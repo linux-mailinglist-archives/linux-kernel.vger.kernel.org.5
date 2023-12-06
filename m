@@ -2,92 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BB28071B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BB38071C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:07:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378788AbjLFODq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 09:03:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
+        id S1378805AbjLFOH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 09:07:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378713AbjLFODp (ORCPT
+        with ESMTP id S1378713AbjLFOH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 09:03:45 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E313181;
-        Wed,  6 Dec 2023 06:03:50 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1rAsVA-0006aQ-6t; Wed, 06 Dec 2023 15:03:48 +0100
-Message-ID: <8ca2c199-b1cf-468e-8182-f590ac0afb3c@leemhuis.info>
-Date:   Wed, 6 Dec 2023 15:03:47 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Revert "fuse: Apply flags2 only when userspace set the
- FUSE_INIT_EXT"
-Content-Language: en-US, de-DE
-To:     =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Wed, 6 Dec 2023 09:07:27 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47514181
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 06:07:33 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-7-5G7ujnPPMmWNFdy5sMVPRg-1; Wed, 06 Dec 2023 14:07:30 +0000
+X-MC-Unique: 5G7ujnPPMmWNFdy5sMVPRg-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 6 Dec
+ 2023 14:07:16 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Wed, 6 Dec 2023 14:07:16 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Bjorn Andersson' <quic_bjorande@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+CC:     "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Paul Lawrence <paullawrence@google.com>,
-        Daniel Rosenberg <drosen@google.com>,
-        Alessio Balsini <balsini@android.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Bernd Schubert <bschubert@ddn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <717fd97a-6d14-4dc9-808c-d752d718fb80@ddn.com>
- <fa3510f3-d3cc-45d2-b38e-e8717e2a9f83@ddn.com>
- <1b03f355170333f20ee20e47c5f355dc73d3a91c.camel@linaro.org>
- <9afc3152-5448-42eb-a7f4-4167fc8bc589@ddn.com>
- <5cd87a64-c506-46f2-9fed-ac8a74658631@ddn.com>
- <8ae8ce4d-6323-4160-848a-5e94895ae60e@leemhuis.info>
- <CAOssrKdvy9qTGSwwPVqYLAYYEk0jbqhGg4Lz=jEff7U58O4Yqw@mail.gmail.com>
- <2023102731-wobbly-glimpse-97f5@gregkh>
- <CAOssrKfNkMmHB2oHHO8gWbzDX27vS--e9dZoh_Mjv-17mSUTBw@mail.gmail.com>
- <2023102740-think-hatless-ab87@gregkh>
- <CAOssrKd-O1JKEPzvnM1VkQ0-oTpDv0RfY6B5oF5p63AtQ4HoqA@mail.gmail.com>
- <689f677b84b484636b673b362b17a6501a056968.camel@linaro.org>
- <CAOssrKfP+t-cy322ujizQofgZkPZsBu1H4+zfbWNEFCmTsXwug@mail.gmail.com>
- <afe378bf254f6c4ac73bb55be3fa7422f2da3f5f.camel@linaro.org>
- <CAOssrKeJB7BZ7fA6Uqo6rHohybmgovc6rVwDeHbegvweSyZeeA@mail.gmail.com>
- <7df24b0e-ea98-4dc7-9e1b-dfc29d0fa1b1@leemhuis.info>
- <61be0ebb17ae0f01ea0e88a225cbfa07ff661060.camel@linaro.org>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <61be0ebb17ae0f01ea0e88a225cbfa07ff661060.camel@linaro.org>
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: RE: [PATCH] soc: qcom: stats: Fix division issue on 32-bit platforms
+Thread-Topic: [PATCH] soc: qcom: stats: Fix division issue on 32-bit platforms
+Thread-Index: AQHaJ91idnM3hlhTbEOITLQ741XLZ7CcR/PQ
+Date:   Wed, 6 Dec 2023 14:07:16 +0000
+Message-ID: <e59bb661054945f7a77b2f67c70d30f7@AcuMS.aculab.com>
+References: <20231205-qcom_stats-aeabi_uldivmod-fix-v1-1-f94ecec5e894@quicinc.com>
+In-Reply-To: <20231205-qcom_stats-aeabi_uldivmod-fix-v1-1-f94ecec5e894@quicinc.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1701871430;7228451f;
-X-HE-SMSGID: 1rAsVA-0006aQ-6t
+Content-Transfer-Encoding: base64
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.11.23 11:31, André Draszik wrote:
-> [...]
-> But I agree, it seems we're stuck and I'm not sure how to resolve this
-> either, Miklos has his points, Android has a different position.
+RnJvbTogQmpvcm4gQW5kZXJzc29uDQo+IFNlbnQ6IDA2IERlY2VtYmVyIDIwMjMgMDA6NDQNCj4g
+DQo+IGNvbW1pdCAnZTg0ZTYxYmRiOTdjICgic29jOiBxY29tOiBzdGF0czogQWRkIEREUiBzbGVl
+cCBzdGF0cyIpJyBtYWRlIGl0DQo+IGluIHdpdGggYSBtdWx0X2ZyYWMoKSB3aGljaCBjYXVzZXMg
+bGluayBlcnJvcnMgb24gQXJtIGFuZCBQb3dlclBDDQo+IGJ1aWxkczoNCj4gDQo+ICAgRVJST1I6
+IG1vZHBvc3Q6ICJfX2FlYWJpX3VsZGl2bW9kIiBbZHJpdmVycy9zb2MvcWNvbS9xY29tX3N0YXRz
+LmtvXSB1bmRlZmluZWQhDQo+IA0KPiBFeHBhbmQgdGhlIG11bHRfZnJhYygpIHRvIGF2b2lkIHRo
+aXMgcHJvYmxlbS4NCj4gDQo+IEZpeGVzOiBlODRlNjFiZGI5N2MgKCJzb2M6IHFjb206IHN0YXRz
+OiBBZGQgRERSIHNsZWVwIHN0YXRzIikNCj4gUmVwb3J0ZWQtYnk6IFJhbmR5IER1bmxhcCA8cmR1
+bmxhcEBpbmZyYWRlYWQub3JnPg0KPiBTaWduZWQtb2ZmLWJ5OiBCam9ybiBBbmRlcnNzb24gPHF1
+aWNfYmpvcmFuZGVAcXVpY2luYy5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9zb2MvcWNvbS9xY29t
+X3N0YXRzLmMgfCAzICsrLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMSBk
+ZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc29jL3Fjb20vcWNvbV9zdGF0
+cy5jIGIvZHJpdmVycy9zb2MvcWNvbS9xY29tX3N0YXRzLmMNCj4gaW5kZXggNDc2M2Q2MmE4Y2Iw
+Li41YmE2MTIzMjMxM2UgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc29jL3Fjb20vcWNvbV9zdGF0
+cy5jDQo+ICsrKyBiL2RyaXZlcnMvc29jL3Fjb20vcWNvbV9zdGF0cy5jDQo+IEBAIC0yMjEsNyAr
+MjIxLDggQEAgc3RhdGljIGludCBxY29tX2Rkcl9zdGF0c19zaG93KHN0cnVjdCBzZXFfZmlsZSAq
+cywgdm9pZCAqdW51c2VkKQ0KPiANCj4gIAlmb3IgKGkgPSAwOyBpIDwgZGRyLmVudHJ5X2NvdW50
+OyBpKyspIHsNCj4gIAkJLyogQ29udmVydCB0aGUgcGVyaW9kIHRvIG1zICovDQo+IC0JCWVudHJ5
+W2ldLmR1ciA9IG11bHRfZnJhYyhNU0VDX1BFUl9TRUMsIGVudHJ5W2ldLmR1ciwgQVJDSF9USU1F
+Ul9GUkVRKTsNCj4gKwkJZW50cnlbaV0uZHVyICo9IE1TRUNfUEVSX1NFQzsNCj4gKwkJZW50cnlb
+aV0uZHVyID0gZGl2X3U2NChlbnRyeVtpXS5kdXIsIEFSQ0hfVElNRVJfRlJFUSk7DQoNCklzIHRo
+YXQgcmlnaHQ/DQpBdCBhIGd1ZXNzIG11bHRfZnJhYyhhLCBiLCBjKSBpcyBkb2luZyBhIDMyeDMy
+IG11bHRpcGx5IGFuZCB0aGVuIGEgNjR4MzINCmRpdmlkZSB0byBnZW5lcmF0ZSBhIDMyYml0IHJl
+c3VsdC4NClNvIEknZCBndWVzcyBlbnRyeVtpXS5kdXIgaXMgMzJiaXQ/ICh0aGlzIGNvZGUgaXNu
+J3QgaW4gLXJjNCAuLi4pLg0KV2hpY2ggbWVhbnMgeW91IGFyZSBub3cgZGlzY2FyZGluZyB0aGUg
+aGlnaCBiaXRzLg0KDQpZb3UndmUgYWxzbyBhZGRlZCBhIHZlcnkgc2xvdyA2NGJpdCBkaXZpZGUu
+DQpBIG11bHRpcGxlIGJ5IHJlY2lwcm9jYWwgY2FsY3VsYXRpb24gd2lsbCBiZSBtdWNoIGJldHRl
+ci4NClNpbmNlIGFic29sdXRlIGFjY3VyYWN5IGFsbW9zdCBjZXJ0YWlubHkgZG9lc24ndCBtYXR0
+ZXIgaGVyZSBjb252ZXJ0Og0KCWR1ciAqIDEwMDAgLyBGUkVRDQp0bw0KCShkdXIgKiAodTMyKSgx
+MDAwdWxsIDw8IDMyIC8gRlJFUSkpID4+IDMyDQp3aGljaCB3aWxsIGJlIGZpbmUgcHJvdmlkZWQg
+RlJFUSA+PSAxMDAwDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUs
+IEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJl
+Z2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-FWIW, this thread died down without any agreement if this is an
-regression or not. Continuing to track it as one likely is not worth the
-effort, hence I'll remove it from the list of tracked issues. If anyone
-still thinks this is something that should be fixed I'd say that person
-should revive this thread and bring Linus in (but FWIW, I pointed him at
-this thread once already).
-
-#regzbot inconclusive: people can't agree if this is a regression or not
-and it seems people stopped caring
-#regzbot ignore-activity
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
