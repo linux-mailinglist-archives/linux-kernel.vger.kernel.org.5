@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DF28068C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0339B8068C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:39:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbjLFHjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 02:39:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43832 "EHLO
+        id S1377095AbjLFHjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 02:39:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjLFHit (ORCPT
+        with ESMTP id S235240AbjLFHim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 02:38:49 -0500
+        Wed, 6 Dec 2023 02:38:42 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE711FEE
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:37:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55489C43395;
-        Wed,  6 Dec 2023 07:37:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368A210F0
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:38:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE21DC43397;
+        Wed,  6 Dec 2023 07:37:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701848278;
-        bh=Q04vqTxy1dsmgwziXnh2z+E07djY9pp2DTirob84VpA=;
+        s=k20201202; t=1701848279;
+        bh=l5iN5w+Qmzs518Y0sHzrhIhEOFTWt8IKcNzWere7ujs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VnUYJE4WxrpV8oP6RIh0fSZ1s3YaiBSY+FPXAeMX5AD0B1pnY73aWQScG2TfWm0E2
-         0N9agwCmSyijagcDcvp/YUSZDuad29IdpcHVF5fyhal8ACXmKkFz6RPAcpS5Q4s8ge
-         wPrgJf0HYDEqLPs0B0XeZ8LHKUyFsfa1p0gEVQQyTB7Fiz/bOTFpmun8WM+eyB3LbV
-         7slSLbYBb5AJulDKq1GiJLxXpRY0ODLwUKZ0Q+m1fbjKAx+oJZDpeqZM//1JhWjISB
-         5W4PLxMGyNoR1Y5jDo2RFvQM/RJ0LZmRqexcj971xsv8iqi6w7ces6RZaoeJJuDOeu
-         eHM5/dCLNo3KA==
+        b=KMB/hg4vc99E3LPXhipYInLEwv756k+4acAyRvlgOyp7K+2MwUqdj5ijXC5Jd2FTk
+         LolnDSwT7/SLuC54yJ1USxMMKpYHWOGU0fQH1cdfeFA3EoHVwsJkfsQeY4QnsQYryN
+         Cj40z6Ejac+7sDp+EV4NiWA/egZ+50VfPkRt3ealLf6ZsuYewnNT1cKIrI8CVZo5PR
+         S6+Cmrvqg+PZ4qVVVGri5UpQ41POlA0ciY6AvR+uL4knwJ8KfKiWsFyjAsaf6dqvM5
+         TiFb244I5413Jk6p0Iz7SyXz78awwr4AKWiQo5EFFSqSx9Cu0oygGrPpz8Du1IGxFK
+         UDXpeVs+OCBcg==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 19/27] tty: n_gsm: convert to u8 and size_t
-Date:   Wed,  6 Dec 2023 08:37:04 +0100
-Message-ID: <20231206073712.17776-20-jirislaby@kernel.org>
+Subject: [PATCH 20/27] tty: n_hdlc: convert to u8 and size_t
+Date:   Wed,  6 Dec 2023 08:37:05 +0100
+Message-ID: <20231206073712.17776-21-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231206073712.17776-1-jirislaby@kernel.org>
 References: <20231206073712.17776-1-jirislaby@kernel.org>
@@ -52,81 +52,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Switch character types to u8 and sizes to size_t. To conform to
 characters/sizes in the rest of the tty layer.
 
+Note u8 is already both passed in and expected on output.
+
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- drivers/tty/n_gsm.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/tty/n_hdlc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index a3ab3946e4ad..4036566febcb 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -124,8 +124,8 @@ struct gsm_msg {
- 	u8 addr;		/* DLCI address + flags */
- 	u8 ctrl;		/* Control byte + flags */
- 	unsigned int len;	/* Length of data block (can be zero) */
--	unsigned char *data;	/* Points into buffer but not at the start */
--	unsigned char buffer[];
-+	u8 *data;	/* Points into buffer but not at the start */
-+	u8 buffer[];
+diff --git a/drivers/tty/n_hdlc.c b/drivers/tty/n_hdlc.c
+index a670419efe79..1615f074ab86 100644
+--- a/drivers/tty/n_hdlc.c
++++ b/drivers/tty/n_hdlc.c
+@@ -109,8 +109,8 @@
+ 
+ struct n_hdlc_buf {
+ 	struct list_head  list_item;
+-	int		  count;
+-	char		  buf[];
++	size_t		  count;
++	u8		  buf[];
  };
  
- enum gsm_dlci_state {
-@@ -283,7 +283,7 @@ struct gsm_mux {
- 	/* Bits for GSM mode decoding */
- 
- 	/* Framing Layer */
--	unsigned char *buf;
-+	u8 *buf;
- 	enum gsm_mux_state state;
- 	unsigned int len;
- 	unsigned int address;
-@@ -2856,7 +2856,7 @@ static void gsm_queue(struct gsm_mux *gsm)
-  *	Receive bytes in gsm mode 0
+ struct n_hdlc_buf_list {
+@@ -263,9 +263,9 @@ static int n_hdlc_tty_open(struct tty_struct *tty)
   */
- 
--static void gsm0_receive(struct gsm_mux *gsm, unsigned char c)
-+static void gsm0_receive(struct gsm_mux *gsm, u8 c)
+ static void n_hdlc_send_frames(struct n_hdlc *n_hdlc, struct tty_struct *tty)
  {
- 	unsigned int len;
- 
-@@ -2947,7 +2947,7 @@ static void gsm0_receive(struct gsm_mux *gsm, unsigned char c)
-  *	Receive bytes in mode 1 (Advanced option)
-  */
- 
--static void gsm1_receive(struct gsm_mux *gsm, unsigned char c)
-+static void gsm1_receive(struct gsm_mux *gsm, u8 c)
- {
- 	/* handle XON/XOFF */
- 	if ((c & ISO_IEC_646_MASK) == XON) {
-@@ -3541,7 +3541,7 @@ static void gsmld_receive_buf(struct tty_struct *tty, const u8 *cp,
- 			      const u8 *fp, size_t count)
- {
- 	struct gsm_mux *gsm = tty->disc_data;
--	char flags = TTY_NORMAL;
-+	u8 flags = TTY_NORMAL;
- 
- 	if (debug & DBG_DATA)
- 		gsm_hex_dump_bytes(__func__, cp, count);
-@@ -3711,7 +3711,7 @@ static ssize_t gsmld_write(struct tty_struct *tty, struct file *file,
- {
- 	struct gsm_mux *gsm = tty->disc_data;
+-	register int actual;
  	unsigned long flags;
--	int space;
-+	size_t space;
- 	int ret;
+ 	struct n_hdlc_buf *tbuf;
++	ssize_t actual;
  
- 	if (!gsm)
-@@ -3909,8 +3909,7 @@ static void gsm_mux_net_tx_timeout(struct net_device *net, unsigned int txqueue)
- 	net->stats.tx_errors++;
- }
+ check_again:
  
--static void gsm_mux_rx_netchar(struct gsm_dlci *dlci,
--				const unsigned char *in_buf, int size)
-+static void gsm_mux_rx_netchar(struct gsm_dlci *dlci, const u8 *in_buf, int size)
+@@ -281,7 +281,7 @@ static void n_hdlc_send_frames(struct n_hdlc *n_hdlc, struct tty_struct *tty)
+ 
+ 	tbuf = n_hdlc_buf_get(&n_hdlc->tx_buf_list);
+ 	while (tbuf) {
+-		pr_debug("sending frame %p, count=%d\n", tbuf, tbuf->count);
++		pr_debug("sending frame %p, count=%zu\n", tbuf, tbuf->count);
+ 
+ 		/* Send the next block of data to device */
+ 		set_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
+@@ -521,9 +521,9 @@ static ssize_t n_hdlc_tty_write(struct tty_struct *tty, struct file *file,
+ 				const u8 *data, size_t count)
  {
- 	struct net_device *net = dlci->net;
- 	struct sk_buff *skb;
+ 	struct n_hdlc *n_hdlc = tty->disc_data;
+-	int error = 0;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	struct n_hdlc_buf *tbuf;
++	ssize_t error = 0;
+ 
+ 	pr_debug("%s() called count=%zd\n", __func__, count);
+ 
 -- 
 2.43.0
 
