@@ -2,80 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E090807609
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A4280760A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442683AbjLFRFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:05:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60874 "EHLO
+        id S1378604AbjLFRHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:07:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379722AbjLFRFV (ORCPT
+        with ESMTP id S1378549AbjLFRHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:05:21 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00361C9;
-        Wed,  6 Dec 2023 09:05:26 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40bd5eaa66cso65204405e9.2;
-        Wed, 06 Dec 2023 09:05:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701882325; x=1702487125; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Aon+6SW66H5qGZ8mIlaW3RBTmDxAICJs/LJzma2pM+k=;
-        b=YNvk4UG/TAxQOxVVyjGZE+/eiqjFkWh6gwpzxCL0caANPm88kFqEoCwAJiwlajGdCQ
-         tWvc0WXKdZtPIsVJ/BakBWXwnJjk3igwDWZrcjpSBmbnomMG7eDx8ur3Weiy3DBCnrPi
-         Oq699L9Rtof+udCcIwUmdMxWbdJvchwFtRGb6DlcNCZe4Jhwa0EEa0mIw4w23NioTM7m
-         xMIZV/4jZZn8Klq2paj+hY+tG7+/hV0wWYlwR5kW+Dfq8kAXNwNpGDVfJ9o4EwttSbdf
-         ZgzcNNF5bUyNXRZON/djhndo/9XifbGN4/c5Js4KnORsbpg+Sc6aE4/qfkD6ohs2EizQ
-         rpFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701882325; x=1702487125;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Aon+6SW66H5qGZ8mIlaW3RBTmDxAICJs/LJzma2pM+k=;
-        b=IvlbkWHThWDCv16nwsvTs0kO6netK9RYicsh6EhEcoZtV4LBLwn0De4ca+7JrThH23
-         E1qotahGXFmYBE0y+tpgCaFf8ySNJsZCvzpgW/X/4mBwsVzBuV+q6cybhMZCMCvl5Uup
-         VSLUuvZShKSjXXFhhzg7Au/6li0anGZKHy6pn8th1/MHZVluQNfD/WOWkV6RLGIQ2S8L
-         CN9w80b2v1jbz16eiJzOFqGXgwirLHnx8zq/kFf0Qx0au6oZB413aoBaiQJRXAdaz+MP
-         jvG4hnS2oFeRlul6CiPNp0A0z5An9ufMnrR0t3l6aM17/0SI9/Zft79X5amAPREx7DI/
-         1mhQ==
-X-Gm-Message-State: AOJu0Yxd3J/EtDkmH4Le3GCycY8bcisHrzIYW3bWs8RVKHzwvV+RX4ud
-        q33c6+S/7u631boDPExkiA==
-X-Google-Smtp-Source: AGHT+IF8nfluIdoHOUHC5Q4HldcNCvJolp8T2hVisdNH1rvL+quoedypu4kSo6tcHw28QVAub1EH4Q==
-X-Received: by 2002:a05:600c:29a:b0:40c:237a:2446 with SMTP id 26-20020a05600c029a00b0040c237a2446mr583915wmk.143.1701882325114;
-        Wed, 06 Dec 2023 09:05:25 -0800 (PST)
-Received: from [192.168.1.148] (15.69.114.89.rev.vodafone.pt. [89.114.69.15])
-        by smtp.googlemail.com with ESMTPSA id g14-20020a05600c4ece00b004090798d29csm201326wmq.15.2023.12.06.09.05.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 09:05:24 -0800 (PST)
-Message-ID: <1dd1a3e8-ef9a-4e89-891f-b49d82acc5f8@gmail.com>
-Date:   Wed, 6 Dec 2023 17:05:21 +0000
+        Wed, 6 Dec 2023 12:07:17 -0500
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2055.outbound.protection.outlook.com [40.107.21.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953B8D40;
+        Wed,  6 Dec 2023 09:07:21 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZWw+fqm7rDyEkKbae+lj0lVP8nNQYgwrrTtHdBF2hCpB9FrpdQUEE0+IzbMfGV3ndgT1AQHBN4kgHBBJBN7me8DEy8BE7K3f7GdA8bzmg1Ic/1S4ekIhsBkCriGFynq1PtHhfphW3k4icUv1CQBLBHphHjl83atwudaMIqRk8C5NwUNuimMd9gjNdXZ0W2w2iK3+BfYjlAApwDbSiYJwJLUinb1tPARRmldjjJeXYiaghispHdy/p8oCiO0oKvSIoLPE2C3LI3cPDMeNTFL3OV1gR/RmNdoSTJLZPQRfcEbugqtr3PYJkPwXSAV8imiBRY/srt7O0von4b71bLdzSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=k1wCyBM1+eCE7XF3bmKzo4H2Km+WyCO2evHnDVPaJQU=;
+ b=g9yuvDQTKtwGS99MbIuwNiHZt7989oa+1MbRNw3/fbDpqZO5XvGrlvHNIKluU9NAQzDjDJdJE+zOlKRcUjJeMFZF9DrCOpyU5ytxBMz0IA3TKdB7TlHdnj/VbPlACWXdL7olcv0kNsxeLmKXgEJwSyglo/V2pZPnzx1l7ISp0ymfwJG3gR+8PoZBqI6Sa+KUAPcrOdsnNcNsIrUL/caN/mEo6umXVtBICw6QvdGhDHN/Tney/iBl4+u7p8wzQi6fuyUFSYL1DYSv+7Wy7UhC+sHh5Y/XhFvu1U1S69JgBH6YB6XmPTWngKbd0OVrtRsdMgg3/NrnOAfG1f6F2kYsMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k1wCyBM1+eCE7XF3bmKzo4H2Km+WyCO2evHnDVPaJQU=;
+ b=FD5X/j614EfD/1kwvAc7lShPJM8ddMaZzWvW3aQq9eD/3OWfUkW8YOjqDoBOlmeQP+sZ2ZSly8FcwO+Q7JIJUt1CTAsekRfZVVuJGGls8RZbWo6jQZnzOVDv4PSwQ+925TKI7Y9KmhZaoVE9hmigf+nXpI0r2VgI0SehLnx8CZ4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4845.eurprd04.prod.outlook.com (2603:10a6:803:51::30)
+ by PAXPR04MB9253.eurprd04.prod.outlook.com (2603:10a6:102:2bd::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.24; Wed, 6 Dec
+ 2023 17:07:17 +0000
+Received: from VI1PR04MB4845.eurprd04.prod.outlook.com
+ ([fe80::dfaa:e869:45eb:76e5]) by VI1PR04MB4845.eurprd04.prod.outlook.com
+ ([fe80::dfaa:e869:45eb:76e5%6]) with mapi id 15.20.7068.022; Wed, 6 Dec 2023
+ 17:07:16 +0000
+Date:   Wed, 6 Dec 2023 12:07:00 -0500
+From:   Frank Li <Frank.li@nxp.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     imx@lists.linux.dev, Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:PCI DRIVER FOR IMX6" <linux-pci@vger.kernel.org>,
+        "moderated list:PCI DRIVER FOR IMX6" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/9] PCI: imx6: Using "linux,pci-domain" as slot ID
+Message-ID: <ZXCqNI3VZ8Sn23WM@lizhi-Precision-Tower-5810>
+References: <ZXCmSOwTWR6AVpGB@lizhi-Precision-Tower-5810>
+ <20231206165953.GA717921@bhelgaas>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206165953.GA717921@bhelgaas>
+X-ClientProxiedBy: SJ0PR05CA0126.namprd05.prod.outlook.com
+ (2603:10b6:a03:33d::11) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] rust: sync: add `CondVar::wait_timeout`
-To:     Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com>
- <20231206-rb-new-condvar-methods-v1-2-33a4cab7fdaa@google.com>
-Content-Language: en-GB
-From:   Tiago Lam <tiagolam@gmail.com>
-In-Reply-To: <20231206-rb-new-condvar-methods-v1-2-33a4cab7fdaa@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4845:EE_|PAXPR04MB9253:EE_
+X-MS-Office365-Filtering-Correlation-Id: 470673d6-267c-41af-f3e0-08dbf67dc82b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4a4+9fYg1RfaxzFql1IsMZVeMHdQ2AB3oPeTScfOhKWirSpr7oFZagbdWUCCiaAposO73u/fHU7VkBBqTjSqnvqGClF2LFx4oxFG4G33hQUmGr4WxE8Ilx7Emhut6PCas6ZoA5Y20UKSC5iDIbU2rBgLS98Yq5QbfELChW28e38mQ2ipc5ql0eJYP+JeLXfxGnohJoovf3TzW7PVrstOfd19chiGXNyjt2RoL+2z0deQEIe2PjnfKEOeGRMIYpJ8LNXn1JRUR7w994TY3uUzXDSeRMgjj+vf1bVk5zgY3NQyht9/Io/ngCadKX6+1r6uqpLUEh0ykpzCWn1oUawS+5K5JWyRJ3PF50SUuyp+WM8RSj+UhLYrNatYFpcTJx53JMJPOBtHiOeOhEynbo9N/FWYj8rjmenVrbg49T/EjlnpKKJwt9HsdsAZR3qX/EO4gM5sWnFy56GrJACysMXIRGuEAxY+N2eqcxmahmXHYskw6ErYSwnoXmseTnndfmqlxesrdjYEhGuOXhsRQW1+9kNmKX+W/xpfaMQY+EnbjHT3VMVGaRg7LDVra/liHRIyRP9EE8NIp+yXFkISAsYPD7ETPdJbo4sCscrKPawfRfjaAZOFf93JiKX3oC3NqBhJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4845.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(346002)(396003)(376002)(39860400002)(366004)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(8936002)(8676002)(4326008)(52116002)(6506007)(6666004)(26005)(6512007)(9686003)(316002)(54906003)(66946007)(66556008)(66476007)(6916009)(6486002)(478600001)(41300700001)(7416002)(5660300002)(33716001)(2906002)(86362001)(38100700002)(38350700005)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iIz5Y76F2jzW29g9dAfkJJINQdSo5eoacjD4xoEiq0+gOe+xwlUJ0sbD2BHG?=
+ =?us-ascii?Q?OMzS9avHtS+KEpydpJcfp/7HhzyQFAg0Qf/u4PjmRAr475iUGkcAt7hdq7Z+?=
+ =?us-ascii?Q?Bpe861zCkuU4zb2BaZ/NjblRM7ffcsFORovf4TOKdX/Dk97DKWgpgYj9XCAd?=
+ =?us-ascii?Q?lcPAjmXcd+cBZvE9/LX2TJcpPGtivhzTsyBGF4djrsJVaAYsFyJNoTujAbM3?=
+ =?us-ascii?Q?5PNhoZqyFcB3LmRteps4OO6uCAi8kfsrQaL5ndoBugmLMKK/IpmpwYUbfB4/?=
+ =?us-ascii?Q?pHWOJiiJjoqvu6DkZHKlkdgMBCmlVVIIK5187g+G2TJdT06zJ/sCliUpeMOr?=
+ =?us-ascii?Q?z7IThryE+VYrFi4mM8IeUQ85c2dHuisr8yopDJBQJqTGjY2lxluJ9TrXODH0?=
+ =?us-ascii?Q?U2xML5QoPhxcQKnz/zhddlwSjKvh2A20GYeW47aJ660uXAcA6D6UiySKK5B2?=
+ =?us-ascii?Q?jInY6bLouWn32WMYcKoC4HaqNyNa29Dn6W0SafLk8Ce5fG6tNFdou9+ToLGc?=
+ =?us-ascii?Q?fLRKdfKzsJBM5T3BeAgBmtbFLqcWl2PyfrHhXobb56ug6Wcf3TsqRocpq3qc?=
+ =?us-ascii?Q?5MHQ7UwPEr9EDptqu72HunnWYabzlh2fqx1Oq47Higs6g0XCc1ciiIAGJQ1Y?=
+ =?us-ascii?Q?sh/PxCfhdKD+q/wkBuiL4yE/5+enZk8E8Xqw7EEf0xkXix4MGNIM44mAXVFR?=
+ =?us-ascii?Q?+THwEv3mbBmWoWqCJJikwBns1U5LBidB5zuaErSg3JeB5ejEv7CfL1jbsiXj?=
+ =?us-ascii?Q?QCgdouW1n11o2J8ixPXEzrOAaeB2hKqSiKfJCYKcLEo13bLuAaDV2qOESW17?=
+ =?us-ascii?Q?1ybUt4tTzmE68dUMlnKvMunna9nAmy9KPs8m435n6/GrM2ZrCbx7UCrhJJFE?=
+ =?us-ascii?Q?pTNDWzj3TkrP5bB+zFt4431KsERk8C8si7NYz+F/FVuHkNZCYIIqFrJROpnW?=
+ =?us-ascii?Q?cSianWAYDjF/DVVwf5rMNP6EFWdhJCF9z6T6EHksG4DNU5AoTdXw+bowoOKk?=
+ =?us-ascii?Q?Bk/Yz3XP3S4RvABJZ1CMACUF3HBxm2xPl6HAW3cAM2Jbc3QOBj9WwyDdEwaE?=
+ =?us-ascii?Q?qUdakuGeNgln7uhdF6yAjFsBomW2EfCAWJX6EEYfNLd+BGzsUMTCTBjjMwSx?=
+ =?us-ascii?Q?v3ieWCHdivunjfU1pTY038WOFngDac2t4vZlM6mWL7gfr1MXNFQYcAeY7A85?=
+ =?us-ascii?Q?jz/E3Rkwu/Y5gkradbpmsnSYJ2jvtDUY1swTKFnTPbji9rfZs6HsEvU03ufA?=
+ =?us-ascii?Q?0DS6Vn9+kwHZeYvtmv1pdiR+CsUZ1SgQRov/wDN321xKvei8qwr4ZKfaglzP?=
+ =?us-ascii?Q?nBh8uuDQbxqsHQXsh2Q4lT2cbWAryx8UZvPZQ3+qFG32zfKzPTFl0EepvZ4p?=
+ =?us-ascii?Q?p6ecrxH9F4S3aMPerq79o5cPC7QFcwLpdWPK0cJ+ovai1u4JVZ+PsN3bFHLL?=
+ =?us-ascii?Q?QFPXgWnSm5Noqw9ztQAe0gRVfXHlvVBH3ZI2ZX+cEH9sjaguj4Bcy6gdxjLL?=
+ =?us-ascii?Q?gMhoOvZMlLd8M+PrgT9FaXi5eMH+zZZDxYYFYaitdt1/ctWAkE3wuu8iwcKo?=
+ =?us-ascii?Q?+lEvjisXdjhiOacx74KaUkkUzFqNArfNDp+ygN7K?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 470673d6-267c-41af-f3e0-08dbf67dc82b
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 17:07:16.2747
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mdM9Esu3sM9WKT/5C7cQINGq6W6yWR6hHJfmS2wrWA0TXlnp7n1ujW3PvA//TGGy0oYcZqXVFkiw1o1NpUmAaw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9253
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,125 +130,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 06, 2023 at 10:59:53AM -0600, Bjorn Helgaas wrote:
+> On Wed, Dec 06, 2023 at 11:50:16AM -0500, Frank Li wrote:
+> > On Wed, Dec 06, 2023 at 10:36:56AM -0600, Bjorn Helgaas wrote:
+> > > In subject, maybe you mean "Use 'linux,pci-domain' as slot ID"?
+> > > "Using" is the wrong verb form here.
+> > > 
+> > > On Wed, Dec 06, 2023 at 10:58:58AM -0500, Frank Li wrote:
+> > > > Avoid use get slot id by compared with register physical address. If there
+> > > > are more than 2 slots, compared logic will become complex.
+> > > 
+> > > But this doesn't say anything about "linux,pci-domain", and I don't
+> > > see anything about a register physical address in the patch.
+> > > 
+> > > Maybe this commit log was meant for a different patch?  I'm confused.
+> > > 
+> > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > ---
+> > > >  drivers/pci/controller/dwc/pci-imx6.c | 6 ++++++
+> > > >  1 file changed, 6 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> > > > index 62d77fabd82a..239ef439ba70 100644
+> > > > --- a/drivers/pci/controller/dwc/pci-imx6.c
+> > > > +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> > > > @@ -33,6 +33,7 @@
+> > > >  #include <linux/pm_domain.h>
+> > > >  #include <linux/pm_runtime.h>
+> > > >  
+> > > > +#include "../../pci.h"
+> > > >  #include "pcie-designware.h"
+> > > >  
+> > > >  #define IMX8MQ_GPR_PCIE_REF_USE_PAD		BIT(9)
+> > > > @@ -1333,6 +1334,11 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+> > > >  					     "Failed to get PCIEPHY reset control\n");
+> > > >  	}
+> > > >  
+> > > > +	/* Using linux,pci-domain as PCI slot id */
+> > > > +	imx6_pcie->controller_id = of_get_pci_domain_nr(node);
+> > > > +	if (imx6_pcie->controller_id)
+> > > > +		imx6_pcie->controller_id = 0;
+> > > 
+> > > I don't understand what this is doing.  It looks the same as just:
+> > 
+> > Good capture. It should be 
+> > if (imx6_pcie->controller_id < 0)
+> > 	imx6_pcie->controller_id = 0;
+> > 
+> > for only one PCI controller case. I just tested first one slot before send
+> > patch, so not met problem.
+> > 
+> > Previously, we use below logic
+> > 	if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
+> > 		imx6_pcie->controller_id = 1;
+> > 
+> > It is not good to depend on register's base address. If there are 3
+> > controllers, check logic will becomoe ugly.
+> 
+> Makes sense.  If the previous code depended on the base address, this
+> patch would make more sense if it contained both the addition of the
+> of_get_pci_domain_nr() call and the removal of the base address code.
 
-On 06/12/2023 10:09, Alice Ryhl wrote:
-[...]
-> diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
-> index 9861c6749ad0..a6a6b6ab0c39 100644
-> --- a/rust/kernel/sync/condvar.rs
-> +++ b/rust/kernel/sync/condvar.rs
-> @@ -120,6 +120,63 @@ fn wait_internal<T: ?Sized, B: Backend>(&self, wait_state: u32, guard: &mut Guar
->           unsafe { bindings::finish_wait(self.wait_list.get(), wait.get()) };
->       }
->   
-> +    /// Atomically releases the given lock (whose ownership is proven by the guard) and puts the
-> +    /// thread to sleep. It wakes up when notified by [`CondVar::notify_one`] or
-> +    /// [`CondVar::notify_all`], or when the thread receives a signal.
-> +    ///
-> +    /// Returns whether there is a signal pending.
-> +    fn wait_internal_timeout<T, B>(
-> +        &self,
-> +        wait_state: u32,
-> +        guard: &mut Guard<'_, T, B>,
-> +        timeout: u64,
-> +    ) -> u64
-> +    where
-> +        T: ?Sized,
-> +        B: Backend,
-> +    {
-> +        let wait = Opaque::<bindings::wait_queue_entry>::uninit();
-> +
-> +        // SAFETY: `wait` points to valid memory.
-> +        unsafe { bindings::init_wait(wait.get()) };
-> +
-> +        // SAFETY: Both `wait` and `wait_list` point to valid memory.
-> +        unsafe {
-> +            bindings::prepare_to_wait_exclusive(self.wait_list.get(), wait.get(), wait_state as _)
-> +        };
-> +
-> +        // SAFETY: Switches to another thread.
-> +        let timeout =
-> +            guard.do_unlocked(|| unsafe { bindings::schedule_timeout(timeout as _) as _ });
+Remove base address code will block existed functions. My plan is
+1. this patch upstreamed
+2. related dts add linux,pci-domain.
+3. removed base address compare code.
 
-It looks like `schedule_timeout()` simply calls `schedule()` when the 
-timeout passed is `MAX_SCHEDULE_TIMEOUT`, so `wait_internal_timeout()` 
-could be merged together with the already existing `wait_internal()`, 
-where `wait_internal()` would always call `schedule_timeout()`? I may be 
-missing something, so just wondering why you decided to introduce 
-another method.
+Frank
 
-> +
-> +        // SAFETY: Both `wait` and `wait_list` point to valid memory.
-> +        unsafe { bindings::finish_wait(self.wait_list.get(), wait.get()) };
-> +
-> +        timeout
-> +    }
-> +
-> +    /// Releases the lock and waits for a notification in interruptible mode.
-> +    ///
-> +    /// Atomically releases the given lock (whose ownership is proven by the guard) and puts the
-> +    /// thread to sleep. It wakes up when notified by [`CondVar::notify_one`] or
-> +    /// [`CondVar::notify_all`], or when a timeout occurs, or when the thread receives a signal.
-> +    ///
-> +    /// Returns whether there is a signal pending.
-> +    #[must_use = "wait_timeout returns if a signal is pending, so the caller must check the return value"]
-> +    pub fn wait_timeout<T: ?Sized, B: Backend>(
-> +        &self,
-> +        guard: &mut Guard<'_, T, B>,
-> +        jiffies: u64,
-> +    ) -> CondVarTimeoutResult {
-
-Should this be called `wait_timeout_interruptable` instead, so that if 
-we need to add one using the `TASK_INTERRUPTIBLE` state later we don't 
-need to modfy it again? It also matches the 
-`schedule_timeout_interruptible` one in the kernel (although that's not 
-a reason to change it just in itself).
-
-> +        let res = self.wait_internal_timeout(bindings::TASK_INTERRUPTIBLE, guard, jiffies);
-> +
-> +        match (res as _, crate::current!().signal_pending()) {
-> +            (jiffies, true) => CondVarTimeoutResult::Signal { jiffies },
-> +            (0, false) => CondVarTimeoutResult::Timeout,
-> +            (jiffies, false) => CondVarTimeoutResult::Woken { jiffies },
-> +        }
-> +    }
-> +
->       /// Releases the lock and waits for a notification in interruptible mode.
->       ///
->       /// Atomically releases the given lock (whose ownership is proven by the guard) and puts the
-> @@ -177,3 +234,19 @@ pub fn notify_all(&self) {
->           self.notify(0, 0);
->       }
->   }
-> +
-> +/// The return type of `wait_timeout`.
-> +pub enum CondVarTimeoutResult {
-> +    /// The timeout was reached.
-> +    Timeout,
-> +    /// Somebody woke us up.
-> +    Woken {
-> +        /// Remaining sleep duration.
-> +        jiffies: u64,
-> +    },
-> +    /// A signal occurred.
-> +    Signal {
-> +        /// Remaining sleep duration.
-> +        jiffies: u64,
-> +    },
-> +}
-
-
-Is `Signal` and `Woken` only going to hold a single value? Would it be 
-best represented as a tuple struct instead, like so?
-
-     pub enum CondVarTimeoutResult {
-         /// The timeout was reached.
-         Timeout,
-         /// Somebody woke us up.
-         Woken (u64),
-         /// A signal occurred.
-         Signal (u64),
-     }
-
-Regard,
-Tiago.
+> 
+> > > Maybe this is a typo?  As written, it doesn't look like there's any
+> > > point in calling of_get_pci_domain_nr().
+> > > 
+> > > >  	switch (imx6_pcie->drvdata->variant) {
+> > > >  	case IMX7D:
+> > > >  		if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
+> > > > -- 
+> > > > 2.34.1
+> > > > 
