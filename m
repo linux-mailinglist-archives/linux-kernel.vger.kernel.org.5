@@ -2,189 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4EE806E1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6101806E25
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377695AbjLFLgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 06:36:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51906 "EHLO
+        id S1377722AbjLFLiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:38:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377585AbjLFLgl (ORCPT
+        with ESMTP id S1377628AbjLFLiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:36:41 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 072AFC9;
-        Wed,  6 Dec 2023 03:36:47 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Slb2t5x9jz4f3lVb;
-        Wed,  6 Dec 2023 19:36:38 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 8B5371A0878;
-        Wed,  6 Dec 2023 19:36:43 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP1 (Coremail) with SMTP id cCh0CgDn6hDJXHBlrr2VCw--.32227S3;
-        Wed, 06 Dec 2023 19:36:43 +0800 (CST)
-Subject: Re: [PATCH -next] md: split MD_RECOVERY_NEEDED out of mddev_resume
-To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
-        dm-devel@lists.linux.dev, janpieter.sollie@edpnet.be,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20231204031703.3102254-1-yukuai1@huaweicloud.com>
- <CAPhsuW4sF=jAyA+Q=2tFBBAApjcW=gWXndDNX6t3nrAfnk_zZA@mail.gmail.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <269ac5cb-aa09-02ca-4150-c90cd5a72e06@huaweicloud.com>
-Date:   Wed, 6 Dec 2023 19:36:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 6 Dec 2023 06:38:01 -0500
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 065B5D49
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:38:06 -0800 (PST)
+Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-7c55a04cd9eso2185546241.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 03:38:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701862685; x=1702467485; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vqiXsfY2To4PHI6eJQCHduTSebcEXd5uADmfhHEO5xo=;
+        b=lR5weGfeGEsG+Gqj9mP9Z2cl5t+alFDxYQKdGX+HIZoX0aXDO52sETrUy5GW/DJ8Xp
+         YjLjk+N3PVCv6puwUccKgFcRFAUeiEDY6B9jNKsz1Ul56JFNp/Y/3InyYNJI5xlM5ed0
+         7KN/b3DQDxjLcyJMDxsNrVYO19RzbBWy8VWhtdpha0JlXjyuaeHbMfXSRvaBEKi7VOf7
+         vE6QPMLthWj6C6Bw7zRiv3JZ+XJAKXhoE0lzL///6xJrR+L4QSRKEoCl/QnnsCWc7+2G
+         b38IYVL2Q2WxZGzIi1Goz0RVeIO60Ix/4EHlZo5Tb6CjN93YB1MmkFO3r3EH5tnpKnBI
+         Bgeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701862685; x=1702467485;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vqiXsfY2To4PHI6eJQCHduTSebcEXd5uADmfhHEO5xo=;
+        b=jGR3TVs5e/N1AxsEkjtcp3xyeBlEmETy3ZA6UOr4Id9E/CI0vJlauCmHuMhgYwQNjd
+         zFYJGgE0U7ZMUgASD/a9zwqPH0Pe14qhVDO9/ynRJ0QbE0T3QqMtUYWXDTwfx8ff9n1f
+         eCWH6X8D+6iuLJ1ykeDLqncUdGIRVZd+vdbU9L0jMfxsbHWKsc5U4tFs/NTVV0YaJfh2
+         K7g8bzryx8fpbTNkq2KvOAvkD6oBSN7Zjwt/fLuVF674Q8vDMYbjd0wcQ/1//37oMMdn
+         FpJzN3PZUZPEMfDVt1JCUgVTuR7nv62zAShAI/nqFVxWR6UqFdk8VgbmMrNw38iUyC6n
+         IC3Q==
+X-Gm-Message-State: AOJu0Yw1YG7MVqbScuTJHgJjhiDHfPdZwUAZYHSnUwZVVQQUPZTDmLlm
+        k28dwNoZenll7Zc4RWshxT3dlFo8+WGG/98Qgu/R+Q==
+X-Google-Smtp-Source: AGHT+IHourNTb7WMH0K3D31guA9V35xLG/P7Tn9mTPPu0kJQ1+4eDDR2yXdz5EU4bC5uAzOSV87KWRPhW1gtjYwiyX8=
+X-Received: by 2002:a67:ee1b:0:b0:464:7f57:b474 with SMTP id
+ f27-20020a67ee1b000000b004647f57b474mr567721vsp.19.1701862685076; Wed, 06 Dec
+ 2023 03:38:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW4sF=jAyA+Q=2tFBBAApjcW=gWXndDNX6t3nrAfnk_zZA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDn6hDJXHBlrr2VCw--.32227S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZFWxWw45tryrWr13tF18Zrb_yoWrJF1kpa
-        yxtF95Wr4kZa93ZrWUG3WkWa48Zw4jgrZrtrW3Wa4kA3s5K34fGF15ur1UJrWDt34SqFsx
-        ta15Za1kAryrKFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcS
-        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231205183249.651714114@linuxfoundation.org>
+In-Reply-To: <20231205183249.651714114@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 6 Dec 2023 17:07:53 +0530
+Message-ID: <CA+G9fYsQLS9sksdRLphmSJ+K7bYDsdiq--xe+eivsOfAeM2Oxg@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/131] 5.10.203-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 6 Dec 2023 at 00:52, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.203 release.
+> There are 131 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.203-rc3.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-在 2023/12/06 16:30, Song Liu 写道:
-> On Sun, Dec 3, 2023 at 7:18 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> New mddev_resume() calls are added to synchroniza IO with array
->> reconfiguration, however, this introduce a regression while adding it in
->> md_start_sync():
->>
->> 1) someone set MD_RECOVERY_NEEDED first;
->> 2) daemon thread grab reconfig_mutex, then clear MD_RECOVERY_NEEDED and
->>     queue a new sync work;
->> 3) daemon thread release reconfig_mutex;
->> 4) in md_start_sync
->>     a) check that there are spares that can be added/removed, then suspend
->>        the array;
->>     b) remove_and_add_spares may not be called, or called without really
->>        add/remove spares;
->>     c) resume the array, then set MD_RECOVERY_NEEDED again!
->>
->> Loop between 2 - 4, then mddev_suspend() will be called quite often, for
->> consequence, normal IO will be quite slow.
->>
->> Fix this problem by spliting MD_RECOVERY_NEEDED out of mddev_resume(), so
->> that md_start_sync() won't set such flag and hence the loop will be broken.
-> 
-> I hope we don't leak set_bit MD_RECOVERY_NEEDED to all call
-> sites of mddev_resume().
 
-There are also some other mddev_resume() that is added later and don't
-need recovery, so md_start_sync() is not the only place:
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-  - md_setup_drive
-  - rdev_attr_store
-  - suspend_lo_store
-  - suspend_hi_store
-  - autorun_devices
-  - md_ioct
-  - r5c_disable_writeback_async
-  - error path from new_dev_store(), ...
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-I'm not sure add a new helper is a good idea, because all above apis
-should use new helper as well.
+## Build
+* kernel: 5.10.203-rc3
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.10.y
+* git commit: 3e5897d7b3637fe06435b1b778ed77c76ef7612d
+* git describe: v5.10.202-132-g3e5897d7b363
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10.202-132-g3e5897d7b363
 
-> 
-> How about something like the following instead?
-> 
-> Please also incorporate feedback from Paul in the next version.
+## Test Regressions (compared to v5.10.202)
 
-Of course.
+## Metric Regressions (compared to v5.10.202)
 
-Thanks,
-Kuai
+## Test Fixes (compared to v5.10.202)
 
-> 
-> Thanks,
-> Song
-> 
-> diff --git i/drivers/md/md.c w/drivers/md/md.c
-> index c94373d64f2c..2d53e1b57070 100644
-> --- i/drivers/md/md.c
-> +++ w/drivers/md/md.c
-> @@ -490,7 +490,7 @@ int mddev_suspend(struct mddev *mddev, bool interruptible)
->   }
->   EXPORT_SYMBOL_GPL(mddev_suspend);
-> 
-> -void mddev_resume(struct mddev *mddev)
-> +static void __mddev_resume(struct mddev *mddev, bool recovery_needed)
->   {
->          lockdep_assert_not_held(&mddev->reconfig_mutex);
-> 
-> @@ -507,12 +507,18 @@ void mddev_resume(struct mddev *mddev)
->          percpu_ref_resurrect(&mddev->active_io);
->          wake_up(&mddev->sb_wait);
-> 
-> -       set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
-> +       if (recovery_needed)
-> +               set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->          md_wakeup_thread(mddev->thread);
->          md_wakeup_thread(mddev->sync_thread); /* possibly kick off a reshape */
-> 
->          mutex_unlock(&mddev->suspend_mutex);
->   }
-> +
-> +void mddev_resume(struct mddev *mddev)
-> +{
-> +       __mddev_resume(mddev, true);
-> +}
->   EXPORT_SYMBOL_GPL(mddev_resume);
-> 
->   /*
-> @@ -9403,7 +9409,9 @@ static void md_start_sync(struct work_struct *ws)
->                  goto not_running;
->          }
-> 
-> -       suspend ? mddev_unlock_and_resume(mddev) : mddev_unlock(mddev);
-> +       mddev_unlock(mddev);
-> +       if (suspend)
-> +               __mddev_resume(mddev, false);
->          md_wakeup_thread(mddev->sync_thread);
->          sysfs_notify_dirent_safe(mddev->sysfs_action);
->          md_new_event();
-> @@ -9415,7 +9423,9 @@ static void md_start_sync(struct work_struct *ws)
->          clear_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
->          clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
->          clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
-> -       suspend ? mddev_unlock_and_resume(mddev) : mddev_unlock(mddev);
-> +       mddev_unlock(mddev);
-> +       if (suspend)
-> +               __mddev_resume(mddev, false);
-> 
->          wake_up(&resync_wait);
->          if (test_and_clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery) &&
-> 
-> .
-> 
+## Metric Fixes (compared to v5.10.202)
 
+## Test result summary
+total: 86943, pass: 67634, fail: 3147, skip: 16110, xfail: 52
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 117 total, 116 passed, 1 failed
+* arm64: 44 total, 43 passed, 1 failed
+* i386: 35 total, 35 passed, 0 failed
+* mips: 24 total, 24 passed, 0 failed
+* parisc: 3 total, 0 passed, 3 failed
+* powerpc: 25 total, 25 passed, 0 failed
+* riscv: 11 total, 11 passed, 0 failed
+* s390: 12 total, 12 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 38 total, 38 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
