@@ -2,120 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B64880660F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 05:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61DB380660D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 05:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbjLFEHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 23:07:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51542 "EHLO
+        id S1376518AbjLFEKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 23:10:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLFEHo (ORCPT
+        with ESMTP id S229493AbjLFEKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 23:07:44 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDA01B9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 20:07:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE132C433C7;
-        Wed,  6 Dec 2023 04:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701835669;
-        bh=KMG769MNITrQ/3a5d6hMdwbizXr8YhfZCzIXqzcUdYA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=f1748msnH4UQkZY4UnLQFsRD/ti09IyK8xqHUWb8u87QYi26s4DPocVQXv5FtSbMd
-         TZcXEoX6s1arM0oMdj9IJ9VKA+P3O+MGKAScOm6cOcxw4u6ry8SIbysXE1m7Os9mNY
-         98Hyr8j9xBAO5QQeDvdHXRflHiCSrRW1Cux1bcNQeNCQgr6oCYK8qCqNfH1G07zHep
-         lGyfWwryQfZJy05NiswJd1h9tJOR8jCp57z9Sowi2jcPbJyGPXZfRHBAVHVDSNO+1T
-         5xNEkgQXuB7zi+9ME3m4kZLePMkZmCljR9UkhQ82s55XJLAJNzVRKYqVft6nDH8rBt
-         Rvkp9wYHkaViw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 612ACCE0B04; Tue,  5 Dec 2023 20:07:49 -0800 (PST)
-Date:   Tue, 5 Dec 2023 20:07:49 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, David.Laight@aculab.com,
-        richard@nod.at, mjguzik@gmail.com,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [RFC PATCH 47/86] rcu: select PREEMPT_RCU if PREEMPT
-Message-ID: <106ab2d8-f63b-4c52-a93f-fc499d43fc13@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <e939c924-1dfa-4a6a-9309-2430f19467f5@paulmck-laptop>
- <87wmu2ywrk.ffs@tglx>
- <fa1249f7-9a5d-4696-9246-4913365b6715@paulmck-laptop>
- <20231205100114.0bd3c4a2@gandalf.local.home>
- <1375e409-2593-45e1-b27e-3699c17c47dd@paulmck-laptop>
- <87il5cpfn1.fsf@oracle.com>
+        Tue, 5 Dec 2023 23:10:50 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6C01BC;
+        Tue,  5 Dec 2023 20:10:55 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1d0a5422c80so26314535ad.3;
+        Tue, 05 Dec 2023 20:10:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701835854; x=1702440654; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ObrC2jCtLGDAckpSfZVTn0tEKMdAtJUEwxrQR45+A9Q=;
+        b=TkPQUDAeccGi9r1+dWcxLq006rWGC5WUjJzykXi4lF4awcoJEA/GgXV0tMUfrCHkER
+         gmhvqPI3H5wKvAxM3h4H2XN2ApuBFTHaqASXseK5AKODJcFl/RV7j8iAYbW2G8E9I22h
+         43rbT7KhdURgS6CZzoV1I1whnPZLpD5ZCL8JDgaDmoYgaUjaEkhGahuT3vOjTXHuhMCW
+         4ngZDGZkCdGU9iwZLjHbuLR/uewVy0HNcAvUWuJWU/dGWJSU57sCTFpJ0nuHdPVt08Ro
+         EsjAxnrJEjvHcR6HGEGmlFrCWHEK4pMMayEsRH1M8KiA5rMkMfHm/V5Iky8xKTel9Ur2
+         LOJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701835854; x=1702440654;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ObrC2jCtLGDAckpSfZVTn0tEKMdAtJUEwxrQR45+A9Q=;
+        b=i3kNEM88JmLz/Icn/f/cZ7Yp8Nj+ZJOhNF/DsFLLCYl1sJLzNmWZcH/qEphXfG2WHB
+         PlgB0OlMW2XgNjCePn8JaabBVltYMZVYm3GO2zmClhHNR6lBsyknJEc/9mIpbOzV3HJp
+         VlX5eJnYyIxOqvWE1+ze9MIpfEggS8DsJsiWPG9v2XQqgwEim0Zuo4FW3c8lRCZgLRyt
+         V4+AoOIvSpV8rXbcNyyKhDnu+vWelDKinq5PWMPzGSvBwr8OgPZBbgV/vc+FAsrpa90L
+         PnQ2RJ8PvBUdfe2ocOLKC/hJKWlwrVkbUbSxXhLpaRtM4PCQFMaY4QETjv371Segj8l4
+         5HMQ==
+X-Gm-Message-State: AOJu0YxPWakMPxT7bLrMEb4HfBTHTZcOyckzCt8WQdfMGM7sVmiWSq8s
+        6PY8yp5GJ42pwfL2DWBr504=
+X-Google-Smtp-Source: AGHT+IEaAOoQGFwwH/kU2fUu/2MKaKhp7MePbfzzvQOCn6yYbZlMCkGzBFnYk7XBORY7u8QTpJQ4RA==
+X-Received: by 2002:a17:902:f7d4:b0:1d0:737d:2ae5 with SMTP id h20-20020a170902f7d400b001d0737d2ae5mr292078plw.87.1701835854495;
+        Tue, 05 Dec 2023 20:10:54 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id ij20-20020a170902ab5400b001cfbd3f38dcsm9625744plb.225.2023.12.05.20.10.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 20:10:53 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id 8E9E81123835B; Wed,  6 Dec 2023 11:10:50 +0700 (WIB)
+Date:   Wed, 6 Dec 2023 11:10:50 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Subject: Re: [PATCH v8 0/6] workload-specific and memory pressure-driven
+ zswap writeback
+Message-ID: <ZW_0SqJ5xDc3lTsR@archie.me>
+References: <20231130194023.4102148-1-nphamcs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cYRqWT32c2qY1zcr"
 Content-Disposition: inline
-In-Reply-To: <87il5cpfn1.fsf@oracle.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231130194023.4102148-1-nphamcs@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 12:18:26PM -0800, Ankur Arora wrote:
-> 
-> Paul E. McKenney <paulmck@kernel.org> writes:
-> 
-> > On Tue, Dec 05, 2023 at 10:01:14AM -0500, Steven Rostedt wrote:
-> >> On Mon, 4 Dec 2023 17:01:21 -0800
-> >> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> >>
-> >> > On Tue, Nov 28, 2023 at 11:53:19AM +0100, Thomas Gleixner wrote:
-> >> > > Paul!
-> >> > >
-> >> > > On Tue, Nov 21 2023 at 07:19, Paul E. McKenney wrote:
-> >> > > > On Tue, Nov 21, 2023 at 10:00:59AM -0500, Steven Rostedt wrote:
-> ...
-> >> > >   3) Looking at the initial problem Ankur was trying to solve there is
-> >> > >      absolutely no acceptable solution to solve that unless you think
-> >> > >      that the semantically invers 'allow_preempt()/disallow_preempt()'
-> >> > >      is anywhere near acceptable.
-> >> >
-> >> > I am not arguing for allow_preempt()/disallow_preempt(), so for that
-> >> > argument, you need to find someone else to argue with.  ;-)
-> >>
-> >> Anyway, there's still a long path before cond_resched() can be removed. It
-> >> was a mistake by Ankur to add those removals this early (and he has
-> >> acknowledged that mistake).
-> >
-> > OK, that I can live with.  But that seems to be a bit different of a
-> > take than that of some earlier emails in this thread.  ;-)
-> 
-> Heh I think it's just that this thread goes to (far) too many places :).
-> 
-> As Steven says, the initial series touching everything all together
-> was a mistake. V1 adds the new preemption model alongside the existing
-> ones locally defines cond_resched() as nop.
-> 
-> That'll allow us to experiment and figure out where there are latency
-> gaps.
 
-Sounds very good!
+--cYRqWT32c2qY1zcr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Again, I am very supportive of the overall direction.  Devils and details
-and all that.  ;-)
+On Thu, Nov 30, 2023 at 11:40:17AM -0800, Nhat Pham wrote:
+> Changelog:
+> v8:
+>    * Fixed a couple of build errors in the case of !CONFIG_MEMCG
+>    * Simplified the online memcg selection scheme for the zswap global
+>      limit reclaim (suggested by Michal Hocko and Johannes Weiner)
+>      (patch 2 and patch 3)
+>    * Added a new kconfig to allows users to enable zswap shrinker by
+>      default. (suggested by Johannes Weiner) (patch 6)
+> v7:
+>    * Added the mem_cgroup_iter_online() function to the API for the new
+>      behavior (suggested by Andrew Morton) (patch 2)
+>    * Fixed a missing list_lru_del -> list_lru_del_obj (patch 1)
+> v6:
+>    * Rebase on top of latest mm-unstable.
+>    * Fix/improve the in-code documentation of the new list_lru
+>      manipulation functions (patch 1)
+> v5:
+>    * Replace reference getting with an rcu_read_lock() section for
+>      zswap lru modifications (suggested by Yosry)
+>    * Add a new prep patch that allows mem_cgroup_iter() to return
+>      online cgroup.
+>    * Add a callback that updates pool->next_shrink when the cgroup is
+>      offlined (suggested by Yosry Ahmed, Johannes Weiner)
+> v4:
+>    * Rename list_lru_add to list_lru_add_obj and __list_lru_add to
+>      list_lru_add (patch 1) (suggested by Johannes Weiner and
+> 	 Yosry Ahmed)
+>    * Some cleanups on the memcg aware LRU patch (patch 2)
+>      (suggested by Yosry Ahmed)
+>    * Use event interface for the new per-cgroup writeback counters.
+>      (patch 3) (suggested by Yosry Ahmed)
+>    * Abstract zswap's lruvec states and handling into=20
+>      zswap_lruvec_state (patch 5) (suggested by Yosry Ahmed)
+> v3:
+>    * Add a patch to export per-cgroup zswap writeback counters
+>    * Add a patch to update zswap's kselftest
+>    * Separate the new list_lru functions into its own prep patch
+>    * Do not start from the top of the hierarchy when encounter a memcg
+>      that is not online for the global limit zswap writeback (patch 2)
+>      (suggested by Yosry Ahmed)
+>    * Do not remove the swap entry from list_lru in
+>      __read_swapcache_async() (patch 2) (suggested by Yosry Ahmed)
+>    * Removed a redundant zswap pool getting (patch 2)
+>      (reported by Ryan Roberts)
+>    * Use atomic for the nr_zswap_protected (instead of lruvec's lock)
+>      (patch 5) (suggested by Yosry Ahmed)
+>    * Remove the per-cgroup zswap shrinker knob (patch 5)
+>      (suggested by Yosry Ahmed)
+> v2:
+>    * Fix loongarch compiler errors
+>    * Use pool stats instead of memcg stats when !CONFIG_MEMCG_KEM
+>=20
+> There are currently several issues with zswap writeback:
+>=20
+> 1. There is only a single global LRU for zswap, making it impossible to
+>    perform worload-specific shrinking - an memcg under memory pressure
+>    cannot determine which pages in the pool it owns, and often ends up
+>    writing pages from other memcgs. This issue has been previously
+>    observed in practice and mitigated by simply disabling
+>    memcg-initiated shrinking:
+>=20
+>    https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com=
+/T/#u
+>=20
+>    But this solution leaves a lot to be desired, as we still do not
+>    have an avenue for an memcg to free up its own memory locked up in
+>    the zswap pool.
+>=20
+> 2. We only shrink the zswap pool when the user-defined limit is hit.
+>    This means that if we set the limit too high, cold data that are
+>    unlikely to be used again will reside in the pool, wasting precious
+>    memory. It is hard to predict how much zswap space will be needed
+>    ahead of time, as this depends on the workload (specifically, on
+>    factors such as memory access patterns and compressibility of the
+>    memory pages).
+>=20
+> This patch series solves these issues by separating the global zswap
+> LRU into per-memcg and per-NUMA LRUs, and performs workload-specific
+> (i.e memcg- and NUMA-aware) zswap writeback under memory pressure. The
+> new shrinker does not have any parameter that must be tuned by the
+> user, and can be opted in or out on a per-memcg basis.
+>=20
+> As a proof of concept, we ran the following synthetic benchmark:
+> build the linux kernel in a memory-limited cgroup, and allocate some
+> cold data in tmpfs to see if the shrinker could write them out and
+> improved the overall performance. Depending on the amount of cold data
+> generated, we observe from 14% to 35% reduction in kernel CPU time used
+> in the kernel builds.
+>=20
+> Domenico Cerasuolo (3):
+>   zswap: make shrinking memcg-aware
+>   mm: memcg: add per-memcg zswap writeback stat
+>   selftests: cgroup: update per-memcg zswap writeback selftest
+>=20
+> Nhat Pham (3):
+>   list_lru: allows explicit memcg and NUMA node selection
+>   memcontrol: implement mem_cgroup_tryget_online()
+>   zswap: shrinks zswap pool based on memory pressure
+>=20
+>  Documentation/admin-guide/mm/zswap.rst      |  10 +
+>  drivers/android/binder_alloc.c              |   7 +-
+>  fs/dcache.c                                 |   8 +-
+>  fs/gfs2/quota.c                             |   6 +-
+>  fs/inode.c                                  |   4 +-
+>  fs/nfs/nfs42xattr.c                         |   8 +-
+>  fs/nfsd/filecache.c                         |   4 +-
+>  fs/xfs/xfs_buf.c                            |   6 +-
+>  fs/xfs/xfs_dquot.c                          |   2 +-
+>  fs/xfs/xfs_qm.c                             |   2 +-
+>  include/linux/list_lru.h                    |  54 ++-
+>  include/linux/memcontrol.h                  |  15 +
+>  include/linux/mmzone.h                      |   2 +
+>  include/linux/vm_event_item.h               |   1 +
+>  include/linux/zswap.h                       |  27 +-
+>  mm/Kconfig                                  |  14 +
+>  mm/list_lru.c                               |  48 ++-
+>  mm/memcontrol.c                             |   3 +
+>  mm/mmzone.c                                 |   1 +
+>  mm/swap.h                                   |   3 +-
+>  mm/swap_state.c                             |  26 +-
+>  mm/vmstat.c                                 |   1 +
+>  mm/workingset.c                             |   4 +-
+>  mm/zswap.c                                  | 456 +++++++++++++++++---
+>  tools/testing/selftests/cgroup/test_zswap.c |  74 ++--
+>  25 files changed, 661 insertions(+), 125 deletions(-)
+>=20
 
-							Thanx, Paul
+Carrying from v7,
+
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--cYRqWT32c2qY1zcr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHQEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZW/0RQAKCRD2uYlJVVFO
+o65MAP9/pT5frcsZd0LxwPcoVNeeGc0pNzxVGOZLmtka3xNlbgD3VXD447mxf7HC
+r0BOQRED5Yu59sVopP7c3ZGK4tuzBA==
+=huGs
+-----END PGP SIGNATURE-----
+
+--cYRqWT32c2qY1zcr--
