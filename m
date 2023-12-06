@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C166D8077E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD398077EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379130AbjLFSqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 13:46:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43190 "EHLO
+        id S1379169AbjLFSrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 13:47:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379143AbjLFSql (ORCPT
+        with ESMTP id S1379134AbjLFSqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 13:46:41 -0500
-Received: from rcdn-iport-9.cisco.com (rcdn-iport-9.cisco.com [173.37.86.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB97810C7;
-        Wed,  6 Dec 2023 10:46:43 -0800 (PST)
+        Wed, 6 Dec 2023 13:46:49 -0500
+Received: from rcdn-iport-5.cisco.com (rcdn-iport-5.cisco.com [173.37.86.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C32D59;
+        Wed,  6 Dec 2023 10:46:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=4170; q=dns/txt; s=iport;
-  t=1701888403; x=1703098003;
+  d=cisco.com; i=@cisco.com; l=3327; q=dns/txt; s=iport;
+  t=1701888411; x=1703098011;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=OcJECNe81v7ZCEUoq8/ceKd1781hnWAO3rR3PDQ7g5E=;
-  b=k76YNNSv31+PK1r4xa4RdsocrSvobr4TACa5RepqJ0io9TYBdhz6Wi+P
-   4kKKMg0OfSdaNECYz8WsherZntZ3Z1yM8+iatC3+bZSXznd66byGOyOGI
-   jb0bcmAZLzycyJJeKl2ZNp7YXjwVDISY8j9YSC7bqyv04lr8LI3wqRie/
-   A=;
-X-CSE-ConnectionGUID: 63OZT/WVSuSeF4g1WZ/R0g==
-X-CSE-MsgGUID: NbfXQPDWRJ+o9rs8ABIgqA==
+  bh=mMh+WNlCdtd3lCTwGeXXwQz4B4E1AJ+tU8QHShz8zGE=;
+  b=BkN0EvffQzec6RjQGlpRG+42BKfX6ZyzgBoRBBTB3T7if0omUm5e6aRx
+   WBT17pPXlDrFBXi10WrKGze0rJZluvs58GdaqDn9c+abpjm+K4uzBgXyb
+   4ae9bXpNMeBEWwqgEH2YqkVVZXHAQNvf3zK1FcSBgWUYnfsO+Uya9RpEY
+   s=;
+X-CSE-ConnectionGUID: abVJPVZpRyeW6DKlGoAGkw==
+X-CSE-MsgGUID: w+trfc3xQI++hcKheDSeiA==
 X-IronPort-AV: E=Sophos;i="6.04,256,1695686400"; 
-   d="scan'208";a="154981894"
+   d="scan'208";a="155557849"
 Received: from alln-core-4.cisco.com ([173.36.13.137])
-  by rcdn-iport-9.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 18:46:42 +0000
+  by rcdn-iport-5.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 18:46:50 +0000
 Received: from localhost.cisco.com ([10.193.101.253])
         (authenticated bits=0)
-        by alln-core-4.cisco.com (8.15.2/8.15.2) with ESMTPSA id 3B6IkHD1010013
+        by alln-core-4.cisco.com (8.15.2/8.15.2) with ESMTPSA id 3B6IkHD2010013
         (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 6 Dec 2023 18:46:42 GMT
+        Wed, 6 Dec 2023 18:46:49 GMT
 From:   Karan Tilak Kumar <kartilak@cisco.com>
 To:     sebaddel@cisco.com
 Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
         mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
         martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        Hannes Reinecke <hare@suse.de>
-Subject: [PATCH v5 05/13] scsi: fnic: Get copy workqueue count and interrupt mode from config
-Date:   Wed,  6 Dec 2023 10:46:07 -0800
-Message-Id: <20231206184615.878755-6-kartilak@cisco.com>
+        Karan Tilak Kumar <kartilak@cisco.com>
+Subject: [PATCH v5 06/13] scsi: fnic: Refactor and redefine fnic.h for multiqueue
+Date:   Wed,  6 Dec 2023 10:46:08 -0800
+Message-Id: <20231206184615.878755-7-kartilak@cisco.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20231206184615.878755-1-kartilak@cisco.com>
 References: <20231206184615.878755-1-kartilak@cisco.com>
@@ -66,104 +65,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get the copy workqueue count and interrupt mode from
-the configuration. The config can be changed via UCSM.
-Add logs to print the interrupt mode and copy workqueue count.
-Add logs to print the vNIC resources.
+Refactor and re-define values in fnic.h to implement
+multiqueue(MQ) functionality.
+
+VIC firmware allows fnic to create up to 64 copy
+workqueues. Update the copy workqueue max to 64.
+Modify the interrupt index to be in sync with the firmware
+to support MQ.
+Add irq number to the MSIX entry.
+Define a software workqueue table to track the status of
+io_reqs. Define a base for the copy workqueue.
 
 Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
 Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
 Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
 ---
- drivers/scsi/fnic/fnic_res.c | 42 ++++++++++++++++++++++++++++++------
- 1 file changed, 36 insertions(+), 6 deletions(-)
+Changes between v4 and v5:
+    Incorporate review comments from Martin:
+	Modify patch commits to include a "---" separator.
 
-diff --git a/drivers/scsi/fnic/fnic_res.c b/drivers/scsi/fnic/fnic_res.c
-index 109316cc4ad9..33dd27f6f24e 100644
---- a/drivers/scsi/fnic/fnic_res.c
-+++ b/drivers/scsi/fnic/fnic_res.c
-@@ -57,6 +57,8 @@ int fnic_get_vnic_config(struct fnic *fnic)
- 	GET_CONFIG(port_down_timeout);
- 	GET_CONFIG(port_down_io_retries);
- 	GET_CONFIG(luns_per_tgt);
-+	GET_CONFIG(intr_mode);
-+	GET_CONFIG(wq_copy_count);
+Changes between v2 and v3:
+    Replace cpy_wq_base with copy_wq_base.
+---
+ drivers/scsi/fnic/fnic.h | 30 ++++++++++++++++++++++--------
+ 1 file changed, 22 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/scsi/fnic/fnic.h b/drivers/scsi/fnic/fnic.h
+index f4bd0e13203d..07d67fe903f2 100644
+--- a/drivers/scsi/fnic/fnic.h
++++ b/drivers/scsi/fnic/fnic.h
+@@ -167,12 +167,21 @@ do {								\
+ #define FNIC_MAIN_NOTE(kern_level, host, fmt, args...)          \
+ 	shost_printk(kern_level, host, fmt, ##args)
  
- 	c->wq_enet_desc_count =
- 		min_t(u32, VNIC_FNIC_WQ_DESCS_MAX,
-@@ -131,6 +133,12 @@ int fnic_get_vnic_config(struct fnic *fnic)
- 	c->intr_timer = min_t(u16, VNIC_INTR_TIMER_MAX, c->intr_timer);
- 	c->intr_timer_type = c->intr_timer_type;
- 
-+	/* for older firmware, GET_CONFIG will not return anything */
-+	if (c->wq_copy_count == 0)
-+		c->wq_copy_count = 1;
++#define FNIC_WQ_COPY_MAX 64
++#define FNIC_WQ_MAX 1
++#define FNIC_RQ_MAX 1
++#define FNIC_CQ_MAX (FNIC_WQ_COPY_MAX + FNIC_WQ_MAX + FNIC_RQ_MAX)
++#define FNIC_DFLT_IO_COMPLETIONS 256
 +
-+	c->wq_copy_count = min_t(u16, FNIC_WQ_COPY_MAX, c->wq_copy_count);
++#define FNIC_MQ_CQ_INDEX        2
 +
- 	shost_printk(KERN_INFO, fnic->lport->host,
- 		     "vNIC MAC addr %pM "
- 		     "wq/wq_copy/rq %d/%d/%d\n",
-@@ -161,6 +169,10 @@ int fnic_get_vnic_config(struct fnic *fnic)
- 	shost_printk(KERN_INFO, fnic->lport->host,
- 		     "vNIC port dn io retries %d port dn timeout %d\n",
- 		     c->port_down_io_retries, c->port_down_timeout);
-+	shost_printk(KERN_INFO, fnic->lport->host,
-+			"vNIC wq_copy_count: %d\n", c->wq_copy_count);
-+	shost_printk(KERN_INFO, fnic->lport->host,
-+			"vNIC intr mode: %d\n", c->intr_mode);
+ extern const char *fnic_state_str[];
  
- 	return 0;
- }
-@@ -187,12 +199,25 @@ int fnic_set_nic_config(struct fnic *fnic, u8 rss_default_cpu,
- void fnic_get_res_counts(struct fnic *fnic)
- {
- 	fnic->wq_count = vnic_dev_get_res_count(fnic->vdev, RES_TYPE_WQ);
--	fnic->raw_wq_count = fnic->wq_count - 1;
--	fnic->wq_copy_count = fnic->wq_count - fnic->raw_wq_count;
-+	fnic->raw_wq_count = 1;
-+	fnic->wq_copy_count = fnic->config.wq_copy_count;
- 	fnic->rq_count = vnic_dev_get_res_count(fnic->vdev, RES_TYPE_RQ);
- 	fnic->cq_count = vnic_dev_get_res_count(fnic->vdev, RES_TYPE_CQ);
- 	fnic->intr_count = vnic_dev_get_res_count(fnic->vdev,
- 		RES_TYPE_INTR_CTRL);
+ enum fnic_intx_intr_index {
+ 	FNIC_INTX_WQ_RQ_COPYWQ,
+-	FNIC_INTX_ERR,
++	FNIC_INTX_DUMMY,
+ 	FNIC_INTX_NOTIFY,
++	FNIC_INTX_ERR,
+ 	FNIC_INTX_INTR_MAX,
+ };
+ 
+@@ -180,7 +189,7 @@ enum fnic_msix_intr_index {
+ 	FNIC_MSIX_RQ,
+ 	FNIC_MSIX_WQ,
+ 	FNIC_MSIX_WQ_COPY,
+-	FNIC_MSIX_ERR_NOTIFY,
++	FNIC_MSIX_ERR_NOTIFY = FNIC_MSIX_WQ_COPY + FNIC_WQ_COPY_MAX,
+ 	FNIC_MSIX_INTR_MAX,
+ };
+ 
+@@ -189,6 +198,7 @@ struct fnic_msix_entry {
+ 	char devname[IFNAMSIZ + 11];
+ 	irqreturn_t (*isr)(int, void *);
+ 	void *devid;
++	int irq_num;
+ };
+ 
+ enum fnic_state {
+@@ -198,12 +208,6 @@ enum fnic_state {
+ 	FNIC_IN_ETH_TRANS_FC_MODE,
+ };
+ 
+-#define FNIC_WQ_COPY_MAX 1
+-#define FNIC_WQ_MAX 1
+-#define FNIC_RQ_MAX 1
+-#define FNIC_CQ_MAX (FNIC_WQ_COPY_MAX + FNIC_WQ_MAX + FNIC_RQ_MAX)
+-#define FNIC_DFLT_IO_COMPLETIONS 256
+-
+ struct mempool;
+ 
+ enum fnic_evt {
+@@ -218,6 +222,13 @@ struct fnic_event {
+ 	enum fnic_evt event;
+ };
+ 
++struct fnic_cpy_wq {
++	unsigned long hw_lock_flags;
++	u16 active_ioreq_count;
++	u16 ioreq_table_size;
++	____cacheline_aligned struct fnic_io_req **io_req_table;
++};
 +
-+	shost_printk(KERN_INFO, fnic->lport->host,
-+		"vNIC fw resources wq_count: %d\n", fnic->wq_count);
-+	shost_printk(KERN_INFO, fnic->lport->host,
-+		"vNIC fw resources raw_wq_count: %d\n", fnic->raw_wq_count);
-+	shost_printk(KERN_INFO, fnic->lport->host,
-+		"vNIC fw resources wq_copy_count: %d\n", fnic->wq_copy_count);
-+	shost_printk(KERN_INFO, fnic->lport->host,
-+		"vNIC fw resources rq_count: %d\n", fnic->rq_count);
-+	shost_printk(KERN_INFO, fnic->lport->host,
-+		"vNIC fw resources cq_count: %d\n", fnic->cq_count);
-+	shost_printk(KERN_INFO, fnic->lport->host,
-+		"vNIC fw resources intr_count: %d\n", fnic->intr_count);
- }
+ /* Per-instance private data structure */
+ struct fnic {
+ 	int fnic_num;
+@@ -287,6 +298,7 @@ struct fnic {
+ 	mempool_t *io_sgl_pool[FNIC_SGL_NUM_CACHES];
+ 	spinlock_t io_req_lock[FNIC_IO_LOCKS];	/* locks for scsi cmnds */
  
- void fnic_free_vnic_resources(struct fnic *fnic)
-@@ -234,10 +259,15 @@ int fnic_alloc_vnic_resources(struct fnic *fnic)
- 		     intr_mode == VNIC_DEV_INTR_MODE_MSIX ?
- 		     "MSI-X" : "unknown");
++	unsigned int copy_wq_base;
+ 	struct work_struct link_work;
+ 	struct work_struct frame_work;
+ 	struct sk_buff_head frame_queue;
+@@ -306,6 +318,8 @@ struct fnic {
  
--	shost_printk(KERN_INFO, fnic->lport->host, "vNIC resources avail: "
--		     "wq %d cp_wq %d raw_wq %d rq %d cq %d intr %d\n",
--		     fnic->wq_count, fnic->wq_copy_count, fnic->raw_wq_count,
--		     fnic->rq_count, fnic->cq_count, fnic->intr_count);
-+	shost_printk(KERN_INFO, fnic->lport->host,
-+			"vNIC resources avail: wq %d cp_wq %d raw_wq %d rq %d",
-+			fnic->wq_count, fnic->wq_copy_count,
-+			fnic->raw_wq_count, fnic->rq_count);
+ 	/* copy work queue cache line section */
+ 	____cacheline_aligned struct vnic_wq_copy hw_copy_wq[FNIC_WQ_COPY_MAX];
++	____cacheline_aligned struct fnic_cpy_wq sw_copy_wq[FNIC_WQ_COPY_MAX];
 +
-+	shost_printk(KERN_INFO, fnic->lport->host,
-+			"vNIC resources avail: cq %d intr %d cpy-wq desc count %d\n",
-+			fnic->cq_count, fnic->intr_count,
-+			fnic->config.wq_copy_desc_count);
+ 	/* completion queue cache line section */
+ 	____cacheline_aligned struct vnic_cq cq[FNIC_CQ_MAX];
  
- 	/* Allocate Raw WQ used for FCS frames */
- 	for (i = 0; i < fnic->raw_wq_count; i++) {
 -- 
 2.31.1
 
