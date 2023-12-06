@@ -2,87 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FC8807820
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98BFB807831
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378583AbjLFSwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 13:52:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53900 "EHLO
+        id S1378653AbjLFSyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 13:54:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378501AbjLFSwk (ORCPT
+        with ESMTP id S1378623AbjLFSyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 13:52:40 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17F311F;
-        Wed,  6 Dec 2023 10:52:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TgX+PmuAr5QRkCmSx0BsqqI+xnwWnFusCDa4CHApM4Y=; b=B5DPzN5JWKoYuSlpoDnvFq5zOY
-        dzy+/0VlFQNrT2wh4LgPvSRluDKGcHlGhouKPTNRY/3vVEEFJ+IKrhPccE1kFE7jLARo3gHWsRE+m
-        hyfobf0yCSUyHM9U1jb0+6DpKrPKsPx7L/YNpn8cKZHkYmiUO8SIvkZZWuqobDpGSal/sOYVBv7Vm
-        XT8/adblz9WvVW6ebYI03bIYngMaLuIkVlBSScKOXh19/Mb231q3/GTdydkZEPlwte5TTgs3iRX+0
-        AJ5UeGPpggFN+1gIc3zDpXpuIDmBzRjbLYup40yo3omwimvD2/V3tK6zybuhECjs7PtpcykiFidbn
-        db/iU80A==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1rAwzg-003AJI-8e; Wed, 06 Dec 2023 18:51:36 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E0501300451; Wed,  6 Dec 2023 19:51:34 +0100 (CET)
-Date:   Wed, 6 Dec 2023 19:51:34 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Alexander Graf <graf@amazon.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        Forrest Yuan Yu <yuanyu@google.com>,
-        James Gowans <jgowans@amazon.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        John Andersen <john.s.andersen@intel.com>,
-        Marian Rotariu <marian.c.rotariu@gmail.com>,
-        Mihai =?utf-8?B?RG9uyJt1?= <mdontu@bitdefender.com>,
-        =?utf-8?B?TmljdciZb3IgQ8OuyJt1?= <nicu.citu@icloud.com>,
-        Thara Gopinath <tgopinath@microsoft.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Zahra Tarkhani <ztarkhani@microsoft.com>,
-        =?utf-8?Q?=C8=98tefan_=C8=98icleru?= <ssicleru@bitdefender.com>,
-        dev@lists.cloudhypervisor.org, kvm@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, qemu-devel@nongnu.org,
-        virtualization@lists.linux-foundation.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org
-Subject: Re: [RFC PATCH v2 17/19] heki: x86: Update permissions counters
- during text patching
-Message-ID: <20231206185134.GA9899@noisy.programming.kicks-ass.net>
-References: <20231113022326.24388-1-mic@digikod.net>
- <20231113022326.24388-18-mic@digikod.net>
- <20231113081929.GA16138@noisy.programming.kicks-ass.net>
- <a52d8885-43cc-4a4e-bb47-9a800070779e@linux.microsoft.com>
- <20231127200841.GZ3818@noisy.programming.kicks-ass.net>
- <ea63ae4e-e8ea-4fbf-9383-499e14de2f5e@linux.microsoft.com>
- <20231130113315.GE20191@noisy.programming.kicks-ass.net>
- <624a310b-c0d2-406c-a4a7-d851b3cc68f5@linux.microsoft.com>
+        Wed, 6 Dec 2023 13:54:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13419A
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 10:54:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701888856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2T2oM8n7ES3F56mk7P89karRriuSouYwO1C14uj3RQs=;
+        b=JimC7r6Z9ntYUll1MLERD24H29srfTXhws9y3VUKI4C5gIluvuDExux/eeh1RYxoOMUMes
+        ZdVch5k+KA0GGvF8l1DG6eYJjffWV7QjRmUDDOxMkczhKG5UoyvDHNVzSN/SvuIYujIr21
+        s8UFSLB0c79YUaiQgGiDeofJrIUzJgs=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-223-S6fuyit5OTO51ppnRR-u6w-1; Wed, 06 Dec 2023 13:52:43 -0500
+X-MC-Unique: S6fuyit5OTO51ppnRR-u6w-1
+Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-58e2b7e4f94so194139eaf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 10:52:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701888758; x=1702493558;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2T2oM8n7ES3F56mk7P89karRriuSouYwO1C14uj3RQs=;
+        b=jkoRMaYgMDMHyC+W89F8LNtto6+slhSpGXWsOQL8KrZWKzLh8hsCBU6Cs8Tr8Zoh/A
+         +OBr6uW+lrVjs7EXpgM83+qE1Og68TWY9p4NYsUsEas5te/HfzrREXTh/WooAFBdL+jO
+         wcFAE+QFjcYo7SjHGgovdoh1k+FKMh1YjDz+hs+NG9e4Pvuy8lW0PLtRWveebbM2h8iT
+         pWu8c7mpYcDPJ8FpCgwiwvDNeI9ma+nvwnM2k+VuuP+OeaB5sTSw3fYJWNGSLJ7oq/72
+         0eQ30bMVKmjOXjxkmThJZEoQn91uYA3PoVgx1SEgNJm78wJwwu4sS3FYD8XXuKxYus7J
+         NNtA==
+X-Gm-Message-State: AOJu0Yy6o7WX/zJ4kQWUV8li5iG3GY3spCO+dI7IgAf9wLiCktFiluqK
+        CPza4lwZaRFMMk+3aOmNE306oOVwNj2VZ+1Zjdgh+bgNZAPs6XhayG40JRyXn3rdHCzDaVudZVP
+        KLaOw+Yvp5BRVBVd6F2GO0vFn
+X-Received: by 2002:a05:6358:9049:b0:170:982:5611 with SMTP id f9-20020a056358904900b0017009825611mr1734948rwf.32.1701888758714;
+        Wed, 06 Dec 2023 10:52:38 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFGWWO9/aICv0W0WM3P+DYCIxzbBCoWdkWyVRrfijwhjBdH3/PviMW3Ncuu5AZPyvNFq7pIKg==
+X-Received: by 2002:a05:6358:9049:b0:170:982:5611 with SMTP id f9-20020a056358904900b0017009825611mr1734939rwf.32.1701888758442;
+        Wed, 06 Dec 2023 10:52:38 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::47])
+        by smtp.gmail.com with ESMTPSA id s6-20020ad45006000000b0067a3ad49979sm185483qvo.96.2023.12.06.10.52.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 10:52:38 -0800 (PST)
+Date:   Wed, 6 Dec 2023 12:52:36 -0600
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     martin.petersen@oracle.com, jejb@linux.ibm.com,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com
+Subject: Re: [PATCH 10/13] scsi: ufs: qcom: Use dev_err_probe() to simplify
+ error handling of devm_gpiod_get_optional()
+Message-ID: <swt7fadd6cpi3tfyphpuhv5omlr3jzc6uipc246f7flritnufs@4hjdjfjnydgr>
+References: <20231201151417.65500-1-manivannan.sadhasivam@linaro.org>
+ <20231201151417.65500-11-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <624a310b-c0d2-406c-a4a7-d851b3cc68f5@linux.microsoft.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231201151417.65500-11-manivannan.sadhasivam@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,35 +82,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 10:37:33AM -0600, Madhavan T. Venkataraman wrote:
+On Fri, Dec 01, 2023 at 08:44:14PM +0530, Manivannan Sadhasivam wrote:
+> As done in other places, let's use dev_err_probe() to simplify the error
+> handling while acquiring the device reset gpio using
+> devm_gpiod_get_optional().
 > 
+> While at it, let's reword the error message to make it clear that the
+> failure is due to acquiring "device reset gpio".
 > 
-> On 11/30/23 05:33, Peter Zijlstra wrote:
-> > On Wed, Nov 29, 2023 at 03:07:15PM -0600, Madhavan T. Venkataraman wrote:
-> > 
-> >> Kernel Lockdown
-> >> ---------------
-> >>
-> >> But, we must provide at least some security in V2. Otherwise, it is useless.
-> >>
-> >> So, we have implemented what we call a kernel lockdown. At the end of kernel
-> >> boot, Heki establishes permissions in the extended page table as mentioned
-> >> before. Also, it adds an immutable attribute for kernel text and kernel RO data.
-> >> Beyond that point, guest requests that attempt to modify permissions on any of
-> >> the immutable pages will be denied.
-> >>
-> >> This means that features like FTrace and KProbes will not work on kernel text
-> >> in V2. This is a temporary limitation. Once authentication is in place, the
-> >> limitation will go away.
-> > 
-> > So either you're saying your patch 17 / text_poke is broken (so why
-> > include it ?!?) or your statement above is incorrect. Pick one.
-> > 
-> 
-> It has been included so that people can be aware of the changes.
-> 
-> I will remove the text_poke() changes from the patchset and send it later when
-> I have some authentication in place. It will make sense then.
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-If you know its broken then fucking say so in the Changelog instead of
-wasting everybody's time.. OMG.
+Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+
+> ---
+>  drivers/ufs/host/ufs-qcom.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index 218d22e1efce..a86f6620abc8 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -1146,9 +1146,8 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+>  	host->device_reset = devm_gpiod_get_optional(dev, "reset",
+>  						     GPIOD_OUT_HIGH);
+>  	if (IS_ERR(host->device_reset)) {
+> -		err = PTR_ERR(host->device_reset);
+> -		if (err != -EPROBE_DEFER)
+> -			dev_err(dev, "failed to acquire reset gpio: %d\n", err);
+> +		err = dev_err_probe(dev, PTR_ERR(host->device_reset),
+> +				    "Failed to acquire device reset gpio\n");
+>  		goto out_variant_clear;
+>  	}
+>  
+> -- 
+> 2.25.1
+> 
+> 
+
