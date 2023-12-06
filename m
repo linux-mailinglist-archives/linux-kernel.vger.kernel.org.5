@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9838073C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:36:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D27468073C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379216AbjLFPgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 10:36:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54766 "EHLO
+        id S1379203AbjLFPfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 10:35:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379142AbjLFPgQ (ORCPT
+        with ESMTP id S1379142AbjLFPfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 10:36:16 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D39B4112;
-        Wed,  6 Dec 2023 07:36:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=34JGkeDw2fzo5aYJ5fytyFCmmA2EAJ4M9xy4pwn6wrM=; b=gTruqnlu8eDmXa3L0iyeSD2Nnn
-        ePXXo7+GcN32qytdrXaWYSLANmme4ALZxhg0JQlNFwM/MH4cviy77G8UNNHVpyThWd9OSqLjvfyjH
-        n+hvMI4zCb/iJgc+nB2YqllaE+P53evNS/9fuIg8TOPrU7vxPv0Z2HgxAq+kGffHXcdGVjW87Znxc
-        j4vkPvTk0bS8qgVSzZs8fcJ4jZGSyPTxTSPz0Q2sEpN7Cn7GkfA4d44EOHD4gLC5FjiKQEaNcynfB
-        DtD725Qv+e8+0LnA0+qRxiZ5Qcjpt7or8VjiV6p28m3HroSjoRF0w57Lro7i//DTiB2B6gCrZJ6mU
-        cXJtqFlQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1rAtw5-0031PW-8d; Wed, 06 Dec 2023 15:35:41 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 36B6E300451; Wed,  6 Dec 2023 16:35:40 +0100 (CET)
-Date:   Wed, 6 Dec 2023 16:35:40 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231206153540.GA36423@noisy.programming.kicks-ass.net>
-References: <20231130133630.192490507@infradead.org>
- <20231130134204.136058029@infradead.org>
- <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
- <20231204091334.GM3818@noisy.programming.kicks-ass.net>
- <20231204111128.GV8262@noisy.programming.kicks-ass.net>
- <20231204125239.GA1319@noisy.programming.kicks-ass.net>
- <ZW4LjmUKj1q6RWdL@krava>
- <20231204181614.GA7299@noisy.programming.kicks-ass.net>
- <20231204183354.GC7299@noisy.programming.kicks-ass.net>
- <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+        Wed, 6 Dec 2023 10:35:50 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89678F;
+        Wed,  6 Dec 2023 07:35:55 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D1D3621EDC;
+        Wed,  6 Dec 2023 15:35:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1701876952; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MPLvnW7ZSTaItCwPS0Rs0fycg4VzNS6jtgADrntBHWI=;
+        b=m1YhFPmrGb8yFFE0iGNJBVb49mN07g3GoS9QrTSI+9aCnMODpfldcMFZVYHd5R9FnPzg+A
+        FiXc/XRICrwbYE96Vu1thfM3obSDopxGJ2XOFK9Pb3cqCBgh6UTmsEeOrBDUhTMJwpkeVt
+        hXP61Idu7b1V9Qoby/CiVaZ83T9R+KU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1701876952;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MPLvnW7ZSTaItCwPS0Rs0fycg4VzNS6jtgADrntBHWI=;
+        b=7YW5jA8TGWCdGZ7MTAAbhhKby0KvmhhWE3KYFWDFfebmyxPT7OdzX/8p1fREU9TGfePOOB
+        P5v2eDmY/8Efb9CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AC7BD13408;
+        Wed,  6 Dec 2023 15:35:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id 7BszKdiUcGUMUAAAD6G6ig
+        (envelope-from <vbabka@suse.cz>); Wed, 06 Dec 2023 15:35:52 +0000
+Message-ID: <8c140ae5-50ad-5a02-0e1c-eae33c13f47c@suse.cz>
+Date:   Wed, 6 Dec 2023 16:35:52 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 1/3] Documentation: kernel-parameters: remove
+ noaliencache
+Content-Language: en-US
+To:     sxwjean@me.com, 42.hyeyoo@gmail.com, cl@linux.com,
+        linux-mm@kvack.org
+Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        roman.gushchin@linux.dev, corbet@lwn.net, keescook@chromium.org,
+        arnd@arndb.de, akpm@linux-foundation.org,
+        gregkh@linuxfoundation.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Xiongwei Song <xiongwei.song@windriver.com>
+References: <20231203001501.126339-1-sxwjean@me.com>
+ <20231203001501.126339-2-sxwjean@me.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231203001501.126339-2-sxwjean@me.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Score: 1.20
+X-Spamd-Result: default: False [1.20 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         TO_DN_SOME(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         FREEMAIL_TO(0.00)[me.com,gmail.com,linux.com,kvack.org];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_MATCH_FROM(0.00)[];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com,me.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         RCPT_COUNT_TWELVE(0.00)[16];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-8.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,63 +105,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 05:18:31PM -0800, Alexei Starovoitov wrote:
-
-> How about
-
-> +int get_cfi_offset(void)
-> +{
-> +       switch (cfi_mode) {
-> +       case CFI_FINEIBT:
-> +               return 16;
-> +       case CFI_KCFI:
-> +#ifdef CONFIG_CALL_PADDING
-> +               return 16;
-> +#else
-> +               return 5;
-> +#endif
-> +       default:
-> +               return 0;
-> +       }
-> +}
-
-Yeah, that works. I'll go make it happen.
-
-> Separately we need to deal with bpf_for_each_array_elem()
-> which doesn't look easy.
-> And fix tcp_set_ca_state() as well (which is even harder).
+On 12/3/23 01:14, sxwjean@me.com wrote:
+> From: Xiongwei Song <xiongwei.song@windriver.com>
 > 
-> Just to see where places like these are I did:
-> +__nocfi
->  BPF_CALL_4(bpf_loop, u32, nr_loops, void *, callback_fn, void *, callback_ctx,
-> +__nocfi
->  static long bpf_for_each_hash_elem(struct bpf_map *map,
-> bpf_callback_t callback_fn,
-> +__nocfi
->  static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
-> +__nocfi
->  static int __bpf_rbtree_add(struct bpf_rb_root *root,
-> +__nocfi
->  BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
-> +__nocfi
->  void tcp_set_ca_state(struct sock *sk, const u8 ca_state)
-> +__nocfi
->  void tcp_init_congestion_control(struct sock *sk)
-> +__nocfi
->  void tcp_enter_loss(struct sock *sk)
-> +__nocfi
->  static void tcp_cong_avoid(struct sock *sk, u32 ack, u32 acked)
-> +__nocfi
->  static inline void tcp_in_ack_event(struct sock *sk, u32 flags)
+> Since slab allocator has already been removed. There is no users about
+
+"There are no users of the noaliencache parameter" ...
+
+> noaliencache, so let's remove it.
 > 
-> and more... Which is clearly not a direction to go.
+> Suggested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
+
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+
+> ---
+> Hi Hyeonggon & Christoph,
 > 
-> Instead of annotating callers is there a way to say that
-> all bpf_callback_t calls are nocfi?
+> I didn't pick your Acked-by tags because I removed the changes for 
+> slab_max_order. Would you like to allow me to add them in this patch?
+> 
+> Regards,
+> Xiongwei
+> 
+> v4: Collect Reviewed-by tag.
+> v3: Remove the changes for slab_max_order.
+> v2: Add changes for removing "noaliencache".
+>     https://lore.kernel.org/linux-mm/20231122143603.85297-1-sxwjean@me.com/
+> v1: Remove slab_max_order.
+>     https://lore.kernel.org/linux-mm/20231120091214.150502-2-sxwjean@me.com/
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 65731b060e3f..9f94baeb2f82 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -3740,10 +3740,6 @@
+>  	no5lvl		[X86-64,RISCV] Disable 5-level paging mode. Forces
+>  			kernel to use 4-level paging instead.
+>  
+> -	noaliencache	[MM, NUMA, SLAB] Disables the allocation of alien
+> -			caches in the slab allocator.  Saves per-node memory,
+> -			but will impact performance.
+> -
+>  	noalign		[KNL,ARM]
+>  
+>  	noaltinstr	[S390] Disables alternative instructions patching
 
-Well, ideally they would all actually use CFI, I'll go figure out how
-all this works and think about it. Thanks!
-
-> I feel the patches scratched the iceberg.
-
-Yeah, clearly :/ I'll go stare at it all.
