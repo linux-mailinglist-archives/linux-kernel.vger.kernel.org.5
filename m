@@ -2,194 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1FF8064D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:12:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD6C8064C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376639AbjLFCCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 21:02:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55092 "EHLO
+        id S1376547AbjLFCCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 21:02:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230423AbjLFCCV (ORCPT
+        with ESMTP id S230423AbjLFCCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 21:02:21 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB36181;
-        Tue,  5 Dec 2023 18:02:28 -0800 (PST)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B61xA4h029542;
-        Wed, 6 Dec 2023 02:01:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-11-20;
- bh=lke4uZRb/q22qW4sYF4uVDKvHCjTPpNA9lTOQnW41Y0=;
- b=nSyd/N0Y/PpTL3wk5xbpz65CXZD8Iqix2Kl2gU9KN+q3AFRrZqV93tXZ1H0b1xBj0NOs
- E26deA6t02vdsuV69QnLfSyEJV5USTeTvdempcDZmordCXgBwUjcgVdUBn1Mc3+Sb2sc
- IJfG6IOC8FPqAl67RMnEVx32uhrZ9+DDV033IN+LELVgoiDYSXWWQKEOV24Jay73aXCz
- jl3i2ly2IlxiD2Ci+ODxbHz9J4KN8lngcKhxabvYEivALgRsx36eZj6aX7C5/CZkkYTo
- UK1v1SnKQ4vDB/jsSMNhViV+1ubl7P9pg3hM1zJDZjXzczD0Q3eeomG/h49YVOAgUN28 4g== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3utdda04xw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Dec 2023 02:01:37 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B600kpn039912;
-        Wed, 6 Dec 2023 02:01:37 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2040.outbound.protection.outlook.com [104.47.57.40])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3utan545ve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Dec 2023 02:01:37 +0000
+        Tue, 5 Dec 2023 21:02:00 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2050.outbound.protection.outlook.com [40.107.223.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C38DBA;
+        Tue,  5 Dec 2023 18:02:05 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JS2ERP1MtLT7ogqdSul2BMn/xltKqYQfuKV1AAaSknAMPPX2puYecnS1Gu/kzwOFYR7xkR/gpneyHkBoxghs8b2w98+xlsBoufG9OPTbAf6LBaJ/l/kc07NTuRBInMPNVYL3YYIaXmRoFW/nvcjW57+NDCJZQ+Z+WwUfvvvmeUZKVjG7THXVPZ9yckszzvN70+dvsKoQ+T00sZixLwTozM6i4cFnDHm6GaHq4QhYzqBLEaIgmbPEO6DQXIueQoNDTLykHtg0swYxv7yeS7jVTD2RpJm8HmKXAV+GZRO5maj1tJL3HDai7qlMfZf3B7KHqw2PsPtHLTvqUzZs/Pd44w==
+ b=oNhF87acw9MMvCGnuukYiDqIaibFOSqNXGC9wYSq8C4SfywHlDTpBcIglYGXC0si4WTN1jd0HxUK7EOiUUr5o4mI6cC7LH1V1xnDVj50+z5HZqGdY6GpDWC0ic6G83MeKh9PO+da5B80I/i/B4Hj5CYIbbIkOAWYj07xattp9gZMsG4QdyU32b5K0NprJ6iJoZmG9x2XCyZw832oYIs4hKxgTfwXsnqvYPYjWKWHM8kX3XsQ3pgB1Mp9VkiTDhrouId4d0FMuUb+aCLOfMqgCmgMy/k/eEiOsHNxxWf0O+1lRloom6mIlVKNd1EPtDYddMBOhbWh1yw8aGrTudx5fA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lke4uZRb/q22qW4sYF4uVDKvHCjTPpNA9lTOQnW41Y0=;
- b=lIea36HempST+knFAn/wq8DiFSfjYqyVQZSZZpjQjyQRlvutS/rxt2eHAFF5ezwqlH2NkB22ViBxG3jOIsNOThE8ssQhhkveIvT3qKTfIEPIXqUkaqvNaraD1s2cWfhtR1HhAmiG1f+7+FaKglBk9ZlCvE+JbhWPvQv+jynm+zhmnpeG41SnOUSWNOCD3x5Opbrzi335Xc0eKoQ8Ltho+Hzr0CGO2X4jkMMOzHEHBNveGHBaAJy7RnGcpPlwgrnc4s4ceG/Jk7sG7oBSQdkxAgGcRbl3ndqih5vPYv1+UxoPE1PobBHV8MN4mwqdmVCyzavPmL6yaXZlOIuI8OKTSw==
+ bh=9j+qoLoOzhtEAelUrP6md3EBv44E66c7k5hDa33fkNU=;
+ b=NqYHPDbSeMYt25BGlMDjXstGXC6jOWk6PMwK5HmGUND3BcxksUMiVdUJM41cKL16luAzhtxOh3Bj8YQEELFvX4L1dO1L2Pko8YuRncaZMLwOV4btw4K+f0GdA9TEJTgOA4LZBv2vu0M4A7pPIlFveClD0Kqai/t+Tp7zl9pMh+0O8UkS6SP8sIZyxDtxeqoeyMjkVS4erx7rn0BLkNEByBjlzKdqRHgYmBn7bBc8zU43lWs67sIF58Q2ZaFbcI0IkTreO5cClola91IOJK3mB5JZg0LQ5HHuXgA0pP2LNizo06hz26EVKUPJLxhoCEUMvmX763nqitqr7zZeTTKu6g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lke4uZRb/q22qW4sYF4uVDKvHCjTPpNA9lTOQnW41Y0=;
- b=pIXjG4tPwqpwRpdgCB8iKrhO++jT4Pa+8UsW5lcOFhRH80YnvnxHDvv6+FIHC30DzOJ7HYkNDWkhdCdMb7wfMk6tGb4iWhb+FNBcL97pkEB+3H7cZQcijRU3aeFY5gy7q8e0Nc+pAZWZiE2vR++hwK9Q0cbDvUwnOA5zpwW22ws=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by DS0PR10MB7204.namprd10.prod.outlook.com (2603:10b6:8:f3::18) with
+ bh=9j+qoLoOzhtEAelUrP6md3EBv44E66c7k5hDa33fkNU=;
+ b=LFBHd9Fu2cNLiV/HtOa1AstaeOLUe6/SDtR9ZP3cdMX+McRLZT+j9JbLkTZMsebhKL2RzC2XUiiedvXUY02S1WA+VqlqTKH7GZYDu3qke+xDeL9rWRA6RTTI9xthMcNDJQRA6XXVzhXqsiCXjweNcmG4S+5uYANIbI+p47ccx14=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by MW4PR17MB5529.namprd17.prod.outlook.com (2603:10b6:303:124::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.25; Wed, 6 Dec
- 2023 02:01:34 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::2b0c:62b3:f9a9:5972]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::2b0c:62b3:f9a9:5972%3]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
- 02:01:34 +0000
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Ilpo =?utf-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH 1/6] x86: Use PCI_HEADER_TYPE_* instead of literals
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1jzpsnl9q.fsf@ca-mkp.ca.oracle.com>
-References: <20231201225609.GA534714@bhelgaas>
-Date:   Tue, 05 Dec 2023 21:01:32 -0500
-In-Reply-To: <20231201225609.GA534714@bhelgaas> (Bjorn Helgaas's message of
-        "Fri, 1 Dec 2023 16:56:09 -0600")
-Content-Type: text/plain
-X-ClientProxiedBy: BY3PR04CA0008.namprd04.prod.outlook.com
- (2603:10b6:a03:217::13) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.24; Wed, 6 Dec
+ 2023 02:02:00 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4%5]) with mapi id 15.20.7068.022; Wed, 6 Dec 2023
+ 02:02:00 +0000
+Date:   Tue, 5 Dec 2023 21:01:53 -0500
+From:   Gregory Price <gregory.price@memverge.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Michal Hocko <mhocko@suse.com>, "tj@kernel.org" <tj@kernel.org>,
+        John Groves <john@jagalactic.com>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+        "shakeelb@google.com" <shakeelb@google.com>,
+        "muchun.song@linux.dev" <muchun.song@linux.dev>,
+        "jgroves@micron.com" <jgroves@micron.com>
+Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
+Message-ID: <ZW/WEVbVnEXXCYSM@memverge.com>
+References: <ZVOXWx8XNJJNC23A@memverge.com>
+ <ZVOn2T_Qg_NTKlB2@tiehlicka>
+ <ZVOzMEtDYB4l8qFy@memverge.com>
+ <87o7fveeze.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZW1IdPI11nhKcdZl@memverge.com>
+ <87sf4i2xe1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZW3ZFDeTs7xotImL@memverge.com>
+ <87fs0h2fb4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZW84F5PUB/0yPW9d@memverge.com>
+ <875y1c2lyo.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <875y1c2lyo.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-ClientProxiedBy: SJ0P220CA0006.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:a03:41b::29) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|DS0PR10MB7204:EE_
-X-MS-Office365-Filtering-Correlation-Id: b37eb6ce-13ea-4ad7-a0ff-08dbf5ff462a
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|MW4PR17MB5529:EE_
+X-MS-Office365-Filtering-Correlation-Id: 61d5ac63-5b18-4050-c29d-08dbf5ff5559
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5o+vE8eHIIjm0E352WxI3Mt7CFkWbBMbPnveF/VqhKw/kIz9nN+jlez6gckTTinKjCsQMeXCgO2rzKGF+LJKAjw6tTLIL6eki59YQv5i95Brvk0nppNgAlSq5HWZv83PnfzY8GPQ+GgpcY5JPkvG9yLezPbeuPSx8HuGZpqtcyVFrqfi6NymUozY2b23GUxuKDGkE35C7ALo8JCnwKVFXWyM4TR48A9uR9VPRMcaYaFM1QfjEea3uk+BWssmZN97XV5TEKG2ttLnOLmo9YMbRQvjwCtTsjSxeQ12JmCbV/woGlTyEwPS4tb0pnyB9TTrVy9DB+Tk99KlajK2XT4NfszfFObhTNn2bzdNLqqVaKp4hgtltsc+G2b1uZUXbcdkWKUdgXMBbvhdrOik2d0OkHgb+AEseei5o3Y8naia84gR1SjJGpewsbokZeDdtpaKep6rYkV+Uhj3+Iketkmc9ukYqkI0fBsFC0jEL58pmQ8+9bePdOeLsSEPvE+kojgad5KV5tAd0omlacfe/IVDRXoiovPLpmDgK2/KUX1TexiE//FeJDIkXNWU+yhu2+1Y
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(346002)(136003)(39860400002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(7416002)(5660300002)(2906002)(41300700001)(38100700002)(86362001)(66946007)(558084003)(26005)(6506007)(6512007)(36916002)(6486002)(478600001)(4326008)(8936002)(8676002)(6916009)(54906003)(316002)(66476007)(66556008);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 1RQK6CH4XINEUNIPL7vp4rrEuC8mMA/iov2ncYxDZr26IudeTdpCPpN1bh4P/gPbFazO6u2cJW50jU7CFr5SwR00iT6X+uVFHv2phavdIT0QirWWoYWjdoggpclY4hVjTdH3xTj+mV6KZ3dpffHI2cFm2PONCdjI6E0AI0mzL8naBiyN16eMXqUdCnFj+2Y/wt0Yn4aIcJvLhJenSzHX3jWF2qzV3CBSyGIJepEHgK9/UUjsm2Ll/bwNHE/oLXCzP/txj/PqFv5CP+rukqiBmoYBdhREEhz5RXE7iuU0we2P0z+/7Nrr8NTVYk19yQqPE5UwNEEBKzejXxGl9homYGf3wy6wlg8sltyydh6+C3uYRagBQ5a1IAL0Qt49UCnCNnVej9MVSN+nixYRaO6Z07TTae63ptTpbVG+iELiPBzecQxJJx1QKEeT0G8IMx9i/OHokZcRwWofe/yTBe5y9GtV7LVvTnCb/vm2TfSc5/luiupuclRstHCLGY+J9RVpjNIdxqR831VUQ4pyJDXNt/z7bzOcMvJsP8FScDfLU2LRHxIkrTPxR/h+Nl+P/RGAZ5blW2iaNd/ZRApZ1YrTz77sKYrjR7uelH2M0kiOkgQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(136003)(39850400004)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(8936002)(83380400001)(4326008)(8676002)(38100700002)(36756003)(86362001)(41300700001)(2906002)(44832011)(7416002)(5660300002)(6506007)(6666004)(6486002)(26005)(478600001)(6512007)(2616005)(6916009)(66946007)(66556008)(54906003)(66476007)(316002)(16393002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HEymCL5lzjblxy+KiMcw8sk4q3QEsT6hLv1uc++qYsSmeqGsL4eNhifJqKB/?=
- =?us-ascii?Q?BJ+THAgDSa9miecxcH2iiFgWso+XID5zJxClcKhcdmldeKZubqet2I1PM2L5?=
- =?us-ascii?Q?ts/eCJosmeHsTRnoUIYYsunaVG4xZypDz2KaYMJrCn/PUKqmWvQ+y1ZSYAns?=
- =?us-ascii?Q?cXviAXyN7HiF/MDT6LDh7VLNyCXJF7UNbYv0lsIZrPuvstni9AXwmjJ6EOaG?=
- =?us-ascii?Q?KEBpjeI4MAo4s0I/0HOXQ5fOG2qJSgIi5JSS42Ot0+IoeXWyV8vK/KxIPsrH?=
- =?us-ascii?Q?1cqiwhkqtoKrasovWEefl1G7HjIXwwiKSRj42MLmECslR3YIhd6YP6MCYC9f?=
- =?us-ascii?Q?MlMq461HIsAOAXI+4XJ7ia4qLMzUY6xoNqEf7CB/xc/k51OsfsYfso3SNDjC?=
- =?us-ascii?Q?RDOrUMIq4/KZl6vaB2zTzkgXkHNNqrTPr5J/Bu0XaCWyST1vTeQjz9F6x1IQ?=
- =?us-ascii?Q?ogwhp6EDx6KePAZj9FJVdcmG5m3E/RyZEwXKYR5+J1P4xN0VIRgMT9L85eoM?=
- =?us-ascii?Q?RV3YEVCUCkELLE2WG701mlUqfY9PnhN9ydx6i7fFqtWae4sC9iwDT9XB0JTU?=
- =?us-ascii?Q?7vziaat5cz07j1h/HftdQvmxFbQOK7HwXMf2CjDg7tazyec5x6ejAHut07pj?=
- =?us-ascii?Q?KwY5vT0Jn6dggMTaikqDKhXxOdY1T0dbR0zI72W0hxQF7vyTMrMFylNMPOge?=
- =?us-ascii?Q?MIyBqZQlqgAUX+2RDe3Xz3qDIwdRQTFRJUs5rmJxJRV88ew1uzTOTBsVgQWU?=
- =?us-ascii?Q?vcpTgrdhFXs9Div5oa9HGYJk6wfxLezJJqFT0AmuEdj3tapnE5/TSFt5DjLz?=
- =?us-ascii?Q?aKNK1wat9HVk6NMRXIPbu3loSVySX9JJecPi3hxcc/nCi6hh0hmjTDZvV7GW?=
- =?us-ascii?Q?YW9C24eNkKiKCyYOVEZxWkiovnSFUbTg5+TF0IYFnfhn1ZJ9yVHqFzn2/1+T?=
- =?us-ascii?Q?DZWEXuXd23wA5PwkLE1e/NAfi8mb65Xw92zN8+eYdDuRdZjjsSORCnqBHONb?=
- =?us-ascii?Q?77FEwHLtQC3GawzbyNzb6zwwHJ5NlSLhtTpQFQqk4f3qvMnmWSw98ljHGQbb?=
- =?us-ascii?Q?dhTfZ4Y8IWbGuneFtBeqz2ReNf4TvRKVbpMZ4ocHB2qu7zscD+bglSEyrLsQ?=
- =?us-ascii?Q?NFav52v7WCpeie3sypGrem2By9s2a6cCOm9wipetxDen7NmpfSqh/OcSkD5D?=
- =?us-ascii?Q?Lb+jJ9sOCv4VjwBS3GvhjDItbR85iVUILk2oXbv+zrsN6uG3WeFtBD3hCNHU?=
- =?us-ascii?Q?GgIqOow+MWHt8Me5XGVzkwGWujrJVseczL1f6ICfK0jFq2OPPl4FocyuOKs0?=
- =?us-ascii?Q?kmI91emzAtoKLlJ+WWTT236Gc6UMBPuOt3sdff/lJ0mpmtEWOMiJBUYqdQ5V?=
- =?us-ascii?Q?/lLidqZM7oPr2fFDqu4Lup05Hi/xhGaggTv/O4mR6suqCbt4VuDDWKOkXP3D?=
- =?us-ascii?Q?9IgriADXoJXnJROitm6TktU4EW9JJlJmhn7wF+YrsNeetf0+EqRA+fPYi0Kl?=
- =?us-ascii?Q?X9/jaUX2QarImEU5R0OHHkmJn5rD4CFg+n1maSKKFidJmq2EkVnesDoblA5E?=
- =?us-ascii?Q?H5cEWvfq5HSszyy3tzydstsHyQMahPahrCsrU3IfAUyK5ppcfePArIl7fehZ?=
- =?us-ascii?Q?rQ=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?LH/UkvximtkneCysU924YzY7rqhgz/w473Fsdab+/VZopmiAeQLE+/iH6ux4?=
- =?us-ascii?Q?mLZsdQfCJIasa3SnJqkSf3tgPMho9CZn7euFLA+bMGkYUbaWhqpYF+3JWP3L?=
- =?us-ascii?Q?lZLoiphNrizBFxkgJ+907l1x78mU6tWoVDNy9oBqNjphEgbGBlHTkVlgoSUn?=
- =?us-ascii?Q?0lDPf7H1v9p4avbLQD2uexGsCIdSs91/0HyMG37dZd8tz2Dk6i9TaQKoemrX?=
- =?us-ascii?Q?Ct6B/xh2OSz7eA02t6BqAjBclOLJR95LTB2ra4MxL/FZ5ibUdGTDWShwuF/S?=
- =?us-ascii?Q?ssV0bb2j82iNz8qFqG7Uz39QCmex6puuET5i2IGza4Vf8yI+kFfJk4naDm7j?=
- =?us-ascii?Q?qA78c+wuf0O8xXmdDAIA77cPRp0aVfr6St77JKa9aDLO6WbrBAmI6+1H5ylf?=
- =?us-ascii?Q?PcVpZrqh9fp4v3lxm/9a/nkJxHZkZbOuR8FgTeYW6CHirrwM4igft56ykKPz?=
- =?us-ascii?Q?gHHzPxTuMT+KwcxLe97cnb50zAGlq6k+qodWq4vCSFfPtSMsbKA9ia9gcdRl?=
- =?us-ascii?Q?TGr06c5OhkOrafZ+BkeHECswfcLCKFgjBl0MhBE7qZS3ftzTFBtpCyVqgwTL?=
- =?us-ascii?Q?PJL42JX4rEaMjlaUYpUISfGYkvOF/OENqzCM3AVg2dYBZ5AHi+yvSWMh+6rY?=
- =?us-ascii?Q?ldYPXeQ/f5kYlZjj9crz4bHEMLe00JL6q1ilsCWXPnl7m9BvrtPAlD0cwMGs?=
- =?us-ascii?Q?lM3PAeI8zoHJ6NxpVc/b8YgbG1OQbOtQY1IMI85jAzIedlVGDu9qsWJrXcLZ?=
- =?us-ascii?Q?jqX7q+NWM0z4jJkjZjoWg8+D4X8sbZk4ZCt+gkq4UFZp4ao92AbENS8YNRc1?=
- =?us-ascii?Q?mTtonxgxtaoPtNzdT/lKCunzUPFcrtV7v7n7oJNq+M6mGniJe+9eXMUimG+1?=
- =?us-ascii?Q?iPdMjUUXq1PZMGv7c3sf5tECl3EvVUrPrjtFc+NmEHWrN+8VjL/rZe8Elzwm?=
- =?us-ascii?Q?hcUoQ+sQ6+RdLF4lplmFsW1o0HUvVW8sn41PIsd9dxZHWh/yIewssydLyPps?=
- =?us-ascii?Q?/ffdZxgMx79ttp3M+TrDMoPF5mAPacXSl3ZsigWhs8DMSUAYJhAyxRTMkUma?=
- =?us-ascii?Q?SzPby5kUHt0LT5jM2d1mPV3E9JmPQKe9iToLcG2q2lRmjRY5tKgZwMGkQT+T?=
- =?us-ascii?Q?ssh/iZ2Aali60CkOGGLGwbdDOLI4N/T/D/Aow0GWEdiQYDBU3G5i+xOWeS9v?=
- =?us-ascii?Q?uzR+HT3DSsbPG0XI?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b37eb6ce-13ea-4ad7-a0ff-08dbf5ff462a
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rivkT0UnoVtKlVDkNIkGsqY0SyIJwOtFHhpNug/Hk9dJacCfp4aDELQXQ2Cu?=
+ =?us-ascii?Q?OWPje0eapyQ6/VBTR2mdoOcg+U8tJfVlqIL99r8ySDyND0oVsepAE4dHNwHK?=
+ =?us-ascii?Q?picun6x5DQe45HJcXkSe7S9LWSjupV9gDtJ8s1+bOjo1jyPDRMuNvxco0a2w?=
+ =?us-ascii?Q?BWAqE7PyfFsc0zoQPFdEP4Mv9zdRKpCDHOW4qEHOxGSjaePxy2YlldhrlEJp?=
+ =?us-ascii?Q?XTSheCVEj7yrM+JRXzocv245gFFDQNk9RK5gd14SgwsiGjVAv677doRgHLM5?=
+ =?us-ascii?Q?l1hsaFk/KV8MmnaBOqpxYNtxfMJG4BHDoAC5uTlfgYGCsMAPLSqRofTYMe6C?=
+ =?us-ascii?Q?pYESnUyq5aFtG60ph1piwpUapYnzbMB2hfQEqhYSRPlge8jlonrqLrRKkRgn?=
+ =?us-ascii?Q?YEDb1Htyo1xDrSoWqZxAsoHzdisBhFmVfQyWC6duMsrgTdhlq9QB28hNlY20?=
+ =?us-ascii?Q?EH4LB82S+23mJ0zZTplheANgJJrKHIqpMpeWvXEWgOL2HqkaP6eyodqGfFuj?=
+ =?us-ascii?Q?3FIlNAuQmoXCbNzJGoggjrq5VoYe2n4cKdLDYRTbXFRY8H3gUeGfh+Z/vAjm?=
+ =?us-ascii?Q?DyFEPlkA8Rm3v0m7tydnlff73fSSBXJXjzD+8i4sIuTH7BwDD+U8aQBtCEnd?=
+ =?us-ascii?Q?yOMi9NfpvmNOJEuK5KHXgmrjfhZShquS4bbdMxDuCULjzn0dCoZxE0a5U0VW?=
+ =?us-ascii?Q?sCauVGVhuJcfjidSBoOS/9Pa4/Sba0XywuOEgwp+wQbeVWmFYhqVHNh+7kBk?=
+ =?us-ascii?Q?nFlH5N1AbK6mzhUm1uVZaQBuo/hvU8V6EGCWJ9AvBQGeWNeg6jjiBv9NPO1o?=
+ =?us-ascii?Q?zcrVshTkb0Ep/pWGf/cMrAPB2AIkv+JvHYQ73bybmSItodKkfl6yL0St0q60?=
+ =?us-ascii?Q?eY/PHanp6Sd/O3+o7p6MnIcfoQ2tUPwztBQ2cYY4w2KLtIRpJlxsay/ukJX3?=
+ =?us-ascii?Q?mp64ILFYhMojeR9yDgDg8Vc+P1D6SAUKRnAIpVPtD1PUs3czyRUyEYLz0Ajq?=
+ =?us-ascii?Q?r6YOHlN/Dtgw7WR1fXB+b9nnWA9YV0bhXLszr7EGSmlsTFP9CouoBQsPxOtT?=
+ =?us-ascii?Q?KJKXxerZeyNY3sltR/Hb4qNuGH68lvQuEJ6D2d1MIsx2DLsrzri0SFX5YrlI?=
+ =?us-ascii?Q?NE/iVlLpdfNF5GSo1pvpNqsf3UrmCsZPCe5si9a4hPMHT1iAOZfe1BT0hwyE?=
+ =?us-ascii?Q?Cfh54WdMUA/qMiwZIz/a3f3fvaz4m5mNZkQl1RmfF12gDGScJRe7Gjk9Vhl+?=
+ =?us-ascii?Q?oW4tFE6Q6ep0+o4hTZSZFYO83b0H+Hg0Ugc68F8uJwE6+A+/snVKMfq4VJDl?=
+ =?us-ascii?Q?uj/0KuBaAVexhVj3GDAt2m3iGjcDBZ/JCWANO/3Z3b6EtmkAF65OGIsUHWOl?=
+ =?us-ascii?Q?aph7vnvPwyX+sduqtRVGk4K1exZfyZ7cch4N+p0T93PvkxqfkGuohsP/Uia3?=
+ =?us-ascii?Q?wxhvJDSPEqKSXEk+Z66XwfHhjwpJ/ikQ5CyPkbspfNkw/THVPT9Z0O8YLPEd?=
+ =?us-ascii?Q?PDRyyUOQUJQbo4OOo8j1hZEQY3Pm6myZ3WFhTMhxw33mOtC/CacdOGkhYRMl?=
+ =?us-ascii?Q?a74X6G9dSABmSDr6ZQ0AKTr+qmFMZyGLs6pPRFZOCZUzMoub0N+2QEhyTZkY?=
+ =?us-ascii?Q?VA=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61d5ac63-5b18-4050-c29d-08dbf5ff5559
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 02:01:34.6770
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 02:02:00.3039
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: az/buwu+qH3bmSZN5XudQzEqr2MQXJ5ndwOAg5G4FQ4QHxXySiQhuaq4bxplNVNzHF3/z3RbTJYZFEBbhpGjJKwE/J0xqBMprEBguM2zTMc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB7204
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-06_01,2023-12-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
- bulkscore=0 adultscore=0 spamscore=0 suspectscore=0 mlxlogscore=950
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312060015
-X-Proofpoint-GUID: QbedeKwSn7aucwIsw24JWcer28UadLDA
-X-Proofpoint-ORIG-GUID: QbedeKwSn7aucwIsw24JWcer28UadLDA
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0SuL5rFCdRvqI1fZfeJ/LwJrVI1wu8hGKZrlg4WovHCI1ycW5/YEWHf2O+tA4OABvk6xhL/7DtXH5iIMHmAQmf6JU2XTqRlsotWcW9+5RBQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR17MB5529
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 06, 2023 at 08:50:23AM +0800, Huang, Ying wrote:
+> Gregory Price <gregory.price@memverge.com> writes:
+> >
+> > From a complexity standpoint, it is exactly as complex as the hardware
+> > configuration itself:  each socket has a different view of the memory
+> > topology. If you have a non-homogeneous memory configuration (e.g. a 
+> > different number of CXL expanders on one socket thant he other), a flat
+> > array of weights has no way of capturing this hardware configuration.
+> 
+> One important task of the software is to hide the complexity of hardware
+> from the users.  At least it should provide the option.  It only add
+> complexity based on real requirements.
+> 
 
-Bjorn,
+The global weights are intended to help adminstrators hide that
+complexity from actual end-users.
 
-> So I kept these in the PCI tree:
+The administrator of a system should already be aware of the hardware
+configuration, however to hide this complexity a system service can 
+be made which auto-configures these weights at system-bringup and on
+memory-device hostplug to simplify and hide the complexity even further.
+
+A system service can use ACPI HMAT (ACPI Heterogeneous Memory Attribute
+Table) information to automatically set the global weight information at
+boot time and/or on hotplug. Such extensions have already been proposed
+in prior RFCs and on the cxl mailing list.
+
+
+
+To break this down a little more explicitly into 6 example use-cases,
+lets consider the potential ways in which weighted interleave may be
+set via set_mempolicy or set_mempolicy2().
+
+1. Actual end-user software calls it directly (or through libnuma)
+   a) they can call set_mempolicy() without task-weights and accept the
+      administrator configured global weights
+   b) they can call set_mempolicy2() with task-weights and use task-local
+      defined weighting
+2. Actual end-user uses `numactl -w[weights] --interleave ...`
+   a) if weights are not defined, use global weights
+   b) if weights are defined, use task-local weights
+3. Administrator / Orchestrator opts user-software into weighted
+   interleave by wrapping their software into `numactl -w --interleave`
+   a) if weights are not defined, use global weights
+   b) if weights are not defined, use task-local weights
+
+The most common use case is likely to be (3a) - an administrator opting
+a user-workload into weighted-interleave via `numactl -w --interleave`
+or an orchestrator such as kubernetes doing something similar on
+pod/container dispatching.
+
+
+
+In all cases where the user does not define weights, they are trusting
+the administrator (or system-daemon) set weights to provide the optimal
+distribution, removing the complexity of understanding the hardware
+environment from the end-user.
+
+
+
+In all cases where the user does define weights, they are accepting the
+complexity of understanding the hardware environment.
+
+
+
+On the topic of the ACTUAL complexity of system hardware that is being
+hidden, we must consider a non-homogeneous bandwidth environment. The
+simplest form is an off the shelf Intel 2-socket server with CXL memory
+expander.
+
+Lets Consider a 2 socket system with the following configuration::
+
+DRAM on Socket0:  300GB/s local DRAM bandwidth  (node 0)
+DRAM on Socket1:  300GB/s local DRAM bandwidth  (node 1)
+CXL on socket0:   128GB/s bandwidth             (node 2)
+CXL on socket1:   128GB/s bandwidth             (node 3)
+
+A single linear array of weights is not sufficient to capture the
+complexities of bandwidth distributions on this system, because
+of the presence of a UPI link between socket0 and socket1, which
+changes the bandwidth distribution depending on where a task runs.
+
+For example, 3 links of UPI is 62.4GB/s full-duplex.
+
+From the perspective of socket 0, the following is true:
+
+Bandwidth to Socket0 DRAM:  300GB/s    (node 0)
+Bandwidth to Socket0 CXL:   100GB/s    (node 2)
+Aggregate bandwidth to nodes (1,3):  62.4GB/s
+
+From the perspective of socket 1, this changes to:
+Bandwidth to Socket0 DRAM:  300GB/s    (node 1)
+Bandwidth to Socket0 CXL:   100GB/s    (node 3)
+Aggregate bandwidth to nodes (0,2):  62.4GB/s
+
+With a single linear array of weights that apply to the entire system,
+you cannot represent this configuration.  And in fact, a single
+configuration of weights will always provide a sub-optimal distribution.
+
+The goal of simplicity defeats the entire goal of weighted interleave in
+a heterogeneous environment.
+
+> 
+> For these complex requirements, we will have process_set_mempolicy2().
+> I think that it's even more flexible than the global matrix.
 >
->   420ac76610d7 ("scsi: lpfc: Use PCI_HEADER_TYPE_MFD instead of literal")
 
-I merged this without seeing your note but I haven't pushed yet so I'll
-just drop the commit.
+process_set_mempolicy2() has a *very* long road to exist. The problem of
+mempolicy reference counting is non-trivial, and the plumbing requires
+changes to no less than 4 subsystems.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Beyond that, the complexity of actually using process_set_mempolicy2()
+is the same as any situation in which set_mempolicy2() with task-local
+weights set:  The absolute highest.
+
+The global weighting matrix actually hides this complexity entirely.
+
+> --
+> Best Regards,
+> Huang, Ying
