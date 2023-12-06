@@ -2,177 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EBD1807971
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78795807976
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379511AbjLFUfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 15:35:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38284 "EHLO
+        id S1379562AbjLFUfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 15:35:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjLFUfU (ORCPT
+        with ESMTP id S230262AbjLFUfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 15:35:20 -0500
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C7F181
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 12:35:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=UA6r0udznHhGJgACyBdbrBYU69S2zUHN7arwQmxPcyk=;
-  b=LA+1FNZNcseRI82S+cz8l+vJfTOsUvtCL0Ge6utC+jC4FGMfU88eV7T5
-   RbwoZLmpaUcjxxWQ9x/02NUhtonbeBMucn+Rhi+gUBAtZA8SHOp4DiE87
-   3Mo2BxJ/OIbtWPBToA/6gHwYTpQJOAJ80nXFS8J7a0UcBHspGNR+lLIxI
-   0=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.04,256,1695679200"; 
-   d="scan'208";a="140710281"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 21:35:23 +0100
-Date:   Wed, 6 Dec 2023 21:35:23 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Jinjie Ruan <ruanjinjie@huawei.com>
-cc:     Paolo Abeni <pabeni@redhat.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Simon Horman <horms@kernel.org>, linux-kernel@vger.kernel.org,
-        oe-kbuild-all@lists.linux.dev
-Subject: drivers/net/ethernet/intel/igb/igb_main.c:7895:6-11: ERROR: invalid
- reference to the index variable of the iterator on line 7890 (fwd)
-Message-ID: <alpine.DEB.2.22.394.2312062131290.3364@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Wed, 6 Dec 2023 15:35:30 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADB7D5C;
+        Wed,  6 Dec 2023 12:35:36 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oTofi2Jj1mdRyQU7bRZbh5143R+wLEJ/nDfvZMPXHQP11DQR0vcvkC87RlZZcINyHcTkhAjxfvdz4JVBGClyW9nvwQhS4P3DkyLBK5r4XRIlpg7TR2xR6kLiT9t2Rwzr33powKv1QBSNCoOrv1qqq0Vm2RgJnV3WZahdchoX+tU60aQfbBmSciXBnRIJ+100lPUnC/9nM3pY0BM8Qd3xifJpXt5J0mwdPaPo2khnoCEi2fJzDFSSIbfOUYiv3MpIH7uPgnZg+9W1mZyd8KJVFLgIZWOqiQD1iNi1IPCA+6A5uEgrkRCl0/PGElLphXibq9h/sfnh32IHv22Aj2VZXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yf5A6/Q53LugxL4lu4tYjyI2OkN8idTKGkvO/tsL4bg=;
+ b=LCNWyG9Jwdt46G1wMrbB0D7Me8AU4EeIz34bSwGgbUqrKH9nmx2F0pwZRyIYHA3yfOKxgASUAVVSpY8opfA1fd/GULz6axjGsEqQ0RCf0VcIVpvLN+8i25v8uq53tVU0qQEIKT5AYkoFMKzBPRTW8KHhQdnaorpl2xzfsFzIsWWKiONAjxp0KLpnwJwmEkt/3Dx4dAZiCx0aNSp6SKv/WuPdluZ2lXzU7SaNv56Qf+QbVL5l2960QWRijPF/RleXz4OnYVm8CmMt/lTwu+Fq/2lyl2fbR5XpuWTOMq2zHAR6s/TqhPQTgUeUgMjQIZgRTl1wzIvhuGY3/4q5Q/VwKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yf5A6/Q53LugxL4lu4tYjyI2OkN8idTKGkvO/tsL4bg=;
+ b=aY3pPK1tg19SgjLi8YY0xxdZ9WbTV+E5Xj7tmg9NUElZEmgVxyytbkxB7Rqpw+o+XoK8P4RDLo/d05UrAia1Taq+/FmmRT6BTc6XwZXXYWkce8Hcp8bSGUR/ZlvklYGN3KT5CrcxOaOKhapqfV6xkhYATioQBOq8k4IJN1ju+uA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by PH0PR12MB7908.namprd12.prod.outlook.com (2603:10b6:510:28e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
+ 2023 20:35:32 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::3341:faaf:5974:f152]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::3341:faaf:5974:f152%7]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
+ 20:35:32 +0000
+Message-ID: <9af9b10f-0ab6-1fe8-eaec-c9f98e14a203@amd.com>
+Date:   Wed, 6 Dec 2023 14:35:28 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v10 14/50] crypto: ccp: Add support to initialize the
+ AMD-SP for SEV-SNP
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+        liam.merwick@oracle.com, zhi.a.wang@intel.com,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Jarkko Sakkinen <jarkko@profian.com>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-15-michael.roth@amd.com>
+ <20231127095937.GLZWRoiaqGlJMX54Xb@fat_crate.local>
+ <d5242390-8904-7ec5-d8a1-9e3fb8f6423c@amd.com>
+ <20231206170807.GBZXCqd0z8uu2rlhpn@fat_crate.local>
+From:   "Kalra, Ashish" <ashish.kalra@amd.com>
+In-Reply-To: <20231206170807.GBZXCqd0z8uu2rlhpn@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9P221CA0024.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:806:25::29) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2767:EE_|PH0PR12MB7908:EE_
+X-MS-Office365-Filtering-Correlation-Id: 758ae55f-f5b6-43cf-43cc-08dbf69ae438
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 666IGnSyk5vqfMUgq8LL2his7GkBHoGqlU3bamZhQFmN7R5r4FdQd6CvNqXhcwmR1/uPAWDogd3ACSu49XFGsNagrd4VX1cuzsi36rJwBck1+LZpAXkB1JkclfdkUTnNXBftaqywEVVT3xprML6n/b9X5F6FgWHOwh8osqrpXv1h6zBom93AUJYIUp6oRsgWA+LFFCcJ9vbRHpqDgbN2OoibXsrCJj1WyWwq6oJOULufiwhx04v1U8R2fIsStlm12iPW/MTtiMcDcMa7g7eiHI/WpzGiYao7mYK0s4P9mo5ULz/h9ni/07y2/gOHgEvjlWa2u0WiQzy4+X3sS9L6zLCGzKPnq2oAxVUJN5mKp7Vw9ML6lLCR+qUg0U4Yl2WA4a/WjNsyvgprda6KjJvM4hbpSZ94J5wZ1O/gi7/+FAnggas3ep1JhDj9GPa811N9CZKdlV2c4hO5103SLBZWfH1t1CCND6o6d2XiidsKWItPA2qrlu9yA6BoDKDiGFiySYFC+nUI1dtgeTf1XgVvRLsclGcuCVhATYMjlYrwdMi5n8SbnoTDwQxtodhcDbdkyQcU1EpSRDKskqRHaraNkPQia6zmqax7O7KMkFNB2NKURpJvfiUjq1QBCNxxSzrKaRhfHoVlVmiweeSKcheLOw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(39860400002)(346002)(376002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(41300700001)(36756003)(7406005)(7416002)(5660300002)(86362001)(2906002)(26005)(2616005)(6512007)(83380400001)(478600001)(53546011)(6506007)(6666004)(6486002)(38100700002)(31686004)(8676002)(8936002)(6916009)(316002)(54906003)(31696002)(4326008)(66556008)(66946007)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SXMzSTZvYm5iZ0dHYnZkNmlUQmdvVE5nNy9nR2NKMXNmK05Va0dkVUxJRWJ2?=
+ =?utf-8?B?K0NkYUV0T1VKRWZOWnE5QnFDbjhlcDZNWmw2cjZxU2hKVmdla3FuNk9SWXNv?=
+ =?utf-8?B?VGtDQlRmbEZGNGFuR2tVanhHMzBmQ3NyQnZRUGd0Mkh2Q2VhNHdSYXJNQlo5?=
+ =?utf-8?B?bmNvanJnR2VjeXlobmN2UGNLUDBlOTdQbzk5MFRnMFEzTjNiaXhRcG01N2RM?=
+ =?utf-8?B?NEJsMTJZYTdJOTE1Mk8xMS9kcGlMdHJRUUlrU0xsR29tbEgrQzlwcGpOaGE0?=
+ =?utf-8?B?TlBveDlLMTFPajFiSTl5Z1l3RlFEQ1VqR0t3M21adUMzeGRTMVNmSVZ4d3dy?=
+ =?utf-8?B?VG9pdWVEelZhTXo0RDdjQnJ3S2ErY2lGSW1HU0tXa0tKUyt4cUxLK3NETkQx?=
+ =?utf-8?B?UkZZMHRmZVV5VnJvOFo1UW1Qb0NZbUxQZG5Uc0JhQXFHUmtvTkJ6LzRoTkh5?=
+ =?utf-8?B?NXlyU2FsaVlhMFc3akt1a3BhOW5DbktqKzl1QnFLMDBFUFVwSjFFMVVpR24x?=
+ =?utf-8?B?ei9zL0pPb1QwUmFpeUwzSXdBZlBBQU5pT3crWU1LQld1c3JGam5pOGpXWlF3?=
+ =?utf-8?B?bWkxUi9iUVlzRFBzdVZ3THQ3Wm4rWnhLNHN6dmluKzdHWlhaUjhIeTZlSGJo?=
+ =?utf-8?B?V25CRWpaNTNna3dTL3g0UlZseXE4QVhsWjlKeVpvN2FJenJzM3pmT0xlTDBm?=
+ =?utf-8?B?ZktXOXNVNnFUMmN5QlJadnJBeDNlYnpsaHhKdm5wWE90ZkpiMlorZWtXQ1JR?=
+ =?utf-8?B?d1hiUy9NYy9LbmdtL0tXUHg2ekZiNUloS1ZNWldUUXE0MFpvbFlLcjdqOU1j?=
+ =?utf-8?B?SUNvelRicytXTTlNRUYyNUJ6dm9RKy9Sb1pRSFUrc3N3anpNRHc1Z2tMcmdR?=
+ =?utf-8?B?WGU4TlZmc1lhSjRsZnkrS1o5RXZXRmE5SEVRR2c1K3dXZU93cUx6RUpxRFhL?=
+ =?utf-8?B?d1Q1VEhwbFpNMFN2bnBZdE5pUUpSeDRabzRicWNTNE80cTJLM2JYbE5VMmxl?=
+ =?utf-8?B?MFZxTG9zd0VHVHltYVV5WXdDZktTWHVVRG16c2tNdHNISjA5KytYc0RnUllX?=
+ =?utf-8?B?dms1bjArR1lQaDRqaWdiWEZieHltRlJMbEpSNUN5aFlEUmhHQStFd1V2M1BZ?=
+ =?utf-8?B?RXpLdnBYZTl1dVRxYWd2WFdJclN1OXlOcTFXWGh5WC9ERTdGZFl3SmZtbGFz?=
+ =?utf-8?B?OHp0Yk4wK29nMWNOdGhscUV1MW9yWlZETzBqUGF4NGp1dXljUGxIRThhNGVQ?=
+ =?utf-8?B?ckNSVno4TmR3M09VaEJWclcvT05EQk5OdHlhSFZTbXVjVmNZWFlURTQ5dXhQ?=
+ =?utf-8?B?UjdjUXp4cXZuellDa1hSaXZIMzllRXRwejZJT3ZCd3BTN0kxU0ZmZ0E2RUdN?=
+ =?utf-8?B?YTN6dDFnais2ODNMNWRTeSt5aWZveWJIT1dsOWdNY1pCTXd1dTQwODBpeXB2?=
+ =?utf-8?B?bHg2Wkd2SVFUYllRdHhrMnZnWXd3eVZiMFNocnpFTjJjdkZ6M1hJSk0wZUIy?=
+ =?utf-8?B?MTdZbk05b0FZOXpnYnR0NlFYMDM3TGZBanhYRE1sYUF1THVSYThWb3p5UitN?=
+ =?utf-8?B?dmFvMzZmaTdkK3RKZ1VaM3pONVJZZmRVVlVQZlhySjROU05EUU56QW5aa3hj?=
+ =?utf-8?B?czVUZi9OemJneHhWaWM0SnkvQTNsc2M1Tyt1ZDFUeW9zbU9VNWNEa3lHS1ll?=
+ =?utf-8?B?UERudE1mOTNHVEpJS1VURUpKNGdGdFRXWkN4WWEzMC82T2RFdlRSTUIydnRR?=
+ =?utf-8?B?a2ZQRXdNQ1hOV0ZZZ3hzNitadmVCUHNnQkdJWTNiVDhNTmhVL0l1eVFTY0cr?=
+ =?utf-8?B?dkF2OFU5RU15RTB2QTgvMFpKandzRnpuV2hhUEFCL2dvZ0RHcWE4YVVhQ1RV?=
+ =?utf-8?B?MUVuYlhNa2UxbkJGRHpXZDBxUjhSaDk0OEpyZElVN0VDdFNEOTBEZVRHVTNu?=
+ =?utf-8?B?VE0yVEpaYWxSTE9FUUlVdE5LelIyaUg5d2Z1SXFxNG1FUkNnbjJ5NEYwdXJr?=
+ =?utf-8?B?YkM3TWlYeEhRckhESEZWV2ZVMWJmWFpSaWtYL3AxNE1Ka2xGZHp2V3V5SjV3?=
+ =?utf-8?B?TlFyUE4xOTJZRXVLcmtoU1JrNWhNSTNpQ2hDUGRrZFR0VUd4ODVKUlVEd3pa?=
+ =?utf-8?Q?RZrg+6YpoH2S1drzKYe2uRcSS?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 758ae55f-f5b6-43cf-43cc-08dbf69ae438
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 20:35:31.9005
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nq44Zt4tZmxh+PibsdgkI8ZIVKzkMd1OVk81LX+fe26rfqzn63pn8fzcyhwUtKtYSrjsqkj1rKWXVgMVTcuT1A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7908
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On line 7895, entry cannot be NULL.  If the list_for_each_entry reaches
-the end, entry->free could be some random location.
+Hello Boris,
 
-julia
+On 12/6/2023 11:08 AM, Borislav Petkov wrote:
+> On Wed, Nov 29, 2023 at 08:13:52PM -0600, Kalra, Ashish wrote:
+>> It surely seems hard to follow up, so i am anyway going to clean it up by:
+>>
+>> Adding the "probe" parameter to sev_platform_init() where the parameter
+>> being true indicates that we only want to do SNP initialization on probe,
+>> the same parameter will get passed on to
+>> __sev_platform_init_locked().
+> 
+> That's exactly what you should *not* do - the probe parameter controls
+> whether
+> 
+> 	if (psp_init_on_probe)
+> 		__sev_platform_init_locked(error);
+> 
+> and so on should get executed or not.
+>
 
----------- Forwarded message ----------
-Date: Thu, 7 Dec 2023 02:50:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: oe-kbuild@lists.linux.dev
-Cc: lkp@intel.com, Julia Lawall <julia.lawall@inria.fr>
-Subject: drivers/net/ethernet/intel/igb/igb_main.c:7895:6-11: ERROR: invalid
-    reference to the index variable of the iterator on line 7890
+Not actually.
 
-BCC: lkp@intel.com
-CC: oe-kbuild-all@lists.linux.dev
-CC: linux-kernel@vger.kernel.org
-TO: Jinjie Ruan <ruanjinjie@huawei.com>
-CC: Paolo Abeni <pabeni@redhat.com>
-CC: Jacob Keller <jacob.e.keller@intel.com>
-CC: Tony Nguyen <anthony.l.nguyen@intel.com>
-CC: Simon Horman <horms@kernel.org>
+The main use case for the probe parameter is to control if we want to do 
+legacy SEV/SEV-ES INIT during probe. There is a usage case where we want 
+to delay legacy SEV INIT till an actual SEV/SEV-ES guest is being 
+launched. So essentially the probe parameter controls if we want to
+execute __sev_do_init_locked() or not.
 
-Hi Jinjie,
+We always want to do SNP INIT at probe time.
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-commit: c1fec890458ad101ddbbc52cdd29f7bba6aa2b10 ethernet/intel: Use list_for_each_entry() helper
-date:   10 weeks ago
-:::::: branch date: 2 days ago
-:::::: commit date: 10 weeks ago
-config: i386-randconfig-054-20231206 (https://download.01.org/0day-ci/archive/20231207/202312070228.ehoA7Xpz-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20231207/202312070228.ehoA7Xpz-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Julia Lawall <julia.lawall@inria.fr>
-| Closes: https://lore.kernel.org/r/202312070228.ehoA7Xpz-lkp@intel.com/
-
-cocci warnings: (new ones prefixed by >>)
->> drivers/net/ethernet/intel/igb/igb_main.c:7895:6-11: ERROR: invalid reference to the index variable of the iterator on line 7890
-   drivers/net/ethernet/intel/igb/igb_main.c:7895:15-20: ERROR: invalid reference to the index variable of the iterator on line 7890
-
-vim +7895 drivers/net/ethernet/intel/igb/igb_main.c
-
-83c21335c87622 Yury Kylulin     2017-03-07  7854
-b476deab8f412b Colin Ian King   2017-04-27  7855  static int igb_set_vf_mac_filter(struct igb_adapter *adapter, const int vf,
-4827cc37796a02 Yury Kylulin     2017-03-07  7856  				 const u32 info, const u8 *addr)
-4827cc37796a02 Yury Kylulin     2017-03-07  7857  {
-4827cc37796a02 Yury Kylulin     2017-03-07  7858  	struct pci_dev *pdev = adapter->pdev;
-4827cc37796a02 Yury Kylulin     2017-03-07  7859  	struct vf_data_storage *vf_data = &adapter->vf_data[vf];
-4827cc37796a02 Yury Kylulin     2017-03-07  7860  	struct vf_mac_filter *entry = NULL;
-4827cc37796a02 Yury Kylulin     2017-03-07  7861  	int ret = 0;
-4827cc37796a02 Yury Kylulin     2017-03-07  7862
-1b8b062a99dc76 Corinna Vinschen 2018-01-17  7863  	if ((vf_data->flags & IGB_VF_FLAG_PF_SET_MAC) &&
-1b8b062a99dc76 Corinna Vinschen 2018-01-17  7864  	    !vf_data->trusted) {
-4827cc37796a02 Yury Kylulin     2017-03-07  7865  		dev_warn(&pdev->dev,
-4827cc37796a02 Yury Kylulin     2017-03-07  7866  			 "VF %d requested MAC filter but is administratively denied\n",
-4827cc37796a02 Yury Kylulin     2017-03-07  7867  			  vf);
-4827cc37796a02 Yury Kylulin     2017-03-07  7868  		return -EINVAL;
-4827cc37796a02 Yury Kylulin     2017-03-07  7869  	}
-4827cc37796a02 Yury Kylulin     2017-03-07  7870  	if (!is_valid_ether_addr(addr)) {
-4827cc37796a02 Yury Kylulin     2017-03-07  7871  		dev_warn(&pdev->dev,
-4827cc37796a02 Yury Kylulin     2017-03-07  7872  			 "VF %d attempted to set invalid MAC filter\n",
-4827cc37796a02 Yury Kylulin     2017-03-07  7873  			  vf);
-4827cc37796a02 Yury Kylulin     2017-03-07  7874  		return -EINVAL;
-4827cc37796a02 Yury Kylulin     2017-03-07  7875  	}
-4827cc37796a02 Yury Kylulin     2017-03-07  7876
-584af82154f56e Karen Sornek     2021-08-31  7877  	switch (info) {
-584af82154f56e Karen Sornek     2021-08-31  7878  	case E1000_VF_MAC_FILTER_CLR:
-584af82154f56e Karen Sornek     2021-08-31  7879  		/* remove all unicast MAC filters related to the current VF */
-c1fec890458ad1 Jinjie Ruan      2023-09-19  7880  		list_for_each_entry(entry, &adapter->vf_macs.l, l) {
-584af82154f56e Karen Sornek     2021-08-31  7881  			if (entry->vf == vf) {
-584af82154f56e Karen Sornek     2021-08-31  7882  				entry->vf = -1;
-584af82154f56e Karen Sornek     2021-08-31  7883  				entry->free = true;
-584af82154f56e Karen Sornek     2021-08-31  7884  				igb_del_mac_filter(adapter, entry->vf_mac, vf);
-584af82154f56e Karen Sornek     2021-08-31  7885  			}
-584af82154f56e Karen Sornek     2021-08-31  7886  		}
-584af82154f56e Karen Sornek     2021-08-31  7887  		break;
-584af82154f56e Karen Sornek     2021-08-31  7888  	case E1000_VF_MAC_FILTER_ADD:
-4827cc37796a02 Yury Kylulin     2017-03-07  7889  		/* try to find empty slot in the list */
-c1fec890458ad1 Jinjie Ruan      2023-09-19 @7890  		list_for_each_entry(entry, &adapter->vf_macs.l, l) {
-4827cc37796a02 Yury Kylulin     2017-03-07  7891  			if (entry->free)
-4827cc37796a02 Yury Kylulin     2017-03-07  7892  				break;
-4827cc37796a02 Yury Kylulin     2017-03-07  7893  		}
-4827cc37796a02 Yury Kylulin     2017-03-07  7894
-4827cc37796a02 Yury Kylulin     2017-03-07 @7895  		if (entry && entry->free) {
-4827cc37796a02 Yury Kylulin     2017-03-07  7896  			entry->free = false;
-4827cc37796a02 Yury Kylulin     2017-03-07  7897  			entry->vf = vf;
-4827cc37796a02 Yury Kylulin     2017-03-07  7898  			ether_addr_copy(entry->vf_mac, addr);
-4827cc37796a02 Yury Kylulin     2017-03-07  7899
-4827cc37796a02 Yury Kylulin     2017-03-07  7900  			ret = igb_add_mac_filter(adapter, addr, vf);
-4827cc37796a02 Yury Kylulin     2017-03-07  7901  			ret = min_t(int, ret, 0);
-4827cc37796a02 Yury Kylulin     2017-03-07  7902  		} else {
-4827cc37796a02 Yury Kylulin     2017-03-07  7903  			ret = -ENOSPC;
-4827cc37796a02 Yury Kylulin     2017-03-07  7904  		}
-4827cc37796a02 Yury Kylulin     2017-03-07  7905
-4827cc37796a02 Yury Kylulin     2017-03-07  7906  		if (ret == -ENOSPC)
-4827cc37796a02 Yury Kylulin     2017-03-07  7907  			dev_warn(&pdev->dev,
-4827cc37796a02 Yury Kylulin     2017-03-07  7908  				 "VF %d has requested MAC filter but there is no space for it\n",
-4827cc37796a02 Yury Kylulin     2017-03-07  7909  				 vf);
-4827cc37796a02 Yury Kylulin     2017-03-07  7910  		break;
-4827cc37796a02 Yury Kylulin     2017-03-07  7911  	default:
-4827cc37796a02 Yury Kylulin     2017-03-07  7912  		ret = -EINVAL;
-4827cc37796a02 Yury Kylulin     2017-03-07  7913  		break;
-4827cc37796a02 Yury Kylulin     2017-03-07  7914  	}
-4827cc37796a02 Yury Kylulin     2017-03-07  7915
-4827cc37796a02 Yury Kylulin     2017-03-07  7916  	return ret;
-4827cc37796a02 Yury Kylulin     2017-03-07  7917  }
-4827cc37796a02 Yury Kylulin     2017-03-07  7918
-
-:::::: The code at line 7895 was first introduced by commit
-:::::: 4827cc37796a02ece7097e01dad8e08f537ac815 igb/igbvf: Add VF MAC filter request capabilities
-
-:::::: TO: Yury Kylulin <yury.kylulin@intel.com>
-:::::: CC: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Ashish
