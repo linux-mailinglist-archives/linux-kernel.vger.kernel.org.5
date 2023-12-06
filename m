@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D98B3806726
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A14806720
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376916AbjLFGGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 01:06:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
+        id S1376883AbjLFGGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 01:06:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376893AbjLFGGc (ORCPT
+        with ESMTP id S1376768AbjLFGG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 01:06:32 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8697D4F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 22:06:36 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b8b463c7c6so2594462b6e.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 22:06:36 -0800 (PST)
+        Wed, 6 Dec 2023 01:06:29 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315FA1B6
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 22:06:35 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-35d67599613so21984905ab.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 22:06:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701842796; x=1702447596; darn=vger.kernel.org;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701842794; x=1702447594; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=I06elknjTKgnu51XMDSSIqaWSXzJw01Bc0WUn6qADWU=;
-        b=z1+QzgS4/Sbur45/4z83hrhThmyzPewSii5IGNWBp6GTVMHXan1ZgtwY9whhev+mue
-         K2ZHkgYYfm6+aYG0XuukPWn5UueTuQw+vOUYlV80QZ+lUDS2TfQykJDh7HtNJsxIKz7n
-         SpQtBqTgUjl8bpz5bxP9mVB+b9Hs80aof8fSZcuFhp2tLKDxIFIW3xsRkXS9AbzM0iK3
-         iRZWOATKwtohJNwKyzPUz7t0hfb4AgHI9uvqRSrtknZnOo43KE/OM4nvkcLkJlDTwx7/
-         hgSRB/D5Cu4dVXEoD7xo9XGHzuEhM7KIKsX0Wc1kHbOpmaAGbWLjo9U/Vw9B5ehH1kU1
-         M6pQ==
+        bh=wHSvpgHbJd6Eu7qsv8V2o7uK7jb6cBWSzdjaYC45cFQ=;
+        b=hP0bHWFJK3CDWgHLZH+vVHpswe5I5mgw1LNhFoZUiTK3MyI+/heouNQ/zh6m6zyqDZ
+         CJbH6hqpwV33+QX44UBROaWbOttoIlTNxv+OQgreCmZ2JgLKJkRzdr5QajqIagFA/d/6
+         VDz2VZCxtod7iSBiaLp/6CD24NgRV56eOvu8VeCPfeGe3I/s+Wx/7aMOOEny82mPe9mX
+         ZbMo13HENl4dEHIq0KCtkfh9NX1vWaYqTIhfSapbyjLS/krHKDQdAnw4a8GHNj0OqwTq
+         fbLV+Xf+KG3f1VdlOANs9ZWnpW1BbJxleDB3FMaJePnNqN9hi7EYu7+bgnS4/nFOt6R0
+         /8+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701842796; x=1702447596;
+        d=1e100.net; s=20230601; t=1701842794; x=1702447594;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=I06elknjTKgnu51XMDSSIqaWSXzJw01Bc0WUn6qADWU=;
-        b=MnpIFFvVvtTvp8TAu8oU9sFppIoBUyRCUWOb08LBE3IKgUn8ZpDYR8eREbiOBm12tT
-         VXF194IML2SgdmkaKXJRByNVDSROPRR5mWDW++RkRa3LuTH+AuzSF/Jt3zSYbhKE8l2E
-         U6vYLYMljd/AKSs6FnjkIqUCnoUATqsAL0znGDjxNtnRbSTdhG7NzackBtdzmBOTaPnn
-         thSafvymOQT4QXnce093RfG/cb0lQ4MvD49gUPkjiLErioKPX7WT/mJbhJYkhXSaRmJl
-         ERtl1veaGwPFFu8QfV08cuZp9uKQ/7Bq5LBNu/h7WHi7cLKVZwa/j1baTS74dK0Ijals
-         eYOw==
-X-Gm-Message-State: AOJu0YwXTyBkIEulBN1oV4aVTK82OfxTyl2yV99c8GEF5s1gtG8zeinB
-        WsRpZlOBSL/jH62DBW45hNpZ0Q==
-X-Google-Smtp-Source: AGHT+IHg46YrWrDsKyEzgLgbWMIe2JdBMh/jkxRdtDbsgeZCFkTPl/hq1LWU5hHHTCSeMwm3TFAgdw==
-X-Received: by 2002:a05:6808:6507:b0:3b8:b063:5d82 with SMTP id fm7-20020a056808650700b003b8b0635d82mr684790oib.105.1701842795753;
-        Tue, 05 Dec 2023 22:06:35 -0800 (PST)
-Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
-        by smtp.gmail.com with ESMTPSA id m18-20020a056a00081200b006ce64ebd2a0sm2297147pfk.99.2023.12.05.22.06.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=wHSvpgHbJd6Eu7qsv8V2o7uK7jb6cBWSzdjaYC45cFQ=;
+        b=JiR98wRW4z9etAeH8mDsvdlXCM6eoFOtKhOOQHNvNJRSjR9uaSkjyDyPj0nHM6JnCm
+         GnWv54+/Z/OYiwUgJA66lZvHz8xsl43DP9ATXaqi8RXu5JFHQsu5DtzHwGiE9Vx6zrqp
+         a+Id4D2Z9lAddCdo8kPGl84Z3reOko0bqL2+JqSxuSbvfrvYH2Ug7KPMnd1DSTJgZ451
+         DOSU9qVCzTN7cgAasXl7dpKTTubFetG0bC8vcyYTCmUvWS9bWutUvvAYsQ+uLjBP8x8c
+         RzIS+BIB4yPbGeqn5aB23obGlKHhuI5Q8dZ8tOm3MsMgP2f9rESf+r/OaXtjubbTVjg0
+         tKuA==
+X-Gm-Message-State: AOJu0YyO763IWyWX++SuzMz+TffKf9pY8fAUEFwrWaFaZRkVE6ieKi1u
+        E37znc6p0cX+UJY419bNlz3bUg==
+X-Google-Smtp-Source: AGHT+IFyEkydutbRflbUebHhG6N121DmGV5SoFJedHB237+BvShkltfvd92qMh3rpX3+xBNwHz7Raw==
+X-Received: by 2002:a05:6e02:13e8:b0:35d:6a39:faeb with SMTP id w8-20020a056e0213e800b0035d6a39faebmr517082ilj.10.1701842794477;
         Tue, 05 Dec 2023 22:06:34 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
+        by smtp.gmail.com with ESMTPSA id i123-20020a639d81000000b005c662e103a1sm6488754pgd.41.2023.12.05.22.06.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 22:06:33 -0800 (PST)
 Received: from [192.168.253.23] (helo=devoid.disaster.area)
         by dread.disaster.area with esmtp (Exim 4.96)
         (envelope-from <dave@fromorbit.com>)
-        id 1rAl3I-004VOr-0C;
+        id 1rAl3I-004VOv-0L;
         Wed, 06 Dec 2023 17:06:31 +1100
 Received: from dave by devoid.disaster.area with local (Exim 4.97-RC0)
         (envelope-from <dave@devoid.disaster.area>)
-        id 1rAl3H-0000000BrVL-2XOR;
+        id 1rAl3H-0000000BrVQ-2oA0;
         Wed, 06 Dec 2023 17:06:31 +1100
 From:   Dave Chinner <david@fromorbit.com>
 To:     linux-fsdevel@vger.kernel.org
@@ -65,9 +65,9 @@ Cc:     linux-block@vger.kernel.org, linux-cachefs@redhat.com,
         dhowells@redhat.com, gfs2@lists.linux.dev,
         dm-devel@lists.linux.dev, linux-security-module@vger.kernel.org,
         selinux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 05/11] selinux: use dlist for isec inode list
-Date:   Wed,  6 Dec 2023 17:05:34 +1100
-Message-ID: <20231206060629.2827226-6-david@fromorbit.com>
+Subject: [PATCH 06/11] vfs: factor out inode hash head calculation
+Date:   Wed,  6 Dec 2023 17:05:35 +1100
+Message-ID: <20231206060629.2827226-7-david@fromorbit.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231206060629.2827226-1-david@fromorbit.com>
 References: <20231206060629.2827226-1-david@fromorbit.com>
@@ -75,8 +75,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -85,227 +84,138 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Chinner <dchinner@redhat.com>
 
-Because it's a horrible point of lock contention under heavily
-concurrent directory traversals...
-
-  - 12.14% d_instantiate
-     - 12.06% security_d_instantiate
-	- 12.13% selinux_d_instantiate
-	   - 12.16% inode_doinit_with_dentry
-	      - 15.45% _raw_spin_lock
-		 - do_raw_spin_lock
-		      14.68% __pv_queued_spin_lock_slowpath
-
+In preparation for changing the inode hash table implementation.
 
 Signed-off-by: Dave Chinner <dchinner@redhat.com>
 ---
- include/linux/dlock-list.h        |  9 ++++
- security/selinux/hooks.c          | 72 +++++++++++++++----------------
- security/selinux/include/objsec.h |  6 +--
- 3 files changed, 47 insertions(+), 40 deletions(-)
+ fs/inode.c | 44 +++++++++++++++++++++++++-------------------
+ 1 file changed, 25 insertions(+), 19 deletions(-)
 
-diff --git a/include/linux/dlock-list.h b/include/linux/dlock-list.h
-index 327cb9edc7e3..7ad933b8875d 100644
---- a/include/linux/dlock-list.h
-+++ b/include/linux/dlock-list.h
-@@ -132,6 +132,15 @@ extern void dlock_lists_add(struct dlock_list_node *node,
- 			    struct dlock_list_heads *dlist);
- extern void dlock_lists_del(struct dlock_list_node *node);
+diff --git a/fs/inode.c b/fs/inode.c
+index 3426691fa305..fead81550cf4 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -59,6 +59,22 @@ static unsigned int i_hash_shift __ro_after_init;
+ static struct hlist_head *inode_hashtable __ro_after_init;
+ static __cacheline_aligned_in_smp DEFINE_SPINLOCK(inode_hash_lock);
  
-+static inline void
-+dlock_list_del_iter(struct dlock_list_iter *iter,
-+		struct dlock_list_node *node)
++static unsigned long hash(struct super_block *sb, unsigned long hashval)
 +{
-+	WARN_ON_ONCE((iter->entry != READ_ONCE(node->head)));
-+	list_del_init(&node->list);
-+	WRITE_ONCE(node->head, NULL);
++	unsigned long tmp;
++
++	tmp = (hashval * (unsigned long)sb) ^ (GOLDEN_RATIO_PRIME + hashval) /
++			L1_CACHE_BYTES;
++	tmp = tmp ^ ((tmp ^ GOLDEN_RATIO_PRIME) >> i_hash_shift);
++	return tmp & i_hash_mask;
++}
++
++static inline struct hlist_head *i_hash_head(struct super_block *sb,
++		unsigned int hashval)
++{
++	return inode_hashtable + hash(sb, hashval);
 +}
 +
  /*
-  * Find the first entry of the next available list.
+  * Empty aops. Can be used for the cases where the user does not
+  * define any of the address_space operations.
+@@ -502,16 +518,6 @@ static inline void inode_sb_list_del(struct inode *inode)
+ 		dlock_lists_del(&inode->i_sb_list);
+ }
+ 
+-static unsigned long hash(struct super_block *sb, unsigned long hashval)
+-{
+-	unsigned long tmp;
+-
+-	tmp = (hashval * (unsigned long)sb) ^ (GOLDEN_RATIO_PRIME + hashval) /
+-			L1_CACHE_BYTES;
+-	tmp = tmp ^ ((tmp ^ GOLDEN_RATIO_PRIME) >> i_hash_shift);
+-	return tmp & i_hash_mask;
+-}
+-
+ /**
+  *	__insert_inode_hash - hash an inode
+  *	@inode: unhashed inode
+@@ -1187,7 +1193,7 @@ struct inode *inode_insert5(struct inode *inode, unsigned long hashval,
+ 			    int (*test)(struct inode *, void *),
+ 			    int (*set)(struct inode *, void *), void *data)
+ {
+-	struct hlist_head *head = inode_hashtable + hash(inode->i_sb, hashval);
++	struct hlist_head *head = i_hash_head(inode->i_sb, hashval);
+ 	struct inode *old;
+ 
+ again:
+@@ -1291,7 +1297,7 @@ EXPORT_SYMBOL(iget5_locked);
   */
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index feda711c6b7b..0358d7c66949 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -340,26 +340,11 @@ static struct inode_security_struct *backing_inode_security(struct dentry *dentr
- static void inode_free_security(struct inode *inode)
+ struct inode *iget_locked(struct super_block *sb, unsigned long ino)
  {
- 	struct inode_security_struct *isec = selinux_inode(inode);
--	struct superblock_security_struct *sbsec;
- 
- 	if (!isec)
- 		return;
--	sbsec = selinux_superblock(inode->i_sb);
--	/*
--	 * As not all inode security structures are in a list, we check for
--	 * empty list outside of the lock to make sure that we won't waste
--	 * time taking a lock doing nothing.
--	 *
--	 * The list_del_init() function can be safely called more than once.
--	 * It should not be possible for this function to be called with
--	 * concurrent list_add(), but for better safety against future changes
--	 * in the code, we use list_empty_careful() here.
--	 */
--	if (!list_empty_careful(&isec->list)) {
--		spin_lock(&sbsec->isec_lock);
--		list_del_init(&isec->list);
--		spin_unlock(&sbsec->isec_lock);
--	}
-+	if (!list_empty(&isec->list.list))
-+		dlock_lists_del(&isec->list);
- }
- 
- struct selinux_mnt_opts {
-@@ -547,6 +532,8 @@ static int sb_finish_set_opts(struct super_block *sb)
- 	struct superblock_security_struct *sbsec = selinux_superblock(sb);
- 	struct dentry *root = sb->s_root;
- 	struct inode *root_inode = d_backing_inode(root);
-+	struct dlock_list_iter iter;
-+	struct inode_security_struct *isec, *n;
- 	int rc = 0;
- 
- 	if (sbsec->behavior == SECURITY_FS_USE_XATTR) {
-@@ -570,27 +557,28 @@ static int sb_finish_set_opts(struct super_block *sb)
- 	/* Initialize the root inode. */
- 	rc = inode_doinit_with_dentry(root_inode, root);
- 
--	/* Initialize any other inodes associated with the superblock, e.g.
--	   inodes created prior to initial policy load or inodes created
--	   during get_sb by a pseudo filesystem that directly
--	   populates itself. */
--	spin_lock(&sbsec->isec_lock);
--	while (!list_empty(&sbsec->isec_head)) {
--		struct inode_security_struct *isec =
--				list_first_entry(&sbsec->isec_head,
--					   struct inode_security_struct, list);
-+	/*
-+	 * Initialize any other inodes associated with the superblock, e.g.
-+	 * inodes created prior to initial policy load or inodes created during
-+	 * get_sb by a pseudo filesystem that directly populates itself.
-+	 */
-+	init_dlock_list_iter(&iter, &sbsec->isec_head);
-+	dlist_for_each_entry_safe(isec, n, &iter, list) {
- 		struct inode *inode = isec->inode;
--		list_del_init(&isec->list);
--		spin_unlock(&sbsec->isec_lock);
-+
-+		dlock_list_del_iter(&iter, &isec->list);
-+		dlock_list_unlock(&iter);
-+
- 		inode = igrab(inode);
- 		if (inode) {
- 			if (!IS_PRIVATE(inode))
- 				inode_doinit_with_dentry(inode, NULL);
- 			iput(inode);
- 		}
--		spin_lock(&sbsec->isec_lock);
-+
-+		dlock_list_relock(&iter);
- 	}
--	spin_unlock(&sbsec->isec_lock);
-+	WARN_ON_ONCE(!dlock_lists_empty(&sbsec->isec_head));
- 	return rc;
- }
- 
-@@ -1428,10 +1416,8 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
- 		/* Defer initialization until selinux_complete_init,
- 		   after the initial policy is loaded and the security
- 		   server is ready to handle calls. */
--		spin_lock(&sbsec->isec_lock);
--		if (list_empty(&isec->list))
--			list_add(&isec->list, &sbsec->isec_head);
--		spin_unlock(&sbsec->isec_lock);
-+		if (list_empty(&isec->list.list))
-+			dlock_lists_add(&isec->list, &sbsec->isec_head);
- 		goto out_unlock;
- 	}
- 
-@@ -2548,9 +2534,10 @@ static int selinux_sb_alloc_security(struct super_block *sb)
+-	struct hlist_head *head = inode_hashtable + hash(sb, ino);
++	struct hlist_head *head = i_hash_head(sb, ino);
+ 	struct inode *inode;
+ again:
+ 	spin_lock(&inode_hash_lock);
+@@ -1359,7 +1365,7 @@ EXPORT_SYMBOL(iget_locked);
+  */
+ static int test_inode_iunique(struct super_block *sb, unsigned long ino)
  {
- 	struct superblock_security_struct *sbsec = selinux_superblock(sb);
+-	struct hlist_head *b = inode_hashtable + hash(sb, ino);
++	struct hlist_head *b = i_hash_head(sb, ino);
+ 	struct inode *inode;
  
-+	if (alloc_dlock_list_heads(&sbsec->isec_head))
-+		return -ENOMEM;
-+
- 	mutex_init(&sbsec->lock);
--	INIT_LIST_HEAD(&sbsec->isec_head);
--	spin_lock_init(&sbsec->isec_lock);
- 	sbsec->sid = SECINITSID_UNLABELED;
- 	sbsec->def_sid = SECINITSID_FILE;
- 	sbsec->mntpoint_sid = SECINITSID_UNLABELED;
-@@ -2558,6 +2545,15 @@ static int selinux_sb_alloc_security(struct super_block *sb)
- 	return 0;
- }
- 
-+static void selinux_sb_free_security(struct super_block *sb)
-+{
-+	struct superblock_security_struct *sbsec = selinux_superblock(sb);
-+
-+	if (!sbsec)
-+		return;
-+	free_dlock_list_heads(&sbsec->isec_head);
-+}
-+
- static inline int opt_len(const char *s)
+ 	hlist_for_each_entry_rcu(inode, b, i_hash) {
+@@ -1446,7 +1452,7 @@ EXPORT_SYMBOL(igrab);
+ struct inode *ilookup5_nowait(struct super_block *sb, unsigned long hashval,
+ 		int (*test)(struct inode *, void *), void *data)
  {
- 	bool open_quote = false;
-@@ -2841,7 +2837,7 @@ static int selinux_inode_alloc_security(struct inode *inode)
- 	u32 sid = current_sid();
+-	struct hlist_head *head = inode_hashtable + hash(sb, hashval);
++	struct hlist_head *head = i_hash_head(sb, hashval);
+ 	struct inode *inode;
  
- 	spin_lock_init(&isec->lock);
--	INIT_LIST_HEAD(&isec->list);
-+	init_dlock_list_node(&isec->list);
- 	isec->inode = inode;
- 	isec->sid = SECINITSID_UNLABELED;
- 	isec->sclass = SECCLASS_FILE;
-@@ -2920,6 +2916,7 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
- 	if (rc)
- 		return rc;
+ 	spin_lock(&inode_hash_lock);
+@@ -1501,7 +1507,7 @@ EXPORT_SYMBOL(ilookup5);
+  */
+ struct inode *ilookup(struct super_block *sb, unsigned long ino)
+ {
+-	struct hlist_head *head = inode_hashtable + hash(sb, ino);
++	struct hlist_head *head = i_hash_head(sb, ino);
+ 	struct inode *inode;
+ again:
+ 	spin_lock(&inode_hash_lock);
+@@ -1550,7 +1556,7 @@ struct inode *find_inode_nowait(struct super_block *sb,
+ 					     void *),
+ 				void *data)
+ {
+-	struct hlist_head *head = inode_hashtable + hash(sb, hashval);
++	struct hlist_head *head = i_hash_head(sb, hashval);
+ 	struct inode *inode, *ret_inode = NULL;
+ 	int mval;
  
-+
- 	/* Possibly defer initialization to selinux_complete_init. */
- 	if (sbsec->flags & SE_SBINITIALIZED) {
- 		struct inode_security_struct *isec = selinux_inode(inode);
-@@ -7215,6 +7212,7 @@ static struct security_hook_list selinux_hooks[] __ro_after_init = {
- 		      selinux_msg_queue_alloc_security),
- 	LSM_HOOK_INIT(shm_alloc_security, selinux_shm_alloc_security),
- 	LSM_HOOK_INIT(sb_alloc_security, selinux_sb_alloc_security),
-+	LSM_HOOK_INIT(sb_free_security, selinux_sb_free_security),
- 	LSM_HOOK_INIT(inode_alloc_security, selinux_inode_alloc_security),
- 	LSM_HOOK_INIT(sem_alloc_security, selinux_sem_alloc_security),
- 	LSM_HOOK_INIT(secid_to_secctx, selinux_secid_to_secctx),
-diff --git a/security/selinux/include/objsec.h b/security/selinux/include/objsec.h
-index 8159fd53c3de..e0709f429c56 100644
---- a/security/selinux/include/objsec.h
-+++ b/security/selinux/include/objsec.h
-@@ -24,6 +24,7 @@
- #include <linux/spinlock.h>
- #include <linux/lsm_hooks.h>
- #include <linux/msg.h>
-+#include <linux/dlock-list.h>
- #include <net/net_namespace.h>
- #include "flask.h"
- #include "avc.h"
-@@ -45,7 +46,7 @@ enum label_initialized {
+@@ -1595,7 +1601,7 @@ EXPORT_SYMBOL(find_inode_nowait);
+ struct inode *find_inode_rcu(struct super_block *sb, unsigned long hashval,
+ 			     int (*test)(struct inode *, void *), void *data)
+ {
+-	struct hlist_head *head = inode_hashtable + hash(sb, hashval);
++	struct hlist_head *head = i_hash_head(sb, hashval);
+ 	struct inode *inode;
  
- struct inode_security_struct {
- 	struct inode *inode;	/* back pointer to inode object */
--	struct list_head list;	/* list of inode_security_struct */
-+	struct dlock_list_node list;	/* list of inode_security_struct */
- 	u32 task_sid;		/* SID of creating task */
- 	u32 sid;		/* SID of this object */
- 	u16 sclass;		/* security class of this object */
-@@ -67,8 +68,7 @@ struct superblock_security_struct {
- 	unsigned short behavior;	/* labeling behavior */
- 	unsigned short flags;		/* which mount options were specified */
- 	struct mutex lock;
--	struct list_head isec_head;
--	spinlock_t isec_lock;
-+	struct dlock_list_heads isec_head;
- };
+ 	RCU_LOCKDEP_WARN(!rcu_read_lock_held(),
+@@ -1633,7 +1639,7 @@ EXPORT_SYMBOL(find_inode_rcu);
+ struct inode *find_inode_by_ino_rcu(struct super_block *sb,
+ 				    unsigned long ino)
+ {
+-	struct hlist_head *head = inode_hashtable + hash(sb, ino);
++	struct hlist_head *head = i_hash_head(sb, ino);
+ 	struct inode *inode;
  
- struct msg_security_struct {
+ 	RCU_LOCKDEP_WARN(!rcu_read_lock_held(),
+@@ -1653,7 +1659,7 @@ int insert_inode_locked(struct inode *inode)
+ {
+ 	struct super_block *sb = inode->i_sb;
+ 	ino_t ino = inode->i_ino;
+-	struct hlist_head *head = inode_hashtable + hash(sb, ino);
++	struct hlist_head *head = i_hash_head(sb, ino);
+ 
+ 	while (1) {
+ 		struct inode *old = NULL;
 -- 
 2.42.0
 
