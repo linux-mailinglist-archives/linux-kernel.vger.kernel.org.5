@@ -2,174 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FAE806361
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCDE806374
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:32:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376286AbjLFAWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 19:22:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
+        id S1376261AbjLFAaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 19:30:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346658AbjLFAWh (ORCPT
+        with ESMTP id S229680AbjLFAaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 19:22:37 -0500
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1941AA;
-        Tue,  5 Dec 2023 16:22:43 -0800 (PST)
-Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-7c58518503aso877888241.1;
-        Tue, 05 Dec 2023 16:22:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701822162; x=1702426962; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PUFVrntTy1cLOik0xNDwq8kH21En+z5/DrAlh/czNd4=;
-        b=Jnyz45az5guo8PWzLpoGLQN1XQJ3IBRXhwiHc+YRzHhTvlJKhPpSglO4ABxG92PvaZ
-         OU7vwaF2558qN70y6+OQVnWJEOsd1y5w3jpFVQsvEOb7igreA8hT1+3MJP3OTf+YuJha
-         aPMb8TondWgNfxvESsqLihPKmI4UTMIleqRAv8WgTi2WL8m1LEaAkvW7mQ9HPcOWhX0c
-         O8hmMklQr9TGBXsR/MevW9cASGes5u8g4Rce1UCyKBGtOkzAMq5eZAeQkwAMGoS5ieHE
-         bJwobOZbW5B6K8fGKvvcmXZRS9Sx7tWtjee+9wUegvE3TkotFbqygi8ABmOYlm6nheFX
-         cAOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701822162; x=1702426962;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PUFVrntTy1cLOik0xNDwq8kH21En+z5/DrAlh/czNd4=;
-        b=HokF2CI1GbUi4iLWBAOgf0YWuggEJ7euUUw8E1aZchvOw9ttSjNzFVOnGFffXljZL+
-         xyKYh2TaMfU9Rct/PImml6vCXaTP+5GDDuafmlEHxmr2wjIASdoWZiTseE9PSvkGZPEW
-         lmFTRRK2WYP0kDVnMNpCVM3ysDSER0rdxkIHNS4RdriWYBavU/YGpN+yKfCIeg4sGUNE
-         G6vA210OJgH/ab7chGbC/uEDTLqNwAzGPgz+6qyILfFMRF09R76LMnVusIXwCWO0k8P6
-         8Sw2gL3YR9F9/K+9gnY7Q/gaWoNhRVDvFtoz+viwwvz8TG/K6u4NwRSn++bNs3EiCRqB
-         fXFw==
-X-Gm-Message-State: AOJu0Ywb/ntQZr+xj3pDOgaz/wG8bAArQwfO2NLa0nDvuekwFXPbOtHo
-        awgb+35PY3L19Qf0e+mKGPcccdjq30TIHYzuIEk=
-X-Google-Smtp-Source: AGHT+IHBU1XdqMtf2ZU4xJh9IQy5wJjx4dbdlFDVHgf7/Bio26uron0S46imRkJiNHrZlQ7I4XSNL+wC0b6HVc/Cgao=
-X-Received: by 2002:a67:ee1a:0:b0:464:9e34:e452 with SMTP id
- f26-20020a67ee1a000000b004649e34e452mr107173vsp.2.1701822162132; Tue, 05 Dec
- 2023 16:22:42 -0800 (PST)
+        Tue, 5 Dec 2023 19:30:04 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C091A4;
+        Tue,  5 Dec 2023 16:30:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701822610; x=1733358610;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mdXpbLSSPrhcTHgM8fSyObWcIrwsztSdnomr2m3TkXA=;
+  b=DbVS1o4I8Ihd8Nwdzqva06ExWDYUU6o0DSee9Gp0F2kHh/Ih1x3vVIhk
+   fx/p31+g0sTvwwNeWYrFi8Kh1frcK8CXbsz7E/7MfakJqoDSj2ft7PvZN
+   0KIiFy+3Y3HrHW2NGaQNTy0qf8FEwNONDcZTfhtGgCWiVgKjtpxAhjPia
+   obNJ+qP+poORDbSwxNb+fNCOuEq6yMvPApxZK62o1GxcWg3u07eEgjJx8
+   mh1omZhqByqDabUSVSUGOIwxoaMYXQ6kzowAigffqYQizZ0y0bhuvCuvm
+   inhuwXrpZxlQI0uRzBUso7RAIHt1Rq6n209t7of3RQAoI0y5vFa1FPAlp
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="374163885"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="374163885"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 16:30:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="771112925"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="771112925"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 05 Dec 2023 16:30:03 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAfnd-0009x4-1v;
+        Wed, 06 Dec 2023 00:30:01 +0000
+Date:   Wed, 6 Dec 2023 08:29:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Serge Semin <fancer.lancer@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+        Serge Semin <fancer.lancer@gmail.com>,
+        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next 11/16] net: pcs: xpcs: Change
+ xpcs_create_mdiodev() suffix to "byaddr"
+Message-ID: <202312060843.C3pV7P8b-lkp@intel.com>
+References: <20231205103559.9605-12-fancer.lancer@gmail.com>
 MIME-Version: 1.0
-References: <20231203001501.126339-1-sxwjean@me.com> <20231203001501.126339-4-sxwjean@me.com>
- <CAB=+i9TVfzWk=anexu6ARPA21AC-uhjQjf4brZF0XDfVaWraWw@mail.gmail.com> <PH0PR11MB5192C8CFE3FC4CF1BCA74796EC85A@PH0PR11MB5192.namprd11.prod.outlook.com>
-In-Reply-To: <PH0PR11MB5192C8CFE3FC4CF1BCA74796EC85A@PH0PR11MB5192.namprd11.prod.outlook.com>
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Wed, 6 Dec 2023 09:22:32 +0900
-Message-ID: <CAB=+i9TM04LaTMNatZH+LBVVy0N30ZzHYE+XqJm72P5wu6bHsA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] mm/slub: correct the default value of
- slub_min_objects in doc
-To:     "Song, Xiongwei" <Xiongwei.Song@windriver.com>
-Cc:     "sxwjean@me.com" <sxwjean@me.com>,
-        "vbabka@suse.cz" <vbabka@suse.cz>, "cl@linux.com" <cl@linux.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205103559.9605-12-fancer.lancer@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 11:11=E2=80=AFPM Song, Xiongwei
-<Xiongwei.Song@windriver.com> wrote:
->
-> Hi Hyeonggon,
->
-> > -----Original Message-----
-> > From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> > Sent: Tuesday, December 5, 2023 8:54 AM
-> > To: sxwjean@me.com
-> > Cc: vbabka@suse.cz; cl@linux.com; linux-mm@kvack.org; penberg@kernel.or=
-g;
-> > rientjes@google.com; iamjoonsoo.kim@lge.com; roman.gushchin@linux.dev;
-> > corbet@lwn.net; keescook@chromium.org; arnd@arndb.de; akpm@linux-founda=
-tion.org;
-> > gregkh@linuxfoundation.org; linux-doc@vger.kernel.org; linux-kernel@vge=
-r.kernel.org; Song,
-> > Xiongwei <Xiongwei.Song@windriver.com>
-> > Subject: Re: [PATCH v2 3/3] mm/slub: correct the default value of slub_=
-min_objects in doc
-> >
-> > On Sun, Dec 3, 2023 at 9:16=E2=80=AFAM <sxwjean@me.com> wrote:
-> > >
-> > > From: Xiongwei Song <xiongwei.song@windriver.com>
-> > >
-> > > There is no a value assigned to slub_min_objects by default, it alway=
-s
-> > > is 0 that is initialized by compiler if no assigned value by command =
-line.
-> > > min_objects is calculated based on processor numbers in calculate_ord=
-er().
-> > > For more details, see commit 9b2cd506e5f2 ("slub: Calculate min_objec=
-ts
-> > > based on number of processors.")
-> > >
-> > > Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
-> >
-> > While slub_min_objects equals zero by default, 'min_objects' overrides =
-it to
-> > 4 * (fls(nr_cpus) + 1) when not set. so when slub_min_objects is not
-> > set, it would be
-> > equal to or higher than 4. I'm not sure this level of implementation
-> > detail is worth documenting.
->
-> commit 9b2cd506e5f2 ("slub: Calculate min_objects based on number of proc=
-essors.")
-> has already given "processors min_objects" pair, do we really need to doc=
-ument
-> the specific detail?
+Hi Serge,
 
-No, I don't think it needs to be documented, but neither do I think
-"slub_min_objects is
-0 by default" is correctly documented...
+kernel test robot noticed the following build warnings:
 
-> > Also, I think patch 2 should update Documentation/mm/slub.rst too.
-> > (slub_$param -> slab_param)
-> I think people can know slub_$params are still supported by
-> Documentation/mm/slub.rst, so we don't need to say the info again in
-> this file.  Is it better to do so just before removing slub_$params
-> completely?
+[auto build test WARNING on net-next/main]
 
-If we're deprecating and planning to drop slub_$params in the future,
-IMHO it'd be less confusing if we change it now, rather than
-when removing slub_$params completely (probably 10 years later)?
+url:    https://github.com/intel-lab-lkp/linux/commits/Serge-Semin/net-pcs-xpcs-Drop-sentinel-entry-from-2500basex-ifaces-list/20231205-183808
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20231205103559.9605-12-fancer.lancer%40gmail.com
+patch subject: [PATCH net-next 11/16] net: pcs: xpcs: Change xpcs_create_mdiodev() suffix to "byaddr"
+config: x86_64-randconfig-006-20231206 (https://download.01.org/0day-ci/archive/20231206/202312060843.C3pV7P8b-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312060843.C3pV7P8b-lkp@intel.com/reproduce)
 
-Thanks,
-Hyeonggon
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312060843.C3pV7P8b-lkp@intel.com/
 
-> > > ---
-> > >  Documentation/mm/slub.rst | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/Documentation/mm/slub.rst b/Documentation/mm/slub.rst
-> > > index be75971532f5..1f4399581449 100644
-> > > --- a/Documentation/mm/slub.rst
-> > > +++ b/Documentation/mm/slub.rst
-> > > @@ -150,7 +150,7 @@ list_lock once in a while to deal with partial sl=
-abs. That overhead is
-> > >  governed by the order of the allocation for each slab. The allocatio=
-ns
-> > >  can be influenced by kernel parameters:
-> > >
-> > > -.. slub_min_objects=3Dx          (default 4)
-> > > +.. slub_min_objects=3Dx          (default 0)
-> > >  .. slub_min_order=3Dx            (default 0)
-> > >  .. slub_max_order=3Dx            (default 3 (PAGE_ALLOC_COSTLY_ORDER=
-))
-> > >
-> > > --
-> > > 2.34.1
-> > >
+All warnings (new ones prefixed by >>):
+
+   drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c: In function 'txgbe_mdio_pcs_init':
+   drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c:150:9: error: implicit declaration of function 'xpcs_create_mdiodev'; did you mean 'xpcs_create_byaddr'? [-Werror=implicit-function-declaration]
+     xpcs = xpcs_create_mdiodev(mii_bus, 0, PHY_INTERFACE_MODE_10GBASER);
+            ^~~~~~~~~~~~~~~~~~~
+            xpcs_create_byaddr
+>> drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c:150:7: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+     xpcs = xpcs_create_mdiodev(mii_bus, 0, PHY_INTERFACE_MODE_10GBASER);
+          ^
+   cc1: some warnings being treated as errors
+
+
+vim +150 drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
+
+854cace61387b6 Jiawen Wu      2023-06-06  121  
+854cace61387b6 Jiawen Wu      2023-06-06  122  static int txgbe_mdio_pcs_init(struct txgbe *txgbe)
+854cace61387b6 Jiawen Wu      2023-06-06  123  {
+854cace61387b6 Jiawen Wu      2023-06-06  124  	struct mii_bus *mii_bus;
+854cace61387b6 Jiawen Wu      2023-06-06  125  	struct dw_xpcs *xpcs;
+854cace61387b6 Jiawen Wu      2023-06-06  126  	struct pci_dev *pdev;
+854cace61387b6 Jiawen Wu      2023-06-06  127  	struct wx *wx;
+854cace61387b6 Jiawen Wu      2023-06-06  128  	int ret = 0;
+854cace61387b6 Jiawen Wu      2023-06-06  129  
+854cace61387b6 Jiawen Wu      2023-06-06  130  	wx = txgbe->wx;
+854cace61387b6 Jiawen Wu      2023-06-06  131  	pdev = wx->pdev;
+854cace61387b6 Jiawen Wu      2023-06-06  132  
+854cace61387b6 Jiawen Wu      2023-06-06  133  	mii_bus = devm_mdiobus_alloc(&pdev->dev);
+854cace61387b6 Jiawen Wu      2023-06-06  134  	if (!mii_bus)
+854cace61387b6 Jiawen Wu      2023-06-06  135  		return -ENOMEM;
+854cace61387b6 Jiawen Wu      2023-06-06  136  
+854cace61387b6 Jiawen Wu      2023-06-06  137  	mii_bus->name = "txgbe_pcs_mdio_bus";
+854cace61387b6 Jiawen Wu      2023-06-06  138  	mii_bus->read_c45 = &txgbe_pcs_read;
+854cace61387b6 Jiawen Wu      2023-06-06  139  	mii_bus->write_c45 = &txgbe_pcs_write;
+854cace61387b6 Jiawen Wu      2023-06-06  140  	mii_bus->parent = &pdev->dev;
+854cace61387b6 Jiawen Wu      2023-06-06  141  	mii_bus->phy_mask = ~0;
+854cace61387b6 Jiawen Wu      2023-06-06  142  	mii_bus->priv = wx;
+854cace61387b6 Jiawen Wu      2023-06-06  143  	snprintf(mii_bus->id, MII_BUS_ID_SIZE, "txgbe_pcs-%x",
+d8c21ef7b2b147 Xiongfeng Wang 2023-08-08  144  		 pci_dev_id(pdev));
+854cace61387b6 Jiawen Wu      2023-06-06  145  
+854cace61387b6 Jiawen Wu      2023-06-06  146  	ret = devm_mdiobus_register(&pdev->dev, mii_bus);
+854cace61387b6 Jiawen Wu      2023-06-06  147  	if (ret)
+854cace61387b6 Jiawen Wu      2023-06-06  148  		return ret;
+854cace61387b6 Jiawen Wu      2023-06-06  149  
+854cace61387b6 Jiawen Wu      2023-06-06 @150  	xpcs = xpcs_create_mdiodev(mii_bus, 0, PHY_INTERFACE_MODE_10GBASER);
+854cace61387b6 Jiawen Wu      2023-06-06  151  	if (IS_ERR(xpcs))
+854cace61387b6 Jiawen Wu      2023-06-06  152  		return PTR_ERR(xpcs);
+854cace61387b6 Jiawen Wu      2023-06-06  153  
+854cace61387b6 Jiawen Wu      2023-06-06  154  	txgbe->xpcs = xpcs;
+854cace61387b6 Jiawen Wu      2023-06-06  155  
+854cace61387b6 Jiawen Wu      2023-06-06  156  	return 0;
+854cace61387b6 Jiawen Wu      2023-06-06  157  }
+854cace61387b6 Jiawen Wu      2023-06-06  158  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
