@@ -2,186 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2C2806E51
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86199806EDF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377766AbjLFLs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 06:48:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49086 "EHLO
+        id S1377775AbjLFLtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:49:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377634AbjLFLs0 (ORCPT
+        with ESMTP id S1377634AbjLFLti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:48:26 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704B1D72
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:48:32 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a1915034144so93220666b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 03:48:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1701863311; x=1702468111; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2atOuZ4m5Gd0/h1m8gOvMaL9Rsri8ziYxXRDoMiJ3Z4=;
-        b=TMI0sLZt4OmnHOdX/rHF7lP7iEiiu9tDICwH446miWRtN5dLMIe3IJohkVCogVU1Vy
-         Ow88vkSgWRAbCVEF5FMImYQGlDfchIVKT4g9XcItpG8Sy+83m4M1Q16LUblA+dTzoyk8
-         AnZfP5hivKxbm86yvrQvzUjrWsy7yS3N/ncZr1oZG5mJIFyM2uTKHIsC25TyGeWNC29K
-         hRNtfDXiT+77zvbU46YoEb3o9fdEJkW/5QchtqkwKNoDBclO2jbFG0/UE8SIKlt7SAge
-         6cMiEWft9lP+8x8se8mwSC2kcajRWNWaSiaV+o1ciQFE6YKFKACdd/F3r8NVa1waKunl
-         YEJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701863311; x=1702468111;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2atOuZ4m5Gd0/h1m8gOvMaL9Rsri8ziYxXRDoMiJ3Z4=;
-        b=EAWzY0uIubsr3Gd+MWkF2HkpKt29s/jY1jm9fAtsexlMY8oZVLOZBTGTP7XCNcuPhj
-         GSEXBjVGDrWOSjnOnuQc3yu/o5u2n1XGB3gOoBtFY0wCao0a564z5nEzHN4yKmVFw0sS
-         Hz8sqAB/a2nsvBFwx+341FPOBLobuBL+HpC66+WzuOVH4waU19+Ezx1EXejs2S8c7krc
-         syErQO6DBua5qYtKD/jBo0PdmydZVX79s7gMZDSz+ZPw2onhCek6ItfNzvvjdMi8RHo0
-         SRhbVbrMLSKyCOVdUNNFLl5mBEEyzeNPZncnTm9R4IJ/vahKPp6+nR72pc7NabWOv0b+
-         fqMQ==
-X-Gm-Message-State: AOJu0YxvSSN1QxsSddiyjfr/cyDaUgqg4DuCHEU1HaNuanD+AhBgFkH/
-        8+Ro2lxm7v4sbUT3Hn1DlDSmpQ==
-X-Google-Smtp-Source: AGHT+IEdO1d6acuKq7fI7Zu+YUD1aCrLTPztZ/SxxNtASmnGXOvg9HfwOsUOMZBpcuZN8TYrQYwLYw==
-X-Received: by 2002:a17:906:3408:b0:a19:a19b:c741 with SMTP id c8-20020a170906340800b00a19a19bc741mr430304ejb.145.1701863310872;
-        Wed, 06 Dec 2023 03:48:30 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.22])
-        by smtp.gmail.com with ESMTPSA id fx20-20020a170906b75400b00a1d38589c67sm1370637ejb.98.2023.12.06.03.48.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 03:48:30 -0800 (PST)
-Message-ID: <89b68781-b552-499d-a8f2-df4dccbb02e0@tuxon.dev>
-Date:   Wed, 6 Dec 2023 13:48:26 +0200
+        Wed, 6 Dec 2023 06:49:38 -0500
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on20619.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eb2::619])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3668F;
+        Wed,  6 Dec 2023 03:49:43 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fWDLwzeRSeuhyI66R6ohDQdhFg2q+kIvTCsaZIHAum0fN2qi6vQ58SQN8aAjw3Da0TCgCuHR7hFdiqYqPW+EjNXpNFdSBY+/XWg7CKNzgz8Tid/E3gF6jpn4+PHMYHc/t254KHv7CFISCh4C+NvaqJ8NuYix+PWZyxnHw5/8GcLRp028lMWrYWrvd8IbVTKxhdT7M+dw+ZMsNIfjT9+Mw2noHhC1w5MzI43HQfosodHfynf0piaCGp9R3XgrSYOmE9dwsrxSiJ1DAYoItDtT4iOfrRNb60zo383p53dsTy7nvxRnJTh/vqZnkahJgTX+LPLk/Ls2bFPiAOY5xXvhAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TthpMvKGWktYcfjH4mr5Jbm3HDz+hnAjUtKCGMp19bs=;
+ b=Y37FWjtz/I7u+yW2bCi8aqjQKUNNSRTy5/zD+nNmHYse9EtdZ8ZY2EPCky+dZiGn8bTalaMI37y+PYnzKn59ct0z8AVKCoyYwf6JnWZbUjffqnTLehNGWTsIA/tH68cDH8nQWh8PQcNw0hZdxCf9AbsRVT1gqaGkmcukHCVBnvwBXVMLJS9GvJeCDmBLw5EnVeTtXzIfFWXs532NHDNijU2ihmirrq6tzgsRUQBrcJ/orbo3AinRglp89zD0dEjP8al+rkXww8SgOxV+Y11lSCzY9t7jSSmoHpQegCXivlLmGAvNAXxuPBJf0v7qzzLJh8SROiA69eLSASNZ1jwVRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TthpMvKGWktYcfjH4mr5Jbm3HDz+hnAjUtKCGMp19bs=;
+ b=go4qKEWvlOJj234xlG0F4AJYu7DJGtrPlvl346LFFFZhZaML9W9hM2aWIpXwkUquqjmBNsopkD05YythexqadcigxwSN2i5AQCmb/rywugef7w6A2lheEGv6CH6l3ObsXx+vtuqufVwBZJ4D2mGNP+u/4iPtFWQGL/1SXC/9SHJpbrgcRo+H+ykZfbnUkRwodgm5iuR5JOi3XoZRpMSg0/FhHErUzKmjmQpcYFE/8PnNqSRrtbJCl/Sbs2L8ZO0EnRIfuDbTaBKRzt1DAInGscuzKdrB5zOTE2DCSDJl3MOqp0Mfuc9ldWmjmFRmZ10DocjldEN+sGBZ28Uw1Stm5g==
+Received: from CYZPR14CA0006.namprd14.prod.outlook.com (2603:10b6:930:8f::21)
+ by SJ0PR12MB6781.namprd12.prod.outlook.com (2603:10b6:a03:44b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
+ 2023 11:49:39 +0000
+Received: from CY4PEPF0000FCC1.namprd03.prod.outlook.com
+ (2603:10b6:930:8f:cafe::88) by CYZPR14CA0006.outlook.office365.com
+ (2603:10b6:930:8f::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34 via Frontend
+ Transport; Wed, 6 Dec 2023 11:49:39 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ CY4PEPF0000FCC1.mail.protection.outlook.com (10.167.242.103) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7068.26 via Frontend Transport; Wed, 6 Dec 2023 11:49:39 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 6 Dec 2023
+ 03:49:29 -0800
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Wed, 6 Dec 2023 03:49:29 -0800
+Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Wed, 6 Dec 2023 03:49:29 -0800
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
+        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH 5.4 00/90] 5.4.263-rc3 review
+In-Reply-To: <20231205183241.636315882@linuxfoundation.org>
+References: <20231205183241.636315882@linuxfoundation.org>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 13/14] arm64: dts: renesas: rzg3s-smarc-som: Enable
- Ethernet interfaces
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux@armlinux.org.uk, magnus.damm@gmail.com,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linus.walleij@linaro.org, p.zabel@pengutronix.de, arnd@arndb.de,
-        m.szyprowski@samsung.com, alexandre.torgue@foss.st.com, afd@ti.com,
-        broonie@kernel.org, alexander.stein@ew.tq-group.com,
-        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com>
- <20231120070024.4079344-14-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdXs9tKo9W31f5OybNR51a_i99Lyx=wHe0GLrADN_8KZTg@mail.gmail.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <CAMuHMdXs9tKo9W31f5OybNR51a_i99Lyx=wHe0GLrADN_8KZTg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Message-ID: <7b75fa54-0a77-45d8-945e-6769b6228091@drhqmail201.nvidia.com>
+Date:   Wed, 6 Dec 2023 03:49:29 -0800
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCC1:EE_|SJ0PR12MB6781:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7be5a9e5-9904-4ddd-106e-08dbf6516dcc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: r20Ff48+w47NQnt0bOGqUPgx6eqJXSavd2cHJTwdU0gNbT6bHtd31odR1mo49roe9H49dF8fhrriEulIzqPKJT1WCRJl0eQFpcSyAZrMSpKc4Dd4rqcZMN6DxpFFRf1f4Oi265b3uUGUcL+26ocZcpPnX2tB7Q++Z8+n+Oq2nJCZxdBsEVGyViNBdFREyhEIDdoiZmFYda6/zj+ax9BHGRY25XnWyXAvzbUpK6Ng3NpiLe/3NTetFq2dA5fVcla5JHGfGroPbHBup3vD6IqMLT2nX4LZCJA308wEZIS5iFx1bDIPYZpzROOT2zN7Cp0NiuQ8qeoi8gjwq8ikcv2HPMCrz/c2nx/jzcT9JilP8J4gBsiOhga0RoG3T3CaFwQn0DgEG4yRoTZTW7vlj7PCg5pkmYUARMzzpDvgx9/SsXEbuxYVpgdYHJ8+M4GfcthkyfyAqz9ryGmHfPFQgmdMNIjHsYCjxtyrOWd/9sFlh968VtpOBo0uiQ/M7FfYbbv3QTMiwTB2V5NctrK1X4Vxr+KhbroTPGYAZuATpFUmTJRVrkiBWDLVNOazlqhC2KMSwurQb5YcMiZ8EI+u1Rje/7LWAuA/V5B4SaxHl4mOB8LoxXnQ4C/7X0JRkfYrHj0tiXxn37RRQauB74zvuvWPI5Jx33IML/wWy4/iz/P8NgvZsxO/ZEcdtjT4D2uVffpeoOwsyAEA6DWb3Pftr31SfIVxrzPafzqm86vsIt+Ot4YoUaFv39Oo8lauTxN7p+kdRHaIJCjCVO4TcWK0OHJyLFUl8yRJCHJGMH4oqWGWOMg=
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(376002)(136003)(396003)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(82310400011)(36840700001)(40470700004)(46966006)(41300700001)(31696002)(7416002)(40460700003)(5660300002)(2906002)(86362001)(40480700001)(82740400003)(26005)(426003)(336012)(966005)(478600001)(47076005)(356005)(7636003)(36860700001)(31686004)(8676002)(4326008)(8936002)(6916009)(316002)(70586007)(70206006)(54906003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 11:49:39.6993
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7be5a9e5-9904-4ddd-106e-08dbf6516dcc
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000FCC1.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6781
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Geert,
+On Wed, 06 Dec 2023 04:22:16 +0900, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.263 release.
+> There are 90 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.263-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-On 06.12.2023 13:22, Geert Uytterhoeven wrote:
-> Hi Claudiu,
-> 
-> Thanks for your patch!
-> 
-> On Mon, Nov 20, 2023 at 8:03 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> RZ/G3S Smarc Module has Ethernet PHYs (KSZ9131) connected to each Ethernet
->> IP. For this add proper DT bindings to enable the Ethernet communication
->> though these PHYs.
->>
->> The interface b/w PHYs and MACs is RGMII. The skew settings were set to
->> zero as based on phy-mode (rgmii-id) the KSZ9131 driver enables internal
->> DLL which adds 2ns delay b/w clocks (TX/RX) and data signals.
-> 
-> So shouldn't you just use phy-mode "rgmii" instead?
+All tests passing for Tegra ...
 
-I chose it like this for simpler configuration of the skew settings. The
-PHY supports fixed 2ns delays which is enough for RGMII. And this is
-configured based on phy-mode="rgmii-id". As this delay depends also on
-soldering length I consider it better this way.
+Test results for stable-v5.4:
+    10 builds:	10 pass, 0 fail
+    24 boots:	24 pass, 0 fail
+    54 tests:	54 pass, 0 fail
 
-The other variant would have been using phy-mode="rgmii" + skew settings.
+Linux version:	5.4.263-rc3-g97430ed51c91
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra20-ventana,
+                tegra210-p2371-2180, tegra210-p3450-0000,
+                tegra30-cardhu-a04
 
-Also, same phy-mode is used by rzg2ul-smarc-som.dtsi which is using the
-same PHY.
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
 
->> Different pin settings were applied to TXC, TX_CTL compared with the rest
->> of the RGMII pins to comply with requirements for these pins imposed by
->> HW manual of RZ/G3S (see chapters "Ether Ch0 Voltage Mode Control
->> Register (ETH0_POC)", "Ether Ch1 Voltage Mode Control Register (ETH1_POC)",
->> for power source selection, "Ether MII/RGMII Mode Control Register
->> (ETH_MODE)" for output-enable and "Input Enable Control Register (IEN_m)"
->> for input-enable configurations).
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
->> --- a/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
->> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
->> @@ -25,7 +25,10 @@ / {
->>
->>         aliases {
->>                 mmc0 = &sdhi0;
->> -#if !SW_SD2_EN
->> +#if SW_SD2_EN
-> 
-> Cfr. my comment on [PATCH 11/14], this looks odd...
-> 
->> +               eth0 = &eth0;
->> +               eth1 = &eth1;
->> +#else
->>                 mmc2 = &sdhi2;
->>  #endif
->>         };
->> @@ -81,6 +84,64 @@ vcc_sdhi2: regulator2 {
->>         };
->>  };
->>
->> +#if SW_SD2_EN
-> 
-> Likewise.
-> 
->> +&eth0 {
->> +       pinctrl-0 = <&eth0_pins>;
->> +       pinctrl-names = "default";
->> +       phy-handle = <&phy0>;
->> +       phy-mode = "rgmii-id";
->> +       #address-cells = <1>;
->> +       #size-cells = <0>;
-> 
-> #{address,size}-cells should be in the SoC-specific .dtsi.
-> Same for eth1.
-> 
->> +       status = "okay";
-> 
-> The rest LGTM.
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Jon
