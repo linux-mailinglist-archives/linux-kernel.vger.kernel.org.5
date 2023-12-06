@@ -2,95 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D0E80736A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:11:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1B2807387
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379167AbjLFPLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 10:11:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36584 "EHLO
+        id S1442523AbjLFPP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 10:15:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379096AbjLFPLJ (ORCPT
+        with ESMTP id S1379244AbjLFPPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 10:11:09 -0500
-Received: from relayaws-01.paragon-software.com (relayaws-01.paragon-software.com [35.157.23.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC519A;
-        Wed,  6 Dec 2023 07:11:15 -0800 (PST)
-Received: from relayfre-01.paragon-software.com (unknown [172.30.72.12])
-        by relayaws-01.paragon-software.com (Postfix) with ESMTPS id 4775E1E1A;
-        Wed,  6 Dec 2023 15:04:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1701875089;
-        bh=2BFRYk4Moqh9lL8OQcoNVoZ0RV2c9czsoWnrNagsXik=;
-        h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=W9QM4y1PMOeSapyHHNSO54M7gNOc1aLuFNGjtTYjQSJV0htdC4x+VrQzupF0/j9I2
-         UQ/Qz+SxSN+tutElWa0RtsRilM5yspu+upzKbRQtGAS3NGzhFCZufJlfmJhGi0hO+U
-         tyjNmuWSVtRiSUFQIzuDruoiwdUzHk7LPQA+M7rs=
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 7F1272117;
-        Wed,  6 Dec 2023 15:11:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1701875473;
-        bh=2BFRYk4Moqh9lL8OQcoNVoZ0RV2c9czsoWnrNagsXik=;
-        h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=LhPCq7kwV1lA63gtdTSLts0Uu8PS4YjNDVw1GJMjGvA42Ak90TZUseTrn1H2SP9cN
-         sxA8xmWKrdoRbOZEcndzE9IUEt+a/pP//oH3NFdTK23dYF2ejGyECH6+V9PauMUPIH
-         I7ouj8D/oTC4AJ8ES2dOWKSGaeBFkG1lESNnyQ7I=
-Received: from [172.16.192.129] (192.168.211.144) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Wed, 6 Dec 2023 18:11:12 +0300
-Message-ID: <44b1dd7e-f5fc-4908-84f1-8e631cdc23d9@paragon-software.com>
-Date:   Wed, 6 Dec 2023 18:11:12 +0300
+        Wed, 6 Dec 2023 10:15:55 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8DEB5;
+        Wed,  6 Dec 2023 07:16:01 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6EljRB026153;
+        Wed, 6 Dec 2023 15:15:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=jeL3QT7o0mBxKNPJeUdUZqEhxWca9D1K5PSNHaGGlqE=;
+ b=IQw778g5OWQaY/awLaIuJkBIyb8onLElvOKPP30GUm8t1Arc+Z/kGLLDetvmiRKsTENg
+ ksIIww1p7RqAY8kB6eQb49PdJ2okmmNrdeueGMiWPlwFvcqBO+ZC8e1uuCTC2s+GI55v
+ uG/muuLql0nfgT1BoDdsAVb37FJwNZ4SLQL8GF9wKXLscJGMiwcgqD5ZR0c3GKmdnJAh
+ G2YRaTyHmakvXo5mw/JuTEZCzMhXTZRMlaQnY9TGB+Wx0+rhrzPddGyKOUaBqZRqDdtt
+ M3Q1XlUnTMw1mF4FnedzDeyzP+/rEmXgMln/tmsloyq8tChmWrFZ9cK5EPR71kuZGsJ/ aQ== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utdcat48q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Dec 2023 15:15:52 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B6FFpgj020746
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 6 Dec 2023 15:15:51 GMT
+Received: from hu-pintu-blr.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 6 Dec 2023 07:11:58 -0800
+From:   Pintu Kumar <quic_pintu@quicinc.com>
+To:     <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <robh+dt@kernel.org>,
+        <frowand.list@gmail.com>, <devicetree@vger.kernel.org>
+CC:     <quic_pintu@quicinc.com>, <pintu.ping@gmail.com>
+Subject: [PATCH] of: reserved_mem: fix error log for reserved mem init failure
+Date:   Wed, 6 Dec 2023 20:41:34 +0530
+Message-ID: <20231206151134.26052-1-quic_pintu@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH 05/16] fs/ntfs3: Print warning while fixing hard links count
-Content-Language: en-US
-From:   Konstantin Komarovc <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-References: <00fd1558-fda5-421b-be43-7de69e32cb4e@paragon-software.com>
-In-Reply-To: <00fd1558-fda5-421b-be43-7de69e32cb4e@paragon-software.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.211.144]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: F5yJi9knaKgY9pDcY_Rx8AW0R4VWeo9f
+X-Proofpoint-ORIG-GUID: F5yJi9knaKgY9pDcY_Rx8AW0R4VWeo9f
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-06_12,2023-12-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 suspectscore=0 spamscore=0 malwarescore=0 priorityscore=1501
+ mlxscore=0 impostorscore=0 mlxlogscore=473 clxscore=1011 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312060123
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+During fdt_init_reserved_mem() when __reserved_mem_init_node()
+fail we are using pr_info to print error.
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+So, if we change the loglevel to 4 (or below), this error
+message will be missed.
+
+Thus, change the pr_info to pr_err for fail case.
+
+Signed-off-by: Pintu Kumar <quic_pintu@quicinc.com>
 ---
-  fs/ntfs3/inode.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/of/of_reserved_mem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-index 5e3d71374918..fa6c7965473c 100644
---- a/fs/ntfs3/inode.c
-+++ b/fs/ntfs3/inode.c
-@@ -412,7 +412,6 @@ static struct inode *ntfs_read_mft(struct inode *inode,
-          goto out;
-
-      if (!is_match && name) {
--        /* Reuse rec as buffer for ascii name. */
-          err = -ENOENT;
-          goto out;
-      }
-@@ -427,6 +426,7 @@ static struct inode *ntfs_read_mft(struct inode *inode,
-
-      if (names != le16_to_cpu(rec->hard_links)) {
-          /* Correct minor error on the fly. Do not mark inode as dirty. */
-+        ntfs_inode_warn(inode, "Correct links count -> %u.", names);
-          rec->hard_links = cpu_to_le16(names);
-          ni->mi.dirty = true;
-      }
+diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+index 7ec94cfcbddb..473665e76b6f 100644
+--- a/drivers/of/of_reserved_mem.c
++++ b/drivers/of/of_reserved_mem.c
+@@ -334,7 +334,7 @@ void __init fdt_init_reserved_mem(void)
+ 		if (err == 0) {
+ 			err = __reserved_mem_init_node(rmem);
+ 			if (err != 0 && err != -ENOENT) {
+-				pr_info("node %s compatible matching fail\n",
++				pr_err("node %s compatible matching fail\n",
+ 					rmem->name);
+ 				if (nomap)
+ 					memblock_clear_nomap(rmem->base, rmem->size);
 -- 
-2.34.1
+2.17.1
 
