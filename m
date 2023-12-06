@@ -2,81 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FB5807C4C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 00:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABE3807C54
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 00:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379669AbjLFX0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 18:26:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49756 "EHLO
+        id S1379666AbjLFX3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 18:29:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441820AbjLFXZ7 (ORCPT
+        with ESMTP id S229636AbjLFX3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 18:25:59 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5597A3;
-        Wed,  6 Dec 2023 15:26:03 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c09d62b70so4230125e9.1;
-        Wed, 06 Dec 2023 15:26:03 -0800 (PST)
+        Wed, 6 Dec 2023 18:29:06 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D08B9
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 15:29:12 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50bf1de91c6so606e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 15:29:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701905162; x=1702509962; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K8nM9qWelyRyVgavRdtFw3MAmrowMHhgp/kZSBIDqog=;
-        b=PT+XEm1kc+HEl8oGYN/OKBmB5OcdX1my3T//i/nAKSqCkc/AzvUlsImMrRVFFObkQW
-         3lqgeC6H2uNc+ZH5s7nc8as7eYyQcUQuuMPCGGFGAte/h7+slOuNIYsg4TxFk6dKJsmJ
-         u4qOSn2hsCJAgQ9yluI+kxXtYRQH+InTlj5U4e1/o3cr74Iv0PnYlxk5b0Vlp22wcMNY
-         XA3/9PSeZydNWs2l1ZSwrAr2NmGa8wyY4vXo2T2SlwjgnSvXVhy6ILCO9yQYjoE3fz0s
-         EsncvUhVbU/1KACZcuyXURuHJ6Ia+umPX343e8s0D/UrCffll93PaGP8bIZ+KPV7ifgz
-         37mA==
+        d=google.com; s=20230601; t=1701905350; x=1702510150; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cMyxDYpYdGVS1iOMrG0zbYmZLRYHYZE/F0CfAEDnOOw=;
+        b=YELjP8tviiaFZ42uQYTYo2Ul9TjOi6tOFQ8YZUF0z5YUaA9/wbmtl9sBb+kDUKY3Vf
+         XbyofOKWczVx/JkcdBXQSkY6phd/zVHgYUsmipqNSTPDZjUPxNlMSAV3lrAA57Si1j9y
+         5QWLu1E6ns0d5l64XdUkNohH+VeYrm2dBPUIMLHFQG4Y0joETGNpc/7aijCHH+yqeA7k
+         EJHIl7hkj+sUxyWmfkKQNrV2qqWLydzy13wYbABK8V5jW6++F7SQNlMX7EJpGf5cbc73
+         Z8oBZZC/3t+cT6gvYjOKUICkGvnom05B2xuwkLGPeHcflW5JshERWh/k/n6TXOXWkPbs
+         lpyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701905162; x=1702509962;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701905350; x=1702510150;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=K8nM9qWelyRyVgavRdtFw3MAmrowMHhgp/kZSBIDqog=;
-        b=vREjrSrCyjXqCqNt8B2c7lMjKexARKRGc8zJ8QLa6SMQuYxjRnfQxj4qYeE/BMFvoJ
-         rRXcSzAEmI4IaiDEs49l9Fc51Ugekyf4Hh+gJy17HKZBnyE8khC79ak+344MJhYy4dk4
-         iWmZUQd3hHYJNgA1c5hp6FpdDtULZALfdGEGY6+mY2514izGlUigjvSToYlzNUvhEseS
-         m33OO9dk5iBVsE4qWlDrrorwrP9XujADWeTUdNQC7qxdFH/2ignQ76k/h5M9WebBO7Ci
-         rss5KDyC+IosPkWKQTu+wMsmMvHrwS7MnSeG3pZs+WzFCPohE5j1eKNz2QN3lDhaioQ8
-         UvFg==
-X-Gm-Message-State: AOJu0YyVZwyvGlIItjIcBxRgu9O7LREkXfcg9tlmcKyfAANwEZtb+nt3
-        C3QNl5OoiXM0G/9EWs0NL+4=
-X-Google-Smtp-Source: AGHT+IGSryGfcwe2mbxn82t4MKHOIrokLTAXFZlwfzmfi5rB3Rom1wn5/b9JD+NszNdAbUiLyyn1RQ==
-X-Received: by 2002:a05:600c:354e:b0:405:1bbd:aa9c with SMTP id i14-20020a05600c354e00b004051bbdaa9cmr711037wmq.34.1701905162266;
-        Wed, 06 Dec 2023 15:26:02 -0800 (PST)
-Received: from localhost.localdomain (host-79-26-252-6.retail.telecomitalia.it. [79.26.252.6])
-        by smtp.googlemail.com with ESMTPSA id n2-20020a5d51c2000000b0033339027c89sm718754wrv.108.2023.12.06.15.26.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 15:26:02 -0800 (PST)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [net-next PATCH v4 3/3] net: phy: add support for PHY package MMD read/write
-Date:   Thu,  7 Dec 2023 00:25:47 +0100
-Message-Id: <20231206232547.2501-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231206232547.2501-1-ansuelsmth@gmail.com>
-References: <20231206232547.2501-1-ansuelsmth@gmail.com>
+        bh=cMyxDYpYdGVS1iOMrG0zbYmZLRYHYZE/F0CfAEDnOOw=;
+        b=bsPxsFs4IOxpDoe7bWvof/qJslx/RsW1JOrE6niVwI5hOPfuJtzLhYUqLXZUvOYdxT
+         s1Mf/KPMnW2w2q5cSDVnS9YzPpoazvnAFFDP/d3RAHB1le0GFtqx2E2OVtKmF20Ithgi
+         F1vpkjbGWDvlP2TgutYo0gyY0VG9mZKdGHYuZtNNCswDgJ4Ac5l0RkRTxvaKwAL/keRb
+         mWySIZIZLPoVOs239n9bUY4ZmDubbicd5vzSLb7XB1KosBbz7EuWKNurxrs7PYpVk8DG
+         7+wmGNHnMUj2qf2hHYjeiwAVK4nT1QhZbnIfxaUZEQRusbfpo507M/WvanuvQwIJ5yji
+         iw7w==
+X-Gm-Message-State: AOJu0YzmTnMulg+dMNyVoje5/W+ZLDdMWQJVqmCOF+WmW36rS31g88TE
+        9fVsCxp5/5DHLuT74a+28EUoKXt5yTCRt0Jga+IS4Q==
+X-Google-Smtp-Source: AGHT+IG7JVEMzZg6QO8/hfUswbkKBGrfYt+Rdguj0uvhDEh3QBI7JQXhxyDyyhjREAx5AVQnl68uToXxXVedT9qzCGg=
+X-Received: by 2002:a05:6512:534:b0:50b:fc76:42c with SMTP id
+ o20-20020a056512053400b0050bfc76042cmr84976lfc.2.1701905350178; Wed, 06 Dec
+ 2023 15:29:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-17-irogers@google.com>
+ <CAM9d7cgj4Wj+0ZFQ3XfG12kkp4ThE4RT1+g=A1aSOinCXM9w+Q@mail.gmail.com>
+In-Reply-To: <CAM9d7cgj4Wj+0ZFQ3XfG12kkp4ThE4RT1+g=A1aSOinCXM9w+Q@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 6 Dec 2023 15:28:58 -0800
+Message-ID: <CAP-5=fX2FFsF5C2DAZq1YrmDQFDq1fknCZ1kkpiQQyK1RpUscQ@mail.gmail.com>
+Subject: Re: [PATCH v5 16/50] perf maps: Add remove maps function to remove a
+ map based on callback
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Guilherme Amadio <amadio@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,205 +104,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some PHY in PHY package may require to read/write MMD regs to correctly
-configure the PHY package.
+On Mon, Dec 4, 2023 at 3:50=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
+>
+> On Mon, Nov 27, 2023 at 2:10=E2=80=AFPM Ian Rogers <irogers@google.com> w=
+rote:
+> >
+> > Removing maps wasn't being done under the write lock. Similar to
+> > maps__for_each_map, iterate the entries but in this case remove the
+> > entry based on the result of the callback. If an entry was removed
+> > then maps_by_name also needs updating, so add missed flush.
+> >
+> > In dso__load_kcore, the test of map to save would always be false with
+> > REFCNT_CHECKING because of a missing RC_CHK_ACCESS.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+>
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
+>
+> A nitpick below,
+>
+> > ---
+> [SNIP]
+> > diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+> > index 72f03b875478..30da8a405d11 100644
+> > --- a/tools/perf/util/symbol.c
+> > +++ b/tools/perf/util/symbol.c
+> > @@ -1239,13 +1239,23 @@ static int kcore_mapfn(u64 start, u64 len, u64 =
+pgoff, void *data)
+> >         return 0;
+> >  }
+> >
+> > +static bool remove_old_maps(struct map *map, void *data)
+> > +{
+> > +       const struct map *map_to_save =3D data;
+> > +
+> > +       /*
+> > +        * We need to preserve eBPF maps even if they are covered by kc=
+ore,
+> > +        * because we need to access eBPF dso for source data.
+> > +        */
+> > +       return RC_CHK_ACCESS(map) !=3D RC_CHK_ACCESS(map_to_save) && !_=
+_map__is_bpf_prog(map);
+>
+> RC_CHK_EQUAL(map, map_to_save) ?
 
-Add support for these additional required function in both lock and no
-lock variant.
+Done in v6.
 
-It's assumed that the entire PHY package is either C22 or C45. We use
-C22 or C45 way of writing/reading to mmd regs based on the passed phydev
-whether it's C22 or C45.
+Thanks,
+Ian
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
-Changes v4:
-- Drop function comments in header file
-Changes v3:
-- Move in phy-core.c from phy.h
-- Base c45 from phydev
-Changes v2:
-- Rework to use newly introduced helper
-- Add common check for regnum and devad
-
- drivers/net/phy/phy-core.c | 136 +++++++++++++++++++++++++++++++++++++
- include/linux/phy.h        |  16 +++++
- 2 files changed, 152 insertions(+)
-
-diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
-index b729ac8b2640..b5868282def1 100644
---- a/drivers/net/phy/phy-core.c
-+++ b/drivers/net/phy/phy-core.c
-@@ -650,6 +650,142 @@ int phy_write_mmd(struct phy_device *phydev, int devad, u32 regnum, u16 val)
- }
- EXPORT_SYMBOL(phy_write_mmd);
- 
-+/**
-+ * __phy_package_read_mmd - Convenience function for reading a register
-+ * on an MMD on a given PHY using the PHY package base addr, added of
-+ * the addr_offset value.
-+ * @phydev: The phy_device struct
-+ * @addr_offset: The offset to be added to PHY package base_addr
-+ * @devad: The MMD to read from
-+ * @regnum: The register on the MMD to read
-+ *
-+ * Same rules as for __phy_read();
-+ *
-+ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
-+ */
-+int __phy_package_read_mmd(struct phy_device *phydev,
-+			   unsigned int addr_offset, int devad,
-+			   u32 regnum)
-+{
-+	struct phy_package_shared *shared = phydev->shared;
-+	int addr = shared->base_addr + addr_offset;
-+
-+	if (addr >= PHY_MAX_ADDR)
-+		return -EIO;
-+
-+	if (regnum > (u16)~0 || devad > 32)
-+		return -EINVAL;
-+
-+	return mmd_phy_read(phydev->mdio.bus, addr, phydev->is_c45, devad,
-+			    regnum);
-+}
-+EXPORT_SYMBOL(__phy_package_read_mmd);
-+
-+/**
-+ * phy_package_read_mmd - Convenience function for reading a register
-+ * on an MMD on a given PHY using the PHY package base addr, added of
-+ * the addr_offset value.
-+ * @phydev: The phy_device struct
-+ * @addr_offset: The offset to be added to PHY package base_addr
-+ * @devad: The MMD to read from
-+ * @regnum: The register on the MMD to read
-+ *
-+ * Same rules as for phy_read();
-+ *
-+ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
-+ */
-+int phy_package_read_mmd(struct phy_device *phydev,
-+			 unsigned int addr_offset, int devad,
-+			 u32 regnum)
-+{
-+	struct phy_package_shared *shared = phydev->shared;
-+	int addr = shared->base_addr + addr_offset;
-+	int val;
-+
-+	if (addr >= PHY_MAX_ADDR)
-+		return -EIO;
-+
-+	if (regnum > (u16)~0 || devad > 32)
-+		return -EINVAL;
-+
-+	phy_lock_mdio_bus(phydev);
-+	val = mmd_phy_read(phydev->mdio.bus, addr, phydev->is_c45, devad,
-+			   regnum);
-+	phy_unlock_mdio_bus(phydev);
-+
-+	return val;
-+}
-+EXPORT_SYMBOL(phy_package_read_mmd);
-+
-+/**
-+ * __phy_package_write_mmd - Convenience function for writing a register
-+ * on an MMD on a given PHY using the PHY package base addr, added of
-+ * the addr_offset value.
-+ * @phydev: The phy_device struct
-+ * @addr_offset: The offset to be added to PHY package base_addr
-+ * @devad: The MMD to read from
-+ * @regnum: The register on the MMD to read
-+ * @val: value to write to @regnum
-+ *
-+ * Same rules as for __phy_write();
-+ *
-+ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
-+ */
-+int __phy_package_write_mmd(struct phy_device *phydev,
-+			    unsigned int addr_offset, int devad,
-+			    u32 regnum, u16 val)
-+{
-+	struct phy_package_shared *shared = phydev->shared;
-+	int addr = shared->base_addr + addr_offset;
-+
-+	if (addr >= PHY_MAX_ADDR)
-+		return -EIO;
-+
-+	if (regnum > (u16)~0 || devad > 32)
-+		return -EINVAL;
-+
-+	return mmd_phy_write(phydev->mdio.bus, addr, phydev->is_c45, devad,
-+			     regnum, val);
-+}
-+EXPORT_SYMBOL(__phy_package_write_mmd);
-+
-+/**
-+ * phy_package_write_mmd - Convenience function for writing a register
-+ * on an MMD on a given PHY using the PHY package base addr, added of
-+ * the addr_offset value.
-+ * @phydev: The phy_device struct
-+ * @addr_offset: The offset to be added to PHY package base_addr
-+ * @devad: The MMD to read from
-+ * @regnum: The register on the MMD to read
-+ * @val: value to write to @regnum
-+ *
-+ * Same rules as for phy_write();
-+ *
-+ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
-+ */
-+int phy_package_write_mmd(struct phy_device *phydev,
-+			  unsigned int addr_offset, int devad,
-+			  u32 regnum, u16 val)
-+{
-+	struct phy_package_shared *shared = phydev->shared;
-+	int addr = shared->base_addr + addr_offset;
-+	int ret;
-+
-+	if (addr >= PHY_MAX_ADDR)
-+		return -EIO;
-+
-+	if (regnum > (u16)~0 || devad > 32)
-+		return -EINVAL;
-+
-+	phy_lock_mdio_bus(phydev);
-+	ret = mmd_phy_write(phydev->mdio.bus, addr, phydev->is_c45, devad,
-+			    regnum, val);
-+	phy_unlock_mdio_bus(phydev);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(phy_package_write_mmd);
-+
- /**
-  * phy_modify_changed - Function for modifying a PHY register
-  * @phydev: the phy_device struct
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 51702e349d83..f58a9ff52e0d 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -2049,6 +2049,22 @@ static inline int __phy_package_write(struct phy_device *phydev,
- 	return __mdiobus_write(phydev->mdio.bus, addr, regnum, val);
- }
- 
-+int __phy_package_read_mmd(struct phy_device *phydev,
-+			   unsigned int addr_offset, int devad,
-+			   u32 regnum);
-+
-+int phy_package_read_mmd(struct phy_device *phydev,
-+			 unsigned int addr_offset, int devad,
-+			 u32 regnum);
-+
-+int __phy_package_write_mmd(struct phy_device *phydev,
-+			    unsigned int addr_offset, int devad,
-+			    u32 regnum, u16 val);
-+
-+int phy_package_write_mmd(struct phy_device *phydev,
-+			  unsigned int addr_offset, int devad,
-+			  u32 regnum, u16 val);
-+
- static inline bool __phy_package_set_once(struct phy_device *phydev,
- 					  unsigned int b)
- {
--- 
-2.40.1
-
+> Thanks,
+> Namhyung
+>
+>
+> > +}
+> > +
+> >  static int dso__load_kcore(struct dso *dso, struct map *map,
+> >                            const char *kallsyms_filename)
+> >  {
+> >         struct maps *kmaps =3D map__kmaps(map);
+> >         struct kcore_mapfn_data md;
+> >         struct map *replacement_map =3D NULL;
+> > -       struct map_rb_node *old_node, *next;
+> >         struct machine *machine;
+> >         bool is_64_bit;
+> >         int err, fd;
+> > @@ -1292,17 +1302,7 @@ static int dso__load_kcore(struct dso *dso, stru=
+ct map *map,
+> >         }
+> >
+> >         /* Remove old maps */
+> > -       maps__for_each_entry_safe(kmaps, old_node, next) {
+> > -               struct map *old_map =3D old_node->map;
+> > -
+> > -               /*
+> > -                * We need to preserve eBPF maps even if they are
+> > -                * covered by kcore, because we need to access
+> > -                * eBPF dso for source data.
+> > -                */
+> > -               if (old_map !=3D map && !__map__is_bpf_prog(old_map))
+> > -                       maps__remove(kmaps, old_map);
+> > -       }
+> > +       maps__remove_maps(kmaps, remove_old_maps, map);
+> >         machine->trampolines_mapped =3D false;
+> >
+> >         /* Find the kernel map using the '_stext' symbol */
+> > --
+> > 2.43.0.rc1.413.gea7ed67945-goog
+> >
