@@ -2,246 +2,569 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DF2806CEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F18C806CD8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377962AbjLFK7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:59:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
+        id S1377880AbjLFK6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:58:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377896AbjLFK7B (ORCPT
+        with ESMTP id S1377883AbjLFK6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:59:01 -0500
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77172B2;
-        Wed,  6 Dec 2023 02:58:53 -0800 (PST)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id E57E37F98;
-        Wed,  6 Dec 2023 18:58:42 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 6 Dec
- 2023 18:58:42 +0800
-Received: from ubuntu.localdomain (183.27.97.199) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 6 Dec
- 2023 18:58:41 +0800
-From:   Minda Chen <minda.chen@starfivetech.com>
-To:     Conor Dooley <conor@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        "Daire McNamara" <daire.mcnamara@microchip.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>,
-        Minda Chen <minda.chen@starfivetech.com>
-Subject: [PATCH v12 0/21] Refactoring Microchip PCIe driver and add StarFive PCIe
-Date:   Wed, 6 Dec 2023 18:58:18 +0800
-Message-ID: <20231206105839.25805-1-minda.chen@starfivetech.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 6 Dec 2023 05:58:20 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40268D3;
+        Wed,  6 Dec 2023 02:58:24 -0800 (PST)
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1C20A660576A;
+        Wed,  6 Dec 2023 10:58:21 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701860302;
+        bh=+VSlk10/LdFmkMalHI3hr1OlICHle6U/dgMAM/Y+9IE=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=N5JYuZ6IPxJYhpHqkHN5wwLK16lvOvFE/E3xaMlycsD9+6boYSeNDT6GcQxxu50mz
+         gZ+iNioDdOL7EL/o3n79R7At5HE1v6RDj/VoaPv+lVsHvQj1T7QAYZRv5QoW9xSwsc
+         XHfLW3PYc25Sw+rSxCyni+hqAFBPKSOfwY6ur9fnX7uCTcfWEQFtSpfDYBXwy0MP3g
+         KTiG8L5CvnEvR4gT4NUHOK+7jlMwJr/y6NbIA5U+25B1dC4MkuWegHHxOg9TRLEVGs
+         O7rsqQW+4RcEAN0lokK3u3DnT3xDg7JMJMvmKKZTNFCv8tQbttGGOyGd/tGY0/kDRQ
+         1UfpxVkasuHxw==
+Message-ID: <21d8bd42-ae90-4ab0-88af-31722f6d4886@collabora.com>
+Date:   Wed, 6 Dec 2023 11:58:18 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [183.27.97.199]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] clk: mediatek: add drivers for MT7988 SoC
+Content-Language: en-US
+To:     Daniel Golle <daniel@makrotopia.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Sabrina Dubroca <sd@queasysnail.net>,
+        Jianhui Zhao <zhaojh329@gmail.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        "Garmin.Chang" <Garmin.Chang@mediatek.com>,
+        Sam Shih <sam.shih@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, netdev@vger.kernel.org
+References: <23bc89d407e7797e97b703fa939b43bfe79296ce.1701823757.git.daniel@makrotopia.org>
+ <af4c5a230cc65d72987cb531518ae32706d6d95e.1701823757.git.daniel@makrotopia.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <af4c5a230cc65d72987cb531518ae32706d6d95e.1701823757.git.daniel@makrotopia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
-JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
-same IP and have commit their codes, which are mixed with PLDA
-controller codes and Microchip platform codes.
+Il 06/12/23 01:57, Daniel Golle ha scritto:
+> From: Sam Shih <sam.shih@mediatek.com>
+> 
+> Add APMIXED, ETH, INFRACFG and TOPCKGEN clock drivers which are
+> typical MediaTek designs.
+> 
+> Also add driver for XFIPLL clock generating the 156.25MHz clock for
+> the XFI SerDes. It needs an undocumented software workaround and has
+> an unknown internal design.
+> 
+> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+> v3: use git --from ...
+> v2: no changes
+> 
+>   drivers/clk/mediatek/Kconfig               |   9 +
+>   drivers/clk/mediatek/Makefile              |   5 +
+>   drivers/clk/mediatek/clk-mt7988-apmixed.c  | 113 ++++++
+>   drivers/clk/mediatek/clk-mt7988-eth.c      | 141 +++++++
+>   drivers/clk/mediatek/clk-mt7988-infracfg.c | 378 +++++++++++++++++
+>   drivers/clk/mediatek/clk-mt7988-topckgen.c | 446 +++++++++++++++++++++
+>   drivers/clk/mediatek/clk-mt7988-xfipll.c   |  79 ++++
+>   7 files changed, 1171 insertions(+)
+>   create mode 100644 drivers/clk/mediatek/clk-mt7988-apmixed.c
+>   create mode 100644 drivers/clk/mediatek/clk-mt7988-eth.c
+>   create mode 100644 drivers/clk/mediatek/clk-mt7988-infracfg.c
+>   create mode 100644 drivers/clk/mediatek/clk-mt7988-topckgen.c
+>   create mode 100644 drivers/clk/mediatek/clk-mt7988-xfipll.c
+> 
+> diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
+> index 48b42d11111cd..70a005e7e1b18 100644
+> --- a/drivers/clk/mediatek/Kconfig
+> +++ b/drivers/clk/mediatek/Kconfig
+> @@ -423,6 +423,15 @@ config COMMON_CLK_MT7986_ETHSYS
+>   	  This driver adds support for clocks for Ethernet and SGMII
+>   	  required on MediaTek MT7986 SoC.
+>   
+> +config COMMON_CLK_MT7988
+> +	tristate "Clock driver for MediaTek MT7988"
+> +	depends on ARCH_MEDIATEK || COMPILE_TEST
+> +	select COMMON_CLK_MEDIATEK
+> +	default ARCH_MEDIATEK
+> +	help
+> +	  This driver supports MediaTek MT7988 basic clocks and clocks
+> +	  required for various periperals found on this SoC.
+> +
+>   config COMMON_CLK_MT8135
+>   	tristate "Clock driver for MediaTek MT8135"
+>   	depends on (ARCH_MEDIATEK && ARM) || COMPILE_TEST
+> diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
+> index dbeaa5b41177d..eeccfa039896f 100644
+> --- a/drivers/clk/mediatek/Makefile
+> +++ b/drivers/clk/mediatek/Makefile
+> @@ -62,6 +62,11 @@ obj-$(CONFIG_COMMON_CLK_MT7986) += clk-mt7986-apmixed.o
+>   obj-$(CONFIG_COMMON_CLK_MT7986) += clk-mt7986-topckgen.o
+>   obj-$(CONFIG_COMMON_CLK_MT7986) += clk-mt7986-infracfg.o
+>   obj-$(CONFIG_COMMON_CLK_MT7986_ETHSYS) += clk-mt7986-eth.o
+> +obj-$(CONFIG_COMMON_CLK_MT7988) += clk-mt7988-apmixed.o
+> +obj-$(CONFIG_COMMON_CLK_MT7988) += clk-mt7988-topckgen.o
+> +obj-$(CONFIG_COMMON_CLK_MT7988) += clk-mt7988-infracfg.o
+> +obj-$(CONFIG_COMMON_CLK_MT7988) += clk-mt7988-eth.o
+> +obj-$(CONFIG_COMMON_CLK_MT7988) += clk-mt7988-xfipll.o
+>   obj-$(CONFIG_COMMON_CLK_MT8135) += clk-mt8135-apmixedsys.o clk-mt8135.o
+>   obj-$(CONFIG_COMMON_CLK_MT8167) += clk-mt8167-apmixedsys.o clk-mt8167.o
+>   obj-$(CONFIG_COMMON_CLK_MT8167_AUDSYS) += clk-mt8167-aud.o
+> diff --git a/drivers/clk/mediatek/clk-mt7988-apmixed.c b/drivers/clk/mediatek/clk-mt7988-apmixed.c
+> new file mode 100644
+> index 0000000000000..3f1edc231e37a
+> --- /dev/null
+> +++ b/drivers/clk/mediatek/clk-mt7988-apmixed.c
+> @@ -0,0 +1,113 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 MediaTek Inc.
+> + * Author: Sam Shih <sam.shih@mediatek.com>
+> + * Author: Xiufeng Li <Xiufeng.Li@mediatek.com>
+> + */
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include "clk-mtk.h"
+> +#include "clk-gate.h"
+> +#include "clk-mux.h"
+> +#include "clk-pll.h"
+> +#include <dt-bindings/clock/mediatek,mt7988-clk.h>
+> +
+> +#define MT7988_PLL_FMAX (2500UL * MHZ)
+> +#define MT7988_PCW_CHG_SHIFT 2
+> +
+> +#define PLL_xtal(_id, _name, _reg, _pwr_reg, _en_mask, _flags, _rst_bar_mask, \
 
-For re-use the PLDA controller codes, I request refactoring microchip
-codes, move PLDA common codes to PLDA files.
-Desigware and Cadence is good example for refactoring codes.
+You're never assigning any div_table, so you don't need to have PLL and PLL_xtal.
 
-----------------------------------------------------------
-The refactoring patches total number is 16,(patch 1-16)
-which do NOT contain changing logic of codes.
+Also, why is your crystal named "clkxtal" instead of "clk26m" like all the others?
 
-These patches just contain three type basic operations.
-(rename, modify codes to support starfive platform, and moving to common file)
-If these patched are all be reviewed. They can be accepted first.
+If your clkxtal is 26MHz, please just change the name to "clk26m" as this is what
+is used by most of the other MTK clock drivers, and because the clk26m name does
+actually stand for practically the same as your clkxtal, granted that yours is
+26M.
 
-Refactoring patches can be devided to different groups
-1. (patch 1- 3 is the prepare work of refactoring)
-patch1 is move PLDA XpressRICH PCIe host common properties dt-binding
-       docs from microchip,pcie-host.yaml
-patch2 is move PolarFire codes to PLDA directory.
-patch3 is move PLDA IP register macros to plda-pcie.h
+> +		 _pcwbits, _pd_reg, _pd_shift, _tuner_reg, _tuner_en_reg,     \
+> +		 _tuner_en_bit, _pcw_reg, _pcw_shift, _pcw_chg_reg,           \
+> +		 _div_table)                                                  \
+> +	{                                                                     \
+> +		.id = _id, .name = _name, .reg = _reg, .pwr_reg = _pwr_reg,   \
+> +		.en_mask = _en_mask, .flags = _flags,                         \
+> +		.rst_bar_mask = BIT(_rst_bar_mask), .fmax = MT7988_PLL_FMAX,  \
+> +		.pcwbits = _pcwbits, .pd_reg = _pd_reg,                       \
+> +		.pd_shift = _pd_shift, .tuner_reg = _tuner_reg,               \
+> +		.tuner_en_reg = _tuner_en_reg, .tuner_en_bit = _tuner_en_bit, \
+> +		.pcw_reg = _pcw_reg, .pcw_shift = _pcw_shift,                 \
+> +		.pcw_chg_reg = _pcw_chg_reg,                                  \
+> +		.pcw_chg_shift = MT7988_PCW_CHG_SHIFT,                        \
+> +		.div_table = _div_table, .parent_name = "clkxtal",            \
+> +	}
+> +
 
-2. (patch4 - 6 is processing and re-use PCIe host instance)
-patch4 is add bridge_addr field to PCIe host instance.
-patch5 is rename data structure in microchip codes.
-patch6 is moving two data structures to head file
+..snip..
 
-3. (patch 7 - 9 are for re-use two PCIe setup function)
-patch7 is rename two setup functions in microchip codes, prepare to move
-to common file.
-patch8 is change the arguments of plda_pcie_setup_iomems()
-patch9 is move the two setup functions to common file pcie-plda-host.c
+> +
+> +static const struct of_device_id of_match_clk_mt7988_apmixed[] = {
+> +	{ .compatible = "mediatek,mt7988-apmixedsys", },
 
-4.(patch 10 - 16 are for re-use interupt processing codes)
-patch10 is rename the IRQ related functions, prepare to move to
-pcie-plda-host.c
-patch 11 - 15 is modify the interrupt event codes, preparing for support starfive
-and microchip two platforms.
-patch16 is move IRQ related functions to pcie-plda-host.c
+{ .compatible = "mediatek,mt7988-apmixedsys" },
 
-------------------------------------------------------------
-The remainder patches (patch 17 -21) are not refactoring patch.
-They are for adding StarFive codes and dont modify the microchip's
-codes.
+( there is an extra comma: `sys", }` => `sys" }` )
 
-patch17 is Add PLDA event interrupt codes and host init/deinit functions.
-patch18 is add StarFive JH7110 PCIe dt-binding doc.
-patch19 is Add a PCIe delay time macro
-patch20 is add StarFive JH7110 Soc PCIe codes.
-patch21 is Starfive dts config
+> +	{ /* sentinel */ }
+> +};
+> +
+> +static int clk_mt7988_apmixed_probe(struct platform_device *pdev)
+> +{
+> +	struct clk_hw_onecell_data *clk_data;
+> +	struct device_node *node = pdev->dev.of_node;
+> +	int r;
+> +
+> +	clk_data = mtk_alloc_clk_data(ARRAY_SIZE(plls));
+> +	if (!clk_data)
+> +		return -ENOMEM;
+> +
+> +	mtk_clk_register_plls(node, plls, ARRAY_SIZE(plls), clk_data);
 
-This patchset is base on v6.7-rc4
+Error checking is missing for mtk_clk_register_plls().
 
-previous version:
-v6:https://patchwork.kernel.org/project/linux-pci/cover/20230915102243.59775-1-minda.chen@starfivetech.com/
-v7:https://patchwork.kernel.org/project/linux-pci/cover/20230927100802.46620-1-minda.chen@starfivetech.com/
-v8:https://patchwork.kernel.org/project/linux-pci/cover/20231011110514.107528-1-minda.chen@starfivetech.com/
-v9:https://patchwork.kernel.org/project/linux-pci/cover/20231020104341.63157-1-minda.chen@starfivetech.com/
-v10:https://patchwork.kernel.org/project/linux-pci/cover/20231031115430.113586-1-minda.chen@starfivetech.com/
-v11:https://patchwork.kernel.org/project/linux-pci/cover/20231115114912.71448-1-minda.chen@starfivetech.com/
+> +
+> +	r = of_clk_add_hw_provider(node, of_clk_hw_onecell_get, clk_data);
+> +	if (r) {
+> +		pr_err("%s(): could not register clock provider: %d\n",
+> +		       __func__, r);
+> +		goto free_apmixed_data;
+> +	}
+> +	return r;
+> +
+> +free_apmixed_data:
+> +	mtk_free_clk_data(clk_data);
+> +	return r;
+> +}
+> +
+> +static struct platform_driver clk_mt7988_apmixed_drv = {
+> +	.probe = clk_mt7988_apmixed_probe,
+> +	.driver = {
+> +		.name = "clk-mt7988-apmixed",
+> +		.of_match_table = of_match_clk_mt7988_apmixed,
+> +	},
+> +};
+> +builtin_platform_driver(clk_mt7988_apmixed_drv);
+> +MODULE_LICENSE("GPL");
 
-change:
-  v12:
-   patch17: modify the commit message and add starfive review tag.
-   Add PCIE_RESET_CONFIG_DEVICE_WAIT_MS to patch 19.
-   patch20: Add disable runtime pm function in starfive_pcie_remove()
-            Add "depens on ARCH_STARFIVE || COMPILE_TEST" in Starfive PCie Kconfig
+..snip..
 
-  v11:
-     check and modify some commit messages again.
-     All the codes are the same with v10.   
+> diff --git a/drivers/clk/mediatek/clk-mt7988-infracfg.c b/drivers/clk/mediatek/clk-mt7988-infracfg.c
+> new file mode 100644
+> index 0000000000000..d23f7bdfafd9d
+> --- /dev/null
+> +++ b/drivers/clk/mediatek/clk-mt7988-infracfg.c
+> @@ -0,0 +1,378 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 MediaTek Inc.
+> + * Author: Sam Shih <sam.shih@mediatek.com>
+> + * Author: Xiufeng Li <Xiufeng.Li@mediatek.com>
+> + */
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include "clk-mtk.h"
+> +#include "clk-gate.h"
+> +#include "clk-mux.h"
+> +#include <dt-bindings/clock/mediatek,mt7988-clk.h>
+> +
+> +static DEFINE_SPINLOCK(mt7988_clk_lock);
+> +
+> +static const char *const infra_mux_uart0_parents[] __initconst = {
 
-  v10:
-   All the commit message set to fit in 75 columns.
-   All the codes fit in less than 80 colunms.
-   patch 14: 
-	Commit message changes suggested by Conor.
-   patch 20:
-        Add 100 ms delay macro to pci.h
-	generic phy pointer related codes moving to pcie-starfive.c
-	This patch Change pcie-starfive only, bus_ops move to patch 16.
-	Some Codes changes suggested by Bjorn.
+Are you sure that you need those __initconst annotations?
 
-  v9:
-   v8 patch 10 squash to v9 patch 12, v8 patch 18 squash to v9 patch 16.
-   patch 4 - 16: Add new review tags and add more accurate commit messages.
-   patch 17: move the plda_pcie_host_init/deinit from patch 19. Make
-             plda driver become to whole driver.
+> +	"csw_infra_f26m_sel", "uart_sel"
+> +};
+> +
 
-  v8:
-    The patch description in cover-letter has been changed.
+..snip..
 
-    v7 patch 4 split to v8 patch 4 - 6.
-        (It is patches about re-use pcie host data structure, new patches just contain one
-	function modification. It is more reguluar and easier to review).
+> +
+> +static const struct mtk_gate_regs infra0_cg_regs = {
+> +	.set_ofs = 0x10,
+> +	.clr_ofs = 0x14,
+> +	.sta_ofs = 0x18,
+> +};
+> +
+> +static const struct mtk_gate_regs infra1_cg_regs = {
+> +	.set_ofs = 0x40,
+> +	.clr_ofs = 0x44,
+> +	.sta_ofs = 0x48,
+> +};
+> +
+> +static const struct mtk_gate_regs infra2_cg_regs = {
+> +	.set_ofs = 0x50,
+> +	.clr_ofs = 0x54,
+> +	.sta_ofs = 0x58,
+> +};
+> +
+> +static const struct mtk_gate_regs infra3_cg_regs = {
+> +	.set_ofs = 0x60,
+> +	.clr_ofs = 0x64,
+> +	.sta_ofs = 0x68,
+> +};
+> +
+> +#define GATE_INFRA0_FLAGS(_id, _name, _parent, _shift, _flags)			\
 
-    patch 7- 9: modify the commit messages and add reason of
-		modifcation.
-    patch10- 16 :
-             Add review tag and add more commit messages to declear the
-	     reason of modifying the codes.
-    patch17: plda_handle_events() using bit mask macro. The function are
-	     easier to read.
+This is exactly the definition of GATE_MTK_FLAGS.
+Use that common definition instead.
 
-  v7:
-    patch17: fix the build warning.
-    patch20: Some format changes (Emil's comment)
-    patch21: change the pcie node sequences by alphabetical
-             delete the "interupt-parent" in pcie node.
+> +	{									\
+> +		.id = _id, .name = _name, .parent_name = _parent,		\
+> +		.regs = &infra0_cg_regs, .shift = _shift,			\
+> +		.ops = &mtk_clk_gate_ops_setclr, .flags = _flags,		\
+> +	}
+> +
+> +#define GATE_INFRA1_FLAGS(_id, _name, _parent, _shift, _flags)			\
 
-  v6:
-    v5 patch 4 split to patch 4 -9. New patches just contain one function modification. It is more reguluar.
+same
 
-    patch 9: Just move the two setup functions only
-    patch 19 : draw a graph of PLDA local register, make it easier to
-               review the codes.
-    v5 patch 7 split to patch 10- 16. Each patch just contain one
-                function modification. It is more regular.
-    patch 10: rename IRQ related functions.
-    patch 11 - 15 : modify the events codes, total five patch.
-    patch 16: move IRQ related functions to pcie-plda-host.c
-    patch 20- 21 using "linux,pci-domain" dts setting.
+> +	{									\
+> +		.id = _id, .name = _name, .parent_name = _parent,		\
+> +		.regs = &infra1_cg_regs, .shift = _shift,			\
+> +		.ops = &mtk_clk_gate_ops_setclr, .flags = _flags,		\
+> +	}
+> +
+> +#define GATE_INFRA2_FLAGS(_id, _name, _parent, _shift, _flags)			\
 
+same again
 
-Kevin Xie (1):
-  PCI: Add PCIE_RESET_CONFIG_DEVICE_WAIT_MS waiting time value
+> +	{									\
+> +		.id = _id, .name = _name, .parent_name = _parent,		\
+> +		.regs = &infra2_cg_regs, .shift = _shift,			\
+> +		.ops = &mtk_clk_gate_ops_setclr, .flags = _flags,		\
+> +	}
+> +
+> +#define GATE_INFRA3_FLAGS(_id, _name, _parent, _shift, _flags)			\
 
-Minda Chen (20):
-  dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
-  PCI: microchip: Move pcie-microchip-host.c to plda directory
-  PCI: microchip: Move PLDA IP register macros to pcie-plda.h
-  PCI: microchip: Add bridge_addr field to struct mc_pcie
-  PCI: microchip: Rename two PCIe data structures
-  PCI: microchip: Move PCIe host data structures to plda-pcie.h
-  PCI: microchip: Rename two setup functions
-  PCI: microchip: Change the argument of plda_pcie_setup_iomems()
-  PCI: microchip: Move setup functions to pcie-plda-host.c
-  PCI: microchip: Rename interrupt related functions
-  PCI: microchip: Add num_events field to struct plda_pcie_rp
-  PCI: microchip: Add request_event_irq() callback function
-  PCI: microchip: Add INTx and MSI event num to struct plda_event
-  PCI: microchip: Add get_events() callback function
-  PCI: microchip: Add event IRQ domain ops to struct plda_event
-  PCI: microchip: Move IRQ functions to pcie-plda-host.c
-  PCI: plda: Add event interrupt codes and host init/deinit functions
-  dt-bindings: PCI: Add StarFive JH7110 PCIe controller
-  PCI: starfive: Add JH7110 PCIe controller
-  riscv: dts: starfive: add PCIe dts configuration for JH7110
+and again.
 
- .../bindings/pci/microchip,pcie-host.yaml     |  55 +-
- .../pci/plda,xpressrich3-axi-common.yaml      |  75 ++
- .../bindings/pci/starfive,jh7110-pcie.yaml    | 120 ++++
- MAINTAINERS                                   |  19 +-
- .../jh7110-starfive-visionfive-2.dtsi         |  64 ++
- arch/riscv/boot/dts/starfive/jh7110.dtsi      |  86 +++
- drivers/pci/controller/Kconfig                |   9 +-
- drivers/pci/controller/Makefile               |   2 +-
- drivers/pci/controller/plda/Kconfig           |  30 +
- drivers/pci/controller/plda/Makefile          |   4 +
- .../{ => plda}/pcie-microchip-host.c          | 602 ++--------------
- drivers/pci/controller/plda/pcie-plda-host.c  | 657 ++++++++++++++++++
- drivers/pci/controller/plda/pcie-plda.h       | 266 +++++++
- drivers/pci/controller/plda/pcie-starfive.c   | 462 ++++++++++++
- drivers/pci/pci.h                             |  16 +
- 15 files changed, 1863 insertions(+), 604 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml
- create mode 100644 Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
- create mode 100644 drivers/pci/controller/plda/Kconfig
- create mode 100644 drivers/pci/controller/plda/Makefile
- rename drivers/pci/controller/{ => plda}/pcie-microchip-host.c (54%)
- create mode 100644 drivers/pci/controller/plda/pcie-plda-host.c
- create mode 100644 drivers/pci/controller/plda/pcie-plda.h
- create mode 100644 drivers/pci/controller/plda/pcie-starfive.c
+> +	{									\
+> +		.id = _id, .name = _name, .parent_name = _parent,		\
+> +		.regs = &infra3_cg_regs, .shift = _shift,			\
+> +		.ops = &mtk_clk_gate_ops_setclr, .flags = _flags,		\
+> +	}
+> +
+
+#define GATE_INFRA0(_id, _name, _parent, _shift)			\
+	GATE_MTK_FLAGS(_id, _name, _parent, &infra0_cg_regs, _shift,	\
+		&mtk_clk_gate_ops_setclr, 0)
+
+#define GATE_INFRA1(_id, _name, _parent, _shift)			\
+	GATE_MTK_FLAGS(_id, _name, _parent, &infra1_cg_regs, _shift,	\
+		&mtk_clk_gate_ops_setclr, 0)
+
+#define GATE_INFRA2_FLAGS(_id, _name, _parent, _shift, _flags)		\
+	GATE_MTK_FLAGS(_id, _name, _parent, &infra2_cg_regs, _shift,	\
+		&mtk_clk_gate_ops_setclr, _flags)
+
+#define GATE_INFRA2(_id, _name, _parent, _shift)			\
+	GATE_INFRA2_FLAGS(_id, _name, _parent, _shift, 0)
+
+#define GATE_INFRA3(_id, _name, _parent, _shift)			\
+	GATE_MTK_FLAGS(_id, _name, _parent, &infra0_cg_regs, _shift,	\
+		&mtk_clk_gate_ops_setclr, 0)
+
+> +#define GATE_INFRA0(_id, _name, _parent, _shift)				\
+> +	GATE_INFRA0_FLAGS(_id, _name, _parent, _shift, 0)
+> +
+> +#define GATE_INFRA1(_id, _name, _parent, _shift)				\
+> +	GATE_INFRA1_FLAGS(_id, _name, _parent, _shift, 0)
+> +
+> +#define GATE_INFRA2(_id, _name, _parent, _shift)				\
+> +	GATE_INFRA2_FLAGS(_id, _name, _parent, _shift, 0)
+> +
+> +#define GATE_INFRA3(_id, _name, _parent, _shift)				\
+> +	GATE_INFRA3_FLAGS(_id, _name, _parent, _shift, 0)
+> +
+> +
+> +#define GATE_CRITICAL(_id, _name, _parent, _regs, _shift)			\
 
 
-base-commit: 33cc938e65a98f1d29d0a18403dbbee050dcad9a
--- 
-2.17.1
+You are using it like that:
+GATE_CRITICAL(CLK_INFRA_RTC, "infra_f_frtc", "top_rtc_32k", &infra2_cg_regs, 19),
 
+Change it to
+GATE_INFRA2_FLAGS(CLK_INFRA_RTC, "infra_f_frtc", "top_rtc_32k", 19),
+
+> +	{									\
+> +		.id = _id, .name = _name, .parent_name = _parent,		\
+> +		.regs = _regs, .shift = _shift,					\
+> +		.flags = CLK_IS_CRITICAL,					\
+> +		.ops = &mtk_clk_gate_ops_setclr,				\
+> +	}
+> +
+> +static const struct mtk_gate infra_clks[] = {
+> +	/* INFRA0 */
+> +	GATE_INFRA0(CLK_INFRA_PCIE_PERI_26M_CK_P0,
+> +		    "infra_pcie_peri_ck_26m_ck_p0", "csw_infra_f26m_sel", 7),
+> +	GATE_INFRA0(CLK_INFRA_PCIE_PERI_26M_CK_P1,
+> +		    "infra_pcie_peri_ck_26m_ck_p1", "csw_infra_f26m_sel", 8),
+> +	GATE_INFRA0(CLK_INFRA_PCIE_PERI_26M_CK_P2,
+> +		    "infra_pcie_peri_ck_26m_ck_p2", "csw_infra_f26m_sel", 9),
+> +	GATE_INFRA0(CLK_INFRA_PCIE_PERI_26M_CK_P3,
+> +		    "infra_pcie_peri_ck_26m_ck_p3", "csw_infra_f26m_sel", 10),
+> +	/* INFRA1 */
+> +	GATE_INFRA1(CLK_INFRA_66M_GPT_BCK, "infra_hf_66m_gpt_bck",
+> +		    "sysaxi_sel", 0),
+
+This one and multiple other entries do fit in one line.
+
+Up to 100 columns is ok: please use one line where possible, here and in the other
+drivers as well, where this comment applies.
+
+> +	GATE_INFRA1(CLK_INFRA_66M_PWM_HCK, "infra_hf_66m_pwm_hck",
+> +		    "sysaxi_sel", 1),
+
+..snip..
+
+
+> diff --git a/drivers/clk/mediatek/clk-mt7988-topckgen.c b/drivers/clk/mediatek/clk-mt7988-topckgen.c
+> new file mode 100644
+> index 0000000000000..7bed282e615f8
+> --- /dev/null
+> +++ b/drivers/clk/mediatek/clk-mt7988-topckgen.c
+> @@ -0,0 +1,446 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 MediaTek Inc.
+> + * Author: Sam Shih <sam.shih@mediatek.com>
+> + * Author: Xiufeng Li <Xiufeng.Li@mediatek.com>
+> + */
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include "clk-mtk.h"
+> +#include "clk-gate.h"
+> +#include "clk-mux.h"
+> +#include <dt-bindings/clock/mediatek,mt7988-clk.h>
+> +
+> +static DEFINE_SPINLOCK(mt7988_clk_lock);
+> +
+> +static const struct mtk_fixed_clk top_fixed_clks[] = {
+> +	FIXED_CLK(CLK_TOP_XTAL, "top_xtal", "clkxtal", 40000000),
+
+Again, why clkxtal and not clk26m?
+
+> +};
+> +
+> +static const struct mtk_fixed_factor top_divs[] = {
+> +	FACTOR(CLK_TOP_XTAL_D2, "top_xtal_d2", "top_xtal", 1, 2),
+> +	FACTOR(CLK_TOP_RTC_32K, "top_rtc_32k", "top_xtal", 1, 1250),
+> +	FACTOR(CLK_TOP_RTC_32P7K, "top_rtc_32p7k", "top_xtal", 1, 1220),
+> +	FACTOR(CLK_TOP_MPLL_D2, "mpll_d2", "mpll", 1, 2),
+> +	FACTOR(CLK_TOP_MPLL_D3_D2, "mpll_d3_d2", "mpll", 1, 2),
+> +	FACTOR(CLK_TOP_MPLL_D4, "mpll_d4", "mpll", 1, 4),
+> +	FACTOR(CLK_TOP_MPLL_D8, "mpll_d8", "mpll", 1, 8),
+> +	FACTOR(CLK_TOP_MPLL_D8_D2, "mpll_d8_d2", "mpll", 1, 16),
+> +	FACTOR(CLK_TOP_MMPLL_D2, "mmpll_d2", "mmpll", 1, 2),
+> +	FACTOR(CLK_TOP_MMPLL_D3_D5, "mmpll_d3_d5", "mmpll", 1, 15),
+> +	FACTOR(CLK_TOP_MMPLL_D4, "mmpll_d4", "mmpll", 1, 4),
+> +	FACTOR(CLK_TOP_MMPLL_D6_D2, "mmpll_d6_d2", "mmpll", 1, 12),
+> +	FACTOR(CLK_TOP_MMPLL_D8, "mmpll_d8", "mmpll", 1, 8),
+> +	FACTOR(CLK_TOP_APLL2_D4, "apll2_d4", "apll2", 1, 4),
+> +	FACTOR(CLK_TOP_NET1PLL_D4, "net1pll_d4", "net1pll", 1, 4),
+> +	FACTOR(CLK_TOP_NET1PLL_D5, "net1pll_d5", "net1pll", 1, 5),
+> +	FACTOR(CLK_TOP_NET1PLL_D5_D2, "net1pll_d5_d2", "net1pll", 1, 10),
+> +	FACTOR(CLK_TOP_NET1PLL_D5_D4, "net1pll_d5_d4", "net1pll", 1, 20),
+> +	FACTOR(CLK_TOP_NET1PLL_D8, "net1pll_d8", "net1pll", 1, 8),
+> +	FACTOR(CLK_TOP_NET1PLL_D8_D2, "net1pll_d8_d2", "net1pll", 1, 16),
+> +	FACTOR(CLK_TOP_NET1PLL_D8_D4, "net1pll_d8_d4", "net1pll", 1, 32),
+> +	FACTOR(CLK_TOP_NET1PLL_D8_D8, "net1pll_d8_d8", "net1pll", 1, 64),
+> +	FACTOR(CLK_TOP_NET1PLL_D8_D16, "net1pll_d8_d16", "net1pll", 1, 128),
+> +	FACTOR(CLK_TOP_NET2PLL_D2, "net2pll_d2", "net2pll", 1, 2),
+> +	FACTOR(CLK_TOP_NET2PLL_D4, "net2pll_d4", "net2pll", 1, 4),
+> +	FACTOR(CLK_TOP_NET2PLL_D4_D4, "net2pll_d4_d4", "net2pll", 1, 16),
+> +	FACTOR(CLK_TOP_NET2PLL_D4_D8, "net2pll_d4_d8", "net2pll", 1, 32),
+> +	FACTOR(CLK_TOP_NET2PLL_D6, "net2pll_d6", "net2pll", 1, 6),
+> +	FACTOR(CLK_TOP_NET2PLL_D8, "net2pll_d8", "net2pll", 1, 8),
+> +};
+> +
+> +static const char *const netsys_parents[] = { "top_xtal", "net2pll_d2",
+> +					      "mmpll_d2" };
+
+Fits in one line as well: please fix, here and everywhere else.
+
+> +
+> +static const char *const netsys_500m_parents[] = { "top_xtal", "net1pll_d5",
+> +						   "net1pll_d5_d2" };
+> +
+
+..snip..
+
+> diff --git a/drivers/clk/mediatek/clk-mt7988-xfipll.c b/drivers/clk/mediatek/clk-mt7988-xfipll.c
+> new file mode 100644
+> index 0000000000000..5862818085a8c
+> --- /dev/null
+> +++ b/drivers/clk/mediatek/clk-mt7988-xfipll.c
+> @@ -0,0 +1,79 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Daniel Golle <daniel@makrotopia.org>
+> + */
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include "clk-mtk.h"
+> +#include "clk-gate.h"
+> +#include <dt-bindings/clock/mediatek,mt7988-clk.h>
+> +
+> +/* Register to control USXGMII XFI PLL analog */
+> +#define XFI_PLL_ANA_GLB8		0x108
+> +#define RG_XFI_PLL_ANA_SWWA		0x02283248
+> +
+> +static const struct mtk_gate_regs xfipll_cg_regs = {
+> +	.set_ofs = 0x8,
+> +	.clr_ofs = 0x8,
+> +	.sta_ofs = 0x8,
+> +};
+> +
+> +#define GATE_XFIPLL(_id, _name, _parent, _shift)                              \
+> +	{                                                                     \
+> +		.id = _id, .name = _name, .parent_name = _parent,             \
+> +		.regs = &xfipll_cg_regs, .shift = _shift,                     \
+> +		.ops = &mtk_clk_gate_ops_no_setclr_inv,                       \
+> +	}
+> +
+> +static const struct mtk_fixed_factor xfipll_divs[] = {
+> +	FACTOR(CLK_XFIPLL_PLL, "xfipll_pll", "top_xtal", 125, 32),
+> +};
+> +
+> +static const struct mtk_gate xfipll_clks[] = {
+> +	GATE_XFIPLL(CLK_XFIPLL_PLL_EN, "xfipll_pll_en", "xfipll_pll", 31),
+> +};
+> +
+> +static const struct mtk_clk_desc xfipll_desc = {
+> +	.clks = xfipll_clks,
+> +	.num_clks = ARRAY_SIZE(xfipll_clks),
+> +	.factor_clks = xfipll_divs,
+> +	.num_factor_clks = ARRAY_SIZE(xfipll_divs),
+> +};
+> +
+> +static int clk_mt7988_xfipll_probe(struct platform_device *pdev)
+> +{
+> +	struct device_node *node = pdev->dev.of_node;
+> +	void __iomem *base = of_iomap(node, 0);
+> +
+> +	if (!base)
+> +		return -ENOMEM;
+> +
+> +	/* Apply software workaround for USXGMII PLL TCL issue */ù
+
+This hurts my heart... :-P
+but it's ok :-)
+
+Cheers,
+Angelo
