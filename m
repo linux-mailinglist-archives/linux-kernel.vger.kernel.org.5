@@ -2,133 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 512278076FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 602208076FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442736AbjLFRwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:52:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38890 "EHLO
+        id S1442731AbjLFRvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:51:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379751AbjLFRwC (ORCPT
+        with ESMTP id S1378776AbjLFRvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:52:02 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023F9D5A;
-        Wed,  6 Dec 2023 09:52:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=xtEyYJ2fL6Bd/0ZQMBJdBd4JHYGCVwVdwTisB+sS+6c=; b=zH/nzGG9C8Rq19EuObrG0yz4pf
-        R93eD9OUVT4C3HY1QMdnol7HJPeIhWZROomiVjeEA5vOZl+0VpkragNpePVgochBymEUcb4tqXCE3
-        +cjT7SYIHITZerFDewzgXH17u0OEX74lJJgr1l0RhzVh/6LqsKCJhwiwCF7e2roBz4pIBnMbfKqer
-        rsm1nvLceBhbmqXohGYuaIJpwIMyIwAia2po95HwUoKD2VVBzltSdO2VPi64RXLRe2cWd+jlWTZg7
-        LkNLQNz1yJGIvo73+eEPhriyAPciIpXk+54b0oGxPr5VdsfZ3ol0O1LZA6f3oOXKHIkbRLhsIHA6d
-        4E4Aed3w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45446)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rAw3e-0000CW-1J;
-        Wed, 06 Dec 2023 17:51:38 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rAw3a-0002uY-MH; Wed, 06 Dec 2023 17:51:34 +0000
-Date:   Wed, 6 Dec 2023 17:51:34 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Alexander Couzens <lynxis@fe80.eu>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
-Subject: Re: [RFC PATCH v2 3/8] net: pcs: pcs-mtk-lynxi: add platform driver
- for MT7988
-Message-ID: <ZXC0pq2C6iRmeF4B@shell.armlinux.org.uk>
-References: <cover.1701826319.git.daniel@makrotopia.org>
- <68bb81ac6bf99393c8de256f42e5715626590af8.1701826319.git.daniel@makrotopia.org>
+        Wed, 6 Dec 2023 12:51:44 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECB9122
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 09:51:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4514C433C8;
+        Wed,  6 Dec 2023 17:51:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701885110;
+        bh=YMA3TAsSiUul57FlmdTimYbCUDIjWoEz6/pHObLXG7Q=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=iDHqvkcoAXQo1mrhbAIkDpwA0Pez0mmJTk0fEIJi2jFFE6O/CGvrguCIeT8PEIa/6
+         hzI6RV7iU6NxKEuLQzhac8mPU/xN3wdnoPElZSxiF5jARVzMB7do7e/hVTztB2wsx0
+         GaW5Va9v5AeLvvrHH6w/yA84FOGsWxXbVRFfeA18OuYkh4e2u7gYRWvKCaOIDY0fbO
+         qT9Dur0ozn6JuwNDUZpOaFB48PvVrA1LTIa1hnTQZ5XpIcnsI+5HdNvNyoREXrkgK8
+         EHGDgEO6WH1SSzU3Xq7zAhLu9xawZgXsSxXnGWvIwWKN7LO2Kgu9AkwK4wXlgdGbD9
+         MX4sfAL5N7Tfg==
+Message-ID: <efd58582-31b6-47f0-ba14-bf369fddd1c0@kernel.org>
+Date:   Wed, 6 Dec 2023 10:51:49 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <68bb81ac6bf99393c8de256f42e5715626590af8.1701826319.git.daniel@makrotopia.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] neighbour: Don't let neigh_forced_gc() disable
+ preemption for long
+Content-Language: en-US
+To:     Stephen Hemminger <stephen@networkplumber.org>,
+        Judy Hsiao <judyhsiao@chromium.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Simon Horman <horms@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Brian Haley <haleyb.dev@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Joel Granados <joel.granados@gmail.com>,
+        Julian Anastasov <ja@ssi.bg>,
+        Leon Romanovsky <leon@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20231206033913.1290566-1-judyhsiao@chromium.org>
+ <20231206093917.04fd57b5@hermes.local>
+From:   David Ahern <dsahern@kernel.org>
+In-Reply-To: <20231206093917.04fd57b5@hermes.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 01:44:17AM +0000, Daniel Golle wrote:
-> +struct phylink_pcs *mtk_pcs_lynxi_select_pcs(struct device_node *np, phy_interface_t mode)
-> +{
-> +	struct platform_device *pdev;
-> +	struct mtk_pcs_lynxi *mpcs;
-> +
-> +	if (!np)
-> +		return NULL;
-> +
-> +	if (!of_device_is_available(np))
-> +		return ERR_PTR(-ENODEV);
-> +
-> +	if (!of_match_node(mtk_pcs_lynxi_of_match, np))
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	pdev = of_find_device_by_node(np);
-> +	if (!pdev || !platform_get_drvdata(pdev)) {
-> +		if (pdev)
-> +			put_device(&pdev->dev);
-> +		return ERR_PTR(-EPROBE_DEFER);
-> +	}
-> +
-> +	mpcs = platform_get_drvdata(pdev);
-> +	put_device(&pdev->dev);
-> +
-> +	return &mpcs->pcs;
-> +}
-> +EXPORT_SYMBOL(mtk_pcs_lynxi_select_pcs);
+On 12/6/23 10:39 AM, Stephen Hemminger wrote:
+> On Wed,  6 Dec 2023 03:38:33 +0000
+> Judy Hsiao <judyhsiao@chromium.org> wrote:
+> 
+>> diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+>> index df81c1f0a570..552719c3bbc3 100644
+>> --- a/net/core/neighbour.c
+>> +++ b/net/core/neighbour.c
+>> @@ -253,9 +253,11 @@ static int neigh_forced_gc(struct neigh_table *tbl)
+>>  {
+>>  	int max_clean = atomic_read(&tbl->gc_entries) -
+>>  			READ_ONCE(tbl->gc_thresh2);
+>> +	u64 tmax = ktime_get_ns() + NSEC_PER_MSEC;
+>>  	unsigned long tref = jiffies - 5 * HZ;
+>>  	struct neighbour *n, *tmp;
+>>  	int shrunk = 0;
+>> +	int loop = 0;
+>>  
+>>  	NEIGH_CACHE_STAT_INC(tbl, forced_gc_runs);
+>>  
+>> @@ -278,11 +280,16 @@ static int neigh_forced_gc(struct neigh_table *tbl)
+>>  				shrunk++;
+>>  			if (shrunk >= max_clean)
+>>  				break;
+>> +			if (++loop == 16) {
+> 
+> Overall looks good.
+> Minor comments:
+> 	- loop count should probably be unsigned
+>         - the magic constant 16 should be a sysctl tuneable
 
-If you're going to play games like this, then you must mark the driver
-with .suppress_bind_attrs = true to remove the bind/unbind attributes
-in userspace that could wreak havoc with the above - because there is
-_nothing_ that guarantees that the memory you're returning from this
-function will remain intact. Basically, it's racy.
-
-Also, I'm not sure I approve of using the "select_pcs" suffix (I
-haven't spotted _where_ you use this, but returning EPROBE_DEFER to
-phylink's mac_select_pcs() method doesn't do anything to defer any
-probe, so that's an entirely misleading error code.
-
-If we are going to have device drivers for PCS, then we need to
-seriously think about how we look up PCS and return the phylink_pcs
-pointer - and also how we handle the PCS device going away. None of
-that should be coded into _any_ PCS driver.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+A tunable is needed here; the loop counter is just to keep the overhead
+of the ktime_get_ns call in check.
