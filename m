@@ -2,149 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E25806BFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1CC806C04
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377459AbjLFKdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:33:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
+        id S1377460AbjLFKew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:34:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377418AbjLFKdv (ORCPT
+        with ESMTP id S1377418AbjLFKeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:33:51 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C87212B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:33:57 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3333224c7b9so566216f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:33:57 -0800 (PST)
+        Wed, 6 Dec 2023 05:34:50 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E659D120
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:34:52 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-286f22c52c7so1043932a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:34:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701858836; x=1702463636; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vNWpu2Kl2fcT2EkQne/K9Yh75bFrD876NBGFXjjHEOg=;
-        b=lY1Xg/Ev7Cep1nYHjYiK9Gi6e4ExyoOnOq+R/RG9SWn/xLRp0vZ7ukzDs0SUHWYNhI
-         orm348jvSLqaY7x2345X+0L03k6zMDD8mViBxWN9NYZJgSWjIBYpggvHckmVAGU8cKEy
-         1XakOpMDcjYJ6KpmffM93eqpKCeujm4e+DTrRKUVvF+4iBoZPhJLD+V/sMI+yLh/cdJN
-         O3HCPGNkWDPXW/C0hBfIJt/ThX1OuQaQnaG9kMsjsKG8YudcEDagzaUHmrESf/SK+sou
-         YTMlR3FE1MFRaI/5nV/Szy0l2J5BFxpt8q95wrBFAXHLIFr3lDH05eTcVzmWVDkWwxip
-         cucA==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701858892; x=1702463692; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=N4Z8EdhyaZRP7j5Yaa3EE9onKgRz+Z4MfKus85WrUrY=;
+        b=w2M98COFigB8GmX+JPVFQJX+JoktYohW1NTF5APcxmW8HtWDwEcXI4/ejjjv8pnI4Q
+         OVTHe4PWqDGQ7hVUxo4NA04B1ACVRFWeVh5UIrgyGv6dJ+v2XTp9RGVYLsbZ0FgkCZaC
+         A1GPQSClac7cEK3YY2y2JSell9df5B/Ib+zKrtUWuK+3ySo/rs9TSF/BW95nYAQR70nO
+         2abijId72/rE/z0NWfV1quElPlS1QcJlcH41iuG1w0k+p3aqSv8tQCfL2TRx2+ACjREd
+         sUq4JvEsImU5lDsjcu6pg7fKVB0BuVVlzCpwX6J30twUB1pF0PYFmP/9qGpTVRNlUzE9
+         rdVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701858836; x=1702463636;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vNWpu2Kl2fcT2EkQne/K9Yh75bFrD876NBGFXjjHEOg=;
-        b=nsbhVwlfRGDDpERh47CrooHh9lDCQqXJv5lclwGp51bc8J5pF/xs0YDEQJIu+n8HC4
-         JwF+itQ+rpZRbIfbRbIL7sLXDS05izK+mqwSeqZq3CsSYPVqsEca11Xj5dTK/Q00Alps
-         Z+W1ATS+kPI9TNl6boBtNqNOZVunonKAigUuEkCCzS89ozOVTBHMLuYQIEtfikIeaC6G
-         g3HIxQG9zzTVoPtzwT8kioEwpG4Jd4OQJtJmJ61GbA3NLorlDIQUDaX8S9bKcd7fACnd
-         DU4yDmWJJIUUwGMIuIGZb8tozvBEh7H/0v7UbD+zEF6ZMn4ydP+Sz/09/LR69Uv7Jilc
-         VIQA==
-X-Gm-Message-State: AOJu0YxPtAB9ToI6C6l0n8d0KWD6un70GAiIisbgXLbcjdYqHDV6YKoE
-        XntzLwZcbaOaq9BZ+2h0/oqrfw==
-X-Google-Smtp-Source: AGHT+IFHTfiHp66DAws9nAd4BCQOEM5XE2vOuXTqoXBYrnMXfJG6nRGYhpFVphsYKk2ITaLUqrIXhQ==
-X-Received: by 2002:adf:e70e:0:b0:333:2fd2:68d9 with SMTP id c14-20020adfe70e000000b003332fd268d9mr394424wrm.108.1701858835916;
-        Wed, 06 Dec 2023 02:33:55 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id b14-20020adff90e000000b0033346fe9b9bsm8429100wrr.83.2023.12.06.02.33.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 02:33:55 -0800 (PST)
-Message-ID: <91188ba1-fd37-454f-beb1-0119bd24d3c8@linaro.org>
-Date:   Wed, 6 Dec 2023 11:33:53 +0100
+        d=1e100.net; s=20230601; t=1701858892; x=1702463692;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N4Z8EdhyaZRP7j5Yaa3EE9onKgRz+Z4MfKus85WrUrY=;
+        b=QagJLIZwBnHs9CwFTwzGI963M+Q3LX46/i9+XHJmIH3Lw0DnsnKYasXnMh+2Npl7JG
+         w0vqu4re9RoUmS+05k2gCyUXb6sjcWiP/66PUwbWEHjPG1Lcm7pMVuvMVgK3MzVN3MEv
+         gmFBMfAv3hISiGSYwm05lOiTcCCC7AkxmPlMAjFJjH9A2uXCET37vb53nqD263nRaLhX
+         P1JkCy8vWlajk/jYkS44yc/nBMvSlr5cVghROnvicgUnI9Gk9Ds9Lg0srx4b+BfOgxFf
+         jQWjd0HEwSg5eDd0HvgmqLjLwuQt0ynotIXcWq0xQPzmtOJgiOCh0nOMNefkFtoH4Gfy
+         Jk5g==
+X-Gm-Message-State: AOJu0YxEcqLAbgcmZNcrFw2rK2mMRBK7p5m4tFGZPM1AzKeP0FfzE9Ti
+        3pnNGDRLH1G3hJpMUZ4t+puMo9HlQI0dsUr4Sow=
+X-Google-Smtp-Source: AGHT+IG+r05DW+YG20wT0zMSUQjc8wthXzTPHXekABeetwsDcjq3ngyrW/IXXGOyDC8eXSbIvaBSMQ==
+X-Received: by 2002:a17:90b:1249:b0:286:6cc1:866d with SMTP id gx9-20020a17090b124900b002866cc1866dmr475002pjb.82.1701858892359;
+        Wed, 06 Dec 2023 02:34:52 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
+        by smtp.gmail.com with ESMTPSA id z14-20020a1709027e8e00b001cc1dff5b86sm10987117pla.244.2023.12.06.02.34.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 02:34:51 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1rApEv-004aa5-1z;
+        Wed, 06 Dec 2023 21:34:49 +1100
+Date:   Wed, 6 Dec 2023 21:34:49 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Baokun Li <libaokun1@huawei.com>, Jan Kara <jack@suse.cz>,
+        linux-mm@kvack.org, linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, willy@infradead.org,
+        akpm@linux-foundation.org, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
+ DIO write race with buffered read
+Message-ID: <ZXBOSRhm11DtGO+K@dread.disaster.area>
+References: <20231202091432.8349-1-libaokun1@huawei.com>
+ <20231204121120.mpxntey47rluhcfi@quack3>
+ <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
+ <ZXAyV/rlfvBBuDL1@dread.disaster.area>
+ <ZXA4swgzsHbkm/uB@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v5 11/11] arm64: dts: fsd: Add MFC related DT enteries
-Content-Language: en-US
-To:     Aakarsh Jain <aakarsh.jain@samsung.com>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     m.szyprowski@samsung.com, andrzej.hajda@intel.com,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        conor+dt@kernel.org, linux-samsung-soc@vger.kernel.org,
-        andi@etezian.org, gost.dev@samsung.com, alim.akhtar@samsung.com,
-        aswani.reddy@samsung.com, pankaj.dubey@samsung.com,
-        ajaykumar.rs@samsung.com, linux-fsd@tesla.com,
-        Smitha T Murthy <smithatmurthy@gmail.com>
-References: <20231206063045.97234-1-aakarsh.jain@samsung.com>
- <CGME20231206063140epcas5p1ba86525117f4d9ec9172ae7cb18b7420@epcas5p1.samsung.com>
- <20231206063045.97234-12-aakarsh.jain@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231206063045.97234-12-aakarsh.jain@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXA4swgzsHbkm/uB@infradead.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 07:30, Aakarsh Jain wrote:
-> Add MFC DT node and reserve memory node for MFC usage.
+On Wed, Dec 06, 2023 at 01:02:43AM -0800, Christoph Hellwig wrote:
+> On Wed, Dec 06, 2023 at 07:35:35PM +1100, Dave Chinner wrote:
+> > Mixing overlapping buffered read with direct writes - especially partial block
+> > extending DIO writes - is a recipe for data corruption. It's not a
+> > matter of if, it's a matter of when.
+> > 
+> > Fundamentally, when you have overlapping write IO involving DIO, the
+> > result of the overlapping IOs is undefined. One cannot control
+> > submission order, the order that the overlapping IO hit the
+> > media, or completion ordering that might clear flags like unwritten
+> > extents. The only guarantee that we give in this case is that we
+> > won't expose stale data from the disk to the user read.
 > 
-> Cc: linux-fsd@tesla.com
-> Signed-off-by: Smitha T Murthy <smithatmurthy@gmail.com>
-> Signed-off-by: Aakarsh Jain <aakarsh.jain@samsung.com>
-> ---
->  arch/arm64/boot/dts/tesla/fsd.dtsi | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
+> Btw, one thing we could do to kill these races forever is to track if
+> there are any buffered openers for an inode and just fall back to
+> buffered I/O for that case.  With that and and inode_dio_wait for
+> when opening for buffered I/O we'd avoid the races an various crazy
+> workarounds entirely.
 
-This should be merged via Samsung SoC, so I will take it once bindings
-get accepted.
+That's basically what Solaris did 20-25 years ago. The inode held a
+flag that indicated what IO was being done, and if the "buffered"
+flag was set (either through mmap() based access or buffered
+read/write syscalls) then direct IO would do also do buffered IO
+until the flag was cleared and the cache cleaned and invalidated.
 
-If there is going to be resend of entire patchset, please don't include
-this patch in new resend. If this patch needs resending, send it
-separately and provide lore link to the bindings.
+That had .... problems.
 
-Best regards,
-Krzysztof
+Largely they were performance problems - unpredictable IO latency
+and CPU overhead for IO meant applications would randomly miss SLAs.
+The application would see IO suddenly lose all concurrency, go real
+slow and/or burn lots more CPU when the inode switched to buffered
+mode.
 
+I'm not sure that's a particularly viable model given the raw IO
+throughput even cheap modern SSDs largely exceeds the capability of
+buffered IO through the page cache. The differences in concurrency,
+latency and throughput between buffered and DIO modes will be even
+more stark itoday than they were 20 years ago....
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
