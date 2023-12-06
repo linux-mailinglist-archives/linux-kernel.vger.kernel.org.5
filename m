@@ -2,76 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B2A806F5D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED81A806F62
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378259AbjLFMCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 07:02:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
+        id S1378282AbjLFMCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 07:02:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377841AbjLFMCF (ORCPT
+        with ESMTP id S1378270AbjLFMCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 07:02:05 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E03181
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:02:11 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40b5155e154so74052605e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 04:02:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701864130; x=1702468930; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C9luEiqd3rNZRXjehlbFdnQ2e1wzzmxPWamwzOSoC4I=;
-        b=jYzdGNcdyUC1zTZyUjENMm1D9CEv1oooXRegryqyxYLT6v2+rFO/HoiYPaQF8kWBUc
-         9nSCZN2cqkI17HsYsCJUGiVKvZ46sbXo+9oNhgXsJ5y8LVUiUcPqVXnOHlDSdvB+o/SY
-         SP2gWuNLiQ0ZEslR9b+0bOYT38N9bVD9lBakC0Cu2UZzxUwMzuL5h3EUd+p4ujpRASOv
-         e8s1ZKIIlpNOEhyIONU9dHG4GkAWoJbwRve4zawfOsm/N95U7BxCuEzMpFzZjNErwm4W
-         eo1EgMxKGfC5kqdXAUfSxSWlG//0Pl9gGC/+9Suksi0W6vNWVykGGo7kwiH1gFlM55e5
-         0z1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701864130; x=1702468930;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C9luEiqd3rNZRXjehlbFdnQ2e1wzzmxPWamwzOSoC4I=;
-        b=PG6PX4o2jNgbp5rCEeDgjfh3K4oyMkFsLYBihdBmViHRQT8+9nSDbNzaCeNoaV/VaJ
-         1iZ/UEuxmzvn+Yann0dRbC3AiVb64wB5QiAIyyByUz5a93RKqu35P1ItTjPBAoRFNA/7
-         VAl2TMkJVBUhk4uYk61VrMqLOVMyNjcs//9Z2IIw/PZcchdHVopiZddWKXiMIOkmojw2
-         zdnBxJNOmtHEa454rzcxgAUZIesoelNDOkTR8TUxnRL2/KsKuHQ+TPPdG+Pn4I6l84r2
-         ddZnGXb4yqcP1dFonqOZkk8ZuLyFvLPolr5CUs+UnnQQ5BHZlzgDPH7f/Fz85uFjRYmE
-         ri8w==
-X-Gm-Message-State: AOJu0YwgimUuWPfzEejpajt90sIzHFPik6GGX9wAcjkkgfWM5qIgd3Ok
-        6aTRGUBZBGWVqkiaEbdJ+4cpMg==
-X-Google-Smtp-Source: AGHT+IFJokEpInd+DiAKxLDKJAGHst4aJ50KC/hLVyMjr37BE7LjVcnWh8PkujsMGpwy/wk3eMm1WA==
-X-Received: by 2002:a7b:cd0d:0:b0:40b:5e4a:4072 with SMTP id f13-20020a7bcd0d000000b0040b5e4a4072mr523452wmj.146.1701864129773;
-        Wed, 06 Dec 2023 04:02:09 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id w17-20020a05600c475100b0040b45356b72sm25543935wmo.33.2023.12.06.04.02.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 04:02:09 -0800 (PST)
-Date:   Wed, 6 Dec 2023 15:02:05 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Vinod Polimera <quic_vpolimer@quicinc.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] drm/msm/dp: Fix platform_get_irq() check
-Message-ID: <c12bb69b-d676-4345-9712-48aab48f2b48@moroto.mountain>
+        Wed, 6 Dec 2023 07:02:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFF81A5
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:02:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CB5CC433C7;
+        Wed,  6 Dec 2023 12:02:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701864174;
+        bh=BiR1najpAX293kKEaaKpGpEKLDwjfEK+NqznOMhkJAY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iSWB1cH6k4OUEUk7A4FwcmEJhcyYVYQbwSOFpocRmdOMoffcD4DIWYZH872z09k44
+         /8sknIf9xxTRdZX+TAB+WuhaRAcoNAGycn2b7WpNU3wIxcQx1f8X/6yANsgQGUu4sO
+         1tJU1kaz//IjG0DT+0gSkB5+g3CVaAsRPFE8xyllM9Wx4I8evrBvU/u/KXzA1CJ8OP
+         JNeE/Z5IrGl8Fug6swfSUPGhAv3SzqUjEvcYM225YUpaIj+CTqftJguV4zqugmZo1B
+         o5f1Yg8TmiOBOqTrOF1azKCvlec4DFUUF5nGfomO/QIwrnUgkfTbYdb6gyHGfGE1vF
+         ez3mX3nFcm5IA==
+Date:   Wed, 6 Dec 2023 17:32:46 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_cang@quicinc.com, Manish Pandey <quic_mapa@quicinc.com>
+Subject: Re: [PATCH V2] scsi: ufs: core: store min and max clk freq from OPP
+ table
+Message-ID: <20231206120246.GB12802@thinkpad>
+References: <20231206114659.13009-1-quic_nitirawa@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231206114659.13009-1-quic_nitirawa@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,31 +54,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The platform_get_irq() function returns negative error codes.  It never
-returns zero.  Fix the check accordingly.
+On Wed, Dec 06, 2023 at 05:16:59PM +0530, Nitin Rawat wrote:
+> OPP support added by commit 72208ebe181e ("scsi: ufs: core: Add support
+> for parsing OPP") doesn't update the min_freq and max_freq of each clocks
+> in 'struct ufs_clk_info'.
+> 
+> But these values are used by the vendor host drivers internally for
+> controller configuration. When the OPP support is enabled in devicetree,
+> these values will be 0, causing boot issues on the respective platforms.
+> 
+> So add support to parse the min_freq and max_freq of all clocks while
+> parsing the OPP table.
+> 
+> Fixes: 72208ebe181e ("scsi: ufs: core: Add support for parsing OPP")
+> Co-developed-by: Manish Pandey <quic_mapa@quicinc.com>
+> Signed-off-by: Manish Pandey <quic_mapa@quicinc.com>
+> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
 
-Fixes: 82c2a5751227 ("drm/msm/dp: tie dp_display_irq_handler() with dp driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/gpu/drm/msm/dp/dp_display.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 61b7103498a7..d80cb3d14c6b 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -1166,9 +1166,9 @@ static int dp_display_request_irq(struct dp_display_private *dp)
- 	struct platform_device *pdev = dp->dp_display.pdev;
- 
- 	dp->irq = platform_get_irq(pdev, 0);
--	if (!dp->irq) {
-+	if (dp->irq < 0) {
- 		DRM_ERROR("failed to get irq\n");
--		return -EINVAL;
-+		return dp->irq;
- 	}
- 
- 	rc = devm_request_irq(&pdev->dev, dp->irq, dp_display_irq_handler,
+Martin, please queue this patch for 6.7-rcS.
+
+- Mani
+
+> ---
+> Changes from v1:
+> As per Manivannan's comment:
+> - Updated commmit description
+> - Sort include file alphabetically
+> - Added missing dev_pm_opp_put
+> - updated function name and documention
+> - removed ret variable
+> ---
+>  drivers/ufs/host/ufshcd-pltfrm.c | 53 ++++++++++++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+> 
+> diff --git a/drivers/ufs/host/ufshcd-pltfrm.c b/drivers/ufs/host/ufshcd-pltfrm.c
+> index da2558e274b4..409efa0db8fa 100644
+> --- a/drivers/ufs/host/ufshcd-pltfrm.c
+> +++ b/drivers/ufs/host/ufshcd-pltfrm.c
+> @@ -8,6 +8,7 @@
+>   *	Vinayak Holikatti <h.vinayak@samsung.com>
+>   */
+> 
+> +#include <linux/clk.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_opp.h>
+> @@ -213,6 +214,54 @@ static void ufshcd_init_lanes_per_dir(struct ufs_hba *hba)
+>  	}
+>  }
+> 
+> +/**
+> + * ufshcd_parse_clock_min_max_freq  - Parse MIN and MAX clocks freq
+> + * @hba: per adapter instance
+> + *
+> + * This function parses MIN and MAX frequencies of all clocks required
+> + * by the vendor host drivers.
+> + *
+> + * Returns 0 for success and non-zero for failure
+> + */
+> +static int ufshcd_parse_clock_min_max_freq(struct ufs_hba *hba)
+> +{
+> +	struct list_head *head = &hba->clk_list_head;
+> +	struct ufs_clk_info *clki;
+> +	struct dev_pm_opp *opp;
+> +	unsigned long freq;
+> +	u8 idx = 0;
+> +
+> +	list_for_each_entry(clki, head, list) {
+> +		if (!clki->name)
+> +			continue;
+> +
+> +		clki->clk = devm_clk_get(hba->dev, clki->name);
+> +		if (!IS_ERR(clki->clk)) {
+> +			/* Find Max Freq */
+> +			freq = ULONG_MAX;
+> +			opp = dev_pm_opp_find_freq_floor_indexed(hba->dev, &freq, idx);
+> +			if (IS_ERR(opp)) {
+> +				dev_err(hba->dev, "Failed to find OPP for MAX frequency\n");
+> +				return PTR_ERR(opp);
+> +			}
+> +			clki->max_freq = dev_pm_opp_get_freq_indexed(opp, idx);
+> +			dev_pm_opp_put(opp);
+> +
+> +			/* Find Min Freq */
+> +			freq = 0;
+> +			opp = dev_pm_opp_find_freq_ceil_indexed(hba->dev, &freq, idx++);
+> +			if (IS_ERR(opp)) {
+> +				dev_err(hba->dev, "Failed to find OPP for MIN frequency\n");
+> +				return PTR_ERR(opp);
+> +			}
+> +			clki->min_freq = dev_pm_opp_get_freq_indexed(opp, idx);
+> +			dev_pm_opp_put(opp);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int ufshcd_parse_operating_points(struct ufs_hba *hba)
+>  {
+>  	struct device *dev = hba->dev;
+> @@ -279,6 +328,10 @@ static int ufshcd_parse_operating_points(struct ufs_hba *hba)
+>  		return ret;
+>  	}
+> 
+> +	ret = ufshcd_parse_clock_min_max_freq(hba);
+> +	if (ret)
+> +		return ret;
+> +
+>  	hba->use_pm_opp = true;
+> 
+>  	return 0;
+> --
+> 2.17.1
+> 
+
 -- 
-2.42.0
-
+மணிவண்ணன் சதாசிவம்
