@@ -2,114 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA538806DE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:28:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE22806DEB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377516AbjLFL2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 06:28:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49982 "EHLO
+        id S1377583AbjLFL2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:28:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377437AbjLFL2A (ORCPT
+        with ESMTP id S1377437AbjLFL2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:28:00 -0500
-Received: from mail-m49204.qiye.163.com (mail-m49204.qiye.163.com [45.254.49.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F5ED3;
-        Wed,  6 Dec 2023 03:28:04 -0800 (PST)
-DKIM-Signature: a=rsa-sha256;
-        b=CGNhd4sjVn5tsHiRRxZ+t3cUlpsvFLcZiVcSSq+FAgX0kIHfaDkoFGroR1A9sALxte2BSIjPb01MqW/ghoKP/q2t2kg5dVxhU4wvHT3dsdr/j0//cydNaZzdKQEgrgL3zl7HqGgdjUL8YLlSZAUurhwuceBCx0aVcGSIw1MTPO4=;
-        c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-        bh=mIp43tx+cz3waI2qLXLmWvwYJEbJny5dp/W8y+Cp4Dk=;
-        h=date:mime-version:subject:message-id:from;
-Received: from [172.16.12.141] (unknown [58.22.7.114])
-        by mail-m12779.qiye.163.com (Hmail) with ESMTPA id B6404780300;
-        Wed,  6 Dec 2023 19:27:31 +0800 (CST)
-Message-ID: <8140e2f4-2081-4492-af17-ce742eef4404@rock-chips.com>
-Date:   Wed, 6 Dec 2023 19:27:31 +0800
+        Wed, 6 Dec 2023 06:28:46 -0500
+Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571CCD3
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:28:51 -0800 (PST)
+Received: from eig-obgw-5004a.ext.cloudfilter.net ([10.0.29.221])
+        by cmsmtp with ESMTPS
+        id Apdxrn32ajtZ3Aq5KromKh; Wed, 06 Dec 2023 11:28:58 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTPS
+        id Aq5CrJdqd11XZAq5Crb2zA; Wed, 06 Dec 2023 11:28:50 +0000
+X-Authority-Analysis: v=2.4 cv=Z+v/oVdA c=1 sm=1 tr=0 ts=65705af2
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=e2cXIFwxEfEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=ATLCLyqtdEkl7mCwK7IA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=U/JIEQOpHf3madKhHzNVrMRcFoUG47rYN5kv0W43qwM=; b=EWr1H0c1+MlHJQh5gHreEeyw0v
+        gv41uzorxGOGzuKsY/6S4JMxhkEmqh/Mv8LNEPFaKrkZvtiM2k1DZxj5hcmFHHomPMDJI3JzB6S5z
+        i2+P2kKhOnpyCx2nSwOL8vJYXKEiQyj5aoetKYDg4FMzhQBGJ/VUFmSQ8o4fmaL574EBef6dzCc0u
+        Y4Mec7Ew+LnNwJaDa6Xv60porjsM5COC5VAZbSyf5HVZOQHitIUUw/JeSnBidx+yqmdf4GCRVFAZM
+        /QonEvyvjW2d078cdik1E3epIMZS39ofEry9siI5b5GDnGN7O0bA2aizyGvpTPsX8foVxATH3v3FO
+        Y1UaixBA==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:58600 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.2)
+        (envelope-from <re@w6rz.net>)
+        id 1rAq59-001p2Q-2S;
+        Wed, 06 Dec 2023 04:28:47 -0700
+Subject: Re: [PATCH 5.15 00/64] 5.15.142-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com
+References: <20231205183238.954685317@linuxfoundation.org>
+In-Reply-To: <20231205183238.954685317@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <b06d08f8-7c86-1ada-6708-8fa5888837b6@w6rz.net>
+Date:   Wed, 6 Dec 2023 03:28:45 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 12/14] drm/rockchip: vop2: Add debugfs support
-Content-Language: en-US
-To:     Sascha Hauer <sha@pengutronix.de>
-Cc:     Andy Yan <andyshrk@163.com>, heiko@sntech.de, hjc@rock-chips.com,
-        dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
-        kever.yang@rock-chips.com, chris.obbard@collabora.com
-References: <20231130122001.12474-1-andyshrk@163.com>
- <20231130122449.13432-1-andyshrk@163.com>
- <20231205091541.GV1057032@pengutronix.de>
- <593f1092-3f5b-42ab-bc6e-dbd0fc8fb8ba@rock-chips.com>
- <20231206112053.GA1318922@pengutronix.de>
-From:   Andy Yan <andy.yan@rock-chips.com>
-In-Reply-To: <20231206112053.GA1318922@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQ0hOSVZPGEgdHUNMQkkfHxhVEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSU5JVUpLS1VKQl
-        kG
-X-HM-Tid: 0a8c3ee210d1b24fkuuub6404780300
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MTY6Cxw5ODwrElEyPQ8yPBES
-        KiMwCjVVSlVKTEtKQ01JS05JTk9OVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
-        WUFZTkNVSUlVTFVKSk9ZV1kIAVlBSEpMTjcG
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rAq59-001p2Q-2S
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:58600
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org:  HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfDswmcfDayWKrGQEsE2lfLiIrf/liqulFoDj6Z9WfbT92Lpm/OEvVEn7BiYPe4vDnGZB3aJELHwv42Z3LtnuKvpgmZIt7QgHqpoEkFiRqXUIwDC1Dfcj
+ iMzO/t4+BKv+J0DXg/ELhVG1IrI00TZvEjqUXMtrZWH18M1vkQy0A2ABlyyvHl28/j0XxDpiAuV3InnH20ZD1L6Lcs34dD+ZUec=
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sascha:
+On 12/5/23 11:22 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.142 release.
+> There are 64 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.142-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 12/6/23 19:20, Sascha Hauer wrote:
-> On Wed, Dec 06, 2023 at 06:20:58PM +0800, Andy Yan wrote:
->> Hi Sascha:
->>
->>>> +	unsigned int n = vop2->data->regs_dump_size;
->>>
->>> 'n' is used only once, it might be clearer just to use the value where
->>> needed and drop the extra variable.
->>
->> Okay, will do.
->>>
->>>> +	unsigned int i;
->>>> +
->>>> +	drm_modeset_lock_all(drm_dev);
->>>> +
->>>> +	if (vop2->enable_count) {
->>>> +		for (i = 0; i < n; i++) {
->>>> +			dump = &vop2->data->regs_dump[i];
->>>> +			vop2_regs_print(vop2, s, dump, false);
->>>> +		}
->>>> +	} else {
->>>> +		seq_printf(s, "VOP disabled:\n");
->>>
->>> There's nothing following after the ':', right? Then this should be
->>> "VOP: disabled\n" or without the colon at all.
->>
->> the colon will be droped in next versin.
->>
->>>
->>>> +	}
->>>> +	drm_modeset_unlock_all(drm_dev);
->>>
->>> This code is repeated in vop2_active_regs_show() below. Maybe factor
->>> this out to a common function?
->>>
->>
->>
->> Do you mean all the code between drm_modeset_lock_all and drm_modeset_unlock_all ?
-> 
-> Including drm_modeset_lock_all() and drm_modeset_unlock_all(), yes.
-> 
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-Okay, will try in v4.
+Tested-by: Ron Economos <re@w6rz.net>
 
-
-> Sascha
-> 
