@@ -2,136 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDF8807875
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F258D807879
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442777AbjLFTRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 14:17:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
+        id S1442779AbjLFTSb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 14:18:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379257AbjLFTRf (ORCPT
+        with ESMTP id S1379257AbjLFTS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:17:35 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2067.outbound.protection.outlook.com [40.107.93.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFDE1D46;
-        Wed,  6 Dec 2023 11:17:41 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lhEEBnTBI+MBN0cKP7shXlPL6ppWr/QEZkPMqZRhwlrCSd4rFRlwUOlKstbFPgIGMOk66Ux7vguOjBKeD/Sv50VPqhVKL+vQRmAF38XuuteyWc0Xyv0zOU0UuyMNQWYDsSWGqCBX6I5IAi6mUlShDKU4XP5CVQ+Gx7nFMwvla4McZegomWi6JPAn3ImAUWBVSmJLAiNEhwGflLetVzfkFD3GJtleFgKxx0QrURvs8CBNK/Onso48yIKSxRkM0r03IeTxF9YDpOcXS/TuCgb9i1MNilS2f6tmOr2FlTPimkAMsQW8hj7Ajg2zWEXqdGdOxldxfP+nnMY9kmUa60CDEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZPMdyZalGGvSjjVcvOYautshIl643f1vqkav+STgSF0=;
- b=N78nRThDdwf1zh83TEQ+3X95Z+pZHFsWNtzDJ8J2bjBbxzqjhb8xD7DRBCsNU6puoL6pnD32z7/Covnei0SmLKh8LqjAOiNpNHyHwGgWez+VC8aK0JA8ekD0jMIfb++ZsGMamRfXO7Xw4hphtl5lFLhIwyrVBDrIMV6GLuOY8yhGxTykbXhK7TsvQ4aNHzBo/BAGhepkosMPCFqmmObIgRPsizEPO0c6lNWktQzm6CQUZ+V7HhJYB960HirztM/46fQtwFMlNjs5DQ41EuzJDNdf5l1/QHCgZFAqEnZqUC9HnoWpeP7dy7lSCg+8NSdBw8yruAGIf/rfZ9EmWE+Grw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZPMdyZalGGvSjjVcvOYautshIl643f1vqkav+STgSF0=;
- b=422xvqN/9N48dnpBIVPad9LYp0OZtHPoKtM58fq1ZLuWUg1XjRQkSCx1VCqkXEHhsSvrvXjygM/qnxscaZ/sV7FxxaA2IMN1MiIQF+7wzszIQ9AGxlK/7NC4H6y3kJNx0R2NdRFH73QycvyweqraDg6ZtODuvPXB49sT5Nyk0Bg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
- by DM3PR12MB9328.namprd12.prod.outlook.com (2603:10b6:0:44::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
- 2023 19:17:39 +0000
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::1549:8c93:8585:ca1b]) by MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::1549:8c93:8585:ca1b%5]) with mapi id 15.20.7068.025; Wed, 6 Dec 2023
- 19:17:39 +0000
-Message-ID: <ca471e43-b7ef-40f6-b0b3-3c79aa3a0d61@amd.com>
-Date:   Wed, 6 Dec 2023 13:17:35 -0600
-User-Agent: Mozilla Thunderbird
-Reply-To: babu.moger@amd.com
-Subject: Re: [PATCH 02/15] x86/resctrl: Remove hard-coded memory bandwidth
- event configuration
-Content-Language: en-US
-To:     Reinette Chatre <reinette.chatre@intel.com>, corbet@lwn.net,
-        fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com
-Cc:     x86@kernel.org, hpa@zytor.com, paulmck@kernel.org,
-        rdunlap@infradead.org, tj@kernel.org, peterz@infradead.org,
-        seanjc@google.com, kim.phillips@amd.com, jmattson@google.com,
-        ilpo.jarvinen@linux.intel.com, jithu.joseph@intel.com,
-        kan.liang@linux.intel.com, nikunj@amd.com,
-        daniel.sneddon@linux.intel.com, pbonzini@redhat.com,
-        rick.p.edgecombe@intel.com, rppt@kernel.org,
-        maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, eranian@google.com,
-        peternewman@google.com, dhagiani@amd.com
-References: <20231201005720.235639-1-babu.moger@amd.com>
- <20231201005720.235639-3-babu.moger@amd.com>
- <47f870e0-ad1a-4a4d-9d9e-4c05bf431858@intel.com>
- <22add4c6-332c-45e4-ae0c-f287d6bff341@amd.com>
- <19e3fd3d-a2ec-4c8e-aa47-44f8f41b569b@intel.com>
-From:   "Moger, Babu" <babu.moger@amd.com>
-In-Reply-To: <19e3fd3d-a2ec-4c8e-aa47-44f8f41b569b@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7PR18CA0023.namprd18.prod.outlook.com
- (2603:10b6:806:f3::16) To MW3PR12MB4553.namprd12.prod.outlook.com
- (2603:10b6:303:2c::19)
+        Wed, 6 Dec 2023 14:18:29 -0500
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2DDBA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 11:18:35 -0800 (PST)
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1fb1f23d1bcso282115fac.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 11:18:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701890314; x=1702495114;
+        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
+         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GOnpzdAi7bAjd5uToaMiD9e+/LWHeatJNb8++ulqA7E=;
+        b=j5oQ8beM+L5i/73WXnzPtYXRTj/4LrFdTjZEjEOi7p88HPaj0cEc3SfuTb+82f2vJs
+         36LGYHvI+1793qJFTDFTCZruHEom6NED3SCupNDBgJMOnTY0Q4R1wXxywWTrpTHPFwJY
+         JbegZgS61KuPS5QoYg/F7f3pfIuKQ8qVlpEZ/QlhJf+Uwi0KG47P6/LatRSt0ATT18Y7
+         EU7Kqz37xmtKtEaZYwFK1FQl1x2lxDS+lPxqigHvguWUxmJn1dJKYcVWVdxzVCUUJpq+
+         Rr0XXzYmUrGNakAbUxGM+FQ84rOMaYKA0QAho/JRJKxCsaSa8xUeDdP9823Ma4BkbONz
+         Le1Q==
+X-Gm-Message-State: AOJu0YxAF3UpwrzcuCKGPeDB2H//WFtGs5r7LcuRo8/eb7FcCwTCu/8F
+        mhst+0srlBk0ubI/DzIxeCxFL3Lr5FkffkLomkEyekrfSyBcfJg=
+X-Google-Smtp-Source: AGHT+IGnvQzjUsWXubOm0sD1FLHF6bhm5RVoQFeaPfD02Cbaru9LbmAlwNj3rfAI6SZiBTEmR+Ox8yFHIKz0xaU3O5S72ZsAsVij
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|DM3PR12MB9328:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1557bab3-51b0-4918-6e09-08dbf69002e3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5PyyyMqsLpT8uuogtxDdFk4EWGBjEA8o2SCeszmEXMZjNTZX12uoIl+VyKjB3WZt2AMUtbcOHBeLU9JqA/AUMtosVt0NG/y1RY+hqa5/b34SEQFLjsGb7cnKZLPcoLyhifE0FAIsi4hLK6pKG3Gt5K6HgV/uJKWAC328sbiEyqDBnffQ9X2nK3xhBtMkZoNYd7XUPD50Ij7ZfgRuWc3G6DOCUdulFDPWFM6elsOQ9fszOrvtJpbFKJEzpPEoGFnIzAkC3J1lI+bdUGGSrtBVOzPAlwawNkC7ckrp6ze7yAFdCE/dNwsdDw3mhRizdGj2El3dBNKKsuPDM4zUzUqwIKdi6ahCfROtX5hWm5X0vl2HGA5LgHz8TmE0vu3iPTxylHcKQeAqK98GzlnzZAdmaoSNv8DlMpJzEWvUcirmpxWkwVmrTnCu5WNQGbuxqRAU2wLHtByPiObnJlCoUw4xIw/OB1oruo28/mqq3FpkId+kldeoRP1mHzr5BS+W9UBFw/4j4Mu+HLZqwBNgG+CcnQOM4fqdqRZ2MwS0OX6wZZ0TdcCD1Z/o0jM9NPhY2j/bZ8l3GjoewXebWLr64zDgpUbOxqTEy9e53FwFz2rycH++h9gzAIdcU0AzJbORrcXFO21KxdNsP8Q+7ionHfpL2Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(346002)(136003)(376002)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(31686004)(478600001)(6506007)(6512007)(53546011)(8936002)(2616005)(6486002)(26005)(6666004)(4326008)(66556008)(66476007)(66946007)(8676002)(316002)(3450700001)(38100700002)(7416002)(31696002)(36756003)(2906002)(5660300002)(41300700001)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YksxRFM5b2tqQ1MyQzIyeUVqYlRFVzNHNmZmd2luN3BHNTA0QS9hUlBCekdH?=
- =?utf-8?B?Q3owTUdMS0FoUGpBNSt1bDEyWXptTHJra2xzUnlWWVRpb2x2clRRWlhJSUVH?=
- =?utf-8?B?dzhhVmNXK0J0SXlNaENLRVUzNjJzK0o1UVhxTzd5ZzJPalpFc05zcVpSbEhK?=
- =?utf-8?B?VnkxMVhaWlU0dC9qMG5yMlc4Z3dDTk1QZ3orSUlURGJhaGkxaEhKbDRZSXkx?=
- =?utf-8?B?U0hTVEpNZkVlN3kwQW1QdDR5aDRnbmxuZWlVL2VJU2FySUo1N0dPSE1xdVFE?=
- =?utf-8?B?TkRPQlVXcUl1TFFYN05SMTBXZWFUVHpRdjZJM0tRVm0rSE9tRXRUM1cyUDFO?=
- =?utf-8?B?L2lXelJaRlRRNmV2T2I2emd1Y3NhVlpsam5oUkpJdDhsZWdBQkoxVDFuNTVV?=
- =?utf-8?B?bm5zV25OVzltVU5uWk5VUmNGZHhDNXA4Z3YyWU03V0VVOWdxQ3oxS3ZIWDQv?=
- =?utf-8?B?KzdTL1F3L1dodDROYm5lUmwyZW85b1NhVDB5SzZ6T3ppVGpNU1dXa3o4dnlO?=
- =?utf-8?B?WEducG5TYTBER2xLTFkwTkNwVDloc00yWXpxd2xIVnFjc2NyNktnZ1MzWUsv?=
- =?utf-8?B?N2tHdklDK0dBcVo0VVF5OUhDYWIzSUJlUzVmM2xScHl4b1EyN1Yvd0hOdzds?=
- =?utf-8?B?RHliRUU3OFBnbVpWSXJaT2RaVXpQN0hmcktaWWxTNXlMZm0venphV1Brd0pE?=
- =?utf-8?B?b0lNYXEzWldQSDRVRiszYW9qYThCakVpUW1rckxER2xPbmY2cytlVDE4cTBq?=
- =?utf-8?B?dWVyeVFFZjBXbVdkcTQxYVVTcGNqUkJkU0haRlVpUHZaaW9TUHpjL2FjaTVz?=
- =?utf-8?B?TVVyRW00YkZQUElOZTA0NUlCUXplaFBRV0p3bkY3RVNsVi9vZndmZHR2R1Av?=
- =?utf-8?B?ekN6UVhYbW9RSld5SmpSNzRCTkxTR1pMaWY1UlJnS2MyaUdBS095ZFozZ09k?=
- =?utf-8?B?K1doZmVKRDF3K1pHQ1EwQlNJbFBSVU1zcldKZTVZVEFHSXgxaFpkeGFpcEs3?=
- =?utf-8?B?cTI2b0NWSjRvSmpYYlVQbHVpUFdLVHEwUjgxOHNabTNTVjdxK2lOODRzcCts?=
- =?utf-8?B?eVhoMHJVd3p3K1F3d0p4RnZqZEhlakVsbmJpSWhUVUZPZi9KWjFNQjRyeFlN?=
- =?utf-8?B?ck1lTFVsRHU4eTNmL3VhZExKT0JyaXhlOXNzdW5JTTJXeEJWcHdwampUb1Ba?=
- =?utf-8?B?ZVBpeWpuN1VUcGQ1RWlweVU4cytDS1MxT3drdEFIMi92eUp3MkZxNjFVY1JC?=
- =?utf-8?B?SDMzQjJ6YkI4OUFQbURKM1dwRnNwVFNOUlZBWjZFUTM5RCtPQi9PbzlGbm9p?=
- =?utf-8?B?RW41OE9nYVJMVTdYZ3ZwK1VpUGRlallRYXZwMjU1QytYRTlBbEVLWXhYaGZn?=
- =?utf-8?B?ZFdPL2FyZDFYc2NzZkVoSHFHbFQ2MGdCa1pBMExaOXUrZ1Y5diszVzBVREFa?=
- =?utf-8?B?bmM1am1QbjFKWjUvMWxhTzN0QU1uK3ZNbEt5aHRhbHlSeDduRHVHSStFNXhG?=
- =?utf-8?B?Nkl6bFRlWnZjaFB5SEZtNHArNDAzRnBabmRyb0xEeEYwa1hIYXBIT1hCWVFX?=
- =?utf-8?B?dGRRc3A2SXdPTmppR0U2a3ozU2lpS09BN1ZFYXJtOW8yZ2ZibTlwN0dlM3ht?=
- =?utf-8?B?QkNYR2dPUVF5YXFaeXZpV1dvZjArM3FtODZjTURoeVBKWG9aeHV0Q1Z2SG40?=
- =?utf-8?B?U3FRUWhjMmJDNCtYYzRNcExqOVZWWk1SbWtrNFJVdWJDL2RMZlJXTjdPTlZt?=
- =?utf-8?B?U3lrckFZZFFzdGZ6OUVNUytyOG81N2xRa2huUzZLVW1nSUZiZlhjNkk3OEN4?=
- =?utf-8?B?dm1wcDVCYWthQ0pyeENEa1NNc2x6Um8rcG9TNWZGRkFqWGFHd215QWEralhV?=
- =?utf-8?B?Z1krUjB3YkJONXA1ckhUOFZ0alcwWFpTU1JJOWl5TVZIR29CNm1jTkR2Rkxv?=
- =?utf-8?B?LytrcGcvandBM3Zia09FVHRHTkROaXpzSEZLNWZHaDYrUnQ5czdNV0Mvd2JK?=
- =?utf-8?B?RGpQak5NeTdlYk5oRkpVQTY3dHpQRE1SV09PZ3BPTkVqYTNLQ2lyZ1djNmlo?=
- =?utf-8?B?RGZMVUZZbldLeEJvNlF2Wkc2by9ZT2FQUlY0a3JqRXRVcnp1V1M3V1VsWE5Y?=
- =?utf-8?Q?CrKE=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1557bab3-51b0-4918-6e09-08dbf69002e3
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 19:17:38.9840
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Yw81akBGrTcsarttQaffEVfFKvFhuzMQzP1GekwOC8F9t8Eux7Nf1ZuZ7B2RGn5Y
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR12MB9328
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+X-Received: by 2002:a05:6871:3402:b0:1fb:2494:5e8e with SMTP id
+ nh2-20020a056871340200b001fb24945e8emr1531603oac.8.1701890314612; Wed, 06 Dec
+ 2023 11:18:34 -0800 (PST)
+Date:   Wed, 06 Dec 2023 11:18:34 -0800
+In-Reply-To: <000000000000fdfe4b060b91993f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a63408060bdc371e@google.com>
+Subject: Re: [syzbot] Re: [syzbot] [fs?] general protection fault in pagemap_scan_hugetlb_entry
+From:   syzbot <syzbot+6e2ccedb96d1174e6a5f@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -139,71 +56,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
 
-On 12/6/23 12:32, Reinette Chatre wrote:
-> Hi Babu,
-> 
-> On 12/6/2023 9:17 AM, Moger, Babu wrote:
->> On 12/5/23 17:21, Reinette Chatre wrote:
->>> On 11/30/2023 4:57 PM, Babu Moger wrote:
-> 
-> ...
-> 
->>> Comparing with supported bits would be an additional check, but what does
->>> that imply? Would it be possible for hardware to have a bit set that is
->>> not supported? Would that mean it is actually supported or a hardware bug?
->>
->> No. Hardware supports all the bits reported here. Like i said before
->> wanted to remove the hard-coded value.
-> 
-> The size of the field in the register is different information from what
-> the value of that field may be.
+***
 
-Yes. it could be.
+Subject: Re: [syzbot] [fs?] general protection fault in pagemap_scan_hugetlb_entry
+Author: sidhartha.kumar@oracle.com
 
-> 
-> 
->>
->>>
->>>>  }
->>>>  
->>>>  static void mondata_config_read(struct rdt_domain *d, struct mon_config_info *mon_info)
->>>> @@ -1621,7 +1621,7 @@ static int mbm_config_write_domain(struct rdt_resource *r,
->>>>  	int ret = 0;
->>>>  
->>>>  	/* mon_config cannot be more than the supported set of events */
->>>> -	if (val > MAX_EVT_CONFIG_BITS) {
->>>> +	if (val > resctrl_max_evt_bitmask) {
->>>>  		rdt_last_cmd_puts("Invalid event configuration\n");
->>>>  		return -EINVAL;
->>>>  	}
->>>
->>> This does not look right. resctrl_max_evt_bitmask contains the supported
->>> types. A user may set a value that is less than resctrl_max_evt_bitmask but
->>> yet have an unsupported bit set, no?
->>
->> I think I have to make this clear in the patch. There is no difference in
->> the definition. Hardware supports all the events reported by the cpuid.
-> 
-> I'll try to elaborate using an example. Let's say AMD decides to make
-> hardware with hypothetical support mask of:
-> 	resctrl_max_evt_bitmask = 0x4F (no support for Slow Mem).
-> 
-> What if user attempts to set config that enables monitoring of Slow Mem:
-> 	val = 0x30
-> 
-> In the above example, val is not larger than resctrl_max_evt_bitmask 
-> but it is an invalid config, no?
+#syz test git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-hotfixes-unstable
+________________________________
+From: syzbot <syzbot+6e2ccedb96d1174e6a5f@syzkaller.appspotmail.com>
+Sent: Saturday, December 2, 2023 6:17 PM
+To: akpm@linux-foundation.org <akpm@linux-foundation.org>; dan.carpenter@linaro.org <dan.carpenter@linaro.org>; linux-fsdevel@vger.kernel.org <linux-fsdevel@vger.kernel.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; linux-mm@kvack.org <linux-mm@kvack.org>; llvm@lists.linux.dev <llvm@lists.linux.dev>; Mike Kravetz <mike.kravetz@oracle.com>; muchun.song@linux.dev <muchun.song@linux.dev>; nathan@kernel.org <nathan@kernel.org>; ndesaulniers@google.com <ndesaulniers@google.com>; Sidhartha Kumar <sidhartha.kumar@oracle.com>; syzkaller-bugs@googlegroups.com <syzkaller-bugs@googlegroups.com>; trix@redhat.com <trix@redhat.com>
+Subject: [syzbot] [fs?] general protection fault in pagemap_scan_hugetlb_entry
 
-Yes. It is invalid config in this case.
+Hello,
 
-How about changing the check to something like this?
+syzbot found the following issue on:
 
-if ((val & resctrl_max_evt_bitmask) != val) {
-                rdt_last_cmd_puts("Invalid event configuration\n");
-  		return -EINVAL;
-   }
--- 
-Thanks
-Babu Moger
+HEAD commit:    df60cee26a2e Merge tag '6.7-rc3-smb3-server-fixes' of git:..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=17ad46fce80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bb39fe85d254f638
+dashboard link: https://syzkaller.appspot.com/bug?extid=6e2ccedb96d1174e6a5f
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17befd62e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d5a90ce80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/c632017e0dc4/disk-df60cee2.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f94c8fa25aeb/vmlinux-df60cee2.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/af80f80c708b/bzImage-df60cee2.xz
+
+The issue was bisected to:
+
+commit a08c7193e4f18dc8508f2d07d0de2c5b94cb39a3
+Author: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Date:   Tue Sep 26 19:20:17 2023 +0000
+
+    mm/filemap: remove hugetlb special casing in filemap.c
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17f61552e80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=140e1552e80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=100e1552e80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6e2ccedb96d1174e6a5f@syzkaller.appspotmail.com
+Fixes: a08c7193e4f1 ("mm/filemap: remove hugetlb special casing in filemap.c")
+
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 5072 Comm: syz-executor107 Not tainted 6.7.0-rc3-syzkaller-00014-gdf60cee26a2e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+RIP: 0010:pagemap_scan_backout_range fs/proc/task_mmu.c:1946 [inline]
+RIP: 0010:pagemap_scan_hugetlb_entry+0x6ca/0x1130 fs/proc/task_mmu.c:2254
+Code: 3c 02 00 0f 85 68 09 00 00 48 8b 83 80 00 00 00 48 8d 04 40 4d 8d 6c c5 00 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 51 09 00 00 4d 8b 75 00 48 8b 7c 24 08 4c 89 f6
+RSP: 0018:ffffc90003a2fa50 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffffc90003a2fdb0 RCX: ffffffff82111e46
+RDX: 0000000000000000 RSI: ffffffff82111e54 RDI: ffffc90003a2fe30
+RBP: 1ffff92000745f52 R08: 0000000000000006 R09: 0000000020ffc000
+R10: 00000000211f9000 R11: ffffffff915f5de8 R12: ffff8880299e0300
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000020ffc000
+FS:  0000555555c7b380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000005fdeb8 CR3: 00000000752b4000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ walk_hugetlb_range mm/pagewalk.c:326 [inline]
+ __walk_page_range+0x36c/0x770 mm/pagewalk.c:393
+ walk_page_range+0x626/0xa80 mm/pagewalk.c:521
+ do_pagemap_scan+0x40d/0xcd0 fs/proc/task_mmu.c:2437
+ do_pagemap_cmd+0x5e/0x80 fs/proc/task_mmu.c:2478
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f171819d669
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffbe81bb68 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fffbe81bb80 RCX: 00007f171819d669
+RDX: 0000000020000040 RSI: 00000000c0606610 RDI: 0000000000000003
+RBP: 00007f1718210610 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000286 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fffbe81bdb8 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:pagemap_scan_backout_range fs/proc/task_mmu.c:1946 [inline]
+RIP: 0010:pagemap_scan_hugetlb_entry+0x6ca/0x1130 fs/proc/task_mmu.c:2254
+Code: 3c 02 00 0f 85 68 09 00 00 48 8b 83 80 00 00 00 48 8d 04 40 4d 8d 6c c5 00 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 51 09 00 00 4d 8b 75 00 48 8b 7c 24 08 4c 89 f6
+RSP: 0018:ffffc90003a2fa50 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffffc90003a2fdb0 RCX: ffffffff82111e46
+RDX: 0000000000000000 RSI: ffffffff82111e54 RDI: ffffc90003a2fe30
+RBP: 1ffff92000745f52 R08: 0000000000000006 R09: 0000000020ffc000
+R10: 00000000211f9000 R11: ffffffff915f5de8 R12: ffff8880299e0300
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000020ffc000
+FS:  0000555555c7b380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000005fdeb8 CR3: 00000000752b4000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:   3c 02                    cmp    $0x2,%al
+   2:   00 0f                    add    %cl,(%rdi)
+   4:   85 68 09                 test   %ebp,0x9(%rax)
+   7:   00 00                    add    %al,(%rax)
+   9:   48 8b 83 80 00 00 00     mov    0x80(%rbx),%rax
+  10:   48 8d 04 40              lea    (%rax,%rax,2),%rax
+  14:   4d 8d 6c c5 00           lea    0x0(%r13,%rax,8),%r13
+  19:   48 b8 00 00 00 00 00     movabs $0xdffffc0000000000,%rax
+  20:   fc ff df
+  23:   4c 89 ea                 mov    %r13,%rdx
+  26:   48 c1 ea 03              shr    $0x3,%rdx
+* 2a:   80 3c 02 00              cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:   0f 85 51 09 00 00        jne    0x985
+  34:   4d 8b 75 00              mov    0x0(%r13),%r14
+  38:   48 8b 7c 24 08           mov    0x8(%rsp),%rdi
+  3d:   4c 89 f6                 mov    %r14,%rsi
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
