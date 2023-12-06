@@ -2,111 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BCD8070B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 883268070AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378456AbjLFNO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 08:14:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48446 "EHLO
+        id S1378446AbjLFNOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 08:14:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378416AbjLFNO0 (ORCPT
+        with ESMTP id S1378416AbjLFNOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 08:14:26 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C599AC;
-        Wed,  6 Dec 2023 05:14:32 -0800 (PST)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6DCqZ4025505;
-        Wed, 6 Dec 2023 13:14:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=J8hfys2B2Zx7SCxn/IF3Kr91+Z9EXpfrC00nX/GDFi0=;
- b=M7EZlmmLnleKmsbrS+mZ0tVtXno0vNcS/kHQZFK5eFclDcge18/lvhqauOTFdmQO1edR
- zUSGNlYiruP48E9dO9QYeI4Q81PA59KUTYZGHZVq4Ccgi9wEjCG9pGy3VKC5C7C5Ptyw
- xMC/b96Yewpks9D4F+r4dCki6k7o2agSiCwtK5PitCYDdI7MF2f03XLmz0CvYh7bHp+y
- ptR4t+B0yiRvi5EQPgLfKV1bPtz6eeJJpclvgbdEkaenczlhXS8q1tjkDlb8blemOL9a
- iL90/VR/xvzNXqRZ6qqexfq+eLMxKCZvZZJvrY2vcdCdbhvk9yZFLMIX4pFB4aek4um4 Xg== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3utsn203dg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 13:14:30 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6D4AAF009905;
-        Wed, 6 Dec 2023 13:14:29 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3utavjmg2a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 13:14:29 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B6DEQ8S3605208
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 6 Dec 2023 13:14:26 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 58CC420043;
-        Wed,  6 Dec 2023 13:14:26 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 23E2D20040;
-        Wed,  6 Dec 2023 13:14:26 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed,  6 Dec 2023 13:14:26 +0000 (GMT)
-Date:   Wed, 6 Dec 2023 14:14:24 +0100
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, nrb@linux.ibm.com,
-        nsg@linux.ibm.com, svens@linux.ibm.com, gor@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com
-Subject: Re: [PATCH v1 1/1] s390: mm: convert pgste locking functions to C
-Message-ID: <ZXBzsCT5vaufHGIZ@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20231205173252.62305-1-imbrenda@linux.ibm.com>
- <ZXA4XkU0M1BZ5R5k@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
- <20231206091541.6897-A-hca@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206091541.6897-A-hca@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 4SUixVMoQyN4a9y8KrDc1-wqkq3l4j3_
-X-Proofpoint-GUID: 4SUixVMoQyN4a9y8KrDc1-wqkq3l4j3_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-06_10,2023-12-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 suspectscore=0 mlxscore=0 impostorscore=0 adultscore=0
- lowpriorityscore=0 phishscore=0 clxscore=1015 mlxlogscore=397 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312060108
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Dec 2023 08:14:21 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA1259E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 05:14:27 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1d075392ff6so6773925ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 05:14:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1701868467; x=1702473267; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6m8NNJ96xoL22f3J2mj0pcMGx/C1e265J+kyF1R2z8o=;
+        b=Gg2/jy1+p8R4muds1hZSZcq3WS5KKs0cqJ6ED+0J+4oPq06qEg541yX1/G/FvX3Sg7
+         8DGob7E1cliKdQsSzs2GbhrUxLNw/NqNwlEgtfaN3FyusyvX71hTil3nvjbAw5+UjzOf
+         xg6fi0bXHOETZS00eWBrcymewYve4qYkoepjNEjwKrtMbtuS+QpGmGU4NCYJm4G36/BD
+         PbRNOS7e9erHcGbSKVw6YFcV+OmApdJ5p12dwyV8JKjJGn0CymvfQPCZCHVO0GZ24Idp
+         IYg2Cto7CpPpIkTE1fQzC5G2NBxlobCv624YU1tx8vxK/lbyosg6foSjQuXMzUUAakTq
+         d4+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701868467; x=1702473267;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6m8NNJ96xoL22f3J2mj0pcMGx/C1e265J+kyF1R2z8o=;
+        b=WvUhsfijYPefRyDwOwdl72ohiu6FgmliB+qRkvLHgi5gffzWm7hd5DPDjCVbUN2wOC
+         F1zKWCHB6i+H6DFOSek0IBHAn6UwnGHcENVaAbkzJCXUiNMXXbotj+tlVO+SvFubUgcw
+         b30qw3zH0rqPSMaxDZHNLLasqzzPz+hDQN7AH4e3qG1/5meBv6vx+ljvip63lZnnjKjQ
+         wjwMZdyAcil1ZuoiYUCI3WUuNOp9aRyLpxoLpdSBBlmb45cO1bYCpSw4etnlIbBS4EaC
+         FcxclXPhSbNaa1AWXd35A+CNOjD27S627hl/lHXsLMsMAAPfOA66M60rsfewHYqyW0w2
+         W5FA==
+X-Gm-Message-State: AOJu0YxKdMQb32IwfALicgHMlHRIxiOsLRdHpRLQSErKbdirRS5U5zB7
+        8/Zi9U3dDjUQnbgBzqeL7ge8qA==
+X-Google-Smtp-Source: AGHT+IGta2bhw+7qIoVXmqExA48kB41RdGIfu5QAI9yipmpTWRjYPKmvmMdYnIurBqPfmflvyEFyTQ==
+X-Received: by 2002:a17:902:dac4:b0:1cf:59df:23e with SMTP id q4-20020a170902dac400b001cf59df023emr1270027plx.12.1701868467222;
+        Wed, 06 Dec 2023 05:14:27 -0800 (PST)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id p24-20020a170902b09800b001b86dd825e7sm12082582plr.108.2023.12.06.05.14.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 05:14:26 -0800 (PST)
+Date:   Wed, 06 Dec 2023 05:14:26 -0800 (PST)
+X-Google-Original-Date: Wed, 06 Dec 2023 05:14:24 PST (-0800)
+Subject:     Re: [PATCH 0/2] riscv: Increase mmap_rnd_bits_max on Sv48/57
+In-Reply-To: <20230929211155.3910949-4-samitolvanen@google.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        akpm@linux-foundation.org, keescook@chromium.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        samitolvanen@google.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     samitolvanen@google.com
+Message-ID: <mhng-f0a257c6-a1f5-41db-b1c4-c178a77a79e9@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 10:15:41AM +0100, Heiko Carstens wrote:
-> On Wed, Dec 06, 2023 at 10:01:18AM +0100, Alexander Gordeev wrote:
-> > On Tue, Dec 05, 2023 at 06:32:52PM +0100, Claudio Imbrenda wrote:
-> > ...
-> > > +	do {
-> > > +		value = __atomic64_or_barrier(PGSTE_PCL_BIT, ptr);
-> > 
-> > Would it make sense to cpu_relax() here, e.g with a follow-up patch?
-> 
-> No, because cpu_relax() is a no-op on our architecture (besides that it
-> translates to barrier(); but __atomic64_or_barrier() obviously comes also
-> with barrier() semantics).
-> 
-> We used to do diag 0x44 with cpu_relax() but that caused many performance
-> problems, therefore we removed diag 0x44 completely from the kernel quite
-> some time ago.
-> 
-> See also commit 1b68ac8678a8 ("s390: remove last diag 0x44 caller").
+On Fri, 29 Sep 2023 14:11:56 PDT (-0700), samitolvanen@google.com wrote:
+> Hi all,
+>
+> We noticed that 64-bit RISC-V kernels limit mmap_rnd_bits to 24
+> even if the hardware supports a larger virtual address space size
+> [1]. These two patches allow mmap_rnd_bits_max to be changed during
+> init, and bumps up the maximum randomness if we end up setting up
+> 4/5-level paging at boot.
 
-Thanks for the clarification!
+Sorry for missing this, I'm just poking through old stuff in patchwork.  
+As far as I can tell this is still relevant, the discussions are just on 
+the mmap() bits (but we'd already screwed that one up and have since 
+fixed it).
 
-Applied.
+So
+
+Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+
+in case someone else wants to take it, but I'm OK taking that MM patch 
+with Kees' review.
+
+>
+> Sami
+>
+>  [1] https://github.com/google/android-riscv64/issues/1
+>
+>
+> Sami Tolvanen (2):
+>   mm: Change mmap_rnd_bits_max to __ro_after_init
+>   riscv: mm: Update mmap_rnd_bits_max
+>
+>  arch/riscv/mm/init.c | 6 ++++++
+>  include/linux/mm.h   | 2 +-
+>  mm/mmap.c            | 2 +-
+>  3 files changed, 8 insertions(+), 2 deletions(-)
+>
+>
+> base-commit: 6465e260f48790807eef06b583b38ca9789b6072
