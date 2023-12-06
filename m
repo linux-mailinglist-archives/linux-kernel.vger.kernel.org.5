@@ -2,196 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D825807102
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:38:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C23D18070FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378580AbjLFNiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 08:38:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50914 "EHLO
+        id S1378589AbjLFNiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 08:38:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378598AbjLFNiV (ORCPT
+        with ESMTP id S1378513AbjLFNiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 08:38:21 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E85D45;
-        Wed,  6 Dec 2023 05:38:26 -0800 (PST)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6D0CVR011334;
-        Wed, 6 Dec 2023 13:38:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=GakJHKGu69ztNO4tMJWAvjGJM5Xzuv9z4sr0PjJwrwU=;
- b=ogblgeEQs6GFJ8rmAlLyWG50pzOvL2mPGttuAn3NtjqOXGuUskk6zrIGE7fUgM6p2O50
- jeRSSduAh5quPsDuA23K7Iepxy49y/n411XKavrrDWvc7Ks4b7Mx+m7ShcSKbTA9Vq9v
- +ld4xKTThlXfTxIUxloP7elEIE4E/mjrgD7baKH6McBWHW418f2HH7ps7Hp1+5UqsjbZ
- hoWW7L1lKgFjoR6yuC3p6gp9bNRUNzTzmBeIc0B3Fpv4axO+p/tKTXkKUka/huvMe8Tl
- Ovqr6igQ38p3S59ZxivDI3EvgyigbEwDF4fqF4LjHH9/YMFHj3thxHt/Ve+g9DRmYm8N 4A== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utdcasvgk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 13:38:19 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3B6DcFAb001824;
-        Wed, 6 Dec 2023 13:38:15 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3uqwnm5d3n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 06 Dec 2023 13:38:15 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B6DcFwL001816;
-        Wed, 6 Dec 2023 13:38:15 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3B6DcE6i001815;
-        Wed, 06 Dec 2023 13:38:15 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
-        id DD6B85000B1; Wed,  6 Dec 2023 19:08:13 +0530 (+0530)
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_cang@quicinc.com, Nitin Rawat <quic_nitirawa@quicinc.com>,
-        Manish Pandey <quic_mapa@quicinc.com>
-Subject: [PATCH V4] scsi: ufs: core: store min and max clk freq from OPP table
-Date:   Wed,  6 Dec 2023 19:08:12 +0530
-Message-Id: <20231206133812.21488-1-quic_nitirawa@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: x399GgyCS9gp5JR1Ulrg6kvRt0L7stHk
-X-Proofpoint-ORIG-GUID: x399GgyCS9gp5JR1Ulrg6kvRt0L7stHk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-06_10,2023-12-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 suspectscore=0 spamscore=0 malwarescore=0 priorityscore=1501
- mlxscore=0 impostorscore=0 mlxlogscore=999 clxscore=1015 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312060111
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Dec 2023 08:38:14 -0500
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28AC9D50;
+        Wed,  6 Dec 2023 05:38:19 -0800 (PST)
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-58d06bfadf8so4780276eaf.1;
+        Wed, 06 Dec 2023 05:38:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701869898; x=1702474698;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wXJLPYyl6Xf8EJB98w2kLHC6dz7zDdmjsJDaz1+tWDQ=;
+        b=bJRRh14wQkJ7+C15rKWoxLLgZOB1xQeyCaqxJr+cBnJMrXCFwBcbCeoFVoMrkv2spd
+         ZPloG6uLUbAA8XmAzTaqVK0HuozEXbg3nhd3NRPCuGgE8pfKuRzivaE7hPgSPy2DjwHg
+         sl9zYltBJFtbapkiAPOqKq5ALxnhdnCFMTntL8ewW9fJFSvvdochMAUjRYDlO5+rTNQs
+         R5D+ug9iZ/BzNF87w+tJUjvr25/87dxRdhUYoSQ4iURC/AW/VlWIwEfylCsCqNUYa0Cb
+         ZeM8YeAO+q1w5E/od+VD5SX5Qt3/VnhOXKmFzA+tfZQWoBvusCi4e7T5yXpcB+lbHkyl
+         knQQ==
+X-Gm-Message-State: AOJu0YzBwwaONAqp8CA+aflP7fSqLLNcEBhjvl631aT0erEri5SAb3WG
+        Zdew7g6ijuFjaTxC7pTYCg==
+X-Google-Smtp-Source: AGHT+IF/LAcnj1J3TR60tozX4/oUnmK8PyZL0iXhjSaODyz/Go3KIoK2mX4OzhZOy/BkcsaB8Zqq1g==
+X-Received: by 2002:a4a:9197:0:b0:58e:3275:3e4b with SMTP id d23-20020a4a9197000000b0058e32753e4bmr752179ooh.19.1701869898302;
+        Wed, 06 Dec 2023 05:38:18 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id v14-20020a4a8c4e000000b005840b5783a1sm2764109ooj.43.2023.12.06.05.38.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 05:38:17 -0800 (PST)
+Received: (nullmailer pid 1955863 invoked by uid 1000);
+        Wed, 06 Dec 2023 13:38:16 -0000
+Date:   Wed, 6 Dec 2023 07:38:16 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexander Couzens <lynxis@fe80.eu>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
+Subject: Re: [RFC PATCH v2 7/8] dt-bindings: net: mediatek,net: fix and
+ complete mt7988-eth binding
+Message-ID: <20231206133816.GA1914715-robh@kernel.org>
+References: <cover.1701826319.git.daniel@makrotopia.org>
+ <567c6aaa64ecb4872056bc0105c70153fd9d9b50.1701826319.git.daniel@makrotopia.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <567c6aaa64ecb4872056bc0105c70153fd9d9b50.1701826319.git.daniel@makrotopia.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OPP support added by commit 72208ebe181e ("scsi: ufs: core: Add support
-for parsing OPP") doesn't update the min_freq and max_freq of each clocks
-in 'struct ufs_clk_info'.
+On Wed, Dec 06, 2023 at 01:45:02AM +0000, Daniel Golle wrote:
+> Complete support for MT7988 which comes with 3 MACs, SRAM for DMA
+> descriptors and uses a dedicated PCS for the SerDes units.
+> 
+> Fixes: c94a9aabec36 ("dt-bindings: net: mediatek,net: add mt7988-eth binding")
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  .../devicetree/bindings/net/mediatek,net.yaml | 148 +++++++++++++++++-
+>  1 file changed, 146 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/mediatek,net.yaml b/Documentation/devicetree/bindings/net/mediatek,net.yaml
+> index 030d106bc7d3f..ca0667c51c1c2 100644
+> --- a/Documentation/devicetree/bindings/net/mediatek,net.yaml
+> +++ b/Documentation/devicetree/bindings/net/mediatek,net.yaml
+> @@ -28,7 +28,10 @@ properties:
+>        - ralink,rt5350-eth
+>  
+>    reg:
+> -    maxItems: 1
+> +    minItems: 1
+> +    items:
+> +      - description: Base of registers used to program the ethernet controller
+> +      - description: SRAM region used for DMA descriptors
 
-But these values are used by the host drivers internally for controller
-configuration. When the OPP support is enabled in devicetree, these
-values will be 0, causing boot issues on the respective platforms.
+Is this a dedicated SRAM for this purpose, or a common one partitioned 
+up. mmio-sram and a phandle is how to do the latter.
 
-So add support to parse the min_freq and max_freq of all clocks while
-parsing the OPP table.
+>  
+>    clocks: true
+>    clock-names: true
+> @@ -115,6 +118,9 @@ allOf:
+>                - mediatek,mt7623-eth
+>      then:
+>        properties:
+> +        reg:
+> +          maxItems: 1
+> +
+>          interrupts:
+>            maxItems: 3
+>  
+> @@ -149,6 +155,9 @@ allOf:
+>                - mediatek,mt7621-eth
+>      then:
+>        properties:
+> +        reg:
+> +          maxItems: 1
+> +
+>          interrupts:
+>            maxItems: 1
+>  
+> @@ -174,6 +183,9 @@ allOf:
+>              const: mediatek,mt7622-eth
+>      then:
+>        properties:
+> +        reg:
+> +          maxItems: 1
+> +
+>          interrupts:
+>            maxItems: 3
+>  
+> @@ -215,6 +227,9 @@ allOf:
+>              const: mediatek,mt7629-eth
+>      then:
+>        properties:
+> +        reg:
+> +          maxItems: 1
+> +
+>          interrupts:
+>            maxItems: 3
+>  
+> @@ -257,6 +272,9 @@ allOf:
+>              const: mediatek,mt7981-eth
+>      then:
+>        properties:
+> +        reg:
+> +          maxItems: 1
+> +
+>          interrupts:
+>            minItems: 4
+>  
+> @@ -295,6 +313,9 @@ allOf:
+>              const: mediatek,mt7986-eth
+>      then:
+>        properties:
+> +        reg:
+> +          maxItems: 1
+> +
+>          interrupts:
+>            minItems: 4
+>  
+> @@ -333,8 +354,13 @@ allOf:
+>              const: mediatek,mt7988-eth
+>      then:
+>        properties:
+> +        reg:
+> +          maxItems: 2
 
-Fixes: 72208ebe181e ("scsi: ufs: core: Add support for parsing OPP")
-Co-developed-by: Manish Pandey <quic_mapa@quicinc.com>
-Signed-off-by: Manish Pandey <quic_mapa@quicinc.com>
-Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
----
-Changes from v3:
-- updated commit description and comment to address christoph's comment
+Don't need maxItems here. That's already the max.
 
-Changes from v2:
-- increment idx in dev_pm_opp_get_freq_indexed
+> +          minItems: 2
+> +
+>          interrupts:
+>            minItems: 4
+> +          maxItems: 4
+>  
+>          clocks:
+>            minItems: 24
+> @@ -368,7 +394,7 @@ allOf:
+>              - const: top_netsys_warp_sel
+>  
+>  patternProperties:
+> -  "^mac@[0-1]$":
+> +  "^mac@[0-2]$":
+>      type: object
+>      unevaluatedProperties: false
+>      allOf:
+> @@ -382,6 +408,9 @@ patternProperties:
+>        reg:
+>          maxItems: 1
+>  
+> +      phys:
+> +        maxItems: 1
+> +
+>      required:
+>        - reg
+>        - compatible
+> @@ -559,3 +588,118 @@ examples:
+>          };
+>        };
+>      };
+> +
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/clock/mediatek,mt7988-clk.h>
 
-Changes from v1:
-As per Manivannan's comment:
-- Updated commmit description
-- Sort include file alphabetically
-- Added missing dev_pm_opp_put
-- updated function name and documention
-- removed ret variable
----
- drivers/ufs/host/ufshcd-pltfrm.c | 53 ++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
 
-diff --git a/drivers/ufs/host/ufshcd-pltfrm.c b/drivers/ufs/host/ufshcd-pltfrm.c
-index da2558e274b4..0983cee6355e 100644
---- a/drivers/ufs/host/ufshcd-pltfrm.c
-+++ b/drivers/ufs/host/ufshcd-pltfrm.c
-@@ -8,6 +8,7 @@
-  *	Vinayak Holikatti <h.vinayak@samsung.com>
-  */
+Why is fixing the binding needing a new example? Is this example really 
+different enough to justify a whole other example?
 
-+#include <linux/clk.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/pm_opp.h>
-@@ -213,6 +214,54 @@ static void ufshcd_init_lanes_per_dir(struct ufs_hba *hba)
- 	}
- }
-
-+/**
-+ * ufshcd_parse_clock_min_max_freq  - Parse MIN and MAX clocks freq
-+ * @hba: per adapter instance
-+ *
-+ * This function parses MIN and MAX frequencies of all clocks required
-+ * by the host drivers.
-+ *
-+ * Returns 0 for success and non-zero for failure
-+ */
-+static int ufshcd_parse_clock_min_max_freq(struct ufs_hba *hba)
-+{
-+	struct list_head *head = &hba->clk_list_head;
-+	struct ufs_clk_info *clki;
-+	struct dev_pm_opp *opp;
-+	unsigned long freq;
-+	u8 idx = 0;
-+
-+	list_for_each_entry(clki, head, list) {
-+		if (!clki->name)
-+			continue;
-+
-+		clki->clk = devm_clk_get(hba->dev, clki->name);
-+		if (!IS_ERR(clki->clk)) {
-+			/* Find Max Freq */
-+			freq = ULONG_MAX;
-+			opp = dev_pm_opp_find_freq_floor_indexed(hba->dev, &freq, idx);
-+			if (IS_ERR(opp)) {
-+				dev_err(hba->dev, "Failed to find OPP for MAX frequency\n");
-+				return PTR_ERR(opp);
-+			}
-+			clki->max_freq = dev_pm_opp_get_freq_indexed(opp, idx);
-+			dev_pm_opp_put(opp);
-+
-+			/* Find Min Freq */
-+			freq = 0;
-+			opp = dev_pm_opp_find_freq_ceil_indexed(hba->dev, &freq, idx);
-+			if (IS_ERR(opp)) {
-+				dev_err(hba->dev, "Failed to find OPP for MIN frequency\n");
-+				return PTR_ERR(opp);
-+			}
-+			clki->min_freq = dev_pm_opp_get_freq_indexed(opp, idx++);
-+			dev_pm_opp_put(opp);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int ufshcd_parse_operating_points(struct ufs_hba *hba)
- {
- 	struct device *dev = hba->dev;
-@@ -279,6 +328,10 @@ static int ufshcd_parse_operating_points(struct ufs_hba *hba)
- 		return ret;
- 	}
-
-+	ret = ufshcd_parse_clock_min_max_freq(hba);
-+	if (ret)
-+		return ret;
-+
- 	hba->use_pm_opp = true;
-
- 	return 0;
---
-2.17.1
-
+> +
+> +    soc {
+> +      #address-cells = <2>;
+> +      #size-cells = <2>;
+> +
+> +      ethernet@15100000 {
+> +        compatible = "mediatek,mt7988-eth";
+> +        reg = <0 0x15100000 0 0x80000>, <0 0x15400000 0 0x380000>;
+> +        interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 197 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 198 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +        clocks = <&ethsys CLK_ETHDMA_XGP1_EN>,
+> +                 <&ethsys CLK_ETHDMA_XGP2_EN>,
+> +                 <&ethsys CLK_ETHDMA_XGP3_EN>,
+> +                 <&ethsys CLK_ETHDMA_FE_EN>,
+> +                 <&ethsys CLK_ETHDMA_GP2_EN>,
+> +                 <&ethsys CLK_ETHDMA_GP1_EN>,
+> +                 <&ethsys CLK_ETHDMA_GP3_EN>,
+> +                 <&ethsys CLK_ETHDMA_ESW_EN>,
+> +                 <&ethsys CLK_ETHDMA_CRYPT0_EN>,
+> +                 <&ethwarp CLK_ETHWARP_WOCPU2_EN>,
+> +                 <&ethwarp CLK_ETHWARP_WOCPU1_EN>,
+> +                 <&ethwarp CLK_ETHWARP_WOCPU0_EN>,
+> +                 <&topckgen CLK_TOP_ETH_GMII_SEL>,
+> +                 <&topckgen CLK_TOP_ETH_REFCK_50M_SEL>,
+> +                 <&topckgen CLK_TOP_ETH_SYS_200M_SEL>,
+> +                 <&topckgen CLK_TOP_ETH_SYS_SEL>,
+> +                 <&topckgen CLK_TOP_ETH_XGMII_SEL>,
+> +                 <&topckgen CLK_TOP_ETH_MII_SEL>,
+> +                 <&topckgen CLK_TOP_NETSYS_SEL>,
+> +                 <&topckgen CLK_TOP_NETSYS_500M_SEL>,
+> +                 <&topckgen CLK_TOP_NETSYS_PAO_2X_SEL>,
+> +                 <&topckgen CLK_TOP_NETSYS_SYNC_250M_SEL>,
+> +                 <&topckgen CLK_TOP_NETSYS_PPEFB_250M_SEL>,
+> +                 <&topckgen CLK_TOP_NETSYS_WARP_SEL>;
+> +
+> +        clock-names = "xgp1", "xgp2", "xgp3", "fe", "gp2", "gp1",
+> +                      "gp3", "esw", "crypto",
+> +                      "ethwarp_wocpu2", "ethwarp_wocpu1",
+> +                      "ethwarp_wocpu0", "top_eth_gmii_sel",
+> +                      "top_eth_refck_50m_sel", "top_eth_sys_200m_sel",
+> +                      "top_eth_sys_sel", "top_eth_xgmii_sel",
+> +                      "top_eth_mii_sel", "top_netsys_sel",
+> +                      "top_netsys_500m_sel", "top_netsys_pao_2x_sel",
+> +                      "top_netsys_sync_250m_sel",
+> +                      "top_netsys_ppefb_250m_sel",
+> +                      "top_netsys_warp_sel";
+> +        assigned-clocks = <&topckgen CLK_TOP_NETSYS_2X_SEL>,
+> +                          <&topckgen CLK_TOP_NETSYS_GSW_SEL>,
+> +                          <&topckgen CLK_TOP_USXGMII_SBUS_0_SEL>,
+> +                          <&topckgen CLK_TOP_USXGMII_SBUS_1_SEL>,
+> +                          <&topckgen CLK_TOP_SGM_0_SEL>,
+> +                          <&topckgen CLK_TOP_SGM_1_SEL>;
+> +        assigned-clock-parents = <&apmixedsys CLK_APMIXED_NET2PLL>,
+> +                                 <&topckgen CLK_TOP_NET1PLL_D4>,
+> +                                 <&topckgen CLK_TOP_NET1PLL_D8_D4>,
+> +                                 <&topckgen CLK_TOP_NET1PLL_D8_D4>,
+> +                                 <&apmixedsys CLK_APMIXED_SGMPLL>,
+> +                                 <&apmixedsys CLK_APMIXED_SGMPLL>;
+> +        mediatek,ethsys = <&ethsys>;
+> +        mediatek,infracfg = <&topmisc>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        mac@0 {
+> +          compatible = "mediatek,eth-mac";
+> +          reg = <0>;
+> +          phy-mode = "internal"; /* CPU port of built-in 1GE switch */
+> +
+> +          fixed-link {
+> +            speed = <10000>;
+> +            full-duplex;
+> +            pause;
+> +          };
+> +        };
+> +
+> +        mac@1 {
+> +          compatible = "mediatek,eth-mac";
+> +          reg = <1>;
+> +          phy-handle = <&int_2p5g_phy>;
+> +        };
+> +
+> +        mac@2 {
+> +          compatible = "mediatek,eth-mac";
+> +          reg = <2>;
+> +          pcs-handle = <&usxgmiisys0>;
+> +          phy-handle = <&phy0>;
+> +        };
+> +
+> +        mdio_bus: mdio-bus {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +
+> +          /* external PHY */
+> +          phy0: ethernet-phy@0 {
+> +            reg = <0>;
+> +            compatible = "ethernet-phy-ieee802.3-c45";
+> +          };
+> +
+> +          /* internal 2.5G PHY */
+> +          int_2p5g_phy: ethernet-phy@15 {
+> +            reg = <15>;
+> +            compatible = "ethernet-phy-ieee802.3-c45";
+> +            phy-mode = "internal";
+> +          };
+> +        };
+> +      };
+> +    };
+> -- 
+> 2.43.0
