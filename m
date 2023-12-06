@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A751B80754D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1DF807559
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442589AbjLFQi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:38:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37168 "EHLO
+        id S1442563AbjLFQji convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 11:39:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379366AbjLFQix (ORCPT
+        with ESMTP id S1379345AbjLFQjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:38:53 -0500
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7782FA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:38:59 -0800 (PST)
-Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7c461a8cb0dso1473295241.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 08:38:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701880739; x=1702485539; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JbcOYch65HQgwW4bXeNQNStE/Bld2otdL+K6EjO7ssY=;
-        b=PmEKKJUIVcUp9Gxuf3aFfdxZyOViqVpHsUBLh/iW827KBOcUMfNFsu02LTOFjHOZWh
-         GhSiWdukxLCDFabebhw+pYRkab2cJTcg98+oHdmaIRmGxvsOH5CFUXDCvbOqBhsG0zPv
-         u2v6m3s4XX06toKFB1JeNiFtaN8IXDGTKVTOB3kPAqwOfw++t3kSECOWQdii6+VZwZEn
-         tYuv2P+lhTmBUeuyuv6zdlYa0Fk0xIB9hzEc2UGwuI4y0mhm3TKDWLdHhGtd5DpC+Hss
-         Jp+H8DdnblZ8IZdZ0Xkf9DUb7AdebwV5QLjNwNjclHa4BwLGIPsnl6DJAtEBl4HHGnqH
-         R0mQ==
+        Wed, 6 Dec 2023 11:39:36 -0500
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EF3FA;
+        Wed,  6 Dec 2023 08:39:42 -0800 (PST)
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1fb2b83986cso4041fac.0;
+        Wed, 06 Dec 2023 08:39:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701880739; x=1702485539;
+        d=1e100.net; s=20230601; t=1701880782; x=1702485582;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JbcOYch65HQgwW4bXeNQNStE/Bld2otdL+K6EjO7ssY=;
-        b=vZur8GA4VyoTh+NSy6aMUcSaOgvvndITiOTvAAjYMcp0P8jx5HAuAJJMGJZAxKOczo
-         OazFui5xRxWJW2jSXyrK/kMVWJeBK3DB0VOMaoRjNKP0cODetrqQb3CICb/qN1zel73T
-         R8UMY+sH3OXhMnZw4SmDpJ49g1BaDYAyloIKqjJymNo8jckzS762yMtx9R1QDm+4Iet8
-         DSdX9fZtdOm1fNVt3HeyZ8m7QibVZPkCNELrbsA2+fTMeYXzRXgU0lnfGuzMkCitdxua
-         UJdKN8ND8Y7teN1Pj0fIrUFuwiJK5gdRFXJOhGiaHyu5YALY9j+Afhep+7y/qbeCY/O8
-         LnUw==
-X-Gm-Message-State: AOJu0YxXrZe7m0G5AkqvMgdwNchWD0+tppFfnSR5rU+CFsD1C7OOWlm6
-        R1sdac1zau1ewvoksIkt0N/pf5tVCMNxdrgZMH5ILMzkAy/xPGi1hxXw70uB
-X-Google-Smtp-Source: AGHT+IERg2HJ276lhfxN7rCRC03VoISQfXlpwt3/L6+Zjw+3y0AvD8tv/uQ/BP1oHi3y+u0vTOleQejpyX++CRsJv2s=
-X-Received: by 2002:a1f:c604:0:b0:4b2:b4a1:593f with SMTP id
- w4-20020a1fc604000000b004b2b4a1593fmr599469vkf.12.1701880738877; Wed, 06 Dec
- 2023 08:38:58 -0800 (PST)
+        bh=QOpsMpN5kc6thb3d1q4d3kl9xx5Ha381XUlpiCeA7Vg=;
+        b=Skr0ltN7RAh68pvyRQ62RYPCxQkTu3zX5vEV7e88NMba0BheWhtM9OU0p4nbhlQNRp
+         MIMIwcRA90C1ojRWsvZr23RVolctb4WJxh7Oj4o2T6Qgg/A0VaG96mk2m3ceQJuNeF3Z
+         75fcagUOb/zghK32WzCh7BrrdA1LBxT1WdUR0p2Hn1XEroNWB+/AnJIaikumhAGBUxe/
+         n+sbxLQqKLlTRgQwiTpIHzgIiOfzciej85BSHAUwWTN8VwxeFWeGMM5RfOa0Jx5UemB4
+         lxn8z61L7FhDdk5dbR8enUfvh5Ww+URb3rkPfb+N/W6GcrVqDHJHldh710GPlLw3LsYG
+         9B1Q==
+X-Gm-Message-State: AOJu0Yykcspxr++1unk5wx2E8XcYlOjSFPOPWjtLZTsuCVl3V4GNavtg
+        vHBeLqx+H4W+i9W8djKOmJUyIcRXbxZcGX7Fi8b3Yv/4qUM=
+X-Google-Smtp-Source: AGHT+IE+QBw0uGCe3QdwQFdjnKR42J/h74k4XSadE/DgYk6WWgxdbDG4+G3mwf1tieSM1OUVNXOpgCrQ+v1vLscpEso=
+X-Received: by 2002:a05:6870:e2cb:b0:1fb:23ec:3318 with SMTP id
+ w11-20020a056870e2cb00b001fb23ec3318mr2127789oad.0.1701880782199; Wed, 06 Dec
+ 2023 08:39:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com>
- <20231206-rb-new-condvar-methods-v1-2-33a4cab7fdaa@google.com> <096b7406-b57c-4daa-9a12-38338dbd91ef@gmail.com>
-In-Reply-To: <096b7406-b57c-4daa-9a12-38338dbd91ef@gmail.com>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Wed, 6 Dec 2023 17:38:45 +0100
-Message-ID: <CAH5fLgix=tV6=VvACx6mhSTe9_HiVjxdgGdt+5iTUJuGH6t_LA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] rust: sync: add `CondVar::wait_timeout`
-To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <b8c5f018-4883-4c14-84ab-0514edac2770@ancud.ru>
+In-Reply-To: <b8c5f018-4883-4c14-84ab-0514edac2770@ancud.ru>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 6 Dec 2023 17:39:29 +0100
+Message-ID: <CAJZ5v0i7LYzF13M0qdeYWXZ7uO6HUpAS7pE5RJnOAJtKB8o88A@mail.gmail.com>
+Subject: Re: [PATCH] ACPICA: debugger: check status of acpi_evaluate_object in acpi_db_walk_for_fields
+To:     Nikita Kiryushin <kiryushin@ancud.ru>
+Cc:     Robert Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 6, 2023 at 4:53=E2=80=AFPM Martin Rodriguez Reboredo
-<yakoyoku@gmail.com> wrote:
+On Mon, Nov 13, 2023 at 2:33 PM Nikita Kiryushin <kiryushin@ancud.ru> wrote:
 >
-> On 12/6/23 07:09, Alice Ryhl wrote:
-> > Sleep on a condition variable with a timeout.
-> >
-> > This is used by Rust Binder for process freezing. There, we want to
-> > sleep until the freeze operation completes, but we want to be able to
-> > abort the process freezing if it doesn't complete within some timeout.
-> >
-> > Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> > ---
-> > [...]
-> >
-> > +    /// Atomically releases the given lock (whose ownership is proven =
-by the guard) and puts the
-> > +    /// thread to sleep. It wakes up when notified by [`CondVar::notif=
-y_one`] or
-> > +    /// [`CondVar::notify_all`], or when the thread receives a signal.
-> > +    ///
-> > +    /// Returns whether there is a signal pending.
+> Errors in acpi_evaluate_object can lead to incorrect state of buffer.
+> This can lead to access to data in previously ACPI_FREEd buffer and
+> secondary ACPI_FREE to the same buffer later.
 >
-> Remaining jiffies or zero on timeout?
+> Handle errors in acpi_evaluate_object the same way it is done earlier
+> with acpi_ns_handle_to_pathname.
+>
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>
+> Fixes: 5fd033288a86 ("ACPICA: debugger: add command to dump all fields
+> of particular subtype")
+> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+> ---
+>   drivers/acpi/acpica/dbnames.c | 8 ++++++--
 
-Seems like I just copied this typo from the other `_internal` method.
-I'll fix it on both.
+This is ACPICA code which comes from a separate project.
 
-Alice
+The way to change it is to submit a pull request with the desired change
+to the upstream ACPICA project on GitHub and add a Link tag pointing
+to the upstream PR to the corresponding Linux patch.  Then, the Linux
+patch can only be applied after the corresponding upstream PR has been
+merged.
+
+Thanks!
+
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/acpi/acpica/dbnames.c b/drivers/acpi/acpica/dbnames.c
+> index b91155ea9c34..c9131259f717 100644
+> --- a/drivers/acpi/acpica/dbnames.c
+> +++ b/drivers/acpi/acpica/dbnames.c
+> @@ -550,8 +550,12 @@ acpi_db_walk_for_fields(acpi_handle obj_handle,
+>         ACPI_FREE(buffer.pointer);
+>         buffer.length = ACPI_ALLOCATE_LOCAL_BUFFER;
+> -       acpi_evaluate_object(obj_handle, NULL, NULL, &buffer);
+> -
+> +       status = acpi_evaluate_object(obj_handle, NULL, NULL, &buffer);
+> +       if (ACPI_FAILURE(status)) {
+> +               acpi_os_printf("Could Not evaluate object %p\n",
+> +                              obj_handle);
+> +               return (AE_OK);
+> +       }
+>         /*
+>          * Since this is a field unit, surround the output in braces
+>          */
+> --
+> 2.34.1
+>
+>
