@@ -2,57 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02421807916
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6785C807917
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442847AbjLFUBC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 15:01:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
+        id S1442842AbjLFUC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 15:02:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379471AbjLFUBA (ORCPT
+        with ESMTP id S1379442AbjLFUC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 15:01:00 -0500
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D37BD6D;
-        Wed,  6 Dec 2023 12:01:05 -0800 (PST)
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-58de9deec94so15618eaf.0;
-        Wed, 06 Dec 2023 12:01:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701892865; x=1702497665;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=voGLwO6rmAuNQZR2QcfhsiCq3DHL2t4UHHcQfpvAbW0=;
-        b=NM4IN/LmkHLHJ/IkolKy1R7HucHdKLugHmgif2OFxHu/aPGlFQNstTb4fz3yfLEmtL
-         +TpT8OmVvQXWWX1FT4YcUbNz7JrpIVo/57gDm1eHrGcedhJBepLFFrzV2ZOpxnqeMlM0
-         KTiVVm/erU/CEJMfHYGht/kwBsbSFXciwO8o6T+KTJrYOUgW58/V6KFSR1m/jsmkHjMs
-         BfvOGaC/0IZXpOWS6o5jtTuPteXtP149teRdUtS1HKRImF+fbORlSCJwnier/QUVzUut
-         wvbHhbXB0pfsGzL1UC7AlCEtIcxatY4TaFgmI7Ac8CSFTEBREW+x8flrcaWQcQ0/Dwio
-         aEVg==
-X-Gm-Message-State: AOJu0YyqTi05xfwU0+PguamtHujs84CIC9/ESq6tF9wZLcMGYOnoivsy
-        YPMYnXlCWN0j6SX8oKGIp73q8vurB6a/Z0N1kr0=
-X-Google-Smtp-Source: AGHT+IHOjxMQIim+NAH4ehno9AKpR5Nu9pb7TM8dBQKiP/cNoCb67G/rcPvqa1hkAJ3Vf35k3jgyTa4Y4dYwrw3R6eY=
-X-Received: by 2002:a05:6870:35ce:b0:1fa:60b0:9d9 with SMTP id
- c14-20020a05687035ce00b001fa60b009d9mr2792857oak.1.1701892865078; Wed, 06 Dec
- 2023 12:01:05 -0800 (PST)
+        Wed, 6 Dec 2023 15:02:26 -0500
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [IPv6:2001:41d0:1004:224b::aa])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEBA0FA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 12:02:32 -0800 (PST)
+Date:   Wed, 6 Dec 2023 15:02:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1701892950;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IoH7rlLBVR0CZdZD7I1aTbDejNohFwpjFpDildbciTg=;
+        b=dOEK3CCoqwwxm9w4xFPD/78KwH+lY5Qdl4gkX+2N2i0EOFTM9ht+Tx5lMlPymo5St807I2
+        G5WLl70n+/WTiAi/dp+eYLTDQzyXihLAvesSYdFpj3H7UC3w/KOz435KDSJJ3leJA0TXeG
+        H0nTO3ZXz2pZtb2QLuVHx6EK2p1hwSs=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 5/7] rust: file: add `Kuid` wrapper
+Message-ID: <20231206200224.rkdkuozztzg2wusj@moria.home.lan>
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+ <20231129-alice-file-v1-5-f81afe8c7261@google.com>
+ <20231130103635.GA20191@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <OS3P286MB1951B46E88AB4A91E47A2696BDBEA@OS3P286MB1951.JPNP286.PROD.OUTLOOK.COM>
-In-Reply-To: <OS3P286MB1951B46E88AB4A91E47A2696BDBEA@OS3P286MB1951.JPNP286.PROD.OUTLOOK.COM>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Dec 2023 21:00:53 +0100
-Message-ID: <CAJZ5v0gR3v3rs5nk5B61TjY8+sYeOGWD_uNBY4SKXEL0Qi4jZQ@mail.gmail.com>
-Subject: Re: [PATCH] acpi/video: Add quirk for the Colorful X15 AT 23 Laptop
-To:     Yuluo Qiu <qyl27@outlook.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Celeste Liu <CoelacanthusHex@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130103635.GA20191@noisy.programming.kicks-ass.net>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,45 +70,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 26, 2023 at 3:00 PM Yuluo Qiu <qyl27@outlook.com> wrote:
->
-> The Colorful X15 AT 23 ACIP video-bus device report spurious
-> ACPI_VIDEO_NOTIFY_CYCLE events resulting in spurious KEY_SWITCHVIDEOMODE
-> events being reported to userspace (and causing trouble there) when
-> an external screen plugged in.
->
-> Add a quirk setting the report_key_events mask to
-> REPORT_BRIGHTNESS_KEY_EVENTS so that the ACPI_VIDEO_NOTIFY_CYCLE
-> events will be ignored, while still reporting brightness up/down
-> hotkey-presses to userspace normally.
->
-> Signed-off-by: Yuluo Qiu <qyl27@outlook.com>
-> Co-developed-by: Celeste Liu <CoelacanthusHex@gmail.com>
-> Signed-off-by: Celeste Liu <CoelacanthusHex@gmail.com>
-> ---
->  drivers/acpi/acpi_video.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
-> index d321ca7160d9..c54a364ffff3 100644
-> --- a/drivers/acpi/acpi_video.c
-> +++ b/drivers/acpi/acpi_video.c
-> @@ -503,6 +503,15 @@ static const struct dmi_system_id video_dmi_table[] = {
->                 DMI_MATCH(DMI_PRODUCT_NAME, "Vostro 3350"),
->                 },
->         },
-> +       {
-> +        .callback = video_set_report_key_events,
-> +        .driver_data = (void *)((uintptr_t)REPORT_BRIGHTNESS_KEY_EVENTS),
-> +        .ident = "COLORFUL X15 AT 23",
-> +        .matches = {
-> +               DMI_MATCH(DMI_SYS_VENDOR, "COLORFUL"),
-> +               DMI_MATCH(DMI_PRODUCT_NAME, "X15 AT 23"),
-> +               },
-> +       },
->         /*
->          * Some machines change the brightness themselves when a brightness
->          * hotkey gets pressed, despite us telling them not to. In this case
-> --
+On Thu, Nov 30, 2023 at 11:36:35AM +0100, Peter Zijlstra wrote:
+> On Wed, Nov 29, 2023 at 01:12:17PM +0000, Alice Ryhl wrote:
+> 
+> > diff --git a/rust/helpers.c b/rust/helpers.c
+> > index fd633d9db79a..58e3a9dff349 100644
+> > --- a/rust/helpers.c
+> > +++ b/rust/helpers.c
+> > @@ -142,6 +142,51 @@ void rust_helper_put_task_struct(struct task_struct *t)
+> >  }
+> >  EXPORT_SYMBOL_GPL(rust_helper_put_task_struct);
+> >  
+> > +kuid_t rust_helper_task_uid(struct task_struct *task)
+> > +{
+> > +	return task_uid(task);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rust_helper_task_uid);
+> > +
+> > +kuid_t rust_helper_task_euid(struct task_struct *task)
+> > +{
+> > +	return task_euid(task);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rust_helper_task_euid);
+> 
+> Aren't these like ideal speculation gadgets? And shouldn't we avoid
+> functions like this for exactly that reason?
 
-Applied as 6.8 material, thanks!
+I think asking the Rust people to care about that is probably putting
+too many constraints on them, unless you actually have an idea for
+something better to do...
+
+(loudly giving the CPU manufacturers the middle finger for making _all_
+of us deal with this bullshit)
