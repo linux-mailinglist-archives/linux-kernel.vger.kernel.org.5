@@ -2,129 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B6480708B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD1180708E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:10:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378408AbjLFNJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 08:09:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43848 "EHLO
+        id S1378420AbjLFNKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 08:10:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378112AbjLFNJ2 (ORCPT
+        with ESMTP id S1378112AbjLFNKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 08:09:28 -0500
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20589C7;
-        Wed,  6 Dec 2023 05:09:35 -0800 (PST)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B65uLUs028385;
-        Wed, 6 Dec 2023 07:09:12 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        PODMain02222019; bh=vVXlRsiAy9OWWtQEMj4TkVdZXjoKPFJXcF0mguDSNPE=; b=
-        Yb1qhaqwbcbNhueoO/dXJUufL4XWZiGxoWePc9h8BFt/xOiRDBaaNpor84WtKSfI
-        wO3S0n6QSeZmAIBzSzWU2oiRlt4glnp+YrfANnGiAeNlwXrUOLBDme6MVfvZODJt
-        vDvQJKYvzu50IEOPjhotO8mxXFX7sTUtp7/1r4T70dSLN+n9YOCPW0Pyr7SxXLs+
-        CFbpaJlJg0cXWXpptd/hO6NQ1uf6UKuy4R5I8GAlxQT5DCN4UmhjluG63snJ/XbD
-        yYCoeq4oalRUyO+cG5BTUBjdd9L9wbeWfOCFJ2FuXJciLJH3xtwxWg+EnLYCRkLW
-        d/TYlQd1TPfCuJOSYGi17w==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3utd47rphm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 07:09:12 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Dec
- 2023 13:09:10 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
- Transport; Wed, 6 Dec 2023 13:09:10 +0000
-Received: from [198.90.251.82] (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.82])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DA03711AB;
-        Wed,  6 Dec 2023 13:09:09 +0000 (UTC)
-Message-ID: <23e3e9b6-c6e2-4b89-b30e-0319f8789590@opensource.cirrus.com>
-Date:   Wed, 6 Dec 2023 13:09:08 +0000
+        Wed, 6 Dec 2023 08:10:13 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CE0AC
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 05:10:20 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-425427286a8so5409381cf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 05:10:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701868219; x=1702473019; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Pt/oMfKEoVvZOs+7PtxgU3lL9BlJV64pat4giYOfloo=;
+        b=VyouUSNz7lObsDlIxiFkNVNrje85/ifEopn61t9jrtHNWhbMDqcWDqcDLnIazw8JHX
+         hY5fnLOPUpRU/O4qVXdO7KlUjJwNfrpnyL2UgD1ADir23NuHLHhGWJQ5CXnnxH4sh/uo
+         YNkILWU2+ABjQ3/r1M8pglvTgeij+87ZbKrkWJkhsHHATs8inGnejdsT4I2NACJZ6P5x
+         OhwRGyD3umhxmdClHVJzrUWJ1mSDToMvt/xe7Yq8PSDUNu+tU21y9wvY7BM6FmnrustK
+         BNrsB9vAtoD6MS5Z6eAUYfkUlAswkJ9fp/MZiUkx5Z3mqCwpZSgyD0PyOIat7RyXmdSs
+         tS+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701868219; x=1702473019;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pt/oMfKEoVvZOs+7PtxgU3lL9BlJV64pat4giYOfloo=;
+        b=ZKaEBl5DOzoaCEDke2EgXq1tzEwkG4lezoChge7I79/xkXoiYrCXPlSB0ZqWX95ySN
+         tuQOM7HFuBeOTTtw8M2Ba56B0VVl9uw+v9gSH7Jk1cp1eL5oUtpkduvtCa0SKBdCUz63
+         +mzTLX1e/qmO6ZMPcUAupXpMYr9VDQwhBNlXmeFd50FbOvBj0pcm1r3V0vkwDFkWiTr9
+         qEDTMImFHVwdX7t9RmCVZid+WmJ3jFYwdrjhphQ6mEOPS1sShkD57Q3MXtuMhRyh32aC
+         XdYI85N2GJRau2d3uH176k7q2iLBoJh1zB9hY7PnY+ARgQZE9tAasPkzPUJwfuk9eA3n
+         hFzg==
+X-Gm-Message-State: AOJu0YxYkCGSwo1h8OPz/CTcSKL2+IwK0/gVzpxqpF7BKslu8Lt7GgVY
+        ejNZfEBGCvOThuJXcp5fhs9y
+X-Google-Smtp-Source: AGHT+IEb4yi9gh7VHo+zZIBCifs1fd4gKseVxyxJ41S1V0cBHCI6vFd8Vt9p32/kxIhAFm7YSoNr0g==
+X-Received: by 2002:a05:6214:76a:b0:67a:bbfe:4edf with SMTP id f10-20020a056214076a00b0067abbfe4edfmr868908qvz.30.1701868219103;
+        Wed, 06 Dec 2023 05:10:19 -0800 (PST)
+Received: from thinkpad ([117.202.188.104])
+        by smtp.gmail.com with ESMTPSA id c9-20020a0ce7c9000000b0067a97f6b0c6sm5052738qvo.32.2023.12.06.05.10.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 05:10:18 -0800 (PST)
+Date:   Wed, 6 Dec 2023 18:40:09 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_vpernami@quicinc.com, quic_parass@quicinc.com
+Subject: Re: [PATCH v3 1/3] dt-bindings: phy: qcom,qmp: Add PCIe
+ qcom,refclk-always-on property
+Message-ID: <20231206131009.GD12802@thinkpad>
+References: <20231127-refclk_always_on-v3-0-26d969fa8f1d@quicinc.com>
+ <20231127-refclk_always_on-v3-1-26d969fa8f1d@quicinc.com>
+ <78815f1b-7390-40de-8afd-ac71806f4051@linaro.org>
+ <24fae40a-453b-b14c-923f-88758a246aa7@quicinc.com>
+ <20231201060716.GJ4009@thinkpad>
+ <166d307e-7d1b-48b5-90db-9b6df01d87c2@linaro.org>
+ <20231201111033.GL4009@thinkpad>
+ <f844cd1e-7e4f-4836-bc9a-2e1ed13f064f@linaro.org>
+ <20231201123054.GM4009@thinkpad>
+ <3a7376aa-18a2-41cb-a4c9-680e735ce75b@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] kunit: run test suites only after module
- initialization completes
-To:     Marco Pagani <marpagan@redhat.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
-        Jinjie Ruan <ruanjinjie@huawei.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-CC:     Javier Martinez Canillas <javierm@redhat.com>,
-        <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20231128101627.65399-1-marpagan@redhat.com>
-Content-Language: en-US
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <20231128101627.65399-1-marpagan@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: y2rFDQWL8jBYyQGM-XoXdC0outj7skhz
-X-Proofpoint-ORIG-GUID: y2rFDQWL8jBYyQGM-XoXdC0outj7skhz
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3a7376aa-18a2-41cb-a4c9-680e735ce75b@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 10:16, Marco Pagani wrote:
-> Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
-> kunit_free_suite_set()") fixed a wild-memory-access bug that could have
-> happened during the loading phase of test suites built and executed as
-> loadable modules. However, it also introduced a problematic side effect
-> that causes test suites modules to crash when they attempt to register
-> fake devices.
+On Fri, Dec 01, 2023 at 02:25:44PM +0100, Krzysztof Kozlowski wrote:
+> On 01/12/2023 13:30, Manivannan Sadhasivam wrote:
+> >> What I said before:
+> >> "Again, third time (once from Bjorn, once from Dmitry), rephrase
+> >> property name and description to describe the hardware issue. I see
+> >> description improved, but not the property name. Again in the end of
+> >> description you say what Linux should do. Bindings do not describe Linux
+> >> OS."
+> >>
+> > 
+> > You didn't answer my question:
+> > 
+> > "I see a plenty of properties similar to this one instructing the OS to keep some
+> > resource ON to workaround hardware issues. So they are all wrong?"
 > 
-> When a module is loaded, it traverses the MODULE_STATE_UNFORMED and
-> MODULE_STATE_COMING states before reaching the normal operating state
-> MODULE_STATE_LIVE. Finally, when the module is removed, it moves to
-> MODULE_STATE_GOING before being released. However, if the loading
-> function load_module() fails between complete_formation() and
-> do_init_module(), the module goes directly from MODULE_STATE_COMING to
-> MODULE_STATE_GOING without passing through MODULE_STATE_LIVE.
+> They are not the best, but it all depends on the individual case.
 > 
-> This behavior was causing kunit_module_exit() to be called without
-> having first executed kunit_module_init(). Since kunit_module_exit() is
-> responsible for freeing the memory allocated by kunit_module_init()
-> through kunit_filter_suites(), this behavior was resulting in a
-> wild-memory-access bug.
+> > 
+> > If you say they are wrong, why are they approved in the first place?
+> Because we don't have time to keep digging what the driver is doing and
+> what is claimed in DT. Some people don't even CC us on the driver.
 > 
-> Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
-> kunit_free_suite_set()") fixed this issue by running the tests when the
-> module is still in MODULE_STATE_COMING. However, modules in that state
-> are not fully initialized, lacking sysfs kobjects. Therefore, if a test
-> module attempts to register a fake device, it will inevitably crash.
-> 
-> This patch proposes a different approach to fix the original
-> wild-memory-access bug while restoring the normal module execution flow
-> by making kunit_module_exit() able to detect if kunit_module_init() has
-> previously initialized the tests suite set. In this way, test modules
-> can once again register fake devices without crashing.
-> 
-> This behavior is achieved by checking whether mod->kunit_suites is a
-> virtual or direct mapping address. If it is a virtual address, then
-> kunit_module_init() has allocated the suite_set in kunit_filter_suites()
-> using kmalloc_array(). On the contrary, if mod->kunit_suites is still
-> pointing to the original address that was set when looking up the
-> .kunit_test_suites section of the module, then the loading phase has
-> failed and there's no memory to be freed.
-> 
-> v2:
-> - add include <linux/mm.h>
-> 
-> Fixes: 2810c1e99867 ("kunit: Fix wild-memory-access bug in kunit_free_suite_set()")
-> Signed-off-by: Marco Pagani <marpagan@redhat.com>
 
-Tested-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+OK. How about, "qcom,broken-refclk"? This reflects the fact that the default
+refclk operation is broken on this platform, so the OS should be prepared for
+it (by keeping it always on).
 
-Fixed this crash:
-https://lore.kernel.org/all/e239b94b-462a-41e5-9a4c-cd1ffd530d75@opensource.cirrus.com/
+- Mani
 
-Also tested with sound/pci/hda/cirrus_scodec_test.c
+> 
+> Best regards,
+> Krzysztof
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
