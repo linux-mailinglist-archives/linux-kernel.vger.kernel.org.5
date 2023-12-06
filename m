@@ -2,143 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 148A08064CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A44880649C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376410AbjLFB0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 20:26:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37602 "EHLO
+        id S230014AbjLFB2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 20:28:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232402AbjLFB0M (ORCPT
+        with ESMTP id S229570AbjLFB16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 20:26:12 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E29D62
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 17:26:17 -0800 (PST)
-Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SlKTr24ggzvRhL;
-        Wed,  6 Dec 2023 09:25:36 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 6 Dec 2023 09:26:14 +0800
-Subject: Re: [PATCH] jffs2: nodemgmt: fix kernel-doc comments
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     David Woodhouse <dwmw2@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        <linux-mtd@lists.infradead.org>
-References: <20231205173222.12575-1-rdunlap@infradead.org>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <f0a0eb5d-7cdf-89a1-3017-2dd048d2a0e4@huawei.com>
-Date:   Wed, 6 Dec 2023 09:26:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Tue, 5 Dec 2023 20:27:58 -0500
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7441A4
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 17:28:05 -0800 (PST)
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3b9ba7bff47so3295049b6e.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 17:28:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701826085; x=1702430885;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7ySauBYp0pXzqSF3h5YZYqJdikNmojNceW9Ms4nmH48=;
+        b=aXuZohbYvqnfmKNg/Xs1vj4a+7Ql3FRWowcgwVuJbOVsauY5SS28uUKeMMBX7pK2XD
+         MAYtZJ9YC/sRuYD5Zem4HZWIRcSM+1RfpXiPOL3YZgWFowCgKn7WJYb7VlwN22sC7KRV
+         xAjB8ltInfooJacqiOpNY4Kq8f1qHkeHseoTTvPoBM/WQ4HJmHD5MQw0rdwYOSbiF+Gr
+         RQrDcr82tVunvcPwR3wyeQrijO3JCR2ljY1ZAtCwx898k9dkoR7wGoVEyk+44XIwhhIH
+         WU5bySAuizWeyB2ONoM5m+b1TxOZaw6qr0Mh+MbOIwO2qyHEorc13WtZD1uvQXRjQ4nZ
+         czEw==
+X-Gm-Message-State: AOJu0Yx3tEl+kuAZTOE5ZFvmwX1GR8uSThW1Y5FAp88nmq5Tizb87Ch+
+        3YEOgNaskL5k8geMvKP9cLr4GOvXcoh1Vi7MdEEswX1NMue7
+X-Google-Smtp-Source: AGHT+IERo+uS3K5PcCNLP0zvPy2IvH185FonEs/HGwm+m6q13cU7lDnfz/RiiSjaBSIUmpp2rN0ho2Cm9BzujinCS+f+Q1Hly+Gw
 MIME-Version: 1.0
-In-Reply-To: <20231205173222.12575-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm000013.china.huawei.com (7.193.23.81)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6808:2009:b0:3b2:e2b6:75a3 with SMTP id
+ q9-20020a056808200900b003b2e2b675a3mr171604oiw.6.1701826084931; Tue, 05 Dec
+ 2023 17:28:04 -0800 (PST)
+Date:   Tue, 05 Dec 2023 17:28:04 -0800
+In-Reply-To: <20231206005340.11534-1-kuniyu@amazon.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004310b8060bcd43a7@google.com>
+Subject: Re: [syzbot] [net?] KMSAN: uninit-value in __llc_lookup_established
+From:   syzbot <syzbot+b5ad66046b913bc04c6f@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        kuniyu@amazon.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ÔÚ 2023/12/6 1:32, Randy Dunlap Ð´µÀ:
-> Update the end of one sentence where a comment was truncated. (dwmw2)
->
-> Fix a bunch of kernel-doc warnings:
->
-> nodemgmt.c:72: warning: Function parameter or member 'sumsize' not described in 'jffs2_do_reserve_space'
-> nodemgmt.c:72: warning: expecting prototype for jffs2_reserve_space(). Prototype was for jffs2_do_reserve_space() instead
-> nodemgmt.c:76: warning: Function parameter or member 'sumsize' not described in 'jffs2_reserve_space'
-> nodemgmt.c:76: warning: No description found for return value of 'jffs2_reserve_space'
-> nodemgmt.c:503: warning: Function parameter or member 'ofs' not described in 'jffs2_add_physical_node_ref'
-> nodemgmt.c:503: warning: Function parameter or member 'ic' not described in 'jffs2_add_physical_node_ref'
-> nodemgmt.c:503: warning: Excess function parameter 'new' description in 'jffs2_add_physical_node_ref'
-> nodemgmt.c:503: warning: No description found for return value of 'jffs2_add_physical_node_ref'
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: linux-mtd@lists.infradead.org
-> ---
->   fs/jffs2/nodemgmt.c |   24 +++++++++++++++---------
->   1 file changed, 15 insertions(+), 9 deletions(-)
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> diff -- a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
-> --- a/fs/jffs2/nodemgmt.c
-> +++ b/fs/jffs2/nodemgmt.c
-> @@ -49,28 +49,31 @@ static int jffs2_rp_can_write(struct jff
->   	return 0;
->   }
->   
-> +static int jffs2_do_reserve_space(struct jffs2_sb_info *c,  uint32_t minsize,
-> +				  uint32_t *len, uint32_t sumsize);
-> +
->   /**
->    *	jffs2_reserve_space - request physical space to write nodes to flash
->    *	@c: superblock info
->    *	@minsize: Minimum acceptable size of allocation
->    *	@len: Returned value of allocation length
->    *	@prio: Allocation type - ALLOC_{NORMAL,DELETION}
-> + *	@sumsize: summary size requested or JFFS2_SUMMARY_NOSUM_SIZE for no summary
-> + *
-> + *	Requests a block of physical space on the flash.
->    *
-> - *	Requests a block of physical space on the flash. Returns zero for success
-> - *	and puts 'len' into the appropriate place, or returns -ENOSPC or other
-> - *	error if appropriate. Doesn't return len since that's
-> + *	Returns: %0 for success	and puts 'len' into the appropriate place,
-> + *	or returns -ENOSPC or other error if appropriate.
-> + *	Doesn't return len since that's already returned in @len.
->    *
-> - *	If it returns zero, jffs2_reserve_space() also downs the per-filesystem
-> + *	If it returns %0, jffs2_reserve_space() also downs the per-filesystem
->    *	allocation semaphore, to prevent more than one allocation from being
-> - *	active at any time. The semaphore is later released by jffs2_commit_allocation()
-> + *	active at any time. The semaphore is later released by jffs2_commit_allocation().
->    *
->    *	jffs2_reserve_space() may trigger garbage collection in order to make room
->    *	for the requested allocation.
->    */
->   
-> -static int jffs2_do_reserve_space(struct jffs2_sb_info *c,  uint32_t minsize,
-> -				  uint32_t *len, uint32_t sumsize);
-> -
->   int jffs2_reserve_space(struct jffs2_sb_info *c, uint32_t minsize,
->   			uint32_t *len, int prio, uint32_t sumsize)
->   {
-> @@ -488,13 +491,16 @@ static int jffs2_do_reserve_space(struct
->   /**
->    *	jffs2_add_physical_node_ref - add a physical node reference to the list
->    *	@c: superblock info
-> - *	@new: new node reference to add
-> + *	@ofs: offset in the block
->    *	@len: length of this physical node
-> + *	@ic: inode cache pointer
->    *
->    *	Should only be used to report nodes for which space has been allocated
->    *	by jffs2_reserve_space.
->    *
->    *	Must be called with the alloc_sem held.
-> + *
-> + *	Returns: pointer to new node on success or -errno code on error
->    */
->   
->   struct jffs2_raw_node_ref *jffs2_add_physical_node_ref(struct jffs2_sb_info *c,
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> .
+Hello,
 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
+Reported-and-tested-by: syzbot+b5ad66046b913bc04c6f@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         1c410411 Merge tag 'i3c/for-6.7' of git://git.kernel.o..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1577c0d4e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=956549bd1d1e9efd
+dashboard link: https://syzkaller.appspot.com/bug?extid=b5ad66046b913bc04c6f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=13fa938ce80000
+
+Note: testing is done by a robot and is best-effort only.
