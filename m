@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D982806D79
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB688806D7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378047AbjLFLJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 06:09:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33412 "EHLO
+        id S1378018AbjLFLJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:09:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377895AbjLFLJX (ORCPT
+        with ESMTP id S1377895AbjLFLJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:09:23 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42921703
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:09:27 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a1b6b65923eso92128466b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 03:09:27 -0800 (PST)
+        Wed, 6 Dec 2023 06:09:55 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D736810D4
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:09:53 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c9f8faf57bso50289691fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 03:09:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701860966; x=1702465766; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701860992; x=1702465792; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4nbeO7xQl7Fj49ypQe9CyjRhIkz9aO5YPmPBlj7nYEA=;
-        b=qcW9Pz4ORT+Eu65DifnxVFUfIphU1nlM2AUDxmpzV1cLbuR2vEnTWqINzHDVVFgVft
-         UJemO40x/OeC2xLOlddhTkpW4g3vy+Kg/SYyNrojHyqhjAPbRyw6fOgIQ4+JrTNIMShs
-         hVRtJ2vMr/v/VD6q9AmGSqfqpmeRHby81iPMqXUZ8ErG54xUSq9bi5D48JMngoOKIqJF
-         maXlnfoEqVZmtdsiJgXB8TbCt+keBT9J0/YNTu9t/SlpG9TYbmshXIIKPEb5a2WC0quz
-         t/VxOXevbgYG31wBOKDVAH9ebYLdZYQT4Fu58v6hZ7ElBjDfSkPKGjwX2IX7Du62alTJ
-         B3ig==
+        bh=zeqhuKsjP7E0SGywqdf5T1tdbUiD3QRekqAg5e4K7cI=;
+        b=hbUNPpA7/Pq3GvW4hXh8mCfl3IikSL8dDqs3qkPEwbraZCTVYYKWRx2qCRc5x7NJWt
+         lWPjl7Yod2efOZbKqd26iUu6Ik740v0DgwyQrRlkNRYgm5aoyqmwZxYHvGDePI2A6u0Q
+         VRneoduklLNfbLzPM06dqkRZfRUjYfWLnV/kpCl2IwpPlaARGTA/QaQIxDqgtV9dfnUt
+         aLKeiuGZKrSJorCcuCZwnjFLtDpg6m2i6ZnfN8gyi0TpuR6v+w1UK6QBOWImfoPw1MVy
+         Q+CUFkNg8dG+ANw6u4jLpcKMA0blivB/X2B+3mER/3bl9IL5t9SdHC1TZ+cHkjF/lwpe
+         eq9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701860966; x=1702465766;
+        d=1e100.net; s=20230601; t=1701860992; x=1702465792;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4nbeO7xQl7Fj49ypQe9CyjRhIkz9aO5YPmPBlj7nYEA=;
-        b=NW+3m3LO0AbjQQaAnBWzkf9AevMaiU4MN+rXlQUmGH6g12Khvw9/Dv7bOr3/jEhxmo
-         19ogmX3r7eD+EUDCb6LBp0sQtaOw0DB8MURgeaE1zN1I5TlpYZsQpZBKxatzXb9PzLXA
-         UA0ttspsi0O5rldGRfTD9D4hfx2EshG0YSoI505mu8pLzAQDkgOCOlLP5geAKFL0o/it
-         ixGVbgJPxSXKHPryOx5D4xu4OtZt12QUpYLGp9MwK4sTxUXBP+YwN0FMaZ5SL5j2a+3K
-         QeSRJlu6SfIP+nQPa0//UnQmakqx1kTtosQxYH1DW12zl4aBgMOA0jxAH79193sCO//0
-         xe9A==
-X-Gm-Message-State: AOJu0YwcPKk1LNeu/NE/RoJhxK/g9OR0ZVPGf8qhf5LjAd/dnKfxbtKW
-        JGEHu3cctDwJzL7Hxr80JpA9Gg==
-X-Google-Smtp-Source: AGHT+IG7H05f/wBTJrmfN/BdTEacygwKqyz0WEw9Emd4alZciGvGJh3y6dqLMlFcmCZryuyHzbp54g==
-X-Received: by 2002:a17:906:c34b:b0:a19:9b79:8b5e with SMTP id ci11-20020a170906c34b00b00a199b798b5emr333373ejb.111.1701860966068;
-        Wed, 06 Dec 2023 03:09:26 -0800 (PST)
+        bh=zeqhuKsjP7E0SGywqdf5T1tdbUiD3QRekqAg5e4K7cI=;
+        b=jF7oBGNvsuuISa9282CvqLa102sT9M8yryRVSBBzgM0gfo026wAWo4bo6M1MrG8BKz
+         EydNTUmiZ1dETnQz7bCxOj1XkCptPhLvF7vXcDw8s/DriypBP8X7xrWjzVwgXX8CTstY
+         IHmaXnMZlt78O7S7t9VD1JByoPDAg1AazUW+Mp9xNw0GCtWe3YCvr4zK1k4PUBTLunzx
+         Y0Uvi/cne3cnnxwu24F6Dxgw/9XWZtYcEATRIw82rVhkpmiCsoSMZbGo2azAZn+r9a6P
+         DglAnmC2bYzmJdrF3NN3tGdwGo6GkMeYYIHW9f+kAQQW9HIPKhbUUCbK6obThVpD79DK
+         afvA==
+X-Gm-Message-State: AOJu0YwW5TsCsi01PfQwhQDe7wTvJEw6xgpZ4hWs1A/V4bOHO4uOLlh0
+        ltwh4inRKFpQUD/ldIjCvqLquQ==
+X-Google-Smtp-Source: AGHT+IHGqiZVssd1SM7AwiG2Q1JOkY2hneHgkU/xkOCLwzWqGsL3sxt58yuDTR1SzEaUWXXde7reBg==
+X-Received: by 2002:a2e:8884:0:b0:2c9:f0e8:bb5f with SMTP id k4-20020a2e8884000000b002c9f0e8bb5fmr493392lji.40.1701860992066;
+        Wed, 06 Dec 2023 03:09:52 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id sa12-20020a1709076d0c00b00a0a5a794575sm8086693ejc.216.2023.12.06.03.09.25
+        by smtp.gmail.com with ESMTPSA id sa12-20020a1709076d0c00b00a0a5a794575sm8086693ejc.216.2023.12.06.03.09.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 03:09:25 -0800 (PST)
-Message-ID: <f17dcd86-7f87-4433-a106-eb7bfdfb05ab@linaro.org>
-Date:   Wed, 6 Dec 2023 12:09:24 +0100
+        Wed, 06 Dec 2023 03:09:51 -0800 (PST)
+Message-ID: <7844ca22-df53-458d-9e3b-7b0758a80455@linaro.org>
+Date:   Wed, 6 Dec 2023 12:09:49 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] dt-bindings: memory: additional compatible strings
- for Broadcom DPFE
+Subject: Re: [PATCH 2/4] memory: brcmstb_dpfe: introduce version-specific
+ compatible strings
 Content-Language: en-US
 To:     Markus Mayer <mmayer@broadcom.com>,
         Florian Fainelli <florian.fainelli@broadcom.com>,
@@ -65,7 +65,7 @@ Cc:     Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
         Device Tree Mailing List <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 References: <20231205184741.3092376-1-mmayer@broadcom.com>
- <20231205184741.3092376-2-mmayer@broadcom.com>
+ <20231205184741.3092376-3-mmayer@broadcom.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -111,7 +111,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231205184741.3092376-2-mmayer@broadcom.com>
+In-Reply-To: <20231205184741.3092376-3-mmayer@broadcom.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -125,37 +125,33 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 05/12/2023 19:47, Markus Mayer wrote:
-> Add versioned compatible strings for Broadcom DPFE. These take the form
-> brcm,dpfe-cpu-v<N> where <N> is a number from 1 to 4.
-> 
-> These API version related compatible strings are more specific than the
-> catch-all "brcm,dpfe-cpu" and more generic than chip-specific compatible
-> strings.
+> Introduce compatible strings brcm,dpfe-cpu-v1 through brcm,dpfe-cpu-v3
+> to the Broadcom DPFE driver.
 
-None of this explains: Why? I don't see any point in this and commit
-does not explain.
+No, why?
 
 > 
 > Signed-off-by: Markus Mayer <mmayer@broadcom.com>
 > ---
->  .../bindings/memory-controllers/brcm,dpfe-cpu.yaml        | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+>  drivers/memory/brcmstb_dpfe.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.yaml b/Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.yaml
-> index 08cbdcddfead..6dffa7b62baf 100644
-> --- a/Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.yaml
-> +++ b/Documentation/devicetree/bindings/memory-controllers/brcm,dpfe-cpu.yaml
-> @@ -16,6 +16,11 @@ properties:
->        - enum:
->            - brcm,bcm7271-dpfe-cpu
->            - brcm,bcm7268-dpfe-cpu
-> +      - enum:
-> +          - brcm,dpfe-cpu-v1
-> +          - brcm,dpfe-cpu-v2
-> +          - brcm,dpfe-cpu-v3
-> +          - brcm,dpfe-cpu-v4
+> diff --git a/drivers/memory/brcmstb_dpfe.c b/drivers/memory/brcmstb_dpfe.c
+> index a7ab3d377206..66876b409e59 100644
+> --- a/drivers/memory/brcmstb_dpfe.c
+> +++ b/drivers/memory/brcmstb_dpfe.c
+> @@ -924,6 +924,12 @@ static const struct of_device_id brcmstb_dpfe_of_match[] = {
+>  	{ .compatible = "brcm,bcm7271-dpfe-cpu", .data = &dpfe_api_old_v2 },
+>  	{ .compatible = "brcm,bcm7278-dpfe-cpu", .data = &dpfe_api_old_v2 },
+>  	{ .compatible = "brcm,bcm7211-dpfe-cpu", .data = &dpfe_api_new_v2 },
+> +
+> +	/* Match specific DCPU versions */
+> +	{ .compatible = "brcm,dpfe-cpu-v1", .data = &dpfe_api_old_v2 },
+> +	{ .compatible = "brcm,dpfe-cpu-v2", .data = &dpfe_api_new_v2 },
+> +	{ .compatible = "brcm,dpfe-cpu-v3", .data = &dpfe_api_v3 },
 
-No, that's just wrong. So you want to say bcm7271 is brcm,dpfe-cpu-v4?
+Pointless change.
+
 
 Best regards,
 Krzysztof
