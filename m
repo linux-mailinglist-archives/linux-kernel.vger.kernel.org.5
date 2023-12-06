@@ -2,94 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFF7806FF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB1F807045
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:54:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378380AbjLFMic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 07:38:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48758 "EHLO
+        id S1378205AbjLFMyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 07:54:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378326AbjLFMia (ORCPT
+        with ESMTP id S1378143AbjLFMyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 07:38:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37B412F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:38:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701866316;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TZQQ6BqHEI6hRsDFbv1/FW96mENZWMKFWNl0n0AGdhw=;
-        b=jVISvmAWQCxftrAgR0WXMbr1r6rJPZTLPh+0On0WaSzV0TF+5AC94pV5915Rdo2BQzapDM
-        cwKFcu1T5PfsT3CrbxqwW4cSxbPygJm+jUpFozoldVhTfjO06nz5gJlBir/BEgNtOezbB9
-        vdN1SacXazgaHvpQo4j7FFmz7y/D3Gk=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-557-thj-CJ5vMACQz1wZWLOP9w-1; Wed,
- 06 Dec 2023 07:38:31 -0500
-X-MC-Unique: thj-CJ5vMACQz1wZWLOP9w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        Wed, 6 Dec 2023 07:54:31 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33249FA;
+        Wed,  6 Dec 2023 04:54:37 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F74F29AB3F3;
-        Wed,  6 Dec 2023 12:38:31 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.161])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C252E3C2E;
-        Wed,  6 Dec 2023 12:38:29 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <447324.1701860432@warthog.procyon.org.uk>
-References: <447324.1701860432@warthog.procyon.org.uk>
-To:     fstests@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-cifs@vger.kernel.org
-Cc:     dhowells@redhat.com, Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Issues with FIEMAP, xfstests, Samba, ksmbd and CIFS
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9AF461FD0C;
+        Wed,  6 Dec 2023 12:54:35 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 13BCD13403;
+        Wed,  6 Dec 2023 12:54:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id 9HGHAwtvcGV6dAAAn2gu4w
+        (envelope-from <tzimmermann@suse.de>); Wed, 06 Dec 2023 12:54:35 +0000
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     ardb@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, bhelgaas@google.com, arnd@arndb.de,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        javierm@redhat.com
+Cc:     linux-arch@vger.kernel.org, linux-efi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH 0/3] arch/x86: Remove unnecessary dependencies on bootparam.h
+Date:   Wed,  6 Dec 2023 13:38:36 +0100
+Message-ID: <20231206125433.18420-1-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <449657.1701866309.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 06 Dec 2023 12:38:29 +0000
-Message-ID: <449658.1701866309@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 9AF461FD0C
+X-Spam-Score: 6.49
+X-Spamd-Result: default: False [6.49 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         R_MISSING_CHARSET(2.50)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         RCPT_COUNT_TWELVE(0.00)[22];
+         MID_CONTAINS_FROM(1.00)[];
+         FREEMAIL_TO(0.00)[kernel.org,linutronix.de,redhat.com,alien8.de,linux.intel.com,zytor.com,google.com,arndb.de,linux.ibm.com,gmail.com,paul-moore.com,namei.org,hallyn.com];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[];
+         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spamd-Bar: ++++++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of tzimmermann@suse.de) smtp.mailfrom=tzimmermann@suse.de
+X-Rspamd-Server: rspamd1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells <dhowells@redhat.com> wrote:
+Reduce built time in some cases by removing unnecessary include statements
+for <asm/bootparam.h>. Reorganize some header files accordingly.
 
-> So:
-> =
+While working on the kernel's boot-up graphics, I noticed that touching
+include/linux/screen_info.h triggers a complete rebuilt of the kernel
+on x86. It turns out that the architecture's PCI and EFI headers include
+<asm/bootparam.h>, which depends on <linux/screen_info.h>. But none of
+the drivers have any business with boot parameters or the screen_info
+state.
 
->  - Should Samba and ksmbd be using FALLOC_FL_ZERO_RANGE rather than
->    PUNCH_HOLE?
-> =
+The patchset moves a few limes from pci.h and efi.h into separate header
+files and then removes the obsolete include statements on x86. I did
 
->  - Should Samba and ksmbd be using FIEMAP rather than SEEK_DATA/HOLE?
+  make allmodconfig
+  make -j28
+  touch include/linus/screen_info.h
+  time -j28 make
 
- - Should Samba and ksmbd report 'unwritten' extents as being allocated?
+to measure the time it takes to rebuild. Results without the patchset
+are around 20 minutes.
 
->  - Should xfstests be less exacting in its FIEMAP analysis - or should t=
-his be
->    skipped for cifs?  I don't want to skip generic/009 as it checks some
->    corner cases that need testing, but it may not be possible to make th=
-e
->    exact extent matching work.
+  real    20m46,705s
+  user    354m29,166s
+  sys     28m27,359s
+
+And with the patchset applied it goes down to about a minute.
+
+  real    0m58,232s
+  user    4m37,617s
+  sys     0m34,993s
+
+The test system was an Intel i5-13500.
+
+Thomas Zimmermann (3):
+  arch/x86: Move struct pci_setup_rom into pci_setup.h
+  arch/x86: Add <asm/ima-efi.h> for arch_ima_efi_boot_mode
+  arch/x86: Do not include <asm/bootparam.h> in several header files
+
+ arch/x86/include/asm/efi.h              |  3 ---
+ arch/x86/include/asm/ima-efi.h          | 12 ++++++++++++
+ arch/x86/include/asm/kexec.h            |  1 -
+ arch/x86/include/asm/mem_encrypt.h      |  2 +-
+ arch/x86/include/asm/pci.h              | 13 -------------
+ arch/x86/include/asm/pci_setup.h        | 19 +++++++++++++++++++
+ arch/x86/include/asm/sev.h              |  3 ++-
+ arch/x86/include/asm/x86_init.h         |  2 --
+ arch/x86/pci/common.c                   |  1 +
+ drivers/firmware/efi/libstub/x86-stub.c |  1 +
+ include/asm-generic/Kbuild              |  1 +
+ include/asm-generic/ima-efi.h           | 16 ++++++++++++++++
+ security/integrity/ima/ima_efi.c        |  5 +----
+ 13 files changed, 54 insertions(+), 25 deletions(-)
+ create mode 100644 arch/x86/include/asm/ima-efi.h
+ create mode 100644 arch/x86/include/asm/pci_setup.h
+ create mode 100644 include/asm-generic/ima-efi.h
+
+
+base-commit: a9d99261a978835b02e248fe18af3026416af3e8
+-- 
+2.43.0
 
