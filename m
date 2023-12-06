@@ -2,263 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DC7806BAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF0A806BB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377610AbjLFKP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:15:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
+        id S1377625AbjLFKQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:16:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377549AbjLFKP4 (ORCPT
+        with ESMTP id S1377538AbjLFKQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:15:56 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5019F112
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:16:01 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E1EA1474;
-        Wed,  6 Dec 2023 02:16:47 -0800 (PST)
-Received: from [10.57.73.130] (unknown [10.57.73.130])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C962C3F762;
-        Wed,  6 Dec 2023 02:15:57 -0800 (PST)
-Message-ID: <c20b75c2-1636-47b8-b120-e0b8da326374@arm.com>
-Date:   Wed, 6 Dec 2023 10:15:56 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 04/10] mm: thp: Support allocation of anonymous
- multi-size THP
-Content-Language: en-GB
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231204102027.57185-1-ryan.roberts@arm.com>
- <20231204102027.57185-5-ryan.roberts@arm.com>
- <CAGsJ_4zG6W_Z-u+3QcRDn4ByoeqUXjMusNS0RotfRMSqo8RCHg@mail.gmail.com>
- <CAGsJ_4zYhJWGx1DnHTiDnP3h1m8_rr6ZT6fXt8pO=jzs9QZS-A@mail.gmail.com>
- <5216caaf-1fcf-4715-99c3-521e2a1cc756@arm.com>
- <CAGsJ_4xHib66MP3-o9jpHGzKecmgb-omBXinazBbrCiwHkonEQ@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4xHib66MP3-o9jpHGzKecmgb-omBXinazBbrCiwHkonEQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Dec 2023 05:16:46 -0500
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F6B109
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:16:52 -0800 (PST)
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C24CA44446
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 10:16:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1701857808;
+        bh=fPFWRVi4UC1wxgK1BZ+tE5lPscptXMAGgYLtmt3rvb8=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=g9vU4SH26SbwgJh42XbYvWGRGF5SUE8+QXLC9lDpJ7RF3f074N4NaQH9iFbtOV2pO
+         Pq9ui69L17HBbnUUe0lAqrpGUdNMm/WpuLpSiyezL+CuXSEeO0048UXzFoX0zyXxTF
+         72JJb6LjwS0ei5dBIVR7z/21jWRE+eqkGTT1juJNta/abiO3Rft2tryLnTtsKQtjg8
+         Y52WPgYCVtEnag5L6pVLEerz90KFqNnB/ZSN2ngOBzShehBbH7wtauIM5iZubfzmf7
+         1G822lW3AaDJan60p93gBZxKSa3spQW9opMnhlt3s8UkclUs7N+t/Ct+t9lQOvRm0n
+         ga3Ml+BNO08Ng==
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2ca0cf1b72aso24539111fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:16:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701857794; x=1702462594;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fPFWRVi4UC1wxgK1BZ+tE5lPscptXMAGgYLtmt3rvb8=;
+        b=dT7b1ZqsHMZGKaMn9MFIeR1Hpu6np++hcs+4kqWU/VODd0Bv4Ozn2vFzymM/lwHXOV
+         QQPWMIOcB77e3lxNoj0WfIarU6I/VuyXnwbwv29bmZULr6x2QDuOhRsjeWJOoLIwsU8b
+         N2zBGM+mN2ZCi3FV/ARNAoSLstQggMP6gdYIi927nFkxJuAX/sFeiW0wiL4rp/qTnjXE
+         JRIOGmHugF8z+RFDIuqXQSiTTAJNsw3SOyjKSB7h6bYoVC64xWCAjYBbSH3g4qOYltLK
+         Lye02pik3NaB+KOwcMDZiCG7asfOiDEUEUjcWsFGuuBbslEZcT/z2vSqRonB2WLjYRlx
+         iOZQ==
+X-Gm-Message-State: AOJu0YxK6WgWHk6PlUrl0w47NsLzxWoCdQZXa4wWnkjkCbubQWdhw087
+        bxEQy5VHHVsqwtuXxKLGj//1ojcTks5sYi56dXURW7AOIPMXsMm2BP5xlgyAGJZaxbIQcdiBVQt
+        ltujBH/OO7os6aL86lvOUNuUBGr7uo0PQKLEWLAWY+T8GOIZqqOIgWgtq1Q==
+X-Received: by 2002:a2e:740e:0:b0:2c9:f925:df0e with SMTP id p14-20020a2e740e000000b002c9f925df0emr211949ljc.34.1701857794550;
+        Wed, 06 Dec 2023 02:16:34 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEq781bpnuacD5QiFiBCg1mUOnOOSBbtHNvzHUW70ZtF1hR2gyBittWXfHSvEnQsp0nEdWGwPsBBWgtAAGiL6c=
+X-Received: by 2002:a2e:740e:0:b0:2c9:f925:df0e with SMTP id
+ p14-20020a2e740e000000b002c9f925df0emr211946ljc.34.1701857794264; Wed, 06 Dec
+ 2023 02:16:34 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 6 Dec 2023 04:16:33 -0600
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <IA1PR20MB49531468A92E2A7670F1EE0BBB84A@IA1PR20MB4953.namprd20.prod.outlook.com>
+References: <CAJM55Z9WO+0Yb-at6CAR6=UP9j60iQz=s7MK-3qiT=w-8N6+Zw@mail.gmail.com>
+ <IA1PR20MB49531468A92E2A7670F1EE0BBB84A@IA1PR20MB4953.namprd20.prod.outlook.com>
+Mime-Version: 1.0
+Date:   Wed, 6 Dec 2023 04:16:33 -0600
+Message-ID: <CAJM55Z-hCzuw+eQ-ABXoBYX7oSScXTKHwUzEe_2k6eSyy5HqKQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] riscv: sophgo: add clock support for Sophgo CV1800 SoCs
+To:     Inochi Amaoto <inochiama@outlook.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Chen Wang <unicorn_wang@outlook.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Jisheng Zhang <jszhang@kernel.org>, qiujingbao.dlmu@gmail.com,
+        dlan@gentoo.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 20:16, Barry Song wrote:
-> On Tue, Dec 5, 2023 at 11:48 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 05/12/2023 01:24, Barry Song wrote:
->>> On Tue, Dec 5, 2023 at 9:15 AM Barry Song <21cnbao@gmail.com> wrote:
->>>>
->>>> On Mon, Dec 4, 2023 at 6:21 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>>
->>>>> Introduce the logic to allow THP to be configured (through the new sysfs
->>>>> interface we just added) to allocate large folios to back anonymous
->>>>> memory, which are larger than the base page size but smaller than
->>>>> PMD-size. We call this new THP extension "multi-size THP" (mTHP).
->>>>>
->>>>> mTHP continues to be PTE-mapped, but in many cases can still provide
->>>>> similar benefits to traditional PMD-sized THP: Page faults are
->>>>> significantly reduced (by a factor of e.g. 4, 8, 16, etc. depending on
->>>>> the configured order), but latency spikes are much less prominent
->>>>> because the size of each page isn't as huge as the PMD-sized variant and
->>>>> there is less memory to clear in each page fault. The number of per-page
->>>>> operations (e.g. ref counting, rmap management, lru list management) are
->>>>> also significantly reduced since those ops now become per-folio.
->>>>>
->>>>> Some architectures also employ TLB compression mechanisms to squeeze
->>>>> more entries in when a set of PTEs are virtually and physically
->>>>> contiguous and approporiately aligned. In this case, TLB misses will
->>>>> occur less often.
->>>>>
->>>>> The new behaviour is disabled by default, but can be enabled at runtime
->>>>> by writing to /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled
->>>>> (see documentation in previous commit). The long term aim is to change
->>>>> the default to include suitable lower orders, but there are some risks
->>>>> around internal fragmentation that need to be better understood first.
->>>>>
->>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>> ---
->>>>>  include/linux/huge_mm.h |   6 ++-
->>>>>  mm/memory.c             | 106 ++++++++++++++++++++++++++++++++++++----
->>>>>  2 files changed, 101 insertions(+), 11 deletions(-)
->>>>>
->>>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->>>>> index bd0eadd3befb..91a53b9835a4 100644
->>>>> --- a/include/linux/huge_mm.h
->>>>> +++ b/include/linux/huge_mm.h
->>>>> @@ -68,9 +68,11 @@ extern struct kobj_attribute shmem_enabled_attr;
->>>>>  #define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
->>>>>
->>>>>  /*
->>>>> - * Mask of all large folio orders supported for anonymous THP.
->>>>> + * Mask of all large folio orders supported for anonymous THP; all orders up to
->>>>> + * and including PMD_ORDER, except order-0 (which is not "huge") and order-1
->>>>> + * (which is a limitation of the THP implementation).
->>>>>   */
->>>>> -#define THP_ORDERS_ALL_ANON    BIT(PMD_ORDER)
->>>>> +#define THP_ORDERS_ALL_ANON    ((BIT(PMD_ORDER + 1) - 1) & ~(BIT(0) | BIT(1)))
->>>>>
->>>>>  /*
->>>>>   * Mask of all large folio orders supported for file THP.
->>>>> diff --git a/mm/memory.c b/mm/memory.c
->>>>> index 3ceeb0f45bf5..bf7e93813018 100644
->>>>> --- a/mm/memory.c
->>>>> +++ b/mm/memory.c
->>>>> @@ -4125,6 +4125,84 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>>>>         return ret;
->>>>>  }
->>>>>
->>>>> +static bool pte_range_none(pte_t *pte, int nr_pages)
->>>>> +{
->>>>> +       int i;
->>>>> +
->>>>> +       for (i = 0; i < nr_pages; i++) {
->>>>> +               if (!pte_none(ptep_get_lockless(pte + i)))
->>>>> +                       return false;
->>>>> +       }
->>>>> +
->>>>> +       return true;
->>>>> +}
->>>>> +
->>>>> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->>>>> +static struct folio *alloc_anon_folio(struct vm_fault *vmf)
->>>>> +{
->>>>> +       gfp_t gfp;
->>>>> +       pte_t *pte;
->>>>> +       unsigned long addr;
->>>>> +       struct folio *folio;
->>>>> +       struct vm_area_struct *vma = vmf->vma;
->>>>> +       unsigned long orders;
->>>>> +       int order;
->>>>> +
->>>>> +       /*
->>>>> +        * If uffd is active for the vma we need per-page fault fidelity to
->>>>> +        * maintain the uffd semantics.
->>>>> +        */
->>>>> +       if (userfaultfd_armed(vma))
->>>>> +               goto fallback;
->>>>> +
->>>>> +       /*
->>>>> +        * Get a list of all the (large) orders below PMD_ORDER that are enabled
->>>>> +        * for this vma. Then filter out the orders that can't be allocated over
->>>>> +        * the faulting address and still be fully contained in the vma.
->>>>> +        */
->>>>> +       orders = thp_vma_allowable_orders(vma, vma->vm_flags, false, true, true,
->>>>> +                                         BIT(PMD_ORDER) - 1);
->>>>> +       orders = thp_vma_suitable_orders(vma, vmf->address, orders);
->>>>> +
->>>>> +       if (!orders)
->>>>> +               goto fallback;
->>>>> +
->>>>> +       pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
->>>>> +       if (!pte)
->>>>> +               return ERR_PTR(-EAGAIN);
->>>>> +
->>>>> +       order = first_order(orders);
->>>>> +       while (orders) {
->>>>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
->>>>> +               vmf->pte = pte + pte_index(addr);
->>>>> +               if (pte_range_none(vmf->pte, 1 << order))
->>>>> +                       break;
->>>>> +               order = next_order(&orders, order);
->>>>> +       }
->>>>> +
->>>>> +       vmf->pte = NULL;
->>>>> +       pte_unmap(pte);
->>>>> +
->>>>> +       gfp = vma_thp_gfp_mask(vma);
->>>>> +
->>>>> +       while (orders) {
->>>>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
->>>>> +               folio = vma_alloc_folio(gfp, order, vma, addr, true);
->>>>> +               if (folio) {
->>>>> +                       clear_huge_page(&folio->page, addr, 1 << order);
->>>>
->>>> Minor.
->>>>
->>>> Do we have to constantly clear a huge page? Is it possible to let
->>>> post_alloc_hook()
->>>> finish this job by using __GFP_ZERO/__GFP_ZEROTAGS as
->>>> vma_alloc_zeroed_movable_folio() is doing?
->>
->> I'm currently following the same allocation pattern as is done for PMD-sized
->> THP. In earlier versions of this patch I was trying to be smarter and use the
->> __GFP_ZERO/__GFP_ZEROTAGS as you suggest, but I was advised to keep it simple
->> and follow the existing pattern.
->>
->> I have a vague recollection __GFP_ZERO is not preferred for large folios because
->> of some issue with virtually indexed caches? (Matthew: did I see you mention
->> that in some other context?)
->>
->> That said, I wasn't aware that Android ships with
->> CONFIG_INIT_ON_ALLOC_DEFAULT_ON (I thought it was only used as a debug option),
->> so I can see the potential for some overhead reduction here.
->>
->> Options:
->>
->>  1) leave it as is and accept the duplicated clearing
->>  2) Pass __GFP_ZERO and remove clear_huge_page()
->>  3) define __GFP_SKIP_ZERO even when kasan is not enabled and pass it down so
->>     clear_huge_page() is the only clear
->>  4) make clear_huge_page() conditional on !want_init_on_alloc()
->>
->> I prefer option 4. What do you think?
-> 
-> either 1 and 4 is ok to me if we will finally remove this duplicated
-> clear_huge_page on top.
-> 4 is even better as it can at least temporarily resolve the problem.
+Inochi Amaoto wrote:
+> >Inochi Amaoto wrote:
+> >> Add clock controller support for the Sophgo CV1800B and CV1812H.
+> >>
+> >> This patch follow this patch series:
+> >> https://lore.kernel.org/all/IA1PR20MB495399CAF2EEECC206ADA7ABBBD5A@IA1PR20MB4953.namprd20.prod.outlook.com/
+> >>
+> >> Changed from v1:
+> >> 1. fix license issues.
+> >>
+> >> Inochi Amaoto (4):
+> >>   dt-bindings: clock: sophgo: Add clock controller of CV1800 series SoC
+> >>   clk: sophgo: Add CV1800 series clock controller driver
+> >>   riscv: dts: sophgo: add clock generator for Sophgo CV1800 series SoC
+> >>   riscv: dts: sophgo: add uart clock for Sophgo CV1800 series SoC
+> >
+> >Hi Inochi,
+> >
+> >This series seems to be missing patch 1 and 2. If you did send them, but just
+> >omitted linux-riscv from those patches, please don't do that. Having the whole
+> >series makes it a lot easier to review without having to hunt down all the
+> >missing parts on lore.kernel.org.
+> >
+> >scripts/get_maintainer.pl does support muliple patches as input
+> >
+> >/Emil
+> >
+>
+> Hi Emil,
+>
+> The get_maintainer.pl does not give me linux-riscv mail list for the first
+> and second patch. I have added this to the second one, but the patch is
+> held by the mail list since is too big. Anyway, I will add this mail list
+> manually if you need. Sorry for this inconvenience.
 
-I'm going to stick with option 1 for this series. Then we can fix it uniformly
-here and for PMD-sized THP in a separate patch (possibly with the approach
-suggested in 4).
+No worries. Yeah, that's what I meant by get_maintainer.pl supporting multiple
+patches.  You can do something like
 
-> 
-> in Android gki_defconfig,
-> https://android.googlesource.com/kernel/common/+/refs/heads/android14-6.1-lts/arch/arm64/configs/gki_defconfig
-> 
-> Android always has the below,
-> CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y
-> 
-> here is some explanation for the reason,
-> https://source.android.com/docs/security/test/memory-safety/zero-initialized-memory
-> 
->>
->> As an aside, I've also noticed that clear_huge_page() should take vmf->address
->> so that it clears the faulting page last to keep the cache hot. If we decide on
->> an option that keeps clear_huge_page(), I'll also make that change.
+  git format-patch <starting point>..
+  ./scripts/get_maintainer.pl *.patch
 
-I'll make this change for the next version.
+..to get a list of recipients for the whole series.
 
->>
->> Thanks,
->> Ryan
->>
->>>>
-> 
-> Thanks
-> Barry
-
+/Emil
