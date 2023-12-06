@@ -2,171 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D406807548
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:38:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A751B80754D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379362AbjLFQit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:38:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
+        id S1442589AbjLFQi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:38:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378708AbjLFQis (ORCPT
+        with ESMTP id S1379366AbjLFQix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:38:48 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8209AD3;
-        Wed,  6 Dec 2023 08:38:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=evl1U5G+v7p9gMxFFsHi0NmzyC/QyjntfdGiRP4l5KI=; b=mFV0PJjQXYK/i1bHZs3i4ArIx2
-        d+67mDb1sq/1LHA4CRjlKQFBybEQ/pPdtvl3YCA6rjyaE1TstBZDO3xznhyQPDrCnlR9QGuHq3P+S
-        narwijdN41kTVPuDq/6+3vxrGUyBvNIMT9JwiAoZ+bKsub8Bznx2HjLBVgDnJa7Nw9VaQgcFYyPFS
-        crmsGQu6piC1a+orpEC7xdDPk1laSZFsjU9j97438gE7BXKWwta+0GMp+qulr7yAxnnu2WxNfAdpE
-        JfXYDiufGNKc/x4BwwXFLE93CGGLVcxqD4Rmg8yirLAoTf4UUc8Ax39kqbOCpn2HNkZKVZz0E48Xo
-        Wk6R1rlw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1rAuue-0034Um-DJ; Wed, 06 Dec 2023 16:38:16 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 09FD5300451; Wed,  6 Dec 2023 17:38:15 +0100 (CET)
-Date:   Wed, 6 Dec 2023 17:38:14 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231206163814.GB36423@noisy.programming.kicks-ass.net>
-References: <20231130133630.192490507@infradead.org>
- <20231130134204.136058029@infradead.org>
- <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
- <20231204091334.GM3818@noisy.programming.kicks-ass.net>
- <20231204111128.GV8262@noisy.programming.kicks-ass.net>
- <20231204125239.GA1319@noisy.programming.kicks-ass.net>
- <ZW4LjmUKj1q6RWdL@krava>
- <20231204181614.GA7299@noisy.programming.kicks-ass.net>
- <20231204183354.GC7299@noisy.programming.kicks-ass.net>
- <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+        Wed, 6 Dec 2023 11:38:53 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7782FA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:38:59 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7c461a8cb0dso1473295241.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 08:38:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701880739; x=1702485539; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JbcOYch65HQgwW4bXeNQNStE/Bld2otdL+K6EjO7ssY=;
+        b=PmEKKJUIVcUp9Gxuf3aFfdxZyOViqVpHsUBLh/iW827KBOcUMfNFsu02LTOFjHOZWh
+         GhSiWdukxLCDFabebhw+pYRkab2cJTcg98+oHdmaIRmGxvsOH5CFUXDCvbOqBhsG0zPv
+         u2v6m3s4XX06toKFB1JeNiFtaN8IXDGTKVTOB3kPAqwOfw++t3kSECOWQdii6+VZwZEn
+         tYuv2P+lhTmBUeuyuv6zdlYa0Fk0xIB9hzEc2UGwuI4y0mhm3TKDWLdHhGtd5DpC+Hss
+         Jp+H8DdnblZ8IZdZ0Xkf9DUb7AdebwV5QLjNwNjclHa4BwLGIPsnl6DJAtEBl4HHGnqH
+         R0mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701880739; x=1702485539;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JbcOYch65HQgwW4bXeNQNStE/Bld2otdL+K6EjO7ssY=;
+        b=vZur8GA4VyoTh+NSy6aMUcSaOgvvndITiOTvAAjYMcp0P8jx5HAuAJJMGJZAxKOczo
+         OazFui5xRxWJW2jSXyrK/kMVWJeBK3DB0VOMaoRjNKP0cODetrqQb3CICb/qN1zel73T
+         R8UMY+sH3OXhMnZw4SmDpJ49g1BaDYAyloIKqjJymNo8jckzS762yMtx9R1QDm+4Iet8
+         DSdX9fZtdOm1fNVt3HeyZ8m7QibVZPkCNELrbsA2+fTMeYXzRXgU0lnfGuzMkCitdxua
+         UJdKN8ND8Y7teN1Pj0fIrUFuwiJK5gdRFXJOhGiaHyu5YALY9j+Afhep+7y/qbeCY/O8
+         LnUw==
+X-Gm-Message-State: AOJu0YxXrZe7m0G5AkqvMgdwNchWD0+tppFfnSR5rU+CFsD1C7OOWlm6
+        R1sdac1zau1ewvoksIkt0N/pf5tVCMNxdrgZMH5ILMzkAy/xPGi1hxXw70uB
+X-Google-Smtp-Source: AGHT+IERg2HJ276lhfxN7rCRC03VoISQfXlpwt3/L6+Zjw+3y0AvD8tv/uQ/BP1oHi3y+u0vTOleQejpyX++CRsJv2s=
+X-Received: by 2002:a1f:c604:0:b0:4b2:b4a1:593f with SMTP id
+ w4-20020a1fc604000000b004b2b4a1593fmr599469vkf.12.1701880738877; Wed, 06 Dec
+ 2023 08:38:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com>
+ <20231206-rb-new-condvar-methods-v1-2-33a4cab7fdaa@google.com> <096b7406-b57c-4daa-9a12-38338dbd91ef@gmail.com>
+In-Reply-To: <096b7406-b57c-4daa-9a12-38338dbd91ef@gmail.com>
+From:   Alice Ryhl <aliceryhl@google.com>
+Date:   Wed, 6 Dec 2023 17:38:45 +0100
+Message-ID: <CAH5fLgix=tV6=VvACx6mhSTe9_HiVjxdgGdt+5iTUJuGH6t_LA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] rust: sync: add `CondVar::wait_timeout`
+To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 05:18:31PM -0800, Alexei Starovoitov wrote:
+On Wed, Dec 6, 2023 at 4:53=E2=80=AFPM Martin Rodriguez Reboredo
+<yakoyoku@gmail.com> wrote:
+>
+> On 12/6/23 07:09, Alice Ryhl wrote:
+> > Sleep on a condition variable with a timeout.
+> >
+> > This is used by Rust Binder for process freezing. There, we want to
+> > sleep until the freeze operation completes, but we want to be able to
+> > abort the process freezing if it doesn't complete within some timeout.
+> >
+> > Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> > ---
+> > [...]
+> >
+> > +    /// Atomically releases the given lock (whose ownership is proven =
+by the guard) and puts the
+> > +    /// thread to sleep. It wakes up when notified by [`CondVar::notif=
+y_one`] or
+> > +    /// [`CondVar::notify_all`], or when the thread receives a signal.
+> > +    ///
+> > +    /// Returns whether there is a signal pending.
+>
+> Remaining jiffies or zero on timeout?
 
-> [   13.978497]  ? asm_exc_invalid_op+0x1a/0x20
-> [   13.978798]  ? tcp_set_ca_state+0x51/0xd0
-> [   13.979087]  tcp_v6_syn_recv_sock+0x45c/0x6c0
-> [   13.979401]  tcp_check_req+0x497/0x590
+Seems like I just copied this typo from the other `_internal` method.
+I'll fix it on both.
 
-> The stack trace doesn't have any bpf, but it's a bpf issue too.
-> Here tcp_set_ca_state() calls
-> icsk->icsk_ca_ops->set_state(sk, ca_state);
-> which calls bpf prog via bpf trampoline.
-
-
-
-Specifically, I think this is
-tools/testing/selftests/bpf/progs/bpf_cubic.c, which has:
-
-        .set_state      = (void *)bpf_cubic_state,
-
-which comes from:
-
-BPF_STRUCT_OPS(bpf_cubic_state, struct sock *sk, __u8 *new_state)
-
-which then wraps:
-
-BPF_PROG()
-
-which ends up generating:
-
-static __always_inline ___bpf_cubic_state(unsigned long long *ctx, struct sock *sk, __u8 *new_state)
-{
-	...
-}
-
-void bpf_cubic_state(unsigned long long *ctx)
-{
-	return ____bpf_cubic_state(ctx, ctx[0], ctx[1]);
-}
-
-
-I think this then uses arch_prepare_bpf_trampoline(), but I'm entirely
-lost how this all comes together, because the way I understand it the
-whole bpf_trampoline is used to hook into an ftrace __fentry hook.
-
-And a __fentry hook is very much not a function pointer. Help!?!?
-
-
-The other case:
-
-For tools/testing/selftests/bpf/progs/bloom_filter_bench.c we have:
-
-        bpf_for_each_map_elem(&array_map, bloom_callback, &data, 0);
-
-and here bloom callback appears like a normal function:
-
-static __u64
-bloom_callback(struct bpf_map *map, __u32 *key, void *val,
-               struct callback_ctx *data)
-
-
-But what do functions looks like in the JIT? What's the actual address
-that's then passed into the helper function. Given this seems to work
-without kCFI, it should at least have an ENDBR, but there's only 3 of
-those afaict:
-
-  - emit_prologue() first insn
-  - emit_prologue() tail-call site
-  - arch_preprare_bpf_trampoline()
-
-If the function passed to the helper is from do_jit()/emit_prologue(),
-then how do I tell what 'function' is being JIT'ed ?
-
-If it is arch_prepare_bpf_trampoline(), then we're back at the previous
-question and I don't see how a __fentry site becomes a callable function
-pointer.
-
-
-Any clues would be much appreciated.
+Alice
