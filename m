@@ -2,79 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E8A807BA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:45:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1339807BA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbjLFWpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 17:45:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49046 "EHLO
+        id S1377680AbjLFWqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 17:46:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjLFWpN (ORCPT
+        with ESMTP id S229642AbjLFWqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 17:45:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36160D5B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 14:45:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701902718;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IZn1S9TK1RDCj7RxM/b8SSbDoPqt7weXZUABUV6sUMI=;
-        b=WFld93N9K5z6wyBcqpg0qJN0WX7tCbgmv95pPON2ocdUeZCmLKIyic3EzoJ/koU9WBiP5O
-        /fmadk46Xur/UbmfPq7m/FgTxG7vIr8An4ZM5TwZ+cVMJvoAjGw7o4ncczPY3q0T+plgcp
-        NmN4/X68mYarkjpOR3zp4Jr8LGPmSl4=
-Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com
- [209.85.222.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-693-Vbb0H26-PBOvPvM1mqKO5Q-1; Wed, 06 Dec 2023 17:45:16 -0500
-X-MC-Unique: Vbb0H26-PBOvPvM1mqKO5Q-1
-Received: by mail-ua1-f71.google.com with SMTP id a1e0cc1a2514c-7c5f24e2b06so17744241.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 14:45:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701902716; x=1702507516;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IZn1S9TK1RDCj7RxM/b8SSbDoPqt7weXZUABUV6sUMI=;
-        b=oOFb706k4r1xcagnV7D7W/FnJMcJ91Aq4tj+SHlXUThQHCdhwoIdghHzWO/WzH5rsy
-         Ajycp1OZSLTtAkf5h2WGGplY+Th0MPY5VFIjTEx6Brh/uA3LmmcXYyd3tKbZqBPxZy+7
-         siKhAHJ5ZjSM86j8yZw78RXBZ+wkErfUmnewzXSNqT6NCZ0T39ZLBpvdN0SESVT8VGSm
-         5Ka8dTPSGPe63GePHIgXgRof1hCK9+WaNBQXJprxyat637v5jmS/V88C3dQkju6gl6zw
-         Hd1BolcA5N63Y7OE2LGUJPndyTQF25hjKfRobwwU66cE5JP2ei9Pl/xxU5ai7FnoxzqP
-         b51A==
-X-Gm-Message-State: AOJu0YwV7tjtVSkwEmEv3iY297QXcoj0Ji9PYqQIEE7ppjkegr/6KL7o
-        GeUcdXLt5oIimBTaQYqQxeQgdFYdrHMFYnCqiXUvXRXVeXjDoJ2uyRnaRwmV7IfrwR1/IyittAl
-        +d93FkVfQRV29uy3GYeBopeLbn2Oz+dTeCwJsAzlF
-X-Received: by 2002:a05:6102:6d1:b0:464:cac8:a03e with SMTP id m17-20020a05610206d100b00464cac8a03emr1957067vsg.1.1701902716171;
-        Wed, 06 Dec 2023 14:45:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFyLxIvkPiRa2M7n8tSqh+BF6QFOiI3tq/gZRUueOYOXw7oyWK3kLWbW/nDqJ4G5XcLMXhDdWeJGlMU3YLuzyc=
-X-Received: by 2002:a05:6102:6d1:b0:464:cac8:a03e with SMTP id
- m17-20020a05610206d100b00464cac8a03emr1957051vsg.1.1701902715890; Wed, 06 Dec
- 2023 14:45:15 -0800 (PST)
+        Wed, 6 Dec 2023 17:46:05 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4309A
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 14:46:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD94C433CC;
+        Wed,  6 Dec 2023 22:46:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701902772;
+        bh=8X83r5OTQETJP3BACOnnNmvlcihfILbuzFscWCAxC/E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DBITz3Evb8Pwetp5R1BX/tFnkZoyAtKKUV/uWrwF7tABe7ICWL3lGLG9fGeJRNEh2
+         hIAMeKvSoWhjBrD4nKn2NWSbVgPCWdnY9ceLFo7AAlnHqqdp1hfdZol1ciWCOeWYRk
+         OxJiPudSZ6CT+S/HHLd/56imUBovQ5/bcBj8n6KOEXm5dPqchdhBXKnOhyxFt8n8Da
+         B6sgEDnIXTEZnSf/qI77+lTdDMC0NljfrbIakg8olJFkf2/GQl81wNy4SxqGPNRcmd
+         1AYuSo/VkMYO6IPK9N0CA0G4+84nrBd/W5FIjMfgoq+sr0CILC8JN9Fkl4P5lghfGK
+         YzrPfzXhS0Qbg==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50bfd7be487so31240e87.0;
+        Wed, 06 Dec 2023 14:46:11 -0800 (PST)
+X-Gm-Message-State: AOJu0YxxielvOk4tzptiIZEbRZ5p7eH80M3dYbMyI1fJbTcePWGaf7En
+        8dauot9twohfk8lhgR1unH1iolK2DVN8EaBQMQ==
+X-Google-Smtp-Source: AGHT+IETBh4KfKssDYyvEIq/NaALVdw46jfGTFoCN6msOKDqdRYDMgd6Fi1n8WkusjpxfTjwzi1IHW56DDYo3kVPYHI=
+X-Received: by 2002:a05:6512:2251:b0:50b:f0df:57bb with SMTP id
+ i17-20020a056512225100b0050bf0df57bbmr1074743lfu.49.1701902769936; Wed, 06
+ Dec 2023 14:46:09 -0800 (PST)
 MIME-Version: 1.0
-References: <c858817d3e3be246a1a2278e3b42d06284e615e5.1700766316.git.maciej.szmigiero@oracle.com>
- <ZWTQuRpwPkutHY-D@google.com> <9a8e3cb95f3e1a69092746668f9643a25723c522.camel@redhat.com>
- <b3aec42f-8aa7-4589-b984-a483a80e4a42@maciej.szmigiero.name>
- <CALMp9eQvLpYdq=2cYyOBERBh2G+xubo6Mb0crWO=dugpie4BRg@mail.gmail.com> <00fa768e-eceb-48c3-ae23-1966f110ec49@maciej.szmigiero.name>
-In-Reply-To: <00fa768e-eceb-48c3-ae23-1966f110ec49@maciej.szmigiero.name>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Date:   Wed, 6 Dec 2023 23:45:02 +0100
-Message-ID: <CABgObfb_hv=_ksOrDLRSKjFpkQtjWh4oYHxzvK6oH=_YLgTn0A@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Allow XSAVES on CPUs where host doesn't use it
- due to an errata
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+References: <20231130191815.2421978-1-robh@kernel.org> <CAOMZO5AZNz1cRg+aYQjDmpZ75ATJQUTWmC5mx+vgaYcBL6M+2w@mail.gmail.com>
+ <CAL_JsqKLFpPo8xTh_vgWvDXSY5J8tQJZh9SrkW2EiK5V_ZNeeA@mail.gmail.com> <CAJ+vNU1DiFbQivka8gA1URiLMD2mWJnWSdn-77bEo8Uz0Liqcg@mail.gmail.com>
+In-Reply-To: <CAJ+vNU1DiFbQivka8gA1URiLMD2mWJnWSdn-77bEo8Uz0Liqcg@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 6 Dec 2023 16:45:57 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJmK5UDN_xKjJHac1L4Wsrx1GLDmeek5=K7gm=W9XPkOw@mail.gmail.com>
+Message-ID: <CAL_JsqJmK5UDN_xKjJHac1L4Wsrx1GLDmeek5=K7gm=W9XPkOw@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: imx8mm-venice: Fix PCI bus nodes
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     Fabio Estevam <festevam@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,40 +66,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 5:05=E2=80=AFPM Maciej S. Szmigiero
-<mail@maciej.szmigiero.name> wrote:
+On Tue, Dec 5, 2023 at 12:13=E2=80=AFPM Tim Harvey <tharvey@gateworks.com> =
+wrote:
 >
-> On 1.12.2023 00:57, Jim Mattson wrote:
-> > On Thu, Nov 30, 2023 at 2:00=E2=80=AFPM Maciej S. Szmigiero
-> > <mail@maciej.szmigiero.name> wrote:
-> >> I think that if particular guest would work on bare metal it should
-> >> work on "-cpu host" too - no tinkering should be required for such
-> >> basic functionality as being able to successfully finish booting.
+> On Thu, Nov 30, 2023 at 2:33=E2=80=AFPM Rob Herring <robh@kernel.org> wro=
+te:
 > >
-> > I disagree. Let's not focus on one particular erratum. If, for
-> > whatever reason, the host kernel is booted with "noxsaves," I don't
-> > think KVM should allow a guest to bypass that directive.
+> > On Thu, Nov 30, 2023 at 1:28=E2=80=AFPM Fabio Estevam <festevam@gmail.c=
+om> wrote:
+> > >
+> > > Hi Rob,
+> > >
+> > > On Thu, Nov 30, 2023 at 4:18=E2=80=AFPM Rob Herring <robh@kernel.org>=
+ wrote:
+> > > >
+> > > > The imx8mm-venice boards PCI bus nodes are a complete mess. The
+> > > > unit-addresses are wrong. The PCI bridge nodes are incomplete missi=
+ng
+> > > > "device_type" and "ranges" and just wrong for "#address-cells" and
+> > > > "#size-cells" values.
+> > > >
+> > > > All of these issues are reported warnings if anyone bothered to pay
+> > > > attention. Sigh.
 >
-> This could be achieved by either adding special "noxsaves" flag
-> or by setting X86_BUG_XSAVES_AVOID instead of clearing
-> X86_FEATURE_XSAVES on these CPUs.
+> Rob,
 >
-> Then the core kernel XSAVES code would check for lack of
-> X86_BUG_XSAVES_AVOID (in addition to checking for
-> presence of X86_FEATURE_XSAVES) while KVM would keep using
-> only X86_FEATURE_XSAVES.
+> Sorry about that. At the time the dt was submitted there were still so
+> many dt warnings it wasn't very clear what was a legitimate issue and
+> the PCI bindings are not that easy to understand.
+>
+> > >
+> > > The warnings are gone in linux-next:
+> > >
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/c=
+ommit/arch/arm64/boot/dts/freescale?h=3Dnext-20231130&id=3Dd61c5068729a76a6=
+183a897bcad4bf26e8d3d674
+> >
+> > Linux-next is wrong. The ethernet device should have a node name of
+> > 'ethernet'. The 'pcie' node name and 'device_type =3D "pci"' is for PCI
+> > buses/bridges only.
+>
+> So as Fabio has tried to fix this with a patch that landed in
+> linux-next this patch won't apply. I'll submit one that covers your
+> changes.
 
-This is feasible, on the other hand the erratum is pretty bad. Since
-the workaround is easy (just disable XSAVEC; and maybe XGETBV1 as
-well?), you could just do a printk_ratelimited() on the write to
-HV_X64_MSR_GUEST_OS_ID, in particular if:
+Thanks.
 
-1) guest CPUID has XSAVEC and SVM
+> It's always been unfortunate to have to have this level of detail in a
+> device-tree just to allow boot firmware to populate the mac address of
+> a PCI ethernet device.
 
-2) host CPUID does not have XSAVES
+More unfortunate are incomplete h/w designs lacking the MAC address. :(
 
-3) guest OS id indicates Windows Server 10.x (which is 2016 to 2022),
-which should be 0x0001040A00??????.
+Not really any way around it I think if you want something that works
+for any device and any number of devices.
 
-Paolo
-
+Rob
