@@ -2,102 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD9C8068DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF3F806839
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376729AbjLFHp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 02:45:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
+        id S1376986AbjLFH2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 02:28:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235442AbjLFHpF (ORCPT
+        with ESMTP id S229506AbjLFH2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 02:45:05 -0500
-X-Greylist: delayed 101238 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Dec 2023 23:44:58 PST
-Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1A1B31BDA
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:44:57 -0800 (PST)
-Received: from localhost.localdomain (unknown [10.190.70.17])
-        by mail-app3 (Coremail) with SMTP id cC_KCgD3_99KInBl+Mp+AA--.11318S4;
-        Wed, 06 Dec 2023 15:27:11 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/plane: fix error handling in __drm_universal_plane_init
-Date:   Wed,  6 Dec 2023 15:27:01 +0800
-Message-Id: <20231206072701.13276-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgD3_99KInBl+Mp+AA--.11318S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7tr48Jw4UuFW8GF18CF4fuFg_yoW8Gw1kpa
-        1UCFyYkr1jywsrKrZrAFsFvFW3Wa1fGry7uryUZwsxK3W5Kr9xJ348Aa47CFyqkw47Ww13
-        tr9xAr1DAF15Ar7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkI1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
-        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
-        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
-        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
-        CI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoTBmVsUQg4xgAcsv
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 6 Dec 2023 02:28:16 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB15122
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:28:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701847702; x=1733383702;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=y2BLxMeFCg26MvmvkQY1Eoek5zZc7iBvIKIQlKS+GRQ=;
+  b=WklE2TvqicchcTdFHV5OjOWvMZVMaNCtxDLebgdMYvZX3LhJ47/b2dTQ
+   xlCD1zu4TXVoj8yhCFAmdvTq8rSdf+67IZcxagl2VJNicYGPhjgazKw0Z
+   KrcSYfcSgdtHraM2Bj9BLAfs2+35qL64r1HZrN8e/QbgFmgV9dF1Vc66B
+   UYpqH/Fy0Fup50coGJT9h9xZ6jVrDnEkEpUoqG/upP/lPwiN1s+U00pYt
+   uDQsv2rYiByFKKV0v9PS2zLuPswX6cSnzhE3y5hVrDQib29R8YHm78RKX
+   8S+fyC9/xE12Pup9Vc+TCUIvVVXD9qWbqgAWZqRghb4JsOumPih3bQVEI
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="391189446"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="391189446"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 23:28:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="720987882"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="720987882"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 05 Dec 2023 23:28:19 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAmKO-000ASw-13;
+        Wed, 06 Dec 2023 07:28:16 +0000
+Date:   Wed, 6 Dec 2023 15:27:49 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>
+Subject: drivers/phy/marvell/phy-mmp3-hsic.c:61:31: sparse: sparse: cast
+ removes address space '__iomem' of expression
+Message-ID: <202312061540.CHjD764h-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__drm_universal_plane_init() frees plane->format_types and
-plane->modifiers on failure. However, sometimes its callers
-will free these two pointers again, which may lead to a
-double-free. One possible call chain is:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+commit: 0347c69214f4b600f40c0dc58945dc2798e2b3d9 phy: Add USB HSIC PHY driver for Marvell MMP3 SoC
+date:   3 years, 1 month ago
+config: openrisc-randconfig-r131-20231102 (https://download.01.org/0day-ci/archive/20231206/202312061540.CHjD764h-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231206/202312061540.CHjD764h-lkp@intel.com/reproduce)
 
-mdp5_plane_init
-  |-> drm_universal_plane_init
-  |     |-> __drm_universal_plane_init (first free)
-  |
-  |-> mdp5_plane_destroy
-        |-> drm_plane_cleanup (second free)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312061540.CHjD764h-lkp@intel.com/
 
-Fix this by setting the two pointers to NULL after kfree.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/phy/marvell/phy-mmp3-hsic.c:61:31: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/phy/marvell/phy-mmp3-hsic.c: note: in included file (through arch/openrisc/include/asm/io.h, include/linux/io.h):
+   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:299:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:299:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:299:22: sparse:     got restricted __le32 [usertype]
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/gpu/drm/drm_plane.c | 3 +++
- 1 file changed, 3 insertions(+)
+vim +/__iomem +61 drivers/phy/marvell/phy-mmp3-hsic.c
 
-diff --git a/drivers/gpu/drm/drm_plane.c b/drivers/gpu/drm/drm_plane.c
-index 24e7998d1731..1331b8224920 100644
---- a/drivers/gpu/drm/drm_plane.c
-+++ b/drivers/gpu/drm/drm_plane.c
-@@ -304,6 +304,7 @@ static int __drm_universal_plane_init(struct drm_device *dev,
- 	if (format_modifier_count && !plane->modifiers) {
- 		DRM_DEBUG_KMS("out of memory when allocating plane\n");
- 		kfree(plane->format_types);
-+		plane->format_types = NULL;
- 		drm_mode_object_unregister(dev, &plane->base);
- 		return -ENOMEM;
- 	}
-@@ -317,6 +318,8 @@ static int __drm_universal_plane_init(struct drm_device *dev,
- 	if (!plane->name) {
- 		kfree(plane->format_types);
- 		kfree(plane->modifiers);
-+		plane->format_types = NULL;
-+		plane->modifiers = NULL;
- 		drm_mode_object_unregister(dev, &plane->base);
- 		return -ENOMEM;
- 	}
+    39	
+    40	static int mmp3_hsic_phy_probe(struct platform_device *pdev)
+    41	{
+    42		struct device *dev = &pdev->dev;
+    43		struct phy_provider *provider;
+    44		struct resource *resource;
+    45		void __iomem *base;
+    46		struct phy *phy;
+    47	
+    48		resource = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+    49		base = devm_ioremap_resource(dev, resource);
+    50		if (IS_ERR(base)) {
+    51			dev_err(dev, "failed to remap PHY regs\n");
+    52			return PTR_ERR(base);
+    53		}
+    54	
+    55		phy = devm_phy_create(dev, NULL, &mmp3_hsic_phy_ops);
+    56		if (IS_ERR(phy)) {
+    57			dev_err(dev, "failed to create PHY\n");
+    58			return PTR_ERR(phy);
+    59		}
+    60	
+  > 61		phy_set_drvdata(phy, (void *)base);
+    62		provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
+    63		if (IS_ERR(provider)) {
+    64			dev_err(dev, "failed to register PHY provider\n");
+    65			return PTR_ERR(provider);
+    66		}
+    67	
+    68		return 0;
+    69	}
+    70	
+
 -- 
-2.17.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
