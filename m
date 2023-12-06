@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C55F807B3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 447F0807B3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377508AbjLFWQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 17:16:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36034 "EHLO
+        id S1377546AbjLFWQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 17:16:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377604AbjLFWQT (ORCPT
+        with ESMTP id S1377494AbjLFWQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 17:16:19 -0500
+        Wed, 6 Dec 2023 17:16:27 -0500
 Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A44710CC;
-        Wed,  6 Dec 2023 14:16:24 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B8E10C0;
+        Wed,  6 Dec 2023 14:16:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1701900966;
+        s=mail; t=1701900967;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UUceoDo9Bg6SpGiZe2ZgCOMicnEPcUc9b/fwjUuivoY=;
-        b=G/N+Q7u5a8AnNOuKK9v7ylF6N5PxskW1qBd6jHmgzsttUjRZ8Gq/NRnlyVX9Z170BM6CaI
-        4c7xiMHZGdQcU2G23B1jPnkp8FxaH6Ce9enhdgbJjBy3pe374kuHp+ZnTfReFnBEHdetMp
-        Cu0cJGd3vgTKER5bhQRTbOU3OqirSS4=
+        bh=J7Gat5xEw2YkABlBCPURNwKi3WZsiT+3bFDUKj6PsyA=;
+        b=iSkBdKepSayqda5WA4rmrRSNcXfR8Toke+qdFKqwV62t8Go/PtqoAp+8OyDTKnBYR7XpzQ
+        5eV3kNYrB5Aom1TNE4mz/Ss4He4KhcBV9qyTNAUb2wdVT55LNCp1KruxKW7Q3LWuQRcWZ/
+        YIg/OQYmGUU3xcz+9aOj9L5woebj0n4=
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -33,9 +33,9 @@ To:     Rob Herring <robh+dt@kernel.org>,
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 2/3] ARM: dts: samsung: exynos4210-i9100: Add node for touch keys
-Date:   Wed,  6 Dec 2023 23:15:55 +0100
-Message-ID: <20231206221556.15348-3-paul@crapouillou.net>
+Subject: [PATCH 3/3] ARM: dts: samsung: exynos4210-i9100: Add accelerometer node
+Date:   Wed,  6 Dec 2023 23:15:56 +0100
+Message-ID: <20231206221556.15348-4-paul@crapouillou.net>
 In-Reply-To: <20231206221556.15348-1-paul@crapouillou.net>
 References: <20231206221556.15348-1-paul@crapouillou.net>
 MIME-Version: 1.0
@@ -51,54 +51,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a Device Tree node to support the LED-backed "menu" and "back" keys.
+Add a Device Tree node for the ST Microelectronics "K3D" accelerometer
+chip found in the Galaxy S2.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- .../arm/boot/dts/samsung/exynos4210-i9100.dts | 23 ++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/samsung/exynos4210-i9100.dts | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
 diff --git a/arch/arm/boot/dts/samsung/exynos4210-i9100.dts b/arch/arm/boot/dts/samsung/exynos4210-i9100.dts
-index a076a1dfe41f..f03b03dbe9f2 100644
+index f03b03dbe9f2..7e57fe033e2b 100644
 --- a/arch/arm/boot/dts/samsung/exynos4210-i9100.dts
 +++ b/arch/arm/boot/dts/samsung/exynos4210-i9100.dts
-@@ -184,6 +184,28 @@ s5k5bafx_ep: endpoint {
- 		};
+@@ -421,6 +421,23 @@ touchscreen@4a {
  	};
+ };
  
-+	i2c-gpio-2 {
-+		compatible = "i2c-gpio";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
++&i2c_1 {
++	status = "okay";
 +
-+		sda-gpios = <&gpk1 2 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+		scl-gpios = <&gpk1 0 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+		i2c-gpio,delay-us = <2>;
++	samsung,i2c-sda-delay = <100>;
++	samsung,i2c-slave-addr = <0x10>;
++	samsung,i2c-max-bus-freq = <100000>;
 +
-+		touchscreen@20 {
-+			compatible = "cypress,aries-touchkey";
-+			reg = <0x20>;
++	lis3dh: accelerometer@19 {
++		compatible = "st,lis3dh-accel";
++		reg = <0x19>;
 +
-+			interrupt-parent = <&gpl0>;
-+			interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
-+
-+			vdd-supply = <&vtouchled_reg>;
-+			vcc-supply = <&vtouch_reg>;
-+			linux,keycodes = <KEY_MENU>, <KEY_BACK>;
-+		};
++		mount-matrix = "0", "-1", "0",
++			       "1", "0", "0",
++			       "0", "0", "1";
 +	};
++};
 +
- 	spi-3 {
- 		compatible = "spi-gpio";
- 		#address-cells = <1>;
-@@ -513,7 +535,6 @@ vtouch_reg: LDO11 {
- 				regulator-name = "TOUCH_2.8V";
- 				regulator-min-microvolt = <2800000>;
- 				regulator-max-microvolt = <2800000>;
--				regulator-always-on;
- 			};
+ &i2c_5 {
+ 	status = "okay";
  
- 			vpll_reg: LDO10 {
 -- 
 2.42.0
 
