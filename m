@@ -2,106 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D959806910
+	by mail.lfdr.de (Postfix) with ESMTP id 3861780690F
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbjLFIBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 03:01:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35544 "EHLO
+        id S1376843AbjLFIBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 03:01:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376792AbjLFIBA (ORCPT
+        with ESMTP id S229493AbjLFIBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 03:01:00 -0500
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AA11BF
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 00:01:04 -0800 (PST)
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b8b91c5638so5619574b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 00:01:04 -0800 (PST)
+        Wed, 6 Dec 2023 03:01:36 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F9E18D;
+        Wed,  6 Dec 2023 00:01:43 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d06819a9cbso28244085ad.1;
+        Wed, 06 Dec 2023 00:01:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701849703; x=1702454503; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NsJi+rAf1/pjE2JHoHBlEmIyNC7axeV0xxI+MHCEAm4=;
+        b=fP0yvDmxQqRudG4Pdu43JNlIHNl9YH7IUUsIrL+vM/acSlwTUDKOpC2/GgO7dcqfwP
+         TdwAq0zLRodGjfs7mk/dPMpTqYtIx2NMNO/XS1OUGKF/M+cZPsjPOoV+eX9NBBp6hPyZ
+         eaLv+yP4tvQj/xYuWPrgkREF8lhtTKcBvb3u/51d2LKzzxiIcqese8kWAtLME5LqdLtT
+         Ne+3yJGsJRi95r86O9k66hJ8NTh2Gb++mPoDhOFYCQRmbE8HXRHdHLEtbTG5rTNz6Az3
+         EuTzmhRPCNdrwUn0hRjgyZz3hCDDjhioI/SfN9l7Il6QaF64JQwEp28XHcm7OEw6OFlW
+         ZJZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701849664; x=1702454464;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xXvEmhbf0vqv+QYVlyHT/O3ASNpZFVKaAYpg1d6nP7A=;
-        b=X19SVGwzMSMeefLDiTguLa6kK4G3ufu2Xvq19XBISqE9fUrrQ3+mc8/pQSOm6oSaU/
-         ujWJLMEUytH+V22HyuxLEQgtnMly8PynDYKlP3cnkUnZ6Zo7tnexEF3dmz45FPNAsANs
-         i8cKz1Vr5/SQ6i/JPppRdJPnAe52k7v647hLEUkQ1deK33wIKCcrGxAjgosq/f6fwSfv
-         LXuDShFDlO3oPWzKmoI4aC+S56C3JxSUxk+AkRxWeWgr+bXBdVSOrEJAyQyNuLoy5AIa
-         dwW9+oi/Uuxs/23GO9fYn3DuDweXlveGfcRiTP9ZdD3BJPTGPPeOEm536us0HTjo5y0p
-         ZgWQ==
-X-Gm-Message-State: AOJu0YxdPrAPnv98yGYuLczbRM3+mdg/FfKKIL0AXiqEt/hKYDofh/AZ
-        63q6DE2ZZj3pzp3LdKCCOQ9iHQVKQJxRAD+nCMFwhi9DPfit
-X-Google-Smtp-Source: AGHT+IF0M8qgi6xXjSJ5/aa7U+hrg7otZ1MIO8sWYVAt1bbCxSIL6PaL4ONLYZslysJQQ1eZjOqZ8KqdE/s1INfD/Jb7oxXLQC3b
+        d=1e100.net; s=20230601; t=1701849703; x=1702454503;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NsJi+rAf1/pjE2JHoHBlEmIyNC7axeV0xxI+MHCEAm4=;
+        b=Pu+GXrPxVL6DrtfTiBaeLoL8F1Vwk50ArC1h6DjzzygGmqZJE97W1v2tcJFrV5pjoF
+         nAoBsNCe5+dB7x0pLupdqiwmuhrOeiNLimU5SQnYFx0IlSNdSEedwrLh3qlwtoKjcZef
+         GVqohVuL5OO8wAFvFpbSY5KuBpJ8s0X+nxYyqWipzztkE3I6yqnU0dyjRi0xqYee9e0x
+         ahICLvzxLlkJnIoov323swCcg9aXUTJo9dTz3v9Drmn7RIw7pYyouyILzzdlDHxcUzRS
+         aXebGDvTSSigQOMLXMa0mS3sC+qg5OgXWb4uM113EhecRzfNnzPeKBx0CIw3cdg/M+OB
+         DyUg==
+X-Gm-Message-State: AOJu0YzpWb1bdnKVDxrklF70S1vpHRgpiUbaRnKtY22fSBhbwCn21NjQ
+        cVN8/pwWp/m5SRsMd2QFw14=
+X-Google-Smtp-Source: AGHT+IGA+NdMOoVaQo27rb8nuihulPx4cilWx0f3Si9dfTy/8wUKfwgUOGwMnzP3PtmBSojs/chvDQ==
+X-Received: by 2002:a17:903:1208:b0:1d0:6ffd:ae04 with SMTP id l8-20020a170903120800b001d06ffdae04mr321640plh.107.1701849702755;
+        Wed, 06 Dec 2023 00:01:42 -0800 (PST)
+Received: from localhost.localdomain ([1.245.180.67])
+        by smtp.gmail.com with ESMTPSA id x4-20020a170902ec8400b001d08bbcf78bsm5976368plg.74.2023.12.06.00.01.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 00:01:41 -0800 (PST)
+Date:   Wed, 6 Dec 2023 17:01:27 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 04/21] KFENCE: cleanup kfence_guarded_alloc() after
+ CONFIG_SLAB removal
+Message-ID: <ZXAqV8wCjw/KAiRp@localhost.localdomain>
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-4-9c9c70177183@suse.cz>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:3084:b0:3b8:b447:2620 with SMTP id
- bl4-20020a056808308400b003b8b4472620mr416777oib.11.1701849664032; Wed, 06 Dec
- 2023 00:01:04 -0800 (PST)
-Date:   Wed, 06 Dec 2023 00:01:03 -0800
-In-Reply-To: <tencent_EE98A7D746C352F2464689936ED8AEF14C06@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000af965b060bd2c08b@google.com>
-Subject: Re: [syzbot] [net?] KMSAN: uninit-value in __llc_lookup_established
-From:   syzbot <syzbot+b5ad66046b913bc04c6f@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120-slab-remove-slab-v2-4-9c9c70177183@suse.cz>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Nov 20, 2023 at 07:34:15PM +0100, Vlastimil Babka wrote:
+> Some struct slab fields are initialized differently for SLAB and SLUB so
+> we can simplify with SLUB being the only remaining allocator.
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  mm/kfence/core.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> index 3872528d0963..8350f5c06f2e 100644
+> --- a/mm/kfence/core.c
+> +++ b/mm/kfence/core.c
+> @@ -463,11 +463,7 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
+>  	/* Set required slab fields. */
+>  	slab = virt_to_slab((void *)meta->addr);
+>  	slab->slab_cache = cache;
+> -#if defined(CONFIG_SLUB)
+>  	slab->objects = 1;
+> -#elif defined(CONFIG_SLAB)
+> -	slab->s_mem = addr;
+> -#endif
+>  
+>  	/* Memory initialization. */
+>  	set_canary(meta);
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KMSAN: uninit-value in __llc_lookup_established
+Looks good to me,
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-syz-executor.0 uses obsolete (PF_INET,SOCK_PACKET)
-3sp: 4352, 1024, 4352
-=====================================================
-BUG: KMSAN: uninit-value in __llc_lookup_established+0xe9d/0xf90
- __llc_lookup_established+0xe9d/0xf90
- __llc_lookup net/llc/llc_conn.c:611 [inline]
- llc_conn_handler+0x4bd/0x1360 net/llc/llc_conn.c:791
- llc_rcv+0x105b/0x1520 net/llc/llc_input.c:208
- __netif_receive_skb_one_core net/core/dev.c:5527 [inline]
- __netif_receive_skb+0x1a6/0x5a0 net/core/dev.c:5641
- netif_receive_skb_internal net/core/dev.c:5727 [inline]
- netif_receive_skb+0x58/0x660 net/core/dev.c:5786
- tun_rx_batched+0x3ee/0x980 drivers/net/tun.c:1555
- tun_get_user+0x53af/0x66d0 drivers/net/tun.c:2002
- tun_chr_write_iter+0x3af/0x5d0 drivers/net/tun.c:2048
- call_write_iter include/linux/fs.h:2020 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x8ef/0x1490 fs/read_write.c:584
- ksys_write+0x20f/0x4c0 fs/read_write.c:637
- __do_sys_write fs/read_write.c:649 [inline]
- __se_sys_write fs/read_write.c:646 [inline]
- __x64_sys_write+0x93/0xd0 fs/read_write.c:646
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Local variable daddr created at:
- llc_conn_handler+0x53/0x1360 net/llc/llc_conn.c:783
- llc_rcv+0x105b/0x1520 net/llc/llc_input.c:208
-
-CPU: 1 PID: 5474 Comm: syz-executor.0 Not tainted 6.6.0-syzkaller-14500-g1c41041124bd-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-=====================================================
-
-
-Tested on:
-
-commit:         1c410411 Merge tag 'i3c/for-6.7' of git://git.kernel.o..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=148a49b4e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=956549bd1d1e9efd
-dashboard link: https://syzkaller.appspot.com/bug?extid=b5ad66046b913bc04c6f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16c0649ce80000
-
+> 
+> -- 
+> 2.42.1
+> 
+> 
