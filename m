@@ -2,422 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CB1807894
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B308078B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442797AbjLFT2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 14:28:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
+        id S1379344AbjLFTgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:36:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379382AbjLFT1y (ORCPT
+        with ESMTP id S1379274AbjLFTgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:27:54 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272CED68;
-        Wed,  6 Dec 2023 11:27:59 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 91D2921DE2;
-        Wed,  6 Dec 2023 19:27:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701890877; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W3rOG8tNDrz/UaTONHfRc+U+0BGGNGTWzhshWawNXhg=;
-        b=oMF0cV5Rhta4SMfHiTrwLB7eI/pQqg5yr/1SOZQZ8OAC4jHOHVP/625pEYGBeNKblXXcpl
-        uK/FwaYGNdV1lUmW5TRubeGPgrlD6KJBcXBhp6OlqCEqnKuK1JyJBA6Aa8G/YOq1ilbu8m
-        JHRV0VUgMB3SrfmdFKI2Ye87lTCELPA=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 2BBEE13B6F;
-        Wed,  6 Dec 2023 19:27:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id aH+lCT3LcGUeYAAAn2gu4w
-        (envelope-from <mkoutny@suse.com>); Wed, 06 Dec 2023 19:27:57 +0000
-From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, cake@lists.bufferbloat.net
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>,
-        Martin Wilck <mwilck@suse.com>
-Subject: [PATCH 3/3] net/sched: act: Load TC action modules via alias
-Date:   Wed,  6 Dec 2023 20:27:52 +0100
-Message-ID: <20231206192752.18989-4-mkoutny@suse.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231206192752.18989-1-mkoutny@suse.com>
-References: <20231206192752.18989-1-mkoutny@suse.com>
+        Wed, 6 Dec 2023 14:36:12 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D0990;
+        Wed,  6 Dec 2023 11:36:18 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6cea2a38b48so172675b3a.3;
+        Wed, 06 Dec 2023 11:36:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701891377; x=1702496177; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=thhmb3P+KlGpZTFSXhxWQdhGMFU5F6uevLRA8AfPi7o=;
+        b=Qs1p8E5hVaI6FYkIMmTGTi2AtEx6AdBQo6EnulWgd0wd/5i/0DXIXC1ynM8Efo3xU3
+         qHAB0OgD79QQvdur5s1A3jNU9+vDkmCEz36xd/MOGOW41BbxFgC+gBk7QQ0IZIFBmYBq
+         mlfySJ9LVaf8gBfqgVKjIBlJDwh6uuJUn6MJUZWTXVHlWYViDu3BnWBUB8yde1FVy+ux
+         LtWEzN8lCw1l/N6gLdROq8UL9LNuQn4weipk6wLef/edxmoPozAJx9y24XKUfQHXMWod
+         dEQyRWVA50nCf4W4iZ6HO3G5gUmCwiikdx8ayZDm5IFVYHUUH3zYmNtLstSlEf5QbuRB
+         6dUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701891377; x=1702496177;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=thhmb3P+KlGpZTFSXhxWQdhGMFU5F6uevLRA8AfPi7o=;
+        b=tTJG68tPH70U+04hR+sWQNCi8EBiTkKyHQGiOwmoe+J0d5KzXbypDdjx5zWr5qRzqg
+         xSd3FSRkZ2TCjCRF114GWUs6LqVy8NTnlznX5LWvntOhw6dKvo7ZJr2QF6N7HEFXACam
+         5ou0oAC5HKC2WWDlUY6R4UD6CVYBRWVxEoI86jVzi3UyU6h3cdJmpuPVN/Pr5kLCMzt0
+         qv+I+jNB+RUSfvERnNPI/LJmcs5BfX7lQ6FQto3vXvbm0IkZJur0P07uKb1npZt42WPG
+         T/ces744DdFeVcM/+lH65uZzXhZ7DEO0GPnna/98yO9OZL843/hmCDgnrxFFSpLa94zb
+         4Ciw==
+X-Gm-Message-State: AOJu0YwUk0/EQdXzczc9IG5gRT4Pao0ahJ6YmzwfkIEQH63KWIDlNv8I
+        D7FrrxutdRmIgUsHak6QI4/0GmgMD4M=
+X-Google-Smtp-Source: AGHT+IFdqUMI5KdpwdwNOZoWwEtsEMxEnq+B94NQjLqjP5ShSd/UYXAzTqFU2rMK6W7sFh2JD61MUA==
+X-Received: by 2002:a05:6a00:1256:b0:6ce:64c5:956e with SMTP id u22-20020a056a00125600b006ce64c5956emr1690371pfi.39.1701891377419;
+        Wed, 06 Dec 2023 11:36:17 -0800 (PST)
+Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
+        by smtp.gmail.com with ESMTPSA id u11-20020a056a00158b00b0068c10187dc3sm329353pfk.168.2023.12.06.11.36.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 11:36:17 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 6 Dec 2023 09:36:16 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [GIT PULL] cgroup fixes for v6.7-rc4
+Message-ID: <ZXDNMJbgFHMiKkO_@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -1.80
-X-Spamd-Result: default: False [-1.80 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[28];
-         MID_CONTAINS_FROM(1.00)[];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,mojatatu.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The action modules may be loaded lazily without user's awareness and
-control. Add respective aliases to modules and request them under these
-aliases so that modprobe's blacklisting mechanism works also for
-these modules. (The same pattern exists e.g. for filesystem
-modules.)
+The following changes since commit 037266a5f7239ead1530266f7d7af153d2a867fa:
 
-Original module names remain unchanged.
+  Merge tag 'scsi-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi (2023-11-18 15:20:58 -0800)
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- include/net/act_api.h      | 1 +
- net/sched/act_api.c        | 2 +-
- net/sched/act_bpf.c        | 1 +
- net/sched/act_connmark.c   | 1 +
- net/sched/act_csum.c       | 1 +
- net/sched/act_ct.c         | 1 +
- net/sched/act_ctinfo.c     | 1 +
- net/sched/act_gact.c       | 1 +
- net/sched/act_gate.c       | 1 +
- net/sched/act_ife.c        | 1 +
- net/sched/act_ipt.c        | 2 ++
- net/sched/act_mirred.c     | 1 +
- net/sched/act_mpls.c       | 1 +
- net/sched/act_nat.c        | 1 +
- net/sched/act_pedit.c      | 1 +
- net/sched/act_police.c     | 1 +
- net/sched/act_sample.c     | 1 +
- net/sched/act_simple.c     | 1 +
- net/sched/act_skbedit.c    | 1 +
- net/sched/act_skbmod.c     | 1 +
- net/sched/act_tunnel_key.c | 1 +
- net/sched/act_vlan.c       | 1 +
- 22 files changed, 23 insertions(+), 1 deletion(-)
+are available in the Git repository at:
 
-diff --git a/include/net/act_api.h b/include/net/act_api.h
-index 4ae0580b63ca..c8bd834f963f 100644
---- a/include/net/act_api.h
-+++ b/include/net/act_api.h
-@@ -200,6 +200,7 @@ int tcf_idr_release(struct tc_action *a, bool bind);
- int tcf_register_action(struct tc_action_ops *a, struct pernet_operations *ops);
- int tcf_unregister_action(struct tc_action_ops *a,
- 			  struct pernet_operations *ops);
-+#define MODULE_ALIAS_TCA(kind)	MODULE_ALIAS("tca-" __stringify(kind))
- int tcf_action_destroy(struct tc_action *actions[], int bind);
- int tcf_action_exec(struct sk_buff *skb, struct tc_action **actions,
- 		    int nr_actions, struct tcf_result *res);
-diff --git a/net/sched/act_api.c b/net/sched/act_api.c
-index c39252d61ebb..1775b3ad5200 100644
---- a/net/sched/act_api.c
-+++ b/net/sched/act_api.c
-@@ -1331,7 +1331,7 @@ struct tc_action_ops *tc_action_load_ops(struct nlattr *nla, bool police,
- #ifdef CONFIG_MODULES
- 		if (rtnl_held)
- 			rtnl_unlock();
--		request_module("act_%s", act_name);
-+		request_module("tca-%s", act_name);
- 		if (rtnl_held)
- 			rtnl_lock();
- 
-diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
-index b0455fda7d0b..76a4bbad3d0d 100644
---- a/net/sched/act_bpf.c
-+++ b/net/sched/act_bpf.c
-@@ -401,6 +401,7 @@ static struct tc_action_ops act_bpf_ops __read_mostly = {
- 	.init		=	tcf_bpf_init,
- 	.size		=	sizeof(struct tcf_bpf),
- };
-+MODULE_ALIAS_TCA("bpf");
- 
- static __net_init int bpf_init_net(struct net *net)
- {
-diff --git a/net/sched/act_connmark.c b/net/sched/act_connmark.c
-index 0d7aee8933c5..3fed64024035 100644
---- a/net/sched/act_connmark.c
-+++ b/net/sched/act_connmark.c
-@@ -242,6 +242,7 @@ static struct tc_action_ops act_connmark_ops = {
- 	.cleanup	=	tcf_connmark_cleanup,
- 	.size		=	sizeof(struct tcf_connmark_info),
- };
-+MODULE_ALIAS_TCA("connmark");
- 
- static __net_init int connmark_init_net(struct net *net)
- {
-diff --git a/net/sched/act_csum.c b/net/sched/act_csum.c
-index 8ed285023a40..6cb090a966ad 100644
---- a/net/sched/act_csum.c
-+++ b/net/sched/act_csum.c
-@@ -709,6 +709,7 @@ static struct tc_action_ops act_csum_ops = {
- 	.offload_act_setup = tcf_csum_offload_act_setup,
- 	.size		= sizeof(struct tcf_csum),
- };
-+MODULE_ALIAS_TCA("csum");
- 
- static __net_init int csum_init_net(struct net *net)
- {
-diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
-index b3f4a503ee2b..21e535fb3ab7 100644
---- a/net/sched/act_ct.c
-+++ b/net/sched/act_ct.c
-@@ -1578,6 +1578,7 @@ static struct tc_action_ops act_ct_ops = {
- 	.offload_act_setup =	tcf_ct_offload_act_setup,
- 	.size		=	sizeof(struct tcf_ct),
- };
-+MODULE_ALIAS_TCA("ct");
- 
- static __net_init int ct_init_net(struct net *net)
- {
-diff --git a/net/sched/act_ctinfo.c b/net/sched/act_ctinfo.c
-index 4d15b6a6169c..9fb55b9b79fe 100644
---- a/net/sched/act_ctinfo.c
-+++ b/net/sched/act_ctinfo.c
-@@ -363,6 +363,7 @@ static struct tc_action_ops act_ctinfo_ops = {
- 	.cleanup= tcf_ctinfo_cleanup,
- 	.size	= sizeof(struct tcf_ctinfo),
- };
-+MODULE_ALIAS_TCA("ctinfo");
- 
- static __net_init int ctinfo_init_net(struct net *net)
- {
-diff --git a/net/sched/act_gact.c b/net/sched/act_gact.c
-index 904ab3d457ef..d69fc861854e 100644
---- a/net/sched/act_gact.c
-+++ b/net/sched/act_gact.c
-@@ -296,6 +296,7 @@ static struct tc_action_ops act_gact_ops = {
- 	.offload_act_setup =	tcf_gact_offload_act_setup,
- 	.size		=	sizeof(struct tcf_gact),
- };
-+MODULE_ALIAS_TCA("gact");
- 
- static __net_init int gact_init_net(struct net *net)
- {
-diff --git a/net/sched/act_gate.c b/net/sched/act_gate.c
-index 393b78729216..4fdb293c71f5 100644
---- a/net/sched/act_gate.c
-+++ b/net/sched/act_gate.c
-@@ -645,6 +645,7 @@ static struct tc_action_ops act_gate_ops = {
- 	.offload_act_setup =	tcf_gate_offload_act_setup,
- 	.size		=	sizeof(struct tcf_gate),
- };
-+MODULE_ALIAS_TCA("gate");
- 
- static __net_init int gate_init_net(struct net *net)
- {
-diff --git a/net/sched/act_ife.c b/net/sched/act_ife.c
-index bc7611b0744c..44657978e2b0 100644
---- a/net/sched/act_ife.c
-+++ b/net/sched/act_ife.c
-@@ -889,6 +889,7 @@ static struct tc_action_ops act_ife_ops = {
- 	.init = tcf_ife_init,
- 	.size =	sizeof(struct tcf_ife_info),
- };
-+MODULE_ALIAS_TCA("ife");
- 
- static __net_init int ife_init_net(struct net *net)
- {
-diff --git a/net/sched/act_ipt.c b/net/sched/act_ipt.c
-index 598d6e299152..d3b6a9a1d310 100644
---- a/net/sched/act_ipt.c
-+++ b/net/sched/act_ipt.c
-@@ -381,6 +381,7 @@ static struct tc_action_ops act_ipt_ops = {
- 	.init		=	tcf_ipt_init,
- 	.size		=	sizeof(struct tcf_ipt),
- };
-+MODULE_ALIAS_TCA("ipt");
- 
- static __net_init int ipt_init_net(struct net *net)
- {
-@@ -411,6 +412,7 @@ static struct tc_action_ops act_xt_ops = {
- 	.init		=	tcf_xt_init,
- 	.size		=	sizeof(struct tcf_ipt),
- };
-+MODULE_ALIAS_TCA("xt");
- 
- static __net_init int xt_init_net(struct net *net)
- {
-diff --git a/net/sched/act_mirred.c b/net/sched/act_mirred.c
-index 0a711c184c29..be98e3882cb2 100644
---- a/net/sched/act_mirred.c
-+++ b/net/sched/act_mirred.c
-@@ -505,6 +505,7 @@ static struct tc_action_ops act_mirred_ops = {
- 	.size		=	sizeof(struct tcf_mirred),
- 	.get_dev	=	tcf_mirred_get_dev,
- };
-+MODULE_ALIAS_TCA("mirred");
- 
- static __net_init int mirred_init_net(struct net *net)
- {
-diff --git a/net/sched/act_mpls.c b/net/sched/act_mpls.c
-index 1010dc632874..2ac73889f826 100644
---- a/net/sched/act_mpls.c
-+++ b/net/sched/act_mpls.c
-@@ -452,6 +452,7 @@ static struct tc_action_ops act_mpls_ops = {
- 	.offload_act_setup =	tcf_mpls_offload_act_setup,
- 	.size		=	sizeof(struct tcf_mpls),
- };
-+MODULE_ALIAS_TCA("mpls");
- 
- static __net_init int mpls_init_net(struct net *net)
- {
-diff --git a/net/sched/act_nat.c b/net/sched/act_nat.c
-index 4184af5abbf3..7f5b0d5f53a3 100644
---- a/net/sched/act_nat.c
-+++ b/net/sched/act_nat.c
-@@ -324,6 +324,7 @@ static struct tc_action_ops act_nat_ops = {
- 	.cleanup	=	tcf_nat_cleanup,
- 	.size		=	sizeof(struct tcf_nat),
- };
-+MODULE_ALIAS_TCA("nat");
- 
- static __net_init int nat_init_net(struct net *net)
- {
-diff --git a/net/sched/act_pedit.c b/net/sched/act_pedit.c
-index 1ef8fcfa9997..15902d378ceb 100644
---- a/net/sched/act_pedit.c
-+++ b/net/sched/act_pedit.c
-@@ -620,6 +620,7 @@ static struct tc_action_ops act_pedit_ops = {
- 	.offload_act_setup =	tcf_pedit_offload_act_setup,
- 	.size		=	sizeof(struct tcf_pedit),
- };
-+MODULE_ALIAS_TCA("pedit");
- 
- static __net_init int pedit_init_net(struct net *net)
- {
-diff --git a/net/sched/act_police.c b/net/sched/act_police.c
-index f3121c5a85e9..e386f326408f 100644
---- a/net/sched/act_police.c
-+++ b/net/sched/act_police.c
-@@ -502,6 +502,7 @@ static struct tc_action_ops act_police_ops = {
- 	.offload_act_setup =	tcf_police_offload_act_setup,
- 	.size		=	sizeof(struct tcf_police),
- };
-+MODULE_ALIAS_TCA("police");
- 
- static __net_init int police_init_net(struct net *net)
- {
-diff --git a/net/sched/act_sample.c b/net/sched/act_sample.c
-index 4c670e7568dc..92ba9e0fc98d 100644
---- a/net/sched/act_sample.c
-+++ b/net/sched/act_sample.c
-@@ -316,6 +316,7 @@ static struct tc_action_ops act_sample_ops = {
- 	.offload_act_setup    = tcf_sample_offload_act_setup,
- 	.size	  = sizeof(struct tcf_sample),
- };
-+MODULE_ALIAS_TCA("sample");
- 
- static __net_init int sample_init_net(struct net *net)
- {
-diff --git a/net/sched/act_simple.c b/net/sched/act_simple.c
-index 4b84514534f3..61f06ad03e1c 100644
---- a/net/sched/act_simple.c
-+++ b/net/sched/act_simple.c
-@@ -209,6 +209,7 @@ static struct tc_action_ops act_simp_ops = {
- 	.init		=	tcf_simp_init,
- 	.size		=	sizeof(struct tcf_defact),
- };
-+MODULE_ALIAS_TCA("simple");
- 
- static __net_init int simp_init_net(struct net *net)
- {
-diff --git a/net/sched/act_skbedit.c b/net/sched/act_skbedit.c
-index ce7008cf291c..fb5c09ab6718 100644
---- a/net/sched/act_skbedit.c
-+++ b/net/sched/act_skbedit.c
-@@ -426,6 +426,7 @@ static struct tc_action_ops act_skbedit_ops = {
- 	.offload_act_setup =	tcf_skbedit_offload_act_setup,
- 	.size		=	sizeof(struct tcf_skbedit),
- };
-+MODULE_ALIAS_TCA("skbedit");
- 
- static __net_init int skbedit_init_net(struct net *net)
- {
-diff --git a/net/sched/act_skbmod.c b/net/sched/act_skbmod.c
-index dffa990a9629..468bc230d278 100644
---- a/net/sched/act_skbmod.c
-+++ b/net/sched/act_skbmod.c
-@@ -287,6 +287,7 @@ static struct tc_action_ops act_skbmod_ops = {
- 	.cleanup	=	tcf_skbmod_cleanup,
- 	.size		=	sizeof(struct tcf_skbmod),
- };
-+MODULE_ALIAS_TCA("skbmod");
- 
- static __net_init int skbmod_init_net(struct net *net)
- {
-diff --git a/net/sched/act_tunnel_key.c b/net/sched/act_tunnel_key.c
-index 0c8aa7e686ea..43d3e250277f 100644
---- a/net/sched/act_tunnel_key.c
-+++ b/net/sched/act_tunnel_key.c
-@@ -842,6 +842,7 @@ static struct tc_action_ops act_tunnel_key_ops = {
- 	.offload_act_setup =	tcf_tunnel_key_offload_act_setup,
- 	.size		=	sizeof(struct tcf_tunnel_key),
- };
-+MODULE_ALIAS_TCA("tunnel_key");
- 
- static __net_init int tunnel_key_init_net(struct net *net)
- {
-diff --git a/net/sched/act_vlan.c b/net/sched/act_vlan.c
-index 0251442f5f29..e7424ca0af95 100644
---- a/net/sched/act_vlan.c
-+++ b/net/sched/act_vlan.c
-@@ -427,6 +427,7 @@ static struct tc_action_ops act_vlan_ops = {
- 	.offload_act_setup =	tcf_vlan_offload_act_setup,
- 	.size		=	sizeof(struct tcf_vlan),
- };
-+MODULE_ALIAS_TCA("vlan");
- 
- static __net_init int vlan_init_net(struct net *net)
- {
--- 
-2.42.1
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.7-rc4-fixes
+
+for you to fetch changes up to cff5f49d433fcd0063c8be7dd08fa5bf190c6c37:
+
+  cgroup_freezer: cgroup_freezing: Check if not frozen (2023-11-28 08:04:03 -1000)
+
+----------------------------------------------------------------
+cgroup: Fixes for v6.7-rc4
+
+Just one patch.
+
+f5d39b020809 ("freezer,sched: Rewrite core freezer logic") changed how
+freezing state is recorded which cgroup_freezing() disagree with the actual
+state of the task while thawing triggering a warning. Fix it by updating
+cgroup_freezing().
+
+----------------------------------------------------------------
+Tim Van Patten (1):
+      cgroup_freezer: cgroup_freezing: Check if not frozen
+
+ kernel/cgroup/legacy_freezer.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
