@@ -2,196 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 050E4807360
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5282980735E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442422AbjLFPIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 10:08:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
+        id S1442424AbjLFPHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 10:07:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442302AbjLFPH6 (ORCPT
+        with ESMTP id S1442337AbjLFPHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 10:07:58 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D905D59;
-        Wed,  6 Dec 2023 07:08:02 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B6F7aSxA3678221, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B6F7aSxA3678221
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 6 Dec 2023 23:07:36 +0800
-Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Wed, 6 Dec 2023 23:07:36 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Wed, 6 Dec 2023 23:07:36 +0800
-Received: from RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3]) by
- RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3%2]) with mapi id
- 15.01.2375.007; Wed, 6 Dec 2023 23:07:36 +0800
-From:   =?utf-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support for Realtek DHC SoCs
-Thread-Topic: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support
- for Realtek DHC SoCs
-Thread-Index: AQHaGXMHJnbDooY4VkyEcMH4aisPjrCBFAaAgAG3OTCAE2RqMIABC34AgACK6PD//42bAIADJhOw//98noCAAgAXEA==
-Date:   Wed, 6 Dec 2023 15:07:36 +0000
-Message-ID: <612d61f5fae0415f9c8eb93b12f49645@realtek.com>
-References: <20231117162709.1096585-1-james.tai@realtek.com>
- <20231117162709.1096585-2-james.tai@realtek.com>
- <c3a98e2c-ba62-4798-a0d0-a8bc1fe5bb6b@linaro.org>
- <7959920acf004f3cb8072de1e17439fa@realtek.com>
- <e1490203387d4c48a5f8c4040ece038a@realtek.com>
- <6250c57b-6d38-4085-9a79-58e4e5ed1e3d@linaro.org>
- <cf2f9fd124514cb9832e942e16b8fa6e@realtek.com>
- <5134d2c7-b499-400d-bec8-ae0de1eff7db@linaro.org>
- <f27cb5d8943e44b597a13d7655edf4d0@realtek.com>
- <3356a35c-0c50-4539-a955-01d2e67b4eca@linaro.org>
-In-Reply-To: <3356a35c-0c50-4539-a955-01d2e67b4eca@linaro.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [36.230.190.14]
-x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 6 Dec 2023 10:07:46 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7883D4F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 07:07:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701875273; x=1733411273;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=OxpvoPymnRmbz5abQuGqeWGHWYBRoA/LaZb29RStz5I=;
+  b=U4ZBPgbevGikpoB2DGt9bNOJxTNTXLNwROYPRt2mSlUMlNf/EzOQr9ie
+   doLcGGQdPDX0jpc3/ffw/yVPjwGIMHW0y9PwEdxLwuFaTEvjzzPVQKVFO
+   pnlm9v7mFdOjdDYkRBgRnTPU10Jpu2ngAVijqKsoZpQSOx4tOulX2gihW
+   hPCZfA401U0kenMqLtilEvM7FrVp0S/cF+Vv7wJ3v1Pes7KQUHXbA3yFH
+   FCwY4Qe5rVlLLkXXCEsCbJ+9cHbA04davgPZC8eiQCaXpe19alDCBuAOx
+   PFOkqALEl3D3ARgz+Rh33TXc4VZf/gS3TWzJsgF8imdw94jEQCpsNUD4k
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="12787916"
+X-IronPort-AV: E=Sophos;i="6.04,255,1695711600"; 
+   d="scan'208";a="12787916"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 07:07:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="915215154"
+X-IronPort-AV: E=Sophos;i="6.04,255,1695711600"; 
+   d="scan'208";a="915215154"
+Received: from eborisov-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.46.36])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 07:07:46 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 8C59410A3F5; Wed,  6 Dec 2023 18:07:43 +0300 (+03)
+Date:   Wed, 6 Dec 2023 18:07:43 +0300
+From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "ashish.kalra@amd.com" <ashish.kalra@amd.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "bhe@redhat.com" <bhe@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv4 10/14] x86/tdx: Convert shared memory back to private
+ on kexec
+Message-ID: <20231206150743.ylgdh2b3qjnacws3@box.shutemov.name>
+References: <20231205004510.27164-1-kirill.shutemov@linux.intel.com>
+ <20231205004510.27164-11-kirill.shutemov@linux.intel.com>
+ <3cf8b953c449320cc4c085924ef0e2eed5eadcf7.camel@intel.com>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3cf8b953c449320cc4c085924ef0e2eed5eadcf7.camel@intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J6eXN6dG9mLA0KDQo+Pj4+Pj4+Pj4gKyAgaW50ZXJydXB0cy1leHRlbmRlZDoNCj4+Pj4+
-Pj4+DQo+Pj4+Pj4+PiBpbnRlcnJ1cHRzIGluc3RlYWQuDQo+Pj4+Pj4+Pg0KPj4+Pj4+Pj4gQW55
-d2F5LCB5b3UgbXVzdCBkZXNjcmliZSB0aGUgaXRlbXMuIFdoeSB0aGlzIGlzIG5vdCBmaXhlZCBi
-dXQNCj5mbGV4aWJsZT8NCj4+Pj4+Pj4+IEhhcmR3YXJlIGhhcyBkaWZmZXJlbnQgbnVtYmVyIG9m
-IHBpbnM/IFRoYXQncyB1bmxpa2VseS4NCj4+Pj4+Pj4+DQo+Pj4+Pj4+IEkgd2lsbCByZXBsYWNl
-IGl0IHdpdGggJ2ludGVycnVwdHMnLiBTaW5jZSBvdXIgSW50ZXJydXB0DQo+Pj4+Pj4+IGNvbnRy
-b2xsZXIgYXJjaGl0ZWN0dXJlIGRvZXNuJ3QgaW52b2x2ZSBtdWx0aXBsZSBpbnRlcnJ1cHQgc291
-cmNlcywgdXNpbmcNCj4naW50ZXJydXB0cycNCj4+Pj4+IHNob3VsZCBzdWZmaWNlLg0KPj4+Pj4+
-Pg0KPj4+Pj4+DQo+Pj4+Pj4gRHVlIHRvIGNoYW5nZXMgaW4gaGFyZHdhcmUgZGVzaWduLCBzb21l
-IHBlcmlwaGVyYWwgaW50ZXJydXB0cyBwaW4NCj4+Pj4+PiBpbml0aWFsbHkNCj4+Pj4+IGNvbm5l
-Y3RlZCB0byB0aGUgUmVhbHRlayBpbnRlcnJ1cHQgY29udHJvbGxlciB3ZXJlIHJlZGlyZWN0ZWQg
-dG8gdGhlIEdJQy4NCj4+Pj4+PiBIb3dldmVyLCB0aGUgYXNzb2NpYXRlZCBmaWVsZHMgYW5kIHN0
-YXR1c2VzIGluIHRoZSBSZWFsdGVrDQo+Pj4+Pj4gaW50ZXJydXB0IGNvbnRyb2xsZXINCj4+Pj4+
-IHJlZ2lzdGVycyB3ZXJlIG5vdCByZW1vdmVkLg0KPj4+Pj4+IEFzIGEgcmVzdWx0LCB0aGVzZSBp
-bnRlcnJ1cHRzIGNhbm5vdCBiZSBjbGVhcmVkIGJ5IHBlcmlwaGVyYWwNCj4+Pj4+PiByZWdpc3Rl
-ciwgYW5kIHRoZWlyDQo+Pj4+PiBzdGF0dXMgY2xlYXJpbmcgaXMgc3RpbGwgbmVlZGluZyB0aGUg
-UmVhbHRlayBpbnRlcnJ1cHQgY29udHJvbGxlcg0KPj4+Pj4gZHJpdmVyIHRvDQo+Pj4gbWFuYWdl
-Lg0KPj4+Pj4+DQo+Pj4+Pj4gVGhhdCdzIHdoeSBmbGV4aWJpbGl0eSBpcyBuZWNlc3NhcnkuDQo+
-Pj4+Pg0KPj4+Pj4gVGhpcyBkb2VzIG5vdCBleHBsYWluIHdoeSB0aGlzIGlzIG5vdCBmaXhlZCBw
-ZXIgdmFyaWFudC4NCj4+Pj4+DQo+Pj4+DQo+Pj4+IERvZXMgdGhlIGRlZmluaXRpb24gb2YgImZp
-eGVkIiB5b3UgbWVudGlvbmVkIHJlZmVyIHRvIGZpeGVkDQo+Pj4+IGludGVycnVwdCBwaW5zPyBJ
-ZiBub3QsIGNvdWxkIHlvdSBwbGVhc2UgZ2l2ZSBtZSBhbiBleGFtcGxlIGFuZCBsZXQNCj4+Pj4g
-bWUga25vdyB3aGF0IHlvdSBtZWFuIGJ5ICJmaXhlZCI/DQo+Pj4NCj4+PiBOdW1iZXIgb2YgdGhl
-IGludGVycnVwdHMgcGVyIGVhY2ggZGV2aWNlIG9yIHZhcmlhbnQgc2hvdWxkIGJlDQo+Pj4gc3Ry
-aWN0bHkgZGVmaW5lZCwgbm90IHZhcmlhYmxlLg0KPj4NCj4+IFRoYW5rIHlvdSBmb3IgeW91ciBl
-eHBsYW5hdGlvbi4NCj4+DQo+PiBUaGUgREhDIHBsYXRmb3JtcyBjb250YWluIHR3byBpbnRlcnJ1
-cHQgY29udHJvbGxlcnMsIGVhY2ggaGFuZGxpbmcgcGVyaXBoZXJhbA0KPmRldmljZSBpbnRlcnJ1
-cHRzIGluIHRoZSB0d28gcG93ZXIgZG9tYWlucy4NCj4+IFdoaWxlIGVhY2ggaGFzIGEgZml4ZWQg
-SVJRIG51bWJlcnMsIHRoZSBzcGVjaWZpYyBJUlEgdmFyaWVzIGRlcGVuZGluZyBvbiB0aGUNCj4+
-cGxhdGZvcm0uDQo+DQo+U3JzbHksIHdoYXQgInNwZWNpZmljIElSUSIgaGFzIGFueXRoaW5nIHRv
-IGRvIHdpdGggIm51bWJlciBvZiBpbnRlcnJ1cHRzIHBlcg0KPmVhY2ggZGV2aWNlIG9yIHZhcmlh
-bnQiPw0KDQpFYWNoIFJlYWx0ZWsgaW50ZXJydXB0IGNvbnRyb2xsZXIgaXMgYXNzaWduZWQgYSBm
-aXhlZCBJUlEsIHdoaWNoIGdhdGhlcnMgaW50ZXJydXB0cyBmcm9tIHBlcmlwaGVyYWwgZGV2aWNl
-cyBzdWNoIGFzIGkyYywgc3BpLCBldGhlcm5ldCBwaHksIHRpbWVyLCB1YXJ0LCB3YXRjaGRvZywg
-cnRjLCBwd20sIGV0Yy4NCg0KRHVlIHRvIG1vZGlmaWNhdGlvbnMgaW4gdGhlIGhhcmR3YXJlIGNp
-cmN1aXQsIGNlcnRhaW4gcGVyaXBoZXJhbCBkZXZpY2UgaW50ZXJydXB0cyBpbmNsdWRpbmcgd2F0
-Y2hkb2csIHJ0YywgdWFydDEsIGFuZCB1YXJ0MiBhcmUgbm93IHJlZGlyZWN0ZWQgdG8gdGhlIEdJ
-Qy4gDQpDb25zZXF1ZW50bHksIHRoZXNlIGRldmljZXMgY2Fubm90IGNsZWFyIGludGVycnVwdCBz
-dGF0dXNlcyB0aHJvdWdoIHRoZWlyIG93biByZWdpc3RlcnMuIFRvIHJlc29sdmUgdGhpcywgd2Ug
-bWFuYWdlIHRoZWlyIGludGVycnVwdHMgdGhyb3VnaCB0aGUgUmVhbHRlayBpbnRlcnJ1cHQgY29u
-dHJvbGxlci4NCg0KVGhpcyByZXN1bHRzIGluIGEgdmFyaWF0aW9uIGluIHRoZSBudW1iZXIgb2Yg
-SVJRcyByZWdpc3RlcmVkIGJ5IHRoZSBpbnRlcnJ1cHQgY29udHJvbGxlcnMgb2YgSVNPIChpc29s
-YXRpb24pIGFuZCBNU0lDIChtaXNjZWxsYW5lb3VzKS4NCg0KSW4gdGhlIERUUyBleGFtcGxlcyBw
-cm92aWRlZCBpbiB0aGUgaW5pdGlhbCBwYXRjaCByZWxlYXNlLCBJUlFzIDQxIGFuZCA0MiBhcmUg
-YXNzaWduZWQgdG8gdGhlIFJlYWx0ZWsgaW50ZXJydXB0IGNvbnRyb2xsZXIuIA0KQXMgd2F0Y2hk
-b2csIHJ0YywgdWFydDEsIGFuZCB1YXJ0MiBpbnRlcnJ1cHRzIG5vIGxvbmdlciB1c2UgSVJRcyA0
-MSBvciA0MiwgdGhlaXIgSVJRcyAoMCwgMzksIDg5LCA5MCkgYXJlIGFzc2lnbmVkIHRvIGJlIHJl
-Z2lzdGVyZWQgYnkgdGhlIFJlYWx0ZWsgaW50ZXJydXB0IGNvbnRyb2xsZXIuDQoNCkZpeGVkIElS
-UXM6DQotIDQxOiBwZXJpcGhlcmFsIGRldmljZXMgKGlzbyBwb3dlciBkb21haW4pDQotIDQyOiBw
-ZXJpcGhlcmFsIGRldmljZXMgKG1pc2MgcG93ZXIgZG9tYWluKQ0KDQpTcGVjaWZpYyBJUlFzOg0K
-LSAwOiB3YXRjaGRvZyAoaXNvIHBvd2VyIGRvbWFpbikNCi0gMzk6IHJ0YyAobWlzYyBwb3dlciBk
-b21haW4pDQotIDg5OiB1YXJ0MSAobWlzYyBwb3dlciBkb21haW4pDQotIDkwOiB1YXJ0MiAobWlz
-YyBwb3dlciBkb21haW4pDQoNCkV4YW1wbGVzKHYxIHBhdGNoZXMpOg0KICAgIGlzb19pcnFfbXV4
-OiBpc29faXJxX211eEA0MCB7DQogICAgICBjb21wYXRpYmxlID0gInJlYWx0ZWsscnRkMTMxOS1p
-bnRjLWlzbyI7DQogICAgICByZWcgPSA8MHgwMCAweDQwPjsNCiAgICAgIGludGVycnVwdHMtZXh0
-ZW5kZWQgPSA8JmdpYyBHSUNfU1BJIDQxIElSUV9UWVBFX0xFVkVMX0hJR0g+LA0KICAgICAgICAg
-ICAgICAgICAgICAgICAgPCZnaWMgR0lDX1NQSSAzOSBJUlFfVFlQRV9MRVZFTF9ISUdIPjsNCiAg
-ICAgIGludGVycnVwdC1jb250cm9sbGVyOw0KICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MD47DQog
-ICAgICAjaW50ZXJydXB0LWNlbGxzID0gPDE+Ow0KICAgIH07DQoNCiAgICBtaXNjX2lycV9tdXg6
-IG1pc2NfaXJxX211eEA4MCB7DQogICAgICBjb21wYXRpYmxlID0gInJlYWx0ZWsscnRkMTMxOS1p
-bnRjLW1pc2MiOw0KICAgICAgcmVnID0gPDB4MDAgMHg4MD47DQogICAgICBpbnRlcnJ1cHRzLWV4
-dGVuZGVkID0gPCZnaWMgR0lDX1NQSSA0MCBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCiAgICAgICAg
-ICAgICAgICAgICAgICAgIDwmZ2ljIEdJQ19TUEkgMCBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCiAg
-ICAgICAgICAgICAgICAgICAgICAgIDwmZ2ljIEdJQ19TUEkgODkgSVJRX1RZUEVfTEVWRUxfSElH
-SD4sDQogICAgICAgICAgICAgICAgICAgICAgICA8JmdpYyBHSUNfU1BJIDkwIElSUV9UWVBFX0xF
-VkVMX0hJR0g+Ow0KICAgICAgaW50ZXJydXB0LWNvbnRyb2xsZXI7DQogICAgICAjYWRkcmVzcy1j
-ZWxscyA9IDwwPjsNCiAgICAgICNpbnRlcnJ1cHQtY2VsbHMgPSA8MT47DQogICAgfTsNCg0KICAg
-IGlzb19pcnFfbXV4OiBpc29faXJxX211eEA0MCB7DQogICAgICBjb21wYXRpYmxlID0gInJlYWx0
-ZWsscnRkMTMxOWQtaW50Yy1pc28iOw0KICAgICAgcmVnID0gPDB4MDAgMHg0MD47DQogICAgICBp
-bnRlcnJ1cHRzLWV4dGVuZGVkID0gPCZnaWMgR0lDX1NQSSA0MSBJUlFfVFlQRV9MRVZFTF9ISUdI
-PiwNCiAgICAgICAgICAgICAgICAgICAgICAgICA8JmdpYyBHSUNfU1BJIDAgSVJRX1RZUEVfTEVW
-RUxfSElHSD47DQogICAgICBpbnRlcnJ1cHQtY29udHJvbGxlcjsNCiAgICAgICNhZGRyZXNzLWNl
-bGxzID0gPDA+Ow0KICAgICAgI2ludGVycnVwdC1jZWxscyA9IDwxPjsNCiAgICB9Ow0KDQogICAg
-bWlzY19pcnFfbXV4OiBtaXNjX2lycV9tdXhAODAgew0KICAgICAgY29tcGF0aWJsZSA9ICJyZWFs
-dGVrLHJ0ZDEzMTlkLWludGMtbWlzYyI7DQogICAgICByZWcgPSA8MHgwMCAweDgwPjsNCiAgICAg
-IGludGVycnVwdHMtZXh0ZW5kZWQgPSA8JmdpYyBHSUNfU1BJIDQwIElSUV9UWVBFX0xFVkVMX0hJ
-R0g+LA0KICAgICAgICAgICAgICAgICAgICAgICAgPCZnaWMgR0lDX1NQSSA4OSBJUlFfVFlQRV9M
-RVZFTF9ISUdIPiwNCiAgICAgICAgICAgICAgICAgICAgICAgIDwmZ2ljIEdJQ19TUEkgOTAgSVJR
-X1RZUEVfTEVWRUxfSElHSD4sDQogICAgICAgICAgICAgICAgICAgICAgICA8JmdpYyBHSUNfU1BJ
-IDM5IElSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KICAgICAgaW50ZXJydXB0LWNvbnRyb2xsZXI7DQog
-ICAgICAjYWRkcmVzcy1jZWxscyA9IDwwPjsNCiAgICAgICNpbnRlcnJ1cHQtY2VsbHMgPSA8MT47
-DQogICAgfTsNCg0KICAgIGlzb19pcnFfbXV4OiBpc29faXJxX211eEA0MCB7DQogICAgICBjb21w
-YXRpYmxlID0gInJlYWx0ZWsscnRkMTMyNS1pbnRjLWlzbyI7DQogICAgICByZWcgPSA8MHgwMCAw
-eDQwPjsNCiAgICAgIGludGVycnVwdHMtZXh0ZW5kZWQgPSA8JmdpYyBHSUNfU1BJIDQxIElSUV9U
-WVBFX0xFVkVMX0hJR0g+LA0KICAgICAgICAgICAgICAgICAgICAgICAgPCZnaWMgR0lDX1NQSSAw
-IElSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KICAgICAgaW50ZXJydXB0LWNvbnRyb2xsZXI7DQogICAg
-ICAjYWRkcmVzcy1jZWxscyA9IDwwPjsNCiAgICAgICNpbnRlcnJ1cHQtY2VsbHMgPSA8MT47DQog
-ICAgfTsNCg0KICAgIG1pc2NfaXJxX211eDogbWlzY19pcnFfbXV4QDgwIHsNCiAgICAgIGNvbXBh
-dGlibGUgPSAicmVhbHRlayxydGQxMzI1LWludGMtbWlzYyI7DQogICAgICByZWcgPSA8MHgwMCAw
-eDgwPjsNCiAgICAgIGludGVycnVwdHMtZXh0ZW5kZWQgPSA8JmdpYyBHSUNfU1BJIDQwIElSUV9U
-WVBFX0xFVkVMX0hJR0g+LA0KICAgICAgICAgICAgICAgICAgICAgICAgPCZnaWMgR0lDX1NQSSA4
-OSBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCiAgICAgICAgICAgICAgICAgICAgICAgIDwmZ2ljIEdJ
-Q19TUEkgOTAgSVJRX1RZUEVfTEVWRUxfSElHSD4sDQogICAgICAgICAgICAgICAgICAgICAgICA8
-JmdpYyBHSUNfU1BJIDM5IElSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KICAgICAgaW50ZXJydXB0LWNv
-bnRyb2xsZXI7DQogICAgICAjYWRkcmVzcy1jZWxscyA9IDwwPjsNCiAgICAgICNpbnRlcnJ1cHQt
-Y2VsbHMgPSA8MT47DQogICAgfTsNCg0KICAgIGlzb19pcnFfbXV4OiBpc29faXJxX211eEA0MCB7
-DQogICAgICBjb21wYXRpYmxlID0gInJlYWx0ZWsscnRkMTYxOWItaW50Yy1pc28iOw0KICAgICAg
-cmVnID0gPDB4MDAgMHg0MD47DQogICAgICBpbnRlcnJ1cHRzLWV4dGVuZGVkID0gPCZnaWMgR0lD
-X1NQSSA0MSBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCiAgICAgICAgICAgICAgICAgICAgICAgIDwm
-Z2ljIEdJQ19TUEkgMCBJUlFfVFlQRV9MRVZFTF9ISUdIPjsNCiAgICAgIGludGVycnVwdC1jb250
-cm9sbGVyOw0KICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MD47DQogICAgICAjaW50ZXJydXB0LWNl
-bGxzID0gPDE+Ow0KICAgIH07DQoNCiAgICBtaXNjX2lycV9tdXg6IG1pc2NfaXJxX211eEA4MCB7
-DQogICAgICBjb21wYXRpYmxlID0gInJlYWx0ZWsscnRkMTYxOWItaW50Yy1taXNjIjsNCiAgICAg
-IHJlZyA9IDwweDAwIDB4ODA+Ow0KICAgICAgaW50ZXJydXB0cy1leHRlbmRlZCA9IDwmZ2ljIEdJ
-Q19TUEkgNDAgSVJRX1RZUEVfTEVWRUxfSElHSD4sDQogICAgICAgICAgICAgICAgICAgICAgICA8
-JmdpYyBHSUNfU1BJIDg5IElSUV9UWVBFX0xFVkVMX0hJR0g+LA0KICAgICAgICAgICAgICAgICAg
-ICAgICAgPCZnaWMgR0lDX1NQSSA5MCBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCiAgICAgIGludGVy
-cnVwdC1jb250cm9sbGVyOw0KICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MD47DQogICAgICAjaW50
-ZXJydXB0LWNlbGxzID0gPDE+Ow0KICAgIH07DQoNCj4NCj5Mb29rIGF0IGFsbCBvdGhlciBiaW5k
-aW5ncyBjb3ZlcmluZyBtdWx0aXBsZSBkZXZpY2VzIGFuZCB0aGVpcg0KPmNsb2Nrcy9pbnRlcnJ1
-cHRzL2ludGVyY29ubmVjdHMvcmVnIGV0Yy4NCg0KTWF5IEkgYWRvcHQgdGhlIGFwcHJvYWNoIHVz
-ZWQgaW4gdGhpcyBZQU1MIGZvciBteSBjYXNlPw0KaHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2Mv
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3RpbWVyL2FsbHdpbm5lciUyQ3N1bjRp
-LWExMC10aW1lci55YW1sDQoNClRoYW5rIHlvdSBmb3IgeW91ciBmZWVkYmFjay4NCg0KUmVnYXJk
-cywNCkphbWVzDQo=
+On Wed, Dec 06, 2023 at 01:28:08AM +0000, Edgecombe, Rick P wrote:
+> On Tue, 2023-12-05 at 03:45 +0300, Kirill A. Shutemov wrote: 
+> > +static void tdx_kexec_unshare_mem(bool crash)
+> > +{
+> > +       unsigned long addr, end;
+> > +       long found = 0, shared;
+> > +
+> > +       /* Stop new private<->shared conversions */
+> > +       conversion_allowed = false;
+> 
+> I wonder if this might need a compiler barrier here to be totally safe.
+> I'm not sure.
+
+Yeah, it should be cleaner with a barrier.
+
+> > +
+> > +       /*
+> > +        * Crash kernel reaches here with interrupts disabled: can't
+> > wait for
+> > +        * conversions to finish.
+> > +        *
+> > +        * If race happened, just report and proceed.
+> > +        */
+> > +       if (!crash) {
+> > +               unsigned long timeout;
+> > +
+> > +               /*
+> > +                * Wait for in-flight conversions to complete.
+> > +                *
+> > +                * Do not wait more than 30 seconds.
+> > +                */
+> > +               timeout = 30 * USEC_PER_SEC;
+> > +               while (atomic_read(&conversions_in_progress) &&
+> > timeout--)
+> > +                       udelay(1);
+> > +       }
+> > +
+> > +       if (atomic_read(&conversions_in_progress))
+> > +               pr_warn("Failed to finish shared<->private
+> > conversions\n");
+> 
+> I can't think of any non-ridiculous way to handle this case. Maybe we
+> need VMM help.
+
+Do you see a specific way how VMM can help here?
+
+> > diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+> > index 830425e6d38e..c81afffaa954 100644
+> > --- a/arch/x86/kernel/reboot.c
+> > +++ b/arch/x86/kernel/reboot.c
+> > @@ -12,6 +12,7 @@
+> >  #include <linux/delay.h>
+> >  #include <linux/objtool.h>
+> >  #include <linux/pgtable.h>
+> > +#include <linux/kexec.h>
+> >  #include <acpi/reboot.h>
+> >  #include <asm/io.h>
+> >  #include <asm/apic.h>
+> > @@ -31,6 +32,7 @@
+> >  #include <asm/realmode.h>
+> >  #include <asm/x86_init.h>
+> >  #include <asm/efi.h>
+> > +#include <asm/tdx.h>
+> >  
+> >  /*
+> >   * Power off function, if any
+> > @@ -716,6 +718,14 @@ static void
+> > native_machine_emergency_restart(void)
+> >  
+> >  void native_machine_shutdown(void)
+> >  {
+> > +       /*
+> > +        * Call enc_kexec_unshare_mem() while all CPUs are still
+> > active and
+> > +        * interrupts are enabled. This will allow all in-flight
+> > memory
+> > +        * conversions to finish cleanly before unsharing all memory.
+> > +        */
+> > +       if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT) &&
+> > kexec_in_progress)
+> > +               x86_platform.guest.enc_kexec_unshare_mem(false);
+> 
+> These questions are coming from an incomplete understanding of the
+> kexec/reboot operation. Please disregard if it is not helpful.
+> 
+> By doing this while other tasks can still run, it handles the
+> conversion races in the !crash case. But then it sets shared pages to
+> NP. What happens if another active task tries to write to one?
+> 
+> I guess we rely on the kernel_restart_prepare()->device_shutdown() to
+> clean up, which runs before native_machine_shutdown(). So there might
+> be conversions in progress when tdx_kexec_unshare_mem() is called, from
+> the allocator work queues. But the actual memory won't be accessed
+> during that operation.
+
+Right, devices has to be shutdown by then.
+
+> But the console must be active? Or otherwise who can see these
+> warnings. It doesn't use a shared page? Or the KVM clock, which looks
+> to clean up at cpu tear down, which now happens after
+> tdx_kexec_unshare_mem()? So I wonder if there might be cases.
+
+Virtio console is not functional by then, but serial is. Serial uses port
+I/O and doesn't need shared memory.
+
+> If so, maybe you could halt the conversions in
+> native_machine_shutdown(), then do the actual reset to private after
+> tasks can't schedule.
+
+It would also mean that we cannot use set_memory_np() there as it requires
+sleepable context. I would rather keep conversion in
+native_machine_shutdown() path.
+
+> I'd still wonder about if anything might try to
+> access a shared page triggered by the console output.
+
+set_memory_np() would make it obvious if it ever happens.
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
