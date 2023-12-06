@@ -2,146 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D34B28077BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C0B8077A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378875AbjLFSmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 13:42:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45280 "EHLO
+        id S1378806AbjLFSfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 13:35:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378355AbjLFSmg (ORCPT
+        with ESMTP id S1378355AbjLFSfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 13:42:36 -0500
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C13D67;
-        Wed,  6 Dec 2023 10:42:40 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 32B6710008B;
-        Wed,  6 Dec 2023 21:42:37 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 32B6710008B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1701888157;
-        bh=PAf3gWYNr1X6Etoo5fn0Vczq30SXtQKZGFNGORjRGC8=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=AAV+fcuhHm0Evps55dof7IXXSARFQOz4XCrLKyDmqV/MHnMv+FBbH20vGfXDcx+DZ
-         vVGUzbH1+BI16V3d8jpitWxYN/JE+rvI2+PlqHJPY0b4tw+oYpbcIJnp3fZiFDoNCH
-         0BZoEqwFlLTZ36xUwhqX2A32xzhPAhMJ0kbFG+TXn53QKR6RncJ62fnvp9u+kYYrOj
-         ZeksIl0PPQx2XYMQjx3O2yejtKDzcx7/UF1Z5nHc3pXOCrXUr+KMU/Jj3hyKvZ0EZM
-         7TgUzpJ4nNNEx810vz6MtHB701dA/QCLJRiMBLOK8zwezjeAk0e7Rr1qAVJvFJ6D+a
-         2fQBHpWr1thXA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed,  6 Dec 2023 21:42:36 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 6 Dec 2023 21:42:36 +0300
-Message-ID: <44c8b8dd-24e4-24c9-c7f9-3d7db892095d@salutedevices.com>
-Date:   Wed, 6 Dec 2023 21:34:27 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net] vsock/virtio: fix "comparison of distinct pointer
- types lacks a cast" warning
-Content-Language: en-US
-To:     Stefano Garzarella <sgarzare@redhat.com>, <netdev@vger.kernel.org>
-CC:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        <virtualization@lists.linux.dev>,
-        "Michael S. Tsirkin" <mst@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>
-References: <20231206164143.281107-1-sgarzare@redhat.com>
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <20231206164143.281107-1-sgarzare@redhat.com>
+        Wed, 6 Dec 2023 13:35:31 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA703D40
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 10:35:37 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5c5daf2baccso448577b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 10:35:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701887737; x=1702492537; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=B2/YElcFb78YmCVTTtjEUczkDmkglR+f6tXmRIs88Pc=;
+        b=lpI5S7KZve6rDwSg9JJuwFXZi3JkCxVRCkaFNLUCQlGo9HFSQI1at6FI526w7WbY3R
+         ntP5ih+FAqVRNL3o1ZV4A4EZuppjCU4bp1IlDErRnOAzhbMIGuoy0YXCOZdynmztQ1qa
+         a6ieddnGtqPT1gMMhhXHYPjAClSqmu8JWSriqMFYv1eIg5IpJw20+JYVpT9X3EDymwOm
+         DGHuk+767I4cQmjyMCYRvZiF/qavx5EDSL4PgxNuMsXXVbCQH01iyMY77N+GtbT/P3BW
+         Wk+BHlZFv11jl9hVMkNRX3KdW6cY/xmHhZF0Iwmm/GmYEERduyErsKcEWb+XrQa653P2
+         Yo5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701887737; x=1702492537;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B2/YElcFb78YmCVTTtjEUczkDmkglR+f6tXmRIs88Pc=;
+        b=wFLUA532xOqUjk213a5xTtup5glUu42hzcrUpf92LX9jpMw16XVnZSwHbiA7Zcrgsx
+         W1QUQuHU94CbTE36w4H61yfgcEVUl39e8hu7/QJyjyWTLNod8ou3gQ+NwU22T0SEHrE3
+         EnFKGOi6FZ0ID37xGAbALs5jwkbN4ItHkidg1rjk2IGvz4InD+hgFpg5vv8xXXNxl4aN
+         yJfcoMFF9wnlw9tAAgl8gpdz9a38uQXYqVZFf30YHvVwJjYWeFoAXchsPs6efHyiFuXR
+         8H5vBnsVz/Wrwxvt7VPl3FtSaCLdJS+J2Fn8npD3CgAqxmMpldfgbx0ZCEj6qO/TTqf+
+         t4OQ==
+X-Gm-Message-State: AOJu0YxmESXLFMKgWBz+heJlPfJFXGH6Tec4PrJC1G4bp2nv1d4xn8vM
+        DWyZFduhKQXAcBlBslyUUd3vMvAwxoG5
+X-Google-Smtp-Source: AGHT+IFZUxuND2td+Pez2UzFtuP3tourqWfU0yR+9nJpAFBDlD4Cc/EBL7A37Z5pgGaT7kEPMo9vpuaFfND5
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:fe7d:8e90:65a9:5cbe])
+ (user=irogers job=sendgmr) by 2002:a81:af04:0:b0:5d8:95b:af70 with SMTP id
+ n4-20020a81af04000000b005d8095baf70mr21731ywh.4.1701887737162; Wed, 06 Dec
+ 2023 10:35:37 -0800 (PST)
+Date:   Wed,  6 Dec 2023 10:35:33 -0800
+Message-Id: <20231206183533.972028-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Subject: [PATCH v1] perf stat: Exit perf stat if parse groups fails
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181917 [Dec 06 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/06 17:41:00 #22621737
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Metrics were added by a callback but commit a4b8cfcabb1d ("perf stat:
+Delay metric parsing") postponed this to allow optimizations based on
+the CPU configuration. In doing so it stopped errors in metric parsing
+from causing perf stat termination. This change adds the termination
+for bad metric names back in.
 
+Reported-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Closes: https://lore.kernel.org/lkml/ZXByT1K6enTh2EHT@kernel.org/
+Fixes: a4b8cfcabb1d ("perf stat: Delay metric parsing")
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/builtin-stat.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-On 06.12.2023 19:41, Stefano Garzarella wrote:
-> After backporting commit 581512a6dc93 ("vsock/virtio: MSG_ZEROCOPY
-> flag support") in CentOS Stream 9, CI reported the following error:
-> 
->     In file included from ./include/linux/kernel.h:17,
->                      from ./include/linux/list.h:9,
->                      from ./include/linux/preempt.h:11,
->                      from ./include/linux/spinlock.h:56,
->                      from net/vmw_vsock/virtio_transport_common.c:9:
->     net/vmw_vsock/virtio_transport_common.c: In function ‘virtio_transport_can_zcopy‘:
->     ./include/linux/minmax.h:20:35: error: comparison of distinct pointer types lacks a cast [-Werror]
->        20 |         (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
->           |                                   ^~
->     ./include/linux/minmax.h:26:18: note: in expansion of macro ‘__typecheck‘
->        26 |                 (__typecheck(x, y) && __no_side_effects(x, y))
->           |                  ^~~~~~~~~~~
->     ./include/linux/minmax.h:36:31: note: in expansion of macro ‘__safe_cmp‘
->        36 |         __builtin_choose_expr(__safe_cmp(x, y), \
->           |                               ^~~~~~~~~~
->     ./include/linux/minmax.h:45:25: note: in expansion of macro ‘__careful_cmp‘
->        45 | #define min(x, y)       __careful_cmp(x, y, <)
->           |                         ^~~~~~~~~~~~~
->     net/vmw_vsock/virtio_transport_common.c:63:37: note: in expansion of macro ‘min‘
->        63 |                 int pages_to_send = min(pages_in_iov, MAX_SKB_FRAGS);
-> 
-> We could solve it by using min_t(), but this operation seems entirely
-> unnecessary, because we also pass MAX_SKB_FRAGS to iov_iter_npages(),
-> which performs almost the same check, returning at most MAX_SKB_FRAGS
-> elements. So, let's eliminate this unnecessary comparison.
-> 
-> Fixes: 581512a6dc93 ("vsock/virtio: MSG_ZEROCOPY flag support")
-> Cc: avkrasnov@salutedevices.com
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index d8e5d6f7a87a..d22228eddccb 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -2695,15 +2695,19 @@ int cmd_stat(int argc, const char **argv)
+ 	 */
+ 	if (metrics) {
+ 		const char *pmu = parse_events_option_args.pmu_filter ?: "all";
++		int ret = metricgroup__parse_groups(evsel_list, pmu, metrics,
++						stat_config.metric_no_group,
++						stat_config.metric_no_merge,
++						stat_config.metric_no_threshold,
++						stat_config.user_requested_cpu_list,
++						stat_config.system_wide,
++						&stat_config.metric_events);
+ 
+-		metricgroup__parse_groups(evsel_list, pmu, metrics,
+-					stat_config.metric_no_group,
+-					stat_config.metric_no_merge,
+-					stat_config.metric_no_threshold,
+-					stat_config.user_requested_cpu_list,
+-					stat_config.system_wide,
+-					&stat_config.metric_events);
+ 		zfree(&metrics);
++		if (ret) {
++			status = ret;
++			goto out;
++		}
+ 	}
+ 
+ 	if (add_default_attributes())
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
 
-Reviewed-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-
->  net/vmw_vsock/virtio_transport_common.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-> index f6dc896bf44c..c8e162c9d1df 100644
-> --- a/net/vmw_vsock/virtio_transport_common.c
-> +++ b/net/vmw_vsock/virtio_transport_common.c
-> @@ -59,8 +59,7 @@ static bool virtio_transport_can_zcopy(const struct virtio_transport *t_ops,
->  	t_ops = virtio_transport_get_ops(info->vsk);
->  
->  	if (t_ops->can_msgzerocopy) {
-> -		int pages_in_iov = iov_iter_npages(iov_iter, MAX_SKB_FRAGS);
-> -		int pages_to_send = min(pages_in_iov, MAX_SKB_FRAGS);
-> +		int pages_to_send = iov_iter_npages(iov_iter, MAX_SKB_FRAGS);
->  
->  		/* +1 is for packet header. */
->  		return t_ops->can_msgzerocopy(pages_to_send + 1);
