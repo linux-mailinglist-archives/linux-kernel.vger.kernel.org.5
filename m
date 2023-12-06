@@ -2,73 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA85C8079D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A4B8079CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442921AbjLFUyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 15:54:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
+        id S1442861AbjLFUv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 15:51:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442884AbjLFUyN (ORCPT
+        with ESMTP id S1379478AbjLFUv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 15:54:13 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2311BD
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 12:54:19 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54c77e0832cso306641a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 12:54:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=melexis.com; s=google; t=1701896058; x=1702500858; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JSietH4+/fXGllVTIYLzbC7uzQTL9XZQ4bRl86qjl6k=;
-        b=M5bk+VJFOOeXn6+taFdpYztLh2ejZ+V7XjEvxosuKXlaP9J2irDDgwSYPf3drbN93K
-         1cMmR+JR6tl9B/7URAkIEBW2p9aSbB9unekHzOoKZYTWR/peU4QsEJdlLbvUj9VpCGdE
-         wdjhfQpmEygnThPYpr1KGxVjqk7sAfC8KQS1jq1uIIep3CHsT6ABTACrbZYWKIugjgQc
-         0U9f2NMxfGS7ndjFIDrSpQvmB2gE8+j9as1bqY70oMql2cuIYIAPrQB8YZe8msi4KWcX
-         jYHKt0ysdRf+OFUCmCNjUWnBJEiuv+2knAd7jFSCEpPED3rYZacKozRDB9nyzI9W/ivw
-         RSKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701896058; x=1702500858;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JSietH4+/fXGllVTIYLzbC7uzQTL9XZQ4bRl86qjl6k=;
-        b=H78aex1tcbSZdYf3TI9DN7Ra4dzKzmATm4M8tvsoiKBQFQtXOSLNQ1fl1U+RVPeZAq
-         N8LSE7o+laTadq67myKoYtQh6b1plg6xMhznofWj7bStq7ntur73Jh3d5D1XWkFh8ws3
-         kFGzP41uJv1B/g4opffa/kUBbqEab57kXmAodc3LdvGZ4LnvCCVCeLwHrqT+gaIWL+DO
-         a1nijT1VINJt1o1IhUKwl7uvgFhxiqhuDBCJow5FxwZae5tPHz41v+vNQazASVHa2zsn
-         9J070oWBgJ0OIrtLVaAK4zW9A1PgE6e2aDeEikw8RF/BcZbTcggs+jAOj94Nl0pEdXvC
-         J6dg==
-X-Gm-Message-State: AOJu0YxkG0Pov+jXHsW2ehpvhmEke6VgEeJUnnzVQM/+QFudCCI3gnxv
-        Yrb8B4WzzEOaTfyEB5kaGZaHqw==
-X-Google-Smtp-Source: AGHT+IEmX1xbn70oD4xbfUR8BF5o3lXgqB/N53BpWMa4EO/sJCLDWKoz+SdXWAAPtv2TVkbSzcqXrw==
-X-Received: by 2002:a17:906:3c43:b0:a08:f837:7802 with SMTP id i3-20020a1709063c4300b00a08f8377802mr897228ejg.14.1701896057918;
-        Wed, 06 Dec 2023 12:54:17 -0800 (PST)
-Received: from localhost.localdomain (d54c3956f.access.telenet.be. [84.195.149.111])
-        by smtp.gmail.com with ESMTPSA id y21-20020a1709063a9500b009fd585a2155sm414181ejd.0.2023.12.06.12.54.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 12:54:17 -0800 (PST)
-From:   Crt Mori <cmo@melexis.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Crt Mori <cmo@melexis.com>, Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 2/2] dt-bindings: iio: temperature: add MLX90635 device
-Date:   Wed,  6 Dec 2023 21:49:42 +0100
-Message-Id: <0313c3b9f7490c32891627feb5ef35d5e5d9aae9.1701872051.git.cmo@melexis.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1701872051.git.cmo@melexis.com>
-References: <cover.1701872051.git.cmo@melexis.com>
+        Wed, 6 Dec 2023 15:51:26 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A413135;
+        Wed,  6 Dec 2023 12:51:32 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B7702720;
+        Wed,  6 Dec 2023 21:50:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701895848;
+        bh=l0ZcHpyWY6UMwv/hikDR8riOCq1MNunta8UDL42xOPs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pt8MhQ3u2yXCm1EjjVxWv5Zv/bL8rSKARO3l7kpOwKjkmNtj9aOQmXDHNL8OJNuAC
+         ifKaRvsnm4BZC5RjcQr8zgm6YG8WPbEDJy7NpSPazH1u686mAPUNYdxIbyMdJftgFx
+         nhNkYYUVJnEvzrkcaMGYkmNQrmUkvzsPzG+54/ss=
+Date:   Wed, 6 Dec 2023 22:51:35 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Dafna Hirschfeld <dafna@fastmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        kieran.bingham@ideasonboard.com, umang.jain@ideasonboard.com,
+        aford173@gmail.com, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] media: rkisp1: Drop IRQF_SHARED
+Message-ID: <20231206205135.GB29417@pendragon.ideasonboard.com>
+References: <20231206-rkisp-irq-fix-v2-0-6ba4185eeb1f@ideasonboard.com>
+ <20231206-rkisp-irq-fix-v2-1-6ba4185eeb1f@ideasonboard.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231206-rkisp-irq-fix-v2-1-6ba4185eeb1f@ideasonboard.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,54 +55,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings for MLX90635 Infra Red contactless temperature
-sensor.
+Hi Tomi,
 
-Signed-off-by: Crt Mori <cmo@melexis.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../iio/temperature/melexis,mlx90632.yaml     | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+Thank you for the patch.
 
-diff --git a/Documentation/devicetree/bindings/iio/temperature/melexis,mlx90632.yaml b/Documentation/devicetree/bindings/iio/temperature/melexis,mlx90632.yaml
-index 4a55e7f25ae7..03bb5d4fa8b5 100644
---- a/Documentation/devicetree/bindings/iio/temperature/melexis,mlx90632.yaml
-+++ b/Documentation/devicetree/bindings/iio/temperature/melexis,mlx90632.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/iio/temperature/melexis,mlx90632.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Melexis MLX90632 contactless Infra Red temperature sensor
-+title: Melexis MLX90632 and MLX90635 contactless Infra Red temperature sensor
- 
- maintainers:
-   - Crt Mori <cmo@melexis.com>
-@@ -27,9 +27,24 @@ description: |
-   Since measured object emissivity effects Infra Red energy emitted,
-   emissivity should be set before requesting the object temperature.
- 
-+  https://www.melexis.com/en/documents/documentation/datasheets/datasheet-mlx90635
-+
-+  MLX90635 is most suitable for consumer applications where
-+  measured object temperature is in range between -20 to 100 degrees
-+  Celsius with relative error of measurement 2 degree Celsius in
-+  object temperature range for industrial applications, while just 0.2
-+  degree Celsius for human body measurement applications. Since it can
-+  operate and measure ambient temperature in range of -20 to 85 degrees
-+  Celsius it is suitable also for outdoor use.
-+
-+  Since measured object emissivity effects Infra Red energy emitted,
-+  emissivity should be set before requesting the object temperature.
-+
- properties:
-   compatible:
--    const: melexis,mlx90632
-+    enum:
-+      - melexis,mlx90632
-+      - melexis,mlx90635
- 
-   reg:
-     maxItems: 1
+On Wed, Dec 06, 2023 at 12:12:28PM +0200, Tomi Valkeinen wrote:
+> In all known platforms the ISP has dedicated IRQ lines, but for some
+> reason the driver uses IRQF_SHARED.
+> 
+> Supporting IRQF_SHARED properly requires handling interrupts even when
+> our device is disabled, and the driver does not handle this. To avoid
+> adding such code, and to be sure the driver won't accidentally be used
+> in a platform with shared interrupts, let's drop the IRQF_SHARED flag.
+> 
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> index 2b9886fd0800..d4950294b7b9 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> @@ -573,7 +573,7 @@ static int rkisp1_probe(struct platform_device *pdev)
+>  		if (irq < 0)
+>  			return irq;
+>  
+> -		ret = devm_request_irq(dev, irq, info->isrs[i].isr, IRQF_SHARED,
+> +		ret = devm_request_irq(dev, irq, info->isrs[i].isr, 0,
+>  				       dev_driver_string(dev), dev);
+>  		if (ret) {
+>  			dev_err(dev, "request irq failed: %d\n", ret);
+> 
+
 -- 
-2.40.1
+Regards,
 
+Laurent Pinchart
