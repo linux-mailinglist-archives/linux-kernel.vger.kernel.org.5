@@ -2,121 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C26807083
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E55807086
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378393AbjLFNFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 08:05:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41778 "EHLO
+        id S1378400AbjLFNH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 08:07:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378112AbjLFNFn (ORCPT
+        with ESMTP id S1378112AbjLFNHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 08:05:43 -0500
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E7CAC
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 05:05:49 -0800 (PST)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1f060e059a3so3789208fac.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 05:05:49 -0800 (PST)
+        Wed, 6 Dec 2023 08:07:54 -0500
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4301A5
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 05:07:59 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-67a338dfca7so50246056d6.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 05:07:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1701867949; x=1702472749; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vzgbFdAZtuGUcSvqWCnnqwHA8w3xAQKY5QSWn1ivO1Q=;
-        b=0jGVZKjJMkR4k3SzhwUcmsr1ARpdtEuHE5otTODLVzyQWKIMd/b+gbSP2urj2UbuD5
-         44lqgzcofE+vH/7OioWTzJ3ZfVIkCLB7J6oeEnBJz0JIzLtLNlpnWDOmRn3uqTww4sNo
-         GZWebmKeRCV4oYnPSdQavq+c2XYkQoq2HJ0/+rGwxfkdRVY95zZd7Lb/vIeKnqX+rF4B
-         a/YBqba9L8RgtkB7UtlvE0yCG3H/M7OR3Q1o32v6f6PqBK6whJ83IpjNYHtyNDV1huml
-         QBdvokDAbwrhWjMic0/AwZp157Zbw1skcuxTyaSeu0mF75xFBZJInrlV42Y8BCKdOP0l
-         JdSg==
+        d=linaro.org; s=google; t=1701868079; x=1702472879; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=gQpMmP2wZ3s7+6OFWhnGzvX5dkNxaHbZY8w8mGlHd4A=;
+        b=n9XrYmdikcSiMDq+clvLq94LurfaElV2iJOIY1Mq4XH0ZudVXzvel9XIlIMSo+TZE8
+         lK0BOHq+bQtfD9a5qiP/kkJYWoqpVCZ5RroUMxCbeA7/agZOXTP4tdDFQymDbQ0bxKt3
+         b3D5DJHfYLiLNZtnECGAzITGmcVEarKUL1KlWyiZnc0Gb3hZh5GV3plIMs16qWqHa+ie
+         crmizJb+9C4Y+K2SkThjF3QJf3g/r68MeBYA4nei1lalC7jXQTEG284f9yTrHNRLWnhl
+         4ku/jiaZxFqUc7Ndk020aDebT3yJWGKQ9Bh6B0RIw+hKVBrWY0M1/UvODXLshsp1MzBS
+         J2UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701867949; x=1702472749;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vzgbFdAZtuGUcSvqWCnnqwHA8w3xAQKY5QSWn1ivO1Q=;
-        b=Do/Q9GgIsl17iEffsjxTqAcxik3HwG6ETE3noIHuadAAR93xSwEZUueqxGfpt6wnDw
-         Gt3iLKWNTgxfp/KNWH7QOqO1dKZ6nY4SMc7oaW3xeHHz738IgOWJMQ/HHSrbNDo6XKia
-         QAqT7pOYeFn/068xs8GnaXGbiiKV6SmgPYwhhA0oRl09SK7fdUd9IJ19BaRs60YCFZUt
-         ZSkmJZQm0fNeSyi40OVPmd5DE6fVdCBlFwuwRhYOJ1CZAjawbDK+Pceb2u9gRyN14J+p
-         WH1izNNHaGJl/PENVW0ADdhbP7N5WenFNMEutrJ98feN2rifpBU9r3HQjeSrdJGkge6G
-         i/nA==
-X-Gm-Message-State: AOJu0YxjrLl0/2o7dyVB0GGINZOAURV8Y4jE6sEMoKegPJdxkaGt3jPW
-        3HduVPeg0c4UvncjY7z14yhIgA==
-X-Google-Smtp-Source: AGHT+IEhjyYkjdko17Yv1eA2AphNCktXFKRI2cyiBKG8GmugvSo4jvEZ3+HFE5q1wXyxbk+tyJpYhw==
-X-Received: by 2002:a05:6870:9e82:b0:1fa:df52:beb4 with SMTP id pu2-20020a0568709e8200b001fadf52beb4mr1148224oab.32.1701867949085;
-        Wed, 06 Dec 2023 05:05:49 -0800 (PST)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id gy26-20020a056870289a00b001fb3240116bsm2094303oab.7.2023.12.06.05.05.48
+        d=1e100.net; s=20230601; t=1701868079; x=1702472879;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gQpMmP2wZ3s7+6OFWhnGzvX5dkNxaHbZY8w8mGlHd4A=;
+        b=sCYaenSG/tRQ5xiIjL+m9/EPZ1X6P85+AqI/yTDACtTk9p5dTooLN45Hwebw4p3Xot
+         XEJCwhArUwC/zC139/LVdnDfM9aAcFlFLW30Znl3BPLRHofk9tj6UHn1wpHgiirSQLXx
+         USbtsjfI3ZAVwlAmpxmBuBIrsyCbSWdsXaeUCaWU5QFH89n0Q6CsFMpEHk71Y0e+ugUQ
+         2UnkRY+S82PzG2iJj/KbBC/a+2QvEYBl8nXZA+6WSdHahNtShhWWQZclO9a1EXMsxubl
+         qUxnEcNALElSupmnAAclepCHNm27a/+338zNYMtOcoo5jhd9Kyrxf4nakY9/8Q2kYm+c
+         MtNA==
+X-Gm-Message-State: AOJu0Yy3hWbjkl7llSad5ja7dovwRmC1ho03FSXqJgp0QOxaWVz67kgu
+        dPqDrAZICKWA2a71j54sNSL5lzoLsxlcVqoygQ==
+X-Google-Smtp-Source: AGHT+IGMvRlyL7C2KEwGemUA9/VVD3S4C+nqnZP0ubycEacEFHKerwgVJe6trkCFC+NxpJq1nwVcHg==
+X-Received: by 2002:a05:6214:d8d:b0:67a:ad52:1f9f with SMTP id e13-20020a0562140d8d00b0067aad521f9fmr862119qve.67.1701868078903;
+        Wed, 06 Dec 2023 05:07:58 -0800 (PST)
+Received: from thinkpad ([117.202.188.104])
+        by smtp.gmail.com with ESMTPSA id y15-20020a0c8ecf000000b0067ac2490d95sm2832957qvb.136.2023.12.06.05.07.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 05:05:48 -0800 (PST)
-Date:   Wed, 06 Dec 2023 05:05:48 -0800 (PST)
-X-Google-Original-Date: Wed, 06 Dec 2023 05:05:46 PST (-0800)
-Subject:     Re: [PATCH 2/2] membarrier: riscv: Provide core serializing command
-In-Reply-To: <ZWe+ljzCUQQVu7oD@andrea>
-CC:     mathieu.desnoyers@efficios.com, paulmck@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, mmaas@google.com, hboehm@google.com,
-        striker@us.ibm.com, charlie@rivosinc.com, rehn@rivosinc.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     parri.andrea@gmail.com
-Message-ID: <mhng-40f43849-e610-410b-92b5-7571838ce9f5@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Wed, 06 Dec 2023 05:07:57 -0800 (PST)
+Date:   Wed, 6 Dec 2023 18:37:46 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_vpernami@quicinc.com, quic_parass@quicinc.com
+Subject: Re: [PATCH v3 1/3] dt-bindings: phy: qcom,qmp: Add PCIe
+ qcom,refclk-always-on property
+Message-ID: <20231206130746.GC12802@thinkpad>
+References: <20231127-refclk_always_on-v3-1-26d969fa8f1d@quicinc.com>
+ <78815f1b-7390-40de-8afd-ac71806f4051@linaro.org>
+ <24fae40a-453b-b14c-923f-88758a246aa7@quicinc.com>
+ <20231201060716.GJ4009@thinkpad>
+ <166d307e-7d1b-48b5-90db-9b6df01d87c2@linaro.org>
+ <20231201111033.GL4009@thinkpad>
+ <f844cd1e-7e4f-4836-bc9a-2e1ed13f064f@linaro.org>
+ <20231201123054.GM4009@thinkpad>
+ <3a7376aa-18a2-41cb-a4c9-680e735ce75b@linaro.org>
+ <c66a93fb-2729-4a86-a2db-f4692f6d0857@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <c66a93fb-2729-4a86-a2db-f4692f6d0857@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 14:43:34 PST (-0800), parri.andrea@gmail.com wrote:
->> > So I should probably stick to 93917ad50972, which apparently selected
->> > CONFIG_MEMBARRIER on RISC-V, for the Fixes: tag in question.
->>
->> I think it goes further than that, because you can explicitly
->> CONFIG_MEMBARRIER=y, see init/Kconfig:
->>
->> config MEMBARRIER
->>         bool "Enable membarrier() system call" if EXPERT
->>         default y
->>         help
->>           Enable the membarrier() system call that allows issuing memory
->>           barriers across all running threads, which can be used to distribute
->>           the cost of user-space memory barriers asymmetrically by transforming
->>           pairs of memory barriers into pairs consisting of membarrier() and a
->>           compiler barrier.
->>
->>           If unsure, say Y.
->>
->> Before 1464d00b27b2, riscv just happened to set it to =n in the defconfig.
->>
->> I suspect the initial port of riscv merged after v4.14 was already broken.
->
-> I see.  Oh well, guess I'll have to leave this up to the maintainers then
-> (I believe I've never managed to build riscv that far), Palmer?
+On Fri, Dec 01, 2023 at 10:29:11PM +0100, Konrad Dybcio wrote:
+> On 1.12.2023 14:25, Krzysztof Kozlowski wrote:
+> > On 01/12/2023 13:30, Manivannan Sadhasivam wrote:
+> >>> What I said before:
+> >>> "Again, third time (once from Bjorn, once from Dmitry), rephrase
+> >>> property name and description to describe the hardware issue. I see
+> >>> description improved, but not the property name. Again in the end of
+> >>> description you say what Linux should do. Bindings do not describe Linux
+> >>> OS."
+> >>>
+> >>
+> >> You didn't answer my question:
+> >>
+> >> "I see a plenty of properties similar to this one instructing the OS to keep some
+> >> resource ON to workaround hardware issues. So they are all wrong?"
+> > 
+> > They are not the best, but it all depends on the individual case.
+> > 
+> >>
+> >> If you say they are wrong, why are they approved in the first place?
+> > Because we don't have time to keep digging what the driver is doing and
+> > what is claimed in DT. Some people don't even CC us on the driver.
+> Not sure if I asked this before, but can this not be set in the config
+> struct inside the driver?
+> 
 
-I see
+This cannot be the default config for any platform as keeping refclk always on
+will have some power penalty. Only if the hardware (EP or board design) has any
+issue, we can turn on this option.
 
-$ git grep "config MEMBARRIER" fab957c11efe2f405e08b9f0d080524bc2631428
-fab957c11efe2f405e08b9f0d080524bc2631428:init/Kconfig:config MEMBARRIER
+- Mani
 
-so IMO this is just one of those forever bugs.  So I'd lean towards
+> Konrad
 
-    Fixes: fab957c11efe ("RISC-V: Atomic and Locking Code")
-
-(or anything in that original patch set).  It's not that big of a 
-backport, so I think it's safe enough?
-
->> > I'll look into adding the membarrier feature you mention (as a final/
->> > follow-up patch), unless you or someone else want to take care of it.
->>
->> I'll be happy to review it :)
->
-> Sweet!  :-)
->
->   Andrea
+-- 
+மணிவண்ணன் சதாசிவம்
