@@ -2,98 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3B3806E1A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2149C806E1F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377656AbjLFLgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 06:36:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        id S1377705AbjLFLgt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 06:36:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377585AbjLFLgL (ORCPT
+        with ESMTP id S1377704AbjLFLgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:36:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13094D3
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:36:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701862578; x=1733398578;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UBamYsiYKUMX5S/MYM4VPzYsx3uU17y8l+V5FKdfObI=;
-  b=bT7WXRk6OSZ/hhnfgQoJLb2c2OYumP+n5In564+MME80mKgDyj+MRQmj
-   uIQS1JyTEP7XgwZcLguq8KgScWHpyVQPmqHHN2C/kWDvQfpr94V/f0TR/
-   kDewCpdZFy0RTN4x6JB20eJYj4q62J238QapCYZYpZrsVSqM81nNRIEnY
-   3BzC6ybXHpMGI5TH3RtvWYgzVzYm31FxMfAG44yvbe1XFRFYjHNGnm41N
-   VrEwMNgPk+3eAzV0mvLTGDZXwdN4j3BoX0eyoYVIwJkQKKu/VlpKXDaEw
-   m8CqzY5e/FEr0OmrUXruJQ0lOHm1ku9oFPZihOwVW026bxS7c7DvA2pQp
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="379065752"
-X-IronPort-AV: E=Sophos;i="6.04,255,1695711600"; 
-   d="scan'208";a="379065752"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 03:36:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="889313656"
-X-IronPort-AV: E=Sophos;i="6.04,255,1695711600"; 
-   d="scan'208";a="889313656"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 06 Dec 2023 03:36:15 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAqCL-000AiQ-06;
-        Wed, 06 Dec 2023 11:36:13 +0000
-Date:   Wed, 6 Dec 2023 19:35:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org, jgg@ziepe.ca,
-        kevin.tian@intel.com
-Cc:     oe-kbuild-all@lists.linux.dev, will@kernel.org,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] iommufd/selftest: Use normal IOMMU registration
-Message-ID: <202312061934.2WuVvBEi-lkp@intel.com>
-References: <44ee6854da69e86b208f49752f60a4c18205c32a.1701165201.git.robin.murphy@arm.com>
+        Wed, 6 Dec 2023 06:36:48 -0500
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98DD31A5;
+        Wed,  6 Dec 2023 03:36:54 -0800 (PST)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5d74186170fso42084847b3.3;
+        Wed, 06 Dec 2023 03:36:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701862613; x=1702467413;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q7uKADVFo67bwK9oLvgec0xCPe6KYQSC4PqeYTk7K8M=;
+        b=wCd7RJ4chb2r3uf8Qosbe1Fmf4ZKLgAjxaa6mPUk+L8lXAy5heN3NmUZpeGpJ1vjIe
+         shTz7A944KGjzQ0zkahp//hmyRir6iRYz/+4PV9wSAxxfXgwY66AT39BLT9t1cE1593S
+         1Y3ZLzd9UnYhfhX2hGpmGYnuJnbRZwKgd5tclPlr+vKlFe0CkplMNcJ0qn07RMz8pcZg
+         B8hRk3GA3nCv+U2/u/Z6ya/WxJHXFiumY5bIECHvLFiZunvjl14Lc6ii2/Vk2U4HaZjV
+         y1ALkTFpkfAbKbiVBr5NRESLn3uHDOYc//opzffrbRDKoTUh4xTzBwX7NSHRVt+PR/XS
+         WRIw==
+X-Gm-Message-State: AOJu0YzwbN5hcFk+p7+0QOgMJ+o3VcQqP/y2TxlpLFhZTJcbD8GP+jpK
+        Wkm3Hwz3SUMs0IGNW0x0LzSXIdEz7nMq5A==
+X-Google-Smtp-Source: AGHT+IFcRlZyOhU4rv85Tz0KaWEXBAmvUQaQyMJXzGN7o+d/zc8yq6Lrq6M8ZxDlN/A44bkK37MglA==
+X-Received: by 2002:a81:af61:0:b0:5d8:96c:690d with SMTP id x33-20020a81af61000000b005d8096c690dmr575820ywj.7.1701862613612;
+        Wed, 06 Dec 2023 03:36:53 -0800 (PST)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
+        by smtp.gmail.com with ESMTPSA id r20-20020a0de814000000b005d39c874019sm4620372ywe.66.2023.12.06.03.36.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Dec 2023 03:36:51 -0800 (PST)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5d96efd26f8so24131207b3.2;
+        Wed, 06 Dec 2023 03:36:49 -0800 (PST)
+X-Received: by 2002:a81:a103:0:b0:5d1:430e:4c2f with SMTP id
+ y3-20020a81a103000000b005d1430e4c2fmr594560ywg.42.1701862609581; Wed, 06 Dec
+ 2023 03:36:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <44ee6854da69e86b208f49752f60a4c18205c32a.1701165201.git.robin.murphy@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com> <20231120084606.4083194-11-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20231120084606.4083194-11-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 6 Dec 2023 12:36:38 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUe4xNMOqMkRhnD0Ciq19uWoFRVbg0YPzB6-Y2gh6m-1g@mail.gmail.com>
+Message-ID: <CAMuHMdUe4xNMOqMkRhnD0Ciq19uWoFRVbg0YPzB6-Y2gh6m-1g@mail.gmail.com>
+Subject: Re: [PATCH 10/13] net: ravb: Switch to SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS()
+ and pm_ptr()
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, p.zabel@pengutronix.de,
+        yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com,
+        biju.das.jz@bp.renesas.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        sergei.shtylyov@cogentembedded.com,
+        mitsuhiro.kimura.kc@renesas.com, masaru.nagai.vx@renesas.com,
+        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
+On Thu, Nov 23, 2023 at 7:15 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> SET_SYSTEM_SLEEP_PM_OPS() and SET_RUNTIME_PM_OPS() are deprecated now
+> and require __maybe_unused protection against unused function warnings.
+> The usage of pm_ptr() and SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() allows
+> the compiler to see the functions, thus suppressing the warning. Thus
+> drop the __maybe_unused markings.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-kernel test robot noticed the following build errors:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[auto build test ERROR on next-20231128]
-[cannot apply to joro-iommu/next v6.7-rc3 v6.7-rc2 v6.7-rc1 linus/master v6.7-rc4]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Gr{oetje,eeting}s,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Robin-Murphy/iommufd-selftest-Use-a-fwnode-to-distinguish-devices/20231128-185058
-base:   next-20231128
-patch link:    https://lore.kernel.org/r/44ee6854da69e86b208f49752f60a4c18205c32a.1701165201.git.robin.murphy%40arm.com
-patch subject: [PATCH 2/2] iommufd/selftest: Use normal IOMMU registration
-config: microblaze-allmodconfig (https://download.01.org/0day-ci/archive/20231206/202312061934.2WuVvBEi-lkp@intel.com/config)
-compiler: microblaze-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312061934.2WuVvBEi-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312061934.2WuVvBEi-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   microblaze-linux-ld: drivers/iommu/iommufd/selftest.o: in function `iommufd_bus_init':
->> (.init.text+0x0): multiple definition of `init_module'; drivers/iommu/iommufd/main.o:main.o:(.init.text+0x0): first defined here
+                        Geert
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
