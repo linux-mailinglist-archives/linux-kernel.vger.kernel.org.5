@@ -2,92 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7AA806522
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:38:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA6180653A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbjLFCij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 21:38:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34580 "EHLO
+        id S230035AbjLFCn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 21:43:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjLFCii (ORCPT
+        with ESMTP id S229493AbjLFCn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 21:38:38 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6BA183;
-        Tue,  5 Dec 2023 18:38:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701830323;
-        bh=jyjavBbFUwkDjLn/BtciNJOtogWo8sCatGx7IAFjGyc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tCvhPNP7HEoWS6rPgOc88V+Ca2rtlnJ5WTJH61+CZW5ABPL/z6ewHrNmMnZiwtnxw
-         DOoQ/jXgeR5nZn/iDSIB8WzjDc8ZBI0EKwceaBDHsjVnoUJvxGH8GZ76p5OT9nzV7Y
-         45N2F1ZKls6lfkI1+49sp0z16R/+LH6hjLbp1MppvGMOHfWaxX/+NUfx/hl6t2oQvm
-         9d00CJty8HmY81mMApecfZELeq8dv8m8BuuaTu4+/Gqk2/3v7debOpvou9aJqmkFfp
-         ybTbIXgTuNNt8zjKSHxmXWAa8A2b+KWhDZcUc7+mKP7L1WeQ2zMRSltVg3Gd1B9lhV
-         v+yCZ+keUWIhg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SlM6C2fRdz4wcJ;
-        Wed,  6 Dec 2023 13:38:42 +1100 (AEDT)
-Date:   Wed, 6 Dec 2023 13:38:42 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Al Viro <viro@ZenIV.linux.org.uk>,
-        Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the vfs tree
-Message-ID: <20231206133842.104276c7@canb.auug.org.au>
+        Tue, 5 Dec 2023 21:43:56 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EAB91AA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 18:44:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A27AC433C8;
+        Wed,  6 Dec 2023 02:43:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701830642;
+        bh=2WCrzjk6sg9ZN4wNGQp/yrOmOx4mghiSWunWQXbn6fA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=otbeRDrlE1bRmPTpEzl385JvvSW/zdTsJI7vLYztAuUt2lihA/7RD/K0lNtQL2rz8
+         dOOMHJIQrvheoARXYontSS8vzblEzOFzjQKIPMs5b95o93bj6dAjd5323+2zWpEDJa
+         XTDHxaXXzOQ8LSsQeUoM72zCYgWlfQGUFSxB6Hn/T2uYU471E2/BV7CCqQ3r5c8bYM
+         x6I9+CZwUJXAP1thyzPWfoQ8DA3XsapHZV1DUvFcYtYVn/hD4A7HCbqPshVc7lSrWt
+         4CnGkIjU5fETjcM/qlEEYNlomv6AwkvoiCO3jaWmjxgQFof6AOBm1a+DOB+95zUe7p
+         +n34Eaz/2/vew==
+Date:   Wed, 6 Dec 2023 10:43:55 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Frieder Schrempf <frieder@fris.de>
+Cc:     Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Gregor Herburger <gregor.herburger@ew.tq-group.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Marek Vasut <marex@denx.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Tim Harvey <tharvey@gateworks.com>
+Subject: Re: [PATCH v2 02/14] arm64: dts: imx8mm-kontron: Add DL
+ (Display-Line) overlay with LVDS support
+Message-ID: <20231206024355.GM236001@dragon>
+References: <20231130161657.556483-1-frieder@fris.de>
+ <20231130161657.556483-3-frieder@fris.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8d/a555COXW92pP0U_VyfpT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130161657.556483-3-frieder@fris.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8d/a555COXW92pP0U_VyfpT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Nov 30, 2023 at 05:16:02PM +0100, Frieder Schrempf wrote:
+> From: Frieder Schrempf <frieder.schrempf@kontron.de>
+> 
+> The Kontron Electronics DL i.MX8MM consists of the BL i.MX8MM board
+> and a 7" LVDS panel. Provide an overlay that enables the panel.
+> 
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+> ---
+> Changes for v2:
+> * Rework DSI mux GPIO logic to be compatible with overlay
+> ---
+>  arch/arm64/boot/dts/freescale/Makefile        |   4 +
+>  .../boot/dts/freescale/imx8mm-kontron-dl.dtso | 200 ++++++++++++++++++
+>  2 files changed, 204 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-kontron-dl.dtso
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+> index 300049037eb0b..e08024797721a 100644
+> --- a/arch/arm64/boot/dts/freescale/Makefile
+> +++ b/arch/arm64/boot/dts/freescale/Makefile
+> @@ -166,6 +166,10 @@ dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
+>  dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
+>  
+> +imx8mm-kontron-dl-dtbs			:= imx8mm-kontron-bl.dtb imx8mm-kontron-dl.dtbo
+> +
+> +dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-dl.dtb
+> +
+>  imx8mm-venice-gw72xx-0x-imx219-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-imx219.dtbo
+>  imx8mm-venice-gw72xx-0x-rpidsi-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-rpidsi.dtbo
+>  imx8mm-venice-gw72xx-0x-rs232-rts-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-rs232-rts.dtbo
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-dl.dtso b/arch/arm64/boot/dts/freescale/imx8mm-kontron-dl.dtso
+> new file mode 100644
+> index 0000000000000..c6369072577e0
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-dl.dtso
+> @@ -0,0 +1,200 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2023 Kontron Electronics GmbH
+> + */
+> +
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include "imx8mm-pinfunc.h"
+> +
+> +&{/} {
+> +	compatible = "kontron,imx8mm-bl", "kontron,imx8mm-sl", "fsl,imx8mm";
+> +
+> +	backlight: backlight {
+> +		compatible = "pwm-backlight";
+> +		pwms = <&pwm1 0 50000 0>;
+> +		brightness-levels = <0 100>;
+> +		num-interpolated-steps = <100>;
+> +		default-brightness-level = <100>;
+> +	};
+> +
+> +	panel {
+> +		compatible = "panel-lvds";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_panel>;
+> +		backlight = <&backlight>;
+> +		data-mapping = "vesa-24";
+> +		enable-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
+> +		height-mm = <86>;
+> +		width-mm = <154>;
+> +
+> +		panel-timing {
+> +			clock-frequency = <51200000>;
+> +			hactive = <1024>;
+> +			vactive = <600>;
+> +			hsync-len = <1>;
+> +			hfront-porch = <160>;
+> +			hback-porch = <160>;
+> +			vsync-len = <1>;
+> +			vfront-porch = <12>;
+> +			vback-porch = <23>;
+> +		};
+> +
+> +		port {
+> +			panel_out_bridge: endpoint {
+> +				remote-endpoint = <&bridge_out_panel>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&dsi_mux_sel_hdmi {
+> +	status = "disabled";
+> +};
+> +
+> +&dsi_mux_sel_lvds {
+> +	status = "okay";
+> +};
+> +
+> +&dsi_out_bridge {
+> +	remote-endpoint = <&bridge_in_dsi_lvds>;
+> +};
+> +
+> +&gpio3 {
+> +	panel_rst {
+> +		gpio-hog;
+> +		gpios = <20 GPIO_ACTIVE_HIGH>;
+> +		output-high;
+> +		line-name = "panel-reset";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_panel_rst>;
+> +	};
+> +
+> +	panel_stby {
+> +		gpio-hog;
+> +		gpios = <21 GPIO_ACTIVE_HIGH>;
+> +		output-high;
+> +		line-name = "panel-standby";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_panel_stby>;
+> +	};
+> +
+> +	panel_hinv {
+> +		gpio-hog;
+> +		gpios = <24 GPIO_ACTIVE_HIGH>;
+> +		output-high;
+> +		line-name = "panel-horizontal-invert";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_panel_hinv>;
+> +	};
+> +
+> +	panel_vinv {
+> +		gpio-hog;
+> +		gpios = <25 GPIO_ACTIVE_HIGH>;
+> +		output-low;
+> +		line-name = "panel-vertical-invert";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_panel_vinv>;
+> +	};
+> +};
+> +
+> +&hdmi {
+> +	status = "disabled";
+> +};
+> +
+> +&i2c2 {
+> +	clock-frequency = <400000>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_i2c2>;
+> +	status = "okay";
+> +
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	gt911@5d {
+> +		compatible = "goodix,gt928";
+> +		reg = <0x5d>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_touch>;
+> +		interrupt-parent = <&gpio3>;
+> +		interrupts = <22 8>;
+> +		reset-gpios = <&gpio3 23 0>;
+> +		irq-gpios = <&gpio3 22 0>;
+> +	};
+> +};
+> +
+> +&lvds {
+> +	status = "okay";
+> +
+> +	ports {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		port@2 {
+> +			reg = <2>;
 
-Hi all,
+Have a newline between properties and child node.
 
-The following commits are also in the bcachefs tree as different
-commits (but the same patches):
+> +			bridge_out_panel: endpoint {
+> +				remote-endpoint = <&panel_out_bridge>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&pwm1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_pwm1>;
+> +	status = "okay";
+> +};
+> +
+> +&iomuxc {
+> +	pinctrl_panel_rst: panelrstgrp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SAI5_RXC_GPIO3_IO20		0x19
+> +		>;
+> +	};
+> +
+> +	pinctrl_panel_stby: panelstbygrp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SAI5_RXD0_GPIO3_IO21		0x19
+> +		>;
+> +	};
+> +
+> +	pinctrl_panel_hinv: panelhinvgrp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SAI5_RXD3_GPIO3_IO24		0x19
+> +		>;
+> +	};
+> +
+> +	pinctrl_panel_vinv: panelvinvgrp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SAI5_MCLK_GPIO3_IO25		0x19
+> +		>;
+> +	};
+> +
+> +	pinctrl_i2c2: i2c2grp {
 
-  bbe6a7c899e7 ("bch2_ioctl_subvolume_destroy(): fix locking")
-  74d016ecc1a7 ("new helper: user_path_locked_at()")
+Could you sort the pinctrl nodes alphabetically?
 
-These are commits
+Shawn
 
-  b3057fdbaa42 ("bch2_ioctl_subvolume_destroy(): fix locking")
-  6d93d94d56e4 ("new helper: user_path_locked_at()")
-
-in the bcachefs tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/8d/a555COXW92pP0U_VyfpT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVv3rIACgkQAVBC80lX
-0GxNswgAljhVwu6CM1jteFx9i2LrM5BEDb48gxNXy+P7ruz/MMldmG8bW0INN7fh
-Vreae3mmHUwBwaOKH9+OQ/6UEm4Ijwxn5fiXr4Jown1rJZAwilbD+p1AyCuHefu+
-xAQbJsBkVusPKSMKdt8Lh21xDJInVRgEmmLCo+eVQ8QycFEnGF9Br5DM7j2VXrVG
-dFC7kT/75FuYbuHrqFCYj9pwTeTh9FtGPdvDp83GPOg/Ux66/VgbCLZGkT4c4Gt1
-k2n4S7cjuaxn9hQfcglVC4sNtwnDPk0fN9vleb91B/ywzluX1/k0jea37ObmE+5I
-ETcsQTdz+6b0cVWI9k3pwmqO+c3F2Q==
-=SQvK
------END PGP SIGNATURE-----
-
---Sig_/8d/a555COXW92pP0U_VyfpT--
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL			0x40000083
+> +			MX8MM_IOMUXC_I2C2_SDA_I2C2_SDA			0x40000083
+> +		>;
+> +	};
+> +
+> +	pinctrl_pwm1: pwm1grp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SPDIF_EXT_CLK_PWM1_OUT		0x6
+> +		>;
+> +	};
+> +
+> +	pinctrl_panel: panelgrp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SAI5_RXFS_GPIO3_IO19		0x19
+> +		>;
+> +	};
+> +
+> +	pinctrl_touch: touchgrp {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SAI5_RXD1_GPIO3_IO22		0x19
+> +			MX8MM_IOMUXC_SAI5_RXD2_GPIO3_IO23		0x19
+> +		>;
+> +	};
+> +};
+> -- 
+> 2.43.0
+> 
