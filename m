@@ -2,163 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B7F807322
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F55F80732A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:57:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379034AbjLFO4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 09:56:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
+        id S1379030AbjLFO5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 09:57:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379015AbjLFO4k (ORCPT
+        with ESMTP id S1379018AbjLFO5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 09:56:40 -0500
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D85B5;
-        Wed,  6 Dec 2023 06:56:47 -0800 (PST)
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6d9a1dd6fdcso467569a34.1;
-        Wed, 06 Dec 2023 06:56:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701874606; x=1702479406;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dMFxTkt+APt9VkSo60/Rj4cKZLAsbnVIJIMVqJP/nRI=;
-        b=qri2uqUTwj/abp8PAD7G7hQ0iisfXb3C5gHRiuoDGEnnPptrvDXqEPF2nxvtjqmz2l
-         jOXHFzOy5knLtxAni5Oxwvmih9OPw9J/DT8VZ8IJT5TvnSt9YU+ywswBiwJshvJv3VNv
-         2o9NTKPHsGBnyy/08nlwd2o9huJOKUxqABwL1cKIOx+7BOwrrPJmw5K6WrUMopgByQn8
-         HAH2BMPZEMcSeGNfxirR665CJ6saeZ82FrVOl3pZLDotSkGPLjTX7jy1xRZHMTOkrNBX
-         e0qGUFbd2r3z8p7MpXtWEK16iG3BS55aY4tawa1ToPXFxTa1qdGQtY//gBGnZPdl/6s0
-         o72A==
-X-Gm-Message-State: AOJu0YzOqKF5MeQUZXnoSj3fsQul1YcnBfqzRYZBYZe1JPT5KwtSkCq4
-        W1kYE4P9XYZBmhycqcljQBbPlCbs0g==
-X-Google-Smtp-Source: AGHT+IGo7Nw4yr8MZn9UYM3es1DB4fV7+KFr86PkrLstPfPuNnxjgC+QKtK0LxxDfWXey61y9+S+nQ==
-X-Received: by 2002:a05:6830:c89:b0:6d8:74f0:30d3 with SMTP id bn9-20020a0568300c8900b006d874f030d3mr1429643otb.29.1701874606223;
-        Wed, 06 Dec 2023 06:56:46 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id m2-20020a9d4c82000000b006d879b8e68csm1880241otf.69.2023.12.06.06.56.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 06:56:45 -0800 (PST)
-Received: (nullmailer pid 2138604 invoked by uid 1000);
-        Wed, 06 Dec 2023 14:56:44 -0000
-Date:   Wed, 6 Dec 2023 08:56:44 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alain Volmat <alain.volmat@foss.st.com>
-Cc:     Andi Shyti <andi.shyti@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/7] dt-bindings: i2c: document st,stm32mp25-i2c
- compatible
-Message-ID: <20231206145644.GA2133904-robh@kernel.org>
-References: <20231129125920.1702497-1-alain.volmat@foss.st.com>
- <20231129125920.1702497-4-alain.volmat@foss.st.com>
+        Wed, 6 Dec 2023 09:57:43 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4ED3B5;
+        Wed,  6 Dec 2023 06:57:49 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 95C2E1FD16;
+        Wed,  6 Dec 2023 14:57:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1701874667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=W1iEqONk/zbDaDJmdYP4h1bjI7CKaBWSU7dA6BrXLIg=;
+        b=aKenJujcJEApG75yiRDSuPOBECArFJf9/amlfRfD4veoUrSAx7mX9tyjh+Pfoupm4/Q2CW
+        AK8eNokOXNKRT1Ve4KZFkVnWUvZ3NhCovynNnW8VDZuR38IBlIpwMWT63Sj0X0bdt0DR62
+        3WOadVDrCxisHF5JdmDQPJ3gTMdo2bU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1701874667;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=W1iEqONk/zbDaDJmdYP4h1bjI7CKaBWSU7dA6BrXLIg=;
+        b=h+/H8r6WaarZ8hA9GAXKZE4KL0Yf9Jw4qxX9HzieBFF2CDicFgo/PgpkQxaYPfNuiR+2KQ
+        xE/C0m+ddCjMixDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D3117136CD;
+        Wed,  6 Dec 2023 14:57:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id vt8jLuqLcGVBQgAAD6G6ig
+        (envelope-from <lhenriques@suse.de>); Wed, 06 Dec 2023 14:57:46 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id 653c8557;
+        Wed, 6 Dec 2023 14:57:45 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Henriques <lhenriques@suse.de>
+Subject: [RFC PATCH] keys: flush work when accessing /proc/key-users
+Date:   Wed,  6 Dec 2023 14:57:44 +0000
+Message-ID: <20231206145744.17277-1-lhenriques@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231129125920.1702497-4-alain.volmat@foss.st.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Score: 1.70
+X-Spamd-Result: default: False [1.70 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         RCPT_COUNT_FIVE(0.00)[6];
+         RCVD_COUNT_THREE(0.00)[4];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_LAST(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         MID_CONTAINS_FROM(1.00)[];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 01:59:12PM +0100, Alain Volmat wrote:
-> Add a new compatible st,stm32mp25-i2c for the STM32MP25 series which
-> has only one interrupt line for both events and errors and differs in
-> term of handling of FastModePlus.
-> 
-> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-> ---
->  .../devicetree/bindings/i2c/st,stm32-i2c.yaml | 49 +++++++++++++++----
->  1 file changed, 39 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
-> index 94b75d9f66cd..6a69bb6de23e 100644
-> --- a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
-> +++ b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
-> @@ -19,6 +19,7 @@ allOf:
->                - st,stm32f7-i2c
->                - st,stm32mp13-i2c
->                - st,stm32mp15-i2c
-> +              - st,stm32mp25-i2c
->      then:
->        properties:
->          i2c-scl-rising-time-ns:
-> @@ -41,6 +42,43 @@ allOf:
->          clock-frequency:
->            enum: [100000, 400000]
->  
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - st,stm32f4-i2c
-> +              - st,stm32f7-i2c
-> +              - st,stm32mp13-i2c
-> +              - st,stm32mp15-i2c
-> +    then:
-> +      properties:
-> +        interrupts:
-> +          items:
-> +            - description: interrupt ID for I2C event
-> +            - description: interrupt ID for I2C error
-> +
-> +        interrupt-names:
-> +          items:
-> +            - const: event
-> +            - const: error
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - st,stm32mp25-i2c
-> +    then:
-> +      properties:
-> +        interrupts:
-> +          items:
-> +            - description: common interrupt for events and errors
-> +
-> +        interrupt-names:
-> +          items:
-> +            - const: event
-> +
->  properties:
->    compatible:
->      enum:
-> @@ -48,20 +86,11 @@ properties:
->        - st,stm32f7-i2c
->        - st,stm32mp13-i2c
->        - st,stm32mp15-i2c
-> +      - st,stm32mp25-i2c
->  
->    reg:
->      maxItems: 1
->  
-> -  interrupts:
-> -    items:
-> -      - description: interrupt ID for I2C event
-> -      - description: interrupt ID for I2C error
-> -
-> -  interrupt-names:
-> -    items:
-> -      - const: event
-> -      - const: error
+Make sure the garbage collector has been run before cycling through all
+the user keys.
 
-No this should remain. You are duplicating defining the names otherwise. 
-Add 'minItems: 1' here. Then the if/then schemas should just have 
-'maxItems: 1' or 'minItems: 2'.
+Signed-off-by: Luis Henriques <lhenriques@suse.de>
+---
+Hi!
 
-Rob
+This patch is mostly for getting some feedback on how to fix an fstest
+failing for ext4/fscrypt (generic/581).  Basically, the test relies on the
+data read from /proc/key-users to be up-to-date regarding the number of
+keys a given user currently has.  However, this file can't be trusted
+because it races against the keys GC.
+
+Using flush_work() seems to work (I can't reproduce the failure), but it
+may be overkill.  Or simply not acceptable.  Maybe, as Eric suggested
+elsewhere [1], there could be a synchronous key_put/revoke/invalidate/...,
+which would wait for the key GC to do its work, although that probably
+would require some more code re-work.
+
+[1] https://lore.kernel.org/all/20231128173734.GD1148@sol.localdomain/
+
+ security/keys/gc.c       | 6 ++++++
+ security/keys/internal.h | 1 +
+ security/keys/proc.c     | 1 +
+ 3 files changed, 8 insertions(+)
+
+diff --git a/security/keys/gc.c b/security/keys/gc.c
+index 3c90807476eb..57b5a54490a0 100644
+--- a/security/keys/gc.c
++++ b/security/keys/gc.c
+@@ -44,6 +44,12 @@ struct key_type key_type_dead = {
+ 	.name = ".dead",
+ };
+ 
++void key_flush_gc(void)
++{
++	kenter("");
++	flush_work(&key_gc_work);
++}
++
+ /*
+  * Schedule a garbage collection run.
+  * - time precision isn't particularly important
+diff --git a/security/keys/internal.h b/security/keys/internal.h
+index 471cf36dedc0..fee1d0025d96 100644
+--- a/security/keys/internal.h
++++ b/security/keys/internal.h
+@@ -170,6 +170,7 @@ extern void keyring_restriction_gc(struct key *keyring,
+ extern void key_schedule_gc(time64_t gc_at);
+ extern void key_schedule_gc_links(void);
+ extern void key_gc_keytype(struct key_type *ktype);
++extern void key_flush_gc(void);
+ 
+ extern int key_task_permission(const key_ref_t key_ref,
+ 			       const struct cred *cred,
+diff --git a/security/keys/proc.c b/security/keys/proc.c
+index d0cde6685627..2837e00a240a 100644
+--- a/security/keys/proc.c
++++ b/security/keys/proc.c
+@@ -277,6 +277,7 @@ static void *proc_key_users_start(struct seq_file *p, loff_t *_pos)
+ 	struct rb_node *_p;
+ 	loff_t pos = *_pos;
+ 
++	key_flush_gc();
+ 	spin_lock(&key_user_lock);
+ 
+ 	_p = key_user_first(seq_user_ns(p), &key_user_tree);
