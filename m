@@ -2,125 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB14807B86
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B35807B5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377604AbjLFWjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 17:39:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48428 "EHLO
+        id S1377223AbjLFWeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 17:34:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377507AbjLFWjb (ORCPT
+        with ESMTP id S229500AbjLFWeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 17:39:31 -0500
-Received: from smtprelay03.ispgateway.de (smtprelay03.ispgateway.de [80.67.31.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9366D5B;
-        Wed,  6 Dec 2023 14:39:37 -0800 (PST)
-Received: from [92.206.191.209] (helo=note-book.lan)
-        by smtprelay03.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96.1)
-        (envelope-from <git@apitzsch.eu>)
-        id 1rB0TI-0007Ur-2A;
-        Wed, 06 Dec 2023 23:34:24 +0100
-From:   =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
-Date:   Wed, 06 Dec 2023 23:33:58 +0100
-Subject: [PATCH v4 4/4] media: i2c: imx214: Add sensor's pixel matrix size
+        Wed, 6 Dec 2023 17:34:20 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6D2D59
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 14:34:26 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id 5614622812f47-3b88c29a995so256887b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 14:34:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google; t=1701902065; x=1702506865; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZLAnzUmImkhc8qIHSMyVS5GmGRI3/cRZA2cD+zeipTg=;
+        b=P2+VFVd91FhMYdDvjKfNHUiArb24/CYL83mKm7g8D8ECiL+waQh5opOpPm5UGlblwP
+         e/dnbPT0I2GnKMk99kvsjPB2SijJiww9Bm1TKBalGzH3YN9B/6yln4eXajy3mesq/bRS
+         4kiOly8fMHG5Q/5/Hrwe2x2iEeZYozyDOg31Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701902065; x=1702506865;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZLAnzUmImkhc8qIHSMyVS5GmGRI3/cRZA2cD+zeipTg=;
+        b=uRcQJUhpw4K1AebPM9Nja4E9Y/Rtf3Hres/Ie6i+qM+C2P+YdkDGIgh+RMfAhpbwYk
+         PJdR3TBnldK/PpF1g7bDkkxa2PlmmHZ30qEs3Quv8RL2dUyAjkFnCkfwy5KBUiDQ7yY9
+         xh8S2anVsiLBPRCI/9gO9yGRMUExeH3P+2NVFEhaR3cm5r+iG9iN2D3YEweS1t+tFPZd
+         KowsdwEiq0oLIuHat55KElKarZ6pUtpLV+jifdmOsKisxeHM3KOIqHfGDgCMDrl+V6GV
+         +fPbKplCniAmZqVtYs/d6rDDNfZNQuoK3Yiyl6gGScue8YYO/6KBZwCKQAqFlXFB4jYJ
+         Yfmw==
+X-Gm-Message-State: AOJu0YynbS5zdCwATv8z9wP5WgYcEsFDCFoIGDT2BiSn4epBmk7o+HFL
+        57Ww5ocQ8i7bHbyEiXm4rTwPOg==
+X-Google-Smtp-Source: AGHT+IF/i0+BQhG4ASvw1P/Q/HjuK2+tumaFPvDBBwN5XEKcKYVZi79XVoybw+GeboMuvgjJju3MIA==
+X-Received: by 2002:a05:6808:1aaa:b0:3b8:b063:a1e0 with SMTP id bm42-20020a0568081aaa00b003b8b063a1e0mr1464142oib.106.1701902065495;
+        Wed, 06 Dec 2023 14:34:25 -0800 (PST)
+Received: from fedora64.linuxtx.org ([99.47.93.78])
+        by smtp.gmail.com with ESMTPSA id z7-20020a056808048700b003b29c2f50f0sm11033oid.18.2023.12.06.14.34.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 14:34:24 -0800 (PST)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+Date:   Wed, 6 Dec 2023 16:34:23 -0600
+From:   Justin Forbes <jforbes@fedoraproject.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+Subject: Re: [PATCH 6.6 000/134] 6.6.5-rc1 review
+Message-ID: <ZXD276eHg24P4237@fedora64.linuxtx.org>
+References: <20231205031535.163661217@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231206-imx214-v4-4-7ef604b01dcb@apitzsch.eu>
-References: <20231206-imx214-v4-0-7ef604b01dcb@apitzsch.eu>
-In-Reply-To: <20231206-imx214-v4-0-7ef604b01dcb@apitzsch.eu>
-To:     Ricardo Ribalda <ribalda@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
-X-Mailer: b4 0.12.4
-X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,PDS_OTHER_BAD_TLD,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205031535.163661217@linuxfoundation.org>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set effective and active sensor pixel sizes as shown in product
-brief[1].
+On Tue, Dec 05, 2023 at 12:14:32PM +0900, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.5 release.
+> There are 134 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 07 Dec 2023 03:14:57 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.5-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-[1]: https://www.mouser.com/datasheet/2/897/ProductBrief_IMX214_20150428-1289331.pdf
+Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
+x86_64), and boot tested x86_64. No regressions noted.
 
-Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-Signed-off-by: André Apitzsch <git@apitzsch.eu>
----
- drivers/media/i2c/imx214.c | 39 ++++++++++++++++++++++++++++++++-------
- 1 file changed, 32 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/media/i2c/imx214.c b/drivers/media/i2c/imx214.c
-index 132267e3a8f5..d67b5b928b9d 100644
---- a/drivers/media/i2c/imx214.c
-+++ b/drivers/media/i2c/imx214.c
-@@ -36,6 +36,14 @@
- #define IMX214_EXPOSURE_STEP		1
- #define IMX214_EXPOSURE_DEFAULT		3184
- 
-+/* IMX214 native and active pixel array size */
-+#define IMX214_NATIVE_WIDTH		4224U
-+#define IMX214_NATIVE_HEIGHT		3136U
-+#define IMX214_PIXEL_ARRAY_LEFT		8U
-+#define IMX214_PIXEL_ARRAY_TOP		8U
-+#define IMX214_PIXEL_ARRAY_WIDTH	4208U
-+#define IMX214_PIXEL_ARRAY_HEIGHT	3120U
-+
- static const char * const imx214_supply_name[] = {
- 	"vdda",
- 	"vddd",
-@@ -634,14 +642,31 @@ static int imx214_get_selection(struct v4l2_subdev *sd,
- {
- 	struct imx214 *imx214 = to_imx214(sd);
- 
--	if (sel->target != V4L2_SEL_TGT_CROP)
--		return -EINVAL;
-+	switch (sel->target) {
-+	case V4L2_SEL_TGT_CROP:
-+		mutex_lock(&imx214->mutex);
-+		sel->r = *__imx214_get_pad_crop(imx214, sd_state, sel->pad,
-+						sel->which);
-+		mutex_unlock(&imx214->mutex);
-+		return 0;
- 
--	mutex_lock(&imx214->mutex);
--	sel->r = *__imx214_get_pad_crop(imx214, sd_state, sel->pad,
--					sel->which);
--	mutex_unlock(&imx214->mutex);
--	return 0;
-+	case V4L2_SEL_TGT_NATIVE_SIZE:
-+		sel->r.top = 0;
-+		sel->r.left = 0;
-+		sel->r.width = IMX214_NATIVE_WIDTH;
-+		sel->r.height = IMX214_NATIVE_HEIGHT;
-+		return 0;
-+
-+	case V4L2_SEL_TGT_CROP_DEFAULT:
-+	case V4L2_SEL_TGT_CROP_BOUNDS:
-+		sel->r.top = IMX214_PIXEL_ARRAY_TOP;
-+		sel->r.left = IMX214_PIXEL_ARRAY_LEFT;
-+		sel->r.width = IMX214_PIXEL_ARRAY_WIDTH;
-+		sel->r.height = IMX214_PIXEL_ARRAY_HEIGHT;
-+		return 0;
-+	}
-+
-+	return -EINVAL;
- }
- 
- static int imx214_entity_init_cfg(struct v4l2_subdev *subdev,
-
--- 
-2.43.0
-
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
