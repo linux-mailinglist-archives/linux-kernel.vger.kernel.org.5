@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EF88068C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE9B8068C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:40:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377045AbjLFHkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 02:40:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
+        id S235236AbjLFHj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 02:39:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377059AbjLFHjK (ORCPT
+        with ESMTP id S1377045AbjLFHjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 02:39:10 -0500
+        Wed, 6 Dec 2023 02:39:08 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A9E1716
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:38:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3078FC4339A;
-        Wed,  6 Dec 2023 07:38:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2B7171B
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:38:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65774C433CC;
+        Wed,  6 Dec 2023 07:38:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701848287;
-        bh=CuMXbzKLOxjnPUoex4ZYwcWf9IxiWz4OFePxU/919ps=;
+        s=k20201202; t=1701848288;
+        bh=3eus7b0hNQLg9OdX0asU6mkvYB2JyWIitlAf+oIxR5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PWa6/T75Q9LLltQqWa4mzFG2zRFvKVqVDayW1IWCDOzJuVsKoGAhCO85bXCVgDM9/
-         +71J9LEskRkNhk0UZuNU9PsGwL0F3lJWGCb3729I86mVgysgMALJ+GomntIr26LCgw
-         Jw/6uscQGdkOYxEowDhdfypDc6oTfTVp6+EjgGYI2E5Ok7kIe9ieLGKwiLFFXLdIuL
-         BJmAsoFMLamiX7jYl7z9zjBcQtqBeJDFkq5I2lJrWbYm67Yrm94l8KRFAGMsds2bn3
-         k+rrLipxL9RQc2wQcDG5d1q3rrfhkwu3ZhMaIKp81SRwOmqC+l1clYHyO8DiHB3XSY
-         WclYGuCqlCGlQ==
+        b=AfFcnbkmDiij/dWO7x1l2NreAxAGYK8c7pNds67o8kla1HnMw7WBsFVng3mNKy9fr
+         8TcwF688b3caLdyzVQ1NUcVlMicbFb8Jeyhp7m5jQD2OWWvcPna8bjA/mMj1QH8v7j
+         Ofbd/oT2evbpvLP6xVFS4TrVrKoew3ZuMjUL3Y6XsMRQi+kp1HgyM0Ddj8magOdams
+         ETYTKjlOdvTIjuVzC9WGjN+E58T/m2facWY7CRD/eMzKNJt0vuFspTcyhr+E7lfPJI
+         Eaq2dzWVUZbt+6U7Fk0777+StnzGCSEfihjlqEEGMZ64TiHnOzljPwlZJ9CQYhh/KA
+         v5UqLRHUmgYcw==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-Subject: [PATCH 24/27] tty: srmcons: convert to u8 and size_t
-Date:   Wed,  6 Dec 2023 08:37:09 +0100
-Message-ID: <20231206073712.17776-25-jirislaby@kernel.org>
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 25/27] tty: ttyprintk: convert to u8 and size_t
+Date:   Wed,  6 Dec 2023 08:37:10 +0100
+Message-ID: <20231206073712.17776-26-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231206073712.17776-1-jirislaby@kernel.org>
 References: <20231206073712.17776-1-jirislaby@kernel.org>
@@ -56,45 +54,36 @@ Switch character types to u8 and sizes to size_t. To conform to
 characters/sizes in the rest of the tty layer.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Richard Henderson <richard.henderson@linaro.org>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: linux-alpha@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/alpha/kernel/srmcons.c | 6 +++---
+ drivers/char/ttyprintk.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/alpha/kernel/srmcons.c b/arch/alpha/kernel/srmcons.c
-index 42deea53beab..feaf89f6936b 100644
---- a/arch/alpha/kernel/srmcons.c
-+++ b/arch/alpha/kernel/srmcons.c
-@@ -53,7 +53,7 @@ srmcons_do_receive_chars(struct tty_port *port)
- 	do {
- 		result.as_long = callback_getc(0);
- 		if (result.bits.status < 2) {
--			tty_insert_flip_char(port, (char)result.bits.c, 0);
-+			tty_insert_flip_char(port, (u8)result.bits.c, 0);
- 			count++;
- 		}
- 	} while((result.bits.status & 1) && (++loops < 10));
-@@ -89,7 +89,7 @@ srmcons_receive_chars(struct timer_list *t)
+diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
+index 5af804c17a75..4c806a189ee5 100644
+--- a/drivers/char/ttyprintk.c
++++ b/drivers/char/ttyprintk.c
+@@ -40,7 +40,7 @@ static struct ttyprintk_port tpk_port;
  
- /* called with callback_lock held */
- static void
--srmcons_do_write(struct tty_port *port, const char *buf, int count)
-+srmcons_do_write(struct tty_port *port, const u8 *buf, size_t count)
+ static int tpk_curr;
+ 
+-static char tpk_buffer[TPK_STR_SIZE + 4];
++static u8 tpk_buffer[TPK_STR_SIZE + 4];
+ 
+ static void tpk_flush(void)
  {
- 	size_t c;
- 	srmcons_result result;
-@@ -131,7 +131,7 @@ srmcons_write(struct tty_struct *tty, const u8 *buf, size_t count)
- 	unsigned long flags;
+@@ -51,9 +51,9 @@ static void tpk_flush(void)
+ 	}
+ }
  
- 	spin_lock_irqsave(&srmcons_callback_lock, flags);
--	srmcons_do_write(tty->port, (const char *) buf, count);
-+	srmcons_do_write(tty->port, buf, count);
- 	spin_unlock_irqrestore(&srmcons_callback_lock, flags);
+-static int tpk_printk(const u8 *buf, int count)
++static int tpk_printk(const u8 *buf, size_t count)
+ {
+-	int i;
++	size_t i;
  
- 	return count;
+ 	for (i = 0; i < count; i++) {
+ 		if (tpk_curr >= TPK_STR_SIZE) {
 -- 
 2.43.0
 
