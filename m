@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9463E807AE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 101E6807AF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377566AbjLFVzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 16:55:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41332 "EHLO
+        id S1377366AbjLFWAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 17:00:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377510AbjLFVzp (ORCPT
+        with ESMTP id S229560AbjLFWAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 16:55:45 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E12D42;
-        Wed,  6 Dec 2023 13:55:51 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CGp+gdzFRmeQYW26qkTSjCShiLFrRHq0PfDT/qb1YKBB+okNCGWHuPY9QKdJUIhkiLgO++sDlr96rAWz6WJx8ndhOdvFh4v8NI6GLhYv28tfDC4jFXQwaIZJxGRytbYmca9xFAjrJWOhfHKANlDGgzejZyPZ+2xrFVLcMfJHbBNEG9TK5plFDkBb9/Cen2IsRvs4qIiMI/AZiwuatQ6xDltc6Fk2lZN2MjD+UZbTSjf1XL9Ib7BElceGrrfXTK+J6OJY8QSBkVqjspHWkZLRDhuFmcLMcInA5cFv0lFFbTb1btR0/duY6lQIN0EGYOJ1DM5B7S8++a9OIoQ/T7MJyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MYNaV4gjDoZ5ACHUBh89q0Js+DOxKHV7nGCsahXl7QI=;
- b=YDnjE3iorEYnrT8rz085VWQm1N0XLjVssGUd6HwLqdp11TqF2CZBWvWXRPsgJuECLFWNTat4ImeMW2VYz7OECryuybquIvq4TxO8tu1EGxt06eayely5jF8ixuSEuhEZhOtYD5HgXBh9L0pguTVMj10N82XPiXmVyzx2nQy4BY8H+wrCaJVJCKD9N4bIwkJ+XPyz7eXWgWHE9FdUhb7Fzte0ZNklfTtKKrXKKAHaJXSFZsLv3BIBy4lsu+XttqQw6pxRdG+9sYIkeYEgka/380bAhTVx6D+DSS5/q5Lc8yapFxelaWyAz2/w65zV6BKIwV0ayjGy/Ttmu1PW5aIkQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MYNaV4gjDoZ5ACHUBh89q0Js+DOxKHV7nGCsahXl7QI=;
- b=C4GwWdn0kt7uTiP5gIAFY+MTCy6ZwiEdEub3zyc2mrYWgAY3Y1UT0msnelX4TjDPEfg2mSV099fbf5pLKrsm3+W7i72GHJKct5mydEf6tpDigSmOkuiAlMpqRglnSx1BUBFQQOWdNJyq+dBaOGEv+lETOxUE6mf93PhoTyDqB05BzpCAGUf7zLWQ4qTPEbOCsLhZtqGxZ3pYBVT8o1wOb0RnQOmhT9W9InE9qH+RkjEEP87yJsYgnjlvj18BFWMMU0F5GFa48LAGDJG6XbYH4cmYxBk1Yn6QHbBYm0eeCB6I26lzS/S56qmRj1L3J+FD/6hTrQQVH714MA9UCVuSRg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by SJ0PR12MB8613.namprd12.prod.outlook.com (2603:10b6:a03:44d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
- 2023 21:55:48 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::ab86:edf7:348:d117]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::ab86:edf7:348:d117%3]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
- 21:55:48 +0000
-From:   Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     <dmitry.torokhov@gmail.com>, <linux-input@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] Input: i8042: Avoid probing if no keyboard and
- mouse are set in quirks
-References: <20231206212140.7458-1-mario.limonciello@amd.com>
-Date:   Wed, 06 Dec 2023 13:55:42 -0800
-In-Reply-To: <20231206212140.7458-1-mario.limonciello@amd.com> (Mario
-        Limonciello's message of "Wed, 6 Dec 2023 15:21:39 -0600")
-Message-ID: <87il5bgfmp.fsf@nvidia.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR13CA0016.namprd13.prod.outlook.com
- (2603:10b6:a03:2c0::21) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+        Wed, 6 Dec 2023 17:00:36 -0500
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C79B12F;
+        Wed,  6 Dec 2023 14:00:43 -0800 (PST)
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6d875809921so158764a34.3;
+        Wed, 06 Dec 2023 14:00:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701900042; x=1702504842;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BwhgtoJBHD+urcH5IYg5YW90GEy+rE7lf0f+y7qkFHs=;
+        b=hv7ie2ZtXi+uiaWZDK26cttoc9RBQaOc6tn+vgh4vqSLkDfM2DHs1+i5AEoZ1X7bFY
+         KIHmw7c9/tMdI1CQcwamnlBeNvFChVKXuUE9HUY7xXbCpeZxjlfbCzES7v7sl8y3os3w
+         iYN/OJqy4X4AusZn2KEzlORHm26vmVDlJ3jiclkoAzCa/YPHhkrlaDQkTDyN5uWGcK0/
+         wyOhMCo5Rv26CJwu58FnD8/suATYk2LjHARh4T0EEgrD1ozDXWcDstCorxys2CJtJwYd
+         uhKSbpjf2ZX9QKbRtjcPVbfgU7Rb6/eqE63zz1LsT353aDCP1WsslM/rzDzaxnNBRiPp
+         ybDQ==
+X-Gm-Message-State: AOJu0YzgjzKqcR/Nw7PSvAHYQL59AFlzXaLJyx8Ee5OdVwZADpoxOkNB
+        mS1/1x7B6GIc0pOdSLHT8us9qhcMvQ==
+X-Google-Smtp-Source: AGHT+IFw6fuFwvD7kKM66OrVG43T8C1pgmSfk4/GKi5DIIhApWtBZ/cbH1dVyNVk7wzjZtscobGlAA==
+X-Received: by 2002:a9d:7997:0:b0:6d8:74e2:6f32 with SMTP id h23-20020a9d7997000000b006d874e26f32mr1618350otm.46.1701900042258;
+        Wed, 06 Dec 2023 14:00:42 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id z14-20020a05683010ce00b006d879d8a4d8sm121306oto.78.2023.12.06.14.00.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 14:00:41 -0800 (PST)
+Received: (nullmailer pid 3402462 invoked by uid 1000);
+        Wed, 06 Dec 2023 22:00:40 -0000
+Date:   Wed, 6 Dec 2023 16:00:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-fsd@tesla.com,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Subject: Re: [PATCH 1/6] dt-bindings: i2c: exynos5: add specific compatible
+ for Tesla FSD
+Message-ID: <170190003691.3402358.13173057171065129546.robh@kernel.org>
+References: <20231205092229.19135-1-krzysztof.kozlowski@linaro.org>
+ <20231205092229.19135-2-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|SJ0PR12MB8613:EE_
-X-MS-Office365-Filtering-Correlation-Id: a90daf43-3bf6-46a5-850d-08dbf6a61af5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eJW6pxgMZuJXBhnO1p+/M/ulPxK7P9BXKDZd1HGwyC46axL72eddE1u6ytDh0mCoLfHcKAYUHo/RcqKlDUDvQoJSXEG7btJ4UPPiN3K4dOdmhynGyN2OEVuE5E+ymMp4FYtcidZ1IeqDWI7kw1OkGtmvV1Jm7RY60yMxK47UAcQAtZD9nUdqIetWfvVAB18f22uc/27aqfIeSdJsuMFxj345QmOo/R7FMmbmgilXn0uF0yuSV1YgZBzOn90uOYTLY1afvAHgGa3L0l9krpxpJQQtFDHMHHjY/p4px4OTjylwP9G2+i9jItA+pUay80Xv+2BQc5bnhwSEhR6saM7hDkznHa1KcsXYhNAkB5P7PQw9iiRReBH5O6oLF3HO5qNfLN0dxijUlKutucWfzO4t4fhsU7E/WW24+Hp0y6u8IKhTFis9EJYaFq8LGeiVELKJrj2RlCf4U1O8Xr/bba1Cmt0d16jDzqTO7O5jagXYRMme8Wz+lHTAai8/yM2bwHGsr897OUB69VbGonvLdpC427Yo4F0Zv14Rjn68v8Y7S7oWXzfohP/9Ww0F6cxYyy3O
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(39860400002)(376002)(366004)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(8936002)(4326008)(4744005)(8676002)(86362001)(36756003)(38100700002)(41300700001)(2906002)(5660300002)(6506007)(6666004)(6486002)(478600001)(26005)(6512007)(2616005)(6916009)(66946007)(66476007)(54906003)(316002)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vJ4JAj3sJiHKn+x9s1RYgB0Oy/6tDuvzOCmV/UaT06g30hlUQIkqE86BbDSQ?=
- =?us-ascii?Q?07QxONfLyf0BDfRFW00O4fjItQhUtq8AZTNOREavJbVLhe4yTQriykLMEsCa?=
- =?us-ascii?Q?cOXfJnKFzumuHt88iXgMLwL7QXC6Y+iv+WkvQkNHN48xjDSJYpsSoT9YmJPo?=
- =?us-ascii?Q?eZKMsNRw/QHSlQYpzY0iHha+P5kLT7vIQQfmTOaLW0I2aT4ZP/58CRkvVetj?=
- =?us-ascii?Q?jENbzo2I2xmM/yBPHVtvhP2L54Ms0YkO5SaFxr3fN0Y6TWO6GNl5C8RJ49WY?=
- =?us-ascii?Q?56ya0nSgkQS22PEhGVtLdxoMZ/+7zXXmT5tvTaS7XwwEuUOuwKs5hmq86NxR?=
- =?us-ascii?Q?6wtJ9BHHW/R+ZlhN4xx3vTR79MoFiIRZVLd1N6yBcO59LX3+JgWzlj89k+O5?=
- =?us-ascii?Q?wBVUstWv68mEDTkbrvY2Ioxuezcn4gb3lQL6j4R6WolbigP310GJ2zX/2T75?=
- =?us-ascii?Q?mJoAFXwDI49miAGKhNtUUfOhzlxxrserGwmeR7OQC7fjgOZDRHF0iqMzcSwk?=
- =?us-ascii?Q?XhNy6TE+4DAh2pXeZTmqdmCVZyUjwp/GDfgSiIeBmoR/OiyanA9ynITVL1/5?=
- =?us-ascii?Q?Wm1BYfkIqRJnKFlpBzI3L3WLTozEq67ITQpzMtrq2KuyiGJkwfj/mZ85T50z?=
- =?us-ascii?Q?7fuk8e8v2jdlA4Me712bBk8rowREcZHAq31ZB09G0+k1lDpCSS9BSbFb2WuC?=
- =?us-ascii?Q?f0mM/ctjdc8hiersG6v6ToBx1WL1gJlZSXcqOMPq1U+4LAbw57tkZb1C3CLQ?=
- =?us-ascii?Q?5QNgH+JinWhR48Kvm9mE2qbf0IS9VTjg2ZdOK1yLlZ/a05dOtbgfI+qOEwKE?=
- =?us-ascii?Q?1RjaVuoWay6mj2VgQkV2RUM+Ech4GVVy6FvGP1pAzkhlGUtaRnplLjZHQ+b8?=
- =?us-ascii?Q?7y/9hrbKLRFTJuhIKS1UZZyV6PXrp71HXvac5596CbUkfj2HI4vvm09P3Pel?=
- =?us-ascii?Q?yR0vMkzn2fYfBI+R9XR/c2AWvVQNxnjMNlBB1YKuM+shdJNGTpaRGMxsRXgj?=
- =?us-ascii?Q?sEFvjVw2MNepgqlvmXQOZqCqOGiiRsGOAshQw/+Gq+z9tQzGN5z5eCA7YBsv?=
- =?us-ascii?Q?FGJIlh39ArAbY6zd9xHCo/jBeG0gJeA2Ee3A/yHsexgDjCkV/I1DBcLZdmX1?=
- =?us-ascii?Q?owK387wS0sUoetJhH6anoiJ6eQgRB4gnhtPbsfH9RDqHBRNwFYywZkUWYeCE?=
- =?us-ascii?Q?Q3/UOhCfuj3fswBTJTDZxhbNI0m8Y+QLxQyetyGQT9YfVdSfQJV2/t9+/N+P?=
- =?us-ascii?Q?2H6InZD+E7rSY/L9NllMz+H7TqBQfxN4S7ZtKSaUzw0Db+LnYwj6qi/ue/1P?=
- =?us-ascii?Q?as/R11qQAhVpG2iF3X1C81YNeW3qjp0EHE/ho5IsN8Urd2cyS6/977coaCAA?=
- =?us-ascii?Q?ROcSvuSPWdZtD+I1VJICKF40KmqikFFqjbPXG+cKcn3h5wEvfFZEKU5k+LpP?=
- =?us-ascii?Q?unxfaGrDeGVTlHBZPN0HLB5MlIlGPfQ1enpvc3xESvbnkWHXtpS2/69OYz5E?=
- =?us-ascii?Q?YZyjOohNWhKsECAH33dsZVW1lAChXrXPfwijzIXubQVEORElgtFjdK8ZieCn?=
- =?us-ascii?Q?aEIEobMUZ/6XPVm/nW3VDo/nNtyPvR+4Qw45JaiV?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a90daf43-3bf6-46a5-850d-08dbf6a61af5
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 21:55:48.2585
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: poZoA0ENvPmkztgm8m32wZGg/JiB20nixyf+fDzf6EtktzYPU1fPYMoiIjqJ5s4L6rya9ZixowK3zmH2UHtFSA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB8613
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205092229.19135-2-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Dec, 2023 15:21:39 -0600 Mario Limonciello <mario.limonciello@amd.com> wrote:
-> Some laptops have an i8042 controller in the SOC, nothing mentioned in
-> ACPI PNP and nothing connected to the controller. Add the ability to
-> skip probing in this case.
->
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+
+On Tue, 05 Dec 2023 10:22:24 +0100, Krzysztof Kozlowski wrote:
+> Tesla FSD is a derivative of Samsung Exynos SoC, thus just like the
+> others it reuses several devices from older designs.  Historically we
+> kept the old (block's) compatible only.  This works fine and there is no
+> bug here, however guidelines expressed in
+> Documentation/devicetree/bindings/writing-bindings.rst state that:
+> 1. Compatibles should be specific.
+> 2. We should add new compatibles in case of bugs or features.
+> 
+> Add Tesla FSD compatible specific to be used with an existing fallback.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
 > ---
+> 
+> I propose to take the patch through Samsung SoC (me). See cover letter
+> for explanation.
+> ---
+>  Documentation/devicetree/bindings/i2c/i2c-exynos5.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Thanks. I think this is a good choice for handling the issue you
-presented with the Framework 16.
+Acked-by: Rob Herring <robh@kernel.org>
 
-Reviewed-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
