@@ -2,145 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9585B8078CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:45:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CEA98078D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379376AbjLFTox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 14:44:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
+        id S1379406AbjLFTqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:46:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379386AbjLFTow (ORCPT
+        with ESMTP id S1379274AbjLFTqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:44:52 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB2E122;
-        Wed,  6 Dec 2023 11:44:58 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5c2066accc5so81343a12.3;
-        Wed, 06 Dec 2023 11:44:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701891898; x=1702496698; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=34Cie9O+2NEe6JD/tiGhw5O8IQAQcami9IqZS5J2OMw=;
-        b=azE5hY6d7qYMc/I6yrPGUYSzyNOOxlobk2q2ie4iTlSPZ1WDvH4UcWU1GRaQsfBtUY
-         d0E9GlSiIPA7dOYk/vZpL5E6HMyguWGZIDejbbqc83k6bNpK4OwRAZ+PZpTEa17ftw5s
-         0I8ooyKPPJYz0jaXKAPPvs/5Ntp+jyoE7oZoV0AGlcBjeGLEDZR7jL98O2jIWFqhs9rE
-         IWswcenJovCTh2PjtWXt9/VfkDHY2QDAzbXgPyp3YHrO3MBLco3O6vdTBdvwKjcUvxW7
-         UhN9N8ULSidqvAiUSpv4AuHla/qBuWGbosvKfqCjSkAdnDdNYTNCBUswQgPnCE0NxtZp
-         ALDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701891898; x=1702496698;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=34Cie9O+2NEe6JD/tiGhw5O8IQAQcami9IqZS5J2OMw=;
-        b=uf2Fo+nZC8uKlLesKJ7ILXBwWq3hQOzN6n5BXarnEjBkqqjkTIe/xoaVs5UpIH1wfv
-         g2MDLsDcw9yaxx++77b0LmvuL2fCmYSEmtX8k/xwkRT8da2bn7h2yMf5fTFY7pHsWPic
-         iNVyywFrtNNVHYZ0PUTyWzuZgU9owH1iagjKQWbqtPQjm/YnSG20YdHpNok2/4XEhFgN
-         c2PUm1pVqG68SsLItBYJvTF8qW42FJ6RAHqfJ8Irr95YOJMg8F8rc4zok9OXo5x5Xfgo
-         g5AeG5DwCJpn1Ed7kYlkJj3vIItfyUkpgp380oz9vXbStavT1SSZJYeYc8E9BzenZvC3
-         /1Lg==
-X-Gm-Message-State: AOJu0YywqzfiHQfukLAXcoESHKKcdv820cJhGX7/7rRbVOkul5FXSJqs
-        Nzlr/IaDnX14xVM5IZ30VQU=
-X-Google-Smtp-Source: AGHT+IGCtzIwuVYyOHM8v9z5Osc7F7Eb1bhTqHBysTeh63PqYeFOGQLL51YX7AuhnxO6tltAWmC3dg==
-X-Received: by 2002:a05:6a20:be9e:b0:18f:97c:4f58 with SMTP id gf30-20020a056a20be9e00b0018f097c4f58mr993500pzb.100.1701891898163;
-        Wed, 06 Dec 2023 11:44:58 -0800 (PST)
-Received: from localhost (fwdproxy-prn-001.fbsv.net. [2a03:2880:ff:1::face:b00c])
-        by smtp.gmail.com with ESMTPSA id s9-20020a056a00178900b006ce91d27c72sm344920pfg.175.2023.12.06.11.44.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 11:44:57 -0800 (PST)
-From:   Nhat Pham <nphamcs@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org
-Subject: [PATCH v8 6/6] zswap: shrinks zswap pool based on memory pressure (fix)
-Date:   Wed,  6 Dec 2023 11:44:56 -0800
-Message-Id: <20231206194456.3234203-1-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231130194023.4102148-7-nphamcs@gmail.com>
-References: <20231130194023.4102148-7-nphamcs@gmail.com>
+        Wed, 6 Dec 2023 14:46:18 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC425D3;
+        Wed,  6 Dec 2023 11:46:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=ZbbXGJgus1UbpDCDhjXLGsD3yiGnIIyarmStVlys6bI=; b=STs7399FPv9DtRiqDNmedwrjo2
+        ek3GCT9XkOwEGqLFaJXUSDTbkjNzGtFAzEKjKiYr+RL/0w/eYSZhZ4S6zG2omW2ieS9II7c4W1cj1
+        bwc52+Vm9AwzrM3qYgyft5xLrGuLpSz2Qag56ACkdJcKzZ4kpn1KvY+zUnaO4aHwKz6I5gNZAxkVl
+        N3hQp19J3OSpEOyKqcaOoRW7iIYpUFGU9a5fIFMqzEv8jAvd1Tf5NIGKShjWNOVXyWX7taO0n5QHD
+        3JSGq8FONvFKpwoHH/7BoUUgj0N+UkSynnOcmLYYj1LMEXiHE7dFLYoSCQw9K7rzRhAjLupiaDwzf
+        TzeT2Fvg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAxqi-00B9PW-1j;
+        Wed, 06 Dec 2023 19:46:24 +0000
+Message-ID: <0c1bb5e8-1ad2-4bda-b038-456d9791f9b7@infradead.org>
+Date:   Wed, 6 Dec 2023 11:46:22 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] usb: typec: qcom-pmic: add CONFIG_OF dependency
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>
+References: <20231206172037.12072-1-rdunlap@infradead.org>
+ <d0323841-a3a7-45b7-b702-0a08f9250c55@roeck-us.net>
+Content-Language: en-US
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <d0323841-a3a7-45b7-b702-0a08f9250c55@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check shrinker enablement early, and use a less costly stat flushing.
 
-Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-Suggested-by: Chengming Zhou <chengming.zhou@linux.dev>
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- mm/zswap.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 27c749f6c1ba..d8ecd79120f3 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -596,13 +596,17 @@ static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
- 	struct zswap_pool *pool = shrinker->private_data;
- 	bool encountered_page_in_swapcache = false;
- 
-+	if (!zswap_shrinker_enabled) {
-+		sc->nr_scanned = 0;
-+		return SHRINK_STOP;
-+	}
-+
- 	nr_protected =
- 		atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_protected);
- 	lru_size = list_lru_shrink_count(&pool->list_lru, sc);
- 
- 	/*
--	 * Abort if the shrinker is disabled or if we are shrinking into the
--	 * protected region.
-+	 * Abort if we are shrinking into the protected region.
- 	 *
- 	 * This short-circuiting is necessary because if we have too many multiple
- 	 * concurrent reclaimers getting the freeable zswap object counts at the
-@@ -611,7 +615,7 @@ static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
- 	 * objects (i.e the reclaimers will reclaim into the protected area of the
- 	 * zswap LRU).
- 	 */
--	if (!zswap_shrinker_enabled || nr_protected >= lru_size - sc->nr_to_scan) {
-+	if (nr_protected >= lru_size - sc->nr_to_scan) {
- 		sc->nr_scanned = 0;
- 		return SHRINK_STOP;
- 	}
-@@ -633,8 +637,11 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
- 	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(sc->nid));
- 	unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
- 
-+	if (!zswap_shrinker_enabled)
-+		return 0;
-+
- #ifdef CONFIG_MEMCG_KMEM
--	cgroup_rstat_flush(memcg->css.cgroup);
-+	mem_cgroup_flush_stats();
- 	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
- 	nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
- #else
-@@ -643,7 +650,7 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
- 	nr_stored = atomic_read(&pool->nr_stored);
- #endif
- 
--	if (!zswap_shrinker_enabled || !nr_stored)
-+	if (!nr_stored)
- 		return 0;
- 
- 	nr_protected =
+On 12/6/23 10:49, Guenter Roeck wrote:
+> On Wed, Dec 06, 2023 at 09:20:37AM -0800, Randy Dunlap wrote:
+>> DRM_AUX_BRIDGE depends on CONFIG_OF, so that is also needed here
+>> to fix a kconfig warning:
+>>
+>> WARNING: unmet direct dependencies detected for DRM_AUX_HPD_BRIDGE
+>>   Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && OF [=n]
+>>   Selected by [y]:
+>>   - TYPEC_QCOM_PMIC [=y] && USB_SUPPORT [=y] && TYPEC [=y] && TYPEC_TCPM [=y] && (ARCH_QCOM || COMPILE_TEST [=y]) && (DRM [=y] || DRM [=y]=n) && DRM_BRIDGE [=y]
+>>
+> 
+> All but impossible for me to determine if this patch or
+> https://lore.kernel.org/all/20231205-drm_aux_bridge-fixes-v1-2-d242a0ae9df4@kernel.org/
+> is more appropriate.
+> 
+> Guenter
+
+I guess that Bryan is the person to ask about that.
+
+I don't see anything wrong with Nathan's patch. It should clear up the kconfig warning,
+so as long as it builds cleanly, it seems OK.
+
+> 
+>> Fixes: 7d9f1b72b296 ("usb: typec: qcom-pmic-typec: switch to DRM_AUX_HPD_BRIDGE")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>> Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+>> Cc: Guenter Roeck <linux@roeck-us.net>
+>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> Cc: linux-arm-msm@vger.kernel.org
+>> Cc: linux-usb@vger.kernel.org
+>> Cc: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>>  drivers/usb/typec/tcpm/Kconfig |    1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff -- a/drivers/usb/typec/tcpm/Kconfig b/drivers/usb/typec/tcpm/Kconfig
+>> --- a/drivers/usb/typec/tcpm/Kconfig
+>> +++ b/drivers/usb/typec/tcpm/Kconfig
+>> @@ -80,6 +80,7 @@ config TYPEC_QCOM_PMIC
+>>  	tristate "Qualcomm PMIC USB Type-C Port Controller Manager driver"
+>>  	depends on ARCH_QCOM || COMPILE_TEST
+>>  	depends on DRM || DRM=n
+>> +	depends on OF
+>>  	select DRM_AUX_HPD_BRIDGE if DRM_BRIDGE
+>>  	help
+>>  	  A Type-C port and Power Delivery driver which aggregates two
+
 -- 
-2.34.1
+~Randy
