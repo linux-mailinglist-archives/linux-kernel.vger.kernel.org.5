@@ -2,51 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA3C8068C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 945BE80681E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377085AbjLFHjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 02:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
+        id S1377044AbjLFHVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 02:21:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235209AbjLFHij (ORCPT
+        with ESMTP id S1376923AbjLFHU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 02:38:39 -0500
-Received: from 13.mo582.mail-out.ovh.net (13.mo582.mail-out.ovh.net [188.165.56.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE4A1FCB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:37:55 -0800 (PST)
-Received: from director1.ghost.mail-out.ovh.net (unknown [10.109.143.223])
-        by mo582.mail-out.ovh.net (Postfix) with ESMTP id E380226B8D
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 07:18:26 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-q659j (unknown [10.110.115.40])
-        by director1.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 971DE1FD9C;
-        Wed,  6 Dec 2023 07:18:25 +0000 (UTC)
-Received: from foxhound.fi ([37.59.142.95])
-        by ghost-submission-6684bf9d7b-q659j with ESMTPSA
-        id A1YgHUEgcGUGAgAAR7yEqA
-        (envelope-from <jose.pekkarinen@foxhound.fi>); Wed, 06 Dec 2023 07:18:25 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-95G0017f6f2474-d401-4c27-b95a-0dbe6361eaae,
-                    FCDADBFD6B1B663F5159E0C54ABC6405D1BD97D1) smtp.auth=jose.pekkarinen@foxhound.fi
-X-OVh-ClientIp: 87.249.133.109
-From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-To:     viro@zeniv.linux.org.uk
-Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
-        linux-kernel@vger.kernel.org,
-        syzbot+cb729843d0f42a5c1a50@syzkaller.appspotmail.com
-Subject: [PATCH RESEND] iov_iter: fix memleak in iov_iter_extract_pages
-Date:   Wed,  6 Dec 2023 09:18:08 +0200
-Message-Id: <20231206071808.7646-1-jose.pekkarinen@foxhound.fi>
-X-Mailer: git-send-email 2.39.2
+        Wed, 6 Dec 2023 02:20:59 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46ACF1B6;
+        Tue,  5 Dec 2023 23:21:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3qSq0ZgSYyFQdhkNKKx+ay2VTuWMWagkFjN44scFJGI=; b=Hj7ctWdUPYGChKSXbjiG3ceuLC
+        qJJdvlVYftwJ0JmFiiq7KgA3kS4RlnIA/MDhNrvJyEEBExXyzpZoszMTkmDa/0AcbWk3X3RegC55V
+        7demvhkD/2Vm6MNZiLt23BUpT9dBqEkmj0CKPAbAJm+oIUuXhDVeLjwJaZkW3WPEmdGuSLkwjyd9+
+        YyBHijcvKAnO2bAVJAUvyMRdWxJKRyTYJ1uvpasFg0q82cLUXzhXq4Wu/L7v1jx64IWttFDdMu/ca
+        3J1JyfBFyObPGWrCPbNdP80bglMjq75SOxMB3QIX6GX/sagc2ovosgUjghAazuSh7ZC/geNc3PWxS
+        jsvebKrQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAmCo-009HjE-0N;
+        Wed, 06 Dec 2023 07:20:26 +0000
+Date:   Tue, 5 Dec 2023 23:20:26 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, axboe@kernel.dk,
+        roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
+        joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, nico@fluxnic.net,
+        xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+        konishi.ryusuke@gmail.com, willy@infradead.org,
+        akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+        linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
+Message-ID: <ZXAgut2MTKw50OLI@infradead.org>
+References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
+ <20231205123728.1866699-2-yukuai1@huaweicloud.com>
+ <ZXARKD0OmjLrvHmU@infradead.org>
+ <aafabc6e-fd98-f927-44d7-3ef76e2acaf8@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 2324420358037480968
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudejledgledvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffogggtgfesthekredtredtjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeevveeileeukeefjeevkeffudehhedtvdeuhffgteelvdejieefheffveelhfekheenucffohhmrghinhepshihiihkrghllhgvrhdrrghpphhsphhothdrtghomhenucfkphepuddvjedrtddrtddruddpkeejrddvgeelrddufeefrddutdelpdefjedrheelrddugedvrdelheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekvddpmhhouggvpehsmhhtphhouhht
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aafabc6e-fd98-f927-44d7-3ef76e2acaf8@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,131 +71,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot reports there is a memory leak in iov_iter_extract_pages where in
-the unlikely case of having an error in pin_user_pages_fast, the pages
-aren't free. This patch will free it before returning. Output of mem
-leak follows:
+On Wed, Dec 06, 2023 at 02:50:56PM +0800, Yu Kuai wrote:
+> I'm a litter confused, so there are 3 use cases:
+> 1) use GFP_USER, default gfp from bdev_alloc.
+> 2) use GFP_KERNEL
+> 3) use GFP_NOFS
+> 
+> I understand that you're suggesting memalloc_nofs_save() to distinguish
+> 2 and 3, but how can I distinguish 1?
 
-BUG: memory leak
-unreferenced object 0xffff888109d2e400 (size 1024):
-  comm "syz-executor121", pid 5006, jiffies 4294943225 (age 17.760s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81554bbb>] __do_kmalloc_node mm/slab_common.c:984 [inline]
-    [<ffffffff81554bbb>] __kmalloc_node+0x4b/0x150 mm/slab_common.c:992
-    [<ffffffff815440f9>] kmalloc_node include/linux/slab.h:602 [inline]
-    [<ffffffff815440f9>] kvmalloc_node+0x99/0x170 mm/util.c:604
-    [<ffffffff824c52fe>] kvmalloc include/linux/slab.h:720 [inline]
-    [<ffffffff824c52fe>] kvmalloc_array include/linux/slab.h:738 [inline]
-    [<ffffffff824c52fe>] want_pages_array lib/iov_iter.c:985 [inline]
-    [<ffffffff824c52fe>] iov_iter_extract_user_pages lib/iov_iter.c:1765 [inline]
-    [<ffffffff824c52fe>] iov_iter_extract_pages+0x1ee/0xa40 lib/iov_iter.c:1831
-    [<ffffffff824125a7>] bio_map_user_iov+0x167/0x5d0 block/blk-map.c:297
-    [<ffffffff82412df3>] blk_rq_map_user_iov+0x3e3/0xb30 block/blk-map.c:664
-    [<ffffffff82413943>] blk_rq_map_user block/blk-map.c:691 [inline]
-    [<ffffffff82413943>] blk_rq_map_user_io+0x143/0x160 block/blk-map.c:724
-    [<ffffffff82ca0925>] sg_io+0x285/0x510 drivers/scsi/scsi_ioctl.c:456
-    [<ffffffff82ca1025>] scsi_cdrom_send_packet+0x1b5/0x480 drivers/scsi/scsi_ioctl.c:820
-    [<ffffffff82ca13ba>] scsi_ioctl+0xca/0xd30 drivers/scsi/scsi_ioctl.c:903
-    [<ffffffff82d35964>] sg_ioctl+0x5f4/0x10a0 drivers/scsi/sg.c:1163
-    [<ffffffff8168e602>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff8168e602>] __do_sys_ioctl fs/ioctl.c:870 [inline]
-    [<ffffffff8168e602>] __se_sys_ioctl fs/ioctl.c:856 [inline]
-    [<ffffffff8168e602>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:856
-    [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+You shouldn't.  Diverging from the default flags except for clearing
+the FS or IO flags is simply a bug.  Note that things like block2mtd
+should probably also ensure a noio allocation if they aren't doing that
+yet.
 
-BUG: memory leak
-unreferenced object 0xffff888109d2dc00 (size 1024):
-  comm "syz-executor121", pid 5007, jiffies 4294943747 (age 12.540s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81554bbb>] __do_kmalloc_node mm/slab_common.c:984 [inline]
-    [<ffffffff81554bbb>] __kmalloc_node+0x4b/0x150 mm/slab_common.c:992
-    [<ffffffff815440f9>] kmalloc_node include/linux/slab.h:602 [inline]
-    [<ffffffff815440f9>] kvmalloc_node+0x99/0x170 mm/util.c:604
-    [<ffffffff824c52fe>] kvmalloc include/linux/slab.h:720 [inline]
-    [<ffffffff824c52fe>] kvmalloc_array include/linux/slab.h:738 [inline]
-    [<ffffffff824c52fe>] want_pages_array lib/iov_iter.c:985 [inline]
-    [<ffffffff824c52fe>] iov_iter_extract_user_pages lib/iov_iter.c:1765 [inline]
-    [<ffffffff824c52fe>] iov_iter_extract_pages+0x1ee/0xa40 lib/iov_iter.c:1831
-    [<ffffffff824125a7>] bio_map_user_iov+0x167/0x5d0 block/blk-map.c:297
-    [<ffffffff82412df3>] blk_rq_map_user_iov+0x3e3/0xb30 block/blk-map.c:664
-    [<ffffffff82413943>] blk_rq_map_user block/blk-map.c:691 [inline]
-    [<ffffffff82413943>] blk_rq_map_user_io+0x143/0x160 block/blk-map.c:724
-    [<ffffffff82ca0925>] sg_io+0x285/0x510 drivers/scsi/scsi_ioctl.c:456
-    [<ffffffff82ca1025>] scsi_cdrom_send_packet+0x1b5/0x480 drivers/scsi/scsi_ioctl.c:820
-    [<ffffffff82ca13ba>] scsi_ioctl+0xca/0xd30 drivers/scsi/scsi_ioctl.c:903
-    [<ffffffff82d35964>] sg_ioctl+0x5f4/0x10a0 drivers/scsi/sg.c:1163
-    [<ffffffff8168e602>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff8168e602>] __do_sys_ioctl fs/ioctl.c:870 [inline]
-    [<ffffffff8168e602>] __se_sys_ioctl fs/ioctl.c:856 [inline]
-    [<ffffffff8168e602>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:856
-    [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> >   - use memalloc_nofs_save in extet instead of using
+> >     mapping_gfp_constraint to clear it from the mapping flags
+> >   - remove __ext4_sb_bread_gfp and just have buffer.c helper that does
+> >     the right thing (either by changing the calling conventions of an
+> >     existing one, or adding a new one).
+> 
+> Thanks for the suggestions, but I'm not sure how to do this yet, I must
+> read more ext4 code.
 
-BUG: memory leak
-unreferenced object 0xffff888109d2d800 (size 1024):
-  comm "syz-executor121", pid 5010, jiffies 4294944269 (age 7.320s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81554bbb>] __do_kmalloc_node mm/slab_common.c:984 [inline]
-    [<ffffffff81554bbb>] __kmalloc_node+0x4b/0x150 mm/slab_common.c:992
-    [<ffffffff815440f9>] kmalloc_node include/linux/slab.h:602 [inline]
-    [<ffffffff815440f9>] kvmalloc_node+0x99/0x170 mm/util.c:604
-    [<ffffffff824c52fe>] kvmalloc include/linux/slab.h:720 [inline]
-    [<ffffffff824c52fe>] kvmalloc_array include/linux/slab.h:738 [inline]
-    [<ffffffff824c52fe>] want_pages_array lib/iov_iter.c:985 [inline]
-    [<ffffffff824c52fe>] iov_iter_extract_user_pages lib/iov_iter.c:1765 [inline]
-    [<ffffffff824c52fe>] iov_iter_extract_pages+0x1ee/0xa40 lib/iov_iter.c:1831
-    [<ffffffff824125a7>] bio_map_user_iov+0x167/0x5d0 block/blk-map.c:297
-    [<ffffffff82412df3>] blk_rq_map_user_iov+0x3e3/0xb30 block/blk-map.c:664
-    [<ffffffff82413943>] blk_rq_map_user block/blk-map.c:691 [inline]
-    [<ffffffff82413943>] blk_rq_map_user_io+0x143/0x160 block/blk-map.c:724
-    [<ffffffff82ca0925>] sg_io+0x285/0x510 drivers/scsi/scsi_ioctl.c:456
-    [<ffffffff82ca1025>] scsi_cdrom_send_packet+0x1b5/0x480 drivers/scsi/scsi_ioctl.c:820
-    [<ffffffff82ca13ba>] scsi_ioctl+0xca/0xd30 drivers/scsi/scsi_ioctl.c:903
-    [<ffffffff82d35964>] sg_ioctl+0x5f4/0x10a0 drivers/scsi/sg.c:1163
-    [<ffffffff8168e602>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff8168e602>] __do_sys_ioctl fs/ioctl.c:870 [inline]
-    [<ffffffff8168e602>] __se_sys_ioctl fs/ioctl.c:856 [inline]
-    [<ffffffff8168e602>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:856
-    [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Reported-by: syzbot+cb729843d0f42a5c1a50@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?id=99c8551967f413d108cfdd2950a0cb5652de07b8
-Fixes: 7d58fe7310281 ("iov_iter: Add a function to extract a page list from an iterator")
-Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
----
- lib/iov_iter.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index 27234a820eeb..c3fd0448dead 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -1780,8 +1780,10 @@ static ssize_t iov_iter_extract_user_pages(struct iov_iter *i,
- 	if (!maxpages)
- 		return -ENOMEM;
- 	res = pin_user_pages_fast(addr, maxpages, gup_flags, *pages);
--	if (unlikely(res <= 0))
-+	if (unlikely(res <= 0)) {
-+		kvfree(*pages);
- 		return res;
-+	}
- 	maxsize = min_t(size_t, maxsize, res * PAGE_SIZE - offset);
- 	iov_iter_advance(i, maxsize);
- 	return maxsize;
--- 
-2.39.2
+the nofs save part should be trivial.  You can just skip the rest for
+now as it's not needed for this patch series.
 
