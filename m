@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B008068AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9268068B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377019AbjLFHh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 02:37:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
+        id S1376770AbjLFHiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 02:38:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232266AbjLFHhk (ORCPT
+        with ESMTP id S1376830AbjLFHhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 02:37:40 -0500
+        Wed, 6 Dec 2023 02:37:47 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0402110CA
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:37:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB38DC433CC;
-        Wed,  6 Dec 2023 07:37:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171B61722
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:37:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5433C433C7;
+        Wed,  6 Dec 2023 07:37:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701848254;
-        bh=ZOGqEODNjCD+oZi+Lzwv9yxa5ZK3n1WxOSTSeSIxzG8=;
+        s=k20201202; t=1701848257;
+        bh=dQFCDmEpt5P6ThPydBMGELVuIhzHjl7/FVwjhyy0yRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uP64B06hW1cXeR4KmqperTlv+8Cbhb+QPK9aJZWuILPhSXIp8I6g9YhCgDy3+Th3l
-         kcy7sWXJL37DKi4EYGJNIRBEXef4eZOUAVu3MBvyN5B8/Q3kotIFl4Ww0l71gI1YfU
-         PNSgW5ff7MMcHXgtrzEdKHtHLBQ4SGOfg+EF71eb0dSLRVf11D9dLEekhjMMxfwnyG
-         7dMnZYMFI5xivBK04SjzC1fIJhDb58mvZQapm9QP1pnpATlhQ/ke3Pc0KlyiDlOXvb
-         v3Ta+tNfBThvVkUSwa9F5J/eHCbIpnDAGpI6gmwgamZfIih3gmgs6vO2o+OjpuX6Eh
-         AOVpKlwoSfi1Q==
+        b=VUvsjQdzGwCfUKDjkBnh/6sqrgysLBucHf9QNxpTCbCY4llLHwlLyUSb2wcYenaUb
+         jG87KYRBZojYzewsCBheiyxTR4VpE8G0gBw/uY6yifqJq5i3AkCl3tbe4Noj0V0QIM
+         vqoXgTa/35sZnCChMUIhYLIRHWIrwbdl5uUR+MPnem7KSgL26UxJXAKIwOsFuchwnI
+         lboLuLBNTSCNJ/UPslvXHh2gX+97CnffjXIQ2IBaaNUwTDlWtbO16MH97vG1trDxcu
+         RPXaPiTEwD5YOckTLLLuCcqmG9uCgVJIOOatRfjCJJ5kncQnjMvAXkhr+5z3fX0ZPA
+         1oOsp61cFOkRg==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 07/27] tty: bcm: convert to u8 and size_t
-Date:   Wed,  6 Dec 2023 08:36:52 +0100
-Message-ID: <20231206073712.17776-8-jirislaby@kernel.org>
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org
+Subject: [PATCH 08/27] tty: con3215: convert to u8 and size_t
+Date:   Wed,  6 Dec 2023 08:36:53 +0100
+Message-ID: <20231206073712.17776-9-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231206073712.17776-1-jirislaby@kernel.org>
 References: <20231206073712.17776-1-jirislaby@kernel.org>
@@ -57,37 +58,92 @@ Switch character types to u8 and sizes to size_t. To conform to
 characters/sizes in the rest of the tty layer.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Scott Branden <scott.branden@broadcom.com>
-Cc: Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org
 ---
- drivers/misc/bcm-vk/bcm_vk_tty.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/s390/char/con3215.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/misc/bcm-vk/bcm_vk_tty.c b/drivers/misc/bcm-vk/bcm_vk_tty.c
-index 2bce835ca43e..59bab76ff0a9 100644
---- a/drivers/misc/bcm-vk/bcm_vk_tty.c
-+++ b/drivers/misc/bcm-vk/bcm_vk_tty.c
-@@ -64,9 +64,9 @@ static void bcm_vk_tty_wq_handler(struct work_struct *work)
- 	struct bcm_vk_tty *vktty;
- 	int card_status;
- 	int count;
--	unsigned char c;
- 	int i;
- 	int wr;
-+	u8 c;
+diff --git a/drivers/s390/char/con3215.c b/drivers/s390/char/con3215.c
+index 34bc343dcfcc..0b0324fe4aff 100644
+--- a/drivers/s390/char/con3215.c
++++ b/drivers/s390/char/con3215.c
+@@ -79,8 +79,8 @@ struct raw3215_info {
+ 	struct ccw_device *cdev;      /* device for tty driver */
+ 	spinlock_t *lock;	      /* pointer to irq lock */
+ 	int flags;		      /* state flags */
+-	char *buffer;		      /* pointer to output buffer */
+-	char *inbuf;		      /* pointer to input buffer */
++	u8 *buffer;		      /* pointer to output buffer */
++	u8 *inbuf;		      /* pointer to input buffer */
+ 	int head;		      /* first free byte in output buffer */
+ 	int count;		      /* number of bytes in output buffer */
+ 	int written;		      /* number of bytes in write requests */
+@@ -522,12 +522,14 @@ static unsigned int raw3215_make_room(struct raw3215_info *raw,
+  *	string	without blocking.
+  *	Return value is the number of bytes copied.
+  */
+-static unsigned int raw3215_addtext(const char *str, unsigned int length,
++static unsigned int raw3215_addtext(const u8 *str, size_t length,
+ 				    struct raw3215_info *raw, int opmode,
+ 				    unsigned int todrop)
+ {
+-	unsigned int c, ch, i, blanks, expanded_size = 0;
++	unsigned int i, blanks, expanded_size = 0;
+ 	unsigned int column = raw->line_pos;
++	size_t c;
++	u8 ch;
  
- 	card_status = vkread32(vk, BAR_0, BAR_CARD_STATUS);
- 	if (BCM_VK_INTF_IS_DOWN(card_status))
-@@ -192,7 +192,7 @@ static ssize_t bcm_vk_tty_write(struct tty_struct *tty, const u8 *buffer,
- 	int index;
- 	struct bcm_vk *vk;
- 	struct bcm_vk_tty *vktty;
+ 	if (opmode == RAW3215_COUNT)
+ 		todrop = 0;
+@@ -558,7 +560,7 @@ static unsigned int raw3215_addtext(const char *str, unsigned int length,
+ 		if (todrop && expanded_size < todrop)	/* Drop head data */
+ 			continue;
+ 		for (i = 0; i < blanks; i++) {
+-			raw->buffer[raw->head] = (char)_ascebc[(int)ch];
++			raw->buffer[raw->head] = _ascebc[ch];
+ 			raw->head = (raw->head + 1) & (RAW3215_BUFFER_SIZE - 1);
+ 			raw->count++;
+ 		}
+@@ -570,8 +572,8 @@ static unsigned int raw3215_addtext(const char *str, unsigned int length,
+ /*
+  * String write routine for 3215 devices
+  */
+-static void raw3215_write(struct raw3215_info *raw, const char *str,
+-			  unsigned int length)
++static void raw3215_write(struct raw3215_info *raw, const u8 *str,
++			  size_t length)
+ {
+ 	unsigned int count, avail;
+ 	unsigned long flags;
+@@ -596,7 +598,7 @@ static void raw3215_write(struct raw3215_info *raw, const char *str,
+ /*
+  * Put character routine for 3215 devices
+  */
+-static void raw3215_putchar(struct raw3215_info *raw, unsigned char ch)
++static void raw3215_putchar(struct raw3215_info *raw, u8 ch)
+ {
+ 	raw3215_write(raw, &ch, 1);
+ }
+@@ -823,12 +825,10 @@ static struct ccw_driver raw3215_ccw_driver = {
+ 	.int_class	= IRQIO_C15,
+ };
+ 
+-static void handle_write(struct raw3215_info *raw, const char *str, int count)
++static void handle_write(struct raw3215_info *raw, const u8 *str, size_t count)
+ {
 -	int i;
-+	size_t i;
- 
- 	index = tty->index;
- 	vk = dev_get_drvdata(tty->dev);
+-
+ 	while (count > 0) {
+-		i = min_t(int, count, RAW3215_BUFFER_SIZE - 1);
++		size_t i = min_t(size_t, count, RAW3215_BUFFER_SIZE - 1);
+ 		raw3215_write(raw, str, i);
+ 		count -= i;
+ 		str += i;
 -- 
 2.43.0
 
