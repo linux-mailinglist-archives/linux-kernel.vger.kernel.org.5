@@ -2,154 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD218075D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 527F28075DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442665AbjLFQy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:54:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35840 "EHLO
+        id S1442652AbjLFQ4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:56:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379719AbjLFQy4 (ORCPT
+        with ESMTP id S1378531AbjLFQ4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:54:56 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CF0D4E
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:55:02 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-332d5c852a0so993366f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 08:55:01 -0800 (PST)
+        Wed, 6 Dec 2023 11:56:49 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A541B2;
+        Wed,  6 Dec 2023 08:56:55 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-35d725ac060so12692295ab.2;
+        Wed, 06 Dec 2023 08:56:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701881700; x=1702486500; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=11Qvm73V/R4oS4z1zzbUqHU36xrwvK0hc2TtJL/D01A=;
-        b=Q2xpQM7/SePVQLCLgneWl/RfzS4khoExkdozP89U1ALawV6MKouCxR+CJDN5q7LlEx
-         QO2Pxj05+lqDH9mCp2d+In8KAJJ584MMqB+wmG6/qOF25gjORvMXi90tjAxf0IXesu7C
-         lkm/DvK66Z0dQxeN5Z7Isbyc9pMY8YqDt5P8JLk1wkdn1awU5Mwwji8K+K28D4emAYUM
-         46OSwS1E73VEXf7nreoSV1Q+eIypGpH9IsErV+KOhn+CqcFyKXj6/Hd+jGqH1HNW+FNA
-         oW6hL49wGvbtHRhffvcP9vZvwqvKMj+om0cqYC/q0cz3m6ieX19zt7MDM1Qibot5lTQJ
-         cPWw==
+        d=gmail.com; s=20230601; t=1701881815; x=1702486615; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yIrgXBCmrJsEmx/2lceqqp9Xwm1JeHuqctE9dAlll+0=;
+        b=aU35HanSNxKXTrTQ4kjEHWAZLFS/tBF3j+fPpW+VrMq78Cqd6wx6n1ee3jUw3O1rr9
+         ALTKgvLZBjgCF7Nde2nUL0mYEAbOqVQYzijEM5FT8tVfvuDICeKsIWmukHSFh8ZzcsYB
+         TTfQgRw83idj5raYHzvEgULsDnpjX2V5EAF1oXFxvL9wHxRDKS8hW2v9vj2QfyxdlKBf
+         rsjA5qadoS4E07v3YnWJ+MaY+3FkG25dIhXpm5ev3DmJdUr2vvSV3olRavFgr3YjxF74
+         C+oFhmdbQl3wR2hCKKOnQSimPiAOHWIlcpR6ktaJ+EZhJXrgozMTAQOd16XCVibcSEd2
+         10UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701881700; x=1702486500;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=11Qvm73V/R4oS4z1zzbUqHU36xrwvK0hc2TtJL/D01A=;
-        b=kfNCWVL3fjUUiH6un+vz/bnhPubk6H73AiBTCsB+wW/EFeePXU6QTU8oLLgH2hVbQe
-         rMib0ry5HVL+lFXKFhI/s+bbCSQHYI+4E7n7bQi7cTrl/ggCctIVehRfQOIIeycpc7wL
-         J7Sg4dT9OBfQNzIiQ+XK3QfYwEmrhqT73XDN1g51tOXtJq9GZYiTaItjRa12jzYRWpRn
-         KCYcaFQjxQfSuVeGXHhBhRyfamY2HSE12CWqvGwBGwE6/nMkfiWN3ycLev1w3y9Y4wpX
-         LeNYfG5pImdUPZ/+v9uFJFgC4OJQ+Z+9zG8cgvpJAfznnLB0RTxZDDYaLTfy8Og6Fyz7
-         qZQg==
-X-Gm-Message-State: AOJu0YxkFu9UJps53sAR45I+spgT79JICi8Y7hkNKRQlehi1YoL0woTI
-        owmQ/tLdvrtOF756YG68q6f02w==
-X-Google-Smtp-Source: AGHT+IEWj7IINYNgOfOiEmwYeJkE0Y1KTlaky3I47a/47VFbSS6FDRvec3zWR9HjMHUj9F/PMRO1pA==
-X-Received: by 2002:adf:a3cc:0:b0:333:10f6:29c8 with SMTP id m12-20020adfa3cc000000b0033310f629c8mr1093444wrb.20.1701881700471;
-        Wed, 06 Dec 2023 08:55:00 -0800 (PST)
-Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id g9-20020a5d5409000000b0033349de2622sm108599wrv.94.2023.12.06.08.55.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 08:55:00 -0800 (PST)
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Zong Li <zong.li@sifive.com>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        syzbot+2c2a76232878c44e0eae@syzkaller.appspotmail.com
-Subject: [PATCH -fixes] riscv: Check if the code to patch lies in the exit section
-Date:   Wed,  6 Dec 2023 17:54:58 +0100
-Message-Id: <20231206165458.40610-1-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20230601; t=1701881815; x=1702486615;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yIrgXBCmrJsEmx/2lceqqp9Xwm1JeHuqctE9dAlll+0=;
+        b=rduf33fc/QRBnPHX5In1m5A+wNchwJUEESGduvgSWou8BD8oBYAo/jZYE3K2BYsVk7
+         e8b1QV3IDa+CtJKZC4JqA+OOvohykW7wFPOO8FzF9+7SPbo/eoMFFv9bkmCSO2DHHb/N
+         bj+sW2EytpyNkTVyVT2lNcHBr9bR+kvUabPiNywxh8uEOD2/nb5J4lhZWUeqL85WXngJ
+         m8nHlYK9FgQlLeW4/syA3FOeWE/txNzPIO+pwvAaKzkZA8mh8gOxsli/GFnplZvOtsPr
+         Zkii0SjRc/mbs6VJF02N6YqLRG1yvRd+B3QiGF1MuyX97Dia25a0DhSlORLHnqEDjv83
+         xe9g==
+X-Gm-Message-State: AOJu0YzoMkDakOQh5a6D6OwghWcSGJ3zSJCeDp3eb/C9EimcaWJ9/luy
+        op5n2ZHrdE/KMGLUpXzPTtf4mN2DFLVavuB9jD8=
+X-Google-Smtp-Source: AGHT+IFNq8u43WbI4c01PT05oYMO3aPQSJ6ErYBAcTShuJSw9WrajU+G7etAPmGSFnGOLDah6Qzb1dasQimC9b9ONCQ=
+X-Received: by 2002:a05:6e02:1050:b0:35d:59a2:1281 with SMTP id
+ p16-20020a056e02105000b0035d59a21281mr1435226ilj.45.1701881814603; Wed, 06
+ Dec 2023 08:56:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231130194023.4102148-1-nphamcs@gmail.com> <20231130194023.4102148-7-nphamcs@gmail.com>
+ <ed2792de-24cc-4037-9ee1-966cc07df57a@linux.dev> <CAJD7tkbiWqXs1PEZjMHO0gj5uSaaB-KNUNCiUz25MuPvzeb=wg@mail.gmail.com>
+In-Reply-To: <CAJD7tkbiWqXs1PEZjMHO0gj5uSaaB-KNUNCiUz25MuPvzeb=wg@mail.gmail.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Wed, 6 Dec 2023 08:56:43 -0800
+Message-ID: <CAKEwX=M8YThH8qOdHt5TV1E4PCiw2FSv7815O3fhqXNVMt5ezg@mail.gmail.com>
+Subject: Re: [PATCH v8 6/6] zswap: shrinks zswap pool based on memory pressure
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Chengming Zhou <chengming.zhou@linux.dev>,
+        akpm@linux-foundation.org, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Otherwise we fall through to vmalloc_to_page() which panics since the
-address does not lie in the vmalloc region.
+On Tue, Dec 5, 2023 at 10:00=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> [..]
+> > > @@ -526,6 +582,102 @@ static struct zswap_entry *zswap_entry_find_get=
+(struct rb_root *root,
+> > >       return entry;
+> > >  }
+> > >
+> > > +/*********************************
+> > > +* shrinker functions
+> > > +**********************************/
+> > > +static enum lru_status shrink_memcg_cb(struct list_head *item, struc=
+t list_lru_one *l,
+> > > +                                    spinlock_t *lock, void *arg);
+> > > +
+> > > +static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
+> > > +             struct shrink_control *sc)
+> > > +{
+> > > +     struct lruvec *lruvec =3D mem_cgroup_lruvec(sc->memcg, NODE_DAT=
+A(sc->nid));
+> > > +     unsigned long shrink_ret, nr_protected, lru_size;
+> > > +     struct zswap_pool *pool =3D shrinker->private_data;
+> > > +     bool encountered_page_in_swapcache =3D false;
+> > > +
+> > > +     nr_protected =3D
+> > > +             atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_p=
+rotected);
+> > > +     lru_size =3D list_lru_shrink_count(&pool->list_lru, sc);
+> > > +
+> > > +     /*
+> > > +      * Abort if the shrinker is disabled or if we are shrinking int=
+o the
+> > > +      * protected region.
+> > > +      *
+> > > +      * This short-circuiting is necessary because if we have too ma=
+ny multiple
+> > > +      * concurrent reclaimers getting the freeable zswap object coun=
+ts at the
+> > > +      * same time (before any of them made reasonable progress), the=
+ total
+> > > +      * number of reclaimed objects might be more than the number of=
+ unprotected
+> > > +      * objects (i.e the reclaimers will reclaim into the protected =
+area of the
+> > > +      * zswap LRU).
+> > > +      */
+> > > +     if (!zswap_shrinker_enabled || nr_protected >=3D lru_size - sc-=
+>nr_to_scan) {
+> > > +             sc->nr_scanned =3D 0;
+> > > +             return SHRINK_STOP;
+> > > +     }
+> > > +
+> > > +     shrink_ret =3D list_lru_shrink_walk(&pool->list_lru, sc, &shrin=
+k_memcg_cb,
+> > > +             &encountered_page_in_swapcache);
+> > > +
+> > > +     if (encountered_page_in_swapcache)
+> > > +             return SHRINK_STOP;
+> > > +
+> > > +     return shrink_ret ? shrink_ret : SHRINK_STOP;
+> > > +}
+> > > +
+> > > +static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+> > > +             struct shrink_control *sc)
+> > > +{
+> > > +     struct zswap_pool *pool =3D shrinker->private_data;
+> > > +     struct mem_cgroup *memcg =3D sc->memcg;
+> > > +     struct lruvec *lruvec =3D mem_cgroup_lruvec(memcg, NODE_DATA(sc=
+->nid));
+> > > +     unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
+> > > +
+> > > +#ifdef CONFIG_MEMCG_KMEM
+> > > +     cgroup_rstat_flush(memcg->css.cgroup);
+> > > +     nr_backing =3D memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_S=
+HIFT;
+> > > +     nr_stored =3D memcg_page_state(memcg, MEMCG_ZSWAPPED);
+> > > +#else
+> > > +     /* use pool stats instead of memcg stats */
+> > > +     nr_backing =3D get_zswap_pool_size(pool) >> PAGE_SHIFT;
+> > > +     nr_stored =3D atomic_read(&pool->nr_stored);
+> > > +#endif
+> > > +
+> > > +     if (!zswap_shrinker_enabled || !nr_stored)
+> > When I tested with this series, with !zswap_shrinker_enabled in the def=
+ault case,
+> > I found the performance is much worse than that without this patch.
+> >
+> > Testcase: memory.max=3D2G, zswap enabled, kernel build -j32 in a tmpfs =
+directory.
+> >
+> > The reason seems the above cgroup_rstat_flush(), caused much rstat lock=
+ contention
+> > to the zswap_store() path. And if I put the "zswap_shrinker_enabled" ch=
+eck above
+> > the cgroup_rstat_flush(), the performance become much better.
+> >
+> > Maybe we can put the "zswap_shrinker_enabled" check above cgroup_rstat_=
+flush()?
+>
+> Yes, we should do nothing if !zswap_shrinker_enabled. We should also
+> use mem_cgroup_flush_stats() here like other places unless accuracy is
+> crucial, which I doubt given that reclaim uses
+> mem_cgroup_flush_stats().
 
-Fixes: 043cb41a85de ("riscv: introduce interfaces to patch kernel code")
-Reported-by: syzbot+2c2a76232878c44e0eae@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/000000000000ce4a27060b39ed34@google.com/T/
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
----
- arch/riscv/include/asm/sections.h |  1 +
- arch/riscv/kernel/patch.c         | 11 ++++++++++-
- arch/riscv/kernel/vmlinux.lds.S   |  2 ++
- 3 files changed, 13 insertions(+), 1 deletion(-)
+Ah, good points on both suggestions. We should not do extra work for
+non-user. And, this is a best-effort approximation of the memory
+saving factor, so as long as it is not *too* far off I think it's
+acceptable.
 
-diff --git a/arch/riscv/include/asm/sections.h b/arch/riscv/include/asm/sections.h
-index 32336e8a17cb..a393d5035c54 100644
---- a/arch/riscv/include/asm/sections.h
-+++ b/arch/riscv/include/asm/sections.h
-@@ -13,6 +13,7 @@ extern char _start_kernel[];
- extern char __init_data_begin[], __init_data_end[];
- extern char __init_text_begin[], __init_text_end[];
- extern char __alt_start[], __alt_end[];
-+extern char __exittext_begin[], __exittext_end[];
- 
- static inline bool is_va_kernel_text(uintptr_t va)
- {
-diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-index 13ee7bf589a1..37e87fdcf6a0 100644
---- a/arch/riscv/kernel/patch.c
-+++ b/arch/riscv/kernel/patch.c
-@@ -14,6 +14,7 @@
- #include <asm/fixmap.h>
- #include <asm/ftrace.h>
- #include <asm/patch.h>
-+#include <asm/sections.h>
- 
- struct patch_insn {
- 	void *addr;
-@@ -25,6 +26,14 @@ struct patch_insn {
- int riscv_patch_in_stop_machine = false;
- 
- #ifdef CONFIG_MMU
-+
-+static inline bool is_kernel_exittext(uintptr_t addr)
-+{
-+	return system_state < SYSTEM_RUNNING &&
-+		addr >= (uintptr_t)__exittext_begin &&
-+		addr < (uintptr_t)__exittext_end;
-+}
-+
- /*
-  * The fix_to_virt(, idx) needs a const value (not a dynamic variable of
-  * reg-a0) or BUILD_BUG_ON failed with "idx >= __end_of_fixed_addresses".
-@@ -35,7 +44,7 @@ static __always_inline void *patch_map(void *addr, const unsigned int fixmap)
- 	uintptr_t uintaddr = (uintptr_t) addr;
- 	struct page *page;
- 
--	if (core_kernel_text(uintaddr))
-+	if (core_kernel_text(uintaddr) || is_kernel_exittext(uintaddr))
- 		page = phys_to_page(__pa_symbol(addr));
- 	else if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
- 		page = vmalloc_to_page(addr);
-diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-index 492dd4b8f3d6..002ca58dd998 100644
---- a/arch/riscv/kernel/vmlinux.lds.S
-+++ b/arch/riscv/kernel/vmlinux.lds.S
-@@ -69,10 +69,12 @@ SECTIONS
- 		__soc_builtin_dtb_table_end = .;
- 	}
- 	/* we have to discard exit text and such at runtime, not link time */
-+	__exittext_begin = .;
- 	.exit.text :
- 	{
- 		EXIT_TEXT
- 	}
-+	__exittext_end = .;
- 
- 	__init_text_end = .;
- 	. = ALIGN(SECTION_ALIGN);
--- 
-2.39.2
+>
+> mem_cgroup_flush_stats() has some thresholding to make sure we don't
+> do flushes unnecessarily, and I have a pending series in mm-unstable
+> that makes that thresholding per-memcg. Keep in mind that adding a
+> call to mem_cgroup_flush_stats() will cause a conflict in mm-unstable,
+> because the series there adds a memcg argument to
+> mem_cgroup_flush_stats(). That should be easily amenable though, I can
+> post a fixlet for my series to add the memcg argument there on top of
+> users if needed.
 
+Hmm so how should we proceed from here? How about this:
+
+a) I can send a fixlet to move the enablement check above the stats
+flushing + use mem_cgroup_flush_stats
+b) Then maybe, you can send a fixlet to update this new callsite?
+
+Does that sound reasonable?
+
+>
+> >
+> > Thanks!
+> >
+> > > +             return 0;
+> > > +
+> > > +     nr_protected =3D
+> > > +             atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_p=
+rotected);
+> > > +     nr_freeable =3D list_lru_shrink_count(&pool->list_lru, sc);
+> > > +     /*
+> > > +      * Subtract the lru size by an estimate of the number of pages
+> > > +      * that should be protected.
+> > > +      */
+> > > +     nr_freeable =3D nr_freeable > nr_protected ? nr_freeable - nr_p=
+rotected : 0;
+> > > +
+> > > +     /*
+> > > +      * Scale the number of freeable pages by the memory saving fact=
+or.
+> > > +      * This ensures that the better zswap compresses memory, the fe=
+wer
+> > > +      * pages we will evict to swap (as it will otherwise incur IO f=
+or
+> > > +      * relatively small memory saving).
+> > > +      */
+> > > +     return mult_frac(nr_freeable, nr_backing, nr_stored);
+> > > +}
+> > > +
+> > > +static void zswap_alloc_shrinker(struct zswap_pool *pool)
+> > > +{
+> > > +     pool->shrinker =3D
+> > > +             shrinker_alloc(SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWA=
+RE, "mm-zswap");
+> > > +     if (!pool->shrinker)
+> > > +             return;
+> > > +
+> > > +     pool->shrinker->private_data =3D pool;
+> > > +     pool->shrinker->scan_objects =3D zswap_shrinker_scan;
+> > > +     pool->shrinker->count_objects =3D zswap_shrinker_count;
+> > > +     pool->shrinker->batch =3D 0;
+> > > +     pool->shrinker->seeks =3D DEFAULT_SEEKS;
+> > > +}
+> > > +
+> > >  /*********************************
+> > >  * per-cpu code
+> > >  **********************************/
+> [..]
