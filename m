@@ -2,106 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E49E0806A5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5073D806A5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346710AbjLFJHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:07:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
+        id S1346717AbjLFJJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:09:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346664AbjLFJHm (ORCPT
+        with ESMTP id S1346664AbjLFJJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:07:42 -0500
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com [209.85.161.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1C7D59
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:07:48 -0800 (PST)
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-58daf9b195cso819551eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 01:07:48 -0800 (PST)
+        Wed, 6 Dec 2023 04:09:32 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F97D71
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:09:37 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-db539f21712so594677276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 01:09:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701853777; x=1702458577; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wP++sDZ0D6RnqxEDsIfOfMZaHshu8C2nXxTEhtKdeFg=;
+        b=XGaGB5S0ho5Kv2fj6FKTKgltohzZKE5geOFxJbJyuOp53bjxzUXqHJJJYUSz9rT9ef
+         iDVeWbUY+VzG1H9NKEY5ikT+wVqqWvooxRElK2rdfniJsceqN8MgATPDFE25rQzCudlY
+         getlh8t+nNOQG6rAfu+xMWkqN+KDBF0rVT60v25JXwDtCNTfnIKJ1vtNuEauPcMT9H16
+         iN6zuCQoGZ0gQD42UDOKZyMhr3/nLQ/mZGKYOPWnzW//YSDidSK44Eq8cQZ/8rtqH3mL
+         IsZwePz4woPgYUGOKxWfdmeS9bGKDcadfOKBo6jvhr70C4NtNAaxRu/zT5QTQNkK8FuK
+         RGmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701853667; x=1702458467;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0zM+HO/CNAIOemtbijlOjCDoOsqDFzpSN4qUdV1TQLo=;
-        b=So85v3PQeJYajyeyKUxi6X4YOvRTbHwttH+oDd2jcCoCIElPNpvD9xlJ9D+9fAOKot
-         44Hi8iExgBSWU8DOgu87x9EgTPao+O31jfhxEIKDNOYUOCnsWrUPhDreKdqvRNy32cGn
-         9AcsQLL4o/u9hpKVgb+3roF2ijoyBOtOSoxuRz9+wGGb7zNsbxO9yaCygJkU7V9ybez8
-         5kgQ6KChD5nlfpyBX1j60Oz3BLpCR8dcEh9XCFJtbhPYoTOg3AjBxeITEs1SMbd1ALw5
-         dEFfKgyWXkple0gu2Nxhr7CuoaTScCANKpPgeElrnT4nHEArRMAUtgI75MUJmQnLgg5X
-         ic3Q==
-X-Gm-Message-State: AOJu0YxGVM2xhXIL1orzgLIPW3007dL3BIOrpD54qHsT9RyrfnjFNx0B
-        XJ44O/RdHh4fWeXnPV3iPfoS3G9t8jX8j2Vo7pEa6YzsY9G9qZ0=
-X-Google-Smtp-Source: AGHT+IH/KVMp+kPIJ7BO+Kg5bl7EEOvtlgfUXIg3wv0DT1ZI0bz//bJreVUyukPgIhVAIrN1ay4rSIBeHTJGjccaw5zYNkvjtD4I
+        d=1e100.net; s=20230601; t=1701853777; x=1702458577;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wP++sDZ0D6RnqxEDsIfOfMZaHshu8C2nXxTEhtKdeFg=;
+        b=qNstQH40Bh1/N0DX7kEPDeCwypemmjlIjxAVqhRe8o2uniVGa7cA/TmYB3K8DcyK6G
+         Lr2yb7bZLhUjE1APJoQ+QJzON/cY3MoDWAT2S2IuSO+zUpYJu25Wwx5Xnt+b10Wn60Ac
+         gfsBRB23PX8ytFN2h0EjkNOskTVfIxUWlrOk+AQCYMgR7Q00STeo6dGSts7MTGMhKSLc
+         AowLd6ZNAXQ5c1BjFPWJr1Uvd/kqg4kSbOk5CNAtH+WcoBRDqb/ODePtnQgPuyKz/ml9
+         yguVr984uEWZ6cyGJiIeSkKwbPwmBY6EWns6whSBqPis0waKvBVj35rzw6cE17B43XMg
+         Ubhg==
+X-Gm-Message-State: AOJu0YxeeFfJ6gNyc/IvZo/8py7M/NXg94/cGJlQBlo79j4SmrZgESRs
+        qiQzcshlydNjCZhiuU3yAK1pQ1qUwzzzj6zy2GSOdQ==
+X-Google-Smtp-Source: AGHT+IHg0pHACl+xt9RzmXvwGIPui6Yb8M/F4NDq2ZCAoTAskYtXkHT/owjn5oxY8N77ibLrBkj9aG20YDg0hFxnl2M=
+X-Received: by 2002:a05:6902:4e1:b0:db9:85c7:b052 with SMTP id
+ w1-20020a05690204e100b00db985c7b052mr1761994ybs.9.1701853776943; Wed, 06 Dec
+ 2023 01:09:36 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:210e:b0:1fa:c4ca:d5e with SMTP id
- f14-20020a056870210e00b001fac4ca0d5emr674796oae.2.1701853667430; Wed, 06 Dec
- 2023 01:07:47 -0800 (PST)
-Date:   Wed, 06 Dec 2023 01:07:47 -0800
-In-Reply-To: <0000000000001b9bed060bc75cbc@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004e991c060bd3af6d@google.com>
-Subject: Re: [syzbot] [net?] KMSAN: uninit-value in __llc_lookup_established
-From:   syzbot <syzbot+b5ad66046b913bc04c6f@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
+References: <20231206072701.13276-1-dinghao.liu@zju.edu.cn> <77925c2e-8cb2-473b-9dd0-3ce60a909066@suse.de>
+In-Reply-To: <77925c2e-8cb2-473b-9dd0-3ce60a909066@suse.de>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 6 Dec 2023 11:09:25 +0200
+Message-ID: <CAA8EJprUDgraGgiGKsh0PSVd6Zxe9L2Q+HTPrALHWFVP3hiq1Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/plane: fix error handling in __drm_universal_plane_init
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On Wed, 6 Dec 2023 at 10:22, Thomas Zimmermann <tzimmermann@suse.de> wrote:
+>
+> Hi
+>
+> Am 06.12.23 um 08:27 schrieb Dinghao Liu:
+> > __drm_universal_plane_init() frees plane->format_types and
+> > plane->modifiers on failure. However, sometimes its callers
+> > will free these two pointers again, which may lead to a
+> > double-free. One possible call chain is:
+> >
+> > mdp5_plane_init
+> >    |-> drm_universal_plane_init
+> >    |     |-> __drm_universal_plane_init (first free)
+> >    |
+> >    |-> mdp5_plane_destroy
+> >          |-> drm_plane_cleanup (second free)
+> >
+> > Fix this by setting the two pointers to NULL after kfree.
+> >
+> > Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+>
+> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+>
+> to get the immediate bug fixed.
+>
+> However, I don't think it's the correct way of doing things in general.
+> Planes should probably not attempt to even make a copy, but use the
+> supplied pointers. Lifetime of the arrays is the same as of the plane.
+> That's for a different patch set, of course.  (I did not review the DRM
+> code whether the internal copy is required.)
 
-***
+But there is no internal copy. The issue is in the mdp5 code calling
+drm_plane_cleanup (indirectly) even though the plane init has failed.
 
-Subject: [net?] KMSAN: uninit-value in __llc_lookup_established
-Author: eadavis@qq.com
+>
+> For now, maybe drm_plane_cleanup() could warn if format_types equals
+> NULL. [1] It indicates that the plane has not been initialized correctly
+> and the driver's memory lifetime handling is somehow broken.
+>
+> Best regards
+> Thomas
+>
+> [1]
+> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/drm_plane.c#L542
+>
+> > ---
+> >   drivers/gpu/drm/drm_plane.c | 3 +++
+> >   1 file changed, 3 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/drm_plane.c b/drivers/gpu/drm/drm_plane.c
+> > index 24e7998d1731..1331b8224920 100644
+> > --- a/drivers/gpu/drm/drm_plane.c
+> > +++ b/drivers/gpu/drm/drm_plane.c
+> > @@ -304,6 +304,7 @@ static int __drm_universal_plane_init(struct drm_device *dev,
+> >       if (format_modifier_count && !plane->modifiers) {
+> >               DRM_DEBUG_KMS("out of memory when allocating plane\n");
+> >               kfree(plane->format_types);
+> > +             plane->format_types = NULL;
+> >               drm_mode_object_unregister(dev, &plane->base);
+> >               return -ENOMEM;
+> >       }
+> > @@ -317,6 +318,8 @@ static int __drm_universal_plane_init(struct drm_device *dev,
+> >       if (!plane->name) {
+> >               kfree(plane->format_types);
+> >               kfree(plane->modifiers);
+> > +             plane->format_types = NULL;
+> > +             plane->modifiers = NULL;
+> >               drm_mode_object_unregister(dev, &plane->base);
+> >               return -ENOMEM;
+> >       }
+>
+> --
+> Thomas Zimmermann
+> Graphics Driver Developer
+> SUSE Software Solutions Germany GmbH
+> Frankenstrasse 146, 90461 Nuernberg, Germany
+> GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
+> HRB 36809 (AG Nuernberg)
 
-please test uninit-value in __llc_lookup_established
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 1c41041124bd
 
-diff --git a/include/net/llc_pdu.h b/include/net/llc_pdu.h
-index 7e73f8e5e497..cba149476e41 100644
---- a/include/net/llc_pdu.h
-+++ b/include/net/llc_pdu.h
-@@ -262,7 +262,8 @@ static inline void llc_pdu_header_init(struct sk_buff *skb, u8 type,
-  */
- static inline void llc_pdu_decode_sa(struct sk_buff *skb, u8 *sa)
- {
--	if (skb->protocol == htons(ETH_P_802_2))
-+	if (skb->protocol == htons(ETH_P_802_2) || 
-+	    skb->protocol == htons(ETH_P_TR_802_2))
- 		memcpy(sa, eth_hdr(skb)->h_source, ETH_ALEN);
- }
- 
-@@ -275,7 +276,8 @@ static inline void llc_pdu_decode_sa(struct sk_buff *skb, u8 *sa)
-  */
- static inline void llc_pdu_decode_da(struct sk_buff *skb, u8 *da)
- {
--	if (skb->protocol == htons(ETH_P_802_2))
-+	if (skb->protocol == htons(ETH_P_802_2) || 
-+	    skb->protocol == htons(ETH_P_TR_802_2))
- 		memcpy(da, eth_hdr(skb)->h_dest, ETH_ALEN);
- }
- 
-diff --git a/net/llc/llc_input.c b/net/llc/llc_input.c
-index 7cac441862e2..f4f24b5d9eea 100644
---- a/net/llc/llc_input.c
-+++ b/net/llc/llc_input.c
-@@ -126,7 +126,8 @@ static inline int llc_fixup_skb(struct sk_buff *skb)
- 
- 	skb->transport_header += llc_len;
- 	skb_pull(skb, llc_len);
--	if (skb->protocol == htons(ETH_P_802_2)) {
-+	if (skb->protocol == htons(ETH_P_802_2)
-+	    skb->protocol == htons(ETH_P_TR_802_2)) {
- 		__be16 pdulen = eth_hdr(skb)->h_proto;
- 		s32 data_size = ntohs(pdulen) - llc_len;
- 
-
+-- 
+With best wishes
+Dmitry
