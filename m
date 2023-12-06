@@ -2,104 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A29680785E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDD6807860
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442773AbjLFTHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 14:07:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36058 "EHLO
+        id S1379219AbjLFTHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:07:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379150AbjLFTG7 (ORCPT
+        with ESMTP id S1442775AbjLFTHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:06:59 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CADEE
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 11:07:05 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A909AC433C9;
-        Wed,  6 Dec 2023 19:07:00 +0000 (UTC)
-Date:   Wed, 6 Dec 2023 19:06:58 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Marc Zyngier <maz@kernel.org>, ankita@nvidia.com,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>, oliver.upton@linux.dev,
-        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
-        ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com,
-        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
-        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
-        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-        lpieralisi@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Message-ID: <ZXDGUskp1s4Bwbtr@arm.com>
-References: <ZW9ezSGSDIvv5MsQ@arm.com>
- <86a5qobkt8.wl-maz@kernel.org>
- <ZW9uqu7yOtyZfmvC@arm.com>
- <868r67blwo.wl-maz@kernel.org>
- <ZXBlmt88dKmZLCU9@arm.com>
- <20231206151603.GR2692119@nvidia.com>
- <ZXCh9N2xp0efHcpE@arm.com>
- <20231206172035.GU2692119@nvidia.com>
- <ZXDEZO6sS1dE_to9@arm.com>
- <20231206190356.GD2692119@nvidia.com>
+        Wed, 6 Dec 2023 14:07:00 -0500
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5DEEE
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 11:07:07 -0800 (PST)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1fb2b95e667so287235fac.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 11:07:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701889626; x=1702494426;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e68f6FqKue8M0jGzCiJGUHLxmm0XLk+1FExZwxvkydY=;
+        b=DwVGtGbSoFS8dLlbxHpQnMzX8RefW7xe+e+3q0nwQZ5geqgek3bpo1rdEwGXLrrRIj
+         akHR37+6OhwZF5B4gBDHcViYAIz7vv7+B7nf68smu3S1T9+sUzz4pB29005R1a+tPFsU
+         yDjvXN6FyvdiXC2IYkComyXw78zzCMIfqIrU7uwFMfRI3p+yoEZB6MFWHyNhftUmxVik
+         epFoHvcQWBV1tZ9vzPzibCX8VzuB0j64yfabfq2nf611y3Eg8iF3V+/7Y4nXqZost8H5
+         7Zh3Pyp1hBcU1jvHM6VK3KoTCgLFPyF7ydGTQxqJnSBctP0OpoJXp4u+3QvZzqzIgTjo
+         TvHw==
+X-Gm-Message-State: AOJu0YyMdXCDRjaNLNrF95DMhoF43NpwVWwSMH40NmQnKjzlfiXPWh2/
+        6bNllaHTNH37X2DKZjrikqKfOIrzWG/X+M17yuBO6cZAZQZHPgQ=
+X-Google-Smtp-Source: AGHT+IEGhW9OFgCk6+fUXuLu4B9IRHNKj5ifxABzBTym95ASC+GaDuhpKpuQMT+xrZiyqgXOtcQR+4VlYb2qROLsRkxD0qMT6VbI
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206190356.GD2692119@nvidia.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6871:593:b0:1fb:1b3c:b5f8 with SMTP id
+ u19-20020a056871059300b001fb1b3cb5f8mr1627282oan.2.1701889626348; Wed, 06 Dec
+ 2023 11:07:06 -0800 (PST)
+Date:   Wed, 06 Dec 2023 11:07:06 -0800
+In-Reply-To: <CH0PR10MB511315588F14A86E6A3E332D9584A@CH0PR10MB5113.namprd10.prod.outlook.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a0232e060bdc0e9e@google.com>
+Subject: Re: [syzbot] [fs?] general protection fault in pagemap_scan_hugetlb_entry
+From:   syzbot <syzbot+6e2ccedb96d1174e6a5f@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, sidhartha.kumar@oracle.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 03:03:56PM -0400, Jason Gunthorpe wrote:
-> On Wed, Dec 06, 2023 at 06:58:44PM +0000, Catalin Marinas wrote:
-> > -------------8<----------------------------
-> > diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-> > index 1929103ee59a..b89d2dfcd534 100644
-> > --- a/drivers/vfio/pci/vfio_pci_core.c
-> > +++ b/drivers/vfio/pci/vfio_pci_core.c
-> > @@ -1863,7 +1863,7 @@ int vfio_pci_core_mmap(struct vfio_device *core_vdev, struct vm_area_struct *vma
-> >  	 * See remap_pfn_range(), called from vfio_pci_fault() but we can't
-> >  	 * change vm_flags within the fault handler.  Set them now.
-> >  	 */
-> > -	vm_flags_set(vma, VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP);
-> > +	vm_flags_set(vma, VM_VFIO | VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP);
-> >  	vma->vm_ops = &vfio_pci_mmap_ops;
-> > 
-> >  	return 0;
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index 418d26608ece..6df46fd7836a 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -391,6 +391,13 @@ extern unsigned int kobjsize(const void *objp);
-> >  # define VM_UFFD_MINOR		VM_NONE
-> >  #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
-> > 
-> > +#ifdef CONFIG_64BIT
-> > +#define VM_VFIO_BIT		39
-> > +#define VM_VFIO			BIT(VM_VFIO_BIT)
-> > +#else
-> > +#define VM_VFIO			VM_NONE
-> > +#endif
-> > +
-> >  /* Bits set in the VMA until the stack is in its final location */
-> >  #define VM_STACK_INCOMPLETE_SETUP (VM_RAND_READ | VM_SEQ_READ | VM_STACK_EARLY)
-> > -------------8<----------------------------
-> > 
-> > In KVM, Akita's patch would take this into account, not just rely on
-> > "device==true".
-> 
-> Yes, Ankit let's try this please. I would not call it VM_VFIO though
-> 
-> VM_VFIO_ALLOW_WC ?
+Hello,
 
-Yeah. I don't really care about the name.
+syzbot tried to test the proposed patch but the build/boot failed:
 
--- 
-Catalin
+mm/hugetlb.c:6485:17: error: too few arguments to function 'set_huge_pte_at'
+
+
+Tested on:
+
+commit:         bee0e776 Merge tag 'for-linus-iommufd' of git://git.ke..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bb39fe85d254f638
+dashboard link: https://syzkaller.appspot.com/bug?extid=6e2ccedb96d1174e6a5f
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1621e60ee80000
+
