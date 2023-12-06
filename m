@@ -2,249 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEB9806379
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5AC806378
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376289AbjLFAcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 19:32:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
+        id S1346667AbjLFAdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 19:33:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346621AbjLFAcx (ORCPT
+        with ESMTP id S1346647AbjLFAd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 19:32:53 -0500
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [IPv6:2001:41d0:1004:224b::af])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADCF9A
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 16:32:58 -0800 (PST)
-Message-ID: <836818de-73ca-4233-830a-71a80dcc1c6c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1701822777;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3SnfDF8plKJgpWd+lzxgl5v07A2wnaRHIaQlR7xVpG0=;
-        b=fw9nU65cSvACJbDJPcf++nb7x1mNDM+TSff2WJ3ew4mQ0gk8mKsC5v2oqPNMSV1PZ0ELXZ
-        /APKjQ9tcywQDH0ZY8bQgQQbX6EzI/NewhfDQIHYCxD1VfZ75DuPljIMfkcQwGUp+kCuEQ
-        d1IjaPaSJoV7L4sCwCbTtJ1IXYu8504=
-Date:   Wed, 6 Dec 2023 08:31:45 +0800
+        Tue, 5 Dec 2023 19:33:29 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C42AA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 16:33:35 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-35d57ab6f5bso57675ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 16:33:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701822814; x=1702427614; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4pHgxdCxOG12G1hvARrJ+hyIHKbL9mJBrNWPcoxsQ7k=;
+        b=XmVhEfoZss/wiHOd7kVPScBYAeeyJo5NlqSI0mz85HoHkltkprnaJ9zdci1hqsQk0H
+         P+6Y+amRR+APwRnskpDFSWFlsVv0znzCDwbPc0atXRvN4Ocswo+Sc3mMpoliq+OjKSu6
+         ctTT4PO+BJQthTd4017Zt66s1npzRQ6fZFWZ5wBwi0QPz59hdHOW3TGydNtLb8sDwcdy
+         bh+NApwelNfWt9oEM1c7TBkAaMpMPxc49l/ibPeNrqfpQSLE3KrwsY5PJEHn07otoYwV
+         Cnvb4MXwJNHpre7h3T3lMrCve2y2GWOugqelXt/Dpz9yjnS4nZu0pqaX1HTBAh1nc5bY
+         c6ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701822814; x=1702427614;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4pHgxdCxOG12G1hvARrJ+hyIHKbL9mJBrNWPcoxsQ7k=;
+        b=DNcMzxxcZYfdj93Hmb1vbzEooIhhFkMFiQAlWYahxvz/zoQSPFSrrIIIZsh5oP2FrD
+         tRcI/mTGd30IUx5C6ihMrx5VCl2wEG8/F7k4HfZ4dS8UkYLFdHV8hitjtkj/57NC0AOe
+         TWX5YAKlpu02Ts/TjTvc/HiDiFkbPmAGONQ1d+ha8GYcQIPySiDpqkYIQ1lLl/tDkcZT
+         JPT6wxZUN5DnXx54xormTM5D7/HcSyPnNjUblb3iByBvfm5w0Kuvqf64OQBkJflu6tlI
+         jlTjxy+Z+MRl9a20ySK4pNBh1xsRPpW5jzQihhRXeQBpUWVArcED8lBzxURUHpVEjAlM
+         0g+w==
+X-Gm-Message-State: AOJu0YzZfQcENsH4QP+qX7UDzYTJ/9jcQjwLXTZ1vfHHgJj1yFmQTFJh
+        ueJa16aqxrBa0hnSlxsBS3PeoX9EZdojZ5WwmhmZXg==
+X-Google-Smtp-Source: AGHT+IGRrPvNuiExO8WZWD5YJ2xzcRJ1o7a+xNPzL983Ng/SJCrQU88wzoHfETCiDN1jOHT+5OkqQxBLNAoxlCe/vnw=
+X-Received: by 2002:a05:6e02:b43:b0:35c:b538:6d15 with SMTP id
+ f3-20020a056e020b4300b0035cb5386d15mr110691ilu.28.1701822814416; Tue, 05 Dec
+ 2023 16:33:34 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/4] mm/slub: introduce __kmem_cache_free_bulk() without
- free hooks
-Content-Language: en-US
-To:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
-References: <20231204-slub-cleanup-hooks-v1-0-88b65f7cd9d5@suse.cz>
- <20231204-slub-cleanup-hooks-v1-2-88b65f7cd9d5@suse.cz>
- <30f88452-740b-441f-bb4f-a2d946e35cf5@linux.dev>
- <25eb93ee-e71a-c257-ef4b-9fbb3b694faf@suse.cz>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <25eb93ee-e71a-c257-ef4b-9fbb3b694faf@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230421141723.2405942-1-peternewman@google.com>
+ <20230421141723.2405942-4-peternewman@google.com> <38b9e6df-cccd-a745-da4a-1d1a0ec86ff3@intel.com>
+ <CALPaoCg76nUsJ7eYcU61gied8WBuAAmqy0Pqpsq5=Z-S52Qg6w@mail.gmail.com>
+ <31993ea8-97e5-b8d5-b344-48db212bc9cf@intel.com> <CALPaoCiPCxUeGKjZytxmse2oNs=qDBbRY9kH7AZGG6iXf1qtJw@mail.gmail.com>
+ <04c9eb5e-3395-05e6-f0cc-bc8f054a6031@intel.com> <CALPaoCjg-W3w8OKLHP_g6Evoo03fbgaOQZrGTLX6vdSLp70=SA@mail.gmail.com>
+ <e4a77e0c-a31c-429b-9de9-3cadd704ca34@intel.com>
+In-Reply-To: <e4a77e0c-a31c-429b-9de9-3cadd704ca34@intel.com>
+From:   Peter Newman <peternewman@google.com>
+Date:   Tue, 5 Dec 2023 16:33:23 -0800
+Message-ID: <CALPaoCiRD6j_Rp7ffew+PtGTF4rWDORwbuRQqH2i-cY5SvWQBg@mail.gmail.com>
+Subject: Re: [PATCH v1 3/9] x86/resctrl: Add resctrl_mbm_flush_cpu() to
+ collect CPUs' MBM events
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>, Babu Moger <babu.moger@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Stephane Eranian <eranian@google.com>,
+        James Morse <james.morse@arm.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/6 03:57, Vlastimil Babka wrote:
-> On 12/5/23 09:19, Chengming Zhou wrote:
->> On 2023/12/5 03:34, Vlastimil Babka wrote:
->>> Currently, when __kmem_cache_alloc_bulk() fails, it frees back the
->>> objects that were allocated before the failure, using
->>> kmem_cache_free_bulk(). Because kmem_cache_free_bulk() calls the free
->>> hooks (KASAN etc.) and those expect objects that were processed by the
->>> post alloc hooks, slab_post_alloc_hook() is called before
->>> kmem_cache_free_bulk().
->>>
->>> This is wasteful, although not a big concern in practice for the rare
->>> error path. But in order to efficiently handle percpu array batch refill
->>> and free in the near future, we will also need a variant of
->>> kmem_cache_free_bulk() that avoids the free hooks. So introduce it now
->>> and use it for the failure path.
->>>
->>> As a consequence, __kmem_cache_alloc_bulk() no longer needs the objcg
->>> parameter, remove it.
->>
->> The objects may have been charged before, but it seems __kmem_cache_alloc_bulk()
->> forget to uncharge them? I can't find "uncharge" in do_slab_free(), or maybe
->> the bulk interface won't be used on chargeable slab?
-> 
-> You're right! I missed that the memcg_pre_alloc_hook() already does the
-> charging, so we need to uncharge. How does this look? Thanks for noticing!
-> 
-> ----8<----
-> From 52f8e77fdfeabffffdce6b761ba5508e940df3be Mon Sep 17 00:00:00 2001
-> From: Vlastimil Babka <vbabka@suse.cz>
-> Date: Thu, 2 Nov 2023 16:34:39 +0100
-> Subject: [PATCH 2/4] mm/slub: introduce __kmem_cache_free_bulk() without free
->  hooks
-> 
-> Currently, when __kmem_cache_alloc_bulk() fails, it frees back the
-> objects that were allocated before the failure, using
-> kmem_cache_free_bulk(). Because kmem_cache_free_bulk() calls the free
-> hooks (KASAN etc.) and those expect objects that were processed by the
-> post alloc hooks, slab_post_alloc_hook() is called before
-> kmem_cache_free_bulk().
-> 
-> This is wasteful, although not a big concern in practice for the rare
-> error path. But in order to efficiently handle percpu array batch refill
-> and free in the near future, we will also need a variant of
-> kmem_cache_free_bulk() that avoids the free hooks. So introduce it now
-> and use it for the failure path.
-> 
-> In case of failure we however still need to perform memcg uncharge so
-> handle that in a new memcg_slab_alloc_error_hook(). Thanks to Chengming
-> Zhou for noticing the missing uncharge.
-> 
-> As a consequence, __kmem_cache_alloc_bulk() no longer needs the objcg
-> parameter, remove it.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Hi Reinette,
 
-Looks good to me!
+On Tue, Dec 5, 2023 at 1:57=E2=80=AFPM Reinette Chatre
+<reinette.chatre@intel.com> wrote:
+> On 12/1/2023 12:56 PM, Peter Newman wrote:
+> > On Tue, May 16, 2023 at 5:06=E2=80=AFPM Reinette Chatre
+> >> I think it may be optimistic to view this as a replacement of a PQR wr=
+ite.
+> >> As you point out, that requires that a CPU switches between tasks with=
+ the
+> >> same CLOSID. You demonstrate that resctrl already contributes a signif=
+icant
+> >> delay to __switch_to - this work will increase that much more, it has =
+to
+> >> be clear about this impact and motivate that it is acceptable.
+> >
+> > We were operating under the assumption that if the overhead wasn't
+> > acceptable, we would have heard complaints about it by now, but we
+> > ultimately learned that this feature wasn't deployed as much as we had
+> > originally thought on AMD hardware and that the overhead does need to
+> > be addressed.
+> >
+> > I am interested in your opinion on two options I'm exploring to
+> > mitigate the overhead, both of which depend on an API like the one
+> > Babu recently proposed for the AMD ABMC feature [1], where a new file
+> > interface will allow the user to indicate which mon_groups are
+> > actively being measured. I will refer to this as "assigned" for now,
+> > as that's the current proposal.
+> >
+> > The first is likely the simpler approach: only read MBM event counters
+> > which have been marked as "assigned" in the filesystem to avoid paying
+> > the context switch cost on tasks in groups which are not actively
+> > being measured. In our use case, we calculate memory bandwidth on
+> > every group every few minutes by reading the counters twice, 5 seconds
+> > apart. We would just need counters read during this 5-second window.
+>
+> I assume that tasks within a monitoring group can be scheduled on any
+> CPU and from the cover letter of this work I understand that only an
+> RMID assigned to a processor can be guaranteed to be tracked by hardware.
+>
+> Are you proposing for this option that you keep this "soft RMID" approach
+> with CPUs  permanently assigned a "hard RMID" but only update the counts =
+for a
+> "soft RMID" that is "assigned"?
 
-Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
+Yes
+
+> I think that means that the context
+> switch cost for the monitored group would increase even more than with th=
+e
+> implementation in this series since the counters need to be read on conte=
+xt
+> switch in as well as context switch out.
+>
+> If I understand correctly then only one monitoring group can be measured
+> at a time. If such a measurement takes 5 seconds then theoretically 12 gr=
+oups
+> can be measured in one minute. It may be possible to create many more
+> monitoring groups than this. Would it be possible to reach monitoring
+> goals in your environment?
+
+We actually measure all of the groups at the same time, so thinking
+about this more, the proposed ABMC fix isn't actually a great fit: the
+user would have to assign all groups individually when a global
+setting would have been fine.
+
+Ignoring any present-day resctrl interfaces, what we minimally need is...
+
+1. global "start measurement", which enables a
+read-counters-on-context switch flag, and broadcasts an IPI to all
+CPUs to read their current count
+2. wait 5 seconds
+3. global "end measurement", to IPI all CPUs again for final counts
+and clear the flag from step 1
+
+Then the user could read at their leisure all the (frozen) event
+counts from memory until the next measurement begins.
+
+In our case, if we're measuring as often as 5 seconds for every
+minute, that will already be a 12x aggregate reduction in overhead,
+which would be worthwhile enough.
+
+>
+> >
+> > The second involves avoiding the situation where a hardware counter
+> > could be deallocated: Determine the number of simultaneous RMIDs
+> > supported, reduce the effective number of RMIDs available to that
+> > number. Use the default RMID (0) for all "unassigned" monitoring
+>
+> hmmm ... so on the one side there is "only the RMID within the PQR
+> register can be guaranteed to be tracked by hardware" and on the
+> other side there is "A given implementation may have insufficient
+> hardware to simultaneously track the bandwidth for all RMID values
+> that the hardware supports."
+>
+> From the above there seems to be something in the middle where
+> some subset of the RMID values supported by hardware can be used
+> to simultaneously track bandwidth? How can it be determined
+> what this number of RMID values is?
+
+In the context of AMD, we could use the smallest number of CPUs in any
+L3 domain as a lower bound of the number of counters.
+
+If the number is actually higher, it's not too difficult to probe at
+runtime. The technique used by the test script[1] reliably identifies
+the number of counters, but some experimentation would be needed to
+see how quickly the hardware will repurpose a counter, as the script
+today is using way too long of a workload for the kernel to be
+invoking.
+
+Maybe a reasonable compromise would be to initialize the HW counter
+estimate at the CPUs-per-domain value and add a file node to let the
+user increase it if they have better information. The worst that can
+happen is the present-day behavior.
+
+>
+> > groups and report "Unavailable" on all counter reads (and address the
+> > default monitoring group's counts being unreliable). When assigned,
+> > attempt to allocate one of the remaining, usable RMIDs to that group.
+> > It would only be possible to assign all event counters (local, total,
+> > occupancy) at the same time. Using this approach, we would no longer
+> > be able to measure all groups at the same time, but this is something
+> > we would already be accepting when using the AMD ABMC feature.
+>
+> It may be possible to turn this into a "fake"/"software" ABMC feature,
+> which I expect needs to be renamed to move it away from a hardware
+> specific feature to something that better reflects how user interacts
+> with system and how the system responds.
+
+Given the similarities in monitoring with ABMC and MPAM, I would want
+to see the interface generalized anyways.
+
+
+>
+> >
+> > While the second feature is a lot more disruptive at the filesystem
+> > layer, it does eliminate the added context switch overhead. Also, it
+>
+> Which changes to filesystem layer are you anticipating?
+
+Roughly speaking...
+
+1. The proposed "assign" interface would have to become more indirect
+to avoid understanding how assign could be implemented on various
+platforms.
+2. RMID management would have to change, because this would introduce
+the option where creating monitoring groups no longer allocates an
+RMID. It may be cleaner for the
+filesystem to just track whether a group has allocated monitoring
+resources or not and let a lower layer understand what the resources
+actually are. (and in the default mode, groups can only be created
+with pre-allocated resources)
+
+If I get the impression that this is the better approach, I'll build a
+prototype on top of the ABMC patches to see how it would go.
+
+So far it seems only the second approach (software ABMC) really ties
+in with Babu's work.
 
 Thanks!
+-Peter
 
-> ---
->  mm/slub.c | 56 ++++++++++++++++++++++++++++++++++++++++++++++---------
->  1 file changed, 47 insertions(+), 9 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index d7b0ca6012e0..0a9e4bd0dd68 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2003,6 +2003,14 @@ void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
->  
->  	__memcg_slab_free_hook(s, slab, p, objects, objcgs);
->  }
-> +
-> +static inline
-> +void memcg_slab_alloc_error_hook(struct kmem_cache *s, int objects,
-> +			   struct obj_cgroup *objcg)
-> +{
-> +	if (objcg)
-> +		obj_cgroup_uncharge(objcg, objects * obj_full_size(s));
-> +}
->  #else /* CONFIG_MEMCG_KMEM */
->  static inline struct mem_cgroup *memcg_from_slab_obj(void *ptr)
->  {
-> @@ -2032,6 +2040,12 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
->  					void **p, int objects)
->  {
->  }
-> +
-> +static inline
-> +void memcg_slab_alloc_error_hook(struct kmem_cache *s, int objects,
-> +				 struct obj_cgroup *objcg)
-> +{
-> +}
->  #endif /* CONFIG_MEMCG_KMEM */
->  
->  /*
-> @@ -4478,6 +4492,27 @@ int build_detached_freelist(struct kmem_cache *s, size_t size,
->  	return same;
->  }
->  
-> +/*
-> + * Internal bulk free of objects that were not initialised by the post alloc
-> + * hooks and thus should not be processed by the free hooks
-> + */
-> +static void __kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
-> +{
-> +	if (!size)
-> +		return;
-> +
-> +	do {
-> +		struct detached_freelist df;
-> +
-> +		size = build_detached_freelist(s, size, p, &df);
-> +		if (!df.slab)
-> +			continue;
-> +
-> +		do_slab_free(df.s, df.slab, df.freelist, df.tail, df.cnt,
-> +			     _RET_IP_);
-> +	} while (likely(size));
-> +}
-> +
->  /* Note that interrupts must be enabled when calling this function. */
->  void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
->  {
-> @@ -4498,8 +4533,9 @@ void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
->  EXPORT_SYMBOL(kmem_cache_free_bulk);
->  
->  #ifndef CONFIG_SLUB_TINY
-> -static inline int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
-> -			size_t size, void **p, struct obj_cgroup *objcg)
-> +static inline
-> +int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
-> +			    void **p)
->  {
->  	struct kmem_cache_cpu *c;
->  	unsigned long irqflags;
-> @@ -4563,14 +4599,13 @@ static inline int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
->  
->  error:
->  	slub_put_cpu_ptr(s->cpu_slab);
-> -	slab_post_alloc_hook(s, objcg, flags, i, p, false, s->object_size);
-> -	kmem_cache_free_bulk(s, i, p);
-> +	__kmem_cache_free_bulk(s, i, p);
->  	return 0;
->  
->  }
->  #else /* CONFIG_SLUB_TINY */
->  static int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
-> -			size_t size, void **p, struct obj_cgroup *objcg)
-> +				   size_t size, void **p)
->  {
->  	int i;
->  
-> @@ -4593,8 +4628,7 @@ static int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
->  	return i;
->  
->  error:
-> -	slab_post_alloc_hook(s, objcg, flags, i, p, false, s->object_size);
-> -	kmem_cache_free_bulk(s, i, p);
-> +	__kmem_cache_free_bulk(s, i, p);
->  	return 0;
->  }
->  #endif /* CONFIG_SLUB_TINY */
-> @@ -4614,15 +4648,19 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
->  	if (unlikely(!s))
->  		return 0;
->  
-> -	i = __kmem_cache_alloc_bulk(s, flags, size, p, objcg);
-> +	i = __kmem_cache_alloc_bulk(s, flags, size, p);
->  
->  	/*
->  	 * memcg and kmem_cache debug support and memory initialization.
->  	 * Done outside of the IRQ disabled fastpath loop.
->  	 */
-> -	if (i != 0)
-> +	if (likely(i != 0)) {
->  		slab_post_alloc_hook(s, objcg, flags, size, p,
->  			slab_want_init_on_alloc(flags, s), s->object_size);
-> +	} else {
-> +		memcg_slab_alloc_error_hook(s, size, objcg);
-> +	}
-> +
->  	return i;
->  }
->  EXPORT_SYMBOL(kmem_cache_alloc_bulk);
+[1] https://lore.kernel.org/all/20230421141723.2405942-2-peternewman@google=
+.com/
