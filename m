@@ -2,776 +2,1643 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B608F8064AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:12:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2148064BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235605AbjLFBqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 20:46:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
+        id S235267AbjLFBqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 20:46:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235288AbjLFBqg (ORCPT
+        with ESMTP id S235229AbjLFBqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 20:46:36 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30EBED4D;
-        Tue,  5 Dec 2023 17:46:31 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6ce6d926f76so291904b3a.1;
-        Tue, 05 Dec 2023 17:46:31 -0800 (PST)
+        Tue, 5 Dec 2023 20:46:32 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1702AD44
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 17:46:13 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6d99c3a3a32so1882594a34.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 17:46:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701827190; x=1702431990; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1kXu/UPxVKmDhF7qMSok5hl4RMufr9c58lvSU1Ok2Xo=;
-        b=bGVtiVy0zqCXUX727WqiSU5PdgUWwe7DMqYUMua85oKTGfirzIVNcT6skPI3Qb/4LN
-         Wofnx5GhMBEUPPREwtQjNgpX5LUQuxyP4g8MhLxO4RPqIlrNc+5c73nG3HmG41x+SR4w
-         gTuVFJwHdSZlwKibmSl3xVyElrLXgl6Z7ZPbKrZ81UC6ftn5vm/szDP4Nt2NV+X/lZs9
-         55Lou+Tsc2GqXCxHtA0v6LE5KECr1xeSYlfnwDyx74xCMFfd1Nn9YDw0HKtm1FjFxXZY
-         HlzUiSkt/ZIkVnmSVoapuC8aDEZvccP9jmH1fN+vqaDN6F4z3lHu49i5rhbQw/rE+0QP
-         dhQg==
+        d=gmail.com; s=20230601; t=1701827172; x=1702431972; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dv/+KnEW+ph6nSQ5wiSgQBDzQ889zOz42oKvNSlitMs=;
+        b=hIRNispgsOqBzAZMlg0u5oreA+BgjS+mPA/fgh9a1e+jSbHTuHglcNJY//aQ84ZyP/
+         TiYg7AGAGVs0CWc6EVt1ZYqyAgyQuGSMgpdRYWuufhMSz+KvcNm3lJuGrS48bLnoqER0
+         YqhItoI+x1+WzRELOILYk4Ke0pp0aSkoQUjqzjzoaQZczMq1oARpdFVQ3VTH4G2mvq8O
+         9a7HN61VkHb9KsW6q9mASBCRwPuknl3JTelS64gws5a1DD6puP1VVMd7G+3LGXcDbZv/
+         HlVBEwmsU8Iy3RwgoaWCBpGwepvvYb2Rc08/YkxUZ7iVAt9+ExHoSOIrpi+UhwQvzwpm
+         hpCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701827190; x=1702431990;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1kXu/UPxVKmDhF7qMSok5hl4RMufr9c58lvSU1Ok2Xo=;
-        b=kz9gdp+uzq1XY9whj4WVl5k7ccQxR67jFvjHZnw6CSk2vySJ2OK5p5LBu/UPkRkQxA
-         pWqnCr1iX/ErNzV3OQCJ+FN3F1ALMjBQv4Yj5HBq2vkeDBEYIAI2j7fR8nl2URbByIq4
-         xXB9LSNKMCwDeG67+I8IN4KBxEi4KXC0LDKRTDFijW1wJAiccn5hZ/XXBNDCRGNc54Z9
-         v5V/IlXVzKlONiXC1+ZflHdbWp/sj5xxZJUl4dsBJrF/kMV4dadAyUr3x2HmBuoNzLaO
-         PTlWROyylld4gjEKfAYZ+tl23tQMp5S0gQ4LUAkxTh1hG/utY8MLB3+zx3seIM8Xusju
-         9uQQ==
-X-Gm-Message-State: AOJu0Yw9cbbLY4A4VJVSTFB6LZ8aSKoPE/+gPqNUSaW0vkvvAL+F8kYr
-        OXL+/NHXfL9xqkBIiXcR6irFZs1x3ts/QQ==
-X-Google-Smtp-Source: AGHT+IG3o3pANiNo3Stj5ypDYPFm4LFflhojSHczab21ch/6r16GOSNBbj3Hzr5aQZJkAjpfYksJfA==
-X-Received: by 2002:a05:6a20:3cab:b0:187:a9b0:434b with SMTP id b43-20020a056a203cab00b00187a9b0434bmr167638pzj.4.1701827190447;
-        Tue, 05 Dec 2023 17:46:30 -0800 (PST)
-Received: from localhost.localdomain ([112.78.94.69])
-        by smtp.gmail.com with ESMTPSA id g24-20020aa78758000000b006ce781f6f85sm1250956pfo.43.2023.12.05.17.46.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 17:46:30 -0800 (PST)
-From:   Jim Liu <jim.t90615@gmail.com>
-To:     JJLIU0@nuvoton.com, krzysztof.kozlowski+dt@linaro.org,
-        linus.walleij@linaro.org, andy@kernel.org, robh+dt@kernel.org,
-        conor+dt@kernel.org, KWLIU@nuvoton.com, jim.t90615@gmail.com
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-Subject: [PATCH v8 3/3] gpio: nuvoton: Add Nuvoton NPCM sgpio driver
-Date:   Wed,  6 Dec 2023 09:45:30 +0800
-Message-Id: <20231206014530.1600151-4-jim.t90615@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231206014530.1600151-1-jim.t90615@gmail.com>
-References: <20231206014530.1600151-1-jim.t90615@gmail.com>
+        d=1e100.net; s=20230601; t=1701827172; x=1702431972;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dv/+KnEW+ph6nSQ5wiSgQBDzQ889zOz42oKvNSlitMs=;
+        b=Sfbaw1aHKG/FK388qTn9dZluty//4nwOg78exhGK3ggHbEy5AlKfoxbQhiWzixLQqI
+         9D95xk5WCj8QgzstjZOxLopN3BG03mAb0UKppXDd63Wb+3HXNdgTLPUVZAEjdFGm3TRN
+         6kCe5RhvKx7PDagwDIBrc+vW+y4BNH3gNucI1Hx8/fqMrHVYfcSO6XBa3yiL9bGUWjPv
+         tKXlaY+mvtYiFI1xCeT11381vp9bAWwhyyK46LWd+aax36rPbwC2aWLeXgZLbmYAgDt8
+         l1XZURcrG2aMpEY5UqOypgeZ+aG95DoWcrT+3+rwFRM3Oh6pQ6mX9JGV2kYn0pY/J3ND
+         AJWw==
+X-Gm-Message-State: AOJu0Ywxp0Iy6ejYQP7cCVcz4KUPorZ0dMFc5wo2ooLOKw/WkEFQbSc8
+        8Z28frHKgdH5gAB97auPKpJkYf7d9TrHg/4hX5g=
+X-Google-Smtp-Source: AGHT+IGg9i6Pfx27FZ1jBjMF7ZB4c16aH4xB8z3ldz+AYQ9jWHrLHAfsQ5xeeUmrikpaXD4TCAEpP2NYsAcaU6ub+/Y=
+X-Received: by 2002:a05:6830:4903:b0:6b7:4a52:a33a with SMTP id
+ eq3-20020a056830490300b006b74a52a33amr274524otb.14.1701827171899; Tue, 05 Dec
+ 2023 17:46:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+From:   xingwei lee <xrivendell7@gmail.com>
+Date:   Wed, 6 Dec 2023 09:46:01 +0800
+Message-ID: <CABOYnLwj6xGRyhMebDVm2PXme3a_g9vowtU5ZLhDRc71A=h5SA@mail.gmail.com>
+Subject: Re: [syzbot] [dri?] KASAN: slab-use-after-free Read in drm_atomic_helper_wait_for_vblanks
+To:     syzbot+380dcf72caf0b5ef5537@syzkaller.appspotmail.com
+Cc:     airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        syzkaller-bugs@googlegroups.com, tzimmermann@suse.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Nuvoton BMC NPCM7xx/NPCM8xx sgpio driver support.
-Nuvoton NPCM SGPIO module is combine serial to parallel IC (HC595)
-and parallel to serial IC (HC165), and use APB3 clock to control it.
-This interface has 4 pins  (D_out , D_in, S_CLK, LDSH).
-BMC can use this driver to increase 64 GPI pins and 64 GPO pins to use.
+Hello, I reproduced this bug with repro.c in
+upstream kernel commit
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=8182d7a3f1b8982c0136dca82a846ea375a4d6e9
+kernel config https://syzkaller.appspot.com/text?tag=KernelConfig&x=32d0b9b42ceb8b10
+the same configuration in dashboard
+https://syzkaller.appspot.com/bug?extid=380dcf72caf0b5ef5537
 
-Signed-off-by: Jim Liu <jim.t90615@gmail.com>
----
-Changes for v8:
-   - Remove OF_GPIO/GPIO_GENERIC and redundant assignments
-   - Use GENMASK() and BIT()
-   - Use dev_WARN and dev_err_probe
-   - Check indentation issue
-   - Use raw_spinlock_t
-Changes for v7:
-   - Remove unused variable
-   - Remove return in bank_reg function
-   - Fix warning for const issue
----
- drivers/gpio/Kconfig           |   7 +
- drivers/gpio/Makefile          |   1 +
- drivers/gpio/gpio-npcm-sgpio.c | 637 +++++++++++++++++++++++++++++++++
- 3 files changed, 645 insertions(+)
- create mode 100644 drivers/gpio/gpio-npcm-sgpio.c
+=* repro.txt =*
+r0 = syz_open_dev$dri(&(0x7f0000000080), 0xf2, 0x0)
+ioctl$DRM_IOCTL_MODE_GETRESOURCES(r0, 0xc04064a0,
+&(0x7f0000000180)={0x0, &(0x7f00000000c0)=[<r1=>0x0], 0x0, 0x0, 0x0,
+0x1})
+ioctl$DRM_IOCTL_MODE_GETCRTC(r0, 0xc06864a1, &(0x7f00000003c0)={0x0,
+0x0, r1, <r2=>0x0})
+r3 = syz_open_dev$dri(&(0x7f0000000080), 0xf2, 0x0)
+ioctl$DRM_IOCTL_MODE_GETRESOURCES(r3, 0xc04064a0,
+&(0x7f0000000180)={0x0, &(0x7f00000000c0)=[<r4=>0x0], 0x0, 0x0, 0x0,
+0x1})
+ioctl$DRM_IOCTL_MODE_PAGE_FLIP(r0, 0xc01864b0, &(0x7f0000000000)={r4,
+r2, 0x0, 0x0, 0x80000003})
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index b3a133ed31ee..efbdc93819d4 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -478,6 +478,13 @@ config GPIO_MXS
- 	select GPIO_GENERIC
- 	select GENERIC_IRQ_CHIP
- 
-+config GPIO_NPCM_SGPIO
-+	bool "Nuvoton SGPIO support"
-+	depends on ARCH_NPCM || COMPILE_TEST
-+	select GPIOLIB_IRQCHIP
-+	help
-+	  Say Y here to support Nuvoton NPCM7XX/NPCM8XX SGPIO functionality.
-+
- config GPIO_OCTEON
- 	tristate "Cavium OCTEON GPIO"
- 	depends on CAVIUM_OCTEON_SOC
-diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index eb73b5d633eb..373aa2943de5 100644
---- a/drivers/gpio/Makefile
-+++ b/drivers/gpio/Makefile
-@@ -116,6 +116,7 @@ obj-$(CONFIG_GPIO_MT7621)		+= gpio-mt7621.o
- obj-$(CONFIG_GPIO_MVEBU)		+= gpio-mvebu.o
- obj-$(CONFIG_GPIO_MXC)			+= gpio-mxc.o
- obj-$(CONFIG_GPIO_MXS)			+= gpio-mxs.o
-+obj-$(CONFIG_GPIO_NPCM_SGPIO)		+= gpio-npcm-sgpio.o
- obj-$(CONFIG_GPIO_OCTEON)		+= gpio-octeon.o
- obj-$(CONFIG_GPIO_OMAP)			+= gpio-omap.o
- obj-$(CONFIG_GPIO_PALMAS)		+= gpio-palmas.o
-diff --git a/drivers/gpio/gpio-npcm-sgpio.c b/drivers/gpio/gpio-npcm-sgpio.c
-new file mode 100644
-index 000000000000..52dde726f175
---- /dev/null
-+++ b/drivers/gpio/gpio-npcm-sgpio.c
-@@ -0,0 +1,637 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Nuvoton NPCM Serial GPIO Driver
-+ *
-+ * Copyright (C) 2021 Nuvoton Technologies
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/gpio/driver.h>
-+#include <linux/hashtable.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/spinlock.h>
-+#include <linux/string.h>
-+
-+#define MAX_NR_HW_SGPIO		64
-+
-+#define  NPCM_IOXCFG1		0x2A
-+#define  NPCM_IOXCFG1_SFT_CLK	GENMASK(3, 0)
-+#define  NPCM_IOXCFG1_SCLK_POL	BIT(4)
-+#define  NPCM_IOXCFG1_LDSH_POL	BIT(5)
-+
-+#define  NPCM_IOXCTS			0x28
-+#define  NPCM_IOXCTS_IOXIF_EN		BIT(7)
-+#define  NPCM_IOXCTS_RD_MODE		GENMASK(2, 1)
-+#define  NPCM_IOXCTS_RD_MODE_PERIODIC	BIT(2)
-+
-+#define  NPCM_IOXCFG2		0x2B
-+#define  NPCM_IOXCFG2_PORT	GENMASK(3, 0)
-+
-+#define  NPCM_IXOEVCFG_MASK	GENMASK(1, 0)
-+#define  NPCM_IXOEVCFG_FALLING	BIT(1)
-+#define  NPCM_IXOEVCFG_RISING	BIT(0)
-+#define  NPCM_IXOEVCFG_BOTH	(NPCM_IXOEVCFG_FALLING | NPCM_IXOEVCFG_RISING)
-+
-+#define NPCM_CLK_MHZ	8000000
-+
-+#define GPIO_BANK(x)    ((x) / 8)
-+#define GPIO_BIT(x)     ((x) % 8)
-+
-+/*
-+ * Select the frequency of shift clock.
-+ * The shift clock is a division of the APB clock.
-+ */
-+struct npcm_clk_cfg {
-+	unsigned int	*sft_clk;
-+	unsigned int	*clk_sel;
-+	unsigned int	cfg_opt;
-+};
-+
-+struct npcm_sgpio {
-+	struct gpio_chip chip;
-+	struct clk *pclk;
-+	struct irq_chip intc;
-+	raw_spinlock_t lock;	/*protect event config*/
-+	void __iomem *base;
-+	int irq;
-+	u8 nin_sgpio;
-+	u8 nout_sgpio;
-+	u8 in_port;
-+	u8 out_port;
-+	u8 int_type[MAX_NR_HW_SGPIO];
-+};
-+
-+struct npcm_sgpio_bank {
-+	u8 rdata_reg;
-+	u8 wdata_reg;
-+	u8 event_config;
-+	u8 event_status;
-+};
-+
-+enum npcm_sgpio_reg {
-+	READ_DATA,
-+	WRITE_DATA,
-+	EVENT_CFG,
-+	EVENT_STS,
-+};
-+
-+static const struct npcm_sgpio_bank npcm_sgpio_banks[] = {
-+	{
-+		.wdata_reg = 0x00,
-+		.rdata_reg = 0x08,
-+		.event_config = 0x10,
-+		.event_status = 0x20,
-+	},
-+	{
-+		.wdata_reg = 0x01,
-+		.rdata_reg = 0x09,
-+		.event_config = 0x12,
-+		.event_status = 0x21,
-+	},
-+	{
-+		.wdata_reg = 0x02,
-+		.rdata_reg = 0x0a,
-+		.event_config = 0x14,
-+		.event_status = 0x22,
-+	},
-+	{
-+		.wdata_reg = 0x03,
-+		.rdata_reg = 0x0b,
-+		.event_config = 0x16,
-+		.event_status = 0x23,
-+	},
-+	{
-+		.wdata_reg = 0x04,
-+		.rdata_reg = 0x0c,
-+		.event_config = 0x18,
-+		.event_status = 0x24,
-+	},
-+	{
-+		.wdata_reg = 0x05,
-+		.rdata_reg = 0x0d,
-+		.event_config = 0x1a,
-+		.event_status = 0x25,
-+	},
-+	{
-+		.wdata_reg = 0x06,
-+		.rdata_reg = 0x0e,
-+		.event_config = 0x1c,
-+		.event_status = 0x26,
-+	},
-+	{
-+		.wdata_reg = 0x07,
-+		.rdata_reg = 0x0f,
-+		.event_config = 0x1e,
-+		.event_status = 0x27,
-+	},
-+
-+};
-+
-+static void __iomem *bank_reg(struct npcm_sgpio *gpio,
-+			      const struct npcm_sgpio_bank *bank,
-+			      const enum npcm_sgpio_reg reg)
-+{
-+	switch (reg) {
-+	case READ_DATA:
-+		return gpio->base + bank->rdata_reg;
-+	case WRITE_DATA:
-+		return gpio->base + bank->wdata_reg;
-+	case EVENT_CFG:
-+		return gpio->base + bank->event_config;
-+	case EVENT_STS:
-+		return gpio->base + bank->event_status;
-+	default:
-+		/* actually if code runs to here, it's an error case */
-+		dev_WARN(true, "Getting here is an error condition");
-+	}
-+	return 0;
-+}
-+
-+static const struct npcm_sgpio_bank *offset_to_bank(unsigned int offset)
-+{
-+	unsigned int bank = GPIO_BANK(offset);
-+
-+	return &npcm_sgpio_banks[bank];
-+}
-+
-+static void irqd_to_npcm_sgpio_data(struct irq_data *d,
-+				    struct npcm_sgpio **gpio,
-+				    const struct npcm_sgpio_bank **bank,
-+				    u8 *bit, unsigned int *offset)
-+{
-+	struct npcm_sgpio *internal;
-+
-+	*offset = irqd_to_hwirq(d);
-+	internal = irq_data_get_irq_chip_data(d);
-+
-+	*gpio = internal;
-+	*offset -= internal->nout_sgpio;
-+	*bank = offset_to_bank(*offset);
-+	*bit = GPIO_BIT(*offset);
-+}
-+
-+static int npcm_sgpio_init_port(struct npcm_sgpio *gpio)
-+{
-+	u8 in_port, out_port, set_port, reg;
-+
-+	in_port = GPIO_BANK(gpio->nin_sgpio);
-+	if (GPIO_BIT(gpio->nin_sgpio) > 0)
-+		in_port += 1;
-+
-+	out_port = GPIO_BANK(gpio->nout_sgpio);
-+	if (GPIO_BIT(gpio->nout_sgpio) > 0)
-+		out_port += 1;
-+
-+	gpio->in_port = in_port;
-+	gpio->out_port = out_port;
-+	set_port = ((out_port & NPCM_IOXCFG2_PORT) << 4) | (in_port & NPCM_IOXCFG2_PORT);
-+	iowrite8(set_port, gpio->base + NPCM_IOXCFG2);
-+
-+	reg = ioread8(gpio->base + NPCM_IOXCFG2);
-+
-+	return reg == set_port ? 0 : -EINVAL;
-+
-+}
-+
-+static int npcm_sgpio_dir_in(struct gpio_chip *gc, unsigned int offset)
-+{
-+	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
-+
-+	return offset <	gpio->nout_sgpio ? -EINVAL : 0;
-+
-+}
-+
-+static int npcm_sgpio_dir_out(struct gpio_chip *gc, unsigned int offset, int val)
-+{
-+	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
-+
-+	gc->set(gc, offset, val);
-+
-+	return 0;
-+
-+}
-+
-+static int npcm_sgpio_get_direction(struct gpio_chip *gc, unsigned int offset)
-+{
-+	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
-+
-+	if (offset > gpio->chip.ngpio)
-+		return -EINVAL;
-+
-+	if (offset < gpio->nout_sgpio)
-+		return GPIO_LINE_DIRECTION_OUT;
-+
-+	return GPIO_LINE_DIRECTION_IN;
-+}
-+
-+static void npcm_sgpio_set(struct gpio_chip *gc, unsigned int offset, int val)
-+{
-+	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
-+	const struct  npcm_sgpio_bank *bank = offset_to_bank(offset);
-+	void __iomem *addr;
-+	u8 reg = 0;
-+
-+	addr = bank_reg(gpio, bank, WRITE_DATA);
-+	reg = ioread8(addr);
-+
-+	if (val)
-+		reg |= (val << GPIO_BIT(offset));
-+	else
-+		reg &= ~(1 << GPIO_BIT(offset));
-+
-+	iowrite8(reg, addr);
-+}
-+
-+static int npcm_sgpio_get(struct gpio_chip *gc, unsigned int offset)
-+{
-+	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
-+	const struct  npcm_sgpio_bank *bank;
-+	void __iomem *addr;
-+	u8 reg;
-+	int dir;
-+
-+	dir = npcm_sgpio_get_direction(gc, offset);
-+	if (dir == 0) {
-+		bank = offset_to_bank(offset);
-+
-+		addr = bank_reg(gpio, bank, WRITE_DATA);
-+		reg = ioread8(addr);
-+		reg = !!(reg & GPIO_BIT(offset));
-+	} else {
-+		offset -= gpio->nout_sgpio;
-+		bank = offset_to_bank(offset);
-+
-+		addr = bank_reg(gpio, bank, READ_DATA);
-+		reg = ioread8(addr);
-+		reg = !!(reg & GPIO_BIT(offset));
-+	}
-+
-+	return reg;
-+}
-+
-+static void npcm_sgpio_setup_enable(struct npcm_sgpio *gpio, bool enable)
-+{
-+	u8 reg = 0;
-+
-+	reg = ioread8(gpio->base + NPCM_IOXCTS);
-+	reg = reg & ~NPCM_IOXCTS_RD_MODE;
-+	reg = reg | NPCM_IOXCTS_RD_MODE_PERIODIC;
-+
-+	if (enable) {
-+		reg |= NPCM_IOXCTS_IOXIF_EN;
-+		iowrite8(reg, gpio->base + NPCM_IOXCTS);
-+	} else {
-+		reg &= ~NPCM_IOXCTS_IOXIF_EN;
-+		iowrite8(reg, gpio->base + NPCM_IOXCTS);
-+	}
-+}
-+
-+static int npcm_sgpio_setup_clk(struct npcm_sgpio *gpio,
-+				const struct npcm_clk_cfg *clk_cfg)
-+{
-+	unsigned long apb_freq;
-+	u32 val;
-+	u8 tmp;
-+	int i;
-+
-+	apb_freq = clk_get_rate(gpio->pclk);
-+	tmp = ioread8(gpio->base + NPCM_IOXCFG1) & ~NPCM_IOXCFG1_SFT_CLK;
-+
-+	for (i = 0; i < clk_cfg->cfg_opt; i++) {
-+		val = apb_freq / clk_cfg->sft_clk[i];
-+		if ((NPCM_CLK_MHZ < val) && (i != 0) ) {
-+			iowrite8(clk_cfg->clk_sel[i-1] | tmp, gpio->base + NPCM_IOXCFG1);
-+			return 0;
-+		} else if (i == (clk_cfg->cfg_opt-1) && (NPCM_CLK_MHZ > val)) {
-+			iowrite8(clk_cfg->clk_sel[i] | tmp, gpio->base + NPCM_IOXCFG1);
-+			return 0;
-+		}
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static void npcm_sgpio_irq_init_valid_mask(struct gpio_chip *gc,
-+					   unsigned long *valid_mask, unsigned int ngpios)
-+{
-+	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
-+	int n = gpio->nin_sgpio;
-+
-+	/* input GPIOs in the high range */
-+	bitmap_set(valid_mask, gpio->nout_sgpio, n);
-+	bitmap_clear(valid_mask, 0, gpio->nout_sgpio);
-+}
-+
-+static void npcm_sgpio_irq_set_mask(struct irq_data *d, bool set)
-+{
-+	const struct npcm_sgpio_bank *bank;
-+	struct npcm_sgpio *gpio;
-+	unsigned long flags;
-+	void __iomem *addr;
-+	unsigned int offset;
-+	u16 reg, type;
-+	u8 bit;
-+
-+	irqd_to_npcm_sgpio_data(d, &gpio, &bank, &bit, &offset);
-+	addr = bank_reg(gpio, bank, EVENT_CFG);
-+
-+	raw_spin_lock_irqsave(&gpio->lock, flags);
-+
-+	npcm_sgpio_setup_enable(gpio, false);
-+
-+	reg = ioread16(addr);
-+	if (set) {
-+		reg &= ~(NPCM_IXOEVCFG_MASK << (bit * 2));
-+	} else {
-+		type = gpio->int_type[offset];
-+		reg |= (type << (bit * 2));
-+	}
-+
-+	iowrite16(reg, addr);
-+
-+	npcm_sgpio_setup_enable(gpio, true);
-+
-+	addr = bank_reg(gpio, bank, EVENT_STS);
-+	reg = ioread8(addr);
-+	reg |= BIT(bit);
-+	iowrite8(reg, addr);
-+
-+	raw_spin_unlock_irqrestore(&gpio->lock, flags);
-+}
-+
-+static void npcm_sgpio_irq_ack(struct irq_data *d)
-+{
-+	const struct npcm_sgpio_bank *bank;
-+	struct npcm_sgpio *gpio;
-+	unsigned long flags;
-+	void __iomem *status_addr;
-+	unsigned int offset;
-+	u8 bit;
-+
-+	irqd_to_npcm_sgpio_data(d, &gpio, &bank, &bit, &offset);
-+	status_addr = bank_reg(gpio, bank, EVENT_STS);
-+	raw_spin_lock_irqsave(&gpio->lock, flags);
-+	iowrite8(BIT(bit), status_addr);
-+	raw_spin_unlock_irqrestore(&gpio->lock, flags);
-+}
-+
-+static void npcm_sgpio_irq_mask(struct irq_data *d)
-+{
-+	npcm_sgpio_irq_set_mask(d, true);
-+}
-+
-+static void npcm_sgpio_irq_unmask(struct irq_data *d)
-+{
-+	npcm_sgpio_irq_set_mask(d, false);
-+}
-+
-+static int npcm_sgpio_set_type(struct irq_data *d, unsigned int type)
-+{
-+	const struct npcm_sgpio_bank *bank;
-+	irq_flow_handler_t handler;
-+	struct npcm_sgpio *gpio;
-+	unsigned long flags;
-+	void __iomem *addr;
-+	unsigned int offset;
-+	u16 reg, val;
-+	u8 bit;
-+
-+	irqd_to_npcm_sgpio_data(d, &gpio, &bank, &bit, &offset);
-+
-+	switch (type & IRQ_TYPE_SENSE_MASK) {
-+	case IRQ_TYPE_EDGE_BOTH:
-+		val = NPCM_IXOEVCFG_BOTH;
-+		handler = handle_edge_irq;
-+		break;
-+	case IRQ_TYPE_EDGE_RISING:
-+		val = NPCM_IXOEVCFG_RISING;
-+		handler = handle_edge_irq;
-+		break;
-+	case IRQ_TYPE_EDGE_FALLING:
-+		val = NPCM_IXOEVCFG_FALLING;
-+		handler = handle_edge_irq;
-+		break;
-+	case IRQ_TYPE_LEVEL_HIGH:
-+		val = NPCM_IXOEVCFG_RISING;
-+		handler = handle_level_irq;
-+		break;
-+	case IRQ_TYPE_LEVEL_LOW:
-+		val = NPCM_IXOEVCFG_FALLING;
-+		handler = handle_level_irq;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	gpio->int_type[offset] = val;
-+
-+	raw_spin_lock_irqsave(&gpio->lock, flags);
-+	npcm_sgpio_setup_enable(gpio, false);
-+	addr = bank_reg(gpio, bank, EVENT_CFG);
-+	reg = ioread16(addr);
-+
-+	reg |= (val << (bit * 2));
-+
-+	iowrite16(reg, addr);
-+	npcm_sgpio_setup_enable(gpio, true);
-+	raw_spin_unlock_irqrestore(&gpio->lock, flags);
-+
-+	irq_set_handler_locked(d, handler);
-+
-+	return 0;
-+}
-+
-+static void npcm_sgpio_irq_handler(struct irq_desc *desc)
-+{
-+	struct gpio_chip *gc = irq_desc_get_handler_data(desc);
-+	struct irq_chip *ic = irq_desc_get_chip(desc);
-+	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
-+	unsigned int i, j, girq;
-+	unsigned long reg;
-+
-+	chained_irq_enter(ic, desc);
-+
-+	for (i = 0; i < ARRAY_SIZE(npcm_sgpio_banks); i++) {
-+		const struct npcm_sgpio_bank *bank = &npcm_sgpio_banks[i];
-+
-+		reg = ioread8(bank_reg(gpio, bank, EVENT_STS));
-+		for_each_set_bit(j, &reg, 8) {
-+			girq = irq_find_mapping(gc->irq.domain, i * 8 + gpio->nout_sgpio + j);
-+			generic_handle_irq(girq);
-+		}
-+	}
-+
-+	chained_irq_exit(ic, desc);
-+}
-+
-+static const struct irq_chip sgpio_irq_chip = {
-+	.name = "sgpio-irq",
-+	.irq_ack = npcm_sgpio_irq_ack,
-+	.irq_mask = npcm_sgpio_irq_mask,
-+	.irq_unmask = npcm_sgpio_irq_unmask,
-+	.irq_set_type = npcm_sgpio_set_type,
-+	.flags	= IRQCHIP_IMMUTABLE | IRQCHIP_MASK_ON_SUSPEND,
-+	GPIOCHIP_IRQ_RESOURCE_HELPERS,
-+};
-+
-+static int npcm_sgpio_setup_irqs(struct npcm_sgpio *gpio,
-+				 struct platform_device *pdev)
-+{
-+	int rc, i;
-+	struct gpio_irq_chip *irq;
-+
-+	rc = platform_get_irq(pdev, 0);
-+	if (rc < 0)
-+		return rc;
-+
-+	gpio->irq = rc;
-+
-+	npcm_sgpio_setup_enable(gpio, false);
-+
-+	/* Disable IRQ and clear Interrupt status registers for all SGPIO Pins. */
-+	for (i = 0; i < ARRAY_SIZE(npcm_sgpio_banks); i++) {
-+		const struct npcm_sgpio_bank *bank = &npcm_sgpio_banks[i];
-+
-+		iowrite16(0x0000, bank_reg(gpio, bank, EVENT_CFG));
-+		iowrite8(0xff, bank_reg(gpio, bank, EVENT_STS));
-+	}
-+
-+	irq = &gpio->chip.irq;
-+	gpio_irq_chip_set_chip(irq, &sgpio_irq_chip);
-+	irq->init_valid_mask = npcm_sgpio_irq_init_valid_mask;
-+	irq->handler = handle_bad_irq;
-+	irq->default_type = IRQ_TYPE_NONE;
-+	irq->parent_handler = npcm_sgpio_irq_handler;
-+	irq->parent_handler_data = gpio;
-+	irq->parents = &gpio->irq;
-+	irq->num_parents = 1;
-+
-+	return 0;
-+}
-+
-+static const unsigned int npcm750_SFT_CLK[] = {
-+	1024, 32, 8, 4, 3, 2,
-+};
-+
-+static const unsigned int npcm750_CLK_SEL[] = {
-+	0x00, 0x05, 0x07, 0x0C, 0x0D, 0x0E,
-+};
-+
-+static const unsigned int npcm845_SFT_CLK[] = {
-+	1024, 32, 16, 8, 4,
-+};
-+
-+static const unsigned int npcm845_CLK_SEL[] = {
-+	0x00, 0x05, 0x06, 0x07, 0x0C,
-+};
-+
-+static const struct npcm_clk_cfg npcm750_sgpio_pdata = {
-+	.sft_clk = npcm750_SFT_CLK,
-+	.clk_sel = npcm750_CLK_SEL,
-+	.cfg_opt = 6,
-+};
-+
-+static const struct npcm_clk_cfg npcm845_sgpio_pdata = {
-+	.sft_clk = npcm845_SFT_CLK,
-+	.clk_sel = npcm845_CLK_SEL,
-+	.cfg_opt = 5,
-+};
-+
-+static const struct of_device_id npcm_sgpio_of_table[] = {
-+	{ .compatible = "nuvoton,npcm750-sgpio", .data = &npcm750_sgpio_pdata, },
-+	{ .compatible = "nuvoton,npcm845-sgpio", .data = &npcm845_sgpio_pdata, },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, npcm_sgpio_of_table);
-+
-+static int npcm_sgpio_probe(struct platform_device *pdev)
-+{
-+	struct npcm_sgpio *gpio;
-+	const struct npcm_clk_cfg *clk_cfg;
-+	int rc;
-+	u32 nin_gpios, nout_gpios;
-+
-+	gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
-+	if (!gpio)
-+		return -ENOMEM;
-+
-+	gpio->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(gpio->base))
-+		return PTR_ERR(gpio->base);
-+
-+	clk_cfg = device_get_match_data(&pdev->dev);
-+	if (!clk_cfg)
-+		return -EINVAL;
-+
-+	rc = device_property_read_u32(&pdev->dev, "nuvoton,input-ngpios", &nin_gpios);
-+	if (rc < 0)
-+		return dev_err_probe(&pdev->dev, rc, "Could not read ngpios property\n");
-+
-+	rc = device_property_read_u32(&pdev->dev, "nuvoton,output-ngpios", &nout_gpios);
-+	if (rc < 0)
-+		return dev_err_probe(&pdev->dev, rc, "Could not read ngpios property\n");
-+
-+	gpio->nin_sgpio = nin_gpios;
-+	gpio->nout_sgpio = nout_gpios;
-+	if (gpio->nin_sgpio > MAX_NR_HW_SGPIO || gpio->nout_sgpio > MAX_NR_HW_SGPIO) {
-+		dev_err(&pdev->dev, "Number of GPIOs exceeds the maximum of %d: input: %d output: %d\n",
-+			MAX_NR_HW_SGPIO, nin_gpios, nout_gpios);
-+		return -EINVAL;
-+	}
-+
-+	gpio->pclk = devm_clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(gpio->pclk)) {
-+		dev_err(&pdev->dev, "Could not get pclk\n");
-+		return PTR_ERR(gpio->pclk);
-+	}
-+
-+	rc = npcm_sgpio_setup_clk(gpio, clk_cfg);
-+	if (rc < 0)
-+		return dev_err_probe(&pdev->dev, rc, "Failed to setup clock\n");
-+
-+	raw_spin_lock_init(&gpio->lock);
-+	gpio->chip.parent = &pdev->dev;
-+	gpio->chip.ngpio = gpio->nin_sgpio + gpio->nout_sgpio;
-+	gpio->chip.direction_input = npcm_sgpio_dir_in;
-+	gpio->chip.direction_output = npcm_sgpio_dir_out;
-+	gpio->chip.get_direction = npcm_sgpio_get_direction;
-+	gpio->chip.get = npcm_sgpio_get;
-+	gpio->chip.set = npcm_sgpio_set;
-+	gpio->chip.label = dev_name(&pdev->dev);
-+	gpio->chip.base = -1;
-+
-+	rc = npcm_sgpio_init_port(gpio);
-+	if (rc < 0)
-+		return rc;
-+
-+	rc = npcm_sgpio_setup_irqs(gpio, pdev);
-+	if (rc < 0)
-+		return rc;
-+
-+	rc = devm_gpiochip_add_data(&pdev->dev, &gpio->chip, gpio);
-+	if (rc < 0)
-+		return rc;
-+
-+	npcm_sgpio_setup_enable(gpio, true);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver npcm_sgpio_driver = {
-+	.driver = {
-+		.name = KBUILD_MODNAME,
-+		.of_match_table = npcm_sgpio_of_table,
-+	},
-+	.probe	= npcm_sgpio_probe,
-+};
-+module_platform_driver(npcm_sgpio_driver);
-+
-+MODULE_AUTHOR("Jim Liu <jjliu0@nuvoton.com>");
-+MODULE_AUTHOR("Joseph Liu <kwliu@nuvoton.com>");
-+MODULE_DESCRIPTION("Nuvoton NPCM Serial GPIO Driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.25.1
 
+=* repro.c =*
+
+#define _GNU_SOURCE
+
+#include <arpa/inet.h>
+#include <dirent.h>
+#include <endian.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <ifaddrs.h>
+#include <linux/capability.h>
+#include <linux/ethtool.h>
+#include <linux/falloc.h>
+#include <linux/genetlink.h>
+#include <linux/if_addr.h>
+#include <linux/if_ether.h>
+#include <linux/if_link.h>
+#include <linux/if_tun.h>
+#include <linux/in6.h>
+#include <linux/ip.h>
+#include <linux/neighbour.h>
+#include <linux/net.h>
+#include <linux/netlink.h>
+#include <linux/rtnetlink.h>
+#include <linux/sockios.h>
+#include <linux/tcp.h>
+#include <linux/veth.h>
+#include <net/if.h>
+#include <net/if_arp.h>
+#include <netinet/in.h>
+#include <sched.h>
+#include <setjmp.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/mount.h>
+#include <sys/prctl.h>
+#include <sys/resource.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/swap.h>
+#include <sys/syscall.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/uio.h>
+#include <sys/wait.h>
+#include <time.h>
+#include <unistd.h>
+
+static unsigned long long procid;
+
+static __thread int clone_ongoing;
+static __thread int skip_segv;
+static __thread jmp_buf segv_env;
+
+static void segv_handler(int sig, siginfo_t* info, void* ctx) {
+  if (__atomic_load_n(&clone_ongoing, __ATOMIC_RELAXED) != 0) {
+    exit(sig);
+  }
+  uintptr_t addr = (uintptr_t)info->si_addr;
+  const uintptr_t prog_start = 1 << 20;
+  const uintptr_t prog_end = 100 << 20;
+  int skip = __atomic_load_n(&skip_segv, __ATOMIC_RELAXED) != 0;
+  int valid = addr < prog_start || addr > prog_end;
+  if (skip && valid) {
+    _longjmp(segv_env, 1);
+  }
+  exit(sig);
+}
+
+static void install_segv_handler(void) {
+  struct sigaction sa;
+  memset(&sa, 0, sizeof(sa));
+  sa.sa_handler = SIG_IGN;
+  syscall(SYS_rt_sigaction, 0x20, &sa, NULL, 8);
+  syscall(SYS_rt_sigaction, 0x21, &sa, NULL, 8);
+  memset(&sa, 0, sizeof(sa));
+  sa.sa_sigaction = segv_handler;
+  sa.sa_flags = SA_NODEFER | SA_SIGINFO;
+  sigaction(SIGSEGV, &sa, NULL);
+  sigaction(SIGBUS, &sa, NULL);
+}
+
+#define NONFAILING(...)                                  \
+  ({                                                     \
+    int ok = 1;                                          \
+    __atomic_fetch_add(&skip_segv, 1, __ATOMIC_SEQ_CST); \
+    if (_setjmp(segv_env) == 0) {                        \
+      __VA_ARGS__;                                       \
+    } else                                               \
+      ok = 0;                                            \
+    __atomic_fetch_sub(&skip_segv, 1, __ATOMIC_SEQ_CST); \
+    ok;                                                  \
+  })
+
+static void sleep_ms(uint64_t ms) { usleep(ms * 1000); }
+
+static uint64_t current_time_ms(void) {
+  struct timespec ts;
+  if (clock_gettime(CLOCK_MONOTONIC, &ts)) exit(1);
+  return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+}
+
+static void use_temporary_dir(void) {
+  char tmpdir_template[] = "./syzkaller.XXXXXX";
+  char* tmpdir = mkdtemp(tmpdir_template);
+  if (!tmpdir) exit(1);
+  if (chmod(tmpdir, 0777)) exit(1);
+  if (chdir(tmpdir)) exit(1);
+}
+
+static bool write_file(const char* file, const char* what, ...) {
+  char buf[1024];
+  va_list args;
+  va_start(args, what);
+  vsnprintf(buf, sizeof(buf), what, args);
+  va_end(args);
+  buf[sizeof(buf) - 1] = 0;
+  int len = strlen(buf);
+  int fd = open(file, O_WRONLY | O_CLOEXEC);
+  if (fd == -1) return false;
+  if (write(fd, buf, len) != len) {
+    int err = errno;
+    close(fd);
+    errno = err;
+    return false;
+  }
+  close(fd);
+  return true;
+}
+
+struct nlmsg {
+  char* pos;
+  int nesting;
+  struct nlattr* nested[8];
+  char buf[4096];
+};
+
+static void netlink_init(struct nlmsg* nlmsg, int typ, int flags,
+                         const void* data, int size) {
+  memset(nlmsg, 0, sizeof(*nlmsg));
+  struct nlmsghdr* hdr = (struct nlmsghdr*)nlmsg->buf;
+  hdr->nlmsg_type = typ;
+  hdr->nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK | flags;
+  memcpy(hdr + 1, data, size);
+  nlmsg->pos = (char*)(hdr + 1) + NLMSG_ALIGN(size);
+}
+
+static void netlink_attr(struct nlmsg* nlmsg, int typ, const void* data,
+                         int size) {
+  struct nlattr* attr = (struct nlattr*)nlmsg->pos;
+  attr->nla_len = sizeof(*attr) + size;
+  attr->nla_type = typ;
+  if (size > 0) memcpy(attr + 1, data, size);
+  nlmsg->pos += NLMSG_ALIGN(attr->nla_len);
+}
+
+static void netlink_nest(struct nlmsg* nlmsg, int typ) {
+  struct nlattr* attr = (struct nlattr*)nlmsg->pos;
+  attr->nla_type = typ;
+  nlmsg->pos += sizeof(*attr);
+  nlmsg->nested[nlmsg->nesting++] = attr;
+}
+
+static void netlink_done(struct nlmsg* nlmsg) {
+  struct nlattr* attr = nlmsg->nested[--nlmsg->nesting];
+  attr->nla_len = nlmsg->pos - (char*)attr;
+}
+
+struct vf_intf {
+  char pass_thru_intf[IFNAMSIZ];
+  int ppid;
+};
+
+static struct vf_intf vf_intf;
+
+static void find_vf_interface(void) {
+  struct ifaddrs* addresses = NULL;
+  int pid = getpid();
+  int ret = 0;
+  memset(&vf_intf, 0, sizeof(struct vf_intf));
+  if (getifaddrs(&addresses) == -1) {
+    return;
+  }
+  int fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP);
+  if (fd < 0) {
+    return;
+  }
+  struct ifreq ifr;
+  struct ethtool_drvinfo drvinfo;
+  struct ifaddrs* address = addresses;
+  while (address) {
+    memset(&ifr, 0, sizeof(struct ifreq));
+    strcpy(ifr.ifr_name, address->ifa_name);
+    memset(&drvinfo, 0, sizeof(struct ethtool_drvinfo));
+    drvinfo.cmd = ETHTOOL_GDRVINFO;
+    ifr.ifr_data = (caddr_t)&drvinfo;
+    ret = ioctl(fd, SIOCETHTOOL, &ifr);
+    if (ret < 0) {
+    } else if (strlen(drvinfo.bus_info)) {
+      if (strcmp(drvinfo.bus_info, "0000:00:11.0") == 0) {
+        if (strlen(address->ifa_name) < IFNAMSIZ) {
+          strncpy(vf_intf.pass_thru_intf, address->ifa_name, IFNAMSIZ);
+          vf_intf.ppid = pid;
+        } else {
+        }
+        break;
+      }
+    }
+    address = address->ifa_next;
+  }
+  freeifaddrs(addresses);
+  if (!vf_intf.ppid) {
+    memset(&vf_intf, 0, sizeof(struct vf_intf));
+    return;
+  }
+}
+
+static int netlink_send_ext(struct nlmsg* nlmsg, int sock, uint16_t reply_type,
+                            int* reply_len, bool dofail) {
+  if (nlmsg->pos > nlmsg->buf + sizeof(nlmsg->buf) || nlmsg->nesting) exit(1);
+  struct nlmsghdr* hdr = (struct nlmsghdr*)nlmsg->buf;
+  hdr->nlmsg_len = nlmsg->pos - nlmsg->buf;
+  struct sockaddr_nl addr;
+  memset(&addr, 0, sizeof(addr));
+  addr.nl_family = AF_NETLINK;
+  ssize_t n = sendto(sock, nlmsg->buf, hdr->nlmsg_len, 0,
+                     (struct sockaddr*)&addr, sizeof(addr));
+  if (n != (ssize_t)hdr->nlmsg_len) {
+    if (dofail) exit(1);
+    return -1;
+  }
+  n = recv(sock, nlmsg->buf, sizeof(nlmsg->buf), 0);
+  if (reply_len) *reply_len = 0;
+  if (n < 0) {
+    if (dofail) exit(1);
+    return -1;
+  }
+  if (n < (ssize_t)sizeof(struct nlmsghdr)) {
+    errno = EINVAL;
+    if (dofail) exit(1);
+    return -1;
+  }
+  if (hdr->nlmsg_type == NLMSG_DONE) return 0;
+  if (reply_len && hdr->nlmsg_type == reply_type) {
+    *reply_len = n;
+    return 0;
+  }
+  if (n < (ssize_t)(sizeof(struct nlmsghdr) + sizeof(struct nlmsgerr))) {
+    errno = EINVAL;
+    if (dofail) exit(1);
+    return -1;
+  }
+  if (hdr->nlmsg_type != NLMSG_ERROR) {
+    errno = EINVAL;
+    if (dofail) exit(1);
+    return -1;
+  }
+  errno = -((struct nlmsgerr*)(hdr + 1))->error;
+  return -errno;
+}
+
+static int netlink_send(struct nlmsg* nlmsg, int sock) {
+  return netlink_send_ext(nlmsg, sock, 0, NULL, true);
+}
+
+static int netlink_query_family_id(struct nlmsg* nlmsg, int sock,
+                                   const char* family_name, bool dofail) {
+  struct genlmsghdr genlhdr;
+  memset(&genlhdr, 0, sizeof(genlhdr));
+  genlhdr.cmd = CTRL_CMD_GETFAMILY;
+  netlink_init(nlmsg, GENL_ID_CTRL, 0, &genlhdr, sizeof(genlhdr));
+  netlink_attr(nlmsg, CTRL_ATTR_FAMILY_NAME, family_name,
+               strnlen(family_name, GENL_NAMSIZ - 1) + 1);
+  int n = 0;
+  int err = netlink_send_ext(nlmsg, sock, GENL_ID_CTRL, &n, dofail);
+  if (err < 0) {
+    return -1;
+  }
+  uint16_t id = 0;
+  struct nlattr* attr = (struct nlattr*)(nlmsg->buf + NLMSG_HDRLEN +
+                                         NLMSG_ALIGN(sizeof(genlhdr)));
+  for (; (char*)attr < nlmsg->buf + n;
+       attr = (struct nlattr*)((char*)attr + NLMSG_ALIGN(attr->nla_len))) {
+    if (attr->nla_type == CTRL_ATTR_FAMILY_ID) {
+      id = *(uint16_t*)(attr + 1);
+      break;
+    }
+  }
+  if (!id) {
+    errno = EINVAL;
+    return -1;
+  }
+  recv(sock, nlmsg->buf, sizeof(nlmsg->buf), 0);
+  return id;
+}
+
+static int netlink_next_msg(struct nlmsg* nlmsg, unsigned int offset,
+                            unsigned int total_len) {
+  struct nlmsghdr* hdr = (struct nlmsghdr*)(nlmsg->buf + offset);
+  if (offset == total_len || offset + hdr->nlmsg_len > total_len) return -1;
+  return hdr->nlmsg_len;
+}
+
+static void netlink_add_device_impl(struct nlmsg* nlmsg, const char* type,
+                                    const char* name, bool up) {
+  struct ifinfomsg hdr;
+  memset(&hdr, 0, sizeof(hdr));
+  if (up) hdr.ifi_flags = hdr.ifi_change = IFF_UP;
+  netlink_init(nlmsg, RTM_NEWLINK, NLM_F_EXCL | NLM_F_CREATE, &hdr,
+               sizeof(hdr));
+  if (name) netlink_attr(nlmsg, IFLA_IFNAME, name, strlen(name));
+  netlink_nest(nlmsg, IFLA_LINKINFO);
+  netlink_attr(nlmsg, IFLA_INFO_KIND, type, strlen(type));
+}
+
+static void netlink_add_device(struct nlmsg* nlmsg, int sock, const char* type,
+                               const char* name) {
+  netlink_add_device_impl(nlmsg, type, name, false);
+  netlink_done(nlmsg);
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_veth(struct nlmsg* nlmsg, int sock, const char* name,
+                             const char* peer) {
+  netlink_add_device_impl(nlmsg, "veth", name, false);
+  netlink_nest(nlmsg, IFLA_INFO_DATA);
+  netlink_nest(nlmsg, VETH_INFO_PEER);
+  nlmsg->pos += sizeof(struct ifinfomsg);
+  netlink_attr(nlmsg, IFLA_IFNAME, peer, strlen(peer));
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_xfrm(struct nlmsg* nlmsg, int sock, const char* name) {
+  netlink_add_device_impl(nlmsg, "xfrm", name, true);
+  netlink_nest(nlmsg, IFLA_INFO_DATA);
+  int if_id = 1;
+  netlink_attr(nlmsg, 2, &if_id, sizeof(if_id));
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_hsr(struct nlmsg* nlmsg, int sock, const char* name,
+                            const char* slave1, const char* slave2) {
+  netlink_add_device_impl(nlmsg, "hsr", name, false);
+  netlink_nest(nlmsg, IFLA_INFO_DATA);
+  int ifindex1 = if_nametoindex(slave1);
+  netlink_attr(nlmsg, IFLA_HSR_SLAVE1, &ifindex1, sizeof(ifindex1));
+  int ifindex2 = if_nametoindex(slave2);
+  netlink_attr(nlmsg, IFLA_HSR_SLAVE2, &ifindex2, sizeof(ifindex2));
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_linked(struct nlmsg* nlmsg, int sock, const char* type,
+                               const char* name, const char* link) {
+  netlink_add_device_impl(nlmsg, type, name, false);
+  netlink_done(nlmsg);
+  int ifindex = if_nametoindex(link);
+  netlink_attr(nlmsg, IFLA_LINK, &ifindex, sizeof(ifindex));
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_vlan(struct nlmsg* nlmsg, int sock, const char* name,
+                             const char* link, uint16_t id, uint16_t proto) {
+  netlink_add_device_impl(nlmsg, "vlan", name, false);
+  netlink_nest(nlmsg, IFLA_INFO_DATA);
+  netlink_attr(nlmsg, IFLA_VLAN_ID, &id, sizeof(id));
+  netlink_attr(nlmsg, IFLA_VLAN_PROTOCOL, &proto, sizeof(proto));
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  int ifindex = if_nametoindex(link);
+  netlink_attr(nlmsg, IFLA_LINK, &ifindex, sizeof(ifindex));
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_macvlan(struct nlmsg* nlmsg, int sock, const char* name,
+                                const char* link) {
+  netlink_add_device_impl(nlmsg, "macvlan", name, false);
+  netlink_nest(nlmsg, IFLA_INFO_DATA);
+  uint32_t mode = MACVLAN_MODE_BRIDGE;
+  netlink_attr(nlmsg, IFLA_MACVLAN_MODE, &mode, sizeof(mode));
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  int ifindex = if_nametoindex(link);
+  netlink_attr(nlmsg, IFLA_LINK, &ifindex, sizeof(ifindex));
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_geneve(struct nlmsg* nlmsg, int sock, const char* name,
+                               uint32_t vni, struct in_addr* addr4,
+                               struct in6_addr* addr6) {
+  netlink_add_device_impl(nlmsg, "geneve", name, false);
+  netlink_nest(nlmsg, IFLA_INFO_DATA);
+  netlink_attr(nlmsg, IFLA_GENEVE_ID, &vni, sizeof(vni));
+  if (addr4) netlink_attr(nlmsg, IFLA_GENEVE_REMOTE, addr4, sizeof(*addr4));
+  if (addr6) netlink_attr(nlmsg, IFLA_GENEVE_REMOTE6, addr6, sizeof(*addr6));
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+#define IFLA_IPVLAN_FLAGS 2
+#define IPVLAN_MODE_L3S 2
+#undef IPVLAN_F_VEPA
+#define IPVLAN_F_VEPA 2
+
+static void netlink_add_ipvlan(struct nlmsg* nlmsg, int sock, const char* name,
+                               const char* link, uint16_t mode,
+                               uint16_t flags) {
+  netlink_add_device_impl(nlmsg, "ipvlan", name, false);
+  netlink_nest(nlmsg, IFLA_INFO_DATA);
+  netlink_attr(nlmsg, IFLA_IPVLAN_MODE, &mode, sizeof(mode));
+  netlink_attr(nlmsg, IFLA_IPVLAN_FLAGS, &flags, sizeof(flags));
+  netlink_done(nlmsg);
+  netlink_done(nlmsg);
+  int ifindex = if_nametoindex(link);
+  netlink_attr(nlmsg, IFLA_LINK, &ifindex, sizeof(ifindex));
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static void netlink_device_change(struct nlmsg* nlmsg, int sock,
+                                  const char* name, bool up, const char* master,
+                                  const void* mac, int macsize,
+                                  const char* new_name) {
+  struct ifinfomsg hdr;
+  memset(&hdr, 0, sizeof(hdr));
+  if (up) hdr.ifi_flags = hdr.ifi_change = IFF_UP;
+  hdr.ifi_index = if_nametoindex(name);
+  netlink_init(nlmsg, RTM_NEWLINK, 0, &hdr, sizeof(hdr));
+  if (new_name) netlink_attr(nlmsg, IFLA_IFNAME, new_name, strlen(new_name));
+  if (master) {
+    int ifindex = if_nametoindex(master);
+    netlink_attr(nlmsg, IFLA_MASTER, &ifindex, sizeof(ifindex));
+  }
+  if (macsize) netlink_attr(nlmsg, IFLA_ADDRESS, mac, macsize);
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static int netlink_add_addr(struct nlmsg* nlmsg, int sock, const char* dev,
+                            const void* addr, int addrsize) {
+  struct ifaddrmsg hdr;
+  memset(&hdr, 0, sizeof(hdr));
+  hdr.ifa_family = addrsize == 4 ? AF_INET : AF_INET6;
+  hdr.ifa_prefixlen = addrsize == 4 ? 24 : 120;
+  hdr.ifa_scope = RT_SCOPE_UNIVERSE;
+  hdr.ifa_index = if_nametoindex(dev);
+  netlink_init(nlmsg, RTM_NEWADDR, NLM_F_CREATE | NLM_F_REPLACE, &hdr,
+               sizeof(hdr));
+  netlink_attr(nlmsg, IFA_LOCAL, addr, addrsize);
+  netlink_attr(nlmsg, IFA_ADDRESS, addr, addrsize);
+  return netlink_send(nlmsg, sock);
+}
+
+static void netlink_add_addr4(struct nlmsg* nlmsg, int sock, const char* dev,
+                              const char* addr) {
+  struct in_addr in_addr;
+  inet_pton(AF_INET, addr, &in_addr);
+  int err = netlink_add_addr(nlmsg, sock, dev, &in_addr, sizeof(in_addr));
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_addr6(struct nlmsg* nlmsg, int sock, const char* dev,
+                              const char* addr) {
+  struct in6_addr in6_addr;
+  inet_pton(AF_INET6, addr, &in6_addr);
+  int err = netlink_add_addr(nlmsg, sock, dev, &in6_addr, sizeof(in6_addr));
+  if (err < 0) {
+  }
+}
+
+static void netlink_add_neigh(struct nlmsg* nlmsg, int sock, const char* name,
+                              const void* addr, int addrsize, const void* mac,
+                              int macsize) {
+  struct ndmsg hdr;
+  memset(&hdr, 0, sizeof(hdr));
+  hdr.ndm_family = addrsize == 4 ? AF_INET : AF_INET6;
+  hdr.ndm_ifindex = if_nametoindex(name);
+  hdr.ndm_state = NUD_PERMANENT;
+  netlink_init(nlmsg, RTM_NEWNEIGH, NLM_F_EXCL | NLM_F_CREATE, &hdr,
+               sizeof(hdr));
+  netlink_attr(nlmsg, NDA_DST, addr, addrsize);
+  netlink_attr(nlmsg, NDA_LLADDR, mac, macsize);
+  int err = netlink_send(nlmsg, sock);
+  if (err < 0) {
+  }
+}
+
+static struct nlmsg nlmsg;
+
+static int tunfd = -1;
+
+#define TUN_IFACE "syz_tun"
+#define LOCAL_MAC 0xaaaaaaaaaaaa
+#define REMOTE_MAC 0xaaaaaaaaaabb
+#define LOCAL_IPV4 "172.20.20.170"
+#define REMOTE_IPV4 "172.20.20.187"
+#define LOCAL_IPV6 "fe80::aa"
+#define REMOTE_IPV6 "fe80::bb"
+
+#define IFF_NAPI 0x0010
+
+static void initialize_tun(void) {
+  tunfd = open("/dev/net/tun", O_RDWR | O_NONBLOCK);
+  if (tunfd == -1) {
+    printf("tun: can't open /dev/net/tun: please enable CONFIG_TUN=y\n");
+    printf("otherwise fuzzing or reproducing might not work as intended\n");
+    return;
+  }
+  const int kTunFd = 200;
+  if (dup2(tunfd, kTunFd) < 0) exit(1);
+  close(tunfd);
+  tunfd = kTunFd;
+  struct ifreq ifr;
+  memset(&ifr, 0, sizeof(ifr));
+  strncpy(ifr.ifr_name, TUN_IFACE, IFNAMSIZ);
+  ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
+  if (ioctl(tunfd, TUNSETIFF, (void*)&ifr) < 0) {
+    exit(1);
+  }
+  char sysctl[64];
+  sprintf(sysctl, "/proc/sys/net/ipv6/conf/%s/accept_dad", TUN_IFACE);
+  write_file(sysctl, "0");
+  sprintf(sysctl, "/proc/sys/net/ipv6/conf/%s/router_solicitations", TUN_IFACE);
+  write_file(sysctl, "0");
+  int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+  if (sock == -1) exit(1);
+  netlink_add_addr4(&nlmsg, sock, TUN_IFACE, LOCAL_IPV4);
+  netlink_add_addr6(&nlmsg, sock, TUN_IFACE, LOCAL_IPV6);
+  uint64_t macaddr = REMOTE_MAC;
+  struct in_addr in_addr;
+  inet_pton(AF_INET, REMOTE_IPV4, &in_addr);
+  netlink_add_neigh(&nlmsg, sock, TUN_IFACE, &in_addr, sizeof(in_addr),
+                    &macaddr, ETH_ALEN);
+  struct in6_addr in6_addr;
+  inet_pton(AF_INET6, REMOTE_IPV6, &in6_addr);
+  netlink_add_neigh(&nlmsg, sock, TUN_IFACE, &in6_addr, sizeof(in6_addr),
+                    &macaddr, ETH_ALEN);
+  macaddr = LOCAL_MAC;
+  netlink_device_change(&nlmsg, sock, TUN_IFACE, true, 0, &macaddr, ETH_ALEN,
+                        NULL);
+  close(sock);
+}
+
+const int kInitNetNsFd = 201;
+
+#define DEVLINK_FAMILY_NAME "devlink"
+
+#define DEVLINK_CMD_PORT_GET 5
+#define DEVLINK_CMD_RELOAD 37
+#define DEVLINK_ATTR_BUS_NAME 1
+#define DEVLINK_ATTR_DEV_NAME 2
+#define DEVLINK_ATTR_NETDEV_NAME 7
+#define DEVLINK_ATTR_NETNS_FD 138
+
+static void netlink_devlink_netns_move(const char* bus_name,
+                                       const char* dev_name, int netns_fd) {
+  struct genlmsghdr genlhdr;
+  int sock;
+  int id, err;
+  sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
+  if (sock == -1) exit(1);
+  id = netlink_query_family_id(&nlmsg, sock, DEVLINK_FAMILY_NAME, true);
+  if (id == -1) goto error;
+  memset(&genlhdr, 0, sizeof(genlhdr));
+  genlhdr.cmd = DEVLINK_CMD_RELOAD;
+  netlink_init(&nlmsg, id, 0, &genlhdr, sizeof(genlhdr));
+  netlink_attr(&nlmsg, DEVLINK_ATTR_BUS_NAME, bus_name, strlen(bus_name) + 1);
+  netlink_attr(&nlmsg, DEVLINK_ATTR_DEV_NAME, dev_name, strlen(dev_name) + 1);
+  netlink_attr(&nlmsg, DEVLINK_ATTR_NETNS_FD, &netns_fd, sizeof(netns_fd));
+  err = netlink_send(&nlmsg, sock);
+  if (err < 0) {
+  }
+error:
+  close(sock);
+}
+
+static struct nlmsg nlmsg2;
+
+static void initialize_devlink_ports(const char* bus_name, const char* dev_name,
+                                     const char* netdev_prefix) {
+  struct genlmsghdr genlhdr;
+  int len, total_len, id, err, offset;
+  uint16_t netdev_index;
+  int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
+  if (sock == -1) exit(1);
+  int rtsock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+  if (rtsock == -1) exit(1);
+  id = netlink_query_family_id(&nlmsg, sock, DEVLINK_FAMILY_NAME, true);
+  if (id == -1) goto error;
+  memset(&genlhdr, 0, sizeof(genlhdr));
+  genlhdr.cmd = DEVLINK_CMD_PORT_GET;
+  netlink_init(&nlmsg, id, NLM_F_DUMP, &genlhdr, sizeof(genlhdr));
+  netlink_attr(&nlmsg, DEVLINK_ATTR_BUS_NAME, bus_name, strlen(bus_name) + 1);
+  netlink_attr(&nlmsg, DEVLINK_ATTR_DEV_NAME, dev_name, strlen(dev_name) + 1);
+  err = netlink_send_ext(&nlmsg, sock, id, &total_len, true);
+  if (err < 0) {
+    goto error;
+  }
+  offset = 0;
+  netdev_index = 0;
+  while ((len = netlink_next_msg(&nlmsg, offset, total_len)) != -1) {
+    struct nlattr* attr = (struct nlattr*)(nlmsg.buf + offset + NLMSG_HDRLEN +
+                                           NLMSG_ALIGN(sizeof(genlhdr)));
+    for (; (char*)attr < nlmsg.buf + offset + len;
+         attr = (struct nlattr*)((char*)attr + NLMSG_ALIGN(attr->nla_len))) {
+      if (attr->nla_type == DEVLINK_ATTR_NETDEV_NAME) {
+        char* port_name;
+        char netdev_name[IFNAMSIZ];
+        port_name = (char*)(attr + 1);
+        snprintf(netdev_name, sizeof(netdev_name), "%s%d", netdev_prefix,
+                 netdev_index);
+        netlink_device_change(&nlmsg2, rtsock, port_name, true, 0, 0, 0,
+                              netdev_name);
+        break;
+      }
+    }
+    offset += len;
+    netdev_index++;
+  }
+error:
+  close(rtsock);
+  close(sock);
+}
+
+static void initialize_devlink_pci(void) {
+  int netns = open("/proc/self/ns/net", O_RDONLY);
+  if (netns == -1) exit(1);
+  int ret = setns(kInitNetNsFd, 0);
+  if (ret == -1) exit(1);
+  netlink_devlink_netns_move("pci", "0000:00:10.0", netns);
+  ret = setns(netns, 0);
+  if (ret == -1) exit(1);
+  close(netns);
+  initialize_devlink_ports("pci", "0000:00:10.0", "netpci");
+}
+
+static int runcmdline(char* cmdline) {
+  int ret = system(cmdline);
+  if (ret) {
+  }
+  return ret;
+}
+
+#define DEV_IPV4 "172.20.20.%d"
+#define DEV_IPV6 "fe80::%02x"
+#define DEV_MAC 0x00aaaaaaaaaa
+
+static void netdevsim_add(unsigned int addr, unsigned int port_count) {
+  write_file("/sys/bus/netdevsim/del_device", "%u", addr);
+  if (write_file("/sys/bus/netdevsim/new_device", "%u %u", addr, port_count)) {
+    char buf[32];
+    snprintf(buf, sizeof(buf), "netdevsim%d", addr);
+    initialize_devlink_ports("netdevsim", buf, "netdevsim");
+  }
+}
+
+#define WG_GENL_NAME "wireguard"
+enum wg_cmd {
+  WG_CMD_GET_DEVICE,
+  WG_CMD_SET_DEVICE,
+};
+enum wgdevice_attribute {
+  WGDEVICE_A_UNSPEC,
+  WGDEVICE_A_IFINDEX,
+  WGDEVICE_A_IFNAME,
+  WGDEVICE_A_PRIVATE_KEY,
+  WGDEVICE_A_PUBLIC_KEY,
+  WGDEVICE_A_FLAGS,
+  WGDEVICE_A_LISTEN_PORT,
+  WGDEVICE_A_FWMARK,
+  WGDEVICE_A_PEERS,
+};
+enum wgpeer_attribute {
+  WGPEER_A_UNSPEC,
+  WGPEER_A_PUBLIC_KEY,
+  WGPEER_A_PRESHARED_KEY,
+  WGPEER_A_FLAGS,
+  WGPEER_A_ENDPOINT,
+  WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+  WGPEER_A_LAST_HANDSHAKE_TIME,
+  WGPEER_A_RX_BYTES,
+  WGPEER_A_TX_BYTES,
+  WGPEER_A_ALLOWEDIPS,
+  WGPEER_A_PROTOCOL_VERSION,
+};
+enum wgallowedip_attribute {
+  WGALLOWEDIP_A_UNSPEC,
+  WGALLOWEDIP_A_FAMILY,
+  WGALLOWEDIP_A_IPADDR,
+  WGALLOWEDIP_A_CIDR_MASK,
+};
+
+static void netlink_wireguard_setup(void) {
+  const char ifname_a[] = "wg0";
+  const char ifname_b[] = "wg1";
+  const char ifname_c[] = "wg2";
+  const char private_a[] =
+      "\xa0\x5c\xa8\x4f\x6c\x9c\x8e\x38\x53\xe2\xfd\x7a\x70\xae\x0f\xb2\x0f\xa1"
+      "\x52\x60\x0c\xb0\x08\x45\x17\x4f\x08\x07\x6f\x8d\x78\x43";
+  const char private_b[] =
+      "\xb0\x80\x73\xe8\xd4\x4e\x91\xe3\xda\x92\x2c\x22\x43\x82\x44\xbb\x88\x5c"
+      "\x69\xe2\x69\xc8\xe9\xd8\x35\xb1\x14\x29\x3a\x4d\xdc\x6e";
+  const char private_c[] =
+      "\xa0\xcb\x87\x9a\x47\xf5\xbc\x64\x4c\x0e\x69\x3f\xa6\xd0\x31\xc7\x4a\x15"
+      "\x53\xb6\xe9\x01\xb9\xff\x2f\x51\x8c\x78\x04\x2f\xb5\x42";
+  const char public_a[] =
+      "\x97\x5c\x9d\x81\xc9\x83\xc8\x20\x9e\xe7\x81\x25\x4b\x89\x9f\x8e\xd9\x25"
+      "\xae\x9f\x09\x23\xc2\x3c\x62\xf5\x3c\x57\xcd\xbf\x69\x1c";
+  const char public_b[] =
+      "\xd1\x73\x28\x99\xf6\x11\xcd\x89\x94\x03\x4d\x7f\x41\x3d\xc9\x57\x63\x0e"
+      "\x54\x93\xc2\x85\xac\xa4\x00\x65\xcb\x63\x11\xbe\x69\x6b";
+  const char public_c[] =
+      "\xf4\x4d\xa3\x67\xa8\x8e\xe6\x56\x4f\x02\x02\x11\x45\x67\x27\x08\x2f\x5c"
+      "\xeb\xee\x8b\x1b\xf5\xeb\x73\x37\x34\x1b\x45\x9b\x39\x22";
+  const uint16_t listen_a = 20001;
+  const uint16_t listen_b = 20002;
+  const uint16_t listen_c = 20003;
+  const uint16_t af_inet = AF_INET;
+  const uint16_t af_inet6 = AF_INET6;
+  const struct sockaddr_in endpoint_b_v4 = {
+      .sin_family = AF_INET,
+      .sin_port = htons(listen_b),
+      .sin_addr = {htonl(INADDR_LOOPBACK)}};
+  const struct sockaddr_in endpoint_c_v4 = {
+      .sin_family = AF_INET,
+      .sin_port = htons(listen_c),
+      .sin_addr = {htonl(INADDR_LOOPBACK)}};
+  struct sockaddr_in6 endpoint_a_v6 = {.sin6_family = AF_INET6,
+                                       .sin6_port = htons(listen_a)};
+  endpoint_a_v6.sin6_addr = in6addr_loopback;
+  struct sockaddr_in6 endpoint_c_v6 = {.sin6_family = AF_INET6,
+                                       .sin6_port = htons(listen_c)};
+  endpoint_c_v6.sin6_addr = in6addr_loopback;
+  const struct in_addr first_half_v4 = {0};
+  const struct in_addr second_half_v4 = {(uint32_t)htonl(128 << 24)};
+  const struct in6_addr first_half_v6 = {{{0}}};
+  const struct in6_addr second_half_v6 = {{{0x80}}};
+  const uint8_t half_cidr = 1;
+  const uint16_t persistent_keepalives[] = {1, 3, 7, 9, 14, 19};
+  struct genlmsghdr genlhdr = {.cmd = WG_CMD_SET_DEVICE, .version = 1};
+  int sock;
+  int id, err;
+  sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
+  if (sock == -1) {
+    return;
+  }
+  id = netlink_query_family_id(&nlmsg, sock, WG_GENL_NAME, true);
+  if (id == -1) goto error;
+  netlink_init(&nlmsg, id, 0, &genlhdr, sizeof(genlhdr));
+  netlink_attr(&nlmsg, WGDEVICE_A_IFNAME, ifname_a, strlen(ifname_a) + 1);
+  netlink_attr(&nlmsg, WGDEVICE_A_PRIVATE_KEY, private_a, 32);
+  netlink_attr(&nlmsg, WGDEVICE_A_LISTEN_PORT, &listen_a, 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGDEVICE_A_PEERS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_b, 32);
+  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_b_v4,
+               sizeof(endpoint_b_v4));
+  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+               &persistent_keepalives[0], 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v4,
+               sizeof(first_half_v4));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v6,
+               sizeof(first_half_v6));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_c, 32);
+  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_c_v6,
+               sizeof(endpoint_c_v6));
+  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+               &persistent_keepalives[1], 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v4,
+               sizeof(second_half_v4));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v6,
+               sizeof(second_half_v6));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  err = netlink_send(&nlmsg, sock);
+  if (err < 0) {
+  }
+  netlink_init(&nlmsg, id, 0, &genlhdr, sizeof(genlhdr));
+  netlink_attr(&nlmsg, WGDEVICE_A_IFNAME, ifname_b, strlen(ifname_b) + 1);
+  netlink_attr(&nlmsg, WGDEVICE_A_PRIVATE_KEY, private_b, 32);
+  netlink_attr(&nlmsg, WGDEVICE_A_LISTEN_PORT, &listen_b, 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGDEVICE_A_PEERS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_a, 32);
+  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_a_v6,
+               sizeof(endpoint_a_v6));
+  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+               &persistent_keepalives[2], 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v4,
+               sizeof(first_half_v4));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v6,
+               sizeof(first_half_v6));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_c, 32);
+  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_c_v4,
+               sizeof(endpoint_c_v4));
+  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+               &persistent_keepalives[3], 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v4,
+               sizeof(second_half_v4));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v6,
+               sizeof(second_half_v6));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  err = netlink_send(&nlmsg, sock);
+  if (err < 0) {
+  }
+  netlink_init(&nlmsg, id, 0, &genlhdr, sizeof(genlhdr));
+  netlink_attr(&nlmsg, WGDEVICE_A_IFNAME, ifname_c, strlen(ifname_c) + 1);
+  netlink_attr(&nlmsg, WGDEVICE_A_PRIVATE_KEY, private_c, 32);
+  netlink_attr(&nlmsg, WGDEVICE_A_LISTEN_PORT, &listen_c, 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGDEVICE_A_PEERS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_a, 32);
+  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_a_v6,
+               sizeof(endpoint_a_v6));
+  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+               &persistent_keepalives[4], 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v4,
+               sizeof(first_half_v4));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v6,
+               sizeof(first_half_v6));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_b, 32);
+  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_b_v4,
+               sizeof(endpoint_b_v4));
+  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
+               &persistent_keepalives[5], 2);
+  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v4,
+               sizeof(second_half_v4));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v6,
+               sizeof(second_half_v6));
+  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  netlink_done(&nlmsg);
+  err = netlink_send(&nlmsg, sock);
+  if (err < 0) {
+  }
+
+error:
+  close(sock);
+}
+
+static void netlink_nicvf_setup(void) {
+  char cmdline[256];
+  if (!vf_intf.ppid) return;
+  sprintf(cmdline, "nsenter -t 1 -n ip link set %s netns %d",
+          vf_intf.pass_thru_intf, getpid());
+  if (runcmdline(cmdline)) return;
+  sprintf(cmdline, "ip a s %s", vf_intf.pass_thru_intf);
+  if (runcmdline(cmdline)) return;
+  sprintf(cmdline, "ip link set %s down", vf_intf.pass_thru_intf);
+  if (runcmdline(cmdline)) return;
+  sprintf(cmdline, "ip link set %s name nicvf0", vf_intf.pass_thru_intf);
+  if (runcmdline(cmdline)) return;
+}
+static void initialize_netdevices(void) {
+  char netdevsim[16];
+  sprintf(netdevsim, "netdevsim%d", (int)procid);
+  struct {
+    const char* type;
+    const char* dev;
+  } devtypes[] = {
+      {"ip6gretap", "ip6gretap0"}, {"bridge", "bridge0"}, {"vcan", "vcan0"},
+      {"bond", "bond0"},           {"team", "team0"},     {"dummy", "dummy0"},
+      {"nicvf", "nicvf0"},         {"nlmon", "nlmon0"},   {"caif", "caif0"},
+      {"batadv", "batadv0"},       {"vxcan", "vxcan1"},   {"veth", 0},
+      {"wireguard", "wg0"},        {"wireguard", "wg1"},  {"wireguard", "wg2"},
+  };
+  const char* devmasters[] = {"bridge", "bond", "team", "batadv"};
+  struct {
+    const char* name;
+    int macsize;
+    bool noipv6;
+  } devices[] = {
+      {"lo", ETH_ALEN},
+      {"sit0", 0},
+      {"bridge0", ETH_ALEN},
+      {"vcan0", 0, true},
+      {"tunl0", 0},
+      {"gre0", 0},
+      {"gretap0", ETH_ALEN},
+      {"ip_vti0", 0},
+      {"ip6_vti0", 0},
+      {"ip6tnl0", 0},
+      {"ip6gre0", 0},
+      {"ip6gretap0", ETH_ALEN},
+      {"erspan0", ETH_ALEN},
+      {"bond0", ETH_ALEN},
+      {"veth0", ETH_ALEN},
+      {"veth1", ETH_ALEN},
+      {"team0", ETH_ALEN},
+      {"veth0_to_bridge", ETH_ALEN},
+      {"veth1_to_bridge", ETH_ALEN},
+      {"veth0_to_bond", ETH_ALEN},
+      {"veth1_to_bond", ETH_ALEN},
+      {"veth0_to_team", ETH_ALEN},
+      {"veth1_to_team", ETH_ALEN},
+      {"veth0_to_hsr", ETH_ALEN},
+      {"veth1_to_hsr", ETH_ALEN},
+      {"hsr0", 0},
+      {"dummy0", ETH_ALEN},
+      {"nicvf0", 0, true},
+      {"nlmon0", 0},
+      {"vxcan0", 0, true},
+      {"vxcan1", 0, true},
+      {"caif0", ETH_ALEN},
+      {"batadv0", ETH_ALEN},
+      {netdevsim, ETH_ALEN},
+      {"xfrm0", ETH_ALEN},
+      {"veth0_virt_wifi", ETH_ALEN},
+      {"veth1_virt_wifi", ETH_ALEN},
+      {"virt_wifi0", ETH_ALEN},
+      {"veth0_vlan", ETH_ALEN},
+      {"veth1_vlan", ETH_ALEN},
+      {"vlan0", ETH_ALEN},
+      {"vlan1", ETH_ALEN},
+      {"macvlan0", ETH_ALEN},
+      {"macvlan1", ETH_ALEN},
+      {"ipvlan0", ETH_ALEN},
+      {"ipvlan1", ETH_ALEN},
+      {"veth0_macvtap", ETH_ALEN},
+      {"veth1_macvtap", ETH_ALEN},
+      {"macvtap0", ETH_ALEN},
+      {"macsec0", ETH_ALEN},
+      {"veth0_to_batadv", ETH_ALEN},
+      {"veth1_to_batadv", ETH_ALEN},
+      {"batadv_slave_0", ETH_ALEN},
+      {"batadv_slave_1", ETH_ALEN},
+      {"geneve0", ETH_ALEN},
+      {"geneve1", ETH_ALEN},
+      {"wg0", 0},
+      {"wg1", 0},
+      {"wg2", 0},
+  };
+  int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+  if (sock == -1) exit(1);
+  unsigned i;
+  for (i = 0; i < sizeof(devtypes) / sizeof(devtypes[0]); i++)
+    netlink_add_device(&nlmsg, sock, devtypes[i].type, devtypes[i].dev);
+  for (i = 0; i < sizeof(devmasters) / (sizeof(devmasters[0])); i++) {
+    char master[32], slave0[32], veth0[32], slave1[32], veth1[32];
+    sprintf(slave0, "%s_slave_0", devmasters[i]);
+    sprintf(veth0, "veth0_to_%s", devmasters[i]);
+    netlink_add_veth(&nlmsg, sock, slave0, veth0);
+    sprintf(slave1, "%s_slave_1", devmasters[i]);
+    sprintf(veth1, "veth1_to_%s", devmasters[i]);
+    netlink_add_veth(&nlmsg, sock, slave1, veth1);
+    sprintf(master, "%s0", devmasters[i]);
+    netlink_device_change(&nlmsg, sock, slave0, false, master, 0, 0, NULL);
+    netlink_device_change(&nlmsg, sock, slave1, false, master, 0, 0, NULL);
+  }
+  netlink_add_xfrm(&nlmsg, sock, "xfrm0");
+  netlink_device_change(&nlmsg, sock, "bridge_slave_0", true, 0, 0, 0, NULL);
+  netlink_device_change(&nlmsg, sock, "bridge_slave_1", true, 0, 0, 0, NULL);
+  netlink_add_veth(&nlmsg, sock, "hsr_slave_0", "veth0_to_hsr");
+  netlink_add_veth(&nlmsg, sock, "hsr_slave_1", "veth1_to_hsr");
+  netlink_add_hsr(&nlmsg, sock, "hsr0", "hsr_slave_0", "hsr_slave_1");
+  netlink_device_change(&nlmsg, sock, "hsr_slave_0", true, 0, 0, 0, NULL);
+  netlink_device_change(&nlmsg, sock, "hsr_slave_1", true, 0, 0, 0, NULL);
+  netlink_add_veth(&nlmsg, sock, "veth0_virt_wifi", "veth1_virt_wifi");
+  netlink_add_linked(&nlmsg, sock, "virt_wifi", "virt_wifi0",
+                     "veth1_virt_wifi");
+  netlink_add_veth(&nlmsg, sock, "veth0_vlan", "veth1_vlan");
+  netlink_add_vlan(&nlmsg, sock, "vlan0", "veth0_vlan", 0, htons(ETH_P_8021Q));
+  netlink_add_vlan(&nlmsg, sock, "vlan1", "veth0_vlan", 1, htons(ETH_P_8021AD));
+  netlink_add_macvlan(&nlmsg, sock, "macvlan0", "veth1_vlan");
+  netlink_add_macvlan(&nlmsg, sock, "macvlan1", "veth1_vlan");
+  netlink_add_ipvlan(&nlmsg, sock, "ipvlan0", "veth0_vlan", IPVLAN_MODE_L2, 0);
+  netlink_add_ipvlan(&nlmsg, sock, "ipvlan1", "veth0_vlan", IPVLAN_MODE_L3S,
+                     IPVLAN_F_VEPA);
+  netlink_add_veth(&nlmsg, sock, "veth0_macvtap", "veth1_macvtap");
+  netlink_add_linked(&nlmsg, sock, "macvtap", "macvtap0", "veth0_macvtap");
+  netlink_add_linked(&nlmsg, sock, "macsec", "macsec0", "veth1_macvtap");
+  char addr[32];
+  sprintf(addr, DEV_IPV4, 14 + 10);
+  struct in_addr geneve_addr4;
+  if (inet_pton(AF_INET, addr, &geneve_addr4) <= 0) exit(1);
+  struct in6_addr geneve_addr6;
+  if (inet_pton(AF_INET6, "fc00::01", &geneve_addr6) <= 0) exit(1);
+  netlink_add_geneve(&nlmsg, sock, "geneve0", 0, &geneve_addr4, 0);
+  netlink_add_geneve(&nlmsg, sock, "geneve1", 1, 0, &geneve_addr6);
+  netdevsim_add((int)procid, 4);
+  netlink_wireguard_setup();
+  netlink_nicvf_setup();
+  for (i = 0; i < sizeof(devices) / (sizeof(devices[0])); i++) {
+    char addr[32];
+    sprintf(addr, DEV_IPV4, i + 10);
+    netlink_add_addr4(&nlmsg, sock, devices[i].name, addr);
+    if (!devices[i].noipv6) {
+      sprintf(addr, DEV_IPV6, i + 10);
+      netlink_add_addr6(&nlmsg, sock, devices[i].name, addr);
+    }
+    uint64_t macaddr = DEV_MAC + ((i + 10ull) << 40);
+    netlink_device_change(&nlmsg, sock, devices[i].name, true, 0, &macaddr,
+                          devices[i].macsize, NULL);
+  }
+  close(sock);
+}
+static void initialize_netdevices_init(void) {
+  int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+  if (sock == -1) exit(1);
+  struct {
+    const char* type;
+    int macsize;
+    bool noipv6;
+    bool noup;
+  } devtypes[] = {
+      {"nr", 7, true},
+      {"rose", 5, true, true},
+  };
+  unsigned i;
+  for (i = 0; i < sizeof(devtypes) / sizeof(devtypes[0]); i++) {
+    char dev[32], addr[32];
+    sprintf(dev, "%s%d", devtypes[i].type, (int)procid);
+    sprintf(addr, "172.30.%d.%d", i, (int)procid + 1);
+    netlink_add_addr4(&nlmsg, sock, dev, addr);
+    if (!devtypes[i].noipv6) {
+      sprintf(addr, "fe88::%02x:%02x", i, (int)procid + 1);
+      netlink_add_addr6(&nlmsg, sock, dev, addr);
+    }
+    int macsize = devtypes[i].macsize;
+    uint64_t macaddr = 0xbbbbbb +
+                       ((unsigned long long)i << (8 * (macsize - 2))) +
+                       (procid << (8 * (macsize - 1)));
+    netlink_device_change(&nlmsg, sock, dev, !devtypes[i].noup, 0, &macaddr,
+                          macsize, NULL);
+  }
+  close(sock);
+  find_vf_interface();
+}
+
+static int read_tun(char* data, int size) {
+  if (tunfd < 0) return -1;
+  int rv = read(tunfd, data, size);
+  if (rv < 0) {
+    if (errno == EAGAIN || errno == EBADFD) return -1;
+    exit(1);
+  }
+  return rv;
+}
+
+static void flush_tun() {
+  char data[1000];
+  while (read_tun(&data[0], sizeof(data)) != -1) {
+  }
+}
+
+#define MAX_FDS 30
+
+static long syz_open_dev(volatile long a0, volatile long a1, volatile long a2) {
+  if (a0 == 0xc || a0 == 0xb) {
+    char buf[128];
+    sprintf(buf, "/dev/%s/%d:%d", a0 == 0xc ? "char" : "block", (uint8_t)a1,
+            (uint8_t)a2);
+    return open(buf, O_RDWR, 0);
+  } else {
+    char buf[1024];
+    char* hash;
+    strncpy(buf, (char*)a0, sizeof(buf) - 1);
+    buf[sizeof(buf) - 1] = 0;
+    while ((hash = strchr(buf, '#'))) {
+      *hash = '0' + (char)(a1 % 10);
+      a1 /= 10;
+    }
+    return open(buf, a2, 0);
+  }
+}
+
+static void setup_common() {
+  if (mount(0, "/sys/fs/fuse/connections", "fusectl", 0, 0)) {
+  }
+}
+
+static void setup_binderfs() {
+  if (mkdir("/dev/binderfs", 0777)) {
+  }
+  if (mount("binder", "/dev/binderfs", "binder", 0, NULL)) {
+  }
+}
+
+static void loop();
+
+static void sandbox_common() {
+  prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+  setsid();
+  int netns = open("/proc/self/ns/net", O_RDONLY);
+  if (netns == -1) exit(1);
+  if (dup2(netns, kInitNetNsFd) < 0) exit(1);
+  close(netns);
+  struct rlimit rlim;
+  rlim.rlim_cur = rlim.rlim_max = (200 << 20);
+  setrlimit(RLIMIT_AS, &rlim);
+  rlim.rlim_cur = rlim.rlim_max = 32 << 20;
+  setrlimit(RLIMIT_MEMLOCK, &rlim);
+  rlim.rlim_cur = rlim.rlim_max = 136 << 20;
+  setrlimit(RLIMIT_FSIZE, &rlim);
+  rlim.rlim_cur = rlim.rlim_max = 1 << 20;
+  setrlimit(RLIMIT_STACK, &rlim);
+  rlim.rlim_cur = rlim.rlim_max = 128 << 20;
+  setrlimit(RLIMIT_CORE, &rlim);
+  rlim.rlim_cur = rlim.rlim_max = 256;
+  setrlimit(RLIMIT_NOFILE, &rlim);
+  if (unshare(CLONE_NEWNS)) {
+  }
+  if (mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, NULL)) {
+  }
+  if (unshare(CLONE_NEWIPC)) {
+  }
+  if (unshare(0x02000000)) {
+  }
+  if (unshare(CLONE_NEWUTS)) {
+  }
+  if (unshare(CLONE_SYSVSEM)) {
+  }
+  typedef struct {
+    const char* name;
+    const char* value;
+  } sysctl_t;
+  static const sysctl_t sysctls[] = {
+      {"/proc/sys/kernel/shmmax", "16777216"},
+      {"/proc/sys/kernel/shmall", "536870912"},
+      {"/proc/sys/kernel/shmmni", "1024"},
+      {"/proc/sys/kernel/msgmax", "8192"},
+      {"/proc/sys/kernel/msgmni", "1024"},
+      {"/proc/sys/kernel/msgmnb", "1024"},
+      {"/proc/sys/kernel/sem", "1024 1048576 500 1024"},
+  };
+  unsigned i;
+  for (i = 0; i < sizeof(sysctls) / sizeof(sysctls[0]); i++)
+    write_file(sysctls[i].name, sysctls[i].value);
+}
+
+static int wait_for_loop(int pid) {
+  if (pid < 0) exit(1);
+  int status = 0;
+  while (waitpid(-1, &status, __WALL) != pid) {
+  }
+  return WEXITSTATUS(status);
+}
+
+static void drop_caps(void) {
+  struct __user_cap_header_struct cap_hdr = {};
+  struct __user_cap_data_struct cap_data[2] = {};
+  cap_hdr.version = _LINUX_CAPABILITY_VERSION_3;
+  cap_hdr.pid = getpid();
+  if (syscall(SYS_capget, &cap_hdr, &cap_data)) exit(1);
+  const int drop = (1 << CAP_SYS_PTRACE) | (1 << CAP_SYS_NICE);
+  cap_data[0].effective &= ~drop;
+  cap_data[0].permitted &= ~drop;
+  cap_data[0].inheritable &= ~drop;
+  if (syscall(SYS_capset, &cap_hdr, &cap_data)) exit(1);
+}
+
+static int do_sandbox_none(void) {
+  if (unshare(CLONE_NEWPID)) {
+  }
+  int pid = fork();
+  if (pid != 0) return wait_for_loop(pid);
+  setup_common();
+  sandbox_common();
+  drop_caps();
+  initialize_netdevices_init();
+  if (unshare(CLONE_NEWNET)) {
+  }
+  write_file("/proc/sys/net/ipv4/ping_group_range", "0 65535");
+  initialize_devlink_pci();
+  initialize_tun();
+  initialize_netdevices();
+  setup_binderfs();
+  loop();
+  exit(1);
+}
+
+#define FS_IOC_SETFLAGS _IOW('f', 2, long)
+static void remove_dir(const char* dir) {
+  int iter = 0;
+  DIR* dp = 0;
+retry:
+  while (umount2(dir, MNT_DETACH | UMOUNT_NOFOLLOW) == 0) {
+  }
+  dp = opendir(dir);
+  if (dp == NULL) {
+    if (errno == EMFILE) {
+      exit(1);
+    }
+    exit(1);
+  }
+  struct dirent* ep = 0;
+  while ((ep = readdir(dp))) {
+    if (strcmp(ep->d_name, ".") == 0 || strcmp(ep->d_name, "..") == 0) continue;
+    char filename[FILENAME_MAX];
+    snprintf(filename, sizeof(filename), "%s/%s", dir, ep->d_name);
+    while (umount2(filename, MNT_DETACH | UMOUNT_NOFOLLOW) == 0) {
+    }
+    struct stat st;
+    if (lstat(filename, &st)) exit(1);
+    if (S_ISDIR(st.st_mode)) {
+      remove_dir(filename);
+      continue;
+    }
+    int i;
+    for (i = 0;; i++) {
+      if (unlink(filename) == 0) break;
+      if (errno == EPERM) {
+        int fd = open(filename, O_RDONLY);
+        if (fd != -1) {
+          long flags = 0;
+          if (ioctl(fd, FS_IOC_SETFLAGS, &flags) == 0) {
+          }
+          close(fd);
+          continue;
+        }
+      }
+      if (errno == EROFS) {
+        break;
+      }
+      if (errno != EBUSY || i > 100) exit(1);
+      if (umount2(filename, MNT_DETACH | UMOUNT_NOFOLLOW)) exit(1);
+    }
+  }
+  closedir(dp);
+  for (int i = 0;; i++) {
+    if (rmdir(dir) == 0) break;
+    if (i < 100) {
+      if (errno == EPERM) {
+        int fd = open(dir, O_RDONLY);
+        if (fd != -1) {
+          long flags = 0;
+          if (ioctl(fd, FS_IOC_SETFLAGS, &flags) == 0) {
+          }
+          close(fd);
+          continue;
+        }
+      }
+      if (errno == EROFS) {
+        break;
+      }
+      if (errno == EBUSY) {
+        if (umount2(dir, MNT_DETACH | UMOUNT_NOFOLLOW)) exit(1);
+        continue;
+      }
+      if (errno == ENOTEMPTY) {
+        if (iter < 100) {
+          iter++;
+          goto retry;
+        }
+      }
+    }
+    exit(1);
+  }
+}
+
+static void kill_and_wait(int pid, int* status) {
+  kill(-pid, SIGKILL);
+  kill(pid, SIGKILL);
+  for (int i = 0; i < 100; i++) {
+    if (waitpid(-1, status, WNOHANG | __WALL) == pid) return;
+    usleep(1000);
+  }
+  DIR* dir = opendir("/sys/fs/fuse/connections");
+  if (dir) {
+    for (;;) {
+      struct dirent* ent = readdir(dir);
+      if (!ent) break;
+      if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+        continue;
+      char abort[300];
+      snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
+               ent->d_name);
+      int fd = open(abort, O_WRONLY);
+      if (fd == -1) {
+        continue;
+      }
+      if (write(fd, abort, 1) < 0) {
+      }
+      close(fd);
+    }
+    closedir(dir);
+  } else {
+  }
+  while (waitpid(-1, status, __WALL) != pid) {
+  }
+}
+
+static void setup_test() {
+  prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+  setpgrp();
+  write_file("/proc/self/oom_score_adj", "1000");
+  flush_tun();
+  if (symlink("/dev/binderfs", "./binderfs")) {
+  }
+}
+
+static void close_fds() {
+  for (int fd = 3; fd < MAX_FDS; fd++) close(fd);
+}
+
+static void setup_usb() {
+  if (chmod("/dev/raw-gadget", 0666)) exit(1);
+}
+
+static void setup_sysctl() {
+  char mypid[32];
+  snprintf(mypid, sizeof(mypid), "%d", getpid());
+  struct {
+    const char* name;
+    const char* data;
+  } files[] = {
+      {"/sys/kernel/debug/x86/nmi_longest_ns", "10000000000"},
+      {"/proc/sys/kernel/hung_task_check_interval_secs", "20"},
+      {"/proc/sys/net/core/bpf_jit_kallsyms", "1"},
+      {"/proc/sys/net/core/bpf_jit_harden", "0"},
+      {"/proc/sys/kernel/kptr_restrict", "0"},
+      {"/proc/sys/kernel/softlockup_all_cpu_backtrace", "1"},
+      {"/proc/sys/fs/mount-max", "100"},
+      {"/proc/sys/vm/oom_dump_tasks", "0"},
+      {"/proc/sys/debug/exception-trace", "0"},
+      {"/proc/sys/kernel/printk", "7 4 1 3"},
+      {"/proc/sys/kernel/keys/gc_delay", "1"},
+      {"/proc/sys/vm/oom_kill_allocating_task", "1"},
+      {"/proc/sys/kernel/ctrl-alt-del", "0"},
+      {"/proc/sys/kernel/cad_pid", mypid},
+  };
+  for (size_t i = 0; i < sizeof(files) / sizeof(files[0]); i++) {
+    if (!write_file(files[i].name, files[i].data))
+      printf("write to %s failed: %s\n", files[i].name, strerror(errno));
+  }
+}
+
+#define SWAP_FILE "./swap-file"
+#define SWAP_FILE_SIZE (128 * 1000 * 1000)
+
+static void setup_swap() {
+  swapoff(SWAP_FILE);
+  unlink(SWAP_FILE);
+  int fd = open(SWAP_FILE, O_CREAT | O_WRONLY | O_CLOEXEC, 0600);
+  if (fd == -1) {
+    exit(1);
+    return;
+  }
+  fallocate(fd, FALLOC_FL_ZERO_RANGE, 0, SWAP_FILE_SIZE);
+  close(fd);
+  char cmdline[64];
+  sprintf(cmdline, "mkswap %s", SWAP_FILE);
+  if (runcmdline(cmdline)) {
+    exit(1);
+    return;
+  }
+  if (swapon(SWAP_FILE, SWAP_FLAG_PREFER) == 1) {
+    exit(1);
+    return;
+  }
+}
+
+static void execute_one(void);
+
+#define WAIT_FLAGS __WALL
+
+static void loop(void) {
+  int iter = 0;
+  for (;; iter++) {
+    char cwdbuf[32];
+    sprintf(cwdbuf, "./%d", iter);
+    if (mkdir(cwdbuf, 0777)) exit(1);
+    int pid = fork();
+    if (pid < 0) exit(1);
+    if (pid == 0) {
+      if (chdir(cwdbuf)) exit(1);
+      setup_test();
+      execute_one();
+      close_fds();
+      exit(0);
+    }
+    int status = 0;
+    uint64_t start = current_time_ms();
+    for (;;) {
+      if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid) break;
+      sleep_ms(1);
+      if (current_time_ms() - start < 5000) continue;
+      kill_and_wait(pid, &status);
+      break;
+    }
+    remove_dir(cwdbuf);
+  }
+}
+
+uint64_t r[5] = {0xffffffffffffffff, 0x0, 0x0, 0xffffffffffffffff, 0x0};
+
+void execute_one(void) {
+  intptr_t res = 0;
+  NONFAILING(memcpy((void*)0x20000080, "/dev/dri/card#\000", 15));
+  res = -1;
+  NONFAILING(res = syz_open_dev(/*dev=*/0x20000080, /*id=*/0xf2, /*flags=*/0));
+  if (res != -1) r[0] = res;
+  NONFAILING(*(uint64_t*)0x20000180 = 0);
+  NONFAILING(*(uint64_t*)0x20000188 = 0x200000c0);
+  NONFAILING(*(uint64_t*)0x20000190 = 0);
+  NONFAILING(*(uint64_t*)0x20000198 = 0);
+  NONFAILING(*(uint32_t*)0x200001a0 = 0);
+  NONFAILING(*(uint32_t*)0x200001a4 = 1);
+  NONFAILING(*(uint32_t*)0x200001a8 = 0);
+  NONFAILING(*(uint32_t*)0x200001ac = 0);
+  NONFAILING(*(uint32_t*)0x200001b0 = 0);
+  NONFAILING(*(uint32_t*)0x200001b4 = 0);
+  NONFAILING(*(uint32_t*)0x200001b8 = 0);
+  NONFAILING(*(uint32_t*)0x200001bc = 0);
+  res = syscall(__NR_ioctl, /*fd=*/r[0], /*cmd=*/0xc04064a0,
+                /*arg=*/0x20000180ul);
+  if (res != -1) NONFAILING(r[1] = *(uint32_t*)0x200000c0);
+  NONFAILING(*(uint64_t*)0x200003c0 = 0);
+  NONFAILING(*(uint32_t*)0x200003c8 = 0);
+  NONFAILING(*(uint32_t*)0x200003cc = r[1]);
+  res = syscall(__NR_ioctl, /*fd=*/r[0], /*cmd=*/0xc06864a1,
+                /*arg=*/0x200003c0ul);
+  if (res != -1) NONFAILING(r[2] = *(uint32_t*)0x200003d0);
+  NONFAILING(memcpy((void*)0x20000080, "/dev/dri/card#\000", 15));
+  res = -1;
+  NONFAILING(res = syz_open_dev(/*dev=*/0x20000080, /*id=*/0xf2, /*flags=*/0));
+  if (res != -1) r[3] = res;
+  NONFAILING(*(uint64_t*)0x20000180 = 0);
+  NONFAILING(*(uint64_t*)0x20000188 = 0x200000c0);
+  NONFAILING(*(uint64_t*)0x20000190 = 0);
+  NONFAILING(*(uint64_t*)0x20000198 = 0);
+  NONFAILING(*(uint32_t*)0x200001a0 = 0);
+  NONFAILING(*(uint32_t*)0x200001a4 = 1);
+  NONFAILING(*(uint32_t*)0x200001a8 = 0);
+  NONFAILING(*(uint32_t*)0x200001ac = 0);
+  NONFAILING(*(uint32_t*)0x200001b0 = 0);
+  NONFAILING(*(uint32_t*)0x200001b4 = 0);
+  NONFAILING(*(uint32_t*)0x200001b8 = 0);
+  NONFAILING(*(uint32_t*)0x200001bc = 0);
+  res = syscall(__NR_ioctl, /*fd=*/r[3], /*cmd=*/0xc04064a0,
+                /*arg=*/0x20000180ul);
+  if (res != -1) NONFAILING(r[4] = *(uint32_t*)0x200000c0);
+  NONFAILING(*(uint32_t*)0x20000000 = r[4]);
+  NONFAILING(*(uint32_t*)0x20000004 = r[2]);
+  NONFAILING(*(uint32_t*)0x20000008 = 0);
+  NONFAILING(*(uint32_t*)0x2000000c = 0);
+  NONFAILING(*(uint64_t*)0x20000010 = 0x80000003);
+  syscall(__NR_ioctl, /*fd=*/r[0], /*cmd=*/0xc01864b0, /*arg=*/0x20000000ul);
+}
+int main(void) {
+  syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
+          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+  syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
+          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+  syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
+          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+  setup_sysctl();
+  setup_usb();
+  setup_swap();
+  install_segv_handler();
+  use_temporary_dir();
+  do_sandbox_none();
+  return 0;
+}
+
+and see also https://gist.github.com/xrivendell7/aceeaacd33afccf6f453ba8e2d3bd403
