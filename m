@@ -2,170 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E2F80778B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:25:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EFF80775C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378387AbjLFSZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 13:25:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
+        id S229790AbjLFSQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 13:16:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbjLFSZA (ORCPT
+        with ESMTP id S229457AbjLFSQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 13:25:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F53D59
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 10:25:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701887102;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KTobgsnYUuUSJ3+JcdTWkz3Ys2jB6Jq/YKHe84U3RGg=;
-        b=cXZl+/aAQazCQOD43RAsW/xrrqW4ebwIGBjocUEpGlhW3aB0NXZBgbvgk18cvkpN3888/s
-        neaZX7uLaLgVyOFOAWUKLImFTHu4TZ/tzdhouNOIkgR3WqXypykMtQHjD0skq107WMxM/K
-        EzjfCxopAbdkcFtYqgxlh5TtVtBVhA4=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-299-2TgtkoZ1O6SyrZTBst8uqw-1; Wed, 06 Dec 2023 13:15:52 -0500
-X-MC-Unique: 2TgtkoZ1O6SyrZTBst8uqw-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-77dc7b361f8so944438885a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 10:15:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701886549; x=1702491349;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Wed, 6 Dec 2023 13:16:02 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03469139;
+        Wed,  6 Dec 2023 10:16:08 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-7b389399dfdso2252039f.2;
+        Wed, 06 Dec 2023 10:16:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701886567; x=1702491367; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KTobgsnYUuUSJ3+JcdTWkz3Ys2jB6Jq/YKHe84U3RGg=;
-        b=wTfor8tsKyaPqUqorHPgD4n/g24G99YfYoD0VXrCyNyB+AEHJp6qqgUwZ2cNd3xjuR
-         ttuyyntuuL1ZO4w9OK0bCfuKyFKwcD4UqoqX/Kv3Eml0GVCx6doSY2yBLMRoNSxsjzUj
-         Yo75W/mrBPX7AQezHCLHHji+ul5T/ImA9YD6PoOfR7QwN1CfkJ9ufkuxN93p2dbEUWcV
-         8qCqMmawAUedn+XXNVxq+R/fEDvmzbt6/TQeGjn/GRbmZi6E3aYeVq1cpHO7kel85quL
-         PorGqn+C/FqzykI4BgRWYWm/dL7EHYKOFtx6edTIsKKCCOIVF41Uh9RsoqYk2PtfhaBP
-         GMkQ==
-X-Gm-Message-State: AOJu0YzTn7FCRW0v3FtXWZPW3/Qkh7RomdjioqGjYcfVnPosXMx9yG5k
-        Ggtd7lomLGk0ptXgSJ6ZZFTTIxQkgW5UXC/TeVpvfVgucHs0BjN6ARZv7JT9EHdQucoRyWlXpiz
-        ezUXpLPHyPgKXBJugVaXpdaxA
-X-Received: by 2002:a05:622a:1c7:b0:425:4043:1daf with SMTP id t7-20020a05622a01c700b0042540431dafmr1590223qtw.130.1701886548807;
-        Wed, 06 Dec 2023 10:15:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEYXmE8oxD/ljT+fjjqAZa2L1Mek9Kw87+1sXy5PKCDiHvI+RdUhoxjbWV8Mvzl4SX522xqJg==
-X-Received: by 2002:a05:622a:1c7:b0:425:4043:1daf with SMTP id t7-20020a05622a01c700b0042540431dafmr1590209qtw.130.1701886548556;
-        Wed, 06 Dec 2023 10:15:48 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::47])
-        by smtp.gmail.com with ESMTPSA id d20-20020ac85454000000b00423dfab8fc3sm140297qtq.32.2023.12.06.10.15.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 10:15:48 -0800 (PST)
-Date:   Wed, 6 Dec 2023 12:15:46 -0600
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     martin.petersen@oracle.com, jejb@linux.ibm.com,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com
-Subject: Re: [PATCH 04/13] scsi: ufs: qcom: Remove superfluous variable
- assignments
-Message-ID: <lpon5atd74luwzrnzh2imc3h7e7hvdn4nopi6ocw7uvzw72dgr@llure3vkleru>
-References: <20231201151417.65500-1-manivannan.sadhasivam@linaro.org>
- <20231201151417.65500-5-manivannan.sadhasivam@linaro.org>
+        bh=gWAuKbmc4GqDy2A6rXUBPXUJNeUa8820dSUeOYSYNt8=;
+        b=lBPJbL2S1TEBPSIZbkawYgKsUuydV4LjcC2j78T85S803TF93P2AhlfIOfksbkMi0P
+         y+LFIkLdNK8OaZQ6deOU6TsHxyL57QTUUO8RKncz+oJw8RxHbc3y6OV9jKoTT8UfvspE
+         i7jjiqIuprT33JoWvs8YHASLUfWKKBrSu7SAOaVW1PonOf7wLNlEYpjmiufXkkzmlmKG
+         aF2ktP4Tv1dfZdjmavrRWR+UzWwzYKSR0I1IlsdVR/SBKNotbQSAEd09fQdYPvpiVAgZ
+         5Ctn9RlC09pO8NrCE3CHIo3a7v/uZtDG5en6wcrakatNAhvNj9H6KNVQTPmYTGS/4Eqy
+         X+Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701886567; x=1702491367;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gWAuKbmc4GqDy2A6rXUBPXUJNeUa8820dSUeOYSYNt8=;
+        b=RpS+Ebm8ZzG6Nsl3c7mCXsFv5IjJ56/xkSHn62W8LAjEKiuMNVthAtdijxGzItGIeX
+         LMmXaIfugjDCvKWUPaqt9ttwRGGyXCQQq1tGkcTTMoQlAapiXHIR2s6C+AyT24tiOVkc
+         brtD/2f6t1T7RT6BLciV8tDQAc1UpvUl4CZpYR+jGc3o5ERHyw3uSQvyrFmF7AYQVMxd
+         AxuY86nE566BP5LhUYxlfrmcX+ALnfH1kygnHvxUQsL2G8oXMFQri13HthdQg/NPoJHz
+         jz4EwN/PvgfD1KbyAuah9dcVlPSljaEG4JAULQ5PWAFeMODU2WnerHwR3FtW8kEDs13F
+         tG0g==
+X-Gm-Message-State: AOJu0YywWWSUibvKHwV6EyZSpNQ8SQFBLsEAQbmpYcHsLwkVmr6NiOxC
+        TT+YFh7Pk8Ry1KhZyN+uSW9URqoZxou1cC9T8SpP/8SxBSA=
+X-Google-Smtp-Source: AGHT+IFKnF3lw3Ax+avLPvnMd5vBZM4imRq0qasjFDFvW3fh5H8dgaFBeFrpeGdZS7/1eSisn26RBDrtRJrc1qJUFxw=
+X-Received: by 2002:a6b:ed19:0:b0:7af:fff7:c3f8 with SMTP id
+ n25-20020a6bed19000000b007affff7c3f8mr1385949iog.15.1701886567239; Wed, 06
+ Dec 2023 10:16:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201151417.65500-5-manivannan.sadhasivam@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231115172344.4155593-1-nphamcs@gmail.com> <CAF8kJuN-4UE0skVHvjUzpGefavkLULMonjgkXUZSBVJrcGFXCA@mail.gmail.com>
+ <CAJD7tkZ1U+YuvoBAnrXFxQDiQV2hXdbMG-gbzu64R8GLAtNAPA@mail.gmail.com>
+ <CAF8kJuPTNwQM413UdeQTkMQ8HkJFyF4OWVrxJSf7uWbege0CXQ@mail.gmail.com>
+ <CAKEwX=O5M-vZE5YhYQ5_CbCmXovS1XECO4ROXKWo06K880M1Mg@mail.gmail.com>
+ <CAF8kJuOD6zq2VPcVdoZGvkzYX8iXn1akuYhNDJx-LUdS+Sx3GA@mail.gmail.com>
+ <CAKEwX=NdFjemcmf27PVpgHpVHWQEo19KfApepWJBRYeyVCWvCw@mail.gmail.com>
+ <CAF8kJuOCyd5r0LQ3m8fQp0GtxxNUKSmwURJH6V9aApefvX8xCA@mail.gmail.com>
+ <ZVrHXJLxvs4_CUxc@google.com> <CAKEwX=MR6a-u87p=Oqm+zvwB_1zhrsM_n2=xW1kJz0_AoVwkPA@mail.gmail.com>
+ <CAF8kJuNFQn_e29YEPy-G29FR2RnrPzZNWR07VuadOTNask_Rig@mail.gmail.com>
+ <CAKEwX=NpKqjApRKk2Qp9Hp63xSjRwD-DEu9yX4BvbMd86x2b1g@mail.gmail.com> <CAF8kJuMp_BNauZzOuqXNiViuY2JH=JKWid2-_BwQjDTWptoryg@mail.gmail.com>
+In-Reply-To: <CAF8kJuMp_BNauZzOuqXNiViuY2JH=JKWid2-_BwQjDTWptoryg@mail.gmail.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Wed, 6 Dec 2023 10:15:56 -0800
+Message-ID: <CAKEwX=NwGGRAtXoNPfq63YnNLBCF0ZDOdLVRsvzUmYhK4jxzHA@mail.gmail.com>
+Subject: Re: [PATCH v5] zswap: memcontrol: implement zswap writeback disabling
+To:     Chris Li <chrisl@kernel.org>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, tj@kernel.org,
+        lizefan.x@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Hugh Dickins <hughd@google.com>, corbet@lwn.net,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        senozhatsky@chromium.org, rppt@kernel.org,
+        linux-mm <linux-mm@kvack.org>, kernel-team@meta.com,
+        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
+        david@ixit.cz, Minchan Kim <minchan@google.com>,
+        Kairui Song <kasong@tencent.com>,
+        Zhongkun He <hezhongkun.hzk@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 08:44:08PM +0530, Manivannan Sadhasivam wrote:
-> There are many instances where the variable assignments are not needed.
-> Remove them.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+On Wed, Nov 22, 2023 at 7:01=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote:
+>
+> On Tue, Nov 21, 2023 at 5:19=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wro=
+te:
+>
+> > > "all": zswap + swapfile
+> > > "zswap": zswap only
+> > > "no_zswap": swapfile only.
+> > > "none": no swap.
+> > >
+> > > All keyword names are open to suggestions.
+> >
+> > SGTM! There might be some functionality duplication between
+> > memory.swap.tiers =3D no_zswap and memory.zswap.max =3D 0, but
+> > otherwise this seems reasonable to me.
+> >
+> > no_zswap sounds a bit awkward, but I can't come up with a better
+> > name.
+>
+> I sleep on it a bit. I  should apply my own suggestion of using the
+> positive words rather than negative one to myself.
+> I actually define it as a non RAM base swap device. How about "disk"?
+> It will include SSD and HDD disk.
+>
+> The current 4 combination will be:
+>
+> "all": zswap + disk swap file
+> "zswap": zswap only
+> "disk": disk only (including SSD and HDD)
+> "none": no swap for you.
+>
+> Chris
 
-Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+Hi Chris,
 
-> ---
->  drivers/ufs/host/ufs-qcom.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index 778df0a9c65e..dc93b1c5ca74 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -219,7 +219,7 @@ static int ufs_qcom_enable_lane_clks(struct ufs_qcom_host *host)
->  
->  static int ufs_qcom_init_lane_clks(struct ufs_qcom_host *host)
->  {
-> -	int err = 0;
-> +	int err;
->  	struct device *dev = host->hba->dev;
->  
->  	if (has_acpi_companion(dev))
-> @@ -237,7 +237,7 @@ static int ufs_qcom_init_lane_clks(struct ufs_qcom_host *host)
->  static int ufs_qcom_check_hibern8(struct ufs_hba *hba)
->  {
->  	int err;
-> -	u32 tx_fsm_val = 0;
-> +	u32 tx_fsm_val;
->  	unsigned long timeout = jiffies + msecs_to_jiffies(HBRN8_POLL_TOUT_MS);
->  
->  	do {
-> @@ -292,9 +292,9 @@ static void ufs_qcom_select_unipro_mode(struct ufs_qcom_host *host)
->   */
->  static int ufs_qcom_host_reset(struct ufs_hba *hba)
->  {
-> -	int ret = 0;
-> +	int ret;
->  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> -	bool reenable_intr = false;
-> +	bool reenable_intr;
->  
->  	if (!host->core_reset) {
->  		dev_warn(hba->dev, "%s: reset control not set\n", __func__);
-> @@ -417,7 +417,7 @@ static int ufs_qcom_hce_enable_notify(struct ufs_hba *hba,
->  				      enum ufs_notify_change_status status)
->  {
->  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> -	int err = 0;
-> +	int err;
->  
->  	switch (status) {
->  	case PRE_CHANGE:
-> @@ -463,7 +463,7 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
->  	u32 core_clk_period_in_ns;
->  	u32 tx_clk_cycles_per_us = 0;
->  	unsigned long core_clk_rate = 0;
-> -	u32 core_clk_cycles_per_us = 0;
-> +	u32 core_clk_cycles_per_us;
->  
->  	static u32 pwm_fr_table[][2] = {
->  		{UFS_PWM_G1, 0x1},
-> @@ -1418,7 +1418,7 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
->  		bool scale_up, enum ufs_notify_change_status status)
->  {
->  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> -	int err = 0;
-> +	int err;
->  
->  	/* check the host controller state before sending hibern8 cmd */
->  	if (!ufshcd_is_hba_active(hba))
-> @@ -1689,7 +1689,7 @@ static int ufs_qcom_mcq_config_resource(struct ufs_hba *hba)
->  	struct platform_device *pdev = to_platform_device(hba->dev);
->  	struct ufshcd_res_info *res;
->  	struct resource *res_mem, *res_mcq;
-> -	int i, ret = 0;
-> +	int i, ret;
->  
->  	memcpy(hba->res, ufs_res_info, sizeof(ufs_res_info));
->  
-> -- 
-> 2.25.1
-> 
-> 
+I chatted with Johannes a bit more about this design. While we still
+think it's potentially useful for the future, it lacks a concrete use
+case at the moment. We don't even have the infrastructure for multiple
+swap tiers at the moment, so adding this interface now is just making
+it more confusing for the users. I think zswap.writeback is a much
+more specific interface, with concrete and immediate usability (it
+stems from internal chatters and requests - so the demand is already
+there).
 
+I think we should just land the change we currently have (rebased on
+top of mm-unstable to resolve merge conflicts etc.). I don't think
+zswap.writeback will get in the way of any swap.tiers functionality,
+correct? There might be some functionality duplication, but that's not
+too bad IHMO. Then we can work on swap.tiers design and implementation
+as we add the support for multiple swap tiers.
