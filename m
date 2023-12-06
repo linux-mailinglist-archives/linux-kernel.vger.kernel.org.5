@@ -2,76 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BB580734A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8BF80734C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442314AbjLFPFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 10:05:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52418 "EHLO
+        id S1442317AbjLFPF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 10:05:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442302AbjLFPFP (ORCPT
+        with ESMTP id S1379092AbjLFPFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 10:05:15 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2617CB5
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 07:05:21 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-332fd78fa9dso792693f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 07:05:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701875119; x=1702479919; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hwMf7u3p+RDwOM148aayiXMLKhs7CLyC1S19yofYD4k=;
-        b=gbxEfaVsmGL+nnmZc76/sZqBIMNdLzVRh0CPgYb27gtd3EQ1SCKi/eYbl4MKhWrd3v
-         qiXO36nUN+QC2fXHViUcjpj3g50gtmrbwS4EfsbTQsASluESePe3PFILigu2lVsGU2rn
-         NhjqK0QuqJ9TaH2QrxzWV6Yi6/tK5jzd8ReEOV5l16yxra76eeu/XcZJsj3i8HzovqIB
-         dYoVxnN8oF3TAN9jID+TMZ5W73VZuukpZjLt8iTGiEiNY7uyn3PqLworGVmhvwRPXIJX
-         Un7cBe2a4ItvFmDXkZ4kcyWGUySEzmTgrEefnc4+DWpJeCjRcHBWuMLMBRwsdh/1s3iN
-         YOEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701875119; x=1702479919;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hwMf7u3p+RDwOM148aayiXMLKhs7CLyC1S19yofYD4k=;
-        b=P16b5Dg0/gBDTz2tiq5snCwKSdZJ98rG5ZgMatvI4T0PXKqROIajN4q7j2G6m4cDaD
-         x4jcMx7qqnkLI/GUAqw6mqR3nf45l0q4Idfah2XUCvf3EM2b1t6u+OqMK5sAZxJDzTYg
-         U8NZPM8d4TtVn3Kr5AALEovi32InItYykQQOHH8OqOfk9nXCyQDRIOcTVUiLpSgcXMu0
-         lsCLAELoc0tcEDdMEQJjMjeNB7W484L7Mz2oXma7S2Lyiudw9o5mec4zL/85pbaniCw5
-         ISdec6BDD7yTqbjAegvYXxm5l6MsN2EIXbqSnXJKvfCIhVTl1D8C35Z0gWQ01R41/wFX
-         72oA==
-X-Gm-Message-State: AOJu0YzZrCOrOlHfT2LiLabYDjS6bQUtxgAgGZl5J/YgrPy/CQ36tDL6
-        mo7YXNKox5l3usn5i/au6WLjVbVDHycJ7eyZpYs=
-X-Google-Smtp-Source: AGHT+IHxmKeit4iuxsVLMovMf5KGrF2Z3fWMEQdwveHfUOweVd3Xp0JZ1c0kBbI5qx1jEzp8P/Navw==
-X-Received: by 2002:a5d:564a:0:b0:333:387b:687a with SMTP id j10-20020a5d564a000000b00333387b687amr280196wrw.199.1701875119471;
-        Wed, 06 Dec 2023 07:05:19 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id o14-20020a056000010e00b00333359b522dsm12772792wrx.77.2023.12.06.07.05.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 07:05:19 -0800 (PST)
-Date:   Wed, 6 Dec 2023 18:05:15 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] drm/bridge: nxp-ptn3460: simplify some error checking
-Message-ID: <04242630-42d8-4920-8c67-24ac9db6b3c9@moroto.mountain>
+        Wed, 6 Dec 2023 10:05:25 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584E89A;
+        Wed,  6 Dec 2023 07:05:31 -0800 (PST)
+Received: from pobox.suse.cz (unknown [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AD63A21E79;
+        Wed,  6 Dec 2023 15:05:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1701875129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fstuDZ14CDhTICiRMQLamJBK2hLQCM7gMcsouHhAvwM=;
+        b=hOL1GB2JqM+RxoEgucs2Mtl+ULTAf1pQwKnnG9598uf6Zfr42KnHp9WO3RNYqrYXMHcTOU
+        8EzJNJsA5uZBa0EdcEgvGDuAIlSJNypjZHq7zlrLJ/BiQb0zYLj9gEtYPqlSPsbNdZB+DZ
+        yjtvbpV3rJ6WUCreof6tVEwsSxTWRwg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1701875129;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fstuDZ14CDhTICiRMQLamJBK2hLQCM7gMcsouHhAvwM=;
+        b=3gIZ75ZflKLKWgKzYBM1YF9Y48YEi9Zx9CWqFeq6zUvczbTdDW86IyTxLNSD3RgAcvK2IN
+        GzAvFvWXGguoJfDw==
+Date:   Wed, 6 Dec 2023 16:05:30 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Joe Lawrence <joe.lawrence@redhat.com>
+cc:     Marcos Paulo de Souza <mpdesouza@suse.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] livepatch: Move tests from lib/livepatch to
+ selftests/livepatch
+In-Reply-To: <ZWn7dEzVWoKxycmy@redhat.com>
+Message-ID: <alpine.LSU.2.21.2312061543280.13051@pobox.suse.cz>
+References: <20231031-send-lp-kselftests-v3-0-2b1655c2605f@suse.com> <20231031-send-lp-kselftests-v3-2-2b1655c2605f@suse.com> <ZWn7dEzVWoKxycmy@redhat.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -3.26
+X-Spamd-Result: default: False [-3.26 / 50.00];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         MID_RHS_MATCH_FROMTLD(0.00)[];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.16)[-0.816];
+         RCPT_COUNT_TWELVE(0.00)[17];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_COUNT_ZERO(0.00)[0];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-3.00)[99.99%]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,59 +89,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i2c_master_send/recv() functions return negative error codes or
-they return "len" on success.  So the error handling here can be written
-as just normal checks for "if (ret < 0) return ret;".  No need to
-complicate things.
+On Fri, 1 Dec 2023, Joe Lawrence wrote:
 
-Btw, in this code the "len" parameter can never be zero, but even if
-it were, then I feel like this would still be the best way to write it.
+> On Tue, Oct 31, 2023 at 06:10:52PM -0300, Marcos Paulo de Souza wrote:
+> > The modules are being moved from lib/livepatch to
+> > tools/testing/selftests/livepatch/test_modules.
+> > 
+> > This code moving will allow writing more complex tests, like for example an
+> > userspace C code that will call a livepatched kernel function.
+> > 
+> > The modules are now built as out-of-tree
+> > modules, but being part of the kernel source means they will be maintained.
+> > 
+> > Another advantage of the code moving is to be able to easily change,
+> > debug and rebuild the tests by running make on the selftests/livepatch directory,
+> > which is not currently possible since the modules on lib/livepatch are
+> > build and installed using the "modules" target.
+> > 
+> > The current approach also keeps the ability to execute the tests manually by
+> > executing the scripts inside selftests/livepatch directory, as it's currently
+> > supported. If the modules are modified, they needed to be rebuilt before running
+> > the scripts though.
+> > 
+> > The modules are built before running the selftests when using the
+> > kselftest invocations:
+> > 
+> > 	make kselftest TARGETS=livepatch
+> > or
+> > 	make -C tools/testing/selftests/livepatch run_tests
+> > 
+> 
+> Quick question:
+> 
+> - We have been building with CONFIG_LIVEPATCH_TEST=m to generate the
+>   test modules at kernel build time
+> 
+> - Our packaging filters out the selftest scripts and supporting modules
+>   from the general kernel RPM package into their subpackages
+> 
+> - Tests are run as part of CKI or other manual tests by installing the
+>   pre-built packages from the previous step
+> 
+> 
+> After this patch, we would need to add something like the following to
+> our kernel build, before packaging:
+> 
+>   $ make KDIR=$(pwd) -C tools/testing/selftests/livepatch/
+>          ^^^^
+> 
+> If this is the correct way to build the test modules for *this* tree and
+> /lib/modules/$(shell uname -r)/build... it might be useful to document
+> in the commit message as an alternative use case.
 
-Fixes: 914437992876 ("drm/bridge: nxp-ptn3460: fix i2c_master_send() error checking")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
-This is not really a bug fix but I added a Fixes tag because I don't
-want people to pull my other commit without also applying this.
+So if I understand it correctly, you would like to stick to pre-building 
+the modules (not in-tree but now after the kernel is build using the 
+proposed way), package them and then install everything on a system 
+running the respective kernel. A valid use case in my opinion.
 
- drivers/gpu/drm/bridge/nxp-ptn3460.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+My idea is to abandon this way completely, take the selftests and build 
+and run them on the system right away.
 
-diff --git a/drivers/gpu/drm/bridge/nxp-ptn3460.c b/drivers/gpu/drm/bridge/nxp-ptn3460.c
-index 9b7eb8c669c1..7c0076e49953 100644
---- a/drivers/gpu/drm/bridge/nxp-ptn3460.c
-+++ b/drivers/gpu/drm/bridge/nxp-ptn3460.c
-@@ -54,15 +54,15 @@ static int ptn3460_read_bytes(struct ptn3460_bridge *ptn_bridge, char addr,
- 	int ret;
- 
- 	ret = i2c_master_send(ptn_bridge->client, &addr, 1);
--	if (ret <= 0) {
-+	if (ret < 0) {
- 		DRM_ERROR("Failed to send i2c command, ret=%d\n", ret);
--		return ret ?: -EIO;
-+		return ret;
- 	}
- 
- 	ret = i2c_master_recv(ptn_bridge->client, buf, len);
--	if (ret != len) {
-+	if (ret < 0) {
- 		DRM_ERROR("Failed to recv i2c data, ret=%d\n", ret);
--		return ret < 0 ? ret : -EIO;
-+		return ret;
- 	}
- 
- 	return 0;
-@@ -78,9 +78,9 @@ static int ptn3460_write_byte(struct ptn3460_bridge *ptn_bridge, char addr,
- 	buf[1] = val;
- 
- 	ret = i2c_master_send(ptn_bridge->client, buf, ARRAY_SIZE(buf));
--	if (ret != ARRAY_SIZE(buf)) {
-+	if (ret < 0) {
- 		DRM_ERROR("Failed to send i2c command, ret=%d\n", ret);
--		return ret < 0 ? ret : -EIO;
-+		return ret;
- 	}
- 
- 	return 0;
--- 
-2.42.0
+Both should be doable, hopefully, if we wire it all correctly... and 
+document it.
+
+Miroslav
+
 
