@@ -2,1108 +2,770 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42006806558
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 04:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B974B80655F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 04:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346621AbjLFDBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 22:01:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52020 "EHLO
+        id S1376311AbjLFDDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 22:03:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjLFDB2 (ORCPT
+        with ESMTP id S229920AbjLFDDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 22:01:28 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B24E1B6
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 19:01:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F385FC433C7;
-        Wed,  6 Dec 2023 03:01:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701831691;
-        bh=FolKJN/Ttf2MHwiWXPPFtd8c32kbVqAkqOxU4BZXdkk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hglsnxelXWeznl75ENAm5AFwnC8TUXhZ4UXbSfJIQc72tGEDJJjEwh1p+br7frxvr
-         4qJO+O9aFtR222GkymLW9mvXgvSO3YSD7xfsfIhQmVM5smF1+hGSerK49+cn9ctIN7
-         78rlpIkgrfkoV2A3F0hEkXpfYnZeU30On6mLhKhLw3MCyrAe3sYD7wAkwbBUXUvZ74
-         r216L9LhV0zxw3qZxpsIKHVeLtDU/5FbK2+qvEuG+cm8vQ4LNk6Jqq1MhV1H/LGhwA
-         tATnRBqYZLiwh4EvYt2ZZjCyLMsg6r1PX+44CId+CoBGfVmCGOVSaE+SkwqCsZ84GP
-         BbND7R6WVqXGg==
-Date:   Wed, 6 Dec 2023 11:01:25 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Frieder Schrempf <frieder@fris.de>
-Cc:     Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH v2 14/14] arm64: dts: imx8mm-kontron: Refactor devicetree
- for OSM-S module and board
-Message-ID: <20231206030125.GN236001@dragon>
-References: <20231130161657.556483-1-frieder@fris.de>
- <20231130161657.556483-15-frieder@fris.de>
+        Tue, 5 Dec 2023 22:03:13 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97681B1;
+        Tue,  5 Dec 2023 19:03:18 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-35d725ac060so10179365ab.2;
+        Tue, 05 Dec 2023 19:03:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701831798; x=1702436598; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wXtYIF9mDzAw2nmZ5sAQTh9n5ch5MmeRp+/MaZCXAPA=;
+        b=kokTxh7LPHmpCSaS7lorpOwngonriX6Fnq3EU+i1wlEOyjc8vNfHtXFRHwTDVz8FPv
+         m+Gla+UmXJXoNFBdgTRHO4I9soIFJz6spK0oOak7szxozXbO7Y8FukdPcmJGsf98oPvp
+         MyfjhsmjEzaaYt0xf8hUIrL7NvcojbgJ93NR3MaENmfbEjmZpE9sokDvGqBXHNZ+R+Jq
+         KU6vN7sm9gbuLVsh7OfSPTO16sndW0yl0TVUTQYALhtdmsFnpSuJpI4d6Sr1TlI0vfia
+         MnsPfOXPmIBw06U0ufQudO5cx2nWlMq2NsWj0uCexl96oQnn1g6oN6YAIH5TNePg7ZuU
+         2otQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701831798; x=1702436598;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wXtYIF9mDzAw2nmZ5sAQTh9n5ch5MmeRp+/MaZCXAPA=;
+        b=vYAHnlhGLrBTgUMcgaHx8RQ1vyInsjJ4Igpfw/enD7fm3+rcKmZM70Be9GRx2lnAay
+         L5rtVDg24gNhHLBf/SBbwooofWE8cFs0TL6G1iQE6p4HahHKhC5+euIxMGU/0R6wyCWy
+         I7QflLavjhP1qToXE3b1D4FE+gN+iN+s4EN2c7nQ9RIzpDGKZIERRRYA6wFqJZxMvuEZ
+         jDQfRCzBV77CfoTjZiHFLrqOOilSHb8JWxJA3GjYz+j+JQ7OeIbsY343xUSt3Q9kSVCP
+         cAl53z+VLRuI2GRIlR5y8//yxrrkZ1xYYG7sWmLrPPS3OOJQ2Vrch2OVQcWlZBlrJyMC
+         azxQ==
+X-Gm-Message-State: AOJu0Ywg7H7su1PvX7JKhyylt4YWuydjCi3CImMgzAlnz6VER8ZW4CFT
+        gVcH/xQ5ZXp9e/qWHts+PTa1TulNXzBvRxJm2NE=
+X-Google-Smtp-Source: AGHT+IG8IbUJhmurGx42aO4Y6bKD97oCS5MfxKmBymUoqPbJqMDhqT3T83yHZNKtFxKbNnveCAckh0K+TZNBSeU6NcM=
+X-Received: by 2002:a92:c60a:0:b0:35d:59a2:128d with SMTP id
+ p10-20020a92c60a000000b0035d59a2128dmr331888ilm.57.1701831797740; Tue, 05 Dec
+ 2023 19:03:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130161657.556483-15-frieder@fris.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231130194023.4102148-1-nphamcs@gmail.com> <20231130194023.4102148-4-nphamcs@gmail.com>
+In-Reply-To: <20231130194023.4102148-4-nphamcs@gmail.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Tue, 5 Dec 2023 19:03:06 -0800
+Message-ID: <CAKEwX=NQujx29=+bbs2A8wQ-JJ=-9=SmdzEKAUyn6uN2KJt0Eg@mail.gmail.com>
+Subject: Re: [PATCH v8 3/6] zswap: make shrinking memcg-aware
+To:     akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 05:16:14PM +0100, Frieder Schrempf wrote:
-> From: Frieder Schrempf <frieder.schrempf@kontron.de>
-> 
-> The OSM spec defines dedicated functions for all pads of the SoM.
-> Therefore we can assume that carrier board designs stick to these
-> definitions and extend the SoM devicetree include with matching
-> default nodes and pinmux settings.
-> 
-> This way we can reduce the overhead and redundancy in the carrier
-> board devicetrees while still sticking to the policy of separating
-> board and module description.
-> 
-> Even if the carrier board design deviates slightly from the spec it
-> can define its own pinmux definitions and use them as necessary or
-> even disable unused nodes from the SoM devicetree.
-> 
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+On Thu, Nov 30, 2023 at 11:40=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrot=
+e:
+>
+> From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+>
+> Currently, we only have a single global LRU for zswap. This makes it
+> impossible to perform worload-specific shrinking - an memcg cannot
+> determine which pages in the pool it owns, and often ends up writing
+> pages from other memcgs. This issue has been previously observed in
+> practice and mitigated by simply disabling memcg-initiated shrinking:
+>
+> https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/=
+#u
+>
+> This patch fully resolves the issue by replacing the global zswap LRU
+> with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
+>
+> a) When a store attempt hits an memcg limit, it now triggers a
+>    synchronous reclaim attempt that, if successful, allows the new
+>    hotter page to be accepted by zswap.
+> b) If the store attempt instead hits the global zswap limit, it will
+>    trigger an asynchronous reclaim attempt, in which an memcg is
+>    selected for reclaim in a round-robin-like fashion.
+>
+> Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> Co-developed-by: Nhat Pham <nphamcs@gmail.com>
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 > ---
-> Changes for v2:
-> * none
-> ---
->  .../dts/freescale/imx8mm-kontron-bl-osm-s.dts | 269 +++------
->  .../dts/freescale/imx8mm-kontron-osm-s.dtsi   | 552 +++++++++++++++++-
->  2 files changed, 616 insertions(+), 205 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts b/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts
-> index 12f786a72fbd5..efadfdff00af1 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts
-> @@ -25,8 +25,6 @@ osc_can: clock-osc-can {
->  
->  	leds {
->  		compatible = "gpio-leds";
-> -		pinctrl-names = "default";
-> -		pinctrl-0 = <&pinctrl_gpio_led>;
->  
->  		led1 {
->  			label = "led1";
-> @@ -52,24 +50,12 @@ pwm-beeper {
->  
->  	reg_rst_eth2: regulator-rst-eth2 {
->  		compatible = "regulator-fixed";
-> -		pinctrl-names = "default";
-> -		pinctrl-0 = <&pinctrl_usb_eth2>;
->  		gpio = <&gpio1 1 GPIO_ACTIVE_HIGH>;
->  		enable-active-high;
->  		regulator-always-on;
->  		regulator-name = "rst-usb-eth2";
->  	};
->  
-> -	reg_usb1_vbus: regulator-usb1-vbus {
-> -		compatible = "regulator-fixed";
-> -		pinctrl-names = "default";
-> -		pinctrl-0 = <&pinctrl_reg_usb1_vbus>;
-> -		gpio = <&gpio3 25 GPIO_ACTIVE_LOW>;
-> -		regulator-min-microvolt = <5000000>;
-> -		regulator-max-microvolt = <5000000>;
-> -		regulator-name = "usb1-vbus";
-> -	};
-> -
->  	reg_vdd_5v: regulator-5v {
->  		compatible = "regulator-fixed";
->  		regulator-always-on;
-> @@ -80,9 +66,6 @@ reg_vdd_5v: regulator-5v {
->  };
->  
->  &ecspi2 {
-> -	pinctrl-names = "default";
-> -	pinctrl-0 = <&pinctrl_ecspi2>;
-> -	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
->  	status = "okay";
->  
->  	can@0 {
-> @@ -103,9 +86,6 @@ can@0 {
->  };
->  
->  &ecspi3 {
-> -	pinctrl-names = "default";
-> -	pinctrl-0 = <&pinctrl_ecspi3>;
-> -	cs-gpios = <&gpio5 25 GPIO_ACTIVE_LOW>;
->  	status = "okay";
->  
->  	eeram@0 {
-> @@ -117,7 +97,7 @@ eeram@0 {
->  
->  &fec1 {
->  	pinctrl-names = "default";
-> -	pinctrl-0 = <&pinctrl_enet>;
-> +	pinctrl-0 = <&pinctrl_enet_rgmii>;
->  	phy-connection-type = "rgmii-id";
->  	phy-handle = <&ethphy>;
->  	status = "okay";
-> @@ -136,27 +116,59 @@ ethphy: ethernet-phy@0 {
->  	};
->  };
->  
-> +/*
-> + * Rename SoM signals according to board usage:
-> + *   GPIO_B_0      -> DIO1_OUT
-> + *   GPIO_B_1      -> DIO2_OUT
-> + */
->  &gpio1 {
-> -	pinctrl-names = "default";
-> -	pinctrl-0 = <&pinctrl_gpio1>;
-> -	gpio-line-names = "", "", "", "dio1-out", "", "", "dio1-in", "dio2-out",
-> -			  "dio2-in", "dio3-out", "dio3-in", "dio4-out", "", "", "", "",
-> -			  "", "", "", "", "", "", "", "",
-> -			  "", "", "", "", "", "", "", "";
-> +	gpio-line-names = "", "GPIO_A_0", "", "GPIO_A_1",
-> +			  "", "GPIO_A_2", "GPIO_A_3", "GPIO_A_4",
-> +			  "GPIO_A_5", "GPIO_A_6", "GPIO_A_7", "DIO1_OUT",
-> +			  "DIO2_OUT", "USB_A_OC#", "CAM_MCK", "USB_B_OC#",
-> +			  "ETH_MDC", "ETH_MDIO", "ETH_A_(S)(R)(G)MII_TXD3",
-> +			  "ETH_A_(S)(R)(G)MII_TXD2", "ETH_A_(S)(R)(G)MII_TXD1",
-> +			  "ETH_A_(S)(R)(G)MII_TXD0", "ETH_A_(R)(G)MII_TX_EN(_ER)",
-> +			  "ETH_A_(R)(G)MII_TX_CLK", "ETH_A_(R)(G)MII_RX_DV(_ER)",
-> +			  "ETH_A_(R)(G)MII_RX_CLK", "ETH_A_(S)(R)(G)MII_RXD0",
-> +			  "ETH_A_(S)(R)(G)MII_RXD1", "ETH_A_(R)(G)MII_RXD2",
-> +			  "ETH_A_(R)(G)MII_RXD3";
->  };
->  
-> -&gpio5 {
-> -	pinctrl-names = "default";
-> -	pinctrl-0 = <&pinctrl_gpio5>;
-> -	gpio-line-names = "", "", "dio4-in", "", "", "", "", "",
-> -			  "", "", "", "", "", "", "", "",
-> -			  "", "", "", "", "", "", "", "",
-> -			  "", "", "", "", "", "", "", "";
-> +/*
-> + * Rename SoM signals according to board usage:
-> + *   GPIO_B_2      -> DIO3_OUT
-> + *   GPIO_B_3      -> DIO4_OUT
-> + */
-> +&gpio3 {
-> +	gpio-line-names = "GPIO_C_5", "GPIO_C_4", "SDIO_B_CD#", "SDIO_B_D5",
-> +			  "SDIO_B_D6", "SDIO_B_D7", "GPIO_C_0", "GPIO_C_1",
-> +			  "GPIO_C_2", "GPIO_C_3", "SDIO_B_D0", "SDIO_B_D1",
-> +			  "SDIO_B_D2", "SDIO_B_D3", "", "SDIO_B_D4",
-> +			  "CARRIER_PWR_EN", "SDIO_B_CLK", "SDIO_B_CMD", "DIO3_OUT",
-> +			  "USB_B_EN", "DIO4_OUT", "PCIe_CLKREQ#", "PCIe_A_PERST#",
-> +			  "PCIe_WAKE#", "USB_A_EN";
-> +};
+>  include/linux/memcontrol.h |   5 +
+>  include/linux/zswap.h      |   2 +
+>  mm/memcontrol.c            |   2 +
+>  mm/swap.h                  |   3 +-
+>  mm/swap_state.c            |  24 +++-
+>  mm/zswap.c                 | 269 +++++++++++++++++++++++++++++--------
+>  6 files changed, 245 insertions(+), 60 deletions(-)
+>
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 2bd7d14ace78..a308c8eacf20 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1192,6 +1192,11 @@ static inline struct mem_cgroup *page_memcg_check(=
+struct page *page)
+>         return NULL;
+>  }
+>
+> +static inline struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cg=
+roup *objcg)
+> +{
+> +       return NULL;
+> +}
 > +
-> +/*
-> + * Rename SoM signals according to board usage:
-> + *   GPIO_B_4      -> DIO1_IN
-> + *   GPIO_B_5      -> DIO2_IN
-> + *   GPIO_B_6      -> DIO3_IN
-> + *   GPIO_B_7      -> DIO4_IN
-> + */
-> +&gpio4 {
-> +	gpio-line-names = "GPIO_C_7", "", "I2S_A_DATA_IN", "I2S_B_DATA_IN",
-> +			  "DIO1_IN", "BOOT_SEL0#", "BOOT_SEL1#", "",
-> +			  "", "", "I2S_LRCLK", "I2S_BITCLK",
-> +			  "I2S_A_DATA_OUT", "I2S_B_DATA_OUT", "DIO2_IN", "DIO3_IN",
-> +			  "DIO4_IN", "SPI_A_/WP_(IO2)", "SPI_A_/HOLD_(IO3)", "GPIO_C_6",
-> +			  "I2S_MCLK", "UART_A_TX", "UART_A_RX", "UART_A_CTS",
-> +			  "UART_A_RTS", "", "", "",
-> +			  "PCIe_SM_ALERT", "UART_B_RTS", "UART_B_CTS", "UART_B_RX";
->  };
->  
->  &i2c3 {
-> -	pinctrl-names = "default";
-> -	pinctrl-0 = <&pinctrl_i2c3>;
->  	status = "okay";
->  
->  	usb-hub@2c {
-> @@ -169,27 +181,28 @@ usb-hub@2c {
->  	};
->  };
->  
-> -&i2c4 {
-> -	pinctrl-names = "default";
-> -	pinctrl-0 = <&pinctrl_i2c4>;
-> -};
-> -
->  &pwm2 {
-> -	pinctrl-names = "default";
-> -	pinctrl-0 = <&pinctrl_pwm2>;
->  	status = "okay";
->  };
->  
-> +&reg_usb2_vbus {
-> +	status = "disabled";
-> +};
+>  static inline bool folio_memcg_kmem(struct folio *folio)
+>  {
+>         return false;
+> diff --git a/include/linux/zswap.h b/include/linux/zswap.h
+> index 2a60ce39cfde..e571e393669b 100644
+> --- a/include/linux/zswap.h
+> +++ b/include/linux/zswap.h
+> @@ -15,6 +15,7 @@ bool zswap_load(struct folio *folio);
+>  void zswap_invalidate(int type, pgoff_t offset);
+>  void zswap_swapon(int type);
+>  void zswap_swapoff(int type);
+> +void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
+>
+>  #else
+>
+> @@ -31,6 +32,7 @@ static inline bool zswap_load(struct folio *folio)
+>  static inline void zswap_invalidate(int type, pgoff_t offset) {}
+>  static inline void zswap_swapon(int type) {}
+>  static inline void zswap_swapoff(int type) {}
+> +static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)=
+ {}
+>
+>  #endif
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 470821d1ba1a..792ca21c5815 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5614,6 +5614,8 @@ static void mem_cgroup_css_offline(struct cgroup_su=
+bsys_state *css)
+>         page_counter_set_min(&memcg->memory, 0);
+>         page_counter_set_low(&memcg->memory, 0);
+>
+> +       zswap_memcg_offline_cleanup(memcg);
 > +
-> +&reg_usdhc2_vcc {
-> +	status = "disabled";
-> +};
+>         memcg_offline_kmem(memcg);
+>         reparent_shrinker_deferred(memcg);
+>         wb_memcg_offline(memcg);
+> diff --git a/mm/swap.h b/mm/swap.h
+> index 73c332ee4d91..c0dc73e10e91 100644
+> --- a/mm/swap.h
+> +++ b/mm/swap.h
+> @@ -51,7 +51,8 @@ struct page *read_swap_cache_async(swp_entry_t entry, g=
+fp_t gfp_mask,
+>                                    struct swap_iocb **plug);
+>  struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
+>                                      struct mempolicy *mpol, pgoff_t ilx,
+> -                                    bool *new_page_allocated);
+> +                                    bool *new_page_allocated,
+> +                                    bool skip_if_exists);
+>  struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t flag,
+>                                     struct mempolicy *mpol, pgoff_t ilx);
+>  struct page *swapin_readahead(swp_entry_t entry, gfp_t flag,
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index 85d9e5806a6a..6c84236382f3 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -412,7 +412,8 @@ struct folio *filemap_get_incore_folio(struct address=
+_space *mapping,
+>
+>  struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
+>                                      struct mempolicy *mpol, pgoff_t ilx,
+> -                                    bool *new_page_allocated)
+> +                                    bool *new_page_allocated,
+> +                                    bool skip_if_exists)
+>  {
+>         struct swap_info_struct *si;
+>         struct folio *folio;
+> @@ -470,6 +471,17 @@ struct page *__read_swap_cache_async(swp_entry_t ent=
+ry, gfp_t gfp_mask,
+>                 if (err !=3D -EEXIST)
+>                         goto fail_put_swap;
+>
+> +               /*
+> +                * Protect against a recursive call to __read_swap_cache_=
+async()
+> +                * on the same entry waiting forever here because SWAP_HA=
+S_CACHE
+> +                * is set but the folio is not the swap cache yet. This c=
+an
+> +                * happen today if mem_cgroup_swapin_charge_folio() below
+> +                * triggers reclaim through zswap, which may call
+> +                * __read_swap_cache_async() in the writeback path.
+> +                */
+> +               if (skip_if_exists)
+> +                       goto fail_put_swap;
 > +
-> +&reg_usdhc3_vcc {
-> +	status = "disabled";
-> +};
+>                 /*
+>                  * We might race against __delete_from_swap_cache(), and
+>                  * stumble across a swap_map entry whose SWAP_HAS_CACHE
+> @@ -537,7 +549,7 @@ struct page *read_swap_cache_async(swp_entry_t entry,=
+ gfp_t gfp_mask,
+>
+>         mpol =3D get_vma_policy(vma, addr, 0, &ilx);
+>         page =3D __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
+> -                                       &page_allocated);
+> +                                       &page_allocated, false);
+>         mpol_cond_put(mpol);
+>
+>         if (page_allocated)
+> @@ -654,7 +666,7 @@ struct page *swap_cluster_readahead(swp_entry_t entry=
+, gfp_t gfp_mask,
+>                 /* Ok, do the async read-ahead now */
+>                 page =3D __read_swap_cache_async(
+>                                 swp_entry(swp_type(entry), offset),
+> -                               gfp_mask, mpol, ilx, &page_allocated);
+> +                               gfp_mask, mpol, ilx, &page_allocated, fal=
+se);
+>                 if (!page)
+>                         continue;
+>                 if (page_allocated) {
+> @@ -672,7 +684,7 @@ struct page *swap_cluster_readahead(swp_entry_t entry=
+, gfp_t gfp_mask,
+>  skip:
+>         /* The page was likely read above, so no need for plugging here *=
+/
+>         page =3D __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
+> -                                       &page_allocated);
+> +                                       &page_allocated, false);
+>         if (unlikely(page_allocated))
+>                 swap_readpage(page, false, NULL);
+>         return page;
+> @@ -827,7 +839,7 @@ static struct page *swap_vma_readahead(swp_entry_t ta=
+rg_entry, gfp_t gfp_mask,
+>                 pte_unmap(pte);
+>                 pte =3D NULL;
+>                 page =3D __read_swap_cache_async(entry, gfp_mask, mpol, i=
+lx,
+> -                                               &page_allocated);
+> +                                               &page_allocated, false);
+>                 if (!page)
+>                         continue;
+>                 if (page_allocated) {
+> @@ -847,7 +859,7 @@ static struct page *swap_vma_readahead(swp_entry_t ta=
+rg_entry, gfp_t gfp_mask,
+>  skip:
+>         /* The page was likely read above, so no need for plugging here *=
+/
+>         page =3D __read_swap_cache_async(targ_entry, gfp_mask, mpol, targ=
+_ilx,
+> -                                       &page_allocated);
+> +                                       &page_allocated, false);
+>         if (unlikely(page_allocated))
+>                 swap_readpage(page, false, NULL);
+>         return page;
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 4bdb2d83bb0d..f323e45cbdc7 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -35,6 +35,7 @@
+>  #include <linux/writeback.h>
+>  #include <linux/pagemap.h>
+>  #include <linux/workqueue.h>
+> +#include <linux/list_lru.h>
+>
+>  #include "swap.h"
+>  #include "internal.h"
+> @@ -174,8 +175,8 @@ struct zswap_pool {
+>         struct work_struct shrink_work;
+>         struct hlist_node node;
+>         char tfm_name[CRYPTO_MAX_ALG_NAME];
+> -       struct list_head lru;
+> -       spinlock_t lru_lock;
+> +       struct list_lru list_lru;
+> +       struct mem_cgroup *next_shrink;
+>  };
+>
+>  /*
+> @@ -291,15 +292,46 @@ static void zswap_update_total_size(void)
+>         zswap_pool_total_size =3D total;
+>  }
+>
+> +/* should be called under RCU */
+> +#ifdef CONFIG_MEMCG
+> +static inline struct mem_cgroup *mem_cgroup_from_entry(struct zswap_entr=
+y *entry)
+> +{
+> +       return entry->objcg ? obj_cgroup_memcg(entry->objcg) : NULL;
+> +}
+> +#else
+> +static inline struct mem_cgroup *mem_cgroup_from_entry(struct zswap_entr=
+y *entry)
+> +{
+> +       return NULL;
+> +}
+> +#endif
 > +
->  &uart1 {
-> -	pinctrl-names = "default";
-> -	pinctrl-0 = <&pinctrl_uart1>;
->  	uart-has-rtscts;
->  	status = "okay";
->  };
->  
->  &uart2 {
-> -	pinctrl-names = "default";
-> -	pinctrl-0 = <&pinctrl_uart2>;
->  	linux,rs485-enabled-at-boot-time;
->  	uart-has-rtscts;
->  	status = "okay";
-> @@ -197,8 +210,6 @@ &uart2 {
->  
->  &usbotg1 {
->  	dr_mode = "otg";
-> -	disable-over-current;
-> -	vbus-supply = <&reg_usb1_vbus>;
->  	status = "okay";
->  };
->  
-> @@ -209,6 +220,9 @@ &usbotg2 {
->  	#size-cells = <0>;
->  	status = "okay";
->  
-> +	/* VBUS is controlled by the hub */
-> +	/delete-property/ vbus-supply;
+> +static inline int entry_to_nid(struct zswap_entry *entry)
+> +{
+> +       return page_to_nid(virt_to_page(entry));
+> +}
 > +
->  	usb1@1 {
->  		compatible = "usb424,2514";
->  		reg = <1>;
-> @@ -224,171 +238,20 @@ usbnet: ethernet@1 {
->  };
->  
->  &usdhc2 {
-> -	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> -	pinctrl-0 = <&pinctrl_usdhc2>;
-> -	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
-> -	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
->  	vmmc-supply = <&reg_vdd_3v3>;
-> -	vqmmc-supply = <&reg_nvcc_sd>;
-> -	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
->  	status = "okay";
->  };
->  
->  &iomuxc {
->  	pinctrl_can: cangrp {
->  		fsl,pins = <
-> -			MX8MM_IOMUXC_SAI3_TXD_GPIO5_IO1			0x19
-> -		>;
-> -	};
-> -
-> -	pinctrl_ecspi2: ecspi2grp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_ECSPI2_MISO_ECSPI2_MISO		0x82
-> -			MX8MM_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI		0x82
-> -			MX8MM_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK		0x82
-> -			MX8MM_IOMUXC_ECSPI2_SS0_GPIO5_IO13		0x19
-> -		>;
-> -	};
-> -
-> -	pinctrl_ecspi3: ecspi3grp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_UART2_RXD_ECSPI3_MISO		0x82
-> -			MX8MM_IOMUXC_UART1_TXD_ECSPI3_MOSI		0x82
-> -			MX8MM_IOMUXC_UART1_RXD_ECSPI3_SCLK		0x82
-> -			MX8MM_IOMUXC_UART2_TXD_GPIO5_IO25		0x19
-> -		>;
-> -	};
-> -
-> -	pinctrl_enet: enetgrp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_ENET_MDC_ENET1_MDC			0x3
-> -			MX8MM_IOMUXC_ENET_MDIO_ENET1_MDIO		0x3
-> -			MX8MM_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f
-> -			MX8MM_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f
-> -			MX8MM_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f
-> -			MX8MM_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f
-> -			MX8MM_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91
-> -			MX8MM_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91
-> -			MX8MM_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91
-> -			MX8MM_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91
-> -			MX8MM_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f
-> -			MX8MM_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91
-> -			MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
-> -			MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
-> -			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3		0x19 /* PHY RST */
-> -		>;
-> -	};
-> -
-> -	pinctrl_gpio_led: gpioledgrp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_GPIO1_IO05_GPIO1_IO5		0x19
-> -			MX8MM_IOMUXC_GPIO1_IO07_GPIO1_IO7		0x19
-> -			MX8MM_IOMUXC_GPIO1_IO08_GPIO1_IO8		0x19
-> -		>;
-> -	};
-> -
-> -	pinctrl_gpio1: gpio1grp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_GPIO1_IO01_GPIO1_IO1		0x19
-> -			MX8MM_IOMUXC_GPIO1_IO09_GPIO1_IO9		0x19
-> -			MX8MM_IOMUXC_GPIO1_IO11_GPIO1_IO11		0x19
-> -			MX8MM_IOMUXC_GPIO1_IO06_GPIO1_IO6		0x19
-> -			MX8MM_IOMUXC_GPIO1_IO10_GPIO1_IO10		0x19
-> -		>;
-> -	};
-> -
-> -	pinctrl_gpio5: gpio5grp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_SAI3_MCLK_GPIO5_IO2		0x19
-> -		>;
-> -	};
-> -
-> -	pinctrl_i2c3: i2c3grp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_I2C3_SCL_I2C3_SCL			0x40000083
-> -			MX8MM_IOMUXC_I2C3_SDA_I2C3_SDA			0x40000083
-> -		>;
-> -	};
-> -
-> -	pinctrl_i2c4: i2c4grp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_I2C4_SCL_I2C4_SCL			0x40000083
-> -			MX8MM_IOMUXC_I2C4_SDA_I2C4_SDA			0x40000083
-> -		>;
-> -	};
-> -
-> -	pinctrl_pwm2: pwm2grp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_SPDIF_RX_PWM2_OUT			0x19
-> -		>;
-> -	};
-> -
-> -	pinctrl_reg_usb1_vbus: regusb1vbusgrp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_SAI5_MCLK_GPIO3_IO25		0x19
-> -		>;
-> -	};
-> -
-> -	pinctrl_uart1: uart1grp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_SAI2_RXC_UART1_DCE_RX		0x0
-> -			MX8MM_IOMUXC_SAI2_RXFS_UART1_DCE_TX		0x0
-> -			MX8MM_IOMUXC_SAI2_RXD0_UART1_DCE_RTS_B		0x0
-> -			MX8MM_IOMUXC_SAI2_TXFS_UART1_DCE_CTS_B		0x0
-> -		>;
-> -	};
-> -
-> -	pinctrl_uart2: uart2grp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_SAI3_TXFS_UART2_DCE_RX		0x0
-> -			MX8MM_IOMUXC_SAI3_TXC_UART2_DCE_TX		0x0
-> -			MX8MM_IOMUXC_SAI3_RXD_UART2_DCE_RTS_B		0x0
-> -			MX8MM_IOMUXC_SAI3_RXC_UART2_DCE_CTS_B		0x0
-> -		>;
-> -	};
-> -
-> -	pinctrl_usb_eth2: usbeth2grp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_GPIO1_IO01_GPIO1_IO1		0x19
-> -		>;
-> -	};
-> -
-> -	pinctrl_usdhc2: usdhc2grp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x90
-> -			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d0
-> -			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d0
-> -			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d0
-> -			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d0
-> -			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d0
-> -			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x19
-> -			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x90
-> -		>;
-> -	};
-> -
-> -	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
-> -		fsl,pins = <
-> -			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x94
-> -			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d4
-> -			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d4
-> -			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d4
-> -			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d4
-> -			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d4
-> -			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x19
-> -			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x90
-> +			MX8MM_IOMUXC_SAI3_TXD_GPIO5_IO1			0x19  /* SDIO_B_PWR_EN */
->  		>;
->  	};
->  
-> -	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
-> +	pinctrl_usb_hub: usbhubgrp {
->  		fsl,pins = <
-> -			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x96
-> -			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d6
-> -			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d6
-> -			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d6
-> -			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d6
-> -			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d6
-> -			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x19
-> -			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x90
-> +			MX8MM_IOMUXC_SAI3_MCLK_GPIO5_IO2		0x19 /* SDIO_B_WP */
->  		>;
->  	};
->  };
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-osm-s.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-osm-s.dtsi
-> index 6b9058fc53332..1a5c29565e7fe 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-osm-s.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-osm-s.dtsi
-> @@ -3,6 +3,7 @@
->   * Copyright (C) 2022 Kontron Electronics GmbH
->   */
->  
-> +#include <dt-bindings/gpio/gpio.h>
->  #include <dt-bindings/interrupt-controller/irq.h>
->  #include "imx8mm.dtsi"
->  
-> @@ -28,6 +29,73 @@ memory@40000000 {
->  	chosen {
->  		stdout-path = &uart3;
->  	};
+> +void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)
+> +{
+> +       struct zswap_pool *pool;
 > +
-> +	reg_vdd_carrier: regulator-vdd-carrier {
-> +		compatible = "regulator-fixed";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_reg_vdd_carrier>;
-> +		enable-active-high;
-> +		gpio = <&gpio3 16 GPIO_ACTIVE_HIGH>;
+> +       /* lock out zswap pools list modification */
+> +       spin_lock(&zswap_pools_lock);
+> +       list_for_each_entry(pool, &zswap_pools, list) {
+> +               if (pool->next_shrink =3D=3D memcg)
+> +                       pool->next_shrink =3D mem_cgroup_iter(NULL, pool-=
+>next_shrink, NULL);
+> +       }
+> +       spin_unlock(&zswap_pools_lock);
+> +}
+> +
+>  /*********************************
+>  * zswap entry functions
+>  **********************************/
+>  static struct kmem_cache *zswap_entry_cache;
+>
+> -static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp)
+> +static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp, int nid)
+>  {
+>         struct zswap_entry *entry;
+> -       entry =3D kmem_cache_alloc(zswap_entry_cache, gfp);
+> +       entry =3D kmem_cache_alloc_node(zswap_entry_cache, gfp, nid);
+>         if (!entry)
+>                 return NULL;
+>         entry->refcount =3D 1;
+> @@ -312,6 +344,61 @@ static void zswap_entry_cache_free(struct zswap_entr=
+y *entry)
+>         kmem_cache_free(zswap_entry_cache, entry);
+>  }
+>
+> +/*********************************
+> +* lru functions
+> +**********************************/
+> +static void zswap_lru_add(struct list_lru *list_lru, struct zswap_entry =
+*entry)
+> +{
+> +       int nid =3D entry_to_nid(entry);
+> +       struct mem_cgroup *memcg;
+> +
+> +       /*
+> +        * Note that it is safe to use rcu_read_lock() here, even in the =
+face of
+> +        * concurrent memcg offlining. Thanks to the memcg->kmemcg_id ind=
+irection
+> +        * used in list_lru lookup, only two scenarios are possible:
+> +        *
+> +        * 1. list_lru_add() is called before memcg->kmemcg_id is updated=
+. The
+> +        *    new entry will be reparented to memcg's parent's list_lru.
+> +        * 2. list_lru_add() is called after memcg->kmemcg_id is updated.=
+ The
+> +        *    new entry will be added directly to memcg's parent's list_l=
+ru.
+> +        *
+> +        * Similar reasoning holds for list_lru_del() and list_lru_putbac=
+k().
+> +        */
+> +       rcu_read_lock();
+> +       memcg =3D mem_cgroup_from_entry(entry);
+> +       /* will always succeed */
+> +       list_lru_add(list_lru, &entry->lru, nid, memcg);
+> +       rcu_read_unlock();
+> +}
+> +
+> +static void zswap_lru_del(struct list_lru *list_lru, struct zswap_entry =
+*entry)
+> +{
+> +       int nid =3D entry_to_nid(entry);
+> +       struct mem_cgroup *memcg;
+> +
+> +       rcu_read_lock();
+> +       memcg =3D mem_cgroup_from_entry(entry);
+> +       /* will always succeed */
+> +       list_lru_del(list_lru, &entry->lru, nid, memcg);
+> +       rcu_read_unlock();
+> +}
+> +
+> +static void zswap_lru_putback(struct list_lru *list_lru,
+> +               struct zswap_entry *entry)
+> +{
+> +       int nid =3D entry_to_nid(entry);
+> +       spinlock_t *lock =3D &list_lru->node[nid].lock;
+> +       struct mem_cgroup *memcg;
+> +
+> +       rcu_read_lock();
+> +       memcg =3D mem_cgroup_from_entry(entry);
+> +       spin_lock(lock);
+> +       /* we cannot use list_lru_add here, because it increments node's =
+lru count */
+> +       list_lru_putback(list_lru, &entry->lru, nid, memcg);
+> +       spin_unlock(lock);
+> +       rcu_read_unlock();
+> +}
+> +
+>  /*********************************
+>  * rbtree functions
+>  **********************************/
+> @@ -396,9 +483,7 @@ static void zswap_free_entry(struct zswap_entry *entr=
+y)
+>         if (!entry->length)
+>                 atomic_dec(&zswap_same_filled_pages);
+>         else {
+> -               spin_lock(&entry->pool->lru_lock);
+> -               list_del(&entry->lru);
+> -               spin_unlock(&entry->pool->lru_lock);
+> +               zswap_lru_del(&entry->pool->list_lru, entry);
+>                 zpool_free(zswap_find_zpool(entry), entry->handle);
+>                 zswap_pool_put(entry->pool);
+>         }
+> @@ -632,21 +717,15 @@ static void zswap_invalidate_entry(struct zswap_tre=
+e *tree,
+>                 zswap_entry_put(tree, entry);
+>  }
+>
+> -static int zswap_reclaim_entry(struct zswap_pool *pool)
+> +static enum lru_status shrink_memcg_cb(struct list_head *item, struct li=
+st_lru_one *l,
+> +                                      spinlock_t *lock, void *arg)
+>  {
+> -       struct zswap_entry *entry;
+> +       struct zswap_entry *entry =3D container_of(item, struct zswap_ent=
+ry, lru);
+>         struct zswap_tree *tree;
+>         pgoff_t swpoffset;
+> -       int ret;
+> +       enum lru_status ret =3D LRU_REMOVED_RETRY;
+> +       int writeback_result;
+>
+> -       /* Get an entry off the LRU */
+> -       spin_lock(&pool->lru_lock);
+> -       if (list_empty(&pool->lru)) {
+> -               spin_unlock(&pool->lru_lock);
+> -               return -EINVAL;
+> -       }
+> -       entry =3D list_last_entry(&pool->lru, struct zswap_entry, lru);
+> -       list_del_init(&entry->lru);
+>         /*
+>          * Once the lru lock is dropped, the entry might get freed. The
+>          * swpoffset is copied to the stack, and entry isn't deref'd agai=
+n
+> @@ -654,28 +733,32 @@ static int zswap_reclaim_entry(struct zswap_pool *p=
+ool)
+>          */
+>         swpoffset =3D swp_offset(entry->swpentry);
+>         tree =3D zswap_trees[swp_type(entry->swpentry)];
+> -       spin_unlock(&pool->lru_lock);
+> +       list_lru_isolate(l, item);
+> +       /*
+> +        * It's safe to drop the lock here because we return either
+> +        * LRU_REMOVED_RETRY or LRU_RETRY.
+> +        */
+> +       spin_unlock(lock);
+>
+>         /* Check for invalidate() race */
+>         spin_lock(&tree->lock);
+> -       if (entry !=3D zswap_rb_search(&tree->rbroot, swpoffset)) {
+> -               ret =3D -EAGAIN;
+> +       if (entry !=3D zswap_rb_search(&tree->rbroot, swpoffset))
+>                 goto unlock;
+> -       }
+> +
+>         /* Hold a reference to prevent a free during writeback */
+>         zswap_entry_get(entry);
+>         spin_unlock(&tree->lock);
+>
+> -       ret =3D zswap_writeback_entry(entry, tree);
+> +       writeback_result =3D zswap_writeback_entry(entry, tree);
+>
+>         spin_lock(&tree->lock);
+> -       if (ret) {
+> -               /* Writeback failed, put entry back on LRU */
+> -               spin_lock(&pool->lru_lock);
+> -               list_move(&entry->lru, &pool->lru);
+> -               spin_unlock(&pool->lru_lock);
+> +       if (writeback_result) {
+> +               zswap_reject_reclaim_fail++;
+> +               zswap_lru_putback(&entry->pool->list_lru, entry);
+> +               ret =3D LRU_RETRY;
+>                 goto put_unlock;
+>         }
+> +       zswap_written_back_pages++;
+>
+>         /*
+>          * Writeback started successfully, the page now belongs to the
+> @@ -689,27 +772,93 @@ static int zswap_reclaim_entry(struct zswap_pool *p=
+ool)
+>         zswap_entry_put(tree, entry);
+>  unlock:
+>         spin_unlock(&tree->lock);
+> -       return ret ? -EAGAIN : 0;
+> +       spin_lock(lock);
+> +       return ret;
+> +}
+> +
+> +static int shrink_memcg(struct mem_cgroup *memcg)
+> +{
+> +       struct zswap_pool *pool;
+> +       int nid, shrunk =3D 0;
+> +
+> +       /*
+> +        * Skip zombies because their LRUs are reparented and we would be
+> +        * reclaiming from the parent instead of the dead memcg.
+> +        */
+> +       if (memcg && !mem_cgroup_online(memcg))
+> +               return -ENOENT;
+> +
+> +       pool =3D zswap_pool_current_get();
+> +       if (!pool)
+> +               return -EINVAL;
+> +
+> +       for_each_node_state(nid, N_NORMAL_MEMORY) {
+> +               unsigned long nr_to_walk =3D 1;
+> +
+> +               shrunk +=3D list_lru_walk_one(&pool->list_lru, nid, memcg=
+,
+> +                                           &shrink_memcg_cb, NULL, &nr_t=
+o_walk);
+> +       }
+> +       zswap_pool_put(pool);
+> +       return shrunk ? 0 : -EAGAIN;
+>  }
+>
+>  static void shrink_worker(struct work_struct *w)
+>  {
+>         struct zswap_pool *pool =3D container_of(w, typeof(*pool),
+>                                                 shrink_work);
+> +       struct mem_cgroup *memcg;
+>         int ret, failures =3D 0;
+>
+> +       /* global reclaim will select cgroup in a round-robin fashion. */
+>         do {
+> -               ret =3D zswap_reclaim_entry(pool);
+> -               if (ret) {
+> -                       zswap_reject_reclaim_fail++;
+> -                       if (ret !=3D -EAGAIN)
+> +               spin_lock(&zswap_pools_lock);
+> +               pool->next_shrink =3D mem_cgroup_iter(NULL, pool->next_sh=
+rink, NULL);
+> +               memcg =3D pool->next_shrink;
+> +
+> +               /*
+> +                * We need to retry if we have gone through a full round =
+trip, or if we
+> +                * got an offline memcg (or else we risk undoing the effe=
+ct of the
+> +                * zswap memcg offlining cleanup callback). This is not c=
+atastrophic
+> +                * per se, but it will keep the now offlined memcg hostag=
+e for a while.
+> +                *
+> +                * Note that if we got an online memcg, we will keep the =
+extra
+> +                * reference in case the original reference obtained by m=
+em_cgroup_iter
+> +                * is dropped by the zswap memcg offlining callback, ensu=
+ring that the
+> +                * memcg is not killed when we are reclaiming.
+> +                */
+> +               if (!memcg) {
+> +                       spin_unlock(&zswap_pools_lock);
+> +                       if (++failures =3D=3D MAX_RECLAIM_RETRIES)
+>                                 break;
+> +
+> +                       goto resched;
+> +               }
+> +
+> +               if (!mem_cgroup_online(memcg)) {
+> +                       /* drop the reference from mem_cgroup_iter() */
+> +                       mem_cgroup_put(memcg);
+> +                       pool->next_shrink =3D NULL;
+> +                       spin_unlock(&zswap_pools_lock);
+> +
+>                         if (++failures =3D=3D MAX_RECLAIM_RETRIES)
+>                                 break;
+> +
+> +                       goto resched;
+>                 }
+> +               spin_unlock(&zswap_pools_lock);
+> +
+> +               ret =3D shrink_memcg(memcg);
+> +               /* drop the extra reference */
+> +               mem_cgroup_put(memcg);
+> +
+> +               if (ret =3D=3D -EINVAL)
+> +                       break;
+> +               if (ret && ++failures =3D=3D MAX_RECLAIM_RETRIES)
+> +                       break;
+> +
+> +resched:
+>                 cond_resched();
+>         } while (!zswap_can_accept());
+> -       zswap_pool_put(pool);
 
-Can we flip the order of these two properties? enable-active-high is a
-further description to GPIO_ACTIVE_HIGH.
+Actually, after staring at this code for a bit more - this looks
+wrong. This line should not have been removed - this reference putting
+pairs with the getting from zswap_store(). Looks like some mishap when
+I rebased and cleaned stuff. Lemme send a fixlet to undo this removal
+real quick.
 
-Shawn
 
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-name = "VDD_CARRIER";
+
+
+
+>  }
+>
+>  static struct zswap_pool *zswap_pool_create(char *type, char *compressor=
+)
+> @@ -767,8 +916,7 @@ static struct zswap_pool *zswap_pool_create(char *typ=
+e, char *compressor)
+>          */
+>         kref_init(&pool->kref);
+>         INIT_LIST_HEAD(&pool->list);
+> -       INIT_LIST_HEAD(&pool->lru);
+> -       spin_lock_init(&pool->lru_lock);
+> +       list_lru_init_memcg(&pool->list_lru, NULL);
+>         INIT_WORK(&pool->shrink_work, shrink_worker);
+>
+>         zswap_pool_debug("created", pool);
+> @@ -834,6 +982,13 @@ static void zswap_pool_destroy(struct zswap_pool *po=
+ol)
+>
+>         cpuhp_state_remove_instance(CPUHP_MM_ZSWP_POOL_PREPARE, &pool->no=
+de);
+>         free_percpu(pool->acomp_ctx);
+> +       list_lru_destroy(&pool->list_lru);
 > +
-> +		regulator-state-standby {
-> +			regulator-on-in-suspend;
-> +		};
+> +       spin_lock(&zswap_pools_lock);
+> +       mem_cgroup_put(pool->next_shrink);
+> +       pool->next_shrink =3D NULL;
+> +       spin_unlock(&zswap_pools_lock);
 > +
-> +		regulator-state-mem {
-> +			regulator-off-in-suspend;
-> +		};
+>         for (i =3D 0; i < ZSWAP_NR_ZPOOLS; i++)
+>                 zpool_destroy_pool(pool->zpools[i]);
+>         kfree(pool);
+> @@ -1081,7 +1236,7 @@ static int zswap_writeback_entry(struct zswap_entry=
+ *entry,
+>         /* try to allocate swap cache page */
+>         mpol =3D get_task_policy(current);
+>         page =3D __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
+> -                               NO_INTERLEAVE_INDEX, &page_was_allocated)=
+;
+> +                               NO_INTERLEAVE_INDEX, &page_was_allocated,=
+ true);
+>         if (!page) {
+>                 ret =3D -ENOMEM;
+>                 goto fail;
+> @@ -1152,7 +1307,6 @@ static int zswap_writeback_entry(struct zswap_entry=
+ *entry,
+>         /* start writeback */
+>         __swap_writepage(page, &wbc);
+>         put_page(page);
+> -       zswap_written_back_pages++;
+>
+>         return ret;
+>
+> @@ -1209,6 +1363,7 @@ bool zswap_store(struct folio *folio)
+>         struct scatterlist input, output;
+>         struct crypto_acomp_ctx *acomp_ctx;
+>         struct obj_cgroup *objcg =3D NULL;
+> +       struct mem_cgroup *memcg =3D NULL;
+>         struct zswap_pool *pool;
+>         struct zpool *zpool;
+>         unsigned int dlen =3D PAGE_SIZE;
+> @@ -1240,15 +1395,15 @@ bool zswap_store(struct folio *folio)
+>                 zswap_invalidate_entry(tree, dupentry);
+>         }
+>         spin_unlock(&tree->lock);
+> -
+> -       /*
+> -        * XXX: zswap reclaim does not work with cgroups yet. Without a
+> -        * cgroup-aware entry LRU, we will push out entries system-wide b=
+ased on
+> -        * local cgroup limits.
+> -        */
+>         objcg =3D get_obj_cgroup_from_folio(folio);
+> -       if (objcg && !obj_cgroup_may_zswap(objcg))
+> -               goto reject;
+> +       if (objcg && !obj_cgroup_may_zswap(objcg)) {
+> +               memcg =3D get_mem_cgroup_from_objcg(objcg);
+> +               if (shrink_memcg(memcg)) {
+> +                       mem_cgroup_put(memcg);
+> +                       goto reject;
+> +               }
+> +               mem_cgroup_put(memcg);
+> +       }
+>
+>         /* reclaim space if needed */
+>         if (zswap_is_full()) {
+> @@ -1265,7 +1420,7 @@ bool zswap_store(struct folio *folio)
+>         }
+>
+>         /* allocate entry */
+> -       entry =3D zswap_entry_cache_alloc(GFP_KERNEL);
+> +       entry =3D zswap_entry_cache_alloc(GFP_KERNEL, page_to_nid(page));
+>         if (!entry) {
+>                 zswap_reject_kmemcache_fail++;
+>                 goto reject;
+> @@ -1292,6 +1447,15 @@ bool zswap_store(struct folio *folio)
+>         if (!entry->pool)
+>                 goto freepage;
+>
+> +       if (objcg) {
+> +               memcg =3D get_mem_cgroup_from_objcg(objcg);
+> +               if (memcg_list_lru_alloc(memcg, &entry->pool->list_lru, G=
+FP_KERNEL)) {
+> +                       mem_cgroup_put(memcg);
+> +                       goto put_pool;
+> +               }
+> +               mem_cgroup_put(memcg);
+> +       }
 > +
-> +		regulator-state-disk {
-> +			regulator-off-in-suspend;
-> +		};
-> +	};
-> +
-> +	reg_usb1_vbus: regulator-usb1-vbus {
-> +		compatible = "regulator-fixed";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_reg_usb1_vbus>;
-> +		enable-active-high;
-> +		gpio = <&gpio3 25 GPIO_ACTIVE_HIGH>;
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		regulator-name = "VBUS_USB1";
-> +	};
-> +
-> +	reg_usb2_vbus: regulator-usb2-vbus {
-> +		compatible = "regulator-fixed";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_reg_usb2_vbus>;
-> +		enable-active-high;
-> +		gpio = <&gpio3 20 GPIO_ACTIVE_HIGH>;
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		regulator-name = "VBUS_USB2";
-> +	};
-> +
-> +	reg_usdhc2_vcc: regulator-usdhc2-vcc {
-> +		compatible = "regulator-fixed";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_reg_usdhc2_vcc>;
-> +		enable-active-high;
-> +		gpio = <&gpio2 19 GPIO_ACTIVE_HIGH>;
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-name = "VCC_SDIO_A";
-> +	};
-> +
-> +	reg_usdhc3_vcc: regulator-usdhc3-vcc {
-> +		compatible = "regulator-fixed";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_reg_usdhc3_vcc>;
-> +		enable-active-high;
-> +		gpio = <&gpio5 1 GPIO_ACTIVE_HIGH>;
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-name = "VCC_SDIO_B";
-> +	};
->  };
->  
->  &A53_0 {
-> @@ -96,6 +164,79 @@ partition@1f0000 {
->  	};
->  };
->  
-> +&ecspi2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_ecspi2>, <&pinctrl_ecspi2_gpio>;
-> +	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
-> +};
-> +
-> +&ecspi3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_ecspi3>;
-> +	cs-gpios = <&gpio5 25 GPIO_ACTIVE_LOW>;
-> +};
-> +
-> +&gpio1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_gpio1>;
-> +	gpio-line-names = "", "GPIO_A_0", "", "GPIO_A_1",
-> +			  "", "GPIO_A_2", "GPIO_A_3", "GPIO_A_4",
-> +			  "GPIO_A_5", "GPIO_A_6", "GPIO_A_7", "GPIO_B_0",
-> +			  "GPIO_B_1", "USB_A_OC#", "CAM_MCK", "USB_B_OC#",
-> +			  "ETH_MDC", "ETH_MDIO", "ETH_A_(S)(R)(G)MII_TXD3",
-> +			  "ETH_A_(S)(R)(G)MII_TXD2", "ETH_A_(S)(R)(G)MII_TXD1",
-> +			  "ETH_A_(S)(R)(G)MII_TXD0", "ETH_A_(R)(G)MII_TX_EN(_ER)",
-> +			  "ETH_A_(R)(G)MII_TX_CLK", "ETH_A_(R)(G)MII_RX_DV(_ER)",
-> +			  "ETH_A_(R)(G)MII_RX_CLK", "ETH_A_(S)(R)(G)MII_RXD0",
-> +			  "ETH_A_(S)(R)(G)MII_RXD1", "ETH_A_(R)(G)MII_RXD2",
-> +			  "ETH_A_(R)(G)MII_RXD3";
-> +};
-> +
-> +&gpio2 {
-> +	gpio-line-names = "", "", "", "",
-> +			  "", "", "", "",
-> +			  "", "", "", "",
-> +			  "SDIO_A_CD#", "SDIO_A_CLK", "SDIO_A_CMD", "SDIO_A_D0",
-> +			  "SDIO_A_D1", "SDIO_A_D2", "SDIO_A_D3", "SDIO_A_PWR_EN",
-> +			  "SDIO_A_WP";
-> +};
-> +
-> +&gpio3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_gpio3>;
-> +	gpio-line-names = "GPIO_C_5", "GPIO_C_4", "SDIO_B_CD#", "SDIO_B_D5",
-> +			  "SDIO_B_D6", "SDIO_B_D7", "GPIO_C_0", "GPIO_C_1",
-> +			  "GPIO_C_2", "GPIO_C_3", "SDIO_B_D0", "SDIO_B_D1",
-> +			  "SDIO_B_D2", "SDIO_B_D3", "", "SDIO_B_D4",
-> +			  "CARRIER_PWR_EN", "SDIO_B_CLK", "SDIO_B_CMD", "GPIO_B_2",
-> +			  "USB_B_EN", "GPIO_B_3", "PCIe_CLKREQ#", "PCIe_A_PERST#",
-> +			  "PCIe_WAKE#", "USB_A_EN";
-> +};
-> +
-> +&gpio4 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_gpio4>;
-> +	gpio-line-names = "GPIO_C_7", "", "I2S_A_DATA_IN", "I2S_B_DATA_IN",
-> +			  "GPIO_B_4", "BOOT_SEL0#", "BOOT_SEL1#", "",
-> +			  "", "", "I2S_LRCLK", "I2S_BITCLK",
-> +			  "I2S_A_DATA_OUT", "I2S_B_DATA_OUT", "GPIO_B_5", "GPIO_B_6",
-> +			  "GPIO_B_7", "SPI_A_/WP_(IO2)", "SPI_A_/HOLD_(IO3)", "GPIO_C_6",
-> +			  "I2S_MCLK", "UART_A_TX", "UART_A_RX", "UART_A_CTS",
-> +			  "UART_A_RTS", "", "", "",
-> +			  "PCIe_SM_ALERT", "UART_B_RTS", "UART_B_CTS", "UART_B_RX";
-> +};
-> +
-> +&gpio5 {
-> +	gpio-line-names = "UART_B_TX", "SDIO_B_PWR_EN", "SDIO_B_WP", "PWM_2",
-> +			  "PWM_1", "PWM_0", "", "",
-> +			  "", "", "SPI_A_SCK", "SPI_A_SDO_(IO1)",
-> +			  "SPI_A_SCK", "SPI_A_CS0#", "", "",
-> +			  "I2C_A_SCL", "I2C_A_SDA", "I2C_B_SCL", "I2C_B_SDA",
-> +			  "PCIe_SMCLK", "PCIe_SMDAT", "SPI_B_SCK", "SPI_B_SDO",
-> +			  "SPI_B_SDI", "SPI_B_CS0#", "UART_CON_RX", "UART_CON_TX",
-> +			  "UART_C_RX", "UART_C_TX";
-> +};
-> +
->  &i2c1 {
->  	clock-frequency = <400000>;
->  	pinctrl-names = "default";
-> @@ -222,12 +363,69 @@ rv3028: rtc@52 {
->  	};
->  };
->  
-> +&i2c2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2c2>;
-> +};
-> +
-> +&i2c3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2c3>;
-> +};
-> +
-> +&i2c4 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2c4>;
-> +};
-> +
-> +&pwm1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm1>;
-> +};
-> +
-> +&pwm2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm2>;
-> +};
-> +
-> +&pwm3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm3>;
-> +};
-> +
-> +&uart1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart1>;
-> +};
-> +
-> +&uart2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart2>;
-> +};
-> +
->  &uart3 { /* console */
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&pinctrl_uart3>;
->  	status = "okay";
->  };
->  
-> +&uart4 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart4>;
-> +};
-> +
-> +&usbotg1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usb1>;
-> +	vbus-supply = <&reg_usb1_vbus>;
-> +};
-> +
-> +&usbotg2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usb2>;
-> +	vbus-supply = <&reg_usb2_vbus>;
-> +};
-> +
->  &usdhc1 {
->  	pinctrl-names = "default", "state_100mhz", "state_200mhz";
->  	pinctrl-0 = <&pinctrl_usdhc1>;
-> @@ -240,6 +438,26 @@ &usdhc1 {
->  	status = "okay";
->  };
->  
-> +&usdhc2 {
-> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> +	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-> +	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
-> +	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_gpio>;
-> +	vmmc-supply = <&reg_usdhc2_vcc>;
-> +	vqmmc-supply = <&reg_nvcc_sd>;
-> +	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
-> +};
-> +
-> +&usdhc3 {
-> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> +	pinctrl-0 = <&pinctrl_usdhc3>, <&pinctrl_usdhc3_gpio>;
-> +	pinctrl-1 = <&pinctrl_usdhc3_100mhz>, <&pinctrl_usdhc3_gpio>;
-> +	pinctrl-2 = <&pinctrl_usdhc3_200mhz>, <&pinctrl_usdhc3_gpio>;
-> +	vmmc-supply = <&reg_usdhc3_vcc>;
-> +	vqmmc-supply = <&reg_nvcc_sd>;
-> +	cd-gpios = <&gpio3 2 GPIO_ACTIVE_LOW>;
-> +};
-> +
->  &wdog1 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&pinctrl_wdog>;
-> @@ -248,6 +466,12 @@ &wdog1 {
->  };
->  
->  &iomuxc {
-> +	pinctrl_csi_mck: csimckgrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_GPIO1_IO14_CCMSRCGPCMIX_CLKO1	0x59 /* CAM_MCK */
-> +		>;
-> +	};
-> +
->  	pinctrl_ecspi1: ecspi1grp {
->  		fsl,pins = <
->  			MX8MM_IOMUXC_ECSPI1_MISO_ECSPI1_MISO		0x82
-> @@ -257,6 +481,106 @@ MX8MM_IOMUXC_ECSPI1_SS0_GPIO5_IO9		0x19
->  		>;
->  	};
->  
-> +	pinctrl_ecspi2: ecspi2grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_ECSPI2_MISO_ECSPI2_MISO		0x82 /* SPI_A_SDI_(IO0) */
-> +			MX8MM_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI		0x82 /* SPI_A_SDO_(IO1) */
-> +			MX8MM_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK		0x82 /* SPI_A_SCK */
-> +			MX8MM_IOMUXC_ECSPI2_SS0_GPIO5_IO13		0x19 /* SPI_A_CS0# */
-> +		>;
-> +	};
-> +
-> +	pinctrl_ecspi2_gpio: ecspi2gpiogrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SAI1_TXD5_GPIO4_IO17		0x19 /* SPI_A_/WP_(IO2) */
-> +			MX8MM_IOMUXC_SAI1_TXD6_GPIO4_IO18		0x19 /* SPI_A_/HOLD_(IO3) */
-> +		>;
-> +	};
-> +
-> +	pinctrl_ecspi3: ecspi3grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_UART2_RXD_ECSPI3_MISO		0x82 /* SPI_B_SDI */
-> +			MX8MM_IOMUXC_UART1_TXD_ECSPI3_MOSI		0x82 /* SPI_B_SDO */
-> +			MX8MM_IOMUXC_UART1_RXD_ECSPI3_SCLK		0x82 /* SPI_B_SCK */
-> +			MX8MM_IOMUXC_UART2_TXD_GPIO5_IO25		0x19 /* SPI_B_CS0# */
-> +		>;
-> +	};
-> +
-> +	pinctrl_enet_rgmii: enetrgmiigrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_ENET_MDC_ENET1_MDC			0x03 /* ETH_MDC */
-> +			MX8MM_IOMUXC_ENET_MDIO_ENET1_MDIO		0x03 /* ETH_MDIO */
-> +			MX8MM_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f /* ETH_A_(S)(R)(G)MII_TXD3 */
-> +			MX8MM_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f /* ETH_A_(S)(R)(G)MII_TXD2 */
-> +			MX8MM_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f /* ETH_A_(S)(R)(G)MII_TXD1 */
-> +			MX8MM_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f /* ETH_A_(S)(R)(G)MII_TXD0 */
-> +			MX8MM_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91 /* ETH_A_(R)(G)MII_RXD3 */
-> +			MX8MM_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91 /* ETH_A_(R)(G)MII_RXD2 */
-> +			MX8MM_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91 /* ETH_A_(S)(R)(G)MII_RXD1 */
-> +			MX8MM_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91 /* ETH_A_(S)(R)(G)MII_RXD0 */
-> +			MX8MM_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f /* ETH_A_(R)(G)MII_TX_CLK */
-> +			MX8MM_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91 /* ETH_A_(R)(G)MII_RX_CLK */
-> +			MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91 /* ETH_A_(R)(G)MII_RX_DV(_ER) */
-> +			MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f /* ETH_A_(R)(G)MII_TX_EN(_ER) */
-> +		>;
-> +	};
-> +
-> +	pinctrl_enet_rmii: enetrmiigrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_ENET_MDC_ENET1_MDC			0x03 /* ETH_MDC */
-> +			MX8MM_IOMUXC_ENET_MDIO_ENET1_MDIO		0x03 /* ETH_MDIO */
-> +			MX8MM_IOMUXC_ENET_TD2_ENET1_TX_CLK		0x4000001f /* ETH_A_(S)(R)(G)MII_TXD2 */
-> +			MX8MM_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x56 /* ETH_A_(S)(R)(G)MII_TXD1 */
-> +			MX8MM_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x56 /* ETH_A_(S)(R)(G)MII_TXD0 */
-> +			MX8MM_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x56 /* ETH_A_(S)(R)(G)MII_RXD1 */
-> +			MX8MM_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x56 /* ETH_A_(S)(R)(G)MII_RXD0 */
-> +			MX8MM_IOMUXC_ENET_RXC_ENET1_RX_ER		0x56 /* ETH_A_(R)(G)MII_RX_CLK */
-> +			MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x56 /* ETH_A_(R)(G)MII_RX_DV(_ER) */
-> +			MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x56 /* ETH_A_(R)(G)MII_TX_EN(_ER) */
-> +		>;
-> +	};
-> +
-> +	pinctrl_gpio1: gpio1grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_GPIO1_IO01_GPIO1_IO1		0x19 /* GPIO_A_0 */
-> +			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3		0x19 /* GPIO_A_1 */
-> +			MX8MM_IOMUXC_GPIO1_IO05_GPIO1_IO5		0x19 /* GPIO_A_2 */
-> +			MX8MM_IOMUXC_GPIO1_IO06_GPIO1_IO6		0x19 /* GPIO_A_3 */
-> +			MX8MM_IOMUXC_GPIO1_IO07_GPIO1_IO7		0x19 /* GPIO_A_4 */
-> +			MX8MM_IOMUXC_GPIO1_IO08_GPIO1_IO8		0x19 /* GPIO_A_5 */
-> +			MX8MM_IOMUXC_GPIO1_IO09_GPIO1_IO9		0x19 /* GPIO_A_6 */
-> +			MX8MM_IOMUXC_GPIO1_IO10_GPIO1_IO10		0x19 /* GPIO_A_7 */
-> +			MX8MM_IOMUXC_GPIO1_IO11_GPIO1_IO11		0x19 /* GPIO_B_0 */
-> +			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12		0x19 /* GPIO_B_1 */
-> +		>;
-> +	};
-> +
-> +	pinctrl_gpio3: gpio3grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_NAND_ALE_GPIO3_IO0			0x19 /* GPIO_C_5 */
-> +			MX8MM_IOMUXC_NAND_CE0_B_GPIO3_IO1		0x19 /* GPIO_C_4 */
-> +			MX8MM_IOMUXC_NAND_DATA00_GPIO3_IO6		0x19 /* GPIO_C_0 */
-> +			MX8MM_IOMUXC_NAND_DATA01_GPIO3_IO7		0x19 /* GPIO_C_1 */
-> +			MX8MM_IOMUXC_NAND_DATA02_GPIO3_IO8		0x19 /* GPIO_C_2 */
-> +			MX8MM_IOMUXC_NAND_DATA03_GPIO3_IO9		0x19 /* GPIO_C_3 */
-> +			MX8MM_IOMUXC_SAI5_RXFS_GPIO3_IO19		0x19 /* GPIO_B_2 */
-> +			MX8MM_IOMUXC_SAI5_RXD0_GPIO3_IO21		0x19 /* GPIO_B_3 */
-> +		>;
-> +	};
-> +
-> +	pinctrl_gpio4: gpio4grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SAI1_RXFS_GPIO4_IO0		0x19 /* GPIO_C_7 */
-> +			MX8MM_IOMUXC_SAI1_RXD2_GPIO4_IO4		0x19 /* GPIO_B_4 */
-> +			MX8MM_IOMUXC_SAI1_RXD3_GPIO4_IO5		0x19 /* BOOT_SEL0# */
-> +			MX8MM_IOMUXC_SAI1_RXD4_GPIO4_IO6		0x19 /* BOOT_SEL1# */
-> +			MX8MM_IOMUXC_SAI1_TXD2_GPIO4_IO14		0x19 /* GPIO_B_5 */
-> +			MX8MM_IOMUXC_SAI1_TXD3_GPIO4_IO15		0x19 /* GPIO_B_6 */
-> +			MX8MM_IOMUXC_SAI1_TXD4_GPIO4_IO16		0x19 /* GPIO_B_7 */
-> +			MX8MM_IOMUXC_SAI1_TXD7_GPIO4_IO19		0x19 /* GPIO_C_6 */
-> +		>;
-> +	};
-> +
->  	pinctrl_i2c1: i2c1grp {
->  		fsl,pins = <
->  			MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL			0x40000083
-> @@ -264,22 +588,149 @@ MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA			0x40000083
->  		>;
->  	};
->  
-> +	pinctrl_i2c2: i2c2grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL			0x40000083 /* I2C_A_SCL */
-> +			MX8MM_IOMUXC_I2C2_SDA_I2C2_SDA			0x40000083 /* I2C_A_SDA */
-> +		>;
-> +	};
-> +
-> +	pinctrl_i2c3: i2c3grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_I2C3_SCL_I2C3_SCL			0x40000083 /* I2C_B_SCL */
-> +			MX8MM_IOMUXC_I2C3_SDA_I2C3_SDA			0x40000083 /* I2C_B_SDA */
-> +		>;
-> +	};
-> +
-> +	pinctrl_i2c4: i2c4grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_I2C4_SCL_I2C4_SCL			0x40000083 /* PCIe_SMCLK and I2C_CAM_SCL/CSI_TX_P */
-> +			MX8MM_IOMUXC_I2C4_SDA_I2C4_SDA			0x40000083 /* PCIe_SMDAT and I2C_CAM_SDA/CSI_TX_N */
-> +		>;
-> +	};
-> +
-> +	pinctrl_pcie: pciegrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SAI5_RXD1_GPIO3_IO22		0x19 /* PCIe_CLKREQ# */
-> +			MX8MM_IOMUXC_SAI5_RXD2_GPIO3_IO23		0x19 /* PCIe_A_PERST# */
-> +			MX8MM_IOMUXC_SAI5_RXD3_GPIO3_IO24		0x19 /* PCIe_WAKE# */
-> +			MX8MM_IOMUXC_SAI3_RXFS_GPIO4_IO28		0x19 /* PCIe_SM_ALERT */
-> +		>;
-> +	};
-> +
->  	pinctrl_pmic: pmicgrp {
->  		fsl,pins = <
->  			MX8MM_IOMUXC_GPIO1_IO00_GPIO1_IO0		0x141
->  		>;
->  	};
->  
-> +	pinctrl_pwm1: pwm1grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SPDIF_EXT_CLK_PWM1_OUT		0x19 /* PWM_0 */
-> +		>;
-> +	};
-> +
-> +	pinctrl_pwm2: pwm2grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SPDIF_RX_PWM2_OUT			0x19 /* PWM_1 */
-> +		>;
-> +	};
-> +
-> +	pinctrl_pwm3: pwm3grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SPDIF_TX_PWM3_OUT			0x19 /* PWM_2 */
-> +		>;
-> +	};
-> +
-> +	pinctrl_reg_usb1_vbus: regusb1vbusgrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SAI5_MCLK_GPIO3_IO25		0x19 /* USB_A_EN */
-> +		>;
-> +	};
-> +
-> +	pinctrl_reg_usb2_vbus: regusb2vbusgrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SAI5_RXC_GPIO3_IO20		0x19 /* USB_B_EN */
-> +		>;
-> +	};
-> +
-> +	pinctrl_reg_usdhc2_vcc: regusdhc2vccgrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SD2_RESET_B_GPIO2_IO19		0x19 /* SDIO_A_PWR_EN */
-> +		>;
-> +	};
-> +
-> +	pinctrl_reg_usdhc3_vcc: regusdhc3vccgrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SAI3_TXD_GPIO5_IO1			0x19 /* SDIO_B_PWR_EN */
-> +		>;
-> +	};
-> +
-> +	pinctrl_reg_vdd_carrier: regvddcarriergrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_NAND_READY_B_GPIO3_IO16		0x19 /* CARRIER_PWR_EN */
-> +		>;
-> +	};
-> +
->  	pinctrl_rtc: rtcgrp {
->  		fsl,pins = <
->  			MX8MM_IOMUXC_SAI1_RXC_GPIO4_IO1			0x19
->  		>;
->  	};
->  
-> +	pinctrl_sai1: sai1grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SAI1_RXD0_SAI1_RX_DATA0		0xd6 /* I2S_A_DATA_IN */
-> +			MX8MM_IOMUXC_SAI1_TXD0_SAI1_TX_DATA0		0xd6 /* I2S_A_DATA_OUT */
-> +			MX8MM_IOMUXC_SAI1_RXD1_SAI1_RX_DATA1		0xd6 /* I2S_B_DATA_IN */
-> +			MX8MM_IOMUXC_SAI1_TXD1_SAI1_TX_DATA1		0xd6 /* I2S_B_DATA_OUT */
-> +			MX8MM_IOMUXC_SAI1_MCLK_SAI1_MCLK		0xd6 /* I2S_MCLK */
-> +			MX8MM_IOMUXC_SAI1_TXFS_SAI1_TX_SYNC		0xd6 /* I2S_LRCLK */
-> +			MX8MM_IOMUXC_SAI1_TXC_SAI1_TX_BCLK		0xd6 /* I2S_BITCLK */
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart1: uart1grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SAI2_RXC_UART1_DCE_RX		0x0 /* UART_A_RX */
-> +			MX8MM_IOMUXC_SAI2_RXFS_UART1_DCE_TX		0x0 /* UART_A_TX */
-> +			MX8MM_IOMUXC_SAI2_RXD0_UART1_DCE_RTS_B		0x0 /* UART_A_CTS */
-> +			MX8MM_IOMUXC_SAI2_TXFS_UART1_DCE_CTS_B		0x0 /* UART_A_RTS */
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart2: uart2grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SAI3_TXFS_UART2_DCE_RX		0x0 /* UART_B_RX */
-> +			MX8MM_IOMUXC_SAI3_TXC_UART2_DCE_TX		0x0 /* UART_B_TX */
-> +			MX8MM_IOMUXC_SAI3_RXD_UART2_DCE_RTS_B		0x0 /* UART_B_CTS */
-> +			MX8MM_IOMUXC_SAI3_RXC_UART2_DCE_CTS_B		0x0 /* UART_B_RTS */
-> +		>;
-> +	};
-> +
->  	pinctrl_uart3: uart3grp {
->  		fsl,pins = <
-> -			MX8MM_IOMUXC_UART3_RXD_UART3_DCE_RX		0x140
-> -			MX8MM_IOMUXC_UART3_TXD_UART3_DCE_TX		0x140
-> +			MX8MM_IOMUXC_UART3_RXD_UART3_DCE_RX		0x140 /* UART_CON_RX */
-> +			MX8MM_IOMUXC_UART3_TXD_UART3_DCE_TX		0x140 /* UART_CON_TX */
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart4: uart4grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_UART4_RXD_UART4_DCE_RX		0x0 /* UART_C_RX */
-> +			MX8MM_IOMUXC_UART4_TXD_UART4_DCE_TX		0x0 /* UART_C_TX */
-> +		>;
-> +	};
-> +
-> +	pinctrl_usb1: usb1grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_GPIO1_IO13_USB1_OTG_OC		0x19 /* USB_A_OC# */
-> +		>;
-> +	};
-> +
-> +	pinctrl_usb2: usb2grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_GPIO1_IO15_USB2_OTG_OC		0x19 /* USB_B_OC# */
->  		>;
->  	};
->  
-> @@ -334,6 +785,103 @@ MX8MM_IOMUXC_SD1_STROBE_USDHC1_STROBE		0x196
->  		>;
->  	};
->  
-> +	pinctrl_usdhc2: usdhc2grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x90 /* SDIO_A_CLK */
-> +			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d0 /* SDIO_A_CMD */
-> +			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d0 /* SDIO_A_D0 */
-> +			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d0 /* SDIO_A_D1 */
-> +			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d0 /* SDIO_A_D2 */
-> +			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d0 /* SDIO_A_D3 */
-> +			MX8MM_IOMUXC_SD2_WP_USDHC2_WP			0x400000d6 /* SDIO_A_WP */
-> +			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x90
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x94 /* SDIO_A_CLK */
-> +			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d4 /* SDIO_A_CMD */
-> +			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d4 /* SDIO_A_D0 */
-> +			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d4 /* SDIO_A_D1 */
-> +			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d4 /* SDIO_A_D2 */
-> +			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d4 /* SDIO_A_D3 */
-> +			MX8MM_IOMUXC_SD2_WP_USDHC2_WP			0x400000d6 /* SDIO_A_WP */
-> +			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x90
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x96 /* SDIO_A_CLK */
-> +			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d6 /* SDIO_A_CMD */
-> +			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d6 /* SDIO_A_D0 */
-> +			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d6 /* SDIO_A_D1 */
-> +			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d6 /* SDIO_A_D2 */
-> +			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d6 /* SDIO_A_D3 */
-> +			MX8MM_IOMUXC_SD2_WP_USDHC2_WP			0x400000d6 /* SDIO_A_WP */
-> +			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT		0x90
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x19 /* SDIO_A_CD# */
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc3: usdhc3grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK		0x90 /* SDIO_B_CLK */
-> +			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD		0x90 /* SDIO_B_CMD */
-> +			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0		0x90 /* SDIO_B_D0 */
-> +			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1		0x90 /* SDIO_B_D1 */
-> +			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2		0x90 /* SDIO_B_D2 */
-> +			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3		0x90 /* SDIO_B_D3 */
-> +			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4		0x90 /* SDIO_B_D4 */
-> +			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5		0x90 /* SDIO_B_D5 */
-> +			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6		0x90 /* SDIO_B_D6 */
-> +			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7		0x90 /* SDIO_B_D7 */
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc3_100mhz: usdhc3-100mhzgrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK		0x94 /* SDIO_B_CLK */
-> +			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD		0x94 /* SDIO_B_CMD */
-> +			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0		0x94 /* SDIO_B_D0 */
-> +			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1		0x94 /* SDIO_B_D1 */
-> +			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2		0x94 /* SDIO_B_D2 */
-> +			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3		0x94 /* SDIO_B_D3 */
-> +			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4		0x94 /* SDIO_B_D4 */
-> +			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5		0x94 /* SDIO_B_D5 */
-> +			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6		0x94 /* SDIO_B_D6 */
-> +			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7		0x94 /* SDIO_B_D7 */
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc3_200mhz: usdhc3-200mhzgrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_NAND_WE_B_USDHC3_CLK		0x96 /* SDIO_B_CLK */
-> +			MX8MM_IOMUXC_NAND_WP_B_USDHC3_CMD		0x96 /* SDIO_B_CMD */
-> +			MX8MM_IOMUXC_NAND_DATA04_USDHC3_DATA0		0x96 /* SDIO_B_D0 */
-> +			MX8MM_IOMUXC_NAND_DATA05_USDHC3_DATA1		0x96 /* SDIO_B_D1 */
-> +			MX8MM_IOMUXC_NAND_DATA06_USDHC3_DATA2		0x96 /* SDIO_B_D2 */
-> +			MX8MM_IOMUXC_NAND_DATA07_USDHC3_DATA3		0x96 /* SDIO_B_D3 */
-> +			MX8MM_IOMUXC_NAND_RE_B_USDHC3_DATA4		0x96 /* SDIO_B_D4 */
-> +			MX8MM_IOMUXC_NAND_CE2_B_USDHC3_DATA5		0x96 /* SDIO_B_D5 */
-> +			MX8MM_IOMUXC_NAND_CE3_B_USDHC3_DATA6		0x96 /* SDIO_B_D6 */
-> +			MX8MM_IOMUXC_NAND_CLE_USDHC3_DATA7		0x96 /* SDIO_B_D7 */
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc3_gpio: usdhc3gpiogrp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_NAND_CE1_B_GPIO3_IO2		0x19 /* SDIO_B_CD# */
-> +			MX8MM_IOMUXC_SAI3_MCLK_GPIO5_IO2		0x19 /* SDIO_B_WP */
-> +		>;
-> +	};
-> +
->  	pinctrl_wdog: wdoggrp {
->  		fsl,pins = <
->  			MX8MM_IOMUXC_GPIO1_IO02_WDOG1_WDOG_B		0xc6
-> -- 
-> 2.43.0
-> 
+>         /* compress */
+>         acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
+>
+> @@ -1370,9 +1534,8 @@ bool zswap_store(struct folio *folio)
+>                 zswap_invalidate_entry(tree, dupentry);
+>         }
+>         if (entry->length) {
+> -               spin_lock(&entry->pool->lru_lock);
+> -               list_add(&entry->lru, &entry->pool->lru);
+> -               spin_unlock(&entry->pool->lru_lock);
+> +               INIT_LIST_HEAD(&entry->lru);
+> +               zswap_lru_add(&entry->pool->list_lru, entry);
+>         }
+>         spin_unlock(&tree->lock);
+>
+> @@ -1385,6 +1548,7 @@ bool zswap_store(struct folio *folio)
+>
+>  put_dstmem:
+>         mutex_unlock(acomp_ctx->mutex);
+> +put_pool:
+>         zswap_pool_put(entry->pool);
+>  freepage:
+>         zswap_entry_cache_free(entry);
+> @@ -1479,9 +1643,8 @@ bool zswap_load(struct folio *folio)
+>                 zswap_invalidate_entry(tree, entry);
+>                 folio_mark_dirty(folio);
+>         } else if (entry->length) {
+> -               spin_lock(&entry->pool->lru_lock);
+> -               list_move(&entry->lru, &entry->pool->lru);
+> -               spin_unlock(&entry->pool->lru_lock);
+> +               zswap_lru_del(&entry->pool->list_lru, entry);
+> +               zswap_lru_add(&entry->pool->list_lru, entry);
+>         }
+>         zswap_entry_put(tree, entry);
+>         spin_unlock(&tree->lock);
+> --
+> 2.34.1
