@@ -2,125 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DC5807334
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 060BA807330
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442107AbjLFO7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 09:59:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
+        id S1442076AbjLFO7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 09:59:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378993AbjLFO7d (ORCPT
+        with ESMTP id S1378993AbjLFO7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 09:59:33 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6017B5;
-        Wed,  6 Dec 2023 06:59:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=s+7kV2NOaPEBmhFkJpDv/pC5Llv4VXEE9i8fdKbvmjw=; b=ojDk7+bvhmkVaj86d9uPvOhQaz
-        kbAJJlz3eiFA7yxHtxf02BCaqsNM5pS9C8k5lXRoPly3/N/e0u5QADIgtZKFOwGOJtwsI5ZzSsYPS
-        PKyktYqelsFB3E+G8W+4/yQSFmaQ2jHSWEigX57CwcwQszQ0bDoxOOqdU2sc0+ZoE3Ff1wwcpqslV
-        VWLgXJnu2MrDZGBo0sVLqXRdAvGI+d1WdlsXWEVkM0crARzZz5+nD3AR2Avd8/g6eRde0hkW/FoXX
-        agEz57imZpOlmdW73T5pzua0TfxBEP/xRZ/WXwPlD7/tpJRN5cqF7OvXJrtIdGRYW6omWvwYwBXvA
-        OJr6nVaw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1rAtMN-002zkJ-Nc; Wed, 06 Dec 2023 14:58:47 +0000
-Date:   Wed, 6 Dec 2023 14:58:47 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-        kent.overstreet@gmail.com, joern@lazybastard.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, nico@fluxnic.net, xiang@kernel.org,
-        chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-        agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
-        akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
-        linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
-Message-ID: <ZXCMJ9skAAgPm4z3@casper.infradead.org>
-References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
- <20231205123728.1866699-2-yukuai1@huaweicloud.com>
+        Wed, 6 Dec 2023 09:59:30 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F1F9A;
+        Wed,  6 Dec 2023 06:59:36 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2472F21E31;
+        Wed,  6 Dec 2023 14:59:34 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F01D2136CD;
+        Wed,  6 Dec 2023 14:59:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id Z+zDOVWMcGXmQgAAD6G6ig
+        (envelope-from <vbabka@suse.cz>); Wed, 06 Dec 2023 14:59:33 +0000
+Message-ID: <d5dff423-40a1-3789-e5ba-68e6c0ab6130@suse.cz>
+Date:   Wed, 6 Dec 2023 15:59:33 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231205123728.1866699-2-yukuai1@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH 2/3] mm/slub: unify all sl[au]b parameters with
+ "slab_$param"
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Song, Xiongwei" <Xiongwei.Song@windriver.com>,
+        "sxwjean@me.com" <sxwjean@me.com>,
+        "42.hyeyoo@gmail.com" <42.hyeyoo@gmail.com>,
+        "cl@linux.com" <cl@linux.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+        "corbet@lwn.net" <corbet@lwn.net>, "arnd@arndb.de" <arnd@arndb.de>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231201031505.286117-1-sxwjean@me.com>
+ <20231201031505.286117-3-sxwjean@me.com> <202312010945.7C5DB1FBB@keescook>
+ <PH0PR11MB51923F916D8FB7D94270BBA7EC80A@PH0PR11MB5192.namprd11.prod.outlook.com>
+ <67b155dd-3731-489e-c3bd-333cb7e90801@suse.cz>
+ <202312021329.86D56FA@keescook>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <202312021329.86D56FA@keescook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Bar: ++++++++++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=none;
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of vbabka@suse.cz) smtp.mailfrom=vbabka@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [10.13 / 50.00];
+         TO_DN_EQ_ADDR_SOME(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com,me.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         SUBJECT_HAS_CURRENCY(1.00)[];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         DMARC_NA(1.20)[suse.cz];
+         RCVD_COUNT_THREE(0.00)[3];
+         ARC_NA(0.00)[];
+         MX_GOOD(-0.01)[];
+         BAYES_HAM(-0.06)[61.00%];
+         RCPT_COUNT_TWELVE(0.00)[16];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[windriver.com,me.com,gmail.com,linux.com,kvack.org,kernel.org,google.com,lge.com,linux.dev,lwn.net,arndb.de,linux-foundation.org,linuxfoundation.org,vger.kernel.org];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 10.13
+X-Rspamd-Queue-Id: 2472F21E31
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 08:37:15PM +0800, Yu Kuai wrote:
-> +struct folio *bdev_read_folio(struct block_device *bdev, pgoff_t index)
-> +{
-> +	return read_mapping_folio(bdev->bd_inode->i_mapping, index, NULL);
-> +}
-> +EXPORT_SYMBOL_GPL(bdev_read_folio);
+On 12/2/23 22:30, Kees Cook wrote:
+> On Sat, Dec 02, 2023 at 07:12:25PM +0100, Vlastimil Babka wrote:
+>> On 12/2/23 05:23, Song, Xiongwei wrote:
+>> > 
+>> > 
+>> 
+>> Yes, they are already recognized by the patch.
+> 
+> Ah, sorry, I missed that. I didn't see it when I skimmed earlier.
+> 
+>> >> with a boot pr_warn() about their deprecation/renaming for several
+>> >> releases (likely across LTSes). I think it's not a good idea to
+>> >> wholesale rename these with no warning. That's going to cause a lot of
+>> >> surprises and broken userspace...
+>> > 
+>> > Oh, yes, that's a good idea. Will update.
+>> 
+>> I'd wait for a while with the warnings, no need to rush.
+> 
+> Better to start ASAP, yeah?
 
-I'm coming to the opinion that 'index' is the wrong parameter here.
-Looking through all the callers of bdev_read_folio() in this patchset,
-they all have a position in bytes, and they all convert it to
-index for this call.  The API should probably be:
-
-struct folio *bdev_read_folio(struct block_device *bdev, loff_t pos)
-{
-	return read_mapping_folio(bdev->bd_inode->i_mapping,
-			pos / PAGE_SIZE, NULL);
-}
-
-... and at some point, we'll get round to converting read_mapping_folio()
-to take its argument in loff_t.
-
-Similiarly for these two APIs:
-
-> +struct folio *bdev_read_folio_gfp(struct block_device *bdev, pgoff_t index,
-> +				  gfp_t gfp)
-> +struct folio *bdev_get_folio(struct block_device *bdev, pgoff_t index)
-
-> +struct folio *bdev_find_or_create_folio(struct block_device *bdev,
-> +					pgoff_t index, gfp_t gfp)
-> +{
-> +	return __filemap_get_folio(bdev->bd_inode->i_mapping, index,
-> +				   FGP_LOCK | FGP_ACCESSED | FGP_CREAT, gfp);
-> +}
-> +EXPORT_SYMBOL_GPL(bdev_find_or_create_folio);
-
-This one probably shouldn't exist.  I've been converting callers of
-find_or_create_page() to call __filemap_get_folio; I suspect we
-should expose a __bdev_get_folio and have the callers use the FGP
-arguments directly, but I'm open to other opinions here.
-
-> +void bdev_sync_readahead(struct block_device *bdev, struct file_ra_state *ra,
-> +			 struct file *file, pgoff_t index,
-> +			 unsigned long req_count)
-> +{
-> +	struct file_ra_state tmp_ra = {};
-> +
-> +	if (!ra) {
-> +		ra = &tmp_ra;
-> +		file_ra_state_init(ra, bdev->bd_inode->i_mapping);
-> +	}
-> +	page_cache_sync_readahead(bdev->bd_inode->i_mapping, ra, file, index,
-> +				  req_count);
-> +}
-
-I think the caller should always be passing in a valid file_ra_state.
-It's only cramfs that doesn't have one, and it really should!
-Not entirely sure about the arguments here; part of me says "bytes",
-but this is weird enough to maybe take arguments in pages.
+I find it a bit obnoxious to accept the slub_* names in one kernel release
+and immediately warn in the next one. I'd let the people who read the
+news/docs adjust on their own first :) After all, we wouldn't be warning
+about something that's dangerous if not acted upon immediately, or something.
