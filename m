@@ -2,169 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FBE9806414
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 02:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C858063BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376432AbjLFBZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 20:25:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
+        id S1376363AbjLFA5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 19:57:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376394AbjLFBZG (ORCPT
+        with ESMTP id S229630AbjLFA47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 20:25:06 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6A61B9;
-        Tue,  5 Dec 2023 17:25:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701825911; x=1733361911;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=Dpb/wEAiGbc4H5m6AAJO2qz8HI2uMp8/qqZnsmjDgS0=;
-  b=BAYUces9slazRD5Fm2my0bvLVbJQYDnPDGmQwxeOCsCV5JhHUVSum+4c
-   PTje156/wxLkePScOcwKbKHfkzSoQX8p2ky7tHuipCeKyz9/ApOK+TAKe
-   pnLGKzrZSTwc9ws+Ysuot5oiEu6NwcwMsVHFUPl3ch5Zhg4SCsTq2sOZZ
-   bSTpKyJ6c0epxuSLQ0iT6pntezvWY0ZKCxhIGhGEBRf7UTvOExZXTzV1A
-   6jvewWz/weNz78vo9TUiqnMyPEknWs33J89v9VGhxefuJYmi05PER3IVy
-   3e3jnLt+BYtb7wLf2bHbBBgxykj6qR6TO6VdM8yMlaNy6NlO1ttCmyUAZ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="391155163"
-X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
-   d="scan'208";a="391155163"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 17:24:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="771123434"
-X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
-   d="scan'208";a="771123434"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Dec 2023 17:24:56 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 5 Dec 2023 17:24:54 -0800
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 5 Dec 2023 17:24:54 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 5 Dec 2023 17:24:54 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 5 Dec 2023 17:24:54 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X9n53WcK4ijE1FGwKvGEJ5iJN07DmiR468pqSKVmwUj+QWh4Upn0NU6S4wOl4GrjXFMPX+dm6vhVx+T73aqlPgVn2a0EwoxRGt/QYLNEmbdP2zOUMJbPvu5AvHYA7hROokBs2ZrqZQdK2nEeyHC2xi9f8AjLFycQmBUb75u5W9EGOD2td12F8Mt40H7Y23z50E1aTXaAuZNnS4//TZODTx1e1UvOecLyfH+rKPkSzNGQ5wSaCzfjv8xTLeBN5M/lMlhcoIP3SBUKf6IpVL+A3eC5kxmwVKMQ93bVtMCimmf0huTXLbG0Hw5VSj+3lCqTKuhvqXhS9G1B3x+Mw5QnJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BntUOtgkzrt5Hpr/iigoXv6Qv7dxdZYJc46e44sTMkw=;
- b=n6+gLmz9wpPvf37Fyi1TUucxKfdIe2l4kRHu+ckyK+K1275HiA6Nx3cdwgbk0blS19peNspRnJswb494O8DCN3zz4VoZmru8+Nwu69OcSWJsJQgzISzC1LJbcE7LnhOUQBVkXytI9JFmXg8mX32oKyWTjQkXxp7BdUy5AlIm8W5+o8JqlzDcx/3iv0eqg9rK6NoaKr1fhPwhsDO8k6DbhO8jJQpXre+BvR/QXmMKpJIqE8MK0dDKr2hagyQU8ydayUCtmFdLczjJhfU/J/w4Nzj1KZfk8MTPaMAIXjJgUv2CuK5t2cXEqMHEEbIfRAT5PTE3OyeWOaU6GtUtDO6fGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- LV8PR11MB8697.namprd11.prod.outlook.com (2603:10b6:408:1fe::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
- 2023 01:24:52 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::32a9:54b8:4253:31d4]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::32a9:54b8:4253:31d4%4]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
- 01:24:51 +0000
-Date:   Wed, 6 Dec 2023 08:55:47 +0800
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <iommu@lists.linux.dev>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <alex.williamson@redhat.com>,
-        <pbonzini@redhat.com>, <seanjc@google.com>, <joro@8bytes.org>,
-        <will@kernel.org>, <robin.murphy@arm.com>, <kevin.tian@intel.com>,
-        <baolu.lu@linux.intel.com>, <dwmw2@infradead.org>,
-        <yi.l.liu@intel.com>
-Subject: Re: [RFC PATCH 16/42] iommufd: Enable device feature IOPF during
- device attachment to KVM HWPT
-Message-ID: <ZW/Gk1Ili6uHBHYK@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20231202091211.13376-1-yan.y.zhao@intel.com>
- <20231202092311.14392-1-yan.y.zhao@intel.com>
- <20231204183603.GN1493156@nvidia.com>
- <ZW7NwSCzswweHZh6@yzhao56-desk.sh.intel.com>
- <20231205145341.GF2787277@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231205145341.GF2787277@nvidia.com>
-X-ClientProxiedBy: SG2P153CA0054.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::23)
- To DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6)
+        Tue, 5 Dec 2023 19:56:59 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F53C6
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 16:57:05 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c239897895so2891167a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 16:57:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701824224; x=1702429024; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZWAAiSe8+A1VbsHX4/sTLd9FUASXF/9Ffo3lwz2GCx8=;
+        b=buG2EXYHU5EdIAIxTic1R28zEFOINrhrgWvhi4kcfw+8aqORzssJjNqY779OyQaVCK
+         nqivdADlKhnlmIo2kKl+LVTcHyPZX2inr1+ZhKcuTR7P7QytWxt3Bqx283SW/R/nJkut
+         2784wxCnYf+yaHRthMvnFRtzgLwwbAVAjNF9QzT5VkmzdEkAfQaOjLzjh79vSqDbxAOy
+         vftPIjMNM+Zh91iaLMVSox/ttzQnOKrYz/Vgjgxribq3f7bpYNFuGfQpS7E2MQoG8Eyz
+         //DpOAXpnjrBffFpaZxHjjOVBSZ1+mfZaStg1rmi6gv8QkBOKmp4VfjG3FP9LoHEtLAK
+         F7pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701824224; x=1702429024;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZWAAiSe8+A1VbsHX4/sTLd9FUASXF/9Ffo3lwz2GCx8=;
+        b=q6+rwCSjZWp26ztjqsBVIEyMPOPQDQerYcgOI5utJb4ME4H+ZKw2uZ7uVKnA3HcY2P
+         0crhrsR2aerp0AIQDfSQITxLLInLDn1VhYM2OLNZpISO2Ldl9FhkZKHhrWXHtJcD7UVw
+         9d9WcDMmQdrVvjcRUAPc/EXf4hVUd4SLTH8zIyq6vmlqQBvcMVOnnHmHAK3p2Cz2ByKZ
+         lE/EovVEi5PacoQ5UBtJBpXWJXtXageYizZjxUSs5pudgkebNktfu4N63jYuUD4JoPXd
+         iplo+wNo++/SeWYTsVfpr2IeV9kZdvf57aSK+7N2m+kLkIijNvmxL3KthlzfdlzSj7sc
+         eR/A==
+X-Gm-Message-State: AOJu0Yw7SuYbQHcMHjipPaaJ4F2ljmHzWIK2gqJieUmCg2x+MLV8tFwM
+        eWB/RgTt6hVcFgU1y1MLxws=
+X-Google-Smtp-Source: AGHT+IGZHifqxyac6FpyylqwcZVy2fMmFBFiU9TY4T5h0BVUiNqz8GDECwupcB5WjfentWWxxLxorw==
+X-Received: by 2002:a05:6a20:442a:b0:18b:37b4:cb6b with SMTP id ce42-20020a056a20442a00b0018b37b4cb6bmr43187pzb.27.1701824223851;
+        Tue, 05 Dec 2023 16:57:03 -0800 (PST)
+Received: from localhost.localdomain ([2804:1b3:a801:efb7:8c5b:a158:7e49:e10])
+        by smtp.gmail.com with ESMTPSA id e3-20020a170902b78300b001d06b63bb98sm7291478pls.71.2023.12.05.16.57.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 16:57:03 -0800 (PST)
+From:   leobras.c@gmail.com
+X-Google-Original-From: leobras@redhat.com
+To:     Leonardo =?iso-8859-1?Q?Br=E1s?= <leobras@redhat.com>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
+        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
+        peterz@infradead.org, boqun.feng@gmail.com,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, parri.andrea@gmail.com,
+        andrzej.hajda@intel.com, guoren@kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [RFC PATCH v5 5/5] riscv/cmpxchg: Implement xchg for variables of size 1 and 2
+Date:   Tue,  5 Dec 2023 21:56:44 -0300
+Message-ID: <ZW_GzKUoqO4fD4Je@LeoBras>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <2a4f1f47e945772b9fbb53a51e148636e0ae6e48.camel@redhat.com>
+References: <mhng-92f37526-d36c-48c0-8fbd-7676df1b6086@palmer-ri-x1c9> <2a4f1f47e945772b9fbb53a51e148636e0ae6e48.camel@redhat.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|LV8PR11MB8697:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9fe7d384-ea56-4006-c612-08dbf5fa24ef
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SQhToq4+fGl+UXrxFFOk6B68/xXciWv7nRoAZCF/C1LlW1olwN/Bch7MJE+bRh5USdNvprVY+aQvgxCeQZxeAsddy4UMs9aSLqNWdTo6hncOCDL1lRrVqQ8R300CQpUbQUHXHJkwhXvJ1EzBQCXze7lCidFeCzk49ZDpBFmNhnSTzFwI69S9nFsjGJVp8bpoo2kyXw8bZwdRiD1c5fLNCx6TDUc+gjop456zeW4Bk/1X4+w/p44WkTG6UslEeaiaGYrHJAFvLRBrg0vulSrjlT2STzaMve/8X/uW8puzGBxfy51EmSMOmgpjNW4UUDfInigng68TrUzs7keeyohBgW3DaAcLZ46Z/1J1WcW2Z2YmUQDZfEB7fIAzrDKZF718vwaqVIwWnE15Gb75lA8Zav38xU6W2TWTErEjc7j/ZeqoMLUxpLOvuFXNTMbsCwqfFsFADuPXqcFuRBb/KhOCId8NbyvNxAklDAP0JYK/YL+g1pZTGT0nx1eHdjl+HWF1PrCAdqm2yJMiEuGedcpqLsUgB5Lc1QiPO5IoYoZy+xqaaDzUH1mejTegG4O66f9/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(376002)(396003)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(4744005)(2906002)(3450700001)(5660300002)(7416002)(86362001)(41300700001)(38100700002)(82960400001)(6512007)(26005)(6506007)(6666004)(478600001)(6486002)(54906003)(316002)(83380400001)(66556008)(66476007)(66946007)(6916009)(4326008)(8936002)(8676002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ahaMuA3tKE5DVCqmjISs2pYvtbwCiFST/TxIOPRXIANT7puqNo7ixcDpT2x/?=
- =?us-ascii?Q?5O6KUwOiRyZV5SyyLDpMK9nn6V/cL/r8zAshGAFUHYWOM/cwAI564Iv615Xv?=
- =?us-ascii?Q?zqrexPLwylkaBLhpRIAfHJSxvOjXV4TBPX92wgj4uFwN+8R4WXFKpTtQFR6m?=
- =?us-ascii?Q?F56NihhcqJN+GSrsZ5LouPuzdCGe314SfUTF52tjazGMPGGcjXGgTn1Jw+pc?=
- =?us-ascii?Q?OKGXIFQ6W+1aWLpbz/OwJJzBtSLxEUpkXUxsi06LITHqA+/eXVF9RL3MN62J?=
- =?us-ascii?Q?T4tqoDVlsAno7Spv+/QQZDSXCGq0MuX1J9nPF68wFlm8MElmST8T4LgzKnU4?=
- =?us-ascii?Q?bqK19mLtuNcR618JOkANM91L5JxQw+WQEiiwYkOrW/kDrlWllytA8kJ8gOHY?=
- =?us-ascii?Q?YOUG9Ue9izrttuin6RgktKhWoHdgl3LI6sPxpG2hnHrz3gr2zYFkbiG3vPoJ?=
- =?us-ascii?Q?xRZH5a2jw6K3eY1MxtwMzpYLODNgDH2Mugj27rmsbCH77RhsavgNIRhPg10B?=
- =?us-ascii?Q?IbbYvSyO3qhpHu3f0W2KGghdRjaH5L/S2mEBAYOEjpBCpBEmvLM9C0m5cn19?=
- =?us-ascii?Q?CFIg1xsOxLys3wNCbFQwdww7v6IKxdIOMAe7s/TRht4UTQLqHiQehEUP3xIc?=
- =?us-ascii?Q?PtTLu/oOSjHgBli4kEokg4O9DKE6RXliPUNhqCw73Lr2hRXiNlXMtoQMN87f?=
- =?us-ascii?Q?vlZBBSerV4Nm4M7HfEbKA+IBHxi41EbkfzF8tGJlmnPPoBm/Vq45pUAAytF2?=
- =?us-ascii?Q?kl2MIj1D8Ysp3WcghPgoNRRNjICrC5JlCPWuVsR+oad6uFP6fa8Lzq8EPW7I?=
- =?us-ascii?Q?xNV6UwUFsRE9QSqOg6+xON3y8BWOoc7xXfNHMEViBMFngCxKUsO/ZyjKr3YE?=
- =?us-ascii?Q?NUAw/EP2HqrdP1NexQ0Ak72GmcvgtVgkoZSNRFqSstNG1oqR7I9LR3EgwyAt?=
- =?us-ascii?Q?dw1qVjdI1M8EPvibvAzUa226edc/xainltqk7UeR9VtJZ4wROS1pBxXmtd9P?=
- =?us-ascii?Q?/GFKRbeM5Eo26ycVBoWPKAqJx7+1fYIu/665Ht8Nkerc58tgpfXRepGZZ2b5?=
- =?us-ascii?Q?E7F6EsFsW3dzD7ydXHjJEJOdAZ6iNDaDadqvLJLrgoFJv8QT3z7AJZwCylx8?=
- =?us-ascii?Q?4XQ1nR88D/4AM43eLtyHJBfZHYC04PXhk+3sZqxZLXEyC6gI/XfM1vxsFZlG?=
- =?us-ascii?Q?jW+gLt/oNa9n+OsVn/KM45dG5f8h2DJ1i9lNDM2qxeUKD7oYLV/mGRFFkFr/?=
- =?us-ascii?Q?bT0WvIOOwN8QFo4kGnCMZTv5LsPIq/klxOcyz8eGv/32IhbyIY/RkXDhGBZ2?=
- =?us-ascii?Q?4GHX9Llhe44nw92ik/RKaPonbixqLLeYmexzZnDCKDqz5RViSHvbc4EPhdJ5?=
- =?us-ascii?Q?+50xU3b6MKnmyMz5LRmZ/N105Aetd4MV/fe5Kgz7J6c0kVN1w+eTszVuhNVY?=
- =?us-ascii?Q?mTQ/RwUUgu3dtdVd7d5m+Snb/BJyLqnH5kfM81+Kf8tQhO3FJ1I+dogROYbX?=
- =?us-ascii?Q?iuN+M91bL7DbwFG3rhJyWQG0t2EZjsQ7C63xN3NwjufgrSNLmQI+HU2kK2BB?=
- =?us-ascii?Q?ZR+8hkNhscmHCGoKr8AKE+0aXwH11UedsYFi3hsx?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9fe7d384-ea56-4006-c612-08dbf5fa24ef
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 01:24:51.7064
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rATRVpnBMSw2nGVSb6uildlbEsUUIx/nf6ZMSKXqPyGkPwo3tujQTWvf06e2QgeIebrHvh2LOEBu9G2NjxiRHQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR11MB8697
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 10:53:41AM -0400, Jason Gunthorpe wrote:
-> On Tue, Dec 05, 2023 at 03:14:09PM +0800, Yan Zhao wrote:
-> 
-> > > I would like to remove IOMMU_DEV_FEAT_IOPF completely please
+From: Leonardo Bras <leobras@redhat.com>
+
+On Wed, Aug 30, 2023 at 06:59:46PM -0300, Leonardo Brás wrote:
+> On Thu, 2023-08-10 at 09:23 -0700, Palmer Dabbelt wrote:
+> > On Thu, 10 Aug 2023 09:04:04 PDT (-0700), leobras@redhat.com wrote:
+> > > On Thu, 2023-08-10 at 08:51 +0200, Arnd Bergmann wrote:
+> > > > On Thu, Aug 10, 2023, at 06:03, Leonardo Bras wrote:
+> > > > > xchg for variables of size 1-byte and 2-bytes is not yet available for
+> > > > > riscv, even though its present in other architectures such as arm64 and
+> > > > > x86. This could lead to not being able to implement some locking mechanisms
+> > > > > or requiring some rework to make it work properly.
+> > > > > 
+> > > > > Implement 1-byte and 2-bytes xchg in order to achieve parity with other
+> > > > > architectures.
+> > > > > 
+> > > > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > > > 
+> > > 
+> > > Hello Arnd Bergmann, thanks for reviewing!
+> > > 
+> > > > Parity with other architectures by itself is not a reason to do this,
+> > > > in particular the other architectures you listed have the instructions
+> > > > in hardware while riscv does not.
+> > > 
+> > > Sure, I understand RISC-V don't have native support for xchg on variables of
+> > > size < 4B. My argument is that it's nice to have even an emulated version for
+> > > this in case any future mechanism wants to use it.
+> > > 
+> > > Not having it may mean we won't be able to enable given mechanism in RISC-V. 
 > > 
-> > So, turn on device PRI during device attachment in IOMMU vendor driver?
+> > IIUC the ask is to have a user within the kernel for these functions.  
+> > That's the general thing to do, and last time this came up there was no 
+> > in-kernel use of it -- the qspinlock stuff would, but we haven't enabled 
+> > it yet because we're worried about the performance/fairness stuff that 
+> > other ports have seen and nobody's got concrete benchmarks yet (though 
+> > there's another patch set out that I haven't had time to look through, 
+> > so that may have changed).
+> > 
+> > So if something uses these I'm happy to go look closer.
 > 
-> If a fault requesting domain is attached then PRI should just be
-> enabled in the driver
->
-Right, it makes sense!
+> IIUC patches 4 & 5 will be used by qspinlock, which may not be done yet, so we
+> don't have an use for them for the time being.
+> 
+> Otherwise, any comments on patches 1, 2 & 3?
+
+ping
+
+> 
+> > 
+> > > > Emulating the small xchg() through cmpxchg() is particularly tricky
+> > > > since it's easy to run into a case where this does not guarantee
+> > > > forward progress.
+> > > > 
+> > > 
+> > > Didn't get this part:
+> > > By "emulating small xchg() through cmpxchg()", did you mean like emulating an
+> > > xchg (usually 1 instruction) with lr & sc (same used in cmpxchg) ?
+> > > 
+> > > If so, yeah, it's a fair point: in some extreme case we could have multiple
+> > > threads accessing given cacheline and have sc always failing. On the other hand,
+> > > there are 2 arguments on that:
+> > > 
+> > > 1 - Other architectures, (such as powerpc, arm and arm64 without LSE atomics)
+> > > also seem to rely in this mechanism for every xchg size. Another archs like csky
+> > > and loongarch use asm that look like mine to handle size < 4B xchg. 
+> > >     
+> > > 
+> > > >  This is also something that almost no architecture
+> > > > specific code relies on (generic qspinlock being a notable exception).
+> > > > 
+> > > 
+> > > 2 - As you mentioned, there should be very little code that will actually make
+> > > use of xchg for vars < 4B, so it should be safe to assume its fine to not
+> > > guarantee forward progress for those rare usages (like some of above mentioned
+> > > archs).
+> > > 
+> > > > I would recommend just dropping this patch from the series, at least
+> > > > until there is a need for it.
+> > > 
+> > > While I agree this is a valid point, I believe its more interesting to have it
+> > > implemented if any future mechanism wants to make use of this. 
+> > > 
+> > > 
+> > > Thanks!
+> > > Leo
+> > 
+> 
