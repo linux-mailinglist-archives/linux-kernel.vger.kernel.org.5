@@ -2,186 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2484806BBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:18:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 780F5806BBE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377632AbjLFKSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:18:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40542 "EHLO
+        id S1377645AbjLFKTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377549AbjLFKSj (ORCPT
+        with ESMTP id S1377549AbjLFKTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:18:39 -0500
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DD98F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:18:45 -0800 (PST)
-Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-46495e57cdeso578913137.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:18:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701857925; x=1702462725; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PB5sZ5MSZmZsnlatsjzNG0ijjFc2lOy26kZJCTP898Q=;
-        b=RZGcPZqXMA0agsSEY6/QfvG6mKWhOvS/+WAb0TiZJb8urUGJYVq8nnDRaDetc6kfBe
-         iOWp26tO2gqJmZXBGFRwdMxmtEJTVLS/FgzyceOhuUYSx/C/EN4EufnwzQ85d0IQOt9H
-         uvU4sch2u36DP8SxzZUuMIZwPqlowIkDFciWFQyRdeupUyh1CdAT3oJHy4s+J7YdE7/o
-         8IIVclnUVFkV0yNFRhT4+8Q2Aje485zdVPXf5MNv4sG2gCK/HRTRgYtero3JyGnnrjTv
-         98DQR9BpejKCVI4FlTvgNCNk1oQXPLeGQ80cKATZ5WDMEcdqAVWjRU/D0vvIFcYm2oMH
-         tC1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701857925; x=1702462725;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PB5sZ5MSZmZsnlatsjzNG0ijjFc2lOy26kZJCTP898Q=;
-        b=s8QDwFBuQ3Q1V0C3rKA6ws26dL9NkZueO1elg8judCqNYxJYaxYvb5/KNlB2sIQ+AE
-         lH9JvH1T2XB2Q7g1bpPxvtdhfDneEUK7VbNpGreQrjGhgdATcQbivU4zyygOwQKss3A3
-         Z7exspeIuxHDqnT6RzkQIFPWKswHoQ8sYcTbqzjxFFlDolmfOmM8f+8Wjyes9p2NKwyH
-         N/5/IgAWXpgFQvHAy6duXLh076jNqQV5S8GoaCynThJNCpGFePXJNyfEVtKSFCbanW5l
-         pPFfqaRPgnKRCqEswRs9LsHBKsOqa/T4MFZ7rtt4NCdMdisk+GEvaGGS/PyHAzsfT0o7
-         cT+Q==
-X-Gm-Message-State: AOJu0YxE/63sUga4Ga4lb8wB6MoqFm7T2GUFRUTWno7fTK4YSOlCw8Ua
-        O5w4qOkIDBXpxcROxV661DnLOB3ga2Bq/yioNMM=
-X-Google-Smtp-Source: AGHT+IFh+MMuiWe4LiMzv/KJTqc5ICpDaA5Y7AOzgAcrrvz+FZPl+kGnCbxOkUR4ACPrCPbILgIpjx0Mmm/ihmaWg+I=
-X-Received: by 2002:a05:6102:7b8:b0:464:95d9:8d39 with SMTP id
- x24-20020a05610207b800b0046495d98d39mr170221vsg.27.1701857924667; Wed, 06 Dec
- 2023 02:18:44 -0800 (PST)
+        Wed, 6 Dec 2023 05:19:30 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33FAF109;
+        Wed,  6 Dec 2023 02:19:37 -0800 (PST)
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id E879B6607326;
+        Wed,  6 Dec 2023 10:19:34 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701857975;
+        bh=IovYJ01Jivwam/qxWADM1HZ4UJMjvtHVmaPsaZqxoro=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Ge3ih24jaH9Ox/URbczBLz2DRMrZfkSWyobDWXa7+PBzEUH+zpDgasWrLMUcfbvEh
+         h8tLwHEsOaQwlpVUWSj1AhstZRO8M17dTwROBWz0kfnZ8AU+oxIC+NUDb5visZyE03
+         NTslxdBQkMfXjXEe7rbrY0EsI6BfKxdg6+/4wJSc7zOH5G41z4C5CW6FkbhM9JR7Wp
+         tAQVenJg98xI841kHPBZJW2YvYSzK8HZhMFcme/UIS2GFO7laGznCkZsl7OWECq7WM
+         Q1EyFeH1N7G15Ua6YS6oFaMkPzYUZcn1r3JJUdRlcrzqXnsk1WBGcyce5I875U32ka
+         0shhZLA2THLkg==
+Message-ID: <449b9678-e3c2-4410-ac80-c50a1a25cc06@collabora.com>
+Date:   Wed, 6 Dec 2023 11:19:32 +0100
 MIME-Version: 1.0
-References: <20231129104530.63787-1-v-songbaohua@oppo.com> <079610c2-04ed-4495-8eb7-518b04f911f7@linux.alibaba.com>
-In-Reply-To: <079610c2-04ed-4495-8eb7-518b04f911f7@linux.alibaba.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Wed, 6 Dec 2023 23:18:32 +1300
-Message-ID: <CAGsJ_4y4Me8=sgujeg6zSz2c_LmnSEg=Z+Q1C7_Wug=k0bGaug@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: compaction: avoid fast_isolate_freepages blindly
- choose improper pageblock
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org, david@redhat.com,
-        shikemeng@huaweicloud.com, willy@infradead.org,
-        mgorman@techsingularity.net, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>,
-        Zhanyuan Hu <huzhanyuan@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] media: mediatek: vcodec: Drop VA check against
+ mtk_vcodec_mem_free()
+Content-Language: en-US
+To:     Fei Shao <fshao@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>, Tiffany Lin <tiffany.lin@mediatek.com>,
+        Xiaoyong Lu <xiaoyong.lu@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org
+References: <20231113123049.4117280-1-fshao@chromium.org>
+ <20231113123049.4117280-5-fshao@chromium.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231113123049.4117280-5-fshao@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 6, 2023 at 10:54=E2=80=AFPM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
->
->
->
-> On 11/29/2023 6:45 PM, Barry Song wrote:
-> > Testing shows fast_isolate_freepages can blindly choose an unsuitable
-> > pageblock from time to time particularly while the min mark is used
-> > from XXX path:
-> >   if (!page) {
-> >           cc->fast_search_fail++;
-> >           if (scan_start) {
-> >                   /*
-> >                    * Use the highest PFN found above min. If one was
-> >                    * not found, be pessimistic for direct compaction
-> >                    * and use the min mark.
-> >                    */
-> >                   if (highest >=3D min_pfn) {
-> >                           page =3D pfn_to_page(highest);
-> >                           cc->free_pfn =3D highest;
-> >                   } else {
-> >                           if (cc->direct_compaction && pfn_valid(min_pf=
-n)) { /* XXX */
-> >                                   page =3D pageblock_pfn_to_page(min_pf=
-n,
-> >                                           min(pageblock_end_pfn(min_pfn=
-),
-> >                                               zone_end_pfn(cc->zone)),
-> >                                           cc->zone);
-> >                                   cc->free_pfn =3D min_pfn;
-> >                           }
-> >                   }
-> >           }
-> >   }
->
-> Yes, the min_pfn can be an unsuitable migration target. But I think we
-> can just add the suitable_migration_target() validation into 'min_pfn'
-> case? Since other cases must be suitable target which found from
-> MIGRATE_MOVABLE free list. Something like below:
->
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 01ba298739dd..4e8eb4571909 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1611,6 +1611,8 @@ static void fast_isolate_freepages(struct
-> compact_control *cc)
->
-> min(pageblock_end_pfn(min_pfn),
->
-> zone_end_pfn(cc->zone)),
->                                                  cc->zone);
-> +                                       if
-> (!suitable_migration_target(cc, page))
-> +                                               page =3D NULL;
->                                          cc->free_pfn =3D min_pfn;
->                                  }
->                          }
->
+Il 13/11/23 13:26, Fei Shao ha scritto:
+> Now mtk_vcodec_mem_free() handles the VA-is-NULL case without generating
+> excess error log, so we don't need to check that every time before using
+> it in the driver.
+> 
+> Remove all the unnecessary if branches against mtk_vcodec_mem_free().
+> 
+> Signed-off-by: Fei Shao <fshao@chromium.org>
 
-yes. this makes more senses.
+For the reasons explained in patch [3/4], I'd prefer to keep those checks.
 
-> By the way, I wonder if this patch can improve the efficiency of
-> compaction in your test case?
-
-This happens not quite often. when running 25 machines for
-one night, most of them can hit this unexpected code path.
-but the frequency isn't  many times in one second. it might
-be one time in a couple of hours.
-
-so it is very difficult to measure the visible performance impact
-in my machines though the affection of choosing the unsuitable
-migration_target should be negative.
-
-I feel like it's worth fixing this to at least make the code theoretically
-self-explanatory? as it is quite odd unsuitable_migration_target can
-be still migration_target?
-
->
-> > In contrast, slow path is skipping unsuitable pageblocks in a decent wa=
-y.
-> >
-> > I don't know if it is an intended design or just an oversight. But
-> > it seems more sensible to skip unsuitable pageblock.
-> >
-> > Reported-by: Zhanyuan Hu <huzhanyuan@oppo.com>
-> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> > ---
-> >   mm/compaction.c | 6 ++++++
-> >   1 file changed, 6 insertions(+)
-> >
-> > diff --git a/mm/compaction.c b/mm/compaction.c
-> > index 01ba298739dd..98c485a25614 100644
-> > --- a/mm/compaction.c
-> > +++ b/mm/compaction.c
-> > @@ -1625,6 +1625,12 @@ static void fast_isolate_freepages(struct compac=
-t_control *cc)
-> >       cc->total_free_scanned +=3D nr_scanned;
-> >       if (!page)
-> >               return;
-> > +     /*
-> > +      * Otherwise, we can blindly choose an improper pageblock especia=
-lly
-> > +      * while using the min mark
-> > +      */
-> > +     if (!suitable_migration_target(cc, page))
-> > +             return;
-> >
-> >       low_pfn =3D page_to_pfn(page);
-> >       fast_isolate_around(cc, low_pfn);
-
-Thanks
-Barry
+Cheers,
+Angelo
