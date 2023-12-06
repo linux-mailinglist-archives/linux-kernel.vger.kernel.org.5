@@ -2,291 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADBB807858
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A29680785E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442760AbjLFTGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 14:06:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37976 "EHLO
+        id S1442773AbjLFTHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:07:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379124AbjLFTGC (ORCPT
+        with ESMTP id S1379150AbjLFTG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:06:02 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B199181
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 11:06:08 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5c17cff57f9so65185a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 11:06:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701889567; x=1702494367; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I409PBeV0vI0BSi/sNEko+BMZt4s00+VHGZ9Cxi/uGs=;
-        b=a/b5xmrKgk/7uyzJAxjbIr2Xb7wyTKzTfLsjFb6oWW05EP6YlIjaNmUcBT0I1x8yq5
-         TEXhXYDpVmPJELmA6eoz0fCoelVWgMttaxPwpp2tsf+r+jVlJvsoeSEE54lur5ShfBs9
-         vWWXsgclEYLdYu/0MGT2L1AoCRq8ijqhLD8eQUf69H0NWlAR3WSH6EujcCYZmMaQNSsA
-         RxiBPVWWa8zcJmmenYgCRNJWLyyIt8hm1H/4IR5q36cszbwoBHZzPaCwcWVv4MYTSRth
-         RnwkyJJdnvKS5+Pj+G0Re10FUOBe8MuenPHZF2JltBxQGtxDUfQclF6ORuX7TPEyRPZK
-         KxSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701889567; x=1702494367;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=I409PBeV0vI0BSi/sNEko+BMZt4s00+VHGZ9Cxi/uGs=;
-        b=JoyE+xo+xChgbo3lPrxKRtjEVRFQ0cDTefIE6JhiUSXKl135NVRs6xOBglZSbXVbq2
-         VQfLekWqA7kQkJQeFDm3kyDrZ7Gdc35m02V7Qnx0nkcHXsSZypgOpH0D0MrlKmZFdUW5
-         r3/HuqKNJeRXumP/tlAFLFNHjDL0aYMxCK+2jDTAcELqEAIkWQHKlGjFLOJRfsMBUB6X
-         1LuyMyRmjo6pRhyDrNln8qezB4iKEJmH5kyTQkLgP2M3tVIIRKkNuIMunLzb3Gvzjvz+
-         5V6WZovIWmZq17ZBsxzGdK8Vv7r8oDMLY6Q+mb7ACjjJFzUaYJiTlkihAdncQtwlAE6W
-         3waw==
-X-Gm-Message-State: AOJu0Yy+3KcuLNAUN5DY8KtykKD/pXZ2DVRYmjFnKnqGQD/Z3DRZGdm9
-        CDq4mUAkxMA5407DdjzvTsXnIPE=
-X-Google-Smtp-Source: AGHT+IEqS0IGgMlSKmdLV1hbJusVKwZ8hKL8byL5eF/gGsSa+b+3KizaW4xrrV9KIs8i0M+jEvdFFF0=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a65:67d2:0:b0:5c6:a4e5:2d6a with SMTP id
- b18-20020a6567d2000000b005c6a4e52d6amr14804pgs.7.1701889567399; Wed, 06 Dec
- 2023 11:06:07 -0800 (PST)
-Date:   Wed, 6 Dec 2023 11:06:05 -0800
-In-Reply-To: <CAJ8uoz3_XqavGt1DyFoQAuKS8Faa1Lc85b2t+whc-f6GN1Pvzw@mail.gmail.com>
-Mime-Version: 1.0
-References: <20231203165129.1740512-1-yoong.siang.song@intel.com>
- <20231203165129.1740512-3-yoong.siang.song@intel.com> <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
- <656de830e8d70_2e983e294ca@willemb.c.googlers.com.notmuch>
- <PH0PR11MB583000826591093B98BA841DD885A@PH0PR11MB5830.namprd11.prod.outlook.com>
- <5a0faf8cc9ec3ab0d5082c66b909c582c8f1eae6.camel@siemens.com>
- <CAKH8qBuXL8bOYtfKKPS8y=KJqouDptyciCjr0wNKVHtNj6BmqA@mail.gmail.com>
- <656f66023f7bd_3dd6422942a@willemb.c.googlers.com.notmuch>
- <ZW98UW033wCy9vI-@google.com> <CAJ8uoz3_XqavGt1DyFoQAuKS8Faa1Lc85b2t+whc-f6GN1Pvzw@mail.gmail.com>
-Message-ID: <ZXDGHThTynXbSTJG@google.com>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 2/3] net: stmmac: add Launch
- Time support to XDP ZC
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Florian Bezdeka <florian.bezdeka@siemens.com>,
-        yoong.siang.song@intel.com,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        davem@davemloft.net, Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Topel <bjorn@kernel.org>, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Wed, 6 Dec 2023 14:06:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CADEE
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 11:07:05 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A909AC433C9;
+        Wed,  6 Dec 2023 19:07:00 +0000 (UTC)
+Date:   Wed, 6 Dec 2023 19:06:58 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Marc Zyngier <maz@kernel.org>, ankita@nvidia.com,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>, oliver.upton@linux.dev,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
+        ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+        lpieralisi@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <ZXDGUskp1s4Bwbtr@arm.com>
+References: <ZW9ezSGSDIvv5MsQ@arm.com>
+ <86a5qobkt8.wl-maz@kernel.org>
+ <ZW9uqu7yOtyZfmvC@arm.com>
+ <868r67blwo.wl-maz@kernel.org>
+ <ZXBlmt88dKmZLCU9@arm.com>
+ <20231206151603.GR2692119@nvidia.com>
+ <ZXCh9N2xp0efHcpE@arm.com>
+ <20231206172035.GU2692119@nvidia.com>
+ <ZXDEZO6sS1dE_to9@arm.com>
+ <20231206190356.GD2692119@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206190356.GD2692119@nvidia.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/06, Magnus Karlsson wrote:
-> On Tue, 5 Dec 2023 at 20:39, Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > On 12/05, Willem de Bruijn wrote:
-> > > Stanislav Fomichev wrote:
-> > > > On Tue, Dec 5, 2023 at 7:34=E2=80=AFAM Florian Bezdeka
-> > > > <florian.bezdeka@siemens.com> wrote:
-> > > > >
-> > > > > On Tue, 2023-12-05 at 15:25 +0000, Song, Yoong Siang wrote:
-> > > > > > On Monday, December 4, 2023 10:55 PM, Willem de Bruijn wrote:
-> > > > > > > Jesper Dangaard Brouer wrote:
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > On 12/3/23 17:51, Song Yoong Siang wrote:
-> > > > > > > > > This patch enables Launch Time (Time-Based Scheduling) su=
-pport to XDP zero
-> > > > > > > > > copy via XDP Tx metadata framework.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Song Yoong Siang<yoong.siang.song@intel.co=
-m>
-> > > > > > > > > ---
-> > > > > > > > >   drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 =
-++
-> > > > > > > >
-> > > > > > > > As requested before, I think we need to see another driver =
-implementing
-> > > > > > > > this.
-> > > > > > > >
-> > > > > > > > I propose driver igc and chip i225.
-> > > > > >
-> > > > > > Sure. I will include igc patches in next version.
-> > > > > >
-> > > > > > > >
-> > > > > > > > The interesting thing for me is to see how the LaunchTime m=
-ax 1 second
-> > > > > > > > into the future[1] is handled code wise. One suggestion is =
-to add a
-> > > > > > > > section to Documentation/networking/xsk-tx-metadata.rst per=
- driver that
-> > > > > > > > mentions/documents these different hardware limitations.  I=
-t is natural
-> > > > > > > > that different types of hardware have limitations.  This is=
- a close-to
-> > > > > > > > hardware-level abstraction/API, and IMHO as long as we docu=
-ment the
-> > > > > > > > limitations we can expose this API without too many limitat=
-ions for more
-> > > > > > > > capable hardware.
-> > > > > >
-> > > > > > Sure. I will try to add hardware limitations in documentation.
-> > > > > >
-> > > > > > >
-> > > > > > > I would assume that the kfunc will fail when a value is passe=
-d that
-> > > > > > > cannot be programmed.
-> > > > > > >
-> > > > > >
-> > > > > > In current design, the xsk_tx_metadata_request() dint got retur=
-n value.
-> > > > > > So user won't know if their request is fail.
-> > > > > > It is complex to inform user which request is failing.
-> > > > > > Therefore, IMHO, it is good that we let driver handle the error=
- silently.
-> > > > > >
-> > > > >
-> > > > > If the programmed value is invalid, the packet will be "dropped" =
-/ will
-> > > > > never make it to the wire, right?
-> > >
-> > > Programmable behavior is to either drop or cap to some boundary
-> > > value, such as the farthest programmable time in the future: the
-> > > horizon. In fq:
-> > >
-> > >                 /* Check if packet timestamp is too far in the future=
-. */
-> > >                 if (fq_packet_beyond_horizon(skb, q, now)) {
-> > >                         if (q->horizon_drop) {
-> > >                                         q->stat_horizon_drops++;
-> > >                                         return qdisc_drop(skb, sch, t=
-o_free);
-> > >                         }
-> > >                         q->stat_horizon_caps++;
-> > >                         skb->tstamp =3D now + q->horizon;
-> > >                 }
-> > >                 fq_skb_cb(skb)->time_to_send =3D skb->tstamp;
-> > >
-> > > Drop is the more obviously correct mode.
-> > >
-> > > Programming with a clock source that the driver does not support will
-> > > then be a persistent failure.
-> > >
-> > > Preferably, this driver capability can be queried beforehand (rather
-> > > than only through reading error counters afterwards).
-> > >
-> > > Perhaps it should not be a driver task to convert from possibly
-> > > multiple clock sources to the device native clock. Right now, we do
-> > > use per-device timecounters for this, implemented in the driver.
-> > >
-> > > As for which clocks are relevant. For PTP, I suppose the device PHC,
-> > > converted to nsec. For pacing offload, TCP uses CLOCK_MONOTONIC.
-> >
-> > Do we need to expose some generic netdev netlink apis to query/adjust
-> > nic clock sources (or maybe there is something existing already)?
-> > Then the userspace can be responsible for syncing/converting the
-> > timestamps to the internal nic clocks. +1 to trying to avoid doing
-> > this in the drivers.
-> >
-> > > > > That is clearly a situation that the user should be informed abou=
-t. For
-> > > > > RT systems this normally means that something is really wrong reg=
-arding
-> > > > > timing / cycle overflow. Such systems have to react on that situa=
-tion.
-> > > >
-> > > > In general, af_xdp is a bit lacking in this 'notify the user that t=
-hey
-> > > > somehow messed up' area :-(
-> > > > For example, pushing a tx descriptor with a wrong addr/len in zc mo=
-de
-> > > > will not give any visible signal back (besides driver potentially
-> > > > spilling something into dmesg as it was in the mlx case).
-> > > > We can probably start with having some counters for these events?
-> > >
-> > > This is because the AF_XDP completion queue descriptor format is only
-> > > a u64 address?
-> >
-> > Yeah. XDP_COPY mode has the descriptor validation which is exported via
-> > recvmsg errno, but zerocopy path seems to be too deep in the stack
-> > to report something back. And there is no place, as you mention,
-> > in the completion ring to report the status.
-> >
-> > > Could error conditions be reported on tx completion in the metadata,
-> > > using xsk_tx_metadata_complete?
-> >
-> > That would be one way to do it, yes. But then the error reporting depen=
-ds
-> > on the metadata opt-in. Having a separate ring to export the errors,
-> > or having a v2 tx-completions layout with extra 'status' field would al=
-so
-> > work.
->=20
-> There are error counters for the non-metadata and offloading cases
-> above that can be retrieved with the XDP_STATISTICS getsockopt(). From
-> if_xdp.h:
->=20
-> struct xdp_statistics {
->         __u64 rx_dropped; /* Dropped for other reasons */
->         __u64 rx_invalid_descs; /* Dropped due to invalid descriptor */
->         __u64 tx_invalid_descs; /* Dropped due to invalid descriptor */
->         __u64 rx_ring_full; /* Dropped due to rx ring being full */
->         __u64 rx_fill_ring_empty_descs; /* Failed to retrieve item
-> from fill ring */
->         __u64 tx_ring_empty_descs; /* Failed to retrieve item from tx rin=
-g */
-> };
->=20
-> Albeit, these are aggregate statistics and do not say anything about
-> which packet that caused it. Works well for things that are
-> programming bugs that should not occur (such as rx_invalid_descs and
-> tx_invalid_descs) and requires the programmer to debug and fix his or
-> her program, but it does not work for requests that might fail even
-> though the program is correct and need to be handled on a packet by
-> packet basis. So something needs to be added for that as you both say.
->=20
-> Would prefer if we could avoid a v2 completion descriptor format or
-> another ring that needs to be checked all the time, so if we could
-> live with providing the error status in the metadata field of the
-> packet at completion time, that would be good. Though having the error
-> status in the completion ring would be faster as that cache line is
-> hot, while the metadata section of the packet is likely not at
-> completion time. So that speaks for a v2 completion ring format. Just
-> thinking out loud here.
+On Wed, Dec 06, 2023 at 03:03:56PM -0400, Jason Gunthorpe wrote:
+> On Wed, Dec 06, 2023 at 06:58:44PM +0000, Catalin Marinas wrote:
+> > -------------8<----------------------------
+> > diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
+> > index 1929103ee59a..b89d2dfcd534 100644
+> > --- a/drivers/vfio/pci/vfio_pci_core.c
+> > +++ b/drivers/vfio/pci/vfio_pci_core.c
+> > @@ -1863,7 +1863,7 @@ int vfio_pci_core_mmap(struct vfio_device *core_vdev, struct vm_area_struct *vma
+> >  	 * See remap_pfn_range(), called from vfio_pci_fault() but we can't
+> >  	 * change vm_flags within the fault handler.  Set them now.
+> >  	 */
+> > -	vm_flags_set(vma, VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP);
+> > +	vm_flags_set(vma, VM_VFIO | VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP);
+> >  	vma->vm_ops = &vfio_pci_mmap_ops;
+> > 
+> >  	return 0;
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index 418d26608ece..6df46fd7836a 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -391,6 +391,13 @@ extern unsigned int kobjsize(const void *objp);
+> >  # define VM_UFFD_MINOR		VM_NONE
+> >  #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
+> > 
+> > +#ifdef CONFIG_64BIT
+> > +#define VM_VFIO_BIT		39
+> > +#define VM_VFIO			BIT(VM_VFIO_BIT)
+> > +#else
+> > +#define VM_VFIO			VM_NONE
+> > +#endif
+> > +
+> >  /* Bits set in the VMA until the stack is in its final location */
+> >  #define VM_STACK_INCOMPLETE_SETUP (VM_RAND_READ | VM_SEQ_READ | VM_STACK_EARLY)
+> > -------------8<----------------------------
+> > 
+> > In KVM, Akita's patch would take this into account, not just rely on
+> > "device==true".
+> 
+> Yes, Ankit let's try this please. I would not call it VM_VFIO though
+> 
+> VM_VFIO_ALLOW_WC ?
 
-In this case, maybe adding tx_over_horizon_dropped to XDP_STATISTICS
-is all we need here? We can have some new api to query this horizon
-per netdev.
+Yeah. I don't really care about the name.
+
+-- 
+Catalin
