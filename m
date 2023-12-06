@@ -2,164 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 088B88078E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:50:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A188078E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442809AbjLFTuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 14:50:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        id S1442817AbjLFTva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:51:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379411AbjLFTuV (ORCPT
+        with ESMTP id S1379411AbjLFTv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:50:21 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A2CFA;
-        Wed,  6 Dec 2023 11:50:27 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701892225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Dhk4+zCj2bSVdaz1f+DwCjhCz2nloe+08Lq1HubewE=;
-        b=v+urtsd1FTU9ZhLnfNMCVE4t5FHdgO9qBV8ZKGd9TpMRxHH/CEWRGbEy4B+0vGbO4suTau
-        wkZdYWlpRePNfzJLQy0BJa0Rh5RCB44e1qerQk/+rqH2Kuxw1JD5rXXd38vUPHy/UaNfD7
-        CuB044qCEi9KUXNO4sdAO5+XlNWUFZr+rKjuYaZ45SI2Tr1BVqhKMx/ElfSYpG8SqoBKQl
-        i5d9YiXVBrEUTzLU+M+B8U1EhdRdYXYjwtG+Inz5kqy416Tc2thKlKAt2VcOgX5ZLSfzzD
-        av1/CKw9UkzTHaJ5OGGwop03VQVPbDBCweKuV1mA0BYPlLNulU2MD3+7iOvLag==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701892225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Dhk4+zCj2bSVdaz1f+DwCjhCz2nloe+08Lq1HubewE=;
-        b=lGzQtl9x+ofH+fpqUAxl6pXbPHwEXsgGEzAYM7ctVOK90MAjAnLeYQaVWkrQ4Jcv/RiiwP
-        ECczWzS12VAPxEBA==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
-        iommu@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>,
-        kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org,
-        seanjc@google.com, Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH RFC 09/13] x86/irq: Install posted MSI notification handler
-In-Reply-To: <20231115125624.GF3818@noisy.programming.kicks-ass.net>
-References: <20231112041643.2868316-1-jacob.jun.pan@linux.intel.com>
- <20231112041643.2868316-10-jacob.jun.pan@linux.intel.com>
- <20231115125624.GF3818@noisy.programming.kicks-ass.net>
-Date:   Wed, 06 Dec 2023 20:50:24 +0100
-Message-ID: <87cyvjun3z.ffs@tglx>
+        Wed, 6 Dec 2023 14:51:28 -0500
+Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29118FA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 11:51:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1701892290; x=1702151490;
+        bh=9bnUt4mQN0sRHuHZE/bBNs8Z6MZSXk16CG08Vf2hXjs=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=oSU146QXFS+PhvtrMroC6/bnYa4wLzuCKzLmcWr3Ckb0yPjIhj+khldB9XV4QqEgR
+         NjeUloT2t+poIcLfYkoLEBX/3UWl2lKnkQXfHm62H2OXO/dspJpaFf2ookn25RqwZZ
+         U7OtrEhXVIjm4jahmkWiKQTPyteVt0edv3hKukF5i0f+P2GSuWcX82e+f/65Xr/l6H
+         vSwtZgvmfGSHJv/yNNlffCpJS3C2EAgPWhSLJHCZila+KY8cQNFCLrFnvvndsvIs+c
+         y763KJlfIJi4wadS+kWRNFQskL2E0loDvigStgUAA/b2WUy3heLVwHvH0XziUN0Ee1
+         TBNQiZ1725JPg==
+Date:   Wed, 06 Dec 2023 19:51:19 +0000
+To:     Jakub Kicinski <kuba@kernel.org>
+From:   cristian_ci <cristian_ci@protonmail.com>
+Cc:     "kvalo@kernel.org" <kvalo@kernel.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>
+Subject: Re: [BUG] wireless: mt7601u: probe failed with error -110
+Message-ID: <QGXUDgc-RbYOKRZYX_gp7uyKz_WQ4_6b_R9c4Qyd-3oEd4V_vluPJtyJfVqpvcF5kKQ3Ffr3cVXmxAY3jPYQwKSBrusexYYFIPfHJ1qtFPI=@protonmail.com>
+In-Reply-To: <20231126142634.3a100e2c@kernel.org>
+References: <Bnwq2et4CBU1_MS8X3rFeejMDmKf2dr_BNq60IzBcGKbjTxHG1CjJ0zB_wZjn8_iLJsi7fCx6_Eh01ozYBqPA-cEZXMZE_X98E0b7yotXCg=@protonmail.com> <20231126142634.3a100e2c@kernel.org>
+Feedback-ID: 27475468:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15 2023 at 13:56, Peter Zijlstra wrote:
->
-> Would it not make more sense to write things something like:
->
-> bool handle_pending_pir()
-> {
-> 	bool handled = false;
-> 	u64 pir_copy[4];
->
-> 	for (i = 0; i < 4; i++) {
-> 		if (!pid-pir_l[i]) {
-> 			pir_copy[i] = 0;
-> 			continue;
-> 		}
->
-> 		pir_copy[i] = arch_xchg(&pir->pir_l[i], 0);
-> 		handled |= true;
-> 	}
->
-> 	if (!handled)
-> 		return handled;
->
-> 	for_each_set_bit()
-> 		....
->
-> 	return handled.
-> }
+[RESEND I've made a mistake with list of recipients]
 
-I don't understand what the whole copy business is about. It's
-absolutely not required.
+Update:
 
-static bool handle_pending_pir(unsigned long *pir)
-{
-        unsigned int idx, vec;
-	bool handled = false;
-        unsigned long pend;
-        
-        for (idx = 0; offs < 4; idx++) {
-                if (!pir[idx])
-                	continue;
-		pend = arch_xchg(pir + idx, 0);
-                for_each_set_bit(vec, &pend, 64)
-			call_irq_handler(vec + idx * 64, NULL);
-                handled = true;
-	}
-        return handled;
-}
+I've built and installed mt7601Usta vendor driver, which is shown into lsmo=
+d output.
 
-No?
+ra0 interface appears as shown in the following output from iwconfig and if=
+config:
 
-> sysvec_posted_blah_blah()
-> {
-> 	bool done = false;
-> 	bool handled;
->
-> 	for (;;) {
-> 		handled = handle_pending_pir();
-> 		if (done)
-> 			break;
-> 		if (!handled || ++loops > MAX_LOOPS) {
+ra0       Ralink STA  ESSID:""
+          Mode:Auto  Frequency=3D2.412 GHz  Access Point: Not-Associated
+          Bit Rate:1 Mb/s
+          RTS thr:off   Fragment thr:off
+          Link Quality=3D10/100  Signal level:0 dBm  Noise level:0 dBm
+          Rx invalid nwid:0  Rx invalid crypt:0  Rx invalid frag:0
+          Tx excessive retries:0  Invalid misc:0   Missed beacon:0
 
-That does one loop too many. Should be ++loops == MAX_LOOPS. No?
 
-> 			pi_clear_on(pid);
-> 			/* once more after clear_on */
-> 			done = true;
-> 		}
-> 	}
-> }
->
->
-> Hmm?
+ra0       Link encap:Ethernet  HWaddr 00:00:00:00:00:00
+          BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisioni:0 txqueuelen:1000
+          Byte RX:0 (0.0 B)  Byte TX:0 (0.0 B)
 
-I think that can be done less convoluted.
+The driver is properly loaded and the device doesn't connect/disconnect con=
+tinuously as instead happens in mainline driver:
 
-{
-	struct pi_desc *pid = this_cpu_ptr(&posted_interrupt_desc);
-	struct pt_regs *old_regs = set_irq_regs(regs);
-        int loops;
+Bus 001 Device 007: ID 148f:7601 Ralink Technology, Corp.
+    |__ Port 3: Dev 7, If 0, Class=3Dvend., Driver=3Drt2870, 480M
 
-	for (loops = 0;;) {
-        	bool handled = handle_pending_pir((unsigned long)pid->pir);
+Any thoughts?
 
-                if (++loops > MAX_LOOPS)
-                	break;
+Waiting for a reply,
 
-                if (!handled || loops == MAX_LOOPS) {
-                	pi_clear_on(pid);
-                        /* Break the loop after handle_pending_pir()! */
-                        loops = MAX_LOOPS;
-                }
-	}
-
-	...
-	set_irq_regs(old_regs);
-}
-
-Hmm? :)
+Cristian.
