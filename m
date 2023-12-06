@@ -2,235 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61DB380660D
+	by mail.lfdr.de (Postfix) with ESMTP id B86A680660E
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 05:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376518AbjLFEKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 23:10:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
+        id S1376520AbjLFENg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 23:13:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLFEKu (ORCPT
+        with ESMTP id S229493AbjLFENd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 23:10:50 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6C01BC;
-        Tue,  5 Dec 2023 20:10:55 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1d0a5422c80so26314535ad.3;
-        Tue, 05 Dec 2023 20:10:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701835854; x=1702440654; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ObrC2jCtLGDAckpSfZVTn0tEKMdAtJUEwxrQR45+A9Q=;
-        b=TkPQUDAeccGi9r1+dWcxLq006rWGC5WUjJzykXi4lF4awcoJEA/GgXV0tMUfrCHkER
-         gmhvqPI3H5wKvAxM3h4H2XN2ApuBFTHaqASXseK5AKODJcFl/RV7j8iAYbW2G8E9I22h
-         43rbT7KhdURgS6CZzoV1I1whnPZLpD5ZCL8JDgaDmoYgaUjaEkhGahuT3vOjTXHuhMCW
-         4ngZDGZkCdGU9iwZLjHbuLR/uewVy0HNcAvUWuJWU/dGWJSU57sCTFpJ0nuHdPVt08Ro
-         EsjAxnrJEjvHcR6HGEGmlFrCWHEK4pMMayEsRH1M8KiA5rMkMfHm/V5Iky8xKTel9Ur2
-         LOJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701835854; x=1702440654;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ObrC2jCtLGDAckpSfZVTn0tEKMdAtJUEwxrQR45+A9Q=;
-        b=i3kNEM88JmLz/Icn/f/cZ7Yp8Nj+ZJOhNF/DsFLLCYl1sJLzNmWZcH/qEphXfG2WHB
-         PlgB0OlMW2XgNjCePn8JaabBVltYMZVYm3GO2zmClhHNR6lBsyknJEc/9mIpbOzV3HJp
-         VlX5eJnYyIxOqvWE1+ze9MIpfEggS8DsJsiWPG9v2XQqgwEim0Zuo4FW3c8lRCZgLRyt
-         V4+AoOIvSpV8rXbcNyyKhDnu+vWelDKinq5PWMPzGSvBwr8OgPZBbgV/vc+FAsrpa90L
-         PnQ2RJ8PvBUdfe2ocOLKC/hJKWlwrVkbUbSxXhLpaRtM4PCQFMaY4QETjv371Segj8l4
-         5HMQ==
-X-Gm-Message-State: AOJu0YxPWakMPxT7bLrMEb4HfBTHTZcOyckzCt8WQdfMGM7sVmiWSq8s
-        6PY8yp5GJ42pwfL2DWBr504=
-X-Google-Smtp-Source: AGHT+IEaAOoQGFwwH/kU2fUu/2MKaKhp7MePbfzzvQOCn6yYbZlMCkGzBFnYk7XBORY7u8QTpJQ4RA==
-X-Received: by 2002:a17:902:f7d4:b0:1d0:737d:2ae5 with SMTP id h20-20020a170902f7d400b001d0737d2ae5mr292078plw.87.1701835854495;
-        Tue, 05 Dec 2023 20:10:54 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id ij20-20020a170902ab5400b001cfbd3f38dcsm9625744plb.225.2023.12.05.20.10.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 20:10:53 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id 8E9E81123835B; Wed,  6 Dec 2023 11:10:50 +0700 (WIB)
-Date:   Wed, 6 Dec 2023 11:10:50 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org
-Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org
-Subject: Re: [PATCH v8 0/6] workload-specific and memory pressure-driven
- zswap writeback
-Message-ID: <ZW_0SqJ5xDc3lTsR@archie.me>
-References: <20231130194023.4102148-1-nphamcs@gmail.com>
+        Tue, 5 Dec 2023 23:13:33 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33AEC1B9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 20:13:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701836019; x=1733372019;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8r8SvioYkh0V9fg5ZDhsYOmVK4Xbo+lcyPeyGgNsAzU=;
+  b=OtDhpX9BE1PUpF6ErRdLmPWahTPt7bIYvRn3uP7oYEpSCLA9uGKLZKOd
+   +GlD9xGGUjxVcFXUgfXMKQDMiczyJNIcqKXP/8SxjPH53vFf9DhhzFc2P
+   /geWpArqvS7XI23kGg3aZDDLSS2e88wzUU+VNNqoDDD+QiKjG03BOy8P+
+   mejixP1wSsdyCD/xMmWtTRrvZPUyoFBh8ABHEmNI1/GA4an5WkU4JzhAn
+   gYqsix55Z0XzegybuiA8RwylcbvDqBUK8pgcuKzexS9l4k0XzNhHayC8C
+   2fQFsqL4lqCVjUtd+dZQncd+4hhwsFBHQYteK38QdNxDkBNY3qYV0uK+J
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="458325935"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="458325935"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 20:13:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="894599845"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="894599845"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 05 Dec 2023 20:13:34 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAjHw-000AEk-1n;
+        Wed, 06 Dec 2023 04:13:32 +0000
+Date:   Wed, 6 Dec 2023 12:13:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yajun Deng <yajun.deng@linux.dev>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: Re: [PATCH 2/2] sched/rt: Return NULL when rt entity isn't a task in
+ rt_task_of()
+Message-ID: <202312061220.T02aFFcy-lkp@intel.com>
+References: <20231201022704.3526377-3-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cYRqWT32c2qY1zcr"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231130194023.4102148-1-nphamcs@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231201022704.3526377-3-yajun.deng@linux.dev>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Yajun,
 
---cYRqWT32c2qY1zcr
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+kernel test robot noticed the following build errors:
 
-On Thu, Nov 30, 2023 at 11:40:17AM -0800, Nhat Pham wrote:
-> Changelog:
-> v8:
->    * Fixed a couple of build errors in the case of !CONFIG_MEMCG
->    * Simplified the online memcg selection scheme for the zswap global
->      limit reclaim (suggested by Michal Hocko and Johannes Weiner)
->      (patch 2 and patch 3)
->    * Added a new kconfig to allows users to enable zswap shrinker by
->      default. (suggested by Johannes Weiner) (patch 6)
-> v7:
->    * Added the mem_cgroup_iter_online() function to the API for the new
->      behavior (suggested by Andrew Morton) (patch 2)
->    * Fixed a missing list_lru_del -> list_lru_del_obj (patch 1)
-> v6:
->    * Rebase on top of latest mm-unstable.
->    * Fix/improve the in-code documentation of the new list_lru
->      manipulation functions (patch 1)
-> v5:
->    * Replace reference getting with an rcu_read_lock() section for
->      zswap lru modifications (suggested by Yosry)
->    * Add a new prep patch that allows mem_cgroup_iter() to return
->      online cgroup.
->    * Add a callback that updates pool->next_shrink when the cgroup is
->      offlined (suggested by Yosry Ahmed, Johannes Weiner)
-> v4:
->    * Rename list_lru_add to list_lru_add_obj and __list_lru_add to
->      list_lru_add (patch 1) (suggested by Johannes Weiner and
-> 	 Yosry Ahmed)
->    * Some cleanups on the memcg aware LRU patch (patch 2)
->      (suggested by Yosry Ahmed)
->    * Use event interface for the new per-cgroup writeback counters.
->      (patch 3) (suggested by Yosry Ahmed)
->    * Abstract zswap's lruvec states and handling into=20
->      zswap_lruvec_state (patch 5) (suggested by Yosry Ahmed)
-> v3:
->    * Add a patch to export per-cgroup zswap writeback counters
->    * Add a patch to update zswap's kselftest
->    * Separate the new list_lru functions into its own prep patch
->    * Do not start from the top of the hierarchy when encounter a memcg
->      that is not online for the global limit zswap writeback (patch 2)
->      (suggested by Yosry Ahmed)
->    * Do not remove the swap entry from list_lru in
->      __read_swapcache_async() (patch 2) (suggested by Yosry Ahmed)
->    * Removed a redundant zswap pool getting (patch 2)
->      (reported by Ryan Roberts)
->    * Use atomic for the nr_zswap_protected (instead of lruvec's lock)
->      (patch 5) (suggested by Yosry Ahmed)
->    * Remove the per-cgroup zswap shrinker knob (patch 5)
->      (suggested by Yosry Ahmed)
-> v2:
->    * Fix loongarch compiler errors
->    * Use pool stats instead of memcg stats when !CONFIG_MEMCG_KEM
->=20
-> There are currently several issues with zswap writeback:
->=20
-> 1. There is only a single global LRU for zswap, making it impossible to
->    perform worload-specific shrinking - an memcg under memory pressure
->    cannot determine which pages in the pool it owns, and often ends up
->    writing pages from other memcgs. This issue has been previously
->    observed in practice and mitigated by simply disabling
->    memcg-initiated shrinking:
->=20
->    https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com=
-/T/#u
->=20
->    But this solution leaves a lot to be desired, as we still do not
->    have an avenue for an memcg to free up its own memory locked up in
->    the zswap pool.
->=20
-> 2. We only shrink the zswap pool when the user-defined limit is hit.
->    This means that if we set the limit too high, cold data that are
->    unlikely to be used again will reside in the pool, wasting precious
->    memory. It is hard to predict how much zswap space will be needed
->    ahead of time, as this depends on the workload (specifically, on
->    factors such as memory access patterns and compressibility of the
->    memory pages).
->=20
-> This patch series solves these issues by separating the global zswap
-> LRU into per-memcg and per-NUMA LRUs, and performs workload-specific
-> (i.e memcg- and NUMA-aware) zswap writeback under memory pressure. The
-> new shrinker does not have any parameter that must be tuned by the
-> user, and can be opted in or out on a per-memcg basis.
->=20
-> As a proof of concept, we ran the following synthetic benchmark:
-> build the linux kernel in a memory-limited cgroup, and allocate some
-> cold data in tmpfs to see if the shrinker could write them out and
-> improved the overall performance. Depending on the amount of cold data
-> generated, we observe from 14% to 35% reduction in kernel CPU time used
-> in the kernel builds.
->=20
-> Domenico Cerasuolo (3):
->   zswap: make shrinking memcg-aware
->   mm: memcg: add per-memcg zswap writeback stat
->   selftests: cgroup: update per-memcg zswap writeback selftest
->=20
-> Nhat Pham (3):
->   list_lru: allows explicit memcg and NUMA node selection
->   memcontrol: implement mem_cgroup_tryget_online()
->   zswap: shrinks zswap pool based on memory pressure
->=20
->  Documentation/admin-guide/mm/zswap.rst      |  10 +
->  drivers/android/binder_alloc.c              |   7 +-
->  fs/dcache.c                                 |   8 +-
->  fs/gfs2/quota.c                             |   6 +-
->  fs/inode.c                                  |   4 +-
->  fs/nfs/nfs42xattr.c                         |   8 +-
->  fs/nfsd/filecache.c                         |   4 +-
->  fs/xfs/xfs_buf.c                            |   6 +-
->  fs/xfs/xfs_dquot.c                          |   2 +-
->  fs/xfs/xfs_qm.c                             |   2 +-
->  include/linux/list_lru.h                    |  54 ++-
->  include/linux/memcontrol.h                  |  15 +
->  include/linux/mmzone.h                      |   2 +
->  include/linux/vm_event_item.h               |   1 +
->  include/linux/zswap.h                       |  27 +-
->  mm/Kconfig                                  |  14 +
->  mm/list_lru.c                               |  48 ++-
->  mm/memcontrol.c                             |   3 +
->  mm/mmzone.c                                 |   1 +
->  mm/swap.h                                   |   3 +-
->  mm/swap_state.c                             |  26 +-
->  mm/vmstat.c                                 |   1 +
->  mm/workingset.c                             |   4 +-
->  mm/zswap.c                                  | 456 +++++++++++++++++---
->  tools/testing/selftests/cgroup/test_zswap.c |  74 ++--
->  25 files changed, 661 insertions(+), 125 deletions(-)
->=20
+[auto build test ERROR on tip/sched/core]
+[also build test ERROR on next-20231205]
+[cannot apply to linus/master v6.7-rc4]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Carrying from v7,
+url:    https://github.com/intel-lab-lkp/linux/commits/Yajun-Deng/sched-fair-Return-NULL-when-entity-isn-t-a-task-in-task_of/20231201-103036
+base:   tip/sched/core
+patch link:    https://lore.kernel.org/r/20231201022704.3526377-3-yajun.deng%40linux.dev
+patch subject: [PATCH 2/2] sched/rt: Return NULL when rt entity isn't a task in rt_task_of()
+config: alpha-allnoconfig (https://download.01.org/0day-ci/archive/20231206/202312061220.T02aFFcy-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312061220.T02aFFcy-lkp@intel.com/reproduce)
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312061220.T02aFFcy-lkp@intel.com/
 
---=20
-An old man doll... just what I always wanted! - Clara
+All errors (new ones prefixed by >>):
 
---cYRqWT32c2qY1zcr
-Content-Type: application/pgp-signature; name="signature.asc"
+   In file included from kernel/sched/build_policy.c:45:
+   kernel/sched/rt.c: In function 'rt_se_prio':
+>> kernel/sched/rt.c:947:29: error: 'struct rt_rq' has no member named 'highest_prio'
+     947 |                 return rt_rq->highest_prio.curr;
+         |                             ^~
 
------BEGIN PGP SIGNATURE-----
 
-iHQEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZW/0RQAKCRD2uYlJVVFO
-o65MAP9/pT5frcsZd0LxwPcoVNeeGc0pNzxVGOZLmtka3xNlbgD3VXD447mxf7HC
-r0BOQRED5Yu59sVopP7c3ZGK4tuzBA==
-=huGs
------END PGP SIGNATURE-----
+vim +947 kernel/sched/rt.c
 
---cYRqWT32c2qY1zcr--
+ac086bc22997a2 kernel/sched_rt.c Peter Zijlstra  2008-04-19  941  
+6f505b16425a51 kernel/sched_rt.c Peter Zijlstra  2008-01-25  942  static inline int rt_se_prio(struct sched_rt_entity *rt_se)
+6f505b16425a51 kernel/sched_rt.c Peter Zijlstra  2008-01-25  943  {
+6f505b16425a51 kernel/sched_rt.c Peter Zijlstra  2008-01-25  944  	struct rt_rq *rt_rq = group_rt_rq(rt_se);
+6f505b16425a51 kernel/sched_rt.c Peter Zijlstra  2008-01-25  945  
+6f505b16425a51 kernel/sched_rt.c Peter Zijlstra  2008-01-25  946  	if (rt_rq)
+e864c499d9e578 kernel/sched_rt.c Gregory Haskins 2008-12-29 @947  		return rt_rq->highest_prio.curr;
+6f505b16425a51 kernel/sched_rt.c Peter Zijlstra  2008-01-25  948  
+6f505b16425a51 kernel/sched_rt.c Peter Zijlstra  2008-01-25  949  	return rt_task_of(rt_se)->prio;
+6f505b16425a51 kernel/sched_rt.c Peter Zijlstra  2008-01-25  950  }
+6f505b16425a51 kernel/sched_rt.c Peter Zijlstra  2008-01-25  951  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
