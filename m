@@ -2,85 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CE0806D81
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B77E7806D88
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378045AbjLFLL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 06:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46598 "EHLO
+        id S1378050AbjLFLMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:12:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377964AbjLFLLz (ORCPT
+        with ESMTP id S1377964AbjLFLMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:11:55 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752CA137
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:12:00 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a196f84d217so80700966b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 03:12:00 -0800 (PST)
+        Wed, 6 Dec 2023 06:12:24 -0500
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09569181
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:12:30 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7c45fa55391so1998563241.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 03:12:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1701861119; x=1702465919; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dcUwLRWzoKCiLujNLbeBgYDSgnjO4m7YhLdFf0vhr4A=;
-        b=DlncmySJI0BK09GpYxHKtmX5lq6kWZTu+SiBkeOU6alFzv21K4opxJnQMZQ35bi2aw
-         KaeRLP0JT+qSl/jIXwIxniERDGPVmyxzwxrO1jEechOUwuVIIgmuZ5e+JbFfyZxcKHd0
-         4JzXLkXx1Un11ugPboa5KhsJesspWH1ag2BjvEVBIih+Fp7H2sBKZf5f1NPEC5U940FQ
-         JersVQ1FyvU4Jnr47TZVmGeug+OVT4yC2A2jbHbRhnMszJtAzU6aY4IleFCvoQEfmpMD
-         nQ9m5Ynq+mL+LV50A1RBK1DwMfuAxtoz29tIhi6nvZNqAXhmDVOmdy+3wlbcRO+8srRp
-         2K2g==
+        d=linaro.org; s=google; t=1701861149; x=1702465949; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0UubSG//sobKoRD33O6F2nApl3ZVDUMYW81HNRkiEIo=;
+        b=RAtLtfP6AT+g9UPBV5Xz8lq/6CB0Dr0YhY0vB06OVjB7mz+6AVGs+9vNJ/F+OiTPGY
+         alvO2yOWmXULsK6htcb8EnjE6jro6ud3/kyipalwHLQMmxVWzORCP52yqznM0/k/ZkUP
+         nD1gvjoztOIKbuZ2jNfFIUiANEqzngvtNAfJYna73tZwzSnd0APKCoNDpcRtXa3V4EV4
+         4TmNZSyHifge7D7hD/Ry1wEQFoOfUUGfgbfDu74Fl2wDXdRbWimMsQQokLDVPV4Ped2O
+         y/vNhNGxgR1+FtkL5vRtBzi9/f7tmS7F0R6jFJdraXrEVDmCpYnsDevs3U3Rulz20QR4
+         c+mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701861119; x=1702465919;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dcUwLRWzoKCiLujNLbeBgYDSgnjO4m7YhLdFf0vhr4A=;
-        b=tNa0F19m8ZSgiAqkr8AGy0i3uTXeA8I8QSR6C3KC4X+rmnl5seNZHqcX+8FSXJE7WV
-         BCYhILzSfIdUhNDIv9OliYmyObR+DxdnuRInTS8Vycn+UIGzwyViEQBuGprY+Aw/xQuW
-         lTCHVtK8mPYHPAEP2rwcL/twbWIVl/lTMHKFc1ZvabsOfx1xw0IZ7FK0arbFYMkinPA5
-         MbHh+Q1sRPUL18BRijEpk+pOxBLYEc9l5C8e+HMqgrcOQw4R1e0sFJjyzznLv4lZMZec
-         tjzoA4Osh+81/NbTv2qoJSsR1WG3VedIsCzMQUXWrHqOklhWIfOCVHSPBgE6dK7P6c0l
-         ZahQ==
-X-Gm-Message-State: AOJu0Yyt93Yt8XaX3QLG3+ptJfkMjimPxeAhvqOFGwqT3+JbhhGk0Udv
-        cQE51IqvF6VetDCQInLq1R3QBg==
-X-Google-Smtp-Source: AGHT+IG3qcWvsI2ibZlg8aF3jqdwhI35Pva3o+lOtVXoK2FasThHPg+BRgLUAXOVFiJ2Rh0QB4rE+A==
-X-Received: by 2002:a17:906:3f5b:b0:9ff:53b6:f951 with SMTP id f27-20020a1709063f5b00b009ff53b6f951mr451808ejj.23.1701861118706;
-        Wed, 06 Dec 2023 03:11:58 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.22])
-        by smtp.gmail.com with ESMTPSA id o26-20020a170906289a00b009e5ce1acb01sm8100203ejd.103.2023.12.06.03.11.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 03:11:58 -0800 (PST)
-Message-ID: <248d24a9-589e-4b92-94b6-98504f78d7b9@tuxon.dev>
-Date:   Wed, 6 Dec 2023 13:11:55 +0200
+        d=1e100.net; s=20230601; t=1701861149; x=1702465949;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0UubSG//sobKoRD33O6F2nApl3ZVDUMYW81HNRkiEIo=;
+        b=Ut00oPTPttpN7qhVL1SAlpsP3cEWYBmjL4it0/7C3p3vF9Hlx4DB1ItUAnv8aCohsw
+         irh2sxc/cGCoW/XzTnKjHrUd0QpkkcEI4pr8PQNDgM9ABtcebzipGJLorMc68SYdLqck
+         GmZyxtmr94blLzlzAE13mm4zU7cey/Qomaeq5gEshbM8C6UB08cPDIynKRhSPX15w5CF
+         dmBbKB2b8TNPbgKQy5vlD7RG+gcxZib5/xMBb83GobfjouCI9rU9Vt8ZpDABufYxlz4f
+         rXZ2I3yxhAEvm2eNz+ko/JN9CfwEgk+wZ3PVZj6gwcHvNRgTlY0a6DhxNPwIy5IsURx6
+         R7Ow==
+X-Gm-Message-State: AOJu0YwjRHkttLmz+oLYwtuVCfXeCkFbKYDDm+//5s5W/vyJ0o4cMocu
+        Dvu5BTFFai2JLTcXY0gfy61h0CUOPj/lcWjDgapTZQ==
+X-Google-Smtp-Source: AGHT+IEHidwbwpgNXmJ6MjWYNBfa3WUcLMr01LVFkssVIxIj415CK0pHbZj8DOAExFJwLgoQHJSK+7fccH16ZKyb5sQ=
+X-Received: by 2002:a05:6102:c87:b0:464:73d8:769a with SMTP id
+ f7-20020a0561020c8700b0046473d8769amr692447vst.26.1701861148966; Wed, 06 Dec
+ 2023 03:12:28 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/14] arm64: renesas: rzg3s-smarc-som: Invert the logic
- for SW_SD2_EN macro
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux@armlinux.org.uk, geert+renesas@glider.be,
-        magnus.damm@gmail.com, mturquette@baylibre.com, sboyd@kernel.org,
-        linus.walleij@linaro.org, p.zabel@pengutronix.de, arnd@arndb.de,
-        m.szyprowski@samsung.com, alexandre.torgue@foss.st.com, afd@ti.com,
-        broonie@kernel.org, alexander.stein@ew.tq-group.com,
-        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com>
- <20231120070024.4079344-12-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdUbKe=yiXWNmk5BJFLtF2psx9khiDRGasT9WsnHz4RWsg@mail.gmail.com>
- <CAMuHMdXwSo1L9UuFg9RL0TLL_xzVt2r6QEFc0gtPoydpr4FmSQ@mail.gmail.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-Content-Language: en-US
-In-Reply-To: <CAMuHMdXwSo1L9UuFg9RL0TLL_xzVt2r6QEFc0gtPoydpr4FmSQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20231205183248.388576393@linuxfoundation.org>
+In-Reply-To: <20231205183248.388576393@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 6 Dec 2023 16:42:17 +0530
+Message-ID: <CA+G9fYsEnqEnPNsaV--Ugp9hAbrr7yDwdokJuZ=jpUBEgY9+EQ@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/105] 6.1.66-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
@@ -91,127 +72,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Geert,
+On Wed, 6 Dec 2023 at 00:52, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.1.66 release.
+> There are 105 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.66-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 06.12.2023 12:56, Geert Uytterhoeven wrote:
-> On Wed, Dec 6, 2023 at 11:33 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> On Mon, Nov 20, 2023 at 8:03 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>
->>> The intention of SW_SD2_EN macro was to reflect the state of SW_CONFIG3
->>> switch available on RZ/G3S Smarc Module. According to documentation SD2
->>> is enabled when switch is in OFF state. For this, changed the logic of
->>> marco to map value 0 to switch's OFF state and value 1 to switch's ON
->>> state. Along with this update the description for each state for better
->>> understanding.
->>>
->>> The value of SW_SD2_EN macro was not changed in file because, according to
->>> documentation, the default state for this switch is ON.
->>>
->>> Fixes: adb4f0c5699c ("arm64: dts: renesas: Add initial support for RZ/G3S SMARC SoM")
->>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> Thanks for your patch!
->>
->>> --- a/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
->>> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
->>> @@ -14,8 +14,8 @@
->>>   *     0 - SD0 is connected to eMMC
->>>   *     1 - SD0 is connected to uSD0 card
->>>   * @SW_SD2_EN:
->>> - *     0 - SCIF1, SSI0, IRQ0, IRQ1 connected to SoC
->>> - *     1 - SD2 is connected to SoC
->>> + *     0 - (switch OFF) SD2 is connected to SoC
->>> + *     1 - (switch ON)  SCIF1, SSI0, IRQ0, IRQ1 connected to SoC
->>
->> I think this is still confusing: SW_SD2_EN refers to an active-low signal
->> (SW_SD2_EN#) in the schematics.
-> 
-> OMG, while the signal is called "SW_SD2_EN#" in the schematics, it is
-> _not_ active-low!
-> SW_D2_EN# drives a STG3692 quad SPDT switch, and SD2 is enabled
-> if SW_D2_EN# is high...
-> 
-> The RZ/G3S SMARC Module User Manual says:
-> 
-> Signal SW_SD2_EN ON: SD2 is disabled.
-> Signal SW_SD2_EN OFF: SD2 is enabled.
 
-I followed the description in this manual, chapter 2.1.1 SW_CONFIG. The
-idea was that these macros to correspond to individual switches, to match
-that table (describing switches position) with this code as the user in the
-end sets those switches described in table at 2.1.1 w/o necessary going
-deep into schematic (at least in the beginning when trying different
-functionalities).
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Do you think it would be better if we will have these macros named
-SWCONFIGX, X in {1, 2, 3, 4, 5, 6} ?
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> 
-> So whatever we do, something will look odd :-(
-> 
->> Before, SW_SD2_EN used assertion-logic (1 is enabled), and didn't
->> match the physical signal level.
->> After your patch, SW_SD2_EN matches the active-low physical level, but
->> this is not reflected in the name...
->>
->>>   */
->>>  #define SW_SD0_DEV_SEL 1
->>>  #define SW_SD2_EN      1
->>> @@ -25,7 +25,7 @@ / {
->>>
->>>         aliases {
->>>                 mmc0 = &sdhi0;
->>> -#if SW_SD2_EN
->>> +#if !SW_SD2_EN
->>
->> ... so this condition looks really weird.
-> 
-> Still, I think the original looks nicer here.
-> 
-> So I suggest to keep the original logic, but clarify the position of
-> the switch.
-> Does that make sense?
+NOTE:
+Following regressions from the previous round have been fixed now.
+* ltp-syscalls
+  - preadv03
+  - preadv03_64
 
-It will still be odd, AFAICT, as this way as we will map 0 to ON and 1 to
-OFF... A bit counterintuitive.
+## Build
+* kernel: 6.1.66-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.1.y
+* git commit: b22b2d52d0a36cac86d9e27a0dd7bbcfb3b36fa9
+* git describe: v6.1.65-106-gb22b2d52d0a3
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.65-106-gb22b2d52d0a3
 
-> 
-> 
->>
->>>                 mmc2 = &sdhi2;
->>>  #endif
->>>         };
->>> @@ -116,7 +116,7 @@ &sdhi0 {
->>>  };
->>>  #endif
->>>
->>> -#if SW_SD2_EN
->>> +#if !SW_SD2_EN
->>>  &sdhi2 {
->>>         pinctrl-0 = <&sdhi2_pins>;
->>>         pinctrl-names = "default";
->>
->> So I think SW_SD2_EN should be renamed to SW_SD2_EN_N.
->>
->> Cfr. SW_ET0_EN_N on RZ/G2UL:
->>
->> arch/arm64/boot/dts/renesas/r9a07g043u11-smarc.dts- * DIP-Switch SW1 setting
->> arch/arm64/boot/dts/renesas/r9a07g043u11-smarc.dts- * 1 : High; 0: Low
->> arch/arm64/boot/dts/renesas/r9a07g043u11-smarc.dts- * SW1-2 :
->> SW_SD0_DEV_SEL    (0: uSD; 1: eMMC)
->> arch/arm64/boot/dts/renesas/r9a07g043u11-smarc.dts- * SW1-3 :
->> SW_ET0_EN_N               (0: ETHER0; 1: CAN0, CAN1, SSI1, RSPI1)
->> arch/arm64/boot/dts/renesas/r9a07g043u11-smarc.dts- * Please change
->> below macros according to SW1 setting on the SoM
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+## Test Regressions (compared to v6.1.65)
+
+## Metric Regressions (compared to v6.1.65)
+
+## Test Fixes (compared to v6.1.65)
+* ltp-syscalls - all devices
+  - preadv03
+  - preadv03_64
+
+## Metric Fixes (compared to v6.1.65)
+
+## Test result summary
+total: 127405, pass: 107870, fail: 2806, skip: 16606, xfail: 123
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 151 total, 130 passed, 21 failed
+* arm64: 52 total, 46 passed, 6 failed
+* i386: 39 total, 39 passed, 0 failed
+* mips: 26 total, 26 passed, 0 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 15 total, 15 passed, 0 failed
+* s390: 16 total, 16 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 46 total, 46 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
