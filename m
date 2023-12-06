@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E878807A75
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 870F3807A80
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442961AbjLFVbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 16:31:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48682 "EHLO
+        id S230374AbjLFVdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 16:33:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379773AbjLFVbG (ORCPT
+        with ESMTP id S229679AbjLFVdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 16:31:06 -0500
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5CCD4B;
-        Wed,  6 Dec 2023 13:31:13 -0800 (PST)
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6d7e56f6845so172152a34.0;
-        Wed, 06 Dec 2023 13:31:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701898272; x=1702503072;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IXOKcwNylDDzpj359uSheKfusXLn+oML8Kk/hPty+vk=;
-        b=trLYAjApi+4jVlwzW0SLWoeRfikk/L2itL6GTuBd6q6c82gAHTMLCFvv6DNqLted6w
-         QhlHnk2QHWvsk9bzfZ5+7J6kkL5uMdgXmNeLJyqVL05ZWAagjxShl95gs1bZeD4KjfX9
-         amp8ODwkC0NMkkSP+QA3qFRIFAo3dFZ6oT9Z45ILSptS5CULQUjAF0EleiuX2VLhPxDK
-         XOR411cl0vsBARPIvLxRp+DxGe69YPGXn4LFCrr48KvNwhvsjEjYeEkZwC2Nieesimr1
-         YVKqcm3xVo5vBL7/6o76x3z9WPz56Xc3UQiOhY2wdq/r8PwpmZmmtUataLg/saxk625m
-         TmMA==
-X-Gm-Message-State: AOJu0Yw8ebGlZMqyzP96ZqIFL3r/wYjYj3AJk0djkgHGaBJPCXthJb9C
-        2y3vMey+jcJXgYnXOzqa1Q==
-X-Google-Smtp-Source: AGHT+IFtumfUIKo6aBSB0vh1CEIuF8AUYhrVdYrLyd/wuCnXSl+flurWmeZTod8cYMx1talrMVK7jA==
-X-Received: by 2002:a9d:7dd5:0:b0:6d8:585b:410b with SMTP id k21-20020a9d7dd5000000b006d8585b410bmr1698733otn.8.1701898272290;
-        Wed, 06 Dec 2023 13:31:12 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id n16-20020a9d7410000000b006d94fa88156sm114804otk.14.2023.12.06.13.31.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 13:31:11 -0800 (PST)
-Received: (nullmailer pid 3358370 invoked by uid 1000);
-        Wed, 06 Dec 2023 21:31:10 -0000
-Date:   Wed, 6 Dec 2023 15:31:10 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Oreoluwa Babatunde <quic_obabatun@quicinc.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, frowand.list@gmail.com,
-        dinguyen@kernel.org, chenhuacai@kernel.org,
-        tsbogend@alpha.franken.de, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
-        mpe@ellerman.id.au, ysato@users.sourceforge.jp, dalias@libc.org,
-        glaubitz@physik.fu-berlin.de, richard@nod.at,
-        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-        chris@zankel.net, jcmvbkbc@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        kernel@quicinc.com
-Subject: Re: [RFC PATCH v2 2/6] of: reserved_mem: Swicth call to
- unflatten_device_tree() to after paging_init()
-Message-ID: <20231206213110.GA3345785-robh@kernel.org>
-References: <20231204185409.19615-1-quic_obabatun@quicinc.com>
- <20231204185409.19615-3-quic_obabatun@quicinc.com>
+        Wed, 6 Dec 2023 16:33:21 -0500
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65ACD5C;
+        Wed,  6 Dec 2023 13:33:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1701898408; x=1733434408;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=olXMY6IT8d9dmgacsnRgFeTZm0WgXJ1U7yVx5NNY3To=;
+  b=YxvzotlqmijvJgPVVPwxfkQbUystmXG3eLx/7xmblqPL4tGk6E3KCrU8
+   JvuqXH2aDvDVhsVM0EnYOYjFvWpinKe4sP8HCtVMrC3HG7SJBbhrOGU9X
+   HfRPRyI3681O3GRWMnMgLRdwyZA6RUyTqsI/VC3Hur4Gydyq3kNxgX6nj
+   s=;
+X-IronPort-AV: E=Sophos;i="6.04,256,1695686400"; 
+   d="scan'208";a="257298916"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-ed19f671.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 21:33:28 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
+        by email-inbound-relay-pdx-2b-m6i4x-ed19f671.us-west-2.amazon.com (Postfix) with ESMTPS id 32CEA82660;
+        Wed,  6 Dec 2023 21:33:27 +0000 (UTC)
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.7.35:14806]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.56.214:2525] with esmtp (Farcaster)
+ id 9e65d653-7053-45d0-8def-e5b76986597e; Wed, 6 Dec 2023 21:33:26 +0000 (UTC)
+X-Farcaster-Flow-ID: 9e65d653-7053-45d0-8def-e5b76986597e
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 6 Dec 2023 21:33:26 +0000
+Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
+ EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 6 Dec 2023 21:33:25 +0000
+From:   Alexander Graf <graf@amazon.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <linux-doc@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Jan=20H=20=2E=20Sch=C3=B6nherr?= <jschoenh@amazon.de>,
+        James Gowans <jgowans@amazon.com>
+Subject: [PATCH v2] initramfs: Expose retained initrd as sysfs file
+Date:   Wed, 6 Dec 2023 21:33:23 +0000
+Message-ID: <20231206213323.78233-1-graf@amazon.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204185409.19615-3-quic_obabatun@quicinc.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Originating-IP: [10.253.83.51]
+X-ClientProxiedBy: EX19D036UWB004.ant.amazon.com (10.13.139.170) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,16 +73,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 10:54:05AM -0800, Oreoluwa Babatunde wrote:
-> Switch call to unflatten_device_tree() to after paging_init() on other
-> archs to follow new order in which the reserved_mem regions are
-> processed.
+When the kernel command line option "retain_initrd" is set, we do not
+free the initrd memory. However, we also don't expose it to anyone for
+consumption. That leaves us in a weird situation where the only user of
+this feature is ppc64 and arm64 specific kexec tooling.
 
-You did this so that you could allocate memory for the reserved regions. 
-But unflatten_device_tree() can already do allocations using memblock. 
-So the same thing should work for you.
+To make it more generally useful, this patch adds a kobject to the
+firmware object that contains the initrd context when "retain_initrd"
+is set. That way, we can access the initrd any time after boot from
+user space and for example hand it into kexec as --initrd parameter
+if we want to reboot the same initrd. Or inspect it directly locally.
 
-I suspect that moving this will break any arch that called an of_* API 
-between the original call and the new call location.
+With this patch applied, there is a new /sys/firmware/initrd file when
+the kernel was booted with an initrd and "retain_initrd" command line
+option is set.
 
-Rob
+Signed-off-by: Alexander Graf <graf@amazon.com>
+
+---
+
+v1 -> v2:
+
+  - Reword commit message to explain the new file path
+  - Add a Documentation/ABI/testing/sysfs-firmware-initrd file
+---
+ .../ABI/testing/sysfs-firmware-initrd          |  8 ++++++++
+ .../admin-guide/kernel-parameters.txt          |  5 +++--
+ init/initramfs.c                               | 18 +++++++++++++++++-
+ 3 files changed, 28 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-firmware-initrd
+
+diff --git a/Documentation/ABI/testing/sysfs-firmware-initrd b/Documentation/ABI/testing/sysfs-firmware-initrd
+new file mode 100644
+index 000000000000..20bf7cf77a19
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-firmware-initrd
+@@ -0,0 +1,8 @@
++What:		/sys/firmware/initrd
++Date:		December 2023
++Contact:	Alexander Graf <graf@amazon.com>
++Description:
++		When the kernel was booted with an initrd and the
++		"retain_initrd" option is set on the kernel command
++		line, /sys/firmware/initrd contains the contents of the
++		initrd that the kernel was booted with.
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 65731b060e3f..51575cd31741 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -2438,7 +2438,7 @@
+ 			between unregistering the boot console and initializing
+ 			the real console.
+ 
+-	keepinitrd	[HW,ARM]
++	keepinitrd	[HW,ARM] See retain_initrd.
+ 
+ 	kernelcore=	[KNL,X86,IA-64,PPC]
+ 			Format: nn[KMGTPE] | nn% | "mirror"
+@@ -5580,7 +5580,8 @@
+ 			Useful for devices that are detected asynchronously
+ 			(e.g. USB and MMC devices).
+ 
+-	retain_initrd	[RAM] Keep initrd memory after extraction
++	retain_initrd	[RAM] Keep initrd memory after extraction. After boot, it will
++			be accessible via /sys/firmware/initrd.
+ 
+ 	retbleed=	[X86] Control mitigation of RETBleed (Arbitrary
+ 			Speculative Code Execution with Return Instructions)
+diff --git a/init/initramfs.c b/init/initramfs.c
+index 8d0fd946cdd2..25244e2a5739 100644
+--- a/init/initramfs.c
++++ b/init/initramfs.c
+@@ -574,6 +574,16 @@ extern unsigned long __initramfs_size;
+ #include <linux/initrd.h>
+ #include <linux/kexec.h>
+ 
++static ssize_t raw_read(struct file *file, struct kobject *kobj,
++			struct bin_attribute *attr, char *buf,
++			loff_t pos, size_t count)
++{
++	memcpy(buf, attr->private + pos, count);
++	return count;
++}
++
++static BIN_ATTR(initrd, 0440, raw_read, NULL, 0);
++
+ void __init reserve_initrd_mem(void)
+ {
+ 	phys_addr_t start;
+@@ -715,8 +725,14 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
+ 	 * If the initrd region is overlapped with crashkernel reserved region,
+ 	 * free only memory that is not part of crashkernel region.
+ 	 */
+-	if (!do_retain_initrd && initrd_start && !kexec_free_initrd())
++	if (!do_retain_initrd && initrd_start && !kexec_free_initrd()) {
+ 		free_initrd_mem(initrd_start, initrd_end);
++	} else if (do_retain_initrd) {
++		bin_attr_initrd.size = initrd_end - initrd_start;
++		bin_attr_initrd.private = (void *)initrd_start;
++		if (sysfs_create_bin_file(firmware_kobj, &bin_attr_initrd))
++			pr_err("Failed to create initrd sysfs file");
++	}
+ 	initrd_start = 0;
+ 	initrd_end = 0;
+ 
+-- 
+2.40.1
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
