@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFCE8068B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:38:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E71888068B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376743AbjLFHiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 02:38:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43798 "EHLO
+        id S1377040AbjLFHiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 02:38:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231877AbjLFHh5 (ORCPT
+        with ESMTP id S232402AbjLFHh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 02:37:57 -0500
+        Wed, 6 Dec 2023 02:37:58 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3FC198D
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:37:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DFF6C433C8;
-        Wed,  6 Dec 2023 07:37:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F6419A6
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:37:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16B3CC433C9;
+        Wed,  6 Dec 2023 07:37:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701848259;
-        bh=r12fMU0BW1YaP5gO3VGkmDOu28jE14hYoJXFZVc2/YA=;
+        s=k20201202; t=1701848261;
+        bh=18JyKq4qj/ln/rCT3pVsLeqjsPFlBw+nKU0XPRGVwY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QXsENStkdWXfRJe/+InQiCO341yd8klGCOU5x6uZVyfrQVZRYdL1l5LU7nizPpJEe
-         UJWPcd8kRnPlvjK2UET/moJZjwN52VYpiGduoQCooyNYMaw0z9Jt4KyH6RRZNl7+Lk
-         pxy1F3jHndTaZ/qvuN1FjIWlzTcmE/rZ9kZnG+z/o9XJmej3soOUGfbNLnnq7ZRghP
-         EXa2iEZnOjGEKlPj/G2OvQ2fRBhR/zWp3lGVe9wCJvlbc5VoOb+baU4XG3/QS0zpcJ
-         GiSiT+JO4Gu3xJ7fL5LNs7kvMat7E4po4tpl+8q6+sEdsEdwdbn1B9RFkY/9ReKcQG
-         cHcfEjlCsZN8g==
+        b=p6IQRDqkaYUoPif/d7W9DRIcT9jGBoIc5ICU9urWmi2ZRus2ETMngmAZsTHKOW0To
+         rLG45RiEQcK1kwmt6j8cYToPebcY32H8QRWMylgVKvixxlqgv/RjnmOpPPRMpM9Pam
+         clpS7FkXgElpDEbUkhIQnwF1oJ9lr5zwiPDIrWzPzGNOOsES30u4YDSCJVdsLnYy1f
+         NvbtSPIITiYZisvRQV7jG+tbbo9cpITSVwJI0bKLQJZX/G8VH1xB+Am3COfhw0Uc+E
+         PhzQSdXnEErWlY1yMEY5+Scs3I8k6cOkD5p1NIkmv4DN7y44EoylEGfPKc/kUCvl3c
+         QwIsT15zKSayA==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org
-Subject: [PATCH 09/27] tty: con3270: convert to u8 and size_t
-Date:   Wed,  6 Dec 2023 08:36:54 +0100
-Message-ID: <20231206073712.17776-10-jirislaby@kernel.org>
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 10/27] tty: ehv_bytechan: convert to u8 and size_t
+Date:   Wed,  6 Dec 2023 08:36:55 +0100
+Message-ID: <20231206073712.17776-11-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231206073712.17776-1-jirislaby@kernel.org>
 References: <20231206073712.17776-1-jirislaby@kernel.org>
@@ -58,74 +55,56 @@ Switch character types to u8 and sizes to size_t. To conform to
 characters/sizes in the rest of the tty layer.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc: Sven Schnelle <svens@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org
+Cc: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc: linuxppc-dev@lists.ozlabs.org
 ---
- drivers/s390/char/con3270.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/tty/ehv_bytechan.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/s390/char/con3270.c b/drivers/s390/char/con3270.c
-index 363315fa1666..251d2a1c3eef 100644
---- a/drivers/s390/char/con3270.c
-+++ b/drivers/s390/char/con3270.c
-@@ -54,7 +54,7 @@ struct tty3270_attribute {
- };
+diff --git a/drivers/tty/ehv_bytechan.c b/drivers/tty/ehv_bytechan.c
+index cc9f4338da60..69508d7a4135 100644
+--- a/drivers/tty/ehv_bytechan.c
++++ b/drivers/tty/ehv_bytechan.c
+@@ -49,7 +49,7 @@ struct ehv_bc_data {
+ 	unsigned int tx_irq;
  
- struct tty3270_cell {
--	unsigned char character;
-+	u8 character;
- 	struct tty3270_attribute attributes;
- };
+ 	spinlock_t lock;	/* lock for transmit buffer */
+-	unsigned char buf[BUF_SIZE];	/* transmit circular buffer */
++	u8 buf[BUF_SIZE];	/* transmit circular buffer */
+ 	unsigned int head;	/* circular buffer head */
+ 	unsigned int tail;	/* circular buffer tail */
  
-@@ -123,7 +123,7 @@ struct tty3270 {
+@@ -138,9 +138,9 @@ static int find_console_handle(void)
  
- 	/* Character array for put_char/flush_chars. */
- 	unsigned int char_count;
--	char char_buf[TTY3270_CHAR_BUF_SIZE];
-+	u8 char_buf[TTY3270_CHAR_BUF_SIZE];
- };
+ static unsigned int local_ev_byte_channel_send(unsigned int handle,
+ 					       unsigned int *count,
+-					       const char *p)
++					       const u8 *p)
+ {
+-	char buffer[EV_BYTE_CHANNEL_MAX_BYTES];
++	u8 buffer[EV_BYTE_CHANNEL_MAX_BYTES];
+ 	unsigned int c = *count;
  
- /* tty3270->update_flags. See tty3270_update for details. */
-@@ -1255,7 +1255,7 @@ static unsigned int tty3270_write_room(struct tty_struct *tty)
-  * Insert character into the screen at the current position with the
-  * current color and highlight. This function does NOT do cursor movement.
+ 	/*
+@@ -166,7 +166,7 @@ static unsigned int local_ev_byte_channel_send(unsigned int handle,
+  * has been sent, or if some error has occurred.
+  *
   */
--static void tty3270_put_character(struct tty3270 *tp, char ch)
-+static void tty3270_put_character(struct tty3270 *tp, u8 ch)
+-static void byte_channel_spin_send(const char data)
++static void byte_channel_spin_send(const u8 data)
  {
- 	struct tty3270_line *line;
- 	struct tty3270_cell *cell;
-@@ -1561,7 +1561,7 @@ static void tty3270_goto_xy(struct tty3270 *tp, int cx, int cy)
-  *  Pn is a numeric parameter, a string of zero or more decimal digits.
-  *  Ps is a selective parameter.
-  */
--static void tty3270_escape_sequence(struct tty3270 *tp, char ch)
-+static void tty3270_escape_sequence(struct tty3270 *tp, u8 ch)
- {
- 	enum { ES_NORMAL, ES_ESC, ES_SQUARE, ES_PAREN, ES_GETPARS };
+ 	int ret, count;
  
-@@ -1726,7 +1726,7 @@ static void tty3270_escape_sequence(struct tty3270 *tp, char ch)
-  * String write routine for 3270 ttys
-  */
- static void tty3270_do_write(struct tty3270 *tp, struct tty_struct *tty,
--			     const unsigned char *buf, int count)
-+			     const u8 *buf, size_t count)
+@@ -474,8 +474,7 @@ static ssize_t ehv_bc_tty_write(struct tty_struct *ttys, const u8 *s,
  {
- 	int i_msg, i;
- 
-@@ -2052,7 +2052,7 @@ con3270_write(struct console *co, const char *str, unsigned int count)
- {
- 	struct tty3270 *tp = co->data;
+ 	struct ehv_bc_data *bc = ttys->driver_data;
  	unsigned long flags;
--	char c;
-+	u8 c;
+-	unsigned int len;
+-	unsigned int written = 0;
++	size_t len, written = 0;
  
- 	spin_lock_irqsave(&tp->view.lock, flags);
- 	while (count--) {
+ 	while (1) {
+ 		spin_lock_irqsave(&bc->lock, flags);
 -- 
 2.43.0
 
