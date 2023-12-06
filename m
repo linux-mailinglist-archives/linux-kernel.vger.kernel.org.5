@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A37DA80710F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766DB807147
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378607AbjLFNnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 08:43:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
+        id S1378649AbjLFNxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 08:53:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378587AbjLFNnd (ORCPT
+        with ESMTP id S1378633AbjLFNxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 08:43:33 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FD6C7
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 05:43:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BFB6C433C9;
-        Wed,  6 Dec 2023 13:43:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701870219;
-        bh=2Aido14TVd955IUD8DzOIYivBbWzkNxrhuhlHMTmfPU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Tn5MWJYCvR078Ay/OB1NuLMPQIJWKoDaZPyNVbzp1fWg3L3bTi8/a3hoG71T0EgJQ
-         Av81198Gjc4S7PwOnxzIDTn7Ht0QzXRbi09UtMCKzzpQJTZNQFQ/Q3l5YlVZBx0gVg
-         Rm1v+4RS9MudqHHaiAf8cPZ6Bq+Y75F9pLlvRj7b7newyuufzHFjQy+Vmt7+imsYJe
-         nsEZWdGDHpDMdjbWrzniFXvCUDal9Io4wE2cTHpWoF4MW0YiP9LUCInVjHJWhNpTui
-         1lCLGrmBtV3iO4tkUkikLnXdDjAF3sg9hW1nx7Qq3SB5G8+Et7Sdpkba4dHfNpbAFl
-         7dIxJx3Y5dGEw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] regmap fixes for v6.7-rc4
-Date:   Wed, 06 Dec 2023 13:43:29 +0000
-Message-Id: <20231206134339.2BFB6C433C9@smtp.kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Wed, 6 Dec 2023 08:53:04 -0500
+X-Greylist: delayed 535 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 06 Dec 2023 05:53:10 PST
+Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6BFC3;
+        Wed,  6 Dec 2023 05:53:10 -0800 (PST)
+Received: from lela.futurama.org (localhost.localdomain [IPv6:::1])
+        by rhlx01.hs-esslingen.de (Postfix) with ESMTP id A63DC28323F0;
+        Wed,  6 Dec 2023 14:44:13 +0100 (CET)
+Received: from dcbf.. (unknown [192.168.1.149])
+        by lela.futurama.org (Postfix) with ESMTP id 96C1E8032518;
+        Wed,  6 Dec 2023 14:44:13 +0100 (CET)
+From:   Adrian Reber <areber@redhat.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Christian Brauner <brauner@kernel.org>
+Subject: [PATCH] tty: allow TIOCSLCKTRMIOS with CAP_CHECKPOINT_RESTORE
+Date:   Wed,  6 Dec 2023 14:43:40 +0100
+Message-ID: <20231206134340.7093-1-areber@redhat.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -43,29 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+The capability CAP_CHECKPOINT_RESTORE was introduced to allow non-root
+users to checkpoint and restore processes as non-root with CRIU.
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+This change extends CAP_CHECKPOINT_RESTORE to enable the CRIU option
+'--shell-job' as non-root. CRIU's man-page describes the '--shell-job'
+option like this:
 
-are available in the Git repository at:
+  Allow one to dump shell jobs. This implies the restored task will
+  inherit session and process group ID from the criu itself. This option
+  also allows to migrate a single external tty connection, to migrate
+  applications like top.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-fix-v6.7-rc4
+TIOCSLCKTRMIOS can only be done if the process has CAP_SYS_ADMIN and
+this change extends it to CAP_SYS_ADMIN or CAP_CHECKPOINT_RESTORE.
 
-for you to fetch changes up to fea88064445a59584460f7f67d102b6e5fc1ca1d:
+With this change it is possible to checkpoint and restore processes
+which have a tty connection as non-root if CAP_CHECKPOINT_RESTORE is
+set.
 
-  regmap: fix bogus error on regcache_sync success (2023-12-04 12:36:55 +0000)
+Signed-off-by: Adrian Reber <areber@redhat.com>
+---
+ drivers/tty/tty_ioctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-----------------------------------------------------------------
-regmap: Fix for v6.7
+diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
+index 4b499301a3db..95d14d7128cc 100644
+--- a/drivers/tty/tty_ioctl.c
++++ b/drivers/tty/tty_ioctl.c
+@@ -844,7 +844,7 @@ int tty_mode_ioctl(struct tty_struct *tty, unsigned int cmd, unsigned long arg)
+ 			ret = -EFAULT;
+ 		return ret;
+ 	case TIOCSLCKTRMIOS:
+-		if (!capable(CAP_SYS_ADMIN))
++		if (!capable(CAP_SYS_ADMIN) && !capable(CAP_CHECKPOINT_RESTORE))
+ 			return -EPERM;
+ 		copy_termios_locked(real_tty, &kterm);
+ 		if (user_termios_to_kernel_termios(&kterm,
+@@ -861,7 +861,7 @@ int tty_mode_ioctl(struct tty_struct *tty, unsigned int cmd, unsigned long arg)
+ 			ret = -EFAULT;
+ 		return ret;
+ 	case TIOCSLCKTRMIOS:
+-		if (!capable(CAP_SYS_ADMIN))
++		if (!capable(CAP_SYS_ADMIN) && !capable(CAP_CHECKPOINT_RESTORE))
+ 			return -EPERM;
+ 		copy_termios_locked(real_tty, &kterm);
+ 		if (user_termios_to_kernel_termios_1(&kterm,
 
-An incremental fix for the fix introduced during the merge window for
-caching of the selector for windowed register ranges, we were
-incorrectly leaking an error code in the case where the last selector
-accessed was for some reason not cached.
+base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
+-- 
+2.43.0
 
-----------------------------------------------------------------
-Matthias Reichl (1):
-      regmap: fix bogus error on regcache_sync success
-
- drivers/base/regmap/regcache.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
