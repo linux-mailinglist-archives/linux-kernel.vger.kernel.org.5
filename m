@@ -2,110 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE7F80757C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0E8807581
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378343AbjLFQmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:42:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41552 "EHLO
+        id S230078AbjLFQmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:42:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjLFQmi (ORCPT
+        with ESMTP id S230028AbjLFQms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:42:38 -0500
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7355D4E
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:42:43 -0800 (PST)
-Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-7bb3e55c120so2067724241.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 08:42:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701880963; x=1702485763; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U8vjKdo8RtK9sF2zFHnjxxHr37Mkrh0m1wUp2s63Svc=;
-        b=ujodJ7JU9IgtG962SsMEjXzR6OBrYNqON6p9GLOidwYPR2d3bQZoJAT3qX9T11QyCN
-         qvMnHK7zP7Rw/BaTJcv5HELGDiawKkraqP0MTtFmrP5G/TEFIwNcrVCbnEdt6JHj97rY
-         xIMpyMk1zqECXDyB183vn3KCQgrgC8Ci9vyOjVR8yI6Ky6LO2tu+gQp3PTXS4X/9/MrU
-         9as3bBiJKI3eXeSYhNhINee9f7Kxz+azk08tuEZ9EVPbdavGjFRQpSreUkTu4fCEtDDn
-         +PUQBzftUS/2cdKbVN1DPI96y/puz4DTTORMNBbe4D4XDuW95nJo0nyMJHf5T3I4SZVC
-         i/Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701880963; x=1702485763;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U8vjKdo8RtK9sF2zFHnjxxHr37Mkrh0m1wUp2s63Svc=;
-        b=UCMBs3NX89kav4jNIQFbsm2mnwCINSjjqywFeuQ26yQJGlKohUtGt0HitGGI9/xvzB
-         99/ZAp5lVkYYKW/61/iHkCUi24DegoH5LsIA+S/Lm2KYEBsP48dUObblTwJwHRWICaDy
-         EwgQm0nQewTMjo0r1fwv/jVvM1dx+xxqd9eADnTnatDuQGtVsfvmg3CIyY2gBRSN+EuB
-         JAFQGO2l05OO1EPTfqaTTLyd7QLox84vOfTuAcqcmZ9EmM4Pu9uYPV2F4PHOpO2Mjstl
-         nLp6v5vBLqHy04GhNGEMTxNihe0IbvkD8jTGkaJb/0SusOSALK9JKZ+m4QgHMDaBPxAi
-         Dwyw==
-X-Gm-Message-State: AOJu0YzTbE/KsH9rULOl+t0dRaaAuM9uTe7HAqxuYgkhXQmlD7Dgd8kf
-        3ba1XofjquYRGGsIlEr2lpKKUDGwjha5La9yHqJWhw==
-X-Google-Smtp-Source: AGHT+IFmX95hKsT+x9B1U9JgLud4gOx76wZ9d0sOYGnTy01xJB/RnRNZ08pYM4rj0hN9VQAvFzXxLZTCMqBtU1eTpHQ=
-X-Received: by 2002:a05:6122:3c54:b0:4b2:dbb5:bc58 with SMTP id
- fv20-20020a0561223c5400b004b2dbb5bc58mr1380918vkb.29.1701880962567; Wed, 06
- Dec 2023 08:42:42 -0800 (PST)
+        Wed, 6 Dec 2023 11:42:48 -0500
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F0AD51;
+        Wed,  6 Dec 2023 08:42:48 -0800 (PST)
+Received: from [78.30.43.141] (port=54118 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1rAuyx-003xzA-MK; Wed, 06 Dec 2023 17:42:46 +0100
+Date:   Wed, 6 Dec 2023 17:42:42 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Phil Sutter <phil@nwl.cc>, Jann Horn <jannh@google.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org, Christian Brauner <brauner@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: Is xt_owner's owner_mt() racy with sock_orphan()? [worse with
+ new TYPESAFE_BY_RCU file lifetime?]
+Message-ID: <ZXCkgoVQCn6bMoKT@calendula>
+References: <CAG48ez0TfTAkaRWFCTb44x=TWP_sDZVx-5U2hvfQSFOhghNrCA@mail.gmail.com>
+ <CAG48ez1hXk_cffp3dy-bYMcoyCCj-EySYR5SzYrNiRHGD=hOUg@mail.gmail.com>
+ <ZW+Yv6TR+EMBp03f@orbyte.nwl.cc>
 MIME-Version: 1.0
-References: <20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com>
- <20231206-rb-new-condvar-methods-v1-2-33a4cab7fdaa@google.com>
- <ZXChjmoKPj3XnJgG@Boquns-Mac-mini.home> <20231206163945.GC36423@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231206163945.GC36423@noisy.programming.kicks-ass.net>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Wed, 6 Dec 2023 17:42:29 +0100
-Message-ID: <CAH5fLgi56i70MaFaoLcWVw+nf-ZvOLpmA8bHNVX=VXTBkcSa4Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] rust: sync: add `CondVar::wait_timeout`
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZW+Yv6TR+EMBp03f@orbyte.nwl.cc>
+X-Spam-Score: -1.9 (-)
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 6, 2023 at 5:39=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
-> wrote:
->
-> On Wed, Dec 06, 2023 at 08:30:06AM -0800, Boqun Feng wrote:
-> > On Wed, Dec 06, 2023 at 10:09:24AM +0000, Alice Ryhl wrote:
-> > [...]
-> > > +
-> > > +/// The return type of `wait_timeout`.
-> > > +pub enum CondVarTimeoutResult {
-> > > +    /// The timeout was reached.
-> > > +    Timeout,
-> > > +    /// Somebody woke us up.
-> > > +    Woken {
-> > > +        /// Remaining sleep duration.
-> > > +        jiffies: u64,
-> >
-> > I have a Jiffies definition in the my upcoming timer patchset:
-> >
-> > /// The time unit of Linux kernel. One jiffy equals (1/HZ) second.
-> > pub type Jiffies =3D core::ffi::c_ulong;
-> >
-> > Maybe you can add that (in a separate patch) in kernel::time?
->
-> Urgh, why are we using jiffies in 2023?
+On Tue, Dec 05, 2023 at 10:40:15PM +0100, Phil Sutter wrote:
+> Hi,
+> 
+> On Tue, Dec 05, 2023 at 06:08:29PM +0100, Jann Horn wrote:
+> > On Tue, Dec 5, 2023 at 5:40 PM Jann Horn <jannh@google.com> wrote:
+> > >
+> > > Hi!
+> > >
+> > > I think this code is racy, but testing that seems like a pain...
+> > >
+> > > owner_mt() in xt_owner runs in context of a NF_INET_LOCAL_OUT or
+> > > NF_INET_POST_ROUTING hook. It first checks that sk->sk_socket is
+> > > non-NULL, then checks that sk->sk_socket->file is non-NULL, then
+> > > accesses the ->f_cred of that file.
+> > >
+> > > I don't see anything that protects this against a concurrent
+> > > sock_orphan(), which NULLs out the sk->sk_socket pointer, if we're in
+> > 
+> > Ah, and all the other users of ->sk_socket in net/netfilter/ do it
+> > under the sk_callback_lock... so I guess the fix would be to add the
+> > same in owner_mt?
+> 
+> Sounds reasonable, although I wonder how likely a socket is to
+> orphan while netfilter is processing a packet it just sent.
+> 
+> How about the attached patch? Not sure what hash to put into a Fixes:
+> tag given this is a day 1 bug and ipt_owner/ip6t_owner predate git.
+> 
+> Thanks, Phil
 
-I assumed that the correct thing here would be to accept the same unit
-as what schedule_timeout takes. Should I be doing something else?
+> From 3e28490e43b04d49e6e7f145a70fff7dd42c8cc5 Mon Sep 17 00:00:00 2001
+> From: Phil Sutter <phil@nwl.cc>
+> Date: Tue, 5 Dec 2023 21:58:12 +0100
+> Subject: [nf PATCH] netfilter: xt_owner: Fix for unsafe access of sk->sk_socket
+> 
+> A concurrently running sock_orphan() may NULL the sk_socket pointer in
+> between check and deref. Follow other users (like nft_meta.c for
+> instance) and acquire sk_callback_lock before dereferencing sk_socket.
 
-Alice
+For the record, I have placed this patch in nf.git
+
+Thanks.
