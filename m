@@ -2,73 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 527F28075DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8457C8075EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442652AbjLFQ4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:56:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45718 "EHLO
+        id S230028AbjLFQ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:59:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378531AbjLFQ4t (ORCPT
+        with ESMTP id S229460AbjLFQ7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:56:49 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A541B2;
-        Wed,  6 Dec 2023 08:56:55 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-35d725ac060so12692295ab.2;
-        Wed, 06 Dec 2023 08:56:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701881815; x=1702486615; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yIrgXBCmrJsEmx/2lceqqp9Xwm1JeHuqctE9dAlll+0=;
-        b=aU35HanSNxKXTrTQ4kjEHWAZLFS/tBF3j+fPpW+VrMq78Cqd6wx6n1ee3jUw3O1rr9
-         ALTKgvLZBjgCF7Nde2nUL0mYEAbOqVQYzijEM5FT8tVfvuDICeKsIWmukHSFh8ZzcsYB
-         TTfQgRw83idj5raYHzvEgULsDnpjX2V5EAF1oXFxvL9wHxRDKS8hW2v9vj2QfyxdlKBf
-         rsjA5qadoS4E07v3YnWJ+MaY+3FkG25dIhXpm5ev3DmJdUr2vvSV3olRavFgr3YjxF74
-         C+oFhmdbQl3wR2hCKKOnQSimPiAOHWIlcpR6ktaJ+EZhJXrgozMTAQOd16XCVibcSEd2
-         10UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701881815; x=1702486615;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yIrgXBCmrJsEmx/2lceqqp9Xwm1JeHuqctE9dAlll+0=;
-        b=rduf33fc/QRBnPHX5In1m5A+wNchwJUEESGduvgSWou8BD8oBYAo/jZYE3K2BYsVk7
-         e8b1QV3IDa+CtJKZC4JqA+OOvohykW7wFPOO8FzF9+7SPbo/eoMFFv9bkmCSO2DHHb/N
-         bj+sW2EytpyNkTVyVT2lNcHBr9bR+kvUabPiNywxh8uEOD2/nb5J4lhZWUeqL85WXngJ
-         m8nHlYK9FgQlLeW4/syA3FOeWE/txNzPIO+pwvAaKzkZA8mh8gOxsli/GFnplZvOtsPr
-         Zkii0SjRc/mbs6VJF02N6YqLRG1yvRd+B3QiGF1MuyX97Dia25a0DhSlORLHnqEDjv83
-         xe9g==
-X-Gm-Message-State: AOJu0YzoMkDakOQh5a6D6OwghWcSGJ3zSJCeDp3eb/C9EimcaWJ9/luy
-        op5n2ZHrdE/KMGLUpXzPTtf4mN2DFLVavuB9jD8=
-X-Google-Smtp-Source: AGHT+IFNq8u43WbI4c01PT05oYMO3aPQSJ6ErYBAcTShuJSw9WrajU+G7etAPmGSFnGOLDah6Qzb1dasQimC9b9ONCQ=
-X-Received: by 2002:a05:6e02:1050:b0:35d:59a2:1281 with SMTP id
- p16-20020a056e02105000b0035d59a21281mr1435226ilj.45.1701881814603; Wed, 06
- Dec 2023 08:56:54 -0800 (PST)
+        Wed, 6 Dec 2023 11:59:49 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F13C9
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:59:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62A39C433C8;
+        Wed,  6 Dec 2023 16:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701881995;
+        bh=xdGLbLZlKz6hqDzxxH4MqX0sG3ItG6KAFGtCvH4gnsg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=MJOLyo52HSa1ezkiZilGDaJk8L3Ol+4TVWOFf2jN/7JZLdwsFDlmL2DvKVIonkRdi
+         3fh5GT7VbTejQ/xnXDT4CHQXfs6JwDdajAVQGRpWv+BrPWR7T16yt2bI4sh8QmVU/U
+         NEO/F5c0EVGAgGrAcr3sMeLNty1noQR5qil2W0V/kYk4ci4M97mv8ecRo/e3l1V5zV
+         qQ3TqEMfeJaGNX2XEBnCPKj/J36uThgLrbIM6SOC3ilUXEAdNQ0LdOvybK/ykg4Dw2
+         rC8p+XzXdMWcPRwjqqjvFnFbWkbQLhfKpf7lnFWNAdDNZK7wI9Ib3eWTm5C1dlEzeU
+         1tWiAKmXvvduw==
+Date:   Wed, 6 Dec 2023 10:59:53 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     imx@lists.linux.dev, Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:PCI DRIVER FOR IMX6" <linux-pci@vger.kernel.org>,
+        "moderated list:PCI DRIVER FOR IMX6" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/9] PCI: imx6: Using "linux,pci-domain" as slot ID
+Message-ID: <20231206165953.GA717921@bhelgaas>
 MIME-Version: 1.0
-References: <20231130194023.4102148-1-nphamcs@gmail.com> <20231130194023.4102148-7-nphamcs@gmail.com>
- <ed2792de-24cc-4037-9ee1-966cc07df57a@linux.dev> <CAJD7tkbiWqXs1PEZjMHO0gj5uSaaB-KNUNCiUz25MuPvzeb=wg@mail.gmail.com>
-In-Reply-To: <CAJD7tkbiWqXs1PEZjMHO0gj5uSaaB-KNUNCiUz25MuPvzeb=wg@mail.gmail.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Wed, 6 Dec 2023 08:56:43 -0800
-Message-ID: <CAKEwX=M8YThH8qOdHt5TV1E4PCiw2FSv7815O3fhqXNVMt5ezg@mail.gmail.com>
-Subject: Re: [PATCH v8 6/6] zswap: shrinks zswap pool based on memory pressure
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Chengming Zhou <chengming.zhou@linux.dev>,
-        akpm@linux-foundation.org, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXCmSOwTWR6AVpGB@lizhi-Precision-Tower-5810>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,179 +65,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 10:00=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> [..]
-> > > @@ -526,6 +582,102 @@ static struct zswap_entry *zswap_entry_find_get=
-(struct rb_root *root,
-> > >       return entry;
-> > >  }
-> > >
-> > > +/*********************************
-> > > +* shrinker functions
-> > > +**********************************/
-> > > +static enum lru_status shrink_memcg_cb(struct list_head *item, struc=
-t list_lru_one *l,
-> > > +                                    spinlock_t *lock, void *arg);
-> > > +
-> > > +static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
-> > > +             struct shrink_control *sc)
-> > > +{
-> > > +     struct lruvec *lruvec =3D mem_cgroup_lruvec(sc->memcg, NODE_DAT=
-A(sc->nid));
-> > > +     unsigned long shrink_ret, nr_protected, lru_size;
-> > > +     struct zswap_pool *pool =3D shrinker->private_data;
-> > > +     bool encountered_page_in_swapcache =3D false;
-> > > +
-> > > +     nr_protected =3D
-> > > +             atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_p=
-rotected);
-> > > +     lru_size =3D list_lru_shrink_count(&pool->list_lru, sc);
-> > > +
-> > > +     /*
-> > > +      * Abort if the shrinker is disabled or if we are shrinking int=
-o the
-> > > +      * protected region.
-> > > +      *
-> > > +      * This short-circuiting is necessary because if we have too ma=
-ny multiple
-> > > +      * concurrent reclaimers getting the freeable zswap object coun=
-ts at the
-> > > +      * same time (before any of them made reasonable progress), the=
- total
-> > > +      * number of reclaimed objects might be more than the number of=
- unprotected
-> > > +      * objects (i.e the reclaimers will reclaim into the protected =
-area of the
-> > > +      * zswap LRU).
-> > > +      */
-> > > +     if (!zswap_shrinker_enabled || nr_protected >=3D lru_size - sc-=
->nr_to_scan) {
-> > > +             sc->nr_scanned =3D 0;
-> > > +             return SHRINK_STOP;
-> > > +     }
-> > > +
-> > > +     shrink_ret =3D list_lru_shrink_walk(&pool->list_lru, sc, &shrin=
-k_memcg_cb,
-> > > +             &encountered_page_in_swapcache);
-> > > +
-> > > +     if (encountered_page_in_swapcache)
-> > > +             return SHRINK_STOP;
-> > > +
-> > > +     return shrink_ret ? shrink_ret : SHRINK_STOP;
-> > > +}
-> > > +
-> > > +static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
-> > > +             struct shrink_control *sc)
-> > > +{
-> > > +     struct zswap_pool *pool =3D shrinker->private_data;
-> > > +     struct mem_cgroup *memcg =3D sc->memcg;
-> > > +     struct lruvec *lruvec =3D mem_cgroup_lruvec(memcg, NODE_DATA(sc=
-->nid));
-> > > +     unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
-> > > +
-> > > +#ifdef CONFIG_MEMCG_KMEM
-> > > +     cgroup_rstat_flush(memcg->css.cgroup);
-> > > +     nr_backing =3D memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_S=
-HIFT;
-> > > +     nr_stored =3D memcg_page_state(memcg, MEMCG_ZSWAPPED);
-> > > +#else
-> > > +     /* use pool stats instead of memcg stats */
-> > > +     nr_backing =3D get_zswap_pool_size(pool) >> PAGE_SHIFT;
-> > > +     nr_stored =3D atomic_read(&pool->nr_stored);
-> > > +#endif
-> > > +
-> > > +     if (!zswap_shrinker_enabled || !nr_stored)
-> > When I tested with this series, with !zswap_shrinker_enabled in the def=
-ault case,
-> > I found the performance is much worse than that without this patch.
-> >
-> > Testcase: memory.max=3D2G, zswap enabled, kernel build -j32 in a tmpfs =
-directory.
-> >
-> > The reason seems the above cgroup_rstat_flush(), caused much rstat lock=
- contention
-> > to the zswap_store() path. And if I put the "zswap_shrinker_enabled" ch=
-eck above
-> > the cgroup_rstat_flush(), the performance become much better.
-> >
-> > Maybe we can put the "zswap_shrinker_enabled" check above cgroup_rstat_=
-flush()?
->
-> Yes, we should do nothing if !zswap_shrinker_enabled. We should also
-> use mem_cgroup_flush_stats() here like other places unless accuracy is
-> crucial, which I doubt given that reclaim uses
-> mem_cgroup_flush_stats().
+On Wed, Dec 06, 2023 at 11:50:16AM -0500, Frank Li wrote:
+> On Wed, Dec 06, 2023 at 10:36:56AM -0600, Bjorn Helgaas wrote:
+> > In subject, maybe you mean "Use 'linux,pci-domain' as slot ID"?
+> > "Using" is the wrong verb form here.
+> > 
+> > On Wed, Dec 06, 2023 at 10:58:58AM -0500, Frank Li wrote:
+> > > Avoid use get slot id by compared with register physical address. If there
+> > > are more than 2 slots, compared logic will become complex.
+> > 
+> > But this doesn't say anything about "linux,pci-domain", and I don't
+> > see anything about a register physical address in the patch.
+> > 
+> > Maybe this commit log was meant for a different patch?  I'm confused.
+> > 
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > ---
+> > >  drivers/pci/controller/dwc/pci-imx6.c | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > > 
+> > > diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> > > index 62d77fabd82a..239ef439ba70 100644
+> > > --- a/drivers/pci/controller/dwc/pci-imx6.c
+> > > +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> > > @@ -33,6 +33,7 @@
+> > >  #include <linux/pm_domain.h>
+> > >  #include <linux/pm_runtime.h>
+> > >  
+> > > +#include "../../pci.h"
+> > >  #include "pcie-designware.h"
+> > >  
+> > >  #define IMX8MQ_GPR_PCIE_REF_USE_PAD		BIT(9)
+> > > @@ -1333,6 +1334,11 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+> > >  					     "Failed to get PCIEPHY reset control\n");
+> > >  	}
+> > >  
+> > > +	/* Using linux,pci-domain as PCI slot id */
+> > > +	imx6_pcie->controller_id = of_get_pci_domain_nr(node);
+> > > +	if (imx6_pcie->controller_id)
+> > > +		imx6_pcie->controller_id = 0;
+> > 
+> > I don't understand what this is doing.  It looks the same as just:
+> 
+> Good capture. It should be 
+> if (imx6_pcie->controller_id < 0)
+> 	imx6_pcie->controller_id = 0;
+> 
+> for only one PCI controller case. I just tested first one slot before send
+> patch, so not met problem.
+> 
+> Previously, we use below logic
+> 	if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
+> 		imx6_pcie->controller_id = 1;
+> 
+> It is not good to depend on register's base address. If there are 3
+> controllers, check logic will becomoe ugly.
 
-Ah, good points on both suggestions. We should not do extra work for
-non-user. And, this is a best-effort approximation of the memory
-saving factor, so as long as it is not *too* far off I think it's
-acceptable.
+Makes sense.  If the previous code depended on the base address, this
+patch would make more sense if it contained both the addition of the
+of_get_pci_domain_nr() call and the removal of the base address code.
 
->
-> mem_cgroup_flush_stats() has some thresholding to make sure we don't
-> do flushes unnecessarily, and I have a pending series in mm-unstable
-> that makes that thresholding per-memcg. Keep in mind that adding a
-> call to mem_cgroup_flush_stats() will cause a conflict in mm-unstable,
-> because the series there adds a memcg argument to
-> mem_cgroup_flush_stats(). That should be easily amenable though, I can
-> post a fixlet for my series to add the memcg argument there on top of
-> users if needed.
-
-Hmm so how should we proceed from here? How about this:
-
-a) I can send a fixlet to move the enablement check above the stats
-flushing + use mem_cgroup_flush_stats
-b) Then maybe, you can send a fixlet to update this new callsite?
-
-Does that sound reasonable?
-
->
-> >
-> > Thanks!
-> >
-> > > +             return 0;
-> > > +
-> > > +     nr_protected =3D
-> > > +             atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_p=
-rotected);
-> > > +     nr_freeable =3D list_lru_shrink_count(&pool->list_lru, sc);
-> > > +     /*
-> > > +      * Subtract the lru size by an estimate of the number of pages
-> > > +      * that should be protected.
-> > > +      */
-> > > +     nr_freeable =3D nr_freeable > nr_protected ? nr_freeable - nr_p=
-rotected : 0;
-> > > +
-> > > +     /*
-> > > +      * Scale the number of freeable pages by the memory saving fact=
-or.
-> > > +      * This ensures that the better zswap compresses memory, the fe=
-wer
-> > > +      * pages we will evict to swap (as it will otherwise incur IO f=
-or
-> > > +      * relatively small memory saving).
-> > > +      */
-> > > +     return mult_frac(nr_freeable, nr_backing, nr_stored);
-> > > +}
-> > > +
-> > > +static void zswap_alloc_shrinker(struct zswap_pool *pool)
-> > > +{
-> > > +     pool->shrinker =3D
-> > > +             shrinker_alloc(SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWA=
-RE, "mm-zswap");
-> > > +     if (!pool->shrinker)
-> > > +             return;
-> > > +
-> > > +     pool->shrinker->private_data =3D pool;
-> > > +     pool->shrinker->scan_objects =3D zswap_shrinker_scan;
-> > > +     pool->shrinker->count_objects =3D zswap_shrinker_count;
-> > > +     pool->shrinker->batch =3D 0;
-> > > +     pool->shrinker->seeks =3D DEFAULT_SEEKS;
-> > > +}
-> > > +
-> > >  /*********************************
-> > >  * per-cpu code
-> > >  **********************************/
-> [..]
+> > Maybe this is a typo?  As written, it doesn't look like there's any
+> > point in calling of_get_pci_domain_nr().
+> > 
+> > >  	switch (imx6_pcie->drvdata->variant) {
+> > >  	case IMX7D:
+> > >  		if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
+> > > -- 
+> > > 2.34.1
+> > > 
