@@ -2,160 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F55F80732A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9FC80732B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379030AbjLFO5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 09:57:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51226 "EHLO
+        id S1379038AbjLFO61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 09:58:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379018AbjLFO5n (ORCPT
+        with ESMTP id S1379000AbjLFO6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 09:57:43 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4ED3B5;
-        Wed,  6 Dec 2023 06:57:49 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 95C2E1FD16;
-        Wed,  6 Dec 2023 14:57:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1701874667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=W1iEqONk/zbDaDJmdYP4h1bjI7CKaBWSU7dA6BrXLIg=;
-        b=aKenJujcJEApG75yiRDSuPOBECArFJf9/amlfRfD4veoUrSAx7mX9tyjh+Pfoupm4/Q2CW
-        AK8eNokOXNKRT1Ve4KZFkVnWUvZ3NhCovynNnW8VDZuR38IBlIpwMWT63Sj0X0bdt0DR62
-        3WOadVDrCxisHF5JdmDQPJ3gTMdo2bU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1701874667;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=W1iEqONk/zbDaDJmdYP4h1bjI7CKaBWSU7dA6BrXLIg=;
-        b=h+/H8r6WaarZ8hA9GAXKZE4KL0Yf9Jw4qxX9HzieBFF2CDicFgo/PgpkQxaYPfNuiR+2KQ
-        xE/C0m+ddCjMixDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D3117136CD;
-        Wed,  6 Dec 2023 14:57:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id vt8jLuqLcGVBQgAAD6G6ig
-        (envelope-from <lhenriques@suse.de>); Wed, 06 Dec 2023 14:57:46 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id 653c8557;
-        Wed, 6 Dec 2023 14:57:45 +0000 (UTC)
-From:   Luis Henriques <lhenriques@suse.de>
-To:     David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>
-Cc:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luis Henriques <lhenriques@suse.de>
-Subject: [RFC PATCH] keys: flush work when accessing /proc/key-users
-Date:   Wed,  6 Dec 2023 14:57:44 +0000
-Message-ID: <20231206145744.17277-1-lhenriques@suse.de>
+        Wed, 6 Dec 2023 09:58:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7A2B5
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 06:58:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701874711;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lI8W6CO+u1S10tMvsZNrVhiLtm/T33ov+fTqgOUmfWo=;
+        b=i475HHpH2DLydJNBRo85fJyNhaDqqI6F6Wx7CcNHyWuWSllUfFWEalnBo71c9MbOhIUo5r
+        V1XD6Xyzy/1z9JLb758dTqzA3MJaSzgGIZEd3tsnKKmspOKOtSFtTtgvzXrpXDnyZt1HiR
+        xh22OgrJq9ibzvEx+xE/q/W4458lxWI=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-118-IqVHfIo9PPiV4gfpXZ7htQ-1; Wed, 06 Dec 2023 09:58:26 -0500
+X-MC-Unique: IqVHfIo9PPiV4gfpXZ7htQ-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c9f5bf236fso36091881fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 06:58:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701874705; x=1702479505;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lI8W6CO+u1S10tMvsZNrVhiLtm/T33ov+fTqgOUmfWo=;
+        b=LMS4raEQ4qOjBslWx779la4HjqVw7RS/R9D56GuwS2f9Yh1uPDU6UNSFCDBjtelY+M
+         Rhf4txrdleI94OoaCIf54IHhTlh06XlC/PCPO/D1I+EYubQmclv5M+9O0e/gUDFf1GCu
+         6rTvDwF4v9XkiqA6sO+JxPYw/mI4moj8fu7EQFUbCo4ivFejrEZz30QXsfLtcstYBBBb
+         eqSDly5TEJAlHb6wh4BpERTn5IOO2IyFb7TTLx0TmpdlOCKb7+XaxrX2ig6hX2EALm+Q
+         i1RTfaIdtS6aW/VMLgK5nlekvn+z5yxfbqbiwHK44DmfDAPdH8LeYl45eYt8M7pvuo3u
+         8KDg==
+X-Gm-Message-State: AOJu0YyzcqU/snP4clqXlU1eOk9vHcZ/HdZoSDhZdzfy2G7wG19tugb6
+        JhwyXy2LR70BiGnIgIvuw2MnFkRd7lCHOH1IeSP85Tq2PgVHTlvj9zdQxklofT7j0S4+M5XbI0O
+        IfxW4oy2eB38d/UnfcChVzFT4
+X-Received: by 2002:a2e:879a:0:b0:2c9:f2ef:cf14 with SMTP id n26-20020a2e879a000000b002c9f2efcf14mr784403lji.67.1701874705516;
+        Wed, 06 Dec 2023 06:58:25 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHFAROg+Lxclo/3NuDIimFR4fm3oJ99oj3ElVJlPS5SozqYTKjUwT8fR42ApPqSVQx8pFmf9Q==
+X-Received: by 2002:a2e:879a:0:b0:2c9:f2ef:cf14 with SMTP id n26-20020a2e879a000000b002c9f2efcf14mr784392lji.67.1701874705190;
+        Wed, 06 Dec 2023 06:58:25 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id br20-20020a170906d15400b00a1dcfd8f95csm27081ejb.37.2023.12.06.06.58.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Dec 2023 06:58:24 -0800 (PST)
+Message-ID: <6381d523-8f49-48e2-8576-b74a14eead30@redhat.com>
+Date:   Wed, 6 Dec 2023 15:58:23 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/10] devm-helpers: introduce devm_mutex_init
+Content-Language: en-US, nl
+To:     George Stark <gnstark@salutedevices.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     pavel@ucw.cz, lee@kernel.org, vadimp@nvidia.com,
+        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        mazziesaccount@gmail.com, jic23@kernel.org,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kernel@salutedevices.com
+References: <20231204180603.470421-1-gnstark@salutedevices.com>
+ <20231204180603.470421-2-gnstark@salutedevices.com>
+ <CAHp75Vc=GAnzwhWQTifLzw8OA7Lb35hrJCDxK-RkgZnX8JmfOg@mail.gmail.com>
+ <48ea90f9-922d-4a03-86da-cbb5aa9908b6@salutedevices.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <48ea90f9-922d-4a03-86da-cbb5aa9908b6@salutedevices.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Score: 1.70
-X-Spamd-Result: default: False [1.70 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         RCPT_COUNT_FIVE(0.00)[6];
-         RCVD_COUNT_THREE(0.00)[4];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_LAST(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         MID_CONTAINS_FROM(1.00)[];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure the garbage collector has been run before cycling through all
-the user keys.
+Hi,
 
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
----
-Hi!
+On 12/6/23 08:56, George Stark wrote:
+> Hello Andy
+> 
+> Thanks for the review.
+> 
+> On 12/4/23 21:11, Andy Shevchenko wrote:
+>> On Mon, Dec 4, 2023 at 8:07 PM George Stark <gnstark@salutedevices.com> wrote:
+>>>
+>>> Using of devm API leads to certain order of releasing resources.
+>>> So all dependent resources which are not devm-wrapped should be deleted
+>>> with respect to devm-release order. Mutex is one of such objects that
+>>> often is bound to other resources and has no own devm wrapping.
+>>> Since mutex_destroy() actually does nothing in non-debug builds
+>>> frequently calling mutex_destroy() is just ignored which is safe for now
+>>> but wrong formally and can lead to a problem if mutex_destroy() is
+>>> extended so introduce devm_mutex_init().
+>>
+>> ...
+>>
+>> Do you need to include mutex.h?
+> It's already included in linux/device.h which is included in devm-helpers. Should I include mutex.h explicitly?
 
-This patch is mostly for getting some feedback on how to fix an fstest
-failing for ext4/fscrypt (generic/581).  Basically, the test relies on the
-data read from /proc/key-users to be up-to-date regarding the number of
-keys a given user currently has.  However, this file can't be trusted
-because it races against the keys GC.
+Yes you must explicitly include all headers you use definitions
+from. Relying on other headers to do this for you is error prone.
 
-Using flush_work() seems to work (I can't reproduce the failure), but it
-may be overkill.  Or simply not acceptable.  Maybe, as Eric suggested
-elsewhere [1], there could be a synchronous key_put/revoke/invalidate/...,
-which would wait for the key GC to do its work, although that probably
-would require some more code re-work.
+Regards,
 
-[1] https://lore.kernel.org/all/20231128173734.GD1148@sol.localdomain/
+Hans
 
- security/keys/gc.c       | 6 ++++++
- security/keys/internal.h | 1 +
- security/keys/proc.c     | 1 +
- 3 files changed, 8 insertions(+)
 
-diff --git a/security/keys/gc.c b/security/keys/gc.c
-index 3c90807476eb..57b5a54490a0 100644
---- a/security/keys/gc.c
-+++ b/security/keys/gc.c
-@@ -44,6 +44,12 @@ struct key_type key_type_dead = {
- 	.name = ".dead",
- };
- 
-+void key_flush_gc(void)
-+{
-+	kenter("");
-+	flush_work(&key_gc_work);
-+}
-+
- /*
-  * Schedule a garbage collection run.
-  * - time precision isn't particularly important
-diff --git a/security/keys/internal.h b/security/keys/internal.h
-index 471cf36dedc0..fee1d0025d96 100644
---- a/security/keys/internal.h
-+++ b/security/keys/internal.h
-@@ -170,6 +170,7 @@ extern void keyring_restriction_gc(struct key *keyring,
- extern void key_schedule_gc(time64_t gc_at);
- extern void key_schedule_gc_links(void);
- extern void key_gc_keytype(struct key_type *ktype);
-+extern void key_flush_gc(void);
- 
- extern int key_task_permission(const key_ref_t key_ref,
- 			       const struct cred *cred,
-diff --git a/security/keys/proc.c b/security/keys/proc.c
-index d0cde6685627..2837e00a240a 100644
---- a/security/keys/proc.c
-+++ b/security/keys/proc.c
-@@ -277,6 +277,7 @@ static void *proc_key_users_start(struct seq_file *p, loff_t *_pos)
- 	struct rb_node *_p;
- 	loff_t pos = *_pos;
- 
-+	key_flush_gc();
- 	spin_lock(&key_user_lock);
- 
- 	_p = key_user_first(seq_user_ns(p), &key_user_tree);
