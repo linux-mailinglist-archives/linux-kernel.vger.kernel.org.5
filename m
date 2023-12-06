@@ -2,92 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5421807A49
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3A5807A4E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379749AbjLFVXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 16:23:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
+        id S1379650AbjLFVZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 16:25:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379747AbjLFVXb (ORCPT
+        with ESMTP id S229679AbjLFVZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 16:23:31 -0500
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ADF2D69
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 13:23:35 -0800 (PST)
-Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
-        by cmsmtp with ESMTPS
-        id AwVGr9wTjWcCIAzMlrxgoX; Wed, 06 Dec 2023 21:23:35 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id AzMkrVCh81b9NAzMkr4xE5; Wed, 06 Dec 2023 21:23:34 +0000
-X-Authority-Analysis: v=2.4 cv=FLYIesks c=1 sm=1 tr=0 ts=6570e656
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=c601a17RXwP2wWhsnozrzA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=e2cXIFwxEfEA:10 a=wYkD_t78qR0A:10 a=COk6AnOGAAAA:8
- a=VwQbUJbxAAAA:8 a=_Wotqz80AAAA:8 a=cm27Pg_UAAAA:8 a=jzDRcfw_wAzovSFxW3EA:9
- a=QEXdDO2ut3YA:10 a=TjNXssC_j7lpFel5tvFf:22 a=AjGcO6oz07-iQ99wixmX:22
- a=buJP51TR1BpY-zbLSsyS:22 a=xmb-EsYY8bH0VWELuYED:22
+        Wed, 6 Dec 2023 16:25:50 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C40CF7;
+        Wed,  6 Dec 2023 13:25:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Z89JbXvFtxvpHgG4/D9TvUPfBOX7E1w1eYXh8GBdDDg=; b=wK+2HNzmisO4AOviFMz6pFLxZv
-        x5za6lFwlYdRe0LTXGbkDAoy3uHP03x6WQMPjzUArkHQFU0vlSa6f/cgkDrqkorNWDTOpgZxxd+MO
-        aUwSlLvSKv0H1BHTwaeTW1BK5/af50yVTOUPQDZasXrXtsFAG4ayPBekTLlXaNli0XkKUpza0ds06
-        WxHbLiW5h7IWvo/jp4EZtKYuz3ms8ahCOG1qbgcxMw9qJNJFw1UjIGgFs/DqHUtanU/5NSiBPVc5z
-        bv4cLz47JSY4+1cxw4iAmoyny7Ppr5MGLGoP2cfmQsOAccFpbBJAL4369hZ5kQZ7kperBj30ANg9n
-        nIfaBQQw==;
-Received: from 187.184.159.186.cable.dyn.cableonline.com.mx ([187.184.159.186]:15648 helo=[192.168.0.10])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1rAzMj-002Gl6-1K;
-        Wed, 06 Dec 2023 15:23:33 -0600
-Message-ID: <69be3198-16f1-45ec-8262-1ed269f1f6ea@embeddedor.com>
-Date:   Wed, 6 Dec 2023 15:23:31 -0600
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=3j90ZFbMF32YiYwLgeelVPftRxouXRUNKvFk7M5BhLM=; b=OElDPuUj0WoPSBTrYyBEQZNUdV
+        BKlCdrNoMn+A7LAzguP4PBqyQhSrYYhBP9qGZYgDZgsAHmneZpWqFHzuXBqQnqtTSLunseEL34TsN
+        R7nsFasCYWQKzGoEdn+aOxrALz4rj/9uyItZelAzmXVjTagnuIWChlylvJ5g4MK6jN60KYuwU0d4D
+        oalJQSu+6L/rf2UC4sblvoLt4c1ygpnZFtZkjWbr73OFoDI8tP7NtPv3cJcVEKYoa8QndEuaA/lkE
+        H/d/Ew7jPqagBjA2jjIuJUPshEc9wM/QhjLip5POPp0cVi9g8qivxtnB20VFvar2gdfi37T7YlNUZ
+        YcZjPD0g==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAzOz-00BJSw-31;
+        Wed, 06 Dec 2023 21:25:53 +0000
+Message-ID: <b2ba3809-81b1-4da7-a441-9ce161a06505@infradead.org>
+Date:   Wed, 6 Dec 2023 13:25:53 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] wifi: ath11k: Fix ath11k_htc_record flexible record
+Subject: Re: [PATCH] usb: typec: qcom-pmic: add CONFIG_OF dependency
 Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc:     Kalle Valo <kvalo@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231205-flexarray-htc_record-v2-1-fbb56d436951@quicinc.com>
- <202312061254.085B4755@keescook>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <202312061254.085B4755@keescook>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.184.159.186
-X-Source-L: No
-X-Exim-ID: 1rAzMj-002Gl6-1K
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187.184.159.186.cable.dyn.cableonline.com.mx ([192.168.0.10]) [187.184.159.186]:15648
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 1
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfC2h6vt5FaslSdRvBtZFd9lpCf1EoYWg4IkpRrnTilLVgyxCq03tjshF0bGakb3CwsbHORMvkQ63d20OO7rqOrcn5YJLVTUdfQjudIE66Oc5aDi/eImE
- 4di2e5bzM+zwa0v3QMM0h9wAsVUWHxg6JlFIvZuitUCXZWen7CY3eTAtdQ/feYovDx9v6O4YOoEPWjAL/IHD44X6eJkZhDmqZzZpkgYRD4Gfgf0oXzJ2Rv0k
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>
+References: <20231206172037.12072-1-rdunlap@infradead.org>
+ <d0323841-a3a7-45b7-b702-0a08f9250c55@roeck-us.net>
+ <0c1bb5e8-1ad2-4bda-b038-456d9791f9b7@infradead.org>
+ <a058827a-b025-4ee5-b2a4-d6c8963a6b73@linaro.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <a058827a-b025-4ee5-b2a4-d6c8963a6b73@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -96,24 +64,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 12/6/23 14:55, Kees Cook wrote:
-> On Tue, Dec 05, 2023 at 01:00:17PM -0800, Jeff Johnson wrote:
->> Transform the zero-length ath11k_htc_record::credit_report array into
->> a proper flexible array. Since this is the only array in
->> ath11k_htc_record, remove the unnecessary union.
+On 12/6/23 13:21, Bryan O'Donoghue wrote:
+> On 06/12/2023 20:46, Randy Dunlap wrote:
 >>
->> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+>>
+>> On 12/6/23 10:49, Guenter Roeck wrote:
+>>> On Wed, Dec 06, 2023 at 09:20:37AM -0800, Randy Dunlap wrote:
+>>>> DRM_AUX_BRIDGE depends on CONFIG_OF, so that is also needed here
+>>>> to fix a kconfig warning:
+>>>>
+>>>> WARNING: unmet direct dependencies detected for DRM_AUX_HPD_BRIDGE
+>>>>    Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && OF [=n]
+>>>>    Selected by [y]:
+>>>>    - TYPEC_QCOM_PMIC [=y] && USB_SUPPORT [=y] && TYPEC [=y] && TYPEC_TCPM [=y] && (ARCH_QCOM || COMPILE_TEST [=y]) && (DRM [=y] || DRM [=y]=n) && DRM_BRIDGE [=y]
+>>>>
+>>>
+>>> All but impossible for me to determine if this patch or
+>>> https://lore.kernel.org/all/20231205-drm_aux_bridge-fixes-v1-2-d242a0ae9df4@kernel.org/
+>>> is more appropriate.
+>>>
+>>> Guenter
+>>
+>> I guess that Bryan is the person to ask about that.
+>>
+>> I don't see anything wrong with Nathan's patch. It should clear up the kconfig warning,
+>> so as long as it builds cleanly, it seems OK.
+>>
 > 
-> Heh, looks good. I wonder why this was a union to begin with?
+> So, I see both versions of this fix
+> 
+> Nathan's
+> drivers/gpu/drm/renesas/rcar-du/Kconfig
 
-It used to contain a couple of members:
-
-https://lore.kernel.org/linux-wireless/20231127-flexarray-htc_record-v1-3-6be1f36126fd@quicinc.com/
-https://lore.kernel.org/linux-wireless/4f2a486c-c6de-43e4-8bb6-bdd3f819b0a9@embeddedor.com/
-
---
-Gustavo
+No, please see https://lore.kernel.org/all/20231205-drm_aux_bridge-fixes-v1-2-d242a0ae9df4@kernel.org/
 
 > 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Yours
+> drivers/gpu/drm/tve200/Kconfig
+
+No, please see https://lore.kernel.org/linux-usb/a058827a-b025-4ee5-b2a4-d6c8963a6b73@linaro.org/T/#m034fb56a750522f18813642259b18bb4867ceb46
+
 > 
+> and virtually equivalent commit text. I think we agree its 1:1
+> 
+> So, maybe stick with Nathan's since he posted first.
+
+Sure, I'm OK with that.
+
+-- 
+~Randy
