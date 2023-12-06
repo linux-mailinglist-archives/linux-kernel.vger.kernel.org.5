@@ -2,91 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E8E806D43
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCD6806D48
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378032AbjLFLEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 06:04:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
+        id S1378012AbjLFLE1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 06:04:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378062AbjLFLED (ORCPT
+        with ESMTP id S1378018AbjLFLEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:04:03 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D125E268B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:02:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kSYlxXqYrJTRv96VW6+MysBZoWRii4OIQnWqLMrQnEI=; b=EfzA3J4PnDms+Gx8LZcjukNC7/
-        oQZLXyNarq3qXGfcgjjOZzkualSeOBaFPk8IgRkjZoe/E3v+mQBIOeLXStF57ll4f0fPVfOqTJtNt
-        NtpZvpvXIzmurgYmsQUL/RnnpXG1q4goNXia9WJixL4/FxeeQZ5Itj2TFv2qqv8qwP1kTEDxIrX2+
-        TIXrgHCWsFNYs+iVegAtKu3U0QJ/ywTH6j8kUQilB59n5J5f3+LHOl4jImRhO5ozCZ9tvvUbeCYfC
-        9WuLw0a70tMcxOL2FhsGJCu53PBk31Tj+gUZc5ZagLvpT8lh0Z957m6VGTYRSyYVB6roROUw7PhNS
-        iiCQFIYg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rApfG-00596Y-2O;
-        Wed, 06 Dec 2023 11:02:03 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 321C0300451; Wed,  6 Dec 2023 12:02:02 +0100 (CET)
-Date:   Wed, 6 Dec 2023 12:02:02 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>
-Subject: Re: [PATCH 0/3] entry: inline syscall enter/exit functions
-Message-ID: <20231206110202.GD30174@noisy.programming.kicks-ass.net>
-References: <20231205133015.752543-1-svens@linux.ibm.com>
+        Wed, 6 Dec 2023 06:04:10 -0500
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53F2D64;
+        Wed,  6 Dec 2023 03:03:38 -0800 (PST)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5d3efc071e2so61083137b3.0;
+        Wed, 06 Dec 2023 03:03:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701860606; x=1702465406;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dVVREpeNBksiVzen2ZqgrQY7HZ3YW+vcOqMYYYjnJRc=;
+        b=HpzMhqvRtcgKQV1bMsK9/EK1usIc1FOxaaNKDW4BSgMWweGdat+oCxQEwlCN1lW36g
+         Ie9b7GP0zYgQ/AghSQ06exNW3b1Ty2Ns95sNEARrveXkCI+O1jE+/VRyK7y37RtWHHkI
+         4AGDukpD5oqM12gMyD9+f75SlcoLtRopY/YhmpKuc8fYG85kDez8XFU6qfYfXnu26DDS
+         TBUtwEudfCu2qyDKT3NtTie3CIB/DuZaywC2Zk13Qd9xLJ13ooucyyE+TkAAOHepClmx
+         hL3JGMND5pIoJsw/lXoAGqzYDi6NjIZHBIp2MbkAMzV7bEFlu7qMIuwQFE8jG7Ol5D0J
+         rt3w==
+X-Gm-Message-State: AOJu0YyIrVYV/XTqJhiD4rdCBUNpDAE8JYSOAuTUhNCtJm9sBYINiwFP
+        FeWMfjKJS2uQZn9ma/osR99MPCK807gNUQ==
+X-Google-Smtp-Source: AGHT+IGG2chzZi55SmELOQzXjX9bd1TZrzeA0mEjt+D6WXX+5jYSxL9Dvx0HlQ5Rz4ISa7+d4inDwg==
+X-Received: by 2002:a81:49d4:0:b0:5d3:e2a2:8bcd with SMTP id w203-20020a8149d4000000b005d3e2a28bcdmr539979ywa.5.1701860606103;
+        Wed, 06 Dec 2023 03:03:26 -0800 (PST)
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
+        by smtp.gmail.com with ESMTPSA id l6-20020a0dc906000000b005add997ae53sm3940442ywd.81.2023.12.06.03.03.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Dec 2023 03:03:25 -0800 (PST)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-db3a09e96daso5427460276.3;
+        Wed, 06 Dec 2023 03:03:25 -0800 (PST)
+X-Received: by 2002:a81:ae5a:0:b0:5d7:1941:2c23 with SMTP id
+ g26-20020a81ae5a000000b005d719412c23mr477831ywk.80.1701860605566; Wed, 06 Dec
+ 2023 03:03:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231205133015.752543-1-svens@linux.ibm.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com> <20231120070024.4079344-13-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20231120070024.4079344-13-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 6 Dec 2023 12:03:14 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWa9wSDfwrz=WSpa9S16BnMCJHdEiJSNFB2m8gr_p8z9g@mail.gmail.com>
+Message-ID: <CAMuHMdWa9wSDfwrz=WSpa9S16BnMCJHdEiJSNFB2m8gr_p8z9g@mail.gmail.com>
+Subject: Re: [PATCH 12/14] arm64: dts: renesas: Improve documentation for SW_SD0_DEV_SEL
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux@armlinux.org.uk, magnus.damm@gmail.com,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linus.walleij@linaro.org, p.zabel@pengutronix.de, arnd@arndb.de,
+        m.szyprowski@samsung.com, alexandre.torgue@foss.st.com, afd@ti.com,
+        broonie@kernel.org, alexander.stein@ew.tq-group.com,
+        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 02:30:12PM +0100, Sven Schnelle wrote:
-> Hi List,
-> 
-> looking into the performance of syscall entry/exit after s390 switched
-> to generic entry showed that there's quite some overhead calling some
-> of the entry/exit work functions even when there's nothing to do.
-> This patchset moves the entry and exit function to entry-common.h, so
-> non inlined code gets only called when there is some work pending.
+Hi Claudiu,
 
-So per that logic you wouldn't need to inline exit_to_user_mode_loop()
-for example, that's only called when there is a EXIT_TO_USER_MODE_WORK
-bit set.
+On Mon, Nov 20, 2023 at 8:03 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Add switch OFF/OFF description to values of SW_SD0_DEV_SEL for
+> better understanding.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-That is, I'm just being pedantic here and pointing out that your
-justification doesn't cover the extent of the changes.
+Thanks for your patch!
 
-> I wrote a small program that just issues invalid syscalls in a loop.
-> On an s390 machine, this results in the following numbers:
-> 
-> without this series:
-> 
-> # ./syscall 1000000000
-> runtime: 94.886581s / per-syscall 9.488658e-08s
-> 
-> with this series:
-> 
-> ./syscall 1000000000
-> runtime: 84.732391s / per-syscall 8.473239e-08s
-> 
-> so the time required for one syscall dropped from 94.8ns to
-> 84.7ns, which is a drop of about 11%.
+> --- a/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
+> @@ -11,8 +11,8 @@
+>  /*
+>   * Signals of SW_CONFIG switches:
+>   * @SW_SD0_DEV_SEL:
+> - *     0 - SD0 is connected to eMMC
+> - *     1 - SD0 is connected to uSD0 card
+> + *     0 - (switch OFF) SD0 is connected to eMMC
+> + *     1 - (switch ON)  SD0 is connected to uSD0 card
+>   * @SW_SD2_EN:
+>   *     0 - (switch OFF) SD2 is connected to SoC
+>   *     1 - (switch ON)  SCIF1, SSI0, IRQ0, IRQ1 connected to SoC
 
-That is obviously very nice, and I don't immediately see anything wrong
-with moving the lot to header based inlines.
+I guess this makes sense
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Thomas?
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
