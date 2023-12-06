@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B9B80786F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA23C807871
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379323AbjLFTOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 14:14:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S1379330AbjLFTPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:15:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379257AbjLFTOW (ORCPT
+        with ESMTP id S1379257AbjLFTPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:14:22 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55BED45;
-        Wed,  6 Dec 2023 11:14:28 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701890067;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fHlmot3W1hhRj+RWqh+9nLkMzx3bkSfmuH5Fhyq8ADM=;
-        b=Ta9+GWcIJxmj4d3u9BZvjYQhpsZjvcjZIb44L8e6cn4XTb4CIhUcvDzJLCt7wOJeA4xekA
-        mpeOiCHxEu/ZfwhtK5xjUTTh9nUp9A1VCQA+6TmCSQOSE6KIm1+Kih7Bwehkqn4w/HwYZ4
-        sZYL/9Orrwze2CGSaRbAo0f3jR4/oKO6t/McU73XqFss0yb04x5DeghQFpqS8lsC459s8T
-        jyeTcsptwKI8UnnSLtrrWyLKadomGiy6LK8jfijeDXwLqBDkxyaGdzBDvGTKU9/ARSGmOs
-        TCLeRnuYrVQ7qyu3qKHNC2T7mj2ucXesX1CgZ/6RF2sg77Iy/dju/5kzq8Iseg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701890067;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fHlmot3W1hhRj+RWqh+9nLkMzx3bkSfmuH5Fhyq8ADM=;
-        b=fqBgTJoRu7ALJihn+tfBI49CmKGFW+utQWueC8s/a4DoaCJ/f/XOWK39jjpK3PNctsTv71
-        PTtg5JewcVGDXYDw==
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
-        iommu@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>,
-        kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org,
-        peterz@infradead.org, seanjc@google.com,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: Re: [PATCH RFC 09/13] x86/irq: Install posted MSI notification handler
-In-Reply-To: <20231112041643.2868316-10-jacob.jun.pan@linux.intel.com>
-References: <20231112041643.2868316-1-jacob.jun.pan@linux.intel.com>
- <20231112041643.2868316-10-jacob.jun.pan@linux.intel.com>
-Date:   Wed, 06 Dec 2023 20:14:26 +0100
-Message-ID: <87fs0fuorx.ffs@tglx>
+        Wed, 6 Dec 2023 14:15:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E620B193
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 11:15:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EA29C433C7;
+        Wed,  6 Dec 2023 19:15:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701890137;
+        bh=SQBCq+vdv0d3tGaClUH0WQbz0FTWgbIDaKT4M0mAh1M=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ZW3mQY6IaEElt6DdQcPJRLSzIdWZQ+mW/oGAUfWPF2QMPgjxB9CT2p1Lhiajup1XC
+         oDqO70xg+YNQp5jh9A47oedCCkYEThPN9EUufF8iGfoHJHyA2NGwIEjPxW3LJico6Q
+         ZRXIGKfWNAV0wC6LYY8h0u3cJuWmILQn7Z/dQQUelRcWo5mnS6Q1KIFwT2u7JCO7YS
+         5nWgtdFB4Shah17Pk0zmJYLglrUo1e+SZlKWrXIznjllXhx8Ydf5/Yq7GqDLtYRn0n
+         SEiXpR8E422gZuQUqE+CRWSH3WHlEIlFKNKhZQ8RZYYiiBfWVX22Pr6pfyIeFXJk24
+         KysCm5H0cGrTw==
+Message-ID: <e4823a44-33a9-4dbf-a39d-66ae256b903a@kernel.org>
+Date:   Wed, 6 Dec 2023 12:15:36 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] neighbour: Don't let neigh_forced_gc() disable
+ preemption for long
+Content-Language: en-US
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        Judy Hsiao <judyhsiao@chromium.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Simon Horman <horms@kernel.org>,
+        Brian Haley <haleyb.dev@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Joel Granados <joel.granados@gmail.com>,
+        Julian Anastasov <ja@ssi.bg>,
+        Leon Romanovsky <leon@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20231206033913.1290566-1-judyhsiao@chromium.org>
+ <20231206093917.04fd57b5@hermes.local>
+ <efd58582-31b6-47f0-ba14-bf369fddd1c0@kernel.org>
+ <CAD=FV=UgPZoXsGTgLV_4X9x2hGTMouO3Tpe9_WkwhU7Bsvav2Q@mail.gmail.com>
+From:   David Ahern <dsahern@kernel.org>
+In-Reply-To: <CAD=FV=UgPZoXsGTgLV_4X9x2hGTMouO3Tpe9_WkwhU7Bsvav2Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,44 +65,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11 2023 at 20:16, Jacob Pan wrote:
-> +	/*
-> +	 * Ideally, we should start from the high order bits set in the PIR
-> +	 * since each bit represents a vector. Higher order bit position means
-> +	 * the vector has higher priority. But external vectors are allocated
-> +	 * based on availability not priority.
-> +	 *
-> +	 * EOI is included in the IRQ handlers call to apic_ack_irq, which
-> +	 * allows higher priority system interrupt to get in between.
+On 12/6/23 11:49 AM, Doug Anderson wrote:
+> Hi,
+> 
+> On Wed, Dec 6, 2023 at 9:51 AM David Ahern <dsahern@kernel.org> wrote:
+>>
+>> On 12/6/23 10:39 AM, Stephen Hemminger wrote:
+>>> On Wed,  6 Dec 2023 03:38:33 +0000
+>>> Judy Hsiao <judyhsiao@chromium.org> wrote:
+>>>
+>>>> diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+>>>> index df81c1f0a570..552719c3bbc3 100644
+>>>> --- a/net/core/neighbour.c
+>>>> +++ b/net/core/neighbour.c
+>>>> @@ -253,9 +253,11 @@ static int neigh_forced_gc(struct neigh_table *tbl)
+>>>>  {
+>>>>      int max_clean = atomic_read(&tbl->gc_entries) -
+>>>>                      READ_ONCE(tbl->gc_thresh2);
+>>>> +    u64 tmax = ktime_get_ns() + NSEC_PER_MSEC;
+>>>>      unsigned long tref = jiffies - 5 * HZ;
+>>>>      struct neighbour *n, *tmp;
+>>>>      int shrunk = 0;
+>>>> +    int loop = 0;
+>>>>
+>>>>      NEIGH_CACHE_STAT_INC(tbl, forced_gc_runs);
+>>>>
+>>>> @@ -278,11 +280,16 @@ static int neigh_forced_gc(struct neigh_table *tbl)
+>>>>                              shrunk++;
+>>>>                      if (shrunk >= max_clean)
+>>>>                              break;
+>>>> +                    if (++loop == 16) {
+>>>
+>>> Overall looks good.
+>>> Minor comments:
+>>>       - loop count should probably be unsigned
+>>>         - the magic constant 16 should be a sysctl tuneable
+>>
+>> A tunable is needed here; the loop counter is just to keep the overhead
+>> of the ktime_get_ns call in check.
+> 
+> From context, I'm going to assume you meant a tunable is _NOT_ needed here. ;-)
+> 
+> -Doug
 
-What? This does not make sense.
-
-_IF_ we go there then
-
-     1) The EOI must be explicit in sysvec_posted_msi_notification()
-
-     2) Interrupt enabling must happen explicit at a dedicated place in
-        sysvec_posted_msi_notification()
-
-        You _CANNOT_ run all the device handlers with interrupts
-        enabled.
-
-Please remove all traces of non-working wishful thinking from this series.
-
-> +	 */
-> +	for_each_set_bit_from(vec, (unsigned long *)&pir_copy[0], 256)
-
-Why does this need to check up to vector 255? The vector space does not
-magially expand just because of posted interrupts, really. At least not
-without major modifications to the vector management.
-
-> +		call_irq_handler(vec, regs);
-> +
-
-Stray newline.
-
-> +}
-
-Thanks,
-
-        tglx
+yes, multitasking fail :-(
