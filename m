@@ -2,38 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B95807375
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAED807376
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442474AbjLFPNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 10:13:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35104 "EHLO
+        id S1379223AbjLFPNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 10:13:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379228AbjLFPNL (ORCPT
+        with ESMTP id S1379228AbjLFPN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 10:13:11 -0500
+        Wed, 6 Dec 2023 10:13:29 -0500
 Received: from relayaws-01.paragon-software.com (relayaws-01.paragon-software.com [35.157.23.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF039DE;
-        Wed,  6 Dec 2023 07:13:17 -0800 (PST)
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayaws-01.paragon-software.com (Postfix) with ESMTPS id 903201E1A;
-        Wed,  6 Dec 2023 15:06:51 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B797FD5E;
+        Wed,  6 Dec 2023 07:13:34 -0800 (PST)
+Received: from relayfre-01.paragon-software.com (unknown [172.30.72.12])
+        by relayaws-01.paragon-software.com (Postfix) with ESMTPS id 8507D1E1A;
+        Wed,  6 Dec 2023 15:07:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1701875211;
-        bh=F097v/jB8ZR21e/O3vd36dCK4gneA3BrFHtMeimQuV4=;
+        d=paragon-software.com; s=mail; t=1701875228;
+        bh=uJ8yXb35Y3nvlXGaUfbKb2hU6mLxvvg7KJ352HRIl1g=;
         h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=m3/oqph84dOfSvsyEUrnjup2sI052twZlQVgqAS6UOH+jafuQ1FPCmz6Fu7lGEQQi
-         2/82ZDbxioT09DRo45akAqbUhutD4t5bbxSm44sL5MnKUhvjmAyx/0IIaHypmgn1vm
-         OEh6DBzuauAM8FnZ1RUItM5m01Y3W9cCWxkOJYF0=
+        b=eDwoUKNxnC3Mgo5YqMg62nEwQlIzs9ZN6vkl1Oj/N6/RT0nvXp72F+JN+rfgOMvXZ
+         foAWQKxkFIIu8YklSD8zsvXh7Y6NfK7Y2fLZ8YkDkPMmdNYLJax5arNk3jQiZY1W5r
+         cPNFAPUzgIEbNaip/DtL7zgWlJgjCSwWstIw/ml0=
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id C75A42117;
+        Wed,  6 Dec 2023 15:13:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1701875612;
+        bh=uJ8yXb35Y3nvlXGaUfbKb2hU6mLxvvg7KJ352HRIl1g=;
+        h=Date:Subject:From:To:CC:References:In-Reply-To;
+        b=Ku8/RedgSWDEvC1aHorRRbeFaxRRq9RroNtmTSCrs4SWXGRQM6g37ggHj/tEIDN7b
+         3EUjBCU0mnJo9y1wgCDSBcr/wdKVNjL3KM0gP50TDKsOV84HDSDA9jUQFNyBmpKVpy
+         Qr3UwRwAkk39i6GpMLxR/4D3cv1L7zyyfGVMbXNM=
 Received: from [172.16.192.129] (192.168.211.144) by
  vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Wed, 6 Dec 2023 18:13:15 +0300
-Message-ID: <89861d9e-f3a4-483d-b88d-4085dc2e0a8b@paragon-software.com>
-Date:   Wed, 6 Dec 2023 18:13:15 +0300
+ 15.1.2375.7; Wed, 6 Dec 2023 18:13:32 +0300
+Message-ID: <4f013a0c-9f3f-4a4a-88fa-17460abd702e@paragon-software.com>
+Date:   Wed, 6 Dec 2023 18:13:32 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: [PATCH 11/16] fs/ntfs3: Drop suid and sgid bits as a part of fpunch
+Subject: [PATCH 12/16] fs/ntfs3: Implement super_operations::shutdown
 Content-Language: en-US
 From:   Konstantin Komarovc <almaz.alexandrovich@paragon-software.com>
 To:     <ntfs3@lists.linux.dev>
@@ -58,58 +68,295 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 ---
-  fs/ntfs3/file.c | 9 +++++++++
-  1 file changed, 9 insertions(+)
+  fs/ntfs3/file.c    | 18 ++++++++++++++++++
+  fs/ntfs3/frecord.c |  3 +++
+  fs/ntfs3/inode.c   | 21 +++++++++++++++++++--
+  fs/ntfs3/namei.c   | 12 ++++++++++++
+  fs/ntfs3/ntfs_fs.h |  9 ++++++++-
+  fs/ntfs3/super.c   | 12 ++++++++++++
+  fs/ntfs3/xattr.c   |  3 +++
+  7 files changed, 75 insertions(+), 3 deletions(-)
 
 diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-index bb80ce2eec2f..0ff5d3af2889 100644
+index 0ff5d3af2889..07ed3d946e7c 100644
 --- a/fs/ntfs3/file.c
 +++ b/fs/ntfs3/file.c
-@@ -498,10 +498,14 @@ static long ntfs_fallocate(struct file *file, int 
-mode, loff_t vbo, loff_t len)
-          ni_lock(ni);
-          err = attr_punch_hole(ni, vbo, len, &frame_size);
-          ni_unlock(ni);
-+        if (!err)
-+            goto ok;
+@@ -260,6 +260,9 @@ static int ntfs_file_mmap(struct file *file, struct 
+vm_area_struct *vma)
+      bool rw = vma->vm_flags & VM_WRITE;
+      int err;
+
++    if (unlikely(ntfs3_forced_shutdown(inode->i_sb)))
++        return -EIO;
 +
-          if (err != E_NTFS_NOTALIGNED)
-              goto out;
+      if (is_encrypted(ni)) {
+          ntfs_inode_warn(inode, "mmap encrypted not supported");
+          return -EOPNOTSUPP;
+@@ -677,6 +680,9 @@ int ntfs3_setattr(struct mnt_idmap *idmap, struct 
+dentry *dentry,
+      umode_t mode = inode->i_mode;
+      int err;
 
-          /* Process not aligned punch. */
-+        err = 0;
-          mask = frame_size - 1;
-          vbo_a = (vbo + mask) & ~mask;
-          end_a = end & ~mask;
-@@ -524,6 +528,8 @@ static long ntfs_fallocate(struct file *file, int 
-mode, loff_t vbo, loff_t len)
-              ni_lock(ni);
-              err = attr_punch_hole(ni, vbo_a, end_a - vbo_a, NULL);
-              ni_unlock(ni);
-+            if (err)
-+                goto out;
-          }
-      } else if (mode & FALLOC_FL_COLLAPSE_RANGE) {
-          /*
-@@ -563,6 +569,8 @@ static long ntfs_fallocate(struct file *file, int 
-mode, loff_t vbo, loff_t len)
-          ni_lock(ni);
-          err = attr_insert_range(ni, vbo, len);
-          ni_unlock(ni);
-+        if (err)
-+            goto out;
-      } else {
-          /* Check new size. */
-          u8 cluster_bits = sbi->cluster_bits;
-@@ -639,6 +647,7 @@ static long ntfs_fallocate(struct file *file, int 
-mode, loff_t vbo, loff_t len)
-          }
-      }
-
-+ok:
-      err = file_modified(file);
++    if (unlikely(ntfs3_forced_shutdown(inode->i_sb)))
++        return -EIO;
++
+      err = setattr_prepare(idmap, dentry, attr);
       if (err)
           goto out;
+@@ -732,6 +738,9 @@ static ssize_t ntfs_file_read_iter(struct kiocb 
+*iocb, struct iov_iter *iter)
+      struct inode *inode = file->f_mapping->host;
+      struct ntfs_inode *ni = ntfs_i(inode);
+
++    if (unlikely(ntfs3_forced_shutdown(inode->i_sb)))
++        return -EIO;
++
+      if (is_encrypted(ni)) {
+          ntfs_inode_warn(inode, "encrypted i/o not supported");
+          return -EOPNOTSUPP;
+@@ -766,6 +775,9 @@ static ssize_t ntfs_file_splice_read(struct file 
+*in, loff_t *ppos,
+      struct inode *inode = in->f_mapping->host;
+      struct ntfs_inode *ni = ntfs_i(inode);
+
++    if (unlikely(ntfs3_forced_shutdown(inode->i_sb)))
++        return -EIO;
++
+      if (is_encrypted(ni)) {
+          ntfs_inode_warn(inode, "encrypted i/o not supported");
+          return -EOPNOTSUPP;
+@@ -1058,6 +1070,9 @@ static ssize_t ntfs_file_write_iter(struct kiocb 
+*iocb, struct iov_iter *from)
+      int err;
+      struct ntfs_inode *ni = ntfs_i(inode);
+
++    if (unlikely(ntfs3_forced_shutdown(inode->i_sb)))
++        return -EIO;
++
+      if (is_encrypted(ni)) {
+          ntfs_inode_warn(inode, "encrypted i/o not supported");
+          return -EOPNOTSUPP;
+@@ -1118,6 +1133,9 @@ int ntfs_file_open(struct inode *inode, struct 
+file *file)
+  {
+      struct ntfs_inode *ni = ntfs_i(inode);
+
++    if (unlikely(ntfs3_forced_shutdown(inode->i_sb)))
++        return -EIO;
++
+      if (unlikely((is_compressed(ni) || is_encrypted(ni)) &&
+               (file->f_flags & O_DIRECT))) {
+          return -EOPNOTSUPP;
+diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
+index 3df2d9e34b91..8744ba36d422 100644
+--- a/fs/ntfs3/frecord.c
++++ b/fs/ntfs3/frecord.c
+@@ -3259,6 +3259,9 @@ int ni_write_inode(struct inode *inode, int sync, 
+const char *hint)
+      if (is_bad_inode(inode) || sb_rdonly(sb))
+          return 0;
+
++    if (unlikely(ntfs3_forced_shutdown(sb)))
++        return -EIO;
++
+      if (!ni_trylock(ni)) {
+          /* 'ni' is under modification, skip for now. */
+          mark_inode_dirty_sync(inode);
+diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
+index bba0208c4afd..85452a6b1d40 100644
+--- a/fs/ntfs3/inode.c
++++ b/fs/ntfs3/inode.c
+@@ -852,9 +852,13 @@ static int ntfs_resident_writepage(struct folio *folio,
+                     struct writeback_control *wbc, void *data)
+  {
+      struct address_space *mapping = data;
+-    struct ntfs_inode *ni = ntfs_i(mapping->host);
++    struct inode *inode = mapping->host;
++    struct ntfs_inode *ni = ntfs_i(inode);
+      int ret;
+
++    if (unlikely(ntfs3_forced_shutdown(inode->i_sb)))
++        return -EIO;
++
+      ni_lock(ni);
+      ret = attr_data_write_resident(ni, &folio->page);
+      ni_unlock(ni);
+@@ -868,7 +872,12 @@ static int ntfs_resident_writepage(struct folio *folio,
+  static int ntfs_writepages(struct address_space *mapping,
+                 struct writeback_control *wbc)
+  {
+-    if (is_resident(ntfs_i(mapping->host)))
++    struct inode *inode = mapping->host;
++
++    if (unlikely(ntfs3_forced_shutdown(inode->i_sb)))
++        return -EIO;
++
++    if (is_resident(ntfs_i(inode)))
+          return write_cache_pages(mapping, wbc, ntfs_resident_writepage,
+                       mapping);
+      return mpage_writepages(mapping, wbc, ntfs_get_block);
+@@ -888,6 +897,9 @@ int ntfs_write_begin(struct file *file, struct 
+address_space *mapping,
+      struct inode *inode = mapping->host;
+      struct ntfs_inode *ni = ntfs_i(inode);
+
++    if (unlikely(ntfs3_forced_shutdown(inode->i_sb)))
++        return -EIO;
++
+      *pagep = NULL;
+      if (is_resident(ni)) {
+          struct page *page =
+@@ -1305,6 +1317,11 @@ struct inode *ntfs_create_inode(struct mnt_idmap 
+*idmap, struct inode *dir,
+          goto out1;
+      }
+
++    if (unlikely(ntfs3_forced_shutdown(sb))) {
++        err = -EIO;
++        goto out2;
++    }
++
+      /* Mark rw ntfs as dirty. it will be cleared at umount. */
+      ntfs_set_state(sbi, NTFS_DIRTY_DIRTY);
+
+diff --git a/fs/ntfs3/namei.c b/fs/ntfs3/namei.c
+index ee3093be5170..cae41db0aaa7 100644
+--- a/fs/ntfs3/namei.c
++++ b/fs/ntfs3/namei.c
+@@ -181,6 +181,9 @@ static int ntfs_unlink(struct inode *dir, struct 
+dentry *dentry)
+      struct ntfs_inode *ni = ntfs_i(dir);
+      int err;
+
++    if (unlikely(ntfs3_forced_shutdown(dir->i_sb)))
++        return -EIO;
++
+      ni_lock_dir(ni);
+
+      err = ntfs_unlink_inode(dir, dentry);
+@@ -199,6 +202,9 @@ static int ntfs_symlink(struct mnt_idmap *idmap, 
+struct inode *dir,
+      u32 size = strlen(symname);
+      struct inode *inode;
+
++    if (unlikely(ntfs3_forced_shutdown(dir->i_sb)))
++        return -EIO;
++
+      inode = ntfs_create_inode(idmap, dir, dentry, NULL, S_IFLNK | 0777, 0,
+                    symname, size, NULL);
+
+@@ -227,6 +233,9 @@ static int ntfs_rmdir(struct inode *dir, struct 
+dentry *dentry)
+      struct ntfs_inode *ni = ntfs_i(dir);
+      int err;
+
++    if (unlikely(ntfs3_forced_shutdown(dir->i_sb)))
++        return -EIO;
++
+      ni_lock_dir(ni);
+
+      err = ntfs_unlink_inode(dir, dentry);
+@@ -264,6 +273,9 @@ static int ntfs_rename(struct mnt_idmap *idmap, 
+struct inode *dir,
+                1024);
+      static_assert(PATH_MAX >= 4 * 1024);
+
++    if (unlikely(ntfs3_forced_shutdown(sb)))
++        return -EIO;
++
+      if (flags & ~RENAME_NOREPLACE)
+          return -EINVAL;
+
+diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
+index f6706143d14b..d40bc7669ae5 100644
+--- a/fs/ntfs3/ntfs_fs.h
++++ b/fs/ntfs3/ntfs_fs.h
+@@ -61,6 +61,8 @@ enum utf16_endian;
+
+  /* sbi->flags */
+  #define NTFS_FLAGS_NODISCARD        0x00000001
++/* ntfs in shutdown state. */
++#define NTFS_FLAGS_SHUTDOWN        0x00000002
+  /* Set when LogFile is replaying. */
+  #define NTFS_FLAGS_LOG_REPLAYING    0x00000008
+  /* Set when we changed first MFT's which copy must be updated in 
+$MftMirr. */
+@@ -226,7 +228,7 @@ struct ntfs_sb_info {
+      u64 maxbytes; // Maximum size for normal files.
+      u64 maxbytes_sparse; // Maximum size for sparse file.
+
+-    u32 flags; // See NTFS_FLAGS_XXX.
++    unsigned long flags; // See NTFS_FLAGS_
+
+      CLST zone_max; // Maximum MFT zone length in clusters
+      CLST bad_clusters; // The count of marked bad clusters.
+@@ -999,6 +1001,11 @@ static inline struct ntfs_sb_info *ntfs_sb(struct 
+super_block *sb)
+      return sb->s_fs_info;
+  }
+
++static inline bool ntfs3_forced_shutdown(struct super_block *sb)
++{
++    return test_bit(NTFS_FLAGS_SHUTDOWN, &ntfs_sb(sb)->flags);
++}
++
+  /*
+   * ntfs_up_cluster - Align up on cluster boundary.
+   */
+diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+index 09d61c6c90aa..af8521a6ed95 100644
+--- a/fs/ntfs3/super.c
++++ b/fs/ntfs3/super.c
+@@ -714,6 +714,14 @@ static int ntfs_show_options(struct seq_file *m, 
+struct dentry *root)
+      return 0;
+  }
+
++/*
++ * ntfs_shutdown - super_operations::shutdown
++ */
++static void ntfs_shutdown(struct super_block *sb)
++{
++    set_bit(NTFS_FLAGS_SHUTDOWN, &ntfs_sb(sb)->flags);
++}
++
+  /*
+   * ntfs_sync_fs - super_operations::sync_fs
+   */
+@@ -724,6 +732,9 @@ static int ntfs_sync_fs(struct super_block *sb, int 
+wait)
+      struct ntfs_inode *ni;
+      struct inode *inode;
+
++    if (unlikely(ntfs3_forced_shutdown(sb)))
++        return -EIO;
++
+      ni = sbi->security.ni;
+      if (ni) {
+          inode = &ni->vfs_inode;
+@@ -763,6 +774,7 @@ static const struct super_operations ntfs_sops = {
+      .put_super = ntfs_put_super,
+      .statfs = ntfs_statfs,
+      .show_options = ntfs_show_options,
++    .shutdown = ntfs_shutdown,
+      .sync_fs = ntfs_sync_fs,
+      .write_inode = ntfs3_write_inode,
+  };
+diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+index 4274b6f31cfa..071356d096d8 100644
+--- a/fs/ntfs3/xattr.c
++++ b/fs/ntfs3/xattr.c
+@@ -744,6 +744,9 @@ static int ntfs_getxattr(const struct xattr_handler 
+*handler, struct dentry *de,
+      int err;
+      struct ntfs_inode *ni = ntfs_i(inode);
+
++    if (unlikely(ntfs3_forced_shutdown(inode->i_sb)))
++        return -EIO;
++
+      /* Dispatch request. */
+      if (!strcmp(name, SYSTEM_DOS_ATTRIB)) {
+          /* system.dos_attrib */
 -- 
 2.34.1
 
