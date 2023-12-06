@@ -2,104 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 886B5807B13
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E89807B1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377482AbjLFWFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 17:05:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35208 "EHLO
+        id S1377463AbjLFWFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 17:05:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377409AbjLFWFQ (ORCPT
+        with ESMTP id S1377421AbjLFWFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 17:05:16 -0500
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6BAD7D;
-        Wed,  6 Dec 2023 14:05:22 -0800 (PST)
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-58cf894544cso1285eaf.3;
-        Wed, 06 Dec 2023 14:05:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701900322; x=1702505122;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vbd5B8BVVpRHLAAm9f1h8aNytsZytNMI1lzIKFManeQ=;
-        b=pMxC2nOv9Eu5z315m6/BLH3Tr7emveEAdtWuOH6hXD7TYe61Uy6N5Ipe1uCZSVRJkQ
-         it6h3Bgi9KuLmFBEa8hqjelaC4FdINkXGH4tuIV8xD6+F7YL+eQlYfDzho76uuwL6Jwm
-         +rMWEYdGnL9ElPP/6f9Fv5F3hn6SCLdzMXyZXYRFfIbBDpSJRxHct5MljgdvmbzfQW97
-         TyXGhbYJX2w4yZuQf5P25cC16/mvfVr9uQwVhb7eQuIGsgkmUUoZhBV80abHWmbGBul7
-         au3/TBR+2kYgIBlFNJrTMsT6tJfHLJnS7yQPIbGInhM2r2PMx2jkMgmPTZeNcHyeihOJ
-         8+gg==
-X-Gm-Message-State: AOJu0YyWo34P2QWrvp09VLfcjMP2++KdX1CWu1aClGwYSrYAPU+TJQrX
-        BlfpM0fSAwG6T/hYZ7rgBA==
-X-Google-Smtp-Source: AGHT+IGje1u2DNEW9pSR9hih68DS0uYGwmFBGf37482odpdjRd1Z0Zs32LrlmDgot+tSfKBspUxDvQ==
-X-Received: by 2002:a4a:251b:0:b0:58e:80e2:93b7 with SMTP id g27-20020a4a251b000000b0058e80e293b7mr1466627ooa.0.1701900322055;
-        Wed, 06 Dec 2023 14:05:22 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id d24-20020a4a9198000000b0057b6ac3922esm803ooh.18.2023.12.06.14.05.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 14:05:21 -0800 (PST)
-Received: (nullmailer pid 3423211 invoked by uid 1000);
-        Wed, 06 Dec 2023 22:05:20 -0000
-Date:   Wed, 6 Dec 2023 16:05:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     linux-serial@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-i2c@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>, linux-fsd@tesla.com,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-pwm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-samsung-soc@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, Andi Shyti <andi.shyti@kernel.org>
-Subject: Re: [PATCH 5/6] dt-bindings: watchdog: samsung: add specific
- compatible for Tesla FSD
-Message-ID: <170190031995.3423149.13499134597119767259.robh@kernel.org>
-References: <20231205092229.19135-1-krzysztof.kozlowski@linaro.org>
- <20231205092229.19135-6-krzysztof.kozlowski@linaro.org>
+        Wed, 6 Dec 2023 17:05:46 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB64DE;
+        Wed,  6 Dec 2023 14:05:52 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D31F9556;
+        Wed,  6 Dec 2023 23:05:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701900309;
+        bh=keu6mZ1cZpht5aJTt3UURktqyYiTT3jXahRG3j0hD+g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KT5ng6A2iGFV5ef2agWZKkPeDA9NB7ofdMpJB2Iihwf+WTQ36ISkHAZTeYNxBL7s5
+         mTQFjlpxeyyv4YOCGBpTAD2TixR2lV0T9BLPMjAHAArucOCjBpmB82AZwTt/PIfCt0
+         hbOictZr2XBlzRqGwUlunC9QdnrLDJSgXR2ihWqk=
+Date:   Thu, 7 Dec 2023 00:05:56 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Dafna Hirschfeld <dafna@fastmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        kieran.bingham@ideasonboard.com, umang.jain@ideasonboard.com,
+        aford173@gmail.com, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] media: rkisp1: Store IRQ lines
+Message-ID: <20231206220556.GC29417@pendragon.ideasonboard.com>
+References: <20231206-rkisp-irq-fix-v2-0-6ba4185eeb1f@ideasonboard.com>
+ <20231206-rkisp-irq-fix-v2-3-6ba4185eeb1f@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231205092229.19135-6-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231206-rkisp-irq-fix-v2-3-6ba4185eeb1f@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tomi,
 
-On Tue, 05 Dec 2023 10:22:28 +0100, Krzysztof Kozlowski wrote:
-> Tesla FSD is a derivative of Samsung Exynos SoC, thus just like the
-> others it reuses several devices from older designs.  Historically we
-> kept the old (block's) compatible only.  This works fine and there is no
-> bug here, however guidelines expressed in
-> Documentation/devicetree/bindings/writing-bindings.rst state that:
-> 1. Compatibles should be specific.
-> 2. We should add new compatibles in case of bugs or features.
+Thank you for the patch.
+
+On Wed, Dec 06, 2023 at 12:12:30PM +0200, Tomi Valkeinen wrote:
+> Store the IRQ lines used by the driver for easy access. These are needed
+> in future patches which fix IRQ race issues.
 > 
-> Add Tesla FSD compatible specific to be used with an existing fallback.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 > ---
+>  .../media/platform/rockchip/rkisp1/rkisp1-common.h    | 11 ++++++++++-
+>  drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c   | 19 ++++++++++++++-----
+>  2 files changed, 24 insertions(+), 6 deletions(-)
 > 
-> I propose to take the patch through Samsung SoC (me). See cover letter
-> for explanation.
-> ---
->  .../bindings/watchdog/samsung-wdt.yaml        | 21 ++++++++++++-------
->  1 file changed, 13 insertions(+), 8 deletions(-)
-> 
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> index 960ab89c659b..ec28907d978e 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> @@ -62,6 +62,14 @@ struct regmap;
+>  						 RKISP1_CIF_ISP_EXP_END |	\
+>  						 RKISP1_CIF_ISP_HIST_MEASURE_RDY)
+>  
+> +/* IRQ lines */
+> +enum rkisp1_irq_line {
+> +	RKISP1_IRQ_ISP = 0,
+> +	RKISP1_IRQ_MI,
+> +	RKISP1_IRQ_MIPI,
+> +	RKISP1_NUM_IRQS,
+> +};
+> +
+>  /* enum for the resizer pads */
+>  enum rkisp1_rsz_pad {
+>  	RKISP1_RSZ_PAD_SINK,
+> @@ -437,7 +445,6 @@ struct rkisp1_debug {
+>   * struct rkisp1_device - ISP platform device
+>   *
+>   * @base_addr:	   base register address
+> - * @irq:	   the irq number
+>   * @dev:	   a pointer to the struct device
+>   * @clk_size:	   number of clocks
+>   * @clks:	   array of clocks
+> @@ -457,6 +464,7 @@ struct rkisp1_debug {
+>   * @stream_lock:   serializes {start/stop}_streaming callbacks between the capture devices.
+>   * @debug:	   debug params to be exposed on debugfs
+>   * @info:	   version-specific ISP information
+> + * @irqs:          IRQ line numbers
+>   */
+>  struct rkisp1_device {
+>  	void __iomem *base_addr;
+> @@ -479,6 +487,7 @@ struct rkisp1_device {
+>  	struct mutex stream_lock; /* serialize {start/stop}_streaming cb between capture devices */
+>  	struct rkisp1_debug debug;
+>  	const struct rkisp1_info *info;
+> +	int irqs[RKISP1_NUM_IRQS];
+>  };
+>  
+>  /*
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> index 030eb8c79546..492ff5e6770d 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> @@ -115,6 +115,7 @@
+>  struct rkisp1_isr_data {
+>  	const char *name;
+>  	irqreturn_t (*isr)(int irq, void *ctx);
+> +	u32 line_mask;
+>  };
+>  
+>  /* ----------------------------------------------------------------------------
+> @@ -473,9 +474,9 @@ static const char * const px30_isp_clks[] = {
+>  };
+>  
+>  static const struct rkisp1_isr_data px30_isp_isrs[] = {
+> -	{ "isp", rkisp1_isp_isr },
+> -	{ "mi", rkisp1_capture_isr },
+> -	{ "mipi", rkisp1_csi_isr },
+> +	{ "isp", rkisp1_isp_isr, BIT(RKISP1_IRQ_ISP) },
+> +	{ "mi", rkisp1_capture_isr, BIT(RKISP1_IRQ_MI) },
+> +	{ "mipi", rkisp1_csi_isr, BIT(RKISP1_IRQ_MIPI) },
+>  };
+>  
+>  static const struct rkisp1_info px30_isp_info = {
+> @@ -496,7 +497,7 @@ static const char * const rk3399_isp_clks[] = {
+>  };
+>  
+>  static const struct rkisp1_isr_data rk3399_isp_isrs[] = {
+> -	{ NULL, rkisp1_isr },
+> +	{ NULL, rkisp1_isr, BIT(RKISP1_IRQ_ISP) | BIT(RKISP1_IRQ_MI) | BIT(RKISP1_IRQ_MIPI) },
+>  };
+>  
+>  static const struct rkisp1_info rk3399_isp_info = {
+> @@ -517,7 +518,7 @@ static const char * const imx8mp_isp_clks[] = {
+>  };
+>  
+>  static const struct rkisp1_isr_data imx8mp_isp_isrs[] = {
+> -	{ NULL, rkisp1_isr },
+> +	{ NULL, rkisp1_isr, BIT(RKISP1_IRQ_ISP) | BIT(RKISP1_IRQ_MI) | BIT(RKISP1_IRQ_MIPI) },
 
-Acked-by: Rob Herring <robh@kernel.org>
+The i.MX8MP has no CSI-2 RX in the ISP, you can drop RKISP1_IRQ_MIPI.
 
+I think we can merge this series before the i.MX8MP support, could you
+base v3 on top of the master branch of the linux-media stage tree ?
+
+>  };
+>  
+>  static const struct rkisp1_info imx8mp_isp_info = {
+> @@ -574,6 +575,9 @@ static int rkisp1_probe(struct platform_device *pdev)
+>  	if (IS_ERR(rkisp1->base_addr))
+>  		return PTR_ERR(rkisp1->base_addr);
+>  
+> +	for (unsigned int il = 0; il < RKISP1_NUM_IRQS; ++il)
+
+I would use ARRAY_SIZE(rkisp1->irqs) instead of RKISP1_NUM_IRQS here.
+
+> +		rkisp1->irqs[il] = -1;
+> +
+>  	for (i = 0; i < info->isr_size; i++) {
+>  		irq = info->isrs[i].name
+>  		    ? platform_get_irq_byname(pdev, info->isrs[i].name)
+> @@ -581,6 +585,11 @@ static int rkisp1_probe(struct platform_device *pdev)
+>  		if (irq < 0)
+>  			return irq;
+>  
+> +		for (unsigned int il = 0; il < RKISP1_NUM_IRQS; ++il) {
+
+Same here.
+
+> +			if (info->isrs[i].line_mask & BIT(il))
+> +				rkisp1->irqs[il] = irq;
+> +		}
+> +
+>  		ret = devm_request_irq(dev, irq, info->isrs[i].isr, 0,
+>  				       dev_driver_string(dev), dev);
+>  		if (ret) {
+
+-- 
+Regards,
+
+Laurent Pinchart
