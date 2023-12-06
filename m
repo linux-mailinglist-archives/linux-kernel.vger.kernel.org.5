@@ -2,101 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7EB807960
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72495807964
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379512AbjLFU2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 15:28:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44100 "EHLO
+        id S1379515AbjLFUcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 15:32:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379405AbjLFU2q (ORCPT
+        with ESMTP id S230019AbjLFUcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 15:28:46 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946F012F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 12:28:52 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-2851a2b30a2so197448a91.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 12:28:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701894532; x=1702499332; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XTBTLAqDXor1l6sg34c9kbUSBjJSEI8UiBBYr9CwL2Q=;
-        b=mBSvMCBnLy7316/Qzf9Xd5nmH/+fsGN1n1j+8Fc1nUYVCrxpCr6MxloLVw01Wc9HQe
-         3IIobqpHYYGBZvVcvjlmukokNk7MbrHRonhcvwLh6vFndFxS166Ez8Ul+OLOSEgh7/to
-         YYkDNXgbiFtLGGw7knY39odkVNoiK40VLKFjo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701894532; x=1702499332;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XTBTLAqDXor1l6sg34c9kbUSBjJSEI8UiBBYr9CwL2Q=;
-        b=D3Y3ylcecCqTGkkpRI0N0gvPPBASevHg1V+gzzcUFKbgoZ9ulK7HV11emXr59WzLuz
-         Nq35UjC93jGfQMPJelRs45XKtogIfhp8Jbrhs3765mfoOSkxMj9CJUwbL5vPxcFePM6C
-         9BhzpdoPD+hxDMHp9XwJTab8kBPi9k0ITJxtCWTTbR6cSk4VV3D6l893AB2m5aTsG8Hv
-         TjBJtf4OwI8yjiU+nrIb25OA4tN6AbF0W2wyvAJq/0R/j/S2XB1QZG1i/w59Q1jOmEBW
-         U21QNYCCqC0E/QqKzES+hnlklZjAAiQbNNoFGgvVw/vi9qEnVF8R8gJdDTrd+/uNDyLe
-         nykg==
-X-Gm-Message-State: AOJu0Yzd53Z4bUfMwfa8Q3v1LawxDCY149Q5er/t1tQR4L6d5j9MQl9Z
-        /71QzqSRMgnpr+/GFxlsW5kLrA==
-X-Google-Smtp-Source: AGHT+IGCJW9aAT/9l5dWk1euSiHsIcWqvf5+MSkN2kUSEvXz1J47cG2MljPvGZxmFTZ5NhzqTZhnjg==
-X-Received: by 2002:a17:90a:d796:b0:286:d42d:e7e with SMTP id z22-20020a17090ad79600b00286d42d0e7emr1213709pju.3.1701894532050;
-        Wed, 06 Dec 2023 12:28:52 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id fz20-20020a17090b025400b00280a2275e4bsm280195pjb.27.2023.12.06.12.28.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 12:28:51 -0800 (PST)
-Date:   Wed, 6 Dec 2023 12:28:50 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     samitolvanen@google.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] riscv: Increase mmap_rnd_bits_max on Sv48/57
-Message-ID: <202312061228.B953DE8CA@keescook>
-References: <20230929211155.3910949-4-samitolvanen@google.com>
- <mhng-f0a257c6-a1f5-41db-b1c4-c178a77a79e9@palmer-ri-x1c9>
+        Wed, 6 Dec 2023 15:32:08 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CE712F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 12:32:14 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id F1EE340E00C7;
+        Wed,  6 Dec 2023 20:32:12 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id aHJQXq1KwOzP; Wed,  6 Dec 2023 20:32:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701894731; bh=UyueyU7MPaTQvDgK5wlvJcgDd3FO2Ojq10R0R2BYr8U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JLxAmP3STXVtCqrnOC9GhMnd7+K1s1K++2no+yM9Jlwwx1o5j4/K4Yu2lobULump+
+         mdILmapFJi/eMMe5/c9zYytvZzQ+xD56TPahPTzQDfdeqS6kumX7SNOIsnnkVFCJxK
+         MG69+oQ3tyfP9ZT6VGYQyvvhmMEJPzbj//76vEv2Ti8piikePT5nuz0nXHzIe4Tr+x
+         wZUTbA1EvyKOE4g+UCnM360rtPm9kKL7oN+AICDl39Xlltsx6kl0ZtIVZN4jQnA1r/
+         TlVPIDCGFOxBRePgDaQy5rRhTl5npyvwEkV+gQ+U2skSY4FSj7EFXy8u0BpQwhAAkh
+         prF3pjXFuyU+P+1Wqq3Xyrc96iwoDBfTZ1j1iAqquC9l7DqyR/wLcildZ98MxGXqhr
+         DSGNzVHvG4TVOXo2cEJGYsDzsEHHZcn9umlbJCeTknvvViDBlCNb+qFXz71VtuQYOe
+         BwPtPJs05VpBMYv4S6HA6ed2waRRbXtsC7j+XA7PAB2Nu8qyT78rIfyOyz8zKqaGWR
+         kx5cLrF3Uij4dKzlm2ArHFRNj6W1JF+H7bcOKlP3wRn3sKdwL0cyYG8d29ivSTxVCC
+         8ca9D1s6wOUBhY7v1hRQcQ9OLMQFDSu72L37O80Js5VqrU8EUYFHd6eYkUjPSmhyNu
+         hdwiHaeyFYLIB12nuhWN33tQ=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 038C740E00C5;
+        Wed,  6 Dec 2023 20:32:03 +0000 (UTC)
+Date:   Wed, 6 Dec 2023 21:31:58 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jann Horn <jannh@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/microcode: Be more verbose, especially about loading
+ errors
+Message-ID: <20231206203158.GEZXDaPslvxtOS/gze@fat_crate.local>
+References: <20231206172844.1756871-1-jannh@google.com>
+ <20231206195814.GDZXDSVgtCWspEJx8Q@fat_crate.local>
+ <CAG48ez3weAU-Uti0QyBSDNRv8xYqCJ5UbgJvssEWAWpvyon0DA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <mhng-f0a257c6-a1f5-41db-b1c4-c178a77a79e9@palmer-ri-x1c9>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAG48ez3weAU-Uti0QyBSDNRv8xYqCJ5UbgJvssEWAWpvyon0DA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 05:14:26AM -0800, Palmer Dabbelt wrote:
-> On Fri, 29 Sep 2023 14:11:56 PDT (-0700), samitolvanen@google.com wrote:
-> > Hi all,
-> > 
-> > We noticed that 64-bit RISC-V kernels limit mmap_rnd_bits to 24
-> > even if the hardware supports a larger virtual address space size
-> > [1]. These two patches allow mmap_rnd_bits_max to be changed during
-> > init, and bumps up the maximum randomness if we end up setting up
-> > 4/5-level paging at boot.
-> 
-> Sorry for missing this, I'm just poking through old stuff in patchwork.  As
-> far as I can tell this is still relevant, the discussions are just on the
-> mmap() bits (but we'd already screwed that one up and have since fixed it).
-> 
-> So
-> 
-> Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
-> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
-> 
-> in case someone else wants to take it, but I'm OK taking that MM patch with
-> Kees' review.
+On Wed, Dec 06, 2023 at 09:23:48PM +0100, Jann Horn wrote:
+> Well, yes, except that if no microcode blob is loaded, you're not
+> gonna have the errata fixes and/or security mitigations that you might
+> expect to have.
 
-Yes, thanks! Please do. I already +1ed it:
-https://lore.kernel.org/all/202309291454.436E19663@keescook
+We say that too:
 
--Kees
+microcode: Current revision: 0x000000f0
+microcode: Updated early from: 0x000000be
+
+That second line would be missing.
+
+And updated microcode != microcode version for all the mitigations is
+even available.
+
+Therefore, the mitigation fixes all report that too. Look for
+"[Mm]icrocode" in the mitigation strings in arch/x86/kernel/cpu/bugs.c.
 
 -- 
-Kees Cook
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
