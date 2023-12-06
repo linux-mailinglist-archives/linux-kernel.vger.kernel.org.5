@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAE7806C68
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:44:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA760806C6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:44:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377485AbjLFKof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:44:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44724 "EHLO
+        id S1377573AbjLFKoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:44:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377467AbjLFKod (ORCPT
+        with ESMTP id S1377467AbjLFKom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:44:33 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8D6137;
-        Wed,  6 Dec 2023 02:44:39 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1cfabcbda7bso5688995ad.0;
-        Wed, 06 Dec 2023 02:44:39 -0800 (PST)
+        Wed, 6 Dec 2023 05:44:42 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4EE12B;
+        Wed,  6 Dec 2023 02:44:49 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-286e05d9408so572440a91.1;
+        Wed, 06 Dec 2023 02:44:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701859479; x=1702464279; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701859488; x=1702464288; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kEcYuPBlZQ9K89kJ8KLiP513yG9gnFFCALFubbK3TyA=;
-        b=UY4FOXFKFawLtVu20rFTnPbzVasgwW+X6yMl4KN+CwjCsUXIGWs8AeFLRehbe+1+AX
-         WFdkyZWdlh5RuZfuPbk7xkh9+HwbV6qFRGjf1KwF0StYnRun1vmEO8qmeakg1pf0godV
-         avNAkTGiq/JmAEYdo+7qvNgv59dIp3KZ14340m7eg1r5j//1EdO61cUZc/ggcMdmV3lF
-         wGXcWACedC0ilb3MAJEZstB1SZLf8zbNWd9gS5IAF2Z+3WYoNsrPtS9Bwt5kTVclJGRI
-         l6QWWQhU27uuoSQ4o625eKxTCpuNKFYKP9fi8TO11CLuxjxW7tlvr//BlpL4al87+Mbh
-         WPEw==
+        bh=M5B5d2/8qxaPjHZlns3KcRSngp7JdBdKI506/CONwgk=;
+        b=b/OKQCGgwQc8Hr3M5I2qojbEa8HFx3XHxyKmhoZ4X/KPRU5EwcZLmJKyjrUeXIvUev
+         Blp5XdZztB4+9Ssap+UqLnOfqzYTBkkkAjqt1L5crraCb3i8q1JMY0qn0ai5+k/a4BKL
+         7kgV29bsfZ3meTLAqw4I6IRhi97I1W2u+rVFb3tOLvMjddoQaXq4fYh9kbMaoMYAwveu
+         T8MPYydJ36VSy1pp1UYFKWRcSqpCj9PasE/vvFcipn4K+R3aDX12pMZLF+GqFQAtlKie
+         WpN8cH9mCXToJrgqilLRH+ngAFzBIxXFm92HbVRdABnBb5UmTT2cJGplMSLxrn1MUIyc
+         3tKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701859479; x=1702464279;
+        d=1e100.net; s=20230601; t=1701859488; x=1702464288;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kEcYuPBlZQ9K89kJ8KLiP513yG9gnFFCALFubbK3TyA=;
-        b=nlxQjSN5YkiYZHlHIObMGL0vnHkH6Lu+1O0kI32hwfVdzjaUgYVWoZTL4rgp8lh61s
-         cdsEalgM0oEcGkwSo7tJd4UVa1j3gbZJSIn+LAMGjfOpQh5PO8GQEIMvfGJQVE58unvE
-         RL2X9ZJgQa4FzgXW+401ES3mtL3Az4tKphLg31IUVsCCIRfkJuRshSNjqxqv+3sempyq
-         4W92F5KtsLvJqpybwHxl26cQ27Ol7u4M2ibcxYKSPojTI6k+I8qew9w3h0TmkgP14KPu
-         jhgdXe3Ik7xlL3PyCvzgwIbUX91/HIRhxszya7W35iSuiCvTHzrVHNbq7dxtBXrVxZEK
-         p3kQ==
-X-Gm-Message-State: AOJu0YyGc8vNN7h6Z3lGXGWQ9oaPpj7xWfbpkqhNa1cc0PHl2yARGie/
-        yLj8kghzErlQy9WOQgS3hjxadC6TOUE=
-X-Google-Smtp-Source: AGHT+IGK7LvDP/h+H38FgIdLJC7ablhYJtMDJ+TDPMwcdCvqU35XSmVhETIKV77MblhK2M/UXOcLzw==
-X-Received: by 2002:a17:90b:33d1:b0:286:74ba:a1d7 with SMTP id lk17-20020a17090b33d100b0028674baa1d7mr949163pjb.26.1701859478921;
-        Wed, 06 Dec 2023 02:44:38 -0800 (PST)
+        bh=M5B5d2/8qxaPjHZlns3KcRSngp7JdBdKI506/CONwgk=;
+        b=dQbdiQL+ozzqXDdKlHL8DgSlcaBvAuM/Q6o+CSiCoF3n6C/25ICs+66CGRfp2K270E
+         I/wox4vhLeeguMgGuauasIq155AHHDzI3uMZfY1HnWV7/RDWPsooWYzXAwug2mGOUAAT
+         WTvRi+EL3TYpEXa8Q8rZJurwU7nmLY2WlxELO4nNdIfRXnr/EedVpcQJibO+2Tv1vH2O
+         qYV3aWBLnGgiJUGbdWVKopNoEYKEl7D1So/I4RsmlZflr71kMJQn9Wzukcf7UQONp+0b
+         rutAL87dEqqhC8kRfw6fD3B2nex9xnstHbulhGdyEXpty1UJEizVu4Bg7kePj5CdLVyU
+         s0pQ==
+X-Gm-Message-State: AOJu0YyBEspCftUK6MgzM2KJGqQviTi/TQFv2KVWpieMjo8s9zTa+FvE
+        XPEP4W5iDL++XPEmtw2SbKT9347or4c=
+X-Google-Smtp-Source: AGHT+IGWci80b+s+FKtQ0vgvKG11CNyQku53N4VrBf95PjPh+wFgPvrb0biGtdgc5OxF8oGoNIzP5w==
+X-Received: by 2002:a17:90b:3e8c:b0:286:975f:7e36 with SMTP id rj12-20020a17090b3e8c00b00286975f7e36mr996284pjb.12.1701859488348;
+        Wed, 06 Dec 2023 02:44:48 -0800 (PST)
 Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id d11-20020a17090a2a4b00b00286596548bcsm10020811pjg.37.2023.12.06.02.44.35
+        by smtp.gmail.com with ESMTPSA id d11-20020a17090a2a4b00b00286596548bcsm10020811pjg.37.2023.12.06.02.44.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 02:44:38 -0800 (PST)
+        Wed, 06 Dec 2023 02:44:48 -0800 (PST)
 From:   Yuntao Wang <ytcoode@gmail.com>
 To:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
 Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
@@ -58,9 +58,9 @@ Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
         Alison Schofield <alison.schofield@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH 1/3] ACPI/NUMA: Remove unnecessary check in acpi_parse_gi_affinity()
-Date:   Wed,  6 Dec 2023 18:43:16 +0800
-Message-ID: <20231206104318.182759-2-ytcoode@gmail.com>
+Subject: [PATCH 2/3] ACPI/NUMA: Optimize the check for the availability of node values
+Date:   Wed,  6 Dec 2023 18:43:17 +0800
+Message-ID: <20231206104318.182759-3-ytcoode@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231206104318.182759-1-ytcoode@gmail.com>
 References: <20231206104318.182759-1-ytcoode@gmail.com>
@@ -76,28 +76,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The acpi_map_pxm_to_node() function will never return a node value
-that is greater than or equal to MAX_NUMNODES. Remove the unnecessary
-`node >= MAX_NUMNODES` check to keep the code consistent with other users
-of the acpi_map_pxm_to_node() function.
+The first_unset_node() function returns the first unused node in
+nodes_found_map. If all nodes are in use, the function returns
+MAX_NUMNODES. We can use this return value to determine whether there are
+any available node values in nodes_found_map, eliminating the need to use
+the nodes_weight() function to perform this check.
 
 Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 ---
- drivers/acpi/numa/srat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/numa/srat.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
-index 12f330b0eac0..9d2d0deb256e 100644
+index 9d2d0deb256e..d58e5ef424f2 100644
 --- a/drivers/acpi/numa/srat.c
 +++ b/drivers/acpi/numa/srat.c
-@@ -430,7 +430,7 @@ acpi_parse_gi_affinity(union acpi_subtable_headers *header,
- 		return -EINVAL;
+@@ -67,9 +67,9 @@ int acpi_map_pxm_to_node(int pxm)
+ 	node = pxm_to_node_map[pxm];
  
- 	node = acpi_map_pxm_to_node(gi_affinity->proximity_domain);
--	if (node == NUMA_NO_NODE || node >= MAX_NUMNODES) {
-+	if (node == NUMA_NO_NODE) {
- 		pr_err("SRAT: Too many proximity domains.\n");
- 		return -EINVAL;
+ 	if (node == NUMA_NO_NODE) {
+-		if (nodes_weight(nodes_found_map) >= MAX_NUMNODES)
+-			return NUMA_NO_NODE;
+ 		node = first_unset_node(nodes_found_map);
++		if (node >= MAX_NUMNODES)
++			return NUMA_NO_NODE;
+ 		__acpi_map_pxm_to_node(pxm, node);
+ 		node_set(node, nodes_found_map);
  	}
 -- 
 2.43.0
