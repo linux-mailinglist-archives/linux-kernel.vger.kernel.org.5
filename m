@@ -2,104 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E548065B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 04:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C959A8065BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 04:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376488AbjLFDi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 22:38:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41508 "EHLO
+        id S1376577AbjLFDjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 22:39:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLFDi4 (ORCPT
+        with ESMTP id S1376525AbjLFDjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 22:38:56 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA7E1AA
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 19:39:03 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24730C433C9;
-        Wed,  6 Dec 2023 03:39:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1701833942;
-        bh=I58oH3gxaXTUpHLr44iFAtoJDHEru7JOv1e8S71m5zs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YIQ0ECqQT8hbMvrqpOzxYPz7G9yKPp/RgU8FHNILKdDyJno0My3V3wxFoWrJWsGvo
-         Ix/RkIyAhokLtuxzUxKLGKVQ+f2lw9vDEvBkAQb15LnkgAppWu2CiMae6R2Tkxo7rP
-         j2RPl1DxZ+byeBOsS1CQGqNsac9fvtgMgD397Zb4=
-Date:   Wed, 6 Dec 2023 12:38:59 +0900
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Simon Holesch <simon@holesch.de>
-Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, Hongren Zheng <i@zenithal.me>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] usbip: Don't submit special requests twice
-Message-ID: <2023120641-krypton-presume-a375@gregkh>
-References: <20231130231650.22410-1-simon@holesch.de>
+        Tue, 5 Dec 2023 22:39:48 -0500
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AF2D44;
+        Tue,  5 Dec 2023 19:39:54 -0800 (PST)
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6d9a1a2fb22so1827987a34.0;
+        Tue, 05 Dec 2023 19:39:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701833994; x=1702438794;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=27O2bZEy3+KAENa38gDF53q97pnYbs0pdHxflIPcivY=;
+        b=ahDm9Ri6+2YPjIRhEi1NZjpE3PxWHwkURHGocDi5tcwDS/6c2m7ukYWxTQtekM6yL5
+         IO81dGtIuBvKBb3xW8cHa984MfKHEXz0FTJKCKoD3HFFXmzDyhUxXsb/YGeZE9awrbSf
+         yQuzK5Xu8vs+XIItY/ToUhbstjlbVgbo1Ta52gsGS4fZHu4nzkyas9ju4JPClFfogA0/
+         1seGof0vmVTbxvqUBAHpYDuKwNTNBhIuXu1BRD3ajmVgIvG4z+JJTo3DdG02M59MLvEg
+         PMb6S73YV+Ygk+w4me7bHt6M2RXRk8RBGnyaggwxX7MS4FOEbktTLsvoPhSdHc8BlsOA
+         gOXw==
+X-Gm-Message-State: AOJu0Yy4m42a+pR2UBaYCZDDe+Y7LzCwuvlbd1mW5w4zXmZekbgRN+yX
+        mXRLtdB+/37POAVsqfaoxA==
+X-Google-Smtp-Source: AGHT+IFZmK9knTyK6Z7myA7wKKOiYLq1oWKaL2xsWe/rjiSvG5jsqRqMq+F3g+GgI8/d743m1gQK6g==
+X-Received: by 2002:a05:6870:8086:b0:1fb:75a:c425 with SMTP id q6-20020a056870808600b001fb075ac425mr215974oab.78.1701833993921;
+        Tue, 05 Dec 2023 19:39:53 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id ds52-20020a0568705b3400b001fae2d2630dsm3272321oab.18.2023.12.05.19.39.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 19:39:53 -0800 (PST)
+Received: (nullmailer pid 463137 invoked by uid 1000);
+        Wed, 06 Dec 2023 03:39:36 -0000
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130231650.22410-1-simon@holesch.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Qingfang Deng <dqfext@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Couzens <lynxis@fe80.eu>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        John Crispin <john@phrozen.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-kernel@vger.kernel.org, Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-mediatek@lists.infradead.org,
+        Paolo Abeni <pabeni@redhat.com>, linux-phy@lists.infradead.org,
+        Vinod Koul <vkoul@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+In-Reply-To: <14c3eb3022fac2af105950eb161990ecfb17c016.1701826319.git.daniel@makrotopia.org>
+References: <cover.1701826319.git.daniel@makrotopia.org>
+ <14c3eb3022fac2af105950eb161990ecfb17c016.1701826319.git.daniel@makrotopia.org>
+Message-Id: <170183397366.463026.10686567364320956476.robh@kernel.org>
+Subject: Re: [RFC PATCH v2 4/8] dt-bindings: net: pcs: add bindings for
+ MediaTek USXGMII PCS
+Date:   Tue, 05 Dec 2023 21:39:36 -0600
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 12:10:13AM +0100, Simon Holesch wrote:
-> Skip submitting URBs, when identical requests were already sent in
-> tweak_special_requests(). Instead call the completion handler directly
-> to return the result of the URB.
+
+On Wed, 06 Dec 2023 01:44:27 +0000, Daniel Golle wrote:
+> MediaTek's USXGMII can be found in the MT7988 SoC. We need to access
+> it in order to configure and monitor the Ethernet SerDes link in
+> USXGMII, 10GBase-R and 5GBase-R mode. By including a wrapped
+> legacy 1000Base-X/2500Base-X/Cisco SGMII LynxI PCS as well, those
+> interface modes are also available.
 > 
-> Even though submitting those requests twice should be harmless, there
-> are USB devices that react poorly to some duplicated requests.
-> 
-> One example is the ChipIdea controller implementation in U-Boot: The
-> second SET_CONFIURATION request makes U-Boot disable and re-enable all
-> endpoints. Re-enabling an endpoint in the ChipIdea controller, however,
-> was broken until U-Boot commit b272c8792502 ("usb: ci: Fix gadget
-> reinit").
-> 
-> Signed-off-by: Simon Holesch <simon@holesch.de>
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 > ---
+>  .../bindings/net/pcs/mediatek,usxgmii.yaml    | 100 ++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/pcs/mediatek,usxgmii.yaml
 > 
-> Changes in v3:
-> - handle errors in tweak_* routines: send URB if tweaking fails
-> 
-> Changes in v2:
-> - explain change in commit message
-> 
-> Thanks again for the feedback!
-> 
->  drivers/usb/usbip/stub_rx.c | 73 +++++++++++++++++++++++--------------
->  1 file changed, 46 insertions(+), 27 deletions(-)
-> 
-> diff --git a/drivers/usb/usbip/stub_rx.c b/drivers/usb/usbip/stub_rx.c
-> index fc01b31bbb87..76a6f46b8676 100644
-> --- a/drivers/usb/usbip/stub_rx.c
-> +++ b/drivers/usb/usbip/stub_rx.c
-> @@ -144,53 +144,62 @@ static int tweak_set_configuration_cmd(struct urb *urb)
->  	if (err && err != -ENODEV)
->  		dev_err(&sdev->udev->dev, "can't set config #%d, error %d\n",
->  			config, err);
-> -	return 0;
-> +	return err;
->  }
->  
->  static int tweak_reset_device_cmd(struct urb *urb)
->  {
->  	struct stub_priv *priv = (struct stub_priv *) urb->context;
->  	struct stub_device *sdev = priv->sdev;
-> +	int err;
->  
->  	dev_info(&urb->dev->dev, "usb_queue_reset_device\n");
->  
-> -	if (usb_lock_device_for_reset(sdev->udev, NULL) < 0) {
-> +	err = usb_lock_device_for_reset(sdev->udev, NULL)
 
-You didn't actually build this change, so how was it tested?
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-{sigh}
+yamllint warnings/errors:
 
-greg k-h
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/net/pcs/mediatek,usxgmii.example.dts:18:18: fatal error: dt-bindings/clock/mediatek,mt7988-clk.h: No such file or directory
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/net/pcs/mediatek,usxgmii.example.dtb] Error 1
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/14c3eb3022fac2af105950eb161990ecfb17c016.1701826319.git.daniel@makrotopia.org
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
