@@ -2,380 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CACD806A4E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6193806A55
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346701AbjLFJF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:05:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53616 "EHLO
+        id S1346688AbjLFJGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:06:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346664AbjLFJFz (ORCPT
+        with ESMTP id S1346664AbjLFJGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:05:55 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951E8D6F;
-        Wed,  6 Dec 2023 01:06:00 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1d0c4d84bf6so12177675ad.1;
-        Wed, 06 Dec 2023 01:06:00 -0800 (PST)
+        Wed, 6 Dec 2023 04:06:51 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92115D59
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:06:57 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5c66b093b86so523753a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 01:06:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701853560; x=1702458360; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=b2GGM7bFYDaqOGYAduet1T5T8Hq7xfXB9hdrnTRRI+g=;
-        b=D1ztODoNlmQ8z2SKbAcMumGRYqolHYwt6rkwD/Hzj+kSPAKXdnTCMtNLzhQEGVUoFU
-         Jjt4kB8+DF6NHo3s95AXysLSqm3txd2wBdtnai81XaCORotTE9CFRXYyBJ593HD6jGqv
-         Rln58z4Cg21bXIOJZlTvH52ZAa/KEuZ7yOdY8IgS/TYLkXxOkfii+o4ki735d4WhdAFa
-         sVMmB0msQ8blv0hvDxChcUPU1zy+Z/nMrPv6Vu20bxZmlh6AySL8RABTeG9eXS8Xqhr7
-         nxz/gwmk6izvLkbDtlx9mw8IyU/sRL2f1n0fnPwgblPCwQg5Tj2MGyBRZ5Q73z59+8yh
-         KJPQ==
+        d=friendlyarm-com.20230601.gappssmtp.com; s=20230601; t=1701853617; x=1702458417; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vkgnInx34MsdRC00k2I9y+o/ne93gzAEsHKwXhaX8A0=;
+        b=QimAQ8iyaUOdup2m6AGC1hbBh5vYSjA0MUj+FwRsUAo7Qp4bNh1lLzCyd72ukcNTgm
+         pQPCqe7zk9g/1fUO4fqJao6w+GZrS5EulUhZXiz8gH0DJyfzW/EUqsI4jCgBkvkEHO/n
+         9s5bKGBplbohpkBfWUZXre7w0wQNUINV4+WDDVqIiedS6Q1vflO/gRj97Pk56dEOQ4zh
+         71b4cUyUO11HZlmj691nXXWmCjDkwZ9hFhqWuJyGkWegcW6IHMm8zG4b6bPB0dqZvDAP
+         Syx0D3KhmOxBlfYUI/EuZdgrcm19iLhqXXvK0Hpx0bY+rCc4SgFUiCGFVu7mgSiUWQmP
+         JpwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701853560; x=1702458360;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b2GGM7bFYDaqOGYAduet1T5T8Hq7xfXB9hdrnTRRI+g=;
-        b=SQGx5OBr4Nb3NV/w+bp3FsceN8wmfoMCvuEPlwKN1/ttsRL6WLG4vA4SjICIU297RV
-         aydGRIKauj75+eVqtRltd839GmWIozkF8JMgv1xvjl3g4jcjQhkgC1Cu2W6aJlk6iM3/
-         97n5TP+rgMdMtJkytFzL83UQG7vZPziLo5tzt+oOs+NHeVSIrpngpCmB3Kf5sEf1qakG
-         0R09y+9QDTVi1gwyCqYg7Ur7AzRHqVPGPKIm175pfZWEaMuIJrjrzI5E/vxLOCaOiBlH
-         beHrNVlKDU0B36Y7RLJNt2uQC9ey3nVKE5c5eS1zTwH32ytmmTyjEScv7iAFAVd+BjsX
-         iWIw==
-X-Gm-Message-State: AOJu0YwERtPg5gO2t1Rx51ytQu41bkYxvZVfAtLdvGrrTaZW15R8WIiy
-        uL3Z8CbxE16mqtaqfFgjAdo=
-X-Google-Smtp-Source: AGHT+IGlm0cH3TcZXGOz3igm65NbMoGXdSSMbu1dGUW4XgsvgeSILUX2r8JpcMUhu/z4L0agyq4hfw==
-X-Received: by 2002:a17:902:c411:b0:1d0:6ffd:f1f8 with SMTP id k17-20020a170902c41100b001d06ffdf1f8mr465248plk.78.1701853559768;
-        Wed, 06 Dec 2023 01:05:59 -0800 (PST)
-Received: from localhost.localdomain ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id j20-20020a170902759400b001c74df14e6fsm11559003pll.284.2023.12.06.01.05.54
+        d=1e100.net; s=20230601; t=1701853617; x=1702458417;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vkgnInx34MsdRC00k2I9y+o/ne93gzAEsHKwXhaX8A0=;
+        b=YvD9WqZpyjJcOFYOvSQemTNJPjipvvjZHWrvbqRVv6DMjVwsWVL/dfR9wEinGhiZmu
+         U9W0R26eJSYLlvMYjbDertVdlYtPCeBprFQXMEHff0YMILipEux9a68KU6pNx9ORr5f0
+         XHPs50rLQDECACBfHS/EQy4H9a5qPlzFk91uyoq/3mwn0BlyY6vz9gaavOPya8GoCMHX
+         j8Ex9JUhZoNDgJP3UN30DJ5aVw5nZDiubNuo4eR4ok0xr3whaQleFJL6EPXfk0PdOYHt
+         R+A1BDGAhDHzJdw8uqqA6Wj488N7A88OuqDRF/YZsli+rvXwCOTwG7vYRp/0nrNOrdcC
+         EoWQ==
+X-Gm-Message-State: AOJu0YzJkY8l5xr60e4C8SahqVxge4RXf3cOeVMleKHoqgKt1I7P5kfm
+        A2fm6/AFWwM7ZiS+NpurcZ++iA==
+X-Google-Smtp-Source: AGHT+IHrGxsDqoubS9LhJ6U+qoCk+pQ/zFRwTborkh3P26N1W35bYry7lNZkS91ue9idDeKXGjDzeQ==
+X-Received: by 2002:a17:90b:1b46:b0:286:c155:10e0 with SMTP id nv6-20020a17090b1b4600b00286c15510e0mr827953pjb.31.1701853616973;
+        Wed, 06 Dec 2023 01:06:56 -0800 (PST)
+Received: from jensen.next (li999-236.members.linode.com. [45.33.49.236])
+        by smtp.gmail.com with ESMTPSA id mi7-20020a17090b4b4700b00286a708cd07sm4967797pjb.57.2023.12.06.01.06.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 01:05:58 -0800 (PST)
-Date:   Wed, 6 Dec 2023 18:05:38 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 07/21] mm/slab: remove CONFIG_SLAB code from slab
- common code
-Message-ID: <ZXA5YqZGAfNUQiIC@localhost.localdomain>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-7-9c9c70177183@suse.cz>
+        Wed, 06 Dec 2023 01:06:56 -0800 (PST)
+From:   Jensen Huang <jensenhuang@friendlyarm.com>
+To:     Heiko Stuebner <heiko@sntech.de>,
+        Andi Shyti <andi.shyti@kernel.org>
+Cc:     Jensen Huang <jensenhuang@friendlyarm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] i2c: rk3x: fix potential spinlock recursion on poll
+Date:   Wed,  6 Dec 2023 17:06:40 +0800
+Message-ID: <20231206090641.18849-1-jensenhuang@friendlyarm.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120-slab-remove-slab-v2-7-9c9c70177183@suse.cz>
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 07:34:18PM +0100, Vlastimil Babka wrote:
-> In slab_common.c and slab.h headers, we can now remove all code behind
-> CONFIG_SLAB and CONFIG_DEBUG_SLAB ifdefs, and remove all CONFIG_SLUB
-> ifdefs.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  include/linux/slab.h | 14 ++---------
->  mm/slab.h            | 69 ++++------------------------------------------------
->  mm/slab_common.c     | 22 ++---------------
->  3 files changed, 9 insertions(+), 96 deletions(-)
-> 
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index 34e43cddc520..b2015d0e01ad 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -24,7 +24,7 @@
->  
->  /*
->   * Flags to pass to kmem_cache_create().
-> - * The ones marked DEBUG are only valid if CONFIG_DEBUG_SLAB is set.
-> + * The ones marked DEBUG need CONFIG_SLUB_DEBUG enabled, otherwise are no-op
->   */
->  /* DEBUG: Perform (expensive) checks on alloc/free */
->  #define SLAB_CONSISTENCY_CHECKS	((slab_flags_t __force)0x00000100U)
-> @@ -302,25 +302,15 @@ static inline unsigned int arch_slab_minalign(void)
->   * Kmalloc array related definitions
->   */
->  
-> -#ifdef CONFIG_SLAB
->  /*
-> - * SLAB and SLUB directly allocates requests fitting in to an order-1 page
-> + * SLUB directly allocates requests fitting in to an order-1 page
->   * (PAGE_SIZE*2).  Larger requests are passed to the page allocator.
->   */
->  #define KMALLOC_SHIFT_HIGH	(PAGE_SHIFT + 1)
->  #define KMALLOC_SHIFT_MAX	(MAX_ORDER + PAGE_SHIFT)
->  #ifndef KMALLOC_SHIFT_LOW
-> -#define KMALLOC_SHIFT_LOW	5
-> -#endif
-> -#endif
-> -
-> -#ifdef CONFIG_SLUB
-> -#define KMALLOC_SHIFT_HIGH	(PAGE_SHIFT + 1)
-> -#define KMALLOC_SHIFT_MAX	(MAX_ORDER + PAGE_SHIFT)
-> -#ifndef KMALLOC_SHIFT_LOW
->  #define KMALLOC_SHIFT_LOW	3
->  #endif
-> -#endif
->  
->  /* Maximum allocatable size */
->  #define KMALLOC_MAX_SIZE	(1UL << KMALLOC_SHIFT_MAX)
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 3d07fb428393..014c36ea51fa 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -42,21 +42,6 @@ typedef union {
->  struct slab {
->  	unsigned long __page_flags;
->  
-> -#if defined(CONFIG_SLAB)
-> -
-> -	struct kmem_cache *slab_cache;
-> -	union {
-> -		struct {
-> -			struct list_head slab_list;
-> -			void *freelist;	/* array of free object indexes */
-> -			void *s_mem;	/* first object */
-> -		};
-> -		struct rcu_head rcu_head;
-> -	};
-> -	unsigned int active;
-> -
-> -#elif defined(CONFIG_SLUB)
-> -
->  	struct kmem_cache *slab_cache;
->  	union {
->  		struct {
-> @@ -91,10 +76,6 @@ struct slab {
->  	};
->  	unsigned int __unused;
->  
-> -#else
-> -#error "Unexpected slab allocator configured"
-> -#endif
-> -
->  	atomic_t __page_refcount;
->  #ifdef CONFIG_MEMCG
->  	unsigned long memcg_data;
-> @@ -111,7 +92,7 @@ SLAB_MATCH(memcg_data, memcg_data);
->  #endif
->  #undef SLAB_MATCH
->  static_assert(sizeof(struct slab) <= sizeof(struct page));
-> -#if defined(system_has_freelist_aba) && defined(CONFIG_SLUB)
-> +#if defined(system_has_freelist_aba)
->  static_assert(IS_ALIGNED(offsetof(struct slab, freelist), sizeof(freelist_aba_t)));
->  #endif
->  
-> @@ -228,13 +209,7 @@ static inline size_t slab_size(const struct slab *slab)
->  	return PAGE_SIZE << slab_order(slab);
->  }
->  
-> -#ifdef CONFIG_SLAB
-> -#include <linux/slab_def.h>
-> -#endif
-> -
-> -#ifdef CONFIG_SLUB
->  #include <linux/slub_def.h>
-> -#endif
->  
->  #include <linux/memcontrol.h>
->  #include <linux/fault-inject.h>
-> @@ -320,26 +295,16 @@ static inline bool is_kmalloc_cache(struct kmem_cache *s)
->  			 SLAB_CACHE_DMA32 | SLAB_PANIC | \
->  			 SLAB_TYPESAFE_BY_RCU | SLAB_DEBUG_OBJECTS )
->  
-> -#if defined(CONFIG_DEBUG_SLAB)
-> -#define SLAB_DEBUG_FLAGS (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER)
-> -#elif defined(CONFIG_SLUB_DEBUG)
-> +#ifdef CONFIG_SLUB_DEBUG
->  #define SLAB_DEBUG_FLAGS (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER | \
->  			  SLAB_TRACE | SLAB_CONSISTENCY_CHECKS)
->  #else
->  #define SLAB_DEBUG_FLAGS (0)
->  #endif
->  
-> -#if defined(CONFIG_SLAB)
-> -#define SLAB_CACHE_FLAGS (SLAB_MEM_SPREAD | SLAB_NOLEAKTRACE | \
-> -			  SLAB_RECLAIM_ACCOUNT | SLAB_TEMPORARY | \
-> -			  SLAB_ACCOUNT | SLAB_NO_MERGE)
-> -#elif defined(CONFIG_SLUB)
->  #define SLAB_CACHE_FLAGS (SLAB_NOLEAKTRACE | SLAB_RECLAIM_ACCOUNT | \
->  			  SLAB_TEMPORARY | SLAB_ACCOUNT | \
->  			  SLAB_NO_USER_FLAGS | SLAB_KMALLOC | SLAB_NO_MERGE)
-> -#else
-> -#define SLAB_CACHE_FLAGS (SLAB_NOLEAKTRACE)
-> -#endif
->  
->  /* Common flags available with current configuration */
->  #define CACHE_CREATE_MASK (SLAB_CORE_FLAGS | SLAB_DEBUG_FLAGS | SLAB_CACHE_FLAGS)
-> @@ -672,18 +637,14 @@ size_t __ksize(const void *objp);
->  
->  static inline size_t slab_ksize(const struct kmem_cache *s)
->  {
-> -#ifndef CONFIG_SLUB
-> -	return s->object_size;
-> -
-> -#else /* CONFIG_SLUB */
-> -# ifdef CONFIG_SLUB_DEBUG
-> +#ifdef CONFIG_SLUB_DEBUG
->  	/*
->  	 * Debugging requires use of the padding between object
->  	 * and whatever may come after it.
->  	 */
->  	if (s->flags & (SLAB_RED_ZONE | SLAB_POISON))
->  		return s->object_size;
-> -# endif
-> +#endif
->  	if (s->flags & SLAB_KASAN)
->  		return s->object_size;
->  	/*
-> @@ -697,7 +658,6 @@ static inline size_t slab_ksize(const struct kmem_cache *s)
->  	 * Else we can use all the padding etc for the allocation
->  	 */
->  	return s->size;
-> -#endif
->  }
->  
->  static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
-> @@ -775,23 +735,6 @@ static inline void slab_post_alloc_hook(struct kmem_cache *s,
->   * The slab lists for all objects.
->   */
->  struct kmem_cache_node {
-> -#ifdef CONFIG_SLAB
-> -	raw_spinlock_t list_lock;
-> -	struct list_head slabs_partial;	/* partial list first, better asm code */
-> -	struct list_head slabs_full;
-> -	struct list_head slabs_free;
-> -	unsigned long total_slabs;	/* length of all slab lists */
-> -	unsigned long free_slabs;	/* length of free slab list only */
-> -	unsigned long free_objects;
-> -	unsigned int free_limit;
-> -	unsigned int colour_next;	/* Per-node cache coloring */
-> -	struct array_cache *shared;	/* shared per node */
-> -	struct alien_cache **alien;	/* on other nodes */
-> -	unsigned long next_reap;	/* updated without locking */
-> -	int free_touched;		/* updated without locking */
-> -#endif
-> -
-> -#ifdef CONFIG_SLUB
->  	spinlock_t list_lock;
->  	unsigned long nr_partial;
->  	struct list_head partial;
-> @@ -800,8 +743,6 @@ struct kmem_cache_node {
->  	atomic_long_t total_objects;
->  	struct list_head full;
->  #endif
-> -#endif
-> -
->  };
->  
->  static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int node)
-> @@ -818,7 +759,7 @@ static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int node)
->  		 if ((__n = get_node(__s, __node)))
->  
->  
-> -#if defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG)
-> +#ifdef CONFIG_SLUB_DEBUG
->  void dump_unreclaimable_slab(void);
->  #else
->  static inline void dump_unreclaimable_slab(void)
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 8d431193c273..63b8411db7ce 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -71,10 +71,8 @@ static int __init setup_slab_merge(char *str)
->  	return 1;
->  }
->  
-> -#ifdef CONFIG_SLUB
->  __setup_param("slub_nomerge", slub_nomerge, setup_slab_nomerge, 0);
->  __setup_param("slub_merge", slub_merge, setup_slab_merge, 0);
-> -#endif
->  
->  __setup("slab_nomerge", setup_slab_nomerge);
->  __setup("slab_merge", setup_slab_merge);
-> @@ -197,10 +195,6 @@ struct kmem_cache *find_mergeable(unsigned int size, unsigned int align,
->  		if (s->size - size >= sizeof(void *))
->  			continue;
->  
-> -		if (IS_ENABLED(CONFIG_SLAB) && align &&
-> -			(align > s->align || s->align % align))
-> -			continue;
-> -
->  		return s;
->  	}
->  	return NULL;
-> @@ -1222,12 +1216,8 @@ void cache_random_seq_destroy(struct kmem_cache *cachep)
->  }
->  #endif /* CONFIG_SLAB_FREELIST_RANDOM */
->  
-> -#if defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG)
-> -#ifdef CONFIG_SLAB
-> -#define SLABINFO_RIGHTS (0600)
-> -#else
-> +#ifdef CONFIG_SLUB_DEBUG
->  #define SLABINFO_RIGHTS (0400)
-> -#endif
->  
->  static void print_slabinfo_header(struct seq_file *m)
->  {
-> @@ -1235,18 +1225,10 @@ static void print_slabinfo_header(struct seq_file *m)
->  	 * Output format version, so at least we can change it
->  	 * without _too_ many complaints.
->  	 */
-> -#ifdef CONFIG_DEBUG_SLAB
-> -	seq_puts(m, "slabinfo - version: 2.1 (statistics)\n");
-> -#else
->  	seq_puts(m, "slabinfo - version: 2.1\n");
-> -#endif
->  	seq_puts(m, "# name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab>");
->  	seq_puts(m, " : tunables <limit> <batchcount> <sharedfactor>");
->  	seq_puts(m, " : slabdata <active_slabs> <num_slabs> <sharedavail>");
-> -#ifdef CONFIG_DEBUG_SLAB
-> -	seq_puts(m, " : globalstat <listallocs> <maxobjs> <grown> <reaped> <error> <maxfreeable> <nodeallocs> <remotefrees> <alienoverflow>");
-> -	seq_puts(m, " : cpustat <allochit> <allocmiss> <freehit> <freemiss>");
-> -#endif
->  	seq_putc(m, '\n');
->  }
->  
-> @@ -1370,7 +1352,7 @@ static int __init slab_proc_init(void)
->  }
->  module_init(slab_proc_init);
->  
-> -#endif /* CONFIG_SLAB || CONFIG_SLUB_DEBUG */
-> +#endif /* CONFIG_SLUB_DEBUG */
->  
->  static __always_inline __realloc_size(2) void *
->  __do_krealloc(const void *p, size_t new_size, gfp_t flags)
-> 
-> -- 
+Possible deadlock scenario (on reboot):
+rk3x_i2c_xfer_common(polling)
+    -> rk3x_i2c_wait_xfer_poll()
+        -> rk3x_i2c_irq(0, i2c);
+            --> spin_lock(&i2c->lock);
+            ...
+        <rk3x i2c interrupt>
+        -> rk3x_i2c_irq(0, i2c);
+            --> spin_lock(&i2c->lock); (deadlock here)
 
-Looks good to me,
-Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Store the IRQ number and disable/enable it around the polling transfer.
+This patch has been tested on NanoPC-T4.
 
-> 2.42.1
-> 
-> 
+Signed-off-by: Jensen Huang <jensenhuang@friendlyarm.com>
+---
+ drivers/i2c/busses/i2c-rk3x.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
+index a044ca0c35a1..94514637c3bd 100644
+--- a/drivers/i2c/busses/i2c-rk3x.c
++++ b/drivers/i2c/busses/i2c-rk3x.c
+@@ -200,6 +200,7 @@ struct rk3x_i2c {
+ 	struct clk *clk;
+ 	struct clk *pclk;
+ 	struct notifier_block clk_rate_nb;
++	int irq;
+ 
+ 	/* Settings */
+ 	struct i2c_timings t;
+@@ -1087,13 +1088,18 @@ static int rk3x_i2c_xfer_common(struct i2c_adapter *adap,
+ 
+ 		spin_unlock_irqrestore(&i2c->lock, flags);
+ 
+-		rk3x_i2c_start(i2c);
+-
+ 		if (!polling) {
++			rk3x_i2c_start(i2c);
++
+ 			timeout = wait_event_timeout(i2c->wait, !i2c->busy,
+ 						     msecs_to_jiffies(WAIT_TIMEOUT));
+ 		} else {
++			disable_irq(i2c->irq);
++			rk3x_i2c_start(i2c);
++
+ 			timeout = rk3x_i2c_wait_xfer_poll(i2c);
++
++			enable_irq(i2c->irq);
+ 		}
+ 
+ 		spin_lock_irqsave(&i2c->lock, flags);
+@@ -1310,6 +1316,8 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	i2c->irq = irq;
++
+ 	platform_set_drvdata(pdev, i2c);
+ 
+ 	if (i2c->soc_data->calc_timings == rk3x_i2c_v0_calc_timings) {
+-- 
+2.42.0
+
