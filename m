@@ -2,108 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E616F807923
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5108807924
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442855AbjLFUIC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 15:08:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54724 "EHLO
+        id S1442864AbjLFUIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 15:08:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379461AbjLFUIB (ORCPT
+        with ESMTP id S1442860AbjLFUIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 15:08:01 -0500
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB9618D;
-        Wed,  6 Dec 2023 12:08:06 -0800 (PST)
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1fb2b83986cso37931fac.0;
-        Wed, 06 Dec 2023 12:08:06 -0800 (PST)
+        Wed, 6 Dec 2023 15:08:23 -0500
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2980D1
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 12:08:29 -0800 (PST)
+Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-4b2ceee07e5so133053e0c.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 12:08:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701893309; x=1702498109; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7SfYIeu14tCXK8E3Za44CV4qWg51U2kdyUz3RWXxawQ=;
+        b=TnR8Raftn7XyzgSznlyjRGG2t1Lv9T1bn7qoc7IX45haNbWMMa1ZxOjrWY1Wq0rrTV
+         rPV4B32ZMbt2+j4R4zk55CZcA+7+Zp87rrmX7lXJoySn1bdJjPuCv1d9nSE7s4ge26pY
+         1M+ApPm4V0n32mSLl1p7J7X98a+UBR+ibar8374/KH7sVZoXy80eYSwoRMIqY4CEr6i0
+         r3OlJRYYz/LO5Di8t9myuSbOS6k7Oie/AEEh3NsT3LLaWaYFyvy8DkO9ZyF+Ytj97O22
+         UQORcvzXUsnhVz6zLhd6bRm6LVPG/0JBbg816TQ7p+HZftGuUKZ3f7ZAmrt7rzY1xTwL
+         2RtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701893285; x=1702498085;
+        d=1e100.net; s=20230601; t=1701893309; x=1702498109;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LOU+dMGimpnkd9aD0uyRbkl6NBIKgBfPHss6q3A/RKc=;
-        b=hv5tTc8n6ucb6RG4DB2/frEaAJ1cwMRJMgcP3EehSlg42X1N3nFWw2RHC+3D2zzLsh
-         W5rrTuBWabs+LBAnL7fH8TVBcuztZFF3Be3wCCyyk5Y8rv6N9Mcv5IDT6vZTEZMn9Kw8
-         q3GhpuAJNW+v28BWxPYdXXt2EpJ0J7W5L8o40K8ks34GF3f2IKXBzZ0MBc9s0cKVlJAx
-         21hvDBhB+YGJyuImsfNtJwnOlTyOTqKVoUXJhKaLM0gdisOJh7gbFMPmoOCs1UGLRHxA
-         +P1wdaN1J1IEqfxHiwOgQvzEVuRvQXrbatkSIktglg5ZGdir1hiHPKolhQP2oT9Vxfgz
-         8UHw==
-X-Gm-Message-State: AOJu0Yw3lOXP/5qII0L39CXJtkovoDoJEhOMIB80ubgjl3ORNot7/sgh
-        46kGo0t8NZGMC8ZgzHDsSIxP7ZnzeyEwGiVDK7A=
-X-Google-Smtp-Source: AGHT+IHpuR7c+DdGHDSzgiRkNb8ETV+06EtkYa3tgv53h1rm7QnyhmlcCPKUIrI2YiFz3Oge8UaTAjhdeZj35DrMoQo=
-X-Received: by 2002:a05:6870:2112:b0:1fb:25fb:fabc with SMTP id
- f18-20020a056870211200b001fb25fbfabcmr2701649oae.5.1701893285575; Wed, 06 Dec
- 2023 12:08:05 -0800 (PST)
+        bh=7SfYIeu14tCXK8E3Za44CV4qWg51U2kdyUz3RWXxawQ=;
+        b=A3dGKsUITosXmkQNh9Hc9OzTtCmbcg2kiOh/Iy9vAK4w8ZKzIeQtzefVYnHzcwSFdC
+         XEoO18DQTG2X5FHHPjiJyAQy5LwBNqbAPUiuijKT0AA73rwYTlclCgVDlO5FqNxL08AD
+         J5aiVo81T4zSzJbytbLvKiJquB6w/KVzBHBpTl2KUDfuzS19gH+OJZgwKzRLv0T0A9QD
+         HJLUsY0zTez1zEeJYd2xwOGtanyHVrZ87JJY19FJYF9f0uXfFyRzZzig+xpmwuoPgemO
+         U4YvIQONK+ewUpLOxd20hJf6exhAkGXyfFpa8TAYOqW2xh8i5hlyOq9j6vU35I2rSvfM
+         xrfQ==
+X-Gm-Message-State: AOJu0YwS3IQjsZ2X2kX6yw/5M2/s0vcNpLH9gBIljjNYemJ5b9STbOoB
+        GSvWOAYDvxF5L174gR4TWxW3FCs0dRSjKZDDH9M=
+X-Google-Smtp-Source: AGHT+IHe02MEVz7Be6DdmFr7DSfmJUUxAP+wHlwxCJjgnIhbuyrHJbmYVUuhbD47v/gkgt0DmytXtO6YnhoqGZepol4=
+X-Received: by 2002:a1f:ecc4:0:b0:4b2:c554:cd05 with SMTP id
+ k187-20020a1fecc4000000b004b2c554cd05mr1332842vkh.17.1701893308918; Wed, 06
+ Dec 2023 12:08:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20231129081355.32317-1-liuhaoran14@163.com>
-In-Reply-To: <20231129081355.32317-1-liuhaoran14@163.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Dec 2023 21:07:54 +0100
-Message-ID: <CAJZ5v0jbhiGgw-vyGyQCTJe0bL67-c1d_qggkZC-vqnA8UsrbA@mail.gmail.com>
-Subject: Re: [PATCH] [ACPI] fan_core: Add error handling for acpi_driver_data
-To:     Haoran Liu <liuhaoran14@163.com>
-Cc:     rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org,
+References: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com>
+In-Reply-To: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Wed, 6 Dec 2023 12:08:17 -0800
+Message-ID: <CAKEwX=OqMK881u3kPB99KX_9UWreddz-cUT5ArzdwpHwQjQ6yA@mail.gmail.com>
+Subject: Re: [PATCH 0/7] mm/zswap: optimize the scalability of zswap rb-tree
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     Vitaly Wool <vitaly.wool@konsulko.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 9:14 AM Haoran Liu <liuhaoran14@163.com> wrote:
+On Wed, Dec 6, 2023 at 1:46=E2=80=AFAM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
+> When testing the zswap performance by using kernel build -j32 in a tmpfs
+> directory, I found the scalability of zswap rb-tree is not good, which
+> is protected by the only spinlock. That would cause heavy lock contention
+> if multiple tasks zswap_store/load concurrently.
 >
-> This patch introduces error handling for the acpi_driver_data call
-> in function acpi_fan_get_fif and acpi_fan_get_fps, within
-> drivers/acpi/fan_core.c. Previously, there was no check for a null
-> return from acpi_driver_data, which could lead to potential
-> instability in scenarios where acpi_driver_data fails.
+> So a simple solution is to split the only one zswap rb-tree into multiple
+> rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M). This idea i=
+s
+> from the commit 4b3ef9daa4fc ("mm/swap: split swap cache into 64MB trunks=
+").
+>
+> Although this method can't solve the spinlock contention completely, it
+> can mitigate much of that contention.
 
-This needs to explain why/how it is possible for acpi_driver_data() to
-return NULL in the 2 places modified by the patch.
+By how much? Do you have any stats to estimate the amount of
+contention and the reduction by this patch?
 
-> Signed-off-by: Haoran Liu <liuhaoran14@163.com>
-> ---
->  drivers/acpi/fan_core.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+I do think lock contention could be a problem here, and it will be
+even worse with the zswap shrinker enabled (which introduces an
+theoretically unbounded number of concurrent reclaimers hammering on
+the zswap rbtree and its lock). I am generally a bit weary about
+architectural change though, especially if it is just a bandaid. We
+have tried to reduce the lock contention somewhere else (multiple
+zpools), and as predicted it just shifts the contention point
+elsewhere. Maybe we need a deeper architectural re-think.
+
+Not an outright NACK of course - just food for thought.
+
 >
-> diff --git a/drivers/acpi/fan_core.c b/drivers/acpi/fan_core.c
-> index 9dccbae9e8ea..f3228fb9c90f 100644
-> --- a/drivers/acpi/fan_core.c
-> +++ b/drivers/acpi/fan_core.c
-> @@ -215,6 +215,13 @@ static int acpi_fan_get_fif(struct acpi_device *device)
->  {
->         struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
->         struct acpi_fan *fan = acpi_driver_data(device);
-> +
-> +       if (!fan) {
-> +               dev_err(&device->dev, "No ACPI fan data associated "
-> +                       "with the device\n");
-> +               return -EINVAL;
-> +       }
-> +
->         struct acpi_buffer format = { sizeof("NNNN"), "NNNN" };
->         u64 fields[4];
->         struct acpi_buffer fif = { sizeof(fields), fields };
-> @@ -265,6 +272,12 @@ static int acpi_fan_speed_cmp(const void *a, const void *b)
->  static int acpi_fan_get_fps(struct acpi_device *device)
->  {
->         struct acpi_fan *fan = acpi_driver_data(device);
-> +
-> +       if (!fan) {
-> +               dev_err(&device->dev, "Failed to retrieve ACPI fan data\n");
-> +               return -ENODEV;
-> +       }
-> +
->         struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
->         union acpi_object *obj;
->         acpi_status status;
-> --
-> 2.17.1
+> Another problem when testing the zswap using our default zsmalloc is that
+> zswap_load() and zswap_writeback_entry() have to malloc a temporary memor=
+y
+> to support !zpool_can_sleep_mapped().
 >
+> Optimize it by reusing the percpu crypto_acomp_ctx->dstmem, which is also
+> used by zswap_store() and protected by the same percpu crypto_acomp_ctx->=
+mutex.
+
+It'd be nice to reduce the (temporary) memory allocation on these
+paths, but would this introduce contention on the per-cpu dstmem and
+the mutex that protects it, if there are too many concurrent
+store/load/writeback requests?
