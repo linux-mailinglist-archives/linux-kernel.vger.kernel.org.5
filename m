@@ -2,93 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A4E80657E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 04:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABA880654E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbjLFDOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 22:14:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39224 "EHLO
+        id S229937AbjLFC5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 21:57:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLFDOT (ORCPT
+        with ESMTP id S229493AbjLFC53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 22:14:19 -0500
-X-Greylist: delayed 919 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Dec 2023 19:14:24 PST
-Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B14BB1B9;
-        Tue,  5 Dec 2023 19:14:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=4cyJT
-        NE05UvgghucLXLFvRY9ulNptDOc09IkUZJomN4=; b=Xig0qw2GzP1Hr3qbz6AxU
-        YHdUgtYuPTvKNcfZxHpKzraLPPlHZY/AD1V+Swhy0JYSymTUSwuK6pGwSFehm5Ph
-        SZ6hedVyzO1F3LU46GfOhOGT4NPEPxSsQ/DyhLeiSlvewxn4z+xTjxAip2rV22/j
-        rCdEU5+W7t83TvYoQqdIUg=
-Received: from fedora.. (unknown [123.52.27.102])
-        by zwqz-smtp-mta-g3-1 (Coremail) with SMTP id _____wA33z3I4m9lB271DQ--.6743S2;
-        Wed, 06 Dec 2023 10:56:08 +0800 (CST)
-From:   Zhao Mengmeng <zhaomzhao@126.com>
-To:     jarkko@kernel.org, dave.hansen@linux.intel.com, shuah@kernel.org,
-        jethro@fortanix.com, bp@suse.de
-Cc:     linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhao Mengmeng <zhaomengmeng@kylinos.cn>
-Subject: [PATCH v1] selftests/sgx: Skip non X86_64 platform
-Date:   Tue,  5 Dec 2023 21:56:05 -0500
-Message-Id: <20231206025605.3965302-1-zhaomzhao@126.com>
-X-Mailer: git-send-email 2.38.1
+        Tue, 5 Dec 2023 21:57:29 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D961A5;
+        Tue,  5 Dec 2023 18:57:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1701831454;
+        bh=Xew00TzhJeX9h8OoFc9MuWr95HLDQ8hDCzCA6kpkblA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tfJoT5UcFg9R+rGCLulA+8B5wHpmvHkdEfDK6zaJ2qIWAd1l1lVWztrvL/299aLOv
+         wMxfh/t7qWjsPR/X1UN/7v/3fS4ORS+i/LASkm+PgkLSBZm+D8b0K6mbFLAmkmYWXn
+         jee/spt99D7Wu8Mpcynd275SdevIJ+WwqzLRy85eAM4l21oKShFTF4AmCsoLxGyV67
+         Mg0MtYHIHKAzTu/1Sx8KAbgmk5f2jZnX8o31Az6jbTsBU0JVYjXq0X09YxugeRxmJE
+         U0bLAQTqhCta+JlYQGyn7udaiCSKaveGBv+yigRJ3vhabGMLj4sKMRLpso3FIoUhgO
+         9YdQNHM5aYzbw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SlMWx498Qz4wd7;
+        Wed,  6 Dec 2023 13:57:33 +1100 (AEDT)
+Date:   Wed, 6 Dec 2023 13:57:32 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <linux@weissschuh.net>
+Subject: linux-next: manual merge of the sysctl tree with the userns tree
+Message-ID: <20231206135732.46d1b2b9@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wA33z3I4m9lB271DQ--.6743S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ZF1rZry8ZrW7AF45ZF13Arb_yoW8XF1Dpa
-        18Jw1qkFyrGF4UZr18urWYqay0yFs3tF4jqr4j934ayr4xJrZ2qFn7tFW8WasrK3yfZ3y3
-        Zw4xGr93Ca4kX37anT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j56pPUUUUU=
-X-Originating-IP: [123.52.27.102]
-X-CM-SenderInfo: 52kd0zp2kd0qqrswhudrp/1tbimgo+d2VLYuSLxAAAs+
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/vnGLMUvy2kcP/dSEqZio71j";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
+--Sig_/vnGLMUvy2kcP/dSEqZio71j
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-When building whole selftests on arm64, rsync gives an erorr about sgx:
+Hi all,
 
-rsync: [sender] link_stat "/root/linux-next/tools/testing/selftests/sgx/test_encl.elf" failed: No such file or directory (2)
-rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1327) [sender=3.2.5]
+Today's linux-next merge of the sysctl tree got a conflict in:
 
-The root casue is sgx only used on X86_64, and shall be skipped on other
-platforms.
+  ipc/ipc_sysctl.c
 
-Fix this by moving TEST_CUSTOM_PROGS and TEST_FILES inside the if check,
-then the build result will be "Skipping non-existent dir: sgx".
+between commit:
 
-Fixes: 2adcba79e69d ("selftests/x86: Add a selftest for SGX")
-Signed-off-by: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
----
- tools/testing/selftests/sgx/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  54e1011bd95a ("sysctl: Allow change system v ipc sysctls inside ipc names=
+pace")
 
-diff --git a/tools/testing/selftests/sgx/Makefile b/tools/testing/selftests/sgx/Makefile
-index 50aab6b57da3..01abe4969b0f 100644
---- a/tools/testing/selftests/sgx/Makefile
-+++ b/tools/testing/selftests/sgx/Makefile
-@@ -16,10 +16,10 @@ HOST_CFLAGS := -Wall -Werror -g $(INCLUDES) -fPIC -z noexecstack
- ENCL_CFLAGS := -Wall -Werror -static -nostdlib -nostartfiles -fPIC \
- 	       -fno-stack-protector -mrdrnd $(INCLUDES)
- 
-+ifeq ($(CAN_BUILD_X86_64), 1)
- TEST_CUSTOM_PROGS := $(OUTPUT)/test_sgx
- TEST_FILES := $(OUTPUT)/test_encl.elf
- 
--ifeq ($(CAN_BUILD_X86_64), 1)
- all: $(TEST_CUSTOM_PROGS) $(OUTPUT)/test_encl.elf
- endif
- 
--- 
-2.38.1
+from the userns tree and commit:
 
+  a6dd7f5a787b ("sysctl: treewide: constify ctl_table_root::permissions")
+
+from the sysctl tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc ipc/ipc_sysctl.c
+index 01c4a50d22b2,d876f96f5992..000000000000
+--- a/ipc/ipc_sysctl.c
++++ b/ipc/ipc_sysctl.c
+@@@ -14,11 -14,10 +14,11 @@@
+  #include <linux/ipc_namespace.h>
+  #include <linux/msg.h>
+  #include <linux/slab.h>
+ +#include <linux/cred.h>
+  #include "util.h"
+ =20
+- static int proc_ipc_dointvec_minmax_orphans(struct ctl_table *table, int =
+write,
+- 		void *buffer, size_t *lenp, loff_t *ppos)
++ static int proc_ipc_dointvec_minmax_orphans(const struct ctl_table *table,
++ 		int write, void *buffer, size_t *lenp, loff_t *ppos)
+  {
+  	struct ipc_namespace *ns =3D
+  		container_of(table->data, struct ipc_namespace, shm_rmid_forced);
+@@@ -191,21 -190,7 +191,21 @@@ static int set_is_seen(struct ctl_table
+  	return &current->nsproxy->ipc_ns->ipc_set =3D=3D set;
+  }
+ =20
+ +static void ipc_set_ownership(struct ctl_table_header *head,
+- 			      struct ctl_table *table,
+++			      const struct ctl_table *table,
+ +			      kuid_t *uid, kgid_t *gid)
+ +{
+ +	struct ipc_namespace *ns =3D
+ +		container_of(head->set, struct ipc_namespace, ipc_set);
+ +
+ +	kuid_t ns_root_uid =3D make_kuid(ns->user_ns, 0);
+ +	kgid_t ns_root_gid =3D make_kgid(ns->user_ns, 0);
+ +
+ +	*uid =3D uid_valid(ns_root_uid) ? ns_root_uid : GLOBAL_ROOT_UID;
+ +	*gid =3D gid_valid(ns_root_gid) ? ns_root_gid : GLOBAL_ROOT_GID;
+ +}
+ +
+- static int ipc_permissions(struct ctl_table_header *head, struct ctl_tabl=
+e *table)
++ static int ipc_permissions(struct ctl_table_header *head, const struct ct=
+l_table *table)
+  {
+  	int mode =3D table->mode;
+ =20
+
+--Sig_/vnGLMUvy2kcP/dSEqZio71j
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVv4xwACgkQAVBC80lX
+0GyJNQgAiWO/K7L2+KjmAFLk4pg11cH/ucDqiwQPtAI1OY6Kvc6ubjgWKiEpdZjb
+JzKLev/6kALbH4lk1Ch3dpuNmt74b+muukh3h87RIXz+KQuTSO1iYsXhklyLgDwn
+0xBphoed1pWUYkmssRgrrgTQHXyhsXgLVt1ZKQhv8jkKPFv0lqDZ0NhI1LbynW5j
+OC5qROlEryuQWZiPduDTDA3pY+Coi5O0wnMXWYWkXrxd/s2xJ4RkOFhPXyrQtDza
+76JJgfaGY/amqcntB252jS39LQBx9WVez/k7vxjvwQSHrWgla3TXh2o7GifvUC4r
+xB5YO/3fR7gP+g53WpEh6SLvEiE4zQ==
+=3LaM
+-----END PGP SIGNATURE-----
+
+--Sig_/vnGLMUvy2kcP/dSEqZio71j--
