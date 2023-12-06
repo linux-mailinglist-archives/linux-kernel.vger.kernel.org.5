@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9BD807105
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5210807108
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378561AbjLFNlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 08:41:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
+        id S1378602AbjLFNml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 08:42:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378587AbjLFNlJ (ORCPT
+        with ESMTP id S1378587AbjLFNmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 08:41:09 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BCEC7;
-        Wed,  6 Dec 2023 05:41:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=HCaDhHjqMUm7iZFzDCXLcNgiTgr4z8Ne9p0cOAccwCU=; b=oEWAA+ljNDN4NFWDfhVL7YvkG+
-        hh4O78O3JT4GNvGm0wMfgUvzeuHvqj/baNlyfPbrzjgbvYuNvSGOSH5PTBS+meMPeIao12JYtv8RC
-        AjdV5pzJIHyNmGxqAok1AsAWkdYvmCXqNjehjVRF/SHjgE4vP0pE5XYp6Xw/O4E2LEW8hm3JxEs2f
-        gzJuEjgaFwUIubAVbZSCYxLm2wQ26U2y2MumVLGBS3o3NE7iHV09/1LycihISc25fEIFWl9x3/M9E
-        PhrslYJhK8oE8jMQDtUr2x894gnwPDmlbm3CrCM5VL53MH2dUTD0msT/fMneWcypUVUmRuzHafRf4
-        /uH5ICOg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1rAs8p-002wdo-3u; Wed, 06 Dec 2023 13:40:43 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7975C300451; Wed,  6 Dec 2023 14:40:41 +0100 (CET)
-Date:   Wed, 6 Dec 2023 14:40:41 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] rust: file: add `Kuid` wrapper
-Message-ID: <20231206134041.GG30174@noisy.programming.kicks-ass.net>
-References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
- <20231206-alice-file-v2-5-af617c0d9d94@google.com>
- <20231206123402.GE30174@noisy.programming.kicks-ass.net>
- <CAH5fLgh+0G85Acf4-zqr_9COB5DUtt6ifVpZP-9V06hjJgd_jQ@mail.gmail.com>
+        Wed, 6 Dec 2023 08:42:40 -0500
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707AAC7;
+        Wed,  6 Dec 2023 05:42:47 -0800 (PST)
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3b8958b32a2so4220841b6e.2;
+        Wed, 06 Dec 2023 05:42:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701870166; x=1702474966;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uLzpQ4fOC8RLmPkow4CQkCwl/Mdnw93sW11GlybnYgs=;
+        b=ZH4AezgBVO9Cg+oP++6voEmQ5G67m7jKi7sUbRFbAf/BJABErhbodQYu0LOGidapUX
+         wNP2/FdaP+/muzCAdhzMADkjOH006IbE+dGDpMp8y7gkFaygUc4Le1P4xx86beqY3hz3
+         Q75pSVKPtsrxlKEjNn3bvd0aKe03yVUpOE5V7hfVtzfCctWNdU3l2+f64mTDdzcEeS0Z
+         ESwrmqveYKrZUVOnCpXQk6TBAGobJuxHLHsxS/bHU708tUAn0/7DNliIymdGeULpmPRO
+         duB0jTysqO2WoXdZY0+5BDKTs1zil8fqAgT/JzJdLLtQQ0fAnrjLMAluUakOHHhb7v3k
+         Yniw==
+X-Gm-Message-State: AOJu0YykRCxkFm5NdaH/KI10B9fGtXhzYQRg5+E21MkXpao05P5EUyd5
+        bhouG0UO6OU9l1Bk6sPotQ==
+X-Google-Smtp-Source: AGHT+IE7PnaaolCnZdgfvQMGg6RBkpYWak6PaCEiL9P2gMCYQYxnLE6AEQWyIP3OQXfLn3puL5Lwpw==
+X-Received: by 2002:a05:6808:1410:b0:3b8:63aa:826f with SMTP id w16-20020a056808141000b003b863aa826fmr1470443oiv.25.1701870166732;
+        Wed, 06 Dec 2023 05:42:46 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id o27-20020a05680803db00b003b8388ffaffsm2544248oie.41.2023.12.06.05.42.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 05:42:46 -0800 (PST)
+Received: (nullmailer pid 1999706 invoked by uid 1000);
+        Wed, 06 Dec 2023 13:42:45 -0000
+Date:   Wed, 6 Dec 2023 07:42:45 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Marijn Suijten <marijn.suijten@somainline.org>
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: Allow
+ #power-domain-cells
+Message-ID: <170187016332.1999400.6374393677018050947.robh@kernel.org>
+References: <20231129-topic-mpmbindingspd-v2-1-acbe909ceee1@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH5fLgh+0G85Acf4-zqr_9COB5DUtt6ifVpZP-9V06hjJgd_jQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231129-topic-mpmbindingspd-v2-1-acbe909ceee1@linaro.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,80 +73,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 01:57:52PM +0100, Alice Ryhl wrote:
-> On Wed, Dec 6, 2023 at 1:34 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Wed, Dec 06, 2023 at 11:59:50AM +0000, Alice Ryhl wrote:
-> >
-> > > diff --git a/rust/helpers.c b/rust/helpers.c
-> > > index fd633d9db79a..58e3a9dff349 100644
-> > > --- a/rust/helpers.c
-> > > +++ b/rust/helpers.c
-> > > @@ -142,6 +142,51 @@ void rust_helper_put_task_struct(struct task_struct *t)
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(rust_helper_put_task_struct);
-> > >
-> > > +kuid_t rust_helper_task_uid(struct task_struct *task)
-> > > +{
-> > > +     return task_uid(task);
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(rust_helper_task_uid);
-> > > +
-> > > +kuid_t rust_helper_task_euid(struct task_struct *task)
-> > > +{
-> > > +     return task_euid(task);
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(rust_helper_task_euid);
-> >
-> > So I still object to these on the ground that they're obvious and
-> > trivial speculation gadgets.
-> >
-> > We should not have (exported) functions that are basically a single
-> > dereference of a pointer argument.
-> >
-> > And I do not appreciate my feedback on the previous round being ignored.
+
+On Wed, 29 Nov 2023 20:12:31 +0100, Konrad Dybcio wrote:
+> MPM provides a single genpd. Allow #power-domain-cells = <0>.
 > 
-> I'm sorry about that. I barely know what speculation gadgets are, so I
-> didn't really know what to respond. But I should have responded by
-> saying that.
+> Fixes: 54fc9851c0e0 ("dt-bindings: interrupt-controller: Add Qualcomm MPM support")
+> Acked-by: Shawn Guo <shawn.guo@linaro.org>
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+> Changes since v1:
+> - Add this property to the example
+> - Pick up tags
+> 
+> Link to v1: https://lore.kernel.org/linux-arm-msm/20230308011705.291337-1-konrad.dybcio@linaro.org/#t
+> 
+> Marc/Krzysztof, can we still pick this up for 6.7?
+> It's been stale for quite a while..
+> ---
+>  Documentation/devicetree/bindings/interrupt-controller/qcom,mpm.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
 
-Sigh... how many years since Meltdown are we now? Oh well, the basic
-idea is to abuse the basic speculative execution of the CPU to make it
-disclose secrets. The way this is done is by training the various branch
-predictors such that you gain control over the speculative control flow.
-
-You then use this control to cause micro-architectural side-effects to
-observe state, eg. cache state.
-
-In the case above, if you train the indirect branch predictor to jump to
-the above functions after you've loaded a secret into %rdi (first
-argument) then it will dereference your pointer + offset.
-
-This causes the CPU to populate the cacheline, even if the actual
-execution path never does this.
-
-So by wiping the cache, doing your tricky thing, and then probing the
-cache to find out which line is present, you can infer the secret value.
-
-Anywhoo, the longer a function is, the harder it becomes, since you need
-to deal with everything a function does and consider the specuation
-window length. So trivial functions like the above that do an immediate
-dereference and are (and must be) a valid indirect target (because
-EXPORT) are ideal.
-
-> I can reimplement these specific functions as inline Rust functions,
-
-That would be good, but how are you going to do that without duplicating
-the horror that is struct task_struct ?
-
-> but I don't think I can give you a general solution to the
-> rust_helper_* problem in this patch series.
-
-Well, I really wish the Rust community would address the C
-interoperability in a hurry. Basically make it a requirement for
-in-kernel Rust.
-
-I mean, how hard can it be to have clang parse the C headers and inject
-them into the Rust IR as if they're external FFI things.
-
+Applied, thanks!
 
