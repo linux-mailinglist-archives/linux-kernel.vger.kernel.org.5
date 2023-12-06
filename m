@@ -2,54 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFEF80668F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 06:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FCE4806693
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 06:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376701AbjLFF0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 00:26:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
+        id S1376706AbjLFF1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 00:27:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbjLFFZ5 (ORCPT
+        with ESMTP id S230170AbjLFF1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 00:25:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A32518F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 21:26:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F283AC433C8;
-        Wed,  6 Dec 2023 05:26:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701840364;
-        bh=mCsuqmzNCQBuIT2HaIRPP4kIonvYoG1ZmvJUL6xFUzU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BcZx+WE0P2aceV4rStln3Xjx/bKk50k9vhCCmv+F3+KXp51jRbwaQyWhkHATOk6IV
-         YsH/IevhHvfhqW+X/gGHiWmw67ycudMhgiF7voZPLd9xKpfks5fLdhcZgX2QH8zjlo
-         uTnJ0Hkhe9Fc69T5om98McaSNj/qOjDLR8biHeOJtCU/YrUqBf/JfzCe9bpH7Ha40Z
-         UtSQz/yn5oNlfeyVX8XaOEwnxXYnqPC8LeHRvo2Znx4qZWN7WijeyTfbCD2ky5nhVd
-         9wXDrqQx1L6InAwGviSfyO0Yg7JWETLfEltB/RPlAcPKhUDp99el6ugxY36tB1cTtQ
-         IQyGAJj11ppWw==
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50c0f6b1015so1118987e87.3;
-        Tue, 05 Dec 2023 21:26:03 -0800 (PST)
-X-Gm-Message-State: AOJu0YzxOy33zo1i9VDG5a1Yr0wstLJtyrwswYnTvDgnK31yUL5ekScr
-        dBaRE+a2b3I9WX5aDsLHC76wfiELjMbUeRzyPn4=
-X-Google-Smtp-Source: AGHT+IEwSyMRoA5jlfXhSkOQJSpXeiZHoZzfxHuEWR1zzWpUg+LFSGyGEw8giAsWSjeaInTaYK+fZfqSCPNKAPzIE9U=
-X-Received: by 2002:ac2:5224:0:b0:50c:e:171e with SMTP id i4-20020ac25224000000b0050c000e171emr158833lfl.5.1701840362186;
- Tue, 05 Dec 2023 21:26:02 -0800 (PST)
+        Wed, 6 Dec 2023 00:27:08 -0500
+Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD7C1A2
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 21:27:13 -0800 (PST)
+Received: from eig-obgw-5009a.ext.cloudfilter.net ([10.0.29.176])
+        by cmsmtp with ESMTPS
+        id AeOZr5MQpWcCIAkRErpAPX; Wed, 06 Dec 2023 05:27:12 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTPS
+        id AkRDr6KAy97pzAkRErQEGw; Wed, 06 Dec 2023 05:27:12 +0000
+X-Authority-Analysis: v=2.4 cv=ULDOoQTy c=1 sm=1 tr=0 ts=65700630
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=e2cXIFwxEfEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=ATLCLyqtdEkl7mCwK7IA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=pO2xW5L49dy/9Rm9TCjtjs18xcEcAAzsBvc2XH40lcU=; b=DpJhC03WIoAybqnuvai09deB+8
+        AqUVbKkWCkjcU46iH+HBSQtc2xIEsUPH3p+i1Spx+90SVkwM+VqJwexEQQG6ZipYbMy9Jsu/BmSmF
+        jwxREaPEA1vaVYq9lVQ9CzDq+88s1XQf/WOHO6VNHYX2b1GRh42qDtIvYJyWu+QVSeiaoKx7REIeb
+        ox2GRIwLpUF/zNXIY9ktwhtCsEmX7E41n7iMuxqsNziRQEXJACMI74sKcCFZcAk3xvkksgHPxkUpo
+        eXKnV7iwEonittTapNEJ/5LUu59XDn8hHfzWuz6oIrU+LE3sXIUTIlGkEuW1jHbIdi01QOBxZ4Sq+
+        gAV39K+Q==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:58548 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.2)
+        (envelope-from <re@w6rz.net>)
+        id 1rAkRB-003bzr-17;
+        Tue, 05 Dec 2023 22:27:09 -0700
+Subject: Re: [PATCH 6.1 000/105] 6.1.66-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com
+References: <20231205183248.388576393@linuxfoundation.org>
+In-Reply-To: <20231205183248.388576393@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <841ea761-414a-cbf0-fb50-1459d8e3ca5b@w6rz.net>
+Date:   Tue, 5 Dec 2023 21:27:06 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20231206154730.00346f93@canb.auug.org.au>
-In-Reply-To: <20231206154730.00346f93@canb.auug.org.au>
-From:   Shawn Guo <shawnguo@kernel.org>
-Date:   Wed, 6 Dec 2023 13:25:50 +0800
-X-Gmail-Original-Message-ID: <CAJBJ56JJ4Dp+wcmfPcNek3XG=7WjkVZAjM4efrsC0Ha4=Th5Yw@mail.gmail.com>
-Message-ID: <CAJBJ56JJ4Dp+wcmfPcNek3XG=7WjkVZAjM4efrsC0Ha4=Th5Yw@mail.gmail.com>
-Subject: Re: linux-next: Fixes tag needs some work in the imx-mxs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rAkRB-003bzr-17
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:58548
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org:  HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfJGf73S7jdwMIm6GaV7Kooo26z8crUXCf3/10qezUXXpEAsVzBnZz9jA5F6AoVT04WkL4R8qRNK+Bk6L0PfiwvpQnP2FBnfV9bQkdHP3WlUWxplTkl2l
+ HcBYSH9JPZgQltKV3byiBBoRHgj42KfmMTXT9zAcOJJyhDZVPA+xRZJDWOBiZqRK3UMi0mmmUe/J2suOsYVMuwS6iknKWe1X2eM=
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,29 +96,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 6, 2023 at 12:47=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
-.au> wrote:
+On 12/5/23 11:22 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.66 release.
+> There are 105 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Hi all,
+> Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
+> Anything received after that time might be too late.
 >
-> In commit
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.66-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
 >
->   50f8906b310e ("arm64: dts: freescale: imx8-ss-lsio: Fix #pwm-cells")
+> thanks,
 >
-> Fixes tag
->
->   Fixes: a05c329644d81 ("arm64: dts: freescale: imx8-ss-lsio: add support=
- for lsio_pwm0-3")
->
-> has these problem(s):
->
->   - Target SHA1 does not exist
->
-> Maybe you meant
->
-> Fixes: 23fa99b205ea ("arm64: dts: freescale: imx8-ss-lsio: add support fo=
-r lsio_pwm0-3")
+> greg k-h
 
-Fixed.  Thanks for reporting!
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-Shawn
+Tested-by: Ron Economos <re@w6rz.net>
+
