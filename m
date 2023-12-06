@@ -2,71 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F24C5807BB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E35807C00
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 00:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbjLFW6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 17:58:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
+        id S1379400AbjLFXAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 18:00:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjLFW6T (ORCPT
+        with ESMTP id S1377430AbjLFXAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 17:58:19 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3C8D4B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 14:58:24 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6cea0fd9b53so41117b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 14:58:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701903504; x=1702508304; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rlRwxrjO/fwpJbdnxlIZRwQlN6+I20Mp4XVwBmKHsZs=;
-        b=XEycvlSLVhHjwQQEo0A3dAfC92LbsY7kCx9Yy2e90+kQlFXZ1JjVu7inbpKPDiwit0
-         +MBeV+wBPzjfsV25hGxHD4lLfFb5nd6uWvebbMmUDwFvTs0HgeybJTL/L5bfGF2wkYdn
-         Fm00IYR7WcyXKpm9C8iLzqq9b4RUPFkfN17Bc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701903504; x=1702508304;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rlRwxrjO/fwpJbdnxlIZRwQlN6+I20Mp4XVwBmKHsZs=;
-        b=TIJbJrJi1zoXXyrC/hBSxoegHHvllPAJfw9utNnsRxfMJwgbNMR0uObQLbfQhSmBXy
-         8537W4PKO9j4kfdwfqZ5yRZ5r4FoKq1Q2KuCJqTRwYa03BexaWyl/FKre2jyXn/NObvg
-         MgEgtBeltdV3l15eMT4R0xMwolxFh9qExQL0q2ILju275nGL5MqH66dwKGxB3QQGRgiT
-         t2//2u0w+lGMAI8tXNUzgD74Mmu49r/6Vb88iqqhmueJ+Xao7Ra8B+rV2j2zqzGl2pSZ
-         /HysW47H9tfxNKKggWLp8XyP450vjkfeugZXGUMjUa1L+MXphCxLvTaWvG1Cxp8nMz8d
-         egqQ==
-X-Gm-Message-State: AOJu0YysuqMO2lQfQSQAu6o/wGlaSHh1OPURjqZvzl/euq/z9trKMy8e
-        Nx4igoYk8nQxfTo2Ag/6PluBYQ==
-X-Google-Smtp-Source: AGHT+IF21TEfSUWNryCsppjMZp7UZtzSTndkR8MeQxDsRI0Vo9gwMzOLX3f62R0JkmE2aAtvmNiKUw==
-X-Received: by 2002:a05:6a21:6d9d:b0:18a:b5c3:55c1 with SMTP id wl29-20020a056a216d9d00b0018ab5c355c1mr1334523pzb.57.1701903504112;
-        Wed, 06 Dec 2023 14:58:24 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id t24-20020a17090ad51800b00286d44e0c59sm336823pju.36.2023.12.06.14.58.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 14:58:23 -0800 (PST)
-Date:   Wed, 6 Dec 2023 14:58:23 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Eric Biederman <ebiederm@xmission.com>, linux-mm@kvack.org
-Subject: Re: [PATCH v3] ELF: document some de-facto PT_* ABI quirks
-Message-ID: <202312061456.2103DA1@keescook>
-References: <2acb586c-08a9-42d9-a41e-7986cc1383ea@p183>
- <e262ea00-a027-9073-812e-7e034d75e718@infradead.org>
- <c4233c97-306c-4db8-9667-34fc31ec4aed@p183>
- <87edp7jyu4.fsf@meer.lwn.net>
- <88d3f1bb-f4e0-4c40-9304-3843513a1262@p183>
+        Wed, 6 Dec 2023 18:00:04 -0500
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8874218D;
+        Wed,  6 Dec 2023 15:00:09 -0800 (PST)
+Received: from [192.168.1.114] (unknown [185.145.125.130])
+        by mail.ispras.ru (Postfix) with ESMTPSA id 0E78540F1DDC;
+        Wed,  6 Dec 2023 23:00:07 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 0E78540F1DDC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+        s=default; t=1701903607;
+        bh=gUdGQ25NEZtDnT8qJMC/puEY2uW/SpYlK1LVVHGS4a4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=QuTg6aubCVRROB8lnn112HUtFi9VQ56WIHGmGpE7A7MDloZqtJRiweOAXn4x38efN
+         OXCNhU/OfkSO7RdwIv8g00nTpnGz6h+FIXA69wB5tEf0roYSE5LJnolbeEX/Q+Ohog
+         U99fayMnuZHMOqZwuWeLaD6KS9UE3ITtqMqpPgoI=
+Subject: Re: [PATCH 5.10 000/131] 5.10.203-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com,
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+References: <20231205183249.651714114@linuxfoundation.org>
+From:   Alexey Khoroshilov <khoroshilov@ispras.ru>
+Message-ID: <efdb0591-2259-f86c-0da4-781dfdae22e1@ispras.ru>
+Date:   Thu, 7 Dec 2023 02:00:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <88d3f1bb-f4e0-4c40-9304-3843513a1262@p183>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <20231205183249.651714114@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,64 +58,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-*thread necromancy* Question below...
+On 05.12.2023 22:22, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.203 release.
+> There are 131 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.203-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-On Sat, Apr 15, 2023 at 08:37:29PM +0300, Alexey Dobriyan wrote:
-> Turns out rules about PT_INTERP, PT_GNU_STACK and PT_GNU_PROPERTY
-> program headers are slightly different.
-> 
-> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> ---
-> 
-> 	v3: move to Documentation/userspace-api/
-> 	v2: integrate into documentation build system
-> 
->  Documentation/userspace-api/ELF.rst   |   34 ++++++++++++++++++++++++++++++++++
->  Documentation/userspace-api/index.rst |    1 +
->  2 files changed, 35 insertions(+)
-> 
-> new file mode 100644
-> --- /dev/null
-> +++ b/Documentation/userspace-api/ELF.rst
-> @@ -0,0 +1,34 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +=================================
-> +Linux-specific ELF idiosyncrasies
-> +=================================
-> +
-> +Definitions
-> +===========
-> +
-> +"First" program header is the one with the smallest offset in the file:
-> +e_phoff.
-> +
-> +"Last" program header is the one with the biggest offset in the file:
-> +e_phoff + (e_phnum - 1) * sizeof(Elf_Phdr).
-> +
-> +PT_INTERP
-> +=========
-> +
-> +First PT_INTERP program header is used to locate the filename of ELF
-> +interpreter. Other PT_INTERP headers are ignored (since Linux 2.4.11).
-> +
-> +PT_GNU_STACK
-> +============
-> +
-> +Last PT_GNU_STACK program header defines userspace stack executability
-> +(since Linux 2.6.6). Other PT_GNU_STACK headers are ignored.
-> +
-> +PT_GNU_PROPERTY
-> +===============
-> +
-> +ELF interpreter's last PT_GNU_PROPERTY program header is used (since
-> +Linux 5.8). If interpreter doesn't have one, then the last PT_GNU_PROPERTY
-> +program header of an executable is used. Other PT_GNU_PROPERTY headers
-> +are ignored.
 
-Should we perhaps solve some of these in some way? What would folks
-prefer the behaviors be? (I like to have things been "as expected", but
-it's not very obvious here for redundant headers...)
+It seems something is seriously broken in this release.
 
--- 
-Kees Cook
+There are patches already applied in 5.10.202 that are in 5.10.203-rc3
+transformed in some strange way, e.g.
+
+Neil Armstrong <narmstrong@baylibre.com>
+    tty: serial: meson: retrieve port FIFO size from DT
+
+
+commit 980c3135f1ae6fe686a70c8ba78eb1bb4bde3060 in 5.10.202
+
+diff --git a/drivers/tty/serial/meson_uart.c
+b/drivers/tty/serial/meson_uart.c
+index d06653493f0e..78bda91a6bf1 100644
+--- a/drivers/tty/serial/meson_uart.c
++++ b/drivers/tty/serial/meson_uart.c
+@@ -728,6 +728,7 @@ static int meson_uart_probe(struct platform_device
+*pdev)
+ {
+        struct resource *res_mem, *res_irq;
+        struct uart_port *port;
++       u32 fifosize = 64; /* Default is 64, 128 for EE UART_0 */
+        int ret = 0;
+
+        if (pdev->dev.of_node)
+@@ -755,6 +756,8 @@ static int meson_uart_probe(struct platform_device
+*pdev)
+        if (!res_irq)
+                return -ENODEV;
+
++       of_property_read_u32(pdev->dev.of_node, "fifo-size", &fifosize);
++
+        if (meson_ports[pdev->id]) {
+                dev_err(&pdev->dev, "port %d already allocated\n",
+pdev->id);
+                return -EBUSY;
+@@ -784,7 +787,7 @@ static int meson_uart_probe(struct platform_device
+*pdev)
+        port->type = PORT_MESON;
+        port->x_char = 0;
+        port->ops = &meson_uart_ops;
+-       port->fifosize = 64;
++       port->fifosize = fifosize;
+
+        meson_ports[pdev->id] = port;
+        platform_set_drvdata(pdev, port);
+
+vs.
+
+commit 71feab929585232694b4f2fb7d70abde4edc581e in 5.10.203-rc3
+
+diff --git a/drivers/tty/serial/meson_uart.c
+b/drivers/tty/serial/meson_uart.c
+index bb66a3f06626..c44ab21a9b7d 100644
+--- a/drivers/tty/serial/meson_uart.c
++++ b/drivers/tty/serial/meson_uart.c
+@@ -765,6 +765,8 @@ static int meson_uart_probe(struct platform_device
+*pdev)
+        of_property_read_u32(pdev->dev.of_node, "fifo-size", &fifosize);
+        has_rtscts = of_property_read_bool(pdev->dev.of_node,
+"uart-has-rtscts");
+
++       of_property_read_u32(pdev->dev.of_node, "fifo-size", &fifosize);
++
+        if (meson_ports[pdev->id]) {
+                dev_err(&pdev->dev, "port %d already allocated\n",
+pdev->id);
+                return -EBUSY;
+
+
+
+Found by Linux Verification Center (linuxtesting.org) with SVACE
+
+
+
+See also:
+
+Qu Huang <qu.huang@linux.dev>
+    drm/amdgpu: Fix a null pointer access when the smc_rreg pointer is NULL
+
+Axel Lin <axel.lin@ingics.com>
+    i2c: sun6i-p2wi: Prevent potential division by zero
+
+Takashi Iwai <tiwai@suse.de>
+    media: imon: fix access to invalid resource for the second interface
+
+
+Also there is a strange pair:
+
+Patrick Thompson <ptf@google.com>
+    net: r8169: Disable multicast filter for RTL8168H and RTL8107E
+
+Heiner Kallweit <hkallweit1@gmail.com>
+    Revert "net: r8169: Disable multicast filter for RTL8168H and RTL8107E"
+
+
+--
+Alexey Khoroshilov
+Linux Verification Center, ISPRAS
