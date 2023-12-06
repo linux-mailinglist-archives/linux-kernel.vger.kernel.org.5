@@ -2,365 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2868063B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:56:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBE9806414
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 02:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232377AbjLFA4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 19:56:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
+        id S1376432AbjLFBZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 20:25:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbjLFA4J (ORCPT
+        with ESMTP id S1376394AbjLFBZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 19:56:09 -0500
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FB41B9;
-        Tue,  5 Dec 2023 16:56:13 -0800 (PST)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96.2)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1rAgCd-0002SE-20;
-        Wed, 06 Dec 2023 00:55:52 +0000
-Date:   Wed, 6 Dec 2023 00:55:44 +0000
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sabrina Dubroca <sd@queasysnail.net>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Jianhui Zhao <zhaojh329@gmail.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        "Garmin.Chang" <Garmin.Chang@mediatek.com>,
-        Sam Shih <sam.shih@mediatek.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, netdev@vger.kernel.org
-Subject: [PATCH v3 1/4] dt-bindings: clock: mediatek: add MT7988 clock IDs
-Message-ID: <23bc89d407e7797e97b703fa939b43bfe79296ce.1701823757.git.daniel@makrotopia.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Tue, 5 Dec 2023 20:25:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6A61B9;
+        Tue,  5 Dec 2023 17:25:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701825911; x=1733361911;
+  h=date:from:to:cc:subject:message-id:reply-to:references:
+   in-reply-to:mime-version;
+  bh=Dpb/wEAiGbc4H5m6AAJO2qz8HI2uMp8/qqZnsmjDgS0=;
+  b=BAYUces9slazRD5Fm2my0bvLVbJQYDnPDGmQwxeOCsCV5JhHUVSum+4c
+   PTje156/wxLkePScOcwKbKHfkzSoQX8p2ky7tHuipCeKyz9/ApOK+TAKe
+   pnLGKzrZSTwc9ws+Ysuot5oiEu6NwcwMsVHFUPl3ch5Zhg4SCsTq2sOZZ
+   bSTpKyJ6c0epxuSLQ0iT6pntezvWY0ZKCxhIGhGEBRf7UTvOExZXTzV1A
+   6jvewWz/weNz78vo9TUiqnMyPEknWs33J89v9VGhxefuJYmi05PER3IVy
+   3e3jnLt+BYtb7wLf2bHbBBgxykj6qR6TO6VdM8yMlaNy6NlO1ttCmyUAZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="391155163"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="391155163"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 17:24:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="771123434"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="771123434"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Dec 2023 17:24:56 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 17:24:54 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 17:24:54 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 5 Dec 2023 17:24:54 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 5 Dec 2023 17:24:54 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X9n53WcK4ijE1FGwKvGEJ5iJN07DmiR468pqSKVmwUj+QWh4Upn0NU6S4wOl4GrjXFMPX+dm6vhVx+T73aqlPgVn2a0EwoxRGt/QYLNEmbdP2zOUMJbPvu5AvHYA7hROokBs2ZrqZQdK2nEeyHC2xi9f8AjLFycQmBUb75u5W9EGOD2td12F8Mt40H7Y23z50E1aTXaAuZNnS4//TZODTx1e1UvOecLyfH+rKPkSzNGQ5wSaCzfjv8xTLeBN5M/lMlhcoIP3SBUKf6IpVL+A3eC5kxmwVKMQ93bVtMCimmf0huTXLbG0Hw5VSj+3lCqTKuhvqXhS9G1B3x+Mw5QnJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BntUOtgkzrt5Hpr/iigoXv6Qv7dxdZYJc46e44sTMkw=;
+ b=n6+gLmz9wpPvf37Fyi1TUucxKfdIe2l4kRHu+ckyK+K1275HiA6Nx3cdwgbk0blS19peNspRnJswb494O8DCN3zz4VoZmru8+Nwu69OcSWJsJQgzISzC1LJbcE7LnhOUQBVkXytI9JFmXg8mX32oKyWTjQkXxp7BdUy5AlIm8W5+o8JqlzDcx/3iv0eqg9rK6NoaKr1fhPwhsDO8k6DbhO8jJQpXre+BvR/QXmMKpJIqE8MK0dDKr2hagyQU8ydayUCtmFdLczjJhfU/J/w4Nzj1KZfk8MTPaMAIXjJgUv2CuK5t2cXEqMHEEbIfRAT5PTE3OyeWOaU6GtUtDO6fGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
+ LV8PR11MB8697.namprd11.prod.outlook.com (2603:10b6:408:1fe::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
+ 2023 01:24:52 +0000
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::32a9:54b8:4253:31d4]) by DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::32a9:54b8:4253:31d4%4]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
+ 01:24:51 +0000
+Date:   Wed, 6 Dec 2023 08:55:47 +0800
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <iommu@lists.linux.dev>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <alex.williamson@redhat.com>,
+        <pbonzini@redhat.com>, <seanjc@google.com>, <joro@8bytes.org>,
+        <will@kernel.org>, <robin.murphy@arm.com>, <kevin.tian@intel.com>,
+        <baolu.lu@linux.intel.com>, <dwmw2@infradead.org>,
+        <yi.l.liu@intel.com>
+Subject: Re: [RFC PATCH 16/42] iommufd: Enable device feature IOPF during
+ device attachment to KVM HWPT
+Message-ID: <ZW/Gk1Ili6uHBHYK@yzhao56-desk.sh.intel.com>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20231202091211.13376-1-yan.y.zhao@intel.com>
+ <20231202092311.14392-1-yan.y.zhao@intel.com>
+ <20231204183603.GN1493156@nvidia.com>
+ <ZW7NwSCzswweHZh6@yzhao56-desk.sh.intel.com>
+ <20231205145341.GF2787277@nvidia.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231205145341.GF2787277@nvidia.com>
+X-ClientProxiedBy: SG2P153CA0054.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::23)
+ To DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|LV8PR11MB8697:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9fe7d384-ea56-4006-c612-08dbf5fa24ef
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SQhToq4+fGl+UXrxFFOk6B68/xXciWv7nRoAZCF/C1LlW1olwN/Bch7MJE+bRh5USdNvprVY+aQvgxCeQZxeAsddy4UMs9aSLqNWdTo6hncOCDL1lRrVqQ8R300CQpUbQUHXHJkwhXvJ1EzBQCXze7lCidFeCzk49ZDpBFmNhnSTzFwI69S9nFsjGJVp8bpoo2kyXw8bZwdRiD1c5fLNCx6TDUc+gjop456zeW4Bk/1X4+w/p44WkTG6UslEeaiaGYrHJAFvLRBrg0vulSrjlT2STzaMve/8X/uW8puzGBxfy51EmSMOmgpjNW4UUDfInigng68TrUzs7keeyohBgW3DaAcLZ46Z/1J1WcW2Z2YmUQDZfEB7fIAzrDKZF718vwaqVIwWnE15Gb75lA8Zav38xU6W2TWTErEjc7j/ZeqoMLUxpLOvuFXNTMbsCwqfFsFADuPXqcFuRBb/KhOCId8NbyvNxAklDAP0JYK/YL+g1pZTGT0nx1eHdjl+HWF1PrCAdqm2yJMiEuGedcpqLsUgB5Lc1QiPO5IoYoZy+xqaaDzUH1mejTegG4O66f9/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(376002)(396003)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(4744005)(2906002)(3450700001)(5660300002)(7416002)(86362001)(41300700001)(38100700002)(82960400001)(6512007)(26005)(6506007)(6666004)(478600001)(6486002)(54906003)(316002)(83380400001)(66556008)(66476007)(66946007)(6916009)(4326008)(8936002)(8676002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ahaMuA3tKE5DVCqmjISs2pYvtbwCiFST/TxIOPRXIANT7puqNo7ixcDpT2x/?=
+ =?us-ascii?Q?5O6KUwOiRyZV5SyyLDpMK9nn6V/cL/r8zAshGAFUHYWOM/cwAI564Iv615Xv?=
+ =?us-ascii?Q?zqrexPLwylkaBLhpRIAfHJSxvOjXV4TBPX92wgj4uFwN+8R4WXFKpTtQFR6m?=
+ =?us-ascii?Q?F56NihhcqJN+GSrsZ5LouPuzdCGe314SfUTF52tjazGMPGGcjXGgTn1Jw+pc?=
+ =?us-ascii?Q?OKGXIFQ6W+1aWLpbz/OwJJzBtSLxEUpkXUxsi06LITHqA+/eXVF9RL3MN62J?=
+ =?us-ascii?Q?T4tqoDVlsAno7Spv+/QQZDSXCGq0MuX1J9nPF68wFlm8MElmST8T4LgzKnU4?=
+ =?us-ascii?Q?bqK19mLtuNcR618JOkANM91L5JxQw+WQEiiwYkOrW/kDrlWllytA8kJ8gOHY?=
+ =?us-ascii?Q?YOUG9Ue9izrttuin6RgktKhWoHdgl3LI6sPxpG2hnHrz3gr2zYFkbiG3vPoJ?=
+ =?us-ascii?Q?xRZH5a2jw6K3eY1MxtwMzpYLODNgDH2Mugj27rmsbCH77RhsavgNIRhPg10B?=
+ =?us-ascii?Q?IbbYvSyO3qhpHu3f0W2KGghdRjaH5L/S2mEBAYOEjpBCpBEmvLM9C0m5cn19?=
+ =?us-ascii?Q?CFIg1xsOxLys3wNCbFQwdww7v6IKxdIOMAe7s/TRht4UTQLqHiQehEUP3xIc?=
+ =?us-ascii?Q?PtTLu/oOSjHgBli4kEokg4O9DKE6RXliPUNhqCw73Lr2hRXiNlXMtoQMN87f?=
+ =?us-ascii?Q?vlZBBSerV4Nm4M7HfEbKA+IBHxi41EbkfzF8tGJlmnPPoBm/Vq45pUAAytF2?=
+ =?us-ascii?Q?kl2MIj1D8Ysp3WcghPgoNRRNjICrC5JlCPWuVsR+oad6uFP6fa8Lzq8EPW7I?=
+ =?us-ascii?Q?xNV6UwUFsRE9QSqOg6+xON3y8BWOoc7xXfNHMEViBMFngCxKUsO/ZyjKr3YE?=
+ =?us-ascii?Q?NUAw/EP2HqrdP1NexQ0Ak72GmcvgtVgkoZSNRFqSstNG1oqR7I9LR3EgwyAt?=
+ =?us-ascii?Q?dw1qVjdI1M8EPvibvAzUa226edc/xainltqk7UeR9VtJZ4wROS1pBxXmtd9P?=
+ =?us-ascii?Q?/GFKRbeM5Eo26ycVBoWPKAqJx7+1fYIu/665Ht8Nkerc58tgpfXRepGZZ2b5?=
+ =?us-ascii?Q?E7F6EsFsW3dzD7ydXHjJEJOdAZ6iNDaDadqvLJLrgoFJv8QT3z7AJZwCylx8?=
+ =?us-ascii?Q?4XQ1nR88D/4AM43eLtyHJBfZHYC04PXhk+3sZqxZLXEyC6gI/XfM1vxsFZlG?=
+ =?us-ascii?Q?jW+gLt/oNa9n+OsVn/KM45dG5f8h2DJ1i9lNDM2qxeUKD7oYLV/mGRFFkFr/?=
+ =?us-ascii?Q?bT0WvIOOwN8QFo4kGnCMZTv5LsPIq/klxOcyz8eGv/32IhbyIY/RkXDhGBZ2?=
+ =?us-ascii?Q?4GHX9Llhe44nw92ik/RKaPonbixqLLeYmexzZnDCKDqz5RViSHvbc4EPhdJ5?=
+ =?us-ascii?Q?+50xU3b6MKnmyMz5LRmZ/N105Aetd4MV/fe5Kgz7J6c0kVN1w+eTszVuhNVY?=
+ =?us-ascii?Q?mTQ/RwUUgu3dtdVd7d5m+Snb/BJyLqnH5kfM81+Kf8tQhO3FJ1I+dogROYbX?=
+ =?us-ascii?Q?iuN+M91bL7DbwFG3rhJyWQG0t2EZjsQ7C63xN3NwjufgrSNLmQI+HU2kK2BB?=
+ =?us-ascii?Q?ZR+8hkNhscmHCGoKr8AKE+0aXwH11UedsYFi3hsx?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9fe7d384-ea56-4006-c612-08dbf5fa24ef
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 01:24:51.7064
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rATRVpnBMSw2nGVSb6uildlbEsUUIx/nf6ZMSKXqPyGkPwo3tujQTWvf06e2QgeIebrHvh2LOEBu9G2NjxiRHQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR11MB8697
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sam Shih <sam.shih@mediatek.com>
-
-Add MT7988 clock dt-bindings for topckgen, apmixedsys, infracfg,
-ethernet and xfipll subsystem clocks.
-
-Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
-v3: no changes
-v2: fix indentation
-
- .../dt-bindings/clock/mediatek,mt7988-clk.h   | 280 ++++++++++++++++++
- 1 file changed, 280 insertions(+)
- create mode 100644 include/dt-bindings/clock/mediatek,mt7988-clk.h
-
-diff --git a/include/dt-bindings/clock/mediatek,mt7988-clk.h b/include/dt-bindings/clock/mediatek,mt7988-clk.h
-new file mode 100644
-index 0000000000000..63376e40f14d2
---- /dev/null
-+++ b/include/dt-bindings/clock/mediatek,mt7988-clk.h
-@@ -0,0 +1,280 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-+/*
-+ * Copyright (c) 2023 MediaTek Inc.
-+ * Author: Sam Shih <sam.shih@mediatek.com>
-+ * Author: Xiufeng Li <Xiufeng.Li@mediatek.com>
-+ */
-+
-+#ifndef _DT_BINDINGS_CLK_MT7988_H
-+#define _DT_BINDINGS_CLK_MT7988_H
-+
-+/* APMIXEDSYS */
-+
-+#define CLK_APMIXED_NETSYSPLL			0
-+#define CLK_APMIXED_MPLL			1
-+#define CLK_APMIXED_MMPLL			2
-+#define CLK_APMIXED_APLL2			3
-+#define CLK_APMIXED_NET1PLL			4
-+#define CLK_APMIXED_NET2PLL			5
-+#define CLK_APMIXED_WEDMCUPLL			6
-+#define CLK_APMIXED_SGMPLL			7
-+#define CLK_APMIXED_ARM_B			8
-+#define CLK_APMIXED_CCIPLL2_B			9
-+#define CLK_APMIXED_USXGMIIPLL			10
-+#define CLK_APMIXED_MSDCPLL			11
-+
-+/* TOPCKGEN */
-+
-+#define CLK_TOP_XTAL				0
-+#define CLK_TOP_XTAL_D2				1
-+#define CLK_TOP_RTC_32K				2
-+#define CLK_TOP_RTC_32P7K			3
-+#define CLK_TOP_MPLL_D2				4
-+#define CLK_TOP_MPLL_D3_D2			5
-+#define CLK_TOP_MPLL_D4				6
-+#define CLK_TOP_MPLL_D8				7
-+#define CLK_TOP_MPLL_D8_D2			8
-+#define CLK_TOP_MMPLL_D2			9
-+#define CLK_TOP_MMPLL_D3_D5			10
-+#define CLK_TOP_MMPLL_D4			11
-+#define CLK_TOP_MMPLL_D6_D2			12
-+#define CLK_TOP_MMPLL_D8			13
-+#define CLK_TOP_APLL2_D4			14
-+#define CLK_TOP_NET1PLL_D4			15
-+#define CLK_TOP_NET1PLL_D5			16
-+#define CLK_TOP_NET1PLL_D5_D2			17
-+#define CLK_TOP_NET1PLL_D5_D4			18
-+#define CLK_TOP_NET1PLL_D8			19
-+#define CLK_TOP_NET1PLL_D8_D2			20
-+#define CLK_TOP_NET1PLL_D8_D4			21
-+#define CLK_TOP_NET1PLL_D8_D8			22
-+#define CLK_TOP_NET1PLL_D8_D16			23
-+#define CLK_TOP_NET2PLL_D2			24
-+#define CLK_TOP_NET2PLL_D4			25
-+#define CLK_TOP_NET2PLL_D4_D4			26
-+#define CLK_TOP_NET2PLL_D4_D8			27
-+#define CLK_TOP_NET2PLL_D6			28
-+#define CLK_TOP_NET2PLL_D8			29
-+#define CLK_TOP_NETSYS_SEL			30
-+#define CLK_TOP_NETSYS_500M_SEL			31
-+#define CLK_TOP_NETSYS_2X_SEL			32
-+#define CLK_TOP_NETSYS_GSW_SEL			33
-+#define CLK_TOP_ETH_GMII_SEL			34
-+#define CLK_TOP_NETSYS_MCU_SEL			35
-+#define CLK_TOP_NETSYS_PAO_2X_SEL		36
-+#define CLK_TOP_EIP197_SEL			37
-+#define CLK_TOP_AXI_INFRA_SEL			38
-+#define CLK_TOP_UART_SEL			39
-+#define CLK_TOP_EMMC_250M_SEL			40
-+#define CLK_TOP_EMMC_400M_SEL			41
-+#define CLK_TOP_SPI_SEL				42
-+#define CLK_TOP_SPIM_MST_SEL			43
-+#define CLK_TOP_NFI1X_SEL			44
-+#define CLK_TOP_SPINFI_SEL			45
-+#define CLK_TOP_PWM_SEL				46
-+#define CLK_TOP_I2C_SEL				47
-+#define CLK_TOP_PCIE_MBIST_250M_SEL		48
-+#define CLK_TOP_PEXTP_TL_SEL			49
-+#define CLK_TOP_PEXTP_TL_P1_SEL			50
-+#define CLK_TOP_PEXTP_TL_P2_SEL			51
-+#define CLK_TOP_PEXTP_TL_P3_SEL			52
-+#define CLK_TOP_USB_SYS_SEL			53
-+#define CLK_TOP_USB_SYS_P1_SEL			54
-+#define CLK_TOP_USB_XHCI_SEL			55
-+#define CLK_TOP_USB_XHCI_P1_SEL			56
-+#define CLK_TOP_USB_FRMCNT_SEL			57
-+#define CLK_TOP_USB_FRMCNT_P1_SEL		58
-+#define CLK_TOP_AUD_SEL				59
-+#define CLK_TOP_A1SYS_SEL			60
-+#define CLK_TOP_AUD_L_SEL			61
-+#define CLK_TOP_A_TUNER_SEL			62
-+#define CLK_TOP_SSPXTP_SEL			63
-+#define CLK_TOP_USB_PHY_SEL			64
-+#define CLK_TOP_USXGMII_SBUS_0_SEL		65
-+#define CLK_TOP_USXGMII_SBUS_1_SEL		66
-+#define CLK_TOP_SGM_0_SEL			67
-+#define CLK_TOP_SGM_SBUS_0_SEL			68
-+#define CLK_TOP_SGM_1_SEL			69
-+#define CLK_TOP_SGM_SBUS_1_SEL			70
-+#define CLK_TOP_XFI_PHY_0_XTAL_SEL		71
-+#define CLK_TOP_XFI_PHY_1_XTAL_SEL		72
-+#define CLK_TOP_SYSAXI_SEL			73
-+#define CLK_TOP_SYSAPB_SEL			74
-+#define CLK_TOP_ETH_REFCK_50M_SEL		75
-+#define CLK_TOP_ETH_SYS_200M_SEL		76
-+#define CLK_TOP_ETH_SYS_SEL			77
-+#define CLK_TOP_ETH_XGMII_SEL			78
-+#define CLK_TOP_BUS_TOPS_SEL			79
-+#define CLK_TOP_NPU_TOPS_SEL			80
-+#define CLK_TOP_DRAMC_SEL			81
-+#define CLK_TOP_DRAMC_MD32_SEL			82
-+#define CLK_TOP_INFRA_F26M_SEL			83
-+#define CLK_TOP_PEXTP_P0_SEL			84
-+#define CLK_TOP_PEXTP_P1_SEL			85
-+#define CLK_TOP_PEXTP_P2_SEL			86
-+#define CLK_TOP_PEXTP_P3_SEL			87
-+#define CLK_TOP_DA_XTP_GLB_P0_SEL		88
-+#define CLK_TOP_DA_XTP_GLB_P1_SEL		89
-+#define CLK_TOP_DA_XTP_GLB_P2_SEL		90
-+#define CLK_TOP_DA_XTP_GLB_P3_SEL		91
-+#define CLK_TOP_CKM_SEL				92
-+#define CLK_TOP_DA_SEL				93
-+#define CLK_TOP_PEXTP_SEL			94
-+#define CLK_TOP_TOPS_P2_26M_SEL			95
-+#define CLK_TOP_MCUSYS_BACKUP_625M_SEL		96
-+#define CLK_TOP_NETSYS_SYNC_250M_SEL		97
-+#define CLK_TOP_MACSEC_SEL			98
-+#define CLK_TOP_NETSYS_TOPS_400M_SEL		99
-+#define CLK_TOP_NETSYS_PPEFB_250M_SEL		100
-+#define CLK_TOP_NETSYS_WARP_SEL			101
-+#define CLK_TOP_ETH_MII_SEL			102
-+#define CLK_TOP_NPU_SEL				103
-+#define CLK_TOP_AUD_I2S_M			104
-+
-+/* MCUSYS */
-+
-+#define CLK_MCU_BUS_DIV_SEL			0
-+#define CLK_MCU_ARM_DIV_SEL			1
-+
-+/* INFRACFG_AO */
-+
-+#define CLK_INFRA_MUX_UART0_SEL			0
-+#define CLK_INFRA_MUX_UART1_SEL			1
-+#define CLK_INFRA_MUX_UART2_SEL			2
-+#define CLK_INFRA_MUX_SPI0_SEL			3
-+#define CLK_INFRA_MUX_SPI1_SEL			4
-+#define CLK_INFRA_MUX_SPI2_SEL			5
-+#define CLK_INFRA_PWM_SEL			6
-+#define CLK_INFRA_PWM_CK1_SEL			7
-+#define CLK_INFRA_PWM_CK2_SEL			8
-+#define CLK_INFRA_PWM_CK3_SEL			9
-+#define CLK_INFRA_PWM_CK4_SEL			10
-+#define CLK_INFRA_PWM_CK5_SEL			11
-+#define CLK_INFRA_PWM_CK6_SEL			12
-+#define CLK_INFRA_PWM_CK7_SEL			13
-+#define CLK_INFRA_PWM_CK8_SEL			14
-+#define CLK_INFRA_PCIE_GFMUX_TL_O_P0_SEL	15
-+#define CLK_INFRA_PCIE_GFMUX_TL_O_P1_SEL	16
-+#define CLK_INFRA_PCIE_GFMUX_TL_O_P2_SEL	17
-+#define CLK_INFRA_PCIE_GFMUX_TL_O_P3_SEL	18
-+
-+/* INFRACFG */
-+
-+#define CLK_INFRA_PCIE_PERI_26M_CK_P0		19
-+#define CLK_INFRA_PCIE_PERI_26M_CK_P1		20
-+#define CLK_INFRA_PCIE_PERI_26M_CK_P2		21
-+#define CLK_INFRA_PCIE_PERI_26M_CK_P3		22
-+#define CLK_INFRA_66M_GPT_BCK			23
-+#define CLK_INFRA_66M_PWM_HCK			24
-+#define CLK_INFRA_66M_PWM_BCK			25
-+#define CLK_INFRA_66M_PWM_CK1			26
-+#define CLK_INFRA_66M_PWM_CK2			27
-+#define CLK_INFRA_66M_PWM_CK3			28
-+#define CLK_INFRA_66M_PWM_CK4			29
-+#define CLK_INFRA_66M_PWM_CK5			30
-+#define CLK_INFRA_66M_PWM_CK6			31
-+#define CLK_INFRA_66M_PWM_CK7			32
-+#define CLK_INFRA_66M_PWM_CK8			33
-+#define CLK_INFRA_133M_CQDMA_BCK		34
-+#define CLK_INFRA_66M_AUD_SLV_BCK		35
-+#define CLK_INFRA_AUD_26M			36
-+#define CLK_INFRA_AUD_L				37
-+#define CLK_INFRA_AUD_AUD			38
-+#define CLK_INFRA_AUD_EG2			39
-+#define CLK_INFRA_DRAMC_F26M			40
-+#define CLK_INFRA_133M_DBG_ACKM			41
-+#define CLK_INFRA_66M_AP_DMA_BCK		42
-+#define CLK_INFRA_66M_SEJ_BCK			43
-+#define CLK_INFRA_PRE_CK_SEJ_F13M		44
-+#define CLK_INFRA_26M_THERM_SYSTEM		45
-+#define CLK_INFRA_I2C_BCK			46
-+#define CLK_INFRA_52M_UART0_CK			47
-+#define CLK_INFRA_52M_UART1_CK			48
-+#define CLK_INFRA_52M_UART2_CK			49
-+#define CLK_INFRA_NFI				50
-+#define CLK_INFRA_SPINFI			51
-+#define CLK_INFRA_66M_NFI_HCK			52
-+#define CLK_INFRA_104M_SPI0			53
-+#define CLK_INFRA_104M_SPI1			54
-+#define CLK_INFRA_104M_SPI2_BCK			55
-+#define CLK_INFRA_66M_SPI0_HCK			56
-+#define CLK_INFRA_66M_SPI1_HCK			57
-+#define CLK_INFRA_66M_SPI2_HCK			58
-+#define CLK_INFRA_66M_FLASHIF_AXI		59
-+#define CLK_INFRA_RTC				60
-+#define CLK_INFRA_26M_ADC_BCK			61
-+#define CLK_INFRA_RC_ADC			62
-+#define CLK_INFRA_MSDC400			63
-+#define CLK_INFRA_MSDC2_HCK			64
-+#define CLK_INFRA_133M_MSDC_0_HCK		65
-+#define CLK_INFRA_66M_MSDC_0_HCK		66
-+#define CLK_INFRA_133M_CPUM_BCK			67
-+#define CLK_INFRA_BIST2FPC			68
-+#define CLK_INFRA_I2C_X16W_MCK_CK_P1		69
-+#define CLK_INFRA_I2C_X16W_PCK_CK_P1		70
-+#define CLK_INFRA_133M_USB_HCK			71
-+#define CLK_INFRA_133M_USB_HCK_CK_P1		72
-+#define CLK_INFRA_66M_USB_HCK			73
-+#define CLK_INFRA_66M_USB_HCK_CK_P1		74
-+#define CLK_INFRA_USB_SYS			75
-+#define CLK_INFRA_USB_SYS_CK_P1			76
-+#define CLK_INFRA_USB_REF			77
-+#define CLK_INFRA_USB_CK_P1			78
-+#define CLK_INFRA_USB_FRMCNT			79
-+#define CLK_INFRA_USB_FRMCNT_CK_P1		80
-+#define CLK_INFRA_USB_PIPE			81
-+#define CLK_INFRA_USB_PIPE_CK_P1		82
-+#define CLK_INFRA_USB_UTMI			83
-+#define CLK_INFRA_USB_UTMI_CK_P1		84
-+#define CLK_INFRA_USB_XHCI			85
-+#define CLK_INFRA_USB_XHCI_CK_P1		86
-+#define CLK_INFRA_PCIE_GFMUX_TL_P0		87
-+#define CLK_INFRA_PCIE_GFMUX_TL_P1		88
-+#define CLK_INFRA_PCIE_GFMUX_TL_P2		89
-+#define CLK_INFRA_PCIE_GFMUX_TL_P3		90
-+#define CLK_INFRA_PCIE_PIPE_P0			91
-+#define CLK_INFRA_PCIE_PIPE_P1			92
-+#define CLK_INFRA_PCIE_PIPE_P2			93
-+#define CLK_INFRA_PCIE_PIPE_P3			94
-+#define CLK_INFRA_133M_PCIE_CK_P0		95
-+#define CLK_INFRA_133M_PCIE_CK_P1		96
-+#define CLK_INFRA_133M_PCIE_CK_P2		97
-+#define CLK_INFRA_133M_PCIE_CK_P3		98
-+
-+/* ETHDMA */
-+
-+#define CLK_ETHDMA_XGP1_EN			0
-+#define CLK_ETHDMA_XGP2_EN			1
-+#define CLK_ETHDMA_XGP3_EN			2
-+#define CLK_ETHDMA_FE_EN			3
-+#define CLK_ETHDMA_GP2_EN			4
-+#define CLK_ETHDMA_GP1_EN			5
-+#define CLK_ETHDMA_GP3_EN			6
-+#define CLK_ETHDMA_ESW_EN			7
-+#define CLK_ETHDMA_CRYPT0_EN			8
-+#define CLK_ETHDMA_NR_CLK			9
-+
-+/* SGMIISYS_0 */
-+
-+#define CLK_SGM0_TX_EN				0
-+#define CLK_SGM0_RX_EN				1
-+#define CLK_SGMII0_NR_CLK			2
-+
-+/* SGMIISYS_1 */
-+
-+#define CLK_SGM1_TX_EN				0
-+#define CLK_SGM1_RX_EN				1
-+#define CLK_SGMII1_NR_CLK			2
-+
-+/* ETHWARP */
-+
-+#define CLK_ETHWARP_WOCPU2_EN			0
-+#define CLK_ETHWARP_WOCPU1_EN			1
-+#define CLK_ETHWARP_WOCPU0_EN			2
-+#define CLK_ETHWARP_NR_CLK			3
-+
-+/* XFIPLL */
-+#define CLK_XFIPLL_PLL				0
-+#define CLK_XFIPLL_PLL_EN			1
-+
-+#endif /* _DT_BINDINGS_CLK_MT7988_H */
--- 
-2.43.0
+On Tue, Dec 05, 2023 at 10:53:41AM -0400, Jason Gunthorpe wrote:
+> On Tue, Dec 05, 2023 at 03:14:09PM +0800, Yan Zhao wrote:
+> 
+> > > I would like to remove IOMMU_DEV_FEAT_IOPF completely please
+> > 
+> > So, turn on device PRI during device attachment in IOMMU vendor driver?
+> 
+> If a fault requesting domain is attached then PRI should just be
+> enabled in the driver
+>
+Right, it makes sense!
