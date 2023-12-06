@@ -2,42 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 030BB80737F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE6F80737E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379228AbjLFPOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 10:14:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
+        id S1442530AbjLFPOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 10:14:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379296AbjLFPOK (ORCPT
+        with ESMTP id S1379244AbjLFPOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Dec 2023 10:14:10 -0500
 Received: from relayaws-01.paragon-software.com (relayaws-01.paragon-software.com [35.157.23.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1EAD65;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2355DD64;
         Wed,  6 Dec 2023 07:14:16 -0800 (PST)
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayaws-01.paragon-software.com (Postfix) with ESMTPS id 7D9731D0B;
-        Wed,  6 Dec 2023 15:01:42 +0000 (UTC)
+Received: from relayfre-01.paragon-software.com (unknown [172.30.72.12])
+        by relayaws-01.paragon-software.com (Postfix) with ESMTPS id DCC301D47;
+        Wed,  6 Dec 2023 15:02:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1701874902;
-        bh=24fZy/sgMaW82JR5E0MnWROlI1NKAwMnW1CVh0eH4aU=;
-        h=Date:To:CC:From:Subject;
-        b=gdyJ3AGYCLh4/ErqRngAwMEMdM9X/g/UMeFQa98F8s7+8IndIBSbFsUWQmVfZSNo1
-         vrcvB2u23hoIr1mTVs2Tm2M1kGg1EokLPIMS9ODB9rSSpU8tRwulvf90dDb/Z5yfVU
-         LGJDWpi3IZa08yPjnS9VCwYvPxfXvIoeZehTiJk8=
+        d=paragon-software.com; s=mail; t=1701874953;
+        bh=h7CldxQv2S5Mzb+cgzMS8C/4d3oWIhrtzyaVf9z57fs=;
+        h=Date:Subject:From:To:CC:References:In-Reply-To;
+        b=FtCj3ZeRaBPZiv12dqOADExR+OT9YeqY3/k6OC2QQKJ9fE5ai7DN/5guAiwZgrx0Y
+         jzP8+1cDoiXU1I2OILGI8oMrFGQ8Mzot78sQq7PJSr+NK9SifuC9zxxEqJPwFMUUQW
+         5WoniFgJM0xApmStxoud0SP6WIR1lmABVdHpzCw8=
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 243202117;
+        Wed,  6 Dec 2023 15:08:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1701875337;
+        bh=h7CldxQv2S5Mzb+cgzMS8C/4d3oWIhrtzyaVf9z57fs=;
+        h=Date:Subject:From:To:CC:References:In-Reply-To;
+        b=eyslm8PSDjgl/rJxNS7F5ffPQA97GTxlXUWYf2oWGY5RTCsYMvvFyqCsElJpRYSwz
+         6npCQYykuV9udtf+8QOPyVk307zBuOQjVyLCP2+qixg9ZdLjMW9bmjegmNrIfmBVN8
+         0V/6teX8F6muUqbGlKbZHgFBNOh1lspt8A1CwIIE=
 Received: from [172.16.192.129] (192.168.211.144) by
  vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Wed, 6 Dec 2023 18:08:06 +0300
-Message-ID: <00fd1558-fda5-421b-be43-7de69e32cb4e@paragon-software.com>
-Date:   Wed, 6 Dec 2023 18:08:05 +0300
+ 15.1.2375.7; Wed, 6 Dec 2023 18:08:56 +0300
+Message-ID: <53c3c86f-c816-4747-9262-592c3ddc6660@paragon-software.com>
+Date:   Wed, 6 Dec 2023 18:08:56 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: [PATCH 01/16] fs/ntfs3: Improve alternative boot processing
 Content-Language: en-US
+From:   Konstantin Komarovc <almaz.alexandrovich@paragon-software.com>
 To:     <ntfs3@lists.linux.dev>
 CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-From:   Konstantin Komarovc <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH 00/16] fs/ntfs3: Bugfix and refactoring
+References: <00fd1558-fda5-421b-be43-7de69e32cb4e@paragon-software.com>
+In-Reply-To: <00fd1558-fda5-421b-be43-7de69e32cb4e@paragon-software.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: [192.168.211.144]
@@ -53,44 +65,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series contains various fixes and refactoring for ntfs3.
-Improved alternative boot processing, reduced stack usage.
 
-Konstantin Komarov (16):
-   fs/ntfs3: Improve alternative boot processing
-   fs/ntfs3: Modified fix directory element type detection
-   fs/ntfs3: Improve ntfs_dir_count
-   fs/ntfs3: Correct hard links updating when dealing with DOS names
-   fs/ntfs3: Print warning while fixing hard links count
-   fs/ntfs3: Reduce stack usage
-   fs/ntfs3: Fix multithreaded stress test
-   fs/ntfs3: Fix detected field-spanning write (size 8) of single field
-     "le->name"
-   fs/ntfs3: Correct use bh_read
-   fs/ntfs3: Add file_modified
-   fs/ntfs3: Drop suid and sgid bits as a part of fpunch
-   fs/ntfs3: Implement super_operations::shutdown
-   fs/ntfs3: ntfs3_forced_shutdown use int instead of bool
-   fs/ntfs3: Add and fix comments
-   fs/ntfs3: Add NULL ptr dereference checking at the end of
-     attr_allocate_frame()
-   fs/ntfs3: Fix c/mtime typo
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+---
+  fs/ntfs3/super.c | 35 +++++++++++++++++------------------
+  1 file changed, 17 insertions(+), 18 deletions(-)
 
-  fs/ntfs3/attrib.c  |  41 +++++----
-  fs/ntfs3/dir.c     |  44 ++++++---
-  fs/ntfs3/file.c    |  59 +++++++++---
-  fs/ntfs3/frecord.c |   5 +-
-  fs/ntfs3/fslog.c   | 218 ++++++++++++++++++++-------------------------
-  fs/ntfs3/fsntfs.c  |   5 +-
-  fs/ntfs3/inode.c   |  30 +++++--
-  fs/ntfs3/namei.c   |  12 +++
-  fs/ntfs3/ntfs.h    |   2 +-
-  fs/ntfs3/ntfs_fs.h |  11 ++-
-  fs/ntfs3/record.c  |  16 +++-
-  fs/ntfs3/super.c   |  47 ++++++----
-  fs/ntfs3/xattr.c   |   3 +
-  13 files changed, 302 insertions(+), 191 deletions(-)
+diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+index 9153dffde950..09d61c6c90aa 100644
+--- a/fs/ntfs3/super.c
++++ b/fs/ntfs3/super.c
+@@ -866,6 +866,7 @@ static int ntfs_init_from_boot(struct super_block 
+*sb, u32 sector_size,
+      u16 fn, ao;
+      u8 cluster_bits;
+      u32 boot_off = 0;
++    sector_t boot_block = 0;
+      const char *hint = "Primary boot";
 
+      /* Save original dev_size. Used with alternative boot. */
+@@ -873,11 +874,11 @@ static int ntfs_init_from_boot(struct super_block 
+*sb, u32 sector_size,
+
+      sbi->volume.blocks = dev_size >> PAGE_SHIFT;
+
+-    bh = ntfs_bread(sb, 0);
++read_boot:
++    bh = ntfs_bread(sb, boot_block);
+      if (!bh)
+-        return -EIO;
++        return boot_block ? -EINVAL : -EIO;
+
+-check_boot:
+      err = -EINVAL;
+
+      /* Corrupted image; do not read OOB */
+@@ -1108,26 +1109,24 @@ static int ntfs_init_from_boot(struct 
+super_block *sb, u32 sector_size,
+      }
+
+  out:
+-    if (err == -EINVAL && !bh->b_blocknr && dev_size0 > PAGE_SHIFT) {
++    brelse(bh);
++
++    if (err == -EINVAL && !boot_block && dev_size0 > PAGE_SHIFT) {
+          u32 block_size = min_t(u32, sector_size, PAGE_SIZE);
+          u64 lbo = dev_size0 - sizeof(*boot);
+
+-        /*
+-          * Try alternative boot (last sector)
+-         */
+-        brelse(bh);
+-
+-        sb_set_blocksize(sb, block_size);
+-        bh = ntfs_bread(sb, lbo >> blksize_bits(block_size));
+-        if (!bh)
+-            return -EINVAL;
+-
++        boot_block = lbo >> blksize_bits(block_size);
+          boot_off = lbo & (block_size - 1);
+-        hint = "Alternative boot";
+-        dev_size = dev_size0; /* restore original size. */
+-        goto check_boot;
++        if (boot_block && block_size >= boot_off + sizeof(*boot)) {
++            /*
++             * Try alternative boot (last sector)
++             */
++            sb_set_blocksize(sb, block_size);
++            hint = "Alternative boot";
++            dev_size = dev_size0; /* restore original size. */
++            goto read_boot;
++        }
+      }
+-    brelse(bh);
+
+      return err;
+  }
 -- 
 2.34.1
 
