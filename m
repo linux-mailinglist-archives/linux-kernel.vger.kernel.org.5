@@ -2,63 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A28806660
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 05:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 432C1806662
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 05:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376651AbjLFEsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 23:48:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37834 "EHLO
+        id S1376669AbjLFEyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 23:54:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLFEsv (ORCPT
+        with ESMTP id S229493AbjLFEyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 23:48:51 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A856A5
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 20:48:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1695EC433C7;
-        Wed,  6 Dec 2023 04:48:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701838137;
-        bh=m+CegGpcxRyo/raoNH696719o8PPhaXae7JopGc2FhQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rPLjrLQk+3kKLIQvdb+37zG5m/hX+g/MoFu7JFtBKiJXzDG0RJLhvM4U6Jkd2K0T7
-         +m/7kY3FKFU4lOlzH+f9hd1m4iDOKIipNneln2zfDPnj1G/4TCiaVY7izmmNUz+32s
-         J+GZZpKWh4y1vxQysMI9tHWwH5cRJDbHB76qblvVdEx5/X0w1yDRZrg9daOpFbnk2u
-         Xz0pfQdjX1eAH+mJmnmr7eepktoWfOxbRynp2muQag611UkwGW9yZdBzIMB+GEejZ/
-         xqrNleabKQvgmOtAWYX0KvNE9rFZYTrEpf6ewmYh3EVJL7Yyi1/gOHNEGBr021qL6S
-         S24PhyYlhvILQ==
-Date:   Tue, 5 Dec 2023 20:48:55 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Aron Silverton <aron.silverton@oracle.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        David Ahern <dsahern@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
-        Itay Avraham <itayavr@nvidia.com>,
-        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
-Message-ID: <20231205204855.52fa5cc1@kernel.org>
-In-Reply-To: <fgalnohzpiox7rvsf3wsurkf2x3rdtyhwqq5tk43gesvjlw6yl@i7colkh2sx5h>
-References: <20231128044628.GA8901@u2004-local>
-        <20231128065321.53d4d5bb@kernel.org>
-        <20231128162413.GP436702@nvidia.com>
-        <20231128084421.6321b9b2@kernel.org>
-        <20231128175224.GR436702@nvidia.com>
-        <20231128103304.25c2c642@kernel.org>
-        <ZWZJGF7moDM_k6TU@x130>
-        <2023112922-lyricist-unclip-8e78@gregkh>
-        <oxtcvxwbj2hzv4lxnxubo3hoxn7diyzhm2oj3tsw2toxbc3og4@ddglhm6r3oa5>
-        <20231204185210.030a72ca@kernel.org>
-        <fgalnohzpiox7rvsf3wsurkf2x3rdtyhwqq5tk43gesvjlw6yl@i7colkh2sx5h>
+        Tue, 5 Dec 2023 23:54:50 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A6618D
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 20:54:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701838497; x=1733374497;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=oljpuVsayk6Ec4XeX7yIM4B5SO9qL0WwI+IK/g1wjrg=;
+  b=jes9XPiKZDTJajVPlgydDT8se/pLnHq1bfw65Lg563M90o6t4Kqa67W/
+   S0sFe5BjwbwLOrxu8P2ohKEzSjS8YPs6GPuqTiGnMn+mfBefilpAvcEbs
+   YzhbJ0YhZZqfnvUMHmCCUQ5jEjiBRkxdniCLMO1EltoHLf/hFEao9CrNM
+   pSMwhXSO2RsxSUqcGP4DwtBdZEmHA+HT9HBsgVkMGO0OqzrlMsxZje6TS
+   5rqQoPHEGQTtkQnhmtsZ9A073oXkb0g24V7kUiGPPCaJiuzEF9IbUsp/o
+   kl5sDZTo46Cwk3LNm6wCMVxGnRoWdUf3a5L6DCPH1Ra1ir5pTxXv7D8t+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="1100651"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="1100651"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 20:54:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="1018450939"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="1018450939"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 05 Dec 2023 20:54:55 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAjvx-000AHw-08;
+        Wed, 06 Dec 2023 04:54:53 +0000
+Date:   Wed, 6 Dec 2023 12:54:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kent Overstreet <kmo@daterainc.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: fs/bcachefs/extents.c:386:5-8: Unneeded variable: "ret". Return "
+  0" on line 392
+Message-ID: <202312061232.UwWyjKnI-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,57 +62,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Dec 2023 11:11:00 -0600 Aron Silverton wrote:
-> 1. As mentioned already, we recently faced a complex problem with RDMA
-> in KVM and were getting nowhere trying to debug using the usual methods.
-> Mellanox support was able to use this debug interface to see what was
-> happening on the PCI bus and prove that the issue was caused by
-> corrupted PCIe transactions. This finally put the investigation on the
-> correct path. The debug interface was used consistently and extensively
-> to test theories about what was happening in the system and, ultimately,
-> allowed the problem to be solved.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+commit: b65db750e2bb9252321fd54c284edd73c1595a09 bcachefs: Enumerate fsck errors
+date:   5 weeks ago
+config: x86_64-randconfig-104-20231204 (https://download.01.org/0day-ci/archive/20231206/202312061232.UwWyjKnI-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20231206/202312061232.UwWyjKnI-lkp@intel.com/reproduce)
 
-You hit on an important point, and what is also my experience working
-at Meta. I may have even mentioned it in this thread already.
-If there is a serious issue with a complex device, there are two ways
-you can get support - dump all you can and send the dump to the vendor
-or get on a live debugging session with their engineers. Users' ability
-to debug those devices is practically non-existent. The idea that we
-need access to FW internals is predicated on the assumption that we
-have an ability to make sense of those internals.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312061232.UwWyjKnI-lkp@intel.com/
 
-Once you're on a support call with the vendor - just load a custom
-kernel, module, whatever, it's already extremely expensive manual labor.
+cocci warnings: (new ones prefixed by >>)
+>> fs/bcachefs/extents.c:386:5-8: Unneeded variable: "ret". Return "  0" on line 392
+--
+>> fs/bcachefs/snapshot.c:37:5-8: Unneeded variable: "ret". Return "  0" on line 44
+   fs/bcachefs/snapshot.c:212:5-8: Unneeded variable: "ret". Return "  0" on line 259
 
-> 2. We've faced RDMA issues related to lost EQ doorbells, requiring
-> complex debug, and ultimately root-caused as a defective CPU. Without
-> interactive access to the device allowing us to test theories like,
-> "what if we manually restart the EQ", we could not have proven this
-> definitively.
+vim +386 fs/bcachefs/extents.c
 
-I'm not familiar with the RDMA debugging capabilities. Perhaps there
-are some gaps there. The more proprietary the implementation the harder
-it is to debug. An answer to that would be "try to keep as much as
-possible open".. and interfaces which let closed user space talk to
-closed FW take us in the opposite direction.
+   380	
+   381	int bch2_reservation_invalid(struct bch_fs *c, struct bkey_s_c k,
+   382				     enum bkey_invalid_flags flags,
+   383				     struct printbuf *err)
+   384	{
+   385		struct bkey_s_c_reservation r = bkey_s_c_to_reservation(k);
+ > 386		int ret = 0;
+   387	
+   388		bkey_fsck_err_on(!r.v->nr_replicas || r.v->nr_replicas > BCH_REPLICAS_MAX, c, err,
+   389				 reservation_key_nr_replicas_invalid,
+   390				 "invalid nr_replicas (%u)", r.v->nr_replicas);
+   391	fsck_err:
+ > 392		return ret;
+   393	}
+   394	
 
-FWIW good netdevice drivers have a selftest which tests IRQ generation
-and EQ handling. I think that'd cover the case you're describing?
-IDK if mlx5 has them, but if it doesn't definitely worth adding. And I
-recommend running those on suspicious machines (ethtool -t, devlink has
-some selftests, too)
-
-> Firstly, We believe in working upstream and all of the advantages that
-> that brings to all the distros as well as to us and our customers.
-> 
-> Secondly, Our cloud business offers many types of machine instances,
-> some with bare metal/vfio mlx5 devices, that require customer driven
-> debug and we want our customers to have the freedom to choose which OS
-> they want to use.
-
-I understand that having everything packaged and shipped together makes
-life easier.
-
-If the point of the kernel at this stage of its evolution is to collect
-incompatible bits of vendor software, make sure they build cleanly and
-ship them to distros - someone should tell me, and I will relent.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
