@@ -2,249 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C224807472
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6F4807477
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442638AbjLFQDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:03:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
+        id S1442653AbjLFQEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:04:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442633AbjLFQDP (ORCPT
+        with ESMTP id S1442566AbjLFQD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:03:15 -0500
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D995D67;
-        Wed,  6 Dec 2023 08:03:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:subject:date:message-id:reply-to;
-        bh=vJ/pwGTcXghojupcHlhsJ+O+adwwtKaY3EtZtLgWwj4=; b=lu0POH03YqJpJl4P/aOORZST4b
-        MLVt/OCuadSGvLGsSWD+3uYtNjuKlkxM+R/C6fLdsmz3GaADLQ29dOPluEd3sDD98Jo4YidA73hhy
-        P+ocsEmuk/BH+TLJizPkTnGnDhUkUrBShA8O8wzCQTXXfXdi0l8MdvQgmfyFipQI1SZ0=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:39388 helo=pettiford.lan)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1rAuMj-0005Bw-52; Wed, 06 Dec 2023 11:03:14 -0500
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        leoyang.li@nxp.com, robh@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, hugo@hugovil.com,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Date:   Wed,  6 Dec 2023 11:03:03 -0500
-Message-Id: <20231206160303.33185-4-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231206160303.33185-1-hugo@hugovil.com>
-References: <20231206160303.33185-1-hugo@hugovil.com>
+        Wed, 6 Dec 2023 11:03:57 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DA3DC
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:03:55 -0800 (PST)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B67KtYi002302;
+        Wed, 6 Dec 2023 10:03:24 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        PODMain02222019; bh=foiFmzUEqVJ/nGA5Ch+P7eFl69ST9qdDwFB3DwnmLsM=; b=
+        Z/SsmbJSKBb8eM74KWZBiOcV9HXnb62a+W6K9v0FeQy1X0W0wpieinlPnoyqmKf0
+        9Bo0Xgo/DfDt+1heRifZEf4qknO1HyzA2mhJf69RJYLrKeH8Mnyxf+f0dudWCcmy
+        XlacSTHAlj4EIgASTtJvCT7yRMPTqs6gbkuvuZYAmlLg/WzIbNyYPvuxmjrVt0S3
+        PGQp7j2wGP0IEKuTTFrxKHY4g5kDGjC0bBamMfQmu0VFoqHiJ/QpAiiwwfY7pyT3
+        11Ye8CdOQrGr0A71m5KJl+LMM+1dX5gEFzViapawS8C67K/5dTHru8ScJ5BpUeFk
+        PG5UJ7IndaqgsyqBXu+0Uw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3utd1w8x5j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Dec 2023 10:03:24 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Dec
+ 2023 16:03:22 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
+ Transport; Wed, 6 Dec 2023 16:03:22 +0000
+Received: from ricardo-lws.crystal.cirrus.com (ricardo-lws.ad.cirrus.com [141.131.145.40])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AF91511AB;
+        Wed,  6 Dec 2023 16:03:20 +0000 (UTC)
+From:   Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
+To:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC:     Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/3] ASoC: cs35l45: Use modern pm_ops
+Date:   Wed, 6 Dec 2023 10:03:16 -0600
+Message-ID: <20231206160318.1255034-2-rriveram@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231206160318.1255034-1-rriveram@opensource.cirrus.com>
+References: <20231206160318.1255034-1-rriveram@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+Content-Type: text/plain
+X-Proofpoint-GUID: _Kgy0evTf8WtsM92-AuIIBWRghTlZrZZ
+X-Proofpoint-ORIG-GUID: _Kgy0evTf8WtsM92-AuIIBWRghTlZrZZ
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-Subject: [PATCH 3/3] arm64: dts: freescale: introduce dimonoff-gateway-evk board
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Make use of the recently introduced EXPORT_GPL_DEV_PM_OPS() macro, to
+conditionally export the runtime/system PM functions.
 
-The Dimonoff gateway EVK board is based on a Variscite
-VAR-SOM-NANO, with a NXP MX8MN nano CPU and also based on a Symphony
-mx8mn EVK.
+Replace the old SET_{RUNTIME,SYSTEM_SLEEP,NOIRQ_SYSTEM_SLEEP}_PM_OPS()
+helpers with their modern alternatives and get rid of the now
+unnecessary '__maybe_unused' annotations on all PM functions.
 
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Additionally, use the pm_ptr() macro to fix the following errors when
+building with CONFIG_PM disabled:
+
+Signed-off-by: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../freescale/imx8mn-dimonoff-gateway-evk.dts | 159 ++++++++++++++++++
- 2 files changed, 160 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-dimonoff-gateway-evk.dts
+ sound/soc/codecs/cs35l45-i2c.c | 2 +-
+ sound/soc/codecs/cs35l45-spi.c | 2 +-
+ sound/soc/codecs/cs35l45.c     | 9 ++++-----
+ 3 files changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index d22e4f4f886d..1f29215ea9bb 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -97,6 +97,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-tqma8mqml-mba8mx-lvds-tm070jvhg33.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-beacon-kit.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-bsh-smm-s2.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-bsh-smm-s2pro.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx8mn-dimonoff-gateway-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr3l-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-dimonoff-gateway-evk.dts b/arch/arm64/boot/dts/freescale/imx8mn-dimonoff-gateway-evk.dts
-new file mode 100644
-index 000000000000..c4572be437bd
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-dimonoff-gateway-evk.dts
-@@ -0,0 +1,159 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2022 DimOnOff
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/usb/pd.h>
-+#include "imx8mn-var-som-symphony.dts"
-+
-+/ {
-+	model = "DimOnOff Gateway EVK board";
-+	compatible = "dimonoff,dimonoff-gateway-evk", "variscite,var-som-mx8mn", "fsl,imx8mn";
-+
-+	/*
-+	 * U30 FPF2193 regulator.
-+	 * Source = BASE_PER_3V3 = SOM_3V3 (COM pin 49).
-+	 */
-+	reg_disp_3v3: regulator-disp-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "Display 3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_gpio_keys>;
-+
-+		key-enter {
-+			label = "enter";
-+			gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_ENTER>;
-+			wakeup-source;
-+		};
-+	};
-+
-+	/* Bourns PEC12R rotary encoder, 24 steps. */
-+	rotary: rotary-encoder {
-+		compatible = "rotary-encoder";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_rotary>;
-+		gpios = <&gpio5 12 GPIO_ACTIVE_LOW>, /* A */
-+			<&gpio5 13 GPIO_ACTIVE_LOW>; /* B */
-+		linux,axis = <0>; /* REL_X */
-+		rotary-encoder,encoding = "gray";
-+		rotary-encoder,relative-axis;
-+	};
-+};
-+
-+/* Disable Asynchronous Sample Rate Converter (audio) */
-+&easrc {
-+	status = "disabled";
-+};
-+
-+&ecspi1 {
-+	/* Resistive touch controller */
-+	/delete-node/ touchscreen@0;
-+};
-+
-+&gpu {
-+	status = "disabled";
-+};
-+
-+&i2c2 {
-+	adc@48 {
-+		compatible = "ti,ads7924";
-+		reg = <0x48>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_adc>;
-+		vref-supply = <&reg_disp_3v3>;
-+		reset-gpios = <&gpio5 5 GPIO_ACTIVE_LOW>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		channel@0 {
-+			reg = <0>;
-+			label = "Pot0";
-+		};
-+		channel@1 {
-+			reg = <1>;
-+			label = "Pot1";
-+		};
-+		channel@2 {
-+			reg = <2>;
-+			label = "Pot2";
-+		};
-+		channel@3 {
-+			reg = <3>;
-+			label = "Pot3";
-+		};
-+	};
-+
-+	rtc@51 {
-+		compatible = "nxp,pcf2129";
-+		reg = <0x51>;
-+		reset-source; /* For watchdog. */
-+	};
-+
-+	rtc@53 {
-+		compatible = "nxp,pcf2131";
-+		reg = <0x53>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_rtc>;
-+		reset-source; /* For watchdog. */
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <10 IRQ_TYPE_EDGE_FALLING>; /* J17.6 on EVK */
-+	};
-+};
-+
-+&i2c3 {
-+	touchscreen@38 {
-+		status = "disabled";
-+	};
-+
-+	codec@1a {
-+		status = "disabled";
-+	};
-+
-+	/* DS1337 RTC module */
-+	rtc@68 {
-+		status = "disabled";
-+	};
-+};
-+
-+&sai5 {
-+	status = "disabled";
-+};
-+
-+&iomuxc {
-+	pinctrl_gpio_keys: gpiokeysgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO08_GPIO1_IO8	0xc6
-+		>;
-+	};
-+
-+	pinctrl_rotary: rotarygrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x00000156
-+			MX8MN_IOMUXC_ECSPI2_SS0_GPIO5_IO13	0x00000156
-+		>;
-+	};
-+
-+	pinctrl_adc: adcgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_SPDIF_EXT_CLK_GPIO5_IO5	0x00000156
-+		>;
-+	};
-+
-+	pinctrl_rtc: rtcgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_ECSPI2_SCLK_GPIO5_IO10	0x00000156
-+			MX8MN_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x00000156
-+		>;
-+	};
-+};
+diff --git a/sound/soc/codecs/cs35l45-i2c.c b/sound/soc/codecs/cs35l45-i2c.c
+index 77e0f8750f37..bc2af1ed0fe9 100644
+--- a/sound/soc/codecs/cs35l45-i2c.c
++++ b/sound/soc/codecs/cs35l45-i2c.c
+@@ -62,7 +62,7 @@ static struct i2c_driver cs35l45_i2c_driver = {
+ 	.driver = {
+ 		.name		= "cs35l45",
+ 		.of_match_table = cs35l45_of_match,
+-		.pm		= &cs35l45_pm_ops,
++		.pm		= pm_ptr(&cs35l45_pm_ops),
+ 	},
+ 	.id_table	= cs35l45_id_i2c,
+ 	.probe		= cs35l45_i2c_probe,
+diff --git a/sound/soc/codecs/cs35l45-spi.c b/sound/soc/codecs/cs35l45-spi.c
+index 5efb77530cc3..39e203a5f060 100644
+--- a/sound/soc/codecs/cs35l45-spi.c
++++ b/sound/soc/codecs/cs35l45-spi.c
+@@ -64,7 +64,7 @@ static struct spi_driver cs35l45_spi_driver = {
+ 	.driver = {
+ 		.name		= "cs35l45",
+ 		.of_match_table = cs35l45_of_match,
+-		.pm		= &cs35l45_pm_ops,
++		.pm		= pm_ptr(&cs35l45_pm_ops),
+ 	},
+ 	.id_table	= cs35l45_id_spi,
+ 	.probe		= cs35l45_spi_probe,
+diff --git a/sound/soc/codecs/cs35l45.c b/sound/soc/codecs/cs35l45.c
+index b68853e42fd1..4f4df166f5f0 100644
+--- a/sound/soc/codecs/cs35l45.c
++++ b/sound/soc/codecs/cs35l45.c
+@@ -982,7 +982,7 @@ static int cs35l45_exit_hibernate(struct cs35l45_private *cs35l45)
+ 	return -ETIMEDOUT;
+ }
+ 
+-static int __maybe_unused cs35l45_runtime_suspend(struct device *dev)
++static int cs35l45_runtime_suspend(struct device *dev)
+ {
+ 	struct cs35l45_private *cs35l45 = dev_get_drvdata(dev);
+ 
+@@ -999,7 +999,7 @@ static int __maybe_unused cs35l45_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int __maybe_unused cs35l45_runtime_resume(struct device *dev)
++static int cs35l45_runtime_resume(struct device *dev)
+ {
+ 	struct cs35l45_private *cs35l45 = dev_get_drvdata(dev);
+ 	int ret;
+@@ -1466,10 +1466,9 @@ void cs35l45_remove(struct cs35l45_private *cs35l45)
+ }
+ EXPORT_SYMBOL_NS_GPL(cs35l45_remove, SND_SOC_CS35L45);
+ 
+-const struct dev_pm_ops cs35l45_pm_ops = {
+-	SET_RUNTIME_PM_OPS(cs35l45_runtime_suspend, cs35l45_runtime_resume, NULL)
++EXPORT_GPL_DEV_PM_OPS(cs35l45_pm_ops) = {
++	RUNTIME_PM_OPS(cs35l45_runtime_suspend, cs35l45_runtime_resume, NULL)
+ };
+-EXPORT_SYMBOL_NS_GPL(cs35l45_pm_ops, SND_SOC_CS35L45);
+ 
+ MODULE_DESCRIPTION("ASoC CS35L45 driver");
+ MODULE_AUTHOR("James Schulman, Cirrus Logic Inc, <james.schulman@cirrus.com>");
 -- 
-2.39.2
+2.34.1
 
