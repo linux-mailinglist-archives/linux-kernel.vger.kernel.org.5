@@ -2,144 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA1F8076B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5AD8076BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442593AbjLFRhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:37:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58666 "EHLO
+        id S1379706AbjLFRhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:37:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379706AbjLFRhB (ORCPT
+        with ESMTP id S1379719AbjLFRhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:37:01 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478BB135
+        Wed, 6 Dec 2023 12:37:02 -0500
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48DDD40
         for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 09:37:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C073BC433C8;
-        Wed,  6 Dec 2023 17:37:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701884226;
-        bh=RwGl1RcbRMFQzj6CBreX5lxtcFVvuIjpzUngRG0hqos=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eR0IQyF+WPhSu4l5rp7kF48UTVIGmAiTFX/GMhnMPr0B0/ZVqF++kGvQNdoDpe+as
-         zBJQw36pOwMnt9UxEvj74ihTS9/HKIhX1RIlEnF/TYlmqmDPXqtWmn68iYoYW2XL+w
-         CvF6iT4uJmozZrYFNjHZc6IcH+t0PqmEl8A2hc+IPcLoINiAmobLlS/8+TOc7ZL7PW
-         SWwf6qcGPKUNI+GKVDwsxdcew8exJFK4HP+qmiOteQRomkA0RYU3hSrqaamwrK4SrN
-         DYWZ7b6bPIyIc4cNzl634W55cdqpIlKeYB1xBJfPNOF2VE10OCDoMHcbhqj4K97uXZ
-         BHMccci2Ama6g==
-Date:   Wed, 6 Dec 2023 17:36:58 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Abdel Alkuor <alkuor@gmail.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        lars@metafoo.de, conor+dt@kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] iio: temperature: Add support for AMS AS6200
-Message-ID: <20231206173658.57b00a49@jic23-huawei>
-In-Reply-To: <ZW6IArKhx4KvxyTD@abdel>
-References: <20231202041651.719963-1-alkuor@gmail.com>
-        <20231202041651.719963-2-alkuor@gmail.com>
-        <20231204135014.15ea47b6@jic23-huawei>
-        <ZW6IArKhx4KvxyTD@abdel>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-58d5979c676so4462754eaf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 09:37:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701884227; x=1702489027; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l8r+v6tMeUDCVlJaWSk9+hoM+kWRX7cXcWkYHpDL0vQ=;
+        b=m9awIHJbuXZdlC2WQz593Dy9S6gXrBkf4JMMeqkJPhbn5PtIlXvrS3m/va+zmYL7WT
+         rMydSRMfn+37OfdRq1zw5VEocB68uy1kTWt5yX1lDWA/etC8xp4eqkGfo/fF7znB93hk
+         npGfhzoTYWMJsukxgjCgnB5DPHkQYzNiLgoKLlYZPsdbb4/tVBntUq0VtBf20jwxzthY
+         8fa3XjR5nZ/9d2m1igWXpmPeK/cU0m9Kb6J/86QlhUfTes07F3LnLsuo85orwiQQhvE/
+         2P0XYzd6YiQo8//Lf+f+5gvi9+wT/Hc3Lt1kg4HmiHujpGQOUto5Pw17pUBp5qe4Y/nK
+         yn0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701884227; x=1702489027;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l8r+v6tMeUDCVlJaWSk9+hoM+kWRX7cXcWkYHpDL0vQ=;
+        b=jSjuQ3EbSjWomMOo6uqUeiXBL+hc4M4sBYWZN5Hj/8k6TqQMwku0ptxp9NmFf9eemW
+         hmkpeSRQtn8xad/agGLQbnpruO9qHnlevZORbogvVjmz94WN3owbIG6Rc3cXRgiLvQBS
+         x6FSSRKmaj5fCvWrlxaVTLK9r+MOafLTLEgNJ06NS6rXYF3a0o02/wbs+RfD3PKO7DbA
+         ZFtdQ47oX8Xn5VW7DDn0cbaEJlY6b2XT4N6Zijx0xvTH2t8JlHQa9q2MnPavUauoQivP
+         wG1Q/rAb+eS6THMcYmYX6q34Ng7DMssRJiA9GPKx03/osbRBr+8ERNeOo/EbOIRijO01
+         /8ZA==
+X-Gm-Message-State: AOJu0YyJDGSjuXBuKJzfepC3NI0YmYm4C08cQuHhjui+4WxWR7zIkZht
+        0VCnGBBdp4KhjHznlmsAcpk=
+X-Google-Smtp-Source: AGHT+IEcMG1ujmNbsAkgAGFMm3Dqk6uL+Gee6W1iN+ec3nLV0x0pzvSwek5MJNSKRawI6CUz4TMiBA==
+X-Received: by 2002:a05:6358:e49f:b0:16f:eb57:af02 with SMTP id by31-20020a056358e49f00b0016feb57af02mr1610911rwb.16.1701884226626;
+        Wed, 06 Dec 2023 09:37:06 -0800 (PST)
+Received: from Mahakal ([2401:4900:1f29:c257:c420:b0b9:2714:1ae5])
+        by smtp.gmail.com with ESMTPSA id s28-20020a63af5c000000b0059d34fb9ccasm175837pgo.2.2023.12.06.09.37.03
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 06 Dec 2023 09:37:06 -0800 (PST)
+Date:   Wed, 6 Dec 2023 23:07:00 +0530
+From:   "<Vishal Badole>" <badolevishal1116@gmail.com>
+To:     peterz@infradead.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mintu Patel <mintupatel89@gmail.com>,
+        chinmoyghosh2001@gmail.com, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org, vimal.kumar32@gmail.com,
+        will@kernel.org
+Subject: Re: [PATCH v2] rt_spin_lock: To list the correct owner of
+ rt_spin_lock
+Message-ID: <20231206173659.GA8874@Mahakal>
+References: <20220619142038.1274-1-mintupatel89@gmail.com>
+ <20220627161136.3468-1-mintupatel89@gmail.com>
+ <20220708162158.03c82f47@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220708162158.03c82f47@gandalf.local.home>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FROM_MISSP_FREEMAIL,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,TO_NO_BRKTS_FROM_MSSP,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Dec 2023 21:16:34 -0500
-Abdel Alkuor <alkuor@gmail.com> wrote:
-
-> On Mon, Dec 04, 2023 at 01:50:14PM +0000, Jonathan Cameron wrote:
-> > On Fri,  1 Dec 2023 23:16:51 -0500
-> > Abdel Alkuor <alkuor@gmail.com> wrote:
-> >   
-> > > as6200 is a high accuracy temperature sensor of 0.0625C with a range
-> > > between -40 to 125 Celsius degrees.
-> > > 
-> > > The driver implements the alert trigger event in comparator mode where
-> > > consecutive faults are converted into periods, high/low temperature
-> > > thresholds require to be above/below the set limit for n seconds for
-> > > the alert to be triggered/cleared. The alert is only cleared when the
-> > > current temperature is below the low temperature threshold for n seconds.
-> > > 
-> > > The driver supports the following:
-> > > - show available sampling frequencey
-> > > - read/write sampling frequency
-> > > - read raw temperature
-> > > - read scaling factor
-> > > - read/write temperature period that needs to be met for low/high
-> > >   temperature thresholds to trigger an alert
-> > > - show available temperature period thresholds
-> > > - buffer trigger
-> > > - temperature alert event trigger  
+On Fri, Jul 08, 2022 at 04:21:58PM -0400, Steven Rostedt wrote:
+> On Mon, 27 Jun 2022 21:41:38 +0530
+> Mintu Patel <mintupatel89@gmail.com> wrote:
+> 
+> Hi Mintu,
+> 
+> FYI, a v2 should never be a reply to the v1. It should always start its own
+> thread, otherwise tooling and such will miss it.
+> 
+> >    rt_spin_lock is actually mutex on RT Kernel so it goes for contention
+> >    for lock. Currently owners of rt_spin_lock are decided before actual
+> >    acquiring of lock. This patch would depict the correct owner of
+> >    rt_spin_lock. The patch would help in solving crashes and deadlock
+> >    due to race condition of lock
 > > 
-> > Hi Abdel,
+> > acquiring rt_spin_lock        acquired the lock       released the lock
+> >                     <-------->                <------->
+> >                     contention period         Held period
 > > 
-> > A few comments inline. Looking good in general.
+> > Thread1                             Thread2
+> > _try_to_take_rt_mutex+0x95c+0x74    enqueue_task_dl+0x8cc/0x8dc
+> > rt_spin_lock_slowlock_locked+0xac+2 rt_mutex_setprio+0x28c/0x574
+> > rt_spin_lock_slowlock+0x5c/0x90     task_blocks_rt_mutex+0x240/0x310
+> > rt_spin_lock+0x58/0x5c              rt_spin_lock_slowlock_locked+0xac/0x2
+> > driverA_acquire_lock+0x28/0x56      rt_spin_lock_slowlock+0x5c/0x90
+> > 				    rt_spin_lock+0x58/0x5c
+> >                                     driverB_acquire_lock+0x48/0x6c
+> > 
+> > As per above call traces sample, Thread1 acquired the rt_spin_lock and
+> > went to critical section on the other hand Thread2 kept trying to acquire
+> > the same rt_spin_lock held by Thread1 ie contention period is too high.
+> > Finally Thread2 entered to dl queue due to high held time of the lock by
+> > Thread1. The below patch would help us to know the correct owner of
+> > rt_spin_lock and point us the driver's critical section. Respective
+> > driver need to be debugged for longer held period of lock.
+> > 
+> >    ex: cat /sys/kernel/debug/tracing/trace
+> > 
+> >    kworker/u13:0-150   [003] .....11   202.761025: rt_spinlock_acquire:
+> > Process: kworker/u13:0 is acquiring lock: &kbdev->hwaccess_lock
+> >    kworker/u13:0-150   [003] .....11   202.761039: rt_spinlock_acquired:
+> > Process: kworker/u13:0 has acquired lock: &kbdev->hwaccess_lock
+> >    kworker/u13:0-150   [003] .....11   202.761042: rt_spinlock_released:
+> > Process: kworker/u13:0 has released lock: &kbdev->hwaccess_lock
+> > 
+> > Signed-off-by: Mintu Patel <mintupatel89@gmail.com>
+> > Signed-off-by: Chinmoy Ghosh <chinmoyghosh2001@gmail.com>
+> > Signed-off-by: Vishal Badole <badolevishal1116@gmail.com>
+> > Signed-off-by: Vimal Kumar <vimal.kumar32@gmail.com>
+> > ---
+> >  include/trace/events/lock.h     | 38 +++++++++++++++++++++++++++++++++
+> >  kernel/locking/rtmutex.c        |  4 ++++
+> >  kernel/locking/rtmutex_common.h | 14 ++++++++++++
+> >  3 files changed, 56 insertions(+)
+> > 
+> > diff --git a/include/trace/events/lock.h b/include/trace/events/lock.h
+> > index d7512129a324..0564474341c8 100644
+> > --- a/include/trace/events/lock.h
+> > +++ b/include/trace/events/lock.h
+> > @@ -36,6 +36,44 @@ TRACE_EVENT(lock_acquire,
+> >  		  __get_str(name))
+> >  );
 > >  
-> Hi Jonathon,
-> 
-> Thank you for your time. I have a couple _silly_ questions about the tag
-> and returning from if else. Other than that, your comments will be addressed
-> in v3.
-> > > 
-> > > Datasheet: https://ams.com/documents/20143/36005/AS6200_DS000449_4-00.pdf
-> > >   
-> > 
-> > No blank line here.  Tags block (and Datasheet is a tag) never has blank lines
-> > as that breaks some existing tooling.
-> >   
-> Understood. 
-> 
-> P.S. when running checkpatch.pl on this patch, I get the following warning:
-> 
-> WARNING: Unknown link reference 'Datasheet:', use 'Link:' or 'Closes:' instead
-> 
-> should I use Link instead?
-
-Nah. Just ignore checkpatch. :)
-
-Also, if just accepting a comment, no need to say so.  Assumption of reviewer
-is that if you keep quiet on a particular comment you will have it fixed in next
-version.  Crop out that section of the email and only keep the bits that
-you want the reviewer to see your comments on.
-
-Hopefully I've cropped it appropriately!
-
-> > > Signed-off-by: Abdel Alkuor <alkuor@gmail.com>
-> > > +	if (info == IIO_EV_INFO_VALUE) {
-> > > +		*val = sign_extend32(FIELD_GET(AS6200_TEMP_MASK, tmp), 11);
-> > > +		ret = IIO_VAL_INT;  
-> > return here.
-> >   
-> > > +	} else {
-> > > +		cf = FIELD_GET(AS6200_CONFIG_CF, tmp);
-> > > +		cr = FIELD_GET(AS6200_CONFIG_CR, tmp);
-> > > +		*val = as6200_temp_thresh_periods[cr][cf][0];
-> > > +		*val2 = as6200_temp_thresh_periods[cr][cf][1];
-> > > +		ret = IIO_VAL_INT_PLUS_MICRO;  
-> > 
-> > and here.  If there is nothing more to be done, it simplifies the code
-> > flow being read to just return as quick as possible.
+> > +DECLARE_EVENT_CLASS(rt_lock_class,
+> > +
+> > +	TP_PROTO(struct lockdep_map *lock, struct task_struct *pname),
+> > +
+> > +	TP_ARGS(lock, pname),
+> > +
+> > +	TP_STRUCT__entry(
+> > +		__string(name, lock->name)
+> > +		__string(process_name, pname->comm)
+> > +	),
+> > +
+> > +	TP_fast_assign(
+> > +		__assign_str(name, lock->name);
+> > +		__assign_str(process_name, pname->comm);
+> > +	),
+> > +
+> > +	TP_printk("Process: %s is acquiring lock: %s", __get_str(process_name),
+> > +		__get_str(name))
+> > +);
+> > +
+> > +DEFINE_EVENT(rt_lock_class, rt_spinlock_acquire,
+> > +	TP_PROTO(struct lockdep_map *lock, struct task_struct *pname),
+> > +	TP_ARGS(lock, pname));
+> > +
+> > +DEFINE_EVENT_PRINT(rt_lock_class, rt_spinlock_acquired,
+> > +	TP_PROTO(struct lockdep_map *lock, struct task_struct *pname),
+> > +	TP_ARGS(lock, pname),
+> > +	TP_printk("Process: %s has acquired lock: %s", __get_str(process_name),
+> > +		__get_str(name))
+> > +	);
+> > +
+> > +DEFINE_EVENT_PRINT(rt_lock_class, rt_spinlock_released,
+> > +	TP_PROTO(struct lockdep_map *lock, struct task_struct *pname),
+> > +	TP_ARGS(lock, pname),
+> > +	TP_printk("Process: %s has released lock: %s", __get_str(process_name),
+> > +		__get_str(name))
+> > +	);
+> > +
+> >  DECLARE_EVENT_CLASS(lock,
 > >  
-> I did it as you mentioned, and when running check_patch.pl, it gives back a
-> warning that else is not needed here because of the return in the if
-> statement. So I opted into using ret instead, should I remove the else or ignore
-> the warning?
+> >  	TP_PROTO(struct lockdep_map *lock, unsigned long ip),
+> > diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+> > index 602eb7821a1b..80ba2c0d7923 100644
+> > --- a/kernel/locking/rtmutex.c
+> > +++ b/kernel/locking/rtmutex.c
+> > @@ -26,6 +26,7 @@
+> >  #include <linux/timer.h>
+> >  #include <linux/ww_mutex.h>
+> >  #include <linux/blkdev.h>
+> > +#include <trace/events/lock.h>
+> >  
+> >  #include "rtmutex_common.h"
+> >  
+> > @@ -1144,7 +1145,9 @@ void __lockfunc rt_spin_lock(spinlock_t *lock)
+> >  	rcu_read_lock();
+> >  	migrate_disable();
+> >  	spin_acquire(&lock->dep_map, 0, 0, _RET_IP_);
+> > +	do_trace_rt_spinlock_acquire(lock, current);
+> >  	rt_spin_lock_fastlock(&lock->lock, rt_spin_lock_slowlock);
+> > +	do_trace_rt_spinlock_acquired(lock, current);
+> >  }
+> >  EXPORT_SYMBOL(rt_spin_lock);
+> >  
+> > @@ -1169,6 +1172,7 @@ void __lockfunc rt_spin_unlock(spinlock_t *lock)
+> >  {
+> >  	/* NOTE: we always pass in '1' for nested, for simplicity */
+> >  	spin_release(&lock->dep_map, 1, _RET_IP_);
+> > +	do_trace_rt_spinlock_released(lock, current);
+> >  	rt_spin_lock_fastunlock(&lock->lock, rt_spin_lock_slowunlock);
+> >  	migrate_enable();
+> >  	rcu_read_unlock();
+> > diff --git a/kernel/locking/rtmutex_common.h b/kernel/locking/rtmutex_common.h
+> > index 546aaf058b9e..185ffc1e7015 100644
+> > --- a/kernel/locking/rtmutex_common.h
+> > +++ b/kernel/locking/rtmutex_common.h
+> > @@ -25,6 +25,20 @@
+> >   * @pi_tree_entry:	pi node to enqueue into the mutex owner waiters tree
+> >   * @task:		task reference to the blocked task
+> >   */
+> > +
+> > +#ifdef CONFIG_RT_SPIN_LOCK_TRACING
+> > +#define do_trace_rt_spinlock_acquire(lock, task) \
+> > +	trace_rt_spinlock_acquire(&lock->dep_map, task)
+> > +#define do_trace_rt_spinlock_acquired(lock, task) \
+> > +	trace_rt_spinlock_acquired(&lock->dep_map, task)
+> > +#define do_trace_rt_spinlock_released(lock, task) \
+> > +	trace_rt_spinlock_released(&lock->dep_map, task)
+> > +#else
+> > +#define do_trace_rt_spinlock_acquire(lock, task) do {} while(0)
+> > +#define do_trace_rt_spinlock_acquired(lock, task) do {} while(0)
+> > +#define do_trace_rt_spinlock_released(lock, task) do {} while(0)
+> > +#endif
+> > +
+> 
+> Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> 
+> Although it will need to be accepted by Peter Zijlstra.
+> 
+> -- Steve
+> 
+> 
+> >  struct rt_mutex_waiter {
+> >  	struct rb_node          tree_entry;
+> >  	struct rb_node          pi_tree_entry;
+>
+Hi Peter,
+Could you please review this patch.
 
-Dropping the else is fine or take the view it's wrong and ignore it.
-Checkpatch is providing hints and suggestions on where to double check.
-There is no requirement to accept it's suggestions if you feel the
-code ends up less readable.
-
-> > > +	}
-> > > +
-> > > +	return ret;
+Regards,
+Vishal Badole
