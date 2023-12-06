@@ -2,119 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0778069F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 366868069FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:43:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377177AbjLFIlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 03:41:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52200 "EHLO
+        id S1376940AbjLFInI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 03:43:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjLFIlh (ORCPT
+        with ESMTP id S229459AbjLFInF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 03:41:37 -0500
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45ACBA1;
-        Wed,  6 Dec 2023 00:41:42 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5FDD220004;
-        Wed,  6 Dec 2023 08:41:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701852100;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pXU57gWotBm7I/l7GKsWF7uvDD3oXFTjUZ5xXd0u10A=;
-        b=ETqbu50vQezP1pXb8hRNCEfD9UrHVYkoav5rUn+OJ+r1F1ZiC6lrr5IATcOV/SRpBJmw3u
-        GyTIlXdyfIqs4MUz5OEYMchaKsBxOVvJltxI0rXq9OUipwfsZFnui9CG3UqFKxP2pYkhWH
-        TR/0/7EG4texGUEY91r3VRox3vwS3IUd4clRgkToG/ml9Ema3JE2lGFiHqj7EnRxhMCBCP
-        Hz07fNdW+BFp4qASZck2gNCF1NT2YwYbXwF8Hgs32pT3DxKxg57k2Sw/iM5dxEODTPlHCH
-        Zl07LYFpAxqGSE1GdRVRvtRC4LWKZcZzOAh8NUc7lEXJngm2ORqbSN5Ac7figg==
-Date:   Wed, 6 Dec 2023 09:41:36 +0100
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v2 8/8] net: pse-pd: Add PD692x0 PSE controller
- driver
-Message-ID: <20231206094136.4e0b10eb@kmaincent-XPS-13-7390>
-In-Reply-To: <e6752370-7aba-4b47-90ff-7896a49ba84b@wanadoo.fr>
-References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
-        <20231201-feature_poe-v2-8-56d8cac607fa@bootlin.com>
-        <6eeead27-e1b1-48e4-8a3b-857e1c33496b@wanadoo.fr>
-        <20231204231655.19baa1a4@kmaincent-XPS-13-7390>
-        <e6752370-7aba-4b47-90ff-7896a49ba84b@wanadoo.fr>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 6 Dec 2023 03:43:05 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C58B1A2;
+        Wed,  6 Dec 2023 00:43:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701852191; x=1733388191;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qIdN+b2rLjTnQPYTeBHnfLQ8YM9/DljqKcBdpdxf2tc=;
+  b=KhipxHYxtQfkGpEXMcbRXpeq4pIEEO44i60kPdSKGfTah6wgvSTd0CDV
+   MWA0tagCzSEjo50cwScInpGgSBAywdLezmZSOIZSWGC6mRIA8RBIbdOrF
+   2HvM6HxrBeqIQnm970w5wFfOdMcl0KyKXXY+6q9BUuVFYlnv03D5jPfTL
+   54VL/SnmfcqQUdGLHSDEygSExRf9xYmB/2sKwHeyUQI4cHyb/gq5zikOZ
+   +EUEvuZhorO23Yjb4ZwG2QA9xgCtMlP540ZcKdgnM9ygeXXUoAOj3wNLb
+   SAP2oa5CDnOnDuvoBMUZstifdODgwKOVyanZXYEVjJ8fhlwGuzBexk98+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="460518072"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="460518072"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 00:43:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="800271912"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="800271912"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 00:43:06 -0800
+Message-ID: <83f502c2-3649-425a-8f02-9cd460755e5b@linux.intel.com>
+Date:   Wed, 6 Dec 2023 16:43:04 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v17 018/116] KVM: TDX: x86: Add ioctl to get TDX
+ systemwide parameters
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        hang.yuan@intel.com, tina.zhang@intel.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1699368322.git.isaku.yamahata@intel.com>
+ <c0242f096fffd63d544c4fbdd3b2415ce94388c6.1699368322.git.isaku.yamahata@intel.com>
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <c0242f096fffd63d544c4fbdd3b2415ce94388c6.1699368322.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Dec 2023 19:01:47 +0100
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-> Le 04/12/2023 =C3=A0 23:16, K=C3=B6ry Maincent a =C3=A9crit=C2=A0:
-> > Thanks for your review!
-> >=20
-> > On Sun, 3 Dec 2023 22:11:46 +0100
-> > Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
-> >  =20
-> >>> +
-> >>> +	fwl =3D firmware_upload_register(THIS_MODULE, dev, dev_name(dev),
-> >>> +				       &pd692x0_fw_ops, priv);
-> >>> +	if (IS_ERR(fwl)) {
-> >>> +		dev_err(dev, "Failed to register to the Firmware Upload
-> >>> API\n");
-> >>> +		ret =3D PTR_ERR(fwl);
-> >>> +		return ret; =20
-> >>
-> >> Nit: return dev_err_probe()? =20
-> >=20
-> > No EPROBE_DEFER error can be catch from firmware_upload_register()
-> > function, so it's not needed. =20
->=20
-> Hi,
->=20
-> up to you to take it or not, but dev_err_probe() also logs the error=20
-> code in a human readable way and it saves a few lines of code.
->=20
-> If I remember correctly, it also saves some bytes in the .o file.
 
-Oh, didn't know that.
+On 11/7/2023 10:55 PM, isaku.yamahata@intel.com wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>
+> Implement an ioctl to get system-wide parameters for TDX.  Although the
+> function is systemwide, vm scoped mem_enc ioctl works for userspace VMM
+> like qemu and device scoped version is not define, re-use vm scoped
+> mem_enc.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+> v14 -> v15:
+> - ABI change: added supported_gpaw and reserved area,
+> ---
+>   arch/x86/include/uapi/asm/kvm.h       | 24 ++++++++++
+>   arch/x86/kvm/vmx/tdx.c                | 64 +++++++++++++++++++++++++++
+>   tools/arch/x86/include/uapi/asm/kvm.h | 52 ++++++++++++++++++++++
+>   3 files changed, 140 insertions(+)
+>
+> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+> index 615fb60b3717..3fbd43d5177b 100644
+> --- a/arch/x86/include/uapi/asm/kvm.h
+> +++ b/arch/x86/include/uapi/asm/kvm.h
+> @@ -593,4 +593,28 @@ struct kvm_tdx_cmd {
+>   	__u64 error;
+>   };
+>   
+> +struct kvm_tdx_cpuid_config {
+> +	__u32 leaf;
+> +	__u32 sub_leaf;
+> +	__u32 eax;
+> +	__u32 ebx;
+> +	__u32 ecx;
+> +	__u32 edx;
+> +};
+> +
+> +struct kvm_tdx_capabilities {
+> +	__u64 attrs_fixed0;
+> +	__u64 attrs_fixed1;
+> +	__u64 xfam_fixed0;
+> +	__u64 xfam_fixed1;
+> +#define TDX_CAP_GPAW_48	(1 << 0)
+> +#define TDX_CAP_GPAW_52	(1 << 1)
+> +	__u32 supported_gpaw;
+> +	__u32 padding;
+> +	__u64 reserved[251];
+> +
+> +	__u32 nr_cpuid_configs;
+> +	struct kvm_tdx_cpuid_config cpuid_configs[];
+> +};
+> +
+>   #endif /* _ASM_X86_KVM_H */
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index ead229e34813..f9e80582865d 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -6,6 +6,7 @@
+>   #include "capabilities.h"
+>   #include "x86_ops.h"
+>   #include "x86.h"
+> +#include "mmu.h"
+>   #include "tdx.h"
+>   
+>   #undef pr_fmt
+> @@ -16,6 +17,66 @@
+>   		offsetof(struct tdsysinfo_struct, cpuid_configs))	\
+>   		/ sizeof(struct tdx_cpuid_config))
+>   
+> +static int tdx_get_capabilities(struct kvm_tdx_cmd *cmd)
+> +{
+> +	struct kvm_tdx_capabilities __user *user_caps;
+> +	const struct tdsysinfo_struct *tdsysinfo;
+> +	struct kvm_tdx_capabilities *caps = NULL;
+> +	int ret = 0;
+> +
+> +	BUILD_BUG_ON(sizeof(struct kvm_tdx_cpuid_config) !=
+> +		     sizeof(struct tdx_cpuid_config));
+> +
+> +	if (cmd->flags)
+> +		return -EINVAL;
+> +
+> +	tdsysinfo = tdx_get_sysinfo();
+> +	if (!tdsysinfo)
+> +		return -EOPNOTSUPP;
+> +
+> +	caps = kmalloc(sizeof(*caps), GFP_KERNEL);
+> +	if (!caps)
+> +		return -ENOMEM;
+> +
+> +	user_caps = (void __user *)cmd->data;
+> +	if (copy_from_user(caps, user_caps, sizeof(*caps))) {
+> +		ret = -EFAULT;
+> +		goto out;
+> +	}
+> +
+> +	if (caps->nr_cpuid_configs < tdsysinfo->num_cpuid_config) {
+> +		ret = -E2BIG;
+> +		goto out;
+> +	}
+> +
+> +	*caps = (struct kvm_tdx_capabilities) {
+> +		.attrs_fixed0 = tdsysinfo->attributes_fixed0,
+> +		.attrs_fixed1 = tdsysinfo->attributes_fixed1,
+> +		.xfam_fixed0 = tdsysinfo->xfam_fixed0,
+> +		.xfam_fixed1 = tdsysinfo->xfam_fixed1,
+> +		.supported_gpaw = TDX_CAP_GPAW_48 |
+> +		(kvm_get_shadow_phys_bits() >= 52 &&
+> +		 cpu_has_vmx_ept_5levels()) ? TDX_CAP_GPAW_52 : 0,
+> +		.nr_cpuid_configs = tdsysinfo->num_cpuid_config,
+> +		.padding = 0,
+> +	};
+> +
+> +	if (copy_to_user(user_caps, caps, sizeof(*caps))) {
+> +		ret = -EFAULT;
+> +		goto out;
+> +	}
+> +	if (copy_to_user(user_caps->cpuid_configs, &tdsysinfo->cpuid_configs,
+> +			 tdsysinfo->num_cpuid_config *
+> +			 sizeof(struct tdx_cpuid_config))) {
+> +		ret = -EFAULT;
+> +	}
+> +
+> +out:
+> +	/* kfree() accepts NULL. */
+> +	kfree(caps);
+> +	return ret;
+> +}
+> +
+>   int tdx_vm_ioctl(struct kvm *kvm, void __user *argp)
+>   {
+>   	struct kvm_tdx_cmd tdx_cmd;
+> @@ -29,6 +90,9 @@ int tdx_vm_ioctl(struct kvm *kvm, void __user *argp)
+>   	mutex_lock(&kvm->lock);
+>   
+>   	switch (tdx_cmd.id) {
+> +	case KVM_TDX_CAPABILITIES:
+> +		r = tdx_get_capabilities(&tdx_cmd);
+> +		break;
+>   	default:
+>   		r = -EINVAL;
+>   		goto out;
+> diff --git a/tools/arch/x86/include/uapi/asm/kvm.h b/tools/arch/x86/include/uapi/asm/kvm.h
+> index 1a6a1f987949..7a08723e99e2 100644
+> --- a/tools/arch/x86/include/uapi/asm/kvm.h
+> +++ b/tools/arch/x86/include/uapi/asm/kvm.h
 
-> Other than that, it is a matter of style.
+According to the discussion, Sean's preference is "never update KVM's
+uapi headers in tools/ in KVM's tree"
+https://lore.kernel.org/all/Y8bZ%2FJ98V5i3wG%2Fv@google.com/
 
-After some thought it seems indeed better, I will move on to dev_err_probe(=
-) in
-next version.
+> @@ -562,4 +562,56 @@ struct kvm_pmu_event_filter {
+>   /* x86-specific KVM_EXIT_HYPERCALL flags. */
+>   #define KVM_EXIT_HYPERCALL_LONG_MODE	BIT(0)
+>   
+> +/* Trust Domain eXtension sub-ioctl() commands. */
+> +enum kvm_tdx_cmd_id {
+> +	KVM_TDX_CAPABILITIES = 0,
+> +
+> +	KVM_TDX_CMD_NR_MAX,
+> +};
+> +
+> +struct kvm_tdx_cmd {
+> +	/* enum kvm_tdx_cmd_id */
+> +	__u32 id;
+> +	/* flags for sub-commend. If sub-command doesn't use this, set zero. */
+> +	__u32 flags;
+> +	/*
+> +	 * data for each sub-command. An immediate or a pointer to the actual
+> +	 * data in process virtual address.  If sub-command doesn't use it,
+> +	 * set zero.
+> +	 */
+> +	__u64 data;
+> +	/*
+> +	 * Auxiliary error code.  The sub-command may return TDX SEAMCALL
+> +	 * status code in addition to -Exxx.
+> +	 * Defined for consistency with struct kvm_sev_cmd.
+> +	 */
+> +	__u64 error;
+> +	/* Reserved: Defined for consistency with struct kvm_sev_cmd. */
+> +	__u64 unused;
+> +};
+> +
+> +struct kvm_tdx_cpuid_config {
+> +	__u32 leaf;
+> +	__u32 sub_leaf;
+> +	__u32 eax;
+> +	__u32 ebx;
+> +	__u32 ecx;
+> +	__u32 edx;
+> +};
+> +
+> +struct kvm_tdx_capabilities {
+> +	__u64 attrs_fixed0;
+> +	__u64 attrs_fixed1;
+> +	__u64 xfam_fixed0;
+> +	__u64 xfam_fixed1;
+> +#define TDX_CAP_GPAW_48		(1 << 0)
+> +#define TDX_CAP_GPAW_52		(1 << 1)
+> +	__u32 supported_gpaw;
+> +	__u32 padding;
+> +	__u64 reserved[251];
+> +
+> +	__u32 nr_cpuid_configs;
+> +	struct kvm_tdx_cpuid_config cpuid_configs[];
+> +};
+> +
+>   #endif /* _ASM_X86_KVM_H */
 
-Thanks,
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
