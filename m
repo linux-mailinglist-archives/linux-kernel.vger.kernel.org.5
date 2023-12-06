@@ -2,128 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B14806A7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD68806A80
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbjLFJNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:13:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38264 "EHLO
+        id S232259AbjLFJO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:14:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjLFJNU (ORCPT
+        with ESMTP id S229459AbjLFJO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:13:20 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F09610C1
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:13:25 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5c66b093b86so527182a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 01:13:25 -0800 (PST)
+        Wed, 6 Dec 2023 04:14:27 -0500
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AA31A2
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:14:32 -0800 (PST)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5d3758fdd2eso66219777b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 01:14:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701854005; x=1702458805; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=g6kf2y7bAp6mjq0zetlI4hRhT2xVJNGrhrzA1HJKDPA=;
-        b=gpERkhv/+oTpI7XNlBMfqZ0ORKXtIFGmPfHLK1fZlyGVMyCYcJ39UCeIyKLRRn5wPm
-         Tb21vfzg8zmt9MkCW0UM7ivkmIIFgiUdPpeB6a+A9cOtpVHieQLpx0FtUJjEqoxd6LH8
-         7FLT2gRDdW9tkgxRUB/Lcw4E3C4UiS73TCk5Ozk8ElKDcS3tqQOaj9EqycI/BzlvqNgJ
-         tNbvzSNc8KsYenz5jtMW52OuA5ZHvSAudHJCxeMJPzXL36PrQ3sn+4CyJIExdLTRbKiA
-         pxq8qk/6GTth7kQP7qwX2wU5QS2m7CoCZZhvhwEmCFf+qDEapILyxcBMPnaKwQBUTo2G
-         PERA==
+        d=linaro.org; s=google; t=1701854072; x=1702458872; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qlCErtIVhbxcjY7zXRIxndr41fNa6EZG3xUiEtLYnTA=;
+        b=pVUsCjQT/XUVIu6Pgk10lTZ7nlo77UOtsMPt0xY7HIaoLdYoKZB4rBgYfH/SFj0hLJ
+         Ga4ll5M4ZE9s4pjMpHe4oeWJBpeG/7khjTNilaGFI0NBBsgWOB8zdekrDrL6SfcXds8u
+         NOwpMK/TZXG82aTkIcJbW8lfo1OzkW/P+/d9s1Xco6AU0RWW1neNy8OFAMmbIDTrbN+9
+         NGmQoEFTFQ/IX47L39GaPIE6xxz38MY2x+b+oWkqgizMA9jkHlZW1gcqJCYuTp3eVshJ
+         hrk0n0xs/QNN+3ZhL5X/2sW69UJVMkS9cp2yuf9FlyUSHlS8iZoe0QmEGwNP7mxUOQIP
+         R5ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701854005; x=1702458805;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g6kf2y7bAp6mjq0zetlI4hRhT2xVJNGrhrzA1HJKDPA=;
-        b=GrhhwBEkGjWB7wrTLrbQmZI7yHodv6kjHihXmZsDLybOuTFqQCqMQXiwLM4BvBWL5l
-         WKZ1byYEPwh2wvjWSQWQhEgGPHc+SLSxSNx3zEOCc2H1SuULtJyY3qqQcAPOpZz4/AQe
-         JY6zQ1+AYlHOx4C4vsshDSqOuMi80qpeR52Nab5QlZ7rHji4K7NTieewfH57/skRPXrA
-         jvYd3Yj+F9kLcQ90ffo2H8R2/baLRnhNQYyt68eKiaRHye3oBk2lIWVm0chZfGrtS88T
-         OGNkF5PbI9oFTFACjbcj2eM0pPUmpgTiIC9P0NwA7qmzEXFxnRr0nKuURJZ8dYqz1yZP
-         0wHA==
-X-Gm-Message-State: AOJu0YyWFCMd4RaS5ljG+TmltNM5rXWnvuGaP2E2YPTNyWiPI0hxSHtT
-        7ZanQA3jr9ObsP5Ub+h2wF/KYQ==
-X-Google-Smtp-Source: AGHT+IHcBVRbTw4fV4raK+5NTdQ/G9rfuq6/QM54MrQz5eNuxhHvE6/ewBaWanYphDgB22PdR9N4Fg==
-X-Received: by 2002:a17:90a:c095:b0:286:7529:3598 with SMTP id o21-20020a17090ac09500b0028675293598mr3090956pjs.13.1701854004624;
-        Wed, 06 Dec 2023 01:13:24 -0800 (PST)
-Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
-        by smtp.gmail.com with ESMTPSA id l3-20020a17090270c300b001cf6783fd41sm11658432plt.17.2023.12.06.01.13.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 01:13:24 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1rAny5-004YwT-25;
-        Wed, 06 Dec 2023 20:13:21 +1100
-Date:   Wed, 6 Dec 2023 20:13:21 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
-        paulmck@kernel.org, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        tytso@mit.edu, steven.price@arm.com, cel@kernel.org,
-        senozhatsky@chromium.org, yujie.liu@intel.com,
-        gregkh@linuxfoundation.org, muchun.song@linux.dev,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v6 42/45] mm: shrinker: make global slab shrink lockless
-Message-ID: <ZXA7MS+p/YjrN4Lj@dread.disaster.area>
-References: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
- <20230911094444.68966-43-zhengqi.arch@bytedance.com>
- <CAJhGHyBdk++L+DhZoZfHUac3ci14QdTM7qqUSQ_fO2iY1iHKKA@mail.gmail.com>
- <93c36097-5266-4fc5-84a8-d770ab344361@bytedance.com>
- <CAJhGHyBJiYOQGY3t=Lpe4A-rmJML8Mn8GC35GkrQ6Us082ZTAQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1701854072; x=1702458872;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qlCErtIVhbxcjY7zXRIxndr41fNa6EZG3xUiEtLYnTA=;
+        b=XSy4ZfmFBKsj7aW8une3Fy6XST+XlaB0JKEcGoNrjGsfNLSAisTDhWntdczm6nnB85
+         OLDdS+1NGwhXwQXIDgm5XV99sJIDmr9U/hUhUwcIAEC/MfIkcwmx5TzJiUvAqaq1ou8u
+         9Q/LtYQ8p0dn1jdF+qMq4QlOOZ8yV3sV1/hw52fHkb8GGM5G9/Ugqbfx6fkmkjsJESzE
+         uCDiqHbwxldpTaYdp15TZNKttgC4R0bO91ZZqa3JKhYno5zYYI8uedNgHZ0EcrGpLbxK
+         FHxAEbJ+FfGBYk27f9bUn12+HCxsAYDjy+ikkIsUQFOAHwB7GtthJt1BGTB80DM5l2rX
+         QKvA==
+X-Gm-Message-State: AOJu0YzVWOvo4gv6uVsvzdS1JwVwwUpcPHEWP7DTEA9vmquCEaBWLiHl
+        IKj8Xe8EosayixPHsTw5OHXMcu0Sz/iaOh+/Aax70A==
+X-Google-Smtp-Source: AGHT+IEY7MlxjGJ0ou3pMTDwF+WI1Yzm//LSBTheVhpZzwvfaZ3oo+MexaxWdAVJC7yGqc9Tkr197T6ymTxjjCmGp30=
+X-Received: by 2002:a0d:dfc5:0:b0:5d7:cfe5:a476 with SMTP id
+ i188-20020a0ddfc5000000b005d7cfe5a476mr473398ywe.74.1701854071856; Wed, 06
+ Dec 2023 01:14:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJhGHyBJiYOQGY3t=Lpe4A-rmJML8Mn8GC35GkrQ6Us082ZTAQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231205220526.417719-1-robdclark@gmail.com> <20231205220526.417719-5-robdclark@gmail.com>
+In-Reply-To: <20231205220526.417719-5-robdclark@gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 6 Dec 2023 11:14:20 +0200
+Message-ID: <CAA8EJppALBgHekKm=+DSQdHV_tvqahHrS2Vb7Yqy4J+VuupM5g@mail.gmail.com>
+Subject: Re: [PATCH 4/5] drm/msm/adreno: Move hwcg table into a6xx specific info
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Akhil P Oommen <quic_akhilpo@quicinc.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 04:23:24PM +0800, Lai Jiangshan wrote:
-> On Wed, Dec 6, 2023 at 3:55 PM Qi Zheng <zhengqi.arch@bytedance.com> wrote:
-> > On 2023/12/6 15:47, Lai Jiangshan wrote:
-> > > On Tue, Sep 12, 2023 at 9:57 PM Qi Zheng <zhengqi.arch@bytedance.com> wrote:
-> > >
-> > No, this_shrinker will not be removed from the shrinker_list until the
-> > last refcount is released. See below:
-> >
-> > > rcu_read_lock();
-> > > shrinker_put(this_shrinker);
-> >
-> >         CPU 1                                      CPU 2
-> >
-> >    --> if (refcount_dec_and_test(&shrinker->refcount))
-> >                 complete(&shrinker->done);
-> >
-> >                                 wait_for_completion(&shrinker->done);
-> >                                  list_del_rcu(&shrinker->list);
-> 
-> since shrinker will not be removed from the shrinker_list until the
-> last refcount is released.
-> 
-> Is it possible that shrinker_free() can be starved by continuous
-> scanners getting and putting the refcount?
+On Wed, 6 Dec 2023 at 00:06, Rob Clark <robdclark@gmail.com> wrote:
+>
+> From: Rob Clark <robdclark@chromium.org>
+>
+> Introduce a6xx_info where we can stash gen specific stuff without
+> polluting the toplevel adreno_info struct.
+>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/msm/adreno/a6xx_catalog.c | 55 +++++++++++++++++------
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c     |  4 +-
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.h     |  9 ++++
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.h   |  6 ++-
+>  4 files changed, 58 insertions(+), 16 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_catalog.c b/drivers/gpu/drm/msm/adreno/a6xx_catalog.c
+> index a35d4c112a61..3fb9e249567a 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_catalog.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_catalog.c
+> @@ -7,6 +7,7 @@
+>   */
+>
+>  #include "adreno_gpu.h"
+> +#include "a6xx_gpu.h"
+>  #include "a6xx.xml.h"
+>  #include "a6xx_gmu.xml.h"
+>
+> @@ -465,7 +466,9 @@ const struct adreno_info a6xx_gpus[] = {
+>                 .inactive_period = DRM_MSM_INACTIVE_PERIOD,
+>                 .init = a6xx_gpu_init,
+>                 .zapfw = "a610_zap.mdt",
+> -               .hwcg = a612_hwcg,
+> +               .a6xx = &(struct a6xx_info) {
+> +                       .hwcg = a612_hwcg,
+> +               },
+>                 /*
+>                  * There are (at least) three SoCs implementing A610: SM6125
+>                  * (trinket), SM6115 (bengal) and SM6225 (khaje). Trinket does
+> @@ -492,6 +495,8 @@ const struct adreno_info a6xx_gpus[] = {
+>                 .inactive_period = DRM_MSM_INACTIVE_PERIOD,
+>                 .quirks = ADRENO_QUIRK_HAS_CACHED_COHERENT,
+>                 .init = a6xx_gpu_init,
+> +               .a6xx = &(struct a6xx_info) {
+> +               },
+>                 .speedbins = ADRENO_SPEEDBINS(
+>                         { 0,   0 },
+>                         { 169, 1 },
+> @@ -510,7 +515,9 @@ const struct adreno_info a6xx_gpus[] = {
+>                 .inactive_period = DRM_MSM_INACTIVE_PERIOD,
+>                 .init = a6xx_gpu_init,
+>                 .zapfw = "a615_zap.mdt",
+> -               .hwcg = a615_hwcg,
+> +               .a6xx = &(struct a6xx_info) {
+> +                       .hwcg = a615_hwcg,
+> +               },
+>                 .speedbins = ADRENO_SPEEDBINS(
+>                         { 0,   0 },
+>                         { 138, 1 },
+> @@ -529,7 +536,9 @@ const struct adreno_info a6xx_gpus[] = {
+>                 .inactive_period = DRM_MSM_INACTIVE_PERIOD,
+>                 .init = a6xx_gpu_init,
+>                 .zapfw = "a615_zap.mdt",
+> -               .hwcg = a615_hwcg,
+> +               .a6xx = &(struct a6xx_info) {
+> +                       .hwcg = a615_hwcg,
+> +               },
+>                 .speedbins = ADRENO_SPEEDBINS(
+>                         { 0,   0 },
+>                         { 190, 1 },
+> @@ -548,7 +557,9 @@ const struct adreno_info a6xx_gpus[] = {
+>                 .quirks = ADRENO_QUIRK_HAS_CACHED_COHERENT,
+>                 .init = a6xx_gpu_init,
+>                 .zapfw = "a615_zap.mdt",
+> -               .hwcg = a615_hwcg,
+> +               .a6xx = &(struct a6xx_info) {
+> +                       .hwcg = a615_hwcg,
+> +               },
+>                 .speedbins = ADRENO_SPEEDBINS(
+>                         { 0,   0 },
+>                         { 120, 4 },
+> @@ -572,7 +583,9 @@ const struct adreno_info a6xx_gpus[] = {
+>                 .quirks = ADRENO_QUIRK_HAS_CACHED_COHERENT,
+>                 .init = a6xx_gpu_init,
+>                 .zapfw = "a630_zap.mdt",
+> -               .hwcg = a630_hwcg,
+> +               .a6xx = &(struct a6xx_info) {
+> +                       .hwcg = a630_hwcg,
+> +               },
+>         }, {
+>                 .chip_ids = ADRENO_CHIP_IDS(0x06040001),
+>                 .family = ADRENO_6XX_GEN2,
+> @@ -586,7 +599,9 @@ const struct adreno_info a6xx_gpus[] = {
+>                 .quirks = ADRENO_QUIRK_HAS_CACHED_COHERENT,
+>                 .init = a6xx_gpu_init,
+>                 .zapfw = "a640_zap.mdt",
+> -               .hwcg = a640_hwcg,
+> +               .a6xx = &(struct a6xx_info) {
+> +                       .hwcg = a640_hwcg,
+> +               },
+>                 .speedbins = ADRENO_SPEEDBINS(
+>                         { 0, 0 },
+>                         { 1, 1 },
+> @@ -605,7 +620,9 @@ const struct adreno_info a6xx_gpus[] = {
+>                         ADRENO_QUIRK_HAS_HW_APRIV,
+>                 .init = a6xx_gpu_init,
+>                 .zapfw = "a650_zap.mdt",
+> -               .hwcg = a650_hwcg,
+> +               .a6xx = &(struct a6xx_info) {
+> +                       .hwcg = a650_hwcg,
+> +               },
+>                 .address_space_size = SZ_16G,
+>                 .speedbins = ADRENO_SPEEDBINS(
+>                         { 0, 0 },
+> @@ -627,7 +644,9 @@ const struct adreno_info a6xx_gpus[] = {
+>                         ADRENO_QUIRK_HAS_HW_APRIV,
+>                 .init = a6xx_gpu_init,
+>                 .zapfw = "a660_zap.mdt",
+> -               .hwcg = a660_hwcg,
+> +               .a6xx = &(struct a6xx_info) {
+> +                       .hwcg = a660_hwcg,
+> +               },
+>                 .address_space_size = SZ_16G,
+>         }, {
+>                 .chip_ids = ADRENO_CHIP_IDS(0x06030500),
+> @@ -642,7 +661,9 @@ const struct adreno_info a6xx_gpus[] = {
+>                         ADRENO_QUIRK_HAS_HW_APRIV,
+>                 .init = a6xx_gpu_init,
+>                 .zapfw = "a660_zap.mbn",
+> -               .hwcg = a660_hwcg,
+> +               .a6xx = &(struct a6xx_info) {
+> +                       .hwcg = a660_hwcg,
+> +               },
+>                 .address_space_size = SZ_16G,
+>                 .speedbins = ADRENO_SPEEDBINS(
+>                         { 0,   0 },
+> @@ -663,7 +684,9 @@ const struct adreno_info a6xx_gpus[] = {
+>                 .quirks = ADRENO_QUIRK_HAS_CACHED_COHERENT,
+>                 .init = a6xx_gpu_init,
+>                 .zapfw = "a640_zap.mdt",
+> -               .hwcg = a640_hwcg,
+> +               .a6xx = &(struct a6xx_info) {
+> +                       .hwcg = a640_hwcg,
+> +               },
+>         }, {
+>                 .chip_ids = ADRENO_CHIP_IDS(0x06090000),
+>                 .family = ADRENO_6XX_GEN4,
+> @@ -677,7 +700,9 @@ const struct adreno_info a6xx_gpus[] = {
+>                         ADRENO_QUIRK_HAS_HW_APRIV,
+>                 .init = a6xx_gpu_init,
+>                 .zapfw = "a690_zap.mdt",
+> -               .hwcg = a690_hwcg,
+> +               .a6xx = &(struct a6xx_info) {
+> +                       .hwcg = a690_hwcg,
+> +               },
+>                 .address_space_size = SZ_16G,
+>         }, {
+>                 /* sentinal */
+> @@ -822,7 +847,9 @@ const struct adreno_info a7xx_gpus[] = {
+>                           ADRENO_QUIRK_HAS_HW_APRIV,
+>                 .init = a6xx_gpu_init,
+>                 .zapfw = "a730_zap.mdt",
+> -               .hwcg = a730_hwcg,
+> +               .a6xx = &(struct a6xx_info) {
+> +                       .hwcg = a730_hwcg,
+> +               },
+>                 .address_space_size = SZ_16G,
+>         }, {
+>                 .chip_ids = ADRENO_CHIP_IDS(0x43050a01), /* "C510v2" */
+> @@ -837,7 +864,9 @@ const struct adreno_info a7xx_gpus[] = {
+>                           ADRENO_QUIRK_HAS_HW_APRIV,
+>                 .init = a6xx_gpu_init,
+>                 .zapfw = "a740_zap.mdt",
+> -               .hwcg = a740_hwcg,
+> +               .a6xx = &(struct a6xx_info) {
+> +                       .hwcg = a740_hwcg,
+> +               },
+>                 .address_space_size = SZ_16G,
+>         }, {
+>                 /* sentinal */
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index e0414d0753ad..a064eb42eedd 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -403,7 +403,7 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
+>         unsigned int i;
+>         u32 val, clock_cntl_on, cgc_mode;
+>
+> -       if (!adreno_gpu->info->hwcg)
+> +       if (!adreno_gpu->info->a6xx->hwcg)
+>                 return;
+>
+>         if (adreno_is_a630(adreno_gpu))
+> @@ -434,7 +434,7 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
+>         if (!adreno_is_a610(adreno_gpu) && !adreno_is_a7xx(adreno_gpu))
+>                 gmu_rmw(gmu, REG_A6XX_GPU_GMU_GX_SPTPRAC_CLOCK_CONTROL, 1, 0);
+>
+> -       for (i = 0; (reg = &adreno_gpu->info->hwcg[i], reg->offset); i++)
+> +       for (i = 0; (reg = &adreno_gpu->info->a6xx->hwcg[i], reg->offset); i++)
+>                 gpu_write(gpu, reg->offset, state ? reg->value : 0);
+>
+>         /* Enable SP clock */
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> index 34822b080759..1840c1f3308e 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+> @@ -12,6 +12,15 @@
+>
+>  extern bool hang_debug;
+>
+> +/**
+> + * struct a6xx_info - a6xx specific information from device table
+> + *
+> + * @hwcg: hw clock gating register sequence
+> + */
+> +struct a6xx_info {
+> +       const struct adreno_reglist *hwcg;
+> +};
+> +
+>  struct a6xx_gpu {
+>         struct adreno_gpu base;
+>
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> index 5d094c5ec363..cba53203de98 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> @@ -81,6 +81,8 @@ struct adreno_speedbin {
+>         uint16_t speedbin;
+>  };
+>
+> +struct a6xx_info;
+> +
+>  struct adreno_info {
+>         const char *machine;
+>         /**
+> @@ -97,7 +99,9 @@ struct adreno_info {
+>         struct msm_gpu *(*init)(struct drm_device *dev);
+>         const char *zapfw;
+>         u32 inactive_period;
+> -       const struct adreno_reglist *hwcg;
+> +       union {
+> +               const struct a6xx_info *a6xx;
+> +       };
 
-In theory, yes. In practice, highly improbable. i.e. I don't think
-this will ever be an issue because the timing conditions for memory
-reclaim to keep a permanently elevated reference count on a shrinker
-for a subsystem that is being torn down are -highly- improbable.
+I think the usual pattern is to subclass the common structure rather
+than adding a polymorphic field.
 
-And even if you could pull it off, who cares if shrinker_free() is
-delayed? It's a teardown operation meaning the subsystem using the
-shrinker will no longer be in use so the latency of the teardown
-operation is largely irrelevant to whatever is still running
-on the system.
+So, from my point of view, it should be:
 
--Dave.
+struct a6xx_info {
+     struct adreno_info base;
+
+     struct areno_reglist *hwcg;
+};
+
+
+>         u64 address_space_size;
+>         /**
+>          * @speedbins: Optional table of fuse to speedbin mappings
+> --
+> 2.42.0
+>
+
+
 -- 
-Dave Chinner
-david@fromorbit.com
+With best wishes
+Dmitry
