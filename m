@@ -2,130 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D48806B15
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F35806B16
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377292AbjLFJyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:54:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53948 "EHLO
+        id S1377295AbjLFJyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:54:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377254AbjLFJyE (ORCPT
+        with ESMTP id S1377254AbjLFJyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:54:04 -0500
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9300FA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:54:09 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Vxxc1mm_1701856445;
-Received: from 30.97.48.44(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vxxc1mm_1701856445)
-          by smtp.aliyun-inc.com;
-          Wed, 06 Dec 2023 17:54:06 +0800
-Message-ID: <079610c2-04ed-4495-8eb7-518b04f911f7@linux.alibaba.com>
-Date:   Wed, 6 Dec 2023 17:54:24 +0800
+        Wed, 6 Dec 2023 04:54:49 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67240112
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:54:55 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3316d09c645so547659f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 01:54:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701856494; x=1702461294; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aTCNtdrnCjRUY4nx+WfhitLfkIdEU+u5rOlYMuK6fK8=;
+        b=V3zKHxDxRBJacc0rjl/ulUt+FcyMN3s4C7lYEN9YVXwqt9gsCnZafXvMT0lcvlXw9v
+         eB5+cXolpEh7PR7btu1ySvVA3rCIOttH2FS1FSRbsSaKMlWfv3mSizoFA5JPpL1s0ISu
+         7qcUqZROrHCa6FbVVquKH+tY4hOgk0pz2mL86e6bhBXTvyd+sEukLIu/LRxeV2xXrCJA
+         LSO7bKYDc6dtBCxb86oqjFmt01d87fp4HdKtD+v2kYFAag65JQPsht+QZzrZGJdpFdrd
+         40RHGd99tdFk6DrijpEnr8d+spXbQXRChnQX2ZmEgNpuIIbZriHVP2L7MhPqwT2X2ZC/
+         LFjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701856494; x=1702461294;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aTCNtdrnCjRUY4nx+WfhitLfkIdEU+u5rOlYMuK6fK8=;
+        b=YK3p7DlgUlfsulY+y0tdY+sGLK+TVvJkZxTiNYTL/jG+qgjmO+XZIibnF3urXlbfjk
+         wJQUjlNGMo8XbP8IyPIDiYVPoFuKL9UZ0ESgRC0HPrFuIhrx/r9m+Z3ZX0vgjZ1Ziy1b
+         9/Oj5MsaZ9lSwSfuwp7QHhlzQTFAapZSTqjCjfh8eLP4FWvVt924fjvRjePVYMM1K0ZX
+         com3WpsZ0ThAIyA1QsVs3fsLFLdje4SvRalkNJp3lx86Y86DbhhQ4cnln7JBZ9+GE9sx
+         2Ui6OjbZVCl7i83qdQbwkXQPXeG8oFEqkH9vlVRSh9VAz/W0r5QTBtXXFY/jIvjDr4Xa
+         aTzA==
+X-Gm-Message-State: AOJu0YzDkTeL3he6rBTEj+WOCKzXNMo+wABtYc+KpEtSR0qdqZQDUDtc
+        DnGIkiFUMUZZaI46GnSnEmaDOA==
+X-Google-Smtp-Source: AGHT+IEpDHw+FDWXV5qQDjf1VsIrkntIzlpWxO7g9TKHWOxe/F+ZDIhT8l5H46wJNNjZlIQhmbBNiQ==
+X-Received: by 2002:a5d:58f4:0:b0:333:2fd2:4ad4 with SMTP id f20-20020a5d58f4000000b003332fd24ad4mr290215wrd.80.1701856493874;
+        Wed, 06 Dec 2023 01:54:53 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id g7-20020a5d4887000000b003335ebde680sm2861777wrq.75.2023.12.06.01.54.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 01:54:53 -0800 (PST)
+Date:   Wed, 6 Dec 2023 12:54:44 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     hverkuil@xs4all.nl, mchehab@kernel.org, tfiga@chromium.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, kernel@collabora.com
+Subject: Re: [PATCH v3 1/2] videobuf2: core: Rename min_buffers_needed field
+ to vb2_queue
+Message-ID: <a2011bd9-8d1d-486d-8a54-794193dc99ec@suswa.mountain>
+References: <20231206085608.33246-1-benjamin.gaignard@collabora.com>
+ <20231206085608.33246-2-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] mm: compaction: avoid fast_isolate_freepages blindly
- choose improper pageblock
-To:     Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org
-Cc:     david@redhat.com, shikemeng@huaweicloud.com, willy@infradead.org,
-        mgorman@techsingularity.net, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>,
-        Zhanyuan Hu <huzhanyuan@oppo.com>
-References: <20231129104530.63787-1-v-songbaohua@oppo.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20231129104530.63787-1-v-songbaohua@oppo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206085608.33246-2-benjamin.gaignard@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/29/2023 6:45 PM, Barry Song wrote:
-> Testing shows fast_isolate_freepages can blindly choose an unsuitable
-> pageblock from time to time particularly while the min mark is used
-> from XXX path:
->   if (!page) {
->           cc->fast_search_fail++;
->           if (scan_start) {
->                   /*
->                    * Use the highest PFN found above min. If one was
->                    * not found, be pessimistic for direct compaction
->                    * and use the min mark.
->                    */
->                   if (highest >= min_pfn) {
->                           page = pfn_to_page(highest);
->                           cc->free_pfn = highest;
->                   } else {
->                           if (cc->direct_compaction && pfn_valid(min_pfn)) { /* XXX */
->                                   page = pageblock_pfn_to_page(min_pfn,
->                                           min(pageblock_end_pfn(min_pfn),
->                                               zone_end_pfn(cc->zone)),
->                                           cc->zone);
->                                   cc->free_pfn = min_pfn;
->                           }
->                   }
->           }
->   }
-
-Yes, the min_pfn can be an unsuitable migration target. But I think we 
-can just add the suitable_migration_target() validation into 'min_pfn' 
-case? Since other cases must be suitable target which found from 
-MIGRATE_MOVABLE free list. Something like below:
-
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 01ba298739dd..4e8eb4571909 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1611,6 +1611,8 @@ static void fast_isolate_freepages(struct 
-compact_control *cc)
- 
-min(pageblock_end_pfn(min_pfn),
- 
-zone_end_pfn(cc->zone)),
-                                                 cc->zone);
-+                                       if 
-(!suitable_migration_target(cc, page))
-+                                               page = NULL;
-                                         cc->free_pfn = min_pfn;
-                                 }
-                         }
-
-By the way, I wonder if this patch can improve the efficiency of 
-compaction in your test case?
-
-> In contrast, slow path is skipping unsuitable pageblocks in a decent way.
+On Wed, Dec 06, 2023 at 09:56:07AM +0100, Benjamin Gaignard wrote:
+> Rename min_buffers_needed into min_queued_buffers and update
+> the documentation about it.
 > 
-> I don't know if it is an intended design or just an oversight. But
-> it seems more sensible to skip unsuitable pageblock.
-> 
-> Reported-by: Zhanyuan Hu <huzhanyuan@oppo.com>
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> ---
->   mm/compaction.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 01ba298739dd..98c485a25614 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1625,6 +1625,12 @@ static void fast_isolate_freepages(struct compact_control *cc)
->   	cc->total_free_scanned += nr_scanned;
->   	if (!page)
->   		return;
-> +	/*
-> +	 * Otherwise, we can blindly choose an improper pageblock especially
-> +	 * while using the min mark
-> +	 */
-> +	if (!suitable_migration_target(cc, page))
-> +		return;
->   
->   	low_pfn = page_to_pfn(page);
->   	fast_isolate_around(cc, low_pfn);
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+
+[ snip ]
+
+> diff --git a/drivers/media/pci/zoran/zoran_driver.c b/drivers/media/pci/zoran/zoran_driver.c
+> index fa672cc8bc67..2c91f75e8d79 100644
+> --- a/drivers/media/pci/zoran/zoran_driver.c
+> +++ b/drivers/media/pci/zoran/zoran_driver.c
+> @@ -749,9 +749,6 @@ static int zr_vb2_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers, unsi
+>  
+>  	zr->buf_in_reserve = 0;
+>  
+> -	if (*nbuffers < vq->min_buffers_needed)
+> -		*nbuffers = vq->min_buffers_needed;
+> -
+>  	if (*nplanes) {
+>  		if (sizes[0] < size)
+>  			return -EINVAL;
+
+This was not mentioned in the commit message.  And anyway, please do
+that as a separate commit.
+
+regards,
+dan carpenter
+
