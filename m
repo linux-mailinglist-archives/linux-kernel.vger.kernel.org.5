@@ -2,71 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFCA807715
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 765D7807716
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjLFR4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:56:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55508 "EHLO
+        id S1379751AbjLFR4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:56:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjLFR4L (ORCPT
+        with ESMTP id S230238AbjLFR4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:56:11 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F6ED42
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 09:56:17 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6d7e56f6845so31442a34.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 09:56:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1701885376; x=1702490176; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YzmOds210uOLMoqUxUrCLSQtsPcHifLKozmBM1oKPoo=;
-        b=rgsk+fXmwfOtpzhA+iN3t9CjJdk7u5+m/oIz9Uap6AdURbAn06Ukz0RVvIrTKpQ20u
-         3d8HTuNtHWPCYtR3xPxZsu3kAzCJ5wg7/djU9jA5PmPbxhOlGYTpB+20GVIdOE4qxgbS
-         +ggG/JNrXlwvLKxHRW0NTq34QZZuTFWyqIk2oZt6g5ChHcVtFSN+E7hXQLS9tY1dcxkp
-         M7YE84bO8yGZcGErOCduAStWPGztCMp3GPzJKEiKlsHM4M9P5KOtYDmTqChCzNrwuLYC
-         iliQCI11ICQVq1tdWcwvY8ZbAvT9S3hZpmd4DmNzzWabMh70yH5U+dptnQ+u6f9VWatR
-         LxMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701885376; x=1702490176;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YzmOds210uOLMoqUxUrCLSQtsPcHifLKozmBM1oKPoo=;
-        b=G6hzWV9tF7CR4G7DDQSVvTY3Yh0lqs2RBPMC6WnfsBVGrK+I/y8hagLtYxBngGab1i
-         P4l61poaqq8eCzi2/r/X6bOAEtbX7/P485zK4z6uKVNJIzdLhW3oZjjjmOdG1dk2k1da
-         xg8509b2nDymPEn9i8Yffq6D2nOFlMYDWe4CX5W5BK1FNCUbL9WVU5DDjl6+60X4BmNW
-         /IRqfA+MJBKY5JeVA/AkZYpdIL4v9z5wUpStbldaapf+Bw24T9BGKL8YlKNvh/CynRGb
-         lNDPa7GqHvYephG4n2G5ZzB2X+2AmXOG7SonefRKbL8pTwtf2uZFlMXwhKF3XDP7w0fA
-         EWuw==
-X-Gm-Message-State: AOJu0YyD+K2slUx6W0TY4GL29Le0+gDdOCeevVqXqXbzNRp7j3AM+PIV
-        maxtst2gQ7t0bjxUUGlqQES6NA==
-X-Google-Smtp-Source: AGHT+IGuLe3uXFDTYJvCW1TreYHsP4rbqmaZqL0yKN+0sgi7VOo/WQy0nBuEdy5xTo8VjXoiNfBFSQ==
-X-Received: by 2002:a05:6830:1e69:b0:6d8:74e2:a3d3 with SMTP id m9-20020a0568301e6900b006d874e2a3d3mr1377709otr.47.1701885376195;
-        Wed, 06 Dec 2023 09:56:16 -0800 (PST)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id l11-20020a0568301d6b00b006d81e704023sm52207oti.2.2023.12.06.09.56.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 09:56:15 -0800 (PST)
-Date:   Wed, 06 Dec 2023 09:56:15 -0800 (PST)
-X-Google-Original-Date: Wed, 06 Dec 2023 09:56:13 PST (-0800)
-Subject:     Re: [PATCH 2/2] membarrier: riscv: Provide core serializing command
-In-Reply-To: <ZXCylOEXSbEMGB96@andrea>
-CC:     mathieu.desnoyers@efficios.com, paulmck@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, mmaas@google.com, hboehm@google.com,
-        striker@us.ibm.com, charlie@rivosinc.com, rehn@rivosinc.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     parri.andrea@gmail.com
-Message-ID: <mhng-5a4880f5-926c-4087-8bb9-b6c09fd4e288@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        Wed, 6 Dec 2023 12:56:31 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5904BD53;
+        Wed,  6 Dec 2023 09:56:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=PKSBsZAZJfjo9et72d0mSM7YqoMxniSM0jUJH+gRhQM=; b=ZsX3DpsK1aSucSyC1aqbU4xygy
+        N8wt7Ogr1sfm32PjJkPFRnQPSNYMX3CE8rwBxp3Rk+ixAED/33xJ6I3U1Dm/OlIHGIs9z+gMJ2w0W
+        mrv2ctMvSzhTL4rQx7fxvWYlt9gs4pHnDrKa8B5K5m4RZ+ZGUnsSNPorJfmLsx2Yo4+6Y+HCRE9yo
+        ITyW8z8FgroOvK1JsWNh01emWtxzxYT5wQhHtcRUXbtZEJf7MRctIN+kj4UF93xKSQ4f8Bs5Y7dr3
+        X8x0HACW5cfJaRQ/scLQxXzj8WUleRz4tUutzCMBnU06SwLKQVKWea+ToU9+nMD9GiBEUBGjO+z9Q
+        ieYKAnlA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53542)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rAw88-0000DD-09;
+        Wed, 06 Dec 2023 17:56:16 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rAw89-0002uf-PY; Wed, 06 Dec 2023 17:56:17 +0000
+Date:   Wed, 6 Dec 2023 17:56:17 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Alexander Couzens <lynxis@fe80.eu>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
+Subject: Re: [RFC PATCH v2 5/8] net: pcs: add driver for MediaTek USXGMII PCS
+Message-ID: <ZXC1wRWEx3f9MMMq@shell.armlinux.org.uk>
+References: <cover.1701826319.git.daniel@makrotopia.org>
+ <3cd8af5e44554c2db2d7898494ee813967206bd9.1701826319.git.daniel@makrotopia.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3cd8af5e44554c2db2d7898494ee813967206bd9.1701826319.git.daniel@makrotopia.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,25 +83,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Dec 2023 09:42:44 PST (-0800), parri.andrea@gmail.com wrote:
->> > The final version of this fix will likely depend on some machinery/code
->> > introduced by 3ccfebedd8cf54 ("powerpc, membarrier: Skip memory barrier
->> > in switch_mm()"); but, yes, nothing we can't safely adjust I think.
->>
->> Ya, I guess we'll have to look to know for sure but hopefully it's
->> manageable.
->
-> Absolutely.  One approach would be to follow what PowerPC did: AFAIU, before
-> 3ccfebedd8cf54 membarrier/powerpc used to hard code the required barrier in
-> in finish_task_switch(), "masking" it as an smp_mb__after_unlock_lock(); riscv
-> could use a similar approach (though with a different/new mask function).
+On Wed, Dec 06, 2023 at 01:44:38AM +0000, Daniel Golle wrote:
+> +struct phylink_pcs *mtk_usxgmii_select_pcs(struct device_node *np, phy_interface_t mode)
+> +{
+> +	struct platform_device *pdev;
+> +	struct mtk_usxgmii_pcs *mpcs;
+> +
+> +	if (!np)
+> +		return NULL;
+> +
+> +	if (!of_device_is_available(np))
+> +		return ERR_PTR(-ENODEV);
+> +
+> +	if (!of_match_node(mtk_usxgmii_of_mtable, np))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	pdev = of_find_device_by_node(np);
+> +	if (!pdev || !platform_get_drvdata(pdev)) {
+> +		if (pdev)
+> +			put_device(&pdev->dev);
+> +		return ERR_PTR(-EPROBE_DEFER);
+> +	}
+> +
+> +	mpcs = platform_get_drvdata(pdev);
+> +	put_device(&pdev->dev);
+> +
+> +	return &mpcs->pcs;
+> +}
+> +EXPORT_SYMBOL(mtk_usxgmii_select_pcs);
 
-IIRC we patterned our MMIOWB/after-spinlock barriers after PPC, so 
-that's probably a good place to start here as well.
+All the same arguments apply here as per the lynxi driver.
 
-> Alternatively, we could maybe keep the barrier in switch_mm().
->
-> But let me complete and send out v2 with the fix at stake...  this should give
-> us a more concrete basis to discuss about these matters.
->
->   Andrea
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
