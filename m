@@ -2,115 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA501807671
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:21:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85058807673
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbjLFRVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:21:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56638 "EHLO
+        id S229516AbjLFRW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:22:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232446AbjLFRVg (ORCPT
+        with ESMTP id S229449AbjLFRW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:21:36 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09DE5D4F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 09:21:42 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54d712c254aso49085a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 09:21:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701883299; x=1702488099; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GaGi8ynGM0sSJk2cTHVa3nEhLRrFYa9iM9DZek/jE/U=;
-        b=WNZGEuQ0NPvNOdNt1kOslNhT9F9Sxyg4xJcxWLaFjEmqMRuznC+2h1y9+WkDqnVFpZ
-         hpXxDZ07/2V2yRDQmfn7jDQ6fz6JAYPCwIsInORUDvryW0p/yl+B3ezLsUUG2spKKY2+
-         ArICsIxM8bJyFAtTsah2i7j0G/ntyFTT3OVEY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701883299; x=1702488099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GaGi8ynGM0sSJk2cTHVa3nEhLRrFYa9iM9DZek/jE/U=;
-        b=oAvgoRUoKLV58zdYOSrchvrzIuzyJUapa3kl5MobixJT15Se9u5Vc1d57+CUhASlST
-         N70m0UjU44xVbZK5QvV5IKWVc8ndYDZN18MnEkQhuAPBrBlnXYgo6r9VlsOoxR8AllhO
-         yHVHL13DYZZzUKSqAE/9Mm/LWadNrMsdynMLk+iBN5lsd3vwIpZdBCewcLRPD0rxt435
-         eLPHjIbsshNd7pxwv2QlrnPGz2HbYOBnjcwQASughBMr+eTZYDQ1XOu96txVUEwO/0UM
-         LabhzgF/9WKsDWPfLIzm6a1qYCDwYEV15onM3GOeXQOWJehBoo805JGXfFpbv5V28xdX
-         DpRQ==
-X-Gm-Message-State: AOJu0Yyml8B1cpqTR6HQ2AsQbB2junq5n0EXHi40heqMShjMwqzNFmo3
-        JS5et67kg8kdjnTG47iaihQTlHTjq9CFoGHgSXGcQUfa
-X-Google-Smtp-Source: AGHT+IEWPa3txn8T0QA9BtMS8w3xKuB3LQUxqfY809r0hVhlqUvRknY43JdeZh1zn4ibVG7/86hJ1g==
-X-Received: by 2002:a17:906:2c7:b0:a1e:2e2b:1b7 with SMTP id 7-20020a17090602c700b00a1e2e2b01b7mr324887ejk.132.1701883299683;
-        Wed, 06 Dec 2023 09:21:39 -0800 (PST)
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com. [209.85.128.48])
-        by smtp.gmail.com with ESMTPSA id c17-20020a170906341100b00a1e1a1dd318sm187241ejb.137.2023.12.06.09.21.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 09:21:39 -0800 (PST)
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40b422a274dso95355e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 09:21:38 -0800 (PST)
-X-Received: by 2002:a05:600c:22d8:b0:40b:4221:4085 with SMTP id
- 24-20020a05600c22d800b0040b42214085mr87519wmg.1.1701883298586; Wed, 06 Dec
- 2023 09:21:38 -0800 (PST)
+        Wed, 6 Dec 2023 12:22:27 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBE5D3;
+        Wed,  6 Dec 2023 09:22:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=IkWMgsAMR6Agcl+tIup9tcwkstloKvFzTgKc+Se18o4=; b=RQcgTGxd0fkHmW8w72vKz8PFbJ
+        Y8X3TmD3AkQNwxBUQRTuLgNTcXu67FlGWsrpztbt3tmqEOI09bjeNMWwCOUNMmhDbdyNAOV+mFYev
+        MRYUF3gDx11dxuZZKgzUrk4kN9zHsm4QWw8w0oDBVed+fiy1md2mX9tMARmCY6WsP6F78g+OppKpp
+        G0WgTEgIZee7+3SAQp7mWpAJCLKTrPGMVPS1Qgv8U4r+4zhYXqd0mBaQostTAJWLiPcagtWrz5oOE
+        9siZ7O4p8QCJScytyVupOY2jlJxTrFpyQeANQbKBccOPM5B8E8WxqrDWawa/CrA/l/WN26MZYxY3W
+        aU33sHbA==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAvbU-00AsZq-0P;
+        Wed, 06 Dec 2023 17:22:32 +0000
+Message-ID: <2172ccea-0749-44fa-942e-195333dacb62@infradead.org>
+Date:   Wed, 6 Dec 2023 09:22:31 -0800
 MIME-Version: 1.0
-References: <20231206033913.1290566-1-judyhsiao@chromium.org>
-In-Reply-To: <20231206033913.1290566-1-judyhsiao@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 6 Dec 2023 09:21:21 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WCLB2M1jGEa5NM=thEmJmntV1sAqg11iLH0uizwhN2eA@mail.gmail.com>
-Message-ID: <CAD=FV=WCLB2M1jGEa5NM=thEmJmntV1sAqg11iLH0uizwhN2eA@mail.gmail.com>
-Subject: Re: [PATCH v2] neighbour: Don't let neigh_forced_gc() disable
- preemption for long
-To:     Judy Hsiao <judyhsiao@chromium.org>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>,
-        Simon Horman <horms@kernel.org>,
-        Brian Haley <haleyb.dev@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Joel Granados <joel.granados@gmail.com>,
-        Julian Anastasov <ja@ssi.bg>,
-        Leon Romanovsky <leon@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] usb: typec: nb7vpq904m: add CONFIG_OF dependency
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231206123828.587065-1-arnd@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231206123828.587065-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Tue, Dec 5, 2023 at 7:39=E2=80=AFPM Judy Hsiao <judyhsiao@chromium.org> =
-wrote:
->
-> We are seeing cases where neigh_cleanup_and_release() is called by
-> neigh_forced_gc() many times in a row with preemption turned off.
-> When running on a low powered CPU at a low CPU frequency, this has
-> been measured to keep preemption off for ~10 ms. That's not great on a
-> system with HZ=3D1000 which expects tasks to be able to schedule in
-> with ~1ms latency.
->
-> Suggested-by: Douglas Anderson <dianders@chromium.org>
-> Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
->
+
+On 12/6/23 04:38, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> DRM_AUX_BRIDGE depends on CONFIG_OF, so the same dependency is needed
+> here to avoid a build failure:
+> 
+> WARNING: unmet direct dependencies detected for DRM_AUX_BRIDGE
+>   Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && OF [=n]
+>   Selected by [y]:
+>   - TYPEC_MUX_NB7VPQ904M [=y] && USB_SUPPORT [=y] && TYPEC [=y] && I2C [=y] && (DRM [=y] || DRM [=y]=n) && DRM_BRIDGE [=y]
+> x86_64-linux-ld: drivers/gpu/drm/bridge/aux-bridge.o: in function `drm_aux_bridge_register':
+> aux-bridge.c:(.text+0x13b): undefined reference to `auxiliary_device_init'
+> x86_64-linux-ld: aux-bridge.c:(.text+0x14d): undefined reference to `__auxiliary_device_add'
+> x86_64-linux-ld: drivers/gpu/drm/bridge/aux-bridge.o: in function `drm_aux_bridge_drv_init':
+> aux-bridge.c:(.init.text+0x15): undefined reference to `__auxiliary_driver_register'
+> x86_64-linux-ld: drivers/gpu/drm/bridge/aux-bridge.o: in function `drm_aux_bridge_drv_exit':
+> aux-bridge.c:(.exit.text+0x9): undefined reference to `auxiliary_driver_unregister'
+> 
+> Fixes: c5d296bad640 ("usb: typec: nb7vpq904m: switch to DRM_AUX_BRIDGE")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
 > ---
->
-> Changes in v2:
-> - Use ktime_get_ns() for timeout calculation instead of jiffies.
->
->  net/core/neighbour.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+>  drivers/usb/typec/mux/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/usb/typec/mux/Kconfig b/drivers/usb/typec/mux/Kconfig
+> index 5120942f309d..818624f59120 100644
+> --- a/drivers/usb/typec/mux/Kconfig
+> +++ b/drivers/usb/typec/mux/Kconfig
+> @@ -40,6 +40,7 @@ config TYPEC_MUX_NB7VPQ904M
+>  	tristate "On Semiconductor NB7VPQ904M Type-C redriver driver"
+>  	depends on I2C
+>  	depends on DRM || DRM=n
+> +	depends on OF
+>  	select DRM_AUX_BRIDGE if DRM_BRIDGE
+>  	select REGMAP_I2C
+>  	help
 
-Though as evidenced by the discussion in v1 I'm not versed enough in
-this code for it to mean much, the patch nonetheless looks reasonable
-to me. I'm happy enough with:
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+-- 
+~Randy
