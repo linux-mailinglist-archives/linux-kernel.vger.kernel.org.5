@@ -2,232 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E74C68068FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DD78068FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376756AbjLFHyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 02:54:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50184 "EHLO
+        id S1376768AbjLFHzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 02:55:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjLFHyu (ORCPT
+        with ESMTP id S229459AbjLFHzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 02:54:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15FDA188
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:54:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2B30C433C8;
-        Wed,  6 Dec 2023 07:54:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701849296;
-        bh=oypg8H92xfnc19tAPThmY81NoTSyU3vjeSxmhkrunYI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n9365YMCtQ4i08AM5A8FU6ypnRi/Hv8bTvXegw3gf0f5PeYEtUNfLUbi0PiaaR0Ch
-         itRumrtGztqFge/s6pc3DQgK8LPlntURUaS/UHiCam7qR4Z1znpqnPRhS7bqeOzCwJ
-         P3FlUAvWOHF12D+d3a+yP53LS3wH7rluw4TMoDEXmpQoYActcXHQQ1ihdCTQCc+Otu
-         NLVktWCpZNjjwI02XrzHDBoqFEkRbfmil2AtfA0aW/3ZNbx7eHfnnKljsKwBKTkehw
-         q1aKKFsUvuWnWLvgkRx51EzBe50SNekCt8b8CTIGaZwzRcaR66hDeRM/qP7NvaYhaw
-         avHxLR5jFOssA==
-Date:   Wed, 6 Dec 2023 13:24:47 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Nitin Rawat <quic_nitirawa@quicinc.com>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, quic_cang@quicinc.com,
-        Manish Pandey <quic_mapa@quicinc.com>
-Subject: Re: [PATCH V1] scsi: ufs: core: store min and max clk freq from OPP
- table
-Message-ID: <20231206075447.GA4954@thinkpad>
-References: <20231206053628.32169-1-quic_nitirawa@quicinc.com>
+        Wed, 6 Dec 2023 02:55:31 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD74137
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:55:37 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1d03f03cda9so12488695ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 23:55:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1701849337; x=1702454137; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KS8bxqNBURkYnzM0KcIii/6TxRexjVdODNdz5oVxNd4=;
+        b=agnOoORL9S/rsRVOticNDCtc1yQkbzMho1Fs3vKSvQ+sSqXAh8nm+v6bW61VTsBRTK
+         gip3padSAqTxAaJ9wfVq9hxY4+OtOsQFv7h/L2W1FI4w5Ips6zBP7AVxRoasxXY15VpG
+         vGZQ6IfHYbfUs/jRJMZweey28YzDiDH1vS/xeaqaSLcrnF16KNUBmAJ9W9PEcea66vAS
+         Bg6KNhi7SExObHxLC2Iz29SdBbhp0Q+FTVMa9cZTJUa160d1qesS6fgTm7MqykjvuR0Z
+         hfRen1h5EiYRbilNXu9nlIQUzB+dcGkQJX82wT73CJpLgHU1kftwpwWAwnUStR1n5tnn
+         ME9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701849337; x=1702454137;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KS8bxqNBURkYnzM0KcIii/6TxRexjVdODNdz5oVxNd4=;
+        b=Rn8vEc2H9Uh1JV1SM+QzNO1wMnI4cZprHoohrYAjBVc0hmafoc57aVF0k5uVSYnVyl
+         MVqTfzHC2U+7CTTqUpHjIBG4O7z+ZDFKShNzXPnEqgIYHi51jMuIqtNJHVqA73ERM41S
+         RCJ8p1wPtCAMLVqH9aYwGFLq1cpuIytBcAyROVn8DQd80pVFtXAHm2lThxy2iuvO3M9G
+         ffwYCPhfrLRY40ATRbm6J2eRUYt2c9QR5/fHZY0ICMOe/KoaF/wJ7wY/JXNnxS5wgxeK
+         iRcDBwztaqHV0qoIAvXkNmuuH3VBLk1oD+lIoj+PkgXIpzlm3Q5Swsf1/Sqk+gU6G2AP
+         +6EQ==
+X-Gm-Message-State: AOJu0YzrWjP5XPxFh5m987GIViY7EYwULU3+drQosJy+WFDtAlOoptAa
+        ADEcZAavl6IUoL2CHVclVkLR4A==
+X-Google-Smtp-Source: AGHT+IFLk5sMy9OTPu9J3OwOGKIEAcdCIVFjwUnyOPSBh82NogqdIsEMmvb8Qth2WbV8n11qZVbf8Q==
+X-Received: by 2002:a17:902:cec1:b0:1cf:b192:fab8 with SMTP id d1-20020a170902cec100b001cfb192fab8mr945048plg.1.1701849336937;
+        Tue, 05 Dec 2023 23:55:36 -0800 (PST)
+Received: from [10.84.152.29] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id j3-20020a17090276c300b001b7f40a8959sm11411596plt.76.2023.12.05.23.55.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 23:55:36 -0800 (PST)
+Message-ID: <93c36097-5266-4fc5-84a8-d770ab344361@bytedance.com>
+Date:   Wed, 6 Dec 2023 15:55:28 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 42/45] mm: shrinker: make global slab shrink lockless
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     akpm@linux-foundation.org, paulmck@kernel.org, david@fromorbit.com,
+        tkhai@ya.ru, vbabka@suse.cz, roman.gushchin@linux.dev,
+        djwong@kernel.org, brauner@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
+ <20230911094444.68966-43-zhengqi.arch@bytedance.com>
+ <CAJhGHyBdk++L+DhZoZfHUac3ci14QdTM7qqUSQ_fO2iY1iHKKA@mail.gmail.com>
+Content-Language: en-US
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <CAJhGHyBdk++L+DhZoZfHUac3ci14QdTM7qqUSQ_fO2iY1iHKKA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231206053628.32169-1-quic_nitirawa@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 11:06:28AM +0530, Nitin Rawat wrote:
-> OPP support will make use of OPP table in device tree and removes
-> freq-table-hz property from device tree.
+Hi,
+
+On 2023/12/6 15:47, Lai Jiangshan wrote:
+> On Tue, Sep 12, 2023 at 9:57 PM Qi Zheng <zhengqi.arch@bytedance.com> wrote:
 > 
-> With OPP enabled in devicetree, clki->min_freq and clki->maxfreq
-> currently is not getting updated and the value is set to 0.
+>> -       if (!down_read_trylock(&shrinker_rwsem))
+>> -               goto out;
+>> -
+>> -       list_for_each_entry(shrinker, &shrinker_list, list) {
+>> +       /*
+>> +        * lockless algorithm of global shrink.
+>> +        *
+>> +        * In the unregistration setp, the shrinker will be freed asynchronously
+>> +        * via RCU after its refcount reaches 0. So both rcu_read_lock() and
+>> +        * shrinker_try_get() can be used to ensure the existence of the shrinker.
+>> +        *
+>> +        * So in the global shrink:
+>> +        *  step 1: use rcu_read_lock() to guarantee existence of the shrinker
+>> +        *          and the validity of the shrinker_list walk.
+>> +        *  step 2: use shrinker_try_get() to try get the refcount, if successful,
+>> +        *          then the existence of the shrinker can also be guaranteed,
+>> +        *          so we can release the RCU lock to do do_shrink_slab() that
+>> +        *          may sleep.
+>> +        *  step 3: *MUST* to reacquire the RCU lock before calling shrinker_put(),
+>> +        *          which ensures that neither this shrinker nor the next shrinker
+>> +        *          will be freed in the next traversal operation.
 > 
-> Soc vendors like qcom, mediatek uses clki->minfreq and clki->maxfreq
-> in vendor specific file. These frequencies values are used to update
-> vendor specific configurations. Since the value is 0, it is causing
-> functional issue.
-
-How about,
-
-"OPP support added by commit 72208ebe181e ("scsi: ufs: core: Add support
-for parsing OPP") doesn't update the min_freq and max_freq of each clocks
-in 'struct ufs_clk_info'.
-
-But these values are used by the vendor host drivers internally for controller
-configuration. When the OPP support is enabled in devicetree, these values will
-be 0, causing boot issues on the respective platforms.
-
-So let's parse the min_freq and max_freq of all clocks while parsing the OPP
-table."
-
+> Hello, Qi, Andrew, Paul,
 > 
-> Add code to store the min and max ufs clk frequency from OPP table.
+> I wonder know how RCU can ensure the lifespan of the next shrinker.
+> it seems it is diverged from the common pattern usage of RCU+reference.
 > 
-> Fixes: 72208ebe181e ("scsi: ufs: core: Add support for parsing OPP")
-> Co-developed-by: Manish Pandey <quic_mapa@quicinc.com>
-> Signed-off-by: Manish Pandey <quic_mapa@quicinc.com>
-> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-> ---
->  drivers/ufs/host/ufshcd-pltfrm.c | 56 ++++++++++++++++++++++++++++++++
->  1 file changed, 56 insertions(+)
+> cpu1:
+> rcu_read_lock();
+> shrinker_try_get(this_shrinker);
+> rcu_read_unlock();
+>      cpu2: shrinker_free(this_shrinker);
+>      cpu2: shrinker_free(next_shrinker); and free the memory of next_shrinker
+>      cpu2: when shrinker_free(next_shrinker), no one updates this_shrinker's next
+>      cpu2: since this_shrinker has been removed first.
+
+No, this_shrinker will not be removed from the shrinker_list until the
+last refcount is released. See below:
+
+> rcu_read_lock();
+> shrinker_put(this_shrinker);
+
+	CPU 1                                      CPU 2
+
+   --> if (refcount_dec_and_test(&shrinker->refcount))
+		complete(&shrinker->done);
+
+				wait_for_completion(&shrinker->done);
+                                 list_del_rcu(&shrinker->list);
+
+> travel to the freed next_shrinker.
 > 
-> diff --git a/drivers/ufs/host/ufshcd-pltfrm.c b/drivers/ufs/host/ufshcd-pltfrm.c
-> index da2558e274b4..12fa6f7d6a97 100644
-> --- a/drivers/ufs/host/ufshcd-pltfrm.c
-> +++ b/drivers/ufs/host/ufshcd-pltfrm.c
-> @@ -13,6 +13,7 @@
->  #include <linux/pm_opp.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/of.h>
-> +#include <linux/clk.h>
-
-Sort includes alphabetically.
-
+> a quick simple fix:
 > 
->  #include <ufs/ufshcd.h>
->  #include "ufshcd-pltfrm.h"
-> @@ -213,6 +214,55 @@ static void ufshcd_init_lanes_per_dir(struct ufs_hba *hba)
->  	}
->  }
+> // called with other references other than RCU (i.e. refcount)
+> static inline rcu_list_deleted(struct list_head *entry)
+> {
+>     // something like this:
+>     return entry->prev == LIST_POISON2;
+> }
 > 
-> +/**
-> + * ufshcd_config_min_max_clk_freq - update min and max freq
-
-"ufshcd_parse_clock_min_max_freq - Parse MIN and MAX frequencies of clocks"
-
-> + * @hba: per adapter instance
-> + *
-> + * This function store min and max freq for all the clocks.
-> + *
-
-"This function parses MIN and MAX frequencies of all clocks required by the
-vendor host drivers."
-
-> + * Returns 0 for success and non-zero for failure
-> + */
-> +static int ufshcd_config_min_max_clk_freq(struct ufs_hba *hba)
-> +{
-> +	struct list_head *head = &hba->clk_list_head;
-> +	struct dev_pm_opp *opp;
-> +	struct ufs_clk_info *clki;
-
-Please maintain reverse Xmas tree order. It's not a rule for this driver, but my
-own preference.
-
-> +	unsigned long freq;
-> +	u8 idx = 0;
-> +	int ret;
-
-This won't be needed if all the return values are directly returned as I shared
-below.
-
-> +
-> +	list_for_each_entry(clki, head, list) {
-> +		if (!clki->name)
-> +			continue;
-> +
-> +		clki->clk = devm_clk_get(hba->dev, clki->name);
-> +		if (!IS_ERR_OR_NULL(clki->clk)) {
-
-This function won't return NULL, so IS_ERR() is sufficient.
-
-> +			/* Find Max Freq */
-> +			freq = ULONG_MAX;
-> +			opp = dev_pm_opp_find_freq_floor_indexed(hba->dev, &freq, idx);
-
-Use idx++ and get rid of the increment at the end of the 'if' condition.
-
-> +			if (IS_ERR(opp)) {
-> +				dev_err(hba->dev, "failed to find dev_pm_opp\n");
-
-"Failed to find OPP for MAX frequency"
-
-> +				ret = PTR_ERR(opp);
-
-return PTR_ERR(opp);
-
-> +				return ret;
-> +			}
-> +			clki->max_freq = dev_pm_opp_get_freq_indexed(opp, idx);
-> +
-
-Missing dev_pm_opp_put()
-
-> +			/* Find Min Freq */
-> +			freq = 0;
-> +			opp = dev_pm_opp_find_freq_ceil_indexed(hba->dev, &freq, idx);
-> +			if (IS_ERR(opp)) {
-> +				dev_err(hba->dev, "failed to find dev_pm_opp\n");
-
-"Failed to find OPP for MIN frequency"
-
-> +				ret = PTR_ERR(opp);
-
-return PTR_ERR(opp);
-
-> +				return ret;
-> +			}
-> +			clki->min_freq = dev_pm_opp_get_freq_indexed(opp, idx);
-
-Missing dev_pm_opp_put()
-
-> +			idx++;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int ufshcd_parse_operating_points(struct ufs_hba *hba)
->  {
->  	struct device *dev = hba->dev;
-> @@ -279,6 +329,12 @@ static int ufshcd_parse_operating_points(struct ufs_hba *hba)
->  		return ret;
->  	}
+> // in the loop
+> if (rcu_list_deleted(&shrinker->list)) {
+>     shrinker_put(shrinker);
+>     goto restart;
+> }
+> rcu_read_lock();
+> shrinker_put(shrinker);
 > 
-> +	ret = ufshcd_config_min_max_clk_freq(hba);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to get min max freq: %d\n", ret);
-
-Since we already print error message inside the function, no need to do the same
-here.
-
-- Mani
-
-> +		return ret;
-> +	}
-> +
->  	hba->use_pm_opp = true;
+> Thanks
+> Lai
 > 
->  	return 0;
-> --
-> 2.17.1
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+>> +        *  step 4: do shrinker_put() paired with step 2 to put the refcount,
+>> +        *          if the refcount reaches 0, then wake up the waiter in
+>> +        *          shrinker_free() by calling complete().
+>> +        */
+>> +       rcu_read_lock();
+>> +       list_for_each_entry_rcu(shrinker, &shrinker_list, list) {
+>>                  struct shrink_control sc = {
+>>                          .gfp_mask = gfp_mask,
+>>                          .nid = nid,
+>>                          .memcg = memcg,
+>>                  };
+>>
+>> +               if (!shrinker_try_get(shrinker))
+>> +                       continue;
+>> +
+>> +               rcu_read_unlock();
+>> +
+>>                  ret = do_shrink_slab(&sc, shrinker, priority);
+>>                  if (ret == SHRINK_EMPTY)
+>>                          ret = 0;
+>>                  freed += ret;
+>> -               /*
+>> -                * Bail out if someone want to register a new shrinker to
+>> -                * prevent the registration from being stalled for long periods
+>> -                * by parallel ongoing shrinking.
+>> -                */
+>> -               if (rwsem_is_contended(&shrinker_rwsem)) {
+>> -                       freed = freed ? : 1;
+>> -                       break;
+>> -               }
+>> +
+>> +               rcu_read_lock();
+>> +               shrinker_put(shrinker);
+>>          }
+>>
