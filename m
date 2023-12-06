@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16BF98074FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1475A807501
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378325AbjLFQa5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 11:30:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48898 "EHLO
+        id S1378353AbjLFQbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:31:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378023AbjLFQaz (ORCPT
+        with ESMTP id S1378023AbjLFQbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:30:55 -0500
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691A3D44;
-        Wed,  6 Dec 2023 08:31:01 -0800 (PST)
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3b86057b5b2so792299b6e.1;
-        Wed, 06 Dec 2023 08:31:01 -0800 (PST)
+        Wed, 6 Dec 2023 11:31:44 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88355D44
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:31:50 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7b442912b8bso10665439f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 08:31:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1701880310; x=1702485110; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iDgo2Cq9agN60fB44yQGuaAdYgge0fbUUX+iicw+JS4=;
+        b=EO0TCUu2k9ZPhpSFMOjxsSWGzqsjwVouTSHtmb6Yz8wYNGhFgV+HdyAaoa9+1peVMG
+         kWnquusDmHUsGuoMhQ25Yw37BHgYQ5ghXIaz+3m+yu5rt7gQRUkXBT61sDiPdOa5Dj7s
+         wU05ygZd4Qraojv/kKoV7WQZjfnuZLjsy2RdI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701880260; x=1702485060;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sJxffBaMiQ2oTEKkMXfgMIDNFQA4n7Ds0nLK++uGZow=;
-        b=S7wQRZjCAI4ruLlWB99F2wWVg9Cxxq+OW6tJ19VDlzp3wvRo3A3xMR2ky+Is6S888I
-         yKDzMmzqjoR70ycHOpsL1Dvbl7LJoQujcLrt4hFlOgNDNam8vSuyiD0L/jxteFShPa7Q
-         UniZhkGaOhDayyJzbp3tTCNu973VikF9AlF6cJ3vICnhRRWfjte4BjtxFOePkvRVEmfN
-         oMzgiWYuTxgMUROsO+oOVV09Fcdq0kuja7olNqhdd1yllPfA7/zkuttSC6gxK39aMDrN
-         vAo2wcFFo0QYBXVU6r6RVcHJUeKU/+Qtd6h/WRrHnAIPPREE6lV6ZkzpfCTbQgnccSoG
-         08ZQ==
-X-Gm-Message-State: AOJu0YxfGz2umqQWXx3QL7BwuG7b84/+f0RjJiTL4Esxseaa1SYUiLuS
-        BwDIqyB9FDqfZDd1IqxgIBTT0LEC8p61gLEMGZM=
-X-Google-Smtp-Source: AGHT+IFPGJlxHkYT76B5iGqfPk/xee9F9t18f0t6eHfXFL1yLeB3+9iiJYLslXfNgsbsEfecYAN5wfXvomuyZirJCL8=
-X-Received: by 2002:a05:6870:8086:b0:1fb:136e:fa93 with SMTP id
- q6-20020a056870808600b001fb136efa93mr2018209oab.0.1701880260700; Wed, 06 Dec
- 2023 08:31:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701880310; x=1702485110;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iDgo2Cq9agN60fB44yQGuaAdYgge0fbUUX+iicw+JS4=;
+        b=h6OeTfEE5cF6Cm/2Xc2++HhyFdAj+X8AtJlluppeKuSt8oC8QeH+g5Cgd27/NDjFIW
+         lc36KV6Xy1cx+DsoCcQPBBmhGnlXC9xpvvwFm26uvSPVQFz5FfrTQ7uXn+QpC7NvTc/m
+         oHx1EauRh9U5Etaw8Mvq3dRzmEfDbwVMJ35WyMxTOL66lZn7Y0uhy3Vdb+OZCPUt9rda
+         U1dNJBP4y8aF/pFvguYfm3PzI33NUnDIrmnSx6rVlUtY0yLGu1cCa6dzgdhM4DdCKI/+
+         ApGVKRYY1KDa7sQMiZ1KI+9XOrBy2hn421I7LeLU/V4Endu68D67tMP4O2FKCiDqVj8F
+         axgw==
+X-Gm-Message-State: AOJu0YzGZ9gjnRN6+8FbHz7hWgmfAJpaUrahmduKke2Oj15fcz+EMAAZ
+        vylqiC4B5VZsT38MPOiGtqsSDw==
+X-Google-Smtp-Source: AGHT+IFBeELv64/d8AuOa3xLLsK3PGlt938fjaP7VdvXIOnh5ODloxlxDxRzn4vnwtsAKO4aT+uOtA==
+X-Received: by 2002:a5e:c30a:0:b0:7b3:58c4:b894 with SMTP id a10-20020a5ec30a000000b007b358c4b894mr2839717iok.1.1701880309819;
+        Wed, 06 Dec 2023 08:31:49 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id a7-20020a5d9807000000b007b3e07371bbsm3970203iol.19.2023.12.06.08.31.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Dec 2023 08:31:49 -0800 (PST)
+Message-ID: <fa221062-03b4-46d7-8708-9d3ce49961dd@linuxfoundation.org>
+Date:   Wed, 6 Dec 2023 09:31:48 -0700
 MIME-Version: 1.0
-References: <20231111134827.174908-1-heinrich.schuchardt@canonical.com>
-In-Reply-To: <20231111134827.174908-1-heinrich.schuchardt@canonical.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Dec 2023 17:30:47 +0100
-Message-ID: <CAJZ5v0gGKuBNBvDj2fNMyCvKTrt2SWfusxyaf7W4jvvfL0nxUg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ACPI: XSDT: struct acpi_table_xsdt must be packed
-To:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Cc:     Robert Moore <robert.moore@intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.10 000/131] 5.10.203-rc3 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com, Shuah Khan <skhan@linuxfoundation.org>
+References: <20231205183249.651714114@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20231205183249.651714114@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11, 2023 at 2:48 PM Heinrich Schuchardt
-<heinrich.schuchardt@canonical.com> wrote:
->
-> According to the ACPI 6.5 specification the component Entry starts at
-> offset 36 in the XSDT table which is not a multiple of 8. Hence we must
-> mark the structure as packed.
+On 12/5/23 12:22, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.203 release.
+> There are 131 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.203-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-There is #pragma pack(1) at the beginning of actbl.h.  Is it not sufficient?
+Compiled. Fails to boot up. Boot hangs during systemd init sequence.
+I am debugging this and will update you.
 
-> We did not see an error due to the incorrect packing yet as in
-> acpi_tb_parse_root_table() we use ACPI_ADD_PTR() to find the address of
-> Entry.
->
-> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-> ---
->  include/acpi/actbl.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/acpi/actbl.h b/include/acpi/actbl.h
-> index 451f6276da49..1a37ac378765 100644
-> --- a/include/acpi/actbl.h
-> +++ b/include/acpi/actbl.h
-> @@ -148,7 +148,7 @@ struct acpi_table_rsdt {
->  struct acpi_table_xsdt {
->         struct acpi_table_header header;        /* Common ACPI table header */
->         u64 table_offset_entry[1];      /* Array of pointers to ACPI tables */
-> -};
-> +} __packed;
->
->  #define ACPI_RSDT_ENTRY_SIZE        (sizeof (u32))
->  #define ACPI_XSDT_ENTRY_SIZE        (sizeof (u64))
-> --
-> 2.40.1
->
+
+thanks,
+-- Shuah
+
