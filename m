@@ -2,80 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B618077AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9F58077A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378850AbjLFSiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 13:38:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
+        id S1378798AbjLFSek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 13:34:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378355AbjLFSiU (ORCPT
+        with ESMTP id S1378355AbjLFSei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 13:38:20 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E79811F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 10:38:27 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-35d68239732so7805ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 10:38:27 -0800 (PST)
+        Wed, 6 Dec 2023 13:34:38 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE3E139;
+        Wed,  6 Dec 2023 10:34:44 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50bfa5a6cffso108867e87.0;
+        Wed, 06 Dec 2023 10:34:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701887906; x=1702492706; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1kHi+/x/yV8/AO54c41VfM0jyCOf9g4qLEuUxaryfSU=;
-        b=PUQINWTZcuJ1Gzxm+DVf8U75wXjpYcVdMtpAoAD2Iw0x8aACAL/G89S72dNVxK7UoB
-         wnVsTWUJiFM9R4kDT2yaDaBzg6PgTC2eK4KQZs/ZV/SMq2EX9CirM54Gihu034T0tsDS
-         N7dNsYL+rzxUXWCBdBT2zecBQz1v3vGRd1WAVADPwB81EM0V1QX3JzGATe/2M2lEbeIi
-         XgyW7nEhYX9SXPMsmNH3P38TjiPmEgJa32ggS+7YNfN08KbKuIVDw3tktcldndu00y0W
-         2aMRtNUOjZhvDVJZ6u5KfyooWPwB3I6AVnC8Y3h9ETLim2MT6JXSrCLMDjEOFIkrR1P/
-         iErQ==
+        d=gmail.com; s=20230601; t=1701887682; x=1702492482; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7DAsSFLxv7cCivXxxZDP7xntxjqrycq5IDoNMPhqOJs=;
+        b=PQ55gHtLdOkK8UrbNpga7nIKtQKtLcirKAIJt7sT21c/QCEHlIWfNebhI0TyRQd8ni
+         Yt5drX4NYgYKBfA8ZFQg3LLElEmk1kR+zDMxF+IYBdmPcKRBgeNEYsLFY19wCRGM9z5v
+         8K/RvWToXxYAY5IiTLu/NnfpR9d6EVYfyGr062acGuhrfRS9cTKx6Ybes/Ecw+RJD37y
+         0dixZR1v+Q8PtnvjG34O7VQfuAh6HfCsbLoxpwOjYJTTQRjRh3dXTSjUAVw7xpItjksF
+         6wh84BpMQce//2LwmJOq0ZzhFlqcU72V7W/jRn9OAvSxmvnI26saAFmKrIF0+RIUL6ZJ
+         10CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701887906; x=1702492706;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1kHi+/x/yV8/AO54c41VfM0jyCOf9g4qLEuUxaryfSU=;
-        b=jETOLpandunL8kSDdbtExCinoFi1js82yjTNJxixpWBe0be4lq+0WYGh3O8j4n+HVu
-         3ptHd9LH3SZ4xEJh3VdTnWIbp/ry61AHy/UsRMVpb1YYWb9gyYzHI0bTOiEo6Aif1cHB
-         VYbAA66SRe4w3bdSVYjr3FrHyQpcozYGDacF4O0iAUSevMep3denwc0tgdY/6A45oEGB
-         DxbxDaHS6IGgg5otdboAIL0+tJYUxFPWVB0DZN1GvZC6Uux77oZxk5VC/Orc1xqMa6f0
-         OIosw3xNKcT9jkVJqLOzT6LrM7kV7dxwVB7+9PLdA5sHrzdJJFlKv3w+Lv1tfRQotgBS
-         pGmA==
-X-Gm-Message-State: AOJu0YxXTgcglRtA5Qb+TqC0c8KY30CN0dPeVhVgTAM13Xs0FyEmc3CT
-        AHrEvS/Gn1nx03I8BL9aL11n+TwokLsrKnXKeXz0CA==
-X-Google-Smtp-Source: AGHT+IECEzFpg3QWyp0E5e/eCQj0fEABYtZZmB0KvLMjY2AH2UAB7JCkJPuizEBMXLOu30ycJ+39VKwEyevubqWqV2U=
-X-Received: by 2002:a05:6e02:1bc4:b0:35d:5fd7:b57 with SMTP id
- x4-20020a056e021bc400b0035d5fd70b57mr369567ilv.20.1701887906105; Wed, 06 Dec
- 2023 10:38:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701887682; x=1702492482;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7DAsSFLxv7cCivXxxZDP7xntxjqrycq5IDoNMPhqOJs=;
+        b=CVGyfNnQfBF2tIx9REITcKVA0YutM9eoOZ1c5TicJBbA1ZXL9PXOAtXhoIGpA2YrWY
+         QXuF+0Rtge11OQP+b86VMGXJ60ECcSC6T4stHDsIEAF4WtQ/cgzn+Vvpw/VJmUhck8aO
+         msX2g+bhxybDEK9h6vMn8+9X11h2CSl77ujx4tFpM5N3A6kRfbS1enQp7MeQy42Ua8VI
+         GUXcM2kmyuI6SK3dq0FMrmMAeOD1GT4pkSIDdagB6x7lS1Q41bdmOqPb0q/j5CajHIky
+         mLQNdEZrfDQMXKyfcC0ROAOyl0mpuMEs07wYmXaMnCXbqbAqJ/j18gbsDZSpX8nDt42f
+         XJSw==
+X-Gm-Message-State: AOJu0YxR97To1a+v+0hEqVIGXcqXeNjLosAd0HurH7fCD6DklaGnNjct
+        i56jS+6Qd+RtfWFwugBzsEyiTBIX71s=
+X-Google-Smtp-Source: AGHT+IHAZABTuzLy8tfuBPtyQAnJPM7dIp8U/NDC2uD3q3TZx0u70ZV82P4fOvOibBdngwVCQ6cm/Q==
+X-Received: by 2002:a05:6512:60b:b0:50c:44:919e with SMTP id b11-20020a056512060b00b0050c0044919emr912640lfe.108.1701887682174;
+        Wed, 06 Dec 2023 10:34:42 -0800 (PST)
+Received: from [192.168.20.11] (83-233-6-197.cust.bredband2.com. [83.233.6.197])
+        by smtp.gmail.com with ESMTPSA id k22-20020ac24f16000000b0050bf59d513bsm1044009lfr.94.2023.12.06.10.34.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 10:34:40 -0800 (PST)
+From:   Marcus Folkesson <marcus.folkesson@gmail.com>
+Date:   Wed, 06 Dec 2023 19:39:04 +0100
+Subject: [PATCH v4] iio: adc: mcp3911: simplify code with guard macro
 MIME-Version: 1.0
-References: <20230421141723.2405942-1-peternewman@google.com>
- <20230421141723.2405942-4-peternewman@google.com> <38b9e6df-cccd-a745-da4a-1d1a0ec86ff3@intel.com>
- <CALPaoCg76nUsJ7eYcU61gied8WBuAAmqy0Pqpsq5=Z-S52Qg6w@mail.gmail.com>
- <31993ea8-97e5-b8d5-b344-48db212bc9cf@intel.com> <CALPaoCiPCxUeGKjZytxmse2oNs=qDBbRY9kH7AZGG6iXf1qtJw@mail.gmail.com>
- <04c9eb5e-3395-05e6-f0cc-bc8f054a6031@intel.com> <CALPaoCjg-W3w8OKLHP_g6Evoo03fbgaOQZrGTLX6vdSLp70=SA@mail.gmail.com>
- <e4a77e0c-a31c-429b-9de9-3cadd704ca34@intel.com> <CALPaoCiRD6j_Rp7ffew+PtGTF4rWDORwbuRQqH2i-cY5SvWQBg@mail.gmail.com>
- <101c0235-c354-43b1-afc2-1332bd8b453a@intel.com>
-In-Reply-To: <101c0235-c354-43b1-afc2-1332bd8b453a@intel.com>
-From:   Peter Newman <peternewman@google.com>
-Date:   Wed, 6 Dec 2023 10:38:15 -0800
-Message-ID: <CALPaoCiLB99MDdMuVR=U6dA8hsnRJkdb2FrHvwXzQoQBHp_qNA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/9] x86/resctrl: Add resctrl_mbm_flush_cpu() to
- collect CPUs' MBM events
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>, Babu Moger <babu.moger@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Stephane Eranian <eranian@google.com>,
-        James Morse <james.morse@arm.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231206-mcp3911-guard-v4-1-30c3c5d4340f@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAMe/cGUC/3XNTQ6CMBCG4auYrq1hplCoK+9hXDTtAE3kJ602G
+ sLdLWwkGJffJM87EwvkHQV2PkzMU3TBDX0a+fHATKv7hrizaTPMUABgwTszCgXAm6f2lldSFgo
+ IjcpLlszoqXavtXe9pd268Bj8e81HWK7/ShE4cCzzyoLUohb1pem0u5/M0LGlFHGry73GpFUuU
+ YrMGg201+KrMfv5LZK2dSVIFdICqa2e5/kDbDpWUyYBAAA=
+To:     Kent Gustavsson <kent@minoris.se>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Marcus Folkesson <marcus.folkesson@gmail.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4388;
+ i=marcus.folkesson@gmail.com; h=from:subject:message-id;
+ bh=0Nl6k178wltht81ihfvleOVdWM/BNHMS3fFENupKlMw=;
+ b=owEBbQKS/ZANAwAIAYiATm9ZXVIyAcsmYgBlcL/P7tGZEz0CLXTKiG7sDCNkD3oZw+S/Ga6J3
+ 5yDl5vSv62JAjMEAAEIAB0WIQQFUaLotmy1TWTBLGWIgE5vWV1SMgUCZXC/zwAKCRCIgE5vWV1S
+ MmF7EACRCAqdqtI6NunF0sERBBFm9wwV4AiP8dWVOk8/2jcipp8zQfRMa0UXkgjHazyWxahhDfb
+ zIf+eJJqsIvZ0vNqV0q0Zvw/pqmWHLdvvsMKsL4HWjryerDsvDHOvRfqxqNVei+KUkZ7b/66V7w
+ Fh0CIxj0VXimj6XUZ6oEvEW9vktEm96ypgi/2LEJVex/h12WIntNQg/po8uhfguvQ5tax/A4Oks
+ tTvCUEP3OkVY11nDuR4cMwdQcHDw8Xu+3k0nlPy31/2aH/UO9+sG8xRPbD01eoPq8L+sy+SFsu2
+ TOzLMHTeTmbR6BbNwjcXhql67HQLRBfN5988LkUKTpN64tG3SqFDk4vRDANAIAz3O6PGP1I/nER
+ xYHqD6HjjrCzqtnK5eOkfCBZKrU2tiY5AzcWTZDxeX1lILf2CAuyr2uhuT3cptJHHZx4iaWnqj1
+ f0eF4ZinPdBs+8qKTMR3jD7BypfkaFuH/OucHylt/5kCtAhSjJzL5A2DNYyM1pqb7UflLwzZLzA
+ cqaqcZkc1WiMIcf74xYzM/IXAzOHSs4NCzT/DF2ATaxpRDIdacKLW5OR+Ho5bi5FMsAJuKh79oo
+ eKIdJxWrZ4DUPFKbGBzq2nGC3p2Qjhf4A6UxDvaz/G5x3fud/9qENQW5622lwsslfhYeQWOJqQe
+ oJNCcGuCI7jBpxA==
+X-Developer-Key: i=marcus.folkesson@gmail.com; a=openpgp;
+ fpr=AB91D46C7E0F6E6FB2AB640EC0FE25D598F6C127
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,138 +93,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
+Use the guard(mutex) macro for handle mutex lock/unlocks.
 
-On Tue, Dec 5, 2023 at 5:47=E2=80=AFPM Reinette Chatre
-<reinette.chatre@intel.com> wrote:
->
-> On 12/5/2023 4:33 PM, Peter Newman wrote:
-> > On Tue, Dec 5, 2023 at 1:57=E2=80=AFPM Reinette Chatre
-> > <reinette.chatre@intel.com> wrote:
-> >> On 12/1/2023 12:56 PM, Peter Newman wrote:
+Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+---
+Changes in v4:
+- Remove unreachable breaks
+- Link to v3: https://lore.kernel.org/r/20231205-mcp3911-guard-v3-1-df83e956d1e9@gmail.com
 
-> > Ignoring any present-day resctrl interfaces, what we minimally need is.=
-..
-> >
-> > 1. global "start measurement", which enables a
-> > read-counters-on-context switch flag, and broadcasts an IPI to all
-> > CPUs to read their current count
-> > 2. wait 5 seconds
-> > 3. global "end measurement", to IPI all CPUs again for final counts
-> > and clear the flag from step 1
-> >
-> > Then the user could read at their leisure all the (frozen) event
-> > counts from memory until the next measurement begins.
-> >
-> > In our case, if we're measuring as often as 5 seconds for every
-> > minute, that will already be a 12x aggregate reduction in overhead,
-> > which would be worthwhile enough.
->
-> The "con" here would be that during those 5 seconds (which I assume would=
- be
-> controlled via user space so potentially shorter or longer) all tasks in =
-the
-> system is expected to have significant (but yet to be measured) impact
-> on context switch delay.
+Changes in v3:
+- Return early in good paths as well
+- Rebase against master
+- Link to v2: https://lore.kernel.org/r/20231127-mcp3911-guard-v2-1-9462630dca1e@gmail.com
 
-Yes, of course. In the worst case I've measured, Zen2, it's roughly a
-1700-cycle context switch penalty (~20%) for tasks in different
-monitoring groups. Bad, but the benefit we gain from the per-RMID MBM
-data makes up for it several times over if we only pay the cost during a
-measurement.
+Changes in v2:
+- Return directly instead of goto label
+- Link to v1: https://lore.kernel.org/r/20231125-mcp3911-guard-v1-1-2748d16a3f3f@gmail.com
+---
+ drivers/iio/adc/mcp3911.c | 55 +++++++++++++----------------------------------
+ 1 file changed, 15 insertions(+), 40 deletions(-)
 
-> I expect the overflow handler should only be run during the measurement
-> timeframe, to not defeat the "at their leisure" reading of counters.
+diff --git a/drivers/iio/adc/mcp3911.c b/drivers/iio/adc/mcp3911.c
+index d864558bc087..dfcb6cb7570f 100644
+--- a/drivers/iio/adc/mcp3911.c
++++ b/drivers/iio/adc/mcp3911.c
+@@ -7,6 +7,7 @@
+  */
+ #include <linux/bitfield.h>
+ #include <linux/bits.h>
++#include <linux/cleanup.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/err.h>
+@@ -318,44 +319,28 @@ static int mcp3911_read_raw(struct iio_dev *indio_dev,
+ 	struct mcp3911 *adc = iio_priv(indio_dev);
+ 	int ret = -EINVAL;
+ 
+-	mutex_lock(&adc->lock);
++	guard(mutex)(&adc->lock);
+ 	switch (mask) {
+ 	case IIO_CHAN_INFO_RAW:
+ 		ret = mcp3911_read(adc,
+ 				   MCP3911_CHANNEL(channel->channel), val, 3);
+ 		if (ret)
+-			goto out;
++			return ret;
+ 
+ 		*val = sign_extend32(*val, 23);
+-
+-		ret = IIO_VAL_INT;
+-		break;
+-
++		return IIO_VAL_INT;
+ 	case IIO_CHAN_INFO_OFFSET:
+-
+ 		ret = adc->chip->get_offset(adc, channel->channel, val);
+-		if (ret)
+-			goto out;
+-
+-		ret = IIO_VAL_INT;
+-		break;
++		return (ret) ? ret : IIO_VAL_INT;
+ 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
+ 		ret = adc->chip->get_osr(adc, val);
+-		if (ret)
+-			goto out;
+-
+-		ret = IIO_VAL_INT;
+-		break;
+-
++		return (ret) ? ret : IIO_VAL_INT;
+ 	case IIO_CHAN_INFO_SCALE:
+ 		*val = mcp3911_scale_table[ilog2(adc->gain[channel->channel])][0];
+ 		*val2 = mcp3911_scale_table[ilog2(adc->gain[channel->channel])][1];
+-		ret = IIO_VAL_INT_PLUS_NANO;
+-		break;
++		return IIO_VAL_INT_PLUS_NANO;
+ 	}
+ 
+-out:
+-	mutex_unlock(&adc->lock);
+ 	return ret;
+ }
+ 
+@@ -364,9 +349,8 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
+ 			     int val2, long mask)
+ {
+ 	struct mcp3911 *adc = iio_priv(indio_dev);
+-	int ret = -EINVAL;
+ 
+-	mutex_lock(&adc->lock);
++	guard(mutex)(&adc->lock);
+ 	switch (mask) {
+ 	case IIO_CHAN_INFO_SCALE:
+ 		for (int i = 0; i < MCP3911_NUM_SCALES; i++) {
+@@ -374,32 +358,24 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
+ 			    val2 == mcp3911_scale_table[i][1]) {
+ 
+ 				adc->gain[channel->channel] = BIT(i);
+-				ret = adc->chip->set_scale(adc, channel->channel, i);
++				return adc->chip->set_scale(adc, channel->channel, i);
+ 			}
+ 		}
+ 		break;
+ 	case IIO_CHAN_INFO_OFFSET:
+-		if (val2 != 0) {
+-			ret = -EINVAL;
+-			goto out;
+-		}
+-
+-		ret = adc->chip->set_offset(adc, channel->channel, val);
+-		break;
++		if (val2 != 0)
++			return -EINVAL;
+ 
++		return adc->chip->set_offset(adc, channel->channel, val);
+ 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
+ 		for (int i = 0; i < ARRAY_SIZE(mcp3911_osr_table); i++) {
+ 			if (val == mcp3911_osr_table[i]) {
+-				ret = adc->chip->set_osr(adc, i);
+-				break;
++				return adc->chip->set_osr(adc, i);
+ 			}
+ 		}
+ 		break;
+ 	}
+-
+-out:
+-	mutex_unlock(&adc->lock);
+-	return ret;
++	return -EINVAL;
+ }
+ 
+ static int mcp3911_calc_scale_table(struct mcp3911 *adc)
+@@ -532,7 +508,7 @@ static irqreturn_t mcp3911_trigger_handler(int irq, void *p)
+ 	int i = 0;
+ 	int ret;
+ 
+-	mutex_lock(&adc->lock);
++	guard(mutex)(&adc->lock);
+ 	adc->tx_buf = MCP3911_REG_READ(MCP3911_CHANNEL(0), adc->dev_addr);
+ 	ret = spi_sync_transfer(adc->spi, xfer, ARRAY_SIZE(xfer));
+ 	if (ret < 0) {
+@@ -549,7 +525,6 @@ static irqreturn_t mcp3911_trigger_handler(int irq, void *p)
+ 	iio_push_to_buffers_with_timestamp(indio_dev, &adc->scan,
+ 					   iio_get_time_ns(indio_dev));
+ out:
+-	mutex_unlock(&adc->lock);
+ 	iio_trigger_notify_done(indio_dev->trig);
+ 
+ 	return IRQ_HANDLED;
 
-Yes, correct. We wouldn't be interested in overflows of the hardware
-counter when not actively measuring bandwidth.
+---
+base-commit: 33cc938e65a98f1d29d0a18403dbbee050dcad9a
+change-id: 20231125-mcp3911-guard-866591e2c947
 
+Best regards,
+-- 
+Marcus Folkesson <marcus.folkesson@gmail.com>
 
->
-> >>> The second involves avoiding the situation where a hardware counter
-> >>> could be deallocated: Determine the number of simultaneous RMIDs
-> >>> supported, reduce the effective number of RMIDs available to that
-> >>> number. Use the default RMID (0) for all "unassigned" monitoring
-> >>
-> >> hmmm ... so on the one side there is "only the RMID within the PQR
-> >> register can be guaranteed to be tracked by hardware" and on the
-> >> other side there is "A given implementation may have insufficient
-> >> hardware to simultaneously track the bandwidth for all RMID values
-> >> that the hardware supports."
-> >>
-> >> From the above there seems to be something in the middle where
-> >> some subset of the RMID values supported by hardware can be used
-> >> to simultaneously track bandwidth? How can it be determined
-> >> what this number of RMID values is?
-> >
-> > In the context of AMD, we could use the smallest number of CPUs in any
-> > L3 domain as a lower bound of the number of counters.
->
-> Could you please elaborate on this? (With the numbers of CPUs nowadays th=
-is
-> may be many RMIDs, perhaps even more than what ABMC supports.)
-
-I think the "In the context of AMD" part is key. This feature would only
-be applicable to the AMD implementations we have today which do not
-implement ABMC.  I believe the difficulties are unique to the topologies
-of these systems: many small L3 domains per node with a relatively small
-number of CPUs in each. If the L3 domains were large and few, simply
-restricting the number of RMIDs and allocating on group creation as we
-do today would probably be fine.
-
-> I am missing something here since it is not obvious to me how this lower
-> bound is determined. Let's assume that there are as many monitor groups
-> (and thus as many assigned RMIDs) as there are CPUs in a L3 domain.
-> Each monitor group may have many tasks. It can be expected that at any
-> moment in time only a subset of assigned RMIDs are assigned to CPUs
-> via the CPUs' PQR registers. Of those RMIDs that are not assigned to
-> CPUs, how can it be certain that they continue to be tracked by hardware?
-
-Are you asking whether the counters will ever be reclaimed proactively?
-The behavior I've observed is that writing a new RMID into a PQR_ASSOC
-register when all hardware counters in the domain are allocated will
-trigger the reallocation.
-
-However, I admit the wording in the PQoS spec[1] is only written to
-support the permanent-assignment workaround in the current patch series:
-
-"All RMIDs which are currently in use by one or more processors in the
-QOS domain will be tracked. The hardware will always begin tracking a
-new RMID value when it gets written to the PQR_ASSOC register of any of
-the processors in the QOS domain and it is not already being tracked.
-When the hardware begins tracking an RMID that it was not previously
-tracking, it will clear the QM_CTR for all events in the new RMID."
-
-I would need to confirm whether this is the case and request the
-documentation be clarified if it is.
-
-
-> >>>
-> >>> While the second feature is a lot more disruptive at the filesystem
-> >>> layer, it does eliminate the added context switch overhead. Also, it
-> >>
-> >> Which changes to filesystem layer are you anticipating?
-> >
-> > Roughly speaking...
-> >
-> > 1. The proposed "assign" interface would have to become more indirect
-> > to avoid understanding how assign could be implemented on various
-> > platforms.
->
-> It is almost starting to sound like we could learn from the tracing
-> interface where individual events can be enabled/disabled ... with severa=
-l
-> events potentially enabled with an "enable" done higher in hierarchy, per=
-haps
-> even globally to support the first approach ...
-
-Sorry, can you clarify the part about the tracing interface? Tracing to
-support dynamic autoconfiguration of events?
-
-Thanks!
--Peter
-
-
- [1] AMD64 Technology Platform Quality of Service Extensions, Revision: 1.0=
-3:
-     https://bugzilla.kernel.org/attachment.cgi?id=3D301365
