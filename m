@@ -2,179 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF828077A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B618077AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378839AbjLFShw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 13:37:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
+        id S1378850AbjLFSiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 13:38:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378792AbjLFShv (ORCPT
+        with ESMTP id S1378355AbjLFSiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 13:37:51 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D12A139;
-        Wed,  6 Dec 2023 10:37:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XjoZdIcJ4x0UyyYTC1Lhh7F1PH0NzGpQF/40WH8h+PE=; b=BYNASHq+jpc/8U1rxz8DCtJj7+
-        Kj4N1eQTG2Yt2dhsGMUSAsRvsSvY1FhmPVaE0bDvw43eARsX1ZWtS2CBnuadPcFc6dtE6LRNOVGYC
-        aZ2nVg6qJ3DRN1Hp3FWYd3h9zWB52+NlCnToyCdRhHDIKgfbalWxEmF1K/m3eh4ebIrexUdcllOya
-        iu5XU6Bs3e8b974e0dREPyH7SvE4bOjVN1reX+MSUGOm2oV7UaqlGMgKIz6Oc8/zxxrHtpEzX/N0v
-        5ZcnLPsxBaGRexjqTtzyz3w5P1owRBXyAq+dLtjk8i17Z+dITkegtGZouRvQyKoYP2c/NWK6ZBrP6
-        SEUC5Jqg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rAwln-005Edk-1B;
-        Wed, 06 Dec 2023 18:37:15 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 061D930057E; Wed,  6 Dec 2023 19:37:14 +0100 (CET)
-Date:   Wed, 6 Dec 2023 19:37:13 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
+        Wed, 6 Dec 2023 13:38:20 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E79811F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 10:38:27 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-35d68239732so7805ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 10:38:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701887906; x=1702492706; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1kHi+/x/yV8/AO54c41VfM0jyCOf9g4qLEuUxaryfSU=;
+        b=PUQINWTZcuJ1Gzxm+DVf8U75wXjpYcVdMtpAoAD2Iw0x8aACAL/G89S72dNVxK7UoB
+         wnVsTWUJiFM9R4kDT2yaDaBzg6PgTC2eK4KQZs/ZV/SMq2EX9CirM54Gihu034T0tsDS
+         N7dNsYL+rzxUXWCBdBT2zecBQz1v3vGRd1WAVADPwB81EM0V1QX3JzGATe/2M2lEbeIi
+         XgyW7nEhYX9SXPMsmNH3P38TjiPmEgJa32ggS+7YNfN08KbKuIVDw3tktcldndu00y0W
+         2aMRtNUOjZhvDVJZ6u5KfyooWPwB3I6AVnC8Y3h9ETLim2MT6JXSrCLMDjEOFIkrR1P/
+         iErQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701887906; x=1702492706;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1kHi+/x/yV8/AO54c41VfM0jyCOf9g4qLEuUxaryfSU=;
+        b=jETOLpandunL8kSDdbtExCinoFi1js82yjTNJxixpWBe0be4lq+0WYGh3O8j4n+HVu
+         3ptHd9LH3SZ4xEJh3VdTnWIbp/ry61AHy/UsRMVpb1YYWb9gyYzHI0bTOiEo6Aif1cHB
+         VYbAA66SRe4w3bdSVYjr3FrHyQpcozYGDacF4O0iAUSevMep3denwc0tgdY/6A45oEGB
+         DxbxDaHS6IGgg5otdboAIL0+tJYUxFPWVB0DZN1GvZC6Uux77oZxk5VC/Orc1xqMa6f0
+         OIosw3xNKcT9jkVJqLOzT6LrM7kV7dxwVB7+9PLdA5sHrzdJJFlKv3w+Lv1tfRQotgBS
+         pGmA==
+X-Gm-Message-State: AOJu0YxXTgcglRtA5Qb+TqC0c8KY30CN0dPeVhVgTAM13Xs0FyEmc3CT
+        AHrEvS/Gn1nx03I8BL9aL11n+TwokLsrKnXKeXz0CA==
+X-Google-Smtp-Source: AGHT+IECEzFpg3QWyp0E5e/eCQj0fEABYtZZmB0KvLMjY2AH2UAB7JCkJPuizEBMXLOu30ycJ+39VKwEyevubqWqV2U=
+X-Received: by 2002:a05:6e02:1bc4:b0:35d:5fd7:b57 with SMTP id
+ x4-20020a056e021bc400b0035d5fd70b57mr369567ilv.20.1701887906105; Wed, 06 Dec
+ 2023 10:38:26 -0800 (PST)
+MIME-Version: 1.0
+References: <20230421141723.2405942-1-peternewman@google.com>
+ <20230421141723.2405942-4-peternewman@google.com> <38b9e6df-cccd-a745-da4a-1d1a0ec86ff3@intel.com>
+ <CALPaoCg76nUsJ7eYcU61gied8WBuAAmqy0Pqpsq5=Z-S52Qg6w@mail.gmail.com>
+ <31993ea8-97e5-b8d5-b344-48db212bc9cf@intel.com> <CALPaoCiPCxUeGKjZytxmse2oNs=qDBbRY9kH7AZGG6iXf1qtJw@mail.gmail.com>
+ <04c9eb5e-3395-05e6-f0cc-bc8f054a6031@intel.com> <CALPaoCjg-W3w8OKLHP_g6Evoo03fbgaOQZrGTLX6vdSLp70=SA@mail.gmail.com>
+ <e4a77e0c-a31c-429b-9de9-3cadd704ca34@intel.com> <CALPaoCiRD6j_Rp7ffew+PtGTF4rWDORwbuRQqH2i-cY5SvWQBg@mail.gmail.com>
+ <101c0235-c354-43b1-afc2-1332bd8b453a@intel.com>
+In-Reply-To: <101c0235-c354-43b1-afc2-1332bd8b453a@intel.com>
+From:   Peter Newman <peternewman@google.com>
+Date:   Wed, 6 Dec 2023 10:38:15 -0800
+Message-ID: <CALPaoCiLB99MDdMuVR=U6dA8hsnRJkdb2FrHvwXzQoQBHp_qNA@mail.gmail.com>
+Subject: Re: [PATCH v1 3/9] x86/resctrl: Add resctrl_mbm_flush_cpu() to
+ collect CPUs' MBM events
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>, Babu Moger <babu.moger@amd.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231206183713.GA35897@noisy.programming.kicks-ass.net>
-References: <20231130134204.136058029@infradead.org>
- <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
- <20231204091334.GM3818@noisy.programming.kicks-ass.net>
- <20231204111128.GV8262@noisy.programming.kicks-ass.net>
- <20231204125239.GA1319@noisy.programming.kicks-ass.net>
- <ZW4LjmUKj1q6RWdL@krava>
- <20231204181614.GA7299@noisy.programming.kicks-ass.net>
- <20231204183354.GC7299@noisy.programming.kicks-ass.net>
- <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
- <20231206163814.GB36423@noisy.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206163814.GB36423@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Stephane Eranian <eranian@google.com>,
+        James Morse <james.morse@arm.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 05:38:14PM +0100, Peter Zijlstra wrote:
-> On Mon, Dec 04, 2023 at 05:18:31PM -0800, Alexei Starovoitov wrote:
-> 
-> > [   13.978497]  ? asm_exc_invalid_op+0x1a/0x20
-> > [   13.978798]  ? tcp_set_ca_state+0x51/0xd0
-> > [   13.979087]  tcp_v6_syn_recv_sock+0x45c/0x6c0
-> > [   13.979401]  tcp_check_req+0x497/0x590
-> 
-> > The stack trace doesn't have any bpf, but it's a bpf issue too.
-> > Here tcp_set_ca_state() calls
-> > icsk->icsk_ca_ops->set_state(sk, ca_state);
-> > which calls bpf prog via bpf trampoline.
-> 
-> 
-> 
-> Specifically, I think this is
-> tools/testing/selftests/bpf/progs/bpf_cubic.c, which has:
-> 
->         .set_state      = (void *)bpf_cubic_state,
-> 
-> which comes from:
-> 
-> BPF_STRUCT_OPS(bpf_cubic_state, struct sock *sk, __u8 *new_state)
-> 
-> which then wraps:
-> 
-> BPF_PROG()
-> 
-> which ends up generating:
-> 
-> static __always_inline ___bpf_cubic_state(unsigned long long *ctx, struct sock *sk, __u8 *new_state)
-> {
-> 	...
-> }
-> 
-> void bpf_cubic_state(unsigned long long *ctx)
-> {
-> 	return ____bpf_cubic_state(ctx, ctx[0], ctx[1]);
-> }
-> 
-> 
-> I think this then uses arch_prepare_bpf_trampoline(), but I'm entirely
-> lost how this all comes together, because the way I understand it the
-> whole bpf_trampoline is used to hook into an ftrace __fentry hook.
-> 
-> And a __fentry hook is very much not a function pointer. Help!?!?
+Hi Reinette,
 
-kernel/bpf/bpf_struct_ops.c:bpf_struct_ops_prepare_trampoline()
+On Tue, Dec 5, 2023 at 5:47=E2=80=AFPM Reinette Chatre
+<reinette.chatre@intel.com> wrote:
+>
+> On 12/5/2023 4:33 PM, Peter Newman wrote:
+> > On Tue, Dec 5, 2023 at 1:57=E2=80=AFPM Reinette Chatre
+> > <reinette.chatre@intel.com> wrote:
+> >> On 12/1/2023 12:56 PM, Peter Newman wrote:
 
-And yeah, it seems to use the ftrace trampoline for indirect calls here,
-*sigh*.
+> > Ignoring any present-day resctrl interfaces, what we minimally need is.=
+..
+> >
+> > 1. global "start measurement", which enables a
+> > read-counters-on-context switch flag, and broadcasts an IPI to all
+> > CPUs to read their current count
+> > 2. wait 5 seconds
+> > 3. global "end measurement", to IPI all CPUs again for final counts
+> > and clear the flag from step 1
+> >
+> > Then the user could read at their leisure all the (frozen) event
+> > counts from memory until the next measurement begins.
+> >
+> > In our case, if we're measuring as often as 5 seconds for every
+> > minute, that will already be a 12x aggregate reduction in overhead,
+> > which would be worthwhile enough.
+>
+> The "con" here would be that during those 5 seconds (which I assume would=
+ be
+> controlled via user space so potentially shorter or longer) all tasks in =
+the
+> system is expected to have significant (but yet to be measured) impact
+> on context switch delay.
 
-> The other case:
-> 
-> For tools/testing/selftests/bpf/progs/bloom_filter_bench.c we have:
-> 
->         bpf_for_each_map_elem(&array_map, bloom_callback, &data, 0);
-> 
-> and here bloom callback appears like a normal function:
-> 
-> static __u64
-> bloom_callback(struct bpf_map *map, __u32 *key, void *val,
->                struct callback_ctx *data)
-> 
-> 
-> But what do functions looks like in the JIT? What's the actual address
-> that's then passed into the helper function. Given this seems to work
-> without kCFI, it should at least have an ENDBR, but there's only 3 of
-> those afaict:
-> 
->   - emit_prologue() first insn
->   - emit_prologue() tail-call site
->   - arch_preprare_bpf_trampoline()
-> 
-> If the function passed to the helper is from do_jit()/emit_prologue(),
-> then how do I tell what 'function' is being JIT'ed ?
-> 
-> If it is arch_prepare_bpf_trampoline(), then we're back at the previous
-> question and I don't see how a __fentry site becomes a callable function
-> pointer.
-> 
-> 
-> Any clues would be much appreciated.
+Yes, of course. In the worst case I've measured, Zen2, it's roughly a
+1700-cycle context switch penalty (~20%) for tasks in different
+monitoring groups. Bad, but the benefit we gain from the per-RMID MBM
+data makes up for it several times over if we only pay the cost during a
+measurement.
 
-Still not figured out how this one works...
+> I expect the overflow handler should only be run during the measurement
+> timeframe, to not defeat the "at their leisure" reading of counters.
+
+Yes, correct. We wouldn't be interested in overflows of the hardware
+counter when not actively measuring bandwidth.
+
+
+>
+> >>> The second involves avoiding the situation where a hardware counter
+> >>> could be deallocated: Determine the number of simultaneous RMIDs
+> >>> supported, reduce the effective number of RMIDs available to that
+> >>> number. Use the default RMID (0) for all "unassigned" monitoring
+> >>
+> >> hmmm ... so on the one side there is "only the RMID within the PQR
+> >> register can be guaranteed to be tracked by hardware" and on the
+> >> other side there is "A given implementation may have insufficient
+> >> hardware to simultaneously track the bandwidth for all RMID values
+> >> that the hardware supports."
+> >>
+> >> From the above there seems to be something in the middle where
+> >> some subset of the RMID values supported by hardware can be used
+> >> to simultaneously track bandwidth? How can it be determined
+> >> what this number of RMID values is?
+> >
+> > In the context of AMD, we could use the smallest number of CPUs in any
+> > L3 domain as a lower bound of the number of counters.
+>
+> Could you please elaborate on this? (With the numbers of CPUs nowadays th=
+is
+> may be many RMIDs, perhaps even more than what ABMC supports.)
+
+I think the "In the context of AMD" part is key. This feature would only
+be applicable to the AMD implementations we have today which do not
+implement ABMC.  I believe the difficulties are unique to the topologies
+of these systems: many small L3 domains per node with a relatively small
+number of CPUs in each. If the L3 domains were large and few, simply
+restricting the number of RMIDs and allocating on group creation as we
+do today would probably be fine.
+
+> I am missing something here since it is not obvious to me how this lower
+> bound is determined. Let's assume that there are as many monitor groups
+> (and thus as many assigned RMIDs) as there are CPUs in a L3 domain.
+> Each monitor group may have many tasks. It can be expected that at any
+> moment in time only a subset of assigned RMIDs are assigned to CPUs
+> via the CPUs' PQR registers. Of those RMIDs that are not assigned to
+> CPUs, how can it be certain that they continue to be tracked by hardware?
+
+Are you asking whether the counters will ever be reclaimed proactively?
+The behavior I've observed is that writing a new RMID into a PQR_ASSOC
+register when all hardware counters in the domain are allocated will
+trigger the reallocation.
+
+However, I admit the wording in the PQoS spec[1] is only written to
+support the permanent-assignment workaround in the current patch series:
+
+"All RMIDs which are currently in use by one or more processors in the
+QOS domain will be tracked. The hardware will always begin tracking a
+new RMID value when it gets written to the PQR_ASSOC register of any of
+the processors in the QOS domain and it is not already being tracked.
+When the hardware begins tracking an RMID that it was not previously
+tracking, it will clear the QM_CTR for all events in the new RMID."
+
+I would need to confirm whether this is the case and request the
+documentation be clarified if it is.
+
+
+> >>>
+> >>> While the second feature is a lot more disruptive at the filesystem
+> >>> layer, it does eliminate the added context switch overhead. Also, it
+> >>
+> >> Which changes to filesystem layer are you anticipating?
+> >
+> > Roughly speaking...
+> >
+> > 1. The proposed "assign" interface would have to become more indirect
+> > to avoid understanding how assign could be implemented on various
+> > platforms.
+>
+> It is almost starting to sound like we could learn from the tracing
+> interface where individual events can be enabled/disabled ... with severa=
+l
+> events potentially enabled with an "enable" done higher in hierarchy, per=
+haps
+> even globally to support the first approach ...
+
+Sorry, can you clarify the part about the tracing interface? Tracing to
+support dynamic autoconfiguration of events?
+
+Thanks!
+-Peter
+
+
+ [1] AMD64 Technology Platform Quality of Service Extensions, Revision: 1.0=
+3:
+     https://bugzilla.kernel.org/attachment.cgi?id=3D301365
