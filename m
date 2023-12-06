@@ -2,170 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B60807640
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:15:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5F5807642
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378536AbjLFRP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:15:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
+        id S1378682AbjLFRPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:15:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235260AbjLFRP0 (ORCPT
+        with ESMTP id S1379823AbjLFRPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:15:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09221D40
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 09:15:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBA0DC433C7;
-        Wed,  6 Dec 2023 17:15:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701882931;
-        bh=TWZ1PvW7WsY9XY5jYN+qaVdqjJkgESCw9MviqH1sYBE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hGV6V4mJFQX2x3YGSlq+x1KYAj6S4+h6e5vo7bjpEbX1F6AlgsWjSm+LJxZcm37G+
-         kLrI5g7wRdBb02GY0lOAuxnW+OsWrTar5jDylsFMTvKBRjlLLYMI9+SdWq1wz6B/HA
-         zT1S/kNthQtmnvqPz/3TE/mrlT+vnat8ZTOuQCJ8OOyCFt/OzdlWxCLXnIvfGnB/nu
-         T4w1gxDa++qDnAPQ9gIInnmLSDvQp382+3rMoSrxeaTeP3e+jiQ1byPsKebBINY8+y
-         HXRIoU0V9IkVIAUhxhgEvdaFOfqMeVRIchZeMgjQ4QHwu2MCUx92ETbG4V4Hx0fSz8
-         s/yP5yW/w56kw==
-Date:   Wed, 6 Dec 2023 17:15:21 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
-Cc:     Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org>,
-        nuno.sa@analog.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        Olivier MOYSAN <olivier.moysan@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wed, 6 Dec 2023 12:15:41 -0500
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322AAD7D;
+        Wed,  6 Dec 2023 09:15:43 -0800 (PST)
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6d87a83ec27so3057068a34.2;
+        Wed, 06 Dec 2023 09:15:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701882942; x=1702487742;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GYp3frOVvXsJ2X/Ct957xNNutu3j7/9mfiaXXwDsyL8=;
+        b=gVKbVzCAXYra62bMjIMCoZ1fft+a+UfeCRDYYZd2rzSipG2X5NFrvuHhWZvZPwtsqX
+         KOLsGaPh13O/W64SjPHM3Zu/CR2D5U00gAWX8Z+PWAO/ecR6T+PneZ1oZOAY4LzjdoJN
+         ANLOVgb6vpg19czs4s3O/ISivvnExXLTHhI5znK20MuRFfqB0SrmqLsMuG+JUmZid8EG
+         n1yAwKrJMbeZ0YUo68i2BH4kkE8ROT0e6Ymkoul1Mx2e3VZ0KgVK1OoYXCmSW5e/81ZY
+         rPtDXnlyWdhHRnSHPrFmMQIjsF928rD0+kQ1zW2Mchz69qez6eE5xae7OJzFaTTbLQ4P
+         loNA==
+X-Gm-Message-State: AOJu0YxKuvafD92fMpwROXvJL3MrPDBXXqPztrugyk5cOZripG0ZBgFg
+        QA3DKie3JwY1nyS+WdSw+Q==
+X-Google-Smtp-Source: AGHT+IG1oCexMuFyW4w0wlSNBbozqLu3b5kTesKDg8PYp6W65l111/ajQomBc1CroYb/JPZNbkf1hQ==
+X-Received: by 2002:a9d:7991:0:b0:6d9:ca1e:af9a with SMTP id h17-20020a9d7991000000b006d9ca1eaf9amr1061464otm.31.1701882942455;
+        Wed, 06 Dec 2023 09:15:42 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id q26-20020a9d4b1a000000b006d99c53f745sm34818otf.77.2023.12.06.09.15.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 09:15:41 -0800 (PST)
+Received: (nullmailer pid 2703661 invoked by uid 1000);
+        Wed, 06 Dec 2023 17:15:40 -0000
+Date:   Wed, 6 Dec 2023 11:15:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Herve Codina <herve.codina@bootlin.com>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
         Frank Rowand <frowand.list@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: Re: [PATCH 03/12] iio: add the IIO backend framework
-Message-ID: <20231206171521.4133569a@jic23-huawei>
-In-Reply-To: <bba767835e775909c6b8a3334cceeb419afef4ca.camel@gmail.com>
-References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
-        <20231121-dev-iio-backend-v1-3-6a3d542eba35@analog.com>
-        <20231204153855.71c9926f@jic23-huawei>
-        <bba767835e775909c6b8a3334cceeb419afef4ca.camel@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>,
+        Sonal Santan <sonal.santan@amd.com>,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 0/2] Synchronize DT overlay removal with devlink removals
+Message-ID: <20231206171540.GA2697853-robh@kernel.org>
+References: <20231130174126.688486-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231130174126.688486-1-herve.codina@bootlin.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Dec 2023 13:05:53 +0100
-Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
+On Thu, Nov 30, 2023 at 06:41:07PM +0100, Herve Codina wrote:
+> Hi,
 
-> On Mon, 2023-12-04 at 15:38 +0000, Jonathan Cameron wrote:
-> > On Tue, 21 Nov 2023 11:20:16 +0100
-> > Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org> wrote:
-> >  =20
-> > > From: Nuno Sa <nuno.sa@analog.com>
-> > >=20
-> > > This is a Framework to handle complex IIO aggregate devices.
-> > >=20
-> > > The typical architecture is to have one device as the frontend device=
- which
-> > > can be "linked" against one or multiple backend devices. All the IIO =
-and
-> > > userspace interface is expected to be registers/managed by the fronte=
-nd
-> > > device which will callback into the backends when needed (to get/set
-> > > some configuration that it does not directly control). =20
-> >=20
-> > As this is first place backend / frontend terminology used (I think), m=
-ake
-> > sure to give an example so people understand what sorts of IP / devices=
- thes
-> > might be.
-> >  =20
-> > >=20
-> > > The basic framework interface is pretty simple:
-> > > =C2=A0- Backends should register themselves with @devm_iio_backend_re=
-gister()
-> > > =C2=A0- Frontend devices should get backends with @devm_iio_backend_g=
-et()
-> > >=20
-> > > Signed-off-by: Nuno Sa <nuno.sa@analog.com> =20
-> >=20
-> > Looks good to me in general.=C2=A0 I'll need to have a really close rea=
-d though
-> > before we merge this as there may be sticky corners! (hopefully not)
-> >=20
-> >=20
-> > ...
-> >  =20
-> > > +static LIST_HEAD(iio_back_list);
-> > > +static DEFINE_MUTEX(iio_back_lock);
-> > > +
-> > > +/*
-> > > + * Helper macros to properly call backend ops. The main point for th=
-ese macros
-> > > + * is to properly lock the backend mutex on every call plus checking=
- if the
-> > > + * backend device is still around (by looking at the *ops pointer). =
-=20
-> > If just checking if it is around rather thank looking for a bug, then
-> > I'd suggest a lighter choice than WARN_ON_x=20
-> >  =20
->=20
-> Arguably, in here, removing a backend is the user doing something serious=
-ly wrong so
-> I see the splat with good eyes :D.
->=20
-> That said, I'm fine in turning this into a pr_warn_once()...
->=20
-> > Btw, there were some interesting discussions on lifetimes and consumer =
-/ provider
-> > models at plumbers. I think https://www.youtube.com/watch?v=3DbHaMMnIH6=
-AM=C2=A0will be
-> > the video.=C2=A0=C2=A0 Suggested the approach of not refcounting but in=
-stead allowing for
-> > a deliberate removal of access similar to your check on ops here (and t=
-he one
-> > we do in core IIO for similar purposes).=C2=A0 Sounded interesting but =
-I've not
-> > explored what it would really mean to switch to that model yet. =20
->=20
-> Yes, interesting talk indeed. I have been following this issue for some t=
-ime now.
-> That's why I tried to be careful in the backend stuff (so we don't explod=
-e if a
-> backend is gone) even though is a much more simpler approach. But the tal=
-k mentions
-> three solutions and we kind of have both option C (the pointer stuff) and=
- option A
-> (consumer removed on provicer unbind)
-> in here. option A is being given through device links with the AUTO_REMOV=
-E_CONSUMER
-> flag.
->=20
-> And the talk actually left me thinking on that (as it's discussed in ther=
-e. In our
-> simpler case (ADI ones), it does make sense to remove the consumer if the=
- provider is
-> not there. But if we think in more advanced usecases (or maybe already in=
- the STM
-> usecase) where we have a backend per data path. Does it make sense to com=
-pletely
-> "kill" the consumer if we remove one of the data paths? Starting to think=
- it
-> doesn't...
++Saravana for comment
 
-There is a reasonably argument that partial tear down isn't a common case. =
-So
-may not be worth worrying about.
+Looks okay to me though.
 
-J
->=20
-> - Nuno S=C3=A1
->=20
-
+> 
+> In the following sequence:
+>   of_platform_depopulate(); /* Remove devices from a DT overlay node */
+>   of_overlay_remove(); /* Remove the DT overlay node itself */
+> 
+> Some warnings are raised by __of_changeset_entry_destroy() which  was
+> called from of_overlay_remove():
+>   ERROR: memory leak, expected refcount 1 instead of 2 ...
+> 
+> The issue is that, during the device devlink removals triggered from the
+> of_platform_depopulate(), jobs are put in a workqueue.
+> These jobs drop the reference to the devices. When a device is no more
+> referenced (refcount == 0), it is released and the reference to its
+> of_node is dropped by a call to of_node_put().
+> These operations are fully correct except that, because of the
+> workqueue, they are done asynchronously with respect to function calls.
+> 
+> In the sequence provided, the jobs are run too late, after the call to
+> __of_changeset_entry_destroy() and so a missing of_node_put() call is
+> detected by __of_changeset_entry_destroy().
+> 
+> This series fixes this issue introducing device_link_wait_removal() in
+> order to wait for the end of jobs execution (patch 1) and using this
+> function to synchronize the overlay removal with the end of jobs
+> execution (patch 2).
+> 
+> Best regards,
+> Hervé
+> 
+> Herve Codina (2):
+>   driver core: Introduce device_link_wait_removal()
+>   of: overlay: Synchronize of_overlay_remove() with the devlink removals
+> 
+>  drivers/base/core.c    | 26 +++++++++++++++++++++++---
+>  drivers/of/overlay.c   |  6 ++++++
+>  include/linux/device.h |  1 +
+>  3 files changed, 30 insertions(+), 3 deletions(-)
+> 
+> -- 
+> 2.42.0
+> 
