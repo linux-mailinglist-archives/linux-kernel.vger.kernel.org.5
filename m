@@ -2,279 +2,532 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E89A6807038
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65721807036
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:50:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378196AbjLFMuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 07:50:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41474 "EHLO
+        id S1378147AbjLFMuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 07:50:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378169AbjLFMuu (ORCPT
+        with ESMTP id S1378101AbjLFMuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 07:50:50 -0500
-Received: from out0-220.mail.aliyun.com (out0-220.mail.aliyun.com [140.205.0.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA89D45
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:50:53 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047198;MF=henry.hj@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.Ve5fmIH_1701867051;
-Received: from localhost(mailfrom:henry.hj@antgroup.com fp:SMTPD_---.Ve5fmIH_1701867051)
-          by smtp.aliyun-inc.com;
-          Wed, 06 Dec 2023 20:50:51 +0800
-From:   "Henry Huang" <henry.hj@antgroup.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     "=?UTF-8?B?6LCI6Ym06ZSL?=" <henry.tjf@antgroup.com>,
-        "=?UTF-8?B?5pyx6L6JKOiMtuawtCk=?=" <teawater@antgroup.com>,
-        <akpm@linux-foundation.org>, "Henry Huang" <henry.hj@antgroup.com>
-Subject: [RFC v2] mm: Multi-Gen LRU: fix use mm/page_idle/bitmap
-Date:   Wed, 06 Dec 2023 20:50:07 +0800
-Message-ID: <951fb7edab535cf522def4f5f2613947ed7b7d28.1701853894.git.henry.hj@antgroup.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1701853894.git.henry.hj@antgroup.com>
-References: <cover.1701853894.git.henry.hj@antgroup.com>
+        Wed, 6 Dec 2023 07:50:37 -0500
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [IPv6:2001:41d0:1004:224b::ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD8D1A2
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:50:40 -0800 (PST)
+Message-ID: <46ad8c2b-5be2-4cfd-b771-a8d95a5b5d8f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1701867038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XRS4/UnuIWnZockarEAvkGkUjCCyPjOVl0T9XNNaWNc=;
+        b=u7F4JYzLxlvxxRManbPQXPqB+5u+xuX0STtkUCBUN3CuyW9lX24PhJImRS2SRd8mDiQNV6
+        S7wWqMi6CZJXGraONux1bZiDr5wd8d09tGpNkYqDOxd94faY3dXzbo6Bl+AClkcREdEt4I
+        12B0tXZkUokVzZ8bRIX0pH81zjm5dtc=
+Date:   Wed, 6 Dec 2023 20:50:29 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [v3 1/6] dt-bindings: display: Add yamls for JH7110 display
+ system
+To:     Keith Zhao <keith.zhao@starfivetech.com>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Cc:     aou@eecs.berkeley.edu, tzimmermann@suse.de,
+        paul.walmsley@sifive.com, mripard@kernel.org,
+        xingyu.wu@starfivetech.com, jack.zhu@starfivetech.com,
+        palmer@dabbelt.com, krzysztof.kozlowski+dt@linaro.org,
+        william.qiu@starfivetech.com, shengyang.chen@starfivetech.com,
+        changhuang.liang@starfivetech.com
+References: <20231204123315.28456-1-keith.zhao@starfivetech.com>
+ <20231204123315.28456-2-keith.zhao@starfivetech.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <20231204123315.28456-2-keith.zhao@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Multi-Gen LRU page-table walker clears pte young flag, but it doesn't
-clear page idle flag. When we use /sys/kernel/mm/page_idle/bitmap to check
-whether one page is accessed, it would tell us this page is idle,
-but actually this page has been accessed.
+Hi,
 
-For those unmapped filecache pages, page idle flag would not been
-cleared in folio_mark_accessed if Multi-Gen LRU is enabled.
-So we couln't use /sys/kernel/mm/page_idle/bitmap to check whether
-a filecache page is read or written.
 
-What's more, /sys/kernel/mm/page_idle/bitmap also clears pte young flag.
-If one page is accessed, it would set page young flag. Multi-Gen LRU
-page-table walker should check both page&pte young flags.
+On 2023/12/4 20:33, Keith Zhao wrote:
+> StarFive SoCs JH7110 display system:
+> dc controller, hdmi controller,
+> encoder, vout syscon.
+>
+> add the path of yaml file in MAINTAINERS
+>
+> Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
+> ---
+>   .../starfive/starfive,display-subsystem.yaml  | 104 ++++++++++++++++
+>   .../starfive/starfive,dsi-encoder.yaml        |  92 ++++++++++++++
+>   .../starfive/starfive,jh7110-dc8200.yaml      | 113 ++++++++++++++++++
+>   .../starfive/starfive,jh7110-inno-hdmi.yaml   |  82 +++++++++++++
+>   .../soc/starfive/starfive,jh7110-syscon.yaml  |   1 +
+>   MAINTAINERS                                   |   7 ++
+>   6 files changed, 399 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml
+>   create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,dsi-encoder.yaml
+>   create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml
+>   create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml b/Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml
+> new file mode 100644
+> index 000000000000..d5ebdba3fb36
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml
+> @@ -0,0 +1,104 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/starfive/starfive,display-subsystem.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Starfive JH7110 Soc Display SubSystem
+> +
+> +maintainers:
+> +  - Keith Zhao <keith.zhao@starfivetech.com>
+> +  - ShengYang Chen <shengyang.chen@starfivetech.com>
+> +
+> +description:
+> +  This is the bindings documentation for the JH7110 Soc Display Subsystem that
+> +  includes front-end video data capture, display controller and display
+> +  interface. such as HDMI and MIPI.
+> +
+> +  JH7110 display pipeline have several components as below description,
+> +  multi display controllers and corresponding physical interfaces.
+> +  For different display scenarios, pipe0 and pipe1 maybe binding to different
+> +  encoder. for example,
+> +
+> +  pipe0 binding to HDMI for primary display,
+> +  pipe1 binding to DSI for external display.
+> +
+> +          +------------------------------+
+> +          |                              |
+> +          |                              |
+> +  +----+  |   +-------------------+      |   +-------+   +------+   +------+
+> +  |    +----->+  dc controller 0  +--->----->+HDMICtl| ->+ PHY  +-->+PANEL0+
+> +  |AXI |  |   +-------------------+      |   +-------+   +------+   +------+
+> +  |    |  |                              |
+> +  |    |  |                              |
+> +  |    |  |                              |
+> +  |    |  |                              |
+> +  |APB |  |   +-------------------+         +---------+    +------+  +-------+
+> +  |    +----->+  dc controller 1  +--->---->+ dsiTx   +--->+DPHY  +->+ PANEL1+
+> +  |    |  |   +-------------------+         +---------+    +------+  +-------+
+> +  +----+  |                              |
+> +          +------------------------------+
+> +
+> +
+> +properties:
+> +  compatible:
+> +    const: starfive,display-subsystem
+> +
+> +  clocks:
+> +    items:
+> +      - description: Clock for display system noc bus.
+> +      - description: Core clock for display controller.
+> +      - description: Clock for axi bus to access ddr.
+> +      - description: Clock for ahb bus to R/W the phy regs.
+> +
+> +  clock-names:
+> +    items:
+> +      - const: noc_bus
+> +      - const: dc_core
+> +      - const: axi_core
+> +      - const: ahb
+> +
+> +  resets:
+> +    items:
+> +      - description: Reset for axi bus.
+> +      - description: Reset for ahb bus.
+> +      - description: Core reset of display controller.
+> +
+> +  reset-names:
+> +    items:
+> +      - const: axi
+> +      - const: ahb
+> +      - const: core
+> +
+> +  ports:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    items:
+> +      maxItems: 1
+> +    description:
+> +      Should contain a list of phandles pointing to display interface port
+> +      of dc-controller devices.
+> +
+> +required:
+> +  - compatible
+> +  - clocks
+> +  - clock-names
+> +  - resets
+> +  - reset-names
+> +  - ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    display-subsystem {
+> +        compatible = "starfive,display-subsystem";
+> +        ports = <&dc_out>;
+> +
+> +        clocks = <&syscrg 60>,
+> +               <&voutcrg 4>,
+> +               <&voutcrg 5>,
+> +               <&voutcrg 6>;
+> +        clock-names = "noc_bus", "dc_core", "axi_core", "ahb";
+> +        resets = <&voutcrg 0>, <&voutcrg 1>, <&voutcrg 2>;
+> +        reset-names = "axi", "ahb", "core";
+> +    };
+> diff --git a/Documentation/devicetree/bindings/display/starfive/starfive,dsi-encoder.yaml b/Documentation/devicetree/bindings/display/starfive/starfive,dsi-encoder.yaml
+> new file mode 100644
+> index 000000000000..2cc0ad8e65ba
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/starfive/starfive,dsi-encoder.yaml
+> @@ -0,0 +1,92 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/starfive/starfive,dsi-encoder.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: starfive jh7110 soc Encoder
+> +
+> +maintainers:
+> +  - Keith Zhao <keith.zhao@starfivetech.com>
+> +
+> +description:
+> +  Device-Tree bindings for simple encoder.
+> +  Simple encoder driver only has basic functionality.
+> +  the hardware of dc8200 has 2 output interface, use
+> +  syscon to select which one to be used.
+> +
+> +properties:
+> +  compatible:
+> +    const: starfive,dsi-encoder
+> +
+> +  starfive,syscon:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    items:
+> +      - items:
+> +          - description: phandle to syscon that select crtc output.
+> +          - description: Offset of crtc selection
+> +          - description: Shift of crtc selection
+> +    description:
+> +      A phandle to syscon with two arguments that configure select output.
+> +      The argument one is the offset of crtc selection, the
+> +      argument two is the shift of crtc selection.
+> +
+> +  ports:
+> +    $ref: /schemas/graph.yaml#/properties/ports
+> +
+> +    properties:
+> +      port@0:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description:
+> +          The first port should be the input coming from the associated dc channel.
+> +
+> +      port@1:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description:
+> +          The second port should be the output coming from the associated bridge.
+> +
+> +    required:
+> +      - port@0
+> +      - port@1
+> +
+> +required:
+> +  - compatible
+> +  - ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +        dssctrl: dssctrl@295b0000 {
+> +            compatible = "starfive,jh7110-vout-syscon", "syscon";
+> +            reg = <0x295b0000 0x90>;
+> +        };
+> +
+> +        dsi_encoder: dsi_encoder {
+> +            compatible = "starfive,dsi-encoder";
+> +            starfive,syscon = <&dssctrl 0x8 0x12>;
+> +
+> +            ports {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +                /* input */
+> +                port@0 {
+> +                    #address-cells = <1>;
+> +                    #size-cells = <0>;
+> +                    reg = <0>;
+> +                    dsi_input0:endpoint@0 {
+> +                        reg = <0>;
+> +                        remote-endpoint = <&dc_out_dpi1>;
+> +                    };
+> +                };
+> +                /* output */
+> +                port@1 {
+> +                    reg = <1>;
+> +                    #address-cells = <1>;
+> +                    #size-cells = <0>;
+> +                    dsi_out:endpoint {
+> +                        remote-endpoint = <&mipi_in>;
+> +                    };
+> +                };
+> +            };
+> +        };
+> diff --git a/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml
+> new file mode 100644
+> index 000000000000..0b083effec02
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml
+> @@ -0,0 +1,113 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/starfive/starfive,jh7110-dc8200.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: StarFive display controller
+> +
+> +description:
+> +  The StarFive SoC uses the display controller based on Verisilicon IP
+> +  to transfer the image data from a video memory buffer to an external
+> +  LCD interface.
+> +
+> +maintainers:
+> +  - Keith Zhao <keith.zhao@starfivetech.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: starfive,jh7110-dc8200
+> +
+> +  reg:
+> +    minItems: 1
+> +    items:
+> +      - description:
+> +          host interface
+> +      - description:
+> +          display physical base address and length.
+> +
+> +  interrupts:
+> +    items:
+> +      - description: The interrupt will be generated when DC finish one frame
+> +
+> +  clocks:
+> +    items:
+> +      - description: Pixel clock for display channel 0.
+> +      - description: Pixel clock for display channel 1.
+> +      - description: Pixel clock from hdmi.
+> +      - description: Pixel clock for soc .
+> +  clock-names:
+> +    items:
+> +      - const: channel0
+> +      - const: channel1
+> +      - const: hdmi_tx
+> +      - const: dc_parent
+> +  ports:
+> +    $ref: /schemas/graph.yaml#/properties/ports
+> +
+> +    properties:
+> +      port@0:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description:
+> +          channel 0 output
+> +
+> +      port@1:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description:
+> +          channel 1 output
+> +
+> +    required:
+> +      - port@0
+> +      - port@1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    dc8200: lcd-controller@29400000 {
+> +        compatible = "starfive,jh7110-dc8200";
+> +        reg = <0x29400000 0x100>, <0x29400800 0x2000>;
+> +        interrupts = <95>;
+> +        clocks = <&voutcrg 7>,
+> +               <&voutcrg 8>,
+> +               <&voutcrg 9>,
+> +               <&voutcrg 10>;
+> +        clock-names = "channel0", "channel1","hdmi_tx", "dc_parent";
+> +
+> +        crtc_out: ports {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            dc_out0: port@0 {
+> +                reg = <0>;
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +
+> +                dc_out_dpi0: endpoint@0 {
+> +                    reg = <0>;
+> +                    remote-endpoint = <&hdmi_in_dc>;
+> +                };
+> +
+> +            };
+> +
+> +            dc_out1: port@1 {
+> +                reg = <1>;
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +
+> +                dc_out_dpi1: endpoint@1 {
+> +                    reg = <1>;
+> +                    remote-endpoint = <&dsi_input0>;
+> +                };
+> +
+> +            };
+> +          };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml
+> new file mode 100644
+> index 000000000000..3640d97ab789
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/starfive/starfive,jh7110-inno-hdmi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Starfive JH7110 HDMI controller
+> +
+> +description:
+> +  The StarFive JH7110 SoC uses the HDMI signal transmiter based on innosilicon IP
 
-how-to-reproduce-problem
+'transmiter' -> 'transmitter'
 
-idle_page_track
-   a tools to track process accessed memory during a specific time
-usage
-   idle_page_track $pid $time
-how-it-works
-   1. scan process vma from /proc/$pid/maps
-   2. vfn --> pfn from /proc/$pid/pagemap
-   3. write /sys/kernel/mm/page_idle/bitmap to
-      mark phy page idle flag and clear pte young flag
-   4. sleep $time
-   5. read /sys/kernel/mm/page_idle/bitmap to
-      test_and_clear pte young flag and
-      return whether phy page is accessed
 
-test ---- test program
-
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-
- int main(int argc, const char *argv[])
- {
-     char *buf = NULL;
-     char pipe_info[4096];
-     int n;
-     int fd = -1;
-
-     buf = malloc(1024*1024*1024UL);
-     memset(buf, 0, 1024*1024*1024UL);
-     fd = open("access.pipe", O_RDONLY);
-     if (fd < 0)
-         goto out;
-     while (1) {
-         n = read(fd, pipe_info, sizeof(pipe_info));
-         if (!n) {
-             sleep(1);
-             continue;
-         } else if (n < 0) {
-             break;
-         }
-         memset(buf, 0, 1024*1024*1024UL);
-         puts("finish access");
-      }
- out:
-     if (fd >=0)
-         close(fd);
-     if (buf)
-         free(buf);
-
-     return 0;
- }
-
-prepare:
-mkfifo access.pipe
-./test
-ps -ef | grep test
-root       4106   3148  8 06:47 pts/0    00:00:01 ./test
-
-We use /sys/kernel/debug/lru_gen to simulate mglru page-table scan.
-
-case 1: mglru walker break page_idle
-./idle_page_track 4106 60 &
-sleep 5; echo 1 > access.pipe
-sleep 5;  echo '+ 8 0 6 1 1' > /sys/kernel/debug/lru_gen
-
-the output of idle_page_track is:
-Est(s)     Ref(MB)
-64.822        1.00
-only found 1MB were accessed during 64.822s, but actually 1024MB were
-accessed.
-
-case 2: page_idle break mglru walker
-echo 1 > access.pipe
-./idle_page_track 4106 10
-echo '+ 8 0 7 1 1' > /sys/kernel/debug/lru_gen
-lru gen status:
-memcg     8     /user.slice
- node     0
-          5     772458       1065        9735
-          6     737435     262244          72
-          7     538053       1184         632
-          8      59404       6422           0
-almost pages should be in max_seq-1 queue, but actually not.
-
-Signed-off-by: Henry Huang <henry.hj@antgroup.com>
----
- mm/swap.c   |  3 +++
- mm/vmscan.c | 40 ++++++++++++++++++++++++++++------------
- 2 files changed, 31 insertions(+), 12 deletions(-)
-
-diff --git a/mm/swap.c b/mm/swap.c
-index cd8f0150ba3a..4bd14aabdc10 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -416,6 +416,9 @@ static void folio_inc_refs(struct folio *folio)
- {
- 	unsigned long new_flags, old_flags = READ_ONCE(folio->flags);
- 
-+	if (folio_test_idle(folio))
-+		folio_clear_idle(folio);
-+
- 	if (folio_test_unevictable(folio))
- 		return;
- 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 96abaa5a973e..c1dd9e7bc315 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -3297,7 +3297,7 @@ static unsigned long get_pmd_pfn(pmd_t pmd, struct vm_area_struct *vma, unsigned
- #endif
- 
- static struct folio *get_pfn_folio(unsigned long pfn, struct mem_cgroup *memcg,
--				   struct pglist_data *pgdat, bool can_swap)
-+				   struct pglist_data *pgdat, bool can_swap, bool clear_idle)
- {
- 	struct folio *folio;
- 
-@@ -3306,6 +3306,10 @@ static struct folio *get_pfn_folio(unsigned long pfn, struct mem_cgroup *memcg,
- 		return NULL;
- 
- 	folio = pfn_folio(pfn);
-+
-+	if (clear_idle && folio_test_idle(folio))
-+		folio_clear_idle(folio);
-+
- 	if (folio_nid(folio) != pgdat->node_id)
- 		return NULL;
- 
-@@ -3355,6 +3359,7 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
- 		unsigned long pfn;
- 		struct folio *folio;
- 		pte_t ptent = ptep_get(pte + i);
-+		bool is_pte_young;
- 
- 		total++;
- 		walk->mm_stats[MM_LEAF_TOTAL]++;
-@@ -3363,16 +3368,20 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
- 		if (pfn == -1)
- 			continue;
- 
--		if (!pte_young(ptent)) {
--			walk->mm_stats[MM_LEAF_OLD]++;
-+		is_pte_young = !!pte_young(ptent);
-+		folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap, is_pte_young);
-+		if (!folio) {
-+			if (!is_pte_young)
-+				walk->mm_stats[MM_LEAF_OLD]++;
- 			continue;
- 		}
- 
--		folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap);
--		if (!folio)
-+		if (!folio_test_clear_young(folio) && !is_pte_young) {
-+			walk->mm_stats[MM_LEAF_OLD]++;
- 			continue;
-+		}
- 
--		if (!ptep_test_and_clear_young(args->vma, addr, pte + i))
-+		if (is_pte_young && !ptep_test_and_clear_young(args->vma, addr, pte + i))
- 			VM_WARN_ON_ONCE(true);
- 
- 		young++;
-@@ -3435,6 +3444,7 @@ static void walk_pmd_range_locked(pud_t *pud, unsigned long addr, struct vm_area
- 	do {
- 		unsigned long pfn;
- 		struct folio *folio;
-+		bool is_pmd_young;
- 
- 		/* don't round down the first address */
- 		addr = i ? (*first & PMD_MASK) + i * PMD_SIZE : *first;
-@@ -3449,11 +3459,15 @@ static void walk_pmd_range_locked(pud_t *pud, unsigned long addr, struct vm_area
- 			goto next;
- 		}
- 
--		folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap);
-+		is_pmd_young = !!pmd_young(pmd[i]);
-+		folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap, is_pmd_young);
- 		if (!folio)
- 			goto next;
- 
--		if (!pmdp_test_and_clear_young(vma, addr, pmd + i))
-+		if (is_pmd_young && !pmdp_test_and_clear_young(vma, addr, pmd + i))
-+			VM_WARN_ON_ONCE(true);
-+
-+		if (!folio_test_clear_young(folio) && !is_pmd_young)
- 			goto next;
- 
- 		walk->mm_stats[MM_LEAF_YOUNG]++;
-@@ -4025,19 +4039,21 @@ void lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
- 	for (i = 0, addr = start; addr != end; i++, addr += PAGE_SIZE) {
- 		unsigned long pfn;
- 		pte_t ptent = ptep_get(pte + i);
-+		bool is_pte_young;
- 
- 		pfn = get_pte_pfn(ptent, pvmw->vma, addr);
- 		if (pfn == -1)
- 			continue;
- 
--		if (!pte_young(ptent))
-+		is_pte_young = !!pte_young(ptent);
-+		folio = get_pfn_folio(pfn, memcg, pgdat, can_swap, is_pte_young);
-+		if (!folio)
- 			continue;
- 
--		folio = get_pfn_folio(pfn, memcg, pgdat, can_swap);
--		if (!folio)
-+		if (!folio_test_clear_young(folio) && !is_pte_young)
- 			continue;
- 
--		if (!ptep_test_and_clear_young(pvmw->vma, addr, pte + i))
-+		if (is_pte_young && !ptep_test_and_clear_young(pvmw->vma, addr, pte + i))
- 			VM_WARN_ON_ONCE(true);
- 
- 		young++;
--- 
-2.43.0
-
+> +  to generate HDMI signal from its input and transmit the signal to the screen.
+> +
+> +maintainers:
+> +  - Keith Zhao <keith.zhao@starfivetech.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: "starfive,jh7110-inno-hdmi"
+> +
+> +  reg:
+> +    minItems: 1
+> +
+> +  interrupts:
+> +    items:
+> +      - description: The HDMI hot plug detection interrupt.
+> +
+> +  clocks:
+> +    items:
+> +      - description: System clock of HDMI module.
+> +      - description: Mclk clock of HDMI audio.
+> +      - description: Bclk clock of HDMI audio.
+> +
+> +  clock-names:
+> +    items:
+> +      - const: sysclk
+> +      - const: mclk
+> +      - const: bclk
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  '#sound-dai-cells':
+> +    const: 0
+> +
+> +  port:
+> +    $ref: /schemas/graph.yaml#/properties/port
+> +    description:
+> +      Should contain a remote endpoint phandle of display controller device.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - resets
+> +  - '#sound-dai-cells'
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    hdmi: hdmi@29590000 {
+> +        compatible = "starfive,jh7110-inno-hdmi";
+> +        reg = <0x29590000 0x4000>;
+> +        interrupts = <99>;
+> +        clocks = <&voutcrg 17>,
+> +               <&voutcrg 15>,
+> +               <&voutcrg 16>;
+> +        clock-names = "sysclk", "mclk","bclk";
+> +        resets = <&voutcrg 9>;
+> +        #sound-dai-cells = <0>;
+> +        hdmi_in: port {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            hdmi_in_dc: endpoint@0 {
+> +                reg = <0>;
+> +                remote-endpoint = <&dc_out_hdmi>;
+> +            };
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/soc/starfive/starfive,jh7110-syscon.yaml b/Documentation/devicetree/bindings/soc/starfive/starfive,jh7110-syscon.yaml
+> index 0039319e91fe..cf9b657d0e8a 100644
+> --- a/Documentation/devicetree/bindings/soc/starfive/starfive,jh7110-syscon.yaml
+> +++ b/Documentation/devicetree/bindings/soc/starfive/starfive,jh7110-syscon.yaml
+> @@ -24,6 +24,7 @@ properties:
+>             - enum:
+>                 - starfive,jh7110-aon-syscon
+>                 - starfive,jh7110-stg-syscon
+> +              - starfive,jh7110-vout-syscon
+>             - const: syscon
+>   
+>     reg:
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 7b151710e8c5..7caaadb83f3f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6881,6 +6881,13 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
+>   F:	Documentation/devicetree/bindings/display/ste,mcde.yaml
+>   F:	drivers/gpu/drm/mcde/
+>   
+> +DRM DRIVERS FOR STARFIVE
+> +M:	Keith Zhao <keith.zhao@starfivetech.com>
+> +L:	dri-devel@lists.freedesktop.org
+> +S:	Maintained
+> +T:	git git://anongit.freedesktop.org/drm/drm-misc
+> +F:	Documentation/devicetree/bindings/display/starfive/
+> +
+>   DRM DRIVER FOR TI DLPC3433 MIPI DSI TO DMD BRIDGE
+>   M:	Jagan Teki <jagan@amarulasolutions.com>
+>   S:	Maintained
