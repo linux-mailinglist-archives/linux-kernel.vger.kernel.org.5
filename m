@@ -2,109 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 410F0806AA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25826806AAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346776AbjLFJYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:24:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37770 "EHLO
+        id S1377144AbjLFJ2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:28:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346728AbjLFJYn (ORCPT
+        with ESMTP id S1346728AbjLFJ2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:24:43 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F77D49
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:24:48 -0800 (PST)
-From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701854686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=93v4gttHfsOj4z7ueaDWrNz1D5HKd3pZTasSdZAFavo=;
-        b=v209QlOlMT9g82bMBVx7adDQvqsF6KeALigEAbFmYNlflxkBRwMeEljUW8D39KRfA2nrkG
-        BY7ExinGmsxF0bX5AZCPxCh072aDnzUEztBs0tLWUNof2arEHm6i6fV4enA81n74+JusXe
-        qJ6Z8hh+fYe/rZA658f8Xm/3m+LnxvYqZdDxc9ggTRZwd4WmIiCtSLKJgkPZleHWtV4qua
-        px2YiPT+unZ2u4d4Zvf/NNSeGIAZ9EHIAn3wfuuXI5lzAYJagTUZpFbt/+UF7f/Q2PBHtX
-        uY1O722r5MMGInTm9N94lrnSE6c0KQbiLceviFnKG7nKHmq1yFgIzW9J8rwYfA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701854686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=93v4gttHfsOj4z7ueaDWrNz1D5HKd3pZTasSdZAFavo=;
-        b=r7SKlq9CJN8pk20mL/YsZXgad23ibFNr9vRc0T7/dZrfYqAEvM21rwHYg42JOepCCxUrFQ
-        HacYlD2hWkIac6AA==
-To:     Sebastian Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v9 17/32] timers: Introduce add_timer() variants which
- modify timer flags
-In-Reply-To: <20231205182835.DNCNokiI@linutronix.de>
-References: <20231201092654.34614-1-anna-maria@linutronix.de>
- <20231201092654.34614-18-anna-maria@linutronix.de>
- <20231205182835.DNCNokiI@linutronix.de>
-Date:   Wed, 06 Dec 2023 10:24:45 +0100
-Message-ID: <87r0jzel9e.fsf@somnus>
+        Wed, 6 Dec 2023 04:28:20 -0500
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C1FBA;
+        Wed,  6 Dec 2023 01:28:25 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0VxxhQrx_1701854900;
+Received: from 30.25.233.235(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VxxhQrx_1701854900)
+          by smtp.aliyun-inc.com;
+          Wed, 06 Dec 2023 17:28:22 +0800
+Message-ID: <2c092b76-6b76-4675-94c8-2e4b0031c966@linux.alibaba.com>
+Date:   Wed, 6 Dec 2023 17:28:15 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 4/5] drivers/perf: add DesignWare PCIe PMU driver
+Content-Language: en-US
+To:     Will Deacon <will@kernel.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     oe-kbuild@lists.linux.dev, ilkka@os.amperecomputing.com,
+        kaishen@linux.alibaba.com, helgaas@kernel.org,
+        yangyicong@huawei.com, Jonathan.Cameron@huawei.com,
+        baolin.wang@linux.alibaba.com, robin.murphy@arm.com, lkp@intel.com,
+        oe-kbuild-all@lists.linux.dev, chengyou@linux.alibaba.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
+        renyu.zj@linux.alibaba.com
+References: <20231121013400.18367-5-xueshuai@linux.alibaba.com>
+ <2d52f588-f584-4c01-8f41-227815a54e41@suswa.mountain>
+ <20231205142128.GA18450@willie-the-truck>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <20231205142128.GA18450@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian Siewior <bigeasy@linutronix.de> writes:
 
-> On 2023-12-01 10:26:39 [+0100], Anna-Maria Behnsen wrote:
->> Timer might be used as pinned timer (using add_timer_on()) and later on as
->> non pinned timers using add_timer(). When the NOHZ timer pull at expiry
->> model is in place, TIMER_PINNED flag is required to be used whenever a
->> timer needs to expire on a dedicated CPU. Flag must no be set, if
->> expiration on a dedicated CPU is not required.
->
-> Slightly reworded.
->
-> | A timer might be used as a pinned timer (using add_timer_on()) and later
-> | on as non-pinned timer using add_timer(). When the "NOHZ timer pull at
-> | expiry model" is in place, the TIMER_PINNED flag is required to be used
-> | whenever a timer needs to expire on a dedicated CPU. Otherwise the flag
-> | must not be set if expiration on a dedicated CPU is not required.
->
->> add_timer_on()'s behavior will be changed during the preparation patches
->> for the NOHZ timer pull at expiry model to unconditionally set TIMER_PINNED
->> flag. To be able to reset/set the flag when queueing a timer, two variants
->> of add_timer() are introduced.
->
-> and here.
->
-> | add_timer_on()'s behavior will be changed during the preparation patches
-> | for the "NOHZ timer pull at expiry model" to unconditionally set
-> | TIMER_PINNED flag. To be able to clear/ set the flag when queueing a
-> | timer, two variants of add_timer() are introduced.
->
-> I let you be judge of this.
 
-I will take your reworded version.
+On 2023/12/5 22:21, Will Deacon wrote:
+> On Sat, Nov 25, 2023 at 10:06:39AM +0300, Dan Carpenter wrote:
+>> Hi Shuai,
+>>
+>> kernel test robot noticed the following build warnings:
+>>
+>> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>>
+>> url:    https://github.com/intel-lab-lkp/linux/commits/Shuai-Xue/docs-perf-Add-description-for-Synopsys-DesignWare-PCIe-PMU-driver/20231121-093713
+>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+>> patch link:    https://lore.kernel.org/r/20231121013400.18367-5-xueshuai%40linux.alibaba.com
+>> patch subject: [PATCH v11 4/5] drivers/perf: add DesignWare PCIe PMU driver
+>> config: x86_64-randconfig-r071-20231123 (https://download.01.org/0day-ci/archive/20231124/202311241906.0ymlLjyo-lkp@intel.com/config)
+>> compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+>> reproduce: (https://download.01.org/0day-ci/archive/20231124/202311241906.0ymlLjyo-lkp@intel.com/reproduce)
+>>
+>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+>> the same patch/commit), kindly add following tags
+>> | Reported-by: kernel test robot <lkp@intel.com>
+>> | Reported-by: Dan Carpenter <error27@gmail.com>
+>> | Closes: https://lore.kernel.org/r/202311241906.0ymlLjyo-lkp@intel.com/
+>>
+>> smatch warnings:
+>> drivers/perf/dwc_pcie_pmu.c:352 dwc_pcie_pmu_event_update() error: uninitialized symbol 'now'.
+>>
+>> vim +/now +352 drivers/perf/dwc_pcie_pmu.c
+>>
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  338  static void dwc_pcie_pmu_event_update(struct perf_event *event)
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  339  {
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  340  	struct hw_perf_event *hwc = &event->hw;
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  341  	enum dwc_pcie_event_type type = DWC_PCIE_EVENT_TYPE(event);
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  342  	u64 delta, prev, now;
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  343  
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  344  	do {
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  345  		prev = local64_read(&hwc->prev_count);
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  346  
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  347  		if (type == DWC_PCIE_LANE_EVENT)
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  348  			now = dwc_pcie_pmu_read_lane_event_counter(event);
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  349  		else if (type == DWC_PCIE_TIME_BASE_EVENT)
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  350  			now = dwc_pcie_pmu_read_time_based_counter(event);
+>>
+>> uninitialized on else path.
+>>
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21  351  
+>> 3481798a4ec51d1 Shuai Xue 2023-11-21 @352  	} while (local64_cmpxchg(&hwc->prev_count, prev, now) != prev);
+> 
+> Shuai, any chance you can address this please? I think the event validation
+> logic means that the type is only ever one of the cases you handle, so
+> you probably just want to either initialise 'now' to 0 or WARN and return
+> early if the type is unknown.
 
-Thanks,
-	Anna-Maria
+Hi, Will, and Dan,
 
+As the type is checked in dwc_pcie_pmu_event_init(), I will fix this warning by
+initialising 'now' to 0.
+
+Thank you.
+Best Regards,
+Shuai
