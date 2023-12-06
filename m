@@ -2,109 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D215807463
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8F6807469
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379498AbjLFQCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:02:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55710 "EHLO
+        id S1442617AbjLFQCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:02:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379700AbjLFQCi (ORCPT
+        with ESMTP id S1379476AbjLFQCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:02:38 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16810D69;
-        Wed,  6 Dec 2023 08:02:43 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B6G2LrT008049;
-        Wed, 6 Dec 2023 10:02:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701878541;
-        bh=rhl+nvYXLRLX2Jc/Aig0zcEsCkr7bl6J1EVaHue9CQU=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Ocq4JF0dRVUbCiffBZkqGuki/ag+DfXLAbpU6+C5V/XgDDrzbAtTAJiQTA0WQWfIa
-         oDNTq7Pai2479ihX2OvNiOrKBqdw13x9mVARLectexLd1C9yFydZjAaAppzbFBtpJ4
-         2DU1oBMn7+8uc4pZSojJj9u3Xt0GcrfPxivpON38=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B6G2LnV009530
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 6 Dec 2023 10:02:21 -0600
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 6
- Dec 2023 10:02:20 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 6 Dec 2023 10:02:20 -0600
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B6G2KXb070466;
-        Wed, 6 Dec 2023 10:02:20 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <r-gunasekaran@ti.com>, <w.egorov@phytec.de>,
-        Garrett Giordano <ggiordano@phytec.com>
-CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <upstream@lists.phytec.de>
-Subject: Re: [PATCH] arm64: dts: ti: phycore-am64: Add R5F DMA Region and Mailboxes
-Date:   Wed, 6 Dec 2023 10:02:19 -0600
-Message-ID: <170187833586.2751.3691315852629771770.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231204212304.1736306-1-ggiordano@phytec.com>
-References: <20231204212304.1736306-1-ggiordano@phytec.com>
+        Wed, 6 Dec 2023 11:02:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6038D5E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:02:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14B9BC433C8;
+        Wed,  6 Dec 2023 16:02:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701878577;
+        bh=JU9PgWyG6P5TU/V8w4KUIz6ICZnLH6l4LvTaLDQSl1U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bZkoI8qBBHKd85zeiEEzJEZJnRlZzI51unIwZe9eJpUiyy4R79bpjeSTEnRUTaYPu
+         yVTN1HZ1S/2sEfF696OJcyaNIJ1it3eQfs2OiO6x9E7haegKbxuf94apfj0y3FKwhr
+         96PbK/sld3MjyUsdO13TjpZNMF06GmfjUYab0iITChGNKstVsNK2p5kslbgojZl5a2
+         BCWsYnYlatsN09dvTvMkNGbzHZNlGH89jfUDb2wNL7Ht+LrdlBVpVoIqWhNwPnP45v
+         ZYtBI3ZGXyT566Qi+Lod683RFEGl4rxZs6Xf6t/djQSY7bp90DzN5oNdUB5afcZ0K5
+         RTXHhsxR/yE0g==
+Date:   Wed, 6 Dec 2023 16:02:49 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>,
+        Donald Robson <donald.robson@imgtec.com>,
+        Matt Coster <matt.coster@imgtec.com>,
+        Adam Ford <aford173@gmail.com>,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
+Message-ID: <20231206-wolverine-paprika-0674ca01e1f2@spud>
+References: <20231204182245.33683-1-afd@ti.com>
+ <20231204182245.33683-2-afd@ti.com>
+ <CFF198DA-5C42-425E-86F4-759629489ECB@goldelico.com>
+ <cb590a13-e0ff-49d9-8583-be613ad50dc5@ti.com>
+ <FE0DBA5E-95A5-4C27-9F69-D1D8BDF56EC3@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="1GzC+imUbKhZhoBm"
+Content-Disposition: inline
+In-Reply-To: <FE0DBA5E-95A5-4C27-9F69-D1D8BDF56EC3@goldelico.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Garrett Giordano,
 
-On Mon, 04 Dec 2023 13:23:04 -0800, Garrett Giordano wrote:
-> Communication between the R5F subsystem and Linux takes place using DMA
-> memory regions and mailboxes. Here we add DT nodes for the memory
-> regions and mailboxes to facilitate communication between the R5
-> clusters and Linux as remoteproc will fail to start if no memory
-> regions or mailboxes are provided.
-> 
-> 
-> [...]
+--1GzC+imUbKhZhoBm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+On Tue, Dec 05, 2023 at 07:04:05PM +0100, H. Nikolaus Schaller wrote:
+> > Am 05.12.2023 um 18:33 schrieb Andrew Davis <afd@ti.com>:
+> >=20
+> > On 12/5/23 2:17 AM, H. Nikolaus Schaller wrote:
+> >>> +          - enum:
+> >>> +              - ti,omap3430-gpu # Rev 121
+> >>> +              - ti,omap3630-gpu # Rev 125
+> >> Is the "Rev 121" and "Rev 125" a property of the SoC integration (cloc=
+k/reset/power
+> >> hookup etc.) or of the integrated SGX core?
+> >=20
+> > The Rev is a property of the SGX core, not the SoC integration.
+>=20
+> Then, it should belong there and not be a comment of the ti,omap*-gpu rec=
+ord.
+> In this way it does not seem to be a proper hardware description.
+>=20
+> BTW: there are examples where the revision is part of the compatible stri=
+ng, even
+> if the (Linux) driver makes no use of it:
+>=20
+> drivers/net/ethernet/xilinx/xilinx_emaclite.c
 
-[1/1] arm64: dts: ti: phycore-am64: Add R5F DMA Region and Mailboxes
-      commit: 5709a6809a6869970ef47bbad7451d32e9081ce1
+AFAICT these Xilinx devices that put the revisions in the compatible are
+a different case - they're "soft" IP intended for use in the fabric of
+an FPGA, and assigning a device specific compatible there does not make
+sense.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+In this case it appears that the revision is completely known once you
+see "ti,omap3630-gpu", so encoding the extra "121" into the compatible
+string is not required.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+>=20
+> > But it seems that
+> > compatible string is being used to define both (as we see being debated=
+ in the other
+> > thread on this series).
+> >=20
+> >> In my understanding the Revs are different variants of the SGX core (e=
+rrata
+> >> fixes, instruction set, pipeline size etc.). And therefore the current=
+ driver code
+> >> has to be configured by some macros to handle such cases.
+> >> So the Rev should IMHO be part of the next line:
+> >>> +          - const: img,powervr-sgx530
+> >> +          - enum:
+> >> +              - img,powervr-sgx530-121
+> >> +              - img,powervr-sgx530-125
+> >> We have a similar definition in the openpvrsgx code.
+> >> Example: compatible =3D "ti,omap3-sgx530-121", "img,sgx530-121", "img,=
+sgx530";
+> >> (I don't mind about the powervr- prefix).
+> >> This would allow a generic and universal sgx driver (loaded through ju=
+st matching
+> >> "img,sgx530") to handle the errata and revision specifics at runtime b=
+ased on the
+> >> compatible entry ("img,sgx530-121") and know about SoC integration ("t=
+i,omap3-sgx530-121").
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+The "raw" sgx530 compatible does not seem helpful if the sgx530-121 or
+sgx530-125 compatibles are also required to be present for the driver to
+actually function. The revision specific compatibles I would not object
+to, but everything in here has different revisions anyway - does the
+same revision actually appear in multiple devices? If it doesn't then I
+don't see any value in the suffixed compatibles either.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> >> And user-space can be made to load the right firmware variant based on=
+ "img,sgx530-121"
+> >> I don't know if there is some register which allows to discover the re=
+vision long
+> >> before the SGX subsystem is initialized and the firmware is up and run=
+ning.
+> >> What I know is that it is possible to read out the revision after star=
+ting the firmware
+> >> but it may just echo the version number of the firmware binary provide=
+d from user-space.
+> >=20
+> > We should be able to read out the revision (register EUR_CR_CORE_REVISI=
+ON), the problem is
+> > today the driver is built for a given revision at compile time.
+>=20
+> Yes, that is something we had planned to get rid of for a long time by us=
+ing different compatible
+> strings and some variant specific struct like many others drivers are doi=
+ng it.
+> But it was a to big task so nobody did start with it.
+>=20
+> > That is a software issue,
+> > not something that we need to encode in DT. While the core ID (SGX5xx) =
+can be also detected
+> > (EUR_CR_CORE_ID), the location of that register changes, and so it does=
+ need encoded in
+> > DT compatible.
+>=20
+> Ok, I didn't know about such registers as there is not much public inform=
+ation available.
+> Fair enough, there are some error reports about in different forums.
+>=20
+> On the other hand we then must read out this register in more or less ear=
+ly initialization
+> stages. Even if we know this information to be static and it could be as =
+simple as a list
+> of compatible strings in the driver.
+>=20
+> > The string "ti,omap3430-gpu" tells us the revision if we cannot detect =
+it (as in the current
+> > driver), and the SoC integration is generic anyway (just a reg and inte=
+rrupt).
+>=20
+> It of course tells, but may need a translation table that needs to be mai=
+ntained in a
+> different format. Basically the same what the comments show in a non-mach=
+ine readable
+> format.
+>=20
+> I just wonder why the specific version can or should not become simply pa=
+rt of the DTS
+> and needs this indirection.
+>=20
+> Basically it is a matter of openness for future (driver) development and =
+why it needs
+> careful decisions.
+>=20
+> So in other words: I would prefer to see the comments about versions enco=
+ded in the device
+> tree binary to make it machine readable.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+It's already machine readable if it is invariant on an SoC given the
+patch had SoC-specific compatibles.
 
+
+--1GzC+imUbKhZhoBm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXCbKQAKCRB4tDGHoIJi
+0gUSAP4pLX8rcwBHj8VW2mgEVDmi72inSYgECU11LQ5z/rfShQEApbEr4eSsSD9+
+DLM236mZLlPAWEhYnu9sfA7Bx1CNzgs=
+=16z1
+-----END PGP SIGNATURE-----
+
+--1GzC+imUbKhZhoBm--
