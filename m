@@ -2,63 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C36BC807926
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C47B80792C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:11:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442867AbjLFUJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 15:09:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
+        id S1379528AbjLFUKy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 15:10:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442850AbjLFUJN (ORCPT
+        with ESMTP id S1442877AbjLFUKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 15:09:13 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8FDC6;
-        Wed,  6 Dec 2023 12:09:19 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701893358;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7dbW0vrOnX4IbvYPSelJWPZTu1xdvo3BzQO97dlKHxY=;
-        b=qeV8sL4NtDdpC+v98nxJ4YFKVOOWfHp2g6n3wWz51mR3auxn6LBI0HtkY4MvRXiDWwNVoP
-        wNpoHq/gBo82SQ6AAblKYvofi0cnZSmpkGq+AJgot54INj94Wsb7mnVGhhS7TWa4aBA0ro
-        XZh/QZPNCZgbSR68EModhMZezBhyZYqi50JYNEbFW7YGIoxwicQc6OW327a/9s0kmYvbIt
-        L6VsFYRDQfBpTt/alXFH1z9XxlwgKo6yaVs477xVLupTh6J/7Pwzlb1NcwQpJMdVuc+oN8
-        98LsEDjHF5IjePvq9BSSpYXSKNgCObJMxVu8faYOVYl54tC684CMmgwiz2fObg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701893358;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7dbW0vrOnX4IbvYPSelJWPZTu1xdvo3BzQO97dlKHxY=;
-        b=wO9GqRfsT0j4miTOei94cHhFBtNkngyWls/haTanPD0XtoG5yo1CZiFdGQTTKhwHhkTvkZ
-        +Egma6PkYZuw3mBQ==
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
-        iommu@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>,
-        kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org,
-        peterz@infradead.org, seanjc@google.com,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: Re: [PATCH RFC 10/13] x86/irq: Handle potential lost IRQ during
- migration and CPU offline
-In-Reply-To: <20231112041643.2868316-11-jacob.jun.pan@linux.intel.com>
-References: <20231112041643.2868316-1-jacob.jun.pan@linux.intel.com>
- <20231112041643.2868316-11-jacob.jun.pan@linux.intel.com>
-Date:   Wed, 06 Dec 2023 21:09:17 +0100
-Message-ID: <87a5qnum8i.ffs@tglx>
+        Wed, 6 Dec 2023 15:10:51 -0500
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7048311F;
+        Wed,  6 Dec 2023 12:10:57 -0800 (PST)
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-1fb00ea5e5fso32417fac.1;
+        Wed, 06 Dec 2023 12:10:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701893457; x=1702498257;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=32NboKdEEry+p7HRVVx+YEW6Zjud8R5v5yW1kUM2NMU=;
+        b=sKlJBRc++kmYVjtJBIMsWf2mFcme5f1AiYWDvJP0v1AzxUkBuYdwa/e/h/sZotFAil
+         Blwf0bWPbZANUmLAk8tqY37x2z/COhp2R8n2elh5DTSx9yd3YgHjvHumlee9wel2fiIU
+         6lpZ9ItDeFHqwZQPVT/njkNAQQSA0obiDvnx8HYT6GoEDB65UhZwLFbkR5Lkm2GyiQ/V
+         +PAnONmshaUGDb4ORJPVHWl9uAIemhAjUFmkk/FGyjE/f1h+X3ZkyvPb0KhF8jDscBBW
+         XNj2FwDf6qqwNPI8Opc44YDvObCzOhzBytj9kUANcwnkKHU/1L5x+FkdjTnlfAI+EnDg
+         OenQ==
+X-Gm-Message-State: AOJu0YxyY4WrPsFOvwgqpeoSG5T0QwHVanVw9fzTc3bWQTOd2MWg3nXs
+        R5ZIiU6SgqDAv5Zj1z1NrFwNQLy0GiSxuMradeo=
+X-Google-Smtp-Source: AGHT+IHPAP8AL59zyFtPtTB7eVNF84HILsRrEh/VOneuGIXezqqewr+VNupPVANN38p6QKK7bV7A6or59SU+DB3njKw=
+X-Received: by 2002:a05:6870:9e84:b0:1fa:f195:e3b4 with SMTP id
+ pu4-20020a0568709e8400b001faf195e3b4mr3000102oab.2.1701893456740; Wed, 06 Dec
+ 2023 12:10:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231129084247.32443-1-liuhaoran14@163.com>
+In-Reply-To: <20231129084247.32443-1-liuhaoran14@163.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 6 Dec 2023 21:10:46 +0100
+Message-ID: <CAJZ5v0goHCBcgFhphtenVKoFPyWN83Uuoo30q3E4DtEH=w4Q7A@mail.gmail.com>
+Subject: Re: [PATCH] [ACPI] sbshc: Add error handling for acpi_driver_data
+To:     Haoran Liu <liuhaoran14@163.com>
+Cc:     rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,100 +58,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11 2023 at 20:16, Jacob Pan wrote:
-> Though IRTE modification for IRQ affinity change is a atomic operation,
-> it does not guarantee the timing of IRQ posting at PID.
-
-No acronyms please.
-
-> considered the following scenario:
-> 	Device		system agent		iommu		memory 		CPU/LAPIC
-> 1	FEEX_XXXX
-> 2			Interrupt request
-> 3						Fetch IRTE	->
-> 4						->Atomic Swap PID.PIR(vec)
-> 						Push to Global Observable(GO)
-> 5						if (ON*)
-> 	i						done;*
-> 						else
-> 6							send a notification ->
+On Wed, Nov 29, 2023 at 9:43 AM Haoran Liu <liuhaoran14@163.com> wrote:
 >
-> * ON: outstanding notification, 1 will suppress new notifications
->
-> If IRQ affinity change happens between 3 and 5 in IOMMU, old CPU's PIR could
-> have pending bit set for the vector being moved. We must check PID.PIR
-> to prevent the lost of interrupts.
+> This patch enhances the acpi_smbus_hc_add and acpi_smbus_hc_remove
+> functions in drivers/acpi/sbshc.c by adding error handling for the
+> acpi_driver_data calls. Previously, these functions did not check
+> the return value of acpi_driver_data, potentially leading to
+> stability issues if the function failed and returned a null pointer.
 
-We must check nothing. We must ensure that the code is correct, right?
+This needs to describe a real scenario in which acpi_driver_data() can
+return NULL for each of the 2 places modified by the patch.
 
-> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Signed-off-by: Haoran Liu <liuhaoran14@163.com>
 > ---
->  arch/x86/kernel/apic/vector.c |  8 +++++++-
->  arch/x86/kernel/irq.c         | 20 +++++++++++++++++---
->  2 files changed, 24 insertions(+), 4 deletions(-)
+>  drivers/acpi/sbshc.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 >
-> diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
-> index 319448d87b99..14fc33cfdb37 100644
-> --- a/arch/x86/kernel/apic/vector.c
-> +++ b/arch/x86/kernel/apic/vector.c
-> @@ -19,6 +19,7 @@
->  #include <asm/apic.h>
->  #include <asm/i8259.h>
->  #include <asm/desc.h>
-> +#include <asm/posted_intr.h>
->  #include <asm/irq_remapping.h>
->  
->  #include <asm/trace/irq_vectors.h>
-> @@ -978,9 +979,14 @@ static void __vector_cleanup(struct vector_cleanup *cl, bool check_irr)
->  		 * Do not check IRR when called from lapic_offline(), because
->  		 * fixup_irqs() was just called to scan IRR for set bits and
->  		 * forward them to new destination CPUs via IPIs.
-> +		 *
-> +		 * If the vector to be cleaned is delivered as posted intr,
-> +		 * it is possible that the interrupt has been posted but
-> +		 * not made to the IRR due to coalesced notifications.
-
-not made to?
-
-> +		 * Therefore, check PIR to see if the interrupt was posted.
->  		 */
->  		irr = check_irr ? apic_read(APIC_IRR + (vector / 32 * 0x10)) : 0;
-> -		if (irr & (1U << (vector % 32))) {
-> +		if (irr & (1U << (vector % 32)) || is_pi_pending_this_cpu(vector)) {
-
-The comment above this code clearly explains what check_irr is
-about. Why would the PIR pending check have different rules? Just
-because its PIR, right?
-
->  
-> +/*
-> + * Check if a given vector is pending in APIC IRR or PIR if posted interrupt
-> + * is enabled for coalesced interrupt delivery (CID).
-> + */
-> +static inline bool is_vector_pending(unsigned int vector)
-> +{
-> +	unsigned int irr;
+> diff --git a/drivers/acpi/sbshc.c b/drivers/acpi/sbshc.c
+> index 16f2daaa2c45..1394104d3894 100644
+> --- a/drivers/acpi/sbshc.c
+> +++ b/drivers/acpi/sbshc.c
+> @@ -267,6 +267,12 @@ static int acpi_smbus_hc_add(struct acpi_device *device)
+>         init_waitqueue_head(&hc->wait);
+>
+>         hc->ec = acpi_driver_data(acpi_dev_parent(device));
+> +       if (!hc->ec) {
+> +               pr_err("Failed to retrieve parent ACPI device data\n");
+> +               kfree(hc);
+> +               return -ENODEV;
+> +       }
 > +
-> +	irr = apic_read(APIC_IRR + (vector / 32 * 0x10));
-> +	if (irr  & (1 << (vector % 32)))
-> +		return true;
+>         hc->offset = (val >> 8) & 0xff;
+>         hc->query_bit = val & 0xff;
+>         device->driver_data = hc;
+> @@ -288,6 +294,11 @@ static void acpi_smbus_hc_remove(struct acpi_device *device)
+>                 return;
+>
+>         hc = acpi_driver_data(device);
+> +       if (!hc) {
+> +               pr_err("Failed to retrieve ACPI SMBus HC data\n");
+> +               return;
+> +       }
 > +
-> +	return is_pi_pending_this_cpu(vector);
-> +}
-
-Why is this outside of the #ifdef region? Just because there was space
-to put it, right?
-
-And of course we need the same thing open coded in two locations.
-
-What's wrong with using this inline function in __vector_cleanup() too?
-
-	if (check_irr && vector_is_pending(vector)) {
-        	pr_warn_once(...);
-                ....
-        }
-
-That would make the logic of __vector_cleanup() correct _AND_ share the
-code.
-
+>         acpi_ec_remove_query_handler(hc->ec, hc->query_bit);
+>         acpi_os_wait_events_complete();
+>         kfree(hc);
+> --
+> 2.17.1
+>
