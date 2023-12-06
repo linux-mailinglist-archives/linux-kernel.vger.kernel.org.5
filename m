@@ -2,156 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7AA806AD2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C57806ADF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377206AbjLFJhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:37:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42648 "EHLO
+        id S1377249AbjLFJi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:38:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377117AbjLFJhC (ORCPT
+        with ESMTP id S1377117AbjLFJi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:37:02 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8E8BA;
-        Wed,  6 Dec 2023 01:37:08 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0548921A3B;
-        Wed,  6 Dec 2023 09:37:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1701855426; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Wed, 6 Dec 2023 04:38:28 -0500
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4D3B9;
+        Wed,  6 Dec 2023 01:38:33 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2AE831C000C;
+        Wed,  6 Dec 2023 09:38:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701855512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0RhjCKHQblZR+lvAtLCjbDfVvYyouCwUYRk6G4t7QCw=;
-        b=YMsDkGCglFuNtIk6OYP5Nkgu1unaIh0mmQwUe9gAm7q9dbPWDaLphkFivI3balS/8oWwy0
-        0ixjx2/jtpqQUWEGJCBloCqp6Jj2epxuby50+D6Rj2wISFdwidDK6wjTUo4MfDppOKIayh
-        gQV1UDyxh0U+cp7RYM6V5dsR/Pui+h0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1701855426;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0RhjCKHQblZR+lvAtLCjbDfVvYyouCwUYRk6G4t7QCw=;
-        b=jc5yeaY2Sy9PUvC/9LM2FGBscljcQxAmngzs8qK/s5JX3Lk9DF/7HxEydGv0YAptOELLhw
-        tQZ0qNFCtG/G/FDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CA3E313408;
-        Wed,  6 Dec 2023 09:37:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id OgMBMcFAcGXVRgAAD6G6ig
-        (envelope-from <vbabka@suse.cz>); Wed, 06 Dec 2023 09:37:05 +0000
-Message-ID: <15e22e38-6eee-3a55-df27-51b7bc0c5976@suse.cz>
-Date:   Wed, 6 Dec 2023 10:37:05 +0100
+        bh=4y+flM2aoike/FPH6qr4fSM5H3yUCAUYtHfykcYhVEk=;
+        b=k3xwGbvc8l51DdwhCNNogPX2i1UK8RjJkiIGiGaX0/DJVE/mlb7iIDCQUJX7b0YZt7Pyrz
+        ol/ktsBWk+HKKJ9KtMnbWNEZbsDwzAZarfZ8Tvw7RKPgjQfRyvZTdgdh2dzaknhZgnsGPc
+        CYNBqpr0zllwndP39wsFuYC0BUL1s/YeutbzFu7W1iQ/r2FAd2DGfueucoeZnU4UGzcbUd
+        DKRseSOSfCmYsxVvS2QS2Ef4WcQCfq6MI2Adx2ZJCp2z/Rr7ilVlDANz8ZYN4LzE2Yf7ZG
+        sRDfl+Qr214EPqeEauGxYkj4Y7YZqozG5zfnFxtxI9jLhBh5pkCvFanPbMffsQ==
+Date:   Wed, 6 Dec 2023 10:38:26 +0100
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexander Couzens <lynxis@fe80.eu>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
+Subject: Re: [RFC PATCH v2 3/8] net: pcs: pcs-mtk-lynxi: add platform driver
+ for MT7988
+Message-ID: <20231206103826.4e396513@device.home>
+In-Reply-To: <68bb81ac6bf99393c8de256f42e5715626590af8.1701826319.git.daniel@makrotopia.org>
+References: <cover.1701826319.git.daniel@makrotopia.org>
+        <68bb81ac6bf99393c8de256f42e5715626590af8.1701826319.git.daniel@makrotopia.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 09/21] mm/slab: remove mm/slab.c and slab_def.h
-Content-Language: en-US
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-9-9c9c70177183@suse.cz>
- <ZXA+Ur55OR1EU/5L@localhost.localdomain>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <ZXA+Ur55OR1EU/5L@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [0.20 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[23];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[chromium.org:email,suse.cz:email,selenic.com:email];
-         FREEMAIL_TO(0.00)[gmail.com];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[google.com,linux.com,kernel.org,lge.com,linux-foundation.org,linux.dev,gmail.com,arm.com,cmpxchg.org,chromium.org,kvack.org,vger.kernel.org,googlegroups.com];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 0.20
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-GND-Sasl: maxime.chevallier@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/6/23 10:31, Hyeonggon Yoo wrote:
-> On Mon, Nov 20, 2023 at 07:34:20PM +0100, Vlastimil Babka wrote:
->> Remove the SLAB implementation. Update CREDITS.
->> Also update and properly sort the SLOB entry there.
->> 
->> RIP SLAB allocator (1996 - 2024)
->> 
->> Reviewed-by: Kees Cook <keescook@chromium.org>
->> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->> ---
->>  CREDITS                  |   12 +-
->>  include/linux/slab_def.h |  124 --
->>  mm/slab.c                | 4005 ----------------------------------------------
->>  3 files changed, 8 insertions(+), 4133 deletions(-)
-> 
-> Acked-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> 
->> diff --git a/CREDITS b/CREDITS
->> index f33a33fd2371..943a73e96149 100644
->> --- a/CREDITS
->> +++ b/CREDITS
->> @@ -9,10 +9,6 @@
->>  			Linus
->>  ----------
->>  
->> -N: Matt Mackal
->> -E: mpm@selenic.com
->> -D: SLOB slab allocator
-> 
-> by the way I just realized that commit 16e943bf8db
-> ("MAINTAINERS: SLAB maintainer update") incorrectly put her lastname
-> (Mackall is correct), maybe update that too?
+Hello Daniel,
 
-Right, thanks a lot for noticing, will fix.
+My two cents below :
 
+On Wed, 6 Dec 2023 01:44:17 +0000
+Daniel Golle <daniel@makrotopia.org> wrote:
+
+> Introduce a proper platform MFD driver for the LynxI (H)SGMII PCS which
+> is going to initially be used for the MT7988 SoC.
+> 
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+
+ [ ... ]
+
+> +static int mtk_pcs_lynxi_enable(struct phylink_pcs *pcs)
+> +{
+> +	struct mtk_pcs_lynxi *mpcs = pcs_to_mtk_pcs_lynxi(pcs);
+> +
+> +	if (mpcs->sgmii_tx && mpcs->sgmii_rx) {
+> +		clk_prepare_enable(mpcs->sgmii_rx);
+> +		clk_prepare_enable(mpcs->sgmii_tx);
+
+You can use the clk_bulk_prepare_enable() here
+
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static void mtk_pcs_lynxi_disable(struct phylink_pcs *pcs)
+>  {
+>  	struct mtk_pcs_lynxi *mpcs = pcs_to_mtk_pcs_lynxi(pcs);
+>  
+> +	regmap_set_bits(mpcs->regmap, SGMSYS_QPHY_PWR_STATE_CTRL, SGMII_PHYA_PWD);
+> +
+> +	if (mpcs->sgmii_tx && mpcs->sgmii_rx) {
+> +		clk_disable_unprepare(mpcs->sgmii_tx);
+> +		clk_disable_unprepare(mpcs->sgmii_rx);
+
+and clk_bulk_disable_unprepare() here
+
+ [...]
+
+> +static int mtk_pcs_lynxi_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev->of_node;
+> +	struct mtk_pcs_lynxi *mpcs;
+> +	struct phylink_pcs *pcs;
+> +	struct regmap *regmap;
+> +	u32 flags = 0;
+> +
+> +	mpcs = devm_kzalloc(dev, sizeof(*mpcs), GFP_KERNEL);
+> +	if (!mpcs)
+> +		return -ENOMEM;
+> +
+> +	regmap = syscon_node_to_regmap(np->parent);
+> +	if (IS_ERR(regmap))
+> +		return PTR_ERR(regmap);
+> +
+> +	if (of_property_read_bool(np->parent, "mediatek,pnswap"))
+> +		flags |= MTK_SGMII_FLAG_PN_SWAP;
+> +
+> +	mpcs->rstc = of_reset_control_get_shared(np->parent, NULL);
+> +	if (IS_ERR(mpcs->rstc))
+> +		return PTR_ERR(mpcs->rstc);
+> +
+> +	reset_control_deassert(mpcs->rstc);
+> +	mpcs->sgmii_sel = devm_clk_get_enabled(dev, "sgmii_sel");
+> +	if (IS_ERR(mpcs->sgmii_sel))
+> +		return PTR_ERR(mpcs->sgmii_sel);
+> +
+> +	mpcs->sgmii_rx = devm_clk_get(dev, "sgmii_rx");
+> +	if (IS_ERR(mpcs->sgmii_rx))
+> +		return PTR_ERR(mpcs->sgmii_rx);
+> +
+> +	mpcs->sgmii_tx = devm_clk_get(dev, "sgmii_tx");
+> +	if (IS_ERR(mpcs->sgmii_tx))
+> +		return PTR_ERR(mpcs->sgmii_tx);
+
+and clk bulk operations here as well ?
+
+Maxime
