@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 352C5806FF0
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFF7806FF1
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:38:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378336AbjLFMia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 07:38:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
+        id S1378380AbjLFMic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 07:38:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378321AbjLFMi3 (ORCPT
+        with ESMTP id S1378326AbjLFMia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 07:38:29 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE52E11F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:38:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CFDAC433C8;
-        Wed,  6 Dec 2023 12:38:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701866314;
-        bh=Fj8YObxpZ6Ytr5jvxIskxu3K4FrlW7trloaLma4Dwnk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mionK04XCoEyEbBjHqMndI2zOeorIQi2PMaZFCfIo1mYYyTlEIjRFDvbm3WWSK6Xz
-         4eERufRZbWwPsaT6F4LrEyr2EDrhWuWZF5+5kY6h5giUmxKs9+SkCP1/IyCcWcYR2o
-         7j/NMF2pooxe3dXERIgj+q2lIdPdvinvaiCnKTbiUyxTjWgTzuLkW6f6cywtP6TmE5
-         z5AUmRMUchiUjN/DJtgrhCwBFirUd5/NfEjwSlhle6TNHBXP4Oe0Wr36LTxabi1g9+
-         3Hq777JBeb/p7i6kLflFKGmq3fgUIwKhWhOgOU3ZykK10t9oUwh4jGbLJn4b8BnK1r
-         EGArkXXZ0E0Uw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: typec: nb7vpq904m: add CONFIG_OF dependency
-Date:   Wed,  6 Dec 2023 13:38:14 +0100
-Message-Id: <20231206123828.587065-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Wed, 6 Dec 2023 07:38:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37B412F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:38:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701866316;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TZQQ6BqHEI6hRsDFbv1/FW96mENZWMKFWNl0n0AGdhw=;
+        b=jVISvmAWQCxftrAgR0WXMbr1r6rJPZTLPh+0On0WaSzV0TF+5AC94pV5915Rdo2BQzapDM
+        cwKFcu1T5PfsT3CrbxqwW4cSxbPygJm+jUpFozoldVhTfjO06nz5gJlBir/BEgNtOezbB9
+        vdN1SacXazgaHvpQo4j7FFmz7y/D3Gk=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-557-thj-CJ5vMACQz1wZWLOP9w-1; Wed,
+ 06 Dec 2023 07:38:31 -0500
+X-MC-Unique: thj-CJ5vMACQz1wZWLOP9w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F74F29AB3F3;
+        Wed,  6 Dec 2023 12:38:31 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.161])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C252E3C2E;
+        Wed,  6 Dec 2023 12:38:29 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <447324.1701860432@warthog.procyon.org.uk>
+References: <447324.1701860432@warthog.procyon.org.uk>
+To:     fstests@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-cifs@vger.kernel.org
+Cc:     dhowells@redhat.com, Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Issues with FIEMAP, xfstests, Samba, ksmbd and CIFS
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <449657.1701866309.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 06 Dec 2023 12:38:29 +0000
+Message-ID: <449658.1701866309@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+David Howells <dhowells@redhat.com> wrote:
 
-DRM_AUX_BRIDGE depends on CONFIG_OF, so the same dependency is needed
-here to avoid a build failure:
+> So:
+> =
 
-WARNING: unmet direct dependencies detected for DRM_AUX_BRIDGE
-  Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && OF [=n]
-  Selected by [y]:
-  - TYPEC_MUX_NB7VPQ904M [=y] && USB_SUPPORT [=y] && TYPEC [=y] && I2C [=y] && (DRM [=y] || DRM [=y]=n) && DRM_BRIDGE [=y]
-x86_64-linux-ld: drivers/gpu/drm/bridge/aux-bridge.o: in function `drm_aux_bridge_register':
-aux-bridge.c:(.text+0x13b): undefined reference to `auxiliary_device_init'
-x86_64-linux-ld: aux-bridge.c:(.text+0x14d): undefined reference to `__auxiliary_device_add'
-x86_64-linux-ld: drivers/gpu/drm/bridge/aux-bridge.o: in function `drm_aux_bridge_drv_init':
-aux-bridge.c:(.init.text+0x15): undefined reference to `__auxiliary_driver_register'
-x86_64-linux-ld: drivers/gpu/drm/bridge/aux-bridge.o: in function `drm_aux_bridge_drv_exit':
-aux-bridge.c:(.exit.text+0x9): undefined reference to `auxiliary_driver_unregister'
+>  - Should Samba and ksmbd be using FALLOC_FL_ZERO_RANGE rather than
+>    PUNCH_HOLE?
+> =
 
-Fixes: c5d296bad640 ("usb: typec: nb7vpq904m: switch to DRM_AUX_BRIDGE")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/usb/typec/mux/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+>  - Should Samba and ksmbd be using FIEMAP rather than SEEK_DATA/HOLE?
 
-diff --git a/drivers/usb/typec/mux/Kconfig b/drivers/usb/typec/mux/Kconfig
-index 5120942f309d..818624f59120 100644
---- a/drivers/usb/typec/mux/Kconfig
-+++ b/drivers/usb/typec/mux/Kconfig
-@@ -40,6 +40,7 @@ config TYPEC_MUX_NB7VPQ904M
- 	tristate "On Semiconductor NB7VPQ904M Type-C redriver driver"
- 	depends on I2C
- 	depends on DRM || DRM=n
-+	depends on OF
- 	select DRM_AUX_BRIDGE if DRM_BRIDGE
- 	select REGMAP_I2C
- 	help
--- 
-2.39.2
+ - Should Samba and ksmbd report 'unwritten' extents as being allocated?
+
+>  - Should xfstests be less exacting in its FIEMAP analysis - or should t=
+his be
+>    skipped for cifs?  I don't want to skip generic/009 as it checks some
+>    corner cases that need testing, but it may not be possible to make th=
+e
+>    exact extent matching work.
 
