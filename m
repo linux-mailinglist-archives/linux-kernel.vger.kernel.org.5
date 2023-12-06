@@ -2,51 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9CA8063A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 062B38063AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376346AbjLFAt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 19:49:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
+        id S1376354AbjLFAwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 19:52:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376296AbjLFAt2 (ORCPT
+        with ESMTP id S1376332AbjLFAwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 19:49:28 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA37C6
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 16:49:35 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50153C433C7;
-        Wed,  6 Dec 2023 00:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701823775;
-        bh=pUu4T3RbOJaOKyAMtNvfnPVIR42cAMmezEVLe9JyB84=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aHTIQAtRxJiPRpOd2KeyUjX5PjjvR55c5TBr2iQXmoa7iz7uBueLGZKKzV0hleHO0
-         mT1dYbxsrbxBmFBVBjjCmyk1snX2Yjfl1qthNlLJ4pnNLbj5gmgKfRX5MtMu+SfSsd
-         //58K6OvzCzM1gbAR2zxQs71srtrpgkznfdVBa2xj6u94Ijg9y9SAWI+CVmUx+sB/N
-         IZIS81OUlhpFdAY6YGJoycTqCMqLwoMXI1UuY8nRiZrJOis9+DedAqLgX7WxJHim6u
-         CLZpxac3v7/djnrJgcSVp/Tlbr9F2Fb5BgN6j0nCY3PB5pfTZb7/3aN4n8EdD/JhFo
-         RP5peYgT0r7hg==
-Date:   Wed, 6 Dec 2023 08:49:28 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, leoyang.li@nxp.com,
-        robh@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Subject: Re: [PATCH v5 0/3] board: imx8mn-rve-gateway: add support for RVE
- gateway board
-Message-ID: <20231206004928.GJ236001@dragon>
-References: <20231205150814.344883-1-hugo@hugovil.com>
+        Tue, 5 Dec 2023 19:52:22 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44887C6;
+        Tue,  5 Dec 2023 16:52:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701823948; x=1733359948;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=80ctbQu0ehO8Eb46q4E7qyIosvMkmzHirGugGzD0fGM=;
+  b=nEP39hyHfvzoRlsdcZVVjm+sRym3O/E5kVOwZZsoCdSZxLB8WvBkrY+9
+   0PJKnxrAVlR/IQ7iwyqbm8vY6A6F5e5/VZ60CR3LOyLcMtqNvXMhn3wwR
+   r4N42KS3X6gqWNGM5czJi4f5jzu0x5x0bFONLzgan+zzAwSb3rt7VKagm
+   D0diNi3uUpKO0fX+vMxnGjpGlgvooll2cNTC+q5b9hZ3HPyPEZR2N2DrL
+   AkEoKI1k1ziPAS8Vd0t5V1sojcHeT8B0bHIM2IvPDehLHt8LaHgYDhj5U
+   hXX2wQILePSXlkhco5RQ/nM781In2Vlo7eJb+lpELSON2ZLlcVv1c/Fqi
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="821338"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="821338"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 16:52:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="861937995"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="861937995"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 16:52:23 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Gregory Price <gregory.price@memverge.com>
+Cc:     Michal Hocko <mhocko@suse.com>, "tj@kernel.org" <tj@kernel.org>,
+        "John Groves" <john@jagalactic.com>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+        "shakeelb@google.com" <shakeelb@google.com>,
+        "muchun.song@linux.dev" <muchun.song@linux.dev>,
+        "jgroves@micron.com" <jgroves@micron.com>
+Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
+In-Reply-To: <ZW84F5PUB/0yPW9d@memverge.com> (Gregory Price's message of "Tue,
+        5 Dec 2023 09:47:51 -0500")
+References: <ZU74L9oxWOoTTfpM@memverge.com> <ZVNBMW8iJIGDyp0y@tiehlicka>
+        <ZVOXWx8XNJJNC23A@memverge.com> <ZVOn2T_Qg_NTKlB2@tiehlicka>
+        <ZVOzMEtDYB4l8qFy@memverge.com>
+        <87o7fveeze.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <ZW1IdPI11nhKcdZl@memverge.com>
+        <87sf4i2xe1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <ZW3ZFDeTs7xotImL@memverge.com>
+        <87fs0h2fb4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <ZW84F5PUB/0yPW9d@memverge.com>
+Date:   Wed, 06 Dec 2023 08:50:23 +0800
+Message-ID: <875y1c2lyo.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231205150814.344883-1-hugo@hugovil.com>
+Content-Type: text/plain; charset=ascii
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,10 +84,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 10:08:11AM -0500, Hugo Villeneuve wrote:
-> Hugo Villeneuve (3):
->   dt-bindings: vendor-prefixes: add rve
->   dt-bindings: arm: fsl: add RVE gateway board
->   arm64: dts: freescale: introduce rve-gateway board
+Gregory Price <gregory.price@memverge.com> writes:
 
-Applied all, thanks!
+> On Tue, Dec 05, 2023 at 05:01:51PM +0800, Huang, Ying wrote:
+>> Gregory Price <gregory.price@memverge.com> writes:
+>> 
+>> > On Mon, Dec 04, 2023 at 04:19:02PM +0800, Huang, Ying wrote:
+>> >> Gregory Price <gregory.price@memverge.com> writes:
+>> >> 
+>> >> > If the structure is built as a matrix of (cpu_node,mem_nodes),
+>> >> > the you can also optimize based on the node the task is running on.
+>> >> 
+>> >> The matrix stuff makes the situation complex.  If people do need
+>> >> something like that, they can just use set_memorypolicy2() with user
+>> >> specified weights.  I still believe that "make simple stuff simple, and
+>> >> complex stuff possible".
+>> >> 
+>> >
+>> > I don't think it's particularly complex, since we already have a
+>> > distance matrix for numa nodes:
+>> >
+>> > available: 2 nodes (0-1)
+>> > ... snip ...
+>> > node distances:
+>> > node   0   1
+>> >   0:  10  21
+>> >   1:  21  10
+>> >
+>> > This would follow the same thing, just adjustable for bandwidth.
+>> 
+>> We add complexity for requirement. Not there's something similar
+>> already.
+>> 
+>> > I personally find the (src,dst) matrix very important for flexibility.
+>> 
+>> With set_memorypolicy2(), I think we have the needed flexibility for
+>> users needs the complexity.
+>> 
+>> > But if there is particular pushback against it, having a one dimensional
+>> > array is better than not having it, so I will take what I can get.
+>> 
+>> TBH, I don't think that we really need that.  Especially given we will
+>> have set_memorypolicy2().
+>>
+>
+> From a complexity standpoint, it is exactly as complex as the hardware
+> configuration itself:  each socket has a different view of the memory
+> topology. If you have a non-homogeneous memory configuration (e.g. a 
+> different number of CXL expanders on one socket thant he other), a flat
+> array of weights has no way of capturing this hardware configuration.
+
+One important task of the software is to hide the complexity of hardware
+from the users.  At least it should provide the option.  It only add
+complexity based on real requirements.
+
+> That makes the feature significantly less useful. In fact, it makes the
+> feature equivalent to set_mempolicy2 - except that weights could be
+> changed at runtime from outside a process.
+>
+>
+> A matrix resolves one very specific use case: task migration
+>
+>
+> set_mempolicy2 is not sufficient to solve this.  There is presently no
+> way for an external task to change the mempolicy of an existing task.
+> That means a task must become "migration aware" to use weighting in the
+> context of containers where migrations are likely.
+>
+> Two things to consider: A task...
+>    a) has no way of knowing a migration occured
+>    b) may not have visibility of numa nodes outside its cpusets prior to
+>       a migration - making it unlikely/not possible for them to set
+>       weights correctly in the event a migration occurs.
+>
+> If a server with 2 sockets is set up non-homogeneously (different amount
+> of CXL memory expanders on each socket), then the effective bandwidth
+> distribution between sockets will be different.
+>
+> If a container is migrated between sockets in this situation, then tasks
+> with manually set weights, or if global weights are a single array, will
+> have poor memory distributions in relation to the new view of the system.
+>
+> Requiring the global settings to be an array basically requires global
+> weights to be sub-optimal for any use cases that is not explicitly a
+> single workload that consumes all the cores on the system.
+>
+> If the system provides a matrix, then the global settings can be optimal
+> and re-weighting in response to migration happens cleanly and transparently.
+
+For these complex requirements, we will have process_set_mempolicy2().
+I think that it's even more flexible than the global matrix.
+
+--
+Best Regards,
+Huang, Ying
