@@ -2,210 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A078073CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6CE8073CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379232AbjLFPh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 10:37:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
+        id S1379285AbjLFPiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 10:38:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379200AbjLFPh6 (ORCPT
+        with ESMTP id S1379240AbjLFPiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 10:37:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65CB8F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 07:38:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701877083;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7m8xOH4+zttkQQNEKRFuMltiPwniLE68hwW+zcTlG4s=;
-        b=CA/0lzxKuC6cpQ5DozdLsLGDswsDLIkQCccAilY+5V/FBdcvKbjTm+HtEr+D1vQ/Sjxijz
-        OoB8K/zrAaHzm9RxszgwCrO+Cz5UErW3lYUFQl82OtC5TC8N7WuOHt+8cuiGnotlpG65D+
-        G1xfLhA22EVJ8RToWG9+baeogp5sY00=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-428-vpZ8jbrXNUaooO-lmVkN9w-1; Wed,
- 06 Dec 2023 10:37:57 -0500
-X-MC-Unique: vpZ8jbrXNUaooO-lmVkN9w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 414881C32941;
-        Wed,  6 Dec 2023 15:37:56 +0000 (UTC)
-Received: from localhost (unknown [10.72.113.121])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8A16D8C0C;
-        Wed,  6 Dec 2023 15:37:55 +0000 (UTC)
-Date:   Wed, 6 Dec 2023 23:37:52 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
-        joe@perches.com, nathan@kernel.org
-Subject: Re: [PATCH v3 5/7] kexec_file, ricv: print out debugging message if
- required
-Message-ID: <ZXCVUD9cCYEShrrj@MiWiFi-R3L-srv>
-References: <20231130023955.5257-1-bhe@redhat.com>
- <20231130023955.5257-6-bhe@redhat.com>
- <20231201-blog-blasphemy-985d2665903c@wendy>
- <ZW3yXWJ7rTrtZzyg@MiWiFi-R3L-srv>
- <20231204-liftoff-enclosure-d3e3daf0ab6e@spud>
-MIME-Version: 1.0
+        Wed, 6 Dec 2023 10:38:08 -0500
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2088.outbound.protection.outlook.com [40.107.95.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D139C;
+        Wed,  6 Dec 2023 07:38:14 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lAokY4l41VZRgDr968TA5D42QKzb8CRL1jhTZ9p+lTzFGN/o5zAjtmU+DDm3xN9/tqEDAtVp+tBaOM8LSTyxWuG+Wu3jLfY7tv56QhK7V3eXmcmtkj4SEvBBw/wUY7myoaz71kazy4hm97oKi1s52a/QY+Yk7d1Ry2/bgeuiaRR8scR1jqxWlZPghDMHVTBjQn0vSF/UhwBzuDqPDMH/mSXF9OVJlkV6FJcFL5wcZGeB6Z8pY8SAaMlP4UYRRUPbQXRpve/lodyQStjwVrE7bIudxNcefCfmCwmcxrRLRz3MKqDLUZroo5hcS2pnaKqemOM8QiGkTxqszA/jvd/QQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ENTAnW6Vnq/r2xFW1aroqscCPTf8UT4lD2uAoZy4FFw=;
+ b=cfBHvYZ95c3G7+81oJov8edRAEgzh4hT1kOu1UYvvYTV/ZaWmDdvCN4cMh8n43eKWEdpiW23C2SYPuVMMgnm2ww8i69im94ja7XvDsJJxo6rUHu/X8eP0hm/tQbDmyi24U/qRXtpn7RBjlT0sOXWR6mQ0nFiI69cFzQ2a0D5Q5/wCXx/417xPYBM0xMIKWebN6xOvSUCTuX0pihqJvUL2ABP9Igsqp6kzC1pFmAPYt2xL7iMW6yT9LdIizL00ele0/PDVQYWSHdmSNhMpai8AWXfxjIZA7dyhPpWV5E2BdQajRXRKTk6vVhv5kWXuyrmRnl6ahahL/SGPZOxgdBmjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ENTAnW6Vnq/r2xFW1aroqscCPTf8UT4lD2uAoZy4FFw=;
+ b=nscj9pEHRlUmXO4DkATXuGg2OuSOpCkaKWnB68Qb82YRK6suTgYlp/881sXCcw1aDRIIaRrnu0CU54rotmpaZdY/RrwwcMXaa8iLg9VioF1tJA1SnI4gyQ9QhqXBDHm2glRzi6HM0ao/Ih8BmCtIl7i2oPu/GqFesYm3Lb0Qcgxzwb+JkfgPSIlTrFbUfygHUhhDzwTqu32U7AvxAPiGkT+/E4AlIlTxXwGT+iCbOD9g5jqAQ2UsbBU3mdAY0oeYomekZR0D5wVvnAbqxr3zw6DLg2QWhW1x9OLiCbweEqZBdoTevaI6byk8+S7GFNumJeShbzMVDqXUI4Nf26Scsw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by MN0PR12MB5980.namprd12.prod.outlook.com (2603:10b6:208:37f::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
+ 2023 15:38:11 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
+ 15:38:11 +0000
+Date:   Wed, 6 Dec 2023 11:38:09 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, ankita@nvidia.com,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>, oliver.upton@linux.dev,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
+        ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <20231206153809.GS2692119@nvidia.com>
+References: <86fs0hatt3.wl-maz@kernel.org>
+ <ZW8MP2tDt4_9ROBz@arm.com>
+ <20231205130517.GD2692119@nvidia.com>
+ <ZW9OSe8Z9gAmM7My@arm.com>
+ <20231205164318.GG2692119@nvidia.com>
+ <ZW949Tl3VmQfPk0L@arm.com>
+ <20231205194822.GL2692119@nvidia.com>
+ <ZXCJ3pVbKuHJ3LTz@arm.com>
+ <20231206150556.GQ2692119@nvidia.com>
+ <ZXCQrTbf6q0BIhSw@lpieralisi>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231204-liftoff-enclosure-d3e3daf0ab6e@spud>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZXCQrTbf6q0BIhSw@lpieralisi>
+X-ClientProxiedBy: BL1PR13CA0417.namprd13.prod.outlook.com
+ (2603:10b6:208:2c2::32) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN0PR12MB5980:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2e0269d6-9c44-45df-ac23-08dbf67159db
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iDOnXAwpqddZLot1dWOzy+487PRaQjISHFfmhM6ex2XbRWK7h98yeNHils8oSDPXR0j6gg94IEdA5hCf+aZyBb72K7qMlGS61OjyOlEr8rwXY6tWS2OyyL8P0P94NUJEwyp1tkqakJTcyxZvF3pNQQITFucCqTN1gnwZEZzrGZixW9OmlqNPp9wXJ8PPFACGope6bJEIOPj3bvRq3dEWjq+LgxtYJrtWgVTwkkc+UWUlQgI+ZWWIozA/4lk/5H1zMGBtjyTXTmMd60jj0Z2n5Bu9APr57PDIWwrByzhAJp1fFyoiBIacEzkR8+T3jOYwMKoUlAxDHjjGB6jaNRQDAoeDI8lExhXOjcFEAN08lUGTsOsNgYSxlM0X3ZWyaXrM49bgj/WGacwKKHU2JkJusD7IbNnMYGKCOJkelZ8l0LC/JbWA7NaVFsyOgPuOY7hwwVJ1/SUTfz4EpokExVl2mXP9tdNB2uwVYLYTlmErZvV0NEgb85Xie1/nqPJFcpAqvsAmINwHARCFKbHAFM0nbMEqO4a1dMLj0eoRx6RtCmvW4zT9W+uiSD50DZrxZC8z
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(346002)(366004)(39860400002)(376002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(6486002)(478600001)(5660300002)(54906003)(66476007)(66556008)(316002)(6916009)(66946007)(8936002)(4326008)(8676002)(6506007)(86362001)(83380400001)(36756003)(38100700002)(41300700001)(33656002)(2616005)(1076003)(7416002)(2906002)(26005)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JORLi2ffC8OvRHrCOQsfR48giCBrxTh1nAXoh8q3ZyTRf5k4hDVnF/G0+/A9?=
+ =?us-ascii?Q?HAvSkw6viNhy7XYISxzrSang2DG/tP+2zFy9bncxngzTrPB5WE7hDK6GKQ5i?=
+ =?us-ascii?Q?UbJeXi4APCexxy8K3uQnKKpRRuCDSn8UUKFyEFxVn+Hatn5WCf3RiDJyaYXh?=
+ =?us-ascii?Q?eeM5Q04FwTA35LQl+GlYbfBBYiqzkp77Jpv4Hnh91nP56yVmb+oyCjSrR+An?=
+ =?us-ascii?Q?4Aw92wI9tD1XmZYiq1EtnVD6k52HiY3ZJFY+5/E/eTDS2m2x8v9a8w2buwGu?=
+ =?us-ascii?Q?EXhZOqPkLK/+HPxLLskiX7X0S616B4ONaqxSUEQrU5eWmn7yfhHFgKDLsOt4?=
+ =?us-ascii?Q?/Vp5qtqLuey4qf29zsyM5jDy4hZmJDbdbuUZxWovQ6SKGGC/CqCtRkcrdWFs?=
+ =?us-ascii?Q?fduiAXKJVja2aiuzCB2PxhSIoH9dxQy3/MN2el4dUlqMB2WNfsliX8DBou6f?=
+ =?us-ascii?Q?u/i/HNpXGksI03JdcJ2lYRwbk7ZcT7t5h11mcIwCBfnx8kTplPdM3il7vndC?=
+ =?us-ascii?Q?paHNh7Ekj5qVGxLYcSibJL8ZlEK4GpDTdbvbzSFnTc12rdLq2OKOwYgEYm6o?=
+ =?us-ascii?Q?tBldmo0BC+zVpjBbLLmySXkaCQbFmnkTmb50h63jP3yoOTr9tKRX3cmpVJxV?=
+ =?us-ascii?Q?9DAXLkBlAQXhGnW2vXAGB5PxXI42rlOuqU0H5tpXplebCuWxHryhaMp15Vln?=
+ =?us-ascii?Q?4x1wNYao8hMgZs+yBmRWV309S7D7oSfbhM4wSYWEWZxVgz3jW3f1hk4z4XgO?=
+ =?us-ascii?Q?K4FUodSdDwP1+E1vYYpqa8AcMbdySGKJh4/gSFP/Fv8ft0+9PhuIh3Bqh1ud?=
+ =?us-ascii?Q?OWtItS9pFvAHeT/KC83K/57pu+zyfgJxn6xeK3H/uCcBHwWKhrtgSkqAuA+5?=
+ =?us-ascii?Q?ch4e0Pcwx41H4PLV5XqTA7oNrPpnYYWzrG6cSp6Kgj+ZtQbpcLe3KQjVhP3k?=
+ =?us-ascii?Q?K7ks+/yjL3sjNuwqiBFYMT+xuSaBIPlSHqdG1DXaE3P2qvwlGcfRAWBLcurF?=
+ =?us-ascii?Q?sa2MO5o7NC/lC33xqT678ImCa0L3zlrKI2Y+ynKTykwjW6FUb0/9AaG2s0Ux?=
+ =?us-ascii?Q?aZ0nDWf2LKol0HFOeHMRPekHIYI++r1r1zj2Z3bPxS8YSYhuY+RCwrNUbGv1?=
+ =?us-ascii?Q?kaHicVoqoQY1QcDzgyf5nsxL1Cx15h1EQYd0jbarfBOSrcoBF+20WBQM1xFE?=
+ =?us-ascii?Q?07/l4BVf8h8ldqscWImlSxARuM/SNdPdgWehroQEh8tqbEPHcFH98fCQvpDD?=
+ =?us-ascii?Q?yFXueTMiD5q619XC5Ccvyv2FBEPPagkE+e/eEO3hsUhf6G1SODziJ//mwWHd?=
+ =?us-ascii?Q?UuY0KrgJxyBRuUL6sRxiSQS+ryv6pziz/Ro8jYiyfru6tAD0z5uU+pQH0t1V?=
+ =?us-ascii?Q?FQ3ZEbUkAOZNq7Zm/QR5+mNpa5FBQ9jsXQPeTD39obOBbfSatnW+pjuSbd4s?=
+ =?us-ascii?Q?SeW2RQ3NNZ5FUgaXXRkzHs7t0S3PvNtf3t+kv9aH1iplaiznNy0m0wiro+zc?=
+ =?us-ascii?Q?REbtpwgusQBjrwKNGk8tTVHTBPRYI1A52RIZLy3bVeX/xvMDXt0KNo+5k7nH?=
+ =?us-ascii?Q?biCeO0f6+vhaJajFHr5tqEvrLjkoSr2AXwIPbX8y?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e0269d6-9c44-45df-ac23-08dbf67159db
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 15:38:10.4246
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7Gfi/qvtE5jYIiXmCtzMfLFxaDxHTpVOmSKDAn+7jGPPQg0l0wW0SAbPVTUyJ4kh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5980
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/04/23 at 04:14pm, Conor Dooley wrote:
-> On Mon, Dec 04, 2023 at 11:38:05PM +0800, Baoquan He wrote:
-> > On 12/01/23 at 10:38am, Conor Dooley wrote:
-> > > On Thu, Nov 30, 2023 at 10:39:53AM +0800, Baoquan He wrote:
-> > > 
-> > > $subject has a typo in the arch bit :)
-> > 
-> > Indeed, will fix if need report. Thanks for careful checking.
-> > 
-> > > 
-> > > > Replace pr_debug() with the newly added kexec_dprintk() in kexec_file
-> > > > loading related codes.
-> > > 
-> > > Commit messages should be understandable in isolation, but this only
-> > > explains (part of) what is obvious in the diff. Why is this change
-> > > being made?
-> > 
-> > The purpose has been detailedly described in cover letter and patch 1
-> > log. Andrew has picked these patches into his tree and grabbed the cover
-> > letter log into the relevant commit for people's later checking. All
-> > these seven patches will be present in mainline together. This is common
-> > way when posting patch series? Please let me know if I misunderstand
-> > anything.
-> 
-> Each patch having a commit message that explains why a change is being
-> made is the expectation. It is especially useful to explain the why
-> here, since it is not just a mechanical conversion of pr_debug()s as the
-> commit message suggests.
-
-Sounds reasonable. I rephrase the patch 3 log as below, do you think
-it's OK to you?
-
-I will also adjust patch logs on other ARCH once this one is done.
-Thanks.
-
-=============================
-Subject: [PATCH v3 5/7] kexec_file, ricv: print out debugging message if required
-
-Then when specifying '-d' for kexec_file_load interface, loaded
-locations of kernel/initrd/cmdline etc can be printed out to help debug.
-
-Here replace pr_debug() with the newly added kexec_dprintk() in kexec_file
-loading related codes.
-
-And also replace pr_notice() with kexec_dprintk() in elf_kexec_load()
-because it's make sense to always print out loaded location of purgatory
-and device tree even though users don't expect the message.
-
-And also remove kexec_image_info() because the content has been printed
-out in generic code.
-
-============================
-
-> 
-> > > 
+On Wed, Dec 06, 2023 at 04:18:05PM +0100, Lorenzo Pieralisi wrote:
+> On Wed, Dec 06, 2023 at 11:05:56AM -0400, Jason Gunthorpe wrote:
+> > On Wed, Dec 06, 2023 at 02:49:02PM +0000, Catalin Marinas wrote:
+> > > On Tue, Dec 05, 2023 at 03:48:22PM -0400, Jason Gunthorpe wrote:
+> > > > On Tue, Dec 05, 2023 at 07:24:37PM +0000, Catalin Marinas wrote:
+> > > > > On Tue, Dec 05, 2023 at 12:43:18PM -0400, Jason Gunthorpe wrote:
+> > > > > > What if we change vfio-pci to use pgprot_device() like it already
+> > > > > > really should and say the pgprot_noncached() is enforced as
+> > > > > > DEVICE_nGnRnE and pgprot_device() may be DEVICE_nGnRE or NORMAL_NC?
+> > > > > > Would that be acceptable?
+> > > > > 
+> > > > > pgprot_device() needs to stay as Device, otherwise you'd get speculative
+> > > > > reads with potential side-effects.
 > > > > 
-> > > > And also remove kexec_image_info() because the content has been printed
-> > > > out in generic code.
-> > > > 
-> > > > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > > > ---
-> > > >  arch/riscv/kernel/elf_kexec.c     | 11 ++++++-----
-> > > >  arch/riscv/kernel/machine_kexec.c | 26 --------------------------
-> > > >  2 files changed, 6 insertions(+), 31 deletions(-)
-> > > > 
-> > > > diff --git a/arch/riscv/kernel/elf_kexec.c b/arch/riscv/kernel/elf_kexec.c
-> > > > index e60fbd8660c4..5bd1ec3341fe 100644
-> > > > --- a/arch/riscv/kernel/elf_kexec.c
-> > > > +++ b/arch/riscv/kernel/elf_kexec.c
-> > > > @@ -216,7 +216,6 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
-> > > >  	if (ret)
-> > > >  		goto out;
-> > > >  	kernel_start = image->start;
-> > > > -	pr_notice("The entry point of kernel at 0x%lx\n", image->start);
-> > > >  
-> > > >  	/* Add the kernel binary to the image */
-> > > >  	ret = riscv_kexec_elf_load(image, &ehdr, &elf_info,
-> > > > @@ -252,8 +251,8 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
-> > > >  		image->elf_load_addr = kbuf.mem;
-> > > >  		image->elf_headers_sz = headers_sz;
-> > > >  
-> > > > -		pr_debug("Loaded elf core header at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
-> > > > -			 image->elf_load_addr, kbuf.bufsz, kbuf.memsz);
-> > > > +		kexec_dprintk("Loaded elf core header at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
-> > > > +			      image->elf_load_addr, kbuf.bufsz, kbuf.memsz);
-> > > >  
-> > > >  		/* Setup cmdline for kdump kernel case */
-> > > >  		modified_cmdline = setup_kdump_cmdline(image, cmdline,
-> > > > @@ -275,6 +274,8 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
-> > > >  		pr_err("Error loading purgatory ret=%d\n", ret);
-> > > >  		goto out;
-> > > >  	}
-> > > > +	kexec_dprintk("Loaded purgatory at 0x%lx\n", kbuf.mem);
-> > > > +
-> > > >  	ret = kexec_purgatory_get_set_symbol(image, "riscv_kernel_entry",
-> > > >  					     &kernel_start,
-> > > >  					     sizeof(kernel_start), 0);
-> > > > @@ -293,7 +294,7 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
-> > > >  		if (ret)
-> > > >  			goto out;
-> > > >  		initrd_pbase = kbuf.mem;
+> > > > I do not mean to change pgprot_device() I mean to detect the
+> > > > difference via pgprot_device() vs pgprot_noncached(). They put a
+> > > > different value in the PTE that we can sense. It is very hacky.
 > > > 
-> > > > -		pr_notice("Loaded initrd at 0x%lx\n", initrd_pbase);
-> > > > +		kexec_dprintk("Loaded initrd at 0x%lx\n", initrd_pbase);
+> > > Ah, ok, it does look hacky though (as is the alternative of coming up
+> > > with a new specific pgprot_*() that KVM can treat differently).
 > > > 
-> > > This is not a pr_debug().
-> > > 
-> > > >  	}
-> > > >  
-> > > >  	/* Add the DTB to the image */
-> > > > @@ -318,7 +319,7 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
-> > > >  	}
-> > > >  	/* Cache the fdt buffer address for memory cleanup */
-> > > >  	image->arch.fdt = fdt;
-> > > 
-> > > > -	pr_notice("Loaded device tree at 0x%lx\n", kbuf.mem);
-> > > > +	kexec_dprintk("Loaded device tree at 0x%lx\n", kbuf.mem);
-> > > 
-> > > Neither is this. Why are they being moved from pr_notice()?
+> > > BTW, on those Mellanox devices that require different attributes within
+> > > a BAR, do they have a problem with speculative reads causing
+> > > side-effects? 
 > > 
-> > You are right. 
-> > 
-> > While always printing out the loaded location of purgatory and
-> > device tree doesn't make sense. It will be confusing when users
-> > see these even when they do normal kexec/kdump loading. It should be
-> > changed to pr_debug().
-> > 
-> > Which way do you suggest?
-> > 1) change it back to pr_debug(), fix it in another patch;
-> > 2) keep it as is in the patch;
+> > Yes. We definitely have had that problem in the past on older
+> > devices. VFIO must map the BAR using pgprot_device/noncached() into
+> > the VMM, no other choice is functionally OK.
 > 
-> Personally I think it is fine to change them all in one patch, but the
-> rationale for converting pr_notice() to your new debug infrastructure
-> needs to be in the commit message.
+> Were those BARs tagged as prefetchable or non-prefetchable ? I assume the
+> latter but please let me know if I am guessing wrong.
 
-Sure, sounds good to me. I have changed the patch log to reflect this as
-you suggested, please help check. Thanks again.
+I don't know it was quite old HW. Probably.
 
+Just because a BAR is not marked as prefetchable doesn't mean that the
+device can't use NORMAL_NC on subsets of it.
+
+Jason
