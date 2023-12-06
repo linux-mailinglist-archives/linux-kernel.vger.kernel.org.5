@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D11F8074F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10FF78074EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378320AbjLFQ3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:29:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48822 "EHLO
+        id S1378281AbjLFQ3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:29:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378034AbjLFQ3T (ORCPT
+        with ESMTP id S1378266AbjLFQ3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:29:19 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CD4D4D
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:29:25 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so14239a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 08:29:25 -0800 (PST)
+        Wed, 6 Dec 2023 11:29:17 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4E2D47;
+        Wed,  6 Dec 2023 08:29:20 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77f3183f012so33369085a.0;
+        Wed, 06 Dec 2023 08:29:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701880164; x=1702484964; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2Q0ni2/1KGl8oE8mSvYKMN/w7HkQAhvJXLW7tvjYVJg=;
-        b=jovmhc7DMq6RVlsgp1hJ63pBy4RtOFJwNC6VWUkmD7EDMaUQrsf8UY+H1Rfc3W4qqz
-         je9YeZLkzdlT1ckXaZIODlqK1PE8uGpUVZ2HLkks5hcmSMqfcLidvfogEQ/2UmhRdqsS
-         fZXiu5H5Ps/iDIX0rlzLIKUD0OE9q2EFF5tWMn0Zej0m0uQbSuqSHQPgkpcXeljYgwKd
-         5Pci1PJskzuOoaNhhC3ftT/tzB86BdbwiHxETeZgJkS92Xjp7zDlgWftYryoCg8z02oa
-         0PUD1sDAThiZOMXNH4uqNNNxsE8qzvgz47JelqRAkbVimhCtTiBhc45/EZbfCTezQhBp
-         0ECg==
+        d=gmail.com; s=20230601; t=1701880159; x=1702484959; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wd9dmNFWVV3wZN+V4jSJjxu24qyO9wHRcayLWIoq474=;
+        b=ciSihS5X1O8h4ci4GGguyECDBinXW/Kltvw4tF6hL5rhD22IZMjB5gclMaueuWlrkd
+         H/tgLZ8SXZZ5ORAPj3sThrgTaYLsg9WVdzTMV37VeUlq+Ar6mdVmbb0OKCEtSE1e9c9w
+         U1RCBARjuEJahKzPKTsKcfQHly3EIKb/WbeAzWj7EXNRvWADkFt/LeUsnP8eSUSJ6TXN
+         uParrsAvtxdeygcvhhKkvXZrrDgNP/jcdt+V/ua2hmh97aygLL0vhieOprPU1Rmak2+y
+         ApCfYxW7Mn7GYShkkBiFdLe895QSS5H2N3cP+hddoaPKkxjg1dOJ+RQvjl6uM/5MZwyH
+         Tfjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701880164; x=1702484964;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2Q0ni2/1KGl8oE8mSvYKMN/w7HkQAhvJXLW7tvjYVJg=;
-        b=APl47HkImU85kP8ZY6t5JGMNdf1pKpjs6yzwyLvzVhZb4U8RkJrEr5Q3S7RP2NwbbV
-         ChteMi7OnQuHsI5c8qnMTKiznp2CeacV6wG4JWAtQ01IvCXIUADMuhA4Z7uvlI1/kvlC
-         dVOAmiR/eMIdjTLL98cD+YnbA/Uf19v6cF90gneycT9vTUwQ0Z7lStYhUuBO088MOy3Y
-         arFrwSMxFITCGeT4bstdqgHF3lZsqKuMmAgvy3BnLB9blPm+MrzdSSAZgxnWSrs7yuiS
-         mbG6/Nzs+7HoOXLJrXwZWJF48AHxUUz5HEf/mOBxd6KzfDSm4/exIOQA5rkzhJXMTnv8
-         0WwA==
-X-Gm-Message-State: AOJu0Yxo/falcB1cP2tZlqw5Fs04zvkvVeYPg7anT77MpA528WlsQS4P
-        kRqGT6c340qu3wh38bMN9NicIx0k/8mNQ+2PNx2AVzyw8jEkwEQo+7CeLA==
-X-Google-Smtp-Source: AGHT+IEFOrwFlWr5FZ0KB2T0KCgIgdyHQa1hSadWxXyDA/De9hFfeLO8tTOPlMdmKuy/UHtCU0vM/qUxtA/0BWamgeg=
-X-Received: by 2002:a50:c048:0:b0:544:e2b8:ba6a with SMTP id
- u8-20020a50c048000000b00544e2b8ba6amr100459edd.3.1701880163670; Wed, 06 Dec
- 2023 08:29:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701880159; x=1702484959;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wd9dmNFWVV3wZN+V4jSJjxu24qyO9wHRcayLWIoq474=;
+        b=H+bqR7nrZffoGgfrWyl1bAUE5R+wfPhomI6fgJs0U0SA+YDH5edmwCmlpsDmqCdnTb
+         KqeEfKCseivRTu7YUC+qcMqUiSoZu+j+5gOJQnRxnubUqpZWgaAidaTix1Z2hBjjLTw8
+         CgHOKrJKCYF600SvrKxek4bGAqdwNMqXWLK8SAfI4BceQtGlZ5cw4x3KqygzkrUYz+cb
+         ETiq4hSk+LUsDp+ulPWQPpi6NfaUeMD80UdBmVE9ABQn3WBQpN3c5UcRCSCJFG81I5t4
+         He+eeolSRfWMWnkRLCNzwdFmaT005cLVTkfq67ZAbod3Qc6MZTJ+3ON5Xpsj6TdrTEPA
+         94aA==
+X-Gm-Message-State: AOJu0YxM2zNWAMs/PasvkI8k/zuz3jh62w85/iv7Cx1WuPu5A6Xu5ey3
+        YL2tWZ5PN054GOdVhVQU418=
+X-Google-Smtp-Source: AGHT+IHhiuALx2hZ1zKntduTCjGsG1MfwXfwX9syFNhffyevENPJR9W/FQbEfj2xzCDrmW4Gb0rfuA==
+X-Received: by 2002:a05:620a:3b07:b0:77f:37e7:bd6e with SMTP id tl7-20020a05620a3b0700b0077f37e7bd6emr396533qkn.121.1701880159169;
+        Wed, 06 Dec 2023 08:29:19 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::6:c65f])
+        by smtp.gmail.com with ESMTPSA id uw5-20020a05620a4d8500b007749dc7881dsm69759qkn.48.2023.12.06.08.29.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 08:29:18 -0800 (PST)
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Subject: [PATCH V2 0/1] Add swappiness argument to memory.reclaim
+Date:   Wed,  6 Dec 2023 08:28:55 -0800
+Message-Id: <20231206162900.1571025-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <CAG48ez0TfTAkaRWFCTb44x=TWP_sDZVx-5U2hvfQSFOhghNrCA@mail.gmail.com>
- <CAG48ez1hXk_cffp3dy-bYMcoyCCj-EySYR5SzYrNiRHGD=hOUg@mail.gmail.com> <ZW+Yv6TR+EMBp03f@orbyte.nwl.cc>
-In-Reply-To: <ZW+Yv6TR+EMBp03f@orbyte.nwl.cc>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 6 Dec 2023 17:28:44 +0100
-Message-ID: <CAG48ez2G4q-50242WRE01iaKfAhd0D+XT9Ry0uS767ceHEzHXA@mail.gmail.com>
-Subject: Re: Is xt_owner's owner_mt() racy with sock_orphan()? [worse with new
- TYPESAFE_BY_RCU file lifetime?]
-To:     Phil Sutter <phil@nwl.cc>, Jann Horn <jannh@google.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam@netfilter.org, Christian Brauner <brauner@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,39 +82,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 10:40=E2=80=AFPM Phil Sutter <phil@nwl.cc> wrote:
-> On Tue, Dec 05, 2023 at 06:08:29PM +0100, Jann Horn wrote:
-> > On Tue, Dec 5, 2023 at 5:40=E2=80=AFPM Jann Horn <jannh@google.com> wro=
-te:
-> > >
-> > > Hi!
-> > >
-> > > I think this code is racy, but testing that seems like a pain...
-> > >
-> > > owner_mt() in xt_owner runs in context of a NF_INET_LOCAL_OUT or
-> > > NF_INET_POST_ROUTING hook. It first checks that sk->sk_socket is
-> > > non-NULL, then checks that sk->sk_socket->file is non-NULL, then
-> > > accesses the ->f_cred of that file.
-> > >
-> > > I don't see anything that protects this against a concurrent
-> > > sock_orphan(), which NULLs out the sk->sk_socket pointer, if we're in
-> >
-> > Ah, and all the other users of ->sk_socket in net/netfilter/ do it
-> > under the sk_callback_lock... so I guess the fix would be to add the
-> > same in owner_mt?
->
-> Sounds reasonable, although I wonder how likely a socket is to
-> orphan while netfilter is processing a packet it just sent.
->
-> How about the attached patch? Not sure what hash to put into a Fixes:
-> tag given this is a day 1 bug and ipt_owner/ip6t_owner predate git.
+Changes since V1:
+  * Added documentation
 
-Looks mostly reasonable to me; though I guess it's a bit weird to have
-two separate bailout paths for checking whether sk->sk_socket is NULL,
-where the first check can race, and the second check uses different
-logic for determining the return value; I don't know whether that
-actually matters semantically. But I'm not sure how to make it look
-nicer either.
-I guess you could add a READ_ONCE() around the first read to signal
-that that's a potentially racy read, but I don't feel strongly about
-that.
+This patch proposes augmenting the memory.reclaim interface with a
+swappiness=<val> argument that overrides the swappiness value for that instance
+of proactive reclaim.
+
+Userspace proactive reclaimers use the memory.reclaim interface to trigger
+reclaim. The memory.reclaim interface does not allow for any way to effect the
+balance of file vs anon during proactive reclaim. The only approach is to adjust
+the vm.swappiness setting. However, there are a few reasons we look to control
+the balance of file vs anon during proactive reclaim, separately from reactive
+reclaim:
+
+* Swapout should be limited to manage SSD write endurance. In near-OOM
+  situations we are fine with lots of swap-out to avoid OOMs. As these are
+  typically rare events, they have relatively little impact on write endurance.
+  However, proactive reclaim runs continuously and so its impact on SSD write
+  endurance is more significant. Therefore it is desireable to control swap-out
+  for proactive reclaim separately from reactive reclaim
+
+* Some userspace OOM killers like systemd-oomd[1] support OOM killing on swap
+  exhaustion. This makes sense if the swap exhaustion is triggered due to
+  reactive reclaim but less so if it is triggered due to proactive reclaim (e.g.
+  one could see OOMs when free memory is ample but anon is just particularly
+  cold). Therefore, it's desireable to have proactive reclaim reduce or stop
+  swap-out before the threshold at which OOM killing occurs.
+
+In the case of Meta's Senpai proactive reclaimer, we adjust vm.swappiness before
+writes to memory.reclaim[2]. This has been in production for nearly two years
+and has addressed our needs to control proactive vs reactive reclaim behavior
+but is still not ideal for a number of reasons:
+
+* vm.swappiness is a global setting, adjusting it can race/interfere with other
+  system administration that wishes to control vm.swappiness. In our case, we
+  need to disable Senpai before adjusting vm.swappiness.
+
+* vm.swappiness is stateful - so a crash or restart of Senpai can leave a
+  misconfigured setting. This requires some additional management to record the
+  "desired" setting and ensure Senpai always adjusts to it.
+
+With this patch, we avoid these downsides of adjusting vm.swappiness globally.
+
+Previously, this exact interface addition was proposed by Yosry[3]. In response,
+Roman proposed instead an interface to specify precise file/anon/slab reclaim
+amounts[4]. More recently Huan also proposed this as well[5] and others
+similarly questioned if this was the proper interface.
+
+Previous proposals sought to use this to allow proactive reclaimers to
+effectively perform a custom reclaim algorithm by issuing proactive reclaim with
+different settings to control file vs anon reclaim (e.g. to only reclaim anon
+from some applications). Responses argued that adjusting swappiness is a poor
+interface for custom reclaim.
+
+In contrast, I argue in favor of a swappiness setting not as a way to implement
+custom reclaim algorithms but rather to bias the balance of anon vs file due to
+differences of proactive vs reactive reclaim. In this context, swappiness is the
+existing interface for controlling this balance and this patch simply allows for
+it to be configured differently for proactive vs reactive reclaim.
+
+Specifying explicit amounts of anon vs file pages to reclaim feels inappropriate
+for this prupose. Proactive reclaimers are un-aware of the relative age of file
+vs anon for a cgroup which makes it difficult to manage proactive reclaim of
+different memory pools. A proactive reclaimer would need some amount of anon
+reclaim attempts separate from the amount of file reclaim attempts which seems
+brittle given that it's difficult to observe the impact.
+
+[1]https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.service.html
+[2]https://github.com/facebookincubator/oomd/blob/main/src/oomd/plugins/Senpai.cpp#L585-L598
+[3]https://lore.kernel.org/linux-mm/CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yKSNgD7aGdg@mail.gmail.com/
+[4]https://lore.kernel.org/linux-mm/YoPHtHXzpK51F%2F1Z@carbon/
+[5]https://lore.kernel.org/lkml/20231108065818.19932-1-link@vivo.com/
+
+Dan Schatzberg (1):
+  mm: add swapiness= arg to memory.reclaim
+
+ Documentation/admin-guide/cgroup-v2.rst | 15 ++++++-
+ include/linux/swap.h                    |  3 +-
+ mm/memcontrol.c                         | 55 ++++++++++++++++++++-----
+ mm/vmscan.c                             | 13 +++++-
+ 4 files changed, 70 insertions(+), 16 deletions(-)
+
+-- 
+2.34.1
+
