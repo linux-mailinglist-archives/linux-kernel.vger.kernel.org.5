@@ -2,128 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AAED8064B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 148A08064CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbjLFB0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 20:26:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52500 "EHLO
+        id S1376410AbjLFB0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 20:26:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235174AbjLFB0D (ORCPT
+        with ESMTP id S232402AbjLFB0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 20:26:03 -0500
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A5BD45;
-        Tue,  5 Dec 2023 17:26:09 -0800 (PST)
-X-QQ-mid: bizesmtp71t1701825951t7a9xq2a
-Received: from localhost.localdomain ( [219.147.0.78])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 06 Dec 2023 09:25:48 +0800 (CST)
-X-QQ-SSF: 01200000000000B0J000000A0000000
-X-QQ-FEAT: AVwGxPGvfUdqbQU/G7eEgdV1fs9Yo38Y6mwGCNuioTVl0jOcC4pMJUn4smZA/
-        45jFOcuA90l4hf6qklveMLvls0JPLGxsmwUXdjwn87awODmf0E6hInIkdnZ9TZUHlbqmn5G
-        U3VuDSJLWaqiDYcZOCojTqiiUm85yKElsIc8YwVw0Vdw0WSIIDowwtl3KVrBwW8qqr7dGIa
-        l976ZY+A6PAIQQZ62bArDpRNIdo78J42KELQLDcJrR/63pCjVhTh3vR4gnWyQ0D+8ygXA/1
-        eZz0WywWZXKfkOnRiliFL/l0Kkyb33t7bVjslwdyMULEPJ+dV7CUriKA/+a0+ImoqK973qj
-        t/OJHERVuFOF+pmZERJjXENtTI84wrv3K5dGDqSHjMIK463Ly12C3Pxv9Z66w==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 6151313308317870226
-From:   Jialu Xu <xujialu@vimux.org>
-To:     nathan@kernel.org
-Cc:     justinstitt@google.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        masahiroy@kernel.org, morbo@google.com, ndesaulniers@google.com,
-        xujialu@vimux.org
-Subject: [PATCH v4] gen_compile_commands.py: fix path resolve with symlinks in it
-Date:   Wed,  6 Dec 2023 09:24:42 +0800
-Message-Id: <20231206012441.840082-1-xujialu@vimux.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231205165648.GA391810@dev-arch.thelio-3990X>
-References: <20231205165648.GA391810@dev-arch.thelio-3990X>
+        Tue, 5 Dec 2023 20:26:12 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E29D62
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 17:26:17 -0800 (PST)
+Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SlKTr24ggzvRhL;
+        Wed,  6 Dec 2023 09:25:36 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 6 Dec 2023 09:26:14 +0800
+Subject: Re: [PATCH] jffs2: nodemgmt: fix kernel-doc comments
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     David Woodhouse <dwmw2@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>
+References: <20231205173222.12575-1-rdunlap@infradead.org>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <f0a0eb5d-7cdf-89a1-3017-2dd048d2a0e4@huawei.com>
+Date:   Wed, 6 Dec 2023 09:26:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20231205173222.12575-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:vimux.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=1.8 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_PBL,RCVD_IN_XBL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a path contains relative symbolic links, os.path.abspath() might
-not follow the symlinks and instead return the absolute path with just
-the relative paths resolved, resulting in an incorrect path.
+ÔÚ 2023/12/6 1:32, Randy Dunlap Ð´µÀ:
+> Update the end of one sentence where a comment was truncated. (dwmw2)
+>
+> Fix a bunch of kernel-doc warnings:
+>
+> nodemgmt.c:72: warning: Function parameter or member 'sumsize' not described in 'jffs2_do_reserve_space'
+> nodemgmt.c:72: warning: expecting prototype for jffs2_reserve_space(). Prototype was for jffs2_do_reserve_space() instead
+> nodemgmt.c:76: warning: Function parameter or member 'sumsize' not described in 'jffs2_reserve_space'
+> nodemgmt.c:76: warning: No description found for return value of 'jffs2_reserve_space'
+> nodemgmt.c:503: warning: Function parameter or member 'ofs' not described in 'jffs2_add_physical_node_ref'
+> nodemgmt.c:503: warning: Function parameter or member 'ic' not described in 'jffs2_add_physical_node_ref'
+> nodemgmt.c:503: warning: Excess function parameter 'new' description in 'jffs2_add_physical_node_ref'
+> nodemgmt.c:503: warning: No description found for return value of 'jffs2_add_physical_node_ref'
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: linux-mtd@lists.infradead.org
+> ---
+>   fs/jffs2/nodemgmt.c |   24 +++++++++++++++---------
+>   1 file changed, 15 insertions(+), 9 deletions(-)
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> diff -- a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+> --- a/fs/jffs2/nodemgmt.c
+> +++ b/fs/jffs2/nodemgmt.c
+> @@ -49,28 +49,31 @@ static int jffs2_rp_can_write(struct jff
+>   	return 0;
+>   }
+>   
+> +static int jffs2_do_reserve_space(struct jffs2_sb_info *c,  uint32_t minsize,
+> +				  uint32_t *len, uint32_t sumsize);
+> +
+>   /**
+>    *	jffs2_reserve_space - request physical space to write nodes to flash
+>    *	@c: superblock info
+>    *	@minsize: Minimum acceptable size of allocation
+>    *	@len: Returned value of allocation length
+>    *	@prio: Allocation type - ALLOC_{NORMAL,DELETION}
+> + *	@sumsize: summary size requested or JFFS2_SUMMARY_NOSUM_SIZE for no summary
+> + *
+> + *	Requests a block of physical space on the flash.
+>    *
+> - *	Requests a block of physical space on the flash. Returns zero for success
+> - *	and puts 'len' into the appropriate place, or returns -ENOSPC or other
+> - *	error if appropriate. Doesn't return len since that's
+> + *	Returns: %0 for success	and puts 'len' into the appropriate place,
+> + *	or returns -ENOSPC or other error if appropriate.
+> + *	Doesn't return len since that's already returned in @len.
+>    *
+> - *	If it returns zero, jffs2_reserve_space() also downs the per-filesystem
+> + *	If it returns %0, jffs2_reserve_space() also downs the per-filesystem
+>    *	allocation semaphore, to prevent more than one allocation from being
+> - *	active at any time. The semaphore is later released by jffs2_commit_allocation()
+> + *	active at any time. The semaphore is later released by jffs2_commit_allocation().
+>    *
+>    *	jffs2_reserve_space() may trigger garbage collection in order to make room
+>    *	for the requested allocation.
+>    */
+>   
+> -static int jffs2_do_reserve_space(struct jffs2_sb_info *c,  uint32_t minsize,
+> -				  uint32_t *len, uint32_t sumsize);
+> -
+>   int jffs2_reserve_space(struct jffs2_sb_info *c, uint32_t minsize,
+>   			uint32_t *len, int prio, uint32_t sumsize)
+>   {
+> @@ -488,13 +491,16 @@ static int jffs2_do_reserve_space(struct
+>   /**
+>    *	jffs2_add_physical_node_ref - add a physical node reference to the list
+>    *	@c: superblock info
+> - *	@new: new node reference to add
+> + *	@ofs: offset in the block
+>    *	@len: length of this physical node
+> + *	@ic: inode cache pointer
+>    *
+>    *	Should only be used to report nodes for which space has been allocated
+>    *	by jffs2_reserve_space.
+>    *
+>    *	Must be called with the alloc_sem held.
+> + *
+> + *	Returns: pointer to new node on success or -errno code on error
+>    */
+>   
+>   struct jffs2_raw_node_ref *jffs2_add_physical_node_ref(struct jffs2_sb_info *c,
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> .
 
-1. Say "drivers/hdf/" has some symlinks:
-
-    # ls -l drivers/hdf/
-    total 364
-    drwxrwxr-x 2 ...   4096 ... evdev
-    lrwxrwxrwx 1 ...     44 ... framework -> ../../../../../../drivers/hdf_core/framework
-    -rw-rw-r-- 1 ... 359010 ... hdf_macro_test.h
-    lrwxrwxrwx 1 ...     55 ... inner_api -> ../../../../../../drivers/hdf_core/interfaces/inner_api
-    lrwxrwxrwx 1 ...     53 ... khdf -> ../../../../../../drivers/hdf_core/adapter/khdf/linux
-    -rw-r--r-- 1 ...     74 ... Makefile
-    drwxrwxr-x 3 ...   4096 ... wifi
-
-2. One .cmd file records that:
-
-    # head -1 ./framework/core/manager/src/.devmgr_service.o.cmd
-    cmd_drivers/hdf/khdf/manager/../../../../framework/core/manager/src/devmgr_service.o := ... \
-    /path/to/out/drivers/hdf/khdf/manager/../../../../framework/core/manager/src/devmgr_service.c
-
-3. os.path.abspath returns "/path/to/out/framework/core/manager/src/devmgr_service.c", not correct:
-
-    # ./scripts/clang-tools/gen_compile_commands.py
-    INFO: Could not add line from ./framework/core/manager/src/.devmgr_service.o.cmd: File \
-        /path/to/out/framework/core/manager/src/devmgr_service.c not found
-
-Use pathlib.Path.resolve(), which resolves the symlinks and normalizes
-the paths correctly.
-
-    # cat compile_commands.json
-    ...
-    {
-      "command": ...
-      "directory": ...
-      "file": "/path/to/blabla/drivers/hdf_core/framework/core/manager/src/devmgr_service.c"
-    },
-    ...
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Jialu Xu <xujialu@vimux.org>
----
- scripts/clang-tools/gen_compile_commands.py | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-index 180952fb91c1b..99e28b7152c19 100755
---- a/scripts/clang-tools/gen_compile_commands.py
-+++ b/scripts/clang-tools/gen_compile_commands.py
-@@ -11,6 +11,7 @@ import argparse
- import json
- import logging
- import os
-+from pathlib import Path
- import re
- import subprocess
- import sys
-@@ -172,8 +173,9 @@ def process_line(root_directory, command_prefix, file_path):
-     # by Make, so this code replaces the escaped version with '#'.
-     prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
- 
--    # Use os.path.abspath() to normalize the path resolving '.' and '..' .
--    abs_path = os.path.abspath(os.path.join(root_directory, file_path))
-+    # Make the path absolute, resolving all symlinks on the way and also normalizing it.
-+    # Convert Path object to a string because 'PosixPath' is not JSON serializable.
-+    abs_path = str(Path(root_directory, file_path).resolve())
-     if not os.path.exists(abs_path):
-         raise ValueError('File %s not found' % abs_path)
-     return {
--- 
-2.39.2
 
