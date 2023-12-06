@@ -2,170 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD34A80702A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5987580702E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:49:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378114AbjLFMsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 07:48:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46858 "EHLO
+        id S1378130AbjLFMs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 07:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378087AbjLFMr7 (ORCPT
+        with ESMTP id S1378101AbjLFMs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 07:47:59 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2053.outbound.protection.outlook.com [40.107.92.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CBCD3;
-        Wed,  6 Dec 2023 04:48:05 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I2ZW4Uy1I36HnwOTrwVM3AbLHB1ZRsMjO5PQffEWsgYoCfK/4y3JmeUZb9UiKWjl4f2LLC7iLCREl7GUh4zvNx82nRO5ih7WHwQZ1hexkMPWxhNSUrR0Rfjg20stOj8iwLuz+kGu392b1gogoH3vwGD/Q1nRg9pqDaqjCGduiTLSawdouHOChV/3WYch7341StK7GCc7/Iy5tHJCHkp0bzEM/TfNyYGQ4Grsx1xDPK3jcz3mEPvYo1Bo3b1D2DWRB9HG7/VKnSmxPZdDI8GL/1u778tk1s6MapWUdGqzZA0dyRZmtnW3z5k21wAKvSl36NHxJeA+TowtusKit1UrlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YiASVAiZSpWdhhLGvvk51Vq7VkqNO7eEICGgr9Vj+eM=;
- b=hBq9bC/gvqnJ9r9lWdB+nGBWZLZ+RGK0+N1kxq/MkqlXSUWTe+VKNKizmyyj7XI4VyyoDNdi1bQQaAF3d1ttQfikfIb3hmz+D3w2iMfI2I+LV4Df2JcLYBkchEZ9zh3yCYKhYOjvUNe3OpO2u2nYs3OSC8ZVhLRFtatNczx4dokIpSOz+6S1+Vg6Ay83mr3rMyja4NCRxst9BrQWW0D2B0ESlsgaTTe+WD1NQStsf6d/VPhLxp7LwKXjEyh59kWRXZ2hUbbblqv47ce81N11wKRjc+QX+Cy+7YVpHgAIf4QHQz51vxDtxi31Fc6lLjsD+CJxJOetIh1JY/v0xZuAbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YiASVAiZSpWdhhLGvvk51Vq7VkqNO7eEICGgr9Vj+eM=;
- b=mt2Nq5p8PWrC8dV928bk93R+i07GRPXi1Wp2Sv9B/B3v8K2jvO0w5ZDB8Av/r4f5aoDwuJy2hdiEZxbD2hLNAHTi0kiQdfbVNNX+BXuodgWns+64syJMAY678PsLo1YRowsYA4gr3t/Hq1QkDJdXaN2605ZENVLyTRpH8tHv05sEvVXR54SklslPiN/PUSgoyphRBfVqZ8Sc+nIZYJqm7fD3Byw+NAD6bdCT8pFqqU3+uJ/nAaSxKP++uHuT+uicwp8qoYWPU/wY+m0s4vHOsez90+9nLE8yY7PdT6UXFglRmPoitJBe/Wxxb7BhC2CSbRD9ahGA/rYsptIeVT84zA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by LV8PR12MB9111.namprd12.prod.outlook.com (2603:10b6:408:189::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.25; Wed, 6 Dec
- 2023 12:48:02 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
- 12:48:02 +0000
-Date:   Wed, 6 Dec 2023 08:48:01 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
-Message-ID: <20231206124801.GO2692119@nvidia.com>
-References: <20231130000816.GB1389974@nvidia.com>
- <ZWjzcEAAg8ptVH4A@Asurada-Nvidia>
- <20231201004523.GJ1389974@nvidia.com>
- <ZWlhLk3JVwX0hRt/@Asurada-Nvidia>
- <20231201125538.GK1389974@nvidia.com>
- <ZWo6z59tnmS8F2V7@Asurada-Nvidia>
- <20231201204340.GA1493156@nvidia.com>
- <ZWpaTD9dVge+suyv@Asurada-Nvidia>
- <20231204144850.GC1493156@nvidia.com>
- <ZW9e6hxyDmkK8bfe@Asurada-Nvidia>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZW9e6hxyDmkK8bfe@Asurada-Nvidia>
-X-ClientProxiedBy: BL1PR13CA0340.namprd13.prod.outlook.com
- (2603:10b6:208:2c6::15) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Wed, 6 Dec 2023 07:48:58 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45490FA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:49:04 -0800 (PST)
+Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 017FA29B;
+        Wed,  6 Dec 2023 13:48:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701866901;
+        bh=hurEz5yHE2buEex1n4ZzEFee0FP8RPfh+K+tCD6yjvE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=fSFVZBdqI+JviLDvZH3zOzMq6rEwYaylDL/ogqXTxjKS8Pbs77u6g61MHeDtIgMgS
+         0U2LsMrmCjYISAbTYxThCoRRDssGiqCsnEGg3rsLJVJZ6Yji+JOX7TSUM6ylnEK+8B
+         3wMzlOZAUVJfFXbm+yPjW/p0CKt36FjlmxwJi13I=
+Message-ID: <17b43cb8-1543-48d2-830a-b9f6dd50fc15@ideasonboard.com>
+Date:   Wed, 6 Dec 2023 14:48:58 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|LV8PR12MB9111:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0c0f0899-9d06-4740-6e16-08dbf659958f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mOgMpZsx9n8zk+A9EbUBu1gi3JN0w2cJHWEpaQ59fbDMSOSdQKJF8H60jTggp9/mJ+neWzdPn1dy68V6mRJkd20KN5kr9vqmFs8pFWf9cvjElKQV3ScZPlucMnZrna0TYE648jjXNhGcTiCjIsAe3dv6zR9mbUZ1pf4Kk+y1pjsl8G6fcRZH+gtT8MjERDQlAajVBCaIG6YExVoxWTAfEza+L5+7XAhRhD91bFxoEw8vHQiHAKlhPvCCt7qrjlxKYmuCr+kRYrPP9bfcEALizhcGCD4/hFfTrmlpezcZVLMk8G9nEA3JK2FpsGEnbZ30TwKZzI1swww5u8+MSUCTaOxQcIvZ5xqk6ozkmm3gL8hwI7/6DUnGtajXNY6inkB74pHyaTrDdS+RO79a7jikp5p/cc3wEj3kMCC8Qx68amjZMwU0IsTcVwfXYWfkqU+hfyY3VYQ/IrstsFCzMq+m3fPbQf+zi4xdaiTIxC5BnD1KvFgdz8stH2evU4mToPVkby4Fu8Efed8EEQCyZUI61ndtVymHCILphH+VGzkS2M0P7AWa8akiNZtnRLg6QvvD
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(39860400002)(346002)(136003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(66556008)(4326008)(7416002)(66946007)(38100700002)(4744005)(2906002)(83380400001)(86362001)(5660300002)(316002)(37006003)(54906003)(6636002)(8936002)(8676002)(6862004)(66476007)(6486002)(478600001)(1076003)(41300700001)(6512007)(6506007)(2616005)(36756003)(26005)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iFEK02X6s2M/S9RY4SydiV2SEPKPV54zhHv6YUN8Y9ujRVJcqcTHIKaCWnM7?=
- =?us-ascii?Q?hT4K/ZPaPvsC6UC3hOVlklouwu8zCavYB/eNuSq1Ct+KsvPLEAl40jZnzppj?=
- =?us-ascii?Q?+/Ysb1WR0BT3Kf/igW2yNbqh8H+YFrGZmPFCILllBCeIv+jQ8BQKSsh7E8nl?=
- =?us-ascii?Q?JsX6ut7QlyU1cE8XmUck5/AUytbEZP2GL040HhE+MEc8TvxDsme2zMLe4Uy6?=
- =?us-ascii?Q?Yk00kzMznqH1u2P9+QexcfvgYD+aXDcqHaTa389Eo7rYjCJP6LqQQl3NY+mI?=
- =?us-ascii?Q?UXEs3TfyWoAv59fasBLt7E8KzTidk1EclHq43lLe+lxCXczweuWPXLJdkwCo?=
- =?us-ascii?Q?Iv+6AyvO4iVN0OkCfxoNEv+IIQs6Y2mmarOs1l4WSuG75qA7zAp0bRiSECDL?=
- =?us-ascii?Q?JOWy/pVQzBzeNr14RFb92wA65/CA1UblDzgqZSgWdDI+iZ8f11ap7/0+LBzY?=
- =?us-ascii?Q?H6h8NanyzZ2rC9iFBfBGsoh4Q7gviZPZEbruqWbUKHdMu30U1RbxBjSUqgzC?=
- =?us-ascii?Q?fpE3H4j4rgwFPopEzKw0CJYp0hH89pxvDyPcjRPy1zM8SWBP7ulakl9iqIyz?=
- =?us-ascii?Q?l9ZsQdUBY/GawfoDBmBb+/e7Uyivs/9VjHV90r/wt2LKPlO6dELB1NcVnwdH?=
- =?us-ascii?Q?AU3zXo61AbJbo0+u3scZFVRAbBC5ejC5uk3a8GrGw/XBo8VfDW7WAGSGYagM?=
- =?us-ascii?Q?BtGdqxROFfub8Q6Ci0fHaLdMPA/7LPTZUHnmS3iBv55dVWneSrXZIYYv0psb?=
- =?us-ascii?Q?tdt15JpIJb/ifD5vWmGAuxrXclbYjxuHKpDrKPzaOyOslYh6nDeg9WUreApW?=
- =?us-ascii?Q?Zh2+3MQwf+oqVIBSx0gsQUunwL1EAWAScXcG42ND2C1FgdLNRIeakjCVCR53?=
- =?us-ascii?Q?Lw2as6V04If8Z77aorC1t6nlDH3cEfaQ6YJcepPAwBt8Jm7/Mvk8pDOQzVba?=
- =?us-ascii?Q?+azUeM9egBvOZlNrTJrH695eZ0c8oVs4qi0QNWpIqXdLy27498CVAOmPaF32?=
- =?us-ascii?Q?QkfDwZbNtHfw7/5rFbaCPPLZ+BN4iCIRdGlgFBOWDIHSV8kXQmrQZC5dbfHV?=
- =?us-ascii?Q?lIc47+ccFsecsp+k+4yphAE3IIP0FogdTytQQg3RmM+NdDjwqH/Q7W53mq2H?=
- =?us-ascii?Q?YER5imGVHT2ghQhVXQ/df9TE0Jv6b1OuEV6WDiKxxXy0YOKofYaUTtl1DZII?=
- =?us-ascii?Q?RWYQoKvS4aTR+rixvK/sZuVkodX+d3Wx0/Kaqjjm3VJV+7OuGSEvS8RHtm4i?=
- =?us-ascii?Q?5VTuM4QDckVqWqASUQdLTi6Mj30yqFK4RjCE6MdbbkTyfRBL9xIyHuqyQ9Yl?=
- =?us-ascii?Q?qRMcylopZvkGnoonJCAxBeu6kDD2cuZzPr10XE06fzLvtu2oKknUfPw6RVB4?=
- =?us-ascii?Q?IIfWC5vZwq97bpYZZeveN4xwN6JWY7ZB4Dbrw9KTNMQ0GO0H0k89xrNlct8f?=
- =?us-ascii?Q?GlyU6G+oPhFV4QTaiYVNJ4jxPptn6bEfznbd6Fm0MtlCp5BH8Jagul05v7oY?=
- =?us-ascii?Q?hcuG4/bDHYnDBYpqQPk5BdRM8HfJPzUnBKDPlh45S6gXCevSQfpPmdAjn7Gs?=
- =?us-ascii?Q?VuoHy2FVI4Tu+CBS1SiMLi+sF5Rq3fc2IAGYFXXk?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c0f0899-9d06-4740-6e16-08dbf659958f
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 12:48:02.6403
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TlIZnIS+D7NqEn11AQXRsqiXcrQ84jq2JQ0Xm7GRRiOnzhxHVXmzaEefz6sFD9Oz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9111
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/mipi-dsi: Fix detach call without attach
+Content-Language: en-US
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20230921-dsi-detach-fix-v1-1-d0de2d1621d9@ideasonboard.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20230921-dsi-detach-fix-v1-1-d0de2d1621d9@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 09:33:30AM -0800, Nicolin Chen wrote:
-> On Mon, Dec 04, 2023 at 10:48:50AM -0400, Jason Gunthorpe wrote:
->  
-> > > Or am I missing some point here?
-> > 
-> > It sounds Ok, we just have to understand what userspace should be
-> > doing and how much of this the kernel should implement.
-> > 
-> > It seems to me that the error code should return the gerror and the
-> > req_num should indicate the halted cons. The vmm should relay both
-> > into the virtual registers.
-> 
-> I see your concern. I will take a closer look and see if we can
-> add to the initial version of arm_smmu_cache_invalidate_user().
-> Otherwise, we can add later.
-> 
-> Btw, VT-d seems to want the error_code and reports in the VT-d
-> specific invalidate entry structure, as Kevin and Yi had that
-> discussion in the other side of the thread.
+Hi mipi dsi maintainers (I'm not sure who that is =),
 
-It could be fine to shift it into the driver data blob. It isn't
-really generic in the end.
+On 21/09/2023 13:50, Tomi Valkeinen wrote:
+> It's been reported that DSI host driver's detach can be called without
+> the attach ever happening:
+> 
+> https://lore.kernel.org/all/20230412073954.20601-1-tony@atomide.com/
+> 
+> After reading the code, I think this is what happens:
+> 
+> We have a DSI host defined in the device tree and a DSI peripheral under
+> that host (i.e. an i2c device using the DSI as data bus doesn't exhibit
+> this behavior).
+> 
+> The host driver calls mipi_dsi_host_register(), which causes (via a few
+> functions) mipi_dsi_device_add() to be called for the DSI peripheral. So
+> now we have a DSI device under the host, but attach hasn't been called.
+> 
+> Normally the probing of the devices continues, and eventually the DSI
+> peripheral's driver will call mipi_dsi_attach(), attaching the
+> peripheral.
+> 
+> However, if the host driver's probe encounters an error after calling
+> mipi_dsi_host_register(), and before the peripheral has called
+> mipi_dsi_attach(), the host driver will do cleanups and return an error
+> from its probe function. The cleanups include calling
+> mipi_dsi_host_unregister().
+> 
+> mipi_dsi_host_unregister() will call two functions for all its DSI
+> peripheral devices: mipi_dsi_detach() and mipi_dsi_device_unregister().
+> The latter makes sense, as the device exists, but the former may be
+> wrong as attach has not necessarily been done.
+> 
+> To fix this, track the attached state of the peripheral, and only detach
+> from mipi_dsi_host_unregister() if the peripheral was attached.
+> 
+> Note that I have only tested this with a board with an i2c DSI
+> peripheral, not with a "pure" DSI peripheral.
+> 
+> However, slightly related, the unregister machinery still seems broken.
+> E.g. if the DSI host driver is unbound, it'll detach and unregister the
+> DSI peripherals. After that, when the DSI peripheral driver unbound
+> it'll call detach either directly or using the devm variant, leading to
+> a crash. And probably the driver will crash if it happens, for some
+> reason, to try to send a message via the DSI bus.
+> 
+> But that's another topic.
+> 
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
 
-Jason
+Any comments? I can push this via drm-misc, but I'd like an ack.
+
+  Tomi
+
+
+>   drivers/gpu/drm/drm_mipi_dsi.c | 17 +++++++++++++++--
+>   include/drm/drm_mipi_dsi.h     |  2 ++
+>   2 files changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
+> index 14201f73aab1..843a6dbda93a 100644
+> --- a/drivers/gpu/drm/drm_mipi_dsi.c
+> +++ b/drivers/gpu/drm/drm_mipi_dsi.c
+> @@ -347,7 +347,8 @@ static int mipi_dsi_remove_device_fn(struct device *dev, void *priv)
+>   {
+>   	struct mipi_dsi_device *dsi = to_mipi_dsi_device(dev);
+>   
+> -	mipi_dsi_detach(dsi);
+> +	if (dsi->attached)
+> +		mipi_dsi_detach(dsi);
+>   	mipi_dsi_device_unregister(dsi);
+>   
+>   	return 0;
+> @@ -370,11 +371,18 @@ EXPORT_SYMBOL(mipi_dsi_host_unregister);
+>   int mipi_dsi_attach(struct mipi_dsi_device *dsi)
+>   {
+>   	const struct mipi_dsi_host_ops *ops = dsi->host->ops;
+> +	int ret;
+>   
+>   	if (!ops || !ops->attach)
+>   		return -ENOSYS;
+>   
+> -	return ops->attach(dsi->host, dsi);
+> +	ret = ops->attach(dsi->host, dsi);
+> +	if (ret)
+> +		return ret;
+> +
+> +	dsi->attached = true;
+> +
+> +	return 0;
+>   }
+>   EXPORT_SYMBOL(mipi_dsi_attach);
+>   
+> @@ -386,9 +394,14 @@ int mipi_dsi_detach(struct mipi_dsi_device *dsi)
+>   {
+>   	const struct mipi_dsi_host_ops *ops = dsi->host->ops;
+>   
+> +	if (WARN_ON(!dsi->attached))
+> +		return -EINVAL;
+> +
+>   	if (!ops || !ops->detach)
+>   		return -ENOSYS;
+>   
+> +	dsi->attached = false;
+> +
+>   	return ops->detach(dsi->host, dsi);
+>   }
+>   EXPORT_SYMBOL(mipi_dsi_detach);
+> diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
+> index c9df0407980c..c0aec0d4d664 100644
+> --- a/include/drm/drm_mipi_dsi.h
+> +++ b/include/drm/drm_mipi_dsi.h
+> @@ -168,6 +168,7 @@ struct mipi_dsi_device_info {
+>    * struct mipi_dsi_device - DSI peripheral device
+>    * @host: DSI host for this peripheral
+>    * @dev: driver model device node for this peripheral
+> + * @attached: the DSI device has been successfully attached
+>    * @name: DSI peripheral chip type
+>    * @channel: virtual channel assigned to the peripheral
+>    * @format: pixel format for video mode
+> @@ -184,6 +185,7 @@ struct mipi_dsi_device_info {
+>   struct mipi_dsi_device {
+>   	struct mipi_dsi_host *host;
+>   	struct device dev;
+> +	bool attached;
+>   
+>   	char name[DSI_DEV_NAME_SIZE];
+>   	unsigned int channel;
+> 
+> ---
+> base-commit: 9fc75c40faa29df14ba16066be6bdfaea9f39ce4
+> change-id: 20230921-dsi-detach-fix-6736f7a48ba7
+> 
+> Best regards,
+
