@@ -2,150 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B60D5806BDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:23:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC91806BDB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377321AbjLFKXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:23:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50602 "EHLO
+        id S1377335AbjLFKYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:24:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377339AbjLFKXc (ORCPT
+        with ESMTP id S1377278AbjLFKYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:23:32 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC28012F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:23:38 -0800 (PST)
-From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701858217;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GsNdpIFc09s1gqwIZ71ov1AFzBRmEFB6zZkx3fRFd5g=;
-        b=iglMCXYyWWOMX7ot3k5OXm8pLuBqWxuDAP2bHQUssr5GOCjJq8hVEADDYLcqHtp4Ep5wfm
-        xe1r8/kqj0JZLEttatjOUyZzkMPt+MMZ/qgy18cSVxvFaycfumYY/nNn0+BqKQSBqr0fz1
-        +e7IXR5KdNmVMYFSjvI4Q4k0bAVkzjUwOdoDriacIToGLT7pu5cHrg+I0zFpG6KvxHCdSM
-        9Jd2aOsz1U4YmnlJSzIy6oQZ6KNsWAYmg0rT0Il4k5WpP0yElDKxnuWNNJQJMBK5YFAKG1
-        yeTKPTcFxyanC0FgHsQZI4SuLhj7lfnTsXf98YM+bsaTrFkGezWeSJ+mt+rSXg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701858217;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GsNdpIFc09s1gqwIZ71ov1AFzBRmEFB6zZkx3fRFd5g=;
-        b=+dJEwX6YqeEwRrSRllj+nGgCh/Z4usBpBzPJUCNUqgV9ao2PWcoaKgLJuW9K661xfUH2qu
-        JIR1wSI6bAPhsDCA==
-To:     Sebastian Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCH v9 22/32] timers: Keep the pinned timers separate from
- the others
-In-Reply-To: <20231205211106.ykKsi921@linutronix.de>
-References: <20231201092654.34614-1-anna-maria@linutronix.de>
- <20231201092654.34614-23-anna-maria@linutronix.de>
- <20231205211106.ykKsi921@linutronix.de>
-Date:   Wed, 06 Dec 2023 11:23:36 +0100
-Message-ID: <87fs0feijb.fsf@somnus>
+        Wed, 6 Dec 2023 05:24:34 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9FA85109
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:24:40 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 701761474;
+        Wed,  6 Dec 2023 02:25:26 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BEFEF3F762;
+        Wed,  6 Dec 2023 02:24:38 -0800 (PST)
+Message-ID: <54be0bd1-9397-4b7c-9b3c-6680c5d4c248@arm.com>
+Date:   Wed, 6 Dec 2023 10:24:37 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] arm64: hugetlb: Fix page fault loop for
+ sw-dirty/hw-clean contiguous PTEs
+Content-Language: en-GB
+To:     James Houghton <jthoughton@google.com>
+Cc:     Steve Capper <steve.capper@arm.com>, Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20231204172646.2541916-1-jthoughton@google.com>
+ <70dcdad7-5952-48ce-a9b9-042cfea59a5d@arm.com>
+ <CADrL8HVNBD=5akoTi3e0d6w=162Wak2cB2bc7jwQ8-DCAC4N1Q@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CADrL8HVNBD=5akoTi3e0d6w=162Wak2cB2bc7jwQ8-DCAC4N1Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian Siewior <bigeasy@linutronix.de> writes:
+On 05/12/2023 17:54, James Houghton wrote:
+> On Tue, Dec 5, 2023 at 6:43 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 04/12/2023 17:26, James Houghton wrote:
+>>> It is currently possible for a userspace application to enter a page
+>>> fault loop when using HugeTLB pages implemented with contiguous PTEs
+>>> when HAFDBS is not available. This happens because:
+>>> 1. The kernel may sometimes write PTEs that are sw-dirty but hw-clean
+>>>    (PTE_DIRTY | PTE_RDONLY | PTE_WRITE).
+>>
+>> Hi James,
+>>
+>> Do you know how this happens?
+> 
+> Hi Ryan,
+> 
+> Thanks for taking a look! I do understand why this is happening. There
+> is an explanation in the reproducer[1] and also in this cover letter
+> (though I realize I could have been a little clearer). See below.
 
-> On 2023-12-01 10:26:44 [+0100], Anna-Maria Behnsen wrote:
->> --- a/kernel/time/timer.c
->> +++ b/kernel/time/timer.c
->> @@ -1985,10 +1998,31 @@ static inline u64 __get_next_timer_interrupt(unsigned long basej, u64 basem,
->>  		return expires;
->>  	}
->>  
->> -	raw_spin_lock(&base->lock);
->> -	nextevt = next_timer_interrupt(base, basej);
->> +	base_local = this_cpu_ptr(&timer_bases[BASE_LOCAL]);
->> +	base_global = this_cpu_ptr(&timer_bases[BASE_GLOBAL]);
->> +
->> +	raw_spin_lock(&base_local->lock);
->> +	raw_spin_lock_nested(&base_global->lock, SINGLE_DEPTH_NESTING);
->> +
->> +	nextevt_local = next_timer_interrupt(base_local, basej);
->> +	nextevt_global = next_timer_interrupt(base_global, basej);
->>  
->> -	if (base->timers_pending) {
->> +	/*
->> +	 * Check whether the local event is expiring before or at the same
->> +	 * time as the global event.
->> +	 *
->> +	 * Note, that nextevt_global and nextevt_local might be based on
->> +	 * different base->clk values. So it's not guaranteed that
->> +	 * comparing with empty bases results in a correct local_first.
->
-> This ends like an unsolved mystery case. Could you add why one should
-> not worry about an incorrect local_first?
->
-> But seriously, how far apart can they get and what difference does it
-> make?  At timer enqueue time clk equals jiffies. At this point one clk
-> base could be at jiffies and the other might be a few jiffies before
-> that.
-> The next event (as in next_expiry) should be valid for both compare
-> wise. Both must be larger than jiffies. The delta between jiffies and
-> next event has to be less than NEXT_TIMER_MAX_DELTA for each base.
->
->> +	 */
->> +	if (base_local->timers_pending && base_global->timers_pending)
->> +		local_first = time_before_eq(nextevt_local, nextevt_global);
->> +	else
->> +		local_first = base_local->timers_pending;
->> +
->> +	nextevt = local_first ? nextevt_local : nextevt_global;
->> +
->> +	if (base_local->timers_pending || base_global->timers_pending) {
->>  		/* If we missed a tick already, force 0 delta */
->>  		if (time_before(nextevt, basej))
->>  			nextevt = basej;
->
-> So if nextevt_local missed a tick and nextevt_global is
-> NEXT_TIMER_MAX_DELTA-1 (so we get the largest difference possible
-> between those two) then the time_before_eq() should still come out
-> right. We could still miss more than one tick.
->
+Sigh... sorry! I totally missed your (excellent) explanation.
 
-This problem was only there when comparing _empty_ bases
-(!timer_base::timers_pending) because of the different base clocks and
-the stale next_expiry.
 
-But I didn't update the check and the comment after introducing the
-forward of the next_expiry when !timer_base::timers_pending in
-next_timer_interrupt(). So now it is sufficient to replace the
-local_first detection by simply doing:
+> 
+>> AFAIK, this is the set of valid bit combinations, and
+>> PTE_RDONLY|PTE_WRITE|PTE_DIRTY is not one of them. Perhaps the real solution is
+>> to understand how this is happening and prevent it?
+>>
+>> /*
+>>  * PTE bits configuration in the presence of hardware Dirty Bit Management
+>>  * (PTE_WRITE == PTE_DBM):
+>>  *
+>>  * Dirty  Writable | PTE_RDONLY  PTE_WRITE  PTE_DIRTY (sw)
+>>  *   0      0      |   1           0          0
+>>  *   0      1      |   1           1          0
+>>  *   1      0      |   1           0          1
+>>  *   1      1      |   0           1          x
+>>  *
+>>  * When hardware DBM is not present, the sofware PTE_DIRTY bit is updated via
+>>  * the page fault mechanism. Checking the dirty status of a pte becomes:
+>>  *
+>>  *   PTE_DIRTY || (PTE_WRITE && !PTE_RDONLY)
+>>  */
+> 
+> Thanks for pointing this out. So (1) is definitely a bug. The second
+> patch in this series makes it impossible to create such a PTE via
+> pte_modify (by forcing sw-dirty PTEs to be hw-dirty as well).
 
-	local_first = time_before_eq(nextevt_local, nextevt_global);
+Yes; I think the second patch should be sufficient; I took a quick look at the
+other helpers and I don't see anything else that could get the PTE to the
+invalid state.
 
-Will fix it and will also add a comment to next_timer_interrupt() where
-the next_expiry is updated when !timer_base::timers_pending.
+I have a series that starts using the contpte bit for (multi-size) THP
+opportunistically. This bug will affect that too I think. Your patch #2 will fix
+for both hugetlb and my series. I'd rather not apply an equivalent to your patch
+#1 because its not quite as straightforward in my code path. But I'm pretty
+confident that patch # is all that's needed here.
 
 Thanks,
+Ryan
 
-	Anna-Maria
+> 
+>>> The second patch in this series makes step (1) less likely to occur.
+> 
+> It makes it impossible to create this invalid set of bits via
+> pte_modify(). Assuming all PTE pgprot updates are done via the proper
+> interfaces, patch #2 might actually make this invalid bit combination
+> impossible to produce (that's certainly the goal). So perhaps language
+> stronger than "less likely" is appropriate.
+> 
+> Here's the sequence of events to trigger this bug, via mprotect():
+> 
+>>> Without this patch, we can get the kernel to write a sw-dirty, hw-clean
+>>> PTE with the following steps (showing the relevant VMA flags and pgprot
+>>> bits):
+>>> i.   Create a valid, writable contiguous PTE.
+>>>        VMA vmflags:     VM_SHARED | VM_READ | VM_WRITE
+>>>        VMA pgprot bits: PTE_RDONLY | PTE_WRITE
+>>>        PTE pgprot bits: PTE_DIRTY | PTE_WRITE
+>>> ii.  mprotect the VMA to PROT_NONE.
+>>>        VMA vmflags:     VM_SHARED
+>>>        VMA pgprot bits: PTE_RDONLY
+>>>        PTE pgprot bits: PTE_DIRTY | PTE_RDONLY
+>>> iii. mprotect the VMA back to PROT_READ | PROT_WRITE.
+>>>        VMA vmflags:     VM_SHARED | VM_READ | VM_WRITE
+>>>        VMA pgprot bits: PTE_RDONLY | PTE_WRITE
+>>>        PTE pgprot bits: PTE_DIRTY | PTE_WRITE | PTE_RDONLY
+> 
+> With patch #2, the PTE pgprot bits in step iii become PTE_DIRTY |
+> PTE_WRITE (hw-dirtiness is set, as the PTE is sw-dirty).
+> 
+> Thanks!
+> 
+>>> [1]: https://gist.github.com/48ca/11d1e466deee032cb35aa8c2280f93b0
+
