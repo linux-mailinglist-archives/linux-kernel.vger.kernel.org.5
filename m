@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CBF806F6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A8E806F74
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378303AbjLFMFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 07:05:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32816 "EHLO
+        id S1378308AbjLFMHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 07:07:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378255AbjLFMFu (ORCPT
+        with ESMTP id S1378255AbjLFMHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 07:05:50 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496AA9A;
-        Wed,  6 Dec 2023 04:05:56 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-332c0c32d19so772750f8f.3;
-        Wed, 06 Dec 2023 04:05:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701864355; x=1702469155; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=aDPm18t9o30pzYuZ1wTj/c6zupAighuOQRXZWPWFINk=;
-        b=acNNMdQ/LtPXuiC5uTQWqWCpj+lkTPGm9kEd0yLSVUxdked4w5s3ppA8lE1z+m5G8k
-         pcnXZRUKETRKVHPjnO4Jv1ktpmmvFlCtv5Khg5DbOnG62PszyFWomQe2fEDNFbkVqGOX
-         ZI9gAqu0UXR7i6zhsRKXx6okPwkKulvrzsyw/ptUvr/sRApBvrAMA2khCGNUSO+oNH3m
-         f+Dn8WZyNXPjpWGmVxUePu8dGSrGS4fTRh1ByM/crVttL9/gkuQr2SXIQiU+CyE8bvtJ
-         crbcdge1YVM/PCn0rx71ckJ8Vry5zb+VZcnZo33tuafjz4p75LNLmM98dJwyrnYGflWk
-         zZ0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701864355; x=1702469155;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aDPm18t9o30pzYuZ1wTj/c6zupAighuOQRXZWPWFINk=;
-        b=Gzn7+RsbArMHsXLcoPiVXeym5w997WYdl367J/BbvtrPGvBIWsfpu3VJDofetMA4k6
-         Y/i2OHoqZ1uJ6ldUjtAtgFPjGZHDIrA1XRQ9OyyHIN3BtMbpvTMb6cEfOXvIrcOvPcqm
-         Yzl+uqfi6bcyu6+fatcQlyz0aE6gKQBjYGWUCejVEPKGBOESb+w0jGhYL4AMVaeOGr9F
-         a2F6M8jb8kmFUvIxM7JD2fkwKj/Vh64VbGQ82de2I1flbqlcR1bE9Lwu3a5+zV/a+2Qq
-         vFY/xTe4jpFOrr3/I8miQn/BY9YtbcObbRpuR/+DWY9z/JwN0wq5+uSgRI7pEzI2nzSy
-         62jw==
-X-Gm-Message-State: AOJu0Yz8lMXtVnheqD6TFmD3KnaBvryBNKHeBLWZyRSNlrlJqTYFCpG9
-        190foFF+ID5Ad6vbOwrvzxc=
-X-Google-Smtp-Source: AGHT+IHwMuty3UHp//1mR32/X8vOijFW8CaVCQvkg824u8QUBajzUYqFtqtw3rcuSxstkbZcgCdBbA==
-X-Received: by 2002:a05:600c:4589:b0:40c:938:782 with SMTP id r9-20020a05600c458900b0040c09380782mr519918wmo.55.1701864354090;
-        Wed, 06 Dec 2023 04:05:54 -0800 (PST)
-Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
-        by smtp.gmail.com with ESMTPSA id f16-20020a05600c4e9000b0040b4e44cf8dsm21685559wmq.47.2023.12.06.04.05.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 04:05:53 -0800 (PST)
-Message-ID: <bba767835e775909c6b8a3334cceeb419afef4ca.camel@gmail.com>
-Subject: Re: [PATCH 03/12] iio: add the IIO backend framework
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Nuno Sa via B4 Relay 
-        <devnull+nuno.sa.analog.com@kernel.org>
-Cc:     nuno.sa@analog.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        Olivier MOYSAN <olivier.moysan@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Date:   Wed, 06 Dec 2023 13:05:53 +0100
-In-Reply-To: <20231204153855.71c9926f@jic23-huawei>
-References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
-         <20231121-dev-iio-backend-v1-3-6a3d542eba35@analog.com>
-         <20231204153855.71c9926f@jic23-huawei>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Wed, 6 Dec 2023 07:07:52 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E56112;
+        Wed,  6 Dec 2023 04:07:56 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B67lFQG019743;
+        Wed, 6 Dec 2023 12:07:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=C3ElGjPvJPm3GBqQVI272F4zRT5qv8TxeEofkU/QRVM=;
+ b=DEQvAk7Hvdz+KDYeK5H7TWHhZIx6fb8oJdQ14OQtEojN99MbRzpF79zO5Z2oGtI7SxYJ
+ bV6L7n8hXIz4JhNGJAOvhuccsF+PUrCVEWBFAY0kUifR8etR/WtFuhdoa+ELwQtOFfha
+ bqvqxhkfNECJXdpUTr2Q7XUZNT83hp0UTg209furuyEjLL8mqBFj3SWI332bualM9SnZ
+ lt45BXoW2OsfMPUl+jHb6y6o1NQ1E06lrsrRqThCynsGV6HDtDlHs7d+e7dLk6w3g9Hh
+ 9yP0YG4t8nNcX9GqPUAwp71mJL8wwQBmxQa7rEPmRRKeAUMFZdyAwVejicC9GRCT2f2+ /A== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utdeb9n7e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Dec 2023 12:07:47 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3B6C7gCI006891;
+        Wed, 6 Dec 2023 12:07:42 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3uqwnm4x37-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 06 Dec 2023 12:07:42 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B6C7gSe006885;
+        Wed, 6 Dec 2023 12:07:42 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3B6C7fUk006884;
+        Wed, 06 Dec 2023 12:07:42 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
+        id B47815000B1; Wed,  6 Dec 2023 17:37:40 +0530 (+0530)
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_cang@quicinc.com, Nitin Rawat <quic_nitirawa@quicinc.com>,
+        Manish Pandey <quic_mapa@quicinc.com>
+Subject: [PATCH V3] scsi: ufs: core: store min and max clk freq from OPP table
+Date:   Wed,  6 Dec 2023 17:37:39 +0530
+Message-Id: <20231206120739.23255-1-quic_nitirawa@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: NWN3gwtlFrONlakVHrW_K4oiuPYrKKF1
+X-Proofpoint-GUID: NWN3gwtlFrONlakVHrW_K4oiuPYrKKF1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-06_08,2023-12-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 malwarescore=0 mlxscore=0 clxscore=1015 spamscore=0
+ mlxlogscore=999 impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312060101
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,99 +81,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-12-04 at 15:38 +0000, Jonathan Cameron wrote:
-> On Tue, 21 Nov 2023 11:20:16 +0100
-> Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org> wrote:
->=20
-> > From: Nuno Sa <nuno.sa@analog.com>
-> >=20
-> > This is a Framework to handle complex IIO aggregate devices.
-> >=20
-> > The typical architecture is to have one device as the frontend device w=
-hich
-> > can be "linked" against one or multiple backend devices. All the IIO an=
-d
-> > userspace interface is expected to be registers/managed by the frontend
-> > device which will callback into the backends when needed (to get/set
-> > some configuration that it does not directly control).
->=20
-> As this is first place backend / frontend terminology used (I think), mak=
-e
-> sure to give an example so people understand what sorts of IP / devices t=
-hes
-> might be.
->=20
-> >=20
-> > The basic framework interface is pretty simple:
-> > =C2=A0- Backends should register themselves with @devm_iio_backend_regi=
-ster()
-> > =C2=A0- Frontend devices should get backends with @devm_iio_backend_get=
-()
-> >=20
-> > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
->=20
-> Looks good to me in general.=C2=A0 I'll need to have a really close read =
-though
-> before we merge this as there may be sticky corners! (hopefully not)
->=20
->=20
-> ...
->=20
-> > +static LIST_HEAD(iio_back_list);
-> > +static DEFINE_MUTEX(iio_back_lock);
-> > +
-> > +/*
-> > + * Helper macros to properly call backend ops. The main point for thes=
-e macros
-> > + * is to properly lock the backend mutex on every call plus checking i=
-f the
-> > + * backend device is still around (by looking at the *ops pointer).
-> If just checking if it is around rather thank looking for a bug, then
-> I'd suggest a lighter choice than WARN_ON_x=20
->=20
+OPP support added by commit 72208ebe181e ("scsi: ufs: core: Add support
+for parsing OPP") doesn't update the min_freq and max_freq of each clocks
+in 'struct ufs_clk_info'.
 
-Arguably, in here, removing a backend is the user doing something seriously=
- wrong so
-I see the splat with good eyes :D.
+But these values are used by the vendor host drivers internally for
+controller configuration. When the OPP support is enabled in devicetree,
+these values will be 0, causing boot issues on the respective platforms.
 
-That said, I'm fine in turning this into a pr_warn_once()...
+So add support to parse the min_freq and max_freq of all clocks while
+parsing the OPP table.
 
-> Btw, there were some interesting discussions on lifetimes and consumer / =
-provider
-> models at plumbers. I think https://www.youtube.com/watch?v=3DbHaMMnIH6AM=
-=C2=A0will be
-> the video.=C2=A0=C2=A0 Suggested the approach of not refcounting but inst=
-ead allowing for
-> a deliberate removal of access similar to your check on ops here (and the=
- one
-> we do in core IIO for similar purposes).=C2=A0 Sounded interesting but I'=
-ve not
-> explored what it would really mean to switch to that model yet.
+Fixes: 72208ebe181e ("scsi: ufs: core: Add support for parsing OPP")
+Co-developed-by: Manish Pandey <quic_mapa@quicinc.com>
+Signed-off-by: Manish Pandey <quic_mapa@quicinc.com>
+Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+---
+Changes from v2:
+- increment idx in dev_pm_opp_get_freq_indexed
 
-Yes, interesting talk indeed. I have been following this issue for some tim=
-e now.
-That's why I tried to be careful in the backend stuff (so we don't explode =
-if a
-backend is gone) even though is a much more simpler approach. But the talk =
-mentions
-three solutions and we kind of have both option C (the pointer stuff) and o=
-ption A
-(consumer removed on provicer unbind)
-in here. option A is being given through device links with the AUTO_REMOVE_=
-CONSUMER
-flag.
+Changes from v1:
+As per Manivannan's comment:
+- Updated commmit description
+- Sort include file alphabetically
+- Added missing dev_pm_opp_put
+- updated function name and documention
+- removed ret variable
+---
+ drivers/ufs/host/ufshcd-pltfrm.c | 53 ++++++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-And the talk actually left me thinking on that (as it's discussed in there.=
- In our
-simpler case (ADI ones), it does make sense to remove the consumer if the p=
-rovider is
-not there. But if we think in more advanced usecases (or maybe already in t=
-he STM
-usecase) where we have a backend per data path. Does it make sense to compl=
-etely
-"kill" the consumer if we remove one of the data paths? Starting to think i=
-t
-doesn't...
+diff --git a/drivers/ufs/host/ufshcd-pltfrm.c b/drivers/ufs/host/ufshcd-pltfrm.c
+index da2558e274b4..cbccf36f6496 100644
+--- a/drivers/ufs/host/ufshcd-pltfrm.c
++++ b/drivers/ufs/host/ufshcd-pltfrm.c
+@@ -8,6 +8,7 @@
+  *	Vinayak Holikatti <h.vinayak@samsung.com>
+  */
 
-- Nuno S=C3=A1
++#include <linux/clk.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_opp.h>
+@@ -213,6 +214,54 @@ static void ufshcd_init_lanes_per_dir(struct ufs_hba *hba)
+ 	}
+ }
+
++/**
++ * ufshcd_parse_clock_min_max_freq  - Parse MIN and MAX clocks freq
++ * @hba: per adapter instance
++ *
++ * This function parses MIN and MAX frequencies of all clocks required
++ * by the vendor host drivers.
++ *
++ * Returns 0 for success and non-zero for failure
++ */
++static int ufshcd_parse_clock_min_max_freq(struct ufs_hba *hba)
++{
++	struct list_head *head = &hba->clk_list_head;
++	struct ufs_clk_info *clki;
++	struct dev_pm_opp *opp;
++	unsigned long freq;
++	u8 idx = 0;
++
++	list_for_each_entry(clki, head, list) {
++		if (!clki->name)
++			continue;
++
++		clki->clk = devm_clk_get(hba->dev, clki->name);
++		if (!IS_ERR(clki->clk)) {
++			/* Find Max Freq */
++			freq = ULONG_MAX;
++			opp = dev_pm_opp_find_freq_floor_indexed(hba->dev, &freq, idx);
++			if (IS_ERR(opp)) {
++				dev_err(hba->dev, "Failed to find OPP for MAX frequency\n");
++				return PTR_ERR(opp);
++			}
++			clki->max_freq = dev_pm_opp_get_freq_indexed(opp, idx);
++			dev_pm_opp_put(opp);
++
++			/* Find Min Freq */
++			freq = 0;
++			opp = dev_pm_opp_find_freq_ceil_indexed(hba->dev, &freq, idx);
++			if (IS_ERR(opp)) {
++				dev_err(hba->dev, "Failed to find OPP for MIN frequency\n");
++				return PTR_ERR(opp);
++			}
++			clki->min_freq = dev_pm_opp_get_freq_indexed(opp, idx++);
++			dev_pm_opp_put(opp);
++		}
++	}
++
++	return 0;
++}
++
+ static int ufshcd_parse_operating_points(struct ufs_hba *hba)
+ {
+ 	struct device *dev = hba->dev;
+@@ -279,6 +328,10 @@ static int ufshcd_parse_operating_points(struct ufs_hba *hba)
+ 		return ret;
+ 	}
+
++	ret = ufshcd_parse_clock_min_max_freq(hba);
++	if (ret)
++		return ret;
++
+ 	hba->use_pm_opp = true;
+
+ 	return 0;
+--
+2.17.1
 
