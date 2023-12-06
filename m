@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1DF807559
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB31280755A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:40:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442563AbjLFQji convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 11:39:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
+        id S1442545AbjLFQj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:39:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379345AbjLFQjg (ORCPT
+        with ESMTP id S1379382AbjLFQjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:39:36 -0500
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EF3FA;
-        Wed,  6 Dec 2023 08:39:42 -0800 (PST)
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1fb2b83986cso4041fac.0;
-        Wed, 06 Dec 2023 08:39:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701880782; x=1702485582;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QOpsMpN5kc6thb3d1q4d3kl9xx5Ha381XUlpiCeA7Vg=;
-        b=Skr0ltN7RAh68pvyRQ62RYPCxQkTu3zX5vEV7e88NMba0BheWhtM9OU0p4nbhlQNRp
-         MIMIwcRA90C1ojRWsvZr23RVolctb4WJxh7Oj4o2T6Qgg/A0VaG96mk2m3ceQJuNeF3Z
-         75fcagUOb/zghK32WzCh7BrrdA1LBxT1WdUR0p2Hn1XEroNWB+/AnJIaikumhAGBUxe/
-         n+sbxLQqKLlTRgQwiTpIHzgIiOfzciej85BSHAUwWTN8VwxeFWeGMM5RfOa0Jx5UemB4
-         lxn8z61L7FhDdk5dbR8enUfvh5Ww+URb3rkPfb+N/W6GcrVqDHJHldh710GPlLw3LsYG
-         9B1Q==
-X-Gm-Message-State: AOJu0Yykcspxr++1unk5wx2E8XcYlOjSFPOPWjtLZTsuCVl3V4GNavtg
-        vHBeLqx+H4W+i9W8djKOmJUyIcRXbxZcGX7Fi8b3Yv/4qUM=
-X-Google-Smtp-Source: AGHT+IE+QBw0uGCe3QdwQFdjnKR42J/h74k4XSadE/DgYk6WWgxdbDG4+G3mwf1tieSM1OUVNXOpgCrQ+v1vLscpEso=
-X-Received: by 2002:a05:6870:e2cb:b0:1fb:23ec:3318 with SMTP id
- w11-20020a056870e2cb00b001fb23ec3318mr2127789oad.0.1701880782199; Wed, 06 Dec
- 2023 08:39:42 -0800 (PST)
+        Wed, 6 Dec 2023 11:39:55 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F481D4B;
+        Wed,  6 Dec 2023 08:40:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wozrE2JVwYdQea39v2odwAxayUucaERPPUek0lDwYT0=; b=WWF8SqBR/ol12mok8XrbFlc7fl
+        YEOaC58edDRRgMxpvnnhTeDndYHyL6IFPhnbnJak0ECGFdjfnSbZsm/DgtWQHPQfyvHngJMSDpW4R
+        H20VH7TT3uLbOsjTLdB3T0TL/Ub7uCPmjPui9606uR5ttR8eyhz68q7kmru/A7Sfk7in+lNjNHXHg
+        wY4WkZXjOc1XsoVdvhcT0Bhn1eU6Ak5n/eGtVCgLHP8sDgsf2EtFaUyD5rtzSuXsFfL4ACpurcwBM
+        5sz0j5NB+ZXH/e4d9Kq8vuCtFxK7GDS9ES253aGL/2I39+VCGPkiTSRPoolnNn3I9X6+BbPu49Fm8
+        1Nm+8dZw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAuw6-005DDo-34;
+        Wed, 06 Dec 2023 16:39:47 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B8EDC300451; Wed,  6 Dec 2023 17:39:45 +0100 (CET)
+Date:   Wed, 6 Dec 2023 17:39:45 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] rust: sync: add `CondVar::wait_timeout`
+Message-ID: <20231206163945.GC36423@noisy.programming.kicks-ass.net>
+References: <20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com>
+ <20231206-rb-new-condvar-methods-v1-2-33a4cab7fdaa@google.com>
+ <ZXChjmoKPj3XnJgG@Boquns-Mac-mini.home>
 MIME-Version: 1.0
-References: <b8c5f018-4883-4c14-84ab-0514edac2770@ancud.ru>
-In-Reply-To: <b8c5f018-4883-4c14-84ab-0514edac2770@ancud.ru>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Dec 2023 17:39:29 +0100
-Message-ID: <CAJZ5v0i7LYzF13M0qdeYWXZ7uO6HUpAS7pE5RJnOAJtKB8o88A@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: debugger: check status of acpi_evaluate_object in acpi_db_walk_for_fields
-To:     Nikita Kiryushin <kiryushin@ancud.ru>
-Cc:     Robert Moore <robert.moore@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXChjmoKPj3XnJgG@Boquns-Mac-mini.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,54 +63,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 2:33 PM Nikita Kiryushin <kiryushin@ancud.ru> wrote:
->
-> Errors in acpi_evaluate_object can lead to incorrect state of buffer.
-> This can lead to access to data in previously ACPI_FREEd buffer and
-> secondary ACPI_FREE to the same buffer later.
->
-> Handle errors in acpi_evaluate_object the same way it is done earlier
-> with acpi_ns_handle_to_pathname.
->
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->
-> Fixes: 5fd033288a86 ("ACPICA: debugger: add command to dump all fields
-> of particular subtype")
-> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
-> ---
->   drivers/acpi/acpica/dbnames.c | 8 ++++++--
+On Wed, Dec 06, 2023 at 08:30:06AM -0800, Boqun Feng wrote:
+> On Wed, Dec 06, 2023 at 10:09:24AM +0000, Alice Ryhl wrote:
+> [...]
+> > +
+> > +/// The return type of `wait_timeout`.
+> > +pub enum CondVarTimeoutResult {
+> > +    /// The timeout was reached.
+> > +    Timeout,
+> > +    /// Somebody woke us up.
+> > +    Woken {
+> > +        /// Remaining sleep duration.
+> > +        jiffies: u64,
+> 
+> I have a Jiffies definition in the my upcoming timer patchset:
+> 
+> /// The time unit of Linux kernel. One jiffy equals (1/HZ) second.
+> pub type Jiffies = core::ffi::c_ulong;
+> 
+> Maybe you can add that (in a separate patch) in kernel::time?
 
-This is ACPICA code which comes from a separate project.
-
-The way to change it is to submit a pull request with the desired change
-to the upstream ACPICA project on GitHub and add a Link tag pointing
-to the upstream PR to the corresponding Linux patch.  Then, the Linux
-patch can only be applied after the corresponding upstream PR has been
-merged.
-
-Thanks!
-
->   1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/acpi/acpica/dbnames.c b/drivers/acpi/acpica/dbnames.c
-> index b91155ea9c34..c9131259f717 100644
-> --- a/drivers/acpi/acpica/dbnames.c
-> +++ b/drivers/acpi/acpica/dbnames.c
-> @@ -550,8 +550,12 @@ acpi_db_walk_for_fields(acpi_handle obj_handle,
->         ACPI_FREE(buffer.pointer);
->         buffer.length = ACPI_ALLOCATE_LOCAL_BUFFER;
-> -       acpi_evaluate_object(obj_handle, NULL, NULL, &buffer);
-> -
-> +       status = acpi_evaluate_object(obj_handle, NULL, NULL, &buffer);
-> +       if (ACPI_FAILURE(status)) {
-> +               acpi_os_printf("Could Not evaluate object %p\n",
-> +                              obj_handle);
-> +               return (AE_OK);
-> +       }
->         /*
->          * Since this is a field unit, surround the output in braces
->          */
-> --
-> 2.34.1
->
->
+Urgh, why are we using jiffies in 2023?
