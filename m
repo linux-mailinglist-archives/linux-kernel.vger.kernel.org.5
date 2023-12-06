@@ -2,206 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B15A58074C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:19:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 040C98074C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379151AbjLFQTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:19:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51782 "EHLO
+        id S1378340AbjLFQTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:19:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjLFQTD (ORCPT
+        with ESMTP id S229721AbjLFQTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:19:03 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E8112F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:19:06 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3b8b0b75445so3488827b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 08:19:06 -0800 (PST)
+        Wed, 6 Dec 2023 11:19:42 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A7318D
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:19:49 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d0bb7ff86cso7932805ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 08:19:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1701879545; x=1702484345; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+        d=broadcom.com; s=google; t=1701879589; x=1702484389; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+keYVVg9QUAM5emaaLbfpon4BhbEQnmzZtHaeEa1QSk=;
-        b=XVSdPCvUMtEMoGqXMAxJFizzKR7lrwGDwjLC4n+oLPmYM+c+heVgMnhOwvOARCGtZ3
-         lJFDUFXzklmUDUryWWF/0YciCxVLAMBEFq1d7Y75OWdp8f2kcW5DcqRDdg6ogZTTV5f1
-         Tq02nPK0K3e+7r+4zdsfhU8bz/LDmbl/uR1ZrEsRMdr9bp0W6b8t6B0yRswmkP6trSmo
-         /edmWr3wQECghggkC/bkt+oxy+hu1CxMf43yeWErtM64AFXa+Ubq1JsUl8spgO4w3+7i
-         vhKkHj0ROqk+4ny2BKU83wF99LsOFQac7oIBmsTF3OxS0i4V+2ftL4Vu/eM7MZAHo/9R
-         8l/g==
+        bh=b0DlNoK3BJOFhmOG7ywVWlfKqqW5sYJHbhj7Z++j+MA=;
+        b=c5rJ2leyduCI1TNGb0Vdv+TibQXCgOe3AefXe9w1XAzd1YIezetneY+Vp+Iz/Md3Iq
+         vCzOgDZl2C8nnT3+UMwx6U6dWDQDexQPILbDXIW6xYVlBBJbmHLcwDHqsCWu1o5o2KRl
+         sVhEAsdg7TzmanfkVKOB2C4kBNZug/OxSNQHw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701879545; x=1702484345;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+keYVVg9QUAM5emaaLbfpon4BhbEQnmzZtHaeEa1QSk=;
-        b=U0izJiUHHRD+0bMbIa0Bdh9ZOing7YzDSTC8iLQ/rCT49X44v0+8vyPaJJOuvn7TYC
-         3aNONKWGoOKB5O0i35j/tYvXaRsazYg81+rFFtobkhhcefGznIN1+hv4qZ7cEWlzWxS4
-         FojqG4K9mvR+DQGO6KLR88qtPf9FYTz7Isfol7++b5wR9ye82RXjwhPBOLETbU+zs8DU
-         y5kVQQKdLNAzaeV55vSiUXARDhlCF3KDAr1yHMOXPS9cidwOYH039p/w3Szr3mkGRdtx
-         aMaysVo1q3ic9tbQe0LW3/QYPokglrltZPDgXmvqylctbUzndt2OWnkKX2/iPgs0e+y0
-         sgbg==
-X-Gm-Message-State: AOJu0Yz19snNaRK8EdA7n+tAMMKYJrT3r3deDcwalOQCIFa03tWRfcEG
-        YEP/v9C0B65bKNeXYtvQOdsCHg==
-X-Google-Smtp-Source: AGHT+IHQdBGicDEd76OIg7GieuoxgilhJd8ujkiO+3l7mCoCs4BDXkJlBUImDbzqYtL+75g/5MIINQ==
-X-Received: by 2002:a05:6808:164e:b0:3b8:b063:a1dd with SMTP id az14-20020a056808164e00b003b8b063a1ddmr1652811oib.103.1701879545455;
-        Wed, 06 Dec 2023 08:19:05 -0800 (PST)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id z10-20020a056808064a00b003b2daf09267sm41295oih.48.2023.12.06.08.19.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 08:19:04 -0800 (PST)
-Date:   Wed, 06 Dec 2023 08:19:04 -0800 (PST)
-X-Google-Original-Date: Wed, 06 Dec 2023 08:19:01 PST (-0800)
-Subject:     Re: [PATCH v2 1/2] riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
-In-Reply-To: <CAGu26P9KiZQhTGO1TrRzGV86GjivmC7_HQaE5p_kNemx+euaEQ@mail.gmail.com>
-CC:     charlie@rivosinc.com, jszhang@kernel.org, ebiggers@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Conor Dooley <conor.dooley@microchip.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     lohr85@gmail.com
-Message-ID: <mhng-bdcdb066-aef0-4fc8-818e-7a63d2a5ad92@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701879589; x=1702484389;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=b0DlNoK3BJOFhmOG7ywVWlfKqqW5sYJHbhj7Z++j+MA=;
+        b=MszBAUx2428nDi0uTSVzycs+LZfmvkjiZ7n6krK4WuJbgCAbI9oNEnwj9uCBdonTXO
+         dbdum1RqfdXP+9AwZZegZWRkp0RJOCOtpSyKVCKWDpEpUMIGwCWn7f7PtgW4dwkSyBDz
+         BoREpL71h4sgMyGQ2vL2eg+gh0q5eLoz+ViY8N2FSsF47/K41WC9rr+yZcT+WRsvu8Si
+         lB9OzNzrJ+sxrRmu1z6OqFW3i8t2nLXcIPevkhzpaAeSMk8pnrI3dSzjjgPz7Wi1TVlz
+         RBVFX8fzmG8WKmZGqARUPb/bSG1ouONng8OjzwK5xJRFrIjGkrsH//tRUoUqQaYN3grh
+         sGQg==
+X-Gm-Message-State: AOJu0YxxXWWthVcR173qEXaucQdnKceRnu8wr49j6UKcF5ZAXEsjY4ko
+        Goo7YZ6/SQYUVg9XUMTO2ylMyv2AaQuQJo89Wlo=
+X-Google-Smtp-Source: AGHT+IGDXDUHgGAGgSfqTth6PqsvL98m/DXRUzl96P4fCSFEjYMfv+TF6uqo8JrUk5rZC4Z/fkZHMA==
+X-Received: by 2002:a17:903:1c1:b0:1d0:b246:721d with SMTP id e1-20020a17090301c100b001d0b246721dmr4805680plh.60.1701879588717;
+        Wed, 06 Dec 2023 08:19:48 -0800 (PST)
+Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
+        by smtp.gmail.com with ESMTPSA id v2-20020a63b642000000b005c6007a13b5sm87660pgt.25.2023.12.06.08.19.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Dec 2023 08:19:48 -0800 (PST)
+Message-ID: <cb1d5118-b4f6-46b3-814b-2edf16372d01@broadcom.com>
+Date:   Wed, 6 Dec 2023 08:19:46 -0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] memory: brcmstb_dpfe: introduce version-specific
+ compatible strings
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Markus Mayer <mmayer@broadcom.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20231205184741.3092376-1-mmayer@broadcom.com>
+ <20231205184741.3092376-3-mmayer@broadcom.com>
+ <7844ca22-df53-458d-9e3b-7b0758a80455@linaro.org>
+From:   Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ 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
+In-Reply-To: <7844ca22-df53-458d-9e3b-7b0758a80455@linaro.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000005cafdc060bd9b8f3"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Dec 2023 16:05:27 PST (-0800), lohr85@gmail.com wrote:
-> The automatic detection code has become a bit of a thorn both for
-> folks like me who use the kernel for some fast-spin up aodr
-> virtualization (where check_unaligned_access soaks up 1/4 to 1/3 of
-> the total boot time and unaligned accesses are always fast) as well as
-> causing issues for the FPGA soft core development where they easily
-> know ahead of time what the situation is going to be.  It would be
-> extremely welcome if the access could always be overridden with a
-> config value that could either force on or force off unaligned access
-> and avoid execution of the check function permanently.  I don't see a
-> world where for some of us, we would ever want autodetection on.  In
-> the RISC-V arena, many times we're dealing with very small systems
-> where the marginal cost of dead code is rather high.
+--0000000000005cafdc060bd9b8f3
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-That seems generally reasonable to me.
 
-We'd talked about putting misaligned access performance informaiton in 
-the DT at some point, but we went with the probing instead.  So I think 
-our options are a Kconfig or a kernel command line argument, both seem 
-generally useful to me so I'd be fine with either (or both).
 
-So I think someone should send a patch... ;)
-
-Also: I think it's not really a blocker for this patch set, as the 
-probing behavior is there already.  IIUC it's really the probing that's 
-the problem here due to the boot time performance impact, so even if we 
-did nothing with the probed information it'd still be causing your 
-issues.
-
-> On Tue, Dec 5, 2023 at 12:57 PM Charlie Jenkins <charlie@rivosinc.com> wrote:
+On 12/6/2023 3:09 AM, Krzysztof Kozlowski wrote:
+> On 05/12/2023 19:47, Markus Mayer wrote:
+>> Introduce compatible strings brcm,dpfe-cpu-v1 through brcm,dpfe-cpu-v3
+>> to the Broadcom DPFE driver.
+> 
+> No, why?
+> 
 >>
->> On Tue, Dec 05, 2023 at 09:53:50PM +0800, Jisheng Zhang wrote:
->> > On Mon, Dec 04, 2023 at 06:14:06PM -0800, Eric Biggers wrote:
->> > > On Mon, Dec 04, 2023 at 11:15:28AM -0800, Charlie Jenkins wrote:
->> > > > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->> > > > > index 7f8aa25457ba..0a76209e9b02 100644
->> > > > > --- a/arch/riscv/Kconfig
->> > > > > +++ b/arch/riscv/Kconfig
->> > > > > @@ -654,6 +654,18 @@ config RISCV_MISALIGNED
->> > > > >           load/store for both kernel and userspace. When disable, misaligned
->> > > > >           accesses will generate SIGBUS in userspace and panic in kernel.
->> > > > >
->> > > > > +config RISCV_EFFICIENT_UNALIGNED_ACCESS
->> > > >
->> > > > There already exists hwprobe for this purpose. If kernel code wants to
->> > > > leverage the efficient unaligned accesses of hardware, it can use static
->> > > > keys. I have a patch that will set this static key if the hardware was
->> > > > detected to have fast unaligned accesses:
->> > > >
->> > > > https://lore.kernel.org/linux-riscv/20231117-optimize_checksum-v11-2-7d9d954fe361@rivosinc.com/
->> > >
->> > > Is the plan to make the get_unaligned* and put_unaligned* macros expand to code
->> > > for both cases, and select between them using a static key?  Note that there are
->> > > a very large number of callers of these macros in the kernel.  And what about
->> > > kernel code that checks CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS directly?
->> > >
->> > > AFAIK, no other Linux architecture supports kernel images where the unaligned
->> > > access support is unknown at compile time.  It's not clear to me that such an
->> > > approach is feasible.  A static key can easily be provided, but it's unclear
->> > > what code would use it, given that currently lots of kernel code assumes that
->> > > unaligned access support is known at compile time.
-
-I agree we won't be able to get everything, but there's some focused 
-routines like memcpy() where having runtime-variant behavior can make 
-things measurably faster.  I'd guess there's some of this in crypto land 
-as well.  We'd have to really look into the benefits, though: not only 
-do we end up with a bunch of complexity, but also using ALTERNATIVE() 
-tends to cause lower quality codegen because of all the inline assembly 
-trickery.
-
-All of that is really based on replacing a whole function at runtime, 
-though.  I don't think we're going to be able to do anything dynamic for 
-the more general case of misaligned access support, though -- that's 
-really in the relm of fine-grained compiler code generation, and trying 
-to do that at runtime with the alternative-type approach is just going 
-to lead to a bunch of poor quality codegen and patched-in NOPs.  We'd 
-essentially be trying to build a full JIT inside the kernel at that 
-point.
-
-It essentially the same problem as things like CMOV and bitmanip.
-
->> > > Meanwhile, there are people building kernels they know will only be deployed on
->> > > systems where unaligned accesses are supported.  To me, it seems useful to
->> > > provide a kconfig option for them to build a more efficient kernel.
-
-I agree.  We've got a bit of a mess in Kconfig land where we don't 
-differentiate between "build a kernel that tries to probe for $FEATURE" 
-and "build a kernel that requires HW that supports $FEATURE".  We need 
-to clean that up at some point, but there's enough of them I'm OK taking 
-one more.
-
->> > Generally, I agree with Eric's above points. Various subsystem such as net, mm,
->> > lib and so on have different code path for CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS,
->> > while Charlie's patch only touch partial code of arch/riscv, and even if those
->> > subsystem maintainers agree with dynamic code patching(I still believe
->> > persuading those subsystem maintainers is not easy), that's still a
->> > huge task which needs to be done step by step. So before that, we'd
->> > better let this series merged and benefit all efficient unaligned access
->> > riscv systems. When the huge task is completed, we can remove the config
->> > option.
->> >
->> > Thanks
+>> Signed-off-by: Markus Mayer <mmayer@broadcom.com>
+>> ---
+>>   drivers/memory/brcmstb_dpfe.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
 >>
->> It would be best to enable all of the paths that leverage
->> CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS at runtime (using hwprobe)
->> instead of using a compile-time flag to do so. However, as you say, that
->> is large task and doesn't need to be done immediately. For now I agree
->> it is sufficient to use this new RISCV_EFFICIENT_UNALIGNED_ACCESS
->> config.
+>> diff --git a/drivers/memory/brcmstb_dpfe.c b/drivers/memory/brcmstb_dpfe.c
+>> index a7ab3d377206..66876b409e59 100644
+>> --- a/drivers/memory/brcmstb_dpfe.c
+>> +++ b/drivers/memory/brcmstb_dpfe.c
+>> @@ -924,6 +924,12 @@ static const struct of_device_id brcmstb_dpfe_of_match[] = {
+>>   	{ .compatible = "brcm,bcm7271-dpfe-cpu", .data = &dpfe_api_old_v2 },
+>>   	{ .compatible = "brcm,bcm7278-dpfe-cpu", .data = &dpfe_api_old_v2 },
+>>   	{ .compatible = "brcm,bcm7211-dpfe-cpu", .data = &dpfe_api_new_v2 },
+>> +
+>> +	/* Match specific DCPU versions */
+>> +	{ .compatible = "brcm,dpfe-cpu-v1", .data = &dpfe_api_old_v2 },
+>> +	{ .compatible = "brcm,dpfe-cpu-v2", .data = &dpfe_api_new_v2 },
+>> +	{ .compatible = "brcm,dpfe-cpu-v3", .data = &dpfe_api_v3 },
+> 
+> Pointless change.
 
-We've got a lot more JIT-ish stuff in the RISC-V port than other ports 
-do, it's kind of ugly but that's just the nature of the ISA.
-It's kind of the same spot we're in with things like CMOV or the 
-bitmanip extensions: there'll be some specific routines where the 
-feature makes a big difference and we can provide an alternative (string 
-and crypto stuff, for example), but trying to do it everywhere is just 
-going to lead to chaos (and probably worse performance).
+Is it possible to ask you as a maintainer to stop having those knee jerk 
+reactions and try to understand things a bit better, or simply request a 
+better explanation from the submitter?
+-- 
+Florian
 
-So I don't know exactly where the line is, but we're always going to 
-have some amount of compile-time performance tuning -- at least until we 
-just replace the whole kernel with BPF ;)
+--0000000000005cafdc060bd9b8f3
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
->>
->> - Charlie
->>
->> Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
->>
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
+MIIQeQYJKoZIhvcNAQcCoIIQajCCEGYCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg3QMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
+MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
+rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
+aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
+e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
+cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
+MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
+KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
+/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
+TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
+YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
+b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
+c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
+CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
+BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
+jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
+9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
+/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
+jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
+AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
+dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
+MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
+IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
+XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
+J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
+nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINKW4qCzIU/Edp2z
+qblPLto8BNZ+VA1E0q2cn9F7X9FtMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMTIwNjE2MTk0OVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAb8nY9fphuajHjOiZSbmDD7L1n041IE8Ux
+uvnEw07vyIKh5b4AMCraAvhI6rKx7sxTIDyP7+7QSLMkm2ygd/sgjcjbpNb9UdLy0zWE0qeqUv/K
+k6c6OalSt3UI0RRYBsXR+ymexQ0zcqI55rMhDxMAscnS3qMqlARwfo0fvJTeLNl3GBil/4eNK36B
+3qzgW5jKe6xbdOG8sn7+rgF/apG3E2aGZ2Te5cZAI6tJnVGm5MyKNTzONSXrZLtBlbSNEuV3sKZP
+Iq84PJJB35CYvrw5eIaO+tAQZYyyxQEgROqPkzfHFjuRM+PCF3TVWwz0jtSENMJDKzGbBYC1XibF
+d9IV
+--0000000000005cafdc060bd9b8f3--
