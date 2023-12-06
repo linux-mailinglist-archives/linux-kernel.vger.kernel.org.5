@@ -2,335 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6C980748C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3B8807494
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:12:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442670AbjLFQJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:09:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
+        id S229968AbjLFQMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:12:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442578AbjLFQJF (ORCPT
+        with ESMTP id S229754AbjLFQML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:09:05 -0500
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152EFAA;
-        Wed,  6 Dec 2023 08:09:11 -0800 (PST)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96.2)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1rAuS2-0006hS-10;
-        Wed, 06 Dec 2023 16:08:43 +0000
-Date:   Wed, 6 Dec 2023 16:08:39 +0000
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexander Couzens <lynxis@fe80.eu>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
-Subject: Re: [RFC PATCH v2 7/8] dt-bindings: net: mediatek,net: fix and
- complete mt7988-eth binding
-Message-ID: <ZXCch6o2Wfp3fQQw@makrotopia.org>
-References: <cover.1701826319.git.daniel@makrotopia.org>
- <567c6aaa64ecb4872056bc0105c70153fd9d9b50.1701826319.git.daniel@makrotopia.org>
- <20231206133816.GA1914715-robh@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206133816.GA1914715-robh@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 6 Dec 2023 11:12:11 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3026A3;
+        Wed,  6 Dec 2023 08:12:16 -0800 (PST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6Fm1ef002321;
+        Wed, 6 Dec 2023 16:11:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=TirS9AB+02GzCC/ZaT3LtdSlY0QQT78AikkNU0XEjlE=;
+ b=Cts1C9t4gvRUGFNjdY/Grg8/HujBcGuE5tzUci4EhA0sIV9ZNRPB4DsRtWz07QyJ1WA1
+ c04paI7fa6XXk5RyzpDaRVgWz0HEHTw7l0teEk3s8Sf4sL39UNE6exXk8EphXCgyg9fn
+ aMj7wjsONEl///4Iu4SdDqKFQneaiMJh4BFztVOZ6l/8GB5cQj5ggEIq66tp0cywMGPi
+ uvpsVT8Tu4rFGHjAivMSHmIQxRzJauNeLTgNdDkJjlf0arnRu3EzW7ZGyrJ9REKCYUow
+ 8FjUmRelGLkj+E03dem1e4E9U7uf807VSjY7Hc8EAL7f9+HQE0zWxMfFKxGymPIx4wYJ tg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3utuwn8x04-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Dec 2023 16:11:13 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B6Fn94v007176;
+        Wed, 6 Dec 2023 16:11:12 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3utuwn8wyn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Dec 2023 16:11:12 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6G73nb004688;
+        Wed, 6 Dec 2023 16:11:11 GMT
+Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3utav4deqv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Dec 2023 16:11:11 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B6GBB6m15663660
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 6 Dec 2023 16:11:11 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F190858050;
+        Wed,  6 Dec 2023 16:11:10 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3F9B58045;
+        Wed,  6 Dec 2023 16:11:08 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.99.183])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  6 Dec 2023 16:11:08 +0000 (GMT)
+Message-ID: <7aefd87764ba8962de85250ff92b82800550401b.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
+ blob for integrity_iint_cache
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        jmorris@namei.org, serge@hallyn.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Wed, 06 Dec 2023 11:11:08 -0500
+In-Reply-To: <d608edb80efe03b62698ab33cbee1eea856a0422.camel@huaweicloud.com>
+References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
+         <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
+         <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
+         <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
+         <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
+         <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
+         <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
+         <CAHC9VhROnfBoaOy2MurdSpcE_poo_6Qy9d2U3g6m2NRRHaqz4Q@mail.gmail.com>
+         <5f441267b6468b98e51a08d247a7ae066a60ff0c.camel@huaweicloud.com>
+         <d608edb80efe03b62698ab33cbee1eea856a0422.camel@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Y28njRj7zR3cjjYOzyBPbBfJWG3Qmg_U
+X-Proofpoint-GUID: 5uBuPgG_9R1M1ich1n8oG8dyH5r9Eh7W
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-06_14,2023-12-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 adultscore=0 mlxlogscore=934 suspectscore=0 mlxscore=0
+ clxscore=1015 spamscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312060131
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 07:38:16AM -0600, Rob Herring wrote:
-> On Wed, Dec 06, 2023 at 01:45:02AM +0000, Daniel Golle wrote:
-> > Complete support for MT7988 which comes with 3 MACs, SRAM for DMA
-> > descriptors and uses a dedicated PCS for the SerDes units.
+On Wed, 2023-12-06 at 14:10 +0100, Roberto Sassu wrote:
+> On Mon, 2023-12-04 at 14:26 +0100, Roberto Sassu wrote:
+
+...
+> > If the result of this patch set should be that IMA and EVM become
+> > proper LSMs without the shared integrity layer, instead of collapsing
+> > all changes in this patch set, I think we should first verify if IMA
+> > and EVM can be really independent. Once we guarantee that, we can
+> > proceed making the proper LSMs.
 > > 
-> > Fixes: c94a9aabec36 ("dt-bindings: net: mediatek,net: add mt7988-eth binding")
-> > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> > ---
-> >  .../devicetree/bindings/net/mediatek,net.yaml | 148 +++++++++++++++++-
-> >  1 file changed, 146 insertions(+), 2 deletions(-)
+> > These are the changes I have in mind:
 > > 
-> > diff --git a/Documentation/devicetree/bindings/net/mediatek,net.yaml b/Documentation/devicetree/bindings/net/mediatek,net.yaml
-> > index 030d106bc7d3f..ca0667c51c1c2 100644
-> > --- a/Documentation/devicetree/bindings/net/mediatek,net.yaml
-> > +++ b/Documentation/devicetree/bindings/net/mediatek,net.yaml
-> > @@ -28,7 +28,10 @@ properties:
-> >        - ralink,rt5350-eth
-> >  
-> >    reg:
-> > -    maxItems: 1
-> > +    minItems: 1
-> > +    items:
-> > +      - description: Base of registers used to program the ethernet controller
-> > +      - description: SRAM region used for DMA descriptors
+> > 1) Fix evm_verifyxattr(), and make it work without integrity_iint_cache
+> > 2) Remove the integrity_iint_cache parameter from evm_verifyxattr(),
+> >    since the other callers are not going to use it
 > 
-> Is this a dedicated SRAM for this purpose, or a common one partitioned 
-> up. mmio-sram and a phandle is how to do the latter.
+> Ehm, I checked better.
+> 
+> integrity_inode_get() is public too (although it is not exported). So,
+> a caller (not IMA) could do:
+> 
+> iint = integrity_inode_get(inode);
+> status = evm_verifyxattr(..., iint);
+> 
+> However, it should not call integrity_inode_free(), which is also in
+> include/linux/integrity.h, since this is going to be called by
+> security_inode_free() (currently).
 
-The SRAM memory sits just next to the Ethernet and dedicated for this
-purpose, at least in theory. I'm not aware of the internal details here.
+Calling integrity_inode_free() directly would release the iint early.  
+As a result, IMA would then need to re-allocate it on next access. 
+Other than impacting IMA's performance, is this a problem?
 
+> > 3) Create an internal function with the original parameters to be used
+> >    by IMA
+> > 4) Introduce evm_post_path_mknod(), which similarly to
+> >    ima_post_path_mknod(), sets IMA_NEW_FILE for new files
 > 
-> >  
-> >    clocks: true
-> >    clock-names: true
-> > @@ -115,6 +118,9 @@ allOf:
-> >                - mediatek,mt7623-eth
-> >      then:
-> >        properties:
-> > +        reg:
-> > +          maxItems: 1
-> > +
-> >          interrupts:
-> >            maxItems: 3
-> >  
-> > @@ -149,6 +155,9 @@ allOf:
-> >                - mediatek,mt7621-eth
-> >      then:
-> >        properties:
-> > +        reg:
-> > +          maxItems: 1
-> > +
-> >          interrupts:
-> >            maxItems: 1
-> >  
-> > @@ -174,6 +183,9 @@ allOf:
-> >              const: mediatek,mt7622-eth
-> >      then:
-> >        properties:
-> > +        reg:
-> > +          maxItems: 1
-> > +
-> >          interrupts:
-> >            maxItems: 3
-> >  
-> > @@ -215,6 +227,9 @@ allOf:
-> >              const: mediatek,mt7629-eth
-> >      then:
-> >        properties:
-> > +        reg:
-> > +          maxItems: 1
-> > +
-> >          interrupts:
-> >            maxItems: 3
-> >  
-> > @@ -257,6 +272,9 @@ allOf:
-> >              const: mediatek,mt7981-eth
-> >      then:
-> >        properties:
-> > +        reg:
-> > +          maxItems: 1
-> > +
-> >          interrupts:
-> >            minItems: 4
-> >  
-> > @@ -295,6 +313,9 @@ allOf:
-> >              const: mediatek,mt7986-eth
-> >      then:
-> >        properties:
-> > +        reg:
-> > +          maxItems: 1
-> > +
-> >          interrupts:
-> >            minItems: 4
-> >  
-> > @@ -333,8 +354,13 @@ allOf:
-> >              const: mediatek,mt7988-eth
-> >      then:
-> >        properties:
-> > +        reg:
-> > +          maxItems: 2
+> I just realized that also this is changing the current behavior.
 > 
-> Don't need maxItems here. That's already the max.
+> IMA would clear IMA_NEW_FILE in ima_check_last_writer(), while EVM
+> wouldn't (unless we implement the file_release hook in EVM too).
 
-Ack.
+True
 
-> 
-> > +          minItems: 2
-> > +
-> >          interrupts:
-> >            minItems: 4
-> > +          maxItems: 4
-> >  
-> >          clocks:
-> >            minItems: 24
-> > @@ -368,7 +394,7 @@ allOf:
-> >              - const: top_netsys_warp_sel
-> >  
-> >  patternProperties:
-> > -  "^mac@[0-1]$":
-> > +  "^mac@[0-2]$":
-> >      type: object
-> >      unevaluatedProperties: false
-> >      allOf:
-> > @@ -382,6 +408,9 @@ patternProperties:
-> >        reg:
-> >          maxItems: 1
-> >  
-> > +      phys:
-> > +        maxItems: 1
-> > +
-> >      required:
-> >        - reg
-> >        - compatible
-> > @@ -559,3 +588,118 @@ examples:
-> >          };
-> >        };
-> >      };
-> > +
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > +    #include <dt-bindings/clock/mediatek,mt7988-clk.h>
-> 
-> 
-> Why is fixing the binding needing a new example? Is this example really 
-> different enough to justify a whole other example?
+Mimi
 
-Starting from MT7988 the PCS needs to be referenced as pcs-handle in the
-MAC node, so that is a bit different. If you don't think that justifies
-including the additional example I will drop that.
-
+> > 5) Add hardcoded call to evm_post_path_mknod() after
+> >    ima_post_path_mknod() in security.c
+> > 
+> > If we think that this is good enough, we proceed with the move of IMA
+> > and EVM functions to the LSM infrastructure (patches v7 19-21).
+> > 
+> > The next patches are going to be similar to patches v6 22-23, but
+> > unlike those, their goal would be simply to split metadata, not to make
+> > IMA and EVM independent, which at this point has been addressed
+> > separately in the prerequisite patches.
+> > 
+> > The final patch is to remove the 'integrity' LSM and the integrity
+> > metadata management code, which now is not used anymore.
+> > 
+> > Would that work?
 > 
-> > +
-> > +    soc {
-> > +      #address-cells = <2>;
-> > +      #size-cells = <2>;
-> > +
-> > +      ethernet@15100000 {
-> > +        compatible = "mediatek,mt7988-eth";
-> > +        reg = <0 0x15100000 0 0x80000>, <0 0x15400000 0 0x380000>;
-> > +        interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>,
-> > +                     <GIC_SPI 197 IRQ_TYPE_LEVEL_HIGH>,
-> > +                     <GIC_SPI 198 IRQ_TYPE_LEVEL_HIGH>,
-> > +                     <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>;
-> > +
-> > +        clocks = <&ethsys CLK_ETHDMA_XGP1_EN>,
-> > +                 <&ethsys CLK_ETHDMA_XGP2_EN>,
-> > +                 <&ethsys CLK_ETHDMA_XGP3_EN>,
-> > +                 <&ethsys CLK_ETHDMA_FE_EN>,
-> > +                 <&ethsys CLK_ETHDMA_GP2_EN>,
-> > +                 <&ethsys CLK_ETHDMA_GP1_EN>,
-> > +                 <&ethsys CLK_ETHDMA_GP3_EN>,
-> > +                 <&ethsys CLK_ETHDMA_ESW_EN>,
-> > +                 <&ethsys CLK_ETHDMA_CRYPT0_EN>,
-> > +                 <&ethwarp CLK_ETHWARP_WOCPU2_EN>,
-> > +                 <&ethwarp CLK_ETHWARP_WOCPU1_EN>,
-> > +                 <&ethwarp CLK_ETHWARP_WOCPU0_EN>,
-> > +                 <&topckgen CLK_TOP_ETH_GMII_SEL>,
-> > +                 <&topckgen CLK_TOP_ETH_REFCK_50M_SEL>,
-> > +                 <&topckgen CLK_TOP_ETH_SYS_200M_SEL>,
-> > +                 <&topckgen CLK_TOP_ETH_SYS_SEL>,
-> > +                 <&topckgen CLK_TOP_ETH_XGMII_SEL>,
-> > +                 <&topckgen CLK_TOP_ETH_MII_SEL>,
-> > +                 <&topckgen CLK_TOP_NETSYS_SEL>,
-> > +                 <&topckgen CLK_TOP_NETSYS_500M_SEL>,
-> > +                 <&topckgen CLK_TOP_NETSYS_PAO_2X_SEL>,
-> > +                 <&topckgen CLK_TOP_NETSYS_SYNC_250M_SEL>,
-> > +                 <&topckgen CLK_TOP_NETSYS_PPEFB_250M_SEL>,
-> > +                 <&topckgen CLK_TOP_NETSYS_WARP_SEL>;
-> > +
-> > +        clock-names = "xgp1", "xgp2", "xgp3", "fe", "gp2", "gp1",
-> > +                      "gp3", "esw", "crypto",
-> > +                      "ethwarp_wocpu2", "ethwarp_wocpu1",
-> > +                      "ethwarp_wocpu0", "top_eth_gmii_sel",
-> > +                      "top_eth_refck_50m_sel", "top_eth_sys_200m_sel",
-> > +                      "top_eth_sys_sel", "top_eth_xgmii_sel",
-> > +                      "top_eth_mii_sel", "top_netsys_sel",
-> > +                      "top_netsys_500m_sel", "top_netsys_pao_2x_sel",
-> > +                      "top_netsys_sync_250m_sel",
-> > +                      "top_netsys_ppefb_250m_sel",
-> > +                      "top_netsys_warp_sel";
-> > +        assigned-clocks = <&topckgen CLK_TOP_NETSYS_2X_SEL>,
-> > +                          <&topckgen CLK_TOP_NETSYS_GSW_SEL>,
-> > +                          <&topckgen CLK_TOP_USXGMII_SBUS_0_SEL>,
-> > +                          <&topckgen CLK_TOP_USXGMII_SBUS_1_SEL>,
-> > +                          <&topckgen CLK_TOP_SGM_0_SEL>,
-> > +                          <&topckgen CLK_TOP_SGM_1_SEL>;
-> > +        assigned-clock-parents = <&apmixedsys CLK_APMIXED_NET2PLL>,
-> > +                                 <&topckgen CLK_TOP_NET1PLL_D4>,
-> > +                                 <&topckgen CLK_TOP_NET1PLL_D8_D4>,
-> > +                                 <&topckgen CLK_TOP_NET1PLL_D8_D4>,
-> > +                                 <&apmixedsys CLK_APMIXED_SGMPLL>,
-> > +                                 <&apmixedsys CLK_APMIXED_SGMPLL>;
-> > +        mediatek,ethsys = <&ethsys>;
-> > +        mediatek,infracfg = <&topmisc>;
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        mac@0 {
-> > +          compatible = "mediatek,eth-mac";
-> > +          reg = <0>;
-> > +          phy-mode = "internal"; /* CPU port of built-in 1GE switch */
-> > +
-> > +          fixed-link {
-> > +            speed = <10000>;
-> > +            full-duplex;
-> > +            pause;
-> > +          };
-> > +        };
-> > +
-> > +        mac@1 {
-> > +          compatible = "mediatek,eth-mac";
-> > +          reg = <1>;
-> > +          phy-handle = <&int_2p5g_phy>;
-> > +        };
-> > +
-> > +        mac@2 {
-> > +          compatible = "mediatek,eth-mac";
-> > +          reg = <2>;
-> > +          pcs-handle = <&usxgmiisys0>;
-> > +          phy-handle = <&phy0>;
-> > +        };
-> > +
-> > +        mdio_bus: mdio-bus {
-> > +          #address-cells = <1>;
-> > +          #size-cells = <0>;
-> > +
-> > +          /* external PHY */
-> > +          phy0: ethernet-phy@0 {
-> > +            reg = <0>;
-> > +            compatible = "ethernet-phy-ieee802.3-c45";
-> > +          };
-> > +
-> > +          /* internal 2.5G PHY */
-> > +          int_2p5g_phy: ethernet-phy@15 {
-> > +            reg = <15>;
-> > +            compatible = "ethernet-phy-ieee802.3-c45";
-> > +            phy-mode = "internal";
-> > +          };
-> > +        };
-> > +      };
-> > +    };
-> > -- 
-> > 2.43.0
+> We are not making much progress, I'm going to follow any recommendation
+> that would move this forward.
+
