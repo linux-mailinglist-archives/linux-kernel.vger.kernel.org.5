@@ -2,70 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DD18064C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D10038064BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376458AbjLFBdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 20:33:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
+        id S1376474AbjLFBfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 20:35:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376424AbjLFBdW (ORCPT
+        with ESMTP id S1376424AbjLFBfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 20:33:22 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6C7C91B9;
-        Tue,  5 Dec 2023 17:33:27 -0800 (PST)
-Received: from loongson.cn (unknown [10.20.42.173])
-        by gateway (Coremail) with SMTP id _____8Bxyeplz29lWC8_AA--.51037S3;
-        Wed, 06 Dec 2023 09:33:25 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx7y9hz29lMwtWAA--.58800S3;
-        Wed, 06 Dec 2023 09:33:23 +0800 (CST)
-Subject: Re: [PATCH v2 2/2] LoongArch: KVM: Add LASX support
-To:     Tianrui Zhao <zhaotianrui@loongson.cn>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
-        Mark Brown <broonie@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Oliver Upton <oliver.upton@linux.dev>
-References: <20231201084619.2255983-1-zhaotianrui@loongson.cn>
- <20231201084619.2255983-3-zhaotianrui@loongson.cn>
-From:   maobibo <maobibo@loongson.cn>
-Message-ID: <b3fc2c52-4bc6-b46d-1f5a-83a37eb1204b@loongson.cn>
-Date:   Wed, 6 Dec 2023 09:33:15 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 5 Dec 2023 20:35:38 -0500
+Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01olkn2068.outbound.protection.outlook.com [40.92.102.68])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FFFDA1;
+        Tue,  5 Dec 2023 17:35:44 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=imWT/V0YPCkmL9GlN6ZzR7N+cpqOl0Is/O2ykFQgoGIg9BomPBRNRdcNQ9OqCopEG99hyvBmbz4PmGKM79KvslvyVD+wqaWiTDg5jiSZHdsluKOPdusKoxev+OFkTZ05RpzP8CWFM6RoCXcNPy5xb5G3c9F+Qw3jY5G/Iz4u+A1U2cHO42IyL/NNn/+l/6jHVcLQjuKlIy3YAO5bplX2fYigbztkisn/Gp5BNgZEbD37q4hUVkQhAnT0xtVrphi4QLCz3o0uyu+uAnyzbPQisgJ7olmjLo/8yTtij6A5yhd/mAgtwxoiFe+IHWgHCm97EJl6wZDY/cm7JL3yQuLk+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=r3/y8o1Df7Q2G7oi+hWq8Fo29CZDT/BeEauVQLIObNw=;
+ b=Vleuq35Anfz2D42KJvm/q5DKNPYjgIi25mmivM7Wa6zv0jLLdZqb9JJKMg/CAFPY9TmnAOpWHMKGVTIK9LTz6b+3CcIdG2RBDnBpbI1H8EvzvxrR6B0AmBBoWuK4DVQSnXiF73lqVi0X1mGSJ5u+68JWYoEBBp0LN6JOGPuDF7/isu7wMTABpfTEkIZc9NRICG+iZQioJIf3HbmCYGQdEPY2rJginMIhrbNBjIz5GRmDPi9SIWVfLpfqYlhUt6hjz32C6lNZHv2o2daiMkIfXJTVCrCLU/19BpMCWUj8jNNUDUcMbTA/lk9HyJp71ovRw6HTmlKYUU5MNiuQ7gKQug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r3/y8o1Df7Q2G7oi+hWq8Fo29CZDT/BeEauVQLIObNw=;
+ b=EFbe7tfJA9TfB0SDfW4sx//Kt5qQ58BHu/abvWJSkyv6BbbbamvGpJr/S4j6jfWflBsM/Ngr+Vq+1BxrSOpEhqx+hvYGPIKz9MYYqYdKFUHWsbo+Vz1US4Qi2fxA+sXkeTsUOR09b+ukKIyviVQsojmA2oxMiPs0Pj2rp1DTYdyS4ktd7R++RKFDcJclHa1sTpXYdFP5fChLKCkEeLy0x64P/j9yVExEMjfi+m6AqObgKGmzbDnUcM1R2EbzUMuZ8Yac6lnGxdMqXLDKYqm54WUtOJCyMdcNYyxEQM0OnThqI1rljYpl/4HuwGyHRyh7KX07/Nx3fxjK/tKl/q3bmA==
+Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:ab::5) by
+ PN2P287MB1582.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:1b4::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7068.25; Wed, 6 Dec 2023 01:35:34 +0000
+Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ ([fe80::b1a7:eee7:e903:9ef3]) by MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ ([fe80::b1a7:eee7:e903:9ef3%7]) with mapi id 15.20.7068.025; Wed, 6 Dec 2023
+ 01:35:34 +0000
+Message-ID: <MA0P287MB03320AD9F4B62A791C67FFEDFE84A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+Date:   Wed, 6 Dec 2023 09:35:29 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/4] clk: sophgo: Add SG2042 clock generator driver
+To:     Inochi Amaoto <inochiama@outlook.com>
+Cc:     Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+        chao.wei@sophgo.com, conor@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
+        guoren@kernel.org, jszhang@kernel.org, samuel.holland@sifive.com
+References: <MA0P287MB033276574107F5031C153DDDFE85A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+ <IA1PR20MB4953B7BBA12262E0ECAC2B04BB85A@IA1PR20MB4953.namprd20.prod.outlook.com>
+From:   Chen Wang <unicorn_wang@outlook.com>
+In-Reply-To: <IA1PR20MB4953B7BBA12262E0ECAC2B04BB85A@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN:  [Mba8P2W9UoEeJ/ApMAV/S32OFfA1spiy]
+X-ClientProxiedBy: SG2PR02CA0080.apcprd02.prod.outlook.com
+ (2603:1096:4:90::20) To MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a01:ab::5)
+X-Microsoft-Original-Message-ID: <27066a03-0c15-44eb-888b-ac5cf37508c3@outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20231201084619.2255983-3-zhaotianrui@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Cx7y9hz29lMwtWAA--.58800S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxKF4DJrWDtr1xAr47Wry8Zwc_yoWfJF4rpF
-        Zrurn0ya18WFn293srJ3Wq9rn8ZrZ2gryIga9rta4fGF1qqry5XF4kKrWDXFWrGw1rJFyS
-        qF1rJr15ZayUJwbCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
-        twAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-        k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l
-        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j5o7tUUUUU=
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MA0P287MB0332:EE_|PN2P287MB1582:EE_
+X-MS-Office365-Filtering-Correlation-Id: 39d75e31-e93e-4ef8-e3e3-08dbf5fba404
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wwp8dpqifOsIoEfjbc7+B6FOPEaJ2/g0pJXrg02G2mGS81IiBOgeHt54peAHoZpinnxra/p0TWal4UIlg9tcA/9vkMials4gqbaxC7/l2d7LqA1JSlNxlB3WyRmmD6dQTeKkDf3Um0pFAtQyEJl07rVM1ScqXEGpZGcEziWtACnAw2YiEaZe80LphUt+nPgrfxNSfy+4H5cRHf4N9H4km23nI5o6q7UquejmkN9qGu+2FpbFQmvkPHeynxw88+8LKRuMfT32r3y89EPMHGNREKocPdcXKTBs9EvpnAk70YViUpWkYnM8qd5Fe38d3+JrJjuYFHadfMIFQBHUf+NhvTEN46+WJMrYjjpVmVAg2x27Er8hWkm0xtu0RwdI9jgrGI+F9TsujTfDJh1HRp3McbB6IWKSHSiMKfmdImdZRN+TVO8LVRvxJpeyMJFOxB1yLTm6P3jUPajKiQG04olOuue7QDrb0gC8KagVtdraj/UI07QnAfD8y3vfFB05VUGkSQDp0PSpF1H11mTgB+5curLjUiPya47dQRldK+VXSerHSyp3Zt3uEluSq7ORfsOV
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VkFKZm9uQ0d1NVh1YUtnNXU0aGJsV2RkSlBIbmxpYVRMZUlQNjhxSGVoUnhW?=
+ =?utf-8?B?aWFwUHRHYXYrTmtNd2h1eC9laVkwOVVabFZFZlBWR2VtMFhpNlVmSC9kRnZM?=
+ =?utf-8?B?WFpkeXkzWXpkVzVTLzRoejFqSFNpK1drUGE0eUNWVHBZWlJYQVdibUdaVERH?=
+ =?utf-8?B?TktpUURtUnAyZ1JVNTJCU2twN1lOZmxCdlBVVzg2UUxyZnBZSU5TQkxRMmdZ?=
+ =?utf-8?B?MWVKd0FDazBvK2JMSktkUlRKZUlWOExCY1pFZ2hZVVpWTXo4bk9nRUxYclhO?=
+ =?utf-8?B?TzYzUnZYZWFJLytLU1Yyd2I5aXdDcUdyUUNaMC9ZVGtQWnVhK1NHb2k5emY0?=
+ =?utf-8?B?UnMzS1E4aDQrcEdISnZJUXN0aHVJcW52cGJVSEVvTVFTeVdJdXZJT2s3Qnd6?=
+ =?utf-8?B?ajRqNVZ3aWFqZVY3bjNsb1lSQkVIWit0QnZhNDJJZm5Fei9rQXk3RXpaQisw?=
+ =?utf-8?B?WUY5c2tyMUdtL1ZFVFRVcWtneE1DM2RuU3NQRkx2bnEzMmliZlY2dGxsOElJ?=
+ =?utf-8?B?algrY0ZsSTh4dzRpMTF2eGFBMVo5dmVKdHNUK2ZwN0JRNnRCWTBhcDZrRlVl?=
+ =?utf-8?B?SDB5aU1LUmdLWk96aGZKdWpIdHlXUS9IQlVlUlE4d1dhT0lsOEpWMzliN1Mw?=
+ =?utf-8?B?a1M2dVFkeE1aRngwejdmb2R4R2Vyb1RGQ01kdXcybnpHQmt5UHM4L1pXV2sr?=
+ =?utf-8?B?THUrWWsvTWhOc1lYQW5makM3c2N2dkJ4MUd5b09pSWM3VzMwODZBMGx1Qm9h?=
+ =?utf-8?B?c0pYZFpMQ0FrYjVwZDc1N28rQUpkWGxqOUV3c20wZWhmd3BUSUlTQldKZC92?=
+ =?utf-8?B?ODNieGREU25yRUdWL1d5UVBuZFhoVkkvL0h0bXhqbjhOS0FjYkpIemkzeURN?=
+ =?utf-8?B?Z1FsazVUM3FuUnlUMTBoWDlIUWhJZ21FdktXNHNsb1lsczVza2M5REpTYTQ5?=
+ =?utf-8?B?ajNyam9lV01IWlZ0MnZ4Z0xLOHZ2VWRKNmNxaDlRSXV0Z0FVS2pKckVWTVVj?=
+ =?utf-8?B?NXNRbXlob2MrWUx2NHJkUThzR0hKd1B4dmJNcVpHNE53dy9GSE1WdzhNVEU5?=
+ =?utf-8?B?dld3ckdwb2Rwc2V2TVpJQ0MyU2s2dHZuOVFrOHMvRWFxaDhzaCt5c3FjZmYz?=
+ =?utf-8?B?UG93YlpFc2NEV0ZCNUY0eHc0RWtlU1FrbEpOSGZmSmRuLy9HNDdFejJkYjNk?=
+ =?utf-8?B?QVNOU2d2eG9waVVnaldmQzhZaS93bTlwT3VRY3VFNEFmVG1JYUV2Z3A0dEVH?=
+ =?utf-8?B?dDIvdC91WkFUdFlzS3RKdlBBU0poR2JpKzJiVXdZWkhhWEdGSThocnpMY1Zn?=
+ =?utf-8?B?b0JPS0x0VnIzMVMxRkd4YUlZajJ2S1B0dUNyVWsyODd4N2RoQmVGSW0yU0lP?=
+ =?utf-8?B?SVV6VlZPSDIxT052RGJkM0E2ZWhZcm1QMlMxSlZFUU5NSW8xY05TSjBvdkJu?=
+ =?utf-8?B?aDF5YmJaRm8xbTVYMDdBTlJHQXJHZHNmRVhlRFowc0Y3andSa2JsSXB5VkxK?=
+ =?utf-8?B?U1lCQlBsbDVyQ0lCemg2SU1UVit3b2ROWit0RjNTbnQ0eXFyaDlsNjc2SlZn?=
+ =?utf-8?B?RitwSklQcTVjZ0pxbmtFUEk3MGdPR0xWQ3kzZDlCR0lBdFZxYW9HVHM0Mzlq?=
+ =?utf-8?Q?vdkgGTZj/sa2FEaBDvARQNHJDFN9+XWe8BmyUPQRWL2M=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 39d75e31-e93e-4ef8-e3e3-08dbf5fba404
+X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 01:35:34.5641
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN2P287MB1582
+X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
+        FREEMAIL_FROM,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -73,242 +119,99 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 2023/12/5 14:34, Inochi Amaoto wrote:
+>> On 2023/12/5 9:13, Inochi Amaoto wrote:
+>>>> From: Chen Wang <unicorn_wang@outlook.com>
+>>>>
+>>>> Add a driver for the SOPHGO SG2042 clock generator.
+>>>>
+>>>> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
+>>>> ---
+>>>> MAINTAINERS                            |    7 +
+>>>> drivers/clk/Kconfig                    |    1 +
+>>>> drivers/clk/Makefile                   |    1 +
+>>>> drivers/clk/sophgo/Kconfig             |    8 +
+>>>> drivers/clk/sophgo/Makefile            |    2 +
+>>>> drivers/clk/sophgo/clk-sophgo-sg2042.c | 1371 ++++++++++++++++++++++++
+>>>> drivers/clk/sophgo/clk-sophgo-sg2042.h |  226 ++++
+>>>> 7 files changed, 1616 insertions(+)
+>>>> create mode 100644 drivers/clk/sophgo/Kconfig
+>>>> create mode 100644 drivers/clk/sophgo/Makefile
+>>>> create mode 100644 drivers/clk/sophgo/clk-sophgo-sg2042.c
+>>>> create mode 100644 drivers/clk/sophgo/clk-sophgo-sg2042.h
+>>>>
+>>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>>> index 97f51d5ec1cf..c9c75468f2cb 100644
+>>>> --- a/MAINTAINERS
+>>>> +++ b/MAINTAINERS
+>>>> @@ -20269,6 +20269,13 @@ S:    Maintained
+>>>> F:    arch/riscv/boot/dts/sophgo/
+>>>> F:    Documentation/devicetree/bindings/riscv/sophgo.yaml
+>>>>
+>>>> +SOPHGO CLOCK DRIVER
+>>>> +M:    Chen Wang <unicorn_wang@outlook.com>
+>>>> +S:    Maintained
+>>>> +F:    Documentation/devicetree/bindings/clock/sophgo/
+>>>> +F:    drivers/clk/sophgo/
+>>>> +F:    include/dt-bindings/clock/sophgo,sg2042-clkgen.h
+>>>> +
+>>>> SOUND
+>>>> M:    Jaroslav Kysela <perex@perex.cz>
+>>>> M:    Takashi Iwai <tiwai@suse.com>
+>>>> diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+>>>> index c30d0d396f7a..514343934fda 100644
+>>>> --- a/drivers/clk/Kconfig
+>>>> +++ b/drivers/clk/Kconfig
+>>>> @@ -499,6 +499,7 @@ source "drivers/clk/rockchip/Kconfig"
+>>>> source "drivers/clk/samsung/Kconfig"
+>>>> source "drivers/clk/sifive/Kconfig"
+>>>> source "drivers/clk/socfpga/Kconfig"
+>>>> +source "drivers/clk/sophgo/Kconfig"
+>>>> source "drivers/clk/sprd/Kconfig"
+>>>> source "drivers/clk/starfive/Kconfig"
+>>>> source "drivers/clk/sunxi/Kconfig"
+>>>> diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+>>>> index ed71f2e0ee36..aa5d2cf0b6a6 100644
+>>>> --- a/drivers/clk/Makefile
+>>>> +++ b/drivers/clk/Makefile
+>>>> @@ -119,6 +119,7 @@ obj-$(CONFIG_ARCH_ROCKCHIP)        += rockchip/
+>>>> obj-$(CONFIG_COMMON_CLK_SAMSUNG)    += samsung/
+>>>> obj-$(CONFIG_CLK_SIFIVE)        += sifive/
+>>>> obj-y                    += socfpga/
+>>>> +obj-$(CONFIG_ARCH_SOPHGO)        += sophgo/
+>>>> obj-$(CONFIG_PLAT_SPEAR)        += spear/
+>>>> obj-y                    += sprd/
+>>>> obj-$(CONFIG_ARCH_STI)            += st/
+>>>> diff --git a/drivers/clk/sophgo/Kconfig b/drivers/clk/sophgo/Kconfig
+>>>> new file mode 100644
+>>>> index 000000000000..b0fbe4499870
+>>>> --- /dev/null
+>>>> +++ b/drivers/clk/sophgo/Kconfig
+>>>> @@ -0,0 +1,8 @@
+>>>> +# SPDX-License-Identifier: GPL-2.0
+>>>> +
+>>>> +config CLK_SOPHGO_SG2042
+>>>> +    bool "Sophgo SG2042 clock support"
+>>>> +    depends on ARCH_SOPHGO || COMPILE_TEST
+>>>> +    default ARCH_SOPHGO
+>>>> +    help
+>>>> +      Say yes here to support the clock controller on the Sophgo SG2042 SoC.
+>>> Please add RISCV to its depends. Not all the sophgo SoCs are in the RISC-V
+>>> platform, Some are arm chips. It is not good to build this driver
+>>> in that arch.
+>> ARCH_SOPHGO is only defined in RISC-V arch, so I think RISCV should not be needed as depends.
+> It needs for the SG200X. which has a arm core. Maybe we should left it now
+> and add this in the future.
+It sounds like a new product, let's consider it when we get the real 
+hardware.
+>>> Also, the condition ARCH_SOPHGO is duplicate in the Makefile. Please
+>>> remove one of them.
+>> Don't undestand your question "the condition ARCH_SOPHGO is duplicate in the Makefile ",  I think you are talking about Kconifg, what Makefile are you talking about?
+>>
+> I mean your change in drivers/clk/Makefile.
 
-On 2023/12/1 下午4:46, Tianrui Zhao wrote:
-> This patch adds LASX support for LoongArch KVM.
-> There will be LASX exception in KVM when guest use the LASX
-> instruction. KVM will enable LASX and restore the vector
-> registers for guest then return to guest to continue running.
-> 
-> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
-> ---
->   arch/loongarch/include/asm/kvm_host.h |  6 ++++
->   arch/loongarch/include/asm/kvm_vcpu.h | 10 ++++++
->   arch/loongarch/kernel/fpu.S           |  2 ++
->   arch/loongarch/kvm/exit.c             | 18 +++++++++++
->   arch/loongarch/kvm/switch.S           | 15 +++++++++
->   arch/loongarch/kvm/trace.h            |  4 ++-
->   arch/loongarch/kvm/vcpu.c             | 46 ++++++++++++++++++++++++++-
->   7 files changed, 99 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/loongarch/include/asm/kvm_host.h b/arch/loongarch/include/asm/kvm_host.h
-> index a53b47093f4..dc817481b30 100644
-> --- a/arch/loongarch/include/asm/kvm_host.h
-> +++ b/arch/loongarch/include/asm/kvm_host.h
-> @@ -97,6 +97,7 @@ enum emulation_result {
->   #define KVM_LARCH_SWCSR_LATEST	(0x1 << 1)
->   #define KVM_LARCH_HWCSR_USABLE	(0x1 << 2)
->   #define KVM_LARCH_LSX		(0x1 << 3)
-> +#define KVM_LARCH_LASX		(0x1 << 4)
->   
->   struct kvm_vcpu_arch {
->   	/*
-> @@ -183,6 +184,11 @@ static inline bool kvm_guest_has_lsx(struct kvm_vcpu_arch *arch)
->   	return arch->cpucfg[2] & CPUCFG2_LSX;
->   }
->   
-> +static inline bool kvm_guest_has_lasx(struct kvm_vcpu_arch *arch)
-> +{
-> +	return arch->cpucfg[2] & CPUCFG2_LASX;
-> +}
-> +
->   /* Debug: dump vcpu state */
->   int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu);
->   
-> diff --git a/arch/loongarch/include/asm/kvm_vcpu.h b/arch/loongarch/include/asm/kvm_vcpu.h
-> index c629771e122..4f87f160185 100644
-> --- a/arch/loongarch/include/asm/kvm_vcpu.h
-> +++ b/arch/loongarch/include/asm/kvm_vcpu.h
-> @@ -67,6 +67,16 @@ static inline void kvm_restore_lsx(struct loongarch_fpu *fpu) { }
->   static inline void kvm_restore_lsx_upper(struct loongarch_fpu *fpu) { }
->   #endif
->   
-> +#ifdef CONFIG_CPU_HAS_LASX
-> +void kvm_own_lasx(struct kvm_vcpu *vcpu);
-> +void kvm_save_lasx(struct loongarch_fpu *fpu);
-> +void kvm_restore_lasx(struct loongarch_fpu *fpu);
-> +#else
-> +static inline void kvm_own_lasx(struct kvm_vcpu *vcpu) { }
-> +static inline void kvm_save_lasx(struct loongarch_fpu *fpu) { }
-> +static inline void kvm_restore_lasx(struct loongarch_fpu *fpu) { }
-> +#endif
-> +
->   void kvm_acquire_timer(struct kvm_vcpu *vcpu);
->   void kvm_init_timer(struct kvm_vcpu *vcpu, unsigned long hz);
->   void kvm_reset_timer(struct kvm_vcpu *vcpu);
-> diff --git a/arch/loongarch/kernel/fpu.S b/arch/loongarch/kernel/fpu.S
-> index d53ab10f464..4382e36ae3d 100644
-> --- a/arch/loongarch/kernel/fpu.S
-> +++ b/arch/loongarch/kernel/fpu.S
-> @@ -349,6 +349,7 @@ SYM_FUNC_START(_restore_lsx_upper)
->   	lsx_restore_all_upper a0 t0 t1
->   	jr	ra
->   SYM_FUNC_END(_restore_lsx_upper)
-> +EXPORT_SYMBOL(_restore_lsx_upper)
->   
->   SYM_FUNC_START(_init_lsx_upper)
->   	lsx_init_all_upper t1
-> @@ -384,6 +385,7 @@ SYM_FUNC_START(_restore_lasx_upper)
->   	lasx_restore_all_upper a0 t0 t1
->   	jr	ra
->   SYM_FUNC_END(_restore_lasx_upper)
-> +EXPORT_SYMBOL(_restore_lasx_upper)
->   
->   SYM_FUNC_START(_init_lasx_upper)
->   	lasx_init_all_upper t1
-> diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
-> index 1b1c58ccc83..57bd5bf562a 100644
-> --- a/arch/loongarch/kvm/exit.c
-> +++ b/arch/loongarch/kvm/exit.c
-> @@ -676,6 +676,23 @@ static int kvm_handle_lsx_disabled(struct kvm_vcpu *vcpu)
->   	return RESUME_GUEST;
->   }
->   
-> +/*
-> + * kvm_handle_lasx_disabled() - Guest used LASX while disabled in root.
-> + * @vcpu:	Virtual CPU context.
-> + *
-> + * Handle when the guest attempts to use LASX when it is disabled in the root
-> + * context.
-> + */
-> +static int kvm_handle_lasx_disabled(struct kvm_vcpu *vcpu)
-> +{
-> +	if (!kvm_guest_has_lasx(&vcpu->arch))
-> +		kvm_queue_exception(vcpu, EXCCODE_INE, 0);
-> +	else
-> +		kvm_own_lasx(vcpu);
-> +
-> +	return RESUME_GUEST;
-> +}
-> +
->   /*
->    * LoongArch KVM callback handling for unimplemented guest exiting
->    */
-> @@ -705,6 +722,7 @@ static exit_handle_fn kvm_fault_tables[EXCCODE_INT_START] = {
->   	[EXCCODE_TLBM]			= kvm_handle_write_fault,
->   	[EXCCODE_FPDIS]			= kvm_handle_fpu_disabled,
->   	[EXCCODE_LSXDIS]                = kvm_handle_lsx_disabled,
-> +	[EXCCODE_LASXDIS]               = kvm_handle_lasx_disabled,
->   	[EXCCODE_GSPR]			= kvm_handle_gspr,
->   };
->   
-> diff --git a/arch/loongarch/kvm/switch.S b/arch/loongarch/kvm/switch.S
-> index 6c48f7d1ca5..215c70b2de3 100644
-> --- a/arch/loongarch/kvm/switch.S
-> +++ b/arch/loongarch/kvm/switch.S
-> @@ -266,6 +266,21 @@ SYM_FUNC_START(kvm_restore_lsx_upper)
->   SYM_FUNC_END(kvm_restore_lsx_upper)
->   #endif
->   
-> +#ifdef CONFIG_CPU_HAS_LASX
-> +SYM_FUNC_START(kvm_save_lasx)
-> +	fpu_save_csr    a0 t1
-> +	fpu_save_cc     a0 t1 t2
-> +	lasx_save_data  a0 t1
-> +	jr              ra
-> +SYM_FUNC_END(kvm_save_lasx)
-> +
-> +SYM_FUNC_START(kvm_restore_lasx)
-> +	lasx_restore_data a0 t1
-> +	fpu_restore_cc    a0 t1 t2
-> +	fpu_restore_csr   a0 t1 t2
-> +	jr                ra
-> +SYM_FUNC_END(kvm_restore_lasx)
-> +#endif
->   	.section ".rodata"
->   SYM_DATA(kvm_exception_size, .quad kvm_exc_entry_end - kvm_exc_entry)
->   SYM_DATA(kvm_enter_guest_size, .quad kvm_enter_guest_end - kvm_enter_guest)
-> diff --git a/arch/loongarch/kvm/trace.h b/arch/loongarch/kvm/trace.h
-> index 7da4e230e89..c2484ad4cff 100644
-> --- a/arch/loongarch/kvm/trace.h
-> +++ b/arch/loongarch/kvm/trace.h
-> @@ -103,6 +103,7 @@ TRACE_EVENT(kvm_exit_gspr,
->   
->   #define KVM_TRACE_AUX_FPU		1
->   #define KVM_TRACE_AUX_LSX		2
-> +#define KVM_TRACE_AUX_LASX		3
->   
->   #define kvm_trace_symbol_aux_op				\
->   	{ KVM_TRACE_AUX_SAVE,		"save" },	\
-> @@ -113,7 +114,8 @@ TRACE_EVENT(kvm_exit_gspr,
->   
->   #define kvm_trace_symbol_aux_state			\
->   	{ KVM_TRACE_AUX_FPU,     "FPU" },		\
-> -	{ KVM_TRACE_AUX_LSX,     "LSX" }
-> +	{ KVM_TRACE_AUX_LSX,     "LSX" },		\
-> +	{ KVM_TRACE_AUX_LASX,    "LASX" }
->   
->   TRACE_EVENT(kvm_aux,
->   	    TP_PROTO(struct kvm_vcpu *vcpu, unsigned int op,
-> diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
-> index 4820c95091f..7802ae68197 100644
-> --- a/arch/loongarch/kvm/vcpu.c
-> +++ b/arch/loongarch/kvm/vcpu.c
-> @@ -329,6 +329,13 @@ static int kvm_get_cpucfg_supported(int id, u64 *v)
->   		 */
->   		if (cpu_has_lsx)
->   			*v |= CPUCFG2_LSX;
-> +		/*
-> +		 * if LASX is supported by CPU, it is also supported by KVM,
-> +		 * as we implement it.
-> +		 */
-> +		if (cpu_has_lasx)
-> +			*v |= CPUCFG2_LASX;
-> +
->   		break;
->   	default:
->   		ret = -EINVAL;
-> @@ -653,12 +660,49 @@ void kvm_own_lsx(struct kvm_vcpu *vcpu)
->   }
->   #endif
->   
-> +#ifdef CONFIG_CPU_HAS_LASX
-> +/* Enable LASX for guest and restore context */
-> +void kvm_own_lasx(struct kvm_vcpu *vcpu)
-> +{
-> +	preempt_disable();
-> +
-> +	set_csr_euen(CSR_EUEN_FPEN | CSR_EUEN_LSXEN | CSR_EUEN_LASXEN);
-> +	switch (vcpu->arch.aux_inuse & (KVM_LARCH_FPU | KVM_LARCH_LSX)) {
-> +	case KVM_LARCH_LSX | KVM_LARCH_FPU:
-> +	case KVM_LARCH_LSX:
-> +		/* Guest LSX state already loaded, only restore upper LASX state */
-> +		_restore_lasx_upper(&vcpu->arch.fpu);
-> +		break;
-> +	case KVM_LARCH_FPU:
-> +		/* Guest FP state already loaded, only restore 64~256 LASX state */
-> +		kvm_restore_lsx_upper(&vcpu->arch.fpu);
-> +		_restore_lasx_upper(&vcpu->arch.fpu);
-> +		break;
-> +	default:
-> +		/* Neither FP or LSX already active, restore full LASX state */
-> +		kvm_restore_lasx(&vcpu->arch.fpu);
-> +		break;
-> +	}
-> +
-> +	trace_kvm_aux(vcpu, KVM_TRACE_AUX_RESTORE, KVM_TRACE_AUX_LASX);
-> +	vcpu->arch.aux_inuse |= KVM_LARCH_LASX | KVM_LARCH_LSX | KVM_LARCH_FPU;
-> +	preempt_enable();
-> +}
-> +#endif
-> +
->   /* Save context and disable FPU */
->   void kvm_lose_fpu(struct kvm_vcpu *vcpu)
->   {
->   	preempt_disable();
->   
-> -	if (vcpu->arch.aux_inuse & KVM_LARCH_LSX) {
-> +	if (vcpu->arch.aux_inuse & KVM_LARCH_LASX) {
-> +		kvm_save_lasx(&vcpu->arch.fpu);
-> +		vcpu->arch.aux_inuse &= ~(KVM_LARCH_LSX | KVM_LARCH_FPU | KVM_LARCH_LASX);
-> +		trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_LASX);
-> +
-> +		/* Disable LASX & LSX & FPU */
-> +		clear_csr_euen(CSR_EUEN_FPEN | CSR_EUEN_LSXEN | CSR_EUEN_LASXEN);
-> +	} else if (vcpu->arch.aux_inuse & KVM_LARCH_LSX) {
->   		kvm_save_lsx(&vcpu->arch.fpu);
->   		vcpu->arch.aux_inuse &= ~(KVM_LARCH_LSX | KVM_LARCH_FPU);
->   		trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_LSX);
-> 
-Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+Yes. I see it now. It's really a problem and redundant, I will fix it, 
+thanks for your carefully check.
+
+......
 
