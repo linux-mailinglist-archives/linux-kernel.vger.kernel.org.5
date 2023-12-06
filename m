@@ -2,113 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB6A806587
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 04:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD081806580
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 04:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbjLFDRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 22:17:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33824 "EHLO
+        id S1346563AbjLFDPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 22:15:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjLFDRO (ORCPT
+        with ESMTP id S229493AbjLFDPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 22:17:14 -0500
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326291AA;
-        Tue,  5 Dec 2023 19:17:19 -0800 (PST)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
-        by Atcsqr.andestech.com with ESMTP id 3B63EGaR027290;
-        Wed, 6 Dec 2023 11:14:16 +0800 (+08)
-        (envelope-from peterlin@andestech.com)
-Received: from APC323 (10.0.12.98) by ATCPCS16.andestech.com (10.0.1.222) with
- Microsoft SMTP Server id 14.3.498.0; Wed, 6 Dec 2023 11:14:12 +0800
-Date:   Wed, 6 Dec 2023 11:14:08 +0800
-From:   Yu-Chien Peter Lin <peterlin@andestech.com>
-To:     Inochi Amaoto <inochiama@outlook.com>
-CC:     Guo Ren <guoren@kernel.org>, <acme@kernel.org>,
-        <adrian.hunter@intel.com>, <ajones@ventanamicro.com>,
-        <alexander.shishkin@linux.intel.com>, <andre.przywara@arm.com>,
-        <anup@brainfault.org>, <aou@eecs.berkeley.edu>,
-        <atishp@atishpatra.org>, <conor+dt@kernel.org>,
-        <conor.dooley@microchip.com>, <conor@kernel.org>,
-        <devicetree@vger.kernel.org>, <dminus@andestech.com>,
-        <evan@rivosinc.com>, <geert+renesas@glider.be>, <heiko@sntech.de>,
-        <irogers@google.com>, <jernej.skrabec@gmail.com>,
-        <jolsa@kernel.org>, <jszhang@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-sunxi@lists.linux.dev>,
-        <locus84@andestech.com>, <magnus.damm@gmail.com>,
-        <mark.rutland@arm.com>, <mingo@redhat.com>, <n.shubin@yadro.com>,
-        <namhyung@kernel.org>, <palmer@dabbelt.com>,
-        <paul.walmsley@sifive.com>, <peterz@infradead.org>,
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>, <rdunlap@infradead.org>,
-        <robh+dt@kernel.org>, <samuel@sholland.org>,
-        <sunilvl@ventanamicro.com>, <tglx@linutronix.de>,
-        <tim609@andestech.com>, <uwu@icenowy.me>, <wens@csie.org>,
-        <will@kernel.org>, <ycliang@andestech.com>
-Subject: Re: [PATCH v4 09/13] dt-bindings: riscv: Add T-Head PMU extension
- description
-Message-ID: <ZW_nAMRDWoMo6t8r@APC323>
-References: <ZWhT_VSpl2aksVK7@APC323>
- <IA1PR20MB4953460FE5BF431DD32CD860BB81A@IA1PR20MB4953.namprd20.prod.outlook.com>
+        Tue, 5 Dec 2023 22:15:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D5B1B1
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 19:15:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EE85C433C8;
+        Wed,  6 Dec 2023 03:15:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701832523;
+        bh=UtCdc+sgLzjdvXkZ1fmLKLdQbkA15fS8azoFUy1h7Jg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QsLS4lff/K0Bn9P0P2EHcfpXD7o+LuSg/wY40jzZ2ORc22RpWMMXixgx1/DtWH2Fm
+         f+Qn5VvQLUrJZtaWOKsrjo0PizgxdTeECIOC0wrVIUf7hQEHSknB6YL4Y85CW9Jc0g
+         vxGCcOFlVk8GvWgo2SHG7BeUSKFVeuuz4g3lSmS44mIIBS5oBf81ZGIW2fPawysbv6
+         jgtyi3ut1rPHuiBq5U6oO8v19pgnRmni6FRBvVmStyn9A5NCxA2C56LAykgBp7VgNW
+         4XzGE4B3aZCFJoAIXOIFkwk8XB+hrSW/t042+tPTM8jXuZaZOT2wlTI6Pigc69r/Vk
+         ghWamRpVeG0Aw==
+Date:   Wed, 6 Dec 2023 11:15:18 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Francesco Dolcini <francesco@dolcini.it>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/2] arm64: dts: freescale: verdin-imx8mp: add support
+ to mallow board
+Message-ID: <20231206031518.GQ236001@dragon>
+References: <20231201153929.26590-1-francesco@dolcini.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <IA1PR20MB4953460FE5BF431DD32CD860BB81A@IA1PR20MB4953.namprd20.prod.outlook.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Originating-IP: [10.0.12.98]
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL: Atcsqr.andestech.com 3B63EGaR027290
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231201153929.26590-1-francesco@dolcini.it>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 09:14:00AM +0800, Inochi Amaoto wrote:
-<...>
-> >>
-> >> Hi, Peter Lin:
-> >>
-> >> You can use the following two document to get all events:
-> >> https://github.com/T-head-Semi/openc906/tree/main/doc
-> >> https://github.com/T-head-Semi/openc910/tree/main/doc
-> >>
-> >> There are also some RTL code can describe these events:
-> >> https://github.com/T-head-Semi/openc910/blob/e0c4ad8ec7f8c70f649d826ebd6c949086453272/C910_RTL_FACTORY/gen_rtl/pmu/rtl/ct_hpcp_top.v#L1123
-> >> https://github.com/T-head-Semi/openc906/blob/af5614d72de7e5a4b8609c427d2e20af1deb21c4/C906_RTL_FACTORY/gen_rtl/pmu/rtl/aq_hpcp_top.v#L543
-> >>
-> >> The perf events json can also be used as document, this is already
-> >> applied (with more detailed explanation):
-> >> https://lore.kernel.org/all/IA1PR20MB495325FCF603BAA841E29281BBBAA@IA1PR20MB4953.namprd20.prod.outlook.com/
-> >
-> >Thanks for reaching out!
-> >The updated description will be:
-> >
-> >- const: xtheadpmu
-> >  description:
-> >    The T-Head performance monitor extension for counter overflow, as ratified
-> >    in commit bd9206 ("Initial commit") of Xuantie C906 user manual.
-> >    https://github.com/T-head-Semi/openc906/tree/main/doc
-> >
-> >Is it OK with you?
-> >
+On Fri, Dec 01, 2023 at 04:39:27PM +0100, Francesco Dolcini wrote:
+> From: Francesco Dolcini <francesco.dolcini@toradex.com>
 > 
-> Please indicate chapter 12 and chapter 13.5 of the manual related to
-> the PMU. And changed openc906 manual to openc910 manual because it is
-> more updated.
+> Add Toradex Verdin IMX8MP Mallow carrier board support. Mallow is a
+> low-cost carrier board in the Verdin family with a small form factor and
+> build for volume production making it ideal for industrial and embedded
+> applications.
 > 
-> If modified:
+> https://www.toradex.com/products/carrier-board/mallow-carrier-board
 > 
-> Reviewed-by: Inochi Amaoto <inochiama@outlook.com>
+> v1:
+>  - https://lore.kernel.org/all/20231129164022.143340-1-francesco@dolcini.it/
+> v2:
+>  - remove dt nodes: eeprom_display_adapter, hwmon
+>  - add Acked-by: Krzysztof
+>  - correct hwmon_temp node compatible to "ti,tmp1075"
+> 
+> Joao Paulo Goncalves (2):
+>   dt-bindings: arm: fsl: add verdin imx8mp mallow board
+>   arm64: dts: freescale: verdin-imx8mp: add support to mallow board
 
-Got it! Thanks for the information.
+Ok, applied this version instead.
 
-Regards,
-Peter Lin
+It would be helpful if you drop a note on the previous version when you
+discard it with a new one.
+
+Shawn
