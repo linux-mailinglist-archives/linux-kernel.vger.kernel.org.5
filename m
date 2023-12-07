@@ -2,134 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD41808474
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 10:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F08E980847D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 10:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378497AbjLGJQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:16:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47768 "EHLO
+        id S1378443AbjLGJQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:16:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231633AbjLGJQg (ORCPT
+        with ESMTP id S230145AbjLGJQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:16:36 -0500
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71F9D5C;
-        Thu,  7 Dec 2023 01:16:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1701940600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=A6B6SQdEGihvdACw2JOjX599xCdZMbfkt+OCZNCmzZo=;
-        b=kv1CVK1BaxewKQIljM85WnQLkFx4xQ60+Y66II8iBPwAzvx++TIayGYDf+o1dDvQR/d/OL
-        zTDQDF5pi9lk9jsQgwu6EmqDfDXEzKSEFRsTJsY/Cr9zPWXwHx+JPF+BP92rLgshT5lPmY
-        bq9oZl1CcFo+nEuDNw6fjQ7x8ZPSvgw=
-Message-ID: <61393c2e941515612f7c4a7d66cd19f00e88ea9d.camel@crapouillou.net>
-Subject: Re: [PATCH RESEND] drm/exynos: dpi: Change connector type to DPI
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     =?UTF-8?Q?=EB=8C=80=EC=9D=B8=EA=B8=B0/Tizen?= Platform
-         =?UTF-8?Q?Lab=28SR=29/=EC=82=BC=EC=84=B1=EC=A0=84=EC=9E=90?= 
-        <inki.dae@samsung.com>, 'Seung-Woo Kim' <sw0312.kim@samsung.com>,
-        'Kyungmin Park' <kyungmin.park@samsung.com>,
-        'Krzysztof Kozlowski' <krzysztof.kozlowski@linaro.org>,
-        'Alim Akhtar' <alim.akhtar@samsung.com>
-Cc:     'David Airlie' <airlied@gmail.com>,
-        'Daniel Vetter' <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 07 Dec 2023 10:16:38 +0100
-In-Reply-To: <048a01da28b6$f84c2670$e8e47350$@samsung.com>
-References: <CGME20231206221903epcas1p2e9d90110b0f2901e3e7db86f748026f1@epcas1p2.samsung.com>
-         <20231206221841.15685-1-paul@crapouillou.net>
-         <048a01da28b6$f84c2670$e8e47350$@samsung.com>
-Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
- keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
-        YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 7 Dec 2023 04:16:16 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 280971AD;
+        Thu,  7 Dec 2023 01:16:21 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B38012FC;
+        Thu,  7 Dec 2023 01:17:07 -0800 (PST)
+Received: from [10.57.6.119] (unknown [10.57.6.119])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 876463F6C4;
+        Thu,  7 Dec 2023 01:16:19 -0800 (PST)
+Message-ID: <ff5605ae-590d-44c9-a428-2f9adf65cb92@arm.com>
+Date:   Thu, 7 Dec 2023 09:17:20 +0000
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] thermal/debugfs: Add thermal debugfs information
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rjw@rjwysocki.net, rui.zhang@intel.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20231110181123.2389186-1-daniel.lezcano@linaro.org>
+ <CAJZ5v0h8CTbDrq1wUOMpKpnKs6Ey7H1onkfKGRS15Gj_AnepAg@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <CAJZ5v0h8CTbDrq1wUOMpKpnKs6Ey7H1onkfKGRS15Gj_AnepAg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le jeudi 07 d=C3=A9cembre 2023 =C3=A0 11:42 +0900, =EB=8C=80=EC=9D=B8=EA=B8=
-=B0/Tizen Platform
-Lab(SR)/=EC=82=BC=EC=84=B1=EC=A0=84=EC=9E=90 a =C3=A9crit=C2=A0:
-> Hi Paul,
->=20
-> > -----Original Message-----
-> > From: Paul Cercueil <paul@crapouillou.net>
-> > Sent: Thursday, December 7, 2023 7:19 AM
-> > To: Inki Dae <inki.dae@samsung.com>; Seung-Woo Kim
-> > <sw0312.kim@samsung.com>; Kyungmin Park
-> > <kyungmin.park@samsung.com>;
-> > Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>; Alim Akhtar
-> > <alim.akhtar@samsung.com>
-> > Cc: David Airlie <airlied@gmail.com>; Daniel Vetter
-> > <daniel@ffwll.ch>;
-> > dri-devel@lists.freedesktop.org;
-> > linux-arm-kernel@lists.infradead.org;
-> > linux-samsung-soc@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > Paul
-> > Cercueil <paul@crapouillou.net>
-> > Subject: [PATCH RESEND] drm/exynos: dpi: Change connector type to
-> > DPI
-> >=20
-> > When exynos_drm_dpi.c was written, DRM_MODE_CONNECTOR_DPI did not
-> > exist
-> > yet and I guess that's the reason why DRM_MODE_CONNECTOR_VGA was
-> > used as
-> > the connector type.
-> >=20
-> > However, now it makes more sense to use DRM_MODE_CONNECTOR_DPI as
-> > the
-> > connector type.
->=20
-> Sorry for late. Merged.
 
-No problem. Thank you!
 
-Cheers,
--Paul
+On 12/6/23 21:43, Rafael J. Wysocki wrote:
+> On Fri, Nov 10, 2023 at 8:37 PM Daniel Lezcano
+> <daniel.lezcano@linaro.org> wrote:
+>>
 
->=20
-> Thanks,
-> Inki Dae
->=20
-> >=20
-> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> > ---
-> > =C2=A0drivers/gpu/drm/exynos/exynos_drm_dpi.c | 2 +-
-> > =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/gpu/drm/exynos/exynos_drm_dpi.c
-> > b/drivers/gpu/drm/exynos/exynos_drm_dpi.c
-> > index 378e5381978f..0dc36df6ada3 100644
-> > --- a/drivers/gpu/drm/exynos/exynos_drm_dpi.c
-> > +++ b/drivers/gpu/drm/exynos/exynos_drm_dpi.c
-> > @@ -101,7 +101,7 @@ static int exynos_dpi_create_connector(struct
-> > drm_encoder *encoder)
-> >=20
-> > =C2=A0	ret =3D drm_connector_init(encoder->dev, connector,
-> > =C2=A0				 &exynos_dpi_connector_funcs,
-> > -				 DRM_MODE_CONNECTOR_VGA);
-> > +				 DRM_MODE_CONNECTOR_DPI);
-> > =C2=A0	if (ret) {
-> > =C2=A0		DRM_DEV_ERROR(ctx->dev,
-> > =C2=A0			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "failed to initialize connector=
- with
-> > drm\n");
-> > --
-> > 2.42.0
-> >=20
->=20
->=20
+[snip]
 
+>> diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
+>> index 0a3b3ec5120b..809d37d0aa28 100644
+>> --- a/drivers/thermal/thermal_core.h
+>> +++ b/drivers/thermal/thermal_core.h
+>> @@ -13,6 +13,7 @@
+>>   #include <linux/thermal.h>
+>>
+>>   #include "thermal_netlink.h"
+>> +#include "thermal_debugfs.h"
+>>
+>>   /* Default Thermal Governor */
+>>   #if defined(CONFIG_THERMAL_DEFAULT_GOV_STEP_WISE)
+> 
+> The change below is large and rather hard to grasp as a whole.
+> 
+> It would be easier to process if it is split into a few smaller
+> changes building on top of each other IMO.
+> 
+> Personally, I would start with stubs of the functions that are called
+> from the core and subsequently add more and more code to them.
+
+I agree, for this approach for this patch. Also we implicitly agreed
+that this CONFIG_THERMAL_DEBUG can fly upstream. What would be built
+on top in the framework and in governors, could be developed in steps,
+IMO.
+
+Thanks for starting this debugfs support.
