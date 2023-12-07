@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B21808E64
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B60808E5D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443061AbjLGRJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:09:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
+        id S1443174AbjLGRJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:09:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232030AbjLGRJy (ORCPT
+        with ESMTP id S233045AbjLGRJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:09:54 -0500
+        Thu, 7 Dec 2023 12:09:55 -0500
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1CE9D1;
-        Thu,  7 Dec 2023 09:09:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645E610EB;
+        Thu,  7 Dec 2023 09:10:01 -0800 (PST)
 Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailout.west.internal (Postfix) with ESMTP id 168293200B20;
-        Thu,  7 Dec 2023 12:09:57 -0500 (EST)
+        by mailout.west.internal (Postfix) with ESMTP id 546973200AC9;
+        Thu,  7 Dec 2023 12:10:00 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Thu, 07 Dec 2023 12:09:57 -0500
+  by compute7.internal (MEProxy); Thu, 07 Dec 2023 12:10:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1701968996; x=1702055396; bh=bT0vifi4KE
-        A/by3Sw+sML2QMzMbrhVLku2bYSBxgxnQ=; b=qtN/QXp1yO9p4LRNkcti69mCK2
-        qRjzp4NSMEi+YLiRrUw/c5JmXVL4x0wKzHjW5ZjrhEkWCO9ypxMnAvNqJtiN7k03
-        Lp+6WhXfJLt91BzlDflfPTFsD0aJDbMNmmZft9xuHGSRJvjRphCShzNphK3+zspK
-        FhvBf7qc3tKr5I2yvzLsd1vlCJmHVTxFHE5AdBhorVF6hLzS+lQOg76OJbOfb6NJ
-        p+bboVgIyLQbrI5eKZVYN3cpGB7ohOq4GE0rm6wTw+blTD5jNfv+Rg2yuefm5B5/
-        6Y6qel18zqFwHfsarH1JZ7Z8dD+A/BGTXnczVKV8/86l4MzRSzBHKNlypOYA==
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1701968999; x=
+        1702055399; bh=WrVPqtASwJJxG2xCWlOFsHZ6qIqzH0f1AOqfJ5algyU=; b=j
+        ZjmcEtoOj30kW1cqgiWAq21aP7CzqXaAzw2w8Lv5/HvgH/Rbr6YTK4mdCx/iEwS/
+        l31AsQRxRIB9+7dPhTilQzthaPEo5ao1BP8bs6QvmeLuMoA6zGls3S9Dx88lm99u
+        kEi9PCX3H0CT07vFkFvj3Gq21MzzprOMbuk3X2MwPdKrbjWpDF3UooTeMfTdBh63
+        yH9IDdZXij/8Gzq64evGu2RlpqGVh2EbE1vziUfE9DuUlnBtm8c5v44tbHHFvJtx
+        0IG5SpsPgj9LE+VrTta/7wFSoPhcl6px4Ec1l2RHUIV6ZZqPkp0su3Is6tLhB8E0
+        XOT6InfVS+Nhe8cDT8ZFg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701968996; x=1702055396; bh=bT0vifi4KEA/b
-        y3Sw+sML2QMzMbrhVLku2bYSBxgxnQ=; b=cZqgMbdqmXEk3rSVJtRrMSG4aJVoh
-        uBkpS+2Nqw5xFcWbzCMCeuW+zAJplRpKQKgty9kGNmTDaLRW4bryH01x7elkTQzm
-        cg69Q5+/NbLnBY7wJYbU5DhSxRuTmu6XTt9mp7zCgvMC/VfPe9uVDkDofbLFKbqB
-        e32FJDK53cA+1NVsaV91Lel9sUI+osnHBa5p+E6TnduC/tz3ojAwcVDMHu0HQWfB
-        f9HXaICGaxCnFCnGmMjWR0xjTvgEbW9oYT0wimLV5I4HMPUILTd3YlIoXON//kdT
-        92JVupeQOcb5WUtq7ynoSazbOuypb81uFPLVigvbPGXulbZKL2w+aYLIw==
-X-ME-Sender: <xms:Y_xxZfU1brVfg6xeH98zVQaf3Z1Bw2ETtUByiKw5fU0itMfC42U8VA>
-    <xme:Y_xxZXkzOcAA_BD-lfEvGOAnsmfTWgtDkcHCYp-paUreBusd2msE_KE9t8WAZw8Ns
-    GzyF6Y2b47G8OlzXoQ>
-X-ME-Received: <xmr:Y_xxZbb4hZVMKu9eY8NSOZUdjJr8ecjnhInszdvNNnbhhIR75w2fXvhxMtT2kN51N3PkDQ>
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1701968999; x=
+        1702055399; bh=WrVPqtASwJJxG2xCWlOFsHZ6qIqzH0f1AOqfJ5algyU=; b=j
+        0jrPhiCID6orXxkMLXx1GjprPqIrBs+uorNXbuvzfn9z9b6yo2C5i32Ghn78wppM
+        CdjwlrNZaEU/fm4QOYg7f3ikJORsbQwX2P0nYTcfBQaWjQtnuxJGh4B5rQYCXk2C
+        K4DVwOBudeM0ePyOYDf1h79olALYsosH00ZIrEoPC9ApCg3yL6pQdQ7nDIyFMkKG
+        AaaKUOwEi3XZc5mMJFLvbSCQt1mutiuWvJHBUtsTjDG/x7FBUaR8wD+hlcWgRcZu
+        kjcsraNS/PgszdQoiMhCd9bqzdXo53mjq7SktOzBiB0haqIzmlGXWnB2ssQw5gZb
+        3sA2Pwfoj7SiVBBFcv5yA==
+X-ME-Sender: <xms:Z_xxZa4ka8JuadYM82QvG6fs6pQxQmrWwwoFL6jpFrAO0I3Uh9sBng>
+    <xme:Z_xxZT4O8Qad7hUVIFSRUsq8PzNABiIavdy70Bs3IAxI3P2OazBeJMIcWz8gRSjzy
+    jLw4rnrJhqSXkDVatc>
+X-ME-Received: <xmr:Z_xxZZcc92NjXWDLM2VgAEgiKUeTQb1sbTSIs7kzvNYWa6_OGTwDb_dX8yL1r7n9oxp00g>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekfedgfeejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepvfihtghhohcu
-    tehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrfgrth
-    htvghrnhephfehleehfeejtdehteejgeefueehtdeufedvhefghefggfeigfegleelvdeh
-    gfejnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehthigthhhosehthigthhhordhpihiiiigr
-X-ME-Proxy: <xmx:ZPxxZaXVKWgLL2m4JMMbPh4cTYnj3YQ2dFICIxbtTG_KkxeowKulfg>
-    <xmx:ZPxxZZn5ITYaIld9yiA1296pNpjumOYJ5Sym56otDJCiQm7pDDaudg>
-    <xmx:ZPxxZXdYqdp34vqOldHuw0LrgcPySQNvIN7NQln2bKmRIQeP8qKFbQ>
-    <xmx:ZPxxZctlR7u3CTOHLGmPTv8tDJZTh2YFGwuXZPDR5rI-wB839fHUdQ>
+    cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepvfihtghh
+    ohcutehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrf
+    grthhtvghrnhepvdegffehledvleejvdethffgieefveevhfeigefffffgheeguedtieek
+    tdeigeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epthihtghhohesthihtghhohdrphhiiiiirg
+X-ME-Proxy: <xmx:Z_xxZXJC_iWgtJfc-5Y1jk4-Ojk8R8qHcIurBL7Q-exfJy12GgNsYQ>
+    <xmx:Z_xxZeJ6UPaDsVVA_KkZJO-KUveXjpH4CICKBovZ-G12o7p3AOyC9A>
+    <xmx:Z_xxZYz66fO1COIwMpq0T1RupSf086S0476BzeOx4vdLPHZm2pNBoQ>
+    <xmx:Z_xxZQjJLk64fyN5WDHAR5iznzh7_0AIQND0GhzAcvasCTuaEOB-QQ>
 Feedback-ID: i21f147d5:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 7 Dec 2023 12:09:54 -0500 (EST)
+ 7 Dec 2023 12:09:58 -0500 (EST)
 From:   Tycho Andersen <tycho@tycho.pizza>
 To:     Christian Brauner <brauner@kernel.org>
 Cc:     Oleg Nesterov <oleg@redhat.com>,
@@ -68,10 +70,12 @@ Cc:     Oleg Nesterov <oleg@redhat.com>,
         linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
         Tycho Andersen <tycho@tycho.pizza>,
         Tycho Andersen <tandersen@netflix.com>
-Subject: [PATCH v2 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
-Date:   Thu,  7 Dec 2023 10:09:44 -0700
-Message-Id: <20231207170946.130823-1-tycho@tycho.pizza>
+Subject: [PATCH v2 2/3] selftests/pidfd: add non-thread-group leader tests
+Date:   Thu,  7 Dec 2023 10:09:45 -0700
+Message-Id: <20231207170946.130823-2-tycho@tycho.pizza>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231207170946.130823-1-tycho@tycho.pizza>
+References: <20231207170946.130823-1-tycho@tycho.pizza>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -86,134 +90,384 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tycho Andersen <tandersen@netflix.com>
 
-We are using the pidfd family of syscalls with the seccomp userspace
-notifier. When some thread triggers a seccomp notification, we want to do
-some things to its context (munge fd tables via pidfd_getfd(), maybe write
-to its memory, etc.). However, threads created with ~CLONE_FILES or
-~CLONE_VM mean that we can't use the pidfd family of syscalls for this
-purpose, since their fd table or mm are distinct from the thread group
-leader's. In this patch, we relax this restriction for pidfd_open().
-
-In order to avoid dangling poll() users we need to notify pidfd waiters
-when individual threads die, but once we do that all the other machinery
-seems to work ok viz. the tests. But I suppose there are more cases than
-just this one.
+This adds a family of tests for various behaviors for pidfds of
+non-thread-group leaders.
 
 Signed-off-by: Tycho Andersen <tandersen@netflix.com>
---
-v2: unify pidfd notification to all go through do_notify_pidfd() inside of
-    __exit_signals() suggested by Oleg.
-    Link to v1: https://lore.kernel.org/all/20231130163946.277502-1-tycho@tycho.pizza/
 ---
- include/linux/sched/signal.h |  1 +
- kernel/exit.c                |  3 +++
- kernel/fork.c                |  4 +---
- kernel/pid.c                 | 11 +----------
- kernel/signal.c              |  5 +----
- 5 files changed, 7 insertions(+), 17 deletions(-)
+ tools/testing/selftests/pidfd/.gitignore      |   1 +
+ tools/testing/selftests/pidfd/Makefile        |   3 +-
+ .../selftests/pidfd/pidfd_non_tgl_test.c      | 339 ++++++++++++++++++
+ 3 files changed, 342 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-index 3499c1a8b929..37d6b4e4ab70 100644
---- a/include/linux/sched/signal.h
-+++ b/include/linux/sched/signal.h
-@@ -332,6 +332,7 @@ extern int kill_pid_usb_asyncio(int sig, int errno, sigval_t addr, struct pid *,
- extern int kill_pgrp(struct pid *pid, int sig, int priv);
- extern int kill_pid(struct pid *pid, int sig, int priv);
- extern __must_check bool do_notify_parent(struct task_struct *, int);
-+extern void do_notify_pidfd(struct task_struct *task);
- extern void __wake_up_parent(struct task_struct *p, struct task_struct *parent);
- extern void force_sig(int);
- extern void force_fatal_sig(int);
-diff --git a/kernel/exit.c b/kernel/exit.c
-index ee9f43bed49a..7bb6488ebd79 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -149,6 +149,9 @@ static void __exit_signal(struct task_struct *tsk)
- 	struct tty_struct *tty;
- 	u64 utime, stime;
+diff --git a/tools/testing/selftests/pidfd/.gitignore b/tools/testing/selftests/pidfd/.gitignore
+index 973198a3ec3d..e7532e84a34a 100644
+--- a/tools/testing/selftests/pidfd/.gitignore
++++ b/tools/testing/selftests/pidfd/.gitignore
+@@ -6,3 +6,4 @@ pidfd_wait
+ pidfd_fdinfo_test
+ pidfd_getfd_test
+ pidfd_setns_test
++pidfd_non_tgl_test
+diff --git a/tools/testing/selftests/pidfd/Makefile b/tools/testing/selftests/pidfd/Makefile
+index d731e3e76d5b..50e3aa9de05a 100644
+--- a/tools/testing/selftests/pidfd/Makefile
++++ b/tools/testing/selftests/pidfd/Makefile
+@@ -2,7 +2,8 @@
+ CFLAGS += -g $(KHDR_INCLUDES) -pthread -Wall
  
-+	/* Wake up all pidfd waiters */
-+	do_notify_pidfd(tsk);
+ TEST_GEN_PROGS := pidfd_test pidfd_fdinfo_test pidfd_open_test \
+-	pidfd_poll_test pidfd_wait pidfd_getfd_test pidfd_setns_test
++	pidfd_poll_test pidfd_wait pidfd_getfd_test pidfd_setns_test \
++	pidfd_non_tgl_test
+ 
+ include ../lib.mk
+ 
+diff --git a/tools/testing/selftests/pidfd/pidfd_non_tgl_test.c b/tools/testing/selftests/pidfd/pidfd_non_tgl_test.c
+new file mode 100644
+index 000000000000..e3992f2d88cf
+--- /dev/null
++++ b/tools/testing/selftests/pidfd/pidfd_non_tgl_test.c
+@@ -0,0 +1,339 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
++#include <sys/socket.h>
++#include <limits.h>
++#include <string.h>
++#include <signal.h>
++#include <syscall.h>
++#include <sched.h>
++#include <poll.h>
 +
- 	sighand = rcu_dereference_check(tsk->sighand,
- 					lockdep_tasklist_lock_is_held());
- 	spin_lock(&sighand->siglock);
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 10917c3e1f03..eef15c93f6cf 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2163,8 +2163,6 @@ static int __pidfd_prepare(struct pid *pid, unsigned int flags, struct file **re
-  * Allocate a new file that stashes @pid and reserve a new pidfd number in the
-  * caller's file descriptor table. The pidfd is reserved but not installed yet.
-  *
-- * The helper verifies that @pid is used as a thread group leader.
-- *
-  * If this function returns successfully the caller is responsible to either
-  * call fd_install() passing the returned pidfd and pidfd file as arguments in
-  * order to install the pidfd into its file descriptor table or they must use
-@@ -2182,7 +2180,7 @@ static int __pidfd_prepare(struct pid *pid, unsigned int flags, struct file **re
-  */
- int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret)
- {
--	if (!pid || !pid_has_task(pid, PIDTYPE_TGID))
-+	if (!pid)
- 		return -EINVAL;
- 
- 	return __pidfd_prepare(pid, flags, ret);
-diff --git a/kernel/pid.c b/kernel/pid.c
-index 6500ef956f2f..4806798022d9 100644
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -552,11 +552,6 @@ struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags)
-  * Return the task associated with @pidfd. The function takes a reference on
-  * the returned task. The caller is responsible for releasing that reference.
-  *
-- * Currently, the process identified by @pidfd is always a thread-group leader.
-- * This restriction currently exists for all aspects of pidfds including pidfd
-- * creation (CLONE_PIDFD cannot be used with CLONE_THREAD) and pidfd polling
-- * (only supports thread group leaders).
-- *
-  * Return: On success, the task_struct associated with the pidfd.
-  *	   On error, a negative errno number will be returned.
-  */
-@@ -615,11 +610,7 @@ int pidfd_create(struct pid *pid, unsigned int flags)
-  * @flags: flags to pass
-  *
-  * This creates a new pid file descriptor with the O_CLOEXEC flag set for
-- * the process identified by @pid. Currently, the process identified by
-- * @pid must be a thread-group leader. This restriction currently exists
-- * for all aspects of pidfds including pidfd creation (CLONE_PIDFD cannot
-- * be used with CLONE_THREAD) and pidfd polling (only supports thread group
-- * leaders).
-+ * the process identified by @pid.
-  *
-  * Return: On success, a cloexec pidfd is returned.
-  *         On error, a negative errno number will be returned.
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 47a7602dfe8d..7b3a1e147225 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2028,7 +2028,7 @@ int send_sigqueue(struct sigqueue *q, struct pid *pid, enum pid_type type)
- 	return ret;
- }
- 
--static void do_notify_pidfd(struct task_struct *task)
-+void do_notify_pidfd(struct task_struct *task)
- {
- 	struct pid *pid;
- 
-@@ -2060,9 +2060,6 @@ bool do_notify_parent(struct task_struct *tsk, int sig)
- 	WARN_ON_ONCE(!tsk->ptrace &&
- 	       (tsk->group_leader != tsk || !thread_group_empty(tsk)));
- 
--	/* Wake up all pidfd waiters */
--	do_notify_pidfd(tsk);
--
- 	if (sig != SIGCHLD) {
- 		/*
- 		 * This is only possible if parent == real_parent.
-
-base-commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
++#include "../kselftest.h"
++#include "pidfd.h"
++
++// glibc defaults to 8MB stacks
++#define STACK_SIZE (8 * 1024 * 1024)
++static char stack[STACK_SIZE];
++
++static int thread_sleep(void *)
++{
++	while (1)
++		sleep(100);
++	return 1;
++}
++
++static int fork_task_with_thread(int (*fn)(void *), int sk_pair[2],
++				 pid_t *tgl, pid_t *thread, int *tgl_pidfd,
++				 int *thread_pidfd)
++{
++	*tgl_pidfd = *thread_pidfd = -1;
++
++	*tgl = fork();
++	if (*tgl < 0) {
++		perror("fork");
++		return -1;
++	}
++
++	if (!*tgl) {
++		int flags = CLONE_THREAD | CLONE_VM | CLONE_SIGHAND;
++		pid_t t;
++
++		t = clone(fn, stack + STACK_SIZE, flags, sk_pair);
++		if (t < 0) {
++			perror("clone");
++			exit(1);
++		}
++
++		close(sk_pair[1]);
++
++		if (write(sk_pair[0], &t, sizeof(t)) != sizeof(t)) {
++			perror("read");
++			exit(1);
++		}
++
++		// wait to get killed for various reasons by the tests.
++		while (1)
++			sleep(100);
++	}
++
++	errno = 0;
++	if (read(sk_pair[1], thread, sizeof(*thread)) != sizeof(*thread)) {
++		perror("read");
++		goto cleanup;
++	}
++
++	*tgl_pidfd = sys_pidfd_open(*tgl, 0);
++	if (*tgl_pidfd < 0) {
++		perror("pidfd_open tgl");
++		goto cleanup;
++	}
++
++	*thread_pidfd = sys_pidfd_open(*thread, 0);
++	if (*thread_pidfd < 0) {
++		perror("pidfd");
++		goto cleanup;
++	}
++
++	return 0;
++
++cleanup:
++	kill(*tgl, SIGKILL);
++	if (*tgl_pidfd >= 0)
++		close(*tgl_pidfd);
++	if (*thread_pidfd >= 0)
++		close(*thread_pidfd);
++	return -1;
++}
++
++static int test_non_tgl_basic(void)
++{
++	pid_t tgl, thread;
++	int sk_pair[2], status;
++	int tgl_pidfd = -1, thread_pidfd = -1;
++	int ret = KSFT_FAIL;
++
++	if (socketpair(PF_LOCAL, SOCK_SEQPACKET, 0, sk_pair) < 0) {
++		ksft_print_msg("socketpair failed %s\n", strerror(errno));
++		return KSFT_FAIL;
++	}
++
++	if (fork_task_with_thread(thread_sleep, sk_pair, &tgl, &thread,
++				  &tgl_pidfd, &thread_pidfd) < 0) {
++		return KSFT_FAIL;
++	}
++
++	/*
++	 * KILL of a thread should still kill everyone
++	 */
++	if (sys_pidfd_send_signal(thread_pidfd, SIGKILL, NULL, 0)) {
++		perror("pidfd_send_signal");
++		goto cleanup;
++	}
++
++	errno = 0;
++	if (waitpid(tgl, &status, 0) != tgl) {
++		perror("waitpid tgl");
++		goto cleanup;
++	}
++
++	if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL) {
++		ksft_print_msg("bad exit status %x\n", status);
++		goto cleanup;
++	}
++
++	ret = KSFT_PASS;
++
++cleanup:
++	close(sk_pair[0]);
++	close(sk_pair[1]);
++	close(tgl_pidfd);
++	close(thread_pidfd);
++	return ret;
++}
++
++static int thread_exec(void *arg)
++{
++	int *sk_pair = arg;
++	pid_t thread;
++
++	if (read(sk_pair[0], &thread, sizeof(thread)) != sizeof(thread)) {
++		perror("read");
++		exit(1);
++	}
++
++	execlp("/bin/true", "/bin/true", NULL);
++	return 1;
++}
++
++static int test_non_tgl_exec(void)
++{
++	pid_t tgl, thread;
++	int sk_pair[2];
++	int tgl_pidfd = -1, thread_pidfd = -1;
++	int ret = KSFT_FAIL, ready;
++	struct pollfd pollfd;
++
++	if (socketpair(PF_LOCAL, SOCK_SEQPACKET, 0, sk_pair) < 0) {
++		ksft_print_msg("socketpair failed %s\n", strerror(errno));
++		return KSFT_FAIL;
++	}
++
++	if (fork_task_with_thread(thread_exec, sk_pair, &tgl, &thread,
++				  &tgl_pidfd, &thread_pidfd) < 0) {
++		return KSFT_FAIL;
++	}
++
++	if (write(sk_pair[1], &thread, sizeof(thread)) != sizeof(thread)) {
++		perror("read");
++		goto cleanup;
++	}
++
++	// thread will exec(), so this pidfd should eventually be dead (i.e.
++	// poll should return).
++	pollfd.fd = thread_pidfd;
++	pollfd.events = POLLIN;
++
++	ready = poll(&pollfd, 1, -1);
++	if (ready == -1) {
++		perror("poll");
++		goto cleanup;
++	}
++
++	if (ready != 1) {
++		ksft_print_msg("bad poll result %d\n", ready);
++		goto cleanup;
++	}
++
++	if (pollfd.revents != POLLIN) {
++		ksft_print_msg("bad poll revents: %x\n", pollfd.revents);
++		goto cleanup;
++	}
++
++	errno = 0;
++	if (sys_pidfd_getfd(thread_pidfd, 0, 0) > 0) {
++		ksft_print_msg("got a real fd");
++		goto cleanup;
++	}
++
++	if (errno != ESRCH) {
++		ksft_print_msg("polling invalid thread didn't give ESRCH");
++		goto cleanup;
++	}
++
++	ret = KSFT_PASS;
++
++cleanup:
++	close(sk_pair[0]);
++	close(sk_pair[1]);
++	close(tgl_pidfd);
++	close(thread_pidfd);
++	return ret;
++}
++
++int thread_wait_exit(void *arg)
++{
++	int *sk_pair = arg;
++	pid_t thread;
++
++	if (read(sk_pair[0], &thread, sizeof(thread)) != sizeof(thread)) {
++		perror("read");
++		exit(1);
++	}
++
++	return 0;
++}
++
++static int test_non_tgl_exit(void)
++{
++	pid_t tgl, thread;
++	int sk_pair[2], status;
++	int tgl_pidfd = -1, thread_pidfd = -1;
++	int ret = KSFT_FAIL, ready;
++	struct pollfd pollfd;
++
++	if (socketpair(PF_LOCAL, SOCK_SEQPACKET, 0, sk_pair) < 0) {
++		ksft_print_msg("socketpair failed %s\n", strerror(errno));
++		return KSFT_FAIL;
++	}
++
++	if (fork_task_with_thread(thread_wait_exit, sk_pair, &tgl, &thread,
++				  &tgl_pidfd, &thread_pidfd) < 0) {
++		return KSFT_FAIL;
++	}
++
++	if (write(sk_pair[1], &thread, sizeof(thread)) != sizeof(thread)) {
++		perror("write");
++		goto cleanup;
++	}
++
++	// thread will exit, so this pidfd should eventually be dead (i.e.
++	// poll should return).
++	pollfd.fd = thread_pidfd;
++	pollfd.events = POLLIN;
++
++	ready = poll(&pollfd, 1, -1);
++	if (ready == -1) {
++		perror("poll");
++		goto cleanup;
++	}
++
++	if (ready != 1) {
++		ksft_print_msg("bad poll result %d\n", ready);
++		goto cleanup;
++	}
++
++	if (pollfd.revents != POLLIN) {
++		ksft_print_msg("bad poll revents: %x\n", pollfd.revents);
++		goto cleanup;
++	}
++
++	errno = 0;
++	if (sys_pidfd_getfd(thread_pidfd, 0, 0) > 0) {
++		ksft_print_msg("got a real pidfd");
++		goto cleanup;
++	}
++
++	if (errno != ESRCH) {
++		ksft_print_msg("polling invalid thread didn't give ESRCH");
++		goto cleanup;
++	}
++
++	close(thread_pidfd);
++
++	// ok, but the thread group *leader* should still be alive
++	pollfd.fd = tgl_pidfd;
++	ready = poll(&pollfd, 1, 1);
++	if (ready == -1) {
++		perror("poll");
++		goto cleanup;
++	}
++
++	if (ready != 0) {
++		ksft_print_msg("polling leader returned something?! %x", pollfd.revents);
++		goto cleanup;
++	}
++
++	ret = KSFT_PASS;
++
++cleanup:
++	kill(tgl, SIGKILL);
++	if (waitpid(tgl, &status, 0) != tgl) {
++		perror("waitpid");
++		return KSFT_FAIL;
++	}
++
++	return ret;
++}
++
++#define T(x) { x, #x }
++struct pidfd_non_tgl_test {
++	int (*fn)();
++	const char *name;
++} tests[] = {
++	T(test_non_tgl_basic),
++	T(test_non_tgl_exec),
++	T(test_non_tgl_exit),
++};
++#undef T
++
++int main(int argc, char *argv[])
++{
++	int i, ret = EXIT_SUCCESS;
++
++	for (i = 0; i < ARRAY_SIZE(tests); i++) {
++		switch (tests[i].fn()) {
++		case KSFT_PASS:
++			ksft_test_result_pass("%s\n", tests[i].name);
++			break;
++		case KSFT_SKIP:
++			ksft_test_result_skip("%s\n", tests[i].name);
++			break;
++		default:
++			ret = EXIT_FAILURE;
++			ksft_test_result_fail("%s\n", tests[i].name);
++			break;
++		}
++	}
++
++	return ret;
++}
 -- 
 2.34.1
 
