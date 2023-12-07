@@ -2,57 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CD8808C31
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8835808D22
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443555AbjLGPsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 10:48:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38626 "EHLO
+        id S1443556AbjLGPtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 10:49:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443511AbjLGPr7 (ORCPT
+        with ESMTP id S1443511AbjLGPtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 10:47:59 -0500
+        Thu, 7 Dec 2023 10:49:24 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85C810EB
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:48:05 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49D21C433C8;
-        Thu,  7 Dec 2023 15:48:02 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D93B9
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:49:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9776AC433C7;
+        Thu,  7 Dec 2023 15:49:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701964085;
-        bh=FWZVFHlYxQKIYNgeLHM8IbfXKEZFHFTZmqvJflUZeDk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yq4DrIcI/Ue7Q7skm8ocH4ItscoEQd/Bsn2tge4pepn7rZy98XrnqnRCeLpXYiapA
-         bjrdTXXGRnvF9Ga65TmwRGrSan3IoSOmF7fyvbv7dV8tlpkM2EX+3Abuf5tNnXsQ+E
-         Y1KHXwVTgiP82BntCBjhKg3QOc+wUlU0cLLOdHCBChiKyQdL39+BJNcbUC0y6l6QNo
-         en+XEoiSX9ypcqDpCGn+1J4hBTsYx6+wYnXpSseUDgct+DjN15tEWg5KhPMx356fHL
-         gu6E6bbPeWksQgUle8BqHAxbImDcqAd1msYdbxHMK8y4r6fR/HFx9oXTsEtmBfHxsX
-         x0LsoVw+6E6yA==
-Date:   Thu, 7 Dec 2023 15:47:58 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 15/21] KVM: arm64: Support FEAT_FPMR for guests
-Message-ID: <20074a3e-c735-4f30-b9b6-42ab15d94d5c@sirena.org.uk>
-References: <20231205-arm64-2023-dpisa-v3-0-dbcbcd867a7f@kernel.org>
- <20231205-arm64-2023-dpisa-v3-15-dbcbcd867a7f@kernel.org>
- <87cyvi8kz1.wl-maz@kernel.org>
- <08ae06c7-1654-4dfd-a789-b8e13c87d705@sirena.org.uk>
- <87bkb285ud.wl-maz@kernel.org>
+        s=k20201202; t=1701964170;
+        bh=/u5kEPo+v6kSj/0L0lrQuH79nm8Vys8QGHNxQV73pAk=;
+        h=From:Subject:Date:To:Cc:From;
+        b=Stkh7EhprDaD81vZluQUhrvMjIoSZjLcEtWo58nj1SXn42I1TIrLavuL9gJl05z3H
+         IIk7vVvhvzp96SgdMk1eN/iDUggeXM9ev4gOdaZohOSnwdcgEBXnusNhKgg9unHTbT
+         D1o+cY1WLFOF/81dNokOcGwBnZLO35RU17wqsysoJNrAkcihfqEDsmsmOxUMrtp5TN
+         MGorkNmTAZMtNfP7pLDaMs7ndEEHpo3mILCk+KPJjCwzyoulJTLQJB5A8uICaXNidv
+         HZPjJfzlEjYFd/P6gSGbSNPsuMRBPTHM71DUBvORUJpMJAMYAlxrkJK5KXzhqUA/mc
+         upKLU/GeBmiZw==
+From:   Maxime Ripard <mripard@kernel.org>
+Subject: [PATCH v5 00/44] drm/connector: Create HDMI Connector
+ infrastructure
+Date:   Thu, 07 Dec 2023 16:49:23 +0100
+Message-Id: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="58ab5MdJriGbSay2"
-Content-Disposition: inline
-In-Reply-To: <87bkb285ud.wl-maz@kernel.org>
-X-Cookie: Two is company, three is an orgy.
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIPpcWUC/43MwWrDMBAE0F8JOldhdyVLck/9j5KDam1ikUYGy
+ RhK8L9n6SEhBExOwzDMu6rGNXNTn7urqrzklqcipfvYqWGM5cQ6J+mKgAwEtPp8aXpMl6yHqRQ
+ e5qnqNseZtUPng2fne/JK7mNuMv79ywtKfL+BLKhBgw3Q2XQ0rrNfZ66Ff/dTPamDqAs9pJ5gQ
+ yKR0PeGUkwp+fQimbuEYHBDMiIZCj9wjGxN9C+SfUhIYUOyIg3eAWEXDDh+ktZ1vQE0dbE3jwE
+ AAA==
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sandy Huang <hjc@rock-chips.com>,
+        =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        Maxime Ripard <mripard@kernel.org>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Sui Jingfeng <sui.jingfeng@linux.dev>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8681; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=/u5kEPo+v6kSj/0L0lrQuH79nm8Vys8QGHNxQV73pAk=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKmFL1u413FHb/h/7nzaF4e9D1RrJx23Yjrlfcr9xx+b2
+ EObH5d86ChlYRDjYpAVU2SJETZfEndq1utONr55MHNYmUCGMHBxCsBEPnsx/C/Ur3Es1UmTzVKO
+ yHj8wthj2q2kJH2TIFM9Je1pj/beC2dk2DP7/NNlC9ed/JGet0nFd43m93gXi1u/G/t1Jqxg+n2
+ SmQ8A
+X-Developer-Key: i=mripard@kernel.org; a=openpgp;
+ fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -63,110 +76,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---58ab5MdJriGbSay2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Here's a series that creates some extra infrastructure specifically
+targeted at HDMI controllers.
 
-On Thu, Dec 07, 2023 at 02:06:34PM +0000, Marc Zyngier wrote:
-> Mark Brown <broonie@kernel.org> wrote:
+The idea behind this series came from a recent discussion on IRC during
+which we discussed infoframes generation of i915 vs everything else.
 
-> > > > @@ -517,7 +519,6 @@ struct kvm_vcpu_arch {
-> > > >  	enum fp_type fp_type;
-> > > >  	unsigned int sve_max_vl;
-> > > >  	u64 svcr;
-> > > > -	u64 fpmr;
+Infoframes generation code still requires some decent boilerplate, with
+each driver doing some variation of it.
 
-> > > Why do this change here? Why isn't done like that the first place?
+In parallel, while working on vc4, we ended up converting a lot of i915
+logic (mostly around format / bpc selection, and scrambler setup) to
+apply on top of a driver that relies only on helpers.
 
-> > It didn't seem right to add the register to struct vcpu_sysreg before it
-> > was handled by KVM.  As referenced in the cover letter normally this
-> > wouldn't come up because KVM doesn't rely on the host kernel for
-> > managing register state so we add KVM support then enable the host
-> > kernel but for FPSIMD we're reusing fpsimd_save() so we need the host
-> > kernel support to be in place when we enable KVM.
+While currently sitting in the vc4 driver, none of that logic actually
+relies on any driver or hardware-specific behaviour.
 
-> That doesn't explain why you can't be upfront with it and populate the
-> FPMR entry. In either case, you are wasting a u64.
+The only missing piece to make it shareable are a bunch of extra
+variables stored in a state (current bpc, format, RGB range selection,
+etc.).
 
-So you'd rather just have the register listed in there as part of the
-host support rather than initially excluding it?  Note that the current
-series has the same approach as is currently used for SVCR which is in a
-similar situation.
+The initial implementation was relying on some generic subclass of
+drm_connector to address HDMI connectors, with a bunch of helpers that
+will take care of all the "HDMI Spec" related code. Scrambler setup is
+missing at the moment but can easily be plugged in.
 
-> > I agree that it's not great, the main issue was that fpsimd_state is
-> > both already embedded in uw for hardened usercopy and very widely
-> > referenced by exactly which struct it's in so I was taking a guess as to
-> > what would get the least objections.  The obvious thing would be to add
-> > FPMR to uw and share the whole thing with the hypervisor, if people
-> > don't mind adding another field to uw I could do that?
+The feedback was that creating a connector subclass like was done for
+writeback would prevent the adoption of those helpers since it couldn't
+be used in all situations (like when the connector driver can implement
+multiple output) and required more churn to cast between the
+drm_connector and its subclass. The decision was thus to provide a set
+of helper and to store the required variables in drm_connector and
+drm_connector_state. This what has been implemented now.
 
-> Either that, or you create a KVM-specific structure that contains
-> these fields. If that results in KVM changes, so be it. But I won't
-> take this sort of pointer arithmetic that assumes some pre-defined
-> layout.
+Hans Verkuil also expressed interest in implementing a mechanism in v4l2
+to retrieve infoframes from HDMI receiver and implementing a tool to
+decode (and eventually check) infoframes. His current work on
+edid-decode to enable that based on that series can be found here:
+https://git.linuxtv.org/hverkuil/edid-decode.git/log/?h=hverkuil
 
-Moving fpsimd_state would have a big textual impact on the host code and
-consequent issues with creating conflicts too so I'd rather avoid that.
+And some more context here:
+https://lore.kernel.org/dri-devel/50db7366-cd3d-4675-aaad-b857202234de@xs4all.nl/
 
-> > > We really need to stop piling the save/restore of stuff that isn't
-> > > advertised to the guest.
+This series thus leverages the infoframe generation code to expose it
+through debugfs.
 
-> > I'm not clear what you're referencing here?  The feature is advertised
-> > to the guest via the ID registers and in the past you've pushed back on
-> > making things where the state is just a single register like this
-> > optional.  Do you mean that we should be making this conditional on the
-> > guest ID registers?  If that is the case is there a plan for how that's
-> > supposed to work, set flags when kvm_vcpu_run_pid_change() happens for
-> > example?
+I also used the occasion to unit-test everything but the infoframe
+generation, which can come later once I get a proper understanding of
+what the infoframe are supposed to look like. This required to add some
+extra kunit helpers and infrastructure to have multiple EDIDs and allow
+each test to run with a particular set of capabilities.
 
-> See the beginning of this email. It is high time that we stop enabling
-> everything by default, because this totally breaks VM migration. We
-> already have a huge backlog of these things, and I don't want to add
-> more of it.
+This entire series has been tested on a Pi4, passes all its unittests
+(125 new tests), and has only been build-tested for sunxi and rockchip.
 
-> Which means that at the very least, enabling *any* feature also comes
-> with sanitising the state one way or another when this feature is
-> disabled by userspace.
+Let me know what you think,
+Maxime
 
-> How this is being done is still a work in progress: my current plan is
-> based on a set of trap bits that are computed on a per-VM basis, and
-> some side state that indicates whether the trap handling is for
-> emulation or feature disabling purpose. This will probably reuse the
-> NV infrastructure which has an exhaustive list of the sysregs that can
-> be trapped from EL0/EL1.
+Signed-off-by: Maxime Ripard <mripard@kernel.org>
+---
+Changes in v5:
+- Dropped the connector init arg checking patch, and the related kunit
+  tests
+- Dropped HDMI Vendor infoframes in rockchip inno_hdmi
+- Fixed the build warnings
+- Link to v4: https://lore.kernel.org/r/20231128-kms-hdmi-connector-state-v4-0-c7602158306e@kernel.org
 
-> At the very least, userspace shouldn't be able to observe the state
-> that a guest isn't supposed to generate, and we should be mindful of
-> not creating covert channels.
+Changes in v4:
+- Create unit tests for everything but infoframes
+- Fix a number of bugs identified by the unit tests
+- Rename DRM (Dynamic Range and Mastering) infoframe file to HDR_DRM
+- Drop RFC status
+- Link to v3: https://lore.kernel.org/r/20231031-kms-hdmi-connector-state-v3-0-328b0fae43a7@kernel.org
 
-OK, that does seem much more like what I'd have expected the enablement
-of these extra features to look like (and may well simplify a bunch of
-the existing trap management) though it is a big change in approach.  It
-does greatly expand the scope of what's needed to virtualise the feature
-though, and there's a bunch of other in flight serieses that'd be
-impacted (eg, POR and GCS) and I'm expecting a bunch of overlap until
-the general mechanism gets landed.
+Changes in v3:
+- Made sure the series work on the RaspberryPi4
+- Handle YUV420 in the char clock rate computation
+- Use the maximum bpc value the connector allows at reset
+- Expose the RGB Limited vs Full Range value in the connector state
+  instead of through a helper
+- Fix Broadcast RGB documentation
+- Add more debug logging
+- Small fixes here and there
+- Link to v2: https://lore.kernel.org/r/20230920-kms-hdmi-connector-state-v2-0-17932daddd7d@kernel.org
 
-Based on that I think it might make sense to push the KVM guest support
-for these features out and deal with them separately as part of the new
-approach to trap/feature management.  Probably through pulling the KVM
-bits to the end of the serieses so they're there for people to see.
-Does that sound reasonable to you?
+Changes in v2:
+- Change from a subclass to a set of helpers for drm_connector and
+  drm_connector state
+- Don't assume that all drivers support RGB, YUV420 and YUV422 but make
+  them provide a bitfield instead.
+- Don't assume that all drivers support the Broadcast RGB property but
+  make them call the registration helper.
+- Document the Broacast RGB property
+- Convert the inno_hdmi and sun4i_hdmi driver.
+- Link to v1: https://lore.kernel.org/r/20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org
 
---58ab5MdJriGbSay2
-Content-Type: application/pgp-signature; name="signature.asc"
+---
+Maxime Ripard (44):
+      drm/tests: helpers: Include missing drm_drv header
+      drm/tests: helpers: Add atomic helpers
+      drm/tests: Add helper to create mock plane
+      drm/tests: Add helper to create mock crtc
+      drm/tests: connector: Add tests for drmm_connector_init
+      drm/connector: Introduce an HDMI connector initialization function
+      drm/connector: hdmi: Create an HDMI sub-state
+      drm/connector: hdmi: Add Broadcast RGB property
+      drm/connector: hdmi: Add RGB Quantization Range to the connector state
+      drm/connector: hdmi: Add output BPC to the connector state
+      drm/connector: hdmi: Add support for output format
+      drm/connector: hdmi: Add HDMI compute clock helper
+      drm/connector: hdmi: Calculate TMDS character rate
+      drm/connector: hdmi: Add custom hook to filter TMDS character rate
+      drm/connector: hdmi: Compute bpc and format automatically
+      drm/connector: hdmi: Add Infoframes generation
+      drm/connector: hdmi: Create Infoframe DebugFS entries
+      drm/vc4: hdmi: Create destroy state implementation
+      drm/vc4: hdmi: Switch to HDMI connector
+      drm/vc4: tests: Remove vc4_dummy_plane structure
+      drm/vc4: tests: Convert to plane creation helper
+      drm/rockchip: inno_hdmi: Remove useless mode_fixup
+      drm/rockchip: inno_hdmi: Remove useless copy of drm_display_mode
+      drm/rockchip: inno_hdmi: Switch encoder hooks to atomic
+      drm/rockchip: inno_hdmi: Get rid of mode_set
+      drm/rockchip: inno_hdmi: no need to store vic
+      drm/rockchip: inno_hdmi: Remove unneeded has audio flag
+      drm/rockchip: inno_hdmi: Remove useless input format
+      drm/rockchip: inno_hdmi: Remove useless output format
+      drm/rockchip: inno_hdmi: Remove useless colorimetry
+      drm/rockchip: inno_hdmi: Remove useless enum
+      drm/rockchip: inno_hdmi: Remove tmds rate from structure
+      drm/rockchip: inno_hdmi: Remove useless coeff_csc matrix
+      drm/rockchip: inno_hdmi: Remove useless mode_valid
+      drm/rockchip: inno_hdmi: Drop HDMI Vendor Infoframe support
+      drm/rockchip: inno_hdmi: Move infoframe disable to separate function
+      drm/rockchip: inno_hdmi: Switch to infoframe type
+      drm/rockchip: inno_hdmi: Remove unused drm device pointer
+      drm/rockchip: inno_hdmi: Switch to HDMI connector
+      drm/sun4i: hdmi: Convert encoder to atomic
+      drm/sun4i: hdmi: Move mode_set into enable
+      drm/sun4i: hdmi: Switch to container_of_const
+      drm/sun4i: hdmi: Consolidate atomic_check and mode_valid
+      drm/sun4i: hdmi: Switch to HDMI connector
 
------BEGIN PGP SIGNATURE-----
+ Documentation/gpu/kms-properties.csv               |    1 -
+ drivers/gpu/drm/Kconfig                            |    1 +
+ drivers/gpu/drm/drm_atomic.c                       |   11 +
+ drivers/gpu/drm/drm_atomic_state_helper.c          |  659 ++++++++
+ drivers/gpu/drm/drm_atomic_uapi.c                  |    4 +
+ drivers/gpu/drm/drm_connector.c                    |  243 +++
+ drivers/gpu/drm/drm_debugfs.c                      |  110 ++
+ drivers/gpu/drm/rockchip/inno_hdmi.c               |  346 +---
+ drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c             |  203 ++-
+ drivers/gpu/drm/tests/Makefile                     |    1 +
+ .../gpu/drm/tests/drm_atomic_state_helper_test.c   | 1728 ++++++++++++++++++++
+ drivers/gpu/drm/tests/drm_connector_test.c         | 1227 +++++++++++++-
+ drivers/gpu/drm/tests/drm_kunit_edid.h             |  482 ++++++
+ drivers/gpu/drm/tests/drm_kunit_helpers.c          |  150 ++
+ drivers/gpu/drm/vc4/tests/vc4_mock.c               |    6 +-
+ drivers/gpu/drm/vc4/tests/vc4_mock.h               |    9 +-
+ drivers/gpu/drm/vc4/tests/vc4_mock_plane.c         |   44 +-
+ drivers/gpu/drm/vc4/vc4_hdmi.c                     |  626 +------
+ drivers/gpu/drm/vc4/vc4_hdmi.h                     |   44 +-
+ drivers/gpu/drm/vc4/vc4_hdmi_phy.c                 |    6 +-
+ include/drm/drm_atomic_state_helper.h              |   12 +
+ include/drm/drm_connector.h                        |  257 +++
+ include/drm/drm_kunit_helpers.h                    |   23 +
+ 23 files changed, 5202 insertions(+), 991 deletions(-)
+---
+base-commit: 90d50b8d85834e73536fdccd5aa913b30494fef0
+change-id: 20230814-kms-hdmi-connector-state-616787e67927
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVx6S4ACgkQJNaLcl1U
-h9CR4Af+O4MzssULY33iRz6zO7cFJSjHaOxMygdFMyXdgxFK0rHMqPGmPw6qlM6q
-+Hf8ZAHcIpTSyXX58BORU8FZvwmvPtWnLpmBiNfIwxIGdV6SKfm86ShyT9A3f90x
-GKaiNHqz/Yya8abt0fqHGGiMiXy8LJ14+D0x8QteqFeb9Zdq6IWdSyEGV7kJx1pw
-VZ03L7wab3AonUsZQII+0tuVcv+blzO2oLenzYlq0GMZgUKX8MfDQthsUBy/bRiO
-VBlmDT+kegDD9MlEMsFo5yiVs32teyIU1OHRpV1YaqOZtWPB6rOdKDEPkkxSourz
-Q92uzr8z9r9oTqyWk0MkVCe4jotIiQ==
-=jKm6
------END PGP SIGNATURE-----
+Best regards,
+-- 
+Maxime Ripard <mripard@kernel.org>
 
---58ab5MdJriGbSay2--
