@@ -2,70 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 272C18089C0
+	by mail.lfdr.de (Postfix) with ESMTP id 8BAEB8089C1
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442832AbjLGOB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:01:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55362 "EHLO
+        id S1442860AbjLGOCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:02:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232923AbjLGOB4 (ORCPT
+        with ESMTP id S235265AbjLGOCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:01:56 -0500
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A701610F3
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:02:02 -0800 (PST)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5d3c7ef7b31so7556437b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 06:02:02 -0800 (PST)
+        Thu, 7 Dec 2023 09:02:02 -0500
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14E610F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:02:06 -0800 (PST)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5d33574f64eso7750627b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 06:02:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701957721; x=1702562521; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701957726; x=1702562526; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xqSN2wz/zGfROIqFiurJMPD+/BJpUqBprXGsU0gwv9Q=;
-        b=kxLlZvpqxT4FoowXREhO+D/r3/lncVGKrOhheT1Q8TsbSJG5FAscSUOWyLGiyBXgDH
-         mtmKRe+GT6p40OIScxDv5Nki87K9XWRs+a8/NiLa54PMSfrNc4CTuHrpjZvkspPw37/5
-         2e8JGMElffVGJCb+cZ/uQW0fewQclDYAykaxesgj5OazgG6HoziVZTbvSm4cXrN3iOk0
-         hfKk5z3dJLdrtBv8VROAMNKMGkIx+CyA8StbXGEfneD1zEWfcPZJYTsnuahuEVaWB430
-         3YaHCYz8Om6T1+GrIqhSrqoLQn8HRzqj9Odn9FApmIt18lQ9WRdyxs8xhjHuX+APk2+J
-         Q16g==
+        bh=8G9fbOrQ4XzSAmbK144ee010XvpvgmM3YlNhRHIsD0Y=;
+        b=lR8w7jqfx3Vp7uClprER2dUrPddo9nZOVCcmmmmrQusIt9ZoZk3hgHt/6GFd6h/u6/
+         eSgHCCcrNuhxUGOyXSDbW0+XzRAc8h0shXzudNxCRL0ARLw/EUNqviNuCAMz7Ky+0Xl7
+         WD6leWW4+bG5lypgp0QKCHKtukQQYWJdLzjVEE7jhL7lGcxlE/iiAiX4BELzwvGm6AE0
+         DDRcUF9xt5IsIcS0lYvtyD1P2GF2pcm3/7hx/WS1yWrcuhlpR0LHYJ+ijHCiKPlBZpfL
+         hJ90+RXChycPYag6wgbEUNR+mwjBt0We/E5b6rHZ25grL+SawIvLBt+V4p4aKpkkk5vV
+         ArYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701957721; x=1702562521;
+        d=1e100.net; s=20230601; t=1701957726; x=1702562526;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xqSN2wz/zGfROIqFiurJMPD+/BJpUqBprXGsU0gwv9Q=;
-        b=iwrDNW3knYsjMoCtQqb/fCyKDc+fRITy/F8+0nfRikaH/NjGm3AwsLZlZcjoyjxAtx
-         1iEwCpA+DWdgJgxVDFvM4xGhUElH9l36RbgmUDsptZzOMDpyhboXL7fhQ88ZUSxFiqwx
-         Pgou84RYJbMDRKg3G3y3grO/dFxcIgTxMQgNHoRwaTaum6RTWydtpGMdQ+o1zrkmrZAO
-         uFHtYgLtxhX2Ca8V0/h24Dhnx38yG/QJmNtC4cQ1RFjFNOps90JSILmBRsQAC9e/4el+
-         oaISAlfoQBGu4+O9NcF/fNH3XibrejBciSlNir6homMeYrvYt834QnOsKxudLdvZVsu+
-         8L3w==
-X-Gm-Message-State: AOJu0Yy2FWIFsa7GlYdM7X2zgbXp+ntXE3O+gyMDiFAVsnzK6TOU5SSl
-        mbxe6nTvul3/gEhvfXjfs83zPCSXhC22Sg6DJqULCg==
-X-Google-Smtp-Source: AGHT+IH3A+kfMVFWXCHHzW1EoiuSi/T1nkVcCCM0Y1P3XBgusQEyXxhBLp9MTbatm83rnaE5ppyGAiBDsLZJiNAzu+I=
-X-Received: by 2002:a0d:d88b:0:b0:5d7:1941:3556 with SMTP id
- a133-20020a0dd88b000000b005d719413556mr2618248ywe.61.1701957721714; Thu, 07
- Dec 2023 06:02:01 -0800 (PST)
+        bh=8G9fbOrQ4XzSAmbK144ee010XvpvgmM3YlNhRHIsD0Y=;
+        b=scpHBcKGtY9qr0w1qhsueOADaIurvjvBznRdFnLZ0tlSh1atyE2Yjvg6mEOi4lXSjl
+         H7B8/eRaaX62//O0yB8ZdNmZYHvFw9K8wupg5pWXIlIAZ7P3072eARfOZjUh2ljidPkQ
+         1x75GffMnQEPUdENh6efAUvk4I481B+fqmqpIGxlhXYsYQzHnMVa3gNSsYQsJW/vOub1
+         dLKHr0lLjxHVmABp2kzvPnqR5tqdqyc8M3jrbSyOXHCD6G4pEw2oQCcItcvoKfQ7ghLT
+         BBNkYXS7oa3KjQvmzNnTpMcLRM7YnQiCSKPCzPHyA7kgC86bHdf9/wfTZ4+PPTTn4B6q
+         2tQA==
+X-Gm-Message-State: AOJu0YwB4lYoUxYKesxMIF4AHFMofaX/kkFjiZw72NrO+Rv4aLiklV39
+        D5f4G8W2d9Ev/WjxZbd6/2gifpwQIt9kaPYUHG/3Tg==
+X-Google-Smtp-Source: AGHT+IHNpZnNhVo3xArPaV4ih/YPMpwg+IyPULyN7ddI6LxkxEThpwK+5zFMwyykgb8b+mZL6gHUbxduL3+w0s0syb8=
+X-Received: by 2002:a05:690c:f85:b0:5d7:1940:b38b with SMTP id
+ df5-20020a05690c0f8500b005d71940b38bmr2721173ywb.87.1701957725928; Thu, 07
+ Dec 2023 06:02:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20231201102747.3854573-1-treapking@chromium.org>
-In-Reply-To: <20231201102747.3854573-1-treapking@chromium.org>
+References: <20231201153143.1449753-1-jorge@foundries.io>
+In-Reply-To: <20231201153143.1449753-1-jorge@foundries.io>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 7 Dec 2023 15:01:25 +0100
-Message-ID: <CAPDyKFrAvkzgHUttY_mVAHK3HXCV_eE6=KhQkdQyLq22zstX8A@mail.gmail.com>
-Subject: Re: [PATCH v3] mmc: mtk-sd: Increase the verbosity of msdc_track_cmd_data
-To:     Pin-yen Lin <treapking@chromium.org>
-Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ot_shunxi.zhang@mediatek.corp-partner.google.com,
-        linux-mediatek@lists.infradead.org,
-        Chen-Yu Tsai <wenst@chromium.org>, linux-mmc@vger.kernel.org
+Date:   Thu, 7 Dec 2023 15:01:30 +0100
+Message-ID: <CAPDyKFrkX-=72=cQKd_3Yand-9ovcvXbFNA3uLKFSCccqBgT4Q@mail.gmail.com>
+Subject: Re: [PATCHv4] mmc: rpmb: fixes pause retune on all RPMB partitions.
+To:     Jorge Ramirez-Ortiz <jorge@foundries.io>
+Cc:     linus.walleij@linaro.org, adrian.hunter@intel.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,50 +68,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Dec 2023 at 11:27, Pin-yen Lin <treapking@chromium.org> wrote:
+On Fri, 1 Dec 2023 at 16:31, Jorge Ramirez-Ortiz <jorge@foundries.io> wrote:
 >
-> This log message is necessary for debugging, so enable it by default to
-> debug issues that are hard to reproduce locally.
+> When RPMB was converted to a character device, it added support for
+> multiple RPMB partitions (Commit 97548575bef3 ("mmc: block: Convert RPMB
+> to a character device").
 >
-> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+> One of the changes in this commit was transforming the variable
+> target_part defined in __mmc_blk_ioctl_cmd into a bitmask.
+>
+> This inadvertedly regressed the validation check done in
+> mmc_blk_part_switch_pre() and mmc_blk_part_switch_post().
+>
+> This commit fixes that regression.
+>
+> Fixes: 97548575bef3 ("mmc: block: Convert RPMB to a character device")
+> Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Cc: <stable@vger.kernel.org> # v4.14+
 
-Applied for next, thanks!
+Applied for fixes, thanks!
 
 Kind regards
 Uffe
 
 
->
 > ---
 >
-> Changes in v3:
-> - Only print the warning when -ETIMEDOUT or not in tuning process
+>   v2:
+>      fixes parenthesis around condition
+>   v3:
+>      adds stable to commit header
+>   v4:
+>      fixes the stable version to v4.14
+>      adds Reviewed-by
 >
-> Changes in v2:
-> - Use dev_warn() instead of dev_err()
+>  drivers/mmc/core/block.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 >
->  drivers/mmc/host/mtk-sd.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-> index 97f7c3d4be6e..6ae5e0a9fca9 100644
-> --- a/drivers/mmc/host/mtk-sd.c
-> +++ b/drivers/mmc/host/mtk-sd.c
-> @@ -1149,9 +1149,11 @@ static void msdc_recheck_sdio_irq(struct msdc_host *host)
->
->  static void msdc_track_cmd_data(struct msdc_host *host, struct mmc_command *cmd)
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 152dfe593c43..13093d26bf81 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -851,9 +851,10 @@ static const struct block_device_operations mmc_bdops = {
+>  static int mmc_blk_part_switch_pre(struct mmc_card *card,
+>                                    unsigned int part_type)
 >  {
-> -       if (host->error)
-> -               dev_dbg(host->dev, "%s: cmd=%d arg=%08X; host->error=0x%08X\n",
-> -                       __func__, cmd->opcode, cmd->arg, host->error);
-> +       if (host->error &&
-> +           ((!mmc_op_tuning(cmd->opcode) && !host->hs400_tuning) ||
-> +            cmd->error == -ETIMEDOUT))
-> +               dev_warn(host->dev, "%s: cmd=%d arg=%08X; host->error=0x%08X\n",
-> +                        __func__, cmd->opcode, cmd->arg, host->error);
->  }
+> +       const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_RPMB;
+>         int ret = 0;
 >
->  static void msdc_request_done(struct msdc_host *host, struct mmc_request *mrq)
+> -       if (part_type == EXT_CSD_PART_CONFIG_ACC_RPMB) {
+> +       if ((part_type & mask) == mask) {
+>                 if (card->ext_csd.cmdq_en) {
+>                         ret = mmc_cmdq_disable(card);
+>                         if (ret)
+> @@ -868,9 +869,10 @@ static int mmc_blk_part_switch_pre(struct mmc_card *card,
+>  static int mmc_blk_part_switch_post(struct mmc_card *card,
+>                                     unsigned int part_type)
+>  {
+> +       const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_RPMB;
+>         int ret = 0;
+>
+> -       if (part_type == EXT_CSD_PART_CONFIG_ACC_RPMB) {
+> +       if ((part_type & mask) == mask) {
+>                 mmc_retune_unpause(card->host);
+>                 if (card->reenable_cmdq && !card->ext_csd.cmdq_en)
+>                         ret = mmc_cmdq_enable(card);
+> @@ -3143,4 +3145,3 @@ module_exit(mmc_blk_exit);
+>
+>  MODULE_LICENSE("GPL");
+>  MODULE_DESCRIPTION("Multimedia Card (MMC) block device driver");
+> -
 > --
-> 2.43.0.rc2.451.g8631bc7472-goog
->
+> 2.34.1
