@@ -2,189 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4C8807DA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B2E807DA4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:11:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441987AbjLGBLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 20:11:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49404 "EHLO
+        id S1442061AbjLGBLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 20:11:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441961AbjLGBLM (ORCPT
+        with ESMTP id S1441961AbjLGBLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 20:11:12 -0500
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F00B10D;
-        Wed,  6 Dec 2023 17:11:19 -0800 (PST)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-5906eac104bso80758eaf.2;
-        Wed, 06 Dec 2023 17:11:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701911478; x=1702516278; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O2iQ4GZaNaP4TLuVf9scG6OMfAEhFr0GcB530VPLhoU=;
-        b=mc2XVfQO1QHhrSD+ppXwi5+S8WGod3W/y74JxPD52WcjvSFjIEZhCG7cnX7qZtVMRM
-         vsHq2uqVAdp4otTfWuS4WFFBkb5kpgMLYJOiV79dHXB0OCyVNBD20fWg9sW6UK9JrQ/A
-         cUCxvqyh7tiSri3UoRKiPhNHXrcPofCU+GKI818g8Eum3zGyMq9BDl2KgUM5zIhA3NgY
-         fshV58sz9U2hfpyPnO9M21AogCdaR4aJUzIDmsu8mHRcldevgKZNVpSXftH4zYyhvXas
-         83NAdbG0YXt6wFahhJBM4hNnwqyEhLh9yPHGZfhS60PaBpS3FmNkZmxamUpk4ugtOyhN
-         ekVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701911478; x=1702516278;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O2iQ4GZaNaP4TLuVf9scG6OMfAEhFr0GcB530VPLhoU=;
-        b=rUSanU991ZVB7yammGONyQ5ymVR1/ZWc3arJnnG0n+j7sdAJlkaoaZ/6M605vNf9uP
-         /Hb1x5Me+l1SrfLRwEcKL2ZeMcwx+gslHwgs9yG5S8DrGMhhFSciz14momx9z7Omwpr6
-         gY4+NrilFYQw8jqDqqIvjdT09PuRag4vwQSYKjNFxVVeMNv09gHoev059CpNqAFiwnPs
-         oZeSp2+OF+0tacrhu72qBQXhsVVcLRXfeRSOdgXCa02u+1KDiQEJasWMvkxuWA6URzXG
-         f4/phFkHOzr2/p/EOmmWTLH2ULl7BLh0kJKm7hY4dAxNyeOwxWc9fDGyS8hnELchZeD2
-         Z2Ww==
-X-Gm-Message-State: AOJu0YxNBAL+yeqFm+y6WFpzhJmclgRHFCOikdxliuiXXu3GZfbWWzzf
-        LPwiCL+4G3Bqst66N+PFPK8=
-X-Google-Smtp-Source: AGHT+IGc9dkQ2KVuG2CkWKzx9T1jI0zfnEUmwYynupuHvD497P297MjLlX6Fmpv412ssI2djQI620w==
-X-Received: by 2002:a05:6358:4320:b0:16e:27b5:3b25 with SMTP id r32-20020a056358432000b0016e27b53b25mr1981299rwc.31.1701911478109;
-        Wed, 06 Dec 2023 17:11:18 -0800 (PST)
-Received: from localhost.localdomain ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id p2-20020aa78602000000b006be5af77f06sm141705pfn.2.2023.12.06.17.11.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 17:11:17 -0800 (PST)
-Date:   Thu, 7 Dec 2023 10:11:02 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wed, 6 Dec 2023 20:11:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67203A4
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 17:11:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701911482;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ExJdtbKmNQpxsox6HxA6icn3NiLLvZaWuFWfZqOZ2U4=;
+        b=XsPkfrC0JflgYC1YZnYxISmZ2R4ygD2F+qlX5Qm1grUpDoD67G4DzjXwY3K7wOYLwqCZHM
+        8HpxWalVdlj/XetPUfXhxZ228bp/NKfc5OdkyzRddQzh/rFyGAlJyrob8L+6rxhE63+euZ
+        ocIYrp5tfYcQP302sl9zPtchPfjrTQg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-609-MjrAbh1mMma7D6M1fsK8pQ-1; Wed,
+ 06 Dec 2023 20:11:21 -0500
+X-MC-Unique: MjrAbh1mMma7D6M1fsK8pQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AF34E283780C;
+        Thu,  7 Dec 2023 01:11:20 +0000 (UTC)
+Received: from fedora (unknown [10.72.120.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 238F7492BC6;
+        Thu,  7 Dec 2023 01:11:13 +0000 (UTC)
+Date:   Thu, 7 Dec 2023 09:11:09 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 15/21] mm/slab: move struct kmem_cache_node from
- slab.h to slub.c
-Message-ID: <ZXEbpvUpmhOBZvuH@localhost.localdomain>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-15-9c9c70177183@suse.cz>
+        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        Yi Zhang <yi.zhang@redhat.com>,
+        Guangwu Zhang <guazhang@redhat.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH V4 resend] lib/group_cpus.c: avoid to acquire cpu hotplug
+ lock in group_cpus_evenly
+Message-ID: <ZXEbrXwzkNMrg+bH@fedora>
+References: <20231120083559.285174-1-ming.lei@redhat.com>
+ <ZXEUyH/38KeATuF4@yury-ThinkPad>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231120-slab-remove-slab-v2-15-9c9c70177183@suse.cz>
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <ZXEUyH/38KeATuF4@yury-ThinkPad>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 07:34:26PM +0100, Vlastimil Babka wrote:
-> The declaration and associated helpers are not used anywhere else
-> anymore.
+On Wed, Dec 06, 2023 at 04:41:44PM -0800, Yury Norov wrote:
+> Hi Ming,
 > 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/slab.h | 29 -----------------------------
->  mm/slub.c | 27 +++++++++++++++++++++++++++
->  2 files changed, 27 insertions(+), 29 deletions(-)
+> On Mon, Nov 20, 2023 at 04:35:59PM +0800, Ming Lei wrote:
+> > group_cpus_evenly() could be part of storage driver's error handler,
+> > such as nvme driver, when may happen during CPU hotplug, in which
+> > storage queue has to drain its pending IOs because all CPUs associated
+> > with the queue are offline and the queue is becoming inactive. And
+> > handling IO needs error handler to provide forward progress.
+> > 
+> > Then dead lock is caused:
+> > 
+> > 1) inside CPU hotplug handler, CPU hotplug lock is held, and blk-mq's
+> > handler is waiting for inflight IO
+> > 
+> > 2) error handler is waiting for CPU hotplug lock
+> > 
+> > 3) inflight IO can't be completed in blk-mq's CPU hotplug handler because
+> > error handling can't provide forward progress.
+> > 
+> > Solve the deadlock by not holding CPU hotplug lock in group_cpus_evenly(),
+> > in which two stage spreads are taken: 1) the 1st stage is over all present
+> > CPUs; 2) the end stage is over all other CPUs.
+> > 
+> > Turns out the two stage spread just needs consistent 'cpu_present_mask', and
+> > remove the CPU hotplug lock by storing it into one local cache. This way
+> > doesn't change correctness, because all CPUs are still covered.
+> > 
+> > Cc: Keith Busch <kbusch@kernel.org>
+> > Cc: linux-nvme@lists.infradead.org
+> > Cc: linux-block@vger.kernel.org
+> > Reported-by: Yi Zhang <yi.zhang@redhat.com>
+> > Reported-by: Guangwu Zhang <guazhang@redhat.com>
+> > Tested-by: Guangwu Zhang <guazhang@redhat.com>
+> > Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
+> > Reviewed-by: Jens Axboe <axboe@kernel.dk>
+> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> > ---
+> >  lib/group_cpus.c | 22 ++++++++++++++++------
+> >  1 file changed, 16 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/lib/group_cpus.c b/lib/group_cpus.c
+> > index aa3f6815bb12..ee272c4cefcc 100644
+> > --- a/lib/group_cpus.c
+> > +++ b/lib/group_cpus.c
+> > @@ -366,13 +366,25 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+> >  	if (!masks)
+> >  		goto fail_node_to_cpumask;
+> >  
+> > -	/* Stabilize the cpumasks */
+> > -	cpus_read_lock();
+> >  	build_node_to_cpumask(node_to_cpumask);
+> >  
+> > +	/*
+> > +	 * Make a local cache of 'cpu_present_mask', so the two stages
+> > +	 * spread can observe consistent 'cpu_present_mask' without holding
+> > +	 * cpu hotplug lock, then we can reduce deadlock risk with cpu
+> > +	 * hotplug code.
+> > +	 *
+> > +	 * Here CPU hotplug may happen when reading `cpu_present_mask`, and
+> > +	 * we can live with the case because it only affects that hotplug
+> > +	 * CPU is handled in the 1st or 2nd stage, and either way is correct
+> > +	 * from API user viewpoint since 2-stage spread is sort of
+> > +	 * optimization.
+> > +	 */
+> > +	cpumask_copy(npresmsk, data_race(cpu_present_mask));
 > 
-> diff --git a/mm/slab.h b/mm/slab.h
-> index a81ef7c9282d..5ae6a978e9c2 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -588,35 +588,6 @@ static inline size_t slab_ksize(const struct kmem_cache *s)
->  	return s->size;
->  }
->  
-> -
-> -/*
-> - * The slab lists for all objects.
-> - */
-> -struct kmem_cache_node {
-> -	spinlock_t list_lock;
-> -	unsigned long nr_partial;
-> -	struct list_head partial;
-> -#ifdef CONFIG_SLUB_DEBUG
-> -	atomic_long_t nr_slabs;
-> -	atomic_long_t total_objects;
-> -	struct list_head full;
-> -#endif
-> -};
-> -
-> -static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int node)
-> -{
-> -	return s->node[node];
-> -}
-> -
-> -/*
-> - * Iterator over all nodes. The body will be executed for each node that has
-> - * a kmem_cache_node structure allocated (which is true for all online nodes)
-> - */
-> -#define for_each_kmem_cache_node(__s, __node, __n) \
-> -	for (__node = 0; __node < nr_node_ids; __node++) \
-> -		 if ((__n = get_node(__s, __node)))
-> -
-> -
->  #ifdef CONFIG_SLUB_DEBUG
->  void dump_unreclaimable_slab(void);
->  #else
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 844e0beb84ee..cc801f8258fe 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -396,6 +396,33 @@ static inline void stat(const struct kmem_cache *s, enum stat_item si)
->  #endif
->  }
->  
-> +/*
-> + * The slab lists for all objects.
-> + */
-> +struct kmem_cache_node {
-> +	spinlock_t list_lock;
-> +	unsigned long nr_partial;
-> +	struct list_head partial;
-> +#ifdef CONFIG_SLUB_DEBUG
-> +	atomic_long_t nr_slabs;
-> +	atomic_long_t total_objects;
-> +	struct list_head full;
-> +#endif
-> +};
-> +
-> +static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int node)
-> +{
-> +	return s->node[node];
-> +}
-> +
-> +/*
-> + * Iterator over all nodes. The body will be executed for each node that has
-> + * a kmem_cache_node structure allocated (which is true for all online nodes)
-> + */
-> +#define for_each_kmem_cache_node(__s, __node, __n) \
-> +	for (__node = 0; __node < nr_node_ids; __node++) \
-> +		 if ((__n = get_node(__s, __node)))
-> +
->  /*
->   * Tracks for which NUMA nodes we have kmem_cache_nodes allocated.
->   * Corresponds to node_state[N_NORMAL_MEMORY], but can temporarily
-> 
-> -- 
+> Now that you initialize the npresmsk explicitly, you can allocate it
+> using alloc_cpumask_var().
 
-Looks good to me,
-Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Indeed, but this way is actually before this patch, and not related with
+this fix.
 
-> 2.42.1
 > 
+> The same actually holds for nmsk too, and even before this patch. Maybe
+> fix it in a separate prepending patch?
+
+Yeah, 'nmsk' is similar with 'npresmsk', and it is not fix, just one
+optimization.
+
+group_cpus_evenly() is only run in slow path, so this kind of
+micro-optimization is not urgent and should be done in standalone
+patch, and even we can live with it.
+
 > 
+> > +
+> >  	/* grouping present CPUs first */
+> >  	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+> > -				  cpu_present_mask, nmsk, masks);
+> > +				  npresmsk, nmsk, masks);
+> >  	if (ret < 0)
+> >  		goto fail_build_affinity;
+> >  	nr_present = ret;
+> > @@ -387,15 +399,13 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+> >  		curgrp = 0;
+> >  	else
+> >  		curgrp = nr_present;
+> > -	cpumask_andnot(npresmsk, cpu_possible_mask, cpu_present_mask);
+> > +	cpumask_andnot(npresmsk, cpu_possible_mask, npresmsk);
+> >  	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+> >  				  npresmsk, nmsk, masks);
+> 
+> The first thing the helper does is checking if nprepmask is empty.
+> cpumask_andnot() returns false in that case. So, assuming that present
+> cpumask in the previous call can't be empty, we can save few cycles if
+> drop corresponding check in the helper and do like this:
+>         
+> 	if (cpumask_andnot(npresmsk, cpu_possible_mask, npresmsk) == 0) {
+>                 nr_others = 0;
+>                 goto fail_build_affinity;
+>         }
+> 
+>   	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+>   				  npresmsk, nmsk, masks);
+> 
+> Although, it's not related to this patch directly. So, if you fix
+> zalloc_cpumask_var(), the patch looks good to me.
+
+I'd rather not make things complicated, as mentioned this API is only
+run in slow path.
+
+> 
+> Reviewed-by: Yury Norov <yury.norov@gmail.com>
+
+Thanks for the review!
+
+
+Thanks, 
+Ming
+
