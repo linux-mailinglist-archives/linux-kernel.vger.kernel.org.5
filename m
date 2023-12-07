@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 858338090A6
+	by mail.lfdr.de (Postfix) with ESMTP id 30F7A8090A5
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443758AbjLGSmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 13:42:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
+        id S1443759AbjLGSnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 13:43:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235228AbjLGSmp (ORCPT
+        with ESMTP id S233135AbjLGSnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 13:42:45 -0500
+        Thu, 7 Dec 2023 13:43:08 -0500
 Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB71FA;
-        Thu,  7 Dec 2023 10:42:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894E89A;
+        Thu,  7 Dec 2023 10:43:14 -0800 (PST)
 Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
-        by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B7HfSl7032190;
-        Thu, 7 Dec 2023 13:42:32 -0500
+        by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B7HfSZx032180;
+        Thu, 7 Dec 2023 13:42:55 -0500
 Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3uujny883u-1
+        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3uujny885u-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Dec 2023 13:42:32 -0500 (EST)
+        Thu, 07 Dec 2023 13:42:55 -0500 (EST)
 Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 3B7IgV4Y024765
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 3B7Igs1K024804
         (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 7 Dec 2023 13:42:31 -0500
+        Thu, 7 Dec 2023 13:42:54 -0500
 Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
  ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Thu, 7 Dec 2023 13:42:30 -0500
+ 15.2.986.14; Thu, 7 Dec 2023 13:42:53 -0500
 Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
  ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Thu, 7 Dec 2023 13:42:30 -0500
+ 15.2.986.14; Thu, 7 Dec 2023 13:42:53 -0500
 Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
  (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Thu, 7 Dec 2023 13:42:30 -0500
+ Transport; Thu, 7 Dec 2023 13:42:52 -0500
 Received: from work.ad.analog.com (HYB-hERzalRezfV.ad.analog.com [10.65.205.129])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3B7IgBHa015404;
-        Thu, 7 Dec 2023 13:42:13 -0500
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3B7IgZ8k015412;
+        Thu, 7 Dec 2023 13:42:38 -0500
 From:   Marcelo Schmitt <marcelo.schmitt@analog.com>
 To:     <apw@canonical.com>, <joe@perches.com>, <dwaipayanray1@gmail.com>,
         <lukas.bulwahn@gmail.com>, <paul.cercueil@analog.com>,
@@ -49,9 +49,9 @@ To:     <apw@canonical.com>, <joe@perches.com>, <dwaipayanray1@gmail.com>,
         <dan.carpenter@linaro.org>, <marcelo.schmitt1@gmail.com>
 CC:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 10/13] dt-bindings: iio: Add AD7091R-8
-Date:   Thu, 7 Dec 2023 15:42:10 -0300
-Message-ID: <53d55f3195b15bd8d47387e296036730ea270770.1701971344.git.marcelo.schmitt1@gmail.com>
+Subject: [PATCH v3 11/13] iio: adc: Split AD7091R-5 config symbol
+Date:   Thu, 7 Dec 2023 15:42:35 -0300
+Message-ID: <70d09d71634b1f969255a4288000a300d05f8668.1701971344.git.marcelo.schmitt1@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1701971344.git.marcelo.schmitt1@gmail.com>
 References: <cover.1701971344.git.marcelo.schmitt1@gmail.com>
@@ -59,8 +59,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: zhAr0SNu0RCl1CD1qdR3fjPhq4ulSPrX
-X-Proofpoint-ORIG-GUID: zhAr0SNu0RCl1CD1qdR3fjPhq4ulSPrX
+X-Proofpoint-GUID: AHwA5D6TI6eA7pB_Arwq3GuBgsnmXVZJ
+X-Proofpoint-ORIG-GUID: AHwA5D6TI6eA7pB_Arwq3GuBgsnmXVZJ
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-02_01,2023-11-30_01,2023-05-22_02
@@ -79,119 +79,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree documentation for AD7091R-8.
+Split AD7091R-5 kconfig symbol into one symbol for the base AD7091R driver
+and another one for the I2C interface AD7091R-5 driver.
 
 Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
 ---
- .../bindings/iio/adc/adi,ad7091r8.yaml        | 99 +++++++++++++++++++
- 1 file changed, 99 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
+ drivers/iio/adc/Kconfig  | 4 ++++
+ drivers/iio/adc/Makefile | 3 ++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
-new file mode 100644
-index 000000000000..02320778f225
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
-@@ -0,0 +1,99 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/adc/adi,ad7091r8.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+index 1e2b7a2c67c6..dcf45d7478e1 100644
+--- a/drivers/iio/adc/Kconfig
++++ b/drivers/iio/adc/Kconfig
+@@ -36,9 +36,13 @@ config AD4130
+ 	  To compile this driver as a module, choose M here: the module will be
+ 	  called ad4130.
+ 
++config AD7091R
++	tristate
 +
-+title: Analog Devices AD7091R8 8-Channel 12-Bit ADC
-+
-+maintainers:
-+  - Marcelo Schmitt <marcelo.schmitt@analog.com>
-+
-+description: |
-+  Analog Devices AD7091R-8 8-Channel 12-Bit ADC
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/AD7091R-2_7091R-4_7091R-8.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,ad7091r2
-+      - adi,ad7091r4
-+      - adi,ad7091r8
-+
-+  reg:
-+    maxItems: 1
-+
-+  vref-supply: true
-+
-+  adi,conversion-start-gpios:
-+    description:
-+      GPIO connected to the CONVST pin.
-+      This logic input is used to initiate conversions on the analog
-+      input channels.
-+    maxItems: 1
-+
-+  reset-gpios:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+patternProperties:
-+  "^channel@[0-7]$":
-+    $ref: adc.yaml
-+    type: object
-+    description: Represents the external channels which are connected to the ADC.
-+
-+    properties:
-+      reg:
-+        minimum: 0
-+        maximum: 7
-+
-+    required:
-+      - reg
-+
-+required:
-+  - compatible
-+  - reg
-+  - adi,conversion-start-gpios
-+
-+allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+
-+  # AD7091R-2 does not have ALERT/BUSY/GPO pin
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - adi,ad7091r4
-+              - adi,ad7091r8
-+    then:
-+      properties:
-+        interrupts: true
-+    else:
-+      properties:
-+        interrupts: false
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/gpio/gpio.h>
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        adc@0 {
-+                compatible = "adi,ad7091r8";
-+                reg = <0x0>;
-+                spi-max-frequency = <45454545>;
-+                vref-supply = <&adc_vref>;
-+                adi,conversion-start-gpios = <&gpio 25 GPIO_ACTIVE_LOW>;
-+                reset-gpios = <&gpio 27 GPIO_ACTIVE_LOW>;
-+                interrupts = <22 IRQ_TYPE_EDGE_FALLING>;
-+                interrupt-parent = <&gpio>;
-+        };
-+    };
-+...
+ config AD7091R5
+ 	tristate "Analog Devices AD7091R5 ADC Driver"
+ 	depends on I2C
++	select AD7091R
+ 	select REGMAP_I2C
+ 	help
+ 	  Say yes here to build support for Analog Devices AD7091R-5 ADC.
+diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+index c0803383a7cc..1e289d674d4d 100644
+--- a/drivers/iio/adc/Makefile
++++ b/drivers/iio/adc/Makefile
+@@ -7,7 +7,8 @@
+ obj-$(CONFIG_AB8500_GPADC) += ab8500-gpadc.o
+ obj-$(CONFIG_AD_SIGMA_DELTA) += ad_sigma_delta.o
+ obj-$(CONFIG_AD4130) += ad4130.o
+-obj-$(CONFIG_AD7091R5) += ad7091r5.o ad7091r-base.o
++obj-$(CONFIG_AD7091R) += ad7091r-base.o
++obj-$(CONFIG_AD7091R5) += ad7091r5.o
+ obj-$(CONFIG_AD7124) += ad7124.o
+ obj-$(CONFIG_AD7192) += ad7192.o
+ obj-$(CONFIG_AD7266) += ad7266.o
 -- 
 2.42.0
 
