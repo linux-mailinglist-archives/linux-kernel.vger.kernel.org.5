@@ -2,140 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E67C88081AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6092F8081B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377834AbjLGHNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 02:13:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34150 "EHLO
+        id S1377825AbjLGHOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 02:14:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbjLGHNl (ORCPT
+        with ESMTP id S229863AbjLGHOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 02:13:41 -0500
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E91A193;
-        Wed,  6 Dec 2023 23:13:47 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5DB9E5C0106;
-        Thu,  7 Dec 2023 02:13:46 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 07 Dec 2023 02:13:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1701933226; x=1702019626; bh=Gn
-        fimb5hncqefIVhB4bE5spPvjRgxNsO0UKP3I5CJ24=; b=gnWq7FOm+5cnwGQBNT
-        HmxCJaQ6tNzZTBXwtwv4/U8MjVoAXSBaFsj8tCRvV/BdnA+WMCMl09H4NX7R26EH
-        ztsKPXk18n4GmiTwUGKHgnnbQ19wv6Xky3yCMWxwc8DbP+wychgUnL0C2+jhXGEf
-        O/9WttnO4lcFOnYNjO7cwgYUzaZaLTAb165HkfnfIizoJk/M+Oyo1HGBGGtoWmA6
-        VQZMREfGurPDXfwB9mG1K+m2Xv/3e3pf9//q8A+5o5FPXyiE+QwXZpuvWEK1wcyd
-        UNI8mtli1S/uip2jJ0Mv/uyxLj7LDpx4pz/sgwoM6gSMR3fCzpn5Mr90naURD794
-        8AeQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701933226; x=1702019626; bh=Gnfimb5hncqef
-        IVhB4bE5spPvjRgxNsO0UKP3I5CJ24=; b=i+Y4B8PbYyANvyOKhO2ZnAkV6NfvF
-        D7FoMvWU4H3mHECLyfTlqlCbPQsRoeqbrnWKcQ4yoQi6Z/JglUWjGa06eOeYcP6A
-        5nFZ7KITak3ZnK+JnvvwRtbq6tpX3JDgUmoLlDT2e/WPl7vJY15tW9pIzD/wWEk/
-        Da401Dm81NtH/LaROxplvxi9AsVJwSAv09extM7e7OwEr0vHFoBuwkBN4ZQmFCxP
-        N23FYqsOY0JH4PuesXQxD17qLS7xynAssFV5EoGKAczh8ngtORvqgZ5Vy3bXzGXc
-        CebPyc8dQk9g5nt4HG4lAYhCVlR3sVbQ6ffKL4EdiZlhUhUFgMT2bR6HA==
-X-ME-Sender: <xms:qHBxZd9sCX8c6trT7KmRinsU51OWkr_7BMZpuhqo0QsiTLjfsrs8Gg>
-    <xme:qHBxZRvRXZYKtkDm_oGQNkVVOhb0lvc-P42yCjwInwOAE65prjpo9JG_CB21F-bI3
-    txS6V1F6PPV89SEeuU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekuddguddthecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:qHBxZbCiFHYuaKoPVy2qV56RM_cEsEzx5FDH3xWw92oZRmnb109z7w>
-    <xmx:qHBxZRfRFrAOpnYshMVHwUX7bEKa3ht3Z4YoOBU-45OmsmQRF_J9Xg>
-    <xmx:qHBxZSN1CWnXaxU3_PyI1GtDy0lmgWwhKUBiS1Ks_M8LGXiNlUJ6Jg>
-    <xmx:qnBxZXZgt3s_BBYuiKpH2X6KqajrkKo09kfgHL-dtMIDOwdv8qCGaA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A144DB60089; Thu,  7 Dec 2023 02:13:44 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
+        Thu, 7 Dec 2023 02:14:15 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9B9D3193
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 23:14:21 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8DxfevMcHFl6Y4_AA--.58818S3;
+        Thu, 07 Dec 2023 15:14:20 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxK9zLcHFl0kVXAA--.61456S3;
+        Thu, 07 Dec 2023 15:14:19 +0800 (CST)
+Subject: Re: [PATCH v5 0/8] Add objtool and orc support for LoongArch
+To:     Huacai Chen <chenhuacai@kernel.org>
+References: <20231129130701.27744-1-yangtiezhu@loongson.cn>
+ <CAAhV-H7VWCFJPYLN6SRuxvvhe6gsj1HHYbLgZaWFk7g8sh1LPA@mail.gmail.com>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <ec661951-c08d-0c47-de5c-f6b8923bbef6@loongson.cn>
+Date:   Thu, 7 Dec 2023 15:14:19 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Message-Id: <67fab0f1-e326-4ad8-9def-4d2bd5489b33@app.fastmail.com>
-In-Reply-To: <20231207002759.51418-8-gregory.price@memverge.com>
-References: <20231207002759.51418-1-gregory.price@memverge.com>
- <20231207002759.51418-8-gregory.price@memverge.com>
-Date:   Thu, 07 Dec 2023 08:13:22 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Gregory Price" <gourry.memverge@gmail.com>, linux-mm@kvack.org,
-        jgroves@micron.com, ravis.opensrc@micron.com,
-        sthanneeru@micron.com, emirakhur@micron.com, Hasan.Maruf@amd.com
-Cc:     linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-kernel@vger.kernel.org,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Andy Lutomirski" <luto@kernel.org>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Michal Hocko" <mhocko@kernel.org>, "Tejun Heo" <tj@kernel.org>,
-        ying.huang@intel.com, "Gregory Price" <gregory.price@memverge.com>,
-        "Jonathan Corbet" <corbet@lwn.net>, rakie.kim@sk.com,
-        hyeongtak.ji@sk.com, honggyu.kim@sk.com, vtavarespetr@micron.com,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "Frank van der Linden" <fvdl@google.com>
-Subject: Re: [RFC PATCH 07/11] mm/mempolicy: add userland mempolicy arg structure
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAAhV-H7VWCFJPYLN6SRuxvvhe6gsj1HHYbLgZaWFk7g8sh1LPA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8BxK9zLcHFl0kVXAA--.61456S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7tFWkurWxCw4fJFy5Ar43Arc_yoW8XrW3pF
+        y7Zrn0kr48ZFs3Cw4DA393WrWfJ39xC3yaq3Z8AryfC3yagas0q3W0yrnrJFyjgw47CrWF
+        qF1F9wnFya1UuwbCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+        Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E
+        14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU466zUUUUU
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023, at 01:27, Gregory Price wrote:
-> This patch adds the new user-api argument structure intended for
-> set_mempolicy2 and mbind2.
->
-> struct mpol_args {
->   /* Basic mempolicy settings */
->   unsigned short mode;
->   unsigned short mode_flags;
->   unsigned long *pol_nodes;
->   unsigned long pol_maxnodes;
->
->   /* get_mempolicy2: policy information (e.g. next interleave node) */
->   int policy_node;
->
->   /* get_mempolicy2: memory range policy */
->   unsigned long addr;
->   int addr_node;
->
->   /* all operations: policy home node */
->   unsigned long home_node;
->
->   /* mbind2: address ranges to apply the policy */
->   const struct iovec __user *vec;
->   size_t vlen;
-> };
 
-This is not a great structure layout for a system call ABI,
-mostly because it requires adding a compat syscall handler
-to be usable from 32-bit tasks. It would be nice if this
-could be rewritten in a way that uses only fixed-length
-members (__u16, __u32, __aligned_u64), though that does
-require the use of u64_to_user_ptr() to replace the pointers
-and the reverse in userspace.
 
-Aside from this, you should avoid holes in the data structure.
-On 64-bit architectures, the layout above has holes after
-policy_node and after addr_node.
+On 12/02/2023 09:52 PM, Huacai Chen wrote:
+> Hi, Tiezhu,
+>
+> There are still some build warnings.
+>
+> If FUNCTION_TRACER enabled, we get
+>   AS      arch/loongarch/kernel/mcount_dyn.o
+> arch/loongarch/kernel/mcount_dyn.o: warning: objtool:
+> ftrace_common+0x0: unreachable instruction
+> arch/loongarch/kernel/mcount_dyn.o: warning: objtool:
+> ftrace_caller+0x0: unreachable instruction
+> arch/loongarch/kernel/mcount_dyn.o: warning: objtool:
+> ftrace_regs_caller+0x0: unreachable instruction
+> arch/loongarch/kernel/mcount_dyn.o: warning: objtool:
+> ftrace_graph_caller+0x0: unreachable instruction
+> arch/loongarch/kernel/mcount_dyn.o: warning: objtool:
+> return_to_handler+0x0: unreachable instruction
+> arch/loongarch/kernel/mcount_dyn.o: warning: objtool:
+> ftrace_stub_direct_tramp+0x0: unreachable instruction
+>
+>   AS      arch/loongarch/kernel/rethook_trampoline.o
+> arch/loongarch/kernel/rethook_trampoline.o: warning: objtool:
+> arch_rethook_trampoline+0x0: unreachable instruction
 
-      Arnd
+I tested with the default config loongson3_defconfig,
+the FUNCTION_TRACE is not enabled, let me try to fix it.
+
+> And when I use the latest binutils/gcc for native build, there are
+> some warnings in some files from the {init, kernel} directory. But
+> cross-building is fine, I don't know why.
+
+I can not reproduce it for native build, it works well,
+I will analysis if it can reproduce someday.
+
+Thanks,
+Tiezhu
+
