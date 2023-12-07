@@ -2,152 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2760280864E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C118085FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbjLGJ5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:57:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39450 "EHLO
+        id S232381AbjLGJ7D convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Dec 2023 04:59:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232378AbjLGJ4y (ORCPT
+        with ESMTP id S232066AbjLGJ7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:56:54 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173B0D5E
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:57:00 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6ce4d4c5ea2so365964b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:57:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1701943019; x=1702547819; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BxtoXiW1GafKjWW917pS65soeBGEddpEWhKf7g8xPVI=;
-        b=TfSDwBOxM9aIqA6bak5Q1MULDjr6tlr9fDPspQ7sbvWovcfTZ3DQSapwViG9G5og/I
-         cEqqwL6UP5QMSq1XCm31hNrA3uXM+gD3YZexgbec9+oiQkB4pBkk8HN3vI/MR+rcGKMD
-         f0v8lDjuAE9YTjnaxuL20T8d5b++bvlyZ+e710CaCwMry9LFyCloJfQcK0NmJZFNZYK3
-         9SEl86bjDqQ7czCTi3ndTy+3lTPIZxonByG04nXgAbfwUIhm3A10n5k9zZu/vsE02+qE
-         S1wvdDn+0NL5OZuDb4lORaiIJJZTo09qLfutRl14tTaN2uHjAdyuj1OpECrd7IRDhGqA
-         UX6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701943019; x=1702547819;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=BxtoXiW1GafKjWW917pS65soeBGEddpEWhKf7g8xPVI=;
-        b=w6HBvl4Q6IbAKEme9IYG7st5BztG87hK4+eo3xAr+y3FcY/cbeY6r6raXc5BpVuHRa
-         o3A0/35GtRqc3VGsM01xVrllo421SOSCYPdG5k23ULMIsNn/7ElSIFPF/6yUy9utXOaL
-         6rgyV6LoPn3He08vc228fOL4lfm316610RtNAZPvuT7cjygelKyzWlpLfe4S3ncmb6en
-         UYuyQTykySLqlWNLXAX0Eslr7DnIBueuqMg9s1SJDfJI+jw2ssRKqQMwbu6YqWZjCcNa
-         PQPNxs1IL5H0IlDhveD89lbFlBEFm5KmHHBweEyAc8Rt539VH8miNE0PatkrQjaRC0eu
-         x18g==
-X-Gm-Message-State: AOJu0Ywq5aM/Zz2aWf6RAdedFPAjBu1ZOTmSG0v7+M6PJkiSWGWXgv7s
-        f43N6ty+2hlO5aom9GfHVSOLnQ==
-X-Google-Smtp-Source: AGHT+IGVYAtbjhU0+Vh9odI7cUMr50rN35LygNjdVcELx7W5mCm1/O9oXuTDZE6Wrh2nKpr/NAgHTw==
-X-Received: by 2002:a05:6a00:2e99:b0:6ce:3388:20 with SMTP id fd25-20020a056a002e9900b006ce33880020mr2152052pfb.53.1701943019497;
-        Thu, 07 Dec 2023 01:56:59 -0800 (PST)
-Received: from [10.84.153.44] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id u22-20020aa78496000000b006ce742b6b1fsm902380pfn.63.2023.12.07.01.56.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 01:56:58 -0800 (PST)
-Message-ID: <bb6c65de-1788-46a4-b913-5b1afa9c5cd7@bytedance.com>
-Date:   Thu, 7 Dec 2023 17:56:52 +0800
+        Thu, 7 Dec 2023 04:59:01 -0500
+Received: from lhr.gtn-esa2.in (gtnesa2.ptcl.net [59.103.87.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E91D2A8;
+        Thu,  7 Dec 2023 01:59:03 -0800 (PST)
+Message-Id: <573856$1i4eng@lhr.gtn-esa2.in>
+X-IPAS-Result: =?us-ascii?q?A2GgFwAglnFl/0+gtbZagQkJgUhnaAKIEYgfoH6GR4F9D?=
+ =?us-ascii?q?wEBAQEBAQEBAR0THQQBAYUGhy0nPAINAQIEAQEBAQMCAwEBAQEBAQMBAQEFA?=
+ =?us-ascii?q?QEBAQEBBgMBAQECgRmFL0aCP4QOJzocKA0CJgJJFoVyrxGBMhpnhF+xTiwDA?=
+ =?us-ascii?q?YgMAYFQhAiUIBWCUwSgAgcCBXBHcBsDBwN/DysHBC0iBgkULSMGUQQoIQkTE?=
+ =?us-ascii?q?j4EMDuCRAqBAj8PDhGCPSs2NhlIglsVDDRKdRBCF4ERbhsTHjcREhcNAwh0H?=
+ =?us-ascii?q?QIyPAMFAwQzChINCyEFVgNFBkkLAwIaBQMDBIEzBQ0eAhAsJwMDEkkCEBQDO?=
+ =?us-ascii?q?wMDBgMLMQMwgRkMTwNrHzYJPA8MHwI5DScjAixWBRICFgMkGjYRCQsYEAMvB?=
+ =?us-ascii?q?jsCEwwGBgleJhYCBwQnAwgEA18DEQMzER03CQN4PTUIDBtECEcdEqYcgkeWM?=
+ =?us-ascii?q?owBgWugTgcDqVYBk14DhBqOHId/kEMgpHaFU4FohChRGaItgSQCBwsBAQMJi?=
+ =?us-ascii?q?SKBQAEB?=
+IronPort-PHdr: A9a23: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
+ xaYG1oa1ZrxKlKpZFvn0FgJiCwq
+IronPort-Data: A9a23:+pM8PayDf4NB5whBRvB6t+cBxirEfRIJ4+MujC+fZmUNrF6WrkUAy
+ WRLCGjUb/6DajakLdEladyxo0pSvsLdyYBkSgNrrC00HyNBpOP7XtnIdU2Y0wF+jyHgoOCLy
+ +1EN7Es+ehtFie0Si+Fa+Sn9T8mvU2xbuKU5NTsY0idfic6Dn994f5fs7Rh2NUx24DmW1rlV
+ e7a+qUzBnf0g1aYDUpJs8pvmDs31BglkGpF1rCWTakjUG72zxH5PrpGTU2CByKQrr1vIwKPb
+ 72rIIdVXI/u10xF5tuNyt4Xe6CRK1LYFVDmZnF+A8BOjvXez8CbP2lS2Pc0MC9qZzu1c99Z1
+ OxjtLWTQDUSAffKwuMeVwBqAxFkMvgTkFPHCSDXXc2783aAa3Lqhu1nB0A4PIZe8eFyR31Rn
+ RAaAGldNFba17vwmezjDLY97iggBJCD0Ic3k2thw3f6Df8gaYjfSKGM49JEmi8z7ixLNauEO
+ pVFOGcxBPjGSxtTHGkUIsIPp/yPi3zUdCJbo2jKg5NitgA/yyQ0itABKuH9c9iEAMxWkwCar
+ 2Td5GP/Kg0WP9uZ0ieB7nOqiebF2yj8Xeo6G6C+9/puiRuLy3APBQcNTly9ify4l0j4QN83A
+ 0cT/y8zq6k5/VCqSd/mdxCzrmTCswN0c9hdCPY74wjLw6zY7hyCHW8CZj1bZdUs8sQxQFQC0
+ l6SlpXgAzBiqqaOTnS18qqSoXWpNEA9KGYYZCZCVQYZ4sXLpJw1glTUQ75LFK++jvXxBDf8h
+ SuHxAAlgrUSpdUO16T95l2vqyihpYLUUhI4/ATRUXms9BlwYoGoYoGu9VXBxe1BKpqUQB+Hu
+ xAsg8+F8OUJEY2El2qBQeoMALitz+2ENiHRjxhpGPEJ+jKg4XGyO5pd+zx3PkxpGt0FfyPkb
+ gnVvmt55ZlfIWC2d65feIO3F8kki67nffziXf3daPJVY55teQHB+iYGTUuZ2X3jmUMwjLs+P
+ 5izaseqEXsUT6JgpBK3Qeka+aQqwDwzyyXVQvjT1w6mz7OVdVaOSLEZPVXIaOdRxKWD5R/Y6
+ 9JOH9CLzQlSXqv4ZUH/8IgdKngGI3s6Q5z7w+RcfeeKJiJqFmIgTfPcqY7NYKQ8z/4Tz7eRu
+ CjjAgkHmTITmEH6FOlDUVg7AJuHYHq1hShT0fAEVbpj55TvjUtDIkvSm1vbsITLLNBe8MM=
+IronPort-HdrOrdr: A9a23:g6VMD6n8Be2a9zeZ0WsOxUsjjD3pDfI83DAbv31ZSRFFG/FwWf
+ rPoBzTvSWZtN93YhwdcLG7U5VoLkmslqKdjbNxAV7AZmPbUQKTRelfBO3Zsl/d8kbFmdK1u5
+ 0PT5RD
+X-Talos-CUID: =?us-ascii?q?9a23=3AX/pcIWooXaPeJ8e+4m1NgvLmUdwcXHz0737iGHD?=
+ =?us-ascii?q?iDzxuS7mMe0+g4qwxxg=3D=3D?=
+X-Talos-MUID: 9a23:5qag6AZ6mbfM8OBTsSPKujJIZPZT+IOjDWsKjpYNgZaiDHkl
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.04,256,1695668400"; 
+   d="scan'208";a="52574960"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from unknown (HELO TS.pan-pacific.com.tw) ([182.181.160.79])
+  by lhr.gtn-esa2.in with ESMTP; 07 Dec 2023 14:58:49 +0500
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Re: [PATCH bpf-next] netkit: Add some ethtool ops to provide
- information to user
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Nikolay Aleksandrov <razor@blackwall.org>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yangzhenze@bytedance.com,
-        wangdongdong.6@bytedance.com, tangchen.1@bytedance.com
-References: <20231130075844.52932-1-zhoufeng.zf@bytedance.com>
- <51dd35c9-ff5b-5b11-04d1-9a5ae9466780@blackwall.org>
- <16b4d42d-2d62-460e-912f-6e3b86f3004d@bytedance.com>
- <94e335d4-ec90-ba78-b2b4-8419b25bfa88@iogearbox.net>
- <57587b74-f865-4b56-8d65-a5cbc6826079@bytedance.com>
- <2a829a9c-69a6-695d-d3df-59190b161787@iogearbox.net>
- <b7053425-65eb-46a0-abd9-59ade5e78211@bytedance.com>
- <d75ffdd9-203a-94a3-57c1-69b1561d808e@iogearbox.net>
-From:   Feng Zhou <zhoufeng.zf@bytedance.com>
-In-Reply-To: <d75ffdd9-203a-94a3-57c1-69b1561d808e@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: #Awaiting your response
+To:     "t.maruyama@n-mtec.co.jp" <Arif.Khan@ptcl.net.pk>
+From:   "Sam.A" <Arif.Khan@ptcl.net.pk>
+Cc:     asghar.meo@ptcl.net.pk
+Date:   Thu, 07 Dec 2023 17:58:21 +0800
+Reply-To: williams1960@cpn.it
+X-Spam-Status: Yes, score=7.2 required=5.0 tests=BAYES_50,FROM_MISSPACED,
+        FROM_MISSP_EH_MATCH,MSGID_FROM_MTA_HEADER,RCVD_IN_MSPIKE_BL,
+        RCVD_IN_MSPIKE_L3,RCVD_IN_PSBL,RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
+        *      [59.103.87.20 listed in zen.spamhaus.org]
+        *  2.7 RCVD_IN_PSBL RBL: Received via a relay in PSBL
+        *      [59.103.87.20 listed in psbl.surriel.com]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 RCVD_IN_MSPIKE_L3 RBL: Low reputation (-3)
+        *      [59.103.87.20 listed in bl.mailspike.net]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 MSGID_FROM_MTA_HEADER Message-Id was added by a relay
+        *  0.0 RCVD_IN_MSPIKE_BL Mailspike blocklisted
+        *  1.7 FROM_MISSPACED From: missing whitespace
+        *  1.9 FROM_MISSP_EH_MATCH From misspaced, matches envelope
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/12/6 18:57, Daniel Borkmann 写道:
-> On 12/6/23 7:59 AM, Feng Zhou wrote:
->> 在 2023/12/4 23:22, Daniel Borkmann 写道:
->>> Thanks, so the netkit_get_link_ksettings is optional. 
->>
->> Yes, netkit_get_link_ksettings really not necessary, I just added it 
->> in line with veth.
->>
->> I don't quite
->>> follow what you
->>> mean with regards to your business logic in veth to obtain peer 
->>> ifindex. What does
->>> the script do exactly with the peer ifindex (aka /why/ is it needed), 
->>> could you
->>> elaborate some more - it's still somewhat too vague? 🙂 E.g. why it 
->>> does not suffice
->>> to look at the device type or other kind of attributes?
->>
->> The scripting logic of the business colleagues should just be simple 
->> logging records, using ethtool. Then they saw that netkit has this 
->> missing, so raised this requirement, so I sent this patch, wanting to 
->> hear your opinions. If you don't think it's necessary, let the 
->> business colleagues modify it.
-> 
-> So it is basically only logging the peer_ifindex data from ethtool but 
-> nothing
-> more is done with it? Meaning, this was raised as a requirement because 
-> this was
-> missing from the logging data, or was there anything more to it?
-> 
-> The peer ifindex is already available via IFLA_LINK (which does 
-> dev_get_iflink()
-> internally to fetch the peer's ifindex). This is also what you see in 
-> iproute2:
-> 
-> # ip l
-> [...]
-> 163: nk0@nk1: <BROADCAST,MULTICAST,NOARP,M-DOWN> mtu 1500 qdisc noop 
-> state DOWN group default qlen 1000
->      link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
-> 164: nk1@nk0: <BROADCAST,MULTICAST,NOARP,M-DOWN> mtu 1500 qdisc noop 
-> state DOWN group default qlen 1000
->      link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
-> [...]
-> # ip netns add blue
-> # ip link set nk1 netns blue
-> # ip l
-> [...]
-> 163: nk0@if164: <BROADCAST,MULTICAST,NOARP> mtu 1500 qdisc noop state 
-> DOWN group default qlen 1000
->      link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff link-netns blue
-> [...]
-> 
-> The `if164` denotes the peer's ifindex and `link-netns blue` provides 
-> info on the netns of the peer.
-> This is much better and more generic than the ethtool hack. I would 
-> suggest changing the logic to
-> rather look at data populated by rtnl_fill_link_netnsid() instead.
-> 
-> Thanks,
-> Daniel
+H e l l o,
 
-Yes, if veth supports ethtool -S to get the function of peer's ifindex, 
-it is not necessary for netkit and can be replaced by other ways.
+I'm a consultant, I work with a client who is interested in entering into a joint venture corporation in your nation. He has capitals set aside for this purpose.
 
+Kindly get in touch with me if you're interested.
 
-
+Regards,
+Mr. Sam A. Williams
