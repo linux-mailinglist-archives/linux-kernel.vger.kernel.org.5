@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9BE80818B
+	by mail.lfdr.de (Postfix) with ESMTP id F337880818C
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377929AbjLGHIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 02:08:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40394 "EHLO
+        id S1377984AbjLGHIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 02:08:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377955AbjLGHIg (ORCPT
+        with ESMTP id S1377989AbjLGHIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 02:08:36 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E401703
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 23:08:29 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54cde11d0f4so806310a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 23:08:28 -0800 (PST)
+        Thu, 7 Dec 2023 02:08:37 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AF110E4
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 23:08:31 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50bfd3a5b54so356649e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 23:08:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1701932907; x=1702537707; darn=vger.kernel.org;
+        d=tuxon.dev; s=google; t=1701932910; x=1702537710; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gkghlNv0V/SuTZPxwTXU6oUm+Z1UHMMmkJLyVfH/CTs=;
-        b=g/FdR8q3/4gaKLPC8MwlRS/lbel73uuZR48NvnIibK2EOkCYK2zG1KKQqgbedZ+QYg
-         QZl7U+t6GYvkqgyy0UHteWcQXtZNAiYkxgKUAggwFp5R2HbUj84Js79Wk5z8NdwR9Qws
-         QO1o5UuUGDa7FOyCAQ0iElD31ChRCVEMmmmR5pZ3cCPZvWmg5SkJFYEgc2MH61vOWFtg
-         jj8bernaxRzi9DBWC1jmRsdflj8tBILAXKyV1BgNuubyGy0UnDCvcEyK/w4hXE8kqe+B
-         vT/VoVHjbRXu88yhGKI4IvLCO4taRoPGOrhuWipA7rf6pE3qJV/o0lrhoN+D7UEYvNPv
-         8Zmw==
+        bh=yeSFEu7OukF0Tuu74YIE2VRnBvTHvA9bdAjWp6LMSbU=;
+        b=O/9Uni0vZdw0ycdIqGqxwvSsUpKFUqMMwQgStYOhDs6i73kT3RP8IFCoyzxYEHTwVV
+         ij9//XnQ6xftxkQT6E9DV15UjgMP4sOGKalo+/F5IkcLZ9aTh+uWECCqCtbjUQYRZK7+
+         ZWc9/85NOObX/HMgs6iok3hLeAu/nVXf1s39OKoM2QvgKG5LmiEolghPG3SYx9ojlt/h
+         xA6Z31j0p3QB/ABzYfx/vXY5Q0iKLi7alSDwLORBeyErbANR0vBEqUebJ/Kt5SSdbBgV
+         Yatqrqn5OAqtGd4bwcXdrFBiSmK9udz+UnorAtb4BNeM1qjox6Fm4DhXQ8NjADo7a6r1
+         vdzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701932907; x=1702537707;
+        d=1e100.net; s=20230601; t=1701932910; x=1702537710;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gkghlNv0V/SuTZPxwTXU6oUm+Z1UHMMmkJLyVfH/CTs=;
-        b=cDg1hIm6hxAOM/egngaGPvgs1TCQPzCXXeaW5cY5bHPahLMBuxlZe039SNljwv01Dr
-         pPLKgg2oQBUW31Yw5l4Nc1Wd3KgCJE53lxsviJ6mgCTFgfoYCrhRoe1JtSl5nWG1yTHK
-         CKCNQZpUbREOBGbH7eYGq/epfrxNJN78F+2gCgdUG+l0Mf+JLqY7XI5n7iz2/S3f/WnP
-         Ag4wwAG71kVCdKfxtQ9EH2Ftr9mB+JSVXP5boRuAEZ2aCLACt+JU+wEUzjKiCbDm+mwm
-         5S/T3Tr0hKEyjUmuHGYL6vhlnnuUO9iBl17t37Q+oH6/MBT6RxjmTHMn5/EXrHk0yFwJ
-         B/ew==
-X-Gm-Message-State: AOJu0YwGXX5Qt90c23YLGYNOT8mLCkH/gXbppG8K+OrCBSi+EGu/FeS/
-        qfFZTMjV3OxMqCUD5cs0JxaaNA==
-X-Google-Smtp-Source: AGHT+IF47v7X3q8qD6gB4ZCRiRsvI7r4bTbz5pfTw8z2mVo3VWRWVZ6UtqKRrNoxLAAITVBzD5hyZg==
-X-Received: by 2002:a50:f692:0:b0:54c:4837:a65d with SMTP id d18-20020a50f692000000b0054c4837a65dmr1419834edn.74.1701932907528;
-        Wed, 06 Dec 2023 23:08:27 -0800 (PST)
+        bh=yeSFEu7OukF0Tuu74YIE2VRnBvTHvA9bdAjWp6LMSbU=;
+        b=Gq4JPacGFgEdpy418mTffZWUOybtyHZIEwGe5mKPQGbbv6R3Id6KC9DmPiAg2mTaWd
+         IZ1RaUvtcSHSKJXZKD3M4A6R8abMHJWwFrCreQcZ9yjYXOgQsMtXt5QPtX9pO+2WIKDF
+         59s8hRmJ5FT3lvow+1Sbihh27E1ZbAq7Go1BDzk3ke0lL25Aj9i+GMrcug0oSTPjBi9z
+         po6erxliJBG4oRBNi16CvBoaJoeM7aBDAhmaR9uU2eo9GwFNfri3Vu9UxApWlFqB3sO3
+         YDjoSg69hu+qnHgxW6SQT8DqFISLgfWcUBc9n7d35Vb9u7kPaHBLteJuPK7t15kHJW8E
+         P9vQ==
+X-Gm-Message-State: AOJu0YzUn1FBM6FjSVQcvRk6JcrQecsfzn2CSqHQIXdXZUC7sRjg3pgI
+        CcltMy/uh1dcWcdFJBm8AXhJzQ==
+X-Google-Smtp-Source: AGHT+IHwFM1deCGaB8hL4AjkVZKdcxII4qcU+r4kO/s02JIjcDLdN1i2kMafFqDp+LcjJNvru3CAlQ==
+X-Received: by 2002:a05:6512:3b97:b0:50b:effb:c63f with SMTP id g23-20020a0565123b9700b0050beffbc63fmr1725491lfv.6.1701932909933;
+        Wed, 06 Dec 2023 23:08:29 -0800 (PST)
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.22])
-        by smtp.gmail.com with ESMTPSA id b41-20020a509f2c000000b0054cb88a353dsm420818edf.14.2023.12.06.23.08.25
+        by smtp.gmail.com with ESMTPSA id b41-20020a509f2c000000b0054cb88a353dsm420818edf.14.2023.12.06.23.08.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 23:08:27 -0800 (PST)
+        Wed, 06 Dec 2023 23:08:29 -0800 (PST)
 From:   Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
@@ -63,9 +63,9 @@ Cc:     linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
         Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH v2 10/11] arm64: renesas: rzg3s-smarc-som: Use switches' names to select on-board functionalities
-Date:   Thu,  7 Dec 2023 09:06:59 +0200
-Message-Id: <20231207070700.4156557-11-claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH v2 11/11] arm64: dts: renesas: rzg3s-smarc-som: Enable the Ethernet interfaces
+Date:   Thu,  7 Dec 2023 09:07:00 +0200
+Message-Id: <20231207070700.4156557-12-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231207070700.4156557-1-claudiu.beznea.uj@bp.renesas.com>
 References: <20231207070700.4156557-1-claudiu.beznea.uj@bp.renesas.com>
@@ -73,7 +73,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,102 +83,208 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-The intention of the SW_SD0_DEV_SEL and SW_SD2_EN macros was to reflect the
-state of SW_CONFIG individual switches available on the RZ/G3S Smarc Module
-and at the same time to have a descriptive name for the switch itself.
-Each individual switch is associated with a signal name, which might be
-active-low or not on the board. Using signal names instead of SW_CONFIG
-switch names may be confusing for a user who just playes with switches to
-select individual functionalities, but also for the advanced user that
-looks over schematics. To avoid even further confusions, use the switches'
-names here and instantitate them with an ON/OFF state. This should be
-simpler, even though the name of the switch is not that intuitive. The
-switch names documentation reflects the switch's purpose.
+The RZ/G3S Smarc Module has Ethernet PHYs (KSZ9131) connected to each
+Ethernet IP. For this, add proper DT bindings to enable the Ethernet
+communication through these PHYs.
+
+The interface b/w PHYs and MACs is RGMII. The skew settings were set to
+zero as based on phy-mode (rgmii-id) the KSZ9131 driver enables internal
+DLL, which adds a 2ns delay b/w clocks (TX/RX) and data signals.
+
+Different pin settings were applied to TXC and TX_CTL compared with the
+rest of the RGMII pins to comply with requirements for these pins imposed
+by HW manual of RZ/G3S (see chapters "Ether Ch0 Voltage Mode Control
+Register (ETH0_POC)", "Ether Ch1 Voltage Mode Control Register (ETH1_POC)",
+for power source selection, "Ether MII/RGMII Mode Control Register
+(ETH_MODE)" for output-enable and "Input Enable Control Register (IEN_m)"
+for input-enable configurations).
+
+Commit also enables the Ethernet interfaces by selecting
+SW_CONFIG3 = SW_ON.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
 
 Changes in v2:
-- this patch is new and aims to replace patch "arm64: renesas: rzg3s-smarc-som:
-  Invert the logic of the SW_SD2_EN macro" from v1
+- removed #address-cells, #size-cells
+- adapted patch description to reflect the usage of SW_CONFIG
 
-
- .../boot/dts/renesas/rzg3s-smarc-som.dtsi     | 34 ++++++++++++-------
- 1 file changed, 21 insertions(+), 13 deletions(-)
+ .../boot/dts/renesas/rzg3s-smarc-som.dtsi     | 141 +++++++++++++++++-
+ 1 file changed, 140 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi b/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
-index 01a4a9da7afc..f59094701a4a 100644
+index f59094701a4a..f062d4ad78b7 100644
 --- a/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
 +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
-@@ -9,23 +9,31 @@
- #include <dt-bindings/pinctrl/rzg2l-pinctrl.h>
- 
- /*
-- * Signals of SW_CONFIG switches:
-- * @SW_SD0_DEV_SEL:
-- *	0 - SD0 is connected to eMMC
-- *	1 - SD0 is connected to uSD0 card
-- * @SW_SD2_EN:
-- *	0 - SCIF1, SSI0, IRQ0, IRQ1 connected to SoC
-- *	1 - SD2 is connected to SoC
-+ * On-board switches' states:
-+ * @SW_OFF: switch's state is OFF
-+ * @SW_ON:  switch's state is ON
+@@ -26,7 +26,7 @@
+  *	SW_ON  - SCIF1, SSI0, IRQ0, IRQ1 connected to SoC
   */
--#define SW_SD0_DEV_SEL	1
--#define SW_SD2_EN	1
-+#define SW_OFF		0
-+#define SW_ON		1
-+
-+/*
-+ * SW_CONFIG[x] switches' states:
-+ * @SW_CONFIG2:
-+ *	SW_OFF - SD0 is connected to eMMC
-+ *	SW_ON  - SD0 is connected to uSD0 card
-+ * @SW_CONFIG3:
-+ *	SW_OFF - SD2 is connected to SoC
-+ *	SW_ON  - SCIF1, SSI0, IRQ0, IRQ1 connected to SoC
-+ */
-+#define SW_CONFIG2	SW_ON
-+#define SW_CONFIG3	SW_OFF
+ #define SW_CONFIG2	SW_ON
+-#define SW_CONFIG3	SW_OFF
++#define SW_CONFIG3	SW_ON
  
  / {
  	compatible = "renesas,rzg3s-smarcm", "renesas,r9a08g045s33", "renesas,r9a08g045";
- 
- 	aliases {
+@@ -35,6 +35,9 @@ aliases {
  		mmc0 = &sdhi0;
--#if SW_SD2_EN
-+#if SW_CONFIG3 == SW_OFF
+ #if SW_CONFIG3 == SW_OFF
  		mmc2 = &sdhi2;
++#else
++		eth0 = &eth0;
++		eth1 = &eth1;
  #endif
  	};
-@@ -50,7 +58,7 @@ vcc_sdhi0: regulator0 {
- 		enable-active-high;
- 	};
  
--#if SW_SD0_DEV_SEL
-+#if SW_CONFIG2 == SW_ON
- 	vccq_sdhi0: regulator1 {
- 		compatible = "regulator-gpio";
- 		regulator-name = "SDHI0 VccQ";
-@@ -85,7 +93,7 @@ &extal_clk {
+@@ -89,6 +92,60 @@ vcc_sdhi2: regulator2 {
+ 	};
+ };
+ 
++#if SW_CONFIG3 == SW_ON
++&eth0 {
++	pinctrl-0 = <&eth0_pins>;
++	pinctrl-names = "default";
++	phy-handle = <&phy0>;
++	phy-mode = "rgmii-id";
++	status = "okay";
++
++	phy0: ethernet-phy@7 {
++		reg = <7>;
++		interrupt-parent = <&pinctrl>;
++		interrupts = <RZG2L_GPIO(12, 0) IRQ_TYPE_EDGE_FALLING>;
++		rxc-skew-psec = <0>;
++		txc-skew-psec = <0>;
++		rxdv-skew-psec = <0>;
++		txen-skew-psec = <0>;
++		rxd0-skew-psec = <0>;
++		rxd1-skew-psec = <0>;
++		rxd2-skew-psec = <0>;
++		rxd3-skew-psec = <0>;
++		txd0-skew-psec = <0>;
++		txd1-skew-psec = <0>;
++		txd2-skew-psec = <0>;
++		txd3-skew-psec = <0>;
++	};
++};
++
++&eth1 {
++	pinctrl-0 = <&eth1_pins>;
++	pinctrl-names = "default";
++	phy-handle = <&phy1>;
++	phy-mode = "rgmii-id";
++	status = "okay";
++
++	phy1: ethernet-phy@7 {
++		reg = <7>;
++		interrupt-parent = <&pinctrl>;
++		interrupts = <RZG2L_GPIO(12, 1) IRQ_TYPE_EDGE_FALLING>;
++		rxc-skew-psec = <0>;
++		txc-skew-psec = <0>;
++		rxdv-skew-psec = <0>;
++		txen-skew-psec = <0>;
++		rxd0-skew-psec = <0>;
++		rxd1-skew-psec = <0>;
++		rxd2-skew-psec = <0>;
++		rxd3-skew-psec = <0>;
++		txd0-skew-psec = <0>;
++		txd1-skew-psec = <0>;
++		txd2-skew-psec = <0>;
++		txd3-skew-psec = <0>;
++	};
++};
++#endif
++
+ &extal_clk {
  	clock-frequency = <24000000>;
  };
- 
--#if SW_SD0_DEV_SEL
-+#if SW_CONFIG2 == SW_ON
- /* SD0 slot */
- &sdhi0 {
- 	pinctrl-0 = <&sdhi0_pins>;
-@@ -116,7 +124,7 @@ &sdhi0 {
- };
+@@ -136,6 +193,88 @@ &sdhi2 {
  #endif
  
--#if SW_SD2_EN
-+#if SW_CONFIG3 == SW_OFF
- &sdhi2 {
- 	pinctrl-0 = <&sdhi2_pins>;
- 	pinctrl-names = "default";
+ &pinctrl {
++	eth0-phy-irq-hog {
++		gpio-hog;
++		gpios = <RZG2L_GPIO(12, 0) GPIO_ACTIVE_LOW>;
++		input;
++		line-name = "eth0-phy-irq";
++	};
++
++	eth0_pins: eth0 {
++		txc {
++			pinmux = <RZG2L_PORT_PINMUX(1, 0, 1)>;  /* ET0_TXC */
++			power-source = <1800>;
++			output-enable;
++			input-enable;
++			drive-strength-microamp = <5200>;
++		};
++
++		tx_ctl {
++			pinmux = <RZG2L_PORT_PINMUX(1, 1, 1)>;  /* ET0_TX_CTL */
++			power-source = <1800>;
++			output-enable;
++			drive-strength-microamp = <5200>;
++		};
++
++		mux {
++			pinmux = <RZG2L_PORT_PINMUX(1, 2, 1)>,	/* ET0_TXD0 */
++				 <RZG2L_PORT_PINMUX(1, 3, 1)>,	/* ET0_TXD1 */
++				 <RZG2L_PORT_PINMUX(1, 4, 1)>,	/* ET0_TXD2 */
++				 <RZG2L_PORT_PINMUX(2, 0, 1)>,	/* ET0_TXD3 */
++				 <RZG2L_PORT_PINMUX(3, 0, 1)>,	/* ET0_RXC */
++				 <RZG2L_PORT_PINMUX(3, 1, 1)>,	/* ET0_RX_CTL */
++				 <RZG2L_PORT_PINMUX(3, 2, 1)>,	/* ET0_RXD0 */
++				 <RZG2L_PORT_PINMUX(3, 3, 1)>,	/* ET0_RXD1 */
++				 <RZG2L_PORT_PINMUX(4, 0, 1)>,	/* ET0_RXD2 */
++				 <RZG2L_PORT_PINMUX(4, 1, 1)>,	/* ET0_RXD3 */
++				 <RZG2L_PORT_PINMUX(4, 3, 1)>,	/* ET0_MDC */
++				 <RZG2L_PORT_PINMUX(4, 4, 1)>,	/* ET0_MDIO */
++				 <RZG2L_PORT_PINMUX(4, 5, 1)>;	/* ET0_LINKSTA */
++			power-source = <1800>;
++		};
++	};
++
++	eth1-phy-irq-hog {
++		gpio-hog;
++		gpios = <RZG2L_GPIO(12, 1) GPIO_ACTIVE_LOW>;
++		input;
++		line-name = "eth1-phy-irq";
++	};
++
++	eth1_pins: eth1 {
++		txc {
++			pinmux = <RZG2L_PORT_PINMUX(7, 0, 1)>;	/* ET1_TXC */
++			power-source = <1800>;
++			output-enable;
++			input-enable;
++			drive-strength-microamp = <5200>;
++		};
++
++		tx_ctl {
++			pinmux = <RZG2L_PORT_PINMUX(7, 1, 1)>;	/* ET1_TX_CTL */
++			power-source = <1800>;
++			output-enable;
++			drive-strength-microamp = <5200>;
++		};
++
++		mux {
++			pinmux = <RZG2L_PORT_PINMUX(7, 2, 1)>,	/* ET1_TXD0 */
++				 <RZG2L_PORT_PINMUX(7, 3, 1)>,	/* ET1_TXD1 */
++				 <RZG2L_PORT_PINMUX(7, 4, 1)>,	/* ET1_TXD2 */
++				 <RZG2L_PORT_PINMUX(8, 0, 1)>,	/* ET1_TXD3 */
++				 <RZG2L_PORT_PINMUX(8, 4, 1)>,	/* ET1_RXC */
++				 <RZG2L_PORT_PINMUX(9, 0, 1)>,	/* ET1_RX_CTL */
++				 <RZG2L_PORT_PINMUX(9, 1, 1)>,	/* ET1_RXD0 */
++				 <RZG2L_PORT_PINMUX(9, 2, 1)>,	/* ET1_RXD1 */
++				 <RZG2L_PORT_PINMUX(9, 3, 1)>,	/* ET1_RXD2 */
++				 <RZG2L_PORT_PINMUX(10, 0, 1)>,	/* ET1_RXD3 */
++				 <RZG2L_PORT_PINMUX(10, 2, 1)>,	/* ET1_MDC */
++				 <RZG2L_PORT_PINMUX(10, 3, 1)>,	/* ET1_MDIO */
++				 <RZG2L_PORT_PINMUX(10, 4, 1)>;	/* ET1_LINKSTA */
++			power-source = <1800>;
++		};
++	};
++
+ 	sdhi0_pins: sd0 {
+ 		data {
+ 			pins = "SD0_DATA0", "SD0_DATA1", "SD0_DATA2", "SD0_DATA3";
 -- 
 2.39.2
 
