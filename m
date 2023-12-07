@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC890807FEF
+	by mail.lfdr.de (Postfix) with ESMTP id 86B5C807FEE
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 06:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbjLGFEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 00:04:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44778 "EHLO
+        id S230325AbjLGFEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 00:04:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLGFEm (ORCPT
+        with ESMTP id S230264AbjLGFEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 00:04:42 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 553DDD44
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 21:04:48 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db53919e062so751910276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 21:04:48 -0800 (PST)
+        Thu, 7 Dec 2023 00:04:47 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96DEDD44
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 21:04:53 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5d3a1e5f8d6so3973157b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 21:04:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701925487; x=1702530287; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701925493; x=1702530293; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=gJ09ILS0FKw69nllEGHZTddJyQyifMD6obVQZgpi4Qw=;
-        b=ljFipjXPu2ocEJjGS5+bo4ZvUR5mU9WkFW6EY0cXddnbdqCN7uxP4VpZYVQaSh+bN2
-         CZUTGz6UU5H0lp1cXq91jVlmEXpsne41KYWUCiZDhNp2Mr8XyAxdrUqY8R1lMeOAe6ae
-         O+XT+QLgm5NShAQcqAdRq8fhTOrhiDufhvsM7lIfHKdZQ09xG6APHhuyotWzh2SkGZDs
-         tonIxluC68vbr8xowwfdA3vDmRmPp9/K/ZOZcFGI6QZnFoqirJdEQQYHb7HEZZxvnT5w
-         GIP2XIRqHKCSLDzZDX/8XYAt9pIF+8bLljLI/UmMB0YDm0NZaBbB2tWrtLXzQH9+G475
-         vhEw==
+        bh=HLfF4gdeUWNr8FF8ACObQvFWnydI6Js6QIkQSQodKEI=;
+        b=16JKr/OAlmIySJ2uZLXZC4p70yZiecAN8EhnkomFKLRuI8/eJ+HXfBmc9iI1Cq67rv
+         1T+ncKFZBzub0uuI67C/Rrf8+HL+kC1+1EqjdnqUxmJ3pi9L9/Rk2RPxBbsbizJ52Fkg
+         11JhkT1Z12L1LsPQQielsZdIbFLpz+B5rV8wxCJ7BEomwakbQlHHrx+ZFVgY/akc2lNG
+         dafpmPc5KgqTa9V9dx9FVoqVmKL+WvcmeyWJhwIfhmjUc07tO+YB+PbDQrLwND2A+HNR
+         oYA0PxhpM3VYtNN19I+CY83SNFgJ6ep0KgUE3vrs2pFRS3r2YQyxym5EvW8sJNcj1I6J
+         WxCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701925487; x=1702530287;
+        d=1e100.net; s=20230601; t=1701925493; x=1702530293;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gJ09ILS0FKw69nllEGHZTddJyQyifMD6obVQZgpi4Qw=;
-        b=KaTFQYLnmngPKuT38q+pCyw4HdE3f3VjyPlIoM0Ya+WZPekSZdQ3m6uZjBrQGLzfP8
-         PlIqmPEXgoEgIjG+ER4+o1EItpseZXBnxyaNRZr57xoBuFxng6CtENGqZfd9V5R4QGWV
-         vWYWIjuB8SPy0lKlAKX8YM1UoO7Fa+tpr66CFjr3YQYoYZRv9t383NsNvyCrN7Tp5qLJ
-         0iPb3EBFm3nKRBt/boq0ouEzrm/9BpjypZRX8s0eGc9LMP7Q+sD/K3f6j0dRTSiVBEe3
-         MOG1yEOtdZtH5isG35HQ2uAS6TJ7KxK7jNTuJJbwUG/1TudQwg0QNVR8hHHTgTJDxCdB
-         RRuw==
-X-Gm-Message-State: AOJu0YwmHGQd5ihdyoBN/JFhHk77dZhvdjU1om1xnttmH1o3oY4qssmV
-        IIC7z7TB5aqvBTZe/MdioB1XRfn5hRFW
-X-Google-Smtp-Source: AGHT+IE25ICHr+L0rrthsfiMJT9vor7826Id8YRj/BihCnqEuwJ+wuOTJjyX1ATd/qisp8dd7xqJkTPlrH7E
+        bh=HLfF4gdeUWNr8FF8ACObQvFWnydI6Js6QIkQSQodKEI=;
+        b=iEhRYRed2mT5NVF2wk98XY4NYHbb1aEdx088aizpD8EvgIMRDJgkAJlhF2xfLB/Uvf
+         hXYUaqT2xGEJBLKzb41prVzORAFu9fNMTNnWEl7rTOLKiJjQHaUpzXKbeQYcW36U4cVE
+         0KFiRQidsVRJqiGgG2nDpjr4joX+gNr3im7Jet09Rk3o//xNAKbDHz8zYeMTSuk3V2h8
+         OqQ/LJPwTteFXKpUIYeWrjVeo/d0nTrJTkcvckycbFMRbexySW+JGndSwF1EqmegLWbw
+         DNIVFHDnFjR6NAAEomClZ3FzZ5SLAjgDBb/UXNJFozjREwSgb6Jj/zvBuJp4gIAPCy8n
+         HMDQ==
+X-Gm-Message-State: AOJu0YwNce6hrN376jGGUQUkvO/EjI7Jq+IWqbDn+BbtSKX+D1yyYcvj
+        Yh/dlHSM7oB0x6diEVLjH5igrTGRPypa
+X-Google-Smtp-Source: AGHT+IFJ8VLzkhmv5lIHBwHao+8hbxbTzxh0PLIX/Y/8B0uG5Cn/P5rXMoDTUFtOLFwHal2ivb+PmHh5k+sj
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:35bf:293e:7696:34e9])
- (user=irogers job=sendgmr) by 2002:a25:d144:0:b0:db7:dce9:76cd with SMTP id
- i65-20020a25d144000000b00db7dce976cdmr24086ybg.9.1701925487528; Wed, 06 Dec
- 2023 21:04:47 -0800 (PST)
-Date:   Wed,  6 Dec 2023 21:04:28 -0800
+ (user=irogers job=sendgmr) by 2002:a81:ad14:0:b0:5d5:6a4c:b0b3 with SMTP id
+ l20-20020a81ad14000000b005d56a4cb0b3mr26965ywh.8.1701925492804; Wed, 06 Dec
+ 2023 21:04:52 -0800 (PST)
+Date:   Wed,  6 Dec 2023 21:04:29 -0800
 In-Reply-To: <20231207050433.1426834-1-irogers@google.com>
-Message-Id: <20231207050433.1426834-2-irogers@google.com>
+Message-Id: <20231207050433.1426834-3-irogers@google.com>
 Mime-Version: 1.0
 References: <20231207050433.1426834-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Subject: [PATCH v1 1/6] tools build: Add a feature test for getdents64
+Subject: [PATCH v1 2/6] tools lib api: Add io_dir an allocation free readdir alternative
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -76,102 +76,148 @@ To:     Peter Zijlstra <peterz@infradead.org>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-getdents64 may be missing from certain libcs, add a feature test to
-determine when such a libc is being used.
+glibc's opendir allocates a minimum of 32kb, when called recursively
+for a directory tree the memory consumption can add up - nearly 300kb
+during perf start-up when processing modules. Add a stack allocated
+variant of readdir sized a little more than 1kb.
+
+As getdents64 may be missing from libc, add support using syscall.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/build/Makefile.feature          |  1 +
- tools/build/feature/Makefile          |  4 ++++
- tools/build/feature/test-all.c        |  5 +++++
- tools/build/feature/test-getdents64.c | 12 ++++++++++++
- 4 files changed, 22 insertions(+)
- create mode 100644 tools/build/feature/test-getdents64.c
+ tools/lib/api/Makefile     |  2 +-
+ tools/lib/api/io_dir.h     | 84 ++++++++++++++++++++++++++++++++++++++
+ tools/perf/Makefile.config |  4 ++
+ 3 files changed, 89 insertions(+), 1 deletion(-)
+ create mode 100644 tools/lib/api/io_dir.h
 
-diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-index 64df118376df..f051d4d8c71c 100644
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -58,6 +58,7 @@ FEATURE_TESTS_BASIC :=                  \
-         pthread-attr-setaffinity-np     \
-         pthread-barrier     		\
-         reallocarray                    \
-+        getdents64                      \
-         stackprotector-all              \
-         timerfd                         \
-         libdw-dwarf-unwind              \
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index 37722e509eb9..5efe89c3b0a6 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -21,6 +21,7 @@ FILES=                                          \
-          test-disassembler-four-args.bin        \
-          test-disassembler-init-styled.bin	\
-          test-reallocarray.bin			\
-+         test-getdents64.bin			\
-          test-libbfd-liberty.bin                \
-          test-libbfd-liberty-z.bin              \
-          test-cplus-demangle.bin                \
-@@ -262,6 +263,9 @@ $(OUTPUT)test-disassembler-init-styled.bin:
- $(OUTPUT)test-reallocarray.bin:
- 	$(BUILD)
+diff --git a/tools/lib/api/Makefile b/tools/lib/api/Makefile
+index 044860ac1ed1..186aa407de8c 100644
+--- a/tools/lib/api/Makefile
++++ b/tools/lib/api/Makefile
+@@ -99,7 +99,7 @@ install_lib: $(LIBFILE)
+ 		$(call do_install_mkdir,$(libdir_SQ)); \
+ 		cp -fpR $(LIBFILE) $(DESTDIR)$(libdir_SQ)
  
-+$(OUTPUT)test-getdents64.bin:
-+	$(BUILD)
-+
- $(OUTPUT)test-libbfd-liberty.bin:
- 	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
- 
-diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
-index 6f4bf386a3b5..c65096f75032 100644
---- a/tools/build/feature/test-all.c
-+++ b/tools/build/feature/test-all.c
-@@ -166,6 +166,10 @@
- # include "test-reallocarray.c"
- #undef main
- 
-+#define main main_test_getdents64
-+# include "test-getdents64.c"
-+#undef main
-+
- #define main main_test_disassembler_four_args
- # include "test-disassembler-four-args.c"
- #undef main
-@@ -216,6 +220,7 @@ int main(int argc, char *argv[])
- 	main_test_setns();
- 	main_test_libaio();
- 	main_test_reallocarray();
-+	main_test_getdents64();
- 	main_test_disassembler_four_args();
- 	main_test_libzstd();
- 
-diff --git a/tools/build/feature/test-getdents64.c b/tools/build/feature/test-getdents64.c
+-HDRS := cpu.h debug.h io.h
++HDRS := cpu.h debug.h io.h io_dir.h
+ FD_HDRS := fd/array.h
+ FS_HDRS := fs/fs.h fs/tracing_path.h
+ INSTALL_HDRS_PFX := $(DESTDIR)$(prefix)/include/api
+diff --git a/tools/lib/api/io_dir.h b/tools/lib/api/io_dir.h
 new file mode 100644
-index 000000000000..f7c9df1e2f05
+index 000000000000..9b702497e05c
 --- /dev/null
-+++ b/tools/build/feature/test-getdents64.c
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stddef.h>
-+#define _GNU_SOURCE
-+#include <dirent.h>
++++ b/tools/lib/api/io_dir.h
+@@ -0,0 +1,84 @@
++/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
++/*
++ * Lightweight directory reading library.
++ */
++#ifndef __API_IO_DIR__
++#define __API_IO_DIR__
 +
-+int main(void)
++#include <dirent.h>
++#include <fcntl.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <sys/stat.h>
++
++#ifndef HAVE_GETDENTS64
++#include <sys/syscall.h>
++
++static inline ssize_t getdents64(int fd, void *dirp, size_t count)
 +{
-+	char buf[128];
-+	return (int)getdents64(0, buf, sizeof(buf));
++	return syscall(SYS_getdents64, fd, dirp, count);
++}
++#endif
++
++struct io_dirent64 {
++	ino64_t        d_ino;    /* 64-bit inode number */
++	off64_t        d_off;    /* 64-bit offset to next structure */
++	unsigned short d_reclen; /* Size of this dirent */
++	unsigned char  d_type;   /* File type */
++	char           d_name[NAME_MAX + 1]; /* Filename (null-terminated) */
++};
++
++struct io_dir {
++	int dirfd;
++	ssize_t available_bytes;
++	struct io_dirent64 *next;
++	struct io_dirent64 buff[4];
++};
++
++static inline void io_dir__init(struct io_dir *iod, int dirfd)
++{
++	iod->dirfd = dirfd;
++	iod->available_bytes = 0;
 +}
 +
-+#undef _GNU_SOURCE
++static inline void io_dir__rewinddir(struct io_dir *iod)
++{
++	lseek(iod->dirfd, 0, SEEK_SET);
++	iod->available_bytes = 0;
++}
++
++static inline struct io_dirent64 *io_dir__readdir(struct io_dir *iod)
++{
++	struct io_dirent64 *entry;
++
++	if (iod->available_bytes <= 0) {
++		ssize_t rc = getdents64(iod->dirfd, iod->buff, sizeof(iod->buff));
++
++		if (rc <= 0)
++			return NULL;
++		iod->available_bytes = rc;
++		iod->next = iod->buff;
++	}
++	entry = iod->next;
++	iod->next = (struct io_dirent64 *)((char *)entry + entry->d_reclen);
++	iod->available_bytes -= entry->d_reclen;
++	return entry;
++}
++
++static inline bool io_dir__is_dir(const struct io_dir *iod, struct io_dirent64 *dent)
++{
++	if (dent->d_type == DT_UNKNOWN) {
++		struct stat st;
++
++		if (fstatat(iod->dirfd, dent->d_name, &st, /*flags=*/0))
++			return false;
++
++		if (S_ISDIR(st.st_mode)) {
++			dent->d_type = DT_DIR;
++			return true;
++		}
++	}
++	return dent->d_type == DT_DIR;
++}
++
++#endif
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index aa55850fbc21..1cef1ab4ddb7 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -357,6 +357,10 @@ ifeq ($(feature-stackprotector-all), 1)
+   CORE_CFLAGS += -fstack-protector-all
+ endif
+ 
++ifeq ($(feature-getdents64), 1)
++  CFLAGS += -DHAVE_GETDENTS64
++endif
++
+ ifeq ($(DEBUG),0)
+   ifeq ($(feature-fortify-source), 1)
+     CORE_CFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
