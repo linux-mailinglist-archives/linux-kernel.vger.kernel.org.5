@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9542F809000
+	by mail.lfdr.de (Postfix) with ESMTP id 40534808FFF
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:36:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbjLGS20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 13:28:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
+        id S232030AbjLGSap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 13:30:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbjLGS20 (ORCPT
+        with ESMTP id S233081AbjLGSan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 13:28:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7EE31709
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 10:28:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78F0CC433C7;
-        Thu,  7 Dec 2023 18:28:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701973712;
-        bh=oUtjZ+VCwu0p6Zdm0+PMZHE5os+JzirK45maCcLFLZk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G41HUC1kewwWxdmisy1k+mtURaptTgqBN3Ot5SqLNnSxHulnqvYUQ8hrMoZC3Gj+C
-         bdOrzxYlaYRd2DhcPRBis+su/vydwNbNU1uNX40OSt2W0Gby3b0UZ0hQcmK8MYbVea
-         isD9GxQEpcWW6+XJkRe57pNziM8KzouUAJRDzrjTh3qxajLv/Y3cm4waUAYboP19O4
-         dc1HxrnBESGdJD5nbynnOQvbGH9geK6/rILKW5cHF1BVehqGWk5OZMh4je8gTkm9hb
-         kFclZCtMB4G5cvWfsTixd9YnZWj3W+AdB9uRl6+PZI8WgVGziEpBAXRJF/nRC8JGbR
-         gB215Dmnno5pg==
-Date:   Thu, 7 Dec 2023 18:28:27 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Gergo Koteles <soyer@irl.hu>
-Cc:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 11/16] ASoC: tas2781: use 0 as default prog/conf index
-Message-ID: <a07270d1-ef63-4558-83aa-223b97b1a93e@sirena.org.uk>
-References: <cover.1701906455.git.soyer@irl.hu>
- <88229933b7aaf0777cbe611979712e4e144b1ca1.1701906455.git.soyer@irl.hu>
+        Thu, 7 Dec 2023 13:30:43 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE6F10E7;
+        Thu,  7 Dec 2023 10:30:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701973849; x=1733509849;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=y2t867H8uPObLoUue6uM57n3MWPsr44cSJW7VsVsF3w=;
+  b=He42HI5Wb671cHw0sVhTNkCYTbgKgI2lSC0o59wHop0CjcJFaKeCunrP
+   XI/iBGaifP4GwqHs3iYBkw9CP6IeYiuULawWIFe4G91TX79GuJPT8LnH2
+   VItkk8u+JiDqYfFeyM24mmue06xZ240LtaN9RqV4r7u4GLvgIGV/4eTlS
+   iE6LgLfIKtcPGsGoT8Tcts6PiHzEy3EhFwyWXuN5ta5bL/g8AshMUmWbp
+   rrMTrJoszME3lU/SKGnKKz5zRsgrmdAon92/J1e2tTjKS0rpywfb2lOSq
+   uaDYK/DnALhcFoiiQFm4sfMrRCD2aQyBtYWufBKp7+sws6NWUt53JTViB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480474543"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="480474543"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 10:30:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="765191302"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="765191302"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 10:30:46 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1rBJ91-00000003scM-0r0L;
+        Thu, 07 Dec 2023 20:30:43 +0200
+Date:   Thu, 7 Dec 2023 20:30:42 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Petre Rodan <petre.rodan@subdimension.ro>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH v8 2/2] iio: pressure: driver for Honeywell HSC/SSC series
+Message-ID: <ZXIPUphL8ZEYDQxk@smile.fi.intel.com>
+References: <20231207164634.11998-1-petre.rodan@subdimension.ro>
+ <20231207164634.11998-2-petre.rodan@subdimension.ro>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Mtri/UqkWBaX0XWB"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <88229933b7aaf0777cbe611979712e4e144b1ca1.1701906455.git.soyer@irl.hu>
-X-Cookie: Two is company, three is an orgy.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231207164634.11998-2-petre.rodan@subdimension.ro>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 07, 2023 at 06:46:29PM +0200, Petre Rodan wrote:
+> Adds driver for digital Honeywell TruStability HSC and SSC series
+> pressure and temperature sensors.
+> Communication is one way. The sensor only requires 4 bytes worth of
+> clock pulses on both i2c and spi in order to push the data out.
+> The i2c address is hardcoded and depends on the part number.
+> There is no additional GPIO control.
+> code is now based on iio/togreg
 
---Mtri/UqkWBaX0XWB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+There is room to improve, but I think it's good enough to be included and
+amended later on if needed.
 
-On Thu, Dec 07, 2023 at 01:04:27AM +0100, Gergo Koteles wrote:
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-> Invalid indexes are not the best default values.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-I'm guessing this is just fallout from the previous (not really
-explained patch)?  Is there perhaps some bootstrapping issue here with
-ensuring that the program and configuration get written to the device if
-the user doesn't explicitly select something in a control?
 
---Mtri/UqkWBaX0XWB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVyDsoACgkQJNaLcl1U
-h9DGpQf/TQARSIEymiOBOzo5cGEpx/8ZwokjtMX7jsnFlo7PvAc6gfo8VM9mxveo
-50R+n3iX5Pmcyf+MAXLcFVDfW/+8lHTiGV0X/KZUBoh76QUk1y3Pwfc+xPylhknp
-rxtIAOu+D7ViODrLm00ODKFfVnb69+fpMaZEmfsmQJHsZByc5UU7m1gk9i7IxhDg
-UXJrBimr02zmiF4AWdyzUVP3rJPCqld6ciVFHwgB3uoA4+LnNEfgjiIbnb1Y/ip1
-qwNmUJpIDEa0exen/Vp95H7fdBKM5wV2H2ivj5D4H4He0FlTS+zEjd6C/+eSY3cA
-GCUzFTelOBOyxOEre7TNzJbXivrxzA==
-=45un
------END PGP SIGNATURE-----
-
---Mtri/UqkWBaX0XWB--
