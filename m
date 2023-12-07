@@ -2,115 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24219807D28
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 01:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B19807D40
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 01:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441923AbjLGA2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 19:28:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
+        id S1441834AbjLGAaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 19:30:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441896AbjLGA2W (ORCPT
+        with ESMTP id S231264AbjLGAax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 19:28:22 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB89D68;
-        Wed,  6 Dec 2023 16:28:27 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54cdef4c913so3065050a12.1;
-        Wed, 06 Dec 2023 16:28:27 -0800 (PST)
+        Wed, 6 Dec 2023 19:30:53 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329091736;
+        Wed,  6 Dec 2023 16:30:31 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6cbd24d9557so78150b3a.1;
+        Wed, 06 Dec 2023 16:30:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701908906; x=1702513706; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701909030; x=1702513830; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=js3vvEMH89qmox90J/KM0UnK1/RXnwyqtGHvEr0H27c=;
-        b=NZJGnH31Ve8w/7MXJCoAsJz8gqvgt9ejM/vpFGNMdQv+33Da+cEOgkeL3BuB77Jsy+
-         Mi3hgKk9bFkjQvo7ywDX9KVaisTO4rQUoQSXn6y9VrIhyIF/KXrO78HcDKRLw+hMERjD
-         wLAElJV2ZDM7NlvDLrNwRxkiOuKqalAj/z+iIlLPYi4rp4l0A7WOQhvAzgsKAFvDRdVg
-         8McXQw+3ia79lnMlSUgKgE2JgKk/oFJ/aL7URTQyVU3qv4g4IZGRaMuoWT4tHCRdD1hk
-         EFwrx4Eg9K+4ECNROoxyMvC5AhS/V9IfRz6ZD+juIpOq+KWlSuSWh+uq0KgSya5q446c
-         kJBw==
+        bh=pUILdXO0fAmIum4i0LjaIhGHTq4M4euUAAZGlBJTfMI=;
+        b=UVkDLPJYiku3Z/fo/QgPMrxc6kDRoov/cHWzBBepkOK/TFxjbFqDA+3SlZC8Lga89h
+         kp/9lKXuMzTjHUDJmYT3I7KvO9+/D/cdqGBcO1mD1zFg67X3BslaEdgZNbZS9bqmjQMZ
+         oWZEG/AgshzfdwLVGk2tB4cSqrLg/mvays2NhZ3KMXJy3S5Dd8XIC8WoXhcEydYpBlb2
+         b2NzUC6n2sYnAv5SGyciV2GAQxQU3qDueyRzj2uBK/x/l8s+QA4xkm5KEh/mMXNTwEfu
+         +pH/oEuGsWzWm5EsVxt8wxgCbI2f8YV2YrLhQjWp4rAIVOnP9Y6ceApY6KPOaCCgv2Bs
+         B5Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701908906; x=1702513706;
+        d=1e100.net; s=20230601; t=1701909030; x=1702513830;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=js3vvEMH89qmox90J/KM0UnK1/RXnwyqtGHvEr0H27c=;
-        b=LZbvFvybzq2QyZb1LFx3bIEXKZ/Mpi0zg+8lij3bj4kPZFvFRrPu3VOqqBjAuqCQRn
-         PnFXZPfDO9iYOc/cE4auG/fBLprMs0qIRiEET7S/StTvzKswQHndnZzdv9eQBQ/CHnxz
-         2UvCoFGea8pVFU7O8xoSOYnQe3XJdpTW2mnsZAqTN6b7FRcUJS1FI6dLKCMxdgC2qRDp
-         c7YRaddtBmuMW44Egwf/oRrelrJ9wU7o/B0GTfCHBcbbIsNDl9pCkrkHTAuxcxRNPfuX
-         ZPTk7OfkSK9RTli2IzHQBFvIH6x1djRK94pbr2XqHBRqf76b8iF3XNOayNR2KogcYjx5
-         vz+g==
-X-Gm-Message-State: AOJu0YzeuFx9W6LCswwB84CeALvZicxh0qeyDwNMj6cgwOrJ7SehpS0i
-        +6ThWTMEBDBi7QUD7rSSKAo=
-X-Google-Smtp-Source: AGHT+IGNrT7hViTJQsGamQ4k6tqu+2atpHkoEskaMm1SjUu6xtabZMmDurcam3BxY8sx0Tfbz78Ykg==
-X-Received: by 2002:a17:906:f951:b0:a01:ae9a:c1d3 with SMTP id ld17-20020a170906f95100b00a01ae9ac1d3mr3266896ejb.11.1701908905883;
-        Wed, 06 Dec 2023 16:28:25 -0800 (PST)
-Received: from skbuf ([188.27.185.68])
-        by smtp.gmail.com with ESMTPSA id f21-20020a170906c09500b00a1cd30d06d1sm86543ejz.14.2023.12.06.16.28.24
+        bh=pUILdXO0fAmIum4i0LjaIhGHTq4M4euUAAZGlBJTfMI=;
+        b=E7Qabj6S23/cy9FIOC9DvMjGtGU12+FhIIymtrlV3RKb9v4tMY9e75zgUFj9pXgu6/
+         +fWAS7thFtNxX1rx3LPncxJcygrv6oI/h7RvyGmMDRZeLKOsB5qOPtGmc11YWYhTC2xm
+         UIGL/DegYmA3nVVB3yBtSKAj/0SU3dwOMWZDTFmTSw3QCEOKbI70hpYWcim4GCJ1czFm
+         ugZueyBRWqHDIYle51TyYSa+Vg8chpvV4osupfdBdrzFIuhiwkAft07jO2SKF0SPh7On
+         2oRJ3vKqSxRNygZ0njPcCJPReQQTQtBMiTR1FyBTwSEkfuW+BW6Z71ova6ANoVTQVKmc
+         veXg==
+X-Gm-Message-State: AOJu0Yzsu8kD9E1L4tQ43UfPp67Z71TxDWiv38zIkEDlO9IrRZiE/3ji
+        LRMDc+Z3+aQRqdbESWRjcTU=
+X-Google-Smtp-Source: AGHT+IGNdRr4yYn8X8E8TUhLrtQlJNH4KI21LBAMZQqyY0t/4ywu4K0f2WjEAimk9RqDqbbbR0tJkQ==
+X-Received: by 2002:a05:6a00:3a1a:b0:68f:a92a:8509 with SMTP id fj26-20020a056a003a1a00b0068fa92a8509mr4897945pfb.7.1701909030344;
+        Wed, 06 Dec 2023 16:30:30 -0800 (PST)
+Received: from localhost.localdomain ([1.245.180.67])
+        by smtp.gmail.com with ESMTPSA id n19-20020aa78a53000000b006ce7d0d2590sm120723pfa.0.2023.12.06.16.30.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 16:28:25 -0800 (PST)
-Date:   Thu, 7 Dec 2023 02:28:23 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next v1 3/3] net: dsa: microchip: Fix PHY loopback
- configuration for KSZ8794 and KSZ8873
-Message-ID: <20231207002823.2qx24nxjhn6e43w4@skbuf>
-References: <20231121152426.4188456-1-o.rempel@pengutronix.de>
- <20231121152426.4188456-1-o.rempel@pengutronix.de>
- <20231121152426.4188456-3-o.rempel@pengutronix.de>
- <20231121152426.4188456-3-o.rempel@pengutronix.de>
+        Wed, 06 Dec 2023 16:30:29 -0800 (PST)
+Date:   Thu, 7 Dec 2023 09:30:15 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 12/21] mm/slab: consolidate includes in the internal
+ mm/slab.h
+Message-ID: <ZXESF2kgL93SjEgl@localhost.localdomain>
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-12-9c9c70177183@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231121152426.4188456-3-o.rempel@pengutronix.de>
- <20231121152426.4188456-3-o.rempel@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231120-slab-remove-slab-v2-12-9c9c70177183@suse.cz>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 04:24:26PM +0100, Oleksij Rempel wrote:
-> Correct the PHY loopback bit handling in the ksz8_w_phy_bmcr and
-> ksz8_r_phy_bmcr functions for KSZ8794 and KSZ8873 variants in the ksz8795
-> driver. Previously, the code erroneously used Bit 7 of port register 0xD
-> for both chip variants, which is actually for LED configuration. This
-> update ensures the correct registers and bits are used for the PHY
-> loopback feature:
+On Mon, Nov 20, 2023 at 07:34:23PM +0100, Vlastimil Babka wrote:
+> The #include's are scattered at several places of the file, but it does
+> not seem this is needed to prevent any include loops (anymore?) so
+> consolidate them at the top. Also move the misplaced kmem_cache_init()
+> declaration away from the top.
 > 
-> - For KSZ8794: Use 0xF / Bit 7.
-> - For KSZ8873: Use 0xD / Bit 0.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > ---
+>  mm/slab.h | 28 ++++++++++++++--------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 3a8d13c099fa..1ac3a2f8d4c0 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -1,10 +1,22 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  #ifndef MM_SLAB_H
+>  #define MM_SLAB_H
+> +
+> +#include <linux/reciprocal_div.h>
+> +#include <linux/list_lru.h>
+> +#include <linux/local_lock.h>
+> +#include <linux/random.h>
+> +#include <linux/kobject.h>
+> +#include <linux/sched/mm.h>
+> +#include <linux/memcontrol.h>
+> +#include <linux/fault-inject.h>
+> +#include <linux/kmemleak.h>
+> +#include <linux/kfence.h>
+> +#include <linux/kasan.h>
+> +
+>  /*
+>   * Internal slab definitions
+>   */
+> -void __init kmem_cache_init(void);
+>  
+>  #ifdef CONFIG_64BIT
+>  # ifdef system_has_cmpxchg128
+> @@ -209,11 +221,6 @@ static inline size_t slab_size(const struct slab *slab)
+>  	return PAGE_SIZE << slab_order(slab);
+>  }
+>  
+> -#include <linux/kfence.h>
+> -#include <linux/kobject.h>
+> -#include <linux/reciprocal_div.h>
+> -#include <linux/local_lock.h>
+> -
+>  #ifdef CONFIG_SLUB_CPU_PARTIAL
+>  #define slub_percpu_partial(c)			((c)->partial)
+>  
+> @@ -347,14 +354,6 @@ static inline int objs_per_slab(const struct kmem_cache *cache,
+>  	return slab->objects;
+>  }
+>  
+> -#include <linux/memcontrol.h>
+> -#include <linux/fault-inject.h>
+> -#include <linux/kasan.h>
+> -#include <linux/kmemleak.h>
+> -#include <linux/random.h>
+> -#include <linux/sched/mm.h>
+> -#include <linux/list_lru.h>
+> -
+>  /*
+>   * State of the slab allocator.
+>   *
+> @@ -405,6 +404,7 @@ gfp_t kmalloc_fix_flags(gfp_t flags);
+>  /* Functions provided by the slab allocators */
+>  int __kmem_cache_create(struct kmem_cache *, slab_flags_t flags);
+>  
+> +void __init kmem_cache_init(void);
+>  void __init new_kmalloc_cache(int idx, enum kmalloc_cache_type type,
+>  			      slab_flags_t flags);
+>  extern void create_boot_cache(struct kmem_cache *, const char *name,
 
-How did you find, and how did you test this, and on which one of the switches?
+Looks good to me,
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-Opening the KSZ8873 datasheet, I am confused about their description of
-the "far-end loopback". They make it sound as if this loops the packets
-_received_ from the media side of PHY port A back to the transmit side
-of PHY port A. But the route that these packets take is through the MAC
-of PHY port A, then the switching fabric, then PHY port B which reflects
-them back to PHY port A, where they finally egress.
-
-Actually, they even go as far as saying that if you set the loopback bit
-of port 1, the packets that will be looped back will be from port 2's
-RXP/RXM to TXP/TXM pins, and viceversa.
-
-If true, I believe this isn't the behavior expected by phy_loopback(),
-where the TX signals from the media side of the PHY are looped back into
-the RX side.
+> 
+> -- 
+> 2.42.1
+> 
+> 
