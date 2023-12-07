@@ -2,56 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFFC80950C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2F280950E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444011AbjLGWFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 17:05:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
+        id S1444035AbjLGWH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 17:07:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235661AbjLGWFf (ORCPT
+        with ESMTP id S231830AbjLGWHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 17:05:35 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B4E1733
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:05:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22B9FC433CA;
-        Thu,  7 Dec 2023 22:05:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701986741;
-        bh=yBOixJQ1eF1hddNoJxG7LtdyuY6vJ5WLNmSrwlgp4wo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lZ7Kf+QaAtNfOvuJpVxhwqHMta+fKOgpz2Z9ArWpVnF2JtG2Qxp3gi54bYhrQbUBr
-         AU4pu4XoT179ntcBcWCgtmfm1CU8RF+gXyY6d5lHfxjYNkxAyVae2DXxbdzJdiYY/j
-         3tvGmFBl6vpojhij2iN83pcJK2zi93fO7DXxb4GuDrC3F53f6wOnRR5ysi+gKGJotW
-         rO9i/9/61Ylel6B+Bxmd9k/oaJkzcN2maaHddY2zA9ePVtO2kKhl7JBdezIjarHqFJ
-         q7MyThsH63PR8NehrljSPqzeaIgzX/IuHr/+vBhtF/J5Ls8tjrzAghnWTdzTnOhkH2
-         2f+WMvcqIHE1Q==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50bf2d9b3fdso1732024e87.3;
-        Thu, 07 Dec 2023 14:05:41 -0800 (PST)
-X-Gm-Message-State: AOJu0Yy0lF4t1sIEyqocVpH8PKVIny3rFG3iPLvoHgUNsQeKQUXoutJA
-        c9nrscIRG5l5KWO6tM124Iq+drNFlI29r+Cv4A==
-X-Google-Smtp-Source: AGHT+IHQkQcg5qrcR88HIPcJlgbksfcxgMOojfI1MFj6MnrTmN95a+4BrWUc8lbvOUDGpYPJEyYyzhxLLZYmEodEpdI=
-X-Received: by 2002:a05:6512:b93:b0:50c:2253:15f7 with SMTP id
- b19-20020a0565120b9300b0050c225315f7mr632120lfv.23.1701986739317; Thu, 07 Dec
- 2023 14:05:39 -0800 (PST)
+        Thu, 7 Dec 2023 17:07:24 -0500
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB62122
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:07:27 -0800 (PST)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5d226f51f71so13351817b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 14:07:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701986847; x=1702591647; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=q0AOHa6WOyvMqCDqQv4ZeeVrDvAZWQXGwSAgV4Zp2Sc=;
+        b=J5qqksZnmm4aPlefwdPzdaRx94rL6aPm2wsTCHjpDf57JWA4YXFeu09kEXWfWFgaiQ
+         8lcReNMfNqjoZTQ5BPRHUhbGPKNSmfRvmLc9AmJCMOQlDbCBtiXW/oYOOmY5Mue0fnIr
+         yN1lJCjmzX0ojDnq7YU3OgHrH4NhlTKn4EA7pOtgm4pkhvBJjZ1Sj3zAg+97ulKuF7iG
+         B3zUo6U6D8v8oOVJahSctNw0Hk8Z8et+RoQF5bywCF9SbJ7WpUw6JUL1aUeeOGgmt7+w
+         CXxG01ybqYBJU3xBSIDueb9swWDHyILusyU+Yd53AVZX7ysez4JnopFYLOrs9Hu05saH
+         869w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701986847; x=1702591647;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q0AOHa6WOyvMqCDqQv4ZeeVrDvAZWQXGwSAgV4Zp2Sc=;
+        b=Qyh8BMgSmallfy17WLaWk+UMyjSG7DsG+y5GmUaZ6Vi+98dCbD7BR0iWd6f8RSs+xM
+         qu093O1bXIDQd2S23T4uYWAYjKxs3ncTUfIuo0pKJ0pqggOwGWOUG+fMq00PPANweovB
+         US8VS1gjAv7D3F8/2hvxWsQwuYHA9gwUQVu4edmvHkurN/JzjdZiT+tM1yn0gpRs8Xkb
+         3cOQyyKzEH8Ap8LNOM9Cm9OHtbma4TYWOfL2nuEz5nQ/5bJqZwx7A8hL09+NbMYQfPM6
+         2wE+nlsRTfaNmg2HzKBpP5VHpxr2+GJnJfIPXf4KD2ZKJWce0Rn6HRBjbbo2oshTbG01
+         BaoA==
+X-Gm-Message-State: AOJu0YxDVlOhjCDhQViU5PdxYLd7ItYJUwH1B/SFX/cercZRcdb+VfFZ
+        ZqVYAsvJ4H5UX7yrsnLgTZeOPLDrCFg=
+X-Google-Smtp-Source: AGHT+IGbK7L45qaSOWLr52dnBqHPtMbvUg5tzv36wIwlEokysyQlvFvzyTrtGG48d6YQlThHI1yWYQ==
+X-Received: by 2002:a0d:d7c5:0:b0:5d7:1940:dd90 with SMTP id z188-20020a0dd7c5000000b005d71940dd90mr3044674ywd.102.1701986846831;
+        Thu, 07 Dec 2023 14:07:26 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:8f7f:efcd:5388:af4f])
+        by smtp.gmail.com with ESMTPSA id x125-20020a817c83000000b005a4da74b869sm191507ywc.139.2023.12.07.14.07.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 14:07:26 -0800 (PST)
+Date:   Thu, 7 Dec 2023 14:07:25 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        Ming Lei <ming.lei@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v2 3/6] lib/group_cpus: optimize inner loop in
+ grp_spread_init_one()
+Message-ID: <ZXJCHTphZ+0niIQB@yury-ThinkPad>
+References: <20231207203900.859776-1-yury.norov@gmail.com>
+ <20231207203900.859776-4-yury.norov@gmail.com>
+ <20231207134521.c921cb0bb1ab7487d78aeb07@linux-foundation.org>
 MIME-Version: 1.0
-References: <20231207125737.5e7553e3@canb.auug.org.au> <CAL_JsqKXo+Cr=9s=dt1kCQeMadJ_cnuSpm06zmvK8yd-vd2X3g@mail.gmail.com>
- <20231208075847.6bbd23b8@canb.auug.org.au>
-In-Reply-To: <20231208075847.6bbd23b8@canb.auug.org.au>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 7 Dec 2023 16:05:27 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKyqe827YRyqZnqcVghhuAuvWoiS4U7uR8wwYoGj3=9KA@mail.gmail.com>
-Message-ID: <CAL_JsqKyqe827YRyqZnqcVghhuAuvWoiS4U7uR8wwYoGj3=9KA@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the devicetree tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207134521.c921cb0bb1ab7487d78aeb07@linux-foundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,46 +76,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 2:58=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org.=
-au> wrote:
->
-> Hi Rob,
->
-> On Thu, 7 Dec 2023 09:11:22 -0600 Rob Herring <robh@kernel.org> wrote:
-> >
-> > I'm sending out fixes for all these. I want to get the final patch
-> > ("of: Stop circularly including of_device.h and of_platform.h") for
-> > all this in next to get some better build coverage and catch any new
-> > drivers added. But if it is dropped for every new driver that breaks,
-> > I'll never get it in. Can you fix these up or just leave them broken?
-> > I can keep the fixes in my tree until they get applied by the
-> > corresponding subsystem.
->
-> These dependencies between trees are impossible to handle.  Please if
-> you really need the final patch in, then you must put all the necessary
-> fixes in the same branch.  There is no telling what order Linus (or I)
-> will merge the interdependent branches.
->
-> The alternative is to spray the needed fixes out to the other
-> subsystems and then put the final patch in after the merge window
-> closes or the next release.
+On Thu, Dec 07, 2023 at 01:45:21PM -0800, Andrew Morton wrote:
+> On Thu,  7 Dec 2023 12:38:57 -0800 Yury Norov <yury.norov@gmail.com> wrote:
+> 
+> > The loop starts from the beginning every time we switch to the next
+> > sibling mask. This is the Schlemiel the Painter's style of coding
+> > because we know for sure that nmsk is clear up to current CPU, and we
+> > can just continue from the next CPU.
+> > 
+> > Also, we can do it nicer if leverage the dedicated for_each() iterator.
+> > 
+> > --- a/lib/group_cpus.c
+> > +++ b/lib/group_cpus.c
+> > @@ -30,13 +30,13 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
+> >  
+> >  		/* If the cpu has siblings, use them first */
+> >  		siblmsk = topology_sibling_cpumask(cpu);
+> > -		for (sibl = -1; cpus_per_grp > 0; ) {
+> > -			sibl = cpumask_next(sibl, siblmsk);
+> > -			if (sibl >= nr_cpu_ids)
+> > -				break;
+> 
+> I assume this test goes away because the iterator takes care of it?
 
-Yes, that's what I've been doing since July and plan to do for the
-final patch. The final patch can't wait a cycle because then we'll
-just have more moles to wack. There's a couple of dependencies that
-still haven't been picked up (seems Sparc is unmaintained), so I'm
-going to send those along. I'll carry any further fixes until they I
-see they are applied.
+Yes, correct.
 
-> I cannot "just leave them broken" because that will interfere with
-> other's trying to get their work done. I will try fix up the newly
-> added drivers if they are obvious, but in the case of these include file
-> cleanups, that can be quite difficult sometimes.
-
-The simple (but not completely correct) fix is usually just add of.h
-and platform_device.h. There could be a case of needing of_platform.h
-instead of of_device.h or vice-versa, but those should all be fixed
-and rare in new code.
-
-Thanks,
-Rob
+> 
+> > +		sibl = cpu + 1;
+> > +
+> > +		for_each_cpu_and_from(sibl, siblmsk, nmsk) {
+> >  			__cpumask_clear_cpu(sibl, nmsk);
+> >  			__cpumask_set_cpu(sibl, irqmsk);
+> > -			cpus_per_grp--;
+> > +			if (cpus_per_grp-- == 0)
+> > +				return;
+> >  		}
+> >  	}
+> >  }
