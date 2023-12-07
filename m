@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8989C808D3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:22:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E46D1808D45
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443820AbjLGPxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 10:53:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54960 "EHLO
+        id S1443718AbjLGPxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 10:53:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443805AbjLGPwd (ORCPT
+        with ESMTP id S1443633AbjLGPwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 10:52:33 -0500
+        Thu, 7 Dec 2023 10:52:39 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD42E19A5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:50:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA422C43395;
-        Thu,  7 Dec 2023 15:50:19 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410EB1FE4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:50:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9302C433CB;
+        Thu,  7 Dec 2023 15:50:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701964220;
-        bh=AP/yR0nm23hUUYu4DfkWen6y8gWPLPwthFIRl4vtop8=;
+        s=k20201202; t=1701964223;
+        bh=KTCGZaHdEVzX8G8gYiwwNK0FXqTtIZ9KRh3cFkf+CNs=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=ubO4jnhht4RrZoAfE/rzpoPdd94AzGO5tEnzAgksjvD6ynUAb6I0hBhDXu/1hBZn5
-         5EG2L7q/maJwr8mTeh/+gmVPTlI4OOknOerOW71QeC3yQlash+jexxKFZ0U8FDaxEn
-         AC9QUw6fAlJ+svPtH9UjIG+zY+bkORxIKssT0SC/TvgTDV2seHRUKrafNntP7pVPay
-         6jscGN3eclHo/+AbwD5bXtcEDtKHk7/WQ/E+dMR2B3UQSJ/MGX2bxL34P3qvtXTEgT
-         v3sN8XYMqbw3CBt0vAWc/r7nNfy0X3m+e+h3ZsgMxCx1PM6gEF/DLGWex6u3+utRLm
-         36gkbq9GojoiA==
+        b=iBH8N7IAhOrx90KyIb6APrsfLzKtmzyRWs9YvFN8KjcgjXs+rYJ0/W9c50SrgiBay
+         XqzK1iXT8Vo6R9kzhyw63JL6YR3AL2LcgOPuHDSbN+U5+7ZZ2YbzObaY+tClIF+1JW
+         w4QykE+C6u9mQfSncIs8l7fT1R7FbC/FVHoHQwCK8t2+SIu7+A4CRk88OMNzG5k0aP
+         XkD4ZrinwXbNg8Ml52w60BaTUoLIrL5FGK+VgaWoX2lIZurSx4XkEaeOpw4HPaUNBA
+         263dD6nkUf9UhPCPysQUxOyIU5FZsKyS16ewfQkBWEeivc2q+Tvq7noZ10QNCf8/sN
+         E7PeVNsDTsf9A==
 From:   Maxime Ripard <mripard@kernel.org>
-Date:   Thu, 07 Dec 2023 16:49:40 +0100
-Subject: [PATCH v5 17/44] drm/connector: hdmi: Create Infoframe DebugFS
- entries
+Date:   Thu, 07 Dec 2023 16:49:41 +0100
+Subject: [PATCH v5 18/44] drm/vc4: hdmi: Create destroy state
+ implementation
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231207-kms-hdmi-connector-state-v5-17-6538e19d634d@kernel.org>
+Message-Id: <20231207-kms-hdmi-connector-state-v5-18-6538e19d634d@kernel.org>
 References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
 In-Reply-To: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -53,12 +53,12 @@ Cc:     Hans Verkuil <hverkuil@xs4all.nl>, dri-devel@lists.freedesktop.org,
         linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
         Maxime Ripard <mripard@kernel.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4158; i=mripard@kernel.org;
- h=from:subject:message-id; bh=AP/yR0nm23hUUYu4DfkWen6y8gWPLPwthFIRl4vtop8=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKmFL1uZ63MsX6Qb7FJo8Ha2c5qkclGk/lecsN8e46057
- 85MnpHfUcrCIMbFICumyBIjbL4k7tSs151sfPNg5rAygQxh4OIUgIlMu8fwV8Y1vvetfPK22W2+
- gZZdGue17E20xZb82b4kd62ZzN1nNxj+F3yYm+dtteaU+OPpSjZ/5BQ020RX1y01lUj5mBTr/Se
- QBQA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1640; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=KTCGZaHdEVzX8G8gYiwwNK0FXqTtIZ9KRh3cFkf+CNs=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKmFL1sPul9YsMvUJ/ZT4sMQ5j+Gsb9z17/t+hm2UdT8W
+ F3h8oSGjlIWBjEuBlkxRZYYYfMlcadmve5k45sHM4eVCWQIAxenAEwkYhPDX/mVssFORv1rY17O
+ 2aYl88hrj07l9n4dtm3LC092iARMv83w39F5TYVTcILkynU3ez3Wzr5pNInppaF6ooj1mydWWv8
+ 5+QE=
 X-Developer-Key: i=mripard@kernel.org; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -71,149 +71,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There has been some discussions recently about the infoframes sent by
-drivers and if they were properly generated.
+Even though we were rolling our own custom state for the vc4 HDMI
+controller driver, we were still using the generic helper to destroy
+that state.
 
-In parallel, there's been some interest in creating an infoframe-decode
-tool similar to edid-decode.
-
-Both would be much easier if we were to expose the infoframes programmed
-in the hardware. It won't be perfect since we have no guarantee that
-it's actually what goes through the wire, but it's the best we can do.
+It was mostly working since the underlying state is the first member of
+our state so the pointers are probably equal in all relevant cases, but
+it's still fragile so let's fix this properly.
 
 Signed-off-by: Maxime Ripard <mripard@kernel.org>
 ---
- drivers/gpu/drm/drm_debugfs.c | 110 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 110 insertions(+)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
-index 02e7481758c0..dab54f14d313 100644
---- a/drivers/gpu/drm/drm_debugfs.c
-+++ b/drivers/gpu/drm/drm_debugfs.c
-@@ -522,6 +522,114 @@ static const struct file_operations drm_connector_fops = {
- 	.write = connector_write
- };
- 
-+struct debugfs_wrapper {
-+	struct drm_connector *connector;
-+	struct drm_connector_hdmi_infoframe *frame;
-+};
-+
-+#define HDMI_MAX_INFOFRAME_SIZE		29
-+
-+static ssize_t
-+infoframe_read(struct file *filp, char __user *ubuf, size_t count, loff_t *ppos)
-+{
-+	const struct debugfs_wrapper *wrapper = filp->private_data;
-+	struct drm_connector *connector = wrapper->connector;
-+	struct drm_connector_hdmi_infoframe *infoframe = wrapper->frame;
-+	union hdmi_infoframe *frame = &infoframe->data;
-+	u8 buf[HDMI_MAX_INFOFRAME_SIZE];
-+	ssize_t len = 0;
-+
-+	mutex_lock(&connector->hdmi.infoframes.lock);
-+
-+	if (!infoframe->set)
-+		goto out;
-+
-+	len = hdmi_infoframe_pack(frame, buf, sizeof(buf));
-+	if (len < 0)
-+		goto out;
-+
-+	len = simple_read_from_buffer(ubuf, count, ppos, buf, len);
-+
-+out:
-+	mutex_unlock(&connector->hdmi.infoframes.lock);
-+	return len;
-+}
-+
-+static const struct file_operations infoframe_fops = {
-+	.owner   = THIS_MODULE,
-+	.open    = simple_open,
-+	.read    = infoframe_read,
-+};
-+
-+static int create_hdmi_infoframe_file(struct drm_connector *connector,
-+				      struct dentry *parent,
-+				      const char *filename,
-+				      struct drm_connector_hdmi_infoframe *frame)
-+{
-+	struct drm_device *dev = connector->dev;
-+	struct debugfs_wrapper *wrapper;
-+	struct dentry *file;
-+
-+	wrapper = drmm_kzalloc(dev, sizeof(*wrapper), GFP_KERNEL);
-+	if (!wrapper)
-+		return -ENOMEM;
-+
-+	wrapper->connector = connector;
-+	wrapper->frame = frame;
-+
-+	file = debugfs_create_file(filename, 0400, parent, wrapper, &infoframe_fops);
-+	if (IS_ERR(file))
-+		return PTR_ERR(file);
-+
-+	return 0;
-+}
-+
-+#define CREATE_HDMI_INFOFRAME_FILE(c, p, i)		\
-+	create_hdmi_infoframe_file(c, p, #i, &(c)->hdmi.infoframes.i)
-+
-+static int create_hdmi_infoframe_files(struct drm_connector *connector,
-+				       struct dentry *parent)
-+{
-+	int ret;
-+
-+	ret = CREATE_HDMI_INFOFRAME_FILE(connector, parent, audio);
-+	if (ret)
-+		return ret;
-+
-+	ret = CREATE_HDMI_INFOFRAME_FILE(connector, parent, avi);
-+	if (ret)
-+		return ret;
-+
-+	ret = CREATE_HDMI_INFOFRAME_FILE(connector, parent, hdr_drm);
-+	if (ret)
-+		return ret;
-+
-+	ret = CREATE_HDMI_INFOFRAME_FILE(connector, parent, spd);
-+	if (ret)
-+		return ret;
-+
-+	ret = CREATE_HDMI_INFOFRAME_FILE(connector, parent, hdmi);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static void hdmi_debugfs_add(struct drm_connector *connector)
-+{
-+	struct dentry *dir;
-+
-+	if (!(connector->connector_type == DRM_MODE_CONNECTOR_HDMIA ||
-+	      connector->connector_type == DRM_MODE_CONNECTOR_HDMIB))
-+		return;
-+
-+	dir = debugfs_create_dir("infoframes", connector->debugfs_entry);
-+	if (IS_ERR(dir))
-+		return;
-+
-+	create_hdmi_infoframe_files(connector, dir);
-+}
-+
- void drm_debugfs_connector_add(struct drm_connector *connector)
- {
- 	struct drm_device *dev = connector->dev;
-@@ -549,6 +657,8 @@ void drm_debugfs_connector_add(struct drm_connector *connector)
- 	debugfs_create_file("output_bpc", 0444, root, connector,
- 			    &output_bpc_fops);
- 
-+	hdmi_debugfs_add(connector);
-+
- 	if (connector->funcs->debugfs_init)
- 		connector->funcs->debugfs_init(connector, root);
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 25c9c71256d3..f05e2c95a60d 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -672,11 +672,21 @@ vc4_hdmi_connector_duplicate_state(struct drm_connector *connector)
+ 	return &new_state->base;
  }
+ 
++static void vc4_hdmi_connector_destroy_state(struct drm_connector *connector,
++					     struct drm_connector_state *state)
++{
++	struct vc4_hdmi_connector_state *vc4_state =
++		conn_state_to_vc4_hdmi_conn_state(state);
++
++	__drm_atomic_helper_connector_destroy_state(state);
++	kfree(vc4_state);
++}
++
+ static const struct drm_connector_funcs vc4_hdmi_connector_funcs = {
+ 	.fill_modes = drm_helper_probe_single_connector_modes,
+ 	.reset = vc4_hdmi_connector_reset,
+ 	.atomic_duplicate_state = vc4_hdmi_connector_duplicate_state,
+-	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
++	.atomic_destroy_state = vc4_hdmi_connector_destroy_state,
+ 	.atomic_get_property = vc4_hdmi_connector_get_property,
+ 	.atomic_set_property = vc4_hdmi_connector_set_property,
+ };
 
 -- 
 2.43.0
