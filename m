@@ -2,183 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C60808473
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB9D808472
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 10:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378487AbjLGJKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:10:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        id S1378669AbjLGJLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:11:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbjLGJKP (ORCPT
+        with ESMTP id S232366AbjLGJKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:10:15 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F6B10DF
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:09:45 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-28657040cdcso637260a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:09:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1701940185; x=1702544985; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2c4C3n0LRxWIX1WwXTdUDTm3hHPBj3ay99ram+tbJ5c=;
-        b=R+MpIeHsJHivnaHL432W9ENPykPVOhtTnA0XNkp4U6jtWmSSG6NT6HlDA9h+igazof
-         dVgosixcAb518PZlhr6gii+lu36hYymcZbzggLkwArOmI8WVYD4zutQxANL0vzVJeZjo
-         WdU6eFKQzkXiWnQ/szG5krgjo4Etiy69Kek0uAuIQhyPF3PZCxNAVLFTKDoGdC4QTWux
-         a2luye57uxXmBdNAfqjF4kgjo2evgIa6MK4pcLQ/YR6r3IRkMpq3VTBjRX6H4DBgb6ox
-         tubfHCzzsrZ1k8uz9EFAbgRgoqNOmYLSqeosC38v2FJYIzjeVMwKEl+VknfDaEmAha2J
-         mI6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701940185; x=1702544985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2c4C3n0LRxWIX1WwXTdUDTm3hHPBj3ay99ram+tbJ5c=;
-        b=EK4rm4ge105k9/TvpE0ZU5dEr3ni2vxxxbTijD2TrFcClYdvNSkvrruc+r4z2puXXR
-         5JJXt8IwAP4sMj8KtgdGzCYVseeDiRVMwTZKHBN9CmpWOXlHhP6aCE8yoFimEXme0jrq
-         ayEx3jlSxSxI90c8Ivomi19PyFrH2naXlTgIvS8Mgo4wH4UuxL7STfM/a23GWJ/BseT6
-         mWwGdjQjBuOOmUvHExykTG+A/DoP549V/S2mvO6jzI6A34l/p7GSs8CiNi0fEWdb/Pq1
-         iVXA7wxtOosfy1YNipYsgVV1t/FDAdVEtsbnCi4ntXhyRYt6zUe19Z1PV+94OhDLj2tK
-         hgVw==
-X-Gm-Message-State: AOJu0Yxesy8ENutvCFFBSCtH7oZ5y0xdC9A1O98lt0jNjOfc63ekEAow
-        12OpmMSS04rn569Fxlhl4S+Z6HZxTBilcapBUh9UTQ==
-X-Google-Smtp-Source: AGHT+IFK+U+J/GEdq+NYipG+hOrQ/lKIqZ6/I+wyo90SHNVrwK9YL7khjtC+G9Lw2tXREXPfZ0XbM9s5dby1KfOqA4U=
-X-Received: by 2002:a17:90b:3509:b0:286:9231:c5c1 with SMTP id
- ls9-20020a17090b350900b002869231c5c1mr1903943pjb.7.1701940185105; Thu, 07 Dec
- 2023 01:09:45 -0800 (PST)
+        Thu, 7 Dec 2023 04:10:44 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC901987;
+        Thu,  7 Dec 2023 01:10:26 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5B8831F897;
+        Thu,  7 Dec 2023 09:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1701940224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jXiKfid97FD5zi8RqmP75wazePMuM2Vj4JZ4H26JF/w=;
+        b=tg8NdadUlk4VfBBiX/KnTc8KWn4/+I2eqU3OCsMmSGO5fGxGo+xFF7FC1+cL85+pnkxgh6
+        +2Q+t+yvWpRrlmhVvY0iaqUjhOk6aDapKv8aWDgxXaeYBRQUq2bq9mHOv8yIv2mkt3uJBW
+        DjcnaOKBqBG38BR6qn1JnsOv3SGRVLU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1701940224;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jXiKfid97FD5zi8RqmP75wazePMuM2Vj4JZ4H26JF/w=;
+        b=eNkRt1wWHc2B/3UiJ7gBmgVmSJJtzZTtEviOYNX31SorNi0ot/Q0TzM7nhemVkTB8kzvHE
+        aOrpBsXvOqOVy6BQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 34B3813907;
+        Thu,  7 Dec 2023 09:10:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id w3HWDACMcWWqPwAAn2gu4w
+        (envelope-from <jack@suse.cz>); Thu, 07 Dec 2023 09:10:24 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 7AF80A07C7; Thu,  7 Dec 2023 10:10:23 +0100 (CET)
+Date:   Thu, 7 Dec 2023 10:10:23 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Disseldorp <ddiss@suse.de>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Karsten Keil <isdn@linux-pingi.de>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Rich Felker <dalias@libc.org>, Rob Herring <robh@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        alsa-devel@alsa-project.org, ath10k@lists.infradead.org,
+        dmaengine@vger.kernel.org, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-net-drivers@amd.com,
+        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        mpi3mr-linuxdrv.pdl@broadcom.com, netdev@vger.kernel.org,
+        sparclinux@vger.kernel.org, x86@kernel.org,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>
+Subject: Re: [PATCH v2 00/35] bitops: add atomic find_bit() operations
+Message-ID: <20231207091023.kioii5mgmnphrvl4@quack3>
+References: <20231203192422.539300-1-yury.norov@gmail.com>
+ <20231204185101.ddmkvsr2xxsmoh2u@quack3>
+ <ZXAFM2VZugdhM3oE@yury-ThinkPad>
 MIME-Version: 1.0
-References: <20231026143122.279437-1-cleger@rivosinc.com>
-In-Reply-To: <20231026143122.279437-1-cleger@rivosinc.com>
-From:   Xu Lu <luxu.kernel@bytedance.com>
-Date:   Thu, 7 Dec 2023 17:09:33 +0800
-Message-ID: <CAPYmKFsFLQnhXRPXpcoNfO-kEyjYLXD2Hm-F-O=Yxe1WJoSL9w@mail.gmail.com>
-Subject: Re: [External] [RFC PATCH 0/3] riscv: add support for SBI Supervisor
- Software Events
-To:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atishp@atishpatra.org>,
-        Anup Patel <apatel@ventanamicro.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Himanshu Chauhan <hchauhan@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXAFM2VZugdhM3oE@yury-ThinkPad>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Score: 2.70
+X-Spamd-Result: default: False [2.70 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         TO_DN_SOME(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_GT_50(0.00)[100];
+         FREEMAIL_TO(0.00)[gmail.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FORGED_RECIPIENTS(2.00)[m:yury.norov@gmail.com,m:davem@davemloft.net,m:jejb@linux.ibm.com,m:haris.iqbal@ionos.com,m:akinobu.mita@gmail.com,m:akpm@linux-foundation.org,m:andersson@kernel.org,m:bp@alien8.de,m:brauner@kernel.org,m:dave.hansen@linux.intel.com,m:ecree.xilinx@gmail.com,m:edumazet@google.com,m:fenghua.yu@intel.com,m:geert@linux-m68k.org,m:gregory.greenman@intel.com,m:hughd@google.com,m:kuba@kernel.org,m:axboe@kernel.dk,m:jirislaby@kernel.org,m:kvalo@kernel.org,m:kgraul@linux.ibm.com,m:isdn@linux-pingi.de,m:keescook@chromium.org,m:leon@kernel.org,m:mark.rutland@arm.com,m:habetsm.xilinx@gmail.com,m:mchehab@kernel.org,m:mpe@ellerman.id.au,m:npiggin@gmail.com,m:peterz@infradead.org,m:dalias@libc.org,m:robh@kernel.org,m:robin.murphy@arm.com,m:seanjc@google.com,m:xueshuai@linux.alibaba.com,m:rostedt@goodmis.org,m:tsbogend@alpha.franken.de,m:tglx@linutronix.de,m:wenjia@linux.ibm.com,m:will@kernel.org,m:alsa-devel@alsa-project.org,m:linux-net-drivers@amd.com,m:mpi3mr-linuxdrv.pdl
+ @broadcom.com,m:x86@kernel.org,m:mirsad.todorovac@alu.unizg.hr,m:willy@infradead.org,m:andriy.shevchenko@linux.intel.com,m:maxim.kuvyrkov@linaro.org,m:klimov.linux@gmail.com,m:bvanassche@acm.org,s:s.shtylyov@omp.ru];
+         BAYES_HAM(-0.00)[40.06%];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[wp.pl,xs4all.nl];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         TO_MATCH_ENVRCPT_SOME(0.00)[];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[suse.cz,vger.kernel.org,davemloft.net,zytor.com,linux.ibm.com,microsoft.com,ionos.com,gmail.com,linux-foundation.org,kernel.org,alien8.de,nvidia.com,opensource.wdc.com,linux.intel.com,suse.de,google.com,intel.com,linux-m68k.org,linuxfoundation.org,xs4all.nl,redhat.com,perex.cz,ziepe.ca,kernel.dk,resnulli.us,linux-pingi.de,chromium.org,arm.com,ellerman.id.au,monstr.eu,suse.com,infradead.org,realtek.com,libc.org,linux.alibaba.com,wp.pl,goodmis.org,alpha.franken.de,linutronix.de,users.sourceforge.jp,marvell.com,alsa-project.org,lists.infradead.org,lists.linux.dev,lists.linux-m68k.org,amd.com,lists.ozlabs.org,broadcom.com,alu.unizg.hr,rasmusvillemoes.dk,linaro.org,acm.org,omp.ru];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pardon. It seems that the code in opensbi[1] is not complete for PMU NMI no=
-w.
-For example, the pmu ovf irq is still delegated to supervisor mode and
-thus can not really play a role as NMI. And neither the kernel nor
-opensbi will inject a pmu event.
+On Tue 05-12-23 21:22:59, Yury Norov wrote:
+> On Mon, Dec 04, 2023 at 07:51:01PM +0100, Jan Kara wrote:
+> > > This series is a result of discussion [1]. All find_bit() functions imply
+> > > exclusive access to the bitmaps. However, KCSAN reports quite a number
+> > > of warnings related to find_bit() API. Some of them are not pointing
+> > > to real bugs because in many situations people intentionally allow
+> > > concurrent bitmap operations.
+> > > 
+> > > If so, find_bit() can be annotated such that KCSAN will ignore it:
+> > > 
+> > >         bit = data_race(find_first_bit(bitmap, nbits));
+> > 
+> > No, this is not a correct thing to do. If concurrent bitmap changes can
+> > happen, find_first_bit() as it is currently implemented isn't ever a safe
+> > choice because it can call __ffs(0) which is dangerous as you properly note
+> > above. I proposed adding READ_ONCE() into find_first_bit() / find_next_bit()
+> > implementation to fix this issue but you disliked that. So other option we
+> > have is adding find_first_bit() and find_next_bit() variants that take
+> > volatile 'addr' and we have to use these in code like xas_find_chunk()
+> > which cannot be converted to your new helpers.
+> 
+> Here is some examples when concurrent operations with plain find_bit()
+> are acceptable:
+> 
+>  - two threads running find_*_bit(): safe wrt ffs(0) and returns correct
+>    value, because underlying bitmap is unchanged;
+>  - find_next_bit() in parallel with set or clear_bit(), when modifying
+>    a bit prior to the start bit to search: safe and correct;
+>  - find_first_bit() in parallel with set_bit(): safe, but may return wrong
+>    bit number;
+>  - find_first_zero_bit() in parallel with clear_bit(): same as above.
+> 
+> In last 2 cases find_bit() may not return a correct bit number, but
+> it may be OK if caller requires any (not exactly first) set or clear
+> bit, correspondingly.
+> 
+> In such cases, KCSAN may be safely silenced.
 
-To complete the work, we think maybe 'enable_cb' and 'disable_cb'
-functions can be supplied for sbi_sse_cb_ops.
-When sbi_sse_enable is called to enable pmu event, the enable_cb will
-be called to revoke the delegation of pmu ovf irq and enable this irq
-in CSR_MIE.
-When pmu ovf irq occurs, kernel traps into opensbi and opensbi injects
-the event via sbi_sse_inject_event and eret back to kernel.
+True - but these are special cases. In particular the case in xas_find_chunk()
+is not any of these special cases. It is using find_next_bit() which is can
+be racing with clear_bit(). So what are your plans for such usecase?
 
-Please point it out if we have any misunderstanding.
-
-By the way, how is SSE going now? We will appreciate it very much if
-we can participate in some development work in kernel or opensbi and
-be of any help.
-
-Regards!
-
-Link: https://github.com/rivosinc/opensbi/tree/dev/cleger/sse [1]
-
-On Thu, Oct 26, 2023 at 10:31=E2=80=AFPM Cl=C3=A9ment L=C3=A9ger <cleger@ri=
-vosinc.com> wrote:
->
-> The SBI Supervisor Software Events (SSE) extensions provides a mechanism
-> to inject software events from an SBI implementation to supervisor
-> software such that it preempts all other supervisor level traps and
-> interrupts [1].
->
-> Various events are defined and can be send asynchronously to supervisor
-> software (RAS, PMU, DEBUG, Asynchronous page fault) from SBI as well
-> as platform specific events. Events can be either local (per-hart) or
-> global. Events can be nested on top of each other based on priority and
-> can interrupt the kernel at any time.
->
-> First patch adds the SSE definitions. Second one adds support for SSE
-> itself. Implementation is split between arch specific code and generic
-> part (similarly to what is done for ARM SDEI). Finally, the last patch
-> add support fro SSE event in the SBI PMU driver. If the SSE event is
-> available from the SBI then, it will be used instead of the normal
-> interrupt.
->
-> Amongst the specific points that needs to be handle is the interruption
-> at any point of the kernel execution and more specifically during
-> exception handling. Due to the fact that the exception entry
-> implementation uses the SCRATCH CSR as both the current task struct and
-> as the temporary register to switch the stack and save register, it is
-> difficult to reliably get the current task struct if we get interrupted
-> at this specific moment. A fixup-like mechanism allows to mark the
-> location of the current task struct depending on the entry level
-> (user/kernel) and the location. This is then used in the SSE assembly to
-> determine where is located the current task_struct.
->
-> Contrary to pseudo NMI [2], SSE does not modifies the way interrupts are
-> handled and does not adds any overhead to existing code. Moreover, it
-> provides "true" NMI-like interrupts which can interrupt the kernel at
-> any time (even in exception handling). This is particularly crucial for
-> RAS errors which needs to be handled as fast as possible to avoid any
-> fault propagation. Additionally, SSE event handling is faster that the
-> standard IRQ handling path with almost half executed instruction (700 vs
-> 1590). Some complementary tests/perf measurements will be done.
->
-> For testing purpose, one can use the provided SBI implementation at [3].
-> This series also needs patch [4] to fix a bug in the PMU driver.
->
-> Link: https://lists.riscv.org/g/tech-prs/message/515 [1]
-> Link: https://lore.kernel.org/lkml/20231023082911.23242-10-luxu.kernel@by=
-tedance.com/T/ [2]
-> Link: https://github.com/rivosinc/opensbi/tree/dev/cleger/sse [3]
-> Link: https://lore.kernel.org/linux-arm-kernel/20231026084010.11888-1-ale=
-xghiti@rivosinc.com/ [4]
->
-> ---
->
-> Cl=C3=A9ment L=C3=A9ger (3):
->   riscv: add SBI SSE extension definitions
->   riscv: add support for SBI Supervisor Software Events extension
->   perf: RISC-V: add support for SSE event
->
->  arch/riscv/include/asm/asm-prototypes.h |   5 +
->  arch/riscv/include/asm/sbi.h            |  40 ++
->  arch/riscv/include/asm/sse.h            |  94 +++++
->  arch/riscv/kernel/Makefile              |   1 +
->  arch/riscv/kernel/asm-offsets.c         |  17 +
->  arch/riscv/kernel/entry.S               | 156 ++++++++
->  arch/riscv/kernel/sbi.c                 |   4 +
->  arch/riscv/kernel/sse.c                 |  97 +++++
->  arch/riscv/kernel/stacktrace.c          |  13 +
->  arch/riscv/kernel/vmlinux.lds.S         |   6 +
->  drivers/firmware/Kconfig                |  10 +
->  drivers/firmware/Makefile               |   1 +
->  drivers/firmware/riscv_sse.c            | 496 ++++++++++++++++++++++++
->  drivers/perf/riscv_pmu_sbi.c            |  51 ++-
->  include/linux/riscv_sse.h               |  56 +++
->  15 files changed, 1038 insertions(+), 9 deletions(-)
->  create mode 100644 arch/riscv/include/asm/sse.h
->  create mode 100644 arch/riscv/kernel/sse.c
->  create mode 100644 drivers/firmware/riscv_sse.c
->  create mode 100644 include/linux/riscv_sse.h
->
-> --
-> 2.42.0
->
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
