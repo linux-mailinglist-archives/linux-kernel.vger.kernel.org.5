@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA1D8082CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 09:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EACF8082D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 09:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378200AbjLGIUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 03:20:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
+        id S1378300AbjLGIU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 03:20:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231829AbjLGIUS (ORCPT
+        with ESMTP id S231876AbjLGIUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 03:20:18 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D26A10DE;
-        Thu,  7 Dec 2023 00:20:22 -0800 (PST)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Sm6X82K1wz14LrL;
-        Thu,  7 Dec 2023 16:15:20 +0800 (CST)
+        Thu, 7 Dec 2023 03:20:21 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4299410DB;
+        Thu,  7 Dec 2023 00:20:24 -0800 (PST)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Sm6Xw0KSszShmK;
+        Thu,  7 Dec 2023 16:16:00 +0800 (CST)
 Received: from localhost.localdomain (10.50.165.33) by
  canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Dec 2023 16:20:19 +0800
+ 15.1.2507.35; Thu, 7 Dec 2023 16:20:22 +0800
 From:   Yicong Yang <yangyicong@huawei.com>
 To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
@@ -30,9 +30,9 @@ To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <jonathan.cameron@huawei.com>, <hejunhao3@huawei.com>,
         <yangyicong@hisilicon.com>, <linuxarm@huawei.com>
-Subject: [PATCH 1/2] perf header: Fix one memory leakage in perf_event__fprintf_event_update()
-Date:   Thu, 7 Dec 2023 16:16:34 +0800
-Message-ID: <20231207081635.8427-2-yangyicong@huawei.com>
+Subject: [PATCH 2/2] perf hisi-ptt: Fix one memory leakage in hisi_ptt_process_auxtrace_event()
+Date:   Thu, 7 Dec 2023 16:16:35 +0800
+Message-ID: <20231207081635.8427-3-yangyicong@huawei.com>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20231207081635.8427-1-yangyicong@huawei.com>
 References: <20231207081635.8427-1-yangyicong@huawei.com>
@@ -54,36 +54,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yicong Yang <yangyicong@hisilicon.com>
 
-When dump the raw trace by `perf report -D` ASan reports a memory
-leakage in perf_event__fprintf_event_update(). It shows that we
-allocated a temporary cpumap for dumping the CPUs but doesn't
-release it and it's not used elsewhere. Fix this by free the
-cpumap after the dumping.
+ASan complains a memory leakage in hisi_ptt_process_auxtrace_event()
+that the data buffer is not freed. Since currently we only support
+the raw dump trace mode, the data buffer is used only within this
+function. So fix this by freeing the data buffer before going out.
 
-Fixes: c853f9394b7b ("perf tools: Add perf_event__fprintf_event_update function")
-Cc: Jiri Olsa <jolsa@kernel.org>
+Fixes: 5e91e57e6809 ("perf auxtrace arm64: Add support for parsing HiSilicon PCIe Trace packet")
 Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 ---
- tools/perf/util/header.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ tools/perf/util/hisi-ptt.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index e86b9439ffee..7190f39ccd13 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -4369,9 +4369,10 @@ size_t perf_event__fprintf_event_update(union perf_event *event, FILE *fp)
- 		ret += fprintf(fp, "... ");
+diff --git a/tools/perf/util/hisi-ptt.c b/tools/perf/util/hisi-ptt.c
+index 43bd1ca62d58..52d0ce302ca0 100644
+--- a/tools/perf/util/hisi-ptt.c
++++ b/tools/perf/util/hisi-ptt.c
+@@ -123,6 +123,7 @@ static int hisi_ptt_process_auxtrace_event(struct perf_session *session,
+ 	if (dump_trace)
+ 		hisi_ptt_dump_event(ptt, data, size);
  
- 		map = cpu_map__new_data(&ev->cpus.cpus);
--		if (map)
-+		if (map) {
- 			ret += cpu_map__fprintf(map, fp);
--		else
-+			perf_cpu_map__put(map);
-+		} else
- 			ret += fprintf(fp, "failed to get cpus\n");
- 		break;
- 	default:
++	free(data);
+ 	return 0;
+ }
+ 
 -- 
 2.24.0
 
