@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF818085F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30573808624
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbjLGJhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:37:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45102 "EHLO
+        id S1378554AbjLGJjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:39:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbjLGJhA (ORCPT
+        with ESMTP id S229379AbjLGJjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:37:00 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE65F121
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:37:06 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-33350fcb2c7so492984f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:37:06 -0800 (PST)
+        Thu, 7 Dec 2023 04:39:18 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D92C9
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:39:24 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3316bb1303bso508361f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:39:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701941825; x=1702546625; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701941963; x=1702546763; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=TVgirxKXDXm5GJs7BxhAmgfiqnHfwl6+dczWvGh6WGg=;
-        b=L5GwvKUzqgHM79RFdngUifHmftnJUR0jMx3khDR3X3J4weWO0glAlmcyoQpigd7he4
-         ygEMTCldabiFzJCx+0NG9OvCPIr/gLWE2MPHyGZltl19E2oM3La7JnUQ6heNfu86hePO
-         ggXUyEVrsppRWk481hrK2JJJYdPbP+b1N9P42R6mbMnQCSoEI6hCVwegeDZz7OnIpUZF
-         2hmwwmht4e0oFwvhg+vN9z/SqBHtn6MzE2YY97SDzProG/U1txY8tCj3AC+P7DysC6zD
-         Z3b+Yvl6oax9UeQk969cWEKTnnLlyqWqHYiQOXDrdaVrMEQQKzznQsQsw8l60RbsMlLm
-         JkiA==
+        bh=ra4wyjCInETwctBctl6WihgaGyi+XSY10++FtZsNhzA=;
+        b=JfKRsBQtU2AeZcXKXs1ZNZAZsd0RLiuCcUgXRk2Y7yxZavnNm56Tw64aUEReqkf44c
+         4szWO8TFfhOQzoJW2sBX36Nne48/Ifvjesv2JyvYPlLA1EHRPqBgp0YX09pIVUjb3ez1
+         p3I9osLe6xBPM9dh9GQKD6uC9xGTWVYrqUkVbF0vgJjpKxa+oXEN+TC5VHAyXXWjTugJ
+         4dS0fDODALSFbLDMqjKRVbs91YjcV0qCK9cq2riVDTRr2IkYsyW7ZIyx+kX0LXT9ZhrI
+         nMiyiFfcyfJBzimTzRgVBMK5xKoDDutaRxOVOjigPRdO+c1+jDCI5t524NY5bmfujiBR
+         GJUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701941825; x=1702546625;
+        d=1e100.net; s=20230601; t=1701941963; x=1702546763;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TVgirxKXDXm5GJs7BxhAmgfiqnHfwl6+dczWvGh6WGg=;
-        b=V9E1ECciuv10RZVM818tQFe1KLBlvXvV6vQSLeUu94gfKieWOghwxickCkGXElh1Et
-         c5xhMj/djczUmHbp3RSMsqQh8cEyHHKjhAb55l5RbBPaHTPX9zls3NrB0r63vu4o+CIS
-         EgNs6dh/YgGcWe8Beff9Zfe+S5hOmvmzsYG1YMjM/3ydqf59Lw6oKwZBCVWX1rmTxk5s
-         APMp29+O8sGBVzdOLXthCrcv7w+CX9M10IOyN5JY2J6ySO2DwQT5sGuOSmpHlnAiX2mi
-         RkfrB6aMQhxLpXgm8uiHbInPMAwuwE8SuqalB6gJlZWMeujy8OsSW5f4+TQgmKKMSWeR
-         AO6g==
-X-Gm-Message-State: AOJu0Yyn0uiTnaXKzpNEqZnqtSu2nLQEli0MTQxcjoIMRMQ4d4ceVV/V
-        ig9DCqKRBJirxizVJZKogO6kXBZcSUq7dBmCsqA=
-X-Google-Smtp-Source: AGHT+IEuEXP8ZhNycekkq6pcvx0quay81tigw7axwCXxrFMAqu78eCJgfruTN0p3HHq9jamRx0w6LA==
-X-Received: by 2002:adf:dd8a:0:b0:333:359f:4205 with SMTP id x10-20020adfdd8a000000b00333359f4205mr1636197wrl.43.1701941825445;
-        Thu, 07 Dec 2023 01:37:05 -0800 (PST)
+        bh=ra4wyjCInETwctBctl6WihgaGyi+XSY10++FtZsNhzA=;
+        b=fWxrSza6yLnwZKTmpzeThUoHqO4Iej8zgWdAl6axYpz2ZOioAEFXroPqC7B2s233VX
+         J0IWfnhn5V+z89jq2AE38laZ2fGtrNoOSKW1yk9UV+kqFITGIy6a9ytfu7kGNhZbBNqK
+         x43nWaJTrUa4xHwwi/Phh2I+HfbDwfnCvNewYf9FLTjWitovS3PbUwO22PjJIhuExyXi
+         5ibyJIif6UhAf3OEKwSuUEvUxBO/WLRiEPVPCxbU/GJWCMlAJ6szg6Ti9sMuRyUb+YwW
+         KwQKDoLMbSAnARQQ8C8b1+LoKDcwLQ2WZSpvqef0TXDB4i2nMG8N8fFK461feFupLUqC
+         kXlg==
+X-Gm-Message-State: AOJu0YyPdNdrvo+XQu3SlyVXyfC5dxAyAAqE6wPZvIy71YRKgWnBKdtL
+        LGraqKy3CEFfKz0+28GYSJ65hg==
+X-Google-Smtp-Source: AGHT+IFFhHZ77bU0lu4tf2G8jHh6IU3ln9imWnRUY3X1uPSEoLWWnY21sV/8D6J0QQ+a8pCp17OMvw==
+X-Received: by 2002:a5d:430e:0:b0:333:2fd2:816b with SMTP id h14-20020a5d430e000000b003332fd2816bmr1373800wrq.136.1701941962712;
+        Thu, 07 Dec 2023 01:39:22 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id h7-20020a5d6e07000000b003342e0745absm943874wrz.93.2023.12.07.01.37.03
+        by smtp.gmail.com with ESMTPSA id x17-20020adff651000000b003333c2c313bsm952293wrp.100.2023.12.07.01.39.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 01:37:05 -0800 (PST)
-Message-ID: <c012c052-6511-4c9e-85ee-5caeeb81ea25@linaro.org>
-Date:   Thu, 7 Dec 2023 10:37:02 +0100
+        Thu, 07 Dec 2023 01:39:22 -0800 (PST)
+Message-ID: <541f9ecb-b0d1-4c30-ae02-87376436cda3@linaro.org>
+Date:   Thu, 7 Dec 2023 10:39:19 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: PCI: dwc: rockchip: document optional pcie
- reference clock input
+Subject: Re: [PATCH v3 1/4] dt-bindings: arm: Add remote etm dt-binding
 Content-Language: en-US
-To:     Heiko Stuebner <heiko@sntech.de>, lpieralisi@kernel.org,
-        kw@linux.com, bhelgaas@google.com
-Cc:     robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        quentin.schulz@theobroma-systems.com,
-        Heiko Stuebner <heiko.stuebner@cherry.de>
-References: <20231206145041.667900-1-heiko@sntech.de>
+To:     Mao Jinlong <quic_jinlmao@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Tao Zhang <quic_taozha@quicinc.com>
+References: <20231206141502.27016-1-quic_jinlmao@quicinc.com>
+ <20231206141502.27016-2-quic_jinlmao@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -111,12 +115,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231206145041.667900-1-heiko@sntech.de>
+In-Reply-To: <20231206141502.27016-2-quic_jinlmao@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -124,15 +128,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 15:50, Heiko Stuebner wrote:
-> From: Heiko Stuebner <heiko.stuebner@cherry.de>
+On 06/12/2023 15:14, Mao Jinlong wrote:
+> Remote ETM(Embedded Trace Macrocell) is to capture information of
+> the executed processor instructions of remote processors like modem.
+> Add new coresight-remote-etm.yaml file describing the bindings
+> required to define coresight remote etm in the device trees.
 > 
-> On some boards the 100MHz PCIe reference clock to both controller and
-> devices is controllable. Add that clock to the list of clocks.
-> 
-> The clock is optional, so the minItems stays the same.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    etm {
+> +          compatible = "qcom,coresight-remote-etm";
+
+Now something happened with your indentation here... was it like this
+before? The guideline asks to use 2 or 4 space indentation for the
+example, while 4 is preferred.
+
+With fixed indentation in the example:
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 
 Best regards,
 Krzysztof
