@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7108094FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 22:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD70980950B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbjLGV6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 16:58:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
+        id S1444043AbjLGWFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 17:05:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235303AbjLGV56 (ORCPT
+        with ESMTP id S1444011AbjLGWE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 16:57:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8625B172E
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 13:58:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701986280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2gpuqenBf/seLQmhrTte/4HdPOyV33jxxLbSCYkPyeM=;
-        b=RkbxtMj86WTPQPDgSuAtAEdS2UGznXH4W/BQgRbf1D3vYuy751kRgCiS/hy1qDl8wro42/
-        Uu+NwUtrG4EC/j8AGGE54sYfGxMWRDqBdZy4NAItoE6ReNDpOBf1x/wD1imyklOwCwHRTE
-        ekYCJkUFL9D7SF/VtqAB9vEC64Cjxp0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-494-3pxRZfFcM5CBFUREWELNAA-1; Thu,
- 07 Dec 2023 16:57:57 -0500
-X-MC-Unique: 3pxRZfFcM5CBFUREWELNAA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7B64C1C0BB50;
-        Thu,  7 Dec 2023 21:57:56 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.161])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E59971C060AF;
-        Thu,  7 Dec 2023 21:57:53 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <ZXI7aGHkxZyiytXg@casper.infradead.org>
-References: <ZXI7aGHkxZyiytXg@casper.infradead.org> <20231207212206.1379128-1-dhowells@redhat.com> <20231207212206.1379128-60-dhowells@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
-        Steve French <smfrench@gmail.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 59/59] netfs: Eliminate PG_fscache by setting folio->private and marking dirty
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1451125.1701986273.1@warthog.procyon.org.uk>
-Date:   Thu, 07 Dec 2023 21:57:53 +0000
-Message-ID: <1451127.1701986273@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Thu, 7 Dec 2023 17:04:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C1910F9
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:05:04 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51111C433CA;
+        Thu,  7 Dec 2023 22:05:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1701986704;
+        bh=VF0YghL2e/It2h2ApBiu9rYOAhcMD7QfN4kDlgcdsy0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Q7g/yzRmKS/evTNuSMWY933klLoiOzH9buF9+E4U6C4SyfQu9tME6ZdXS/WYufNg8
+         sXj2dUuBnWymH2oMrT0EyfV+WScjIhEjpgSNy8eEVZY1jqQP+l0HTYQ4J8y/ISQoB6
+         0ySrJ9S1PEQY2XDilFHHeU+ZKttStOAOSAMrhR4U=
+Date:   Thu, 7 Dec 2023 14:05:02 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Barry Song <21cnbao@gmail.com>,
+        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 00/10] Multi-size THP for anonymous memory
+Message-Id: <20231207140502.e7dff5d1cfb195b1644b61a5@linux-foundation.org>
+In-Reply-To: <20231207161211.2374093-1-ryan.roberts@arm.com>
+References: <20231207161211.2374093-1-ryan.roberts@arm.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+On Thu,  7 Dec 2023 16:12:01 +0000 Ryan Roberts <ryan.roberts@arm.com> wrote:
 
-> On Thu, Dec 07, 2023 at 09:22:06PM +0000, David Howells wrote:
-> > With this, PG_fscache is no longer required.
+> Hi All,
 > 
-> ... for filesystems that use netfslib, right?  ie we can't delete
-> folio_wait_private_2_killable() and friends because nfs still uses it?
+> This is v9 (and hopefully the last) of a series to implement multi-size THP
+> (mTHP) for anonymous memory (previously called "small-sized THP" and "large
+> anonymous folios").
 
-Yeah.  Though I have my eye on NFS too ;-)
+A general point on the [0/N] intro.  Bear in mind that this is
+(intended to be) for ever.  Five years hence, people won't be
+interested in knowing which version the patchset was, in seeing what
+changed from the previous iteration, etc.  This is all important and
+useful info, of course.  But it's best suited for being below the
+"^---$" separator.
 
-David
+Also, those five-years-from-now people won't want to have to go click
+on some link to find the performance testing results and suchlike. 
+It's better to paste such important info right into their faces.
+
+
 
