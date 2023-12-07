@@ -2,127 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E27808F41
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D0C808F3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443712AbjLGR4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:56:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51020 "EHLO
+        id S235273AbjLGR6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:58:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443664AbjLGR4n (ORCPT
+        with ESMTP id S235228AbjLGR6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:56:43 -0500
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262681722;
-        Thu,  7 Dec 2023 09:56:38 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 76BADE000E;
-        Thu,  7 Dec 2023 17:56:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701971796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3/wsTmEWxe0ogRl/8Vy0GB64u7O6jbPEVRaQ+GQnwaY=;
-        b=TBi5Jsw3+5mnNcW9IhE2m6nUyGUyN0WNMfAZgXLfasNSPCB4rkolx0TkeWOEZ7qBHW7FzW
-        9nuXRnJQKUxnz08NeZFoFosZrgeNEbcymD/jeV/sW5mZQrDiePn7REoFzET/S7ARTJYC4Y
-        v5rJexcNH/NdUJCMwinEOfk8kc+n9gc/ZioZdAM3ckW2Yo/Pd9vXD7gAvNTSKgD9Xv7FlB
-        uCWJfooNeQidDBNhP7LRJ/uHqrA+uY23ZJaVWYb4hZKMgaI6w8DuAfzpbNRsmNZpb8ta7b
-        bQ2/A0rfPKu+SdKZGbF4Xh1WOcht9fd6GPjfbj7MrgNK8rBfWLNEH/WVvLfSww==
-From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date:   Thu, 07 Dec 2023 18:56:13 +0100
-Subject: [PATCH v6 8/8] tty: serial: amba-pl011: factor QDF2400 SoC erratum
- 44 out of probe
+        Thu, 7 Dec 2023 12:58:11 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CCA173C
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:57:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 500ABC433C8;
+        Thu,  7 Dec 2023 17:57:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701971867;
+        bh=he6LQ25WriwrUDDfYMH36GaKEnf82jbzGv13WZYSigA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l4TN7o1bbCnfchU9RLrHJPvjo+IZ4KULQNSU5zsj3q64CV1bTzf9IP4m/+rGhIOIn
+         oODMJChWCx477zxVUlNsE6IiNamrGVAYLkSOsAW8UWbIDDKQEU0zCFkl5Mk4fYQIts
+         HOo+02W54XWWpeoEuIF0nOJ7f0mHuv24kSBz+ftktQSyzd2VhtGnUmbfYn1oR9I4w+
+         TEmD0BS8uKH8WiFT3owGtMdsYPLRGGonI2MbEl75vFuxW7WT48v05dZDyYWiqibHTF
+         pdqXCqbnIvyVn+8rcYo+hwaS9FmzBMzKw7Ff6x4+jlp2JrR99IxRJkBwBIDAwizBwj
+         cQ2PSv3eCw8wg==
+Date:   Thu, 7 Dec 2023 18:57:42 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Tycho Andersen <tycho@tycho.pizza>, Oleg Nesterov <oleg@redhat.com>
+Cc:     "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Tycho Andersen <tandersen@netflix.com>,
+        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
+Message-ID: <20231207-weither-autopilot-8daee206e6c5@brauner>
+References: <20231130163946.277502-1-tycho@tycho.pizza>
+ <20231130173938.GA21808@redhat.com>
+ <ZWjM6trZ6uw6yBza@tycho.pizza>
+ <ZWoKbHJ0152tiGeD@tycho.pizza>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231207-mbly-uart-v6-8-e384afa5e78c@bootlin.com>
-References: <20231207-mbly-uart-v6-0-e384afa5e78c@bootlin.com>
-In-Reply-To: <20231207-mbly-uart-v6-0-e384afa5e78c@bootlin.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: b4 0.12.4
-X-GND-Sasl: theo.lebrun@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZWoKbHJ0152tiGeD@tycho.pizza>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On this platform, different vendor data is used. That requires a
-compile-time check as we access (1) a global boolean & (2) our local
-vendor data. Both symbols are accessible only when
-CONFIG_ACPI_SPCR_TABLE is enabled.
+On Fri, Dec 01, 2023 at 09:31:40AM -0700, Tycho Andersen wrote:
+> On Thu, Nov 30, 2023 at 10:57:01AM -0700, Tycho Andersen wrote:
+> > On Thu, Nov 30, 2023 at 06:39:39PM +0100, Oleg Nesterov wrote:
+> > > I think that wake_up_all(wait_pidfd) should have a single caller,
+> > > do_notify_pidfd(). This probably means it should be shiftef from
+> > > do_notify_parent() to exit_notify(), I am not sure...
+> 
+> Indeed, below passes the tests without issue and is much less ugly.
 
-Factor the vendor data overriding to a separate function that is empty
-when CONFIG_ACPI_SPCR_TABLE is not defined.
+So I think I raised that question on another medium already but what
+does the interaction with de_thread() look like?
 
-Suggested-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
----
- drivers/tty/serial/amba-pl011.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+Say some process creates pidfd for a thread in a non-empty thread-group
+is created via CLONE_PIDFD. The pidfd_file->private_data is set to
+struct pid of that task. The task the pidfd refers to later exec's.
 
-diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-index fe910c5f3489..d50e3c14b0e4 100644
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -2869,6 +2869,22 @@ static int pl011_resume(struct device *dev)
- 
- static SIMPLE_DEV_PM_OPS(pl011_dev_pm_ops, pl011_suspend, pl011_resume);
- 
-+#ifdef CONFIG_ACPI_SPCR_TABLE
-+static void qpdf2400_erratum44_workaround(struct device *dev,
-+					  struct uart_amba_port *uap)
-+{
-+	if (!qdf2400_e44_present)
-+		return;
-+
-+	dev_info(dev, "working around QDF2400 SoC erratum 44\n");
-+	uap->vendor = &vendor_qdt_qdf2400_e44;
-+}
-+#else
-+static void qpdf2400_erratum44_workaround(struct device *dev,
-+					  struct uart_amba_port *uap)
-+{ /* empty */ }
-+#endif
-+
- static int sbsa_uart_probe(struct platform_device *pdev)
- {
- 	struct uart_amba_port *uap;
-@@ -2904,13 +2920,8 @@ static int sbsa_uart_probe(struct platform_device *pdev)
- 		return ret;
- 	uap->port.irq	= ret;
- 
--#ifdef CONFIG_ACPI_SPCR_TABLE
--	if (qdf2400_e44_present) {
--		dev_info(&pdev->dev, "working around QDF2400 SoC erratum 44\n");
--		uap->vendor = &vendor_qdt_qdf2400_e44;
--	} else
--#endif
--		uap->vendor = &vendor_sbsa;
-+	uap->vendor = &vendor_sbsa;
-+	qpdf2400_erratum44_workaround(&pdev->dev, uap);
- 
- 	uap->reg_offset	= uap->vendor->reg_offset;
- 	uap->fifosize	= 32;
+Once it passed de_thread() the task the pidfd refers to assumes the
+struct pid of the old thread-group leader and continues.
 
--- 
-2.43.0
+At the same time, the old thread-group leader now assumes the struct pid
+of the task that just exec'd.
 
+So after de_thread() the pidfd now referes to the old thread-group
+leaders struct pid. Any subsequent operation will fail because the
+process has already exited.
+
+Basically, the pidfd now refers to the old thread-group leader and any
+subsequent operation will fail even though the task still exists.
+
+Conversely, if someone had created a pidfd that referred to the old
+thread-group leader task then this pidfd will now suddenly refer to the
+new thread-group leader task for the same reason: the struct pid's were
+exchanged.
+
+So this also means, iiuc, that the pidfd could now be passed to
+waitid(P_PIFD) to retrieve the status of the old thread-group leader
+that just got zapped.
+
+And for the case where the pidfd referred to the old thread-group leader
+task you would now suddenly _not_ be able to wait on that task anymore.
+
+If these concerns are correct, then I think we need to decide what
+semantics we want and how to handle this because that's not ok.
