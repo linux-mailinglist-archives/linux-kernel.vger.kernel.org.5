@@ -2,171 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24724808AEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:46:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B344808AF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443387AbjLGOpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:45:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
+        id S1443404AbjLGOqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:46:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443322AbjLGOpg (ORCPT
+        with ESMTP id S1443322AbjLGOq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:45:36 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 03273A3
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:45:43 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9CCE92F4;
-        Thu,  7 Dec 2023 06:46:28 -0800 (PST)
-Received: from [10.1.32.134] (XHFQ2J9959.cambridge.arm.com [10.1.32.134])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A89C33F6C4;
-        Thu,  7 Dec 2023 06:45:39 -0800 (PST)
-Message-ID: <3d49bcbf-1f9b-48e8-a91a-ede0762b795c@arm.com>
-Date:   Thu, 7 Dec 2023 14:45:38 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 04/10] mm: thp: Support allocation of anonymous
- multi-size THP
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231204102027.57185-1-ryan.roberts@arm.com>
- <20231204102027.57185-5-ryan.roberts@arm.com>
- <71040a8c-4ea1-4f21-8ac8-65f7c25c217e@redhat.com>
- <f2896d7f-183b-48fb-a3aa-d21bf2257043@arm.com>
- <ca649aad-7b76-4c6d-b513-26b3d58f8e68@redhat.com>
- <126c3b71-1acc-4851-9986-4228cb8a8660@arm.com>
- <94806b4f-2370-4999-9586-2c936955cb87@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <94806b4f-2370-4999-9586-2c936955cb87@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 7 Dec 2023 09:46:29 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB75A3;
+        Thu,  7 Dec 2023 06:46:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=iUUDZHVt3az3SXfC7sYwpPvzPdIHPFC7thViDztCq4Q=; b=dS8xskovguqOJ5eUSKQ+62Po/P
+        kV9OVE13U7QhQeBWaEK68kRxetwAlRFvhyFqRzvR1ZQ6NMBtpuXbIa05JaPMnZrB/iCQnSQ+HIgwT
+        pY14sCKkUJxU5fihmDEbheVTVoJ2/F8ja91gTre/shIXyGn2Ca8dqQuXaJf7BcJkB9WQ=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:35438 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1rBFdx-0006Pv-TO; Thu, 07 Dec 2023 09:46:26 -0500
+Date:   Thu, 7 Dec 2023 09:46:25 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        leoyang.li@nxp.com, robh@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Message-Id: <20231207094625.01d081092dd60ddc504d7f7b@hugovil.com>
+In-Reply-To: <6035c4cc-afe1-456d-a4d0-16992da09a2e@linaro.org>
+References: <20231206160303.33185-1-hugo@hugovil.com>
+        <20231206160303.33185-3-hugo@hugovil.com>
+        <6035c4cc-afe1-456d-a4d0-16992da09a2e@linaro.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 2/3] dt-bindings: arm: fsl: add Dimonoff gateway EVK
+ board
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/12/2023 13:28, David Hildenbrand wrote:
->>>
->>> Right, but you know from the first loop which order is applicable (and will be
->>> fed to the second loop) and could just pte_unmap(pte) + tryalloc. If that fails,
->>> remap and try with the next orders.
->>
->> You mean something like this?
->>
->>     pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
->>     if (!pte)
->>         return ERR_PTR(-EAGAIN);
->>
->>     order = highest_order(orders);
->>     while (orders) {
->>         addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
->>         if (!pte_range_none(pte + pte_index(addr), 1 << order)) {
->>             order = next_order(&orders, order);
->>             continue;
->>         }
->>
->>         pte_unmap(pte);
->>        
->>         folio = vma_alloc_folio(gfp, order, vma, addr, true);
->>         if (folio) {
->>             clear_huge_page(&folio->page, vmf->address, 1 << order);
->>             return folio;
->>         }
->>
->>         pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
->>         if (!pte)
->>             return ERR_PTR(-EAGAIN);
->>
->>         order = next_order(&orders, order);
->>     }
->>
->>     pte_unmap(pte);
->>
->> I don't really like that because if high order folio allocations fail, then you
->> are calling pte_range_none() again for the next lower order; once that check has
->> succeeded for an order it shouldn't be required for any lower orders. In this
->> case you also have lots of pte map/unmap.
-> 
-> I see what you mean.
-> 
->>
->> The original version feels more efficient to me.
-> Yes it is. Adding in some comments might help, like
-> 
-> /*
->  * Find the largest order where the aligned range is completely prot_none(). Note
->  * that all remaining orders will be completely prot_none().
->  */
-> ...
-> 
-> /* Try allocating the largest of the remaining orders. */
+On Thu, 7 Dec 2023 09:32:38 +0100
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-OK added.
-
+> On 06/12/2023 17:03, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > Add DT compatible string for Dimonoff gateway EVK board based on a
+> > Variscite VAR-SOM-NANO with a NXP MX8MN nano CPU.
+> > 
+> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > ---
+> >  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > index cd87d1afe7b7..e445d65d6f17 100644
+> > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > @@ -1025,6 +1025,7 @@ properties:
+> >        - description: Variscite VAR-SOM-MX8MN based boards
+> >          items:
+> >            - enum:
+> > +              - dimonoff,dimonoff-gateway-evk # i.MX8MN Dimonoff Gateway EVK Board
 > 
->>
->>>
->>> That would make the code certainly easier to understand. That "orders" magic of
->>> constructing, filtering, walking is confusing :)
->>>
->>>
->>> I might find some time today to see if there is an easy way to cleanup all what
->>> I spelled out above. It really is a mess. But likely that cleanup could be
->>> deferred (but you're touching it, so ... :) ).
->>
->> I'm going to ignore the last 5 words. I heard the "that cleanup could be
->> deferred" part loud and clear though :)
+> Company name appears twice, which is not really helpful. What's the true
+> name? Gateway EVK? Then keep only this.
 > 
-> :)
-> 
-> If we could stop passing orders into thp_vma_allowable_orders(), that would
-> probably
-> be the biggest win. It's just all a confusing mess.
+> Best regards,
+> Krzysztof
 
+Ok, will do for V2.
 
-
-I tried an approach like you suggested in the other thread originally, but I
-struggled to define exactly what "thp_vma_configured_orders()" should mean;
-Ideally, I just want "all the THP orders that are currently enabled for this
-VMA+flags". But some callers want to enforce_sysfs and others don't, so you
-probably have to at least pass that flag. Then you have DAX which explicitly
-ignores enforce_sysfs, but only in a page fault. And shmem, which ignores
-enforce_sysfs, but only outside of a page fault. So it quickly becomes pretty
-complex. It is basically thp_vma_allowable_orders() as currently defined.
-
-If this could be a simple function then it could be inline and as you say, we
-can do the masking in the caller and exit early for the order-0 case. But it is
-very complex (at least if you want to retain the equivalent logic to what
-thp_vma_allowable_orders() has) so I'm not sure how to do the order-0 early exit
-without passing in the orders bitfield. And we are unlikely to exit early
-because PMD-sized THP is likely enabled and because we didn't pass in a orders
-bitfield, that wasn't filtered out.
-
-In short, I can't see a solution that's better than the one I have. But if you
-have something in mind, if you can spell it out, then I'll have a go at tidying
-it up and integrating it into the series. Otherwise I really would prefer to
-leave it for a separate series.
+Thank you,
+Hugo Villeneuve
