@@ -2,109 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CEBF80912D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5423B809132
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbjLGTXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 14:23:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42120 "EHLO
+        id S1443238AbjLGTXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 14:23:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjLGTXO (ORCPT
+        with ESMTP id S229472AbjLGTXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 14:23:14 -0500
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C6810DC;
-        Thu,  7 Dec 2023 11:23:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1701976997;
-        bh=6SYQxYyGrcDvx6IRN+6dIff5PVo7wQPuPHWX4hH6KZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nJRdrpHl406V8Pqv+diMBiUkggs7GtUBNOx0+SSTMlNWhL6h7/9+XQ/o7Ul2ru7YQ
-         0TkWrmXbCwMT0a04wtzuExXuKNewvXrDMSts24ePrOt49uTn3dQ+Ap0nA1sV5cT09A
-         BvZPUjsgDL//msyJBTFObJS3p7YQtjTXc7BaeONU=
-Date:   Thu, 7 Dec 2023 20:23:16 +0100
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
-Message-ID: <f327cf10-3680-43ec-a05c-8c038af767c0@t-8ch.de>
-References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
- <ZW66FhWx7W67Y9rP@bombadil.infradead.org>
- <b4b0b7ea-d8b3-4538-a5b9-87a23bbdac5f@t-8ch.de>
- <CGME20231205171700eucas1p17edbc33ec1d0be37573b1977b76b9ce6@eucas1p1.samsung.com>
- <d50978d8-d4e7-4767-8ea7-5849f05d3be1@t-8ch.de>
- <20231207111957.b24ib4hcxr6xufll@localhost>
+        Thu, 7 Dec 2023 14:23:51 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B48910EF;
+        Thu,  7 Dec 2023 11:23:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701977037; x=1733513037;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Xwx4rRdSKQImronKlBDekXzVZf//CVGQYIZHr07oJ6I=;
+  b=NBX3YbFv6CB7ezc6M1LC4XFhBLm6DV/NfnEUSVdL6bqHUjNFkMJZUbJA
+   HC+1RZ4u2SG21EaR0UbO5y/STQJBQS2djlhloyypSLwTdf4Oh2IwE5nwd
+   CuModD40Ipx3cFVZztlQCxp9N3Yvjybj07BtBRS3xH9NpTSVi475HZwgz
+   4W0ICnC33aJ34KwtD5NANlBmznAOUYAHHMfW4MfVtK1yuYiNDdpITxrww
+   p+FQaq3oVq0CPu33GZvNknBkoANjV7lqEACThNwkyQ7vdhwTAteizb5JF
+   S6C0I8mqBUveICRnq5rfBVXqMrDc3o1N7lOwqpsSu7cv9DrT+ltVveYo2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="425431716"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="425431716"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 11:23:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="721589151"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="721589151"
+Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
+  by orsmga003.jf.intel.com with ESMTP; 07 Dec 2023 11:23:56 -0800
+From:   kan.liang@linux.intel.com
+To:     acme@kernel.org, irogers@google.com, peterz@infradead.org,
+        mingo@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
+        adrian.hunter@intel.com, john.g.garry@oracle.com, will@kernel.org,
+        james.clark@arm.com, mike.leach@linaro.org, leo.yan@linaro.org,
+        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V2 0/5] Clean up perf mem
+Date:   Thu,  7 Dec 2023 11:23:33 -0800
+Message-Id: <20231207192338.400336-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231207111957.b24ib4hcxr6xufll@localhost>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-07 12:19:57+0100, Joel Granados wrote:
-> On Tue, Dec 05, 2023 at 06:16:53PM +0100, Thomas Weißschuh wrote:
-> > Hi Luis, Joel,
-> > 
-> > On 2023-12-05 09:04:08+0100, Thomas Weißschuh wrote:
-> > > On 2023-12-04 21:50:14-0800, Luis Chamberlain wrote:
-> > > > On Mon, Dec 04, 2023 at 08:52:13AM +0100, Thomas Weißschuh wrote:
-> > > > > Tested by booting and with the sysctl selftests on x86.
-> > > > 
-> > > > Can I trouble you to rebase on sysctl-next?
-> > > > 
-> > > > https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=sysctl-next
-> > > 
-> > > Will do.
-> > 
-> > The rebased series is now available at
-> > https://git.sr.ht/~t-8ch/linux b4/const-sysctl
-> > 
-> > Nothing much has changed in contrast to v2.
-> > The only functional change so far is the initialization of
-> > ctl_table_header::type in init_header().
-> > 
-> > I'll wait for Joels and maybe some more reviews before resending it.
-> > 
-> > > [..]
-> > 
-> > For the future I think it would make sense to combine the tree-wide constification
-> > of the structs with the removal of the sentinel values.
+From: Kan Liang <kan.liang@linux.intel.com>
 
-> I don't see how these two would fit. And this is why:
-> 1. The "remove sentinel" stuff is almost done. With the sets going into
->    6.7 we would only be missing everything under net/*. So you would not
->    be able to combine them (except for the net stuff)
-> 2. The motivation for the two sets is differnt. This would confuse
->    rather than simplify the process.
-> 3. In order to introduce the const stuff we would have to go through
->    another round of "convincing" which can potentially derail the
->    "remove sentinel" stuff.
+Changes since V1:
+- Fix strcmp of PMU name checking (Ravi)
+- Fix "/," typo (Ian)
+- Rename several functions with perf_pmu__mem_events prefix. (Ian)
+- Fold the header removal patch into the patch where the cleanups made.
+  (Arnaldo)
+- Add reviewed-by and tested-by from Ian and Ravi
 
-Good reasons, especially 1).
- 
-> I would *not* like to combine them. I think the const set can stand on
-> its own.
+As discussed in the below thread, the patch set is to clean up perf mem.
+https://lore.kernel.org/lkml/afefab15-cffc-4345-9cf4-c6a4128d4d9c@linux.intel.com/
 
-It was more about a process optimization. If somebody has to touch each
-sysctl table anyway and test the changes, doing so for both series would
-be easier for the sysctl and subsystem maintainers.
+Introduce generic functions perf_mem_events__ptr(),
+perf_mem_events__name() ,and is_mem_loads_aux_event() to replace the
+ARCH specific ones.
+Simplify the perf_mem_event__supported().
 
-But alas, it seems I have to do it myself and can't heap it onto your
-pile :-)
+Only keeps the ARCH-specific perf_mem_events array in the corresponding
+mem-events.c for each ARCH.
 
-> > 
-> > This would reduce the impacts of the maintainers.
+There is no functional change.
+
+The patch set touches almost all the ARCHs, Intel, AMD, ARM, Power and
+etc. But I can only test it on two Intel platforms.
+Please give it try, if you have machines with other ARCHs.
+
+Here are the test results:
+Intel hybrid machine:
+
+$perf mem record -e list
+ldlat-loads  : available
+ldlat-stores : available
+
+$perf mem record -e ldlat-loads -v --ldlat 50
+calling: record -e cpu_atom/mem-loads,ldlat=50/P -e cpu_core/mem-loads,ldlat=50/P
+
+$perf mem record -v
+calling: record -e cpu_atom/mem-loads,ldlat=30/P -e cpu_atom/mem-stores/P -e cpu_core/mem-loads,ldlat=30/P -e cpu_core/mem-stores/P
+
+$perf mem record -t store -v
+calling: record -e cpu_atom/mem-stores/P -e cpu_core/mem-stores/P
+
+
+Intel SPR:
+$perf mem record -e list
+ldlat-loads  : available
+ldlat-stores : available
+
+$perf mem record -e ldlat-loads -v --ldlat 50
+calling: record -e {cpu/mem-loads-aux/,cpu/mem-loads,ldlat=50/}:P
+
+$perf mem record -v
+calling: record -e {cpu/mem-loads-aux/,cpu/mem-loads,ldlat=30/}:P -e cpu/mem-stores/P
+
+$perf mem record -t store -v
+calling: record -e cpu/mem-stores/P
+
+Kan Liang (5):
+  perf mem: Add mem_events into the supported perf_pmu
+  perf mem: Clean up perf_mem_events__ptr()
+  perf mem: Clean up perf_mem_events__name()
+  perf mem: Clean up perf_mem_event__supported()
+  perf mem: Clean up is_mem_loads_aux_event()
+
+ tools/perf/arch/arm64/util/mem-events.c   |  36 +----
+ tools/perf/arch/arm64/util/pmu.c          |   6 +
+ tools/perf/arch/powerpc/util/mem-events.c |  13 +-
+ tools/perf/arch/powerpc/util/mem-events.h |   7 +
+ tools/perf/arch/powerpc/util/pmu.c        |  11 ++
+ tools/perf/arch/s390/util/pmu.c           |   3 +
+ tools/perf/arch/x86/util/mem-events.c     |  99 ++----------
+ tools/perf/arch/x86/util/pmu.c            |  11 ++
+ tools/perf/builtin-c2c.c                  |  28 +++-
+ tools/perf/builtin-mem.c                  |  28 +++-
+ tools/perf/util/mem-events.c              | 181 +++++++++++++---------
+ tools/perf/util/mem-events.h              |  15 +-
+ tools/perf/util/pmu.c                     |   4 +-
+ tools/perf/util/pmu.h                     |   7 +
+ 14 files changed, 233 insertions(+), 216 deletions(-)
+ create mode 100644 tools/perf/arch/powerpc/util/mem-events.h
+ create mode 100644 tools/perf/arch/powerpc/util/pmu.c
+
+-- 
+2.35.1
+
