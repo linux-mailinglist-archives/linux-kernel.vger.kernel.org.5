@@ -2,55 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EDC98089B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2E28089B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442733AbjLGN7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:59:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35460 "EHLO
+        id S1442677AbjLGOAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:00:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235269AbjLGN7s (ORCPT
+        with ESMTP id S235160AbjLGOAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:59:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152D310FB
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:59:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6281AC433C9;
-        Thu,  7 Dec 2023 13:59:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701957592;
-        bh=ZuC5Sg0qcx3RtpmbuKgYYlSi24reNt2keYVou/b9iGA=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=dF7VDSiEmvkU9E45dhqgHWEkwRy7zOwN9AQAmSbRBaNnGI8NWqXL/Mp9BdIL0x9n6
-         QWi3xts7w45kOhz9VWG3DY9yjMBtyvSdTnq4NEa0C//AEtUVf1dPgARlPMIv5hJszd
-         8IeNi6a9uZKsubM1YmySbnPVY8JBrDAPhIDfVB3ZSorV3h/94pMahlBx45UhhU+hpN
-         EETx/x/S2wzncUXiqRWJEi2l+2tmmWphMgqpCvBH74oUEyEm2GU0c+hawqyRLc7ffC
-         8KBAKdLwQqhnsrrDcQ9uahkqXvsWIW4ckFOFob7u7VFi8lxS+o+dNAly7pRZo/vaqY
-         7/a3NJ33QuLYg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc:     alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
-        Sunil-kumar.Dommati@amd.com, Mario.Limonciello@amd.com,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
-        Marian Postevca <posteuca@mutex.one>,
-        "open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <linux-sound@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-In-Reply-To: <20231207045505.1519151-1-Vijendar.Mukunda@amd.com>
-References: <20231207045505.1519151-1-Vijendar.Mukunda@amd.com>
-Subject: Re: [PATCH] ASoC: amd: acp: modify config flag read logic
-Message-Id: <170195759012.40629.1653590710406299836.b4-ty@kernel.org>
-Date:   Thu, 07 Dec 2023 13:59:50 +0000
+        Thu, 7 Dec 2023 09:00:45 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87C5133
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:00:50 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54c79cca895so11978a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 06:00:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701957649; x=1702562449; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B+yGSqZ11QV/22duj6c6AAFIvmwA7gtQojZiRqNzB1A=;
+        b=tHQiGah2KRHocfcs6nXPssNQn+Y62cikemwlCV6p5byLra+dC7jgOXQic0KuMTf6Fg
+         WIP6/5A0HUk3YAdiYNu/7rHIHmtFEHveSs0XkeWOAGEKw0JH0/OvtTyS1lIpMBR8UF8v
+         Ub2xlL/xfRf5usZLfB5d6hZzJObAbQijDbFWuBe+Y2i6vNRoIQygWuXCCauWdtuaUAH9
+         M/hDVZidMeeyqe1mzR734Bi+tIqX5mF8NjQfQnKW5W6KaiWpauo9BOhwNYLatTT7nDgd
+         OqjQeEeUqPCkiuCe/qesFjIVmIf40MUEQECgL5M+xmS9DDHUSjTYbwqMPmOtfwMVUvPm
+         33Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701957649; x=1702562449;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B+yGSqZ11QV/22duj6c6AAFIvmwA7gtQojZiRqNzB1A=;
+        b=nH2SoOOiG1sfoFYZL6R8ydlfDJWhX6/N8k6cPZqUrXzheWiP4cX1j5VbnHM1FVQjWn
+         QJ8TY4lHNXFkVFLNHFL6reTDRFBQzR7LqIZmdoHnpXXdsZPsgovZW3KZA+B0gl0IBnmy
+         dBcdVCJObR+HHD6CYXusjADTzt/rqDH9yaPYuAAjSjiawcEA4duJEc6V5/tWShwcOnaO
+         NnqHpXATuVTqFsbwKyFzW3NSsKnAQRzueIfqLYCExs2UnNebgevkKTmyceBbWf36/abI
+         BSVGkeVmBBhnnLZAu3VqQEDRD60jFiZIhauFaTeEeRfuiVBOXQhdgm7OHiChhyW8nzka
+         MWcQ==
+X-Gm-Message-State: AOJu0YxD/bWfHhyGDfjEYxvu+EL8o8RSnRGxglTmD3+T7x/4eOqOjKTk
+        UGmBrkrB0HSUd8xCwxKbDAYrbaZuxZEsGl83Il7s0g==
+X-Google-Smtp-Source: AGHT+IGA6+1WHGVoJdWfC9ZSeFSRpBQrEpVr6+oFGCkIX/thP3tMAHw6JaFmNkHsu3yW2DoaLc02r3g0aAnOPLwVPDI=
+X-Received: by 2002:a50:baae:0:b0:545:279:d075 with SMTP id
+ x43-20020a50baae000000b005450279d075mr198699ede.1.1701957648485; Thu, 07 Dec
+ 2023 06:00:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-5c066
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231207094844.706407-1-agordeev@linux.ibm.com>
+In-Reply-To: <20231207094844.706407-1-agordeev@linux.ibm.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 7 Dec 2023 15:00:10 +0100
+Message-ID: <CAG48ez2KS=EpmRmiQWB0jOMD+qCGjZag6dtFQQG5FUfWU0RfUw@mail.gmail.com>
+Subject: Re: [PATCH] mm: do not protect VMA lock object in vma_end_read()
+To:     Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Suren Baghdasaryan <surenb@google.com>,
+        Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,41 +75,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 Dec 2023 10:25:01 +0530, Vijendar Mukunda wrote:
-> Modify acp config flag read logic from ACP v7.0 onwards.
-> Instead of reading from DMI table match entry, read the
-> config flag value from BIOS ACPI table.
-> This will remove updating DMI table when new platform support
-> is added.
-> Use FLAG_AMD_LEGACY_ONLY_DMIC flag as default one.
-> 
-> [...]
+On Thu, Dec 7, 2023 at 10:49=E2=80=AFAM Alexander Gordeev
+<agordeev@linux.ibm.com> wrote:
+> In early discussion to the implementation of vma_end_read()
+> Jann Horn pointed out that up_read() could access the VMA
+> lock object after it has already been acquired by someone
+> else. As result, up_read() is protected with RCU read lock:
+>
+>         rcu_read_lock(); /* keeps vma alive */
+>         up_read(&vma->lock);
+>         rcu_read_unlock();
+>
+> Since commit 3f5245538a19 ("locking/rwsem: Disable preemption
+> in all down_read*() and up_read() code paths") __up_read()
+> disables preemption internally and thus the need to protect
+> the VMA lock object does not exist anymore.
 
-Applied to
+I think this is a bad idea. Please don't.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Yes, it looks like the (non-RT) implementation of __up_read
+*currently* disables preemption. But that's an implementation detail,
+not a documented API contract of up_read(), so there would be nothing
+stopping someone from reimplementing __up_read() in the future such
+that the preemption stuff disappears again.
 
-Thanks!
+And from what I can tell from a quick look, the RT implementation of
+__up_read() does not currently give you this kind of guarantee.
 
-[1/1] ASoC: amd: acp: modify config flag read logic
-      commit: 8527ecc6cf25417a1940f91eb91fca0c69a5c553
+In my opinion, if you want to make this change, then as a prerequisite
+you have to get buy-in from the locking maintainers.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+> Link: https://lore.kernel.org/all/CAG48ez3sCwasFzKD5CsqMFA2W57-2fazd75g7r=
+0NaA_BVNTLow@mail.gmail.com/
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> ---
+>  include/linux/mm.h | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 418d26608ece..7b32bc75a4ab 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -683,9 +683,7 @@ static inline bool vma_start_read(struct vm_area_stru=
+ct *vma)
+>
+>  static inline void vma_end_read(struct vm_area_struct *vma)
+>  {
+> -       rcu_read_lock(); /* keeps vma alive till the end of up_read */
+>         up_read(&vma->vm_lock->lock);
+> -       rcu_read_unlock();
+>  }
+>
+>  /* WARNING! Can only be used if mmap_lock is expected to be write-locked=
+ */
+> --
+> 2.40.1
+>
