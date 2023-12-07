@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7135C809316
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 22:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2293180931B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 22:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235339AbjLGVIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 16:08:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34736 "EHLO
+        id S1443934AbjLGVIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 16:08:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235249AbjLGVIO (ORCPT
+        with ESMTP id S233115AbjLGVIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 16:08:14 -0500
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34781716;
-        Thu,  7 Dec 2023 13:08:19 -0800 (PST)
-Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-59064bca27dso665121eaf.0;
-        Thu, 07 Dec 2023 13:08:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701983299; x=1702588099; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cT8aoY+rEUbS2cmho5uFAl6BrXELpVToy3OJdxx6OrM=;
-        b=LyNnwWagJp0D7TbUx6FE+b6nvhHt1TJiXvBPdjailIhJcBWxw6alwEzS5ixQ9hRKsm
-         /t4mg0W/VVLgZdeRAm5BA+htOhgkEB+gVHKL/l9TyMKj2ZKEBWSZ+yf0Y0uO8270/oI9
-         pnI45uauZjL/tLe9FtjNV5cj0J9XNmrnmuh4OtNXjjzey6Fh+ugPnd3DjL2otnzrrX78
-         mJk/LPn/QteA1jgzvx/JP1T5KkQJO6zdaWX/zMVwb9qE5gHeMG6Su0KKMAeMLa5bC4bu
-         nTt4e2XjgsWk+2TVw4r6eKqV6i1RC0DUcu2TKhI0l41QIGVKxzuesqhQCh8bzxU7NxO5
-         xdEQ==
+        Thu, 7 Dec 2023 16:08:50 -0500
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56D21716;
+        Thu,  7 Dec 2023 13:08:56 -0800 (PST)
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7b701f86c3aso27832539f.3;
+        Thu, 07 Dec 2023 13:08:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701983299; x=1702588099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cT8aoY+rEUbS2cmho5uFAl6BrXELpVToy3OJdxx6OrM=;
-        b=YyHQeAVup2nwq8rqZQ6Pes/fBJVqX88rfosIB3skwpsnH4CgRPE3TbEC6e0IKsdrv5
-         MWRtocPcwZzi0+kO4CQ3K0TYR4yUoQaZ+vgmZpV4m+7X0lPsWBSbQp9KGWQDwqxxTeNa
-         CM6VtthyTzDqR7btZmCDi+B96qI8xYdpNQIM1gCnJJJobn3xWvFFeJYMxbOcJqQ6afZA
-         cE/nH+lip1VJJri3KkaLZnHqwfK7LrqYQxPqEch0UilKNlek+mK4cGd7PipvSavBLhh+
-         FEoZYx1MY/3Vu/1F5ct5bGyIlEl7CflUd/4jXnaWJhZg4PjQuG2b2A3rZyqCreMx75gR
-         t7oQ==
-X-Gm-Message-State: AOJu0YwfYb8HzqicPmHgvHDifsoRPaixQEdGgCZBg8rs7LyLJSDWT6VB
-        tk8ggguUzYgQYwCYghUqdNRzDbO7t2lnsFs6E30=
-X-Google-Smtp-Source: AGHT+IG83QhY+pRKk3BmyKEfFMPW4XrmoG6/c8wZ9DRo4O/G68kHGBkfM+q/nfwoojAXScdP2rjxHN46fkRs2UFh+lY=
-X-Received: by 2002:a05:6820:1508:b0:590:69cf:d99 with SMTP id
- ay8-20020a056820150800b0059069cf0d99mr1980369oob.3.1701983299115; Thu, 07 Dec
- 2023 13:08:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701983336; x=1702588136;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c5ItdRbOqpANKaixOSJQmbB0WAG359l9deHn4U60E+o=;
+        b=Lmg5BMDar17AVm6TSYea0Y4KW8SB/XL3hDipufb3z/+i72guz/j2SbqQpBBZA29vT/
+         wjdcR6DM332daH+gx2+oey6oDZuIMBwnVC20+7JwYJeMCPDCnpPZbS5/ZfIE6c7zHAZS
+         RG4syzkUGRRK/homcAsg6BfW6aT3NbV4hQalO8px3gjap1yScw12xN4G5sZ4Fy/qrJf5
+         qbvk/5Ym48mP5ICzuzeTl/3EDdezOmCdRUd++JEbtpaxsGZX2pWHKzDhfwWy+M19gZE0
+         86MBr4dl7bgmtir5DkoyAd2eCQRmFMazPOycTz0hIoeaBATasFW1kOHlrV33hAa/3WjN
+         tsxg==
+X-Gm-Message-State: AOJu0YwBGL+9fPJ7rd/RbCPF24oQqhHUN4E2hgUXPJCeTiVNTO0ilQ1d
+        ikmve6r5PUIPhyTw14PJV9zxWQoZIU2MP1F8
+X-Google-Smtp-Source: AGHT+IEm+k29lpdyAM/25MP/3vYQ4ardejaj/bMf6jxfTyZCm14FlRtYeKcYn5o7OkuSDQK/TVKBRA==
+X-Received: by 2002:a05:6602:29ca:b0:7b3:7caf:4645 with SMTP id z10-20020a05660229ca00b007b37caf4645mr4253142ioq.5.1701983335546;
+        Thu, 07 Dec 2023 13:08:55 -0800 (PST)
+Received: from localhost (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id w10-20020a02394a000000b0046685d57f00sm117977jae.110.2023.12.07.13.08.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 13:08:55 -0800 (PST)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com
+Subject: [PATCH bpf-next 0/2] Add new bpf_cpumask_weight() kfunc
+Date:   Thu,  7 Dec 2023 15:08:41 -0600
+Message-ID: <20231207210843.168466-1-void@manifault.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-References: <cover.1701722991.git.dxu@dxuuu.xyz> <a385991bb4f36133e15d6eacb72ed22a3c02da16.1701722991.git.dxu@dxuuu.xyz>
- <ZXGx7H/Spv634xgX@gauss3.secunet.de>
-In-Reply-To: <ZXGx7H/Spv634xgX@gauss3.secunet.de>
-From:   Eyal Birger <eyal.birger@gmail.com>
-Date:   Thu, 7 Dec 2023 13:08:08 -0800
-Message-ID: <CAHsH6GtmhP=hZcf2Qv=21dAOSb5dD4GDa+QYdLFz9_FsCZq6tA@mail.gmail.com>
-Subject: Re: [devel-ipsec] [PATCH bpf-next v4 01/10] xfrm: bpf: Move
- xfrm_interface_bpf.c to xfrm_bpf.c
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alexei.starovoitov@gmail.com, devel@linux-ipsec.org,
-        eddyz87@gmail.com, edumazet@google.com,
-        Eyal Birger <eyal@metanetworks.com>, yonghong.song@linux.dev,
-        kuba@kernel.org, bpf@vger.kernel.org, pabeni@redhat.com,
-        davem@davemloft.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+It can be useful to query how many bits are set in a cpumask. For
+example, if you want to perform special logic for the last remaining
+core that's set in a mask. This logic is already exposed through the
+main kernel's cpumask header as cpumask_weight(), so it would be useful
+to add a new bpf_cpumask_weight() kfunc which wraps it and does the
+same.
 
-On Thu, Dec 7, 2023 at 3:52=E2=80=AFAM Steffen Klassert via Devel
-<devel@linux-ipsec.org> wrote:
->
-> On Mon, Dec 04, 2023 at 01:56:21PM -0700, Daniel Xu wrote:
-> > This commit moves the contents of xfrm_interface_bpf.c into a new file,
-> > xfrm_bpf.c This is in preparation for adding more xfrm kfuncs. We'd lik=
-e
-> > to keep all the bpf integrations in a single file.
+This patch series was built and tested on top of commit 2146f7fe6e02
+("Merge branch 'allocate-bpf-trampoline-on-bpf_prog_pack'").
 
-This takes away the nice ability to reload the xfrm interface
-related kfuncs when reloading the xfrm interface.
+David Vernet (2):
+  bpf: Add bpf_cpumask_weight() kfunc
+  selftests/bpf: Add test for bpf_cpumask_weight() kfunc
 
-I also find it a little strange that the kfuncs would be available
-when the xfrm interface isn't loaded.
+ Documentation/bpf/cpumasks.rst                |  2 +-
+ kernel/bpf/cpumask.c                          | 12 ++++++
+ .../selftests/bpf/prog_tests/cpumask.c        |  1 +
+ .../selftests/bpf/progs/cpumask_common.h      |  1 +
+ .../selftests/bpf/progs/cpumask_success.c     | 43 +++++++++++++++++++
+ 5 files changed, 58 insertions(+), 1 deletion(-)
 
-So imho it makes sense that these kfuncs would be built
-as part of the module and not as part of the core.
+-- 
+2.42.1
 
-Eyal.
