@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B61D3807DB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 292C4807DB6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443008AbjLGBSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 20:18:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57800 "EHLO
+        id S1442991AbjLGBSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 20:18:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443021AbjLGBSZ (ORCPT
+        with ESMTP id S1442038AbjLGBS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 20:18:25 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2133919B7
+        Wed, 6 Dec 2023 20:18:28 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F4519BD
         for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 17:18:02 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d3911218b3so1880597b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 17:18:01 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db402e6f61dso534596276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 17:18:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701911875; x=1702516675; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701911877; x=1702516677; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/sHbkqXu1fUVSCDOGBtyBTb/TcjN5e6RYI3KdCcTGvc=;
-        b=lPWCAere9A/tqQJb4Z5l4LaSTTwqTXgknJXo8BgtDlT7+pjrDMQuOtG9EKofMJkg1t
-         CtpCTbGz+ViPywB2P82f9qcxD0LG+NQD7/OT2Dkbxqv3+GaoRZ59zUuIIWmiC9kRyLjO
-         TJHlWjqI9UhaCg4VbqqPVqc29zm2Fffa7c1+UjKWqm4er5Xm2WioYzMNKph/AA4BfhoW
-         3vEyzvguY9SWNLsRJxK+3ApHLIvJ09yWKxX0rrpi8MlGj5Lcvx6GkcxDiO27doaJiN39
-         yCAj3yQgXayfT5jwXN5dlKJLTSYJOELXp2yZlS7nKzsMgivrB2dpfrvI0YXG5fQrMUcY
-         wtJw==
+        bh=LdvL5AMgGawz38PbKP6bJb9rCM4m4RVHx/ZUCFaT4KI=;
+        b=eIalGa6NBwURfR5gfFD2dyslg5agUniNKtTQ8ta8R7nV/ESDmICnC4+fOyBtlZnAU4
+         i8UYi6dXHUPHdtz3Zf4+D40x+Wn0piod5nKWjbyYEeo4CsdrEINAGtzSdWpnkXTZewIJ
+         jK0moWyDeX0I77URJ8Fi5RXsm6e2e3DhD6rQ1K/z/WMVXGfisKNc9Tzo/iUR4TijTBV5
+         qqIzedjic8hvVuPvLW1x94vplPk2o5Tu0+BNQHjBJebe/HDpnBxStBGoLksAZx3pAFzA
+         WpLQC0BhtUKlCankJwjT5yIbUA8Me1Y7+w8V3IQvtpJrEKWiBTRVnDlSN2Xecj9nt9hx
+         UuVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701911875; x=1702516675;
+        d=1e100.net; s=20230601; t=1701911877; x=1702516677;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/sHbkqXu1fUVSCDOGBtyBTb/TcjN5e6RYI3KdCcTGvc=;
-        b=xSA3QZAworlAr3qNWkebCCCF6BV+Ur/zFP33hBELg+XAxZ1paL9aqzIv7XXPzckwcq
-         gecZJvUKp1jzYxNRQm9vpioYrgcp/2no2EoeDVgonIf68NeD5UFLvp3vKS823VlbrWfh
-         Sc+8nsgwydxG4VPs6k4xm90f5qGStULkE0pp9eX67w+N5gaBqqYfaeHqCG+ZB8qhViF5
-         sVraaZ3XFVwmjUcoqzNuY26ZLYwpSR15hgNuJgKTmFz1EAWWSbXRYYRZN+kxaN/mbHvp
-         U4Tfs/HviPG3nQtflRQ/GmPaV7QBxCz2q1z7OMmn08TtHD4I3eb+Sbg+9WBC7PxoGity
-         zKhg==
-X-Gm-Message-State: AOJu0Ywk+rxKwf2Yd95WuSGlSBPR/64QvchAaXjhYlSPl/y00ChGZmrz
-        5FvFneWNRkLR7MHeBY83TDrSTi3rhIBA
-X-Google-Smtp-Source: AGHT+IEumQPe3/vz/fQO4LUDE4GZ7qAE8fCJL7nIDamWMCjWVHBn0oHchNObH1MJsGJSoyiQUyF0/NKazFtE
+        bh=LdvL5AMgGawz38PbKP6bJb9rCM4m4RVHx/ZUCFaT4KI=;
+        b=ouiMxOgs0+O7Lj/pApt+nfkS/eocTMcqqxYAkzC6zewXAWnZBJZ0r00nUMG4qvs8DA
+         xtd4Ds2aTPRLbEo/QJos3huIZ2y3CY+ypW/NI+17RYugWGG6T69KAXUqbr5WY4cgJwim
+         4nu5pjbmHIPZ6xc0zfPcrp/c2l6964kTrqWW1NeO8I0BoxtdwpJE9FStFKZsDqj0dej+
+         SqsClOQ/j2niVbjdywGf+0sBfWnQeSCb1ieVKTvAerqh9oGjH8pCKrXgURJum42r9hJC
+         Uo2YLH1jHWPuRQclZf+XsVpww+Plk/NrolHGYvBOuVbhDK+3b+TYNhai5z1D1R4zZBG0
+         68wA==
+X-Gm-Message-State: AOJu0Yxj8mZynRO55ub45jIjH36+l3zfp330xNLMmGySfQ+ed6K2zJnN
+        LxrhqxkKbaGwHFUfq8pEedUXRYYhpruc
+X-Google-Smtp-Source: AGHT+IFwfNkHgIpPgOHFHAls/fybTbtDbjEPoiQ0LnBRzmA0eriNl9OZDpm91G687u7YpRH1FafQtsKGElCY
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:35bf:293e:7696:34e9])
- (user=irogers job=sendgmr) by 2002:a05:690c:2f89:b0:5d4:263e:c819 with SMTP
- id ew9-20020a05690c2f8900b005d4263ec819mr25058ywb.8.1701911875437; Wed, 06
- Dec 2023 17:17:55 -0800 (PST)
-Date:   Wed,  6 Dec 2023 17:16:46 -0800
+ (user=irogers job=sendgmr) by 2002:a25:ccd5:0:b0:daf:6333:17c3 with SMTP id
+ l204-20020a25ccd5000000b00daf633317c3mr24166ybf.1.1701911877641; Wed, 06 Dec
+ 2023 17:17:57 -0800 (PST)
+Date:   Wed,  6 Dec 2023 17:16:47 -0800
 In-Reply-To: <20231207011722.1220634-1-irogers@google.com>
-Message-Id: <20231207011722.1220634-13-irogers@google.com>
+Message-Id: <20231207011722.1220634-14-irogers@google.com>
 Mime-Version: 1.0
 References: <20231207011722.1220634-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Subject: [PATCH v6 12/47] perf vdso: Use function to add missing maps lock
+Subject: [PATCH v6 13/47] perf maps: Reduce scope of maps__for_each_entry
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -102,66 +102,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch machine__thread_dso_type from loop macro maps__for_each_entry
-to maps__for_each_map function that takes a callback. The function
-holds the maps lock, which should be held during iteration.
+Reduce scope of maps__for_each_entry as maps__for_each_map is a safer
+alternative holding the maps lock during iteration.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/vdso.c | 35 +++++++++++++++++++++++------------
- 1 file changed, 23 insertions(+), 12 deletions(-)
+ tools/perf/util/maps.c | 3 +++
+ tools/perf/util/maps.h | 3 ---
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/util/vdso.c b/tools/perf/util/vdso.c
-index ae3eee69b659..df8963796187 100644
---- a/tools/perf/util/vdso.c
-+++ b/tools/perf/util/vdso.c
-@@ -140,23 +140,34 @@ static struct dso *__machine__addnew_vdso(struct machine *machine, const char *s
- 	return dso;
- }
+diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
+index 160a6dce54bb..00e6589bba10 100644
+--- a/tools/perf/util/maps.c
++++ b/tools/perf/util/maps.c
+@@ -10,6 +10,9 @@
+ #include "ui/ui.h"
+ #include "unwind.h"
  
-+struct machine__thread_dso_type_maps_cb_args {
-+	struct machine *machine;
-+	enum dso_type dso_type;
-+};
++#define maps__for_each_entry(maps, map) \
++	for (map = maps__first(maps); map; map = map_rb_node__next(map))
 +
-+static int machine__thread_dso_type_maps_cb(struct map *map, void *data)
-+{
-+	struct machine__thread_dso_type_maps_cb_args *args = data;
-+	struct dso *dso = map__dso(map);
-+
-+	if (!dso || dso->long_name[0] != '/')
-+		return 0;
-+
-+	args->dso_type = dso__type(dso, args->machine);
-+	return (args->dso_type != DSO__TYPE_UNKNOWN) ? 1 : 0;
-+}
-+
- static enum dso_type machine__thread_dso_type(struct machine *machine,
- 					      struct thread *thread)
+ static void maps__init(struct maps *maps, struct machine *machine)
  {
--	enum dso_type dso_type = DSO__TYPE_UNKNOWN;
--	struct map_rb_node *rb_node;
+ 	refcount_set(maps__refcnt(maps), 1);
+diff --git a/tools/perf/util/maps.h b/tools/perf/util/maps.h
+index 14ad95979257..8ac30cdaf5bd 100644
+--- a/tools/perf/util/maps.h
++++ b/tools/perf/util/maps.h
+@@ -36,9 +36,6 @@ struct map_rb_node *map_rb_node__next(struct map_rb_node *node);
+ struct map_rb_node *maps__find_node(struct maps *maps, struct map *map);
+ struct map *maps__find(struct maps *maps, u64 addr);
+ 
+-#define maps__for_each_entry(maps, map) \
+-	for (map = maps__first(maps); map; map = map_rb_node__next(map))
 -
--	maps__for_each_entry(thread__maps(thread), rb_node) {
--		struct dso *dso = map__dso(rb_node->map);
-+	struct machine__thread_dso_type_maps_cb_args args = {
-+		.machine = machine,
-+		.dso_type = DSO__TYPE_UNKNOWN,
-+	};
- 
--		if (!dso || dso->long_name[0] != '/')
--			continue;
--		dso_type = dso__type(dso, machine);
--		if (dso_type != DSO__TYPE_UNKNOWN)
--			break;
--	}
-+	maps__for_each_map(thread__maps(thread), machine__thread_dso_type_maps_cb, &args);
- 
--	return dso_type;
-+	return args.dso_type;
- }
- 
- #if BITS_PER_LONG == 64
+ #define maps__for_each_entry_safe(maps, map, next) \
+ 	for (map = maps__first(maps), next = map_rb_node__next(map); map; \
+ 	     map = next, next = map_rb_node__next(map))
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
