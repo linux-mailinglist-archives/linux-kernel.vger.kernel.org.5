@@ -2,41 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A82808617
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7947808608
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbjLGKNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 05:13:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
+        id S230145AbjLGKN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 05:13:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232072AbjLGKNM (ORCPT
+        with ESMTP id S230234AbjLGKNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 05:13:12 -0500
+        Thu, 7 Dec 2023 05:13:55 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6AFD57
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 02:13:12 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBC34C433C8;
-        Thu,  7 Dec 2023 10:13:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1701943992;
-        bh=jjIqC4iSn/VFDe+Xa9h9ciWtGqh8N3pSlXrWjTTjMaI=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40BAA4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 02:14:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE0C4C433C8;
+        Thu,  7 Dec 2023 10:13:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701944040;
+        bh=imy4ugx4p592rTLtYsew6LM8Qw7swHAvvWpZOmSRbzM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=um9XVhMk6ydG46DAOeQvOYixYw3Lvl2SRRiPz7BFVe5hWSWwj/iBaUMibhPo8IHnp
-         imwk05eZz98/uY/w6+KOpBNw3Ptesy6eqokQGK4kO+UoE0kWa3EmiwxEm/LoC3aKlG
-         zxBuGQS1oGOU7Za1fr5e9R6SulbE6J6q0qaNPOzU=
-Date:   Thu, 7 Dec 2023 11:13:08 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yann Sionneau <ysionneau@kalrayinc.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: regression in 6.1.yy branch: LTP test preadv03 fails
-Message-ID: <2023120747-domain-angled-d633@gregkh>
-References: <c1f93c13-4865-b5a8-8969-4c2f5cb8f776@kalrayinc.com>
+        b=hhHuuJeqjenrJzluJ4waW5koAwpWLKrwzA15G7CY8Utv6hjNfvFBFFodpJSyTaKaF
+         7EN4QZkZ0wMz69gziLzI+1qWic/TNJhzwqb92SOYzocWHNq5gIwurKXze1emnQSkUu
+         5EaDIvOuY5Q9MPaZqjdoMnnNo9cbueXBY7gfxZidJC/YhLIrrDuLczNiynyULhIAXI
+         +Ntbu8iq1JUNgGpTswSapQAtiLCQP87puO1UsFeWiY02poI233eYyilYZXLK6DrKQE
+         vQEMmx2GQCZtFgFbx6pK6MBsP4SP7Y5Bg73JfNkZU6HgGJdvjt7ZSA9LYt+cuYd/lJ
+         E6mNvF9PiP9pg==
+Date:   Thu, 7 Dec 2023 11:13:52 +0100
+From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, ankita@nvidia.com,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>, oliver.upton@linux.dev,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
+        ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <ZXGa4A6rfxLtkTB2@lpieralisi>
+References: <ZW9OSe8Z9gAmM7My@arm.com>
+ <20231205164318.GG2692119@nvidia.com>
+ <ZW949Tl3VmQfPk0L@arm.com>
+ <20231205194822.GL2692119@nvidia.com>
+ <ZXCJ3pVbKuHJ3LTz@arm.com>
+ <20231206150556.GQ2692119@nvidia.com>
+ <ZXCQrTbf6q0BIhSw@lpieralisi>
+ <20231206153809.GS2692119@nvidia.com>
+ <ZXCf_e-ACqrj6VrV@arm.com>
+ <20231206164802.GT2692119@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c1f93c13-4865-b5a8-8969-4c2f5cb8f776@kalrayinc.com>
+In-Reply-To: <20231206164802.GT2692119@nvidia.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -47,26 +68,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 11:05:15AM +0100, Yann Sionneau wrote:
-> Hello,
+On Wed, Dec 06, 2023 at 12:48:02PM -0400, Jason Gunthorpe wrote:
+> On Wed, Dec 06, 2023 at 04:23:25PM +0000, Catalin Marinas wrote:
+> > On Wed, Dec 06, 2023 at 11:38:09AM -0400, Jason Gunthorpe wrote:
+> > > On Wed, Dec 06, 2023 at 04:18:05PM +0100, Lorenzo Pieralisi wrote:
+> > > > On Wed, Dec 06, 2023 at 11:05:56AM -0400, Jason Gunthorpe wrote:
+> > > > > On Wed, Dec 06, 2023 at 02:49:02PM +0000, Catalin Marinas wrote:
+> > > > > > BTW, on those Mellanox devices that require different attributes within
+> > > > > > a BAR, do they have a problem with speculative reads causing
+> > > > > > side-effects? 
+> > > > > 
+> > > > > Yes. We definitely have had that problem in the past on older
+> > > > > devices. VFIO must map the BAR using pgprot_device/noncached() into
+> > > > > the VMM, no other choice is functionally OK.
+> > > > 
+> > > > Were those BARs tagged as prefetchable or non-prefetchable ? I assume the
+> > > > latter but please let me know if I am guessing wrong.
+> > > 
+> > > I don't know it was quite old HW. Probably.
+> > > 
+> > > Just because a BAR is not marked as prefetchable doesn't mean that the
+> > > device can't use NORMAL_NC on subsets of it.
+> > 
+> > What about the other way around - would we have a prefetchable BAR that
+> > has portions which are unprefetchable?
 > 
-> I noticed yesterday that LTP test preadv03 now fails since 6.1.64 (it also
-> fails on 6.1.65).
+> I would say possibly.
 > 
-> 6.6.4, 6.6.3, 6.5.0 and 6.2.0 seem to be unaffected.
+> Prefetch is a dead concept in PCIe, it was obsoleted in PCI-X about 20
+> years ago. No PCIe system has ever done prefetch.
 > 
-> I tested this on x86_64 and kvx arch (the latter is not upstream).
-> 
-> I can see some ext4 related commits on 6.1.64 and 6.1.65 changes, maybe it's
-> related, therefore I add ext4 mailing list as CC.
-> 
-> I didn't run git bisect on this so far because I noticed building an x86_64
-> ubuntu kernel on my laptop was taking ages. Maybe someone is more used to
-> dealing with this and can bisect this way faster than me.
+> There is a strong incentive to mark BAR's as prefetchable because it
+> allows 64 bit addressing in configurations with bridges.
 
-Should be fixed in the latest 6.1.y-rc release, right?  If not, please
-let me know.
+If by strong incentive you mean the "Additional guidance on the
+Prefetchable Bit in Memory Space BARs" in the PCI express specifications,
+I think it has been removed from the spec and the criteria that had to be
+met to implement it were basically impossible to fulfill on ARM systems,
+it did not make any sense in the first place.
 
-thanks,
+I agree on your statement related to the prefetchable concept but I
+believe that a prefetchable BAR containing regions that have
+read side-effects is essentially a borked design unless at system level
+speculative reads are prevented (as far as I understand the
+implementation note this could only be an endpoint integrated in a
+system where read speculation can't just happen (?)).
 
-greg k-h
+Long story short: a PCIe card/device that can be plugged on any PCIe
+compliant system (x86, ARM or whatever) should not mark a
+BAR region with memory read side-effects as prefetchable, either
+that or I don't understand what the implementation note above
+was all about.
+
+AFAIK the prefetchable concept in PCIe is likely to be scrapped
+altogether in the not too distant future.
+
+Anyway, that was just for completeness (and to shed light
+on the BAR prefetchable bit usage).
+
+Lorenzo
