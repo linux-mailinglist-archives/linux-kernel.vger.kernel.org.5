@@ -2,73 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D14080897C
+	by mail.lfdr.de (Postfix) with ESMTP id B502380897D
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442128AbjLGNtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:49:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45936 "EHLO
+        id S1442337AbjLGNtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:49:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232849AbjLGNtS (ORCPT
+        with ESMTP id S1442098AbjLGNtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:49:18 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604DE10C2;
-        Thu,  7 Dec 2023 05:49:24 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B7DnDJu093419;
-        Thu, 7 Dec 2023 07:49:13 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701956953;
-        bh=WfaUI8G9Kw7xD7ihODTl/rr/KLgCLlkJ948Ob9AdpUM=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=S82R8HymbzabOPl6K5p2XZefLK42I9gmZQg56r+XWlp4KgeFDdGeE14x6s3PNmnER
-         wS0bomgdrW3EHScHeqltr1TR0Ga1muYuJVXRiJBq56xCDj2cglW/OgI5zdXp6NVqe/
-         Kdx0mluCpWBlWAiRCqwcTbdIHO/2JiDKytyJSh+U=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B7DnDjM012734
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 7 Dec 2023 07:49:13 -0600
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 7
- Dec 2023 07:49:12 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 7 Dec 2023 07:49:12 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B7DnCf8020264;
-        Thu, 7 Dec 2023 07:49:12 -0600
-Date:   Thu, 7 Dec 2023 07:49:12 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Neha Malcom Francis <n-francis@ti.com>
-CC:     "Kumar, Udit" <u-kumar1@ti.com>, <vigneshr@ti.com>,
-        <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <a-nandan@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <eblanc@baylibre.com>, <jneanne@baylibre.com>,
-        <aseketeli@baylibre.com>, <jpanis@baylibre.com>, <j-luthra@ti.com>,
-        <vaishnav.a@ti.com>, <hnagalla@ti.com>, <devarsht@ti.com>,
-        <sjg@chromium.org>, <trini@konsulko.com>
-Subject: Re: [PATCH v9 6/7] arm64: dts: ti: k3-j721e-sk: Add TPS6594 family
- PMICs
-Message-ID: <20231207134912.olfhmcz5kkbx47wo@landmine>
-References: <20231205093439.2298296-1-n-francis@ti.com>
- <20231205093439.2298296-7-n-francis@ti.com>
- <20231205151647.vh6rlhro7qlwoerc@knelt>
- <5e22f8cb-1004-4bcc-9bd0-2c30180ba10e@ti.com>
- <cc2c3e97-e2c6-487b-91a5-c5f5fbe2c3bc@ti.com>
+        Thu, 7 Dec 2023 08:49:20 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B63D5E;
+        Thu,  7 Dec 2023 05:49:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701956967; x=1733492967;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=imR+7Va4hKymRovZBLHbPvJA/DcqrguwTFTFepAUI4c=;
+  b=alQZylu39oipWsTUI2G9+xRjY6rN3F70sJIAl/rYunl1GOwIoXpeeLQT
+   IBAILTeaJlAngphIAISQq883tt/UTYYWrNMXMbrKWhaCbTeVD9aMVsGPZ
+   XFOtegjck5mEhcCblV4+lvLW3aDzP/e6H96k8+orVkB35gIvS2lY72EfB
+   MZMebMiEpUZBsGFvnAH9X+u9uLUVDLX3e3Dt6W0F/GhqQTEoyLdeV6qDn
+   ey4lgTcNKmvb7L8oh/XKnQ99b3418GMGY5rtYGFCaR4T83RsJIzJbP54Y
+   2T+wqokuqGUnRhgRNXEIZw7JETKGn8HdHe4VIHKP/BeovDq1ixR69g2a9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1338852"
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="1338852"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 05:49:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="17418890"
+Received: from yzhan76-mobl1.amr.corp.intel.com (HELO [10.212.19.153]) ([10.212.19.153])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 05:49:26 -0800
+Message-ID: <6776742e5aba8f9f10c661a7876eb252f4ac7745.camel@linux.intel.com>
+Subject: Re: [PATCH v2] HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, jikos@kernel.org,
+        benjamin.tissoires@redhat.com
+Cc:     linux-pm@vger.kernel.org, linux-pci@vger.kernel.org,
+        Jian Hui Lee <jianhui.lee@canonical.com>,
+        Even Xu <even.xu@intel.com>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 07 Dec 2023 08:49:24 -0500
+In-Reply-To: <20231108121940.288005-1-kai.heng.feng@canonical.com>
+References: <20231108121940.288005-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cc2c3e97-e2c6-487b-91a5-c5f5fbe2c3bc@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,71 +63,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11:01-20231207, Neha Malcom Francis wrote:
-> Hi Nishanth, Udit,
-> 
-> On 07/12/23 10:12, Kumar, Udit wrote:
-> > 
-> > On 12/5/2023 8:46 PM, Nishanth Menon wrote:
-> > > On 15:04-20231205, Neha Malcom Francis wrote:
-> > > > This patch adds support for TPS6594 PMIC family on wakeup I2C0 bus.
-> > > > These devices provide regulators (bucks and LDOs), but also GPIOs, a
-> > > > RTC, a watchdog, an ESM (Error Signal Monitor) which monitors the SoC
-> > > > error output signal, and a PFSM (Pre-configurable Finite State Machine)
-> > > > which manages the operational modes of the PMIC.
-> > > > 
-> > > > Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
-> > > > ---
-> > > >   arch/arm64/boot/dts/ti/k3-j721e-sk.dts | 158 +++++++++++++++++++++++++
-> > > >   1 file changed, 158 insertions(+)
-> > > > 
-> > > > diff --git a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-> > > > b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-> > > > index 42fe8eee9ec8..e600825f7e78 100644
-> > > > --- a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-> > > > +++ b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-> > > > @@ -459,6 +459,13 @@ J721E_IOPAD(0x234, PIN_INPUT, 7) /* (U3)
-> > > > EXT_REFCLK1.GPIO1_12 */
-> > > >   };
-> > > >   &wkup_pmx0 {
-> > > > +    pmic_irq_pins_default: pmic-irq-default-pins {
-> > > > +        bootph-pre-ram;
-> > > > +        pinctrl-single,pins = <
-> > > > +            J721E_WKUP_IOPAD(0x0cc, PIN_INPUT, 7) /* (G28) WKUP_GPIO0_7 */
-> > > > +        >;
-> > > > +    };
-> > > > +
-> > > >       mcu_cpsw_pins_default: mcu-cpsw-default-pins {
-> > > >           pinctrl-single,pins = <
-> > > >               J721E_WKUP_IOPAD(0x84, PIN_INPUT, 0) /* (B24) MCU_RGMII1_RD0 */
-> > > > @@ -560,6 +567,157 @@ eeprom@51 {
-> > > >           compatible = "atmel,24c512";
-> > > >           reg = <0x51>;
-> > > >       };
-> > > > +
-> > > > +    tps659413: pmic@48 {
-> > > > +        bootph-pre-ram;
-> > > only for the leaf nodes. See
-> > > https://libera.irclog.whitequark.org/armlinux/2023-10-19
-> > 
-> > 
-> > AFAIK, please correct me, u-boot still needs in all nodes ?
-> > 
-> 
-> That's what I believe as well, is it better to have only the leaf nodes in
-> kernel and have U-Boot DTSI handle the parent bootph properties? If so I'll
-> send out v10 making change accordingly.
-> 
+T24gV2VkLCAyMDIzLTExLTA4IGF0IDE0OjE5ICswMjAwLCBLYWktSGVuZyBGZW5nIHdyb3RlOgo+
+IFNpbmNlIFBDSSBjb3JlIGFuZCBBQ1BJIGNvcmUgYWxyZWFkeSBoYW5kbGVzIFBDSSBQTUUgd2Fr
+ZSBhbmQgR1BFCj4gd2FrZQo+IHdoZW4gdGhlIGRldmljZSBoYXMgd2FrZXVwIGNhcGFiaWxpdHks
+IHVzZSBkZXZpY2VfaW5pdF93YWtldXAoKSB0bwo+IGxldAo+IHRoZW0gZG8gdGhlIHdha2V1cCBz
+ZXR0aW5nIHdvcmsuCj4gCj4gQWxzbyBhZGQgYSBzaHV0ZG93biBjYWxsYmFjayB3aGljaCB1c2Vz
+IHBjaV9wcmVwYXJlX3RvX3NsZWVwKCkgdG8gbGV0Cj4gUENJIGFuZCBBQ1BJIHNldCBPT0Igd2Fr
+ZXVwIGZvciBTNS4KPiAKPiBDYzogSmlhbiBIdWkgTGVlIDxqaWFuaHVpLmxlZUBjYW5vbmljYWwu
+Y29tPgo+IFNpZ25lZC1vZmYtYnk6IEthaS1IZW5nIEZlbmcgPGthaS5oZW5nLmZlbmdAY2Fub25p
+Y2FsLmNvbT4KQWNrZWQtYnk6IFNyaW5pdmFzIFBhbmRydXZhZGEgPHNyaW5pdmFzLnBhbmRydXZh
+ZGFAbGludXguaW50ZWwuY29tPgoKPiAtLS0KPiB2MjoKPiDCoFJlYmFzZSBvbiAoIkhJRDogaW50
+ZWwtaXNoLWhpZDogaXBjOiBEaXNhYmxlIGFuZCByZWVuYWJsZSBBQ1BJIEdQRQo+IGJpdCIpCj4g
+Cj4gwqBkcml2ZXJzL2hpZC9pbnRlbC1pc2gtaGlkL2lwYy9wY2ktaXNoLmMgfCA2NyArKysrKyst
+LS0tLS0tLS0tLS0tLS0tLQo+IC0tCj4gwqAxIGZpbGUgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygr
+KSwgNTIgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaGlkL2ludGVsLWlz
+aC1oaWQvaXBjL3BjaS1pc2guYwo+IGIvZHJpdmVycy9oaWQvaW50ZWwtaXNoLWhpZC9pcGMvcGNp
+LWlzaC5jCj4gaW5kZXggNzEwZmRhNWYxOWUxLi42NWU3ZWViMmZhNjQgMTAwNjQ0Cj4gLS0tIGEv
+ZHJpdmVycy9oaWQvaW50ZWwtaXNoLWhpZC9pcGMvcGNpLWlzaC5jCj4gKysrIGIvZHJpdmVycy9o
+aWQvaW50ZWwtaXNoLWhpZC9pcGMvcGNpLWlzaC5jCj4gQEAgLTExOSw1MCArMTE5LDYgQEAgc3Rh
+dGljIGlubGluZSBib29sIGlzaF9zaG91bGRfbGVhdmVfZDBpMyhzdHJ1Y3QKPiBwY2lfZGV2ICpw
+ZGV2KQo+IMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gIXBtX3Jlc3VtZV92aWFfZmlybXdhcmUoKSB8
+fCBwZGV2LT5kZXZpY2UgPT0KPiBDSFZfREVWSUNFX0lEOwo+IMKgfQo+IMKgCj4gLXN0YXRpYyBp
+bnQgZW5hYmxlX2dwZShzdHJ1Y3QgZGV2aWNlICpkZXYpCj4gLXsKPiAtI2lmZGVmIENPTkZJR19B
+Q1BJCj4gLcKgwqDCoMKgwqDCoMKgYWNwaV9zdGF0dXMgYWNwaV9zdHM7Cj4gLcKgwqDCoMKgwqDC
+oMKgc3RydWN0IGFjcGlfZGV2aWNlICphZGV2Owo+IC3CoMKgwqDCoMKgwqDCoHN0cnVjdCBhY3Bp
+X2RldmljZV93YWtldXAgKndha2V1cDsKPiAtCj4gLcKgwqDCoMKgwqDCoMKgYWRldiA9IEFDUElf
+Q09NUEFOSU9OKGRldik7Cj4gLcKgwqDCoMKgwqDCoMKgaWYgKCFhZGV2KSB7Cj4gLcKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoGRldl9lcnIoZGV2LCAiZ2V0IGFjcGkgaGFuZGxlIGZhaWxl
+ZFxuIik7Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiAtRU5PREVWOwo+
+IC3CoMKgwqDCoMKgwqDCoH0KPiAtwqDCoMKgwqDCoMKgwqB3YWtldXAgPSAmYWRldi0+d2FrZXVw
+Owo+IC0KPiAtwqDCoMKgwqDCoMKgwqAvKgo+IC3CoMKgwqDCoMKgwqDCoCAqIENhbGwgYWNwaV9k
+aXNhYmxlX2dwZSgpLCBzbyB0aGF0IHJlZmVyZW5jZSBjb3VudAo+IC3CoMKgwqDCoMKgwqDCoCAq
+IGdwZV9ldmVudF9pbmZvLT5ydW50aW1lX2NvdW50IGRvZXNuJ3Qgb3ZlcmZsb3cuCj4gLcKgwqDC
+oMKgwqDCoMKgICogV2hlbiBncGVfZXZlbnRfaW5mby0+cnVudGltZV9jb3VudCA9IDAsIHRoZSBj
+YWxsCj4gLcKgwqDCoMKgwqDCoMKgICogdG8gYWNwaV9kaXNhYmxlX2dwZSgpIHNpbXBseSByZXR1
+cm4uCj4gLcKgwqDCoMKgwqDCoMKgICovCj4gLcKgwqDCoMKgwqDCoMKgYWNwaV9kaXNhYmxlX2dw
+ZSh3YWtldXAtPmdwZV9kZXZpY2UsIHdha2V1cC0+Z3BlX251bWJlcik7Cj4gLQo+IC3CoMKgwqDC
+oMKgwqDCoGFjcGlfc3RzID0gYWNwaV9lbmFibGVfZ3BlKHdha2V1cC0+Z3BlX2RldmljZSwgd2Fr
+ZXVwLQo+ID5ncGVfbnVtYmVyKTsKPiAtwqDCoMKgwqDCoMKgwqBpZiAoQUNQSV9GQUlMVVJFKGFj
+cGlfc3RzKSkgewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZfZXJyKGRldiwg
+ImVuYWJsZSBvc2VfZ3BlIGZhaWxlZFxuIik7Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoHJldHVybiAtRUlPOwo+IC3CoMKgwqDCoMKgwqDCoH0KPiAtCj4gLcKgwqDCoMKgwqDCoMKg
+cmV0dXJuIDA7Cj4gLSNlbHNlCj4gLcKgwqDCoMKgwqDCoMKgcmV0dXJuIC1FTk9ERVY7Cj4gLSNl
+bmRpZgo+IC19Cj4gLQo+IC1zdGF0aWMgdm9pZCBlbmFibGVfcG1lX3dha2Uoc3RydWN0IHBjaV9k
+ZXYgKnBkZXYpCj4gLXsKPiAtwqDCoMKgwqDCoMKgwqBpZiAoKHBjaV9wbWVfY2FwYWJsZShwZGV2
+LCBQQ0lfRDApIHx8Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcGNpX3BtZV9jYXBhYmxlKHBk
+ZXYsIFBDSV9EM2hvdCkgfHwKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwY2lfcG1lX2NhcGFi
+bGUocGRldiwgUENJX0QzY29sZCkpICYmICFlbmFibGVfZ3BlKCZwZGV2LQo+ID5kZXYpKSB7Cj4g
+LcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHBjaV9wbWVfYWN0aXZlKHBkZXYsIHRydWUp
+Owo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZfZGJnKCZwZGV2LT5kZXYsICJp
+c2ggaXBjIGRyaXZlciBwbWUgd2FrZQo+IGVuYWJsZWRcbiIpOwo+IC3CoMKgwqDCoMKgwqDCoH0K
+PiAtfQo+IC0KPiDCoC8qKgo+IMKgICogaXNoX3Byb2JlKCkgLSBQQ0kgZHJpdmVyIHByb2JlIGNh
+bGxiYWNrCj4gwqAgKiBAcGRldjrCoMKgwqDCoMKgwqBwY2kgZGV2aWNlCj4gQEAgLTIzMyw3ICsx
+ODksNyBAQCBzdGF0aWMgaW50IGlzaF9wcm9iZShzdHJ1Y3QgcGNpX2RldiAqcGRldiwgY29uc3QK
+PiBzdHJ1Y3QgcGNpX2RldmljZV9pZCAqZW50KQo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoC8qIEVu
+YWJsZSBQTUUgZm9yIEVITCAqLwo+IMKgwqDCoMKgwqDCoMKgwqBpZiAocGRldi0+ZGV2aWNlID09
+IEVITF9BeF9ERVZJQ0VfSUQpCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGVuYWJs
+ZV9wbWVfd2FrZShwZGV2KTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZGV2aWNl
+X2luaXRfd2FrZXVwKGRldiwgdHJ1ZSk7Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgcmV0ID0gaXNo
+X2luaXQoaXNodHApOwo+IMKgwqDCoMKgwqDCoMKgwqBpZiAocmV0KQo+IEBAIC0yNTYsNiArMjEy
+LDE5IEBAIHN0YXRpYyB2b2lkIGlzaF9yZW1vdmUoc3RydWN0IHBjaV9kZXYgKnBkZXYpCj4gwqDC
+oMKgwqDCoMKgwqDCoGlzaF9kZXZpY2VfZGlzYWJsZShpc2h0cF9kZXYpOwo+IMKgfQo+IMKgCj4g
+Kwo+ICsvKioKPiArICogaXNoX3NodXRkb3duKCkgLSBQQ0kgZHJpdmVyIHNodXRkb3duIGNhbGxi
+YWNrCj4gKyAqIEBwZGV2OsKgwqDCoMKgwqDCoHBjaSBkZXZpY2UKPiArICoKPiArICogVGhpcyBm
+dW5jdGlvbiBzZXRzIHVwIHdha2V1cCBmb3IgUzUKPiArICovCj4gK3N0YXRpYyB2b2lkIGlzaF9z
+aHV0ZG93bihzdHJ1Y3QgcGNpX2RldiAqcGRldikKPiArewo+ICvCoMKgwqDCoMKgwqDCoGlmIChw
+ZGV2LT5kZXZpY2UgPT0gRUhMX0F4X0RFVklDRV9JRCkKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgcGNpX3ByZXBhcmVfdG9fc2xlZXAocGRldik7Cj4gK30KPiArCj4gwqBzdGF0aWMg
+c3RydWN0IGRldmljZSBfX21heWJlX3VudXNlZCAqaXNoX3Jlc3VtZV9kZXZpY2U7Cj4gwqAKPiDC
+oC8qIDUwbXMgdG8gZ2V0IHJlc3VtZSByZXNwb25zZSAqLwo+IEBAIC0zNzgsMTMgKzM0Nyw2IEBA
+IHN0YXRpYyBpbnQgX19tYXliZV91bnVzZWQgaXNoX3Jlc3VtZShzdHJ1Y3QKPiBkZXZpY2UgKmRl
+dmljZSkKPiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IHBjaV9kZXYgKnBkZXYgPSB0b19wY2lfZGV2
+KGRldmljZSk7Cj4gwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBpc2h0cF9kZXZpY2UgKmRldiA9IHBj
+aV9nZXRfZHJ2ZGF0YShwZGV2KTsKPiDCoAo+IC3CoMKgwqDCoMKgwqDCoC8qIGFkZCB0aGlzIHRv
+IGZpbmlzaCBwb3dlciBmbG93IGZvciBFSEwgKi8KPiAtwqDCoMKgwqDCoMKgwqBpZiAoZGV2LT5w
+ZGV2LT5kZXZpY2UgPT0gRUhMX0F4X0RFVklDRV9JRCkgewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqBwY2lfc2V0X3Bvd2VyX3N0YXRlKHBkZXYsIFBDSV9EMCk7Cj4gLcKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoGVuYWJsZV9wbWVfd2FrZShwZGV2KTsKPiAtwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgZGV2X2RiZyhkZXYtPmRldmMsICJzZXQgcG93ZXIgc3RhdGUg
+dG8gRDAgZm9yCj4gZWhsXG4iKTsKPiAtwqDCoMKgwqDCoMKgwqB9Cj4gLQo+IMKgwqDCoMKgwqDC
+oMKgwqBpc2hfcmVzdW1lX2RldmljZSA9IGRldmljZTsKPiDCoMKgwqDCoMKgwqDCoMKgZGV2LT5y
+ZXN1bWVfZmxhZyA9IDE7Cj4gwqAKPiBAQCAtNDAwLDYgKzM2Miw3IEBAIHN0YXRpYyBzdHJ1Y3Qg
+cGNpX2RyaXZlciBpc2hfZHJpdmVyID0gewo+IMKgwqDCoMKgwqDCoMKgwqAuaWRfdGFibGUgPSBp
+c2hfcGNpX3RibCwKPiDCoMKgwqDCoMKgwqDCoMKgLnByb2JlID0gaXNoX3Byb2JlLAo+IMKgwqDC
+oMKgwqDCoMKgwqAucmVtb3ZlID0gaXNoX3JlbW92ZSwKPiArwqDCoMKgwqDCoMKgwqAuc2h1dGRv
+d24gPSBpc2hfc2h1dGRvd24sCj4gwqDCoMKgwqDCoMKgwqDCoC5kcml2ZXIucG0gPSAmaXNoX3Bt
+X29wcywKPiDCoH07Cj4gwqAKCg==
 
-Yes, u-boot today needs it in all nodes. BUT, u-boot needs to be fixed in
-line to obey the rules of the schema convention that Rob clarified in
-the discussion above.
-
-The other choice is NOT to introduce new bootph properties till u-boot
-is fixed up (this is also why I haven't sent out further updates for
-bootph properties for kernel in this cycle).
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
