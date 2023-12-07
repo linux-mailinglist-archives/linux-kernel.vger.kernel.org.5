@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 340C980910B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75AA1809110
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443780AbjLGTIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 14:08:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
+        id S230370AbjLGTKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 14:10:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233073AbjLGTIW (ORCPT
+        with ESMTP id S233135AbjLGTKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 14:08:22 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7648E
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 11:08:29 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b9df0a6560so560972b6e.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 11:08:29 -0800 (PST)
+        Thu, 7 Dec 2023 14:10:42 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5053C8E
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 11:10:48 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c9f9db9567so13507411fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 11:10:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1701976109; x=1702580909; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=n8OWS2EF/jxgGIxX7cfSGEDjvCH+3JHnn1iapS5BEtE=;
-        b=Pv9IcVlHfdK9pDYkLUhP3PBrcbdsbR3yPC/C1/+sc33u3YTBBHITNJOd8Oz0501b7/
-         rx2TaHztpC0NOwpf0z3Yk7pbU905opt1KKhtZE7qJr2760BiwF15RN/fIMMgnESzHjh4
-         bcYeMDgdILbqzjEervxU1+5Hvy74g7hd9iMd+/fDwpX7TwanSdMifIh5gNrG9LmvSYqh
-         Cdk5xq1IFSzMvInQxFo8Q4ukGbZFkelHM7HCY8S9fhXXREKgoef20nXxfaQfBv0m0jz5
-         YKqqEV2spc9NLseUoMKXX9yJKwpI2IQ2l0/vxWTJucbK6KKiMOaXz9HZQLZu7J69eiYJ
-         QjsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701976109; x=1702580909;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=linaro.org; s=google; t=1701976246; x=1702581046; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=n8OWS2EF/jxgGIxX7cfSGEDjvCH+3JHnn1iapS5BEtE=;
-        b=aGKhMzb/G6grc8kqxOWGOsZG2CT3IUBxPmf+yd6eg0HYdegj+d72+HvYasbPvuaioQ
-         xtX70t2tr9B0L9JlMBFeY3lL/pChUbdeRCivuKnEUkJeTPkYcbotReTee2fXdryVL0T1
-         POJRbsfKDBmkagylNA1n2suZCVnlgzEKsH5pp/jKSyU9M4DWOqUXCrFG9OPPU4BVqL9p
-         el+Jf3EJWsNoPFFYamQ3h5+qxBXXpOFGit5ZAcvqt3xrQg3k0YDkFa9hH6YnL2wh2gUU
-         qsf78AU4w6lmxlAel4FsV7/7UZT/xfPS4TToXY5PSmWAZZwpLF5M5jwiBtJCN13UlH8t
-         U17Q==
-X-Gm-Message-State: AOJu0YziOmRrFn+9WOCFS8qX2waRYDmljGkQOSF1dlCJpH68sG22ZkRa
-        kugWHJfaWF5xzDUX+uIVKkbzfQ160pwFFUg/xec=
-X-Google-Smtp-Source: AGHT+IHmlEBqMLi8p7ZsVgEMreur2OTNgRYwmLDFd4yoPSVmqEsKGnS9sX3SRUQEzGPFuG0+Bp2AOQ==
-X-Received: by 2002:a05:6808:148b:b0:3b9:e475:d5e1 with SMTP id e11-20020a056808148b00b003b9e475d5e1mr957229oiw.9.1701976108782;
-        Thu, 07 Dec 2023 11:08:28 -0800 (PST)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:17:b5c::7a9])
-        by smtp.gmail.com with ESMTPSA id ot20-20020a05620a819400b0077d5d1461aesm118361qkn.31.2023.12.07.11.08.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 11:08:28 -0800 (PST)
-Message-ID: <81903c6258fe21696775a290e338cc2042a7ff64.camel@ndufresne.ca>
-Subject: Re: [PATCH] media: chips-media: wave5: remove duplicate check
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Dan Carpenter <dan.carpenter@linaro.org>,
-        Nas Chung <nas.chung@chipsnmedia.com>
-Cc:     Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Date:   Thu, 07 Dec 2023 14:08:26 -0500
-In-Reply-To: <9bdce1f1-b2f0-4b11-9dfd-16ca7048281b@moroto.mountain>
-References: <9bdce1f1-b2f0-4b11-9dfd-16ca7048281b@moroto.mountain>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        bh=OfswJHbbaE8lthgCuxsCEF+7HdLrX0KCYICyRwFYL8Q=;
+        b=DRqd+z8mWcy9cSBAJFc7XovxoM6gE47GuGITuKPQK4NkbBOVry5J6gPE5gfcD7lwWi
+         WEbLXO3DL86Lbj9d5q23MNd9tTDTZC8Mr8KaAEt4r6uQvnySUNmNuu4RYzP6kJ4UI8mN
+         XkqfyYS6hm7YZfnvTc4641eYzQ/UUuHa1xBsTOIe82yQ5BIS89bO3wIE+lPe0juZC6Jx
+         rikzEimLdfdtjE5VLlpagn4OC1KYSVaV28sMGdmAXaYmO9++Hn7K7gSfPut3utapgvRL
+         42WyR44zjJ+bsH8VtCk024ehGbooNIlnpJmAxokVqUTKRNgTYfPNOlRBMuAfJODG8F4C
+         gpfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701976246; x=1702581046;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OfswJHbbaE8lthgCuxsCEF+7HdLrX0KCYICyRwFYL8Q=;
+        b=ATuZOZDQUpok7LmypmlSExv9+YdCrvlg09zEjCRS4OdpwQgJJKSZTFCGQwrSizjwjf
+         aO6wcjuLH17rPlGlTG5w5z+FyMYsSmLaYuUh+rShPaLnpfOAtSSyK41/Ins30VBN5foy
+         aGdKvkGhEnDWnYzTMALRU5KDJ/pU0clkuINV92jspeUJ/juxJTT2GmdJDCsopdiHHaCh
+         STg+SVL8lLhacOjRespxsMs1RyAC+l9ZArFpQrVGoE6JM47hPAwSFAubkp3pgIefvqKM
+         tHbQaibEPqJPurnhk+XreXZtO8xckE9tWurO8sbTxvWS4sKXLWnNV4PHaW40em8Q2NO7
+         tqjg==
+X-Gm-Message-State: AOJu0YxObIhO9nuxKJKvBOB4j0Bqud6h8M8XphQpxACMvf78e6JF5ccW
+        EHpWr1kK+XM3+7dvo7JnQgINIQ==
+X-Google-Smtp-Source: AGHT+IHHZzDwVjEoqj5L0COX7ANyUFp8QKEMmxG3cMwdjoXkbsmuUH84Uxh48VDZssIMNDNTOto8AQ==
+X-Received: by 2002:a2e:9991:0:b0:2c9:c8f4:1c0c with SMTP id w17-20020a2e9991000000b002c9c8f41c0cmr1649768lji.32.1701976246456;
+        Thu, 07 Dec 2023 11:10:46 -0800 (PST)
+Received: from [172.30.205.181] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id o18-20020a2e9b52000000b002c9f75a48fcsm23408ljj.16.2023.12.07.11.10.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 11:10:45 -0800 (PST)
+Message-ID: <014a4a44-0da2-49e9-ab1c-f4cc1ca2e218@linaro.org>
+Date:   Thu, 7 Dec 2023 20:10:41 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] interconnect: qcom: Add MSM8909 interconnect provider
+ driver
+To:     kernel test robot <lkp@intel.com>,
+        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Georgi Djakov <djakov@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Adam Skladowski <a39.skl@gmail.com>
+References: <20231206-icc-msm8909-v1-2-fe0dd632beff@kernkonzept.com>
+ <202312071325.M9cg1wry-lkp@intel.com>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <202312071325.M9cg1wry-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mardi 28 novembre 2023 =C3=A0 17:39 +0300, Dan Carpenter a =C3=A9crit=C2=
-=A0:
-> We already verified that "ret" is zero a few lines earlier.  Delete this
-> duplicate check.
->=20
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
 
-> ---
->  drivers/media/platform/chips-media/wave5/wave5-hw.c | 3 ---
->  1 file changed, 3 deletions(-)
->=20
-> diff --git a/drivers/media/platform/chips-media/wave5/wave5-hw.c b/driver=
-s/media/platform/chips-media/wave5/wave5-hw.c
-> index 3fcb2d92add8..f1e022fb148e 100644
-> --- a/drivers/media/platform/chips-media/wave5/wave5-hw.c
-> +++ b/drivers/media/platform/chips-media/wave5/wave5-hw.c
-> @@ -578,9 +578,6 @@ int wave5_vpu_dec_init_seq(struct vpu_instance *inst)
->  	dev_dbg(inst->dev->dev, "%s: init seq sent (queue %u : %u)\n", __func__=
-,
->  		p_dec_info->instance_queue_count, p_dec_info->report_queue_count);
-> =20
-> -	if (ret)
-> -		return ret;
-> -
->  	return 0;
->  }
-> =20
+On 12/7/23 07:06, kernel test robot wrote:
+> Hi Stephan,
+> 
+> kernel test robot noticed the following build errors:
+(.remove -> .remove_new)
 
+Konrad
