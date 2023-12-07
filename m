@@ -2,203 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 878498086A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:23:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E8C8086A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379050AbjLGLXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 06:23:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
+        id S1378977AbjLGLX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 06:23:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378977AbjLGLXB (ORCPT
+        with ESMTP id S1379020AbjLGLXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 06:23:01 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B720210EA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 03:23:03 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D9EC12FC;
-        Thu,  7 Dec 2023 03:23:49 -0800 (PST)
-Received: from [10.1.32.134] (XHFQ2J9959.cambridge.arm.com [10.1.32.134])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A05F73F762;
-        Thu,  7 Dec 2023 03:23:00 -0800 (PST)
-Message-ID: <4aa520f0-7c84-4e93-88bf-aee6d8d3ea70@arm.com>
-Date:   Thu, 7 Dec 2023 11:22:59 +0000
+        Thu, 7 Dec 2023 06:23:25 -0500
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E98A10DF;
+        Thu,  7 Dec 2023 03:23:26 -0800 (PST)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231207112325euoutp027a3fb34ac3039778584482f733e7de25~eiOAWlDOW0096800968euoutp02y;
+        Thu,  7 Dec 2023 11:23:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231207112325euoutp027a3fb34ac3039778584482f733e7de25~eiOAWlDOW0096800968euoutp02y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1701948205;
+        bh=mv2E/4ghW3Y614By89oI+rnRJ/EeSCDukuyif0pKhY4=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=pKSDTFZ3/rIy3m9CeF5f6TFVZifRRljyHp/8x1U6uaJTUVVAE7dTrTJaMWTCyEGga
+         6st2LdETFYxT7dNjFoQOexZQhzys9Eq1b9Ho0crjnP3FYAmTCH+tuaoe6XM6eqm8sK
+         7jDSjLbHDjZdNXY3pSiPB+diZjc1h18uDB3YLdgU=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20231207112324eucas1p294e7836b2f95a621f5c5da4417fbd944~eiOAHv0101543615436eucas1p28;
+        Thu,  7 Dec 2023 11:23:24 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 6D.1C.09814.C2BA1756; Thu,  7
+        Dec 2023 11:23:24 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231207112324eucas1p2962efea55f2a1f49f6efb3b06fd1a582~eiN-e9jzy0304903049eucas1p29;
+        Thu,  7 Dec 2023 11:23:24 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231207112324eusmtrp1ba25d583adfbb1f4832c2ef714986ac0~eiN-eNB2i2178921789eusmtrp1p;
+        Thu,  7 Dec 2023 11:23:24 +0000 (GMT)
+X-AuditID: cbfec7f4-711ff70000002656-4b-6571ab2cba0b
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id BD.36.09274.C2BA1756; Thu,  7
+        Dec 2023 11:23:24 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231207112324eusmtip2d0ba42d1464b1fac01f073106bd847d0~eiN-Qu0pa0917909179eusmtip2-;
+        Thu,  7 Dec 2023 11:23:24 +0000 (GMT)
+Received: from localhost (106.210.248.38) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Thu, 7 Dec 2023 11:23:23 +0000
+Date:   Thu, 7 Dec 2023 12:23:22 +0100
+From:   Joel Granados <j.granados@samsung.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+CC:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+Message-ID: <20231207112322.uac2my3u4aafnxl2@localhost>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 03/10] mm: thp: Introduce multi-size THP sysfs
- interface
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231204102027.57185-1-ryan.roberts@arm.com>
- <20231204102027.57185-4-ryan.roberts@arm.com>
- <004ed23d-5571-4474-b7fe-7bc08817c165@redhat.com>
- <ca3a2b97-f08e-452a-91dc-1a53dece0aa6@arm.com>
- <378afc6b-f93a-48ad-8aa6-ab171f3b9613@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <378afc6b-f93a-48ad-8aa6-ab171f3b9613@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="2b7bopsuuvobq6c5"
+Content-Disposition: inline
+In-Reply-To: <ZW+juEWLSTybbujk@bombadil.infradead.org>
+X-Originating-IP: [106.210.248.38]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrBKsWRmVeSWpSXmKPExsWy7djP87o6qwtTDVp+GFo0L17PZvHr4jRW
+        izPduRZ79p5ksZi3/iejxeVdc9gsfv94xmRxY8JTRotlO/0cOD1mN1xk8ViwqdRj06pONo/9
+        c9ewe3zeJOfR332MPYAtissmJTUnsyy1SN8ugSvj1OcT7AUHJCt+HPvD2sDYL9rFyMEhIWAi
+        8exiQRcjF4eQwApGiVu7rrJBOF8YJc7vWcIM4XxmlFg37RE7TMfpB5kQ8eWMEneXL0Qo+vhw
+        GiuEs5lRYu77U4xdjJwcLAIqEttm/WIDsdkEdCTOv7nDDGKLCGhI7JvQywTSwCxwjklixYnr
+        rCArhAUcJLY1SYLU8AqYS7yZ9p0RwhaUODnzCQuIzSxQIXH+6ixGkHJmAWmJ5f84QMKcAmYS
+        H9c9ZgWxJQSUJA5P/swMYddKnNpyC2yVhMB6TomNv/azQHzjIjGlIQqiRlji1fEt7BC2jMTp
+        yT0sEPWTGSX2//vADuGsZpRY1viVCaLKWqLlyhOoDkeJBYdfsUIM5ZO48VYQ4k4+iUnbpjND
+        hHklOtqEIKrVJFbfe8MygVF5FpLPZiH5bBbCZxBhPYkbU6ewYQhrSyxb+JoZwraVWLfuPcsC
+        RvZVjOKppcW56anFRnmp5XrFibnFpXnpesn5uZsYgQnu9L/jX3YwLn/1Ue8QIxMH4yFGFaDm
+        RxtWX2CUYsnLz0tVEuHNOZ+fKsSbklhZlVqUH19UmpNafIhRmoNFSZxXNUU+VUggPbEkNTs1
+        tSC1CCbLxMEp1cAU99plnshDrTVXbNdc2xvTaK8iH84lztQZc9k1+uruh/aMDw5u1z7VkfHO
+        2Vo3ysuwb9fVG4zMwddXv2A1ELN3/GbZy3Xwwq6a2k8s109yBk6UeZd36ZXe0oXVxkEHjuxd
+        ubb8l2XAGw3NO7X1zHdeeTF8v9l1/8GJFceD2RLehWa4+M+8N9/0n5fKuqkcLnXzi26Xuyju
+        P3qIR9diKpvQey2HTwob9Hy+xfItvKXHJzPLJczAabl+fLBns/bR6bVTS4z39S7cwvrob7Gb
+        2Jx7PmYX6n59el04ce0f1qdrj005fbLz/hrpor+xZ3+zMajIh/7ivG4s7flU/7sTQ//X/463
+        n57RX+9dI+xtPue7EktxRqKhFnNRcSIAADfIqusDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCIsWRmVeSWpSXmKPExsVy+t/xe7o6qwtTDbZM5rJoXryezeLXxWms
+        Fme6cy327D3JYjFv/U9Gi8u75rBZ/P7xjMnixoSnjBbLdvo5cHrMbrjI4rFgU6nHplWdbB77
+        565h9/i8Sc6jv/sYewBblJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1N
+        SmpOZllqkb5dgl7GyZtXWQr2SVbsebeLuYGxV7SLkYNDQsBE4vSDzC5GLg4hgaWMEp1bvrF1
+        MXICxWUkNn65ygphC0v8udbFBlH0kVFiz7I/zBDOZkaJb3/3M4JUsQioSGyb9Qusm01AR+L8
+        mzvMILaIgIbEvgm9TCANzALnmCR2bbvKDLJaWMBBYluTJEgNr4C5xJtp3xkhhl5hkph/cQ8b
+        REJQ4uTMJywg9cwCZRK/V8ZDmNISy/9xgFRwCphJfFz3GOpQJYnDkz8zQ9i1Ep//PmOcwCg8
+        C8mgWQiDZiEMAqlgBrp559Y7bBjC2hLLFr5mhrBtJdate8+ygJF9FaNIamlxbnpusZFecWJu
+        cWleul5yfu4mRmCUbzv2c8sOxpWvPuodYmTiYDzEqALU+WjD6guMUix5+XmpSiK8OefzU4V4
+        UxIrq1KL8uOLSnNSiw8xmgLDcCKzlGhyPjD95JXEG5oZmBqamFkamFqaGSuJ83oWdCQKCaQn
+        lqRmp6YWpBbB9DFxcEo1MPkrCby3zPB7HiVkw/cmqMPDrLomT0Tr6JHdhxmep/Ss8k20LNg5
+        d9rBlwoyxzQ/5Ms9O379w4wLPL2sIRumHEtl63FLuTfde/emldGlc/ftfi63ZMVuoQ8qbMuZ
+        2VNfXXOQjbYsl3youcNvN/unPL6V/7QXFqlOvbb14OxD1ab/lxbeEn22RTx5g5rW1/rvp7dm
+        /z03f1XSVfE9a4I4LiovqHF12tNXpbWT5eCzTT7HLMrFDy0v/PdObs37X80Hr3xvNZw14fmb
+        +Wz6f2d7eqQW9yedyr0ybSurw57sjplPNBkXzD3KKd+181lM6gw1le839535MY37mvf9yzXx
+        cwpTtTQqny832qRwW6H/4ntLJZbijERDLeai4kQA4FkMaYcDAAA=
+X-CMS-MailID: 20231207112324eucas1p2962efea55f2a1f49f6efb3b06fd1a582
+X-Msg-Generator: CA
+X-RootMTR: 20231205222712eucas1p109566babf1072328184c818d1b6965b5
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231205222712eucas1p109566babf1072328184c818d1b6965b5
+References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+        <ZW66FhWx7W67Y9rP@bombadil.infradead.org>
+        <b4b0b7ea-d8b3-4538-a5b9-87a23bbdac5f@t-8ch.de>
+        <d50978d8-d4e7-4767-8ea7-5849f05d3be1@t-8ch.de>
+        <CGME20231205222712eucas1p109566babf1072328184c818d1b6965b5@eucas1p1.samsung.com>
+        <ZW+juEWLSTybbujk@bombadil.infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/12/2023 11:13, David Hildenbrand wrote:
->>>
->>>> +
->>>>        if (!vma->vm_mm)        /* vdso */
->>>> -        return false;
->>>> +        return 0;
->>>>          /*
->>>>         * Explicitly disabled through madvise or prctl, or some
->>>> @@ -88,16 +141,16 @@ bool hugepage_vma_check(struct vm_area_struct *vma,
->>>> unsigned long vm_flags,
->>>>         * */
->>>>        if ((vm_flags & VM_NOHUGEPAGE) ||
->>>>            test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
->>>> -        return false;
->>>> +        return 0;
->>>>        /*
->>>>         * If the hardware/firmware marked hugepage support disabled.
->>>>         */
->>>>        if (transparent_hugepage_flags & (1 <<
->>>> TRANSPARENT_HUGEPAGE_UNSUPPORTED))
->>>> -        return false;
->>>> +        return 0;
->>>>          /* khugepaged doesn't collapse DAX vma, but page fault is fine. */
->>>>        if (vma_is_dax(vma))
->>>> -        return in_pf;
->>>> +        return in_pf ? orders : 0;
->>>>          /*
->>>>         * khugepaged special VMA and hugetlb VMA.
->>>> @@ -105,17 +158,29 @@ bool hugepage_vma_check(struct vm_area_struct *vma,
->>>> unsigned long vm_flags,
->>>>         * VM_MIXEDMAP set.
->>>>         */
->>>>        if (!in_pf && !smaps && (vm_flags & VM_NO_KHUGEPAGED))
->>>> -        return false;
->>>> +        return 0;
->>>>          /*
->>>> -     * Check alignment for file vma and size for both file and anon vma.
->>>> +     * Check alignment for file vma and size for both file and anon vma by
->>>> +     * filtering out the unsuitable orders.
->>>>         *
->>>>         * Skip the check for page fault. Huge fault does the check in fault
->>>> -     * handlers. And this check is not suitable for huge PUD fault.
->>>> +     * handlers.
->>>>         */
->>>> -    if (!in_pf &&
->>>> -        !transhuge_vma_suitable(vma, (vma->vm_end - HPAGE_PMD_SIZE)))
->>>> -        return false;
->>>> +    if (!in_pf) {
->>>> +        int order = first_order(orders);
->>>> +        unsigned long addr;
->>>> +
->>>> +        while (orders) {
->>>> +            addr = vma->vm_end - (PAGE_SIZE << order);
->>>> +            if (thp_vma_suitable_orders(vma, addr, BIT(order)))
->>>> +                break;
->>>
->>> Comment: you'd want a "thp_vma_suitable_order" helper here. But maybe the
->>> compiler is smart enough to optimize the loop and everyything else out.
->>
->> I'm happy to refactor so that thp_vma_suitable_order() is the basic primitive,
->> then make thp_vma_suitable_orders() a loop that calls thp_vma_suitable_order()
->> (that's basically how it is laid out already, just all in one function). Is that
->> what you are requesting?
-> 
-> You got the spirit, yes.
-> 
->>>
->>> [...]
->>>
->>>> +
->>>> +static ssize_t thpsize_enabled_store(struct kobject *kobj,
->>>> +                     struct kobj_attribute *attr,
->>>> +                     const char *buf, size_t count)
->>>> +{
->>>> +    int order = to_thpsize(kobj)->order;
->>>> +    ssize_t ret = count;
->>>> +
->>>> +    if (sysfs_streq(buf, "always")) {
->>>> +        set_bit(order, &huge_anon_orders_always);
->>>> +        clear_bit(order, &huge_anon_orders_inherit);
->>>> +        clear_bit(order, &huge_anon_orders_madvise);
->>>> +    } else if (sysfs_streq(buf, "inherit")) {
->>>> +        set_bit(order, &huge_anon_orders_inherit);
->>>> +        clear_bit(order, &huge_anon_orders_always);
->>>> +        clear_bit(order, &huge_anon_orders_madvise);
->>>> +    } else if (sysfs_streq(buf, "madvise")) {
->>>> +        set_bit(order, &huge_anon_orders_madvise);
->>>> +        clear_bit(order, &huge_anon_orders_always);
->>>> +        clear_bit(order, &huge_anon_orders_inherit);
->>>> +    } else if (sysfs_streq(buf, "never")) {
->>>> +        clear_bit(order, &huge_anon_orders_always);
->>>> +        clear_bit(order, &huge_anon_orders_inherit);
->>>> +        clear_bit(order, &huge_anon_orders_madvise);
->>>
->>> Note: I was wondering for a second if some concurrent cames could lead to an
->>> inconsistent state. I think in the worst case we'll simply end up with "never"
->>> on races.
->>
->> You mean if different threads try to write different values to this file
->> concurrently? Or if there is a concurrent fault that tries to read the flags
->> while they are being modified?
-> 
-> I thought about what you said first, but what you said last might also apply. As
-> long as "nothing breaks", all good.
-> 
->>
->> I thought about this for a long time too and wasn't sure what was best. The
->> existing global enabled store impl clears the bits first then sets the bit. With
->> this approach you can end up with multiple bits set if there is a race to set
->> diffierent values, and you can end up with a faulting thread seeing never if it
->> reads the bits after they have been cleared but before setting them.
-> 
-> Right, but user space is playing stupid games and can win stupid prices. As long
-> as nothing breaks, we're good.
-> 
->>
->> I decided to set the new bit before clearing the old bits, which is different; A
->> racing fault will never see "never" but as you say, a race to set the file could
->> result in "never" being set.
->>
->> On reflection, it's probably best to set the bit *last* like the global control
->> does?
-> 
-> Probably might just slap a simple spinlock in there, so at least the writer side
-> is completely serialized. Then you can just set the bit last. It's unlikely that
-> readers will actually run into issues, and if they ever would, we could use some
-> rcu magic to let them read a consistent state.
+--2b7bopsuuvobq6c5
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'd prefer to leave it as it is now; clear first, set last without any explicit
-serialization. I've convinced myself that nothing breaks and its the same
-pattern used by the global control so its consistent. Unless you're insisting on
-the spin lock?
+On Tue, Dec 05, 2023 at 02:27:04PM -0800, Luis Chamberlain wrote:
+> On Tue, Dec 05, 2023 at 06:16:53PM +0100, Thomas Wei=DFschuh wrote:
+> > Hi Luis, Joel,
+> >=20
+> > On 2023-12-05 09:04:08+0100, Thomas Wei=DFschuh wrote:
+> > > On 2023-12-04 21:50:14-0800, Luis Chamberlain wrote:
+> > > > On Mon, Dec 04, 2023 at 08:52:13AM +0100, Thomas Wei=DFschuh wrote:
+> > > > > Tested by booting and with the sysctl selftests on x86.
+> > > >=20
+> > > > Can I trouble you to rebase on sysctl-next?
+> > > >=20
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/lo=
+g/?h=3Dsysctl-next
+> > >=20
+> > > Will do.
+> >=20
+> > The rebased series is now available at
+> > https://git.sr.ht/~t-8ch/linux b4/const-sysctl
+>=20
+> I've applied this to sysctl-next as this all looks very sensible to me,
+> except one patch which I'll chime in on, but I'm merging it to
+That is the "move sysctl type to ctl_table_header" right?
 
+> sysctl-next now without a promise to get this in as I really would like
+> this to soak in on linux-next for a bit even if it does not get merged
+> in the next kernel release. Exposing it on linux-next will surely
+> iron out run time issues fast.
++1 for soaking it :)
 
+>=20
+> > Nothing much has changed in contrast to v2.
+> > The only functional change so far is the initialization of
+> > ctl_table_header::type in init_header().
+> >=20
+> > I'll wait for Joels and maybe some more reviews before resending it.
+>=20
+> It all is very trivial stuff, except a few patches, but it all is making
+> sense, so my ask is to address feedback this week and post next week
+> a new set so we can have changes merged as-is for Linux in case this
+> really doesn't break anything.
+Any thoughts on the size of the tree-wide patches?
 
+>=20
+> For some reason I raccall seeing som hacky sysclts that shared and
+> modified an entry somewhere but the exact sysctl phases me, and I just
+> cannot recall.
+Its probably in net/*. There is were they are really taking advantage of
+ctl_table.
+
+>=20
+> > > [..]
+> >=20
+> > For the future I think it would make sense to combine the tree-wide con=
+stification
+> > of the structs with the removal of the sentinel values.
+> >=20
+> > This would reduce the impacts of the maintainers.
+>=20
+> Indeed.
+>=20
+>   Luis
+
+--=20
+
+Joel Granados
+
+--2b7bopsuuvobq6c5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmVxqyoACgkQupfNUreW
+QU9Mfgv/W62R2aUunsSdN2DFcIRXKePW0Oyyu2RfLLT5I7Utd/1PdHjuhIyyOAGS
+/9vP1zfp6ZGhrl/NqZpIIZH3t1E8/zxURK178TDc/d5zC6LzOTu+r7PVgGq0wN9Q
+PiiEebBCA5bdfrEO4baxAofR981s92b+EH/914TTzn4McmwPCLkn6+6HujiSakz5
+HNz8wIGczjzsnYDrHSWV8DlAH87vs+Zxa8/T9hzBhWm+yb1f0o+XCHhLLmfACfop
+q+NEQwlRK/0Tfx3Xug43D5fU6kvZqgm0vJxOhEU3fnZClS08IZj4oVyixBcCtQuK
+FQDoy1wy9nBLtea4ENrWbJ6mIhOB2a4N8mq3Nn31+OmcSqw+fr6uEbYGi2hmqcZy
+rhkQU4qJL6BD387CrLxiglHbSVJ5SKEDXdZ99ukoXkQi60/zcOdr6ZnxA1NAkzLE
+vtyQIcDYBIogDImnnNqSMJo5ETxVM1GxisxECDwK4izJrE0MznDZnPnyDAK+CbAl
+6YZXT1C0
+=8Yi9
+-----END PGP SIGNATURE-----
+
+--2b7bopsuuvobq6c5--
