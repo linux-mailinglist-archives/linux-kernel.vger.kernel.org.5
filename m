@@ -2,581 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BC9807D7B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7F7807D7F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441942AbjLGBAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 20:00:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
+        id S1441948AbjLGBAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 20:00:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbjLGA77 (ORCPT
+        with ESMTP id S1441924AbjLGBAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 19:59:59 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8934E12F;
-        Wed,  6 Dec 2023 17:00:04 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1d0c4d84bf6so2810175ad.1;
-        Wed, 06 Dec 2023 17:00:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701910804; x=1702515604; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zsGIjCFU5lyJ4K017s44uK87gjwXDiMcgnBYCQQOfWs=;
-        b=lINBcacfxnxuiWvWQXj0W+WxuwWJZcRS4E1pFDRFj9Rp2ffqxOLBhS5qUxFKBHdbaY
-         9eJm5+FsWBIz+vwqFiLl2Ema5HUwgkacopsyYhgiSrB0TYVUxNG8/YdK0UXtyKPp327T
-         HnnBOofRvNIwRYQjstN8JvfEXrOiBtAuORKGvYcDLLvB4rV4oC/x+cxyrfCQ/I2USKgx
-         XWLazA9Koy7dJABRAIllCrTnCuTNxWHBeRJAH2O9FHkGtlZcFvcXxYZ2rPtiwaDg+0W4
-         0LbKcfeBxQNL023NksaQnsrY4FJlpHUK1elsHfWQBPsFxni1SzuJJrGR3bW/vNYlV8ch
-         skNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701910804; x=1702515604;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zsGIjCFU5lyJ4K017s44uK87gjwXDiMcgnBYCQQOfWs=;
-        b=YSgJKDDHmDpRRjd40RGGjb+giaPvr2dD4e8RSzMb9HDpLqFAIR8lagEj0App4ldmx6
-         aj+c2FL5gtw5dOK/EOFez+EMcvY1dG7puPxAWlUt0NBTUM0iwjUET+F/mM23XtKkQxz8
-         QJlnyqOyGyt1uTcuBbD28+5PxXEAyYpf+2lsYYyBlxaJM8cbf2Q+absFrD4ynu96vSbV
-         weCL1nb0JHkjsgIGydgZ+e6Cj7xWWtK51pCO2d73A56Lm8h7/0r9VKnWEmns/MK6FdZk
-         0attlsLwKveQ9BEaTyzJt9lUHtZ+GOn3vr2ufjQdoNojcc0pS3GWHWi7TmZUof5H8cZ0
-         GSwA==
-X-Gm-Message-State: AOJu0YzfGGrRabTC6QBV+WBK8UQndYrFGpI8Dx97pU/EXp/0tGtKF/Jf
-        2zpsWud+JyLllQ+vMY7PYSw=
-X-Google-Smtp-Source: AGHT+IEYT0meh5v4+cOmVkY4VpOtcJCuZrKmOhAfrzrneCN6WNofRmsINq37W873FAiLxM6nhzFaGw==
-X-Received: by 2002:a17:903:2642:b0:1d0:6ffd:f214 with SMTP id je2-20020a170903264200b001d06ffdf214mr1476793plb.106.1701910803148;
-        Wed, 06 Dec 2023 17:00:03 -0800 (PST)
-Received: from localhost.localdomain ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id b6-20020a170902bd4600b001d0af279a1fsm70671plx.182.2023.12.06.16.59.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 17:00:02 -0800 (PST)
-Date:   Thu, 7 Dec 2023 09:59:46 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v2 14/21] mm/slab: move memcg related functions from
- slab.h to slub.c
-Message-ID: <ZXEZAnHBJpAi8Sdy@localhost.localdomain>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-14-9c9c70177183@suse.cz>
+        Wed, 6 Dec 2023 20:00:48 -0500
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2100.outbound.protection.outlook.com [40.107.113.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B5FEE;
+        Wed,  6 Dec 2023 17:00:54 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nvj4DjlZ69Tn2CUN9f8beo49UKXt47y1cp/8kOgD8Ewg4svqGoiKs0J/GEWzvMkehz3jKWMnfuX0RenFefK3EKcz1jpCwH/tfy2XA1r4eiXAl+uVkZCoyW9dRImKpt1CIUwF2nCrCrpPUJjsVbFeHQN0sLvmnWPJvlX2M8vfSWhb8wPPWS5a6KWqJjIZgLKY+mYywAHqzLsiiNcNSDTAnpdbcFFaEuG2ydVqje3Yn8d9U42k3kQqxrhBTf4F6Qd6U8inY3cRA8VsFleit09IiQU7AHL3+XnTP7yh6eNfTxyuGxL/OVLaSi7wZwbUw2t+MgtjCzsS8ASVRvzyJV39Gg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GwBmRh7liOsS0FPjA2FLvimHyZRzyLYeUnk33MIhMkE=;
+ b=F2c+h02RRLGCkifC7YSpn1AGj18pMNEuLPmauRloGCa1cZiKFiwPrBjq6Mtaru5Zyxcvpn51tuchn+Tbo3yE/C5IpP0t+7uM3N1Sm0HRS8IO369b5cJrvsw5mXrh3qrovnUVTqvEh5rXt0Iz+BegkhoBCNVpzZzYP+yI13QkGrJTNTc1Oo6t1lnw0ff1iSo6wQ6NaTvE6FRzROCZmJWCDKFca8A6XS2WzUlFdOia3uQHrjPC16pO2Jzn/B/CSS3NwdCQm+hpBfbovNzKvYyz0N4NgsPejms9ModFY9a/xkoExRI8/w773CynkZwYrlTe3Qcr5kyqTK7Vie64bYVhPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GwBmRh7liOsS0FPjA2FLvimHyZRzyLYeUnk33MIhMkE=;
+ b=ZEFCyRw5vqTyJTRUC9J5hU40n/UDcAVX4NEhGFE7VjVgDGcocagtlL0T7kqRsXUCPVQzTBwSX77V27bRPUAAax+8Eml6fFlxyRtuIl42AcDw6b991hGsU9SM9GdNocyMaJUEv8wfNWLBXAY0tLorAD/LsPmi890ktkaZyZ6SUAU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=renesas.com;
+Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
+ (2603:1096:400:3a9::11) by OS3PR01MB8618.jpnprd01.prod.outlook.com
+ (2603:1096:604:19c::5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.25; Thu, 7 Dec
+ 2023 01:00:51 +0000
+Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
+ ([fe80::5732:673b:846c:ed92]) by TYCPR01MB10914.jpnprd01.prod.outlook.com
+ ([fe80::5732:673b:846c:ed92%4]) with mapi id 15.20.7091.010; Thu, 7 Dec 2023
+ 01:00:51 +0000
+Message-ID: <87il5aomh1.wl-kuninori.morimoto.gx@renesas.com>
+From:   Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Rob Herring <robh@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ASoC: audio-graph-card2: fix off by one in graph_parse_node_multi_nm()
+In-Reply-To: <1032216f-902f-48f9-aa49-9d5ece8e87f2@moroto.mountain>
+References: <1032216f-902f-48f9-aa49-9d5ece8e87f2@moroto.mountain>
+User-Agent: Wanderlust/2.15.9 Emacs/27.1 Mule/6.0
+Content-Type: text/plain; charset=US-ASCII
+Date:   Thu, 7 Dec 2023 01:00:50 +0000
+X-ClientProxiedBy: TYCP286CA0341.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:38e::9) To TYCPR01MB10914.jpnprd01.prod.outlook.com
+ (2603:1096:400:3a9::11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120-slab-remove-slab-v2-14-9c9c70177183@suse.cz>
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYCPR01MB10914:EE_|OS3PR01MB8618:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4166a4ef-9f63-4ebc-f3b0-08dbf6bff4b1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eO1Ll+06LDfqPUFndy3qiFbJxIeGzMH+MG131yJg3aqNpwA1OSCt1kb2vYx5Xht4Ciu/etihrXw+Rb6HmUFQv7MAfKbMCpsOAQKnu4VYdaAliClaCWlfDz4QkB5Px4lAgd/J6Gri2q9G7krfOapYvWaTrfuMTPbRErOcRo45LkWTEULDfIXSqfaBIa8tnjkfL4yWaTwN84SeSU3NLrVqJDj65EKdHYwC7eUZ4NgAY8Hn7qixkNXT+KQYpb7pgmKkynC51d3JykQ+TQeivAFi2PC4nRhU0yx13aE+Jc4VwG23MI8JD8h934tHAUz0qXI12Wt3oRpTjWyhQYPsCdI9PqOhtSPwVnnM539IUuRggYGF/aeBbzHp03MflGLXVbaqJzY91v+A3/hTmRd047Z+emZYVwdvxpuyBw0dCwew9boIbQyjVx3Y+6H8zYLl7powUtiAOBN7Ycr+pIhzTG3LGJX3N/ZeRABSuXx6THf9i6a07NmrjtaWi9zH9AbPRt4+aS4vHdR+Qypgn8OUqI0GQMR/+++OHMuVi/UpFIm2QjUXKjE/9F3M+la5tLzqdAP8hqequq/CEO94Uuxe3xmm3eJgR0iQNB0sUq8BCCq3G1ZTQwQ6BDlAjmkknv60BQPxNH7GKbkvj/LbnJOHW9DgqQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB10914.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(39860400002)(136003)(346002)(366004)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(38100700002)(8936002)(4326008)(8676002)(2906002)(6916009)(66556008)(66476007)(316002)(66946007)(36756003)(5660300002)(2013699003)(7416002)(38350700005)(54906003)(4744005)(2616005)(26005)(52116002)(6506007)(86362001)(6486002)(41300700001)(478600001)(6512007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5kDy+4ESosqAVYj3PnukDZfqFZ2L/uNDHrnlZNjF8GA1XenuNrkl0XFx5tTa?=
+ =?us-ascii?Q?/EFFeRmXRaj1LiuJUWvqtjqcyMzCF5HTFSUo7o0M9FPVnnmSCA07W/++GdS3?=
+ =?us-ascii?Q?PncNR1rFE7dcbvNjeyCB6zxqBpP9ebqOgysgl1HVmvNBK/R8EAlR/2TV8DBX?=
+ =?us-ascii?Q?DscACNCSwqiUoN2qAxXS01l53JYtNYMmjLM1MPU+NXuFmjU/Umt9e+4aGZX4?=
+ =?us-ascii?Q?lPqWR30CJsjpN88Ow70wvlh1XD+i9epR3UoGYvSa0HVhmYtrWb+r5xXrTpi9?=
+ =?us-ascii?Q?89v/H9vvLQKymxWDVp8Er9hdFKdY/BPh8OeB9OSzgFtJnjJp+BIr/LcOCipm?=
+ =?us-ascii?Q?zspo/YebQN/S/GjCKzRA3bXN6v7uZcTcSPGllp/rXXqPTlcgnZmEysGtyuWY?=
+ =?us-ascii?Q?EG98Yla2c3SjPLQfJwJwBF5bB48AyYeznQ4qTXbkQGN84gvvnevTtDyCwJY2?=
+ =?us-ascii?Q?Lca/zH5PlssI/DI0lkoJQyUzs65yLzCrMuUwUAttukzaDuUac8T8znKvotBZ?=
+ =?us-ascii?Q?1YsoOl9bH76toIeJxo8IdopjboS3y6P2EZk4vSZ5uZ2BGDGzqsOFS4a/pCe6?=
+ =?us-ascii?Q?g6BsfQQ5TAUSC+6hxxFgiY+MZi1vFyrmdqxRFGncIHKsWnPdc0YqfAE3V0wf?=
+ =?us-ascii?Q?3Xx0NAjZvTQupa/dwE+/oFcXr19EWVjnvqCLDAAdn8LioHEYL2u8vn4LNLxT?=
+ =?us-ascii?Q?4GJAJZ7ugmd0xLfkGRYC22+VcT9LJq2aVrzYWjB/tnXcDkw/Vq5IUZVkOa66?=
+ =?us-ascii?Q?LWSg4CIf2JZ5Inw/cJHOHTr26muojDBmfgty8T2YuZnbjENreQKAey+/p+om?=
+ =?us-ascii?Q?Pt8oxwxixUNwrWZ0ejgJYmEXnZ4hbefslePp1/L78SWOQTDgjzMkRWsLVUSQ?=
+ =?us-ascii?Q?5PE4qESdhPcfKX1nkj/xKDCcz3mg3VzJVQWmi/GWQkax6EAZmEDCMVxvz97J?=
+ =?us-ascii?Q?+wPqE0TJbX61geXlAriOZaWCbfh6iH6ChekI3GGUrpkxiuWtBpde5mz7kiny?=
+ =?us-ascii?Q?BdlPQ8qc/M0dniyTK0Vxxx7B/OKjquWW0vvyVpOoyQvBc6PUSCIT4ybs7NYi?=
+ =?us-ascii?Q?5PKrkwBZ2q3rN3Eux+9EQ3gTmAcFxAKnyxC8rNMQJsnc81RBYFvv1iH6CY+I?=
+ =?us-ascii?Q?gB8mnwuGZ6fTtkH8XwC5bRt2gua4e2gufcvlq9xSWoe/k1KzUxqUd0I1dNcv?=
+ =?us-ascii?Q?4oNOjzOeACbIXUKVUc4ksNipOrWFt+R5uOZ+GjZ019Jm1ygEueu6WYogADUY?=
+ =?us-ascii?Q?tkU5ogcvJG5mrtnFOequVEJ2tiIJ2TaV94ksUlmfHltKGqhLU/rk8t2Z6tA0?=
+ =?us-ascii?Q?0Ix/0FXZyNoLxowxPNeySEcfs5RTtjyGxdrGO8HhabMaRaOJZOqJBNuv35W9?=
+ =?us-ascii?Q?uJQKj3eeJv8v3XWcZJcJ2YTw7QA8V8LzfwK+2chfXPinxYk155x1ilwbZvf3?=
+ =?us-ascii?Q?kWkxg6vTzRYIG5NKKP9byDqMZaR+1tX36ZP2DUGfVmP1vNRiYByIZpIYXTR6?=
+ =?us-ascii?Q?GIyFKbvfqz5aAbld2o9Tga1zdO4JkLMpLMZb+GK2LL2D6fbdXQAvxqXLfsok?=
+ =?us-ascii?Q?6z24/nS9AxDSWiiN7TrWgjf9gmtAu2rrxqZdyfSXgWe5ZENuPqF8aL7hV8b5?=
+ =?us-ascii?Q?QtxfguO+CawO7kIrwiwY1L0=3D?=
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4166a4ef-9f63-4ebc-f3b0-08dbf6bff4b1
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB10914.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2023 01:00:51.0300
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s9vhkYh1NaUoRZoFScantmgWPfxv4azV0q13mNvpGeEDeutlFjC3lnfnwI11fQ4AeE4GM8iT3iXKxUtzpzf2ro/cng253w6450ix3k6FuFmZCbUIlD4FosG0o6+5apny
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB8618
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 07:34:25PM +0100, Vlastimil Babka wrote:
-> We don't share those between SLAB and SLUB anymore, so most memcg
-> related functions can be moved to slub.c proper.
+
+Hi Dan
+
+> The > comparison should be >= to avoid writing one element beyond the end
+> of the dai_link->ch_maps[] array.  The dai_link->ch_maps[] array is
+> allocated in graph_parse_node_multi() and it has "nm_max" elements.
 > 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Fixes: e2de6808df4a ("ASoC: audio-graph-card2: add CPU:Codec = N:M support")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 > ---
->  mm/slab.h | 206 --------------------------------------------------------------
->  mm/slub.c | 205 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 205 insertions(+), 206 deletions(-)
-> 
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 65ebf86b3fe9..a81ef7c9282d 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -486,12 +486,6 @@ void slabinfo_show_stats(struct seq_file *m, struct kmem_cache *s);
->  ssize_t slabinfo_write(struct file *file, const char __user *buffer,
->  		       size_t count, loff_t *ppos);
->  
-> -static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
-> -{
-> -	return (s->flags & SLAB_RECLAIM_ACCOUNT) ?
-> -		NR_SLAB_RECLAIMABLE_B : NR_SLAB_UNRECLAIMABLE_B;
-> -}
-> -
->  #ifdef CONFIG_SLUB_DEBUG
->  #ifdef CONFIG_SLUB_DEBUG_ON
->  DECLARE_STATIC_KEY_TRUE(slub_debug_enabled);
-> @@ -551,220 +545,20 @@ int memcg_alloc_slab_cgroups(struct slab *slab, struct kmem_cache *s,
->  				 gfp_t gfp, bool new_slab);
->  void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->  		     enum node_stat_item idx, int nr);
-> -
-> -static inline void memcg_free_slab_cgroups(struct slab *slab)
-> -{
-> -	kfree(slab_objcgs(slab));
-> -	slab->memcg_data = 0;
-> -}
-> -
-> -static inline size_t obj_full_size(struct kmem_cache *s)
-> -{
-> -	/*
-> -	 * For each accounted object there is an extra space which is used
-> -	 * to store obj_cgroup membership. Charge it too.
-> -	 */
-> -	return s->size + sizeof(struct obj_cgroup *);
-> -}
-> -
-> -/*
-> - * Returns false if the allocation should fail.
-> - */
-> -static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
-> -					     struct list_lru *lru,
-> -					     struct obj_cgroup **objcgp,
-> -					     size_t objects, gfp_t flags)
-> -{
-> -	struct obj_cgroup *objcg;
-> -
-> -	if (!memcg_kmem_online())
-> -		return true;
-> -
-> -	if (!(flags & __GFP_ACCOUNT) && !(s->flags & SLAB_ACCOUNT))
-> -		return true;
-> -
-> -	/*
-> -	 * The obtained objcg pointer is safe to use within the current scope,
-> -	 * defined by current task or set_active_memcg() pair.
-> -	 * obj_cgroup_get() is used to get a permanent reference.
-> -	 */
-> -	objcg = current_obj_cgroup();
-> -	if (!objcg)
-> -		return true;
-> -
-> -	if (lru) {
-> -		int ret;
-> -		struct mem_cgroup *memcg;
-> -
-> -		memcg = get_mem_cgroup_from_objcg(objcg);
-> -		ret = memcg_list_lru_alloc(memcg, lru, flags);
-> -		css_put(&memcg->css);
-> -
-> -		if (ret)
-> -			return false;
-> -	}
-> -
-> -	if (obj_cgroup_charge(objcg, flags, objects * obj_full_size(s)))
-> -		return false;
-> -
-> -	*objcgp = objcg;
-> -	return true;
-> -}
-> -
-> -static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
-> -					      struct obj_cgroup *objcg,
-> -					      gfp_t flags, size_t size,
-> -					      void **p)
-> -{
-> -	struct slab *slab;
-> -	unsigned long off;
-> -	size_t i;
-> -
-> -	if (!memcg_kmem_online() || !objcg)
-> -		return;
-> -
-> -	for (i = 0; i < size; i++) {
-> -		if (likely(p[i])) {
-> -			slab = virt_to_slab(p[i]);
-> -
-> -			if (!slab_objcgs(slab) &&
-> -			    memcg_alloc_slab_cgroups(slab, s, flags,
-> -							 false)) {
-> -				obj_cgroup_uncharge(objcg, obj_full_size(s));
-> -				continue;
-> -			}
-> -
-> -			off = obj_to_index(s, slab, p[i]);
-> -			obj_cgroup_get(objcg);
-> -			slab_objcgs(slab)[off] = objcg;
-> -			mod_objcg_state(objcg, slab_pgdat(slab),
-> -					cache_vmstat_idx(s), obj_full_size(s));
-> -		} else {
-> -			obj_cgroup_uncharge(objcg, obj_full_size(s));
-> -		}
-> -	}
-> -}
-> -
-> -static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
-> -					void **p, int objects)
-> -{
-> -	struct obj_cgroup **objcgs;
-> -	int i;
-> -
-> -	if (!memcg_kmem_online())
-> -		return;
-> -
-> -	objcgs = slab_objcgs(slab);
-> -	if (!objcgs)
-> -		return;
-> -
-> -	for (i = 0; i < objects; i++) {
-> -		struct obj_cgroup *objcg;
-> -		unsigned int off;
-> -
-> -		off = obj_to_index(s, slab, p[i]);
-> -		objcg = objcgs[off];
-> -		if (!objcg)
-> -			continue;
-> -
-> -		objcgs[off] = NULL;
-> -		obj_cgroup_uncharge(objcg, obj_full_size(s));
-> -		mod_objcg_state(objcg, slab_pgdat(slab), cache_vmstat_idx(s),
-> -				-obj_full_size(s));
-> -		obj_cgroup_put(objcg);
-> -	}
-> -}
-> -
->  #else /* CONFIG_MEMCG_KMEM */
->  static inline struct obj_cgroup **slab_objcgs(struct slab *slab)
->  {
->  	return NULL;
->  }
->  
-> -static inline struct mem_cgroup *memcg_from_slab_obj(void *ptr)
-> -{
-> -	return NULL;
-> -}
-> -
->  static inline int memcg_alloc_slab_cgroups(struct slab *slab,
->  					       struct kmem_cache *s, gfp_t gfp,
->  					       bool new_slab)
->  {
->  	return 0;
->  }
-> -
-> -static inline void memcg_free_slab_cgroups(struct slab *slab)
-> -{
-> -}
-> -
-> -static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
-> -					     struct list_lru *lru,
-> -					     struct obj_cgroup **objcgp,
-> -					     size_t objects, gfp_t flags)
-> -{
-> -	return true;
-> -}
-> -
-> -static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
-> -					      struct obj_cgroup *objcg,
-> -					      gfp_t flags, size_t size,
-> -					      void **p)
-> -{
-> -}
-> -
-> -static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
-> -					void **p, int objects)
-> -{
-> -}
->  #endif /* CONFIG_MEMCG_KMEM */
->  
-> -static inline struct kmem_cache *virt_to_cache(const void *obj)
-> -{
-> -	struct slab *slab;
-> -
-> -	slab = virt_to_slab(obj);
-> -	if (WARN_ONCE(!slab, "%s: Object is not a Slab page!\n",
-> -					__func__))
-> -		return NULL;
-> -	return slab->slab_cache;
-> -}
-> -
-> -static __always_inline void account_slab(struct slab *slab, int order,
-> -					 struct kmem_cache *s, gfp_t gfp)
-> -{
-> -	if (memcg_kmem_online() && (s->flags & SLAB_ACCOUNT))
-> -		memcg_alloc_slab_cgroups(slab, s, gfp, true);
-> -
-> -	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
-> -			    PAGE_SIZE << order);
-> -}
-> -
-> -static __always_inline void unaccount_slab(struct slab *slab, int order,
-> -					   struct kmem_cache *s)
-> -{
-> -	if (memcg_kmem_online())
-> -		memcg_free_slab_cgroups(slab);
-> -
-> -	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
-> -			    -(PAGE_SIZE << order));
-> -}
-> -
-> -static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
-> -{
-> -	struct kmem_cache *cachep;
-> -
-> -	if (!IS_ENABLED(CONFIG_SLAB_FREELIST_HARDENED) &&
-> -	    !kmem_cache_debug_flags(s, SLAB_CONSISTENCY_CHECKS))
-> -		return s;
-> -
-> -	cachep = virt_to_cache(x);
-> -	if (WARN(cachep && cachep != s,
-> -		  "%s: Wrong slab cache. %s but object is from %s\n",
-> -		  __func__, s->name, cachep->name))
-> -		print_tracking(cachep, x);
-> -	return cachep;
-> -}
-> -
->  void free_large_kmalloc(struct folio *folio, void *object);
->  
->  size_t __ksize(const void *objp);
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 9eb6508152c2..844e0beb84ee 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -1814,6 +1814,165 @@ static bool freelist_corrupted(struct kmem_cache *s, struct slab *slab,
->  #endif
->  #endif /* CONFIG_SLUB_DEBUG */
->  
-> +static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
-> +{
-> +	return (s->flags & SLAB_RECLAIM_ACCOUNT) ?
-> +		NR_SLAB_RECLAIMABLE_B : NR_SLAB_UNRECLAIMABLE_B;
-> +}
-> +
-> +#ifdef CONFIG_MEMCG_KMEM
-> +static inline void memcg_free_slab_cgroups(struct slab *slab)
-> +{
-> +	kfree(slab_objcgs(slab));
-> +	slab->memcg_data = 0;
-> +}
-> +
-> +static inline size_t obj_full_size(struct kmem_cache *s)
-> +{
-> +	/*
-> +	 * For each accounted object there is an extra space which is used
-> +	 * to store obj_cgroup membership. Charge it too.
-> +	 */
-> +	return s->size + sizeof(struct obj_cgroup *);
-> +}
-> +
-> +/*
-> + * Returns false if the allocation should fail.
-> + */
-> +static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
-> +					     struct list_lru *lru,
-> +					     struct obj_cgroup **objcgp,
-> +					     size_t objects, gfp_t flags)
-> +{
-> +	struct obj_cgroup *objcg;
-> +
-> +	if (!memcg_kmem_online())
-> +		return true;
-> +
-> +	if (!(flags & __GFP_ACCOUNT) && !(s->flags & SLAB_ACCOUNT))
-> +		return true;
-> +
-> +	/*
-> +	 * The obtained objcg pointer is safe to use within the current scope,
-> +	 * defined by current task or set_active_memcg() pair.
-> +	 * obj_cgroup_get() is used to get a permanent reference.
-> +	 */
-> +	objcg = current_obj_cgroup();
-> +	if (!objcg)
-> +		return true;
-> +
-> +	if (lru) {
-> +		int ret;
-> +		struct mem_cgroup *memcg;
-> +
-> +		memcg = get_mem_cgroup_from_objcg(objcg);
-> +		ret = memcg_list_lru_alloc(memcg, lru, flags);
-> +		css_put(&memcg->css);
-> +
-> +		if (ret)
-> +			return false;
-> +	}
-> +
-> +	if (obj_cgroup_charge(objcg, flags, objects * obj_full_size(s)))
-> +		return false;
-> +
-> +	*objcgp = objcg;
-> +	return true;
-> +}
-> +
-> +static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
-> +					      struct obj_cgroup *objcg,
-> +					      gfp_t flags, size_t size,
-> +					      void **p)
-> +{
-> +	struct slab *slab;
-> +	unsigned long off;
-> +	size_t i;
-> +
-> +	if (!memcg_kmem_online() || !objcg)
-> +		return;
-> +
-> +	for (i = 0; i < size; i++) {
-> +		if (likely(p[i])) {
-> +			slab = virt_to_slab(p[i]);
-> +
-> +			if (!slab_objcgs(slab) &&
-> +			    memcg_alloc_slab_cgroups(slab, s, flags, false)) {
-> +				obj_cgroup_uncharge(objcg, obj_full_size(s));
-> +				continue;
-> +			}
-> +
-> +			off = obj_to_index(s, slab, p[i]);
-> +			obj_cgroup_get(objcg);
-> +			slab_objcgs(slab)[off] = objcg;
-> +			mod_objcg_state(objcg, slab_pgdat(slab),
-> +					cache_vmstat_idx(s), obj_full_size(s));
-> +		} else {
-> +			obj_cgroup_uncharge(objcg, obj_full_size(s));
-> +		}
-> +	}
-> +}
-> +
-> +static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
-> +					void **p, int objects)
-> +{
-> +	struct obj_cgroup **objcgs;
-> +	int i;
-> +
-> +	if (!memcg_kmem_online())
-> +		return;
-> +
-> +	objcgs = slab_objcgs(slab);
-> +	if (!objcgs)
-> +		return;
-> +
-> +	for (i = 0; i < objects; i++) {
-> +		struct obj_cgroup *objcg;
-> +		unsigned int off;
-> +
-> +		off = obj_to_index(s, slab, p[i]);
-> +		objcg = objcgs[off];
-> +		if (!objcg)
-> +			continue;
-> +
-> +		objcgs[off] = NULL;
-> +		obj_cgroup_uncharge(objcg, obj_full_size(s));
-> +		mod_objcg_state(objcg, slab_pgdat(slab), cache_vmstat_idx(s),
-> +				-obj_full_size(s));
-> +		obj_cgroup_put(objcg);
-> +	}
-> +}
-> +#else /* CONFIG_MEMCG_KMEM */
-> +static inline struct mem_cgroup *memcg_from_slab_obj(void *ptr)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline void memcg_free_slab_cgroups(struct slab *slab)
-> +{
-> +}
-> +
-> +static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
-> +					     struct list_lru *lru,
-> +					     struct obj_cgroup **objcgp,
-> +					     size_t objects, gfp_t flags)
-> +{
-> +	return true;
-> +}
-> +
-> +static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
-> +					      struct obj_cgroup *objcg,
-> +					      gfp_t flags, size_t size,
-> +					      void **p)
-> +{
-> +}
-> +
-> +static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
-> +					void **p, int objects)
-> +{
-> +}
-> +#endif /* CONFIG_MEMCG_KMEM */
-> +
->  /*
->   * Hooks for other subsystems that check memory allocations. In a typical
->   * production configuration these hooks all should produce no code at all.
-> @@ -2048,6 +2207,26 @@ static inline bool shuffle_freelist(struct kmem_cache *s, struct slab *slab)
->  }
->  #endif /* CONFIG_SLAB_FREELIST_RANDOM */
->  
-> +static __always_inline void account_slab(struct slab *slab, int order,
-> +					 struct kmem_cache *s, gfp_t gfp)
-> +{
-> +	if (memcg_kmem_online() && (s->flags & SLAB_ACCOUNT))
-> +		memcg_alloc_slab_cgroups(slab, s, gfp, true);
-> +
-> +	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
-> +			    PAGE_SIZE << order);
-> +}
-> +
-> +static __always_inline void unaccount_slab(struct slab *slab, int order,
-> +					   struct kmem_cache *s)
-> +{
-> +	if (memcg_kmem_online())
-> +		memcg_free_slab_cgroups(slab);
-> +
-> +	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
-> +			    -(PAGE_SIZE << order));
-> +}
-> +
->  static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
->  {
->  	struct slab *slab;
-> @@ -3965,6 +4144,32 @@ void ___cache_free(struct kmem_cache *cache, void *x, unsigned long addr)
->  }
->  #endif
->  
-> +static inline struct kmem_cache *virt_to_cache(const void *obj)
-> +{
-> +	struct slab *slab;
-> +
-> +	slab = virt_to_slab(obj);
-> +	if (WARN_ONCE(!slab, "%s: Object is not a Slab page!\n", __func__))
-> +		return NULL;
-> +	return slab->slab_cache;
-> +}
-> +
-> +static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
-> +{
-> +	struct kmem_cache *cachep;
-> +
-> +	if (!IS_ENABLED(CONFIG_SLAB_FREELIST_HARDENED) &&
-> +	    !kmem_cache_debug_flags(s, SLAB_CONSISTENCY_CHECKS))
-> +		return s;
-> +
-> +	cachep = virt_to_cache(x);
-> +	if (WARN(cachep && cachep != s,
-> +		 "%s: Wrong slab cache. %s but object is from %s\n",
-> +		 __func__, s->name, cachep->name))
-> +		print_tracking(cachep, x);
-> +	return cachep;
-> +}
-> +
->  void __kmem_cache_free(struct kmem_cache *s, void *x, unsigned long caller)
->  {
->  	slab_free(s, virt_to_slab(x), x, NULL, &x, 1, caller);
-> 
-> -- 
 
-Looks good to me,
-Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-> 2.42.1
+> In this same function I was also concerned about these conditions:
 > 
+> if (cpu_idx > dai_link->num_cpus)
+> if (codec_idx > dai_link->num_codecs)
 > 
+> But I wasn't able to see out how those idx variables are actually
+> used.
+
+These also ">=" I think.
+
+Thank you for pointing it
+
+Best regards
+---
+Renesas Electronics
+Ph.D. Kuninori Morimoto
