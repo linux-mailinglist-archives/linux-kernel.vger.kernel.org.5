@@ -2,70 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 620F0808822
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1729808817
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:44:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379435AbjLGMhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 07:37:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46284 "EHLO
+        id S1379437AbjLGMhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:37:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379370AbjLGMh3 (ORCPT
+        with ESMTP id S1379421AbjLGMhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 07:37:29 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6C01721;
-        Thu,  7 Dec 2023 04:37:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701952643; x=1733488643;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=uoIOAcneX9AofP4JnfDFkqufIngyLWMkLfkJAUEGqpI=;
-  b=XnnA7Bw52mhYR1l5GPVvCTAy30yJiC2dN5svROW2Fo0/bf5yyHGqW0Ns
-   oWPcse6TYEcgcQ1UhwpSzYEVjeFCIVPknJzdNJ94SeA5d7dpZI+uQ4Rv1
-   uXOTPeuO1KacwloNgJ2KyOE5OFuJG6T59VeWWmx0VpEGWlTjNGuxbFrsx
-   HlEWvk9tKExq+B0jBTRUUlYpqKuaWiGbyaq4FltT+k+VtQVNvQJN1FOiG
-   c3CYTNqroIyv3Yn5g30XEOJcptyZ/TqhdMtCGpB0f0rd5vhsSebV/ZGZh
-   eML6ZqAQKLTS15PjNS//GAV38lpvq2RcG1p0ZbXlKU7/RZWsOeZU1PSYO
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="384628704"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="384628704"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 04:37:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="837702740"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="837702740"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 04:37:20 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1rBDcz-00000002bDf-3Wqj;
-        Thu, 07 Dec 2023 14:37:17 +0200
-Date:   Thu, 7 Dec 2023 14:37:17 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-renesas-soc@vger.kernel.org,
-        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-Subject: Re: [PATCH v1 0/5] pinctrl: Use struct pingroup and
- PINCTRL_PINGROUP()
-Message-ID: <ZXG8fQpWBQ8eag6x@smile.fi.intel.com>
-References: <20231204160033.1872569-1-andriy.shevchenko@linux.intel.com>
- <CACRpkdYVTgNCdDE6qK8wnbPAL2=S6RyDQYwPUVdtfQSSTratnQ@mail.gmail.com>
+        Thu, 7 Dec 2023 07:37:51 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712F710F0;
+        Thu,  7 Dec 2023 04:37:54 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40c19f5f822so5136965e9.1;
+        Thu, 07 Dec 2023 04:37:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701952673; x=1702557473; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YHBwoyDjedu5XQ7s8skeUEAIG/9qhqMseyxLf/UJGFg=;
+        b=aCHQQTVUwBVARoBAM5iMCt2LdMB9CMclb+e6DEnqPgAE9dsCd0mRkkM2hQdUwLK6NG
+         4AzA2AqznKlhP/PANe20RSJxaAQuA3+/HPthn6o/U5YmOMju82o+o/0keCIUyFAK1EC2
+         UVcKwdsFiHrOa4Y9Xb2dn82HUsq4cczL8Vf+LwROnFbeAnX94WYEFKdcrQ6+U0E2fg8u
+         5fzuSJs9W39owx8AzAfm/bI74VoMmWSReb9/33Y3/lCzV46JWe7Gwi70ENNFVZ5HHGRH
+         7/7ko8D+RB7SontBC+r561sN8Zjf0QsIq19k8ES+7KmmKPbS+DQ9b46ZS7+/pkdm2BUu
+         xIoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701952673; x=1702557473;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YHBwoyDjedu5XQ7s8skeUEAIG/9qhqMseyxLf/UJGFg=;
+        b=G/SF1GmHRgAz8qK5vH/AQjJ24V4iX74PgeJvJ766hTzGgFVA4ePYY+qRWSOwTT1ciN
+         Q6pUWB3XLxkHvgS/zZRdRoQ1+wNEyisNTWjUzbyuDN8YYGcHg6jNYT1TQ1xUZeRqFrkq
+         YffALr8j79fwYOgkJTnBiOPixKNjPYN5za07keTv+jcux1IrRhJ/tC2YcFZ8wRf1gjsS
+         aIOfLRyQ7I7V6fPEck9zp7ihbFEjuvsvmmZ9+QgQSFEzV2dX/jCoYzgrwuExzAzPPjIe
+         IP6zzlwMyHA8rzGr37xV3+qt0rdmnPjjOW5aoGNypGkgYWIxX1Zp/XVCdWQjGv1wvgKk
+         7ofQ==
+X-Gm-Message-State: AOJu0YwJ5SVaINncd/G87tc1vrsNQby+C4LY0M7qiyTPeC+U4JqfxcyL
+        dDz7zzwUMviGNKDoKzBSj9eqE2GFFLcKTNHns90=
+X-Google-Smtp-Source: AGHT+IFm3uvKUeZ2aJsxTlbEqDNbqUgt7fUphXqPyWYkZTrojc5WDFlnw6gHTSDOdSXH6Vcl5IwYVc4nvcJB8p7Z/wM=
+X-Received: by 2002:a05:600c:d5:b0:40b:5e4a:236f with SMTP id
+ u21-20020a05600c00d500b0040b5e4a236fmr2438696wmm.113.1701952672388; Thu, 07
+ Dec 2023 04:37:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdYVTgNCdDE6qK8wnbPAL2=S6RyDQYwPUVdtfQSSTratnQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+References: <20231005074858.65082-1-dg573847474@gmail.com> <20231006162835.79484017@kernel.org>
+ <CAAo+4rUE=+9Kp8CvMH3w15dJotkX03h=5YMV+hu-YSobkwj1NA@mail.gmail.com> <20231009081750.2073013d@kernel.org>
+In-Reply-To: <20231009081750.2073013d@kernel.org>
+From:   Chengfeng Ye <dg573847474@gmail.com>
+Date:   Thu, 7 Dec 2023 20:37:41 +0800
+Message-ID: <CAAo+4rWiPtnmW8anx-E1+qG1HAsobJ+F7EOfZS8Jhwh5DGT=-w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] atm: solos-pci: Fix potential deadlock on &cli_queue_lock
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     3chas3@gmail.com, davem@davemloft.net, horms@kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,24 +69,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 10:54:58AM +0100, Linus Walleij wrote:
-> On Mon, Dec 4, 2023 at 5:00 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > This is an excerpt from v4 of the "pinctrl: Convert struct group_desc
-> > to use struct pingroup" [1]. The series has been compiled with GCC 8
-> > for ARM64 besides x86_64 GCC 13 and LLVM 16.
-> >
-> > Changelog to the mother series [1]:
-> > - added a new patch against Renesas code, so no warnings will be seen
-> 
-> Patches applied!
+Dear Maintainers,
 
-Thank you!
-I will send the rest after this part appears in Linux Next.
+Sorry for the late reply after such a long time. I have just sent the v3 patch
+to change spin_lock_irqsave() to spin_lock_bh().
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks much for your effort in reviewing!
+Chengfeng
