@@ -2,200 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13895808907
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE523808909
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232750AbjLGNUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:20:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
+        id S232761AbjLGNVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:21:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjLGNUs (ORCPT
+        with ESMTP id S229949AbjLGNVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:20:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D59510CB
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:20:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 994CEC433C8;
-        Thu,  7 Dec 2023 13:20:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701955253;
-        bh=VGXZlD3aN+zu4hUiBpFuDVMj9agW847mPvkLNy/30Ic=;
-        h=Date:From:To:Cc:Subject:From;
-        b=F2wMD8s7Ojo3UFBA7f7XhebyaRfJ4DefpifbWzDLuPw7mPHwZciZqYPcAGx3pD/ku
-         Iqv86I36x+wppuT3GpJWcYRNrxQIgZ3VMgnXKrDmFm1CJp2rNEQMnw3R8Y0TH03Hoo
-         SiZog/kv6N3qxXyzS2vRFupKgysiSwd4QbpWU0cX+qvCPM8UFwM52kut4MENAP1+on
-         niE48Qz7Re8uOfyoggR/jHP57fLjL/Q42yq1PLIVzgQL19iazur/YrMgappPRNWjLk
-         T1QUlekCVO6pz/Fx5sMbGgLMoGY90I4yt3LoZZWYq4pMqf0ECnp9AYShI9vCLUyMUk
-         5d5vY1lGrLppg==
-Received: by wens.tw (Postfix, from userid 1000)
-        id F10035FA01; Thu,  7 Dec 2023 21:20:50 +0800 (CST)
-Date:   Thu, 7 Dec 2023 21:20:50 +0800
-From:   Chen-Yu Tsai <wens@kernel.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Seth Forshee <sforshee@kernel.org>
-Subject: [PATCH] cfg80211: Add my certificate
-Message-ID: <ZXHGsqs34qZyzZng@wens.tw>
+        Thu, 7 Dec 2023 08:21:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0AA1AA
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:21:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701955289;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hlxnIkTVs+MeF68tCsmk/nR1vv5URTWbbq/XkKatOUM=;
+        b=VASoLc3T4fHEot6tOntF8ZRlz0DARTVmt8/XuFeiOHXFw2zGVoxUEROvD73gbvMvuSGOe5
+        0a+H1scnD5EYJqLBLT70GxXv8VFPAUyO5LULYEUilMX1gCuwakFSQyfbBo2UviXpvsrz2Q
+        pIKkb4+6Whxi9xD79ZGNyDiBjSdgRug=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-668-jCRHf0RGOiK98jxr_VOP_w-1; Thu,
+ 07 Dec 2023 08:21:22 -0500
+X-MC-Unique: jCRHf0RGOiK98jxr_VOP_w-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 58B3C3813F28;
+        Thu,  7 Dec 2023 13:21:22 +0000 (UTC)
+Received: from [10.22.32.209] (unknown [10.22.32.209])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AFB23492BE6;
+        Thu,  7 Dec 2023 13:21:21 +0000 (UTC)
+Message-ID: <0a79501b-ff60-4122-840f-fc0095ae05fd@redhat.com>
+Date:   Thu, 7 Dec 2023 08:21:21 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="V4A1Neu/yLTY82M4"
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH-cgroup] cgroup: Move rcu_head up near the top of
+ cgroup_root
+Content-Language: en-US
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yafang Shao <laoar.shao@gmail.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <20231207043753.876437-1-longman@redhat.com>
+ <CAJD7tkZtt8xedBJyRns+6HpdXoBxadLUGuGNG5s1trEbRgb9hA@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <CAJD7tkZtt8xedBJyRns+6HpdXoBxadLUGuGNG5s1trEbRgb9hA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/6/23 23:51, Yosry Ahmed wrote:
+> On Wed, Dec 6, 2023 at 8:38 PM Waiman Long <longman@redhat.com> wrote:
+>> Commit d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU
+>> safe") adds a new rcu_head to the cgroup_root structure and kvfree_rcu()
+>> for freeing the cgroup_root.
+>>
+>> The use of kvfree_rcu(), however, has the limitation that the offset of
+>> the rcu_head structure within the larger data structure cannot exceed
+>> 4096 or the compilation will fail. By putting rcu_head below the cgroup
+>> structure, any change to the cgroup structure that makes it larger has
+>> the risk of build failure. Commit 77070eeb8821 ("cgroup: Avoid false
+>> cacheline sharing of read mostly rstat_cpu") happens to be the commit
+>> that breaks it even though it is not its fault. Fix it by moving the
+>> rcu_head structure up before the cgroup structure.
+>>
+>> Fixes: d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU safe")
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   include/linux/cgroup-defs.h | 8 ++++----
+>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+>> index 5a97ea95b564..45359969d8cf 100644
+>> --- a/include/linux/cgroup-defs.h
+>> +++ b/include/linux/cgroup-defs.h
+>> @@ -562,6 +562,10 @@ struct cgroup_root {
+>>          /* Unique id for this hierarchy. */
+>>          int hierarchy_id;
+>>
+>> +       /* A list running through the active hierarchies */
+>> +       struct list_head root_list;
+>> +       struct rcu_head rcu;
+>> +
+> Perhaps the comment should mention the placement requirements, and
+> maybe a pointer to wherever it is specified that the offset of struct
+> rcu_head should not exceed 4096?
 
---V4A1Neu/yLTY82M4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fair. I will update the patch description to give more details about 
+that. It is new to me too before I got a compilation failure report in 
+linux-next.
 
-As announced [1][2], I have taken over maintainership of the
-wireless-regdb project.
+Cheers,
+Longman
 
-Add my certificate so that newer releases are valid to the kernel.
-Seth's certificate should be kept around for awhile, at least until
-a few new releases by me happen.
+>
 
-This should also be applied to stable trees so that stable kernels
-can utilize newly released database binaries.
-
-[1] https://lore.kernel.org/linux-wireless/CAGb2v657baNMPKU3QADijx7hZa=3DGU=
-cSv2LEDdn6N=3DQQaFX8r-g@mail.gmail.com/
-[2] https://lore.kernel.org/linux-wireless/ZWmRR5ul7EDfxCan@wens.tw/
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Chen-Yu Tsai <wens@kernel.org>
----
- net/wireless/certs/wens.hex | 87 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 87 insertions(+)
- create mode 100644 net/wireless/certs/wens.hex
-
-diff --git a/net/wireless/certs/wens.hex b/net/wireless/certs/wens.hex
-new file mode 100644
-index 000000000000..ccd5b5dc3360
---- /dev/null
-+++ b/net/wireless/certs/wens.hex
-@@ -0,0 +1,87 @@
-+/* Chen-Yu Tsai's regdb certificate */
-+0x30, 0x82, 0x02, 0xa7, 0x30, 0x82, 0x01, 0x8f,
-+0x02, 0x14, 0x61, 0xc0, 0x38, 0x65, 0x1a, 0xab,
-+0xdc, 0xf9, 0x4b, 0xd0, 0xac, 0x7f, 0xf0, 0x6c,
-+0x72, 0x48, 0xdb, 0x18, 0xc6, 0x00, 0x30, 0x0d,
-+0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d,
-+0x01, 0x01, 0x0b, 0x05, 0x00, 0x30, 0x0f, 0x31,
-+0x0d, 0x30, 0x0b, 0x06, 0x03, 0x55, 0x04, 0x03,
-+0x0c, 0x04, 0x77, 0x65, 0x6e, 0x73, 0x30, 0x20,
-+0x17, 0x0d, 0x32, 0x33, 0x31, 0x32, 0x30, 0x31,
-+0x30, 0x37, 0x34, 0x31, 0x31, 0x34, 0x5a, 0x18,
-+0x0f, 0x32, 0x31, 0x32, 0x33, 0x31, 0x31, 0x30,
-+0x37, 0x30, 0x37, 0x34, 0x31, 0x31, 0x34, 0x5a,
-+0x30, 0x0f, 0x31, 0x0d, 0x30, 0x0b, 0x06, 0x03,
-+0x55, 0x04, 0x03, 0x0c, 0x04, 0x77, 0x65, 0x6e,
-+0x73, 0x30, 0x82, 0x01, 0x22, 0x30, 0x0d, 0x06,
-+0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01,
-+0x01, 0x01, 0x05, 0x00, 0x03, 0x82, 0x01, 0x0f,
-+0x00, 0x30, 0x82, 0x01, 0x0a, 0x02, 0x82, 0x01,
-+0x01, 0x00, 0xa9, 0x7a, 0x2c, 0x78, 0x4d, 0xa7,
-+0x19, 0x2d, 0x32, 0x52, 0xa0, 0x2e, 0x6c, 0xef,
-+0x88, 0x7f, 0x15, 0xc5, 0xb6, 0x69, 0x54, 0x16,
-+0x43, 0x14, 0x79, 0x53, 0xb7, 0xae, 0x88, 0xfe,
-+0xc0, 0xb7, 0x5d, 0x47, 0x8e, 0x1a, 0xe1, 0xef,
-+0xb3, 0x90, 0x86, 0xda, 0xd3, 0x64, 0x81, 0x1f,
-+0xce, 0x5d, 0x9e, 0x4b, 0x6e, 0x58, 0x02, 0x3e,
-+0xb2, 0x6f, 0x5e, 0x42, 0x47, 0x41, 0xf4, 0x2c,
-+0xb8, 0xa8, 0xd4, 0xaa, 0xc0, 0x0e, 0xe6, 0x48,
-+0xf0, 0xa8, 0xce, 0xcb, 0x08, 0xae, 0x37, 0xaf,
-+0xf6, 0x40, 0x39, 0xcb, 0x55, 0x6f, 0x5b, 0x4f,
-+0x85, 0x34, 0xe6, 0x69, 0x10, 0x50, 0x72, 0x5e,
-+0x4e, 0x9d, 0x4c, 0xba, 0x38, 0x36, 0x0d, 0xce,
-+0x73, 0x38, 0xd7, 0x27, 0x02, 0x2a, 0x79, 0x03,
-+0xe1, 0xac, 0xcf, 0xb0, 0x27, 0x85, 0x86, 0x93,
-+0x17, 0xab, 0xec, 0x42, 0x77, 0x37, 0x65, 0x8a,
-+0x44, 0xcb, 0xd6, 0x42, 0x93, 0x92, 0x13, 0xe3,
-+0x39, 0x45, 0xc5, 0x6e, 0x00, 0x4a, 0x7f, 0xcb,
-+0x42, 0x17, 0x2b, 0x25, 0x8c, 0xb8, 0x17, 0x3b,
-+0x15, 0x36, 0x59, 0xde, 0x42, 0xce, 0x21, 0xe6,
-+0xb6, 0xc7, 0x6e, 0x5e, 0x26, 0x1f, 0xf7, 0x8a,
-+0x57, 0x9e, 0xa5, 0x96, 0x72, 0xb7, 0x02, 0x32,
-+0xeb, 0x07, 0x2b, 0x73, 0xe2, 0x4f, 0x66, 0x58,
-+0x9a, 0xeb, 0x0f, 0x07, 0xb6, 0xab, 0x50, 0x8b,
-+0xc3, 0x8f, 0x17, 0xfa, 0x0a, 0x99, 0xc2, 0x16,
-+0x25, 0xbf, 0x2d, 0x6b, 0x1a, 0xaa, 0xe6, 0x3e,
-+0x5f, 0xeb, 0x6d, 0x9b, 0x5d, 0x4d, 0x42, 0x83,
-+0x2d, 0x39, 0xb8, 0xc9, 0xac, 0xdb, 0x3a, 0x91,
-+0x50, 0xdf, 0xbb, 0xb1, 0x76, 0x6d, 0x15, 0x73,
-+0xfd, 0xc6, 0xe6, 0x6b, 0x71, 0x9e, 0x67, 0x36,
-+0x22, 0x83, 0x79, 0xb1, 0xd6, 0xb8, 0x84, 0x52,
-+0xaf, 0x96, 0x5b, 0xc3, 0x63, 0x02, 0x4e, 0x78,
-+0x70, 0x57, 0x02, 0x03, 0x01, 0x00, 0x01, 0x30,
-+0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7,
-+0x0d, 0x01, 0x01, 0x0b, 0x05, 0x00, 0x03, 0x82,
-+0x01, 0x01, 0x00, 0x24, 0x28, 0xee, 0x22, 0x74,
-+0x7f, 0x7c, 0xfa, 0x6c, 0x1f, 0xb3, 0x18, 0xd1,
-+0xc2, 0x3d, 0x7d, 0x29, 0x42, 0x88, 0xad, 0x82,
-+0xa5, 0xb1, 0x8a, 0x05, 0xd0, 0xec, 0x5c, 0x91,
-+0x20, 0xf6, 0x82, 0xfd, 0xd5, 0x67, 0x60, 0x5f,
-+0x31, 0xf5, 0xbd, 0x88, 0x91, 0x70, 0xbd, 0xb8,
-+0xb9, 0x8c, 0x88, 0xfe, 0x53, 0xc9, 0x54, 0x9b,
-+0x43, 0xc4, 0x7a, 0x43, 0x74, 0x6b, 0xdd, 0xb0,
-+0xb1, 0x3b, 0x33, 0x45, 0x46, 0x78, 0xa3, 0x1c,
-+0xef, 0x54, 0x68, 0xf7, 0x85, 0x9c, 0xe4, 0x51,
-+0x6f, 0x06, 0xaf, 0x81, 0xdb, 0x2a, 0x7b, 0x7b,
-+0x6f, 0xa8, 0x9c, 0x67, 0xd8, 0xcb, 0xc9, 0x91,
-+0x40, 0x00, 0xae, 0xd9, 0xa1, 0x9f, 0xdd, 0xa6,
-+0x43, 0x0e, 0x28, 0x7b, 0xaa, 0x1b, 0xe9, 0x84,
-+0xdb, 0x76, 0x64, 0x42, 0x70, 0xc9, 0xc0, 0xeb,
-+0xae, 0x84, 0x11, 0x16, 0x68, 0x4e, 0x84, 0x9e,
-+0x7e, 0x92, 0x36, 0xee, 0x1c, 0x3b, 0x08, 0x63,
-+0xeb, 0x79, 0x84, 0x15, 0x08, 0x9d, 0xaf, 0xc8,
-+0x9a, 0xc7, 0x34, 0xd3, 0x94, 0x4b, 0xd1, 0x28,
-+0x97, 0xbe, 0xd1, 0x45, 0x75, 0xdc, 0x35, 0x62,
-+0xac, 0x1d, 0x1f, 0xb7, 0xb7, 0x15, 0x87, 0xc8,
-+0x98, 0xc0, 0x24, 0x31, 0x56, 0x8d, 0xed, 0xdb,
-+0x06, 0xc6, 0x46, 0xbf, 0x4b, 0x6d, 0xa6, 0xd5,
-+0xab, 0xcc, 0x60, 0xfc, 0xe5, 0x37, 0xb6, 0x53,
-+0x7d, 0x58, 0x95, 0xa9, 0x56, 0xc7, 0xf7, 0xee,
-+0xc3, 0xa0, 0x76, 0xf7, 0x65, 0x4d, 0x53, 0xfa,
-+0xff, 0x5f, 0x76, 0x33, 0x5a, 0x08, 0xfa, 0x86,
-+0x92, 0x5a, 0x13, 0xfa, 0x1a, 0xfc, 0xf2, 0x1b,
-+0x8c, 0x7f, 0x42, 0x6d, 0xb7, 0x7e, 0xb7, 0xb4,
-+0xf0, 0xc7, 0x83, 0xbb, 0xa2, 0x81, 0x03, 0x2d,
-+0xd4, 0x2a, 0x63, 0x3f, 0xf7, 0x31, 0x2e, 0x40,
-+0x33, 0x5c, 0x46, 0xbc, 0x9b, 0xc1, 0x05, 0xa5,
-+0x45, 0x4e, 0xc3
---=20
-2.39.2
-
-
---V4A1Neu/yLTY82M4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE2nN1m/hhnkhOWjtHOJpUIZwPJDAFAmVxxq8ACgkQOJpUIZwP
-JDDyfw/+NxGYOoA07MHtSH+zz0SdUfLgBVH1I2jIuVaXQdLYiOE03Spl6tNP+Kac
-kYcTa06bNc73VxVkPHTcXxOCgbCo12uI2/Koq7UzfgjYW3qoF/r4xo5U9+kdK+he
-M+7PZoF12Fjj1z8FtVt8HI5O+gDL5KLvypr3InrgjMvHgPTZ2Un0sFfYvZFb9mhP
-LnfYB61IeoZHrHEuLzvLLuNXfMds/zSeqe0hXNgMUsgs/HEi5/5is3oaNjeSgzCi
-QIPs2Ch1LmKgAggq61gvmmkJ6djNu7SylSlNmZley8Dcvf+LJdyS24HLe315tq/+
-Z0Mj4VpjiCjN5rdi60ECZ1eFmMN+MF3XRsFTVrHa0C+3g3yRe+mf7hSqr4xfQAEF
-DH8P9i3WZAdr3VTjYivRLpF2gUnLqr3Ajd+3QGoG9Lw5uFpUJuPM3sSCWym3J+JX
-5ACMYqZpOML7Zgk4trl0FTyUkooGQF4UhTub5xhIXHTkhl30uhgwUjMZreLxPDFV
-fLobkAN2+VugxX8PA3ZD8c35VbVTJ1xWO/JG4IN4pV016ziIB/9iaap7reDewX+C
-kP+UcH6DlntcnpQA6UDpKnxd50+Gu+I5NmV7x7ngahnZf1qSAOFDj32X4RE0oDbE
-C79kBaFbdVoUpgvXYyBnXnTUgqbCHM3CB85pwjXF0RHCwXeL3v4=
-=g4/W
------END PGP SIGNATURE-----
-
---V4A1Neu/yLTY82M4--
