@@ -2,267 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 073BD8085F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96370808610
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378592AbjLGJXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:23:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
+        id S1378937AbjLGJX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:23:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378575AbjLGJXI (ORCPT
+        with ESMTP id S235161AbjLGJXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:23:08 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3627F2114;
-        Thu,  7 Dec 2023 01:22:10 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-        id 31E0E20B74C0; Thu,  7 Dec 2023 01:22:09 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 31E0E20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1701940929;
-        bh=4uHX88aun/PPuF/sUNPOuDrWsfmV1wMV1IjTk3tvv+U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PN0UhXPkwUrWg8ZoABpfJ6USVncJkcRFgnpTNYqwCle8x6fcnR/siLINPXpGCdEjN
-         h/+Cp7RHF1MEoSBYM4GeIX1iV/9q6tYGkKdCUZGl6XXsRcWtNljbFmDH1SgPNeGVfL
-         kuzYjH0vMrqhTAKLB+NduIKNR6MD0/jPzzbgliqs=
-Date:   Thu, 7 Dec 2023 01:22:09 -0800
-From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, sch^Crabarti@microsoft.com,
-        paulros@microsoft.com
-Subject: Re: [PATCH V4 net-next] net: mana: Assigning IRQ affinity on HT cores
-Message-ID: <20231207092209.GA22375@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1701679841-9359-1-git-send-email-schakrabarti@linux.microsoft.com>
- <ZW3om2dfA4U0lhVY@yury-ThinkPad>
- <20231205110138.GA31232@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <ZW+plvYrNvdcSFCB@yury-ThinkPad>
+        Thu, 7 Dec 2023 04:23:25 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB0210C9
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:23:23 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-334b1751182so58905f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:23:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701941002; x=1702545802; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=l5FBiJ45iDeUXfgQxMa3i0Od/x/7WPqbPJGDEHdM0F0=;
+        b=WIHuVE+LrOEiN5WU9ZrQ+hLrJc3WZ9WQDXmVFItNNF4vBAbq0eBE9XEt3T3yFTe/E8
+         edaSOGcUFiRtODYGMoMBz9tRs3gFDRcrUuBQ++iK18CcR2cZ4c7awj9p2DLoy+LkKmR9
+         I75qpPs9jUOIZlHcOnIUKg6QcrcROhomqa5IadkGlC+RZPDzAGnHItOi2D5Usr2ST6fs
+         OFvCwKJh11mE32ZCETibCy7E8+izUhUAstBrLcePj4/cz2v544wUheBkIJuI6l5TtF0g
+         CPzNQ7nDER/o8ELocSgYCALjKRfF2Wrglo3GaEnMhSqMNPKIxjaga4O1OMVD7Zu8naFQ
+         50Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701941002; x=1702545802;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l5FBiJ45iDeUXfgQxMa3i0Od/x/7WPqbPJGDEHdM0F0=;
+        b=QyIoJIga+eOpzKl/9wqVoLbrBJ9PJV2lze3UEmCmGVTiA+Lp4gaUHbP557NHPkEgNG
+         9B7VMuUbk89E7caXlKPgd+LxrSJHOFjmbRBteCvIQg6NwITZbPLH1zHu3LB82ppeexFr
+         dIhB4sGpT+9ULwJg1v/YxiCOhUZt5RQChQCSondjrlJSZ/71mdG83/yL0015wAMsPHFb
+         AS/sw8lFwyUPbcGCk+yhhQXakOyFMidB4z5sLdLyeg9ev3a/q0Vv9SoQSRkV3IlWboR3
+         4M90C7YEtZ9nLr+LuHnCdcWhOEehOhefUtPp00QcOADAplNEBu8biUNKW9fwaFU/MZO6
+         VP1w==
+X-Gm-Message-State: AOJu0Yxs0UoOPg9JwutN51F8yRU3HHC6Hfbge9ygCoQ9jDmwSURolUCv
+        B6hqqEXHevpO1DhBREePGkdZhw==
+X-Google-Smtp-Source: AGHT+IHiSl8NR8L1J4o7p9pO4hO7ZjB/jzT8jO2oUpGxKH1pv3D7QS7UJOcLUaw5et+Kc0foXQo7Hg==
+X-Received: by 2002:a05:6000:184b:b0:333:463a:b66e with SMTP id c11-20020a056000184b00b00333463ab66emr2922749wri.0.1701941001855;
+        Thu, 07 Dec 2023 01:23:21 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:999:a3a0:7592:dcea:a631:2772? ([2a01:e0a:999:a3a0:7592:dcea:a631:2772])
+        by smtp.gmail.com with ESMTPSA id e22-20020a5d5956000000b0033334625bdbsm529774wri.13.2023.12.07.01.23.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 01:23:21 -0800 (PST)
+Message-ID: <8a9952bf-67ff-4ab0-9e44-e2c2f2a68076@rivosinc.com>
+Date:   Thu, 7 Dec 2023 10:23:20 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZW+plvYrNvdcSFCB@yury-ThinkPad>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [External] [RFC PATCH 0/3] riscv: add support for SBI Supervisor
+ Software Events
+To:     Xu Lu <luxu.kernel@bytedance.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atishp@atishpatra.org>,
+        Anup Patel <apatel@ventanamicro.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Himanshu Chauhan <hchauhan@ventanamicro.com>
+References: <20231026143122.279437-1-cleger@rivosinc.com>
+ <CAPYmKFsFLQnhXRPXpcoNfO-kEyjYLXD2Hm-F-O=Yxe1WJoSL9w@mail.gmail.com>
+Content-Language: en-US
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <CAPYmKFsFLQnhXRPXpcoNfO-kEyjYLXD2Hm-F-O=Yxe1WJoSL9w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 02:52:06PM -0800, Yury Norov wrote:
-> On Tue, Dec 05, 2023 at 03:01:38AM -0800, Souradeep Chakrabarti wrote:
-> > > > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > index 6367de0c2c2e..2194a53cce10 100644
-> > > > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > @@ -1243,15 +1243,57 @@ void mana_gd_free_res_map(struct gdma_resource *r)
-> > > >  	r->size = 0;
-> > > >  }
-> > > >  
-> > > > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
-> > > > +{
-> > > > +	int i = 0, cpu, err = 0;
-> > > > +	const struct cpumask *node_cpumask;
-> > > > +	unsigned int  next_node = start_numa_node;
-> > > > +	cpumask_var_t visited_cpus, node_cpumask_temp;
-> > > > +
-> > > > +	if (!zalloc_cpumask_var(&visited_cpus, GFP_KERNEL)) {
-> > > > +		err = ENOMEM;
-> > > > +		return err;
-> > > > +	}
-> > > > +	if (!zalloc_cpumask_var(&node_cpumask_temp, GFP_KERNEL)) {
-> > > > +		err = -ENOMEM;
-> > > > +		return err;
-> > > > +	}
-> > > 
-> > > Can you add a bit more of vertical spacing?
-> > > 
-> > > > +	rcu_read_lock();
-> > > > +	for_each_numa_hop_mask(node_cpumask, next_node) {
-> > > > +		cpumask_copy(node_cpumask_temp, node_cpumask);
-> > > > +		for_each_cpu(cpu, node_cpumask_temp) {
-> > > > +			cpumask_andnot(node_cpumask_temp, node_cpumask_temp,
-> > > > +				       topology_sibling_cpumask(cpu));
-> > > > +			irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu));
-> > > > +			if (++i == nvec)
-> > > > +				goto free_mask;
-> > > > +			cpumask_set_cpu(cpu, visited_cpus);
-> > > > +			if (cpumask_empty(node_cpumask_temp)) {
-> > > > +				cpumask_copy(node_cpumask_temp, node_cpumask);
-> > > > +				cpumask_andnot(node_cpumask_temp, node_cpumask_temp,
-> > > > +					       visited_cpus);
-> > > > +				cpu = 0;
-> > > > +			}
-> > > 
-> > > It feels like you can calculate number of sibling groups in a hop in
-> > > advance, so that you'll know how many IRQs you want to assign per each
-> > > hop, and avoid resetting the node_cpumask_temp and spinning in inner
-> > > loop for more than once...
-> > > 
-> > > Can you print your topology, and describe how you want to spread IRQs
-> > > on it, and how your existing code does spread them?
-> > >
-> > The topology of one system is
-> > > numactl -H
-> > available: 2 nodes (0-1)
-> > node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-> > 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64
-> > 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95
-> > node 0 size: 459521 MB
-> > node 0 free: 456316 MB
-> > node 1 cpus: 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118
-> > 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143
-> > 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168
-> > 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191
-> > node 1 size: 459617 MB
-> > node 1 free: 456864 MB
-> > node distances:
-> > node   0   1
-> >   0:  10  21
-> >   1:  21  10
-> > and I want to spread the IRQs in numa0 node first with 
-> > CPU0 - IRQ0
-> > CPU2 - IRQ1
-> > CPU4 - IRQ2
-> > CPU6 - IRQ3
-> > ---
-> > ---
-> > ---
-> > CPU94 - IRQ47
-> > then
-> > CPU1 - IRQ48
-> > CPU3 - IRQ49
-> > CPU32 - IRQ64
-> > 
-> > In a topology where NUMA0 has 20 cores and NUMA1 has 20 cores, with total 80 CPUS, there I want
-> > CPU0 - IRQ0
-> > CPU2 - IRQ1
-> > CPU4 - IRQ2
-> > ---
-> > ---
-> > ---
-> > CPU38 - IRQ19
-> > Then
-> > CPU1 - IRQ20
-> > CPU3 - IRQ21
-> > ---
-> > ---
-> > CPU39 - IRQ39
-> > Node1
-> > CPU40 - IRQ40
-> > CPU42 - IRQ41
-> > CPU44 - IRQ42
-> > ---
-> > CPU78 - IRQ58
-> > CPU41 - IRQ59
-> > CPU43 - IRQ60
-> > ---
-> > ---
-> > CPU49 - IRQ64
-> >  
-> > 
-> > Exisitng code : 
-> > https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/microsoft/mana/gdma_main.c#L1246
-> > 
-> > This uses cpumask_local_spread, so in a system where node has 64 cores, it spreads all 64+1 IRQs on
-> > 33 cores, rather than spreading it only on HT cores.
+
+
+On 07/12/2023 10:09, Xu Lu wrote:
+> Pardon. It seems that the code in opensbi[1] is not complete for PMU NMI now.
+> For example, the pmu ovf irq is still delegated to supervisor mode and
+> thus can not really play a role as NMI. And neither the kernel nor
+> opensbi will inject a pmu event.
 > 
-> So from what you said, it looks like you're trying to implement the
-> following heuristics:
+> To complete the work, we think maybe 'enable_cb' and 'disable_cb'
+> functions can be supplied for sbi_sse_cb_ops.
+> When sbi_sse_enable is called to enable pmu event, the enable_cb will
+> be called to revoke the delegation of pmu ovf irq and enable this irq
+> in CSR_MIE.
+
+Hi Xu,
+
+Indeed, this part has been developed but was left out for the RFC. But
+your understanding is correct.
+
+> When pmu ovf irq occurs, kernel traps into opensbi and opensbi injects
+> the event via sbi_sse_inject_event and eret back to kernel.
 > 
-> 1. No more than one IRQ per CPU, if possible;
-> 2. NUMA locality is the second priority;
-> 3. Sibling dislocality is the last priority;
+> Please point it out if we have any misunderstanding.
 > 
-> Can you confirm that?
+> By the way, how is SSE going now? We will appreciate it very much if
+> we can participate in some development work in kernel or opensbi and
+> be of any help.
+
+The development is almost complete, Anup/Himanchu will send a new
+revision of the spec addressing various comments and I'll resend the RFC
+following that spec update.
+
+Regards,
+
+Clément
+
 > 
-The idea is pretty similar, only change is that if there are enough cpu
-cores in the NUMA node, then no more than one IRQ per core, if possible.
-So the behaviour will be :
-1. no more than one IRQ per core, if possible.
-2. No more than one IRQ per CPU, if possible
-3. NUMA locality is the second priority;
-4. Sibling dislocality is the last priority;
-> If the above correct, your code is quite close to what you want except
-> that for every new hop (outer loop) you have to clear CPUs belonging to
-> previous hop, which is in you case the same as visited_cpus mask.
+> Regards!
 > 
-> But I think you can do it even better if just account the number of
-> assigned IRQs. That way you can get rid of the most of housekeeping
-> code.
+> Link: https://github.com/rivosinc/opensbi/tree/dev/cleger/sse [1]
 > 
-> const struct cpumask *next, *prev = cpu_none_mask;
-> 
-> for_each_numa_hop_mask(next, node) {
->         cpumask_and_not(curr, next, prev);
-> 
->         for (w = cpumask_weight(curr), cnt = 0; cnt < w; cnt++)
->                 cpumask_copy(cpus, curr);
->                 for_each_cpu(cpu, cpus) {
->                         if (i++ == nvec)
->                                 goto done;
-> 
->                         cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
->                         irq_set_affinity_and_hint(irqs[i], topology_sibling_cpumask(cpu)); // [*]
->                 }
->         }
->         prev = next;
-> }
-> 
-> [*] I already mentioned that in v3, and also asking here: if you're saying
-> that wrt IRQs distribution, all CPUs belonging to the same sibling group
-> are the same, why don't you assign all the group to the IRQ. It gives the
-> system flexibility to balance workload better.
-> 
-> Let's consider this topology:
-> 
-> Node            0               1
-> Core        0       1       2       3
-> CPU       0   1   2   3   4   5   6   7
-> 
-> The code above should create the following mapping for the IRQs:
-> IRQ     Nodes   Cores   CPUs
-> 0       1       0       0-1
-> 1       1       1       2-3
-> 2       1       0       0-1
-> 3       1       1       2-3
-> 4       2       2       4-5
-> 5       2       3       6-7
-> 6       2       2       4-5
-> 7       2       3       6-7
-> 
-Thanks for the suggestion, but as mentioned by me above, that if enough
-cores are available in a numa noed, then will assign one IRQ per core, rather
-than each CPU. That is the reason we are moving away from using cpumask_local_spread().
-As it assign in every cpu in the numa, irrespective of if there are enough cores
-to accomodate the IRQs. That is why I am first trying to assign one irq per core
-till all the cores in the NUMA node are used.
-> This is pretty close to what I proposed in v3, except that it flips
-> priorities of NUMA locality vs sibling dislocality. My original
-> suggestion is simpler in implementation and aligns with my natural
-> feeling of 'fair' IRQ distribution.
-> 
-> Can you make sure that your heuristics are the best wrt performance?
-> 
-Yes, I had done multiple perf analysis using ntttcp and we got approximately
-12-15 percent improvement.
-> Regarding the rest of the discussion, I think that for_each_numa_hop_mask() 
-> together with some basic cpumaks operations results quite a readable
-> and maintainable code, and we don't need any more generic API to
-> support this type of distribution tasks.
->
-I will share the V5 patch soon, which does fix the mask issue from V4 and
-also tries to assign IRQ0 to separate CPU if enough CPUs are available. 
-> What do you think guys?
-> 
-> Thanks,
-> Yury
+> On Thu, Oct 26, 2023 at 10:31 PM Clément Léger <cleger@rivosinc.com> wrote:
+>>
+>> The SBI Supervisor Software Events (SSE) extensions provides a mechanism
+>> to inject software events from an SBI implementation to supervisor
+>> software such that it preempts all other supervisor level traps and
+>> interrupts [1].
+>>
+>> Various events are defined and can be send asynchronously to supervisor
+>> software (RAS, PMU, DEBUG, Asynchronous page fault) from SBI as well
+>> as platform specific events. Events can be either local (per-hart) or
+>> global. Events can be nested on top of each other based on priority and
+>> can interrupt the kernel at any time.
+>>
+>> First patch adds the SSE definitions. Second one adds support for SSE
+>> itself. Implementation is split between arch specific code and generic
+>> part (similarly to what is done for ARM SDEI). Finally, the last patch
+>> add support fro SSE event in the SBI PMU driver. If the SSE event is
+>> available from the SBI then, it will be used instead of the normal
+>> interrupt.
+>>
+>> Amongst the specific points that needs to be handle is the interruption
+>> at any point of the kernel execution and more specifically during
+>> exception handling. Due to the fact that the exception entry
+>> implementation uses the SCRATCH CSR as both the current task struct and
+>> as the temporary register to switch the stack and save register, it is
+>> difficult to reliably get the current task struct if we get interrupted
+>> at this specific moment. A fixup-like mechanism allows to mark the
+>> location of the current task struct depending on the entry level
+>> (user/kernel) and the location. This is then used in the SSE assembly to
+>> determine where is located the current task_struct.
+>>
+>> Contrary to pseudo NMI [2], SSE does not modifies the way interrupts are
+>> handled and does not adds any overhead to existing code. Moreover, it
+>> provides "true" NMI-like interrupts which can interrupt the kernel at
+>> any time (even in exception handling). This is particularly crucial for
+>> RAS errors which needs to be handled as fast as possible to avoid any
+>> fault propagation. Additionally, SSE event handling is faster that the
+>> standard IRQ handling path with almost half executed instruction (700 vs
+>> 1590). Some complementary tests/perf measurements will be done.
+>>
+>> For testing purpose, one can use the provided SBI implementation at [3].
+>> This series also needs patch [4] to fix a bug in the PMU driver.
+>>
+>> Link: https://lists.riscv.org/g/tech-prs/message/515 [1]
+>> Link: https://lore.kernel.org/lkml/20231023082911.23242-10-luxu.kernel@bytedance.com/T/ [2]
+>> Link: https://github.com/rivosinc/opensbi/tree/dev/cleger/sse [3]
+>> Link: https://lore.kernel.org/linux-arm-kernel/20231026084010.11888-1-alexghiti@rivosinc.com/ [4]
+>>
+>> ---
+>>
+>> Clément Léger (3):
+>>   riscv: add SBI SSE extension definitions
+>>   riscv: add support for SBI Supervisor Software Events extension
+>>   perf: RISC-V: add support for SSE event
+>>
+>>  arch/riscv/include/asm/asm-prototypes.h |   5 +
+>>  arch/riscv/include/asm/sbi.h            |  40 ++
+>>  arch/riscv/include/asm/sse.h            |  94 +++++
+>>  arch/riscv/kernel/Makefile              |   1 +
+>>  arch/riscv/kernel/asm-offsets.c         |  17 +
+>>  arch/riscv/kernel/entry.S               | 156 ++++++++
+>>  arch/riscv/kernel/sbi.c                 |   4 +
+>>  arch/riscv/kernel/sse.c                 |  97 +++++
+>>  arch/riscv/kernel/stacktrace.c          |  13 +
+>>  arch/riscv/kernel/vmlinux.lds.S         |   6 +
+>>  drivers/firmware/Kconfig                |  10 +
+>>  drivers/firmware/Makefile               |   1 +
+>>  drivers/firmware/riscv_sse.c            | 496 ++++++++++++++++++++++++
+>>  drivers/perf/riscv_pmu_sbi.c            |  51 ++-
+>>  include/linux/riscv_sse.h               |  56 +++
+>>  15 files changed, 1038 insertions(+), 9 deletions(-)
+>>  create mode 100644 arch/riscv/include/asm/sse.h
+>>  create mode 100644 arch/riscv/kernel/sse.c
+>>  create mode 100644 drivers/firmware/riscv_sse.c
+>>  create mode 100644 include/linux/riscv_sse.h
+>>
+>> --
+>> 2.42.0
+>>
