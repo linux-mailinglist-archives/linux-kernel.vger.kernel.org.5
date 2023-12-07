@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF20808B6F
+	by mail.lfdr.de (Postfix) with ESMTP id 7221B808B70
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442707AbjLGPHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 10:07:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
+        id S235295AbjLGPHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 10:07:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235250AbjLGPHM (ORCPT
+        with ESMTP id S235150AbjLGPHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 10:07:12 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC6CD10D8;
-        Thu,  7 Dec 2023 07:07:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701961639; x=1733497639;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=+GVLoJDm5SxtMSOy2cOPpF18a6NRQbOqGZnFwXI0CXM=;
-  b=NqXNXEELO6Prwo1mMqQCes/Xt+rZlNLEmy4lkeTEMF9D4XcCQXGCQNSX
-   qYKtUihRfI0UJTsDcKaVnLnZP64Mk054lxjBqpFBeIscvcdvEI+DKnxyO
-   RGJuyo0gY7YH+DreAa8Pt9VNVAiWbAtgx3c8wBVSML/edHubFVVihfCht
-   IL++lAdDig9sB6bV//b/5uQQyWwCY45uLzS6vbLJn4mgI136+V/kmc3M0
-   rZ+NIc57+ef2hlaaMLHqAF3V/ZRwZ1tnZ/Vvo2xMD6iKev7kpB48mL3gf
-   obttnbWxdyLifU/tvSZu1E+Hm6LWrlAdnm1JmNfEeVp6/da9Mt1PMVRc8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1123841"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="1123841"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 07:05:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="837755629"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="837755629"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 07:05:58 -0800
-Received: from [10.212.103.45] (kliang2-mobl1.ccr.corp.intel.com [10.212.103.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id C5AC1580D4F;
-        Thu,  7 Dec 2023 07:05:55 -0800 (PST)
-Message-ID: <a22be949-56fb-4e18-bd5a-5db441fd53df@linux.intel.com>
-Date:   Thu, 7 Dec 2023 10:05:54 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/6] Clean up perf mem
-Content-Language: en-US
-To:     Ravi Bangoria <ravi.bangoria@amd.com>, acme@kernel.org,
-        irogers@google.com, peterz@infradead.org, mingo@redhat.com,
-        namhyung@kernel.org, jolsa@kernel.org, adrian.hunter@intel.com,
-        john.g.garry@oracle.com, will@kernel.org, james.clark@arm.com,
-        mike.leach@linaro.org, leo.yan@linaro.org,
-        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
-        tmricht@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20231206201324.184059-1-kan.liang@linux.intel.com>
- <0597b44c-226d-1180-d55d-bcf9bbd2e03f@amd.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <0597b44c-226d-1180-d55d-bcf9bbd2e03f@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 7 Dec 2023 10:07:11 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75242D59
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:07:16 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6ce6dd83945so627664b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 07:07:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1701961635; x=1702566435; darn=vger.kernel.org;
+        h=to:cc:date:message-id:subject:mime-version
+         :content-transfer-encoding:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CZPF962lXavs4LecESKaTLt6HdfoXpSpOotG4VFvnDw=;
+        b=ZkSn8+nWY96TbWvXxlSUIObuKhFfqK1LE+JiRG+o7OYrUNHtzgXOj2qp7QlVCr9FzR
+         I3KPIVruxgAyD0+lOUawc7A8Lm1A3+Qn7P/klBoLFQmF0KroNKuoJS0E5Hvq9d2VBeC5
+         DwGXz2S74Oc8xmevRcKG8QQiT82nZ+tt+aUIid2V4pto+oBcprkULVtAIBwMJD7NKW1K
+         O9xkmgkQRJSuHUEPs2KlavFVtB8/LXfjPNv3SPOPzpvsza+a8nMBHwwY2cqzmf6+4DTM
+         v+lWXVqyZ/w7V7WcJGyE2hadnMgtKRAXr7RQxg9HPQHVjRaipZkaypZoWIWYoP9i3KmO
+         eYXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701961635; x=1702566435;
+        h=to:cc:date:message-id:subject:mime-version
+         :content-transfer-encoding:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CZPF962lXavs4LecESKaTLt6HdfoXpSpOotG4VFvnDw=;
+        b=PZ1cKiVdQiZwGxVWHK8zDzsiGXIZsIQYTuv+wvcDGhkNA/cpNVQD/hujtD+0fw9oAY
+         duTVQJ1jwH8D3zXDybR7wzzt4D7lDqPaHgaB8aGOPKvP/Pvpfhru0Cg9juXVZhiAxgbL
+         T81NdSXfenD/1Yu7LcjHlvsZ1/0YRwWtErPZ+S32bgq12dfb15cMrepg7keXYKC0wX9s
+         1uYyIC/tiThUDYhvSLXK6bZ2vQbWi+8x3949+o5g2s2+AXNhfEpI+41aCjXXDEh8dwWU
+         nieIsZgQS68SCBBvpHNiJy9KTs7ppHlpN+lH1TMsd3QqRvkZqcvG7hwv8zFeZIUl2/qI
+         hZgA==
+X-Gm-Message-State: AOJu0Yw2Jf2zIwzysxlbhENiDTq2I9R+PwiQBcI82J73mRpyJeemV3yj
+        ZpBi5xk7YKajRnwBoZBE0RR7zvfHDh7z7RrMAiHGlQ==
+X-Google-Smtp-Source: AGHT+IFeDLFm4/ox9OEcay0E+2CrGOLfCELaHKQrl+v+mFmvEF7verRHXrwXCmQBat0HYdXuSbkuDg==
+X-Received: by 2002:a05:6a20:2618:b0:18c:9855:e949 with SMTP id i24-20020a056a20261800b0018c9855e949mr2417031pze.15.1701961635507;
+        Thu, 07 Dec 2023 07:07:15 -0800 (PST)
+Received: from smtpclient.apple ([2600:1700:63d0:ab90:5481:84fe:12c9:eb0e])
+        by smtp.gmail.com with ESMTPSA id e7-20020a056a001a8700b006ce4b40e7desm1452749pfv.90.2023.12.07.07.07.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 Dec 2023 07:07:15 -0800 (PST)
+From:   Gianfranco Dutka <gianfranco.dutka@arista.com>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.1\))
+Subject: Modifying isolcpus, nohz_full, and rcu_nocb kernel parameters at
+ runtime
+Message-Id: <76587DD3-2A77-41A3-9807-6AEE4398EBA6@arista.com>
+Date:   Thu, 7 Dec 2023 10:07:13 -0500
+Cc:     vincent.guittot@linaro.com
+To:     linux-kernel@vger.kernel.org
+X-Mailer: Apple Mail (2.3696.120.41.1.1)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Good afternoon maintainers and subscribers to the lkml,=20
+
+I'm a bit new to kernel development but I had a question with respect to =
+the kernel parameters: isolcpus, nohz_full, and rcu_nocbs.=20
+
+Basically the question is this, am I able to modify the three parameters =
+I mentioned above at runtime after the kernel has already =
+started/booted? Doing some reading online it seems that it=E2=80=99s not =
+possible but I wanted to double check with the maintainers if there =
+wasn=E2=80=99t some sort of change in the works that might make it =
+possible. If not, what would be required to make the change after =
+boot-time through some kind of patch or something like that? Would that =
+be something that might be valuable upstream?
+
+At the moment we are running an application that might see some benefit =
+from being able to isolate cpus on the fly without having to reboot =
+everything every time we want to modify the parameters mentioned above.=20=
 
 
-On 2023-12-07 9:44 a.m., Ravi Bangoria wrote:
->> The patch set touches almost all the ARCHs, Intel, AMD, ARM, Power and
->> etc. But I can only test it on two Intel platforms.
->> Please give it try, if you have machines with other ARCHs.
-> 
-> I did a quick perf mem and perf c2c test, with the fix I suggested
-> in patch #1, and things seems to be working fine.
-> 
-> [For AMD specific changes]
-> Tested-by: Ravi Bangoria <ravi.bangoria@amd.com>
-
-Thanks Ravi.
-
-Kan
+Thanks,=20
+Gianfranco=
