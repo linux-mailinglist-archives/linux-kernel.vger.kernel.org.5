@@ -2,55 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D54E6807FA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13612807FAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbjLGEdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 23:33:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60642 "EHLO
+        id S229764AbjLGEeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 23:34:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLGEdT (ORCPT
+        with ESMTP id S229459AbjLGEeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 23:33:19 -0500
+        Wed, 6 Dec 2023 23:34:07 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C911B110
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 20:33:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F0B0C433C7;
-        Thu,  7 Dec 2023 04:33:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF187D3
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 20:34:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7855AC433C7;
+        Thu,  7 Dec 2023 04:34:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701923605;
-        bh=CoNecGZwfNBANhBMFz8VdlldFhNvEacV0ZUf2WoDpwY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ExxzF4Tnx3OfoII9S7zhDYhvxzcz3ixiGA9GF5zbsTdgsxROvbiXvP4VrU18vSBOx
-         2fOCJF0BOW8eQOnG+I5ii42Et8MB6MqC+XIKhC3vftmOyrCdewZjGOrb+RGKzntDz7
-         NRWP4EfNCupxdWDI3t7NC4c/XeHFgfFfpJJbYnJj3p4FzL7kXHw7k7huIZBc9jPAJC
-         04IR9psm+2wDOI5xK/OZaEHxryWU4fgk97sMt6eJUy8x9UyBkY6SaIa6JEMWSt/kuo
-         /YKB4BgfG8nx+BDLjUbryY2MF3QkS3FTyLSmlbcHwU5JTxX+TeJO38T9yN8jE3zoV+
-         79ubek2FID5EA==
-Message-ID: <67480da4c1418ae03123ecc5cbfb189119d9ca0e.camel@kernel.org>
-Subject: Re: [RFC PATCH] keys: flush work when accessing /proc/key-users
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Luis Henriques <lhenriques@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>
-Cc:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 07 Dec 2023 06:33:19 +0200
-In-Reply-To: <20231206145744.17277-1-lhenriques@suse.de>
-References: <20231206145744.17277-1-lhenriques@suse.de>
-Autocrypt: addr=jarkko@kernel.org; prefer-encrypt=mutual;
- keydata=mQINBF0RXVoBEACq7dxNqGliHRIUjKeA0Ajj8R0JiNRbhayBAmCmjfDh6m/QTNfyCmFBv6ZPe4EbBEyCgcFxerS0qgkaRD0FApKgtrX842rkwDyyhTA222rkv5Q/U2SY1Hi55kekBcAgYHVQzhvHnRrckvE7YxDlH06mnUGlL63s9NI/xnhtJvn92rLNvWqAyn+48Ud/EcE9oBo6vvq10O0UAHN/PEsyqtThN9tlTEKH8IMXmy1FAC70Ov8Ap63ZJT2RE7H4wbIYrHOOxarfHaKHcKy+UjZBhuQ54sGxxch2kXQCfkXOY7Ab7KKNkb4u2jDc6lyz8TJlc8Twi5KQcWBzomnYy5R0OJ01g6byY7vCSwAfCSp87P50F5O2pmjqd82mdB3Noy+CWIlV1kjMjaJglTyFGym7CWkvx7+yP+Jjq643aIbveN/Tx5OYZIhtSMRtJDzT+nDIgD83NyHL6JHO3LzKZEw6yZJWWSXyK9P5H8RX7ipWf3o3NaUCcs1K8wyTcgBZ/GT9X9SprH1ySYAGJz+G1UyPMQT1V4OirkQaMfN0Ht7jl6gEXXOs0Ks1sOdaKZUFIGn9P1cNRixp34Bw3edL4ZjNljXZa12MqzbaArTCm+WzJqrvkToOx2bqU37Y1vNskOBdYkCvWhKsIf8Gj5LZiVjFnX27bXeLv6Gd3asJ4qcQAl06+wARAQABtChKYXJra28gU2Fra2luZW4gPGphcmtrby5zYWtraW5lbkBpa2kuZmk+iQJXBBMBCgBBAhsBBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAhkBFiEEUQfmbTR4ipPjInyQOrBUhsd1L+EFAmSlnJMFCQl1crkACgkQOrBUhsd1L+EPKw/9EnoAjcbK+duuIN4JA6iXCfdWrYK8DhvaMgfNIbH4ZrtbMYwAPsHeZTv/C47pf48sp200OvdQoA2qoYdtX+I1JLhz7aaRtemBp1lwZEESeNG5j
-        0EwCSLeR6ITQanlpnj8FQ0MnLi8yKf8crWR8QyKlE96zT1yBFxNsjveGHBpW9syHjSFUZOLVA9JVSv6eSGobvU265EPxekVH3+GreSzs/lXWOMvXdLONbUtRJSktq1/p8T5m+btNxRKRi16gQOK8gZL/VRXg0/GLhNgobOniAYKz/q9pM/6vQWDzVeg+ur1HHbln/C28DJNubV8+4VnmZGWDpb2AOrEVX8xXyPr6MZmsPdf0/X5nSHDjF8+NOwWfPcdIu+ZmPKX0kAzDtefDoXD54dm13WvPVxH1zS1hz66LKRmEhutXUpE05U+XBrpxlXGKEU3MF/XeaMN04s6JktjXyIyAeG7G7TrexHcDEmi7bbUhzPCHMHnL3ialXDH59hpzdYBMiFkMiQ1xv45ow5W3AsCkfgljEG4GAnLbvnFJgbcvdYhR5QEfS2/vBXLrmHsi+cNlGuD9maf22ymiUJEdAe9AtwapT6YLNSlHuOF4OhmBemYkmTAYB6Jo/2jD5sSDnQXglO/Ib1+qh9Adj/iCgjavijojl3kebWNcusZGspuQpYQKoKHFSZLyqe0I0phcmtrbyBTYWtraW5lbiA8amFya2tvQGtlcm5lbC5vcmc+iQJUBBMBCgA+AhsBBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAFiEEUQfmbTR4ipPjInyQOrBUhsd1L+EFAmSlnJ8FCQl1crkACgkQOrBUhsd1L+H4UxAAnw2J8ew6vDB+vAK2snuNKUaVsyZX2EPJJ9WZStGkCyEzbnG/a3dk4ktpGlNLpk9tJJKTpb88efDIkp/Xa1fIUuOP75QQO8lNePX8lsc1aVWwNr4QHqTWe1Jgr1rBE29qeZA1R/poAMezI3Rrn5YEchexdDqFICba6KL2Wzl/yFR2puXMZoscVen3+NjyXE2UZiLdH0F/zacr2sIiwzKwp3Ej3m+fXmvxp+EPvRlt9LzxiTnDNKAy3A+xBec2uNveAM
-        uB60i2GJES880Q4f/gPPiQiLJteqJcqz0GfosXSqInUlGM+6kDUG4wYaA+fXLux9orO0pVi9q71tFgSNjRNtp17PmdpjQHJRY/+jd621DETWs8gSa3m3gyyyAhkyjvw3TyOaR8oN94AB+ygNWN7Klgfyr+4KrulXKjMI39SnXoxbnWSfVwSHGsZUFpiU+B9GuMruA0piQgjp+rVr8bfQre+f4PrgwGB474qvECfJcrS+bLk5raOwCReM1aSfprNECgQB4qvfQUM14QlyeAzbGIKYff2vZ2HrmjFpIKsuuqvJOVdmhPlMaANBh+dCrkCScP+xbCbhtNiJu7pZCxlbSsf1Z1IlmE0E/kbePCgi8M2SQ+/F+4wPtaP8mAt63v5ImlNuHLLw8CMvHDxDElu1SZBgzdrTkWJ18+5oZpH1S0KUphcmtrbyBTYWtraW5lbiA8amFya2tvLnNha2tpbmVuQHR1bmkuZmk+iQJUBBMBCgA+AhsBBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAFiEEUQfmbTR4ipPjInyQOrBUhsd1L+EFAmSlnJ8FCQl1crkACgkQOrBUhsd1L+FwcA//VeqTamEEtfxHKjq2tcx5eclRg8oXVt8V4ba6668uAN0f0gXHC2DcggXCvuSFfpMM5QZMXTMW1Duoh0UJCzhNSyKbblu8EYNGDquLQpgQYaiMUhxSp96FbXUZu7oQMah7QnWXaHJ4Nmw1MzW92HpBT2uGbY1uY8ILAKB5V50coPKtB2pfcU4B67hQvSZNBott0JR071YsD1JVmLRhq0RmQMNlgXE9mpfHU1QjraYcozAAe9aodvRasKsZYSkE+2prbgdaoCTspYUo+gKoYsZEdXqUj4EYm3PhOmnWIlCZ7D/7cBfthYmwpm5wdyhUrRaXNceq7fbJs2DIlYz/hpNZ4ObfCsFDPHAq4OzaYxUVxeVu0E/pEww6z7qquTj2isIGIzIsrhL5miHj8ex
-        8ynJIKIDiFdq4EKb1m/lViQK3+wGqWT+xEOmM8uW5fJcuKb87BGxYPVuunlbhVMIW765gpa4y9eY24PF9UNZm13GGGZ7EZ6JNLgIc5ailxJzb4mvCUrhEYzs6det4cnUKqjkSItrFKAnyHRMJwDeYiBSgQycWshOGAiFQ2KPKezTGHrXhOpfsm6s9TRh/lHSIrNMen/ymlgrMs39kVijBpa5P1oVDTrt3X/ayDYTYEqjW6KuerGVx707XkTN+4Mma4EbTBBRoRYDcmFKDVa3Jz39EKdW4MwRdEXSIFgkrBgEEAdpHDwEBB0BPq0RM4xLLKQt+/jDx+bwwwB0k+FzS+69WFoCnK2bNBokCswQYAQoAJgIbAhYhBFEH5m00eIqT4yJ8kDqwVIbHdS/hBQJkw+oYBQkLdNyQAIF2IAQZFggAHRYhBETqlI6doELTQ4QcQhp6uiF0a6vSBQJdEXSIAAoJEBp6uiF0a6vS/LsA/3mk08n5Jb2JwsMfqC0hTzKh3HNXVBNzovB8VKjeyQJfAQDtKhHp/B/gEyxui+peedgm2pGHFxicXWEKtlNZ+DUpBAkQOrBUhsd1L+FCpQ/9EXEtElzGyJdGhsDA27Doo3HbRIVD9sALTqjbRkXKj1salYLVi8hP+6iaxYqWeaP1SjeH9JimqTTOVuClhD9NSkH3a6h6gH6kTLC9H220n3kPGwUDjKpQWiWpq/1HdeUirzdIG30lCzUiyYCB3Oim1A2iGu6RBu/EditQ/f7ExkBiqE6hByX6yk2zKlhlNwc9Sf4LM7uqRoY5B8NIL+a14GbNDXVud/ck5UbnhZ2jFo7Wqg1LUCRypBAFMN48qFOI11Mu+NBVWYNopPNu4R3iTlk4R1X33Bmz0OerXAGIEbokvMKB8s/wBxyXpQzzYKU11vZ06eedu8DWJJTsi6hJmGuK9vsd/8KAmfYDziTCbzsFZB6pGTsfnncJR8K+zIsWMoF8mElYWHp7vB5q
-        Qo/bVw5tqC/aWluq1fXJ8ygBkK4OXq9SIXDvw+GnPW/W+1GnyEIL742xUYNjEV5/M0IXJWJIURYSydxvc9FozoDlNQxw+krOM7CODwFvL2+EMVyeRPB8SmeQYjYMXetJIRxyhzWcUUpQCzHzFwOZ2dXmkhmjzS2wpQco5VreTkX5Zka92EnnjLG4Uqo/NOq48T6DrfflYYJXdX8ZOSxTVjSr3fSVYjTuL9Jk+0udh9if3xWcBOFa2jfIlWnitxboDaJiWXRpTSSsGGedIjwdl04/pmu5Ag0EXzMZxQEQALe6fnxvNLCsRcPk8w25P2diHIF92IR4OtxB3cVpzD09mKGUXB95z6LPTS7hts2ZysbRiFPTno9KeohHgOoZIrc3aJqdxLVqcF+A1LtJ7TaNw7KgeyCsMUfozESCRkugVjxeh0Tk08Ma3qs+iLLox43SMo2+4wxD1QWB7ruTLSlZmPION3JcRFlYQiNyn45BcxoUBTfMkJudouBWfsKLNlzCuK7YSUyDS1W/F2Rbn1Bb11KCYJ0XjPBK8s3pdWloLD5+JdX7T1ark9PrmpP+tYL/TI7gFa5kW15fyBfINAEmoTM0qOS8AI0Uji5uVJRA7vNifIVCOXDDTj5p9MWRZlghXZS05ljMlpOD3QNPd9AGQkzGwcdzgbx4X5K94jLW2I6ruN/xu290osLK8is0yWEH31g8DMEVR39f/Du44S2bsvjOhZr7phGO0qI+25p4YZBWvcIRT8v2u09j09+Q87EZRqGczkzYyxJPk09n361a+GMQVfidJijkRKEUET2bTWxrrvmbOs7CwFfCLsCUFm1PiERg3WO9VRVevAQLxbtErLcLSaBT+aWfFcenbdp/1gSSOJgDlkGYrj6rzmjSkF/rXpwsCHN5sPChPm/1WRhj6rW3ectalob0cAfQGY/IRbSOUHWPGrBS+WZZDXi+1lQ4DOsWcChQoNUtN64r7Dm/ABEBAAGJAjYEGAEKA
-        CACGyAWIQRRB+ZtNHiKk+MifJA6sFSGx3Uv4QUCY695PQAKCRA6sFSGx3Uv4fW5D/40tdKK/D+GklySOdWr4/eg8yCzAKnEbmYMVsNR0/cjG2ZWtbkqu0oaQS77phCCWcKNO0NGIFOteT1Ai8PcSmw8u4Kva3u7kyqAZF+RSqOFG6kWJ1do0OfAuqUSTYO4Tp7pAGbOnxo1csNL8wleeSMUiHzXDQC5n7DH8fsIeUzqaerrCRbqyCyqqzNIjZUrHFcnW9RwW1PwC5jnNKDvxcxGouieCGtkMWGDDn/hQe9TGrYdMCewgUUKG4UjwEnB6Ve79R1/RIsVX0G/M/T9+/VRXYvS3+b/DDKca0wApIjuN+cA/SNFiRgh5nkquYR3TZan1K72cPkrFresSEA7Vspg+AI1vxC/9jWspQRFu2tE13AT01BpusACXXSTInfkBSa6pXqO6smAbCmuhj2HRbpnC2fx5SyQJliiLzb8YE5ErQkJgSvj3fYr/kdlkJucOfnHgBX9DzEgAmm5WoZeJruCyqO0Md7r0A5R+H7IPmqKmI+1hEylSZqU2XTGd84M9SA7qiPK5hxyA1zT+eic3mKO46l5zn3w5FlMrihZXkUqlmL1N834UU/laM6O7cbXq/VpTn5mQnlTqnieyDboYjW9LBRFb/kjCUTNgRTi7q+Lxpe0hDfOJqAgbG6l/icNCkoUj+9M73qck+DDDwqgHIdhAmeyPwRVf1nU9OnEO92k7bkCDQRiN+yEARAAtzi2qY61jzsEUZsDhPJHERFUwuZ5+eUWrIXKP67umgJEfXdw/veohOVi/8rh4dNQiSOhQFjriknOQr19Q02jibNWSIa56RNZRX0BnSFTWsFq5+PjOjAPgqhf+rDdIPPKZFtRW4W8wR8Qlocd/xP52f1c4y0uJtiQCLbb21KGBnUJ97An87RuVoScVJ08sBxBc3KEnjXJHHvhQa6h6PdVUh0B7HOb9BVttWYPW2XAoB
-        YaYiLgz2OII9KD0yRpIS6FIjBVm7W/ZMUZMNwOqZOcroHvb+OPk39OGiCOkJllpbfL6Hlba1pIatSmsqUTZI31FA+4/Vjx7CG89ABbuN6c88ofc6KYqqzBQLhB9p33d6FyGSP+9F33L4MIrTuZ79TUWjckeIbwObd1oti+YS//jnZmTMnEFRvPek3iGIt6QHJ2Ujd/aIwd0N1tutf1AI1heOM2zsK//FzH0Dd4HukWqvyYupVPifVHgu8wGTmQ8+eaMoGrc5ToizsUaVxreKPl5ar55OpJGM+HsoFJJY5/+I1uCWSzl+eCuVQb58RTRe50B8jCF95eY2e8Ns/8SOYZjd8yhDvQA5MrPPeSbnvZXRBcPLRly9gznZTBvakBJts5W01SCEwfHauB4l1TVR3SNy5byhidp/2NICv0fPuPyYYF/Jm9oSWCePRGFMs5hLEAEQEAAYkCPAQYAQgAJhYhBFEH5m00eIqT4yJ8kDqwVIbHdS/hBQJiN+yEAhsMBQkDwmcAAAoJEDqwVIbHdS/hbhQQAIqKJuw59/USsUSRCs98kE8Ajpm0GHD4prgm7pLpWaDb/Z88qlALMOOgA797Rc+B7mCIaYq9uChBhX5di3g8N0yWFUOtJOr0uy43XcnP0Ll+3Wsz19eWct0/Mud/P5Ez0U3absdDOv8lu/ZBy/5JyldzqfCPdIWk030bsvCWOim7O1pisCsO6tWhp5GTaKt39vDw7FeCC48K4K61ueL1wsDFcYYn3ImU2soli4KFdPo1BeJtaCjG/VD1r4Vv8t4lCnSYksCAwV+vcHqBm7GdZKtrBA/TxMjihJqAyEEEigjEA9crIlgxzV27JlaLaNs7qs8AqjYjttq9eoqXPnyg0yqCDlRpnZaTqm2bf1wF3yzWUuTpNXLYbiGymNwqvuBgKxe+1q9SoAslbbyhOoEmDlnDagGtMmQF2xifx6w1VDaMrmEPyVoQNKOH0nu0W3X3aNEo/7PFexT
-        zGRp5BUC/QECF1e24osBzH901Cyzz/jCrXFf0ctIHQDRxBgY8UGqH7HVjowv5F3utxH9HxRrd0HvOcL+lMXUHScFHjx15N+NVtchhlWJyrW/wuz4vgLQEOpYYXKZ0yDEb9H6bmeNWh2yUxod4t6tw++Wr8yioJBRaNzU4O2jsO3zQlzWXbJQ8C8BpkV/HdfR5l4bth5U9WnHT6DpEkMB505yipnCge0jduDMEY62jzRYJKwYBBAHaRw8BAQdAoBS/mNv08cEN6n/mweAIA5nhNdKGWyXVpVqcXdQP+auJAjYEGAEIACAWIQRRB+ZtNHiKk+MifJA6sFSGx3Uv4QUCY62jzQIbIAAKCRA6sFSGx3Uv4S+rEACioiDUOR9Go4gflH+lp1HpDF0SqNAUwuLWq3X1SzWaOZKVoHBuXEThJx+zy6niBClgHKpTulc/bqsL9651teYx6N+gbntjdPpyjTXjo10GLvy7wEqb6xeZQMbpBh/FGe3Ns8EqZzgxGOgIJpDCxX2r7uR93DdXMfwklgAZ3RBdBDoOc9ydclhN855bf9h+LoouszCZCznnlQSsGjBv9Ojfn2QNzGd3/cCrL7xS82PguDXopi6oZycp9LpfKKWL7BWmkQT8lgbSrm+QNY4DzMiNPhcqMb+8Yj+V7kqbBS/yWV/kbl5CrI5P/Iz4ZeqKrh07dKUJaj+RGaifW3cZFx/VCHqLxVfa3DwrHtFwQops4/lewpCqBtfx9UWGHRZIfn2Y9EEEmx94ymhO3nN3bVo0GZHCgfcvSDbFgNEefbakVoCAMq6/oiPZTRN0bxktVC7r36lybcbRdCX+MF6OXZb/jjJ71WzkhThEaA+NXx6uaxOvIhgOU0h1qLFkxPpESEYolyhRSs2urvTtbFG/PqHHGlxrl2vLaRee5YJDfvpar+unOY44lfYVdvqd3udMbXhb7FFfajz0iSsok4VwEkh/6BCZ+x8sMSueroMf1jMFsN1LK7Vr
-        OhxtP1vYUoyv1iQpYsijVlqHhqbA7Va/jVwBJi40tjMFS0E91mK1iRtBzA==
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0-1 
+        s=k20201202; t=1701923652;
+        bh=pwk0NVvM3OzErLnSqfGhNAC6MvdYkvcl/3vF7TAYcWc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=YixjbXGmGZpAOokl0JNJqmNh0F4ACYA8lhjT4Jzn0/wkUCJY7ygPO7wIUi2gtOaXo
+         RAgQe8LK8+5T2PVIfWzNHfgDXv2yv3SMu3/UvvOB8r0WA1SDPhQtc+j7FasPlBzWnw
+         I9GVW83GqYqlNyBWj3PWbp4U1fIj4XgqF+FaqJiVXKpkLCfXPHSIBAvIsNZQLm73DK
+         /hr1yNbkYblBnI2m+idaaMhiJ6S+3F77HKzLc28JQgOuJwtg82BpCLQtr+ucCP8DfM
+         yMXs4AE4akYiJJLwJrmEan9FBV4t+t8ORjxuwViEnTfvLhpeB5wogSqgC+9LxNfFkT
+         8aizF1pgS88sQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id F1557CE0E88; Wed,  6 Dec 2023 20:34:11 -0800 (PST)
+Date:   Wed, 6 Dec 2023 20:34:11 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, David.Laight@aculab.com,
+        richard@nod.at, mjguzik@gmail.com,
+        Simon Horman <horms@verge.net.au>,
+        Julian Anastasov <ja@ssi.bg>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [RFC PATCH 47/86] rcu: select PREEMPT_RCU if PREEMPT
+Message-ID: <842f589e-5ea3-4c2b-9376-d718c14fabf5@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <e939c924-1dfa-4a6a-9309-2430f19467f5@paulmck-laptop>
+ <87wmu2ywrk.ffs@tglx>
+ <fa1249f7-9a5d-4696-9246-4913365b6715@paulmck-laptop>
+ <20231205100114.0bd3c4a2@gandalf.local.home>
+ <1375e409-2593-45e1-b27e-3699c17c47dd@paulmck-laptop>
+ <20231205154518.70d042c3@gandalf.local.home>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205154518.70d042c3@gandalf.local.home>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -61,88 +75,237 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David, this really needs your feedback.
+On Tue, Dec 05, 2023 at 03:45:18PM -0500, Steven Rostedt wrote:
+> On Tue, 5 Dec 2023 11:38:42 -0800
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > > 
+> > > Note that the new preemption model is a new paradigm and we need to start
+> > > thinking a bit differently if we go to it.  
+> > 
+> > We can of course think differently, but existing hardware and software
+> > will probably be a bit more stubborn.
+> 
+> Not at all. I don't see how hardware plays a role here, but how software is
+> designed does sometimes require thinking differently.
 
-BR, Jarkko
+The hardware runs the software and so gets its say.  And I of course do
+agree that changes in software sometimes require thinking differently,
+but I can also personally attest to how much work it is and how long it
+takes to induce changes in thinking.  ;-)
 
-On Wed, 2023-12-06 at 14:57 +0000, Luis Henriques wrote:
-> Make sure the garbage collector has been run before cycling through
-> all
-> the user keys.
->=20
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> ---
-> Hi!
->=20
-> This patch is mostly for getting some feedback on how to fix an
-> fstest
-> failing for ext4/fscrypt (generic/581).=C2=A0 Basically, the test relies
-> on the
-> data read from /proc/key-users to be up-to-date regarding the number
-> of
-> keys a given user currently has.=C2=A0 However, this file can't be truste=
-d
-> because it races against the keys GC.
->=20
-> Using flush_work() seems to work (I can't reproduce the failure), but
-> it
-> may be overkill.=C2=A0 Or simply not acceptable.=C2=A0 Maybe, as Eric sug=
-gested
-> elsewhere [1], there could be a synchronous
-> key_put/revoke/invalidate/...,
-> which would wait for the key GC to do its work, although that
-> probably
-> would require some more code re-work.
->=20
-> [1]
-> https://lore.kernel.org/all/20231128173734.GD1148@sol.localdomain/
->=20
-> =C2=A0security/keys/gc.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 6 ++++++
-> =C2=A0security/keys/internal.h | 1 +
-> =C2=A0security/keys/proc.c=C2=A0=C2=A0=C2=A0=C2=A0 | 1 +
-> =C2=A03 files changed, 8 insertions(+)
->=20
-> diff --git a/security/keys/gc.c b/security/keys/gc.c
-> index 3c90807476eb..57b5a54490a0 100644
-> --- a/security/keys/gc.c
-> +++ b/security/keys/gc.c
-> @@ -44,6 +44,12 @@ struct key_type key_type_dead =3D {
-> =C2=A0	.name =3D ".dead",
-> =C2=A0};
-> =C2=A0
-> +void key_flush_gc(void)
-> +{
-> +	kenter("");
-> +	flush_work(&key_gc_work);
-> +}
-> +
-> =C2=A0/*
-> =C2=A0 * Schedule a garbage collection run.
-> =C2=A0 * - time precision isn't particularly important
-> diff --git a/security/keys/internal.h b/security/keys/internal.h
-> index 471cf36dedc0..fee1d0025d96 100644
-> --- a/security/keys/internal.h
-> +++ b/security/keys/internal.h
-> @@ -170,6 +170,7 @@ extern void keyring_restriction_gc(struct key
-> *keyring,
-> =C2=A0extern void key_schedule_gc(time64_t gc_at);
-> =C2=A0extern void key_schedule_gc_links(void);
-> =C2=A0extern void key_gc_keytype(struct key_type *ktype);
-> +extern void key_flush_gc(void);
-> =C2=A0
-> =C2=A0extern int key_task_permission(const key_ref_t key_ref,
-> =C2=A0			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct cred *cred,
-> diff --git a/security/keys/proc.c b/security/keys/proc.c
-> index d0cde6685627..2837e00a240a 100644
-> --- a/security/keys/proc.c
-> +++ b/security/keys/proc.c
-> @@ -277,6 +277,7 @@ static void *proc_key_users_start(struct seq_file
-> *p, loff_t *_pos)
-> =C2=A0	struct rb_node *_p;
-> =C2=A0	loff_t pos =3D *_pos;
-> =C2=A0
-> +	key_flush_gc();
-> =C2=A0	spin_lock(&key_user_lock);
-> =C2=A0
-> =C2=A0	_p =3D key_user_first(seq_user_ns(p), &key_user_tree);
+> > > One thing I would like to look into with the new work is to have holding a
+> > > mutex ignore the NEED_RESCHED_LAZY (similar to what is done with spinlock
+> > > converted to mutex in the RT kernel). That way you are less likely to be
+> > > preempted while holding a mutex.  
+> > 
+> > I like the concept, but those with mutex_lock() of rarely-held mutexes
+> > in their fastpaths might have workloads that have a contrary opinion.
+> 
+> I don't understand your above statement. Maybe I wasn't clear with my
+> statement? The above is more about PREEMPT_FULL, as it currently will
+> preempt immediately. My above comment is that we can have an option for
+> PREEMPT_FULL where if the scheduler decided to preempt even in a fast path,
+> it would at least hold off until there's no mutex held. Who cares if it's a
+> fast path when a task needs to give up the CPU for another task? What I
+> worry about is scheduling out while holding a mutex which increases the
+> chance of that mutex being contended upon. Which does have drastic impact
+> on performance.
 
+As I understand the current mutex_lock() code, the fastpaths leave no
+scheduler-visible clue that a mutex is in fact held.  If there is no
+such clue, it is quite likely that those fastpaths will need to do some
+additional clue-leaving work, increasing their overhead.  And while it
+is always possible that this overhead will be down in the noise, if it
+was too far down in the noise there would be no need for those fastpaths.
+
+So it is possible (but by no means certain) that some workloads will end
+up caring.
+
+> > > > Another is the aforementioned situations where removing the cond_resched()
+> > > > increases latency.  Yes, capping the preemption latency is a wonderful
+> > > > thing, and the people I chatted with are all for that, but it is only
+> > > > natural that there would be a corresponding level of concern about the
+> > > > cases where removing the cond_resched() calls increases latency.  
+> > > 
+> > > With the "capped preemption" I'm not sure that would still be the case.
+> > > cond_resched() currently only preempts if NEED_RESCHED is set. That means
+> > > the system had to already be in a situation that a schedule needs to
+> > > happen. There's lots of places in the kernel that run for over a tick
+> > > without any cond_resched(). The cond_resched() is usually added for
+> > > locations that show tremendous latency (where either a watchdog triggered,
+> > > or showed up in some analysis that had a latency that was much greater than
+> > > a tick).  
+> > 
+> > For non-real-time workloads, the average case is important, not just the
+> > worst case.  In the new lazily preemptible mode of thought, a preemption
+> > by a non-real-time task will wait a tick.  Earlier, it would have waited
+> > for the next cond_resched().  Which, in the average case, might have
+> > arrived much sooner than one tick.
+> 
+> Or much later. It's random. And what's nice about this model, we can add
+> more models than just "NONE", "VOLUNTARY", "FULL". We could have a way to
+> say "this task needs to preempt immediately" and not just for RT tasks.
+> 
+> This allows the user to decide which task preempts more and which does not
+> (defined by the scheduler), instead of some random cond_resched() that can
+> also preempt a higher priority task that just finished its quota to run a
+> low priority task causing latency for the higher priority task.
+> 
+> This is what I mean by "think differently".
+
+I did understand your meaning, and it is a source of some concern.  ;-)
+
+When things become sufficiently stable, larger-scale tests will of course
+be needed, not just different thought..
+
+> > > The point is, if/when we switch to the new preemption model, we would need
+> > > to re-evaluate if any cond_resched() is needed. Yes, testing needs to be
+> > > done to prevent regressions. But the reasons I see cond_resched() being
+> > > added today, should no longer exist with this new model.  
+> > 
+> > This I agree with.  Also, with the new paradigm and new mode of thought
+> > in place, it should be safe to drop any cond_resched() that is in a loop
+> > that consumes more than a tick of CPU time per iteration.
+> 
+> Why does that matter? Is the loop not important? Why stop it from finishing
+> for some random task that may not be important, and cond_resched() has no
+> idea if it is or not.
+
+Because if it takes more than a tick to reach the next cond_resched(),
+lazy preemption is likely to preempt before that cond_resched() is
+reached.  Which suggests that such a cond_resched() would not be all
+that valuable in the new thought paradigm.  Give or take potential issues
+with exactly where the preemption happens.
+
+> > > > There might be others as well.  These are the possibilities that have
+> > > > come up thus far.
+> > > >   
+> > > > > They all suck and keeping some of them is just counterproductive as
+> > > > > again people will sprinkle them all over the place for the very wrong
+> > > > > reasons.    
+> > > > 
+> > > > Yes, but do they suck enough and are they counterproductive enough to
+> > > > be useful and necessary?  ;-)  
+> > > 
+> > > They are only useful and necessary because of the way we handle preemption
+> > > today. With the new preemption model, they are all likely to be useless and
+> > > unnecessary ;-)  
+> > 
+> > The "all likely" needs some demonstration.  I agree that a great many
+> > of them would be useless and unnecessary.  Maybe even the vast majority.
+> > But that is different than "all".  ;-)
+> 
+> I'm betting it is "all" ;-) But I also agree that this "needs some
+> demonstration". We are not there yet, and likely will not be until the
+> second half of next year. So we have plenty of time to speak rhetorically
+> to each other!
+
+You know, we usually find time to engage in rhetorical conversation.  ;-)
+
+> > > The conflict is with the new paradigm (I love that word! It's so "buzzy").
+> > > As I mentioned above, cond_resched() is usually added when a problem was
+> > > seen. I really believe that those problems would never had been seen if
+> > > the new paradigm had already been in place.  
+> > 
+> > Indeed, that sort of wording does quite the opposite of raising my
+> > confidence levels.  ;-)
+> 
+> Yes, I admit the "manager speak" isn't something to brag about here. But I
+> really do like that word. It's just fun to say (and spell)! Paradigm,
+> paradigm, paradigm! It's that silent 'g'. Although, I wonder if we should
+> be like gnu, and pronounce it when speaking about free software? Although,
+> that makes the word sound worse. :-p
+
+Pair a' dime, pair a' quarter, pair a' fifty-cent pieces, whatever it takes!
+
+> > You know, the ancient Romans would have had no problem dealing with the
+> > dot-com boom, cryptocurrency, some of the shadier areas of artificial
+> > intelligence and machine learning, and who knows what all else.  As the
+> > Romans used to say, "Beware of geeks bearing grifts."
+> > 
+> > > > >   3) Looking at the initial problem Ankur was trying to solve there is
+> > > > >      absolutely no acceptable solution to solve that unless you think
+> > > > >      that the semantically invers 'allow_preempt()/disallow_preempt()'
+> > > > >      is anywhere near acceptable.    
+> > > > 
+> > > > I am not arguing for allow_preempt()/disallow_preempt(), so for that
+> > > > argument, you need to find someone else to argue with.  ;-)  
+> > > 
+> > > Anyway, there's still a long path before cond_resched() can be removed. It
+> > > was a mistake by Ankur to add those removals this early (and he has
+> > > acknowledged that mistake).  
+> > 
+> > OK, that I can live with.  But that seems to be a bit different of a
+> > take than that of some earlier emails in this thread.  ;-)
+> 
+> Well, we are also stating the final goal as well. I think there's some
+> confusion to what's going to happen immediately and what's going to happen
+> in the long run.
+
+If I didn't know better, I might suspect that in addition to the
+confusion, there are a few differences of opinion.  ;-)
+
+> > > First we need to get the new preemption modeled implemented. When it is, it
+> > > can be just a config option at first. Then when that config option is set,
+> > > you can enable the NONE, VOLUNTARY or FULL preemption modes, even switch
+> > > between them at run time as they are just a way to tell the scheduler when
+> > > to set NEED_RESCHED_LAZY vs NEED_RSECHED.  
+> > 
+> > Assuming CONFIG_PREEMPT_RCU=y, agreed.  With CONFIG_PREEMPT_RCU=n,
+> > the runtime switching needs to be limited to NONE and VOLUNTARY.
+> > Which is fine.
+> 
+> But why? Because the run time switches of NONE and VOLUNTARY are no
+> different than FULL.
+> 
+> Why I say that? Because:
+> 
+> For all modes, NEED_RESCHED_LAZY is set, the kernel has one tick to get out
+> or NEED_RESCHED will be set (of course that one tick may be configurable).
+> Once the NEED_RESCHED is set, then the kernel is converted to PREEMPT_FULL.
+> 
+> Even if the user sets the mode to "NONE", after the above scenario (one tick
+> after NEED_RESCHED_LAZY is set) the kernel will be behaving no differently
+> than PREEMPT_FULL.
+> 
+> So why make the difference between CONFIG_PREEMPT_RCU=n and limit to only
+> NONE and VOLUNTARY. It must work with FULL or it will be broken for NONE
+> and VOLUNTARY after one tick from NEED_RESCHED_LAZY being set.
+
+Because PREEMPT_FULL=y plus PREEMPT_RCU=n appears to be a useless
+combination.  All of the gains from PREEMPT_FULL=y are more than lost
+due to PREEMPT_RCU=n, especially when the kernel decides to do something
+like walk a long task list under RCU protection.  We should not waste
+people's time getting burned by this combination, nor should we waste
+cycles testing it.
+
+> > > At that moment, when that config is set, the cond_resched() can turn into a
+> > > nop. This will allow for testing to make sure there are no regressions in
+> > > latency, even with the NONE mode enabled.  
+> > 
+> > And once it appears to be reasonably stable (in concept as well as
+> > implementation), heavy testing should get underway.
+> 
+> Agreed.
+> 
+> > 
+> > > The real test is implementing the code and seeing how it affects things in
+> > > the real world. Us arguing about it isn't going to get anywhere.  
+> > 
+> > Indeed, the opinion of the objective universe always wins.  It all too
+> > often takes longer than necessary for the people arguing with each other
+> > to realize this, but such is life.
+> > 
+> > >                                                                  I just
+> > > don't want blind NACK. A NACK to a removal of a cond_resched() needs to
+> > > show that there was a real regression with that removal.  
+> > 
+> > Fair enough, although a single commit bulk removing a large number of
+> > cond_resched() calls will likely get a bulk NAK.
+> 
+> We'll see. I now have a goal to hit!
+
+;-) ;-) ;-)
+
+							Thanx, Paul
