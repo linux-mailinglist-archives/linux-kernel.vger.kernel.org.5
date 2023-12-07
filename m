@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D67CA80816F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D498680817B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:08:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377964AbjLGHI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 02:08:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
+        id S1377949AbjLGHIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 02:08:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377825AbjLGHIO (ORCPT
+        with ESMTP id S1377922AbjLGHIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 02:08:14 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D845010DD
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 23:08:18 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54c64316a22so767324a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 23:08:18 -0800 (PST)
+        Thu, 7 Dec 2023 02:08:18 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1007B10F0
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 23:08:21 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54c77e0835bso726081a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 23:08:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1701932897; x=1702537697; darn=vger.kernel.org;
+        d=tuxon.dev; s=google; t=1701932899; x=1702537699; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gywAwq9qJG6+p4wdmC5POU/toms4P6YzG5VQvmZQgJo=;
-        b=SF9xKO9dTlRHbzKzxxgMv1dwTpKAdBXeZJeBvEGOn25NesbB3uPDly614Z5rzkIOA4
-         aU3lhrBLa9Bpat4khyijYgsvsVSOiY0qLUmgm0XOA8h52dykkeuiRglgxKbQrt4RPacR
-         mXCliiHSEUgXlE+yyn+u+iXB4LxA47AMUCBGzugLd5xBBjoX3zepJsGsVnKPwiKSKChd
-         Ov6WwIBb2PzPrRIFd+x8BQuKuUzyg1s8wz3b8v07oNluMDXW2uYBLkfxnef3b4r6uAaX
-         8DfXpV6hWK6Ps+stdAzW7ml9B4iwuGbKfpMQ4TMOaLhX5BRVC8vfTngY8hrd62KlZidE
-         vkaw==
+        bh=KuAnHZUJssT/ogjytdawjrgSLlqBwwzWO4plVJg60Do=;
+        b=jqMXOIHM7NIXqMSoon8Tj4OiojoQsSLX2/6BgPjh+kQEJb2tNRAvMtwr80Zq/+rxar
+         zA6zWDMwm1H7uKoO6SUqbKvJuqYEkyqH+cAYLEWSVqMzzHZJXa4SVlI92vPjrOTU+uJd
+         54WU0CELrbRUuz6yPC4i1buqDWphqHEKSiZSKy6TVDdraaf6TLx9vIDbvPMioneYPaLh
+         lrXYCDqR7roY1d2s05sjVo3lU2onA3bhE4VZnpLGE58FvQVj78oL/nFMbaHbM12Heg0d
+         zP21IRcdYVgXyTk89LXgqYxiAzywVARsz0kr7GOzei/VwbT9y9iFYuOPHv547AF4xZZC
+         t5HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701932897; x=1702537697;
+        d=1e100.net; s=20230601; t=1701932899; x=1702537699;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gywAwq9qJG6+p4wdmC5POU/toms4P6YzG5VQvmZQgJo=;
-        b=RloKlaf9GGB/PyAAl6iTALEZMca7nqdD6MFDXwMt20ngzbzoO2xG7d1SRZ2dc4Ocda
-         sRm0AId+jTNE6rZyJoSljjDmvRRF7gb3zZAJ2kCi/VOEMCRziUVyZsNmHBmWxkgfDSqM
-         0YI8LCgcW5Xqo6CScD9CkSk1vHFAel/JsBnBKcJ61VLKoRjsAmCXXmWc3/SIlNUWFXfL
-         1G3m9VOz9jVdW6AYwWbZ4enhIrHBhov3zl42UC6aOSeVyat7bowoKm05PAP7Gcj5z+bL
-         N4Kd4pqsmQkFzZxyUJOa3PR3/pqJrRX5PlkLYv2NrSUJUDrhOMy5XYizjXera8XNiRT5
-         Tcxw==
-X-Gm-Message-State: AOJu0YxLTKaW4BLpp53Iu/fm276bc9Ur/p2cjs91+qAbHF3lo58temJg
-        cI/qjlOGsc7fA/tWlzwM6ASpLg==
-X-Google-Smtp-Source: AGHT+IH2s13SvnGUnp9Exacy8WvKTCkwe6cVk81dwDV/TMe00FfiDjtDFUaBNkpHFymxLpe4GnkSVw==
-X-Received: by 2002:a50:a699:0:b0:53e:1825:be81 with SMTP id e25-20020a50a699000000b0053e1825be81mr1329406edc.21.1701932896937;
-        Wed, 06 Dec 2023 23:08:16 -0800 (PST)
+        bh=KuAnHZUJssT/ogjytdawjrgSLlqBwwzWO4plVJg60Do=;
+        b=r1jUXhESfiJJSPVvxUDpr6XUcAh3nXhPUPS7DGThcsSLzqTSieNzlgioAPseY/dTM+
+         /Yxo/azLZ0N3nXdjTfbQA+R2HDroa/VHgLN7fLIg9DXK82IEjwcjwKH7jNeyGORsERM3
+         kokm+4poNmF0cU1Tscav71Vg7lOSYmbg4LEmf4Po8MnBoP2gObLirO0jTIxqDWref+AT
+         he2AHm2BayLgnjPik0RTuDik5xJKAjj6kPAdEwJHd4fMif9Vr3XORFe6o5ibD3gv3u4m
+         hMg3dS0bpl/OfmJDIhyYcn/5eAUmiS0l9t/rJZxc+tcKOZ+AkXgYFf0cTL51rW/pRHwx
+         tIUQ==
+X-Gm-Message-State: AOJu0YzVA7IN8e7+uH1OwmX8zhdMAB1MK5w/58tVx6Pt6SD5lel+hdyc
+        lKdHQvg8xbgM0Jde5dJ9TtfQvQ==
+X-Google-Smtp-Source: AGHT+IEK/F8KEkOlDZ8jP3JRofMjdFI+uwlBNgwbxKm8acFivOfhgfyBJhuNrj6wnLXSiVf/gPl5mQ==
+X-Received: by 2002:a05:6402:1ada:b0:54c:4837:8b5e with SMTP id ba26-20020a0564021ada00b0054c48378b5emr1070240edb.44.1701932899557;
+        Wed, 06 Dec 2023 23:08:19 -0800 (PST)
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.22])
-        by smtp.gmail.com with ESMTPSA id b41-20020a509f2c000000b0054cb88a353dsm420818edf.14.2023.12.06.23.08.14
+        by smtp.gmail.com with ESMTPSA id b41-20020a509f2c000000b0054cb88a353dsm420818edf.14.2023.12.06.23.08.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 23:08:16 -0800 (PST)
+        Wed, 06 Dec 2023 23:08:19 -0800 (PST)
 From:   Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
@@ -63,9 +63,9 @@ Cc:     linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
         Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH v2 06/11] pinctrl: renesas: rzg2l: Add output enable support
-Date:   Thu,  7 Dec 2023 09:06:55 +0200
-Message-Id: <20231207070700.4156557-7-claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH v2 07/11] pinctrl: renesas: rzg2l: Add input enable to the Ethernet pins
+Date:   Thu,  7 Dec 2023 09:06:56 +0200
+Message-Id: <20231207070700.4156557-8-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231207070700.4156557-1-claudiu.beznea.uj@bp.renesas.com>
 References: <20231207070700.4156557-1-claudiu.beznea.uj@bp.renesas.com>
@@ -83,192 +83,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Some of the Ethernet pins on RZ/G3S (but also valid for RZ/G2L) need to
-have the direction of the IO buffer set as output for Ethernet to work
-properly. On RZ/G3S, these pins are P1_0/P7_0, P1_1/P7_1 which could have
-the following Ethernet functions: TXC/TX_CLK or TX_CTL/TX_EN.
-
-As the pins supporting output enable are SoC specific and there is a
-limited number of these pins (TXC/TX_CLK and/or TX_CTL/TX_EN), for proper
-validation the output enable capable port limits were specified on
-platform-based configuration data structure.
-
-The OEN support has been intantiated for RZ/G3S at the moment.
+Some of the RZ/G3S Ethernet pins (P1_0, P7_0) could be configured with
+input enable. Enable this functionality for these pins.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
 
 Changes in v2:
-- use 8 bit helpers to get/set value of output enable register
-- adapted to code to work for both RZ/G2L based devices and RZ/G3S
-- removed IEN capability for Ethernet pins and added it in a separate
-  patch (patch 07/12)
-  
-  
- drivers/pinctrl/renesas/pinctrl-rzg2l.c | 87 ++++++++++++++++++++++++-
- 1 file changed, 85 insertions(+), 2 deletions(-)
+- this patch is new in v2
+
+
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-index 6b082161e821..0c05ccd03eb2 100644
+index 0c05ccd03eb2..03253b3150e0 100644
 --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
 +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-@@ -57,6 +57,7 @@
- #define PIN_CFG_FILCLKSEL		BIT(12)
- #define PIN_CFG_IOLH_C			BIT(13)
- #define PIN_CFG_SOFT_PS			BIT(14)
-+#define PIN_CFG_OEN			BIT(15)
- 
- #define RZG2L_MPXED_COMMON_PIN_FUNCS(group) \
- 					(PIN_CFG_IOLH_##group | \
-@@ -109,6 +110,7 @@
- #define SD_CH(off, ch)		((off) + (ch) * 4)
- #define ETH_POC(off, ch)	((off) + (ch) * 4)
- #define QSPI			(0x3008)
-+#define ETH_MODE		(0x3018)
- 
- #define PVDD_2500		2	/* I/O domain voltage 2.5V */
- #define PVDD_1800		1	/* I/O domain voltage <= 1.8V */
-@@ -170,6 +172,8 @@ enum rzg2l_iolh_index {
-  * @iolh_groupb_oi: IOLH group B output impedance specific values
-  * @drive_strength_ua: drive strength in uA is supported (otherwise mA is supported)
-  * @func_base: base number for port function (see register PFC)
-+ * @oen_max_pin: the maximum pin number supporting output enable
-+ * @oen_max_port: the maximum port number supporting output enable
-  */
- struct rzg2l_hwcfg {
- 	const struct rzg2l_register_offsets regs;
-@@ -179,6 +183,8 @@ struct rzg2l_hwcfg {
- 	u16 iolh_groupb_oi[4];
- 	bool drive_strength_ua;
- 	u8 func_base;
-+	u8 oen_max_pin;
-+	u8 oen_max_port;
- };
- 
- struct rzg2l_dedicated_configs {
-@@ -782,6 +788,66 @@ static bool rzg2l_ds_is_supported(struct rzg2l_pinctrl *pctrl, u32 caps,
- 	return false;
- }
- 
-+static bool rzg2l_oen_is_supported(u32 caps, u8 pin, u8 max_pin)
-+{
-+	if (!(caps & PIN_CFG_OEN))
-+		return false;
-+
-+	if (pin > max_pin)
-+		return false;
-+
-+	return true;
-+}
-+
-+static u8 rzg2l_pin_to_oen_bit(u32 offset, u8 pin, u8 max_port)
-+{
-+	if (pin)
-+		pin *= 2;
-+
-+	if (offset / RZG2L_PINS_PER_PORT == max_port)
-+		pin += 1;
-+
-+	return pin;
-+}
-+
-+static u32 rzg2l_read_oen(struct rzg2l_pinctrl *pctrl, u32 caps, u32 offset, u8 pin)
-+{
-+	u8 max_port = pctrl->data->hwcfg->oen_max_port;
-+	u8 max_pin = pctrl->data->hwcfg->oen_max_pin;
-+	u8 bit;
-+
-+	if (!rzg2l_oen_is_supported(caps, pin, max_pin))
-+		return 0;
-+
-+	bit = rzg2l_pin_to_oen_bit(offset, pin, max_port);
-+
-+	return !(readb(pctrl->base + ETH_MODE) & BIT(bit));
-+}
-+
-+static int rzg2l_write_oen(struct rzg2l_pinctrl *pctrl, u32 caps, u32 offset, u8 pin, u8 oen)
-+{
-+	u8 max_port = pctrl->data->hwcfg->oen_max_port;
-+	u8 max_pin = pctrl->data->hwcfg->oen_max_pin;
-+	unsigned long flags;
-+	u8 val, bit;
-+
-+	if (!rzg2l_oen_is_supported(caps, pin, max_pin))
-+		return -EINVAL;
-+
-+	bit = rzg2l_pin_to_oen_bit(offset, pin, max_port);
-+
-+	spin_lock_irqsave(&pctrl->lock, flags);
-+	val = readb(pctrl->base + ETH_MODE);
-+	if (oen)
-+		val &= ~BIT(bit);
-+	else
-+		val |= BIT(bit);
-+	writeb(val, pctrl->base + ETH_MODE);
-+	spin_unlock_irqrestore(&pctrl->lock, flags);
-+
-+	return 0;
-+}
-+
- static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
- 				     unsigned int _pin,
- 				     unsigned long *config)
-@@ -819,6 +885,12 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
- 			return -EINVAL;
- 		break;
- 
-+	case PIN_CONFIG_OUTPUT_ENABLE:
-+		arg = rzg2l_read_oen(pctrl, cfg, _pin, bit);
-+		if (!arg)
-+			return -EINVAL;
-+		break;
-+
- 	case PIN_CONFIG_POWER_SOURCE:
- 		ret = rzg2l_get_power_source(pctrl, _pin, cfg);
- 		if (ret < 0)
-@@ -920,6 +992,13 @@ static int rzg2l_pinctrl_pinconf_set(struct pinctrl_dev *pctldev,
- 			rzg2l_rmw_pin_config(pctrl, IEN(off), bit, IEN_MASK, !!arg);
- 			break;
- 
-+		case PIN_CONFIG_OUTPUT_ENABLE:
-+			arg = pinconf_to_config_argument(_configs[i]);
-+			ret = rzg2l_write_oen(pctrl, cfg, _pin, bit, !!arg);
-+			if (ret)
-+				return ret;
-+			break;
-+
- 		case PIN_CONFIG_POWER_SOURCE:
- 			settings.power_source = pinconf_to_config_argument(_configs[i]);
- 			break;
-@@ -1364,7 +1443,8 @@ static const u32 r9a07g043_gpio_configs[] = {
- static const u32 r9a08g045_gpio_configs[] = {
+@@ -1444,7 +1444,7 @@ static const u32 r9a08g045_gpio_configs[] = {
  	RZG2L_GPIO_PORT_PACK(4, 0x20, RZG3S_MPXED_PIN_FUNCS(A)),			/* P0  */
  	RZG2L_GPIO_PORT_PACK(5, 0x30, RZG2L_MPXED_ETH_PIN_FUNCS(PIN_CFG_IOLH_C |
--								PIN_CFG_IO_VMC_ETH0)),	/* P1 */
-+								PIN_CFG_IO_VMC_ETH0)) |
-+				      PIN_CFG_OEN,					/* P1 */
+ 								PIN_CFG_IO_VMC_ETH0)) |
+-				      PIN_CFG_OEN,					/* P1 */
++				      PIN_CFG_OEN | PIN_CFG_IEN,			/* P1 */
  	RZG2L_GPIO_PORT_PACK(4, 0x31, RZG2L_MPXED_ETH_PIN_FUNCS(PIN_CFG_IOLH_C |
  								PIN_CFG_IO_VMC_ETH0)),	/* P2 */
  	RZG2L_GPIO_PORT_PACK(4, 0x32, RZG2L_MPXED_ETH_PIN_FUNCS(PIN_CFG_IOLH_C |
-@@ -1374,7 +1454,8 @@ static const u32 r9a08g045_gpio_configs[] = {
- 	RZG2L_GPIO_PORT_PACK(5, 0x21, RZG3S_MPXED_PIN_FUNCS(A)),			/* P5  */
+@@ -1455,7 +1455,7 @@ static const u32 r9a08g045_gpio_configs[] = {
  	RZG2L_GPIO_PORT_PACK(5, 0x22, RZG3S_MPXED_PIN_FUNCS(A)),			/* P6  */
  	RZG2L_GPIO_PORT_PACK(5, 0x34, RZG2L_MPXED_ETH_PIN_FUNCS(PIN_CFG_IOLH_C |
--								PIN_CFG_IO_VMC_ETH1)),	/* P7 */
-+								PIN_CFG_IO_VMC_ETH1)) |
-+				      PIN_CFG_OEN,					/* P7 */
+ 								PIN_CFG_IO_VMC_ETH1)) |
+-				      PIN_CFG_OEN,					/* P7 */
++				      PIN_CFG_OEN | PIN_CFG_IEN,			/* P7 */
  	RZG2L_GPIO_PORT_PACK(5, 0x35, RZG2L_MPXED_ETH_PIN_FUNCS(PIN_CFG_IOLH_C |
  								PIN_CFG_IO_VMC_ETH1)),	/* P8 */
  	RZG2L_GPIO_PORT_PACK(4, 0x36, RZG2L_MPXED_ETH_PIN_FUNCS(PIN_CFG_IOLH_C |
-@@ -1956,6 +2037,8 @@ static const struct rzg2l_hwcfg rzg3s_hwcfg = {
- 	},
- 	.drive_strength_ua = true,
- 	.func_base = 1,
-+	.oen_max_pin = 1, /* Pin 1 of P0 and P7 is the maximum OEN pin. */
-+	.oen_max_port = 7, /* P7_1 is the maximum OEN port. */
- };
- 
- static struct rzg2l_pinctrl_data r9a07g043_data = {
 -- 
 2.39.2
 
