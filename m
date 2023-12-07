@@ -2,101 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B818808880
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E994F80887F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbjLGMvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 07:51:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43458 "EHLO
+        id S1379472AbjLGMwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:52:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232583AbjLGMvU (ORCPT
+        with ESMTP id S232583AbjLGMwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 07:51:20 -0500
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCF0D5C;
-        Thu,  7 Dec 2023 04:51:23 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 2ADA5100008;
-        Thu,  7 Dec 2023 15:51:21 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 2ADA5100008
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1701953481;
-        bh=fI5OzawEGCVVfRbMhXE1Of2XRpyVwMZSfxOH5EOrJ1o=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=N9/bCE5o94pPixmQ6rwVigYyQ8ZL1iWdN3H/ufJbuG/fJmBzC9B70M7Eoay6t7FDw
-         oxcblJ1d8+s2ljK8OVXEcoVQI0pi2Ww+RV0dyc3kaxNPhfplP3APYPDoq6XQbpmUSp
-         XWj+PmNtWEeYkfMolrzH9LqSq7r2ZoD5owypj4jX75gVfw8eJ/83lwbvcwuRGFMpA2
-         gw63RsmrnvH+sw02s6qyY6+kJPO4n4dy4zOGip7BPd9b4HZsC8ZtbFQjt5arC0e7YX
-         QTbKG3wnO5+fev8HWiFVzM9VhppNYGUu44S+HSbQAbsoT8g50AQlSsQQc1v5nNxf0/
-         mMxVTg0ZXWriA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu,  7 Dec 2023 15:51:20 +0300 (MSK)
-Received: from [192.168.1.127] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 7 Dec 2023 15:51:19 +0300
-Message-ID: <57ea099a-8b88-4b16-9b54-b81e5b28bcb6@salutedevices.com>
-Date:   Thu, 7 Dec 2023 15:51:44 +0300
+        Thu, 7 Dec 2023 07:52:14 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A2ED7F
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:52:20 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54bfa9b3ffaso1259660a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 04:52:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701953538; x=1702558338; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E2V1Nu5Y3M7B3c5KtqzFbEZA29nzyhwL2JmdTIY4szc=;
+        b=YjprtQhldkfGAJQNy+UfThmCa4zhfZy8zfBGmy0amyLBlUpOVW31nzw0iUEt0Mrxlm
+         bvBt6l/NCZUXbhLM85TvTPashgXcx64ml1oPYFaLSctGBatzTlB0Tcz5v+ZiWmDIZimu
+         EZNq2vlj/oegIa+9DSvGzHOSzcy0+snm8QxlETItcbNqkEjnKYUNWTsn1HVfX1zjPXbx
+         m/Eq9iB7LbuMVN5UXAuKiRE32lXzmKeXKk6TG491opKuHzUQHvISHkc5u/BXmpsRL+N6
+         jkXKEElcDh4+2hq5n5lTKv1LhE3rwjm8CsZWiH2ZNQMcOSQtWh0OQAEkXQ18a88ax9zx
+         kC8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701953538; x=1702558338;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E2V1Nu5Y3M7B3c5KtqzFbEZA29nzyhwL2JmdTIY4szc=;
+        b=li0WOkjs7Qty9H8gP6L6Cd/LXJMmckBfLD3LcZn6St3aXDBoM2LDB23rrwRlJQgtkw
+         cmoN8/3BMgVOLxCnlRqSXsbY+2vgYTd40qGhxrcLL/uPdNJQrTOKIrpkdCBfWqo8vrbw
+         RCiAqf/lmZKrMUJS6jYJ7QQ0Uje54qk6W5Ktc1Af3cA6SrifAYhiXz7pdoDU5kdNkpYj
+         GWYsvn+v2sOd3QdrRtfeDGvwfekNqPhiocjaxpIqFER5LaoyHge6hMjkeRYZRqFseGVU
+         AFMlQ/OkYfYQjcYjHMmTSSBzlhdla0rNvXJYJemoo9M9ut3yxj+sY21ywxQ0TCFvhxlY
+         oCZQ==
+X-Gm-Message-State: AOJu0Yz5T1jZM1qe/3RXINW3I59MHV1iauY5a9dNuPg3rQPT9ESmFGhZ
+        RWwaI4yfwuNNGwsJMgH+48Jikg==
+X-Google-Smtp-Source: AGHT+IFht54XAvdFOQ/lNFTSE16Z0z3a5hJ4XsdAOJVB02lM8AR5iw4enjeAPcl2cN19a5tGdwNr6Q==
+X-Received: by 2002:a50:8d53:0:b0:54c:a676:d1de with SMTP id t19-20020a508d53000000b0054ca676d1demr1377196edt.60.1701953538552;
+        Thu, 07 Dec 2023 04:52:18 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id er9-20020a056402448900b0054c6a70a435sm736766edb.44.2023.12.07.04.52.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 04:52:18 -0800 (PST)
+Message-ID: <375bb6e4-18dc-4f54-9a06-6f9f2ba0a0ec@linaro.org>
+Date:   Thu, 7 Dec 2023 13:52:16 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/10] devm-helpers: introduce devm_mutex_init
+Subject: Re: [PATCH v3 3/4] riscv: dts: sophgo: add clock generator for Sophgo
+ CV1800 series SoC
 Content-Language: en-US
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Hans de Goede <hdegoede@redhat.com>, "pavel@ucw.cz" <pavel@ucw.cz>,
-        "lee@kernel.org" <lee@kernel.org>,
-        "vadimp@nvidia.com" <vadimp@nvidia.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "npiggin@gmail.com" <npiggin@gmail.com>,
-        "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
-        "jic23@kernel.org" <jic23@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "kernel@salutedevices.com" <kernel@salutedevices.com>
-References: <20231204180603.470421-1-gnstark@salutedevices.com>
- <20231204180603.470421-2-gnstark@salutedevices.com>
- <81798fe5-f89e-482f-b0d0-674ccbfc3666@redhat.com>
- <29584eb6-fa10-4ce0-9fa3-0c409a582445@salutedevices.com>
- <17a9fede-30e8-4cd5-ae02-fe34e11f5c20@csgroup.eu>
- <be693688-2e82-4e1a-9ead-cf1513ee637b@csgroup.eu>
- <2a68534b-9e64-4d6e-8a49-eeab0889841b@salutedevices.com>
- <CAHp75Veyz-hMYPDEiCC1WJASGZ8N9pVef0foYJ0vBcW2VpfR+w@mail.gmail.com>
- <34060476-86e5-42fb-a139-6790487c1568@csgroup.eu>
-From:   George Stark <gnstark@salutedevices.com>
-In-Reply-To: <34060476-86e5-42fb-a139-6790487c1568@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181936 [Dec 07 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/07 02:56:00 #22627289
-X-KSMG-AntiVirus-Status: Clean, skipped
+To:     Inochi Amaoto <inochiama@outlook.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Chen Wang <unicorn_wang@outlook.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Jisheng Zhang <jszhang@kernel.org>,
+        Liu Gui <kenneth.liu@sophgo.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        qiujingbao.dlmu@gmail.com, dlan@gentoo.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+References: <f9db367c-a96b-4789-9884-f2062499765a@linaro.org>
+ <IA1PR20MB49531D4EFD4626834B5C604ABB8BA@IA1PR20MB4953.namprd20.prod.outlook.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <IA1PR20MB49531D4EFD4626834B5C604ABB8BA@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -104,133 +134,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/7/23 15:28, Christophe Leroy wrote:
-> 
-> 
-> Le 07/12/2023 à 13:02, Andy Shevchenko a écrit :
->> On Thu, Dec 7, 2023 at 1:23 AM George Stark <gnstark@salutedevices.com> wrote:
->>> On 12/7/23 01:37, Christophe Leroy wrote:
->>>> Le 06/12/2023 à 23:14, Christophe Leroy a écrit :
->>
->> ...
->>
->>>> Looking at it closer, I have the feeling that you want to do similar to
->>>> devm_gpio_request() in linux/gpio.h :
->>>>
->>>> In linux/mutex.h, add a prototype for devm_mutex_init() when
->>>> CONFIG_DEBUG_MUTEXES is defined and an empty static inline otherwise.
->>>> Then define devm_mutex_init() in kernel/locking/mutex-debug.c
+On 07/12/2023 10:42, Inochi Amaoto wrote:
+>>> +&clk {
+>>> +	compatible = "sophgo,cv1810-clk";
+>>> +};
+>>> diff --git a/arch/riscv/boot/dts/sophgo/cv18xx.dtsi b/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+>>> index 2d6f4a4b1e58..6ea1b2784db9 100644
+>>> --- a/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+>>> +++ b/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+>>> @@ -53,6 +53,12 @@ soc {
+>>>  		dma-noncoherent;
+>>>  		ranges;
 >>>
->>> Yes, this would be almost perfect decision. BTW just as in linux/gpio.h
->>> we wouldn't have to include whole "linux/device.h" into mutex.h, only
->>> add forward declaration of struct device;
+>>> +		clk: clock-controller@3002000 {
+>>> +			reg = <0x03002000 0x1000>;
+>>> +			clocks = <&osc>;
+>>> +			#clock-cells = <1>;
 >>
->> In case you place it into a C-file. Otherwise you need a header for
->> the API and that is not acceptable for mutex.h.
+>> I don't find such layout readable and maintainable. I did some parts
+>> like this long, long time ago for one of my SoCs (Exynos54xx), but I
+>> find it over time unmaintainable approach. I strongly suggest to have
+>> compatible and other properties in one place, so cv1800 and cv1812, even
+>> if it duplicates the code.
 >>
 > 
-> Right, that's the reason why I'm suggesting to define devm_mutex_init()
-> in kernel/locking/mutex-debug.c.
+> Hi Krzysztof:
 > 
-> In linux/mutex.h, you define a stub for when CONFIG_DEBUG_MUTEXES is not
-> set, and the prototype of devm_mutex_init() when CONFIG_DEBUG_MUTEXES is
-> set.
+> Thanks for your advice, but I have a question about this: when I should
+> use the DT override? The memory mapping of the CV1800 and CV1810 are
+> almost the same (the CV1810 have more peripheral and the future SG200X
+> have the same layout). IIRC, this is why conor suggested using DT override
+> to make modification easier. But duplicating node seems to break thiS, so
+> I's pretty confused.
 
-Something like this:
+Go with whatever your subarchitecture and architecture maintainers
+prefer, I just shared my opinion that I find such code difficult to read
+and maintain.
 
-diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index a33aa9eb9fc3..4a6041a7fd44 100644
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -21,6 +21,8 @@
-  #include <linux/debug_locks.h>
-  #include <linux/cleanup.h>
+Extending node with supplies, pinctrl or even clocks would be readable.
+But the compatible: no. The same applies when you need to delete
+property or subnode: not readable/maintainable IMHO.
 
-+struct device;
-+
-  #ifdef CONFIG_DEBUG_LOCK_ALLOC
-  # define __DEP_MAP_MUTEX_INITIALIZER(lockname)			\
-  		, .dep_map = {					\
-@@ -127,6 +129,20 @@ extern void __mutex_init(struct mutex *lock, const 
-char *name,
-   */
-  extern bool mutex_is_locked(struct mutex *lock);
+Best regards,
+Krzysztof
 
-+#ifdef CONFIG_DEBUG_MUTEXES
-+
-+extern int devm_mutex_init(struct device *dev, struct mutex *lock);
-+
-+#else
-+
-+static inline int devm_mutex_init(struct device *dev, struct mutex *lock)
-+{
-+	mutex_init(lock);
-+	return 0;
-+}
-+
-+#endif
-+
-  #else /* !CONFIG_PREEMPT_RT */
-  /*
-   * Preempt-RT variant based on rtmutexes.
-@@ -169,6 +185,13 @@ do {							\
-  							\
-  	__mutex_init((mutex), #mutex, &__key);		\
-  } while (0)
-+
-+static inline int devm_mutex_init(struct device *dev, struct mutex *lock)
-+{
-+	mutex_init(lock);
-+	return 0;
-+}
-+
-  #endif /* CONFIG_PREEMPT_RT */
-
-  /*
-diff --git a/kernel/locking/mutex-debug.c b/kernel/locking/mutex-debug.c
-index bc8abb8549d2..d50dfa06e82c 100644
---- a/kernel/locking/mutex-debug.c
-+++ b/kernel/locking/mutex-debug.c
-@@ -19,6 +19,7 @@
-  #include <linux/kallsyms.h>
-  #include <linux/interrupt.h>
-  #include <linux/debug_locks.h>
-+#include <linux/device.h>
-
-  #include "mutex.h"
-
-@@ -104,3 +105,25 @@ void mutex_destroy(struct mutex *lock)
-  }
-
-  EXPORT_SYMBOL_GPL(mutex_destroy);
-+
-+static void devm_mutex_release(void *res)
-+{
-+	mutex_destroy(res);
-+}
-+
-+/**
-+ * devm_mutex_init - Resource-managed mutex initialization
-+ * @dev:	Device which lifetime mutex is bound to
-+ * @lock:	Pointer to a mutex
-+ *
-+ * Initialize mutex which is automatically destroyed when the driver is 
-detached.
-+ *
-+ * Returns: 0 on success or a negative error code on failure.
-+ */
-+int devm_mutex_init(struct device *dev, struct mutex *lock)
-+{
-+	mutex_init(lock);
-+	return devm_add_action_or_reset(dev, devm_mutex_release, lock);
-+}
-+
-+EXPORT_SYMBOL_GPL(devm_mutex_init);
-\ No newline at end of file
-
-
--- 
-Best regards
-George
