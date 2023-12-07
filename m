@@ -2,54 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D73807F72
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71121807F75
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:12:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbjLGEMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 23:12:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
+        id S229594AbjLGEMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 23:12:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLGEMS (ORCPT
+        with ESMTP id S229484AbjLGEMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 23:12:18 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D93D10C0
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 20:12:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1E55C433C9
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:12:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701922344;
-        bh=0RjgV47unZBqHuDbjr4/VkAWoqZn4Tl76xtyIEWOyh0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nlS5viHch/RcAiCqRdfO+367ziRpUvnEvaoVtrJObtLC1jnMJI7FLhQLyHzrcIG/j
-         4fjUN5D4eTHuQOxE4OYY95R+GBA955UkmHTrIXEmLtUl6iXa8rUSP9LnBN3Hd7uIsP
-         Tw/RruHlM9j98uMOxtPgmfflwiBAyRyF2bUX7pPYLqjYyll6bZkMaGcmC3RUp45aXQ
-         qVe5PbpQhWf1MBB73vppPkNXf6ZUP1cYriT6D3Wwot8LEUIhJy9PwbayYi18VdAHB/
-         /FSIDDQuSDo9poqx/CvIYEPdq4QidgNQl62XfbtdtUZOtcOSQtQ4s2j3wWS4nMpSJh
-         yt5fCTtZZAX9A==
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2c9f85eff28so3422811fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 20:12:24 -0800 (PST)
-X-Gm-Message-State: AOJu0Yzj6YnTugRjjEOiHKYvQfMqj/hhLZ2a/o3qgmKDM8cruRpsBjNw
-        Q+aAcSqED4nDSAgGIlgn01qJV/jYlFdY1uqVjPc=
-X-Google-Smtp-Source: AGHT+IHIPS1wDHWq56C+Y7X9N9a98eDKbLbm/xzE+PEo9oZw5MW4RGUFCfyRcPDXO2ej6s2EL9iNms2IOp97Li1iwrQ=
-X-Received: by 2002:a05:651c:1030:b0:2c9:d872:e7b3 with SMTP id
- w16-20020a05651c103000b002c9d872e7b3mr1141856ljm.106.1701922343104; Wed, 06
- Dec 2023 20:12:23 -0800 (PST)
+        Wed, 6 Dec 2023 23:12:44 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C5C1B4;
+        Wed,  6 Dec 2023 20:12:50 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B73GL2b029931;
+        Thu, 7 Dec 2023 04:12:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=DPjpRrL/za+yxHGpGqV2m9WYI4TpbKPjkDDWOXeGb5Q=;
+ b=ICgKLPeJdePNqAw7oxNYtNJ7GmCThS5k5hGsozeqtkZ+Rn+uwJvvY5mJfuMr38+5MQBV
+ Ha9YVzvfucP1CJO/2Ni30vC/3KtXtChWIZ+jjLBDPWJZI25qkDPgA8BJPJauvEEEsguo
+ 3QBjfn2LAsdgwzkWLnrOjTTIQDanvYnWEsFxbjpjHslV3mmMGApzxRGLi3esDU1+p1N1
+ DAgMEVf9skz/WmAMnMxDazED4iNrHPK2LMuqEg2o6zyZcgs+Le3PHdUP2kxet+cr8Iov
+ SnzVJQG8cmjF5HbeLq0aW63BHqn2bQ+Kpen78J0u4bUXmn0/o7MCgcFVLtxUfez6l4XE 9A== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uu2p88en5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 04:12:45 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B74CiCo029623
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 7 Dec 2023 04:12:44 GMT
+Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 6 Dec 2023 20:12:40 -0800
+Date:   Thu, 7 Dec 2023 09:42:36 +0530
+From:   Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>,
+        <dmitry.baryshkov@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 2/2] arm64: dts: qcom: ipq9574: Fix USB
+ 'vdda-pll-supply'
+Message-ID: <ZXFGNLhyEZC924T8@hu-varada-blr.qualcomm.com>
+References: <cover.1701160842.git.varada@hu-varada-blr.qualcomm.com>
+ <f98bbf0a515236709d999010f08c8f2470a31209.1701160842.git.varada@hu-varada-blr.qualcomm.com>
+ <832a6d4f-f561-4cf5-b1cb-7e4b2d4d50b4@linaro.org>
+ <ZWW9oF24YUGfev+2@hu-varada-blr.qualcomm.com>
+ <0acdc122-b7fa-4bb4-b838-6420cd43d0e0@linaro.org>
+ <ZXBdHQpJYBmZbd76@hu-varada-blr.qualcomm.com>
+ <a1cfc6af-080c-4aa1-8200-e230640f7ca3@linaro.org>
+ <81bdac87-59e0-4618-a51d-ebe5cec6f54c@linaro.org>
 MIME-Version: 1.0
-References: <20231207032951.16334-1-yangtiezhu@loongson.cn> <20231207032951.16334-2-yangtiezhu@loongson.cn>
-In-Reply-To: <20231207032951.16334-2-yangtiezhu@loongson.cn>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Thu, 7 Dec 2023 12:12:10 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H40YTpJP0giD6Y9ekfaceimpzuxqJndoBJiMU89YLA3zw@mail.gmail.com>
-Message-ID: <CAAhV-H40YTpJP0giD6Y9ekfaceimpzuxqJndoBJiMU89YLA3zw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] LoongArch: BPF: Fix sign-extension mov instructions
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Hengqi Chen <hengqi.chen@gmail.com>, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <81bdac87-59e0-4618-a51d-ebe5cec6f54c@linaro.org>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: VAN8zApSXwIIpBwsY36r2XSOLDZYu73a
+X-Proofpoint-ORIG-GUID: VAN8zApSXwIIpBwsY36r2XSOLDZYu73a
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-07_01,2023-12-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
+ suspectscore=0 mlxlogscore=836 mlxscore=0 adultscore=0 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 impostorscore=0 spamscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312070033
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,62 +87,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 11:30=E2=80=AFAM Tiezhu Yang <yangtiezhu@loongson.cn=
-> wrote:
->
-> We can see that "Short form of movsx, dst_reg =3D (s8,s16,s32)src_reg"
-> in include/linux/filter.h, additionally, for BPF_ALU64 the value of
-> the destination register is unchanged whereas for BPF_ALU the upper
-> 32 bits of the destination register are zeroed, so it should clear
-> the upper 32 bits for BPF_ALU.
->
-> [root@linux fedora]# echo 1 > /proc/sys/net/core/bpf_jit_enable
-> [root@linux fedora]# modprobe test_bpf
->
-> Before:
-> test_bpf: #81 ALU_MOVSX | BPF_B jited:1 ret 2 !=3D 1 (0x2 !=3D 0x1)FAIL (=
-1 times)
-> test_bpf: #82 ALU_MOVSX | BPF_H jited:1 ret 2 !=3D 1 (0x2 !=3D 0x1)FAIL (=
-1 times)
->
-> After:
-> test_bpf: #81 ALU_MOVSX | BPF_B jited:1 6 PASS
-> test_bpf: #82 ALU_MOVSX | BPF_H jited:1 6 PASS
->
-> By the way, the bpf selftest case "./test_progs -t verifier_movsx" can
-> also be fixed with this patch.
-Hmmm, it is a little strange that privileged verifier_movsx has no problem.
+On Wed, Dec 06, 2023 at 01:33:17PM +0100, Krzysztof Kozlowski wrote:
+> On 06/12/2023 13:31, Krzysztof Kozlowski wrote:
+> > On 06/12/2023 12:38, Varadarajan Narayanan wrote:
+> >> On Tue, Nov 28, 2023 at 03:01:12PM +0100, Krzysztof Kozlowski wrote:
+> >>> On 28/11/2023 11:14, Varadarajan Narayanan wrote:
+> >>>> On Tue, Nov 28, 2023 at 09:51:50AM +0100, Krzysztof Kozlowski wrote:
+> >>>>> On 28/11/2023 09:46, Varadarajan Narayanan wrote:
+> >>>>>> From: Varadarajan Narayanan <quic_varada@quicinc.com>
+> >>>>>>
+> >>>>>> The earlier patch ec4f047679d5, incorrectly used 'l2'
+> >>>>>> as the vdda-pll-supply. However, 'l5' is the correct
+> >>>>>> ldo that supplies power to the USB PHY.
+> >>>>>>
+> >>>>>> Fixes: ec4f047679d5 ("arm64: dts: qcom: ipq9574: Enable USB")
+> >>>>>
+> >>>>> Doesn't this depend on the driver change?
+> >>>>
+> >>>> Yes, will mention in the cover letter.
+> >>>
+> >>> This commit should have it in its changelog ---
+> >>>
+> >>>>
+> >>>>> It affects both existing
+> >>>>> kernel and backports which you claim here should happen.
+> >>>>
+> >>>> Ok. Will include stable@vger.kernel.org in the next revision.
+> >>>
+> >>> I wasn't speaking about Cc. You indicated this should be backported.
+> >>> Then please backport it, without previous commit, and check the result.
+> >>> Is stable tree working correctly or not?
+> >>
+> >> Without the previous commit, it would fail in both the latest
+> >> and stable tree. (Please see below for the error messages and
+> >> stack dump)
+> >>
+> >> The previous commit is necessary for this commit to work.
+> >
+> > Yep, exactly. It's visible from the patches. I don't know how to solve
+> > this exactly. The Fixes tag here is logically correct, but then any
+> > backporting must include previous commit. Dependency can be provided in
+> > cc-stable tag, but you did not cc-stable, I suppose on purpose.
 
-Huacai
+It was not on purpose. Got lucky :).
+Shall I separate the patches and wait till the first one gets
+merged (in stable and top of tree) and then post the second one?
 
+> > If this is chosen by AUTOSEL, are you going to check if backport
+> > includes previous patch and object/review such backport?
 >
-> Fixes: f48012f16150 ("LoongArch: BPF: Support sign-extension mov instruct=
-ions")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/loongarch/net/bpf_jit.c | 2 ++
->  1 file changed, 2 insertions(+)
+> One more point. Except issues with backporting, you did not annotate any
+> dependency so patches can be applied independently. This will lead to
+> non-bisectable tree or even broken tree. What's more DTS goes always via
+> separate tree and branches, so this patch must be delayed.
 >
-> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> index 169ff8b3915e..8c907c2c42f7 100644
-> --- a/arch/loongarch/net/bpf_jit.c
-> +++ b/arch/loongarch/net/bpf_jit.c
-> @@ -480,10 +480,12 @@ static int build_insn(const struct bpf_insn *insn, =
-struct jit_ctx *ctx, bool ext
->                 case 8:
->                         move_reg(ctx, t1, src);
->                         emit_insn(ctx, extwb, dst, t1);
-> +                       emit_zext_32(ctx, dst, is32);
->                         break;
->                 case 16:
->                         move_reg(ctx, t1, src);
->                         emit_insn(ctx, extwh, dst, t1);
-> +                       emit_zext_32(ctx, dst, is32);
->                         break;
->                 case 32:
->                         emit_insn(ctx, addw, dst, src, LOONGARCH_GPR_ZERO=
-);
-> --
-> 2.42.0
->
->
+> You always must explicitly mention such dependencies and changes to
+> default applying process, so maintainers know what to do. Nothing like
+> this was explained anywhere here.
+
+Sorry, my mistake. Will be careful in future.
+
+Thanks for the feedback.
+
+Regards
+Varada
