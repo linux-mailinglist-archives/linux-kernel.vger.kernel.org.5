@@ -2,60 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1DA80955C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E86080955A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbjLGWa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 17:30:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
+        id S231830AbjLGWae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 17:30:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232348AbjLGWay (ORCPT
+        with ESMTP id S229634AbjLGWac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 17:30:54 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF927170F
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:31:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701988260; x=1733524260;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=srVJ8gw6ZfAE4QWT2Lto/OnSd1qPcsDD1l6x8Su01f0=;
-  b=lo0uvwaU9h6G1sZwwQk/VduW60RIWKCkum17vrVIntVGBxNdu9zUpzZ/
-   5WNEv3G4Y84HPOhDLTn2a41BH5vNHJxG9dviS24DplRSIk8TdhK3Lko05
-   +ajGKIaza86HI9CR1iY/L98/j10eem1azg0k+IjG8ywhPAd4vYPgzBXUm
-   s2S+t7iTu+vYL7SQgUJQWaSNFYm1pI4BE009iA8pAkFmi0htOl/XcrmzV
-   taQUokNHQNjwpWBsfeEdsYgwKwvc51gxMZ2k4HAUmNEhrb28OftszH7qf
-   q/43LlpZW43xB+p2DbD1+k/DKWab51XIhYTuWF/DS55pPTDpzt8BuNgMM
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1396058"
-X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="1396058"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 14:31:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="889893209"
-X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="889893209"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 07 Dec 2023 14:30:58 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBMtU-000CvV-0a;
-        Thu, 07 Dec 2023 22:30:56 +0000
-Date:   Fri, 8 Dec 2023 06:30:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>, Fuad Tabba <tabba@google.com>
-Subject: arch/arm64/kvm/hyp/nvhe/stacktrace.c:15:1: sparse: sparse: symbol
- '__pcpu_scope_kvm_stacktrace_info' was not declared. Should it be static?
-Message-ID: <202312080623.pPZHVKGm-lkp@intel.com>
+        Thu, 7 Dec 2023 17:30:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D70BA
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:30:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24756C433C8;
+        Thu,  7 Dec 2023 22:30:38 +0000 (UTC)
+Date:   Thu, 7 Dec 2023 17:31:08 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH v2] ring-buffer: Add offset of events in dump on mismatch
+Message-ID: <20231207173108.484b912c@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,32 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   9ace34a8e446c1a566f3b0a3e0c4c483987e39a6
-commit: 879e5ac7b2e4db05799a905b5a07fc9e5dedf651 KVM: arm64: Prepare non-protected nVHE hypervisor stacktrace
-date:   1 year, 4 months ago
-config: arm64-randconfig-r112-20231117 (https://download.01.org/0day-ci/archive/20231208/202312080623.pPZHVKGm-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231208/202312080623.pPZHVKGm-lkp@intel.com/reproduce)
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312080623.pPZHVKGm-lkp@intel.com/
+On bugs that have the ring buffer timestamp get out of sync, the config
+CONFIG_RING_BUFFER_VALIDATE_TIME_DELTAS, that checks for it and if it is
+detected it causes a dump of the bad sub buffer.
 
-sparse warnings: (new ones prefixed by >>)
-   arch/arm64/kvm/hyp/nvhe/stacktrace.c:12:1: sparse: sparse: symbol '__pcpu_scope_overflow_stack' was not declared. Should it be static?
->> arch/arm64/kvm/hyp/nvhe/stacktrace.c:15:1: sparse: sparse: symbol '__pcpu_scope_kvm_stacktrace_info' was not declared. Should it be static?
+It shows each event and their timestamp as well as the delta in the event.
+But it's also good to see the offset into the subbuffer for that event to
+know if how close to the end it is.
 
-vim +/__pcpu_scope_kvm_stacktrace_info +15 arch/arm64/kvm/hyp/nvhe/stacktrace.c
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231207171613.0592087d@gandalf.local.home
 
-    11	
-    12	DEFINE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)], overflow_stack)
-    13		__aligned(16);
-    14	
-  > 15	DEFINE_PER_CPU(struct kvm_nvhe_stacktrace_info, kvm_stacktrace_info);
-    16	
+- Add "0x" before the "%x" to make the print less confusing (Mathieu Desnoyers)
 
+ kernel/trace/ring_buffer.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 8d2a4f00eca9..09d4b1aa8820 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -3424,23 +3424,27 @@ static void dump_buffer_page(struct buffer_data_page *bpage,
+ 		case RINGBUF_TYPE_TIME_EXTEND:
+ 			delta = rb_event_time_stamp(event);
+ 			ts += delta;
+-			pr_warn("  [%lld] delta:%lld TIME EXTEND\n", ts, delta);
++			pr_warn(" 0x%x: [%lld] delta:%lld TIME EXTEND\n",
++				e, ts, delta);
+ 			break;
+ 
+ 		case RINGBUF_TYPE_TIME_STAMP:
+ 			delta = rb_event_time_stamp(event);
+ 			ts = rb_fix_abs_ts(delta, ts);
+-			pr_warn("  [%lld] absolute:%lld TIME STAMP\n", ts, delta);
++			pr_warn(" 0x%x:  [%lld] absolute:%lld TIME STAMP\n",
++				e, ts, delta);
+ 			break;
+ 
+ 		case RINGBUF_TYPE_PADDING:
+ 			ts += event->time_delta;
+-			pr_warn("  [%lld] delta:%d PADDING\n", ts, event->time_delta);
++			pr_warn(" 0x%x:  [%lld] delta:%d PADDING\n",
++				e, ts, event->time_delta);
+ 			break;
+ 
+ 		case RINGBUF_TYPE_DATA:
+ 			ts += event->time_delta;
+-			pr_warn("  [%lld] delta:%d\n", ts, event->time_delta);
++			pr_warn(" 0x%x:  [%lld] delta:%d\n",
++				e, ts, event->time_delta);
+ 			break;
+ 
+ 		default:
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
