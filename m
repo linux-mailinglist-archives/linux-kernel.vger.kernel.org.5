@@ -2,140 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB20D8088EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02BD88088EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232714AbjLGNMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:12:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        id S232817AbjLGNMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:12:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbjLGNMC (ORCPT
+        with ESMTP id S232741AbjLGNMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:12:02 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E404910E9;
-        Thu,  7 Dec 2023 05:12:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1701954728; x=1733490728;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4hPha8F9u1bHaqRGRfkg8SwanFYTgp+4Z7tK+Ubzcjs=;
-  b=EoAUjU1OqOJHpCkpqwFv39VX/gT55zavlED0+Zi14t+KhRpDWDZw6XTj
-   tCexsmJ2QjuJwZ++nNL9TRybezLIN7bTLzLSxAvUK6vOinQ5efJHsKm+i
-   1nl8MvhAfTCyawpYOEjiPZdzGimFzAHxJtPL27dvOUi4iTug/SgMohWzw
-   64goeFEfPSZ3E7QWSVFAOd6ndUcPrbSs8pQXrKM8JeoaR27i80T7F+Kji
-   uLaC3kFquGE38P+WdXpXRrvlQ+na/Ey9pPJXGhyOHmsaMlR/FUeWxnXb/
-   MSGWgUuMEMQMs9jhWLCOU6No5Kzoih+Rgei4NrRfdBAr82bSL3ntUtleI
-   w==;
-X-CSE-ConnectionGUID: JQolBRUHQTen03AsQHVsCg==
-X-CSE-MsgGUID: phlp69xtRlu1zFivcfKhmw==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="asc'?scan'208";a="13247861"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Dec 2023 06:12:07 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Dec 2023 06:11:56 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Thu, 7 Dec 2023 06:11:53 -0700
-Date:   Thu, 7 Dec 2023 13:11:23 +0000
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-CC:     Conor Dooley <conor@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, <geert+renesas@glider.be>,
-        Atish Patra <atishp@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        <apatel@ventanamicro.com>, <alexghiti@rivosinc.com>,
-        Bjorn Topel <bjorn@rivosinc.com>, <suagrfillet@gmail.com>,
-        <jeeheng.sia@starfivetech.com>, <petrtesarik@huaweicloud.com>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [RFT 1/2] RISC-V: handle missing "no-map" properties for
- OpenSBI's PMP protected regions
-Message-ID: <20231207-buffalo-varmint-de843c8a12bb@wendy>
-References: <20230810-crewless-pampers-6f51aafb8cff@wendy>
- <mhng-550dee8b-a2fb-485b-ad4d-2763e94191b4@palmer-ri-x1c9>
- <20231206-precut-serotonin-2eecee4ab6af@spud>
- <CA+V-a8s3MjvpD8gAE7-mOUc6PEytbPOR6x_PHuw0J0hOLkaz-w@mail.gmail.com>
+        Thu, 7 Dec 2023 08:12:12 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DBB10E4;
+        Thu,  7 Dec 2023 05:12:18 -0800 (PST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B7CFSUE004171;
+        Thu, 7 Dec 2023 13:12:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pq9tlMAU45aQTY12lwhk5UDN9Rk9+Cf4WTKPJEyrQQw=;
+ b=WJJdh3JVJNFTHyHhtb6cmX7wKwe487HSa1yHMTTzK8x6DFsETkbXn9Q3Xq12xYOfq9HF
+ OC1MBsIB1uz/ZO1ipSzo/05siAUOP2jvRI68IkCY3EFjZZcfBFhn5gu9RcJKwPHhtM6Z
+ 23byy4+sxsbEfpw8ySazMHO50uLq9NlcRwtwIb8dZ8hs+q5130g0al/NCThOO1boE0Zr
+ Q7JmmnOPFIvxdO+9TcRHzD/ERLn+01zxEGL77cBBrz65S9tu97eqBx+ukUJru4S2w2vo
+ SLNJtUm8IXo484gkyQOasX1UfkYP9Ou1Gha7InbrDvA1NAWLxP0OmCWc0pLSpKYAUWvT +Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uuajaqvke-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 13:12:14 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B7DCD9G013046;
+        Thu, 7 Dec 2023 13:12:13 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uuajaqvh1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 13:12:13 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B7B5il0015401;
+        Thu, 7 Dec 2023 13:12:09 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3utavkk8rc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 13:12:09 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B7DC6Zq24380048
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Dec 2023 13:12:06 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B555320040;
+        Thu,  7 Dec 2023 13:12:06 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 84D272004B;
+        Thu,  7 Dec 2023 13:12:06 +0000 (GMT)
+Received: from [9.152.224.24] (unknown [9.152.224.24])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  7 Dec 2023 13:12:06 +0000 (GMT)
+Message-ID: <0e2cbf20-bd58-49bf-8000-6d3f80f50380@linux.ibm.com>
+Date:   Thu, 7 Dec 2023 14:12:05 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="f9Fz83/CoTY3gAXZ"
-Content-Disposition: inline
-In-Reply-To: <CA+V-a8s3MjvpD8gAE7-mOUc6PEytbPOR6x_PHuw0J0hOLkaz-w@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net/smc: fix missing byte order conversion in CLC
+ handshake
+To:     Wen Gu <guwen@linux.alibaba.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        ubraun@linux.ibm.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1701882157-87956-1-git-send-email-guwen@linux.alibaba.com>
+Content-Language: en-US
+From:   Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <1701882157-87956-1-git-send-email-guwen@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: pyPlAxCYf6O0LsoSaApc_LH8y-D2Zudh
+X-Proofpoint-GUID: 8qP-iISBaAlxC7jX63c4lAAUEkTTQJsu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-07_10,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ phishscore=0 adultscore=0 mlxlogscore=849 clxscore=1015 impostorscore=0
+ lowpriorityscore=0 spamscore=0 suspectscore=0 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312070108
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---f9Fz83/CoTY3gAXZ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 07, 2023 at 01:02:00PM +0000, Lad, Prabhakar wrote:
-> On Wed, Dec 6, 2023 at 2:26=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
-ote:
-> > On Wed, Dec 06, 2023 at 04:52:11AM -0800, Palmer Dabbelt wrote:
-> > > On Thu, 10 Aug 2023 02:07:10 PDT (-0700), Conor Dooley wrote:
 
-> > > > I'm perfectly happy to drop this series though, if people generally=
- are
-> > > > of the opinion that this sort of firmware workaround is ill-advised.
-> > > > We are unaffected by it, so I certainly have no pressure to have
-> > > > something working here. It's my desire not to be user-hostile that
-> > > > motivated this patch.
-> > >
-> > > IIUC you guys and Reneas are the only ones who have hardware that mig=
-ht be
-> > > in a spot where users aren't able to update the firmware (ie, it's ou=
-t in
-> > > production somewhere).
-> >
-> > I dunno if we can really keep thinking like that though. In terms of
-> > people who have devicetrees in the kernel and stuff available in western
-> > catalog distribution, sure.
-> > I don't think we can assume that that covers all users though, certainly
-> > the syntacore folks pop up every now and then, and I sure hope that
-> > Andes etc have larger customer bases than the in-kernel users would
-> > suggest.
-> >
-> > > So I'm adding Geert, though he probably saw this
-> > > months ago...
-> >
-> > Prabhakar might be a good call on that front. I'm not sure if the
-> > Renesas stuff works on affected versions of OpenSBI though, guess it
-> > depends on the sequencing of the support for the non-coherent stuff and
-> > when this bug was fixed.
-> >
-> ATM, I dont think there are any users who are using the upstream
-> kernel + OpenSBI (apart from me and Geert!). Currently the customers
-> are using the BSP releases.
+On 06.12.23 18:02, Wen Gu wrote:
+> The byte order conversions of ISM GID and DMB token are missing in
+> process of CLC accept and confirm. So fix it.
+> 
+> Fixes: 3d9725a6a133 ("net/smc: common routine for CLC accept and confirm")
+> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+> ---
 
-That doesn't really answer whether or not you (and your customers) are
-using an affected version of the vendor OpenSBI?
-The affected range for OpenSBI itself is [v0.8 to v1.3).
-
---f9Fz83/CoTY3gAXZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXHEewAKCRB4tDGHoIJi
-0qAVAQDuyK5FCD922oVznNjcMLfpdk3VinS8Td2EgK/P06qa2wD+NHaA5dhQABPZ
-AL8kEYvuUajwlHISzPfMrsohnzvnlQE=
-=LBlc
------END PGP SIGNATURE-----
-
---f9Fz83/CoTY3gAXZ--
+Thank you
+Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
