@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEFD80815F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D904F80815E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377837AbjLGHIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 02:08:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34110 "EHLO
+        id S1377841AbjLGHIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 02:08:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377743AbjLGHIA (ORCPT
+        with ESMTP id S1377758AbjLGHIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Dec 2023 02:08:00 -0500
 Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C3B10C3
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 23:08:04 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-54c9116d05fso723290a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 23:08:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C605D57
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 23:08:06 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-54cae99a48aso1330406a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 23:08:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1701932883; x=1702537683; darn=vger.kernel.org;
+        d=tuxon.dev; s=google; t=1701932885; x=1702537685; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bUZ+Xi6iPmzuyCXXhpAA62gGUIVrLESrpvXoWFTaEuQ=;
-        b=pfhuARPm3GVHnoU/4zDsTaU9G0Nrv9BxUZo/odlaf10z7EsmErfaRLzJXlSI3yXK0y
-         2TXrP4VEB5/otvxhuWEU7U7+eOeerlhImW+7gf7KcpIBbDPLJYau3t8obFTEiOi5XgsU
-         GjOi2aLjbVjagj3aupFMbcNlwpEBrn9EBJqigBYTSgTvXUzS5M+0UtEXo0ZNnaoYhkyt
-         tWOP7PRdLSSM1nGDse237gAV+7JqI+BFV7QJrHAG+N+0MmdPjB0e15UPQvPWwCh+k3Ub
-         9I6jdqTis/NwQqm5T/f38nYjwhT82CvsJGNscZtEM8Qd5hcc/CInsziPy6gWSYVxZAti
-         uvOw==
+        bh=PWXKHpy1c4gjJzr0PzkBK/pN3/t8zDF0LUDKvRtnzbs=;
+        b=rT/be6PjKAKs+pV0OXXzcHLs47lyAD0N01MEuG/iDqfxzq43xISfQ7R9zY9Yxnjvum
+         PU0USvHkjGQL2HKbCXh3p5I8YVtIQNHlwcr4pQiDVXcpxzRNLtfDQr8WA5vOaUjO8JR8
+         tCc9SpNSpunukp+090F9UoZu0OsgNep0Dg6A0FiFtGUTSpMZvOoK5KAX715TJcxSFRBI
+         Ef5OCMTLhqV+beDg78tDl6Ad4FqpP2AYJ+mSEHjiNaTFVwfMKgqFxxNB/OsSqgXRUJLy
+         nQl03vWYT6GehPcEkb0R6Q5CcxSXkB+nAGZnb7yfFMDNuG3iD/AaKMGXOiF370+CsKW4
+         rTBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701932883; x=1702537683;
+        d=1e100.net; s=20230601; t=1701932885; x=1702537685;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bUZ+Xi6iPmzuyCXXhpAA62gGUIVrLESrpvXoWFTaEuQ=;
-        b=vadwDhRy/8y7538qUMxkFvsq2hJPpUi7YZGILC4QMiGuOei2UiIPGzG2Yd59RuFKNW
-         351hj5GOeoDXA6HlN+PoRmd2LW19mm1UjdvwDIXM9sgmkavPMmVyXDif4QJKb0KdEhFo
-         45+xUGuw+BRC4k3vwITFt5uzx4GAqjdIYkeTPJxtvDCzj2dRR9eI4SdZbTSUpMTJ8vQg
-         b2uOvLxF8V6VpQ55nMjEA9C011q7n2T+1UzJROIjiy3DheJiYHBWxY5/ymIaPfkmY1WY
-         CW4v7S4awztO7Y4i/ZGP6mDOfMPDCWMEuJjR1hgTSA9Eb8oVKzBIHRm8xERqkqBssh8K
-         DuwQ==
-X-Gm-Message-State: AOJu0YzWxyGH+mffQ7QLDbEJkbnTlsOP1PqxKhhIg31I0vzuwFLlQyoN
-        VHqFP9cZJ4XkhpDylEMhOMLEfQ==
-X-Google-Smtp-Source: AGHT+IFYgHoezyMBS5pVMBDpau8vEgCGmmvXZ2I9QTiAtdjmWuM1kvPNgWs04XfPEI5GdV69KGuAkA==
-X-Received: by 2002:a50:8ad8:0:b0:54c:d1d5:7682 with SMTP id k24-20020a508ad8000000b0054cd1d57682mr523483edk.22.1701932882708;
-        Wed, 06 Dec 2023 23:08:02 -0800 (PST)
+        bh=PWXKHpy1c4gjJzr0PzkBK/pN3/t8zDF0LUDKvRtnzbs=;
+        b=KNf7WDNslISAXB3WW4ZXECkfZZwf6YoeKG1+eSHi0qnuKtefEAvUTv914HvkFJQMOk
+         ObkqcYnoeB3vpg8ofTQy4IxY7n/xdFw6AwKY3nn9kuEIXsgWpx3sOBaZLdJbD0A0Xh+v
+         jdSsbz1lBDyKnnHO1ERBit90yrgAN9/LeDLkR2WCMy28BQcYFSOBeF251cthKHs4epQU
+         ILwRxB+wu3kIxZTc3M73cmzWYZ2PN2Co6THnFjppfIiHoLxt04WS+82E2oyAXbvPFdpY
+         reBzSTMwjFLXM5M2KQ43rwObTqLGSkPg+70icLf9+KT6dtZybAcbAQZjCW367m5lkmhy
+         y7/A==
+X-Gm-Message-State: AOJu0YyVUtZLNw40LHkWg+7Y0aRYdCno9FkY2cvokCRv6xpgRuncMMQF
+        ANByK0i3SAeHtvMnnSnZakR79w==
+X-Google-Smtp-Source: AGHT+IETRJWidR+eZ6Amb/oUqqk3EAj6S1ifekK+yyXNDYte9c3Us0ASM4lMk2pU+I8G94xgufnSsw==
+X-Received: by 2002:a50:a6d5:0:b0:54c:ada2:7fa1 with SMTP id f21-20020a50a6d5000000b0054cada27fa1mr2848300edc.16.1701932885084;
+        Wed, 06 Dec 2023 23:08:05 -0800 (PST)
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.22])
-        by smtp.gmail.com with ESMTPSA id b41-20020a509f2c000000b0054cb88a353dsm420818edf.14.2023.12.06.23.08.00
+        by smtp.gmail.com with ESMTPSA id b41-20020a509f2c000000b0054cb88a353dsm420818edf.14.2023.12.06.23.08.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 23:08:02 -0800 (PST)
+        Wed, 06 Dec 2023 23:08:04 -0800 (PST)
 From:   Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
@@ -63,9 +63,9 @@ Cc:     linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
         Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH v2 01/11] clk: renesas: rzg2l-cpg: Check reset monitor registers
-Date:   Thu,  7 Dec 2023 09:06:50 +0200
-Message-Id: <20231207070700.4156557-2-claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH v2 02/11] clk: renesas: r9a08g045-cpg: Add clock and reset support for ETH0 and ETH1
+Date:   Thu,  7 Dec 2023 09:06:51 +0200
+Message-Id: <20231207070700.4156557-3-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231207070700.4156557-1-claudiu.beznea.uj@bp.renesas.com>
 References: <20231207070700.4156557-1-claudiu.beznea.uj@bp.renesas.com>
@@ -73,7 +73,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,134 +83,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-The hardware manual of both RZ/G2L and RZ/G3S specifies that the reset
-monitor registers need to be interrogated when the reset signals are
-toggled (chapters "Procedures for Supplying and Stopping Reset Signals"
-and "Procedure for Activating Modules"). Without this, there is a chance
-that different modules (e.g., Ethernet) to not be ready after their reset
-signal is toggled, leading to failures (on probe or resume from deep sleep
-states).
+RZ/G3S has 2 Gigabit Ethernet interfaces available. Add clock and reset
+support for both of them.
 
-The same indications are available for RZ/V2M for TYPE-B reset controls.
-
-Fixes: ef3c613ccd68 ("clk: renesas: Add CPG core wrapper for RZ/G2L SoC")
-Fixes: 8090bea32484 ("clk: renesas: rzg2l: Add support for RZ/V2M reset monitor reg")
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
 
 Changes in v2:
-- adapted for CPG versions with monbit (e.g., RZ/V2M)
-- added a fixes tag for RZ/V2M
-- fixed typos in commit description
+- dropped MSTOP
 
- drivers/clk/renesas/rzg2l-cpg.c | 59 ++++++++++++++++++++++++---------
- 1 file changed, 44 insertions(+), 15 deletions(-)
+ drivers/clk/renesas/r9a08g045-cpg.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/clk/renesas/rzg2l-cpg.c b/drivers/clk/renesas/rzg2l-cpg.c
-index 3189c3167ba8..1424fe78f09f 100644
---- a/drivers/clk/renesas/rzg2l-cpg.c
-+++ b/drivers/clk/renesas/rzg2l-cpg.c
-@@ -1416,12 +1416,27 @@ static int rzg2l_cpg_assert(struct reset_controller_dev *rcdev,
- 	struct rzg2l_cpg_priv *priv = rcdev_to_priv(rcdev);
- 	const struct rzg2l_cpg_info *info = priv->info;
- 	unsigned int reg = info->resets[id].off;
--	u32 value = BIT(info->resets[id].bit) << 16;
-+	u32 mask = BIT(info->resets[id].bit);
-+	s8 monbit = info->resets[id].monbit;
-+	u32 value = mask << 16;
+diff --git a/drivers/clk/renesas/r9a08g045-cpg.c b/drivers/clk/renesas/r9a08g045-cpg.c
+index 4394cb241d99..a6d3bea968c0 100644
+--- a/drivers/clk/renesas/r9a08g045-cpg.c
++++ b/drivers/clk/renesas/r9a08g045-cpg.c
+@@ -181,9 +181,11 @@ static const struct cpg_core_clk r9a08g045_core_clks[] __initconst = {
+ 	DEF_G3S_DIV("P3", R9A08G045_CLK_P3, CLK_PLL3_DIV2_4, DIVPL3C, G3S_DIVPL3C_STS,
+ 		    dtable_1_32, 0, 0, 0, NULL),
+ 	DEF_FIXED("P3_DIV2", CLK_P3_DIV2, R9A08G045_CLK_P3, 1, 2),
++	DEF_FIXED("ZT", R9A08G045_CLK_ZT, CLK_PLL3_DIV2_8, 1, 1),
+ 	DEF_FIXED("S0", R9A08G045_CLK_S0, CLK_SEL_PLL4, 1, 2),
+ 	DEF_FIXED("OSC", R9A08G045_OSCCLK, CLK_EXTAL, 1, 1),
+ 	DEF_FIXED("OSC2", R9A08G045_OSCCLK2, CLK_EXTAL, 1, 3),
++	DEF_FIXED("HP", R9A08G045_CLK_HP, CLK_PLL6, 1, 2),
+ };
  
- 	dev_dbg(rcdev->dev, "assert id:%ld offset:0x%x\n", id, CLK_RST_R(reg));
- 
- 	writel(value, priv->base + CLK_RST_R(reg));
--	return 0;
-+
-+	if (info->has_clk_mon_regs) {
-+		reg = CLK_MRST_R(reg);
-+	} else if (monbit >= 0) {
-+		reg = CPG_RST_MON;
-+		mask = BIT(monbit);
-+	} else {
-+		/* Wait for at least one cyc le of the RCLK clock (@ ca. 32 kHz) */
-+		udelay(35);
-+		return 0;
-+	}
-+
-+	return readl_poll_timeout_atomic(priv->base + reg, value,
-+					 value & mask, 10, 200);
- }
- 
- static int rzg2l_cpg_deassert(struct reset_controller_dev *rcdev,
-@@ -1430,14 +1445,28 @@ static int rzg2l_cpg_deassert(struct reset_controller_dev *rcdev,
- 	struct rzg2l_cpg_priv *priv = rcdev_to_priv(rcdev);
- 	const struct rzg2l_cpg_info *info = priv->info;
- 	unsigned int reg = info->resets[id].off;
--	u32 dis = BIT(info->resets[id].bit);
--	u32 value = (dis << 16) | dis;
-+	u32 mask = BIT(info->resets[id].bit);
-+	s8 monbit = info->resets[id].monbit;
-+	u32 value = (mask << 16) | mask;
- 
- 	dev_dbg(rcdev->dev, "deassert id:%ld offset:0x%x\n", id,
- 		CLK_RST_R(reg));
- 
- 	writel(value, priv->base + CLK_RST_R(reg));
--	return 0;
-+
-+	if (info->has_clk_mon_regs) {
-+		reg = CLK_MRST_R(reg);
-+	} else if (monbit >= 0) {
-+		reg = CPG_RST_MON;
-+		mask = BIT(monbit);
-+	} else {
-+		/* Wait for at least one cycle of the RCLK clock (@ ca. 32 kHz) */
-+		udelay(35);
-+		return 0;
-+	}
-+
-+	return readl_poll_timeout_atomic(priv->base + reg, value,
-+					 !(value & mask), 10, 200);
- }
- 
- static int rzg2l_cpg_reset(struct reset_controller_dev *rcdev,
-@@ -1449,9 +1478,6 @@ static int rzg2l_cpg_reset(struct reset_controller_dev *rcdev,
- 	if (ret)
- 		return ret;
- 
--	/* Wait for at least one cycle of the RCLK clock (@ ca. 32 kHz) */
--	udelay(35);
--
- 	return rzg2l_cpg_deassert(rcdev, id);
- }
- 
-@@ -1460,18 +1486,21 @@ static int rzg2l_cpg_status(struct reset_controller_dev *rcdev,
- {
- 	struct rzg2l_cpg_priv *priv = rcdev_to_priv(rcdev);
- 	const struct rzg2l_cpg_info *info = priv->info;
--	unsigned int reg = info->resets[id].off;
--	u32 bitmask = BIT(info->resets[id].bit);
- 	s8 monbit = info->resets[id].monbit;
-+	unsigned int reg;
-+	u32 bitmask;
- 
- 	if (info->has_clk_mon_regs) {
--		return !!(readl(priv->base + CLK_MRST_R(reg)) & bitmask);
-+		reg = CLK_MRST_R(info->resets[id].off);
-+		bitmask = BIT(info->resets[id].bit);
- 	} else if (monbit >= 0) {
--		u32 monbitmask = BIT(monbit);
--
--		return !!(readl(priv->base + CPG_RST_MON) & monbitmask);
-+		reg = CPG_RST_MON;
-+		bitmask = BIT(monbit);
-+	} else {
-+		return -ENOTSUPP;
- 	}
--	return -ENOTSUPP;
-+
-+	return !!(readl(priv->base + reg) & bitmask);
- }
- 
- static const struct reset_control_ops rzg2l_cpg_reset_ops = {
+ static const struct rzg2l_mod_clk r9a08g045_mod_clks[] = {
+@@ -202,6 +204,12 @@ static const struct rzg2l_mod_clk r9a08g045_mod_clks[] = {
+ 	DEF_MOD("sdhi2_imclk2",		R9A08G045_SDHI2_IMCLK2, CLK_SD2_DIV4, 0x554, 9),
+ 	DEF_MOD("sdhi2_clk_hs",		R9A08G045_SDHI2_CLK_HS, R9A08G045_CLK_SD2, 0x554, 10),
+ 	DEF_MOD("sdhi2_aclk",		R9A08G045_SDHI2_ACLK, R9A08G045_CLK_P1, 0x554, 11),
++	DEF_COUPLED("eth0_axi",		R9A08G045_ETH0_CLK_AXI, R9A08G045_CLK_M0, 0x57c, 0),
++	DEF_COUPLED("eth0_chi",		R9A08G045_ETH0_CLK_CHI, R9A08G045_CLK_ZT, 0x57c, 0),
++	DEF_MOD("eth0_refclk",		R9A08G045_ETH0_REFCLK, R9A08G045_CLK_HP, 0x57c, 8),
++	DEF_COUPLED("eth1_axi",		R9A08G045_ETH1_CLK_AXI, R9A08G045_CLK_M0, 0x57c, 1),
++	DEF_COUPLED("eth1_chi",		R9A08G045_ETH1_CLK_CHI, R9A08G045_CLK_ZT, 0x57c, 1),
++	DEF_MOD("eth1_refclk",		R9A08G045_ETH1_REFCLK, R9A08G045_CLK_HP, 0x57c, 9),
+ 	DEF_MOD("scif0_clk_pck",	R9A08G045_SCIF0_CLK_PCK, R9A08G045_CLK_P0, 0x584, 0),
+ 	DEF_MOD("gpio_hclk",		R9A08G045_GPIO_HCLK, R9A08G045_OSCCLK, 0x598, 0),
+ };
+@@ -212,6 +220,8 @@ static const struct rzg2l_reset r9a08g045_resets[] = {
+ 	DEF_RST(R9A08G045_SDHI0_IXRST, 0x854, 0),
+ 	DEF_RST(R9A08G045_SDHI1_IXRST, 0x854, 1),
+ 	DEF_RST(R9A08G045_SDHI2_IXRST, 0x854, 2),
++	DEF_RST(R9A08G045_ETH0_RST_HW_N, 0x87c, 0),
++	DEF_RST(R9A08G045_ETH1_RST_HW_N, 0x87c, 1),
+ 	DEF_RST(R9A08G045_SCIF0_RST_SYSTEM_N, 0x884, 0),
+ 	DEF_RST(R9A08G045_GPIO_RSTN, 0x898, 0),
+ 	DEF_RST(R9A08G045_GPIO_PORT_RESETN, 0x898, 1),
 -- 
 2.39.2
 
