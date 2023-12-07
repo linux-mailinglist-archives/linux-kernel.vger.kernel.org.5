@@ -2,293 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC428086AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:25:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0155E8086B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379051AbjLGLZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 06:25:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45714 "EHLO
+        id S232364AbjLGL1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 06:27:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379020AbjLGLZK (ORCPT
+        with ESMTP id S232395AbjLGL1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 06:25:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18722AD
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 03:25:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701948315;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=K0j7fBT8MBHy9QWJasxgiKZePtCf0WKdwcLYR8W8mIk=;
-        b=QQymiAG+BsoXkeWMFlwOOT0hz32PkES7WMFcmGfRBmjaErS1Yd3/Yv1WjW/tUdQgj5N7zm
-        0zmEUcETQJolYE2ZQNvf08/DyjWvDuAJJ8vJK1jI/dxHH1dSjFHBaxgtjCkzlYU7aP9/Cz
-        PTG1QhjaYIJIwEwBqCfTGVsTiJ9fOiQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-592-vKSxhMX3NNuT0cejLRCAjg-1; Thu, 07 Dec 2023 06:25:12 -0500
-X-MC-Unique: vKSxhMX3NNuT0cejLRCAjg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33344663fbcso742865f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 03:25:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701948312; x=1702553112;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K0j7fBT8MBHy9QWJasxgiKZePtCf0WKdwcLYR8W8mIk=;
-        b=g5TZ7dPnU7sjZLOQ2jUN1bLfr23fDFqhBM5+YVvkkgUu9g20i1MHt3VpcDvDE8DWH1
-         GOslYu0R3XgbByIfdKM/GdlpXLrUI1If2A+ujOzAHaeGBff2KiGgqsLjSx23rdVsK1e0
-         GD7KqNXGYJemgQoLNhfAheFmOcZATFuCqQ2qjmgF97gk3FIfLxfIbhFyGdVioFtzZDF0
-         01V3TCfct09VgP1TmhZDsTBSc2lzXf5FMIvFAad80FnBvG2fMWVydakjUui/3OfsKMGi
-         iSU2ctgF+2YAm86sAniXSHyTVlOgzir1m0krbCillnIwtHBKtWWRQlzM4B5n5znUU2Lw
-         mD0g==
-X-Gm-Message-State: AOJu0Yxf6L/GVWQFJrdF8HsNue0DaNI2fkqn6mhfElt8Wr3FLjLNTymo
-        mj/XqLya2mqRfWpPZ5XLPK2OS3ZYR8bTIu5yt3bvRHZw7FTO/KbWip8zf9Q55A0SRg+USaZEyIe
-        +PwbMZ2xjwr/EKYJLHf9dKe7D
-X-Received: by 2002:adf:e5c3:0:b0:333:3c4d:7ff5 with SMTP id a3-20020adfe5c3000000b003333c4d7ff5mr659423wrn.26.1701948311791;
-        Thu, 07 Dec 2023 03:25:11 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFmWmk5Vyplt95qyM+itfs1NpTj4L+SVTdY4zz6yKXzsR9YO3s0D7m6mkG211G8K2hy+3azWg==
-X-Received: by 2002:adf:e5c3:0:b0:333:3c4d:7ff5 with SMTP id a3-20020adfe5c3000000b003333c4d7ff5mr659409wrn.26.1701948311206;
-        Thu, 07 Dec 2023 03:25:11 -0800 (PST)
-Received: from ?IPV6:2003:cb:c71b:5d00:18d7:1475:24bc:2417? (p200300cbc71b5d0018d7147524bc2417.dip0.t-ipconnect.de. [2003:cb:c71b:5d00:18d7:1475:24bc:2417])
-        by smtp.gmail.com with ESMTPSA id q12-20020a5d658c000000b003333298eb4bsm1186219wru.61.2023.12.07.03.25.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 03:25:10 -0800 (PST)
-Message-ID: <44fdd46b-ad46-4ae2-a20f-20374acdf464@redhat.com>
-Date:   Thu, 7 Dec 2023 12:25:08 +0100
+        Thu, 7 Dec 2023 06:27:36 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E7A10C2;
+        Thu,  7 Dec 2023 03:27:41 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B76pfEm032475;
+        Thu, 7 Dec 2023 11:27:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=n2YTQb/UjP+pwK7iKBnIiq6r4mjJpw9TcnxON9yKqZI=;
+ b=CBNA1wsfQFXYzkKI5EzKfFqx/vU+HFKGOXAGhbWrl6GvoZHU+Ghl2nG4viv2LB+BUTm+
+ amu2K5bIcsZeKLZdO/qdYIIwSNLfU4inc0UgRSVuVAus8UlI2beFy7epEe8xen0kCduL
+ 9L60wdGZ/8jENO7khGD+4PqQJANO6y1dRrNXUzcurzDrspBJV91sBnlaCCsmgr1wBDFv
+ JCr1Qysc7N6hkzgg79Vv9OToS3pL/TfqDiAixsNra94v4znHoNpm6UD+YI1e1fZbtW4e
+ otUIiJiaeZzrTvsGHtjTK6JlcyWPJsKcamqmDw0TFmOwaCX9HzdJlMYVxwDTt+G29o80 AQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utuhfaerd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 11:27:23 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B7BRNoc002597
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 7 Dec 2023 11:27:23 GMT
+Received: from [10.218.37.200] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Dec
+ 2023 03:26:47 -0800
+Message-ID: <090f3c8c-bbd8-4036-aaa1-d18c7a854ee9@quicinc.com>
+Date:   Thu, 7 Dec 2023 16:56:44 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 03/10] mm: thp: Introduce multi-size THP sysfs
- interface
+Subject: Re: [PATCH V2 1/3] ufs: core: Add CPU latency QoS support for ufs
+ driver
 Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231204102027.57185-1-ryan.roberts@arm.com>
- <20231204102027.57185-4-ryan.roberts@arm.com>
- <004ed23d-5571-4474-b7fe-7bc08817c165@redhat.com>
- <ca3a2b97-f08e-452a-91dc-1a53dece0aa6@arm.com>
- <378afc6b-f93a-48ad-8aa6-ab171f3b9613@redhat.com>
- <4aa520f0-7c84-4e93-88bf-aee6d8d3ea70@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <4aa520f0-7c84-4e93-88bf-aee6d8d3ea70@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Peter Wang <peter.wang@mediatek.com>,
+        "Andy Gross" <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, <chu.stanley@gmail.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <quic_cang@quicinc.com>,
+        <quic_nguyenb@quicinc.com>, Nitin Rawat <quic_nitirawa@quicinc.com>
+References: <20231204143101.64163-1-quic_mnaresh@quicinc.com>
+ <20231204143101.64163-2-quic_mnaresh@quicinc.com>
+ <20231206152646.GH12802@thinkpad>
+From:   Naresh Maramaina <quic_mnaresh@quicinc.com>
+In-Reply-To: <20231206152646.GH12802@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 3wlcbkcRaHNdlTi71SETI-ottmSdZcja
+X-Proofpoint-GUID: 3wlcbkcRaHNdlTi71SETI-ottmSdZcja
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-07_09,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
+ priorityscore=1501 bulkscore=0 impostorscore=0 adultscore=0
+ lowpriorityscore=0 mlxscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312070093
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.12.23 12:22, Ryan Roberts wrote:
-> On 07/12/2023 11:13, David Hildenbrand wrote:
->>>>
->>>>> +
->>>>>         if (!vma->vm_mm)        /* vdso */
->>>>> -        return false;
->>>>> +        return 0;
->>>>>           /*
->>>>>          * Explicitly disabled through madvise or prctl, or some
->>>>> @@ -88,16 +141,16 @@ bool hugepage_vma_check(struct vm_area_struct *vma,
->>>>> unsigned long vm_flags,
->>>>>          * */
->>>>>         if ((vm_flags & VM_NOHUGEPAGE) ||
->>>>>             test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
->>>>> -        return false;
->>>>> +        return 0;
->>>>>         /*
->>>>>          * If the hardware/firmware marked hugepage support disabled.
->>>>>          */
->>>>>         if (transparent_hugepage_flags & (1 <<
->>>>> TRANSPARENT_HUGEPAGE_UNSUPPORTED))
->>>>> -        return false;
->>>>> +        return 0;
->>>>>           /* khugepaged doesn't collapse DAX vma, but page fault is fine. */
->>>>>         if (vma_is_dax(vma))
->>>>> -        return in_pf;
->>>>> +        return in_pf ? orders : 0;
->>>>>           /*
->>>>>          * khugepaged special VMA and hugetlb VMA.
->>>>> @@ -105,17 +158,29 @@ bool hugepage_vma_check(struct vm_area_struct *vma,
->>>>> unsigned long vm_flags,
->>>>>          * VM_MIXEDMAP set.
->>>>>          */
->>>>>         if (!in_pf && !smaps && (vm_flags & VM_NO_KHUGEPAGED))
->>>>> -        return false;
->>>>> +        return 0;
->>>>>           /*
->>>>> -     * Check alignment for file vma and size for both file and anon vma.
->>>>> +     * Check alignment for file vma and size for both file and anon vma by
->>>>> +     * filtering out the unsuitable orders.
->>>>>          *
->>>>>          * Skip the check for page fault. Huge fault does the check in fault
->>>>> -     * handlers. And this check is not suitable for huge PUD fault.
->>>>> +     * handlers.
->>>>>          */
->>>>> -    if (!in_pf &&
->>>>> -        !transhuge_vma_suitable(vma, (vma->vm_end - HPAGE_PMD_SIZE)))
->>>>> -        return false;
->>>>> +    if (!in_pf) {
->>>>> +        int order = first_order(orders);
->>>>> +        unsigned long addr;
->>>>> +
->>>>> +        while (orders) {
->>>>> +            addr = vma->vm_end - (PAGE_SIZE << order);
->>>>> +            if (thp_vma_suitable_orders(vma, addr, BIT(order)))
->>>>> +                break;
->>>>
->>>> Comment: you'd want a "thp_vma_suitable_order" helper here. But maybe the
->>>> compiler is smart enough to optimize the loop and everyything else out.
->>>
->>> I'm happy to refactor so that thp_vma_suitable_order() is the basic primitive,
->>> then make thp_vma_suitable_orders() a loop that calls thp_vma_suitable_order()
->>> (that's basically how it is laid out already, just all in one function). Is that
->>> what you are requesting?
+
+
+On 12/6/2023 8:56 PM, Manivannan Sadhasivam wrote:
+> On Mon, Dec 04, 2023 at 08:00:59PM +0530, Maramaina Naresh wrote:
+>> Register ufs driver to CPU latency PM QoS framework can improves
+>> ufs device random io performance.
 >>
->> You got the spirit, yes.
+>> PM QoS initialization will insert new QoS request into the CPU
+>> latency QoS list with the maximum latency PM_QOS_DEFAULT_VALUE
+>> value.
 >>
->>>>
->>>> [...]
->>>>
->>>>> +
->>>>> +static ssize_t thpsize_enabled_store(struct kobject *kobj,
->>>>> +                     struct kobj_attribute *attr,
->>>>> +                     const char *buf, size_t count)
->>>>> +{
->>>>> +    int order = to_thpsize(kobj)->order;
->>>>> +    ssize_t ret = count;
->>>>> +
->>>>> +    if (sysfs_streq(buf, "always")) {
->>>>> +        set_bit(order, &huge_anon_orders_always);
->>>>> +        clear_bit(order, &huge_anon_orders_inherit);
->>>>> +        clear_bit(order, &huge_anon_orders_madvise);
->>>>> +    } else if (sysfs_streq(buf, "inherit")) {
->>>>> +        set_bit(order, &huge_anon_orders_inherit);
->>>>> +        clear_bit(order, &huge_anon_orders_always);
->>>>> +        clear_bit(order, &huge_anon_orders_madvise);
->>>>> +    } else if (sysfs_streq(buf, "madvise")) {
->>>>> +        set_bit(order, &huge_anon_orders_madvise);
->>>>> +        clear_bit(order, &huge_anon_orders_always);
->>>>> +        clear_bit(order, &huge_anon_orders_inherit);
->>>>> +    } else if (sysfs_streq(buf, "never")) {
->>>>> +        clear_bit(order, &huge_anon_orders_always);
->>>>> +        clear_bit(order, &huge_anon_orders_inherit);
->>>>> +        clear_bit(order, &huge_anon_orders_madvise);
->>>>
->>>> Note: I was wondering for a second if some concurrent cames could lead to an
->>>> inconsistent state. I think in the worst case we'll simply end up with "never"
->>>> on races.
->>>
->>> You mean if different threads try to write different values to this file
->>> concurrently? Or if there is a concurrent fault that tries to read the flags
->>> while they are being modified?
+>> UFS driver will vote for performance mode on scale up and power
+>> save mode for scale down.
 >>
->> I thought about what you said first, but what you said last might also apply. As
->> long as "nothing breaks", all good.
+>> If clock scaling feature is not enabled then voting will be based
+>> on clock on or off condition.
 >>
->>>
->>> I thought about this for a long time too and wasn't sure what was best. The
->>> existing global enabled store impl clears the bits first then sets the bit. With
->>> this approach you can end up with multiple bits set if there is a race to set
->>> diffierent values, and you can end up with a faulting thread seeing never if it
->>> reads the bits after they have been cleared but before setting them.
+>> tiotest benchmark tool io performance results on sm8550 platform:
 >>
->> Right, but user space is playing stupid games and can win stupid prices. As long
->> as nothing breaks, we're good.
+>> 1. Without PM QoS support
+>> 	Type (Speed in)    | Average of 18 iterations
+>> 	Random Write(IPOS) | 41065.13
+>> 	Random Read(IPOS)  | 37101.3
 >>
->>>
->>> I decided to set the new bit before clearing the old bits, which is different; A
->>> racing fault will never see "never" but as you say, a race to set the file could
->>> result in "never" being set.
->>>
->>> On reflection, it's probably best to set the bit *last* like the global control
->>> does?
+>> 2. With PM QoS support
+>> 	Type (Speed in)    | Average of 18 iterations
+>> 	Random Write(IPOS) | 46784.9
+>> 	Random Read(IPOS)  | 42943.4
+>> (Improvement % with PM QoS = ~15%).
 >>
->> Probably might just slap a simple spinlock in there, so at least the writer side
->> is completely serialized. Then you can just set the bit last. It's unlikely that
->> readers will actually run into issues, and if they ever would, we could use some
->> rcu magic to let them read a consistent state.
+>> Co-developed-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+>> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+>> Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+>> Signed-off-by: Maramaina Naresh <quic_mnaresh@quicinc.com>
+>> ---
+>>   drivers/ufs/core/ufshcd-priv.h |  8 +++++
+>>   drivers/ufs/core/ufshcd.c      | 62 ++++++++++++++++++++++++++++++++++
+>>   include/ufs/ufshcd.h           | 16 +++++++++
+>>   3 files changed, 86 insertions(+)
+>>
+>> diff --git a/drivers/ufs/core/ufshcd-priv.h b/drivers/ufs/core/ufshcd-priv.h
+>> index f42d99ce5bf1..536805f6c4e1 100644
+>> --- a/drivers/ufs/core/ufshcd-priv.h
+>> +++ b/drivers/ufs/core/ufshcd-priv.h
+>> @@ -241,6 +241,14 @@ static inline void ufshcd_vops_config_scaling_param(struct ufs_hba *hba,
+>>   		hba->vops->config_scaling_param(hba, p, data);
+>>   }
+>>   
+>> +static inline u32 ufshcd_vops_config_qos_vote(struct ufs_hba *hba)
+>> +{
+>> +	if (hba->vops && hba->vops->config_qos_vote)
+>> +		return hba->vops->config_qos_vote(hba);
 > 
-> I'd prefer to leave it as it is now; clear first, set last without any explicit
-> serialization. I've convinced myself that nothing breaks and its the same
-> pattern used by the global control so its consistent. Unless you're insisting on
-> the spin lock?
+> Please remove this callback as Bart noted.
+> 
 
-No, not at all. But it would certainly remove any possible concerns :)
+Sure Mani, will takecare of this comment.
 
--- 
-Cheers,
+>> +
+>> +	return UFSHCD_QOS_DEFAULT_VOTE;
+>> +}
+>> +
+>>   static inline void ufshcd_vops_reinit_notify(struct ufs_hba *hba)
+>>   {
+>>   	if (hba->vops && hba->vops->reinit_notify)
+>> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+>> index ae9936fc6ffb..13370febd2b5 100644
+>> --- a/drivers/ufs/core/ufshcd.c
+>> +++ b/drivers/ufs/core/ufshcd.c
+>> @@ -1001,6 +1001,20 @@ static bool ufshcd_is_unipro_pa_params_tuning_req(struct ufs_hba *hba)
+>>   	return ufshcd_get_local_unipro_ver(hba) < UFS_UNIPRO_VER_1_6;
+>>   }
+>>   
+>> +/**
+>> + * ufshcd_pm_qos_perf - vote for PM QoS performance or power save mode
+> 
+> ufshcd_pm_qos_update() - Update PM QoS request
+> 
 
-David / dhildenb
+Sure Mani, will takecare of this comment.
 
+>> + * @hba: per adapter instance
+>> + * @on: If True, vote for perf PM QoS mode otherwise power save mode
+>> + */
+>> +static void ufshcd_pm_qos_perf(struct ufs_hba *hba, bool on)
+>> +{
+>> +	if (!hba->pm_qos_init)
+>> +		return;
+>> +
+>> +	cpu_latency_qos_update_request(&hba->pm_qos_req, on ? hba->qos_vote
+>> +							: PM_QOS_DEFAULT_VALUE);
+>> +}
+>> +
+>>   /**
+>>    * ufshcd_set_clk_freq - set UFS controller clock frequencies
+>>    * @hba: per adapter instance
+>> @@ -1153,6 +1167,10 @@ static int ufshcd_scale_clks(struct ufs_hba *hba, unsigned long freq,
+>>   	trace_ufshcd_profile_clk_scaling(dev_name(hba->dev),
+>>   			(scale_up ? "up" : "down"),
+>>   			ktime_to_us(ktime_sub(ktime_get(), start)), ret);
+>> +
+>> +	if (!ret)
+>> +		ufshcd_pm_qos_perf(hba, scale_up);
+> 
+> Can't you just move this before trace_ufshcd_profile_clk_scaling()? This also
+> avoids checking for !ret.
+> 
+
+In this case, we need to use goto out; inside if(ret) of 
+ufshcd_vops_clk_scale_notify.
+will do the above change, to enable ufshcd_pm_qos_perf before the out flag.
+
+>> +
+>>   	return ret;
+>>   }
+>>   
+>> @@ -9204,6 +9222,8 @@ static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on)
+>>   	if (ret)
+>>   		return ret;
+>>   
+>> +	if (!ufshcd_is_clkscaling_supported(hba))
+>> +		ufshcd_pm_qos_perf(hba, on);
+>>   out:
+>>   	if (ret) {
+>>   		list_for_each_entry(clki, head, list) {
+>> @@ -9296,6 +9316,45 @@ static int ufshcd_init_clocks(struct ufs_hba *hba)
+>>   	return ret;
+>>   }
+>>   
+>> +/**
+>> + * ufshcd_pm_qos_init - initialize PM QoS instance
+> 
+> "Initialize PM QoS request"
+> 
+
+Sure Mani, will takecare of this comment.
+
+>> + * @hba: per adapter instance
+>> + */
+>> +static void ufshcd_pm_qos_init(struct ufs_hba *hba)
+>> +{
+>> +	if (!(hba->caps & UFSHCD_CAP_PM_QOS))
+>> +		return;
+>> +
+>> +	/*
+>> +	 * called to configure PM QoS vote value for UFS host,
+>> +	 * expecting qos vote return value from caller else
+>> +	 * default vote value will be return.
+>> +	 */
+>> +	hba->qos_vote = ufshcd_vops_config_qos_vote(hba);
+> 
+> No need of this variable too if you get rid of the callback.
+> 
+>> +	cpu_latency_qos_add_request(&hba->pm_qos_req,
+>> +					PM_QOS_DEFAULT_VALUE);
+>> +
+>> +	if (cpu_latency_qos_request_active(&hba->pm_qos_req))
+>> +		hba->pm_qos_init = true;
+> 
+> Why do you need this flag?
+
+this flag ensure UFS qos request got added into the Global PM QoS list.
+
+> 
+>> +
+>> +	dev_dbg(hba->dev, "%s: QoS %s, qos_vote: %u\n", __func__,
+>> +		hba->pm_qos_init ? "initialized" : "uninitialized",
+>> +		hba->qos_vote);
+>> +}
+>> +
+>> +/**
+>> + * ufshcd_pm_qos_exit - remove instance from PM QoS
+>> + * @hba: per adapter instance
+>> + */
+>> +static void ufshcd_pm_qos_exit(struct ufs_hba *hba)
+>> +{
+>> +	if (!hba->pm_qos_init)
+>> +		return;
+>> +
+>> +	cpu_latency_qos_remove_request(&hba->pm_qos_req);
+>> +	hba->pm_qos_init = false;
+>> +}
+>> +
+> 
+> [...]
+> 
+>>   /**
+>>    * struct ufs_hba - per adapter private structure
+>>    * @mmio_base: UFSHCI base register address
+>> @@ -912,6 +923,8 @@ enum ufshcd_mcq_opr {
+>>    * @mcq_base: Multi circular queue registers base address
+>>    * @uhq: array of supported hardware queues
+>>    * @dev_cmd_queue: Queue for issuing device management commands
+>> + * @pm_qos_req: PM QoS request handle
+>> + * @pm_qos_init: flag to check if pm qos init completed
+>>    */
+>>   struct ufs_hba {
+>>   	void __iomem *mmio_base;
+>> @@ -1076,6 +1089,9 @@ struct ufs_hba {
+>>   	struct ufs_hw_queue *uhq;
+>>   	struct ufs_hw_queue *dev_cmd_queue;
+>>   	struct ufshcd_mcq_opr_info_t mcq_opr[OPR_MAX];
+>> +	struct pm_qos_request pm_qos_req;
+>> +	bool pm_qos_init;
+>> +	u32 qos_vote;
+> 
+> Order doesn't match Kdoc.
+>
+
+we are removing qos_vote variable in next patch series.
+
+> - Mani
+> 
+
+Thanks,
+Naresh.
