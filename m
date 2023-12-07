@@ -2,171 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64819808644
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B067B8085E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235233AbjLGKJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 05:09:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40246 "EHLO
+        id S231573AbjLGKMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 05:12:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235229AbjLGKJv (ORCPT
+        with ESMTP id S235194AbjLGKLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 05:09:51 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF11B9;
-        Thu,  7 Dec 2023 02:09:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701943797; x=1733479797;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=DRHCv5WAhRB3KOrQWsR/0xE5OXpRqjn+7xrlZgK+TTU=;
-  b=iFca53VzxvNO4XIegi7UprjjJRSnNsYJZXKDK4QK8/YWcdvMPRKbbR35
-   yDAJCfieoyN5cMd+VH6xK141jR+T/VhoN1tjdxA5ASyT4l78VUMCoxBVG
-   iwsxcj7iZzgP2wXGaRkVJOgtlYW2IfLk+zPEcLW0cYKfPfN43pUaTpoEu
-   aQMUImYtObV7SjT2ylDlOmMaTLloMzPMnZM7zEx8BzRENbnf3T9lPXR8B
-   g/YYR+uqMHij5FQN38kXqZP6w2IMNz7GRLO4m3GbYK7PJzBuonh37CHVq
-   j7mdKSzagIUcaJp1mm3+JJVxuwZOU6LamiQbuz0ei48tE6tgaksJDcGAT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="374374065"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="374374065"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 02:09:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="1103151809"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="1103151809"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Dec 2023 02:09:55 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+        Thu, 7 Dec 2023 05:11:14 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B920A4;
+        Thu,  7 Dec 2023 02:11:20 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B7AAs8Q2078486, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B7AAs8Q2078486
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Dec 2023 18:10:54 +0800
+Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Dec 2023 02:09:54 -0800
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ 15.1.2375.32; Thu, 7 Dec 2023 18:10:55 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Dec 2023 02:09:54 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 7 Dec 2023 02:09:54 -0800
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 7 Dec 2023 02:09:54 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L0tJ0WhSNyXkp4KlsVQY95YR3q3mB5ffuhO9ieuEMSDgkrvQgJVeKU+M3CzW5KPybNft9hUykeEp82oe1XYHUQm56PeXsY24TPu4A7OkIU0A1k4Vz60PmSKHlAiOPKJhmwmgfgJT9zwvaWxqK02GvlTCXu2UqosBbBbBx57aG8boyCA0U/1C+CVietIzbYnK052k/NHuAmPSw85MZNgonVQlDxNXEA0ekl9CHc1jgy0QexNvbGk/COvECTT8x85mnZX3E1kqBJwpKKf3ET0zxwc6giie0U5YK30gc1vY1Dr00J9tSyxj5ndKYIWcF1/cZtfLEYJ5ekIuhw2I74Dexw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4fpV/mWabOiJge2xbzHNB89KDwH5FdZ1lNELh+fD0v0=;
- b=AEU4pnlxZ7mCGTm1F4fpEBWbo0qn0IwNQg9yxB3uH5XU/xADArEgYO4Sp3Rz1bqcbFRJxmmMLe3vr2DptepnQwSu3RFQaLdyPo674dCBbXCndoA+lKaazS0P/Et5ma4Ee/eZ7DZpayaORcoZh/T/av3FYQezujdwIGrRET03lNpvyTMGO9CdkGB3uN0JLeTOBhzyRo2uEDOhqyGWxz0ugDF1vBVrvZ/FagRGAgNysrqzutA1R90TTPm+iCSSiPB+Lj52gxRwaoRIbbWsaxO/sCz+QaSaK6mRifDh0aPEuKhZ09q8A2/CvQgub8iYnoiRvnGA0huRc/HXYoF0XhML7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SA1PR11MB6734.namprd11.prod.outlook.com (2603:10b6:806:25d::22)
- by DM4PR11MB7351.namprd11.prod.outlook.com (2603:10b6:8:104::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.25; Thu, 7 Dec
- 2023 10:09:46 +0000
-Received: from SA1PR11MB6734.namprd11.prod.outlook.com
- ([fe80::3d98:6afd:a4b2:49e3]) by SA1PR11MB6734.namprd11.prod.outlook.com
- ([fe80::3d98:6afd:a4b2:49e3%7]) with mapi id 15.20.7046.034; Thu, 7 Dec 2023
- 10:09:46 +0000
-From:   "Li, Xin3" <xin3.li@intel.com>
-To:     "Gao, Chao" <chao.gao@intel.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ 15.1.2375.34; Thu, 7 Dec 2023 18:10:54 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Thu, 7 Dec 2023 18:10:54 +0800
+From:   =?utf-8?B?VFlfQ2hhbmdb5by15a2Q6YC4XQ==?= <tychang@realtek.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "Cui, Dexuan" <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
-Subject: RE: [PATCH v1 13/23] KVM: VMX: Handle VMX nested exception for FRED
-Thread-Topic: [PATCH v1 13/23] KVM: VMX: Handle VMX nested exception for FRED
-Thread-Index: AQHaEnYXOQlvFLhpWkG4lt/jksLCm7B5dqYAgAFC3tCAIVOmcIABoIUAgAAStHA=
-Date:   Thu, 7 Dec 2023 10:09:46 +0000
-Message-ID: <SA1PR11MB67342A44E1C2E17E127AA44AA88BA@SA1PR11MB6734.namprd11.prod.outlook.com>
-References: <20231108183003.5981-1-xin3.li@intel.com>
- <20231108183003.5981-14-xin3.li@intel.com> <ZVMkVmBPVfaMjDTL@chao-email>
- <SA1PR11MB67348D3637C2BC6B107C5CCAA8B1A@SA1PR11MB6734.namprd11.prod.outlook.com>
- <SA1PR11MB6734EFF17E15C68AAD12A227A884A@SA1PR11MB6734.namprd11.prod.outlook.com>
- <ZXGFcuwwmkBlqq5s@chao-email>
-In-Reply-To: <ZXGFcuwwmkBlqq5s@chao-email>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR11MB6734:EE_|DM4PR11MB7351:EE_
-x-ms-office365-filtering-correlation-id: 3f8bb752-20fd-46bd-c8a9-08dbf70ca3df
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZifDK4y3eASt6wGYDUdtDebqItqKPVFYgJGtZAg67MSIx+YQwXLJNmsV6O5bnYuzJut+4kRHmajQbBEchuJubPMohfIbxM6rOWv7ccBGvvn4DzQpn+ycetEp2goMPrzBLkzSmQFphKWUZSD1RM82/Qas0T6hW08e85Uqlt+koAGaSAMV2NktDEC735WK2/y427E7ThwiAK0zsBPsAN28+nICROVojKoVU+wpby+mHKvbhCh/g1X6ScpTrcUMn4QfoVDwGQgpF291SBN9qOTHR1TaIPEyXxfsWp+DKj5zKT2e4Yac6FNu7rNeIxOhCgunyX2Ck3/Je9zwjr3SPVa4/aSDXDUcKT65Gv7QcTpEmJ/PUFdLvr/Ki8JIPcQJcd2DUcfd4CKAM4AlzLYBxCu40kpBLBvWS23NTA1nKvSurEyxzPjJxYCv/R44VPCcTYEC8Zr0jMpIRx/87oZuSZ/XoK56CHGnLMKC/Ss4X3S9RTDRCfQ4Dzduo8p72mmqcPWWPg9YzLtyYiCn5aECifFiNsn1aEqXB+tfBtSmi5EM/tAXKvRnrREanlQdAsbxhX/NlnIqsV7y21f+XUvF4feK3Zgby0+gfooLI9nsafis3IxQLjM+7BhuVzfj8tZmdGqpA9RN2Ahx1JRgh3DOWgw1q7nXtFk1sjgrmasprlpd5TE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(39860400002)(376002)(136003)(230922051799003)(230273577357003)(230173577357003)(64100799003)(1800799012)(186009)(451199024)(122000001)(38070700009)(2906002)(38100700002)(26005)(83380400001)(55016003)(86362001)(82960400001)(33656002)(7416002)(7696005)(5660300002)(6506007)(71200400001)(8676002)(52536014)(6862004)(8936002)(4326008)(9686003)(66446008)(41300700001)(54906003)(316002)(76116006)(6636002)(66476007)(66946007)(478600001)(64756008)(66556008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?d86xj6oXZKLCWQJ1rY4Ef4QFVMTleOLYe8sQEf9JiXIAO4/phBket9yjqNYO?=
- =?us-ascii?Q?oIyB2s1eIWYtOU4w1iVJWmR0AtDsSXfiNJZQL9a5MhOhHvPN0ZiuosoasF8t?=
- =?us-ascii?Q?ub0mYiO/NCKTUKgOlh8X0tiTg5UYb/EB/czMJkJwtaMV/+xK86wl6hbgBJnB?=
- =?us-ascii?Q?snAt6DrSg0XNwFUYDABdQ92bOdlyjTgvCGOo/MtdLf7hPz9+37LvZ8phD5gI?=
- =?us-ascii?Q?l2SzUtO78x33WLs43+NSvKCNT7PAnRJIU+ejSvZsbJpuUjsydU4gv27DWnIP?=
- =?us-ascii?Q?J4vztjH7zsNaqnl/foXyQb5gzPrxo263YMfZ/45WkPGNJ09bEIgAG/bkVNcn?=
- =?us-ascii?Q?VCRmG1kUnlVyaEslbHsaDluDnFDMBIce1gr6CUub3o+SpeDbAuu0HCAbYATP?=
- =?us-ascii?Q?Zb28dWRsTeq/XmRCCVQiMjkNroo4RAqYJGHrZ0BdM5UCZfJVF4ocH5Z/2McA?=
- =?us-ascii?Q?U69iH/oFbQnh5KqUroW/3wISbRIR56zY5rnQBSRn2kZuF5h/IEhluErQ1Rgf?=
- =?us-ascii?Q?mzdqOVQH2Npz3yhwq1o2y5YYIK34QuLvsqpcmiU+uIAxv77ZoWfGyM1ZezLn?=
- =?us-ascii?Q?8EIMmHI4Ppo1XYx4TL0SNyryLUdFkOA2VS8g/ycfGlwEPx+FLd/zYnbDCvtq?=
- =?us-ascii?Q?QT3lH6BpOixdXyGeRkbHP2EG5fdvAcW1aQAFZj/j9p3nTCxHZb+TgwAwqBL0?=
- =?us-ascii?Q?HEI54XivpJ2wYROgbAUMJVzRQsWarhNkuR84vG8wk2ET8mzKzVh7OYv4uJ3K?=
- =?us-ascii?Q?6UnwOPzSvz1wxkkJ38u8UU1PziWyGhX9CHw2Mtg7ens38NnPZUn1b5BEDHfE?=
- =?us-ascii?Q?E3IsaqIXD7dC4F3Hg1SUsCXkmrBPk7eyBxNQLr77+s2+8pOBfX4IoUmLO4s3?=
- =?us-ascii?Q?F7rpI2zwwNz3Vuom6Crl4+4MOnpXVuKz1gi+mNJdPthJ9GPFjDTL50k458yZ?=
- =?us-ascii?Q?eHPXXezLBO1Wtzhq7rFP5RQzn+o+YSJUKlNBseOKRxNZWOqHeqz2CPUIehWF?=
- =?us-ascii?Q?vDKDqpJuzEigxrzVir/NaXnXfkvN5bt1M7x8iQgAp7dYBO1lCnws7qeKfQ9w?=
- =?us-ascii?Q?OaMx0xoiQNxcSSNr28qL/VZI3mHd104IhsPCUjR1RkSb9HZ1/taaEXcKZjSK?=
- =?us-ascii?Q?GyKKZg2tyZIuyKb/TngxpgVGJ3KiP9LawBFz1y1WTQJQgFKF9td15zpZK+8X?=
- =?us-ascii?Q?5tTw7Z4q6RAE3fC2meFZiN13yl7NX8BHiGR0YYgqWfiWPEcnFDqMiDwMwz1p?=
- =?us-ascii?Q?alQqLzhVy7AkJGCWvVvORTxaCVgxeqInIfmMt8lwysyImhpoOlX4IVu1S8WV?=
- =?us-ascii?Q?65mj1llQEPfJYxbVwDyyKQxq2lHAheIU3NGj8ixyflK212wjHA6OU0gDeD+b?=
- =?us-ascii?Q?otNImXSv+i/ZkAQeXIb1CkUaZJnPz8N+VJA3p/E9IKkBZhLerqumIy7zU6py?=
- =?us-ascii?Q?JCSEs8PSgyUxm8K3igzDbpCiOdgTzn8w7wAF8tohEeJYZtc4siKXd5ytamhK?=
- =?us-ascii?Q?WDDjKaSxOtTmJ6UU+/9J+wFxtoeoSzWfciXyJiL3cpHVSGne+OrioNNE9PQK?=
- =?us-ascii?Q?uBC0SW5un0lr4edNZwg=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
+        <stanley_chang@realtek.com>
+Subject: RE: [PATCH 1/2] dt-bindings: phy: realtek: Add Realtek DHC RTD SoC PCIe PHY
+Thread-Topic: [PATCH 1/2] dt-bindings: phy: realtek: Add Realtek DHC RTD SoC
+ PCIe PHY
+Thread-Index: AQHaJERyJL4rQ+THDkqbltcZ8ZneurCXQdKAgAXqHZA=
+Date:   Thu, 7 Dec 2023 10:10:54 +0000
+Message-ID: <5e57f7b0f54d4a8aa52ed6e15a9af9f5@realtek.com>
+References: <20231201105207.11786-1-tychang@realtek.com>
+ <20231201105207.11786-2-tychang@realtek.com>
+ <01946883-e008-4b4c-8e2a-a73787ad9f23@linaro.org>
+In-Reply-To: <01946883-e008-4b4c-8e2a-a73787ad9f23@linaro.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.21.181.166]
+x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6734.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f8bb752-20fd-46bd-c8a9-08dbf70ca3df
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Dec 2023 10:09:46.3842
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: blCkVG2ftWahGx/O41NyKoDFJfGO4SyyA8Bh3PgdFFy+IyE9tXsxkP3tPahye1GqIo24tXBHR2sSTVBJiGaB6w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7351
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -174,55 +76,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >> > Exiting-event identification can also have bit 13 set, indicating a
-> >> > nested exception encountered and caused VM-exit. when reinjecting th=
-e
-> >> > exception to guests, kvm needs to set the "nested" bit, right? I
-> >> > suspect some changes to e.g., handle_exception_nmi() are needed.
-> >>
-> >> The current patch relies on kvm_multiple_exception() to do that.  But =
-TBH, I'm
-> >> not sure it can recognize all nested cases.  I probably should revisit=
- it.
-> >
-> >So the conclusion is that kvm_multiple_exception() is smart enough, and
-> >a VMM doesn't have to check bit 13 of the Exiting-event identification.
-> >
-> >In FRED spec 5.0, section 9.2 - New VMX Feature: VMX Nested-Exception
-> >Support, there is a statement at the end of Exiting-event identification=
-:
-> >
-> >(The value of this bit is always identical to that of the valid bit of
-> >the original-event identification field.)
-> >
-> >It means that even w/o VMX Nested-Exception support, a VMM already knows
-> >if an exception is a nested exception encountered during delivery of
-> >another event in an exception caused VM exit (exit reason 0).  This is
-> >done in KVM through reading IDT_VECTORING_INFO_FIELD and calling
-> >vmx_complete_interrupts() immediately after VM exits.
-> >
-> >vmx_complete_interrupts() simply queues the original exception if there =
-is
-> >one, and later the nested exception causing the VM exit could be cancell=
-ed
-> >if it is a shadow page fault.  However if the shadow page fault is cause=
-d
-> >by a guest page fault, KVM injects it as a nested exception to have gues=
-t
-> >fix its page table.
-> >
-> >I will add comments about this background in the next iteration.
->=20
-> is it possible that the CPU encounters an exception and causes VM-exit du=
-ring
-> injecting an __interrupt__? in this case, no __exception__ will be (re-)q=
-ueued
-> by vmx_complete_interrupts().
-
-I guess the following case is what you're suggesting:
-KVM injects an external interrupt after shadow page tables are nuked.
-
-vmx_complete_interrupts() are called after each VM exit to clear both
-interrupt and exception queues, which means it always pushes the
-deepest event if there is an original event.  In the above case, the
-original event is the external interrupt KVM just tried to inject.
+SGkgS3J6eXN6dG9mLA0KDQpUaGFuayB5b3UgZm9yIHRoZSByZXZpZXcuDQoNCj5PbiAwMS8xMi8y
+MDIzIDExOjUyLCBUenV5aSBDaGFuZyB3cm90ZToNCj4+ICsgICIjcGh5LWNlbGxzIjoNCj4+ICsg
+ICAgY29uc3Q6IDANCj4+ICsNCj4+ICsgIG52bWVtLWNlbGxzOg0KPj4gKyAgICBtYXhJdGVtczog
+MQ0KPj4gKyAgICBkZXNjcmlwdGlvbjoNCj4+ICsgICAgICBQaGFuZGxlIHRvIG52bWVtIGNlbGwg
+dGhhdCBjb250YWlucyAnVHggc3dpbmcgdHJpbScNCj4+ICsgICAgICB0dW5pbmcgcGFyYW1ldGVy
+IHZhbHVlIGZvciBQQ0llIHBoeS4NCj4+ICsNCj4+ICsgIG52bWVtLWNlbGwtbmFtZXM6DQo+PiAr
+ICAgIGl0ZW1zOg0KPj4gKyAgICAgIC0gY29uc3Q6IHR4X3N3aW5nX3RyaW0NCj4+ICsNCj4+ICsg
+IHJlYWx0ZWsscGNpZS1zeXNjb246DQo+PiArICAgICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwj
+L2RlZmluaXRpb25zL3BoYW5kbGUNCj4+ICsgICAgZGVzY3JpcHRpb246IHBoYW5kbGUgb2Ygc3lz
+Y29uIHVzZWQgdG8gY29udHJvbCBQQ0llIE1ESU8gcmVnaXN0ZXIuDQo+DQo+V2h5IHRoaXMgZG9l
+cyBub3QgaGF2ZSByZWcgcHJvcGVydHkgYnV0IHN5c2Nvbj8gVGhpcyBsb29rcyBoYWNreS4NCj4N
+Cg0KT3VyIFBDSWUgUEhZIGRyaXZlciBuZWVkcyB0byBhY2Nlc3MgdHdvIHJlZ2lzdGVyczoNCjEu
+IFBDSWUgTURJTyByZWdpc3RlcjogVXRpbGl6ZWQgZm9yIGNvbmZpZ3VyaW5nIHRoZSBQQ0llIFBI
+WS4NCjIuIFBDSWUgTUFDIExpbmsgQ29udHJvbCBhbmQgTGluayBTdGF0dXMgUmVnaXN0ZXI6IFVz
+ZSB0byBnZXQgdGhlIGN1cnJlbnQNCiAgbGluayBzcGVlZCBmb3IgY2FsaWJyYXRpb24gcHVycG9z
+ZXMuDQoNCkJvdGggdGhlc2UgcmVnaXN0ZXJzIHJlc2lkZSB3aXRoaW4gdGhlIFBDSWUgY29udHJv
+bGxlciByZWdpc3RlcnMuIFRoZSBQQ0llDQpkcml2ZXIgaGFzIG1hcHBlZCB0aGVzZSByZWdpc3Rl
+ciBhZGRyZXNzIHJlZ2lvbiwgc28gSSB1c2UgcmVnbWFwIHRvIGFjY2Vzcw0KdGhlc2UgcmVnaXN0
+ZXJzLg0KDQo+V2hlcmUgaXMgdGhlIERUUyBvZiB5b3VyIHBsYXRmb3JtIHNvIHdlIGNhbiB2ZXJp
+ZnkgdGhlIGJpbmRpbmdzPyBJbiB0aGUgcGFzdA0KPlJlYWx0ZWsgYmluZGluZ3MgYW5kIERUUyB3
+ZXJlIHNlbnQgd2l0aG91dCB0ZXN0aW5nLg0KDQpUaGUgYmluZGluZ3MgYW5kIERUUyBmb3Igb3Vy
+IHBsYXRmb3JtIGFyZSBjb250aW51b3VzbHkgYmVpbmcgYWRqdXN0ZWQgZm9yIHRoZSB1cHN0cmVh
+bS4NCg0KVGhlcmVmb3JlLCBJIG9ubHkgbW9kaWZpZWQgYW5kIHRlc3RlZCB0aGUgRFRTIG5vZGUg
+b2YgdGhlIGJpbmRpbmcgZG9jdW1lbnRhdGlvbnMgSSBzdWJtaXR0ZWQuDQpUaGUgRFRTIG5vZGUg
+aXMgdGhlIHNhbWUgYXMgdGhlIGV4YW1wbGVzIGluIHRoZSBiaW5kaW5nIGRvY3VtZW50YXRpb24u
+IEkgdGVzdGVkIGl0IHVzaW5nIHRoZQ0KY29tbWFuZCAibWFrZSBkdGJzX2NoZWNrIERUX1NDSEVN
+QV9GSUxFUz0uLi4iIHdpdGhvdXQgZW5jb3VudGVyaW5nIGFueSBlcnJvcnMuDQoNCj4+ICsNCj4+
+ICtyZXF1aXJlZDoNCj4+ICsgIC0gY29tcGF0aWJsZQ0KPj4gKyAgLSByZWFsdGVrLHBjaWUtc3lz
+Y29uDQo+PiArICAtICIjcGh5LWNlbGxzIg0KPj4gKw0KPj4gK2FkZGl0aW9uYWxQcm9wZXJ0aWVz
+OiBmYWxzZQ0KPj4gKw0KPj4gK2V4YW1wbGVzOg0KPj4gKyAgLSB8DQo+PiArICAgIHBjaWUxX3Bo
+eSB7DQo+DQo+cGh5IHsNCj4NCg0KSSB3aWxsIGZpeCBpdCBpbiB0aGUgbmV4dCB2ZXJzaW9uLg0K
+DQpUaGFua3MsDQpUenV5aSBDaGFuZw0K
