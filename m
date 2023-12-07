@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCAC808FDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF9F808FE2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443711AbjLGSXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 13:23:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
+        id S1443724AbjLGSXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 13:23:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443686AbjLGSXd (ORCPT
+        with ESMTP id S1443688AbjLGSXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 13:23:33 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFEA10E3
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 10:23:39 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54bf9a54fe3so1819997a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 10:23:39 -0800 (PST)
+        Thu, 7 Dec 2023 13:23:51 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C3E91718
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 10:23:57 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a1eb422b412so211859266b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 10:23:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701973416; x=1702578216; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1701973433; x=1702578233; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=18Xj7GvDH6vU8O7BJr6AsjtH8lVK3Aid34DvmXifJHM=;
-        b=FLQrPp82ZxoFUAOELtyxwE30HqRsZzio/ZSv48fB+PyEj26C0N4+QEzAkKE5fHtd6b
-         Zr1FVmSkODrxLajK76o0TlisSckJUbBwCQVWJDkCoppsy5hYCK6wk2KseuzNUFCMbgY5
-         qWANEDBu4EoYLN0dqZ4KwRn6VWjgNYRNSLDBs=
+        bh=x1yF2nbpTBS+jUEhedo6G2ntKnSSa7ydctF2qRUubWQ=;
+        b=XypoBWDXvsowrtiroRwPcfe7ICXGJ1wGTt82ECUKckz5QNp2q1ZxY/8mAgKy4npkpJ
+         th6FLAI6KGYt77sLqbp1B1AjKlgeYfwZet3NcXJyUtiXxHQ6BaghIBk1oHWdIESmc+vU
+         hZS+2yv+1PYhrN15n4YxgztoKFh3BrprrXsJ4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701973416; x=1702578216;
+        d=1e100.net; s=20230601; t=1701973433; x=1702578233;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=18Xj7GvDH6vU8O7BJr6AsjtH8lVK3Aid34DvmXifJHM=;
-        b=sDJ/aKF54EI3P65PgUWVY6FIregF4oAbdDB0+fhVRxTkZCw8aC6NJ50alXtwwz/kqN
-         4C7DJp642yspnHzwL1QMR22l/JYqIk7f8Pi0zTJl/LpjpD82BNeOK9sfbhjbDIyr9/cX
-         3uFOTpTthFvWbfR4/z1WSLmVtatPbWEm6rJCxGPnZ+A9074b+MmA3+70eyZlVYNewHjr
-         JEGcY3+Tc3LRqofudBrtvH3q9G3cNOpweimxGdv68jS5DkE/JK3uyFLbXli/ySbcTv6Z
-         nAG900ZUTdNUFYL58a3ihm8GASX+2NhJXt5YFr3T2JZ8QBMeokfLjJOD3qTz6o036n1W
-         ISaw==
-X-Gm-Message-State: AOJu0YzK80uJvsWrRDZyvsWvrZwlpLkrnTjGFiC6LeXOBChEB43OMeDZ
-        hBYeP+JuLamrpn7X8gEViLSbv50ic1l/zXah6/AYlnj8
-X-Google-Smtp-Source: AGHT+IFyT0GFuweuOYW/7w7U8kThzWMNxwRYS5HH3DiguQIoJyzc8JhsiuJIZdh3L/eiQ3hrhooRAQ==
-X-Received: by 2002:a17:906:20c8:b0:a1c:f745:e0b8 with SMTP id c8-20020a17090620c800b00a1cf745e0b8mr1856048ejc.92.1701973416048;
-        Thu, 07 Dec 2023 10:23:36 -0800 (PST)
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
-        by smtp.gmail.com with ESMTPSA id th8-20020a1709078e0800b00a1df93ed441sm50902ejc.135.2023.12.07.10.23.35
+        bh=x1yF2nbpTBS+jUEhedo6G2ntKnSSa7ydctF2qRUubWQ=;
+        b=PKFFuMwaloirXKQKT75l1rZnf7H7sdC2d7Q2QLGhPgOqJws7/1xSjs/Iimj4v/OlZA
+         aICUnYou//py1lNiA9Lc86Ub59V6FpzzuipW6JJkOUDBMVFetDGoFC65UjqoW0sXD/E/
+         aXdcZRRdDIHQ7UwzgkBGNEvc7UtglMsKNXsmCuoJoFoAb8LCa2gEdUq0zEts8E9qU7qB
+         8Dsm8cd03nwkaQXogO1+UCl45MKkkcMY/gLdHHXq/dlnq6yy+VioFzmjiXcM6cYkaeoZ
+         dDo80/W8LgS3E5Bys8kKjYlTivsJsxtNJ0l4Sf6anjAnEOIznO8zdV8L4qEfjGQXMZtQ
+         GzSw==
+X-Gm-Message-State: AOJu0Yx26gTgn4aeBFdUGId7C4NsH7gezGt+kp1A4sc0zgS8qyCrOUN8
+        AgSmeZh1gJuXMtVV+LgseSEZune9dZIlsf6EsgM3de4A
+X-Google-Smtp-Source: AGHT+IGopSf8q0dTnLjnscAFnDRlNysz9VGL2huvoThLErRLUo358HIIeXjU0lm6Uf1GdMtE1cfdFA==
+X-Received: by 2002:a17:906:197:b0:a1c:892e:9e68 with SMTP id 23-20020a170906019700b00a1c892e9e68mr4747590ejb.29.1701973433059;
+        Thu, 07 Dec 2023 10:23:53 -0800 (PST)
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
+        by smtp.gmail.com with ESMTPSA id sn24-20020a170906629800b00a1da72b874bsm50848ejc.175.2023.12.07.10.23.52
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 10:23:35 -0800 (PST)
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40b367a0a12so3555e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 10:23:35 -0800 (PST)
+        Thu, 07 Dec 2023 10:23:52 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40b367a0a12so3685e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 10:23:52 -0800 (PST)
 X-Received: by 2002:a05:600c:231a:b0:405:320a:44f9 with SMTP id
- 26-20020a05600c231a00b00405320a44f9mr220896wmo.5.1701973414710; Thu, 07 Dec
- 2023 10:23:34 -0800 (PST)
+ 26-20020a05600c231a00b00405320a44f9mr220940wmo.5.1701973431985; Thu, 07 Dec
+ 2023 10:23:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20231207081801.4049075-1-treapking@chromium.org> <20231207081801.4049075-2-treapking@chromium.org>
-In-Reply-To: <20231207081801.4049075-2-treapking@chromium.org>
+References: <20231207081801.4049075-1-treapking@chromium.org> <20231207081801.4049075-3-treapking@chromium.org>
+In-Reply-To: <20231207081801.4049075-3-treapking@chromium.org>
 From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 7 Dec 2023 10:23:18 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=Xbmo4BYjy3si4D8NJ5hThmjQky3oK4VFQz8fwKj87Rtw@mail.gmail.com>
-Message-ID: <CAD=FV=Xbmo4BYjy3si4D8NJ5hThmjQky3oK4VFQz8fwKj87Rtw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] drm/edp-panel: Move the KDC panel to a separate group
+Date:   Thu, 7 Dec 2023 10:23:36 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WdUXKmZZMnEDsGeSrAyM831zPUom9QLWbnm0nPieZv_A@mail.gmail.com>
+Message-ID: <CAD=FV=WdUXKmZZMnEDsGeSrAyM831zPUom9QLWbnm0nPieZv_A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] drm/panel-edp: Add powered_on_to_enable delay
 To:     Pin-yen Lin <treapking@chromium.org>
 Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
         Jessica Zhang <quic_jesszhan@quicinc.com>,
@@ -89,18 +89,23 @@ Hi,
 On Thu, Dec 7, 2023 at 12:18=E2=80=AFAM Pin-yen Lin <treapking@chromium.org=
 > wrote:
 >
-> Move the KDC panel entry to make the list sorted by the vendor string.
+> Add the support of powered_on_to_enable delay as the minimum time that
+> needs to have passed between the panel powered on and enable may begin.
+>
+> This delay is seen in BOE panels as the minimum delay of T3+T4+T5+T6+T8
+> in the eDP timing diagrams.
 >
 > Signed-off-by: Pin-yen Lin <treapking@chromium.org>
 > ---
 >
 > (no changes since v1)
 >
->  drivers/gpu/drm/panel/panel-edp.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/gpu/drm/panel/panel-edp.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+
+Should have carried my tag from v1 since there were no changes:
 
 Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-Pushed to drm-misc-next:
-
-67a5f0ff3429 drm/edp-panel: Move the KDC panel to a separate group
+As per my response in v1: This needs to bake a little while on the
+lists (1-2 weeks) before I apply it in case others have opinions.
