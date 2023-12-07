@@ -2,142 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 470E0808950
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9B680894E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442007AbjLGNgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:36:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38666 "EHLO
+        id S1441964AbjLGNg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:36:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441947AbjLGNgf (ORCPT
+        with ESMTP id S1441825AbjLGNg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:36:35 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F5D10E9;
-        Thu,  7 Dec 2023 05:36:41 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id 41be03b00d2f7-5c66bbb3d77so651660a12.0;
-        Thu, 07 Dec 2023 05:36:41 -0800 (PST)
+        Thu, 7 Dec 2023 08:36:27 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45846123
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:36:33 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3b8903f7192so618414b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 05:36:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701956201; x=1702561001; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VjSQyuSgVvJ/v1Bs+z8zb7EPthGUs1fJmqCPvPc17Jc=;
-        b=SFmElmRpR0e3Fx4Kyt33ra6gciua88FBgArZWAwAca6o5HRysUcC62nEO+Nu0eKuh6
-         N/IedmoDJg2IMBRhNA7DJ98xG77axvve9KMrFGJTZqxWdbrjSHinJeqhpyE0evsXph2b
-         NMgKTxZMxdvpwapjz2KYvleQhkvV40sI7uayN8SQqSpzy3Z9hxypVouxleaaox9SKMHn
-         8RU5YVeA2mX8ug5agFlta7SQ/RAAKsKnAG2Y76THgbf/0p+C84cfbJkF2/FJ4XVISbmb
-         /lFCxyPiDH5Z60qFEP9K0ibmSV2LWsfVXhby+/EEfapvnMNL3pifIPsbw78cxsFtEDyT
-         vh3w==
+        d=ziepe.ca; s=google; t=1701956192; x=1702560992; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KwDkkPUreM+kT7f1DugxhqlPlB5ZMWRT1cx42MxAk4I=;
+        b=oKnSWm50XyXVjOUDdOeL6MUIyhnylxm0OjgqQD2hCUWdRAOX7sewv6onLTENMUjBQL
+         C0C0zoneBNq2X4+VEBTwE0BKtidHUqieDWOOmJg9XAMI3/OwAaQFJfI3oyETZxXSdIld
+         0R4bVILx2ME80eni5noDCjZYNMlYICktWQtZIZe03FXc1Ielg6Pt5Za1+pelw3SckCpo
+         XhOx+FGEIzxB1Yoip8KPD2WEVn/23zqgAl263TAkwXVTlin9uMxMOznrTv0RLp62Eq0+
+         ydPJ+cLM/xf8IlWgie2cSMwE5II+uQEPFDfvXs3tov/THjZfREQiMvzTOEjIdJ+qelMe
+         wdzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701956201; x=1702561001;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VjSQyuSgVvJ/v1Bs+z8zb7EPthGUs1fJmqCPvPc17Jc=;
-        b=GNE+tOWaIIbMH7hCqO1LoLJ3kbaBlYQmNezSveVWWqoHJ8wcmY1uAWI4aSz9CW2plT
-         z/q7+WFojnUjRrw+jZKIqUYGw/q6A2Gw/S4luYx7mOWL4QbbM86jJ2Jnobc2kQAxurd0
-         DwRyPWAcESK9adFV+DnUgFx3O+mnovYK4o+XiHLYBDIPiqPHGmCoHYQFVOhCipQO9cXE
-         XLCFju38xNQYXWNUKAlnWpnFRWURv4wqFFT593R116MpWWMOrVqOeyvJZshVwCm3TV3a
-         zIUDwy8SQmSR6UUxogWEs6yVpr8WD68eKoons+En8ZTkielQ4/HV4EdM+H0dmOSp1qZT
-         xh0g==
-X-Gm-Message-State: AOJu0YxEJbHdtEl2byz4b8uOId2oWM1ISvANbOiArMnBfFKnI4Nv0GwM
-        8Ywe1hade99euNiJ/pDSApENVtEVMR6x+aXKz0gSA89TTt7ZBl5YueE=
-X-Google-Smtp-Source: AGHT+IHo/qPLG2H/4BL+OPGDtxBQTSHt9k2BhKOF/IU5s15zvDYUB/DkOWSfgbWcTjkXEKmzl0OkTiGNH6T5dwBCKTY=
-X-Received: by 2002:a17:90a:a406:b0:27e:1ea0:c6fc with SMTP id
- y6-20020a17090aa40600b0027e1ea0c6fcmr2218828pjp.6.1701956201090; Thu, 07 Dec
- 2023 05:36:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701956192; x=1702560992;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KwDkkPUreM+kT7f1DugxhqlPlB5ZMWRT1cx42MxAk4I=;
+        b=Zc+RRLtmIbaNAGvIHyT4X9xd7wFOezgzX0MogDL9+xxCcc1hNcZToAtc3ICe5Nyniz
+         OLwsdeIpBKEmGPpcAgvD/SWIks5joNW4+03jxn1aTQq4L1P9UNoicjd7PF94Y8fys4JK
+         DuQYGWZLZhaaXWkIjC+oalCTeDQE5s6ICuvD4grosaIPMV3MXlUYvrJ5kBYj9aWrKwy2
+         /uXT9aYOwWotNw0tGQgN0qxuJTsRqtPQis2ni9lOIK75RvX3GNTYxKhB1qICb2TVaS8R
+         DtlYTmA7Cyeb8rCdX+i+sj+j1jev/e2GKT1AwGTJSb8EUDTCfEHiT8bjYQVRsl2kEwDT
+         rQHA==
+X-Gm-Message-State: AOJu0YwTmKgt/gt4o0pUYUro5wOYpPb32SeAlqPUQLDoe3h0LsbIESvZ
+        6+kVUCIMXO1Zq/pbkTcIpccaVg==
+X-Google-Smtp-Source: AGHT+IH6fAbj16DTLfT8u3PbyCwETOojac9pGddUrlBYHcgsySGBqjGqZwT8hQo4ADzlc4325nrSLg==
+X-Received: by 2002:a05:6808:df2:b0:3b8:b063:6675 with SMTP id g50-20020a0568080df200b003b8b0636675mr2155128oic.108.1701956191899;
+        Thu, 07 Dec 2023 05:36:31 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id d2-20020ac851c2000000b0041aff9339a2sm481604qtn.22.2023.12.07.05.36.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 05:36:31 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1rBEYI-00Bzlz-II;
+        Thu, 07 Dec 2023 09:36:30 -0400
+Date:   Thu, 7 Dec 2023 09:36:30 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Kevin Tian <kevin.tian@intel.com>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] iommu: Set owner token to sva and nested domains
+Message-ID: <20231207133630.GS1489931@ziepe.ca>
+References: <20231207021938.306738-1-baolu.lu@linux.intel.com>
+ <f1c473f7-ba40-454e-bd3e-a47f6d58513e@arm.com>
 MIME-Version: 1.0
-From:   xingwei lee <xrivendell7@gmail.com>
-Date:   Thu, 7 Dec 2023 21:36:29 +0800
-Message-ID: <CABOYnLxJzspevWrZLOt+6jkybyUEHfYz8MFZbTuRcyyjnExiKA@mail.gmail.com>
-Subject: Re: KMSAN: uninit-value in ip_route_output_key_hash_rcu (4)
-To:     syzbot+549e451574ba8bfd0fd6@syzkaller.appspotmail.com
-Cc:     davem@davemloft.net, glider@google.com, kuba@kernel.org,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f1c473f7-ba40-454e-bd3e-a47f6d58513e@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+On Thu, Dec 07, 2023 at 09:56:10AM +0000, Robin Murphy wrote:
+> On 2023-12-07 2:19 am, Lu Baolu wrote:
+> > Commit a9c362db3920 ("iommu: Validate that devices match domains") added
+> > an owner token to an iommu_domain. This token is checked during domain
+> > attachment to RID or PASID through the generic iommu interfaces.
+> > 
+> > The sva and nested domains are attached to device or PASID through the
+> > generic iommu interfaces. Therefore, they require the owner token to be
+> > set during allocation. Otherwise, they fail to attach.
+> 
+> Oops, I missed that iommu_sva_domain_alloc() is a thing - when did we get
+> such a confusing proliferation of domain allocation paths? Sigh...
 
-I reproduced this bug in the latest upstream linux with repro.c and repro.txt
+We have alot of different kinds of domains now, APIs that are giant
+multiplexers are not good.
 
-When fuzzing the latest upstream linux 6.7-rc4,  the following crash
-was triggered.
-HEAD commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+What I've been wanting to do for a while is to have the drivers call a
+helper to allocate their domain struct and the helper would initialize
+the common iommu_domain instead of doing this after the op
+returns. This is more typical kernel pattern and avoids some of the
+confusion about when struct members are valid or not (notice some of
+driver code needs iommu_domain stuff set earlier and we confusingly
+initialize things twice :()
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: xingwei Lee <xrivendell7@gmail.com>
+> I think we should set the owner generically there, since presumably it's
+> being missed for SMMUv3/AMD/etc. SVA domains as well. Nested domains are
+> supposed to be OK since both ->domain_alloc_user callsites are covered, or
+> is there some other sneaky path I've also missed?
 
-console_log: https://gist.github.com/xrivendell7/195eb3c1946ea466f9d8f5977b90c6ed#file-console_log
-report: https://gist.github.com/xrivendell7/195eb3c1946ea466f9d8f5977b90c6ed#file-report
-kernel commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=ce27066613dacbb6
-repro.c: https://gist.github.com/xrivendell7/195eb3c1946ea466f9d8f5977b90c6ed#file-repro-c
-repro.txt: https://gist.github.com/xrivendell7/195eb3c1946ea466f9d8f5977b90c6ed#file-repro-txt
+Indeed, I also think the first hunk is not needed, the second hunk was
+missed.
 
-In the lasted kernel: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8 the
-crash likes below:
-[  209.523497][ T8593] =====================================================
-[  209.530316][ T8593] BUG: KMSAN: uninit-value in
-ip_route_output_key_hash_rcu+0x1ee8/0x3810
-[  209.533357][ T8593]  ip_route_output_key_hash_rcu+0x1ee8/0x3810
-[  209.535524][ T8593]  ip_route_output_flow+0x14f/0x320
-[  209.537312][ T8593]  ip_tunnel_xmit+0x1450/0x3e80
-[  209.538995][ T8593]  ipgre_xmit+0xd1c/0xe20
-[  209.540511][ T8593]  dev_hard_start_xmit+0x247/0xa10
-[  209.542211][ T8593]  __dev_queue_xmit+0x33b8/0x5130
-[  209.543742][ T8593]  __bpf_redirect+0xdd7/0x1600
-[  209.545235][ T8593]  bpf_clone_redirect+0x328/0x470
-[  209.546807][ T8593]  ___bpf_prog_run+0x2180/0xdb80
-[  209.548288][ T8593]  __bpf_prog_run512+0xb5/0xe0
-[  209.549864][ T8593]  bpf_test_run+0x482/0xb00
-[  209.551178][ T8593]  bpf_prog_test_run_skb+0x14e5/0x1f20
-[  209.552612][ T8593]  bpf_prog_test_run+0x6af/0xac0
-[  209.553902][ T8593]  __sys_bpf+0x649/0xd60
-[  209.555000][ T8593]  __x64_sys_bpf+0xa0/0xe0
-[  209.556114][ T8593]  do_syscall_64+0x44/0x110
-[  209.557249][ T8593]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-[  209.558676][ T8593]
-[  209.559232][ T8593] Uninit was stored to memory at:
-[  209.560528][ T8593]  ip_tunnel_xmit+0x1161/0x3e80
-[  209.561676][ T8593]  ipgre_xmit+0xd1c/0xe20
-[  209.562711][ T8593]  dev_hard_start_xmit+0x247/0xa10
-[  209.563864][ T8593]  __dev_queue_xmit+0x33b8/0x5130
-[  209.564963][ T8593]  __bpf_redirect+0xdd7/0x1600
-[  209.566044][ T8593]  bpf_clone_redirect+0x328/0x470
-[  209.567151][ T8593]  ___bpf_prog_run+0x2180/0xdb80
-[  209.568184][ T8593]  __bpf_prog_run512+0xb5/0xe0
-[  209.569187][ T8593]  bpf_test_run+0x482/0xb00
-[  209.570201][ T8593]  bpf_prog_test_run_skb+0x14e5/0x1f20
-[  209.571308][ T8593]  bpf_prog_test_run+0x6af/0xac0
-[  209.572284][ T8593]  __sys_bpf+0x649/0xd60
-[  209.573131][ T8593]  __x64_sys_bpf+0xa0/0xe0
-[  209.574010][ T8593]  do_syscall_64+0x44/0x110
-[  209.574902][ T8593]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-[  209.576008][ T8593]
-[  209.576456][ T8593] Uninit was created at:
-[  209.577301][ T8593]  slab_post_alloc_hook+0x129/0xa70
-[  209.578284][ T8593]  kmem_cache_alloc_node+0x5e9/0xb10
-[  209.579233][ T8593]  kmalloc_reserve+0x13d/0x4a0
-[  209.580177][ T8593]  pskb_expand_head+0x226/0x1a00
-[  209.581096][ T8593]  skb_ensure_writable+0x3d3/0x460
-[  209.582015][ T8593]  bpf_clone_redirect+0x17f/0x470
-[  209.582963][ T8593]  ___bpf_prog_run+0x2180/0xdb80
-[  209.583859][ T8593]  __bpf_prog_run512+0xb5/0xe0
-[  209.584725][ T8593]  bpf_test_run+0x482/0xb00
-[  209.585556][ T8593]  bpf_prog_test_run_skb+0x14e5/0x1f20
-[  209.586527][ T8593]  bpf_prog_test_run+0x6af/0xac0
-[  209.587347][ T8593]  __sys_bpf+0x649/0xd60
-[  209.588058][ T8593]  __x64_sys_bpf+0xa0/0xe0
-[  209.588802][ T8593]  do_syscall_64+0x44/0x110
-[  209.589613][ T8593]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Jason
