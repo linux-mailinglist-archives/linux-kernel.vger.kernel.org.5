@@ -2,145 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08805808F9F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C1E808FA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443588AbjLGSJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 13:09:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
+        id S1443645AbjLGSJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 13:09:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbjLGSJ1 (ORCPT
+        with ESMTP id S233088AbjLGSJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Dec 2023 13:09:27 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33BB510EF;
-        Thu,  7 Dec 2023 10:09:33 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40c2d50bfbfso3463175e9.0;
-        Thu, 07 Dec 2023 10:09:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701972571; x=1702577371; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=n5ZRbFTxvl5gVQWRXKJWEF7nKXIu01Clbw3olLA/fCQ=;
-        b=RyFdm3yzSsl960UwhIGewoEz9GFnQayU/vHKRTxhQhEKfZfBtACNg6LPPteLmQ6nzG
-         zrrA6tIlmET/SGgpdH2mVsIaQ/R70vMN43w8oJKcPZF8iZEX4aoI/WuNbcv6XLuUUYhv
-         fYeAA4q4dwfTNbxTd51QX/Bg2mEsm7/E5uyLnQr7nbLoXs7kfEddHRtAjTQygAHIRkP7
-         m6MzaZv5VR4fws7C7ERlhnoI+vRFC7svBjXpAUo1PmBtAbzpbKdospha9iAJtbSanqPa
-         LtFG7r8xcc4qWDS3PtyeNzqDxLdagqJrkrd2ESAPCG+lh/Fkumx7mrVW3bXMW2Ahr9K1
-         LyvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701972571; x=1702577371;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=n5ZRbFTxvl5gVQWRXKJWEF7nKXIu01Clbw3olLA/fCQ=;
-        b=elVx6moT+4seluOtyEw/uk5ar3xo8jgNqNwUTtckhz/toXpczAiafpotG8fY/pjZZS
-         H2fBi+XTJutOWoHku/MxfIbF0nRpHEgJPRKAIC0TzrU00f8pyFv5E8ptcB6U/r11GALH
-         87pWWfZ+hkkbYzGofZk/XiUqPPHgdczFBj6wLFdjdDvsMUzPMuqeDCH8ool+JjBNv1XA
-         pkwHySpxhAPuhseURyppwyaiwLLIw6hfQgK2bY98wyCfIXPexglpfFNYUYUz3HmmZvS/
-         PutPQzWwMMAdSDMwizkzUspsk1j5Pl0cvB3njzX7Q5IBMSWuIRdpfZr4R8NwRHN9yuNR
-         wzkw==
-X-Gm-Message-State: AOJu0YyFyk7GbZENKdUZRdlwxGPG5IAoiE0VMoaRvOakrDbN8CwTVJk8
-        SltpnMfUKOAxNo1wX/qra7I=
-X-Google-Smtp-Source: AGHT+IHZAXkSmZQqB9z+1AqDiUbZeS4/8xz5Dhc+U7CesSrublwy8/I0tLRPl3cQl5XGwCzyydffiw==
-X-Received: by 2002:a7b:c4da:0:b0:40b:5e4a:234d with SMTP id g26-20020a7bc4da000000b0040b5e4a234dmr2876477wmk.79.1701972571228;
-        Thu, 07 Dec 2023 10:09:31 -0800 (PST)
-Received: from nz.home ([2a00:23c8:a613:101:600:de73:7edb:4f76])
-        by smtp.gmail.com with ESMTPSA id s12-20020adf978c000000b003333a0da243sm218359wrb.81.2023.12.07.10.09.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 10:09:30 -0800 (PST)
-Received: by nz.home (Postfix, from userid 1000)
-        id 9608F139EC7060; Thu,  7 Dec 2023 18:09:29 +0000 (GMT)
-From:   Sergei Trofimovich <slyich@gmail.com>
-To:     bpf@vger.kernel.org
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CEF10F0
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 10:09:33 -0800 (PST)
+Date:   Thu, 7 Dec 2023 19:09:28 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701972570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f07I5vkYcNbiJNcAFNGcoVH+whxOwsU4ggr1Z+Ad5Oo=;
+        b=wx9J+x173SrfVWMNdaqT+ljIRdiLnnFsFD6yQR2Ekhy1Yt6UQT/Vbpl5LB4pA3bsdOlnk8
+        +U4Pfl8xo32E3TlxTAQ3Pe5zH7oHLmsOcGyrRzS2hJ2dnkLlGCHX7Iv++jhdJp7lFYpHvb
+        MkgSfZtr4QCj51IyWO33EkW7pLbP8b2wKguZ1uvKkL+ki1pPFMW1Ub5jRTiFjR0HzxvPil
+        lVsiK2KvtkNALd0M04O+vUQgOabTTGPiutriGWM7RGuLSRTQwy05yw40BO9QbFeQALm+7L
+        9lJkW0pRVJHg7XoMkls6Ms/0jtrP3IgZeJRFJaW4UZ6KAcHeFEIroKQCr0lG6Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701972570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f07I5vkYcNbiJNcAFNGcoVH+whxOwsU4ggr1Z+Ad5Oo=;
+        b=xs/glPgKWdiq161zlbK3FZZ3ABArMgyrleehjhmhOn6S4QFdtkAsnXRd0VL+t2l8oTPWd+
+        FEABJ1I0ZlAyIgAA==
+From:   Sebastian Siewior <bigeasy@linutronix.de>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
 Cc:     linux-kernel@vger.kernel.org,
-        Sergei Trofimovich <slyich@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH] tools/lib/bpf: add pr_warn() to more -EINVAL cases
-Date:   Thu,  7 Dec 2023 18:09:19 +0000
-Message-ID: <20231207180919.2379718-1-slyich@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Dumazet <edumazet@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v9 30/32] timers: Implement the hierarchical pull model
+Message-ID: <20231207180928.FZB319OJ@linutronix.de>
+References: <20231201092654.34614-1-anna-maria@linutronix.de>
+ <20231201092654.34614-31-anna-maria@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231201092654.34614-31-anna-maria@linutronix.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before the change on `i686-linux` `systemd` build failed as:
+On 2023-12-01 10:26:52 [+0100], Anna-Maria Behnsen wrote:
+> diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
+> new file mode 100644
+> index 000000000000..05cd8f1bc45d
+> --- /dev/null
+> +++ b/kernel/time/timer_migration.c
+> @@ -0,0 +1,1636 @@
+=E2=80=A6
+> + * Protection of the tmigr group state information:
+> + * ------------------------------------------------
+> + *
+> + * The state information with the list of active children and migrator n=
+eeds to
+> + * be protected by a sequence counter. It prevents a race when updates i=
+n a
 
-    $ bpftool gen object src/core/bpf/socket_bind/socket-bind.bpf.o src/core/bpf/socket_bind/socket-bind.bpf.unstripped.o
-    Error: failed to link 'src/core/bpf/socket_bind/socket-bind.bpf.unstripped.o': Invalid argument (22)
+s/a$//
 
-After the change it fails as:
+> + * child groups are propagated in changed order. The following scenario
+> + * describes what happens without updating the sequence counter:
+> + *
+> + * Therefore, let's take three groups and four CPUs (CPU2 and CPU3 as we=
+ll
+> + * as GRP0:1 will not change during the scenario):
+> + *
+> + *    LVL 1            [GRP1:0]
+> + *                     migrator =3D GRP0:1
+> + *                     active   =3D GRP0:0, GRP0:1
+> + *                   /                \
+> + *    LVL 0  [GRP0:0]                  [GRP0:1]
+> + *           migrator =3D CPU0           migrator =3D CPU2
+> + *           active   =3D CPU0           active   =3D CPU2
+> + *              /         \                /         \
+> + *    CPUs     0           1              2           3
+> + *             active      idle           active      idle
+> + *
+> + *
+> + * 1. CPU0 goes idle (changes are updated in GRP0:0; afterwards the curr=
+ent
+> + *    states of GRP0:0 and GRP1:0 are stored in the data for walking the
+> + *    hierarchy):
 
-    $ bpftool gen object src/core/bpf/socket_bind/socket-bind.bpf.o src/core/bpf/socket_bind/socket-bind.bpf.unstripped.o
-    libbpf: ELF section #9 has inconsistent alignment in src/core/bpf/socket_bind/socket-bind.bpf.unstripped.o
-    Error: failed to link 'src/core/bpf/socket_bind/socket-bind.bpf.unstripped.o': Invalid argument (22)
+   CPU0 goes idle. The state update is performed lock less and group
+   wise. In the first step only GRP0:0 has been updated. The update of
+   GRP1:0 is pending, the CPU walks through the hierarchy.
 
-Now it's slightly easier to figure out what is wrong with an ELF file.
+> + *
+> + *    LVL 1            [GRP1:0]
+> + *                     migrator =3D GRP0:1
+> + *                     active   =3D GRP0:0, GRP0:1
+> + *                   /                \
+> + *    LVL 0  [GRP0:0]                  [GRP0:1]
+> + *       --> migrator =3D TMIGR_NONE     migrator =3D CPU2
+> + *       --> active   =3D                active   =3D CPU2
+> + *              /         \                /         \
+> + *    CPUs     0           1              2           3
+> + *         --> idle        idle           active      idle
 
-CC: Alexei Starovoitov <ast@kernel.org>
-CC: Daniel Borkmann <daniel@iogearbox.net>
-CC: Andrii Nakryiko <andrii@kernel.org>
-CC: Martin KaFai Lau <martin.lau@linux.dev>
-CC: Song Liu <song@kernel.org>
-CC: Yonghong Song <yonghong.song@linux.dev>
-CC: John Fastabend <john.fastabend@gmail.com>
-CC: KP Singh <kpsingh@kernel.org>
-CC: Stanislav Fomichev <sdf@google.com>
-CC: Hao Luo <haoluo@google.com>
-CC: Jiri Olsa <jolsa@kernel.org>
-CC: bpf@vger.kernel.org
-Signed-off-by: Sergei Trofimovich <slyich@gmail.com>
----
- tools/lib/bpf/linker.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+> + * 2. CPU1 comes out of idle (changes are update in GRP0:0; afterwards t=
+he
+> + *    current states of GRP0:0 and GRP1:0 are stored in the data for wal=
+king the
+> + *    hierarchy):
 
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 5ced96d99f8c..71bb4916b762 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -719,13 +719,22 @@ static int linker_sanity_check_elf(struct src_obj *obj)
- 			return -EINVAL;
- 		}
- 
--		if (sec->shdr->sh_addralign && !is_pow_of_2(sec->shdr->sh_addralign))
-+		if (sec->shdr->sh_addralign && !is_pow_of_2(sec->shdr->sh_addralign)) {
-+			pr_warn("ELF section #%zu alignment is non pow-of-2 alignment in %s\n",
-+				sec->sec_idx, obj->filename);
- 			return -EINVAL;
--		if (sec->shdr->sh_addralign != sec->data->d_align)
-+		}
-+		if (sec->shdr->sh_addralign != sec->data->d_align) {
-+			pr_warn("ELF section #%zu has inconsistent alignment in %s\n",
-+				sec->sec_idx, obj->filename);
- 			return -EINVAL;
-+		}
- 
--		if (sec->shdr->sh_size != sec->data->d_size)
-+		if (sec->shdr->sh_size != sec->data->d_size) {
-+			pr_warn("ELF section #%zu has inconsistent section size in %s\n",
-+				sec->sec_idx, obj->filename);
- 			return -EINVAL;
-+		}
- 
- 		switch (sec->shdr->sh_type) {
- 		case SHT_SYMTAB:
--- 
-2.42.0
+   While CPU0 goes idle and continues to update the state, CPU1 comes
+   out of idle. CPU1 updates GRP0:0. The update for GRP1:0 is pending,
+   tge CPU walks through the hierarchy. Both CPUs now walk the hierarchy
+   to perform the needed update from their point of view.
+   The currently visible state:
 
+> + *
+> + *    LVL 1            [GRP1:0]
+> + *                     migrator =3D GRP0:1
+> + *                     active   =3D GRP0:0, GRP0:1
+> + *                   /                \
+> + *    LVL 0  [GRP0:0]                  [GRP0:1]
+> + *       --> migrator =3D CPU1           migrator =3D CPU2
+> + *       --> active   =3D CPU1           active   =3D CPU2
+> + *              /         \                /         \
+> + *    CPUs     0           1              2           3
+> + *             idle    --> active         active      idle
+> + *
+> + * 3. Here comes the change of the order: Propagating the changes of ste=
+p 2
+> + *    through the hierarchy to GRP1:0 - nothing to be done, because GRP0=
+:0
+> + *    is already up to date.
+
+    Here is the race condition: CPU1 managed to propagate its changes
+    through the hierarchy to GRP1:0 before CPU0 did. The active members
+    of GRP1:0 remain unchanged after the update since it is still valid
+    from CPU1 current point of view:
+
+         LVL 1            [GRP1:0]
+                      --> migrator =3D GRP0:1
+                      --> active   =3D GRP0:0, GRP0:1
+                        /                \
+         LVL 0  [GRP0:0]                  [GRP0:1]
+                migrator =3D CPU1           migrator =3D CPU2
+                active   =3D CPU1           active   =3D CPU2
+                   /         \                /         \
+         CPUs     0           1              2           3
+                  idle        active         active      idle
+
+[ I take it as the migrator remains set to GRP0:1 by CPU1 but it could
+  be changed to GRP0:0. I assume that both fields (migrator+active) are
+  changed there via the propagation and the arrow in both fields denotes
+  this. ]
+
+> + * 4. Propagating the changes of step 1 through the hierarchy to GRP1:0
+
+     Now CPU0 finally propagates its changes to GRP1:0.
+
+> + *
+> + *    LVL 1            [GRP1:0]
+> + *                 --> migrator =3D GRP0:1
+> + *                 --> active   =3D GRP0:1
+> + *                   /                \
+> + *    LVL 0  [GRP0:0]                  [GRP0:1]
+> + *           migrator =3D CPU1           migrator =3D CPU2
+> + *           active   =3D CPU1           active   =3D CPU2
+> + *              /         \                /         \
+> + *    CPUs     0           1              2           3
+> + *             idle        active         active      idle
+> + *
+> + * Now there is a inconsistent overall state because GRP0:0 is active, b=
+ut
+> + * it is marked as idle in the GRP1:0. This is prevented by incrementing
+> + * sequence counter whenever changing the state.
+
+   The race of CPU0 vs CPU1 led to an inconsistent state in GRP1:0.
+   CPU1 is active and is correctly listed as active in GRP0:0. However
+   GRP1:0 does not have GRP0:0 listed as active which is wrong.
+   The sequence counter has been added to avoid inconsistent states
+   during updates. The state is updated atomically only if all members,
+   including the sequence counter, match the expected value
+   (compare-and-exchange).
+   Looking back at the previous example with the addition of the
+   sequence number: The update as performed by CPU0 in step 4 will fail.
+   CPU1 changed the sequence number during the update in step 3 so the
+   expected old value (as seen by CPU0 before starting the walk) does
+   not match.
+
+
+Sebastian
