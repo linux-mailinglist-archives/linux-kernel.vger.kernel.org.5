@@ -2,99 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E86080955A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B51E809567
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbjLGWae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 17:30:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
+        id S232173AbjLGWcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 17:32:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjLGWac (ORCPT
+        with ESMTP id S231461AbjLGWcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 17:30:32 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D70BA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:30:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24756C433C8;
-        Thu,  7 Dec 2023 22:30:38 +0000 (UTC)
-Date:   Thu, 7 Dec 2023 17:31:08 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCH v2] ring-buffer: Add offset of events in dump on mismatch
-Message-ID: <20231207173108.484b912c@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 7 Dec 2023 17:32:14 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F26A4;
+        Thu,  7 Dec 2023 14:32:20 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6cebbf51742so700864b3a.1;
+        Thu, 07 Dec 2023 14:32:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701988340; x=1702593140; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FMK5oBL7ZRsz2fIyOpAup+LzkwMHF1v8UfcRl/00pW4=;
+        b=jVgyz74EA9YH/e4wrnkTRiHle/tsmvlkMVnLqgH1lxIVScjA3FikU1u43v3s/EzfQq
+         Zr/ecCxEnYHKU/nXMEX5gA4Fq5EYYvmFzrGxfEyFwPjbEGwYevQj5rePgrd8knjYMmf2
+         q9yt8xDujDUoDO28aDKxtZni5kEQpQJuoxA0wSZRI2QliMncJCQELAmTBn3/l9eAQJv6
+         3hY69XiCZgS247+wfWC143F4KKR9rgFKKBoiPkxkT1uxROf2HW6HNhTr+8McNJ31fN/b
+         TCC5vr5GK72isb8xmBs+IRjrXXDghPD6CAv0BvKUR3naFmm6rq3jQaQ9yvU3ZlnZ32gG
+         VjZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701988340; x=1702593140;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FMK5oBL7ZRsz2fIyOpAup+LzkwMHF1v8UfcRl/00pW4=;
+        b=ACFE++F2HEFynL4/M62Vr9U2xW2Myx1UkqEuIZ7KJOKIC+Y2nhLC9waVl95MoCj354
+         +fbWH680PZnfiu3/FeYY6h528CrBJ0JFEt1tOUlJ70303bSJzdwYCJRDl9EWUL2M7dGq
+         YRav+LrpWclHGn/usLia4PMZ6j9b69ihMMwMYj+tQe4BI8Jwzn5B/2fJKRzmzTWelZUM
+         QRdBiGbSpJ07Kp+YTHf9A3f7zryvcvWm/bsHpvif1ilKmNWaHMMgNNSZXq20NWN04El2
+         h6Mp1qv06JGZ+r8Suv01GJMDdDC06bQgi2rew7qwLNBbkKT5I/wt6yOwwleiuIDpmp5P
+         2y+Q==
+X-Gm-Message-State: AOJu0YzLOYZ8ssCNt9PbIeYotQJ/XEkkjZcKAzmu9VydgmBs0yrC+eUp
+        Rq/E6HkGYS++6FugHAAYCKU=
+X-Google-Smtp-Source: AGHT+IGjndnK2BCYLCyacoFwmyubc38b0BJwGWZc02r4foqXNC19yYWn9LMik7KGPp42sJmibTCaIg==
+X-Received: by 2002:a05:6a00:238c:b0:6ce:939e:bed6 with SMTP id f12-20020a056a00238c00b006ce939ebed6mr3760900pfc.34.1701988340144;
+        Thu, 07 Dec 2023 14:32:20 -0800 (PST)
+Received: from MacBook-Pro-49.local ([2620:10d:c090:500::7:6fe4])
+        by smtp.gmail.com with ESMTPSA id gx4-20020a056a001e0400b006cbb71186f7sm286775pfb.29.2023.12.07.14.32.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 14:32:19 -0800 (PST)
+Date:   Thu, 7 Dec 2023 14:32:12 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+        Song Liu <songliubraving@meta.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joao Moreira <joao@overdrivepizza.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
+References: <20231204111128.GV8262@noisy.programming.kicks-ass.net>
+ <20231204125239.GA1319@noisy.programming.kicks-ass.net>
+ <ZW4LjmUKj1q6RWdL@krava>
+ <20231204181614.GA7299@noisy.programming.kicks-ass.net>
+ <20231204183354.GC7299@noisy.programming.kicks-ass.net>
+ <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+ <20231206163814.GB36423@noisy.programming.kicks-ass.net>
+ <20231206183713.GA35897@noisy.programming.kicks-ass.net>
+ <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
+ <20231207093105.GA28727@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207093105.GA28727@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Thu, Dec 07, 2023 at 10:31:05AM +0100, Peter Zijlstra wrote:
+> On Wed, Dec 06, 2023 at 01:39:43PM -0800, Alexei Starovoitov wrote:
+> 
+> 
+> > All is ok until kCFI comes into picture.
+> > Here we probably need to teach arch_prepare_bpf_trampoline() to emit
+> > different __kcfi_typeid depending on kernel function proto,
+> > so that caller hash checking logic won't be tripped.
+> > I suspect that requires to reverse engineer an algorithm of computing kcfi from clang.
+> > other ideas?
+> 
+> I was going to try and extend bpf_struct_ops with a pointer, this
+> pointer will point to a struct of the right type with all ops filled out
+> as stubs.
 
-On bugs that have the ring buffer timestamp get out of sync, the config
-CONFIG_RING_BUFFER_VALIDATE_TIME_DELTAS, that checks for it and if it is
-detected it causes a dump of the bad sub buffer.
+Right. Something like this, but it's more nuanced.
 
-It shows each event and their timestamp as well as the delta in the event.
-But it's also good to see the offset into the subbuffer for that event to
-know if how close to the end it is.
+The bpf_struct_ops concept is a generic mechanism to provide bpf-based callback
+to any set of kernel callbacks.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231207171613.0592087d@gandalf.local.home
+bpf tcp CC plugs into:
+struct tcp_congestion_ops {
+        /* do new cwnd calculation (required) */
+        void (*cong_avoid)(struct sock *sk, u32 ack, u32 acked);
 
-- Add "0x" before the "%x" to make the print less confusing (Mathieu Desnoyers)
+        /* call before changing ca_state (optional) */
+        void (*set_state)(struct sock *sk, u8 new_state);
 
- kernel/trace/ring_buffer.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+        /* call when cwnd event occurs (optional) */
+        void (*cwnd_event)(struct sock *sk, enum tcp_ca_event ev);
+  ...
+};
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 8d2a4f00eca9..09d4b1aa8820 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3424,23 +3424,27 @@ static void dump_buffer_page(struct buffer_data_page *bpage,
- 		case RINGBUF_TYPE_TIME_EXTEND:
- 			delta = rb_event_time_stamp(event);
- 			ts += delta;
--			pr_warn("  [%lld] delta:%lld TIME EXTEND\n", ts, delta);
-+			pr_warn(" 0x%x: [%lld] delta:%lld TIME EXTEND\n",
-+				e, ts, delta);
- 			break;
- 
- 		case RINGBUF_TYPE_TIME_STAMP:
- 			delta = rb_event_time_stamp(event);
- 			ts = rb_fix_abs_ts(delta, ts);
--			pr_warn("  [%lld] absolute:%lld TIME STAMP\n", ts, delta);
-+			pr_warn(" 0x%x:  [%lld] absolute:%lld TIME STAMP\n",
-+				e, ts, delta);
- 			break;
- 
- 		case RINGBUF_TYPE_PADDING:
- 			ts += event->time_delta;
--			pr_warn("  [%lld] delta:%d PADDING\n", ts, event->time_delta);
-+			pr_warn(" 0x%x:  [%lld] delta:%d PADDING\n",
-+				e, ts, event->time_delta);
- 			break;
- 
- 		case RINGBUF_TYPE_DATA:
- 			ts += event->time_delta;
--			pr_warn("  [%lld] delta:%d\n", ts, event->time_delta);
-+			pr_warn(" 0x%x:  [%lld] delta:%d\n",
-+				e, ts, event->time_delta);
- 			break;
- 
- 		default:
--- 
-2.42.0
+and from bpf side we don't touch tcp kernel bits at all.
+tcp stack doesn't know whether it's calling bpf based CC or builtin CC or CC provided by kernel module.
 
+bpf struct_ops mechanim is a zero cost extension to potentially any kernel mechanism
+that is already setup with callbacks. tcp_congestion_ops is one of them.
+
+The allowlisting of tcp_congestion_ops for bpf use is done in net/ipv4/bpf_tcp_ca.c via:
+
+struct bpf_struct_ops bpf_tcp_congestion_ops = {
+        ...
+        .reg = bpf_tcp_ca_reg,
+        .unreg = bpf_tcp_ca_unreg,
+        ...
+        .name = "tcp_congestion_ops",
+};
+static int bpf_tcp_ca_reg(void *kdata)
+{
+        return tcp_register_congestion_control(kdata);
+}
+and
+ int tcp_register_congestion_control(struct tcp_congestion_ops *type);
+is a normal TCP CC registration routine that is used by all CCs.
+
+The bpf struct_ops infra prepares everything inside
+'struct tcp_congestion_ops' that makes it indistinguishable from normal kernel CC,
+except kCFI part. sadly.
+
+The kCFI challenge is that clang may not generate any __cfi + __kcfi_typeid at all.
+Like if vmlinux doesn't have any TCP CCs built-in there will be no kCFI hashes
+in the kernel that represent a required hash to call cong_avoid, set_state, cwnd_event.
+
+At the callsite like in net/ipv4/tcp_input.c
+  icsk->icsk_ca_ops->cong_avoid(sk, ack, acked);
+the clang will compute the kcfi hash, but there will be no __cfi symbol in vmlinux.
+
+If there was one we could teach the verifier to look for __kcfi...cong_avoid
+in kallsyms, then read cfi hash from there and populate it into generated asm
+in arch_prepare_bpf_trampoline.
+
+So I'm thinking to do this:
+
+diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
+index c7bbd8f3c708..afaadc2c0827 100644
+--- a/net/ipv4/bpf_tcp_ca.c
++++ b/net/ipv4/bpf_tcp_ca.c
+@@ -283,6 +283,12 @@ struct bpf_struct_ops bpf_tcp_congestion_ops = {
+        .name = "tcp_congestion_ops",
+ };
+
++/* never accessed, here for clang kCFI only */
++extern void __kcfi_cong_avoid(struct sock *sk, u32 ack, u32 acked);
++__ADDRESSABLE(__kcfi_cong_avoid);
++extern void __kcfi_set_state(struct sock *sk, u8 new_state);
++__ADDRESSABLE(__kcfi_set_state);
+
+To force kcfi generation and then teach struct_ops infra to look
+for __kcfi_typeid___kcfi_##callbackname in kallsyms,
+read kcfi from there and populate into bpf trampoline.
+
+Since kcfi and bpf are not working well, I believe it's bpf folks job to fix it.
+Especially since it's starting to look bpf infra heavy.
+
+If you're interested I can, of course, point to relevant bits in kernel/bpf/bpf_struct_ops.c
+that would need to be extended to support such kcfi_typeid search,
+but I think it's my job to fix it.
+
+If I get stuck, I'll ask for help.
+
+I also researched a different approach.
+llvm does the following to compute the kcfi hash:
+
+llvm::ConstantInt *CodeGenModule::CreateKCFITypeId(QualType T) {
+  if (auto *FnType = T->getAs<FunctionProtoType>())
+    T = getContext().getFunctionType(
+        FnType->getReturnType(), FnType->getParamTypes(),
+        FnType->getExtProtoInfo().withExceptionSpec(EST_None));
+
+  std::string OutName;
+  llvm::raw_string_ostream Out(OutName);
+  getCXXABI().getMangleContext().mangleCanonicalTypeName(
+      T, Out, getCodeGenOpts().SanitizeCfiICallNormalizeIntegers);
+
+  if (getCodeGenOpts().SanitizeCfiICallNormalizeIntegers)
+    Out << ".normalized";
+
+  return llvm::ConstantInt::get(Int32Ty,
+                                static_cast<uint32_t>(llvm::xxHash64(OutName)));
+}
+
+xxhash is already available in the kernel.
+We can add type mangling logic and convert prototype of cong_avoid, set_state, etc
+(that are already available in vmlinux BTF) into a mangled string and
+apply xxhash on that string.
+This way we wouldn't need to add __kcfi stubs to net/ipv4/bpf_tcp_ca.c.
+kcfi will be computed on demand.
+
+> > 
+> > This case is easier to make work with kCFI.
+> > The JIT will use:
+> > cfi_bpf_hash:
+> >       .long   __kcfi_typeid___bpf_prog_runX  
+> > like your patch already does.
+> > And will use
+> > extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
+> > cfi_bpf_subprog_hash:
+> >       .long   __kcfi_typeid___bpf_callback_fn
+> > to JIT all subprogs. See bpf_is_subprog().
+> 
+> Aaah!, yes it should be trivial to use another hash value when
+> is_subprog in emit_prologue().
+
+Great. I'll wait for your respin and then will start building "kcfi for struct-ops"
+via one of the two approaches above.
+
+> Yes, we can do that. Plans have changed on my side too -- I'm taking a 6
+> week break soon, so I'll do whatever I can before I'm out, and then
+> continue from whatever state I find when I get back.
+
+6 weeks! Nice. Enjoy the long break.
+Last time I took 3 week PTO in a row I got bored after week 2 and went back to hacking :)
