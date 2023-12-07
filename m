@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A599808D04
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C7D808FE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:28:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbjLGQUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 11:20:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
+        id S230359AbjLGS0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 13:26:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232532AbjLGQUi (ORCPT
+        with ESMTP id S235229AbjLGQUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 11:20:38 -0500
+        Thu, 7 Dec 2023 11:20:46 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042E411B
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 08:20:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01601C433CA;
-        Thu,  7 Dec 2023 16:20:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC03611B
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 08:20:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE46FC433B9;
+        Thu,  7 Dec 2023 16:20:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701966044;
-        bh=w7Xd+/OSbJk+99OQ/CNyt9RR9EvA1R1smLyRfv0wPeE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nfSVX9gxMKlehSViXQ3Klw264+i4ncJhVTZy87Mh4ZIbSNzXPeL0KoMtmdkWwbzdB
-         waxbbpkx0NWueh/RiOuR9A9mF2arnZO5XrFIAWQkQUVsIwuvTJjlDtT/0z6WpBQrkS
-         9Jql4vR9VfjRK4ARm5uqMq5ljy4gz8Ma/j9kWobmEF0q8ofJEnX4hqgDeeLKoOXMY5
-         jnstQlGdVAO1WbJLP/mL+xEsmbONzyqsKZ89ym8emLxnPokoE0GoAwXqditx9lBEB1
-         9gNeIT0DOBbli1/KWaRazG9m9NmaN/pcc6a2WzS2/TESeFMtyMCnAMqr9pv2Gw210O
-         JuufPwAB2toow==
-Date:   Thu, 7 Dec 2023 08:20:42 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     David Ahern <dsahern@kernel.org>
-Cc:     Aron Silverton <aron.silverton@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
-        Itay Avraham <itayavr@nvidia.com>,
-        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
-Message-ID: <20231207082042.6229868e@kernel.org>
-In-Reply-To: <2bbc4c40-ff8b-4243-9987-dc7d5502a37c@kernel.org>
-References: <20231128044628.GA8901@u2004-local>
-        <20231128065321.53d4d5bb@kernel.org>
-        <20231128162413.GP436702@nvidia.com>
-        <20231128084421.6321b9b2@kernel.org>
-        <20231128175224.GR436702@nvidia.com>
-        <20231128103304.25c2c642@kernel.org>
-        <ZWZJGF7moDM_k6TU@x130>
-        <2023112922-lyricist-unclip-8e78@gregkh>
-        <oxtcvxwbj2hzv4lxnxubo3hoxn7diyzhm2oj3tsw2toxbc3og4@ddglhm6r3oa5>
-        <20231204185210.030a72ca@kernel.org>
-        <fgalnohzpiox7rvsf3wsurkf2x3rdtyhwqq5tk43gesvjlw6yl@i7colkh2sx5h>
-        <20231205204855.52fa5cc1@kernel.org>
-        <2bbc4c40-ff8b-4243-9987-dc7d5502a37c@kernel.org>
+        s=k20201202; t=1701966052;
+        bh=MBl8jX+CYsWd6FZCSkh8ink0zxCjpM93rbZyvHRV2R8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OaX+Amr4+2De3B69b6K4i/wdD/KlCz19NtGb/HlW2OyVVH6jkUYW99P33NutAtN4J
+         A0nJKfpdTQgOybcd97ybL7zLpQcpAoIfs08y/yLVszKPYo/p+7aHgn5ouMxal5zYoQ
+         neQnIF9I8uOtFo2BAuAC+cNRUgo3VlEwViQgAwkE3Y6L8ngIELWn0jYiUvgC0Tfw/T
+         15nM8TDyTLAx6xgL9Dl9eBYcgSLXtLh34DH8JSLBQEIAB6zRSvv4ifzuKJxcwR84Qo
+         O6eqsr+covJ2qISwOFeGcu9CXz+wIGANUWkPYIT3T2/5srMqIVYD9zUL5gKYmw2wNS
+         ougPA1Q+aQ0Jw==
+Date:   Thu, 7 Dec 2023 16:20:43 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Lee Jones <lee@kernel.org>
+Cc:     tudor.ambarus@linaro.org, pratyush@kernel.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sbinding@opensource.cirrus.com, james.schulman@cirrus.com,
+        david.rhodes@cirrus.com, rf@opensource.cirrus.com, perex@perex.cz,
+        tiwai@suse.com,
+        Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        michael@walle.cc, linux-mtd@lists.infradead.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        claudiu.beznea@tuxon.dev, michal.simek@amd.com,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+        git@amd.com, amitrkcian2002@gmail.com
+Subject: Re: [GIT PULL] Immutable branch between MFD and SPI due for the v6.8
+ merge window
+Message-ID: <d12da7b2-f18c-4b56-85be-6d98b62d6ddd@sirena.org.uk>
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+ <20231125092137.2948-2-amit.kumar-mahapatra@amd.com>
+ <170142465659.3329910.8527538140063947758.b4-ty@kernel.org>
+ <395caa58-a8a0-4c75-85d3-4fa0f6f4a9ba@sirena.org.uk>
+ <20231207133849.GB8867@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="H1tMbLV73SdOkctb"
+Content-Disposition: inline
+In-Reply-To: <20231207133849.GB8867@google.com>
+X-Cookie: Two is company, three is an orgy.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,51 +67,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David, I agree with your points. I think you're misreading
-what I said.
 
-On Thu, 7 Dec 2023 08:54:51 -0700 David Ahern wrote:
-> You rail against out of tree drivers and vendor proprietary tools, and
-> now you argue for just that.
+--H1tMbLV73SdOkctb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I don't rail against out of tree drivers, very much the opposite.
-Linux supports out of tree modules, and I agree that's 100% the
-correct thing to do. I'd encourage more people to take advantage of
-that. The problem is quite the opposite, all the "security hardening"
-is making it almost impossible for users to take advantage of OOT
-modules.
+On Thu, Dec 07, 2023 at 01:38:49PM +0000, Lee Jones wrote:
+> Good afternoon Mark,
+>=20
+> > Is there a signed tag available for this - without this change the
+> > subsequent SPI changes introduce a build breakage.
+>=20
+> The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa=
+86:
+>=20
+>   Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+>=20
+> are available in the Git repository at:
+>=20
+>   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-spi-v6=
+=2E8
+>=20
+> for you to fetch changes up to 4ae08845db4c1f759b8382bc7527ab8249230e7f:
+>=20
+>   mfd: tps6594: Use spi_get_chipselect() API to access spi->chip_select (=
+2023-12-07 13:36:29 +0000)
 
-> There is no reason debugging capabilities
-> can not be built into the OS and used when needed. That means anything
-> needed - from kernel modules to userspace tools.
-> 
-> The Meta data point is not representative of the world at large -
-> different scale, different needs, different expertise on staff (OS and
-> H/W). Getting S/W installed (especially anything requiring a compiler)
-> in a production server (and VMs) is not an easy request and in many
-> cases not even possible.
+Thanks!
 
-I did not say it's easy.
+--H1tMbLV73SdOkctb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> When a customer hits problem, the standard steps are to run a script,
-> generate a tar file and ship it to the OS vendor. Engineers at the OS
-> vendor go through it and may need other data - like getting detailed
-> dumps from individual pieces of H/W.
+-----BEGIN PGP SIGNATURE-----
 
-You say that like this is not _exactly_ what I just said!?
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVx8NoACgkQJNaLcl1U
+h9BXiwf+NG+nYvE91fSSJn6y9dB1oLiMaR2BUDYVTOuWkwmRWLtbTbJgJwxJfBqH
+itW5Xs7GuEJ8Rq82sl4K6ITes+jLCB1ljYdbbH4QTqo7Sm5MjdRwGQczHbe8FONG
+FTu5Oa7WGJfTQa7tTu7TOJU16Dd1YPVT4QO8Zg2D6Fvltfdh5y0vTJO9LxdA99cE
+11d/pzJGFKEojADXl3V7RFLAiJJAFpri7C730ZOZ30WRt42f18MTl7omglIGAQOE
+6YvN9sSZ57FEQuWaoIKp8IGnOukM4eqEwuwx8CqUNGfD7ag9ffo17PpytPgQosoX
+6xPrq5I2cgrNMJzC71jsMobrBpQF1w==
+=4OmM
+-----END PGP SIGNATURE-----
 
-> Every time those requests require
-> going to a vendor web site to pull down vendor tools, get permission to
-> install them, schedule the run of said tool ... it only serves to drag
-> out the debugging process. ie., this open-ended stance only serves to
-> hurt Linux users.
-
-Right, exactly. What are you arguing with then? As I said - we have a
-very open / accommodating policy for extracting all sort of debug and
-state dumps. You can put whatever read only stuff you want in debugfs**
-Read-write interfaces must be constrained to a clear set of commands /
-settings but also very much allowed. As you said users need to be able
-to extract debug info to share with the vendors, no tools necessary.
-
-** (this will surprise you but you can also put stats there, if they 
-    are custom, I don't care if they go into ethtool -S or debugfs)
+--H1tMbLV73SdOkctb--
