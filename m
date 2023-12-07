@@ -2,133 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3EF8085E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E113808628
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231866AbjLGKMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 05:12:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50012 "EHLO
+        id S231899AbjLGKNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 05:13:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbjLGKMn (ORCPT
+        with ESMTP id S230145AbjLGKND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 05:12:43 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3398A8
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 02:12:48 -0800 (PST)
-From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701943966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3uUxHjyDj4NRFMrhXCuRnn2gfUyDxgWhxlbVoNO/d3M=;
-        b=cfJROQdJKb2KzsnF9n0prH8m5esN/M7acjPp7eQEvIgSMDLshZcvEY1I640zhN3tmfasyu
-        Lb/D358mrpPlcNiRr2vS+q7DvCv1KFv8rOyuZhJfIqOv+XdA++lzVOACq9SI1VOxVUBHk8
-        KXHqQbLHmeBn80bcc2faNgB9N/jZvSqPqr1yq0gPbCqJQ/wDVPL7TzjMgnY7hsktSt3B8f
-        gTiZWqO/j/aCuwJVxALwvN0tpN1Lt4dyP13uNPTYTzwuDgbMjeyJAL+KKVVTpKAY61PX7V
-        xrZ+9Hg6ckjOlWuB3y4kIR8pYK4bzfLKhg1Gt6kk/LHr4KXxniYj3d8MT9Wv0A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701943966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3uUxHjyDj4NRFMrhXCuRnn2gfUyDxgWhxlbVoNO/d3M=;
-        b=EQAKsl0dDkVzdF0MrvwdUQkH5wXKUQG6fBDuCDpgjWQr6tb7mZVT/QlfUdr+oW/lK5UyAD
-        vfnauG3fCsMZO5AA==
-To:     Sebastian Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCH v9 23/32] timers: Retrieve next expiry of
- pinned/non-pinned timers separately
-In-Reply-To: <20231206094735.HMFIZlHa@linutronix.de>
-References: <20231201092654.34614-1-anna-maria@linutronix.de>
- <20231201092654.34614-24-anna-maria@linutronix.de>
- <20231206094735.HMFIZlHa@linutronix.de>
-Date:   Thu, 07 Dec 2023 11:12:45 +0100
-Message-ID: <87h6ku8go2.fsf@somnus>
+        Thu, 7 Dec 2023 05:13:03 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57B0D59
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 02:13:04 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-dae0ab8ac3eso806150276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 02:13:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701943984; x=1702548784; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=e3B67B1TYSjUdt6Cc8K4XbRIZ1QzqkY0WH6+puDGmn4=;
+        b=ciHMHUepSltr4g56V7l6mEs/NQDP3xPGlRjPxmgeIFK9L3OwSp/sA8/mHv8AUxjiYS
+         e38OTUXVtymi0rj3uhgT6ZMNS5pLylLhBx+FW4FO75IRJDqh2PAI8rf6k26iJfCAmMsl
+         ImCm1tuuvvmeQ9v3D9vBEw1iVv9ZoQ+h5E7X5aGpyB9/kb50VxEK8xILiauHQGXpVGA7
+         T9m64BQZp16DqTYhAZZm6ylqgK92grDQZ59BWN+nOi5RW2X75smZM6vf0pwk5ufyGROk
+         a3X5ENF7ZA7wwstyrHaT+fAxZsq3JIJUXOVQa2RO0xLMcMduq/X1EUyDcGQqzLUeavSo
+         /HWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701943984; x=1702548784;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e3B67B1TYSjUdt6Cc8K4XbRIZ1QzqkY0WH6+puDGmn4=;
+        b=kmuLjgsS4rYOWypWfg5JmUhdZG1ktOqFrDaX5i/osr9X7JQlvVQF+lLqNHOHK6gyiJ
+         qvZqfIA/iMcFKpd7n6w3GtoVKa5KlzJelQ/j5h4SP0RBogJI/TmeksqyEvZXsk2WWEfH
+         bktd04uYcZ5Bk8D62uiR0Aulz0DPzcOm8S81GT7/CqHreIA3r3uf72Y4khI6k69W9YP9
+         r2neJyRCDGulDx3rS1FhnnMYGa0TyN17roT5WceD5Xmw+kFjv0HZ/vPA8Dr2uJemOtt/
+         +TtyhCR3WaV3nhGPVayJLa24Ln52ffB9h2qjNkSx8Qs1VRezsgcePedyknpD81VZiKB3
+         w28g==
+X-Gm-Message-State: AOJu0YzvzaosxOvWCEvhhBtTwkvl7NBeCj/Ix8l7qPgRgUw0O3MNTwkh
+        wAFoRxHP3WJgDf6IMofSyuzeAhVWILF8EsffVQ==
+X-Google-Smtp-Source: AGHT+IFNn1HUFDtLCOGTeA3m9Ta/i3bQvpYxwVgKKLYlxLDmi9pfv/W/T/9B2nxE7SkRSL3QSWQJtw==
+X-Received: by 2002:a25:243:0:b0:db5:4503:6de5 with SMTP id 64-20020a250243000000b00db545036de5mr1932607ybc.60.1701943983997;
+        Thu, 07 Dec 2023 02:13:03 -0800 (PST)
+Received: from thinkpad ([117.248.6.133])
+        by smtp.gmail.com with ESMTPSA id l13-20020a0cc20d000000b0067a22bb8d57sm373453qvh.56.2023.12.07.02.12.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 02:13:03 -0800 (PST)
+Date:   Thu, 7 Dec 2023 15:42:52 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_vpernami@quicinc.com, quic_parass@quicinc.com
+Subject: Re: [PATCH v3 1/3] dt-bindings: phy: qcom,qmp: Add PCIe
+ qcom,refclk-always-on property
+Message-ID: <20231207101252.GJ2932@thinkpad>
+References: <78815f1b-7390-40de-8afd-ac71806f4051@linaro.org>
+ <24fae40a-453b-b14c-923f-88758a246aa7@quicinc.com>
+ <20231201060716.GJ4009@thinkpad>
+ <166d307e-7d1b-48b5-90db-9b6df01d87c2@linaro.org>
+ <20231201111033.GL4009@thinkpad>
+ <f844cd1e-7e4f-4836-bc9a-2e1ed13f064f@linaro.org>
+ <20231201123054.GM4009@thinkpad>
+ <3a7376aa-18a2-41cb-a4c9-680e735ce75b@linaro.org>
+ <20231206131009.GD12802@thinkpad>
+ <ZXGVjY9gYMD6-xFJ@hovoldconsulting.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZXGVjY9gYMD6-xFJ@hovoldconsulting.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian Siewior <bigeasy@linutronix.de> writes:
+On Thu, Dec 07, 2023 at 10:51:09AM +0100, Johan Hovold wrote:
+> On Wed, Dec 06, 2023 at 06:40:09PM +0530, Manivannan Sadhasivam wrote:
+> 
+> > OK. How about, "qcom,broken-refclk"? This reflects the fact that the default
+> > refclk operation is broken on this platform, so the OS should be prepared for
+> > it (by keeping it always on).
+> 
+> Shouldn't that be
+> 
+> 	qcom,broken-clkreq
+> 
+> since its the CLKREQ# signal used to request REFCLK that is broken, not
+> the REFCLK itself?
+> 
 
-> On 2023-12-01 10:26:45 [+0100], Anna-Maria Behnsen wrote:
->> For the conversion of the NOHZ timer placement to a pull at expiry time
->> model it's required to have separate expiry times for the pinned and the
->> non-pinned (movable) timers. Therefore struct timer_events is introduced.
->>=20
->> No functional change
->>=20
->> Originally-by: Richard Cochran (linutronix GmbH) <richardcochran@gmail.c=
-om>
->> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
->> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> =E2=80=A6
->> index 366ea26ce3ba..0d53d853ae22 100644
->> --- a/kernel/time/timer.c
->> +++ b/kernel/time/timer.c
-> =E2=80=A6
->> @@ -2022,13 +2028,31 @@ static inline u64 __get_next_timer_interrupt(uns=
-igned long basej, u64 basem,
->>=20=20
->>  	nextevt =3D local_first ? nextevt_local : nextevt_global;
->>=20=20
->> -	if (base_local->timers_pending || base_global->timers_pending) {
->> +	/*
->> +	 * If the @nextevt is at max. one tick away, use @nextevt and store
->> +	 * it in the local expiry value. The next global event is irrelevant in
->> +	 * this case and can be left as KTIME_MAX.
->> +	 */
->> +	if (time_before_eq(nextevt, basej + 1)) {
->>  		/* If we missed a tick already, force 0 delta */
->>  		if (time_before(nextevt, basej))
->>  			nextevt =3D basej;
->> -		expires =3D basem + (u64)(nextevt - basej) * TICK_NSEC;
->> +		tevt.local =3D basem + (u64)(nextevt - basej) * TICK_NSEC;
->> +		goto unlock;
->
-> You claim "No functional change" in the patch description. However if
-> you take the shortcut here you don't update `idle' if set and you don't
-> __forward_timer_base(). The `idle` parameter doesn't matter because it
-> was false and will remain false as per current logic.
->
-> But what about the forward of the timer base? It is probably not real
-> problem since the next add/mod timer call will forward it.
+Darn... You are right. I got carried away by the initial property name. Thanks
+for spotting!
 
-You are right. It is not a problem as the timer base will be forwarded
-by add/mod timer and also when timers needs to expire. (It is reworked
-by the next patch...)
+- Mani
 
-But it is not consistent and happend within one of the last rework
-iterations. I'll change the goto label into 'forward' and place it
-before the forward calls.
+> Johan
 
-Thanks,
-
-	Anna-Maria
+-- 
+மணிவண்ணன் சதாசிவம்
