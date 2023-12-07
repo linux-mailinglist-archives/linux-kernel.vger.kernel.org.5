@@ -2,113 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3A080832A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 09:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3F280832E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 09:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378271AbjLGIhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 03:37:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
+        id S1378345AbjLGIhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 03:37:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbjLGIhB (ORCPT
+        with ESMTP id S229456AbjLGIhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 03:37:01 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3736ED7E;
-        Thu,  7 Dec 2023 00:37:08 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B778A6S008789;
-        Thu, 7 Dec 2023 08:37:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=tUM5+ayb6HVh/mMV/yVkH5oTfjcL4aN8S+wZ04hIcZo=;
- b=GB7lHicPYt4tqTYL8ZVLzRrFL86+dT9I8rNfPgydUzyFX9QlcTiEAgIjYLv6IX+3C7NM
- pBBjgIu0SidcBT5KAqVQvZgpgh8f/Cksemoax+0W3pYmNGt87Q4GkqHFc5qI57+qGZgP
- ZPCFwX5fngNXIw22062/02r9KMldzWS5U5GHq/iMiGCTjPLAOh4pb8NngKIiRqArD42P
- o3HKkTAhfHiYNvdr0v1Pxks3WL6+oZmLug9weBm9lkenKqhkMCL4lDIOQe99C8VhgELf
- lc79NyN8j36djoX37+q2TaFLbxPHhO4AgAB+U4WvgCtHprL56dhsN64mjt8naNX9XJol qQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uu928g6ts-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Dec 2023 08:37:01 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B78b0SU013346
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 7 Dec 2023 08:37:00 GMT
-Received: from [10.218.45.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Dec
- 2023 00:36:56 -0800
-Message-ID: <d95cc83b-0a84-a408-00de-42d6ab1c0c9d@quicinc.com>
-Date:   Thu, 7 Dec 2023 14:06:52 +0530
+        Thu, 7 Dec 2023 03:37:02 -0500
+Received: from mail.manjaro.org (mail.manjaro.org [IPv6:2a01:4f8:c0c:51f3::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A1BC6;
+        Thu,  7 Dec 2023 00:37:06 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH 09/13] scsi: ufs: qcom: Remove redundant error print for
- devm_kzalloc() failure
-Content-Language: en-US
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        <martin.petersen@oracle.com>, <jejb@linux.ibm.com>
-CC:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>
-References: <20231201151417.65500-1-manivannan.sadhasivam@linaro.org>
- <20231201151417.65500-10-manivannan.sadhasivam@linaro.org>
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-In-Reply-To: <20231201151417.65500-10-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+        t=1701938223;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ItJvp86mvKeMDbvON2mlBeaPlnTZSQtaPqu7Y3Wk7gc=;
+        b=apBinFhY27PhsJ07Cw8uCjWrCpuBCPMK6GzUR0aOWW5xTxRSCNgeP0H8ZpHndVXiHzIJek
+        7RBgE81Zb1CJwIL3wY5aosDGgdKxnSCQL5vTOreX624afVuqQDQ6tQVfxxXbOh86cFOicD
+        mX4yi4bmZl+dyplE/4A5Vkjf7xYmPYHUdU1NDWR2+kOREsEL56pH8VOWOUv9QYMmAVLqLV
+        rSgE6Mv+wUVyrvmjiJP09lpSFoXmNCnRl+OTWuJWn2ER71IT4bAY+epz3HDR1/717pbC/j
+        SKXXbzGYOGXwlqw3VEY4TUQW5bRcl4q9vzzRYHKWkGoiTwHvJ67/He09CzU9sw==
+Date:   Thu, 07 Dec 2023 09:37:03 +0100
+From:   Dragan Simic <dsimic@manjaro.org>
+To:     Jensen Huang <jensenhuang@friendlyarm.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        Chris Morgan <macroalpha82@gmail.com>,
+        Benjamin Bara <bbara93@gmail.com>
+Subject: Re: [PATCH v2] i2c: rk3x: fix potential spinlock recursion on poll
+In-Reply-To: <20231207082200.16388-1-jensenhuang@friendlyarm.com>
+References: <20231207082200.16388-1-jensenhuang@friendlyarm.com>
+Message-ID: <ebf6cf8ec3b5befd673d295061fa2738@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: E5eAyF2vNKCixqYHRSkb3LRHmW4R3TWQ
-X-Proofpoint-GUID: E5eAyF2vNKCixqYHRSkb3LRHmW4R3TWQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-07_06,2023-12-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
- priorityscore=1501 suspectscore=0 malwarescore=0 lowpriorityscore=0
- phishscore=0 impostorscore=0 clxscore=1015 bulkscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312070069
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/1/2023 8:44 PM, Manivannan Sadhasivam wrote:
-> devm_kzalloc() will itself print the error message on failure. So let's get
-> rid of the redundant error message in ufs_qcom_init().
+On 2023-12-07 09:21, Jensen Huang wrote:
+> Possible deadlock scenario (on reboot):
+> rk3x_i2c_xfer_common(polling)
+>     -> rk3x_i2c_wait_xfer_poll()
+>         -> rk3x_i2c_irq(0, i2c);
+>             --> spin_lock(&i2c->lock);
+>             ...
+>         <rk3x i2c interrupt>
+>         -> rk3x_i2c_irq(0, i2c);
+>             --> spin_lock(&i2c->lock); (deadlock here)
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Store the IRQ number and disable/enable it around the polling transfer.
+> This patch has been tested on NanoPC-T4.
+
+In case you haven't already seen the related discussion linked below, 
+please have a look.  I also added more people to the list of recipients, 
+in an attempt to make everyone aware of the different approaches to 
+solving this issue.
+
+https://lore.kernel.org/all/655177f4.050a0220.d85c9.3ba0@mx.google.com/T/#m6fc9c214452fec6681843e7f455978c35c6f6c8b
+
+> Signed-off-by: Jensen Huang <jensenhuang@friendlyarm.com>
+> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
 > ---
->   drivers/ufs/host/ufs-qcom.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
+> Changes in v2:
+>  - Add description for member 'irq' to fix build warning
 > 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index e4dd3777a4d4..218d22e1efce 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -1107,10 +1107,8 @@ static int ufs_qcom_init(struct ufs_hba *hba)
->   	struct ufs_clk_info *clki;
->   
->   	host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
-> -	if (!host) {
-> -		dev_err(dev, "%s: no memory for qcom ufs host\n", __func__);
-> +	if (!host)
->   		return -ENOMEM;
-> -	}
->   
->   	/* Make a two way bind between the qcom host and the hba */
->   	host->hba = hba;
-
-Reviewed-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+>  drivers/i2c/busses/i2c-rk3x.c | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-rk3x.c 
+> b/drivers/i2c/busses/i2c-rk3x.c
+> index a044ca0c35a1..4362db7c5789 100644
+> --- a/drivers/i2c/busses/i2c-rk3x.c
+> +++ b/drivers/i2c/busses/i2c-rk3x.c
+> @@ -178,6 +178,7 @@ struct rk3x_i2c_soc_data {
+>   * @clk: function clk for rk3399 or function & Bus clks for others
+>   * @pclk: Bus clk for rk3399
+>   * @clk_rate_nb: i2c clk rate change notify
+> + * @irq: irq number
+>   * @t: I2C known timing information
+>   * @lock: spinlock for the i2c bus
+>   * @wait: the waitqueue to wait for i2c transfer
+> @@ -200,6 +201,7 @@ struct rk3x_i2c {
+>  	struct clk *clk;
+>  	struct clk *pclk;
+>  	struct notifier_block clk_rate_nb;
+> +	int irq;
+> 
+>  	/* Settings */
+>  	struct i2c_timings t;
+> @@ -1087,13 +1089,18 @@ static int rk3x_i2c_xfer_common(struct
+> i2c_adapter *adap,
+> 
+>  		spin_unlock_irqrestore(&i2c->lock, flags);
+> 
+> -		rk3x_i2c_start(i2c);
+> -
+>  		if (!polling) {
+> +			rk3x_i2c_start(i2c);
+> +
+>  			timeout = wait_event_timeout(i2c->wait, !i2c->busy,
+>  						     msecs_to_jiffies(WAIT_TIMEOUT));
+>  		} else {
+> +			disable_irq(i2c->irq);
+> +			rk3x_i2c_start(i2c);
+> +
+>  			timeout = rk3x_i2c_wait_xfer_poll(i2c);
+> +
+> +			enable_irq(i2c->irq);
+>  		}
+> 
+>  		spin_lock_irqsave(&i2c->lock, flags);
+> @@ -1310,6 +1317,8 @@ static int rk3x_i2c_probe(struct platform_device 
+> *pdev)
+>  		return ret;
+>  	}
+> 
+> +	i2c->irq = irq;
+> +
+>  	platform_set_drvdata(pdev, i2c);
+> 
+>  	if (i2c->soc_data->calc_timings == rk3x_i2c_v0_calc_timings) {
