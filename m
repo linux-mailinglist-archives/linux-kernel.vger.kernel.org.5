@@ -2,94 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75AA1809110
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:11:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4A7809115
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbjLGTKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 14:10:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
+        id S1443520AbjLGTMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 14:12:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbjLGTKm (ORCPT
+        with ESMTP id S229541AbjLGTMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 14:10:42 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5053C8E
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 11:10:48 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c9f9db9567so13507411fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 11:10:48 -0800 (PST)
+        Thu, 7 Dec 2023 14:12:46 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0058E;
+        Thu,  7 Dec 2023 11:12:53 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54cdef4c913so4992206a12.1;
+        Thu, 07 Dec 2023 11:12:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701976246; x=1702581046; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OfswJHbbaE8lthgCuxsCEF+7HdLrX0KCYICyRwFYL8Q=;
-        b=DRqd+z8mWcy9cSBAJFc7XovxoM6gE47GuGITuKPQK4NkbBOVry5J6gPE5gfcD7lwWi
-         WEbLXO3DL86Lbj9d5q23MNd9tTDTZC8Mr8KaAEt4r6uQvnySUNmNuu4RYzP6kJ4UI8mN
-         XkqfyYS6hm7YZfnvTc4641eYzQ/UUuHa1xBsTOIe82yQ5BIS89bO3wIE+lPe0juZC6Jx
-         rikzEimLdfdtjE5VLlpagn4OC1KYSVaV28sMGdmAXaYmO9++Hn7K7gSfPut3utapgvRL
-         42WyR44zjJ+bsH8VtCk024ehGbooNIlnpJmAxokVqUTKRNgTYfPNOlRBMuAfJODG8F4C
-         gpfg==
+        d=gmail.com; s=20230601; t=1701976371; x=1702581171; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FBcbek6gttfppERWG6d3/hToWIBrJs6uRJTnr+Awj6E=;
+        b=dQgnC7tV+Fpu5/5QqiQWj1jHqWtZe89H3xPDeXbIzL+fqcP4pk68pHeiiOdVSbJkg8
+         mJdkWNmxmgQtkUG+gPHuhr5FFiljy9v+GuwK6wnc0Ar9a3WUHNWkXmur2SMAVzCxgk6k
+         bPfj0c03laCraaK2YNu7j0aJWaZabOXttSPM3yhCWqXiWAUIMjR6SNYYisWGp4Xm4m6O
+         0UVKsrzPqtSuOCxqcarcS3WdM4qpyLgua+62lYKYTLQE4+17gxZsHT9nV/ykC0+KwpbG
+         0lW3guGBKiEtNy1OIb5LXsW7r7S/dJn4ms82NAbnj6YJPtcPtzB2n7o+0nuJNHmCFkKp
+         NqOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701976246; x=1702581046;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OfswJHbbaE8lthgCuxsCEF+7HdLrX0KCYICyRwFYL8Q=;
-        b=ATuZOZDQUpok7LmypmlSExv9+YdCrvlg09zEjCRS4OdpwQgJJKSZTFCGQwrSizjwjf
-         aO6wcjuLH17rPlGlTG5w5z+FyMYsSmLaYuUh+rShPaLnpfOAtSSyK41/Ins30VBN5foy
-         aGdKvkGhEnDWnYzTMALRU5KDJ/pU0clkuINV92jspeUJ/juxJTT2GmdJDCsopdiHHaCh
-         STg+SVL8lLhacOjRespxsMs1RyAC+l9ZArFpQrVGoE6JM47hPAwSFAubkp3pgIefvqKM
-         tHbQaibEPqJPurnhk+XreXZtO8xckE9tWurO8sbTxvWS4sKXLWnNV4PHaW40em8Q2NO7
-         tqjg==
-X-Gm-Message-State: AOJu0YxObIhO9nuxKJKvBOB4j0Bqud6h8M8XphQpxACMvf78e6JF5ccW
-        EHpWr1kK+XM3+7dvo7JnQgINIQ==
-X-Google-Smtp-Source: AGHT+IHHZzDwVjEoqj5L0COX7ANyUFp8QKEMmxG3cMwdjoXkbsmuUH84Uxh48VDZssIMNDNTOto8AQ==
-X-Received: by 2002:a2e:9991:0:b0:2c9:c8f4:1c0c with SMTP id w17-20020a2e9991000000b002c9c8f41c0cmr1649768lji.32.1701976246456;
-        Thu, 07 Dec 2023 11:10:46 -0800 (PST)
-Received: from [172.30.205.181] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id o18-20020a2e9b52000000b002c9f75a48fcsm23408ljj.16.2023.12.07.11.10.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 11:10:45 -0800 (PST)
-Message-ID: <014a4a44-0da2-49e9-ab1c-f4cc1ca2e218@linaro.org>
-Date:   Thu, 7 Dec 2023 20:10:41 +0100
+        d=1e100.net; s=20230601; t=1701976371; x=1702581171;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FBcbek6gttfppERWG6d3/hToWIBrJs6uRJTnr+Awj6E=;
+        b=DXOjEvFiTVkd5rfv1Y+w3kADj+PE95iQvJ4nALnbGuGZDvC5GtpU8MD8svELCwOIEs
+         33GPy30tmG4zWrq9L0x9kJi/5FjZKzdq65RqU+K9ZQxdnH3PA8S37PUvS4bqkEnTvNh2
+         HuN+A2d8uUsoBcevM2d6yVIJ40De1i5HPAeb/m+zgX5Kdcyexm62cXxZRWJKm/EIdqHo
+         +7AsYPA7SkPv8jjcYqHGkv/NoU/XdiGFaKBBbEPhJx5GS48bnVnISLfB5cukKcRVcHwD
+         IUjyIQeHYXKMR3UcFqKaf/9jiw2732lNeqycbkubDOcSk1R5s+xEebRfKuW081gVNmud
+         YDHA==
+X-Gm-Message-State: AOJu0YyUx/lVlnv6GGmZFQFldfYGZiTEBiY+Yue27b7YtS9m3++yD0mI
+        Q3SW9uBiar4L5wAYSjU4uty01ynmUflEEI4GTolPQtMdBGE=
+X-Google-Smtp-Source: AGHT+IHlWG5bKii7MvV2efsGC4HKRhhsZ5maBOhBSV/8S5dfwK9hpNSZOGn/4a9pAHw3z3+goSCLDK5cRl3DzSO6/SU=
+X-Received: by 2002:a17:906:c10d:b0:9fa:7c87:b10a with SMTP id
+ do13-20020a170906c10d00b009fa7c87b10amr6266158ejc.10.1701976371192; Thu, 07
+ Dec 2023 11:12:51 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] interconnect: qcom: Add MSM8909 interconnect provider
- driver
-To:     kernel test robot <lkp@intel.com>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        Georgi Djakov <djakov@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Adam Skladowski <a39.skl@gmail.com>
-References: <20231206-icc-msm8909-v1-2-fe0dd632beff@kernkonzept.com>
- <202312071325.M9cg1wry-lkp@intel.com>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <202312071325.M9cg1wry-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231207163458.5554-1-khuey@kylehuey.com> <20231207163458.5554-3-khuey@kylehuey.com>
+In-Reply-To: <20231207163458.5554-3-khuey@kylehuey.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 7 Dec 2023 11:12:38 -0800
+Message-ID: <CAEf4Bza5LWs8nQhJ78QRAU78PU8DOjs5aZkbsgdggr_a+GdEjQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] perf/bpf: Allow a bpf program to suppress all
+ sample side effects.
+To:     Kyle Huey <me@kylehuey.com>
+Cc:     Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Marco Elver <elver@google.com>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        "Robert O'Callahan" <robert@ocallahan.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 7, 2023 at 8:35=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote:
+>
+> Returning zero from a bpf program attached to a perf event already
+> suppresses any data output. By clearing pending_kill, returning zero from=
+ a
+> bpf program will effectively pretend the sample never happened for all
+> userspace purposes.
+>
+> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> ---
+>  kernel/events/core.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
 
+LGTM
 
-On 12/7/23 07:06, kernel test robot wrote:
-> Hi Stephan,
-> 
-> kernel test robot noticed the following build errors:
-(.remove -> .remove_new)
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-Konrad
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 19fddfc27a4a..6cda05a4969d 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -10421,8 +10421,10 @@ static void bpf_overflow_handler(struct perf_eve=
+nt *event,
+>         rcu_read_unlock();
+>  out:
+>         __this_cpu_dec(bpf_prog_active);
+> -       if (!ret)
+> +       if (!ret) {
+> +               event->pending_kill =3D 0;
+>                 return;
+> +       }
+>
+>         event->orig_overflow_handler(event, data, regs);
+>  }
+> --
+> 2.34.1
+>
