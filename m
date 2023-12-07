@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC95808A80
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:27:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CCB808A86
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235263AbjLGO1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:27:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
+        id S1443202AbjLGO16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:27:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232883AbjLGO1W (ORCPT
+        with ESMTP id S1443070AbjLGO1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:27:22 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0CAD53
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:27:28 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-2868cf6cb82so816300a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 06:27:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701959248; x=1702564048; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FnUqi8dAEgGMyEzBxdD28hEtaCGQO1gXXHV0T1kN7CU=;
-        b=S/HaNrIlZ1DvlTNB0E5lv/B/jagUzSzYVkBFDPkoNIN1LiRa1I0xHQINUKVCg0TNSR
-         SM8n1x6D6WJHzB+l3IkgyqBLYA5Jz9TniilXPvrPTiF/RF22DXM2XhS7PgktPvNbpLWh
-         eQy/d/QFNFVcy+m/YZA/NdrB5w7zq9ehc4c6U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701959248; x=1702564048;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FnUqi8dAEgGMyEzBxdD28hEtaCGQO1gXXHV0T1kN7CU=;
-        b=bGqD6K0GmrLb5UWrTLDw2OlDTM1dqZobdcnc9xKN8ez4NcBIt5qAbmer0KWtl00Cia
-         mqFYvZxLmE0IimWi2aJ5v9YYwUgsIwxySNa7sNCtB81oCprWqgawf2nx3236FFxTj99z
-         dFMBDbQ7QJqr815pOjcDV48nN47m/iqWySTGsmbIruqNi3ojfQOtmFjpSOE+2OR+khKm
-         c7O2KOnRbfSALDspI1xgnajQCBWgIMo4p4pleWBAPVxJ3uPxHoWkZHDLmy+FKd9d33fd
-         B+Fohf0wI0Ups4bzoZ7v7JMWKfezigdE40kzeOII3pkCuyOfFzmBqfls6AVnP2FLmb/X
-         jDHA==
-X-Gm-Message-State: AOJu0Yy5Cw4hK8C7EKV5DCkXAlcWz9BEwNc9tO5IYpKkahtzl6kqsqsD
-        SditE2VfmxTLEDPjTNx3glpfXA==
-X-Google-Smtp-Source: AGHT+IH8AzbuT3bEW5QtQ3VpbuixskHTKbrXXL1zs3HHhHdzRy4lAaYreOoFMvEXA8A9ADp82mykHw==
-X-Received: by 2002:a17:90a:e009:b0:286:6cc0:b918 with SMTP id u9-20020a17090ae00900b002866cc0b918mr2087016pjy.79.1701959247711;
-        Thu, 07 Dec 2023 06:27:27 -0800 (PST)
-Received: from google.com ([2401:fa00:1:10:e0f4:e383:e626:f567])
-        by smtp.gmail.com with ESMTPSA id d15-20020a170902654f00b001cfc2d024edsm1507200pln.29.2023.12.07.06.27.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 06:27:27 -0800 (PST)
-Date:   Thu, 7 Dec 2023 22:27:23 +0800
-From:   Chen-Yu Tsai <wenst@chromium.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Simon Glass <sjg@chromium.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Tom Rini <trini@konsulko.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, workflows@vger.kernel.org
-Subject: Re: [PATCH v9 2/2] arm64: boot: Support Flat Image Tree
-Message-ID: <20231207142723.GA3187877@google.com>
-References: <20231202035511.487946-1-sjg@chromium.org>
- <20231202035511.487946-3-sjg@chromium.org>
- <20231203153401.GV8402@pendragon.ideasonboard.com>
+        Thu, 7 Dec 2023 09:27:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1F8D53
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:28:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7EA1C433C7;
+        Thu,  7 Dec 2023 14:27:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701959281;
+        bh=CaZ0RkB0u+scxi86DPB/42R2LXTYaUc50U7WyvnPd4c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ixHWvApDZdXcScyCyHgSPpkRXRIjHTfDc7XKTaOYYHyA0CJoWXqcaOlBlRoQZmPum
+         cZEVE2bX1oFgDJCeGKA8Eij6ykoNYerGYNMEqMM9N0UPL7kPFIzuNhtH4zP29G0HOP
+         Mk4kmBhpIvI5Tie0V7cVF4FbKhFX7pOhshSDNyCInX190j56xlln4VPJIpaxOyRTUz
+         wgPPlx8WuM985xSfcVO82jEoOkOI8vzBM560UdkCTY0H9xQTqmzCV9wF31TqkkWcLt
+         qSpagfLT5EkverT3rl2LMMOPDFA72Iy0LRHOY8pSYvyQaSn7DJhAi3K7L5YEGCTYbn
+         WnpcFCj7GHBvw==
+Message-ID: <e97d54f2-88f3-4c03-9f41-e90df458bb95@kernel.org>
+Date:   Thu, 7 Dec 2023 15:27:57 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231203153401.GV8402@pendragon.ideasonboard.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] w1: gpio: Some cleanup and simplifiction
+To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <cover.1701727212.git.u.kleine-koenig@pengutronix.de>
+ <15578a4d-f749-4bf8-b507-4c6efb7805fa@kernel.org>
+ <20231207142445.rp5or5wvkosyu7ho@pengutronix.de>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <20231207142445.rp5or5wvkosyu7ho@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,69 +98,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 03, 2023 at 05:34:01PM +0200, Laurent Pinchart wrote:
-> Hi Simon,
+On 07/12/2023 15:24, Uwe Kleine-König wrote:
+> Hello Krzysztof,
 > 
-> Thank you for the patch.
+> On Thu, Dec 07, 2023 at 02:29:34PM +0100, Krzysztof Kozlowski wrote:
+>> On 04/12/2023 23:05, Uwe Kleine-König wrote:
+>>> Hello,
+>>>
+>>> v1 is available at
+>>> https://lore.kernel.org/r/20230525095624.615350-1-u.kleine-koenig@pengutronix.de.
+>>>
+>>> The changes in this v2 since then are:
+>>>
+>>>  - Fix a build problem in patch #3
+>>>  - Rebase to today's next
+>>
+>>   ✗ No key: openpgp/u.kleine-koenig@pengutronix.de
+>>
+>> Are you sure you exported your key to openpgp and verified addresses?
 > 
-> On Fri, Dec 01, 2023 at 08:54:42PM -0700, Simon Glass wrote:
-> > Add a script which produces a Flat Image Tree (FIT), a single file
-> > containing the built kernel and associated devicetree files.
-> > Compression defaults to gzip which gives a good balance of size and
-> > performance.
-> > 
-> > The files compress from about 86MB to 24MB using this approach.
-> > 
-> > The FIT can be used by bootloaders which support it, such as U-Boot
-> > and Linuxboot. It permits automatic selection of the correct
-> > devicetree, matching the compatible string of the running board with
-> > the closest compatible string in the FIT. There is no need for
-> > filenames or other workarounds.
-> > 
-> > Add a 'make image.fit' build target for arm64, as well. Use
-> > FIT_COMPRESSION to select a different algorithm.
-> > 
-> > The FIT can be examined using 'dumpimage -l'.
-> > 
-> > This features requires pylibfdt (use 'pip install libfdt'). It also
-> > requires compression utilities for the algorithm being used. Supported
-> > compression options are the same as the Image.xxx files. For now there
-> > is no way to change the compression other than by editing the rule for
-> > $(obj)/image.fit
-> > 
-> > While FIT supports a ramdisk / initrd, no attempt is made to support
-> > this here, since it must be built separately from the Linux build.
+> Works for me:
 > 
-> FIT images are very useful, so I think this is a very welcome addition
-> to the kernel build system. It can get tricky though: given the
-> versatile nature of FIT images, there can't be any
-> one-size-fits-them-all solution to build them, and striking the right
-> balance between what makes sense for the kernel and the features that
-> users may request will probably lead to bikeshedding. As we all love
-> bikeshedding, I thought I would start selfishly, with a personal use
-> case :-) This isn't a yak-shaving request though, I don't see any reason
-> to delay merging this series.
+> $ gpg --locate-keys u.kleine-koenig@pengutronix.de
+> gpg: directory '/home/test/.gnupg' created
+> gpg: keybox '/home/test/.gnupg/pubring.kbx' created
+> gpg: /home/test/.gnupg/trustdb.gpg: trustdb created
+> gpg: key E2DCDD9132669BD6: public key "Uwe Kleine-König <u.kleine-koenig@pengutronix.de>" imported
+> gpg: Total number processed: 1
+> gpg:               imported: 1
+> gpg: no ultimately trusted keys found
+> pub   rsa4096 2010-06-15 [SC] [expires: 2024-06-21]
+>       0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+> uid           [ unknown] Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> sub   rsa2048 2023-03-17 [A] [expires: 2025-03-16]
+> sub   rsa2048 2023-03-17 [S] [expires: 2025-03-16]
+> sub   rsa2048 2023-03-17 [E] [expires: 2025-03-16]
 > 
-> Have you envisioned building FIT images with a subset of DTBs, or adding
-> DTBOs ? Both would be fairly trivial extensions to this script by
-> extending the supported command line arguments. It would perhaps be more
-> difficult to integrate in the kernel build system though. This leads me
-> to a second question: would you consider merging extensions to this
-> script if they are not used by the kernel build system, but meant for
-> users who manually invoke the script ? More generally, is the script
+> also https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git seems to
+> have the current key since commit 5151fbdbeb53 "Update E2DCDD9132669BD6
+> (Uwe Kleine-König)".
+> 
 
-We'd also be interested in some customization, though in a different way.
-We imagine having a rule file that says X compatible string should map
-to A base DTB, plus B and C DTBO for the configuration section. The base
-DTB would carry all common elements of some device, while the DTBOs
-carry all the possible second source components, like different display
-panels or MIPI cameras for instance. This could drastically reduce the
-size of FIT images in ChromeOS by deduplicating all the common stuff.
+Huh, I think I misunderstood the message from b4. I thought it is trying
+to get your key from keys.openpgp.org and your key is just not there.
+Are you saying that it was looking only in my local keyring?
 
-> meant to be used stand-alone as well, in which case its command line
-> arguments need to remain backward-compatible, or do you see it as being
-> internal to the kernel ?
+Best regards,
+Krzysztof
 
-[...]
-
-ChenYu
