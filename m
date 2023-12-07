@@ -2,158 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23926807FF4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 06:06:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C11808002
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 06:11:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbjLGFFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 00:05:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
+        id S229935AbjLGFKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 00:10:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbjLGFE5 (ORCPT
+        with ESMTP id S229449AbjLGFKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 00:04:57 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE270D51
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 21:05:02 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5d3eafe3d17so1929387b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 21:05:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701925502; x=1702530302; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bNmJSk2Mf8wiupmA7otv2vwMpu3HCNA090aeI5fVLaE=;
-        b=j66J+ZPkvukEjBSMTiJqbYvNks4a/6dOQ4AghyY/zuocABJaYCry4143ccTRt7IO12
-         cYV7ElMH/wyxsT8O+mscRYokLeg4Kelm1c9kkCufTmMQS2xSB+Y0uaQERrli8gjNFT2R
-         ftAMltvudLWurWANfRAedFRT8HD2S6bAk+OebcjhQihsyFq+tM08ZT8za14+WtLh70CA
-         OaWS6ZeQ3qRNuWnKY9MbEyDIbXlFf8PGQ+vbtHtJ/Zc4F0GZ7u+oAoCRPO5RVw0M6MAH
-         +WefPPlJiERBxJHnEyZIo4M+9OOJK2wN5gnItQK6bCV74Sb4M/miQNoil+CRlfirz9cf
-         Tpkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701925502; x=1702530302;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bNmJSk2Mf8wiupmA7otv2vwMpu3HCNA090aeI5fVLaE=;
-        b=v+xQ86awFBA0e6U5Ijn04wINuoW1yV4L3vVtDeubZFq414AaJktNqq+AqsQNDTAAPi
-         2B3UR6ZKUjfzQq8M9DNhp/L1prIKfi/8APymhsyQCfIuRIVeElFDT0zA9Lg+Vf8Gu7ga
-         XYX0JXNT/O9EZiAD7hlsIsuGPycXz/ExG0U2Y7kmS4wlsITKWUBALCHjHpgAE+6gNPW9
-         I7qawYzC8oFm2xdH/dVUA4zEvCynF3qYS3ICRSYqx6Tx9nJ8ul+AfUFplAxNZqw5dj8/
-         tWVkOD22rfOBYvXWXe5IaE/3z11WWER7/qWS03FANTNR5QG1kft3EADBDdIofDM5j9EK
-         XSYg==
-X-Gm-Message-State: AOJu0Yx7BMlK8MCQISo65UvxFgORKYSRF5cn3drj00IRbCDSQpt3z5in
-        nDbm/yKI9MmjRC5l9vbmVM0Dhk9OeIIA
-X-Google-Smtp-Source: AGHT+IF/nzirSeJnMIvE0mGEycoV9XdkGUbzHi13uh8ZFStCgczXxDlh1x3wJVZVQti1bAtMbyQyGetvXwAv
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:35bf:293e:7696:34e9])
- (user=irogers job=sendgmr) by 2002:a25:3144:0:b0:db5:4a00:a153 with SMTP id
- x65-20020a253144000000b00db54a00a153mr46968ybx.4.1701925501849; Wed, 06 Dec
- 2023 21:05:01 -0800 (PST)
-Date:   Wed,  6 Dec 2023 21:04:33 -0800
-In-Reply-To: <20231207050433.1426834-1-irogers@google.com>
-Message-Id: <20231207050433.1426834-7-irogers@google.com>
-Mime-Version: 1.0
-References: <20231207050433.1426834-1-irogers@google.com>
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Subject: [PATCH v1 6/6] perf events: Remove scandir in thread synthesis
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Fangrui Song <maskray@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Artem Savkov <asavkov@redhat.com>,
-        James Clark <james.clark@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Thu, 7 Dec 2023 00:10:31 -0500
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359B1D44;
+        Wed,  6 Dec 2023 21:10:37 -0800 (PST)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B75AT0c077218;
+        Wed, 6 Dec 2023 23:10:29 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1701925829;
+        bh=iP+g/I8yA4NofAFT2YlcQSRPdT6ZK1QM6d3BX+2pB1g=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=hIeOLnZJOzpmLgTIy0aziyHVdkURvHx210+Paz+hV/R49zHG6BZLLFU/ZD3xVcp9L
+         05j55ACNNZXdHNA+o+EsTkKbwktD/WdxICbLoY99CALD3gYe1P+qeADBOZeZfqyFKF
+         mPGJS3blN6bCKxtNZEVJRafV2S2pV00EQuAtxZBI=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B75ATIs024140
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 6 Dec 2023 23:10:29 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 6
+ Dec 2023 23:10:29 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 6 Dec 2023 23:10:29 -0600
+Received: from [172.24.227.36] (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
+        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B75AN16032413;
+        Wed, 6 Dec 2023 23:10:24 -0600
+Message-ID: <48ede2d2-29b8-4c92-940c-ac28f9d7c10f@ti.com>
+Date:   Thu, 7 Dec 2023 10:40:23 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 5/7] arm64: dts: ti: k3-am69-sk: Add support for
+ TPS6594 PMIC
+To:     "Kumar, Udit" <u-kumar1@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <a-nandan@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <eblanc@baylibre.com>, <jneanne@baylibre.com>,
+        <aseketeli@baylibre.com>, <jpanis@baylibre.com>, <j-luthra@ti.com>,
+        <vaishnav.a@ti.com>, <hnagalla@ti.com>, <devarsht@ti.com>
+References: <20231205093439.2298296-1-n-francis@ti.com>
+ <20231205093439.2298296-6-n-francis@ti.com>
+ <5eecd094-bc14-4257-bbe9-1e20aabd38f7@ti.com>
+Content-Language: en-US
+From:   Neha Malcom Francis <n-francis@ti.com>
+In-Reply-To: <5eecd094-bc14-4257-bbe9-1e20aabd38f7@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This avoids scanddir reading the directory into memory that's
-allocated and instead allocates on the stack.
+Hi Udit,
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/synthetic-events.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+On 07/12/23 10:29, Kumar, Udit wrote:
+> 
+> On 12/5/2023 3:04 PM, Neha Malcom Francis wrote:
+>> This patch adds support for TPS6594 PMIC on wkup I2C0 bus. This device
+>> provides regulators (bucks and LDOs), but also GPIOs, a RTC, a watchdog,
+>> an ESM (Error Signal Monitor) which monitors the SoC error output
+>> signal, and a PFSM (Pre-configurable Finite State Machine) which manages
+>> the operational modes of the PMIC.
+>>
+>> Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
+>> Tested-by: Manorit Chawdhry <m-chawdhry@ti.com>
+>> ---
+>>   arch/arm64/boot/dts/ti/k3-am69-sk.dts | 100 ++++++++++++++++++++++++++
+>>   1 file changed, 100 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts 
+>> b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+>> index 9868c7049bfb..dec27acb4e96 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+>> +++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+>> @@ -431,6 +431,17 @@ J784S4_IOPAD(0x000, PIN_INPUT, 7) /* (AN35) 
+>> EXTINTN.GPIO0_0 */
+>>       };
+>>   };
+>> +&wkup_pmx1 {
+>> +    status = "okay";
+>> +
+>> +    pmic_irq_pins_default: pmic-irq-default-pins {
+>> +        pinctrl-single,pins = <
+>> +            /* (AA37) MCU_ADC1_AIN4.WKUP_GPIO0_83 */
+>> +            J784S4_WKUP_IOPAD(0x12c, PIN_INPUT, 7)
+>> +        >;
+>> +    };
+>> +};
+> 
+> Could you re check this pin mux
+> 
+> wkup_pmx1 is defined as reg = <0x00 0x4301c038 0x00 0x02c>;
+> 
+> LTM, this is above wrt given size
+> 
 
-diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index a0579c7d7b9e..7cc38f2a0e9e 100644
---- a/tools/perf/util/synthetic-events.c
-+++ b/tools/perf/util/synthetic-events.c
-@@ -38,6 +38,7 @@
- #include <uapi/linux/mman.h> /* To get things like MAP_HUGETLB even on older libc headers */
- #include <api/fs/fs.h>
- #include <api/io.h>
-+#include <api/io_dir.h>
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-@@ -751,10 +752,10 @@ static int __event__synthesize_thread(union perf_event *comm_event,
- 				      bool needs_mmap, bool mmap_data)
- {
- 	char filename[PATH_MAX];
--	struct dirent **dirent;
-+	struct io_dir iod;
-+	struct io_dirent64 *dent;
- 	pid_t tgid, ppid;
- 	int rc = 0;
--	int i, n;
- 
- 	/* special case: only send one comm event using passed in pid */
- 	if (!full) {
-@@ -786,16 +787,19 @@ static int __event__synthesize_thread(union perf_event *comm_event,
- 	snprintf(filename, sizeof(filename), "%s/proc/%d/task",
- 		 machine->root_dir, pid);
- 
--	n = scandir(filename, &dirent, filter_task, NULL);
--	if (n < 0)
--		return n;
-+	io_dir__init(&iod, open(filename, O_CLOEXEC | O_DIRECTORY | O_RDONLY));
-+	if (iod.dirfd < 0)
-+		return -1;
- 
--	for (i = 0; i < n; i++) {
-+	while ((dent = io_dir__readdir(&iod)) != NULL) {
- 		char *end;
- 		pid_t _pid;
- 		bool kernel_thread = false;
- 
--		_pid = strtol(dirent[i]->d_name, &end, 10);
-+		if (!isdigit(dent->d_name[0]))
-+			continue;
-+
-+		_pid = strtol(dent->d_name, &end, 10);
- 		if (*end)
- 			continue;
- 
-@@ -829,9 +833,7 @@ static int __event__synthesize_thread(union perf_event *comm_event,
- 		}
- 	}
- 
--	for (i = 0; i < n; i++)
--		zfree(&dirent[i]);
--	free(dirent);
-+	close(iod.dirfd);
- 
- 	return rc;
- }
+You're right it must be in wkup_pmx2. Thanks for catching this!
+
+> 
+>> +
+>>   &wkup_pmx2 {
+>>       bootph-all;
+>>       wkup_uart0_pins_default: wkup-uart0-default-pins {
+>> @@ -631,6 +642,95 @@ eeprom@51 {
+>>           compatible = "atmel,24c512";
+>>           reg = <0x51>;
+>>       };
+>> +
+>> +    tps659413: pmic@48 {
+>> +        compatible = "ti,tps6594-q1";
+>> +        reg = <0x48>;
+>> +        system-power-controller;
+>> +        pinctrl-names = "default";
+>> +        pinctrl-0 = <&pmic_irq_pins_default>;
+>> +        interrupt-parent = <&wkup_gpio0>;
+>> +        interrupts = <39 IRQ_TYPE_EDGE_FALLING>;
+>> +        ti,primary-pmic;
+>> +
+>> +        gpio-controller;
+>> +        #gpio-cells = <2>;
+>> +
+>> +        buck12-supply = <&vsys_3v3>;
+>> +        buck3-supply = <&vsys_3v3>;
+>> +        buck4-supply = <&vsys_3v3>;
+>> +        buck5-supply = <&vsys_3v3>;
+>> +        ldo1-supply = <&vsys_3v3>;
+>> +        ldo2-supply = <&vsys_3v3>;
+>> +        ldo3-supply = <&vsys_3v3>;
+>> +        ldo4-supply = <&vsys_3v3>;
+>> +
+>> +        regulators {
+>> +            bucka12: buck12 {
+>> +                regulator-name = "vdd_ddr_1v1";
+>> +                regulator-min-microvolt = <1100000>;
+>> +                regulator-max-microvolt = <1100000>;
+>> +                regulator-boot-on;
+>> +                regulator-always-on;
+>> +            };
+>> +
+>> +            bucka3: buck3 {
+>> +                regulator-name = "vdd_ram_0v85";
+>> +                regulator-min-microvolt = <850000>;
+>> +                regulator-max-microvolt = <850000>;
+>> +                regulator-boot-on;
+>> +                regulator-always-on;
+>> +            };
+>> +
+>> +            bucka4: buck4 {
+>> +                regulator-name = "vdd_io_1v8";
+>> +                regulator-min-microvolt = <1800000>;
+>> +                regulator-max-microvolt = <1800000>;
+>> +                regulator-boot-on;
+>> +                regulator-always-on;
+>> +            };
+>> +
+>> +            bucka5: buck5 {
+>> +                regulator-name = "vdd_mcu_0v85";
+>> +                regulator-min-microvolt = <850000>;
+>> +                regulator-max-microvolt = <850000>;
+>> +                regulator-boot-on;
+>> +                regulator-always-on;
+>> +            };
+>> +
+>> +            ldoa1: ldo1 {
+>> +                regulator-name = "vdd_mcuio_1v8";
+>> +                regulator-min-microvolt = <1800000>;
+>> +                regulator-max-microvolt = <1800000>;
+>> +                regulator-boot-on;
+>> +                regulator-always-on;
+>> +            };
+>> +
+>> +            ldoa2: ldo2 {
+>> +                regulator-name = "vdd_mcuio_3v3";
+>> +                regulator-min-microvolt = <3300000>;
+>> +                regulator-max-microvolt = <3300000>;
+>> +                regulator-boot-on;
+>> +                regulator-always-on;
+>> +            };
+>> +
+>> +            ldoa3: ldo3 {
+>> +                regulator-name = "vds_dll_0v8";
+>> +                regulator-min-microvolt = <800000>;
+>> +                regulator-max-microvolt = <800000>;
+>> +                regulator-boot-on;
+>> +                regulator-always-on;
+>> +            };
+>> +
+>> +            ldoa4: ldo4 {
+>> +                regulator-name = "vda_mcu_1v8";
+>> +                regulator-min-microvolt = <1800000>;
+>> +                regulator-max-microvolt = <1800000>;
+>> +                regulator-boot-on;
+>> +                regulator-always-on;
+>> +            };
+>> +        };
+>> +    };
+>>   };
+>>   &wkup_gpio0 {
+
 -- 
-2.43.0.rc2.451.g8631bc7472-goog
-
+Thanking You
+Neha Malcom Francis
