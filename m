@@ -2,317 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F4F8090A1
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1D480909F
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443771AbjLGSnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 13:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        id S1443768AbjLGSoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 13:44:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443763AbjLGSnl (ORCPT
+        with ESMTP id S233289AbjLGSoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 13:43:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D139B171B
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 10:43:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701974625; x=1733510625;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=jJJ6Fe6KdSpWiVrI8cvk8u6sKPDsIEB6P876TLyzOEo=;
-  b=eAcNGzXAa4O1xcjZxSKmK8yaODEsqtkSG8utvnISndyXprTx+Ykfq47i
-   KunMizBumYf6JuHcT91rlLy3V2ZdeN9AIFM3t1CHSweMOfUFIS9y7bXMF
-   S7rmTSuV+w4s5B41IUTNmzygkMFwXdk0mLnQH4ph2YjLSlH1GhjC9Hfua
-   slrO0CIyc8AtKsg/XeNgecK/7uTK/2gi8h261vJRHsPcW3E3/TYA0OvCZ
-   qBXvxQw78eDTq6Qnt8+Fxd6YT1RI+ZSKMn32Du6c4uJpd7P1lLts9HRsr
-   BlKkmRcxkw+g7XHUnsOdcHT8g64GpmsQpTyic6ZeRmofdKZuZFeC+xXP6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480476366"
-X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="480476366"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 10:43:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="806113509"
-X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="806113509"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 07 Dec 2023 10:43:43 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBJLY-000CgJ-2C;
-        Thu, 07 Dec 2023 18:43:40 +0000
-Date:   Fri, 8 Dec 2023 02:43:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: drivers/i2c/busses/i2c-cpm.c:661:58: sparse: sparse: incorrect type
- in argument 1 (different base types)
-Message-ID: <202312080225.z4UrXocp-lkp@intel.com>
+        Thu, 7 Dec 2023 13:44:32 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7F210EB;
+        Thu,  7 Dec 2023 10:44:38 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a1e2f34467aso124795466b.2;
+        Thu, 07 Dec 2023 10:44:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701974676; x=1702579476; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oXf2lAj8XDVwxOmvMwYO09ccy2NUDabGlY5Knm7jvKw=;
+        b=csTXh3rMFTJhvJb/goSS2xFjOHdvRpHl/E9wUz/5twSHunuH2vjuythL8OssMn3tJZ
+         nusyhB0pBjPy4MS5SRPN6ctKZRPlpWxUjGeMEueB8CTxhQEQZTB6QSWoYYJGzEw2ZCu4
+         NdJrliLFFHagl3BJBwMNUANDtlxVDpUoT+jGlZL6YHgLr4azcKuucrOtiLXvRiovgfVz
+         CagHFsmHxb00C5BrOcBhjYbazlchuAkcKKPa+CQfoTlTKXewa1VopR3fvmFTFNQ1GkZ7
+         8z8vRHJD2lnGGwLaPHT8xKv3qiZziiFqqfMQwtifLgv6MCeDal8o32pwf/aV4k+vdpS2
+         ZG3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701974676; x=1702579476;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oXf2lAj8XDVwxOmvMwYO09ccy2NUDabGlY5Knm7jvKw=;
+        b=J/JPoqvnZn9NUpFKBrEn3BE25c9uuj9EmvkgYqC6Hsns0sdjGAQ80Zrru/meUEyh5r
+         mzWCJVXhN2e3Ys/uZ2WkNy39lPZKOOGXoXEjME3h5rWxP6A3aFcAQv7lZltNEgA/4EXK
+         oje1BgYJ1cGgiG+85InxKymRdSLiUQhL7qbPZ0+f1hPJOjvapzGe9TsYJx4G7gK1gza7
+         yiVBNHKHHxbvO1Ey9ysE9fK5p/UpX0OgDivokuyUsU4+83ABknHirCrQVY2stSarRgIu
+         SKrMugJ5bQmYGSmrlrszlWaGBEgEfrilYCEE2IBdRW3L/6t9dQWvQeR7IjaaJTBy1cQk
+         ch3g==
+X-Gm-Message-State: AOJu0Yy8vKUkK6MMur631Onrh4GeWv2UNJT9XyeVHUCaU2hop63HF798
+        k+RQMCgbemkXdLnB9kbcRw==
+X-Google-Smtp-Source: AGHT+IG8L55PCNrPucgL1/sFRpfhV8423aIsHP2Z6wo2jY09zJ7nIsTSpi7u44scNAUHxdQnF0wQYw==
+X-Received: by 2002:a17:907:bb90:b0:a12:635d:fcd1 with SMTP id xo16-20020a170907bb9000b00a12635dfcd1mr1717463ejc.35.1701974675864;
+        Thu, 07 Dec 2023 10:44:35 -0800 (PST)
+Received: from p183 ([46.53.254.107])
+        by smtp.gmail.com with ESMTPSA id tz4-20020a170907c78400b00a1aad4d92dbsm69623ejc.123.2023.12.07.10.44.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 10:44:35 -0800 (PST)
+Date:   Thu, 7 Dec 2023 21:44:33 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Florian Weimer <fweimer@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        x86@kernel.org, Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org
+Subject: [PATCH v3] ELF: AT_PAGE_SHIFT_MASK -- supply userspace with
+ available page shifts
+Message-ID: <8582f7c9-b49d-4d21-8948-59d580e5317c@p183>
+References: <6b399b86-a478-48b0-92a1-25240a8ede54@p183>
+ <87v89dvuxg.fsf@oldenburg.str.redhat.com>
+ <1d679805-8a82-44a4-ba14-49d4f28ff597@p183>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <1d679805-8a82-44a4-ba14-49d4f28ff597@p183>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-commit: eb5aa2137275da82052586f9bd405a1358b48139 powerpc/82xx: Remove CONFIG_8260 and CONFIG_8272
-date:   4 months ago
-config: powerpc-randconfig-r131-20231118 (https://download.01.org/0day-ci/archive/20231208/202312080225.z4UrXocp-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231208/202312080225.z4UrXocp-lkp@intel.com/reproduce)
+Report available page shifts in arch independent manner, so that
+userspace developers won't have to parse /proc/cpuinfo hunting
+for arch specific strings.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312080225.z4UrXocp-lkp@intel.com/
+Main users are supposed to be libhugetlbfs-like libraries which try
+to abstract huge mappings across multiple architectures. Regular code
+which queries hugepage support before using them benefits too because
+it doesn't have to deal with descriptors and parsing sysfs hierarchies
+while enjoying the simplicity and speed of getauxval(AT_PAGE_SHIFT_MASK).
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/i2c/busses/i2c-cpm.c:661:58: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected restricted __be32 const [usertype] *p @@     got unsigned int const [usertype] *[assigned] data @@
-   drivers/i2c/busses/i2c-cpm.c:661:58: sparse:     expected restricted __be32 const [usertype] *p
-   drivers/i2c/busses/i2c-cpm.c:661:58: sparse:     got unsigned int const [usertype] *[assigned] data
---
-   drivers/soc/fsl/qe/qmc.c:334:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_free @@
-   drivers/soc/fsl/qe/qmc.c:334:12: sparse:     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
-   drivers/soc/fsl/qe/qmc.c:334:12: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_free
-   drivers/soc/fsl/qe/qmc.c:346:39: sparse: sparse: subtraction of different types can't work (different address spaces)
-   drivers/soc/fsl/qe/qmc.c:389:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_done @@
-   drivers/soc/fsl/qe/qmc.c:389:12: sparse:     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
-   drivers/soc/fsl/qe/qmc.c:389:12: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_done
-   drivers/soc/fsl/qe/qmc.c:396:47: sparse: sparse: subtraction of different types can't work (different address spaces)
-   drivers/soc/fsl/qe/qmc.c:441:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *rxbd_free @@
-   drivers/soc/fsl/qe/qmc.c:453:39: sparse: sparse: subtraction of different types can't work (different address spaces)
-   drivers/soc/fsl/qe/qmc.c:505:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *rxbd_done @@
-   drivers/soc/fsl/qe/qmc.c:505:12: sparse:     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
-   drivers/soc/fsl/qe/qmc.c:505:12: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *rxbd_done
-   drivers/soc/fsl/qe/qmc.c:512:47: sparse: sparse: subtraction of different types can't work (different address spaces)
-   drivers/soc/fsl/qe/qmc.c:670:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *rxbds @@
-   drivers/soc/fsl/qe/qmc.c:675:47: sparse: sparse: subtraction of different types can't work (different address spaces)
-   drivers/soc/fsl/qe/qmc.c:705:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbds @@
-   drivers/soc/fsl/qe/qmc.c:705:12: sparse:     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
-   drivers/soc/fsl/qe/qmc.c:705:12: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbds
-   drivers/soc/fsl/qe/qmc.c:710:47: sparse: sparse: subtraction of different types can't work (different address spaces)
-   drivers/soc/fsl/qe/qmc.c:1108:30: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] __iomem * @@
-   drivers/soc/fsl/qe/qmc.c:1108:30: sparse:     expected void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:1108:30: sparse:     got unsigned short [noderef] __iomem *
-   drivers/soc/fsl/qe/qmc.c:1111:22: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] __iomem * @@
-   drivers/soc/fsl/qe/qmc.c:1111:22: sparse:     expected void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:1111:22: sparse:     got unsigned short [noderef] __iomem *
-   drivers/soc/fsl/qe/qmc.c:1120:30: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] __iomem * @@
-   drivers/soc/fsl/qe/qmc.c:1120:30: sparse:     expected void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:1120:30: sparse:     got unsigned short [noderef] __iomem *
-   drivers/soc/fsl/qe/qmc.c:1123:22: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] __iomem * @@
-   drivers/soc/fsl/qe/qmc.c:1123:22: sparse:     expected void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:1123:22: sparse:     got unsigned short [noderef] __iomem *
-   drivers/soc/fsl/qe/qmc.c:1176:44: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem * @@
-   drivers/soc/fsl/qe/qmc.c:1176:44: sparse:     expected void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:1176:44: sparse:     got unsigned short [noderef] [usertype] __iomem *
-   drivers/soc/fsl/qe/qmc.c:1181:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem *[assigned] last @@
-   drivers/soc/fsl/qe/qmc.c:1181:29: sparse:     expected void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:1181:29: sparse:     got unsigned short [noderef] [usertype] __iomem *[assigned] last
-   drivers/soc/fsl/qe/qmc.c:1194:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem *int_curr @@
-   drivers/soc/fsl/qe/qmc.c:1194:35: sparse:     expected void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:1194:35: sparse:     got unsigned short [noderef] [usertype] __iomem *int_curr
-   drivers/soc/fsl/qe/qmc.c:1197:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem *int_curr @@
-   drivers/soc/fsl/qe/qmc.c:1197:32: sparse:     expected void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:1197:32: sparse:     got unsigned short [noderef] [usertype] __iomem *int_curr
-   drivers/soc/fsl/qe/qmc.c:1242:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem *int_curr @@
-   drivers/soc/fsl/qe/qmc.c:1242:43: sparse:     expected void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:1242:43: sparse:     got unsigned short [noderef] [usertype] __iomem *int_curr
-   drivers/soc/fsl/qe/qmc.c:1286:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *[noderef] scc_regs @@     got void [noderef] __iomem * @@
-   drivers/soc/fsl/qe/qmc.c:1286:23: sparse:     expected void *[noderef] scc_regs
-   drivers/soc/fsl/qe/qmc.c:1286:23: sparse:     got void [noderef] __iomem *
-   drivers/soc/fsl/qe/qmc.c:1295:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *[noderef] scc_pram @@     got void [noderef] __iomem * @@
-   drivers/soc/fsl/qe/qmc.c:1295:23: sparse:     expected void *[noderef] scc_pram
-   drivers/soc/fsl/qe/qmc.c:1295:23: sparse:     got void [noderef] __iomem *
-   drivers/soc/fsl/qe/qmc.c:1299:21: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *[noderef] dpram @@     got void [noderef] __iomem * @@
-   drivers/soc/fsl/qe/qmc.c:1299:21: sparse:     expected void *[noderef] dpram
-   drivers/soc/fsl/qe/qmc.c:1299:21: sparse:     got void [noderef] __iomem *
-   drivers/soc/fsl/qe/qmc.c:1335:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table @@     got void * @@
-   drivers/soc/fsl/qe/qmc.c:1335:23: sparse:     expected struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table
-   drivers/soc/fsl/qe/qmc.c:1335:23: sparse:     got void *
->> drivers/soc/fsl/qe/qmc.c:1342:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table @@
-   drivers/soc/fsl/qe/qmc.c:1342:9: sparse:     expected void const *
-   drivers/soc/fsl/qe/qmc.c:1342:9: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table
->> drivers/soc/fsl/qe/qmc.c:1342:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table @@
-   drivers/soc/fsl/qe/qmc.c:1342:9: sparse:     expected void const *
-   drivers/soc/fsl/qe/qmc.c:1342:9: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table
-   drivers/soc/fsl/qe/qmc.c:1342:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table @@
-   drivers/soc/fsl/qe/qmc.c:1342:9: sparse:     expected void *
-   drivers/soc/fsl/qe/qmc.c:1342:9: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table
-   drivers/soc/fsl/qe/qmc.c:1348:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned short [noderef] [usertype] __iomem *int_table @@     got void * @@
-   drivers/soc/fsl/qe/qmc.c:1348:24: sparse:     expected unsigned short [noderef] [usertype] __iomem *int_table
-   drivers/soc/fsl/qe/qmc.c:1348:24: sparse:     got void *
->> drivers/soc/fsl/qe/qmc.c:1355:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned short [noderef] [usertype] __iomem *int_table @@
-   drivers/soc/fsl/qe/qmc.c:1355:9: sparse:     expected void const *
-   drivers/soc/fsl/qe/qmc.c:1355:9: sparse:     got unsigned short [noderef] [usertype] __iomem *int_table
->> drivers/soc/fsl/qe/qmc.c:1355:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned short [noderef] [usertype] __iomem *int_table @@
-   drivers/soc/fsl/qe/qmc.c:1355:9: sparse:     expected void const *
-   drivers/soc/fsl/qe/qmc.c:1355:9: sparse:     got unsigned short [noderef] [usertype] __iomem *int_table
-   drivers/soc/fsl/qe/qmc.c:1355:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got unsigned short [noderef] [usertype] __iomem *int_table @@
-   drivers/soc/fsl/qe/qmc.c:1355:9: sparse:     expected void *
-   drivers/soc/fsl/qe/qmc.c:1355:9: sparse:     got unsigned short [noderef] [usertype] __iomem *int_table
-   drivers/soc/fsl/qe/qmc.c:290:33: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:290:33: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:292:29: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:292:29: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:295:39: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:295:39: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:298:39: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:298:39: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:238:21: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:238:38: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:238:38: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:238:21: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:238:38: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:304:29: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:304:29: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:336:28: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:336:28: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:343:22: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:343:22: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:344:22: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
-   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
-   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:344:22: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:346:36: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:353:22: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:353:22: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:356:31: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:356:31: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
-   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
-   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+Note!
 
-vim +661 drivers/i2c/busses/i2c-cpm.c
+This is strictly for userspace, if some page size is shutdown due
+to kernel command line option or CPU bug workaround, than it must
+not be reported in aux vector!
 
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  632  
-0b255e927d47b5 Bill Pemberton   2012-11-27  633  static int cpm_i2c_probe(struct platform_device *ofdev)
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  634  {
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  635  	int result, len;
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  636  	struct cpm_i2c *cpm;
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  637  	const u32 *data;
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  638  
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  639  	cpm = kzalloc(sizeof(struct cpm_i2c), GFP_KERNEL);
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  640  	if (!cpm)
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  641  		return -ENOMEM;
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  642  
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  643  	cpm->ofdev = ofdev;
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  644  
-c2c64954723b9d Jingoo Han       2013-05-23  645  	platform_set_drvdata(ofdev, cpm);
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  646  
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  647  	cpm->adap = cpm_ops;
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  648  	i2c_set_adapdata(&cpm->adap, cpm);
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  649  	cpm->adap.dev.parent = &ofdev->dev;
-9fd049927ccba1 Grant Likely     2010-06-08  650  	cpm->adap.dev.of_node = of_node_get(ofdev->dev.of_node);
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  651  
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  652  	result = cpm_i2c_setup(cpm);
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  653  	if (result) {
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  654  		dev_err(&ofdev->dev, "Unable to init hardware\n");
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  655  		goto out_free;
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  656  	}
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  657  
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  658  	/* register new adapter to i2c module... */
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  659  
-61c7a080a5a061 Grant Likely     2010-04-13  660  	data = of_get_property(ofdev->dev.of_node, "linux,i2c-index", &len);
-488bf314bf219c Grant Likely     2011-07-25 @661  	cpm->adap.nr = (data && len == 4) ? be32_to_cpup(data) : -1;
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  662  	result = i2c_add_numbered_adapter(&cpm->adap);
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  663  
-ea734404f3daf1 Wolfram Sang     2016-08-09  664  	if (result < 0)
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  665  		goto out_shut;
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  666  
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  667  	dev_dbg(&ofdev->dev, "hw routines for %s registered.\n",
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  668  		cpm->adap.name);
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  669  
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  670  	return 0;
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  671  out_shut:
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  672  	cpm_i2c_shutdown(cpm);
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  673  out_free:
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  674  	kfree(cpm);
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  675  
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  676  	return result;
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  677  }
-61045dbe9d8d81 Jochen Friedrich 2008-07-14  678  
+x86_64 machine with 1 GiB pages:
 
-:::::: The code at line 661 was first introduced by commit
-:::::: 488bf314bf219c66922305a1a320950efa86662f i2c: Allow i2c_add_numbered_adapter() to assign a bus id
+	00000030  06 00 00 00 00 00 00 00  00 10 00 00 00 00 00 00
+	00000040  1d 00 00 00 00 00 00 00  00 10 20 40 00 00 00 00
 
-:::::: TO: Grant Likely <grant.likely@secretlab.ca>
-:::::: CC: Jean Delvare <khali@endymion.delvare>
+x86_64 machine with 2 MiB pages only:
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+	00000030  06 00 00 00 00 00 00 00  00 10 00 00 00 00 00 00
+	00000040  1d 00 00 00 00 00 00 00  00 10 20 00 00 00 00 00
+
+AT_PAGESZ always reports one smallest page size which is not interesting.
+
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
+
+	v3: better comment and changelog
+	v2: switch to page shifts, rename to ARCH_AT_PAGE_SHIFT_MASK
+
+ arch/x86/include/asm/elf.h  |   12 ++++++++++++
+ fs/binfmt_elf.c             |    3 +++
+ include/uapi/linux/auxvec.h |   13 +++++++++++++
+ 3 files changed, 28 insertions(+)
+
+--- a/arch/x86/include/asm/elf.h
++++ b/arch/x86/include/asm/elf.h
+@@ -358,6 +358,18 @@ else if (IS_ENABLED(CONFIG_IA32_EMULATION))				\
+ 
+ #define COMPAT_ELF_ET_DYN_BASE	(TASK_UNMAPPED_BASE + 0x1000000)
+ 
++#define ARCH_AT_PAGE_SHIFT_MASK					\
++	do {							\
++		u32 val = 1 << 12;				\
++		if (boot_cpu_has(X86_FEATURE_PSE)) {		\
++			val |= 1 << 21;				\
++		}						\
++		if (boot_cpu_has(X86_FEATURE_GBPAGES)) {	\
++			val |= 1 << 30;				\
++		}						\
++		NEW_AUX_ENT(AT_PAGE_SHIFT_MASK, val);		\
++	} while (0)
++
+ #endif /* !CONFIG_X86_32 */
+ 
+ #define VDSO_CURRENT_BASE	((unsigned long)current->mm->context.vdso)
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -240,6 +240,9 @@ create_elf_tables(struct linux_binprm *bprm, const struct elfhdr *exec,
+ #endif
+ 	NEW_AUX_ENT(AT_HWCAP, ELF_HWCAP);
+ 	NEW_AUX_ENT(AT_PAGESZ, ELF_EXEC_PAGESIZE);
++#ifdef ARCH_AT_PAGE_SHIFT_MASK
++	ARCH_AT_PAGE_SHIFT_MASK;
++#endif
+ 	NEW_AUX_ENT(AT_CLKTCK, CLOCKS_PER_SEC);
+ 	NEW_AUX_ENT(AT_PHDR, phdr_addr);
+ 	NEW_AUX_ENT(AT_PHENT, sizeof(struct elf_phdr));
+--- a/include/uapi/linux/auxvec.h
++++ b/include/uapi/linux/auxvec.h
+@@ -33,6 +33,19 @@
+ #define AT_RSEQ_FEATURE_SIZE	27	/* rseq supported feature size */
+ #define AT_RSEQ_ALIGN		28	/* rseq allocation alignment */
+ 
++/*
++ * All page sizes supported by CPU encoded as bitmask.
++ *
++ * Example: x86_64 system with pse, pdpe1gb /proc/cpuinfo flags
++ * reports 4 KiB, 2 MiB and 1 GiB page support.
++ *
++ *	$ LD_SHOW_AUXV=1 $(which true) | grep -e AT_PAGE_SHIFT_MASK
++ *	AT_PAGE_SHIFT_MASK: 0x40201000
++ *
++ * For 2^64 hugepage support please contact your Universe sales representative.
++ */
++#define AT_PAGE_SHIFT_MASK	29
++
+ #define AT_EXECFN  31	/* filename of program */
+ 
+ #ifndef AT_MINSIGSTKSZ
