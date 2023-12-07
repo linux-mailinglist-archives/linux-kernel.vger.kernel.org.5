@@ -2,163 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF299808687
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:18:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D7380868D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378950AbjLGLSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 06:18:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58048 "EHLO
+        id S1378965AbjLGLT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 06:19:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378884AbjLGLSc (ORCPT
+        with ESMTP id S1378884AbjLGLT5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 06:18:32 -0500
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F520A3
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 03:18:38 -0800 (PST)
-Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-4b2d64a368aso325774e0c.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 03:18:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701947917; x=1702552717; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JtRAp/Zuzq7fGbpcbPcumzgHdraAjC7L39RpTXDHPvw=;
-        b=cKUQhQTJ32lgveuo8CgQWvVy6nSpDP4PuSKt/CDSEvtPirm+8NxIPCfoSFUOcaGXwz
-         PChLiRWSZVcR+VXujHkLVOv/IJd19b2+dcBaL/H1CuCtE1hQrq8t/A5xN/aPkjtdjBIT
-         Y28yV7ByOW9Y3wlREo8j8cilqnD5vCWEH0MOI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701947917; x=1702552717;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JtRAp/Zuzq7fGbpcbPcumzgHdraAjC7L39RpTXDHPvw=;
-        b=ojerlnOSg/fMzKUETBrdNaUQ1RXFP9g8rhjFgKzl3VRpfcxINmYXB0Nu9bvA26x1VG
-         75meTfWhmKTHW5eWjLfZRB/Oy4rq6S3UgXyyBcP35LJKka2hWW9UT4OaFZ2LmThX3nOP
-         tXsxUobv1+8Ng6kcMYSp1IQNhjvkEvNI3xCR9KaeI8If8wG0nEPHztFsvCwzVG7lEAwQ
-         q3EyamjqhLj4bYgA02maGQHMfnaF7VosKGhaNlj6kFjXxUVWUm5tpMzmUIOMI269oX7a
-         /5p+K4jJmDdC2Ctfp7+bRplh0NqW9Y78VtaQE74NF/wD8Ndo4qiWKRIH1z+SHAH5PmxK
-         sS2A==
-X-Gm-Message-State: AOJu0Yx2QQDyAyFwUouAIlrb5Sl8r0Z+TSTN1xqh/yBpMvmLiANHB5Hd
-        ng+zqoPMeWtGSwv6FViORxb9MG3u1XQphBu8s+c=
-X-Google-Smtp-Source: AGHT+IHnVoOiOebaKyusQjNHe2qAtYlvFLD3dT3rjix30RrDMyEx0nSZZWE9Mw6dar6WCAe6VW0Egg==
-X-Received: by 2002:a05:6122:3685:b0:4b2:d8c3:981c with SMTP id ec5-20020a056122368500b004b2d8c3981cmr4442918vkb.1.1701947917254;
-        Thu, 07 Dec 2023 03:18:37 -0800 (PST)
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com. [209.85.221.177])
-        by smtp.gmail.com with ESMTPSA id x23-20020a056122119700b004b28dec2935sm51321vkn.20.2023.12.07.03.18.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 03:18:35 -0800 (PST)
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4b2ceee07e5so329186e0c.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 03:18:35 -0800 (PST)
-X-Received: by 2002:a1f:c401:0:b0:4b2:c554:ccfd with SMTP id
- u1-20020a1fc401000000b004b2c554ccfdmr1880286vkf.9.1701947914936; Thu, 07 Dec
- 2023 03:18:34 -0800 (PST)
+        Thu, 7 Dec 2023 06:19:57 -0500
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F768A3;
+        Thu,  7 Dec 2023 03:20:02 -0800 (PST)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231207112000euoutp02629bf037199b58114d617dc158ea9223~eiLB5yu043028230282euoutp02S;
+        Thu,  7 Dec 2023 11:20:00 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231207112000euoutp02629bf037199b58114d617dc158ea9223~eiLB5yu043028230282euoutp02S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1701948000;
+        bh=CXEoF01cA0lxJUjcgcpiHuTJ21uaNlVDe1HMzxDBl1M=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=Fry04PEMo5Lbo5h3A6jv9XprImiaT7JqLmSeGQpxjMGD5YjyNp+K0GS8rzOT+Io8p
+         xxjKYbsO3fNSTqd8toZfD9438zZpYliZ4ZoJn5hcnhiFOWGOEgugopHI1MZZLikv0g
+         DBTHrYBtQygndZlCFryEfFGPHqBTvzwtcNmYzPBk=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20231207112000eucas1p293f9ec36b36b17599041707c4c5b22cd~eiLBq602-1452414524eucas1p2p;
+        Thu,  7 Dec 2023 11:20:00 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 58.8B.09814.06AA1756; Thu,  7
+        Dec 2023 11:20:00 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231207111959eucas1p2a83929e07821c4311f420eeabf58f553~eiLBJq1J21452414524eucas1p2o;
+        Thu,  7 Dec 2023 11:19:59 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231207111959eusmtrp26676cebfdb0c107e7d6ddee853548b22~eiLBI-hrr2237722377eusmtrp2J;
+        Thu,  7 Dec 2023 11:19:59 +0000 (GMT)
+X-AuditID: cbfec7f4-711ff70000002656-c4-6571aa60a452
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 0D.A5.09274.F5AA1756; Thu,  7
+        Dec 2023 11:19:59 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231207111959eusmtip1921e99a998a87ed5d059fee31555b558~eiLA8d6230310103101eusmtip1U;
+        Thu,  7 Dec 2023 11:19:59 +0000 (GMT)
+Received: from localhost (106.210.248.38) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Thu, 7 Dec 2023 11:19:59 +0000
+Date:   Thu, 7 Dec 2023 12:19:57 +0100
+From:   Joel Granados <j.granados@samsung.com>
+To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+CC:     Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+Message-ID: <20231207111957.b24ib4hcxr6xufll@localhost>
 MIME-Version: 1.0
-References: <20231113123049.4117280-1-fshao@chromium.org> <20231113123049.4117280-4-fshao@chromium.org>
- <6c693161-0e89-4f9d-9a92-18f3783eefd2@collabora.com>
-In-Reply-To: <6c693161-0e89-4f9d-9a92-18f3783eefd2@collabora.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Thu, 7 Dec 2023 19:17:58 +0800
-X-Gmail-Original-Message-ID: <CAC=S1nhp3HoKGQr1UgKtZJ9SLMqvm-G_YZi9dEWWF3tj2d=OFQ@mail.gmail.com>
-Message-ID: <CAC=S1nhp3HoKGQr1UgKtZJ9SLMqvm-G_YZi9dEWWF3tj2d=OFQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] media: mediatek: vcodec: Fix mtk_vcodec_mem_free()
- error log criteria
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>, Tiffany Lin <tiffany.lin@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="5z5snkykkq6vptla"
+Content-Disposition: inline
+In-Reply-To: <d50978d8-d4e7-4767-8ea7-5849f05d3be1@t-8ch.de>
+X-Originating-IP: [106.210.248.38]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFKsWRmVeSWpSXmKPExsWy7djPc7oJqwpTDVbulrRoXryezeLXxWms
+        Fme6cy327D3JYjFv/U9Gi8u75rBZ/P7xjMnixoSnjBbLdvo5cHrMbrjI4rFgU6nHplWdbB77
+        565h9/i8Sc6jv/sYewBbFJdNSmpOZllqkb5dAlfGpvZHLAXNohV/rzawNzDeEexi5OSQEDCR
+        uHzwM0sXIxeHkMAKRok7l05DOV8YJW7O3QrlfGaUuPRmFzNMy6b3nWwQieWMEoemgSSgqp6d
+        6WeEcDYDDduyg6mLkYODRUBFYs+XBJBuNgEdifNv7oBNEhGwkVj57TM7SD2zwC4miWv7rrOA
+        1AsLOEhsa5IEqeEVMJdY33OGGcIWlDg58wkLiM0sUCGx+eFbZpByZgFpieX/OEDCnEAjZzYt
+        YYc4VEni8OTPUEfXSpzacosJZJWEwGpOie5XLVAJF4k5Z9ewQdjCEq+Ob4FqlpH4v3M+VMNk
+        Ron9/z6wQ3UzSixr/MoEUWUt0XLlCVSHo8Tzqe/ZQS6SEOCTuPFWEOJQPolJ26YzQ4R5JTra
+        hCCq1SRW33vDMoFReRaS12YheW0WwmsQYT2JG1OnsGEIa0ssW/iaGcK2lVi37j3LAkb2VYzi
+        qaXFuempxUZ5qeV6xYm5xaV56XrJ+bmbGIFJ7vS/4192MC5/9VHvECMTB+MhRhWg5kcbVl9g
+        lGLJy89LVRLhzTmfnyrEm5JYWZValB9fVJqTWnyIUZqDRUmcVzVFPlVIID2xJDU7NbUgtQgm
+        y8TBKdXANONv5dSzjucL/fLdt67Z+7/GXHMv+1/fgDbNBSxr1JKOXPE7qcvedT72w4fGraWu
+        1W577glseDIhWLjsrHzPxByurOpHbDZ+CabH67mY6/bqnBV9EWFcuHaJWpPDnFcLy5e48PnP
+        +uIyd6bA7L63Gs4Pf0U+e/CJr+Rk07OT7BHrTjbrRm8R0rQM1Q5ffG1Xg4O2ckf8NGcl3XWT
+        lBeuinh73EzkK5vju/zbl4TanXu/Ci9r2MHsHf5OUWHrjZDz+W9/Cka/vHhA66VQj9J7CXEx
+        ie2ZLgmhOq/rG+ZFMl2v27vlgfRaOR0Gr6NnTv+wM5n8fBLni5VFoW3v3FfdWX1Rr//rR09f
+        m0U88v9fKLEUZyQaajEXFScCAFh4yYjtAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGIsWRmVeSWpSXmKPExsVy+t/xu7rxqwpTDXYeNLJoXryezeLXxWms
+        Fme6cy327D3JYjFv/U9Gi8u75rBZ/P7xjMnixoSnjBbLdvo5cHrMbrjI4rFgU6nHplWdbB77
+        565h9/i8Sc6jv/sYewBblJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1N
+        SmpOZllqkb5dgl7G+8bn7AWNohV9yx4zNTDeEuxi5OSQEDCR2PS+k62LkYtDSGApo8Tpvhns
+        EAkZiY1frrJC2MISf651QRV9ZJS4fXUxO4SzmVFizca5QBkODhYBFYk9XxJAGtgEdCTOv7nD
+        DGKLCNhIrPz2GayeWWAXk8S1fddZQOqFBRwktjVJgtTwCphLrO85wwwxcwWTxKQjsxghEoIS
+        J2c+YQGxmQXKJN7M3cYM0sssIC2x/B8HSJgTaP7MpiVQRytJHJ78mRnCrpX4/PcZ4wRG4VlI
+        Js1CMmkWwiSIsI7Ezq132DCEtSWWLXzNDGHbSqxb955lASP7KkaR1NLi3PTcYiO94sTc4tK8
+        dL3k/NxNjMBI33bs55YdjCtffdQ7xMjEwXiIUQWo89GG1RcYpVjy8vNSlUR4c87npwrxpiRW
+        VqUW5ccXleakFh9iNAUG4kRmKdHkfGAKyiuJNzQzMDU0MbM0MLU0M1YS5/Us6EgUEkhPLEnN
+        Tk0tSC2C6WPi4JRqYHJwejXZhPl+o9ksiy0mGisUFhxXvZcV18l9aeOxqgmh8fcsfzDrXdZr
+        mb3/8cXGUOOlFxS5Gx12n2oV4ZNY8Cly6a3MarXgtHtzdn1fF3bpUaFQffr+cykzTMXWOb80
+        7T65Qljnf0A3R2PUj1+vfqvPvX9+3YGIq/ME8/eFX7rrdjrnccKehf+zsiyTL+qqOM7mZ5+5
+        wzc6kS1lc0LYwxBPNYP19+9rnt32x190+WVv9W1bJp1WWWq7V8uouP6EtvnWdpfOsuif8b23
+        e28feSfUbO68tWC2Ve/Ey+u36hXPzL6i9CBTtaaBJyLuGMeCFYd2/3TdXTqFOzs7/PfC/93d
+        Ur+UFVM4l9VlBadUfFRiKc5INNRiLipOBAAdzfBbiQMAAA==
+X-CMS-MailID: 20231207111959eucas1p2a83929e07821c4311f420eeabf58f553
+X-Msg-Generator: CA
+X-RootMTR: 20231205171700eucas1p17edbc33ec1d0be37573b1977b76b9ce6
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231205171700eucas1p17edbc33ec1d0be37573b1977b76b9ce6
+References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+        <ZW66FhWx7W67Y9rP@bombadil.infradead.org>
+        <b4b0b7ea-d8b3-4538-a5b9-87a23bbdac5f@t-8ch.de>
+        <CGME20231205171700eucas1p17edbc33ec1d0be37573b1977b76b9ce6@eucas1p1.samsung.com>
+        <d50978d8-d4e7-4767-8ea7-5849f05d3be1@t-8ch.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Angelo,
+--5z5snkykkq6vptla
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 6, 2023 at 6:19=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Il 13/11/23 13:26, Fei Shao ha scritto:
-> > mtk_vcodec_mem_free() shouldn't print error if the target DMA buffer ha=
-s
-> > never been allocated or was freed properly in the previous call. That
-> > makes log confusing.
-> >
-> > Update the error path to print log only when the caller attempts to fre=
-e
-> > nonzero-size buffer with VA being NULL, which indicates something indee=
-d
-> > went wrong.
-> >
-> > This brings another benefit that the callers no more need to check
-> > mem->va explicitly to avoid the error, which can make the code more
-> > compact and neat.
-> >
-> > Signed-off-by: Fei Shao <fshao@chromium.org>
->
-> I think that this error is supposed to catch two issues in one:
->   - We're called to free no memory (something that does make no sense),
->     this may happen for example when calling xxx_free() twice, and it
->     is a mistake that *must* be fixed;
-When I made the change, I was thinking of kfree() that doesn't warn
-against a NULL pointer.
-I imagine mtk_vcodec_mem_free() calls with NULL VA and mem size 0
-probably have the similar nuance (if the buffer exists, free it; never
-mind otherwise), but I could have missed some important differences
-specific to the MTK vcodec driver.
+On Tue, Dec 05, 2023 at 06:16:53PM +0100, Thomas Wei=DFschuh wrote:
+> Hi Luis, Joel,
+>=20
+> On 2023-12-05 09:04:08+0100, Thomas Wei=DFschuh wrote:
+> > On 2023-12-04 21:50:14-0800, Luis Chamberlain wrote:
+> > > On Mon, Dec 04, 2023 at 08:52:13AM +0100, Thomas Wei=DFschuh wrote:
+> > > > Tested by booting and with the sysctl selftests on x86.
+> > >=20
+> > > Can I trouble you to rebase on sysctl-next?
+> > >=20
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/=
+?h=3Dsysctl-next
+> >=20
+> > Will do.
+>=20
+> The rebased series is now available at
+> https://git.sr.ht/~t-8ch/linux b4/const-sysctl
+>=20
+> Nothing much has changed in contrast to v2.
+> The only functional change so far is the initialization of
+> ctl_table_header::type in init_header().
+>=20
+> I'll wait for Joels and maybe some more reviews before resending it.
+>=20
+> > [..]
+>=20
+> For the future I think it would make sense to combine the tree-wide const=
+ification
+> of the structs with the removal of the sentinel values.
+I don't see how these two would fit. And this is why:
+1. The "remove sentinel" stuff is almost done. With the sets going into
+   6.7 we would only be missing everything under net/*. So you would not
+   be able to combine them (except for the net stuff)
+2. The motivation for the two sets is differnt. This would confuse
+   rather than simplify the process.
+3. In order to introduce the const stuff we would have to go through
+   another round of "convincing" which can potentially derail the
+   "remove sentinel" stuff.
 
-Looking at the mtk_vcodec_mem_free() usages, almost every one of those
-checks VA beforehand, but nothing else - they don't warn or do
-anything special when they encounter a NULL VA, and they should if
-that's a concern.
-Some even don't check at all (and I think that's why I ended up seeing
-the errors mentioned in the cover letter). As for that, I think
-there's nothing else we can fix except prepending "if (mem->va)".
-So from all this, I feel perhaps we don't need to worry much about
-those NULL VA, and we can further remove the checks (or at least move
-it into mtk_vcodec_mem_free()) to trim the lines in the driver. That's
-the reason for patch [4/4].
+I would *not* like to combine them. I think the const set can stand on
+its own.
+>=20
+> This would reduce the impacts of the maintainers.
+>=20
+>=20
+> Thomas
 
-Not sure if that makes sense to you.
+--=20
 
->   - We're failing to free memory for real (which you covered)
->
-> ....that said, I think that if you want to clarify the error messages
-> in this function, it should look something like this:
->
-> if (!mem->va) {
->         mtk_v4l2_err(plat_dev, "%s: Tried to free a NULL VA", __func__);
->         if (mem->size)
->                 mtk_v4l2_err(plat_dev, "Failed to free %lu bytes", mem->s=
-ize);
->         return;
-> }
-Sure, I can revise the patch with this, but I also want to make sure
-if the NULL VA print needs to be an error.
-If you still think it should, I guess I'll drop the current patch
-[4/4] and instead add the check before every mtk_vcodec_mem_free()
-calls. This should also work for the issue I want to address in the
-first place.
+Joel Granados
 
-And thanks for the review.  :)
+--5z5snkykkq6vptla
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Regards,
-Fei
+-----BEGIN PGP SIGNATURE-----
 
-> Cheers,
-> Angelo
->
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmVxqlwACgkQupfNUreW
+QU8frQwAmVCgALk4OWR4ZO/s1n4rLY7ci247QjM9Bmg1WdksPWp70HkrU5eSmb9t
+BiHrNBMb9edU00xHbC0553m/HaeOq1sERcubT2LXmjagnshZzR4JHPj4qWi2k20k
+Bwnsd8n/ZMY33T7Vq97o3rW2W5aPMBiqeY/fdBPqG3ArlXUISGtonYFmGERiNhyu
+eZ6JBtjl5+Q50CwH01HbRm0uFLNWrZA3tBoJssnFJt06AaoYAYK302UL2DirCCuu
+fCLSIsiz3CngsVs+cJHLZaOWB5lXLPGoQjjGJ0Lvdy8Q5Xlgx/ckugTw9AzDN9B+
+y7Q22g7TY+Eg8aspEvICKEIuQYo1fi0WmqgS63t+Ttvdw/VpeEId2p15eRz3PJGz
+KY0oOKoS2Xy52uNhxsL6zGtMqKM/hL3WJXtNyOeshXQWY2qrsF+t5+OckxODOCgR
+5FFILM1DVgj5zJM2b7LC308T+ULLhU7HllJ9oLG6QzWotSx+M0TcbVmmNneN1nI8
+BhCGk6c+
+=2W1o
+-----END PGP SIGNATURE-----
+
+--5z5snkykkq6vptla--
