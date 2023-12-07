@@ -2,108 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1F08091EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E7C8091F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:56:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbjLGTwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 14:52:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
+        id S233127AbjLGT4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 14:56:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjLGTwO (ORCPT
+        with ESMTP id S229541AbjLGT4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 14:52:14 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D6EA5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 11:52:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B75ECC433C7;
-        Thu,  7 Dec 2023 19:52:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701978741;
-        bh=mbc/iuLtD8dfCRev1lXPOrNzkAar0/fIcJRnERdFfIk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LnBBcxt+T/FbexCwnL4xPBnb0UqNrwMD4tRzSXMLvI6QfnQIBLxcBs5fve8nuy1+S
-         OSuYEMGauWPmMwDATH/cgCAvLwic5xCUt/JHsOwOt9aBwxdt5vsqyQujV2bBCbcaeO
-         9uOjCguEiKxDhXbrMx/LbnBp57cXNyOW2KZB26u296oYUqBtq7+AwGPWiGmqzUPtwI
-         Gj91ncJ/UYtA2RYmJILWnI7EMb+dreTIvuWgBpq99zLsOXDlCZVOgcTTxNIkwKGBSN
-         HduANwSSITKLUAcERcaOjKcUkBNn9HExtVHSkVFAM1hmDeeihBSRXahQnu1xcLbkLx
-         b48wXRlNd+6Og==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 13641403EF; Thu,  7 Dec 2023 16:52:18 -0300 (-03)
-Date:   Thu, 7 Dec 2023 16:52:17 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCHSET 0/8] perf annotate: Make annotation_options global (v1)
-Message-ID: <ZXIicbe9K5KYGSV4@kernel.org>
-References: <20231128175441.721579-1-namhyung@kernel.org>
- <CAP-5=fWfKqgT60TFRALw8vTDQT7VFV+0+eo1rFSSH3eVrjzPmA@mail.gmail.com>
- <CAM9d7chKmDETK6Ea2wyR8L21jyHWcPHbKavarnq-JmNA-AoUnQ@mail.gmail.com>
- <CAP-5=fUf6R=bsfg7i8atFApJBY-=zWUBMq7inFsCPZhB+w2==Q@mail.gmail.com>
- <CAM9d7cjDiu=dksnhboJFT4uPQJcvGMB-vBt96v3i7Kqy5LKRMw@mail.gmail.com>
- <CAP-5=fXKbi3DYoOKrJvNKLNU=fJEY9aDAOQhH+Vh+XWxHzGjwA@mail.gmail.com>
- <ZXIiBp-rvdvSI-ZY@kernel.org>
+        Thu, 7 Dec 2023 14:56:18 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5D110EF;
+        Thu,  7 Dec 2023 11:56:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701978984; x=1733514984;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=J23aFV6iwILzuNztzQ1fpjCoJLBjXYWEnIF8zssZEKU=;
+  b=DD7KdeP5xGzOlZNHQ9ksJWmfPVDbVPLARXS5uWPQB81qeFispzyzqz4g
+   1KLH2yCsXQ7MihmV92lZz4dRsTk74WzDZvzuYS/hcSO7A/ogKW3+wy/4h
+   08bbxACe9rCFvsT+xFAyVDL51KmV/3upxhi8xkO1jfamb/Tdoj2OsuuVW
+   0fJu4kCLqKefW00v75bsX1ZFxsndXnBgJM5Adh6ppRMASBY25XOYp3Uws
+   Js4CsL34OGmhd/qeigVcDWhPh+LAou1S9D4rMHp7OFTkY0SV9/N9qxXWZ
+   0hU4EKF8Z58t4PVO/2FurQiA987oTBIFlWfZavk9e3IdNXX0aKtt47L2b
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="15848938"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="15848938"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 11:56:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="889858586"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="889858586"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 11:56:23 -0800
+From:   Tony Luck <tony.luck@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
+Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v6 0/3] x86/resctrl: mba_MBps enhancements
+Date:   Thu,  7 Dec 2023 11:56:10 -0800
+Message-ID: <20231207195613.153980-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231201214737.104444-1-tony.luck@intel.com>
+References: <20231201214737.104444-1-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZXIiBp-rvdvSI-ZY@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Dec 07, 2023 at 04:50:30PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Tue, Dec 05, 2023 at 09:59:02AM -0800, Ian Rogers escreveu:
-> > On Mon, Dec 4, 2023 at 2:46 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > On Thu, Nov 30, 2023 at 10:37 AM Ian Rogers <irogers@google.com> wrote:
-> > > > Sgtm. My point wasn't to criticize, I think this is a good change, I
-> > > > was just trying to imagine doing things in a way that could overall
-> > > > reduce complexity
-> 
-> > > Yep, thanks for your review.  Can I get your ACKs? :)
-> 
-> > For the series:
-> > Reviewed-by: Ian Rogers <irogers@google.com>
-> 
-> Thanks, applied to perf-tools-next.
+Two changes relating to the MBA Software Controller(mba_sc):
+
+1) Add a new mount option so the user can choose which memory
+bandwidth monitoring event to use as the input to the feedback
+loop.
+
+2) Update the "mba_MBps" mount option to make use of total memory
+bandwidth event on systems that do not support local bandwidth
+event.
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+
+---
+Changes since v5:
+
+Babu: Split into separate patches for the new mount option and the
+update to the exising mount option. Since this is now a series, I
+also moved the Documentation change to its own patch.
+
+Reinette: Use "mbm_local_bytes", "mbm_total_bytes" as the strings for
+the new "mba_MBps_event" option. This sets a precedent that new events
+should follow the naming convention for the monitor files for the event.
+
+Reinette: Update rdtgroup_show_options(). I'd completely missed this in
+the earlier versions. Note that when the legacy "mba_MBps" mount option
+is used, this will show in /proc as if the new option was used:
+
+	# mount -t resctrl -o mba_MBps resctrl /sys/fs/resctrl/
+	# grep resctrl /proc/mounts
+	resctrl /sys/fs/resctrl resctrl rw,relatime,mba_MBps_event=mbm_local_bytes 0 0
+
+Changing this to exacly match what the user typed would lose the detail
+of which event is being used.
+
+Reinette: More documentation needed. I added some text on why using
+total instead of local might be useful to some users.
+
+Tony Luck (3):
+  x86/resctrl: Add mount option "mba_MBps_event"
+  x86/resctrl: Use total bandwidth for mba_MBps option when local isn't
+    present
+  x86/resctrl: Add new "mba_MBps_event" mount option to documentation
+
+ Documentation/arch/x86/resctrl.rst     | 16 ++++++-
+ include/linux/resctrl.h                |  2 +
+ arch/x86/kernel/cpu/resctrl/internal.h |  3 +-
+ arch/x86/kernel/cpu/resctrl/monitor.c  | 21 ++++-----
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 63 +++++++++++++++++++++-----
+ 5 files changed, 79 insertions(+), 26 deletions(-)
 
 
-Now trying to fix this:
-
-  CC      bench/numa.o
-  CC      tests/hists_cumulate.o
-ui/gtk/annotate.c: In function ‘symbol__gtk_annotate’:
-ui/gtk/annotate.c:179:43: error: passing argument 3 of ‘symbol__annotate’ from incompatible pointer type [-Werror=incompatible-pointer-types]
-  179 |         err = symbol__annotate(ms, evsel, options, NULL);
-      |                                           ^~~~~~~
-      |                                           |
-      |                                           struct annotation_options *
-In file included from ui/gtk/annotate.c:5:
-/home/acme/git/perf-tools-next/tools/perf/util/annotate.h:376:36: note: expected ‘struct arch **’ but argument is of type ‘struct annotation_options *’
-  376 |                      struct arch **parch);
-      |                      ~~~~~~~~~~~~~~^~~~~
-ui/gtk/annotate.c:179:15: error: too many arguments to function ‘symbol__annotate’
-  179 |         err = symbol__annotate(ms, evsel, options, NULL);
-      |               ^~~~~~~~~~~~~~~~
-/home/acme/git/perf-tools-next/tools/perf/util/annotate.h:374:5: note: declared here
-  374 | int symbol__annotate(struct map_symbol *ms,
-      |     ^~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
-  CC      tests/python-use.o
-  CC      trace/beauty/sockaddr.o
-  CC      arch/x86/util/topdown.o
-make[6]: *** [/home/acme/git/perf-tools-next/tools/build/Makefile.build:105: ui/gtk/annotate.o] Error 1
-make[6]: *** Waiting for unfinished jobs....
-  CC      arch/x86/util/machine.o
+base-commit: 33cc938e65a98f1d29d0a18403dbbee050dcad9a
+-- 
+2.41.0
 
