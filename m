@@ -2,113 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E127808D44
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C00808D3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232634AbjLGQLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 11:11:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
+        id S232585AbjLGQL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 11:11:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232083AbjLGQK5 (ORCPT
+        with ESMTP id S232083AbjLGQLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 11:10:57 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4F212D
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 08:11:03 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9e1021dbd28so144146066b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 08:11:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1701965461; x=1702570261; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UXMGWx05Oqhgl5suufkTuT8kZBkK433+J40SP+lUHbM=;
-        b=cnIq84J8SbgPnPG1J121gJudWFBv66DJ8jtMQ/fWftW8fuWwXez25NFxYwDwJC631w
-         6QjEz3y7hkkcvG6ZrOo3vyViJbyWjQ6i2WJHEdVsgVrql3f2Urwo8mtoN81WY8nmSQi8
-         qeixsxxAKP1ueJyCAyQPYs/qcv3BjhsyRlVbk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701965461; x=1702570261;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UXMGWx05Oqhgl5suufkTuT8kZBkK433+J40SP+lUHbM=;
-        b=Ne5W4nvK8Wp0Bxbn65x7FhoAoHmQaNsVqMtlhHz7HjyYkLVzdsWlecqEBPTuVbD3qB
-         KzCzb+lnicYbkO5rl45kYizykOQj7hIzjsPKk4hXh3JbV5qcglhaePYYh5bS8mhhRJoo
-         BBPzj47CNww7mzSw/dkITW/PdH0Lnu4l6Bf1JW+Aw2lOhumAOarTBDlm7Oa8M8fHmyBi
-         91SwEoXyHpQlgIWRVylxVeIBcT3Sg9YXwLjIWmlewiMv0bOcSKGsJQiIKEWes+/N7kL8
-         VG2/m3H6o3l3EH5T3xJC6DUZSr+JSNHzL7Sw8jLR2ctdErfxWavjzOkmVrxPZ96NwNFi
-         hCuA==
-X-Gm-Message-State: AOJu0Yy0sW0a4Tl4BGpgavOKz90BaFfaVlK00apgd9353ZgGGTn3YrhV
-        u9MQv3IhfJHoUT0BV+0r+K8ZEBVPRam6KPEtuFB0EA==
-X-Google-Smtp-Source: AGHT+IGs6KP73vU1SUU/HRyy8dMywzlKbx8fMvag5ZyzuitZ0Tn8jejydHX1ZR3GalG7y7zCNBbq7A==
-X-Received: by 2002:a17:906:e8b:b0:a1d:7f40:bebe with SMTP id p11-20020a1709060e8b00b00a1d7f40bebemr1678683ejf.126.1701965461446;
-        Thu, 07 Dec 2023 08:11:01 -0800 (PST)
-Received: from localhost.localdomain ([2001:b07:6474:ebbf:9bf:959c:3c66:46c2])
-        by smtp.gmail.com with ESMTPSA id k19-20020a170906681300b009a193a5acffsm989730ejr.121.2023.12.07.08.10.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 08:11:01 -0800 (PST)
-From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH] drm/bridge: samsung-dsim: check the return value only if necessary
-Date:   Thu,  7 Dec 2023 17:10:43 +0100
-Message-ID: <20231207161056.183442-1-dario.binacchi@amarulasolutions.com>
-X-Mailer: git-send-email 2.43.0
+        Thu, 7 Dec 2023 11:11:23 -0500
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748FEB9;
+        Thu,  7 Dec 2023 08:11:29 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id E066E5C021E;
+        Thu,  7 Dec 2023 11:11:28 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 07 Dec 2023 11:11:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1701965488; x=1702051888; bh=Y5
+        EtfXRSI/+ixNFoU04FOFaVdI+LJixYoWPRJ9FkR5c=; b=mY5disBsuPFMVlEEPk
+        0cc9XMc6QWCWGB+uMWnfiO3pOHGhKeLZz6QymL1oOZsnWzzk/KUNLW2jsml1vMLG
+        VShStlaQsAJmd7YZz6qnGL+jkxdNAs34o25ajZ9+bFr3ZfzQsX1lM3z5ZoS+Dnvc
+        0CLVA+NUk6Ska/S7DydrCMGN63l9A7tn3m8Pru58MJDqYftoheutQLddR4kC1Uad
+        /YidtYklvTW7ask6TJKhHBXBMSXnAEi9Yu8a/jtvwkC4D3fH2j0sZZooXi5Buf7i
+        GSycLxwxMpYzX5MwdyPa1VG/w9HbI03hjaQZpM/gJfP/GFPV7rRzBuSp7gYy9Sqt
+        E8Xg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701965488; x=1702051888; bh=Y5EtfXRSI/+ix
+        NFoU04FOFaVdI+LJixYoWPRJ9FkR5c=; b=Y7GNY5nALvpo2EKuAaGU6+Jd06Q+c
+        nFH4PRliG1iE4bcGsB0GziCFWLyAx+95Sy0F42dTow06az/D+ja4wfWE4eaj92HZ
+        6vH2xVsFWuaQbp78pjWBRV66RQh5cuhMqXtQxt/kIJSIv+SzoDodFj1IpUA6zdXs
+        Yfa5bdWWoMXrpQvZUwm99XvMqPvP3ZXiJny99oultBoG0yA8c3Q1PZUuypOzkL0K
+        ycTtcbrtTok0nOt3HQnxfe2SQQvO5JxNdw6N6hnyeuHCrZL7AoydA4LHFClbwCt9
+        1n7P4cqZexpQ18yqO3/7BiBFT4w6QZlrr+VqTo/FYAoENIBIGtj3n2arw==
+X-ME-Sender: <xms:sO5xZWclTWKxVhBIizJucOoDtJTB8-e4tB6AjPPs8QaN36_LIbwVPw>
+    <xme:sO5xZQOTXT9bcoKLgpnybEqOvTfM5vN2I8e1EUHWPU_C4tlgHHGSi_gdRXv8csxl6
+    NextYnhPuT_xsmVWfg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekfedgvdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
+    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:sO5xZXiiECUZ-NrIY2dYBr4dQzHbCL9RvnoWMsjLfDsYjdchDrAGoA>
+    <xmx:sO5xZT9pkNWvC6U2UtMpqwvB8VQe8jak3M4T9HgGJ19-YWeXImLV_Q>
+    <xmx:sO5xZSsuY5Hy8hNkb3iu7qIpDJEOP4yHRT93dphu_VQlwGVgh88CLg>
+    <xmx:sO5xZUIIcz4NyJFTwnsKodvyLZi79lC1dkoGcgWzd9o2aab2SoOW5A>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 69B56B60089; Thu,  7 Dec 2023 11:11:28 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <f39d5940-2030-4378-9a44-3355a4429e31@app.fastmail.com>
+In-Reply-To: <170196405395.2897000.836367709392997740.kvalo@kernel.org>
+References: <20231204073020.1105416-1-arnd@kernel.org>
+ <170196405395.2897000.836367709392997740.kvalo@kernel.org>
+Date:   Thu, 07 Dec 2023 17:11:06 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Kalle Valo" <kvalo@kernel.org>, "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "Ping-Ke Shih" <pkshih@realtek.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "Ching-Te Ku" <ku920601@realtek.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rtw89: avoid stringop-overflow warning
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It was useless to check again the "ret" variable if the function
-register_host() was not called.
+On Thu, Dec 7, 2023, at 16:47, Kalle Valo wrote:
+> Arnd Bergmann <arnd@kernel.org> wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> Fixes: 89741e7e42f6 ("Makefile: Enable -Wstringop-overflow globally")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> ERROR: 'wifi:' prefix missing: '[PATCH] rtw89: avoid stringop-overflow 
+> warning'
+> ERROR: Failed to find commit id: Fixes: 89741e7e42f6 ("Makefile: Enable 
+> -Wstringop-overflow globally")
+>
+> I can add the "wifi:" prefix but where can I find the commit 89741e7e42f6?
 
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
----
+It's in linux-next and came in from Gustavo's tree at
+https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
 
- drivers/gpu/drm/bridge/samsung-dsim.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
-index be5914caa17d..98cd589e4427 100644
---- a/drivers/gpu/drm/bridge/samsung-dsim.c
-+++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-@@ -2020,11 +2020,11 @@ int samsung_dsim_probe(struct platform_device *pdev)
- 	else
- 		dsi->bridge.timings = &samsung_dsim_bridge_timings_de_high;
- 
--	if (dsi->plat_data->host_ops && dsi->plat_data->host_ops->register_host)
-+	if (dsi->plat_data->host_ops && dsi->plat_data->host_ops->register_host) {
- 		ret = dsi->plat_data->host_ops->register_host(dsi);
--
--	if (ret)
--		goto err_disable_runtime;
-+		if (ret)
-+			goto err_disable_runtime;
-+	}
- 
- 	return 0;
- 
--- 
-2.43.0
-
+    Arnd
