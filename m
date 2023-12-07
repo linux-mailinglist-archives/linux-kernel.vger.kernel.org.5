@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9001780954B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2904080954C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444116AbjLGW1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 17:27:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34564 "EHLO
+        id S1444118AbjLGW1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 17:27:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232369AbjLGW04 (ORCPT
+        with ESMTP id S232430AbjLGW04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Dec 2023 17:26:56 -0500
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C1F170C;
-        Thu,  7 Dec 2023 14:27:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE591711;
+        Thu,  7 Dec 2023 14:27:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1701988008; x=1702592808; i=w_armin@gmx.de;
-        bh=y2EiVsoHmyaZo5EWEuzoKsphmINyUOYwfn7EMnwuLU0=;
+        t=1701988010; x=1702592810; i=w_armin@gmx.de;
+        bh=16WGdSv1+wfNklniu4sIQ3a5/s+FjR905kU76pYmoek=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
          References;
-        b=Yj+srHueQQUZbBmN77rZ2/c3CPtuEnYClCHxzkl6trWoSymWU5Mr03g3aIoUcxLB
-         uiIqDD7+mtS36KH1x0S6Cxj3wbzLQF6kMaUJA9ZkIyAhc8QyqPKR0qHYSELS0OriS
-         5CScQo/lLKODJGpASISe+fiYliDcw2l1hCwB75znrZLELEZVcwiAKYMrO10njtBsx
-         KSnGh2+cUK75JPaz4OkEQAEjhdWzQUWRicg1ftgHqccmxEIGvkFp9hpuSGMIGtWs+
-         plFPh7wLpdtjiM9ouRKQ4c45ducIP6ZsYo/+5anyMJLQOWTtx+O4miCn/UwlGPyFB
-         HQih1FcinZYC1HaYAg==
+        b=II+4uhQ47c/heN/9/Kv9a3ubuYSXD6Bq3S2q8MW6tDrxQlf3RGaDxUzlik4/HLeg
+         tnLaU20ueLBKeQluHIxlS+rEKEAOLdniLucywJR5TYR5zJtigo7CLMsroIHUtfTaU
+         itp4JUnwjsBqDTwV6jTNeu9HEjkcPkMzP87YoQM+3atzXGj0IkebGwkNw0dxq7ks6
+         uKRmNTtyQI0c9hKJJ6OZCl7DkLbE1A1yqUKcb3Wu34yeC1ZeFKj2bQ93KHBpDtQb/
+         oTRvmIek9VL32T/mxZg9TAyov9pv0jeSTO7KMHgEvkinqo2Kx8xpcpjr6PLGiYEN7
+         aO2CEXlhDzs+iXSVLQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
  (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1Mg6Zw-1rj4UQ2FIM-00hgNB; Thu, 07 Dec 2023 23:26:48 +0100
+ 1M9Wuk-1r852z3pQK-005aLd; Thu, 07 Dec 2023 23:26:49 +0100
 From:   Armin Wolf <W_Armin@gmx.de>
 To:     hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com, corbet@lwn.net
 Cc:     Dell.Client.Kernel@dell.com, linux-doc@vger.kernel.org,
         platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/5] platform/x86: wmi: Remove chardev interface
-Date:   Thu,  7 Dec 2023 23:26:22 +0100
-Message-Id: <20231207222623.232074-5-W_Armin@gmx.de>
+Subject: [PATCH 5/5] platform/x86: wmi: Add driver development guide
+Date:   Thu,  7 Dec 2023 23:26:23 +0100
+Message-Id: <20231207222623.232074-6-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231207222623.232074-1-W_Armin@gmx.de>
 References: <20231207222623.232074-1-W_Armin@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:WQ9UYDFhnYuYZY2U6JeHfGozqpr2BYf08f6ZRM2dq5zgwIBVrgS
- 94JDOsPJlXyD22SApQEwMw/NsHWUg7hN0eJLtjUp+p599yImgw1BzNpHclSoZivB2yBFE9K
- RH5XA3Zx02xwZMNn+Il7u9/382ze1mD/5y5b0/T7QZE7TGxUGgFKRMCUhdZFyeXH/3ypyOx
- 3zTkxB1/FqmvK81nQYw+g==
-UI-OutboundReport: notjunk:1;M01:P0:oCtkFgIGYMc=;IWDCxZdV9V6XU83HaYvD7N4J9MV
- 5WUIVL1zHlmo0ofZP0/uXUhKhl5P3joTMmbKoraEttlb8DC4LFFj+r19xxejyKqWa9OQcT8Sj
- u+Wyyhml8y68KrNrKjMMnjjruCiMJCAT9QFwZfSBaeEGW3XZ92jhDvcXfSt1POT/ZgUr3OvBt
- eqzpaPbLcHkqDm1MdXfhR6j5Acd/pnpXuZE+nFnXOrDh36sMuDA/HyLgLtDf3Qde99mh2vwjv
- 2rAMpEvbkWwY6NarHX0kkHZlIRmViKOpL4Z0NgaFrBx/caDRd+rjrZ8L2CoTNj3Qmc7k4EGrL
- W2UoqvwUOUCMqkXv8It9rbkNTfDrVKJB/q3LyYnti+2+7IGUJWLjpRf/fDXTMe1btblAVoXAG
- fA5ZLCc2tuK1U08lBHsE6PjhmCrEGPJMDPCKkDmUiaq7DljlSYNj9y0Bw8WNuhCRiedtlffjY
- Al9oo4YOw/1jxJ2sCybN/PVQ+EAMZ6bgo1cqGozLrxKSCkvjXTONDILZ5xbMdejJmbLZfRh0Y
- qK/zLwYKB0uxLQMvHfOR9pq0hq0I4DXHxBrSbWYdthFlzL3KvbFKzW9u0sqRtqMeQKn4vdDJ+
- YIw9zxoqi64+smcx1ii+UnuoRZl3diAoelA/ggP8Quk1hcE/7qWVxvuEy4zXukDWvs8IT5aRy
- 2RRurZ4A1dOTa3FrudayEz7jo3YbmsOhDanFx2vYcBrfTIBjyl+SCZzMy1KEQqSmf+aHxZyXg
- JPn5yvB3a7QRlwuKrZ5Ru9oPv451kSIhyjmRkhoEPTtrAwzbLYJzT4znB4/tO9LOpqn311z4A
- iGrRrbzUSRvi+m2LrQwyxlAGWxAZaSaNHPyNdM402ApcZ6SZLbdRdcfQUX0gBdtsTQ9/UdBnV
- vFH+oKLZ9ynf8w1CjC3NBgQxnHb433do7Te55kJETsm68ZRPT4wGD3v3LB8HiWNiKsM4+c4mD
- 7d2sDUbOdWLyvGx1gPNtbZCmRB8=
+X-Provags-ID: V03:K1:2qa6zIdjybo5q629oAtjbiXMkCrTpt+gIGIfAX5ZpzSG5Dy44i5
+ Ip69bUk3E+GN/Xq4ChdcANtHh0/d0jtCb89eKTap7xeSlJIc74+Ei+050cM3LBj1MDljV+Z
+ FItLSj84qZuaaM7DhpAK26XJdpiS2yybmflZ7+2UycBM2RL7VdH3anbhcXzMd+sE2TxMBPu
+ e8KkQKe/twR+19lTu6JQw==
+UI-OutboundReport: notjunk:1;M01:P0:YQBEAL5gS1I=;qafX62ughQgYefvaW5PcGYW4NfN
+ og+e4JKSRBWlhZ+OfbVcii/qfl4wcX8eIdFMi2w2wMrzCZor84RvRBHnemYFKbfnkmSVFgoml
+ C7XIWRfFsQI1mEgakfDV3k1D96l+++AX8XX+rBxUlQvvNemDgwbGdgFS5M06OpGcxJKEHLXiV
+ rPs7Jpa4AWkedthXHLWelgt5aXncx+FAtGPpHqqOUyTT6j2BxRowgU4PSvQVvRN8+SUGyXS/e
+ XBdIpSqsPTjpE2PjNZVZ1JT3w1EHOedSmbb/MXsehBcn48qFMLKpa5D00DZFK8e9pj62b435h
+ fK7KcJiS1PYLYz3XqJtArvtNJL9QeTKttyEoINGVMDip9hD1ngWcMQBwEYm7ytr34iiF/xohJ
+ gbHkLRoDRsHiN3LVV1Spt2lo+KRLLWN1cLtwcYq5vqNMUMuX1koeC/C6+c6OgnsusXjvk+Hdt
+ Jm1AZoJMSnYPGIM/zm2HefApjtKsTaqQ52BzbnxkNfmHVUhKFk60cqnluOO2MUr5Ry5P4oA4R
+ /i9MkVeW/gmiJHCy4ds/EbNEigcK6A96a+DCEfg6lImwsuVMJuyGw1Q35ztZPDR5prulsCG1J
+ arwVf8LMJzl40Ahz3bfJTUgzyxiHlmI1T3pohUoYW0mVpxsKxSCiI3gotHKTTidTaEg8r2UFs
+ KCY51v3PUF0Zeoj6VTDDuuWdwYc+Y5WkEQe/bc0+/TZ+tfs7Tmf4enWudvqC1nua97TUiXAU0
+ F+MsDvOFhKDbt2QEnRrS5o16l5hKVYyZOnP6y/sE96On9rSWTTuwC26DVad4sATQgjJveoKMM
+ AdH5vfeES8EFxlQWrR/rJjiBIBZwKLIifBNGj8LLGdcE1vUZF8g2kR8pETdSnW0xHkaKmhDJI
+ tSYIARd1aMbxoA2WnkB8H38UdaI2bs+NgPuT+chcz0azkqIbs35JWSGmnlj21PEo8nMNh7Dx/
+ 0/hBR8+q2msPyIDnSHB0tOGwonQ=
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -71,329 +71,216 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The design of the WMI chardev interface is broken:
-- it assumes that WMI drivers are not instantiated twice
-- it offers next to no abstractions, the WMI driver gets
-a raw byte buffer
-- it is only used by a single driver, something which is
-unlikely to change
+Since 2010, an LWN article covering WMI drivers exists:
 
-Since the only user (dell-smbios-wmi) has been migrated
-to his own ioctl interface, remove it.
+	https://lwn.net/Articles/391230/
+
+Since the introduction of the modern bus-based interface
+and other userspace tooling (fwts wmi, bmfdec, ...), this
+article is outdated and causes people to still submit new
+WMI drivers using the deprecated GUID-based interface.
+Fix this by adding a short guid on how to develop WMI drivers
+using the modern bus-based interface.
 
 Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 =2D--
- drivers/platform/x86/wmi.c | 180 ++-----------------------------------
- include/linux/wmi.h        |   8 --
- 2 files changed, 5 insertions(+), 183 deletions(-)
+ .../wmi/driver-development-guide.rst          | 126 ++++++++++++++++++
+ Documentation/wmi/index.rst                   |   1 +
+ 2 files changed, 127 insertions(+)
+ create mode 100644 Documentation/wmi/driver-development-guide.rst
 
-diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index 7df5b5ee7983..7303702290e5 100644
-=2D-- a/drivers/platform/x86/wmi.c
-+++ b/drivers/platform/x86/wmi.c
-@@ -23,17 +23,14 @@
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/list.h>
--#include <linux/miscdevice.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/sysfs.h>
- #include <linux/types.h>
--#include <linux/uaccess.h>
- #include <linux/uuid.h>
- #include <linux/wmi.h>
- #include <linux/fs.h>
--#include <uapi/linux/wmi.h>
+diff --git a/Documentation/wmi/driver-development-guide.rst b/Documentatio=
+n/wmi/driver-development-guide.rst
+new file mode 100644
+index 000000000000..a831e2728d25
+=2D-- /dev/null
++++ b/Documentation/wmi/driver-development-guide.rst
+@@ -0,0 +1,126 @@
++.. SPDX-License-Identifier: GPL-2.0-or-later
++
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
++WMI driver development guide
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
++
++The WMI subsystem provides a rich driver api for implementing WMI drivers=
+,
++documented at Documentation/driver-api/wmi.rst. This document will serve
++as an introductory guide for WMI driver writers using this API. It is sup=
+posed
++t be an successor to the original `LWN article <https://lwn.net/Articles/=
+391230/>`_
++which deals with WMI drivers using the deprecated GUID-based WMI interfac=
+e.
++
++Optaining WMI device information
++--------------------------------
++
++Before developing an WMI driver, information about the WMI device in ques=
+tion
++must be optained. The `lswmi <https://pypi.org/project/lswmi>`_ utility c=
+an be
++used to display detailed WMI device information using the following comma=
+nd:
++
++::
++
++  lswmi -V
++
++The resulting output will contain information about all WMI devices insid=
+e a given
++machine, plus some extra information.
++
++In order to find out more about the interface used to communicate with a =
+WMI device,
++the `bmfdec <https://github.com/pali/bmfdec>`_ utilities can be used to d=
+ecode
++the Binary MOF information used to describe WMI devices. The ``wmi-bmof``=
+ driver
++exposes this information to userspace, see Documentation/ABI/stable/sysfs=
+-platform-wmi-bmof.
++In order to retrieve the decoded Binary MOF information, use the followin=
+g command (requires root):
++
++::
++
++  ./bmf2mof /sys/bus/wmi/devices/05901221-D566-11D1-B2F0-00A0C9062910[-X]=
+/bmof
++
++Sometimes, looking at the disassembled ACPI tables used to describe the W=
+MI device
++helps in understanding how the WMI device is supposed to work. To find ou=
+t which
++ACPI method handles which WMI device, the `fwts <https://github.com/fwts/=
+fwts>`_
++program can be used with the following command (requires root):
++
++::
++
++  fwts wmi -
++
++Basic WMI driver structure
++--------------------------
++
++The basic WMI driver is build around the struct wmi_driver, which is then=
+ bound
++to matching WMI devices using an struct wmi_device_id table. Please note =
+that each
++WMI driver should be able to be instantiated multiple times.
++
++::
++
++  static const struct wmi_device_id foo_id_table[] =3D {
++         { "936DA01F-9ABD-4D9D-80C7-02AF85C822A8", NULL },
++         { }
++  };
++  MODULE_DEVICE_TABLE(wmi, foo_id_table);
++
++  static struct wmi_driver foo_driver =3D {
++        .driver =3D {
++                .name =3D "foo",
++                .probe_type =3D PROBE_PREFER_ASYNCHRONOUS,        /* opti=
+onal */
++                .pm =3D pm_sleep_ptr(&foo_dev_pm_ops),            /* opti=
+onal */
++        },
++        .id_table =3D foo_id_table,
++        .probe =3D foo_probe,
++        .remove =3D foo_remove,         /* optional, devres is preferred =
+*/
++        .notify =3D foo_notify,         /* optional, for event handling *=
+/
++  };
++  module_wmi_driver(foo_driver);
++
++If your WMI driver is not using any deprecated GUID-based WMI functions a=
+nd is
++able to be instantiated multiple times, please add its GUID to ``allow_du=
+plicates``
++inside drivers/platform/x86/wmi.c, so that the WMI subsystem does not blo=
+ck duplicate
++GUIDs for it.
++
++WMI method drivers
++------------------
++
++WMI drivers can call WMI device methods using wmidev_evaluate_method(), t=
+he
++structure of the ACPI buffer passed to this function is device-specific a=
+nd usually
++needs some tinkering to get right. Looking at the ACPI tables containing =
+the WMI
++device usually helps here. The method id and instance number passed to th=
+is function
++are also device-specific, looking at the decoded Binary MOF is usually en=
+ough to
++find the right values.
++The maximum instance number can be retrieved during runtime using wmidev_=
+instance_count().
++
++Take a look at drivers/platform/x86/inspur_platform_profile.c for an exam=
+ple WMI method driver.
++
++WMI data block drivers
++----------------------
++
++WMI drivers can query WMI device data blocks using wmidev_block_query(), =
+the
++structure of the returned ACPI object is again device-specific. Some WMI =
+devices
++also allow for setting data blocks using wmidev_block_set().
++The maximum instance number can also be retrieved using wmidev_instance_c=
+ount().
++
++Take a look at drivers/platform/x86/intel/wmi/sbl-fw-update.c for an exam=
+ple
++WMI data block driver.
++
++WMI event drivers
++-----------------
++
++WMI drivers can receive WMI event notifications by providing the notify()=
+ callback
++inside the struct wmi_driver. The WMI subsystem will then take care of se=
+tting
++up the WMI event accordingly. Plase note that the ACPI object passed to t=
+his callback
++is optional and its structure device-specific. It also does not need to b=
+e freed,
++the WMI subsystem takes care of that.
++
++Take a look at drivers/platform/x86/xiaomi-wmi.c for an example WMI event=
+ driver.
++
++Things to avoid
++---------------
++
++When developing WMI drivers, there are a couple of things which should be=
+ avoid
++if feasible:
++
++- usage of the deprecated GUID-based WMI interface
++- bypassing of the WMI subsystem when talking to WMI devices
++- WMI drivers which cannot be instantiated multiple times.
++
++Many older WMI drivers violate one or more points from this list. The rea=
+son for
++this is that the WMI subsystem evolved significantly over the last two de=
+cades,
++so there is a lot of legacy cruft inside older WMI drivers.
+diff --git a/Documentation/wmi/index.rst b/Documentation/wmi/index.rst
+index 537cff188e14..fec4b6ae97b3 100644
+=2D-- a/Documentation/wmi/index.rst
++++ b/Documentation/wmi/index.rst
+@@ -8,6 +8,7 @@ WMI Subsystem
+    :maxdepth: 1
 
- MODULE_AUTHOR("Carlos Corbacho");
- MODULE_DESCRIPTION("ACPI-WMI Mapping Driver");
-@@ -66,12 +63,9 @@ struct wmi_block {
- 	struct wmi_device dev;
- 	struct list_head list;
- 	struct guid_block gblock;
--	struct miscdevice char_dev;
--	struct mutex char_mutex;
- 	struct acpi_device *acpi_device;
- 	wmi_notify_handler handler;
- 	void *handler_data;
--	u64 req_buf_size;
- 	unsigned long flags;
- };
+    acpi-interface
++   driver-development-guide
+    devices/index
 
-@@ -256,26 +250,6 @@ static void wmi_device_put(struct wmi_device *wdev)
-  * Exported WMI functions
-  */
-
--/**
-- * set_required_buffer_size - Sets the buffer size needed for performing =
-IOCTL
-- * @wdev: A wmi bus device from a driver
-- * @length: Required buffer size
-- *
-- * Allocates memory needed for buffer, stores the buffer size in that mem=
-ory.
-- *
-- * Return: 0 on success or a negative error code for failure.
-- */
--int set_required_buffer_size(struct wmi_device *wdev, u64 length)
--{
--	struct wmi_block *wblock;
--
--	wblock =3D container_of(wdev, struct wmi_block, dev);
--	wblock->req_buf_size =3D length;
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(set_required_buffer_size);
--
- /**
-  * wmi_instance_count - Get number of WMI object instances
-  * @guid_string: 36 char string of the form fa50ff2b-f2e8-45de-83fa-65417=
-f2f49ba
-@@ -884,111 +858,12 @@ static int wmi_dev_match(struct device *dev, struct=
- device_driver *driver)
-
- 	return 0;
- }
--static int wmi_char_open(struct inode *inode, struct file *filp)
--{
--	/*
--	 * The miscdevice already stores a pointer to itself
--	 * inside filp->private_data
--	 */
--	struct wmi_block *wblock =3D container_of(filp->private_data, struct wmi=
-_block, char_dev);
--
--	filp->private_data =3D wblock;
--
--	return nonseekable_open(inode, filp);
--}
--
--static ssize_t wmi_char_read(struct file *filp, char __user *buffer,
--			     size_t length, loff_t *offset)
--{
--	struct wmi_block *wblock =3D filp->private_data;
--
--	return simple_read_from_buffer(buffer, length, offset,
--				       &wblock->req_buf_size,
--				       sizeof(wblock->req_buf_size));
--}
--
--static long wmi_ioctl(struct file *filp, unsigned int cmd, unsigned long =
-arg)
--{
--	struct wmi_ioctl_buffer __user *input =3D
--		(struct wmi_ioctl_buffer __user *) arg;
--	struct wmi_block *wblock =3D filp->private_data;
--	struct wmi_ioctl_buffer *buf;
--	struct wmi_driver *wdriver;
--	int ret;
--
--	if (_IOC_TYPE(cmd) !=3D WMI_IOC)
--		return -ENOTTY;
--
--	/* make sure we're not calling a higher instance than exists*/
--	if (_IOC_NR(cmd) >=3D wblock->gblock.instance_count)
--		return -EINVAL;
--
--	mutex_lock(&wblock->char_mutex);
--	buf =3D wblock->handler_data;
--	if (get_user(buf->length, &input->length)) {
--		dev_dbg(&wblock->dev.dev, "Read length from user failed\n");
--		ret =3D -EFAULT;
--		goto out_ioctl;
--	}
--	/* if it's too small, abort */
--	if (buf->length < wblock->req_buf_size) {
--		dev_err(&wblock->dev.dev,
--			"Buffer %lld too small, need at least %lld\n",
--			buf->length, wblock->req_buf_size);
--		ret =3D -EINVAL;
--		goto out_ioctl;
--	}
--	/* if it's too big, warn, driver will only use what is needed */
--	if (buf->length > wblock->req_buf_size)
--		dev_warn(&wblock->dev.dev,
--			"Buffer %lld is bigger than required %lld\n",
--			buf->length, wblock->req_buf_size);
--
--	/* copy the structure from userspace */
--	if (copy_from_user(buf, input, wblock->req_buf_size)) {
--		dev_dbg(&wblock->dev.dev, "Copy %llu from user failed\n",
--			wblock->req_buf_size);
--		ret =3D -EFAULT;
--		goto out_ioctl;
--	}
--
--	/* let the driver do any filtering and do the call */
--	wdriver =3D drv_to_wdrv(wblock->dev.dev.driver);
--	if (!try_module_get(wdriver->driver.owner)) {
--		ret =3D -EBUSY;
--		goto out_ioctl;
--	}
--	ret =3D wdriver->filter_callback(&wblock->dev, cmd, buf);
--	module_put(wdriver->driver.owner);
--	if (ret)
--		goto out_ioctl;
--
--	/* return the result (only up to our internal buffer size) */
--	if (copy_to_user(input, buf, wblock->req_buf_size)) {
--		dev_dbg(&wblock->dev.dev, "Copy %llu to user failed\n",
--			wblock->req_buf_size);
--		ret =3D -EFAULT;
--	}
--
--out_ioctl:
--	mutex_unlock(&wblock->char_mutex);
--	return ret;
--}
--
--static const struct file_operations wmi_fops =3D {
--	.owner		=3D THIS_MODULE,
--	.read		=3D wmi_char_read,
--	.open		=3D wmi_char_open,
--	.unlocked_ioctl	=3D wmi_ioctl,
--	.compat_ioctl	=3D compat_ptr_ioctl,
--};
-
- static int wmi_dev_probe(struct device *dev)
- {
- 	struct wmi_block *wblock =3D dev_to_wblock(dev);
- 	struct wmi_driver *wdriver =3D drv_to_wdrv(dev->driver);
- 	int ret =3D 0;
--	char *buf;
-
- 	if (ACPI_FAILURE(wmi_method_enable(wblock, true)))
- 		dev_warn(dev, "failed to enable device -- probing anyway\n");
-@@ -996,55 +871,17 @@ static int wmi_dev_probe(struct device *dev)
- 	if (wdriver->probe) {
- 		ret =3D wdriver->probe(dev_to_wdev(dev),
- 				find_guid_context(wblock, wdriver));
--		if (ret !=3D 0)
--			goto probe_failure;
--	}
--
--	/* driver wants a character device made */
--	if (wdriver->filter_callback) {
--		/* check that required buffer size declared by driver or MOF */
--		if (!wblock->req_buf_size) {
--			dev_err(&wblock->dev.dev,
--				"Required buffer size not set\n");
--			ret =3D -EINVAL;
--			goto probe_failure;
--		}
-+		if (!ret) {
-+			if (ACPI_FAILURE(wmi_method_enable(wblock, false)))
-+				dev_warn(dev, "Failed to disable device\n");
-
--		wblock->handler_data =3D kmalloc(wblock->req_buf_size,
--					       GFP_KERNEL);
--		if (!wblock->handler_data) {
--			ret =3D -ENOMEM;
--			goto probe_failure;
--		}
--
--		buf =3D kasprintf(GFP_KERNEL, "wmi/%s", wdriver->driver.name);
--		if (!buf) {
--			ret =3D -ENOMEM;
--			goto probe_string_failure;
--		}
--		wblock->char_dev.minor =3D MISC_DYNAMIC_MINOR;
--		wblock->char_dev.name =3D buf;
--		wblock->char_dev.fops =3D &wmi_fops;
--		wblock->char_dev.mode =3D 0444;
--		ret =3D misc_register(&wblock->char_dev);
--		if (ret) {
--			dev_warn(dev, "failed to register char dev: %d\n", ret);
--			ret =3D -ENOMEM;
--			goto probe_misc_failure;
-+			return ret;
- 		}
- 	}
-
- 	set_bit(WMI_PROBED, &wblock->flags);
--	return 0;
-
--probe_misc_failure:
--	kfree(buf);
--probe_string_failure:
--	kfree(wblock->handler_data);
--probe_failure:
--	if (ACPI_FAILURE(wmi_method_enable(wblock, false)))
--		dev_warn(dev, "failed to disable device\n");
--	return ret;
-+	return 0;
- }
-
- static void wmi_dev_remove(struct device *dev)
-@@ -1054,12 +891,6 @@ static void wmi_dev_remove(struct device *dev)
-
- 	clear_bit(WMI_PROBED, &wblock->flags);
-
--	if (wdriver->filter_callback) {
--		misc_deregister(&wblock->char_dev);
--		kfree(wblock->char_dev.name);
--		kfree(wblock->handler_data);
--	}
--
- 	if (wdriver->remove)
- 		wdriver->remove(dev_to_wdev(dev));
-
-@@ -1131,7 +962,6 @@ static int wmi_create_device(struct device *wmi_bus_d=
-ev,
-
- 	if (wblock->gblock.flags & ACPI_WMI_METHOD) {
- 		wblock->dev.dev.type =3D &wmi_type_method;
--		mutex_init(&wblock->char_mutex);
- 		goto out_init;
- 	}
-
-diff --git a/include/linux/wmi.h b/include/linux/wmi.h
-index 8a643c39fcce..50f7f1e4fd4f 100644
-=2D-- a/include/linux/wmi.h
-+++ b/include/linux/wmi.h
-@@ -11,7 +11,6 @@
- #include <linux/device.h>
- #include <linux/acpi.h>
- #include <linux/mod_devicetable.h>
--#include <uapi/linux/wmi.h>
-
- /**
-  * struct wmi_device - WMI device structure
-@@ -47,8 +46,6 @@ acpi_status wmidev_block_set(struct wmi_device *wdev, u8=
- instance, const struct
-
- u8 wmidev_instance_count(struct wmi_device *wdev);
-
--extern int set_required_buffer_size(struct wmi_device *wdev, u64 length);
--
- /**
-  * struct wmi_driver - WMI driver structure
-  * @driver: Driver model structure
-@@ -57,11 +54,8 @@ extern int set_required_buffer_size(struct wmi_device *=
-wdev, u64 length);
-  * @probe: Callback for device binding
-  * @remove: Callback for device unbinding
-  * @notify: Callback for receiving WMI events
-- * @filter_callback: Callback for filtering device IOCTLs
-  *
-  * This represents WMI drivers which handle WMI devices.
-- * @filter_callback is only necessary for drivers which
-- * want to set up a WMI IOCTL interface.
-  */
- struct wmi_driver {
- 	struct device_driver driver;
-@@ -71,8 +65,6 @@ struct wmi_driver {
- 	int (*probe)(struct wmi_device *wdev, const void *context);
- 	void (*remove)(struct wmi_device *wdev);
- 	void (*notify)(struct wmi_device *device, union acpi_object *data);
--	long (*filter_callback)(struct wmi_device *wdev, unsigned int cmd,
--				struct wmi_ioctl_buffer *arg);
- };
-
- extern int __must_check __wmi_driver_register(struct wmi_driver *driver,
+ .. only::  subproject and html
 =2D-
 2.39.2
 
