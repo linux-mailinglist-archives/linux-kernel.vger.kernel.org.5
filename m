@@ -2,125 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29811807EF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 03:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C26807EB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 03:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443126AbjLGCsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 21:48:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43162 "EHLO
+        id S1443058AbjLGCkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 21:40:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443152AbjLGCsH (ORCPT
+        with ESMTP id S235205AbjLGCkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 21:48:07 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEBD10FA;
-        Wed,  6 Dec 2023 18:39:26 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d0a7b72203so3806375ad.2;
-        Wed, 06 Dec 2023 18:39:26 -0800 (PST)
+        Wed, 6 Dec 2023 21:40:10 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06FFAD5E;
+        Wed,  6 Dec 2023 18:40:15 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6ce6caedce6so147486b3a.3;
+        Wed, 06 Dec 2023 18:40:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701916766; x=1702521566; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701916814; x=1702521614; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=elG8GlXQstrh+7SbheHvlM9Wbdhuu5GKD5vjQyxAHjA=;
-        b=csIDZDuaVx9RPEC6Gwjoyk9cFIzTNQVEHNnwM+DYA+B7weYRmQcKqpZbFd3OiXweTO
-         UfcjAjOH6tBbUO++Y7DAD3lL8slz1Dk8rk8teZFB92Nk6n20E1ElKDf0EvjB9L2jhZOG
-         e9ccMg7VvcdQ2Fjrs2wpYgSRlUKZppxTRd73phvAuA4wHHBotBN3+QPwwTOCCRi76fH4
-         oRETJVYVsBcXrnNJ6tUev4V6qOw2jAbxW0nYp5kZfuh2g9Ke8TFW1QyP04kS5QQYCoOP
-         SW9HGOUI7NyTHcnpvftGjlWvB1/RkWWtU3bhju2adF/vIeiOMGPF13LQvholJcpl8+W/
-         +CIQ==
+        bh=CjGR+gix1XQRxaJ5p7IMY1S7CLbhofOgFFoOucSld8k=;
+        b=FgiFiSVIWYuZAXOi9ywgWfJl2OcRi3OVnj4BY4f1INUoulTPxFtwsYLZAtx1oAhTPR
+         CuFVDDHYus/RIP0/nDDMSjxWTVK+REDu5P+6fpicNdwLNMXawtje0+1d+xpztLNvVRjy
+         58R2O0+9tW6G8SPCTE474skVXMOePlMbYV1LTR3yNQRpJtpbYELZAcycx+hgZNUu6ZoB
+         LlV7PvdY/huazd3H1QUntLaanccCFLLLch9EhR39XBxszty5h7I8Vl00n/9H7q7/fFIY
+         9ZEzt1WtuLPXdKZEYjXo6eoX6r8xUhh0J0HUYgHKHHmUUN2Rx6BDkFhQizx67xyYzIgK
+         sVIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701916766; x=1702521566;
+        d=1e100.net; s=20230601; t=1701916814; x=1702521614;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=elG8GlXQstrh+7SbheHvlM9Wbdhuu5GKD5vjQyxAHjA=;
-        b=b3O1/Ayo72tcFJpOGkPWr7dG3YX9eawrH7XgmWtGGvFWrCyncYJWyShqscTARQkOpV
-         WUVmqz+wVbw7Yh2Ff4BaZQJhy+ApL0jz3f9i/AqcUYJqwtvmh63/mDFhdd1r57VFmtn2
-         PArtjHpheRVjktSi8FseVrf3DpguVG5BupA6jdAo/9RVG9nGpXiFP6iDnqaG05ac1xra
-         WLotUj0emhU6+Sup5fP4CVZCFt5AtNd53um4zdXCLbVbyb+ZhZZh9rrDljDIhadxKWxp
-         tlb2Kh0sn6nUxhIcOfAgkjByxIVcrhTjw+5lMi75+a1K7p3gAzUuhFBikFvjMEkT+29j
-         /pGQ==
-X-Gm-Message-State: AOJu0YyqmG//07aWVQqtdPI9D8R/WDMb6Lw5I1jR0X7nRetn4VRJcuc3
-        fID15mZgatthpAhv1RuDqnxbj4ZbLYWBvg==
-X-Google-Smtp-Source: AGHT+IEK+qI5y2AHtPi9fYvkLjo2GmFVrcscUkg3UWuixiW/+HC2JdXhLqGPHnNbolOnqpMcPBpTHA==
-X-Received: by 2002:a17:902:dacf:b0:1cf:c42c:cfbd with SMTP id q15-20020a170902dacf00b001cfc42ccfbdmr2468303plx.0.1701916765692;
-        Wed, 06 Dec 2023 18:39:25 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id m2-20020a170902768200b001cc3fae06a6sm149846pll.159.2023.12.06.18.39.24
+        bh=CjGR+gix1XQRxaJ5p7IMY1S7CLbhofOgFFoOucSld8k=;
+        b=Zq3pv92HmRtTvmdcmG8sxPDrVNz3CIxz6pUP//0IHWxyNuBvTskvenQAx58F9mYikE
+         fiosgOuoiYGSH4wOUt97IC5/U2zrwZRhMwgJa3Wd2BnIr66GceuN9Epmj1c3IOgbMIzE
+         KAY9agetFj9/2akjYrGPNx+TjTfmSAmUerXdDvKkZ+sEN4PQ94f/YBSYQSOavVIjsrxE
+         L46+EA+LBhMRW4L6XxlvjX6Nh1lCTFIu+yS+vj0UPpXGruop44i7LTaAe2SvUQ+L1yWT
+         vcfy3TIkOXFONq/4StWDQ1QduaOJsWReFyVwYnNTST86X9tWEhVti9mKGL4b3LiKaizf
+         ojFw==
+X-Gm-Message-State: AOJu0Yzj+/qc9U5M2LA6bArebTOH1uCSMnZqZuMmRHlRM2VrfhSoyYq8
+        IOu+anD4bQJ6eQVsgMMEaew=
+X-Google-Smtp-Source: AGHT+IG4OHX+SeQcJYhn0alXQOImary9hj1xbJZTveWssuMvLq90907J7Mp6IPQ+vyVQWr7sJuLFKw==
+X-Received: by 2002:a05:6a20:1593:b0:18f:97c:4f3b with SMTP id h19-20020a056a20159300b0018f097c4f3bmr1673961pzj.71.1701916814237;
+        Wed, 06 Dec 2023 18:40:14 -0800 (PST)
+Received: from localhost.localdomain ([1.245.180.67])
+        by smtp.gmail.com with ESMTPSA id pl16-20020a17090b269000b0028652f98978sm121526pjb.8.2023.12.06.18.40.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 18:39:25 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id E1D9B1143CC84; Thu,  7 Dec 2023 09:39:19 +0700 (WIB)
-Date:   Thu, 7 Dec 2023 09:39:19 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Dianne Skoll <dianne@skoll.ca>,
-        Linux Stable <stable@vger.kernel.org>
-Cc:     Linux Regressions <regressions@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux AMDGPU <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Pan@archie.me, Xinhui <Xinhui.Pan@amd.com>
-Subject: Re: Regression: Radeon video card does not work with 6.6.4; works
- fine with 6.6.3
-Message-ID: <ZXEwV_BRROeu84Zh@archie.me>
-References: <20231206172220.37ff4df9@gato.skoll.ca>
+        Wed, 06 Dec 2023 18:40:13 -0800 (PST)
+Date:   Thu, 7 Dec 2023 11:40:05 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 21/21] mm/slub: optimize free fast path code layout
+Message-ID: <ZXEwhbDgESjPs/vh@localhost.localdomain>
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-21-9c9c70177183@suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9mKsw2ilVY5K14MK"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231206172220.37ff4df9@gato.skoll.ca>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231120-slab-remove-slab-v2-21-9c9c70177183@suse.cz>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 20, 2023 at 07:34:32PM +0100, Vlastimil Babka wrote:
+> Inspection of kmem_cache_free() disassembly showed we could make the
+> fast path smaller by providing few more hints to the compiler, and
+> splitting the memcg_slab_free_hook() into an inline part that only
+> checks if there's work to do, and an out of line part doing the actual
+> uncharge.
+> 
+> bloat-o-meter results:
+> add/remove: 2/0 grow/shrink: 0/3 up/down: 286/-554 (-268)
+> Function                                     old     new   delta
+> __memcg_slab_free_hook                         -     270    +270
+> __pfx___memcg_slab_free_hook                   -      16     +16
+> kfree                                        828     665    -163
+> kmem_cache_free                             1116     948    -168
+> kmem_cache_free_bulk.part                   1701    1478    -223
+> 
+> Checking kmem_cache_free() disassembly now shows the non-fastpath
+> cases are handled out of line, which should reduce instruction cache
+> usage.
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  mm/slub.c | 40 ++++++++++++++++++++++++----------------
+>  1 file changed, 24 insertions(+), 16 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 77d259f3d592..3f8b95757106 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -1959,20 +1959,11 @@ void memcg_slab_post_alloc_hook(struct kmem_cache *s, struct obj_cgroup *objcg,
+>  	return __memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
+>  }
+>  
+> -static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> -					void **p, int objects)
+> +static void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> +				   void **p, int objects,
+> +				   struct obj_cgroup **objcgs)
+>  {
+> -	struct obj_cgroup **objcgs;
+> -	int i;
+> -
+> -	if (!memcg_kmem_online())
+> -		return;
+> -
+> -	objcgs = slab_objcgs(slab);
+> -	if (!objcgs)
+> -		return;
+> -
+> -	for (i = 0; i < objects; i++) {
+> +	for (int i = 0; i < objects; i++) {
+>  		struct obj_cgroup *objcg;
+>  		unsigned int off;
+>  
+> @@ -1988,6 +1979,22 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+>  		obj_cgroup_put(objcg);
+>  	}
+>  }
+> +
+> +static __fastpath_inline
+> +void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
+> +			  int objects)
+> +{
+> +	struct obj_cgroup **objcgs;
+> +
+> +	if (!memcg_kmem_online())
+> +		return;
+> +
+> +	objcgs = slab_objcgs(slab);
+> +	if (likely(!objcgs))
+> +		return;
+> +
+> +	__memcg_slab_free_hook(s, slab, p, objects, objcgs);
+> +}
+>  #else /* CONFIG_MEMCG_KMEM */
+>  static inline struct mem_cgroup *memcg_from_slab_obj(void *ptr)
+>  {
+> @@ -2047,7 +2054,7 @@ static __always_inline bool slab_free_hook(struct kmem_cache *s,
+>  	 * The initialization memset's clear the object and the metadata,
+>  	 * but don't touch the SLAB redzone.
+>  	 */
+> -	if (init) {
+> +	if (unlikely(init)) {
+>  		int rsize;
+>  
+>  		if (!kasan_has_integrated_init())
+> @@ -2083,7 +2090,8 @@ static inline bool slab_free_freelist_hook(struct kmem_cache *s,
+>  		next = get_freepointer(s, object);
+>  
+>  		/* If object's reuse doesn't have to be delayed */
+> -		if (!slab_free_hook(s, object, slab_want_init_on_free(s))) {
+> +		if (likely(!slab_free_hook(s, object,
+> +					   slab_want_init_on_free(s)))) {
+>  			/* Move object to the new freelist */
+>  			set_freepointer(s, object, *head);
+>  			*head = object;
+> @@ -4282,7 +4290,7 @@ static __fastpath_inline void slab_free(struct kmem_cache *s, struct slab *slab,
+>  	 * With KASAN enabled slab_free_freelist_hook modifies the freelist
+>  	 * to remove objects, whose reuse must be delayed.
+>  	 */
+> -	if (slab_free_freelist_hook(s, &head, &tail, &cnt))
+> +	if (likely(slab_free_freelist_hook(s, &head, &tail, &cnt)))
+>  		do_slab_free(s, slab, head, tail, cnt, addr);
+>  }
+>  
+> 
+> -- 
 
---9mKsw2ilVY5K14MK
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Looks good to me,
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-[Cc'ing also amdgpu people]
-
-On Wed, Dec 06, 2023 at 05:22:20PM -0500, Dianne Skoll wrote:
-> Hi,
->=20
-> I had to go back to 6.6.3 because 6.6.4 seems to have broken my Radeon
-> video setup.  The full bug report:
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D218238
->=20
-
-Can you bisect to find the culprit commit? See
-Documentation/admin-guide/bug-bisect.rst in the kernel sources for reference
-if you have never done bisection.
-
-Also, can you check if latest mainline (currently v6.7-rc4) still have this
-regression?
-
-Regardless, please also report on freedesktop tracker [1].
-
-Thanks.
-
-[1]: https://gitlab.freedesktop.org/drm/amd/-/issues
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---9mKsw2ilVY5K14MK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZXEwUgAKCRD2uYlJVVFO
-o26uAP4pJSbOfEfKR0cpWObUfKDiW5fKckPa8tUO8ExaxMRvWgEAjV139d+uzj2c
-9OyU7VsBGW31gkolGGzUhLp5YIce2QI=
-=isDS
------END PGP SIGNATURE-----
-
---9mKsw2ilVY5K14MK--
+> 2.42.1
+> 
+> 
