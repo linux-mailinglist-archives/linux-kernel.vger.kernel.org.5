@@ -2,273 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3E080957E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B038280957F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231918AbjLGWif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 17:38:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44330 "EHLO
+        id S232376AbjLGWjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 17:39:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjLGWid (ORCPT
+        with ESMTP id S229634AbjLGWjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 17:38:33 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AAEB170F;
-        Thu,  7 Dec 2023 14:38:39 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-2866951b6e0so1464953a91.2;
-        Thu, 07 Dec 2023 14:38:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701988719; x=1702593519; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=26/GlUsu1cFJgj1Tg+JnHuO4HSzDZlYdi/Z+MXwW2YA=;
-        b=GhCLg9jKCgxpkfX+nMAFq12VS58Ibu30l5m4P9131O/X7njH/Zf2uHRQTvSb7mosNc
-         0EV/axqqqknMlhoiJpN7FnPnNDjUEeq4SkgV3oo6Wi+Myw3EOKF1BzdqsSIPq5+D20HI
-         npA9WtNIFTJFGAUGNMrOSvKWLll2ZPKYn4yK48GiuqCMI1DFKtYvnQlMEcxosUfWCbvT
-         svqpuZksWC4AnzCTWCe3Z+V7Kr0sHJMsrkdR32lFu5PPP5AidB9pRt74dHQGV8ykurWs
-         s+QvxkWtklD0O+NAJxmIHWR3cQRZ/gV/eyLA8kqtYbVMHyoqurYJy7zXR7YPbkCSWinV
-         NQ9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701988719; x=1702593519;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=26/GlUsu1cFJgj1Tg+JnHuO4HSzDZlYdi/Z+MXwW2YA=;
-        b=JGlKvoas38O+HyejzDR97ts03fnL7jlAe9zWX8j0qSa1hOxReElQQwsyuyOz2Bv75b
-         Mntzsu9SzlcFHdmhwphzpypypc5vr5jxUopnLfhXcNBsfQfUlX28FhQ3JpmR9o1s5rt/
-         6H1BShXR8AkjoPyESQixLhSPp0SceH+WPkfFD7iJhm/oTet6j73XOC8PkahmSnZpCG7e
-         bAnC2FQTdegEptpejIhgMq+NhndUCHD5xfzHWzmqrxxOCAKsLmzyU82uqigUcl5zGnWH
-         y5r125kKbd+/PSNHCEU1zS0xQXiJ/mroiwHRUEArQYfPbDCk2E6GluKILzdZGBaeurFy
-         HpvA==
-X-Gm-Message-State: AOJu0YyejJHu0jnbcR9u+kCCXDUyLzcpirtS3BfLh88BiaxqVnuPmVYs
-        Don9KBwh83lJKWDZQHt5L7o=
-X-Google-Smtp-Source: AGHT+IFPqKQFqUPSIHmtUKJfelWiArNRR3kqFRT/2EdGOw64n3uX7VW0PR6PGxDS6JcDl3b7oKuUAw==
-X-Received: by 2002:a17:90b:4c4f:b0:285:fc67:6164 with SMTP id np15-20020a17090b4c4f00b00285fc676164mr3307923pjb.5.1701988718605;
-        Thu, 07 Dec 2023 14:38:38 -0800 (PST)
-Received: from google.com ([2620:15c:2c0:5:3280:1779:f8f1:9d5a])
-        by smtp.gmail.com with ESMTPSA id hi16-20020a17090b30d000b00286bd821426sm1945215pjb.26.2023.12.07.14.38.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 14:38:37 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-Date:   Thu, 7 Dec 2023 14:38:35 -0800
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Kyle Huey <me@kylehuey.com>, Kyle Huey <khuey@kylehuey.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        Robert O'Callahan <robert@ocallahan.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] perf: Reorder overflow handler ahead of
- event_limit/sigtrap
-Message-ID: <ZXJJa5re536_e7c1@google.com>
-References: <20231207163458.5554-1-khuey@kylehuey.com>
- <20231207163458.5554-2-khuey@kylehuey.com>
- <CANpmjNNi1WoE0gsq5TSv8ys68YcF2o+LtWiDj+=bZ3Y46oP7Jw@mail.gmail.com>
- <CAP045Ap8z0qUpuYtbf9hpBqfnngNU7wVT0HM0XwQMrYYt9CAkg@mail.gmail.com>
- <CANpmjNOCFz43zhJm1mS5Ai1XTQiZ_-BW2K3z8vJEV4CyfoZtCA@mail.gmail.com>
+        Thu, 7 Dec 2023 17:39:15 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32289133
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:39:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3DC8C433C8;
+        Thu,  7 Dec 2023 22:39:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701988761;
+        bh=MsLLpv1+/XDyn3UAs12wR75ZLa9IjOrbPm1kkfTtosE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h7kkiL7Ak/7GSuJ1qH4EHyUTxoHiRKTwCqw53xa/OV4dG+kFQuSJLBVZpzq1ocJGa
+         QIuH0T9Tbb8/jeLEiHZW6rxhzy8mrpYV2qyy0rNpEzPjqkHTXC4eqXH7mOKNTVrMTv
+         5o7+wMTHoTkQarxlu6vWVUA1lwwSCE40hv+TlBJW4f8Pf64VgaN9dZ8dSr3kbNZjS6
+         bOaD0RbbdGg8s0e2/vqLwp9n3THviaOJZ2LYhM/PYjonw2zONkzwOSHDuSNqODY/It
+         RG4qsrMtDz3JS/nbpytfBiewpy1Kp5f+7hll2qUBJGeR9b0D92tSZ73TbZfU2jLYGo
+         7F3ic/gYzLXRw==
+Date:   Thu, 7 Dec 2023 22:39:16 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Gergo Koteles <soyer@irl.hu>
+Cc:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 03/16] ASoC: tas2781: disable regmap regcache
+Message-ID: <bf24488f-e4e1-4d3e-a67e-fe74c05acda4@sirena.org.uk>
+References: <cover.1701906455.git.soyer@irl.hu>
+ <21a183b5a08cb23b193af78d4b1114cc59419272.1701906455.git.soyer@irl.hu>
+ <0b836c10-b21b-4275-8dd0-254dd5467497@sirena.org.uk>
+ <47097f19398808b64f4cc87c2a3c7cc462fb2416.camel@irl.hu>
+ <5f3f0306-799f-4f3b-9e05-fbd300c59d5d@sirena.org.uk>
+ <b0ab21657f2e4f0825579de97ca012e294d1e743.camel@irl.hu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FPnKMl3SLG0UUQNN"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANpmjNOCFz43zhJm1mS5Ai1XTQiZ_-BW2K3z8vJEV4CyfoZtCA@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <b0ab21657f2e4f0825579de97ca012e294d1e743.camel@irl.hu>
+X-Cookie: Two is company, three is an orgy.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Thu, Dec 07, 2023 at 06:53:58PM +0100, Marco Elver wrote:
-> On Thu, 7 Dec 2023 at 18:47, Kyle Huey <me@kylehuey.com> wrote:
-> >
-> >
-> >
-> > On Thu, Dec 7, 2023, 9:05 AM Marco Elver <elver@google.com> wrote:
-> >>
-> >> On Thu, 7 Dec 2023 at 17:35, Kyle Huey <me@kylehuey.com> wrote:
-> >> >
-> >> > The perf subsystem already allows an overflow handler to clear pending_kill
-> >> > to suppress a fasync signal (although nobody currently does this). Allow an
-> >> > overflow handler to suppress the other visible side effects of an overflow,
-> >> > namely event_limit accounting and SIGTRAP generation.
+--FPnKMl3SLG0UUQNN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Well, I think it can still hit the throttling logic and generate
-a PERF_RECORD_THROTTLE.  But it should be rare..
+On Thu, Dec 07, 2023 at 10:12:13PM +0100, Gergo Koteles wrote:
+> On Thu, 2023-12-07 at 20:36 +0000, Mark Brown wrote:
 
-> >> >
-> >> > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> >> > ---
-> >> >  kernel/events/core.c | 10 +++++++---
-> >> >  1 file changed, 7 insertions(+), 3 deletions(-)
-> >> >
-> >> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> >> > index b704d83a28b2..19fddfc27a4a 100644
-> >> > --- a/kernel/events/core.c
-> >> > +++ b/kernel/events/core.c
-> >> > @@ -9541,6 +9541,12 @@ static int __perf_event_overflow(struct perf_event *event,
-> >> >          */
-> >> >
-> >> >         event->pending_kill = POLL_IN;
-> >> > +
-> >> > +       READ_ONCE(event->overflow_handler)(event, data, regs);
-> >> > +
-> >> > +       if (!event->pending_kill)
-> >> > +               return ret;
-> >>
-> >> It's not at all intuitive that resetting pending_kill to 0 will
-> >> suppress everything else, too. There is no relationship between the
-> >> fasync signals and SIGTRAP. pending_kill is for the former and
-> >> pending_sigtrap is for the latter. One should not affect the other.
-> >>
-> >> A nicer solution would be to properly undo the various pending_*
-> >> states (in the case of pending_sigtrap being set it should be enough
-> >> to reset pending_sigtrap to 0, and also decrement
-> >> event->ctx->nr_pending).
-> >
-> >
-> > I don't believe it's possible to correctly undo the event_limit decrement after the fact (if it's e.g. racing with the ioctl that adds to the event limit).
-> >
-> >> Although I can see why this solution is simpler. Perhaps with enough
-> >> comments it might be clearer.
-> >>
-> >> Preferences?
-> >
-> >
-> > The cleanest way would probably be to add a return value to the overflow handler function that controls this. It requires changing a bunch of arch specific code on arches I don't have access to though.
-> 
-> Hmm.
-> 
-> Maybe wait for perf maintainers to say what is preferrable. (I could
-> live with just making sure this has no other weird side effects and
-> more comments.)
+> > > And only one, because tasdevice_change_chn_book directly changes the
+> > > address of i2c_client, so the unlucky one gets invalid values in its
+> > > actual book from regcache_sync.
 
-What if we can call bpf handler directly and check the return value?
-Then I think we can also get rid of the original overflow handler.
+> > The code creates the impression that writing to one tas2781 writes to
+> > all of them, is that not the case?
 
-Something like this (untested..)
+> Yes, the tasdevice_* functions, but the regcache_sync doesn't know
+> this.
 
-Thanks,
-Namhyung
+So this syncing is done in software not hardware?  My understanding was
+that this was a hardware thing.
 
+> > How would the devices get their configuration restored?
 
----8<---
+> tasdevice_tuning_switch calls tasdevice_select_tuningprm_cfg which
+> checks whether the devices needs a new program or configuration.
 
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index e85cd1c0eaf3..1eba6f5bb70b 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -809,7 +809,6 @@ struct perf_event {
- 	perf_overflow_handler_t		overflow_handler;
- 	void				*overflow_handler_context;
- #ifdef CONFIG_BPF_SYSCALL
--	perf_overflow_handler_t		orig_overflow_handler;
- 	struct bpf_prog			*prog;
- 	u64				bpf_cookie;
- #endif
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 4c72a41f11af..e1a00646dbbe 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9471,6 +9471,12 @@ static inline bool sample_is_allowed(struct perf_event *event, struct pt_regs *r
-  * Generic event overflow handling, sampling.
-  */
- 
-+#ifdef CONFIG_BPF_SYSCALL
-+static int bpf_overflow_handler(struct perf_event *event,
-+				struct perf_sample_data *data,
-+				struct pt_regs *regs);
-+#endif
-+
- static int __perf_event_overflow(struct perf_event *event,
- 				 int throttle, struct perf_sample_data *data,
- 				 struct pt_regs *regs)
-@@ -9487,6 +9493,11 @@ static int __perf_event_overflow(struct perf_event *event,
- 
- 	ret = __perf_event_account_interrupt(event, throttle);
- 
-+#ifdef CONFIG_BPF_SYSCALL
-+	if (event->prog && bpf_overflow_handler(event, data, regs) == 0)
-+		return ret;
-+#endif
-+
- 	/*
- 	 * XXX event_limit might not quite work as expected on inherited
- 	 * events
-@@ -10346,7 +10357,7 @@ static void perf_event_free_filter(struct perf_event *event)
- }
- 
- #ifdef CONFIG_BPF_SYSCALL
--static void bpf_overflow_handler(struct perf_event *event,
-+static int bpf_overflow_handler(struct perf_event *event,
- 				 struct perf_sample_data *data,
- 				 struct pt_regs *regs)
- {
-@@ -10355,7 +10366,7 @@ static void bpf_overflow_handler(struct perf_event *event,
- 		.event = event,
- 	};
- 	struct bpf_prog *prog;
--	int ret = 0;
-+	int ret = 1;
- 
- 	ctx.regs = perf_arch_bpf_user_pt_regs(regs);
- 	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1))
-@@ -10369,10 +10380,7 @@ static void bpf_overflow_handler(struct perf_event *event,
- 	rcu_read_unlock();
- out:
- 	__this_cpu_dec(bpf_prog_active);
--	if (!ret)
--		return;
--
--	event->orig_overflow_handler(event, data, regs);
-+	return ret;
- }
- 
- static int perf_event_set_bpf_handler(struct perf_event *event,
-@@ -10408,8 +10416,6 @@ static int perf_event_set_bpf_handler(struct perf_event *event,
- 
- 	event->prog = prog;
- 	event->bpf_cookie = bpf_cookie;
--	event->orig_overflow_handler = READ_ONCE(event->overflow_handler);
--	WRITE_ONCE(event->overflow_handler, bpf_overflow_handler);
- 	return 0;
- }
- 
-@@ -10420,7 +10426,6 @@ static void perf_event_free_bpf_handler(struct perf_event *event)
- 	if (!prog)
- 		return;
- 
--	WRITE_ONCE(event->overflow_handler, event->orig_overflow_handler);
- 	event->prog = NULL;
- 	bpf_prog_put(prog);
- }
-@@ -11880,13 +11885,11 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
- 		overflow_handler = parent_event->overflow_handler;
- 		context = parent_event->overflow_handler_context;
- #if defined(CONFIG_BPF_SYSCALL) && defined(CONFIG_EVENT_TRACING)
--		if (overflow_handler == bpf_overflow_handler) {
-+		if (parent_event->prog) {
- 			struct bpf_prog *prog = parent_event->prog;
- 
- 			bpf_prog_inc(prog);
- 			event->prog = prog;
--			event->orig_overflow_handler =
--				parent_event->orig_overflow_handler;
- 		}
- #endif
- 	}
+> the runtime_suspend and system resume set the devices cur_prog,
+> cur_conf to -1.
+
+...
+
+> The tas2781_hda_playback_hook calls the tasdevice_tuning_switch
+
+And there are no registers other than these programs?
+
+--FPnKMl3SLG0UUQNN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVySZQACgkQJNaLcl1U
+h9Dz0Qf9EolHA/7hwfIR8tUUDiJRQu5X9PEQJHjmqNgUo0b2RfbIXugc4S/61wPO
+reW9pzswW/8Uix3UZcpSo16bjD2ZphcGMFoaFuYBfVf+7j8mg9fUMCuX2LcY5ch1
+0EUB6G/1a3qGcVhC8yC9hGtF24lMOogSClM+t3jj8RhH60EU7VLKc1B4GhX+Vm/E
+ROtqapM8Tx5oi1tsQLV8nQ+zGdOXdqsg1kZNp9Arv7EcgQ2YkhqA3C6bnb2lebwF
+2RZzfAdeX1wlXobP0fzO0h626QjKcHq1YqQgPc6Eyl+QIZfIZ67yvY3y0WJwHh6r
+TIHr3QC4TNT60x8XouFh6PuIHtjnaA==
+=eHRJ
+-----END PGP SIGNATURE-----
+
+--FPnKMl3SLG0UUQNN--
