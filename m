@@ -2,163 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E578089C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A238089CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442881AbjLGOCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:02:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42654 "EHLO
+        id S1442954AbjLGOEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:04:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235171AbjLGOCl (ORCPT
+        with ESMTP id S1442604AbjLGOEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:02:41 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DCD5133;
-        Thu,  7 Dec 2023 06:02:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=KToobrjtx8bHUanPqkeSeV34L1vDgN1VtbwPowRALnQ=; b=YPat5xI6eBrv3+C+YkdTiRJB7M
-        oV0REbgHItkm73igzwfcTnvly7Uml7dcjpEamNWAeRjMqXBTQw3d3R1mRAv6+o4uQ+Lt6430a8xpK
-        KHKXt0HVslE/WcX7slKZPBjXLUh2E+cGPKoeVZ98lZvOvnZ0clx6LrhqkAX1LF9IH4BahjDSiRLNy
-        Qo7Yd7qdtyGvN4PU2IzoZpIHT2gT+yPoThPSt9ZK7CtZUedUCbQQyU6duXRZjkSavIdEf9xMZEEed
-        sHvGlelGiJhSW0txg4yAld9oZ8Aw5t0/2gbxYAeUQvkPUMHaiyolKBUPtw5TddSxwah2zQiY1/X/X
-        3B0wRJzA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38332)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rBExQ-0001AL-0q;
-        Thu, 07 Dec 2023 14:02:28 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rBExP-0003mi-5N; Thu, 07 Dec 2023 14:02:27 +0000
-Date:   Thu, 7 Dec 2023 14:02:27 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 09/16] net: mdio: Add Synopsys DW XPCS
- management interface support
-Message-ID: <ZXHQcyZbXwesy0MV@shell.armlinux.org.uk>
-References: <20231205103559.9605-1-fancer.lancer@gmail.com>
- <20231205103559.9605-10-fancer.lancer@gmail.com>
- <20231205133205.3309ab91@device.home>
- <cv6oo27tqbfst3jrgtkg7bcxmeshadtzoomn2xgnzh2arz4nwy@wq5k7oygto6n>
- <15e6857a-b1d1-465a-945e-6f31edac62fb@lunn.ch>
- <jqwhgthwxfge6y4nv5mdnojqu76m4pi2mt2x6kwqiuqntcwj67@mewh42eey5ny>
+        Thu, 7 Dec 2023 09:04:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7259310C2;
+        Thu,  7 Dec 2023 06:04:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701957852; x=1733493852;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=sQ3VPlHWz03Xl+CmKdb7cfnD+1sqirMdhZ7aUAJOLcI=;
+  b=dx0NFVnxmjHsMraKtyFHMB5OgbdBxW2XQmX5nMTfGfyzPY1+lfXf1fs1
+   rsE1L15sM5aa0deNTZTr+Td8Exmkhznb8uu0cC2oPMDx2VeQs/T0gVgc2
+   Wbk+oNEDm/klJJ6YmAJgP4utkX3r5+aPwNev0ONabZDZIt4PUrq1HfZE4
+   h/8DbjP6H+2yJziVH2VwuzNwr/CucJxTGWAas7zBcpWzr7uoxXMQsSB2L
+   d6Zd495ff8PDfFNiCfh1rLCuscq9z+iLNjYN5ymP+8LlPcITcugJZIeps
+   7BTVlLxNS110A6fDcvNtsfCLa0QkQGTf2OtoqSPeke61dpPC8GgttTZv6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="397024582"
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="397024582"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 06:04:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="19709866"
+Received: from dkrupnov-mobl3.ger.corp.intel.com ([10.249.34.6])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 06:04:10 -0800
+Date:   Thu, 7 Dec 2023 16:04:07 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 02/26] selftests/resctrl: Split fill_buf to allow
+ tests finer-grained control
+In-Reply-To: <356eb613-a380-4389-96d3-f2667b7d18d3@intel.com>
+Message-ID: <4ad2d41-9d65-e2ae-ade8-6d38dd4cbd81@linux.intel.com>
+References: <20231120111340.7805-1-ilpo.jarvinen@linux.intel.com> <20231120111340.7805-3-ilpo.jarvinen@linux.intel.com> <356eb613-a380-4389-96d3-f2667b7d18d3@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jqwhgthwxfge6y4nv5mdnojqu76m4pi2mt2x6kwqiuqntcwj67@mewh42eey5ny>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1882619583-1701957851=:1765"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 04:35:47PM +0300, Serge Semin wrote:
-> Hi Andrew
-> 
-> On Wed, Dec 06, 2023 at 06:01:30PM +0100, Andrew Lunn wrote:
-> > The compiler does a better job at deciding what to inline than we
-> > humans do. If you can show the compiler is doing it wrong, then we
-> > might accept them.
-> 
-> In general I would have agreed with you especially if the methods were
-> heavier than what they are:
-> static inline ptrdiff_t dw_xpcs_mmio_addr_format(int dev, int reg)
-> {               
->         return FIELD_PREP(0x1f0000, dev) | FIELD_PREP(0xffff, reg);
-> }               
->         
-> static inline u16 dw_xpcs_mmio_addr_page(ptrdiff_t csr)
-> {       
->         return FIELD_GET(0x1fff00, csr);
-> }       
-> 
-> static inline ptrdiff_t dw_xpcs_mmio_addr_offset(ptrdiff_t csr)
-> {
->         return FIELD_GET(0xff, csr);
-> }
-> 
-> > But in general, netdev does not like inline in .C
-> > file.
-> 
-> I see. I'll do as you say if you don't change your mind after my
-> reasoning below.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-This isn't Andrew saying it - you seem to have missed the detail that
-"netdev". If Andrew doesn't say it, then DaveM, Jakub or Paolo will.
+--8323329-1882619583-1701957851=:1765
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Have you read the "Inline functions" section in
-Documentation/process/4.Coding.rst ?
+On Tue, 28 Nov 2023, Reinette Chatre wrote:
+> On 11/20/2023 3:13 AM, Ilpo Järvinen wrote:
+> > MBM, MBA and CMT test cases call run_fill_buf() that in turn calls
+> > fill_cache() to alloc and loop indefinitely around the buffer. This
+> > binds buffer allocation and running the benchmark into a single bundle
+> > so that a selftest cannot allocate a buffer once and reuse it. CAT test
+> > doesn't want to loop around the buffer continuously and after rewrite
+> > it needs the ability to allocate the buffer separately.
+> > 
+> > Split buffer allocation out of fill_cache() into alloc_buffer(). This
+> > change is part of preparation for the new CAT test that allocates a
+> > buffer and does multiple passes over the same buffer (but not in an
+> > infinite loop).
+> > 
+> > Co-developed-by: Fenghua Yu <fenghua.yu@intel.com>
+> > Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > ---
+> 
+> Could you please list the changes to a patch in this area instead of
+> lumping all in the cover letter? Without this it is not clear what,
+> if anything, changed in the new version.
 
-> > Also, nothing in MDIO is hot path, it spends a lot of time
-> > waiting for a slow bus. So inline is likely to just bloat the code for
-> > no gain.
-> 
-> I would have been absolutely with you in this matter, if we were talking
-> about a normal MDIO bus. In this case the devices are accessed over
-> the system IO-memory. So the bus isn't that slow.
-> 
-> Regarding the compiler knowing better when to inline the code. Here is
-> what it does with the methods above. If the inline keyword is
-> specified the compiler will inline all three methods. If the keyword isn't
-> specified then dw_xpcs_mmio_addr_format() won't be inlined while the rest
-> two functions will be. So the only part at consideration is the
-> dw_xpcs_mmio_addr_format() method since the rest of the functions are
-> inlined anyway.
-> 
-> The dw_xpcs_mmio_addr_format() function body is of the 5 asm
-> instructions length (on MIPS). Since the function call in this case
-> requires two jump instructions (to function and back), one instruction
-> to save the previous return address on stack and two instructions for
-> the function arguments, the trade-off of having non-inlined function
-> are those five additional instructions on each call. There are four
-> dw_xpcs_mmio_addr_format() calls. So here is what we get in both
-> cases:
-> inlined:     5 func ins * 4 calls = 20 ins
-> non-inlined: (5 func + 1 jump) ins + (1 jump + 1 ra + 2 arg) ins * 4 calls  = 22 ins
-> but seeing the return address needs to be saved anyway in the callers
-> here is what we finally get:
-> non-inlined: (5 func + 1 jump) ins + (1 jump + 2 arg) ins * 4 calls  = 18 ins
-> 
-> So unless I am mistaken in some of the aspects if we have the function
-> non-inlined then we'll save 2 instructions in the object file, but
-> each call would require additional _4_ instructions to execute (2
-> jumps and 2 arg creations), which makes the function execution almost
-> two times longer than it would have been should it was inlined.
+Okay, I'll try to keep them per patch.
 
-Rather than just focusing on instruction count, you also need to
-consider things like branch prediction, prefetching and I-cache
-usage. Modern CPUs don't execute instruction-by-instruction anymore.
+> > +static int fill_cache(size_t buf_size, int memflush, int op, bool once)
+> > +{
+> > +	unsigned char *buf;
+> > +	int ret;
+> > +
+> > +	buf = alloc_buffer(buf_size, memflush);
+> > +	if (!buf)
+> > +		return -1;
+> > +
+> >  	if (op == 0)
+> >  		ret = fill_cache_read(buf, buf_size, once);
+> >  	else
+> >  		ret = fill_cache_write(buf, buf_size, once);
+> > -
+> >  	free(buf);
+> >  
+> > -	if (ret) {
+> > -		printf("\n Error in fill cache read/write...\n");
+> > -		return -1;
+> > -	}
+> > -
+> 
+> The changelog does not motivate the removal of this error message.
+> It seems ok at this point since the only failing functions already
+> print their own error message. Without a motivation of this change
+> it is not clear if it is actually intended.
 
-It is entirely possible that the compiler is making better choices
-even if it results in more jumps in the code.
+Hi,
+
+I don't have recollection of how it ended up into this patch as it's so 
+long time ago already... But in any case, it naturally seemed to fit into 
+the next patch that removes the extra call level so I moved the removal 
+of the duplicated error printout to that patch instead.
+
+> In any case, this looks good.
+> 
+> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+ i.
+
+--8323329-1882619583-1701957851=:1765--
