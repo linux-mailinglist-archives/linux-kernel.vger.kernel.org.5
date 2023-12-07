@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30573808624
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFB38085F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378554AbjLGJjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:39:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
+        id S1378581AbjLGJjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:39:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjLGJjS (ORCPT
+        with ESMTP id S229379AbjLGJji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:39:18 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D92C9
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:39:24 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3316bb1303bso508361f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:39:24 -0800 (PST)
+        Thu, 7 Dec 2023 04:39:38 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D70E9
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:39:43 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3333fbbeab9so661479f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:39:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701941963; x=1702546763; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701941982; x=1702546782; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ra4wyjCInETwctBctl6WihgaGyi+XSY10++FtZsNhzA=;
-        b=JfKRsBQtU2AeZcXKXs1ZNZAZsd0RLiuCcUgXRk2Y7yxZavnNm56Tw64aUEReqkf44c
-         4szWO8TFfhOQzoJW2sBX36Nne48/Ifvjesv2JyvYPlLA1EHRPqBgp0YX09pIVUjb3ez1
-         p3I9osLe6xBPM9dh9GQKD6uC9xGTWVYrqUkVbF0vgJjpKxa+oXEN+TC5VHAyXXWjTugJ
-         4dS0fDODALSFbLDMqjKRVbs91YjcV0qCK9cq2riVDTRr2IkYsyW7ZIyx+kX0LXT9ZhrI
-         nMiyiFfcyfJBzimTzRgVBMK5xKoDDutaRxOVOjigPRdO+c1+jDCI5t524NY5bmfujiBR
-         GJUw==
+        bh=sDEG22soV9/sv5O+2rWHT+MElR4n7sYwHVS8rbYswEg=;
+        b=zyxoKG+fT6osxklPD05mNHoVv1F3RK02jWx5J7jMwtM2j+rnG3IDNc0/KFGuUPk78+
+         JK1oJ/SXivmljhERxcu+1SAj0ZDlnJ0mc/R7cs+FX3+Nf1RYrL0w+6+aEuu88cpf2dAR
+         TqtUTn+Kv8kWYztGKO4DBBFBpHt5Ns9h65eiYJ5hFCQwe3O//sW1TYkSB5eyhPsLWgJu
+         uSrBLCsmOw8AWIawKxho6OBXL/pFRRQZ3v9FxuYl+2zJl4QEfKbC+yumG47EnMIpPO8y
+         ckWSKlyiOs6uDDzuMLAPuTYrbBzcwbid4IOQKpAigRADwuHqIOmB3RZmz7EUICvNEK54
+         ALUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701941963; x=1702546763;
+        d=1e100.net; s=20230601; t=1701941982; x=1702546782;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ra4wyjCInETwctBctl6WihgaGyi+XSY10++FtZsNhzA=;
-        b=fWxrSza6yLnwZKTmpzeThUoHqO4Iej8zgWdAl6axYpz2ZOioAEFXroPqC7B2s233VX
-         J0IWfnhn5V+z89jq2AE38laZ2fGtrNoOSKW1yk9UV+kqFITGIy6a9ytfu7kGNhZbBNqK
-         x43nWaJTrUa4xHwwi/Phh2I+HfbDwfnCvNewYf9FLTjWitovS3PbUwO22PjJIhuExyXi
-         5ibyJIif6UhAf3OEKwSuUEvUxBO/WLRiEPVPCxbU/GJWCMlAJ6szg6Ti9sMuRyUb+YwW
-         KwQKDoLMbSAnARQQ8C8b1+LoKDcwLQ2WZSpvqef0TXDB4i2nMG8N8fFK461feFupLUqC
-         kXlg==
-X-Gm-Message-State: AOJu0YyPdNdrvo+XQu3SlyVXyfC5dxAyAAqE6wPZvIy71YRKgWnBKdtL
-        LGraqKy3CEFfKz0+28GYSJ65hg==
-X-Google-Smtp-Source: AGHT+IFFhHZ77bU0lu4tf2G8jHh6IU3ln9imWnRUY3X1uPSEoLWWnY21sV/8D6J0QQ+a8pCp17OMvw==
-X-Received: by 2002:a5d:430e:0:b0:333:2fd2:816b with SMTP id h14-20020a5d430e000000b003332fd2816bmr1373800wrq.136.1701941962712;
-        Thu, 07 Dec 2023 01:39:22 -0800 (PST)
+        bh=sDEG22soV9/sv5O+2rWHT+MElR4n7sYwHVS8rbYswEg=;
+        b=INzATrVTf5sQLsqGSpg2YzRtzQW2DnBV1mgzwKnsdqUa5KCYANWbR9Ce0jD/lw7xja
+         qGiF0KU5b1LxX+FNzZDGsSwnbUcYboMSHrjRciQYi3ucaJqEmhlYJOt2ZBJiJiD1Egcq
+         LWpAm0fW0J16sTjppfHhEf65aB968Sx3Gubki9BKibrbNxtKsM0WU1tnf8e1Wq6um0FQ
+         iy33/u8hhhVUnOPVfePY3Nvf5GLbKMZmTU3lpW9DJTtE78FQPLlsvZE3z7B4YxgKb/r7
+         n0Qv7j2+yF70RY9MdmqZ0YW/QbHrYqG+SOOuB5JUexnefG7Oh6DsB3hr2+/Ah2R3nXEE
+         y5lw==
+X-Gm-Message-State: AOJu0YyBvE0byoNtZ+CK4AxYEFCdsWiVIyYhqwWzxAAbpAtovgj6SdKl
+        O0U3z1ma2obkzMEd2V2lkGzM0nE3IUjnov1Ao+A=
+X-Google-Smtp-Source: AGHT+IHvf8Yd7ScNXngFZQTc6LbO8p0Lobd2ne6I7Q0CSTVhm6zYQep3gWEqsr5XaBG1u3q+rZ84/w==
+X-Received: by 2002:adf:f50c:0:b0:333:145e:f529 with SMTP id q12-20020adff50c000000b00333145ef529mr1184834wro.33.1701941982435;
+        Thu, 07 Dec 2023 01:39:42 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id x17-20020adff651000000b003333c2c313bsm952293wrp.100.2023.12.07.01.39.21
+        by smtp.gmail.com with ESMTPSA id x17-20020adff651000000b003333c2c313bsm952293wrp.100.2023.12.07.01.39.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 01:39:22 -0800 (PST)
-Message-ID: <541f9ecb-b0d1-4c30-ae02-87376436cda3@linaro.org>
-Date:   Thu, 7 Dec 2023 10:39:19 +0100
+        Thu, 07 Dec 2023 01:39:42 -0800 (PST)
+Message-ID: <f5f66934-f919-4550-ade9-d00ae8958040@linaro.org>
+Date:   Thu, 7 Dec 2023 10:39:40 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] dt-bindings: arm: Add remote etm dt-binding
+Subject: Re: [PATCH v3 2/4] arm64: dts: qcom: msm8996: Fix 'in-ports' is a
+ required property
 Content-Language: en-US
 To:     Mao Jinlong <quic_jinlmao@quicinc.com>,
         Andy Gross <agross@kernel.org>,
@@ -69,7 +70,7 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         Yuanfang Zhang <quic_yuanfang@quicinc.com>,
         Tao Zhang <quic_taozha@quicinc.com>
 References: <20231206141502.27016-1-quic_jinlmao@quicinc.com>
- <20231206141502.27016-2-quic_jinlmao@quicinc.com>
+ <20231206141502.27016-3-quic_jinlmao@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -115,7 +116,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231206141502.27016-2-quic_jinlmao@quicinc.com>
+In-Reply-To: <20231206141502.27016-3-quic_jinlmao@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -129,29 +130,16 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 06/12/2023 15:14, Mao Jinlong wrote:
-> Remote ETM(Embedded Trace Macrocell) is to capture information of
-> the executed processor instructions of remote processors like modem.
-> Add new coresight-remote-etm.yaml file describing the bindings
-> required to define coresight remote etm in the device trees.
+> Add the inport of funnel@3023000 to fix 'in-ports' is a required property
+> warning.
+> 
+> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/msm8996.dtsi | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
 > 
 
-
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    etm {
-> +          compatible = "qcom,coresight-remote-etm";
-
-Now something happened with your indentation here... was it like this
-before? The guideline asks to use 2 or 4 space indentation for the
-example, while 4 is preferred.
-
-With fixed indentation in the example:
-
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
 
 Best regards,
 Krzysztof
