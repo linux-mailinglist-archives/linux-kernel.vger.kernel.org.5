@@ -2,131 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F42808734
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3376B808738
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:01:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379142AbjLGL6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 06:58:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60526 "EHLO
+        id S1379147AbjLGL7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 06:59:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232186AbjLGL6i (ORCPT
+        with ESMTP id S232186AbjLGL7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 06:58:38 -0500
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7A510C6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 03:58:43 -0800 (PST)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5d3c7ef7b31so6143957b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 03:58:43 -0800 (PST)
+        Thu, 7 Dec 2023 06:59:34 -0500
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA509AA;
+        Thu,  7 Dec 2023 03:59:40 -0800 (PST)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5cece20f006so6246377b3.3;
+        Thu, 07 Dec 2023 03:59:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701950322; x=1702555122; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5XmsrJXJOel1pOwV1DpetQX2xR+tuD3kF6lMHYEW14c=;
-        b=dphjGpT8B0pJZWQ9GX011Eyo/IlJzEf52wVaxN7gZ7iRvfXkfeioR+NlJaawaJqW5J
-         gqlf9g/NEaGhT6QEGIq4KH0EdMtgjw7y4+oiFgIN+TzeiTuXg0XV7juaH+8h6oOeTjAg
-         +wOtH1WxUOyl4iQltWhIzWwkpmx8ytHaw/Tv14iF+ltiEo2DI9A5Jm/OoL+SejzV9i/Y
-         suPfWZIEheLesCZQ0WThFOAmEEwUGganzwXkLxUCwWDXn8edqWSoA7FMJinVooorglBS
-         WxGtTDdDAoX3pqsPR8PKY/OnpfWpjHCjdoSxNMkulkHDHzOurYmbs3ALro2CrcoRcBDi
-         1h7A==
+        d=gmail.com; s=20230601; t=1701950380; x=1702555180; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Pzcrn9pBVNf1FVU0YoFLtUh482zBFVsR0jyYJt8y9LY=;
+        b=H3RJ6O/MTJurKk4YIhJHX/arJEb8Sd5OhlguLRN3FUR2gdsLCbWhPj6qZFbJAvuape
+         alYkVDvWaYHUriWy2dSbzaicC50f+NTrqbj0OZ1nByw+TW4dMveJ0JYPyjhfqXRrwoB2
+         V4lV64CkMv/vBvtKVvCvMnQPrcKGt17Bt9rajI0p3DnwIfZE4yrzeZGfp29lbAZqkpNO
+         w52ihKAM9GjnHno9DgG5hnX8WdhOy2VubDIs/CMkYkVmy4gq2vxLfbil/spnrOQyWh1a
+         sbxKUkJ8hpaVLi0NgUTRd8133edadzNAS/eHcb89Y4mTcELCo08Wn3QapXp4//3Oa0j/
+         /Zhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701950322; x=1702555122;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5XmsrJXJOel1pOwV1DpetQX2xR+tuD3kF6lMHYEW14c=;
-        b=TWIzJXKxQi2UxMzUUg8GxG2RZEgBSMrV6XJ7FaBwkfo2aRzSdw00o+JN74Rj9kNCLS
-         +S8bLJ8tE/3fqOIcF5ETLH3GDMGiqr2R+hm58n+U/Oe2lACk31a8UihgiCBPzTfR9qw7
-         rfLsnBNwJIeVEGS29VlXjmSMUijXqwC25nprK6i8dFRj8LVn0tNzgplCChIgPnT+tlug
-         8ABPQmLcB+KV3qwgBZHRg3FRRFmaZGZY3sOjKnYK5eUkdkvbC9NNWk2up4S7syolEKhd
-         CKjBoj68ChecyzD1H1egs7E0h3YTv2edaAvY8mHHRDhJaK4QxHbrpCaAv+yuRgKaCrE9
-         5BEA==
-X-Gm-Message-State: AOJu0YzW+i3UexqIL9k1y25yvGYbSbUUFhmpgaG2v6gD5uKo7ig5bXSd
-        MKPMTduXDuOCv95TzeZOMkD2miLozMK9eMfkhFcgfA==
-X-Google-Smtp-Source: AGHT+IFukjk7+VvB4cAweU10tWIgWIRNcRODLwuYaC54AWvlj03fe3JTz7XnPc9w7cjNwkd5PEZbF2PppX325vcHp0I=
-X-Received: by 2002:a81:b702:0:b0:5d7:1941:3562 with SMTP id
- v2-20020a81b702000000b005d719413562mr2376001ywh.73.1701950322250; Thu, 07 Dec
- 2023 03:58:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701950380; x=1702555180;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Pzcrn9pBVNf1FVU0YoFLtUh482zBFVsR0jyYJt8y9LY=;
+        b=OFIwkuntYA8zqGZrYw1jiibexbEoNg/m2WyN2nKCLOEhFeJkL8s4ABxSmQ9zSijxV6
+         3w0a9Jmk4hMoJDMpxSmckrpd7LqW8aDTd2FrGyT4mVjfyD1hkb4xEMWflMsfb30RN/ft
+         bRnnQgLtqR1bAosjC0iteceNMrUiJ6B5A0mAKk7YalnUTH0E9fp3wfkfSSJFjhQ0DdN/
+         9H3ZQPJeywKmn28A1Htw1yxzkBhq8WrhXJ8cy8kvFxTc0NPREpVBojR567NFSd17/lo+
+         METBiQ3Y5yi54L4KCrLFp7Xqym5N9kDf4fN9TP4yoX5KnhX1ZB7C66iPk4ozz//YRpN8
+         /TDw==
+X-Gm-Message-State: AOJu0Yxk+cPYTBWSv5yUq6BUaQ6Bh235bQdefltfibaygUJpaBh2OWZq
+        fnunJp/uxOQlVVtm30drNC8N1uFTdN6eV4SMrx0=
+X-Google-Smtp-Source: AGHT+IEwU2Oa17ghfxEIDVSxGWej/Ung3dJ4wEwQtQtgqzDx1OcoWa6L51OU26eN6kYON1gZ8dLXhswa4QnAchx52HU=
+X-Received: by 2002:a25:aae6:0:b0:db7:dacf:6fd4 with SMTP id
+ t93-20020a25aae6000000b00db7dacf6fd4mr1806203ybi.92.1701950379950; Thu, 07
+ Dec 2023 03:59:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20231206123828.587065-1-arnd@kernel.org> <ZXGySCtdsxW4qCel@kuha.fi.intel.com>
- <CAA8EJprV3O24V0+MnPK1OdQZQ_7F2aMfN1Um13eH9ux4J+ucMw@mail.gmail.com> <ZXGzJlv9C3Z9lMeI@kuha.fi.intel.com>
-In-Reply-To: <ZXGzJlv9C3Z9lMeI@kuha.fi.intel.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 7 Dec 2023 13:58:31 +0200
-Message-ID: <CAA8EJpphJwfL-ZBOirzezBkBQ4E0RhhugtJh_jM0aHsHgp0D8g@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: nb7vpq904m: add CONFIG_OF dependency
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231206115355.4319-1-laoar.shao@gmail.com> <2023120644-pry-worried-22a2@gregkh>
+ <CALOAHbDtFKDh7C0NYeZ0xBV1z3AsNBDdnL7qRtWOrGbaU7W9VQ@mail.gmail.com> <2023120724-overstep-gesture-75be@gregkh>
+In-Reply-To: <2023120724-overstep-gesture-75be@gregkh>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 7 Dec 2023 19:59:03 +0800
+Message-ID: <CALOAHbAbU8At_iPVCiz9M8=jiGQ_BYFupCbVwsm=d9te85pAyg@mail.gmail.com>
+Subject: Re: [PATCH] drivers: base: Introduce a new kernel parameter driver_sync_probe=
+To:     Greg KH <gregkh@linuxfoundation.org>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Dec 2023 at 13:57, Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
+On Thu, Dec 7, 2023 at 6:19=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org>=
+ wrote:
 >
-> On Thu, Dec 07, 2023 at 01:55:06PM +0200, Dmitry Baryshkov wrote:
-> > On Thu, 7 Dec 2023 at 13:53, Heikki Krogerus
-> > <heikki.krogerus@linux.intel.com> wrote:
+> On Wed, Dec 06, 2023 at 10:08:40PM +0800, Yafang Shao wrote:
+> > On Wed, Dec 6, 2023 at 9:31=E2=80=AFPM Greg KH <gregkh@linuxfoundation.=
+org> wrote:
 > > >
-> > > On Wed, Dec 06, 2023 at 01:38:14PM +0100, Arnd Bergmann wrote:
-> > > > From: Arnd Bergmann <arnd@arndb.de>
-> > > >
-> > > > DRM_AUX_BRIDGE depends on CONFIG_OF, so the same dependency is needed
-> > > > here to avoid a build failure:
-> > > >
-> > > > WARNING: unmet direct dependencies detected for DRM_AUX_BRIDGE
-> > > >   Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && OF [=n]
-> > > >   Selected by [y]:
-> > > >   - TYPEC_MUX_NB7VPQ904M [=y] && USB_SUPPORT [=y] && TYPEC [=y] && I2C [=y] && (DRM [=y] || DRM [=y]=n) && DRM_BRIDGE [=y]
-> > > > x86_64-linux-ld: drivers/gpu/drm/bridge/aux-bridge.o: in function `drm_aux_bridge_register':
-> > > > aux-bridge.c:(.text+0x13b): undefined reference to `auxiliary_device_init'
-> > > > x86_64-linux-ld: aux-bridge.c:(.text+0x14d): undefined reference to `__auxiliary_device_add'
-> > > > x86_64-linux-ld: drivers/gpu/drm/bridge/aux-bridge.o: in function `drm_aux_bridge_drv_init':
-> > > > aux-bridge.c:(.init.text+0x15): undefined reference to `__auxiliary_driver_register'
-> > > > x86_64-linux-ld: drivers/gpu/drm/bridge/aux-bridge.o: in function `drm_aux_bridge_drv_exit':
-> > > > aux-bridge.c:(.exit.text+0x9): undefined reference to `auxiliary_driver_unregister'
-> > > >
-> > > > Fixes: c5d296bad640 ("usb: typec: nb7vpq904m: switch to DRM_AUX_BRIDGE")
-> > > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > > > ---
-> > > >  drivers/usb/typec/mux/Kconfig | 1 +
-> > > >  1 file changed, 1 insertion(+)
-> > > >
-> > > > diff --git a/drivers/usb/typec/mux/Kconfig b/drivers/usb/typec/mux/Kconfig
-> > > > index 5120942f309d..818624f59120 100644
-> > > > --- a/drivers/usb/typec/mux/Kconfig
-> > > > +++ b/drivers/usb/typec/mux/Kconfig
-> > > > @@ -40,6 +40,7 @@ config TYPEC_MUX_NB7VPQ904M
-> > > >       tristate "On Semiconductor NB7VPQ904M Type-C redriver driver"
-> > > >       depends on I2C
-> > > >       depends on DRM || DRM=n
-> > > > +     depends on OF
-> > > >       select DRM_AUX_BRIDGE if DRM_BRIDGE
-> > > >       select REGMAP_I2C
-> > > >       help
+> > > On Wed, Dec 06, 2023 at 11:53:55AM +0000, Yafang Shao wrote:
+> > > > After upgrading our kernel from version 4.19 to 6.1, certain regres=
+sions
+> > > > occurred due to the driver's asynchronous probe behavior. Specifica=
+lly,
+> > > > the SCSI driver transitioned to an asynchronous probe by default, r=
+esulting
+> > > > in a non-fixed root disk behavior. In the prior 4.19 kernel, the ro=
+ot disk
+> > > > was consistently identified as /dev/sda. However, with kernel 6.1, =
+the root
+> > > > disk can be any of /dev/sdX, leading to issues for applications rel=
+iant on
+> > > > /dev/sda, notably impacting monitoring systems monitoring the root =
+disk.
 > > >
-> > > Shouldn't DRM_BRIDGE depend on OF instead?
+> > > Device names are never guaranteed to be stable, ALWAYS use a persista=
+nt
+> > > names like a filesystem label or other ways.  Look at /dev/disk/ for =
+the
+> > > needed ways to do this properly.
 > >
-> > No. DRM_AUX_BRIDGE depends on OF, DRM_BRIDGE framework doesn't.
+> > The root disk is typically identified as /dev/sda or /dev/vda, right?
 >
-> Okay, so this probable should also be
+> Depends on your system.  It can also be identified, in the proper way,
+> as /dev/disk/by-uuid/eef0abc1-4039-4c3f-a123-81fc99999993 if you want
+> (note, fake uuid, use your own disk uuid please.)
 >
->         select DRM_AUX_BRIDGE if DRM_BRIDGE and OF
+> Why not do that?  That's the most stable and recommended way of doing
+> things.
 
-Yes, this is what a patch from Nathan does:
-https://patchwork.freedesktop.org/patch/570638/?series=127385&rev=1
+Adapting to this change isn't straightforward, especially for a large
+fleet of servers. Our monitoring system needs to accommodate and
+adjust accordingly.
 
--- 
-With best wishes
-Dmitry
+>
+> > This is because the root disk, which houses the operating system,
+> > cannot be removed or hotplugged.
+>
+> Not true at all, happens for many systems (think about how systems that
+> run their whole OS out of ram work...)
+>
+> > Therefore, it usually remains as the
+> > first disk in the system. With the synchronous probe, the root disk
+> > maintains a stable and consistent identification.
+> >
+> > >
+> > > > To address this, a new kernel parameter 'driver_sync_probe=3D' is i=
+ntroduced
+> > > > to enforce synchronous probe behavior for specific drivers.
+> > >
+> > > This should be a per-bus thing, not a driver-specific thing as driver=
+s
+> > > for the same bus could have differing settings here which would cause=
+ a
+> > > mess.
+> > >
+> > > Please just revert the scsi bus functionality if you have had
+> > > regressions here, it's not a driver-core thing to do.
+> >
+> > Are you suggesting a reversal of the asynchronous probe code in the
+> > SCSI driver?
+>
+> For your broken scsi driver, yes.
+>
+> > While reverting to synchronous probing could ensure
+> > stability, it's worth noting that asynchronous probing can potentially
+> > shorten the reboot duration under specific conditions. Thus, there
+> > might be some resistance to reverting this change as it offers
+> > performance benefits in certain scenarios. That's why I prefer to
+> > introduce a kernel parameter for it.
+>
+> I don't want to add a new parameter that we need to support for forever
+> and add to the complexity of the system unless it is REALLY needed.
+
+BTW, since there's already a 'driver_async_probe=3D', introducing
+another 'driver_sync_probe=3D' wouldn't significantly increase the
+maintenance overhead.
+
+> Please work with the scsi developers to resolve the issue for your
+> hardware, as it's been working for everyone else for well over a year
+> now, right?
+
+The SCSI guys are added to this mail thread.
+
+I'm uncertain whether it's possible to add SCSI kernel parameters
+selectively. If that's not feasible, we'll need to maintain the
+following modification in our local kernel:
+
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index e934779..8148d12 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -607,7 +607,7 @@ static void sd_set_flush_flag(struct scsi_disk *sdkp)
+                .name           =3D "sd",
+                .owner          =3D THIS_MODULE,
+                .probe          =3D sd_probe,
+-               .probe_type     =3D PROBE_PREFER_ASYNCHRONOUS,
++               .probe_type     =3D PROBE_PREFER_SYNCHRONOUS,
+                .remove         =3D sd_remove,
+                .shutdown       =3D sd_shutdown,
+                .pm             =3D &sd_pm_ops,
+
+
+
+
+--
+Regards
+Yafang
