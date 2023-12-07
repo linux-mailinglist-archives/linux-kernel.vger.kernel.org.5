@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79BC1807DB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF06807DD3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443043AbjLGBSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 20:18:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56844 "EHLO
+        id S1443170AbjLGBWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 20:22:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442110AbjLGBSb (ORCPT
+        with ESMTP id S1443057AbjLGBVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 20:18:31 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965A21BDC
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 17:18:04 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db5416d0fccso480559276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 17:18:04 -0800 (PST)
+        Wed, 6 Dec 2023 20:21:47 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837B21BE7
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 17:18:05 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db54a19c7d6so503579276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 17:18:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701911882; x=1702516682; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701911884; x=1702516684; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=07FiGpCpRwekHPiY2eAXlYGujYsi6QRvrXzBG4my8ro=;
-        b=qIhxv5hW3S3qKis0f+Q+G8ZTk6EVylrpqVFngUCChey0fj8WkrVH62mOQpG77rpKap
-         mGP+CCZCtdI2gKT2ohREaHbF/u64B/gQ30Ovjb/LrOehRllAY7OeyQ5oPDPDYIfZqhvj
-         uiqrNyPbADe+HeWQKyxsTuBpCtD5bj824nIxGVQm8RRiwE4Bx/rnIuIinrvs4vvQf8KD
-         V+iJzrKNO1ZdLDKavKMKSfR1piuD5XWEtNZDV+RE/BFd+PPAsnA3TUxHjP65Z/Qxo4dP
-         LMP/knLiqfV6FoOdJMJ9o/8bcCBihMHdmAH4lKXbc6GOH75ZFmFOWfC4gqw0lrPPzaGr
-         3JGQ==
+        bh=/BM+/6c/Tr/mAdGEEBA/HXGZRIn+6+7yv2y1Rhu0O2o=;
+        b=NxSdT39faglTLaxlk9edbhFB/RBMdP3+tNG493GpancH3w8PBph/ssCk1S5VGyw6ZI
+         Mr9Z7NyYc1vUtgTN9Rvw+LO13RxUvmWcga13AmlXKDXmsAhCmXqB0c2zDut5pvjY/6j1
+         W1xJ7gqHsgtlDFpeo19CJP/nZfj11G7H3d8oE47fROuKIXyslFXmlbb/j/LXzTDY6yZ+
+         aIZfh6COzuog18uO6+u49+7B6K4PYUtqcEAzhCRPP7ym3tjS3KVmuHs/+QtkNfTx9PL8
+         llueD5Xac1+CORj8YIO2JrtX2ssFblcSySS18nLPtBSyYRF3EpOjORwaXSQa1W9oJTNZ
+         JGNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701911882; x=1702516682;
+        d=1e100.net; s=20230601; t=1701911884; x=1702516684;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=07FiGpCpRwekHPiY2eAXlYGujYsi6QRvrXzBG4my8ro=;
-        b=XRM897gCDqEMBwhRkwn3HtsDuJNUgh8APUxVV81OP1Z5uOr0CTnu6QvQsMo731yOLl
-         qwKKdfdIY+j29bHvaglmvX2+YY5TzpKr1RLtLYluKuXcnWwp3WvFLJSd5keVrYvvn1E5
-         0tWJUN6KrUx2uRAluzgjzHWtdu+nJtIgmVviKfc1imiVa8Kqh0vCWEiMWJBiqNMWTG10
-         M4prXDFbsBcZrMB0wp/VmAmmePIYGgT6o9hB5IvELg0BUAkZ7T5XjYGBaqxCP8E6u7lu
-         qItz1rWqQdafZyJq6BmZjZLcNvB0rDq3rQYsd1pDDjvqr3vJQxT1LDphs4yfkeJplqui
-         s7oQ==
-X-Gm-Message-State: AOJu0YzgIwqXbORgfgh2KLMJUcQjp9904p4fOUI6nXipyeXr/QzVV3OH
-        J833+O0yZ0K2H9oP+yKGcSypVa4DFX8k
-X-Google-Smtp-Source: AGHT+IH1SKf3b7cnEfDDfVo5hssWOMvIV6XiMXNs7EhkA8rrrP+9ROg58H69RbViRWo0T+1v+Yw5Epdd4bcz
+        bh=/BM+/6c/Tr/mAdGEEBA/HXGZRIn+6+7yv2y1Rhu0O2o=;
+        b=Vb7fNIs3PWcZ2GYXnahRMSwO2SEG3Pz7Ox5hcgfuL6Hnb4RXtHmUI6jtmo8dVddh/Z
+         pKl/2CnKMd1o7/2E9VPEth3Cjv8pvDgjq9QKJOhTll+u8ugfepTjIMk5dH1Vs91YZpXr
+         kOlKnzvY/Rxn0GjfZ/5qrgS4Fjd4SLwwP+1Td3Jg4Q9QCcu2UlB8wmjGx00tsga9w/+R
+         ccbvZTUtMB6DQiYd6NQ8qSF4dLK6GBnfzavygIPd07eMArtFpARV3KPhbXyv/eebsl1R
+         +dfDvn2Iri+J+Y/YH2gY6c/j2RHIshyNHlWyijRXzVT33WBSJ951CNdbPVJcON6XOv4c
+         eMug==
+X-Gm-Message-State: AOJu0YwWGvpM7c80wpw8vp5plTHjLM6ROG/9y5QXlVf3dQHcj6tBlSSe
+        6wqAqE8RJ5ul5Je9+wYCRFoXeOTQWRPS
+X-Google-Smtp-Source: AGHT+IHuGOinVo8yGRnJo+pdShHMcAZ3lIS76n/OsEzGgjuALvSJoFK5cIamFV++qi4EcWYQydm0lqCsA7Yx
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:35bf:293e:7696:34e9])
- (user=irogers job=sendgmr) by 2002:a25:dac7:0:b0:da0:3117:f35 with SMTP id
- n190-20020a25dac7000000b00da031170f35mr30196ybf.3.1701911882151; Wed, 06 Dec
- 2023 17:18:02 -0800 (PST)
-Date:   Wed,  6 Dec 2023 17:16:49 -0800
+ (user=irogers job=sendgmr) by 2002:a25:d003:0:b0:db5:41e9:aa1c with SMTP id
+ h3-20020a25d003000000b00db541e9aa1cmr21259ybg.11.1701911884195; Wed, 06 Dec
+ 2023 17:18:04 -0800 (PST)
+Date:   Wed,  6 Dec 2023 17:16:50 -0800
 In-Reply-To: <20231207011722.1220634-1-irogers@google.com>
-Message-Id: <20231207011722.1220634-16-irogers@google.com>
+Message-Id: <20231207011722.1220634-17-irogers@google.com>
 Mime-Version: 1.0
 References: <20231207011722.1220634-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Subject: [PATCH v6 15/47] perf debug: Expose debug file
+Subject: [PATCH v6 16/47] perf maps: Refactor maps__fixup_overlappings
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -102,81 +102,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some dumping call backs need to be passed a FILE*. Expose debug file
-via an accessor API for a consistent way to do this. Catch the
-unlikely failure of it not being set. Switch two cases where stderr
-was being used instead of debug_file.
+Rename to maps__fixup_overlap_and_insert as the given mapping is
+always inserted. Factor out first_ending_after as a utility
+function. Minor variable name changes. Switch to using debug_file()
+rather than passing a debug FILE*.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/debug.c | 22 +++++++++++++++-------
- tools/perf/util/debug.h |  1 +
- 2 files changed, 16 insertions(+), 7 deletions(-)
+ tools/perf/util/maps.c   | 57 ++++++++++++++++++++++++----------------
+ tools/perf/util/maps.h   |  2 +-
+ tools/perf/util/thread.c |  3 +--
+ 3 files changed, 37 insertions(+), 25 deletions(-)
 
-diff --git a/tools/perf/util/debug.c b/tools/perf/util/debug.c
-index 88378c4c5dd9..e282b4ceb4d2 100644
---- a/tools/perf/util/debug.c
-+++ b/tools/perf/util/debug.c
-@@ -38,12 +38,21 @@ bool dump_trace = false, quiet = false;
- int debug_ordered_events;
- static int redirect_to_stderr;
- int debug_data_convert;
--static FILE *debug_file;
-+static FILE *_debug_file;
- bool debug_display_time;
+diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
+index f13fd3a9686b..94a97923527d 100644
+--- a/tools/perf/util/maps.c
++++ b/tools/perf/util/maps.c
+@@ -334,20 +334,16 @@ size_t maps__fprintf(struct maps *maps, FILE *fp)
+ 	return args.printed;
+ }
  
-+FILE *debug_file(void)
-+{
-+	if (!_debug_file) {
-+		pr_warning_once("debug_file not set");
-+		debug_set_file(stderr);
-+	}
-+	return _debug_file;
+-int maps__fixup_overlappings(struct maps *maps, struct map *map, FILE *fp)
++/*
++ * Find first map where end > map->start.
++ * Same as find_vma() in kernel.
++ */
++static struct rb_node *first_ending_after(struct maps *maps, const struct map *map)
+ {
+ 	struct rb_root *root;
+ 	struct rb_node *next, *first;
+-	int err = 0;
+-
+-	down_write(maps__lock(maps));
+ 
+ 	root = maps__entries(maps);
+-
+-	/*
+-	 * Find first map where end > map->start.
+-	 * Same as find_vma() in kernel.
+-	 */
+ 	next = root->rb_node;
+ 	first = NULL;
+ 	while (next) {
+@@ -361,8 +357,23 @@ int maps__fixup_overlappings(struct maps *maps, struct map *map, FILE *fp)
+ 		} else
+ 			next = next->rb_right;
+ 	}
++	return first;
 +}
 +
- void debug_set_file(FILE *file)
- {
--	debug_file = file;
-+	_debug_file = file;
- }
++/*
++ * Adds new to maps, if new overlaps existing entries then the existing maps are
++ * adjusted or removed so that new fits without overlapping any entries.
++ */
++int maps__fixup_overlap_and_insert(struct maps *maps, struct map *new)
++{
++
++	struct rb_node *next;
++	int err = 0;
++	FILE *fp = debug_file();
++
++	down_write(maps__lock(maps));
  
- void debug_set_display_time(bool set)
-@@ -78,8 +87,8 @@ int veprintf(int level, int var, const char *fmt, va_list args)
- 		if (use_browser >= 1 && !redirect_to_stderr) {
- 			ui_helpline__vshow(fmt, args);
- 		} else {
--			ret = fprintf_time(debug_file);
--			ret += vfprintf(debug_file, fmt, args);
-+			ret = fprintf_time(debug_file());
-+			ret += vfprintf(debug_file(), fmt, args);
+-	next = first;
++	next = first_ending_after(maps, new);
+ 	while (next && !err) {
+ 		struct map_rb_node *pos = rb_entry(next, struct map_rb_node, rb_node);
+ 		next = rb_next(&pos->rb_node);
+@@ -371,27 +382,27 @@ int maps__fixup_overlappings(struct maps *maps, struct map *map, FILE *fp)
+ 		 * Stop if current map starts after map->end.
+ 		 * Maps are ordered by start: next will not overlap for sure.
+ 		 */
+-		if (map__start(pos->map) >= map__end(map))
++		if (map__start(pos->map) >= map__end(new))
+ 			break;
+ 
+ 		if (verbose >= 2) {
+ 
+ 			if (use_browser) {
+ 				pr_debug("overlapping maps in %s (disable tui for more info)\n",
+-					 map__dso(map)->name);
++					 map__dso(new)->name);
+ 			} else {
+-				fputs("overlapping maps:\n", fp);
+-				map__fprintf(map, fp);
++				pr_debug("overlapping maps:\n");
++				map__fprintf(new, fp);
+ 				map__fprintf(pos->map, fp);
+ 			}
  		}
+ 
+-		rb_erase_init(&pos->rb_node, root);
++		rb_erase_init(&pos->rb_node, maps__entries(maps));
+ 		/*
+ 		 * Now check if we need to create new maps for areas not
+ 		 * overlapped by the new map:
+ 		 */
+-		if (map__start(map) > map__start(pos->map)) {
++		if (map__start(new) > map__start(pos->map)) {
+ 			struct map *before = map__clone(pos->map);
+ 
+ 			if (before == NULL) {
+@@ -399,7 +410,7 @@ int maps__fixup_overlappings(struct maps *maps, struct map *map, FILE *fp)
+ 				goto put_map;
+ 			}
+ 
+-			map__set_end(before, map__start(map));
++			map__set_end(before, map__start(new));
+ 			err = __maps__insert(maps, before);
+ 			if (err) {
+ 				map__put(before);
+@@ -411,7 +422,7 @@ int maps__fixup_overlappings(struct maps *maps, struct map *map, FILE *fp)
+ 			map__put(before);
+ 		}
+ 
+-		if (map__end(map) < map__end(pos->map)) {
++		if (map__end(new) < map__end(pos->map)) {
+ 			struct map *after = map__clone(pos->map);
+ 
+ 			if (after == NULL) {
+@@ -419,10 +430,10 @@ int maps__fixup_overlappings(struct maps *maps, struct map *map, FILE *fp)
+ 				goto put_map;
+ 			}
+ 
+-			map__set_start(after, map__end(map));
+-			map__add_pgoff(after, map__end(map) - map__start(pos->map));
+-			assert(map__map_ip(pos->map, map__end(map)) ==
+-				map__map_ip(after, map__end(map)));
++			map__set_start(after, map__end(new));
++			map__add_pgoff(after, map__end(new) - map__start(pos->map));
++			assert(map__map_ip(pos->map, map__end(new)) ==
++				map__map_ip(after, map__end(new)));
+ 			err = __maps__insert(maps, after);
+ 			if (err) {
+ 				map__put(after);
+@@ -436,6 +447,8 @@ int maps__fixup_overlappings(struct maps *maps, struct map *map, FILE *fp)
+ 		map__put(pos->map);
+ 		free(pos);
  	}
++	/* Add the map. */
++	err = __maps__insert(maps, new);
+ 	up_write(maps__lock(maps));
+ 	return err;
+ }
+diff --git a/tools/perf/util/maps.h b/tools/perf/util/maps.h
+index b94ad5c8fea7..62e94d443c02 100644
+--- a/tools/perf/util/maps.h
++++ b/tools/perf/util/maps.h
+@@ -133,7 +133,7 @@ struct addr_map_symbol;
  
-@@ -107,9 +116,8 @@ static int veprintf_time(u64 t, const char *fmt, va_list args)
- 	nsecs -= secs  * NSEC_PER_SEC;
- 	usecs  = nsecs / NSEC_PER_USEC;
+ int maps__find_ams(struct maps *maps, struct addr_map_symbol *ams);
  
--	ret = fprintf(stderr, "[%13" PRIu64 ".%06" PRIu64 "] ",
--		      secs, usecs);
--	ret += vfprintf(stderr, fmt, args);
-+	ret = fprintf(debug_file(), "[%13" PRIu64 ".%06" PRIu64 "] ", secs, usecs);
-+	ret += vfprintf(debug_file(), fmt, args);
- 	return ret;
+-int maps__fixup_overlappings(struct maps *maps, struct map *map, FILE *fp);
++int maps__fixup_overlap_and_insert(struct maps *maps, struct map *new);
+ 
+ struct map *maps__find_by_name(struct maps *maps, const char *name);
+ 
+diff --git a/tools/perf/util/thread.c b/tools/perf/util/thread.c
+index b6986a81aa6d..3d47b5c5528b 100644
+--- a/tools/perf/util/thread.c
++++ b/tools/perf/util/thread.c
+@@ -345,8 +345,7 @@ int thread__insert_map(struct thread *thread, struct map *map)
+ 	if (ret)
+ 		return ret;
+ 
+-	maps__fixup_overlappings(thread__maps(thread), map, stderr);
+-	return maps__insert(thread__maps(thread), map);
++	return maps__fixup_overlap_and_insert(thread__maps(thread), map);
  }
  
-diff --git a/tools/perf/util/debug.h b/tools/perf/util/debug.h
-index f99468a7f681..de8870980d44 100644
---- a/tools/perf/util/debug.h
-+++ b/tools/perf/util/debug.h
-@@ -77,6 +77,7 @@ int eprintf_time(int level, int var, u64 t, const char *fmt, ...) __printf(4, 5)
- int veprintf(int level, int var, const char *fmt, va_list args);
- 
- int perf_debug_option(const char *str);
-+FILE *debug_file(void);
- void debug_set_file(FILE *file);
- void debug_set_display_time(bool set);
- void perf_debug_setup(void);
+ struct thread__prepare_access_maps_cb_args {
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
