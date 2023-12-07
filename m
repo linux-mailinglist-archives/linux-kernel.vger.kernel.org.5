@@ -2,111 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3EA807FBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC58D807FC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbjLGEiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 23:38:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
+        id S229704AbjLGElz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 23:41:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLGEiB (ORCPT
+        with ESMTP id S229449AbjLGEly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 23:38:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CFBD3
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 20:38:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701923887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=tGYuayIbjuzHLuEu82pkqtgPwJeMuDwkxBYxtZFsrRQ=;
-        b=jIEfo0ZRJcwGhrI5/wQ+Zv9yYCWWUGZd23StJyZ4dvLaNaTJkcB2RseiLVmqv6Vi7IqHm6
-        9MLknV5ExSz21gLTWUeaX9aaG6+8ur2D8n+JkEpP9gN3ZPzCyzWtKbKL8msMlbIo7J148y
-        KKGxRLElywtcwlIAj1N18ovxVh0Zdvc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-442-3EujIB-UPuOPPoDl20n5tQ-1; Wed, 06 Dec 2023 23:38:04 -0500
-X-MC-Unique: 3EujIB-UPuOPPoDl20n5tQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 685FF83BA86;
-        Thu,  7 Dec 2023 04:38:03 +0000 (UTC)
-Received: from llong.com (unknown [10.22.34.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7550D8CD0;
-        Thu,  7 Dec 2023 04:38:02 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yafang Shao <laoar.shao@gmail.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH-cgroup] cgroup: Move rcu_head up near the top of cgroup_root
-Date:   Wed,  6 Dec 2023 23:37:53 -0500
-Message-Id: <20231207043753.876437-1-longman@redhat.com>
+        Wed, 6 Dec 2023 23:41:54 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2340126
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 20:41:59 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-286d6c9ce6dso551258a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 20:41:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701924119; x=1702528919; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=v2QqlXWCI26gv+jGfNp5oJjKdW8trvqIMxHSQSlEVHs=;
+        b=MKoR0dcrSBRNJKZmpUwr0+k2U4NqHbxPyVIUTmDcvuDa7rgLcBAGAIx6zkdjjxunk4
+         w7HqBHmzFX3i1Bc97Y1XK7d5r1CCuRapoxS9K67ePCo0I3YjnjbM+pVs2QeX6f0T4CSC
+         X4lqcOPh54gnrmzQegKb9Mqc0LuG5JsT/yAaKm/DSPxO8xVUYxmyTvUMALt9WWpHfbhQ
+         LwxY/XWeUMurIzzvkthXsuHxsSFu+jkPhiY30F3uGKiiNuOUY13chSKWw8BvQXIL0Sen
+         zokKIhg3tUngUM+yYHxk9tZwQaVS5ZPU2H737G/uSJiPK9tws8aHT/hXEQnlJbJLEKTN
+         TPDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701924119; x=1702528919;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v2QqlXWCI26gv+jGfNp5oJjKdW8trvqIMxHSQSlEVHs=;
+        b=uXXit1JQnE71g6kGZ6JV1wWkKNy8gezucYztUAtL2LV68tki8E1aJu78s6RNioWLHz
+         6oJvWaQdOTtjzSxw28XRk6pj243+t/Y1YPQaxSJ/nFJqz7sj2BFJBR58VqLp97OeD1uj
+         E7hHyHDyS+KRsLPRmotssGDjxiIqGJi2LqX8tKJQHl2be+2alu444pwjSN6zg5z0Dmw7
+         qVYwmEE3uxKgSUHAbvigK/4y+H1G8/ovYa5npgwabG2XGOlLZX+oO9oC8bvPqERcMLyg
+         KSRviYaMi/Ja5vdAb0siwpzTKYy1apdLdppXX01Qu3SomF7SobzUeKmJL08ibp/uj5tW
+         POnw==
+X-Gm-Message-State: AOJu0Yyy/1fSwhZjzep5L2P1HP5ZyzETrDnZpik1VWaGCqDv0WLtVxTc
+        rSLpTXvPyJGHzUSp5VEdt/9RAg==
+X-Google-Smtp-Source: AGHT+IEKMEQI+Kt2z5Onuh0MysWMqhlDFc/G7D/Ejlz0kBFz1I/zpQGv1eC/i6etrpu5sui34F8eUg==
+X-Received: by 2002:a17:90a:ff14:b0:286:6cc1:781a with SMTP id ce20-20020a17090aff1400b002866cc1781amr1867568pjb.93.1701924119432;
+        Wed, 06 Dec 2023 20:41:59 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
+        by smtp.gmail.com with ESMTPSA id mm22-20020a17090b359600b00286901e226bsm293341pjb.28.2023.12.06.20.41.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 20:41:58 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1rB6Cy-004vYN-0Q;
+        Thu, 07 Dec 2023 15:41:56 +1100
+Date:   Thu, 7 Dec 2023 15:41:56 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-cachefs@redhat.com, dhowells@redhat.com,
+        gfs2@lists.linux.dev, dm-devel@lists.linux.dev,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/11] list_bl: don't use bit locks for PREEMPT_RT or
+ lockdep
+Message-ID: <ZXFNFKai3ILLFdnR@dread.disaster.area>
+References: <20231206060629.2827226-1-david@fromorbit.com>
+ <20231206060629.2827226-11-david@fromorbit.com>
+ <20231207041650.3tzzmv2jfrr5vppl@moria.home.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207041650.3tzzmv2jfrr5vppl@moria.home.lan>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU
-safe") adds a new rcu_head to the cgroup_root structure and kvfree_rcu()
-for freeing the cgroup_root.
+On Wed, Dec 06, 2023 at 11:16:50PM -0500, Kent Overstreet wrote:
+> On Wed, Dec 06, 2023 at 05:05:39PM +1100, Dave Chinner wrote:
+> > From: Dave Chinner <dchinner@redhat.com>
+> > 
+> > hash-bl nests spinlocks inside the bit locks. This causes problems
+> > for CONFIG_PREEMPT_RT which converts spin locks to sleeping locks,
+> > and we're not allowed to sleep while holding a spinning lock.
+> > 
+> > Further, lockdep does not support bit locks, so we lose lockdep
+> > coverage of the inode hash table with the hash-bl conversion.
+> > 
+> > To enable these configs to work, add an external per-chain spinlock
+> > to the hlist_bl_head() and add helpers to use this instead of the
+> > bit spinlock when preempt_rt or lockdep are enabled.
+> > 
+> > This converts all users of hlist-bl to use the external spinlock in
+> > these situations, so we also gain lockdep coverage of things like
+> > the dentry cache hash table with this change.
+> > 
+> > Signed-off-by: Dave Chinner <dchinner@redhat.com>
+> 
+> Sleepable bit locks can be done with wait_on_bit(), is that worth
+> considering for PREEMPT_RT? Or are the other features of real locks
+> important there?
 
-The use of kvfree_rcu(), however, has the limitation that the offset of
-the rcu_head structure within the larger data structure cannot exceed
-4096 or the compilation will fail. By putting rcu_head below the cgroup
-structure, any change to the cgroup structure that makes it larger has
-the risk of build failure. Commit 77070eeb8821 ("cgroup: Avoid false
-cacheline sharing of read mostly rstat_cpu") happens to be the commit
-that breaks it even though it is not its fault. Fix it by moving the
-rcu_head structure up before the cgroup structure.
+I think wait_on_bit() is not scalable. It hashes down to one of 256
+shared struct wait_queue_heads which have thundering herd
+behaviours, and it requires the locker to always run
+prepare_to_wait() and finish_wait(). This means there is at least
+one spinlock_irqsave()/unlock pair needed, sometimes two, just to
+get an uncontended sleeping bit lock.
 
-Fixes: d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU safe")
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- include/linux/cgroup-defs.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+So as a fast path operation that requires lock scalability, it's
+going to be better to use a straight spinlock that doesn't require
+irq safety as it's far less expensive than a sleeping bit lock.
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 5a97ea95b564..45359969d8cf 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -562,6 +562,10 @@ struct cgroup_root {
- 	/* Unique id for this hierarchy. */
- 	int hierarchy_id;
- 
-+	/* A list running through the active hierarchies */
-+	struct list_head root_list;
-+	struct rcu_head rcu;
-+
- 	/*
- 	 * The root cgroup. The containing cgroup_root will be destroyed on its
- 	 * release. cgrp->ancestors[0] will be used overflowing into the
-@@ -575,10 +579,6 @@ struct cgroup_root {
- 	/* Number of cgroups in the hierarchy, used only for /proc/cgroups */
- 	atomic_t nr_cgrps;
- 
--	/* A list running through the active hierarchies */
--	struct list_head root_list;
--	struct rcu_head rcu;
--
- 	/* Hierarchy-specific flags */
- 	unsigned int flags;
- 
+Whether CONFIG_PREEMPT_RT changes that equation at all is not at all
+clear to me, and so I'll leave that consideration to RT people if
+they see a need to address it. In the mean time, we need to use an
+external spinlock for lockdep validation so it really doesn't make
+any sense at all to add a third locking variant with completely
+different semantics just for PREEMPT_RT...
+
+-Dave.
 -- 
-2.39.3
-
+Dave Chinner
+david@fromorbit.com
