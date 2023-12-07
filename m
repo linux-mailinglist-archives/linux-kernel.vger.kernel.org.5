@@ -2,84 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71121807F75
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A523E807F79
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbjLGEMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 23:12:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
+        id S229560AbjLGEQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 23:16:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjLGEMo (ORCPT
+        with ESMTP id S229449AbjLGEQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 23:12:44 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C5C1B4;
-        Wed,  6 Dec 2023 20:12:50 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B73GL2b029931;
-        Thu, 7 Dec 2023 04:12:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=DPjpRrL/za+yxHGpGqV2m9WYI4TpbKPjkDDWOXeGb5Q=;
- b=ICgKLPeJdePNqAw7oxNYtNJ7GmCThS5k5hGsozeqtkZ+Rn+uwJvvY5mJfuMr38+5MQBV
- Ha9YVzvfucP1CJO/2Ni30vC/3KtXtChWIZ+jjLBDPWJZI25qkDPgA8BJPJauvEEEsguo
- 3QBjfn2LAsdgwzkWLnrOjTTIQDanvYnWEsFxbjpjHslV3mmMGApzxRGLi3esDU1+p1N1
- DAgMEVf9skz/WmAMnMxDazED4iNrHPK2LMuqEg2o6zyZcgs+Le3PHdUP2kxet+cr8Iov
- SnzVJQG8cmjF5HbeLq0aW63BHqn2bQ+Kpen78J0u4bUXmn0/o7MCgcFVLtxUfez6l4XE 9A== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uu2p88en5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Dec 2023 04:12:45 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B74CiCo029623
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 7 Dec 2023 04:12:44 GMT
-Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 6 Dec 2023 20:12:40 -0800
-Date:   Thu, 7 Dec 2023 09:42:36 +0530
-From:   Varadarajan Narayanan <quic_varada@quicinc.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <dmitry.baryshkov@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/2] arm64: dts: qcom: ipq9574: Fix USB
- 'vdda-pll-supply'
-Message-ID: <ZXFGNLhyEZC924T8@hu-varada-blr.qualcomm.com>
-References: <cover.1701160842.git.varada@hu-varada-blr.qualcomm.com>
- <f98bbf0a515236709d999010f08c8f2470a31209.1701160842.git.varada@hu-varada-blr.qualcomm.com>
- <832a6d4f-f561-4cf5-b1cb-7e4b2d4d50b4@linaro.org>
- <ZWW9oF24YUGfev+2@hu-varada-blr.qualcomm.com>
- <0acdc122-b7fa-4bb4-b838-6420cd43d0e0@linaro.org>
- <ZXBdHQpJYBmZbd76@hu-varada-blr.qualcomm.com>
- <a1cfc6af-080c-4aa1-8200-e230640f7ca3@linaro.org>
- <81bdac87-59e0-4618-a51d-ebe5cec6f54c@linaro.org>
+        Wed, 6 Dec 2023 23:16:52 -0500
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54DEA3;
+        Wed,  6 Dec 2023 20:16:56 -0800 (PST)
+Date:   Wed, 6 Dec 2023 23:16:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1701922614;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LNe/f5rAqesLPfJC2GbJ9GN0ksK5lZDul4OlDPlZJWI=;
+        b=jJovVp0PMthG0Fxd+36NA6aiVeZ0cUop/mARCXienhJod0P8rjipoXIV3vyPsRwR++Hltt
+        KZos0d6bAQlhsYSXLnBC8LyY4chkQWLGfLDZHfGVIbBecpWDyhIu9oyZGDpWDN25rl6KDv
+        9810V143X27MqeRBM+FMKQqyc6/x2t4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-cachefs@redhat.com, dhowells@redhat.com,
+        gfs2@lists.linux.dev, dm-devel@lists.linux.dev,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/11] list_bl: don't use bit locks for PREEMPT_RT or
+ lockdep
+Message-ID: <20231207041650.3tzzmv2jfrr5vppl@moria.home.lan>
+References: <20231206060629.2827226-1-david@fromorbit.com>
+ <20231206060629.2827226-11-david@fromorbit.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <81bdac87-59e0-4618-a51d-ebe5cec6f54c@linaro.org>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: VAN8zApSXwIIpBwsY36r2XSOLDZYu73a
-X-Proofpoint-ORIG-GUID: VAN8zApSXwIIpBwsY36r2XSOLDZYu73a
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-07_01,2023-12-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- suspectscore=0 mlxlogscore=836 mlxscore=0 adultscore=0 lowpriorityscore=0
- malwarescore=0 priorityscore=1501 impostorscore=0 spamscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312070033
+In-Reply-To: <20231206060629.2827226-11-david@fromorbit.com>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,67 +53,269 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 01:33:17PM +0100, Krzysztof Kozlowski wrote:
-> On 06/12/2023 13:31, Krzysztof Kozlowski wrote:
-> > On 06/12/2023 12:38, Varadarajan Narayanan wrote:
-> >> On Tue, Nov 28, 2023 at 03:01:12PM +0100, Krzysztof Kozlowski wrote:
-> >>> On 28/11/2023 11:14, Varadarajan Narayanan wrote:
-> >>>> On Tue, Nov 28, 2023 at 09:51:50AM +0100, Krzysztof Kozlowski wrote:
-> >>>>> On 28/11/2023 09:46, Varadarajan Narayanan wrote:
-> >>>>>> From: Varadarajan Narayanan <quic_varada@quicinc.com>
-> >>>>>>
-> >>>>>> The earlier patch ec4f047679d5, incorrectly used 'l2'
-> >>>>>> as the vdda-pll-supply. However, 'l5' is the correct
-> >>>>>> ldo that supplies power to the USB PHY.
-> >>>>>>
-> >>>>>> Fixes: ec4f047679d5 ("arm64: dts: qcom: ipq9574: Enable USB")
-> >>>>>
-> >>>>> Doesn't this depend on the driver change?
-> >>>>
-> >>>> Yes, will mention in the cover letter.
-> >>>
-> >>> This commit should have it in its changelog ---
-> >>>
-> >>>>
-> >>>>> It affects both existing
-> >>>>> kernel and backports which you claim here should happen.
-> >>>>
-> >>>> Ok. Will include stable@vger.kernel.org in the next revision.
-> >>>
-> >>> I wasn't speaking about Cc. You indicated this should be backported.
-> >>> Then please backport it, without previous commit, and check the result.
-> >>> Is stable tree working correctly or not?
-> >>
-> >> Without the previous commit, it would fail in both the latest
-> >> and stable tree. (Please see below for the error messages and
-> >> stack dump)
-> >>
-> >> The previous commit is necessary for this commit to work.
-> >
-> > Yep, exactly. It's visible from the patches. I don't know how to solve
-> > this exactly. The Fixes tag here is logically correct, but then any
-> > backporting must include previous commit. Dependency can be provided in
-> > cc-stable tag, but you did not cc-stable, I suppose on purpose.
+On Wed, Dec 06, 2023 at 05:05:39PM +1100, Dave Chinner wrote:
+> From: Dave Chinner <dchinner@redhat.com>
+> 
+> hash-bl nests spinlocks inside the bit locks. This causes problems
+> for CONFIG_PREEMPT_RT which converts spin locks to sleeping locks,
+> and we're not allowed to sleep while holding a spinning lock.
+> 
+> Further, lockdep does not support bit locks, so we lose lockdep
+> coverage of the inode hash table with the hash-bl conversion.
+> 
+> To enable these configs to work, add an external per-chain spinlock
+> to the hlist_bl_head() and add helpers to use this instead of the
+> bit spinlock when preempt_rt or lockdep are enabled.
+> 
+> This converts all users of hlist-bl to use the external spinlock in
+> these situations, so we also gain lockdep coverage of things like
+> the dentry cache hash table with this change.
+> 
+> Signed-off-by: Dave Chinner <dchinner@redhat.com>
 
-It was not on purpose. Got lucky :).
-Shall I separate the patches and wait till the first one gets
-merged (in stable and top of tree) and then post the second one?
+Sleepable bit locks can be done with wait_on_bit(), is that worth
+considering for PREEMPT_RT? Or are the other features of real locks
+important there?
 
-> > If this is chosen by AUTOSEL, are you going to check if backport
-> > includes previous patch and object/review such backport?
->
-> One more point. Except issues with backporting, you did not annotate any
-> dependency so patches can be applied independently. This will lead to
-> non-bisectable tree or even broken tree. What's more DTS goes always via
-> separate tree and branches, so this patch must be delayed.
->
-> You always must explicitly mention such dependencies and changes to
-> default applying process, so maintainers know what to do. Nothing like
-> this was explained anywhere here.
+(not a request for the current patchset, just perhaps a note for future
+work)
 
-Sorry, my mistake. Will be careful in future.
+Reviewed-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-Thanks for the feedback.
-
-Regards
-Varada
+> ---
+>  include/linux/list_bl.h    | 126 ++++++++++++++++++++++++++++---------
+>  include/linux/rculist_bl.h |  13 ++++
+>  2 files changed, 110 insertions(+), 29 deletions(-)
+> 
+> diff --git a/include/linux/list_bl.h b/include/linux/list_bl.h
+> index 8ee2bf5af131..990ad8e24e0b 100644
+> --- a/include/linux/list_bl.h
+> +++ b/include/linux/list_bl.h
+> @@ -4,14 +4,27 @@
+>  
+>  #include <linux/list.h>
+>  #include <linux/bit_spinlock.h>
+> +#include <linux/spinlock.h>
+>  
+>  /*
+>   * Special version of lists, where head of the list has a lock in the lowest
+>   * bit. This is useful for scalable hash tables without increasing memory
+>   * footprint overhead.
+>   *
+> - * For modification operations, the 0 bit of hlist_bl_head->first
+> - * pointer must be set.
+> + * Whilst the general use of bit spin locking is considered safe, PREEMPT_RT
+> + * introduces a problem with nesting spin locks inside bit locks: spin locks
+> + * become sleeping locks, and we can't sleep inside spinning locks such as bit
+> + * locks. However, for RTPREEMPT, performance is less of an issue than
+> + * correctness, so we trade off the memory and cache footprint of a spinlock per
+> + * list so the list locks are converted to sleeping locks and work correctly
+> + * with PREEMPT_RT kernels.
+> + *
+> + * An added advantage of this is that we can use the same trick when lockdep is
+> + * enabled (again, performance doesn't matter) and gain lockdep coverage of all
+> + * the hash-bl operations.
+> + *
+> + * For modification operations when using pure bit locking, the 0 bit of
+> + * hlist_bl_head->first pointer must be set.
+>   *
+>   * With some small modifications, this can easily be adapted to store several
+>   * arbitrary bits (not just a single lock bit), if the need arises to store
+> @@ -30,16 +43,21 @@
+>  #define LIST_BL_BUG_ON(x)
+>  #endif
+>  
+> +#undef LIST_BL_USE_SPINLOCKS
+> +#if defined(CONFIG_PREEMPT_RT) || defined(CONFIG_LOCKDEP)
+> +#define LIST_BL_USE_SPINLOCKS	1
+> +#endif
+>  
+>  struct hlist_bl_head {
+>  	struct hlist_bl_node *first;
+> +#ifdef LIST_BL_USE_SPINLOCKS
+> +	spinlock_t lock;
+> +#endif
+>  };
+>  
+>  struct hlist_bl_node {
+>  	struct hlist_bl_node *next, **pprev;
+>  };
+> -#define INIT_HLIST_BL_HEAD(ptr) \
+> -	((ptr)->first = NULL)
+>  
+>  static inline void INIT_HLIST_BL_NODE(struct hlist_bl_node *h)
+>  {
+> @@ -54,6 +72,69 @@ static inline bool  hlist_bl_unhashed(const struct hlist_bl_node *h)
+>  	return !h->pprev;
+>  }
+>  
+> +#ifdef LIST_BL_USE_SPINLOCKS
+> +#define INIT_HLIST_BL_HEAD(ptr) do { \
+> +	(ptr)->first = NULL; \
+> +	spin_lock_init(&(ptr)->lock); \
+> +} while (0)
+> +
+> +static inline void hlist_bl_lock(struct hlist_bl_head *b)
+> +{
+> +	spin_lock(&b->lock);
+> +}
+> +
+> +static inline void hlist_bl_unlock(struct hlist_bl_head *b)
+> +{
+> +	spin_unlock(&b->lock);
+> +}
+> +
+> +static inline bool hlist_bl_is_locked(struct hlist_bl_head *b)
+> +{
+> +	return spin_is_locked(&b->lock);
+> +}
+> +
+> +static inline struct hlist_bl_node *hlist_bl_first(struct hlist_bl_head *h)
+> +{
+> +	return h->first;
+> +}
+> +
+> +static inline void hlist_bl_set_first(struct hlist_bl_head *h,
+> +					struct hlist_bl_node *n)
+> +{
+> +	h->first = n;
+> +}
+> +
+> +static inline void hlist_bl_set_before(struct hlist_bl_node **pprev,
+> +					struct hlist_bl_node *n)
+> +{
+> +	WRITE_ONCE(*pprev, n);
+> +}
+> +
+> +static inline bool hlist_bl_empty(const struct hlist_bl_head *h)
+> +{
+> +	return !READ_ONCE(h->first);
+> +}
+> +
+> +#else /* !LIST_BL_USE_SPINLOCKS */
+> +
+> +#define INIT_HLIST_BL_HEAD(ptr) \
+> +	((ptr)->first = NULL)
+> +
+> +static inline void hlist_bl_lock(struct hlist_bl_head *b)
+> +{
+> +	bit_spin_lock(0, (unsigned long *)b);
+> +}
+> +
+> +static inline void hlist_bl_unlock(struct hlist_bl_head *b)
+> +{
+> +	__bit_spin_unlock(0, (unsigned long *)b);
+> +}
+> +
+> +static inline bool hlist_bl_is_locked(struct hlist_bl_head *b)
+> +{
+> +	return bit_spin_is_locked(0, (unsigned long *)b);
+> +}
+> +
+>  static inline struct hlist_bl_node *hlist_bl_first(struct hlist_bl_head *h)
+>  {
+>  	return (struct hlist_bl_node *)
+> @@ -69,11 +150,21 @@ static inline void hlist_bl_set_first(struct hlist_bl_head *h,
+>  	h->first = (struct hlist_bl_node *)((unsigned long)n | LIST_BL_LOCKMASK);
+>  }
+>  
+> +static inline void hlist_bl_set_before(struct hlist_bl_node **pprev,
+> +					struct hlist_bl_node *n)
+> +{
+> +	WRITE_ONCE(*pprev,
+> +		   (struct hlist_bl_node *)
+> +			((uintptr_t)n | ((uintptr_t)*pprev & LIST_BL_LOCKMASK)));
+> +}
+> +
+>  static inline bool hlist_bl_empty(const struct hlist_bl_head *h)
+>  {
+>  	return !((unsigned long)READ_ONCE(h->first) & ~LIST_BL_LOCKMASK);
+>  }
+>  
+> +#endif /* LIST_BL_USE_SPINLOCKS */
+> +
+>  static inline void hlist_bl_add_head(struct hlist_bl_node *n,
+>  					struct hlist_bl_head *h)
+>  {
+> @@ -94,11 +185,7 @@ static inline void hlist_bl_add_before(struct hlist_bl_node *n,
+>  	n->pprev = pprev;
+>  	n->next = next;
+>  	next->pprev = &n->next;
+> -
+> -	/* pprev may be `first`, so be careful not to lose the lock bit */
+> -	WRITE_ONCE(*pprev,
+> -		   (struct hlist_bl_node *)
+> -			((uintptr_t)n | ((uintptr_t)*pprev & LIST_BL_LOCKMASK)));
+> +	hlist_bl_set_before(pprev, n);
+>  }
+>  
+>  static inline void hlist_bl_add_behind(struct hlist_bl_node *n,
+> @@ -119,11 +206,7 @@ static inline void __hlist_bl_del(struct hlist_bl_node *n)
+>  
+>  	LIST_BL_BUG_ON((unsigned long)n & LIST_BL_LOCKMASK);
+>  
+> -	/* pprev may be `first`, so be careful not to lose the lock bit */
+> -	WRITE_ONCE(*pprev,
+> -		   (struct hlist_bl_node *)
+> -			((unsigned long)next |
+> -			 ((unsigned long)*pprev & LIST_BL_LOCKMASK)));
+> +	hlist_bl_set_before(pprev, next);
+>  	if (next)
+>  		next->pprev = pprev;
+>  }
+> @@ -165,21 +248,6 @@ static inline bool hlist_bl_fake(struct hlist_bl_node *n)
+>  	return n->pprev == &n->next;
+>  }
+>  
+> -static inline void hlist_bl_lock(struct hlist_bl_head *b)
+> -{
+> -	bit_spin_lock(0, (unsigned long *)b);
+> -}
+> -
+> -static inline void hlist_bl_unlock(struct hlist_bl_head *b)
+> -{
+> -	__bit_spin_unlock(0, (unsigned long *)b);
+> -}
+> -
+> -static inline bool hlist_bl_is_locked(struct hlist_bl_head *b)
+> -{
+> -	return bit_spin_is_locked(0, (unsigned long *)b);
+> -}
+> -
+>  /**
+>   * hlist_bl_for_each_entry	- iterate over list of given type
+>   * @tpos:	the type * to use as a loop cursor.
+> diff --git a/include/linux/rculist_bl.h b/include/linux/rculist_bl.h
+> index 0b952d06eb0b..2d5eb5153121 100644
+> --- a/include/linux/rculist_bl.h
+> +++ b/include/linux/rculist_bl.h
+> @@ -8,6 +8,18 @@
+>  #include <linux/list_bl.h>
+>  #include <linux/rcupdate.h>
+>  
+> +#ifdef LIST_BL_USE_SPINLOCKS
+> +static inline void hlist_bl_set_first_rcu(struct hlist_bl_head *h,
+> +					struct hlist_bl_node *n)
+> +{
+> +	rcu_assign_pointer(h->first, n);
+> +}
+> +
+> +static inline struct hlist_bl_node *hlist_bl_first_rcu(struct hlist_bl_head *h)
+> +{
+> +	return rcu_dereference_check(h->first, hlist_bl_is_locked(h));
+> +}
+> +#else /* !LIST_BL_USE_SPINLOCKS */
+>  static inline void hlist_bl_set_first_rcu(struct hlist_bl_head *h,
+>  					struct hlist_bl_node *n)
+>  {
+> @@ -23,6 +35,7 @@ static inline struct hlist_bl_node *hlist_bl_first_rcu(struct hlist_bl_head *h)
+>  	return (struct hlist_bl_node *)
+>  		((unsigned long)rcu_dereference_check(h->first, hlist_bl_is_locked(h)) & ~LIST_BL_LOCKMASK);
+>  }
+> +#endif /* LIST_BL_USE_SPINLOCKS */
+>  
+>  /**
+>   * hlist_bl_del_rcu - deletes entry from hash list without re-initialization
+> -- 
+> 2.42.0
+> 
