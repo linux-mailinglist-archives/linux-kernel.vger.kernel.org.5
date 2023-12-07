@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F3A808FB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59BCD808FB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443704AbjLGSUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 13:20:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47034 "EHLO
+        id S1443700AbjLGSUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 13:20:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443669AbjLGSUW (ORCPT
+        with ESMTP id S1443634AbjLGSUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Dec 2023 13:20:22 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555BF1709
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BCD1704
         for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 10:20:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F2DB0C433CA;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E35F0C433C9;
         Thu,  7 Dec 2023 18:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1701973229;
-        bh=LDm1+QHR8otPnvd5qanmORyB5Bf/LNhiYArxQO95HWE=;
+        bh=0KcANSyv1sr9UhGc/vinHfJbi1QB9ETNOHuMpKsQkMk=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=f8lO6UP1Sqq41OawP3hmxO8XqLS5s4UDhBRVSnBqbluAh1Ie+BOkuf9+Wmn4+fFkP
-         eyqdiS8t/eXheGxPdwxOoL+zK8fiQ4H8W66NyhFdCph2J/BQDtDAgpQxD7Ck2zEXwe
-         yMaas11FNBS9gONxXvmfHXU/6BPEIe1IWulwoDjJH2SW2O3/6MaeS7j6TSdK+cSsXr
-         EBCVF3PC3owTnoTvD+kecJ7iy7twB8eJMgd9Jz5XjBGAPShyhWnh/TdpPTAP946WLm
-         fEX4k3dvbdQinHMt6ryFbv+1CDhzFWbZwgk5PuTa6woiMzWUSy+oDL/Ya35LTGXqT3
-         0Ub9j3sE+hOdg==
+        b=WolHTfrnuD59oo7UIECAYiJGuyiZL+9nfNxgrnrVMoUaQt1DvlLzpFIeeXZmOXihU
+         7Ins/SIsy8rBda6rEfMi5kztLjQEtxOlxLUA/6qDs42rW2CPVNSs480pWBmyWbMBCC
+         TwGraVPrfqxWyWaoKTyVKw9el7oY/GnONTQ/Y9PAkNF0kA0a2zQKiVPNq4Jr/drr9W
+         GeBAPNWNmf2TdBKPpH0tp7sE+9D+LEXamJuNPb5bDe7+9hMVVPW0fIzDO408bR1ctJ
+         2Qu43EG3IZdqdfu5YlrDakPNMfAQb4vvKQEcPHXXr1IsP4USVTFd/vbxeGNeQCsK2/
+         r6VxGwAoK6WUg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D76C7C40C5E;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CC0C0C4314C;
         Thu,  7 Dec 2023 18:20:28 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net/smc: fix missing byte order conversion in CLC
- handshake
+Subject: Re: [PATCH net] vsock/virtio: fix "comparison of distinct pointer types
+ lacks a cast" warning
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <170197322887.20147.8322709345682789955.git-patchwork-notify@kernel.org>
+Message-Id: <170197322883.20147.5857598481880040072.git-patchwork-notify@kernel.org>
 Date:   Thu, 07 Dec 2023 18:20:28 +0000
-References: <1701882157-87956-1-git-send-email-guwen@linux.alibaba.com>
-In-Reply-To: <1701882157-87956-1-git-send-email-guwen@linux.alibaba.com>
-To:     Wen Gu <guwen@linux.alibaba.com>
-Cc:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, alibuda@linux.alibaba.com,
-        tonylu@linux.alibaba.com, ubraun@linux.ibm.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20231206164143.281107-1-sgarzare@redhat.com>
+In-Reply-To: <20231206164143.281107-1-sgarzare@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     netdev@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
+        virtualization@lists.linux.dev, mst@redhat.com,
+        avkrasnov@salutedevices.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stefanha@redhat.com,
+        edumazet@google.com, pabeni@redhat.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -62,21 +61,36 @@ Hello:
 This patch was applied to netdev/net.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Thu,  7 Dec 2023 01:02:37 +0800 you wrote:
-> The byte order conversions of ISM GID and DMB token are missing in
-> process of CLC accept and confirm. So fix it.
+On Wed,  6 Dec 2023 17:41:43 +0100 you wrote:
+> After backporting commit 581512a6dc93 ("vsock/virtio: MSG_ZEROCOPY
+> flag support") in CentOS Stream 9, CI reported the following error:
 > 
-> Fixes: 3d9725a6a133 ("net/smc: common routine for CLC accept and confirm")
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-> ---
->  net/smc/af_smc.c  | 4 ++--
->  net/smc/smc_clc.c | 9 ++++-----
->  net/smc/smc_clc.h | 4 ++--
->  3 files changed, 8 insertions(+), 9 deletions(-)
+>     In file included from ./include/linux/kernel.h:17,
+>                      from ./include/linux/list.h:9,
+>                      from ./include/linux/preempt.h:11,
+>                      from ./include/linux/spinlock.h:56,
+>                      from net/vmw_vsock/virtio_transport_common.c:9:
+>     net/vmw_vsock/virtio_transport_common.c: In function ‘virtio_transport_can_zcopy‘:
+>     ./include/linux/minmax.h:20:35: error: comparison of distinct pointer types lacks a cast [-Werror]
+>        20 |         (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+>           |                                   ^~
+>     ./include/linux/minmax.h:26:18: note: in expansion of macro ‘__typecheck‘
+>        26 |                 (__typecheck(x, y) && __no_side_effects(x, y))
+>           |                  ^~~~~~~~~~~
+>     ./include/linux/minmax.h:36:31: note: in expansion of macro ‘__safe_cmp‘
+>        36 |         __builtin_choose_expr(__safe_cmp(x, y), \
+>           |                               ^~~~~~~~~~
+>     ./include/linux/minmax.h:45:25: note: in expansion of macro ‘__careful_cmp‘
+>        45 | #define min(x, y)       __careful_cmp(x, y, <)
+>           |                         ^~~~~~~~~~~~~
+>     net/vmw_vsock/virtio_transport_common.c:63:37: note: in expansion of macro ‘min‘
+>        63 |                 int pages_to_send = min(pages_in_iov, MAX_SKB_FRAGS);
+> 
+> [...]
 
 Here is the summary with links:
-  - [net] net/smc: fix missing byte order conversion in CLC handshake
-    https://git.kernel.org/netdev/net/c/c5a10397d457
+  - [net] vsock/virtio: fix "comparison of distinct pointer types lacks a cast" warning
+    https://git.kernel.org/netdev/net/c/b0a930e8d90c
 
 You are awesome, thank you!
 -- 
