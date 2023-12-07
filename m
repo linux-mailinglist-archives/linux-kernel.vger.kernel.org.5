@@ -2,256 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE54809556
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1DA80955C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235307AbjLGW2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 17:28:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50956 "EHLO
+        id S232144AbjLGWa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 17:30:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231950AbjLGW23 (ORCPT
+        with ESMTP id S232348AbjLGWay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 17:28:29 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3495A172A
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:28:35 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50be10acaf9so1306116e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 14:28:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701988113; x=1702592913; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F7X6vTFqWb09Hl26abSc3iWrCQ3sx3FODL4PuiNVTps=;
-        b=qwvQgD/k5SqjXaqCLOFfY5Vgj+s5ig5xf04vC7RV8K0TKdYo4CZlsbpaKb5XTCGqPC
-         l8KDBxF8dhnxOg7UT8zlXppkMUgv61J0S/sETV+AsKPZ4d3Y9TEaRgEvTbLs7TYLWl2X
-         CeY+HXrsCTrP6fqfn+pYPR0F+Il0sL+haHTUYGMflMauBSUUSuKe0s1ssRVPhBzm9o3i
-         OKeuTVxTM4E0kX4s/J/yLWhLrcUyi/mKFcFYg8EnIavQY4L9nh4N+WKpcvGtK3+NhNn4
-         F7n51FobRuWE9CzIuK1NBzAz1J5EdSBuEY7tWygez8zFUpA7K2nFrqmIedt5/CUmKTjn
-         5z+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701988113; x=1702592913;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F7X6vTFqWb09Hl26abSc3iWrCQ3sx3FODL4PuiNVTps=;
-        b=Ku/znXgwOWuq3oc91KB9/tUOQBb0VrJNS8B+NhUzRsrJb58T2exwmFG54dC3EZuPje
-         sBnQUnrh0+K3FbeT71mcsQn2GRmw2Xitpf7qjZm1FaWE/f3nfXYTZ7tXgnKHmnEGUG4x
-         5DCfYhUlSiCPDxw2Ss790safiHHmvzRosF6H+N/v6ys4CuyobmhapTfD8SMn53R6HXLr
-         UoW4I+tYU/ZRc89SDGhSi1PPPkebiu5v4mTgdc/LTZuiUrQaaoO/3ZCzevsMC6LOyaUC
-         Jptg9tG5qMaOM3/3lZSNfeDzCNjV1hoBWeD2VlNamMl2ghTmAKOCmM9HhWzGKxptnGdA
-         bN0g==
-X-Gm-Message-State: AOJu0YypWgHczDPSGYX/SuMvNE8bkPJye0owR/usvIT7b+2WSqJ2og1A
-        ILKoyGBjSWR2BZQo5494eYYngK+0AzoLvn6MiouKUWGrfUO0MLmd
-X-Google-Smtp-Source: AGHT+IFMeUkqr61TWZyGhho/o1itZ/1GgltEbBbTaiobf127xgg0OQ1wLqtREkQkBS7yymtzB1YAtzVIkINFM0Xan+8=
-X-Received: by 2002:a05:6512:2203:b0:50b:f88d:f848 with SMTP id
- h3-20020a056512220300b0050bf88df848mr3898378lfu.23.1701988113187; Thu, 07 Dec
- 2023 14:28:33 -0800 (PST)
+        Thu, 7 Dec 2023 17:30:54 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF927170F
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:31:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701988260; x=1733524260;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=srVJ8gw6ZfAE4QWT2Lto/OnSd1qPcsDD1l6x8Su01f0=;
+  b=lo0uvwaU9h6G1sZwwQk/VduW60RIWKCkum17vrVIntVGBxNdu9zUpzZ/
+   5WNEv3G4Y84HPOhDLTn2a41BH5vNHJxG9dviS24DplRSIk8TdhK3Lko05
+   +ajGKIaza86HI9CR1iY/L98/j10eem1azg0k+IjG8ywhPAd4vYPgzBXUm
+   s2S+t7iTu+vYL7SQgUJQWaSNFYm1pI4BE009iA8pAkFmi0htOl/XcrmzV
+   taQUokNHQNjwpWBsfeEdsYgwKwvc51gxMZ2k4HAUmNEhrb28OftszH7qf
+   q/43LlpZW43xB+p2DbD1+k/DKWab51XIhYTuWF/DS55pPTDpzt8BuNgMM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1396058"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="1396058"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 14:31:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="889893209"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="889893209"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 07 Dec 2023 14:30:58 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBMtU-000CvV-0a;
+        Thu, 07 Dec 2023 22:30:56 +0000
+Date:   Fri, 8 Dec 2023 06:30:05 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>, Fuad Tabba <tabba@google.com>
+Subject: arch/arm64/kvm/hyp/nvhe/stacktrace.c:15:1: sparse: sparse: symbol
+ '__pcpu_scope_kvm_stacktrace_info' was not declared. Should it be static?
+Message-ID: <202312080623.pPZHVKGm-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231205024310.1593100-1-atishp@rivosinc.com> <20231207-affiliate-state-c4a20ea7e8de@wendy>
-In-Reply-To: <20231207-affiliate-state-c4a20ea7e8de@wendy>
-From:   Atish Kumar Patra <atishp@rivosinc.com>
-Date:   Thu, 7 Dec 2023 14:28:22 -0800
-Message-ID: <CAHBxVyGE48dprUk+QnQ0WDijy0fi3fu5abDGjBKjuZhXC8y1vw@mail.gmail.com>
-Subject: Re: [RFC 0/9] RISC-V SBI v2.0 PMU improvements and Perf sampling in
- KVM guest
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 4:03=E2=80=AFAM Conor Dooley <conor.dooley@microchip=
-.com> wrote:
->
-> Hey Atish,
->
-> On Mon, Dec 04, 2023 at 06:43:01PM -0800, Atish Patra wrote:
-> > This series implements SBI PMU improvements done in SBI v2.0[1] i.e. PM=
-U snapshot
-> > and fw_read_hi() functions.
->
-> I don't see any commentary in this cover letter as to why the series is
-> an RFC. v2.0 is a frozen spec per the Releases tab on GitHub, so that
-> has ruled out the usual reason for spec related things being RFCs.
->
-> What is it about the series that you are not yet willing to stand over?
->
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9ace34a8e446c1a566f3b0a3e0c4c483987e39a6
+commit: 879e5ac7b2e4db05799a905b5a07fc9e5dedf651 KVM: arm64: Prepare non-protected nVHE hypervisor stacktrace
+date:   1 year, 4 months ago
+config: arm64-randconfig-r112-20231117 (https://download.01.org/0day-ci/archive/20231208/202312080623.pPZHVKGm-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231208/202312080623.pPZHVKGm-lkp@intel.com/reproduce)
 
-Nothing. It's just my script where I tag any first version of a
-feature series as RFC :).
-I am planning to send the next one with a version tag this week as I
-got some feedback.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312080623.pPZHVKGm-lkp@intel.com/
 
-Thanks for reviewing the patches :).
+sparse warnings: (new ones prefixed by >>)
+   arch/arm64/kvm/hyp/nvhe/stacktrace.c:12:1: sparse: sparse: symbol '__pcpu_scope_overflow_stack' was not declared. Should it be static?
+>> arch/arm64/kvm/hyp/nvhe/stacktrace.c:15:1: sparse: sparse: symbol '__pcpu_scope_kvm_stacktrace_info' was not declared. Should it be static?
 
-> Cheers,
-> Conor.
->
-> > SBI v2.0 introduced PMU snapshot feature which allows the SBI implement=
-ation
-> > to provide counter information (i.e. values/overlfow status) via a shar=
-ed
-> > memory between the SBI implementation and supervisor OS. This allows to=
- minimize
-> > the number of traps in when perf being used inside a kvm guest as it re=
-lies on
-> > SBI PMU + trap/emulation of the counters.
-> >
-> > The current set of ratified RISC-V specification also doesn't allow sco=
-untovf
-> > to be trap/emulated by the hypervisor. The SBI PMU snapshot bridges the=
- gap
-> > in ISA as well and enables perf sampling in the guest. However, LCOFI i=
-n the
-> > guest only works via IRQ filtering in AIA specification. That's why, AI=
-A
-> > has to be enabled in the hardware (at least the Ssaia extension) in ord=
-er to
-> > use the sampling support in the perf.
-> >
-> > Here are the patch wise implementation details.
-> >
-> > PATCH 1-2 : Generic cleanups/improvements.
-> > PATCH 3,4,9 : FW_READ_HI function implementation
-> > PATCH 5-6: Add PMU snapshot feature in sbi pmu driver
-> > PATCH 7-8: KVM implementation for snapshot and sampling in kvm guests
-> >
-> > The series is based on v6.70-rc3 and is available at:
-> >
-> > https://github.com/atishp04/linux/tree/kvm_pmu_snapshot_v1
-> >
-> > The kvmtool patch is also available at:
-> > https://github.com/atishp04/kvmtool/tree/sscofpmf
-> >
-> > It also requires Ssaia ISA extension to be present in the hardware in o=
-rder to
-> > get perf sampling support in the guest. In Qemu virt machine, it can be=
- done
-> > by the following config.
-> >
-> > ```
-> > -cpu rv64,sscofpmf=3Dtrue,x-ssaia=3Dtrue
-> > ```
-> >
-> > There is no other dependancies on AIA apart from that. Thus, Ssaia must=
- be disabled
-> > for the guest if AIA patches are not available. Here is the example com=
-mand.
-> >
-> > ```
-> > ./lkvm-static run -m 256 -c2 --console serial -p "console=3DttyS0 early=
-con" --disable-ssaia -k ./Image --debug
-> > ```
-> >
-> > The series has been tested only in Qemu.
-> > Here is the snippet of the perf running inside a kvm guest.
-> >
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-> > # perf record -e cycles -e instructions perf bench sched messaging -g 5
-> > ...
-> > # Running 'sched/messaging' benchmark:
-> > ...
-> > [   45.928723] perf_duration_warn: 2 callbacks suppressed
-> > [   45.929000] perf: interrupt took too long (484426 > 483186), lowerin=
-g kernel.perf_event_max_sample_rate to 250
-> > # 20 sender and receiver processes per group
-> > # 5 groups =3D=3D 200 processes run
-> >
-> >      Total time: 14.220 [sec]
-> > [ perf record: Woken up 1 times to write data ]
-> > [ perf record: Captured and wrote 0.117 MB perf.data (1942 samples) ]
-> > # perf report --stdio
-> > # To display the perf.data header info, please use --header/--header-on=
-ly optio>
-> > #
-> > #
-> > # Total Lost Samples: 0
-> > #
-> > # Samples: 943  of event 'cycles'
-> > # Event count (approx.): 5128976844
-> > #
-> > # Overhead  Command          Shared Object                Symbol       =
-        >
-> > # ........  ...............  ...........................  .............=
-........>
-> > #
-> >      7.59%  sched-messaging  [kernel.kallsyms]            [k] memcpy
-> >      5.48%  sched-messaging  [kernel.kallsyms]            [k] percpu_co=
-unter_ad>
-> >      5.24%  sched-messaging  [kernel.kallsyms]            [k] __sbi_rfe=
-nce_v02_>
-> >      4.00%  sched-messaging  [kernel.kallsyms]            [k] _raw_spin=
-_unlock_>
-> >      3.79%  sched-messaging  [kernel.kallsyms]            [k] set_pte_r=
-ange
-> >      3.72%  sched-messaging  [kernel.kallsyms]            [k] next_upto=
-date_fol>
-> >      3.46%  sched-messaging  [kernel.kallsyms]            [k] filemap_m=
-ap_pages
-> >      3.31%  sched-messaging  [kernel.kallsyms]            [k] handle_mm=
-_fault
-> >      3.20%  sched-messaging  [kernel.kallsyms]            [k] finish_ta=
-sk_switc>
-> >      3.16%  sched-messaging  [kernel.kallsyms]            [k] clear_pag=
-e
-> >      3.03%  sched-messaging  [kernel.kallsyms]            [k] mtree_ran=
-ge_walk
-> >      2.42%  sched-messaging  [kernel.kallsyms]            [k] flush_ica=
-che_pte
-> >
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-> >
-> > [1] https://github.com/riscv-non-isa/riscv-sbi-doc
-> >
-> > Atish Patra (9):
-> > RISC-V: Fix the typo in Scountovf CSR name
-> > drivers/perf: riscv: Add a flag to indicate SBI v2.0 support
-> > RISC-V: Add FIRMWARE_READ_HI definition
-> > drivers/perf: riscv: Read upper bits of a firmware counter
-> > RISC-V: Add SBI PMU snapshot definitions
-> > drivers/perf: riscv: Implement SBI PMU snapshot function
-> > RISC-V: KVM: Implement SBI PMU Snapshot feature
-> > RISC-V: KVM: Add perf sampling support for guests
-> > RISC-V: KVM: Support 64 bit firmware counters on RV32
-> >
-> > arch/riscv/include/asm/csr.h          |   5 +-
-> > arch/riscv/include/asm/errata_list.h  |   2 +-
-> > arch/riscv/include/asm/kvm_vcpu_pmu.h |  16 +-
-> > arch/riscv/include/asm/sbi.h          |  11 ++
-> > arch/riscv/include/uapi/asm/kvm.h     |   1 +
-> > arch/riscv/kvm/main.c                 |   1 +
-> > arch/riscv/kvm/vcpu.c                 |   8 +-
-> > arch/riscv/kvm/vcpu_onereg.c          |   1 +
-> > arch/riscv/kvm/vcpu_pmu.c             | 232 ++++++++++++++++++++++++--
-> > arch/riscv/kvm/vcpu_sbi_pmu.c         |  10 ++
-> > drivers/perf/riscv_pmu.c              |   1 +
-> > drivers/perf/riscv_pmu_sbi.c          | 219 ++++++++++++++++++++++--
-> > include/linux/perf/riscv_pmu.h        |   6 +
-> > 13 files changed, 478 insertions(+), 35 deletions(-)
-> >
-> > --
-> > 2.34.1
-> >
+vim +/__pcpu_scope_kvm_stacktrace_info +15 arch/arm64/kvm/hyp/nvhe/stacktrace.c
+
+    11	
+    12	DEFINE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)], overflow_stack)
+    13		__aligned(16);
+    14	
+  > 15	DEFINE_PER_CPU(struct kvm_nvhe_stacktrace_info, kvm_stacktrace_info);
+    16	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
