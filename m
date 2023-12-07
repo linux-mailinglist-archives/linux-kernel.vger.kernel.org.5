@@ -2,128 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67245808B1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E74808B26
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443435AbjLGOyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:54:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56024 "EHLO
+        id S232862AbjLGOzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:55:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443429AbjLGOyX (ORCPT
+        with ESMTP id S232768AbjLGOze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:54:23 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4DCAC;
-        Thu,  7 Dec 2023 06:54:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=HZuWJZJT56neic9r6wbg2bseNLCneoOJMEj6j6nq8xM=; b=Kj5JYHCnocsxjpn10612FX5k82
-        XXApSgMi9D34L1+NjQx1nN3zlGdK02Km1aTk/EkiYYLhdkgec/qv8lok6YMXxnHp4TtX8Gs6ewpJz
-        OBOfjFGgABnc8jObbYw1cJmwhFhU67WIg9z21M19wwSNEFZENt9jo6NX4gsrVfw66a70=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1rBFlQ-002K3T-Qc; Thu, 07 Dec 2023 15:54:08 +0100
-Date:   Thu, 7 Dec 2023 15:54:08 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 09/16] net: mdio: Add Synopsys DW XPCS
- management interface support
-Message-ID: <19ebc244-6d79-4e12-8ac4-fcf046106a07@lunn.ch>
-References: <20231205103559.9605-1-fancer.lancer@gmail.com>
- <20231205103559.9605-10-fancer.lancer@gmail.com>
- <20231205133205.3309ab91@device.home>
- <cv6oo27tqbfst3jrgtkg7bcxmeshadtzoomn2xgnzh2arz4nwy@wq5k7oygto6n>
- <15e6857a-b1d1-465a-945e-6f31edac62fb@lunn.ch>
- <jqwhgthwxfge6y4nv5mdnojqu76m4pi2mt2x6kwqiuqntcwj67@mewh42eey5ny>
+        Thu, 7 Dec 2023 09:55:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771551AD
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:55:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701960940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tFUwTkwUasQAuYCMcpY6aWYFjKBTvsfILYuExDUI9Xs=;
+        b=TPNtrttgHTh1VEdO2hkqZO9dEL6Dtu0a5+s7RPB1vvzFWqKZTwMIkpuh3A2bcJmMZ91Hbh
+        sHNgmjVVclQQ5hLF0l+Rtq/6OIp2q6FtnnXloQ5jdErDo7oB6FDRahb+waDZ8NTePA5j88
+        hzd+vhXyzpxurgvlW8O4Och5EPuAinU=
+Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
+ [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-499-8axHlxATN5moUwMqpmJ7bg-1; Thu, 07 Dec 2023 09:55:38 -0500
+X-MC-Unique: 8axHlxATN5moUwMqpmJ7bg-1
+Received: by mail-ua1-f69.google.com with SMTP id a1e0cc1a2514c-7c5f24e2b06so264713241.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 06:55:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701960938; x=1702565738;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tFUwTkwUasQAuYCMcpY6aWYFjKBTvsfILYuExDUI9Xs=;
+        b=Vfkt1fScvBk3PRNPhf6OcYZ3Ry27obXKImw4QkPuvO+lIvjY/YOZAG5zYORbfbt4kI
+         cRUGzZb6aAuGbxQAwWNy5qSmJAEXQes2sMVjmFHWCTsboDEW/nZH94bZpyzn2Ftfd8RE
+         TjUdTNruF27uHxnq+ydbN/dxlIHhE9fnB/vVR/xODvmAsHaWnZ5hQ/qFWCMuWtdQmXCG
+         imG+EgixY7MENyuKg5DRl0gY+cP4Zy0A7+6YWZcKRkAH43WFJvPxcbIr6ViEUgg/lSX7
+         EZoWGSArv8SuC7CR+ka1GA70Jc68PZUuDrsp/BwTVDOjVW16/NNFgp1aqnDg5TeEdfky
+         tkQQ==
+X-Gm-Message-State: AOJu0Yy7d8FJ+ZiEX6jdXhAlSSdeZB7P+3+XsRLuvF1wI2oxbzrjOoa/
+        ufEFU5lZSy3x7w75aIX8ZYThyp0NiG8ukprxaFAL3ivKulFbFYeuE3WPVDXXd2Rxfd6f1Ku4LEe
+        PlUIYCWR+TlMcrlAVZeECp7BDguFErjPwoPyr/IBq
+X-Received: by 2002:a67:fb0e:0:b0:464:7c84:f2ce with SMTP id d14-20020a67fb0e000000b004647c84f2cemr2428516vsr.33.1701960937521;
+        Thu, 07 Dec 2023 06:55:37 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IExPh5/hFE8CE6pwdTcln4SPXa7YsxLmil/VdfPW34AuIerYiD738D5CYb9gwkY7cCXF4lnoAE2qa1q+zUlTFA=
+X-Received: by 2002:a67:fb0e:0:b0:464:7c84:f2ce with SMTP id
+ d14-20020a67fb0e000000b004647c84f2cemr2428507vsr.33.1701960937193; Thu, 07
+ Dec 2023 06:55:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jqwhgthwxfge6y4nv5mdnojqu76m4pi2mt2x6kwqiuqntcwj67@mewh42eey5ny>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231207043118.118158-1-fengli@smartx.com> <20231207145159.GB2147383@fedora>
+In-Reply-To: <20231207145159.GB2147383@fedora>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Thu, 7 Dec 2023 15:55:17 +0100
+Message-ID: <CABgObfYJUH0hF8QfNUAZS9ztR7LqeHGOXeTa0JO904svJw23_g@mail.gmail.com>
+Subject: Re: [PATCH] virtio_blk: set the default scheduler to none
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     Li Feng <fengli@smartx.com>, Jens Axboe <axboe@kernel.dk>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:VIRTIO BLOCK AND SCSI DRIVERS" 
+        <virtualization@lists.linux.dev>, Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 04:35:47PM +0300, Serge Semin wrote:
-> Hi Andrew
-> 
-> On Wed, Dec 06, 2023 at 06:01:30PM +0100, Andrew Lunn wrote:
-> > > > You shouldn't use inline in C files, only in headers.
-> > > 
-> > > Could you please clarify why? I failed to find such requirement in the
-> > > coding style doc. Moreover there are multiple examples of using the
-> > > static-inline-ers in the C files in the kernel including the net/mdio
-> > > subsystem.
-> > 
-> 
-> > The compiler does a better job at deciding what to inline than we
-> > humans do. If you can show the compiler is doing it wrong, then we
-> > might accept them.
-> 
-> In general I would have agreed with you especially if the methods were
-> heavier than what they are:
-> static inline ptrdiff_t dw_xpcs_mmio_addr_format(int dev, int reg)
-> {               
->         return FIELD_PREP(0x1f0000, dev) | FIELD_PREP(0xffff, reg);
-> }               
->         
-> static inline u16 dw_xpcs_mmio_addr_page(ptrdiff_t csr)
-> {       
->         return FIELD_GET(0x1fff00, csr);
-> }       
-> 
-> static inline ptrdiff_t dw_xpcs_mmio_addr_offset(ptrdiff_t csr)
-> {
->         return FIELD_GET(0xff, csr);
-> }
-> 
-> > But in general, netdev does not like inline in .C
-> > file.
-> 
-> I see. I'll do as you say if you don't change your mind after my
-> reasoning below.
-> 
-> > Also, nothing in MDIO is hot path, it spends a lot of time
-> > waiting for a slow bus. So inline is likely to just bloat the code for
-> > no gain.
-> 
-> I would have been absolutely with you in this matter, if we were talking
-> about a normal MDIO bus. In this case the devices are accessed over
-> the system IO-memory. So the bus isn't that slow.
+On Thu, Dec 7, 2023 at 3:52=E2=80=AFPM Stefan Hajnoczi <stefanha@redhat.com=
+> wrote:
+>
+> On Thu, Dec 07, 2023 at 12:31:05PM +0800, Li Feng wrote:
+> > virtio-blk is generally used in cloud computing scenarios, where the
+> > performance of virtual disks is very important. The mq-deadline schedul=
+er
+> > has a big performance drop compared to none with single queue. In my te=
+sts,
+> > mq-deadline 4k readread iops were 270k compared to 450k for none. So he=
+re
+> > the default scheduler of virtio-blk is set to "none".
+> >
+> > Signed-off-by: Li Feng <fengli@smartx.com>
+> > ---
+> >  drivers/block/virtio_blk.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> This seems similar to commit f8b12e513b95 ("virtio_blk: revert
+> QUEUE_FLAG_VIRT addition") where changing the default sounded good in
+> theory but exposed existing users to performance regressions. [...]
+> I don't want to be overly conservative. The virtio_blk driver has
+> undergone changes in this regard from the legacy block layer to blk-mq
+> (without an I/O scheduler) to blk-mq (mq-deadline).
 
-O.K, so its not slow. But how often is it used? PHYs tend to get
-polled once a second if interrupts are not used. But is the PCS also
-polled at the same time? Does this optimisation make a noticeable
-difference at once per second? Do you have a requirement that the
-system boots very very fast, and this optimisation makes a difference
-when there is heavier activity on the PCS at boot? Is the saving
-noticeable, when auto-neg takes a little over 1 second.
+IIRC there were also regressions in both virtio-blk and virtio-scsi
+when switching from the legacy block layer to blk-mq. So perhaps I
+*am* a bit more conservative, but based on past experience, this patch
+seems not to be a great idea for practical use cases.
 
-The best way to make your case is show real world requirements and
-benchmark results.
+Paolo
 
-	  Andrew
+> Performance changed
+> at each step and that wasn't a showstopper, so I think we could default
+> to 'none' without a lot of damage. Let's just get more data.
+>
+> Stefan
+>
+> >
+> > diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> > index d53d6aa8ee69..5183ec8e00be 100644
+> > --- a/drivers/block/virtio_blk.c
+> > +++ b/drivers/block/virtio_blk.c
+> > @@ -1367,7 +1367,7 @@ static int virtblk_probe(struct virtio_device *vd=
+ev)
+> >       vblk->tag_set.ops =3D &virtio_mq_ops;
+> >       vblk->tag_set.queue_depth =3D queue_depth;
+> >       vblk->tag_set.numa_node =3D NUMA_NO_NODE;
+> > -     vblk->tag_set.flags =3D BLK_MQ_F_SHOULD_MERGE;
+> > +     vblk->tag_set.flags =3D BLK_MQ_F_SHOULD_MERGE | BLK_MQ_F_NO_SCHED=
+_BY_DEFAULT;
+> >       vblk->tag_set.cmd_size =3D
+> >               sizeof(struct virtblk_req) +
+> >               sizeof(struct scatterlist) * VIRTIO_BLK_INLINE_SG_CNT;
+> > --
+> > 2.42.0
+> >
+
