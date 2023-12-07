@@ -2,123 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B438091E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E4B8091E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443847AbjLGTtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 14:49:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40242 "EHLO
+        id S230352AbjLGTua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 14:50:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443836AbjLGTtV (ORCPT
+        with ESMTP id S229671AbjLGTu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 14:49:21 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEF3A5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 11:49:27 -0800 (PST)
-Message-ID: <20231207194518.401797191@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701978566;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=RL2aUGa/0fCGlOcvBTwpDBVET2p1h9g7vOOa31RMm2Y=;
-        b=iMm66hHYutaHMZyNgXhZ+NUJJ/Q84XYfn6Kdy3ZYQnR8hI70r+14JU6bBNynwg+T1HAehy
-        Xjy+uX8uiTVEdDhc0IsVFTLYnKs+8QCKm5AAXVErIFz/f6pAL+UB7CkUv36lstLqMTNljO
-        XDp4EdqqZHcson9iolfqCMn/jOQONsgXDqrQnihAAaKj7p5czEuyUJkdzLvQ7blDBWg8tt
-        ej0/0NDse/jLOEzrerfH31NAYipIkJCWkuN3hVKQXHnutv4mSs9aP1rbLtgq3SC3QZ5ijA
-        eBfLrvDUVZo0P2slpBUBq0V6UIb1ed6jJB68Zp9oRI0ucMF7yxvCsEt0T2O+Xg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701978566;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=RL2aUGa/0fCGlOcvBTwpDBVET2p1h9g7vOOa31RMm2Y=;
-        b=910XjksgkcPwpDkvhFYaJHImSqHEk5thdypIC3+GOs+1Ypp17Be4ufGHHbhbLYiyqupVsa
-        peopkJzCMCArp/Aw==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     paul.gortmaker@windriver.com, x86@kernel.org,
-        regressions@leemhuis.info, richard.purdie@linuxfoundation.org,
-        regressions@lists.linux.dev
-Subject: [patch 2/2] x86/alternatives: Disable interrupts and sync when
- optimizing NOPs in place
-References: <ZXCXc+BtnLzqMbFv@windriver.com> <ZUEgAAGDVqXz2Seo@windriver.com>
- <0adb772c-e8d2-4444-92b0-00cbfdaf1fac@leemhuis.info> <87r0k9ym0y.ffs@tglx>
- <20231207193859.961361261@linutronix.de>
+        Thu, 7 Dec 2023 14:50:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF38A5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 11:50:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 205FFC433C7;
+        Thu,  7 Dec 2023 19:50:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701978634;
+        bh=uolfMoZiIRSE/4h+zQ+qJh3J/h+CcPF6Bi68mWyjVuk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Hw4AUm3eUGiUHDMPy4OR0enT9w8/FGehvahDwUMqHTW0frjTo3grUXPZ9joA6xby3
+         G/RJsqWb3nxyR1Tp3nBXHGOCrDvDPx92BYBRBGBAJOXIOoaHws87u/0rpJ9Y5X2gDI
+         yB3P8n3F+D9R1iXspXHX6JqjOcTgt3DjK7bIBotQMrILBDhMkS+MbkNLjaEb5KJ5Mf
+         P4lkADP/qH/B+/7rvUOenEDV4+MuzMqrgBv+PxMD8nPclklMvivqb1snTymO6wqLZH
+         5zBJ79msLN5FwG/scROF1W2BiU5IZZ/pyK9ia0vhnKkcXL1D5xIEGSH/I/p8zBDnp/
+         e3kEQWTtB5mSw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id EED24403EF; Thu,  7 Dec 2023 16:50:30 -0300 (-03)
+Date:   Thu, 7 Dec 2023 16:50:30 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCHSET 0/8] perf annotate: Make annotation_options global (v1)
+Message-ID: <ZXIiBp-rvdvSI-ZY@kernel.org>
+References: <20231128175441.721579-1-namhyung@kernel.org>
+ <CAP-5=fWfKqgT60TFRALw8vTDQT7VFV+0+eo1rFSSH3eVrjzPmA@mail.gmail.com>
+ <CAM9d7chKmDETK6Ea2wyR8L21jyHWcPHbKavarnq-JmNA-AoUnQ@mail.gmail.com>
+ <CAP-5=fUf6R=bsfg7i8atFApJBY-=zWUBMq7inFsCPZhB+w2==Q@mail.gmail.com>
+ <CAM9d7cjDiu=dksnhboJFT4uPQJcvGMB-vBt96v3i7Kqy5LKRMw@mail.gmail.com>
+ <CAP-5=fXKbi3DYoOKrJvNKLNU=fJEY9aDAOQhH+Vh+XWxHzGjwA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu,  7 Dec 2023 20:49:26 +0100 (CET)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fXKbi3DYoOKrJvNKLNU=fJEY9aDAOQhH+Vh+XWxHzGjwA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-apply_alternatives() treats alternatives with the ALT_FLAG_NOT flag set
-special as it optimizes the existing NOPs in place.
+Em Tue, Dec 05, 2023 at 09:59:02AM -0800, Ian Rogers escreveu:
+> On Mon, Dec 4, 2023 at 2:46 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > On Thu, Nov 30, 2023 at 10:37 AM Ian Rogers <irogers@google.com> wrote:
+> > > Sgtm. My point wasn't to criticize, I think this is a good change, I
+> > > was just trying to imagine doing things in a way that could overall
+> > > reduce complexity
 
-Unfortunately this happens with interrupts enabled and does not provide any
-form of core synchronization.
+> > Yep, thanks for your review.  Can I get your ACKs? :)
 
-So an interrupt hitting in the middle of the update and using the affected
-code path will observe a half updated NOP and crash and burn. The following
-3 NOP sequence was observed to expose this crash halfways reliably under
-QEMU 32bit:
+> For the series:
+> Reviewed-by: Ian Rogers <irogers@google.com>
 
-   0x90 0x90 0x90
+Thanks, applied to perf-tools-next.
 
-which is replaced by the optimized 3 byte NOP:
-
-   0x8d 0x76 0x00
-
-So an interrupt can observe:
-
-   1) 0x90 0x90 0x90		nop nop nop
-   2) 0x8d 0x90 0x90		undefined
-   3) 0x8d 0x76 0x90		lea    -0x70(%esi),%esi
-   4) 0x8d 0x76 0x00		lea     0x0(%esi),%esi
-
-Where only #1 and #4 are true NOPs. The same problem exists for 64bit obviously.
-
-Disable interrupts around this NOP optimization and invoke sync_core()
-before reenabling them.
-
-Fixes: 270a69c4485d ("x86/alternative: Support relocations in alternatives")
-Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
----
- arch/x86/kernel/alternative.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -255,6 +255,16 @@ static void __init_or_module noinline op
- 	}
- }
- 
-+static void __init_or_module noinline optimize_nops_inplace(u8 *instr, size_t len)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	optimize_nops(instr, len);
-+	sync_core();
-+	local_irq_restore(flags);
-+}
-+
- /*
-  * In this context, "source" is where the instructions are placed in the
-  * section .altinstr_replacement, for example during kernel build by the
-@@ -438,7 +448,7 @@ void __init_or_module noinline apply_alt
- 		 *   patch if feature is *NOT* present.
- 		 */
- 		if (!boot_cpu_has(a->cpuid) == !(a->flags & ALT_FLAG_NOT)) {
--			optimize_nops(instr, a->instrlen);
-+			optimize_nops_inplace(instr, a->instrlen);
- 			continue;
- 		}
- 
+- Arnaldo
 
