@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F4C80823C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E38A80823E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377989AbjLGH6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 02:58:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
+        id S1378087AbjLGH6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 02:58:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbjLGH6G (ORCPT
+        with ESMTP id S1377935AbjLGH6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 02:58:06 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488DDD59;
-        Wed,  6 Dec 2023 23:58:13 -0800 (PST)
+        Thu, 7 Dec 2023 02:58:08 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D06B2;
+        Wed,  6 Dec 2023 23:58:14 -0800 (PST)
 Received: from [127.0.1.1] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 58E39B90;
-        Thu,  7 Dec 2023 08:57:28 +0100 (CET)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 44D0ABB2;
+        Thu,  7 Dec 2023 08:57:29 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701935849;
-        bh=bGiI3ohQXukgHLEaHJG8c1OieVXiQ00QG2sxjKW40bM=;
+        s=mail; t=1701935850;
+        bh=IN5LU/eD22tmOTeDM2C7nJS4isiwUwSC5E9Fa8YFuO4=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=SDPB+ePJxt97r3PBmz6a1aEDg0KDvpBpWpl30pD+NrSDV5yVd+fp5Q/3+WZxuz4ke
-         AXyMrH6sK+31o73OWydiv0CtmMCupuWMzGmEQ4ZhQBi8/N9EobcRBsXLXqtXTtVEfP
-         MMG4L6CmPXOpEosI80JIX7Xyi4BULBu/9JKCi73E=
+        b=Y7xwRc5/7+KVUJYnbGStSVw2rc55W8ELOcsGf3/p3AYo/XtOHeRA9t8XSjJswnoYN
+         MVSMFR6xL9bL/J4oI+VVk/kSBRe1AXaybVncoSS1ZaOaIOzDH5agTzN/FGueVk0R2q
+         1teZ9sXK0NhqQfw3R+2sOtHiGjQ8zCVpjV+gppIU=
 From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Thu, 07 Dec 2023 09:57:46 +0200
-Subject: [PATCH v3 2/4] media: rkisp1: Fix IRQ handler return values
+Date:   Thu, 07 Dec 2023 09:57:47 +0200
+Subject: [PATCH v3 3/4] media: rkisp1: Store IRQ lines
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231207-rkisp-irq-fix-v3-2-358a2c871a3c@ideasonboard.com>
+Message-Id: <20231207-rkisp-irq-fix-v3-3-358a2c871a3c@ideasonboard.com>
 References: <20231207-rkisp-irq-fix-v3-0-358a2c871a3c@ideasonboard.com>
 In-Reply-To: <20231207-rkisp-irq-fix-v3-0-358a2c871a3c@ideasonboard.com>
 To:     Dafna Hirschfeld <dafna@fastmail.com>,
@@ -46,21 +46,21 @@ Cc:     Alexander Stein <alexander.stein@ew.tq-group.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1716;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3974;
  i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=bGiI3ohQXukgHLEaHJG8c1OieVXiQ00QG2sxjKW40bM=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlcXsOKgEcZaHHloIBNCieuxBeeKoqHOKwE/9m0
- PUGT9kmPEiJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZXF7DgAKCRD6PaqMvJYe
- 9U3YD/9tsbBKzMKy+XePs7loo/BXgqs03sIny/UoyRHH6spbrIZdOawKUOr98MvUPH3AP5pJPC4
- y74ntV+wR24XZdAXb82sYmqkKEm4nIUTaL8dc0Kk2mvgAwvZVSN08DRxFF8zYxMExKFD8rmLAn0
- kEGNPTbmmqMpwpDhQODFGpJPDnQ+Y/uTtYDDt5MfHVqQ28Ene2hD1i4idBa+s50sugtT93yf2lZ
- z3jGrBAABYFQS6TQoT4W2QtDS2WCLiHNMA8pMAawD5z2NTPoDns3OUiRWvVW+wcmyhcQ0/M5l3r
- PRpO13NFtbMTzsVE6NxCqHVlS764Y4dJyh7tY7HW/Mn+rL/0LzpT7SZMIuHz7/5J4a0W9biATlX
- dJocbkpAM5Cu9atIJLLgn/8kBQpuEAkl9rv+HNQ7eUd30diYpXPBuQfAVWyvzCF8HgGTc3Jv2XV
- BGZkcXwWpaOoQ+/zVhvb5DnvjdWfDEtvrnD2YoUBrwQZXNeQQMmARweHSGmfVb+02AWn1MJADCV
- 5Lg6x+MXx0PkIyxu2unWE4rXXI2GBTF6/qr5tRbLOsDkgAgp9u6cSXbzGkDfOsYZEZSDeIzWKj2
- 6g+6RSHSVCwRBiS36UORj46S2iZHLWhuPOmh+i5IVczYKsvvfgWz45TwlgB9aeG5WoovqIWzcvJ
- ZxW4aUjmogsRkcQ==
+ bh=IN5LU/eD22tmOTeDM2C7nJS4isiwUwSC5E9Fa8YFuO4=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlcXsOh+BH82EXHG0jjkStq5uPi/P/50dYPN2Au
+ njDqaZfbJCJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZXF7DgAKCRD6PaqMvJYe
+ 9ZoFD/9N23s+QIvh7ode//z60gdpcgTf9YQ7ollHP5eZ+RZNkTg1wFNir8l1ACakoiwD6U2Rujs
+ fFhRIEmJFLxMDujyRNgqKdhsokjUKBk25qREscVn5SuclYYZomhbXenR2gSUvRdOW7mCcMfo+gh
+ sqg8wpNJS8KiK0SVHNm492EVbyewwvKXE0yrQiMhvCYclXCo+RBGUyB70K1Cp0IybDpSyJVsLDz
+ utfnhVTndkYKyy3yM2HmPs7iS6rVygOnVMchFLu6YX5Ap18S6F7sacVJZbjnc3BphEjYaYmV44p
+ FLjEIZVt7CS6TsAAeuxb++csH1wfk4dRmmQkxpdquJHe3tnXG1hE7EBAJCUEwhLrWy9tv4FRgke
+ KmCijgiQCj50t33zIdGAbEgsonejWPG+tBu9eA/kI8F5QTmhLJw9+qOTos3hY+O8C3Rjez1bWFx
+ QTTnpg6arXrE0mrEDMIZn0WCOFgMfu9bq01HRTTmSpusmu8PW1ftxejFn2HmERcDVy4/is1OL2m
+ j4A55L0ccZanY4vv8hqwLIZMIFnDtJKiqBll/0fA3ZK3qFYoZZiObiOwQq4QiZ8+IT70Ao9bxTB
+ YNnHzXsbuHqSAmPgYW07hmwVdwHa+E0anDFOoRVCm7hLPOqKEcxgfxeel0aJOx60PpanSi+ugcn
+ fRQeetI0vdBMbIg==
 X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
  fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,54 +72,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IRQ handler rkisp1_isr() calls sub-handlers, all of which returns an
-irqreturn_t value, but rkisp1_isr() ignores those values and always
-returns IRQ_HANDLED.
+Store the IRQ lines used by the driver for easy access. These are needed
+in future patches which fix IRQ race issues.
 
-Fix this by collecting the return values, and returning IRQ_HANDLED or
-IRQ_NONE as appropriate.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Tested-by: Adam Ford <aford173@gmail.com>  #imx8mp-beacon
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
- drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/media/platform/rockchip/rkisp1/rkisp1-common.h | 11 ++++++++++-
+ drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c    | 17 +++++++++++++----
+ 2 files changed, 23 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+index 1e7cea1bea5e..2d7f06281c39 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+@@ -61,6 +61,14 @@ struct dentry;
+ 						 RKISP1_CIF_ISP_EXP_END |	\
+ 						 RKISP1_CIF_ISP_HIST_MEASURE_RDY)
+ 
++/* IRQ lines */
++enum rkisp1_irq_line {
++	RKISP1_IRQ_ISP = 0,
++	RKISP1_IRQ_MI,
++	RKISP1_IRQ_MIPI,
++	RKISP1_NUM_IRQS,
++};
++
+ /* enum for the resizer pads */
+ enum rkisp1_rsz_pad {
+ 	RKISP1_RSZ_PAD_SINK,
+@@ -423,7 +431,6 @@ struct rkisp1_debug {
+  * struct rkisp1_device - ISP platform device
+  *
+  * @base_addr:	   base register address
+- * @irq:	   the irq number
+  * @dev:	   a pointer to the struct device
+  * @clk_size:	   number of clocks
+  * @clks:	   array of clocks
+@@ -441,6 +448,7 @@ struct rkisp1_debug {
+  * @stream_lock:   serializes {start/stop}_streaming callbacks between the capture devices.
+  * @debug:	   debug params to be exposed on debugfs
+  * @info:	   version-specific ISP information
++ * @irqs:          IRQ line numbers
+  */
+ struct rkisp1_device {
+ 	void __iomem *base_addr;
+@@ -461,6 +469,7 @@ struct rkisp1_device {
+ 	struct mutex stream_lock; /* serialize {start/stop}_streaming cb between capture devices */
+ 	struct rkisp1_debug debug;
+ 	const struct rkisp1_info *info;
++	int irqs[RKISP1_NUM_IRQS];
+ };
+ 
+ /*
 diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-index 4c4514e20673..22b2ae0e89c4 100644
+index 22b2ae0e89c4..c3fa40976140 100644
 --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
 +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-@@ -442,17 +442,25 @@ static int rkisp1_entities_register(struct rkisp1_device *rkisp1)
+@@ -114,6 +114,7 @@
+ struct rkisp1_isr_data {
+ 	const char *name;
+ 	irqreturn_t (*isr)(int irq, void *ctx);
++	u32 line_mask;
+ };
  
- static irqreturn_t rkisp1_isr(int irq, void *ctx)
- {
-+	irqreturn_t ret = IRQ_NONE;
-+
- 	/*
- 	 * Call rkisp1_capture_isr() first to handle the frame that
- 	 * potentially completed using the current frame_sequence number before
- 	 * it is potentially incremented by rkisp1_isp_isr() in the vertical
- 	 * sync.
- 	 */
--	rkisp1_capture_isr(irq, ctx);
--	rkisp1_isp_isr(irq, ctx);
--	rkisp1_csi_isr(irq, ctx);
+ /* ----------------------------------------------------------------------------
+@@ -471,9 +472,9 @@ static const char * const px30_isp_clks[] = {
+ };
  
--	return IRQ_HANDLED;
-+	if (rkisp1_capture_isr(irq, ctx) == IRQ_HANDLED)
-+		ret = IRQ_HANDLED;
-+
-+	if (rkisp1_isp_isr(irq, ctx) == IRQ_HANDLED)
-+		ret = IRQ_HANDLED;
-+
-+	if (rkisp1_csi_isr(irq, ctx) == IRQ_HANDLED)
-+		ret = IRQ_HANDLED;
-+
-+	return ret;
- }
+ static const struct rkisp1_isr_data px30_isp_isrs[] = {
+-	{ "isp", rkisp1_isp_isr },
+-	{ "mi", rkisp1_capture_isr },
+-	{ "mipi", rkisp1_csi_isr },
++	{ "isp", rkisp1_isp_isr, BIT(RKISP1_IRQ_ISP) },
++	{ "mi", rkisp1_capture_isr, BIT(RKISP1_IRQ_MI) },
++	{ "mipi", rkisp1_csi_isr, BIT(RKISP1_IRQ_MIPI) },
+ };
  
- static const char * const px30_isp_clks[] = {
+ static const struct rkisp1_info px30_isp_info = {
+@@ -492,7 +493,7 @@ static const char * const rk3399_isp_clks[] = {
+ };
+ 
+ static const struct rkisp1_isr_data rk3399_isp_isrs[] = {
+-	{ NULL, rkisp1_isr },
++	{ NULL, rkisp1_isr, BIT(RKISP1_IRQ_ISP) | BIT(RKISP1_IRQ_MI) | BIT(RKISP1_IRQ_MIPI) },
+ };
+ 
+ static const struct rkisp1_info rk3399_isp_info = {
+@@ -543,6 +544,9 @@ static int rkisp1_probe(struct platform_device *pdev)
+ 	if (IS_ERR(rkisp1->base_addr))
+ 		return PTR_ERR(rkisp1->base_addr);
+ 
++	for (unsigned int il = 0; il < ARRAY_SIZE(rkisp1->irqs); ++il)
++		rkisp1->irqs[il] = -1;
++
+ 	for (i = 0; i < info->isr_size; i++) {
+ 		irq = info->isrs[i].name
+ 		    ? platform_get_irq_byname(pdev, info->isrs[i].name)
+@@ -550,6 +554,11 @@ static int rkisp1_probe(struct platform_device *pdev)
+ 		if (irq < 0)
+ 			return irq;
+ 
++		for (unsigned int il = 0; il < ARRAY_SIZE(rkisp1->irqs); ++il) {
++			if (info->isrs[i].line_mask & BIT(il))
++				rkisp1->irqs[il] = irq;
++		}
++
+ 		ret = devm_request_irq(dev, irq, info->isrs[i].isr, 0,
+ 				       dev_driver_string(dev), dev);
+ 		if (ret) {
 
 -- 
 2.34.1
