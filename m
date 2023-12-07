@@ -2,91 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1CCB808A86
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA24808A8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:29:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443202AbjLGO16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:27:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
+        id S1443217AbjLGO2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:28:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443070AbjLGO1z (ORCPT
+        with ESMTP id S235274AbjLGO23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:27:55 -0500
+        Thu, 7 Dec 2023 09:28:29 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1F8D53
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:28:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7EA1C433C7;
-        Thu,  7 Dec 2023 14:27:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CE5199A
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:28:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DA2BC433C8;
+        Thu,  7 Dec 2023 14:28:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701959281;
-        bh=CaZ0RkB0u+scxi86DPB/42R2LXTYaUc50U7WyvnPd4c=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ixHWvApDZdXcScyCyHgSPpkRXRIjHTfDc7XKTaOYYHyA0CJoWXqcaOlBlRoQZmPum
-         cZEVE2bX1oFgDJCeGKA8Eij6ykoNYerGYNMEqMM9N0UPL7kPFIzuNhtH4zP29G0HOP
-         Mk4kmBhpIvI5Tie0V7cVF4FbKhFX7pOhshSDNyCInX190j56xlln4VPJIpaxOyRTUz
-         wgPPlx8WuM985xSfcVO82jEoOkOI8vzBM560UdkCTY0H9xQTqmzCV9wF31TqkkWcLt
-         qSpagfLT5EkverT3rl2LMMOPDFA72Iy0LRHOY8pSYvyQaSn7DJhAi3K7L5YEGCTYbn
-         WnpcFCj7GHBvw==
-Message-ID: <e97d54f2-88f3-4c03-9f41-e90df458bb95@kernel.org>
-Date:   Thu, 7 Dec 2023 15:27:57 +0100
+        s=k20201202; t=1701959300;
+        bh=ZVLzNRalk/EBQP7fBKQQUpiBjDCywhTS+ujhMZKHZag=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lqVp5I63et5bljSNokYmdBSuMMJegNZ3fS+vyMoz7z6FGjpPZAEEgPPkhmnB+23dI
+         iOITgbXqWJgtm9Z0cdHb2NGJ/EtdpNap3VBCdhLYx3RJuRZ0AnxvlI/mfskwMemqSM
+         pTYiCXXYkXxs3yTIhw1jYJs3QX9dXhzOq0b66YTljTKWTYD6qEVPVEVSQYVU3Ph0NS
+         6eWHkJKjI2TJGJ1pXXU/dAaXl2ZU8ErUkr1lDIF0/YD36eW0bsxhXd9wYXMVvlAABk
+         19jm6WRybPuP7n92iRjdcyy89tKKguVcD1IInxvJfR8XK/CO94Br5xRazz/Pj2D3sB
+         fQEylljkmBa4g==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Chandrakanth patil <chandrakanth.patil@broadcom.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Ranjan Kumar <ranjan.kumar@broadcom.com>,
+        "Shin'ichiro Kawasaki" <shinichiro.kawasaki@wdc.com>,
+        mpi3mr-linuxdrv.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mpi3mr: fix printk() format strings
+Date:   Thu,  7 Dec 2023 15:28:06 +0100
+Message-Id: <20231207142813.935717-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] w1: gpio: Some cleanup and simplifiction
-To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <cover.1701727212.git.u.kleine-koenig@pengutronix.de>
- <15578a4d-f749-4bf8-b507-4c6efb7805fa@kernel.org>
- <20231207142445.rp5or5wvkosyu7ho@pengutronix.de>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20231207142445.rp5or5wvkosyu7ho@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -98,51 +56,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/12/2023 15:24, Uwe Kleine-König wrote:
-> Hello Krzysztof,
-> 
-> On Thu, Dec 07, 2023 at 02:29:34PM +0100, Krzysztof Kozlowski wrote:
->> On 04/12/2023 23:05, Uwe Kleine-König wrote:
->>> Hello,
->>>
->>> v1 is available at
->>> https://lore.kernel.org/r/20230525095624.615350-1-u.kleine-koenig@pengutronix.de.
->>>
->>> The changes in this v2 since then are:
->>>
->>>  - Fix a build problem in patch #3
->>>  - Rebase to today's next
->>
->>   ✗ No key: openpgp/u.kleine-koenig@pengutronix.de
->>
->> Are you sure you exported your key to openpgp and verified addresses?
-> 
-> Works for me:
-> 
-> $ gpg --locate-keys u.kleine-koenig@pengutronix.de
-> gpg: directory '/home/test/.gnupg' created
-> gpg: keybox '/home/test/.gnupg/pubring.kbx' created
-> gpg: /home/test/.gnupg/trustdb.gpg: trustdb created
-> gpg: key E2DCDD9132669BD6: public key "Uwe Kleine-König <u.kleine-koenig@pengutronix.de>" imported
-> gpg: Total number processed: 1
-> gpg:               imported: 1
-> gpg: no ultimately trusted keys found
-> pub   rsa4096 2010-06-15 [SC] [expires: 2024-06-21]
->       0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-> uid           [ unknown] Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> sub   rsa2048 2023-03-17 [A] [expires: 2025-03-16]
-> sub   rsa2048 2023-03-17 [S] [expires: 2025-03-16]
-> sub   rsa2048 2023-03-17 [E] [expires: 2025-03-16]
-> 
-> also https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git seems to
-> have the current key since commit 5151fbdbeb53 "Update E2DCDD9132669BD6
-> (Uwe Kleine-König)".
-> 
+From: Arnd Bergmann <arnd@arndb.de>
 
-Huh, I think I misunderstood the message from b4. I thought it is trying
-to get your key from keys.openpgp.org and your key is just not there.
-Are you saying that it was looking only in my local keyring?
+The newly introduced error messages get multiple format strings wrong: size_t must
+be printed using the %z modifier rather than %l and dma_addr_t must be printed
+by reference using the special %pad pointer type:
 
-Best regards,
-Krzysztof
+drivers/scsi/mpi3mr/mpi3mr_app.c: In function 'mpi3mr_build_nvme_prp':
+include/linux/kern_levels.h:5:25: error: format '%llx' expects argument of type 'long long unsigned int', but argument 4 has type 'dma_addr_t' {aka 'unsigned int'} [-Werror=format=]
+drivers/scsi/mpi3mr/mpi3mr_app.c:949:25: note: in expansion of macro 'dprint_bsg_err'
+  949 |                         dprint_bsg_err(mrioc,
+      |                         ^~~~~~~~~~~~~~
+include/linux/kern_levels.h:5:25: error: format '%ld' expects argument of type 'long int', but argument 4 has type 'size_t' {aka 'unsigned int'} [-Werror=format=]
+drivers/scsi/mpi3mr/mpi3mr_app.c:1112:41: note: in expansion of macro 'dprint_bsg_err'
+ 1112 |                                         dprint_bsg_err(mrioc,
+      |                                         ^~~~~~~~~~~~~~
+
+Fixes: 9536af615dc9 ("scsi: mpi3mr: Support for preallocation of SGL BSG data buffers part-3")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/scsi/mpi3mr/mpi3mr_app.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/scsi/mpi3mr/mpi3mr_app.c b/drivers/scsi/mpi3mr/mpi3mr_app.c
+index 4b93b7440da6..0380996b5ad2 100644
+--- a/drivers/scsi/mpi3mr/mpi3mr_app.c
++++ b/drivers/scsi/mpi3mr/mpi3mr_app.c
+@@ -947,8 +947,8 @@ static int mpi3mr_build_nvme_prp(struct mpi3mr_ioc *mrioc,
+ 		dma_addr = drv_buf_iter->dma_desc[count].dma_addr;
+ 		if (dma_addr & page_mask) {
+ 			dprint_bsg_err(mrioc,
+-				       "%s:dma_addr 0x%llx is not aligned with page size 0x%x\n",
+-				       __func__,  dma_addr, dev_pgsz);
++				       "%s:dma_addr %pad is not aligned with page size 0x%x\n",
++				       __func__,  &dma_addr, dev_pgsz);
+ 			return -1;
+ 		}
+ 	}
+@@ -1110,7 +1110,7 @@ static int mpi3mr_build_nvme_prp(struct mpi3mr_ioc *mrioc,
+ 				if ((++desc_count) >=
+ 				   drv_buf_iter->num_dma_desc) {
+ 					dprint_bsg_err(mrioc,
+-						       "%s: Invalid len %ld while building PRP\n",
++						       "%s: Invalid len %zd while building PRP\n",
+ 						       __func__, length);
+ 					goto err_out;
+ 				}
+-- 
+2.39.2
 
