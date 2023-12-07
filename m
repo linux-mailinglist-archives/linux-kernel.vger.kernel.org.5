@@ -2,116 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C75D680864D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A72C08085F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378545AbjLGJg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:36:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
+        id S231464AbjLGJlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231866AbjLGJgV (ORCPT
+        with ESMTP id S229379AbjLGJk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:36:21 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234BFD5E;
-        Thu,  7 Dec 2023 01:36:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701941787; x=1733477787;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2xCC9VMF8HQQ5iJ4fro+1qWC/m9zv5+EUIPiEyIdfFw=;
-  b=cbkudBwGqZoRrekMmwXXWK1oZ8SiUdMWwERTjwO3qfvSs3pJ7iDzFsMM
-   44p6GJ54SaaVojC/fPkWsVZAzA0jdju+Fne48mqwodv29CHX4QqSnn7xe
-   vpRtDuZZ1V0kr84dT+t53UyR2Rd3knIkwOWJ3bvroqbFqIr6o7XZuDaCa
-   UZNom0NY+pI93rpAoy+px7FnCPT7Mclu5v5LzQW2q6oB1AgRMrLKPqNFK
-   ya/MnMa9K629ACdYBnjwmLO8gK1RvR7eKDaYPSUin3Y2lwvIMu81iLm2z
-   qIgX+p5Jxz1pEfKIHySwl84jMa4UouKSMZZXu3oTCgS5iXbC8+c/QrG4d
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="391378018"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="391378018"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 01:36:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="895075318"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="895075318"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 07 Dec 2023 01:36:21 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBAnq-000C2A-2f;
-        Thu, 07 Dec 2023 09:36:18 +0000
-Date:   Thu, 7 Dec 2023 17:35:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Frank Li <Frank.Li@nxp.com>, imx@lists.linux.dev,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:PCI DRIVER FOR IMX6" <linux-pci@vger.kernel.org>,
-        "moderated list:PCI DRIVER FOR IMX6" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 7/9] PCI: imx6: Simplify switch-case logic by involve
- init_phy callback
-Message-ID: <202312071732.l6LvuDdy-lkp@intel.com>
-References: <20231206155903.566194-8-Frank.Li@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206155903.566194-8-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 7 Dec 2023 04:40:58 -0500
+Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 03979FA;
+        Thu,  7 Dec 2023 01:40:59 -0800 (PST)
+Received: from localhost.localdomain (unknown [10.190.66.146])
+        by mail-app2 (Coremail) with SMTP id by_KCgCHj08pknFlatRXAA--.45476S4;
+        Thu, 07 Dec 2023 17:36:49 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn
+Cc:     Ariel Elior <aelior@marvell.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yuval Mintz <Yuval.Mintz@qlogic.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] qed: Fix a potential use-after-free in qed_cxt_tables_alloc
+Date:   Thu,  7 Dec 2023 17:36:06 +0800
+Message-Id: <20231207093606.17868-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgCHj08pknFlatRXAA--.45476S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw1fuw1fWFykCFyxtF1kZrb_yoW8tw1fpr
+        4xJFy2vF40qwn8Xa1kuw1rtFy5Zay7KFy7Gry0kw4ruFn8XFn7X3W7Aa4ruw1xur98JF45
+        tFWjkFnagw1qkFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvm1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgwCBmVwRZREWwAAsR
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
+qed_ilt_shadow_alloc() will call qed_ilt_shadow_free() to
+free p_hwfn->p_cxt_mngr->ilt_shadow on error. However,
+qed_cxt_tables_alloc() accesses the freed pointer on failure
+of qed_ilt_shadow_alloc() through calling qed_cxt_mngr_free(),
+which may lead to use-after-free. Fix this issue by setting
+p_hwfn->p_cxt_mngr->ilt_shadow to NULL in qed_ilt_shadow_free().
 
-kernel test robot noticed the following build errors:
+Fixes: fe56b9e6a8d9 ("qed: Add module with basic common support")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
 
-[auto build test ERROR on pci/next]
-[also build test ERROR on pci/for-linus linus/master v6.7-rc4 next-20231207]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Changelog:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/PCI-imx6-Simplify-clock-handling-by-using-HAS_CLK_-bitmask/20231207-000209
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20231206155903.566194-8-Frank.Li%40nxp.com
-patch subject: [PATCH 7/9] PCI: imx6: Simplify switch-case logic by involve init_phy callback
-config: powerpc-randconfig-002-20231207 (https://download.01.org/0day-ci/archive/20231207/202312071732.l6LvuDdy-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231207/202312071732.l6LvuDdy-lkp@intel.com/reproduce)
+v2: -Change the bug type from double-free to use-after-free.
+    -Move the null check against p_mngr->ilt_shadow to the beginning
+     of the function qed_ilt_shadow_free().
+    -When kcalloc() fails in qed_ilt_shadow_alloc(), just return
+     because there is nothing to free.
+---
+ drivers/net/ethernet/qlogic/qed/qed_cxt.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312071732.l6LvuDdy-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   powerpc-linux-ld: drivers/pci/controller/dwc/pci-imx6.o: in function `imx6_pcie_host_init':
->> pci-imx6.c:(.text.imx6_pcie_host_init+0x120): undefined reference to `__ffsdi2'
-
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_cxt.c b/drivers/net/ethernet/qlogic/qed/qed_cxt.c
+index 65e20693c549..911e0c0d3563 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_cxt.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_cxt.c
+@@ -921,9 +921,12 @@ static void qed_ilt_shadow_free(struct qed_hwfn *p_hwfn)
+ 	struct qed_cxt_mngr *p_mngr = p_hwfn->p_cxt_mngr;
+ 	u32 ilt_size, i;
+ 
++	if (!p_mngr->ilt_shadow)
++		return;
++
+ 	ilt_size = qed_cxt_ilt_shadow_size(p_cli);
+ 
+-	for (i = 0; p_mngr->ilt_shadow && i < ilt_size; i++) {
++	for (i = 0; i < ilt_size; i++) {
+ 		struct phys_mem_desc *p_dma = &p_mngr->ilt_shadow[i];
+ 
+ 		if (p_dma->virt_addr)
+@@ -933,6 +936,7 @@ static void qed_ilt_shadow_free(struct qed_hwfn *p_hwfn)
+ 		p_dma->virt_addr = NULL;
+ 	}
+ 	kfree(p_mngr->ilt_shadow);
++	p_hwfn->p_cxt_mngr->ilt_shadow = NULL;
+ }
+ 
+ static int qed_ilt_blk_alloc(struct qed_hwfn *p_hwfn,
+@@ -995,10 +999,8 @@ static int qed_ilt_shadow_alloc(struct qed_hwfn *p_hwfn)
+ 	size = qed_cxt_ilt_shadow_size(clients);
+ 	p_mngr->ilt_shadow = kcalloc(size, sizeof(struct phys_mem_desc),
+ 				     GFP_KERNEL);
+-	if (!p_mngr->ilt_shadow) {
+-		rc = -ENOMEM;
+-		goto ilt_shadow_fail;
+-	}
++	if (!p_mngr->ilt_shadow)
++		return -ENOMEM;
+ 
+ 	DP_VERBOSE(p_hwfn, QED_MSG_ILT,
+ 		   "Allocated 0x%x bytes for ilt shadow\n",
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.17.1
+
