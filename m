@@ -2,101 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 145CA809212
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 21:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A68E1809218
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 21:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbjLGULC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 15:11:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
+        id S230051AbjLGUOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 15:14:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjLGULB (ORCPT
+        with ESMTP id S229541AbjLGUOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 15:11:01 -0500
-Received: from smtp.smtpout.orange.fr (smtp-29.smtpout.orange.fr [80.12.242.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780CD170F
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 12:11:03 -0800 (PST)
-Received: from pop-os.home ([92.140.202.140])
-        by smtp.orange.fr with ESMTPA
-        id BKi4rWEPVrKXzBKi4rMu75; Thu, 07 Dec 2023 21:11:01 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1701979861;
-        bh=lrqiH8yVpgT6zM5oRkE6GFJPks/LuoT9ILt/fdADS18=;
-        h=From:To:Cc:Subject:Date;
-        b=VZSPcQ9YfoGsXgnmIKwNY2isHZdBmuBhN9Bl8vEIAFMUqL1O15e1YjavF1euIk1zS
-         4A0GXrQhsoupjVxjO8I3pyyGagDU4Ga03RrLDbc2N2mM2wYyqcQB60YFrzpOU8RTZS
-         s5BJ0ryxAYDsANJb0IRoZzIYFX8Forzk1vnJvyLB7GIutwow89eM0hA9sC7iHIvMB6
-         i89qbwBxrvEyL9a8k+3PtnzgKpDLf1uv1CnQM9cmnGotx3CoJTdc88CgV3L2eKAAzL
-         0yvqEprB95WoIP2q1NJTijsBhck/lq0yc7vUBAMQ9cfA4CPiUioBfdiNcvwdhORo5L
-         2fImSgAiB6nmA==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 07 Dec 2023 21:11:01 +0100
-X-ME-IP: 92.140.202.140
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Antti Palosaari <crope@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Brad Love <brad@nextdimension.cc>, Sean Young <sean@mess.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: [PATCH] media: m88ds3103: Fix an error handling path in m88ds3103_probe()
-Date:   Thu,  7 Dec 2023 21:10:56 +0100
-Message-Id: <32237b89eef582a89f64c4f6213e27d99245bafd.1701979842.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Thu, 7 Dec 2023 15:14:30 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7401710
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 12:14:36 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54c77d011acso2172a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 12:14:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701980075; x=1702584875; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O59CADGEUW6I15GmJQjsmBYRut0M70PjtjxoPXjvnZo=;
+        b=RSHFfBI5cnyPBAa/SOFWl4kamY+bc+MhBa6SZT5PD+BtArkyu8GzGQfm0TsFkhQrgg
+         xo1TpZC0ehPnIuR4wHjzVmuj8IaMXOgGvpTR/Hmqyeum5ZB0gCrXtFL/bFn6/bBB84VF
+         Kd7C/oK08blnT7GB+/hooPA5XLlaKe6vwGjxAYpNd8YR+caYXYevmO27/9BOvpQglLQG
+         1Vb1TImUlmCKiVKnt510ZvjY9iPIZmAMq3+UkOYg1Ag+/YjAMnpl/9TnH84XnYJrJdxz
+         4zVZmte6QjiKgDqCUF1FIgTMSLGiMHuwhtI5MvbySHSe8NXDcvZoeSWu7wrNUsdKBDZS
+         JjrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701980075; x=1702584875;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O59CADGEUW6I15GmJQjsmBYRut0M70PjtjxoPXjvnZo=;
+        b=Jn2FevPd9rMBT881ZEib3SMNdXCWPWUCjslX4HZHX/e+PcjkFWASdQiC/TQnmljYEC
+         7KrpBA29i72laEvxjGwZOTCWiUNApxrEuN3UXfF+UKGt7eCFVd1TDTtrJzw6cvG1XRvp
+         DF1ji2Ll+4iACuwi9+ei7y44pjhE95FNcZd9fjZu2yr8+Xm2o0dp95jBKoUGTcSyX0Jz
+         +LxuC9TcYwUD79ynVF1lbqdyfYYTQyMmiwqNNhRs3ANBI5U5NhQzBYNJcc51tD+s8n9C
+         ykuFa2K7b501NwP/MLgUq86MK1tpwTah1XCIh7R2s0DVBS36tp4TsHIhIeMakyf3oGIX
+         pxLA==
+X-Gm-Message-State: AOJu0Yzdw/CHfwhqC/DJ26qU4pucU2BPyONzk6v2ZP/h0ZhrjvUi+v+/
+        pohNvMt/JMAgO6n04EidhCckLSREx9uyByQ+A1UcIg==
+X-Google-Smtp-Source: AGHT+IHKHtr5xE3RkGK0fJwUK612HPcHHmi9TzXyZbEI0xzrbY30jcQXq3kwA1TkT9ayLJiDTy7rskFOTZTnNxoE6f4=
+X-Received: by 2002:a50:ccc6:0:b0:54a:ee8b:7a99 with SMTP id
+ b6-20020a50ccc6000000b0054aee8b7a99mr17972edj.0.1701980074584; Thu, 07 Dec
+ 2023 12:14:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231128175441.721579-1-namhyung@kernel.org> <CAP-5=fWfKqgT60TFRALw8vTDQT7VFV+0+eo1rFSSH3eVrjzPmA@mail.gmail.com>
+ <CAM9d7chKmDETK6Ea2wyR8L21jyHWcPHbKavarnq-JmNA-AoUnQ@mail.gmail.com>
+ <CAP-5=fUf6R=bsfg7i8atFApJBY-=zWUBMq7inFsCPZhB+w2==Q@mail.gmail.com>
+ <CAM9d7cjDiu=dksnhboJFT4uPQJcvGMB-vBt96v3i7Kqy5LKRMw@mail.gmail.com>
+ <CAP-5=fXKbi3DYoOKrJvNKLNU=fJEY9aDAOQhH+Vh+XWxHzGjwA@mail.gmail.com>
+ <ZXIiBp-rvdvSI-ZY@kernel.org> <ZXIicbe9K5KYGSV4@kernel.org>
+In-Reply-To: <ZXIicbe9K5KYGSV4@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 7 Dec 2023 12:14:23 -0800
+Message-ID: <CAP-5=fWN5Jwsf5dxqw0BJxpdu89FM54A-AtQpEqxeE7XLDx3mA@mail.gmail.com>
+Subject: Re: [PATCHSET 0/8] perf annotate: Make annotation_options global (v1)
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error occurs after a successful i2c_mux_add_adapter(),
-i2c_mux_del_adapters() should be called to avoid a some leaks, as already
-done in the .remove() function.
+On Thu, Dec 7, 2023 at 11:52=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Thu, Dec 07, 2023 at 04:50:30PM -0300, Arnaldo Carvalho de Melo escrev=
+eu:
+> > Em Tue, Dec 05, 2023 at 09:59:02AM -0800, Ian Rogers escreveu:
+> > > On Mon, Dec 4, 2023 at 2:46=E2=80=AFPM Namhyung Kim <namhyung@kernel.=
+org> wrote:
+> > > > On Thu, Nov 30, 2023 at 10:37=E2=80=AFAM Ian Rogers <irogers@google=
+.com> wrote:
+> > > > > Sgtm. My point wasn't to criticize, I think this is a good change=
+, I
+> > > > > was just trying to imagine doing things in a way that could overa=
+ll
+> > > > > reduce complexity
+> >
+> > > > Yep, thanks for your review.  Can I get your ACKs? :)
+> >
+> > > For the series:
+> > > Reviewed-by: Ian Rogers <irogers@google.com>
+> >
+> > Thanks, applied to perf-tools-next.
+>
+>
+> Now trying to fix this:
+>
+>   CC      bench/numa.o
+>   CC      tests/hists_cumulate.o
+> ui/gtk/annotate.c: In function =E2=80=98symbol__gtk_annotate=E2=80=99:
+> ui/gtk/annotate.c:179:43: error: passing argument 3 of =E2=80=98symbol__a=
+nnotate=E2=80=99 from incompatible pointer type [-Werror=3Dincompatible-poi=
+nter-types]
+>   179 |         err =3D symbol__annotate(ms, evsel, options, NULL);
+>       |                                           ^~~~~~~
+>       |                                           |
+>       |                                           struct annotation_optio=
+ns *
+> In file included from ui/gtk/annotate.c:5:
+> /home/acme/git/perf-tools-next/tools/perf/util/annotate.h:376:36: note: e=
+xpected =E2=80=98struct arch **=E2=80=99 but argument is of type =E2=80=98s=
+truct annotation_options *=E2=80=99
+>   376 |                      struct arch **parch);
+>       |                      ~~~~~~~~~~~~~~^~~~~
+> ui/gtk/annotate.c:179:15: error: too many arguments to function =E2=80=98=
+symbol__annotate=E2=80=99
+>   179 |         err =3D symbol__annotate(ms, evsel, options, NULL);
+>       |               ^~~~~~~~~~~~~~~~
+> /home/acme/git/perf-tools-next/tools/perf/util/annotate.h:374:5: note: de=
+clared here
+>   374 | int symbol__annotate(struct map_symbol *ms,
+>       |     ^~~~~~~~~~~~~~~~
+> cc1: all warnings being treated as errors
+>   CC      tests/python-use.o
+>   CC      trace/beauty/sockaddr.o
+>   CC      arch/x86/util/topdown.o
+> make[6]: *** [/home/acme/git/perf-tools-next/tools/build/Makefile.build:1=
+05: ui/gtk/annotate.o] Error 1
+> make[6]: *** Waiting for unfinished jobs....
+>   CC      arch/x86/util/machine.o
 
-Add the missing call.
+Maybe a signal to remove the gtk support :-)
 
-Fixes: e6089feca460 ("media: m88ds3103: Add support for ds3103b demod")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/media/dvb-frontends/m88ds3103.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/dvb-frontends/m88ds3103.c b/drivers/media/dvb-frontends/m88ds3103.c
-index 26c67ef05d13..e0272054fca5 100644
---- a/drivers/media/dvb-frontends/m88ds3103.c
-+++ b/drivers/media/dvb-frontends/m88ds3103.c
-@@ -1894,7 +1894,7 @@ static int m88ds3103_probe(struct i2c_client *client)
- 		/* get frontend address */
- 		ret = regmap_read(dev->regmap, 0x29, &utmp);
- 		if (ret)
--			goto err_kfree;
-+			goto err_del_adapters;
- 		dev->dt_addr = ((utmp & 0x80) == 0) ? 0x42 >> 1 : 0x40 >> 1;
- 		dev_dbg(&client->dev, "dt addr is 0x%02x\n", dev->dt_addr);
- 
-@@ -1902,11 +1902,14 @@ static int m88ds3103_probe(struct i2c_client *client)
- 						      dev->dt_addr);
- 		if (IS_ERR(dev->dt_client)) {
- 			ret = PTR_ERR(dev->dt_client);
--			goto err_kfree;
-+			goto err_del_adapters;
- 		}
- 	}
- 
- 	return 0;
-+
-+err_del_adapters:
-+	i2c_mux_del_adapters(dev->muxc);
- err_kfree:
- 	kfree(dev);
- err:
--- 
-2.34.1
-
+Ian
