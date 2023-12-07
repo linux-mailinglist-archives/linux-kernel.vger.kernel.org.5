@@ -2,154 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B1580910A
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA29809109
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443367AbjLGTHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 14:07:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32850 "EHLO
+        id S1443786AbjLGTHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 14:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbjLGTHo (ORCPT
+        with ESMTP id S1443238AbjLGTHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 14:07:44 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE45122;
-        Thu,  7 Dec 2023 11:07:50 -0800 (PST)
+        Thu, 7 Dec 2023 14:07:45 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9737A10DC;
+        Thu,  7 Dec 2023 11:07:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1701976071; x=1733512071;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=pmpl+6ezX0Ah9BkO+Ag8eq4zTiI/Wi2kFTYQxpuuf98=;
-  b=MV6LSP0V/1DWVUmNVg1DNc955S0SdNZKDOIzsDN4B/ofiTyMk8fZ0rda
-   rYNEdQDlo3aq+hAbF7cDEdb95fKtzd5ZefkTA8tBw3b3O0FMhsDbiDYcl
-   esjZ2tg4D2YBe8rqHhKLyN/K1QYlb7SUh4sklWHrm1ZRT3tMjDczaHg4N
-   M1AniVghCDCDYHZJcomrocOGTtzIynqY2e5qcA2L9U5BU96O0exe1iCF4
-   MkOjHy9WjcC7Y3j3346zZlaroRghfTQU1RU2t4SH0ur+502C21az6le2l
-   nFWYz6vB6bfsCoJlJp5Yhoor54brHgFhWYz4rIAQo0hWDF+I/wEkWXWfI
+  bh=ieJEkuMKhcAdLylW1AUSXkjLtQT7yen+rjsrcCv2Ujc=;
+  b=kgzskMW/3jukR6TzUl0mJOaRdE4iWCJVIFLxzK2Qx4bETHg4W0bdjkcg
+   fpyiYqjAmV65Je+Rw+6MXo/XiZZrxil4oibO8XvSJLfebGfpBeW6poS6x
+   MNQNo1TGR/l+9WGJl8yIB2/8X+obo2sWylZGDT6gkN36Bs7uBEDp90sbx
+   uvY1IGrEM8C8xXcc3EqT7iW9zxdy8qo417Fpu2OYX1Iae2ExMGaVgjZAw
+   ADpZeJZAagU6Std/cyYa72JKSjer4GSfhV5FW6hymKr8gGgI08df9bgHH
+   d9pVfcgpChth6E796MThHDzLIjBxm0aR73q8jMj2ZA4XIFmOIpbazuNA3
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1357819"
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="15843127"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="1357819"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 11:07:51 -0800
+   d="scan'208";a="15843127"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 11:07:51 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895246434"
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="721582135"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="895246434"
+   d="scan'208";a="721582135"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 07 Dec 2023 11:07:44 -0800
+  by orsmga003.jf.intel.com with ESMTP; 07 Dec 2023 11:07:45 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1rBJio-000CiZ-06;
+        id 1rBJio-000Cib-0A;
         Thu, 07 Dec 2023 19:07:42 +0000
-Date:   Fri, 8 Dec 2023 03:06:59 +0800
+Date:   Fri, 8 Dec 2023 03:07:00 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Romain Gantois <romain.gantois@bootlin.com>, davem@davemloft.net,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Romain Gantois <romain.gantois@bootlin.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>
-Subject: Re: [PATCH net-next v3 5/8] net: qualcomm: ipqess: add bridge
- offloading features to the IPQESS driver
-Message-ID: <202312080233.sRrkY9Q5-lkp@intel.com>
-References: <20231114105600.1012056-6-romain.gantois@bootlin.com>
+To:     Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+        chao.wei@sophgo.com, conor@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
+        guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
+        samuel.holland@sifive.com
+Cc:     oe-kbuild-all@lists.linux.dev, Chen Wang <unicorn_wang@outlook.com>
+Subject: Re: [PATCH v5 3/4] clk: sophgo: Add SG2042 clock generator driver
+Message-ID: <202312080230.uE0e0ycK-lkp@intel.com>
+References: <975f9995584dfa8af751e96a1f4d2c7991551a35.1701938395.git.unicorn_wang@outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231114105600.1012056-6-romain.gantois@bootlin.com>
+In-Reply-To: <975f9995584dfa8af751e96a1f4d2c7991551a35.1701938395.git.unicorn_wang@outlook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Romain,
+Hi Chen,
 
-kernel test robot noticed the following build warnings:
+kernel test robot noticed the following build errors:
 
-[auto build test WARNING on net-next/main]
+[auto build test ERROR on b85ea95d086471afb4ad062012a4d73cd328fa86]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Romain-Gantois/dt-bindings-net-Introduce-the-Qualcomm-IPQESS-Ethernet-switch/20231114-185953
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231114105600.1012056-6-romain.gantois%40bootlin.com
-patch subject: [PATCH net-next v3 5/8] net: qualcomm: ipqess: add bridge offloading features to the IPQESS driver
-config: arc-randconfig-r112-20231116 (https://download.01.org/0day-ci/archive/20231208/202312080233.sRrkY9Q5-lkp@intel.com/config)
+url:    https://github.com/intel-lab-lkp/linux/commits/Chen-Wang/dt-bindings-soc-sophgo-Add-Sophgo-system-control-module/20231207-165948
+base:   b85ea95d086471afb4ad062012a4d73cd328fa86
+patch link:    https://lore.kernel.org/r/975f9995584dfa8af751e96a1f4d2c7991551a35.1701938395.git.unicorn_wang%40outlook.com
+patch subject: [PATCH v5 3/4] clk: sophgo: Add SG2042 clock generator driver
+config: arc-randconfig-002-20231208 (https://download.01.org/0day-ci/archive/20231208/202312080230.uE0e0ycK-lkp@intel.com/config)
 compiler: arc-elf-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231208/202312080233.sRrkY9Q5-lkp@intel.com/reproduce)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231208/202312080230.uE0e0ycK-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312080233.sRrkY9Q5-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312080230.uE0e0ycK-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/net/dsa/qca/qca8k-8xxx.c:1982:5: sparse: sparse: symbol 'qca8k_dsa_port_fdb_dump' was not declared. Should it be static?
->> drivers/net/dsa/qca/qca8k-8xxx.c:1988:6: sparse: sparse: symbol 'qca8k_dsa_port_stp_state_set' was not declared. Should it be static?
->> drivers/net/dsa/qca/qca8k-8xxx.c:1995:6: sparse: sparse: symbol 'qca8k_dsa_port_fast_age' was not declared. Should it be static?
->> drivers/net/dsa/qca/qca8k-8xxx.c:2000:5: sparse: sparse: symbol 'qca8k_dsa_set_ageing_time' was not declared. Should it be static?
->> drivers/net/dsa/qca/qca8k-8xxx.c:2005:5: sparse: sparse: symbol 'qca8k_dsa_port_vlan_filtering' was not declared. Should it be static?
->> drivers/net/dsa/qca/qca8k-8xxx.c:2012:5: sparse: sparse: symbol 'qca8k_dsa_vlan_add' was not declared. Should it be static?
+All error/warnings (new ones prefixed by >>):
 
-vim +/qca8k_dsa_port_fdb_dump +1982 drivers/net/dsa/qca/qca8k-8xxx.c
+   drivers/clk/sophgo/clk-sophgo-sg2042.c: In function 'sg2042_clk_init_clk_data':
+>> drivers/clk/sophgo/clk-sophgo-sg2042.c:1273:20: error: implicit declaration of function 'kzalloc'; did you mean 'vzalloc'? [-Werror=implicit-function-declaration]
+    1273 |         clk_data = kzalloc(struct_size(clk_data, onecell_data.hws, num_clks), GFP_KERNEL);
+         |                    ^~~~~~~
+         |                    vzalloc
+>> drivers/clk/sophgo/clk-sophgo-sg2042.c:1273:18: warning: assignment to 'struct sg2042_clk_data *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+    1273 |         clk_data = kzalloc(struct_size(clk_data, onecell_data.hws, num_clks), GFP_KERNEL);
+         |                  ^
+>> drivers/clk/sophgo/clk-sophgo-sg2042.c:1293:9: error: implicit declaration of function 'kfree'; did you mean 'vfree'? [-Werror=implicit-function-declaration]
+    1293 |         kfree(clk_data);
+         |         ^~~~~
+         |         vfree
+   cc1: some warnings being treated as errors
 
-  1981	
-> 1982	int qca8k_dsa_port_fdb_dump(struct dsa_switch *ds, int port,
-  1983				    dsa_fdb_dump_cb_t *cb, void *data)
-  1984	{
-  1985		return qca8k_port_fdb_dump(ds->priv, port, cb, data);
-  1986	}
-  1987	
-> 1988	void qca8k_dsa_port_stp_state_set(struct dsa_switch *ds, int port,
-  1989					  u8 state)
-  1990	{
-  1991		qca8k_port_stp_state_set(ds->priv, port, state,
-  1992					 dsa_to_port(ds, port)->learning, true);
-  1993	}
-  1994	
-> 1995	void qca8k_dsa_port_fast_age(struct dsa_switch *ds, int port)
-  1996	{
-  1997		qca8k_port_fast_age(ds->priv, port);
-  1998	}
-  1999	
-> 2000	int qca8k_dsa_set_ageing_time(struct dsa_switch *ds, unsigned int msecs)
-  2001	{
-  2002		return qca8k_set_ageing_time(ds->priv, msecs);
-  2003	}
-  2004	
-> 2005	int qca8k_dsa_port_vlan_filtering(struct dsa_switch *ds, int port,
-  2006					  bool vlan_filtering,
-  2007					  struct netlink_ext_ack *extack)
-  2008	{
-  2009		return qca8k_port_vlan_filtering(ds->priv, port, vlan_filtering);
-  2010	}
-  2011	
-> 2012	int qca8k_dsa_vlan_add(struct dsa_switch *ds, int port,
-  2013			       const struct switchdev_obj_port_vlan *vlan,
-  2014			       struct netlink_ext_ack *extack)
-  2015	{
-  2016		return qca8k_port_vlan_add(ds->priv, port, vlan, extack);
-  2017	}
-  2018	
+
+vim +1273 drivers/clk/sophgo/clk-sophgo-sg2042.c
+
+  1256	
+  1257	static int __init sg2042_clk_init_clk_data(
+  1258		struct device_node *node,
+  1259		int num_clks,
+  1260		struct sg2042_clk_data **pp_clk_data)
+  1261	{
+  1262		int ret = 0;
+  1263		struct sg2042_clk_data *clk_data = NULL;
+  1264		struct device_node *np_syscon;
+  1265	
+  1266		np_syscon = of_parse_phandle(node, "sophgo,system-ctrl", 0);
+  1267		if (!np_syscon) {
+  1268			pr_err("failed to get system-ctrl node\n");
+  1269			ret = -EINVAL;
+  1270			goto error_out;
+  1271		}
+  1272	
+> 1273		clk_data = kzalloc(struct_size(clk_data, onecell_data.hws, num_clks), GFP_KERNEL);
+  1274		if (!clk_data) {
+  1275			ret = -ENOMEM;
+  1276			goto error_out;
+  1277		}
+  1278	
+  1279		clk_data->regmap_syscon = device_node_to_regmap(np_syscon);
+  1280		if (IS_ERR_OR_NULL(clk_data->regmap_syscon)) {
+  1281			pr_err("cannot get regmap_syscon %ld\n", PTR_ERR(clk_data->regmap_syscon));
+  1282			ret = -ENODEV;
+  1283			goto cleanup;
+  1284		}
+  1285		clk_data->iobase_syscon = of_iomap(np_syscon, 0);
+  1286		clk_data->iobase = of_iomap(node, 0);
+  1287		clk_data->onecell_data.num = num_clks;
+  1288	
+  1289		*pp_clk_data = clk_data;
+  1290		return ret;
+  1291	
+  1292	cleanup:
+> 1293		kfree(clk_data);
+  1294	
+  1295	error_out:
+  1296		return ret;
+  1297	}
+  1298	
 
 -- 
 0-DAY CI Kernel Test Service
