@@ -2,114 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC51807CE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 01:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C83B807CFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 01:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441806AbjLGAMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 19:12:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43698 "EHLO
+        id S1441862AbjLGARL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 19:17:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235178AbjLGAL5 (ORCPT
+        with ESMTP id S235174AbjLGARJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 19:11:57 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F2BD59
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 16:12:02 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1d053953954so2333355ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 16:12:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701907922; x=1702512722; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=r3cjh/OicCbB8QyzwRWb0eXa967TdIfrySjWwl2ZooY=;
-        b=AcJEwKRtnRhFdf9yERxlg2/bQjSarjJHqoSk7XjiA86DOSwJW98aocwUPyK6j++Q5i
-         ERvBtbKngbATkTO1344e1Lgg9JwwXqRP/dBrrssHpca3FhfcHu1nFkBTTN8wnVPcx1xE
-         /LspOhEOkrMYh9nxjdzeTX15c5FXINmIMT7x2Pa30q9spgOkeNf2YLAksyO0FNz0cCfh
-         Xi8H409VKeXRyuJBf7EgiiJWK5CVbzrXhicH9nm8GDUrEGbL1dM8tGlkcIWf6tt7Ycd2
-         jnuyySK0iCM7eR5q3KPz+QRUIK0qNsQL7gOfScEgKWonXlglCE1hAnOPilGWz6ICwLF5
-         K3qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701907922; x=1702512722;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=r3cjh/OicCbB8QyzwRWb0eXa967TdIfrySjWwl2ZooY=;
-        b=VfSYc1rPT6roi0Sl6eATBdL3vYJlsC3KRfNLFTQ7sMNLuD8jUUJNzwmiT8XRjHMKy4
-         AXXrXrD8ERPT+5+eUjuwXp48ODLeELtTEUInf3ivpKlZJcRBuUfduKumcYU1wbLmskKM
-         r2wj6twO0y3mhVIDT/UQAhA6sdHD5w4+D9tmDtxBZO7hO8kzPXqwz1LVS9Pgd2Sz2ScW
-         KBJdKM+TqBddGZ3mD5y8PziKixZFNl942zOh7id/9CUEKsKCc/NA92PuVbbOAdkdb32V
-         lq1N5R62pOSSNwtnNdVYtLqLziW8p+zBKqtIusEiBu7rK62mB06JbjRBc9OIiHUpibtk
-         GWGw==
-X-Gm-Message-State: AOJu0YwzrpDXAHjYIUlJUxtBmfrSnbZk3fijEpRIiDVzHID2N+6y1vBV
-        KyhdIAu9uAiF4bSYRQ35zxvcg6Dr1b3FLmD0yA==
-X-Google-Smtp-Source: AGHT+IFhH+WCd8DAawr4vLyQHCpqGtGc1HufViK0emU+lU7pKAr0bAQNvOdUDmWpsf2ekAPUQhaWWageB2FN+GwAog==
-X-Received: from dionnaglaze.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2ee6])
- (user=dionnaglaze job=sendgmr) by 2002:a17:902:eccd:b0:1d0:96b7:7f4 with SMTP
- id a13-20020a170902eccd00b001d096b707f4mr24174plh.12.1701907921779; Wed, 06
- Dec 2023 16:12:01 -0800 (PST)
-Date:   Thu,  7 Dec 2023 00:11:32 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231207001142.3617856-1-dionnaglaze@google.com>
-Subject: [PATCH] kvm: x86: use a uapi-friendly macro for BIT
-From:   Dionna Glaze <dionnaglaze@google.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        seanjc@google.com, pbonzini@redhat.com
-Cc:     Dionna Glaze <dionnaglaze@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Wed, 6 Dec 2023 19:17:09 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D0F1A5;
+        Wed,  6 Dec 2023 16:17:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701908235; x=1733444235;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fB13dmwJjMECWyaEkSjqxu5l+yl9pd/z0TjHdRhOt2A=;
+  b=WZQgv/W9lMqOTwtjhOks0aP5b/hiIRUmd67OTKJBoFWcZvimATlCXl1d
+   d7AcwA34AXh5T/4zUyLF59GKI9wfX7euTcmoOzTpDtFj8A/KpsEFM7Fm7
+   7djSnfXbo1DigfS6srZlDRJt6NQ97q59oQYoIyPm/v/DCQf60eoOAoFBT
+   oxBYDiGKXFlsTCxUo1nuHWhG+t1kEblmDj6V23sQq+soe5FBPEn4T3yvF
+   x9N+MdFkihsR6tnw05nHfZOc4x4dZK7nEN6PcsY8AM7Jha6Gn+2DCNWhk
+   er1KdMvHlRs6sX5KVVb1hjoR/TadNceihtuOu5ENGXVR455v3I2YS22tc
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="393021653"
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="393021653"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 16:17:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="944827102"
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="944827102"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 06 Dec 2023 16:17:11 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rB24j-000Bcc-14;
+        Thu, 07 Dec 2023 00:17:09 +0000
+Date:   Thu, 7 Dec 2023 08:16:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jim Liu <jim.t90615@gmail.com>, JJLIU0@nuvoton.com,
+        krzysztof.kozlowski+dt@linaro.org, linus.walleij@linaro.org,
+        andy@kernel.org, robh+dt@kernel.org, conor+dt@kernel.org,
+        KWLIU@nuvoton.com
+Cc:     oe-kbuild-all@lists.linux.dev, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org
+Subject: Re: [PATCH v8 3/3] gpio: nuvoton: Add Nuvoton NPCM sgpio driver
+Message-ID: <202312070733.GNrG7abU-lkp@intel.com>
+References: <20231206014530.1600151-4-jim.t90615@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206014530.1600151-4-jim.t90615@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change uapi header uses of BIT to instead use the uapi/linux/const.h bit
-macros, since BIT is not defined in uapi headers.
+Hi Jim,
 
-The PMU mask uses _BITUL since it targets a 32 bit flag field, whereas
-the longmode definition is meant for a 64 bit flag field.
+kernel test robot noticed the following build warnings:
 
-Cc: Sean Christophersen <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
+[auto build test WARNING on brgl/gpio/for-next]
+[also build test WARNING on robh/for-next linus/master v6.7-rc4 next-20231206]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Signed-off-by: Dionna Glaze <dionnaglaze@google.com>
----
- arch/x86/include/uapi/asm/kvm.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Jim-Liu/dt-bindings-gpio-add-NPCM-sgpio-driver-bindings/20231206-095724
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio/for-next
+patch link:    https://lore.kernel.org/r/20231206014530.1600151-4-jim.t90615%40gmail.com
+patch subject: [PATCH v8 3/3] gpio: nuvoton: Add Nuvoton NPCM sgpio driver
+config: nios2-randconfig-r131-20231207 (https://download.01.org/0day-ci/archive/20231207/202312070733.GNrG7abU-lkp@intel.com/config)
+compiler: nios2-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231207/202312070733.GNrG7abU-lkp@intel.com/reproduce)
 
-diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-index 1a6a1f987949..a8955efeef09 100644
---- a/arch/x86/include/uapi/asm/kvm.h
-+++ b/arch/x86/include/uapi/asm/kvm.h
-@@ -7,6 +7,7 @@
-  *
-  */
- 
-+#include <linux/const.h>
- #include <linux/types.h>
- #include <linux/ioctl.h>
- #include <linux/stddef.h>
-@@ -526,7 +527,7 @@ struct kvm_pmu_event_filter {
- #define KVM_PMU_EVENT_ALLOW 0
- #define KVM_PMU_EVENT_DENY 1
- 
--#define KVM_PMU_EVENT_FLAG_MASKED_EVENTS BIT(0)
-+#define KVM_PMU_EVENT_FLAG_MASKED_EVENTS _BITUL(0)
- #define KVM_PMU_EVENT_FLAGS_VALID_MASK (KVM_PMU_EVENT_FLAG_MASKED_EVENTS)
- 
- /*
-@@ -560,6 +561,6 @@ struct kvm_pmu_event_filter {
- #define   KVM_VCPU_TSC_OFFSET 0 /* attribute for the TSC offset */
- 
- /* x86-specific KVM_EXIT_HYPERCALL flags. */
--#define KVM_EXIT_HYPERCALL_LONG_MODE	BIT(0)
-+#define KVM_EXIT_HYPERCALL_LONG_MODE	_BITULL(0)
- 
- #endif /* _ASM_X86_KVM_H */
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312070733.GNrG7abU-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> drivers/gpio/gpio-npcm-sgpio.c:150:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected struct device const *dev @@     got int @@
+   drivers/gpio/gpio-npcm-sgpio.c:150:17: sparse:     expected struct device const *dev
+   drivers/gpio/gpio-npcm-sgpio.c:150:17: sparse:     got int
+>> drivers/gpio/gpio-npcm-sgpio.c:150:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected struct device const *dev @@     got int @@
+   drivers/gpio/gpio-npcm-sgpio.c:150:17: sparse:     expected struct device const *dev
+   drivers/gpio/gpio-npcm-sgpio.c:150:17: sparse:     got int
+>> drivers/gpio/gpio-npcm-sgpio.c:152:16: sparse: sparse: Using plain integer as NULL pointer
+>> drivers/gpio/gpio-npcm-sgpio.c:534:20: sparse: sparse: incorrect type in initializer (different modifiers) @@     expected unsigned int *sft_clk @@     got unsigned int const * @@
+   drivers/gpio/gpio-npcm-sgpio.c:534:20: sparse:     expected unsigned int *sft_clk
+   drivers/gpio/gpio-npcm-sgpio.c:534:20: sparse:     got unsigned int const *
+>> drivers/gpio/gpio-npcm-sgpio.c:535:20: sparse: sparse: incorrect type in initializer (different modifiers) @@     expected unsigned int *clk_sel @@     got unsigned int const * @@
+   drivers/gpio/gpio-npcm-sgpio.c:535:20: sparse:     expected unsigned int *clk_sel
+   drivers/gpio/gpio-npcm-sgpio.c:535:20: sparse:     got unsigned int const *
+   drivers/gpio/gpio-npcm-sgpio.c:540:20: sparse: sparse: incorrect type in initializer (different modifiers) @@     expected unsigned int *sft_clk @@     got unsigned int const * @@
+   drivers/gpio/gpio-npcm-sgpio.c:540:20: sparse:     expected unsigned int *sft_clk
+   drivers/gpio/gpio-npcm-sgpio.c:540:20: sparse:     got unsigned int const *
+   drivers/gpio/gpio-npcm-sgpio.c:541:20: sparse: sparse: incorrect type in initializer (different modifiers) @@     expected unsigned int *clk_sel @@     got unsigned int const * @@
+   drivers/gpio/gpio-npcm-sgpio.c:541:20: sparse:     expected unsigned int *clk_sel
+   drivers/gpio/gpio-npcm-sgpio.c:541:20: sparse:     got unsigned int const *
+
+vim +150 drivers/gpio/gpio-npcm-sgpio.c
+
+   134	
+   135	static void __iomem *bank_reg(struct npcm_sgpio *gpio,
+   136				      const struct npcm_sgpio_bank *bank,
+   137				      const enum npcm_sgpio_reg reg)
+   138	{
+   139		switch (reg) {
+   140		case READ_DATA:
+   141			return gpio->base + bank->rdata_reg;
+   142		case WRITE_DATA:
+   143			return gpio->base + bank->wdata_reg;
+   144		case EVENT_CFG:
+   145			return gpio->base + bank->event_config;
+   146		case EVENT_STS:
+   147			return gpio->base + bank->event_status;
+   148		default:
+   149			/* actually if code runs to here, it's an error case */
+ > 150			dev_WARN(true, "Getting here is an error condition");
+   151		}
+ > 152		return 0;
+   153	}
+   154	
+
 -- 
-2.43.0.rc2.451.g8631bc7472-goog
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
