@@ -2,125 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73572808D2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A599808D04
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232655AbjLGQUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 11:20:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
+        id S232759AbjLGQUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 11:20:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232532AbjLGQUc (ORCPT
+        with ESMTP id S232532AbjLGQUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 11:20:32 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373E3D4A;
-        Thu,  7 Dec 2023 08:20:38 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 49D4A1FB8F;
-        Thu,  7 Dec 2023 16:20:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1701966036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R9gDJpilOFtri5BMtSk1bR16VKzmy1EoAMg8XN+4Hs8=;
-        b=xxTXJx3GPoOl7SBcxIJqOQY+tneUAmrvullQZsq6Y0AdZHg7xq11tltLJ6XCWQKwQxYcwk
-        HT33a4nMU2w3w9MG+rUa8S0IjxZBChoNpEM/Fk61JsRbYhku/KT2ETpZ6RCdOFtcJMjyDz
-        IKKnYkKtyOjkwmj0q+ZaOkeGmOSUCXE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1701966036;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R9gDJpilOFtri5BMtSk1bR16VKzmy1EoAMg8XN+4Hs8=;
-        b=TGD6PJiW4rWFAKNCxeLhi1pT83vgP+nsYq+vHBQVED9NbLzgVnBTcoOEz45J5WokkGcnPi
-        EpQoh63MFcmvc0Bw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1701966036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R9gDJpilOFtri5BMtSk1bR16VKzmy1EoAMg8XN+4Hs8=;
-        b=xxTXJx3GPoOl7SBcxIJqOQY+tneUAmrvullQZsq6Y0AdZHg7xq11tltLJ6XCWQKwQxYcwk
-        HT33a4nMU2w3w9MG+rUa8S0IjxZBChoNpEM/Fk61JsRbYhku/KT2ETpZ6RCdOFtcJMjyDz
-        IKKnYkKtyOjkwmj0q+ZaOkeGmOSUCXE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1701966036;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R9gDJpilOFtri5BMtSk1bR16VKzmy1EoAMg8XN+4Hs8=;
-        b=TGD6PJiW4rWFAKNCxeLhi1pT83vgP+nsYq+vHBQVED9NbLzgVnBTcoOEz45J5WokkGcnPi
-        EpQoh63MFcmvc0Bw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E7DE013B6A;
-        Thu,  7 Dec 2023 16:20:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id liI5ONPwcWWzXwAAD6G6ig
-        (envelope-from <vbabka@suse.cz>); Thu, 07 Dec 2023 16:20:35 +0000
-Message-ID: <0e84720f-bb52-c77f-e496-40d91e94a4f6@suse.cz>
-Date:   Thu, 7 Dec 2023 17:20:35 +0100
+        Thu, 7 Dec 2023 11:20:38 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042E411B
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 08:20:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01601C433CA;
+        Thu,  7 Dec 2023 16:20:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701966044;
+        bh=w7Xd+/OSbJk+99OQ/CNyt9RR9EvA1R1smLyRfv0wPeE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nfSVX9gxMKlehSViXQ3Klw264+i4ncJhVTZy87Mh4ZIbSNzXPeL0KoMtmdkWwbzdB
+         waxbbpkx0NWueh/RiOuR9A9mF2arnZO5XrFIAWQkQUVsIwuvTJjlDtT/0z6WpBQrkS
+         9Jql4vR9VfjRK4ARm5uqMq5ljy4gz8Ma/j9kWobmEF0q8ofJEnX4hqgDeeLKoOXMY5
+         jnstQlGdVAO1WbJLP/mL+xEsmbONzyqsKZ89ym8emLxnPokoE0GoAwXqditx9lBEB1
+         9gNeIT0DOBbli1/KWaRazG9m9NmaN/pcc6a2WzS2/TESeFMtyMCnAMqr9pv2Gw210O
+         JuufPwAB2toow==
+Date:   Thu, 7 Dec 2023 08:20:42 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     David Ahern <dsahern@kernel.org>
+Cc:     Aron Silverton <aron.silverton@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
+        Itay Avraham <itayavr@nvidia.com>,
+        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
+Message-ID: <20231207082042.6229868e@kernel.org>
+In-Reply-To: <2bbc4c40-ff8b-4243-9987-dc7d5502a37c@kernel.org>
+References: <20231128044628.GA8901@u2004-local>
+        <20231128065321.53d4d5bb@kernel.org>
+        <20231128162413.GP436702@nvidia.com>
+        <20231128084421.6321b9b2@kernel.org>
+        <20231128175224.GR436702@nvidia.com>
+        <20231128103304.25c2c642@kernel.org>
+        <ZWZJGF7moDM_k6TU@x130>
+        <2023112922-lyricist-unclip-8e78@gregkh>
+        <oxtcvxwbj2hzv4lxnxubo3hoxn7diyzhm2oj3tsw2toxbc3og4@ddglhm6r3oa5>
+        <20231204185210.030a72ca@kernel.org>
+        <fgalnohzpiox7rvsf3wsurkf2x3rdtyhwqq5tk43gesvjlw6yl@i7colkh2sx5h>
+        <20231205204855.52fa5cc1@kernel.org>
+        <2bbc4c40-ff8b-4243-9987-dc7d5502a37c@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v10 16/50] x86/sev: Introduce snp leaked pages list
-To:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
-Cc:     linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        bp@alien8.de, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-        pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-17-michael.roth@amd.com>
-Content-Language: en-US
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20231016132819.1002933-17-michael.roth@amd.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spam-Score: -4.30
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-3.10 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_RATELIMIT(0.00)[to_ip_from(RL81e5qggtdx371s8ik49ru6xr)];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         RCPT_COUNT_TWELVE(0.00)[39];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -3.10
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -129,98 +68,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/23 15:27, Michael Roth wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
+David, I agree with your points. I think you're misreading
+what I said.
+
+On Thu, 7 Dec 2023 08:54:51 -0700 David Ahern wrote:
+> You rail against out of tree drivers and vendor proprietary tools, and
+> now you argue for just that.
+
+I don't rail against out of tree drivers, very much the opposite.
+Linux supports out of tree modules, and I agree that's 100% the
+correct thing to do. I'd encourage more people to take advantage of
+that. The problem is quite the opposite, all the "security hardening"
+is making it almost impossible for users to take advantage of OOT
+modules.
+
+> There is no reason debugging capabilities
+> can not be built into the OS and used when needed. That means anything
+> needed - from kernel modules to userspace tools.
 > 
-> Pages are unsafe to be released back to the page-allocator, if they
-> have been transitioned to firmware/guest state and can't be reclaimed
-> or transitioned back to hypervisor/shared state. In this case add
-> them to an internal leaked pages list to ensure that they are not freed
+> The Meta data point is not representative of the world at large -
+> different scale, different needs, different expertise on staff (OS and
+> H/W). Getting S/W installed (especially anything requiring a compiler)
+> in a production server (and VMs) is not an easy request and in many
+> cases not even possible.
 
-Note the adding to the list doesn't ensure anything like that. Not dropping
-the refcount to zero does. But tracking them might indeed not be bad for
-e.g. crashdump investigations so no objection there.
+I did not say it's easy.
 
-> or touched/accessed to cause fatal page faults.
-> 
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> [mdr: relocate to arch/x86/coco/sev/host.c]
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> ---
->  arch/x86/include/asm/sev-host.h |  3 +++
->  arch/x86/virt/svm/sev.c         | 28 ++++++++++++++++++++++++++++
->  2 files changed, 31 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/sev-host.h b/arch/x86/include/asm/sev-host.h
-> index 1df989411334..7490a665e78f 100644
-> --- a/arch/x86/include/asm/sev-host.h
-> +++ b/arch/x86/include/asm/sev-host.h
-> @@ -19,6 +19,8 @@ void sev_dump_hva_rmpentry(unsigned long address);
->  int psmash(u64 pfn);
->  int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int asid, bool immutable);
->  int rmp_make_shared(u64 pfn, enum pg_level level);
-> +void snp_leak_pages(u64 pfn, unsigned int npages);
-> +
->  #else
->  static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return -ENXIO; }
->  static inline void sev_dump_hva_rmpentry(unsigned long address) {}
-> @@ -29,6 +31,7 @@ static inline int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int as
->  	return -ENXIO;
->  }
->  static inline int rmp_make_shared(u64 pfn, enum pg_level level) { return -ENXIO; }
-> +static inline void snp_leak_pages(u64 pfn, unsigned int npages) {}
->  #endif
->  
->  #endif
-> diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
-> index bf9b97046e05..29a69f4b8cfb 100644
-> --- a/arch/x86/virt/svm/sev.c
-> +++ b/arch/x86/virt/svm/sev.c
-> @@ -59,6 +59,12 @@ struct rmpentry {
->  static struct rmpentry *rmptable_start __ro_after_init;
->  static u64 rmptable_max_pfn __ro_after_init;
->  
-> +/* list of pages which are leaked and cannot be reclaimed */
-> +static LIST_HEAD(snp_leaked_pages_list);
-> +static DEFINE_SPINLOCK(snp_leaked_pages_list_lock);
-> +
-> +static atomic_long_t snp_nr_leaked_pages = ATOMIC_LONG_INIT(0);
-> +
->  #undef pr_fmt
->  #define pr_fmt(fmt)	"SEV-SNP: " fmt
->  
-> @@ -518,3 +524,25 @@ int rmp_make_shared(u64 pfn, enum pg_level level)
->  	return rmpupdate(pfn, &val);
->  }
->  EXPORT_SYMBOL_GPL(rmp_make_shared);
-> +
-> +void snp_leak_pages(u64 pfn, unsigned int npages)
-> +{
-> +	struct page *page = pfn_to_page(pfn);
-> +
-> +	pr_debug("%s: leaking PFN range 0x%llx-0x%llx\n", __func__, pfn, pfn + npages);
-> +
-> +	spin_lock(&snp_leaked_pages_list_lock);
-> +	while (npages--) {
-> +		/*
-> +		 * Reuse the page's buddy list for chaining into the leaked
-> +		 * pages list. This page should not be on a free list currently
-> +		 * and is also unsafe to be added to a free list.
-> +		 */
-> +		list_add_tail(&page->buddy_list, &snp_leaked_pages_list);
-> +		sev_dump_rmpentry(pfn);
-> +		pfn++;
+> When a customer hits problem, the standard steps are to run a script,
+> generate a tar file and ship it to the OS vendor. Engineers at the OS
+> vendor go through it and may need other data - like getting detailed
+> dumps from individual pieces of H/W.
 
-You increment pfn, but not page, which is always pointing to the page of the
-initial pfn, so need to do page++ too.
-But that assumes it's all order-0 pages (hard to tell for me whether that's
-true as we start with a pfn), if there can be compound pages, it would be
-best to only add the head page and skip the tail pages - it's not expected
-to use page->buddy_list of tail pages.
+You say that like this is not _exactly_ what I just said!?
 
-> +	}
-> +	spin_unlock(&snp_leaked_pages_list_lock);
-> +	atomic_long_inc(&snp_nr_leaked_pages);
-> +}
-> +EXPORT_SYMBOL_GPL(snp_leak_pages);
+> Every time those requests require
+> going to a vendor web site to pull down vendor tools, get permission to
+> install them, schedule the run of said tool ... it only serves to drag
+> out the debugging process. ie., this open-ended stance only serves to
+> hurt Linux users.
 
+Right, exactly. What are you arguing with then? As I said - we have a
+very open / accommodating policy for extracting all sort of debug and
+state dumps. You can put whatever read only stuff you want in debugfs**
+Read-write interfaces must be constrained to a clear set of commands /
+settings but also very much allowed. As you said users need to be able
+to extract debug info to share with the vendors, no tools necessary.
+
+** (this will surprise you but you can also put stats there, if they 
+    are custom, I don't care if they go into ethtool -S or debugfs)
