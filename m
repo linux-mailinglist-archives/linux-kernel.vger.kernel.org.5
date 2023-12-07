@@ -2,133 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE4580863C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4C3808605
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378666AbjLGJtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:49:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52388 "EHLO
+        id S232366AbjLGJ5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:57:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLGJtL (ORCPT
+        with ESMTP id S232066AbjLGJ5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:49:11 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F633DD
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:49:17 -0800 (PST)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B79HfRW022693;
-        Thu, 7 Dec 2023 09:49:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=Zd9+oPas+LQi3lQLkq3Fh560FUK3g4VIjF94BPvemwM=;
- b=AXGFezkaxR2Wt6e4i40M5hwOWRvpp7X2L7//QObHaU8QTXo881B8Szbem9/t/yOM4t5Z
- JlYVDXB20Cm1Sn5atf943q//UqUk11BKaQ7Cqvrm0d/3yx4lmZjPq6+WzOjnGeGICETd
- zFwVKNUsavRr2jeKm/Ri8k2n3a3APRzoLbNR33y+EhXDCelMQw5vq5BJvqg1RsSkvJyg
- jC0v9JfjsUG9/puBrQ9ND1An6C2hOmCXcFWKbX6+/n5mP5Wtl74xWu3QXkitrt/ks2zI
- iCE8cp0h1/kbjRoDttDOJ83FMut+SpaPLzcdyICui70TrV8yYtqRUuiwZ99EmbTWbHQC nQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uuasehk7v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Dec 2023 09:49:12 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B79IeWj027410;
-        Thu, 7 Dec 2023 09:49:11 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uuasehk64-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Dec 2023 09:49:11 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B77gKTn015423;
-        Thu, 7 Dec 2023 09:49:10 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3utavkjbf1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Dec 2023 09:49:10 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B79n8SB24969898
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 7 Dec 2023 09:49:09 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D59202004B;
-        Thu,  7 Dec 2023 09:49:08 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C518D20040;
-        Thu,  7 Dec 2023 09:49:08 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Thu,  7 Dec 2023 09:49:08 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55669)
-        id 8ABF6E0103; Thu,  7 Dec 2023 10:49:08 +0100 (CET)
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Jann Horn <jannh@google.com>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: [PATCH] mm: do not protect VMA lock object in vma_end_read()
-Date:   Thu,  7 Dec 2023 10:48:44 +0100
-Message-Id: <20231207094844.706407-1-agordeev@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: tEhOk5_0mus90xzpZ7ZklNdLJI1Ua4L6
-X-Proofpoint-ORIG-GUID: iE71XjwwLV2ubpf2n75cBBHlyRGSuK0c
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 7 Dec 2023 04:57:33 -0500
+Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C1D96133;
+        Thu,  7 Dec 2023 01:57:35 -0800 (PST)
+Received: from luzhipeng.223.5.5.5 (unknown [115.200.230.188])
+        by mail-app4 (Coremail) with SMTP id cS_KCgDXltSZlXFl8NNbAA--.3170S2;
+        Thu, 07 Dec 2023 17:51:21 +0800 (CST)
+From:   Zhipeng Lu <alexious@zju.edu.cn>
+To:     alexious@zju.edu.cn
+Cc:     Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        George Cherian <george.cherian@marvell.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] octeontx2-af: fix a use-after-free in rvu_nix_register_reporters
+Date:   Thu,  7 Dec 2023 17:49:16 +0800
+Message-Id: <20231207094917.3338582-1-alexious@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-07_07,2023-12-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
- mlxlogscore=661 adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- priorityscore=1501 bulkscore=0 phishscore=0 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312070079
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cS_KCgDXltSZlXFl8NNbAA--.3170S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFW3GFWUWr1DGF1xJF17Awb_yoW8tFWxpF
+        WrAry3GryxtryUtF9rXa1jyay7Kan3KrWUGr1SkwnagayrJFnayrsaqFnavFsxArWkGFWj
+        vr4Yq3yDArWDtr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUbgyCJUUUUU==
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In early discussion to the implementation of vma_end_read()
-Jann Horn pointed out that up_read() could access the VMA
-lock object after it has already been acquired by someone
-else. As result, up_read() is protected with RCU read lock:
+The rvu_dl will be freed in rvu_nix_health_reporters_destroy(rvu_dl)
+after the create_workqueue fails, and after that free, the rvu_dl will
+be translate back through the following call chain:
 
-	rcu_read_lock(); /* keeps vma alive */
-	up_read(&vma->lock);
-	rcu_read_unlock();
+rvu_nix_health_reporters_destroy
+  |-> rvu_nix_health_reporters_create
+       |-> rvu_health_reporters_create
+             |-> rvu_register_dl (label err_dl_health)
 
-Since commit 3f5245538a19 ("locking/rwsem: Disable preemption
-in all down_read*() and up_read() code paths") __up_read()
-disables preemption internally and thus the need to protect
-the VMA lock object does not exist anymore.
+Finally. in the err_dl_health label, rvu_dl being freed again in
+rvu_health_reporters_destroy(rvu) by rvu_nix_health_reporters_destroy.
+In the second calls of rvu_nix_health_reporters_destroy, however,
+it uses rvu_dl->rvu_nix_health_reporter, which is already freed at
+the end of rvu_nix_health_reporters_destroy in the first call.
 
-Link: https://lore.kernel.org/all/CAG48ez3sCwasFzKD5CsqMFA2W57-2fazd75g7r0NaA_BVNTLow@mail.gmail.com/
-Cc: Jann Horn <jannh@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+So this patch prevents the first destroy by instantly returning -ENONMEN
+when create_workqueue fails. In addition, since the failure of
+create_workqueue is the only entrence of label err, it has been
+integrated into the error-handling path of create_workqueue.
+
+Fixes: 5ed66306eab6 ("octeontx2-af: Add devlink health reporters for NIX")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
 ---
- include/linux/mm.h | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 418d26608ece..7b32bc75a4ab 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -683,9 +683,7 @@ static inline bool vma_start_read(struct vm_area_struct *vma)
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
+index c70932625d0d..f0308d7716e1 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
+@@ -538,7 +538,7 @@ static int rvu_nix_register_reporters(struct rvu_devlink *rvu_dl)
  
- static inline void vma_end_read(struct vm_area_struct *vma)
- {
--	rcu_read_lock(); /* keeps vma alive till the end of up_read */
- 	up_read(&vma->vm_lock->lock);
--	rcu_read_unlock();
+ 	rvu_dl->devlink_wq = create_workqueue("rvu_devlink_wq");
+ 	if (!rvu_dl->devlink_wq)
+-		goto err;
++		return -ENOMEM;
+ 
+ 	INIT_WORK(&rvu_reporters->intr_work, rvu_nix_intr_work);
+ 	INIT_WORK(&rvu_reporters->gen_work, rvu_nix_gen_work);
+@@ -546,9 +546,6 @@ static int rvu_nix_register_reporters(struct rvu_devlink *rvu_dl)
+ 	INIT_WORK(&rvu_reporters->ras_work, rvu_nix_ras_work);
+ 
+ 	return 0;
+-err:
+-	rvu_nix_health_reporters_destroy(rvu_dl);
+-	return -ENOMEM;
  }
  
- /* WARNING! Can only be used if mmap_lock is expected to be write-locked */
+ static int rvu_nix_health_reporters_create(struct rvu_devlink *rvu_dl)
 -- 
-2.40.1
+2.34.1
 
