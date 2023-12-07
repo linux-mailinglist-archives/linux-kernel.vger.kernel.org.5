@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A39808E69
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5B4808E62
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443194AbjLGRM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:12:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45606 "EHLO
+        id S1443223AbjLGRNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:13:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLGRM4 (ORCPT
+        with ESMTP id S232713AbjLGRNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:12:56 -0500
+        Thu, 7 Dec 2023 12:13:40 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09DFE0
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:13:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D25CC433C7;
-        Thu,  7 Dec 2023 17:12:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E84E10F9
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:13:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03C3CC433C8;
+        Thu,  7 Dec 2023 17:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701969182;
-        bh=CWq54dj8Wontm3jMWlBjKGW8W5yeehl6dhE489SUR0k=;
+        s=k20201202; t=1701969227;
+        bh=DRPKptBBmLOx5+OFyOUopYmLskN58QcplGFuspiJ3n4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SIvadOdHqMIfBJnkKTHoWVdlW8stNFjOoGAqwWatdV0l62gCGKrkk3vEGRrcJNNQU
-         CVfXX1kdAwdCkc1H2SpMyvF/yshcbXXRM+Efstw6ONK+jSMbsH1Nbf7ewZ/jDaQOjb
-         o/WQ8wUapc/gl4abDD233akB8mpK5dbASCt1LCu1scD38vczeh0/U0mJEvJv6UA7DF
-         VXklf2x97dLHxLnyILc4UEWw/RODCKbh65qnUvomFD5eGlieWgTy3DHrDfEP0HSA3M
-         NHUAHRCT2S1rgK7gIA+Kt0dII0WpCmAAlhGsEewGzwQoLZPrd6tHUhvlc5Drcf0Lfq
-         v0Yu2s0WNPzCA==
-Date:   Thu, 7 Dec 2023 17:12:57 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Elad Nachman <enachman@marvell.com>
+        b=VRSgnLgpAB2E+67FK4MbwV1WZOHG/yHsV+TYfLKc4iM9XaZRCVQKBdDHjV1Zjl2e7
+         8DP/Rbh2ZreW2H2NsjROtKzxNqy7jO8bKS2ZQjn9KjHOidM6Anb4so4FRH5ihwIVWc
+         4wgzzvXH/ReD0Avhsbv502RlcQhSWlqCecj7MEp2bohIBM3Lj1fBriDKWO6FiBQDlX
+         vv8cYjHkpftvaL6NhK9xcb7Qw+Zre+tFwtRABPZgd/pxOpLwqu1Gf5zMhvt/Px76IE
+         Keh83FDvSNNA9ul2ua+N43/vQcGuEMARNSXkX5+3riS/G0lVjgqjNpjUoZl0/dlKnV
+         Avyl9oapOmRhQ==
+Date:   Thu, 7 Dec 2023 17:13:41 +0000
+From:   Lee Jones <lee@kernel.org>
+To:     Andreas Kemnade <andreas@kemnade.info>
 Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, pali@kernel.org,
-        mrkiko.rs@gmail.com, chris.packham@alliedtelesis.co.nz,
+        conor+dt@kernel.org, bcousson@baylibre.com, tony@atomide.com,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, cyuval@marvell.com
-Subject: Re: [PATCH v7 2/3] dt-bindings: arm64: add Marvell COM Express boards
-Message-ID: <20231207-dallying-tablet-c5f32f91373c@spud>
-References: <20231207143248.2439926-1-enachman@marvell.com>
- <20231207143248.2439926-3-enachman@marvell.com>
+        linux-omap@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] mfd: twl4030-power: accept standard property for
+ power controller
+Message-ID: <20231207171341.GH111411@google.com>
+References: <20231203222903.343711-1-andreas@kemnade.info>
+ <20231203222903.343711-6-andreas@kemnade.info>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="d2AP0+yTHV6MnsnX"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231207143248.2439926-3-enachman@marvell.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231203222903.343711-6-andreas@kemnade.info>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -55,86 +54,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 03 Dec 2023, Andreas Kemnade wrote:
 
---d2AP0+yTHV6MnsnX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Instead of only accepting the ti specific properties accept also
+> the standard property. For uniformity, search in the parent node
 
-On Thu, Dec 07, 2023 at 04:32:47PM +0200, Elad Nachman wrote:
-> From: Elad Nachman <enachman@marvell.com>
->=20
-> Add dt bindings for:
-> CN9130 COM Express CPU module
-> CN9131 COM Express CPU module
-> AC5X RD COM Express Type 7 carrier board.
-> AC5X RD COM Express board with a CN9131 COM Express Type 7 CPU module.
->=20
-> Signed-off-by: Elad Nachman <enachman@marvell.com>
+Search 'in' the parent node or 'from' the parent node?
+
+Where is the property?
+
+> for the tag. The code for powering of is also isolated from the
+
+Should this be "off"?
+
+> rest in this file. So it is a pure Linux design decision to put it
+> here.
+> 
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
 > ---
->  .../bindings/arm/marvell/armada-7k-8k.yaml    | 24 +++++++++++++++++++
->  1 file changed, 24 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.y=
-aml b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> index 52d78521e412..d00866aeaa8d 100644
-> --- a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> +++ b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> @@ -60,4 +60,28 @@ properties:
->            - const: marvell,armada-ap807-quad
->            - const: marvell,armada-ap807
-> =20
-> +      - description:
-> +          Alleycat5X (98DX35xx) Reference Design as COM Express Carrier =
-plus
-> +          Armada CN9130 COM Express CPU module
-> +        items:
-> +          - enum:
-> +              - marvell,cn9130-ac5x-carrier
-
-There's so many compatibles here that it is a bit hard for me to follow,
-but I am wondering why you have the "enum" here.
-The description seems to define this as being for one specific carrier
-and you have two entries here for carriers compatible with the rd-ac5x.
-It looks like you should either a) combine both of these or b) swap the
-enum for const.
-
-Thanks,
-Conor.
-
-> +          - const: marvell,rd-ac5x-carrier
-> +          - const: marvell,cn9130-cpu-module
-> +          - const: marvell,cn9130
-> +          - const: marvell,armada-ap807-quad
-> +          - const: marvell,armada-ap807
+>  drivers/mfd/twl4030-power.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mfd/twl4030-power.c b/drivers/mfd/twl4030-power.c
+> index e35b0f788c504..3ef892e63b88f 100644
+> --- a/drivers/mfd/twl4030-power.c
+> +++ b/drivers/mfd/twl4030-power.c
+> @@ -686,6 +686,9 @@ static bool twl4030_power_use_poweroff(const struct twl4030_power_data *pdata,
+>  	if (of_property_read_bool(node, "ti,use_poweroff"))
+>  		return true;
+>  
+> +	if (of_device_is_system_power_controller(node->parent))
+> +		return true;
 > +
-> +      - description:
-> +          Alleycat5X (98DX35xx) Reference Design as COM Express Carrier =
-plus
-> +          Armada CN9131 COM Express CPU module
-> +        items:
-> +          - enum:
-> +              - marvell,cn9131-ac5x-carrier
-> +          - const: marvell,rd-ac5x-carrier
-> +          - const: marvell,cn9131-cpu-module
-> +          - const: marvell,cn9131
-> +          - const: marvell,armada-ap807-quad
-> +          - const: marvell,armada-ap807
-> +
->  additionalProperties: true
-> --=20
-> 2.25.1
->=20
+>  	return false;
+>  }
+>  
+> -- 
+> 2.39.2
+> 
 
---d2AP0+yTHV6MnsnX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXH9GQAKCRB4tDGHoIJi
-0nN2AQCqThk3YPq4l91eYo/Ek1s5Bu2ydkEspqikzp/UG0MxhAD+JGcDJ2d91XJp
-b/Zp56LDXRG9MZ7NMtXQKC69ErA4+go=
-=7TZ9
------END PGP SIGNATURE-----
-
---d2AP0+yTHV6MnsnX--
+-- 
+Lee Jones [李琼斯]
