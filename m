@@ -2,126 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E26A380867E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:15:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA4C808682
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:15:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378893AbjLGLPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 06:15:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55958 "EHLO
+        id S1378944AbjLGLPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 06:15:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232358AbjLGLPE (ORCPT
+        with ESMTP id S1378884AbjLGLPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 06:15:04 -0500
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDC2FA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 03:15:10 -0800 (PST)
-Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-4b2c2e77777so161138e0c.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 03:15:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701947709; x=1702552509; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+1zKx8JGuByRmZeIzOLjwU47rnrPjKnk2Jj1ReloFCE=;
-        b=JBhbQp65tjURrxy7jmLaTYH5H7RZYPGivQV66Ihw3eg3+U4XT9wuuyp0/FO8ZwidaD
-         ewvbJ8nk3qU75sXVmmROHDio1NZtH0UL/J5BTyjN1YPZo9LWaSY6DfC8gtPhs/Bb0K+6
-         FKwxmYWTtZdv8CN2OEAx9CglbZl2lskU++SK0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701947709; x=1702552509;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+1zKx8JGuByRmZeIzOLjwU47rnrPjKnk2Jj1ReloFCE=;
-        b=eUfx/A5hb392ZCTU5F4NEQndsRQ/qrY5FsFU9syU7E1rPlWsvU7jptqOoSUWlmKMYF
-         ykTVOn1Ocj9udhHYC5zK3yN5Lf0hFa8fkkEI10GeMk+jf0uHTA/YyPFhtqeIpZLUBGQ+
-         058m82xeaE2pZnxB3QgltfW1Pk3RrIzC7BrL8QlbgEdaab36+ikcu4n5uGmqrZm1wFnr
-         d76six8CCLKyBr9S+YXCLWT7ZL446Y2LOZmL5C1Ati2pjVNHfBGlhl+WgpLmy0P4bJ5L
-         MQkQacinqJEfRCvR2sO4ndj7riqzA+09/7wmMbq5PyjWYK4lh2ZbGfXGrPn/CHUfbEm2
-         ePcA==
-X-Gm-Message-State: AOJu0Yzl4AIj9mkFDt0m2JqTC3EA1BctskeS4trZ1kXWCyF0syCNj271
-        eCtYgp/ntGIP/SJVrEfgBwG24TB1Fm/T1wjEUJM=
-X-Google-Smtp-Source: AGHT+IHh+dzyGX92NJv7uBnWDcDBdn4BgX4FgKTJgHe/cuD9nQjOLvkdyNzJp5c7BVvRxJXrwZCQXQ==
-X-Received: by 2002:a05:6122:987:b0:4b2:d37e:16c8 with SMTP id g7-20020a056122098700b004b2d37e16c8mr2645372vkd.7.1701947709476;
-        Thu, 07 Dec 2023 03:15:09 -0800 (PST)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
-        by smtp.gmail.com with ESMTPSA id x23-20020a056122119700b004b28dec2935sm51100vkn.20.2023.12.07.03.15.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 03:15:08 -0800 (PST)
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7c471449998so200663241.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 03:15:08 -0800 (PST)
-X-Received: by 2002:a05:6122:30a2:b0:49a:6dc0:5a89 with SMTP id
- cd34-20020a05612230a200b0049a6dc05a89mr2860131vkb.5.1701947707983; Thu, 07
- Dec 2023 03:15:07 -0800 (PST)
+        Thu, 7 Dec 2023 06:15:16 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC4011F;
+        Thu,  7 Dec 2023 03:15:22 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E84B940E00C7;
+        Thu,  7 Dec 2023 11:15:20 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id zA3FcBYuDKzQ; Thu,  7 Dec 2023 11:15:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701947719; bh=q/aOTK0ooA0NK+qsWb3wyUsPFtr16T+u4TTr3X/f35g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gDp40T9RvusesPyiIKCAlH4uapzEgwCDQl4ctT4Z4WmSvHNVikoMLSVj7r3Ae5j/4
+         eVBfuqUVBHzln+anqJZViKAOXdijlxsGry9mloyFQuWW0/UbGtBpFDaKZvmBQeVJkC
+         FLj3iE1/RVlqafPE/qop5wwWHJJTksBRIPHN6BTk9yfsOaqJFeNRVH00UuV1H3pbg9
+         NYsgxhpVwyNsAnlUcrGWdlXkd2QFWL6roalHcjb1DUeOSvrEScd1nlGgqVdEhPE3ze
+         Vm2bXFbvpfyVzJJUF5GaeahOcEvolA9vbu1qtfVRGkwED745Wc7WhsFUX4v4n+LngU
+         AKwjDw+C89pTPOOMgRS/Neoe5aSC6gYoz0eHjGf7kmO6ScZk2DHKnAjPP44URE3sfi
+         eS7ylFOQ+0zfueQ79ptGocWonJp7Zi1LIdg21TBe0XxoxUcr8aCd5zYLXeTEgmgK97
+         FBX7N3BB08h3iW5MuneIvbprI8e91/yfOJxzMsbhWNoLfD1/CoJb7fJCaDhZI1oJcm
+         tLk+7gGTABLIOn2iOwqTdjAfgfo3hQP8Qui7RIYLm96cSJGn4sOuvwHRgVvxWELqN0
+         OAjgr4iB37iwRdFFF32i/YxECbXFcbg5Wr5nRimoyOawkYnjOLFEDykaJIG0oJtxlZ
+         icO8DeXM53D6ozeI6gAZlR34=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1ADAD40E00C5;
+        Thu,  7 Dec 2023 11:15:14 +0000 (UTC)
+Date:   Thu, 7 Dec 2023 12:15:09 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org
+Subject: Re: [tip: x86/percpu] x86/callthunks: Mark apply_relocation() as
+ __init_or_module
+Message-ID: <20231207111509.GAZXGpPVEuWO/gNfvY@fat_crate.local>
+References: <20231105213731.1878100-3-ubizjak@gmail.com>
+ <170137899106.398.14613676631297252898.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-References: <20231113123049.4117280-1-fshao@chromium.org> <20231113123049.4117280-3-fshao@chromium.org>
- <3528639f-85a3-4756-b04b-c233f6c84276@collabora.com>
-In-Reply-To: <3528639f-85a3-4756-b04b-c233f6c84276@collabora.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Thu, 7 Dec 2023 19:14:31 +0800
-X-Gmail-Original-Message-ID: <CAC=S1nibsNfo7Ans2J0aiXqJSz5-iTPh2NwTEuUL8-HUM0AJdw@mail.gmail.com>
-Message-ID: <CAC=S1nibsNfo7Ans2J0aiXqJSz5-iTPh2NwTEuUL8-HUM0AJdw@mail.gmail.com>
-Subject: Re: [PATCH 2/4] media: mediatek: vcodec: Drop unnecessary variable
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>, Tiffany Lin <tiffany.lin@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <170137899106.398.14613676631297252898.tip-bot2@tip-bot2>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Angelo,
+On Thu, Nov 30, 2023 at 09:16:31PM -0000, tip-bot2 for Ingo Molnar wrote:
+> -void apply_relocation(u8 *buf, size_t len, u8 *dest, u8 *src, size_t src_len)
+> +void __init_or_module apply_relocation(u8 *buf, size_t len, u8 *dest, u8 *src, size_t src_len)
+>  {
+>  	int prev, target = 0;
 
-On Wed, Dec 6, 2023 at 6:19=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Il 13/11/23 13:26, Fei Shao ha scritto:
-> > It's unclear why only mem->size has local copies without particular
-> > usage in mtk_vcodec_mem_alloc() and mtk_vcodec_mem_free(), and they
-> > seem removable.
-> >
-> > Drop them to make the code visually consistent, and update printk forma=
-t
-> > identifier accordingly.
-> >
-> > Signed-off-by: Fei Shao <fshao@chromium.org>
->
-> That's probably just about personal preferences, as mem->size is not expe=
-cted
-> to change during the flow of those functions.
->
-> That said, as much as you, I prefer not having this local copy as it's us=
-ing
-> (a very small amount of) memory for no real reason anyway, so:
+Can't do that for a CONFIG_MODULES=n build:
 
-Yes, and I think I should have mentioned this in the commit message...
-I'll revise that in the next version.
+WARNING: modpost: vmlinux: section mismatch in reference: patch_dest+0x61 (section: .text) -> apply_relocation (section: .init.text)
+ERROR: modpost: Section mismatches detected.
 
-Thanks,
-Fei
+-- 
+Regards/Gruss,
+    Boris.
 
-
-
-
-
->
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
-ora.com>
->
->
+https://people.kernel.org/tglx/notes-about-netiquette
