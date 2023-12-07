@@ -2,155 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F71180887D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C60B808895
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232602AbjLGMyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 07:54:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
+        id S1379175AbjLGMy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:54:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjLGMyP (ORCPT
+        with ESMTP id S232546AbjLGMyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 07:54:15 -0500
-Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838FCD6D;
-        Thu,  7 Dec 2023 04:54:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        Content-ID:Content-Description;
-        bh=xaCvAzlwzR9Hokmynfu7A4/6oLv+b96ic63xDkUsACk=; b=EEgZ+CgszC5pK4/GcUfCvYqH04
-        GLu1k/eCfcwojQHQ5el6pDSztUvnFz19Bl4B2/S8XTbmFiANjFkROQg0dFUlw/NCGnX6MiqL/cvho
-        AB0dPPlwnfe0bwKWgoWkf3FXVQcAZJaTf0OtuMbZxN4DH+978qnPwc8rZ/yZz2U8FZf3f5zp5/nR1
-        /e/q06i2kmDqEveKXy6S6DcUP7Xgb77s/B5y9AZjjgHPWsR+L2o0LYLxAdIEXJFhle2FemDi0yWy1
-        0sgqlFw2Eck9usYCTda4MIQPQ6gO4KN5DYfQ4u54ZG2pDBfGxhjrmW/UCNtlAs37a63+MHcfWvsrZ
-        9h0RGIAgpiD6l0Yf0OyRLhOKreubHCTgeFfmiqM9QyjQgKY2Ck3XY3AXNwUFoxMrf0bgWWps3KOPq
-        EXhaWCwetQmq7zhqlDMndBxh4MjDkjMSc+/+OjAZFmqGcUBqYttE8L7zVKNydG81AjqeEaMwcjOoX
-        DASbpuccxYgxTCA8YPjQKjImXNSk53F8DrMQkrMSo4fhNCeh5ZxzRimcEy+oCTqziTm9Jdv/zX8E4
-        oapJatLZiXWmQ80xIHNG11D02ziTpiahg61UjfZ6iNF/TXc260fF0beo7BcsT+G6g5l35qcVf1hnb
-        Pn5UT8uk+aLvs2SmkEbRyRDU7kyAEsOIvr8XWcVLw=;
-From:   Christian Schoenebeck <linux_oss@crudebyte.com>
-To:     Dominique Martinet <asmadeus@codewreck.org>,
-        Fedor Pchelkin <pchelkin@ispras.ru>
-Cc:     Fedor Pchelkin <pchelkin@ispras.ru>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, v9fs@lists.linux.dev,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        lvc-project@linuxtesting.org
-Subject: Re: [PATCH v4] net: 9p: avoid freeing uninit memory in p9pdu_vreadf
-Date:   Thu, 07 Dec 2023 13:54:02 +0100
-Message-ID: <1808202.Umia7laAZq@silver>
-In-Reply-To: <20231206200913.16135-1-pchelkin@ispras.ru>
-References: <20231206200913.16135-1-pchelkin@ispras.ru>
+        Thu, 7 Dec 2023 07:54:54 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62837D6D;
+        Thu,  7 Dec 2023 04:55:00 -0800 (PST)
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 508006607393;
+        Thu,  7 Dec 2023 12:54:58 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701953699;
+        bh=0avdqItorVWQlXzkKrdwMLjbDRMB/SdzTH77XcICv5Q=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=dAOuFyzKah2MkArDPQMPp0s2dl3ePv5sfsOg8HxlVS+xyN4I/ZSAmpMb87G08U7tV
+         pw0qJacO0PWsr7mjGKmzENh7sGWXvcfic7ZsR95HiA8TDTVmI1QNYUKcLcMRsyRjLA
+         7nYIPkpZ9vxexf05n+vaM+/KgLP6qEYKzB754PZaKryAgWlh6U6I7sIzpQXvC/TNZh
+         a27UH8E8WAmgzlErLkI2OpynEQ//kA8mtCVfzO4evIYO1Z2NG5ZGw8IbL/yBlL2S1R
+         abjHwjmgmhTD4lQs5Ee3b0U1z9BhkZUeac7WHjylAgyYUjQM8FM+EgkQuigHoecBcH
+         JtxkwoZsXLkbw==
+Message-ID: <6046a40b-800c-4bf8-ab45-d7f1015b2d9c@collabora.com>
+Date:   Thu, 7 Dec 2023 13:54:55 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] media: mediatek: vcodec: Fix mtk_vcodec_mem_free()
+ error log criteria
+Content-Language: en-US
+To:     Fei Shao <fshao@chromium.org>,
+        Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>, Tiffany Lin <tiffany.lin@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org
+References: <20231113123049.4117280-1-fshao@chromium.org>
+ <20231113123049.4117280-4-fshao@chromium.org>
+ <6c693161-0e89-4f9d-9a92-18f3783eefd2@collabora.com>
+ <CAC=S1nhp3HoKGQr1UgKtZJ9SLMqvm-G_YZi9dEWWF3tj2d=OFQ@mail.gmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <CAC=S1nhp3HoKGQr1UgKtZJ9SLMqvm-G_YZi9dEWWF3tj2d=OFQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, December 6, 2023 9:09:13 PM CET Fedor Pchelkin wrote:
-> If some of p9pdu_readf() calls inside case 'T' in p9pdu_vreadf() fails,
-> the error path is not handled properly. *wnames or members of *wnames
-> array may be left uninitialized and invalidly freed.
+Il 07/12/23 12:17, Fei Shao ha scritto:
+> Hi Angelo,
 > 
-> Initialize *wnames to NULL in beginning of case 'T'. Initialize the first
-> *wnames array element to NULL and nullify the failing *wnames element so
-> that the error path freeing loop stops on the first NULL element and
-> doesn't proceed further.
+> On Wed, Dec 6, 2023 at 6:19 PM AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@collabora.com> wrote:
+>>
+>> Il 13/11/23 13:26, Fei Shao ha scritto:
+>>> mtk_vcodec_mem_free() shouldn't print error if the target DMA buffer has
+>>> never been allocated or was freed properly in the previous call. That
+>>> makes log confusing.
+>>>
+>>> Update the error path to print log only when the caller attempts to free
+>>> nonzero-size buffer with VA being NULL, which indicates something indeed
+>>> went wrong.
+>>>
+>>> This brings another benefit that the callers no more need to check
+>>> mem->va explicitly to avoid the error, which can make the code more
+>>> compact and neat.
+>>>
+>>> Signed-off-by: Fei Shao <fshao@chromium.org>
+>>
+>> I think that this error is supposed to catch two issues in one:
+>>    - We're called to free no memory (something that does make no sense),
+>>      this may happen for example when calling xxx_free() twice, and it
+>>      is a mistake that *must* be fixed;
+> When I made the change, I was thinking of kfree() that doesn't warn
+> against a NULL pointer.
+> I imagine mtk_vcodec_mem_free() calls with NULL VA and mem size 0
+> probably have the similar nuance (if the buffer exists, free it; never
+> mind otherwise), but I could have missed some important differences
+> specific to the MTK vcodec driver.
 > 
-> Found by Linux Verification Center (linuxtesting.org).
+> Looking at the mtk_vcodec_mem_free() usages, almost every one of those
+> checks VA beforehand, but nothing else - they don't warn or do
+> anything special when they encounter a NULL VA, and they should if
+> that's a concern.
+> Some even don't check at all (and I think that's why I ended up seeing
+> the errors mentioned in the cover letter). As for that, I think
+> there's nothing else we can fix except prepending "if (mem->va)".
+> So from all this, I feel perhaps we don't need to worry much about
+> those NULL VA, and we can further remove the checks (or at least move
+> it into mtk_vcodec_mem_free()) to trim the lines in the driver. That's
+> the reason for patch [4/4].
 > 
-> Fixes: ace51c4dd2f9 ("9p: add new protocol support code")
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-> ---
-> v2: I've missed that *wnames can also be left uninitialized. Please
-> ignore the patch v1. As an answer to Dominique's comment: my
-> organization marks this statement in all commits.
-> v3: Simplify the patch by using kcalloc() instead of array indices
-> manipulation per Christian Schoenebeck's remark. Update the commit
-> message accordingly.
-> v4: Per Christian's suggestion, apply another strategy: mark failing
-> array element as NULL and move in the freeing loop until it is found.
-> Update the commit message accordingly. If v4 is more appropriate than the
-> version at
-> https://github.com/martinetd/linux/commit/69cc23eb3a0b79538e9b5face200c4cd5cd32ae0
-> then please use it, otherwise, I don't think we can provide more
-> convenient solution here than the one already queued at github.
-> 
->  net/9p/protocol.c | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/net/9p/protocol.c b/net/9p/protocol.c
-> index 4e3a2a1ffcb3..0e6603b1ec90 100644
-> --- a/net/9p/protocol.c
-> +++ b/net/9p/protocol.c
-> @@ -394,6 +394,8 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
->  				uint16_t *nwname = va_arg(ap, uint16_t *);
->  				char ***wnames = va_arg(ap, char ***);
->  
-> +				*wnames = NULL;
-> +
->  				errcode = p9pdu_readf(pdu, proto_version,
->  								"w", nwname);
->  				if (!errcode) {
-> @@ -403,6 +405,8 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
->  							  GFP_NOFS);
->  					if (!*wnames)
->  						errcode = -ENOMEM;
-> +					else
-> +						(*wnames)[0] = NULL;
->  				}
->  
->  				if (!errcode) {
-> @@ -414,8 +418,10 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
->  								proto_version,
->  								"s",
->  								&(*wnames)[i]);
-> -						if (errcode)
-> +						if (errcode) {
-> +							(*wnames)[i] = NULL;
->  							break;
-> +						}
+> Not sure if that makes sense to you.
 
-I just checked whether this could create a leak, but it looks clean, so LGTM:
+What you say does make sense - and a lot - but still, I think that freeing
+a NULL VA (= freeing nothing) is something that shouldn't happen...
 
-Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
-
-Dominique, I would tend to use this v4 instead of v2. What do you think?
-
->  					}
->  				}
->  
-> @@ -423,11 +429,14 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
->  					if (*wnames) {
->  						int i;
->  
-> -						for (i = 0; i < *nwname; i++)
-> +						for (i = 0; i < *nwname; i++) {
-> +							if (!(*wnames)[i])
-> +								break;
->  							kfree((*wnames)[i]);
-> +						}
-> +						kfree(*wnames);
-> +						*wnames = NULL;
->  					}
-> -					kfree(*wnames);
-> -					*wnames = NULL;
->  				}
->  			}
->  			break;
+> 
+>>    - We're failing to free memory for real (which you covered)
+>>
+>> ....that said, I think that if you want to clarify the error messages
+>> in this function, it should look something like this:
+>>
+>> if (!mem->va) {
+>>          mtk_v4l2_err(plat_dev, "%s: Tried to free a NULL VA", __func__);
+>>          if (mem->size)
+>>                  mtk_v4l2_err(plat_dev, "Failed to free %lu bytes", mem->size);
+>>          return;
+>> }
+> Sure, I can revise the patch with this, but I also want to make sure
+> if the NULL VA print needs to be an error.
+> If you still think it should, I guess I'll drop the current patch
+> [4/4] and instead add the check before every mtk_vcodec_mem_free()
+> calls. This should also work for the issue I want to address in the
+> first place.
 > 
 
+... because if you notice, some of the calls to mtk_vcodec_mem_free() are not
+checked with `if (something->va)` beforehand, so I think that those are cases
+in which freeing with a NULL VA would actually be an indication of something
+going wrong and/or not as expected anyway (checking beforehand = error won't
+get printed from mtk_vcodec_mem_free(), not checking = print error if va==NULL)
 
+It's an easy check:
+cd drivers/media/platform/mediatek/vcodec
+grep -rb1 mtk_vcodec_mem_free
+
+P.S.: h264_if, av1_req_lat :-)
+
+That's why I think that you should drop your [4/4] - unless MediaTek comes in
+stating that the missed checks are something unintended, and that every instance
+of VA==NULL should print an error.
+
+I honestly wouldn't be surprised if they did so, because anyway this occurs only
+in two decoders...
+
+Regards,
+Angelo
