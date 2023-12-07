@@ -2,251 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1318095C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EEF8095D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232432AbjLGWwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 17:52:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50612 "EHLO
+        id S232440AbjLGWyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 17:54:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjLGWwI (ORCPT
+        with ESMTP id S229634AbjLGWyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 17:52:08 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8A1170C
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:52:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4100C433C8;
-        Thu,  7 Dec 2023 22:52:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701989530;
-        bh=HGADqaQgJ+Ygr3T4IO/0dGsxAN2q2tX+T8CN+umeUWA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NnOmXd6J55uZV5c/Q8lnyXY+WrZAYHCXvvLCSD+sb+IJe/FyfuWaSQDmufnULAsj6
-         uSvIfYlALZYlwCM1kPyEqu5Uhzsmmbbqz72UVCXOlcvJzNAm/uL5p9D5k+zrFUuCOd
-         rb0UrsAY34/ZjP2vcOgpuSjO1MRBnfOhafqvwFJ14eku0I/Y9OikWfJ4E8DrOz0VOy
-         t89C3KQvK2mSNYedx2kGc/bcvRKrH58r/LVHJlLcDDnW04c0j8Cg/PmsVdijlWPRdy
-         2gAtdSkokCW/87z/lKlwFsw7TcNWbYOpv7r91uVpOIpv3yp1Mga84VN/BuTRHzk3KX
-         Ld0V0ouH62qnA==
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50be10acaf9so1323969e87.1;
-        Thu, 07 Dec 2023 14:52:10 -0800 (PST)
-X-Gm-Message-State: AOJu0YwkHmgcheK8oe/pXEnn4UA5N1+Ih3wA3bSJTD+FjNO7qbLbB1Bt
-        0XZfvbQfJMlbxKTqO/ZFzQh6boJCPBn+W5WF/w==
-X-Google-Smtp-Source: AGHT+IGtv5yRJd+8qa8B+2DYoZIs3gnXSm5VdhX0PVbXigUGSFcxjSpk5PW7GY618HkpowugjuqIZuaaWItXoxh9+e4=
-X-Received: by 2002:a19:8c5d:0:b0:50b:e73c:b574 with SMTP id
- i29-20020a198c5d000000b0050be73cb574mr3136537lfj.32.1701989528934; Thu, 07
- Dec 2023 14:52:08 -0800 (PST)
+        Thu, 7 Dec 2023 17:54:09 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C33210E6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:54:15 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-35d6b381341so5261405ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 14:54:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701989655; x=1702594455; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8z/n7oVJrLI7AapO66ABR3Mg7MdK3FEalI7JxmyKlx0=;
+        b=edEE4eU8+O6QlvYuz3i3d26dDugmn+vDFrfAdV+kG+NLXC013awhcjppZZHt2ekSCo
+         TlXtUgBhLONARN3Lczn34VGbHYmPy4reGk3vVcQSiR3K1f2xsFEBfdobHp1bGY1bpP5z
+         wrRdtpbqb7kocSsScMTBi3cSoB6SCiupAuRIpjTABz/mKUK881z5CJMUY7P0OrnDXKqj
+         zGLP7NQbWp3iX280Nr5PH/CkfpD2RlIqEnsd9T5zlSUlYGWOIy3eC5K8tFJOn3vvThAZ
+         ark1z6lwXyBcBorxonk11VAyASTgL2CuqsOT96vvZkLyJWx14/YTFPSvamYZXTZYQodn
+         hTag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701989655; x=1702594455;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8z/n7oVJrLI7AapO66ABR3Mg7MdK3FEalI7JxmyKlx0=;
+        b=h9KLy/EdOV0PXLWUgw8/6UjO0bHURt+9FAkHNUXMW+jv5tLNUVCGt4EYEOAA1rWoxr
+         DXqCKmjsRmK/VK03vdj1mzhQpH6jgLIoiekTqxg1v7o5tIS3WLHa8p+zrkdcfF0h17Fm
+         sWDLWNfpCGR5xa0TqGZxAq/PG2n4cxJi4XzqTJE8x4R2D4yvQp9liGwGEDVgjHDXFAdL
+         MCBuSR3Nd9Lb3H01hSXZMK/nViaVfdAiRi7CFGVE9hMrVnSeufy/jwhtAUET3s8/MKDB
+         0VHaoHacSDIXP2hFJAGEKMBrbbBKzk95tVK8m+1H9xeWT5+vvnwHx7xtfXCnilhXu6Yp
+         aduQ==
+X-Gm-Message-State: AOJu0Yy3soNrF8XtZoESuMhib+e4BxB0u5uHZEx3v41ushnZ8J/NCQ8L
+        1JzuZRJtivfi2O07fIDuq1rfTg==
+X-Google-Smtp-Source: AGHT+IG+tMLAPQMs0kJxW/IS3KFdRdsft6Gda4jPxtMmDl2cn6omxOmWAnKPtSQSHnM2EVZDhqe2JQ==
+X-Received: by 2002:a05:6e02:12ec:b0:35d:59a2:331d with SMTP id l12-20020a056e0212ec00b0035d59a2331dmr4773035iln.33.1701989654689;
+        Thu, 07 Dec 2023 14:54:14 -0800 (PST)
+Received: from google.com (20.10.132.34.bc.googleusercontent.com. [34.132.10.20])
+        by smtp.gmail.com with ESMTPSA id h6-20020a92c086000000b0035d5935e19bsm168963ile.65.2023.12.07.14.54.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 14:54:14 -0800 (PST)
+Date:   Thu, 7 Dec 2023 22:54:11 +0000
+From:   Justin Stitt <justinstitt@google.com>
+To:     Jialu Xu <xujialu@vimux.org>
+Cc:     nathan@kernel.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        masahiroy@kernel.org, morbo@google.com, ndesaulniers@google.com
+Subject: Re: [PATCH v4] gen_compile_commands.py: fix path resolve with
+ symlinks in it
+Message-ID: <20231207225411.his46ofov6kswkmi@google.com>
+References: <20231205165648.GA391810@dev-arch.thelio-3990X>
+ <20231206012441.840082-1-xujialu@vimux.org>
 MIME-Version: 1.0
-References: <20231130165700.685764-1-herve.codina@bootlin.com>
- <CAL_JsqJvt6FpXK+FgAwE8xN3G5Z23Ktq=SEY-K7VA7nM5XgZRg@mail.gmail.com>
- <20231204134335.3ded3d46@bootlin.com> <CAL_JsqLtCS3otZ1sfiPEWwrWB4dyNpu4e0xANWJriCEUYr+4Og@mail.gmail.com>
- <20231204163014.4da383f2@bootlin.com> <CAL_JsqJJ64513pyQggU71agTzawNWPpm6ZpWMB6e0zu-tWL8yw@mail.gmail.com>
- <20231205090452.7c601eb5@bootlin.com>
-In-Reply-To: <20231205090452.7c601eb5@bootlin.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 7 Dec 2023 16:51:56 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+je7+9ATR=B6jXHjEJHjn24vQFs4Tvi9=vhDeK9n42Aw@mail.gmail.com>
-Message-ID: <CAL_Jsq+je7+9ATR=B6jXHjEJHjn24vQFs4Tvi9=vhDeK9n42Aw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>,
-        Sonal Santan <sonal.santan@amd.com>,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206012441.840082-1-xujialu@vimux.org>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 2:05=E2=80=AFAM Herve Codina <herve.codina@bootlin.c=
-om> wrote:
->
-> On Mon, 4 Dec 2023 17:03:21 -0600
-> Rob Herring <robh@kernel.org> wrote:
->
-> > On Mon, Dec 4, 2023 at 9:30=E2=80=AFAM Herve Codina <herve.codina@bootl=
-in.com> wrote:
-> > >
-> > > Hi Rob,
-> > >
-> > > On Mon, 4 Dec 2023 07:59:09 -0600
-> > > Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > [...]
-> > >
-> > > > > > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
-> > > > > > index 9c2137dae429..46b252bbe500 100644
-> > > > > > --- a/drivers/pci/bus.c
-> > > > > > +++ b/drivers/pci/bus.c
-> > > > > > @@ -342,8 +342,6 @@ void pci_bus_add_device(struct pci_dev *dev=
-)
-> > > > > >          */
-> > > > > >         pcibios_bus_add_device(dev);
-> > > > > >         pci_fixup_device(pci_fixup_final, dev);
-> > > > > > -       if (pci_is_bridge(dev))
-> > > > > > -               of_pci_make_dev_node(dev);
-> > > > > >         pci_create_sysfs_dev_files(dev);
-> > > > > >         pci_proc_attach_device(dev);
-> > > > > >         pci_bridge_d3_update(dev);
-> > > > > > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-> > > > > > index 51e3dd0ea5ab..e15eaf0127fc 100644
-> > > > > > --- a/drivers/pci/of.c
-> > > > > > +++ b/drivers/pci/of.c
-> > > > > > @@ -31,6 +31,8 @@ int pci_set_of_node(struct pci_dev *dev)
-> > > > > >                 return 0;
-> > > > > >
-> > > > > >         node =3D of_pci_find_child_device(dev->bus->dev.of_node=
-, dev->devfn);
-> > > > > > +       if (!node && pci_is_bridge(dev))
-> > > > > > +               of_pci_make_dev_node(dev);
-> > > > > >         if (!node)
-> > > > > >                 return 0;
-> > > > >
-> > > > > Maybe it is too early.
-> > > > > of_pci_make_dev_node() creates a node and fills some properties b=
-ased on
-> > > > > some already set values available in the PCI device such as its s=
-truct resource
-> > > > > values.
-> > > > > We need to have some values set by the PCI infra in order to crea=
-te our DT node
-> > > > > with correct values.
-> > > >
-> > > > Indeed, that's probably the issue I'm having. In that case,
-> > > > DECLARE_PCI_FIXUP_HEADER should work. That's later, but still befor=
-e
-> > > > device_add().
-> > > >
-> > > > I think modifying sysfs after device_add() is going to race with
-> > > > userspace. Userspace is notified of a new device, and then the of_n=
-ode
-> > > > link may or may not be there when it reads sysfs. Also, not sure if
-> > > > we'll need DT modaliases with PCI devices, but they won't work if t=
-he
-> > > > DT node is not set before device_add().
-> > >
-> > > Ok, we can try using DECLARE_PCI_FIXUP_HEADER.
-> > > On your side, is moving from DECLARE_PCI_FIXUP_EARLY to DECLARE_PCI_F=
-IXUP_HEADER
-> > > fix your QEMU unittest ?
-> >
-> > No...
+Hi,
 
-I think the problem is we aren't setting the fwnode, just the of_node
-ptr, but I haven't had a chance to verify that.
-
-> > And testing the bridge part crashes. That's because there's a
-> > dependency on the bridge->subordinate to write out bus-range and
-> > interrupt-map. I think the fix there is we should just not write those
-> > properties. The bus range isn't needed because the kernel does its own
-> > assignments. For interrupt-map, it is only needed if "interrupts" is
-> > present in the child devices. If not present, then the standard PCI
-> > swizzling is used. Alternatively, I think the interrupt mapping could
-> > be simplified to just implement the standard swizzling at each level
-> > which isn't dependent on any of the devices on the bus. I gave that a
-> > go where each interrupt-map just points to the parent bridge, but ran
-> > into an issue that the bridge nodes don't have a phandle. That should
-> > be fixable, but I'd rather go with the first option. I suppose that
-> > depends on how the interrupts downstream of the PCI device need to get
-> > resolved. It could be that the PCI device serves as the interrupt
-> > controller and can resolve the parent interrupt on its own (which may
-> > be needed for ACPI host anyways).
+On Wed, Dec 06, 2023 at 09:24:42AM +0800, Jialu Xu wrote:
+> When a path contains relative symbolic links, os.path.abspath() might
+> not follow the symlinks and instead return the absolute path with just
+> the relative paths resolved, resulting in an incorrect path.
 >
-> About interrupt, I am a bit stuck on my side.
-> My dtso (applied at PCI device level) contains the following:
->         fragment@0 {
->                 target-path=3D"";
->                 __overlay__ {
->                         pci-ep-bus@0 {
->                                 compatible =3D "simple-bus";
->                                 #address-cells =3D <1>;
->                                 #size-cells =3D <1>;
+> 1. Say "drivers/hdf/" has some symlinks:
 >
->                                 /*
->                                  * map @0xe2000000 (32MB) to BAR0 (CPU)
->                                  * map @0xe0000000 (16MB) to BAR1 (AMBA)
->                                  */
->                                 ranges =3D <0xe2000000 0x00 0x00 0x00 0x2=
-000000
->                                           0xe0000000 0x01 0x00 0x00 0x100=
-0000>;
+>     # ls -l drivers/hdf/
+>     total 364
+>     drwxrwxr-x 2 ...   4096 ... evdev
+>     lrwxrwxrwx 1 ...     44 ... framework -> ../../../../../../drivers/hdf_core/framework
+>     -rw-rw-r-- 1 ... 359010 ... hdf_macro_test.h
+>     lrwxrwxrwx 1 ...     55 ... inner_api -> ../../../../../../drivers/hdf_core/interfaces/inner_api
+>     lrwxrwxrwx 1 ...     53 ... khdf -> ../../../../../../drivers/hdf_core/adapter/khdf/linux
+>     -rw-r--r-- 1 ...     74 ... Makefile
+>     drwxrwxr-x 3 ...   4096 ... wifi
 >
->                                 itc: itc {
->                                         compatible =3D "microchip,lan966x=
--itc";
->                                         #interrupt-cells =3D <1>;
->                                         interrupt-controller;
->                                         reg =3D <0xe00c0120 0x190>;
->                                 };
+> 2. One .cmd file records that:
 >
->                                 ...
->                          };
->                 };
->         };
+>     # head -1 ./framework/core/manager/src/.devmgr_service.o.cmd
+>     cmd_drivers/hdf/khdf/manager/../../../../framework/core/manager/src/devmgr_service.o := ... \
+>     /path/to/out/drivers/hdf/khdf/manager/../../../../framework/core/manager/src/devmgr_service.c
 >
-> I have a 'simple-bus' with a 'ranges' property to translate the BAR addre=
-sses
-> then several devices. Among them a interrupt controller (itc). Its parent
-> interrupt is the one used by the PCI device (INTA).
-> I cannot describe this parent interrupt in the dtso because to that I nee=
-d the
-> parent interrupt phandle which will be know only at runtime.
-
-But you don't. The logic to find the interrupt parent is walk up the
-parent nodes until you find 'interrupt-parent' or
-'#interrupt-controller' (and interrupt-map always has
-#interrupt-controller). So your overlay just needs 'interrupts =3D <1>'
-for INTA and it should all just work.
-
-That of course implies that we need interrupt properties in all the
-bridges which I was hoping to avoid. In the ACPI case, for DT
-interrupt parsing to work, we're going to need to end up in an
-'interrupt-controller' node somewhere. I think the options are either
-we walk interrupt-map properties up to the host bridge which then
-points to something or the PCI device is the interrupt controller. I
-think the PCI device is the right place. How the downstream interrupts
-are routed to PCI interrupts are defined by the device. That would
-work the same way for both DT and ACPI. If you are concerned about
-implementing in each driver needing this, some library functions can
-mitigate that.
-
-I'm trying to play around with the IRQ domains and get this to work,
-but not having any luck yet.
-
-> Of course, I can modified the overlay applied to tweak the 'interrupt' an=
-d
-> 'interrupt-parent' in the itc node from my PCI device driver at runtime b=
-ut I
-> would like to avoid this kind of tweak in the PCI device driver.
-> This kind of tweak is overlay dependent and needs to be done by each PCI
-> device driver that need to work with interrupts.
+> 3. os.path.abspath returns "/path/to/out/framework/core/manager/src/devmgr_service.c", not correct:
 >
-> For BAR addresses translation, we use the 'ranges' property at the PCI de=
-vice
-> node to translate 0 0 0 to BAR0, 1 0 0 to BAR1, ...
-> What do you think about a new 'irq-ranges' property to translate the irq =
-number
-> and get the irq parent controller base.
+>     # ./scripts/clang-tools/gen_compile_commands.py
+>     INFO: Could not add line from ./framework/core/manager/src/.devmgr_service.o.cmd: File \
+>         /path/to/out/framework/core/manager/src/devmgr_service.c not found
 >
-> irq-ranges =3D <child_irq_spec parent_irq_spec length>;
+> Use pathlib.Path.resolve(), which resolves the symlinks and normalizes
+> the paths correctly.
+>
+>     # cat compile_commands.json
+>     ...
+>     {
+>       "command": ...
+>       "directory": ...
+>       "file": "/path/to/blabla/drivers/hdf_core/framework/core/manager/src/devmgr_service.c"
+>     },
+>     ...
+>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Jialu Xu <xujialu@vimux.org>
+> ---
 
-Seems fragile as you have to know something about the parent (the # of
-cells), but you don't have the phandle. If you needed multiple
-entries, you couldn't parse this.
+This looks good to me. I prefer using pathlib over anything in os
+module, even if the behavior was the same. In this case, the pathlib
+behavior is better -- which is a bonus.
 
-Rob
+Reviewed-by: Justin Stitt <justinstitt@google.com>
+>  scripts/clang-tools/gen_compile_commands.py | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+> index 180952fb91c1b..99e28b7152c19 100755
+> --- a/scripts/clang-tools/gen_compile_commands.py
+> +++ b/scripts/clang-tools/gen_compile_commands.py
+> @@ -11,6 +11,7 @@ import argparse
+>  import json
+>  import logging
+>  import os
+> +from pathlib import Path
+>  import re
+>  import subprocess
+>  import sys
+> @@ -172,8 +173,9 @@ def process_line(root_directory, command_prefix, file_path):
+>      # by Make, so this code replaces the escaped version with '#'.
+>      prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
+>
+> -    # Use os.path.abspath() to normalize the path resolving '.' and '..' .
+> -    abs_path = os.path.abspath(os.path.join(root_directory, file_path))
+> +    # Make the path absolute, resolving all symlinks on the way and also normalizing it.
+> +    # Convert Path object to a string because 'PosixPath' is not JSON serializable.
+> +    abs_path = str(Path(root_directory, file_path).resolve())
+>      if not os.path.exists(abs_path):
+>          raise ValueError('File %s not found' % abs_path)
+>      return {
+> --
+> 2.39.2
+>
