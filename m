@@ -2,131 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFE8807F25
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 04:25:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2EB807F27
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 04:30:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbjLGDZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 22:25:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
+        id S229495AbjLGD37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 22:29:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjLGDZk (ORCPT
+        with ESMTP id S229447AbjLGD35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 22:25:40 -0500
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC3FE9
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 19:25:20 -0800 (PST)
-Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-590711b416fso64504eaf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 19:25:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1701919520; x=1702524320; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=F7AHndxWz2DLeIzHjloCHoJF/ew41gSasKy9MKVjd14=;
-        b=WB4yV9cswbi1Z048oEIzJ+ro3KMTYqmpkQPly8zsRTRwGz0ZiT/Ip/SQmeljr/kWwf
-         zMjCs+X1MgBG8EPlh5zw03ySoEFpsQQwHlDrtTxQ8OoXE1y8Ke4Jg6DycpqSk84eG64k
-         VdkRn+RmEkz5NIB2aACyZTc2hu+o7SL2kRSWqQMb5nl7vkrJHRRY0hC/v0u/EC/2NSEG
-         nqHBzWaX904GQoIIcm2eEIfMJBdg1jajPe4FiJB4ZT/J+XuZVZ2bsSeLq6WssfbrWLHG
-         wxsm3or7sDjE/rSqOZascSk6A4AkiueGcQa/zjyHdQ6qDwfRaQqLs/gaykVVUIi7tVYA
-         rlqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701919520; x=1702524320;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F7AHndxWz2DLeIzHjloCHoJF/ew41gSasKy9MKVjd14=;
-        b=tbkDFHswMzT4OsIf/OV+Js+LDQ+QrdmhSgcj2/ZSw51KUelBTdOh7nN4uy5089RnYD
-         32WTPO6VNahYAnZ3SkvrvcTw8Dz3YYh0kX/g+XlwZE2NcoxMo+j9MofupQ+pcZY8i3Qu
-         FL6eSRM+1TSWJI2Pqfdqau6B8VdK4NWLf8UD6ZXjQSHcLq/sE4yLvY7l5v+hZgpg4hPu
-         XwGvm+CLgXjFyR9k24zkSsL6CzP98SQc3bN6dCFEEbdfiVaRokA+RmoJT7IzuvH4DbNT
-         iNn0KvvpXcpkBjq43Yp6C0++HNXoHmi95ruLZgaoC80XkuJ3hluo8hW4/lx6mltIzeRd
-         vqHw==
-X-Gm-Message-State: AOJu0Yy9DE6RZxJJv7r0POSm2QQRFJKGj4JiGjUx7vWgNwHxhJm9AN3N
-        wZdg0kXp40jjZZuVvUZQzYWTkg==
-X-Google-Smtp-Source: AGHT+IF9dASApVLNt143xv+CQnmNd4Vw0TKYepOrvkaRJ4bcMsv5nb6UbIXp0Xdwqd1HtU+w5ugw4Q==
-X-Received: by 2002:a05:6358:5e11:b0:16d:fb29:d78 with SMTP id q17-20020a0563585e1100b0016dfb290d78mr2688671rwn.2.1701919519707;
-        Wed, 06 Dec 2023 19:25:19 -0800 (PST)
-Received: from [10.255.200.168] ([139.177.225.241])
-        by smtp.gmail.com with ESMTPSA id a2-20020a62d402000000b006ce95e37a40sm261930pfh.111.2023.12.06.19.25.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 19:25:19 -0800 (PST)
-Message-ID: <77d628dc-ab8c-4d8c-bc63-7e4518ea92d7@bytedance.com>
-Date:   Thu, 7 Dec 2023 11:25:13 +0800
+        Wed, 6 Dec 2023 22:29:57 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6B0B291
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 19:30:02 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8Dxl+g3PHFl9oQ_AA--.25335S3;
+        Thu, 07 Dec 2023 11:29:59 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax3tw0PHFlBCFXAA--.60649S2;
+        Thu, 07 Dec 2023 11:29:57 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     Hengqi Chen <hengqi.chen@gmail.com>, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/2] Fix failed test cases in test_bpf.ko for LoongArch
+Date:   Thu,  7 Dec 2023 11:29:49 +0800
+Message-ID: <20231207032951.16334-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/7] mm/zswap: optimize the scalability of zswap rb-tree
-Content-Language: en-US
-To:     Chris Li <chriscli@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Nhat Pham <nphamcs@gmail.com>
-Cc:     Vitaly Wool <vitaly.wool@konsulko.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-References: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com>
- <CAKEwX=NXcY3_GuKbh0=Ceg9wj=7u4y0NgmfSVEG3-+deY0jiWQ@mail.gmail.com>
- <CAJD7tkbErWz7Rjn-JdY8LjSW=GzEyyrNeJ5P1ipChFSufmQmLQ@mail.gmail.com>
- <CAF8kJuMegmMD3+YZfvsW3h1y1z1-kH7SiyJHPVnrSc89OZASuA@mail.gmail.com>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <CAF8kJuMegmMD3+YZfvsW3h1y1z1-kH7SiyJHPVnrSc89OZASuA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: AQAAf8Ax3tw0PHFlBCFXAA--.60649S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
+        BjDU0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
+        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
+        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E
+        14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44
+        I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2
+        jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20x
+        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
+        3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIx
+        AIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAI
+        cVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2js
+        IEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8czVUUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/7 08:43, Chris Li wrote:
-> Hi Nhat and Yosry,
-> 
-> On Wed, Dec 6, 2023 at 12:42 PM Yosry Ahmed <yosryahmed@google.com> wrote:
->>
->> On Wed, Dec 6, 2023 at 9:24 AM Nhat Pham <nphamcs@gmail.com> wrote:
->>>
->>> + Chris Li
->>>
->>> Chris, I vaguely remember from our last conversation that you have
->>> some concurrent efforts to use xarray here right?
-> 
-> Yes, I do have the zswap xarray for older versions of the kernel. The
-> recent mm-unstable tree has  a lot of zswap related updates. Give me 2
-> days to refresh and post it. The zswap invalid entry and the reference
-> count change is causing a good portion of the code to be updated. That
-> is the price to pay keeping out of tree patches. My fault is not
-> getting to it sooner.
-> 
->>
->> If I recall correctly, the xarray already reduces the lock contention
->> as lookups are lockless, but Chris knows more here. As you mentioned
-> 
-> Yes. To be exact, xarray can use spin lock (same as current RB tree)
-> or take RCU read lock on the lookup path (depending on how you call
-> the xarray API). Not completely lockless but the RCU read lock should
-> have less lock contention than normal spinlock. +Matthew
-> 
+There are 5 failed test cases in test_bpf.ko if enable jit on LoongArch,
+one of them is related with the test case itself and has been fixed in
+bpf-next tree [1], the other failed test cases are related with bpf jit
+and can be fixed with this patch series.
 
-Great! Lockless lookup in zswap_load() should reduce spinlock contention.
-And multiple trees (multiple xarrays) can further reduce the contention
-on the concurrent zswap_store() side. So it's complementary IMHO.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=5fa201f37c2e
 
->> in a different email, it would be nice to get some data so that we can
->> compare different solutions.
-> 
-> Yes, it is certainly welcome to see more data points. If I recall
-> correctly, the zswap xarray array makes the lookup similar to the swap
-> cache lookup. It has a noticeable difference in the long tail end.
-> 
+Tiezhu Yang (2):
+  LoongArch: BPF: Fix sign-extension mov instructions
+  LoongArch: BPF: Fix unconditional bswap instructions
 
-Right, I post some data from yesterday in another reply.
-Will test again and update the data since Nhat's zswap shrinker fix patch
-has been merged into mm-unstable today.
+ arch/loongarch/net/bpf_jit.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Thanks!
+-- 
+2.42.0
+
