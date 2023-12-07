@@ -2,129 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A8180805E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 06:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C359D808060
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 06:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbjLGFqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 00:46:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35198 "EHLO
+        id S1346664AbjLGFwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 00:52:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjLGFqs (ORCPT
+        with ESMTP id S229454AbjLGFwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 00:46:48 -0500
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318C5121;
-        Wed,  6 Dec 2023 21:46:53 -0800 (PST)
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1cf7a8ab047so3777115ad.1;
-        Wed, 06 Dec 2023 21:46:53 -0800 (PST)
+        Thu, 7 Dec 2023 00:52:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514B21AD
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 21:52:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701928342;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HSUZB2MS9IXq3JbO5o9diZppcpNs8joa8PI6k/pJS1g=;
+        b=bUuLd1zAB94Wp3czypK6KO1DTShTcZhE4ZWPboHv4K20/bMl0XIBjYI+hWHcFzkvSElpQb
+        6DP4jwMyk0p1Fb/q/KsrEFg+l6STM9SOFKdGP4dHV9ymL40pjvFs0OJ7+pwa5ehWhHa4ZC
+        TBwUVQV1rx3f9F8IdI/zNExebeKBo8Q=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-348-WBYIC2X5PninDoBu-ZlXDg-1; Thu, 07 Dec 2023 00:52:20 -0500
+X-MC-Unique: WBYIC2X5PninDoBu-ZlXDg-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2866c800dd5so737126a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 21:52:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701928012; x=1702532812;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=egxxoHFyDqeCA/LxlDg8JyWMVYkStRh8cbZHikRDbS0=;
-        b=JeRe68CMyQ2Y8eU4AcHetoaEmDGZiqZUj8X1z1QW0ZAmA2hvt0hszrmH9ceEEOrkCO
-         3L4sEuJi7/hybH+tayAtm2+46DP4DsjnrOlvTcCgy85h5Acrc/LkbMqRJsmNsGajuuDW
-         aCJRdP7JKoVtlsJK23tftejfYdJnXso/JH0GsmXxftmJXooqUTOwEomojiaWEza4iFXy
-         7LDqcQ95mpP3L899yMm+B38ytew2URwlCeVPmFpLNgJg+qDzOG3qkIiEJkcJZGaoSIfJ
-         AdKVoLMshv/ewuSbYOdoO5VYhKnO+d6uHXbU1huN3h/CnbrwUAuWVnSj6JbRa2tsHbxO
-         uDNA==
-X-Gm-Message-State: AOJu0YxRP7XcvhouDLWfGrp+Vwj3t5tROh2EV1EzJddywWQtxhxQLBmR
-        yMan8oD1xLG5qFmojZrtUxA=
-X-Google-Smtp-Source: AGHT+IF6vXYcdw6GXClAOhugyGgBVtuMtwXIfwxdWqT56yjqXEpfSXOgZ2/KtLitjpsLVgMAz5ioAA==
-X-Received: by 2002:a17:902:c101:b0:1d0:8afd:b28c with SMTP id 1-20020a170902c10100b001d08afdb28cmr1453916pli.92.1701928012478;
-        Wed, 06 Dec 2023 21:46:52 -0800 (PST)
-Received: from snowbird ([136.25.84.107])
-        by smtp.gmail.com with ESMTPSA id x5-20020a170902ea8500b001d08e080042sm431944plb.43.2023.12.06.21.46.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 21:46:51 -0800 (PST)
-Date:   Wed, 6 Dec 2023 21:46:48 -0800
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Tejun Heo <tj@kernel.org>, Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 0/2] riscv: Enable percpu page first chunk allocator
-Message-ID: <ZXFcSEzalzl790bO@snowbird>
-References: <20231110140721.114235-1-alexghiti@rivosinc.com>
- <f259088f-a590-454e-b322-397e63071155@ghiti.fr>
- <ZXDEyzVcBOPUCCpg@slm.duckdns.org>
+        d=1e100.net; s=20230601; t=1701928339; x=1702533139;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HSUZB2MS9IXq3JbO5o9diZppcpNs8joa8PI6k/pJS1g=;
+        b=oo3i4pOAaCuaOmpbehuIDBP7YML2IM7z0FGuMKhz3lvmG2RRNGVb/rtM8g87Ng0/SW
+         AcY5q8M9TNObcocVrMn9hbbKHQPF6+snvImoTVSBLDzEtxen5zKkcJKK2oiRC9STs7kZ
+         pnSAMdm+ZHTcsOMvKlPxELMNWNy6nMpq35PyiO1lNd5LWUDfYkSwR9daIytJfAM6VQRp
+         my7OUOmF4Gvpszft1vPD+GZczeN8deRR31WC2mWKlk8dqilDvw9nAJCBG4JA/NcRcJa0
+         jbvK8PVl9zrvakpVBB5EvsSMKusgRFDQXXyIxqNPwUArAChvNeV1d/N8JTtGU1RdwcGT
+         qBGA==
+X-Gm-Message-State: AOJu0Ywt2mnQewAXSqGyMCGHj56C6xoylp4KEqFlKGfGBuxj8Ye5Zeq9
+        5+t8zWuzsXiNYSi/KCGsAx4DByjm1wHAXu+JbZGAWslMXau+TOc4H1PaXPfnAluFToQfs39GGyj
+        iKbu4cOgLMOdCg+C1M3LxOTuW+IZ6fXruyk0IGqdB
+X-Received: by 2002:a17:90a:fd09:b0:286:6cc0:cad3 with SMTP id cv9-20020a17090afd0900b002866cc0cad3mr1949087pjb.74.1701928339212;
+        Wed, 06 Dec 2023 21:52:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHmSjJEJticrA6iI+yH1lm5XAyMtFr/azBvGsGe1XMJiQigUQ9nLH+oU43aD6xf+IguxCTdguGcxA4sxW4hVuw=
+X-Received: by 2002:a17:90a:fd09:b0:286:6cc0:cad3 with SMTP id
+ cv9-20020a17090afd0900b002866cc0cad3mr1949085pjb.74.1701928338997; Wed, 06
+ Dec 2023 21:52:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXDEyzVcBOPUCCpg@slm.duckdns.org>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20231205113444.63015-1-linyunsheng@huawei.com> <20231205113444.63015-5-linyunsheng@huawei.com>
+In-Reply-To: <20231205113444.63015-5-linyunsheng@huawei.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 7 Dec 2023 13:52:08 +0800
+Message-ID: <CACGkMEvwG6EvZ3me9ReqA-YSR1Y_6fb_kotT=+PFARaLS1FTmg@mail.gmail.com>
+Subject: Re: [PATCH net-next 4/6] vhost/net: remove vhost_net_page_frag_refill()
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux.dev, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Dec 5, 2023 at 7:35=E2=80=AFPM Yunsheng Lin <linyunsheng@huawei.com=
+> wrote:
+>
+> The page frag in vhost_net_page_frag_refill() uses the
+> 'struct page_frag' from skb_page_frag_refill(), but it's
+> implementation is similar to page_frag_alloc_align() now.
+>
+> This patch removes vhost_net_page_frag_refill() by using
+> 'struct page_frag_cache' instead of 'struct page_frag',
+> and allocating frag using page_frag_alloc_align().
+>
+> The added benefit is that not only unifying the page frag
+> implementation a little, but also having about 0.5% performance
+> boost testing by using the vhost_net_test introduced in the
+> last patch.
+>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
 
-On Wed, Dec 06, 2023 at 09:00:27AM -1000, Tejun Heo wrote:
-> On Wed, Dec 06, 2023 at 11:08:20AM +0100, Alexandre Ghiti wrote:
-> > Hi Tejun,
-> > 
-> > On 10/11/2023 15:07, Alexandre Ghiti wrote:
-> > > While working with pcpu variables, I noticed that riscv did not support
-> > > first chunk allocation in the vmalloc area which may be needed as a fallback
-> > > in case of a sparse NUMA configuration.
-> > > 
-> > > patch 1 starts by introducing a new function flush_cache_vmap_early() which
-> > > is needed since a new vmalloc mapping is established and directly accessed:
-> > > on riscv, this would likely fail in case of a reordered access or if the
-> > > uarch caches invalid entries in TLB.
-> > > 
-> > > patch 2 simply enables the page percpu first chunk allocator in riscv.
-> > > 
-> > > Alexandre Ghiti (2):
-> > >    mm: Introduce flush_cache_vmap_early() and its riscv implementation
-> > >    riscv: Enable pcpu page first chunk allocator
-> > > 
-> > >   arch/riscv/Kconfig                  | 2 ++
-> > >   arch/riscv/include/asm/cacheflush.h | 3 ++-
-> > >   arch/riscv/include/asm/tlbflush.h   | 2 ++
-> > >   arch/riscv/mm/kasan_init.c          | 8 ++++++++
-> > >   arch/riscv/mm/tlbflush.c            | 5 +++++
-> > >   include/asm-generic/cacheflush.h    | 6 ++++++
-> > >   mm/percpu.c                         | 8 +-------
-> > >   7 files changed, 26 insertions(+), 8 deletions(-)
-> > > 
-> > 
-> > Any feedback regarding this?
-> 
-> On cursory look, it looked fine to me but Dennis is maintaining the percpu
-> tree now. Dennis?
-> 
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-Ah I wasn't sure at the time if we needed this to go through percpu vs
-risc v. I need to poke tglx and potentially pull some more stuff so I
-can take it.
+Thanks
 
-I regrettably got both the covid and flu vaccines today and feel like a
-truck hit me. I'll review this tomorrow and make sure it's taken care
-of for the next merge window.
-
-Thanks,
-Dennis
-
-> Thanks.
-> 
-> -- 
-> tejun
