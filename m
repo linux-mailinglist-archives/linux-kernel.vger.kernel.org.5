@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC6E8081FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C369808202
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377918AbjLGHb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 02:31:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
+        id S1377897AbjLGHde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 02:33:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbjLGHby (ORCPT
+        with ESMTP id S229660AbjLGHdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 02:31:54 -0500
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DBBD5E;
-        Wed,  6 Dec 2023 23:31:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1701934320; x=1733470320;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=NvfRzA06H3AcI6WpmXO5M+PBAuH7VC1PGViD7SmhVyU=;
-  b=lKRxIdSJLEk/QeuIx+pV1u79AHXtTSdMjrFJIEJCTaDmnr5RO/GK092J
-   sUZEcq/K5/klos/dwgGmfcwFUlp5bp/UM66X0V/flwMLJUTzVHKQmn7mb
-   QCmpdGuIajW74UWochJLprUrR2zu6/GV/I0exKgp0no/ID9LxrvMWL412
-   0QvkTSxwoxVsElSIQR5g7UE8CUhPyNnxd8yZvk+S6nAV/u5bONJ0k0Zfo
-   XnF6HAkfJbnaErKbXn6qjWOV2WGXpHLrS6bBXVTRxuUodxYGIxY0W+//D
-   y2Mlk3kUtP6JzRKyXDuxiywpq0TEcPloJbpNDGXlD6Ft8DXhOBzHtLmfg
-   g==;
-X-IronPort-AV: E=Sophos;i="6.04,256,1695679200"; 
-   d="scan'208";a="34373751"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 07 Dec 2023 08:31:57 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
+        Thu, 7 Dec 2023 02:33:32 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04853122;
+        Wed,  6 Dec 2023 23:33:39 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 7F243280075;
-        Thu,  7 Dec 2023 08:31:57 +0100 (CET)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux@ew.tq-group.com,
-        gregor.herburger@ew.tq-group.com,
-        Gregor Herburger <gregor.herburger@ew.tq-group.com>
-Subject: Re: [PATCH 0/2] TQMLX2160A support
-Date:   Thu, 07 Dec 2023 08:31:56 +0100
-Message-ID: <1874330.tdWV9SEqCh@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <20231206-for-ml-tqmlx2160a-v1-0-622e41ae4d8e@ew.tq-group.com>
-References: <20231206-for-ml-tqmlx2160a-v1-0-622e41ae4d8e@ew.tq-group.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9A0A022075;
+        Thu,  7 Dec 2023 07:33:37 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 632AE13B6A;
+        Thu,  7 Dec 2023 07:33:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id u1DHFVF1cWWhHAAAD6G6ig
+        (envelope-from <tiwai@suse.de>); Thu, 07 Dec 2023 07:33:37 +0000
+Date:   Thu, 07 Dec 2023 08:33:36 +0100
+Message-ID: <87ttou1n73.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Ivan Orlov <ivan.orlov0322@gmail.com>
+Cc:     tiwai@suse.com, perex@perex.cz, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ALSA: pcmtest: stop timer before buffer is released
+In-Reply-To: <20231206223211.12761-1-ivan.orlov0322@gmail.com>
+References: <20231206223211.12761-1-ivan.orlov0322@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Queue-Id: 9A0A022075
+X-Spam-Score: 2.43
+X-Spamd-Result: default: False [2.43 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-0.06)[61.30%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         RCPT_COUNT_FIVE(0.00)[5];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         MID_CONTAINS_FROM(1.00)[];
+         FREEMAIL_TO(0.00)[gmail.com];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[];
+         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spamd-Bar: ++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of tiwai@suse.de) smtp.mailfrom=tiwai@suse.de
+X-Rspamd-Server: rspamd1
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 06 Dec 2023 23:32:11 +0100,
+Ivan Orlov wrote:
+> 
+> Stop timer in the 'trigger' and 'sync_stop' callbacks since we want
+> the timer to be stopped before the DMA buffer is released. Otherwise,
+> it could trigger a kernel panic in some circumstances, for instance
+> when the DMA buffer is already released but the timer callback is
+> still running.
+> 
+> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
 
-Am Mittwoch, 6. Dezember 2023, 15:01:00 CET schrieb Gregor Herburger:
-> Hi,
->=20
-> this series adds initial support for the TQMLX2160A SoM on MBLX2160a
-> baseboard. The various supported Serdes Configurations are added with
-> overlay files.
->=20
-> Patch 1 adds the compatible to dt bindings
-> Patch 2 adds the dts files
->=20
-> ---
-> Gregor Herburger (2):
->       dt-bindings: arm: fsl: Add TQ-Systems LX2160A based boards
->       arm64: dts: freescale: add fsl-lx2160a-mblx2160a board
-
-=46or the whole series:
-Reviewed-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-
->  Documentation/devicetree/bindings/arm/fsl.yaml     |  10 +
->  arch/arm64/boot/dts/freescale/Makefile             |  26 ++
->  .../freescale/fsl-lx2160a-tqmlx2160a-mblx2160a.dts | 338
-> +++++++++++++++++++++ .../fsl-lx2160a-tqmlx2160a-mblx2160a_12_x_x.dtso   =
-|=20
-> 29 ++
->  .../fsl-lx2160a-tqmlx2160a-mblx2160a_14_x_x.dtso   |  17 ++
->  .../fsl-lx2160a-tqmlx2160a-mblx2160a_x_11_x.dtso   |  49 +++
->  .../fsl-lx2160a-tqmlx2160a-mblx2160a_x_7_x.dtso    |  55 ++++
->  .../fsl-lx2160a-tqmlx2160a-mblx2160a_x_8_x.dtso    |  47 +++
->  .../boot/dts/freescale/fsl-lx2160a-tqmlx2160a.dtsi |  97 ++++++
->  9 files changed, 668 insertions(+)
-> ---
-> base-commit: 8728c14129df7a6e29188a2e737b4774fb200953
-> change-id: 20231206-for-ml-tqmlx2160a-68ee235f71cd
->=20
-> Best regards,
+Thanks, applied now.
 
 
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
-
+Takashi
