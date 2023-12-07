@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E21948089EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:10:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD008089F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:13:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443029AbjLGOK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:10:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58028 "EHLO
+        id S1443001AbjLGOMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:12:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442975AbjLGOK1 (ORCPT
+        with ESMTP id S232813AbjLGOMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:10:27 -0500
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A469710E9
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:10:32 -0800 (PST)
+        Thu, 7 Dec 2023 09:12:43 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EFF710C2
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:12:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701958369; x=1733494369;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=otLh6o1rX99RrYIJ5oiet7dYcuo6Lqn/Ua6HMYdsT5w=;
+  b=cIiZ6Y3pcbDsN2FEQGL/CqK62sDTl8suPiX7R6Qnf6F3Fa5FR2ID4T8F
+   SujNF5L0tSkp432LJfbw12QuY8EW559DpBjPwZxxw9ZUjzDmBOqcrLI//
+   sLJ4MwrQRZyN6C52SYWknl3m1bGFbX1hexYWGm7MqvWLrumaBibhxLuni
+   PmSsdoo0c8DYwpOu6+6QEaIS0098cuK/iwXATDf2vOCc4MFMvMEdsDmbb
+   +UVjBj1BtRxM9C0Ge3gT1AqYGM9SqaOIJPFuBY8UOQDEECVnQG6vhsf1J
+   +KTv+YldTi6jj3wbHyMhIQ9q5FLcEIVTXXjSxwpmF4vyiZvcrLUui9TC6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="397026053"
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="397026053"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 06:12:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="19716476"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 07 Dec 2023 06:12:48 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBF7N-000CLV-1J;
+        Thu, 07 Dec 2023 14:12:45 +0000
+Date:   Thu, 7 Dec 2023 22:12:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Leif Lindholm <leif@nuviainc.com>
+Subject: drivers/firmware/efi/libstub/arm32-stub.c:12:28: sparse: sparse:
+ symbol 'efi_entry_state' was not declared. Should it be static?
+Message-ID: <202312072219.Qpsizncn-lkp@intel.com>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-        t=1701958229;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GiNAy2Hgm4il6Eg6UIzDiq34mDKxYnVzU21DMZvQkiY=;
-        b=LhpCpjC5vmNJlHpagut9DSMEp7fZMKX5K+L+Ii+geqVN4pgmaHB4UNxcmUnA1Fn22twNhZ
-        wGOXbrUOuniiEhDXNEt8/YLeWmWHpUuqfR8e0dFRG5t/6Sp8GPaGxGloICafx/QiUopN1O
-        ASl05ipLEvscQTis82wNW1612SPQA6sIsELqmIWCo7Qu9I2BEyykYxT8/DmlseQIgPLQN4
-        Sp9Rxa89tkvxbLveCrRLRf8e0+ppf4cc3xusNAbecq4wABnXcZk6w/oThvgVJfiaqjSyr8
-        koo3jjuqIgHB/fMDE/vnF/sxv9SXR/W/6DJIipJiju/Bf42chPY/o/FTZPaBUg==
-Date:   Thu, 07 Dec 2023 15:10:29 +0100
-From:   Dragan Simic <dsimic@manjaro.org>
-To:     Jensen Huang <jensenhuang@friendlyarm.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        Chris Morgan <macroalpha82@gmail.com>,
-        Benjamin Bara <bbara93@gmail.com>
-Subject: Re: [PATCH v2] i2c: rk3x: fix potential spinlock recursion on poll
-In-Reply-To: <CAMpZ1qHUnTDQ78gdrQF9Sx_-XfLM-B+H-0bL1-+twKsno+JOvg@mail.gmail.com>
-References: <20231207082200.16388-1-jensenhuang@friendlyarm.com>
- <ebf6cf8ec3b5befd673d295061fa2738@manjaro.org>
- <CAMpZ1qHUnTDQ78gdrQF9Sx_-XfLM-B+H-0bL1-+twKsno+JOvg@mail.gmail.com>
-Message-ID: <5e11553952c02ad20591992be4284bbd@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-        auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,39 +63,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-07 10:25, Jensen Huang wrote:
-> On Thu, Dec 7, 2023 at 4:37 PM Dragan Simic <dsimic@manjaro.org> wrote:
->> 
->> On 2023-12-07 09:21, Jensen Huang wrote:
->> > Possible deadlock scenario (on reboot):
->> > rk3x_i2c_xfer_common(polling)
->> >     -> rk3x_i2c_wait_xfer_poll()
->> >         -> rk3x_i2c_irq(0, i2c);
->> >             --> spin_lock(&i2c->lock);
->> >             ...
->> >         <rk3x i2c interrupt>
->> >         -> rk3x_i2c_irq(0, i2c);
->> >             --> spin_lock(&i2c->lock); (deadlock here)
->> >
->> > Store the IRQ number and disable/enable it around the polling transfer.
->> > This patch has been tested on NanoPC-T4.
->> 
->> In case you haven't already seen the related discussion linked below,
->> please have a look.  I also added more people to the list of 
->> recipients,
->> in an attempt to make everyone aware of the different approaches to
->> solving this issue.
->> 
->> https://lore.kernel.org/all/655177f4.050a0220.d85c9.3ba0@mx.google.com/T/#m6fc9c214452fec6681843e7f455978c35c6f6c8b
-> 
-> Thank you for providing the information. I hadn't seen this link 
-> before.
-> After carefully looking into the related discussion, it appears that
-> Dmitry Osipenko is already working on a suitable patch. To avoid 
-> duplication
-> or conflicts, my patch can be discarded.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+commit: 2a55280a3675203496d302463b941834228b9875 efi/libstub: arm: Print CPU boot mode and MMU state at boot
+date:   3 years, 6 months ago
+config: arm-randconfig-r113-20231116 (https://download.01.org/0day-ci/archive/20231207/202312072219.Qpsizncn-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231207/202312072219.Qpsizncn-lkp@intel.com/reproduce)
 
-Thank you for responding so quickly.  Perhaps it would be best to hear 
-from Dmitry as well, before discarding anything.  It's been a while 
-since Dmitry wrote about working on the patch, so he might have 
-abandoned it.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312072219.Qpsizncn-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> drivers/firmware/efi/libstub/arm32-stub.c:12:28: sparse: sparse: symbol 'efi_entry_state' was not declared. Should it be static?
+
+vim +/efi_entry_state +12 drivers/firmware/efi/libstub/arm32-stub.c
+
+    11	
+  > 12	struct efi_arm_entry_state *efi_entry_state;
+    13	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
