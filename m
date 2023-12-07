@@ -2,61 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDDA808820
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 940B580881D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379411AbjLGMjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 07:39:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
+        id S1379401AbjLGMk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:40:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbjLGMjh (ORCPT
+        with ESMTP id S1379508AbjLGMk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 07:39:37 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F4BA8
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:39:41 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5c659db0ce2so698936a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 04:39:41 -0800 (PST)
+        Thu, 7 Dec 2023 07:40:56 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039D110C4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:41:01 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54cde11d0f4so1290777a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 04:41:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1701952781; x=1702557581; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5/2d4/WwckVFpUcYhl9cottD/fQXNOLH0HoIwOJzbDs=;
-        b=Nu4+903Ihg3zdeaq8E1eiGT1fiTuINPEZT9EeLuzC8GnVuLgvApEa6Bfl2yLD+oALl
-         Jx3KDjDT5BO1ayqibDpV2TM2U+aOgCOpbhi5WLDa4yq1/7mFrhJphccg6HyuMPmDa+8E
-         pcCT/WO6Yj4+pbv4z4j10r2z9P82wW3SAr5j+yAukxnJLK5u3PcObplalVfMKjRPc1WU
-         MBIsg97929i/552vzbmWm7he9A5C1uZtBvYVv7A2+ViYnoxd0pIKsN3XJqWIJ01tGXfW
-         HGDt09vPnXw1D78xujGHxyzZe7hmv4jvsb+ja5GocXbKfhROa5a6EsD+iUy+feVInQr7
-         MiNQ==
+        d=linaro.org; s=google; t=1701952859; x=1702557659; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ukN90Di1G2R4M3iUHGuDrVWfWD5h0aTfPPTqZizy9y8=;
+        b=ydjsHS6HYnoIdU+pump2vjkLbM+kFYwueW4CyUh8QeMxM7ApS1wb65LXKXkag1cG2/
+         1bi+2fCCGfqiR3bjEliQWs3mczHh2CmDyuMGQkMz+zzV4KjC3jwdpjiPvswVEtkEgNri
+         s7qv+XZXiDuW76350y2DM6OHvr2pVVsUZGlMRrw6J1Raea+WmEGeM2fXMfOKskkG7WRp
+         wUUKMBhUxCeVnKqc+hGEt4VD6je8oqcIUmSLTlJOIBQAtcwGzGor1AwlICBgc/WcGxbw
+         zzK5uVJJLl/OetVIS7m4AhNAEDAqL0SsBJT5l7YefI1x+2ogzy+jry2AZs2NVVTypgW8
+         OBdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701952781; x=1702557581;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5/2d4/WwckVFpUcYhl9cottD/fQXNOLH0HoIwOJzbDs=;
-        b=IubkTmxFRfrO6eVoniEXAQtUpYqwQDMJ3cn0gOYI+4RmZTyxSVzUi/FOYcaswmU63b
-         8ft1B8uB3wGXgJoB6f+n9LY+b9to1Goox9hHe+6L7ZnGevmsotzHhHupFS1JIEB+raHM
-         Gj2JF4RjbGogQKDDxgvXQKsfvmamxNgFt6LhNQbn/BXuBXDVr8F001SXZp4B6EbFTc2K
-         26u7iwd4gWbSGY+TTTyKSujvWAco9dsH6mq8hYa50yXw72QRaOETDY7MZIG6oyjoOHBt
-         MOEWfkEKOENPTx3/EchOuXBmFN/j8CcFhhifE+7gBI5AKJbZeKYGSJLDyEnK2uScpkxO
-         Bqfg==
-X-Gm-Message-State: AOJu0Yyy6jxCnosgxbiRCqyCp+U6zwa40wAsbNwYmohuy6dB2o2XJtuS
-        oS6IUEBqnothd07gmR1M/KcOoQPZWQNuKFKhRmqqIw==
-X-Google-Smtp-Source: AGHT+IEzkgJQJnWYmMzJOq4pyyaNab9jZr2hC4d0IDCAojvZR7JADKfgyBDU2BAn/ZN5WrSI3I6Ay7Ly2RGbPXQlIP4=
-X-Received: by 2002:a17:90a:d40e:b0:282:d080:feed with SMTP id
- r14-20020a17090ad40e00b00282d080feedmr2174637pju.40.1701952780872; Thu, 07
- Dec 2023 04:39:40 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701952859; x=1702557659;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ukN90Di1G2R4M3iUHGuDrVWfWD5h0aTfPPTqZizy9y8=;
+        b=bCTv15Xc8AQlR89NTjTXBeonCnYJIXF15H2wMwSZadzboHr7HbuR11BHVEdRUV8PUm
+         pLibuAjlAbNjyc+Vjupg1oqcAaANYqMpYWhUbetR4wH2hWRyPUmBinHbKh6EVPkQODMJ
+         VrggyHnLMMhY1PfYXfLL48pVzlCtxYa0vLbgOtaObOwznbGtcCriJIyCyBXrYm+kWz/q
+         3gcJ/OzfD4HwOQme8uPah32VLHiMRrnyxftuR93xq30948R/SIjOPeaF7xsP70F7/OZK
+         sGsWoE4y9wiAvVLiv79Ppdhi/4SI6DRmKwgWFGlUOmD+pn2PHGhuvrV0YTHypcedcysp
+         8/OA==
+X-Gm-Message-State: AOJu0Ywx1i4WWPKbmFRi+9afjl1E6lEjbJ0rieE5fpt9hW8+tG4dHaJT
+        jnxRrqRQ/t7unDEHjRWCydbLCw==
+X-Google-Smtp-Source: AGHT+IG43Ix3H4WQbq/IkviZiMqnIWharU7qBkTL7bxP9W+ryA5kt3uxVxSyBnQWoOeqCvZ1aw8+aA==
+X-Received: by 2002:a17:906:1113:b0:a1c:9dc1:3042 with SMTP id h19-20020a170906111300b00a1c9dc13042mr1393818eja.1.1701952859422;
+        Thu, 07 Dec 2023 04:40:59 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id lt10-20020a170906fa8a00b00a015eac52dcsm777725ejb.108.2023.12.07.04.40.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 04:40:58 -0800 (PST)
+Message-ID: <604e653d-c1e2-45c7-b121-8a6b4be5c6bb@linaro.org>
+Date:   Thu, 7 Dec 2023 13:40:57 +0100
 MIME-Version: 1.0
-References: <20231205105207.1262928-1-naresh.solanki@9elements.com> <46b1d303-8104-4298-bd43-a649634f5393@gmail.com>
-In-Reply-To: <46b1d303-8104-4298-bd43-a649634f5393@gmail.com>
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-Date:   Thu, 7 Dec 2023 18:09:30 +0530
-Message-ID: <CABqG17jwAw6zqy9FLtZ3ppwLT+3fAQ21bGfMr4Xt5eTDm-jQMw@mail.gmail.com>
-Subject: Re: [PATCH v4] regulator: event: Add regulator netlink event support
-To:     Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 1/2] dt-bindings: usb: Add the binding example for the
+ Genesys Logic GL3523 hub
+Content-Language: en-US
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Icenowy Zheng <uwu@icenowy.me>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        linux-amlogic@lists.infradead.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231204144429.45197-1-linux.amoon@gmail.com>
+ <20231204144429.45197-2-linux.amoon@gmail.com>
+ <20231206135311.GA2043711-robh@kernel.org>
+ <CANAwSgTS0ZSFPv4x803pCLEpjH5imh8vEoWpbiJRH14Sy3GZww@mail.gmail.com>
+ <21673bfd-bb87-4c7d-a53f-337c263f3a00@linaro.org>
+ <CANAwSgSo37B0zg-xjrmqndSZ5SbyB3m27_wRsqqN9WTONooeiw@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CANAwSgSo37B0zg-xjrmqndSZ5SbyB3m27_wRsqqN9WTONooeiw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -67,264 +132,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matti,
+On 07/12/2023 13:33, Anand Moon wrote:
+> Hi Krzysztof
+> 
+> On Thu, 7 Dec 2023 at 14:00, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 06/12/2023 18:14, Anand Moon wrote:
+>>> Hi Rob,
+>>>
+>>> On Wed, 6 Dec 2023 at 19:23, Rob Herring <robh@kernel.org> wrote:
+>>>>
+>>>> On Mon, Dec 04, 2023 at 08:14:25PM +0530, Anand Moon wrote:
+>>>>> Add the binding example for the USB3.1 Genesys Logic GL3523
+>>>>> integrates with USB 3.1 Gen 1 Super Speed and USB 2.0 High-Speed
+>>>>> hub.
+>>>>>
+>>>>> For onboard hub controllers that support USB 3.x and USB 2.0 hubs
+>>>>> with shared resets and power supplies, this property is used to identify
+>>>>> the hubs with which these are shared.
+>>>>>
+>>>>> GL3523 has built-in 5V to 3.3V and 5V to 1.2V regulators, which serves
+>>>>> power to the USB HUB, it uses 5V power regulator.
+>>>>>
+>>>>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>>>>> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+>>>>> ---
+>>>>> V6: fix the description of the regulators
+>>>>> Updated the commit message for regulator updates.
+>>>>> add reviewed by Conor Dooley
+>>>>> [1] https://lore.kernel.org/all/20231130053130.21966-2-linux.amoon@gmail.com/
+>>>>> v5: upgrade peer-hub description : Conor Dooley
+>>>>> [0] https://www.genesyslogic.com.tw/en/product_view.php?show=67 [Block Diagram]
+>>>>> v4: Fix the description of peer-hub and update the commit message.
+>>>>> Schematics of the Odroid N2+
+>>>>> https://dn.odroid.com/S922X/ODROID-N2/Schematic/odroid-n2_rev0.6_20210121.pdf
+>>>>> V3: fix the dt_binding_check error, added new example for Genesys GL3523
+>>>>> v2: added Genesys GL3523 binding
+>>>>> v1: none
+>>>>> ---
+>>>>>  .../bindings/usb/genesys,gl850g.yaml          | 65 +++++++++++++++++--
+>>>>>  1 file changed, 61 insertions(+), 4 deletions(-)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+>>>>> index ee08b9c3721f..c6f63a69396d 100644
+>>>>> --- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+>>>>> +++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+>>>>> @@ -9,9 +9,6 @@ title: Genesys Logic USB hub controller
+>>>>>  maintainers:
+>>>>>    - Icenowy Zheng <uwu@icenowy.me>
+>>>>>
+>>>>> -allOf:
+>>>>> -  - $ref: usb-device.yaml#
+>>>>> -
+>>>>>  properties:
+>>>>>    compatible:
+>>>>>      enum:
+>>>>> @@ -27,12 +24,46 @@ properties:
+>>>>>
+>>>>>    vdd-supply:
+>>>>>      description:
+>>>>> -      the regulator that provides 3.3V core power to the hub.
+>>>>> +      The regulator that provides 3.3V or 5.0V core power to the hub.
+>>>>> +
+>>>>> +  peer-hub:
+>>>>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>>>>> +    description:
+>>>>> +      For onboard hub controllers that support USB 3.x and USB 2.0 hubs
+>>>>> +      with shared resets and power supplies, this property is used to identify
+>>>>> +      the hubs with which these are shared.
+>>>>>
+>>>>>  required:
+>>>>>    - compatible
+>>>>>    - reg
+>>>>>
+>>>>> +allOf:
+>>>>> +  - $ref: usb-device.yaml#
+>>>>> +  - if:
+>>>>> +      properties:
+>>>>> +        compatible:
+>>>>> +          contains:
+>>>>> +            enum:
+>>>>> +              - usb5e3,608
+>>>>> +    then:
+>>>>> +      properties:
+>>>>> +        peer-hub: false
+>>>>> +        vdd-supply: false
+>>>>> +        reset-gpios: true
+>>>>> +
+>>>>> +  - if:
+>>>>> +      properties:
+>>>>> +        compatible:
+>>>>> +          contains:
+>>>>> +            enum:
+>>>>> +              - usb5e3,610
+>>>>> +              - usb5e3,620
+>>>>> +    then:
+>>>>> +      properties:
+>>>>> +        peer-hub: true
+>>>>> +        vdd-supply: true
+>>>>> +        reset-gpios: true
+>>>>
+>>>> No need for this if schema. The default is they are allowed.
+>>>>
+>>>
+>>> If I move reset-gpios to required, I observe the below warning.
+>>>
+>>>   DTC_CHK Documentation/devicetree/bindings/usb/maxim,max33359.example.dtb
+>>> /home/alarm/linux-amlogic-5.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
+>>> hub@1: 'reset-gpio' is a required property
+>>>         from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+>>
+>> Where are the properties defined? If you open the binding you see:
+>> nowhere. You cannot define properties in some variant with "true".
+>> Please define all of them in top-level and only narrow/constrain when
+>> applicable.
+>>
+> What I meant is the example below, required meant applicable for both
+> the binding
+> But it shows me the above warning.
 
+My explanation stands... So again:
 
-On Thu, 7 Dec 2023 at 13:42, Matti Vaittinen <mazziesaccount@gmail.com> wrote:
->
-> Hi Naresh,
->
-> On 12/5/23 12:52, Naresh Solanki wrote:
-> > This commit introduces netlink event support to the regulator subsystem.
-> >
-> > Changes:
-> > - Introduce event.c and regnl.h for netlink event handling.
-> > - Implement reg_generate_netlink_event to broadcast regulator events.
-> > - Update Makefile to include the new event.c file.
-> >
-> > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
->
-> Thanks! I have somehow missed the earlier patches (or just don't
-> remember seeing them). I _really_ like the idea of sending the regulator
-> events as netlink multicasts!
->
-> ...
->
-> > +
-> > +int reg_generate_netlink_event(const char *reg_name, u64 event)
-> > +{
-> > +     struct sk_buff *skb;
-> > +     struct nlattr *attr;
-> > +     struct reg_genl_event *edata;
-> > +     void *msg_header;
-> > +     int size;
-> > +
-> > +     /* allocate memory */
-> > +     size = nla_total_size(sizeof(struct reg_genl_event)) +
-> > +         nla_total_size(0);
-> > +
-> > +     skb = genlmsg_new(size, GFP_ATOMIC);
-> > +     if (!skb)
-> > +             return -ENOMEM;
-> > +
-> > +     /* add the genetlink message header */
-> > +     msg_header = genlmsg_put(skb, 0, reg_event_seqnum++,
-> > +                              &reg_event_genl_family, 0,
-> > +                              REG_GENL_CMD_EVENT);
->
-> Should the reg_event_seqnum++ be atomic or is access somehow serialized?
-Yes making it atomic will be better.
->
-> > +     if (!msg_header) {
-> > +             nlmsg_free(skb);
-> > +             return -ENOMEM;
-> > +     }
-> > +
-> > +     /* fill the data */
-> > +     attr = nla_reserve(skb, REG_GENL_ATTR_EVENT, sizeof(struct reg_genl_event));
-> > +     if (!attr) {
-> > +             nlmsg_free(skb);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     edata = nla_data(attr);
-> > +     memset(edata, 0, sizeof(struct reg_genl_event));
-> > +
-> > +     strscpy(edata->reg_name, reg_name, sizeof(edata->reg_name));
-> > +     edata->event = event;
-> > +
-> > +     /* send multicast genetlink message */
-> > +     genlmsg_end(skb, msg_header);
-> > +     size = genlmsg_multicast(&reg_event_genl_family, skb, 0, 0, GFP_ATOMIC);
-> > +
-> > +     return size;
-> > +}
-> > +
->
-> ...
->
-> > diff --git a/include/uapi/regulator/regulator.h b/include/uapi/regulator/regulator.h
-> > new file mode 100644
-> > index 000000000000..d2b5612198b6
-> > --- /dev/null
-> > +++ b/include/uapi/regulator/regulator.h
-> > @@ -0,0 +1,90 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > +/*
-> > + * Regulator uapi header
-> > + *
-> > + * Author: Naresh Solanki <Naresh.Solanki@9elements.com>
-> > + */
-> > +
-> > +#ifndef _UAPI_REGULATOR_H
-> > +#define _UAPI_REGULATOR_H
-> > +
-> > +#ifdef __KERNEL__
-> > +#include <linux/types.h>
-> > +#else
-> > +#include <stdint.h>
-> > +#endif
-> > +
-> > +/*
-> > + * Regulator notifier events.
-> > + *
-> > + * UNDER_VOLTAGE  Regulator output is under voltage.
-> > + * OVER_CURRENT   Regulator output current is too high.
-> > + * REGULATION_OUT Regulator output is out of regulation.
-> > + * FAIL           Regulator output has failed.
-> > + * OVER_TEMP      Regulator over temp.
-> > + * FORCE_DISABLE  Regulator forcibly shut down by software.
-> > + * VOLTAGE_CHANGE Regulator voltage changed.
-> > + *                Data passed is old voltage cast to (void *).
-> > + * DISABLE        Regulator was disabled.
-> > + * PRE_VOLTAGE_CHANGE   Regulator is about to have voltage changed.
-> > + *                      Data passed is "struct pre_voltage_change_data"
-> > + * ABORT_VOLTAGE_CHANGE Regulator voltage change failed for some reason.
-> > + *                      Data passed is old voltage cast to (void *).
-> > + * PRE_DISABLE    Regulator is about to be disabled
-> > + * ABORT_DISABLE  Regulator disable failed for some reason
-> > + *
-> > + * NOTE: These events can be OR'ed together when passed into handler.
-> > + */
-> > +
-> > +#define REGULATOR_EVENT_UNDER_VOLTAGE                0x01
-> > +#define REGULATOR_EVENT_OVER_CURRENT         0x02
-> > +#define REGULATOR_EVENT_REGULATION_OUT               0x04
-> > +#define REGULATOR_EVENT_FAIL                 0x08
-> > +#define REGULATOR_EVENT_OVER_TEMP            0x10
-> > +#define REGULATOR_EVENT_FORCE_DISABLE                0x20
-> > +#define REGULATOR_EVENT_VOLTAGE_CHANGE               0x40
-> > +#define REGULATOR_EVENT_DISABLE                      0x80
-> > +#define REGULATOR_EVENT_PRE_VOLTAGE_CHANGE   0x100
-> > +#define REGULATOR_EVENT_ABORT_VOLTAGE_CHANGE 0x200
-> > +#define REGULATOR_EVENT_PRE_DISABLE          0x400
-> > +#define REGULATOR_EVENT_ABORT_DISABLE                0x800
-> > +#define REGULATOR_EVENT_ENABLE                       0x1000
-> > +/*
-> > + * Following notifications should be emitted only if detected condition
-> > + * is such that the HW is likely to still be working but consumers should
-> > + * take a recovery action to prevent problems esacalating into errors.
->
-> It's easier to spot my own typos when someone throws them at my face :)
-> Maybe fix the 'esacalating' while shuffling these? (don't know if it's
-> preferred to first move everything and only do typofix as own patch - in
-> which case it definitely does not need to be done as a part of this
-> series. Just commented on this as I noticed it now)
-Yes.  I missed fixing the typo.
->
-> > + */
-> > +#define REGULATOR_EVENT_UNDER_VOLTAGE_WARN   0x2000
-> > +#define REGULATOR_EVENT_OVER_CURRENT_WARN    0x4000
-> > +#define REGULATOR_EVENT_OVER_VOLTAGE_WARN    0x8000
-> > +#define REGULATOR_EVENT_OVER_TEMP_WARN               0x10000
-> > +#define REGULATOR_EVENT_WARN_MASK            0x1E000
-> > +
-> > +struct reg_genl_event {
-> > +     char reg_name[32];
-> > +     uint64_t event;
-> > +};
->
-> Do you think we could and / or should separate the event type and event
-> severity to own attributes here? I wonder if we will see more
-> 'severities' of events in the future. I see we have currently some
-> activity for deciding if a regulator event should result for example a
-> "data storage protection" by shutting down storage hardware before a
-> back-up capacitor runs out of energy. Maybe we see more cases where the
-> user-space needs to decide whether to run a (partial) system shutdown or
-> do some other action based on regulator events.
->
-> I have a feeling that there will be "actions" which are common (like
-> system shutdown or data flushing) and could utilize some generic
-> user-space daemon - maybe the severity is something such a generic
-> daemon could use to decide if shutdown/flush/whatsoever is needed? If
-> so, being able to add new severities may be needed - and duplicating
-> event flags for all severities may not scale.
->
-> OTOH, it's not that hard to append new netlink attributes to the end of
-> the message to give user-space a hint regarding what should be done. In
-> that sense this is not something I would insist - just wonder if you see
-> it sensible?
+>> Please define all of them in top-level and only narrow/constrain when
+>> applicable.
 
-When I wrote the code, I kept in mind to make sure to receive all events
-from regulators so that userspace application (in my case BMC
-application which does power sequence) has regulator events information.
-Hence I assumed that its upto userspace application to decide on corrective
-action based on events of interest.
+Best regards,
+Krzysztof
 
-At the same time I think having it in a way which is very generic & meets
-requirement of many use case would be better.
-
-Please correct me if my understanding is inaccurate.
-As I understand from your inputs, receiving severity information along
-with event would help application decide corrective information insteading
-of decoding regulator events.
-
->
-> > +
-> > +/* attributes of reg_genl_family */
-> > +enum {
-> > +     REG_GENL_ATTR_UNSPEC,
-> > +     REG_GENL_ATTR_EVENT,    /* reg event info needed by user space */
-> > +     __REG_GENL_ATTR_MAX,
-> > +};
-> > +
-> > +#define REG_GENL_ATTR_MAX (__REG_GENL_ATTR_MAX - 1)
-> > +
-> > +/* commands supported by the reg_genl_family */
-> > +enum {
-> > +     REG_GENL_CMD_UNSPEC,
-> > +     REG_GENL_CMD_EVENT,     /* kernel->user notifications for reg events */
-> > +     __REG_GENL_CMD_MAX,
-> > +};
-> > +
-> > +#define REG_GENL_CMD_MAX (__REG_GENL_CMD_MAX - 1)
-> > +
-> > +#define REG_GENL_FAMILY_NAME         "reg_event"
-> > +#define REG_GENL_VERSION             0x01
-> > +#define REG_GENL_MCAST_GROUP_NAME    "reg_mc_group"
->
-> I am wondering what will the user-space handlers look like? Do we think
-> that there will be a 'I am interested in _all_ regulator multicast
-> events' type of listener, or do we think there will be listeners who
-> would like to listen only for a subset of regulator netlink notifications?
->
-> Asking this just because I wonder if we should be prepared for more than
-> one regulator multicast group? Do you think that an ability to say "Hey,
-> I'd like to listen for under-voltage events only" or "I would like to
-> get all temperature-related notifications" should/could be supported by
-> more specific multicast groups or is that just over-engineering at this
-> point?
-Current implementation is such that all events will be sent.
-But I agree with you that it is not something desired as sometimes
-application might not be interested in all events.
-Also I'm not sure on multicast group, as currently only one group
-exist for regulator event & how adding additional group would help.
-
-
->
-> It has been a long while since I wrote netlink code. So, if this makes
-> no sense to you it's probably me who is overlooking something.
-I'm aligned to make sure regulator netlink serves wider purpose &
-hence your inputs are highly valuable.
-
-Based on inputs provided by you(please add if missed anything):
-1. Add an attribute severity & set it if event is of critical nature like:
-    under-voltage, over-current, event_fail & *any others* ?.
-2. Ability to receive specific set of regulator events instead of all events.
-
-Regards,
-Naresh
-
->
-> > +
-> > +#endif /* _UAPI_REGULATOR_H */
-> >
-> > base-commit: 753e4d5c433da57da75dd4c3e1aececc8e874a62
->
-> --
-> Matti Vaittinen
-> Linux kernel developer at ROHM Semiconductors
-> Oulu Finland
->
-> ~~ When things go utterly wrong vim users can always type :help! ~~
->
