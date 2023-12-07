@@ -2,220 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C1E808FA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E23808FA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443645AbjLGSJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 13:09:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
+        id S1443670AbjLGSJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 13:09:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233088AbjLGSJ1 (ORCPT
+        with ESMTP id S1443657AbjLGSJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 13:09:27 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CEF10F0
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 10:09:33 -0800 (PST)
-Date:   Thu, 7 Dec 2023 19:09:28 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701972570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f07I5vkYcNbiJNcAFNGcoVH+whxOwsU4ggr1Z+Ad5Oo=;
-        b=wx9J+x173SrfVWMNdaqT+ljIRdiLnnFsFD6yQR2Ekhy1Yt6UQT/Vbpl5LB4pA3bsdOlnk8
-        +U4Pfl8xo32E3TlxTAQ3Pe5zH7oHLmsOcGyrRzS2hJ2dnkLlGCHX7Iv++jhdJp7lFYpHvb
-        MkgSfZtr4QCj51IyWO33EkW7pLbP8b2wKguZ1uvKkL+ki1pPFMW1Ub5jRTiFjR0HzxvPil
-        lVsiK2KvtkNALd0M04O+vUQgOabTTGPiutriGWM7RGuLSRTQwy05yw40BO9QbFeQALm+7L
-        9lJkW0pRVJHg7XoMkls6Ms/0jtrP3IgZeJRFJaW4UZ6KAcHeFEIroKQCr0lG6Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701972570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f07I5vkYcNbiJNcAFNGcoVH+whxOwsU4ggr1Z+Ad5Oo=;
-        b=xs/glPgKWdiq161zlbK3FZZ3ABArMgyrleehjhmhOn6S4QFdtkAsnXRd0VL+t2l8oTPWd+
-        FEABJ1I0ZlAyIgAA==
-From:   Sebastian Siewior <bigeasy@linutronix.de>
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Thu, 7 Dec 2023 13:09:37 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859531716;
+        Thu,  7 Dec 2023 10:09:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=tfIWnqZ3nQOuHBXi2xMiPcBXFezRuvO6di/KOho/tPw=; b=onMd3X3SuTwSLahRkZwZpue9ag
+        eVHFIhln8ZggmQOkmvTNEAxCHsfAZVlYrwD+kUuMBpmOgv3NClRTzVeNPAggdKSi/OUcevMR+gwmg
+        M9qY2ajG4HZPhSvVXEnMeX44wGLpyZwL7dhxk/Tbq/3Y2ouDhpbrARu9jPUAnbv8ToKz6j27kEzsY
+        bruJGfTsZoUiweDpyxtzRCO6MEy9LGKQmLRWJp/u+XVPursh1UH993u0eXzKty9oRbl7HhRVSe7MB
+        DmwblMNTNno9ugtOxezOFSTvTnWJqWpAYzbMC7TMaleR2P/MtnxMPlLhaX+X5l5nrGezi1K6WR581
+        EMjNXDGg==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1rBIoa-0008TT-RL; Thu, 07 Dec 2023 19:09:36 +0100
+Date:   Thu, 7 Dec 2023 19:09:36 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Jann Horn <jannh@google.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org, Christian Brauner <brauner@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v9 30/32] timers: Implement the hierarchical pull model
-Message-ID: <20231207180928.FZB319OJ@linutronix.de>
-References: <20231201092654.34614-1-anna-maria@linutronix.de>
- <20231201092654.34614-31-anna-maria@linutronix.de>
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: Is xt_owner's owner_mt() racy with sock_orphan()? [worse with
+ new TYPESAFE_BY_RCU file lifetime?]
+Message-ID: <ZXIKYGbvmO4UC+er@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>, Jann Horn <jannh@google.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org, Christian Brauner <brauner@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+References: <CAG48ez0TfTAkaRWFCTb44x=TWP_sDZVx-5U2hvfQSFOhghNrCA@mail.gmail.com>
+ <CAG48ez1hXk_cffp3dy-bYMcoyCCj-EySYR5SzYrNiRHGD=hOUg@mail.gmail.com>
+ <ZW+Yv6TR+EMBp03f@orbyte.nwl.cc>
+ <CAG48ez2G4q-50242WRE01iaKfAhd0D+XT9Ry0uS767ceHEzHXA@mail.gmail.com>
+ <ZXDctabBrEFMVxg2@orbyte.nwl.cc>
+ <CAG48ez1ixOapt330sDoCfhnVhN0VmO=i9H8cSQontGkvi_NT7A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231201092654.34614-31-anna-maria@linutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG48ez1ixOapt330sDoCfhnVhN0VmO=i9H8cSQontGkvi_NT7A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-01 10:26:52 [+0100], Anna-Maria Behnsen wrote:
-> diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
-> new file mode 100644
-> index 000000000000..05cd8f1bc45d
-> --- /dev/null
-> +++ b/kernel/time/timer_migration.c
-> @@ -0,0 +1,1636 @@
-=E2=80=A6
-> + * Protection of the tmigr group state information:
-> + * ------------------------------------------------
-> + *
-> + * The state information with the list of active children and migrator n=
-eeds to
-> + * be protected by a sequence counter. It prevents a race when updates i=
-n a
+On Wed, Dec 06, 2023 at 10:02:04PM +0100, Jann Horn wrote:
+> On Wed, Dec 6, 2023 at 9:42 PM Phil Sutter <phil@nwl.cc> wrote:
+> >
+> > On Wed, Dec 06, 2023 at 05:28:44PM +0100, Jann Horn wrote:
+> > > On Tue, Dec 5, 2023 at 10:40 PM Phil Sutter <phil@nwl.cc> wrote:
+> > > > On Tue, Dec 05, 2023 at 06:08:29PM +0100, Jann Horn wrote:
+> > > > > On Tue, Dec 5, 2023 at 5:40 PM Jann Horn <jannh@google.com> wrote:
+> > > > > >
+> > > > > > Hi!
+> > > > > >
+> > > > > > I think this code is racy, but testing that seems like a pain...
+> > > > > >
+> > > > > > owner_mt() in xt_owner runs in context of a NF_INET_LOCAL_OUT or
+> > > > > > NF_INET_POST_ROUTING hook. It first checks that sk->sk_socket is
+> > > > > > non-NULL, then checks that sk->sk_socket->file is non-NULL, then
+> > > > > > accesses the ->f_cred of that file.
+> > > > > >
+> > > > > > I don't see anything that protects this against a concurrent
+> > > > > > sock_orphan(), which NULLs out the sk->sk_socket pointer, if we're in
+> > > > >
+> > > > > Ah, and all the other users of ->sk_socket in net/netfilter/ do it
+> > > > > under the sk_callback_lock... so I guess the fix would be to add the
+> > > > > same in owner_mt?
+> > > >
+> > > > Sounds reasonable, although I wonder how likely a socket is to
+> > > > orphan while netfilter is processing a packet it just sent.
+> > > >
+> > > > How about the attached patch? Not sure what hash to put into a Fixes:
+> > > > tag given this is a day 1 bug and ipt_owner/ip6t_owner predate git.
+> > >
+> > > Looks mostly reasonable to me; though I guess it's a bit weird to have
+> > > two separate bailout paths for checking whether sk->sk_socket is NULL,
+> > > where the first check can race, and the second check uses different
+> > > logic for determining the return value; I don't know whether that
+> > > actually matters semantically. But I'm not sure how to make it look
+> > > nicer either.
+> >
+> > I find the code pretty confusing since it combines three matches (socket
+> > UID, socket GID and socket existence) via binary ops. The second bail
+> > disregards socket existence bits, I assumed it was deliberate and thus
+> > decided to leave the first part as-is.
+> >
+> > > I guess you could add a READ_ONCE() around the first read to signal
+> > > that that's a potentially racy read, but I don't feel strongly about
+> > > that.
+> >
+> > Is this just annotation or do you see a practical effect of using
+> > READ_ONCE() there?
+> 
+> I mostly just meant that as an annotation. My understanding is that in
+> theory, racy reads can cause the compiler to do some terrible things
+> to your code (https://lore.kernel.org/all/CAG48ez2nFks+yN1Kp4TZisso+rjvv_4UW0FTo8iFUd4Qyq1qDw@mail.gmail.com/),
 
-s/a$//
+Thanks for the pointer, this was an educational read!
 
-> + * child groups are propagated in changed order. The following scenario
-> + * describes what happens without updating the sequence counter:
-> + *
-> + * Therefore, let's take three groups and four CPUs (CPU2 and CPU3 as we=
-ll
-> + * as GRP0:1 will not change during the scenario):
-> + *
-> + *    LVL 1            [GRP1:0]
-> + *                     migrator =3D GRP0:1
-> + *                     active   =3D GRP0:0, GRP0:1
-> + *                   /                \
-> + *    LVL 0  [GRP0:0]                  [GRP0:1]
-> + *           migrator =3D CPU0           migrator =3D CPU2
-> + *           active   =3D CPU0           active   =3D CPU2
-> + *              /         \                /         \
-> + *    CPUs     0           1              2           3
-> + *             active      idle           active      idle
-> + *
-> + *
-> + * 1. CPU0 goes idle (changes are updated in GRP0:0; afterwards the curr=
-ent
-> + *    states of GRP0:0 and GRP1:0 are stored in the data for walking the
-> + *    hierarchy):
+> but that's almost certainly not going to happen here.
 
-   CPU0 goes idle. The state update is performed lock less and group
-   wise. In the first step only GRP0:0 has been updated. The update of
-   GRP1:0 is pending, the CPU walks through the hierarchy.
+At least it's not a switch on a value in user-controlled memory. ;)
 
-> + *
-> + *    LVL 1            [GRP1:0]
-> + *                     migrator =3D GRP0:1
-> + *                     active   =3D GRP0:0, GRP0:1
-> + *                   /                \
-> + *    LVL 0  [GRP0:0]                  [GRP0:1]
-> + *       --> migrator =3D TMIGR_NONE     migrator =3D CPU2
-> + *       --> active   =3D                active   =3D CPU2
-> + *              /         \                /         \
-> + *    CPUs     0           1              2           3
-> + *         --> idle        idle           active      idle
+> (Well, I guess doing a READ_ONCE() at one side without doing
+> WRITE_ONCE() on the other side is also unclean...)
 
-> + * 2. CPU1 comes out of idle (changes are update in GRP0:0; afterwards t=
-he
-> + *    current states of GRP0:0 and GRP1:0 are stored in the data for wal=
-king the
-> + *    hierarchy):
+For the annotation aspect it won't matter. Though since it will merely
+improve reliability of that check in the given corner-case which is an
+unreliable situation in the first place, I'd just leave it alone and
+hope for the code to be replaced by the one in nft_meta.c eventually.
 
-   While CPU0 goes idle and continues to update the state, CPU1 comes
-   out of idle. CPU1 updates GRP0:0. The update for GRP1:0 is pending,
-   tge CPU walks through the hierarchy. Both CPUs now walk the hierarchy
-   to perform the needed update from their point of view.
-   The currently visible state:
-
-> + *
-> + *    LVL 1            [GRP1:0]
-> + *                     migrator =3D GRP0:1
-> + *                     active   =3D GRP0:0, GRP0:1
-> + *                   /                \
-> + *    LVL 0  [GRP0:0]                  [GRP0:1]
-> + *       --> migrator =3D CPU1           migrator =3D CPU2
-> + *       --> active   =3D CPU1           active   =3D CPU2
-> + *              /         \                /         \
-> + *    CPUs     0           1              2           3
-> + *             idle    --> active         active      idle
-> + *
-> + * 3. Here comes the change of the order: Propagating the changes of ste=
-p 2
-> + *    through the hierarchy to GRP1:0 - nothing to be done, because GRP0=
-:0
-> + *    is already up to date.
-
-    Here is the race condition: CPU1 managed to propagate its changes
-    through the hierarchy to GRP1:0 before CPU0 did. The active members
-    of GRP1:0 remain unchanged after the update since it is still valid
-    from CPU1 current point of view:
-
-         LVL 1            [GRP1:0]
-                      --> migrator =3D GRP0:1
-                      --> active   =3D GRP0:0, GRP0:1
-                        /                \
-         LVL 0  [GRP0:0]                  [GRP0:1]
-                migrator =3D CPU1           migrator =3D CPU2
-                active   =3D CPU1           active   =3D CPU2
-                   /         \                /         \
-         CPUs     0           1              2           3
-                  idle        active         active      idle
-
-[ I take it as the migrator remains set to GRP0:1 by CPU1 but it could
-  be changed to GRP0:0. I assume that both fields (migrator+active) are
-  changed there via the propagation and the arrow in both fields denotes
-  this. ]
-
-> + * 4. Propagating the changes of step 1 through the hierarchy to GRP1:0
-
-     Now CPU0 finally propagates its changes to GRP1:0.
-
-> + *
-> + *    LVL 1            [GRP1:0]
-> + *                 --> migrator =3D GRP0:1
-> + *                 --> active   =3D GRP0:1
-> + *                   /                \
-> + *    LVL 0  [GRP0:0]                  [GRP0:1]
-> + *           migrator =3D CPU1           migrator =3D CPU2
-> + *           active   =3D CPU1           active   =3D CPU2
-> + *              /         \                /         \
-> + *    CPUs     0           1              2           3
-> + *             idle        active         active      idle
-> + *
-> + * Now there is a inconsistent overall state because GRP0:0 is active, b=
-ut
-> + * it is marked as idle in the GRP1:0. This is prevented by incrementing
-> + * sequence counter whenever changing the state.
-
-   The race of CPU0 vs CPU1 led to an inconsistent state in GRP1:0.
-   CPU1 is active and is correctly listed as active in GRP0:0. However
-   GRP1:0 does not have GRP0:0 listed as active which is wrong.
-   The sequence counter has been added to avoid inconsistent states
-   during updates. The state is updated atomically only if all members,
-   including the sequence counter, match the expected value
-   (compare-and-exchange).
-   Looking back at the previous example with the addition of the
-   sequence number: The update as performed by CPU0 in step 4 will fail.
-   CPU1 changed the sequence number during the update in step 3 so the
-   expected old value (as seen by CPU0 before starting the walk) does
-   not match.
-
-
-Sebastian
+Thanks, Phil
