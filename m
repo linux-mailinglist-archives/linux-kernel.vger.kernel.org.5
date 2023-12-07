@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7D4808D38
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B350808D4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443774AbjLGPv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 10:51:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
+        id S1443845AbjLGPxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 10:53:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443738AbjLGPvX (ORCPT
+        with ESMTP id S1443613AbjLGPxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 10:51:23 -0500
+        Thu, 7 Dec 2023 10:53:09 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E24269D
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:50:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C03B4C433AD;
-        Thu,  7 Dec 2023 15:50:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771B61735
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:50:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83D0AC433CC;
+        Thu,  7 Dec 2023 15:50:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701964249;
-        bh=6Qw4iLH/F2FcU5c/z9vvLxUq+OTnYrPseK/QX6rHEgg=;
+        s=k20201202; t=1701964251;
+        bh=LHrvwLkKgd5mOAx4m+biZr4E5ZkYjgrvoA6vecePIcU=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=NHqm3bJyNCcxD+W/rJS6ll92pIGyo56Ab0+qJWrPG1jpdp/T8JfKFwVIg7zMkQLxN
-         p3DGpMbj92H/3WKPYgEyckfhFIWd/5w/BLxrWj5NpXuxD/E3szfpW94cY3GQsi0HfL
-         KLtWvna3VBKlSpsCrbi/lNeJuik6MtqQyBZJRUL3GkvOYs13AMFYltEcfMT15cYDwN
-         ZJYI5zFPL2viLiwjbs/VwlUehjLiWID/NkHi1CJGbcCD4AT9FhpC5r1dhJ5TJZNT/N
-         jerOfrIwsqx+7DmYktfHaTdFP5c5+PeunLodXLvZzqfn5+KZaXrB8vRvo7zeE3/AdY
-         HJ8GC8joHIo7w==
+        b=m79fJJ5kH9Wxu+x4hsV354crGWuRCDtOPlgOKUEg1V6vcGKTWl1G9ZHJ/yHNTH48i
+         /zTvOH6WYTLr+DkpmkzYOGTAAbJdctAGUAnxcfpmDPB+qg9dHYC2yItQJ32+V29wfk
+         e7Q1Ohejbja2Cy07QAeyiX+PeHrRBzNlafbgTyV2Qc355KU9FwGf8JBxUldnxqValp
+         D4gAVqPx312NwCmu+kmSvn2W4b2vbIIeeq4J21gCClOP7b4zQ/JtC7P5WyW6PGHv4D
+         g46He2cqFECf4chJl6nk7/b4K7Y9miFhcSq0E8Pgn5n7f5R4zBB5XU9eKPLxLOlQ0M
+         MNJBAa9d6qzZw==
 From:   Maxime Ripard <mripard@kernel.org>
-Date:   Thu, 07 Dec 2023 16:49:50 +0100
-Subject: [PATCH v5 27/44] drm/rockchip: inno_hdmi: Remove unneeded has
- audio flag
+Date:   Thu, 07 Dec 2023 16:49:51 +0100
+Subject: [PATCH v5 28/44] drm/rockchip: inno_hdmi: Remove useless input
+ format
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231207-kms-hdmi-connector-state-v5-27-6538e19d634d@kernel.org>
+Message-Id: <20231207-kms-hdmi-connector-state-v5-28-6538e19d634d@kernel.org>
 References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
 In-Reply-To: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -53,12 +53,12 @@ Cc:     Hans Verkuil <hverkuil@xs4all.nl>, dri-devel@lists.freedesktop.org,
         linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
         Maxime Ripard <mripard@kernel.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1051; i=mripard@kernel.org;
- h=from:subject:message-id; bh=6Qw4iLH/F2FcU5c/z9vvLxUq+OTnYrPseK/QX6rHEgg=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKmFL9t0lQwOppzSObi0RPhCGLeHqe8SmQq7a4vlD0Z1f
- BKdn5LQUcrCIMbFICumyBIjbL4k7tSs151sfPNg5rAygQxh4OIUgIksT2RkeMdQn2r290Nx0xV3
- lzOOcj+D6qzls9a66ESeU5vc5bywnpHhktJqh43+DAUb3TWLBW7c9vgz89opkY+GL+20/qTnZMU
- xAQA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3445; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=LHrvwLkKgd5mOAx4m+biZr4E5ZkYjgrvoA6vecePIcU=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKmFL9sEZDMn/l6innE7bYnHpnm/bf49ySl6KHCy9fjfI
+ rtIzyr1jlIWBjEuBlkxRZYYYfMlcadmve5k45sHM4eVCWQIAxenAEzkASfDP9PfU1mvV74+uUPq
+ +N9wr79quff47Zr39lQo2FYl117WW87wh/fCU7MtCg8y+VcfMXiVNeuNUo5+cc/ymj+PtTz3/Jz
+ QywkA
 X-Developer-Key: i=mripard@kernel.org; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -71,34 +71,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sink_has_audio flag is not used anywhere in the driver so let's get
-rid of it. It's redundant with drm_display_info.has_audio anyway.
+The driver has a lot of logic to deal with multiple input formats, but
+hardcodes it to RGB. This means that most of that code has been dead
+code, so let's get rid of it.
 
 Signed-off-by: Maxime Ripard <mripard@kernel.org>
 ---
- drivers/gpu/drm/rockchip/inno_hdmi.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/gpu/drm/rockchip/inno_hdmi.c | 39 +++++++++---------------------------
+ 1 file changed, 10 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index 294f0d442c0c..3908dc09d85f 100644
+index 3908dc09d85f..e0696ab16da3 100644
 --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
 +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
 @@ -28,7 +28,6 @@
  #include "inno_hdmi.h"
  
  struct hdmi_data_info {
--	bool sink_has_audio;
- 	unsigned int enc_in_format;
+-	unsigned int enc_in_format;
  	unsigned int enc_out_format;
  	unsigned int colorimetry;
-@@ -554,7 +553,6 @@ static int inno_hdmi_connector_get_modes(struct drm_connector *connector)
+ };
+@@ -328,47 +327,30 @@ static int inno_hdmi_config_video_csc(struct inno_hdmi *hdmi)
+ 		v_VIDEO_INPUT_CSP(0);
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL2, value);
  
- 	edid = drm_get_edid(connector, hdmi->ddc);
- 	if (edid) {
--		hdmi->hdmi_data.sink_has_audio = drm_detect_monitor_audio(edid);
- 		drm_connector_update_edid_property(connector, edid);
- 		ret = drm_add_edid_modes(connector, edid);
- 		kfree(edid);
+-	if (data->enc_in_format == data->enc_out_format) {
+-		if ((data->enc_in_format == HDMI_COLORSPACE_RGB) ||
+-		    (data->enc_in_format >= HDMI_COLORSPACE_YUV444)) {
+-			value = v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
+-			hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
++	if (HDMI_COLORSPACE_RGB == data->enc_out_format) {
++		value = v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
++		hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
+ 
+-			hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
+-				  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
+-				  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
+-				  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
+-			return 0;
+-		}
++		hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
++			  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
++			  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
++			  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
++		return 0;
+ 	}
+ 
+ 	if (data->colorimetry == HDMI_COLORIMETRY_ITU_601) {
+-		if ((data->enc_in_format == HDMI_COLORSPACE_RGB) &&
+-		    (data->enc_out_format == HDMI_COLORSPACE_YUV444)) {
++		if (data->enc_out_format == HDMI_COLORSPACE_YUV444) {
+ 			csc_mode = CSC_RGB_0_255_TO_ITU601_16_235_8BIT;
+ 			auto_csc = AUTO_CSC_DISABLE;
+ 			c0_c2_change = C0_C2_CHANGE_DISABLE;
+ 			csc_enable = v_CSC_ENABLE;
+-		} else if ((data->enc_in_format == HDMI_COLORSPACE_YUV444) &&
+-			   (data->enc_out_format == HDMI_COLORSPACE_RGB)) {
+-			csc_mode = CSC_ITU601_16_235_TO_RGB_0_255_8BIT;
+-			auto_csc = AUTO_CSC_ENABLE;
+-			c0_c2_change = C0_C2_CHANGE_DISABLE;
+-			csc_enable = v_CSC_DISABLE;
+ 		}
+ 	} else {
+-		if ((data->enc_in_format == HDMI_COLORSPACE_RGB) &&
+-		    (data->enc_out_format == HDMI_COLORSPACE_YUV444)) {
++		if (data->enc_out_format == HDMI_COLORSPACE_YUV444) {
+ 			csc_mode = CSC_RGB_0_255_TO_ITU709_16_235_8BIT;
+ 			auto_csc = AUTO_CSC_DISABLE;
+ 			c0_c2_change = C0_C2_CHANGE_DISABLE;
+ 			csc_enable = v_CSC_ENABLE;
+-		} else if ((data->enc_in_format == HDMI_COLORSPACE_YUV444) &&
+-			   (data->enc_out_format == HDMI_COLORSPACE_RGB)) {
+-			csc_mode = CSC_ITU709_16_235_TO_RGB_0_255_8BIT;
+-			auto_csc = AUTO_CSC_ENABLE;
+-			c0_c2_change = C0_C2_CHANGE_DISABLE;
+-			csc_enable = v_CSC_DISABLE;
+ 		}
+ 	}
+ 
+@@ -443,7 +425,6 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
+ 	struct drm_display_info *display = &hdmi->connector.display_info;
+ 	u8 vic = drm_match_cea_mode(mode);
+ 
+-	hdmi->hdmi_data.enc_in_format = HDMI_COLORSPACE_RGB;
+ 	hdmi->hdmi_data.enc_out_format = HDMI_COLORSPACE_RGB;
+ 
+ 	if ((vic == 6) || (vic == 7) ||
 
 -- 
 2.43.0
