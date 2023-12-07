@@ -2,122 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71466808E53
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FA5808E68
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442189AbjLGQ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 11:57:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
+        id S1442604AbjLGQ60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 11:58:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231530AbjLGQ5f (ORCPT
+        with ESMTP id S231530AbjLGQ6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 11:57:35 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DB71704;
-        Thu,  7 Dec 2023 08:57:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701968262; x=1733504262;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Gz/YhlEPqHemYXUvHjjd7D2SyWR2QGO2GITEF/SCnbY=;
-  b=MseZB7+Ky0+c1Bd6J17kAMR0tTSv6k34qNmT+T0G8jWAGWD5uJO1ABx8
-   7IMobCRAUVQlM4VayuKivp+7mEktUSIWeirZIW65rQVgNV8Wnb7vQAcLt
-   GJps9plRapFoN8cwmOGA2wIs1/9HZ6TsX/XkbCFHfq+F9BefUyxFn3Ut3
-   F+rVXcepRx5oVsamftS+KsY7osT9Y6VXtas+g9cDvARdK7VtXnk7Y4xxu
-   onJuJMza9vtTxoeRPfe7WAIUZNw7ESLUqgjC38ZcHjdOJwRQXtYgbnm8q
-   iFywbgrSk5SKYcyIoSlZ41iuU6HxS37C2vM5dldHqia9V8gl03bUB553U
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="373761370"
-X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="373761370"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 08:57:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1019018026"
-X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="1019018026"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 07 Dec 2023 08:57:38 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBHgu-000CYl-11;
-        Thu, 07 Dec 2023 16:57:36 +0000
-Date:   Fri, 8 Dec 2023 00:57:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        Georgi Djakov <djakov@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Adam Skladowski <a39.skl@gmail.com>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Subject: Re: [PATCH 2/2] interconnect: qcom: Add MSM8909 interconnect
- provider driver
-Message-ID: <202312080018.m4nXAKLG-lkp@intel.com>
-References: <20231206-icc-msm8909-v1-2-fe0dd632beff@kernkonzept.com>
+        Thu, 7 Dec 2023 11:58:24 -0500
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2139.outbound.protection.outlook.com [40.107.8.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4F21704
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 08:58:30 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H/RjZl+Vo5TJvpCEDP3yTIKkKoY2B6/PuxnIdPXyKyQql6Vcg5eYfj/LS+phCBBZ01ecAwHdJWu4vTP30BkKrGQ4b7ryoSqLW1XqMW8lY1KQkuCXic3j7gNcKXbPq5vdCqTjacpkAcI/ma0rm5NopqowFR4O92LslsMeZEO6+L5jRNYHD1kXDee0SbMeT+1A+5RexN5amxuFtlvew7J5wvX4Ju3sEBnsCYvJoXhTXA5uPqf6FWF5bFtd9LQguESfUvr3KM6m4geolNtdXL6zgd0vZ3o2A9eAyVWmEDCB+NWLBcPr8WwU8Mb8JdqVLIT/BIcjlMhak61nHTA6BEn63A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MIM1SCe3ifWloVZ81SgDOmXKTicqzpCcwS81UvQ46UU=;
+ b=FpyB7LhA/aldgvY7J5zTiX6qpGkN35WASAsnx+n/TNjEd3th2+ZFs8NKL/NtJ9IyFuT/m5l1i/GzQk0N6YPB/DGp3v9+tCJ3+KqjVOUbdR3EiIzZcB9pGS1b+AwB3mN+W0kdsymBvPnuEOOVTVWwz2sXlscfw2e1A2i4gxJNvdS3teUiDiGt3oWzjBe+fHCh42topr8CmJS+2NvD+BG30A0HJMe3TzUhQlla58h/Od6psnnISnqRypkRvA/PspREAzlt+J2clK/9VhYJYsT43kQlIHkDXhQs0cEh4wIDoryn1aLgIHRhdrT/tIJDUJPAQ6mN/Tzv1HFuoukPVjMg6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MIM1SCe3ifWloVZ81SgDOmXKTicqzpCcwS81UvQ46UU=;
+ b=RjP8gEwyrM1QtFXRA+gG6/Zyn6wnDWQNJXHCv0dgw5UvIAYkmQuoXpLrtGYdRKi2NaFQbbkf2+y7NPJFwEtrlCZ3z5egFlPgSCyXOcexvf6bqBtnr1SSHkM2Z4YlJvF8e/WRiV0J1aTHJUuN+cX8bl2Afz4j1ANZRJAc97Q128o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kontron.de;
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
+ by VE1PR10MB3760.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:800:16d::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Thu, 7 Dec
+ 2023 16:58:28 +0000
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::27ba:9922:8d12:7b3d]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::27ba:9922:8d12:7b3d%5]) with mapi id 15.20.7068.025; Thu, 7 Dec 2023
+ 16:58:27 +0000
+Message-ID: <21e1b508-328a-4ec0-9f1f-75773f2686c3@kontron.de>
+Date:   Thu, 7 Dec 2023 17:58:25 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 04/10] drm: bridge: samsung-dsim: complete the
+ CLKLANE_STOP setting
+Content-Language: en-US, de-DE
+To:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Amarula patchwork <linux-amarula@amarulasolutions.com>,
+        dri-devel@lists.freedesktop.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        michael@amarulasolutions.com,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+References: <20231207141723.108004-1-dario.binacchi@amarulasolutions.com>
+ <20231207141723.108004-5-dario.binacchi@amarulasolutions.com>
+From:   Frieder Schrempf <frieder.schrempf@kontron.de>
+In-Reply-To: <20231207141723.108004-5-dario.binacchi@amarulasolutions.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0413.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:d0::14) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:102:263::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206-icc-msm8909-v1-2-fe0dd632beff@kernkonzept.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|VE1PR10MB3760:EE_
+X-MS-Office365-Filtering-Correlation-Id: cd2430ba-d50d-46b2-4bb1-08dbf745bbbf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Sz+7VRoaFVACiW47yP8Fm9iWwfPjfiE3fo0bofXtCBlOJKT/3vGNKYZYHnaJ2WFo16LFXyReY6f3puiuzD/jAozblopwjr/w84lK2IcbQl0nRkd++MUNfy/ghvmBL5XzBRdIqTJPlGwFAdy/GdA3jf04JC63gZq8J3/EhUiH2i2xL6mhGzZTbeemnKthm8IlTb0WrbL5P6mvjTcGtqo8WVoTHs899eEoP97eqbIPyxsHrf+FBvthMYWzJA6lbkREBDilCLOnCto9EBb3ToULIMc/iD2lFt5Q9FbHHgIlK4nh2gcgHBc8AbzBBE0BO5VZ+vwV2ETR7Gl/jPx2GfrHI1hF2Wa/OoDwSmBdrmbSRYdKsavXjyiAiV8Pi8dsodolcGyy6/tP+TynJ8Ln/OtuE+cH+Cj+tjR6H58EtU1kaS6xAPVCXJqS1rxbveYM0848hyb9g4XGXYbGPeHqdHiZMS96zXK3DwQfRTSMNlL7oqYdz6wPm8fz7o54LFLBRve9dX15hkkUOzKlFbqk7sDbthf+egYsPmctJm1uGvcEcKusIEUvRv9qQJXxh2vb/0dFhWQnIgW8sRiOdNJt8MZBmD5jyHz0MQODG+azZixbkWy+pUnsraR1knucKYm+nEJkp2PkauBSOi6NPNKbYvi43w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(366004)(136003)(376002)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(31686004)(53546011)(83380400001)(478600001)(2616005)(7416002)(6512007)(2906002)(26005)(6486002)(6506007)(4326008)(8676002)(8936002)(86362001)(66556008)(5660300002)(44832011)(41300700001)(36756003)(54906003)(31696002)(316002)(38100700002)(66476007)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dzB1UW9zNXk4NnV5RUc2cnNZaFdXcDlKeE9YR3hEWThpSk9ZZ3NCWUNYcVpa?=
+ =?utf-8?B?Vm41akdINzNCbXk0aWlRd0E0emlzdkh2elhDVDlDcHVYaTg1ckEzWDA3OFBu?=
+ =?utf-8?B?Z0pWUWMwMzI2aUd5N0lxZm1KN2tzTlJwbWZJRzhYOGVacGJRY2xXUzA4U2lS?=
+ =?utf-8?B?WFh6cjMrOE80Y3pyTUN5NjMzZGxPSFFrYit6RU8zcitUcnlZN1J6Y3ozeUFW?=
+ =?utf-8?B?MnNzekE0M1dQTXBVajY4T0JjYktRbEVWSHcxZjZuQXI0UU9MNnhVU2VMTVBj?=
+ =?utf-8?B?RDdCemhWd0xOWDdlS3Y1WjIrclVNSzhlRk1NZ2JRVUx4WTdib1ZpTGZGaTJ0?=
+ =?utf-8?B?NlV0djhaSGFSRlRFZ0FxTGZidThZM01jQXYxVlB4aXVuNzJuQ3cycEpBaTdj?=
+ =?utf-8?B?SU1COUZ5MVRHSVJFcG5LTi93THd6b2Z3L1llYml2RHR0eXhVbVUwTVRCR0pG?=
+ =?utf-8?B?TXFhSlZwdWxoaVo2V29vQUp1Uzh0dURsMkJkam40TDJFYWxkT2FrVUxUVVdz?=
+ =?utf-8?B?bEticjIrTlJNdkVhTEJORVBOWkhQL01HdThqMmNOb09wSjE3UG1vQjNtOU9l?=
+ =?utf-8?B?M1pWZzdEN28vR1ljV0QzclRzT1BKUU9FcUFWNGVkcnFlemJldXlhZHhtZ1BO?=
+ =?utf-8?B?dmpVM2VIVGFJN3Q4QTV3VFB5a0JsVElaTWdqZnRmQmtVM0UvTTVacjFsNHF4?=
+ =?utf-8?B?NmUvL1ZtYVh1RkdaclZveDBtTmdPYndMNHF6UllsMFZxaVF1dS9waXM3M3VN?=
+ =?utf-8?B?SFo5L1BQb3pod3E4Qzd5MFZrUHRScy9wd2txV3RGbjVDM1NCSFpwc1c3Ykx4?=
+ =?utf-8?B?am9HL2lVNlBOZUdGMDV6a25VSTBIYzFGazFPdEpOSmxOeTRIc1djRnJQa3pk?=
+ =?utf-8?B?R1BoY1krUzZZLzZJR3BPRnc3czBLL0hyMW5WNUtoYWxVS1l2d1Q4NU9sWStR?=
+ =?utf-8?B?cFZCbVBzTGd4VXdYQktYdXBkU3l3LytZSk03M2k4THltSFM4Y0NENDk0aTZQ?=
+ =?utf-8?B?Z1czZ3NiMWdFMGFObjBxTWptOU81K3VFeGxaeUJOK0NZbnVYTWIzZ2JTSmJk?=
+ =?utf-8?B?RmVveGFISkNuM3F0bFhRaFpKckJ4Y3hGRDRyQVNJL29VVmt1MXFGbVp1QVBi?=
+ =?utf-8?B?d29OSEpPTVhQUVhZUm1LMHBQYXN4clNTNW9Tb3FNOGhrbVk1NDFpRUFudDlJ?=
+ =?utf-8?B?T0FZS2l1QVB1WkZQclZ0RE1mbC9jZlpIMWdHUDJiN0tld1pZa3BXbjBjVTlS?=
+ =?utf-8?B?T2JqTi9hYTIzYzU0MGZ2UEgxYUVQNWZnellRai9zSFRtc1ZJSWNOT3pYeDB2?=
+ =?utf-8?B?MTN6eW15VGhLbWFDRi9pMkZQRWhiWHgzTDdqR21ZcWt3OUpNLzdYSW5SdDdZ?=
+ =?utf-8?B?NGdXU2hRQ01pRTkvcGxxN2NDZk15UGwxZDF5SHY4bTllNkYzUjZYWnZZeVRl?=
+ =?utf-8?B?TFNrMUhDNmF0cHZ6U2ZnQUlPdW9kcEZrZlErMURyU0l3WjhySkFPcXkrZzNT?=
+ =?utf-8?B?NHhROWxYSmFxL2twczdSWXF2aC9SSGNlTGRKNWoyaTdDeHl2eEsrQklnZnl2?=
+ =?utf-8?B?c25iSVAvZzNUdzJKYkQwSlBhcUtlQnZDNm5QVmIxTWUzNVZidGZqSXJnU3B3?=
+ =?utf-8?B?cjBweGVtSHBkOEdpeitlOHpCLzBoTi9UVFVpU1dDYk9JcnBET25QMlJUeVV3?=
+ =?utf-8?B?cmN0Umk4MHJwOURiVHdsTk9ETWNzVUF3N1RCN1JoV3lmWEtBTVJHeE5qSlli?=
+ =?utf-8?B?dk1WbnVqVUMxZ0lUeDFBK3M2OVZIZVoySVI1ZWVsQmdRMExZQnhuTE1oS3dB?=
+ =?utf-8?B?VzFicE9vcHFjSENQbG5MQkpkRnlNWnd0ZkUyRzNBOWwxZ2dvU25Gb2pCOWFC?=
+ =?utf-8?B?STgwOGU5dVZjcEVaR3QxbEFGNHJmWFIyUWlBbitIN0lrOUlZN0IzWEd2WHg4?=
+ =?utf-8?B?ekhtM1ZXQUJScVNHZk5KRGZyYXRMQ200elR5L0tTU3F2eVBxaStjNW50Tlk5?=
+ =?utf-8?B?K3ZaYWhOK0lHWE0xbmVzZ0p1Y2ZtQUhKQnltNDdnUGRXSHNXQnBZZlV4dy9H?=
+ =?utf-8?B?NE5sNjJZUGp2K2hRSW1zdWxVTFAyNXNRekJIRS9zT3daRWlSVUhCSm52SGkv?=
+ =?utf-8?B?OC9NejVRSzdDcGVtbGRFRk41dngwM3RaQlFvZkhLRlVsZFFudW1RTHZrcFl1?=
+ =?utf-8?B?b3c9PQ==?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd2430ba-d50d-46b2-4bb1-08dbf745bbbf
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2023 16:58:27.8693
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: M2M9XrEWrBYaumrpLfO7fSEhv1i2ZrMk/4ovuF+u+m+d1JvTkdkrF9q/P9coJgPXCMLAm+hEnJgkw12eCvW0JBkABtVJl0BZgEfMEQDht7s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR10MB3760
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephan,
+On 07.12.23 15:16, Dario Binacchi wrote:
+> The patch completes the setting of CLKLANE_STOP for the imx8mn and imx8mp
+> platforms (i. e. not exynos).
 
-kernel test robot noticed the following build errors:
+This also affects i.MX8MM, so better just mention i.MX in general in the
+commit message.
 
-[auto build test ERROR on feaf241ae2da2a73cb421473f52a4732128a996f]
+> 
+> Co-developed-by: Michael Trimarchi <michael@amarulasolutions.com>
+> Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+> ---
+> 
+> (no changes since v1)
+> 
+>  drivers/gpu/drm/bridge/samsung-dsim.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
+> index 15bf05b2bbe4..13f181c99d7e 100644
+> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+> @@ -96,6 +96,7 @@
+>  #define DSIM_MFLUSH_VS			BIT(29)
+>  /* This flag is valid only for exynos3250/3472/5260/5430 */
+>  #define DSIM_CLKLANE_STOP		BIT(30)
+> +#define DSIM_NON_CONTINUOUS_CLKLANE	BIT(31)
+>  
+>  /* DSIM_ESCMODE */
+>  #define DSIM_TX_TRIGGER_RST		BIT(4)
+> @@ -945,8 +946,12 @@ static int samsung_dsim_init_link(struct samsung_dsim *dsi)
+>  	 * power consumption.
+>  	 */
+>  	if (driver_data->has_clklane_stop &&
+> -	    dsi->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS)
+> +	    dsi->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) {
+> +		if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
+> +			reg |= DSIM_NON_CONTINUOUS_CLKLANE;
+> +
+>  		reg |= DSIM_CLKLANE_STOP;
+> +	}
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Stephan-Gerhold/dt-bindings-interconnect-Add-Qualcomm-MSM8909-DT-bindings/20231206-223626
-base:   feaf241ae2da2a73cb421473f52a4732128a996f
-patch link:    https://lore.kernel.org/r/20231206-icc-msm8909-v1-2-fe0dd632beff%40kernkonzept.com
-patch subject: [PATCH 2/2] interconnect: qcom: Add MSM8909 interconnect provider driver
-config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20231208/202312080018.m4nXAKLG-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231208/202312080018.m4nXAKLG-lkp@intel.com/reproduce)
+I really wonder what the difference between DSIM_NON_CONTINUOUS_CLKLANE
+and DSIM_CLKLANE_STOP is.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312080018.m4nXAKLG-lkp@intel.com/
+If Exynos only has the latter, it's pretty clear what to use. But as
+i.MX has both of these bits, should both be set? Or is setting
+DSIM_NON_CONTINUOUS_CLKLANE enough and we should leave DSIM_CLKLANE_STOP
+alone?
 
-All errors (new ones prefixed by >>):
+Maybe someone has a clue here. The description of the bits in the RM is:
 
->> drivers/interconnect/qcom/msm8909.c:1319:12: error: incompatible function pointer types initializing 'int (*)(struct platform_device *)' with an expression of type 'void (struct platform_device *)' [-Wincompatible-function-pointer-types]
-    1319 |         .remove = qnoc_remove,
-         |                   ^~~~~~~~~~~
-   1 error generated.
+DSIM_NON_CONTINUOUS_CLKLANE - Non-continuous clock mode
+DSIM_CLKLANE_STOP -  PHY clock lane On/Off for ESD
 
-
-vim +1319 drivers/interconnect/qcom/msm8909.c
-
-  1316	
-  1317	static struct platform_driver msm8909_noc_driver = {
-  1318		.probe = qnoc_probe,
-> 1319		.remove = qnoc_remove,
-  1320		.driver = {
-  1321			.name = "qnoc-msm8909",
-  1322			.of_match_table = msm8909_noc_of_match,
-  1323			.sync_state = icc_sync_state,
-  1324		},
-  1325	};
-  1326	module_platform_driver(msm8909_noc_driver);
-  1327	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>  	samsung_dsim_write(dsi, DSIM_CONFIG_REG, reg);
+>  
+>  	lanes_mask = BIT(dsi->lanes) - 1;
