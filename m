@@ -2,100 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 331FF809229
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 21:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D1680922B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 21:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443883AbjLGUSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 15:18:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51170 "EHLO
+        id S1443897AbjLGUTe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Dec 2023 15:19:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbjLGUSs (ORCPT
+        with ESMTP id S229541AbjLGUTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 15:18:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68221710
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 12:18:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16879C433C7;
-        Thu,  7 Dec 2023 20:18:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701980334;
-        bh=QNpdhsUDUeBMWgIe029az6yJ0bM5+Vcwn1beTYWInjA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MiREk0soMiRO9TNKHICL6XVvpK+xRhB8awImP5Tu/ALNn3KK0TLQEII5AS6pC8BMV
-         hGBCZsGBE165bv3S3xh0lY+E0TYq1sbIHJ7u/xiU6kZW9c+mKAOQ0FwC3NTNiZSh0/
-         Py2ShItz64LdfEow6Bfrl3/u5m+LvWLyjTJli7sLatQX9Y9NgEhQwaG20dRQNzsrqu
-         xNyXu8FZEv5rXhi4eXpDOHoNHkK2DTrU1bWSN+BSvK/qUNCkhnA70RPevK6AZy18Vx
-         vknatbPHPBBDRpO5JxgZTeFUivH7BQvrdHCTtvbobP0MxaDLu0R2lkuxUaVm+U3kWe
-         0UqAlSihLkq9A==
-Date:   Thu, 7 Dec 2023 20:18:49 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
-        <nfraprado@collabora.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, kernelci@lists.linux.dev,
-        kernel@collabora.com, Guenter Roeck <groeck@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] kselftest: Add new test for detecting unprobed
- Devicetree devices
-Message-ID: <310391e8-fdf2-4c2f-a680-7744eb685177@sirena.org.uk>
-References: <20230828211424.2964562-1-nfraprado@collabora.com>
- <20230828211424.2964562-4-nfraprado@collabora.com>
+        Thu, 7 Dec 2023 15:19:33 -0500
+Received: from irl.hu (irl.hu [95.85.9.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8FD41717
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 12:19:39 -0800 (PST)
+Received: from [192.168.2.4] (51b690cd.dsl.pool.telekom.hu [::ffff:81.182.144.205])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 0000000000070A5A.00000000657228D7.0011AE34; Thu, 07 Dec 2023 21:19:35 +0100
+Message-ID: <47097f19398808b64f4cc87c2a3c7cc462fb2416.camel@irl.hu>
+Subject: Re: [PATCH 03/16] ASoC: tas2781: disable regmap regcache
+From:   Gergo Koteles <soyer@irl.hu>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Date:   Thu, 07 Dec 2023 21:19:34 +0100
+In-Reply-To: <0b836c10-b21b-4275-8dd0-254dd5467497@sirena.org.uk>
+References: <cover.1701906455.git.soyer@irl.hu>
+         <21a183b5a08cb23b193af78d4b1114cc59419272.1701906455.git.soyer@irl.hu>
+         <0b836c10-b21b-4275-8dd0-254dd5467497@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.50.1 (3.50.1-1.fc39) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Pkj5fhuMUnWEtPFQ"
-Content-Disposition: inline
-In-Reply-To: <20230828211424.2964562-4-nfraprado@collabora.com>
-X-Cookie: Integrity has no need for rules.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2023-12-07 at 18:20 +0000, Mark Brown wrote:
+> On Thu, Dec 07, 2023 at 12:59:44AM +0100, Gergo Koteles wrote:
+> 
+> > The amp has 3 level addressing (BOOK, PAGE, REG).
+> > The regcache couldn't handle it.
+> 
+> So the books aren't currently used so the driver actually works?
+> 
+It writes to the book 0 and 8c. The initialization works with regcache,
+because it writes also the i2c devices.
 
---Pkj5fhuMUnWEtPFQ
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >  static int tas2781_system_suspend(struct device *dev)
+> > @@ -770,10 +758,7 @@ static int tas2781_system_suspend(struct device *dev)
+> >  		return ret;
+> >  
+> >  	/* Shutdown chip before system suspend */
+> > -	regcache_cache_only(tas_priv->regmap, false);
+> >  	tasdevice_tuning_switch(tas_priv, 1);
+> > -	regcache_cache_only(tas_priv->regmap, true);
+> > -	regcache_mark_dirty(tas_priv->regmap);
+> >  
+> >  	/*
+> >  	 * Reset GPIO may be shared, so cannot reset here.
+> 
+> How can this work over system suspend?  This just removes the cache with
+> no replacement so if the device looses power over suspend (which seems
+> likely) then all the register state will be lost.  A similar issue may
+> potentially exist over runtime suspend on an ACPI system with
+> sufficiently heavily optimised power management.
 
-On Mon, Aug 28, 2023 at 05:13:12PM -0400, N=EDcolas F. R. A. Prado wrote:
-> Introduce a new kselftest to detect devices that were declared in the
-> Devicetree, and are expected to be probed by a driver, but weren't.
+In runtime_resume, only one of the two amplifiers goes back.
+The runtime_suspend sets the current book/prog/conf to -1 on all
+devices, and tas2781_hda_playback_hook will restore the
+program/configuration/profile with tasdevice_tuning_switch.
 
-I've been running this in my personal CI for a little while now and I'm
-finding it's pretty marginal for the 45 second default timeout in
-kselftest on some platforms, especially BeagleBone Black though it's not
-just that.  BBB is both slow and has a comprehensive DT which won't help
-matters, there's 253 devices.
+And only one, because tasdevice_change_chn_book directly changes the
+address of i2c_client, so the unlucky one gets invalid values in its
+actual book from regcache_sync.
 
-I'm running it from nfsroot which is going to be part of the problem but
-shouldn't be too bad since we're mainly dealing with proc and sysfs and
-hopefully mostly running cached binaries, I'm also using a serial
-console to get the output which is going to add overhead especially with
-a large number odevices with length names.  I'm not sure what the best
-solution is here - a quick glance at the code doesn't ring any alarm
-bells for me, this may just be a reasonable runtime for the test.
+system_restore doesn't work at all, because regcache_cache_only stays
+true since system_suspend.
 
---Pkj5fhuMUnWEtPFQ
-Content-Type: application/pgp-signature; name="signature.asc"
+It works without the regcache functions.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVyKKgACgkQJNaLcl1U
-h9Bc2Qf9Ff2kw/O+966mMrAYPT/ndJA6i8hD9VjeLevjVDZ2HGUY9YfIo4B+zkb2
-bPVIFdfHfD3J3hu01MWBUyaUVTNU+TWTF3rX5imPd9NNFHnvneTOGtg4KOCRXcSl
-KKuM+C4k+euPWJiFNJRJgwLFVOY4GPNrVkTi9XP7r6Wv8MU7Un4sjQ0+dBTmE5gp
-FclMgg306GEgWgzGxw2rIhyLZbGJPpPuu0cmqVlitgmTWIzi63vQrH4wrCQ+R/l1
-Npe6lzBjnqghV5cJOLs0sQe7NRMPzY/B9Z+cXERW1DYad86s9jeYedqdXDaRuqjM
-CgbCssr96PhbPheZxkPPULQacKbrBA==
-=uXwM
------END PGP SIGNATURE-----
-
---Pkj5fhuMUnWEtPFQ--
