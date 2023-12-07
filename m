@@ -2,115 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D8E809584
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:41:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7990080958A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbjLGWlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 17:41:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
+        id S232399AbjLGWpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 17:45:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235614AbjLGWlC (ORCPT
+        with ESMTP id S229634AbjLGWpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 17:41:02 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CC2170F
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:41:08 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6ce33234fd7so964347b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 14:41:08 -0800 (PST)
+        Thu, 7 Dec 2023 17:45:10 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C801709
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:45:17 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-4258b6df295so96591cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 14:45:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701988868; x=1702593668; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aWwtPSuJ4EcoYc0K8T+hlW+rYGdha5aHVzCoAjzsYOI=;
-        b=laTgJrFNtg49Gzjdh9o6OuuZXExkyAkxvD8m8vPwwa/l8uLGKYJHC/phAh8fkXJVix
-         aIZBgFSWyg9pHoEmSdXg5FlIpd/IvE6pUi239MgKsXqx9RbYOYN3yiwRV6jksIiMHwDz
-         MOU291Hq1OGTTM6pgMnd8s0d8Lm/mSQ6YWYMfhayxhn5PYFfecgR0z25foGhNlffOtPc
-         l/b3xbCuMDCkrdUsstlua4afuZbR0rQe6G3xYUwCZ1QhuAfR2LFWAG6rSIwHcBhG+B3I
-         YXRccbz9wPKyBwd9ceIdv/pwdUceWjn7RlHGWGqdu7TAHacQ8+f3Znm0Lr0hLoiWVBUp
-         fOeQ==
+        d=google.com; s=20230601; t=1701989116; x=1702593916; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HkuIzoN396jqYT+Pk75+VoEYaTQnHg5zkQllCC1Stfc=;
+        b=FXrxwxAifDQYaC3srMRdQ/4dqB/2siC0IOSk7q6n4KnMbt13LhSkjVCZXhSnwlWmFy
+         E3RM+tdfjp3TiEgMae+a36yuxNHll6DSgxTRg5VbbTm2QPE234OivE9/ariGhsmL6mpT
+         F13FRGqrYOk7dVkXmzweaBFdAAh5H5tXAxExGOuzf1XhWGEO34DsJ5xVNIWq8fSK/rNO
+         1e75YWz0u4+iVi7xrW1sAbV+0ZMs903cSBUsMy4TDoyTA93+6IxgkMSHpvZh59/DvG4Z
+         e03CjW+jLZjJZrCp1cnl9glLH3NzPjr9U5Mf+QQP3L7XVzzR7qkmrSSHEmGwfwIbG4ej
+         8nPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701988868; x=1702593668;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aWwtPSuJ4EcoYc0K8T+hlW+rYGdha5aHVzCoAjzsYOI=;
-        b=PeF6HMFJSiSJskZt4O+sSmPwjlMaznthwhljEmAMK3fRsNq1n8jbdpfPRoyY0t19p8
-         yHSY3wtS6QAWYARn/gGNHG9Bf/JNJY6DUr+lKeugi+8fmZP2Sj/BYeOlwBtKuOBKFw7v
-         ZJ1AVQySlZ4azrv3fnIKdSqcR/iJI7N1iVS2ugZZCPIfa9hj/dIVLKf6dhYB+7drNcGw
-         6ONb7z5MejtpuMcExn3capl1MzZQFnyWjzSg0ICwvAQ2YOGS549SgBgYZBIlruDTigIK
-         ZUNNJ99a8CMp8QH/NwOy9iXneqDKmQJe5goRuZmcKUqcdvhBzbLkx7BjFpVF/aY6QEQL
-         B4TQ==
-X-Gm-Message-State: AOJu0YyhOu4/MowRL/SgH24DhJGJIL+R1fBoWXe6oYT/80d5jzUzWrqn
-        zT8p+MwRNk6FrwWKxrN/JW8=
-X-Google-Smtp-Source: AGHT+IE9XaDZDNAUL1akhCPfx9OlDdLiDvkRIFHb5YqrrbCEAhJa6yX7Gb7gvAm75kQSPeyeUAciGQ==
-X-Received: by 2002:a05:6a21:a5a4:b0:181:ed8b:4823 with SMTP id gd36-20020a056a21a5a400b00181ed8b4823mr3537546pzc.43.1701988867842;
-        Thu, 07 Dec 2023 14:41:07 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id t20-20020a056a00139400b006cd88728572sm282054pfg.211.2023.12.07.14.41.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 14:41:07 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 7 Dec 2023 12:41:06 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Gianfranco Dutka <gianfranco.dutka@arista.com>,
-        linux-kernel@vger.kernel.org, vincent.guittot@linaro.com,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: Modifying isolcpus, nohz_full, and rcu_nocb kernel parameters at
- runtime
-Message-ID: <ZXJKAnrRjBUmKx1V@slm.duckdns.org>
-References: <76587DD3-2A77-41A3-9807-6AEE4398EBA6@arista.com>
- <CAKfTPtAkhfAhFouCGTy7m4swCeeEsu1VdWEX_ahOVDq1U594Dg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1701989116; x=1702593916;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HkuIzoN396jqYT+Pk75+VoEYaTQnHg5zkQllCC1Stfc=;
+        b=QUHXWcx3iQ1sW8bgGnFdrUDugzS25tHl1oAXudOTJbI4tftFJRHo6puEwhF5bXT52l
+         zqQUCzVV3DZBscqX6+2BKtasvy711u82XQgtRY9meLi8sd5foqgwpYNzlGuDsHin1YUX
+         Jmk1ihz+2lucbHS/ut9pxz3ctQ/7G1nWWmp3uxf9MkWPueqc0j2gZQBtfS16FDHYt7ty
+         rR131Fsxa7MXn5+Mr8H58DwYJmj5b+0IS4xAbcTuBR5xKji83cNY8fK2G1rqVWrKOKy8
+         JHc79cTyl96iK+2lhuWae/TzrLWKqOexfbdv8PEQQ7SWUzvjcXCiwjnimdaa258SCiUj
+         krHw==
+X-Gm-Message-State: AOJu0Yw5fSVHcKDMuLgFdZpsK8aSxRjqwkmjhWMwS2FiEyLd2XUcsdkj
+        1NI8zy/i++SNKRlTItod2im0elkLXxvpK+KTANXwaA==
+X-Google-Smtp-Source: AGHT+IH2Ee5fQ2BMKGV5V0CAb7d7P5bahZSNARWtZJJA7pnbKyLDlUQTzvbGMsPydmQi6PxASuAciYGntOuuhoIaNAo=
+X-Received: by 2002:a05:622a:413:b0:423:98a3:422 with SMTP id
+ n19-20020a05622a041300b0042398a30422mr39958qtx.11.1701989116154; Thu, 07 Dec
+ 2023 14:45:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKfTPtAkhfAhFouCGTy7m4swCeeEsu1VdWEX_ahOVDq1U594Dg@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20231111014933.1934562-1-davidai@google.com> <20231111014933.1934562-2-davidai@google.com>
+ <865y231jvj.wl-maz@kernel.org>
+In-Reply-To: <865y231jvj.wl-maz@kernel.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 7 Dec 2023 14:44:36 -0800
+Message-ID: <CAGETcx9-n0z5buWgtLZ+6VxW2jEko1GWzkGtGhFiZEq-x_G4nw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: cpufreq: add virtual cpufreq device
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     David Dai <davidai@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Masami Hiramatsu <mhiramat@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        Gupta Pankaj <pankaj.gupta@amd.com>,
+        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(cc'ing Waiman)
-
-On Thu, Dec 07, 2023 at 05:32:15PM +0100, Vincent Guittot wrote:
-> Hi Gianfranco,
-> 
-> + Adding all scheduler maintainers and few other people that are
-> working on similar things
-> 
-> On Thu, 7 Dec 2023 at 16:07, Gianfranco Dutka
-> <gianfranco.dutka@arista.com> wrote:
-...
-> > I'm a bit new to kernel development but I had a question with respect to the kernel parameters: isolcpus, nohz_full, and rcu_nocbs.
+On Wed, Nov 15, 2023 at 12:49=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrot=
+e:
+>
+> On Sat, 11 Nov 2023 01:49:29 +0000,
+> David Dai <davidai@google.com> wrote:
 > >
-> > Basically the question is this, am I able to modify the three parameters I mentioned above at runtime after the kernel has already started/booted? Doing some reading online it seems that it’s not possible but I wanted to double check with the maintainers if there wasn’t some sort of change in the works that might make it possible. If not, what would be required to make the change after boot-time through some kind of patch or something like that? Would that be something that might be valuable upstream?
-> 
-> It's not possible but you can achieve something close with cgroup
-> although you will still have some housekeeping activities happening in
-> your partition.
+> > Adding bindings to represent a virtual cpufreq device.
+> >
+> > Virtual machines may expose MMIO regions for a virtual cpufreq device
+> > for guests to read frequency information or to request frequency
+> > selection. The virtual cpufreq device has an individual controller for
+> > each frequency domain.
+>
+> I would really refrain form having absolute frequencies here. A
+> virtual machine can be migrated, and there are *zero* guarantees that
+> the target system has the same clock range as the source.
+>
+> This really should be a relative number, much like the capacity. That,
+> at least, can be migrated across systems.
 
-FWIW, Waiman has been improving both the usability and level of isolation
-with cpuset, so it should be better now.
+There's nothing in this patch that mandates absolute frequency.
+In true KVM philosophy, we leave it to the VMM to decide.
 
-Thanks.
-
--- 
-tejun
+-Saravana
