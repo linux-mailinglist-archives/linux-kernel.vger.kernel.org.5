@@ -2,90 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54518808D37
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E127808D44
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232604AbjLGQKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 11:10:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
+        id S232634AbjLGQLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 11:11:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232358AbjLGQKg (ORCPT
+        with ESMTP id S232083AbjLGQK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 11:10:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A1284
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 08:10:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BE9CC433C8;
-        Thu,  7 Dec 2023 16:10:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701965441;
-        bh=F9jvVm4Xw/p4U6hdGC3086OM1LmvQJua8bhrbGVSwCM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dZzWK5JRmFVCcZOjYN86lmpWzPq2AWQGQjfmSAYhjdi189K2Fnvuo5itPQU+PqFU8
-         Z9VJfw88x0AQVscIPQmRyrOudv+vd7tsKBFL3NDICK+tQN2aufJJRIfw9X4ttqwmdt
-         hj+EJxyOZ8oDpwivD1zh0rdV5yz7tHGY5MaxoV2X1Q7R3Ov1ZKlMFSF41/d2woB7p8
-         512pMsymUMGsdxYrD76TVeDG0phxI0qEOvCqU8hxUFfDgotQxG16gzF5uL5pTPaDRb
-         FDSo3mE5ysR9PjLl5zFwKDoc/nn+HLz5aVrxdh3tH0zCV1dbG8ytegL7vXLaIYw7nK
-         1O2q7Xe54S7hg==
-Date:   Thu, 7 Dec 2023 16:10:37 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Kunwu Chan <chentao@kylinos.cn>
-Cc:     jpanis@baylibre.com, kunwu.chan@hotmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: tps6594: Add null pointer check to
- tps6594_device_init
-Message-ID: <20231207161037.GA111411@google.com>
-References: <20231205095426.2532572-1-chentao@kylinos.cn>
+        Thu, 7 Dec 2023 11:10:57 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4F212D
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 08:11:03 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9e1021dbd28so144146066b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 08:11:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1701965461; x=1702570261; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UXMGWx05Oqhgl5suufkTuT8kZBkK433+J40SP+lUHbM=;
+        b=cnIq84J8SbgPnPG1J121gJudWFBv66DJ8jtMQ/fWftW8fuWwXez25NFxYwDwJC631w
+         6QjEz3y7hkkcvG6ZrOo3vyViJbyWjQ6i2WJHEdVsgVrql3f2Urwo8mtoN81WY8nmSQi8
+         qeixsxxAKP1ueJyCAyQPYs/qcv3BjhsyRlVbk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701965461; x=1702570261;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UXMGWx05Oqhgl5suufkTuT8kZBkK433+J40SP+lUHbM=;
+        b=Ne5W4nvK8Wp0Bxbn65x7FhoAoHmQaNsVqMtlhHz7HjyYkLVzdsWlecqEBPTuVbD3qB
+         KzCzb+lnicYbkO5rl45kYizykOQj7hIzjsPKk4hXh3JbV5qcglhaePYYh5bS8mhhRJoo
+         BBPzj47CNww7mzSw/dkITW/PdH0Lnu4l6Bf1JW+Aw2lOhumAOarTBDlm7Oa8M8fHmyBi
+         91SwEoXyHpQlgIWRVylxVeIBcT3Sg9YXwLjIWmlewiMv0bOcSKGsJQiIKEWes+/N7kL8
+         VG2/m3H6o3l3EH5T3xJC6DUZSr+JSNHzL7Sw8jLR2ctdErfxWavjzOkmVrxPZ96NwNFi
+         hCuA==
+X-Gm-Message-State: AOJu0Yy0sW0a4Tl4BGpgavOKz90BaFfaVlK00apgd9353ZgGGTn3YrhV
+        u9MQv3IhfJHoUT0BV+0r+K8ZEBVPRam6KPEtuFB0EA==
+X-Google-Smtp-Source: AGHT+IGs6KP73vU1SUU/HRyy8dMywzlKbx8fMvag5ZyzuitZ0Tn8jejydHX1ZR3GalG7y7zCNBbq7A==
+X-Received: by 2002:a17:906:e8b:b0:a1d:7f40:bebe with SMTP id p11-20020a1709060e8b00b00a1d7f40bebemr1678683ejf.126.1701965461446;
+        Thu, 07 Dec 2023 08:11:01 -0800 (PST)
+Received: from localhost.localdomain ([2001:b07:6474:ebbf:9bf:959c:3c66:46c2])
+        by smtp.gmail.com with ESMTPSA id k19-20020a170906681300b009a193a5acffsm989730ejr.121.2023.12.07.08.10.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 08:11:01 -0800 (PST)
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm/bridge: samsung-dsim: check the return value only if necessary
+Date:   Thu,  7 Dec 2023 17:10:43 +0100
+Message-ID: <20231207161056.183442-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231205095426.2532572-1-chentao@kylinos.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Dec 2023, Kunwu Chan wrote:
+It was useless to check again the "ret" variable if the function
+register_host() was not called.
 
-> devm_kasprintf() returns a pointer to dynamically allocated memory
-> which can be NULL upon failure.
-> 
-> Fixes: 325bec7157b3 ("mfd: tps6594: Add driver for TI TPS6594 PMIC")
-> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> ---
->  drivers/mfd/tps6594-core.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/mfd/tps6594-core.c b/drivers/mfd/tps6594-core.c
-> index 0fb9c5cf213a..6403c1063de9 100644
-> --- a/drivers/mfd/tps6594-core.c
-> +++ b/drivers/mfd/tps6594-core.c
-> @@ -433,6 +433,9 @@ int tps6594_device_init(struct tps6594 *tps, bool enable_crc)
->  	tps6594_irq_chip.name = devm_kasprintf(dev, GFP_KERNEL, "%s-%ld-0x%02x",
->  					       dev->driver->name, tps->chip_id, tps->reg);
->  
-> +	if (!tps6594_irq_chip.name)
-> +		return dev_err_probe(dev, -ENOMEM, "Failed to allocate memory\n");
-> +
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+---
 
-The check is fine, but the use of dev_err_probe() is not.
+ drivers/gpu/drm/bridge/samsung-dsim.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Simply:
-
-	return -ENOMEM;
-
->  	ret = devm_regmap_add_irq_chip(dev, tps->regmap, tps->irq, IRQF_SHARED | IRQF_ONESHOT,
->  				       0, &tps6594_irq_chip, &tps->irq_data);
->  	if (ret)
-> -- 
-> 2.34.1
-> 
-
+diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
+index be5914caa17d..98cd589e4427 100644
+--- a/drivers/gpu/drm/bridge/samsung-dsim.c
++++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+@@ -2020,11 +2020,11 @@ int samsung_dsim_probe(struct platform_device *pdev)
+ 	else
+ 		dsi->bridge.timings = &samsung_dsim_bridge_timings_de_high;
+ 
+-	if (dsi->plat_data->host_ops && dsi->plat_data->host_ops->register_host)
++	if (dsi->plat_data->host_ops && dsi->plat_data->host_ops->register_host) {
+ 		ret = dsi->plat_data->host_ops->register_host(dsi);
+-
+-	if (ret)
+-		goto err_disable_runtime;
++		if (ret)
++			goto err_disable_runtime;
++	}
+ 
+ 	return 0;
+ 
 -- 
-Lee Jones [李琼斯]
+2.43.0
+
