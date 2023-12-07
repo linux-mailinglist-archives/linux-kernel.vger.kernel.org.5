@@ -2,138 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A75808BDA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49268808BE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443490AbjLGP3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 10:29:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57550 "EHLO
+        id S1443487AbjLGPbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 10:31:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443485AbjLGP3u (ORCPT
+        with ESMTP id S1443473AbjLGPbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 10:29:50 -0500
-Received: from sender4-op-o10.zoho.com (sender4-op-o10.zoho.com [136.143.188.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C4C10CA;
-        Thu,  7 Dec 2023 07:29:55 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1701962954; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=A7ElI23MVAgm8zNNFAPzAp4CcAcy8+UHl2rY3FB80PV4Z4xi4yA29Fljao/pKRPtqc6TQ0GAFvFGuAjt1QYavztr5RKbywxMx3IpmzCM6p7DAaaH7HSm7hFOBS8OUIBkdAm7j4K2qZAHf3gbfot7T8mACJpB4/oKoDIGEzk9RLg=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1701962954; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=NFBGBgeucIqzd2ci9Tfm6H+YgMwBZS4hxN3L8cqSz1A=; 
-        b=Tm9rqeaPSRN3eiuLwdPVnnjiCUilR5FXQbq+d1nSWDWsl6EetzA+RVlBgVM0IM4AOyfkpTwNQOHnpcxuA7LskaXeiV+MLb++jUAis0BLjxkBwxHozeF07RgUtBVgY/OETRUJPRTIj3E57cx8lFtqd9eWWo0TNMHhZGBiUX4X93c=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=icenowy.me;
-        spf=pass  smtp.mailfrom=uwu@icenowy.me;
-        dmarc=pass header.from=<uwu@icenowy.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1701962954;
-        s=zmail2; d=icenowy.me; i=uwu@icenowy.me;
-        h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
-        bh=NFBGBgeucIqzd2ci9Tfm6H+YgMwBZS4hxN3L8cqSz1A=;
-        b=RHzDcopP166e8R861X9TjbgMe58SYkGjRLRDfqViz3rvTUANIWxr6yEOhoVp9x71
-        SZid4KQlPaaP/xsYOmLd1j4FxIhHef/8YCiDuiiP4vz4TcW+z4OqS4hDxnuXc9V1fif
-        gZ9qrBw8JheRjUthXNWTXXEUtxiQHlRx2/EBRbOyBsfyKzZ7+8oLZTTd2uQHPJi6pRL
-        iBtigR9DKRCQZDhYKTXH1c0bShIAh+LfAPWzxDBAsvm+jnl89i49mS4a2f6aDz/YKrV
-        n6ePMcmNSHgWXndvcj4WZ66HKRtFYvlK59wLYKLw1tp3lrCJ/q22BnYTApUk1GQZNvJ
-        uozEW78eXQ==
-Received: from edelgard.fodlan.icenowy.me (120.85.96.101 [120.85.96.101]) by mx.zohomail.com
-        with SMTPS id 1701962951848842.8386346646538; Thu, 7 Dec 2023 07:29:11 -0800 (PST)
-Message-ID: <13e146c581a51121308a0cad4db44bf3a0d2ae75.camel@icenowy.me>
-Subject: Re: [v3 4/6] drm/vs: Add KMS crtc&plane
-From:   Icenowy Zheng <uwu@icenowy.me>
-To:     Keith Zhao <keith.zhao@starfivetech.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
-Cc:     "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "suijingfeng@loongson.cn" <suijingfeng@loongson.cn>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        William Qiu <william.qiu@starfivetech.com>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        Xingyu Wu <xingyu.wu@starfivetech.com>,
-        Jack Zhu <jack.zhu@starfivetech.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        Shengyang Chen <shengyang.chen@starfivetech.com>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>
-Date:   Thu, 07 Dec 2023 23:29:05 +0800
-In-Reply-To: <580e13ab-a73e-4ce7-999a-8a8685faf2dd@starfivetech.com>
-References: <20231204123315.28456-1-keith.zhao@starfivetech.com>
-         <20231204123315.28456-5-keith.zhao@starfivetech.com>
-         <7acd5af8fd4c5bf6ee0614f72cf6cb6751c89dc3.camel@icenowy.me>
-         <580e13ab-a73e-4ce7-999a-8a8685faf2dd@starfivetech.com>
-Organization: Anthon Open-Source Community
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.44.4 
+        Thu, 7 Dec 2023 10:31:18 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D806C10E3;
+        Thu,  7 Dec 2023 07:31:24 -0800 (PST)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B7FHPRG022631;
+        Thu, 7 Dec 2023 15:31:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=HuWvFvcr/mC74jZHPiQaVgBRkwEivXlwrOK4769QA2g=;
+ b=Ge2qPERJ5N1H7ECiEQrCz3ppigtIoT2Uy8M5P7mNXoZO0/dttZEQ6DtvJKUoM/1T9vH0
+ ih+hjZUYl2OsmbX3OJrP4R7dr0peY0TKmrnYSYHQkTBmZTFF9QGXgphxhJOoGkjrnznp
+ 5iH/cZwWrFA+FO+0pTodAIR3o1FJ3Z6W34J4lruEUyr7nly1tuEpsZOywV/Bfk2d6XaQ
+ bjZHgOfLy7R7qFGBMZlFxQZ8GS+boieV0WPMrsvL93RjPIlTyye7PH6bkmevj7Hskl65
+ uersXD2+qJ9c7a/Gd+Jwtq4g301JudpErjGf7BgeL+wru8Jpwf/rEBbJ1enONyOaAbhr bQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uud24fs1r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 15:31:22 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B7FI1XM027872;
+        Thu, 7 Dec 2023 15:31:22 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uud24fs10-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 15:31:21 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B7EMebO013743;
+        Thu, 7 Dec 2023 15:31:21 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3utau4by09-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 15:31:21 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B7FVIqI18809512
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Dec 2023 15:31:18 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7BEC65804B;
+        Thu,  7 Dec 2023 15:31:18 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 04BDC58059;
+        Thu,  7 Dec 2023 15:31:10 +0000 (GMT)
+Received: from [9.61.158.74] (unknown [9.61.158.74])
+        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  7 Dec 2023 15:31:09 +0000 (GMT)
+Message-ID: <483f23b2-0c88-49e2-8b40-7b17cd2b46cc@linux.ibm.com>
+Date:   Thu, 7 Dec 2023 10:31:06 -0500
 MIME-Version: 1.0
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
+Content-Language: en-US
+To:     Halil Pasic <pasic@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>
+Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, imbrenda@linux.ibm.com, david@redhat.com,
+        Reinhard Buendgen <BUENDGEN@de.ibm.com>
+References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
+ <b43414ef-7aa4-9e5c-a706-41861f0d346c@linux.ibm.com>
+ <1f4720d7-93f1-4e38-a3ad-abaf99596e7c@linux.ibm.com>
+ <05cfc382-d01d-4370-b8bb-d3805e957f2e@linux.ibm.com>
+ <20231204171506.42aa687f.pasic@linux.ibm.com>
+ <d780a15a7c073e7d437f8120a72e8d29@linux.ibm.com>
+ <20231206181727.376c3d67.pasic@linux.ibm.com>
+From:   Anthony Krowiak <akrowiak@linux.ibm.com>
+In-Reply-To: <20231206181727.376c3d67.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 4oqZgj2SjW_75L3EIb6kXMmDRx2r6Pmz
+X-Proofpoint-ORIG-GUID: JPsT5elpzc5Bh6d_VWDloAtXMc3U1eRX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-07_12,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 mlxscore=0 impostorscore=0
+ lowpriorityscore=0 spamscore=0 phishscore=0 suspectscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312070127
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-5ZyoIDIwMjMtMTItMDfmmJ/mnJ/lm5vnmoQgMTk6MzEgKzA4MDDvvIxLZWl0aCBaaGFv5YaZ6YGT
-77yaCj4gCj4gCj4gT24gMjAyMy8xMi83IDE2OjQxLCBJY2Vub3d5IFpoZW5nIHdyb3RlOgo+ID4g
-5ZyoIDIwMjMtMTItMDTmmJ/mnJ/kuIDnmoQgMjA6MzMgKzA4MDDvvIxLZWl0aCBaaGFv5YaZ6YGT
-77yaCj4gPiAqc25pcCoKPiA+IAo+ID4gPiArc3RhdGljIHZvaWQgdXBkYXRlX2N1cnNvcl9wbGFu
-ZShzdHJ1Y3QgdnNfZGMgKmRjLCBzdHJ1Y3QKPiA+ID4gdnNfcGxhbmUKPiA+ID4gKnBsYW5lLAo+
-ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqBzdHJ1Y3QgZHJtX3BsYW5lICpkcm1fcGxhbmUsCj4gPiA+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHN0cnVj
-dCBkcm1fYXRvbWljX3N0YXRlCj4gPiA+ICpkcm1fc3RhdGUpCj4gPiA+ICt7Cj4gPiA+ICvCoMKg
-wqDCoMKgwqDCoHN0cnVjdCBkcm1fcGxhbmVfc3RhdGUgKnN0YXRlID0KPiA+ID4gZHJtX2F0b21p
-Y19nZXRfbmV3X3BsYW5lX3N0YXRlKGRybV9zdGF0ZSwKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgCj4g
-PiA+IMKgwqDCoMKgCj4gPiA+IMKgIGRybV9wbGFuZSk7Cj4gPiA+ICvCoMKgwqDCoMKgwqDCoHN0
-cnVjdCB2c19wbGFuZV9zdGF0ZSAqcGxhbmVfc3RhdGUgPQo+ID4gPiB0b192c19wbGFuZV9zdGF0
-ZShzdGF0ZSk7Cj4gPiA+ICvCoMKgwqDCoMKgwqDCoHN0cnVjdCBkcm1fZnJhbWVidWZmZXIgKmRy
-bV9mYiA9IHN0YXRlLT5mYjsKPiA+ID4gK8KgwqDCoMKgwqDCoMKgc3RydWN0IGRjX2h3X2N1cnNv
-ciBjdXJzb3I7Cj4gPiA+ICsKPiA+ID4gK8KgwqDCoMKgwqDCoMKgY3Vyc29yLmFkZHJlc3MgPSBw
-bGFuZV9zdGF0ZS0+ZG1hX2FkZHJbMF07Cj4gPiA+ICvCoMKgwqDCoMKgwqDCoGN1cnNvci54ID0g
-c3RhdGUtPmNydGNfeDsKPiA+ID4gK8KgwqDCoMKgwqDCoMKgY3Vyc29yLnkgPSBzdGF0ZS0+Y3J0
-Y195Owo+ID4gCj4gPiBGcm9tIG15IGV4cGVyaW1lbnRzIG9uIHBva2luZyB3aXRoIHJlZ2lzdGVy
-cyBvbiBULUhlYWQgVEgxNTIwIChhbHNvCj4gPiB1c2VzIERDODIwMCBkaXNwbGF5IGNvbnRyb2xs
-ZXIgYW5kIGEgc2ltaWxhciBkcml2ZXIpLCB0aGUgREM4MjAwCj4gPiBoYXJkd2FyZSBoYXZlIGEg
-ZGlmZmVyZW50IGRlZmluaXRpb24gb2YgY3Vyc29yIHBvc2l0aW9uIFggYW5kIFkKPiA+IHdpdGgK
-PiA+IHRoZSBDUlRDIHBsYW5lIHN0YXRlLgo+ID4gCj4gPiBGb3IgQ1JUQyBwbGFuZSBzdGF0ZSwg
-aG90X3ggYW5kIGhvdF95IGFyZSBvbmx5IHByb3ZpZGVkIGFzCj4gPiByZWZlcmVuY2UsCj4gPiBh
-bmQgdGhlIGN1cnNvciBzaG91bGQgYmUgZGlzcGxheWVkIHdpdGggaXRzICgwLDApIGRyYXduIHRv
-IChjcnRjX3gsCj4gPiBjcnRjX3kpIChbWFldX2NydGMgYXJlIHZhbHVlcyBzcGVjaWZpZWQgaW4g
-Q1JUQyBzdGF0ZSwgdGhlIHJpZ2h0Cj4gPiBwYXJ0Cj4gPiBvZiB0aGUgYXNzaWdubWVudHMgaGVy
-ZSksIHdoZW4gdGhlIGN1cnNvciBpcyBtb3ZlZCB0byAoMCwwKSBidXQgdGhlCj4gPiBob3QKPiA+
-IHBvaW50IGlzIG5vdCAoMCwwKSwgaXQgY291bGQgYmUgbmVnYXRpdmUuCj4gPiAKPiA+IEhvd2V2
-ZXIsIGZvciBEQzgyMDAgcmVnaXN0ZXJzIGRlZmluaXRpb24sIGN1cnNvciBYWSBwb3NpdGlvbiBj
-b3VsZAo+ID4gbm90Cj4gPiBiZSBuZWdhdGl2ZSAtLSB0aGUgY3Vyc29yIHdpbGwgZGlzYXBwZWFy
-IHRoZW47IGJlY2F1c2UgaW4gaXRzCj4gPiBkZWZpbml0aW9uLCB0aGUgY3Vyc29yIFhZIHBvc2l0
-aW9uIHNob3VsZCBiZSB3aGVyZSB0aGUgY3Vyc29yIGlzCj4gPiBwb2ludGluZyB0bywgaW5zdGVh
-ZCBvZiBpdHMgKDAsMCkuIERDODIwMCB3aWxsIGRyYXcgKDAsMCkgb2YgdGhlCj4gPiBjdXJzb3IK
-PiA+IHRvICh4IC0gaG90X3gsIHkgLSBob3RfeSkuIFNvIHRvIG1ldCB0aGUgZXhwZWN0YXRpb24g
-b2YgdGhlIEtNUwo+ID4gcGxhbmUKPiA+IHNldHRpbmdzLCB0aGUgREM4MjAwIHBvc2l0aW9uIHNo
-b3VsZCBiZSBzZXQgdG8gKGNydGNfeCArIGhvdF94LAo+ID4gY3J0Y195Cj4gPiArIGhvdF95KSBp
-bnN0ZWFkLiBUaHVzIHRoZXNlIHR3byBsaW5lcyBvZiBjb2RlIHNob3VsZCBiZToKPiA+IAo+ID4g
-YGBgCj4gPiDCoMKgwqDCoMKgwqDCoCBjdXJzb3IueCA9IHN0YXRlLT5jcnRjX3ggKyBkcm1fZmIt
-PmhvdF94Owo+ID4gwqDCoMKgwqDCoMKgwqAgY3Vyc29yLnkgPSBzdGF0ZS0+Y3J0Y195ICsgZHJt
-X2ZiLT5ob3RfeTsKPiA+IGBgYAo+ID4gCj4gPiAKPiA+ID4gK8KgwqDCoMKgwqDCoMKgY3Vyc29y
-LmhvdF94ID0gZHJtX2ZiLT5ob3RfeDsKPiA+ID4gK8KgwqDCoMKgwqDCoMKgY3Vyc29yLmhvdF95
-ID0gZHJtX2ZiLT5ob3RfeTsKPiA+ID4gK8KgwqDCoMKgwqDCoMKgY3Vyc29yLmRpc3BsYXlfaWQg
-PSB0b192c19kaXNwbGF5X2lkKGRjLCBzdGF0ZS0+Y3J0Yyk7Cj4gPiA+ICvCoMKgwqDCoMKgwqDC
-oHVwZGF0ZV9jdXJzb3Jfc2l6ZShzdGF0ZSwgJmN1cnNvcik7Cj4gPiA+ICvCoMKgwqDCoMKgwqDC
-oGN1cnNvci5lbmFibGUgPSB0cnVlOwo+ID4gPiArCj4gPiA+ICvCoMKgwqDCoMKgwqDCoGRjX2h3
-X3VwZGF0ZV9jdXJzb3IoJmRjLT5odywgY3Vyc29yLmRpc3BsYXlfaWQsICZjdXJzb3IpOwo+ID4g
-PiArfQo+ID4gKnNuaXAKPiBoZWxsbyBJY2Vub3d5Ogo+IHlvdSBhcmUgZGVlcCB1bmRlcnN0YW5k
-aW5nIG9uIGRjODIwMC4KPiBieSB0aGUgd2F5IG9mIHByYWN0aWNlCj4gSSB0ZXN0ZWQgdGhpcyBj
-aGFuZ2Ugb24gdGhlIGRlYmlhbiBkZXNrdG9wLCBpcyB0aGVyZSBhIHdheSB0byBjb21wYXJlCj4g
-dGhlIGN1cnNvciBiZWhhdmlvciBjaGFuZ2U/CgpUcnkgc2VsZWN0aW5nIHNvbWUgc21hbGwtc2l6
-ZWQgdGV4dCBpbiBhIHRleHRib3g/Cgo+IFRoYW5rcwo+IAo+IAo+IAoK
 
+On 12/6/23 12:17 PM, Halil Pasic wrote:
+> On Tue, 05 Dec 2023 09:04:23 +0100
+> Harald Freudenberger <freude@linux.ibm.com> wrote:
+>
+>> On 2023-12-04 17:15, Halil Pasic wrote:
+>>> On Mon, 4 Dec 2023 16:16:31 +0100
+>>> Christian Borntraeger <borntraeger@linux.ibm.com> wrote:
+>>>    
+>>>> Am 04.12.23 um 15:53 schrieb Tony Krowiak:
+>>>>>
+>>>>> On 11/29/23 12:12, Christian Borntraeger wrote:
+>>>>>> Am 29.11.23 um 15:35 schrieb Tony Krowiak:
+>>>>>>> In the current implementation, response code 01 (AP queue number not valid)
+>>>>>>> is handled as a default case along with other response codes returned from
+>>>>>>> a queue reset operation that are not handled specifically. Barring a bug,
+>>>>>>> response code 01 will occur only when a queue has been externally removed
+>>>>>>> from the host's AP configuration; nn this case, the queue must
+>>>>>>> be reset by the machine in order to avoid leaking crypto data if/when the
+>>>>>>> queue is returned to the host's configuration. The response code 01 case
+>>>>>>> will be handled specifically by logging a WARN message followed by cleaning
+>>>>>>> up the IRQ resources.
+>>>>>>>   
+>>>>>> To me it looks like this can be triggered by the LPAR admin, correct? So it
+>>>>>> is not desireable but possible.
+>>>>>> In that case I prefer to not use WARN, maybe use dev_warn or dev_err instead.
+>>>>>> WARN can be a disruptive event if panic_on_warn is set.
+>>>>> Yes, it can be triggered by the LPAR admin. I can't use dev_warn here because we don't have a reference to any device, but I can use pr_warn if that suffices.
+>>>> Ok, please use pr_warn then.
+>>> Shouldn't we rather make this an 'info'. I mean we probably do not want
+>>> people complaining about this condition. Yes it should be a besNo info logging is done via the S390 Debug Feature in vfio_ap.
+>>>        There are a few warning messages logged solely in the handle_pqap
+>>>        and vfio_ap_irq_enable functions. The question is, why are we
+>>>        talking about the S390 Debug Feature? We are talking about using
+>>>        pr_warn verses pr_info. What am I missing here?t
+>>> practice
+>>> to coordinate such things with the guest, and ideally remove the
+>>> resource
+>>> from the guest first. But AFAIU our stack is supposed to be able to
+>>> handle something like this. IMHO issuing a warning is excessive
+>>> measure.
+>>> I know Reinhard and Tony probably disagree with the last sentence
+>>> though.
+>> Halil, Tony, the thing about about info versus warning versus error is
+>> our
+>> own stuff. Keep in mind that these messages end up in the "debug
+>> feature"
+>> as FFDC data. So it comes to the point which FFDC data do you/Tony want
+>> to
+>> see there ? It should be enough to explain to a customer what happened
+>> without the need to "recreate with higher debug level" if something
+>> serious
+>> happened. So my private decision table is:
+>> 1) is it something serious, something exceptional, something which may
+>> not
+>>      come up again if tried to recreate ? Yes -> make it visible on the
+>> first
+>>      occurrence as error msg.
+>> 2) is it something you want to read when a customer hits it and you tell
+>> him
+>>      to extract and examine the debug feature data ? Yes -> make it a
+>> warning
+>>      and make sure your debug feature by default records warnings.
+>> 3) still serious, but may flood the debug feature. Good enough and high
+>>      probability to reappear on a recreate ? Yes -> make it an info
+>> message
+>>      and live with the risk that you may not be able to explain to a
+>> customer
+>>      what happened without a recreate and higher debug level.
+>> 4) not 1-3, -> maybe a debug msg but still think about what happens when
+>> a
+>>      customer enables "debug feature" with highest level. Does it squeeze
+>> out
+>>      more important stuff ? Maybe make it dynamic debug with pr_debug()
+>> (see
+>>      kernel docu admin-guide/dynamic-debug-howto.rst).
+> AFAIU the default log level of the S390 Debug Feature is 3 that is
+> error. So warnings do not help us there by default. And if we are
+> already asking the reporter to crank up the loglevel of the debug
+> feature, we can as the reporter to crank it up to 5, assumed there
+> is not too much stuff that log level 5 in that area... How much
+> info stuff do we have for the 'ap' debug facility (I hope
+> that is the facility used by vfio_ap)?
+
+
+No info logging is done via the S390 Debug Feature in vfio_ap. There are 
+a few warning messages logged solely in the handle_pqap and 
+vfio_ap_irq_enable functions. The question is, why are we talking about 
+the S390 Debug Feature given the discussion is about using pr_warn 
+verses pr_info. What am I missing here?
+
+
+>
+> I think log levels are supposed to be primarily about severity, and
+> and I'm not sure that a queue becoming unavailable in G1 without
+> fist re-configuring the G2 so that it no more has access to the
+> given queue is not really a warning severity thing. IMHO if we
+> really do want people complaining about this should they ever see it,
+> yes it should be a warning. If not then probably not.
+>
+> Regards,
+> Halil
