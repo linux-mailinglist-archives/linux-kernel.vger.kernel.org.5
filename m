@@ -2,139 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08966808A72
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C6D808A79
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443374AbjLGOZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:25:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35152 "EHLO
+        id S229702AbjLGO0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:26:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443171AbjLGOZG (ORCPT
+        with ESMTP id S1443269AbjLGOZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:25:06 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18191BD8
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:24:01 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a1f33c13ff2so44868266b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 06:24:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701959040; x=1702563840; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=f5R9Aa9qvwLBkzJk+1JXYE0IjKovTx3obUbkAIs0Rg4=;
-        b=wgATDF8VUbVTFH4N+5lA7KQNf2Alh2iCrnizLPqHghdinE2pUYqy9x5RXXRwLTt0vo
-         eEAW1FREgrQe1zrMj6N9jJdtOXKo7acvQX58SzRsdiACfNDEHhjnrgyg3z66xo8LWCVD
-         s9NJyZbYB2kQWt5GB9EvJPjWpKCaafJRRQe5YvLKvrlnqVBxp4NidQqK+DGmUROw0Xul
-         h7Jq/ZBScgKgyViR/Qf7xDspQXlCqvsVMsywIzCeLUpxN7G191ducd0fUZD/Zrrq5IQS
-         B3exz3boUcc1GvpikxaqtKo8IYG/Zk8vHcfVcvhxH6Yx591S/oKHH8f2ahd9V7vKeCcO
-         fuMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701959040; x=1702563840;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f5R9Aa9qvwLBkzJk+1JXYE0IjKovTx3obUbkAIs0Rg4=;
-        b=p65Hf4FFBkS46i0AH9Y/iQnTz02G3hT+jYEoQdBMJLvCTRYBQ1TAH5c+GRtZJbNWHp
-         IHN5rKL8fnJpJjXnYpF3HdkH9HoSaDoscICpgep1jJvrt0ckFQ2v5f4zqYubdy3jor1R
-         wXClwCYAsJN4cQm57+AlswfrTO6v+Vpwt2tb9UnqXc1HEetGkYcsFD6L6cec60g3KvFk
-         +qYfn3r4nPlPwKjHQs+N3VQt8h5yUDlgVRKDQZZ2MvAlncfmG7FJbHcFOnz9tqZqwR5O
-         lqJQ/lkvZKNDqjdutijSPz8CCFw6muVi+zg4MEmH2sha2VqfS9zgaZzcgNQTKmsON/nC
-         EwIw==
-X-Gm-Message-State: AOJu0YwaoBMRzefoAsAauv5jaWJgz4Vq2lgkc5tUzPOVe8I4e1JTKl6u
-        /xSXWujiT476008cgi0FBFtD3w==
-X-Google-Smtp-Source: AGHT+IE/3SWDqV4xhpz7Rs+evs81SxbYlZyZ+DLKO6j3oA2qDINuWbsYe7F/SGOm+61IvfLyrv0rqg==
-X-Received: by 2002:a17:906:a45a:b0:a0a:391d:2dad with SMTP id cb26-20020a170906a45a00b00a0a391d2dadmr1602565ejb.75.1701959040327;
-        Thu, 07 Dec 2023 06:24:00 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id lo15-20020a170906fa0f00b009a19701e7b5sm889738ejb.96.2023.12.07.06.23.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 06:23:59 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2] media: dt-bindings: ov8856: decouple lanes and link frequency from driver
-Date:   Thu,  7 Dec 2023 15:23:56 +0100
-Message-Id: <20231207142356.100453-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Thu, 7 Dec 2023 09:25:35 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8841BE7
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:24:58 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rBFJ0-0005GM-Do; Thu, 07 Dec 2023 15:24:46 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rBFIz-00EDAG-MS; Thu, 07 Dec 2023 15:24:45 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rBFIz-00FwBy-DM; Thu, 07 Dec 2023 15:24:45 +0100
+Date:   Thu, 7 Dec 2023 15:24:45 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2 0/3] w1: gpio: Some cleanup and simplifiction
+Message-ID: <20231207142445.rp5or5wvkosyu7ho@pengutronix.de>
+References: <cover.1701727212.git.u.kleine-koenig@pengutronix.de>
+ <15578a4d-f749-4bf8-b507-4c6efb7805fa@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zphejp4frfwbr6rc"
+Content-Disposition: inline
+In-Reply-To: <15578a4d-f749-4bf8-b507-4c6efb7805fa@kernel.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The data lanes and link frequency were set to match exiting Linux driver
-limitations, however bindings should be independent of chosen Linux
-driver support.
 
-Decouple these properties from the driver to match what is actually
-supported by the hardware.
+--zphejp4frfwbr6rc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This also fixes DTS example:
+Hello Krzysztof,
 
-  ov8856.example.dtb: camera@10: port:endpoint:link-frequencies:0: [360000000] is too short
+On Thu, Dec 07, 2023 at 02:29:34PM +0100, Krzysztof Kozlowski wrote:
+> On 04/12/2023 23:05, Uwe Kleine-K=C3=B6nig wrote:
+> > Hello,
+> >=20
+> > v1 is available at
+> > https://lore.kernel.org/r/20230525095624.615350-1-u.kleine-koenig@pengu=
+tronix.de.
+> >=20
+> > The changes in this v2 since then are:
+> >=20
+> >  - Fix a build problem in patch #3
+> >  - Rebase to today's next
+>=20
+>   =E2=9C=97 No key: openpgp/u.kleine-koenig@pengutronix.de
+>=20
+> Are you sure you exported your key to openpgp and verified addresses?
 
-Fixes: 066a94e28a23 ("media: dt-bindings: media: Use graph and video-interfaces schemas")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Works for me:
 
----
+$ gpg --locate-keys u.kleine-koenig@pengutronix.de
+gpg: directory '/home/test/.gnupg' created
+gpg: keybox '/home/test/.gnupg/pubring.kbx' created
+gpg: /home/test/.gnupg/trustdb.gpg: trustdb created
+gpg: key E2DCDD9132669BD6: public key "Uwe Kleine-K=C3=B6nig <u.kleine-koen=
+ig@pengutronix.de>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1
+gpg: no ultimately trusted keys found
+pub   rsa4096 2010-06-15 [SC] [expires: 2024-06-21]
+      0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+uid           [ unknown] Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix=
+=2Ede>
+sub   rsa2048 2023-03-17 [A] [expires: 2025-03-16]
+sub   rsa2048 2023-03-17 [S] [expires: 2025-03-16]
+sub   rsa2048 2023-03-17 [E] [expires: 2025-03-16]
 
-Changes in v2:
-1. Rework approach: decouple bindings from driver instead of fixing
-   DTS example (Sakari)
----
- .../devicetree/bindings/media/i2c/ov8856.yaml | 21 +++++++++++--------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+also https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git seems to
+have the current key since commit 5151fbdbeb53 "Update E2DCDD9132669BD6
+(Uwe Kleine-K=C3=B6nig)".
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-index 57f5e48fd8e0..71102a71cf81 100644
---- a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-@@ -67,19 +67,22 @@ properties:
- 
-         properties:
-           data-lanes:
--            description: |-
--              The driver only supports four-lane operation.
--            items:
--              - const: 1
--              - const: 2
--              - const: 3
--              - const: 4
-+            oneOf:
-+              - items:
-+                  - const: 1
-+              - items:
-+                  - const: 1
-+                  - const: 2
-+              - items:
-+                  - const: 1
-+                  - const: 2
-+                  - const: 3
-+                  - const: 4
- 
-           link-frequencies:
-             description: Frequencies listed are driver, not h/w limitations.
--            maxItems: 2
-             items:
--              enum: [ 360000000, 180000000 ]
-+              enum: [ 1440000000, 720000000, 360000000, 180000000 ]
- 
-         required:
-           - link-frequencies
--- 
-2.34.1
+Best regards
+Uwe
 
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--zphejp4frfwbr6rc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVx1awACgkQj4D7WH0S
+/k5shwf/QPjY0vbw3xiXkut1wHgeR76JD4HVoLS3y6kuyIjMkkKTvyUadGQuODir
+9CBJP0WZIVH/guFlifyDKRnQPl1WYdPauWySSSPQVaFOgaIJZANtqH0hWkcI+QG/
+M+xIoTWuZOIWma+cHLpBlhNWfzegBrP/VOnIHyEKUQPjDHvdNNdrsYeOXtpEdYN5
+haJgyR1gcIHRiCIh+aNgvAVM2TGMPmO4m+yJcnrgZNC5TbM30QcLl9CQjjF7otRN
+/f9WVN5eWApaKKVLlteBlwBPeF8WtruB1hizwyvth3TwyQM6NnHoh8i/YZx1y/dc
+/VcX+z+50dVw3wNEWnuL+IYm7+JtfQ==
+=T7pv
+-----END PGP SIGNATURE-----
+
+--zphejp4frfwbr6rc--
