@@ -2,127 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24418808C32
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D71D808C30
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443553AbjLGPrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 10:47:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
+        id S1443548AbjLGPrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 10:47:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443511AbjLGPro (ORCPT
+        with ESMTP id S1443511AbjLGPrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 10:47:44 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCA510F3;
-        Thu,  7 Dec 2023 07:47:50 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B78wjtP009869;
-        Thu, 7 Dec 2023 15:47:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=DMNId5NNTRlJNHzk+yn5j+Qypl85O0gZX/21kwX/lzk=;
- b=ldx9OVJ0+ypNve2LIJ8H1fQknaLUsPcq42+3uFP197S33ioy6M4yNvDs/AVSXx3Yo0rU
- lHnixS+ToJlRp3Nu5HfJpDyRoGTK6mpVabJ4A4VZxm008WNq7fZw+a6pUeJOhkWxozZl
- hoALbUqgDMD9DTNHiiv2GorOr4WQnDugNbwSdGYUXJYgjwr4ooKJad3bwUxEQpAvD8tO
- ZtOcyMqFHCShzQpRXGhUYgRfmWXWrFVkdnuyvBToJVKS5pT7r+LyUKVdms+1BNYDV2fF
- FnHmTVV6WGyrSH6MQAC/q6lXT3NIcVMGzTYvpftvpZrvSn1Kj70Afg5xbfppV82amjCq JQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uu2p8a1vx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Dec 2023 15:47:44 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B7Flhpf020296
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 7 Dec 2023 15:47:43 GMT
-Received: from [10.216.4.183] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Dec
- 2023 07:47:36 -0800
-Message-ID: <9d52fa8c-41d1-46a7-be89-5c1c11ca09b4@quicinc.com>
-Date:   Thu, 7 Dec 2023 21:17:32 +0530
+        Thu, 7 Dec 2023 10:47:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFD010CA
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:47:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFE7CC433C7;
+        Thu,  7 Dec 2023 15:47:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701964057;
+        bh=/ZDHgbY7Qojq5NSOaS3ODtQuPI8wdf01S4O6ylvQ4SI=;
+        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+        b=E0d1vBL/4aGpOEQtNh5W274I6t+fB4VirOSjzn/XML6rDD+UnjGgt3ohtFvMsmqNk
+         ULIKqdgiezEcVjB0XHj11u352aB1aytMQu4vUdVvuHkRoJ+aFKF4McyjRL4VEi1Qhl
+         xrFBVyfCJSKpeTDlKEeCrfFNDc4OlG4SZXUGmBUvnr2TNKnRInua8KVfQPBLX55c0Y
+         dLfr4vcVFqJaJGI9Zds4Yttd65AJ4Dl/0bW2mVjBTz6+GsqH5+yqLRrIneEjby7zWw
+         hDBvMB8lIsM50U0q+QYzni0m5RLobflwPK90M9v64AtEGugT6ItS5d1VUWSmrcEjlC
+         htfNe6paRjfsA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/6] usb: dwc3: qcom: Rename hs_phy_irq to
- qusb2_phy_irq
-Content-Language: en-US
-To:     Johan Hovold <johan@kernel.org>
-CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>
-References: <20231204100950.28712-1-quic_kriskura@quicinc.com>
- <20231204100950.28712-3-quic_kriskura@quicinc.com>
- <ZXHkpwji_AzXMjfm@hovoldconsulting.com>
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZXHkpwji_AzXMjfm@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 5hA4un0pgVGyjOaodvzPzjc48OfgqVvv
-X-Proofpoint-ORIG-GUID: 5hA4un0pgVGyjOaodvzPzjc48OfgqVvv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-07_12,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- suspectscore=0 mlxlogscore=361 mlxscore=0 adultscore=0 lowpriorityscore=0
- malwarescore=0 priorityscore=1501 impostorscore=0 spamscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312070129
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] rtw89: avoid stringop-overflow warning
+From:   Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20231204073020.1105416-1-arnd@kernel.org>
+References: <20231204073020.1105416-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Ping-Ke Shih <pkshih@realtek.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ching-Te Ku <ku920601@realtek.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <170196405395.2897000.836367709392997740.kvalo@kernel.org>
+Date:   Thu,  7 Dec 2023 15:47:35 +0000 (UTC)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Arnd Bergmann <arnd@kernel.org> wrote:
 
-
-On 12/7/2023 8:58 PM, Johan Hovold wrote:
-> On Mon, Dec 04, 2023 at 03:39:46PM +0530, Krishna Kurapati wrote:
->> For wakeup to work, driver needs to enable interrupts that depict what is
->> happening on th DP/DM lines. On QUSB targets, this is identified by
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> typo: the
+> After -Wstringop-overflow got enabled, the rtw89 driver produced
+> two odd warnings with gcc-13:
 > 
->> qusb2_phy whereas on SoCs using Femto PHY, separate {dp,dm}_hs_phy_irq's
->> are used instead.
->>
->> The implementation incorrectly names qusb2_phy interrupts as "hs_phy_irq".
->> Clean this up so that driver would be using only qusb2/(dp & dm) for wakeup
->> purposes.
+> drivers/net/wireless/realtek/rtw89/coex.c: In function 'rtw89_btc_ntfy_scan_start':
+> drivers/net/wireless/realtek/rtw89/coex.c:5362:50: error: writing 1 byte into a region of size 0 [-Werror=stringop-overflow=]
+>  5362 |                 wl->dbcc_info.scan_band[phy_idx] = band;
+>       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+> In file included from drivers/net/wireless/realtek/rtw89/coex.h:8,
+>                  from drivers/net/wireless/realtek/rtw89/coex.c:5:
+> drivers/net/wireless/realtek/rtw89/core.h:1441:12: note: at offset [64, 255] into destination object 'scan_band' of size 2
+>  1441 |         u8 scan_band[RTW89_PHY_MAX]; /* scan band in  each phy */
+>       |            ^~~~~~~~~
+> drivers/net/wireless/realtek/rtw89/coex.c: In function 'rtw89_btc_ntfy_switch_band':
+> drivers/net/wireless/realtek/rtw89/coex.c:5406:50: error: writing 1 byte into a region of size 0 [-Werror=stringop-overflow=]
+>  5406 |                 wl->dbcc_info.scan_band[phy_idx] = band;
+>       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+> drivers/net/wireless/realtek/rtw89/core.h:1441:12: note: at offset [64, 255] into destination object 'scan_band' of size 2
+>  1441 |         u8 scan_band[RTW89_PHY_MAX]; /* scan band in  each phy */
+>       |            ^~~~~~~~~
 > 
-> Here too you should say something about why this won't break any systems
-> booting using an older devicetree. Specifically, the QUSB2 PHY interrupt
-> has never been armed on any system running mainline as those bits never
-> made it upstream.
+> I don't know what happened here, but adding an explicit range check
+> shuts up the output.
 > 
-> So an alternative to this could also be to just drop the QUSB2 PHY
-> interrupt handling from this driver for now. >
+> Fixes: 89741e7e42f6 ("Makefile: Enable -Wstringop-overflow globally")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Hi Johan,
+ERROR: 'wifi:' prefix missing: '[PATCH] rtw89: avoid stringop-overflow warning'
+ERROR: Failed to find commit id: Fixes: 89741e7e42f6 ("Makefile: Enable -Wstringop-overflow globally")
 
-So, are you suggesting that we drop the whole patch ?
-I assume if the older kernels are using old DT, they would be using an 
-old driver version too right ? Is there a case where DT is not updated 
-but driver is ? Because if we drop this patch from series, targets with 
-updated DT's would break.
+I can add the "wifi:" prefix but where can I find the commit 89741e7e42f6?
 
-Regards,
-Krishna,
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20231204073020.1105416-1-arnd@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
