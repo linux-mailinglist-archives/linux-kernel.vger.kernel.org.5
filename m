@@ -2,54 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1158080FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 07:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15CC980810E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 07:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbjLGGoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 01:44:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
+        id S1377678AbjLGGsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 01:48:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbjLGGoP (ORCPT
+        with ESMTP id S231347AbjLGGsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 01:44:15 -0500
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3467BD7F;
-        Wed,  6 Dec 2023 22:44:22 -0800 (PST)
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-        by mail5.25mail.st (Postfix) with ESMTPSA id D55AE6045F;
-        Thu,  7 Dec 2023 06:44:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-        s=25mailst; t=1701931461;
-        bh=nJmFuXQf9RfNTr9UuRgO4Hc4w3gZivv6FvKt1ZS32ng=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IrRFqxFxt9IwRGnDy4eKNbzra9+kK+MNCN5HzI7FE+tDi0u3uCDUfI2InxQ2Gk+q3
-         RMt6Ccx+vm9z0zZJkMeMuleUZRlAMKIfIFLRaGH0RyCuwfc7Eu9bpJi480d5bih1Zo
-         My/LD9Zn5wiUe5R/2EQ/8G/z4O6PQo+llw5/AWU7CzREV0wZvYOl8F3qrKIzvWAoqY
-         ZZLLQUDYR2EBmfWKukj9trCrpVv13ZkIsiCA6iZL4pyTNBpOqlHj397UCNzG+Td/ul
-         AZQATRAHMVmZc9RQhn+zthYvQxf9+xY+b1MT3MS5AR+g9KtBOUadRY5k0+mHtVLt+F
-         G09+T9e60N14g==
-Date:   Thu, 7 Dec 2023 08:43:59 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Andreas Kemnade <andreas@kemnade.info>, lee@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, bcousson@baylibre.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: Re: [PATCH v3 6/6] ARM: dts: omap: gta04: standardize
- system-power-controller
-Message-ID: <20231207064359.GS5169@atomide.com>
-References: <20231203222903.343711-1-andreas@kemnade.info>
- <20231203222903.343711-7-andreas@kemnade.info>
- <CAHCN7xKG6-vgnJ+mA8xt0aFK-jCBWOX-GkVmJGNERH43N0ikaw@mail.gmail.com>
+        Thu, 7 Dec 2023 01:48:32 -0500
+Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1F09010D9;
+        Wed,  6 Dec 2023 22:48:33 -0800 (PST)
+Received: from dinghao.liu$zju.edu.cn ( [10.190.66.146] ) by
+ ajax-webmail-mail-app2 (Coremail) ; Thu, 7 Dec 2023 14:46:15 +0800
+ (GMT+08:00)
+X-Originating-IP: [10.190.66.146]
+Date:   Thu, 7 Dec 2023 14:46:15 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Suman Ghosh" <sumang@marvell.com>
+Cc:     "Ariel Elior" <aelior@marvell.com>,
+        "Manish Chopra" <manishc@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "Paolo Abeni" <pabeni@redhat.com>,
+        "Yuval Mintz" <Yuval.Mintz@qlogic.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [EXT] [PATCH] qed: Fix a potential double-free in
+ qed_cxt_tables_alloc
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.2-cmXT5 build
+ 20230825(e13b6a3b) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <SJ0PR18MB5216722A40A24102A158A923DB8BA@SJ0PR18MB5216.namprd18.prod.outlook.com>
+References: <20231206064531.6089-1-dinghao.liu@zju.edu.cn>
+ <SJ0PR18MB5216D284A0CFEF612721D5FDDB84A@SJ0PR18MB5216.namprd18.prod.outlook.com>
+ <7f6e6e60.21d45.18c41ff00b8.Coremail.dinghao.liu@zju.edu.cn>
+ <SJ0PR18MB5216722A40A24102A158A923DB8BA@SJ0PR18MB5216.namprd18.prod.outlook.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHCN7xKG6-vgnJ+mA8xt0aFK-jCBWOX-GkVmJGNERH43N0ikaw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
+Message-ID: <13642c61.22e78.18c4306e6f2.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: by_KCgB37yo3anFlswBXAA--.18674W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgICBmVwRZQ1PQABsJ
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,34 +62,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Adam Ford <aford173@gmail.com> [231203 22:46]:
-> On Sun, Dec 3, 2023 at 4:29 PM Andreas Kemnade <andreas@kemnade.info> wrote:
-> >
-> > Replace TI-specific property by generic one.
-> >
-> > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> > ---
-> > cannot be applied independently of the other ones, so maybe simply delay
-> > it.
-> >
-> >  arch/arm/boot/dts/ti/omap/omap3-gta04.dtsi | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm/boot/dts/ti/omap/omap3-gta04.dtsi b/arch/arm/boot/dts/ti/omap/omap3-gta04.dtsi
-> > index 3661340009e7a..5001c4ea35658 100644
-> > --- a/arch/arm/boot/dts/ti/omap/omap3-gta04.dtsi
-> > +++ b/arch/arm/boot/dts/ti/omap/omap3-gta04.dtsi
-> > @@ -476,6 +476,7 @@ twl: twl@48 {
-> >                 reg = <0x48>;
-> >                 interrupts = <7>; /* SYS_NIRQ cascaded to intc */
-> >                 interrupt-parent = <&intc>;
-> > +               system-power-controller;
-> 
-> Could this go into the twl4030.dtsi file so we don't have every omap3
-> board with this part duplicating this line?
-
-Sounds good to me.
-
-Regards,
-
-Tony
+PiA+PiA+KysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvcWxvZ2ljL3FlZC9xZWRfY3h0LmMKPiA+
+PiA+QEAgLTkzMyw2ICs5MzMsNyBAQCBzdGF0aWMgdm9pZCBxZWRfaWx0X3NoYWRvd19mcmVlKHN0
+cnVjdCBxZWRfaHdmbgo+ID4+ID4qcF9od2ZuKQo+ID4+ID4gCQlwX2RtYS0+dmlydF9hZGRyID0g
+TlVMTDsKPiA+PiA+IAl9Cj4gPj4gPiAJa2ZyZWUocF9tbmdyLT5pbHRfc2hhZG93KTsKPiA+PiA+
+KwlwX2h3Zm4tPnBfY3h0X21uZ3ItPmlsdF9zaGFkb3cgPSBOVUxMOwo+ID4+IFtTdW1hbl0gSGkg
+RGluZ2hhbywKPiA+Pgo+ID4+IEkgYW0gbm90IHN1cmUgaG93IHRoaXMgd2lsbCBoZWxwIHByZXZl
+bnQgdGhlIGRvdWJsZSBmcmVlIGhlcmU/IElmCj4gPj4gcWVkX2lsdF9zaGFkb3dfYWxsb2MoKSBm
+YWlscyB0byBhbGxvY2F0ZSBtZW1vcnksIHRoZW4gc3RpbGwKPiA+cWVkX2N4dF9tbmdyX2ZyZWUo
+KSB3aWxsIGJlIGNhbGxlZCBhbmQga2ZyZWUoKSB3aWxsIHRyeSB0byBmcmVlIHRoZSBOVUxMCj4g
+PnBvaW50ZXIuIFNob3VsZG4ndCBpdCBiZSBsaWtlIGJlbG93Pwo+ID4+Cj4gPj4gaWYgKHBfbW5n
+ci0+aWx0X3NoYWRvdykKPiA+PiAJS2ZyZWUocF9tbmdyLT5pbHRfc2hhZG93KTsKPiA+PiA+IH0K
+PiA+PiA+Cj4gPj4gPiBzdGF0aWMgaW50IHFlZF9pbHRfYmxrX2FsbG9jKHN0cnVjdCBxZWRfaHdm
+biAqcF9od2ZuLAo+ID4+ID4tLQo+ID4+ID4yLjE3LjEKPiA+PiA+Cj4gPgo+ID5rZnJlZShOVUxM
+KSBpcyBzYWZlIGluIGtlcm5lbC4gQnV0IGtmcmVlKCkgd2lsbCBub3Qgc2V0IHRoZSBmcmVlZAo+
+ID5wb2ludGVyIHRvIE5VTEwuIFRoZXJlZm9yZSwgY2hlY2tpbmcgcF9tbmdyLT5pbHRfc2hhZG93
+IHdpbGwgbm90IHByZXZlbnQKPiA+dGhlIGtmcmVlKCkgZm9yIHRoZSBzZWNvbmQgdGltZS4gTWFu
+eSBkb3VibGUtZnJlZSBidWdzIGFyZSBmaXhlZCBieQo+ID5zZXR0aW5nIHRoZSBmcmVlZCBwb2lu
+dGVyIHRvIE5VTEwgKGUuZy4sCj4gPjZiMGQwNDc3ZmNlNyAoIm1lZGlhOiBkdmItY29yZTogRml4
+IGRvdWJsZSBmcmVlIGluCj4gPmR2Yl9yZWdpc3Rlcl9kZXZpY2UoKSIpKSwgc28gSSBqdXN0IGZp
+eCB0aGlzIGJ1ZyBpbiB0aGUgc2FtZSB3YXkuCj4gPgo+ID5SZWdhcmRzLAo+ID5EaW5naGFvCj4g
+W1N1bWFuXSBPa2F5LCBJIHVuZGVyc3RhbmQuIEFsb25nIHdpdGggdGhpcyBjaGFuZ2UsIEkgaGF2
+ZSBjb3VwbGUgb2Ygc3VnZ2VzdGlvbi4gQnV0IGl0IGlzIHVwIHRvIHlvdSB0byBtYWtlIHRoZW0u
+Cj4gMS4gSW4gdGhlIGJlZ2lubmluZyBvZiB0aGUgZnVuY3Rpb24gcWVkX2lsdF9zaGFkb3dfZnJl
+ZSgpIHNob3VsZCB3ZSBhZGQgYSBjaGVjayBhbmQgcmV0dXJuIGlmIGlsdF9zaGFkZXcgPT0gTlVM
+TD8gU28sIHRoYXQgdGhlIGNvbnRyb2wgZG9lcyBub3QgcmVhY2ggdG8gdGhlIGVuZCBvZiB0aGUg
+ZnVuY3Rpb24/IAo+IDIuIEkgc2VlIGluIHFlZF9pbHRfc2hhZG93X2FsbG9jKCkgd2UgYXJlIGNh
+bGxpbmcgImdvdG8gaWx0X3NoYWRvd19mYWlsIiBldmVuIGlmIHRoZSBrY2FsbG9jKCkgaXMgZmFp
+bGluZy4gSWYga2NhbGxvYygpIGZhaWxzLCB0aGVuIHRoZXJlIGlzIG5vdGhpbmcgdG8gZnJlZSwg
+YW5kIHdlIGNhbiBkaXJlY3RseSByZXR1cm4gZnJvbSB0aGVyZSwgcmlnaHQ/CgpUaGFua3MgZm9y
+IHlvdXIgc3VnZ2VzdGlvbnMhIEZvciB0aGUgZmlyc3Qgc3VnZ2VzdGlvbiwgaWx0X3NoYWRldyBp
+cwpjaGVja2VkIGluIHRoZSBiZWdpbm5pbmcgb2YgdGhlIGZvciBsb29wLCBidXQgaXQgc2VlbXMg
+dGhhdCB3ZSBuZWVkCm5vdCB0byBjaGVjayB0aGlzIHBvaW50ZXIgYXQgZWFjaCBpdGVyYXRpb24u
+IEkgd2lsbCBtb3ZlIGl0IHRvIHRoZQpiZWdpbm5pbmcgb2YgdGhlIGZ1bmN0aW9uLiBJIGFsc28g
+cmVjaGVja2VkIHRoZSBsb29wIGFuZCBmb3VuZCB0aGUgYnVnCmhlcmUgc2hvdWxkIGJlIGEgdXNl
+LWFmdGVyLWZyZWUgaW5zdGVhZCBvZiBkb3VibGUtZnJlZS4gVGhlcmUgaXMgYSAKcG9pbnRlciBk
+ZXJlZmVyZW5jZSAmcF9tbmdyLT5pbHRfc2hhZG93W2ldLCB3aGljaCB3aWxsIGJlCnRyaWdnZXJl
+ZCBiZWZvcmUga2ZyZWUoKS4gSSB3aWxsIHJlc2VuZCBhIG5ldyBwYXRjaCB0byBmaXggdGhpcy4K
+CkZvciB0aGUgc2Vjb25kIHN1Z2dlc3Rpb24sIEkgYWdyZWUgdGhhdCBkaXJlY3RseSByZXR1cm5p
+bmcgd291bGQgYmUgYmV0dGVyLgpJIHdpbGwgZml4IHRoaXMgaW4gdGhlIG5leHQgcGF0Y2ggdmVy
+c2lvbiwgdGhhbmtzIQoKUmVnYXJkcywKRGluZ2hhbwo=
