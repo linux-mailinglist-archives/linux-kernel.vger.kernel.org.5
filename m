@@ -2,86 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4D2808E57
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB616808E51
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbjLGRLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:11:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35906 "EHLO
+        id S232800AbjLGRL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:11:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLGRLl (ORCPT
+        with ESMTP id S229671AbjLGRLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:11:41 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CB110EB;
-        Thu,  7 Dec 2023 09:11:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=/UFjD58fhtoLAst150cniGCGsb0qSuthtkjBFrtzgWQ=; b=To
-        9TIVrzpz8t2dkPVK0anb4qxU9D9czgjdViR0/5xmzbyUMZRjVvyo5P2lmhcNuJERkM8VokSq7XMJO
-        qSd67bYlbk5ZKI8vAgFda7Et3yyidIceUOXxFK59lTr19DOWiJ+lATtOEru/23HUrjkkZ+WprR+dT
-        AFMDiUn+EUptw/Y=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1rBHuL-002Kqt-1h; Thu, 07 Dec 2023 18:11:29 +0100
-Date:   Thu, 7 Dec 2023 18:11:29 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Cc:     Daniel Golle <daniel@makrotopia.org>, Lee Jones <lee@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Jakub Kicinski <kuba@kernel.org>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Li Zetao <lizetao1@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] leds: trigger: netdev: extend speeds up to 10G
-Message-ID: <cdcab57e-ef73-436d-8dac-f92219e4cbf9@lunn.ch>
-References: <99e7d3304c6bba7f4863a4a80764a869855f2085.1701143925.git.daniel@makrotopia.org>
- <20231207172923.62ce530e@dellmb>
+        Thu, 7 Dec 2023 12:11:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE48B170C
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:12:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78BA1C433C8;
+        Thu,  7 Dec 2023 17:11:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701969120;
+        bh=IyPtYmm7UMjttoaV79y97U5M1AiSkAlE5kldVFOD7Qs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bXlGR5U81hQG84IDZlqVXL/s9801dWDL095ZFx6khDpmnlS5vYR0mLR2RERobBupI
+         p9x5SnV/kz9Fw1lJKA0DyAUQ4IeqAuOADwtARkANfI2BYoJcYrMOAfBxh6XR27g5kM
+         Fg+7+O28Z7VuCtlEpxBjUjrTMWP84oeOU1Ft82B8km0jwLcwcy9mrEKa5BDbWXnKKA
+         tmF05vs6YzrD/YswILYhOCbjQcdoPYTM9orr8IpctqwFS8bpJ4tShbyHF1uNLdXU03
+         irtTIXv/nz8xPwyPUfRkSTHWgS8sxDM/VOxzqq/TKJWZLNsOKN4v8iwN6aYNFurntD
+         R/slSm6O/emCA==
+Date:   Thu, 7 Dec 2023 17:11:55 +0000
+From:   Lee Jones <lee@kernel.org>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, bcousson@baylibre.com, tony@atomide.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: Re: [PATCH v3 2/6] twl-core: add power off implementation for twl603x
+Message-ID: <20231207171155.GG111411@google.com>
+References: <20231203222903.343711-1-andreas@kemnade.info>
+ <20231203222903.343711-3-andreas@kemnade.info>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231207172923.62ce530e@dellmb>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231203222903.343711-3-andreas@kemnade.info>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 05:29:23PM +0100, Marek Beh�n wrote:
-> On Tue, 28 Nov 2023 04:00:10 +0000
-> Daniel Golle <daniel@makrotopia.org> wrote:
-> 
-> > Add 2.5G, 5G and 10G as available speeds to the netdev LED trigger.
-> > 
-> > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> 
-> So what will happen when there are more speeds? Will we create a
-> separate file for each speed?
-> 
-> Will we have a separate sysfs file for 10, 100, 1000, 2500, 5000,
-> 10000, 20000, 25000, 40000, 50000, 56000, 100000, 200000, 400000,
-> 800000 ?
-> 
-> These are all speeds from include/uapi/linux/ethtool.h.
-> 
-> Maybe we should have reused ethtool link mode bits, or something...
+On Sun, 03 Dec 2023, Andreas Kemnade wrote:
 
-That gets pretty ugly. The bits are not in any logical order, since
-they just get appended onto the end as needed.
+> If the system-power-controller property is there, enable power off.
+> Implementation is based on a Linux v3.0 vendor kernel.
+> 
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> ---
+>  drivers/mfd/twl-core.c  | 28 ++++++++++++++++++++++++++++
+>  include/linux/mfd/twl.h |  1 +
+>  2 files changed, 29 insertions(+)
+> 
+> diff --git a/drivers/mfd/twl-core.c b/drivers/mfd/twl-core.c
+> index 6e384a79e3418..f3982d18008d1 100644
+> --- a/drivers/mfd/twl-core.c
+> +++ b/drivers/mfd/twl-core.c
+> @@ -124,6 +124,11 @@
+>  #define TWL6030_BASEADD_RSV		0x0000
+>  #define TWL6030_BASEADD_ZERO		0x0000
+>  
+> +/* some fields in TWL6030_PHOENIX_DEV_ON */
 
-> Also, the files should only be present if the requested speed is
-> supported by the net device. So if 2500 mbps is not supported, there
-> should no be link_2500.
+My preference is for proper grammar in comments please.
 
-Yes, this would be nice. We have the information in the phy_setting
-settings[] table in phy-core.c.
+"Some"
 
-	 Andrew
+What is TWL6030_PHOENIX_DEV_ON?  A register?
+
+> +#define TWL6030_APP_DEVOFF		BIT(0)
+> +#define TWL6030_CON_DEVOFF		BIT(1)
+> +#define TWL6030_MOD_DEVOFF		BIT(2)
+> +
+>  /* Few power values */
+>  #define R_CFG_BOOT			0x05
+>  
+> @@ -687,6 +692,20 @@ static void twl_remove(struct i2c_client *client)
+>  	twl_priv->ready = false;
+>  }
+>  
+> +static void twl6030_power_off(void)
+> +{
+> +	int err;
+> +	u8 val;
+> +
+> +	err = twl_i2c_read_u8(TWL_MODULE_PM_MASTER, &val, TWL6030_PHOENIX_DEV_ON);
+> +	if (err)
+> +		return;
+> +
+> +	val |= TWL6030_APP_DEVOFF | TWL6030_CON_DEVOFF | TWL6030_MOD_DEVOFF;
+> +	twl_i2c_write_u8(TWL_MODULE_PM_MASTER, val, TWL6030_PHOENIX_DEV_ON);
+> +}
+> +
+> +
+>  static struct of_dev_auxdata twl_auxdata_lookup[] = {
+>  	OF_DEV_AUXDATA("ti,twl4030-gpio", 0, "twl4030-gpio", NULL),
+>  	{ /* sentinel */ },
+> @@ -852,6 +871,15 @@ twl_probe(struct i2c_client *client)
+>  			goto free;
+>  	}
+>  
+> +	if (twl_class_is_6030()) {
+
+Is this check required?
+
+> +		if (of_device_is_system_power_controller(node)) {
+
+Shouldn't this cover it?
+
+> +			if (!pm_power_off)
+> +				pm_power_off = twl6030_power_off;
+> +			else
+> +				dev_warn(&client->dev, "Poweroff callback already assigned\n");
+
+Can this happen?  Why would anyone care if it did?
+
+> +		}
+> +	}
+> +
+>  	status = of_platform_populate(node, NULL, twl_auxdata_lookup,
+>  				      &client->dev);
+>  
+> diff --git a/include/linux/mfd/twl.h b/include/linux/mfd/twl.h
+> index c062d91a67d92..85dc406173dba 100644
+> --- a/include/linux/mfd/twl.h
+> +++ b/include/linux/mfd/twl.h
+> @@ -461,6 +461,7 @@ static inline int twl6030_mmc_card_detect(struct device *dev, int slot)
+>  
+>  #define TWL4030_PM_MASTER_GLOBAL_TST		0xb6
+>  
+> +#define TWL6030_PHOENIX_DEV_ON                  0x06
+>  /*----------------------------------------------------------------------*/
+>  
+>  /* Power bus message definitions */
+> -- 
+> 2.39.2
+> 
+
+-- 
+Lee Jones [李琼斯]
