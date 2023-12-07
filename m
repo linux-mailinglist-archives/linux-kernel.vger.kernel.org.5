@@ -2,161 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4CB808A6D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D32808A6C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443245AbjLGOYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:24:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
+        id S1443368AbjLGOXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:23:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443199AbjLGOX7 (ORCPT
+        with ESMTP id S1443271AbjLGOX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:23:59 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EBA30DB
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:20:56 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54c79cca895so12250a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 06:20:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701958854; x=1702563654; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GkRewiu/NZNFWUxZGqBol41tT6ZsnLqbUhftzqAc+jE=;
-        b=MEAqqvBG99bOv9gYMpP2Qo4DQNDbq0xm69Wc707OAVXHOGS76Oti4rMXUdVp/2kBWp
-         Z1lNl4UW84d+7rg2LDGfLya0Oi2N3CBkAl25y+hdUHilYo6E/Jupv8D8ofcjsrF157+6
-         kYqbXC+V8shxRycKm9S8xtGvBMfZXYoFMhlO+GtlThmfwLIsnYqKOp8+gFOm0YkgM8LC
-         L9wri7O8KBdfyZpPVVYU/AU6jaxzBcsRAcEb86v+NTMvDVbwFAO1wslrhzmjUNdgRMh6
-         SjwEHRGZTx45BedVgHZGk4O9yo63BDNj3ugEQLUgmjG2hcV2lgmEiQpj0GpYQzZoXrNn
-         aK+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701958854; x=1702563654;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GkRewiu/NZNFWUxZGqBol41tT6ZsnLqbUhftzqAc+jE=;
-        b=DZLIPr/ArrEjdpRQGamYrC6t0Cvx45Z2K/eVRt09qwS/5GuANZtGdfPfw96tQ0yIL7
-         /0WAfghXQArJOf2dOlaeSyXYVj5rTxONCKwhQ1EGhQ6+vISafqa9b26vfut8UAworkNV
-         vSHjPTlGEIyeDTc8D8OTPxWkvnS7m95+qjccSfEzs8+7wx3qhzmkBQMEV+lecpC4QuJ7
-         9PpC63R7i1nd3TeaCHjYI/5mXPMjpBvcRNskfNcCVEpJu2JNGUQwwN555tX/OzbYiPsc
-         AV5O3PqOMg5Pj0acvbyb2a3S5/j+OyCN7Yd/Z5T5wl1WbjeJJgg/h48Qlrk8pvUCwVJ0
-         NrIA==
-X-Gm-Message-State: AOJu0Yx2/SUK8n7JMEpTRLE+pZFkrIMVnzi4HsuQ0vuQJVuPFfAdISE2
-        4BmVWfY0Qs5dPzGNA/9v/x45Uu9O0o2LgtvMiYMPKg==
-X-Google-Smtp-Source: AGHT+IFLjUJbZEWxmcKPEqIR6GlBevvmCt7XyrArSlH2PfvinLYze+S7AEZ+gA4JR7ugTHdKo2yo2htiVN6SEIL8RQ4=
-X-Received: by 2002:a50:c35d:0:b0:54c:79ed:a018 with SMTP id
- q29-20020a50c35d000000b0054c79eda018mr252385edb.2.1701958854365; Thu, 07 Dec
- 2023 06:20:54 -0800 (PST)
+        Thu, 7 Dec 2023 09:23:29 -0500
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2080.outbound.protection.outlook.com [40.107.220.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1FE26A2;
+        Thu,  7 Dec 2023 06:21:59 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Owegfm9G7RNm8SYETb2NJRKpOdHh2P60vNM1+Qml6DYs78/wRPvz6S7BWupq4oIrFxQpinJ8M8h1fPeacaM8nU8iV8GZu0JKfOGp6HoE7IgBr7fwRthHDPZsfaQKnPLQxUYbDKDbq+zEqASwSdQ40sa0FG6DhM4Z3hwWe3w+kjS0f3wBLvMKS891fg/gxZtugv9+oczUOhxvVi7u+uZtz99AMELKHRwhMDTr7EM0FeyU4WLF3WgRyGkvkmvEdDRs41sq703IiXWLWmEL1WiSSYIHLcCo/1JoamYN9PKa6/9m3Ann19bHPx4RjR2jIl/A9z/2AXYQ4szq3GzghiVXsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=k3jVE5aniqmQYRZf9bOsgHZr1wyu3wH4STP082+kz5s=;
+ b=LgP5TJU+2IQnNi69NuANENh+TKXFz8/0KFyUxOyRJlJfDa6xLpxTBTuVjYRzjW5TbazS96jh/g38lZ3P8geXKjeKnySZ1Rln9y+lSVKlxibIgtxkfvVLgGB+j/0aZg5aTWCUjmytmnfdSgzWHpgVkxjoj1CURmL1zWDzb9/fXFD8hCbfh/yfK0GLA6lln0wNRCdJ+pGv5LO8huEDpzzsorXa52iWfHKkJIlVVU/mpskXiKT4f1QlZFhBN3FcTUQgZTpw1f1JEHmsQj+QXqR3ofMxmm3/AMqDvhrWJJT1ENv1prB5EYN/uD/Lt8fWQCOZMwav4KIh5oEUu2EAaz4E6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k3jVE5aniqmQYRZf9bOsgHZr1wyu3wH4STP082+kz5s=;
+ b=l5VCW/TwprtBBd+uFF4LFaTb973pu01KIkR7hKZ2mvd47/JCtLqwOvcwlHl9NJmRsfEp/fuxo5htIJaMIjv2kEvqX2lNQTRzmMw5GYJG5+8YQomRqRQp0OyHql6whNsDRw8VXa6hIXloUGbtK4mSUMD807VyYFZsnUFUbHN9fqU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB6588.namprd12.prod.outlook.com (2603:10b6:510:210::10)
+ by IA0PR12MB7625.namprd12.prod.outlook.com (2603:10b6:208:439::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Thu, 7 Dec
+ 2023 14:21:54 +0000
+Received: from PH7PR12MB6588.namprd12.prod.outlook.com
+ ([fe80::cd68:8823:38b3:65bc]) by PH7PR12MB6588.namprd12.prod.outlook.com
+ ([fe80::cd68:8823:38b3:65bc%3]) with mapi id 15.20.7068.027; Thu, 7 Dec 2023
+ 14:21:54 +0000
+Message-ID: <13272300-1d7e-92e8-020e-54d9cfd12ca7@amd.com>
+Date:   Thu, 7 Dec 2023 19:51:43 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+From:   Ravi Bangoria <ravi.bangoria@amd.com>
+Subject: Re: [PATCH 1/6] perf mem: Add mem_events into the supported perf_pmu
+To:     kan.liang@linux.intel.com, acme@kernel.org, irogers@google.com,
+        peterz@infradead.org, mingo@redhat.com, namhyung@kernel.org,
+        jolsa@kernel.org, adrian.hunter@intel.com, john.g.garry@oracle.com,
+        will@kernel.org, james.clark@arm.com, mike.leach@linaro.org,
+        leo.yan@linaro.org, yuhaixin.yhx@linux.alibaba.com,
+        renyu.zj@linux.alibaba.com, tmricht@linux.ibm.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Ravi Bangoria <ravi.bangoria@amd.com>
+References: <20231206201324.184059-1-kan.liang@linux.intel.com>
+ <20231206201324.184059-2-kan.liang@linux.intel.com>
+Content-Language: en-US
+In-Reply-To: <20231206201324.184059-2-kan.liang@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0195.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:e8::20) To PH7PR12MB6588.namprd12.prod.outlook.com
+ (2603:10b6:510:210::10)
 MIME-Version: 1.0
-References: <CABOYnLxJzspevWrZLOt+6jkybyUEHfYz8MFZbTuRcyyjnExiKA@mail.gmail.com>
-In-Reply-To: <CABOYnLxJzspevWrZLOt+6jkybyUEHfYz8MFZbTuRcyyjnExiKA@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 7 Dec 2023 15:20:43 +0100
-Message-ID: <CANn89iLNOyqDy6p1AZj5A=Vr52xhA_d3aDiNyTWOfczTcC8FFw@mail.gmail.com>
-Subject: Re: KMSAN: uninit-value in ip_route_output_key_hash_rcu (4)
-To:     xingwei lee <xrivendell7@gmail.com>
-Cc:     syzbot+549e451574ba8bfd0fd6@syzkaller.appspotmail.com,
-        davem@davemloft.net, glider@google.com, kuba@kernel.org,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB6588:EE_|IA0PR12MB7625:EE_
+X-MS-Office365-Filtering-Correlation-Id: b5720a52-c6c5-4df6-4dc2-08dbf72fdcc3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jC39ctvXyBcMRPyo7QaTl2DBJnFV7siNQvmCmLYn59wc8PL0HcweSmALLvfBEq8xFAWIE5xy14DfFR8RTjesSyZVuwi+hM20v8dhmTAEztG/S+B90eB1X4fd5tzETHoWDkTxRq3Yl+ZjplozcMdCJlSqIRD2wsl0L1J917mZoTAERqIlcEjK7vAJtD/PFCM5dt9XLLemWyXoX46ihWXkDNJhZGfOMcHtuL8D76vehJa/4+H1XL0j5qmHXXPz4N4bmBqGMB8hOJH3AwmDNem7eLlDXQQgXH9HWO3fq9gRn752NspJ5imda+wMroM5Rgsvw1xNzexW/Gaq564sDI+BElwb5xsON2VSAthCSAxx/Xu4oyRMkNaX/Em59GrUKfmWlBlnAs2VtAaaHDyAsRgLntjKi9PkGaetW78QVVrQj48Jeu6JALTHj7+C5q5orcnA3G2cOe0PB4gkr9bNgPLOvK5c9g5qqePy6LyNex94++9aQDaZ6ZeVMcL4Dnd6X205aYOkH74QmEm6ZtAWqyMZmgSntGgZZOD5DIuRQLazQfxoreHdgbdPv2lFcNJe4W45QGmcIeu3pNXDek87EhCrDMhuqQ3n+LhCcOOW7hhGHQqQ4iSgkLI3N92Z+kQrKGz1xhadISK/g8LaAsOyxR8jRDV/CahrgjvsUzNEdrWn2K8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB6588.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(346002)(396003)(366004)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(6862004)(2906002)(8676002)(558084003)(6200100001)(31696002)(8936002)(44832011)(86362001)(7416002)(5660300002)(921008)(36756003)(41300700001)(6512007)(6506007)(6666004)(2616005)(26005)(38100700002)(31686004)(66556008)(66476007)(37006003)(316002)(66946007)(6486002)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T09jR0lrMW1yVWd0ZmtabTBvVUphMHpXLzc5bldETHc5ajkzcXVJM2FSZlRu?=
+ =?utf-8?B?UTdqSUUzdjlQRFRpVXRHTDBqVVh4Q3ljdWhEeDkzdkhoc1hvZlg5STlBQTR0?=
+ =?utf-8?B?NzlvNE1kRENCbUQxTGk4NmFhWXFpbzRoREtzY0RmRGVZMHpIdnlyVDFEanNS?=
+ =?utf-8?B?cVBiY3cyTFlmNmVSTDRvcW5oZHNxY1AwelZaNDhkTEVNZGZnNkhOb1RDQktm?=
+ =?utf-8?B?WnVYMDU5SWJmSnhKZUkycUZaSStSa2lDNDdGVno4cm5rZ3I1R0x6N3poZjVs?=
+ =?utf-8?B?UjV0Y0hjOXJpQnRvWE0rMDBQWGJqOVp6RnBsbmU2TGdFa04vT0ZFRmNDWmRm?=
+ =?utf-8?B?NzN3cnJmZjV3cmswam40YUU5TUJGQlRrMUFERlNsQnltVFBiRlpHc3RxRUha?=
+ =?utf-8?B?RWJHd0xaakM2OWsyU0NrYXJqczZHTGV1a2dSOE9KQ09tNmdWZlg3U3BiUVB2?=
+ =?utf-8?B?ZUtnemJjTEg1Z1J1MW40WTU2VVEwRklHR3VYZUd3RHNZMVJBTEZoTTV4Rnky?=
+ =?utf-8?B?UHduODNHc0JCeSt5T3RrU3pCclJvWUNudDB1UlVjellLYXEwaTVaa3ErN1Bv?=
+ =?utf-8?B?Q0xPS2N1SzBsMUxmbk5aMWgveFRXQkt1eHNYQzROTGxTbXJIdTZaR29kWFpQ?=
+ =?utf-8?B?OUFWVEt1bDBHOFFYUVVncExuempwVGFxU1dUTFlGbFhzVFVqYzU3L1NsMGJy?=
+ =?utf-8?B?aXVITVl3OFdEUUhyUG1sTG5JaVJGdUR6RUxrcHo1RDltellRTUgrSTB4STNu?=
+ =?utf-8?B?eWdtMGh5Y2llSWpxMEtqczNpRzhMNFpLeVJWYXhXbHFEakZWdWhDOTdPNzlM?=
+ =?utf-8?B?bDlpOVhoYitlYUl0QTdFdUs4M3I1ZWxrSlBxWnRxTG1Xcmo5c21GZ3JWaWNZ?=
+ =?utf-8?B?bE4zV3dCcSt5K0E1TUpLdW54eXhCWHZQUzFlMUwyS1kyd0hOMjVnaGhobThR?=
+ =?utf-8?B?cmUvRG5nb0hJY1NNbTgrL1RnMGhBUGM1M3hqbmsvZDVidFFBczFreHpleGVp?=
+ =?utf-8?B?TGpzZHV5RU1oejRhamt6dkVsSDZaVDdOWkJpdVVnMkNwbGlsNHFHQUNnK1Fq?=
+ =?utf-8?B?eTl6VWcvVmkwOHhHZDlPQ1pMbnYyM3lyM3V1ckM2cm80VGplTUV2ay8yTmNh?=
+ =?utf-8?B?YXlFdjAwSy9LZVUxWUJUY2h4U2cxZmdFOXhwMkRCaTJkUzlSaVNnQWVncnVw?=
+ =?utf-8?B?MnJkaUZ1U0RWenhmdVBzcUdJaEpUUlN3c1ZMSkJMYThmZjhuSXV6WlN6Q0FH?=
+ =?utf-8?B?VFB1VUZDMDR2WWN2QUYvZisvUjM2c1FtdkNkWVFlMkxGMGhtNEtwTnZaVys4?=
+ =?utf-8?B?cVN1Yi9OdENtZkttTkl2WitQODlTLzljL2I5MmIwUWl3dTNXWWFtbVc2KzQ3?=
+ =?utf-8?B?ZU4vdDFTODdlbTJ3eXpzY0JuenkwdVFJTE91R0xGY3V6MTRLUGFsUTJPNWEz?=
+ =?utf-8?B?QUhTeVF3Zmt6WGltUFluUlpueVNuaGFuTkdwY0EySm9vMWFzRE4wcnRTbGZ4?=
+ =?utf-8?B?Z0FEdnNKaE1mTlBmRUJTMzd3cHl2MmpBR2x6MmduSWp3a0x5VGYvQ1dKdE8v?=
+ =?utf-8?B?eGM0ZVFBL2RSczM1YnZKeVNVTk53WGxlMWRKSEtINmhqNXdXNnFoeUszMWp1?=
+ =?utf-8?B?QUdXV1F0blgyTHZkTXhMNTRza2JXQUFJcWtJMXU3dkt6WUVzN21BekVnUmYy?=
+ =?utf-8?B?UjlzVkkvOTBMMmVUMzdCRjhpWkJMa0VCSlBlZ1Vobm1wYVZFZnNnZGRsdSts?=
+ =?utf-8?B?cHAzSzZKbXJsZFRkSm54ZHZZSnJlSkJON05lelF2amx5ZHc5M0dzZFAvMkhs?=
+ =?utf-8?B?MDdHemkvU0UzSjA5dWREOS9tMi85a25Hd2o2cytBSjNCU1JXVUNjbGI1YWto?=
+ =?utf-8?B?b3hxaWhzR1I4aHNOM1ZpTURFVE5jUzZpNXdiZHFDODB2MHk5QU1WZGhQLzRQ?=
+ =?utf-8?B?clFjTFlnRmRtVElUQ1k1d3RxQUhvUlNSdkZxWWVkQXpWZndGSFpLT1NHZE53?=
+ =?utf-8?B?VktnQTdVMTBFTTcrdG8yR0xKcHdkWlYxQk1jT0FjZ1lWamZhelJZZ3pRWXFu?=
+ =?utf-8?B?KzludGU0YXhTcEpCdkt0b29tbzNGdU9IN1M5SE5HaGxzVmhOVm9nY0xuUHY1?=
+ =?utf-8?Q?JnJIdD/NPz+xDQBvIaASJI+C+?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b5720a52-c6c5-4df6-4dc2-08dbf72fdcc3
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB6588.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2023 14:21:54.6294
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: B35MCcMzcU7PXo5eZt/hT8rtbxw9RYUI47ZAMJinb559cC98Ci2n4sSYZthVaslKCzmJqBxX8tMXbckngbsW8g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7625
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 2:36=E2=80=AFPM xingwei lee <xrivendell7@gmail.com> =
-wrote:
->
-> Hello
->
-> I reproduced this bug in the latest upstream linux with repro.c and repro=
-.txt
->
-> When fuzzing the latest upstream linux 6.7-rc4,  the following crash
-> was triggered.
-> HEAD commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
->
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: xingwei Lee <xrivendell7@gmail.com>
->
-> console_log: https://gist.github.com/xrivendell7/195eb3c1946ea466f9d8f597=
-7b90c6ed#file-console_log
-> report: https://gist.github.com/xrivendell7/195eb3c1946ea466f9d8f5977b90c=
-6ed#file-report
-> kernel commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-> kernel config: https://syzkaller.appspot.com/text?tag=3DKernelConfig&x=3D=
-ce27066613dacbb6
-> repro.c: https://gist.github.com/xrivendell7/195eb3c1946ea466f9d8f5977b90=
-c6ed#file-repro-c
-> repro.txt: https://gist.github.com/xrivendell7/195eb3c1946ea466f9d8f5977b=
-90c6ed#file-repro-txt
->
-> In the lasted kernel: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8 the
-> crash likes below:
-> [  209.523497][ T8593] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [  209.530316][ T8593] BUG: KMSAN: uninit-value in
-> ip_route_output_key_hash_rcu+0x1ee8/0x3810
-> [  209.533357][ T8593]  ip_route_output_key_hash_rcu+0x1ee8/0x3810
-> [  209.535524][ T8593]  ip_route_output_flow+0x14f/0x320
-> [  209.537312][ T8593]  ip_tunnel_xmit+0x1450/0x3e80
-> [  209.538995][ T8593]  ipgre_xmit+0xd1c/0xe20
-> [  209.540511][ T8593]  dev_hard_start_xmit+0x247/0xa10
-> [  209.542211][ T8593]  __dev_queue_xmit+0x33b8/0x5130
-> [  209.543742][ T8593]  __bpf_redirect+0xdd7/0x1600
-> [  209.545235][ T8593]  bpf_clone_redirect+0x328/0x470
-> [  209.546807][ T8593]  ___bpf_prog_run+0x2180/0xdb80
-> [  209.548288][ T8593]  __bpf_prog_run512+0xb5/0xe0
-> [  209.549864][ T8593]  bpf_test_run+0x482/0xb00
-> [  209.551178][ T8593]  bpf_prog_test_run_skb+0x14e5/0x1f20
-> [  209.552612][ T8593]  bpf_prog_test_run+0x6af/0xac0
-> [  209.553902][ T8593]  __sys_bpf+0x649/0xd60
-> [  209.555000][ T8593]  __x64_sys_bpf+0xa0/0xe0
-> [  209.556114][ T8593]  do_syscall_64+0x44/0x110
-> [  209.557249][ T8593]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> [  209.558676][ T8593]
-> [  209.559232][ T8593] Uninit was stored to memory at:
-> [  209.560528][ T8593]  ip_tunnel_xmit+0x1161/0x3e80
-> [  209.561676][ T8593]  ipgre_xmit+0xd1c/0xe20
-> [  209.562711][ T8593]  dev_hard_start_xmit+0x247/0xa10
-> [  209.563864][ T8593]  __dev_queue_xmit+0x33b8/0x5130
-> [  209.564963][ T8593]  __bpf_redirect+0xdd7/0x1600
-> [  209.566044][ T8593]  bpf_clone_redirect+0x328/0x470
-> [  209.567151][ T8593]  ___bpf_prog_run+0x2180/0xdb80
-> [  209.568184][ T8593]  __bpf_prog_run512+0xb5/0xe0
-> [  209.569187][ T8593]  bpf_test_run+0x482/0xb00
-> [  209.570201][ T8593]  bpf_prog_test_run_skb+0x14e5/0x1f20
-> [  209.571308][ T8593]  bpf_prog_test_run+0x6af/0xac0
-> [  209.572284][ T8593]  __sys_bpf+0x649/0xd60
-> [  209.573131][ T8593]  __x64_sys_bpf+0xa0/0xe0
-> [  209.574010][ T8593]  do_syscall_64+0x44/0x110
-> [  209.574902][ T8593]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> [  209.576008][ T8593]
-> [  209.576456][ T8593] Uninit was created at:
-> [  209.577301][ T8593]  slab_post_alloc_hook+0x129/0xa70
-> [  209.578284][ T8593]  kmem_cache_alloc_node+0x5e9/0xb10
-> [  209.579233][ T8593]  kmalloc_reserve+0x13d/0x4a0
-> [  209.580177][ T8593]  pskb_expand_head+0x226/0x1a00
-> [  209.581096][ T8593]  skb_ensure_writable+0x3d3/0x460
-> [  209.582015][ T8593]  bpf_clone_redirect+0x17f/0x470
-> [  209.582963][ T8593]  ___bpf_prog_run+0x2180/0xdb80
-> [  209.583859][ T8593]  __bpf_prog_run512+0xb5/0xe0
-> [  209.584725][ T8593]  bpf_test_run+0x482/0xb00
-> [  209.585556][ T8593]  bpf_prog_test_run_skb+0x14e5/0x1f20
-> [  209.586527][ T8593]  bpf_prog_test_run+0x6af/0xac0
-> [  209.587347][ T8593]  __sys_bpf+0x649/0xd60
-> [  209.588058][ T8593]  __x64_sys_bpf+0xa0/0xe0
-> [  209.588802][ T8593]  do_syscall_64+0x44/0x110
-> [  209.589613][ T8593]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Hi Kan,
 
-Please double check the latest net tree.
+> +void perf_pmu__arch_init(struct perf_pmu *pmu)
+> +{
+> +	if (strcmp(pmu->name, "arm_spe_0"))
+
+if (!strcmp(...))
+
+> +	if (x86__is_amd_cpu()) {
+> +		if (strcmp(pmu->name, "ibs_op"))
+
+Ditto.
+
+Thanks,
+Ravi
