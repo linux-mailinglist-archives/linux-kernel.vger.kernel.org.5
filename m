@@ -2,59 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 011B6808961
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E332C808966
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:44:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442025AbjLGNkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:40:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
+        id S1441907AbjLGNnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:43:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbjLGNkl (ORCPT
+        with ESMTP id S232759AbjLGNno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:40:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDA7D54
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:40:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701956448; x=1733492448;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=gC+5aft9ozWQVDCDl/u6T3mecmIgG+ZwP5eqt1lPTSY=;
-  b=Zq0Au4Xzmb/wtamxuZCyeRLPnOwWGmrlPzMhEDqEhK3Hfaz9O86BsYz9
-   wS6x56KkoS7qpwJ3/KuwFe1cazoa20f1UWwyvIlXTr1d9fhK3C8qvrJZx
-   ZllWaD/rRp4Uyv7xyys5c5o3BahUCU8ZnmD7xBVnAXdO5thfN7FjgEvwb
-   FvRvlDQ/7/xcfBjjoDVPasrtvAkIbVO/ToYeGHBZjpgU8C3YzZGJSzGP3
-   QxpBwZDjpyflvbZDN/Ffe0l3d0PMbHOuXTG3b9WcJuGs8hj1aIN7RzFxC
-   bmvQKaYi0g4zxe8zalB7cdGvzIQsVZBanaQ+eqEjxF3nrX0F2AblM/BdI
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="379247557"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="379247557"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 05:40:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="19704759"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 07 Dec 2023 05:40:47 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBEcO-000CJ8-00;
-        Thu, 07 Dec 2023 13:40:44 +0000
-Date:   Thu, 7 Dec 2023 21:39:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Julien Massot <julien.massot@iot.bzh>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Subject: drivers/remoteproc/rcar_rproc.c:45:20: sparse: sparse: incorrect
- type in argument 1 (different address spaces)
-Message-ID: <202312072159.2k3mbRlb-lkp@intel.com>
+        Thu, 7 Dec 2023 08:43:44 -0500
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ADB2D54;
+        Thu,  7 Dec 2023 05:43:50 -0800 (PST)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B7DhhoH067822;
+        Thu, 7 Dec 2023 07:43:43 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1701956623;
+        bh=/FQO++Y5swUkctZSmrGpa24HWk4rIJeD9rWaIjxBst8=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=XPQhOsExUkD7inCNDDaCJb5As8nrZu+DUP/LgFIJyCEZkJwT8pT20p8AvoJJ7batB
+         lcQKZkoOAfPgYhLSXwaa9Kfme+0CGbuXUrFDAcwSyb8AMDqgbsS8aKgXTwsehIkRiv
+         f8kqx+t4JWzjWUhOppipQBB0na1+CQ7ULWcxw2do=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B7DhhDs074417
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 7 Dec 2023 07:43:43 -0600
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 7
+ Dec 2023 07:43:43 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 7 Dec 2023 07:43:43 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B7Dhhmd037794;
+        Thu, 7 Dec 2023 07:43:43 -0600
+Date:   Thu, 7 Dec 2023 07:43:43 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     "Anwar, Md Danish" <a0501179@ti.com>
+CC:     MD Danish Anwar <danishanwar@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Tero Kristo <kristo@kernel.org>, <srk@ti.com>,
+        <r-gunasekaran@ti.com>
+Subject: Re: [PATCH 2/3] arm64: dts: ti: k3-am642-evm: add ICSSG1 Ethernet
+ support
+Message-ID: <20231207134343.ufiy2owik5kn3y2r@degrease>
+References: <20231207081917.340167-1-danishanwar@ti.com>
+ <20231207081917.340167-3-danishanwar@ti.com>
+ <20231207131818.3n7z64ve6izatlvs@unchanged>
+ <f83f21c0-3f5f-4069-abab-2b47e371d3bd@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
+In-Reply-To: <f83f21c0-3f5f-4069-abab-2b47e371d3bd@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,60 +74,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-commit: 285892a74f1370a12249f765c6a4e3b16194852e remoteproc: Add Renesas rcar driver
-date:   2 years ago
-config: mips-randconfig-r122-20231108 (https://download.01.org/0day-ci/archive/20231207/202312072159.2k3mbRlb-lkp@intel.com/config)
-compiler: mips-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231207/202312072159.2k3mbRlb-lkp@intel.com/reproduce)
+On 18:58-20231207, Anwar, Md Danish wrote:
+[...]
+> >> +
+> >>  	memory@80000000 {
+> >>  		bootph-all;
+> >>  		device_type = "memory";
+> >> @@ -229,6 +234,70 @@ transceiver2: can-phy1 {
+> >>  		max-bitrate = <5000000>;
+> >>  		standby-gpios = <&exp1 9 GPIO_ACTIVE_HIGH>;
+> >>  	};
+> >> +
+> >> +	icssg1_eth: icssg1-eth {
+> >> +		compatible = "ti,am642-icssg-prueth";
+> >> +		pinctrl-names = "default";
+> >> +		pinctrl-0 = <&icssg1_rgmii1_pins_default>;
+> >> +
+> >> +		sram = <&oc_sram>;
+> >> +		ti,prus = <&pru1_0>, <&rtu1_0>, <&tx_pru1_0>, <&pru1_1>, <&rtu1_1>, <&tx_pru1_1>;
+> >> +		firmware-name = "ti-pruss/am65x-sr2-pru0-prueth-fw.elf",
+> >> +				"ti-pruss/am65x-sr2-rtu0-prueth-fw.elf",
+> >> +				"ti-pruss/am65x-sr2-txpru0-prueth-fw.elf",
+> >> +				"ti-pruss/am65x-sr2-pru1-prueth-fw.elf",
+> >> +				"ti-pruss/am65x-sr2-rtu1-prueth-fw.elf",
+> >> +				"ti-pruss/am65x-sr2-txpru1-prueth-fw.elf";
+> > 
+> > Umm... am65x??? is that a typo? I'd rather keep it am64x here and drop
+> > that sr2 thing. Tomorrow there will be a custom bug on am64 and then we
+> > will have to respin this again.
+> > 
+> 
+> No Nishant, this is not a typo. Both AM64x and AM65x use the same ICSSG
+> firmwares. We only have am65x-sr2-* firmwares and they are used by both
+> AM64x and AM65x and that is why I have kept the firmware-name here in dt
+> same as the files that we load on the pru cores.
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312072159.2k3mbRlb-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
-   drivers/remoteproc/rcar_rproc.c:28:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *va @@     got void [noderef] __iomem * @@
-   drivers/remoteproc/rcar_rproc.c:28:12: sparse:     expected void *va
-   drivers/remoteproc/rcar_rproc.c:28:12: sparse:     got void [noderef] __iomem *
->> drivers/remoteproc/rcar_rproc.c:45:20: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *va @@
-   drivers/remoteproc/rcar_rproc.c:45:20: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/remoteproc/rcar_rproc.c:45:20: sparse:     got void *va
-
-vim +45 drivers/remoteproc/rcar_rproc.c
-
-    20	
-    21	static int rcar_rproc_mem_alloc(struct rproc *rproc,
-    22					 struct rproc_mem_entry *mem)
-    23	{
-    24		struct device *dev = &rproc->dev;
-    25		void *va;
-    26	
-    27		dev_dbg(dev, "map memory: %pa+%zx\n", &mem->dma, mem->len);
-  > 28		va = ioremap_wc(mem->dma, mem->len);
-    29		if (!va) {
-    30			dev_err(dev, "Unable to map memory region: %pa+%zx\n",
-    31				&mem->dma, mem->len);
-    32			return -ENOMEM;
-    33		}
-    34	
-    35		/* Update memory entry va */
-    36		mem->va = va;
-    37	
-    38		return 0;
-    39	}
-    40	
-    41	static int rcar_rproc_mem_release(struct rproc *rproc,
-    42					   struct rproc_mem_entry *mem)
-    43	{
-    44		dev_dbg(&rproc->dev, "unmap memory: %pa\n", &mem->dma);
-  > 45		iounmap(mem->va);
-    46	
-    47		return 0;
-    48	}
-    49	
+SoCs are different. The hardware as a result is different as well. In
+fact, you do have a different compatible to distinguish the two. Some
+day, there will be an erratum that is different and we will be stuck
+with abi breakage across distros. So, unless you can explain why this
+scenario will never occur, I don't buy the argument this will survive
+long term.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
