@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1FB8089B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDC98089B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442628AbjLGN7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:59:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
+        id S1442733AbjLGN7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:59:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232950AbjLGN7m (ORCPT
+        with ESMTP id S235269AbjLGN7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:59:42 -0500
+        Thu, 7 Dec 2023 08:59:48 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389DFD5E
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:59:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E126C433C7;
-        Thu,  7 Dec 2023 13:59:45 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152D310FB
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:59:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6281AC433C9;
+        Thu,  7 Dec 2023 13:59:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701957587;
-        bh=xRjuwAzrqlcjnOGRq1pqq7Lp1FZjkiM2NMq1l7NLBm8=;
+        s=k20201202; t=1701957592;
+        bh=ZuC5Sg0qcx3RtpmbuKgYYlSi24reNt2keYVou/b9iGA=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=XltynE0Yrz8pP2zYajfeEZwz3kHRMBES4I4yU8u67sXIEaHd6B94aLUYmaDDdrscG
-         7hLXQULlN5te4xsCqnggyiqqwcaoWAIah+OH1iDq7pqMJADbocujtq70fHZQwUwVDi
-         XdBGBfg0JTs9KX/p0Y9rBLhRZOKxdXnENHNAFua9vnohq8T/2UfTtdF74U1QcY4ZfB
-         1TbMIOyONzJxOGG2iiEJAsWKjfRSIfBYZviyjkTk8OxnwV/6yfdvYlwwjp4tCouODE
-         2YF4mmVnkZJlgc3OJLrd5gGG2GWS9ly/jYabJgrG/CNLTiYxMqS0zypZzwrizvdNe1
-         gASijK/MTBhmw==
+        b=dF7VDSiEmvkU9E45dhqgHWEkwRy7zOwN9AQAmSbRBaNnGI8NWqXL/Mp9BdIL0x9n6
+         QWi3xts7w45kOhz9VWG3DY9yjMBtyvSdTnq4NEa0C//AEtUVf1dPgARlPMIv5hJszd
+         8IeNi6a9uZKsubM1YmySbnPVY8JBrDAPhIDfVB3ZSorV3h/94pMahlBx45UhhU+hpN
+         EETx/x/S2wzncUXiqRWJEi2l+2tmmWphMgqpCvBH74oUEyEm2GU0c+hawqyRLc7ffC
+         8KBAKdLwQqhnsrrDcQ9uahkqXvsWIW4ckFOFob7u7VFi8lxS+o+dNAly7pRZo/vaqY
+         7/a3NJ33QuLYg==
 From:   Mark Brown <broonie@kernel.org>
-To:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
+To:     Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc:     alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, Mario.Limonciello@amd.com,
         Liam Girdwood <lgirdwood@gmail.com>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
-        Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
-Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231206160318.1255034-2-rriveram@opensource.cirrus.com>
-References: <20231206160318.1255034-1-rriveram@opensource.cirrus.com>
- <20231206160318.1255034-2-rriveram@opensource.cirrus.com>
-Subject: Re: [PATCH 1/3] ASoC: cs35l45: Use modern pm_ops
-Message-Id: <170195758517.40629.8262800996139784314.b4-ty@kernel.org>
-Date:   Thu, 07 Dec 2023 13:59:45 +0000
+        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        "open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <linux-sound@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+In-Reply-To: <20231207045505.1519151-1-Vijendar.Mukunda@amd.com>
+References: <20231207045505.1519151-1-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH] ASoC: amd: acp: modify config flag read logic
+Message-Id: <170195759012.40629.1653590710406299836.b4-ty@kernel.org>
+Date:   Thu, 07 Dec 2023 13:59:50 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -59,13 +58,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Dec 2023 10:03:16 -0600, Ricardo Rivera-Matos wrote:
-> Make use of the recently introduced EXPORT_GPL_DEV_PM_OPS() macro, to
-> conditionally export the runtime/system PM functions.
-> 
-> Replace the old SET_{RUNTIME,SYSTEM_SLEEP,NOIRQ_SYSTEM_SLEEP}_PM_OPS()
-> helpers with their modern alternatives and get rid of the now
-> unnecessary '__maybe_unused' annotations on all PM functions.
+On Thu, 07 Dec 2023 10:25:01 +0530, Vijendar Mukunda wrote:
+> Modify acp config flag read logic from ACP v7.0 onwards.
+> Instead of reading from DMI table match entry, read the
+> config flag value from BIOS ACPI table.
+> This will remove updating DMI table when new platform support
+> is added.
+> Use FLAG_AMD_LEGACY_ONLY_DMIC flag as default one.
 > 
 > [...]
 
@@ -75,12 +74,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: cs35l45: Use modern pm_ops
-      commit: 12e102b1bd22ee00361559d57a5876445bcb2407
-[2/3] ASoC: cs35l45: Prevent IRQ handling when suspending/resuming
-      commit: c3c8b088949b9ccb88da2f84d3c3cc06580a6a43
-[3/3] ASoC: cs35l45: Prevents spinning during runtime suspend
-      commit: a0ffa8115e1ea9786b03edc3f431d2f4ef3e7a2e
+[1/1] ASoC: amd: acp: modify config flag read logic
+      commit: 8527ecc6cf25417a1940f91eb91fca0c69a5c553
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
