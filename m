@@ -2,69 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 187E3807FBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3EA807FBE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbjLGEhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 23:37:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
+        id S229850AbjLGEiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 23:38:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjLGEhC (ORCPT
+        with ESMTP id S229449AbjLGEiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 23:37:02 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C897710C7
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 20:37:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50E99C433C7;
-        Thu,  7 Dec 2023 04:37:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701923828;
-        bh=J/VsET9W1xTAZ1BYcQcmQfYgWVlazcI6Cc/4X4dTaUE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lO7xMQ/QRFPtQ6IcrCFyd2vs+0r9ouZAW/Bj1uZ9qEVQqcSwhVsDDuvfxAZrZzT5K
-         BHROptZV2Qf9yA8bXQmRtKhRio7Pwc8T/qPn7uvp6XEUbwdZtlC1hzpTaDAYgDmt+1
-         ClVCrLpxs+ch+SZz+OEs82pbU+oTYaHr5vOnW9RPjVvYnDm0qnM4bSzWb4tsvcmfwI
-         aIYxnR54AABMdDdFq9tS3p38BYOfexP/7NLbmd6CApHePM6n5ww+dY6tZ//X11kG1P
-         BUTLqW56cxsse460LTYzc+NjVdZymY7S8Xp02IMF7I3GrTq/Fwmn6/0qCCOntoXUHU
-         IWJB9WUSy5Ozw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D5F00CE0E88; Wed,  6 Dec 2023 20:37:07 -0800 (PST)
-Date:   Wed, 6 Dec 2023 20:37:07 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, David.Laight@aculab.com,
-        richard@nod.at, mjguzik@gmail.com
-Subject: Re: [RFC PATCH 48/86] rcu: handle quiescent states for PREEMPT_RCU=n
-Message-ID: <3cc64b80-0975-4cdf-81ea-952ca80976e4@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107215742.363031-49-ankur.a.arora@oracle.com>
- <2027da00-273d-41cf-b9e7-460776181083@paulmck-laptop>
- <87v89lzu5a.ffs@tglx>
- <209f0e89-7ebd-4759-9883-21d842d0d26c@paulmck-laptop>
- <87zfymn6h9.fsf@oracle.com>
- <20231206211022.710ada02@gandalf.local.home>
+        Wed, 6 Dec 2023 23:38:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CFBD3
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 20:38:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701923887;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tGYuayIbjuzHLuEu82pkqtgPwJeMuDwkxBYxtZFsrRQ=;
+        b=jIEfo0ZRJcwGhrI5/wQ+Zv9yYCWWUGZd23StJyZ4dvLaNaTJkcB2RseiLVmqv6Vi7IqHm6
+        9MLknV5ExSz21gLTWUeaX9aaG6+8ur2D8n+JkEpP9gN3ZPzCyzWtKbKL8msMlbIo7J148y
+        KKGxRLElywtcwlIAj1N18ovxVh0Zdvc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-442-3EujIB-UPuOPPoDl20n5tQ-1; Wed, 06 Dec 2023 23:38:04 -0500
+X-MC-Unique: 3EujIB-UPuOPPoDl20n5tQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 685FF83BA86;
+        Thu,  7 Dec 2023 04:38:03 +0000 (UTC)
+Received: from llong.com (unknown [10.22.34.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7550D8CD0;
+        Thu,  7 Dec 2023 04:38:02 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yafang Shao <laoar.shao@gmail.com>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH-cgroup] cgroup: Move rcu_head up near the top of cgroup_root
+Date:   Wed,  6 Dec 2023 23:37:53 -0500
+Message-Id: <20231207043753.876437-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206211022.710ada02@gandalf.local.home>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,41 +62,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 09:10:22PM -0500, Steven Rostedt wrote:
-> On Wed, 06 Dec 2023 17:31:30 -0800
-> Ankur Arora <ankur.a.arora@oracle.com> wrote:
-> 
-> > ---
-> > diff --git a/include/linux/preempt.h b/include/linux/preempt.h
-> > index 9aa6358a1a16..d8139cda8814 100644
-> > --- a/include/linux/preempt.h
-> > +++ b/include/linux/preempt.h
-> > @@ -226,9 +226,11 @@ do { \
-> >  #ifdef CONFIG_PREEMPTION
-> >  #define preempt_enable() \
-> >  do { \
-> >  	barrier(); \
-> >  	if (unlikely(preempt_count_dec_and_test())) \
-> >  		__preempt_schedule(); \
-> > +	else if (unlikely(raw_cpu_read(rcu_data.rcu_urgent_qs))) \
-> 
-> Shouldn't this still have the:
-> 
-> 	else if (!IS_ENABLED(CONFIG_PREEMPT_RCU) && \
-> 
-> That is, is it needed when PREEMPT_RCU is set?
+Commit d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU
+safe") adds a new rcu_head to the cgroup_root structure and kvfree_rcu()
+for freeing the cgroup_root.
 
-Given that PREEMPT_RCU has been getting along fine without it, I agree
-with Steve on this one.  Unless and until someone demonstrates otherwise,
-but such a demonstration would almost certainly affect current code,
-not just the lazy-preemption changes.
+The use of kvfree_rcu(), however, has the limitation that the offset of
+the rcu_head structure within the larger data structure cannot exceed
+4096 or the compilation will fail. By putting rcu_head below the cgroup
+structure, any change to the cgroup structure that makes it larger has
+the risk of build failure. Commit 77070eeb8821 ("cgroup: Avoid false
+cacheline sharing of read mostly rstat_cpu") happens to be the commit
+that breaks it even though it is not its fault. Fix it by moving the
+rcu_head structure up before the cgroup structure.
 
-							Thanx, Paul
+Fixes: d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU safe")
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ include/linux/cgroup-defs.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> -- Steve
-> 
-> 
-> > +		rcu_all_qs_check();
-> >  } while (0)
-> > 
-> >  #define preempt_enable_notrace() \
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 5a97ea95b564..45359969d8cf 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -562,6 +562,10 @@ struct cgroup_root {
+ 	/* Unique id for this hierarchy. */
+ 	int hierarchy_id;
+ 
++	/* A list running through the active hierarchies */
++	struct list_head root_list;
++	struct rcu_head rcu;
++
+ 	/*
+ 	 * The root cgroup. The containing cgroup_root will be destroyed on its
+ 	 * release. cgrp->ancestors[0] will be used overflowing into the
+@@ -575,10 +579,6 @@ struct cgroup_root {
+ 	/* Number of cgroups in the hierarchy, used only for /proc/cgroups */
+ 	atomic_t nr_cgrps;
+ 
+-	/* A list running through the active hierarchies */
+-	struct list_head root_list;
+-	struct rcu_head rcu;
+-
+ 	/* Hierarchy-specific flags */
+ 	unsigned int flags;
+ 
+-- 
+2.39.3
+
