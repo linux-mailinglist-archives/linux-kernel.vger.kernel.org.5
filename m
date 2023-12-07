@@ -2,156 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 753B0809320
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 22:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF648094C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 22:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443959AbjLGVJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 16:09:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58380 "EHLO
+        id S1444084AbjLGVjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 16:39:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443943AbjLGVIx (ORCPT
+        with ESMTP id S235538AbjLGViq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 16:08:53 -0500
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F03E9;
-        Thu,  7 Dec 2023 13:08:59 -0800 (PST)
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7b6fe5d67d4so31815339f.3;
-        Thu, 07 Dec 2023 13:08:59 -0800 (PST)
+        Thu, 7 Dec 2023 16:38:46 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FD11728;
+        Thu,  7 Dec 2023 13:37:14 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-286d8f3a08bso1439757a91.1;
+        Thu, 07 Dec 2023 13:37:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701985034; x=1702589834; darn=vger.kernel.org;
+        h=message-id:date:content-id:mime-version:references:in-reply-to:cc
+         :to:subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gBBC3+RnZ4D0MUX3ZqGqN8vGIaNXSQk0kKGYcAtYiDo=;
+        b=UiYCYvpfwi+ZDuDgeWWqfiWfuyIBG3Zejdzhpiemxzoau9Sfq7LNJTEvXJ559eoWJh
+         341lGCMfdchI3H4pR9KxwpR569zw/Jw8wMwOWQ0rC1D64CTU2oGSn3yTX3bk621o0ZoE
+         SlhaMaPOkv3/Wgs2oN3LIqdALTEhs0fbzVWYL8LD5MXUQlZbautjNakULGWfORsdCSkL
+         iUMA+lYW6tWlrNPkSqLphx9iHJ/ajeciLnv8GU8vzGMWDW9H3YW6/Xfo9i1XBbwfHVUH
+         FMmW/m4fHC/tf21Yu44IjazXW2vcOeDckkea4ChS/Olclhe7TFy4ka7RoV4h7GqXI0Tv
+         YoHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701983338; x=1702588138;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9U46t7VRKkzRri+us8kqzfYBSLxC0cBypP0Rhwiulss=;
-        b=JKfR4YEDy4v1K5xE6KDhWJXOLK59xw7pgUDObgM5XjeijOTuGeQ64sOjpCwA6sr9WK
-         QGeqw3ucscEb/UUSX1YKjh5h7qDclRCqW8sAKj51pCKEhGxjZhGdxzU1LL8UOJgm/Nyy
-         342GtBN1XywZQ1SihxepR6sCrLtIUZwGG2HUrwuuToqcpUyKqIEa271AJsv3Ry5Ey9gu
-         q8gT9IWMd+iMucJfhai6UY2LAbWnmDUi6vZ817/+kOJQbqZUJjJtNgXgZnY3AVWdrnsv
-         NcyAsJ7bjkMLqNT0Nui4N86SgWVn0IgICz/dp/Vupbo/vEWgV6z5GAwPbPb2PkwKKG45
-         bZpw==
-X-Gm-Message-State: AOJu0YxSt033rAQ83AlaZxvNs99XyNC75wJqupWyKo4PGy7R8thJDS9l
-        RN9lsmP3YJjAumLgoe5S4fUYozQhqzIsfr57
-X-Google-Smtp-Source: AGHT+IFYYCyWTIi4d9eKIBiaWLyNDTli9Yl/aUGYGxCHdfpzst91EtyP3AdYmx0GXlZDFT2yjx5OSg==
-X-Received: by 2002:a5d:9ec2:0:b0:77e:3598:e516 with SMTP id a2-20020a5d9ec2000000b0077e3598e516mr3701688ioe.2.1701983338323;
-        Thu, 07 Dec 2023 13:08:58 -0800 (PST)
-Received: from localhost (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id v3-20020a023843000000b00466b43f6b54sm117902jae.156.2023.12.07.13.08.57
+        d=1e100.net; s=20230601; t=1701985034; x=1702589834;
+        h=message-id:date:content-id:mime-version:references:in-reply-to:cc
+         :to:subject:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gBBC3+RnZ4D0MUX3ZqGqN8vGIaNXSQk0kKGYcAtYiDo=;
+        b=on1lqLftS+Ag1pwHJ6h8YN9kU5QwUKte39Sdk+/vMf5F4SSUWL0F8lkjeOMOTmc+l3
+         bktE/Gwj3pj8U1inpJgvsHWBwkQ+xakGuwk6NhJrS8v5e0WTwAsfbFzKj4T12usEDYWP
+         K2uKVx3HDLUnb6f0w0qI2WP6ofQC/U0puxaoYX1cjhAvZmZ7hybC3v9AAe7XNMTyEYcx
+         jyHO9+Cg/Vejba+Z0WF9pXZLSDLLi2zjLJR9C3jnVi1CcJrph1P4uQXM8Dwt7tbq3lux
+         XQ1I82EhSlvin7/Mgj3O8qeGOZ3ng7xz3Zg3qWgLFF7prEISXE9C/xEalUv/HEcSmeTC
+         xhDA==
+X-Gm-Message-State: AOJu0YwpPsR1EhL1bbInTEmb8r3ZvT6p5htSF6KK7rQxsNpOLZailbwc
+        p4dDcR4vW4JDZSsLcMcFwVk=
+X-Google-Smtp-Source: AGHT+IElIp+cAHpNT5XZVbCct1KDG8EC2BtuKUTXw+pmvU+3AvJNfTkTV1K9c+dUQKpO/5jVtUv7hA==
+X-Received: by 2002:a17:90b:4b44:b0:286:d242:2629 with SMTP id mi4-20020a17090b4b4400b00286d2422629mr3189271pjb.3.1701985034008;
+        Thu, 07 Dec 2023 13:37:14 -0800 (PST)
+Received: from jromail.nowhere (h219-110-241-048.catv02.itscom.jp. [219.110.241.48])
+        by smtp.gmail.com with ESMTPSA id j18-20020a170902c3d200b001cc3a6813f8sm273891plj.154.2023.12.07.13.37.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 13:08:57 -0800 (PST)
-From:   David Vernet <void@manifault.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add test for bpf_cpumask_weight() kfunc
-Date:   Thu,  7 Dec 2023 15:08:43 -0600
-Message-ID: <20231207210843.168466-3-void@manifault.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231207210843.168466-1-void@manifault.com>
-References: <20231207210843.168466-1-void@manifault.com>
+        Thu, 07 Dec 2023 13:37:13 -0800 (PST)
+Received: from jro by jrotkm2 id 1rBLdS-0000Rz-2M ;
+        Fri, 08 Dec 2023 06:10:18 +0900
+From:   "J. R. Okajima" <hooanon05g@gmail.com>
+Subject: Re: [PATCH] fs: Pass AT_GETATTR_NOSEC flag to getattr interface function
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     amir73il@gmail.com, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, Stefan Berger <stefanb@linux.ibm.com>,
+        syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, Tyler Hicks <code@tyhicks.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Christian Brauner <brauner@kernel.org>
+In-Reply-To: <20231002125733.1251467-1-stefanb@linux.vnet.ibm.com>
+References: <20231002125733.1251467-1-stefanb@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1733.1701983418.1@jrotkm2>
+Date:   Fri, 08 Dec 2023 06:10:18 +0900
+Message-ID: <1734.1701983418@jrotkm2>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new bpf_cpumask_weight() kfunc can be used to count the number of
-bits that are set in a struct cpumask* kptr. Let's add a selftest to
-verify its behavior.
+Stefan Berger:
+> When vfs_getattr_nosec() calls a filesystem's getattr interface function
+> then the 'nosec' should propagate into this function so that
+> vfs_getattr_nosec() can again be called from the filesystem's gettattr
+> rather than vfs_getattr(). The latter would add unnecessary security
+> checks that the initial vfs_getattr_nosec() call wanted to avoid.
+> Therefore, introduce the getattr flag GETATTR_NOSEC and allow to pass
+> with the new getattr_flags parameter to the getattr interface function.
+> In overlayfs and ecryptfs use this flag to determine which one of the
+> two functions to call.
 
-Signed-off-by: David Vernet <void@manifault.com>
----
- .../selftests/bpf/prog_tests/cpumask.c        |  1 +
- .../selftests/bpf/progs/cpumask_common.h      |  1 +
- .../selftests/bpf/progs/cpumask_success.c     | 43 +++++++++++++++++++
- 3 files changed, 45 insertions(+)
+You are introducing two perfectly identical functions.
+ecryptfs_do_getattr() and ovl_do_getattr().
+Why don't you provide one in a common place, such like
+include/linux/fs_stack.h?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cpumask.c b/tools/testing/selftests/bpf/prog_tests/cpumask.c
-index 756ea8b590b6..c2e886399e3c 100644
---- a/tools/testing/selftests/bpf/prog_tests/cpumask.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cpumask.c
-@@ -18,6 +18,7 @@ static const char * const cpumask_success_testcases[] = {
- 	"test_insert_leave",
- 	"test_insert_remove_release",
- 	"test_global_mask_rcu",
-+	"test_cpumask_weight",
- };
- 
- static void verify_success(const char *prog_name)
-diff --git a/tools/testing/selftests/bpf/progs/cpumask_common.h b/tools/testing/selftests/bpf/progs/cpumask_common.h
-index b15c588ace15..0cd4aebb97cf 100644
---- a/tools/testing/selftests/bpf/progs/cpumask_common.h
-+++ b/tools/testing/selftests/bpf/progs/cpumask_common.h
-@@ -54,6 +54,7 @@ bool bpf_cpumask_full(const struct cpumask *cpumask) __ksym;
- void bpf_cpumask_copy(struct bpf_cpumask *dst, const struct cpumask *src) __ksym;
- u32 bpf_cpumask_any_distribute(const struct cpumask *src) __ksym;
- u32 bpf_cpumask_any_and_distribute(const struct cpumask *src1, const struct cpumask *src2) __ksym;
-+u32 bpf_cpumask_weight(const struct cpumask *cpumask) __ksym;
- 
- void bpf_rcu_read_lock(void) __ksym;
- void bpf_rcu_read_unlock(void) __ksym;
-diff --git a/tools/testing/selftests/bpf/progs/cpumask_success.c b/tools/testing/selftests/bpf/progs/cpumask_success.c
-index 674a63424dee..fc3666edf456 100644
---- a/tools/testing/selftests/bpf/progs/cpumask_success.c
-+++ b/tools/testing/selftests/bpf/progs/cpumask_success.c
-@@ -460,6 +460,49 @@ int BPF_PROG(test_global_mask_rcu, struct task_struct *task, u64 clone_flags)
- 	return 0;
- }
- 
-+SEC("tp_btf/task_newtask")
-+int BPF_PROG(test_cpumask_weight, struct task_struct *task, u64 clone_flags)
-+{
-+	struct bpf_cpumask *local;
-+
-+	if (!is_test_task())
-+		return 0;
-+
-+	local = create_cpumask();
-+	if (!local)
-+		return 0;
-+
-+	if (bpf_cpumask_weight(cast(local)) != 0) {
-+		err = 3;
-+		goto out;
-+	}
-+
-+	bpf_cpumask_set_cpu(0, local);
-+	if (bpf_cpumask_weight(cast(local)) != 1) {
-+		err = 4;
-+		goto out;
-+	}
-+
-+	/*
-+	 * Make sure that adding additional CPUs changes the weight. Test to
-+	 * see whether the CPU was set to account for running on UP machines.
-+	 */
-+	bpf_cpumask_set_cpu(1, local);
-+	if (bpf_cpumask_test_cpu(1, cast(local)) && bpf_cpumask_weight(cast(local)) != 2) {
-+		err = 5;
-+		goto out;
-+	}
-+
-+	bpf_cpumask_clear(local);
-+	if (bpf_cpumask_weight(cast(local)) != 0) {
-+		err = 6;
-+		goto out;
-+	}
-+out:
-+	bpf_cpumask_release(local);
-+	return 0;
-+}
-+
- SEC("tp_btf/task_newtask")
- __success
- int BPF_PROG(test_refcount_null_tracking, struct task_struct *task, u64 clone_flags)
--- 
-2.42.1
 
+J. R. Okajima
