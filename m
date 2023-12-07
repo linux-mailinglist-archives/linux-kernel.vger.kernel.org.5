@@ -2,101 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EAE8085ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 945028085DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbjLGKMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 05:12:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44016 "EHLO
+        id S232073AbjLGJ41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:56:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232435AbjLGJ4I (ORCPT
+        with ESMTP id S232057AbjLGJ4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:56:08 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 228A4132
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:56:14 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E31B512FC;
-        Thu,  7 Dec 2023 01:56:59 -0800 (PST)
-Received: from [10.57.74.174] (unknown [10.57.74.174])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B579F3F762;
-        Thu,  7 Dec 2023 01:56:12 -0800 (PST)
-Message-ID: <f1c473f7-ba40-454e-bd3e-a47f6d58513e@arm.com>
-Date:   Thu, 7 Dec 2023 09:56:10 +0000
+        Thu, 7 Dec 2023 04:56:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109BD133;
+        Thu,  7 Dec 2023 01:56:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701942982; x=1733478982;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=EsZ9iyoAmNB41lTSlRafnsFQSmgu2tbDM95/rM+nIpQ=;
+  b=Qb0xm/uie5JS2QlyWOPixvIxf9N8qboBIco2lk0w8jqArgFskaXzrj9H
+   TmWojtCtJbVDJIRU/TicUqWhT5bOSx5v9p2/n/IrFLVGP7/gLkCYhxRxS
+   fqogLUPMQckqrmYjBScHwgspvdJWMtjr5p1g5TJXOUHFqKZkjRVL32ySu
+   O62/4LnXLbnu1bZx4jkEMHVJlovqLZk/aZFHL4YsozeNne0Nx1JDlvsVU
+   DocCn9kf3r2Gemim6Zq/Q38Q4ANeWoeDOivqLszMe1khcsUf10ZdulMck
+   +ysXk6zt1BqoAvr1nZkgrYQvDtHzVqUxWnXV1oRziaDKe+amOO0hWzCkh
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="1289013"
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="1289013"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 01:56:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="944979494"
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="944979494"
+Received: from dkrupnov-mobl3.ger.corp.intel.com ([10.249.34.6])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 01:56:18 -0800
+Date:   Thu, 7 Dec 2023 11:56:15 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     =?ISO-8859-15?Q?Th=E9o_Lebrun?= <theo.lebrun@bootlin.com>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?ISO-8859-15?Q?Gr=E9gory_Clement?= <gregory.clement@bootlin.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH v5 2/9] tty: serial: amba: Use linux/{bits,bitfield}.h
+ macros
+In-Reply-To: <CXHZXP7XVD0T.24N3YDLX7I929@bootlin.com>
+Message-ID: <42e8faf-5293-18e4-3877-25e4d094f1d@linux.intel.com>
+References: <20231130-mbly-uart-v5-0-6566703a04b5@bootlin.com> <20231130-mbly-uart-v5-2-6566703a04b5@bootlin.com> <2023120742-argue-slighting-6120@gregkh> <CXHZXP7XVD0T.24N3YDLX7I929@bootlin.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] iommu: Set owner token to sva and nested domains
-Content-Language: en-GB
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>
-Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20231207021938.306738-1-baolu.lu@linux.intel.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20231207021938.306738-1-baolu.lu@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-1941806678-1701942827=:1765"
+Content-ID: <e6839a44-23d8-86b-e736-5d7a4e41b2c5@linux.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-07 2:19 am, Lu Baolu wrote:
-> Commit a9c362db3920 ("iommu: Validate that devices match domains") added
-> an owner token to an iommu_domain. This token is checked during domain
-> attachment to RID or PASID through the generic iommu interfaces.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-1941806678-1701942827=:1765
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <669795fb-a6b2-2749-cc7e-df83337e581a@linux.intel.com>
+
+On Thu, 7 Dec 2023, Théo Lebrun wrote:
+
+> Hello,
 > 
-> The sva and nested domains are attached to device or PASID through the
-> generic iommu interfaces. Therefore, they require the owner token to be
-> set during allocation. Otherwise, they fail to attach.
-
-Oops, I missed that iommu_sva_domain_alloc() is a thing - when did we 
-get such a confusing proliferation of domain allocation paths? Sigh...
-
-I think we should set the owner generically there, since presumably it's 
-being missed for SMMUv3/AMD/etc. SVA domains as well. Nested domains are 
-supposed to be OK since both ->domain_alloc_user callsites are covered, 
-or is there some other sneaky path I've also missed?
-
-Thanks,
-Robin.
-
-> Set the owner token for sva and nested domains.
+> On Thu Dec 7, 2023 at 2:37 AM CET, Greg Kroah-Hartman wrote:
+> > On Thu, Nov 30, 2023 at 03:07:14PM +0100, Théo Lebrun wrote:
+> > > The driver uses bit shifts and hexadecimal expressions to declare
+> > > constants. Replace that with the BIT(), GENMASK() & FIELD_PREP_CONST()
+> > > macros to clarify intent.
+> > > 
+> > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > > Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > > Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> > > ---
+> > >  include/linux/amba/serial.h | 248 +++++++++++++++++++++++---------------------
+> > >  1 file changed, 127 insertions(+), 121 deletions(-)
+> >
+> > As 0-day had a problem with this patch, I've applied only patch 1 of
+> > this series.  Can you fix it up and rebase and resend the rest again
+> > (while adding the collected reviewed-by that some patches in this series
+> > had)?
 > 
-> Fixes: a9c362db3920 ("iommu: Validate that devices match domains")
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->   drivers/iommu/intel/nested.c | 1 +
->   drivers/iommu/iommu.c        | 1 +
->   2 files changed, 2 insertions(+)
+> So the issue is this: the header file gets included in
+> arch/arm/include/debug/pl01x.S that gets included in arch/arm/kernel/debug.S
+> (see #include CONFIG_DEBUG_LL_INCLUDE).
 > 
-> diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
-> index b5a5563ab32c..014d4a4e7586 100644
-> --- a/drivers/iommu/intel/nested.c
-> +++ b/drivers/iommu/intel/nested.c
-> @@ -108,6 +108,7 @@ struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain *parent,
->   	domain->s1_cfg = vtd;
->   	domain->domain.ops = &intel_nested_domain_ops;
->   	domain->domain.type = IOMMU_DOMAIN_NESTED;
-> +	domain->domain.owner = &intel_iommu_ops;
->   	INIT_LIST_HEAD(&domain->devices);
->   	INIT_LIST_HEAD(&domain->dev_pasids);
->   	spin_lock_init(&domain->lock);
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 0d25468d53a6..d0a28667479a 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -3617,6 +3617,7 @@ struct iommu_domain *iommu_sva_domain_alloc(struct device *dev,
->   	domain->type = IOMMU_DOMAIN_SVA;
->   	mmgrab(mm);
->   	domain->mm = mm;
-> +	domain->owner = ops;
->   	domain->iopf_handler = iommu_sva_handle_iopf;
->   	domain->fault_data = mm;
->   
+> I don't see any easy way out of this, so I guess it means the patch must be
+> dropped. If someone confirms that there are indeed no solution to have BIT(),
+> GENMASK() & FIELD_PREP_CONST() accessible from assembly, I'll send the next
+> version.
+
+Yeah, it seems to require UART01x_FR_TXFF and UART01x_FR_BUSY, plus 
+UART01x_DR and UART01x_FR that are not touched by your patch.
+
+I suppose the rest might be convertable though..
+
+-- 
+ i.
+--8323329-1941806678-1701942827=:1765--
