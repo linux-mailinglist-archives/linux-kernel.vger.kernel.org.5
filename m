@@ -2,151 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D47E808958
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC262808957
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441999AbjLGNib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:38:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44824 "EHLO
+        id S1441994AbjLGNiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:38:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441947AbjLGNi3 (ORCPT
+        with ESMTP id S1441907AbjLGNiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:38:29 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2CED5E
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:38:34 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-db538b07865so1070286276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 05:38:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701956314; x=1702561114; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lAVV2qiEK5RCktShx/Q1QMv0e5n63Am5gtpRCSYF1Yc=;
-        b=xmxbajQBGxbyTM3tMWXpxibo5+FikWAk/fYAheLrvMrR15nZJNIrT5h7n2qqHGtRHb
-         cGosfGpm8r8rkttxq3Wa0ZnyXsIJHCHoGtIWz/x278e3XIkOQyRyHPrSw91lAGolZnyF
-         BLOO/EZjHYjq32wQda1WzaJwYhcd8HVCkoRh6z/TVJAzo34XGI8sA6c+VN0DaSvRwAmJ
-         d9kmF1sVMQKpNTe3CsSMUZj9HBChqvacPHA/OH2XqcWdOPN7gXkA8jdvckymKiOSPqgg
-         xYZ057XBzgrGPvuSBMaWhsnJBB1PTCNJEaTbtF9UJo0Ojz6vFQfasLOSn9hGb/kuoYXw
-         2qyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701956314; x=1702561114;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lAVV2qiEK5RCktShx/Q1QMv0e5n63Am5gtpRCSYF1Yc=;
-        b=KvgHj6A+72xdT5L8N67DhsY0ABJ/FEQOXUPQbBzB6CTu++i3F8xqylqxBbLdbNlBRy
-         lqtxp/Mq1E/SMInjLmr2JeV7H1k1KaVZb2fS3HYo9v5pMrvYr2wQFcHyi499tPDt5hBC
-         4LZ1qwqvQ7kNuh2FDOHkrEZMUk4xrqWfxyZf2+WWw/acxajr6YMBi+sTB679TAotdJze
-         pPArDWDPUmVLgadQZkM/FXFlvVCjMX2doAzDIUgMTT+4pXebm8UBEX6pw5vZzs+xOXoY
-         yDVjt7defw/lDW/qdUWIXCdceXm406xkrMjw38tEWj2tLVaB1BA4/+vkHdI7kEyXiupT
-         cRsg==
-X-Gm-Message-State: AOJu0Yyon2YysvCvw9xH9C+GWAWN4dDzmzPEPa7GP+I1lruHK5ESdTwY
-        zLgGvCl+0Lx5FFPJkml7s9e/1vS/O2C9YjsAIsIJjA==
-X-Google-Smtp-Source: AGHT+IEJUzzF+mqKM2cMqlMkgSJjy8gNx2I3xz0+xRFeMN9n4FIMMoQJYpoutX6EOtTJPaW4EAm6phj5PJecY/TvrDE=
-X-Received: by 2002:a25:bc84:0:b0:db5:43e7:47b7 with SMTP id
- e4-20020a25bc84000000b00db543e747b7mr2249653ybk.48.1701956314164; Thu, 07 Dec
- 2023 05:38:34 -0800 (PST)
+        Thu, 7 Dec 2023 08:38:23 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2045.outbound.protection.outlook.com [40.107.223.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C4ED54;
+        Thu,  7 Dec 2023 05:38:29 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j6btKgnBF2db8ZZxk47wou3rGEWdiWf/eh8ASiNB13C0E9Ioq0N4SwqX9Dc6YPj9qtHcNBSKnPc2EkT9CedmcWyXNHF6vvOuoH1BtfGL0CsJQ1p/oljZXL64FQVVK9gNAnBWEfr/HseQsh5Agh3djmBegFOlsCYXNzbxT0E19XTnFD4hYOUQXBGn/IA4rJFhC6miBNx+uwB4tBgHVSv0Or1+UHyR4bu0P72/rr++2aPRQXYvwzKbcuV19Ahe40trkQhLBGgzG3OH78oz7IbKoyJpOmNHR0uQ2CR7mILkCzusd7e1PZfdY0dhI70wuq6LHebbEkw6D5wqWdM77E9hFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CNkJqALxPIloVQQyRq9w66yUKQ75s1OxQOBMXkXLLOY=;
+ b=bpOZYbJb/5ieINi8OXkzkqCyG0yoPk3R2+JgdZ/y479itdbMucxSJiJ94gwX287Rv6Bb+9Q1ZR/MnoJwDjj38lTCWRLmsfvL5qQ+aXyCmoVCHT7QDblBi1xvEOXDfGI9Kz1Bx8DWqy0J37cg0kVioabBTpK0VJtOyOG+O5k3eUIGnucHsKJjCvKDfaR6XvjW/wCKNlrTXST7dkYKQc7Rntwr84xUUmBrkmqiDSxTWqliCxjpA2tN/puk3AD8asL796glCKlLDBW1Ux2U9DoGZVsCdxFZqJHKM6ovFMsjnk9066aUJAd5jxh7AyypnZUzSWKi3EcPxW0MhmzFdjQQYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CNkJqALxPIloVQQyRq9w66yUKQ75s1OxQOBMXkXLLOY=;
+ b=RhCZKxKEg64gyT0b3j6M/kiF0VwmTEP3Vbzr65E4uYfcxx6SigYudTEJyaCC0JIzcyUs23wWsWO9XfD9Cxw5D3FVzaTKBLzmVlqPGSo1ckyEKpbWeQ0ujKipKI4KQ0vxsHgnBqtXdUHUZzu5ZHuli0Dfo97f6DAIQaKvaqc4Mc/2SJQEL28O2iQqvnFA+MCynuQJEv32XZDnMhTnUnzuyPe3lo/WaKJfsC9bdl45aR9r96MC7dQMVXoBmOd5k8B2LNGK8IIm2ygW5xN+B7zf9PIGxkCYYtvpx6t8Jm9xqigEjSpYqkdn+Wsy+9L6PmuWlFTxY0qx6C+h+e8d2LAMiw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DS7PR12MB8289.namprd12.prod.outlook.com (2603:10b6:8:d8::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.34; Thu, 7 Dec 2023 13:38:26 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.038; Thu, 7 Dec 2023
+ 13:38:25 +0000
+Date:   Thu, 7 Dec 2023 09:38:25 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, ankita@nvidia.com,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>, oliver.upton@linux.dev,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
+        ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <20231207133825.GI2692119@nvidia.com>
+References: <20231205164318.GG2692119@nvidia.com>
+ <ZW949Tl3VmQfPk0L@arm.com>
+ <20231205194822.GL2692119@nvidia.com>
+ <ZXCJ3pVbKuHJ3LTz@arm.com>
+ <20231206150556.GQ2692119@nvidia.com>
+ <ZXCQrTbf6q0BIhSw@lpieralisi>
+ <20231206153809.GS2692119@nvidia.com>
+ <ZXCf_e-ACqrj6VrV@arm.com>
+ <20231206164802.GT2692119@nvidia.com>
+ <ZXGa4A6rfxLtkTB2@lpieralisi>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXGa4A6rfxLtkTB2@lpieralisi>
+X-ClientProxiedBy: BL1PR13CA0254.namprd13.prod.outlook.com
+ (2603:10b6:208:2ba::19) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-References: <20231201030547.11553-1-mengqi.zhang@mediatek.com>
-In-Reply-To: <20231201030547.11553-1-mengqi.zhang@mediatek.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 7 Dec 2023 14:37:57 +0100
-Message-ID: <CAPDyKFqhGULWp3P2EpxUMLvdiijqu7qxPrY40GU2m3FM7XVCVQ@mail.gmail.com>
-Subject: Re: [v1,1/1] mmc: core: Add HS400es support in retune and
- initialization flow
-To:     Mengqi Zhang <mengqi.zhang@mediatek.com>
-Cc:     chaotian.jing@mediatek.com, matthias.bgg@gmail.com,
-        wenbin.mei@mediatek.com, yangyingliang@huawei.com,
-        adrian.hunter@intel.com, avri.altman@wdc.com,
-        vincent.whitchurch@axis.com, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS7PR12MB8289:EE_
+X-MS-Office365-Filtering-Correlation-Id: d83d53c0-7edb-445a-1e14-08dbf729c9f7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +PLS9XJa84XgId/39fpR6mjL4zlOYkDm6EAMMNlxDWH27P/4vPSLDV6SzEl8RCXk7+9FZmLvNgYQVxzcfIajAo6TsFYJSDO3A3HgZ2dvuH8xhIDJZIU6dHpk/kY/Z4wxagzZxFiJjBrpRCVKkJv1rxfIxA8jxfwxHEg/vXIU5kbV+qktZXreKR98OmKY9LJdqX5zx9ew/FgSbHIoCr8K8ZVIHiAYUQO5NPM5wwtdZEd8Nb/a+1nffPNqX+ZTFyv4aIY8QnTO8Oz/cZoGB5083Og9afox625RegVqaT5Saz+lwDf0H/z3l4JLAinb/cIo6LYzdlcAe+jesEIz9yN0e3mdZC7JooXo1LoZhoptqLvBB76UJ72r6WaaKLSDhFrdjikxDWGvXANdC6fV368szwllxc4ROk819oSYjyr/W7dem2VBdZo5J1IvkibhYDLNpBMscBwFWI0Ji/IDJ/gWhyLvd9tvudONLsY/i4Rb7cBNCarVpJILhbDXxo9gqVffm5rMSJc+xKNExsBA+zJwc8ZmM7bVtJA6OCunbnduI1DwPtqKGBJ4F+S/xddqlnQh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(366004)(136003)(346002)(396003)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(4326008)(54906003)(316002)(83380400001)(5660300002)(7416002)(6486002)(6916009)(66946007)(66476007)(66556008)(8936002)(2906002)(478600001)(8676002)(6506007)(6512007)(2616005)(26005)(41300700001)(33656002)(1076003)(36756003)(38100700002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?p2lInPG7+HvFJ/QV4Rl9Pvm7Y77r9O7E/I6Xf3z4jkELZr+qOxGlbQqqrYUf?=
+ =?us-ascii?Q?qN/HoMOdLX2facLQDoFUJ2Bo7dGXSELZ9Elo8OPqvU1HYmxjfAS/fe6OMPEo?=
+ =?us-ascii?Q?1MRHgF5aw7YNEax9dBHazay20Ei6LJq+I0zgsJFAuE2ESQNkYJhvTMTBAInV?=
+ =?us-ascii?Q?KDMmww/FOR/lVNUR2fB7k3QS8ZktIiRKvTr6xxJgUh+9vmuPqqLXBqVrfYUN?=
+ =?us-ascii?Q?NdGPFWRSDiBg9nZapq8gDIqvRV7IkHtwp33ejaH+g8NByk9euxZJf4gmqQmg?=
+ =?us-ascii?Q?T+zxg5ChCvw5gBYJCXLBfWgXdArmQG3UIk7I1+ICYA5KlMkFGPBItpF30cEb?=
+ =?us-ascii?Q?+86KovZeDxNE1BwPhMST54VLAeyXOCY3Vz7JHG8xRlynxHsINJQDN7wH7dpx?=
+ =?us-ascii?Q?crCgkkL7rn81C7/chzxjQ/hMNz0oRQErYsG4bbNwRTs5fo7iN7L8VGyub/wp?=
+ =?us-ascii?Q?3tM5yZUk5ZBE64Br+yonfAPYIPEsmpeuxPgdXLR8yerYcDj0UqhaYnTOXgtk?=
+ =?us-ascii?Q?N5ImNumSTqtSdsrYXNrwf2YQ01FoCDPKxaajoQodFjtKzyzQ5p9wCIR9z9vo?=
+ =?us-ascii?Q?j2M9T/+QiLF35nHRBzzi1zWn3FjF7Lmr5WE3yswGMFgoE4IPWDiVyQRIFu+O?=
+ =?us-ascii?Q?uYIWn+r1GCK6CyD7eprlexPu9vnK+223UFzodwlkHHxViAbsBiu96J2nLYGP?=
+ =?us-ascii?Q?CbIrPYzmmi0ptReY+8Wsaxz0preIsOwJRtfrRAw8NKNc0kHPWs3BqwkWcLxz?=
+ =?us-ascii?Q?5AXVt+1xG99yZrdFgV6G+fbsXyP3PMkZMY6F/I8oLVGjMxcftE3p1x+K7iRN?=
+ =?us-ascii?Q?l51byr1YABmErO06oT3huHy/ReFME6Wh6bl7Jiw1rDWCr0LUxZMDAD9XgPaX?=
+ =?us-ascii?Q?1YGaotSuPWPVeHAO2oz7jvlU4UruUjtu1VbLZmCPSq5OkvjtEWm5YHTe0erS?=
+ =?us-ascii?Q?VcPorsbEMJiBgmWzbgX1s+Zqz9GxlEkw+IfAAT2Na1oQybWd1xsRcRBbkeif?=
+ =?us-ascii?Q?sLp5dsmmlYVvSYeLi7hWh+pvQ0ZrIl6/EedEIQA0ZcYJJpf9oiSk4ojB3RWC?=
+ =?us-ascii?Q?ey0SWOvL1CHcJLW9V2dmigk1/t8BYmT3leVnAgzVYRDFes5MrsmOFdAYkB9F?=
+ =?us-ascii?Q?ojibFeU1lir5DdfctevO/ZYxevXt0dRDivdRRiTD7okp9nD09qi2093eMKQ1?=
+ =?us-ascii?Q?LG6M/u8RtCQaG1vN5g25HMeg2j7JT8NusM8hzcBwO7ZDZXFBbBrcIdHkP9rf?=
+ =?us-ascii?Q?IEn2Ph5SCwcFneU7uAEpbNNCrbV2qB1t+QUZw7OBmJIhDITgP5+1xjiZDZXq?=
+ =?us-ascii?Q?bbArTDONijhOFf3GvlvpbN5r/H9jOuHTnvkjEdO5K9iu2DZ0XAND5WyaaGXO?=
+ =?us-ascii?Q?RCddAqhzS5SP4gJsXxyjyoZSWrUmJVOKJurhQs8SlrNxZSoZpDtDzJvXfnBx?=
+ =?us-ascii?Q?bURMvRKkz1qBRvzL7aUGiIIRV8Ohz1BcciEftkC+D/wRG/Ir03sdNtl/2kjp?=
+ =?us-ascii?Q?XZ4HmO65cOqTUKl5X5Ah0rdJmnyUYnAwPk9wBQToI7IeXbFb2CyB6Waid60I?=
+ =?us-ascii?Q?Eo4S7T6CxLmsPtX69uakGzJWvMNCaVHVOcuRc+7H?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d83d53c0-7edb-445a-1e14-08dbf729c9f7
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2023 13:38:25.8836
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3BvC8BnVt6ea0X/JCkPQw/WlLk6usmY0nQ6sEn+u20QWJ+uAlP6Jw9+VPKEYuDM2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8289
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Dec 2023 at 04:06, Mengqi Zhang <mengqi.zhang@mediatek.com> wrote:
->
-> In HS400es mode, when we enter mmc_retune(), we will be forced to
-> the HS400 mode instead of HS400es mode. So we decided to add support
-> for HS400es in the mmc_retune() process.
+On Thu, Dec 07, 2023 at 11:13:52AM +0100, Lorenzo Pieralisi wrote:
+> > > What about the other way around - would we have a prefetchable BAR that
+> > > has portions which are unprefetchable?
+> > 
+> > I would say possibly.
+> > 
+> > Prefetch is a dead concept in PCIe, it was obsoleted in PCI-X about 20
+> > years ago. No PCIe system has ever done prefetch.
+> > 
+> > There is a strong incentive to mark BAR's as prefetchable because it
+> > allows 64 bit addressing in configurations with bridges.
+> 
+> If by strong incentive you mean the "Additional guidance on the
+> Prefetchable Bit in Memory Space BARs" in the PCI express specifications,
+> I think it has been removed from the spec and the criteria that had to be
+> met to implement it were basically impossible to fulfill on ARM systems,
+> it did not make any sense in the first place.
 
-Hmm, I was under the impression that we really don't need to do
-re-tuning at all, when using HS400es mode.
+No, I mean many systems don't have room to accommodate large 32 bit
+BARs and the only real way to make stuff work is to have a 64 bit BAR
+by setting prefetchable. Given mis-marking a read-side-effect region
+as prefetchable has no actual consequence on PCI-E I would not be
+surprised to learn people have done this.
 
-Are we calling mmc_retune_enable() from a place that we shouldn't?
+> I agree on your statement related to the prefetchable concept but I
+> believe that a prefetchable BAR containing regions that have
+> read side-effects is essentially a borked design unless at system level
+> speculative reads are prevented (as far as I understand the
+> implementation note this could only be an endpoint integrated in a
+> system where read speculation can't just happen (?)).
 
->
-> Additionally, during the initialization to the HS400es stage, add
-> hs400 tuning as an optional process.
->
-> Signed-off-by: Mengqi Zhang <mengqi.zhang@mediatek.com>
+IMHO the PCIe concept of prefetchable has no intersection with the
+CPU. The CPU chooses entirely on its own what rules to apply to the
+PCI MMIO regions and no OS should drive that decision based on the
+prefetchable BAR flag.
 
-Kind regards
-Uffe
+The *only* purpose of the prefetchable flag was to permit a classical
+33/66MHz PCI bridge to prefetch reads because the physical bus
+protocol back then did not include a read length.
 
-> ---
->  drivers/mmc/core/host.c | 11 ++++++++++-
->  drivers/mmc/core/mmc.c  | 10 +++++++++-
->  2 files changed, 19 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-> index 096093f7be00..4bddbbb3d539 100644
-> --- a/drivers/mmc/core/host.c
-> +++ b/drivers/mmc/core/host.c
-> @@ -179,7 +179,7 @@ EXPORT_SYMBOL(mmc_retune_release);
->  int mmc_retune(struct mmc_host *host)
->  {
->         bool return_to_hs400 = false;
-> -       int err;
-> +       int err = 0;
->
->         if (host->retune_now)
->                 host->retune_now = 0;
-> @@ -194,6 +194,15 @@ int mmc_retune(struct mmc_host *host)
->         host->doing_retune = 1;
->
->         if (host->ios.timing == MMC_TIMING_MMC_HS400) {
-> +               if (host->ios.enhanced_strobe) {
-> +                       if (host->ops->execute_hs400_tuning) {
-> +                               mmc_retune_disable(host);
-> +                               err = host->ops->execute_hs400_tuning(host, host->card);
-> +                               mmc_retune_enable(host);
-> +                       }
-> +                       goto out;
-> +               }
-> +
->                 err = mmc_hs400_to_hs200(host->card);
->                 if (err)
->                         goto out;
-> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-> index 705942edacc6..9760eea2c104 100644
-> --- a/drivers/mmc/core/mmc.c
-> +++ b/drivers/mmc/core/mmc.c
-> @@ -1823,7 +1823,15 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
->                 if (err)
->                         goto free_card;
->
-> -       } else if (!mmc_card_hs400es(card)) {
-> +       } else if (mmc_card_hs400es(card)) {
-> +               if (host->ops->execute_hs400_tuning) {
-> +                       mmc_retune_disable(host);
-> +                       err = host->ops->execute_hs400_tuning(host, card);
-> +                       mmc_retune_enable(host);
-> +                       if (err)
-> +                               goto free_card;
-> +               }
-> +       } else {
->                 /* Select the desired bus width optionally */
->                 err = mmc_select_bus_width(card);
->                 if (err > 0 && mmc_card_hs(card)) {
-> --
-> 2.25.1
->
+For any system that does not have an ancient PCI bridge the indication
+is totally useless.
+
+Jason
