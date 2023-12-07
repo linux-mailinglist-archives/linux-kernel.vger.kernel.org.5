@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 943BB807DAB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5C0807DAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:17:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442001AbjLGBRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 20:17:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52146 "EHLO
+        id S1442077AbjLGBRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 20:17:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441989AbjLGBR1 (ORCPT
+        with ESMTP id S1441968AbjLGBR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 20:17:27 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE5610D
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 17:17:32 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db9612b8997so540222276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 17:17:32 -0800 (PST)
+        Wed, 6 Dec 2023 20:17:29 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB75D5E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 17:17:35 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d3a1f612b3so1802567b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 17:17:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701911852; x=1702516652; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701911854; x=1702516654; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8uJ4Fnb6KBcCgmxkcQQeI5pptPcrA/cGJHUyHI7nyas=;
-        b=OoCZZncPPQd5kgK1UOCDwoF+/NmySNc8s713ECp1pSEVfB//uQaj7OTBcg+0fto6Bt
-         uSDlbi7aC/sA5QxPFJylv7RP/PNWaPDhdfH6HISvd1scfuDBvM7CzZ63JAU0tF1b1Oik
-         xOPi6ojQdhezJorS+/uNhcbAsh8MPB1UILsyl6lzywEX0XymaoD9tKhJXC6A7f6jVyUP
-         AShSexM6qybIt2VUOWn+MH0CLu0Yhs9RHH7pJlp3W7jvnnCxv8/Bu2iT1pyTtR28j+U9
-         fIThd6nJiNQWfxRlTlTeqohN19dOvZe2fq/MeEO3zJwXSr3BBPqruoapZ7w1QSdrUXvG
-         +//w==
+        bh=OZVma1lrp2oy91ELMTmGFGFg9/I25IFe6Z4TysewRjs=;
+        b=x9Q/OiL4uAbpgM1f8c21FZuKuVNpBnUW53hzBC/jHYn3n+fHEwnKWSzQZBrrna1VNh
+         9Vtgm65ZcUlOriYR1tMVO6YlylnQV3k9Es4NX6VfMP4keGxa0v4rvlMrxTUAmc2H56G4
+         7gpizSlS7fARuSHoxTCdjhGRTzyWkYlbIGkVZVNHSIIlXHO/sqNTq2mnAFPuUHpK3567
+         d5QnGwOMdcz8vUXKepe8+Gq2VF578yzSHqm1oPWnaTVlbCjYGEO1VcTsVzPCc/5GAk/R
+         5osUvRo4kOsdLOS8sHtGbsVkyAUzcBxvijC8wszI1mMClWZN4NEIxuE0WSVcBJaF4+QZ
+         08tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701911852; x=1702516652;
+        d=1e100.net; s=20230601; t=1701911854; x=1702516654;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8uJ4Fnb6KBcCgmxkcQQeI5pptPcrA/cGJHUyHI7nyas=;
-        b=U9WF7ZUIhlLOhrVsyYPqre77xsVZZKLckE98eU3bRvMmhutfOwdP6gcVmvssAFbXeQ
-         I0YsQcHUEbMFB35KYiFC+l3PLSC8+2Am7XfitrJpkRnwaD50nZiwXYgz5M+N8s5B3z2r
-         X6pAruJs80cvGX5mM/wF3t6AualDVqUcUGwGvsFW7FLXzslBG/4b5AhgxCF7DZNU8K74
-         2q6hlVChstF6XPK1xnWqX5ycWNG9fVCzpgohEooTxtKXNDtADBjVF7Vmc3wCxz63EmKr
-         8AslCCXJqNRR/MksFhvQ/D3pgk/GQdGDYQMZWlqceHb7v/FXHiUyORqNFyTkMkq/zvVY
-         9jbw==
-X-Gm-Message-State: AOJu0Yzkk9N3FAWcGZWhHiiNC+djxzSd0hOEOxZDT9UHQR11TroYJC5N
-        E4GB6hX8fmiq38oFtyt5YmJe4rqGbR2U
-X-Google-Smtp-Source: AGHT+IFIkuL6wUfePQicPlMcF3SN1sRC7MNBSNmzlJIyddZLGndwvQqALN4cJkIHxzfWKsH2ocK4YVKbZhl+
+        bh=OZVma1lrp2oy91ELMTmGFGFg9/I25IFe6Z4TysewRjs=;
+        b=b4iqkj+HYKMdcZmNWnEU8V+DWgHLm3x45AWmOTmUKewB95M8P6oY4jQn2nGv6EKUPQ
+         DHOmfnwrulSKIyzJFWBCoa35cI6+NXYnPXYoX0VbqbdNq7t1lHKx0NRXwNVrMBfm6Qs5
+         QUWvvkjwDxkI8rxlq8fEdnpVwFokGvjAcKoqIb5xpkf1ZUrvlCDiOvVCLWlqucgNuslT
+         aBDsSfOMHVkhmx0T0DaxkSJyuShyODEgTkAJW4EXuqsCf7rfp3MK8csRXqXbHWaL/zAo
+         YKYFfdq14nMtUvyrWtphOU59lUH4zkp0mJBuQjRnq4qA4EF+moZon4mKwYUq7XtmGQWi
+         rXCQ==
+X-Gm-Message-State: AOJu0YwAe45/hiYU2P6iDUKSx5DUduCo3hE2IczfV9gTGPHfDskQ2SHr
+        DpwHd3oLwaccjZ7snAWkfchwNis5lM74
+X-Google-Smtp-Source: AGHT+IGXr1N17uDcE3z+qjpA3hfU04mTcYqcsLONo1h/vQUmSMh8GIVV09jBjCzZD8HWVaEj0DqTtHxTnz9d
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:35bf:293e:7696:34e9])
- (user=irogers job=sendgmr) by 2002:a25:cb0a:0:b0:db5:3aa1:827c with SMTP id
- b10-20020a25cb0a000000b00db53aa1827cmr32204ybg.13.1701911851794; Wed, 06 Dec
- 2023 17:17:31 -0800 (PST)
-Date:   Wed,  6 Dec 2023 17:16:36 -0800
+ (user=irogers job=sendgmr) by 2002:a05:690c:2888:b0:5d3:cca8:1d59 with SMTP
+ id ee8-20020a05690c288800b005d3cca81d59mr29912ywb.5.1701911854339; Wed, 06
+ Dec 2023 17:17:34 -0800 (PST)
+Date:   Wed,  6 Dec 2023 17:16:37 -0800
 In-Reply-To: <20231207011722.1220634-1-irogers@google.com>
-Message-Id: <20231207011722.1220634-3-irogers@google.com>
+Message-Id: <20231207011722.1220634-4-irogers@google.com>
 Mime-Version: 1.0
 References: <20231207011722.1220634-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Subject: [PATCH v6 02/47] perf maps: Add maps__for_each_map to iterate maps
- holding the lock
+Subject: [PATCH v6 03/47] perf events x86: Use function to add missing lock
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -102,167 +101,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The macro maps__for_each_entry is error prone as it doesn't require
-holding the maps lock. Add a new function that iterates the maps
-holding the read lock. Convert maps__find_symbol_by_name and
-maps__fprintf to use callbacks, the latter being an example of where
-the read lock wasn't being held.
+Switch from loop macro maps__for_each_entry to maps__for_each_map
+function that takes a callback. The function holds the maps lock,
+which should be held during iteration.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/maps.c | 99 ++++++++++++++++++++++++++++--------------
- tools/perf/util/maps.h |  3 ++
- 2 files changed, 69 insertions(+), 33 deletions(-)
+ tools/perf/arch/x86/util/event.c | 103 +++++++++++++++++--------------
+ 1 file changed, 58 insertions(+), 45 deletions(-)
 
-diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
-index 9a011aed4b75..160a6dce54bb 100644
---- a/tools/perf/util/maps.c
-+++ b/tools/perf/util/maps.c
-@@ -196,6 +196,21 @@ void maps__put(struct maps *maps)
- 		RC_CHK_PUT(maps);
- }
+diff --git a/tools/perf/arch/x86/util/event.c b/tools/perf/arch/x86/util/event.c
+index 5741ffe47312..e65b7dbe27fb 100644
+--- a/tools/perf/arch/x86/util/event.c
++++ b/tools/perf/arch/x86/util/event.c
+@@ -14,66 +14,79 @@
  
-+int maps__for_each_map(struct maps *maps, int (*cb)(struct map *map, void *data), void *data)
-+{
-+	struct map_rb_node *pos;
-+	int ret = 0;
+ #if defined(__x86_64__)
+ 
+-int perf_event__synthesize_extra_kmaps(struct perf_tool *tool,
+-				       perf_event__handler_t process,
+-				       struct machine *machine)
++struct perf_event__synthesize_extra_kmaps_cb_args {
++	struct perf_tool *tool;
++	perf_event__handler_t process;
++	struct machine *machine;
++	union perf_event *event;
++};
 +
-+	down_read(maps__lock(maps));
-+	maps__for_each_entry(maps, pos)	{
-+		ret = cb(pos->map, data);
-+		if (ret)
-+			break;
-+	}
-+	up_read(maps__lock(maps));
-+	return ret;
-+}
-+
- struct symbol *maps__find_symbol(struct maps *maps, u64 addr, struct map **mapp)
++static int perf_event__synthesize_extra_kmaps_cb(struct map *map, void *data)
  {
- 	struct map *map = maps__find(maps, addr);
-@@ -210,31 +225,40 @@ struct symbol *maps__find_symbol(struct maps *maps, u64 addr, struct map **mapp)
- 	return NULL;
- }
- 
--struct symbol *maps__find_symbol_by_name(struct maps *maps, const char *name, struct map **mapp)
--{
-+struct maps__find_symbol_by_name_args {
-+	struct map **mapp;
-+	const char *name;
- 	struct symbol *sym;
+-	int rc = 0;
 -	struct map_rb_node *pos;
-+};
+-	struct maps *kmaps = machine__kernel_maps(machine);
+-	union perf_event *event = zalloc(sizeof(event->mmap) +
+-					 machine->id_hdr_size);
++	struct perf_event__synthesize_extra_kmaps_cb_args *args = data;
++	union perf_event *event = args->event;
++	struct kmap *kmap;
++	size_t size;
  
--	down_read(maps__lock(maps));
-+static int maps__find_symbol_by_name_cb(struct map *map, void *data)
-+{
-+	struct maps__find_symbol_by_name_args *args = data;
- 
--	maps__for_each_entry(maps, pos) {
--		sym = map__find_symbol_by_name(pos->map, name);
-+	args->sym = map__find_symbol_by_name(map, args->name);
-+	if (!args->sym)
+-	if (!event) {
+-		pr_debug("Not enough memory synthesizing mmap event "
+-			 "for extra kernel maps\n");
+-		return -1;
+-	}
++	if (!__map__is_extra_kernel_map(map))
 +		return 0;
  
--		if (sym == NULL)
+-	maps__for_each_entry(kmaps, pos) {
+-		struct kmap *kmap;
+-		size_t size;
+-		struct map *map = pos->map;
++	kmap = map__kmap(map);
+ 
+-		if (!__map__is_extra_kernel_map(map))
 -			continue;
--		if (!map__contains_symbol(pos->map, sym)) {
--			sym = NULL;
--			continue;
--		}
--		if (mapp != NULL)
--			*mapp = pos->map;
--		goto out;
-+	if (!map__contains_symbol(map, args->sym)) {
-+		args->sym = NULL;
-+		return 0;
- 	}
++	size = sizeof(event->mmap) - sizeof(event->mmap.filename) +
++		      PERF_ALIGN(strlen(kmap->name) + 1, sizeof(u64)) +
++		      args->machine->id_hdr_size;
  
--	sym = NULL;
--out:
--	up_read(maps__lock(maps));
--	return sym;
-+	if (args->mapp != NULL)
-+		*args->mapp = map__get(map);
-+	return 1;
-+}
-+
-+struct symbol *maps__find_symbol_by_name(struct maps *maps, const char *name, struct map **mapp)
-+{
-+	struct maps__find_symbol_by_name_args args = {
-+		.mapp = mapp,
-+		.name = name,
-+		.sym = NULL,
-+	};
-+
-+	maps__for_each_map(maps, maps__find_symbol_by_name_cb, &args);
-+	return args.sym;
- }
+-		kmap = map__kmap(map);
++	memset(event, 0, size);
  
- int maps__find_ams(struct maps *maps, struct addr_map_symbol *ams)
-@@ -253,25 +277,34 @@ int maps__find_ams(struct maps *maps, struct addr_map_symbol *ams)
- 	return ams->ms.sym ? 0 : -1;
- }
+-		size = sizeof(event->mmap) - sizeof(event->mmap.filename) +
+-		       PERF_ALIGN(strlen(kmap->name) + 1, sizeof(u64)) +
+-		       machine->id_hdr_size;
++	event->mmap.header.type = PERF_RECORD_MMAP;
  
--size_t maps__fprintf(struct maps *maps, FILE *fp)
--{
--	size_t printed = 0;
--	struct map_rb_node *pos;
-+struct maps__fprintf_args {
-+	FILE *fp;
-+	size_t printed;
-+};
+-		memset(event, 0, size);
++	/*
++	 * kernel uses 0 for user space maps, see kernel/perf_event.c
++	 * __perf_event_mmap
++	 */
++	if (machine__is_host(args->machine))
++		event->header.misc = PERF_RECORD_MISC_KERNEL;
++	else
++		event->header.misc = PERF_RECORD_MISC_GUEST_KERNEL;
  
--	down_read(maps__lock(maps));
-+static int maps__fprintf_cb(struct map *map, void *data)
-+{
-+	struct maps__fprintf_args *args = data;
+-		event->mmap.header.type = PERF_RECORD_MMAP;
++	event->mmap.header.size = size;
  
--	maps__for_each_entry(maps, pos) {
--		printed += fprintf(fp, "Map:");
--		printed += map__fprintf(pos->map, fp);
--		if (verbose > 2) {
--			printed += dso__fprintf(map__dso(pos->map), fp);
--			printed += fprintf(fp, "--\n");
--		}
-+	args->printed += fprintf(args->fp, "Map:");
-+	args->printed += map__fprintf(map, args->fp);
-+	if (verbose > 2) {
-+		args->printed += dso__fprintf(map__dso(map), args->fp);
-+		args->printed += fprintf(args->fp, "--\n");
- 	}
+-		/*
+-		 * kernel uses 0 for user space maps, see kernel/perf_event.c
+-		 * __perf_event_mmap
+-		 */
+-		if (machine__is_host(machine))
+-			event->header.misc = PERF_RECORD_MISC_KERNEL;
+-		else
+-			event->header.misc = PERF_RECORD_MISC_GUEST_KERNEL;
++	event->mmap.start = map__start(map);
++	event->mmap.len   = map__size(map);
++	event->mmap.pgoff = map__pgoff(map);
++	event->mmap.pid   = args->machine->pid;
+ 
+-		event->mmap.header.size = size;
++	strlcpy(event->mmap.filename, kmap->name, PATH_MAX);
+ 
+-		event->mmap.start = map__start(map);
+-		event->mmap.len   = map__size(map);
+-		event->mmap.pgoff = map__pgoff(map);
+-		event->mmap.pid   = machine->pid;
++	if (perf_tool__process_synth_event(args->tool, event, args->machine, args->process) != 0)
++		return -1;
+ 
+-		strlcpy(event->mmap.filename, kmap->name, PATH_MAX);
 +	return 0;
 +}
  
--	up_read(maps__lock(maps));
-+size_t maps__fprintf(struct maps *maps, FILE *fp)
+-		if (perf_tool__process_synth_event(tool, event, machine,
+-						   process) != 0) {
+-			rc = -1;
+-			break;
+-		}
++int perf_event__synthesize_extra_kmaps(struct perf_tool *tool,
++				       perf_event__handler_t process,
++				       struct machine *machine)
 +{
-+	struct maps__fprintf_args args = {
-+		.fp = fp,
-+		.printed = 0,
++	int rc;
++	struct maps *kmaps = machine__kernel_maps(machine);
++	struct perf_event__synthesize_extra_kmaps_cb_args args = {
++		.tool = tool,
++		.process = process,
++		.machine = machine,
++		.event = zalloc(sizeof(args.event->mmap) + machine->id_hdr_size),
 +	};
 +
-+	maps__for_each_map(maps, maps__fprintf_cb, &args);
++	if (!args.event) {
++		pr_debug("Not enough memory synthesizing mmap event "
++			 "for extra kernel maps\n");
++		return -1;
+ 	}
  
--	return printed;
-+	return args.printed;
+-	free(event);
++	rc = maps__for_each_map(kmaps, perf_event__synthesize_extra_kmaps_cb, &args);
++
++	free(args.event);
+ 	return rc;
  }
  
- int maps__fixup_overlappings(struct maps *maps, struct map *map, FILE *fp)
-diff --git a/tools/perf/util/maps.h b/tools/perf/util/maps.h
-index a689149be8c4..14ad95979257 100644
---- a/tools/perf/util/maps.h
-+++ b/tools/perf/util/maps.h
-@@ -81,6 +81,9 @@ static inline void __maps__zput(struct maps **map)
- 
- #define maps__zput(map) __maps__zput(&map)
- 
-+/* Iterate over map calling cb for each entry. */
-+int maps__for_each_map(struct maps *maps, int (*cb)(struct map *map, void *data), void *data);
-+
- static inline struct rb_root *maps__entries(struct maps *maps)
- {
- 	return &RC_CHK_ACCESS(maps)->entries;
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
