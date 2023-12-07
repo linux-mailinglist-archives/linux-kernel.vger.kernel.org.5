@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F298089E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0C48089E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443044AbjLGOJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:09:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49380 "EHLO
+        id S1443000AbjLGOJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:09:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442831AbjLGOJ3 (ORCPT
+        with ESMTP id S1442978AbjLGOJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:09:29 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 529E610C2;
-        Thu,  7 Dec 2023 06:09:34 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 407A412FC;
-        Thu,  7 Dec 2023 06:10:20 -0800 (PST)
-Received: from e126817.. (e126817.cambridge.arm.com [10.2.3.5])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A71BB3F6C4;
-        Thu,  7 Dec 2023 06:09:32 -0800 (PST)
-From:   Ben Gainey <ben.gainey@arm.com>
-To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
-        adrian.hunter@intel.com, Ben Gainey <ben.gainey@arm.com>
-Subject: [PATCH] tools/perf: Fix missing reference count get in call_path_from_sample
-Date:   Thu,  7 Dec 2023 14:09:11 +0000
-Message-ID: <20231207140911.3240408-1-ben.gainey@arm.com>
-X-Mailer: git-send-email 2.43.0
+        Thu, 7 Dec 2023 09:09:21 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46AB10CB
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:09:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA0B9C433C7;
+        Thu,  7 Dec 2023 14:09:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701958167;
+        bh=H4XF+LqR6lnW5axiIdnTAEfuhRgWdQr7OOX8znjsCwQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gXnRRnfdQToNJAuodRkXasWCP48sM3fMyS8EC6ilFDSGi0arEZSYiYdJyhCZpsZbt
+         GiRohH6K3kZYMUQOsyz7cA2QzJExNzJivnJz3T1xeCp/1gQmn/ZF/CK6YzOQpvM+QS
+         qCjKrjtKzFOpfEpbEtkURKSIie0/P+6ptCei62sxi+rtI9wPxTe2LhI7Ku4BaqQ7DE
+         vaT7gDjWTmBCCFdKyIcm5cZwPIpeByQe3L75Fx/JcGDUFDav5a87o2umzIF3llBWSl
+         9lQc/rN7NMq2IcBv3K9jejz8aLd28UkbcLrdcsbuAoewClRPn76fCMaIkwQCjPmaJm
+         qriPrsZUgZkxw==
+Date:   Thu, 7 Dec 2023 15:09:17 +0100
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Sjoerd Simons <sjoerd@collabora.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] bus: moxtet: Mark the irq as shared
+Message-ID: <20231207150917.6f69999c@dellmb>
+In-Reply-To: <20231123142403.2262032-1-sjoerd@collabora.com>
+References: <20231123142403.2262032-1-sjoerd@collabora.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The addr_location map and maps fields in the inner loop were missing
-calls to map__get/maps__get. The subsequent addr_location__exit call in
-each loop puts the map/maps fields causing use-after-free aborts.
+On Thu, 23 Nov 2023 15:23:37 +0100
+Sjoerd Simons <sjoerd@collabora.com> wrote:
 
-This issue reproduces on at least arm64 and x86_64 with something
-simple like `perf record -g ls` followed by `perf script -s script.py`
-with the following script:
+> The Turris Mox shares the moxtet IRQ with various devices on the board,
+> so mark the IRQ as shared in the driver as well.
+>=20
+> Without this loading the module will fail with:
+>   genirq: Flags mismatch irq 40. 00002002 (moxtet) vs. 00002080 (mcp7940x)
+>=20
+> Signed-off-by: Sjoerd Simons <sjoerd@collabora.com>
+> ---
+>=20
+>  drivers/bus/moxtet.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/bus/moxtet.c b/drivers/bus/moxtet.c
+> index 5eb0fe73ddc4..48c18f95660a 100644
+> --- a/drivers/bus/moxtet.c
+> +++ b/drivers/bus/moxtet.c
+> @@ -755,7 +755,7 @@ static int moxtet_irq_setup(struct moxtet *moxtet)
+>  	moxtet->irq.masked =3D ~0;
+> =20
+>  	ret =3D request_threaded_irq(moxtet->dev_irq, NULL, moxtet_irq_thread_f=
+n,
+> -				   IRQF_ONESHOT, "moxtet", moxtet);
+> +				   IRQF_SHARED | IRQF_ONESHOT, "moxtet", moxtet);
+>  	if (ret < 0)
+>  		goto err_free;
+> =20
 
-    perf_db_export_mode = True
-    perf_db_export_calls = False
-    perf_db_export_callchains = True
-
-    def sample_table(*args):
-        print(f'sample_table({args})')
-
-    def call_path_table(*args):
-        print(f'call_path_table({args}')
-
-Fixes: 0dd5041c9a0ea ("perf addr_location: Add init/exit/copy functions")
-Signed-off-by: Ben Gainey <ben.gainey@arm.com>
----
- tools/perf/util/db-export.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/util/db-export.c b/tools/perf/util/db-export.c
-index b9fb71ab7a73..106429155c2e 100644
---- a/tools/perf/util/db-export.c
-+++ b/tools/perf/util/db-export.c
-@@ -253,8 +253,8 @@ static struct call_path *call_path_from_sample(struct db_export *dbe,
- 		 */
- 		addr_location__init(&al);
- 		al.sym = node->ms.sym;
--		al.map = node->ms.map;
--		al.maps = thread__maps(thread);
-+		al.map = map__get(node->ms.map);
-+		al.maps = maps__get(thread__maps(thread));
- 		al.addr = node->ip;
- 
- 		if (al.map && !al.sym)
--- 
-2.43.0
-
+Reviewed-by: Marek Beh=C3=BAn <kabel@kernel.org>
