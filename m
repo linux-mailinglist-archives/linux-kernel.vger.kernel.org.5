@@ -2,96 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE7580892C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8A9808924
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441871AbjLGN2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:28:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45616 "EHLO
+        id S1379555AbjLGN1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:27:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232812AbjLGN2l (ORCPT
+        with ESMTP id S229949AbjLGN1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:28:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE27D5E
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:28:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701955727; x=1733491727;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=eTR0Hpp0PjFJxfOgb8+cljzCstG4pP8ylV+zf623s94=;
-  b=hlhNlwqh0WoRIANnlTn7n3TPQtJTzC+BmJyd6jgSCwAm/jwkjGZ0/iBg
-   naqczXutLQDngthtxnMhYmASX1VdPIsQNBNMSfYvxvagIFQ+W62YJkLl3
-   G2RFTTL2YOVPQqkJNPknzvr/7EZYf8x6QmZAZbxTM5qAn6ozIAqRL1zln
-   W8+L1U9hXnBTG+dBQkLOURKvMX07hU7KbWj2zen1taRfkaRtWmXmMwK5r
-   smbCK/fLsWZm829G5c3GkcBW9zrv/pV/vlD4b4lEMKwLY1onBXjWfnVDT
-   9TNzjx3G6z5joclasM34VHPAyDv0QYKgoRQX418h74/R7zbqCdcISq47h
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1311736"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="1311736"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 05:28:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="747964131"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="747964131"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 07 Dec 2023 05:28:45 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBEQl-000CHd-0v;
-        Thu, 07 Dec 2023 13:28:43 +0000
-Date:   Thu, 7 Dec 2023 21:27:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: arch/arm64/kernel/proton-pack.c:353:1: sparse: sparse: symbol
- '__pcpu_scope_arm64_ssbd_callback_required' was not declared. Should it be
- static?
-Message-ID: <202312072137.5WQ7t3df-lkp@intel.com>
+        Thu, 7 Dec 2023 08:27:51 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4ECD5E;
+        Thu,  7 Dec 2023 05:27:58 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id d9443c01a7336-1d1e1edb10bso7683565ad.1;
+        Thu, 07 Dec 2023 05:27:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701955678; x=1702560478; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qy8bCqLkc/ug6mEJ+c+F03iEuHRroYlHNOEVG+qZwYo=;
+        b=RiJb+HL5+viDEhmHm9O3FUeHqM/qPXpEZra2WZGCZoQBcKogQTDPdLLT8d7MfrmgLo
+         FZtBVVEEPDGp8XGnRrkkW2LrTM4AeoKewUPnGNKWxsio2I/+Z2zrNwfhAAaouf5DKvFy
+         th+qIB0fLfSznYqv1se3caQcIhL0LaAIuy5HCIbTCCn6yS2ILOEz6ulurAE9gli89TEP
+         vczBVbmXIVDgVzwoZbJhU4m15b7auJUgCfvKSLmQ7Xt+DfNS2PaXsNpeN1ru/qv1FNcF
+         Db5K4DBhvkZmFId3SBj4+/KsWR60QblA4uJ0t1VOlIX60LOD6RlGXFMIfTEhplR1kgIa
+         LVuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701955678; x=1702560478;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qy8bCqLkc/ug6mEJ+c+F03iEuHRroYlHNOEVG+qZwYo=;
+        b=d7TQFF4eCpCzJH4XAUuKop47qkVv1nMPAp3fuHVhxjGnAdf/Fzco+pOGdIv/8D96Bv
+         2tJBvWDUABRKvx2IN/75Jezub1cL6g0L0zx/lKN4vrVpUS+7DlN0oocU2jVdWdlO0f7W
+         KwDef0Z0hVXxkYaKzouhaaJb8JZwjTye0FZmCQsEY4bsW9yARqZcsUQIV3nTu6EMUuBy
+         hPOn/qQqxIMvXobEbWgodnPkCWny13YpxYAIWzdSBBQfwQ2phwWgw4Bhwv16OTsE7vUn
+         zLCGAy+akaDKtMV78iHvqhxsudcRAIR1OtP453/wZwACwpgfvI3tMs22Am1dBHGtAl0r
+         bJ2g==
+X-Gm-Message-State: AOJu0YybVIIpaOjeWuqIi44tMwtP4JJ3i2lhV7vYU8N/tkBzUb5Idtfu
+        7R2qqk4/L6PFSpXi6v30aZlZWwdU0vQwkt9OvHo=
+X-Google-Smtp-Source: AGHT+IGfa/eq5WVyw2kvM/MNxsedwjFAeSez7k2ZHxr2vnCrTUNYeb6zx7OQHUPai83QwolE7eWhPDPODQO3E4b3Lzo=
+X-Received: by 2002:a17:903:32d0:b0:1d0:9c03:a7c9 with SMTP id
+ i16-20020a17090332d000b001d09c03a7c9mr2471428plr.97.1701955677729; Thu, 07
+ Dec 2023 05:27:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   xingwei lee <xrivendell7@gmail.com>
+Date:   Thu, 7 Dec 2023 21:27:46 +0800
+Message-ID: <CABOYnLyH=PmSoP8=PdkyK5VG1vhiG8fHKg2Xie4oBrVeYbdhHw@mail.gmail.com>
+Subject: KMSAN: uninit-value in ip_tunnel_xmit
+To:     davem@davemloft.net
+Cc:     dsahern@kernel.org, Eric Dumazet <edumazet@google.com>,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller@googlegroups.com,
+        syzbot+4a2c52677a8a1aa283cb@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-commit: 5c8b0cbd9d6bac5f40943b5a7d8eac8cb86cbe7f arm64: Pull in task_stack_page() to Spectre-v4 mitigation code
-date:   3 years, 2 months ago
-config: arm64-randconfig-r112-20231117 (https://download.01.org/0day-ci/archive/20231207/202312072137.5WQ7t3df-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231207/202312072137.5WQ7t3df-lkp@intel.com/reproduce)
+Hello,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312072137.5WQ7t3df-lkp@intel.com/
+When fuzzing the latest upstream linux 6.7-rc4,  the following crash
+was triggered.
+HEAD commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
 
-sparse warnings: (new ones prefixed by >>)
->> arch/arm64/kernel/proton-pack.c:353:1: sparse: sparse: symbol '__pcpu_scope_arm64_ssbd_callback_required' was not declared. Should it be static?
+If you fix this issue, please add the following tag to the commit:
+Reported-by: xingwei Lee <xrivendell7@gmail.com>
 
-vim +/__pcpu_scope_arm64_ssbd_callback_required +353 arch/arm64/kernel/proton-pack.c
+console_log: https://gist.github.com/xrivendell7/b41fbc928cd203823783fd90c98b6583#file-console_log
+report: https://gist.github.com/xrivendell7/b41fbc928cd203823783fd90c98b6583#file-report
+kernel commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=ce27066613dacbb6
+repro.c: https://gist.github.com/xrivendell7/b41fbc928cd203823783fd90c98b6583#file-repro-c
+repro.txt: https://gist.github.com/xrivendell7/b41fbc928cd203823783fd90c98b6583#file-repro-txt
 
-c28762070ca651 Will Deacon 2020-09-18  351  
-c28762070ca651 Will Deacon 2020-09-18  352  /* This is the per-cpu state tracking whether we need to talk to firmware */
-c28762070ca651 Will Deacon 2020-09-18 @353  DEFINE_PER_CPU_READ_MOSTLY(u64, arm64_ssbd_callback_required);
-c28762070ca651 Will Deacon 2020-09-18  354  
+In the lasted kernel: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8 the
+[  199.471467][ T8590] =====================================================
+[  199.475015][ T8590] BUG: KMSAN: uninit-value in ip_tunnel_xmit+0x857/0x3e80
+[  199.478180][ T8590]  ip_tunnel_xmit+0x857/0x3e80
+[  199.480541][ T8590]  ipgre_xmit+0xd1c/0xe20
+[  199.482393][ T8590]  dev_hard_start_xmit+0x247/0xa10
+[  199.484530][ T8590]  __dev_queue_xmit+0x33b8/0x5130
+[  199.486433][ T8590]  __bpf_redirect+0xdd7/0x1600
+[  199.488258][ T8590]  bpf_clone_redirect+0x328/0x470
+[  199.490250][ T8590]  ___bpf_prog_run+0x2180/0xdb80
+[  199.491997][ T8590]  __bpf_prog_run512+0xb5/0xe0
+[  199.493691][ T8590]  bpf_test_run+0x482/0xb00
+[  199.495215][ T8590]  bpf_prog_test_run_skb+0x14e5/0x1f20
+[  199.497026][ T8590]  bpf_prog_test_run+0x6af/0xac0
+[  199.498701][ T8590]  __sys_bpf+0x649/0xd60
+[  199.500029][ T8590]  __x64_sys_bpf+0xa0/0xe0
+[  199.501411][ T8590]  do_syscall_64+0x44/0x110
+[  199.502757][ T8590]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+[  199.504463][ T8590]
+[  199.505159][ T8590] Uninit was created at:
+[  199.506344][ T8590]  slab_post_alloc_hook+0x129/0xa70
+[  199.507690][ T8590]  kmem_cache_alloc_node+0x5e9/0xb10
+[  199.509191][ T8590]  kmalloc_reserve+0x13d/0x4a0
+[  199.510411][ T8590]  pskb_expand_head+0x226/0x1a00
+[  199.511657][ T8590]  skb_ensure_writable+0x3d3/0x460
+[  199.512905][ T8590]  bpf_clone_redirect+0x17f/0x470
+[  199.514135][ T8590]  ___bpf_prog_run+0x2180/0xdb80
+[  199.515325][ T8590]  __bpf_prog_run512+0xb5/0xe0
+[  199.516479][ T8590]  bpf_test_run+0x482/0xb00
+[  199.517580][ T8590]  bpf_prog_test_run_skb+0x14e5/0x1f20
+[  199.518901][ T8590]  bpf_prog_test_run+0x6af/0xac0
+[  199.520015][ T8590]  __sys_bpf+0x649/0xd60
+[  199.520996][ T8590]  __x64_sys_bpf+0xa0/0xe0
+[  199.521949][ T8590]  do_syscall_64+0x44/0x110
+[  199.522926][ T8590]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-:::::: The code at line 353 was first introduced by commit
-:::::: c28762070ca651fe7a981b8f31d972c9b7d2c386 arm64: Rewrite Spectre-v4 mitigation code
+and I notice the problem is reported at 2018/2020 and seems fixed twice.
 
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
+https://syzkaller.appspot.com/bug?id=f62d236e2fceaeb104f4e8f77d2324ef9da4b41b
+https://syzkaller.appspot.com/bug?extid=4a2c52677a8a1aa283cb
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
