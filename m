@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D99DD8086FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 615D4808701
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379061AbjLGLqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 06:46:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
+        id S232262AbjLGLqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 06:46:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232493AbjLGLqF (ORCPT
+        with ESMTP id S232494AbjLGLqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Dec 2023 06:46:05 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7EE4137;
-        Thu,  7 Dec 2023 03:46:10 -0800 (PST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0AAD54;
+        Thu,  7 Dec 2023 03:46:11 -0800 (PST)
 Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SmCBc4MnszYsp3;
-        Thu,  7 Dec 2023 19:45:28 +0800 (CST)
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SmC6L6rCvzShxH;
+        Thu,  7 Dec 2023 19:41:46 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -26,9 +26,9 @@ From:   Junxian Huang <huangjunxian6@hisilicon.com>
 To:     <jgg@ziepe.ca>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH v2 for-next 2/5] RDMA/hns: Response dmac to userspace
-Date:   Thu, 7 Dec 2023 19:42:28 +0800
-Message-ID: <20231207114231.2872104-3-huangjunxian6@hisilicon.com>
+Subject: [PATCH v2 for-next 3/5] RDMA/hns: Add a max length of gid table
+Date:   Thu, 7 Dec 2023 19:42:29 +0800
+Message-ID: <20231207114231.2872104-4-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20231207114231.2872104-1-huangjunxian6@hisilicon.com>
 References: <20231207114231.2872104-1-huangjunxian6@hisilicon.com>
@@ -49,54 +49,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While creating AH, dmac is already resolved in kernel. Response dmac
-to userspace so that userspace doesn't need to resolve dmac repeatedly.
+IB-core and rdma-core restrict the sgid_index specified by users,
+which is uint8_t/u8 data type, to only be within the range of 0-255,
+so it's meaningless to support excessively large gid_table_len.
+
+On the other hand, ib-core creates as many sysfs gid files as
+gid_table_len, most of which are not only useless because of the
+reason above, but also greatly increase the traversal time of
+the sysfs gid files for applications.
+
+This patch limits the maximum length of gid table to 256.
 
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_ah.c | 7 +++++++
- include/uapi/rdma/hns-abi.h             | 5 +++++
- 2 files changed, 12 insertions(+)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_ah.c b/drivers/infiniband/hw/hns/hns_roce_ah.c
-index fbf046982374..b4209b6aed8d 100644
---- a/drivers/infiniband/hw/hns/hns_roce_ah.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_ah.c
-@@ -57,6 +57,7 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
- 	struct rdma_ah_attr *ah_attr = init_attr->ah_attr;
- 	const struct ib_global_route *grh = rdma_ah_read_grh(ah_attr);
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibah->device);
-+	struct hns_roce_ib_create_ah_resp resp = {};
- 	struct hns_roce_ah *ah = to_hr_ah(ibah);
- 	int ret = 0;
- 	u32 max_sl;
-@@ -97,6 +98,12 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
- 		ah->av.vlan_en = ah->av.vlan_id < VLAN_N_VID;
- 	}
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 4258b6daaded..93a71db527d8 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -2060,6 +2060,7 @@ static void set_hem_page_size(struct hns_roce_dev *hr_dev)
+ /* Apply all loaded caps before setting to hardware */
+ static void apply_func_caps(struct hns_roce_dev *hr_dev)
+ {
++#define MAX_GID_TBL_LEN 256
+ 	struct hns_roce_caps *caps = &hr_dev->caps;
+ 	struct hns_roce_v2_priv *priv = hr_dev->priv;
  
-+	if (udata) {
-+		memcpy(resp.dmac, ah_attr->roce.dmac, ETH_ALEN);
-+		ret = ib_copy_to_udata(udata, &resp,
-+				       min(udata->outlen, sizeof(resp)));
-+	}
-+
- err_out:
- 	if (ret)
- 		atomic64_inc(&hr_dev->dfx_cnt[HNS_ROCE_DFX_AH_CREATE_ERR_CNT]);
-diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index ce0f37f83416..c996e151081e 100644
---- a/include/uapi/rdma/hns-abi.h
-+++ b/include/uapi/rdma/hns-abi.h
-@@ -125,4 +125,9 @@ struct hns_roce_ib_alloc_pd_resp {
- 	__u32 pdn;
- };
+@@ -2095,8 +2096,14 @@ static void apply_func_caps(struct hns_roce_dev *hr_dev)
+ 		caps->gmv_entry_sz = HNS_ROCE_V3_GMV_ENTRY_SZ;
  
-+struct hns_roce_ib_create_ah_resp {
-+	__u8 dmac[6];
-+	__u8 reserved[2];
-+};
+ 		caps->gmv_hop_num = HNS_ROCE_HOP_NUM_0;
+-		caps->gid_table_len[0] = caps->gmv_bt_num *
+-					(HNS_HW_PAGE_SIZE / caps->gmv_entry_sz);
 +
- #endif /* HNS_ABI_USER_H */
++		/* It's meaningless to support excessively large gid_table_len,
++		 * as the type of sgid_index in kernel struct ib_global_route
++		 * and userspace struct ibv_global_route are u8/uint8_t (0-255).
++		 */
++		caps->gid_table_len[0] = min_t(u32, MAX_GID_TBL_LEN,
++					 caps->gmv_bt_num *
++					 (HNS_HW_PAGE_SIZE / caps->gmv_entry_sz));
+ 
+ 		caps->gmv_entry_num = caps->gmv_bt_num * (PAGE_SIZE /
+ 							  caps->gmv_entry_sz);
 -- 
 2.30.0
 
