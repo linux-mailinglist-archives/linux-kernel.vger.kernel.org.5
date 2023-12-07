@@ -2,75 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 201EA808BC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18435808BCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443466AbjLGPZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 10:25:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
+        id S1443480AbjLGP2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 10:28:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443452AbjLGPZu (ORCPT
+        with ESMTP id S1443452AbjLGP23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 10:25:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1312510C2;
-        Thu,  7 Dec 2023 07:25:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E33CFC433C7;
-        Thu,  7 Dec 2023 15:25:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701962756;
-        bh=QSRLw7yztCghjyxb/KELP29iYZGlYvVKvP/F2T64Jww=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=jLNIWoTMMlZNrMRCUjmXid2FCoRKOegMarVWk3xLK4aTFV6FBlgv5y9ie8gZ3gbjf
-         HVy1/YRb6I6hDXuOKp/2fMWHBZKzcwJZzNkVUiXibUjyVLsXfjZaOp0/uPsLciony/
-         bPDSlMOC4YH6hhKUJ0YA54GWz29VI+hQKM339jK2I8ACK55mC2wtoIv/CAiBg0wesQ
-         IjgWPLDNFODIZUsAlrxz91CR4kOzWxn4SfQFXsbJ6YeCvaZ/Gc1rsHDl87NCLtDxLa
-         Hyww8vRbvCLV66RcyTFs6hRxZws4Kh4tjak3En96dfuEfX5vKidCiRhJjyE24K2iP1
-         hcqEppM2IsqTA==
-From:   Lee Jones <lee@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Johan Hovold <johan+linaro@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        inux-arm-msm@vger.kernel.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231130171940.12391-1-johan+linaro@kernel.org>
-References: <20231130171940.12391-1-johan+linaro@kernel.org>
-Subject: Re: (subset) [PATCH] dt-bindings: leds: qcom,spmi-flash-led: fix
- example node name
-Message-Id: <170196275366.99959.4254922896810354041.b4-ty@kernel.org>
-Date:   Thu, 07 Dec 2023 15:25:53 +0000
+        Thu, 7 Dec 2023 10:28:29 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8177C10CA;
+        Thu,  7 Dec 2023 07:28:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=oSO91Zjek++1IKXEdE5RYlis15XBD+gc14pgxk+BMSU=; b=snOb9ecvdpUafV+1Kv8SNC57GJ
+        x7/AZCiAkpE/XzFrf7+piCHYMPszK6iqkhe3XvlRx2yU5gcjm088FMML13QyMxSmUZgSzqvUmcNsI
+        KZITbZYDmXgsQqEqy+L60UfhISdR1Cn92aavH1IjrN8ZR7hRCibS76yLWVKjjZLLvurs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1rBGHc-002KGh-Uo; Thu, 07 Dec 2023 16:27:24 +0100
+Date:   Thu, 7 Dec 2023 16:27:24 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     justinstitt@google.com
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Rasesh Mody <rmody@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com,
+        Dimitris Michailidis <dmichail@fungible.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Louis Peens <louis.peens@corigine.com>,
+        Shannon Nelson <shannon.nelson@amd.com>,
+        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        UNGLinuxDriver@microchip.com, Jiawen Wu <jiawenwu@trustnetic.com>,
+        Mengyuan Lou <mengyuanlou@net-swift.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
+        linux-hyperv@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v5 1/3] ethtool: Implement ethtool_puts()
+Message-ID: <6a0340d5-20e0-40ab-822e-d9fc1ce360d9@lunn.ch>
+References: <20231206-ethtool_puts_impl-v5-0-5a2528e17bf8@google.com>
+ <20231206-ethtool_puts_impl-v5-1-5a2528e17bf8@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206-ethtool_puts_impl-v5-1-5a2528e17bf8@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Nov 2023 18:19:40 +0100, Johan Hovold wrote:
-> The led controller is a child of an SPMI PMIC, which in turn sits on an
-> SPMI bus.
+On Wed, Dec 06, 2023 at 11:16:10PM +0000, justinstitt@google.com wrote:
+> Use strscpy() to implement ethtool_puts().
 > 
-> While at it, add some newline separators to improve readability.
+> Functionally the same as ethtool_sprintf() when it's used with two
+> arguments or with just "%s" format specifier.
 > 
-> 
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Applied, thanks!
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-[1/1] dt-bindings: leds: qcom,spmi-flash-led: fix example node name
-      commit: e9a3374e5c545e5eade4623098b958d2f4073455
-
---
-Lee Jones [李琼斯]
-
+    Andrew
