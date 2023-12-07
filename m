@@ -2,197 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 240F08081D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D12548081F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377904AbjLGHYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 02:24:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39806 "EHLO
+        id S229695AbjLGH3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 02:29:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbjLGHYN (ORCPT
+        with ESMTP id S229456AbjLGH3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 02:24:13 -0500
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2051.outbound.protection.outlook.com [40.107.220.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0679137;
-        Wed,  6 Dec 2023 23:24:19 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QRdHhekgzKGQxVWNYjJvxoDIdb05+EXjx7eum2BbplSlu7oE0EmbRa90DpBh9aS7P41DaDkr3+eQSJo89lqaqB89c5ei93Kr+63YcFMo4JH8L1uws3YIVun5O8uZHAeS2oUgul7R+nW0GNeWoBF5PF0iTSe8F7FZTkScQCvKyNpAq/y5giIekzXdk567SPnwWzWM0Ed+BkcirXVHZt0rr8oETLh1fB84C4MSdsYPUdO/b8k6e5CKHrj1SZ6Upl+weCO4EHU4twn1pSwKVCcpezkdREL7KKhtuwHKb09yKnDNazfN57hkiXgVnhoasVHd7gg8dKjyMtbhGXnyShRzmg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+8Cbt8nvIbMcjXSLbl70zjwu+kqJsiOXYMoU0yD4Ezw=;
- b=L9PRn7Q6T+ql786GXkx1r20KiEIdyKfFb2zWlk/BeKffZPf1jGTXKzsaKVvNubp9bjKX4WBAENZvfipMRUghRvqJCMqL97qNCbw7EAtvnVS0mbqS7JuDJ9lCwabBFtAXovDGY77s9Sf9dOaxaVQJIFDPD5JCIhkDs0s02M1L8UapdlewPRZrI5Rq61QoUxnD4C3G82KSLYlnFwhrcFEbTJfUqYMdoOqKZQTpectNS1Jao3XV5x0RfjJcYgfEbzzyyA9XceU8bz9iLS85UK32wet+r3+Xr6q94vxrsF68Ra/GLBGi0/RxfZvXlIrTH7FGC7jlmx+/CE60mTQUZQwgEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+8Cbt8nvIbMcjXSLbl70zjwu+kqJsiOXYMoU0yD4Ezw=;
- b=Bs1Yhx2Of40OMbcYBInZBp5gvGynXfS0chnoY9N4Jyx8Mj0xB1VEbaHRJDqkmPb5cxvn/MiHR3qQu97rxAMruvVqKDsHLdGqiZ9rkWDtP9EGQAaA24QVmY2Sco5vB9B8PnEX9zoxJLj0ClfsSKkdV4aw8oEpS1QnjhG17hpt5WXSCmNvFk4VwgIIDpVZ0vU9w2DS1ZYczc7SgBKx0/m1pjhtd0lbAYMLCezFxzZ5WSiUX1appd6p9jAcS+zlTCTSmQNOkvu1vOXjWvqw5z8ZjqsMGFEAx8JwKqQdP8boQ6kK349qcbXok8TBiaXdSrTUKuzRRUW00rSjZDhT1fMB1w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3356.namprd12.prod.outlook.com (2603:10b6:5:38::11) by
- BL3PR12MB6596.namprd12.prod.outlook.com (2603:10b6:208:38f::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.25; Thu, 7 Dec
- 2023 07:24:17 +0000
-Received: from DM6PR12MB3356.namprd12.prod.outlook.com
- ([fe80::1a50:8e27:5f8f:7c4d]) by DM6PR12MB3356.namprd12.prod.outlook.com
- ([fe80::1a50:8e27:5f8f:7c4d%5]) with mapi id 15.20.7068.025; Thu, 7 Dec 2023
- 07:24:17 +0000
-Message-ID: <c86e8f75-f74a-491e-9ac0-2431a6ec4b80@nvidia.com>
-Date:   Thu, 7 Dec 2023 12:54:04 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC,v14 4/5] arm64: tegra: Add PCIe port node with PCIe WAKE#
- for C1 controller
-Content-Language: en-US
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     bhelgaas@google.com, thierry.reding@gmail.com, petlozup@nvidia.com,
-        rafael.j.wysocki@intel.com, lpieralisi@kernel.org, robh@kernel.org,
-        jeffy.chen@rock-chips.com, krzysztof.kozlowski+dt@linaro.org,
-        jonathanh@nvidia.com, dmitry.osipenko@collabora.com,
-        viresh.kumar@linaro.org, gregkh@linuxfoundation.org,
-        steven.price@arm.com, kw@linux.com, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        vidyas@nvidia.com
-References: <20230208111645.3863534-1-mmaddireddy@nvidia.com>
- <20230208111645.3863534-5-mmaddireddy@nvidia.com>
- <20231206153627.GJ12802@thinkpad>
-X-Nvconfidentiality: public
-From:   Manikanta Maddireddy <mmaddireddy@nvidia.com>
-In-Reply-To: <20231206153627.GJ12802@thinkpad>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BMXPR01CA0077.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:54::17) To DM6PR12MB3356.namprd12.prod.outlook.com
- (2603:10b6:5:38::11)
+        Thu, 7 Dec 2023 02:29:50 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2517D137;
+        Wed,  6 Dec 2023 23:29:54 -0800 (PST)
+Received: from loongson.cn (unknown [112.20.109.254])
+        by gateway (Coremail) with SMTP id _____8CxLOtxdHFl0Y8_AA--.55856S3;
+        Thu, 07 Dec 2023 15:29:53 +0800 (CST)
+Received: from localhost.localdomain (unknown [112.20.109.254])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxnd5vdHFl7EhXAA--.63284S2;
+        Thu, 07 Dec 2023 15:29:51 +0800 (CST)
+From:   Binbin Zhou <zhoubinbin@loongson.cn>
+To:     Binbin Zhou <zhoubb.aaron@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Huacai Chen <chenhuacai@kernel.org>, devicetree@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, lvjianmin@loongson.cn,
+        WANG Xuerui <git@xen0n.name>, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: [PATCH v6 0/2] dt-bindings: interrupt-controller: Fix some loongson,liointc warnings
+Date:   Thu,  7 Dec 2023 15:29:37 +0800
+Message-Id: <cover.1701933946.git.zhoubinbin@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3356:EE_|BL3PR12MB6596:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4ef0069f-8d71-4fc4-7bbf-08dbf6f58524
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o739r9IuClSeobdMcsRG0rvagSktM/Gkt8wZNswCHJokpRjsbx8EYSq4lw6HX3Pfa2+2F4xZ5lgqAh/Ez1dYI+pasvIryy0/5ITXmeJw6WGVCENC2EQa7hIRcKXw2I/gJhG20Kd09WSVT+1OIBa11n8iY6xnzUEZ4eH2sCgP40gr6PH5fdNuDffNAuT3JVbdXODt7mfYM3TNlz5fT1MKzKxVFTo8FWO9sbG9B/VVVYJfrcnVp0qU85AEt1ZrUyMT9ZBcS5+7FFAiFKNXvgMwrw5yMxfbsjdO4w/L+OYuRnbghBn/Ev4jwbvcblxWDLsgB8JtRpMIQX4tG53sqUS8lxvl0sdBGo82HiXPkez/Z4NZ5O/eZ8ewgCQFgkkSfBw16Sypg2TCxnjErN1Mc9U17p6ZuqHwL5QPjtiFpg7MnftARuVbJkz9QtZLyDiGL1+IvDEpzOS+bDsYcFgS2Mjk81ISXoL3XWhDWt+kAehVwsldrQZCOV5tW2e6zHdDr+pSNY1uVXzMESn4zpSEXglg1nmw92W3VS9ecWaoPT6sBXnZkctn5puhvnbjrAD0dXi1W8HadMnPVaKGBIsZjttdJJ4DM1Y3Th0hdBOsNewQC4zS8WEe7UUCvmegtGitqtCqDpu1avVLJRRaQQYf+UZMZAEd4Hp1AHOT3xRIBslATNYhkf/dCk8QeDjg9lQKmSvsDKMOEX3cYuCm6dTMRnr93/eQpDJLkbNYrJoSfBZ+Kto=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3356.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(376002)(346002)(136003)(230173577357003)(230922051799003)(230273577357003)(451199024)(186009)(1800799012)(64100799003)(4326008)(2906002)(7416002)(5660300002)(38100700002)(8676002)(36756003)(41300700001)(31686004)(86362001)(8936002)(316002)(66476007)(6916009)(66556008)(66946007)(478600001)(966005)(31696002)(6486002)(6666004)(6506007)(53546011)(26005)(6512007)(107886003)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NjVoTDJCalFxTTFpZXpLa05GeEJEbWtXTEpNYzk5MUhIcDJiZVkxa3ZnemxE?=
- =?utf-8?B?azZDMERidjNtZWNtaVlLc0M1ZmlpSkY5ZUVGV3BnTGpLSndsNjNtTnphMFlQ?=
- =?utf-8?B?WHYwdThZSXg0dVIvd2NOdHFiQ2F3UEE2NFFwOVJLYnlsZXRUbFpjUFpUaVVx?=
- =?utf-8?B?M1pyRjZsckhMWGltZUZJdEpCZDZhRVRwVE1ieEZLUU14QkRYRHFNRWY3VUta?=
- =?utf-8?B?dXR0bUxna3ovTkxrQkpzeG1FNXFwQWtRZHZXNk1YbHBHWlZ4YVQ3K205Y1JX?=
- =?utf-8?B?Z3MzbHBuRkp2aGhOWnUxQ1BPdjVGSWRwdGkvaUt2NG45NmtWSTJVNGI0RitT?=
- =?utf-8?B?c3RSSDVxeDEwdUdoUVZFZE1Zc3Q3bFkyRnhJM3FablFBbEZXOWpJbzdZc1VE?=
- =?utf-8?B?Vy9HNUQ3dzEzN2I3RW9YNTl6VUZpdlZkTXk3QmRQcTEwc1FwYUwrVHg2emNi?=
- =?utf-8?B?NzRmemxxWFRFUzM1L2F6bDA4WEJrclpWS0k2UlVRUTlPV2FGVWpRbGNic2s3?=
- =?utf-8?B?NWJWbUNRNGJUMGtya2Jlc0NKTW1pa2FmMmVieFJmZUpCOElBWUQycnJmU2pa?=
- =?utf-8?B?UVdBWUlYWW8ramN4QWtZYzVHbmhNY0lUWHMrb09mSUNiMmZnODNWMThmVTdS?=
- =?utf-8?B?REIvODErMU44WW5TRUNRRWtMTWwrLzlWNTF2OVpkU1NYWThsSFhNTFR6Vncy?=
- =?utf-8?B?cGJMQlRyem4vRnBscFFLYk9NV2tnYkVrMzZwVU9aU1hUNXlNUXhOTmN4bjFS?=
- =?utf-8?B?eGZoL3JLSm5aeEJzOG9oQ0prWEhPWWk1TitlNUozZUJiRkhqYkdOQjhKazA1?=
- =?utf-8?B?VkFBenBIZnNXVTByQzA3Y29DSWorSHNibXlVbks1Z1lpdnVqMjZjL0NHdkZx?=
- =?utf-8?B?Tyt0YUN0YTZqL1pIMWM5cWo4ZldYUUM5RGV4RnBNV0xtOUI4TVltQTFYOXdU?=
- =?utf-8?B?THJjU2tmazMwcTFSMWtZTmNpM2t0VUZvWkpFd3dFZ3NZaTI0ZkNsbktoYXNs?=
- =?utf-8?B?RXYzczBJSURkQ3lFeC9DeThEczFnU1k2MS9WbGlmQWRBL2dmZ0xyUmNyc2lY?=
- =?utf-8?B?dG9uYXI4Mk1iQVlVcjB5Q2taUUxZTVk0dGwwTzBldlVSbTl1N1V1TkF5VlhI?=
- =?utf-8?B?aDFOekhqd0VCQzczdktQRkY3U0tqSVBhSVFQbytoSUx0WXBxTVFPd1Vyc1lt?=
- =?utf-8?B?d0NJMHVwNk9UVzJ0NkhaalVQeWtVTHVEMW9sMitpcFRVNDJkZUZJMldwSUxa?=
- =?utf-8?B?eUlQa1VoazI4c3ZNeGlyd1RIcnNRZGtqblhkVktlbWdMQXBNUWcrem1PYWpa?=
- =?utf-8?B?ZU9JZ0JqcnA5T3BhMktJMWNCQW9yK2pMUGlrT0hDb0gwSnE5OUNYaWZSMCt3?=
- =?utf-8?B?dnRPeUtyOEhkQ3V3NDNTeEFhVGkyNVRqdU12c0xLRmUzV1lPU2xGUW95M2hT?=
- =?utf-8?B?TkpMUkVRNzZQUkh4ODVEcVBtMyt3WUs0Ymh0NWx5UmRiK3lRV0lCSEVKRTJR?=
- =?utf-8?B?a3BONnRTdFpkZ1JCczBNeURYYlN6d3NnZWJoM1Blc2dzYktUZ0ZJVmdockUr?=
- =?utf-8?B?SVA1eXlyUm1OellFQW5NQnVvNGRBcXJzVlpvUE50c3M0ditOdXl2UWpyRGJ4?=
- =?utf-8?B?Q1ROMHNTQUlZRXBRMlUwcCtKMTVacXc5MlAxcEJFc1NEbzRXUWk1MHozSnpO?=
- =?utf-8?B?akRUSUwwK2Z1TjNMK2dIcGt1dDNHYmpCUmNMODBacmVaTzF2TnhtVlR4QkJx?=
- =?utf-8?B?WDc2ZFM1a21Ienc5MDhqMWRXY05PbmJLRTFYaWtSSFJZaFV0VEptNjc4WTZG?=
- =?utf-8?B?VGpXR2NkNWRrMjV4eWw3NGZYKzJnbnNzMDFGczl2Y2RHMlo0N3hVQytuUVMr?=
- =?utf-8?B?aklkMkFWcEIwUjhVN05EOTFJTU5MU2ZxSzFiZXNaZDl5NXdVeVRHK3RYSTJz?=
- =?utf-8?B?REVtbFEzVVJ5OTV0TWFtcy9PSjhjWXRlSXE1a3dRUmJDTWNMQ0k1SFRwQ3Fp?=
- =?utf-8?B?S1F0bllia0FpVG1LSVVNNW9WMnNGWi9OaTZ0QzFDblkvdWZxZjU5NDArNno1?=
- =?utf-8?B?dndPeTYvTXo2dG40bEkxdHZPQ3g2cmpKWDNHcFlNNElaVDlvQnB1a2hCL3Ar?=
- =?utf-8?B?Zk85VUhlQTBjMWZNZnJKZGwvTzdpUG5FVGNlSmNaY0hWa3lDMTlrL09XSXdG?=
- =?utf-8?B?d0E9PQ==?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ef0069f-8d71-4fc4-7bbf-08dbf6f58524
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3356.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2023 07:24:16.8525
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ln1NckxrWl1iR8lrS/HVLzOBjaznlNKaUyyNcWisvHX87Mp/xyn7MhIpSEzx44pIy8xlJS2if+8esPipv819oA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6596
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Dxnd5vdHFl7EhXAA--.63284S2
+X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7WryfJFyxGrW5uFy8Kw4UGFX_yoW8Zw4fpF
+        Zxu3ZxGr4Utr4xAwsxJ3y2vFyru398JasxWFs7Aw18AayDJw1DXw1S9F45ArW3CrWSqF1a
+        qFsakF4jga4UCFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
+        wI0_Gr1j6F4UJwAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2
+        xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_
+        JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x
+        0EwIxGrwCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
+        bVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+        k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+        xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8Dl1DUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all:
 
-On 06-12-2023 21:06, Manivannan Sadhasivam wrote:
-> External email: Use caution opening links or attachments
->
->
-> On Wed, Feb 08, 2023 at 04:46:44PM +0530, Manikanta Maddireddy wrote:
->> Add PCIe port node under the PCIe controller-1 device tree node to support
->> PCIe WAKE# interrupt for WiFi.
->>
->> Signed-off-by: Manikanta Maddireddy <mmaddireddy@nvidia.com>
->> ---
->>
->> Changes in v14:
->> New patch in the series to support PCIe WAKE# in NVIDIA Jetson AGX Orin.
->>
->>   .../dts/nvidia/tegra234-p3737-0000+p3701-0000.dts     | 11 +++++++++++
->>   1 file changed, 11 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts b/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
->> index 8a9747855d6b..9c89be263141 100644
->> --- a/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
->> +++ b/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
->> @@ -2147,6 +2147,17 @@ pcie@14100000 {
->>
->>                        phys = <&p2u_hsio_3>;
->>                        phy-names = "p2u-0";
->> +
->> +                     pci@0,0 {
->> +                             reg = <0x0000 0 0 0 0>;
->> +                             #address-cells = <3>;
->> +                             #size-cells = <2>;
->> +                             ranges;
->> +
->> +                             interrupt-parent = <&gpio>;
->> +                             interrupts = <TEGRA234_MAIN_GPIO(L, 2) IRQ_TYPE_LEVEL_LOW>;
->> +                             interrupt-names = "wakeup";
-> WAKE# should be part of the PCIe controller, not device. And the interrupt name
-> should be "wake".
->
-> - Mani
-Hi,
+Some liointc-related DTBS_CHECK warnings were found when trying to
+introduce the Loongson-2K DTS{I} for LoongArch.
+This patch series attempts to fix those warnings.
 
-Please refer to the discussion in below link, WAKE# is per PCI bridge.
-https://patchwork.ozlabs.org/project/linux-pci/patch/20171226020806.32710-2-jeffy.chen@rock-chips.com/
+Of course, these fixes also apply to MIPS Loongson-2K1000.
 
-I carried wakeup name defined in previous version, but wake seems to be 
-sufficient.
+Thanks.
 
-Thanks,
-Manikanta
->
->> +                     };
->>                };
->>
->>                pcie@14160000 {
->> --
->> 2.25.1
->>
-> --
-> மணிவண்ணன் சதாசிவம்
+-----
+V6:
+- Drop the 'parent_int_map' related patches following Rob's comment.
+
+Link to V5:
+https://lore.kernel.org/all/cover.1700449792.git.zhoubinbin@loongson.cn/
+
+V5:
+- Add Reviewed-by tag;
+patch(1/5):
+  - Just drop 'loongson,parent_int_map' instead of marking it as
+    deprecated.
+
+Link to V4:
+https://lore.kernel.org/all/cover.1699521866.git.zhoubinbin@loongson.cn/
+
+V4:
+- Add Acked-by tag;
+patch(2/5):
+  - Just add 'maxitem 2' instead of duplicating the list;
+patch(3/5):
+  - Rewite commit message for 'interrupt-names'.
+
+Link to V3:
+https://lore.kernel.org/all/cover.1698717154.git.zhoubinbin@loongson.cn/
+
+V3:
+patch(1/5):
+  - new patch, 'loongson,parent_int_map' renamed to 'loongson,parent-int-map';
+patch(2/5)(3/5):
+  - Separate the change points into separate patches;
+patch(4/5):
+ - new patch, make sure both parent map forms can be parsed;
+patch(5/5):
+ - new patch, fix 'loongson,parent_int_map' references in mips loongson
+   dts{i}.
+
+Link to V2:
+https://lore.kernel.org/all/20230821061315.3416836-1-zhoubinbin@loongson.cn/
+
+V2:
+1. Update commit message;
+2. "interruprt-names" should be "required", the driver gets the parent
+interrupts through it;
+3. Add more descriptions to explain the rationale for multiple nodes;
+4. Rewrite if-else statements.
+
+Link to V1:
+https://lore.kernel.org/all/20230815084713.1627520-1-zhoubinbin@loongson.cn/
+
+Binbin Zhou (2):
+  dt-bindings: interrupt-controller: loongson,liointc: Fix dtbs_check
+    warning for reg-names
+  dt-bindings: interrupt-controller: loongson,liointc: Fix dtbs_check
+    warning for interrupt-names
+
+ .../interrupt-controller/loongson,liointc.yaml | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+-- 
+2.39.3
+
