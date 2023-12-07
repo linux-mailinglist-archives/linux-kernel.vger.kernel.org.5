@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6EA80887C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 942AE80887E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbjLGMwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 07:52:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43638 "EHLO
+        id S232592AbjLGMxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:53:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbjLGMwl (ORCPT
+        with ESMTP id S229472AbjLGMxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 07:52:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588E9122;
-        Thu,  7 Dec 2023 04:52:47 -0800 (PST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="398105685"
+        Thu, 7 Dec 2023 07:53:23 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E70D5C;
+        Thu,  7 Dec 2023 04:53:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701953610; x=1733489610;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=ZiHl9FrPeon9v+0HakeSLaCOj/bdmgwLi2bMYXzJSUE=;
+  b=Psq70qvTGlqNW6T+BxEFHN05WTFW1NQ/NtJ68Vy6SRlDfSNn+jIDVsLE
+   agjqMEoqbqmfpxr/t59LNql3c2Y9eTYK9F1DoYQTFqx5sztUwgGwLz8Hu
+   iDT9NQnuBDfycbAR6n7PjHC1EHJlAxfJmASC0Y5yiS4cicN0P099WSWJT
+   SS+wVg+9bMD3jQ64/VbdbPIGa1aOudVp+Jv5mrudN1Jb/gfWk1i4wGeEA
+   Gtaf6CFX+RphhW6QWqVVMEj9D6F2XLl9idrkHoZ57AM1Vv/W0eREDOVgT
+   ekuHkJFfDxl6LDT0AvhxY/bvwj640DHCAx/QeKnth3af4S1oyGhP1gbbe
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="1092309"
 X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="398105685"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 04:52:46 -0800
+   d="scan'208";a="1092309"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 04:53:30 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="771724258"
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="945022813"
 X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="771724258"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 04:52:44 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andy@kernel.org>)
-        id 1rBDrs-00000002bPB-40QR;
-        Thu, 07 Dec 2023 14:52:40 +0200
-Date:   Thu, 7 Dec 2023 14:52:40 +0200
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>, tanzirh@google.com,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nick DeSaulniers <nnn@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev
-Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
-Message-ID: <ZXHAGDy_KcwElsLP@smile.fi.intel.com>
-References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com>
- <20231205213807.GE1674809@ZenIV>
- <CAKwvOd=2VASkaLvjU+7kkbvhu2CimYn5KUGJBDRePyUhtrNK2Q@mail.gmail.com>
- <ZW-d1NZRIvmJlfcW@smile.fi.intel.com>
- <20231205221521.GH1674809@ZenIV>
+   d="scan'208";a="945022813"
+Received: from naamamex-mobl.ger.corp.intel.com (HELO [10.214.195.94]) ([10.214.195.94])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 04:53:26 -0800
+Message-ID: <04cbd377-8b3f-4013-9d6b-71dbfd7adaef@linux.intel.com>
+Date:   Thu, 7 Dec 2023 14:53:23 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Intel-wired-lan] [PATCH v4 3/3] e1000e: Use
+ pcie_capability_read_word() for reading LNKSTA
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        linux-kernel@vger.kernel.org
+References: <20231121123428.20907-1-ilpo.jarvinen@linux.intel.com>
+ <20231121123428.20907-4-ilpo.jarvinen@linux.intel.com>
+From:   "naamax.meir" <naamax.meir@linux.intel.com>
+In-Reply-To: <20231121123428.20907-4-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231205221521.GH1674809@ZenIV>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 10:15:21PM +0000, Al Viro wrote:
-> On Wed, Dec 06, 2023 at 12:01:56AM +0200, Andy Shevchenko wrote:
-> > On Tue, Dec 05, 2023 at 01:51:10PM -0800, Nick Desaulniers wrote:
-> > > On Tue, Dec 5, 2023 at 1:38 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> > > > On Tue, Dec 05, 2023 at 08:58:53PM +0000, tanzirh@google.com wrote:
-
-...
-
-> > > > > IWYU is implemented using the IWYUScripts github repository which is a tool that is
-> > > > > currently undergoing development. These changes seek to improve build times.
-> > > > >
-> > > > > This change to lib/string.c resulted in a preprocessed size of
-> > > > > lib/string.i from 26371 lines to 5232 lines (-80%).
-> > > >
-> > > > It also breeds includes of asm/*.h, by the look of the output, which is
-> > > > not a good thing in general ;-/  E.g. #include <asm/uaccess.h> *anywhere*
-> > > > outside of linux/uaccess.h is a bad idea.
-> > > 
-> > > It's not clear to me when it's ok to #include <asm/*.h>.  Is there a
-> > > convention here that I'm missing?
-> > 
-> > The mandatory ones can be used, but not all of them.
-> > In some cases you even must include asm and not linux
-> > (unaligned.h, byteorder.h, maybe others...).
-> > 
-> > As I told, it comes with experience, we lack of the
-> > respective documentation (or file which is good for
-> > automation checks, like with IWYU).
+On 11/21/2023 14:34, Ilpo Järvinen wrote:
+> Use pcie_capability_read_word() for reading LNKSTA and remove the
+> custom define that matches to PCI_EXP_LNKSTA.
 > 
-> It would certainly be nice to have such information in the tree;
-> "where should I pick $SYMBOL from?" is something one needs to
-> find out often enough.  To a large extent it's covered by "where
-> in include/*.h do we have it defined?", but that's not all there
-> is to it.  E.g. "get_user() => use linux/uaccess.h".
+> As only single user for cap_offset remains, replace it with a call to
+> pci_pcie_cap(). Instead of e1000_adapter, make local variable out of
+> pci_dev because both users are interested in it.
 > 
-> There's also stuff like "$SYMBOL should not be used outside of arch/*
-> and include/*, better use $OTHER_SYMBOL", etc.
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> ---
+>   drivers/net/ethernet/intel/e1000e/defines.h |  1 -
+>   drivers/net/ethernet/intel/e1000e/mac.c     | 11 ++++-------
+>   2 files changed, 4 insertions(+), 8 deletions(-)
 
-Precisely! That's what many developers will benefit from!
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Tested-by: Naama Meir <naamax.meir@linux.intel.com>
