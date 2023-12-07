@@ -2,70 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7332980864C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2760280864E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232260AbjLGJ4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:56:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
+        id S232003AbjLGJ5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:57:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232366AbjLGJ4e (ORCPT
+        with ESMTP id S232378AbjLGJ4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:56:34 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD9711F
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:56:40 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-db544987c79so772674276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:56:40 -0800 (PST)
+        Thu, 7 Dec 2023 04:56:54 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173B0D5E
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:57:00 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6ce4d4c5ea2so365964b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:57:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701943000; x=1702547800; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1701943019; x=1702547819; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TJnq125j0YdWG47h8sgeSrpDhVFiAnTytxHlskk2EhY=;
-        b=h5msvbptgCQw59PMItu4yKSNeB4votNJq7/JDvy69ZqNTpHpJTQHD7l8RKotTO+ML6
-         lDus2hDTgya5dA7ZbfrEqeqVGRjlisWxJo5SLae4w65DyZxi/nROl49SKZHBIFQ1GSoD
-         dOJTi/cIWKqvkcdNrvPh2WIgs0VehNfmYvtynPDAs5w1sWTOrnJJ9FFzpBxlC28PgKas
-         6d6FvnW0UxYojjB4KxCvHUStWrrOsZS9vCVWU7Nzq/rp2KFYU+Z7MKt9d/cpngqcbCKi
-         nQw6O3GDqUSv2ma1NZYUuH1FG9PfqUYHfim8+KkuNL9JVa18WmS54uRZE4Sjxv6SoN9l
-         yvVg==
+        bh=BxtoXiW1GafKjWW917pS65soeBGEddpEWhKf7g8xPVI=;
+        b=TfSDwBOxM9aIqA6bak5Q1MULDjr6tlr9fDPspQ7sbvWovcfTZ3DQSapwViG9G5og/I
+         cEqqwL6UP5QMSq1XCm31hNrA3uXM+gD3YZexgbec9+oiQkB4pBkk8HN3vI/MR+rcGKMD
+         f0v8lDjuAE9YTjnaxuL20T8d5b++bvlyZ+e710CaCwMry9LFyCloJfQcK0NmJZFNZYK3
+         9SEl86bjDqQ7czCTi3ndTy+3lTPIZxonByG04nXgAbfwUIhm3A10n5k9zZu/vsE02+qE
+         S1wvdDn+0NL5OZuDb4lORaiIJJZTo09qLfutRl14tTaN2uHjAdyuj1OpECrd7IRDhGqA
+         UX6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701943000; x=1702547800;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TJnq125j0YdWG47h8sgeSrpDhVFiAnTytxHlskk2EhY=;
-        b=gT9c0SFfXBgUXgkOSEXYbeNcZ2B4imujGM2NvffUvC+7MrFT4ygUvdPUJQIicOXwhR
-         FIt/PVksPj38TOrl3v5ceMG6AKy5xtKpZNuv680bFrsT6+3/djLf6pFs8igaryKKiyZF
-         xohtD53VEtyrp9U+Obm48ntusu4FFUI+zCQ6LOxStIIzhV7Fb8MByBn8x5z78ot/ZGhq
-         TUusrl1QyFenNV5avh8a/qxkNjhqizX4je/BsTk3kwChV2hnTmt+eJGxlyehaGhxnqsY
-         kF6UOnB7UsizoUR4XGyaXnIX+XEP9XVIcSoogDjwi2teWhOPtMPlaM+HaphkGXun9R7O
-         zM8A==
-X-Gm-Message-State: AOJu0YyWi6x4+pIhuvLDxKLDkqrBFpCZO2Mk0oxQXpPIhqoq0hgRYGP0
-        wEZkoIi67mlYimXg7umyfRQp5GyFRmy+zI83Xqjncw==
-X-Google-Smtp-Source: AGHT+IFmG5Eix/w4QK05D8maIWu4NoSnt+3uvdJ7TmBB3MpQnzAeGZpXme98S/yULZnvsP6j+GPexkcwj6QKWJI6sGg=
-X-Received: by 2002:a25:190a:0:b0:da3:76d3:e4fb with SMTP id
- 10-20020a25190a000000b00da376d3e4fbmr1627701ybz.26.1701942999893; Thu, 07 Dec
- 2023 01:56:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701943019; x=1702547819;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=BxtoXiW1GafKjWW917pS65soeBGEddpEWhKf7g8xPVI=;
+        b=w6HBvl4Q6IbAKEme9IYG7st5BztG87hK4+eo3xAr+y3FcY/cbeY6r6raXc5BpVuHRa
+         o3A0/35GtRqc3VGsM01xVrllo421SOSCYPdG5k23ULMIsNn/7ElSIFPF/6yUy9utXOaL
+         6rgyV6LoPn3He08vc228fOL4lfm316610RtNAZPvuT7cjygelKyzWlpLfe4S3ncmb6en
+         UYuyQTykySLqlWNLXAX0Eslr7DnIBueuqMg9s1SJDfJI+jw2ssRKqQMwbu6YqWZjCcNa
+         PQPNxs1IL5H0IlDhveD89lbFlBEFm5KmHHBweEyAc8Rt539VH8miNE0PatkrQjaRC0eu
+         x18g==
+X-Gm-Message-State: AOJu0Ywq5aM/Zz2aWf6RAdedFPAjBu1ZOTmSG0v7+M6PJkiSWGWXgv7s
+        f43N6ty+2hlO5aom9GfHVSOLnQ==
+X-Google-Smtp-Source: AGHT+IGVYAtbjhU0+Vh9odI7cUMr50rN35LygNjdVcELx7W5mCm1/O9oXuTDZE6Wrh2nKpr/NAgHTw==
+X-Received: by 2002:a05:6a00:2e99:b0:6ce:3388:20 with SMTP id fd25-20020a056a002e9900b006ce33880020mr2152052pfb.53.1701943019497;
+        Thu, 07 Dec 2023 01:56:59 -0800 (PST)
+Received: from [10.84.153.44] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id u22-20020aa78496000000b006ce742b6b1fsm902380pfn.63.2023.12.07.01.56.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 01:56:58 -0800 (PST)
+Message-ID: <bb6c65de-1788-46a4-b913-5b1afa9c5cd7@bytedance.com>
+Date:   Thu, 7 Dec 2023 17:56:52 +0800
 MIME-Version: 1.0
-References: <20231204203357.2897008-1-ben.wolsieffer@hefring.com> <20231204203357.2897008-3-ben.wolsieffer@hefring.com>
-In-Reply-To: <20231204203357.2897008-3-ben.wolsieffer@hefring.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 7 Dec 2023 10:56:50 +0100
-Message-ID: <CACRpkdZKjcE5yMF0=E+4BRTEmrShSqFzCcyH8Rug7u7kOotUQQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] pinctrl: stm32: fix GPIO level interrupts
-To:     Ben Wolsieffer <ben.wolsieffer@hefring.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Re: [PATCH bpf-next] netkit: Add some ethtool ops to provide
+ information to user
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Nikolay Aleksandrov <razor@blackwall.org>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yangzhenze@bytedance.com,
+        wangdongdong.6@bytedance.com, tangchen.1@bytedance.com
+References: <20231130075844.52932-1-zhoufeng.zf@bytedance.com>
+ <51dd35c9-ff5b-5b11-04d1-9a5ae9466780@blackwall.org>
+ <16b4d42d-2d62-460e-912f-6e3b86f3004d@bytedance.com>
+ <94e335d4-ec90-ba78-b2b4-8419b25bfa88@iogearbox.net>
+ <57587b74-f865-4b56-8d65-a5cbc6826079@bytedance.com>
+ <2a829a9c-69a6-695d-d3df-59190b161787@iogearbox.net>
+ <b7053425-65eb-46a0-abd9-59ade5e78211@bytedance.com>
+ <d75ffdd9-203a-94a3-57c1-69b1561d808e@iogearbox.net>
+From:   Feng Zhou <zhoufeng.zf@bytedance.com>
+In-Reply-To: <d75ffdd9-203a-94a3-57c1-69b1561d808e@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,26 +84,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 9:35=E2=80=AFPM Ben Wolsieffer
-<ben.wolsieffer@hefring.com> wrote:
+在 2023/12/6 18:57, Daniel Borkmann 写道:
+> On 12/6/23 7:59 AM, Feng Zhou wrote:
+>> 在 2023/12/4 23:22, Daniel Borkmann 写道:
+>>> Thanks, so the netkit_get_link_ksettings is optional. 
+>>
+>> Yes, netkit_get_link_ksettings really not necessary, I just added it 
+>> in line with veth.
+>>
+>> I don't quite
+>>> follow what you
+>>> mean with regards to your business logic in veth to obtain peer 
+>>> ifindex. What does
+>>> the script do exactly with the peer ifindex (aka /why/ is it needed), 
+>>> could you
+>>> elaborate some more - it's still somewhat too vague? 🙂 E.g. why it 
+>>> does not suffice
+>>> to look at the device type or other kind of attributes?
+>>
+>> The scripting logic of the business colleagues should just be simple 
+>> logging records, using ethtool. Then they saw that netkit has this 
+>> missing, so raised this requirement, so I sent this patch, wanting to 
+>> hear your opinions. If you don't think it's necessary, let the 
+>> business colleagues modify it.
+> 
+> So it is basically only logging the peer_ifindex data from ethtool but 
+> nothing
+> more is done with it? Meaning, this was raised as a requirement because 
+> this was
+> missing from the logging data, or was there anything more to it?
+> 
+> The peer ifindex is already available via IFLA_LINK (which does 
+> dev_get_iflink()
+> internally to fetch the peer's ifindex). This is also what you see in 
+> iproute2:
+> 
+> # ip l
+> [...]
+> 163: nk0@nk1: <BROADCAST,MULTICAST,NOARP,M-DOWN> mtu 1500 qdisc noop 
+> state DOWN group default qlen 1000
+>      link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+> 164: nk1@nk0: <BROADCAST,MULTICAST,NOARP,M-DOWN> mtu 1500 qdisc noop 
+> state DOWN group default qlen 1000
+>      link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+> [...]
+> # ip netns add blue
+> # ip link set nk1 netns blue
+> # ip l
+> [...]
+> 163: nk0@if164: <BROADCAST,MULTICAST,NOARP> mtu 1500 qdisc noop state 
+> DOWN group default qlen 1000
+>      link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff link-netns blue
+> [...]
+> 
+> The `if164` denotes the peer's ifindex and `link-netns blue` provides 
+> info on the netns of the peer.
+> This is much better and more generic than the ethtool hack. I would 
+> suggest changing the logic to
+> rather look at data populated by rtnl_fill_link_netnsid() instead.
+> 
+> Thanks,
+> Daniel
 
-> The STM32 doesn't support GPIO level interrupts in hardware, so the
-> driver tries to emulate them using edge interrupts, by retriggering the
-> interrupt if necessary based on the pin state after the handler
-> finishes.
->
-> Currently, this functionality does not work because the irqchip uses
-> handle_edge_irq(), which doesn't run the irq_eoi() or irq_unmask()
-> callbacks after handling the interrupt. This patch fixes this by using
-> handle_level_irq() for level interrupts, which causes irq_unmask() to be
-> called to retrigger the interrupt.
->
-> Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Yes, if veth supports ethtool -S to get the function of peer's ifindex, 
+it is not necessary for netkit and can be replaced by other ways.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Marc Z can apply all the patches to the irq tree once he's happy
-with the solution.
 
-Yours,
-Linus Walleij
