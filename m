@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC2B808649
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1625808613
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232209AbjLGKw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 05:52:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
+        id S232350AbjLGKxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 05:53:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231372AbjLGKw4 (ORCPT
+        with ESMTP id S231876AbjLGKw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 05:52:56 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB9A10C2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 02:53:02 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54c79968ffbso1007911a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 02:53:02 -0800 (PST)
+        Thu, 7 Dec 2023 05:52:57 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A948D59
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 02:53:03 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40bd5eaa66cso11004625e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 02:53:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701946380; x=1702551180; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AtCSycu5VoV4XGxtf8UzVv+51mWT6iBDiDsVSWX2wmQ=;
-        b=ZpXeXnHOMV8VLiCP3f49NU/ZqxWz6jmZJ5MkZ5oj+iMkbfFW+KD7avR4gCg/zSNdL/
-         wCJMZPx6fQ0+MSsTJ0gpxhOjkANXBRI01xNWJilYQTbC6uUYeu721ZmNqSNLk6RTMbQV
-         VoseiVatvSst5As9JsI8Qof80A7LM4sWnnEGWr5vOyooiz9E/pIVOlGG2QG0WCVZuQAU
-         5/fAAfkqHcOrTAld/hEqGxgnSqOdgjItBJLKdjMF69apZ+4koGPFymrI3wXrRc+nYIWr
-         Nyt7cdXcc54lZ41MiKvICWtXAFA4OX7O9A+hPod2xQnsKEPeXv2ipOHsNiTHWz9uUC+v
-         /oEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701946380; x=1702551180;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1701946382; x=1702551182; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=AtCSycu5VoV4XGxtf8UzVv+51mWT6iBDiDsVSWX2wmQ=;
-        b=k2H7VqNAwaz7aJ2hI4iHAgax9XoyBu/kFRKv5YYhcsOHJqH13tyHDllGNGulywYLG9
-         soBlKFAXAxXUTzTmocVrBYn19Nognrhj6be/RAVTMebxf/gpbSbopGVTVjuN1R3GH4xz
-         mJIbsZ2ubVdelErSOSfbV7IeY33ru441w91bPT/HbpVtTnHdTJFAip1+zKqwrPow1lO3
-         RSXp4Jl4JjQ5s3Nbx4rgcYqzj56bxVm1dU7+JStpU5fU1pAn3TV5szU5Zk5hA9p4NTnA
-         lRMn8QwKsSxIsYZewpnByJ1eudZE51qsHzemQ2gd3M4Sf35Ot+V55pHNMsvSuxQe3e9y
-         6/mA==
-X-Gm-Message-State: AOJu0YzxeMi4kAlaEYPFwU+tgIIuoJ/HDtnfByTfX528hfyPxJzIATll
-        FL1U4DinIgjqAdKsG3j3EEdiQA==
-X-Google-Smtp-Source: AGHT+IFZAW6iGHIUOWPQlYEIASIETzRu7Kbq8+GrvsORtO8W4NYmCpiJpraQ3A5q8w+f5CAqnaWQHw==
-X-Received: by 2002:a17:906:12:b0:a01:a193:1d56 with SMTP id 18-20020a170906001200b00a01a1931d56mr1427724eja.14.1701946380521;
-        Thu, 07 Dec 2023 02:53:00 -0800 (PST)
+        bh=DzAkdCe8GmigS9meJGB6RLFDC8CgmK6hEzQqiVyayPM=;
+        b=WIFpfyPfJxZp7EzuHYsbL/8Cuffv8AteYGwTv0eQkEewXhqBEVPJm9U1ng1Xanzipj
+         SXfup3xW3emIXT2ZCuD6ErkrmWcSuNhKfNY9gGmS+5vcpRG7AFSRy9cc+dmk8qMMBkYd
+         2Sn8JquW7hRuDbKhoLZeUrlrs11y4OKWxJvNfMbbT3M7FWAh7FRokR3Ed7wCDBtuwyyu
+         D2Q+Q8o4ni10SoZeYnKq3poqgZc/xeRSBTy2sE8l6cf+RyhzIW+5+0QCp4pQefbzW5M+
+         ifikXRlzqRWEsKqIjVqx0waaWmbkvcAfnsYedrKEWbopedGn6h4b0ZkQKhpzSP4ZQFem
+         XQsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701946382; x=1702551182;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DzAkdCe8GmigS9meJGB6RLFDC8CgmK6hEzQqiVyayPM=;
+        b=SVn9bBNJTLaWIkanQk53YWFveK9PCRoYDZGMPzZZcaVcWIbjMJ2JP5swS+G6CyoJ3p
+         6/3fLV730NTbxVmLz+nv+obGSkn5nkrJOcjtL+W4rfqHpF6HJI/HucWPt+6nb3OhJSVG
+         1VCYzqD/YkjSXEOzNBrMtG4QjiXpD//nu5Iqb+4gcPM1f9Fjd4Qlp4HhUT8YrAal87kj
+         GM/aV8D8o2gl6ixAcdPBihhDrv/GDKVEnE6alUB2iKOlL74lzSgHz5RBlDYw6O5UMh1I
+         Lpa2RsbHKRUQYDoWRwHjQXvz7lRR2mjAAwgitUD7vuc2X+Hw1FQoiUFVI8ksKiKomhRZ
+         OO6g==
+X-Gm-Message-State: AOJu0YwM5RXzvkr6GM8x/hlfsbvm94gnad5S+8+9/3fb71VyrQH8/yWU
+        ePNA1nhSpWXSdqUlPp1Ro/M5ng==
+X-Google-Smtp-Source: AGHT+IHRtGdot/NsE2L3XoU8qXrI4IhdWzOZdCj+ecTyhBAvaBVisMbzzrPQ2/3t11cv8c68fwqI2A==
+X-Received: by 2002:a05:600c:2901:b0:40c:2699:b625 with SMTP id i1-20020a05600c290100b0040c2699b625mr795852wmd.138.1701946381938;
+        Thu, 07 Dec 2023 02:53:01 -0800 (PST)
 Received: from [127.0.1.1] ([82.79.186.233])
-        by smtp.gmail.com with ESMTPSA id k23-20020a1709063e1700b00a1db8b08610sm668700eji.148.2023.12.07.02.52.59
+        by smtp.gmail.com with ESMTPSA id k23-20020a1709063e1700b00a1db8b08610sm668700eji.148.2023.12.07.02.53.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 02:53:00 -0800 (PST)
+        Thu, 07 Dec 2023 02:53:01 -0800 (PST)
 From:   Abel Vesa <abel.vesa@linaro.org>
-Subject: [PATCH v3 0/3] phy: qcom: edp: Add support for X1E80100
-Date:   Thu, 07 Dec 2023 12:52:47 +0200
-Message-Id: <20231122-phy-qualcomm-edp-x1e80100-v3-0-576fc4e9559d@linaro.org>
+Date:   Thu, 07 Dec 2023 12:52:48 +0200
+Subject: [PATCH v3 1/3] dt-bindings: phy: Add PHY_TYPE_EDP definition
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAP+jcWUC/42NQQ6DIBQFr9KwLg0fapSueo+mC9SPkCBYqEZjv
- HvRXXcu5yVvZiUJo8VEHpeVRJxsssFnENcLaYzyHVLbZiaccQHAOR3MQj+jck3oe4rtQGfAigF
- jVBVlA4XWWvCa5H+tEtI6Kt+YbPCjc3kcImo7H8HXO7Ox6RvicvQn2NczqQlo7kkpKikZtrV4O
- utVDLcQO7JrJ35axbMK4I5lJTUDWfyptm37Ab+EthcjAQAA
+Message-Id: <20231122-phy-qualcomm-edp-x1e80100-v3-1-576fc4e9559d@linaro.org>
+References: <20231122-phy-qualcomm-edp-x1e80100-v3-0-576fc4e9559d@linaro.org>
+In-Reply-To: <20231122-phy-qualcomm-edp-x1e80100-v3-0-576fc4e9559d@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
@@ -75,24 +74,24 @@ Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Abel Vesa <abel.vesa@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2332; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=J0EO7EFg1UUSjme4RsWRaM9iONQtXhLwbGIIZFOz4eQ=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlcaQBe5bGJRePDF3FebwqZ6aTKwsnphqkGo1c1
- zwZfP/GC8CJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZXGkAQAKCRAbX0TJAJUV
- VlSWD/9EuCWKfjtiFjobk3uxsDeMKlEyfKMAURDentVCqtx/tdduq+aN2Paubjw8qIhYFax0ozD
- neobZgMzFaQmvOZMM5pBO3c8+BH8lEG8JLTI5MXXlhPsEdf9WR1rbml95OcE2JPprTbtj86Aus6
- 6nBw58IPFJo0BciOkTNSMnCHtfWxPTQj47qxIHvnawGXtXmMJDSjTeml5MBz0X6CzDeGTs8Kvkq
- mkgBWLPkjnQDkDc5puoGNcbIgxE/zyh2HErKs1XCy/kbds7ZPvUE3j2jnLLh5Rx2lJ0K8R7A3Ed
- mCfvf1cbXPF8ntdGUaeoyekEEQSIIGcnwyPZwKUxIIOtNUgOsuidcLxCMONth9XZvTEbh6KqztF
- gaVsRR+IHLH9hBYrC7AkLNvY5mg468QY+jRbBZ54QpBPTdc3LVkuaqc7GHdBnYh3M+tOhEaVk/q
- tn6fN/EHTcDK1aeaTQjOgBDfZV4lJKbndbaTejHAq/84/YDpvPOnlbT7qhP7GV/TWKe+4waOi1/
- UmPpQjpBB2hIy1hUuBblQhj26ekUtjcZSBSgaWL9YCtRGqQbgvtzijTbpt7uHyFLZu7JpnAxlNp
- zuCOUWysDY/ceX4muA8bLxOmAjGHkd96vIsFWnYw5P5t7h++u1kR9zO32swP6a10M8A6XF0m1QH
- dMVZFfDD9qSNabA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=559; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=Hwpu6tM6RD/JKvU7jn8nmPGWlA4+6aqHXvdwplMfgcU=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlcaQHvtNBoyFoDqGxYZdSuJ7V9rS3o4tMgMa/L
+ /rsakNygxiJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZXGkBwAKCRAbX0TJAJUV
+ Vj/ZEACqcEFqs4X3nCWLQ3UkvPUu21OX6QLZgnucuhOQy2j5+YN5KcFbAopZrh2tFu72hZV0YhZ
+ BKH00j7k1sah0JalC5y+NP4CVfJiptouXa70dSe5DHUDEgsrV4FBEvsL0cuIs9zx2zFyCTF//7A
+ Qzn0quAZeGog51ywahMduGZObO8YbAjMsaBtloLS8bQw7ghNRB8RgihW20v5wjmHGlIJdXuauhM
+ 7umWswF85EQzZ/yQrXRLRnDjomUWC8R6aRsZiJ3e7oeD3MWzki9bniGavuNXJ+fX/6nJyfbx3vs
+ mXbJwTInK/4+jcnb01svlQhMOUf32EMxS9gQH+UWvgZ1VLL4u7WwPa/cu9TnT9p0DGdZUyEg0uj
+ OUMXkD0hRL3yyBGFPV1a51r1huH0+JENQqbnCZHHb4hjtz9AfocmZeTB7XKcLv+mhSGLPT6HRCl
+ BuMeaGdSNmgBV2YKu7BkUEde2flczzvN4tT7+8LH00alp8aoJLaF8GaQ49GCrStIhQ6/S2x0bao
+ tNgQWBYfQQEntMS2UV3o9iBO3w7jVceHxr7gYlCbRuSvrYjcF8lgc+QUMjUq+xnVN/OJBl+9K0O
+ OP3hxaTXJzb0vXwlsWm0enJTJtZfhbm2wbK7V3gMlrd613LJ3FfEl+aDOnTBgYwwkuBp3hrOPZt
+ m/shR67U6aGSMDw==
 X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
  fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -101,57 +100,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset adds support for the X1E80100 eDP/DP PHY and documents its
-compatible.
-
-Now, the X1E80100 uses QMP COM v6 registers, so it is added here. This
-required configuration-based register offsets support, so that's done
-here as well. Then, the legacy "PHY type" specific compatible should not
-be used by newer platforms, so the platform-specific configurations have
-been added. Rest of it is pretty much variables renaming to make their
-use more obvious.
-
-Only tested this on the X1E80100 CRD. Need to test it on at least one
-legacy with "PHY type" compatible platforms.
-
-This patchset depends on the QSERDES_V6_COM_SSC_ADJ_PER1 register offset
-added by the following patchset:
-
-https://lore.kernel.org/all/20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v1-0-d9340d362664@linaro.org/
+Add definition for Embedded DisplayPort (eDP) phy type.
 
 Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 ---
-Changes in v3:
-- The whole support for COM v6 register offsets has been reworked from scratch.
-- The bindings now document the phy-type property. (dropped Krzysztof's R-b tag)
-- New patch for adding PHY_TYPE_EDP into bindings header file.
-- Link to v2: https://lore.kernel.org/r/20231122-phy-qualcomm-edp-x1e80100-v2-0-114e789f0195@linaro.org
+ include/dt-bindings/phy/phy.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Changes in v2:
-- Added Krzysztof's R-b tag
-- Re-worded commit message for bindings to suggest same PHY can work in
-  both eDP and DP mode rather than being different PHY types.
-- Implemented different qcom_edp_configure_ssc and
-  qcom_edp_configure_pll for each version of the PHY.
-- Dropped the cfg8 override in qcom_edp_phy_init
-- Used enum instead of defines for PHY versions
-- Link to v1: https://lore.kernel.org/r/20231122-phy-qualcomm-edp-x1e80100-v1-0-a9938990edb3@linaro.org
+diff --git a/include/dt-bindings/phy/phy.h b/include/dt-bindings/phy/phy.h
+index 6b901b342348..b1a64508d937 100644
+--- a/include/dt-bindings/phy/phy.h
++++ b/include/dt-bindings/phy/phy.h
+@@ -23,5 +23,6 @@
+ #define PHY_TYPE_DPHY		10
+ #define PHY_TYPE_CPHY		11
+ #define PHY_TYPE_USXGMII	12
++#define PHY_TYPE_EDP		13
+ 
+ #endif /* _DT_BINDINGS_PHY */
 
----
-Abel Vesa (3):
-      dt-bindings: phy: Add PHY_TYPE_EDP definition
-      dt-bindings: phy: qcom-edp: Add X1E80100 PHY compatibles
-      phy: qcom: edp: Add support for X1E80100 PHY
-
- .../devicetree/bindings/phy/qcom,edp-phy.yaml      |  15 +
- drivers/phy/qualcomm/phy-qcom-edp.c                | 583 +++++++++++++++++----
- include/dt-bindings/phy/phy.h                      |   1 +
- 3 files changed, 506 insertions(+), 93 deletions(-)
----
-base-commit: 629a3b49f3f957e975253c54846090b8d5ed2e9b
-change-id: 20231122-phy-qualcomm-edp-x1e80100-a57c15fff32b
-
-Best regards,
 -- 
-Abel Vesa <abel.vesa@linaro.org>
+2.34.1
 
