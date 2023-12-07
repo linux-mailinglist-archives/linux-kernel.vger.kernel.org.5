@@ -2,151 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F4C80925C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 21:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 913DB809268
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 21:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443905AbjLGUdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 15:33:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
+        id S1443917AbjLGUeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 15:34:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLGUda (ORCPT
+        with ESMTP id S235208AbjLGUdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 15:33:30 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5971713;
-        Thu,  7 Dec 2023 12:33:35 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B7Fvb0w002794;
-        Thu, 7 Dec 2023 20:33:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : from : subject : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=KE84m7jSCLDZSitSp0ZCXBSAkzsdFgASbeQ45RDczPc=;
- b=G4VspXtwpHUHrK9s7xxFlHoeiVr+1t8cvJu+dxd3ezziRdkqpuyMxXB6STOxvumH1WY9
- RCPL8Zs6WiOQztNGBf8rFYMwepVGH5mhPA+qGaoju8hMqd6OlTgANI/rXKgxCONrkmfm
- UN/ezKyvVONn0t3hiuwQfHGaPKS3I5MHU8Dqf5Gqz+Gd0pKl+cEubdJTP+Ze09Zg/SAY
- NcO5LzfKTM9ie7N8EjkBjFhSo2v9SmVbhbBHq5QYVOKovgS9R+PWesT9mOJcr6IX43wB
- ENgUz7/SRvb1H7ufC8Rlvh1IjqqgyW27tk+iRqVqc4IUm4+oDm6SVe4K6vrNQKKR0pjU +A== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uu2trjpv5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Dec 2023 20:33:24 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B7KXNRD009969
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 7 Dec 2023 20:33:23 GMT
-Received: from [10.110.31.193] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Dec
- 2023 12:33:21 -0800
-Message-ID: <6a05436d-a89f-43f9-b2d3-a664a6a36185@quicinc.com>
-Date:   Thu, 7 Dec 2023 12:33:20 -0800
+        Thu, 7 Dec 2023 15:33:54 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248D71723;
+        Thu,  7 Dec 2023 12:33:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701981239; x=1733517239;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4utBiV134gRoO48soBfJ8QpcFZDaar9aUc6yImhniHw=;
+  b=OuOWf1S/rc/fSKyuTcALyRBVjkqAnpIi8pPEVTbcOIqCV4FWhOSpoG88
+   vEU+gOIc1Y6axwVDk1818+nSCRXV/3S/nwREg8cKDIzcd+ttaRlKpurLG
+   tulEuSn+Lrpn8zY/DaB+Xp11sNXpaaK9cvWIHiPEHzbHQWQ3/apJNeKkC
+   FUkh2azS2fi1qw4SAWGlHibm+wUOjDwnPdLAgK2rFOOdzhGSwSkC2gFpO
+   WnM7KDnhKypLVBfWRaJhr5Bwjzk7vChN4PuGqqjwFTbjMOXraWUzZ5Flp
+   RABGiwnjS6d0BHBGp7G8ywbEzzJVUB7KgbRTw0bS8tcwfm0KpOTrfMV4d
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1410463"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="1410463"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 12:33:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="771876772"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="771876772"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 07 Dec 2023 12:33:53 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBL4B-000Cnf-1i;
+        Thu, 07 Dec 2023 20:33:51 +0000
+Date:   Fri, 8 Dec 2023 04:33:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+        chao.wei@sophgo.com, conor@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
+        guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
+        samuel.holland@sifive.com
+Cc:     oe-kbuild-all@lists.linux.dev, Chen Wang <unicorn_wang@outlook.com>
+Subject: Re: [PATCH v5 3/4] clk: sophgo: Add SG2042 clock generator driver
+Message-ID: <202312080441.KewnhdyO-lkp@intel.com>
+References: <975f9995584dfa8af751e96a1f4d2c7991551a35.1701938395.git.unicorn_wang@outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-Subject: Re: [PATCH v2 2/6] drm/msm/dsi: set video mode widebus enable bit
- when widebus is enabled
-To:     Jonathan Marek <jonathan@marek.ca>,
-        <freedreno@lists.freedesktop.org>
-CC:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231114225857.19702-1-jonathan@marek.ca>
- <20231114225857.19702-3-jonathan@marek.ca>
-Content-Language: en-US
-In-Reply-To: <20231114225857.19702-3-jonathan@marek.ca>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: hAd7VvXACY9sPzVUcJGz1ElWYnTCORUe
-X-Proofpoint-ORIG-GUID: hAd7VvXACY9sPzVUcJGz1ElWYnTCORUe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-07_17,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- malwarescore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0
- clxscore=1015 mlxscore=0 adultscore=0 priorityscore=1501 mlxlogscore=856
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312070172
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <975f9995584dfa8af751e96a1f4d2c7991551a35.1701938395.git.unicorn_wang@outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Chen,
 
+kernel test robot noticed the following build warnings:
 
-On 11/14/2023 2:58 PM, Jonathan Marek wrote:
-> The value returned by msm_dsi_wide_bus_enabled() doesn't match what the
-> driver is doing in video mode. Fix that by actually enabling widebus for
-> video mode.
-> 
-> Fixes: efcbd6f9cdeb ("drm/msm/dsi: Enable widebus for DSI")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->   drivers/gpu/drm/msm/dsi/dsi.xml.h  | 1 +
->   drivers/gpu/drm/msm/dsi/dsi_host.c | 2 ++
->   2 files changed, 3 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi.xml.h b/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> index 2a7d980e12c3..f0b3cdc020a1 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> +++ b/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> @@ -231,6 +231,7 @@ static inline uint32_t DSI_VID_CFG0_TRAFFIC_MODE(enum dsi_traffic_mode val)
->   #define DSI_VID_CFG0_HSA_POWER_STOP				0x00010000
->   #define DSI_VID_CFG0_HBP_POWER_STOP				0x00100000
->   #define DSI_VID_CFG0_HFP_POWER_STOP				0x01000000
-> +#define DSI_VID_CFG0_DATABUS_WIDEN				0x02000000
->   #define DSI_VID_CFG0_PULSE_MODE_HSA_HE				0x10000000
->   
->   #define REG_DSI_VID_CFG1					0x0000001c
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> index deeecdfd6c4e..f2c1cbd08d4d 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> @@ -745,6 +745,8 @@ static void dsi_ctrl_enable(struct msm_dsi_host *msm_host,
->   		data |= DSI_VID_CFG0_TRAFFIC_MODE(dsi_get_traffic_mode(flags));
->   		data |= DSI_VID_CFG0_DST_FORMAT(dsi_get_vid_fmt(mipi_fmt));
->   		data |= DSI_VID_CFG0_VIRT_CHANNEL(msm_host->channel);
-> +		if (msm_dsi_host_is_wide_bus_enabled(&msm_host->base))
-> +			data |= DSI_VID_CFG0_DATABUS_WIDEN;
+[auto build test WARNING on b85ea95d086471afb4ad062012a4d73cd328fa86]
 
-Hi Jonathan,
+url:    https://github.com/intel-lab-lkp/linux/commits/Chen-Wang/dt-bindings-soc-sophgo-Add-Sophgo-system-control-module/20231207-165948
+base:   b85ea95d086471afb4ad062012a4d73cd328fa86
+patch link:    https://lore.kernel.org/r/975f9995584dfa8af751e96a1f4d2c7991551a35.1701938395.git.unicorn_wang%40outlook.com
+patch subject: [PATCH v5 3/4] clk: sophgo: Add SG2042 clock generator driver
+config: riscv-randconfig-r113-20231208 (https://download.01.org/0day-ci/archive/20231208/202312080441.KewnhdyO-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20231208/202312080441.KewnhdyO-lkp@intel.com/reproduce)
 
-Now that widebus is enabled for video mode, I think you can also drop 
-the TODO here [1]. Other than that, this LGTM.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312080441.KewnhdyO-lkp@intel.com/
 
-Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+sparse warnings: (new ones prefixed by >>)
+   WARNING: invalid argument to '-march': '_zihintpause'
+>> drivers/clk/sophgo/clk-sophgo-sg2042.c:1037:1: sparse: sparse: symbol 'sg2042_clk_lock' was not declared. Should it be static?
+   drivers/clk/sophgo/clk-sophgo-sg2042.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
+   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
 
-Thanks,
+vim +/sg2042_clk_lock +1037 drivers/clk/sophgo/clk-sophgo-sg2042.c
 
-Jessica Zhang
+  1036	
+> 1037	DEFINE_SPINLOCK(sg2042_clk_lock);
+  1038	
 
-[1] 
-https://elixir.bootlin.com/linux/v6.7-rc3/source/drivers/gpu/drm/msm/dsi/dsi_host.c#L772
-
->   		dsi_write(msm_host, REG_DSI_VID_CFG0, data);
->   
->   		/* Do not swap RGB colors */
-> -- 
-> 2.26.1
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
