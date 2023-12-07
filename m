@@ -2,131 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A37808020
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 06:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A457808029
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 06:28:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbjLGF03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 00:26:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41178 "EHLO
+        id S230364AbjLGF1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 00:27:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjLGF01 (ORCPT
+        with ESMTP id S230448AbjLGF1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 00:26:27 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A6F10C0
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 21:26:32 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5bcfc508d14so417930a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 21:26:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701926791; x=1702531591; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XeEwOVdmoze4GgUERLZCvN1YeRMPDZTEgHk4TFeG0KI=;
-        b=GB5BLNw2Hg3PxpzGnosbNxesjIavbkDGPg6Yi6K9IBB0+H3WuHRPwDjO5CZWYLElX0
-         hB0Fc4qtYeDdQie4hahYtqt0R1p2f0MoaAOsHqGWRm9mA59yKDyRjoQWw51ncWJE5Eie
-         kda8TR8Hg0DEDLFlYvA6W0eMM35vzlqEjMAuKA2LUR1eHiNWk9PqIz904F04stkwf1mu
-         AiTidL2Tm9xe6RlZTPjOsnNhirY1oP8ZtXvJttZo8fVJLd8Pt6x5dftJ5AKuL3A1czhA
-         UKVt9nSIPsXKy5R1xiaEfkXr0ORBi2WVtdBpVijQy998zbK6NqvVMyWzsbysZODstuNB
-         k/ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701926791; x=1702531591;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XeEwOVdmoze4GgUERLZCvN1YeRMPDZTEgHk4TFeG0KI=;
-        b=nzwf2aRmxdWgAys4pD1s2mAn1NTfkXe5fjDrN+m1X5QWe/zDkHTO/dj6B5sjC6nkv2
-         30LVf9G3rH+sntvwsnq7PqXu7DX7mWV9EHjBD5lREas7G1rxsAhAuLtyRbHo2Rp0bNwT
-         pWRw7xzO3rhQzg3Fe2H0nvfgLkjtYjupgmjqISlrcur6ymNBr+zVLfSvjZsE1YK7NO0P
-         gg05j22K0KbLML3V0m4uBsePG0xtvjX/bsW5aFLPJRJLIL5vWboqupw1ptoOkE82vKqm
-         fHzYNoiZ+6RNsFXGee31g22+chKowlMPj6pkvZOH1Gf/J9YsLVGYZaWC5JBAWAKficIG
-         eGwA==
-X-Gm-Message-State: AOJu0Yz3rQ3su0z2UJU2yb8EBWcbFFV1vjNbfmj80yywP/Jzyd1J5kMi
-        VlspSbI4REUDgUiO5I3dN0AV
-X-Google-Smtp-Source: AGHT+IEtTZTW+sxUG+Y2qkOFbTaA4dzLqxda31KDpLSQuX7weMGaX0vHN/j3SKmhaPyP+fnGbTc3vw==
-X-Received: by 2002:a05:6a21:149a:b0:18c:42ab:fced with SMTP id od26-20020a056a21149a00b0018c42abfcedmr1857397pzb.47.1701926791573;
-        Wed, 06 Dec 2023 21:26:31 -0800 (PST)
-Received: from thinkpad ([117.248.6.133])
-        by smtp.gmail.com with ESMTPSA id x20-20020a170902821400b001cfc50e5afesm385085pln.23.2023.12.06.21.26.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 21:26:31 -0800 (PST)
-Date:   Thu, 7 Dec 2023 10:56:26 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     martin.petersen@oracle.com, jejb@linux.ibm.com,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com
-Subject: Re: [PATCH 07/13] scsi: ufs: qcom: Fail ufs_qcom_power_up_sequence()
- when core_reset fails
-Message-ID: <20231207052626.GB2932@thinkpad>
-References: <20231201151417.65500-1-manivannan.sadhasivam@linaro.org>
- <20231201151417.65500-8-manivannan.sadhasivam@linaro.org>
- <iecwyzsamuwhatodicsfptf3dgl5nglrdqyennmhagpjz7yrtr@r72gejcvhi6w>
+        Thu, 7 Dec 2023 00:27:31 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 311FDD6D;
+        Wed,  6 Dec 2023 21:27:36 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B759NV1005313;
+        Thu, 7 Dec 2023 05:27:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=sJtq/mf3IaDcHrZEnV/Gxwe8zGF+t6C09xMyyojnKQs=;
+ b=GqlD4qhcEs6svQOeJvzsjB9ZaaGXpr+3NmClMPHolbWtdQzpBZcARIqNHqTLmYWJIuAW
+ lEG4+M4x9gCDVPWdfOLola6CtvceQoFkoWKHS1BFMxjfbee7gYAqZoS88W370Vv5chGT
+ XyXCbU2Q2kAxomiqVAahmNv+RmiY41OO722ZlELEK6SGNXuep/rNsz9bHSF6RGf1CZTG
+ zX8A0sV3xO0lLM1I5OWb53H2SuFUw86x+HbC+EVVj/utLcfmv+tQkZf7Ukgj13GPz2MX
+ SussIt/AeM5Iab9in2rY2VEkP6QlmzV+7opFGRDdUcPeeFRHoNNEiBXkIkSDKpCajMsD Bw== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uu6qr04eq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 05:27:25 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B75RObR031511
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 7 Dec 2023 05:27:24 GMT
+Received: from [10.253.35.241] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Dec
+ 2023 21:27:22 -0800
+Message-ID: <947af144-e2a2-49bc-9f39-31f6ee5b1aa1@quicinc.com>
+Date:   Thu, 7 Dec 2023 13:27:19 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/4] bus: mhi: host: Drop chan lock before queuing
+ buffers
+Content-Language: en-US
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <quic_jhugo@quicinc.com>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_cang@quicinc.com>, <quic_mrana@quicinc.com>
+References: <1699939661-7385-1-git-send-email-quic_qianyu@quicinc.com>
+ <1699939661-7385-3-git-send-email-quic_qianyu@quicinc.com>
+ <20231124100403.GA4536@thinkpad>
+ <639d6008-bdfa-4b6e-b622-e916003ec908@quicinc.com>
+ <20231128133252.GX3088@thinkpad>
+ <5eb0a521-0b72-4d15-9a65-429c4c123833@quicinc.com>
+ <20231130053157.GB3043@thinkpad>
+ <9873ee7b-7ef1-4327-8e22-49e1cd3872f1@quicinc.com>
+ <20231206134848.GG12802@thinkpad>
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+In-Reply-To: <20231206134848.GG12802@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <iecwyzsamuwhatodicsfptf3dgl5nglrdqyennmhagpjz7yrtr@r72gejcvhi6w>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: v8lOCPpFY54S-_fcui5HN1YbNZv7s8iq
+X-Proofpoint-ORIG-GUID: v8lOCPpFY54S-_fcui5HN1YbNZv7s8iq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-07_03,2023-12-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 adultscore=0 mlxscore=0 bulkscore=0 mlxlogscore=733
+ priorityscore=1501 malwarescore=0 impostorscore=0 spamscore=0
+ clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312070039
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 12:41:28PM -0600, Andrew Halaney wrote:
-> On Fri, Dec 01, 2023 at 08:44:11PM +0530, Manivannan Sadhasivam wrote:
-> > Even though core_reset is optional, a failure during assert/deassert should
-> > be considered fatal, if core_reset is available. So fail
-> > ufs_qcom_power_up_sequence() if an error happens during reset and also get
-> > rid of the redundant warning as the ufs_qcom_host_reset() function itself
-> > prints error messages.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-> > ---
-> >  drivers/ufs/host/ufs-qcom.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> > index 604273a22afd..4948dd732aae 100644
-> > --- a/drivers/ufs/host/ufs-qcom.c
-> > +++ b/drivers/ufs/host/ufs-qcom.c
-> > @@ -359,8 +359,7 @@ static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
-> >  	/* Reset UFS Host Controller and PHY */
-> >  	ret = ufs_qcom_host_reset(hba);
-> 
-> I noticed that ufs_qcom_host_reset() doesn't return an error if
-> reset_control_deassert() fails. Can you address this in the next spin of
-> the series (I don't think its in the following patches that I glanced
-> through).
-> 
 
-Right. I'll fix it in next version.
-
-- Mani
-
-> Thanks,
-> Andrew
-> 
-> >  	if (ret)
-> > -		dev_warn(hba->dev, "%s: host reset returned %d\n",
-> > -				  __func__, ret);
-> > +		return ret;
-> >  
-> >  	/* phy initialization - calibrate the phy */
-> >  	ret = phy_init(phy);
-> > -- 
-> > 2.25.1
-> > 
-> > 
-> 
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+On 12/6/2023 9:48 PM, Manivannan Sadhasivam wrote:
+> On Wed, Dec 06, 2023 at 10:25:12AM +0800, Qiang Yu wrote:
+>> On 11/30/2023 1:31 PM, Manivannan Sadhasivam wrote:
+>>> On Wed, Nov 29, 2023 at 11:29:07AM +0800, Qiang Yu wrote:
+>>>> On 11/28/2023 9:32 PM, Manivannan Sadhasivam wrote:
+>>>>> On Mon, Nov 27, 2023 at 03:13:55PM +0800, Qiang Yu wrote:
+>>>>>> On 11/24/2023 6:04 PM, Manivannan Sadhasivam wrote:
+>>>>>>> On Tue, Nov 14, 2023 at 01:27:39PM +0800, Qiang Yu wrote:
+>>>>>>>> Ensure read and write locks for the channel are not taken in succession by
+>>>>>>>> dropping the read lock from parse_xfer_event() such that a callback given
+>>>>>>>> to client can potentially queue buffers and acquire the write lock in that
+>>>>>>>> process. Any queueing of buffers should be done without channel read lock
+>>>>>>>> acquired as it can result in multiple locks and a soft lockup.
+>>>>>>>>
+>>>>>>> Is this patch trying to fix an existing issue in client drivers or a potential
+>>>>>>> issue in the future drivers?
+>>>>>>>
+>>>>>>> Even if you take care of disabled channels, "mhi_event->lock" acquired during
+>>>>>>> mhi_mark_stale_events() can cause deadlock, since event lock is already held by
+>>>>>>> mhi_ev_task().
+>>>>>>>
+>>>>>>> I'd prefer not to open the window unless this patch is fixing a real issue.
+>>>>>>>
+>>>>>>> - Mani
+>>>>>> In [PATCH v4 1/4] bus: mhi: host: Add spinlock to protect WP access when
+>>>>>> queueing
+>>>>>> TREs,  we add
+>>>>>> write_lock_bh(&mhi_chan->lock)/write_unlock_bh(&mhi_chan->lock)
+>>>>>> in mhi_gen_tre, which may be invoked as part of mhi_queue in client xfer
+>>>>>> callback,
+>>>>>> so we have to use read_unlock_bh(&mhi_chan->lock) here to avoid acquiring
+>>>>>> mhi_chan->lock
+>>>>>> twice.
+>>>>>>
+>>>>>> Sorry for confusing you. Do you think we need to sqush this two patch into
+>>>>>> one?
+>>>>> Well, if patch 1 is introducing a potential deadlock, then we should fix patch
+>>>>> 1 itself and not introduce a follow up patch.
+>>>>>
+>>>>> But there is one more issue that I pointed out in my previous reply.
+>>>> Sorry, I can not understand why "mhi_event->lock" acquired during
+>>>> mhi_mark_stale_events() can cause deadlock. In mhi_ev_task(), we will
+>>>> not invoke mhi_mark_stale_events(). Can you provide some interpretation?
+>>> Going by your theory that if a channel gets disabled while processing the event,
+>>> the process trying to disable the channel will try to acquire "mhi_event->lock"
+>>> which is already held by the process processing the event.
+>>>
+>>> - Mani
+>> OK, I get you. Thank you for kind explanation. Hopefully I didn't intrude
+>> too much.
+> Not at all. Btw, did you actually encounter any issue that this patch is trying
+> to fix? Or just fixing based on code inspection.
+>
+> - Mani
+Yes, we actually meet the race issue in downstream driver. But I can not 
+find more details about the issue.
+>>>>> Also, I'm planning to cleanup the locking mess within MHI in the coming days.
+>>>>> Perhaps we can revisit this series at that point of time. Will that be OK for
+>>>>> you?
+>>>> Sure, that will be great.
+>>>>> - Mani
+>>>>>
+>>>>>>>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+>>>>>>>> ---
+>>>>>>>>      drivers/bus/mhi/host/main.c | 4 ++++
+>>>>>>>>      1 file changed, 4 insertions(+)
+>>>>>>>>
+>>>>>>>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+>>>>>>>> index 6c6d253..c4215b0 100644
+>>>>>>>> --- a/drivers/bus/mhi/host/main.c
+>>>>>>>> +++ b/drivers/bus/mhi/host/main.c
+>>>>>>>> @@ -642,6 +642,8 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+>>>>>>>>      			mhi_del_ring_element(mhi_cntrl, tre_ring);
+>>>>>>>>      			local_rp = tre_ring->rp;
+>>>>>>>> +			read_unlock_bh(&mhi_chan->lock);
+>>>>>>>> +
+>>>>>>>>      			/* notify client */
+>>>>>>>>      			mhi_chan->xfer_cb(mhi_chan->mhi_dev, &result);
+>>>>>>>> @@ -667,6 +669,8 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+>>>>>>>>      					kfree(buf_info->cb_buf);
+>>>>>>>>      				}
+>>>>>>>>      			}
+>>>>>>>> +
+>>>>>>>> +			read_lock_bh(&mhi_chan->lock);
+>>>>>>>>      		}
+>>>>>>>>      		break;
+>>>>>>>>      	} /* CC_EOT */
+>>>>>>>> -- 
+>>>>>>>> 2.7.4
+>>>>>>>>
+>>>>>>>>
