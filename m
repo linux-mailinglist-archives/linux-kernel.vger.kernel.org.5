@@ -2,168 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10DC48086C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA21A8086C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbjLGLad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 06:30:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
+        id S232424AbjLGLbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 06:31:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232222AbjLGLa0 (ORCPT
+        with ESMTP id S232483AbjLGLbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 06:30:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D23122
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 03:30:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B55ECC433C9;
-        Thu,  7 Dec 2023 11:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1701948632;
-        bh=yW7tXWdDtIWMp7veY4GKrj377HGeMh3azpE291fF+DE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZasI4foS+lpsk6sVVze2+Fxi1d3UOk8JkVu4yEUNu7HZKZJ6ZI7/P9/8FxZZ01BfG
-         u6uPDMIRwOHssp6eiDTxRXH4GDyKQCQpAzenKZyoI8iZMgz+uAj75WPNlDZ55o1LEy
-         aA2K4GryPbPqpuWtCmR7qL52wgo8CMaDVwTf/g6w=
-Date:   Thu, 7 Dec 2023 12:30:26 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ayush Singh <ayushdevel1325@gmail.com>
-Cc:     greybus-dev@lists.linaro.org, johan@kernel.org, elder@kernel.org,
-        linux-kernel@vger.kernel.org, jkridner@beagleboard.org, nm@ti.com,
-        yujie.liu@intel.com
-Subject: Re: [PATCH 1/1] greybus: gb-beagleplay: Remove use of pad bytes
-Message-ID: <2023120758-coleslaw-unstopped-530c@gregkh>
-References: <20231206150602.176574-1-ayushdevel1325@gmail.com>
- <20231206150602.176574-2-ayushdevel1325@gmail.com>
+        Thu, 7 Dec 2023 06:31:09 -0500
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DE110C4;
+        Thu,  7 Dec 2023 03:31:13 -0800 (PST)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231207113112euoutp029900412f10484f3ca5a51062bbc5f7a6~eiUzPPxN11146011460euoutp02i;
+        Thu,  7 Dec 2023 11:31:12 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231207113112euoutp029900412f10484f3ca5a51062bbc5f7a6~eiUzPPxN11146011460euoutp02i
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1701948672;
+        bh=LQbsCB2xkDlZrVSHuSbYgEXZy2Mk/5QJLXPD/YcUQ/I=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=BbOHq0vNAsLVh1rT9jh5jrbUFfNdw6mLl7M7nmCKpui8r92Nu/u2zviKPJ9g73OTf
+         8QGLvDuLLwVnlocFDE/Aq99jMXv3SDy3reT7pK+kAi0t/yhv7DOXVQmd4e4I5Cq4vG
+         DLk6/rWE7YMg8oj7A5qtGbmceDUCYNPpNR2EKhRo=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20231207113112eucas1p2262dec4c91d359055358e432181bc448~eiUzErjVq0649006490eucas1p29;
+        Thu,  7 Dec 2023 11:31:12 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id C9.4E.09539.FFCA1756; Thu,  7
+        Dec 2023 11:31:11 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231207113111eucas1p2d8a3b27e91bf4cf00c33d717cdd2bf9e~eiUypFNtt0649006490eucas1p28;
+        Thu,  7 Dec 2023 11:31:11 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231207113111eusmtrp170fae65246d78fbbaafb0bfdf99ee506~eiUyoex6E2693926939eusmtrp1A;
+        Thu,  7 Dec 2023 11:31:11 +0000 (GMT)
+X-AuditID: cbfec7f2-52bff70000002543-63-6571acffbd08
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id D1.77.09274.FFCA1756; Thu,  7
+        Dec 2023 11:31:11 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231207113111eusmtip2d4e87ab44d7318d3da608777a9f1fcc5~eiUycspVC1212812128eusmtip2X;
+        Thu,  7 Dec 2023 11:31:11 +0000 (GMT)
+Received: from localhost (106.210.248.38) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Thu, 7 Dec 2023 11:31:10 +0000
+Date:   Thu, 7 Dec 2023 12:31:09 +0100
+From:   Joel Granados <j.granados@samsung.com>
+To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+CC:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v2 13/18] sysctl: move sysctl type to ctl_table_header
+Message-ID: <20231207113109.dc4fpaaenk7z7hmu@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="ce6zcdvlndypsxv7"
 Content-Disposition: inline
-In-Reply-To: <20231206150602.176574-2-ayushdevel1325@gmail.com>
+In-Reply-To: <20231204-const-sysctl-v2-13-7a5060b11447@weissschuh.net>
+X-Originating-IP: [106.210.248.38]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOKsWRmVeSWpSXmKPExsWy7djPc7r/1xSmGvS8MbNoXryezeLXxWms
+        Fme6cy327D3JYjFv/U9Gi8u75rBZ/P7xjMnixoSnjBbLdvo5cHrMbrjI4rFgU6nHplWdbB77
+        565h9/i8Sc6jv/sYewBbFJdNSmpOZllqkb5dAlfGtc/fWQr2qVdMOTyJrYFxrkIXIweHhICJ
+        xKEfal2MXBxCAisYJV6umskG4XxhlJg17TIThPOZUWLt63ZGmI7126og4ssZJeYd/80GV3R5
+        /wagIk4gZzOjxJclniA2i4CKxJU3J8DibAI6Euff3GEGsUUEbCRWfvvMDtLMLLCLSeLxw7lM
+        IAlhAS+JG9OWgzXwCphLvFr9jwnCFpQ4OfMJC8gVzAIVEhOmOEGY0hLL/3GAVHAKuElMPNvH
+        DmJLCChJHJ78mRnCrpU4teUW2DMSAus5JR686WGESLhIXJ34kQXCFpZ4dXwLVLOMxOnJPSwQ
+        DZMZJfb/+8AO4axmlFjW+JUJospaouXKE6gOR4nuTY3skCDik7jxVhAkzAxkTto2nRkizCvR
+        0SYEUa0msfreG5YJjMqzkHw2C+GzWQifzQKboydxY+oUNgxhbYllC18zQ9i2EuvWvWdZwMi+
+        ilE8tbQ4Nz212DAvtVyvODG3uDQvXS85P3cTIzC9nf53/NMOxrmvPuodYmTiYDzEqALU/GjD
+        6guMUix5+XmpSiK8OefzU4V4UxIrq1KL8uOLSnNSiw8xSnOwKInzqqbIpwoJpCeWpGanphak
+        FsFkmTg4pRqYWq34q2SqxQUuuqk1xGj2nnTt3azFxX//qVuHmXbPN1VP61uyfkxzT6dk7pzn
+        O8H1aZgn35umC6+3MWya+sZiaqT+JuONKhJP3ixbyb5s8nMxm/Ubty7v/zrt1JbMYzIbXog5
+        N93f6P6i9PSMliI/zV3rNe7/PfjLntN2KvPlS7rvd85KLmUM/1ObZ5V5MvD0iqqEOZGl/E+z
+        mWaV5DI27rpyLbwjo/yW2lO7NjvR+FUOBWtUbZ7yfdUU226654hQVYQHg9O+71ccLq01dK+v
+        nXWhTcZQYJvVTl2PibvWrUxqD/jcz/vEdO1pdS72FY4m1otnTkwQDVQXu32N+7S8hJnefZ7H
+        fnNrl80/98tCiaU4I9FQi7moOBEAJxpvq+oDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGIsWRmVeSWpSXmKPExsVy+t/xe7r/1xSmGnzpl7ZoXryezeLXxWms
+        Fme6cy327D3JYjFv/U9Gi8u75rBZ/P7xjMnixoSnjBbLdvo5cHrMbrjI4rFgU6nHplWdbB77
+        565h9/i8Sc6jv/sYewBblJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1N
+        SmpOZllqkb5dgl7GyqXX2Qr2qFfM3TmZtYFxtkIXIweHhICJxPptVV2MXBxCAksZJT6/3Mja
+        xcgJFJeR2PjlKpQtLPHnWhcbRNFHRonNj3ayQzibGSVuv//GDlLFIqAiceXNCUYQm01AR+L8
+        mzvMILaIgI3Eym+fwRqYBXYxSTx+OJcJJCEs4CVxY9pysAZeAXOJV6v/gcWFBK4wSpy/LwcR
+        F5Q4OfMJC4jNLFAmcffJJHaQs5kFpCWW/+MACXMKuElMPNvHDnGpksThyZ+ZIexaic9/nzFO
+        YBSehWTSLCSTZiFMggjrSOzceocNQ1hbYtnC18wQtq3EunXvWRYwsq9iFEktLc5Nzy020itO
+        zC0uzUvXS87P3cQIjPRtx35u2cG48tVHvUOMTByMhxhVgDofbVh9gVGKJS8/L1VJhDfnfH6q
+        EG9KYmVValF+fFFpTmrxIUZTYChOZJYSTc4HpqC8knhDMwNTQxMzSwNTSzNjJXFez4KORCGB
+        9MSS1OzU1ILUIpg+Jg5OqQYmL6frarlhbYVLmzpZXCeeCdZIztY3MmwI5tYpq+H7Jx/Fd9iE
+        wfmtkJzarJa9i6S0o4uUn998vnXmE27D5Rt3rL8z+feW2LPL59jtDrwdwueyU0JI6+ONmJJ3
+        W6Nz55TyVpye387+nn+v89wlOr9TJn4WNJ00+VlTz/T6uWc0HKIjthqtK5x/S7Cv99oOWe0Q
+        zR6dyOi9M3kn7FO5tyPsyDz7rSmHuVMzK3be/BjMbXadN3rV3ovMJz9EiGaf3OPplG1wSbFV
+        9Jod35a/O38uObkwqn3BfI2TF6Wk2YJMivfrr+CUvX8tKqi+eOsGWWnZrfOUJ3VE1nwvLDtj
+        0uWv+r7H6XSW+7HkL/ueV6YosRRnJBpqMRcVJwIAFw0JiIkDAAA=
+X-CMS-MailID: 20231207113111eucas1p2d8a3b27e91bf4cf00c33d717cdd2bf9e
+X-Msg-Generator: CA
+X-RootMTR: 20231204075921eucas1p1ba1617c3d261249f38c78c8e3d96239c
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231204075921eucas1p1ba1617c3d261249f38c78c8e3d96239c
+References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+        <CGME20231204075921eucas1p1ba1617c3d261249f38c78c8e3d96239c@eucas1p1.samsung.com>
+        <20231204-const-sysctl-v2-13-7a5060b11447@weissschuh.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 08:36:00PM +0530, Ayush Singh wrote:
-> Make gb-beagleplay greybus spec compliant by using a wrapper around HDLC
-> payload to include cport information.
+--ce6zcdvlndypsxv7
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-"wrapper"?  You just changed the data you send on your "wire", right?
+This is the patch that I said could be on its own to facilitate review
 
-> Fixes: ec558bbfea67 ("greybus: Add BeaglePlay Linux Driver")
-> Reported-by: kernel test robot <yujie.liu@intel.com>
-> Closes: https://lore.kernel.org/r/202311072329.Xogj7hGW-lkp@intel.com/
-> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
+On Mon, Dec 04, 2023 at 08:52:26AM +0100, Thomas Wei=DFschuh wrote:
+> In a future commit the sysctl core will only use
+> "const struct ctl_table". As a preparation for that move this mutable
+> field from "struct ctl_table" to "struct ctl_table_header".
+>=20
+> This is also more correct in general as this is in fact a property of
+> the header and not the table itself.
+>=20
+> Signed-off-by: Thomas Wei=DFschuh <linux@weissschuh.net>
 > ---
->  drivers/greybus/gb-beagleplay.c | 44 +++++++++++++++++++++++----------
->  1 file changed, 31 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/greybus/gb-beagleplay.c b/drivers/greybus/gb-beagleplay.c
-> index 1e70ff7e3da4..fb40ade9364f 100644
-> --- a/drivers/greybus/gb-beagleplay.c
-> +++ b/drivers/greybus/gb-beagleplay.c
-> @@ -85,17 +85,35 @@ struct hdlc_payload {
->  	void *buf;
+>  fs/proc/proc_sysctl.c  | 11 ++++++-----
+>  include/linux/sysctl.h | 22 +++++++++++-----------
+>  2 files changed, 17 insertions(+), 16 deletions(-)
+>=20
+> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+> index 689a30196d0c..a398cc77637f 100644
+> --- a/fs/proc/proc_sysctl.c
+> +++ b/fs/proc/proc_sysctl.c
+> @@ -31,7 +31,7 @@ static const struct inode_operations proc_sys_dir_opera=
+tions;
+> =20
+>  /* Support for permanently empty directories */
+>  static struct ctl_table sysctl_mount_point[] =3D {
+> -	{.type =3D SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY }
+> +	{ }
 >  };
->  
-> +/**
-> + * struct hdlc_greybus_frame - Structure to represent greybus HDLC frame
-
-Represent it where?  And where is this documented?
-
-> + *
-> + * @cport: cport id
-> + * @hdr: greybus operation header
-> + * @payload: greybus message payload
-> + */
-> +struct hdlc_greybus_frame {
-> +	__le16 cport;
-> +	struct gb_operation_msg_hdr hdr;
-> +	u8 payload[];
-> +} __packed;
-> +
->  static void hdlc_rx_greybus_frame(struct gb_beagleplay *bg, u8 *buf, u16 len)
+> =20
+>  /**
+> @@ -49,11 +49,11 @@ struct ctl_table_header *register_sysctl_mount_point(=
+const char *path)
+>  EXPORT_SYMBOL(register_sysctl_mount_point);
+> =20
+>  #define sysctl_is_perm_empty_ctl_header(hptr)		\
+> -	(hptr->ctl_table[0].type =3D=3D SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY)
+> +	(hptr->type =3D=3D SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY)
+>  #define sysctl_set_perm_empty_ctl_header(hptr)		\
+> -	(hptr->ctl_table[0].type =3D SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY)
+> +	(hptr->type =3D SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY)
+>  #define sysctl_clear_perm_empty_ctl_header(hptr)	\
+> -	(hptr->ctl_table[0].type =3D SYSCTL_TABLE_TYPE_DEFAULT)
+> +	(hptr->type =3D SYSCTL_TABLE_TYPE_DEFAULT)
+> =20
+>  void proc_sys_poll_notify(struct ctl_table_poll *poll)
 >  {
-> -	u16 cport_id;
-> -	struct gb_operation_msg_hdr *hdr = (struct gb_operation_msg_hdr *)buf;
-> +	struct hdlc_greybus_frame *gb_frame = (struct hdlc_greybus_frame *)buf;
-> +	u16 cport_id = le16_to_cpu(gb_frame->cport);
->  
-> -	memcpy(&cport_id, hdr->pad, sizeof(cport_id));
-> +	/* Ensure that the greybus message is valid */
-> +	if (le16_to_cpu(gb_frame->hdr.size) > len - sizeof(cport_id)) {
-> +		dev_warn_ratelimited(&bg->sd->dev, "Invalid/Incomplete greybus message");
+> @@ -231,7 +231,8 @@ static int insert_header(struct ctl_dir *dir, struct =
+ctl_table_header *header)
+>  		return -EROFS;
+> =20
+>  	/* Am I creating a permanently empty directory? */
+> -	if (sysctl_is_perm_empty_ctl_header(header)) {
+> +	if (header->ctl_table =3D=3D sysctl_mount_point ||
+> +	    sysctl_is_perm_empty_ctl_header(header)) {
+Why do you have to check that it is equal to sysctl_mount_point? It
+should be enough to make sure that the type of PERMANENTLY_EMPTY. no?
 
-Don't spam the kernel log for corrupted data on the line, that would be
-a mess.  Use a tracepoint?
+>  		if (!RB_EMPTY_ROOT(&dir->root))
+>  			return -EINVAL;
+>  		sysctl_set_perm_empty_ctl_header(dir_h);
+> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+> index ada36ef8cecb..061ea65104be 100644
+> --- a/include/linux/sysctl.h
+> +++ b/include/linux/sysctl.h
+> @@ -137,17 +137,6 @@ struct ctl_table {
+>  	void *data;
+>  	int maxlen;
+>  	umode_t mode;
+> -	/**
+> -	 * enum type - Enumeration to differentiate between ctl target types
+> -	 * @SYSCTL_TABLE_TYPE_DEFAULT: ctl target with no special considerations
+> -	 * @SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY: Used to identify a permanently
+> -	 *                                       empty directory target to serve
+> -	 *                                       as mount point.
+> -	 */
+> -	enum {
+> -		SYSCTL_TABLE_TYPE_DEFAULT,
+> -		SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY
+> -	} type;
+>  	proc_handler *proc_handler;	/* Callback for text formatting */
+>  	struct ctl_table_poll *poll;
+>  	void *extra1;
+> @@ -188,6 +177,17 @@ struct ctl_table_header {
+>  	struct ctl_dir *parent;
+>  	struct ctl_node *node;
+>  	struct hlist_head inodes; /* head for proc_inode->sysctl_inodes */
+> +	/**
+> +	 * enum type - Enumeration to differentiate between ctl target types
+> +	 * @SYSCTL_TABLE_TYPE_DEFAULT: ctl target with no special considerations
+> +	 * @SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY: Used to identify a permanently
+> +	 *                                       empty directory target to serve
+> +	 *                                       as mount point.
+> +	 */
+> +	enum {
+> +		SYSCTL_TABLE_TYPE_DEFAULT,
+> +		SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY
+> +	} type;
+>  };
+> =20
+>  struct ctl_dir {
+>=20
+> --=20
+> 2.43.0
+>=20
 
-> +		return;
-> +	}
->  
->  	dev_dbg(&bg->sd->dev, "Greybus Operation %u type %X cport %u status %u received",
-> -		hdr->operation_id, hdr->type, le16_to_cpu(cport_id), hdr->result);
-> +		gb_frame->hdr.operation_id, gb_frame->hdr.type, cport_id, gb_frame->hdr.result);
+--=20
 
-Better yet, put the error in the debug message?
+Joel Granados
 
->  
-> -	greybus_data_rcvd(bg->gb_hd, le16_to_cpu(cport_id), buf, len);
-> +	greybus_data_rcvd(bg->gb_hd, cport_id, &buf[sizeof(cport_id)],
+--ce6zcdvlndypsxv7
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Fun with pointer math.  This feels really fragile, why not just point to
-the field instead?
+-----BEGIN PGP SIGNATURE-----
 
-> +			  le16_to_cpu(gb_frame->hdr.size));
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmVxrP0ACgkQupfNUreW
+QU/4CAv9G2jBKR2NiolqAwAvYHcTmNPtwVxq2ZOsMh0bFWdGtUxskZkfYiMnjdc/
+2SwCtBUjyweEacRbhiJdqYjWzjH8APKp0lpEze1CrHEZQ7Ug3Cq9UiK8+PFkD1Va
+bdFZJaVx2jXbeYf47ZE4rWClgrSW9E/8KqgnimtkVIw4aidcI4Ixjw8Ral0DC38I
+22ZeqJALOtg/ayF9Uy1waCayVj6rupZoVR3sePIVZm4CtYCzO9eL/STgK8ONRzol
+A2beO02uZ6akJG9I0tzR2tZ6gvjTy1sTkTWBXKSGbKIVq2j2irRr16ek3i8Mr2PU
+QLgkumQZQiC3/HzRxO9rf9bfSvRcr42LexCNfcZOi1rLhme/YKgF702c1aWn6kv1
+QI5GSBn1Q0HU884O/+X9glIAG9vf7bb2DAd4Jo7rsJNsoSei4pLFYD65qj/lM9Jr
+5xTZGcx6/JtW3eo8ToGvRDnbyZjvppoeXTmHNRH3PYIu37RnLKjQgUz3fvSd67C5
+Kk+zmfLi
+=rMjb
+-----END PGP SIGNATURE-----
 
-You convert the size twice, might as well do it once up above, right?
-
-Also, it's best to use the same value you checked as the value you pass
-in here, odds are you can't change the data underneath you (like you
-could if this came from userspace), but it's best to not get in the
-habit of coding like this.
-
-
->  }
->  
->  static void hdlc_rx_dbg_frame(const struct gb_beagleplay *bg, const char *buf, u16 len)
-> @@ -339,7 +357,7 @@ static struct serdev_device_ops gb_beagleplay_ops = {
->  static int gb_message_send(struct gb_host_device *hd, u16 cport, struct gb_message *msg, gfp_t mask)
->  {
->  	struct gb_beagleplay *bg = dev_get_drvdata(&hd->dev);
-> -	struct hdlc_payload payloads[2];
-> +	struct hdlc_payload payloads[3];
-
-why 3?
-
-It's ok to put this on the stack?
-
->  	__le16 cport_id = le16_to_cpu(cport);
->  
->  	dev_dbg(&hd->dev, "Sending greybus message with Operation %u, Type: %X on Cport %u",
-> @@ -348,14 +366,14 @@ static int gb_message_send(struct gb_host_device *hd, u16 cport, struct gb_messa
->  	if (le16_to_cpu(msg->header->size) > RX_HDLC_PAYLOAD)
->  		return dev_err_probe(&hd->dev, -E2BIG, "Greybus message too big");
->  
-> -	memcpy(msg->header->pad, &cport_id, sizeof(cport_id));
-> -
-> -	payloads[0].buf = msg->header;
-> -	payloads[0].len = sizeof(*msg->header);
-> -	payloads[1].buf = msg->payload;
-> -	payloads[1].len = msg->payload_size;
-> +	payloads[0].buf = &cport_id;
-> +	payloads[0].len = sizeof(cport_id);
-> +	payloads[1].buf = msg->header;
-> +	payloads[1].len = sizeof(*msg->header);
-> +	payloads[2].buf = msg->payload;
-> +	payloads[2].len = msg->payload_size;
-
-So you send the cport number as the first message?  Don't you need to
-document this somewhere?
-
-thanks,
-
-greg k-h
+--ce6zcdvlndypsxv7--
