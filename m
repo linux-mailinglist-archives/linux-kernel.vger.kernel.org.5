@@ -2,86 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9E0807D93
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 138CF807D96
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:08:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441954AbjLGBGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 20:06:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
+        id S1441971AbjLGBIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 20:08:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441961AbjLGBGL (ORCPT
+        with ESMTP id S1441961AbjLGBIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 20:06:11 -0500
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA11ED51;
-        Wed,  6 Dec 2023 17:06:17 -0800 (PST)
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d05199f34dso2904045ad.3;
-        Wed, 06 Dec 2023 17:06:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701911177; x=1702515977;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uLC9SHWP9HzPPTfguvi7eCiTglb7l56HPdmyFvz6QMA=;
-        b=HVxuqATRtNeh+PZj+0v6py1i7Dv9UwNXnH1iKyUmSQRZLpYLebOsJwKaIPqUaTC6ZT
-         s7twbP32ZX7xEcDdDRbGEw1tnH+/C1++JETH+S0vNqE/QsYK5gupc2mxvH/B3vvIvlDE
-         ZnwlYIHHSxOeb/WXnDx+kVBRlAwecfO3vUKFDJKFThR67G3CU/wh5Xzn4YvEkPe3NFFN
-         b43/jUwdkKu9PHC2uy98Tdf6AU0Xd90kYskXD3LSOS/PiLEsdMjT/rBHebyxzBzj/pW9
-         dD7UMq7rh2MBdlRNY6kuvL6+z7h2GA+T678TvMYPFEOw60wzOGJu7QlYniOV1JbMuITq
-         A2Nw==
-X-Gm-Message-State: AOJu0Yy3ypJpS3kUefVte/7pr78PscH7/pUYq0z53u314kyndHFXuvpX
-        EXm/iog5S1VDwn7PANO90Ps=
-X-Google-Smtp-Source: AGHT+IHwUB/whwiwrYuDeWnhqFHNTLsYBeNTQh7IPMwKHmtxCck1bYQoJP4rNoMnXUU8cBJoXNMMPA==
-X-Received: by 2002:a17:902:b195:b0:1d0:6ffd:6e6e with SMTP id s21-20020a170902b19500b001d06ffd6e6emr1655754plr.102.1701911177129;
-        Wed, 06 Dec 2023 17:06:17 -0800 (PST)
-Received: from [172.20.2.177] (rrcs-173-197-90-226.west.biz.rr.com. [173.197.90.226])
-        by smtp.gmail.com with ESMTPSA id 21-20020a170902c21500b001cfb573674fsm80938pll.30.2023.12.06.17.06.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 17:06:16 -0800 (PST)
-Message-ID: <bf2b1671-2911-4d74-abfb-e6dbfe03d626@acm.org>
-Date:   Wed, 6 Dec 2023 15:06:14 -1000
+        Wed, 6 Dec 2023 20:08:36 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A8512F;
+        Wed,  6 Dec 2023 17:08:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1701911315;
+        bh=phe4O51H7/V3YS47hEgMUqHs3d968ZCnQlFDHma9U1Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lb0l514GhPPpUFUIO2g5tSXP3nYjAIvM8WKSPJQ/fjLwmG9cLD0f+iEhGrvlvx+yF
+         obQMBK4np8Rh7BumQsBoT/OkM9nuxFo+AvlN6JnEzVeXENefpZnUBxf6ob9iq1K7gs
+         KCITTzuDDMHnv0pDEnocyCdfnAHhz0RGuNJoP48tHKFr57T+tyxcvgxW5S38iGriMJ
+         Xxh/X2WJYdWZ4EcpHN97ubJgevzcjSGmI9KU/c5QvAIHcAEvPHxFEC7tv6H2wXKJMv
+         7Kk893gKFzyCMtQczY/Ah+tf8w3H5aLUBuiGcEMlE6Mi5x7mZii9/N2s881S4wQNGG
+         QTFrxiy1MdkZA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Slx3k4BP6z4wc3;
+        Thu,  7 Dec 2023 12:08:34 +1100 (AEDT)
+Date:   Thu, 7 Dec 2023 12:08:33 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paul Moore <paul@paul-moore.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the security tree with the bpf-next
+ tree
+Message-ID: <20231207120833.46ebfc2d@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4] scsi: ufs: core: store min and max clk freq from OPP
- table
-Content-Language: en-US
-To:     Nitin Rawat <quic_nitirawa@quicinc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_cang@quicinc.com, Manish Pandey <quic_mapa@quicinc.com>
-References: <20231206133812.21488-1-quic_nitirawa@quicinc.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20231206133812.21488-1-quic_nitirawa@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/XLz+L06gsoqiomsd0nyAVro";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/6/23 03:38, Nitin Rawat wrote:
-> +	list_for_each_entry(clki, head, list) {
-> +		if (!clki->name)
-> +			continue;
-> +
-> +		clki->clk = devm_clk_get(hba->dev, clki->name);
-> +		if (!IS_ERR(clki->clk)) {
+--Sig_/XLz+L06gsoqiomsd0nyAVro
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Please change the above line into the following:
+Hi all,
 
-	if (IS_ERR(...))
-		continue;
+Today's linux-next merge of the security tree got a conflict in:
 
-to reduce the indentation level of the code below this statement.
+  include/linux/security.h
 
-Thanks,
+between commit:
 
-Bart.
+  d734ca7b33db ("bpf,lsm: add BPF token LSM hooks")
+
+from the bpf-next tree and commit:
+
+  e1ca7129db2c ("LSM: Helpers for attribute names and filling lsm_ctx")
+
+from the security tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/security.h
+index 00809d2d5c38,750130a7b9dd..000000000000
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@@ -32,7 -32,7 +32,8 @@@
+  #include <linux/string.h>
+  #include <linux/mm.h>
+  #include <linux/sockptr.h>
+ +#include <linux/bpf.h>
++ #include <uapi/linux/lsm.h>
+ =20
+  struct linux_binprm;
+  struct cred;
+
+--Sig_/XLz+L06gsoqiomsd0nyAVro
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVxGxEACgkQAVBC80lX
+0Gy4Vgf+O274EwUxOtVS9S2Y1V4GBLB4rb1nfBXkGFaZcVFEb0Me3AaxcaEzpg8d
+Kt4r6LSKFPfCR3vLi372ixaQSUJSYthQL8hoUNVDuCo1dVq7I2pFHfH/C/BsSFut
+xww4WgQOAp2iWekkU7/5XjPQLgqDGTd1fB+4fiNTW/2rOluhVOeOsqrf+pfymLHD
+7kwej6pieq63GjksZD2462AGiYkwiS7vedj2smlvYBACVCB5sZ+L1NCWMZE6nKtc
+FG1/UsFpuIBvmaEGz8QlW20AFMB85SqxOnXSG/qvmfi5jINU3y32I6WEBGuGN0xT
+BgO0o1aotXB2X/z9yezZPGO329pBqA==
+=dqeK
+-----END PGP SIGNATURE-----
+
+--Sig_/XLz+L06gsoqiomsd0nyAVro--
