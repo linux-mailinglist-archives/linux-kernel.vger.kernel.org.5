@@ -2,129 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8904808FDD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40077808FE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443736AbjLGSYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 13:24:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49926 "EHLO
+        id S1443732AbjLGSYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 13:24:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443688AbjLGSYF (ORCPT
+        with ESMTP id S1443698AbjLGSYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 13:24:05 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B8AE0
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 10:24:11 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-548f853fc9eso1726805a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 10:24:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701973449; x=1702578249; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hRjWkx56RHR1r5cAwUPqSGXDNsuGHCsvk8l76pBIe10=;
-        b=lsS7VigTxlTl7B1gH9qKau2sYxd3c57rqG5xdDTbB3WBwIyK8vWb0lbeKS+u6DJQhO
-         39o8lbtNmWvysJvRgew+hAKve0MO7bondvlZ70kEDEUq1/MZPBBU92Rg6WEyThL5TM3o
-         ujT4Pt0idVw5/qTHC6BM6H17pG+GWiAKUiEl4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701973449; x=1702578249;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hRjWkx56RHR1r5cAwUPqSGXDNsuGHCsvk8l76pBIe10=;
-        b=H68bIK9LAf7WxSAJBThCBf7VfPYg0fQqFTugna2OWMHsQI83k/Lv58NjVtp+TvY3Vf
-         Q1OUuqXukNSmQDrzBKcyaNNE2m/oL6nDZzomopMKxzu/BuGX48HOFzxdcovIKO+DS46b
-         Yqp28BaW+hT0KeUymllwdQlwcbpIYaChIoDSSdDC0Daic8xeF46WKaSDED4QG/FOlf5j
-         QyGk1GlTiWHHhcJ2kaHlWcyuec2wfzaiLWLQmk6SFeWb4vryUcoxlH15cDC8ABjAZqvc
-         a85XA1jRCfcL2Qj2H0IAPWd8l1WGHCxDzSbjbHxVpQwR6uDlzAdfPor3dM6ziE1WRJtB
-         S2MA==
-X-Gm-Message-State: AOJu0YzgGeAuaEywPhheKOhvJ1ocgV6CrQxC72c7yDyqgBayivCYNueH
-        Tp1TorxgGvLM1R7Y5aqwJ8dsOZuAxtwGoN2cS0lzvBLb
-X-Google-Smtp-Source: AGHT+IFTXuEyk2sJw+I9aqcOh7qthvlAQJtcsvY+F5E2J8RI0/y7EkPyupR90mK1SH+nOSN6328ung==
-X-Received: by 2002:a17:906:203:b0:a1d:da25:1ad5 with SMTP id 3-20020a170906020300b00a1dda251ad5mr704767ejd.162.1701973449078;
-        Thu, 07 Dec 2023 10:24:09 -0800 (PST)
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
-        by smtp.gmail.com with ESMTPSA id hd10-20020a170907968a00b009fcb5fcfbe6sm49592ejc.220.2023.12.07.10.24.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 10:24:08 -0800 (PST)
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40b367a0a12so3775e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 10:24:06 -0800 (PST)
-X-Received: by 2002:a05:600c:54cf:b0:40c:2399:d861 with SMTP id
- iw15-20020a05600c54cf00b0040c2399d861mr175294wmb.6.1701973446020; Thu, 07 Dec
- 2023 10:24:06 -0800 (PST)
+        Thu, 7 Dec 2023 13:24:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4520710E7
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 10:24:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCAD5C433CA;
+        Thu,  7 Dec 2023 18:24:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701973491;
+        bh=TFDAjpdgkNrVFuP09kuXa8cBSyHPUJTONtfHhK5KAF8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XZtEUJFTAvCj6DyX8vxVXxTjD5YjJ/WJrcxDNUlcnRBSEJ1JMExugTaMAGNMLVc47
+         Z3GncuUjyCxD4TA7GawunDxij0Xdj1rEj4xQHu8b8AiCutMq9lSC1vKVlXnKrLoOhO
+         S1Bt/wSB9E2CxdhsserdsWWpU6cr8MxZvlzwRoWgU7X/lbidD5RF599dM2j/K2m7FU
+         HC6I7W12faHc7VDui71Jh3aYlEk3eSp2V5Uqw2PDT34LrRDC68hzTpJx1dXo0lu1Jc
+         Fa/4if7JKV4o4QBYscpYFe2JGOo9eNLL9JTk91SSTIYTTZIDejApdAnsbHNr3WcKzG
+         OjbCPuYftSBrg==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50bef9b7a67so1245256e87.1;
+        Thu, 07 Dec 2023 10:24:51 -0800 (PST)
+X-Gm-Message-State: AOJu0YwSeAnGK8UccDsEb6Yjse1ddZGlFBV2VhMT+9VjzsJBTN9r6vei
+        3O2q55DoARvhQqysxXptrpTz/aNZFRKp7pLeo8E=
+X-Google-Smtp-Source: AGHT+IGlmRYc4vXht3q8KHvwAnFI8GwVfUHZY9n0Bl9Rz2Y6kSVhoStUxO2W1P9bVc814rM4Xz3nvq1SNWHBqHlez2o=
+X-Received: by 2002:ac2:5634:0:b0:50b:f302:5e40 with SMTP id
+ b20-20020ac25634000000b0050bf3025e40mr1568105lff.34.1701973490061; Thu, 07
+ Dec 2023 10:24:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20231207081801.4049075-1-treapking@chromium.org> <20231207081801.4049075-5-treapking@chromium.org>
-In-Reply-To: <20231207081801.4049075-5-treapking@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 7 Dec 2023 10:23:53 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=U6M5rpQXmjC+iGf0BGtiyjRAAcMfo4Fr3pDyYVp3m4aQ@mail.gmail.com>
-Message-ID: <CAD=FV=U6M5rpQXmjC+iGf0BGtiyjRAAcMfo4Fr3pDyYVp3m4aQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] drm/panel-edp: Add some panels with conservative timings
-To:     Pin-yen Lin <treapking@chromium.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        Guenter Roeck <groeck@chromium.org>,
-        dri-devel@lists.freedesktop.org
+References: <20231207020724.2797445-1-yukuai1@huaweicloud.com>
+In-Reply-To: <20231207020724.2797445-1-yukuai1@huaweicloud.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 7 Dec 2023 10:24:38 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW65GoX1Sewndu9ViUYTCKgLxy-VhbPkkXPBO6P2g-1UrQ@mail.gmail.com>
+Message-ID: <CAPhsuW65GoX1Sewndu9ViUYTCKgLxy-VhbPkkXPBO6P2g-1UrQ@mail.gmail.com>
+Subject: Re: [PATCH v2] md: split MD_RECOVERY_NEEDED out of mddev_resume
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     yukuai3@huawei.com, pmenzel@molgen.mpg.de,
+        janpieter.sollie@edpnet.be, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Dec 7, 2023 at 12:18=E2=80=AFAM Pin-yen Lin <treapking@chromium.org=
-> wrote:
+On Wed, Dec 6, 2023 at 6:08=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> wr=
+ote:
 >
-> These panels are used by Mediatek MT8173 Chromebooks but we can't find
-> the corresponding data sheets, and these panels used to work on v4.19
-> kernel without any specified delays.
+> From: Yu Kuai <yukuai3@huawei.com>
 >
-> Therefore, instead of having them use the default conservative timings,
-> update them with less-conservative timings from other panels of the same
-> vendor. The panels should still work under those timings, and we can
-> save some delays and suppress the warnings.
+> New mddev_resume() calls are added to synchronize IO with array
+> reconfiguration, however, this introduces a performance regression while
+> adding it in md_start_sync():
 >
-> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+> 1) someone sets MD_RECOVERY_NEEDED first;
+> 2) daemon thread grabs reconfig_mutex, then clears MD_RECOVERY_NEEDED and
+>    queues a new sync work;
+> 3) daemon thread releases reconfig_mutex;
+> 4) in md_start_sync
+>    a) check that there are spares that can be added/removed, then suspend
+>       the array;
+>    b) remove_and_add_spares may not be called, or called without really
+>       add/remove spares;
+>    c) resume the array, then set MD_RECOVERY_NEEDED again!
 >
-> ---
+> Loop between 2 - 4, then mddev_suspend() will be called quite often, for
+> consequence, normal IO will be quite slow.
 >
-> (no changes since v1)
+> Fix this problem by don't set MD_RECOVERY_NEEDED again in md_start_sync()=
+,
+> hence the loop will be broken.
 >
->  drivers/gpu/drm/panel/panel-edp.c | 31 +++++++++++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
+> Fixes: bc08041b32ab ("md: suspend array in md_start_sync() if array need =
+reconfiguration")
+> Suggested-by: Song Liu <song@kernel.org>
+> Reported-by: Janpieter Sollie <janpieter.sollie@edpnet.be>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D218200
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Thanks for the fix! I added a comment and applied it to md-fixes.
 
-Repeating my comments from v1 here too, since I expect this patch to
-sit on the lists for a little while:
-
-
-This is OK w/ me, but it will need time on the mailing lists before
-landing in case anyone else has opinions. Specifical thoughts:
-
-* I at least feel fairly confident that this is OK since these panels
-essentially booted without _any_ delays back on the old downstream
-v4.19 kernel. Presumably the panels just had fairly robust timing
-controllers and so worked OK, but it's better to get the timing more
-correct.
-
-* This is definitely better than the very conservative timings and the
-WARN_ON splat.
-
-* I don't love the "Unknown" string, but it doesn't do anything other
-than print to dmesg anyway and at least it conveys to anyone else
-reading the table that the timings may not be quite as tight.
+Song
