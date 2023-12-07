@@ -2,143 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A68E1809218
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 21:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1607B80921A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 21:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbjLGUOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 15:14:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
+        id S1443876AbjLGUPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 15:15:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjLGUOa (ORCPT
+        with ESMTP id S229541AbjLGUPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 15:14:30 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7401710
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 12:14:36 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54c77d011acso2172a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 12:14:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701980075; x=1702584875; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O59CADGEUW6I15GmJQjsmBYRut0M70PjtjxoPXjvnZo=;
-        b=RSHFfBI5cnyPBAa/SOFWl4kamY+bc+MhBa6SZT5PD+BtArkyu8GzGQfm0TsFkhQrgg
-         xo1TpZC0ehPnIuR4wHjzVmuj8IaMXOgGvpTR/Hmqyeum5ZB0gCrXtFL/bFn6/bBB84VF
-         Kd7C/oK08blnT7GB+/hooPA5XLlaKe6vwGjxAYpNd8YR+caYXYevmO27/9BOvpQglLQG
-         1Vb1TImUlmCKiVKnt510ZvjY9iPIZmAMq3+UkOYg1Ag+/YjAMnpl/9TnH84XnYJrJdxz
-         4zVZmte6QjiKgDqCUF1FIgTMSLGiMHuwhtI5MvbySHSe8NXDcvZoeSWu7wrNUsdKBDZS
-         JjrQ==
+        Thu, 7 Dec 2023 15:15:11 -0500
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61528170F;
+        Thu,  7 Dec 2023 12:15:18 -0800 (PST)
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6d9e179b217so402185a34.0;
+        Thu, 07 Dec 2023 12:15:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701980075; x=1702584875;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O59CADGEUW6I15GmJQjsmBYRut0M70PjtjxoPXjvnZo=;
-        b=Jn2FevPd9rMBT881ZEib3SMNdXCWPWUCjslX4HZHX/e+PcjkFWASdQiC/TQnmljYEC
-         7KrpBA29i72laEvxjGwZOTCWiUNApxrEuN3UXfF+UKGt7eCFVd1TDTtrJzw6cvG1XRvp
-         DF1ji2Ll+4iACuwi9+ei7y44pjhE95FNcZd9fjZu2yr8+Xm2o0dp95jBKoUGTcSyX0Jz
-         +LxuC9TcYwUD79ynVF1lbqdyfYYTQyMmiwqNNhRs3ANBI5U5NhQzBYNJcc51tD+s8n9C
-         ykuFa2K7b501NwP/MLgUq86MK1tpwTah1XCIh7R2s0DVBS36tp4TsHIhIeMakyf3oGIX
-         pxLA==
-X-Gm-Message-State: AOJu0Yzdw/CHfwhqC/DJ26qU4pucU2BPyONzk6v2ZP/h0ZhrjvUi+v+/
-        pohNvMt/JMAgO6n04EidhCckLSREx9uyByQ+A1UcIg==
-X-Google-Smtp-Source: AGHT+IHKHtr5xE3RkGK0fJwUK612HPcHHmi9TzXyZbEI0xzrbY30jcQXq3kwA1TkT9ayLJiDTy7rskFOTZTnNxoE6f4=
-X-Received: by 2002:a50:ccc6:0:b0:54a:ee8b:7a99 with SMTP id
- b6-20020a50ccc6000000b0054aee8b7a99mr17972edj.0.1701980074584; Thu, 07 Dec
- 2023 12:14:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701980117; x=1702584917;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ytNDdKy1mnEm3e+yRbuE/HnHivt5uF3IXJRUZqNhUno=;
+        b=mEa0a6rzS1oeICoVtcbftTkkjs341I0HaON9WkC5oS+ilW4BTpjvvAlMbjZmtc7P+r
+         8d8TeFDbnhtPH/wAEC1to4Ce/SkDY0omOVRJjBAF3ysAgRWiSwyu/FCst/Zeqiwd1JJD
+         yqeAzJFYE8OAx3i8JR2OpUDycclC4OftS3T3DMKu5U2wvlCN4FXM/LjyveyIzVQHd6LH
+         zoRW2r/nLCWW8bXFmO3Dt7Fe8N0/YpglxGX1KMA5RAJ7z+Yb77xwDb83svvcS4FD7M7O
+         QOyhRUS41jwZeLyQINBO3t6NHWLMaUTbehJzKYJfNXIhwdGd/E1x3HqD/Ajyj3YXzXTJ
+         AlRA==
+X-Gm-Message-State: AOJu0YzX77qTx0j0OLLYmQlGpuW44n3qtqxENWMjKcJ5/hxA8OI2Tflu
+        qiIXTAq/9VbElyNoEsnzp9d//eEYew==
+X-Google-Smtp-Source: AGHT+IFFpMDZK/yIr6hZpE4r1FjYZtPYedvtJwcGCyDCOPoNAYk8TdQZMuSyWAZEu2Vjduf1L9uMfA==
+X-Received: by 2002:a05:6830:124e:b0:6d9:d144:c9a9 with SMTP id s14-20020a056830124e00b006d9d144c9a9mr2599082otp.22.1701980117581;
+        Thu, 07 Dec 2023 12:15:17 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id l16-20020a9d7350000000b006d9d3d0e145sm84403otk.10.2023.12.07.12.15.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 12:15:16 -0800 (PST)
+Received: (nullmailer pid 3350191 invoked by uid 1000);
+        Thu, 07 Dec 2023 20:15:16 -0000
+Date:   Thu, 7 Dec 2023 14:15:16 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v1 3/4] powerpc/machdep: Define 'compatibles' property in
+ ppc_md and use it
+Message-ID: <20231207201516.GA3348285-robh@kernel.org>
+References: <e6cf01d41502b15e688b6f5aa5c3b68c62b8ac64.1701878821.git.christophe.leroy@csgroup.eu>
+ <9da79892e7ff433095a7bf42e86aef02ab86b5c1.1701878821.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-References: <20231128175441.721579-1-namhyung@kernel.org> <CAP-5=fWfKqgT60TFRALw8vTDQT7VFV+0+eo1rFSSH3eVrjzPmA@mail.gmail.com>
- <CAM9d7chKmDETK6Ea2wyR8L21jyHWcPHbKavarnq-JmNA-AoUnQ@mail.gmail.com>
- <CAP-5=fUf6R=bsfg7i8atFApJBY-=zWUBMq7inFsCPZhB+w2==Q@mail.gmail.com>
- <CAM9d7cjDiu=dksnhboJFT4uPQJcvGMB-vBt96v3i7Kqy5LKRMw@mail.gmail.com>
- <CAP-5=fXKbi3DYoOKrJvNKLNU=fJEY9aDAOQhH+Vh+XWxHzGjwA@mail.gmail.com>
- <ZXIiBp-rvdvSI-ZY@kernel.org> <ZXIicbe9K5KYGSV4@kernel.org>
-In-Reply-To: <ZXIicbe9K5KYGSV4@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 7 Dec 2023 12:14:23 -0800
-Message-ID: <CAP-5=fWN5Jwsf5dxqw0BJxpdu89FM54A-AtQpEqxeE7XLDx3mA@mail.gmail.com>
-Subject: Re: [PATCHSET 0/8] perf annotate: Make annotation_options global (v1)
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9da79892e7ff433095a7bf42e86aef02ab86b5c1.1701878821.git.christophe.leroy@csgroup.eu>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 11:52=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Thu, Dec 07, 2023 at 04:50:30PM -0300, Arnaldo Carvalho de Melo escrev=
-eu:
-> > Em Tue, Dec 05, 2023 at 09:59:02AM -0800, Ian Rogers escreveu:
-> > > On Mon, Dec 4, 2023 at 2:46=E2=80=AFPM Namhyung Kim <namhyung@kernel.=
-org> wrote:
-> > > > On Thu, Nov 30, 2023 at 10:37=E2=80=AFAM Ian Rogers <irogers@google=
-.com> wrote:
-> > > > > Sgtm. My point wasn't to criticize, I think this is a good change=
-, I
-> > > > > was just trying to imagine doing things in a way that could overa=
-ll
-> > > > > reduce complexity
-> >
-> > > > Yep, thanks for your review.  Can I get your ACKs? :)
-> >
-> > > For the series:
-> > > Reviewed-by: Ian Rogers <irogers@google.com>
-> >
-> > Thanks, applied to perf-tools-next.
->
->
-> Now trying to fix this:
->
->   CC      bench/numa.o
->   CC      tests/hists_cumulate.o
-> ui/gtk/annotate.c: In function =E2=80=98symbol__gtk_annotate=E2=80=99:
-> ui/gtk/annotate.c:179:43: error: passing argument 3 of =E2=80=98symbol__a=
-nnotate=E2=80=99 from incompatible pointer type [-Werror=3Dincompatible-poi=
-nter-types]
->   179 |         err =3D symbol__annotate(ms, evsel, options, NULL);
->       |                                           ^~~~~~~
->       |                                           |
->       |                                           struct annotation_optio=
-ns *
-> In file included from ui/gtk/annotate.c:5:
-> /home/acme/git/perf-tools-next/tools/perf/util/annotate.h:376:36: note: e=
-xpected =E2=80=98struct arch **=E2=80=99 but argument is of type =E2=80=98s=
-truct annotation_options *=E2=80=99
->   376 |                      struct arch **parch);
->       |                      ~~~~~~~~~~~~~~^~~~~
-> ui/gtk/annotate.c:179:15: error: too many arguments to function =E2=80=98=
-symbol__annotate=E2=80=99
->   179 |         err =3D symbol__annotate(ms, evsel, options, NULL);
->       |               ^~~~~~~~~~~~~~~~
-> /home/acme/git/perf-tools-next/tools/perf/util/annotate.h:374:5: note: de=
-clared here
->   374 | int symbol__annotate(struct map_symbol *ms,
->       |     ^~~~~~~~~~~~~~~~
-> cc1: all warnings being treated as errors
->   CC      tests/python-use.o
->   CC      trace/beauty/sockaddr.o
->   CC      arch/x86/util/topdown.o
-> make[6]: *** [/home/acme/git/perf-tools-next/tools/build/Makefile.build:1=
-05: ui/gtk/annotate.o] Error 1
-> make[6]: *** Waiting for unfinished jobs....
->   CC      arch/x86/util/machine.o
+On Wed, Dec 06, 2023 at 05:13:34PM +0100, Christophe Leroy wrote:
+> Most probe functions that do not use the 'compatible' string do
+> nothing else than checking whether the machine is compatible with
+> one of the strings in a NULL terminated table of strings.
+> 
+> Define that table of strings in ppc_md structure and check it directly
+> from probe_machine() instead of using ppc_md.probe() for that.
+> 
+> Keep checking in ppc_md.probe() only for more complex probing.
+> 
+> All .compatible could be replaced with a single element NULL
+> terminated list but that's not worth the churn. Can be do incrementaly
+> in follow-up patches.
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/include/asm/machdep.h            |  1 +
+>  arch/powerpc/kernel/setup-common.c            |  2 ++
+>  arch/powerpc/platforms/40x/ppc40x_simple.c    |  9 +++------
+>  arch/powerpc/platforms/512x/mpc512x_generic.c |  4 +---
+>  arch/powerpc/platforms/52xx/lite5200.c        | 10 +---------
+>  arch/powerpc/platforms/52xx/mpc5200_simple.c  | 10 +---------
+>  arch/powerpc/platforms/83xx/mpc830x_rdb.c     | 10 +---------
+>  arch/powerpc/platforms/83xx/mpc831x_rdb.c     | 10 +---------
+>  arch/powerpc/platforms/83xx/mpc837x_rdb.c     | 10 +---------
+>  arch/powerpc/platforms/85xx/corenet_generic.c |  2 +-
+>  arch/powerpc/platforms/85xx/tqm85xx.c         | 10 +---------
+>  11 files changed, 14 insertions(+), 64 deletions(-)
 
-Maybe a signal to remove the gtk support :-)
+> -/*
+> - * Called very early, MMU is off, device-tree isn't unflattened
+> - */
 
-Ian
+Certainly an out of date comment as the unflattened API was being 
+called.
+
+Reviewed-by: Rob Herring <robh@kernel.org>
