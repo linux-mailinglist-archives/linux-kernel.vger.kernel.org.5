@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C190807EA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 03:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A24D7807EA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 03:38:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443084AbjLGCh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 21:37:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55756 "EHLO
+        id S1443074AbjLGCiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 21:38:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235175AbjLGCho (ORCPT
+        with ESMTP id S235178AbjLGCho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Dec 2023 21:37:44 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9BBD68
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF89D69
         for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 18:37:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55248C4339A;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97C03C433AD;
         Thu,  7 Dec 2023 02:37:50 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
         (envelope-from <rostedt@goodmis.org>)
-        id 1rB4HM-00000001aOg-0cKq;
+        id 1rB4HM-00000001aPB-1r1j;
         Wed, 06 Dec 2023 21:38:20 -0500
-Message-ID: <20231207023819.931186714@goodmis.org>
+Message-ID: <20231207023820.217771011@goodmis.org>
 User-Agent: quilt/0.67
-Date:   Wed, 06 Dec 2023 21:37:57 -0500
+Date:   Wed, 06 Dec 2023 21:37:58 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Petr Pavlu <petr.pavlu@suse.com>
-Subject: [for-linus][PATCH 5/8] tracing: Fix a warning when allocating buffered events fails
+        stable@vger.kernel.org, Petr Pavlu <petr.pavlu@suse.com>
+Subject: [for-linus][PATCH 6/8] tracing: Fix a possible race when disabling buffered events
 References: <20231207023752.712829638@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,76 +46,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Petr Pavlu <petr.pavlu@suse.com>
 
-Function trace_buffered_event_disable() produces an unexpected warning
-when the previous call to trace_buffered_event_enable() fails to
-allocate pages for buffered events.
+Function trace_buffered_event_disable() is responsible for freeing pages
+backing buffered events and this process can run concurrently with
+trace_event_buffer_lock_reserve().
 
-The situation can occur as follows:
+The following race is currently possible:
 
-* The counter trace_buffered_event_ref is at 0.
+* Function trace_buffered_event_disable() is called on CPU 0. It
+  increments trace_buffered_event_cnt on each CPU and waits via
+  synchronize_rcu() for each user of trace_buffered_event to complete.
 
-* The soft mode gets enabled for some event and
-  trace_buffered_event_enable() is called. The function increments
-  trace_buffered_event_ref to 1 and starts allocating event pages.
+* After synchronize_rcu() is finished, function
+  trace_buffered_event_disable() has the exclusive access to
+  trace_buffered_event. All counters trace_buffered_event_cnt are at 1
+  and all pointers trace_buffered_event are still valid.
 
-* The allocation fails for some page and trace_buffered_event_disable()
-  is called for cleanup.
+* At this point, on a different CPU 1, the execution reaches
+  trace_event_buffer_lock_reserve(). The function calls
+  preempt_disable_notrace() and only now enters an RCU read-side
+  critical section. The function proceeds and reads a still valid
+  pointer from trace_buffered_event[CPU1] into the local variable
+  "entry". However, it doesn't yet read trace_buffered_event_cnt[CPU1]
+  which happens later.
 
-* Function trace_buffered_event_disable() decrements
-  trace_buffered_event_ref back to 0, recognizes that it was the last
-  use of buffered events and frees all allocated pages.
+* Function trace_buffered_event_disable() continues. It frees
+  trace_buffered_event[CPU1] and decrements
+  trace_buffered_event_cnt[CPU1] back to 0.
 
-* The control goes back to trace_buffered_event_enable() which returns.
-  The caller of trace_buffered_event_enable() has no information that
-  the function actually failed.
+* Function trace_event_buffer_lock_reserve() continues. It reads and
+  increments trace_buffered_event_cnt[CPU1] from 0 to 1. This makes it
+  believe that it can use the "entry" that it already obtained but the
+  pointer is now invalid and any access results in a use-after-free.
 
-* Some time later, the soft mode is disabled for the same event.
-  Function trace_buffered_event_disable() is called. It warns on
-  "WARN_ON_ONCE(!trace_buffered_event_ref)" and returns.
-
-Buffered events are just an optimization and can handle failures. Make
-trace_buffered_event_enable() exit on the first failure and left any
-cleanup later to when trace_buffered_event_disable() is called.
+Fix the problem by making a second synchronize_rcu() call after all
+trace_buffered_event values are set to NULL. This waits on all potential
+users in trace_event_buffer_lock_reserve() that still read a previous
+pointer from trace_buffered_event.
 
 Link: https://lore.kernel.org/all/20231127151248.7232-2-petr.pavlu@suse.com/
-Link: https://lkml.kernel.org/r/20231205161736.19663-3-petr.pavlu@suse.com
+Link: https://lkml.kernel.org/r/20231205161736.19663-4-petr.pavlu@suse.com
 
+Cc: stable@vger.kernel.org
 Fixes: 0fc1b09ff1ff ("tracing: Use temp buffer when filtering events")
 Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/trace.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ kernel/trace/trace.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 6aeffa4a6994..ef72354f61ce 100644
+index ef72354f61ce..fbcd3bafb93e 100644
 --- a/kernel/trace/trace.c
 +++ b/kernel/trace/trace.c
-@@ -2728,8 +2728,11 @@ void trace_buffered_event_enable(void)
- 	for_each_tracing_cpu(cpu) {
- 		page = alloc_pages_node(cpu_to_node(cpu),
- 					GFP_KERNEL | __GFP_NORETRY, 0);
--		if (!page)
--			goto failed;
-+		/* This is just an optimization and can handle failures */
-+		if (!page) {
-+			pr_err("Failed to allocate event buffer\n");
-+			break;
-+		}
- 
- 		event = page_address(page);
- 		memset(event, 0, sizeof(*event));
-@@ -2743,10 +2746,6 @@ void trace_buffered_event_enable(void)
- 			WARN_ON_ONCE(1);
- 		preempt_enable();
+@@ -2791,13 +2791,17 @@ void trace_buffered_event_disable(void)
+ 		free_page((unsigned long)per_cpu(trace_buffered_event, cpu));
+ 		per_cpu(trace_buffered_event, cpu) = NULL;
  	}
--
--	return;
-- failed:
--	trace_buffered_event_disable();
- }
++
+ 	/*
+-	 * Make sure trace_buffered_event is NULL before clearing
+-	 * trace_buffered_event_cnt.
++	 * Wait for all CPUs that potentially started checking if they can use
++	 * their event buffer only after the previous synchronize_rcu() call and
++	 * they still read a valid pointer from trace_buffered_event. It must be
++	 * ensured they don't see cleared trace_buffered_event_cnt else they
++	 * could wrongly decide to use the pointed-to buffer which is now freed.
+ 	 */
+-	smp_wmb();
++	synchronize_rcu();
  
- static void enable_trace_buffered_event(void *data)
+-	/* Do the work on each cpu */
++	/* For each CPU, relinquish the buffer */
+ 	on_each_cpu_mask(tracing_buffer_mask, enable_trace_buffered_event, NULL,
+ 			 true);
+ }
 -- 
 2.42.0
 
