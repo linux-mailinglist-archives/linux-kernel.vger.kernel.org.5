@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A1C809282
+	by mail.lfdr.de (Postfix) with ESMTP id 1E069809281
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 21:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443903AbjLGUi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 15:38:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
+        id S1443915AbjLGUjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 15:39:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjLGUi4 (ORCPT
+        with ESMTP id S231301AbjLGUi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 15:38:56 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2631713
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 12:39:03 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso1437567276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 12:39:03 -0800 (PST)
+        Thu, 7 Dec 2023 15:38:58 -0500
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EB11713
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 12:39:04 -0800 (PST)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5d226f51f71so12440627b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 12:39:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701981542; x=1702586342; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=f0nqkFu7e/a89gcQ+5bKDtMmMoDf4cXbjeDawa75MYo=;
-        b=k8DXPu/a47RcjSNVg6zJu4tQtfglRyieZSADUTSV3apRwl7NArYMXEsVXtG+vyqtK1
-         9IOoqSNgcFhqVLcS98QLbbfWNUw9eGd1biry/0pc7M7Zucy1+QlbD8qXo0LzCs37mBMG
-         /keBWrhUCHfshacS4O4azIFZ3uQsrSQwovLgDycmVkqH+mo2zqXeVtuNKLXPmo6ixv3D
-         4QyEs6PjERiQY6enw1kRSbgSS2YNA+enTeVh1Vac554qVjrNR1cyCcZKSOcSxn9I15QI
-         oyNPQYAPIEw7KE/suEKNIzaAeI5jIrjqV4uUZ5UjInn7FQ2FIenkfsZKbu3dRPUxMDBt
-         voUA==
+        d=gmail.com; s=20230601; t=1701981544; x=1702586344; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t+ncE/Ke8W/9eSicUFGfjAMk7XfHt6TzmaC+XB67O8c=;
+        b=Mn6cD47IEGNhYiJtgTi0Q/J42HOq51Rzpy9lsf1AA5BwEhob3wSOLyCoocML3DAXIq
+         l7zLIztB116RuBHtxHVYsM5P+TtgFrb2Qxubla34kugzXgWtajUVoR7qXgPcA+o4yvcW
+         eIkT2TMoZdFeUDW+HFKM4JIotiZ+3jWmmNMjGhj1pxLCfw1pOrbgfT3Wx9WuWOPkZopJ
+         HWiAP09C2IJRrDA+KBWlEmDDWUYr2qIy383rF1/S2/jVBtUc9fDg63AHKK7lC5UsWU6E
+         AdbIdXv9lpMiht8RLk4pmUN6f0kQVXqsPOyXWepQrRTw3S4m68LWHErWN2m6uM19v2lZ
+         5/Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701981542; x=1702586342;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f0nqkFu7e/a89gcQ+5bKDtMmMoDf4cXbjeDawa75MYo=;
-        b=PGX6nuW1G0OQS06pK1RDBBhl1J9ZaXyDXGVdNu6UV5wPXLQNKGGliaNa0mwvOujF3O
-         Jm5g1V/A78I9JyL24yRj9CwQ8bj1GtOmEOI1s+8yeVJoksLzMXPKj4YHDC6CLXJ1PqAc
-         WGfSM7dMisSZKKy9CSG4+fxiOvfoJwTnNZXvWjM2lRnB3fC7v8f85DUXsITfrfEq/g83
-         V71RtO5LqX7i8NdSCAh73lhHDR1tJ3Us5DXQTvGwA53fGqRpgJX/s5nlqRENg41htG2S
-         CFAxZzX37YDPK4qeIIdxIpwSSkI30hnCFPTYs0hjxlcx+Zp2j0pFGPbeV0r4Cjm5olaD
-         0mCA==
-X-Gm-Message-State: AOJu0YwAPO1dusjXEUVxy2od06rU5/HESqL5NCEK3VNriT9p0WSPIDiS
-        OkTrbSDT2eTn0JmTX/X7ei4=
-X-Google-Smtp-Source: AGHT+IFnaQcVyYMMYmphChZydtsRUMu/k+z+cN9goYJ2Ko8K29V+/xvKjeO4fAYTCRKqK3GHjo7NOw==
-X-Received: by 2002:a25:2541:0:b0:db7:6630:be4b with SMTP id l62-20020a252541000000b00db76630be4bmr2235384ybl.55.1701981542488;
-        Thu, 07 Dec 2023 12:39:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701981544; x=1702586344;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t+ncE/Ke8W/9eSicUFGfjAMk7XfHt6TzmaC+XB67O8c=;
+        b=KN6Gxw7kIJeZAd49Q3LYMlmjydxPk72CVpOk/jkEgAhQjX8I7cYX6S66LfLwctejU9
+         jjEfkweBE8k7jfIlHC4gVFsnr31eLCBRxF31yA6NBAW9N2VnvybqLf1krfVJo/H/W2Rk
+         B4pHe0SNonp1gK8zDc0wlwXlbzpPvmP7imq2DPW+ho892vW8X7TDhLiJ0tKIhQi0Xff8
+         MzmaHXBP/qhRlTYJ20R1aZQNZ0ekJ9puF4EG4TSu/J6nLTjMFoB8IfQSou/lFUH86Wtj
+         oA/sGIQi/A8G8mrqYOOHyQX0bUvZdjA7TAexBx94mopaC1ZSv1uFa4znQYUkC8R+3lek
+         1gpg==
+X-Gm-Message-State: AOJu0Yysj9lsNjiu0NlEogAn4/cJEFZKEvgKafN/Vwb+A129aE9p0lDu
+        lQEHqsdDoBMm1WLRMd6AZsY=
+X-Google-Smtp-Source: AGHT+IEjxfx4/yblkVJIQxF90BhwSszmQgB/4/z8ZfVuRkbqovYnHwqDHbbqqMtSKVytphbLBzIWOA==
+X-Received: by 2002:a81:574f:0:b0:5d7:545e:3bda with SMTP id l76-20020a81574f000000b005d7545e3bdamr2499373ywb.20.1701981543874;
+        Thu, 07 Dec 2023 12:39:03 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:8f7f:efcd:5388:af4f])
-        by smtp.gmail.com with ESMTPSA id e82-20020a25e755000000b00d9ab86bdaffsm146662ybh.12.2023.12.07.12.39.01
+        by smtp.gmail.com with ESMTPSA id m132-20020a81718a000000b005d4071e3adasm144853ywc.57.2023.12.07.12.39.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 12:39:02 -0800 (PST)
+        Thu, 07 Dec 2023 12:39:03 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -56,10 +57,12 @@ To:     Andrew Morton <akpm@linux-foundation.org>,
 Cc:     Yury Norov <yury.norov@gmail.com>, Ming Lei <ming.lei@redhat.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH v2 0/6] lib/group_cpus: rework grp_spread_init_one() and make it O(1)
-Date:   Thu,  7 Dec 2023 12:38:54 -0800
-Message-Id: <20231207203900.859776-1-yury.norov@gmail.com>
+Subject: [PATCH v2 1/6] cpumask: introduce for_each_cpu_and_from()
+Date:   Thu,  7 Dec 2023 12:38:55 -0800
+Message-Id: <20231207203900.859776-2-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231207203900.859776-1-yury.norov@gmail.com>
+References: <20231207203900.859776-1-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,32 +75,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-grp_spread_init_one() implementation is sub-optimal because it
-traverses bitmaps from the beginning, instead of picking from the
-previous iteration.
+Similarly to for_each_cpu_and(), introduce a for_each_cpu_and_from(),
+which is handy when it's needed to traverse 2 cpumasks or bitmaps,
+starting from a given position.
 
-Fix it and use find_bit API where appropriate. While here, optimize
-cpumasks allocation and drop unneeded cpumask_empty() call.
-
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
-v1: https://lore.kernel.org/all/ZW5MI3rKQueLM0Bz@yury-ThinkPad/T/
-v2: add few more optimizations (patches 5-6)
-
-Yury Norov (6):
-  cpumask: introduce for_each_cpu_and_from()
-  lib/group_cpus: relax atomicity requirement in grp_spread_init_one()
-  lib/group_cpus: optimize inner loop in grp_spread_init_one()
-  lib/group_cpus: optimize outer loop in grp_spread_init_one()
-  lib/cgroup_cpus.c: don't zero cpumasks in group_cpus_evenly() on
-    allocation
-  lib/group_cpus.c: drop unneeded cpumask_empty() call in
-    __group_cpus_evenly()
-
- include/linux/cpumask.h | 11 ++++++++++
+ include/linux/cpumask.h | 11 +++++++++++
  include/linux/find.h    |  3 +++
- lib/group_cpus.c        | 47 +++++++++++++++++++----------------------
- 3 files changed, 36 insertions(+), 25 deletions(-)
+ 2 files changed, 14 insertions(+)
 
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index cfb545841a2c..73ff2e0ef090 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -332,6 +332,17 @@ unsigned int __pure cpumask_next_wrap(int n, const struct cpumask *mask, int sta
+ #define for_each_cpu_and(cpu, mask1, mask2)				\
+ 	for_each_and_bit(cpu, cpumask_bits(mask1), cpumask_bits(mask2), small_cpumask_bits)
+ 
++/**
++ * for_each_cpu_and_from - iterate over every cpu in both masks starting from a given cpu
++ * @cpu: the (optionally unsigned) integer iterator
++ * @mask1: the first cpumask pointer
++ * @mask2: the second cpumask pointer
++ *
++ * After the loop, cpu is >= nr_cpu_ids.
++ */
++#define for_each_cpu_and_from(cpu, mask1, mask2)				\
++	for_each_and_bit_from(cpu, cpumask_bits(mask1), cpumask_bits(mask2), small_cpumask_bits)
++
+ /**
+  * for_each_cpu_andnot - iterate over every cpu present in one mask, excluding
+  *			 those present in another.
+diff --git a/include/linux/find.h b/include/linux/find.h
+index 5e4f39ef2e72..dfd3d51ff590 100644
+--- a/include/linux/find.h
++++ b/include/linux/find.h
+@@ -563,6 +563,9 @@ unsigned long find_next_bit_le(const void *addr, unsigned
+ 	     (bit) = find_next_and_bit((addr1), (addr2), (size), (bit)), (bit) < (size);\
+ 	     (bit)++)
+ 
++#define for_each_and_bit_from(bit, addr1, addr2, size) \
++	for (; (bit) = find_next_and_bit((addr1), (addr2), (size), (bit)), (bit) < (size); (bit)++)
++
+ #define for_each_andnot_bit(bit, addr1, addr2, size) \
+ 	for ((bit) = 0;									\
+ 	     (bit) = find_next_andnot_bit((addr1), (addr2), (size), (bit)), (bit) < (size);\
 -- 
 2.40.1
 
