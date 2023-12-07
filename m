@@ -2,159 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB06808C18
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18510808C2F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443495AbjLGPnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 10:43:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43680 "EHLO
+        id S1443544AbjLGPpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 10:45:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235339AbjLGPnm (ORCPT
+        with ESMTP id S232946AbjLGPpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 10:43:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3076710F7
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:43:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701963829; x=1733499829;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=g5go5E6yw+YpYc381GEscm64stVZBIKwrU1yPV68bX0=;
-  b=HfKgquXYVQI5wxrmu0ENNkLR5jQDEYV5EV6yxm60lbOLMFsr/lb74MRG
-   cDvzoUhlQQGURx+1MgvSxG7ZfaS5Mh0SJdqOhFcJSWDUwJkzmhYIPDIbc
-   6e8fsDhcvJs68+LVKWhYHNUPeHiFpXiEYnvLZcHwAO6rtXXQmwjHZIvzX
-   SIjSSaq+4mdPB26RVDLG26ADnhoDcnr3YGvyl4JDTEAiJmWDeHc6jiHEC
-   ATwC88ItbOuSteCcyVZwHUro2OMAcpmWDzFNdAXldhMBON7WzEfHBTFax
-   UTW17P/j3xl07wE0PazHyFLFMDsBrLkdBxTniPPrL1fsvFfbnFlULXHUG
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="393987393"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="393987393"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 07:43:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="945078673"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="945078673"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Dec 2023 07:43:48 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Dec 2023 07:43:47 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Dec 2023 07:43:47 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 7 Dec 2023 07:43:47 -0800
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.41) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 7 Dec 2023 07:43:47 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AGp7YRiKKLOtYOcSsRXXJ+6TnP5lKQ0LAQmyvPsaHHzYLNjtm4B9xuzzi4dfyzcPL5IDxnzJxTXSFCbC4xO+2XOqxK7i1EBI6fCHdE+JTAGk1+dTUe7mKQc4HYoMkEkGMtDRDXJpqJ0m6HWje98lxoAU6FWT4T93ety2FXQp0281itKaxzaADMEGSywhyX/FlHiO9ATO/9NKUvFhJAAlmTLxsh2WSlLu3SxZ0fzn5RO6GtPx7DGnVuY9LmGu/QyPUu/qRPzWvvCH/Ho3BcnuMbeCzmB9JCW5vazUp/6W5JsB1rqoeSkd/GzffTViZEQTeXbBNAmV00I7xF4wEknNWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WU40mmlk6Hi711hn2F7ZaKi59fgZPMqFfPMvgizGjOs=;
- b=FtfD75wa1drKjLAbvCPWqxlPhNw7yoSGuzLwvq78Bl4xS9MoqeCFFOeC6Fdb5umXEhzKnl3PZJcU/TW2Fg5UQzGxuRuqlaZyYPXM3PYv/cISYM6fgQZZINZJOsf4byFLlD3+myPSwhcw0AkvAye0tHj0UAch1klSRWX772kYVUNueUM7krPdg32wdvJI7FjohIS77Wf5WCMUJEMq0YantDHazQ7kKhd0PSgwqteR6RqMYWO8FoO19Qa6uMl0Wv5QpPcWWY4eo2eV786IqSwtZ1YpzF32PI+29lHXVVtBZ+xafUb+DLc5zFMi2qm5uy9F8Oe4AKeDMigaOTTtJvZYKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
- by CH0PR11MB5473.namprd11.prod.outlook.com (2603:10b6:610:d4::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Thu, 7 Dec
- 2023 15:43:45 +0000
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::6f7b:337d:383c:7ad1]) by PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::6f7b:337d:383c:7ad1%4]) with mapi id 15.20.7068.027; Thu, 7 Dec 2023
- 15:43:44 +0000
-Message-ID: <23a91617-4562-4399-a8c6-df2f3f28c7a9@intel.com>
-Date:   Thu, 7 Dec 2023 08:43:42 -0700
-User-Agent: Betterbird (Linux)
-Subject: Re: [PATCH] nvdimm-btt: fix a potential memleak in btt_freelist_init
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-CC:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, <nvdimm@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>
-References: <20231207034332.24107-1-dinghao.liu@zju.edu.cn>
-Content-Language: en-US
-From:   Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20231207034332.24107-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0180.namprd13.prod.outlook.com
- (2603:10b6:a03:2c7::35) To PH7PR11MB5984.namprd11.prod.outlook.com
- (2603:10b6:510:1e3::15)
+        Thu, 7 Dec 2023 10:45:10 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC6410CA;
+        Thu,  7 Dec 2023 07:45:16 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B7B0EB8021167;
+        Thu, 7 Dec 2023 15:45:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=ITywNu0Suc/YQC4o3PPSo94jnMG2sJT5GusxuK3R6WY=;
+ b=fc2XTcCJTQARMf8TcWc4bz9kJWat5sNobNV31FfQpGtEOMREx24NrSEk/gjQCYojGzee
+ t9JktYMdeQbzoSthjqsYbAOI0QZ68xAq8N90xn/t8FJ93M3YUoLd9eqawPsLrAcbrasB
+ gnYaFcsGUEWkkqEfmcpeKCcqsboKT1cEVIUtioBwfliPC21u0lxkz6GZmaBxwPs740Bu
+ sSLAIE/ZdJwZgYoGnUp2qka7l1a630T7q2uPp5iG8CXVCqoHz9zFpjtM/mPjHTAtmvlH
+ 8YR1jI/sJQ0Mzi5S2FWH4i77e/2mI3PZS0SHhPIsAsHmgPPdrHH9hvjHrEdx9N/a0CoD dw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utt70bcag-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 15:45:08 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B7Fj7Mb031983
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 7 Dec 2023 15:45:07 GMT
+Received: from [10.216.4.183] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Dec
+ 2023 07:45:00 -0800
+Message-ID: <028097f3-9056-4c07-a868-4eeac9bc8c94@quicinc.com>
+Date:   Thu, 7 Dec 2023 21:14:55 +0530
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|CH0PR11MB5473:EE_
-X-MS-Office365-Filtering-Correlation-Id: 35b1ca92-895c-4ded-adc3-08dbf73b4b83
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q1hUSDm/g+s6RRS/lIskIyd8rFXD54NZeEvutZl3qtgISNbUgPWdZh/3ixb0Sz3OhSr445NXvZNwmBHktzxTiOWidc2LnR5WW384JHsVvZxt7m/7vAPKKvKD3fR/0jm4Dvh7WBwv3PVK3TeKTVzrQW6MtMhIw1d8L2IFGKuvYz0g8ZnwS3UElAxrfPzKj67II7DHUbF40x2poSsngmMP4Az5pOtiCUCbkTEz8bjfVi3tnN069vcWgq79pbO0i2mKqk+QH8QkngBHvcMzPIvg/rs6sWCY1IjcJohijDCrrA/h8pSeyvXClegdn50aUNKbhgiLZ979Hj50SpYNOXUm2JnOLuXSBWpiipOE8CH22VXFesgOofzVDKI/asfBeb5QiydLLBgkeS1wB43ATPfE+GV7hf/5mLErIfFaFaJnLmV1bl7oFFrXjrksetKRj+cbTrI3ongV4X7ajUxxYmN8oyL/ukx25CMWlxsv8J2VW/L60iKsX443iAa0K+HDQ651elLm6wYz8GEyZFZZoDbV6eNxDRE6x19jR7DsdPdKFhxORtUlUT3lvvSFrfNAkENoGDh660zYZ1R62zkDKZBl0lG3d2+qpV6X4Otn02/c6FY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(376002)(346002)(136003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(8936002)(8676002)(82960400001)(83380400001)(41300700001)(36756003)(26005)(6916009)(316002)(31696002)(4326008)(86362001)(6486002)(966005)(66946007)(66556008)(66476007)(54906003)(6512007)(2616005)(2906002)(478600001)(44832011)(53546011)(5660300002)(6506007)(31686004)(38100700002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UWFHK2RRVG9RblZwd1VXelI3bFU1QTY0SEpIb3JLc056MVhlVmtKVzc3cXVy?=
- =?utf-8?B?OEdzdFNzMTZQMGFvSnJMSUZFNyt1ZVBlNzJwa2p5OU4rNi9qNXpjRTVBS0Ru?=
- =?utf-8?B?bWlnTmthQXVFekVLSFJZUk9Od1lYQkZoSzFqbkJjQUJNM0JhMXlOT3RWMitp?=
- =?utf-8?B?cytPNzc2QU9Jb0F5dllCU1poS0N1ckxCTllxdGRKeUladmJ1V0w3dHQ5OUVy?=
- =?utf-8?B?RmdyZUtveUlKODFoaThVZGpHenJ1Z2FHUzhhMkh6cmVpTXpCY3MwbExrc2VK?=
- =?utf-8?B?K1FiUE44VWVTdkFaQXVCeFkyOUhNUVBWd3B2YW50eStydzZuUWhOV3o2cEsw?=
- =?utf-8?B?dUxUUDRSNlBwejZvVzRPaGZaS1VxWWI2K1gyS1J5bTUvVy9TQ1U4VGFqWDJs?=
- =?utf-8?B?V1oyQzFzamN0TzNzOGVkVjJjZXVMcVVkcTZBNG1VSnpCVWtpaldJV0EwdmV6?=
- =?utf-8?B?bGEzaEJ3Qkhld2xhUVV2WjFodWFGYUw1VTVYQmE3U1VYdTkzZ3dCM3h6QlNG?=
- =?utf-8?B?aTAyOFBCOXN1eEFJeG5Jek1GTXowM0MrS09HNVRIbnJKek15YXA4dGVXN1pm?=
- =?utf-8?B?ZEF0bEFaTzJBaGgxaTA4Um1QT3pQMEt1WUk1NVVya0djUFdDNkh6Q2Jqbmh4?=
- =?utf-8?B?cHhTRi9QQzgvNk1UV0dZSy9hNXdGODVEbVEyczdkS3lkQndmNmN4aHF0Zmxo?=
- =?utf-8?B?NkYvdjV4TWJveE5qb3c0RHQ2TzFMVFdJM2dOWVFXa2tYQXJ2VWlJSStvTXFM?=
- =?utf-8?B?S016WElIOTlRdW1FNVBPc1pTRjRENnU4ZnkzY3J5YjlLaXJGd3dXYkNwWEpt?=
- =?utf-8?B?eTc3WU5lR2pobHRxVHBiM1UvOHVBVE1kYmJvLzBuMWNvY0s0NXRPd2pkTVR6?=
- =?utf-8?B?Y25jeHpLSE13R1ZZSThaa3MyUzRFWW9POUVkaEJRRVhHTUl6RS90Qlp1dm50?=
- =?utf-8?B?Q2ZFL3JPOCs3c0w0QWxiNEtwb1VnNWVSSjZCTEthVXpEdCsvRnFrUFBsdXJM?=
- =?utf-8?B?TkNZVkJ0K3FrVmFZeExPVWE5WmZRMEt6NDNhRUJYVGw3S040K05YVjFDc0RN?=
- =?utf-8?B?MDV2NlVZa2M4cWtGd1U4RWFFdkZDZk5LRkF3M3FkWjkvT3hzdzAzcHlKdytL?=
- =?utf-8?B?Skp0dncvK2ZDeXY0dzhhMFl0NEVIc29GVjAzTzkrR3dqMTVRQkcyb3pmMkhJ?=
- =?utf-8?B?bjZHcEJTU2hpR2wwdXA2RnlaSVJYS0g1OWVZUmtoenFVSXhPeDZsUi9MaVJW?=
- =?utf-8?B?YjNrclVhZEhza1ZiNkFjUXcxWDh4bGEzTGxndFRwVVM2OExSN21UUmFjalg2?=
- =?utf-8?B?eTJkR1dwVzhYY05oY3hrUEJidFRhVW0rL1lRR1pJS3B0N2Irc1l4UzBOaU5l?=
- =?utf-8?B?eG56dTJ1YjRJeU5abkNhblBBaTQ5bXFzcy8vNS9ZUVNlMU01YkxieVc4R2I2?=
- =?utf-8?B?eE1ybURoRDdCZnpUdFdpNnlpT0gwT1JwcENHN2s2cDlNcHpFSzVJWTA1M3dy?=
- =?utf-8?B?dHBSc0IveE9ZMFR2ODk4ZGZMa2lqTTRPa0F3RVNkZEExZnFKbmp2SjdsUVZQ?=
- =?utf-8?B?OUhQUTlHUGR0aGZiMnF6ckUxY1EzL2VDWVVMSUgwZmdRZExNbHhTRWoxRVNS?=
- =?utf-8?B?Z2RqWmQxSTh4anNPVUZZS1JKemVHUVZvUkdJSFR3RmFSNXhXU2xEbjlBdys5?=
- =?utf-8?B?MlZ4eFdwSGRhcVRNUlR5SWU1VmhTcDZoOHJOWnR2OGZ2T3dQNGZXenBaWFU0?=
- =?utf-8?B?d1FOTVBrTzZ4U2xicVhTcWpMejNEeWJ5TWtnaENKUWdjUG5BYWY3OGcxOThJ?=
- =?utf-8?B?WTNxTFNNbUUrZVNrdVZ5d1A1VVVidWtJbEVOZzc5NmZYZEt6NEYzazQyUy9G?=
- =?utf-8?B?blFxcmpkOGNNbXA4SHJiZ2k3RHZKdVVWb2h0VUJxQlQvQzhYd0RlRThCNU5F?=
- =?utf-8?B?OXU2VGNKMjR6QmRsazNTNU0wQUFXUlQzZ3BNRUlLdGQzWjhlV1lHWG81Q2dH?=
- =?utf-8?B?dmRnS0tPWEh2dlJxUEN0Z1FJNCtMTHgwd0FuK0lYd290S2UzR21VRzhYWCth?=
- =?utf-8?B?blNiTGlRZ2pWMGhvWUZPbnpHek1qNGp4WGo5bnVlN3Z3MUlONFBjRUgzZFhj?=
- =?utf-8?Q?RiH9q/bHwrYRWeZy6X4gNpW1f?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35b1ca92-895c-4ded-adc3-08dbf73b4b83
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2023 15:43:44.7317
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Yea1k/i8yVBgsUQ/gnFu9nz1ILW0Z6P9tuidq19zg44ysPTqfyuA6zJzpg1vlgJpLdNJFG3gQDbRHkZ4aM49Fw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5473
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/6] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
+ bindings
+To:     Johan Hovold <johan@kernel.org>
+CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <cros-qcom-dts-watchers@chromium.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>
+References: <20231204100950.28712-1-quic_kriskura@quicinc.com>
+ <20231204100950.28712-2-quic_kriskura@quicinc.com>
+ <ZXHjXGEbdtbCiOck@hovoldconsulting.com>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <ZXHjXGEbdtbCiOck@hovoldconsulting.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 1WG_AKh5pcew3-IAAqB3E5qn9KVawZc2
+X-Proofpoint-GUID: 1WG_AKh5pcew3-IAAqB3E5qn9KVawZc2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-07_12,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 malwarescore=0 clxscore=1015
+ adultscore=0 phishscore=0 priorityscore=1501 mlxscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2312070129
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -162,66 +93,180 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Hi Johan. Thanks for the review.
 
-On 12/6/23 20:43, Dinghao Liu wrote:
-> When an error happens in btt_freelist_init(), its caller
-> discover_arenas() will directly free arena, which makes
-> arena->freelist allocated in btt_freelist_init() a leaked
-> memory. Fix this by freeing arena->freelist in all error
-> handling paths of btt_freelist_init().
 > 
-> Fixes: 5212e11fde4d ("nd_btt: atomic sector updates")
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-
-How about use the new scope based resource management and we can avoid the goto mess altogether?
-https://lwn.net/Articles/934679/
-
-
-> ---
->  drivers/nvdimm/btt.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
+> And say something about the SS PHY interrupt being treated as optional
+> as there are SoCs with multiple controllers where only some supports SS.
 > 
-> diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
-> index d5593b0dc700..d8c4ba8bfdda 100644
-> --- a/drivers/nvdimm/btt.c
-> +++ b/drivers/nvdimm/btt.c
-> @@ -544,8 +544,10 @@ static int btt_freelist_init(struct arena_info *arena)
->  
->  	for (i = 0; i < arena->nfree; i++) {
->  		new = btt_log_read(arena, i, &log_new, LOG_NEW_ENT);
-> -		if (new < 0)
-> -			return new;
-> +		if (new < 0) {
-> +			ret = new;
-> +			goto out_free;
-> +		}
->  
->  		/* old and new map entries with any flags stripped out */
->  		log_oldmap = ent_lba(le32_to_cpu(log_new.old_map));
-> @@ -577,7 +579,7 @@ static int btt_freelist_init(struct arena_info *arena)
->  		ret = btt_map_read(arena, le32_to_cpu(log_new.lba), &map_entry,
->  				NULL, NULL, 0);
->  		if (ret)
-> -			return ret;
-> +			goto out_free;
->  
->  		/*
->  		 * The map_entry from btt_read_map is stripped of any flag bits,
-> @@ -594,11 +596,16 @@ static int btt_freelist_init(struct arena_info *arena)
->  			ret = btt_map_write(arena, le32_to_cpu(log_new.lba),
->  					le32_to_cpu(log_new.new_map), 0, 0, 0);
->  			if (ret)
-> -				return ret;
-> +				goto out_free;
->  		}
->  	}
->  
->  	return 0;
-> +
-> +out_free:
-> +	kfree(arena->freelist);
-> +	arena->freelist = NULL;
-> +	return ret;
->  }
->  
->  static bool ent_is_padding(struct log_entry *ent)
+> As Krzysztof mentioned you should also add something to motivate why
+> this de-facto ABI breakage by reordering interrupts is justified and
+> safe in this case.
+>   
+Sure. Let me come up with a good reason why this breakage is needed.
+
+
+> 
+> Try to use uppercase 'PHY' consistently in text throughout the series.
+> 
+ACK.
+
+>> +        - qusb2_phy:: SoCs with QUSB2 PHY do not have separate DP/DM IRQs and
+>> +                      expose only a single IRQ whose behavior can be modified
+>> +                      by the QUSB2PHY_INTR_CTRL register. The required DPSE/
+>> +                      DMSE configuration is done in QUSB2PHY_INTR_CTRL register
+>> +                      of phy address space.
+>> +        - {dp/dm}_hs_phy_irq:: These IRQ's directly reflect changes on the DP/
+>> +                               DM pads of the SoC. These are used for wakeup
+>> +                               only on SoCs with non-QUSBb2 targets with
+> 
+> QUSB2 typo
+> 
+>> +                               exception of SDM670/SDM845/SM6350.
+>> +        - ss_phy_irq:: When in super speed mode of operation, interrupts are
+> 
+> Capitalise 'Super Speed'
+> 
+>> +                       received when a wakeup event is received on ss_phy_irq.
+> 
+> The description as it stands sounds circular. And this one is only used
+> for remote wakeup right?
+> 
+Yes. It is used for remote wakeup. Mentioning it as wakeup event should 
+be changed ?
+
+>> +        - hs_phY_irq:: Apart from DP/DM/QUSB2 Phy interrupts, there is
+> 
+> s/phY/phy/
+> 
+> Perhaps rephrase to sound less like a commit message and to make it a
+> bit more concise.
+> 
+> But this is already an improvement over the current descriptions which
+> are too terse and not even correct.
+> 
+>> +                       hs_phy_irq which is not triggered by default and its
+>> +                       functionality is mutually exclusive to that of
+>> +                       {dp/dm}_hs_phy_irq and qusb2_phy_irq.
+>> +        - pwr_event:: Used for wakeup based on other power events.
+> 
+> I'm not sure about the free text description of these (format etc), but
+> at least this avoid repeating the descriptions for each permutation.
+> 
+> Perhaps the DT maintainers can chime in here.
+> 
+> I think you should reorder them to match the permutations below though.
+> 
+Sure. Will reorder them as per permutations.
+
+>> +    minItems: 2
+>> +    maxItems: 5
+>>   
+>>     interrupt-names:
+>> -    minItems: 1
+>> -    maxItems: 4
+>> +    minItems: 2
+>> +    maxItems: 5
+>>   
+>>     qcom,select-utmi-as-pipe-clk:
+>>       description:
+>> @@ -359,116 +377,54 @@ allOf:
+>>           compatible:
+>>             contains:
+>>               enum:
+>> -              - qcom,ipq4019-dwc3
+>> +              - qcom,ipq5018-dwc3
+>>                 - qcom,ipq6018-dwc3
+>> -              - qcom,ipq8064-dwc3
+>>                 - qcom,ipq8074-dwc3
+>> -              - qcom,msm8994-dwc3
+>> -              - qcom,qcs404-dwc3
+>> -              - qcom,sc7180-dwc3
+>> -              - qcom,sdm670-dwc3
+>> -              - qcom,sdm845-dwc3
+>> -              - qcom,sdx55-dwc3
+>> -              - qcom,sdx65-dwc3
+>> -              - qcom,sdx75-dwc3
+>> -              - qcom,sm4250-dwc3
+>> -              - qcom,sm6350-dwc3
+>> -              - qcom,sm8150-dwc3
+>> -              - qcom,sm8250-dwc3
+>> -              - qcom,sm8350-dwc3
+>> -              - qcom,sm8450-dwc3
+>> -              - qcom,sm8550-dwc3
+>> -              - qcom,sm8650-dwc3
+>> +              - qcom,msm8953-dwc3
+>> +              - qcom,msm8998-dwc3
+>> +              - qcom,qcm2290-dwc3
+>>       then:
+>>         properties:
+>> -        interrupts:
+>> -          items:
+>> -            - description: The interrupt that is asserted
+>> -                when a wakeup event is received on USB2 bus.
+>> -            - description: The interrupt that is asserted
+>> -                when a wakeup event is received on USB3 bus.
+>> -            - description: Wakeup event on DM line.
+>> -            - description: Wakeup event on DP line.
+>>           interrupt-names:
+>>             items:
+>> -            - const: hs_phy_irq
+>> -            - const: ss_phy_irq
+>> -            - const: dm_hs_phy_irq
+>> -            - const: dp_hs_phy_irq
+>> +            - const: pwr_event
+>> +            - const: qusb2_phy
+>> +            - const: ss_phy_irq (optional)
+> 
+> You should not include the string "(optional)" here. It was only a
+> notation I used when we discussed this earlier.
+> 
+> The fact that these are optional should be expressed using min/maxItems
+> as I mentioned earlier. For the above SoCs that would be
+> 
+> 	minItems: 2
+> 	maxItems: 3
+>  >> @@ -522,12 +490,13 @@ examples:
+>>                             <&gcc GCC_USB30_PRIM_MASTER_CLK>;
+>>               assigned-clock-rates = <19200000>, <150000000>;
+>>   
+>> -            interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+>> -                         <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>,
+>> +            interrupts = <GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
+>> +                         <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+>> +                         <GIC_SPI 489 IRQ_TYPE_EDGE_BOTH>,
+>>                            <GIC_SPI 488 IRQ_TYPE_EDGE_BOTH>,
+>> -                         <GIC_SPI 489 IRQ_TYPE_EDGE_BOTH>;
+>> -            interrupt-names = "hs_phy_irq", "ss_phy_irq",
+>> -                          "dm_hs_phy_irq", "dp_hs_phy_irq";
+>> +                         <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>;
+>> +            interrupt-names = "pwr_event", "hs_phy_irq",
+>> +                          "dp_hs_phy_irq", "dm_hs_phy_irq", "ss_phy_irq";
+> 
+> Perhaps you should align the continuation line here too.
+> 
+>>   
+>>               power-domains = <&gcc USB30_PRIM_GDSC>;
+> 
+> Also have you set up the tools so that you can verify your bindings
+> before posing them? I assume the above wouldn't pass (e.g. due to the
+> "(optional)" strings).
+> 
+> There's some more details here:
+> 
+> 	https://docs.kernel.org/devicetree/bindings/writing-schema.html
+> 
+> under "Running checks".
+
+I did do a dt-binding check and got the following line as well:
+
+   DTC_CHK Documentation/devicetree/bindings/usb/qcom,dwc3.example.dtb
+/local/mnt/workspace/sriramd/upstream/torvalds/linux/Documentation/devicetree/bindings/usb/qcom,dwc3.example.dtb: 
+usb@a6f8800: interrupt-names:4: 'ss_phy_irq (optional)' was expected
+         From schema:
+
+I ignored this because it isn't a warning and the example dtb too was 
+generated. Will remove the optional thing in v3.
+
+Regards,
+Krishna,
