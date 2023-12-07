@@ -2,136 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B20588090F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1312E8090F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443787AbjLGS6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 13:58:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
+        id S1443779AbjLGS6m convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Dec 2023 13:58:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443745AbjLGS6U (ORCPT
+        with ESMTP id S1443745AbjLGS6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 13:58:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7D210EB
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 10:58:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3627AC433CA;
-        Thu,  7 Dec 2023 18:58:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701975506;
-        bh=xt1Y/+kttVY9PNDwkDjXmwsJOVheyqKF1T6pNH3dGtg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jz5XnCaYN+luVaE47xCUh01SlCqazNvM+pIr7TfJlWPFfVP8k6bMbv/qFl+c2k0DG
-         xNfUzAJ/xalYGkPYbJCqRlxLovMBAcbI7mIBlB7FS6qyaT+nrDpgT7YRPjG5NDIRRC
-         hCfchARFo1GBtuR00ObXnV4sxGLvTJUci3ANbun4jHM6xtkaJsc7eShJSuq4lVT5aj
-         lCOP3diS2aVG5+I7PX9m4QBHcpVxlHO6IHXCPUxAsRmBlrXgUilZX6CFfB7xuRQwBn
-         Sr+ZUbL+U3qcea6n0XhvTtMuG4XSxssBn/yRt21FF76GYyKIPasMEu+ejizA49yfof
-         8HiP01ypjSOgA==
-Date:   Thu, 7 Dec 2023 19:58:24 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Pin-yen Lin <treapking@chromium.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        Guenter Roeck <groeck@chromium.org>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2 4/4] drm/panel-edp: Add some panels with conservative
- timings
-Message-ID: <fctpvshu5ychxketsf35jfg2qzi6i3nfup5hy7r7hzmmbpd2j4@xmsik3cycjlj>
-References: <20231207081801.4049075-1-treapking@chromium.org>
- <20231207081801.4049075-5-treapking@chromium.org>
- <CAD=FV=U6M5rpQXmjC+iGf0BGtiyjRAAcMfo4Fr3pDyYVp3m4aQ@mail.gmail.com>
+        Thu, 7 Dec 2023 13:58:40 -0500
+X-Greylist: delayed 142 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Dec 2023 10:58:47 PST
+Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C00610F9;
+        Thu,  7 Dec 2023 10:58:47 -0800 (PST)
+Received: from omf15.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay09.hostedemail.com (Postfix) with ESMTP id 410A9801F7;
+        Thu,  7 Dec 2023 18:58:44 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id A25171A;
+        Thu,  7 Dec 2023 18:58:39 +0000 (UTC)
+Message-ID: <26ceceaec7dfe109b43c8677f74d91c5c893ac60.camel@perches.com>
+Subject: Re: [PATCH v3 13/13] MAINTAINERS: Add MAINTAINERS entry for AD7091R
+From:   Joe Perches <joe@perches.com>
+To:     Marcelo Schmitt <marcelo.schmitt@analog.com>, apw@canonical.com,
+        dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+        paul.cercueil@analog.com, Michael.Hennerich@analog.com,
+        lars@metafoo.de, jic23@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        dan.carpenter@linaro.org, marcelo.schmitt1@gmail.com
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 07 Dec 2023 10:58:38 -0800
+In-Reply-To: <b55d378dd8b6dbe787a83b5a0a1f3f05b2530eab.1701971344.git.marcelo.schmitt1@gmail.com>
+References: <cover.1701971344.git.marcelo.schmitt1@gmail.com>
+         <b55d378dd8b6dbe787a83b5a0a1f3f05b2530eab.1701971344.git.marcelo.schmitt1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kpzcmzjycd4hvubw"
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=U6M5rpQXmjC+iGf0BGtiyjRAAcMfo4Fr3pDyYVp3m4aQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Stat-Signature: kxqmrhecpbp8rrfygtoxcukpefw3woyr
+X-Rspamd-Server: rspamout07
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Rspamd-Queue-Id: A25171A
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/3NwuE18cfhVHEcK6vs+EyQ+1MnrtfxDk=
+X-HE-Tag: 1701975519-182943
+X-HE-Meta: U2FsdGVkX18+J42L2hwAsDCsmGB+Rg7Bix3MeDWX7Teb+C69tUX9anU45klsBarWWpuCDaqa747aFttNZ/nmfuXaZYXW/nQc+WvHWmSbZXEPRlebaODfW/DOG/9W6kohoy0NTvClAebSUky/V1JA1ob1AJsbJX5dMd9BWTberEvPqGuZZqwrhhjqIOiuveXhAYr2UMjRwoYd4zsj15zNvap/9vtoVhD0VsdZYNQaSZchmV6YYuicTpVkYSLGfY2Z6TR4p3O1IeRf3ah7bCjDjTdtdH3E29D6IqWvF2CJgeDgnLFS0TrSX7ZefB5lLNFTisvliB08PCml9EPYXWMjY1KHSRGCu1aBqeSYP8JPe1aapzTjsre2pk8U4ePtfY6HcO/acMZ4T/XoVK+xxfH3PFouclB9MJIP/wjJkW43i5XMoktSt6nJsg/AH+NLGBxG
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2023-12-07 at 15:43 -0300, Marcelo Schmitt wrote:
+> The driver for AD7091R was added in
+> ca693001: iio: adc: Add support for AD7091R5 ADC
+> but no MAINTAINERS file entry was added for it since then.
+> Add a proper MAINTAINERS file entry for the AD7091R driver.
+[]
+> diff --git a/MAINTAINERS b/MAINTAINERS
+[]
+> @@ -1126,6 +1126,18 @@ F:	Documentation/ABI/testing/sysfs-bus-iio-adc-ad4130
+>  F:	Documentation/devicetree/bindings/iio/adc/adi,ad4130.yaml
+>  F:	drivers/iio/adc/ad4130.c
+>  
+> +ANALOG DEVICES INC AD7091R DRIVER
+> +M:	Marcelo Schmitt <marcelo.schmitt@analog.com>
+> +L:	linux-iio@vger.kernel.org
+> +S:	Supported
+> +W:	http://ez.analog.com/community/linux-device-drivers
+> +F:	Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml
+> +F:	Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
+> +F:	drivers/iio/adc/drivers/iio/adc/ad7091r-base.c
+> +F:	drivers/iio/adc/drivers/iio/adc/ad7091r-base.h
+> +F:	drivers/iio/adc/drivers/iio/adc/ad7091r5.c
+> +F:	drivers/iio/adc/drivers/iio/adc/ad7091r8.c
 
---kpzcmzjycd4hvubw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Maybe use wildcards?
 
-On Thu, Dec 07, 2023 at 10:23:53AM -0800, Doug Anderson wrote:
-> Hi,
->=20
-> On Thu, Dec 7, 2023 at 12:18=E2=80=AFAM Pin-yen Lin <treapking@chromium.o=
-rg> wrote:
-> >
-> > These panels are used by Mediatek MT8173 Chromebooks but we can't find
-> > the corresponding data sheets, and these panels used to work on v4.19
-> > kernel without any specified delays.
-> >
-> > Therefore, instead of having them use the default conservative timings,
-> > update them with less-conservative timings from other panels of the same
-> > vendor. The panels should still work under those timings, and we can
-> > save some delays and suppress the warnings.
-> >
-> > Signed-off-by: Pin-yen Lin <treapking@chromium.org>
-> >
-> > ---
-> >
-> > (no changes since v1)
-> >
-> >  drivers/gpu/drm/panel/panel-edp.c | 31 +++++++++++++++++++++++++++++++
-> >  1 file changed, 31 insertions(+)
->=20
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
->=20
-> Repeating my comments from v1 here too, since I expect this patch to
-> sit on the lists for a little while:
->=20
->=20
-> This is OK w/ me, but it will need time on the mailing lists before
-> landing in case anyone else has opinions.
+F:	Documentation/devicetree/bindings/iio/adc/adi,ad7091r*
+F:	drivers/iio/adc/drivers/iio/adc/ad7091r*
 
-Generally speaking, I'm not really a fan of big patches that dump
-whatever ChromeOS is doing ...
 
-> Specifical thoughts:
->=20
-> * I at least feel fairly confident that this is OK since these panels
-> essentially booted without _any_ delays back on the old downstream
-> v4.19 kernel. Presumably the panels just had fairly robust timing
-> controllers and so worked OK, but it's better to get the timing more
-> correct.
-
-=2E.. especially since you have to rely on the recollection of engineers
-involved at the time and you have no real way to test and make things
-clearer anymore, and we have to take patches in that are handwavy "trust
-us, it's doing the right thing".
-
-I'd really prefer to have these patches sent as they are found out.
-
-Also, the fact that the 4.19 kernel mentionned in the commit log is
-actually a downstream tree needs to be made much clearer.
-
-Maxime
-
---kpzcmzjycd4hvubw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZXIV0AAKCRDj7w1vZxhR
-xeYzAQC5Kfn8dNrwLwALt+hK6tSD4201IsoTzahQwfQbf9GB3gD9HiIAYt8FNGuE
-6Kmrydj+s2FsQuULmnFdbvdumWwYcwQ=
-=sewR
------END PGP SIGNATURE-----
-
---kpzcmzjycd4hvubw--
