@@ -2,113 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADAE680943A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 22:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0D98093FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 22:29:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444148AbjLGVbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 16:31:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48694 "EHLO
+        id S235851AbjLGV3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 16:29:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444244AbjLGVav (ORCPT
+        with ESMTP id S235810AbjLGV2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 16:30:51 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A491B3AA9;
-        Thu,  7 Dec 2023 13:27:07 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso1132074a12.3;
-        Thu, 07 Dec 2023 13:27:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701984427; x=1702589227; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Px2TdaotpIYQ6sIN9yY8qaT1+HH5T+pH93w2l1LXKbY=;
-        b=OZSGChIK/dU7FKvQLuwc5t3PiMcG5Aa+lpva/7j/L4uR6ZFY3459aMGruUCQHAImFt
-         phW+Clv1rvlbkepWN3purRzhrVo1U0Ju2HeSVB3HbXLC/v+ZXpFUaYkUq3uM9Li9ORnL
-         cZ7m3Gzn+xq8mPQydcScn4Qox9Wh0jnMTWNPznch9cVgmYYL2ZHE3mKfPVYesgsRCmMd
-         O2+lPBwSLwHY1AZQU89KDdH0T2pAU3VKqfJjHN733j4vGr3pip5OyxSnZkP5+XQ3Y3Wq
-         JJd9enr5lUWiIa4hniYc9NMht6VylsLpjrC8YeGaar39NsM4TRRoOMuGpZL4mkvbNiX4
-         0iMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701984427; x=1702589227;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Px2TdaotpIYQ6sIN9yY8qaT1+HH5T+pH93w2l1LXKbY=;
-        b=soHuJWFsgMae5db+8tFpA30Gpur3B+1ZA5+U5SixtrgLHWEmTL3Hq31odbLtSCvwYL
-         4EscDfzxIEswGw3vVQ7jP5ZiQB9eEjKFEN79wM9ZLwbzU8VEqQLikTtrEGXsh2tPRydG
-         cBOYfoMi9wz6V5GwW8tCgBmWOfPcc+kytFyuyGARLVEMuwoXIE4bzpODL/544qw9N7qA
-         oG/lA1Rm1ftJunOR2agOHEfBxtjff0D5HreZJMNIgduRZdkprlcNA/rzZ3LXq+9Fo7yZ
-         QwhgusEkoHyMQb7Ns5gh7LZ8ak9rXtLc1m7pSEhgOt3oaxbG3lzdK0pTsvmJKK2MRZqS
-         KCSA==
-X-Gm-Message-State: AOJu0Yyp+W4WlKpBMpivlU3O1Ie9M7jdcgF5uxLe0Fd1Yx8p+lKHXdan
-        o3VjnK/ZwgpJJdjwAmc6brE=
-X-Google-Smtp-Source: AGHT+IHmgFAdaNpu9/4tm5vsxNdq2+tiP4Ccd9SFpbqI/bLYNy2EA7+7YCXFBASFrF7Nf+u/eTyJbg==
-X-Received: by 2002:a05:6a20:12ca:b0:187:df72:48ef with SMTP id v10-20020a056a2012ca00b00187df7248efmr3188889pzg.0.1701984426614;
-        Thu, 07 Dec 2023 13:27:06 -0800 (PST)
-Received: from localhost ([100.84.200.15])
-        by smtp.gmail.com with ESMTPSA id q19-20020a056a00151300b006cdcfd814e9sm241008pfu.147.2023.12.07.13.27.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 13:27:05 -0800 (PST)
-From:   Rob Clark <robdclark@gmail.com>
-To:     iommu@lists.linux-foundation.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Richard Acayan <mailingradian@gmail.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM SMMU DRIVERS),
-        iommu@lists.linux.dev (open list:IOMMU SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] iommu/arm-smmu-qcom: Add missing GMU entry to match table
-Date:   Thu,  7 Dec 2023 13:24:39 -0800
-Message-ID: <20231207212441.6199-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        Thu, 7 Dec 2023 16:28:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82362126
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 13:25:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15240C433CC;
+        Thu,  7 Dec 2023 21:25:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701984315;
+        bh=YaZTLucbXUWiTUu4ZO//do5mro1EpRuUKJNhwZYZyPw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YdAxYA+EeNyu7dUv+IRTk8zJHh9KLM672+XJ7jpuEtThS6zfCTI3ANCa3/dWlAyad
+         LUFegPgGXaSaGie9FCRbKhkTRG0O8jkxlJ/INEAwB6RH1wXjf1rYbDbjEvfyI46TvY
+         H2mChOR+2VWzt6u8hVb9eEhU8KM0kVhU0m0iv06jCCul2W5q8IZJi8z4osKMyynxoN
+         G5I02OijBORh6p1rFOjgnaGjyZWdin5pPaH0ehw2ORdAN4bl2pva8cMV0cA7xS1l89
+         b4HfU3IB3Rvodibolr3RCSjicIDtQi+roEsAcCcoOK2QRO1cKESYSK+/pj0nkM6KlB
+         +wrdrhd5q1UbQ==
+Date:   Thu, 7 Dec 2023 22:25:09 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Tycho Andersen <tycho@tycho.pizza>, Oleg Nesterov <oleg@redhat.com>
+Cc:     "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Tycho Andersen <tandersen@netflix.com>,
+        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
+Message-ID: <20231207-avancieren-unbezahlbar-9258f45ec3ec@brauner>
+References: <20231130163946.277502-1-tycho@tycho.pizza>
+ <20231130173938.GA21808@redhat.com>
+ <ZWjM6trZ6uw6yBza@tycho.pizza>
+ <ZWoKbHJ0152tiGeD@tycho.pizza>
+ <20231207-weither-autopilot-8daee206e6c5@brauner>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231207-weither-autopilot-8daee206e6c5@brauner>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+> If these concerns are correct
 
-We also want the default domain for the GMU to be an identy domain,
-so it does not get a context bank assigned.  Without this, both
-of_dma_configure() and drm/msm's iommu_domain_attach() will trigger
-allocating and configuring a context bank.  So GMU ends up attached
-to both cbndx 1 and cbndx 2.  This arrangement seemingly confounds
-and surprises the firmware if the GPU later triggers a translation
-fault, resulting (on sc8280xp / lenovo x13s, at least) in the SMMU
-getting wedged and the GPU stuck without memory access.
+So, ok. I misremebered this. The scenario I had been thinking of is
+basically the following.
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 1 +
- 1 file changed, 1 insertion(+)
+We have a thread-group with thread-group leader 1234 and a thread with
+4567 in that thread-group. Assume current thread-group leader is tsk1
+and the non-thread-group leader is tsk2. tsk1 uses struct pid *tg_pid
+and tsk2 uses struct pid *t_pid. The struct pids look like this after
+creation of both thread-group leader tsk1 and thread tsk2:
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index 549ae4dba3a6..d326fa230b96 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -243,6 +243,7 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
- 
- static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
- 	{ .compatible = "qcom,adreno" },
-+	{ .compatible = "qcom,adreno-gmu" },
- 	{ .compatible = "qcom,mdp4" },
- 	{ .compatible = "qcom,mdss" },
- 	{ .compatible = "qcom,sc7180-mdss" },
--- 
-2.43.0
+	TGID 1234				TID 4567 
+	tg_pid[PIDTYPE_PID]  = tsk1		t_pid[PIDTYPE_PID]  = tsk2
+	tg_pid[PIDTYPE_TGID] = tsk1		t_pid[PIDTYPE_TGID] = NULL
 
+IOW, tsk2's struct pid has never been used as a thread-group leader and
+thus PIDTYPE_TGID is NULL. Now assume someone does create pidfds for
+tsk1 and for tsk2:
+	
+	tg_pidfd = pidfd_open(tsk1)		t_pidfd = pidfd_open(tsk2)
+	-> tg_pidfd->private_data = tg_pid	-> t_pidfd->private_data = t_pid
+
+So we stash away struct pid *tg_pid for a pidfd_open() on tsk1 and we
+stash away struct pid *t_pid for a pidfd_open() on tsk2.
+
+If we wait on that task via P_PIDFD we get:
+
+				/* waiting through pidfd */
+	waitid(P_PIDFD, tg_pidfd)		waitid(P_PIDFD, t_pidfd)
+	tg_pid[PIDTYPE_TGID] == tsk1		t_pid[PIDTYPE_TGID] == NULL
+	=> succeeds				=> fails
+
+Because struct pid *tg_pid is used a thread-group leader struct pid we
+can wait on that tsk1. But we can't via the non-thread-group leader
+pidfd because the struct pid *t_pid has never been used as a
+thread-group leader.
+
+Now assume, t_pid exec's and the struct pids are transfered. IIRC, we
+get:
+
+	tg_pid[PIDTYPE_PID]   = tsk2		t_pid[PIDTYPE_PID]   = tsk1
+	tg_pid[PIDTYPE_TGID]  = tsk2		t_pid[PIDTYPE_TGID]  = NULL
+
+If we wait on that task via P_PIDFD we get:
+	
+				/* waiting through pidfd */
+	waitid(P_PIDFD, tg_pidfd)		waitid(P_PIDFD, t_pid)
+	tg_pid[PIDTYPE_TGID] == tsk2		t_pid[PIDTYPE_TGID] == NULL
+	=> succeeds				=> fails
+
+Which is what we want. So effectively this should all work and I
+misremembered the struct pid linkage. So afaict we don't even have a
+problem here which is great.
