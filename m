@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B65809518
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC2A80951E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444046AbjLGWLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 17:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
+        id S1444055AbjLGWOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 17:14:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231830AbjLGWLi (ORCPT
+        with ESMTP id S231830AbjLGWO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 17:11:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABDA98
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 14:11:44 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7796BC433C8;
-        Thu,  7 Dec 2023 22:11:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1701987104;
-        bh=gtl71HBKJQxQ32Agrxutqbcus3/RTRAhRHa92m2vZ9s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mMYBqqBusjscmfbCqYwr4KmHVQk204C5IArYBZMGpgLsQbnnrUSV6nZeLW8KKwvIW
-         eRZoP2bJN/HWrDIrvSYUtPw3wmtfLHSPu3QhWxw5GDWQc8gdkd/MmQI2f6TbqT59QV
-         fh8BxwFhgNhu68GfmwE9USNL+fAMcGOQNdULY3Hs=
-Date:   Thu, 7 Dec 2023 14:11:42 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, yosryahmed@google.com,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
-        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        david@ixit.cz, chrisl@kernel.org
-Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback
- disabling
-Message-Id: <20231207141142.307745be167d044b0eec1b42@linux-foundation.org>
-In-Reply-To: <20231207192406.3809579-1-nphamcs@gmail.com>
-References: <20231207192406.3809579-1-nphamcs@gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 7 Dec 2023 17:14:29 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE61C10DE;
+        Thu,  7 Dec 2023 14:14:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701987276; x=1733523276;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3jDYHZdLhclZjNlkAWZI8B4j0AN+0ZaZjsj4QnwFCNE=;
+  b=Bm6+rFLpdqydvVLwrPYJM2DOVwjdsH3vyA/9Zmbio8XFbo6DgiAhvmEd
+   VuJyETQwtKQK76yAdQUG+Niqau+O4qyOcMxLQ15Fnw6xMespf0yvZ17/3
+   eiXWGDj6gSxbv5F42b4hkwZG9R01d9Y93yx3c9C/fY0Lq+peU0PmdDPEI
+   hD7sNdWzIB7bptUykeHX+p0o2NlKJ4HW99yWQkteKeW9rYYdPqBVl5dYo
+   u3k8hqsvtzLaJC77cKpZBcaEwzV9+kzFcr3MUEzISxwBLD5Ep0fRRLL7M
+   Pmv2YTRs/d7wFBSE5su9s7u7mCP4zC4rQnUlbN3k/VGN9GPb1I3EsBzF+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1197560"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="1197560"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 14:14:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="842365244"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="842365244"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 07 Dec 2023 14:14:34 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 07707284; Fri,  8 Dec 2023 00:14:32 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: [PATCH v1 0/2] spi: pxa2xx: Update documentation
+Date:   Fri,  8 Dec 2023 00:13:38 +0200
+Message-ID: <20231207221426.3259806-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  7 Dec 2023 11:24:06 -0800 Nhat Pham <nphamcs@gmail.com> wrote:
+A couple of documentation updates.
 
-> During our experiment with zswap, we sometimes observe swap IOs due to
-> occasional zswap store failures and writebacks-to-swap. These swapping
-> IOs prevent many users who cannot tolerate swapping from adopting zswap
-> to save memory and improve performance where possible.
-> 
-> This patch adds the option to disable this behavior entirely: do not
-> writeback to backing swapping device when a zswap store attempt fail,
-> and do not write pages in the zswap pool back to the backing swap
-> device (both when the pool is full, and when the new zswap shrinker is
-> called).
-> 
-> This new behavior can be opted-in/out on a per-cgroup basis via a new
-> cgroup file. By default, writebacks to swap device is enabled, which is
-> the previous behavior. Initially, writeback is enabled for the root
-> cgroup, and a newly created cgroup will inherit the current setting of
-> its parent.
-> 
-> Note that this is subtly different from setting memory.swap.max to 0, as
-> it still allows for pages to be stored in the zswap pool (which itself
-> consumes swap space in its current form).
-> 
-> This patch should be applied on top of the zswap shrinker series:
-> 
-> https://lore.kernel.org/linux-mm/20231130194023.4102148-1-nphamcs@gmail.com/
-> 
-> as it also disables the zswap shrinker, a major source of zswap
-> writebacks.
-> 
-> ...
->
-> --- a/Documentation/admin-guide/mm/zswap.rst
-> +++ b/Documentation/admin-guide/mm/zswap.rst
-> @@ -153,6 +153,12 @@ attribute, e. g.::
->  
->  Setting this parameter to 100 will disable the hysteresis.
->  
-> +Some users cannot tolerate the swapping that comes with zswap store failures
-> +and zswap writebacks. Swapping can be disabled entirely (without disabling
-> +zswap itself) on a cgroup-basis as follows:
-> +
-> +	echo 0 > /sys/fs/cgroup/<cgroup-name>/memory.zswap.writeback
-> +
+Andy Shevchenko (2):
+  spi: pxa2xx: Use inclusive language
+  spi: pxa2xx: Update DMA mapping and using logic in the documentation
 
-This does seem to be getting down into the weeds.  How would a user
-know (or even suspect) that these things are happening to them?  Perhaps
-it would be helpful to tell people where to go look to determine this.
+ Documentation/spi/pxa2xx.rst | 59 +++++++++++++++++-------------------
+ 1 file changed, 28 insertions(+), 31 deletions(-)
 
-Also, it would be quite helpful of the changelog were to give us some
-idea of how important this tunable is.  What sort of throughput
-differences might it cause and under what circumstances?
+-- 
+2.43.0.rc1.1.gbec44491f096
+
