@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5907080913F
+	by mail.lfdr.de (Postfix) with ESMTP id 03DEA80913E
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443685AbjLGTY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 14:24:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43436 "EHLO
+        id S1443303AbjLGTZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 14:25:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233115AbjLGTYz (ORCPT
+        with ESMTP id S233127AbjLGTZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 14:24:55 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C09F91733
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 11:24:57 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c9f413d6b2so14666531fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 11:24:57 -0800 (PST)
+        Thu, 7 Dec 2023 14:25:32 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48901706
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 11:25:38 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c9eca5bbaeso14709471fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 11:25:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701977096; x=1702581896; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701977137; x=1702581937; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=YVaODAR3o/Ibyy68Y5wtq42VvON75SYxd68wi+HuMbg=;
-        b=aapZXh8gNXnkNDyCEaF2CkI3afCG7YiDlbr+psnIu7TKK+I8/1APWcUZ/u96GhYc3M
-         UpWSLUmZcpReZ/5bXvPoD41Zf1ZAOKWUW6N1kFXXonaaM3Qq6aTGFI6t/Axs7U+Sihbp
-         m3JuYFAE7Es77L8dQvZi8lCSL1rpK3E54UVHBiLNCU72XGWTvgxdaZZU5mG+5kwleuDM
-         yvz5E0GKj0yO4vLf2hbozliSLvwOQbfqOIMDoETznw2dlNtk2sTXK5yg9eUDCWj6fpH9
-         U7PKdF1m54Bgobii2+ki5ZHodDNnyMVjNXjTIiYPq6azn/ckmQbX53D937kEwDl3YP9l
-         avGQ==
+        bh=RUDn/j69FGh+Nko+qtqx4etAJxz91ofxqPcpkro2SJw=;
+        b=X1BBzRfmwFLt6jQtwOvMSrfl03DJDDkT3cVsJ+2HDahjYn6npzFj7uq114WuRbLCWm
+         7gBH/Va1dRFOP7S+XbW1SyfwBq02x1Uwsw/k21Dap3UpAF3E4AQeCfBGexabIXUE5zDf
+         /T/5sSfvXuz8kZ79gkrngl1qZdMWsJwK7YAH0E6ddzAOJaHVzPvBNpfht48BMgbD14c2
+         K6FeXg4zKGFeMW6PAZqg2V+EeySzav3LaVJaS19DozY6V3WDlvgzZ+cQEFkU1UAqz5b8
+         vDlA1ItHvvcW85ez9cSxRYuWIRc3qSWTCz67NG3YqB3fqKH7c1eIpB//uVH5j9m4LzE/
+         R2Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701977096; x=1702581896;
+        d=1e100.net; s=20230601; t=1701977137; x=1702581937;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YVaODAR3o/Ibyy68Y5wtq42VvON75SYxd68wi+HuMbg=;
-        b=G7MW5GCTVRSb9q0jFHO7x336nwJYVxvSnmcmOYLua3LIu2DIS7tE/oD6Nr40DDHSxa
-         TQS0CQA+5skqs4GMlsDkiccIY3TLxjJcrlVgtNmuWkdenkuV5ntqcxECpBDSojVT1683
-         7VrILyyw8rgpQCKIM5YvGQ8xe80m8WAz8ieq2o4yXVfhra33ZWSPlderXGT+qffhpf9H
-         BzS5h+rg1Y4Wx/Z2ZqmurqdxVMx5huV7sGU3XuFH20CUbSZvQ/jIq+yXMsh3yLwrEYyW
-         PeyBHrRh4zp3imX/OTG0nwXPPolhYNaNgUUlW74EvsDilG1NG+oOx5tap/Zp7Ahx5T1t
-         pR/w==
-X-Gm-Message-State: AOJu0YzQyieqYFrHQ25Zjsrccr6vPj1fsY14YLY/j2ClHLMozY5BYpzr
-        oKw8mLaAT58I+AddKnVEK87/WQ==
-X-Google-Smtp-Source: AGHT+IFbt/5mwz2PM1xcvV0ngLhtlHgCEprELvE1ziPZmZYPzXnNF0jvMRZNxbcmV6BSINZKU+pZmw==
-X-Received: by 2002:a2e:97d3:0:b0:2ca:18de:126b with SMTP id m19-20020a2e97d3000000b002ca18de126bmr1347468ljj.43.1701977095729;
-        Thu, 07 Dec 2023 11:24:55 -0800 (PST)
+        bh=RUDn/j69FGh+Nko+qtqx4etAJxz91ofxqPcpkro2SJw=;
+        b=cZseL9lKpu4GEPStSXYPYODqW8L4S7QizQAmr9vG7OOy5p/JfsiqOFlAKFhFqlWxzz
+         iruw6PeFFmBWr8IpGUj4OufoQIWw0gwVrYGsEJBTYN9NcTlSfvb4d4iynuvGUo0ak8pG
+         D6fr0R+Db5KOZ2dUCMbMJJ/WRF/peLc2W5OfIifpKMiV3pFOyP4L2LQUriLGktRbTfs3
+         lmLBYnEkC/4meDpPbx5q5VoT6d1LJcMLqYRS0nOtAnGL/BJtuDhJz3N7fJTQLqhsFxrV
+         bhIuv8aMFBu6S9Up8lYa0dfxclpLfblhFxkKul0x8L5LS31xkp4i6NfGorwJOA9gTpjx
+         laqA==
+X-Gm-Message-State: AOJu0YzE2YWFDlAiTq8d8W9y+OeUn17raJ3E6E8NZ3/ArmUr265+iW9y
+        a4UqgmRlxTd4k9LQO3CA+1oceQ==
+X-Google-Smtp-Source: AGHT+IEp6nkb7rKd6lVkK3sBTYQmEK9KmGCayssO0/HB+is7lA3ZTjG8bz5353dtDuDlplr1n1Xggw==
+X-Received: by 2002:a05:651c:1030:b0:2ca:bcb:e798 with SMTP id w16-20020a05651c103000b002ca0bcbe798mr928338ljm.157.1701977136856;
+        Thu, 07 Dec 2023 11:25:36 -0800 (PST)
 Received: from [172.30.205.181] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id a11-20020a05651c010b00b002ca0a5dc73csm24380ljb.9.2023.12.07.11.24.54
+        by smtp.gmail.com with ESMTPSA id a11-20020a05651c010b00b002ca0a5dc73csm24380ljb.9.2023.12.07.11.25.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 11:24:55 -0800 (PST)
-Message-ID: <71459bab-05b9-41f6-bb32-2b744736487d@linaro.org>
-Date:   Thu, 7 Dec 2023 20:24:53 +0100
+        Thu, 07 Dec 2023 11:25:36 -0800 (PST)
+Message-ID: <c7b5677b-9f76-435c-bc79-00012be295e9@linaro.org>
+Date:   Thu, 7 Dec 2023 20:25:34 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] power: supply: Add Acer Aspire 1 embedded controller
- driver
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: acer-aspire1: Add embedded
+ controller
 Content-Language: en-US
 To:     Nikita Travkin <nikita@trvn.ru>,
         Sebastian Reichel <sre@kernel.org>,
@@ -68,9 +68,9 @@ To:     Nikita Travkin <nikita@trvn.ru>,
 Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
 References: <20231207-aspire1-ec-v1-0-ba9e1c227007@trvn.ru>
- <20231207-aspire1-ec-v1-2-ba9e1c227007@trvn.ru>
+ <20231207-aspire1-ec-v1-3-ba9e1c227007@trvn.ru>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231207-aspire1-ec-v1-2-ba9e1c227007@trvn.ru>
+In-Reply-To: <20231207-aspire1-ec-v1-3-ba9e1c227007@trvn.ru>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -86,81 +86,24 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 12/7/23 12:20, Nikita Travkin wrote:
-> Acer Aspire 1 is a Snapdragon 7c based laptop. It uses an embedded
-> controller to control the charging and battery management, as well as to
-> perform a set of misc functions.
+> The laptop contains an embedded controller that provides a set of
+> features:
 > 
-> Unfortunately, while all this functionality is implemented in ACPI, it's
-> currently not possible to use ACPI to boot Linux on such Qualcomm
-> devices. To allow Linux to still support the features provided by EC,
-> this driver reimplments the relevant ACPI parts. This allows us to boot
-> the laptop with Device Tree and retain all the features.
+> - Battery and charger monitoring
+> - USB Type-C DP alt mode HPD monitoring
+> - Lid status detection
+> - Small amount of keyboard configuration*
+> 
+> [*] The keyboard is handled by the same EC but it has a dedicated i2c
+> bus and is already enabled. This port only provides fn key behavior
+> configuration.
+> 
+> Add the EC to the device tree and describe the relationship between the
+> EC-managed type-c port and the SoC DisplayPort.
 > 
 > Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 > ---
-[...]
-
-> +	case POWER_SUPPLY_PROP_CAPACITY:
-> +		val->intval = le16_to_cpu(ddat.capacity_now) * 100
-> +			      / le16_to_cpu(sdat.capacity_full);
-It may be just my OCD and im not the maintainer here, but I'd do
-/= here
-
-[...]
-
-> +	case POWER_SUPPLY_PROP_MODEL_NAME:
-> +		if (sdat.model_id - 1 < ARRAY_SIZE(aspire_ec_psy_battery_model))
-> +			val->strval = aspire_ec_psy_battery_model[sdat.model_id - 1];
-> +		else
-> +			val->strval = "Unknown";
-Would it make sense to print the model_id that's absent from the LUT
-here and similarly below?
-
-> +		break;
-> +
-> +	case POWER_SUPPLY_PROP_MANUFACTURER:
-> +		if (sdat.vendor_id - 3 < ARRAY_SIZE(aspire_ec_psy_battery_vendor))
-> +			val->strval = aspire_ec_psy_battery_vendor[sdat.vendor_id - 3];
-> +		else
-> +			val->strval = "Unknown";
-> +		break;
-> +
-> +	default:
-> +		return -EINVAL;
-> +	}
-Another ocd trip, i'd add a newline before return
-
-> +	return 0;
-> +}
-[...]
-
-> +	/*
-> +	 * The original ACPI firmware actually has a small sleep in the handler.
-> +	 *
-> +	 * It seems like in most cases it's not needed but when the device
-> +	 * just exits suspend, our i2c driver has a brief time where data
-> +	 * transfer is not possible yet. So this delay allows us to suppress
-> +	 * quite a bunch of spurious error messages in dmesg. Thus it's kept.
-Ouch.. do you think i2c-geni needs fixing on this part?
-
-[...]
-
-> +	switch (id) {
-> +	case 0x0: /* No event */
-> +		break;
-Is this a NOP/watchdog sort of thing?
-
-[...]
-
-> +
-> +static struct i2c_driver aspire_ec_driver = {
-> +	.driver = {
-> +		.name = "aspire-ec",
-> +		.of_match_table = aspire_ec_of_match,
-> +		.pm = pm_sleep_ptr(&aspire_ec_pm_ops),
-> +	},
-> +	.probe = aspire_ec_probe,
-> +	.id_table = aspire_ec_id,
-Since it's tristate, I'd expect an entry for .remove_new here
+lgtm but I'll wait for bindings to settle so that the computer can
+say it's happy as well
 
 Konrad
