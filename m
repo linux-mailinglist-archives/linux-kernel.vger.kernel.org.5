@@ -2,126 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D864B808DDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:50:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6821808DEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:50:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbjLGQbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 11:31:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
+        id S232664AbjLGQc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 11:32:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232804AbjLGQb0 (ORCPT
+        with ESMTP id S233092AbjLGQcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 11:31:26 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981B7133
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 08:31:32 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a1db6816177so151977566b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 08:31:32 -0800 (PST)
+        Thu, 7 Dec 2023 11:32:24 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D371713
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 08:32:27 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6cec976b197so40704b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 08:32:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701966691; x=1702571491; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cOoOFWyjj8c8wProhSysHMiw8x6245X5XYVMi74y9Wc=;
-        b=SYGY3LQYkkZ7WBcbaI4D/TJhGI161WzwJ5xM6Ve8xiCxoygjJDNbTOknoHP3xjKn+f
-         SOS65Zzf9V419UiXZV+cNJk92BHhFsBmW8OBsSc6kDosGsroPqKq1IQN66KTcmTfYuhL
-         66ox3pUo1vTOusonXAiKW0Dg95v/0NipaEAlCb+wR881vuA/FP39V1twtKH/ZOmrc8t3
-         vfZ6lsU7HbLQi9c0W31DywneJfQSvaVtoJY36KzXIymhfna8XYWuDff7QU7YDKTl352j
-         DTy6JHTOllQionZfGTuOBig/7lRFInGofHmroHugmy/6dLs5Hu1MSHXze35LUq8oF+3e
-         57pA==
+        d=linaro.org; s=google; t=1701966747; x=1702571547; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=esUGZflfku9DXDzsKmGJoCZTKHSMJXxpWGFrjWaHjY4=;
+        b=qWROFk9j/J7UnhfyVAxPOwxo5RqYWnL+rvqGvUsirU6+vKFgt/d1C/27dMq0TnHd00
+         bOgRsrmTETKEMTUyGdNeGArbJIvvMjJw1AOSmw4RanHTGZyZDLRJ5HXVzpw0+bzdJMlS
+         oRYy0bpoX9hahRVlJd8T2L60uGPwAm06IplHB5R0S0l/CwXvEdltx3JLdBjz42h3iE2K
+         HZpan3qdL081spUht4BIYnEjQi/rbAUd3REpndR8Zo6SSdWH92YSnnHNi6LMFGI4vzDt
+         YYCGKdOAwNhsR1Td5CxSdU3ZwEBGS1ocYh8iiPbSDYqN3AQ3jvN88dQmWICiv9c2DyXH
+         thkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701966691; x=1702571491;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cOoOFWyjj8c8wProhSysHMiw8x6245X5XYVMi74y9Wc=;
-        b=Mgw4/VLcbuFhVSU6f7eKgIUSLgDLioZn6ORlTqr23i4RlHpGbfHFvQ5rYio0r8HOQZ
-         DKdKolcDrD6b7FghzFalHkbOwpUOkZutsf7U1Kc6iD034TliZN+MkywJvOvQz+3p/tbg
-         nelYKSCNsLHWPegtHULLWyTvJ3YcTiLzcDzbxvjfnvssPrqbV3LmjSAxj/NMXI6LNLt3
-         OgZOBeSvwbHfYurhQ0onfq+Rjub5qeSfRteFB6ITlUEdETkTF9egiXWT4cpK9j+7HiGB
-         pgIhGTAtf3UjpRz3eXHnKt6W9D89CTq4TYhOBJZldMoyzm/8i+RKj/EI5rJZA6w+DPnw
-         tsOQ==
-X-Gm-Message-State: AOJu0Yx1Em473iGnayEtSjlFG6RVDASUBFmL/BUwqmkXtqs8ZCVSf33Q
-        t6h+NaKKUug0rSer2figmQxndQ==
-X-Google-Smtp-Source: AGHT+IFYA6fuwC8Yt963r2LxO5z7E9Du8USSZmtfjOAyT73mKblgzyZwx3ahRT+91rmiKT5pedWWmg==
-X-Received: by 2002:a17:906:d298:b0:a16:3410:3d47 with SMTP id ay24-20020a170906d29800b00a1634103d47mr1292304ejb.8.1701966691020;
-        Thu, 07 Dec 2023 08:31:31 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id d8-20020a170906040800b00a1d01b11498sm1016758eja.24.2023.12.07.08.31.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 08:31:30 -0800 (PST)
-Message-ID: <306ae775-0c1c-4739-bc7d-44f8ae784968@linaro.org>
-Date:   Thu, 7 Dec 2023 17:31:28 +0100
+        d=1e100.net; s=20230601; t=1701966747; x=1702571547;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=esUGZflfku9DXDzsKmGJoCZTKHSMJXxpWGFrjWaHjY4=;
+        b=nBRuvfcDaxjeHfPu61NvXdG1F4XIFetIVmcnqNlRUfklQCxcLVtujScLzd582uw8sC
+         A0/Xi32R6Nl7wg2FvGeq7XzJHKa0dv4rXwEkKm8tgck+FXVj+i5LLZO7+pZwL3Z460FK
+         pEojXjT4Uu4IFMJmc02sK4QLayRqYScMuioOo/BmP989UlguvEDprjo7Ows/ERbS0v1B
+         FFQkYag7z3rIXLlayMiMW5kTiXh6Dk+/Di31a7FLySciJbtO++vyfLdcRR6rm6RP6COz
+         rCKMxe8STa8iAZSElWxazx65EmRpfi6oGmPOjZlldND+F+TpT7zYbZckrqyW5aJlnkKR
+         eKYQ==
+X-Gm-Message-State: AOJu0YxuV5IvKlZIKxm+o3W/9stO08LQ4nf4I7+kvCqy49jXwmsUyvxQ
+        YThsP6jeJn8SlVqA/EY64MkuQsGTw+EnBpx6OheyyA==
+X-Google-Smtp-Source: AGHT+IFRGlSqxD8x8sx2ixDKNV4Bgn8IR2U64KiJftcFvT6EgKZVa+UqCsno0lRD8ozWGx/9wlUkOGkVbuZ2tQQYsT8=
+X-Received: by 2002:a05:6a00:a04:b0:6ce:696f:d0f5 with SMTP id
+ p4-20020a056a000a0400b006ce696fd0f5mr2936740pfh.31.1701966747287; Thu, 07 Dec
+ 2023 08:32:27 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: phy: qcom,sc8280xp-qmp-usb43dp-phy:
- Document X1E80100 compatible
-Content-Language: en-US
-To:     Abel Vesa <abel.vesa@linaro.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Johan Hovold <johan@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231201-x1e80100-phy-combo-v1-0-6938ec41f3ac@linaro.org>
- <20231201-x1e80100-phy-combo-v1-1-6938ec41f3ac@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231201-x1e80100-phy-combo-v1-1-6938ec41f3ac@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <76587DD3-2A77-41A3-9807-6AEE4398EBA6@arista.com>
+In-Reply-To: <76587DD3-2A77-41A3-9807-6AEE4398EBA6@arista.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 7 Dec 2023 17:32:15 +0100
+Message-ID: <CAKfTPtAkhfAhFouCGTy7m4swCeeEsu1VdWEX_ahOVDq1U594Dg@mail.gmail.com>
+Subject: Re: Modifying isolcpus, nohz_full, and rcu_nocb kernel parameters at runtime
+To:     Gianfranco Dutka <gianfranco.dutka@arista.com>
+Cc:     linux-kernel@vger.kernel.org, vincent.guittot@linaro.com,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tejun Heo <tj@kernel.org>,
+        "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -129,14 +79,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/12/2023 14:16, Abel Vesa wrote:
-> Add the X1E80100 compatible to the list.
-> 
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
+Hi Gianfranco,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++ Adding all scheduler maintainers and few other people that are
+working on similar things
 
-Best regards,
-Krzysztof
+On Thu, 7 Dec 2023 at 16:07, Gianfranco Dutka
+<gianfranco.dutka@arista.com> wrote:
+>
+> Good afternoon maintainers and subscribers to the lkml,
+>
+> I'm a bit new to kernel development but I had a question with respect to =
+the kernel parameters: isolcpus, nohz_full, and rcu_nocbs.
+>
+> Basically the question is this, am I able to modify the three parameters =
+I mentioned above at runtime after the kernel has already started/booted? D=
+oing some reading online it seems that it=E2=80=99s not possible but I want=
+ed to double check with the maintainers if there wasn=E2=80=99t some sort o=
+f change in the works that might make it possible. If not, what would be re=
+quired to make the change after boot-time through some kind of patch or som=
+ething like that? Would that be something that might be valuable upstream?
 
+It's not possible but you can achieve something close with cgroup
+although you will still have some housekeeping activities happening in
+your partition.
+
+This thread tries to do something similar:
+https://lore.kernel.org/lkml/20230804090858.7605-1-rui.zhang@intel.com/
+
+
+
+>
+> At the moment we are running an application that might see some benefit f=
+rom being able to isolate cpus on the fly without having to reboot everythi=
+ng every time we want to modify the parameters mentioned above.
+>
+> Thanks,
+> Gianfranco
