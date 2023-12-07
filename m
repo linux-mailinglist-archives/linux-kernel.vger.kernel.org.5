@@ -2,279 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B72E809121
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60883809126
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbjLGTSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 14:18:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46978 "EHLO
+        id S232488AbjLGTTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 14:19:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjLGTSV (ORCPT
+        with ESMTP id S229472AbjLGTTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 14:18:21 -0500
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2059.outbound.protection.outlook.com [40.107.220.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06ECA9;
-        Thu,  7 Dec 2023 11:18:26 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CtWpPjqJVNIzLJiNqNJo+jRfCaPkxN4rVXfNDEfzM0e0aHEl8kQPbuGN595XOCm9Ukerli02KY12eSFThX9Nr8KzzRndGfk8J/NG7KMEFhEbhDAYe8OlHRzn/4RhKSqkdpHAezt6Ma6bENQO7/9E7OmsikeBUU/pgwpU3JCbhlhjRO4LGxPBZls40fWRk6AgyvnNdH13MB0Bg93t9rPx4vHulfy6wFHW4R+7sRSUMsrXK15AdEBX9D6HBZK5VvRzYXvOgo37uGQu22FhP3VsAmvwkMZl6DvGfxuUWJNnQ+f7khutMlaxkgR374v1NkO4qq8UQMsOBVxhtKqVR9ET3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DlhLX5HCxFtw5RKguObSeRoGMVv4h43lU45G3jHZB8k=;
- b=AYmOSF81dIYsIC9Sg3SCljPOJPDbO90WyqDOOC+VWvOVc/iIPlQULq2twby8IlrZz4KBdapr40SGB9PIsQQaGyb0YxEiBjZ+0LK8ws2PrS5vO8SjwqO+tAOk/IxsBqZaK/Y9VYmHsTRyYwhb1gsgHx7mqMaiEpFDcJVDfEWhQHe939s2l+6SPCveKj1IfH4UKE/X3Gc3JM/Quspuq80Fe9r+jDG0AhQ/mwzSNKJl9dg48aaDBeoOxoHeG3Ld/UhzDi3ytx/Rb5btgIyS+pW0wvQqLMqDBmA39V2se4CCWmBdqp7/+j0B7O0DjqMArCpglbDcHJBu/5OPmvqHqp+ndg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DlhLX5HCxFtw5RKguObSeRoGMVv4h43lU45G3jHZB8k=;
- b=ZbTKhh10MAO8J/IGioj5Y6YJaLhJzpfKffRWyo1gjttx26pzRAv/OJ24w+u87ZBM+P3Bd3MXd5GfIjrKrcyE8Q9rlY8WqRS5c1DsI9bfu7EAuC2JwP21mcB4fKgntEnD32FyKO8U0LpNnf50g4Uu/T702ofMKCO2rc2vpRoerU0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by SJ0PR12MB8113.namprd12.prod.outlook.com (2603:10b6:a03:4e0::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.36; Thu, 7 Dec
- 2023 19:18:19 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.7068.025; Thu, 7 Dec 2023
- 19:18:19 +0000
-Message-ID: <3b3d2bea-c8be-4438-9c71-876ce55dce35@amd.com>
-Date:   Thu, 7 Dec 2023 13:18:15 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86/intel/pmc: Remove GBE LTR ignore
-Content-Language: en-US
-To:     Hans de Goede <hdegoede@redhat.com>,
-        "David E. Box" <david.e.box@linux.intel.com>,
-        jahutchinson99@googlemail.com, ilpo.jarvinen@linux.intel.com,
-        xi.pardee@intel.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rajvi.jingar@linux.intel.com
-References: <20231207182311.2080972-1-david.e.box@linux.intel.com>
- <585eee5b-06ee-4b0a-a5e3-50e5c471fcff@redhat.com>
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <585eee5b-06ee-4b0a-a5e3-50e5c471fcff@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR16CA0018.namprd16.prod.outlook.com
- (2603:10b6:a03:1a0::31) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+        Thu, 7 Dec 2023 14:19:44 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC67A10DE
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 11:19:49 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54917ef6c05so1840934a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 11:19:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1701976788; x=1702581588; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=GqNljMeu10jeQo935R54vZ6RNgIIhYo8bGwZuNpxXu4=;
+        b=QcfKhdrknHq8e6jK6RVLpxIGMtEh7bCRxkfJFFg5kjvaeiXjFg+WIT6EzbRai7Eq7q
+         r2bDCOZsmmu+/wr+kcgK1uRu/bKZESakMzqjTyV7Io12elmmJZjpzowz/LwYzfp5KNEW
+         Cp7cDjL7P2xTkK8clrdEpOQcPqcKaI/rrU0DDSZzsw+iGJeM32N5Vgs37jE4EU3Uh27k
+         AtV9bi56iRbpf4ly/ptViDC9Eb+CYLZoFugkqG76oemY7EwcqKbfOPs5NJ8HdxKd7v9g
+         N7Wu/HEZmRKwueGf7mj4Q5rFbrRWnfVqb7ui7JAkq/Wk/v1lfIm0EvBQeVEOzxNMopX+
+         Folg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701976788; x=1702581588;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GqNljMeu10jeQo935R54vZ6RNgIIhYo8bGwZuNpxXu4=;
+        b=w44ZJ16ZdZE8/JIjIOuwLTZtp33l1bdl3vNw8Yb1RCrLp3CwhkiwcZkfq/2Y3zH+OD
+         VAOyom42gIKvt4rKGesvgCxpDgSdoHnolTtwLQegF7Hm9ByMG1vBl/eHevIRcxnskcBN
+         QTx741/whaogPOoOUUVhBByq1KuVyidkFuP34rggpXpMVai+ZXiNXzExuRjWNuEhqZ+V
+         WSUQb/l59xt3lPJD7IEa3XWCwvGqXG7TxFlhRHIuq9hHyzAW23DZ5hR5iMpGcSwpwnlD
+         fyq0wixCLzjHDoorM5OensHHZ7CsxXMEKdIXCT+3VeTej4M5IvaWIJ88i4HKAxgZdYsq
+         SOKw==
+X-Gm-Message-State: AOJu0YzfKuHfju2dWEd9iv0U2zn0fPNY2v/eRB8+UOFJtbGFVlfrrjuc
+        7fuyIl7l06gUdOc7rKSvxorTNA==
+X-Google-Smtp-Source: AGHT+IFBIOm0w6M5xLYQMgu5ASfsSFBsRFtnFH6mDk0C8McQSxHcLqmHPgbqxDhYSlhlK7QDsnXq4Q==
+X-Received: by 2002:a17:906:a84d:b0:a19:a19b:4268 with SMTP id dx13-20020a170906a84d00b00a19a19b4268mr1051351ejb.211.1701976788270;
+        Thu, 07 Dec 2023 11:19:48 -0800 (PST)
+Received: from ?IPv6:2804:30c:915:cb00:89a8:6d94:ec55:e0a3? ([2804:30c:915:cb00:89a8:6d94:ec55:e0a3])
+        by smtp.gmail.com with ESMTPSA id sa25-20020a1709076d1900b00a1d8626d650sm97674ejc.208.2023.12.07.11.19.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 11:19:48 -0800 (PST)
+Message-ID: <57fb9f30afbaddb09def96aac11c45296a59a277.camel@suse.com>
+Subject: Re: [PATCH v3 2/3] livepatch: Move tests from lib/livepatch to
+ selftests/livepatch
+From:   mpdesouza@suse.com
+To:     Joe Lawrence <joe.lawrence@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>
+Cc:     Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        live-patching@vger.kernel.org
+Date:   Thu, 07 Dec 2023 16:19:32 -0300
+In-Reply-To: <273a86d6-d220-fdcf-3c2f-70516c519ff9@redhat.com>
+References: <20231031-send-lp-kselftests-v3-0-2b1655c2605f@suse.com>
+         <20231031-send-lp-kselftests-v3-2-2b1655c2605f@suse.com>
+         <ZWn7dEzVWoKxycmy@redhat.com>
+         <alpine.LSU.2.21.2312061543280.13051@pobox.suse.cz>
+         <273a86d6-d220-fdcf-3c2f-70516c519ff9@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|SJ0PR12MB8113:EE_
-X-MS-Office365-Filtering-Correlation-Id: f5292d77-f058-4bd0-ba0a-08dbf7594548
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: w/l6JL5WasOtwpThtc1V7w5Kl1Ti6HZm+C5G3jOnbdqWaIeEhWwU/m+YBOS0amWdQZ0z7OcHkIuoPrLhm1i5A8W18lWvmYlgfpmDxwnSXbyRl0dQlV+kdkqZz//RNW/A00DAecVUe6luHAUrx7AduU77M0xkHdYOKiIUKm8szHXo4nGzj3WGQtSa91RQcPPd78wuoA9Tt1R5d4Ycw3cHzBZs/R9voFk17il8mIG1jO47sNzGTtKaC8qQueVRTYX+BBZrKNlsWtNcfjp0WG5Nsw2eqHEnM+PxSSf3U4I7nZsSIZ79+jdsKswsNg3vlU+qmkEvf6/O3ncJamwoxkIQ5vyfFjHPhpcwOMPvHa25oWzKENcHrhLlHgPDwGPM2lM1paBS2yRj6BARFiVl3u+Y6ZLOlzKfauadE02NbPMqycj/wCVB4R7Tx5pAvH5KrlooQC5fjMHekkt2V9ICTW7tP0qWHyIqCfRArRFNg5L56fCOoVCnGO9caRC8Aj+ekcHQz/SiNzHIjWS3HBVjqU3QNp0x1oGaAFgLgraHFywEUh7F331I+9NnrcZ8M/q0lyqigVOrEaHdluTAxz7Gy9mlhmg9mRekQNzYwiJjaVluco3bqKOBSGaHEX9RXusuVSaxMnz3Rt/dtmPF/XHTZo1msg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(346002)(396003)(376002)(136003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(83380400001)(2616005)(26005)(38100700002)(31696002)(86362001)(36756003)(110136005)(66556008)(316002)(8936002)(8676002)(41300700001)(5660300002)(2906002)(44832011)(31686004)(6666004)(53546011)(66476007)(66946007)(6486002)(966005)(6506007)(6512007)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VEViVGRyek16Q2FTWWlqemZ0T3NOKzVVWDdsb0FLTDdwSU94c2hMcFR4d1Av?=
- =?utf-8?B?MStNejA0aWNObXBtTTlzZ0dmUUVyQ2ZlL3o2YXM0WjIzYjRtUDJ5RDFTbjA2?=
- =?utf-8?B?SkJIeE9KSlhSQUFHY3Y5aXBmS3pZMm5ZNmJMdGNoVSsxQThmaGVnamYvTkZ3?=
- =?utf-8?B?bkpzY3ZzTVkwUDYyaWZReFJ6MlZFbGVhNWl6aHhObytSRDhrTkJQUnRvbEJm?=
- =?utf-8?B?N2JyWWV3ZEt4LzlyQmdTRzViRGhrTDBsL0lqYTN5SU5pMmV4alhnRjY3Y0lF?=
- =?utf-8?B?bGhVQm53b2tqUzk0L1M2Mzd3am1kdUJTejlqaEhzNnR4SjEyTUN4VlVoQXlY?=
- =?utf-8?B?L1p1ckFHaExSbEc2NytROHFjN2R3Q05MYnZmdzBya3pIR2krSGxiWks5Z1Bi?=
- =?utf-8?B?QjMxZXA1MmJHZmFBamsvY2dudlFkMHFTaDdQZFhFanJJYlBJS1hPVU5sRXBF?=
- =?utf-8?B?eG5KTnVyWWR3Q3hQMXhiRDNwRFF3RmYxWlI0ZGZDTHZiei9FM1ZZRmt1TnJX?=
- =?utf-8?B?SVRMWmRUeFoyV1hSUU4vS0JTTkQrTU5nanE5NUxoa1hEeVEzR3VSbFNCN0tO?=
- =?utf-8?B?Z2dXNmR5MXM4UTh6TnBPZnUwMVFtenZ6enFkYmlxVHdlVnRwMGMyTk5oYThJ?=
- =?utf-8?B?bkNzNG5RSGI3NDMvL1ZPdFRVdndwV2tzMm1GL0xRSUFocjNnMlBuK3ZMbSsz?=
- =?utf-8?B?N3I4ckpZQjJoRnB4eE52c2ovdGJHc0dFT1FwT3VsTWVQTE5RL29rVUw5amFv?=
- =?utf-8?B?U0J1UlpXM3pLMEx4V2hsa1V2Uk9MZDRTTURRMjM2dHliWmJpUXRuWUNsaWc1?=
- =?utf-8?B?aFJ1c3NrSGNhZEdhOXNzRlhGOEpMQzhHVmVpNkNubzVqRHhQOUR1Tk8xc3Bi?=
- =?utf-8?B?V1VPUzQvbVpaT3lpLzJDdlpmUEJ6ci9OTURJTEx5QmdBSmVYa0RvT1JBUW5C?=
- =?utf-8?B?ODFLSUVYV1pPb0ZxdkdKVkg2empPdVdqUC8rV1pCU1c0Z2g4UVZGQ281eUZF?=
- =?utf-8?B?YXozYXFHeGpJWnVoVENJbTF1VEZIYi9EdDFsblppR2I2MWo4Y3hobjRnTkdD?=
- =?utf-8?B?T0RWTisvM1Zncm4yRG4rR3R5SzVvdElqVmszK0dPSUtYUURWMDJxTTVDMjNX?=
- =?utf-8?B?dmVTTkpUS25kbStOeXF5dHNDeTZDVlAyV2t6d3QvVWNJUXpWNlFDTXJLRVJi?=
- =?utf-8?B?T1BCYTA0SS9pNkJCbGlXTDFGZjRrRzczTXNYaU5mREppVERkUHgwOGNvTXZy?=
- =?utf-8?B?bDhYUVB1K3ZSbnNzRm96WVh1d1ZENFg2OUdYZTRyT2w3YmVzR0lOeHZmWE1U?=
- =?utf-8?B?aXFaS1p3RXliRUxIWHIyTTJOUGJ6QmxEc1lPcm14dXVSS2RNdnFCbStEVXRL?=
- =?utf-8?B?bDVTTmJ4WlNFTUYyL1hzL2FKQ2RyWlIySDhNMFFYQUsxUFQxU0JmZDNYTW5H?=
- =?utf-8?B?aElTbFNHZ3c1KzZ4NDVuOENtcWxURXFtRXBOVTRsNVRCdXRhdDBuc3Q5dTZC?=
- =?utf-8?B?WUl1WmpRZmJxWjZyL29OYXpOZ2xBWVF4VWlHTWhwQVBOUDAyZ3hVMStOa3Y4?=
- =?utf-8?B?Vml4ZDk3WlhSRDZBbDhvS3BsZHJlK3oxZXN3T1RiMHU1dHFEcVNGcmgwREdT?=
- =?utf-8?B?TmhzOFBLU2NIczR3OHN4eE96NUFrdm01cmxQR3QxWmdEYUR5TElDajMweE5O?=
- =?utf-8?B?WTJQaUdOaVViN3VYMXF0cmtRYjdYN1BRNVk3dXYrVFdNNzhRSU9ZMEdURVZI?=
- =?utf-8?B?WEpuK29FSHZTWjJYazNlQ1Y1cG0vT2FmMWFsTjI5bkUrQ0JuSW15cVl4eElI?=
- =?utf-8?B?ZFBvZWF6UklmaWZSV0Vtdnl1Z2FXY20zZU9mNENhU0tGbGo5QkFSS3Y5UEZH?=
- =?utf-8?B?eWszSnN4U0hZalBaaWNkQjhlU1ZEUndaZWJqclkzNkhUQlRtc0sxNlA4V0Na?=
- =?utf-8?B?Vk8rMmFxSWUvYUxySkorVWlkQnplWWFoTGxjL2tLQ0lzUFU5cTZOd2hnZmkr?=
- =?utf-8?B?VFBsY3hpU2VpMDVvUy9ncjBKcG4wVmZvSXJDd0lmWEdjM3BnTzdYQjVoUmZs?=
- =?utf-8?B?anRyMUJzZVo2ME5HdG9RbGtzV2p6QmRraThYVmNPL01mbXpvaEhjNFc1Q3Js?=
- =?utf-8?Q?qx6s6W+X0w30sjyCMqCEvIVVW?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5292d77-f058-4bd0-ba0a-08dbf7594548
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2023 19:18:19.1811
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2p9Hd7YPWov5bdKpZrpmbKB2jasepKKoZYV4zBYgMxm0+CtIg0Vit4GSd/Or0wJQ/P1Avk/L2BUH2JW52Eqfng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB8113
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/2023 13:02, Hans de Goede wrote:
-> Hi David,
-> 
-> On 12/7/23 19:23, David E. Box wrote:
->> Commit 804951203aa5 ("platform/x86:intel/pmc: Combine core_init() and
->> core_configure()") moved the GBE LTR ignore workaround from core.c to PCH
->> code and added it new for Cannon Lake PCH in cnp.c. This introduced a
->> network performance regression on a CNP PCH system [1] which has been
->> observed on other PCH architectures during testing. Remove the probe-time
->> GBE LTR ignore for all platforms. While this will prevent performance
->> degradation, it will also limit the deepest SoC Package C state that can be
->> entered at runtime while a LAN cable is attached.
->>
->> Reported-by: James Hutchinson <jahutchinson99@googlemail.com>
->> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218143 [1]
->> Fixes: 804951203aa5 ("platform/x86:intel/pmc: Combine core_init() and core_configure()")
->> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
->> Tested-by: James Hutchinson <jahutchinson99@googlemail.com>
-> 
-> So it seems to me that to fix 804951203aa5 the only thing
-> which needs to be done is remove the pmc_core_send_ltr_ignore()
-> call from cnp_core_init(), the other changes here are NOT
-> related to fixing the regression.
-> 
-> So IMHO it seems better to split this into 2 patches?
-> 
-> Also if this block the system from reaching PC10 should
-> this then not at least be done at suspend time and
-> undone at resume ?  I'm not seeing anything in the current
-> code which does an equivalent on suspend/resume, so it
-> seems to me like this will cause a significant increase
-> on suspended power-usage if an ethernet cable is attached ?
+On Thu, 2023-12-07 at 10:20 -0500, Joe Lawrence wrote:
+> On 12/6/23 10:05, Miroslav Benes wrote:
+> > On Fri, 1 Dec 2023, Joe Lawrence wrote:
+> >=20
+> > > On Tue, Oct 31, 2023 at 06:10:52PM -0300, Marcos Paulo de Souza
+> > > wrote:
+> > > > The modules are being moved from lib/livepatch to
+> > > > tools/testing/selftests/livepatch/test_modules.
+> > > >=20
+> > > > This code moving will allow writing more complex tests, like
+> > > > for example an
+> > > > userspace C code that will call a livepatched kernel function.
+> > > >=20
+> > > > The modules are now built as out-of-tree
+> > > > modules, but being part of the kernel source means they will be
+> > > > maintained.
+> > > >=20
+> > > > Another advantage of the code moving is to be able to easily
+> > > > change,
+> > > > debug and rebuild the tests by running make on the
+> > > > selftests/livepatch directory,
+> > > > which is not currently possible since the modules on
+> > > > lib/livepatch are
+> > > > build and installed using the "modules" target.
+> > > >=20
+> > > > The current approach also keeps the ability to execute the
+> > > > tests manually by
+> > > > executing the scripts inside selftests/livepatch directory, as
+> > > > it's currently
+> > > > supported. If the modules are modified, they needed to be
+> > > > rebuilt before running
+> > > > the scripts though.
+> > > >=20
+> > > > The modules are built before running the selftests when using
+> > > > the
+> > > > kselftest invocations:
+> > > >=20
+> > > > 	make kselftest TARGETS=3Dlivepatch
+> > > > or
+> > > > 	make -C tools/testing/selftests/livepatch run_tests
+> > > >=20
+> > >=20
+> > > Quick question:
+> > >=20
+> > > - We have been building with CONFIG_LIVEPATCH_TEST=3Dm to generate
+> > > the
+> > > =C2=A0 test modules at kernel build time
+> > >=20
+> > > - Our packaging filters out the selftest scripts and supporting
+> > > modules
+> > > =C2=A0 from the general kernel RPM package into their subpackages
+> > >=20
+> > > - Tests are run as part of CKI or other manual tests by
+> > > installing the
+> > > =C2=A0 pre-built packages from the previous step
+> > >=20
+> > >=20
+> > > After this patch, we would need to add something like the
+> > > following to
+> > > our kernel build, before packaging:
+> > >=20
+> > > =C2=A0 $ make KDIR=3D$(pwd) -C tools/testing/selftests/livepatch/
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^^^^
+> > >=20
+> > > If this is the correct way to build the test modules for *this*
+> > > tree and
+> > > /lib/modules/$(shell uname -r)/build... it might be useful to
+> > > document
+> > > in the commit message as an alternative use case.
 
-In addition to system suspend on these system does GBE support runtime PM?
+That's right:
 
-If so, would it make sense to also have a Linux communication path from 
-the GBE driver to this driver as part of the runtime PM callbacks?
+$ make -C tools/testing/selftests/livepatch/
 
-Then if the the GBE goes into runtime PM it could tell this driver to 
-waive LTR and if exits runtime PM it could tell this driver to stop 
-waiving LTR.
+is indeed the way to build the tests without running them. KDIR will be
+set to  /lib/modules/$(shell uname -r)/build is empty.
 
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
-> 
->> ---
->>   drivers/platform/x86/intel/pmc/adl.c  | 6 ------
->>   drivers/platform/x86/intel/pmc/cnp.c  | 6 ------
->>   drivers/platform/x86/intel/pmc/core.c | 2 +-
->>   drivers/platform/x86/intel/pmc/core.h | 1 -
->>   drivers/platform/x86/intel/pmc/mtl.c  | 6 ------
->>   drivers/platform/x86/intel/pmc/tgl.c  | 5 -----
->>   6 files changed, 1 insertion(+), 25 deletions(-)
->>
->> diff --git a/drivers/platform/x86/intel/pmc/adl.c b/drivers/platform/x86/intel/pmc/adl.c
->> index 64c492391ede..e4a421ca64be 100644
->> --- a/drivers/platform/x86/intel/pmc/adl.c
->> +++ b/drivers/platform/x86/intel/pmc/adl.c
->> @@ -321,11 +321,5 @@ int adl_core_init(struct pmc_dev *pmcdev)
->>   
->>   	pmc_core_get_low_power_modes(pmcdev);
->>   
->> -	/* Due to a hardware limitation, the GBE LTR blocks PC10
->> -	 * when a cable is attached. Tell the PMC to ignore it.
->> -	 */
->> -	dev_dbg(&pmcdev->pdev->dev, "ignoring GBE LTR\n");
->> -	pmc_core_send_ltr_ignore(pmcdev, 3);
->> -
->>   	return 0;
->>   }
->> diff --git a/drivers/platform/x86/intel/pmc/cnp.c b/drivers/platform/x86/intel/pmc/cnp.c
->> index 59298f184d0e..416d3a0c3615 100644
->> --- a/drivers/platform/x86/intel/pmc/cnp.c
->> +++ b/drivers/platform/x86/intel/pmc/cnp.c
->> @@ -216,11 +216,5 @@ int cnp_core_init(struct pmc_dev *pmcdev)
->>   
->>   	pmc_core_get_low_power_modes(pmcdev);
->>   
->> -	/* Due to a hardware limitation, the GBE LTR blocks PC10
->> -	 * when a cable is attached. Tell the PMC to ignore it.
->> -	 */
->> -	dev_dbg(&pmcdev->pdev->dev, "ignoring GBE LTR\n");
->> -	pmc_core_send_ltr_ignore(pmcdev, 3);
->> -
->>   	return 0;
->>   }
->> diff --git a/drivers/platform/x86/intel/pmc/core.c b/drivers/platform/x86/intel/pmc/core.c
->> index 983e3a8f4910..7c6a74957d57 100644
->> --- a/drivers/platform/x86/intel/pmc/core.c
->> +++ b/drivers/platform/x86/intel/pmc/core.c
->> @@ -462,7 +462,7 @@ static int pmc_core_pll_show(struct seq_file *s, void *unused)
->>   }
->>   DEFINE_SHOW_ATTRIBUTE(pmc_core_pll);
->>   
->> -int pmc_core_send_ltr_ignore(struct pmc_dev *pmcdev, u32 value)
->> +static int pmc_core_send_ltr_ignore(struct pmc_dev *pmcdev, u32 value)
->>   {
->>   	struct pmc *pmc;
->>   	const struct pmc_reg_map *map;
->> diff --git a/drivers/platform/x86/intel/pmc/core.h b/drivers/platform/x86/intel/pmc/core.h
->> index 6d7673145f90..3bbdb41a754f 100644
->> --- a/drivers/platform/x86/intel/pmc/core.h
->> +++ b/drivers/platform/x86/intel/pmc/core.h
->> @@ -493,7 +493,6 @@ extern const struct pmc_reg_map mtl_ioem_reg_map;
->>   
->>   extern void pmc_core_get_tgl_lpm_reqs(struct platform_device *pdev);
->>   extern int pmc_core_ssram_get_lpm_reqs(struct pmc_dev *pmcdev);
->> -extern int pmc_core_send_ltr_ignore(struct pmc_dev *pmcdev, u32 value);
->>   
->>   int pmc_core_resume_common(struct pmc_dev *pmcdev);
->>   int get_primary_reg_base(struct pmc *pmc);
->> diff --git a/drivers/platform/x86/intel/pmc/mtl.c b/drivers/platform/x86/intel/pmc/mtl.c
->> index 38c2f946ec23..33d32a76c43a 100644
->> --- a/drivers/platform/x86/intel/pmc/mtl.c
->> +++ b/drivers/platform/x86/intel/pmc/mtl.c
->> @@ -1065,11 +1065,5 @@ int mtl_core_init(struct pmc_dev *pmcdev)
->>   	pmc_core_get_low_power_modes(pmcdev);
->>   	mtl_punit_pmt_init(pmcdev);
->>   
->> -	/* Due to a hardware limitation, the GBE LTR blocks PC10
->> -	 * when a cable is attached. Tell the PMC to ignore it.
->> -	 */
->> -	dev_dbg(&pmcdev->pdev->dev, "ignoring GBE LTR\n");
->> -	pmc_core_send_ltr_ignore(pmcdev, 3);
->> -
->>   	return pmc_core_ssram_get_lpm_reqs(pmcdev);
->>   }
->> diff --git a/drivers/platform/x86/intel/pmc/tgl.c b/drivers/platform/x86/intel/pmc/tgl.c
->> index d5f1d2223c5a..7e6f5739a197 100644
->> --- a/drivers/platform/x86/intel/pmc/tgl.c
->> +++ b/drivers/platform/x86/intel/pmc/tgl.c
->> @@ -265,11 +265,6 @@ int tgl_core_init(struct pmc_dev *pmcdev)
->>   
->>   	pmc_core_get_low_power_modes(pmcdev);
->>   	pmc_core_get_tgl_lpm_reqs(pmcdev->pdev);
->> -	/* Due to a hardware limitation, the GBE LTR blocks PC10
->> -	 * when a cable is attached. Tell the PMC to ignore it.
->> -	 */
->> -	dev_dbg(&pmcdev->pdev->dev, "ignoring GBE LTR\n");
->> -	pmc_core_send_ltr_ignore(pmcdev, 3);
->>   
->>   	return 0;
->>   }
->>
->> base-commit: 35ddd61cf023b5deb2b7e9f1627abef053281c0a
-> 
-> 
+Yes, I can definitely add documentation about it inside the
+tools/testing/selftests/livepatch/README.
+
+> >=20
+> > So if I understand it correctly, you would like to stick to pre-
+> > building=20
+> > the modules (not in-tree but now after the kernel is build using
+> > the=20
+> > proposed way), package them and then install everything on a system
+> > running the respective kernel. A valid use case in my opinion.
+> >=20
+>=20
+> That would accurate.=C2=A0 If this use case can be supported, it wouldn't
+> require changes to our CKI / testing scripts, only the post-build
+> packaging bits.
+>=20
+> > My idea is to abandon this way completely, take the selftests and
+> > build=20
+> > and run them on the system right away.
+> >=20
+> > Both should be doable, hopefully, if we wire it all correctly...
+> > and=20
+> > document it.
+> >=20
+> I can't think of why it shouldn't continue to work, even in a future
+> where newer livepatching selftests support older kernels.=C2=A0 (We would
+> just have newer selftests sources backported to test older kernel
+> sources.)
+>=20
+> Are there any test cases which truly need to be build on-the-fly?=C2=A0
+> Aside
+> from testing different toolchain pieces?
+
+We would like to use the same selftests to trigger testing on different
+kernels (adjusting it when necessary as you stated), without having to
+rebuild the kernel. Miroslav may have other ideias about it too, IIRC.
+
+>=20
 
