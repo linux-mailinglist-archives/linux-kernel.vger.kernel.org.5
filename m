@@ -2,176 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D308808F1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:54:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C662F808F1C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443572AbjLGRwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:52:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34426 "EHLO
+        id S1443584AbjLGRwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:52:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443447AbjLGRwi (ORCPT
+        with ESMTP id S1443447AbjLGRww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:52:38 -0500
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B3710D8;
-        Thu,  7 Dec 2023 09:52:44 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 09D813200AC9;
-        Thu,  7 Dec 2023 12:52:42 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 07 Dec 2023 12:52:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1701971562; x=1702057962; bh=9S
-        PuDsUJwGeei3z+4rDX4Q1weGr+WJTZBwyJEr/m8Mw=; b=iUTCAs4qx2M/wphlu+
-        vPnGBcKG4F0yO+5ihhHEHCkOjOEq+hiK5Oe9sd4w2N0tm7fyCZq5jc6SwqtlM+BT
-        Gt0cYDf4/TOyiyWqHJdvH5Rq/qqvt9kimhhDd5I6C4yubPsRa3b7AERUz1pVd+Vz
-        kABcgIWwnhArRbkQI30RZhWxP5l3sXfpLi+ZA2w/KfB6OyrpKNyQ2RyCzdGeU4TS
-        RHqnM+jS0AtYpdljHqPdrroIpOlRqvu68NOvkyRruthpxeU4k3+zZUptwddwmTFY
-        GNGqf5KiE8ALQt9gP/HVYICuuHOnJ3QBo23Lui9Lb/4D0Bzo98SU/LXszBVHVQef
-        nvMw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701971562; x=1702057962; bh=9SPuDsUJwGeei
-        3z+4rDX4Q1weGr+WJTZBwyJEr/m8Mw=; b=Olgz8eycoNjHzFvs2SHIEUL7pWbcL
-        3dv7v6zbBcypnzWso9uRrTfhnNxKDbDy4c+k4wDaG42LaXtfc9DB+BN98gq8i5za
-        TxENHLpe3eSdgM42dAep3ryZuCGBdeSry3BiWDFD9fVJMC8b+GQItSWfQrZXAjUR
-        i7+M7aL4HiYpJsU1FAdAQyWOP/9Z37UNVUyWbMFttswD2yluO+UTcoHgf2iKs2Ft
-        MOwKBxZZb1pPhamNGEZFDDCT3cVxpfTGKOuoPuaHfvVwnCoMSL/47HmWtdnHhSG1
-        l8nxJSnpnuIBtb4siR8lWWK+FW8VVwbq+QSNyOZhxdnsO59yjV2qxGocw==
-X-ME-Sender: <xms:agZyZVm4DSd34wRd17n1n6Z8GCgVrhOtYUINxIQcM0BdQe7_mIbHmg>
-    <xme:agZyZQ2QeVyvh0_Zh6xbFr91I-UnWnR21nDP0Ek53f-BJMx2ig6IC3eZuRX6j8B0u
-    Cx_Eb3YnSRIZoHxZS4>
-X-ME-Received: <xmr:agZyZbpbiqAEyRnE-ZEcR_ZtawngNtY5Q2nK-Ct8b7bgCw3YOcuo__IRCFo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekfedggeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghh
-    ohcutehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrf
-    grthhtvghrnhepueettdetgfejfeffheffffekjeeuveeifeduleegjedutdefffetkeel
-    hfelleetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epthihtghhohesthihtghhohdrphhiiiiirg
-X-ME-Proxy: <xmx:agZyZVmWrcnjmRK67J16oX163voS7ZkPzUeidPc18AKSihcaCBXrjQ>
-    <xmx:agZyZT2-TNh94lrT1Sja0qFHM76vezY_IODaBaYmo4fA3YzGb53oIQ>
-    <xmx:agZyZUtqutLA5n3vcKIADAcrheSDIV221HIqRNqTVe3PV0zrU-PwdA>
-    <xmx:agZyZYk3S4YpUFIf4pbFy0KbVuB6jTgHphirH2w3gjBvys4iXsLl-A>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 7 Dec 2023 12:52:40 -0500 (EST)
-Date:   Thu, 7 Dec 2023 10:52:38 -0700
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Tycho Andersen <tandersen@netflix.com>,
-        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
-Message-ID: <ZXIGZq18Bb6LK1qt@tycho.pizza>
-References: <20231130163946.277502-1-tycho@tycho.pizza>
- <20231207-netzhaut-wachen-81c34f8ee154@brauner>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231207-netzhaut-wachen-81c34f8ee154@brauner>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 7 Dec 2023 12:52:52 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BA2170C;
+        Thu,  7 Dec 2023 09:52:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=zG2UGPXCv4/FgbLJTXPGX3Nf8DqXr0h+L8Zc4YpOnTg=; b=RThyG6ynxjFruIcj+Fjw17JpTZ
+        9Xlpp4UZrDFthSmK3pDHBqY5AHfVWp12rkbHjOKkuO7YeVb47/IpVphxP8OZHbED7+45vEsnAj7b2
+        +z4JeO/Lbt6egcVkjiaMEkDmTdrwVuILKEq9PbcLYKM+vHdhc0KUUrY+tHqcRW29k6Hk=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:57946 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1rBIYG-0007oa-0U; Thu, 07 Dec 2023 12:52:45 -0500
+Date:   Thu, 7 Dec 2023 12:52:43 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        hvilleneuve@dimonoff.com, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        stable@vger.kernel.org, Andy Shevchenko <andy.shevchenko@gmail.com>
+Message-Id: <20231207125243.c056d5cd0f875ea6dfdfa194@hugovil.com>
+In-Reply-To: <202312061443.Cknef7Uq-lkp@intel.com>
+References: <20231130191050.3165862-2-hugo@hugovil.com>
+        <202312061443.Cknef7Uq-lkp@intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 1/7] serial: sc16is7xx: fix snprintf format specifier in
+ sc16is7xx_regmap_name()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 06:21:18PM +0100, Christian Brauner wrote:
-> [Cc fsdevel & Jan because we had some discussions about fanotify
-> returning non-thread-group pidfds. That's just for awareness or in case
-> this might need special handling.]
-> 
-> On Thu, Nov 30, 2023 at 09:39:44AM -0700, Tycho Andersen wrote:
-> > From: Tycho Andersen <tandersen@netflix.com>
-> > 
-> > We are using the pidfd family of syscalls with the seccomp userspace
-> > notifier. When some thread triggers a seccomp notification, we want to do
-> > some things to its context (munge fd tables via pidfd_getfd(), maybe write
-> > to its memory, etc.). However, threads created with ~CLONE_FILES or
-> > ~CLONE_VM mean that we can't use the pidfd family of syscalls for this
-> > purpose, since their fd table or mm are distinct from the thread group
-> > leader's. In this patch, we relax this restriction for pidfd_open().
-> > 
-> > In order to avoid dangling poll() users we need to notify pidfd waiters
-> > when individual threads die, but once we do that all the other machinery
-> > seems to work ok viz. the tests. But I suppose there are more cases than
-> > just this one.
-> > 
-> > Another weirdness is the open-coding of this vs. exporting using
-> > do_notify_pidfd(). This particular location is after __exit_signal() is
-> > called, which does __unhash_process() which kills ->thread_pid, so we need
-> > to use the copy we have locally, vs do_notify_pid() which accesses it via
-> > task_pid(). Maybe this suggests that the notification should live somewhere
-> > in __exit_signals()? I just put it here because I saw we were already
-> > testing if this task was the leader.
-> > 
-> > Signed-off-by: Tycho Andersen <tandersen@netflix.com>
-> > ---
-> 
-> So we've always said that if there's a use-case for this then we're
-> willing to support it. And I think that stance hasn't changed. I know
-> that others have expressed interest in this as well.
-> 
-> So currently the series only enables pidfds for threads to be created
-> and allows notifications for threads. But all places that currently make
-> use of pidfds refuse non-thread-group leaders. We can certainly proceed
-> with a patch series that only enables creation and exit notification but
-> we should also consider unlocking additional functionality:
-> 
-> * audit of all callers that use pidfd_get_task()
-> 
->   (1) process_madvise()
->   (2) process_mrlease()
-> 
->   I expect that both can handle threads just fine but we'd need an Ack
->   from mm people.
-> 
-> * pidfd_prepare() is used to create pidfds for:
-> 
->   (1) CLONE_PIDFD via clone() and clone3()
->   (2) SCM_PIDFD and SO_PEERPIDFD
->   (3) fanotify
->   
->   (1) is what this series here is about.
-> 
->   For (2) we need to check whether fanotify would be ok to handle pidfds
->   for threads. It might be fine but Jan will probably know more.
-> 
->   For (3) the change doesn't matter because SCM_CREDS always use the
->   thread-group leader. So even if we allowed the creation of pidfds for
->   threads it wouldn't matter.
-> * audit all callers of pidfd_pid() whether they could simply be switched
->   to handle individual threads:
-> 
->   (1) setns() handles threads just fine so this is safe to allow.
->   (2) pidfd_getfd() I would like to keep restricted and essentially
->       freeze new features for it.
-> 
->       I'm not happy that we did didn't just implement it as an ioctl to
->       the seccomp notifier. And I wouldn't oppose a patch that would add
->       that functionality to the seccomp notifier itself. But that's a
->       separate topic.
->   (3) pidfd_send_signal(). I think that one is the most interesting on
->       to allow signaling individual threads. I'm not sure that you need
->       to do this right now in this patch but we need to think about what
->       we want to do there.
+On Wed, 6 Dec 2023 14:29:39 +0800
+kernel test robot <lkp@intel.com> wrote:
 
-This all sounds reasonable to me, I can take a look as time permits.
+> Hi Hugo,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on d804987153e7bedf503f8e4ba649afe52cfd7f6d]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Hugo-Villeneuve/serial-sc16is7xx-fix-snprintf-format-specifier-in-sc16is7xx_regmap_name/20231201-031413
+> base:   d804987153e7bedf503f8e4ba649afe52cfd7f6d
+> patch link:    https://lore.kernel.org/r/20231130191050.3165862-2-hugo%40hugovil.com
+> patch subject: [PATCH 1/7] serial: sc16is7xx: fix snprintf format specifier in sc16is7xx_regmap_name()
+> config: x86_64-buildonly-randconfig-001-20231201 (https://download.01.org/0day-ci/archive/20231206/202312061443.Cknef7Uq-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312061443.Cknef7Uq-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202312061443.Cknef7Uq-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    drivers/tty/serial/sc16is7xx.c: In function 'sc16is7xx_i2c_probe':
+> >> drivers/tty/serial/sc16is7xx.c:1703:41: warning: '%u' directive output may be truncated writing between 1 and 10 bytes into a region of size 2 [-Wformat-truncation=]
+>     1703 |         snprintf(buf, sizeof(buf), "port%u", port_id);
+>          |                                         ^~
+>    In function 'sc16is7xx_regmap_name',
+>        inlined from 'sc16is7xx_i2c_probe' at drivers/tty/serial/sc16is7xx.c:1805:17:
+>    drivers/tty/serial/sc16is7xx.c:1703:36: note: directive argument in the range [0, 4294967294]
+>     1703 |         snprintf(buf, sizeof(buf), "port%u", port_id);
+>          |                                    ^~~~~~~~
+>    drivers/tty/serial/sc16is7xx.c:1703:9: note: 'snprintf' output between 6 and 15 bytes into a destination of size 6
+>     1703 |         snprintf(buf, sizeof(buf), "port%u", port_id);
+>          |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-pidfd_send_signal() at the very least would have been useful while
-writing these tests.
+Hi,
+the only solution I could find is to add this line just before snprintf:
 
-Tycho
+    BUG_ON(port_id > MAX310X_MAX_PORTS);
+
+it allows us to have the smallest buffer size possible.
+
+One other solution would be to change port_id from "unsigned int"
+to "u8", and increase the buffer by an additional 2 bytes to silence
+the warning, but then wasting 2 bytes for each channel, like so:
+
+static const char *max310x_regmap_name(u8 port_id)
+{
+    static char buf[
+        sizeof(MAX310X_PORT_NAME_SUFFIX __stringify(UCHAR_MAX))];
+
+I prefer solution 1, unless there is another solution that I am
+unaware of.
+
+Hugo.
+
+
+> vim +1703 drivers/tty/serial/sc16is7xx.c
+> 
+>   1698	
+>   1699	static const char *sc16is7xx_regmap_name(unsigned int port_id)
+>   1700	{
+>   1701		static char buf[6];
+>   1702	
+> > 1703		snprintf(buf, sizeof(buf), "port%u", port_id);
+>   1704	
+>   1705		return buf;
+>   1706	}
+>   1707	
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+> 
+
+
+-- 
+Hugo Villeneuve
