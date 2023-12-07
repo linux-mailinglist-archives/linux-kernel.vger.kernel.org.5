@@ -2,119 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B60808971
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE9780896F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442115AbjLGNq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:46:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55736 "EHLO
+        id S1442091AbjLGNqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:46:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442008AbjLGNq0 (ORCPT
+        with ESMTP id S1442008AbjLGNqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:46:26 -0500
+        Thu, 7 Dec 2023 08:46:17 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EF610E9
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:46:32 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800AE10CF
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:46:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701956791;
+        s=mimecast20190719; t=1701956782;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=xICLJqbrK65stKoTdC9zWPAAFCF9WJ2JOuG2uZTX2Bg=;
-        b=hGNd25T84/dlThhjxlH+7yGUKT321pOBoIyphJqjQdtgajW7gVXWLlfPyumdFwT52CYrVq
-        j3Gy0IN2WdLmAzuFA5xL1nRTSKZOgLEL+8eNYJFALVL33MrJYj+yoDPRerSzfBSDL3om0X
-        +oruW1/rJrl9MlPHz2WBhjPJbyJ3+IU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MayE2jstjV8R9mQ7ezeMnZEaKl2NQz8vMG8UW7Z3nRs=;
+        b=HnFVJREzmV0+5B+WRfsa3Auj1wBsxEz2bPLl3/fI/LP7zdXHX50b86t3ZV+zkSbUBQ03vl
+        DKdbFJeXnMAktHe5bhIStoVzemF9lHkK3wGoM7R6+ZNCgjfnLi5UsuJPUMBRjMXH/DV7Q0
+        f+jsH8UUO0nW09h3oX/VKGSLdbC4+ZA=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-595-s18BKpLhPquqfPMDwGyRVA-1; Thu, 07 Dec 2023 08:46:25 -0500
-X-MC-Unique: s18BKpLhPquqfPMDwGyRVA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5D3FA185A785;
-        Thu,  7 Dec 2023 13:46:25 +0000 (UTC)
-Received: from llong.com (unknown [10.22.32.209])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 821CB2166B35;
-        Thu,  7 Dec 2023 13:46:24 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yafang Shao <laoar.shao@gmail.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH-cgroup v2] cgroup: Move rcu_head up near the top of cgroup_root
-Date:   Thu,  7 Dec 2023 08:46:14 -0500
-Message-Id: <20231207134614.882991-1-longman@redhat.com>
+ us-mta-437-RfYS4EubPbaPBKM8hzGFJA-1; Thu, 07 Dec 2023 08:46:21 -0500
+X-MC-Unique: RfYS4EubPbaPBKM8hzGFJA-1
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6d83f218157so1230040a34.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 05:46:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701956780; x=1702561580;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MayE2jstjV8R9mQ7ezeMnZEaKl2NQz8vMG8UW7Z3nRs=;
+        b=jcsxaH19zM4f4k+uMhVaoZbmk44aNxxfqPv2tpxdxgFF3nRUX5jWtHfVTLGukc4OTi
+         PIeQ6B2azqPRziFND3NXKf8D5eAgHt/eOV7pZ3bEXr1KWZan9cDur701hfX+euwdfh/u
+         PqGjdu0TcfShZbfGRx4h5Dn1/DyBlQxGM9IdzEUF0g0HI1ISZFkTYv1QCHUKECQt7Xe0
+         wTUaXQjj6uElF0/Y+2VAZT5x2ZhFsGQhReIauKYtUz2boU4iZsD1lOw1o3IbeAjzgjs9
+         +mnNwg/ZH6C/0gYOlik3YcwUfn4C05JUoQs7qek64Xaw7LrxzSltCBFkaalojXgi7n95
+         e0Vw==
+X-Gm-Message-State: AOJu0YxAUqXD63hiWQlrjBAv+zDm6vmTjq4mXq1NdLttyBzf0voEYSU/
+        ci6HyqCuexkXZq3u313XN0kSsiJK/Wh50GNglymxSR4AoEYsMiKduP7UkshfEhaI5IEYDFnp/Si
+        Elz2fQgb/S9CxvbA73e0/dxNb
+X-Received: by 2002:a05:6358:7244:b0:170:2cff:b57e with SMTP id i4-20020a056358724400b001702cffb57emr3149551rwa.28.1701956780346;
+        Thu, 07 Dec 2023 05:46:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEkleS9nA9h1C/ufo8zCGD9PAxaOCQltjexOMuG5X9Zhtpyj8pooXqvLS0Uxwdd3bswk+SUxQ==
+X-Received: by 2002:a05:6358:7244:b0:170:2cff:b57e with SMTP id i4-20020a056358724400b001702cffb57emr3149542rwa.28.1701956780083;
+        Thu, 07 Dec 2023 05:46:20 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::47])
+        by smtp.gmail.com with ESMTPSA id cx11-20020a056214188b00b0067ac01d39bdsm496309qvb.47.2023.12.07.05.46.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 05:46:19 -0800 (PST)
+Date:   Thu, 7 Dec 2023 07:46:17 -0600
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     martin.petersen@oracle.com, jejb@linux.ibm.com,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com
+Subject: Re: [PATCH 11/13] scsi: ufs: qcom: Remove unused ufs_qcom_hosts
+ struct array
+Message-ID: <ca4ag4xrnw3cegbfqjcjf4ejidi2oblabcrkxadpgv6yda26a4@2khffdooqvlj>
+References: <20231201151417.65500-1-manivannan.sadhasivam@linaro.org>
+ <20231201151417.65500-12-manivannan.sadhasivam@linaro.org>
+ <sqdgnfedt5j3epypmsvb7lv6gvmjrymtuieji3yhqsfvniiodl@f3aj73mlshxy>
+ <20231207053159.GC2932@thinkpad>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+In-Reply-To: <20231207053159.GC2932@thinkpad>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU
-safe") adds a new rcu_head to the cgroup_root structure and kvfree_rcu()
-for freeing the cgroup_root.
+On Thu, Dec 07, 2023 at 11:01:59AM +0530, Manivannan Sadhasivam wrote:
+> On Wed, Dec 06, 2023 at 12:54:43PM -0600, Andrew Halaney wrote:
+> > On Fri, Dec 01, 2023 at 08:44:15PM +0530, Manivannan Sadhasivam wrote:
+> > > ufs_qcom_hosts array is assigned, but not used anywhere. So let's remove
+> > > it.
+> > > 
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > ---
+> > >  drivers/ufs/host/ufs-qcom.c | 5 -----
+> > >  1 file changed, 5 deletions(-)
+> > > 
+> > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> > > index a86f6620abc8..824c006be093 100644
+> > > --- a/drivers/ufs/host/ufs-qcom.c
+> > > +++ b/drivers/ufs/host/ufs-qcom.c
+> > > @@ -90,8 +90,6 @@ static const struct __ufs_qcom_bw_table {
+> > >  	[MODE_MAX][0][0]		    = { 7643136,	307200 },
+> > >  };
+> > >  
+> > > -static struct ufs_qcom_host *ufs_qcom_hosts[MAX_UFS_QCOM_HOSTS];
+> > > -
+> > 
+> > I think we can get rid of MAX_UFS_QCOM_HOSTS as well with this change in
+> > place?
+> > 
+> 
+> Yes, thanks for spotting.
 
-The current implementation of kvfree_rcu(), however, has the limitation
-that the offset of the rcu_head structure within the larger data
-structure must be less than 4096 or the compilation will fail. See the
-macro definition of __is_kvfree_rcu_offset() in include/linux/rcupdate.h
-for more information.
+With that in place please add:
 
-By putting rcu_head below the large cgroup structure, any change to the
-cgroup structure that makes it larger run the risk of causing build
-failure under certain configurations. Commit 77070eeb8821 ("cgroup:
-Avoid false cacheline sharing of read mostly rstat_cpu") happens to be
-the last straw that breaks it. Fix this problem by moving the rcu_head
-structure up before the cgroup structure.
+    Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
 
-Fixes: d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU safe")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Closes: https://lore.kernel.org/lkml/20231207143806.114e0a74@canb.auug.org.au/
-Signed-off-by: Waiman Long <longman@redhat.com>
-Acked-by: Yafang Shao <laoar.shao@gmail.com>
----
- include/linux/cgroup-defs.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 5a97ea95b564..ea48c861cd36 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -562,6 +562,10 @@ struct cgroup_root {
- 	/* Unique id for this hierarchy. */
- 	int hierarchy_id;
- 
-+	/* A list running through the active hierarchies */
-+	struct list_head root_list;
-+	struct rcu_head rcu;	/* Must be near the top */
-+
- 	/*
- 	 * The root cgroup. The containing cgroup_root will be destroyed on its
- 	 * release. cgrp->ancestors[0] will be used overflowing into the
-@@ -575,10 +579,6 @@ struct cgroup_root {
- 	/* Number of cgroups in the hierarchy, used only for /proc/cgroups */
- 	atomic_t nr_cgrps;
- 
--	/* A list running through the active hierarchies */
--	struct list_head root_list;
--	struct rcu_head rcu;
--
- 	/* Hierarchy-specific flags */
- 	unsigned int flags;
- 
--- 
-2.39.3
+> 
+> - Mani
+> 
+> > >  static void ufs_qcom_get_default_testbus_cfg(struct ufs_qcom_host *host);
+> > >  static int ufs_qcom_set_core_clk_ctrl(struct ufs_hba *hba, bool is_scale_up);
+> > >  
+> > > @@ -1192,9 +1190,6 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+> > >  
+> > >  	ufs_qcom_setup_clocks(hba, true, POST_CHANGE);
+> > >  
+> > > -	if (hba->dev->id < MAX_UFS_QCOM_HOSTS)
+> > > -		ufs_qcom_hosts[hba->dev->id] = host;
+> > > -
+> > >  	ufs_qcom_get_default_testbus_cfg(host);
+> > >  	err = ufs_qcom_testbus_config(host);
+> > >  	if (err)
+> > > -- 
+> > > 2.25.1
+> > > 
+> > > 
+> > 
+> > 
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
+> 
 
