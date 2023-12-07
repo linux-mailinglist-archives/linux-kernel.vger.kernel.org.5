@@ -2,415 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE46807DEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4C1807DF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:33:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442113AbjLGBbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 20:31:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
+        id S1442129AbjLGBdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 20:33:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232511AbjLGBbB (ORCPT
+        with ESMTP id S235339AbjLGBde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 20:31:01 -0500
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBA5D59;
-        Wed,  6 Dec 2023 17:31:06 -0800 (PST)
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1fb71880f12so310136fac.0;
-        Wed, 06 Dec 2023 17:31:06 -0800 (PST)
+        Wed, 6 Dec 2023 20:33:34 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EAC10D4
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 17:33:30 -0800 (PST)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6MgJgF023016;
+        Thu, 7 Dec 2023 01:31:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=references : from :
+ to : cc : subject : in-reply-to : date : message-id : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=YmjbfD/YhYJK/NcBWzrOQz7cenxzTzhDK44IprKp5ms=;
+ b=i0Ok+jHe+aOg3Q9CciNof2ipbFkU3D0fqHjWBlb9ID4iXZaBkMgvOMQ0//rVimClhFEA
+ CJLo5B2ETlSYGW9aZz50HcHGfzPTh0cncPMGOs3bFCvv7KGSuxIiXqD8Gn/zK5swxMrJ
+ VO7rVFMq372d2yhBel081uU2NCfz7GpEq0Ql1TaICQdONew+KP38nFYrIwSpi94T0u1y
+ UWo/Wm2UUAG+cO5RtFjQTCvHaangx4ufCrZbNgAd9uPIv/VVxmKbfWK0IdsPKGh+1kcU
+ BYOgfaSxqlEvT6Kv/ZluU2M/erd0/QaphdRRUtl5nfdZEPQaOKuYq0av41clZF3dw5QA yg== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3utdda2rky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 Dec 2023 01:31:36 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6N23wC019557;
+        Thu, 7 Dec 2023 01:31:35 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3utan5g6t0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 Dec 2023 01:31:35 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I//2ql4AtAEtvi1vZSaXG0XzBx41So9TM0T352HQCLyKQffZcWyjQG5e02uhjtPSggmZsgYo6DDrNVxRQYfhy8gxYNxIrzZNtx4lL5xGAHS+zikgGs6DK/faxE33jLMeLOT8LFepdag1uZ9N4MxqWLLW+QmE3bt1KzirUnmhCNbv9dibtVUmwhGNnNFlrwLxWDFYk3rQASGWhaVrr59/Ukh1Nmgxmu3gCB38n3gzAiobOInEkQFiHVno3B6y/0JZomihZQMzWg5g10XlFoM6d5fq+TxlilHIHtu38KF6E0SPkNHhdIa+Zq6qcj/vTK7Lthpvw/+sRhmvIAcn6gEFnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YmjbfD/YhYJK/NcBWzrOQz7cenxzTzhDK44IprKp5ms=;
+ b=Q/f+wxiDkTFBBPnHq6rtk+q6dn4qQ25oOYFjaDl/fFutT/Mbzu6cg9Z6QzO2lO7EpiHPEo4hZZGmJPWh+439D99PRQlQdTr7XNMJQJgXHK3AsBz1BMSklSSooK3jCpQ7hQXqFufLAA06XyLzCvTEkra/I8bA5HTvgL2d70UD+fHPzaGTQv7IK8m5MjEM5doE5kVfMVf8BRlvm1aUjwFQrX0nVhy931WvxpJJG+Uu0Cy+eRchOnj2ermIuaF2lnzN24yhRD6U2AzyylVcPNjGxAlUnY8vgM2NAn+Shcqj7oAzmsTDgYApRNPsEjt0UjO15y1KKErGT/DWunkb1D8ACA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701912665; x=1702517465; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FC4kVPBMR3jCsCH7t301OXLH/yq0oHM2fZo2MjvGfcg=;
-        b=mrZmQc+wrZI/ngYGDoSfheKhd0EwAIKKvyZIaFLIbECc8RDvB45TJ+Pt1XY0EO35qI
-         eYdT1W/ixh6UAahRqa11vuNa4gf5z7NPIqPoJF3VMPeDI8HJ4XrZuMBjUE82GC63kboR
-         Fx9yhdOdmNnSJNU0lvd+t73RGyAwDSKSkBpTX7hV+jPVFxp0EdMG5bIQn9kPmsIunppO
-         DU82X8W72nXqGOx6zJTtGnO0XKz1ujIlM+mGg6EyMH9fGA0TyeefMdBIIi5GuIW+53mT
-         jojgM59ymnvrct41Lfs7eZwtsaoxhmV0R+4/i4mzVYduy11e6lJYaSMPWrfI/ST+jzFx
-         yT3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701912665; x=1702517465;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FC4kVPBMR3jCsCH7t301OXLH/yq0oHM2fZo2MjvGfcg=;
-        b=wieRRBSCwbCPwgnS7dPzkssgSssfvL2V3DkN1DGBnGvV2mLl5dDNzT93VrbieYeZJm
-         H6Z8+M24Lytf4iEueSHvO63EjwAHMgSXcXQdPNrb+47ZRo5Gbm0vf2wsJGOMyc8yzDpz
-         6us3kejHpkB6ww51NNEqOLRJCcXd0HQgFziDa1mabyYHW8JRDdxUrpzB49PJL30DnwB+
-         hbU9+IxkZ9D2ebVQz8MuVIszpME67FZwcNgdhl6AmGjHAfk72/gmnHgolUjeZw1HPG8f
-         purXqmFoGcn3NGuwogoMX8BY/K9Edvi0ObJeTgDZ+/rC5DhJomvHMuJy8lYiFKkANtjq
-         m1ww==
-X-Gm-Message-State: AOJu0Yy+S8enQncZUIsUwlLOm11eBM9bxPBg7zAjCWCpvOgzUPz2Zj7R
-        Glyof5L11lA8BuH3vPz4Cq8=
-X-Google-Smtp-Source: AGHT+IFZ5wq0R88YYcSMswZ76r5mJtY195BOiWGDf+xrPaXU+/BjFAfNM0OZhocjkWwXQnNn88ggEQ==
-X-Received: by 2002:a05:6870:9d9b:b0:1fb:75a:779d with SMTP id pv27-20020a0568709d9b00b001fb075a779dmr1959822oab.78.1701912665309;
-        Wed, 06 Dec 2023 17:31:05 -0800 (PST)
-Received: from localhost.localdomain ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id i16-20020a056a00005000b006cde2889213sm158443pfk.14.2023.12.06.17.30.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 17:31:04 -0800 (PST)
-Date:   Thu, 7 Dec 2023 10:30:57 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 18/21] mm/slab: move kmalloc() functions from
- slab_common.c to slub.c
-Message-ID: <ZXEgUVrUuIHlgsec@localhost.localdomain>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-18-9c9c70177183@suse.cz>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YmjbfD/YhYJK/NcBWzrOQz7cenxzTzhDK44IprKp5ms=;
+ b=N4sHBQnL9AXF3BFfNecOXkqW1GujL0kkpnTAu0WV/8HikoDgDSvW1kyl7501+gryAHl6CUy11tzJZqwN9/cWAVN6vq6Tw+wVOJK7l5SEhvpvBYPTE4N3xRzDpw0zsMMpH/aqBeBplnHPFy9QqW99jR/M9Qzp3Y9AyU6YnyZ+JAg=
+Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
+ by CY5PR10MB5916.namprd10.prod.outlook.com (2603:10b6:930:2c::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.25; Thu, 7 Dec
+ 2023 01:31:32 +0000
+Received: from CO6PR10MB5409.namprd10.prod.outlook.com
+ ([fe80::10fc:975b:65bf:1d76]) by CO6PR10MB5409.namprd10.prod.outlook.com
+ ([fe80::10fc:975b:65bf:1d76%4]) with mapi id 15.20.7068.025; Thu, 7 Dec 2023
+ 01:31:32 +0000
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107215742.363031-49-ankur.a.arora@oracle.com>
+ <2027da00-273d-41cf-b9e7-460776181083@paulmck-laptop>
+ <87v89lzu5a.ffs@tglx>
+ <209f0e89-7ebd-4759-9883-21d842d0d26c@paulmck-laptop>
+User-agent: mu4e 1.4.10; emacs 27.2
+From:   Ankur Arora <ankur.a.arora@oracle.com>
+To:     paulmck@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 48/86] rcu: handle quiescent states for PREEMPT_RCU=n
+In-reply-to: <209f0e89-7ebd-4759-9883-21d842d0d26c@paulmck-laptop>
+Date:   Wed, 06 Dec 2023 17:31:30 -0800
+Message-ID: <87zfymn6h9.fsf@oracle.com>
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR04CA0214.namprd04.prod.outlook.com
+ (2603:10b6:303:87::9) To CO6PR10MB5409.namprd10.prod.outlook.com
+ (2603:10b6:5:357::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120-slab-remove-slab-v2-18-9c9c70177183@suse.cz>
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|CY5PR10MB5916:EE_
+X-MS-Office365-Filtering-Correlation-Id: a1385476-88d2-4202-2b45-08dbf6c43e59
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: F2eGj7z06pKScPJgoZUq5+I8d6czkjkLPHCs/+FpX3zFDV7hX8RV5KbSCeT2yYnDJp36/WV4KeF8iHIqnCRCKd/E/txzjS/l5cvq0/1S8sPmJ7wjZxvO+xlTK2EpqZElNjun6ujnb7TYrAhOp+9xwDA/cGfE8ONDieuv+z2FOyc8eVFjG4pBdsTMvWfwhtBlq1Mzw73zA+IFCju7XU5an5/eK/HCzzGINbyUJ9DJbTvXSvsOD1VO4tluCRjN1sIPd2tSARzLBUHvBwzTp4041R6OwJbZg/8ba2W97tzVTIp87Up9gPfz2HC6gHg1Sp3ki7h1iFEhOjxMdnO9lgSVGfOr/8tDhYNaxM6Jkb3vJ4d4oRgUTvZBvdBjuatWhsMK0ToJGrQ3OmsicOCba37/CoLB4qYJh45GNKaRHRjDWMfxNB21XFZ7kY3Y01Z+mMuvD7inW6/hHYXWTUw7BXslpBqwCH2aYxw8DUj4riyiWyP+LV0JKxTWRQDenVyexIQTLDU10J+K4SMOTxVC80m7TgWPgj+n0bvwBKB4Iybmf6OvmP8v5uOejL0J5k3jCXfnrzpQYYx3ONU9WKJIaGNgdD9dauEF8zLMTlxdRJn7ecylzWktWDtMwvJ7734Wa2l3
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(376002)(366004)(136003)(230273577357003)(230922051799003)(230173577357003)(1800799012)(64100799003)(186009)(451199024)(2906002)(86362001)(26005)(83380400001)(38100700002)(5660300002)(66899024)(6512007)(6486002)(478600001)(6506007)(36756003)(966005)(2616005)(8936002)(8676002)(4326008)(7416002)(7406005)(41300700001)(54906003)(6916009)(66476007)(66946007)(316002)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wQWBsLULSpsG6TXhvwTKEpuNchbs8ubiaX1ArMexay51ZvhXqNem1SDGZPVZ?=
+ =?us-ascii?Q?NlTqSK2rdGD7xCYlcUcJ8suEa/QzU/i5x6HhaoyLM/hrsK1WehUOB8fzCaM+?=
+ =?us-ascii?Q?Jq8vJ+l0A0rBAc7WTYwXJ3H6V8xHpb3TCkUXhvpZqENGNx3T9e71xnVWKLdS?=
+ =?us-ascii?Q?uq6NyLc/JU2l50mW0+X5TknrtoSM8fsgpRRzxpD6etVc8TB07eDeuPpGFrAe?=
+ =?us-ascii?Q?E/Rl+CSka8PSGNZrgjG/wRTed1NFVPwWkvQhJTpRzZsA7JmbhmxisAfsijDB?=
+ =?us-ascii?Q?Qj34bV8N3HmKgz9RPSUDb9kldjq37vOmEtW0K/wRF4RSGhC2gyzrxJW40rJY?=
+ =?us-ascii?Q?rjznHjE5WcKZqayH6W7Cyk2x1a4LuWPpCPRKVEoR/HlWiXeU1u3PSqZGhc1n?=
+ =?us-ascii?Q?2YjrIMkL4pdRnEbgHKipSspBDoMSYQM86gN6/u+gO9w+EFm2zgC7mZ1X2vxP?=
+ =?us-ascii?Q?I3Fq7XxpWdxpU1ya6jkdCfQZw/irXZWRNXc5xs5s86OiKbHT26S3MtVwOK7F?=
+ =?us-ascii?Q?mVuomTnslnviRLZ0vrMYA91SBi5DkRbaKZN61CAphi7NRg2KdFOnOdATdACi?=
+ =?us-ascii?Q?JBZEg8tcaQBaRQrD24ZaS/CLZola8f+3Z9iCsOAfqUM1p9TZOLytRhZf9f8+?=
+ =?us-ascii?Q?0+/oq6mRtLrjY/LFWWAS4KXw55hoWnB3+dIqZ24a7qEILKJXHUV8BQpCAI7R?=
+ =?us-ascii?Q?hZdGdReiMB9MQJEofc7vKFq8/7YVMJ8rKfUDgbPJxWDu/0oIAh0xTtY0y4JF?=
+ =?us-ascii?Q?DJ/nf/Jzcvj3e5NW7gB7xZaLsww4xPnfrUl7ixJZhPaDtOisUHpZC9V5p+dS?=
+ =?us-ascii?Q?5NOWS6sJ+tlAryJxRy5nxegKViEeZyrcCaaElDPY2Tw79ntH12tfkkHCSuln?=
+ =?us-ascii?Q?EFxm5YVccJCxC3RkvICxdY3IT8vmgXtiqan4TcFkut4NRSKjW8KPyaRab83V?=
+ =?us-ascii?Q?Yq097tFgD3ToOn7Bc2GV5SymwSrD7LUuQInPkIgpA7NHcrcAOQheCoONdRiG?=
+ =?us-ascii?Q?/aLD+zZ77n9dQXSRteCai4kw5mJYn2OPQ/vqCBm/XzQ5zjgoARoVOg5SKDjy?=
+ =?us-ascii?Q?S1d1N7cGOaXTtuvxVp4ECQ3ZMw4CKKm1mPv+qHZPwa9tzcLZ6JBCgBdBNRtC?=
+ =?us-ascii?Q?lCg5fgmMHfZBl/dRWl2A79hHlK7vPQLfaCFEcKAkojQ7Vj4wPTcBWD5cDX4N?=
+ =?us-ascii?Q?cG/m89vFF9AnImW8p41aK7O/1gxMfCjOvaNh1il+xtyV8L+Doj6cUCWWcZLB?=
+ =?us-ascii?Q?Mx9e4Nr04xHxW5enyXSMW3nylcrRURH3y0sOGbqHhvJZLNQtxn+U/KvDj4WM?=
+ =?us-ascii?Q?kqjhKEBmv12EHimax9N7k87LXNDoyZAA2RYqJ/NmwbIBpmETfG1pAJgVQP4d?=
+ =?us-ascii?Q?PG5JANBSnSUCCNqGb0zXw/mrd6W/jAaiQXgsB8gNW5XwOcoTY/saTtBkWKiI?=
+ =?us-ascii?Q?hgmgHQ2N7tDx26wIzJdgh+fr0rpEj6HUq/iwKo4DDkX/dnC9LexC//Kz3dS6?=
+ =?us-ascii?Q?dVJE10o04Tgja2uVHDmiaAnQJysESM+nyokHT7jP87ELRqpQKZGGnxaAeiCL?=
+ =?us-ascii?Q?Xv8YOuuDqaczpE1ljJEB7gIoKYrc+rQ8EueCH/2jrjnL+T3IvBUWZErzQVWs?=
+ =?us-ascii?Q?kg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?Xf7LmLRT0woxQ4lF2MVzHJxVLwcAnctWc866c71BI0771TjAMlIyo2OG5B1B?=
+ =?us-ascii?Q?Dm6euKOOMkfAJovnxj/e3WjewcKudPk6S73LbyxtXFQ6aHxIaC6v80+ESy1L?=
+ =?us-ascii?Q?QqrJEBAZ3IMpMxYUlLqD9Zbq6w9kJgPpaz6upZYT0Rg0ReD7xVhP2KGLpQ+f?=
+ =?us-ascii?Q?hyudMI83ohU0xLBVCY8CoHp0EIa3VP0+dUeTAKGEemCmwUeudWNfPWoboed3?=
+ =?us-ascii?Q?aH12wB8mhSPtmLgaVtubbCS2Sz9S2Do9v/Pt2yzcUZtB5ZJY72NPMfRt6ERa?=
+ =?us-ascii?Q?g105L1cGerT60AwhzFQjo1u9rTZR68CY1TmpO78ZekVpAXB3BwjhSKX4WfqF?=
+ =?us-ascii?Q?bAOwLHZTQbHpvWHrkNppwBfNKc0s27tTrnSVa6JGpv8y2Hd9m+Zij6mjQbVP?=
+ =?us-ascii?Q?W7LDBwZRb0OipInML4I2KBcJ6MB7alc/WZeCzhg4y/SVrRdMZYJQblq1p7Iq?=
+ =?us-ascii?Q?1OfQX2HzhsDWca6NhYyGLzsD3wAQ6L6k9lX6d0/bHKgfaWeIziwA2n7PpYPM?=
+ =?us-ascii?Q?PjhjjTzpRKMxKZow12yDZTgKk/mkORrKpjmvobQ9t3UZSsUDLQupY6NI5THD?=
+ =?us-ascii?Q?BMsbqVo32rqFFPotRFlvQV9TsJiQ3mAbUzDLdbO1dO4NuJAxqgGWVl3FkYN0?=
+ =?us-ascii?Q?q6u+Q+8js0CsDeKDv0Y7BQBz02RJYG2+5Jc7xepYihuWFtUV6Kbj1H/6CQhN?=
+ =?us-ascii?Q?oAw7m+YWxKm3ESAOY7xnSW+B6h6k1zMg5mSdGvrNXPIJi7KESXkZRnqF0wzQ?=
+ =?us-ascii?Q?8i46ZlRP8kLyb7exTSpaxRIy5J+YZiTd1jHun0lPsiPrS1+aIUkzFE6UkgAK?=
+ =?us-ascii?Q?wGduPNrUKnjQvRNmz6ara7fVIBg2/zC9B+P26XsKBcdkVvT1z/vH3S/wczEM?=
+ =?us-ascii?Q?Rqc0INZX78nv0/pLEKDE6h54JPrrTt6A2z6N6eyvCg4+GuqX0OYW3e1CWnx8?=
+ =?us-ascii?Q?QQrgDddm5Bm1GwYOL5skWD1OCg8cVC5sm8gtHg8YfJnFRwiwclLCtJHZH9e6?=
+ =?us-ascii?Q?3YvcrR7qcqY42RhvadHhu64dxjONIPfhbin7gemGmslKVUx0bGq+DUf0XBrn?=
+ =?us-ascii?Q?AkGIDwVuBOcjydQn1sw56M/p2hVQbG8xe9++3A7sHWsHbq4nitBzF04JeR5v?=
+ =?us-ascii?Q?T2OKt9AiezvzUhlHsTHgZqtfx71Vd2MMIfaRdW+oKqLMM+/abKV5rDhBSjCU?=
+ =?us-ascii?Q?8Q0I2FfTiABnURur/FqAyCrqFX8TQ8IHkueP6auy6IMknyAZknqffQBo6lMm?=
+ =?us-ascii?Q?m7o+KDDlbWIQpkOH776E+b7zvrpE+SRM+t6RUEq7IsHBiclzWFymVI/Bt5FC?=
+ =?us-ascii?Q?bKJ1EF55ZtjuMlW18ERZuM/oy2LJ9d1KBxOUm9JuljA/dWgG947cBoGjrEJH?=
+ =?us-ascii?Q?h0YVNZSmvhUG73pLTL4vihDKy1s0PiazVxCyutwDHf0UTGPkTu0K5d+LHsvm?=
+ =?us-ascii?Q?15aizF0bjewwte0bU+D1s/GaJC2+LU5QtdFTSQ+7Z32JatUpo/a0LaUMlMBj?=
+ =?us-ascii?Q?DqZ724aiSU6aJACj9DFO0CTXzl+BEgLmqEIzQUj3g5aRVNseg2LkSiZu8A?=
+ =?us-ascii?Q?=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1385476-88d2-4202-2b45-08dbf6c43e59
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2023 01:31:32.5728
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YFSY+sU7c+HkwpJbrzCZLHXvIYup22IJHSLiKe6PX9kmSLe1sjrlkXBTucN5e4K/NH3xs3soWXAidTRfsWISI9/C1U+OmXnDjWHuF2tO4IA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR10MB5916
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-06_22,2023-12-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 phishscore=0
+ bulkscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312070011
+X-Proofpoint-GUID: Z6aMkmvdI7RUv8FifeERjNejsByxfGuU
+X-Proofpoint-ORIG-GUID: Z6aMkmvdI7RUv8FifeERjNejsByxfGuU
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 07:34:29PM +0100, Vlastimil Babka wrote:
-> This will eliminate a call between compilation units through
-> __kmem_cache_alloc_node() and allow better inlining of the allocation
-> fast path.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/slab.h        |   3 --
->  mm/slab_common.c | 119 ----------------------------------------------------
->  mm/slub.c        | 126 +++++++++++++++++++++++++++++++++++++++++++++++++++----
->  3 files changed, 118 insertions(+), 130 deletions(-)
-> 
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 7d7cc7af614e..54deeb0428c6 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -416,9 +416,6 @@ kmalloc_slab(size_t size, gfp_t flags, unsigned long caller)
->  	return kmalloc_caches[kmalloc_type(flags, caller)][index];
->  }
->  
-> -void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
-> -			      int node, size_t orig_size,
-> -			      unsigned long caller);
->  gfp_t kmalloc_fix_flags(gfp_t flags);
->  
->  /* Functions provided by the slab allocators */
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 31ade17a7ad9..238293b1dbe1 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -936,50 +936,6 @@ void __init create_kmalloc_caches(slab_flags_t flags)
->  	slab_state = UP;
->  }
->  
-> -static void *__kmalloc_large_node(size_t size, gfp_t flags, int node);
-> -static __always_inline
-> -void *__do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller)
-> -{
-> -	struct kmem_cache *s;
-> -	void *ret;
-> -
-> -	if (unlikely(size > KMALLOC_MAX_CACHE_SIZE)) {
-> -		ret = __kmalloc_large_node(size, flags, node);
-> -		trace_kmalloc(caller, ret, size,
-> -			      PAGE_SIZE << get_order(size), flags, node);
-> -		return ret;
-> -	}
-> -
-> -	if (unlikely(!size))
-> -		return ZERO_SIZE_PTR;
-> -
-> -	s = kmalloc_slab(size, flags, caller);
-> -
-> -	ret = __kmem_cache_alloc_node(s, flags, node, size, caller);
-> -	ret = kasan_kmalloc(s, ret, size, flags);
-> -	trace_kmalloc(caller, ret, size, s->size, flags, node);
-> -	return ret;
-> -}
-> -
-> -void *__kmalloc_node(size_t size, gfp_t flags, int node)
-> -{
-> -	return __do_kmalloc_node(size, flags, node, _RET_IP_);
-> -}
-> -EXPORT_SYMBOL(__kmalloc_node);
-> -
-> -void *__kmalloc(size_t size, gfp_t flags)
-> -{
-> -	return __do_kmalloc_node(size, flags, NUMA_NO_NODE, _RET_IP_);
-> -}
-> -EXPORT_SYMBOL(__kmalloc);
-> -
-> -void *__kmalloc_node_track_caller(size_t size, gfp_t flags,
-> -				  int node, unsigned long caller)
-> -{
-> -	return __do_kmalloc_node(size, flags, node, caller);
-> -}
-> -EXPORT_SYMBOL(__kmalloc_node_track_caller);
-> -
->  /**
->   * __ksize -- Report full size of underlying allocation
->   * @object: pointer to the object
-> @@ -1016,30 +972,6 @@ size_t __ksize(const void *object)
->  	return slab_ksize(folio_slab(folio)->slab_cache);
->  }
->  
-> -void *kmalloc_trace(struct kmem_cache *s, gfp_t gfpflags, size_t size)
-> -{
-> -	void *ret = __kmem_cache_alloc_node(s, gfpflags, NUMA_NO_NODE,
-> -					    size, _RET_IP_);
-> -
-> -	trace_kmalloc(_RET_IP_, ret, size, s->size, gfpflags, NUMA_NO_NODE);
-> -
-> -	ret = kasan_kmalloc(s, ret, size, gfpflags);
-> -	return ret;
-> -}
-> -EXPORT_SYMBOL(kmalloc_trace);
-> -
-> -void *kmalloc_node_trace(struct kmem_cache *s, gfp_t gfpflags,
-> -			 int node, size_t size)
-> -{
-> -	void *ret = __kmem_cache_alloc_node(s, gfpflags, node, size, _RET_IP_);
-> -
-> -	trace_kmalloc(_RET_IP_, ret, size, s->size, gfpflags, node);
-> -
-> -	ret = kasan_kmalloc(s, ret, size, gfpflags);
-> -	return ret;
-> -}
-> -EXPORT_SYMBOL(kmalloc_node_trace);
-> -
->  gfp_t kmalloc_fix_flags(gfp_t flags)
->  {
->  	gfp_t invalid_mask = flags & GFP_SLAB_BUG_MASK;
-> @@ -1052,57 +984,6 @@ gfp_t kmalloc_fix_flags(gfp_t flags)
->  	return flags;
->  }
->  
-> -/*
-> - * To avoid unnecessary overhead, we pass through large allocation requests
-> - * directly to the page allocator. We use __GFP_COMP, because we will need to
-> - * know the allocation order to free the pages properly in kfree.
-> - */
-> -
-> -static void *__kmalloc_large_node(size_t size, gfp_t flags, int node)
-> -{
-> -	struct page *page;
-> -	void *ptr = NULL;
-> -	unsigned int order = get_order(size);
-> -
-> -	if (unlikely(flags & GFP_SLAB_BUG_MASK))
-> -		flags = kmalloc_fix_flags(flags);
-> -
-> -	flags |= __GFP_COMP;
-> -	page = alloc_pages_node(node, flags, order);
-> -	if (page) {
-> -		ptr = page_address(page);
-> -		mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-> -				      PAGE_SIZE << order);
-> -	}
-> -
-> -	ptr = kasan_kmalloc_large(ptr, size, flags);
-> -	/* As ptr might get tagged, call kmemleak hook after KASAN. */
-> -	kmemleak_alloc(ptr, size, 1, flags);
-> -	kmsan_kmalloc_large(ptr, size, flags);
-> -
-> -	return ptr;
-> -}
-> -
-> -void *kmalloc_large(size_t size, gfp_t flags)
-> -{
-> -	void *ret = __kmalloc_large_node(size, flags, NUMA_NO_NODE);
-> -
-> -	trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << get_order(size),
-> -		      flags, NUMA_NO_NODE);
-> -	return ret;
-> -}
-> -EXPORT_SYMBOL(kmalloc_large);
-> -
-> -void *kmalloc_large_node(size_t size, gfp_t flags, int node)
-> -{
-> -	void *ret = __kmalloc_large_node(size, flags, node);
-> -
-> -	trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << get_order(size),
-> -		      flags, node);
-> -	return ret;
-> -}
-> -EXPORT_SYMBOL(kmalloc_large_node);
-> -
->  #ifdef CONFIG_SLAB_FREELIST_RANDOM
->  /* Randomize a generic freelist */
->  static void freelist_randomize(unsigned int *list,
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 2baa9e94d9df..d6bc15929d22 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -3851,14 +3851,6 @@ void *kmem_cache_alloc_lru(struct kmem_cache *s, struct list_lru *lru,
->  }
->  EXPORT_SYMBOL(kmem_cache_alloc_lru);
->  
-> -void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
-> -			      int node, size_t orig_size,
-> -			      unsigned long caller)
-> -{
-> -	return slab_alloc_node(s, NULL, gfpflags, node,
-> -			       caller, orig_size);
-> -}
-> -
->  /**
->   * kmem_cache_alloc_node - Allocate an object on the specified node
->   * @s: The cache to allocate from.
-> @@ -3882,6 +3874,124 @@ void *kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags, int node)
->  }
->  EXPORT_SYMBOL(kmem_cache_alloc_node);
->  
-> +/*
-> + * To avoid unnecessary overhead, we pass through large allocation requests
-> + * directly to the page allocator. We use __GFP_COMP, because we will need to
-> + * know the allocation order to free the pages properly in kfree.
-> + */
-> +static void *__kmalloc_large_node(size_t size, gfp_t flags, int node)
-> +{
-> +	struct page *page;
-> +	void *ptr = NULL;
-> +	unsigned int order = get_order(size);
-> +
-> +	if (unlikely(flags & GFP_SLAB_BUG_MASK))
-> +		flags = kmalloc_fix_flags(flags);
-> +
-> +	flags |= __GFP_COMP;
-> +	page = alloc_pages_node(node, flags, order);
-> +	if (page) {
-> +		ptr = page_address(page);
-> +		mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-> +				      PAGE_SIZE << order);
-> +	}
-> +
-> +	ptr = kasan_kmalloc_large(ptr, size, flags);
-> +	/* As ptr might get tagged, call kmemleak hook after KASAN. */
-> +	kmemleak_alloc(ptr, size, 1, flags);
-> +	kmsan_kmalloc_large(ptr, size, flags);
-> +
-> +	return ptr;
-> +}
-> +
-> +void *kmalloc_large(size_t size, gfp_t flags)
-> +{
-> +	void *ret = __kmalloc_large_node(size, flags, NUMA_NO_NODE);
-> +
-> +	trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << get_order(size),
-> +		      flags, NUMA_NO_NODE);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(kmalloc_large);
-> +
-> +void *kmalloc_large_node(size_t size, gfp_t flags, int node)
-> +{
-> +	void *ret = __kmalloc_large_node(size, flags, node);
-> +
-> +	trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << get_order(size),
-> +		      flags, node);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(kmalloc_large_node);
-> +
-> +static __always_inline
-> +void *__do_kmalloc_node(size_t size, gfp_t flags, int node,
-> +			unsigned long caller)
-> +{
-> +	struct kmem_cache *s;
-> +	void *ret;
-> +
-> +	if (unlikely(size > KMALLOC_MAX_CACHE_SIZE)) {
-> +		ret = __kmalloc_large_node(size, flags, node);
-> +		trace_kmalloc(caller, ret, size,
-> +			      PAGE_SIZE << get_order(size), flags, node);
-> +		return ret;
-> +	}
-> +
-> +	if (unlikely(!size))
-> +		return ZERO_SIZE_PTR;
-> +
-> +	s = kmalloc_slab(size, flags, caller);
-> +
-> +	ret = slab_alloc_node(s, NULL, flags, node, caller, size);
-> +	ret = kasan_kmalloc(s, ret, size, flags);
-> +	trace_kmalloc(caller, ret, size, s->size, flags, node);
-> +	return ret;
-> +}
-> +
-> +void *__kmalloc_node(size_t size, gfp_t flags, int node)
-> +{
-> +	return __do_kmalloc_node(size, flags, node, _RET_IP_);
-> +}
-> +EXPORT_SYMBOL(__kmalloc_node);
-> +
-> +void *__kmalloc(size_t size, gfp_t flags)
-> +{
-> +	return __do_kmalloc_node(size, flags, NUMA_NO_NODE, _RET_IP_);
-> +}
-> +EXPORT_SYMBOL(__kmalloc);
-> +
-> +void *__kmalloc_node_track_caller(size_t size, gfp_t flags,
-> +				  int node, unsigned long caller)
-> +{
-> +	return __do_kmalloc_node(size, flags, node, caller);
-> +}
-> +EXPORT_SYMBOL(__kmalloc_node_track_caller);
-> +
-> +void *kmalloc_trace(struct kmem_cache *s, gfp_t gfpflags, size_t size)
-> +{
-> +	void *ret = slab_alloc_node(s, NULL, gfpflags, NUMA_NO_NODE,
-> +					    _RET_IP_, size);
-> +
-> +	trace_kmalloc(_RET_IP_, ret, size, s->size, gfpflags, NUMA_NO_NODE);
-> +
-> +	ret = kasan_kmalloc(s, ret, size, gfpflags);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(kmalloc_trace);
-> +
-> +void *kmalloc_node_trace(struct kmem_cache *s, gfp_t gfpflags,
-> +			 int node, size_t size)
-> +{
-> +	void *ret = slab_alloc_node(s, NULL, gfpflags, node, _RET_IP_, size);
-> +
-> +	trace_kmalloc(_RET_IP_, ret, size, s->size, gfpflags, node);
-> +
-> +	ret = kasan_kmalloc(s, ret, size, gfpflags);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(kmalloc_node_trace);
-> +
->  static noinline void free_to_partial_list(
->  	struct kmem_cache *s, struct slab *slab,
->  	void *head, void *tail, int bulk_cnt,
-> 
-> -- 
 
-Looks good to me,
-Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Paul E. McKenney <paulmck@kernel.org> writes:
 
-> 2.42.1
-> 
-> 
+> On Tue, Nov 28, 2023 at 06:04:33PM +0100, Thomas Gleixner wrote:
+>> Paul!
+>>
+>> On Mon, Nov 20 2023 at 16:38, Paul E. McKenney wrote:
+>> > But...
+>> >
+>> > Suppose we have a long-running loop in the kernel that regularly
+>> > enables preemption, but only momentarily.  Then the added
+>> > rcu_flavor_sched_clock_irq() check would almost always fail, making
+>> > for extremely long grace periods.  Or did I miss a change that causes
+>> > preempt_enable() to help RCU out?
+>>
+>> So first of all this is not any different from today and even with
+>> RCU_PREEMPT=y a tight loop:
+>>
+>>     do {
+>>     	preempt_disable();
+>>         do_stuff();
+>>         preempt_enable();
+>>     }
+>>
+>> will not allow rcu_flavor_sched_clock_irq() to detect QS reliably. All
+>> it can do is to force reschedule/preemption after some time, which in
+>> turn ends up in a QS.
+>
+> True, but we don't run RCU_PREEMPT=y on the fleet.  So although this
+> argument should offer comfort to those who would like to switch from
+> forced preemption to lazy preemption, it doesn't help for those of us
+> running NONE/VOLUNTARY.
+>
+> I can of course compensate if need be by making RCU more aggressive with
+> the resched_cpu() hammer, which includes an IPI.  For non-nohz_full CPUs,
+> it currently waits halfway to the stall-warning timeout.
+>
+>> The current NONE/VOLUNTARY models, which imply RCU_PRREMPT=n cannot do
+>> that at all because the preempt_enable() is a NOOP and there is no
+>> preemption point at return from interrupt to kernel.
+>>
+>>     do {
+>>         do_stuff();
+>>     }
+>>
+>> So the only thing which makes that "work" is slapping a cond_resched()
+>> into the loop:
+>>
+>>     do {
+>>         do_stuff();
+>>         cond_resched();
+>>     }
+>
+> Yes, exactly.
+>
+>> But the whole concept behind LAZY is that the loop will always be:
+>>
+>>     do {
+>>     	preempt_disable();
+>>         do_stuff();
+>>         preempt_enable();
+>>     }
+>>
+>> and the preempt_enable() will always be a functional preemption point.
+>
+> Understood.  And if preempt_enable() can interact with RCU when requested,
+> I would expect that this could make quite a few calls to cond_resched()
+> provably unnecessary.  There was some discussion of this:
+>
+> https://lore.kernel.org/all/0d6a8e80-c89b-4ded-8de1-8c946874f787@paulmck-laptop/
+>
+> There were objections to an earlier version.  Is this version OK?
+
+Copying that version here for discussion purposes:
+
+        #define preempt_enable() \
+        do { \
+                barrier(); \
+                if (unlikely(preempt_count_dec_and_test())) \
+                        __preempt_schedule(); \
+                else if (!IS_ENABLED(CONFIG_PREEMPT_RCU) && \
+                        (preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK | HARDIRQ_MASK | NMI_MASK) == PREEMPT_OFFSET) && \
+                        !irqs_disabled()) \
+        ) \
+                                rcu_all_qs(); \
+        } while (0)
+
+(sched_feat is not exposed outside the scheduler so I'm using the
+!CONFIG_PREEMPT_RCU version here.)
+
+
+I have two-fold objections to this: as PeterZ pointed out, this is
+quite a bit heavier than the fairly minimal preempt_enable() -- both
+conceptually where the preemption logic now needs to know about when
+to check for a specific RCU quiescience state, and in terms of code
+size (seems to add about a cacheline worth) to every preempt_enable()
+site.
+
+If we end up needing this, is it valid to just optimistically check if
+a quiescent state needs to be registered (see below)?
+Though this version exposes rcu_data.rcu_urgent_qs outside RCU but maybe
+we can encapsulate that in linux/rcupdate.h.
+
+For V1 will go with this simple check in rcu_flavor_sched_clock_irq()
+and see where that gets us:
+
+>         if (this_cpu_read(rcu_data.rcu_urgent_qs))
+>         	set_need_resched();
+
+---
+diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+index 9aa6358a1a16..d8139cda8814 100644
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -226,9 +226,11 @@ do { \
+ #ifdef CONFIG_PREEMPTION
+ #define preempt_enable() \
+ do { \
+ 	barrier(); \
+ 	if (unlikely(preempt_count_dec_and_test())) \
+ 		__preempt_schedule(); \
++	else if (unlikely(raw_cpu_read(rcu_data.rcu_urgent_qs))) \
++		rcu_all_qs_check();
+ } while (0)
+
+ #define preempt_enable_notrace() \
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 41021080ad25..2ba2743d7ba3 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -887,6 +887,17 @@ void rcu_all_qs(void)
+ }
+ EXPORT_SYMBOL_GPL(rcu_all_qs);
+
++void rcu_all_qs_check(void)
++{
++	if (((preempt_count() &
++	      (PREEMPT_MASK | SOFTIRQ_MASK | HARDIRQ_MASK | NMI_MASK)) == PREEMPT_OFFSET) && \
++	      !irqs_disabled())
++
++		  rcu_all_qs();
++}
++EXPORT_SYMBOL_GP(rcu_all_qs);
++
++
+ /*
+  * Note a PREEMPTION=n context switch. The caller must have disabled interrupts.
+  */
+
+
+--
+ankur
