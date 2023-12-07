@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7AC808790
+	by mail.lfdr.de (Postfix) with ESMTP id DA232808792
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379248AbjLGMTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 07:19:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36900 "EHLO
+        id S1379264AbjLGMTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:19:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbjLGMTf (ORCPT
+        with ESMTP id S232532AbjLGMTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Dec 2023 07:19:35 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322C7DD
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:19:40 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a1f47f91fc0so30382266b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 04:19:40 -0800 (PST)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F920D4A
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:19:41 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a1eb422b412so125291966b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 04:19:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701951578; x=1702556378; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701951579; x=1702556379; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fGHV88NHoP25qmFC88bijzEotkjq5kSrfnrsf5gnWnU=;
-        b=dLWHGeF2Kxc+sKIpXOC3IxOOG8eUs2xcjCAfWRGg39E9LWY2+JTPt6x7/qsiQnnm6N
-         PXh0ENPNMrMTn2pELorfodHA7hT9lpm/GECg/Pj17w32FVYzxKTZrfcwbrSSkxiPxG7j
-         kJk0LYrdZy20Sk31kWaSWdIi13Xob/hoHkB2vhP5ZZ4QNsTGYCcJSECpAn9komfivcI3
-         hxJHC7dZhmdXzp7mbtKYMSQc1xnTWWS1+UHIgUy8e6eaakCfelCU4CVHwrxG9QKtSw2O
-         OKtQ0319KA1X7RJJEyo86INnCdvwiJ7MpD4M0uC46r/boYE2mAfCW6idBYdOcmu+HUAf
-         P9/g==
+        bh=7On32Ao7taWCroDJzXI//r1UxZ6SeERvRI44tfdfGvE=;
+        b=UwvpqHpzs6/+ieL8wNn4QJnj7vChjexHVFRCh1UxYg+56OpiXmpkyuKLsTNFGn+sSr
+         gyCYWvPZVlG+7jtKwDyrb1PPw46oU/5VWtHUdpAc+13Bq345w74Ff5ZpJMc3GWYHW1sm
+         DWCeGvEJISZdxa4yOg7ISfW59/A22RDHv0juxqhgIeJpkJaEiZWobxABZlu3IevfJ/w0
+         OFtK7eMpiMY1Yw4KIxjqcKiFVao+o7SKzOh0e72wKa4ONc3FZbG+0OA22FJhEolgrxLH
+         O1ccMi80jr1NxlbLTEAM41Coruy2mOyh4hssKMTqo6R6u/DcBek3YIQrj+3L62qn2F1K
+         Of/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701951578; x=1702556378;
+        d=1e100.net; s=20230601; t=1701951579; x=1702556379;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fGHV88NHoP25qmFC88bijzEotkjq5kSrfnrsf5gnWnU=;
-        b=e18JagMrttrNahOKNn51CJ231Q6CtaH9lr0+TP3Xh1oGisEq5nIOtsTqFrfrAkr0iS
-         wRA0/RaDHNsEPeutN0CGPQ0vkS7pgtpDUU1Ck8msjkc1pfdn+0asJ6Wm5/ZK/ci7wVFW
-         gtoXbfdEYNmSQWo9QPlUsIRfB+Rc8sRmHZrw6ckvhV5zhirbvkXBdIRLl4P51c9b0qOW
-         lt0eoLoBbP3+PoAAFJn39vOUGZOgoZn12jwDrwdtSdBig4IryLCM5m335wJrmtaFnUAA
-         FY4lVTnbhaK4OuwRB79LyBEhbyUC1MPeoMI9NREb+lq+cXZFoBD/s9xxXp/dGD+AIjxy
-         pUPQ==
-X-Gm-Message-State: AOJu0YxgUjhnHKYXbRdQPJ31ZGzOktXuUsk3aJXrE0q3Awu2576lnnwp
-        uTSwkNGiPvDUAig8WMzJlw63hqgfGn2keCIM2hk=
-X-Google-Smtp-Source: AGHT+IFnTNxL6mh9XIHt4yGAmG86ARKFNFDsH5YoLZO8tS2u5z0k4nEFYqklzW7NXB11j3XKRnCRNA==
-X-Received: by 2002:a17:907:7190:b0:9c3:e66e:2006 with SMTP id zv16-20020a170907719000b009c3e66e2006mr1235143ejb.9.1701951578651;
-        Thu, 07 Dec 2023 04:19:38 -0800 (PST)
+        bh=7On32Ao7taWCroDJzXI//r1UxZ6SeERvRI44tfdfGvE=;
+        b=cYKH+oA/hJxXfd5+K8UkUkSNJej6cYgLP52b7orXztPNvYb0+XIYErAOK36tIgWb/I
+         aSt04JqmjMSbi+rQPDF2TrZZNTJ6d3yYGw9s1WbUFL+tWp9cXoGaRtUYtdJHwRWb/PiK
+         NF6sHP1LPuATwZA0urCBIF/giFmeKuxbvM14IwpPuh8ABRksF+cFYop/bErTmpLtbTl4
+         gOW0XzjiZ2RqQh2y09RAw9Kqod47wbuq9+mWU5Ke9lwYyQzH74XjHj9j8FAIkfeMkTb4
+         rNGzjiBOQYx1qL5YfyKEC9W67p1NReDvAEdeOkKyW0gDNRBQ3FoMlRjZVsrkUdBPdr83
+         fneg==
+X-Gm-Message-State: AOJu0YzPjnwdkjboPup0xk432tyrfHYgDW+B0VkqQDT19of+NKVrPXTP
+        xBZVf3LOi5TSw/uZM1ogsCvoKA==
+X-Google-Smtp-Source: AGHT+IF61+QjWE2AWz41aasoYB8cRvYzAzPEIV5U9doaUwbMp6/Fx2hixokB3I8/2YAu02VxHQVUYw==
+X-Received: by 2002:a17:906:bc4f:b0:a1d:6780:8fef with SMTP id s15-20020a170906bc4f00b00a1d67808fefmr2619897ejv.72.1701951579736;
+        Thu, 07 Dec 2023 04:19:39 -0800 (PST)
 Received: from [127.0.1.1] ([82.79.186.233])
-        by smtp.gmail.com with ESMTPSA id f24-20020a170906c09800b00a1e814b7155sm761394ejz.62.2023.12.07.04.19.37
+        by smtp.gmail.com with ESMTPSA id f24-20020a170906c09800b00a1e814b7155sm761394ejz.62.2023.12.07.04.19.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 04:19:38 -0800 (PST)
+        Thu, 07 Dec 2023 04:19:39 -0800 (PST)
 From:   Abel Vesa <abel.vesa@linaro.org>
-Date:   Thu, 07 Dec 2023 14:19:12 +0200
-Subject: [PATCH v3 3/7] phy: qcom-qmp: pcs: Add v7 register offsets
+Date:   Thu, 07 Dec 2023 14:19:13 +0200
+Subject: [PATCH v3 4/7] phy: qcom-qmp: pcs-usb: Add v7 register offsets
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v3-3-dfd1c375ef61@linaro.org>
+Message-Id: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v3-4-dfd1c375ef61@linaro.org>
 References: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v3-0-dfd1c375ef61@linaro.org>
 In-Reply-To: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v3-0-dfd1c375ef61@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
@@ -68,20 +68,20 @@ To:     Andy Gross <agross@kernel.org>,
 Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
         linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2265; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=Ge9uHoDuXXvAQ55h+Et8Z8vF4p7+wEMKdaHgdMwEqGk=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlcbhPfy4psDwYMoLc3DyHe+itq1ML0mzViRBit
- o0rlPBGk3OJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZXG4TwAKCRAbX0TJAJUV
- VmL1D/0WeT+S8R8U4i6vg8xjGyNRgBnA4s1WFpuYFKmUOrqyfPkBs84o/+D82xusp/RzemSy5eo
- SuRaHtH9fQr33m2Phe1d4PL12ggWJOCTkvbMalx22cOY9zuTvmJ4gatyCHsDW/2ldI0JWuTW17y
- sYCkdc2TalFLJ9sQwo0jKOhUZng1+j0I1VR02sVricz+A4KtDVtxcT6GxnNWNaEw7Y9blCyWDYT
- 5szs0492ExTBQubamm/2zwF9JlO4HZRIRahY85L0UOc99jl/Mdje1oXpgYE9BSTlkUN7BOZwCjM
- RlqZM4DZyPc6UeKQmmzqtdg3mSYRI3MJtyMi+plSJTmnIn+E1lM+oim84AMQ3xY7EbeTXHCXgk1
- ua2BpbaBB+S+bD8ElVdGl4714PSDalUblXWB/NdRExGC3sPJSd0A1HMBwDFVVnUPl9yoax4rwPS
- nTLLj+dU7Ip1HZts2WlJD6W++o6QYeFDoCAZl8SXx+IyThOTeJE04Tt+TKdKosscpmLz47e8w7F
- +U48kLyMG+By8W3nuxmn8wMjeylS6fWIT+VHLLwkCRg9/XZIZs9GYoENpK/VOy5o16claG0/jSy
- L8WjpBSWzo8pUD59SxsWx5EeRBQfA3NI+pXSAftsYiUeOgtIyUrfOJnuKHYpgVySEpgm/04hf+r
- VKbxPGS5HluFI+Q==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1132; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=094Egkf62OVqF7D0untdpemc272H0gSJ6WbJhC5msA4=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlcbhQMxZFgnrlpDPmWBSqqG6wCOokWQjV8TfhW
+ YkzQvmz4pOJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZXG4UAAKCRAbX0TJAJUV
+ Vr4rD/9LuG7frASaJswBxrabFG8ybpg4BmpxcBxFemfvMleShmPjSXU6i0D91hXkwFBKpWXgeFM
+ 750TMGcVrZQIDjV05bc5DwxAkGcbQPUX+zGHy6RsT8fZl5HVHn1h+ZCsYfAWd6T37AWNT/ju4Zo
+ MsFyAqkHeSWAp/CiTyonIKIYBSPMCs9ohNrLcB1EXQgJCTrCwgKCfSHaq0cVOgV4gkPKhr+scL1
+ faadenslWvQMLcFCiIJuJV939PnHavI6kTHc7TRG5QrgzJfOUNGYZqmZzE6p72gcyakznSc/KSQ
+ YVaPe2HfGD3sx+1k6zuM74Ddf89NoGhRwuJdJ5wqSRg69VSZ2LTThGqJJmby8o5UTIQ19ohTfr9
+ 9jYQPCjFYui7I5RRxISp1qlvNzuFNF4BiCTrVVCcj8GjFgL/rr7EDBkAHH+tiRqTQYS09vF9TUB
+ 5cViI6ULLuLNM7EoWJIK8opvAjPX3+OvN6U3ob/qS8iVkbj8TJeUyuaNpElkzUWR+iBuMAxv8Qb
+ YcZFVtPTBCl1zE4iabH+BTqnpwCfZ0H3T33KlOUva1WvYN8A4XP2BmZh36bDsC0gWOwnRw+kBNx
+ AhZlBum8Wpj3wTTebkHrXXkNRWs98UsUYcAeXvad2a9xb/ujopTQS4bC+dtkyqm+gzPzs5xz7py
+ DE4GK5p7nVKiwxg==
 X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
  fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -94,66 +94,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The X1E80100 platform bumps the HW version of QMP phy to v7 for USB,
-and PCIe. Add the new PCS offsets in a dedicated header file.
+The X1E80100 platform bumps the HW version of QMP phy to v7 for USB.
+Add the new PCS USB specific offsets in a dedicated header file.
 
 Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 ---
- drivers/phy/qualcomm/phy-qcom-qmp-pcs-v7.h | 32 ++++++++++++++++++++++++++++++
- drivers/phy/qualcomm/phy-qcom-qmp.h        |  2 ++
- 2 files changed, 34 insertions(+)
+ drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v7.h | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v7.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v7.h
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v7.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v7.h
 new file mode 100644
-index 000000000000..c7759892ed2e
+index 000000000000..24368d45ae76
 --- /dev/null
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v7.h
-@@ -0,0 +1,32 @@
++++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v7.h
+@@ -0,0 +1,17 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
 + * Copyright (c) 2023, Linaro Limited
 + */
 +
-+#ifndef QCOM_PHY_QMP_PCS_V7_H_
-+#define QCOM_PHY_QMP_PCS_V7_H_
++#ifndef QCOM_PHY_QMP_PCS_USB_V7_H_
++#define QCOM_PHY_QMP_PCS_USB_V7_H_
 +
-+/* Only for QMP V7 PHY - USB/PCIe PCS registers */
-+#define QPHY_V7_PCS_SW_RESET			0x000
-+#define QPHY_V7_PCS_PCS_STATUS1			0x014
-+#define QPHY_V7_PCS_POWER_DOWN_CONTROL		0x040
-+#define QPHY_V7_PCS_START_CONTROL		0x044
-+#define QPHY_V7_PCS_POWER_STATE_CONFIG1		0x090
-+#define QPHY_V7_PCS_LOCK_DETECT_CONFIG1		0x0c4
-+#define QPHY_V7_PCS_LOCK_DETECT_CONFIG2		0x0c8
-+#define QPHY_V7_PCS_LOCK_DETECT_CONFIG3		0x0cc
-+#define QPHY_V7_PCS_LOCK_DETECT_CONFIG6		0x0d8
-+#define QPHY_V7_PCS_REFGEN_REQ_CONFIG1		0x0dc
-+#define QPHY_V7_PCS_RX_SIGDET_LVL		0x188
-+#define QPHY_V7_PCS_RCVR_DTCT_DLY_P1U2_L	0x190
-+#define QPHY_V7_PCS_RCVR_DTCT_DLY_P1U2_H	0x194
-+#define QPHY_V7_PCS_RATE_SLEW_CNTRL1		0x198
-+#define QPHY_V7_PCS_CDR_RESET_TIME		0x1b0
-+#define QPHY_V7_PCS_ALIGN_DETECT_CONFIG1	0x1c0
-+#define QPHY_V7_PCS_ALIGN_DETECT_CONFIG2	0x1c4
-+#define QPHY_V7_PCS_PCS_TX_RX_CONFIG		0x1d0
-+#define QPHY_V7_PCS_EQ_CONFIG1			0x1dc
-+#define QPHY_V7_PCS_EQ_CONFIG2			0x1e0
-+#define QPHY_V7_PCS_EQ_CONFIG5			0x1ec
++#define QPHY_V7_PCS_USB3_POWER_STATE_CONFIG1		0x00
++#define QPHY_V7_PCS_USB3_AUTONOMOUS_MODE_CTRL		0x08
++#define QPHY_V7_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR		0x14
++#define QPHY_V7_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL	0x18
++#define QPHY_V7_PCS_USB3_RXEQTRAINING_DFE_TIME_S2	0x3c
++#define QPHY_V7_PCS_USB3_RCVR_DTCT_DLY_U3_L		0x40
++#define QPHY_V7_PCS_USB3_RCVR_DTCT_DLY_U3_H		0x44
 +
 +#endif
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.h b/drivers/phy/qualcomm/phy-qcom-qmp.h
-index 71f063f4a56e..21f6a56e7ae3 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp.h
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp.h
-@@ -44,6 +44,8 @@
- 
- #include "phy-qcom-qmp-pcs-v6_20.h"
- 
-+#include "phy-qcom-qmp-pcs-v7.h"
-+
- /* Only for QMP V3 & V4 PHY - DP COM registers */
- #define QPHY_V3_DP_COM_PHY_MODE_CTRL			0x00
- #define QPHY_V3_DP_COM_SW_RESET				0x04
 
 -- 
 2.34.1
