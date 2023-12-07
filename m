@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 798F9808675
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 489CE808679
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbjLGLN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 06:13:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
+        id S232405AbjLGLNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 06:13:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232364AbjLGLNY (ORCPT
+        with ESMTP id S232388AbjLGLNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 06:13:24 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6104810CC;
-        Thu,  7 Dec 2023 03:13:29 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3333131e08dso927688f8f.2;
-        Thu, 07 Dec 2023 03:13:29 -0800 (PST)
+        Thu, 7 Dec 2023 06:13:25 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D158F10D0;
+        Thu,  7 Dec 2023 03:13:30 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3332fc9b9b2so720452f8f.1;
+        Thu, 07 Dec 2023 03:13:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701947608; x=1702552408; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NY+6+R8v4aRIvSFz5uHIjnM8cd0n2dPdBglyETOqCeY=;
-        b=BzBXI2MHrJ4pDxQPfWQP9eEuod9/Yr/x7s6jE9mE8r+BLv1xWzA9EEVG4bHejEae15
-         mNcCa2XrjDEdo8U1Jo+GdJrPI5ZSI9/fJ8231tZRcwINBVXub6WGEGSD7mVcQyoFom01
-         P6nk6NUVdIEIypyQ36fp89877dygaNC9Ov/AM+Ns7QFunDaGdNP7+qCWniGpuuXBUNIj
-         jnuOJHARS2GV9P+LLr+I/MjTHKg0QVPWdmL6PtogY8hINTnOne1RoyDfJqngBZ4NLD4O
-         QP5e2g67M/q90mWC+zzu3cm9jlx3f7k5fIbJ0o71tvxorFuL/bN64insX7k7c6Ez4otC
-         zUjA==
+        d=gmail.com; s=20230601; t=1701947609; x=1702552409; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cd1jhV+Kh/V8UGgnPN8H8ix4gV6UKpJNpQeBveVjzsY=;
+        b=aIG/xV2AYhp7Od0dE99nZ9C9ooHTr6NN5Eo0hPCi5tbzTxei6XY/KI0QxNzYiIm3XD
+         kllIo/067+HRjx5tUGy6l3od1wXrUuIBKraiNJi8dFb/f9vXnPzY2SffbWy/gi4T9WPV
+         XilP+LQukW5SR+p1TBHUnOtrL+mwNTYFmbMG8YhJWhIh0rpJ5qIeK5n2WCwhgXLbAgv/
+         MMZXkrR7iWWkm+XG3B4NrKFtL06PR6uzPacoCQfbGNFtMrvUXHIa8/omAXtBqqT5+4+C
+         lqa62LunzrJgz97CU+OFdZF0KhqBNdJzvU+/Iz0bzBIPogDqmrqlBKv1qII0Y4jNApVZ
+         +ICw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701947608; x=1702552408;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NY+6+R8v4aRIvSFz5uHIjnM8cd0n2dPdBglyETOqCeY=;
-        b=qWPchIpm163CM8n7KaACUCJrEO9tSHFZ/K3cHaZqY+SLhYSEI1cMnpoBQSSHpJskPj
-         nXojKr6wGPl+mcidZ+vueeV03x8Oze+U8HqH2nK0Fc5FtiTXkxdzuEP2pKZVa81KYgmf
-         jRuH4S8trZNmlvzhK6ObL68EEUBvG1UNM/wKnULTh4BPb5siO8pN34qFWjB3HBaTWhEI
-         3A8R/r7QrkbgjAnH/daUcMmolbDB0O30pEfyJK+U07GBJwoR1cll4jjhvlPHIS3uzeer
-         gMj5g+n6xZ3yq8jYV6BZmm1XrML6MVUejMMgUAXLC7rL7vHsyy0hq065tURuui2/BdTq
-         mzuA==
-X-Gm-Message-State: AOJu0YyqhTr+345TcTIDWM3sROURzqv7bTUzkxqQViNHMZUK1Z4alJId
-        OoUX2bf9yrgll4Whq0OKFIw=
-X-Google-Smtp-Source: AGHT+IEwKw1JVypNLO2jgvKNhNQ/YOGneVAgciUWuj/XaC9Fss2MjipcrbFcF+6gAEFLb9MlHRSbuQ==
-X-Received: by 2002:a5d:4fca:0:b0:333:387b:687b with SMTP id h10-20020a5d4fca000000b00333387b687bmr1203565wrw.34.1701947607741;
-        Thu, 07 Dec 2023 03:13:27 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701947609; x=1702552409;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cd1jhV+Kh/V8UGgnPN8H8ix4gV6UKpJNpQeBveVjzsY=;
+        b=dZ47I9ub2+te8GHqgfx4Tz9BRljT36bZYnkluc2vI60AzGXKA9sykyPj2TWVHFaJHS
+         5NqVOCp6xMT2Z9xgCbm0nSXwIekbhqkxCvkUs/bmmcHLg2Y4y0GL+z/9lNHw/RX0/uN9
+         k5LPXJx4/3A07ot1W5l5VlSwGc5cq66FjV8dZjiXRT0jS12P9BW3vDfpHT3V3mitsyjO
+         5xuxGC0+LUeYyD0Dg+vjbolKcdtfN9GJ23ZN8bA9s0V84x+jNHzVuwep7fyJI3nTRXeF
+         Vr90HR48pxcpt8xftRZbR0lOKYvcuE44RZzy3P6U5hc0RHiATpo5I+fCIRulLXOdfut5
+         LGRg==
+X-Gm-Message-State: AOJu0YzaswXCbQ5n8BHDDR+g43r/YXRX7hDAaM6jjKDgpmr9urerl5CR
+        coyN6guHHhWnQTOtTggDyKk=
+X-Google-Smtp-Source: AGHT+IFv1ebmCk3N1x3Mxx6fv83N1AAOGffRf8mBXwhKza7hBzguDpGV7NiDcl/L/wezk+ucRBqHfQ==
+X-Received: by 2002:a5d:49d0:0:b0:333:4fd1:1c6b with SMTP id t16-20020a5d49d0000000b003334fd11c6bmr713944wrs.84.1701947609065;
+        Thu, 07 Dec 2023 03:13:29 -0800 (PST)
 Received: from eichest-laptop.toradex.int ([2a02:168:af72:0:5036:93fe:290b:56de])
-        by smtp.gmail.com with ESMTPSA id b10-20020a5d550a000000b003333541a5bdsm1166096wrv.80.2023.12.07.03.13.25
+        by smtp.gmail.com with ESMTPSA id b10-20020a5d550a000000b003333541a5bdsm1166096wrv.80.2023.12.07.03.13.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 03:13:26 -0800 (PST)
+        Thu, 07 Dec 2023 03:13:28 -0800 (PST)
 From:   Stefan Eichenberger <eichest@gmail.com>
 To:     nick@shmanahar.org, dmitry.torokhov@gmail.com, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -57,10 +58,12 @@ To:     nick@shmanahar.org, dmitry.torokhov@gmail.com, robh+dt@kernel.org,
 Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Stefan Eichenberger <stefan.eichenberger@toradex.com>
-Subject: [PATCH v1 0/2] Add a property to turn off the max touch controller in suspend mode
-Date:   Thu,  7 Dec 2023 12:12:58 +0100
-Message-Id: <20231207111300.80581-1-eichest@gmail.com>
+Subject: [PATCH v1 1/2] dt-bindings: input: atmel,maxtouch: add poweroff-in-suspend property
+Date:   Thu,  7 Dec 2023 12:12:59 +0100
+Message-Id: <20231207111300.80581-2-eichest@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231207111300.80581-1-eichest@gmail.com>
+References: <20231207111300.80581-1-eichest@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,23 +78,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
 
-Our hardware has a shared regulator that powers various peripherals such
-as the display, touch, USB hub, etc. Since the Maxtouch controller
-doesn't currently allow it to be turned off, this regulator has to stay
-on in suspend mode. This increases the overall power consumption. In
-order to turn off the controller when the system goes into suspend mode,
-this series adds a device tree property to the maxtouch driver that
-allows the controller to be turned off completely and ensurs that it can
-resume from the power off state.
+Add a new property to indicate that the device should be powered off in
+suspend mode.
 
-Stefan Eichenberger (2):
-  dt-bindings: input: atmel,maxtouch: add power-off-in-suspend property
-  Input: atmel_mxt_ts - support power off in suspend
+Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+---
+ Documentation/devicetree/bindings/input/atmel,maxtouch.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
- .../bindings/input/atmel,maxtouch.yaml        |  6 ++
- drivers/input/touchscreen/atmel_mxt_ts.c      | 72 ++++++++++++++-----
- 2 files changed, 61 insertions(+), 17 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
+index c40799355ed7..047a5101341c 100644
+--- a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
++++ b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
+@@ -87,6 +87,12 @@ properties:
+       - 2 # ATMEL_MXT_WAKEUP_GPIO
+     default: 0
+ 
++  atmel,poweroff-in-suspend:
++    description: |
++      When this property is set, all supplies are turned off when the system is
++      going to suspend.
++    type: boolean
++
+   wakeup-source:
+     type: boolean
+ 
 -- 
 2.40.1
 
