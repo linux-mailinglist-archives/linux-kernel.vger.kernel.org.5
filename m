@@ -2,60 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E77808AA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A34808AAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443234AbjLGOcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:32:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
+        id S235289AbjLGOdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:33:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232888AbjLGOcM (ORCPT
+        with ESMTP id S235568AbjLGOdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:32:12 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5034F121;
-        Thu,  7 Dec 2023 06:32:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701959537; x=1733495537;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=IMMsqc0K2X/JwCbUNgUXoJZ7VcmenzGdCa/931H1GNA=;
-  b=Vqro6IAHJ3j3wBBAfOwhxnjdwz3GyJquzm1k9f9TIhdsqBDOh5yb4UQi
-   qMqyT9aqwgLm5Mo8n0HX/ypS9o1oy36YmOZYrSWwwbAPk3TNmGiruDzJP
-   UKEmyZbIDHXWjX/m6MIgLhxHNDsIiwMjO9mvPHEISVzyQTAh80LMqN4+g
-   NYwHTlbc+2+Zg2hjgZJfDfUcMXDY7MHvB1kjzw59thGHxjux7oyMU8r19
-   6AfTn2QkIBy5M6so8mQ6inhWO9KJ6fUugOhs2bNF501YB86TBMuOoIXOj
-   qpu9oVHjXq3aaZTCDQsc5x7scrIcuDT+eQudUKowoDkM+bV3t0YwhrstX
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="397029637"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="397029637"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 06:32:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="19727735"
-Received: from dkrupnov-mobl3.ger.corp.intel.com ([10.249.34.6])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 06:32:15 -0800
-Date:   Thu, 7 Dec 2023 16:32:12 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 08/26] selftests/resctrl: Split measure_cache_vals()
-In-Reply-To: <c303ba1b-d7bd-47cf-9e81-8ea0c60b973c@intel.com>
-Message-ID: <e87d8ba-141a-5779-fc6-27e4735fc1bf@linux.intel.com>
-References: <20231120111340.7805-1-ilpo.jarvinen@linux.intel.com> <20231120111340.7805-9-ilpo.jarvinen@linux.intel.com> <c303ba1b-d7bd-47cf-9e81-8ea0c60b973c@intel.com>
+        Thu, 7 Dec 2023 09:33:15 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93620121;
+        Thu,  7 Dec 2023 06:33:15 -0800 (PST)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B76LrHD016498;
+        Thu, 7 Dec 2023 06:32:59 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=83cT9X0WoCPXDQdO0m3fkmTFu3FaXI0/hx3jIvTEUZs=;
+ b=J+vK8ES4SPIYveko9YIZp5euL8d1sLhiol7MoAQK1ErRY94cQiha+SY9pisfEURaqCIF
+ +uDjCCF4T+1WWtQ836rCbl1ozmc4DGqOLCrrcHuj8POge1FhC1VZdQyX2iIwvEqShspx
+ t38qAu+Xne7/aNmsxIBDy7UJSU8mSkitmm3m09Nj5Pwpoqp34ppi014HY2M6H7tZZON0
+ PgyhVS8oZrCevE8tk99M+NWmLXG1HFpVh1YslnnGkbQUx4Amkaz2ZjibY1jF+EJ2YVCI
+ 3UjbDpw6QyXgM+bcaH4yCe+7ci0hglIMBHk9D19S7GPQkzKA1191oIQbfCvRFAtgiyv/ Yg== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3uu8qe9jfx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 06:32:58 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 7 Dec
+ 2023 06:32:57 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Thu, 7 Dec 2023 06:32:57 -0800
+Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
+        by maili.marvell.com (Postfix) with ESMTP id 0C4763F7051;
+        Thu,  7 Dec 2023 06:32:53 -0800 (PST)
+From:   Elad Nachman <enachman@marvell.com>
+To:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <andrew@lunn.ch>,
+        <gregory.clement@bootlin.com>, <sebastian.hesselbarth@gmail.com>,
+        <pali@kernel.org>, <mrkiko.rs@gmail.com>,
+        <chris.packham@alliedtelesis.co.nz>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <enachman@marvell.com>, <cyuval@marvell.com>
+Subject: [PATCH v7 0/3] arm64: dts: cn913x: add COM Express boards
+Date:   Thu, 7 Dec 2023 16:32:45 +0200
+Message-ID: <20231207143248.2439926-1-enachman@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-683619166-1701959536=:1765"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: gPKCn1kOMn8dsNtTUaNJvwDeHljikPEL
+X-Proofpoint-ORIG-GUID: gPKCn1kOMn8dsNtTUaNJvwDeHljikPEL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-07_12,2023-12-07_01,2023-05-22_02
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,124 +69,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+From: Elad Nachman <enachman@marvell.com>
 
---8323329-683619166-1701959536=:1765
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Add support for CN9130 and CN9131 COM Express Type 7 CPU
+module boards by Marvell.
+Add device tree bindings for this board.
+Define these COM Express CPU modules as dtsi, and
+provide a dtsi file for a carrier board (Marvell AC5X RD
+COM Express type 7 carrier board).
+This Carrier board only utilizes the PCIe link, hence no
+special device / driver support is provided by this dtsi file.
+Finally, add dts file for the combined carrier and CPU module.
 
-On Tue, 28 Nov 2023, Reinette Chatre wrote:
+v7:
+   1) update MAINTAINERS file to contain all marvell arm64
+      dts file in one line, covering all files
+   2) Add Documentation to carrier dtsi and combined carrier
+      and CPU module dts, explaining the configuration and
+      modes of operations of the carrier and the combined
+      system.
 
-> Hi Ilpo,
-> 
-> On 11/20/2023 3:13 AM, Ilpo Järvinen wrote:
-> > measure_cache_vals() does a different thing depending on the test case
-> > that called it:
-> >   - For CAT, it measures LLC misses through perf.
-> >   - For CMT, it measures LLC occupancy through resctrl.
-> > 
-> > Split these two functionalities into own functions the CAT and CMT
-> > tests can call directly. Replace passing the struct resctrl_val_param
-> > parameter with the filename because it's more generic and all those
-> > functions need out of resctrl_val.
-> > 
-> > Co-developed-by: Fenghua Yu <fenghua.yu@intel.com>
-> > Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > ---
-> >  tools/testing/selftests/resctrl/cache.c       | 66 ++++++++++++-------
-> >  tools/testing/selftests/resctrl/resctrl.h     |  2 +-
-> >  tools/testing/selftests/resctrl/resctrl_val.c |  2 +-
-> >  3 files changed, 43 insertions(+), 27 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/resctrl/cache.c b/tools/testing/selftests/resctrl/cache.c
-> > index 8aa6d67db978..129d1c293518 100644
-> > --- a/tools/testing/selftests/resctrl/cache.c
-> > +++ b/tools/testing/selftests/resctrl/cache.c
-> > @@ -147,7 +147,7 @@ static int get_llc_occu_resctrl(unsigned long *llc_occupancy)
-> >   *
-> >   * Return:		0 on success. non-zero on failure.
-> >   */
-> > -static int print_results_cache(char *filename, int bm_pid,
-> > +static int print_results_cache(const char *filename, int bm_pid,
-> >  			       unsigned long llc_value)
-> >  {
-> >  	FILE *fp;
-> > @@ -169,35 +169,51 @@ static int print_results_cache(char *filename, int bm_pid,
-> >  	return 0;
-> >  }
-> >  
-> > -int measure_cache_vals(struct resctrl_val_param *param, int bm_pid)
-> > +/*
-> > + * perf_event_measure - Measure perf events
-> > + * @filename:	Filename for writing the results
-> > + * @bm_pid:	PID that runs the benchmark
-> > + *
-> > + * Measures perf events (e.g., cache misses) and writes the results into
-> > + * @filename. @bm_pid is written to the results file along with the measured
-> > + * value.
-> > + *
-> > + * Return: =0 on success. <0 on failure.
-> 
-> I do not think this is accurate. It looks like this function returns
-> the return value of print_results_cache() which returns errno on failure.
-> If this is the case then I think this proves that returning a
-> positive integer on failure should be avoided since it just creates
-> traps.
->
-> > + */
-> > +static int perf_event_measure(const char *filename, int bm_pid)
-> >  {
-> > -	unsigned long llc_perf_miss = 0, llc_occu_resc = 0, llc_value = 0;
-> > +	unsigned long llc_perf_miss = 0;
-> >  	int ret;
-> >  
-> > -	/*
-> > -	 * Measure cache miss from perf.
-> > -	 */
-> > -	if (!strncmp(param->resctrl_val, CAT_STR, sizeof(CAT_STR))) {
-> > -		ret = get_llc_perf(&llc_perf_miss);
-> > -		if (ret < 0)
-> > -			return ret;
-> > -		llc_value = llc_perf_miss;
-> > -	}
-> > +	ret = get_llc_perf(&llc_perf_miss);
-> > +	if (ret < 0)
-> > +		return ret;
-> >  
-> > -	/*
-> > -	 * Measure llc occupancy from resctrl.
-> > -	 */
-> > -	if (!strncmp(param->resctrl_val, CMT_STR, sizeof(CMT_STR))) {
-> > -		ret = get_llc_occu_resctrl(&llc_occu_resc);
-> > -		if (ret < 0)
-> > -			return ret;
-> > -		llc_value = llc_occu_resc;
-> > -	}
-> > -	ret = print_results_cache(param->filename, bm_pid, llc_value);
-> > -	if (ret)
-> > +	ret = print_results_cache(filename, bm_pid, llc_perf_miss);
-> > +	return ret;
-> > +}
-> 
-> Perhaps print_results_cache() can be made to return negative error
-> and this just be "return print_results_cache(...)" and the function
-> comment be accurate?
+v6:
+   1) Add cn9130 COM Express system
 
-I think, I'll just change all "return errno;" to "return -1" before this,
-however, one open question which impacts whether this is actually Fixes 
-class issue:
+   2) Drop with from compatibility name of COM Express system
 
-It seems that perror()'s manpage doesn't answer one important question, 
-whether it ifself can alter errno or not. The resctrl selftest code 
-assumes it doesn't but some evidence I came across says otherwise so doing 
-return errno; after calling perror() might not even be valid at all.
+   3) Fix indentation issues of dt bindings
 
-So I'm tempted to create an additional Fixes patch about the return change 
-into the front of the series.
+v5:
+
+   1) List only carrier compatibility on carrier dtsi
+
+   2) Fix dt_bindings_check warnings using latest yamllint/dtschema
+
+   3) Fix subject lines to remove unnecessary wordings.
+
+   4) Remove dt bindings for standalone CPU modules
+
+   5) Move CN913x dt bindings to A7K dt bindings file
+
+   6) Fix dtbs_check warnings for dtb and bindings,
+      using latest yamllint/dtschema.
+
+   7) Move memory definition to main dts file, as memory
+      is socket based.
+
+v4:
+   1) reorder patches - dt bindings before dts/dtsi files
+
+   2) correct description in dt bindings
+
+   3) separate dt bindings for CPU module, carrier and combination
+
+   4) make carrier board dts into dtsi, make dts for combination of
+      carrier and CPU module
+
+   5) correct compatibility strings and file names to use dashes
+      instead of underscores
+
+v3:
+   1) Remove acronym which creates warnings for checkpatch.pl
+
+   2) Correct compatibility string for ac5x rd board
+
+   3) Add above compatibility string to dt bindings
+
+   4) update MAINTAINERS file with ac5 series dts files
+
+   5) remove memory property from carrier dts
+
+   6) add comment explaining that OOB RGMII ethernet port
+      connector and PHY are both on CPU module
+
+v2:
+   1) add compatibility string for the board
+
+   2) remove unneeded hard-coded PHY LED blinking mode initialization
+
+   3) Split the CPU portion of the carrier board to 
+      dtsi files, and define a dts file for the AC5X RD
+      carrier board.
+
+Elad Nachman (3):
+  MAINTAINERS: add ac5 to list of maintained Marvell dts files
+  dt-bindings: arm64: add Marvell COM Express boards
+  arm64: dts: cn913x: add device trees for COM Express boards
+
+ .../bindings/arm/marvell/armada-7k-8k.yaml    |  24 ++++
+ MAINTAINERS                                   |   3 +-
+ arch/arm64/boot/dts/marvell/Makefile          |   1 +
+ .../dts/marvell/ac5x-rd-carrier-cn9131.dts    |  44 +++++++
+ .../boot/dts/marvell/ac5x-rd-carrier.dtsi     |  34 ++++++
+ .../dts/marvell/cn9130-db-comexpress.dtsi     |  96 ++++++++++++++++
+ .../dts/marvell/cn9131-db-comexpress.dtsi     | 108 ++++++++++++++++++
+ 7 files changed, 308 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/marvell/ac5x-rd-carrier-cn9131.dts
+ create mode 100644 arch/arm64/boot/dts/marvell/ac5x-rd-carrier.dtsi
+ create mode 100644 arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dtsi
+ create mode 100644 arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi
 
 -- 
- i.
+2.25.1
 
---8323329-683619166-1701959536=:1765--
