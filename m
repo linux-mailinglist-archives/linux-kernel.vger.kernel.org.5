@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1620F807F3C
+	by mail.lfdr.de (Postfix) with ESMTP id C1806807F3E
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 04:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjLGDmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 22:42:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
+        id S229469AbjLGDoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 22:44:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjLGDmT (ORCPT
+        with ESMTP id S229447AbjLGDoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 22:42:19 -0500
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AFA3A4;
-        Wed,  6 Dec 2023 19:42:24 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0Vy-JpWo_1701920540;
-Received: from 30.221.129.202(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vy-JpWo_1701920540)
-          by smtp.aliyun-inc.com;
-          Thu, 07 Dec 2023 11:42:22 +0800
-Message-ID: <7359d629-a5c0-f8ec-6d00-d6b483a2c255@linux.alibaba.com>
-Date:   Thu, 7 Dec 2023 11:42:20 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v3 7/7] net/smc: manage system EID in SMC stack
- instead of ISM driver
-To:     Alexandra Winter <wintera@linux.ibm.com>, wenjia@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
-Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        raspl@linux.ibm.com, schnelle@linux.ibm.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        Wed, 6 Dec 2023 22:44:07 -0500
+Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 92284D5C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 19:44:11 -0800 (PST)
+Received: from localhost.localdomain (unknown [10.190.66.146])
+        by mail-app4 (Coremail) with SMTP id cS_KCgBHTzeBP3FlODFaAA--.40820S4;
+        Thu, 07 Dec 2023 11:44:08 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, nvdimm@lists.linux.dev,
         linux-kernel@vger.kernel.org
-References: <1701343695-122657-1-git-send-email-guwen@linux.alibaba.com>
- <1701343695-122657-8-git-send-email-guwen@linux.alibaba.com>
- <aab0905a-b77f-4504-a510-83c98f79b2b7@linux.ibm.com>
- <8efa4f88-4ab1-bdd9-5705-93d62909bfa9@linux.alibaba.com>
- <f61e8e26-47d7-4970-84b4-a57bd06df235@linux.ibm.com>
-From:   Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <f61e8e26-47d7-4970-84b4-a57bd06df235@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+Subject: [PATCH] nvdimm-btt: fix a potential memleak in btt_freelist_init
+Date:   Thu,  7 Dec 2023 11:43:32 +0800
+Message-Id: <20231207034332.24107-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgBHTzeBP3FlODFaAA--.40820S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7urWrArWxXw4rKF1xXFW7twb_yoW8Ww1DpF
+        s3ArW5Ar4UJF47ur17ZwsrWa43Ca1fG3srGa4Yka4Syr15AFWqvFWSyayavry5Cr48ZFWj
+        kr4ktrWrGF4UAwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkI1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgsCBmVwRZQp9wAAsX
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,41 +55,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When an error happens in btt_freelist_init(), its caller
+discover_arenas() will directly free arena, which makes
+arena->freelist allocated in btt_freelist_init() a leaked
+memory. Fix this by freeing arena->freelist in all error
+handling paths of btt_freelist_init().
 
+Fixes: 5212e11fde4d ("nd_btt: atomic sector updates")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/nvdimm/btt.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-On 2023/12/4 20:57, Alexandra Winter wrote:
-> 
-> 
-> On 04.12.23 13:36, Wen Gu wrote:
->>> Here we only check the first smcd device to determine whether we support v2.
->>> Which is ok, for today's platform firmware ISM devices, as they are always the same version.
->>>
->>> When you add virtual ISM devices (loopback-ism, virtio-ism) then this needs to be changed.
->>> IMO the logic then needs to be "if all smcd devices support v2,
->>> then smc_ism_v2_capable = true;
->>> else smc_ism_v2_capable = false;"
->>>
->>
->> Thank you. I will change this in the loopback-ism patch set.
->>
->> But I am wondering if loopback-ism coexists with s390 ISMv1, why smc_ism_v2_capable shouldn't be set?
->> Is it because the SEID generated in this way is not correct if the s390 ISMv2 does not exist?
-> 
-> I think you're right: 'At least one IMSv2 device' is sufficient for smc_ism_v2_capable.
-> 
-> Actually, we could even always do smc_ism_v2_capable=true, and append an empty ISMv2 device list.
-> (I am not sure that would be a good idea...)
-> 
-> Interesting sceanrios to consider for ism-loopback:
-> e.g.: 2 ISMv1 device and 1 ism-loopback...
+diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
+index d5593b0dc700..d8c4ba8bfdda 100644
+--- a/drivers/nvdimm/btt.c
++++ b/drivers/nvdimm/btt.c
+@@ -544,8 +544,10 @@ static int btt_freelist_init(struct arena_info *arena)
+ 
+ 	for (i = 0; i < arena->nfree; i++) {
+ 		new = btt_log_read(arena, i, &log_new, LOG_NEW_ENT);
+-		if (new < 0)
+-			return new;
++		if (new < 0) {
++			ret = new;
++			goto out_free;
++		}
+ 
+ 		/* old and new map entries with any flags stripped out */
+ 		log_oldmap = ent_lba(le32_to_cpu(log_new.old_map));
+@@ -577,7 +579,7 @@ static int btt_freelist_init(struct arena_info *arena)
+ 		ret = btt_map_read(arena, le32_to_cpu(log_new.lba), &map_entry,
+ 				NULL, NULL, 0);
+ 		if (ret)
+-			return ret;
++			goto out_free;
+ 
+ 		/*
+ 		 * The map_entry from btt_read_map is stripped of any flag bits,
+@@ -594,11 +596,16 @@ static int btt_freelist_init(struct arena_info *arena)
+ 			ret = btt_map_write(arena, le32_to_cpu(log_new.lba),
+ 					le32_to_cpu(log_new.new_map), 0, 0, 0);
+ 			if (ret)
+-				return ret;
++				goto out_free;
+ 		}
+ 	}
+ 
+ 	return 0;
++
++out_free:
++	kfree(arena->freelist);
++	arena->freelist = NULL;
++	return ret;
+ }
+ 
+ static bool ent_is_padding(struct log_entry *ent)
+-- 
+2.17.1
 
-Yes. when virtual ISM is introduced (e.g. loopback-ism), I think logic can be
-
-1) smc_ism_v2_capable is false initially as now;
-2) Set smc_ism_v2_capable when ISMv2 or virtual ISM is registered, regardless of
-    whether there is already a device in smcd device list.
-
-And I guess the intent of smc_ism_v2_capable is to indicate that this kernel is
-capable of using v2 devices rather than indicate that there are v2 smcd devices
-available in the list, since right now smc_ism_v2_capable won't be cleared even
-ISMv2 devices are unregistered.
