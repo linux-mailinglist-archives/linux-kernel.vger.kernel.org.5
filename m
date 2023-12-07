@@ -2,253 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5762808B65
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF20808B6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443312AbjLGPFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 10:05:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35336 "EHLO
+        id S1442707AbjLGPHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 10:07:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443229AbjLGPFZ (ORCPT
+        with ESMTP id S235250AbjLGPHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 10:05:25 -0500
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F5510D1;
-        Thu,  7 Dec 2023 07:05:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:subject:date:message-id:reply-to;
-        bh=9xk7eqmQQbP0qXxNQwUcuRhbhRaYrmKwNtQD6VG5v0A=; b=avp5YckG8I9xwQ0PmnVTo+0NHP
-        4kVg+KdebEvBMAVADZOp5PuaOeluo9OZGAUVVc1E7kCsx/AL8r3AumvfWagThdwcFMAGjWK47n2XA
-        rQ5Lkkz8LY/tWu96N4DLOkUzoHAUDNaaCV44CUH1hncC6X6BfKnrNx7OYQTbVc6N4WBY=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:59044 helo=pettiford.lan)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1rBFwM-0006Zh-5o; Thu, 07 Dec 2023 10:05:27 -0500
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        leoyang.li@nxp.com, robh@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, hugo@hugovil.com,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date:   Thu,  7 Dec 2023 10:05:19 -0500
-Message-Id: <20231207150519.1264808-4-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231207150519.1264808-1-hugo@hugovil.com>
-References: <20231207150519.1264808-1-hugo@hugovil.com>
+        Thu, 7 Dec 2023 10:07:12 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC6CD10D8;
+        Thu,  7 Dec 2023 07:07:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701961639; x=1733497639;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=+GVLoJDm5SxtMSOy2cOPpF18a6NRQbOqGZnFwXI0CXM=;
+  b=NqXNXEELO6Prwo1mMqQCes/Xt+rZlNLEmy4lkeTEMF9D4XcCQXGCQNSX
+   qYKtUihRfI0UJTsDcKaVnLnZP64Mk054lxjBqpFBeIscvcdvEI+DKnxyO
+   RGJuyo0gY7YH+DreAa8Pt9VNVAiWbAtgx3c8wBVSML/edHubFVVihfCht
+   IL++lAdDig9sB6bV//b/5uQQyWwCY45uLzS6vbLJn4mgI136+V/kmc3M0
+   rZ+NIc57+ef2hlaaMLHqAF3V/ZRwZ1tnZ/Vvo2xMD6iKev7kpB48mL3gf
+   obttnbWxdyLifU/tvSZu1E+Hm6LWrlAdnm1JmNfEeVp6/da9Mt1PMVRc8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1123841"
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="1123841"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 07:05:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="837755629"
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="837755629"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 07:05:58 -0800
+Received: from [10.212.103.45] (kliang2-mobl1.ccr.corp.intel.com [10.212.103.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id C5AC1580D4F;
+        Thu,  7 Dec 2023 07:05:55 -0800 (PST)
+Message-ID: <a22be949-56fb-4e18-bd5a-5db441fd53df@linux.intel.com>
+Date:   Thu, 7 Dec 2023 10:05:54 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/6] Clean up perf mem
+Content-Language: en-US
+To:     Ravi Bangoria <ravi.bangoria@amd.com>, acme@kernel.org,
+        irogers@google.com, peterz@infradead.org, mingo@redhat.com,
+        namhyung@kernel.org, jolsa@kernel.org, adrian.hunter@intel.com,
+        john.g.garry@oracle.com, will@kernel.org, james.clark@arm.com,
+        mike.leach@linaro.org, leo.yan@linaro.org,
+        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+        tmricht@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20231206201324.184059-1-kan.liang@linux.intel.com>
+ <0597b44c-226d-1180-d55d-bcf9bbd2e03f@amd.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <0597b44c-226d-1180-d55d-bcf9bbd2e03f@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-Subject: [PATCH v2 3/3] arm64: dts: freescale: introduce dimonoff-gateway-evk board
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-The Dimonoff gateway EVK board is based on a Variscite
-VAR-SOM-NANO, with a NXP MX8MN nano CPU and also based on a Symphony
-mx8mn EVK.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
----
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../freescale/imx8mn-dimonoff-gateway-evk.dts | 160 ++++++++++++++++++
- 2 files changed, 161 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-dimonoff-gateway-evk.dts
+On 2023-12-07 9:44 a.m., Ravi Bangoria wrote:
+>> The patch set touches almost all the ARCHs, Intel, AMD, ARM, Power and
+>> etc. But I can only test it on two Intel platforms.
+>> Please give it try, if you have machines with other ARCHs.
+> 
+> I did a quick perf mem and perf c2c test, with the fix I suggested
+> in patch #1, and things seems to be working fine.
+> 
+> [For AMD specific changes]
+> Tested-by: Ravi Bangoria <ravi.bangoria@amd.com>
 
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index d22e4f4f886d..1f29215ea9bb 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -97,6 +97,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-tqma8mqml-mba8mx-lvds-tm070jvhg33.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-beacon-kit.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-bsh-smm-s2.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-bsh-smm-s2pro.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx8mn-dimonoff-gateway-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr3l-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-dimonoff-gateway-evk.dts b/arch/arm64/boot/dts/freescale/imx8mn-dimonoff-gateway-evk.dts
-new file mode 100644
-index 000000000000..6f9b82958b96
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-dimonoff-gateway-evk.dts
-@@ -0,0 +1,160 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2022 DimOnOff
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/usb/pd.h>
-+#include "imx8mn-var-som-symphony.dts"
-+
-+/ {
-+	model = "DimOnOff Gateway EVK board";
-+	compatible = "dimonoff,gateway-evk", "variscite,var-som-mx8mn",
-+		     "fsl,imx8mn";
-+
-+	/*
-+	 * U30 FPF2193 regulator.
-+	 * Source = BASE_PER_3V3 = SOM_3V3 (COM pin 49).
-+	 */
-+	reg_disp_3v3: regulator-disp-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "Display 3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_gpio_keys>;
-+
-+		key-enter {
-+			label = "enter";
-+			gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_ENTER>;
-+			wakeup-source;
-+		};
-+	};
-+
-+	/* Bourns PEC12R rotary encoder, 24 steps. */
-+	rotary: rotary-encoder {
-+		compatible = "rotary-encoder";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_rotary>;
-+		gpios = <&gpio5 12 GPIO_ACTIVE_LOW>, /* A */
-+			<&gpio5 13 GPIO_ACTIVE_LOW>; /* B */
-+		linux,axis = <0>; /* REL_X */
-+		rotary-encoder,encoding = "gray";
-+		rotary-encoder,relative-axis;
-+	};
-+};
-+
-+/* Disable Asynchronous Sample Rate Converter (audio) */
-+&easrc {
-+	status = "disabled";
-+};
-+
-+&ecspi1 {
-+	/* Resistive touch controller */
-+	/delete-node/ touchscreen@0;
-+};
-+
-+&gpu {
-+	status = "disabled";
-+};
-+
-+&i2c2 {
-+	adc@48 {
-+		compatible = "ti,ads7924";
-+		reg = <0x48>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_adc>;
-+		vref-supply = <&reg_disp_3v3>;
-+		reset-gpios = <&gpio5 5 GPIO_ACTIVE_LOW>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		channel@0 {
-+			reg = <0>;
-+			label = "Pot0";
-+		};
-+		channel@1 {
-+			reg = <1>;
-+			label = "Pot1";
-+		};
-+		channel@2 {
-+			reg = <2>;
-+			label = "Pot2";
-+		};
-+		channel@3 {
-+			reg = <3>;
-+			label = "Pot3";
-+		};
-+	};
-+
-+	rtc@51 {
-+		compatible = "nxp,pcf2129";
-+		reg = <0x51>;
-+		reset-source; /* For watchdog. */
-+	};
-+
-+	rtc@53 {
-+		compatible = "nxp,pcf2131";
-+		reg = <0x53>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_rtc>;
-+		reset-source; /* For watchdog. */
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <10 IRQ_TYPE_EDGE_FALLING>; /* J17.6 on EVK */
-+	};
-+};
-+
-+&i2c3 {
-+	touchscreen@38 {
-+		status = "disabled";
-+	};
-+
-+	codec@1a {
-+		status = "disabled";
-+	};
-+
-+	/* DS1337 RTC module */
-+	rtc@68 {
-+		status = "disabled";
-+	};
-+};
-+
-+&sai5 {
-+	status = "disabled";
-+};
-+
-+&iomuxc {
-+	pinctrl_gpio_keys: gpiokeysgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO08_GPIO1_IO8	0xc6
-+		>;
-+	};
-+
-+	pinctrl_rotary: rotarygrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x00000156
-+			MX8MN_IOMUXC_ECSPI2_SS0_GPIO5_IO13	0x00000156
-+		>;
-+	};
-+
-+	pinctrl_adc: adcgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_SPDIF_EXT_CLK_GPIO5_IO5	0x00000156
-+		>;
-+	};
-+
-+	pinctrl_rtc: rtcgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_ECSPI2_SCLK_GPIO5_IO10	0x00000156
-+			MX8MN_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x00000156
-+		>;
-+	};
-+};
--- 
-2.39.2
+Thanks Ravi.
 
+Kan
