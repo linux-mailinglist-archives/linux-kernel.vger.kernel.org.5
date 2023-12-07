@@ -2,45 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7408F8087AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B671C8087B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379386AbjLGMYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 07:24:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38860 "EHLO
+        id S1379213AbjLGM2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:28:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379319AbjLGMYv (ORCPT
+        with ESMTP id S232186AbjLGM2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 07:24:51 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A54E10C7
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:24:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13806C433C8;
-        Thu,  7 Dec 2023 12:24:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701951896;
-        bh=2NZQ3Opr9G9uYMBH2XjlJi9TKT75+nOKGrZdYjCEuHk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lZgTZ7LNFnUUUY22MagHqb9EIIiiYB07XAmTpnR2kqd3KN8hIenCt4ahXD4aPgGp6
-         VhZN6ojBc7ojSHUYb10dzdDJDZD8HQCYJZJJdjw4Zgv6H4SrQa+Nea6XkCLh048oxQ
-         ZskVlKa++vXIqO++krh989hXWaVJ5PYo/1Q3DoocKbO4Jk/adzvNeHvjGv27ffGuII
-         fCiqKp08c1Aa1znarA/dn1ngUtFYoucIC3GLXGMsVre3Wo9ZCxdrX17YAiy1aEaFsv
-         U0LmojeW38QHmt8M7+CFQpLfr14lUNU86SaOZ/sB7wkHvr8VWSATNSNlmI8djqjKe9
-         SYlc8Oa3Pq7EA==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Tomer Tayar <ttayar@habana.ai>
-Subject: [PATCH 5/5] accel/habanalabs/gaudi2: avoid overriding existing undefined opcode data
-Date:   Thu,  7 Dec 2023 14:24:44 +0200
-Message-Id: <20231207122444.50512-5-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231207122444.50512-1-ogabbay@kernel.org>
-References: <20231207122444.50512-1-ogabbay@kernel.org>
+        Thu, 7 Dec 2023 07:28:08 -0500
+Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2072.outbound.protection.outlook.com [40.107.9.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649A884;
+        Thu,  7 Dec 2023 04:28:13 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VvoaJZnsGJ9fQY3AoOuoSolscvbdpWHLevZxw+eIkZTgGjZ3ewm3mVfZk8CJdGqs6eRMhvw2Xrca1+ofE0BIaLti8w3vXt83hadU4v7T7u9ypFmUjGD8L5TyeAPDjlxrkYl7kh2W59z+eSwXNiiWJXaH/dJE9DcdusQpsxeITgsQWMwqda2sUYbKdgRZ0hXho8+dYvVK53refzbhPdc4GDe+c/bfIwbMNKX/fDTNxOiOo/Cw1TMN5i/uyAhTXhtLZwKbgniDRhCJ9zL+8EuSWwLIy1T90TbbWTSRCo3Uvt55UBXn1C6HGcAQ3FGleNqeR89mUjkj7X1IW06xVR+rLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=reDXQkEPynptNb+MuT2F2EhnDk2CwWtm0eeU6j35IdQ=;
+ b=TiKFBgLp+ofq2nDZfI8Q3hc30N9u3ouQqTxJ/asU18slK4NpTf833zSvFsdsv8YpI2iEHBUF5xD1Yk5sf4b6/ClDR4FkvHkn2pgXAU2YIxbiXvi5v82/nqQl6yBCMygPZ2CKzXnKsadNwDlzkTqWbTHz8I7/vWIf6l9FCQ6rJD7P7wi8O1hLtRhwt5cLX5X6srFoZIMp06NmvgXuOJ6RtlsjYllIhi+Va6JFGtniFFV+uWSK0iYN5dQtOD9cdCpN35GvKoakRgqCgvqdFQe5IXhYM3k29V1T3nGe85CSq0LZa1gm92YjoOOnPx/q9DlTZBxb8/IFlD0+phux6gRmLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=reDXQkEPynptNb+MuT2F2EhnDk2CwWtm0eeU6j35IdQ=;
+ b=PddbeulbJF8uSbAnEG77hf/VU2Cbgx68gfltM01TDG+GT4K9gaxNL2e+CTXjxUBRfP27cQIyxyvNcqtp5Ue/XBvmj6Bc4vvcRJCAKEQ0BjDQ4EnAPRj9dDnE5k02HNrBF6Y6NDSSKxcJjf5T13FSxuIf3ptH6v+btzKnmpc6Ss9grzSV9GxVlFngLPmCopPWDZWvAs06Y+tXgzBz2vPA+prypAYpXXF3xM8kzcdsGBVGYxZ1KeB2es7ZdFfUcOQ0wRgkebhPGhFtb2s7YyamVVw0JqrX0RLCVF06KdsIuM5jUqdESmG7ZVadZlD/RZfdNWKd9m1Rf7xESKx9tf+7dg==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by MR1P264MB3377.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:29::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Thu, 7 Dec
+ 2023 12:28:08 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::5bfe:e2f2:6d89:8d97]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::5bfe:e2f2:6d89:8d97%3]) with mapi id 15.20.7068.027; Thu, 7 Dec 2023
+ 12:28:08 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        George Stark <gnstark@salutedevices.com>
+CC:     Hans de Goede <hdegoede@redhat.com>, "pavel@ucw.cz" <pavel@ucw.cz>,
+        "lee@kernel.org" <lee@kernel.org>,
+        "vadimp@nvidia.com" <vadimp@nvidia.com>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "npiggin@gmail.com" <npiggin@gmail.com>,
+        "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        Waiman Long <longman@redhat.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "kernel@salutedevices.com" <kernel@salutedevices.com>
+Subject: Re: [PATCH v2 01/10] devm-helpers: introduce devm_mutex_init
+Thread-Topic: [PATCH v2 01/10] devm-helpers: introduce devm_mutex_init
+Thread-Index: AQHaJty3lcbSNrP0Vk6nW4+1IjDYxbCcXFOAgABCTACAADawAIAABniAgAANGICAANPogIAABymA
+Date:   Thu, 7 Dec 2023 12:28:08 +0000
+Message-ID: <34060476-86e5-42fb-a139-6790487c1568@csgroup.eu>
+References: <20231204180603.470421-1-gnstark@salutedevices.com>
+ <20231204180603.470421-2-gnstark@salutedevices.com>
+ <81798fe5-f89e-482f-b0d0-674ccbfc3666@redhat.com>
+ <29584eb6-fa10-4ce0-9fa3-0c409a582445@salutedevices.com>
+ <17a9fede-30e8-4cd5-ae02-fe34e11f5c20@csgroup.eu>
+ <be693688-2e82-4e1a-9ead-cf1513ee637b@csgroup.eu>
+ <2a68534b-9e64-4d6e-8a49-eeab0889841b@salutedevices.com>
+ <CAHp75Veyz-hMYPDEiCC1WJASGZ8N9pVef0foYJ0vBcW2VpfR+w@mail.gmail.com>
+In-Reply-To: <CAHp75Veyz-hMYPDEiCC1WJASGZ8N9pVef0foYJ0vBcW2VpfR+w@mail.gmail.com>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MR1P264MB3377:EE_
+x-ms-office365-filtering-correlation-id: 54d67e9b-c049-4fc3-b62a-08dbf71ff83f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UzrzzEHj1ATd6bwck2cHUlJTq4QQwBBEOHHTb7XAGnX0gUHpOsOIIrGg0vNtJTPllHzyuUUKGQMbnWQhu+CMKCHgadcuvcsuxG1VVE+CRUX+r2u1Q7033HjUJjGAelw3ol8E5XmgDLcx5eQXptT+urzNkohzKdAKf9CztxiqNvu+8Ycv4+rf1KOIjVpM66fbRwtegPSjpmEdgGqFwa6S0gwm/OOfEYnN9AkgHeGx+6q/2h9BexkJIB+LCgfYR3kgSRN10ctEYL5U2ZJ/1+AsV7toj2Y657LkiAbqpe7uSKrnKSTBngSrnk6sIV+HC1EEl0MWnzNg6Mi6G7lmg+RbFno1Zog/61yq68tGdJIYkr3k5mgbZP5lTu21ASQgCwMOPT6G9izHMw12Oai8THQbhOwDzWq00P5Rfx6tX0gNo3vk86Ly7+EflkIlu7E6nkZEAQXlXtigysf8LVLeFms1oiR4RczKBtQ83W87bH8gp33ZjXTeLF09hteFypBDpYyEq3fZtaogzognpGJprN6uTeIAh/Sy7K755fwGrK0fSdD74LNBg2LvO6oeIF5EaDeruYr9nwCzj+gMYh1/JbHCfcQ+/+BuqVUHIzn6LNhQ/VeJr5hljP4tsLmDEInUhytLy1tSG9nrmjWCBqIv6A1Rgg1mqBL4cfoz5syghM0ESadkCsEMY0ZCgoyVz35qaIvA
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(39850400004)(376002)(396003)(136003)(366004)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(7416002)(44832011)(5660300002)(4326008)(2906002)(31686004)(8676002)(8936002)(66476007)(66556008)(66446008)(64756008)(316002)(110136005)(54906003)(76116006)(66946007)(91956017)(6486002)(478600001)(38070700009)(2616005)(6512007)(6506007)(53546011)(41300700001)(36756003)(83380400001)(71200400001)(26005)(38100700002)(66574015)(122000001)(86362001)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aDNUWW1ZYzNEZlIxWXJrcFBzeG1Ic0s3bXVUQXhKRnV4RFRiV3Y0dExHSjlT?=
+ =?utf-8?B?YXMxNVk1bmR0U2ZmREg1bTdCTllsb1V0cmcwTUFYeW9qelRpcDhJcHljZVc3?=
+ =?utf-8?B?SE1ic0FZbFlIKzViUzFKamQwVU0wV1o4TXZUSEUwQnBCQ3ZJOGVGRHNwSmJG?=
+ =?utf-8?B?R1FxOXZETi94NlBwVW9saVlpcy9XR2F1RGJFTWFVS0hYZ2lMQTlZbDV2SU9Z?=
+ =?utf-8?B?SVZIbWdpaktEUkV0YVJHYkFmK0JSRTRTVEYzdnRKcFR1R0xqR3FHZ2lqOTRT?=
+ =?utf-8?B?TWV1MllVSFJuV2tQTnNTaWwzSlp2Rzdub2h0S3J6NjA4UGpFcGtnSWE3enFV?=
+ =?utf-8?B?MVZuRDVjWlovYXpnOGJRckRnRXVJRll3djllTE55QVpIOXdQQnkvWkJNSEN0?=
+ =?utf-8?B?ellKY21rWTBqOW1QUVg5aVdYcXkvTWU0dS9XYlo2aEhvYkd2dVNVenBORGVB?=
+ =?utf-8?B?WGczQnhLM1hlcWxYSmlGK0FYUGFkVk1YRTVPd1BRaUNFVzdrbEVSMElqaTBz?=
+ =?utf-8?B?d3EyeHQ0bkwwYzFmeEx4eGI1cUtoY3pkd0VZa3AxZmlVaVZHWVEzL1BFRW1s?=
+ =?utf-8?B?a0FMOHA4TUY5NGtCczBoa2RQcURCcjllOGdHOWJNTDhrUTZzaXdISnVVV3l2?=
+ =?utf-8?B?czNVTE1KWVFmbVc3MjgxUzgycmJtT2o5TnZ4Y1lkWTdIcld6Z1hsZFIyWXhj?=
+ =?utf-8?B?R1ZkRkhZWERleGczaUFTNHNQdVlPa2ZIUDVqWmdiNEpVcE9HYkNNRlI5RVEw?=
+ =?utf-8?B?cmhSSzdNWk9hemV4RjhMbERTVGpMUkQ3ZlJERUtTbXJKN1ovY24zbFc2ZzZs?=
+ =?utf-8?B?T0FVN1hZZndUT1JBZ0pXajB5Y3FLcGN6ZjZPbmJ5RkN4cWg2R3laUXc0dWtk?=
+ =?utf-8?B?OWpwV2lONWYrdG9TZHZ5TklyS2lJTEZLaUx4RDRxVHpMRVdYSWJGS28wUnps?=
+ =?utf-8?B?OGtqeTJtL1h4dkljdzhEM1dYSEFJTE5VZ200L2hrZlVZbndSbTlDbE5SN05a?=
+ =?utf-8?B?dmZGdkRnemMrQUJWcjNFa1IxaDBrOTZCL0NYQjdTSTMzQmEvdWtSa29nUlQ3?=
+ =?utf-8?B?NTVKdElQajBNTUdZOC80N1F0Z0lUV0RYN2U3dmFhNlo4ZjAycy9KR1Z1b0xJ?=
+ =?utf-8?B?cjlDalgzVmRlK3h6R3I0QXRrYU1lN3pudlJuMnZHSEloOXpjbkpZQm0yMlB3?=
+ =?utf-8?B?T3BtUWNtWklCcGZ4Y0JBYU5WWGNUNTk2WGxGYktPVE5hd2RvTklyV2tLVmpC?=
+ =?utf-8?B?M2k2cGlHdEJWZmI5SlgrMjBiQXV2a2hxZ1E5d1EvdGpsUEhDWkptNExia1Zl?=
+ =?utf-8?B?WHdXVlMxdFdjeUtYQ2lOdG5CekdjSXJ1eTVrbzRQRHgrYk01OUIvcEM4RVNV?=
+ =?utf-8?B?ZlhjMEZjMGJEN1lsK0tvai9KazZkYW9ITEV3NVFNTkxHYjdibjRQQXFCSTc1?=
+ =?utf-8?B?MGdiR2FUREdxb2JuQVl0cHhVU3NFa3RjZSt5SUg5R2Y0SVM5RC9RMEFjRThs?=
+ =?utf-8?B?cFZCZVMvNTdkWGRPdWxsaHQ3VDdnK1VxczFycXR2MkMvMkxITkpnWFNXeEJn?=
+ =?utf-8?B?L1lXRU1iUm1jOVV3QmxJSEN4VzNkUXVUYzNnb05Ia1ZFNTdDYjUwNzYvbUdU?=
+ =?utf-8?B?bkNWelRuV3U5TzZnN2x1cDUvWit2Zng5WUd0bUtmUjJ6WU5BMmJ0WjVHM29G?=
+ =?utf-8?B?enc2Y3JpcVV4bmlMbWZYNFlMZXFLRE1TUUt1c2FIYXNpT1ZyN1JCNEhtMW9y?=
+ =?utf-8?B?Mzl1bHVOVWREUjkxUXBOaDdsaVRWK3JGZGx3bHZaWWFlVlFNRDNub2xDRDlT?=
+ =?utf-8?B?OUszZ1AwVmJuOHh4RmtPVThVMlJzV0RsWUpxcHR5OUxLZHdEck5WNEdTUDlF?=
+ =?utf-8?B?VFkzRlRYQUtaV1lFaFNZU2RFU2hjWmY1M3dadVZrTVNVcC9QOWpMWjNaMHNK?=
+ =?utf-8?B?dDgrd0UvWWxtRnJPK0RPZmNjYWsyN0thSHcrNTdJbkdXM0ExcjA4OU5PV3l2?=
+ =?utf-8?B?NVdTeU5URHVpdi9TSUpJZ0laSEpRNld5bjk1cUZGaTdjOEhCeXFkamZIMit4?=
+ =?utf-8?B?Q3h0dUZ0ZVVKMUhROVNRM2pLamo2aUg2UTB1bDdwS0tSdEpXblVXUU1ZaVJM?=
+ =?utf-8?Q?MzHFkF/oHykM/dFydMCLGi/lN?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0D608FBDF4C62D489A6DC0769C425900@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54d67e9b-c049-4fc3-b62a-08dbf71ff83f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Dec 2023 12:28:08.3558
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: SGEVmwjk9d/2coNuX1YXqlZ3fYx+56NZRCkZTVNXnjTu5jxmXUhd1iV1+Euzsk0WD5tKl1F7Zp/G7S55olv2PHTjCgc0amn3/dnm/2od6Oo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB3377
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,110 +149,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomer Tayar <ttayar@habana.ai>
-
-Part of the undefined opcode data is updated in
-gaudi2_handle_qman_err_generic() and some in
-handle_lower_qman_data_on_err().
-However, the 'write_enable' flag is checked only in
-gaudi2_handle_qman_err_generic(), and information of more than a single
-error can be mixed there.
-
-Moreover, handle_lower_qman_data_on_err() is called only for the lower
-QMAN, so for an error in the upper QMAN there is only a partial info.
-
-Move all the data update to be done in a single place, protected by the
-'write_enable' flag.
-As mainly the lower QMAN's info is interesting, avoid saving the partial
-info for the upper QMAN.
-
-Signed-off-by: Tomer Tayar <ttayar@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/accel/habanalabs/gaudi2/gaudi2.c | 40 +++++++++++-------------
- 1 file changed, 19 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/accel/habanalabs/gaudi2/gaudi2.c b/drivers/accel/habanalabs/gaudi2/gaudi2.c
-index f81b57649b00..e0e5615ef9b0 100644
---- a/drivers/accel/habanalabs/gaudi2/gaudi2.c
-+++ b/drivers/accel/habanalabs/gaudi2/gaudi2.c
-@@ -7858,10 +7858,11 @@ static bool gaudi2_handle_ecc_event(struct hl_device *hdev, u16 event_type,
- 	return !!ecc_data->is_critical;
- }
- 
--static void handle_lower_qman_data_on_err(struct hl_device *hdev, u64 qman_base, u64 event_mask)
-+static void handle_lower_qman_data_on_err(struct hl_device *hdev, u64 qman_base, u32 engine_id)
- {
--	u32 lo, hi, cq_ptr_size, cp_sts;
-+	struct undefined_opcode_info *undef_opcode = &hdev->captured_err_info.undef_opcode;
- 	u64 cq_ptr, cp_current_inst;
-+	u32 lo, hi, cq_size, cp_sts;
- 	bool is_arc_cq;
- 
- 	cp_sts = RREG32(qman_base + QM_CP_STS_4_OFFSET);
-@@ -7871,12 +7872,12 @@ static void handle_lower_qman_data_on_err(struct hl_device *hdev, u64 qman_base,
- 		lo = RREG32(qman_base + QM_ARC_CQ_PTR_LO_STS_OFFSET);
- 		hi = RREG32(qman_base + QM_ARC_CQ_PTR_HI_STS_OFFSET);
- 		cq_ptr = ((u64) hi) << 32 | lo;
--		cq_ptr_size = RREG32(qman_base + QM_ARC_CQ_TSIZE_STS_OFFSET);
-+		cq_size = RREG32(qman_base + QM_ARC_CQ_TSIZE_STS_OFFSET);
- 	} else {
- 		lo = RREG32(qman_base + QM_CQ_PTR_LO_STS_4_OFFSET);
- 		hi = RREG32(qman_base + QM_CQ_PTR_HI_STS_4_OFFSET);
- 		cq_ptr = ((u64) hi) << 32 | lo;
--		cq_ptr_size = RREG32(qman_base + QM_CQ_TSIZE_STS_4_OFFSET);
-+		cq_size = RREG32(qman_base + QM_CQ_TSIZE_STS_4_OFFSET);
- 	}
- 
- 	lo = RREG32(qman_base + QM_CP_CURRENT_INST_LO_4_OFFSET);
-@@ -7885,12 +7886,16 @@ static void handle_lower_qman_data_on_err(struct hl_device *hdev, u64 qman_base,
- 
- 	dev_info(hdev->dev,
- 		"LowerQM. %sCQ: {ptr %#llx, size %u}, CP: {instruction %#018llx}\n",
--		is_arc_cq ? "ARC_" : "", cq_ptr, cq_ptr_size, cp_current_inst);
-+		is_arc_cq ? "ARC_" : "", cq_ptr, cq_size, cp_current_inst);
- 
--	if (event_mask & HL_NOTIFIER_EVENT_UNDEFINED_OPCODE) {
--		hdev->captured_err_info.undef_opcode.cq_addr = cq_ptr;
--		hdev->captured_err_info.undef_opcode.cq_size = cq_ptr_size;
--		hdev->captured_err_info.undef_opcode.stream_id = QMAN_STREAMS;
-+	if (undef_opcode->write_enable) {
-+		memset(undef_opcode, 0, sizeof(*undef_opcode));
-+		undef_opcode->timestamp = ktime_get();
-+		undef_opcode->cq_addr = cq_ptr;
-+		undef_opcode->cq_size = cq_size;
-+		undef_opcode->engine_id = engine_id;
-+		undef_opcode->stream_id = QMAN_STREAMS;
-+		undef_opcode->write_enable = 0;
- 	}
- }
- 
-@@ -7929,19 +7934,12 @@ static int gaudi2_handle_qman_err_generic(struct hl_device *hdev, u16 event_type
- 				error_count++;
- 			}
- 
--		/* check for undefined opcode */
--		if (glbl_sts_val & PDMA0_QM_GLBL_ERR_STS_CP_UNDEF_CMD_ERR_MASK) {
-+		/* Check for undefined opcode error in lower QM */
-+		if ((i == QMAN_STREAMS) &&
-+				(glbl_sts_val & PDMA0_QM_GLBL_ERR_STS_CP_UNDEF_CMD_ERR_MASK)) {
-+			handle_lower_qman_data_on_err(hdev, qman_base,
-+							gaudi2_queue_id_to_engine_id[qid_base]);
- 			*event_mask |= HL_NOTIFIER_EVENT_UNDEFINED_OPCODE;
--			if (hdev->captured_err_info.undef_opcode.write_enable) {
--				memset(&hdev->captured_err_info.undef_opcode, 0,
--						sizeof(hdev->captured_err_info.undef_opcode));
--				hdev->captured_err_info.undef_opcode.timestamp = ktime_get();
--				hdev->captured_err_info.undef_opcode.engine_id =
--							gaudi2_queue_id_to_engine_id[qid_base];
--			}
--
--			if (i == QMAN_STREAMS)
--				handle_lower_qman_data_on_err(hdev, qman_base, *event_mask);
- 		}
- 	}
- 
--- 
-2.34.1
-
+DQoNCkxlIDA3LzEyLzIwMjMgw6AgMTM6MDIsIEFuZHkgU2hldmNoZW5rbyBhIMOpY3JpdMKgOg0K
+PiBPbiBUaHUsIERlYyA3LCAyMDIzIGF0IDE6MjPigK9BTSBHZW9yZ2UgU3RhcmsgPGduc3RhcmtA
+c2FsdXRlZGV2aWNlcy5jb20+IHdyb3RlOg0KPj4gT24gMTIvNy8yMyAwMTozNywgQ2hyaXN0b3Bo
+ZSBMZXJveSB3cm90ZToNCj4+PiBMZSAwNi8xMi8yMDIzIMOgIDIzOjE0LCBDaHJpc3RvcGhlIExl
+cm95IGEgw6ljcml0IDoNCj4gDQo+IC4uLg0KPiANCj4+PiBMb29raW5nIGF0IGl0IGNsb3Nlciwg
+SSBoYXZlIHRoZSBmZWVsaW5nIHRoYXQgeW91IHdhbnQgdG8gZG8gc2ltaWxhciB0bw0KPj4+IGRl
+dm1fZ3Bpb19yZXF1ZXN0KCkgaW4gbGludXgvZ3Bpby5oIDoNCj4+Pg0KPj4+IEluIGxpbnV4L211
+dGV4LmgsIGFkZCBhIHByb3RvdHlwZSBmb3IgZGV2bV9tdXRleF9pbml0KCkgd2hlbg0KPj4+IENP
+TkZJR19ERUJVR19NVVRFWEVTIGlzIGRlZmluZWQgYW5kIGFuIGVtcHR5IHN0YXRpYyBpbmxpbmUg
+b3RoZXJ3aXNlLg0KPj4+IFRoZW4gZGVmaW5lIGRldm1fbXV0ZXhfaW5pdCgpIGluIGtlcm5lbC9s
+b2NraW5nL211dGV4LWRlYnVnLmMNCj4+DQo+PiBZZXMsIHRoaXMgd291bGQgYmUgYWxtb3N0IHBl
+cmZlY3QgZGVjaXNpb24uIEJUVyBqdXN0IGFzIGluIGxpbnV4L2dwaW8uaA0KPj4gd2Ugd291bGRu
+J3QgaGF2ZSB0byBpbmNsdWRlIHdob2xlICJsaW51eC9kZXZpY2UuaCIgaW50byBtdXRleC5oLCBv
+bmx5DQo+PiBhZGQgZm9yd2FyZCBkZWNsYXJhdGlvbiBvZiBzdHJ1Y3QgZGV2aWNlOw0KPiANCj4g
+SW4gY2FzZSB5b3UgcGxhY2UgaXQgaW50byBhIEMtZmlsZS4gT3RoZXJ3aXNlIHlvdSBuZWVkIGEg
+aGVhZGVyIGZvcg0KPiB0aGUgQVBJIGFuZCB0aGF0IGlzIG5vdCBhY2NlcHRhYmxlIGZvciBtdXRl
+eC5oLg0KPiANCg0KUmlnaHQsIHRoYXQncyB0aGUgcmVhc29uIHdoeSBJJ20gc3VnZ2VzdGluZyB0
+byBkZWZpbmUgZGV2bV9tdXRleF9pbml0KCkgDQppbiBrZXJuZWwvbG9ja2luZy9tdXRleC1kZWJ1
+Zy5jLg0KDQpJbiBsaW51eC9tdXRleC5oLCB5b3UgZGVmaW5lIGEgc3R1YiBmb3Igd2hlbiBDT05G
+SUdfREVCVUdfTVVURVhFUyBpcyBub3QgDQpzZXQsIGFuZCB0aGUgcHJvdG90eXBlIG9mIGRldm1f
+bXV0ZXhfaW5pdCgpIHdoZW4gQ09ORklHX0RFQlVHX01VVEVYRVMgaXMgDQpzZXQuDQo=
