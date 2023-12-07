@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E10807D12
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 01:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59354807D0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 01:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441911AbjLGA2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 19:28:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
+        id S231163AbjLGA2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 19:28:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441852AbjLGA2J (ORCPT
+        with ESMTP id S229447AbjLGA2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 19:28:09 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C34D46;
-        Wed,  6 Dec 2023 16:28:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701908895; x=1733444895;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Aeiyg4qx7bpYJygKiaD67EIN+bTA3XdLMvUjVUJSJwI=;
-  b=DLPRwAWJ6ydfFloGChDTvDGrXbnD6aKLOH6jq25AX3PA2EhQ+nmmZHCP
-   gwkXoRAb96eUtDLnXa/j5/BS0v8llYXG+v1C4yu8Ud/CFQIg9Sk1lD6jm
-   urq9QAHCsx0PfBvJzUzScF4gPcDhlXWqrjqi+0tT7051shJjfcT44FEi9
-   duPz8m8V1OaWqBM+7Kc6tkuyuyYGUBuYcldc0ARGWNXO8L5fbp2jtM6o2
-   Oo/EPb8D/Z26NeHV/s/O1u+xaLF0MGGp/gqKPqx/2Bzw9VqiaxEfCySDM
-   QOFSPc3nTo1d1YyLfbNk8T5UX8172yD4TgVFYnF4jlT3k3I4hK1sMZ9Uk
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="12863039"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="12863039"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 16:28:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="1103009011"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="1103009011"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 06 Dec 2023 16:28:11 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rB2FN-000BdC-2r;
-        Thu, 07 Dec 2023 00:28:09 +0000
-Date:   Thu, 7 Dec 2023 08:27:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Allen_Lin <allencl_lin@hotmail.com>, dmitry.torokhov@gmail.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jikos@kernel.org,
-        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, Allen_Lin <allencl_lin@hotmail.com>
-Subject: Re: [PATCH v2 2/2] Input: Add Himax HX83102J touchscreen driver
-Message-ID: <202312070838.oJSWv4T3-lkp@intel.com>
-References: <TY0PR06MB56119F0D60142F4C1435767C9E84A@TY0PR06MB5611.apcprd06.prod.outlook.com>
+        Wed, 6 Dec 2023 19:28:05 -0500
+Received: from mail-yw1-x1144.google.com (mail-yw1-x1144.google.com [IPv6:2607:f8b0:4864:20::1144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE33318D;
+        Wed,  6 Dec 2023 16:28:10 -0800 (PST)
+Received: by mail-yw1-x1144.google.com with SMTP id 00721157ae682-5d3644ca426so1010387b3.1;
+        Wed, 06 Dec 2023 16:28:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701908890; x=1702513690; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=p2jrmbLAF90SkKFGh277QUQB5VktoD8qYGVqtPErfcM=;
+        b=ahZnDzFryBtkIyX0PsIjS6rx91sgurvC84agAuLdBcZU2Xq+1C6BSfgAXw+VHz4LOi
+         voGDvIQsEjMc0X/rDZffkebgc5xV8BwytW5++Uje7pD6d3d9Ybtibtx3YC2bwwOyf1Ks
+         XrAgHkkZkG8AZeD4t98Uwmf73bfubX5x08Lq4rDHo6lRy6CWS2Op5BYj2y8ab6ZvBWv6
+         3gB/hLR71RgvNeC/pURhRaGJB6gnR9QQ4CWdfnB7DWiHwW9hHNqHFnDKm3N6qYKibCv8
+         N15/CZ+RbiVXbLMVxiy0oH/NN6p654dA8X8BO0WUghyGZiJq4GuaW7ICYoj1MWQrPnph
+         42HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701908890; x=1702513690;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p2jrmbLAF90SkKFGh277QUQB5VktoD8qYGVqtPErfcM=;
+        b=g+RmMLEmLzIGx4rw2A0hS7CC66BpQzWlRh35vUFxJ56Oqv1d5JGic748uDOh3PWgSD
+         9UG0U0X/AINZbSqVFiqLAmkCEXnPcfFbrqibejoRCXVIF0JjSs9M36e+ox5hBlntSptY
+         bko1Anae6ClUUiZwNEJUFnsOO/4KAq9SA5FXxPyk/DGTS4/M2iu3/25mio/o4QdSpa55
+         9P2LFQ2O9dM/6odz4d9INghLW5WWTJdn0DcWpWxXCHpLWQ3XFdkGufa2PS0MoarRRDDR
+         fG2BHPJfahAZrHrzlPXk3uI61FQK7mJpRjnCaX/k4YSebEVlChMBZzs7IboslqP/YKEZ
+         Vzcw==
+X-Gm-Message-State: AOJu0YzxI603g3WjkExDsJjEZfRRBs403esiR1u04bw7/DwpWLujSRix
+        HKPXpbyOpqvFW3VHbaxwkg==
+X-Google-Smtp-Source: AGHT+IEQJAoREK4xn8fsoXYjhaCunmOrXu+8IFSL9PQ5FsLRppKBmZuAP2/vtiTo6pDT7CHS3wM00A==
+X-Received: by 2002:a81:aa09:0:b0:5d7:1941:355b with SMTP id i9-20020a81aa09000000b005d71941355bmr1862188ywh.66.1701908889569;
+        Wed, 06 Dec 2023 16:28:09 -0800 (PST)
+Received: from fedora.mshome.net (pool-173-79-56-208.washdc.fios.verizon.net. [173.79.56.208])
+        by smtp.gmail.com with ESMTPSA id x145-20020a81a097000000b005d82fc8cc92sm19539ywg.105.2023.12.06.16.28.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 16:28:09 -0800 (PST)
+From:   Gregory Price <gourry.memverge@gmail.com>
+X-Google-Original-From: Gregory Price <gregory.price@memverge.com>
+To:     linux-mm@kvack.org, jgroves@micron.com, ravis.opensrc@micron.com,
+        sthanneeru@micron.com, emirakhur@micron.com, Hasan.Maruf@amd.com
+Cc:     linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        arnd@arndb.de, tglx@linutronix.de, luto@kernel.org,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, mhocko@kernel.org, tj@kernel.org,
+        ying.huang@intel.com, gregory.price@memverge.com, corbet@lwn.net,
+        rakie.kim@sk.com, hyeongtak.ji@sk.com, honggyu.kim@sk.com,
+        vtavarespetr@micron.com, peterz@infradead.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Hasan Al Maruf <hasanalmaruf@fb.com>,
+        Hao Wang <haowang3@fb.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Zhongkun He <hezhongkun.hzk@bytedance.com>,
+        Frank van der Linden <fvdl@google.com>,
+        John Groves <john@jagalactic.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Subject: [RFC PATCH 00/11] mempolicy2, mbind2, and weighted interleave
+Date:   Wed,  6 Dec 2023 19:27:48 -0500
+Message-Id: <20231207002759.51418-1-gregory.price@memverge.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TY0PR06MB56119F0D60142F4C1435767C9E84A@TY0PR06MB5611.apcprd06.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,227 +88,370 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Allen_Lin,
+This patch set extends the mempolicy interface to enable new
+mempolicies which may require extended data to operate.
 
-kernel test robot noticed the following build warnings:
+One such policy is included with this set as an example:
+MPOL_WEIGHTED_INTERLEAVE
 
-[auto build test WARNING on hid/for-next]
-[also build test WARNING on dtor-input/next dtor-input/for-linus robh/for-next linus/master v6.7-rc4 next-20231206]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+There are 3 major "phases" in the patch set:
+1) Implement a "global weight" mechanism via sysfs, which allows
+   set_mempolicy to implement MPOL_WEIGHTED_INTERLEAVE utilizing
+   weights set by the administrator (or system daemon).
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Allen_Lin/Input-Add-Himax-HX83102J-touchscreen-driver/20231206-183804
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-next
-patch link:    https://lore.kernel.org/r/TY0PR06MB56119F0D60142F4C1435767C9E84A%40TY0PR06MB5611.apcprd06.prod.outlook.com
-patch subject: [PATCH v2 2/2] Input: Add Himax HX83102J touchscreen driver
-config: sh-randconfig-r053-20231207 (https://download.01.org/0day-ci/archive/20231207/202312070838.oJSWv4T3-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231207/202312070838.oJSWv4T3-lkp@intel.com/reproduce)
+2) A refactor of the mempolicy creation mechanism to accept an
+   extensible argument structure `struct mempolicy_args` to promote
+   code re-use between the original mempolicy/mbind interfaces and
+   the new extended mempolicy2/mbind2 interfaces.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312070838.oJSWv4T3-lkp@intel.com/
+3) Implementation of set_mempolicy2, get_mempolicy2, and mbind2,
+   along with the addition of task-local weights so that per-task
+   weights can be registered for MPOL_WEIGHTED_INTERLEAVE.
 
-All warnings (new ones prefixed by >>):
+=====================================================================
+(Patch 1) : sysfs addition - /sys/kernel/mm/mempolicy/
 
->> drivers/hid/hid-himax-83102j.c:2673:12: warning: 'himax_parse_dt' defined but not used [-Wunused-function]
-    2673 | static int himax_parse_dt(struct device_node *dt, struct himax_platform_data *pdata)
-         |            ^~~~~~~~~~~~~~
+This feature  provides a way to set interleave weight information under
+sysfs at /sys/kernel/mm/mempolicy/weighted_interleave/nodeN/nodeM/weight
+
+    The sysfs structure is designed as follows.
+
+      $ tree /sys/kernel/mm/mempolicy/
+      /sys/kernel/mm/mempolicy/
+      ├── cpu_nodes
+      ├── possible_nodes
+      └── weighted_interleave
+          ├── nodeN
+          │   ├── nodeM
+          │   │     └── weight
+          │   └── nodeM+X
+          │         └── weight
+          └── nodeN+X
+              ├── nodeM
+              │     └── weight
+              └── node+X
+                    └── weight
+
+'cpu_nodes' and 'possible_nodes' is added to 'mm/mempolicy' to help
+describe the expected structures under mempolicy directorys. For
+example 'cpu_nodes' will describe what 'nodeN' directories will
+exist in 'weighted_interleave', while 'possible_nodes' describes
+what nodeM directories wille exist under the 'nodeN' directories.
+
+Internally, weights are represented as a matrix of [src,dst] nodes.
+
+struct interleave_weight_table {
+        unsigned char weights[MAX_NUMNODES];
+};
+static struct interleave_weight_table *iw_table;
+
+"Source Nodes" are nodes which have 1 or more CPUs, while "Destination
+Nodes" include any possible node.  A "Possible" node is one which has
+been reserved by the system, but which may or may not be online.
+
+We present possible nodes, instead of online nodes, to simplify the
+management interface, considering that a) the table of MAX_NUMNODES
+size is allocated anyway to simplfy fetching of weights, and b) it
+simplifies the management of hotplug events, allowing for weights to
+be set prior to a node coming online which may be beneficial for
+immediate use of the memory.
+
+the 'weight' of a node (an unsigned char of value 1-255) is the number
+of pages that are allocated during a "weighted interleave" round.
+(See 'weighted interleave' for more details').
+
+The [src,dst] matrix is implemented to allow for the capturing the
+complexity of bandwidth distribution across a multi-socket, or
+heterogeneous memory environment. For example, consider a 2-socket
+Intel server with 1 CXL Memory expander attached to each socket.
+
+From the perspective of a task on a CPU in Socket 0, the bandwidth
+distribution is as follows:
+
+Socket 0 DRAM:  (# DDR Channels) * (DDR Bandwidth)     ~400GB/s
+Socket 0 CXL :  (# CXL Lanes) * (CXL Lane Bandwidth)    128GB/s
+Socket 1 DRAM + CXL:   (# UPI Lanes) * (UPI Bandwidth) ~64GB/s
+
+If the task is then migrated to Socket 1, the bandwidth distribution
+flips to the following.
+
+Socket 1 DRAM:  (# DDR Channels) * (DDR Bandwidth)     ~400GB/s
+Socket 1 CXL :  (# CXL Lanes) * (CXL Lane Bandwidth)    128GB/s
+Socket 0 DRAM + CXL:   (# UPI Lanes) * (UPI Bandwidth) ~64GB/s
+
+The matrix allows for a 'source node' perspective weighting strategy,
+which allows for migrated tasks to simply "re-weight" new allocations
+immediately, by simply changing the [src] index they access in the
+global interleave weight table.
+
+=====================================================================
+(Patch 2) set_mempolicy: MPOL_WEIGHTED_INTERLEAVE
+
+Weighted interleave is a new memory policy that interleaves memory
+across numa nodes in the provided nodemask based on the weights
+described in patch 1 (sysfs global weights).
+
+When a system has multiple NUMA nodes and it becomes bandwidth hungry,
+the current MPOL_INTERLEAVE could be an wise option.
+
+However, if those NUMA nodes consist of different types of memory such
+as having local DRAM and CXL memory together, the current round-robin
+based interleaving policy doesn't maximize the overall bandwidth
+because of their different bandwidth characteristics.
+
+Instead, the interleaving can be more efficient when the allocation
+policy follows each NUMA nodes' bandwidth weight rather than having 1:1
+round-robin allocation.
+
+This patch introduces a new memory policy, MPOL_WEIGHTED_INTERLEAVE,
+which enables weighted interleaving between NUMA nodes.  Weighted
+interleave allows for a proportional distribution of memory across
+multiple numa nodes, preferablly apportioned to match the bandwidth
+capacity of each node from the perspective of the accessing node.
+
+For example, if a system has 1 CPU node (0), and 2 memory nodes (0,1),
+with a relative bandwidth of (100GB/s, 50GB/s) respectively, the
+appropriate weight distribution is (2:1).
+
+Weights will be acquired from the global weight matrix exposed by the
+sysfs extension: /sys/kernel/mm/mempolicy/weighted_interleave/
+
+The policy will then allocate the number of pages according to the
+set weights.  For example, if the weights are (2,1), then 2 pages
+will be allocated on node0 for every 1 page allocated on node1.
+
+The new flag MPOL_WEIGHTED_INTERLEAVE can be used in set_mempolicy(2)
+and mbind(2).
+
+=====================================================================
+(Patches 3-6) Refactoring mempolicy for code-reuse
+
+To avoid multiple paths of mempolicy creation, we should refactor the
+existing code to enable the designed extensibility, and refactor
+existing users to utilize the new interface (while retaining the
+existing userland interface).
+
+This set of patches introduces a new mempolicy_args structure, which
+is used to more fully describe a requested mempolicy - to include
+existing and future extensions.
+
+/*
+ * Describes settings of a mempolicy during set/get syscalls and
+ * kernel internal calls to do_set_mempolicy()
+ */
+struct mempolicy_args {
+    unsigned short mode;            /* policy mode */
+    unsigned short mode_flags;      /* policy mode flags */
+    nodemask_t *policy_nodes;       /* get/set/mbind */
+    int policy_node;                /* get: policy node information */
+    unsigned long addr;             /* get: vma address */
+    int addr_node;                  /* get: node the address belongs to */
+    int home_node;                  /* mbind: use MPOL_MF_HOME_NODE */
+    unsigned char *il_weights;      /* for mode MPOL_WEIGHTED_INTERLEAVE */
+};
+
+This arg structure will eventually be utilized by the following
+interfaces:
+    mpol_new() - new mempolicy creation
+    do_get_mempolicy() - acquiring information about mempolicy
+    do_set_mempolicy() - setting the task mempolicy
+    do_mbind()         - setting a vma mempolicy
+
+do_get_mempolicy() is completely refactored to break it out into
+separate functionality based on the flags provided by get_mempolicy(2)
+    MPOL_F_MEMS_ALLOWED: acquires task->mems_allowed
+    MPOL_F_ADDR: acquires information on vma policies
+    MPOL_F_NODE: changes the output for the policy arg to node info
+
+We refactor the get_mempolicy syscall flatten the logic based on these
+flags, and aloow for set_mempolicy2() to re-use the underlying logic.
+
+The result of this refactor, and the new mempolicy_args structure, is
+that extensions like 'sys_set_mempolicy_home_node' can now be directly
+integrated into the initial call to 'set_mempolicy2', and that more
+complete information about a mempolicy can be returned with a single
+call to 'get_mempolicy2', rather than multiple calls to 'get_mempolicy'
 
 
-vim +/himax_parse_dt +2673 drivers/hid/hid-himax-83102j.c
+=====================================================================
+(Patches 7-10) set_mempolicy2, get_mempolicy2, mbind2
 
-  2672	
-> 2673	static int himax_parse_dt(struct device_node *dt, struct himax_platform_data *pdata)
-  2674	{
-  2675		/* pid_fw_name size = length of default_fw_name + length of "_XXXX" +
-  2676		 * length of ".bin" + null terminator.
-  2677		 */
-  2678		static char pid_fw_name[ARRAY_SIZE(default_fw_name) + 5 + 4 + 1] = {0};
-  2679		int tmp = 0;
-  2680		const int pid_prop_args = 2;
-  2681		u32 data = 0;
-  2682		int id_gpios[8] = {0};
-  2683		int counter = 0;
-  2684		int i = 0;
-  2685		s16 id_value = -1;
-  2686		int dts_irq = 0;
-  2687		int err = 0;
-  2688	
-  2689		UNUSED(default_fw_name);
-  2690		if (!dt || !pdata) {
-  2691			E("DT: dev or pdata is NULL");
-  2692			return -EINVAL;
-  2693		}
-  2694	
-  2695		dts_irq = of_irq_get(dt, 0);
-  2696		D("DT: dts_irq = %d", dts_irq);
-  2697		if (dts_irq <= 0) {
-  2698			if (dts_irq == -EPROBE_DEFER)
-  2699				E("DT: dts_irq = -EPROBE_DEFER");
-  2700			return -EIO;
-  2701		}
-  2702	
-  2703		pdata->of_irq = dts_irq;
-  2704		pdata->gpio_irq = -1;
-  2705	
-  2706		pdata->gpio_reset = of_get_named_gpio(dt, "reset-gpios", 0);
-  2707		if (!gpio_is_valid(pdata->gpio_reset)) {
-  2708			I(" DT:gpio-rst value is not valid");
-  2709			return -EIO;
-  2710		}
-  2711	
-  2712		I(" DT:interrupt=%d, reset=%d",
-  2713		  pdata->of_irq, pdata->gpio_reset);
-  2714		counter = gpiod_count(pdata->ts->dev, "himax,id");
-  2715		if (counter > 0) {
-  2716			for (i = 0 ; i < counter ; i++) {
-  2717				id_gpios[i] = of_get_named_gpio(dt, "himax,id-gpios", i);
-  2718				if (!gpio_is_valid(id_gpios[i])) {
-  2719					I(" DT:gpio-id value is not valid");
-  2720					return -EIO;
-  2721				}
-  2722				I(" DT:gpio-id[%d]=%d", i, id_gpios[i]);
-  2723			}
-  2724			id_value = 0;
-  2725			for (i = 0 ; i < counter ; i++) {
-  2726				gpio_direction_input(id_gpios[i]);
-  2727				id_value |= gpio_get_value(id_gpios[i]) << i;
-  2728			}
-  2729			I(" DT:gpio-id value=%04X", id_value);
-  2730			pdata->panel_id = id_value;
-  2731		} else {
-  2732			pdata->panel_id = -1;
-  2733			D(" DT:gpio-id not found");
-  2734		}
-  2735	
-  2736		// himax,ic_det_delay unit is millisecond
-  2737		if (of_property_read_u32(dt, "himax,ic-det-delay-ms", &data)) {
-  2738			pdata->ic_det_delay = 0;
-  2739			D(" DT:himax,ic-det-delay-ms not found");
-  2740		} else {
-  2741			pdata->ic_det_delay = data;
-  2742			I(" DT:himax,ic-det-delay-ms=%d", pdata->ic_det_delay);
-  2743		}
-  2744	
-  2745		// himax,ic_resume_delay unit is millisecond
-  2746		if (of_property_read_u32(dt, "himax,ic-resume-delay-ms", &data)) {
-  2747			pdata->ic_resume_delay = 0;
-  2748			D(" DT:himax,ic-resume-delay-ms not found");
-  2749		} else {
-  2750			pdata->ic_resume_delay = data;
-  2751			I(" DT:himax,ic-resume-delay-ms=%d", pdata->ic_resume_delay);
-  2752		}
-  2753	
-  2754		if (of_property_read_bool(dt, "himax,has-flash")) {
-  2755			pdata->is_zf = false;
-  2756			D(" DT:himax,has-flash");
-  2757		} else {
-  2758			pdata->is_zf = true;
-  2759			I(" DT:himax,has-flash not found, load firmware from file");
-  2760		}
-  2761	
-  2762		if (of_property_read_bool(dt, "vccd-supply")) {
-  2763			pdata->vccd_supply = regulator_get(pdata->ts->dev, "vccd");
-  2764			if (IS_ERR(pdata->vccd_supply)) {
-  2765				E(" DT:failed to get vccd supply");
-  2766				err = PTR_ERR(pdata->vccd_supply);
-  2767				pdata->vccd_supply = NULL;
-  2768				return err;
-  2769			}
-  2770			I(" DT:vccd-supply=%p", pdata->vccd_supply);
-  2771		} else {
-  2772			pdata->vccd_supply = NULL;
-  2773		}
-  2774	
-  2775		if (of_property_read_bool(dt, "vcca-supply")) {
-  2776			pdata->vcca_supply = regulator_get(pdata->ts->dev, "vcca");
-  2777			if (IS_ERR(pdata->vcca_supply)) {
-  2778				E(" DT:failed to get vcca supply");
-  2779				err = PTR_ERR(pdata->vcca_supply);
-  2780				pdata->vcca_supply = NULL;
-  2781				return err;
-  2782			}
-  2783			I(" DT:vcca-supply=%p", pdata->vcca_supply);
-  2784		} else {
-  2785			pdata->vcca_supply = NULL;
-  2786		}
-  2787	
-  2788		/*
-  2789		 * check himax,pid first, if exist then check if it is single.
-  2790		 * Single case: himax,pid = <0x1002>; // 0x1002 is pid value
-  2791		 * Multiple case: himax,pid = <id_value0 00x1001>, <id_value1 0x1002>;
-  2792		 * When id_value >= 0, check the mapping listed to use the pid value.
-  2793		 */
-  2794		if (of_get_property(dt, "himax,pid", &data)) {
-  2795			counter = data / (sizeof(u32) * pid_prop_args);
-  2796	
-  2797			if (!counter) {
-  2798				// default case, no id->pid mappings
-  2799				if (of_property_read_u32(dt, "himax,pid", &data)) {
-  2800					pdata->pid = 0;
-  2801					D(" DT:himax,pid not found");
-  2802					goto GET_PID_END;
-  2803				} else {
-  2804					goto GET_PID_VALUE;
-  2805				}
-  2806			}
-  2807	
-  2808			if (id_value < 0) {
-  2809				E(" DT:himax,pid has no matched for id_value=%04X", id_value);
-  2810				pdata->pid = 0;
-  2811				goto GET_PID_END;
-  2812			}
-  2813	
-  2814			for (i = 0; i < counter; i++) {
-  2815				if (of_property_read_u32_index(dt, "himax,pid",
-  2816							       i * pid_prop_args, &tmp)) {
-  2817					D(" DT:himax,pid parsing error!");
-  2818					pdata->pid = 0;
-  2819					goto GET_PID_END;
-  2820				}
-  2821	
-  2822				if (of_property_read_u32_index(dt, "himax,pid",
-  2823							       i * pid_prop_args + 1, &data)) {
-  2824					D(" DT:himax,pid parsing error!");
-  2825					pdata->pid = 0;
-  2826					goto GET_PID_END;
-  2827				}
-  2828	
-  2829				if (tmp == id_value) {
-  2830					I(" DT:himax,pid mapping: id=%04X => pid=%04X, matched!",
-  2831					  tmp, data);
-  2832					i = counter;
-  2833				} else {
-  2834					I(" DT:himax,pid mapping: id=%04X => pid=%04X", tmp, data);
-  2835				}
-  2836			}
-  2837	
-  2838			if (counter == i) {
-  2839				E(" DT:himax,pid has no matched for id_value=%04X", id_value);
-  2840				pdata->pid = 0;
-  2841				goto GET_PID_END;
-  2842			}
-  2843	
-  2844	GET_PID_VALUE:
-  2845			g_fw_boot_upgrade_name = pid_fw_name;
-  2846			pdata->pid = data;
-  2847			snprintf(pid_fw_name, sizeof(pid_fw_name), "%s_%04X%s",
-  2848				 BOOT_UPGRADE_FWNAME, pdata->pid, ".bin");
-  2849			I(" DT:himax,pid=%04X, fw_name=%s",
-  2850			  pdata->pid, pid_fw_name);
-  2851		} else {
-  2852			pdata->pid = 0;
-  2853			D(" DT:himax,pid not found");
-  2854		}
-  2855	GET_PID_END:
-  2856	
-  2857		return 0;
-  2858	}
-  2859	
+These interfaces are the 'extended' counterpart to their relatives.
+They use the userland 'struct mpol_args' structure to communicate a
+complete mempolicy configuration to the kernel.  This structure
+looks very much like the kernel-internal 'struct mempolicy_args':
+
+struct mpol_args {
+        /* Basic mempolicy settings */
+        unsigned short mode;
+        unsigned short mode_flags;
+        unsigned long *pol_nodes;
+        unsigned long pol_maxnodes;
+        /* get_mempolicy: policy node information */
+        int policy_node;
+        /* get_mempolicy: memory range policy */
+        unsigned long addr;
+        int addr_node;
+        /* mbind2: policy home node */
+        int home_node;
+        /* mbind2: address ranges to apply the policy */
+        struct iovec *vec;
+        size_t vlen;
+        /* weighted interleave settings */
+        unsigned char *il_weights;      /* of size pol_maxnodes */
+};
+
+The basic mempolicy settings which are shared across all interfaces
+are captured at the top of the structure, while extensions such as
+'policy_node' and 'addr' are collected beneath.
+
+The syscalls are uniform and defined as follows:
+
+long sys_mbind2(struct mpol_args *args,
+                size_t size,
+                unsigned long flags);
+
+long sys_get_mempolicy2(struct mpol_args *args,
+                        size_t size,
+                        unsigned long flags);
+
+long sys_set_mempolicy2(struct mpol_args *args,
+                        size_t size,
+                        unsigned long flags);
+
+The 'flags' argument for mbind2 is the same as 'mbind', except with
+the addition of MPOL_MF_HOME_NODE to denote whether the 'home_node'
+field should be utilized.
+
+The 'flags' argument for get_mempolicy2 is the same as get_mempolicy.
+
+The 'flags' argument is not used by 'set_mempolicy' at this time, but
+may end up allowing the use of MPOL_MF_HOME_NODE if such functionality
+is desired.
+
+The extensions can be summed up as follows:
+
+get_mempolicy2 extensions:
+    'mode', 'policy_node', and 'addr_node' can now be fetched with
+    a single call, rather than multiple with a combination of flags.
+    - 'mode' will always return the policy mode
+    - 'policy_node' will replace the functionality of MPOL_F_NODE
+    - 'addr_node' will return the node for 'addr' w/ MPOL_F_ADDR
+
+set_mempolicy2:
+    - task-local interleave weights can be set via 'il_weights'
+      (see next patch)
+
+mbind2:
+    - 'home_node' field sets policy home node w/ MPOL_MF_HOME_NODE
+    - task-local interleave weights can be set via 'il_weights'
+      (see next patch)
+    - 'vec' and 'vlen' can be used to operate on multiple memory
+      ranges, rather than a single memory range per syscall.
+
+=====================================================================
+(Patch 11) set_mempolicy2/mbind2: MPOL_WEIGHTED_INTERLEAVE
+
+This patch shows the explicit extension pattern when adding new
+policies to mempolicy2/mbind2.  This adds the 'il_weights' field
+to mpol_args and adds the logic to fill in task-local weights.
+
+There are now two ways to weight a mempolicy: global and local.
+To denote which mode the task is in, we add the internal flag:
+MPOL_F_GWEIGHT /* Utilize global weights */
+
+When MPOL_F_GWEIGHT is set, the global weights are used, and
+when it is not set, task-local weights are used.
+
+Example logic:
+if (pol->flags & MPOL_F_GWEIGHT)
+       pol_weights = iw_table[numa_node_id()].weights;
+else
+       pol_weights = pol->wil.weights;
+
+set_mempolicy is changed to always set MPOL_F_GWEIGHT, since this
+syscall is incapable of passing weights via its interfaces, while
+set_mempolicy2 sets MPOL_F_GWEIGHT if MPOL_F_WEIGHTED_INTERLEAVE
+is required but (*il_weights) in mpol_args is null.
+
+The operation of task-local weighted is otherwise exactly the
+same - except for what occurs on task migration.
+
+On task migration, the system presently has no way of determining
+what the new weights "should be", or what the user "intended".
+
+For this reason, we default all weights to '1' and do not allow
+weights to be '0'.  This means, should a migration occur where
+one or more nodes appear into the nodemask - the effective weight
+for that node will be '1'.  This avoids a potential allocation
+failure condition if a migration occurs and introduces a node
+which otherwise did not have a weight.
+
+For this reason, users should use task-local weighting when
+migrations are not expected, and global weighting when migrations
+are expected or possible.
+
+Suggested-by: Gregory Price <gregory.price@memverge.com>
+Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+Suggested-by: Hasan Al Maruf <hasanalmaruf@fb.com>
+Suggested-by: Hao Wang <haowang3@fb.com>
+Suggested-by: Ying Huang <ying.huang@intel.com>
+Suggested-by: Dan Williams <dan.j.williams@intel.com>
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Suggested-by: tj <tj@kernel.org>
+Suggested-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
+Suggested-by: Frank van der Linden <fvdl@google.com>
+Suggested-by: John Groves <john@jagalactic.com>
+Suggested-by: Vinicius Tavares Petrucci <vtavarespetr@micron.com>
+Suggested-by: Srinivasulu Thanneeru <sthanneeru@micron.com>
+Suggested-by: Ravi Jonnalagadda <ravis.opensrc@micron.com>
+Suggested-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Signed-off-by: Gregory Price <gregory.price@memverge.com>
+
+Gregory Price (9):
+  mm/mempolicy: refactor sanitize_mpol_flags for reuse
+  mm/mempolicy: create struct mempolicy_args for creating new
+    mempolicies
+  mm/mempolicy: refactor kernel_get_mempolicy for code re-use
+  mm/mempolicy: allow home_node to be set by mpol_new
+  mm/mempolicy: add userland mempolicy arg structure
+  mm/mempolicy: add set_mempolicy2 syscall
+  mm/mempolicy: add get_mempolicy2 syscall
+  mm/mempolicy: add the mbind2 syscall
+  mm/mempolicy: extend set_mempolicy2 and mbind2 to support weighted
+    interleave
+
+Rakie Kim (2):
+  mm/mempolicy: implement the sysfs-based weighted_interleave interface
+  mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE for weighted
+    interleaving
+
+ .../ABI/testing/sysfs-kernel-mm-mempolicy     |  33 +
+ ...fs-kernel-mm-mempolicy-weighted-interleave |  35 +
+ .../admin-guide/mm/numa_memory_policy.rst     |  85 ++
+ arch/alpha/kernel/syscalls/syscall.tbl        |   3 +
+ arch/arm/tools/syscall.tbl                    |   3 +
+ arch/m68k/kernel/syscalls/syscall.tbl         |   3 +
+ arch/microblaze/kernel/syscalls/syscall.tbl   |   3 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl     |   3 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl     |   3 +
+ arch/parisc/kernel/syscalls/syscall.tbl       |   3 +
+ arch/powerpc/kernel/syscalls/syscall.tbl      |   3 +
+ arch/s390/kernel/syscalls/syscall.tbl         |   3 +
+ arch/sh/kernel/syscalls/syscall.tbl           |   3 +
+ arch/sparc/kernel/syscalls/syscall.tbl        |   3 +
+ arch/x86/entry/syscalls/syscall_32.tbl        |   3 +
+ arch/x86/entry/syscalls/syscall_64.tbl        |   3 +
+ arch/xtensa/kernel/syscalls/syscall.tbl       |   3 +
+ include/linux/mempolicy.h                     |  21 +
+ include/linux/syscalls.h                      |   6 +
+ include/uapi/asm-generic/unistd.h             |   8 +-
+ include/uapi/linux/mempolicy.h                |  27 +-
+ mm/mempolicy.c                                | 960 ++++++++++++++++--
+ 22 files changed, 1103 insertions(+), 114 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-mempolicy
+ create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-mempolicy-weighted-interleave
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.1
+
