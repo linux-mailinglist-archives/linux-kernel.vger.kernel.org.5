@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8ABC807F66
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:00:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD55807F6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjLGEAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 23:00:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
+        id S229545AbjLGEIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 23:08:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjLGEAP (ORCPT
+        with ESMTP id S229447AbjLGEIx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 23:00:15 -0500
+        Wed, 6 Dec 2023 23:08:53 -0500
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0907F193;
-        Wed,  6 Dec 2023 20:00:20 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 63D13D73;
+        Wed,  6 Dec 2023 20:08:59 -0800 (PST)
 Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8DxBfFRQ3FlY4Y_AA--.61920S3;
-        Thu, 07 Dec 2023 12:00:17 +0800 (CST)
+        by gateway (Coremail) with SMTP id _____8BxIvBZRXFlqoY_AA--.60736S3;
+        Thu, 07 Dec 2023 12:08:57 +0800 (CST)
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxvi9RQ3FljSZXAA--.61641S2;
-        Thu, 07 Dec 2023 12:00:17 +0800 (CST)
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxK9xYRXFltidXAA--.61203S2;
+        Thu, 07 Dec 2023 12:08:57 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     Puranjay Mohan <puranjay12@gmail.com>, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v1] test_bpf: Rename second ALU64_SMOD_X to ALU64_SMOD_K
-Date:   Thu,  7 Dec 2023 12:00:10 +0800
-Message-ID: <20231207040010.18956-1-yangtiezhu@loongson.cn>
+Subject: [PATCH RESEND bpf-next v1] test_bpf: Rename second ALU64_SMOD_X to ALU64_SMOD_K
+Date:   Thu,  7 Dec 2023 12:08:51 +0800
+Message-ID: <20231207040851.19730-1-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Dxvi9RQ3FljSZXAA--.61641S2
+X-CM-TRANSID: AQAAf8BxK9xYRXFltidXAA--.61203S2
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7XFyrArWfZw1rWr48trWkuFX_yoWDCFgE9a
-        18AF9rAF15uFyYvw4agFWDKrs29F1jy3WxCr1DZFWDG3yUtry5Cr4kZr1Dua45WrZav3ZF
-        v3Zrt3ZrGwnYkosvyTuYvTs0mTUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvT
+X-Coremail-Antispam: 1Uk129KBj9xXoW7XFyrArWfZw1rWr48trWkuFX_yoWDKwcE9a
+        18AF9rAF15uFyYvw4SgFWDKrs29F4Dt3WxCr1DuFWDGay5Jry5Cr4kZr1Uua45WrZav3ZF
+        v3WDt3ZrGwnYkosvyTuYvTs0mTUanT9S1TB71UUUUjDqnTZGkaVYY2UrUUUUj1kv1TuYvT
         s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        cSsGvfJTRUUUb3AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
         w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
-        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAF
-        wI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
-        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8vApUUUUUU==
+        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
+        6r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+        vIr41lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+        Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
+        AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
+        cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
+        IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIev
+        Ja73UjIFyTuYvjxU2rgADUUUU
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -76,6 +77,9 @@ test_bpf: #171 ALU64_SMOD_K: -7 % 2 = -1 jited:1 4 PASS
 Fixes: daabb2b098e0 ("bpf/tests: add tests for cpuv4 instructions")
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
+
+Add "bpf-next" in the patch subject, sorry for that
+
  lib/test_bpf.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
