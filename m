@@ -2,123 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 581B7807F5D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 04:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8ABC807F66
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbjLGDus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 22:50:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41922 "EHLO
+        id S229534AbjLGEAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 23:00:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjLGDuZ (ORCPT
+        with ESMTP id S229447AbjLGEAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 22:50:25 -0500
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD6F1717;
-        Wed,  6 Dec 2023 19:50:23 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0Vy-N8Tj_1701921018;
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vy-N8Tj_1701921018)
-          by smtp.aliyun-inc.com;
-          Thu, 07 Dec 2023 11:50:20 +0800
-From:   Wen Gu <guwen@linux.alibaba.com>
-To:     wintera@linux.ibm.com, wenjia@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        kgraul@linux.ibm.com, jaka@linux.ibm.com
-Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        guwen@linux.alibaba.com, raspl@linux.ibm.com,
-        schnelle@linux.ibm.com, guangguan.wang@linux.alibaba.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        Wed, 6 Dec 2023 23:00:15 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0907F193;
+        Wed,  6 Dec 2023 20:00:20 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8DxBfFRQ3FlY4Y_AA--.61920S3;
+        Thu, 07 Dec 2023 12:00:17 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxvi9RQ3FljSZXAA--.61641S2;
+        Thu, 07 Dec 2023 12:00:17 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v4 9/9] net/smc: support extended GID in SMC-D lgr netlink attribute
-Date:   Thu,  7 Dec 2023 11:49:54 +0800
-Message-Id: <1701920994-73705-10-git-send-email-guwen@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1701920994-73705-1-git-send-email-guwen@linux.alibaba.com>
-References: <1701920994-73705-1-git-send-email-guwen@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: [PATCH v1] test_bpf: Rename second ALU64_SMOD_X to ALU64_SMOD_K
+Date:   Thu,  7 Dec 2023 12:00:10 +0800
+Message-ID: <20231207040010.18956-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Dxvi9RQ3FljSZXAA--.61641S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj9xXoW7XFyrArWfZw1rWr48trWkuFX_yoWDCFgE9a
+        18AF9rAF15uFyYvw4agFWDKrs29F1jy3WxCr1DZFWDG3yUtry5Cr4kZr1Dua45WrZav3ZF
+        v3Zrt3ZrGwnYkosvyTuYvTs0mTUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAF
+        wI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
+        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
+        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
+        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8vApUUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Virtual ISM devices introduced in SMCv2.1 requires a 128 bit extended
-GID vs. the existing ISM 64bit GID. So the 2nd 64 bit of extended GID
-should be included in SMC-D linkgroup netlink attribute as well.
+Currently, there are two test cases with same name
+"ALU64_SMOD_X: -7 % 2 = -1", the first one is right,
+the second one should be ALU64_SMOD_K because its
+code is BPF_ALU64 | BPF_MOD | BPF_K.
 
-Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+Before:
+test_bpf: #170 ALU64_SMOD_X: -7 % 2 = -1 jited:1 4 PASS
+test_bpf: #171 ALU64_SMOD_X: -7 % 2 = -1 jited:1 4 PASS
+
+After:
+test_bpf: #170 ALU64_SMOD_X: -7 % 2 = -1 jited:1 4 PASS
+test_bpf: #171 ALU64_SMOD_K: -7 % 2 = -1 jited:1 4 PASS
+
+Fixes: daabb2b098e0 ("bpf/tests: add tests for cpuv4 instructions")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- include/uapi/linux/smc.h      | 2 ++
- include/uapi/linux/smc_diag.h | 2 ++
- net/smc/smc_core.c            | 6 ++++++
- net/smc/smc_diag.c            | 2 ++
- 4 files changed, 12 insertions(+)
+ lib/test_bpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/uapi/linux/smc.h b/include/uapi/linux/smc.h
-index 837fcd4..b531e3e 100644
---- a/include/uapi/linux/smc.h
-+++ b/include/uapi/linux/smc.h
-@@ -160,6 +160,8 @@ enum {
- 	SMC_NLA_LGR_D_CHID,		/* u16 */
- 	SMC_NLA_LGR_D_PAD,		/* flag */
- 	SMC_NLA_LGR_D_V2_COMMON,	/* nest */
-+	SMC_NLA_LGR_D_EXT_GID,		/* u64 */
-+	SMC_NLA_LGR_D_PEER_EXT_GID,	/* u64 */
- 	__SMC_NLA_LGR_D_MAX,
- 	SMC_NLA_LGR_D_MAX = __SMC_NLA_LGR_D_MAX - 1
- };
-diff --git a/include/uapi/linux/smc_diag.h b/include/uapi/linux/smc_diag.h
-index 8cb3a6f..58eceb7 100644
---- a/include/uapi/linux/smc_diag.h
-+++ b/include/uapi/linux/smc_diag.h
-@@ -107,6 +107,8 @@ struct smcd_diag_dmbinfo {		/* SMC-D Socket internals */
- 	__aligned_u64	my_gid;		/* My GID */
- 	__aligned_u64	token;		/* Token of DMB */
- 	__aligned_u64	peer_token;	/* Token of remote DMBE */
-+	__aligned_u64	peer_gid_ext;	/* Peer GID (extended part) */
-+	__aligned_u64	my_gid_ext;	/* My GID (extended part) */
- };
- 
- #endif /* _UAPI_SMC_DIAG_H_ */
-diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-index 672eff0..95cc954 100644
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -526,9 +526,15 @@ static int smc_nl_fill_smcd_lgr(struct smc_link_group *lgr,
- 	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_GID,
- 			      smcd_gid.gid, SMC_NLA_LGR_D_PAD))
- 		goto errattr;
-+	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_EXT_GID,
-+			      smcd_gid.gid_ext, SMC_NLA_LGR_D_PAD))
-+		goto errattr;
- 	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_PEER_GID, lgr->peer_gid.gid,
- 			      SMC_NLA_LGR_D_PAD))
- 		goto errattr;
-+	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_PEER_EXT_GID,
-+			      lgr->peer_gid.gid_ext, SMC_NLA_LGR_D_PAD))
-+		goto errattr;
- 	if (nla_put_u8(skb, SMC_NLA_LGR_D_VLAN_ID, lgr->vlan_id))
- 		goto errattr;
- 	if (nla_put_u32(skb, SMC_NLA_LGR_D_CONNS_NUM, lgr->conns_num))
-diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
-index c180c18..3fbe14e 100644
---- a/net/smc/smc_diag.c
-+++ b/net/smc/smc_diag.c
-@@ -175,8 +175,10 @@ static int __smc_diag_dump(struct sock *sk, struct sk_buff *skb,
- 
- 		dinfo.linkid = *((u32 *)conn->lgr->id);
- 		dinfo.peer_gid = conn->lgr->peer_gid.gid;
-+		dinfo.peer_gid_ext = conn->lgr->peer_gid.gid_ext;
- 		smcd->ops->get_local_gid(smcd, &smcd_gid);
- 		dinfo.my_gid = smcd_gid.gid;
-+		dinfo.my_gid_ext = smcd_gid.gid_ext;
- 		dinfo.token = conn->rmb_desc->token;
- 		dinfo.peer_token = conn->peer_token;
- 
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index 7916503e6a6a..3c5a1ca06219 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -6293,7 +6293,7 @@ static struct bpf_test tests[] = {
+ 	},
+ 	/* BPF_ALU64 | BPF_MOD | BPF_K off=1 (SMOD64) */
+ 	{
+-		"ALU64_SMOD_X: -7 % 2 = -1",
++		"ALU64_SMOD_K: -7 % 2 = -1",
+ 		.u.insns_int = {
+ 			BPF_LD_IMM64(R0, -7),
+ 			BPF_ALU64_IMM_OFF(BPF_MOD, R0, 2, 1),
 -- 
-1.8.3.1
+2.42.0
 
