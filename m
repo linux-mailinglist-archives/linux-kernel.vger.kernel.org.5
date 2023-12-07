@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EB4808D48
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A299808D08
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbjLGQBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 11:01:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
+        id S1443305AbjLGQCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 11:02:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443690AbjLGQAo (ORCPT
+        with ESMTP id S232709AbjLGQCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 11:00:44 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F53121;
-        Thu,  7 Dec 2023 08:00:50 -0800 (PST)
-Received: from [10.3.2.161] (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id BE36A660739F;
-        Thu,  7 Dec 2023 16:00:47 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701964848;
-        bh=o60ZivJAjuNVk9lMONJuI83P129Uc3ICsB0e+skvORE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=J+HzaMOmkobFxYMAtj8seSUoTES01PM+gUy6AJ1Rby/oRd0J7+PDOezsV5mD/tn6K
-         EkSmnkdqoJuT8pb2R0q7hAurSYtX9c9b2lEnTDBPrmyJ/TIrJppmb14MZFbw8y86I3
-         FqvfijCWVaKSW5bq6BY73mzVmS6dSpfajFksSpBuz1tD8SlmOMXZ7zYvChz2eZ+FD/
-         NKR9hvbaqcvGJHK2sB9UhMf5OUH9dBlNMribUGYAOrOZ3fqexBu7YRmg4XGYHuJH1h
-         71YB2AJZxJOwZKdvEGbB7jC0hPO+HAoOew1HOrDkHkjJlB9iER4S6RVUXfxJ/7FuB9
-         3wlZgxaWA9ALg==
-Message-ID: <95cc7716-ba01-e239-e7c0-eba0b7da7955@collabora.com>
-Date:   Thu, 7 Dec 2023 19:00:42 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] i2c: rk3x: fix potential spinlock recursion on poll
-Content-Language: en-US
-To:     Dragan Simic <dsimic@manjaro.org>,
-        Jensen Huang <jensenhuang@friendlyarm.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chris Morgan <macroalpha82@gmail.com>,
-        Benjamin Bara <bbara93@gmail.com>
-References: <20231207082200.16388-1-jensenhuang@friendlyarm.com>
- <ebf6cf8ec3b5befd673d295061fa2738@manjaro.org>
- <CAMpZ1qHUnTDQ78gdrQF9Sx_-XfLM-B+H-0bL1-+twKsno+JOvg@mail.gmail.com>
- <5e11553952c02ad20591992be4284bbd@manjaro.org>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <5e11553952c02ad20591992be4284bbd@manjaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 7 Dec 2023 11:02:53 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F39610C3;
+        Thu,  7 Dec 2023 08:02:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=9hxmOxzlmeubWF8MZL43e5U0xtVhFBe0Cobz79lxqI8=; b=zj6odPv7rjZuL72UE9JehHSORQ
+        QGDf+Gm9uILicHxNCMYwWZdj0pTcqxXhKJfWWM9FU7fS0pX9lLjuY704AGlZcYh+0+UdcdBMDJaik
+        +wURkW151BOqGGrGSUh12VRg/eaHcr5/uHYKEuthIFHWlbg33Bafz4Peqtxz8/CasyZE=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:52566 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1rBGpw-00072a-QE; Thu, 07 Dec 2023 11:02:53 -0500
+Date:   Thu, 7 Dec 2023 11:02:52 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     jirislaby@kernel.org, hvilleneuve@dimonoff.com,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        stable@vger.kernel.org, Andy Shevchenko <andy.shevchenko@gmail.com>
+Message-Id: <20231207110252.1c7dfd46c0c5772edda9a770@hugovil.com>
+In-Reply-To: <2023120748-swimming-precinct-722c@gregkh>
+References: <20231130191050.3165862-1-hugo@hugovil.com>
+        <20231130191050.3165862-2-hugo@hugovil.com>
+        <2023120748-swimming-precinct-722c@gregkh>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 1/7] serial: sc16is7xx: fix snprintf format specifier in
+ sc16is7xx_regmap_name()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/23 17:10, Dragan Simic wrote:
-> On 2023-12-07 10:25, Jensen Huang wrote:
->> On Thu, Dec 7, 2023 at 4:37 PM Dragan Simic <dsimic@manjaro.org> wrote:
->>>
->>> On 2023-12-07 09:21, Jensen Huang wrote:
->>> > Possible deadlock scenario (on reboot):
->>> > rk3x_i2c_xfer_common(polling)
->>> >     -> rk3x_i2c_wait_xfer_poll()
->>> >         -> rk3x_i2c_irq(0, i2c);
->>> >             --> spin_lock(&i2c->lock);
->>> >             ...
->>> >         <rk3x i2c interrupt>
->>> >         -> rk3x_i2c_irq(0, i2c);
->>> >             --> spin_lock(&i2c->lock); (deadlock here)
->>> >
->>> > Store the IRQ number and disable/enable it around the polling
->>> transfer.
->>> > This patch has been tested on NanoPC-T4.
->>>
->>> In case you haven't already seen the related discussion linked below,
->>> please have a look.  I also added more people to the list of recipients,
->>> in an attempt to make everyone aware of the different approaches to
->>> solving this issue.
->>>
->>> https://lore.kernel.org/all/655177f4.050a0220.d85c9.3ba0@mx.google.com/T/#m6fc9c214452fec6681843e7f455978c35c6f6c8b
->>
->> Thank you for providing the information. I hadn't seen this link before.
->> After carefully looking into the related discussion, it appears that
->> Dmitry Osipenko is already working on a suitable patch. To avoid
->> duplication
->> or conflicts, my patch can be discarded.
+On Thu, 7 Dec 2023 10:44:33 +0900
+Greg KH <gregkh@linuxfoundation.org> wrote:
+
+> On Thu, Nov 30, 2023 at 02:10:43PM -0500, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > Change snprint format specifier from %d to %u since port_id is unsigned.
+> > 
+> > Fixes: 3837a0379533 ("serial: sc16is7xx: improve regmap debugfs by using one regmap per port")
+> > Cc: stable@vger.kernel.org # 6.1.x: 3837a03 serial: sc16is7xx: improve regmap debugfs by using one regmap per port
+> > Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > ---
+> > I did not originally add a "Cc: stable" tag for commit 3837a0379533 ("serial: sc16is7xx: improve regmap debugfs by using one regmap per port")
+> > as it was intended only to improve debugging using debugfs. But
+> > since then, I have been able to confirm that it also fixes a long standing
+> > bug in our system where the Tx interrupt are no longer enabled at some
+> > point when transmitting large RS-485 paquets (> 64 bytes, which is the size
+> > of the FIFO). I have been investigating why, but so far I haven't found the
+> > exact cause, altough I suspect it has something to do with regmap caching.
+> > Therefore, I have added it as a prerequisite for this patch so that it is
+> > automatically added to the stable kernels.
 > 
-> Thank you for responding so quickly.  Perhaps it would be best to hear
-> from Dmitry as well, before discarding anything.  It's been a while
-> since Dmitry wrote about working on the patch, so he might have
-> abandoned it.
+> Looks like the 0-day test bot found problems with this, so I'll hold off
+> on taking this patch and the rest of the series until that's fixed up
+> with a new version of this series.
 
-This patch is okay. In general, will be better to have IRQ disabled by
-default like I did in my variant, it should allow to remove the spinlock
-entirely. Of course this also can be done later on in a follow up
-patches. Jensen, feel free to use my variant of the patch, add my
-s-o-b+co-developed tags to the commit msg if you'll do. Otherwise I'll
-be able to send my patch next week.
+No problem, I am on it.
 
--- 
-Best regards,
-Dmitry
-
+Hugo
