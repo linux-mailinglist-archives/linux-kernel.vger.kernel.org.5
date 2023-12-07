@@ -2,122 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 553E78089D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F298089E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442981AbjLGOJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:09:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
+        id S1443044AbjLGOJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:09:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442831AbjLGOJE (ORCPT
+        with ESMTP id S1442831AbjLGOJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:09:04 -0500
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8F210C2;
-        Thu,  7 Dec 2023 06:09:09 -0800 (PST)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231207140906euoutp01a968583816babe8207af359fc417f762~ekerLmbeQ1200612006euoutp014;
-        Thu,  7 Dec 2023 14:09:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231207140906euoutp01a968583816babe8207af359fc417f762~ekerLmbeQ1200612006euoutp014
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1701958146;
-        bh=gQOvJwnP4RJmx4q0SMRimq7/pmHWQK9ZyIg5Zdub5FQ=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=oDc1LQNsSbjh2qqzpnTX3PNzYKwZMKOewQFOhEL+ClVOX1S6nPstiZLNzzdhPtVS9
-         +GEVy8GxMWirtMPW+LSPdlH4TA1BdPZE6RZQuDmtCOepWeJIDoQIrlVU5tSBddL/WU
-         DDlobbou1qcAuuXQyaOzt0I9Fs3XmuSyCtPk5B1U=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20231207140906eucas1p1ca0d19aed72cacf9fa18fc8a45a98464~ekeq_-Ztj3009030090eucas1p1r;
-        Thu,  7 Dec 2023 14:09:06 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 37.51.09539.202D1756; Thu,  7
-        Dec 2023 14:09:06 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20231207140905eucas1p1b4a4b5df08ed08727df6094d9f84dd69~ekeqW7qsv3251532515eucas1p1S;
-        Thu,  7 Dec 2023 14:09:05 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231207140905eusmtrp2f080007a2612533b23a8b01f3fb466cc~ekeqWGZzi2087320873eusmtrp2T;
-        Thu,  7 Dec 2023 14:09:05 +0000 (GMT)
-X-AuditID: cbfec7f2-52bff70000002543-61-6571d202bd44
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id B6.61.09274.102D1756; Thu,  7
-        Dec 2023 14:09:05 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20231207140905eusmtip20883ecdcf0cb7e5beb49b4056b777b70~ekeqKjJA20797807978eusmtip2V;
-        Thu,  7 Dec 2023 14:09:05 +0000 (GMT)
-Received: from localhost (106.210.248.38) by CAMSVWEXC02.scsc.local
-        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Thu, 7 Dec 2023 14:09:05 +0000
-Date:   Thu, 7 Dec 2023 15:09:03 +0100
-From:   Joel Granados <j.granados@samsung.com>
-To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-CC:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v2 03/18] sysctl: drop sysctl_is_perm_empty_ctl_table
-Message-ID: <20231207140903.dxlazorxcolnhyrf@localhost>
+        Thu, 7 Dec 2023 09:09:29 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 529E610C2;
+        Thu,  7 Dec 2023 06:09:34 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 407A412FC;
+        Thu,  7 Dec 2023 06:10:20 -0800 (PST)
+Received: from e126817.. (e126817.cambridge.arm.com [10.2.3.5])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A71BB3F6C4;
+        Thu,  7 Dec 2023 06:09:32 -0800 (PST)
+From:   Ben Gainey <ben.gainey@arm.com>
+To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, Ben Gainey <ben.gainey@arm.com>
+Subject: [PATCH] tools/perf: Fix missing reference count get in call_path_from_sample
+Date:   Thu,  7 Dec 2023 14:09:11 +0000
+Message-ID: <20231207140911.3240408-1-ben.gainey@arm.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="etof6dfa6kluo2qz"
-Content-Disposition: inline
-In-Reply-To: <20231204-const-sysctl-v2-3-7a5060b11447@weissschuh.net>
-X-Originating-IP: [106.210.248.38]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFKsWRmVeSWpSXmKPExsWy7djP87pMlwpTDS51yFs0L17PZvHr4jRW
-        izPduRZ79p5ksZi3/iejxeVdc9gsfv94xmRxY8JTRotlO/0cOD1mN1xk8ViwqdRj06pONo/9
-        c9ewe3zeJOfR332MPYAtissmJTUnsyy1SN8ugSvj7Y/ZrAUdohXrTxxibGDcJtTFyMkhIWAi
-        0Ta5n6WLkYtDSGAFo8SU/XvZIJwvjBIrJq6Gcj4zSvx9c48ZpmXB9F4miMRyRonN97eyIFTd
-        WMYK4WxmlPhw4SgTSAuLgIrEmyc9YO1sAjoS59/cAbNFBGwkVn77zA7SwCywi0ni8cO5QA0c
-        HMICnhJnHtSD1PAKmEvM3XiLHcIWlDg58wkLiM0sUCExseMhC0g5s4C0xPJ/HCBhTgFXiT8X
-        frFCXKokcXjyZ6irayVObbnFBGGv5pTYP4MdwnaRaDr2H8oWlnh1fAuULSPxf+d8sC8lBCYz
-        Suz/94EdwlnNKLGs8SvUJGuJlitPoDocJSbcvscOcpCEAJ/EjbeCEHfySUzaNp0ZIswr0dEG
-        DXg1idX33rBMYFSeheSzWUg+m4XwGURYT+LG1ClsGMLaEssWvmaGsG0l1q17z7KAkX0Vo3hq
-        aXFuemqxYV5quV5xYm5xaV66XnJ+7iZGYJI7/e/4px2Mc1991DvEyMTBeIhRBaj50YbVFxil
-        WPLy81KVRHhzzuenCvGmJFZWpRblxxeV5qQWH2KU5mBREudVTZFPFRJITyxJzU5NLUgtgsky
-        cXBKNTDZKxy7dWD+F7VtZx+mhScvuqO2IOmloun5aX2vpO/4zREqM49+GrpkUQ2T/n9fqRlp
-        fxS2NezhZDxjuMNlrsTxgjrmeRaCCWwb7Bge/F/TqZzfvLP8MfcTAVYXU3GfAgX9rFfi+6Nd
-        Rd+f+V587Kbs4qLWFFW7v7H82hZrl7WtnOEpcW5mjNbB8z5CdqkrbCy07FmPVLz753s74/2u
-        g1fVJLImMXQ8aejW2b5wfXbq2eKFlh9OcrdNdtmYeK6+YxVX19XMj7ofJHWcbhhwe8p9KuNf
-        vqspLok3e+5Mh/g3EembPc3akouZGJj+Ta2ufTt9u7Jw/W42y3qxhNyUsutXjY8b39af2fbi
-        aWX3WiWW4oxEQy3mouJEACVGO4ztAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOIsWRmVeSWpSXmKPExsVy+t/xe7qMlwpTDaZ+NbJoXryezeLXxWms
-        Fme6cy327D3JYjFv/U9Gi8u75rBZ/P7xjMnixoSnjBbLdvo5cHrMbrjI4rFgU6nHplWdbB77
-        565h9/i8Sc6jv/sYewBblJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1N
-        SmpOZllqkb5dgl7Goz/nmQraRCvObdrA1MC4RaiLkZNDQsBEYsH0XqYuRi4OIYGljBKvL3xn
-        hkjISGz8cpUVwhaW+HOtiw2i6COjRO+RzSwQzmZGib62BrAOFgEViTdPesBsNgEdifNv7oDZ
-        IgI2Eiu/fWYHaWAW2MUk8fjhXKB9HBzCAp4SZx7Ug9TwCphLzN14ix1i6GVGiZtrFzBBJAQl
-        Ts58wgJiMwuUSTzaf5AZpJdZQFpi+T8OkDCngKvEnwu/oC5Vkjg8+TPUB7USn/8+Y5zAKDwL
-        yaRZSCbNQpgEEdaR2Ln1DhuGsLbEsoWvmSFsW4l1696zLGBkX8UoklpanJueW2ykV5yYW1ya
-        l66XnJ+7iREY69uO/dyyg3Hlq496hxiZOBgPMaoAdT7asPoCoxRLXn5eqpIIb875/FQh3pTE
-        yqrUovz4otKc1OJDjKbAUJzILCWanA9MQnkl8YZmBqaGJmaWBqaWZsZK4ryeBR2JQgLpiSWp
-        2ampBalFMH1MHJxSDUwVSoeqhX6qGVbzLvU9bTdD6uMO622iTtc7Dc7HNxi9DzhwZ2m5BbMO
-        t+u2RnfHcyavt17RVTqfxqP0+Vf6tYiJGbaexz6c2d9y7pDk7BnZ9wyX/wzi3SjN5+IY2jcl
-        P1XCp+3cNnYrsbzonyemJK6Ze4VTWrBCz5VT689Jpsb/dX9VpNdM432inT53earo019b325a
-        MFOOu/3qm8sJE1wdcioFpE1FhSOKDp4K+THzfkGawr8TL2JVQ/PsjVnazlxsd3jhV1o5+dKd
-        LZIxWy6uKRGOMKyZylqy2zRloxhf44OJn+/3cX6x+bq3OM9xiW+Uw/9Hcw/tbfDSv6bK/+Tz
-        U6/i02+TbvBF13x6k6nEUpyRaKjFXFScCABZDUT2igMAAA==
-X-CMS-MailID: 20231207140905eucas1p1b4a4b5df08ed08727df6094d9f84dd69
-X-Msg-Generator: CA
-X-RootMTR: 20231204075236eucas1p150b54f5bca6816fb8130a30496a8dbff
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231204075236eucas1p150b54f5bca6816fb8130a30496a8dbff
-References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
-        <CGME20231204075236eucas1p150b54f5bca6816fb8130a30496a8dbff@eucas1p1.samsung.com>
-        <20231204-const-sysctl-v2-3-7a5060b11447@weissschuh.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -125,77 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---etof6dfa6kluo2qz
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The addr_location map and maps fields in the inner loop were missing
+calls to map__get/maps__get. The subsequent addr_location__exit call in
+each loop puts the map/maps fields causing use-after-free aborts.
 
-If you are separating the work for permanently empty directories, you
-can add this patch to that set. as well as  2/18
+This issue reproduces on at least arm64 and x86_64 with something
+simple like `perf record -g ls` followed by `perf script -s script.py`
+with the following script:
 
-Best
-On Mon, Dec 04, 2023 at 08:52:16AM +0100, Thomas Wei=DFschuh wrote:
-> It is used only once and that caller would be simpler with
-> sysctl_is_perm_empty_ctl_header().
-> So use this sibling function.
->=20
-> Signed-off-by: Thomas Wei=DFschuh <linux@weissschuh.net>
-> ---
->  fs/proc/proc_sysctl.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->=20
-> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> index 8064ea76f80b..689a30196d0c 100644
-> --- a/fs/proc/proc_sysctl.c
-> +++ b/fs/proc/proc_sysctl.c
-> @@ -48,10 +48,8 @@ struct ctl_table_header *register_sysctl_mount_point(c=
-onst char *path)
->  }
->  EXPORT_SYMBOL(register_sysctl_mount_point);
-> =20
-> -#define sysctl_is_perm_empty_ctl_table(tptr)		\
-> -	(tptr[0].type =3D=3D SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY)
->  #define sysctl_is_perm_empty_ctl_header(hptr)		\
-> -	(sysctl_is_perm_empty_ctl_table(hptr->ctl_table))
-> +	(hptr->ctl_table[0].type =3D=3D SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY)
->  #define sysctl_set_perm_empty_ctl_header(hptr)		\
->  	(hptr->ctl_table[0].type =3D SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY)
->  #define sysctl_clear_perm_empty_ctl_header(hptr)	\
-> @@ -233,7 +231,7 @@ static int insert_header(struct ctl_dir *dir, struct =
-ctl_table_header *header)
->  		return -EROFS;
-> =20
->  	/* Am I creating a permanently empty directory? */
-> -	if (sysctl_is_perm_empty_ctl_table(header->ctl_table)) {
-> +	if (sysctl_is_perm_empty_ctl_header(header)) {
->  		if (!RB_EMPTY_ROOT(&dir->root))
->  			return -EINVAL;
->  		sysctl_set_perm_empty_ctl_header(dir_h);
->=20
-> --=20
-> 2.43.0
->=20
+    perf_db_export_mode = True
+    perf_db_export_calls = False
+    perf_db_export_callchains = True
 
---=20
+    def sample_table(*args):
+        print(f'sample_table({args})')
 
-Joel Granados
+    def call_path_table(*args):
+        print(f'call_path_table({args}')
 
---etof6dfa6kluo2qz
-Content-Type: application/pgp-signature; name="signature.asc"
+Fixes: 0dd5041c9a0ea ("perf addr_location: Add init/exit/copy functions")
+Signed-off-by: Ben Gainey <ben.gainey@arm.com>
+---
+ tools/perf/util/db-export.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/tools/perf/util/db-export.c b/tools/perf/util/db-export.c
+index b9fb71ab7a73..106429155c2e 100644
+--- a/tools/perf/util/db-export.c
++++ b/tools/perf/util/db-export.c
+@@ -253,8 +253,8 @@ static struct call_path *call_path_from_sample(struct db_export *dbe,
+ 		 */
+ 		addr_location__init(&al);
+ 		al.sym = node->ms.sym;
+-		al.map = node->ms.map;
+-		al.maps = thread__maps(thread);
++		al.map = map__get(node->ms.map);
++		al.maps = maps__get(thread__maps(thread));
+ 		al.addr = node->ip;
+ 
+ 		if (al.map && !al.sym)
+-- 
+2.43.0
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmVx0f8ACgkQupfNUreW
-QU+GIAv+KWbc8cruumpWQKvgTgVlEGLGgCJVse3Kfb0DYiRjt3V7lGQZv1RSqezm
-ZKMsMzljxb1o8OhymJAD1m658hQd/6pqN7z880QwPLQMLRb4SOnO9b0x3uyp+wSH
-q9hEl77PaAtXa64un9iY363HUrWYhE7yTCCLRJ26WuVLAFypd7ciX7qkxEK12swX
-s42K1APkW3uenFOoZxSb1HKwxGduFQYnjfaQB7/MWm4zwglExu7y9Xy9OnkavjX8
-2QgE0RFSQfBUbf59fBWgMui0NdSNg0T5qFtP3yfyav/W4/BBKZiWl/7vsNPtXQ/v
-K/rRsOkRxyHtmKu8mZvWoiMhPyyLMWfIuw2KPp2A+QYVVfAfWMhuqJ/9f2UTR/uM
-Qmn+KW8szcU1WCM6GrG09HRREk82TROTALV0Rq0x1Vm/WF5UXpT2Sqg/Dc+japov
-iF7oYcAvPsBLIm3B1fPxeWlCx6o/l9XrXHrw8FP6GCAmveb7HMpccFJZtdHRL2h9
-bi1HXhWK
-=NL3C
------END PGP SIGNATURE-----
-
---etof6dfa6kluo2qz--
