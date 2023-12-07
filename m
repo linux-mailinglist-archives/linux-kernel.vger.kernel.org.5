@@ -2,131 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E698080E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 07:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AD58080DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 07:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377664AbjLGGjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 01:39:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
+        id S1377524AbjLGGij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 01:38:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377662AbjLGGjB (ORCPT
+        with ESMTP id S229454AbjLGGii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 01:39:01 -0500
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B5810CB;
-        Wed,  6 Dec 2023 22:39:06 -0800 (PST)
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-        by mail5.25mail.st (Postfix) with ESMTPSA id 25AE36045F;
-        Thu,  7 Dec 2023 06:38:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-        s=25mailst; t=1701931146;
-        bh=WJ0wR74d+mkwm+IUhYNno9dDAtwE/eqL/spvRAJBdfs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NB5K6bbGCpg41F4Y2JGI/TNwe3RGFW3Rb4TSnkoscLAJWyiJiI9oXkVCYi5gJHMUE
-         rec/JKiVE0yT1vYJQYhdXWSOpHIN54QGzL6WqfqoxkLv91onW6Dz79NJ6Vdb3udRhT
-         g4HB3bZFTntDqubO+X3JvKDCdaKA0DekPQ4uWpzaKpeKqvgHMCIg8HwkhVRqCravtn
-         YeFizvmnz0qBvGZ2CbSPVnG4I+Gr9T0sxFMTO9tFLKvsPkuLc89p9Vr2tw7BtmLd1j
-         PUVaUSKJDGuguxsfKpyxZIFKGKz5PBUnOl4Ij7KZmXv3Ryh00sxy2R/JOPY1RyCIZ1
-         XKfEq9e8Lqa+Q==
-Date:   Thu, 7 Dec 2023 08:38:02 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andrew Davis <afd@ti.com>,
-        Frank Binns <frank.binns@imgtec.com>,
-        Donald Robson <donald.robson@imgtec.com>,
-        Matt Coster <matt.coster@imgtec.com>,
-        "H . Nikolaus Schaller" <hns@goldelico.com>,
-        Adam Ford <aford173@gmail.com>,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
-Message-ID: <20231207063802.GR5169@atomide.com>
-References: <b97f04f6-cda2-4e9b-b729-a5149e36f978@linaro.org>
- <20231205075657.GN5169@atomide.com>
- <df7dd7b0-f315-4033-985a-175f75568a8c@linaro.org>
- <20231205081031.GO5169@atomide.com>
- <efcd64f4-00d2-4671-af3a-e27764f70e8d@linaro.org>
- <20231205083001.GP5169@atomide.com>
- <27f2e3a3-0791-4278-adb2-55ed76820a3a@linaro.org>
- <20231205100246.5db0d6a1@aktux>
- <78a81d54-f12c-401e-9a26-5125eb0b1c65@linaro.org>
- <20231205104343.2e3c4105@aktux>
+        Thu, 7 Dec 2023 01:38:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126CDD59
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 22:38:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701931124;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zWU3XhY3SGz8Nm4Q405d0erGPeXKkfHuFXSX394aJLk=;
+        b=F8SpE+xTqNcOxnosIq2kwiHdPxTGD1nykvYX5r11gyU17crEKzI2QI07h0hPo8xtDY4duV
+        L7oOYwh6Uw2oKRJWpEvRx62S/4qc78d2dKfLlGX8SSw053Erv9acqfOgCSrJ5qJmfvKYaT
+        /NVlbHVBnMbNWoBQ4tQYbvCmtIy7VEY=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-493-lgdW7a0BM-62ywO_z42CsA-1; Thu, 07 Dec 2023 01:38:42 -0500
+X-MC-Unique: lgdW7a0BM-62ywO_z42CsA-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a1eb3f3dc2eso17893066b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 22:38:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701931121; x=1702535921;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zWU3XhY3SGz8Nm4Q405d0erGPeXKkfHuFXSX394aJLk=;
+        b=eGkgS4ixpR85IU5A5lvvgeiX0+2o7OO7ih9YAGRPssIzA6OR3Ded1O4rEb8CmeT7GC
+         xn/eMhO8oVE4PRKhIv8b74YelKnm9+0fkUzStAv7xv5UbXEs/fxaa2a7Ul+Z8mvTKTO/
+         sgzhTSR4KfMQXF1SEq5CYFk1GeD+nXzQLwui8UN8g2Bjl3g6C0tLIUYP88ymSsfaV9eT
+         bBzl2S8+FMQwSpqLcz8oZiUHrvI61KkFedRbFfg/Acv5r7mNYjPniUQUcoUfUuKDF2Kj
+         A4NbVV4exyn0RXnBL4UZOZFrH5Hn90H7AmGtwro4uObz32cA2hzSHzEzz1kPtFY6ETsi
+         BBcQ==
+X-Gm-Message-State: AOJu0YxSwARJKYlNf12u24pxo4W8HtwkND5wfLuZGxKYhr16JemfB+J+
+        PGZbbzk2ZvDf3K1iaNuLvx38r/U8JmY76FAcDzBd+pDwvBzQaV4mBwR/rP48x9fe91TfND7eVkx
+        Yfg7oziVRiD3ttd7wqEArwnz6
+X-Received: by 2002:a17:906:412:b0:a19:a1ba:8cdf with SMTP id d18-20020a170906041200b00a19a1ba8cdfmr1283535eja.125.1701931121431;
+        Wed, 06 Dec 2023 22:38:41 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHhiBhaS+kmbU1JKx2cAFUfZmT6awaVyiVkat1D9D0v41JMF0DlUXomnGzVKOZQPNjGyvsaNQ==
+X-Received: by 2002:a17:906:412:b0:a19:a1ba:8cdf with SMTP id d18-20020a170906041200b00a19a1ba8cdfmr1283523eja.125.1701931121146;
+        Wed, 06 Dec 2023 22:38:41 -0800 (PST)
+Received: from redhat.com ([2.55.11.67])
+        by smtp.gmail.com with ESMTPSA id s6-20020a170906c30600b00a1dee0289b4sm376148ejz.169.2023.12.06.22.38.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 22:38:40 -0800 (PST)
+Date:   Thu, 7 Dec 2023 01:38:37 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Li Feng <fengli@smartx.com>, Jens Axboe <axboe@kernel.dk>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:VIRTIO BLOCK AND SCSI DRIVERS" 
+        <virtualization@lists.linux.dev>
+Subject: Re: [PATCH] virtio_blk: set the default scheduler to none
+Message-ID: <20231207013617-mutt-send-email-mst@kernel.org>
+References: <20231207043118.118158-1-fengli@smartx.com>
+ <CACGkMEt4_T5-aArkS4LOQsndwrMkjm_K-uPjdFnNRvwknQPaPg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231205104343.2e3c4105@aktux>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACGkMEt4_T5-aArkS4LOQsndwrMkjm_K-uPjdFnNRvwknQPaPg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Andreas Kemnade <andreas@kemnade.info> [231205 09:43]:
-> On Tue, 5 Dec 2023 10:27:56 +0100
-> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+On Thu, Dec 07, 2023 at 02:02:36PM +0800, Jason Wang wrote:
+> On Thu, Dec 7, 2023 at 12:33 PM Li Feng <fengli@smartx.com> wrote:
+> >
+> > virtio-blk is generally used in cloud computing scenarios, where the
+> > performance of virtual disks is very important. The mq-deadline scheduler
+> > has a big performance drop compared to none with single queue.
 > 
-> > On 05/12/2023 10:02, Andreas Kemnade wrote:
-> > > On Tue, 5 Dec 2023 09:45:44 +0100
-> > > Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-> > >   
-> > >>> Sure the clock nodes can be there for the child IP, but they won't do
-> > >>> anything. And still need to be managed separately by the device driver if
-> > >>> added.    
-> > >>
-> > >> So if OS does not have runtime PM, the bindings are wrong? Bindings
-> > >> should not depend on some particular feature of some particular OS.  
-> > > 
-> > > Any user of the devicetree sees that there is a parent and the parent needs
-> > > to be enabled by some mechanism.
-> > > E.g. I2c devices do not specify the clocks of the parent (the i2c master)  
-
-Yeah the interconnect target module needs to be enabled before the child
-IP can be probed for any OS. That is unless the target module is left on
-from the bootloader.
-
-But like I said, I have no objection to also having the clocks for the
-child SGX device here. I think two out of the tree SGX clocks are merged,
-so one of the three clocks would repeat twice in the binding.
-
-We do provide some of the clock aliases, like fck and ick, for the child
-ip automatically by the ti-sysc interconnect target module. But likely we
-don't want to clock name specific handling in the driver so best to
-standardize on SGX specific clock names. That is if the clock properties
-are not set optional.
-
-> > If you use this analogy, then compare it with an I2C device which has
-> > these clock inputs. Such device must have clocks in the bindings.
-> > 
-> I would see target-module = i2c master.
+> At least you can choose the scheduler based on if mq is supported or not?
 > 
-> Well, if there is a variant of the i2c device which does not require
-> external clocks and a variant which requires it, then clock can be
-> optional.
+> Thanks
 
-Yes that sounds about right for an analogy :)
+This is already the case:
 
-Regards,
+static struct elevator_type *elevator_get_default(struct request_queue *q)
+{
+        if (q->tag_set && q->tag_set->flags & BLK_MQ_F_NO_SCHED_BY_DEFAULT)
+                return NULL;
 
-Tony
+        if (q->nr_hw_queues != 1 &&
+            !blk_mq_is_shared_tags(q->tag_set->flags))
+                return NULL;
+
+        return elevator_find_get(q, "mq-deadline");
+}
+
+I guess I agree blk is typically kind of similar to loopback
+so none by default makes sense here same as for loopback.
+
+Stefan care to comment?
+
+-- 
+MST
+
