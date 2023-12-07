@@ -2,108 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8483D808625
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F2D8085FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378992AbjLGJ0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:26:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42440 "EHLO
+        id S232278AbjLGJ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:27:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231633AbjLGJZv (ORCPT
+        with ESMTP id S231909AbjLGJ1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:25:51 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE7ED4A
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:25:57 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54cb4fa667bso888782a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:25:57 -0800 (PST)
+        Thu, 7 Dec 2023 04:27:03 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC8119A
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:27:08 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-33340c50af9so701262f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:27:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=friendlyarm-com.20230601.gappssmtp.com; s=20230601; t=1701941156; x=1702545956; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=56T1M3RkgkEvFsKEJLHWcohTkirOLnD7I3rdsoTC1yI=;
-        b=jxZvrCWikWieZRTpVZsMw0cQ03wEvaQTxcNTvw4DfWpvkIt9LPDYqZX2Wb3g92JuuW
-         SmEA+Q2Z7utaNpoVC/HUjbKqMtAIvz/tJ5bTQyLXI74t2r31cg+JKAUJsSmTcJ1bTMfB
-         3+JffSCf4FmOOuDxrSddrGTe4hyF5PP6T/+9pvxzo6VOYj8NrlSpj0Uz+mkdT5DlwXSH
-         0B9wdmRFjwx3DVSKVr37rYdKIaQzQv3EndZlS/7kR6fQ7sB0lALLALBf/F0hckoY4a7s
-         UhYycfhYxt/LQ1FlWrzdLUiphRZKk5T82+ymkKOf6lmnZOw4452GNPzjY97yGINvTnfV
-         3Qyw==
+        d=linaro.org; s=google; t=1701941227; x=1702546027; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3m6CS57cUjZxYRogS67wujxVeVsPxM0RKyj9GDSsNRg=;
+        b=XARJUxnOGXnCKksMBryp3CP7WMoDlRLTNaKwaBsnhvtEhTR5r6A3WYJCjFBV2wCe5g
+         tFFEv9HZBg5JFY0bAh9qwVSBFzwByLniuCI/Vm8FlNxJOLgjdz8xkLD/MUiww2XjkMyE
+         S1jcmYZ0bF3+/zmqTH0G7gB6JCxKB0uyrYU1DI/0d8w7+rHpZkLpe5KUaKze1CJa+UZl
+         u8L6Me3xER6Mfk4skzcEERjRtYi0mo2C9FYZ2mqjRFk7otrHJKG3fxg9Rs9zo7thBxZm
+         /LCTIVL/XyBmOsaeDZG7XwcBEuARmRsJ6FL+hysMdNcK9meNOCnn9e4f0HA7U5QbhMi1
+         WzZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701941156; x=1702545956;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=56T1M3RkgkEvFsKEJLHWcohTkirOLnD7I3rdsoTC1yI=;
-        b=EWJ86sgoD5T2txK5l91/NSBX+DvZCzCMk8caAIPDzv/qU3Rojw2McQv5bSS6jF0Y5V
-         KF4getPdZc0k01+4XHpuQQWP040xypZRoqMCo+1SAaGtcLWcykUpF+VOJlTX9Xf+Wk2m
-         m9vb9MdtFRETcRT3mTbeN0DSe6uXnKUvtd1Bq+FaPCaB5ID8LQtJe58gVirCBW0KueUe
-         5kdtyXc0XrC/BhSx2ambQ6lFlZLjtrMDiEStu7HPgSdut2vUhBno8V99L9a/H9j6ids/
-         1MYlQAP24Nf3rcjXyCoOLzPaalviV78Hiqt9uot7OpnwzVBF8tlsH41KErlAh8+I6VCc
-         +eEA==
-X-Gm-Message-State: AOJu0YztQX9d3vI+DZCW1o9r4G7IuzB3ofoxQ60r+4PbvWDl+phfFQUW
-        nXkUUf01QpNtbM3ael24corlEoPvSm9OWsmXytDv9A==
-X-Google-Smtp-Source: AGHT+IFtB80x1RKWaoiFQnsZTz44KpZp+e8iynF5WtfXkFTzjLVGH8RiUrf6aQvX2/TyBvWbzs9E6CfhsZ3FrmAGZcc=
-X-Received: by 2002:a50:8a97:0:b0:54c:d8f6:3f with SMTP id j23-20020a508a97000000b0054cd8f6003fmr1476412edj.56.1701941155885;
- Thu, 07 Dec 2023 01:25:55 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701941227; x=1702546027;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3m6CS57cUjZxYRogS67wujxVeVsPxM0RKyj9GDSsNRg=;
+        b=hw3HHccEct0fjUkIrHErLJRAi2nlVc6Xg2iDRCcqmF1xmCYwVHzuOBNO8JToeOx7Jv
+         KpznknNxcX96aU8D//68MMShgVhAGbdaBYO000Nl80pwsn7mLZ/q4JuDLkv3R0cEN2zu
+         MrmwsfAj3vXb+acWVtQoaS2A/sy9rRD0+7eKLBtpwkL59Xx2wsU6w64tC5ahDAq5iXjB
+         ZSfkEYqd5Uhim3XxE8LcVARzXGiH1adsC2A9z3rwm57APIQ9WVgUd3EzpHXeL56nXjwf
+         Kxql9E8zdows3VSgKx+a0uBYj2XokIUiLKrtLUhazUB8RnChMEIWYrgYbwX7j39cW5je
+         3uvw==
+X-Gm-Message-State: AOJu0Yw0TpPxxi8TllmgUElCHc0PQh6tBG8qr7EE6u4L9LFSL7n9Jxjw
+        MbOwNYHjI5Tv1F+LhuYOgdmDAg==
+X-Google-Smtp-Source: AGHT+IHqZJGXhZ4O/Aex9Bi5A23P1/7Hu4vNRMMdABBMJKjjppHbd0atvCBt6hPVeBfgz679A1jMTQ==
+X-Received: by 2002:a05:6000:10c1:b0:333:2fd2:3bfe with SMTP id b1-20020a05600010c100b003332fd23bfemr925953wrx.183.1701941227194;
+        Thu, 07 Dec 2023 01:27:07 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id g18-20020a5d5552000000b003332faefd86sm956251wrw.0.2023.12.07.01.27.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 01:27:06 -0800 (PST)
+Message-ID: <ff98ba3e-9f3f-495d-ae9b-f5241d565326@linaro.org>
+Date:   Thu, 7 Dec 2023 10:27:05 +0100
 MIME-Version: 1.0
-References: <20231207082200.16388-1-jensenhuang@friendlyarm.com> <ebf6cf8ec3b5befd673d295061fa2738@manjaro.org>
-In-Reply-To: <ebf6cf8ec3b5befd673d295061fa2738@manjaro.org>
-From:   Jensen Huang <jensenhuang@friendlyarm.com>
-Date:   Thu, 7 Dec 2023 17:25:44 +0800
-Message-ID: <CAMpZ1qHUnTDQ78gdrQF9Sx_-XfLM-B+H-0bL1-+twKsno+JOvg@mail.gmail.com>
-Subject: Re: [PATCH v2] i2c: rk3x: fix potential spinlock recursion on poll
-To:     Dragan Simic <dsimic@manjaro.org>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        Chris Morgan <macroalpha82@gmail.com>,
-        Benjamin Bara <bbara93@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: interconnect: Add Qualcomm MSM8909 DT
+ bindings
+Content-Language: en-US
+To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Georgi Djakov <djakov@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Adam Skladowski <a39.skl@gmail.com>
+References: <20231206-icc-msm8909-v1-0-fe0dd632beff@kernkonzept.com>
+ <20231206-icc-msm8909-v1-1-fe0dd632beff@kernkonzept.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231206-icc-msm8909-v1-1-fe0dd632beff@kernkonzept.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 4:37=E2=80=AFPM Dragan Simic <dsimic@manjaro.org> wr=
-ote:
->
-> On 2023-12-07 09:21, Jensen Huang wrote:
-> > Possible deadlock scenario (on reboot):
-> > rk3x_i2c_xfer_common(polling)
-> >     -> rk3x_i2c_wait_xfer_poll()
-> >         -> rk3x_i2c_irq(0, i2c);
-> >             --> spin_lock(&i2c->lock);
-> >             ...
-> >         <rk3x i2c interrupt>
-> >         -> rk3x_i2c_irq(0, i2c);
-> >             --> spin_lock(&i2c->lock); (deadlock here)
-> >
-> > Store the IRQ number and disable/enable it around the polling transfer.
-> > This patch has been tested on NanoPC-T4.
->
-> In case you haven't already seen the related discussion linked below,
-> please have a look.  I also added more people to the list of recipients,
-> in an attempt to make everyone aware of the different approaches to
-> solving this issue.
->
-> https://lore.kernel.org/all/655177f4.050a0220.d85c9.3ba0@mx.google.com/T/=
-#m6fc9c214452fec6681843e7f455978c35c6f6c8b
+On 06/12/2023 15:35, Stephan Gerhold wrote:
+> From: Adam Skladowski <a39.skl@gmail.com>
+> 
+> Add bindings for Qualcomm MSM8909 Network-On-Chip interconnect devices.
+> 
+> Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
+> [Stephan: Drop separate mm-snoc that exists downstream since it's
+>  actually the same NoC as SNoC in hardware]
+> Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+> ---
+>  .../devicetree/bindings/interconnect/qcom,rpm.yaml |  3 +
 
-Thank you for providing the information. I hadn't seen this link before.
-After carefully looking into the related discussion, it appears that
-Dmitry Osipenko is already working on a suitable patch. To avoid duplicatio=
-n
-or conflicts, my patch can be discarded.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
---
 Best regards,
-Jensen
+Krzysztof
+
