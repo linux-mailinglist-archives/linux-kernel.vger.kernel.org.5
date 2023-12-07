@@ -2,57 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F82808862
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B818808880
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379458AbjLGMu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 07:50:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57154 "EHLO
+        id S232670AbjLGMvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:51:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232666AbjLGMu6 (ORCPT
+        with ESMTP id S232583AbjLGMvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 07:50:58 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A208010C4;
-        Thu,  7 Dec 2023 04:51:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701953464; x=1733489464;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=qZHsWoDGythR+xpoV3du0UBWiGRf3tb4+oh+E8eq000=;
-  b=VfZ22qTYIByY9zYexwiRhypIN8L7O+OfFiLQJNlzx70FtMbYHW3UXUYF
-   r+yxv1h1Dy1O7lMqOcseRwDZnIrJ1b698v1aRW9ueoZhagetnhv9uh75o
-   kV2QTmrYb9RZLBAb0h/H98MQ/5/MGsMhJc2+uxoB105xl/GkfhVLdO+Lf
-   Yz0Abg6HIqn3gDYhNblIt4I1guKWjDRm5c8R/1UjxQnt+7rbl3AEVF3Ow
-   Ul1BUJMlGnqp50LULap0lXNw3k07DOghXF6WEaFn32Quaov/Hxes8q5Dy
-   SfCl1+l6+7g9nY/rfOuMGOjmrnnpRdgO4/Dxmhrg6X9ETyWXGBN5+tGwp
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="1092104"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="1092104"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 04:51:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="915567795"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="915567795"
-Received: from dkrupnov-mobl3.ger.corp.intel.com ([10.249.34.6])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 04:51:01 -0800
-Date:   Thu, 7 Dec 2023 14:50:59 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 21/27] tty: nozomi: convert to u8 and size_t
-In-Reply-To: <20231206073712.17776-22-jirislaby@kernel.org>
-Message-ID: <9246bc67-518a-72b9-beaf-3204a4a977@linux.intel.com>
-References: <20231206073712.17776-1-jirislaby@kernel.org> <20231206073712.17776-22-jirislaby@kernel.org>
+        Thu, 7 Dec 2023 07:51:20 -0500
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCF0D5C;
+        Thu,  7 Dec 2023 04:51:23 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 2ADA5100008;
+        Thu,  7 Dec 2023 15:51:21 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 2ADA5100008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1701953481;
+        bh=fI5OzawEGCVVfRbMhXE1Of2XRpyVwMZSfxOH5EOrJ1o=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=N9/bCE5o94pPixmQ6rwVigYyQ8ZL1iWdN3H/ufJbuG/fJmBzC9B70M7Eoay6t7FDw
+         oxcblJ1d8+s2ljK8OVXEcoVQI0pi2Ww+RV0dyc3kaxNPhfplP3APYPDoq6XQbpmUSp
+         XWj+PmNtWEeYkfMolrzH9LqSq7r2ZoD5owypj4jX75gVfw8eJ/83lwbvcwuRGFMpA2
+         gw63RsmrnvH+sw02s6qyY6+kJPO4n4dy4zOGip7BPd9b4HZsC8ZtbFQjt5arC0e7YX
+         QTbKG3wnO5+fev8HWiFVzM9VhppNYGUu44S+HSbQAbsoT8g50AQlSsQQc1v5nNxf0/
+         mMxVTg0ZXWriA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu,  7 Dec 2023 15:51:20 +0300 (MSK)
+Received: from [192.168.1.127] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 7 Dec 2023 15:51:19 +0300
+Message-ID: <57ea099a-8b88-4b16-9b54-b81e5b28bcb6@salutedevices.com>
+Date:   Thu, 7 Dec 2023 15:51:44 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/10] devm-helpers: introduce devm_mutex_init
+Content-Language: en-US
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Hans de Goede <hdegoede@redhat.com>, "pavel@ucw.cz" <pavel@ucw.cz>,
+        "lee@kernel.org" <lee@kernel.org>,
+        "vadimp@nvidia.com" <vadimp@nvidia.com>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "npiggin@gmail.com" <npiggin@gmail.com>,
+        "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        Waiman Long <longman@redhat.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "kernel@salutedevices.com" <kernel@salutedevices.com>
+References: <20231204180603.470421-1-gnstark@salutedevices.com>
+ <20231204180603.470421-2-gnstark@salutedevices.com>
+ <81798fe5-f89e-482f-b0d0-674ccbfc3666@redhat.com>
+ <29584eb6-fa10-4ce0-9fa3-0c409a582445@salutedevices.com>
+ <17a9fede-30e8-4cd5-ae02-fe34e11f5c20@csgroup.eu>
+ <be693688-2e82-4e1a-9ead-cf1513ee637b@csgroup.eu>
+ <2a68534b-9e64-4d6e-8a49-eeab0889841b@salutedevices.com>
+ <CAHp75Veyz-hMYPDEiCC1WJASGZ8N9pVef0foYJ0vBcW2VpfR+w@mail.gmail.com>
+ <34060476-86e5-42fb-a139-6790487c1568@csgroup.eu>
+From:   George Stark <gnstark@salutedevices.com>
+In-Reply-To: <34060476-86e5-42fb-a139-6790487c1568@csgroup.eu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181936 [Dec 07 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/07 02:56:00 #22627289
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,52 +104,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Dec 2023, Jiri Slaby (SUSE) wrote:
 
-> Switch character types to u8 and sizes to size_t. To conform to
-> characters/sizes in the rest of the tty layer.
-> 
-> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-> ---
->  drivers/tty/nozomi.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
-> index b247341bd12f..e28a921c1637 100644
-> --- a/drivers/tty/nozomi.c
-> +++ b/drivers/tty/nozomi.c
-> @@ -783,11 +783,10 @@ static int receive_data(enum port_type index, struct nozomi *dc)
->  			tty_insert_flip_char(&port->port, buf[0], TTY_NORMAL);
->  			size = 0;
->  		} else if (size < RECEIVE_BUF_MAX) {
-> -			size -= tty_insert_flip_string(&port->port,
-> -					(char *)buf, size);
-> +			size -= tty_insert_flip_string(&port->port, buf, size);
->  		} else {
-> -			i = tty_insert_flip_string(&port->port,
-> -					(char *)buf, RECEIVE_BUF_MAX);
-> +			i = tty_insert_flip_string(&port->port, buf,
-> +						   RECEIVE_BUF_MAX);
->  			size -= i;
->  			offset += i;
->  		}
-> @@ -1584,10 +1583,10 @@ static void ntty_hangup(struct tty_struct *tty)
->  static ssize_t ntty_write(struct tty_struct *tty, const u8 *buffer,
->  			  size_t count)
->  {
-> -	int rval = -EINVAL;
->  	struct nozomi *dc = get_dc_by_tty(tty);
->  	struct port *port = tty->driver_data;
->  	unsigned long flags;
-> +	size_t rval;
->  
->  	if (!dc || !port)
->  		return -ENODEV;
-> 
 
-It wouldn't hurt to mention in the commit message that -EINVAL 
-initialization is unnecessary.
+On 12/7/23 15:28, Christophe Leroy wrote:
+> 
+> 
+> Le 07/12/2023 à 13:02, Andy Shevchenko a écrit :
+>> On Thu, Dec 7, 2023 at 1:23 AM George Stark <gnstark@salutedevices.com> wrote:
+>>> On 12/7/23 01:37, Christophe Leroy wrote:
+>>>> Le 06/12/2023 à 23:14, Christophe Leroy a écrit :
+>>
+>> ...
+>>
+>>>> Looking at it closer, I have the feeling that you want to do similar to
+>>>> devm_gpio_request() in linux/gpio.h :
+>>>>
+>>>> In linux/mutex.h, add a prototype for devm_mutex_init() when
+>>>> CONFIG_DEBUG_MUTEXES is defined and an empty static inline otherwise.
+>>>> Then define devm_mutex_init() in kernel/locking/mutex-debug.c
+>>>
+>>> Yes, this would be almost perfect decision. BTW just as in linux/gpio.h
+>>> we wouldn't have to include whole "linux/device.h" into mutex.h, only
+>>> add forward declaration of struct device;
+>>
+>> In case you place it into a C-file. Otherwise you need a header for
+>> the API and that is not acceptable for mutex.h.
+>>
+> 
+> Right, that's the reason why I'm suggesting to define devm_mutex_init()
+> in kernel/locking/mutex-debug.c.
+> 
+> In linux/mutex.h, you define a stub for when CONFIG_DEBUG_MUTEXES is not
+> set, and the prototype of devm_mutex_init() when CONFIG_DEBUG_MUTEXES is
+> set.
+
+Something like this:
+
+diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+index a33aa9eb9fc3..4a6041a7fd44 100644
+--- a/include/linux/mutex.h
++++ b/include/linux/mutex.h
+@@ -21,6 +21,8 @@
+  #include <linux/debug_locks.h>
+  #include <linux/cleanup.h>
+
++struct device;
++
+  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+  # define __DEP_MAP_MUTEX_INITIALIZER(lockname)			\
+  		, .dep_map = {					\
+@@ -127,6 +129,20 @@ extern void __mutex_init(struct mutex *lock, const 
+char *name,
+   */
+  extern bool mutex_is_locked(struct mutex *lock);
+
++#ifdef CONFIG_DEBUG_MUTEXES
++
++extern int devm_mutex_init(struct device *dev, struct mutex *lock);
++
++#else
++
++static inline int devm_mutex_init(struct device *dev, struct mutex *lock)
++{
++	mutex_init(lock);
++	return 0;
++}
++
++#endif
++
+  #else /* !CONFIG_PREEMPT_RT */
+  /*
+   * Preempt-RT variant based on rtmutexes.
+@@ -169,6 +185,13 @@ do {							\
+  							\
+  	__mutex_init((mutex), #mutex, &__key);		\
+  } while (0)
++
++static inline int devm_mutex_init(struct device *dev, struct mutex *lock)
++{
++	mutex_init(lock);
++	return 0;
++}
++
+  #endif /* CONFIG_PREEMPT_RT */
+
+  /*
+diff --git a/kernel/locking/mutex-debug.c b/kernel/locking/mutex-debug.c
+index bc8abb8549d2..d50dfa06e82c 100644
+--- a/kernel/locking/mutex-debug.c
++++ b/kernel/locking/mutex-debug.c
+@@ -19,6 +19,7 @@
+  #include <linux/kallsyms.h>
+  #include <linux/interrupt.h>
+  #include <linux/debug_locks.h>
++#include <linux/device.h>
+
+  #include "mutex.h"
+
+@@ -104,3 +105,25 @@ void mutex_destroy(struct mutex *lock)
+  }
+
+  EXPORT_SYMBOL_GPL(mutex_destroy);
++
++static void devm_mutex_release(void *res)
++{
++	mutex_destroy(res);
++}
++
++/**
++ * devm_mutex_init - Resource-managed mutex initialization
++ * @dev:	Device which lifetime mutex is bound to
++ * @lock:	Pointer to a mutex
++ *
++ * Initialize mutex which is automatically destroyed when the driver is 
+detached.
++ *
++ * Returns: 0 on success or a negative error code on failure.
++ */
++int devm_mutex_init(struct device *dev, struct mutex *lock)
++{
++	mutex_init(lock);
++	return devm_add_action_or_reset(dev, devm_mutex_release, lock);
++}
++
++EXPORT_SYMBOL_GPL(devm_mutex_init);
+\ No newline at end of file
+
 
 -- 
- i.
-
+Best regards
+George
