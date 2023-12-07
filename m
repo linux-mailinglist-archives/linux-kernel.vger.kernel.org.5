@@ -2,190 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B72808BFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6753808BF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443494AbjLGPfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 10:35:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47198 "EHLO
+        id S1443533AbjLGPfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 10:35:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443546AbjLGPfK (ORCPT
+        with ESMTP id S1443494AbjLGPfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 10:35:10 -0500
+        Thu, 7 Dec 2023 10:35:01 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B6910F8
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:35:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8582DC433AD;
-        Thu,  7 Dec 2023 15:35:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701963316;
-        bh=GX1JJEdl3nBIPUgvKvrvyG3QPg50ra5uqsG8fD9kqBk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mz/wOiECHCVR1Lz74BNfGrVpl75pi4T1SmdNhY7T5tllzwvHekJAKY+DnlhOdAJ3H
-         Y5ET2/EfKwazOw1UTaJeeVu74l04i5jYhNIEy1L2Z2z6ZHuM0TDun+Tdj+cig5PmlS
-         yDK+FLExVUpT0R5XuaZ9WbDFDV/WKCUuMsBVjWNUSxth1pqW62e88T58K444wwlrZn
-         Z6sEM2E99OWA1wwwE7tbnvv935G2s6uoEpKMjI7mHkiHNAdAE1YTcgQZ1GS3U88oiP
-         gTd7Zjm9pdWTskE52YIYsPXPKUoaVgu+iSzbE6ZSSy0H8O7+/l6TKFn0yOnU+gv8Xe
-         da57Lx0/Ymf8g==
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2c9eca5bbaeso11055361fa.3;
-        Thu, 07 Dec 2023 07:35:16 -0800 (PST)
-X-Gm-Message-State: AOJu0Ywc97LuL7Z11n9vC6iKMixZRw+byohIi3XdAxR0zef+lA4tk76P
-        PfFfTyDPDarXw14Lfi9RdNBr1V8rGuOiphPCrew=
-X-Google-Smtp-Source: AGHT+IF/q/lLjgFbSPGy960Lqp10I7G5W6vbxblvpjxeewdLqSpG5SEUTfucABSTKcFVGKtdRrUOTAdXb/YyFHWnbEc=
-X-Received: by 2002:a2e:7c15:0:b0:2c9:f2a5:7145 with SMTP id
- x21-20020a2e7c15000000b002c9f2a57145mr888908ljc.142.1701963314593; Thu, 07
- Dec 2023 07:35:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B69210E3
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:35:07 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1192FC433C7;
+        Thu,  7 Dec 2023 15:35:05 +0000 (UTC)
+Date:   Thu, 7 Dec 2023 10:35:36 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yuanhan Zhang <zyhtheonly@gmail.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        zyhtheonly@yeah.net, tglx@linutronix.de, mingo@redhat.com,
+        Venkatesh Pallipadi <venki@google.com>, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        vschneid@redhat.com
+Subject: Re: [PATCH v3] sched/cputime: let ktimers align with ksoftirqd in
+ accounting CPUTIME_SOFTIRQ
+Message-ID: <20231207103536.30ae05aa@gandalf.local.home>
+In-Reply-To: <CAEQmJ=iNVUuQQrm4bJgud=e7yhgwNb4Q1-BgOQF98D7NP9r29A@mail.gmail.com>
+References: <20231201073240.T9bFNCkU@linutronix.de>
+        <20231201080522.GA31309@didi-ThinkCentre-M930t-N000>
+        <20231201161640.Z0cJLUi3@linutronix.de>
+        <CAEQmJ=jbB5ag5HRMjZqjych_wj_v6wTMLQxJbnJsgwNdn37kbw@mail.gmail.com>
+        <20231205153146.OSpCIs1G@linutronix.de>
+        <CAEQmJ=iNVUuQQrm4bJgud=e7yhgwNb4Q1-BgOQF98D7NP9r29A@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20231206125433.18420-1-tzimmermann@suse.de> <20231206125433.18420-2-tzimmermann@suse.de>
-In-Reply-To: <20231206125433.18420-2-tzimmermann@suse.de>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 7 Dec 2023 16:35:03 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEOXh10v7dz-Y4hVM0y1VxR3YFxSxuE9a3wE0LbMsy2UA@mail.gmail.com>
-Message-ID: <CAMj1kXEOXh10v7dz-Y4hVM0y1VxR3YFxSxuE9a3wE0LbMsy2UA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] arch/x86: Move struct pci_setup_rom into pci_setup.h
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        bhelgaas@google.com, arnd@arndb.de, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, javierm@redhat.com, linux-arch@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Thomas,
+On Thu, 7 Dec 2023 18:43:47 +0800
+Yuanhan Zhang <zyhtheonly@gmail.com> wrote:
 
-On Wed, 6 Dec 2023 at 13:54, Thomas Zimmermann <tzimmermann@suse.de> wrote:
->
-> The type definition of struct pci_setup_rom in <asm/pci.h> requires
-> struct setup_data from <asm/bootparam.h>. Many drivers include
-> <linux/pci.h>, but do not use boot parameters. Changes to bootparam.h
-> or its included header files could easily trigger a large, unnecessary
-> rebuild of the kernel.
->
-> Moving struct pci_setup_rom into its own header file avoid including
-> <asm/bootparam.h> in <asm/pci.h>. Update the only two users of the
-> struct in the x86 PCI code and in the EFI code. Also remove the include
-> statement for x86_init.h, which is unnecessary but pulls in bootparams.h.
->
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> ---
->  arch/x86/include/asm/pci.h              | 13 -------------
->  arch/x86/include/asm/pci_setup.h        | 19 +++++++++++++++++++
->  arch/x86/pci/common.c                   |  1 +
->  drivers/firmware/efi/libstub/x86-stub.c |  1 +
->  4 files changed, 21 insertions(+), 13 deletions(-)
->  create mode 100644 arch/x86/include/asm/pci_setup.h
->
+> It results in if we do not handle ksoftirqd like this, we will have a
+> bigger SYSTEM and less SOFTIRQ.
 
-Thanks for cleaning this up.
+And honestly that's what we want. Interrupts and softirqs that execute in
+interrupts and softirq context take away from the system. That is, if they
+are not explicitly blocked (local_irq_disable/local_bh_disable) they
+interrupt the current task and take up the time of the current task. We
+need to differentiate this because this context has no "task" context to
+measure.
 
-Would it be more appropriate to move all setup_data related
-definitions into a separate header entirely?
+We do not want to add ksoftirqd or threaded interrupt handlers / softirqs
+to this measurement. Sure, they are handling interrupt and softirq code,
+but they have their own context that can be measured like any other task.
 
-- the SETUP_ defines
-- struct setup_data
-- struct pci_setup_rom
-- struct   jailhouse_setup_data
-etc etc
+If we blur this with real irqs and softirqs, then we will not know what
+those real irqs and softirqs are measuring.
 
-struct setup_header has a setup_data field which is the root of the
-setup_data linked list, but it is typed as __u64 so it doesn't
-actually need to know the real type of the associated structs.
+> So my point is if we do not align ktimers, ktimers would act like
+> **observation on *not-excluded ksoftirq patched* kernel** part in the
+> above example,
+> and this might make SOFTIRQ less than expected, /proc/stat less accurate.
 
-That way, you can avoid creating a special asm/pci_setup.h that only
-covers this one particular definition.
+No it does not. When a softirq kicks off it's work to a thread (ksoftirq,
+threaded softirqd, or simply a workqueue), it's no longer running in
+softirq context, and should not be measured as such.
 
+The measurement is not about how much work the softirq is doing (otherwise
+we need to add workqueues started by softirqs too), it's about measuring
+the actual irq and softirq context. In PREEMPT_RT, we try to eliminate that
+context as much as possible.
 
+So seeing less is a feature not a bug!
 
-> diff --git a/arch/x86/include/asm/pci.h b/arch/x86/include/asm/pci.h
-> index b40c462b4af3..b3ab80a03365 100644
-> --- a/arch/x86/include/asm/pci.h
-> +++ b/arch/x86/include/asm/pci.h
-> @@ -10,7 +10,6 @@
->  #include <linux/numa.h>
->  #include <asm/io.h>
->  #include <asm/memtype.h>
-> -#include <asm/x86_init.h>
->
->  struct pci_sysdata {
->         int             domain;         /* PCI domain */
-> @@ -124,16 +123,4 @@ cpumask_of_pcibus(const struct pci_bus *bus)
->  }
->  #endif
->
-> -struct pci_setup_rom {
-> -       struct setup_data data;
-> -       uint16_t vendor;
-> -       uint16_t devid;
-> -       uint64_t pcilen;
-> -       unsigned long segment;
-> -       unsigned long bus;
-> -       unsigned long device;
-> -       unsigned long function;
-> -       uint8_t romdata[];
-> -};
-> -
->  #endif /* _ASM_X86_PCI_H */
-> diff --git a/arch/x86/include/asm/pci_setup.h b/arch/x86/include/asm/pci_setup.h
-> new file mode 100644
-> index 000000000000..b4b246ef6f2b
-> --- /dev/null
-> +++ b/arch/x86/include/asm/pci_setup.h
-> @@ -0,0 +1,19 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_X86_PCI_SETUP_H
-> +#define _ASM_X86_PCI_SETUP_H
-> +
-> +#include <asm/bootparam.h>
-> +
-> +struct pci_setup_rom {
-> +       struct setup_data data;
-> +       uint16_t vendor;
-> +       uint16_t devid;
-> +       uint64_t pcilen;
-> +       unsigned long segment;
-> +       unsigned long bus;
-> +       unsigned long device;
-> +       unsigned long function;
-> +       uint8_t romdata[];
-> +};
-> +
-> +#endif /* _ASM_X86_PCI_SETUP_H */
-> diff --git a/arch/x86/pci/common.c b/arch/x86/pci/common.c
-> index ddb798603201..c6cbb9182160 100644
-> --- a/arch/x86/pci/common.c
-> +++ b/arch/x86/pci/common.c
-> @@ -17,6 +17,7 @@
->  #include <asm/segment.h>
->  #include <asm/io.h>
->  #include <asm/smp.h>
-> +#include <asm/pci_setup.h>
->  #include <asm/pci_x86.h>
->  #include <asm/setup.h>
->  #include <asm/irqdomain.h>
-> diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-> index 1bfdae34df39..0c878ebe5257 100644
-> --- a/drivers/firmware/efi/libstub/x86-stub.c
-> +++ b/drivers/firmware/efi/libstub/x86-stub.c
-> @@ -17,6 +17,7 @@
->  #include <asm/boot.h>
->  #include <asm/kaslr.h>
->  #include <asm/sev.h>
-> +#include <asm/pci_setup.h>
->
->  #include "efistub.h"
->  #include "x86-stub.h"
-> --
-> 2.43.0
->
+-- Steve
