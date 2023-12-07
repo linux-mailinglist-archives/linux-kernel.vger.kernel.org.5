@@ -2,150 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC91808FB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:20:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 382FA808FBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443674AbjLGSRi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Dec 2023 13:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34074 "EHLO
+        id S1443680AbjLGSS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 13:18:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443464AbjLGSRg (ORCPT
+        with ESMTP id S231719AbjLGSS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 13:17:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03A6170C
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 10:17:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1125C433C8;
-        Thu,  7 Dec 2023 18:17:40 +0000 (UTC)
-Date:   Thu, 7 Dec 2023 13:18:11 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yuanhan Zhang <zyhtheonly@gmail.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        zyhtheonly@yeah.net, tglx@linutronix.de, mingo@redhat.com,
-        Venkatesh Pallipadi <venki@google.com>, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        vschneid@redhat.com
-Subject: Re: [PATCH v3] sched/cputime: let ktimers align with ksoftirqd in
- accounting CPUTIME_SOFTIRQ
-Message-ID: <20231207131811.08145840@gandalf.local.home>
-In-Reply-To: <CAEQmJ=jceiVevd9d3i4h0BHCNc8FFONJqEaiKyN9p21rg0QdkQ@mail.gmail.com>
-References: <20231201073240.T9bFNCkU@linutronix.de>
-        <20231201080522.GA31309@didi-ThinkCentre-M930t-N000>
-        <20231201161640.Z0cJLUi3@linutronix.de>
-        <CAEQmJ=jbB5ag5HRMjZqjych_wj_v6wTMLQxJbnJsgwNdn37kbw@mail.gmail.com>
-        <20231205153146.OSpCIs1G@linutronix.de>
-        <CAEQmJ=iNVUuQQrm4bJgud=e7yhgwNb4Q1-BgOQF98D7NP9r29A@mail.gmail.com>
-        <20231207103536.30ae05aa@gandalf.local.home>
-        <CAEQmJ=jceiVevd9d3i4h0BHCNc8FFONJqEaiKyN9p21rg0QdkQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 7 Dec 2023 13:18:57 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C3A10E3;
+        Thu,  7 Dec 2023 10:19:03 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1f37fd4b53so95049066b.1;
+        Thu, 07 Dec 2023 10:19:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701973142; x=1702577942; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=c9T9Dhk1u4UBA5bWyuf5C2EepRsZ1GhJrZKYEms2QYA=;
+        b=VVwUTEM+XrKFHBEr6R/eD/Fv3vfBWLsM2f4uUxeZpomwdswdHUBcfw8xNU0/esTB+D
+         1q+hK4oKS1BlaWzGt1PpEQUKq4o/tpBnONt6e+MKL4dfkh7uO7xNkRveg6CeQcyxUX+p
+         SU1inDIRi640pIPD85ibmqQZ6le1HFmmAEUZKNv67IW7ByHfOogOCeVYlnnL+fiDvScZ
+         sN/GvTmA9yeY3ESsAHf0Zcrdrt0hPwegqPvAR9NS8wFoezSAURDMX5Fsk0P8BTSCPwfk
+         eicNofLSnis2TuobYrrPh+ZintPdcI4ig3Teld2GKL8uIB7e359KZwijpbZl1iBDOnC/
+         cSpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701973142; x=1702577942;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c9T9Dhk1u4UBA5bWyuf5C2EepRsZ1GhJrZKYEms2QYA=;
+        b=HXDQdLaO+7WIECCCShS/wLnqbOjNvg+IY1EzMQsJg/ShUiwyk2+nuzC/G8TaerEWqu
+         U7KLoONsT5STde03vJXt6ULLWsplCjOX83qIluG2urvaiiKhX2VX/WOnTsAXRiJSHvC9
+         3UsCFHYWM7GZx5MoB1Sfnk1cg7aSQGBfyQrHMpfcVt/C3EohptzVG+WkWaFDlNru3zls
+         QkkAUYD11oOR26c1+AVGh71y3kX4JXwWagsCiBmUrPyjojPVyo7FuvoX3fb6xXmV8pG8
+         /+rKFvsTfI6hgmZddt5QCpMcQx4JD+dV8mabcEHR1UIZIuFTisu0XHZ3LcqZg/WSJQZ5
+         L+wA==
+X-Gm-Message-State: AOJu0Yx/EI70ofgjWKar0ZqSSW4dW40yyTmKnUR4EQBi2PnHM/o7KQJe
+        zUtVaz9l6Uia4kawGxDl9nU=
+X-Google-Smtp-Source: AGHT+IHhlsosLWTuwyhAeqO++aHUvDn0g4qZutyh2cC8TSPxd5604m2eGpGCPcSESnypX9SXpSmSgg==
+X-Received: by 2002:a17:906:43:b0:a19:39d1:f958 with SMTP id 3-20020a170906004300b00a1939d1f958mr1762530ejg.41.1701973141888;
+        Thu, 07 Dec 2023 10:19:01 -0800 (PST)
+Received: from skbuf ([188.27.185.68])
+        by smtp.gmail.com with ESMTPSA id ll9-20020a170907190900b00a1cbb289a7csm45995ejc.183.2023.12.07.10.19.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 10:19:01 -0800 (PST)
+Date:   Thu, 7 Dec 2023 20:18:58 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+        mithat.guner@xeront.com, erkin.bozoglu@xeront.com
+Subject: Re: [PATCH net-next 06/15] net: dsa: mt7530: do not set
+ priv->p5_interface on mt7530_setup_port5()
+Message-ID: <20231207181858.ojbgt5pwyqq3tzjk@skbuf>
+References: <20231118123205.266819-1-arinc.unal@arinc9.com>
+ <20231118123205.266819-7-arinc.unal@arinc9.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231118123205.266819-7-arinc.unal@arinc9.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Dec 2023 12:19:28 -0500
-Yuanhan Zhang <zyhtheonly@gmail.com> wrote:
-
-> Hi,
+On Sat, Nov 18, 2023 at 03:31:56PM +0300, Arınç ÜNAL wrote:
+> Do not set priv->p5_interface on mt7530_setup_port5(). There isn't a case
+> where mt753x_phylink_mac_config() runs after mt7530_setup_port5() which
+> setting priv->p5_interface would prevent mt7530_setup_port5() from running
+> more than once.
 > 
-> Steven Rostedt <rostedt@goodmis.org> 于2023年12月7日周四 10:35写道：
-> >
-> > On Thu, 7 Dec 2023 18:43:47 +0800
-> > Yuanhan Zhang <zyhtheonly@gmail.com> wrote:
-> >  
-> > > It results in if we do not handle ksoftirqd like this, we will have a
-> > > bigger SYSTEM and less SOFTIRQ.  
-> >
-> > And honestly that's what we want. Interrupts and softirqs that execute in
-> > interrupts and softirq context take away from the system. That is, if they
-> > are not explicitly blocked (local_irq_disable/local_bh_disable) they
-> > interrupt the current task and take up the time of the current task. We
-> > need to differentiate this because this context has no "task" context to
-> > measure.
-> >
-> > We do not want to add ksoftirqd or threaded interrupt handlers / softirqs
-> > to this measurement. Sure, they are handling interrupt and softirq code,
-> > but they have their own context that can be measured like any other task.
-> >
-> > If we blur this with real irqs and softirqs, then we will not know what
-> > those real irqs and softirqs are measuring.  
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> ---
+>  drivers/net/dsa/mt7530.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> Yes you say clearly enough and it makes some sense to me!
-> So my understanding is that in PREEMPT_RT, it is better to put ksoftirqd's time
-> into SYSTEM since they are just in their "task" context.
+> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> index 069b3dfca6fa..fc87ec817672 100644
+> --- a/drivers/net/dsa/mt7530.c
+> +++ b/drivers/net/dsa/mt7530.c
+> @@ -978,8 +978,6 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
+>  	dev_dbg(ds->dev, "Setup P5, HWTRAP=0x%x, intf_sel=%s, phy-mode=%s\n",
+>  		val, p5_intf_modes(priv->p5_intf_sel), phy_modes(interface));
+>  
+> -	priv->p5_interface = interface;
+> -
+>  unlock_exit:
+>  	mutex_unlock(&priv->reg_mutex);
+>  }
+> -- 
+> 2.40.1
 > 
-> If my understanding is right, how about we just exclude ksoftirqd
-> like what I do in the last email?
-> (something like
->     else if (in_serving_softirq() &&
->                (IS_ENABLED(CONFIG_PREEMPT_RT) || curr != this_cpu_ksoftirqd()))
-> 
-> If this looks okay to you, I'm happy to send a new patch for this :)
 
-Hmm, looking at the code in mainline, I may have misspoken. Although,
-honestly, I don't know why we want this.
+Purely as a matter of theory, mt753x_phylink_mac_config() itself could
+be called more than once, at any time there is a phylink_major_config() -
+first during initial one, then upon any change of the phy_interface_t.
+With the port being fixed and internal, maybe that is unlikely.
 
-In irqtime_account_process_tick() there's:
+Destroying and re-creating the phylink instance could also make the
+driver see more than 1 mt753x_phylink_mac_config() call. During periods
+of -EPROBE_DEFER, maybe this could even happen.
 
-	if (this_cpu_ksoftirqd() == p) {
-		/*
-		 * ksoftirqd time do not get accounted in cpu_softirq_time.
-		 * So, we have to handle it separately here.
-		 * Also, p->stime needs to be updated for ksoftirqd.
-		 */
-		account_system_index_time(p, cputime, CPUTIME_SOFTIRQ);
+I think what we need to see is a description of what the priv->p5_interface
+test is really protecting against, because it certainly is uncommon in other
+drivers to have this much logic to avoid mt753x_mac_config() being
+called twice.
 
-Which to me looks like it is counting ksoftirqd for SOFTIRQ time. But
-honestly, why do we care about that? What's the difference if ksoftirqd
-were to run or softirqd were to pass work off to a workqueue?
-
-ksoftirqd runs in vanilla Linux as SCHED_OTHER. The work it does doesn't
-interrupt processes any more than any other kernel thread. I don't know why
-we make it "special".
-
-I guess the better question I need to ask is, what is this information used
-for? I thought it was how much time was take away from tasks. As current
-would be a task, and we do care if a real softirq is running, as we do not
-want to add that to the current task accounting.
-
-But for ksoftirqd, that's not the case, and I don't really care if it's
-running a softirq or not. As that time isn't interrupting actual tasks. Not
-to mention, one could simply look at the ksoftirqd tasks to see how much
-time they take up.
-
-> 
-> >  
-> > > So my point is if we do not align ktimers, ktimers would act like
-> > > **observation on *not-excluded ksoftirq patched* kernel** part in the
-> > > above example,
-> > > and this might make SOFTIRQ less than expected, /proc/stat less accurate.  
-> >
-> > No it does not. When a softirq kicks off it's work to a thread (ksoftirq,
-> > threaded softirqd, or simply a workqueue), it's no longer running in
-> > softirq context, and should not be measured as such.
-> >
-> > The measurement is not about how much work the softirq is doing (otherwise
-> > we need to add workqueues started by softirqs too), it's about measuring
-> > the actual irq and softirq context. In PREEMPT_RT, we try to eliminate that
-> > context as much as possible.  
-> 
-> Thanks anyway, I think I begin to learn a bit more about PREEMPT_RT...
-
-Well, I may have been wrong in this information.
-
-I would like to know who is using this information and for what purpose.
-Ideally, I would love to make ksoftirqd *not* report its time as handling
-SOFTIRQ.
-
--- Steve
-
+If there's nothing wrong with calling it twice and it's just an optimization,
+I think that's enough of a justification for removing that extra protection.
+At the same time, the optimization (and simplification) that we should
+pursue is that we should remove the overlap between phylink and the
+initial port setup made by the driver.
