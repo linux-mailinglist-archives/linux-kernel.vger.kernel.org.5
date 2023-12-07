@@ -2,95 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8091807D92
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:05:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9E0807D93
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:06:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441974AbjLGBFr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 20:05:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57824 "EHLO
+        id S1441954AbjLGBGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 20:06:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441964AbjLGBFp (ORCPT
+        with ESMTP id S1441961AbjLGBGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 20:05:45 -0500
-Received: from irl.hu (irl.hu [95.85.9.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77407D46
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 17:05:51 -0800 (PST)
-Received: from [192.168.2.4] (51b690cd.dsl.pool.telekom.hu [::ffff:81.182.144.205])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 000000000007171C.0000000065711A6C.001192E6; Thu, 07 Dec 2023 02:05:48 +0100
-Message-ID: <4adaf4d4a0b4baf808697fb644889410dcfed948.camel@irl.hu>
-Subject: Re: [PATCH 0/2] ALSA: hda/tas2563: Add tas253 HDA driver
-From:   Gergo Koteles <soyer@irl.hu>
-To:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Date:   Thu, 07 Dec 2023 02:05:47 +0100
-In-Reply-To: <cover.1701733441.git.soyer@irl.hu>
-References: <cover.1701733441.git.soyer@irl.hu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.50.1 (3.50.1-1.fc39) 
+        Wed, 6 Dec 2023 20:06:11 -0500
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA11ED51;
+        Wed,  6 Dec 2023 17:06:17 -0800 (PST)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d05199f34dso2904045ad.3;
+        Wed, 06 Dec 2023 17:06:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701911177; x=1702515977;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uLC9SHWP9HzPPTfguvi7eCiTglb7l56HPdmyFvz6QMA=;
+        b=HVxuqATRtNeh+PZj+0v6py1i7Dv9UwNXnH1iKyUmSQRZLpYLebOsJwKaIPqUaTC6ZT
+         s7twbP32ZX7xEcDdDRbGEw1tnH+/C1++JETH+S0vNqE/QsYK5gupc2mxvH/B3vvIvlDE
+         ZnwlYIHHSxOeb/WXnDx+kVBRlAwecfO3vUKFDJKFThR67G3CU/wh5Xzn4YvEkPe3NFFN
+         b43/jUwdkKu9PHC2uy98Tdf6AU0Xd90kYskXD3LSOS/PiLEsdMjT/rBHebyxzBzj/pW9
+         dD7UMq7rh2MBdlRNY6kuvL6+z7h2GA+T678TvMYPFEOw60wzOGJu7QlYniOV1JbMuITq
+         A2Nw==
+X-Gm-Message-State: AOJu0Yy3ypJpS3kUefVte/7pr78PscH7/pUYq0z53u314kyndHFXuvpX
+        EXm/iog5S1VDwn7PANO90Ps=
+X-Google-Smtp-Source: AGHT+IHwUB/whwiwrYuDeWnhqFHNTLsYBeNTQh7IPMwKHmtxCck1bYQoJP4rNoMnXUU8cBJoXNMMPA==
+X-Received: by 2002:a17:902:b195:b0:1d0:6ffd:6e6e with SMTP id s21-20020a170902b19500b001d06ffd6e6emr1655754plr.102.1701911177129;
+        Wed, 06 Dec 2023 17:06:17 -0800 (PST)
+Received: from [172.20.2.177] (rrcs-173-197-90-226.west.biz.rr.com. [173.197.90.226])
+        by smtp.gmail.com with ESMTPSA id 21-20020a170902c21500b001cfb573674fsm80938pll.30.2023.12.06.17.06.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Dec 2023 17:06:16 -0800 (PST)
+Message-ID: <bf2b1671-2911-4d74-abfb-e6dbfe03d626@acm.org>
+Date:   Wed, 6 Dec 2023 15:06:14 -1000
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4] scsi: ufs: core: store min and max clk freq from OPP
+ table
+Content-Language: en-US
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_cang@quicinc.com, Manish Pandey <quic_mapa@quicinc.com>
+References: <20231206133812.21488-1-quic_nitirawa@quicinc.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20231206133812.21488-1-quic_nitirawa@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please disregard this patch.
-The tas2781-hda driver will handle this.
+On 12/6/23 03:38, Nitin Rawat wrote:
+> +	list_for_each_entry(clki, head, list) {
+> +		if (!clki->name)
+> +			continue;
+> +
+> +		clki->clk = devm_clk_get(hba->dev, clki->name);
+> +		if (!IS_ERR(clki->clk)) {
 
-https://lore.kernel.org/all/cover.1701906455.git.soyer@irl.hu/
+Please change the above line into the following:
 
-On Tue, 2023-12-05 at 00:45 +0100, Gergo Koteles wrote:
-> The ta2563 is a smart amplifier. Similar to tas2562 but with DSP. Some 
-> Lenovo laptops have it to drive the bass speakers. By default, it is in 
-> software shutdown state.
-> 
-> To make the DSP work it needs a firmware and some calibration data.
-> The latter can be read from the EFI in Lenovo laptops.
-> 
-> For the correct configuration it needs additional register data.
-> It captured after running the Windows driver.
-> 
-> The firmware can be extracted as TAS2563Firmware.bin from the Windows 
-> driver with innoextract.
-> https://download.lenovo.com/consumer/mobiles/h5yd037fbfyy7kd0.exe
-> 
-> The driver will search for it as TAS2563-17AA3870.bin with the 14ARB7.
-> 
-> It uses the default program/configuration, and has no controls for these yet.
-> 
-> The amplifier works without firmware, but I don't know how safe is it, 
-> that's why the firmware is required.
-> 
-> Gergo Koteles (2):
->   ASoc: tas2563: DSP Firmware loading support
->   ALSA: hda/tas2563: Add tas2563 HDA driver
-> 
->  {sound/soc/codecs => include/sound}/tas2562.h |   8 +
->  include/sound/tas25xx-dsp.h                   | 100 ++++
->  sound/pci/hda/Kconfig                         |  14 +
->  sound/pci/hda/Makefile                        |   2 +
->  sound/pci/hda/patch_realtek.c                 |  22 +-
->  sound/pci/hda/tas2563_hda_i2c.c               | 508 ++++++++++++++++++
->  sound/soc/codecs/Kconfig                      |   7 +
->  sound/soc/codecs/Makefile                     |   2 +
->  sound/soc/codecs/tas2562.c                    |   2 +-
->  sound/soc/codecs/tas25xx-dsp.c                | 282 ++++++++++
->  10 files changed, 942 insertions(+), 5 deletions(-)
->  rename {sound/soc/codecs => include/sound}/tas2562.h (90%)
->  create mode 100644 include/sound/tas25xx-dsp.h
->  create mode 100644 sound/pci/hda/tas2563_hda_i2c.c
->  create mode 100644 sound/soc/codecs/tas25xx-dsp.c
-> 
-> 
-> base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
+	if (IS_ERR(...))
+		continue;
 
+to reduce the indentation level of the code below this statement.
+
+Thanks,
+
+Bart.
