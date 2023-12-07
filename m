@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E93A80903E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 858338090A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379602AbjLGSmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 13:42:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
+        id S1443758AbjLGSmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 13:42:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235231AbjLGSmW (ORCPT
+        with ESMTP id S235228AbjLGSmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 13:42:22 -0500
+        Thu, 7 Dec 2023 13:42:45 -0500
 Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9011F171F;
-        Thu,  7 Dec 2023 10:42:27 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB71FA;
+        Thu,  7 Dec 2023 10:42:51 -0800 (PST)
 Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
-        by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B7HfS4X032199;
-        Thu, 7 Dec 2023 13:42:09 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3uujny881w-1
+        by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B7HfSl7032190;
+        Thu, 7 Dec 2023 13:42:32 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3uujny883u-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Dec 2023 13:42:08 -0500 (EST)
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 3B7Ig7C2056403
+        Thu, 07 Dec 2023 13:42:32 -0500 (EST)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 3B7IgV4Y024765
         (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 7 Dec 2023 13:42:07 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Thu, 7 Dec 2023
- 13:42:06 -0500
+        Thu, 7 Dec 2023 13:42:31 -0500
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Thu, 7 Dec 2023 13:42:30 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Thu, 7 Dec 2023 13:42:30 -0500
 Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
  (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Thu, 7 Dec 2023 13:42:06 -0500
+ Transport; Thu, 7 Dec 2023 13:42:30 -0500
 Received: from work.ad.analog.com (HYB-hERzalRezfV.ad.analog.com [10.65.205.129])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3B7IfmLu015389;
-        Thu, 7 Dec 2023 13:41:50 -0500
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3B7IgBHa015404;
+        Thu, 7 Dec 2023 13:42:13 -0500
 From:   Marcelo Schmitt <marcelo.schmitt@analog.com>
 To:     <apw@canonical.com>, <joe@perches.com>, <dwaipayanray1@gmail.com>,
         <lukas.bulwahn@gmail.com>, <paul.cercueil@analog.com>,
@@ -45,9 +49,9 @@ To:     <apw@canonical.com>, <joe@perches.com>, <dwaipayanray1@gmail.com>,
         <dan.carpenter@linaro.org>, <marcelo.schmitt1@gmail.com>
 CC:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 09/13] iio: adc: ad7091r: Add chip_info callback to get conversion result channel
-Date:   Thu, 7 Dec 2023 15:41:47 -0300
-Message-ID: <3ebc1e28f806bedc00f603881450af5de411e78b.1701971344.git.marcelo.schmitt1@gmail.com>
+Subject: [PATCH v3 10/13] dt-bindings: iio: Add AD7091R-8
+Date:   Thu, 7 Dec 2023 15:42:10 -0300
+Message-ID: <53d55f3195b15bd8d47387e296036730ea270770.1701971344.git.marcelo.schmitt1@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1701971344.git.marcelo.schmitt1@gmail.com>
 References: <cover.1701971344.git.marcelo.schmitt1@gmail.com>
@@ -55,8 +59,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: m3IoyOqCUKN1ScmACjvcAkH0ANn2eDtd
-X-Proofpoint-ORIG-GUID: m3IoyOqCUKN1ScmACjvcAkH0ANn2eDtd
+X-Proofpoint-GUID: zhAr0SNu0RCl1CD1qdR3fjPhq4ulSPrX
+X-Proofpoint-ORIG-GUID: zhAr0SNu0RCl1CD1qdR3fjPhq4ulSPrX
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-02_01,2023-11-30_01,2023-05-22_02
@@ -75,97 +79,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AD7091R-5 and AD7091R-2/-4/-8 have slightly different register field
-layout and due to that require different masks for getting the index of
-the channel associated with each read.
-Add a callback function so the base driver can get correct channel ID
-for each chip variant.
+Add device tree documentation for AD7091R-8.
 
 Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
 ---
- drivers/iio/adc/ad7091r-base.c | 6 +-----
- drivers/iio/adc/ad7091r-base.h | 6 ++++++
- drivers/iio/adc/ad7091r5.c     | 7 +++++++
- 3 files changed, 14 insertions(+), 5 deletions(-)
+ .../bindings/iio/adc/adi,ad7091r8.yaml        | 99 +++++++++++++++++++
+ 1 file changed, 99 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
 
-diff --git a/drivers/iio/adc/ad7091r-base.c b/drivers/iio/adc/ad7091r-base.c
-index 59a7ec44955d..5a7046f6f0ce 100644
---- a/drivers/iio/adc/ad7091r-base.c
-+++ b/drivers/iio/adc/ad7091r-base.c
-@@ -15,10 +15,6 @@
- 
- #include "ad7091r-base.h"
- 
--/* AD7091R_REG_RESULT */
--#define AD7091R_REG_RESULT_CH_ID(x)	    (((x) >> 13) & 0x3)
--#define AD7091R_REG_RESULT_CONV_RESULT(x)   ((x) & 0xfff)
--
- const struct iio_event_spec ad7091r_events[] = {
- 	{
- 		.type = IIO_EV_TYPE_THRESH,
-@@ -73,7 +69,7 @@ static int ad7091r_read_one(struct iio_dev *iio_dev,
- 	if (ret)
- 		return ret;
- 
--	if (AD7091R_REG_RESULT_CH_ID(val) != channel)
-+	if (st->chip_info->ad7091r_reg_result_chan_id(val) != channel)
- 		return -EIO;
- 
- 	*read_val = AD7091R_REG_RESULT_CONV_RESULT(val);
-diff --git a/drivers/iio/adc/ad7091r-base.h b/drivers/iio/adc/ad7091r-base.h
-index e153c2d7deb5..c554f04e7448 100644
---- a/drivers/iio/adc/ad7091r-base.h
-+++ b/drivers/iio/adc/ad7091r-base.h
-@@ -19,6 +19,11 @@
- #define AD7091R_REG_CH_HIGH_LIMIT(ch) ((ch) * 3 + 5)
- #define AD7091R_REG_CH_HYSTERESIS(ch) ((ch) * 3 + 6)
- 
-+/* AD7091R_REG_RESULT */
-+#define AD7091R5_REG_RESULT_CH_ID(x)	    (((x) >> 13) & 0x3)
-+#define AD7091R8_REG_RESULT_CH_ID(x)	    (((x) >> 13) & 0x7)
-+#define AD7091R_REG_RESULT_CONV_RESULT(x)   ((x) & 0xfff)
+diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
+new file mode 100644
+index 000000000000..02320778f225
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
+@@ -0,0 +1,99 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/adc/adi,ad7091r8.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- /* AD7091R_REG_CONF */
- #define AD7091R_REG_CONF_INT_VREF	BIT(0)
- #define AD7091R_REG_CONF_ALERT_EN	BIT(4)
-@@ -61,6 +66,7 @@ struct ad7091r_chip_info {
- 	unsigned int num_channels;
- 	const struct iio_chan_spec *channels;
- 	unsigned int vref_mV;
-+	unsigned int (*ad7091r_reg_result_chan_id)(unsigned int val);
- 	int (*ad7091r_set_mode)(struct ad7091r_state *st, enum ad7091r_mode mode);
- };
- 
-diff --git a/drivers/iio/adc/ad7091r5.c b/drivers/iio/adc/ad7091r5.c
-index ed5e00cc82e2..53a3f74f6452 100644
---- a/drivers/iio/adc/ad7091r5.c
-+++ b/drivers/iio/adc/ad7091r5.c
-@@ -54,11 +54,17 @@ static int ad7091r_set_mode(struct ad7091r_state *st, enum ad7091r_mode mode)
- 	return 0;
- }
- 
-+static unsigned int ad7091r5_reg_result_chan_id(unsigned int val)
-+{
-+	return AD7091R5_REG_RESULT_CH_ID(val);
-+}
++title: Analog Devices AD7091R8 8-Channel 12-Bit ADC
 +
- static const struct ad7091r_chip_info ad7091r5_chip_info_irq = {
- 	.name = "ad7091r-5",
- 	.channels = ad7091r5_channels_irq,
- 	.num_channels = ARRAY_SIZE(ad7091r5_channels_irq),
- 	.vref_mV = 2500,
-+	.ad7091r_reg_result_chan_id = &ad7091r5_reg_result_chan_id,
- 	.ad7091r_set_mode = &ad7091r_set_mode,
- };
- 
-@@ -67,6 +73,7 @@ static const struct ad7091r_chip_info ad7091r5_chip_info_noirq = {
- 	.channels = ad7091r5_channels_noirq,
- 	.num_channels = ARRAY_SIZE(ad7091r5_channels_noirq),
- 	.vref_mV = 2500,
-+	.ad7091r_reg_result_chan_id = &ad7091r5_reg_result_chan_id,
- 	.ad7091r_set_mode = &ad7091r_set_mode,
- };
- 
++maintainers:
++  - Marcelo Schmitt <marcelo.schmitt@analog.com>
++
++description: |
++  Analog Devices AD7091R-8 8-Channel 12-Bit ADC
++  https://www.analog.com/media/en/technical-documentation/data-sheets/AD7091R-2_7091R-4_7091R-8.pdf
++
++properties:
++  compatible:
++    enum:
++      - adi,ad7091r2
++      - adi,ad7091r4
++      - adi,ad7091r8
++
++  reg:
++    maxItems: 1
++
++  vref-supply: true
++
++  adi,conversion-start-gpios:
++    description:
++      GPIO connected to the CONVST pin.
++      This logic input is used to initiate conversions on the analog
++      input channels.
++    maxItems: 1
++
++  reset-gpios:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++patternProperties:
++  "^channel@[0-7]$":
++    $ref: adc.yaml
++    type: object
++    description: Represents the external channels which are connected to the ADC.
++
++    properties:
++      reg:
++        minimum: 0
++        maximum: 7
++
++    required:
++      - reg
++
++required:
++  - compatible
++  - reg
++  - adi,conversion-start-gpios
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++  # AD7091R-2 does not have ALERT/BUSY/GPO pin
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - adi,ad7091r4
++              - adi,ad7091r8
++    then:
++      properties:
++        interrupts: true
++    else:
++      properties:
++        interrupts: false
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/gpio/gpio.h>
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        adc@0 {
++                compatible = "adi,ad7091r8";
++                reg = <0x0>;
++                spi-max-frequency = <45454545>;
++                vref-supply = <&adc_vref>;
++                adi,conversion-start-gpios = <&gpio 25 GPIO_ACTIVE_LOW>;
++                reset-gpios = <&gpio 27 GPIO_ACTIVE_LOW>;
++                interrupts = <22 IRQ_TYPE_EDGE_FALLING>;
++                interrupt-parent = <&gpio>;
++        };
++    };
++...
 -- 
 2.42.0
 
