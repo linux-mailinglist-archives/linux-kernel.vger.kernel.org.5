@@ -2,70 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 481BF80967E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 00:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BF280968E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 00:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbjLGXST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 18:18:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50794 "EHLO
+        id S1444119AbjLGX0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 18:26:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLGXSR (ORCPT
+        with ESMTP id S232505AbjLGX0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 18:18:17 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD031710
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 15:18:22 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c9eca5bbaeso17484971fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 15:18:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1701991100; x=1702595900; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2qVgIXXI2cMw2ajdOYKgvt4GH6JzHiU0pdSvnaX1mW4=;
-        b=MV1LYsc0sqYLrqubyZ9BgfYCovQ7NwnwTnHIfEkR7xBQXJNRRSsuyRNhOOpkF3dJLP
-         yyujvvp/NHVZte/5SzZrq1TEIU4DQyh0W0aH6t+o+Bpeq41KrkTrOU0P6T0y+r7PfL5V
-         5obuwdRjan4mYXCSji+IM6vlDnFtVOar44FXk0rfPmV3Wp9vaOwnHny9ttKqSd+pSrmn
-         Q6ee6/2w8uQ/VcEwY0K/CpfjaLy2ubXnFsFHYJG1Pn5RSjlBzUwevT6q3EiMBkInwL+9
-         LPWqx75VmSpWeCZZ+ReIVgXTXTIhr0l8CPoqLAaazvQOi0j4FkzqWQoglR8O1voUbZK0
-         Aj1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701991100; x=1702595900;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2qVgIXXI2cMw2ajdOYKgvt4GH6JzHiU0pdSvnaX1mW4=;
-        b=CG+mAG8ySNTZJwSpCsx1XCOotvsihX9djphA+yztCgL9gb0+bYLv4IPsn2GhwLzPB3
-         +F1w4KgIgA31zGxdD3Fqb39N/p/eHucleTP/AmUdcYWmGjkQz8lBcO1sIuDQU6N2DBco
-         +FpFvVfSOdGrvSZWXtOcGYlqjDGK2ZLLrBZiDfniHDj8/JZT3KpFdgZvgHJTE3VB3+bT
-         U36ZEVHkT8h05GzAYYuINrM4JJJ4IgZXzlhrs5B3ZNDUn0C38OoitVFh2gsfiFAP6B3S
-         sWJWmlVWDCcS5TsS12FGdj2zlEFVeTfDzHFCRHS+IGAbFKrLU9xF8tFvnBzHS/GFJCW5
-         +iBQ==
-X-Gm-Message-State: AOJu0Yy8MkuKf3IEICr15JoUm8SMmNC19F2RDGxSJaf0cdZ5rTy4wroL
-        /Po4gtgVKwewdVA1Poji5Yer9rOAiBCNCOpxfgNA3w==
-X-Google-Smtp-Source: AGHT+IHQ1Cpr4EU0uoWT4gxeah7NnQJz57yCMLaVX91YLu7zNGMJ28UWG2gIa8fDxSMey7KqGONBMNrBP01R9tlIPsE=
-X-Received: by 2002:a2e:3608:0:b0:2c9:f4e4:3206 with SMTP id
- d8-20020a2e3608000000b002c9f4e43206mr932197lja.38.1701991099990; Thu, 07 Dec
- 2023 15:18:19 -0800 (PST)
+        Thu, 7 Dec 2023 18:26:11 -0500
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9C41719
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 15:26:17 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 37EDE3200B8F;
+        Thu,  7 Dec 2023 18:26:16 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 07 Dec 2023 18:26:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1701991575; x=1702077975; bh=Bt
+        llAeRuCcPTl4gOdGM/QH1NvWPxw+8wNvSb0SE/0x4=; b=EaAnBEEkCePGS88Kzt
+        KeGILp5fDctSLpMJrATWla6rcjKJROlBbb/Jp9oa9HRF22ijq7D70YpIAPyX5Rn8
+        ZqRjT14uc0F9df6Yk5Dk0kL7jaZT8OGuHt5LnC+kIIGQK1cu92FvaO9CfyC37let
+        I0kkOoAEmaFHnxMtcejllHRadVW8jB59t0JfzOTte0jTjKxt8TqXjVtMNrWadT6N
+        j/N9ZcwplQPVg83+JSsJQNq9P66OW4AzasD2Oh180NdMMfbOdO63QWhLivToRNOu
+        55wO3jqKPxa6vIlP6bjvSGCm9MM4aU/HPadA4fTpxyJGX17vuZ+dLJQiwHF1yI3t
+        R6oQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701991575; x=1702077975; bh=BtllAeRuCcPTl
+        4gOdGM/QH1NvWPxw+8wNvSb0SE/0x4=; b=SPimJHgega8xzRp7sPUJLqkbYjFmw
+        CbHOvU5wtYJXA08x9q8+sTR7P1/oR7ZKDzGY5Vj2n6GeyDms/Ont5aOfybAyz5pN
+        9cNNzw1WJk1xazjratCZ5NvtRoWP99b9278BWi7pZoQPHuk8MBifUuPHHZ/HLxnR
+        DdDN4/yVb0AbQj7zf23utL/jd7i8DCpRML3ebSQIWAKdQ71PxXabsK4guInpooha
+        r5btUwawqJ+/ZXhh1YFKdhlPKDgIAnxiC3IWSgNfkT/MFO79Pf0qt4tIXHEmCxdI
+        MvVnyxwnLhXuxZTChA6hV3D+DXflHbs01BKcB3vbekQ7ypsJUDzIqPXBg==
+X-ME-Sender: <xms:l1RyZXB9ColG3E4W4I7lmlDe_QYBgPYyzqlF8xUAV3R9vz3Nfx_NUg>
+    <xme:l1RyZdgkYNF7_3v0hO2C-WFMTtbgcgVrPTo1wOHQjwd2r3f5H2p_jjX4tvhAAOoij
+    7C6VbLFTlnmuzH6Oys>
+X-ME-Received: <xmr:l1RyZSkYisWq3fVFcOZpgt4WlZz_EFBVAIP5tv-C8dSEwvVGpWrqeU8O>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekgedgtddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpehffgfhvfevufffjgfkgggtsehttd
+    ertddtredtnecuhfhrohhmpefuthgvfhgrnhcutfhovghstghhuceoshhhrhesuggvvhhk
+    vghrnhgvlhdrihhoqeenucggtffrrghtthgvrhhnpeduteejkefhueffkeekudffueeihe
+    dukeeuteejvedvgeekhfehheektddtuefghfenucffohhmrghinhepmhgrrhgtrdhinhhf
+    ohenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehshh
+    hrseguvghvkhgvrhhnvghlrdhioh
+X-ME-Proxy: <xmx:l1RyZZyLMEaPyPaIS8ozLA2EQJMegIE5vur9Jgxq71PQm5vijvFU7w>
+    <xmx:l1RyZcRdLbj1TWQ8H94hwjmtFMO1TfHZy-0hSaCVZG1VHeb2g7mP4Q>
+    <xmx:l1RyZcagJRcnxe80qsmRQHLga1PlLX08DFG2l3jWh-m1GYrhDKH_2Q>
+    <xmx:l1RyZRLqcISa-kYJ4AMWKg9YmEu378VWxacZqqeU4MeFrYcTO2Ujpw>
+Feedback-ID: i84614614:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 7 Dec 2023 18:26:13 -0500 (EST)
+References: <20231204234906.1237478-1-shr@devkernel.io>
+ <20231205124610.ca70c47e880daa81a0f21f07@linux-foundation.org>
+User-agent: mu4e 1.10.3; emacs 29.1
+From:   Stefan Roesch <shr@devkernel.io>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     kernel-team@fb.com, david@redhat.com, hannes@cmpxchg.org,
+        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 0/4] mm/ksm: Add ksm advisor
+Date:   Thu, 07 Dec 2023 15:18:27 -0800
+In-reply-to: <20231205124610.ca70c47e880daa81a0f21f07@linux-foundation.org>
+Message-ID: <87il59vbl9.fsf@devkernel.io>
 MIME-Version: 1.0
-References: <cover.1701971344.git.marcelo.schmitt1@gmail.com> <14973feb4c0f4ad01a0e5047407c93ce9b9e5463.1701971344.git.marcelo.schmitt1@gmail.com>
-In-Reply-To: <14973feb4c0f4ad01a0e5047407c93ce9b9e5463.1701971344.git.marcelo.schmitt1@gmail.com>
-From:   David Lechner <dlechner@baylibre.com>
-Date:   Thu, 7 Dec 2023 17:18:09 -0600
-Message-ID: <CAMknhBHCYicEL_xhumBQMUm=HBVb=7dLrYsK8Zj2o7RodvMarw@mail.gmail.com>
-Subject: Re: [PATCH v3 02/13] iio: adc: ad7091r: Populate device driver data field
-To:     Marcelo Schmitt <marcelo.schmitt@analog.com>
-Cc:     apw@canonical.com, joe@perches.com, dwaipayanray1@gmail.com,
-        lukas.bulwahn@gmail.com, paul.cercueil@analog.com,
-        Michael.Hennerich@analog.com, lars@metafoo.de, jic23@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, dan.carpenter@linaro.org,
-        marcelo.schmitt1@gmail.com, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,64 +85,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 12:38=E2=80=AFPM Marcelo Schmitt
-<marcelo.schmitt@analog.com> wrote:
+
+Andrew Morton <akpm@linux-foundation.org> writes:
+
+> On Mon,  4 Dec 2023 15:49:02 -0800 Stefan Roesch <shr@devkernel.io> wrote:
 >
-> Set device driver data so it can be retrieved when handling alert
-> events, avoiding null pointer dereference.
+>> What is the KSM advisor?
+>> =========================
+>> The ksm advisor automatically manages the pages_to_scan setting to
+>> achieve a target scan time. The target scan time defines how many seconds
+>> it should take to scan all the candidate KSM pages. In other words the
+>> pages_to_scan rate is changed by the advisor to achieve the target scan
+>> time.
 >
-> Fixes: ca69300173b6 ("iio: adc: Add support for AD7091R5 ADC")
-> Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
-> ---
->  drivers/iio/adc/ad7091r-base.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/iio/adc/ad7091r-base.c b/drivers/iio/adc/ad7091r-bas=
-e.c
-> index 8e252cde735b..0f192fbecbd4 100644
-> --- a/drivers/iio/adc/ad7091r-base.c
-> +++ b/drivers/iio/adc/ad7091r-base.c
-> @@ -232,6 +232,7 @@ int ad7091r_probe(struct device *dev, const char *nam=
-e,
->         iio_dev->channels =3D chip_info->channels;
->
->         if (irq) {
-> +               dev_set_drvdata(st->dev, iio_dev);
->                 ret =3D devm_request_threaded_irq(dev, irq, NULL,
->                                 ad7091r_event_handler,
->                                 IRQF_TRIGGER_FALLING | IRQF_ONESHOT, name=
-, st);
-> --
-> 2.42.0
->
+> Dumb question time.  Can this be done in userspace?  Presumably this
+> will require exposing some additional kernel state to userspace.
 >
 
-Instead of introducing a new relationship between iio_dev and st, why
-not pass iio_dev to devm_request_threaded_irq() instead of st and then
-use iio_priv() to get st in ad7091r_event_handler?
+Userspace doesn't look like a good fit
+- We need access to how much cpu the ksmd kernel thread spent during the
+last scan
+- We want to recompute this after each scan completes, so the new
+parameter is in effect for the next scan and to avoid we have to
+partially deal with new values in the middle
+- When the advisor is active we want to disable that other users can
+manually set the scan rate.
 
-diff --git a/drivers/iio/adc/ad7091r-base.c b/drivers/iio/adc/ad7091r-base.=
-c
-index 8e252cde735b..0e5d3d2e9c98 100644
---- a/drivers/iio/adc/ad7091r-base.c
-+++ b/drivers/iio/adc/ad7091r-base.c
-@@ -174,8 +174,8 @@ static const struct iio_info ad7091r_info =3D {
+The scan advisor might be augmented with per page cost in the future.
 
- static irqreturn_t ad7091r_event_handler(int irq, void *private)
- {
--    struct ad7091r_state *st =3D (struct ad7091r_state *) private;
--    struct iio_dev *iio_dev =3D dev_get_drvdata(st->dev);
-+    struct iio_dev *iio_dev =3D private;
-+    struct ad7091r_state *st =3D iio_priv(iio_dev);
-     unsigned int i, read_val;
-     int ret;
-     s64 timestamp =3D iio_get_time_ns(iio_dev);
-@@ -234,7 +234,7 @@ int ad7091r_probe(struct device *dev, const char *name,
-     if (irq) {
-         ret =3D devm_request_threaded_irq(dev, irq, NULL,
-                 ad7091r_event_handler,
--                IRQF_TRIGGER_FALLING | IRQF_ONESHOT, name, st);
-+                IRQF_TRIGGER_FALLING | IRQF_ONESHOT, name, iio_dev);
-         if (ret)
-             return ret;
-     }
+>> Why do we need a KSM advisor?
+>> ==============================
+>> The number of candidate pages for KSM is dynamic. It can often be observed
+>> that during the startup of an application more candidate pages need to be
+>> processed. Without an advisor the pages_to_scan parameter needs to be
+>> sized for the maximum number of candidate pages. With the scan time
+>> advisor the pages_to_scan parameter based can be changed based on demand.
+>>
+>> Algorithm
+>> ==========
+>> The algorithm calculates the change value based on the target scan time
+>> and the previous scan time. To avoid pertubations an exponentially
+>> weighted moving average is applied.
+>>
+>> The algorithm has a max and min
+>> value to:
+>> - guarantee responsiveness to changes
+>> - to limit CPU resource consumption
+>>
+>> Parameters to influence the KSM scan advisor
+>> =============================================
+>> The respective parameters are:
+>> - ksm_advisor_mode
+>>   0: None (default), 1: scan time advisor
+>> - ksm_advisor_target_scan_time
+>>   how many seconds a scan should of all candidate pages take
+>> - ksm_advisor_max_cpu
+>>   upper limit for the cpu usage in percent of the ksmd background thread
+>>
+>> The initial value and the max value for the pages_to_scan parameter can
+>> be limited with:
+>> - ksm_advisor_min_pages
+>>   minimum value for pages_to_scan per batch
+>> - ksm_advisor_max_pages
+>>   maximum value for pages_to_scan per batch
+>
+> Should these be called ksm_advisor_min_pages_to_scan?
+>
+
+That's a good recommendation. I'll make that change and the
+corresponding change for max.
+
+>> The default settings for the above two parameters should be suitable for
+>> most workloads.
+>>
+>> The parameters are exposed as knobs in /sys/kernel/mm/ksm. By default the
+>> scan time advisor is disabled.
+>
+> Disabling it will reduce the effectiveness of testing.  What are the
+> risks of defaulting to "on"?
+>
+
+Some users might have already tuned the values for pages_to_scan. So
+generally turning it on might not be good. However we could turn it on,
+it the default value of 100 for pages_to_scan hasn't been changed.
+
+Any thoughts?
+
+>> Currently there are two advisors:
+>> - none and
+>> - scan-time.
+>>
+>> Resource savings
+>> =================
+>> Tests with various workloads have shown considerable CPU savings. Most
+>> of the workloads I have investigated have more candidate pages during
+>> startup. Once the workload is stable in terms of memory, the number of
+>> candidate pages is reduced. Without the advisor, the pages_to_scan needs
+>> to be sized for the maximum number of candidate pages. So having this
+>> advisor definitely helps in reducing CPU consumption.
+>>
+>> For the instagram workload, the advisor achieves a 25% CPU reduction.
+>
+> 25% of what?  What is the overall affect on machine resource
+> consumption?
+>
+
+25% of the cpu consumption of the ksmd background thread. On a 32 cpu
+machine this translates to 1 to 2% cpu savings alltogether.
+
+However this is highly workload dependent.
+
+>> Once the memory is stable, the pages_to_scan parameter gets reduced to
+>> about 40% of its max value.
+>>
+>> The new advisor works especially well if the smart scan feature is also
+>> enabled.
+>>
+>> How is defining a target scan time better?
+>> ===========================================
+>> For an administrator it is more logical to set a target scan time.. The
+>> administrator can determine how many pages are scanned on each scan.
+>> Therefore setting a target scan time makes more sense.
+>>
+>> In addition the administrator might have a good idea about the memory
+>> sizing of its respective workloads.
+>>
+>> Setting cpu limits is easier than setting The pages_to_scan parameter. The
+>> pages_to_scan parameter is per batch. For the administrator it is difficult
+>> to set the pages_to_scan parameter.
+>>
+>> Tracing
+>> =======
+>> A new tracing event has been added for the scan time advisor. The new
+>> trace event is called ksm_advisor. It reports the scan time, the new
+>> pages_to_scan setting and the cpu usage of the ksmd background thread.
+>>
+>> Other approaches
+>> =================
+>>
+>> Approach 1: Adapt pages_to_scan after processing each batch. If KSM
+>>   merges pages, increase the scan rate, if less KSM pages, reduce the
+>>   the pages_to_scan rate. This doesn't work too well. While it increases
+>>   the pages_to_scan for a short period, but generally it ends up with a
+>>   too low pages_to_scan rate.
+>>
+>> Approach 2: Adapt pages_to_scan after each scan. The problem with that
+>>   approach is that the calculated scan rate tends to be high. The more
+>>   aggressive KSM scans, the more pages it can de-duplicate.
+>>
+>> There have been earlier attempts at an advisor:
+>>   propose auto-run mode of ksm and its tests
+>>   (https://marc.info/?l=linux-mm&m=166029880214485&w=2)
