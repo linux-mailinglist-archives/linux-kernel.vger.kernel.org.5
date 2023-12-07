@@ -2,129 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC58D807FC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B72807FC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbjLGElz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 23:41:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48602 "EHLO
+        id S229841AbjLGEnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 23:43:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLGEly (ORCPT
+        with ESMTP id S229449AbjLGEnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 23:41:54 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2340126
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 20:41:59 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-286d6c9ce6dso551258a91.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 20:41:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701924119; x=1702528919; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=v2QqlXWCI26gv+jGfNp5oJjKdW8trvqIMxHSQSlEVHs=;
-        b=MKoR0dcrSBRNJKZmpUwr0+k2U4NqHbxPyVIUTmDcvuDa7rgLcBAGAIx6zkdjjxunk4
-         w7HqBHmzFX3i1Bc97Y1XK7d5r1CCuRapoxS9K67ePCo0I3YjnjbM+pVs2QeX6f0T4CSC
-         X4lqcOPh54gnrmzQegKb9Mqc0LuG5JsT/yAaKm/DSPxO8xVUYxmyTvUMALt9WWpHfbhQ
-         LwxY/XWeUMurIzzvkthXsuHxsSFu+jkPhiY30F3uGKiiNuOUY13chSKWw8BvQXIL0Sen
-         zokKIhg3tUngUM+yYHxk9tZwQaVS5ZPU2H737G/uSJiPK9tws8aHT/hXEQnlJbJLEKTN
-         TPDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701924119; x=1702528919;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v2QqlXWCI26gv+jGfNp5oJjKdW8trvqIMxHSQSlEVHs=;
-        b=uXXit1JQnE71g6kGZ6JV1wWkKNy8gezucYztUAtL2LV68tki8E1aJu78s6RNioWLHz
-         6oJvWaQdOTtjzSxw28XRk6pj243+t/Y1YPQaxSJ/nFJqz7sj2BFJBR58VqLp97OeD1uj
-         E7hHyHDyS+KRsLPRmotssGDjxiIqGJi2LqX8tKJQHl2be+2alu444pwjSN6zg5z0Dmw7
-         qVYwmEE3uxKgSUHAbvigK/4y+H1G8/ovYa5npgwabG2XGOlLZX+oO9oC8bvPqERcMLyg
-         KSRviYaMi/Ja5vdAb0siwpzTKYy1apdLdppXX01Qu3SomF7SobzUeKmJL08ibp/uj5tW
-         POnw==
-X-Gm-Message-State: AOJu0Yyy/1fSwhZjzep5L2P1HP5ZyzETrDnZpik1VWaGCqDv0WLtVxTc
-        rSLpTXvPyJGHzUSp5VEdt/9RAg==
-X-Google-Smtp-Source: AGHT+IEKMEQI+Kt2z5Onuh0MysWMqhlDFc/G7D/Ejlz0kBFz1I/zpQGv1eC/i6etrpu5sui34F8eUg==
-X-Received: by 2002:a17:90a:ff14:b0:286:6cc1:781a with SMTP id ce20-20020a17090aff1400b002866cc1781amr1867568pjb.93.1701924119432;
-        Wed, 06 Dec 2023 20:41:59 -0800 (PST)
-Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
-        by smtp.gmail.com with ESMTPSA id mm22-20020a17090b359600b00286901e226bsm293341pjb.28.2023.12.06.20.41.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 20:41:58 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1rB6Cy-004vYN-0Q;
-        Thu, 07 Dec 2023 15:41:56 +1100
-Date:   Thu, 7 Dec 2023 15:41:56 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-cachefs@redhat.com, dhowells@redhat.com,
-        gfs2@lists.linux.dev, dm-devel@lists.linux.dev,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/11] list_bl: don't use bit locks for PREEMPT_RT or
- lockdep
-Message-ID: <ZXFNFKai3ILLFdnR@dread.disaster.area>
-References: <20231206060629.2827226-1-david@fromorbit.com>
- <20231206060629.2827226-11-david@fromorbit.com>
- <20231207041650.3tzzmv2jfrr5vppl@moria.home.lan>
+        Wed, 6 Dec 2023 23:43:09 -0500
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0850E9;
+        Wed,  6 Dec 2023 20:43:13 -0800 (PST)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B74gs2D012674;
+        Wed, 6 Dec 2023 22:42:54 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1701924174;
+        bh=Kv7NwkC/Z42YLzXZ+MHWTh/Tmd1UIQuMwlwAq7O7h8c=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=PICozpIgB+2PejfqGivgzXk2sVnkeQ/0GEJHB0fOKcUrWpBJ/JZoDll8/LyrPr801
+         p2y8gv2izOxrgdVPd2pZ57l0M7HxcwxWlNFmAA8hGJY7Yn12WYfW9jjfsIzu0hwSog
+         fU4YGYP329kwOh078YsVi+7IZ6c0QEEzE/9h4G/w=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B74gsQP003183
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 6 Dec 2023 22:42:54 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 6
+ Dec 2023 22:42:54 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 6 Dec 2023 22:42:54 -0600
+Received: from [172.24.20.156] (lt5cd2489kgj.dhcp.ti.com [172.24.20.156])
+        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B74f6Y0093945;
+        Wed, 6 Dec 2023 22:42:49 -0600
+Message-ID: <5e22f8cb-1004-4bcc-9bd0-2c30180ba10e@ti.com>
+Date:   Thu, 7 Dec 2023 10:12:49 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231207041650.3tzzmv2jfrr5vppl@moria.home.lan>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 6/7] arm64: dts: ti: k3-j721e-sk: Add TPS6594 family
+ PMICs
+Content-Language: en-US
+To:     Nishanth Menon <nm@ti.com>, Neha Malcom Francis <n-francis@ti.com>
+CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <a-nandan@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <eblanc@baylibre.com>, <jneanne@baylibre.com>,
+        <aseketeli@baylibre.com>, <jpanis@baylibre.com>, <j-luthra@ti.com>,
+        <vaishnav.a@ti.com>, <hnagalla@ti.com>, <devarsht@ti.com>
+References: <20231205093439.2298296-1-n-francis@ti.com>
+ <20231205093439.2298296-7-n-francis@ti.com>
+ <20231205151647.vh6rlhro7qlwoerc@knelt>
+From:   "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20231205151647.vh6rlhro7qlwoerc@knelt>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 11:16:50PM -0500, Kent Overstreet wrote:
-> On Wed, Dec 06, 2023 at 05:05:39PM +1100, Dave Chinner wrote:
-> > From: Dave Chinner <dchinner@redhat.com>
-> > 
-> > hash-bl nests spinlocks inside the bit locks. This causes problems
-> > for CONFIG_PREEMPT_RT which converts spin locks to sleeping locks,
-> > and we're not allowed to sleep while holding a spinning lock.
-> > 
-> > Further, lockdep does not support bit locks, so we lose lockdep
-> > coverage of the inode hash table with the hash-bl conversion.
-> > 
-> > To enable these configs to work, add an external per-chain spinlock
-> > to the hlist_bl_head() and add helpers to use this instead of the
-> > bit spinlock when preempt_rt or lockdep are enabled.
-> > 
-> > This converts all users of hlist-bl to use the external spinlock in
-> > these situations, so we also gain lockdep coverage of things like
-> > the dentry cache hash table with this change.
-> > 
-> > Signed-off-by: Dave Chinner <dchinner@redhat.com>
-> 
-> Sleepable bit locks can be done with wait_on_bit(), is that worth
-> considering for PREEMPT_RT? Or are the other features of real locks
-> important there?
 
-I think wait_on_bit() is not scalable. It hashes down to one of 256
-shared struct wait_queue_heads which have thundering herd
-behaviours, and it requires the locker to always run
-prepare_to_wait() and finish_wait(). This means there is at least
-one spinlock_irqsave()/unlock pair needed, sometimes two, just to
-get an uncontended sleeping bit lock.
+On 12/5/2023 8:46 PM, Nishanth Menon wrote:
+> On 15:04-20231205, Neha Malcom Francis wrote:
+>> This patch adds support for TPS6594 PMIC family on wakeup I2C0 bus.
+>> These devices provide regulators (bucks and LDOs), but also GPIOs, a
+>> RTC, a watchdog, an ESM (Error Signal Monitor) which monitors the SoC
+>> error output signal, and a PFSM (Pre-configurable Finite State Machine)
+>> which manages the operational modes of the PMIC.
+>>
+>> Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
+>> ---
+>>   arch/arm64/boot/dts/ti/k3-j721e-sk.dts | 158 +++++++++++++++++++++++++
+>>   1 file changed, 158 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
+>> index 42fe8eee9ec8..e600825f7e78 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
+>> +++ b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
+>> @@ -459,6 +459,13 @@ J721E_IOPAD(0x234, PIN_INPUT, 7) /* (U3) EXT_REFCLK1.GPIO1_12 */
+>>   };
+>>   
+>>   &wkup_pmx0 {
+>> +	pmic_irq_pins_default: pmic-irq-default-pins {
+>> +		bootph-pre-ram;
+>> +		pinctrl-single,pins = <
+>> +			J721E_WKUP_IOPAD(0x0cc, PIN_INPUT, 7) /* (G28) WKUP_GPIO0_7 */
+>> +		>;
+>> +	};
+>> +
+>>   	mcu_cpsw_pins_default: mcu-cpsw-default-pins {
+>>   		pinctrl-single,pins = <
+>>   			J721E_WKUP_IOPAD(0x84, PIN_INPUT, 0) /* (B24) MCU_RGMII1_RD0 */
+>> @@ -560,6 +567,157 @@ eeprom@51 {
+>>   		compatible = "atmel,24c512";
+>>   		reg = <0x51>;
+>>   	};
+>> +
+>> +	tps659413: pmic@48 {
+>> +		bootph-pre-ram;
+> only for the leaf nodes. See
+> https://libera.irclog.whitequark.org/armlinux/2023-10-19
 
-So as a fast path operation that requires lock scalability, it's
-going to be better to use a straight spinlock that doesn't require
-irq safety as it's far less expensive than a sleeping bit lock.
 
-Whether CONFIG_PREEMPT_RT changes that equation at all is not at all
-clear to me, and so I'll leave that consideration to RT people if
-they see a need to address it. In the mean time, we need to use an
-external spinlock for lockdep validation so it really doesn't make
-any sense at all to add a third locking variant with completely
-different semantics just for PREEMPT_RT...
+AFAIK, please correct me, u-boot still needs in all nodes ?
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>
+>> +		compatible = "ti,tps6594-q1";
+>> +		reg = <0x48>;
+>> +		system-power-controller;
+>> +		pinctrl-names = "default";
+>> +		pinctrl-0 = <&pmic_irq_pins_default>;
+>> +		interrupt-parent = <&wkup_gpio0>;
+>> +		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
+>> +		ti,primary-pmic;
+>> +
+>> +		gpio-controller;
+>> +		#gpio-cells = <2>;
+>> +
+>> +		buck123-supply = <&vsys_3v3>;
+>> +		buck4-supply = <&vsys_3v3>;
+>> +		buck5-supply = <&vsys_3v3>;
+>> +		ldo1-supply = <&vsys_3v3>;
+>> +		ldo2-supply = <&vsys_3v3>;
+>> +		ldo3-supply = <&vsys_3v3>;
+>> +		ldo4-supply = <&vsys_3v3>;
+>> +
+>> +		regulators {
+>> +			bootph-pre-ram;
+>> +			bucka123: buck123 {
+>> +				bootph-pre-ram;
+>> +				regulator-name = "vdd_cpu_avs";
+>> +				regulator-min-microvolt = <600000>;
+>> +				regulator-max-microvolt = <900000>;
+>> +				regulator-boot-on;
+>> +				regulator-always-on;
+>> +			};
+>> +
+>> +			bucka4: buck4 {
+>> +				regulator-name = "vdd_mcu_0v85";
+>> +				regulator-min-microvolt = <850000>;
+>> +				regulator-max-microvolt = <850000>;
+>> +				regulator-boot-on;
+>> +				regulator-always-on;
+>> +			};
+>> +
+>> +			bucka5: buck5 {
+>> +				regulator-name = "vdd_phyio_1v8";
+>> +				regulator-min-microvolt = <1800000>;
+>> +				regulator-max-microvolt = <1800000>;
+>> +				regulator-boot-on;
+>> +				regulator-always-on;
+>> +			};
+>> +
+>> +			ldoa1: ldo1 {
+>> +				regulator-name = "vdd1_lpddr4_1v8";
+>> +				regulator-min-microvolt = <1800000>;
+>> +				regulator-max-microvolt = <1800000>;
+>> +				regulator-boot-on;
+>> +				regulator-always-on;
+>> +			};
+>> +
+>> +			ldoa2: ldo2 {
+>> +				regulator-name = "vdd_mcuio_1v8";
+>> +				regulator-min-microvolt = <1800000>;
+>> +				regulator-max-microvolt = <1800000>;
+>> +				regulator-boot-on;
+>> +				regulator-always-on;
+>> +			};
+>> +
+>> +			ldoa3: ldo3 {
+>> +				regulator-name = "vdda_dll_0v8";
+>> +				regulator-min-microvolt = <800000>;
+>> +				regulator-max-microvolt = <800000>;
+>> +				regulator-boot-on;
+>> +				regulator-always-on;
+>> +			};
+>> +
+>> +			ldoa4: ldo4 {
+>> +				regulator-name = "vda_mcu_1v8";
+>> +				regulator-min-microvolt = <1800000>;
+>> +				regulator-max-microvolt = <1800000>;
+>> +				regulator-boot-on;
+>> +				regulator-always-on;
+>> +			};
+>> +		};
+>> +	};
+>> +
+>> +	tps659411: pmic@4c {
+>> +		compatible = "ti,tps6594-q1";
+>> +		reg = <0x4c>;
+>> +		system-power-controller;
+>> +		interrupt-parent = <&wkup_gpio0>;
+>> +		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
+>> +
+>> +		gpio-controller;
+>> +		#gpio-cells = <2>;
+>> +
+>> +		buck1234-supply = <&vsys_3v3>;
+>> +		buck5-supply = <&vsys_3v3>;
+>> +		ldo1-supply = <&vsys_3v3>;
+>> +		ldo2-supply = <&vsys_3v3>;
+>> +		ldo3-supply = <&vsys_3v3>;
+>> +		ldo4-supply = <&vsys_3v3>;
+>> +
+>> +		regulators {
+>> +			buckb1234: buck1234 {
+>> +				regulator-name = "vdd_core_0v8";
+>> +				regulator-min-microvolt = <800000>;
+>> +				regulator-max-microvolt = <800000>;
+>> +				regulator-boot-on;
+>> +				regulator-always-on;
+>> +			};
+>> +
+>> +			buckb5: buck5 {
+>> +				regulator-name = "vdd_ram_0v85";
+>> +				regulator-min-microvolt = <850000>;
+>> +				regulator-max-microvolt = <850000>;
+>> +				regulator-boot-on;
+>> +				regulator-always-on;
+>> +			};
+>> +
+>> +			ldob1: ldo1 {
+>> +				regulator-name = "vdd_sd_dv";
+>> +				regulator-min-microvolt = <1800000>;
+>> +				regulator-max-microvolt = <3300000>;
+>> +				regulator-boot-on;
+>> +				regulator-always-on;
+>> +			};
+>> +
+>> +			ldob2: ldo2 {
+>> +				regulator-name = "vdd_usb_3v3";
+>> +				regulator-min-microvolt = <3300000>;
+>> +				regulator-max-microvolt = <3300000>;
+>> +				regulator-boot-on;
+>> +				regulator-always-on;
+>> +			};
+>> +
+>> +			ldob3: ldo3 {
+>> +				regulator-name = "vdd_io_1v8";
+>> +				regulator-min-microvolt = <1800000>;
+>> +				regulator-max-microvolt = <1800000>;
+>> +				regulator-boot-on;
+>> +				regulator-always-on;
+>> +			};
+>> +
+>> +			ldob4: ldo4 {
+>> +				regulator-name = "vda_pll_1v8";
+>> +				regulator-min-microvolt = <1800000>;
+>> +				regulator-max-microvolt = <1800000>;
+>> +				regulator-boot-on;
+>> +				regulator-always-on;
+>> +			};
+>> +		};
+>> +	};
+>>   };
+>>   
+>>   &mcu_uart0 {
+>> -- 
+>> 2.34.1
+>>
