@@ -2,90 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19535808635
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFE9808601
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378630AbjLGJeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:34:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36868 "EHLO
+        id S1378639AbjLGJc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:32:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378491AbjLGJeA (ORCPT
+        with ESMTP id S1378491AbjLGJcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:34:00 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4A8D53;
-        Thu,  7 Dec 2023 01:34:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vFTMUOzkVz1yhy1eVbvlXLTlgFpP3ARXqzrNiOd/DUQ=; b=BjH07tO6hYuSjTfilfl4n85dJn
-        jwCzc+ni2sBN9SitG9DfFVJjs61YLkfrb8GoQfH8XUGR24A3w3hE+1+4eiXvch0bjuircH2TzwNe3
-        2wib7xfIbfMu0ZZCat/L7nH7JGRv5WicJZ/YEBVBSbdkmRW3wvF7MqUwoqS1mwMuKRmY9XOrwRUQh
-        gZqD610ihrIYCMrm8rtS55j06Xe9kiv0m2lp+eptll2P0QUCCn78OPoHJlJr2h6EdGWAwM+xhz9Qx
-        BRv9z5wptGCweR1/JNdj+9h0GN55+WMsNwvvADN6sEL9iwgdTFdETyA1h0mlfWIcOHhLOs0Jjfqb4
-        dnXvWrjA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rBAio-005war-2y;
-        Thu, 07 Dec 2023 09:33:07 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B8E6C300338; Thu,  7 Dec 2023 10:31:05 +0100 (CET)
-Date:   Thu, 7 Dec 2023 10:31:05 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231207093105.GA28727@noisy.programming.kicks-ass.net>
-References: <20231204091334.GM3818@noisy.programming.kicks-ass.net>
- <20231204111128.GV8262@noisy.programming.kicks-ass.net>
- <20231204125239.GA1319@noisy.programming.kicks-ass.net>
- <ZW4LjmUKj1q6RWdL@krava>
- <20231204181614.GA7299@noisy.programming.kicks-ass.net>
- <20231204183354.GC7299@noisy.programming.kicks-ass.net>
- <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
- <20231206163814.GB36423@noisy.programming.kicks-ass.net>
- <20231206183713.GA35897@noisy.programming.kicks-ass.net>
- <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
+        Thu, 7 Dec 2023 04:32:39 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A141FF7
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:31:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20DE0C433C8;
+        Thu,  7 Dec 2023 09:31:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701941483;
+        bh=ic0z5MdiV/0Is1elWTXze/Uq9YLCT3pb49zs6lpdupM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QBXRsV2obUFdVvgOkKaTQaGJdzTrnhg9uSomhvsreRT8HRHyc5IG+RMnyWtyzvZpb
+         f3GdVQvOTZ9gkuxJLMI83k4bELO1q4xaViHGbpt7ZmZEOqicjc3wqx3clO2sgBNsfZ
+         rV946/t9MsngKplwyDm0tMpjkfbYstmcymvkQDL+942ZbTuaaDQbJg7HH3oUqVYAJ6
+         9oQiTWxwzjNyCUxnuTX62sBPbCtXyLJ80kT4O408PLO/zLcUTwYGsO3ro106Y1xPUX
+         dtpHUO10E6Gy8eIxVOgLDweVqaJrguuBu1Qd7IP0bYqnVZJTVUaND7gjEQq4BTvHEz
+         z4SDPBma0Wxhg==
+Date:   Thu, 7 Dec 2023 15:01:12 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Manikanta Maddireddy <mmaddireddy@nvidia.com>
+Cc:     bhelgaas@google.com, thierry.reding@gmail.com, petlozup@nvidia.com,
+        rafael.j.wysocki@intel.com, lpieralisi@kernel.org, robh@kernel.org,
+        jeffy.chen@rock-chips.com, krzysztof.kozlowski+dt@linaro.org,
+        jonathanh@nvidia.com, dmitry.osipenko@collabora.com,
+        viresh.kumar@linaro.org, gregkh@linuxfoundation.org,
+        steven.price@arm.com, kw@linux.com, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        vidyas@nvidia.com
+Subject: Re: [RFC,v14 4/5] arm64: tegra: Add PCIe port node with PCIe WAKE#
+ for C1 controller
+Message-ID: <20231207093112.GH2932@thinkpad>
+References: <20230208111645.3863534-1-mmaddireddy@nvidia.com>
+ <20230208111645.3863534-5-mmaddireddy@nvidia.com>
+ <20231206153627.GJ12802@thinkpad>
+ <c86e8f75-f74a-491e-9ac0-2431a6ec4b80@nvidia.com>
+ <20231207075952.GG2932@thinkpad>
+ <6e282e1b-39d2-4a08-bdd4-a9d02b2b7f74@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6e282e1b-39d2-4a08-bdd4-a9d02b2b7f74@nvidia.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,80 +63,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 01:39:43PM -0800, Alexei Starovoitov wrote:
-
-
-> All is ok until kCFI comes into picture.
-> Here we probably need to teach arch_prepare_bpf_trampoline() to emit
-> different __kcfi_typeid depending on kernel function proto,
-> so that caller hash checking logic won't be tripped.
-> I suspect that requires to reverse engineer an algorithm of computing kcfi from clang.
-> other ideas?
-
-I was going to try and extend bpf_struct_ops with a pointer, this
-pointer will point to a struct of the right type with all ops filled out
-as stubs.
-
-Then I was going to have bpf_struct_ops_map_update_elem() pass a pointer
-to the stub op (using moff) into bpf_struct_ops_prepare_trampoline() and
-eventually arch_prepare_bpf_trampoline().
-
-Additionally I was going to add BPF_TRAMP_F_INDIRECT.
-
-Then when F_INDIRECT is set, have it generate the CFI preamble based on
-the stub passed -- which will have the correct preamble for that method.
-
-At least, that's what I'm thinking now, I've yet to try and implement
-it.
-
-> > > The other case:
-
-> In the case of bpf_for_each_map_elem() the 'bloom_callback' is a subprog
-> of bpf_callback_t type.
-> So the kernel is doing:
->                 ret = callback_fn((u64)(long)map, (u64)(long)&key,
->                                   (u64)(long)val, (u64)(long)callback_ctx, 0);
-> and that works on all archs including 32-bit.
-> The kernel is doing conversion from native calling convention to bpf calling convention
-> and for lucky archs like x86-64 the conversion is a true nop.
-> It's a plain indirect call to JITed bpf prog.
-> Note there is no interpreter support here. This works on archs with JITs only.
-> No ftrace and no trampoline.
+On Thu, Dec 07, 2023 at 02:23:46PM +0530, Manikanta Maddireddy wrote:
 > 
-> This case is easier to make work with kCFI.
-> The JIT will use:
-> cfi_bpf_hash:
->       .long   __kcfi_typeid___bpf_prog_runX  
-> like your patch already does.
-> And will use
-> extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
-> cfi_bpf_subprog_hash:
->       .long   __kcfi_typeid___bpf_callback_fn
-> to JIT all subprogs. See bpf_is_subprog().
-
-Aaah!, yes it should be trivial to use another hash value when
-is_subprog in emit_prologue().
-
-> btw there are two patchsets in progress that will touch core bits of JITs.
-> This one:
-> https://patchwork.kernel.org/project/netdevbpf/cover/20231201190654.1233153-1-song@kernel.org/
-> and this one:
-> https://patchwork.kernel.org/project/netdevbpf/cover/20231011152725.95895-1-hffilwlqm@gmail.com/
+> On 07-12-2023 13:29, Manivannan Sadhasivam wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > On Thu, Dec 07, 2023 at 12:54:04PM +0530, Manikanta Maddireddy wrote:
+> > > On 06-12-2023 21:06, Manivannan Sadhasivam wrote:
+> > > > External email: Use caution opening links or attachments
+> > > > 
+> > > > 
+> > > > On Wed, Feb 08, 2023 at 04:46:44PM +0530, Manikanta Maddireddy wrote:
+> > > > > Add PCIe port node under the PCIe controller-1 device tree node to support
+> > > > > PCIe WAKE# interrupt for WiFi.
+> > > > > 
+> > > > > Signed-off-by: Manikanta Maddireddy <mmaddireddy@nvidia.com>
+> > > > > ---
+> > > > > 
+> > > > > Changes in v14:
+> > > > > New patch in the series to support PCIe WAKE# in NVIDIA Jetson AGX Orin.
+> > > > > 
+> > > > >    .../dts/nvidia/tegra234-p3737-0000+p3701-0000.dts     | 11 +++++++++++
+> > > > >    1 file changed, 11 insertions(+)
+> > > > > 
+> > > > > diff --git a/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts b/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
+> > > > > index 8a9747855d6b..9c89be263141 100644
+> > > > > --- a/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
+> > > > > +++ b/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
+> > > > > @@ -2147,6 +2147,17 @@ pcie@14100000 {
+> > > > > 
+> > > > >                         phys = <&p2u_hsio_3>;
+> > > > >                         phy-names = "p2u-0";
+> > > > > +
+> > > > > +                     pci@0,0 {
+> > > > > +                             reg = <0x0000 0 0 0 0>;
+> > > > > +                             #address-cells = <3>;
+> > > > > +                             #size-cells = <2>;
+> > > > > +                             ranges;
+> > > > > +
+> > > > > +                             interrupt-parent = <&gpio>;
+> > > > > +                             interrupts = <TEGRA234_MAIN_GPIO(L, 2) IRQ_TYPE_LEVEL_LOW>;
+> > > > > +                             interrupt-names = "wakeup";
+> > > > WAKE# should be part of the PCIe controller, not device. And the interrupt name
+> > > > should be "wake".
+> > > > 
+> > > > - Mani
+> > > Hi,
+> > > 
+> > > Please refer to the discussion in below link, WAKE# is per PCI bridge.
+> > > https://patchwork.ozlabs.org/project/linux-pci/patch/20171226020806.32710-2-jeffy.chen@rock-chips.com/
+> > > 
+> > PCIe Host controller (RC) usually represents host bridge + PCI-PCI bridge. We do
+> > not represent the PCI-PCI bridge in devicetree for any platforms, but only RC as
+> > a whole.
+> > 
+> > Moreover, PERST# is already defined in RC node. So it becomes confusing if
+> > WAKE# is defined in a child node representing bridge.
+> > 
+> > So please move WAKE# to RC node.
+> > 
+> > - Mani
 > 
-> so do you mind resending your current set with get_cfi_offset() change and
-> I can land it into bpf-next, so we can fix one bug at a time,
-> build on top, and avoid conflicts?
+> Hi,
+> 
+> We can define PCI-PCI bridge in device tree, refer to below device tree
+> which has 3 ports under a controller,
+> with PERST#(reset-gpios) defined per port.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/boot/dts/apple/t8103.dtsi#n749
+> 
 
-I can do.
+Hmm. For RCs with single bridge, we never defined a DT node (atleast on Qcom
+platforms). But I think it is the time to fix them.
 
-> The more we dig the more it looks like that the follow up you planned to do
-> on top of this set isn't going to happen soon.
-> So should be ok going through bpf-next and then you can follow up with x86 things
-> after merge window?
+> Also, of_pci_setup_wake_irq() in below patch is parsing "wakeup" from PCI
+> bridge, not from the host bridge.
+> https://patchwork.ozlabs.org/project/linux-pci/patch/20230208111645.3863534-4-mmaddireddy@nvidia.com/
+> 
 
-Yes, we can do that. Plans have changed on my side too -- I'm taking a 6
-week break soon, so I'll do whatever I can before I'm out, and then
-continue from whatever state I find when I get back.
+I didn't say that WAKE# should be parsed from host bridge, it doesn't make
+sense. But I get your point.
 
+> If a controller has only one port it has to define a PCI bridge under
+> controller device tree node and
+> add wakeup interrupt property, refer to below patch from original author.
+> 
+> https://www.spinics.net/lists/linux-pci/msg135569.html
+> 
 
-Thanks for the details!
+Yes, I agree. Thanks for the clarification.
+
+- Mani
+
+> Thanks,
+> Manikanta
+> > 
+> > > I carried wakeup name defined in previous version, but wake seems to be
+> > > sufficient.
+> > > 
+> > > Thanks,
+> > > Manikanta
+> > > > > +                     };
+> > > > >                 };
+> > > > > 
+> > > > >                 pcie@14160000 {
+> > > > > --
+> > > > > 2.25.1
+> > > > > 
+> > > > --
+> > > > மணிவண்ணன் சதாசிவம்
+> > --
+> > மணிவண்ணன் சதாசிவம்
+
+-- 
+மணிவண்ணன் சதாசிவம்
