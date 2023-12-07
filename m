@@ -2,90 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B255808AC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76323808ACB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443277AbjLGOhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:37:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
+        id S1443268AbjLGOiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:38:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232888AbjLGOhD (ORCPT
+        with ESMTP id S235280AbjLGOiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:37:03 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6129293;
-        Thu,  7 Dec 2023 06:37:09 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50be3eed85aso1002345e87.2;
-        Thu, 07 Dec 2023 06:37:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701959827; x=1702564627; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=P/n/DJfS500DzkD8o2lIXV8iW85crXSXBVQD2G7alNw=;
-        b=Hui9haKWfVL2J2RO7YyWFL84qDbS3MzfZgZdgV/n9IDs9BrBkg+P3PF1I7DZbBmsOO
-         BCmUmrfPg2pDAOOYtKaxYZfKJdFalR99mWuoPDtK8m3c5tdv2iNnkKGko+Sivg3AMsB6
-         O54nb/J44N7IU9dkqJ5lJVStpoQt6cO2ngf5ZXwkbAgvEp1ig3FRogJv8aOhIJBrG1M0
-         DWkW552Hz/epr5G/N+4mX1A9MOe0a5bYgqO82aYV6ArrsKZTSnGpWpHr0M7TjWMVOIqr
-         g7tUKELNGNYunltrMXxGDqsC99xNrxP7Isl0Bs3f56nMi6rSgx8s8sL+DADqZhUh15Kj
-         ytyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701959827; x=1702564627;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P/n/DJfS500DzkD8o2lIXV8iW85crXSXBVQD2G7alNw=;
-        b=grN+gkFa1iU9WzElc9TG598WYOZQYRMU/Y19BbJAQ/dmehyTI9Hr0l5y97TaosVG6U
-         3Xv2WpzYJzSpfeItuT5PTpMIgCx3jdWmpdJ9MfEx1UYT/z5yeODuAGObU3/uSRP6Fdqo
-         ihji3a3o8RkkjIqTp13DhdvSO2DYWvNgDsxZwM6iYUa8R8QURtsytZldQ8A4fihES7yV
-         rvK5yJZzm3ZyPQj2A+YXUzihiLms3fMKvvR50sRWhvQZ9GXmWrvvQG1bT9nL/QKXdgbR
-         5I9fXitGA7RbCazVrvbBsgDDWFba1AiYkD8heEGz38W3GlkA2AQrbnSE4MZjf+0+S/HK
-         8fWQ==
-X-Gm-Message-State: AOJu0Yy2ZAMjF0L/XoPbp2kbDEEFh0TMjEuYB7DXOkymCIRgiXHnbXOg
-        X6WXPVVKXFyX6dyP6v3TGuQ=
-X-Google-Smtp-Source: AGHT+IGovfLmkKIpNWXQzCi7+4Z29EuCi9BtTtr8LpMmdT8CKQjdK8hgB4jjJwsDKG30N8bWSXmUog==
-X-Received: by 2002:a05:6512:230a:b0:50b:c8a0:5657 with SMTP id o10-20020a056512230a00b0050bc8a05657mr2022447lfu.17.1701959827365;
-        Thu, 07 Dec 2023 06:37:07 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id q9-20020a0565123a8900b0050c0bbbe3d2sm186046lfu.256.2023.12.07.06.37.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 06:37:06 -0800 (PST)
-Date:   Thu, 7 Dec 2023 17:37:03 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next 11/16] net: pcs: xpcs: Change
- xpcs_create_mdiodev() suffix to "byaddr"
-Message-ID: <jiblfzhnqjztssy76dojx6g7vyqgpjymnt4hz6yg6xv2psn3fo@pro373rkjbbq>
-References: <20231205103559.9605-12-fancer.lancer@gmail.com>
- <202312060634.Cblfigt2-lkp@intel.com>
+        Thu, 7 Dec 2023 09:38:04 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73227B9;
+        Thu,  7 Dec 2023 06:38:10 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4CA62669;
+        Thu,  7 Dec 2023 15:37:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701959847;
+        bh=zXe+jRGFsIALQDiNPjUbby+TY+TBluHe2uMVYoZajGE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hFvfub1kMNWT+sajOcN5s7Ix3DNF2A6Pkg5dQ9Y7g9Coz6OmKJnCPKj2yL9gUCwUK
+         8mnLCDDOxUytTLxkyTZeJGqrH5UF7H7W1qtp4hNUzgp15DJZLkbLfPcGsN6exWkTrZ
+         O1MzrHNjifnFuxyRI9lkqoozUdRpBmc8Z61b/zJ0=
+Date:   Thu, 7 Dec 2023 16:38:14 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Simon Glass <sjg@chromium.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Tom Rini <trini@konsulko.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, workflows@vger.kernel.org
+Subject: Re: [PATCH v9 2/2] arm64: boot: Support Flat Image Tree
+Message-ID: <20231207143814.GD15521@pendragon.ideasonboard.com>
+References: <20231202035511.487946-1-sjg@chromium.org>
+ <20231202035511.487946-3-sjg@chromium.org>
+ <20231203153401.GV8402@pendragon.ideasonboard.com>
+ <20231207142723.GA3187877@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202312060634.Cblfigt2-lkp@intel.com>
+In-Reply-To: <20231207142723.GA3187877@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,87 +61,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 07:03:46AM +0800, kernel test robot wrote:
-> Hi Serge,
+On Thu, Dec 07, 2023 at 10:27:23PM +0800, Chen-Yu Tsai wrote:
+> On Sun, Dec 03, 2023 at 05:34:01PM +0200, Laurent Pinchart wrote:
+> > Hi Simon,
+> > 
+> > Thank you for the patch.
+> > 
+> > On Fri, Dec 01, 2023 at 08:54:42PM -0700, Simon Glass wrote:
+> > > Add a script which produces a Flat Image Tree (FIT), a single file
+> > > containing the built kernel and associated devicetree files.
+> > > Compression defaults to gzip which gives a good balance of size and
+> > > performance.
+> > > 
+> > > The files compress from about 86MB to 24MB using this approach.
+> > > 
+> > > The FIT can be used by bootloaders which support it, such as U-Boot
+> > > and Linuxboot. It permits automatic selection of the correct
+> > > devicetree, matching the compatible string of the running board with
+> > > the closest compatible string in the FIT. There is no need for
+> > > filenames or other workarounds.
+> > > 
+> > > Add a 'make image.fit' build target for arm64, as well. Use
+> > > FIT_COMPRESSION to select a different algorithm.
+> > > 
+> > > The FIT can be examined using 'dumpimage -l'.
+> > > 
+> > > This features requires pylibfdt (use 'pip install libfdt'). It also
+> > > requires compression utilities for the algorithm being used. Supported
+> > > compression options are the same as the Image.xxx files. For now there
+> > > is no way to change the compression other than by editing the rule for
+> > > $(obj)/image.fit
+> > > 
+> > > While FIT supports a ramdisk / initrd, no attempt is made to support
+> > > this here, since it must be built separately from the Linux build.
+> > 
+> > FIT images are very useful, so I think this is a very welcome addition
+> > to the kernel build system. It can get tricky though: given the
+> > versatile nature of FIT images, there can't be any
+> > one-size-fits-them-all solution to build them, and striking the right
+> > balance between what makes sense for the kernel and the features that
+> > users may request will probably lead to bikeshedding. As we all love
+> > bikeshedding, I thought I would start selfishly, with a personal use
+> > case :-) This isn't a yak-shaving request though, I don't see any reason
+> > to delay merging this series.
+> > 
+> > Have you envisioned building FIT images with a subset of DTBs, or adding
+> > DTBOs ? Both would be fairly trivial extensions to this script by
+> > extending the supported command line arguments. It would perhaps be more
+> > difficult to integrate in the kernel build system though. This leads me
+> > to a second question: would you consider merging extensions to this
+> > script if they are not used by the kernel build system, but meant for
+> > users who manually invoke the script ? More generally, is the script
 > 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on net-next/main]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Serge-Semin/net-pcs-xpcs-Drop-sentinel-entry-from-2500basex-ifaces-list/20231205-183808
-> base:   net-next/main
-> patch link:    https://lore.kernel.org/r/20231205103559.9605-12-fancer.lancer%40gmail.com
-> patch subject: [PATCH net-next 11/16] net: pcs: xpcs: Change xpcs_create_mdiodev() suffix to "byaddr"
-> config: arc-randconfig-001-20231206 (https://download.01.org/0day-ci/archive/20231206/202312060634.Cblfigt2-lkp@intel.com/config)
-> compiler: arc-elf-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312060634.Cblfigt2-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202312060634.Cblfigt2-lkp@intel.com/
-> 
-> All error/warnings (new ones prefixed by >>):
-> 
->    drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c: In function 'txgbe_mdio_pcs_init':
-> >> drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c:150:16: error: implicit declaration of function 'xpcs_create_mdiodev'; did you mean 'xpcs_create_byaddr'? [-Werror=implicit-function-declaration]
->      150 |         xpcs = xpcs_create_mdiodev(mii_bus, 0, PHY_INTERFACE_MODE_10GBASER);
->          |                ^~~~~~~~~~~~~~~~~~~
->          |                xpcs_create_byaddr
-> >> drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c:150:14: warning: assignment to 'struct dw_xpcs *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
->      150 |         xpcs = xpcs_create_mdiodev(mii_bus, 0, PHY_INTERFACE_MODE_10GBASER);
->          |              ^
->    cc1: some warnings being treated as errors
-> 
-> 
-> vim +150 drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
+> We'd also be interested in some customization, though in a different way.
+> We imagine having a rule file that says X compatible string should map
+> to A base DTB, plus B and C DTBO for the configuration section. The base
+> DTB would carry all common elements of some device, while the DTBOs
+> carry all the possible second source components, like different display
+> panels or MIPI cameras for instance. This could drastically reduce the
+> size of FIT images in ChromeOS by deduplicating all the common stuff.
 
-Ah, right. I had been creating the series some times earlier than this
-code was introduced and just missed it on the last rebase. I'll fix
-this on v2.
+Do you envision the "mapping" compatible string mapping to a config
+section in the FIT image, that would bundle the base DTB and the DTBOs ?
 
--Serge(y)
+> > meant to be used stand-alone as well, in which case its command line
+> > arguments need to remain backward-compatible, or do you see it as being
+> > internal to the kernel ?
+> 
+> [...]
+> 
+> ChenYu
 
-> 
-> 854cace61387b6 Jiawen Wu      2023-06-06  121  
-> 854cace61387b6 Jiawen Wu      2023-06-06  122  static int txgbe_mdio_pcs_init(struct txgbe *txgbe)
-> 854cace61387b6 Jiawen Wu      2023-06-06  123  {
-> 854cace61387b6 Jiawen Wu      2023-06-06  124  	struct mii_bus *mii_bus;
-> 854cace61387b6 Jiawen Wu      2023-06-06  125  	struct dw_xpcs *xpcs;
-> 854cace61387b6 Jiawen Wu      2023-06-06  126  	struct pci_dev *pdev;
-> 854cace61387b6 Jiawen Wu      2023-06-06  127  	struct wx *wx;
-> 854cace61387b6 Jiawen Wu      2023-06-06  128  	int ret = 0;
-> 854cace61387b6 Jiawen Wu      2023-06-06  129  
-> 854cace61387b6 Jiawen Wu      2023-06-06  130  	wx = txgbe->wx;
-> 854cace61387b6 Jiawen Wu      2023-06-06  131  	pdev = wx->pdev;
-> 854cace61387b6 Jiawen Wu      2023-06-06  132  
-> 854cace61387b6 Jiawen Wu      2023-06-06  133  	mii_bus = devm_mdiobus_alloc(&pdev->dev);
-> 854cace61387b6 Jiawen Wu      2023-06-06  134  	if (!mii_bus)
-> 854cace61387b6 Jiawen Wu      2023-06-06  135  		return -ENOMEM;
-> 854cace61387b6 Jiawen Wu      2023-06-06  136  
-> 854cace61387b6 Jiawen Wu      2023-06-06  137  	mii_bus->name = "txgbe_pcs_mdio_bus";
-> 854cace61387b6 Jiawen Wu      2023-06-06  138  	mii_bus->read_c45 = &txgbe_pcs_read;
-> 854cace61387b6 Jiawen Wu      2023-06-06  139  	mii_bus->write_c45 = &txgbe_pcs_write;
-> 854cace61387b6 Jiawen Wu      2023-06-06  140  	mii_bus->parent = &pdev->dev;
-> 854cace61387b6 Jiawen Wu      2023-06-06  141  	mii_bus->phy_mask = ~0;
-> 854cace61387b6 Jiawen Wu      2023-06-06  142  	mii_bus->priv = wx;
-> 854cace61387b6 Jiawen Wu      2023-06-06  143  	snprintf(mii_bus->id, MII_BUS_ID_SIZE, "txgbe_pcs-%x",
-> d8c21ef7b2b147 Xiongfeng Wang 2023-08-08  144  		 pci_dev_id(pdev));
-> 854cace61387b6 Jiawen Wu      2023-06-06  145  
-> 854cace61387b6 Jiawen Wu      2023-06-06  146  	ret = devm_mdiobus_register(&pdev->dev, mii_bus);
-> 854cace61387b6 Jiawen Wu      2023-06-06  147  	if (ret)
-> 854cace61387b6 Jiawen Wu      2023-06-06  148  		return ret;
-> 854cace61387b6 Jiawen Wu      2023-06-06  149  
-> 854cace61387b6 Jiawen Wu      2023-06-06 @150  	xpcs = xpcs_create_mdiodev(mii_bus, 0, PHY_INTERFACE_MODE_10GBASER);
-> 854cace61387b6 Jiawen Wu      2023-06-06  151  	if (IS_ERR(xpcs))
-> 854cace61387b6 Jiawen Wu      2023-06-06  152  		return PTR_ERR(xpcs);
-> 854cace61387b6 Jiawen Wu      2023-06-06  153  
-> 854cace61387b6 Jiawen Wu      2023-06-06  154  	txgbe->xpcs = xpcs;
-> 854cace61387b6 Jiawen Wu      2023-06-06  155  
-> 854cace61387b6 Jiawen Wu      2023-06-06  156  	return 0;
-> 854cace61387b6 Jiawen Wu      2023-06-06  157  }
-> 854cace61387b6 Jiawen Wu      2023-06-06  158  
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+-- 
+Regards,
+
+Laurent Pinchart
