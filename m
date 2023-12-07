@@ -2,142 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E456808672
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D256808673
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378840AbjLGLNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 06:13:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
+        id S1378862AbjLGLNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 06:13:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbjLGLNG (ORCPT
+        with ESMTP id S232372AbjLGLNP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 06:13:06 -0500
+        Thu, 7 Dec 2023 06:13:15 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68CB9FA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 03:13:12 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E010BD5B
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 03:13:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701947591;
+        s=mimecast20190719; t=1701947601;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=wPeBM9Akb4UzMeLoilBrSSGJzuhyKbcfl13QHg/TR+0=;
-        b=D1nGjytGWVjEm1ezextJdUUkGfUHaaC/dgV6E8zoCws1X6UNo9RZdVekZWoy4tBk+wVNpl
-        uhgGOQKfjT56JRLMR5OevoqvxSWH8z9XdqUpm94S8R7nmxweaTUgGAd5Fdk81w0Qie+Ec2
-        JBT7p3H7dZrQXpQCKC2tCtgJQCRaJSk=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-455-ZyQMzzyVNHSiayxo8EGZTg-1; Thu, 07 Dec 2023 06:13:10 -0500
-X-MC-Unique: ZyQMzzyVNHSiayxo8EGZTg-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40b38501d82so5588575e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 03:13:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701947589; x=1702552389;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wPeBM9Akb4UzMeLoilBrSSGJzuhyKbcfl13QHg/TR+0=;
-        b=vPtTO1X0lf64aNiigKM8UfQECi1z0axaqFDzmBcyIi7U15PotY1oPOK72nt65ecirs
-         vxwuN6Wxre6QHJ1MIbUL7khsk63yKifI7UxA8lNtYL+Bjk+oFW7R7rS5lKf+qf7FYA1o
-         EiCHZTJgC3aMEKDgzXCXCjLctfcIDw3AOQlduMsJ+Yh4y9vVGDFUSS7HBqfYcUscbjrA
-         8mbApFTU/yDc08mZZ0MRBqt7Jn/se5o+B4d0UwuSNPkt/5dBDQYd1/mLirLviga+OV6W
-         q6TFUwMAd5mOLgcWnwNg0su2deJqvkxNqdrFi3lnHSxNxPJ5/qjYisFZm6LPg9DjRg4z
-         QIqg==
-X-Gm-Message-State: AOJu0Yx+K/b7ErxoqgSzW22FEs6YC2atkZCpVHMxI+purK7Nore+Hiz9
-        nE4x35RAhzeuN+m8tz0C+BONVXwdPTS/rWHILNyFmfa8prhj1wJjGOhJw4C6fxj9TvNYe1mSemM
-        tdHPEWZrRhOcSawDM0Pk3TeWR
-X-Received: by 2002:a05:600c:4f8a:b0:40c:2daf:79df with SMTP id n10-20020a05600c4f8a00b0040c2daf79dfmr6973wmq.92.1701947588938;
-        Thu, 07 Dec 2023 03:13:08 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGXXdmihvnzjM3M7x2H3YxQFAOWC1+79eS/CIUpcDQH4shhO4XtqzWuK7g9KGFbrRRgVINjpQ==
-X-Received: by 2002:a05:600c:4f8a:b0:40c:2daf:79df with SMTP id n10-20020a05600c4f8a00b0040c2daf79dfmr6959wmq.92.1701947588500;
-        Thu, 07 Dec 2023 03:13:08 -0800 (PST)
-Received: from ?IPV6:2003:cb:c71b:5d00:18d7:1475:24bc:2417? (p200300cbc71b5d0018d7147524bc2417.dip0.t-ipconnect.de. [2003:cb:c71b:5d00:18d7:1475:24bc:2417])
-        by smtp.gmail.com with ESMTPSA id g12-20020a05600c310c00b00406408dc788sm1604385wmo.44.2023.12.07.03.13.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 03:13:08 -0800 (PST)
-Message-ID: <378afc6b-f93a-48ad-8aa6-ab171f3b9613@redhat.com>
-Date:   Thu, 7 Dec 2023 12:13:05 +0100
+         in-reply-to:in-reply-to:references:references;
+        bh=g9AlbuKp6i4vZhZFTL2Nt/u/GlI5HW0Gg0C26t4Adtk=;
+        b=Pk8wM+NRTLszGRGgB9SHfhz6e9j+3ct82ASVEIUj5Dtbs/eU6USvEqGjKNuVBpqF0NWRAB
+        VeRWPuctEQQwtB/KuVt/9ujs8Hn1kQU5cylIjGOA26oUmC5MsywRTrfvoUoBH6ox3mz+C0
+        NAasApB1QO+mWBj7HG5kLpdyN9b2+kU=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-507-LyxVm7zXOSSDw9WNAilHjQ-1; Thu,
+ 07 Dec 2023 06:13:18 -0500
+X-MC-Unique: LyxVm7zXOSSDw9WNAilHjQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9A7B23C2A1C5;
+        Thu,  7 Dec 2023 11:13:17 +0000 (UTC)
+Received: from rotkaeppchen (unknown [10.39.192.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 15F0A2026D66;
+        Thu,  7 Dec 2023 11:13:15 +0000 (UTC)
+Date:   Thu, 7 Dec 2023 12:13:14 +0100
+From:   Philipp Rudo <prudo@redhat.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Baoquan He <bhe@redhat.com>, Donald Dutile <ddutile@redhat.com>,
+        Jiri Bohac <jbohac@suse.cz>, Pingfan Liu <piliu@redhat.com>,
+        Tao Liu <ltao@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        David Hildenbrand <dhildenb@redhat.com>
+Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
+Message-ID: <20231207121314.50b8e4c4@rotkaeppchen>
+In-Reply-To: <ZXGIeAgCcatUDa2h@tiehlicka>
+References: <ZWiAsJlLookvCI+h@MiWiFi-R3L-srv>
+        <ZWiQ-II9CvGv8EWK@tiehlicka>
+        <20231201123353.2b3db7fa@rotkaeppchen>
+        <ZWnJyArAmFo_uYPA@tiehlicka>
+        <20231201165113.43211a48@rotkaeppchen>
+        <ZWoQ1k2AikSiMjys@tiehlicka>
+        <20231206120805.4fdcb8ab@rotkaeppchen>
+        <ZXB7_rbC0GAkIp7p@tiehlicka>
+        <ZXCRF-bvm8ijXxr4@tiehlicka>
+        <ZXFIsZ+0GmUZMFk3@MiWiFi-R3L-srv>
+        <ZXGIeAgCcatUDa2h@tiehlicka>
+Organization: Red Hat inc.
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 03/10] mm: thp: Introduce multi-size THP sysfs
- interface
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231204102027.57185-1-ryan.roberts@arm.com>
- <20231204102027.57185-4-ryan.roberts@arm.com>
- <004ed23d-5571-4474-b7fe-7bc08817c165@redhat.com>
- <ca3a2b97-f08e-452a-91dc-1a53dece0aa6@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ca3a2b97-f08e-452a-91dc-1a53dece0aa6@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -148,135 +77,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>
->>> +
->>>        if (!vma->vm_mm)        /* vdso */
->>> -        return false;
->>> +        return 0;
->>>          /*
->>>         * Explicitly disabled through madvise or prctl, or some
->>> @@ -88,16 +141,16 @@ bool hugepage_vma_check(struct vm_area_struct *vma,
->>> unsigned long vm_flags,
->>>         * */
->>>        if ((vm_flags & VM_NOHUGEPAGE) ||
->>>            test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
->>> -        return false;
->>> +        return 0;
->>>        /*
->>>         * If the hardware/firmware marked hugepage support disabled.
->>>         */
->>>        if (transparent_hugepage_flags & (1 << TRANSPARENT_HUGEPAGE_UNSUPPORTED))
->>> -        return false;
->>> +        return 0;
->>>          /* khugepaged doesn't collapse DAX vma, but page fault is fine. */
->>>        if (vma_is_dax(vma))
->>> -        return in_pf;
->>> +        return in_pf ? orders : 0;
->>>          /*
->>>         * khugepaged special VMA and hugetlb VMA.
->>> @@ -105,17 +158,29 @@ bool hugepage_vma_check(struct vm_area_struct *vma,
->>> unsigned long vm_flags,
->>>         * VM_MIXEDMAP set.
->>>         */
->>>        if (!in_pf && !smaps && (vm_flags & VM_NO_KHUGEPAGED))
->>> -        return false;
->>> +        return 0;
->>>          /*
->>> -     * Check alignment for file vma and size for both file and anon vma.
->>> +     * Check alignment for file vma and size for both file and anon vma by
->>> +     * filtering out the unsuitable orders.
->>>         *
->>>         * Skip the check for page fault. Huge fault does the check in fault
->>> -     * handlers. And this check is not suitable for huge PUD fault.
->>> +     * handlers.
->>>         */
->>> -    if (!in_pf &&
->>> -        !transhuge_vma_suitable(vma, (vma->vm_end - HPAGE_PMD_SIZE)))
->>> -        return false;
->>> +    if (!in_pf) {
->>> +        int order = first_order(orders);
->>> +        unsigned long addr;
->>> +
->>> +        while (orders) {
->>> +            addr = vma->vm_end - (PAGE_SIZE << order);
->>> +            if (thp_vma_suitable_orders(vma, addr, BIT(order)))
->>> +                break;
->>
->> Comment: you'd want a "thp_vma_suitable_order" helper here. But maybe the
->> compiler is smart enough to optimize the loop and everyything else out.
+On Thu, 7 Dec 2023 09:55:20 +0100
+Michal Hocko <mhocko@suse.com> wrote:
+
+> On Thu 07-12-23 12:23:13, Baoquan He wrote:
+> [...]
+> > We can't guarantee how swift the DMA transfer could be in the cma, case,
+> > it will be a venture.  
 > 
-> I'm happy to refactor so that thp_vma_suitable_order() is the basic primitive,
-> then make thp_vma_suitable_orders() a loop that calls thp_vma_suitable_order()
-> (that's basically how it is laid out already, just all in one function). Is that
-> what you are requesting?
+> We can't guarantee this of course but AFAIK the DMA shouldn't take
+> minutes, right? While not perfect, waiting for some time before jumping
+> into the crash kernel should be acceptable from user POV and it should
+> work around most of those potential lingering programmed DMA transfers.
 
-You got the spirit, yes.
+I don't think that simply waiting is acceptable. For one it doesn't
+guarantee that there is no corruption (please also see below) but only
+reduces its probability. Furthermore, how long would you wait?
+Thing is that users don't only want to reduce the memory usage but also
+the downtime of kdump. In the end I'm afraid that "simply waiting" will
+make things unnecessarily more complex without really solving any issue.
 
->>
->> [...]
->>
->>> +
->>> +static ssize_t thpsize_enabled_store(struct kobject *kobj,
->>> +                     struct kobj_attribute *attr,
->>> +                     const char *buf, size_t count)
->>> +{
->>> +    int order = to_thpsize(kobj)->order;
->>> +    ssize_t ret = count;
->>> +
->>> +    if (sysfs_streq(buf, "always")) {
->>> +        set_bit(order, &huge_anon_orders_always);
->>> +        clear_bit(order, &huge_anon_orders_inherit);
->>> +        clear_bit(order, &huge_anon_orders_madvise);
->>> +    } else if (sysfs_streq(buf, "inherit")) {
->>> +        set_bit(order, &huge_anon_orders_inherit);
->>> +        clear_bit(order, &huge_anon_orders_always);
->>> +        clear_bit(order, &huge_anon_orders_madvise);
->>> +    } else if (sysfs_streq(buf, "madvise")) {
->>> +        set_bit(order, &huge_anon_orders_madvise);
->>> +        clear_bit(order, &huge_anon_orders_always);
->>> +        clear_bit(order, &huge_anon_orders_inherit);
->>> +    } else if (sysfs_streq(buf, "never")) {
->>> +        clear_bit(order, &huge_anon_orders_always);
->>> +        clear_bit(order, &huge_anon_orders_inherit);
->>> +        clear_bit(order, &huge_anon_orders_madvise);
->>
->> Note: I was wondering for a second if some concurrent cames could lead to an
->> inconsistent state. I think in the worst case we'll simply end up with "never"
->> on races.
+> So I guess what we would like to hear from you as kdump maintainers is
+> this. Is it absolutely imperative that these issue must be proven
+> impossible or is a best effort approach something worth investing time
+> into? Because if the requirement is an absolute guarantee then I simply
+> do not see any feasible way to achieve the goal of reusable memory.
 > 
-> You mean if different threads try to write different values to this file
-> concurrently? Or if there is a concurrent fault that tries to read the flags
-> while they are being modified?
+> Let me reiterate that the existing reservation mechanism is showing its
+> limits for production systems and I strongly believe this is something
+> that needs addressing because crash dumps are very often the only tool
+> to investigate complex issues.
 
-I thought about what you said first, but what you said last might also 
-apply. As long as "nothing breaks", all good.
+Because having a crash dump is so important I want a prove that no
+legal operation can corrupt the crashkernel memory. The easiest way to
+achieve this is by simply keeping the two memory regions fully
+separated like it is today. In theory it should also be possible to
+prevent any kind of page pinning in the shared crashkernel memory. But
+I don't know which side effect this has for mm. Such an idea needs to
+be discussed on the mm mailing list first.
 
-> 
-> I thought about this for a long time too and wasn't sure what was best. The
-> existing global enabled store impl clears the bits first then sets the bit. With
-> this approach you can end up with multiple bits set if there is a race to set
-> diffierent values, and you can end up with a faulting thread seeing never if it
-> reads the bits after they have been cleared but before setting them.
+Finally, let me question whether the whole approach actually solves
+anything. For me the difficulty in determining the correct crashkernel
+memory is only a symptom. The real problem is that most developers
+don't expect their code to run outside their typical environment.
+Especially not in an memory constraint environment like kdump. But that
+problem won't be solved by throwing more memory at it as this
+additional memory will eventually run out as well. In the end we are
+back at the point where we are today but with more memory.
 
-Right, but user space is playing stupid games and can win stupid prices. 
-As long as nothing breaks, we're good.
+Finally finally, one tip. Next time a customer complaints about how
+much memory the crashkernel "wastes" ask them how much one day of down
+time for one machine costs them and how much memory they could buy for
+that money. After that calculation I'm pretty sure that an additional
+100M of crashkernel memory becomes much more tempting.
 
-> 
-> I decided to set the new bit before clearing the old bits, which is different; A
-> racing fault will never see "never" but as you say, a race to set the file could
-> result in "never" being set.
-> 
-> On reflection, it's probably best to set the bit *last* like the global control
-> does?
-
-Probably might just slap a simple spinlock in there, so at least the 
-writer side is completely serialized. Then you can just set the bit 
-last. It's unlikely that readers will actually run into issues, and if 
-they ever would, we could use some rcu magic to let them read a 
-consistent state.
-
--- 
-Cheers,
-
-David / dhildenb
+Thanks
+Philipp
 
