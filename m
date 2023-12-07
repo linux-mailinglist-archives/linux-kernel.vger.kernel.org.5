@@ -2,80 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A298081C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A886A8081C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377771AbjLGHUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 02:20:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51802 "EHLO
+        id S1377886AbjLGHXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 02:23:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbjLGHUl (ORCPT
+        with ESMTP id S229456AbjLGHXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 02:20:41 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471B9D53
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 23:20:47 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1d06d4d685aso4123605ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 23:20:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20230601.gappssmtp.com; s=20230601; t=1701933647; x=1702538447; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j53nqNU7jMgvgRvYSWrD1Dh7t93e+rnrWj/PotqK0BA=;
-        b=MD/BumprF9xqKfB6752eRZ7GFq5+Z+EHobjhRN9QVvWTlCycgN+FjkZhwUstXhzhl7
-         yauWSk2aeLHice2vdJvlYjnZCwv9dMbyCdQV5Vyf+I0QXhn8JZjYMYph+PnXLu3BwuCf
-         wY9Q7hRq8DnzPdMcmc1KA3/dPjzau/dtue2TOAQMW89ITKqn9O1+DY8lXY7xnBnJch9x
-         29buCJZe1/nlC0vZkGyDbTxMQQdMKSRZ6hCDcnPg9cQGZFrBA5Alh3C6JSD9TaVy0kUV
-         pjgrKOBfHVkPJ8VauSuGxZSO7vYoQTwtvdRddF0x6YWI9VrcJLHbxMTTui7vYnRP0XZn
-         eOYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701933647; x=1702538447;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j53nqNU7jMgvgRvYSWrD1Dh7t93e+rnrWj/PotqK0BA=;
-        b=eJ5A7CmkK+2ymJKKEAKdi3udiltShWFvknUP6X/3hTCLehFlfo+qGiGbIwkIlx06qJ
-         XbtOcwEnelGC858Dz6uUjn9DpedcumMWvmIMpz3abuAeTd0TJA48F58S5vva/8bDwdmp
-         T/WN59Wgt4Tw0GZqrHzWIyG7aScP3/VpBQn7ZdtxpDzpS2OzD2jB98jbRqoeZjiWcbtq
-         4IEPlmnvNujqo6RmgZSShLx+5sMftG1hRaVRV/WQsxhSdhdv7v8Jm85S+/q6/HNDuezF
-         WnMsPuG7k7rEEhR/bmLPEKSjYeHxP445cUbceviUyYIpE5hxLwuVZmlVTe5WJ96d/aip
-         kcSQ==
-X-Gm-Message-State: AOJu0Yzfd1L1Badp+3SHc6c0rkle/V+tfuK96aQ940evHSu5YzctNdHs
-        d0Nv+fqUj+kEqAN6174Oy2WAPw==
-X-Google-Smtp-Source: AGHT+IEcHwrgZ609ib1Kc+VIk23LvoQqX7Hw9/y0DIrVmUjiSFR5zAD8EnbsROb67jMnfQsP0p39Qw==
-X-Received: by 2002:a17:903:2448:b0:1d0:9416:efec with SMTP id l8-20020a170903244800b001d09416efecmr2048898pls.74.1701933646273;
-        Wed, 06 Dec 2023 23:20:46 -0800 (PST)
-Received: from smtpclient.apple ([8.210.91.195])
-        by smtp.gmail.com with ESMTPSA id p14-20020a170902e74e00b001d04c097d32sm624915plf.270.2023.12.06.23.20.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 06 Dec 2023 23:20:45 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.100.2.1.4\))
-Subject: Re: [PATCH] virtio_blk: set the default scheduler to none
-From:   Li Feng <fengli@smartx.com>
-In-Reply-To: <9b963af6-0a3f-4957-9227-43673e70b720@nvidia.com>
-Date:   Thu, 7 Dec 2023 15:21:44 +0800
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:VIRTIO BLOCK AND SCSI DRIVERS" 
-        <virtualization@lists.linux.dev>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <ADCE81A1-D65A-41C4-A485-66E1B056B1CC@smartx.com>
-References: <20231207043118.118158-1-fengli@smartx.com>
- <9b963af6-0a3f-4957-9227-43673e70b720@nvidia.com>
-To:     Chaitanya Kulkarni <chaitanyak@nvidia.com>
-X-Mailer: Apple Mail (2.3774.100.2.1.4)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 7 Dec 2023 02:23:16 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4CC84137
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 23:23:21 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8AxuerncnFldI8_AA--.51386S3;
+        Thu, 07 Dec 2023 15:23:19 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bxni_lcnFlkEdXAA--.62240S3;
+        Thu, 07 Dec 2023 15:23:18 +0800 (CST)
+Subject: Re: [PATCH v5 8/8] LoongArch: Add ORC stack unwinder support
+To:     Huacai Chen <chenhuacai@kernel.org>
+References: <20231129130701.27744-1-yangtiezhu@loongson.cn>
+ <20231129130701.27744-9-yangtiezhu@loongson.cn>
+ <CAAhV-H4XBG8XafSvY11j4GW8RGJ_uW=sXc4K0PEcMwyGyUPw=Q@mail.gmail.com>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <eab54e21-550d-12a8-cec1-1634c9c7de20@loongson.cn>
+Date:   Thu, 7 Dec 2023 15:23:17 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <CAAhV-H4XBG8XafSvY11j4GW8RGJ_uW=sXc4K0PEcMwyGyUPw=Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Bxni_lcnFlkEdXAA--.62240S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7AFy5tFy5KFWkGrWDJFW7ZFc_yoW8Xryrpa
+        yUAFs8tr4kK3y0qr9FyayUXr1kt3ykGr90gFs8CFy8Zwn8Z345Jrs3KF4DuFyUWwn5ArWI
+        vFn5Wa4xuFW8A3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU9Sb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv
+        67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
+        AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C2
+        67AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI
+        8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8
+        JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
+        1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBI
+        daVFxhVjvjDU0xZFpf9x07jOb18UUUUU=
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -84,50 +68,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On Dec 7, 2023, at 14:53, Chaitanya Kulkarni <chaitanyak@nvidia.com> =
-wrote:
->=20
-> On 12/6/23 20:31, Li Feng wrote:
->> virtio-blk is generally used in cloud computing scenarios, where the
->> performance of virtual disks is very important. The mq-deadline =
-scheduler
->> has a big performance drop compared to none with single queue. In my =
-tests,
->> mq-deadline 4k readread iops were 270k compared to 450k for none. So =
-here
->> the default scheduler of virtio-blk is set to "none".
->>=20
->> Signed-off-by: Li Feng <fengli@smartx.com>
->> ---
->>=20
->=20
-> This patch looks good to me, however I'd update the commit log and add
-> performance numbers for the non-mq case also, just in-case to show =
-that we
-> are not breaking non-mq setup.
->=20
-> Being said that, in case we want to be future proof, we can also think =
-of
-> adding a module param so if someone comes with a scenario where =
-NO_SCHED is
-> not providing the performance then they can just use the module =
-parameter
-> instead of again editing the code, irrespective of that :-
->=20
-> Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
->=20
-> -ck
+On 12/03/2023 08:42 PM, Huacai Chen wrote:
+> On Wed, Nov 29, 2023 at 9:07 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>>
+>> The kernel CONFIG_UNWINDER_ORC option enables the ORC unwinder, which is
+>> similar in concept to a DWARF unwinder. The difference is that the format
+>> of the ORC data is much simpler than DWARF, which in turn allows the ORC
+>> unwinder to be much simpler and faster.
 
-Hi ck,
+...
 
-What I put above(450k vs 270k) is the data of single queue(non-mq). I =
-think
-we don=E2=80=99t need to add module parameters because the scheduler can =
-be modified
-through sysfs.
+>> diff --git a/arch/loongarch/lib/Makefile b/arch/loongarch/lib/Makefile
+>> index a77bf160bfc4..e3023d9a508c 100644
+>> --- a/arch/loongarch/lib/Makefile
+>> +++ b/arch/loongarch/lib/Makefile
+>> @@ -3,6 +3,8 @@
+>>  # Makefile for LoongArch-specific library files.
+>>  #
+>>
+>> +OBJECT_FILES_NON_STANDARD := y
+>> +
+>>  lib-y  += delay.o memset.o memcpy.o memmove.o \
+>>            clear_user.o copy_user.o csum.o dump_tlb.o unaligned.o
+>>
+> I have a draft live-patch patch here:
+> https://github.com/chenhuacai/linux/commit/744942cbf456b320f2333638e4bd27d35900284c
+>
+> But we get such an error:
+>
+> # selftests: livepatch: test-ftrace.sh
+>
+>                                       [48/1865]
+> [14936.262721] livepatch: failed to register ftrace handler for
+> function 'cmdline_proc_show' (-16)
+> # TEST: livepatch interaction with ftrace_enabled sysctl ...
 
-Thanks.
+...
 
->=20
->=20
+> I think it is probably because we skip mem* functions here.
+
+I did not test livepatch which is a separate new feature,
+let me try it, maybe it needs some time because I am very
+busy with some other stuffs.
+
+Thanks,
+Tiezhu
 
