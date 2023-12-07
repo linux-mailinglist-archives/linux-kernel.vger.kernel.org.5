@@ -2,152 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB616808E51
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D56808E59
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232800AbjLGRL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:11:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57114 "EHLO
+        id S1443225AbjLGRNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:13:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLGRLy (ORCPT
+        with ESMTP id S229671AbjLGRM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:11:54 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE48B170C
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:12:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78BA1C433C8;
-        Thu,  7 Dec 2023 17:11:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701969120;
-        bh=IyPtYmm7UMjttoaV79y97U5M1AiSkAlE5kldVFOD7Qs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bXlGR5U81hQG84IDZlqVXL/s9801dWDL095ZFx6khDpmnlS5vYR0mLR2RERobBupI
-         p9x5SnV/kz9Fw1lJKA0DyAUQ4IeqAuOADwtARkANfI2BYoJcYrMOAfBxh6XR27g5kM
-         Fg+7+O28Z7VuCtlEpxBjUjrTMWP84oeOU1Ft82B8km0jwLcwcy9mrEKa5BDbWXnKKA
-         tmF05vs6YzrD/YswILYhOCbjQcdoPYTM9orr8IpctqwFS8bpJ4tShbyHF1uNLdXU03
-         irtTIXv/nz8xPwyPUfRkSTHWgS8sxDM/VOxzqq/TKJWZLNsOKN4v8iwN6aYNFurntD
-         R/slSm6O/emCA==
-Date:   Thu, 7 Dec 2023 17:11:55 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, bcousson@baylibre.com, tony@atomide.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: Re: [PATCH v3 2/6] twl-core: add power off implementation for twl603x
-Message-ID: <20231207171155.GG111411@google.com>
-References: <20231203222903.343711-1-andreas@kemnade.info>
- <20231203222903.343711-3-andreas@kemnade.info>
+        Thu, 7 Dec 2023 12:12:58 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391E2E0;
+        Thu,  7 Dec 2023 09:13:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701969185; x=1733505185;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=sdZDQhsABjBMs2ZU+jeFXjhRmCQapnRfv9iegKEmDDs=;
+  b=DnuPJnxDDzHEGN8z49RoDDfG8Arh5kkPjPkY9QAEHvrPLSyumbk6RQbD
+   8ShtAPHeN2T5wc4pN9tE8yhl8VBl8LVEMkym6+9aBUozP/lNk6ONw1BdE
+   wH2G/c3/t687ARXYGXLLpN2QqV8z2AxeTp7LdAvUqnEfUmosEfwdOuP4x
+   DkOovKdtQp9ynTZBRokF1TXZMqwIp0w5ToYzQhtmnR+Rp8ClSycT1F2aj
+   nHWMbCunzNxvesE2OSITGjLzyIcyQsZy+fwUijukq2zInO2TaUEwneLy7
+   KalbLQXh07cywRGnOEtAkNNLoz/rZORNMiQ0jFqBGQ6XGgdixCiNR+wfr
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="374432049"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="374432049"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 09:12:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="721547226"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="721547226"
+Received: from adlilak-mobl.amr.corp.intel.com (HELO [10.212.147.208]) ([10.212.147.208])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 09:12:41 -0800
+Message-ID: <53592a3a-3d96-4aa1-8357-ec595f59c5f3@intel.com>
+Date:   Thu, 7 Dec 2023 09:12:41 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231203222903.343711-3-andreas@kemnade.info>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/vmware: Add TDX hypercall support
+Content-Language: en-US
+To:     Alexey Makhalov <alexey.makhalov@broadcom.com>,
+        linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+        hpa@zytor.com, dave.hansen@linux.intel.co, bp@alien8.d,
+        mingo@redhat.com, tglx@linutronix.de, dave.hansen@linux.intel.com
+Cc:     x86@kernel.org, netdev@vger.kernel.org, richardcochran@gmail.com,
+        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
+        zackr@vmware.com, linux-graphics-maintainer@vmware.com,
+        pv-drivers@vmware.com, namit@vmware.com, timothym@vmware.com,
+        akaher@vmware.com, jsipek@vmware.com,
+        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
+        airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
+        maarten.lankhorst@linux.intel.com, horms@kernel.org
+References: <ef8d3e17-7028-47fd-ad31-54dadbb6796d@broadcom.com>
+ <20231206071527.59171-1-alexey.makhalov@broadcom.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20231206071527.59171-1-alexey.makhalov@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 03 Dec 2023, Andreas Kemnade wrote:
-
-> If the system-power-controller property is there, enable power off.
-> Implementation is based on a Linux v3.0 vendor kernel.
-> 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> ---
->  drivers/mfd/twl-core.c  | 28 ++++++++++++++++++++++++++++
->  include/linux/mfd/twl.h |  1 +
->  2 files changed, 29 insertions(+)
-> 
-> diff --git a/drivers/mfd/twl-core.c b/drivers/mfd/twl-core.c
-> index 6e384a79e3418..f3982d18008d1 100644
-> --- a/drivers/mfd/twl-core.c
-> +++ b/drivers/mfd/twl-core.c
-> @@ -124,6 +124,11 @@
->  #define TWL6030_BASEADD_RSV		0x0000
->  #define TWL6030_BASEADD_ZERO		0x0000
->  
-> +/* some fields in TWL6030_PHOENIX_DEV_ON */
-
-My preference is for proper grammar in comments please.
-
-"Some"
-
-What is TWL6030_PHOENIX_DEV_ON?  A register?
-
-> +#define TWL6030_APP_DEVOFF		BIT(0)
-> +#define TWL6030_CON_DEVOFF		BIT(1)
-> +#define TWL6030_MOD_DEVOFF		BIT(2)
-> +
->  /* Few power values */
->  #define R_CFG_BOOT			0x05
->  
-> @@ -687,6 +692,20 @@ static void twl_remove(struct i2c_client *client)
->  	twl_priv->ready = false;
->  }
->  
-> +static void twl6030_power_off(void)
+On 12/5/23 23:15, Alexey Makhalov wrote:
+> +#ifdef CONFIG_INTEL_TDX_GUEST
+> +/* Export tdx hypercall and allow it only for VMware guests. */
+> +void vmware_tdx_hypercall_args(struct tdx_module_args *args)
 > +{
-> +	int err;
-> +	u8 val;
-> +
-> +	err = twl_i2c_read_u8(TWL_MODULE_PM_MASTER, &val, TWL6030_PHOENIX_DEV_ON);
-> +	if (err)
-> +		return;
-> +
-> +	val |= TWL6030_APP_DEVOFF | TWL6030_CON_DEVOFF | TWL6030_MOD_DEVOFF;
-> +	twl_i2c_write_u8(TWL_MODULE_PM_MASTER, val, TWL6030_PHOENIX_DEV_ON);
+> +	if (hypervisor_is_type(X86_HYPER_VMWARE))
+> +		__tdx_hypercall(args);
 > +}
-> +
-> +
->  static struct of_dev_auxdata twl_auxdata_lookup[] = {
->  	OF_DEV_AUXDATA("ti,twl4030-gpio", 0, "twl4030-gpio", NULL),
->  	{ /* sentinel */ },
-> @@ -852,6 +871,15 @@ twl_probe(struct i2c_client *client)
->  			goto free;
->  	}
->  
-> +	if (twl_class_is_6030()) {
+> +EXPORT_SYMBOL_GPL(vmware_tdx_hypercall_args);
+> +#endif
 
-Is this check required?
+I think this is still too generic.  This still allows anything setting
+X86_HYPER_VMWARE to make any TDX hypercall.
 
-> +		if (of_device_is_system_power_controller(node)) {
-
-Shouldn't this cover it?
-
-> +			if (!pm_power_off)
-> +				pm_power_off = twl6030_power_off;
-> +			else
-> +				dev_warn(&client->dev, "Poweroff callback already assigned\n");
-
-Can this happen?  Why would anyone care if it did?
-
-> +		}
-> +	}
-> +
->  	status = of_platform_populate(node, NULL, twl_auxdata_lookup,
->  				      &client->dev);
->  
-> diff --git a/include/linux/mfd/twl.h b/include/linux/mfd/twl.h
-> index c062d91a67d92..85dc406173dba 100644
-> --- a/include/linux/mfd/twl.h
-> +++ b/include/linux/mfd/twl.h
-> @@ -461,6 +461,7 @@ static inline int twl6030_mmc_card_detect(struct device *dev, int slot)
->  
->  #define TWL4030_PM_MASTER_GLOBAL_TST		0xb6
->  
-> +#define TWL6030_PHOENIX_DEV_ON                  0x06
->  /*----------------------------------------------------------------------*/
->  
->  /* Power bus message definitions */
-> -- 
-> 2.39.2
-> 
-
--- 
-Lee Jones [李琼斯]
+I'd *much* rather you export something like vmware_tdx_hypercall() or
+even the high-level calls like hypervisor_ppn_reset_all().  The higher
+level and more specialized the interface, the less likely it is to be
+abused.
