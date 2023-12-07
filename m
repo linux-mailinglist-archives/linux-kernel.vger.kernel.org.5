@@ -2,179 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F7C808943
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C26808948
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441922AbjLGNfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:35:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
+        id S1441934AbjLGNfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:35:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232759AbjLGNe6 (ORCPT
+        with ESMTP id S1442011AbjLGNfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:34:58 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4E7123;
-        Thu,  7 Dec 2023 05:35:04 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6ce32821a53so444814b3a.0;
-        Thu, 07 Dec 2023 05:35:04 -0800 (PST)
+        Thu, 7 Dec 2023 08:35:47 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD59123;
+        Thu,  7 Dec 2023 05:35:53 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50be3eed85aso886460e87.2;
+        Thu, 07 Dec 2023 05:35:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701956104; x=1702560904; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FRTzlruS03W9af/VQ5z7QRDszsj8/IYotlOynmYM3G8=;
-        b=gd60ctfhqdAJeSenjc7HWhJyG/vHJSmX1k/u8CeudLcV+1UeZdZN6Fah0JKszmY9Bb
-         0bjV7qvzj9V07v/FFaXSrutS00s/MmPr3qDGD/DwlZ6Np5VdcY/QjUGQ0pvTmHH1v9hK
-         0bp0ATvs6CwOxSuIOndLLlEa7XJ9NyHK2hm76tBFiwzCb30wSXGBKRLoNtqOFhb+KloD
-         rCiF2jrHUdnGoTteqvRCK6YN546aGexIvytDQIuSFEXmUVneTPahK1J5L1DTzwZBILBV
-         Tqzc40PtywOrjRWe653jqvKgxztHXOg0MTV6AoIObDMenU+pRBnY5Raip82YTjS0xg+m
-         QaHA==
+        d=gmail.com; s=20230601; t=1701956151; x=1702560951; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DE2zFskkDTSnqEUr5OB7Tct7a2e7vqqhqiLJL3O/hkk=;
+        b=KJQdZ+qJlJ6FVDgAxHaA38o34Hy/dL74T5lvCDNCgp/ceKAGIpzNvO5bgtYEzqXzak
+         j5i1i/ADcZ2C3gF+ILRzbXSs73o68vrO0FwfS2nIa5AZSj/FERjqsAPmgHASmgZnTbcY
+         kq0907N0YNHaTs3UQtb67857AP1kbuyCesANQ5tDi9jgRMrD3ZnFhw1/ZtseLNwVgJqb
+         KeEr8WhewcPk1ukT5nk1xPnG/LRldc7rRR/d3+/QjCGTWnhSxNzYW0lZ5WkG1zjbIvvt
+         3UlLnQl12Huw8dD4C5t/+IrZHVkJjRmC4u4mUZcRZFAiWTVHJ84C4IGXlrGZqrr2YHiH
+         BQRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701956104; x=1702560904;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FRTzlruS03W9af/VQ5z7QRDszsj8/IYotlOynmYM3G8=;
-        b=iufawzxmQlxZY/Tgn3+TvcHZ3Qh4GfGTP78A+7sk42QTbSEIHEk7RGaqZBh4fGu4x9
-         amh54NuVFPlGAEDptRuDidL1jbUjKFZMrawwSPay3TFk5Pnny7QSYpiCgSiw5NbpVJhH
-         fMyNjKGJJ6bG332f6gQbjlxFrb/i3YFBbdtKkZt0oWS9mgCihXunqc3AUYz8zIgeSZxn
-         cndtcr4DNxrOIU/eVRCdmH1R6SJ0Si5d31SEj9HVjmXC3zc3ZTEJl7elqi0VypXF/AIn
-         ROwCdUdcyt0psA7i5doT7BaPPJfEcnE+qQiAc1RmkP/hckSYXNN3oWiN1YkiIy7A/5S2
-         3Jxg==
-X-Gm-Message-State: AOJu0YydumiMeiUVvIeRljf7pY3hI5E/iFaFDlxEewhvvM3MFYGdEmxs
-        PPXPF11s/xgaOKyc81oEAW0=
-X-Google-Smtp-Source: AGHT+IHFIIBb/Pc2NOsSGu4FGrav3Qw1ptK/bHaF+FmbByi3IJkvRqbxEBe5UfCHredzqwZQQYnSqg==
-X-Received: by 2002:a05:6a00:8d93:b0:6ce:60d7:2aa0 with SMTP id im19-20020a056a008d9300b006ce60d72aa0mr2207083pfb.55.1701956103608;
-        Thu, 07 Dec 2023 05:35:03 -0800 (PST)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id n19-20020aa78a53000000b006ce7d0d2590sm1299176pfa.0.2023.12.07.05.35.01
+        d=1e100.net; s=20230601; t=1701956151; x=1702560951;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DE2zFskkDTSnqEUr5OB7Tct7a2e7vqqhqiLJL3O/hkk=;
+        b=uuqFSNvAkRIp4YzL4XBmzNxjmp7JIaB6MKn6bu2PQ0HtVT1/EFXqnHLUIS9VWcQs9q
+         SJnmHda71TgtNREvmDCVgQYPmWKFYhFnAIH25nWxRgD5loJMf2vt8PpBG1z4J4/rAgUd
+         qodcT0osBSldCnhxjvLoP7VeGRteyhHhJqdpEiTDyR7zuJUiJJnEmbGJyZhV8RelWDZu
+         S+Cc9nY48C2EjkkKdMMHlBrotN2jqrdjN/iHav+RAGGphm3O8nWrcC/JK6sJY2mVh36o
+         2Bl2RGWWZ8fY+/PAxkox8XD38P4LCmtrLjBMwKHSnjemrTXLsh6nHDtj7wl0Ucl1FrqC
+         ggVg==
+X-Gm-Message-State: AOJu0YwSXTfBKWmq48iagfbNYCvEWwIbpDCPSwjSueB7od31VNSCZJIr
+        FTQZLGE8GVazGb1bZFkHLoI=
+X-Google-Smtp-Source: AGHT+IFpxi32i/H2T4l/U2UQxsPFB0f94jLoEstgg/x9ZHx2sGmv9RsyaRRUJxbdN9o8b/cu5/ilBA==
+X-Received: by 2002:a05:6512:3124:b0:50c:a39:ee37 with SMTP id p4-20020a056512312400b0050c0a39ee37mr1567241lfd.109.1701956150819;
+        Thu, 07 Dec 2023 05:35:50 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id bp42-20020a05651215aa00b0050bf8852fb1sm174527lfb.45.2023.12.07.05.35.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 05:35:03 -0800 (PST)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     vkoul@kernel.org, allen.lkml@gmail.com, arnd@arndb.de,
-        christophe.jaillet@wanadoo.fr
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH v2] dmaengine: pch_dma: Fix potential deadlock on &pd_chan->lock
-Date:   Thu,  7 Dec 2023 13:34:52 +0000
-Message-Id: <20231207133452.14726-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 07 Dec 2023 05:35:50 -0800 (PST)
+Date:   Thu, 7 Dec 2023 16:35:47 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 09/16] net: mdio: Add Synopsys DW XPCS
+ management interface support
+Message-ID: <jqwhgthwxfge6y4nv5mdnojqu76m4pi2mt2x6kwqiuqntcwj67@mewh42eey5ny>
+References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+ <20231205103559.9605-10-fancer.lancer@gmail.com>
+ <20231205133205.3309ab91@device.home>
+ <cv6oo27tqbfst3jrgtkg7bcxmeshadtzoomn2xgnzh2arz4nwy@wq5k7oygto6n>
+ <15e6857a-b1d1-465a-945e-6f31edac62fb@lunn.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <15e6857a-b1d1-465a-945e-6f31edac62fb@lunn.ch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As &pd_chan->lock is acquired by pdc_tasklet() under softirq context,
-other acquisition of the same lock under process context should at least
-disable bottom half, otherwise deadlock could happen if the tasklet
-preempts the execution while the lock is held under process context on
-the same CPU.
+Hi Andrew
 
-pd_issue_pending(), pd_tx_submit(), pdc_desc_put() and pdc_desc_get()
-seem like that could execute under process context without bottom half
-disaled.
+On Wed, Dec 06, 2023 at 06:01:30PM +0100, Andrew Lunn wrote:
+> > > You shouldn't use inline in C files, only in headers.
+> > 
+> > Could you please clarify why? I failed to find such requirement in the
+> > coding style doc. Moreover there are multiple examples of using the
+> > static-inline-ers in the C files in the kernel including the net/mdio
+> > subsystem.
+> 
 
-One Possible deadlock scenario:
-pd_prep_slave_sg()
-    -> pdc_desc_put()
-    -> spin_lock(&pd_chan->lock)
-        <tasklet softirq interruption>
-        -> pdc_tasklet()
-        -> spin_lock_irqsave(&pd_chan->lock, flags); (deadlock here)
+> The compiler does a better job at deciding what to inline than we
+> humans do. If you can show the compiler is doing it wrong, then we
+> might accept them.
 
-This flaw was found by an experimental static analysis tool I am developing
-for irq-related deadlock.
+In general I would have agreed with you especially if the methods were
+heavier than what they are:
+static inline ptrdiff_t dw_xpcs_mmio_addr_format(int dev, int reg)
+{               
+        return FIELD_PREP(0x1f0000, dev) | FIELD_PREP(0xffff, reg);
+}               
+        
+static inline u16 dw_xpcs_mmio_addr_page(ptrdiff_t csr)
+{       
+        return FIELD_GET(0x1fff00, csr);
+}       
 
-The tentative patch fixes the potential deadlock by spin_lock_bh() to
-disable bottom half while lock is held.
+static inline ptrdiff_t dw_xpcs_mmio_addr_offset(ptrdiff_t csr)
+{
+        return FIELD_GET(0xff, csr);
+}
 
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
----
-V2: change to spin_lock_bh() instead of spin_lock_irqsave()
+> But in general, netdev does not like inline in .C
+> file.
 
- drivers/dma/pch_dma.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+I see. I'll do as you say if you don't change your mind after my
+reasoning below.
 
-diff --git a/drivers/dma/pch_dma.c b/drivers/dma/pch_dma.c
-index c359decc07a3..2c4e479ca124 100644
---- a/drivers/dma/pch_dma.c
-+++ b/drivers/dma/pch_dma.c
-@@ -410,7 +410,7 @@ static dma_cookie_t pd_tx_submit(struct dma_async_tx_descriptor *txd)
- 	struct pch_dma_desc *desc = to_pd_desc(txd);
- 	struct pch_dma_chan *pd_chan = to_pd_chan(txd->chan);
- 
--	spin_lock(&pd_chan->lock);
-+	spin_lock_bh(&pd_chan->lock);
- 
- 	if (list_empty(&pd_chan->active_list)) {
- 		list_add_tail(&desc->desc_node, &pd_chan->active_list);
-@@ -419,7 +419,7 @@ static dma_cookie_t pd_tx_submit(struct dma_async_tx_descriptor *txd)
- 		list_add_tail(&desc->desc_node, &pd_chan->queue);
- 	}
- 
--	spin_unlock(&pd_chan->lock);
-+	spin_unlock_bh(&pd_chan->lock);
- 	return 0;
- }
- 
-@@ -447,7 +447,7 @@ static struct pch_dma_desc *pdc_desc_get(struct pch_dma_chan *pd_chan)
- 	struct pch_dma_desc *ret = NULL;
- 	int i = 0;
- 
--	spin_lock(&pd_chan->lock);
-+	spin_lock_bh(&pd_chan->lock);
- 	list_for_each_entry_safe(desc, _d, &pd_chan->free_list, desc_node) {
- 		i++;
- 		if (async_tx_test_ack(&desc->txd)) {
-@@ -457,15 +457,15 @@ static struct pch_dma_desc *pdc_desc_get(struct pch_dma_chan *pd_chan)
- 		}
- 		dev_dbg(chan2dev(&pd_chan->chan), "desc %p not ACKed\n", desc);
- 	}
--	spin_unlock(&pd_chan->lock);
-+	spin_unlock_bh(&pd_chan->lock);
- 	dev_dbg(chan2dev(&pd_chan->chan), "scanned %d descriptors\n", i);
- 
- 	if (!ret) {
- 		ret = pdc_alloc_desc(&pd_chan->chan, GFP_ATOMIC);
- 		if (ret) {
--			spin_lock(&pd_chan->lock);
-+			spin_lock_bh(&pd_chan->lock);
- 			pd_chan->descs_allocated++;
--			spin_unlock(&pd_chan->lock);
-+			spin_unlock_bh(&pd_chan->lock);
- 		} else {
- 			dev_err(chan2dev(&pd_chan->chan),
- 				"failed to alloc desc\n");
-@@ -478,11 +478,12 @@ static struct pch_dma_desc *pdc_desc_get(struct pch_dma_chan *pd_chan)
- static void pdc_desc_put(struct pch_dma_chan *pd_chan,
- 			 struct pch_dma_desc *desc)
- {
-+
- 	if (desc) {
--		spin_lock(&pd_chan->lock);
-+		spin_lock_bh(&pd_chan->lock);
- 		list_splice_init(&desc->tx_list, &pd_chan->free_list);
- 		list_add(&desc->desc_node, &pd_chan->free_list);
--		spin_unlock(&pd_chan->lock);
-+		spin_unlock_bh(&pd_chan->lock);
- 	}
- }
- 
-@@ -557,9 +558,9 @@ static void pd_issue_pending(struct dma_chan *chan)
- 	struct pch_dma_chan *pd_chan = to_pd_chan(chan);
- 
- 	if (pdc_is_idle(pd_chan)) {
--		spin_lock(&pd_chan->lock);
-+		spin_lock_bh(&pd_chan->lock);
- 		pdc_advance_work(pd_chan);
--		spin_unlock(&pd_chan->lock);
-+		spin_unlock_bh(&pd_chan->lock);
- 	}
- }
- 
--- 
-2.17.1
+> Also, nothing in MDIO is hot path, it spends a lot of time
+> waiting for a slow bus. So inline is likely to just bloat the code for
+> no gain.
 
+I would have been absolutely with you in this matter, if we were talking
+about a normal MDIO bus. In this case the devices are accessed over
+the system IO-memory. So the bus isn't that slow.
+
+Regarding the compiler knowing better when to inline the code. Here is
+what it does with the methods above. If the inline keyword is
+specified the compiler will inline all three methods. If the keyword isn't
+specified then dw_xpcs_mmio_addr_format() won't be inlined while the rest
+two functions will be. So the only part at consideration is the
+dw_xpcs_mmio_addr_format() method since the rest of the functions are
+inlined anyway.
+
+The dw_xpcs_mmio_addr_format() function body is of the 5 asm
+instructions length (on MIPS). Since the function call in this case
+requires two jump instructions (to function and back), one instruction
+to save the previous return address on stack and two instructions for
+the function arguments, the trade-off of having non-inlined function
+are those five additional instructions on each call. There are four
+dw_xpcs_mmio_addr_format() calls. So here is what we get in both
+cases:
+inlined:     5 func ins * 4 calls = 20 ins
+non-inlined: (5 func + 1 jump) ins + (1 jump + 1 ra + 2 arg) ins * 4 calls  = 22 ins
+but seeing the return address needs to be saved anyway in the callers
+here is what we finally get:
+non-inlined: (5 func + 1 jump) ins + (1 jump + 2 arg) ins * 4 calls  = 18 ins
+
+So unless I am mistaken in some of the aspects if we have the function
+non-inlined then we'll save 2 instructions in the object file, but
+each call would require additional _4_ instructions to execute (2
+jumps and 2 arg creations), which makes the function execution almost
+two times longer than it would have been should it was inlined. IMO in
+this case saving 2 instructions of the object file isn't worth than
+getting rid from four instructions on each call seeing the DW XPCS
+MCI/APB3 buses are the memory IO interfaces which don't require any
+long-time waits to perform the ops. Thus I'd suggest to keep the
+inline keywords specified here.
+
+What is your conclusion?
+
+-Serge(y)
+
+> 
+>    Andrew
