@@ -2,186 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD002808382
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 09:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38343808357
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 09:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378368AbjLGIrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 03:47:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
+        id S229878AbjLGIkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 03:40:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231909AbjLGIrU (ORCPT
+        with ESMTP id S229456AbjLGIj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 03:47:20 -0500
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2072.outbound.protection.outlook.com [40.107.20.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8381AC6;
-        Thu,  7 Dec 2023 00:47:19 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e1O9LFaYeWokIm42wHZa75RaULlA7+PwuCAvUFtKGJswnXARtyZ2fyRBAF/Lp38/MktU3o+EDi65UNDwnlRLp6cwQkzvHT4QomEHRkJvwQumQ/LgBj6enT9biRqP3Q1obkGW9+ON7qz3YUnILfgTrOFQAANCfi88DVx8eInAd/Sf35XMpXHDBeSJpYYX64Gu3hCCJqLIgdUHaY5Zr5kQLOdrnA5uOhDcv9ryXJqbEF8pXZRqfGpcIjgzsaCaCLLpiiGuXDdejeudKSH8jM1C5Rb25dADLMGOU2e8S2wqVaQQkE/Rc04Ec3fopHlIjdbOcpzengDOjB7V+KLqesiOXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0iJs9qJQ1bONPlJNCi6upX7UdxMYgDYFf3jHLAURVT0=;
- b=HhcryniN606SqM3qloi39ihofW0fzC6YjUa1uRnGZikVV3y93iQMCchBNb70gn+jz/nTEDateQ1kS33T0F9wZz+XYef9l5QxocItkJQlUvqWlrqutOCrmrLnYzF0wDq5Ke8GXfe4a2vmp2dUb667RIlpvwFWJ5QuvuqDkD4rY1WULA4p/VBwmwxfAZV0MLEKo17NWJGImSEZgR+zaz2wSrjgroxEl94e1RaHk05MX1VK3y9Wu5mDUdNTynLgElEhmqwwsuJKp3nH6A6h1EamZjTUh9Ml/GvedAysUWn+AimiFVabqK5Y06kAZCh9zqcVw4G8JPlitsxpjDIp7zcy5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0iJs9qJQ1bONPlJNCi6upX7UdxMYgDYFf3jHLAURVT0=;
- b=FuYt+n1DEYhy/znDPRngH9+DemZ0tZLYQS9v9sz4Lr6D0yrXO/vd7KWAUCkNy3SBfxyh7/JsIEuZiof8BMO5Ehvgs13spLC6S3GVhUYKmuwgsVgdZXMv5oH6y1mlFu79IlUA/aFxSAqBabAdH/Ro8753mgAJNlYzgteL5CuB0TI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
- by AM9PR04MB8652.eurprd04.prod.outlook.com (2603:10a6:20b:43f::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Thu, 7 Dec
- 2023 08:47:16 +0000
-Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
- ([fe80::d6ee:d372:176b:1786]) by AM5PR04MB3139.eurprd04.prod.outlook.com
- ([fe80::d6ee:d372:176b:1786%5]) with mapi id 15.20.7068.026; Thu, 7 Dec 2023
- 08:47:16 +0000
-From:   Wei Fang <wei.fang@nxp.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, shenwei.wang@nxp.com, xiaoning.wang@nxp.com,
-        netdev@vger.kernel.org
-Cc:     radu-andrei.bulie@nxp.com, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Subject: [PATCH net] net: fec: correct queue selection
-Date:   Thu,  7 Dec 2023 16:38:01 +0800
-Message-Id: <20231207083801.233704-1-wei.fang@nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0137.apcprd01.prod.exchangelabs.com
- (2603:1096:4:8f::17) To AM5PR04MB3139.eurprd04.prod.outlook.com
- (2603:10a6:206:8::20)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM5PR04MB3139:EE_|AM9PR04MB8652:EE_
-X-MS-Office365-Filtering-Correlation-Id: c7ee5707-291a-4a8b-060a-08dbf7011cdf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HyhwSDLdZjKxK2iSDd5N+L3B963bZgB+aIh1MWkWJ45ezOVugAw0COyrXjaUJ612jBwKNOtWU/qMpp0FKHLj3QFzIOrdNkF3pRcMDcm5Z0haO06xC/Krr1oNMt4biOolTdFsKSfS9RQpeL07wo/0x2ZELquywM1DzWubkblxJl4uyGfcW/oBVQP5XO4UtOLpTbLL78gvZDn00IPhi2avuNqFGw+xlBSeRXZZoZCBfCWKvlxYFBVOGAFLLJOE9ymyB7ak44KfnVuGAXNdtpoH/T6rGhk2KvDfZJjnXAIhcLrSdJA//i2pMfFBagQGCTIEepBFJRohynTJlaQfTzD+I4QKbZzM2RD+j2kaENrcxIK+DYo69fYtNqn4YMQAUc4mOVKEu5MKuFfZoCaLsfLHGvmrn8F5gBcggejuu/GBl42ggvy+BtbQqj4w5QKP/taC+GUAK0szadJVLshXLbXX9ncraIari5EGyHywWq47JfPAsS+89B35ijHFQRPhM73OG6n3ZoL436uRbhx0a6FkQ1sPK+2qfRtr46ShnUBm6YHCqVBJCYyqyPPxkeCi6J1pItxZBzt10Bb9D9QjfT2szntnOsiOLkYBURcZSJZMwuVEaTxAdejAgY8tGdFVPLWA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(39860400002)(346002)(366004)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(316002)(66556008)(66476007)(66946007)(6512007)(6506007)(36756003)(41300700001)(52116002)(6666004)(83380400001)(26005)(1076003)(6486002)(2616005)(478600001)(38350700005)(86362001)(38100700002)(44832011)(5660300002)(2906002)(8936002)(8676002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yg4X0ejig4FU5+Tm0pPXrJN2oEMm3au8bbbbmxhnFdhskWo/zCe1ka3TfkqW?=
- =?us-ascii?Q?UCsWvqsj8uYAhkaVlSyPd79MHAeKkmW/glnmazziGJX6149fmsNW3Uk7m2NS?=
- =?us-ascii?Q?FRCGK+awwDSFOg2vy7iGGAJrB3F/3tEg6MdaIjB3Ti1zJ7YKzCltqg+B4F1T?=
- =?us-ascii?Q?jT8DcM8LczFo3rmtomYX4829AJ5SEUCRWu6FwIZXGAaCe7k9eJRJz1eV4EZC?=
- =?us-ascii?Q?wty/Ys1KXV05BV1sh3EjDCkyiQH7hEjLS2eAnHqPTxBFj0D4XincIaHAaGLN?=
- =?us-ascii?Q?4XM9vx1GGhvbDl0dInsNBr21FnwfLihpiuxtwiBPbi7yLsWRKCIl6XMM685Z?=
- =?us-ascii?Q?8lXco0fKv/m81KYyKIkhMNZrG/jFMvWxsBG3SNwBmHKWcPbToFTt/L0FejDl?=
- =?us-ascii?Q?or+tlEMX8C4iy8U+yQQZ2q55/YyM9U14J0oPq/2YDrX19BIJp0MIWRBFY5rO?=
- =?us-ascii?Q?i9djGWCmwH9aC8SHj6ArR1zWLd5FA8H3c6IJOYfX7qfx1LdEAmLFslTqtppC?=
- =?us-ascii?Q?wcCkiTmwTkwQUzuQD6CD241pyd+aEBHC+z/HZot6JdEcaQW7yi+r2sVnFwBA?=
- =?us-ascii?Q?k9KM/fUKwUfOwWnhZz1qqCG3VqACVK5c70dpXq8amPCEfKSrvR5SqIZySgp+?=
- =?us-ascii?Q?hNm0o9M/INx2Ar2Po1hIlO7jGes10KQFF5pXmRjuHrYKwal/zMs/1Sujmqvt?=
- =?us-ascii?Q?FKPGLvYZ8kDbyLaNqQx80s7vjP8R5mfIIt6vxwD3TmgJoC3DXwar0UT42Hee?=
- =?us-ascii?Q?gqCKOc66i6p95798IZyN3U12d/OsqCPZpQzBFsTElLXFM30Atf6TlVPZ7Vx7?=
- =?us-ascii?Q?T6WHJbe/oMboWMGRwOd52R7k3TIxjm46UDfFyUm3n5R02AGWbOyz3soVZQiE?=
- =?us-ascii?Q?H31QvysACPEypsdwOV5z2/veADsgPKKAYh1iZUsBawKhr7K8HdrIYkyuUjpY?=
- =?us-ascii?Q?w7wq4pQezAaET3wMJy2pIJHT3ttUaY1dfLC1+SUyJ0uGb0Qfrt2yDeHYAO5M?=
- =?us-ascii?Q?4my9nR8SxTGapIBW6ZOzaWpCYScH4/THfgG536OYimLle/MKb5ipqO+ZkTCp?=
- =?us-ascii?Q?G8iITqI96dwPEKpPVqzv9a42v2zmiY20fosRjNxTJxiilQlYoszWHXxb53F7?=
- =?us-ascii?Q?wJUF4UvO8tRZqxsvdAkcZbmOUepIj7qJtPIUU/rRk+1WHzjH0eluZAIXIM6o?=
- =?us-ascii?Q?Z6GdfCcN6l7atxyBysQfUmQMuZ/Gb9V7bm3RII4jEN5+M3YzbzhxtBEVlp73?=
- =?us-ascii?Q?leSOMV0GMEmkh9a4DK99VLEdbuDW1IovZeUJBgL9TFjzSzkdwrsEApnsWzd9?=
- =?us-ascii?Q?/ab+VBIselNmlvLIqnOQ2/f5jnBBKzz/3jVBYjgcApB+KYL1Mpy/Pei60Lr1?=
- =?us-ascii?Q?nLuNWiu155guCfm7pYQY6eqhiWt/6etf66mYuuZ2XHQfO0f5zJm5/6SmUe25?=
- =?us-ascii?Q?eCOftbj2vfsKM8BkUMa3tmllrLs/XBVbQIHTfX/HGsjFFkSXE0RcySOZ8oRn?=
- =?us-ascii?Q?P2YoP9nwjQBEumQ4fC0LaNoGWpoSiz0baHSpRGcUA3EypFaLrTfY/OvGs2qh?=
- =?us-ascii?Q?EqPT7LguBlvtTWdbS7ROM1qcs0WKFfyRQSi0eRlE?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7ee5707-291a-4a8b-060a-08dbf7011cdf
-X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2023 08:47:16.2343
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cyiShRoVVggoFHOxh0kMAD83brpaIU8UYSecXf5+bT84PkMoDM1IfBVmaoc2PILikCt0+GCMilEyzBcPlxi0MA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8652
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 7 Dec 2023 03:39:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCD3C6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 00:40:04 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 420C2C433C7;
+        Thu,  7 Dec 2023 08:40:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701938404;
+        bh=aERKSRSkgUM4DekqTDBhu4Ocyd2adYz1QF9/iT1ti/o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=esa/QkqgYlHsn6hwR7x1wBb4dhnQrP/9kPdP8POQbBVMV7yp1HdqBgJ2p5X0vNfiH
+         460P9x4aip/x1L2+SzI0XGFamUl9rUZbin82hE+MTadrDh2iEcr9PYUb794tKHoeqY
+         lFCsUZOeqtB672dsUwXecZUXkOTt7Eh+XwoSAMtStv+ol7OIpWHITeVhHIw3SU2Pcs
+         624V31oVMWUHTIH8XMVAiAwHS4RTJHa3/m1lPbzC5heIHLn7zXp+1wxlb6NqtrPTiI
+         BM2XKMlRf5sMR3ptIT11+3IhfgDprU7UvavyZWH/BOFrS9ixaEGN5jrHK3YyVFHy//
+         B7vzOgstBmKgQ==
+Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1rB9vN-0029MR-84;
+        Thu, 07 Dec 2023 08:40:01 +0000
+Date:   Thu, 07 Dec 2023 08:39:46 +0000
+Message-ID: <87cyvi8kz1.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 15/21] KVM: arm64: Support FEAT_FPMR for guests
+In-Reply-To: <20231205-arm64-2023-dpisa-v3-15-dbcbcd867a7f@kernel.org>
+References: <20231205-arm64-2023-dpisa-v3-0-dbcbcd867a7f@kernel.org>
+        <20231205-arm64-2023-dpisa-v3-15-dbcbcd867a7f@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.104.136.29
+X-SA-Exim-Rcpt-To: broonie@kernel.org, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, corbet@lwn.net, shuah@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Radu Bulie <radu-andrei.bulie@nxp.com>
+On Tue, 05 Dec 2023 16:48:13 +0000,
+Mark Brown <broonie@kernel.org> wrote:
+> 
+> FEAT_FPMR introduces a new system register FPMR which allows configuration
+> of floating point behaviour, currently for FP8 specific features. Allow use
+> of this in guests, disabling the trap while guests are running and saving
+> and restoring the value along with the rest of the floating point state.
+> Since FPMR is stored immediately after the main floating point state we
+> share it with the hypervisor by adjusting the size of the shared region.
+> 
+> Access to FPMR is covered by both a register specific trap HCRX_EL2.EnFPM
+> and the overall floating point access trap so we just unconditionally
+> enable the FPMR specific trap and rely on the floating point access trap to
+> detect guest floating point usage.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  arch/arm64/include/asm/kvm_arm.h        |  2 +-
+>  arch/arm64/include/asm/kvm_host.h       |  4 +++-
+>  arch/arm64/kvm/emulate-nested.c         |  9 +++++++++
+>  arch/arm64/kvm/fpsimd.c                 | 20 +++++++++++++++++---
+>  arch/arm64/kvm/hyp/include/hyp/switch.h |  7 ++++++-
+>  arch/arm64/kvm/sys_regs.c               | 11 +++++++++++
+>  6 files changed, 47 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
+> index 9f9239d86900..95f3b44e7c3a 100644
+> --- a/arch/arm64/include/asm/kvm_arm.h
+> +++ b/arch/arm64/include/asm/kvm_arm.h
+> @@ -103,7 +103,7 @@
+>  #define HCR_HOST_VHE_FLAGS (HCR_RW | HCR_TGE | HCR_E2H)
+>  
+>  #define HCRX_GUEST_FLAGS \
+> -	(HCRX_EL2_SMPME | HCRX_EL2_TCR2En | \
+> +	(HCRX_EL2_SMPME | HCRX_EL2_TCR2En | HCRX_EL2_EnFPM | \
 
-The old implementation extracted VLAN TCI info from the payload
-before the VLAN tag has been pushed in the payload.
+We really should start making all of these things conditional. See
+below.
 
-Another problem was that the VLAN TCI was extracted even if the
-packet did not have VLAN protocol header.
+>  	 (cpus_have_final_cap(ARM64_HAS_MOPS) ? (HCRX_EL2_MSCEn | HCRX_EL2_MCE2) : 0))
+>  #define HCRX_HOST_FLAGS (HCRX_EL2_MSCEn | HCRX_EL2_TCR2En | HCRX_EL2_EnFPM)
+>  
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index f8d98985a39c..9885adff06fa 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -391,6 +391,8 @@ enum vcpu_sysreg {
+>  	CNTP_CVAL_EL0,
+>  	CNTP_CTL_EL0,
+>  
+> +	FPMR,
+> +
+>  	/* Memory Tagging Extension registers */
+>  	RGSR_EL1,	/* Random Allocation Tag Seed Register */
+>  	GCR_EL1,	/* Tag Control Register */
+> @@ -517,7 +519,6 @@ struct kvm_vcpu_arch {
+>  	enum fp_type fp_type;
+>  	unsigned int sve_max_vl;
+>  	u64 svcr;
+> -	u64 fpmr;
 
-This resulted in invalid VLAN TCI and as a consequence a random
-queue was computed.
+Why do this change here? Why isn't done like that the first place?
 
-This patch fixes the above issues and use the VLAN TCI from the
-skb if it is present or VLAN TCI from payload if present. If no
-VLAN header is present queue 0 is selected.
+>  
+>  	/* Stage 2 paging state used by the hardware on next switch */
+>  	struct kvm_s2_mmu *hw_mmu;
+> @@ -576,6 +577,7 @@ struct kvm_vcpu_arch {
+>  	struct kvm_guest_debug_arch external_debug_state;
+>  
+>  	struct user_fpsimd_state *host_fpsimd_state;	/* hyp VA */
+> +	u64 *host_fpmr;					/* hyp VA */
+>  	struct task_struct *parent_task;
+>  
+>  	struct {
+> diff --git a/arch/arm64/kvm/emulate-nested.c b/arch/arm64/kvm/emulate-nested.c
+> index 06185216a297..802e5cde696f 100644
+> --- a/arch/arm64/kvm/emulate-nested.c
+> +++ b/arch/arm64/kvm/emulate-nested.c
+> @@ -67,6 +67,8 @@ enum cgt_group_id {
+>  	CGT_HCR_TTLBIS,
+>  	CGT_HCR_TTLBOS,
+>  
+> +	CGT_HCRX_EnFPM,
+> +
+>  	CGT_MDCR_TPMCR,
+>  	CGT_MDCR_TPM,
+>  	CGT_MDCR_TDE,
+> @@ -279,6 +281,12 @@ static const struct trap_bits coarse_trap_bits[] = {
+>  		.mask		= HCR_TTLBOS,
+>  		.behaviour	= BEHAVE_FORWARD_ANY,
+>  	},
+> +	[CGT_HCRX_EnFPM] = {
+> +		.index		= HCRX_EL2,
+> +		.value		= HCRX_EL2_EnFPM,
+> +		.mask		= HCRX_EL2_EnFPM,
+> +		.behaviour	= BEHAVE_FORWARD_ANY,
 
-Fixes: 52c4a1a85f4b ("net: fec: add ndo_select_queue to fix TX bandwidth fluctuations")
-Signed-off-by: Radu Bulie <radu-andrei.bulie@nxp.com>
-Signed-off-by: Wei Fang <wei.fang@nxp.com>
----
- drivers/net/ethernet/freescale/fec_main.c | 27 +++++++++--------------
- 1 file changed, 11 insertions(+), 16 deletions(-)
+This looks wrong. HCRX_EL2.EnFPM is an enable bit.
 
-diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index c3b7694a7485..e08c7b572497 100644
---- a/drivers/net/ethernet/freescale/fec_main.c
-+++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -3731,31 +3731,26 @@ static int fec_set_features(struct net_device *netdev,
- 	return 0;
- }
- 
--static u16 fec_enet_get_raw_vlan_tci(struct sk_buff *skb)
--{
--	struct vlan_ethhdr *vhdr;
--	unsigned short vlan_TCI = 0;
--
--	if (skb->protocol == htons(ETH_P_ALL)) {
--		vhdr = (struct vlan_ethhdr *)(skb->data);
--		vlan_TCI = ntohs(vhdr->h_vlan_TCI);
--	}
--
--	return vlan_TCI;
--}
--
- static u16 fec_enet_select_queue(struct net_device *ndev, struct sk_buff *skb,
- 				 struct net_device *sb_dev)
- {
- 	struct fec_enet_private *fep = netdev_priv(ndev);
--	u16 vlan_tag;
-+	u16 vlan_tag = 0;
- 
- 	if (!(fep->quirks & FEC_QUIRK_HAS_AVB))
- 		return netdev_pick_tx(ndev, skb, NULL);
- 
--	vlan_tag = fec_enet_get_raw_vlan_tci(skb);
--	if (!vlan_tag)
-+	/* VLAN is present in the payload.*/
-+	if (eth_type_vlan(skb->protocol)) {
-+		struct vlan_ethhdr *vhdr = skb_vlan_eth_hdr(skb);
-+
-+		vlan_tag = ntohs(vhdr->h_vlan_TCI);
-+	/*  VLAN is present in the skb but not yet pushed in the payload.*/
-+	} else if (skb_vlan_tag_present(skb)) {
-+		vlan_tag = skb->vlan_tci;
-+	} else {
- 		return vlan_tag;
-+	}
- 
- 	return fec_enet_vlan_pri_to_queue[vlan_tag >> 13];
- }
+> +	},
+>  	[CGT_MDCR_TPMCR] = {
+>  		.index		= MDCR_EL2,
+>  		.value		= MDCR_EL2_TPMCR,
+> @@ -478,6 +486,7 @@ static const struct encoding_to_trap_config encoding_to_cgt[] __initconst = {
+>  	SR_TRAP(SYS_AIDR_EL1,		CGT_HCR_TID1),
+>  	SR_TRAP(SYS_SMIDR_EL1,		CGT_HCR_TID1),
+>  	SR_TRAP(SYS_CTR_EL0,		CGT_HCR_TID2),
+> +	SR_TRAP(SYS_FPMR,		CGT_HCRX_EnFPM),
+>  	SR_TRAP(SYS_CCSIDR_EL1,		CGT_HCR_TID2_TID4),
+>  	SR_TRAP(SYS_CCSIDR2_EL1,	CGT_HCR_TID2_TID4),
+>  	SR_TRAP(SYS_CLIDR_EL1,		CGT_HCR_TID2_TID4),
+> diff --git a/arch/arm64/kvm/fpsimd.c b/arch/arm64/kvm/fpsimd.c
+> index e3e611e30e91..dee078625d0d 100644
+> --- a/arch/arm64/kvm/fpsimd.c
+> +++ b/arch/arm64/kvm/fpsimd.c
+> @@ -14,6 +14,16 @@
+>  #include <asm/kvm_mmu.h>
+>  #include <asm/sysreg.h>
+>  
+> +static void *fpsimd_share_end(struct user_fpsimd_state *fpsimd)
+> +{
+> +	void *share_end = fpsimd + 1;
+> +
+> +	if (cpus_have_final_cap(ARM64_HAS_FPMR))
+> +		share_end += sizeof(u64);
+> +
+> +	return share_end;
+> +}
+
+This is horrible. Why can't you just have a new structure wrapping
+both user_fpsimd_state and fpmr? This is going to break in subtle
+ways, just like the SVE/SME stuff.
+
+> +
+>  void kvm_vcpu_unshare_task_fp(struct kvm_vcpu *vcpu)
+>  {
+>  	struct task_struct *p = vcpu->arch.parent_task;
+> @@ -23,7 +33,7 @@ void kvm_vcpu_unshare_task_fp(struct kvm_vcpu *vcpu)
+>  		return;
+>  
+>  	fpsimd = &p->thread.uw.fpsimd_state;
+> -	kvm_unshare_hyp(fpsimd, fpsimd + 1);
+> +	kvm_unshare_hyp(fpsimd, fpsimd_share_end(fpsimd));
+>  	put_task_struct(p);
+>  }
+>  
+> @@ -45,11 +55,15 @@ int kvm_arch_vcpu_run_map_fp(struct kvm_vcpu *vcpu)
+>  	kvm_vcpu_unshare_task_fp(vcpu);
+>  
+>  	/* Make sure the host task fpsimd state is visible to hyp: */
+> -	ret = kvm_share_hyp(fpsimd, fpsimd + 1);
+> +	ret = kvm_share_hyp(fpsimd, fpsimd_share_end(fpsimd));
+>  	if (ret)
+>  		return ret;
+>  
+>  	vcpu->arch.host_fpsimd_state = kern_hyp_va(fpsimd);
+> +	if (cpus_have_final_cap(ARM64_HAS_FPMR)) {
+> +		WARN_ON_ONCE(&current->thread.fpmr + 1 != fpsimd_share_end(fpsimd));
+
+How can this happen?
+
+> +		vcpu->arch.host_fpmr = kern_hyp_va(&current->thread.fpmr);
+> +	}
+
+We really need to stop piling the save/restore of stuff that isn't
+advertised to the guest.
+
+	M.
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
