@@ -2,237 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32BF280968E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 00:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6CF7809686
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 00:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444119AbjLGX0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 18:26:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42352 "EHLO
+        id S1444099AbjLGXYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 18:24:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232505AbjLGX0L (ORCPT
+        with ESMTP id S229671AbjLGXYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 18:26:11 -0500
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9C41719
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 15:26:17 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 37EDE3200B8F;
-        Thu,  7 Dec 2023 18:26:16 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 07 Dec 2023 18:26:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1701991575; x=1702077975; bh=Bt
-        llAeRuCcPTl4gOdGM/QH1NvWPxw+8wNvSb0SE/0x4=; b=EaAnBEEkCePGS88Kzt
-        KeGILp5fDctSLpMJrATWla6rcjKJROlBbb/Jp9oa9HRF22ijq7D70YpIAPyX5Rn8
-        ZqRjT14uc0F9df6Yk5Dk0kL7jaZT8OGuHt5LnC+kIIGQK1cu92FvaO9CfyC37let
-        I0kkOoAEmaFHnxMtcejllHRadVW8jB59t0JfzOTte0jTjKxt8TqXjVtMNrWadT6N
-        j/N9ZcwplQPVg83+JSsJQNq9P66OW4AzasD2Oh180NdMMfbOdO63QWhLivToRNOu
-        55wO3jqKPxa6vIlP6bjvSGCm9MM4aU/HPadA4fTpxyJGX17vuZ+dLJQiwHF1yI3t
-        R6oQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701991575; x=1702077975; bh=BtllAeRuCcPTl
-        4gOdGM/QH1NvWPxw+8wNvSb0SE/0x4=; b=SPimJHgega8xzRp7sPUJLqkbYjFmw
-        CbHOvU5wtYJXA08x9q8+sTR7P1/oR7ZKDzGY5Vj2n6GeyDms/Ont5aOfybAyz5pN
-        9cNNzw1WJk1xazjratCZ5NvtRoWP99b9278BWi7pZoQPHuk8MBifUuPHHZ/HLxnR
-        DdDN4/yVb0AbQj7zf23utL/jd7i8DCpRML3ebSQIWAKdQ71PxXabsK4guInpooha
-        r5btUwawqJ+/ZXhh1YFKdhlPKDgIAnxiC3IWSgNfkT/MFO79Pf0qt4tIXHEmCxdI
-        MvVnyxwnLhXuxZTChA6hV3D+DXflHbs01BKcB3vbekQ7ypsJUDzIqPXBg==
-X-ME-Sender: <xms:l1RyZXB9ColG3E4W4I7lmlDe_QYBgPYyzqlF8xUAV3R9vz3Nfx_NUg>
-    <xme:l1RyZdgkYNF7_3v0hO2C-WFMTtbgcgVrPTo1wOHQjwd2r3f5H2p_jjX4tvhAAOoij
-    7C6VbLFTlnmuzH6Oys>
-X-ME-Received: <xmr:l1RyZSkYisWq3fVFcOZpgt4WlZz_EFBVAIP5tv-C8dSEwvVGpWrqeU8O>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekgedgtddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpehffgfhvfevufffjgfkgggtsehttd
-    ertddtredtnecuhfhrohhmpefuthgvfhgrnhcutfhovghstghhuceoshhhrhesuggvvhhk
-    vghrnhgvlhdrihhoqeenucggtffrrghtthgvrhhnpeduteejkefhueffkeekudffueeihe
-    dukeeuteejvedvgeekhfehheektddtuefghfenucffohhmrghinhepmhgrrhgtrdhinhhf
-    ohenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehshh
-    hrseguvghvkhgvrhhnvghlrdhioh
-X-ME-Proxy: <xmx:l1RyZZyLMEaPyPaIS8ozLA2EQJMegIE5vur9Jgxq71PQm5vijvFU7w>
-    <xmx:l1RyZcRdLbj1TWQ8H94hwjmtFMO1TfHZy-0hSaCVZG1VHeb2g7mP4Q>
-    <xmx:l1RyZcagJRcnxe80qsmRQHLga1PlLX08DFG2l3jWh-m1GYrhDKH_2Q>
-    <xmx:l1RyZRLqcISa-kYJ4AMWKg9YmEu378VWxacZqqeU4MeFrYcTO2Ujpw>
-Feedback-ID: i84614614:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 7 Dec 2023 18:26:13 -0500 (EST)
-References: <20231204234906.1237478-1-shr@devkernel.io>
- <20231205124610.ca70c47e880daa81a0f21f07@linux-foundation.org>
-User-agent: mu4e 1.10.3; emacs 29.1
-From:   Stefan Roesch <shr@devkernel.io>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     kernel-team@fb.com, david@redhat.com, hannes@cmpxchg.org,
-        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 0/4] mm/ksm: Add ksm advisor
-Date:   Thu, 07 Dec 2023 15:18:27 -0800
-In-reply-to: <20231205124610.ca70c47e880daa81a0f21f07@linux-foundation.org>
-Message-ID: <87il59vbl9.fsf@devkernel.io>
+        Thu, 7 Dec 2023 18:24:35 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C217E10DD;
+        Thu,  7 Dec 2023 15:24:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701991481; x=1733527481;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xoqsFo9dnxWWy6BSu4v73RRiTtczxofsXV0GmHIT9GE=;
+  b=CZUOsi4MRyWo6dTjyx6dlzZvFQVxCzNSvyuTR7nYOeZrM6R1QHA8kyLv
+   GDpZyQYVbWscMLzKrGqfPd2xC0Wq5PNYlea1TSoa7ln1FOHRuY5L5B828
+   1COj643IiPmYYOZRr/YBvup2thxeuDNrASASSYs1ui/MKVuP3fs+pEM8k
+   sLOazRxhQh95MYbNytoqZSaSJv5ZtIV3iXsTlVnvPElosyZzjtJ8Gyh1Q
+   NX/k637d3jMgz0TBYIBRVWQrS//eNOBd7V4x6uLPrBU61+i+zgjGFF59d
+   zHQBp8yWzLIdQRnl1SmLxNkhDodYpjyP0N09I8ehI8hS3drT9aG3sY4vY
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1430969"
+X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
+   d="scan'208";a="1430969"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 15:24:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="771923277"
+X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
+   d="scan'208";a="771923277"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 07 Dec 2023 15:24:36 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBNjM-000CyZ-1m;
+        Thu, 07 Dec 2023 23:24:32 +0000
+Date:   Fri, 8 Dec 2023 07:23:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     RD Babiera <rdbabiera@google.com>, heikki.krogerus@linux.intel.com,
+        linux@roeck-us.net, gregkh@linuxfoundation.org,
+        pmalani@chromium.org, bleung@chromium.org,
+        chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        badhri@google.com, tzungbi@kernel.org, utkarsh.h.patel@intel.com,
+        andriy.shevchenko@linux.intel.com,
+        RD Babiera <rdbabiera@google.com>
+Subject: Re: [PATCH v1 02/10] usb: typec: tcpci: enable reception of SOP'
+ messages
+Message-ID: <202312080751.GDJHcwNz-lkp@intel.com>
+References: <20231207090738.15721-14-rdbabiera@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207090738.15721-14-rdbabiera@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi RD,
 
-Andrew Morton <akpm@linux-foundation.org> writes:
+kernel test robot noticed the following build errors:
 
-> On Mon,  4 Dec 2023 15:49:02 -0800 Stefan Roesch <shr@devkernel.io> wrote:
->
->> What is the KSM advisor?
->> =========================
->> The ksm advisor automatically manages the pages_to_scan setting to
->> achieve a target scan time. The target scan time defines how many seconds
->> it should take to scan all the candidate KSM pages. In other words the
->> pages_to_scan rate is changed by the advisor to achieve the target scan
->> time.
->
-> Dumb question time.  Can this be done in userspace?  Presumably this
-> will require exposing some additional kernel state to userspace.
->
+[auto build test ERROR on 5e4c8814a431d21bfaf20b464134f40f2f81e152]
 
-Userspace doesn't look like a good fit
-- We need access to how much cpu the ksmd kernel thread spent during the
-last scan
-- We want to recompute this after each scan completes, so the new
-parameter is in effect for the next scan and to avoid we have to
-partially deal with new values in the middle
-- When the advisor is active we want to disable that other users can
-manually set the scan rate.
+url:    https://github.com/intel-lab-lkp/linux/commits/RD-Babiera/usb-typec-bus-provide-transmit-type-for-alternate-mode-drivers/20231207-171114
+base:   5e4c8814a431d21bfaf20b464134f40f2f81e152
+patch link:    https://lore.kernel.org/r/20231207090738.15721-14-rdbabiera%40google.com
+patch subject: [PATCH v1 02/10] usb: typec: tcpci: enable reception of SOP' messages
+config: x86_64-allmodconfig (https://download.01.org/0day-ci/archive/20231208/202312080751.GDJHcwNz-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231208/202312080751.GDJHcwNz-lkp@intel.com/reproduce)
 
-The scan advisor might be augmented with per page cost in the future.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312080751.GDJHcwNz-lkp@intel.com/
 
->> Why do we need a KSM advisor?
->> ==============================
->> The number of candidate pages for KSM is dynamic. It can often be observed
->> that during the startup of an application more candidate pages need to be
->> processed. Without an advisor the pages_to_scan parameter needs to be
->> sized for the maximum number of candidate pages. With the scan time
->> advisor the pages_to_scan parameter based can be changed based on demand.
->>
->> Algorithm
->> ==========
->> The algorithm calculates the change value based on the target scan time
->> and the previous scan time. To avoid pertubations an exponentially
->> weighted moving average is applied.
->>
->> The algorithm has a max and min
->> value to:
->> - guarantee responsiveness to changes
->> - to limit CPU resource consumption
->>
->> Parameters to influence the KSM scan advisor
->> =============================================
->> The respective parameters are:
->> - ksm_advisor_mode
->>   0: None (default), 1: scan time advisor
->> - ksm_advisor_target_scan_time
->>   how many seconds a scan should of all candidate pages take
->> - ksm_advisor_max_cpu
->>   upper limit for the cpu usage in percent of the ksmd background thread
->>
->> The initial value and the max value for the pages_to_scan parameter can
->> be limited with:
->> - ksm_advisor_min_pages
->>   minimum value for pages_to_scan per batch
->> - ksm_advisor_max_pages
->>   maximum value for pages_to_scan per batch
->
-> Should these be called ksm_advisor_min_pages_to_scan?
->
+All errors (new ones prefixed by >>):
 
-That's a good recommendation. I'll make that change and the
-corresponding change for max.
+>> drivers/usb/typec/tcpm/fusb302.c:1470:39: error: too few arguments to function call, expected 3, have 2
+                   tcpm_pd_receive(chip->tcpm_port, msg);
+                   ~~~~~~~~~~~~~~~                     ^
+   include/linux/usb/tcpm.h:172:6: note: 'tcpm_pd_receive' declared here
+   void tcpm_pd_receive(struct tcpm_port *port,
+        ^
+   1 error generated.
+--
+>> drivers/usb/typec/tcpm/wcove.c:538:37: error: too few arguments to function call, expected 3, have 2
+                           tcpm_pd_receive(wcove->tcpm, &msg);
+                           ~~~~~~~~~~~~~~~                  ^
+   include/linux/usb/tcpm.h:172:6: note: 'tcpm_pd_receive' declared here
+   void tcpm_pd_receive(struct tcpm_port *port,
+        ^
+   1 error generated.
+--
+>> drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c:302:52: error: too few arguments to function call, expected 3, have 2
+                   tcpm_pd_receive(pmic_typec_pdphy->tcpm_port, &msg);
+                   ~~~~~~~~~~~~~~~                                  ^
+   include/linux/usb/tcpm.h:172:6: note: 'tcpm_pd_receive' declared here
+   void tcpm_pd_receive(struct tcpm_port *port,
+        ^
+   1 error generated.
 
->> The default settings for the above two parameters should be suitable for
->> most workloads.
->>
->> The parameters are exposed as knobs in /sys/kernel/mm/ksm. By default the
->> scan time advisor is disabled.
->
-> Disabling it will reduce the effectiveness of testing.  What are the
-> risks of defaulting to "on"?
->
 
-Some users might have already tuned the values for pages_to_scan. So
-generally turning it on might not be good. However we could turn it on,
-it the default value of 100 for pages_to_scan hasn't been changed.
+vim +1470 drivers/usb/typec/tcpm/fusb302.c
 
-Any thoughts?
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1421  
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1422  static int fusb302_pd_read_message(struct fusb302_chip *chip,
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1423  				   struct pd_message *msg)
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1424  {
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1425  	int ret = 0;
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1426  	u8 token;
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1427  	u8 crc[4];
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1428  	int len;
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1429  
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1430  	/* first SOP token */
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1431  	ret = fusb302_i2c_read(chip, FUSB_REG_FIFOS, &token);
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1432  	if (ret < 0)
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1433  		return ret;
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1434  	ret = fusb302_i2c_block_read(chip, FUSB_REG_FIFOS, 2,
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1435  				     (u8 *)&msg->header);
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1436  	if (ret < 0)
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1437  		return ret;
+f03d95f59026d1 drivers/staging/typec/fusb302/fusb302.c Guru Das Srinagesh 2017-05-10  1438  	len = pd_header_cnt_le(msg->header) * 4;
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1439  	/* add 4 to length to include the CRC */
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1440  	if (len > PD_MAX_PAYLOAD * 4) {
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1441  		fusb302_log(chip, "PD message too long %d", len);
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1442  		return -EINVAL;
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1443  	}
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1444  	if (len > 0) {
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1445  		ret = fusb302_i2c_block_read(chip, FUSB_REG_FIFOS, len,
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1446  					     (u8 *)msg->payload);
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1447  		if (ret < 0)
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1448  			return ret;
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1449  	}
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1450  	/* another 4 bytes to read CRC out */
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1451  	ret = fusb302_i2c_block_read(chip, FUSB_REG_FIFOS, 4, crc);
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1452  	if (ret < 0)
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1453  		return ret;
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1454  	fusb302_log(chip, "PD message header: %x", msg->header);
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1455  	fusb302_log(chip, "PD message len: %d", len);
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1456  
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1457  	/*
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1458  	 * Check if we've read off a GoodCRC message. If so then indicate to
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1459  	 * TCPM that the previous transmission has completed. Otherwise we pass
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1460  	 * the received message over to TCPM for processing.
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1461  	 *
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1462  	 * We make this check here instead of basing the reporting decision on
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1463  	 * the IRQ event type, as it's possible for the chip to report the
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1464  	 * TX_SUCCESS and GCRCSENT events out of order on occasion, so we need
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1465  	 * to check the message type to ensure correct reporting to TCPM.
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1466  	 */
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1467  	if ((!len) && (pd_header_type_le(msg->header) == PD_CTRL_GOOD_CRC))
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1468  		tcpm_pd_transmit_complete(chip->tcpm_port, TCPC_TX_SUCCESS);
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1469  	else
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21 @1470  		tcpm_pd_receive(chip->tcpm_port, msg);
+ab69f61321140f drivers/usb/typec/fusb302/fusb302.c     Adam Thomson       2017-11-21  1471  
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1472  	return ret;
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1473  }
+c034a43e72dda5 drivers/staging/typec/fusb302/fusb302.c Yueyao Zhu         2017-04-27  1474  
 
->> Currently there are two advisors:
->> - none and
->> - scan-time.
->>
->> Resource savings
->> =================
->> Tests with various workloads have shown considerable CPU savings. Most
->> of the workloads I have investigated have more candidate pages during
->> startup. Once the workload is stable in terms of memory, the number of
->> candidate pages is reduced. Without the advisor, the pages_to_scan needs
->> to be sized for the maximum number of candidate pages. So having this
->> advisor definitely helps in reducing CPU consumption.
->>
->> For the instagram workload, the advisor achieves a 25% CPU reduction.
->
-> 25% of what?  What is the overall affect on machine resource
-> consumption?
->
-
-25% of the cpu consumption of the ksmd background thread. On a 32 cpu
-machine this translates to 1 to 2% cpu savings alltogether.
-
-However this is highly workload dependent.
-
->> Once the memory is stable, the pages_to_scan parameter gets reduced to
->> about 40% of its max value.
->>
->> The new advisor works especially well if the smart scan feature is also
->> enabled.
->>
->> How is defining a target scan time better?
->> ===========================================
->> For an administrator it is more logical to set a target scan time.. The
->> administrator can determine how many pages are scanned on each scan.
->> Therefore setting a target scan time makes more sense.
->>
->> In addition the administrator might have a good idea about the memory
->> sizing of its respective workloads.
->>
->> Setting cpu limits is easier than setting The pages_to_scan parameter. The
->> pages_to_scan parameter is per batch. For the administrator it is difficult
->> to set the pages_to_scan parameter.
->>
->> Tracing
->> =======
->> A new tracing event has been added for the scan time advisor. The new
->> trace event is called ksm_advisor. It reports the scan time, the new
->> pages_to_scan setting and the cpu usage of the ksmd background thread.
->>
->> Other approaches
->> =================
->>
->> Approach 1: Adapt pages_to_scan after processing each batch. If KSM
->>   merges pages, increase the scan rate, if less KSM pages, reduce the
->>   the pages_to_scan rate. This doesn't work too well. While it increases
->>   the pages_to_scan for a short period, but generally it ends up with a
->>   too low pages_to_scan rate.
->>
->> Approach 2: Adapt pages_to_scan after each scan. The problem with that
->>   approach is that the calculated scan rate tends to be high. The more
->>   aggressive KSM scans, the more pages it can de-duplicate.
->>
->> There have been earlier attempts at an advisor:
->>   propose auto-run mode of ksm and its tests
->>   (https://marc.info/?l=linux-mm&m=166029880214485&w=2)
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
