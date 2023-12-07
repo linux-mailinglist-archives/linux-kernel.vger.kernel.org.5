@@ -2,261 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE34B808E5B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:13:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D64808E5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443149AbjLGRGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:06:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44702 "EHLO
+        id S233045AbjLGRKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:10:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233096AbjLGRGl (ORCPT
+        with ESMTP id S235208AbjLGRK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:06:41 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 09763D1;
-        Thu,  7 Dec 2023 09:06:47 -0800 (PST)
-Received: from [192.168.178.49] (dynamic-adsl-84-220-28-122.clienti.tiscali.it [84.220.28.122])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 32DE920B74C0;
-        Thu,  7 Dec 2023 09:06:41 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 32DE920B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1701968806;
-        bh=56k6nLXOObGCyIj9dZYd9gyocqrB3kKOchmRLoVdHg4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=kEmh9SUaaXtb8FDQoPxKy5lGxqy6p9XmIPh9Tt8pQOFdn5PgyFiaQsmtlpeqjN9PT
-         gwSWOJFN2L+zMnLcIXjxd3/RjI1t9QTJTX/JhSbvSpwu17fM+CgAywmNg/+PnsckN6
-         SnaoZliD7Pap2lnjf8VqyUbSAu81sVTFNJTdIxhQ=
-Message-ID: <66cff831-1766-4b82-b95a-bc3790a6f24b@linux.microsoft.com>
-Date:   Thu, 7 Dec 2023 18:06:38 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Michael Kelley <mhkelley58@gmail.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Cui, Dexuan" <decui@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
-        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
-        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
-        "cascardo@canonical.com" <cascardo@canonical.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
- <DM8PR11MB575090573031AD9888D4738AE786A@DM8PR11MB5750.namprd11.prod.outlook.com>
- <9ab71fee-be9f-4afc-8098-ad9d6b667d46@linux.microsoft.com>
- <20231205105407.vp2rejqb5avoj7mx@box.shutemov.name>
- <0c4e33f0-6207-448d-a692-e81391089bea@linux.microsoft.com>
- <20231206225415.zxfm2ndpwsmthc6e@box.shutemov.name>
+        Thu, 7 Dec 2023 12:10:28 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04981732;
+        Thu,  7 Dec 2023 09:10:30 -0800 (PST)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B7GtMTu017039;
+        Thu, 7 Dec 2023 09:08:20 -0800
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3uu8qea6rr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 09:08:19 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vv2QyaZ9TqItjhjdeYg8R/LA/hIrn4YTMSjvLYlLZHh2oohOkACOII10KpaH11JQe6Kig5tuddIHMoF9/svDrpOouBazQf139MFLR6yZzzP2Xvz3BQtGel8cA5TL+mH0D2g4sQ2LckuPw/PvbVKfjc6ydDRU8jpqYrJLC2BwHqgewAD0Yfy+2bWXsnVt7UHdzNxG4AtTITnM4Vbx4/Si+oIaIRt17w488K3iLIrz3Bff1cRpMxmr3lf2tSuyhHko0ICmkWYN9y9r1JOgTFutJE86C3SRJxP3iv7iuqj4EjJ5j7FtUCiPteaeQpNQ++t3ejPysKw7vEH2u+wGwJbf2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zBbFsFs2ThFOD02x9Atzw497CJduJifVYy8Od0T09hM=;
+ b=Wj99YwmEyz0weGSaoeds5qSWgB+vRh0cWEatHyNUeUUQbts/LzWFZMjrA5/1sB5Vn8Ai697gyk+QGJJVMraTCqbjJpV8Xk+oyrJMFZeC2wjAcjF9N+X08Q2UQDAXAPxQbaVYzY9KIfA4JrfQxg8Gr+JSfBpvAULyORnNvzWFVc3xl1vg0fF8BCnrDWH7HAoFWvF0Nch8D2vXNGkCiwUX4qQlbB2fzNvyltZ4KrHt2YP4Xl7qVngCLk6G3/HLg1pTGGSLqhAHX4hGrnQiooHMNFEULBxbQnRpGvsM3ugDQ6H4kTW6HTxOkznoZosAXgrhO6Vd2KKdDqaY4cI0LXwhqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zBbFsFs2ThFOD02x9Atzw497CJduJifVYy8Od0T09hM=;
+ b=ESmUoNBi23s9IKhyAMpcTjDhojbRwSVCX2C2HxH4GKjjzdUUhFQjfRym3aEwBKXdZKF0M/LFs1hyuIFQYE05Cmioa+cMi+Ghc3m1CrMasQbg8rXLFRygYd4TnlkON0cmv5JK3EMXKGa3n65ISD3UiN0JzpeX6N+7ygLpLbUgNrE=
+Received: from SJ0PR18MB5216.namprd18.prod.outlook.com (2603:10b6:a03:430::6)
+ by SJ2PR18MB5588.namprd18.prod.outlook.com (2603:10b6:a03:55f::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.14; Thu, 7 Dec
+ 2023 17:08:15 +0000
+Received: from SJ0PR18MB5216.namprd18.prod.outlook.com
+ ([fe80::6a4f:cb8d:70fd:ef2]) by SJ0PR18MB5216.namprd18.prod.outlook.com
+ ([fe80::6a4f:cb8d:70fd:ef2%4]) with mapi id 15.20.7091.014; Thu, 7 Dec 2023
+ 17:08:15 +0000
+From:   Suman Ghosh <sumang@marvell.com>
+To:     Zhipeng Lu <alexious@zju.edu.cn>
+CC:     Chris Snook <chris.snook@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Simon Horman <horms@kernel.org>,
+        Yuanjun Gong <ruc_gongyuanjun@163.com>,
+        Jie Yang <jie.yang@atheros.com>,
+        Jeff Garzik <jgarzik@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [EXT] [PATCH] ethernet: atheros: fix a memleak in
+ atl1e_setup_ring_resources
+Thread-Topic: [EXT] [PATCH] ethernet: atheros: fix a memleak in
+ atl1e_setup_ring_resources
+Thread-Index: AQHaKRsv7nzqkhz5D02RUtwgtknIiLCeDKvw
+Date:   Thu, 7 Dec 2023 17:08:15 +0000
+Message-ID: <SJ0PR18MB52161F73B08DA547F7A8F3B8DB8BA@SJ0PR18MB5216.namprd18.prod.outlook.com>
+References: <20231207143822.3358727-1-alexious@zju.edu.cn>
+In-Reply-To: <20231207143822.3358727-1-alexious@zju.edu.cn>
+Accept-Language: en-IN, en-US
 Content-Language: en-US
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <20231206225415.zxfm2ndpwsmthc6e@box.shutemov.name>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcc3VtYW5nXGFw?=
+ =?us-ascii?Q?cGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEy?=
+ =?us-ascii?Q?OWUzNWJcbXNnc1xtc2ctMzM0MzMzNzQtOTUyMy0xMWVlLWI3MDAtODQxNDRk?=
+ =?us-ascii?Q?ZWVhNTRjXGFtZS10ZXN0XDMzNDMzMzc2LTk1MjMtMTFlZS1iNzAwLTg0MTQ0?=
+ =?us-ascii?Q?ZGVlYTU0Y2JvZHkudHh0IiBzej0iMTUyMiIgdD0iMTMzNDY0NDI0OTIxNjY0?=
+ =?us-ascii?Q?NzIyIiBoPSJVMlNSVDBrWGsrTXVtanNXSm1hM2FBdTVJcXc9IiBpZD0iIiBi?=
+ =?us-ascii?Q?bD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFCZ1dBQURT?=
+ =?us-ascii?Q?akp2MUx5bmFBUVg0ZWlkdnJvVUhCZmg2SjIrdWhRY1pBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBSEFBQUFCdUR3QUEzZzhBQURvR0FBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?RUFBUUVCQUFBQTlSZW5Md0NBQVFBQUFBQUFBQUFBQUo0QUFBQmhBR1FBWkFC?=
+ =?us-ascii?Q?eUFHVUFjd0J6QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
+ =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdNQWRRQnpBSFFBYndCdEFGOEFjQUJs?=
+ =?us-ascii?Q?QUhJQWN3QnZBRzRBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFB?=
+ =?us-ascii?Q?QUFDZUFBQUFZd0IxQUhNQWRBQnZBRzBBWHdCd0FHZ0Fid0J1QUdVQWJnQjFB?=
+ =?us-ascii?Q?RzBBWWdCbEFISUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCakFIVUFj?=
+ =?us-ascii?Q?d0IwQUc4QWJRQmZBSE1BY3dCdUFGOEFaQUJoQUhNQWFBQmZBSFlBTUFBeUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-refone: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR01B?=
+ =?us-ascii?Q?ZFFCekFIUUFid0J0QUY4QWN3QnpBRzRBWHdCckFHVUFlUUIzQUc4QWNnQmtB?=
+ =?us-ascii?Q?SE1BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFBQVl3QjFBSE1BZEFCdkFHMEFY?=
+ =?us-ascii?Q?d0J6QUhNQWJnQmZBRzRBYndCa0FHVUFiQUJwQUcwQWFRQjBBR1VBY2dCZkFI?=
+ =?us-ascii?Q?WUFNQUF5QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUlBQUFBQUFKNEFBQUJqQUhVQWN3QjBBRzhBYlFCZkFITUFjd0J1QUY4QWN3?=
+ =?us-ascii?Q?QndBR0VBWXdCbEFGOEFkZ0F3QURJQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFH?=
+ =?us-ascii?Q?UUFiQUJ3QUY4QWN3QnJBSGtBY0FCbEFGOEFZd0JvQUdFQWRBQmZBRzBBWlFC?=
+ =?us-ascii?Q?ekFITUFZUUJuQUdVQVh3QjJBREFBTWdBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWkFCc0FIQUFYd0J6QUd3?=
+ =?us-ascii?Q?QVlRQmpBR3NBWHdCakFHZ0FZUUIwQUY4QWJRQmxBSE1BY3dCaEFHY0FaUUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reftwo: =?us-ascii?Q?QUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQmtBR3dBY0FCZkFI?=
+ =?us-ascii?Q?UUFaUUJoQUcwQWN3QmZBRzhBYmdCbEFHUUFjZ0JwQUhZQVpRQmZBR1lBYVFC?=
+ =?us-ascii?Q?c0FHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFB?=
+ =?us-ascii?Q?QUFBQUFBQWdBQUFBQUFuZ0FBQUdVQWJRQmhBR2tBYkFCZkFHRUFaQUJrQUhJ?=
+ =?us-ascii?Q?QVpRQnpBSE1BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFD?=
+ =?us-ascii?Q?ZUFBQUFiUUJoQUhJQWRnQmxBR3dBWHdCd0FISUFid0JxQUdVQVl3QjBBRjhB?=
+ =?us-ascii?Q?YmdCaEFHMEFaUUJ6QUY4QVl3QnZBRzRBWmdCcEFHUUFaUUJ1QUhRQWFRQmhB?=
+ =?us-ascii?Q?R3dBWHdCaEFHd0Fid0J1QUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCdEFHRUFjZ0Iy?=
+ =?us-ascii?Q?QUdVQWJBQmZBSEFBY2dCdkFHb0FaUUJqQUhRQVh3QnVBR0VBYlFCbEFITUFY?=
+ =?us-ascii?Q?d0J5QUdVQWN3QjBBSElBYVFCakFIUUFaUUJrQUY4QVlRQnNBRzhBYmdCbEFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVB?=
+ =?us-ascii?Q?QUFBQUFBQUFBZ0FBQUFBQW5nQUFBRzBBWVFCeUFIWUFaUUJzQUY4QWNBQnlB?=
+ =?us-ascii?Q?RzhBYWdCbEFHTUFkQUJmQUc0QVlRQnRBR1VBY3dCZkFISUFaUUJ6QUhRQWNn?=
+ =?us-ascii?Q?QnBBR01BZEFCbEFHUUFYd0JvQUdVQWVBQmpBRzhBWkFCbEFITUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFB?=
+ =?us-ascii?Q?QUNlQUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUdFQWNnQnRBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-rorf: true
+x-dg-refthree: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlB?=
+ =?us-ascii?Q?QUFBQUFKNEFBQUJ0QUdFQWNnQjJBR1VBYkFCc0FGOEFad0J2QUc4QVp3QnNB?=
+ =?us-ascii?Q?R1VBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZ?=
+ =?us-ascii?Q?UUJ5QUhZQVpRQnNBR3dBWHdCd0FISUFid0JxQUdVQVl3QjBBRjhBWXdCdkFH?=
+ =?us-ascii?Q?UUFaUUJ6QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJB?=
+ =?us-ascii?Q?QmZBSEFBY2dCdkFHb0FaUUJqQUhRQVh3QmpBRzhBWkFCbEFITUFYd0JrQUdr?=
+ =?us-ascii?Q?QVl3QjBBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFB?=
+ =?us-ascii?Q?SUFBQUFBQUo0QUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QWNBQnlBRzhBYWdC?=
+ =?us-ascii?Q?bEFHTUFkQUJmQUc0QVlRQnRBR1VBY3dCZkFHTUFid0J1QUdZQWFRQmtBR1VB?=
+ =?us-ascii?Q?YmdCMEFHa0FZUUJzQUY4QWJRQmhBSElBZGdCbEFHd0FiQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUcw?=
+ =?us-ascii?Q?QVlRQnlBSFlBWlFCc0FHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFiZ0Jo?=
+ =?us-ascii?Q?QUcwQVpRQnpBRjhBWXdCdkFHNEFaZ0JwQUdRQVpRQnVBSFFBYVFCaEFHd0FY?=
+ =?us-ascii?Q?d0J0QUdFQWNnQjJBR1VBYkFCc0FGOEFid0J5QUY4QVlRQnlBRzBBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reffour: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFB?=
+ =?us-ascii?Q?QUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdC?=
+ =?us-ascii?Q?dUFHRUFiUUJsQUhNQVh3QmpBRzhBYmdCbUFHa0FaQUJsQUc0QWRBQnBBR0VB?=
+ =?us-ascii?Q?YkFCZkFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCdkFISUFYd0JuQUc4QWJ3Qm5B?=
+ =?us-ascii?Q?R3dBWlFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCdEFHRUFjZ0IyQUdV?=
+ =?us-ascii?Q?QWJBQnNBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0Jm?=
+ =?us-ascii?Q?QUhJQVpRQnpBSFFBY2dCcEFHTUFkQUJsQUdRQVh3QnRBR0VBY2dCMkFHVUFi?=
+ =?us-ascii?Q?QUJzQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFB?=
+ =?us-ascii?Q?QUFBQUFBZ0FBQUFBQW5nQUFBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QndBSElB?=
+ =?us-ascii?Q?YndCcUFHVUFZd0IwQUY4QWJnQmhBRzBBWlFCekFGOEFjZ0JsQUhNQWRBQnlB?=
+ =?us-ascii?Q?R2tBWXdCMEFHVUFaQUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3?=
+ =?us-ascii?Q?QmhBSElBYlFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNl?=
+ =?us-ascii?Q?QUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUhRQVpRQnlBRzBBYVFCdUFIVUFj?=
+ =?us-ascii?Q?d0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNnQjJB?=
+ =?us-ascii?Q?R1VBYkFCc0FGOEFkd0J2QUhJQVpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFnQUFBQUFBT2dZQUFBQUFBQUFJQUFBQUFBQUFBQWdBQUFBQUFB?=
+ =?us-ascii?Q?QUFDQUFBQUFBQUFBQWFCZ0FBR1FBQUFCZ0FB?=
+x-dg-reffive: =?us-ascii?Q?QUFBQUFBQVlRQmtBR1FBY2dCbEFITUFjd0FBQUNRQUFBQUFBQUFBWXdCMUFI?=
+ =?us-ascii?Q?TUFkQUJ2QUcwQVh3QndBR1VBY2dCekFHOEFiZ0FBQUM0QUFBQUFBQUFBWXdC?=
+ =?us-ascii?Q?MUFITUFkQUJ2QUcwQVh3QndBR2dBYndCdUFHVUFiZ0IxQUcwQVlnQmxBSElB?=
+ =?us-ascii?Q?QUFBd0FBQUFBQUFBQUdNQWRRQnpBSFFBYndCdEFGOEFjd0J6QUc0QVh3QmtB?=
+ =?us-ascii?Q?R0VBY3dCb0FGOEFkZ0F3QURJQUFBQXdBQUFBQUFBQUFHTUFkUUJ6QUhRQWJ3?=
+ =?us-ascii?Q?QnRBRjhBY3dCekFHNEFYd0JyQUdVQWVRQjNBRzhBY2dCa0FITUFBQUErQUFB?=
+ =?us-ascii?Q?QUFBQUFBR01BZFFCekFIUUFid0J0QUY4QWN3QnpBRzRBWHdCdUFHOEFaQUJs?=
+ =?us-ascii?Q?QUd3QWFRQnRBR2tBZEFCbEFISUFYd0IyQURBQU1nQUFBRElBQUFBQUFBQUFZ?=
+ =?us-ascii?Q?d0IxQUhNQWRBQnZBRzBBWHdCekFITUFiZ0JmQUhNQWNBQmhBR01BWlFCZkFI?=
+ =?us-ascii?Q?WUFNQUF5QUFBQVBnQUFBQUFBQUFCa0FHd0FjQUJmQUhNQWF3QjVBSEFBWlFC?=
+ =?us-ascii?Q?ZkFHTUFhQUJoQUhRQVh3QnRBR1VBY3dCekFHRUFad0JsQUY4QWRnQXdBRElB?=
+ =?us-ascii?Q?QUFBMkFBQUFBQUFBQUdRQWJBQndBRjhBY3dCc0FHRUFZd0JyQUY4QVl3Qm9B?=
+ =?us-ascii?Q?R0VBZEFCZkFHMEFaUUJ6QUhNQVlRQm5BR1VBQUFBNEFBQUFBQUFBQUdRQWJB?=
+ =?us-ascii?Q?QndBRjhBZEFCbEFHRUFiUUJ6QUY4QWJ3QnVBR1VBWkFCeUFHa0FkZ0JsQUY4?=
+ =?us-ascii?Q?QVpnQnBBR3dBWlFBQUFDUUFBQUFBQUFBQVpRQnRBR0VBYVFCc0FGOEFZUUJr?=
+ =?us-ascii?Q?QUdRQWNnQmxBSE1BY3dBQUFGZ0FBQUFBQUFBQWJRQmhBSElBZGdCbEFHd0FY?=
+ =?us-ascii?Q?d0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFiZ0JoQUcwQVpRQnpBRjhBWXdCdkFH?=
+ =?us-ascii?Q?NEFaZ0JwQUdRQVpRQnVBSFFBYVFCaEFHd0FYd0JoQUd3QWJ3QnVBR1VBQUFC?=
+ =?us-ascii?Q?VUFBQUFBQUFBQUcwQVlRQnlBSFlBWlFCc0FGOEFjQUJ5QUc4QWFnQmxBR01B?=
+ =?us-ascii?Q?ZEFCZkFHNEFZUUJ0QUdVQWN3QmZBSElBWlFCekFIUUFjZ0JwQUdNQWRBQmxB?=
+ =?us-ascii?Q?R1FBWHdCaEFHd0Fid0J1QUdVQUFBQmFBQUFBQUFBQUFHMEFZUUJ5QUhZQVpR?=
+ =?us-ascii?Q?QnNBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUhJ?=
+ =?us-ascii?Q?QVpRQnpBSFFBY2dCcEFHTUFkQUJsQUdRQVh3Qm9BR1VBZUFCakFHOEFaQUJs?=
+ =?us-ascii?Q?QUhNQUFBQWdBQUFBQUFBQUFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCaEFISUFi?=
+ =?us-ascii?Q?UUFBQUNZQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBR2NBYndCdkFH?=
+ =?us-ascii?Q?Y0FiQUJsQUFBQU5BQUFBQUFBQUFCdEFHRUFj?=
+x-dg-refsix: =?us-ascii?Q?Z0IyQUdVQWJBQnNBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQmZBR01BYndCa0FH?=
+ =?us-ascii?Q?VUFjd0FBQUQ0QUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSEFBY2dC?=
+ =?us-ascii?Q?dkFHb0FaUUJqQUhRQVh3QmpBRzhBWkFCbEFITUFYd0JrQUdrQVl3QjBBQUFB?=
+ =?us-ascii?Q?WGdBQUFBQUFBQUJ0QUdFQWNnQjJBR1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxB?=
+ =?us-ascii?Q?R01BZEFCZkFHNEFZUUJ0QUdVQWN3QmZBR01BYndCdUFHWUFhUUJrQUdVQWJn?=
+ =?us-ascii?Q?QjBBR2tBWVFCc0FGOEFiUUJoQUhJQWRnQmxBR3dBYkFBQUFHd0FBQUFBQUFB?=
+ =?us-ascii?Q?QWJRQmhBSElBZGdCbEFHd0FiQUJmQUhBQWNnQnZBR29BWlFCakFIUUFYd0J1?=
+ =?us-ascii?Q?QUdFQWJRQmxBSE1BWHdCakFHOEFiZ0JtQUdrQVpBQmxBRzRBZEFCcEFHRUFi?=
+ =?us-ascii?Q?QUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3QmhBSElBYlFBQUFI?=
+ =?us-ascii?Q?SUFBQUFBQUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUhBQWNnQnZBR29BWlFC?=
+ =?us-ascii?Q?akFIUUFYd0J1QUdFQWJRQmxBSE1BWHdCakFHOEFiZ0JtQUdrQVpBQmxBRzRB?=
+ =?us-ascii?Q?ZEFCcEFHRUFiQUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3Qm5B?=
+ =?us-ascii?Q?RzhBYndCbkFHd0FaUUFBQUZvQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QWJB?=
+ =?us-ascii?Q?QmZBSEFBY2dCdkFHb0FaUUJqQUhRQVh3QnVBR0VBYlFCbEFITUFYd0J5QUdV?=
+ =?us-ascii?Q?QWN3QjBBSElBYVFCakFIUUFaUUJrQUY4QWJRQmhBSElBZGdCbEFHd0FiQUFB?=
+ =?us-ascii?Q?QUdnQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSEFBY2dCdkFHb0Fa?=
+ =?us-ascii?Q?UUJqQUhRQVh3QnVBR0VBYlFCbEFITUFYd0J5QUdVQWN3QjBBSElBYVFCakFI?=
+ =?us-ascii?Q?UUFaUUJrQUY4QWJRQmhBSElBZGdCbEFHd0FiQUJmQUc4QWNnQmZBR0VBY2dC?=
+ =?us-ascii?Q?dEFBQUFLZ0FBQUFBQUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QWRBQmxBSElB?=
+ =?us-ascii?Q?YlFCcEFHNEFkUUJ6QUFBQUlnQUFBQUFBQUFCdEFHRUFjZ0IyQUdVQWJBQnNB?=
+ =?us-ascii?Q?RjhBZHdCdkFISUFaQUFBQUE9PSIvPjwvbWV0YT4=3D?=
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR18MB5216:EE_|SJ2PR18MB5588:EE_
+x-ms-office365-filtering-correlation-id: 5d61cfe9-9436-486e-bd52-08dbf7471a0f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: C+P/acmLXJgm365FzaYo/42H9jRoweftVEUwUM1MVZS7sRWtS/M7xfhQG843VzvQ4G3PGdqsOqNh6ZjXSAl06pNXUKTFukgNCZbpuBUFMc7AER7U6MbZQ5ijUC9SpPPyeU71WDgSl+wpDammh8dGZpKN5ReTjj620llXpHLsRZoBjG1VG1vm/aKnL3psnW1627zokLTgV+CUozRB8LdQp4ouiK+hA6zMFcvm5D/sJFN1rEkkAVokS/6zXz+4h7tWMfIG7s1buFRGJH4QLj8ld2qEe5erzGKUUdF6a9UZn+Yqo+Z8GPigqHkBMT/xvATjJ78EhgbcpzqwelcI4IukB9epMXxUhITHdT3M0xpEN1h/ss4xNOVf6SnJplHzilSnic9jQCJXmLTbn6U+TxekhqnGjpfM83ytSwg9Omm0ASNHABeW8YDpSLlFHlL5VRty+Z7kBmaV4hf62N0zL2cVc/FOQMQrWrD63pFalzFd2HKwgPfA9HS8GhBVh/4t4TglsO8McRPHcd6fsWsgsODd6e3RVGEw119aCz6GWu979WbChloeLsvISMNSg+9iRIukcwORpJ/yMAV01TbQDSpfd76Y6622eYBNsWzY/5HgFu+ANOljmL1kx7GK15KTk6cP
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB5216.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(39850400004)(136003)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(9686003)(26005)(86362001)(52536014)(41300700001)(4326008)(8676002)(2906002)(4744005)(5660300002)(8936002)(7416002)(66946007)(38070700009)(76116006)(66556008)(316002)(6916009)(64756008)(54906003)(66446008)(66476007)(6506007)(7696005)(71200400001)(478600001)(33656002)(122000001)(38100700002)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?E+HxGOYSb0UTFokqPEL2QiszhOZ60LmXu+/snzRbgofIxKia52IoR+n6JeJ6?=
+ =?us-ascii?Q?AC+SBzuKUP89cbcy8mb/kws0xdEtiJMBnH/yEUXyFipSXpr55xx5BqVlxiZx?=
+ =?us-ascii?Q?SsA8fD+KCM82ImE0fysvDpRpLTUaHeG685pB5+gJt58qyzo7kCOcQlgQRsKf?=
+ =?us-ascii?Q?czPwYKAxnefDao0X2VJ4kfJ+J+zxdZLZWuEiaoyA9yfwBIl74qruFbYO9Ow7?=
+ =?us-ascii?Q?B+NWDKmT5NCWmAatOe4TkFC2GfFWRmtc24jCr9YWl2w2rTxzEf1ZQzKK5f8Z?=
+ =?us-ascii?Q?i1vnJfD6btUBr5JeCRHpd4iCdmO4Ht87wQ29Mnxk03C8cqDTM423AAEOI6J5?=
+ =?us-ascii?Q?C5j6KwHQ0kAPfjpdSGXHHlcat4YbKZCaeI6j2QLOsoXKcdGCjBx2eYY6R7e6?=
+ =?us-ascii?Q?Iedl1j2wOcnr7p1/iF09yucz02e/vos417Ja4akJM45YhWZJZyxzPerK76Js?=
+ =?us-ascii?Q?XEbZSO+FXn8qcclYKJMpZhPkirL3qDIlwJ7DeRxe3hxXu2bPf5GSw7/VC0wb?=
+ =?us-ascii?Q?h100bA0qLy5Tp5OYu9QQwV6l48b+SvN/0EZ4T+Uzbus7aM/CVTkYPzOVMem7?=
+ =?us-ascii?Q?bIhCRKIhW0x1H0dTtFiZt/4/SJ99cpoMnF6hkVWqOIr+P5ZNZmvBLlLn5ccl?=
+ =?us-ascii?Q?VJaVjBRH6hE8cl25KqilkSbryypjKpfxistgeShK6VWXKU6gYC1oQM/u6aFZ?=
+ =?us-ascii?Q?Ybiz4St9hOmNfJoHSZXVB47MGpaF+xfYcql9Dtbr/D/DvCdf/eGpUbBLW10/?=
+ =?us-ascii?Q?+E/kfwDFxcOdomqMtqgfiC2jzYU8uMcOqZonOmjPuGTsWaVW7m7zQSvZICXm?=
+ =?us-ascii?Q?ozC0/oFcRTPRFyf4hzJVtojBsyhUy3vzuNtSGPV8l90FyDlSctjLkQfUlnop?=
+ =?us-ascii?Q?DIhiw5vn2XzKdknCFxJXpHjDB/tkmlrYgcw9YnIt1wRCKfrnrwiinn0NMkDE?=
+ =?us-ascii?Q?8QJCgamNiUl30mNH1Xu4g3UhgV9XzPR5nZK0RxzCzlk8DHPhhWmtCx6GZtOm?=
+ =?us-ascii?Q?rt9C71ZksMkRVyXm3M0wItfHIqdWv7FbfdQi0we+EFYcUk9vfal6/OaLvRK8?=
+ =?us-ascii?Q?kEO94yI/OAuu7OD63Rlah2sAY8w4SVj9IdZ2OxxgiQFJCxPCQBZ5jX+FQ9uZ?=
+ =?us-ascii?Q?4GqlhwH3ZJTNy/ymO3gXADoS4qwIi3YuodK+fE0iWTj3wTre0WXe2eKGbW0Q?=
+ =?us-ascii?Q?/vNGU/HfmiSm3nh+AXosMPRNiKFqkXxeyBNaeIzEQr+ZsK4SkW/VHZFPyzvp?=
+ =?us-ascii?Q?+iClEBe7Ov23cjEbVD0dpROSRN0ms2iTO1bLAdRW+hvwTm7B4HQKG4wQN5xC?=
+ =?us-ascii?Q?Wuj4+qUbDp9FeVG9z6mT9OqLSxB9RHvYi72SZowBBTn0iFA3kR0x4OI4+dHm?=
+ =?us-ascii?Q?3ehhoShmKmL6cBgKffT+J6/oqLUQqy6pA5jegrHwMwHTzWxTvyC38Muph24M?=
+ =?us-ascii?Q?/CgSAa+Uivkc26I+OOeUykJg5Q50lkfq5VTEb/8nli4mskKXn/caj0ii4n+N?=
+ =?us-ascii?Q?vOhEV2A9hqJr0j1NO4QXoySjn6/1wq+msVcLSiDiJUCKh26bmi4RZOlYpaBW?=
+ =?us-ascii?Q?jrPFDof/1pX+8uDx78JnzDTbZTsflsNrCIjNpK3G?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB5216.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d61cfe9-9436-486e-bd52-08dbf7471a0f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Dec 2023 17:08:15.4886
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: j3ori12JhBQUpoeVCx1gPQu18PyyWSIg4stCgXzEM5L7jb63uvk4gbIRhHUlng9Mx5XQNgrbV4d9+9m1ffRlnQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR18MB5588
+X-Proofpoint-GUID: 7bjBNcryJIHSTaB_6Y8YcZe51i0Z95d1
+X-Proofpoint-ORIG-GUID: 7bjBNcryJIHSTaB_6Y8YcZe51i0Z95d1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-07_15,2023-12-07_01,2023-05-22_02
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 23:54, Kirill A. Shutemov wrote:
-> On Wed, Dec 06, 2023 at 06:49:11PM +0100, Jeremi Piotrowski wrote:
->> On 05/12/2023 11:54, Kirill A. Shutemov wrote:
->>> On Mon, Dec 04, 2023 at 08:07:38PM +0100, Jeremi Piotrowski wrote:
->>>> On 04/12/2023 10:17, Reshetova, Elena wrote:
->>>>>> Check for additional CPUID bits to identify TDX guests running with Trust
->>>>>> Domain (TD) partitioning enabled. TD partitioning is like nested virtualization
->>>>>> inside the Trust Domain so there is a L1 TD VM(M) and there can be L2 TD VM(s).
->>>>>>
->>>>>> In this arrangement we are not guaranteed that the TDX_CPUID_LEAF_ID is
->>>>>> visible
->>>>>> to Linux running as an L2 TD VM. This is because a majority of TDX facilities
->>>>>> are controlled by the L1 VMM and the L2 TDX guest needs to use TD partitioning
->>>>>> aware mechanisms for what's left. So currently such guests do not have
->>>>>> X86_FEATURE_TDX_GUEST set.
->>>>>
->>>>> Back to this concrete patch. Why cannot L1 VMM emulate the correct value of
->>>>> the TDX_CPUID_LEAF_ID to L2 VM? It can do this per TDX partitioning arch.
->>>>> How do you handle this and other CPUID calls call currently in L1? Per spec,
->>>>> all CPUIDs calls from L2 will cause L2 --> L1 exit, so what do you do in L1?
->>>> The disclaimer here is that I don't have access to the paravisor (L1) code. But
->>>> to the best of my knowledge the L1 handles CPUID calls by calling into the TDX
->>>> module, or synthesizing a response itself. TDX_CPUID_LEAF_ID is not provided to
->>>> the L2 guest in order to discriminate a guest that is solely responsible for every
->>>> TDX mechanism (running at L1) from one running at L2 that has to cooperate with L1.
->>>> More below.
->>>>
->>>>>
->>>>> Given that you do that simple emulation, you already end up with TDX guest
->>>>> code being activated. Next you can check what features you wont be able to
->>>>> provide in L1 and create simple emulation calls for the TDG calls that must be
->>>>> supported and cannot return error. The biggest TDG call (TDVMCALL) is already
->>>>> direct call into L0 VMM, so this part doesn’t require L1 VMM support. 
->>>>
->>>> I don't see anything in the TD-partitioning spec that gives the TDX guest a way
->>>> to detect if it's running at L2 or L1, or check whether TDVMCALLs go to L0/L1.
->>>> So in any case this requires an extra cpuid call to establish the environment.
->>>> Given that, exposing TDX_CPUID_LEAF_ID to the guest doesn't help.
->>>>
->>>> I'll give some examples of where the idea of emulating a TDX environment
->>>> without attempting L1-L2 cooperation breaks down.
->>>>
->>>> hlt: if the guest issues a hlt TDVMCALL it goes to L0, but if it issues a classic hlt
->>>> it traps to L1. The hlt should definitely go to L1 so that L1 has a chance to do
->>>> housekeeping.
->>>
->>> Why would L2 issue HLT TDVMCALL? It only happens in response to #VE, but
->>> if partitioning enabled #VEs are routed to L1 anyway.
->>
->> What about tdx_safe_halt? When X86_FEATURE_TDX_GUEST is defined I see
->> "using TDX aware idle routing" in dmesg.
-> 
-> Yeah. I forgot about this one. My bad. :/
-> 
-> I think it makes a case for more fine-grained control on where TDVMCALL
-> routed: to L1 or to L0. I think TDX module can do that.
-
-can -> could. Elena suggested something similar in another mail. That might
-make it possible to standardize future paravisor-like usecases, similar to
-[1]. Not sure this alone would be enough.
-
-[1]: https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
-
-> 
-> BTW, what kind of housekeeping do you do in L1 for HLT case?
-> 
-
-L1 is responsible for "virtual trust levels" so it might want to service
-software running at other trust levels (other L2).
-
->>>> map gpa: say the guest uses MAP_GPA TDVMCALL. This goes to L0, not L1 which is the actual
->>>> entity that needs to have a say in performing the conversion. L1 can't act on the request
->>>> if L0 would forward it because of the CoCo threat model. So L1 and L2 get out of sync.
->>>> The only safe approach is for L2 to use a different mechanism to trap to L1 explicitly.
->>>
->>> Hm? L1 is always in loop on share<->private conversion. I don't know why
->>> you need MAP_GPA for that.
->>>
->>> You can't rely on MAP_GPA anyway. It is optional (unfortunately). Conversion
->>> doesn't require MAP_GPA call.
->>>
->>
->> I'm sorry, I don't quite follow. I'm reading tdx_enc_status_changed():
->> - TDVMCALL_MAP_GPA is issued for all transitions
->> - TDX_ACCEPT_PAGE is issued for shared->private transitions
-> 
-> I am talking about TDX architecture. It doesn't require MAP_GPA call.
-> Just setting shared bit and touching the page will do the conversion.
-
-Not when L1 is involved.
-
-> MAP_GPA is "being nice" on the guest behalf.> 
-> Linux do MAP_GPA all the time. Or tries to. I had bug where I converted
-> page by mistake this way. It was pain to debug.
-
-Reading TDX host support in KVM/Qemu it seems to rely on the MAP_GPA, and
-I believe so does Hyper-V when the guest runs non-partitioned TDX.
-
-So the spec may say one thing, but if all implementations do the MAP_GPA
-then it becomes expected behavior. But we're digressing.
-
-> 
-> My point is that if you *must* catch all conversions in L1, MAP_GPA is not
-> reliable way.
-
-Exactly, you're confirming my point. Which is why L2 issues a hypervisor specific
-hypercall on every page visibility change that will always be handled by L1.
-
-> 
->> This doesn't work in partitioning when TDVMCALLs go to L0: TDVMCALL_MAP_GPA bypasses
->> L1 and TDX_ACCEPT_PAGE is L1 responsibility.
->>
->> If you want to see how this is currently supported take a look at arch/x86/hyperv/ivm.c.
->> All memory starts as private and there is a hypercall to notify the paravisor for both
->> TDX (when partitioning) and SNP (when VMPL). This guarantees that all page conversions
->> go through L1.
-> 
-> But L1 guest control anyway during page conversion and it has to manage
-> aliases with TDG.MEM.PAGE.ATTR.RD/WR. Why do you need MAP_GPA for that?
+>diff --git a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+>b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+>index 5935be190b9e..deb5a3f207cc 100644
+>--- a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+>+++ b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+>@@ -866,6 +866,7 @@ static int atl1e_setup_ring_resources(struct
+>atl1e_adapter *adapter)
+> 		netdev_err(adapter->netdev, "offset(%d) > ring size(%d) !!\n",
+> 			   offset, adapter->ring_size);
+> 		err =3D -1;
+>+		kfree(tx_ring->tx_buffer);
+[Suman] I think we should do tx_ring->tx_buffer =3D NULL also, to avoid use=
+ after free?
+> 		goto failed;
+> 	}
+>
+>--
+>2.34.1
 >
 
-When the L2 wants to perform a page conversion it needs to notify L1 of this so that it
-can do its part managing the aliases. Without L1 involvement the conversion doesn't
-happen. MAP_GPA is not suitable for this purpose as I've described and you've confirmed
-above.
- 
->>>> Having a paravisor is required to support a TPM and having TDVMCALLs go to L0 is
->>>> required to make performance viable for real workloads.
->>>>
->>>>>
->>>>> Until we really see what breaks with this approach, I don’t think it is worth to
->>>>> take in the complexity to support different L1 hypervisors view on partitioning.
->>>>>
->>>>
->>>> I'm not asking to support different L1 hypervisors view on partitioning, I want to
->>>> clean up the code (by fixing assumptions that no longer hold) for the model that I'm
->>>> describing that: the kernel already supports, has an implementation that works and
->>>> has actual users. This is also a model that Intel intentionally created the TD-partitioning
->>>> spec to support.
->>>>
->>>> So lets work together to make X86_FEATURE_TDX_GUEST match reality.
->>>
->>> I think the right direction is to make TDX architecture good enough
->>> without that. If we need more hooks in TDX module that give required
->>> control to L1, let's do that. (I don't see it so far)
->>>
->>
->> I'm not the right person to propose changes to the TDX module, I barely know anything about
->> TDX. The team that develops the paravisor collaborates with Intel on it and was also consulted
->> in TD-partitioning design.
-> 
-> One possible change I mentioned above: make TDVMCALL exit to L1 for some
-> TDVMCALL leafs (or something along the line).
-> 
-
-You can explore changes to TDVMCALL handling in the TDX module but I don't see any reason
-this would be adopted, because a shared hypercall to control page visibility for SNP & TDX is
-already part of Hyper-V ABI and works great for this purpose.
-
-> I would like to keep it transparent for enlightened TDX Linux guest. It
-> should not care if it runs as L1 or as L2 in your environment.
-
-I understand that is how you would prefer it but, as we've established in these emails,
-that doesn't work when the L1 paravisor provides services to the L2 with an L1 specific
-protocol and TDVMCALLs are routed to L0 for performance reasons. It can't be done
-transparently with TDX 1.5 calls alone and we already have TDX 1.5 deployed to users with
-an upstream kernel.
-
-Can you propose a way forward to enable X86_FEATURE_TDX_GUEST for this usecase? We're
-talking about consolidating existing kernel TDX code here.
-
-> 
->> I'm also not sure what kind of changes you envision. Everything is supported by the
->> kernel already and the paravisor ABI is meant to stay vendor independent.
->>
->> What I'm trying to accomplish is better integration with the non-partitioning side of TDX
->> so that users don't see "Memory Encryption Features active: AMD SEV" when running on Intel
->> TDX with a paravisor.
-> 
-> This part is cosmetics and doesn't make much difference.
-> 
-
-Not according to Intel engineers and users that I've talked to that are unhappy with this.
-And also userspace lacks discoverability of tdx guest in /proc/cpuinfo.
