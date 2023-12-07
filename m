@@ -2,125 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADB78091F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1528C8091FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443862AbjLGT4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 14:56:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34986 "EHLO
+        id S233081AbjLGT7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 14:59:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233115AbjLGT4U (ORCPT
+        with ESMTP id S229541AbjLGT7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 14:56:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68ECF170F;
-        Thu,  7 Dec 2023 11:56:26 -0800 (PST)
+        Thu, 7 Dec 2023 14:59:38 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F1410EF;
+        Thu,  7 Dec 2023 11:59:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701978986; x=1733514986;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=7Y+W1l2QvxVLq3YI3AbXljtPrGo+7Qw1R28SArBOmbk=;
-  b=KJRUJPTPm4Vl80uWPmSXEmxulAoj3j/TGEKecYavYOpMoYirsraIZ2rG
-   i2wkKa0uPioAOcYtwEHZNqVZdXV3bpYmK1tF707UOSptVJTGoWnsZzIbe
-   V3THq/Kfp/i779XtWiPBiIT4VWLNzqUs/hTFciGp/CiNyYZIE+7a4GZBH
-   k/zWafEgTbjrr7SPAr71Mct+I2MDmAIk4tlNdk/FUL02wpK124g0Nbzmu
-   kUetYjmi0KIVJ6oCeQ6OvMrx8ao1v0EEu5x9WeZbFwixKBk4x/RGimNzW
-   OAtwVjmKIQQWtU5KypD857yQYFFQ7eXHh5fGo3hjbiKUJtc74RO9np6ER
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="15848980"
+  t=1701979185; x=1733515185;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=kySfWtvu+dSPcwXer3wIupFJdUPFKblbUaSVoORb70Q=;
+  b=Dvw6tfCg1HbCoA7YHTR9030Ij/guFpUzHRxRNoPHev8ERR1msJBY8GGI
+   ms6xI0KPWozSuW0qONAWMby0smFMIV8MGqicNqsNeWwEwTc4rIbmS9mgM
+   anOwJL5Qsf+UMNA/0DYj/QNEdKpHni1C2UkwrkkLJNGv7TlX/m697NxpX
+   ev6dGy4OdxVI6IrXAlhabJq6OdSKm0J6MLZ6O7lj8COh/DqrbVWcAa/rs
+   Q+owQ0HY6ll4ui9YdZWyECUUmkqhyPIDMc1k2C1C8y1gQq6a5QhSqORPW
+   3bKvWjEnxgy7LrEa0KBjdqu221nwzhR6oBAPXIBS2jIXOhsKUj/a2g7a0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1163579"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="15848980"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 11:56:24 -0800
+   d="scan'208";a="1163579"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 11:59:44 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="889858596"
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="945166057"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="889858596"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 11:56:24 -0800
-From:   Tony Luck <tony.luck@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
-Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v6 3/3] x86/resctrl: Add new "mba_MBps_event" mount option to documentation
-Date:   Thu,  7 Dec 2023 11:56:13 -0800
-Message-ID: <20231207195613.153980-4-tony.luck@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231207195613.153980-1-tony.luck@intel.com>
-References: <20231201214737.104444-1-tony.luck@intel.com>
- <20231207195613.153980-1-tony.luck@intel.com>
+   d="scan'208";a="945166057"
+Received: from barinat-mobl1.amr.corp.intel.com ([10.213.188.213])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 11:59:41 -0800
+Message-ID: <ae9e4984a50842e056363cbae73ea01a745aebb6.camel@linux.intel.com>
+Subject: Re: [PATCH v12 13/14] crypto: iaa - Add IAA Compression Accelerator
+ stats
+From:   Tom Zanussi <tom.zanussi@linux.intel.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        fenghua.yu@intel.com, vkoul@kernel.org
+Cc:     dave.jiang@intel.com, tony.luck@intel.com,
+        wajdi.k.feghali@intel.com, james.guilford@intel.com,
+        kanchana.p.sridhar@intel.com, vinodh.gopal@intel.com,
+        giovanni.cabiddu@intel.com, pavel@ucw.cz,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        dmaengine@vger.kernel.org
+Date:   Thu, 07 Dec 2023 13:59:39 -0600
+In-Reply-To: <4f53df8e-0957-44b6-b18e-e4362800e180@wanadoo.fr>
+References: <20231205212530.285671-1-tom.zanussi@linux.intel.com>
+         <20231205212530.285671-14-tom.zanussi@linux.intel.com>
+         <4f53df8e-0957-44b6-b18e-e4362800e180@wanadoo.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-New mount option may be used to choose a specific memory bandwidth
-monitoring event to feed the MBA Software Controller(mba_sc) feedback
-loop.
+Hi Christophe,
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- Documentation/arch/x86/resctrl.rst | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+On Thu, 2023-12-07 at 07:22 +0100, Christophe JAILLET wrote:
+> Le 05/12/2023 =C3=A0 22:25, Tom Zanussi a =C3=A9crit=C2=A0:
+> > Add support for optional debugfs statistics support for the IAA
+> > Compression Accelerator.=C2=A0 This is enabled by the kernel config
+> > item:
+> >=20
+> > =C2=A0=C2=A0 CRYPTO_DEV_IAA_CRYPTO_STATS
+> >=20
+> > When enabled, the IAA crypto driver will generate statistics which
+> > can
+> > be accessed at /sys/kernel/debug/iaa-crypto/.
+> >=20
+> > See Documentation/driver-api/crypto/iax/iax-crypto.rst for details.
+> >=20
+> > Signed-off-by: Tom Zanussi <tom.zanussi@linux.intel.com>
+> > ---
+>=20
+> > +void update_max_adecomp_delay_ns(u64 start_time_ns)
+> > +{
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0u64 time_diff;
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0time_diff =3D ktime_get_ns()=
+ - start_time_ns;
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (time_diff > max_adecomp_=
+delay_ns)
+> > +
+>=20
+> Nit: unneeded NL.
+>=20
 
-diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
-index a6279df64a9d..a0c521db6786 100644
---- a/Documentation/arch/x86/resctrl.rst
-+++ b/Documentation/arch/x86/resctrl.rst
-@@ -35,7 +35,8 @@ about the feature from resctrl's info directory.
- 
- To use the feature mount the file system::
- 
-- # mount -t resctrl resctrl [-o cdp[,cdpl2][,mba_MBps][,debug]] /sys/fs/resctrl
-+ # mount -t resctrl resctrl [-o cdp[,cdpl2][,mba_MBps] \
-+ [,mba_MBps_event=[mbm_local_bytes|mbm_total_bytes]][,debug]] /sys/fs/resctrl
- 
- mount options are:
- 
-@@ -45,7 +46,12 @@ mount options are:
- 	Enable code/data prioritization in L2 cache allocations.
- "mba_MBps":
- 	Enable the MBA Software Controller(mba_sc) to specify MBA
--	bandwidth in MBps
-+	bandwidth in MBps. Defaults to using MBM local bandwidth,
-+	but will use total bandwidth on systems that do not support
-+	local bandwidth monitoring.
-+"mba_MBps_event=[mbm_local_bytes|mbm_total_bytes]":
-+	Enable the MBA Software Controller(mba_sc) with a specific
-+	MBM event as input to the feedback loop.
- "debug":
- 	Make debug files accessible. Available debug files are annotated with
- 	"Available only with debug option".
-@@ -538,6 +544,12 @@ where as user can switch to the "MBA software controller" mode using
- a mount option 'mba_MBps'. The schemata format is specified in the below
- sections.
- 
-+By default the software feedback mechanism uses measurement of local
-+memory bandwidth to make adjustments to throttling levels. If a system
-+is running applications with poor NUMA locality users may want to use
-+the "mba_MBps_event=mbm_total_bytes" mount option which will use total
-+memory bandwidth measurements instead of local.
-+
- L3 schemata file details (code and data prioritization disabled)
- ----------------------------------------------------------------
- With CDP disabled the L3 schemata format is::
--- 
-2.41.0
+Good eye, thanks for pointing it out.
+
+Tom
+
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0max_adecomp_delay_ns =3D time_diff;
+> > +}
+>=20
+> CJ
 
