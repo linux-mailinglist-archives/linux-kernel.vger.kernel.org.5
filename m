@@ -2,141 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2318094F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 22:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9623980950D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 23:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231980AbjLGVye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 16:54:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
+        id S1444087AbjLGWFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 17:05:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLGVyb (ORCPT
+        with ESMTP id S1444027AbjLGWFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 16:54:31 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E68412D
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 13:54:37 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5ddd64f83a4so12946617b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 13:54:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701986076; x=1702590876; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Noxi+OqGUk9/20RL0r0Ovx99qYSoefYFwzxukbeHOP4=;
-        b=qdaoTNUf8vq8NB7lgw9jI1u1kGNQui1LEmVg7IzJNYj5lXpuph2wxEL8aAe6GUiQAn
-         meiq5L4RDWZ9QVZD/o94qChXDw3fS7tkzz9hZK+IeCU0+KCh1qs9L+R//ZXnPAMZkeSA
-         9cTY655w/8KEoPsrJd75F05J3l8kv2nEEpfbpyGLHbjQNHAyyRxigG5icl9HkBbNK7YE
-         UiO18s5YEHFh+gZDhxAF4WmUm/V/e0CII1iEN1WLwysKtdaYgsjEXIlm2VHvFi1C7WDA
-         Jai4sh7v5ZC/jYw+nHhe3IF9agW5MNyJonqb9BbglX2ky+Mm+AoCnMJWCO5jwhwClJPh
-         6GMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701986076; x=1702590876;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Noxi+OqGUk9/20RL0r0Ovx99qYSoefYFwzxukbeHOP4=;
-        b=TxWqDNT9+z04JgobrPZdAO6aShPTmJi+qOEXH5SRX6diM2Pzcp/98s+Mx8fSVPy8gO
-         MZhERX5f+9eAm9c37wimXTduwtyno/YuQxU/VupqmrPjvsuNJrMkFwG02lp8HbQ07TCj
-         s6YxH/JaGMoHxq49mb2SLxwS8vNFbj6dJ353ybIzLd22e8CiTRVw7IJeuaWcBTLDYVtn
-         n74Wz5DHJKeQtgb6IfLU6rYBPPgfvAeHp+v0uzeSm4O5/855EfpdKoHH1oyoz4Qwpbxg
-         p3XFyvQ0TB1IX2HX4VskXWuDfSxOmkQ7CHDUrTc+j/7YDnBzITPKD3R7jol96YFCsOJb
-         YBug==
-X-Gm-Message-State: AOJu0YxBuzwL7mNOY8kN4w6dPr1TFYJP3Dlyo91FIF6kiHN3RENVTpPQ
-        Czut/OhptDdIAzPbVy4cw4hdGP5clfFZy6WFLw==
-X-Google-Smtp-Source: AGHT+IEfP8G6Mq6p9f3UpWaqraovTeynqyUcXUgsTtwAM9ie4HXQ+50Qc28Hx2+aHE9Jofu36ETlW3y5yA0H5JbCjg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:dac7:0:b0:da0:3117:f35 with SMTP
- id n190-20020a25dac7000000b00da031170f35mr50538ybf.3.1701986076410; Thu, 07
- Dec 2023 13:54:36 -0800 (PST)
-Date:   Thu, 07 Dec 2023 21:54:31 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIABY/cmUC/5WNQQqDMBBFr1Ky7pQkgmBXvUdxYWbGOFATSSRUx
- Ls3tSfo5sH7i/92lTkJZ3W/7CpxkSwxVLHXi8JpCJ5BqLqy2jZGGwt5TQGXDShJ4ZQh8AozSfz
- BLxUIjog6Jo1to1W9WhKP8j4zz776JHmNaTurxXzXPwPFgIHBdU63OCIN7uFj9C++YZxVfxzHB 6DmPazZAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701986075; l=2506;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=zIrhzyHJNpJ40QKMRusYTExmdzhkSwgmZkrSxmSyxvs=; b=RRGltwx9Y0ze6MjA6QcpAPfN/r19x0syHfol/YE9t1zYphYLUnvX5TOrPEtZsMYZsJsdKTs+v
- gSjruECAkTlAYO1P+Ow+E5USv9FTXuiPVpyLCFA7mN9EigO70KzLKKJ
-X-Mailer: b4 0.12.3
-Message-ID: <20231207-strncpy-drivers-net-mdio-mdio-gpio-c-v2-1-c28d52dd3dfe@google.com>
-Subject: [PATCH v2] net: mdio-gpio: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Thu, 7 Dec 2023 17:05:00 -0500
+Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24ED10DE;
+        Thu,  7 Dec 2023 14:04:59 -0800 (PST)
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 740E44C1D75;
+        Thu,  7 Dec 2023 21:56:15 +0000 (UTC)
+Received: from pdx1-sub0-mail-a206.dreamhost.com (unknown [127.0.0.6])
+        (Authenticated sender: dreamhost)
+        by relay.mailchannels.net (Postfix) with ESMTPA id C44434C1E75;
+        Thu,  7 Dec 2023 21:56:12 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1701986173; a=rsa-sha256;
+        cv=none;
+        b=FrzBhKhi7oi2hh5/Ab2hEXkSLTK+gN7zS8lRMvn/uA6y2ff2RocuRoF3iRIe04EGSb9o5A
+        hW8pbncCySgd5EvStma2upNJ0baApNsdo7+QDQyZqAo/4yeW4ZnxXWOyBA+508RnvwgCZU
+        1cGVHTg2dk9P8wM8cmd00Op06dcJObHzqcN2NwETY/znSlbeLY1XfDn+CZJW1UDxOq8pEM
+        p4feXEWkUyaqAEYZpx1Jqw2rzyuveWqM9okl+wMT2UhYXiA1fz/shGCximkWtioExwSf6M
+        +Wcs9XYjFVaERc08j8dJL1ztrnUVFom5LOY9kJJYOWR49jyg+xY7DfQfjke0CQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1701986173;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:dkim-signature;
+        bh=ZFQXUxb5pGxDFp9SqTWomNtV+BmHJVuCbAFuRHJpiLo=;
+        b=aJs9zHZE8/6fnJKBnUnMonnvA1jPRRICMNj4FaJFBbp48FybiaH82QJUE02OM3gjIuLcqv
+        KOOxbaHfL7HWFik4CJWcaF8bSgu0IZWpEBU+KM+cUM9IhB24EVjBGQjcG27MBmxmsYwP3Y
+        JKqBkVvCfJdJyH4LbksqIIQxjIBcsbIMtWQxc2CvaKlkbPJ4+Ek48tkraWNyFyUkBxB+oB
+        Ee965c8lmrMpqivaL5zyFssvlgGe0P8moBkgOwT/X6fIiISTdEvFewj0nBC/mCYRNcHV0d
+        T6/ME6DdT9f5MI1WAsyA+/kUAv9DtAUNZq0DxVSshcy/+HtSJURDg+zui7hZvw==
+ARC-Authentication-Results: i=1;
+        rspamd-d88d8bd54-9cctm;
+        auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
+X-MailChannels-Auth-Id: dreamhost
+X-Battle-Soft: 0d11124e0e30dae7_1701986175277_409846363
+X-MC-Loop-Signature: 1701986175277:1907138347
+X-MC-Ingress-Time: 1701986175277
+Received: from pdx1-sub0-mail-a206.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+        by 100.125.102.70 (trex/6.9.2);
+        Thu, 07 Dec 2023 21:56:15 +0000
+Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dave@stgolabs.net)
+        by pdx1-sub0-mail-a206.dreamhost.com (Postfix) with ESMTPSA id 4SmSlG6CW8zCb;
+        Thu,  7 Dec 2023 13:56:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
+        s=dreamhost; t=1701986172;
+        bh=Nh2dCSqy2bPuNSUn1zPTus4eN9IQRtX4phDu3VMYX3w=;
+        h=Date:From:To:Cc:Subject:Content-Type;
+        b=OP0+Rsf9gPii7VoqZYcWYfH7IthslLifAefd7vbsdulQz139A+lTtfwRuFr/Glk6S
+         r5pFgCWXsQN/9dO082NMTrSsgiCcsbTVCImTesTZF9Xwys/lwI2yof5xk7ilLVS58C
+         Y0hXBTpj8Au9+j4onfzgEKpPL4ynFAZWV23SEz0sSbEu7dZD7u28zXLbapaFaY95BY
+         Q53iPmLCeBLAzRQZm6KRPIFaSo2o/Mp0hKFHLBA8vnktEO/GMPU2OVMXX1jB7oNanf
+         D0UjTUOvjS4lofM/CHx5S0Vj6YZSq/4BA5NqYz+xE9yMRM2qeuAi/g7uQrM9l9tvAg
+         M3afLawtxCxxA==
+Date:   Thu, 7 Dec 2023 13:56:07 -0800
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Gregory Price <gourry.memverge@gmail.com>
+Cc:     linux-mm@kvack.org, jgroves@micron.com, ravis.opensrc@micron.com,
+        sthanneeru@micron.com, emirakhur@micron.com, Hasan.Maruf@amd.com,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        arnd@arndb.de, tglx@linutronix.de, luto@kernel.org,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, mhocko@kernel.org, tj@kernel.org,
+        ying.huang@intel.com, gregory.price@memverge.com, corbet@lwn.net,
+        rakie.kim@sk.com, hyeongtak.ji@sk.com, honggyu.kim@sk.com,
+        vtavarespetr@micron.com, peterz@infradead.org
+Subject: Re: [RFC PATCH 01/11] mm/mempolicy: implement the sysfs-based
+ weighted_interleave interface
+Message-ID: <uxqkbmqbvcvx6wc3g2h6vhkutv5flrq6rslwdfs7pa6kknupwh@a245pbtfqfgj>
+Mail-Followup-To: Gregory Price <gourry.memverge@gmail.com>, 
+        linux-mm@kvack.org, jgroves@micron.com, ravis.opensrc@micron.com, 
+        sthanneeru@micron.com, emirakhur@micron.com, Hasan.Maruf@amd.com, 
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org, 
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, 
+        arnd@arndb.de, tglx@linutronix.de, luto@kernel.org, mingo@redhat.com, 
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+        mhocko@kernel.org, tj@kernel.org, ying.huang@intel.com, gregory.price@memverge.com, 
+        corbet@lwn.net, rakie.kim@sk.com, hyeongtak.ji@sk.com, honggyu.kim@sk.com, 
+        vtavarespetr@micron.com, peterz@infradead.org
+References: <20231207002759.51418-1-gregory.price@memverge.com>
+ <20231207002759.51418-2-gregory.price@memverge.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20231207002759.51418-2-gregory.price@memverge.com>
+User-Agent: NeoMutt/20231006
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        SUBJECT_DRUG_GAP_L,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Wed, 06 Dec 2023, Gregory Price wrote:
 
-We expect new_bus->id to be NUL-terminated but not NUL-padded based on
-its prior assignment through snprintf:
-|       snprintf(new_bus->id, MII_BUS_ID_SIZE, "gpio-%x", bus_id);
+>Signed-off-by: Rakie Kim <rakie.kim@sk.com>
+>Signed-off-by: Honggyu Kim <honggyu.kim@sk.com>
+>Co-developed-by: Gregory Price <gregory.price@memverge.com>
+>Signed-off-by: Gregory Price <gregory.price@memverge.com>
+>Co-developed-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+>Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
 
-We can also use sizeof() instead of a length macro as this more closely
-ties the maximum buffer size to the destination buffer.
+fyi Rakie's tag needs to be last, per the From.
 
-Due to this, a suitable replacement is `strscpy` [2] due to the fact
-that it guarantees NUL-termination on the destination buffer without
-unnecessarily NUL-padding.
+...
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- change subject line as it was causing problems in patchwork with
-  "superseded" label being improperly applied.
-- update commit msg with rationale around sizeof() (thanks Kees)
-- Link to v1 (lore): https://lore.kernel.org/r/20231012-strncpy-drivers-net-mdio-mdio-gpio-c-v1-1-ab9b06cfcdab@google.com
-- Link to v1 (patchwork): https://patchwork.kernel.org/project/netdevbpf/patch/20231012-strncpy-drivers-net-mdio-mdio-gpio-c-v1-1-ab9b06cfcdab@google.com/
-- Link to other patch with same subject message: https://patchwork.kernel.org/project/netdevbpf/patch/20231012-strncpy-drivers-net-phy-mdio_bus-c-v1-1-15242e6f9ec4@google.com/
----
-Note: build-tested only.
+>+What:		/sys/kernel/mm/mempolicy/weighted_interleave/
+>+Date:		December 2023
+>+Contact:	Linux memory management mailing list <linux-mm@kvack.org>
+>+Description:	Configuration Interface for the Weighted Interleave policy
+>+
+>+What:		/sys/kernel/mm/mempolicy/weighted_interleave/nodeN/
+>+Date:		December 2023
+>+Contact:	Linux memory management mailing list <linux-mm@kvack.org>
+>+Description:	Configuration interface for accesses initiated from nodeN
+>+
+>+		The directory to configure access initiator weights for nodeN.
+>+
+>+		Possible numa nodes which have not been marked as a CPU node
+>+		at boot will not have a nodeN directory made for them at boot.
 
-Found with: $ rg "strncpy\("
----
- drivers/net/mdio/mdio-gpio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This could be better rephrased without the negation. ie:
 
-diff --git a/drivers/net/mdio/mdio-gpio.c b/drivers/net/mdio/mdio-gpio.c
-index 0fb3c2de0845..a1718d646504 100644
---- a/drivers/net/mdio/mdio-gpio.c
-+++ b/drivers/net/mdio/mdio-gpio.c
-@@ -125,7 +125,7 @@ static struct mii_bus *mdio_gpio_bus_init(struct device *dev,
- 	if (bus_id != -1)
- 		snprintf(new_bus->id, MII_BUS_ID_SIZE, "gpio-%x", bus_id);
- 	else
--		strncpy(new_bus->id, "gpio", MII_BUS_ID_SIZE);
-+		strscpy(new_bus->id, "gpio", sizeof(new_bus->id));
- 
- 	if (pdata) {
- 		new_bus->phy_mask = pdata->phy_mask;
+"Only numa nodes with CPUs (compute) will have a nodeN directory."
 
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231012-strncpy-drivers-net-mdio-mdio-gpio-c-bddd9ed0c630
+>+		Hotplug for CPU nodes is not supported.
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+Can this even happen? Hot-adding a previously offlined CPU won't change/add a
+new numa node. So just rm the line altogether?
 
+>+
+>+What:		/sys/kernel/mm/mempolicy/weighted_interleave/nodeN/nodeM
+>+		/sys/kernel/mm/mempolicy/weighted_interleave/nodeN/nodeM/weight
+>+Date:		December 2023
+>+Contact:	Linux memory management mailing list <linux-mm@kvack.org>
+>+Description:	Configuration interface for target nodes accessed from nodeNN
+>+
+>+		The interleave weight for a memory node (M) from initiating
+>+		node (N). These weights are utilized by processes which have set
+>+		the mempolicy to MPOL_WEIGHTED_INTERLEAVE and have opted into
+>+		global weights by omitting a task-local weight array.
+>+
+>+		These weights only affect new allocations, and changes at runtime
+>+		will not cause migrations on already allocated pages.
+>+
+>+		If the weight of 0 is desired, the appropriate way to do this is
+>+		by removing the node from the weighted interleave nodemask.
+>+
+>+		Minimum weight: 1
+>+		Maximum weight: 255
+>diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+>index 10a590ee1c89..ce332b5e7a03 100644
+>--- a/mm/mempolicy.c
+>+++ b/mm/mempolicy.c
+>@@ -131,6 +131,11 @@ static struct mempolicy default_policy = {
+>
+> static struct mempolicy preferred_node_policy[MAX_NUMNODES];
+>
+>+struct interleave_weight_table {
+>+	unsigned char weights[MAX_NUMNODES];
+>+};
+>+static struct interleave_weight_table *iw_table;
+>+
+> /**
+>  * numa_nearest_node - Find nearest node by state
+>  * @node: Node id to start the search
+>@@ -3067,3 +3072,224 @@ void mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol)
+>		p += scnprintf(p, buffer + maxlen - p, ":%*pbl",
+>			       nodemask_pr_args(&nodes));
+> }
+>+
+>+struct iw_node_info {
+>+	struct kobject kobj;
+>+	int src;
+>+	int dst;
+>+};
+>+
+>+static ssize_t node_weight_show(struct kobject *kobj,
+>+				struct kobj_attribute *attr, char *buf)
+>+{
+>+	struct iw_node_info *node_info = container_of(kobj, struct iw_node_info,
+>+						      kobj);
+>+	return sysfs_emit(buf, "%d\n",
+>+			  iw_table[node_info->src].weights[node_info->dst]);
+>+}
+>+
+>+static ssize_t node_weight_store(struct kobject *kobj,
+>+				 struct kobj_attribute *attr,
+>+				 const char *buf, size_t count)
+>+{
+>+	unsigned char weight = 0;
+>+	struct iw_node_info *node_info = NULL;
+>+
+>+	node_info = container_of(kobj, struct iw_node_info, kobj);
+>+
+>+	if (kstrtou8(buf, 0, &weight) || !weight)
+>+		return -EINVAL;
+>+
+>+	iw_table[node_info->src].weights[node_info->dst] = weight;
+>+
+>+	return count;
+>+}
+
+iw_table will need some (basic) form of serialization.
+
+...
+
+>+static int __init mempolicy_sysfs_init(void)
+>+{
+>+	int err, nid;
+>+	int cpunodes = 0;
+>+	struct kobject *root_kobj;
+>+
+>+	for_each_node_state(nid, N_CPU)
+>+		cpunodes += 1;
+>+	iw_table = kmalloc_array(cpunodes, sizeof(*iw_table), GFP_KERNEL);
+>+	if (!iw_table) {
+>+		pr_err("failed to create interleave weight table\n");
+>+		err = -ENOMEM;
+>+		goto fail_obj;
+
+No ref here yet, just return -ENOMEM.
+
+>+	}
+>+	memset(iw_table, 1, cpunodes * sizeof(*iw_table));
+>+
+>+	root_kobj = kzalloc(sizeof(struct kobject), GFP_KERNEL);
+>+	if (!root_kobj)
+>+		return -ENOMEM;
+>+
+>+	kobject_init(root_kobj, &mempolicy_kobj_ktype);
+>+	err = kobject_add(root_kobj, mm_kobj, "mempolicy");
+>+	if (err) {
+>+		pr_err("failed to add kobject to the system\n");
+>+		goto fail_obj;
+>+	}
+>+
+>+	err = sysfs_create_group(root_kobj, &mempolicy_attr_group);
+>+	if (err) {
+>+		pr_err("failed to register mempolicy group\n");
+>+		goto fail_obj;
+>+	}
+>+
+>+	err = add_weighted_interleave_group(root_kobj);
+>+fail_obj:
+>+	if (err)
+>+		kobject_put(root_kobj);
+>+	return err;
+>+
+>+}
+>+late_initcall(mempolicy_sysfs_init);
+>--
+>2.39.1
+>
+>
