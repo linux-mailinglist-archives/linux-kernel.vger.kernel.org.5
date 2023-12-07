@@ -2,193 +2,415 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC3F807DE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE46807DEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442036AbjLGBaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 20:30:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
+        id S1442113AbjLGBbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 20:31:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbjLGBax (ORCPT
+        with ESMTP id S232511AbjLGBbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 20:30:53 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11966CA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 17:30:59 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-423f28ae2d0so78751cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 17:30:59 -0800 (PST)
+        Wed, 6 Dec 2023 20:31:01 -0500
+Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBA5D59;
+        Wed,  6 Dec 2023 17:31:06 -0800 (PST)
+Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1fb71880f12so310136fac.0;
+        Wed, 06 Dec 2023 17:31:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701912658; x=1702517458; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O2zo2U+sNI4+OgaTjf0Valql9hDrUGd6ADOT6fl9bdQ=;
-        b=A3DEEADx8FbmpvN2b+z+eAvQw3wbeYnoqPIhaO1uT2AIsKQIiiWz+B5A8EGUroU3RI
-         QQ39JIH3hDo4pbhXmOdNc4ZEppczJr24T/Mh/+bM9asw1a/jHeg7C61jM4bEUmmzfN+Z
-         xtzkXvX583x38yiofMlJZY1YXydFzpAvzeE3QGSLmc/vYWUuhJCdo+tQrfnX3f4DUYEe
-         eZKM8h/Z+tlGMmWfb9QWRKPWsgCpuFsBerS39MGxtWg7skQ+ga5cyaggEcDxCWzQQkz7
-         AM6h833XIwY/QhvCE4QXovBVLpOzVPUXOZn+6IJ1Hyz/Z2uorPGJ//TnRC1Xxi523Mqr
-         NR3w==
+        d=gmail.com; s=20230601; t=1701912665; x=1702517465; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FC4kVPBMR3jCsCH7t301OXLH/yq0oHM2fZo2MjvGfcg=;
+        b=mrZmQc+wrZI/ngYGDoSfheKhd0EwAIKKvyZIaFLIbECc8RDvB45TJ+Pt1XY0EO35qI
+         eYdT1W/ixh6UAahRqa11vuNa4gf5z7NPIqPoJF3VMPeDI8HJ4XrZuMBjUE82GC63kboR
+         Fx9yhdOdmNnSJNU0lvd+t73RGyAwDSKSkBpTX7hV+jPVFxp0EdMG5bIQn9kPmsIunppO
+         DU82X8W72nXqGOx6zJTtGnO0XKz1ujIlM+mGg6EyMH9fGA0TyeefMdBIIi5GuIW+53mT
+         jojgM59ymnvrct41Lfs7eZwtsaoxhmV0R+4/i4mzVYduy11e6lJYaSMPWrfI/ST+jzFx
+         yT3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701912658; x=1702517458;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O2zo2U+sNI4+OgaTjf0Valql9hDrUGd6ADOT6fl9bdQ=;
-        b=gFoRydVv9msrOnsIie/uvvMaY63umicqj+Hr3T/NLzvWzNxbG6RMu0xT7axeSG90zx
-         GZhz0Su9UiH7/uwJ5nrPx7Gk1Mncn0kgDsIchBhYbom5YsxFB4STcbpe5M+Kb/D+wK+C
-         n/pqQ71B4i1KtDrRM6svfmi3yaKgyyaUcZlc0KFjyktkCDpYZqMZmed9Flda4FGrg9ds
-         /85+1sNkIV/gGEb45LHacFaQsWVEU3Fo2GNGyOsjzxyHCZ+Vl20w4aQT5sMSRUcvPvlZ
-         AIMWhng95DfuY7qM0836dNF/2lw+Cd8so+xNGaDLhTpDQdvgGCNtZX+DoSvMtFtdq0aj
-         ERgw==
-X-Gm-Message-State: AOJu0YxHjlwl9oWXRTWf/oV0JAy3y2xtRz1AtC2mPT1po9dRLkAdq1Ey
-        gWf5gNq5wfap1L0HYQI3x3xClVF3kYPi+YtIObDJVL0YYBZiDEy+Gmr77g==
-X-Google-Smtp-Source: AGHT+IHL8E/hDTudTK8Hyu22QQModhzXxymgzYmfFYZyb8GWrpnpPUX7eVad5IWdC7skobooAJrUoQ17vEC3gBx1osc=
-X-Received: by 2002:ac8:4255:0:b0:425:75cf:90e9 with SMTP id
- r21-20020ac84255000000b0042575cf90e9mr382422qtm.22.1701912657893; Wed, 06 Dec
- 2023 17:30:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701912665; x=1702517465;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FC4kVPBMR3jCsCH7t301OXLH/yq0oHM2fZo2MjvGfcg=;
+        b=wieRRBSCwbCPwgnS7dPzkssgSssfvL2V3DkN1DGBnGvV2mLl5dDNzT93VrbieYeZJm
+         H6Z8+M24Lytf4iEueSHvO63EjwAHMgSXcXQdPNrb+47ZRo5Gbm0vf2wsJGOMyc8yzDpz
+         6us3kejHpkB6ww51NNEqOLRJCcXd0HQgFziDa1mabyYHW8JRDdxUrpzB49PJL30DnwB+
+         hbU9+IxkZ9D2ebVQz8MuVIszpME67FZwcNgdhl6AmGjHAfk72/gmnHgolUjeZw1HPG8f
+         purXqmFoGcn3NGuwogoMX8BY/K9Edvi0ObJeTgDZ+/rC5DhJomvHMuJy8lYiFKkANtjq
+         m1ww==
+X-Gm-Message-State: AOJu0Yy+S8enQncZUIsUwlLOm11eBM9bxPBg7zAjCWCpvOgzUPz2Zj7R
+        Glyof5L11lA8BuH3vPz4Cq8=
+X-Google-Smtp-Source: AGHT+IFZ5wq0R88YYcSMswZ76r5mJtY195BOiWGDf+xrPaXU+/BjFAfNM0OZhocjkWwXQnNn88ggEQ==
+X-Received: by 2002:a05:6870:9d9b:b0:1fb:75a:779d with SMTP id pv27-20020a0568709d9b00b001fb075a779dmr1959822oab.78.1701912665309;
+        Wed, 06 Dec 2023 17:31:05 -0800 (PST)
+Received: from localhost.localdomain ([1.245.180.67])
+        by smtp.gmail.com with ESMTPSA id i16-20020a056a00005000b006cde2889213sm158443pfk.14.2023.12.06.17.30.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 17:31:04 -0800 (PST)
+Date:   Thu, 7 Dec 2023 10:30:57 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 18/21] mm/slab: move kmalloc() functions from
+ slab_common.c to slub.c
+Message-ID: <ZXEgUVrUuIHlgsec@localhost.localdomain>
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-18-9c9c70177183@suse.cz>
 MIME-Version: 1.0
-References: <cover.1701853894.git.henry.hj@antgroup.com> <951fb7edab535cf522def4f5f2613947ed7b7d28.1701853894.git.henry.hj@antgroup.com>
-In-Reply-To: <951fb7edab535cf522def4f5f2613947ed7b7d28.1701853894.git.henry.hj@antgroup.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Wed, 6 Dec 2023 18:30:20 -0700
-Message-ID: <CAOUHufZeADNp_y=Ng+acmMMgnTR=ZGFZ7z-m6O47O=CmJauWjw@mail.gmail.com>
-Subject: Re: [RFC v2] mm: Multi-Gen LRU: fix use mm/page_idle/bitmap
-To:     Henry Huang <henry.hj@antgroup.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?B?6LCI6Ym06ZSL?= <henry.tjf@antgroup.com>,
-        =?UTF-8?B?5pyx6L6JKOiMtuawtCk=?= <teawater@antgroup.com>,
-        akpm@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120-slab-remove-slab-v2-18-9c9c70177183@suse.cz>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 6, 2023 at 5:51=E2=80=AFAM Henry Huang <henry.hj@antgroup.com> =
-wrote:
->
-> Multi-Gen LRU page-table walker clears pte young flag, but it doesn't
-> clear page idle flag. When we use /sys/kernel/mm/page_idle/bitmap to chec=
-k
-> whether one page is accessed, it would tell us this page is idle,
-> but actually this page has been accessed.
->
-> For those unmapped filecache pages, page idle flag would not been
-> cleared in folio_mark_accessed if Multi-Gen LRU is enabled.
-> So we couln't use /sys/kernel/mm/page_idle/bitmap to check whether
-> a filecache page is read or written.
->
-> What's more, /sys/kernel/mm/page_idle/bitmap also clears pte young flag.
-> If one page is accessed, it would set page young flag. Multi-Gen LRU
-> page-table walker should check both page&pte young flags.
->
-> how-to-reproduce-problem
->
-> idle_page_track
->    a tools to track process accessed memory during a specific time
-> usage
->    idle_page_track $pid $time
-> how-it-works
->    1. scan process vma from /proc/$pid/maps
->    2. vfn --> pfn from /proc/$pid/pagemap
->    3. write /sys/kernel/mm/page_idle/bitmap to
->       mark phy page idle flag and clear pte young flag
->    4. sleep $time
->    5. read /sys/kernel/mm/page_idle/bitmap to
->       test_and_clear pte young flag and
->       return whether phy page is accessed
->
-> test ---- test program
->
->  #include <stdio.h>
->  #include <stdlib.h>
->  #include <string.h>
->  #include <unistd.h>
->  #include <sys/types.h>
->  #include <sys/stat.h>
->  #include <fcntl.h>
->
->  int main(int argc, const char *argv[])
->  {
->      char *buf =3D NULL;
->      char pipe_info[4096];
->      int n;
->      int fd =3D -1;
->
->      buf =3D malloc(1024*1024*1024UL);
->      memset(buf, 0, 1024*1024*1024UL);
->      fd =3D open("access.pipe", O_RDONLY);
->      if (fd < 0)
->          goto out;
->      while (1) {
->          n =3D read(fd, pipe_info, sizeof(pipe_info));
->          if (!n) {
->              sleep(1);
->              continue;
->          } else if (n < 0) {
->              break;
->          }
->          memset(buf, 0, 1024*1024*1024UL);
->          puts("finish access");
->       }
->  out:
->      if (fd >=3D0)
->          close(fd);
->      if (buf)
->          free(buf);
->
->      return 0;
+On Mon, Nov 20, 2023 at 07:34:29PM +0100, Vlastimil Babka wrote:
+> This will eliminate a call between compilation units through
+> __kmem_cache_alloc_node() and allow better inlining of the allocation
+> fast path.
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  mm/slab.h        |   3 --
+>  mm/slab_common.c | 119 ----------------------------------------------------
+>  mm/slub.c        | 126 +++++++++++++++++++++++++++++++++++++++++++++++++++----
+>  3 files changed, 118 insertions(+), 130 deletions(-)
+> 
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 7d7cc7af614e..54deeb0428c6 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -416,9 +416,6 @@ kmalloc_slab(size_t size, gfp_t flags, unsigned long caller)
+>  	return kmalloc_caches[kmalloc_type(flags, caller)][index];
 >  }
->
-> prepare:
-> mkfifo access.pipe
-> ./test
-> ps -ef | grep test
-> root       4106   3148  8 06:47 pts/0    00:00:01 ./test
->
-> We use /sys/kernel/debug/lru_gen to simulate mglru page-table scan.
->
-> case 1: mglru walker break page_idle
-> ./idle_page_track 4106 60 &
-> sleep 5; echo 1 > access.pipe
-> sleep 5;  echo '+ 8 0 6 1 1' > /sys/kernel/debug/lru_gen
->
-> the output of idle_page_track is:
-> Est(s)     Ref(MB)
-> 64.822        1.00
-> only found 1MB were accessed during 64.822s, but actually 1024MB were
-> accessed.
->
-> case 2: page_idle break mglru walker
-> echo 1 > access.pipe
-> ./idle_page_track 4106 10
-> echo '+ 8 0 7 1 1' > /sys/kernel/debug/lru_gen
-> lru gen status:
-> memcg     8     /user.slice
->  node     0
->           5     772458       1065        9735
->           6     737435     262244          72
->           7     538053       1184         632
->           8      59404       6422           0
-> almost pages should be in max_seq-1 queue, but actually not.
->
-> Signed-off-by: Henry Huang <henry.hj@antgroup.com>
+>  
+> -void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
+> -			      int node, size_t orig_size,
+> -			      unsigned long caller);
+>  gfp_t kmalloc_fix_flags(gfp_t flags);
+>  
+>  /* Functions provided by the slab allocators */
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 31ade17a7ad9..238293b1dbe1 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -936,50 +936,6 @@ void __init create_kmalloc_caches(slab_flags_t flags)
+>  	slab_state = UP;
+>  }
+>  
+> -static void *__kmalloc_large_node(size_t size, gfp_t flags, int node);
+> -static __always_inline
+> -void *__do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller)
+> -{
+> -	struct kmem_cache *s;
+> -	void *ret;
+> -
+> -	if (unlikely(size > KMALLOC_MAX_CACHE_SIZE)) {
+> -		ret = __kmalloc_large_node(size, flags, node);
+> -		trace_kmalloc(caller, ret, size,
+> -			      PAGE_SIZE << get_order(size), flags, node);
+> -		return ret;
+> -	}
+> -
+> -	if (unlikely(!size))
+> -		return ZERO_SIZE_PTR;
+> -
+> -	s = kmalloc_slab(size, flags, caller);
+> -
+> -	ret = __kmem_cache_alloc_node(s, flags, node, size, caller);
+> -	ret = kasan_kmalloc(s, ret, size, flags);
+> -	trace_kmalloc(caller, ret, size, s->size, flags, node);
+> -	return ret;
+> -}
+> -
+> -void *__kmalloc_node(size_t size, gfp_t flags, int node)
+> -{
+> -	return __do_kmalloc_node(size, flags, node, _RET_IP_);
+> -}
+> -EXPORT_SYMBOL(__kmalloc_node);
+> -
+> -void *__kmalloc(size_t size, gfp_t flags)
+> -{
+> -	return __do_kmalloc_node(size, flags, NUMA_NO_NODE, _RET_IP_);
+> -}
+> -EXPORT_SYMBOL(__kmalloc);
+> -
+> -void *__kmalloc_node_track_caller(size_t size, gfp_t flags,
+> -				  int node, unsigned long caller)
+> -{
+> -	return __do_kmalloc_node(size, flags, node, caller);
+> -}
+> -EXPORT_SYMBOL(__kmalloc_node_track_caller);
+> -
+>  /**
+>   * __ksize -- Report full size of underlying allocation
+>   * @object: pointer to the object
+> @@ -1016,30 +972,6 @@ size_t __ksize(const void *object)
+>  	return slab_ksize(folio_slab(folio)->slab_cache);
+>  }
+>  
+> -void *kmalloc_trace(struct kmem_cache *s, gfp_t gfpflags, size_t size)
+> -{
+> -	void *ret = __kmem_cache_alloc_node(s, gfpflags, NUMA_NO_NODE,
+> -					    size, _RET_IP_);
+> -
+> -	trace_kmalloc(_RET_IP_, ret, size, s->size, gfpflags, NUMA_NO_NODE);
+> -
+> -	ret = kasan_kmalloc(s, ret, size, gfpflags);
+> -	return ret;
+> -}
+> -EXPORT_SYMBOL(kmalloc_trace);
+> -
+> -void *kmalloc_node_trace(struct kmem_cache *s, gfp_t gfpflags,
+> -			 int node, size_t size)
+> -{
+> -	void *ret = __kmem_cache_alloc_node(s, gfpflags, node, size, _RET_IP_);
+> -
+> -	trace_kmalloc(_RET_IP_, ret, size, s->size, gfpflags, node);
+> -
+> -	ret = kasan_kmalloc(s, ret, size, gfpflags);
+> -	return ret;
+> -}
+> -EXPORT_SYMBOL(kmalloc_node_trace);
+> -
+>  gfp_t kmalloc_fix_flags(gfp_t flags)
+>  {
+>  	gfp_t invalid_mask = flags & GFP_SLAB_BUG_MASK;
+> @@ -1052,57 +984,6 @@ gfp_t kmalloc_fix_flags(gfp_t flags)
+>  	return flags;
+>  }
+>  
+> -/*
+> - * To avoid unnecessary overhead, we pass through large allocation requests
+> - * directly to the page allocator. We use __GFP_COMP, because we will need to
+> - * know the allocation order to free the pages properly in kfree.
+> - */
+> -
+> -static void *__kmalloc_large_node(size_t size, gfp_t flags, int node)
+> -{
+> -	struct page *page;
+> -	void *ptr = NULL;
+> -	unsigned int order = get_order(size);
+> -
+> -	if (unlikely(flags & GFP_SLAB_BUG_MASK))
+> -		flags = kmalloc_fix_flags(flags);
+> -
+> -	flags |= __GFP_COMP;
+> -	page = alloc_pages_node(node, flags, order);
+> -	if (page) {
+> -		ptr = page_address(page);
+> -		mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
+> -				      PAGE_SIZE << order);
+> -	}
+> -
+> -	ptr = kasan_kmalloc_large(ptr, size, flags);
+> -	/* As ptr might get tagged, call kmemleak hook after KASAN. */
+> -	kmemleak_alloc(ptr, size, 1, flags);
+> -	kmsan_kmalloc_large(ptr, size, flags);
+> -
+> -	return ptr;
+> -}
+> -
+> -void *kmalloc_large(size_t size, gfp_t flags)
+> -{
+> -	void *ret = __kmalloc_large_node(size, flags, NUMA_NO_NODE);
+> -
+> -	trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << get_order(size),
+> -		      flags, NUMA_NO_NODE);
+> -	return ret;
+> -}
+> -EXPORT_SYMBOL(kmalloc_large);
+> -
+> -void *kmalloc_large_node(size_t size, gfp_t flags, int node)
+> -{
+> -	void *ret = __kmalloc_large_node(size, flags, node);
+> -
+> -	trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << get_order(size),
+> -		      flags, node);
+> -	return ret;
+> -}
+> -EXPORT_SYMBOL(kmalloc_large_node);
+> -
+>  #ifdef CONFIG_SLAB_FREELIST_RANDOM
+>  /* Randomize a generic freelist */
+>  static void freelist_randomize(unsigned int *list,
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 2baa9e94d9df..d6bc15929d22 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3851,14 +3851,6 @@ void *kmem_cache_alloc_lru(struct kmem_cache *s, struct list_lru *lru,
+>  }
+>  EXPORT_SYMBOL(kmem_cache_alloc_lru);
+>  
+> -void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
+> -			      int node, size_t orig_size,
+> -			      unsigned long caller)
+> -{
+> -	return slab_alloc_node(s, NULL, gfpflags, node,
+> -			       caller, orig_size);
+> -}
+> -
+>  /**
+>   * kmem_cache_alloc_node - Allocate an object on the specified node
+>   * @s: The cache to allocate from.
+> @@ -3882,6 +3874,124 @@ void *kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags, int node)
+>  }
+>  EXPORT_SYMBOL(kmem_cache_alloc_node);
+>  
+> +/*
+> + * To avoid unnecessary overhead, we pass through large allocation requests
+> + * directly to the page allocator. We use __GFP_COMP, because we will need to
+> + * know the allocation order to free the pages properly in kfree.
+> + */
+> +static void *__kmalloc_large_node(size_t size, gfp_t flags, int node)
+> +{
+> +	struct page *page;
+> +	void *ptr = NULL;
+> +	unsigned int order = get_order(size);
+> +
+> +	if (unlikely(flags & GFP_SLAB_BUG_MASK))
+> +		flags = kmalloc_fix_flags(flags);
+> +
+> +	flags |= __GFP_COMP;
+> +	page = alloc_pages_node(node, flags, order);
+> +	if (page) {
+> +		ptr = page_address(page);
+> +		mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
+> +				      PAGE_SIZE << order);
+> +	}
+> +
+> +	ptr = kasan_kmalloc_large(ptr, size, flags);
+> +	/* As ptr might get tagged, call kmemleak hook after KASAN. */
+> +	kmemleak_alloc(ptr, size, 1, flags);
+> +	kmsan_kmalloc_large(ptr, size, flags);
+> +
+> +	return ptr;
+> +}
+> +
+> +void *kmalloc_large(size_t size, gfp_t flags)
+> +{
+> +	void *ret = __kmalloc_large_node(size, flags, NUMA_NO_NODE);
+> +
+> +	trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << get_order(size),
+> +		      flags, NUMA_NO_NODE);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(kmalloc_large);
+> +
+> +void *kmalloc_large_node(size_t size, gfp_t flags, int node)
+> +{
+> +	void *ret = __kmalloc_large_node(size, flags, node);
+> +
+> +	trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << get_order(size),
+> +		      flags, node);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(kmalloc_large_node);
+> +
+> +static __always_inline
+> +void *__do_kmalloc_node(size_t size, gfp_t flags, int node,
+> +			unsigned long caller)
+> +{
+> +	struct kmem_cache *s;
+> +	void *ret;
+> +
+> +	if (unlikely(size > KMALLOC_MAX_CACHE_SIZE)) {
+> +		ret = __kmalloc_large_node(size, flags, node);
+> +		trace_kmalloc(caller, ret, size,
+> +			      PAGE_SIZE << get_order(size), flags, node);
+> +		return ret;
+> +	}
+> +
+> +	if (unlikely(!size))
+> +		return ZERO_SIZE_PTR;
+> +
+> +	s = kmalloc_slab(size, flags, caller);
+> +
+> +	ret = slab_alloc_node(s, NULL, flags, node, caller, size);
+> +	ret = kasan_kmalloc(s, ret, size, flags);
+> +	trace_kmalloc(caller, ret, size, s->size, flags, node);
+> +	return ret;
+> +}
+> +
+> +void *__kmalloc_node(size_t size, gfp_t flags, int node)
+> +{
+> +	return __do_kmalloc_node(size, flags, node, _RET_IP_);
+> +}
+> +EXPORT_SYMBOL(__kmalloc_node);
+> +
+> +void *__kmalloc(size_t size, gfp_t flags)
+> +{
+> +	return __do_kmalloc_node(size, flags, NUMA_NO_NODE, _RET_IP_);
+> +}
+> +EXPORT_SYMBOL(__kmalloc);
+> +
+> +void *__kmalloc_node_track_caller(size_t size, gfp_t flags,
+> +				  int node, unsigned long caller)
+> +{
+> +	return __do_kmalloc_node(size, flags, node, caller);
+> +}
+> +EXPORT_SYMBOL(__kmalloc_node_track_caller);
+> +
+> +void *kmalloc_trace(struct kmem_cache *s, gfp_t gfpflags, size_t size)
+> +{
+> +	void *ret = slab_alloc_node(s, NULL, gfpflags, NUMA_NO_NODE,
+> +					    _RET_IP_, size);
+> +
+> +	trace_kmalloc(_RET_IP_, ret, size, s->size, gfpflags, NUMA_NO_NODE);
+> +
+> +	ret = kasan_kmalloc(s, ret, size, gfpflags);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(kmalloc_trace);
+> +
+> +void *kmalloc_node_trace(struct kmem_cache *s, gfp_t gfpflags,
+> +			 int node, size_t size)
+> +{
+> +	void *ret = slab_alloc_node(s, NULL, gfpflags, node, _RET_IP_, size);
+> +
+> +	trace_kmalloc(_RET_IP_, ret, size, s->size, gfpflags, node);
+> +
+> +	ret = kasan_kmalloc(s, ret, size, gfpflags);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(kmalloc_node_trace);
+> +
+>  static noinline void free_to_partial_list(
+>  	struct kmem_cache *s, struct slab *slab,
+>  	void *head, void *tail, int bulk_cnt,
+> 
+> -- 
 
-It's never intended for MGLRU to support page_idle/bitmap or
-PG_idle/young because:
-1. page_idle/bitmap isn't a capable interface at all -- yes, Google
-proposed the idea [1], but we don't really use it anymore because of
-its poor scalability.
-2. PG_idle/young, being a boolean value, has poor granularity. If
-anyone must use page_idle/bitmap for some specific reason, I'd
-recommend exporting generation numbers instead.
+Looks good to me,
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-[1] https://lore.kernel.org/cover.1426706637.git.vdavydov@parallels.com/
+> 2.42.1
+> 
+> 
