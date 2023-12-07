@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C359D808060
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 06:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7921808071
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 07:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346664AbjLGFwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 00:52:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
+        id S229571AbjLGF7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 00:59:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjLGFwS (ORCPT
+        with ESMTP id S229454AbjLGF7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 00:52:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514B21AD
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 21:52:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701928342;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HSUZB2MS9IXq3JbO5o9diZppcpNs8joa8PI6k/pJS1g=;
-        b=bUuLd1zAB94Wp3czypK6KO1DTShTcZhE4ZWPboHv4K20/bMl0XIBjYI+hWHcFzkvSElpQb
-        6DP4jwMyk0p1Fb/q/KsrEFg+l6STM9SOFKdGP4dHV9ymL40pjvFs0OJ7+pwa5ehWhHa4ZC
-        TBwUVQV1rx3f9F8IdI/zNExebeKBo8Q=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-348-WBYIC2X5PninDoBu-ZlXDg-1; Thu, 07 Dec 2023 00:52:20 -0500
-X-MC-Unique: WBYIC2X5PninDoBu-ZlXDg-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2866c800dd5so737126a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 21:52:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701928339; x=1702533139;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HSUZB2MS9IXq3JbO5o9diZppcpNs8joa8PI6k/pJS1g=;
-        b=oo3i4pOAaCuaOmpbehuIDBP7YML2IM7z0FGuMKhz3lvmG2RRNGVb/rtM8g87Ng0/SW
-         AcY5q8M9TNObcocVrMn9hbbKHQPF6+snvImoTVSBLDzEtxen5zKkcJKK2oiRC9STs7kZ
-         pnSAMdm+ZHTcsOMvKlPxELMNWNy6nMpq35PyiO1lNd5LWUDfYkSwR9daIytJfAM6VQRp
-         my7OUOmF4Gvpszft1vPD+GZczeN8deRR31WC2mWKlk8dqilDvw9nAJCBG4JA/NcRcJa0
-         jbvK8PVl9zrvakpVBB5EvsSMKusgRFDQXXyIxqNPwUArAChvNeV1d/N8JTtGU1RdwcGT
-         qBGA==
-X-Gm-Message-State: AOJu0Ywt2mnQewAXSqGyMCGHj56C6xoylp4KEqFlKGfGBuxj8Ye5Zeq9
-        5+t8zWuzsXiNYSi/KCGsAx4DByjm1wHAXu+JbZGAWslMXau+TOc4H1PaXPfnAluFToQfs39GGyj
-        iKbu4cOgLMOdCg+C1M3LxOTuW+IZ6fXruyk0IGqdB
-X-Received: by 2002:a17:90a:fd09:b0:286:6cc0:cad3 with SMTP id cv9-20020a17090afd0900b002866cc0cad3mr1949087pjb.74.1701928339212;
-        Wed, 06 Dec 2023 21:52:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHmSjJEJticrA6iI+yH1lm5XAyMtFr/azBvGsGe1XMJiQigUQ9nLH+oU43aD6xf+IguxCTdguGcxA4sxW4hVuw=
-X-Received: by 2002:a17:90a:fd09:b0:286:6cc0:cad3 with SMTP id
- cv9-20020a17090afd0900b002866cc0cad3mr1949085pjb.74.1701928338997; Wed, 06
- Dec 2023 21:52:18 -0800 (PST)
+        Thu, 7 Dec 2023 00:59:47 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0E1D44;
+        Wed,  6 Dec 2023 21:59:50 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B75xY9L14146789, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B75xY9L14146789
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Dec 2023 13:59:34 +0800
+Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Thu, 7 Dec 2023 13:59:34 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Thu, 7 Dec 2023 13:59:34 +0800
+Received: from RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3]) by
+ RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3%2]) with mapi id
+ 15.01.2375.007; Thu, 7 Dec 2023 13:59:34 +0800
+From:   =?utf-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: RE: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support for Realtek DHC SoCs
+Thread-Topic: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support
+ for Realtek DHC SoCs
+Thread-Index: AQHaGXMHJnbDooY4VkyEcMH4aisPjrCBFAaAgAG3OTCAE2RqMIABC34AgACK6PD//42bAIADJhOw//98noCAAgAXEIAAKXGAgAERTZA=
+Date:   Thu, 7 Dec 2023 05:59:33 +0000
+Message-ID: <caa94d5b82f14c168fd3cfda88664623@realtek.com>
+References: <20231117162709.1096585-1-james.tai@realtek.com>
+ <20231117162709.1096585-2-james.tai@realtek.com>
+ <c3a98e2c-ba62-4798-a0d0-a8bc1fe5bb6b@linaro.org>
+ <7959920acf004f3cb8072de1e17439fa@realtek.com>
+ <e1490203387d4c48a5f8c4040ece038a@realtek.com>
+ <6250c57b-6d38-4085-9a79-58e4e5ed1e3d@linaro.org>
+ <cf2f9fd124514cb9832e942e16b8fa6e@realtek.com>
+ <5134d2c7-b499-400d-bec8-ae0de1eff7db@linaro.org>
+ <f27cb5d8943e44b597a13d7655edf4d0@realtek.com>
+ <3356a35c-0c50-4539-a955-01d2e67b4eca@linaro.org>
+ <612d61f5fae0415f9c8eb93b12f49645@realtek.com>
+ <7f0c906c-9b36-4b29-bb8a-d65621e9e08b@linaro.org>
+In-Reply-To: <7f0c906c-9b36-4b29-bb8a-d65621e9e08b@linaro.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [49.216.16.144]
+x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20231205113444.63015-1-linyunsheng@huawei.com> <20231205113444.63015-5-linyunsheng@huawei.com>
-In-Reply-To: <20231205113444.63015-5-linyunsheng@huawei.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Thu, 7 Dec 2023 13:52:08 +0800
-Message-ID: <CACGkMEvwG6EvZ3me9ReqA-YSR1Y_6fb_kotT=+PFARaLS1FTmg@mail.gmail.com>
-Subject: Re: [PATCH net-next 4/6] vhost/net: remove vhost_net_page_frag_refill()
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux.dev, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 7:35=E2=80=AFPM Yunsheng Lin <linyunsheng@huawei.com=
-> wrote:
->
-> The page frag in vhost_net_page_frag_refill() uses the
-> 'struct page_frag' from skb_page_frag_refill(), but it's
-> implementation is similar to page_frag_alloc_align() now.
->
-> This patch removes vhost_net_page_frag_refill() by using
-> 'struct page_frag_cache' instead of 'struct page_frag',
-> and allocating frag using page_frag_alloc_align().
->
-> The added benefit is that not only unifying the page frag
-> implementation a little, but also having about 0.5% performance
-> boost testing by using the vhost_net_test introduced in the
-> last patch.
->
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-Thanks
-
+SGkgS3J6eXN6dG9mLA0KDQo+Pg0KPj4gICAgIG1pc2NfaXJxX211eDogbWlzY19pcnFfbXV4QDgw
+IHsNCj4+ICAgICAgIGNvbXBhdGlibGUgPSAicmVhbHRlayxydGQxNjE5Yi1pbnRjLW1pc2MiOw0K
+Pj4gICAgICAgcmVnID0gPDB4MDAgMHg4MD47DQo+PiAgICAgICBpbnRlcnJ1cHRzLWV4dGVuZGVk
+ID0gPCZnaWMgR0lDX1NQSSA0MCBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCj4+ICAgICAgICAgICAg
+ICAgICAgICAgICAgIDwmZ2ljIEdJQ19TUEkgODkgSVJRX1RZUEVfTEVWRUxfSElHSD4sDQo+PiAg
+ICAgICAgICAgICAgICAgICAgICAgICA8JmdpYyBHSUNfU1BJIDkwIElSUV9UWVBFX0xFVkVMX0hJ
+R0g+LA0KPj4gICAgICAgaW50ZXJydXB0LWNvbnRyb2xsZXI7DQo+PiAgICAgICAjYWRkcmVzcy1j
+ZWxscyA9IDwwPjsNCj4+ICAgICAgICNpbnRlcnJ1cHQtY2VsbHMgPSA8MT47DQo+PiAgICAgfTsN
+Cj4NCj5TbyB5b3UgaGF2ZSBzdHJpY3RseSBkZWZpbmVkIG51bWJlciBvZiBpbnRlcnJ1cHRzIGFu
+ZCB0aGUgYWN0dWFsIGludGVycnVwdHMgcGVyDQo+dmFyaWFudC4NCj4NClllcywgSSBoYXZlIGRl
+ZmluZWQgdGhlbS4NCg0KPj4NCj4+Pg0KPj4+IExvb2sgYXQgYWxsIG90aGVyIGJpbmRpbmdzIGNv
+dmVyaW5nIG11bHRpcGxlIGRldmljZXMgYW5kIHRoZWlyDQo+Pj4gY2xvY2tzL2ludGVycnVwdHMv
+aW50ZXJjb25uZWN0cy9yZWcgZXRjLg0KPj4NCj4+IE1heSBJIGFkb3B0IHRoZSBhcHByb2FjaCB1
+c2VkIGluIHRoaXMgWUFNTCBmb3IgbXkgY2FzZT8NCj4+IGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcv
+ZG9jL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy90aW1lci9hbGwNCj4+IHdpbm5l
+ciUyQ3N1bjRpLWExMC10aW1lci55YW1sDQo+DQo+DQo+SSBhbSBhc2tpbmcgZm9yIHRoaXMgc2lu
+Y2UgZmV3IGVtYWlscy4NCj4NCj5Mb29rOg0KPiJBbnl3YXksIHlvdSBtdXN0IGRlc2NyaWJlIHRo
+ZSBpdGVtcy4gV2h5IHRoaXMgaXMgbm90IGZpeGVkIGJ1dCBmbGV4aWJsZT8NCj5IYXJkd2FyZSBo
+YXMgZGlmZmVyZW50IG51bWJlciBvZiBwaW5zPyBUaGF0J3MgdW5saWtlbHkuIg0KPg0KSXQgaXMg
+Zml4ZWQsIGFuZCB0aGUgaGFyZHdhcmUgaGFzIHRoZSBzYW1lIG51bWJlciBvZiBwaW5zLg0KDQpS
+ZWdhcmRzLA0KSmFtZXMNCg0K
