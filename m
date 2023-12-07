@@ -2,124 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A72C08085F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF818085F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbjLGJlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:41:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54402 "EHLO
+        id S231387AbjLGJhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:37:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjLGJk6 (ORCPT
+        with ESMTP id S231439AbjLGJhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:40:58 -0500
-Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 03979FA;
-        Thu,  7 Dec 2023 01:40:59 -0800 (PST)
-Received: from localhost.localdomain (unknown [10.190.66.146])
-        by mail-app2 (Coremail) with SMTP id by_KCgCHj08pknFlatRXAA--.45476S4;
-        Thu, 07 Dec 2023 17:36:49 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn
-Cc:     Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yuval Mintz <Yuval.Mintz@qlogic.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] qed: Fix a potential use-after-free in qed_cxt_tables_alloc
-Date:   Thu,  7 Dec 2023 17:36:06 +0800
-Message-Id: <20231207093606.17868-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgCHj08pknFlatRXAA--.45476S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cw1fuw1fWFykCFyxtF1kZrb_yoW8tw1fpr
-        4xJFy2vF40qwn8Xa1kuw1rtFy5Zay7KFy7Gry0kw4ruFn8XFn7X3W7Aa4ruw1xur98JF45
-        tFWjkFnagw1qkFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvm1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgwCBmVwRZREWwAAsR
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 7 Dec 2023 04:37:00 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE65F121
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:37:06 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-33350fcb2c7so492984f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:37:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701941825; x=1702546625; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TVgirxKXDXm5GJs7BxhAmgfiqnHfwl6+dczWvGh6WGg=;
+        b=L5GwvKUzqgHM79RFdngUifHmftnJUR0jMx3khDR3X3J4weWO0glAlmcyoQpigd7he4
+         ygEMTCldabiFzJCx+0NG9OvCPIr/gLWE2MPHyGZltl19E2oM3La7JnUQ6heNfu86hePO
+         ggXUyEVrsppRWk481hrK2JJJYdPbP+b1N9P42R6mbMnQCSoEI6hCVwegeDZz7OnIpUZF
+         2hmwwmht4e0oFwvhg+vN9z/SqBHtn6MzE2YY97SDzProG/U1txY8tCj3AC+P7DysC6zD
+         Z3b+Yvl6oax9UeQk969cWEKTnnLlyqWqHYiQOXDrdaVrMEQQKzznQsQsw8l60RbsMlLm
+         JkiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701941825; x=1702546625;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TVgirxKXDXm5GJs7BxhAmgfiqnHfwl6+dczWvGh6WGg=;
+        b=V9E1ECciuv10RZVM818tQFe1KLBlvXvV6vQSLeUu94gfKieWOghwxickCkGXElh1Et
+         c5xhMj/djczUmHbp3RSMsqQh8cEyHHKjhAb55l5RbBPaHTPX9zls3NrB0r63vu4o+CIS
+         EgNs6dh/YgGcWe8Beff9Zfe+S5hOmvmzsYG1YMjM/3ydqf59Lw6oKwZBCVWX1rmTxk5s
+         APMp29+O8sGBVzdOLXthCrcv7w+CX9M10IOyN5JY2J6ySO2DwQT5sGuOSmpHlnAiX2mi
+         RkfrB6aMQhxLpXgm8uiHbInPMAwuwE8SuqalB6gJlZWMeujy8OsSW5f4+TQgmKKMSWeR
+         AO6g==
+X-Gm-Message-State: AOJu0Yyn0uiTnaXKzpNEqZnqtSu2nLQEli0MTQxcjoIMRMQ4d4ceVV/V
+        ig9DCqKRBJirxizVJZKogO6kXBZcSUq7dBmCsqA=
+X-Google-Smtp-Source: AGHT+IEuEXP8ZhNycekkq6pcvx0quay81tigw7axwCXxrFMAqu78eCJgfruTN0p3HHq9jamRx0w6LA==
+X-Received: by 2002:adf:dd8a:0:b0:333:359f:4205 with SMTP id x10-20020adfdd8a000000b00333359f4205mr1636197wrl.43.1701941825445;
+        Thu, 07 Dec 2023 01:37:05 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id h7-20020a5d6e07000000b003342e0745absm943874wrz.93.2023.12.07.01.37.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 01:37:05 -0800 (PST)
+Message-ID: <c012c052-6511-4c9e-85ee-5caeeb81ea25@linaro.org>
+Date:   Thu, 7 Dec 2023 10:37:02 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: PCI: dwc: rockchip: document optional pcie
+ reference clock input
+Content-Language: en-US
+To:     Heiko Stuebner <heiko@sntech.de>, lpieralisi@kernel.org,
+        kw@linux.com, bhelgaas@google.com
+Cc:     robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        quentin.schulz@theobroma-systems.com,
+        Heiko Stuebner <heiko.stuebner@cherry.de>
+References: <20231206145041.667900-1-heiko@sntech.de>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231206145041.667900-1-heiko@sntech.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-qed_ilt_shadow_alloc() will call qed_ilt_shadow_free() to
-free p_hwfn->p_cxt_mngr->ilt_shadow on error. However,
-qed_cxt_tables_alloc() accesses the freed pointer on failure
-of qed_ilt_shadow_alloc() through calling qed_cxt_mngr_free(),
-which may lead to use-after-free. Fix this issue by setting
-p_hwfn->p_cxt_mngr->ilt_shadow to NULL in qed_ilt_shadow_free().
+On 06/12/2023 15:50, Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@cherry.de>
+> 
+> On some boards the 100MHz PCIe reference clock to both controller and
+> devices is controllable. Add that clock to the list of clocks.
+> 
+> The clock is optional, so the minItems stays the same.
 
-Fixes: fe56b9e6a8d9 ("qed: Add module with basic common support")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Changelog:
-
-v2: -Change the bug type from double-free to use-after-free.
-    -Move the null check against p_mngr->ilt_shadow to the beginning
-     of the function qed_ilt_shadow_free().
-    -When kcalloc() fails in qed_ilt_shadow_alloc(), just return
-     because there is nothing to free.
----
- drivers/net/ethernet/qlogic/qed/qed_cxt.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_cxt.c b/drivers/net/ethernet/qlogic/qed/qed_cxt.c
-index 65e20693c549..911e0c0d3563 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_cxt.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_cxt.c
-@@ -921,9 +921,12 @@ static void qed_ilt_shadow_free(struct qed_hwfn *p_hwfn)
- 	struct qed_cxt_mngr *p_mngr = p_hwfn->p_cxt_mngr;
- 	u32 ilt_size, i;
- 
-+	if (!p_mngr->ilt_shadow)
-+		return;
-+
- 	ilt_size = qed_cxt_ilt_shadow_size(p_cli);
- 
--	for (i = 0; p_mngr->ilt_shadow && i < ilt_size; i++) {
-+	for (i = 0; i < ilt_size; i++) {
- 		struct phys_mem_desc *p_dma = &p_mngr->ilt_shadow[i];
- 
- 		if (p_dma->virt_addr)
-@@ -933,6 +936,7 @@ static void qed_ilt_shadow_free(struct qed_hwfn *p_hwfn)
- 		p_dma->virt_addr = NULL;
- 	}
- 	kfree(p_mngr->ilt_shadow);
-+	p_hwfn->p_cxt_mngr->ilt_shadow = NULL;
- }
- 
- static int qed_ilt_blk_alloc(struct qed_hwfn *p_hwfn,
-@@ -995,10 +999,8 @@ static int qed_ilt_shadow_alloc(struct qed_hwfn *p_hwfn)
- 	size = qed_cxt_ilt_shadow_size(clients);
- 	p_mngr->ilt_shadow = kcalloc(size, sizeof(struct phys_mem_desc),
- 				     GFP_KERNEL);
--	if (!p_mngr->ilt_shadow) {
--		rc = -ENOMEM;
--		goto ilt_shadow_fail;
--	}
-+	if (!p_mngr->ilt_shadow)
-+		return -ENOMEM;
- 
- 	DP_VERBOSE(p_hwfn, QED_MSG_ILT,
- 		   "Allocated 0x%x bytes for ilt shadow\n",
--- 
-2.17.1
+Best regards,
+Krzysztof
 
