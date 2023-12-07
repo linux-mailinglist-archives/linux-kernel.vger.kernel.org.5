@@ -2,123 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1252780929B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 21:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2EF8092A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 21:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443916AbjLGUmJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Dec 2023 15:42:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
+        id S231373AbjLGUoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 15:44:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235586AbjLGUlU (ORCPT
+        with ESMTP id S229541AbjLGUoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 15:41:20 -0500
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6651727;
-        Thu,  7 Dec 2023 12:41:26 -0800 (PST)
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d048d38881so10401735ad.2;
-        Thu, 07 Dec 2023 12:41:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701981686; x=1702586486;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ertAQ/XyfkeiqVhWFyijagBt3DCkqglpo69jMsd5dTk=;
-        b=ItEK50E1AKumUVx5BcQZMqxloiP/7Vx0fZgFc4HawyywdmN1eDf/MbPnulaRCOurQb
-         8/lCRDmsT3h9x5/6+TeZTEymDJRsOiEsnwuEJ+QhueXZ4muev2q3AvVN6WABm+lSVNN4
-         Rg6j6/SKWb9krRiYc4A/kYDd4dshi0YRCHOxFPFWyzja7eGEZL3LaJTBGw3JNbzY4L4s
-         gipFiSbilfgDApEzoE6F+I/FJmd+0boBk87+VAVEOMU2QVV7Y/sbAap9DgA0KOmWEWEt
-         9Om+OeymCd/i9Sizf6atrmKf/QIE9tBsgkdAFX58029l2+/WubwC+2poFrfNW/s/DesH
-         DfjA==
-X-Gm-Message-State: AOJu0Yx2hqhD0/b7oyi/HxAaZXesdsrmK6GEKOIIx25AorCS0kMkJJNP
-        LDJG/GJmNhbmHKHfbMKQPrCWdIecCD6XfmR2lx2hc5RBv8U=
-X-Google-Smtp-Source: AGHT+IETK/ZIBBWSnej2AHVaDXTSJyrSjWXTCLalDqzjnurbXAmTOaTyPYadjSwdrWBVBxwyYVL23HN0QA+OfUT2Av8=
-X-Received: by 2002:a17:902:ea86:b0:1d0:8d57:47c with SMTP id
- x6-20020a170902ea8600b001d08d57047cmr2943727plb.25.1701981685734; Thu, 07 Dec
- 2023 12:41:25 -0800 (PST)
+        Thu, 7 Dec 2023 15:44:14 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8104C1713
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 12:44:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B985C433C8;
+        Thu,  7 Dec 2023 20:44:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701981859;
+        bh=d9aDVM2UeURdax+lpotfrVgU9kIaouVQcvPA3ammyFM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FZcc6zBjxi6Hw9KA7xxdN1W62gPQWQyol1uN7QTMtxIa9WKnE8SU57t/mpAY9P/SX
+         5nNnw8aAPE/oVuer1jDxJCVlgzt2vA6TB3fwrHdGItYH8OkEyOBZH6hG4tY8bxNLtx
+         ECqcCpkgzxLdlpQxr5/zG2EG4fJL1Bh118j9IKBjVPcEfIZqGy1B+TgqzEIwj1LFpX
+         cy4pdGbKaqiT6wiuahVBs5lHs9HF5KzqCHJ5JF+B1YN0JYWzIy2fbAsWq4XbL1T0rc
+         RFmnzl1gJgB10ZwLq84RXu7RuC3M9q3od+CXqVReGoBzNmF4OWstUUC+dl/Jabh4em
+         LNxMGKpu7q8gQ==
+Date:   Thu, 7 Dec 2023 20:44:14 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 5/5] hwmon: Add support for Amphenol ChipCap 2
+Message-ID: <6cce1b87-a9a9-4554-9dae-c24d1d276fb5@sirena.org.uk>
+References: <20231020-topic-chipcap2-v3-0-5b3bb50a5f0b@gmail.com>
+ <20231020-topic-chipcap2-v3-5-5b3bb50a5f0b@gmail.com>
+ <04475f91-bdce-4677-894c-74c2bb8233d9@sirena.org.uk>
+ <5b62afcb-254d-4dfc-8332-7979c62ea2c2@gmail.com>
 MIME-Version: 1.0
-References: <20231128175441.721579-1-namhyung@kernel.org> <CAP-5=fWfKqgT60TFRALw8vTDQT7VFV+0+eo1rFSSH3eVrjzPmA@mail.gmail.com>
- <CAM9d7chKmDETK6Ea2wyR8L21jyHWcPHbKavarnq-JmNA-AoUnQ@mail.gmail.com>
- <CAP-5=fUf6R=bsfg7i8atFApJBY-=zWUBMq7inFsCPZhB+w2==Q@mail.gmail.com>
- <CAM9d7cjDiu=dksnhboJFT4uPQJcvGMB-vBt96v3i7Kqy5LKRMw@mail.gmail.com>
- <CAP-5=fXKbi3DYoOKrJvNKLNU=fJEY9aDAOQhH+Vh+XWxHzGjwA@mail.gmail.com>
- <ZXIiBp-rvdvSI-ZY@kernel.org> <ZXIicbe9K5KYGSV4@kernel.org> <CAP-5=fWN5Jwsf5dxqw0BJxpdu89FM54A-AtQpEqxeE7XLDx3mA@mail.gmail.com>
-In-Reply-To: <CAP-5=fWN5Jwsf5dxqw0BJxpdu89FM54A-AtQpEqxeE7XLDx3mA@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 7 Dec 2023 12:41:14 -0800
-Message-ID: <CAM9d7chXf7F9T+ToKXG+p+37-noMRtOmUr9sttBzEDOw8uJGgw@mail.gmail.com>
-Subject: Re: [PATCHSET 0/8] perf annotate: Make annotation_options global (v1)
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="84DjwU6xjfumnT6L"
+Content-Disposition: inline
+In-Reply-To: <5b62afcb-254d-4dfc-8332-7979c62ea2c2@gmail.com>
+X-Cookie: Two is company, three is an orgy.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 12:14 PM Ian Rogers <irogers@google.com> wrote:
->
-> On Thu, Dec 7, 2023 at 11:52 AM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > Em Thu, Dec 07, 2023 at 04:50:30PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Tue, Dec 05, 2023 at 09:59:02AM -0800, Ian Rogers escreveu:
-> > > > On Mon, Dec 4, 2023 at 2:46 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > > > On Thu, Nov 30, 2023 at 10:37 AM Ian Rogers <irogers@google.com> wrote:
-> > > > > > Sgtm. My point wasn't to criticize, I think this is a good change, I
-> > > > > > was just trying to imagine doing things in a way that could overall
-> > > > > > reduce complexity
-> > >
-> > > > > Yep, thanks for your review.  Can I get your ACKs? :)
-> > >
-> > > > For the series:
-> > > > Reviewed-by: Ian Rogers <irogers@google.com>
-> > >
-> > > Thanks, applied to perf-tools-next.
-> >
-> >
-> > Now trying to fix this:
-> >
-> >   CC      bench/numa.o
-> >   CC      tests/hists_cumulate.o
-> > ui/gtk/annotate.c: In function ‘symbol__gtk_annotate’:
-> > ui/gtk/annotate.c:179:43: error: passing argument 3 of ‘symbol__annotate’ from incompatible pointer type [-Werror=incompatible-pointer-types]
-> >   179 |         err = symbol__annotate(ms, evsel, options, NULL);
-> >       |                                           ^~~~~~~
-> >       |                                           |
-> >       |                                           struct annotation_options *
-> > In file included from ui/gtk/annotate.c:5:
-> > /home/acme/git/perf-tools-next/tools/perf/util/annotate.h:376:36: note: expected ‘struct arch **’ but argument is of type ‘struct annotation_options *’
-> >   376 |                      struct arch **parch);
-> >       |                      ~~~~~~~~~~~~~~^~~~~
-> > ui/gtk/annotate.c:179:15: error: too many arguments to function ‘symbol__annotate’
-> >   179 |         err = symbol__annotate(ms, evsel, options, NULL);
-> >       |               ^~~~~~~~~~~~~~~~
-> > /home/acme/git/perf-tools-next/tools/perf/util/annotate.h:374:5: note: declared here
-> >   374 | int symbol__annotate(struct map_symbol *ms,
-> >       |     ^~~~~~~~~~~~~~~~
-> > cc1: all warnings being treated as errors
-> >   CC      tests/python-use.o
-> >   CC      trace/beauty/sockaddr.o
-> >   CC      arch/x86/util/topdown.o
-> > make[6]: *** [/home/acme/git/perf-tools-next/tools/build/Makefile.build:105: ui/gtk/annotate.o] Error 1
-> > make[6]: *** Waiting for unfinished jobs....
-> >   CC      arch/x86/util/machine.o
->
-> Maybe a signal to remove the gtk support :-)
 
-+1
+--84DjwU6xjfumnT6L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Namhyung
+On Thu, Dec 07, 2023 at 09:34:58PM +0100, Javier Carrasco wrote:
+> On 07.12.23 21:05, Mark Brown wrote:
+
+> > This is very buggy.  A consumer should only disable a regulator if it
+> > itself enabled that regulator (or it *requires* an exclusive regulator
+> > which isn't a good fit here), and there's no guarantee that disabling a
+> > regulator will actually result in a power off.  Either the board might
+> > not physically or through constraints permit the state to change or
+> > another user may have enabled the regulator.  The driver needs to keep
+> > track of if it enabled the regulator and only disable it as many times
+> > as it enabled it.
+
+> The idea is actually that if alarms are required, an exclusive regulator
+> will be necessary to trigger power cycles and enter the command mode.
+
+There is a specific API for exclusive regulators which the driver is not
+using, and it's unconditionally doing the disable/enable cycle here.
+
+> In summary there would be two options: either a regulator is defined and
+> can be controlled to trigger the command mode or no regulator was
+> defined for this device and therefore no command mode is available i.e.
+> interrupts cannot be configured. That would be the case for example when
+> the supply is always on.
+
+The driver needs to be explicitly configured for this and have separate
+code paths for normal operation and operation where the supply can be
+bounced like this.  In neither code path should the supply be optional.
+Right now we don't have a mechanism for discovering optionally exclusive
+and enable/disablable supplies which is what the device needs, we could
+potentially add that since this does seem like a viable use case and we
+already have enough information in the DT to say if the supply matches
+the constraints.  Probably the two properties queryable separately.  If
+that API were added then the driver would do a normal regulator_get()
+then check if it has the capabilities it needs and either keep the
+supply on all the time (or possibly just during measurements?) or enable
+the alarm functionality.
+
+--84DjwU6xjfumnT6L
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVyLp0ACgkQJNaLcl1U
+h9A0kwf6A9o+HV9MW3c5kq5qLVjTu0EmR00E8VExX9/QFePmhDWEVuPtI53Cky5I
+vrpgnVTh4FtB23ga32jy7qHH/TpZ7knjqL1f7/iWmJED6Nl3GRQEXullQwAJoV1X
+tdO3MjtjJ10YMB6CLdFE7LcNb5APUGAk46tpjigU4a8/Adkctw+G7DN9dJPDhH4U
+w8pSe5reBCM7eLpW3YROF3M2j6Ucq60cYlCymE7ijJkhvU+tYvSHIXPLdK53JHxa
+DRw75mqIKhSr/gMLpYq2QnyNkFzlr7YPoxTEVwp5IBbOXWbReoiOKvnx/zu4PwqF
+ovHn/RKfkkdo03p4ohncAz0eThNaZw==
+=5LYW
+-----END PGP SIGNATURE-----
+
+--84DjwU6xjfumnT6L--
