@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C92808481
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 10:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7454B808476
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 10:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378470AbjLGI7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 03:59:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60052 "EHLO
+        id S230166AbjLGJBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:01:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378452AbjLGI66 (ORCPT
+        with ESMTP id S229775AbjLGJBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 03:58:58 -0500
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E4DD53;
-        Thu,  7 Dec 2023 00:59:04 -0800 (PST)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1efb9571b13so468957fac.2;
-        Thu, 07 Dec 2023 00:59:04 -0800 (PST)
+        Thu, 7 Dec 2023 04:01:07 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7521B19A;
+        Thu,  7 Dec 2023 01:01:13 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40c0f3a7717so8336185e9.1;
+        Thu, 07 Dec 2023 01:01:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701939544; x=1702544344; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kMotijnh/qiarlNtyEfMGI6pNts/0ixAszGWpmQazv8=;
-        b=AgIICz0iiva4A0f1MqZT6dkoQa1H63dHZtUcVklYFSEyyN6NwvHHb89jljAGt2j0ui
-         DsUZvBwSE7DsCrezUv8t78VyxW3ooVwB/cGpxd/H1AuPESEZFFf99ZvXD2HwxVLWPMwg
-         qVJdFDT+lGUDV3nROLZRXC1JHUIBU5veR3CwjY7Cn4lIy3msdsz7U5qEoMzErYGYPPZE
-         MhoKlsGIy8yGFBemI0ueUOSBOf6Px9ZW2Iv23+3JQ91/pa4rqAaoc6aFZDryC37tnA9p
-         mEJzsj5bT4z6IzxeR9V3Trqp6++4jlxdsAdhJf2RtosRJ8aiQEo9xQugfn9uixjTr3Zq
-         gXEg==
+        d=gmail.com; s=20230601; t=1701939672; x=1702544472; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qKsrC2p/dEstQQ0QtE5+II/Axy3OGpRA/lKlIyxGMfU=;
+        b=P50b6a6EiNqeI3saTqQWSxr8707DjD2giXkYr68M+X82gzEw6GkQpFAX0ywwVXeBkA
+         M5JnIPlJHaE6tNi4aw+aGcR3CL5r1C6WQuba7XP3E0FXv4v5OzgEgBdN+8fe7QNW92Pb
+         N88C5lpd4xdCVWbC4NngSRSxj3dtYc6k4ApfAOamDeWnoAeh13VsgY4LxSkp0XL/nvxh
+         AvEuvaz6KkCpCuhuTh4s+yyKWQAC1Syx/E7VtmpDt49EEXJ7L79ziSsTFfblle/9Upad
+         qRIVJqJQwdy4j+lccdJ6tDrD4Yf4u7L2gBKVuxUeD10Ar0/+vpJ7TfN+DqD58cdKIipb
+         bwTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701939544; x=1702544344;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kMotijnh/qiarlNtyEfMGI6pNts/0ixAszGWpmQazv8=;
-        b=kb+3rvRKDt6oR12TL3w6GUPHrwXG5KaiwofX59LeQTIJhz86GuyJj8MMc9K2JAFQB9
-         j6ljoeJrfmwVXX52xKltNJpaw4IIIFdzA/6P8NtwIHF1sWqGtBQPZopwjiNtDiW4+n60
-         1e+ke+2TpjL923HGdPjLybOYxeyC6W7ZiJKKju9YJnI9Zs2NChpZ46abiSmivz7EN/FB
-         QqxRFEiQFvCQ3k5Y1YmHDwRpVGsyrYJ+lC059pHzBtoX1edcCt91wEs8renM5v1cuElx
-         J6ktM37DQ5ZBo2lRnf3OSs86i3T3gAQr0VstcMV4gZiyjXE7y9BoJJJT+xFrjXgi1EXa
-         sNJQ==
-X-Gm-Message-State: AOJu0Ywx5y8UuHcrWhDDaJEeGBgmZ8/PKDV+/LgayZTkhc0BLXSbxqOn
-        q9H4Se5Dqk/SCqNRF02JKWI=
-X-Google-Smtp-Source: AGHT+IEXTbQq8dYkPSJIMFuDzSIa2jJdfeAvsDSzpCTKkjrNj1lYR7HKeNF3KhBamgosP45aezeo2g==
-X-Received: by 2002:a05:6871:2b1b:b0:1fb:75a:7797 with SMTP id dr27-20020a0568712b1b00b001fb075a7797mr2467585oac.72.1701939544160;
-        Thu, 07 Dec 2023 00:59:04 -0800 (PST)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id m25-20020a9d7ad9000000b006d84f49497fsm153756otn.23.2023.12.07.00.59.02
+        d=1e100.net; s=20230601; t=1701939672; x=1702544472;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qKsrC2p/dEstQQ0QtE5+II/Axy3OGpRA/lKlIyxGMfU=;
+        b=jDWRQiZwpfLHnQia2D7NZwcD1TIjp0g0ib2wzGgJnIDhSvt61r3/61G//l7rYdkkU5
+         mDPXlkrJXdmpnTtRc58FHLFsV1sB13ZNWxIT7w3ivqe2lpR5XbBST/0UR6l+h+sfpC+4
+         cr79hqEnk9oKixsDyPRH4AyI5VTprGZ0WcbVDjhuJUViatgS5a7TIlKyEambOWfDh6Ts
+         pQunmw4ljS6Yf+IJ0z6Yehu6mJBoSSt7RjC3gVhM0xKA2vkHLHxNqJBk7FQiWIIICYWW
+         WscoqlHqjHTTAfzUNGxKd6Lt/BZLuBv7CwoFVhWf8uBsfwDUgoJOLQj5sb38OcgBJjCN
+         Xb2w==
+X-Gm-Message-State: AOJu0YxJ7c+AP9poVIPi9jDl602q+9uZZ22qxTRbhE4j7Q7HI1MEf5uf
+        hPLMjYwiqa06Q7YPKdD/cPk=
+X-Google-Smtp-Source: AGHT+IFwH3MlrTBWISRHWbZ79UOTiRqbgIqnDY4jyF0MSzJqHfOjVk1Qh+G7NHGCEArx3HAl90HMfQ==
+X-Received: by 2002:a05:600c:4f03:b0:40b:5f03:b3db with SMTP id l3-20020a05600c4f0300b0040b5f03b3dbmr657798wmq.253.1701939671713;
+        Thu, 07 Dec 2023 01:01:11 -0800 (PST)
+Received: from eichest-laptop ([2a02:168:af72:0:5036:93fe:290b:56de])
+        by smtp.gmail.com with ESMTPSA id s9-20020a05600c45c900b0040b3d8907fesm1173675wmo.29.2023.12.07.01.01.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 00:59:03 -0800 (PST)
-From:   Chen Wang <unicornxw@gmail.com>
-To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
-        palmer@dabbelt.com, paul.walmsley@sifive.com,
-        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
-        guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
-        samuel.holland@sifive.com
-Cc:     Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH v5 4/4] riscv: dts: add clock generator for Sophgo SG2042 SoC
-Date:   Thu,  7 Dec 2023 16:58:54 +0800
-Message-Id: <8e58ac40c02e13ed09c5bb896f1cb5aaa01d82c6.1701938395.git.unicorn_wang@outlook.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1701938395.git.unicorn_wang@outlook.com>
-References: <cover.1701938395.git.unicorn_wang@outlook.com>
+        Thu, 07 Dec 2023 01:01:10 -0800 (PST)
+Date:   Thu, 7 Dec 2023 10:01:08 +0100
+From:   Stefan Eichenberger <eichest@gmail.com>
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     mw@semihalf.com, linux@armlinux.org.uk, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: mvpp2: add support for mii
+Message-ID: <ZXGJXIK3cl/9lfKi@eichest-laptop>
+References: <20231206160125.2383281-1-eichest@gmail.com>
+ <20231206182705.3ff798ad@device.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206182705.3ff798ad@device.home>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -79,142 +73,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Wang <unicorn_wang@outlook.com>
+Hi Maxime,
 
-Add clock generator node to device tree for SG2042, and enable clock for
-uart.
+On Wed, Dec 06, 2023 at 06:27:05PM +0100, Maxime Chevallier wrote:
+> > @@ -6973,6 +6988,9 @@ static int mvpp2_port_probe(struct platform_device *pdev,
+> >  				  port->phylink_config.supported_interfaces);
+> >  			__set_bit(PHY_INTERFACE_MODE_SGMII,
+> >  				  port->phylink_config.supported_interfaces);
+> > +		} else if (phy_mode == PHY_INTERFACE_MODE_MII) {
+> > +			__set_bit(PHY_INTERFACE_MODE_100BASEX,
+> > +				  port->phylink_config.supported_interfaces);
+> 
+> Can you explain that part ? I don't understand why 100BaseX is being
+> reported as a supported mode here. This whole section of the function
+> is about detecting what can be reported based on the presence or not of
+> a comphy driver / hardcoded comphy config. I don't think the comphy
+> here has anything to do with MII / 100BaseX
+> 
+> If 100BaseX can be carried on MII (which I don't know), shouldn't it be
+> reported no matter what ?
 
-Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
----
- .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  |  4 +
- arch/riscv/boot/dts/sophgo/sg2042.dtsi        | 79 +++++++++++++++++++
- 2 files changed, 83 insertions(+)
+I missunderstood that part, I thought it is a translation from interface
+type to speed but it is obviously not. I already verfied that everything
+works without this part and will remove it in version 2 of the patch.
+Thanks a lot for the review!
 
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts b/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-index 49b4b9c2c101..0b3b3b2b0c64 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-+++ b/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-@@ -14,6 +14,10 @@ chosen {
- 	};
- };
- 
-+&cgi {
-+	clock-frequency = <25000000>;
-+};
-+
- &uart0 {
- 	status = "okay";
- };
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042.dtsi b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-index 93256540d078..f08c41dda216 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-+++ b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/clock/sophgo,sg2042-clkgen.h>
- 
- #include "sg2042-cpus.dtsi"
- 
-@@ -18,6 +19,12 @@ aliases {
- 		serial0 = &uart0;
- 	};
- 
-+	cgi: oscillator {
-+		compatible = "fixed-clock";
-+		clock-output-names = "cgi";
-+		#clock-cells = <0>;
-+	};
-+
- 	soc: soc {
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
-@@ -311,12 +318,84 @@ intc: interrupt-controller@7090000000 {
- 			riscv,ndev = <224>;
- 		};
- 
-+		sys_ctrl: system-controller@7030010000 {
-+			compatible = "sophgo,sg2042-sysctrl";
-+			reg = <0x70 0x30010000 0x0 0x1000>;
-+		};
-+
-+		clkgen: clock-controller@7030012000 {
-+			compatible = "sophgo,sg2042-clkgen";
-+			reg = <0x70 0x30012000 0x0 0x1000>;
-+			sophgo,system-ctrl = <&sys_ctrl>;
-+			#clock-cells = <1>;
-+			clocks = <&cgi>;
-+			assigned-clocks = \
-+				<&clkgen DIV_CLK_FPLL_RP_CPU_NORMAL_1>,
-+				<&clkgen DIV_CLK_FPLL_50M_A53>,
-+				<&clkgen DIV_CLK_FPLL_TOP_RP_CMN_DIV2>,
-+				<&clkgen DIV_CLK_FPLL_UART_500M>,
-+				<&clkgen DIV_CLK_FPLL_AHB_LPC>,
-+				<&clkgen DIV_CLK_FPLL_EFUSE>,
-+				<&clkgen DIV_CLK_FPLL_TX_ETH0>,
-+				<&clkgen DIV_CLK_FPLL_PTP_REF_I_ETH0>,
-+				<&clkgen DIV_CLK_FPLL_REF_ETH0>,
-+				<&clkgen DIV_CLK_FPLL_EMMC>,
-+				<&clkgen DIV_CLK_FPLL_SD>,
-+				<&clkgen DIV_CLK_FPLL_TOP_AXI0>,
-+				<&clkgen DIV_CLK_FPLL_TOP_AXI_HSPERI>,
-+				<&clkgen DIV_CLK_FPLL_AXI_DDR_1>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER1>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER2>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER3>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER4>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER5>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER6>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER7>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER8>,
-+				<&clkgen DIV_CLK_FPLL_100K_EMMC>,
-+				<&clkgen DIV_CLK_FPLL_100K_SD>,
-+				<&clkgen DIV_CLK_FPLL_GPIO_DB>,
-+				<&clkgen DIV_CLK_MPLL_RP_CPU_NORMAL_0>,
-+				<&clkgen DIV_CLK_MPLL_AXI_DDR_0>;
-+			assigned-clock-rates = \
-+				<2000000000>,
-+				<50000000>,
-+				<1000000000>,
-+				<500000000>,
-+				<200000000>,
-+				<25000000>,
-+				<125000000>,
-+				<50000000>,
-+				<25000000>,
-+				<100000000>,
-+				<100000000>,
-+				<100000000>,
-+				<250000000>,
-+				<1000000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<100000>,
-+				<100000>,
-+				<100000>,
-+				<2000000000>,
-+				<1000000000>;
-+		};
-+
- 		uart0: serial@7040000000 {
- 			compatible = "snps,dw-apb-uart";
- 			reg = <0x00000070 0x40000000 0x00000000 0x00001000>;
- 			interrupt-parent = <&intc>;
- 			interrupts = <112 IRQ_TYPE_LEVEL_HIGH>;
- 			clock-frequency = <500000000>;
-+			clocks = <&clkgen GATE_CLK_UART_500M>,
-+				 <&clkgen GATE_CLK_APB_UART>;
-+			clock-names = "baudclk", "apb_pclk";
- 			reg-shift = <2>;
- 			reg-io-width = <4>;
- 			status = "disabled";
--- 
-2.25.1
-
+Regards,
+Stefan
