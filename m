@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAE98093C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 22:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5752A8094D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 22:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235642AbjLGV0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 16:26:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
+        id S1444056AbjLGV0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 16:26:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235794AbjLGVZm (ORCPT
+        with ESMTP id S235811AbjLGVZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 16:25:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6294D385E
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 13:24:08 -0800 (PST)
+        Thu, 7 Dec 2023 16:25:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048BC386A
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 13:24:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701984247;
+        s=mimecast20190719; t=1701984248;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BBeV+gPa6exSN5f9Ij71agEQGyyesbGBrZnLGz9yhJU=;
-        b=Pn25jT4gHEPBbzqhiyw1V97qur+I1p6D4SzmUAxkhMFxGfTM2c8WtXdTOaO0OJsXT8iqK2
-        rG3Li8BFQFNo4AaWgyJ6lpBu6es50pB337MRxI4fi88xDOoDFQ3w96qyjUUfcIfde5yXAU
-        EZWT+mhWRGQs0H32mYQ7hN159+4fQgA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-467-xRXaFeGcNgOaRy7C7CAhjw-1; Thu, 07 Dec 2023 16:24:03 -0500
-X-MC-Unique: xRXaFeGcNgOaRy7C7CAhjw-1
+        bh=GWz3UetJ1H2inkDCEy0FPsiHj6M0nuo6NxktZOcXvKA=;
+        b=QahHgl+/Yotep8XFuYM3kLSZQxJ/21vfDIoXwkXpZbcwUXC8CYnqS/k0DscfyVzsiF1rzM
+        e3En7d7/Jbnyi8kQEYZIdgUJY+h8tm3J8h2vZElKonB5NSkdNJMKyuO9Je3tQqBcxJik2I
+        81QH2VjQ/gLPE+qXG4svXHuzsBApTBY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-528-CgN40KOpOgG4AEmFSx37PQ-1; Thu,
+ 07 Dec 2023 16:24:06 -0500
+X-MC-Unique: CgN40KOpOgG4AEmFSx37PQ-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 17FBE870825;
-        Thu,  7 Dec 2023 21:24:02 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 84A4D3C40B53;
+        Thu,  7 Dec 2023 21:24:05 +0000 (UTC)
 Received: from warthog.procyon.org.com (unknown [10.42.28.161])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6E8473C35;
-        Thu,  7 Dec 2023 21:23:59 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D986B3C2E;
+        Thu,  7 Dec 2023 21:24:02 +0000 (UTC)
 From:   David Howells <dhowells@redhat.com>
 To:     Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>
 Cc:     David Howells <dhowells@redhat.com>,
@@ -56,9 +56,9 @@ Cc:     David Howells <dhowells@redhat.com>,
         ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
         linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 32/59] netfs: Provide netfs_file_read_iter()
-Date:   Thu,  7 Dec 2023 21:21:39 +0000
-Message-ID: <20231207212206.1379128-33-dhowells@redhat.com>
+Subject: [PATCH v3 33/59] netfs, cachefiles: Pass upper bound length to allow expansion
+Date:   Thu,  7 Dec 2023 21:21:40 +0000
+Message-ID: <20231207212206.1379128-34-dhowells@redhat.com>
 In-Reply-To: <20231207212206.1379128-1-dhowells@redhat.com>
 References: <20231207212206.1379128-1-dhowells@redhat.com>
 MIME-Version: 1.0
@@ -66,7 +66,7 @@ Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,8 +74,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide a top-level-ish function that can be pointed to directly by
-->read_iter file op.
+Make netfslib pass the maximum length to the ->prepare_write() op to tell
+the cache how much it can expand the length of a write to.  This allows a
+write to the server at the end of a file to be limited to a few bytes
+whilst writing an entire block to the cache (something required by direct
+I/O).
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 cc: Jeff Layton <jlayton@kernel.org>
@@ -83,102 +86,206 @@ cc: linux-cachefs@redhat.com
 cc: linux-fsdevel@vger.kernel.org
 cc: linux-mm@kvack.org
 ---
- fs/netfs/buffered_read.c | 73 ++++++++++++++++++++++++++++++++++++++++
- include/linux/netfs.h    |  2 ++
- 2 files changed, 75 insertions(+)
+ fs/cachefiles/internal.h |  2 +-
+ fs/cachefiles/io.c       | 10 ++++++----
+ fs/cachefiles/ondemand.c |  2 +-
+ fs/netfs/fscache_io.c    |  2 +-
+ fs/netfs/io.c            |  2 +-
+ fs/netfs/objects.c       |  1 +
+ fs/netfs/output.c        | 25 ++++++++++---------------
+ fs/smb/client/fscache.c  |  2 +-
+ include/linux/netfs.h    |  5 +++--
+ 9 files changed, 25 insertions(+), 26 deletions(-)
 
-diff --git a/fs/netfs/buffered_read.c b/fs/netfs/buffered_read.c
-index 950f63fc156a..a59e7b2edaac 100644
---- a/fs/netfs/buffered_read.c
-+++ b/fs/netfs/buffered_read.c
-@@ -558,3 +558,76 @@ int netfs_prefetch_for_write(struct file *file, struct folio *folio,
- 	_leave(" = %d", ret);
- 	return ret;
+diff --git a/fs/cachefiles/internal.h b/fs/cachefiles/internal.h
+index 4a87c9d714a9..d33169f0018b 100644
+--- a/fs/cachefiles/internal.h
++++ b/fs/cachefiles/internal.h
+@@ -246,7 +246,7 @@ extern bool cachefiles_begin_operation(struct netfs_cache_resources *cres,
+ 				       enum fscache_want_state want_state);
+ extern int __cachefiles_prepare_write(struct cachefiles_object *object,
+ 				      struct file *file,
+-				      loff_t *_start, size_t *_len,
++				      loff_t *_start, size_t *_len, size_t upper_len,
+ 				      bool no_space_allocated_yet);
+ extern int __cachefiles_write(struct cachefiles_object *object,
+ 			      struct file *file,
+diff --git a/fs/cachefiles/io.c b/fs/cachefiles/io.c
+index 5857241c5918..9fe69a60eb24 100644
+--- a/fs/cachefiles/io.c
++++ b/fs/cachefiles/io.c
+@@ -517,7 +517,7 @@ cachefiles_prepare_ondemand_read(struct netfs_cache_resources *cres,
+  */
+ int __cachefiles_prepare_write(struct cachefiles_object *object,
+ 			       struct file *file,
+-			       loff_t *_start, size_t *_len,
++			       loff_t *_start, size_t *_len, size_t upper_len,
+ 			       bool no_space_allocated_yet)
+ {
+ 	struct cachefiles_cache *cache = object->volume->cache;
+@@ -529,6 +529,8 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
+ 	down = start - round_down(start, PAGE_SIZE);
+ 	*_start = start - down;
+ 	*_len = round_up(down + len, PAGE_SIZE);
++	if (down < start || *_len > upper_len)
++		return -ENOBUFS;
+ 
+ 	/* We need to work out whether there's sufficient disk space to perform
+ 	 * the write - but we can skip that check if we have space already
+@@ -591,8 +593,8 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
  }
-+
-+/**
-+ * netfs_buffered_read_iter - Filesystem buffered I/O read routine
-+ * @iocb: kernel I/O control block
-+ * @iter: destination for the data read
-+ *
-+ * This is the ->read_iter() routine for all filesystems that can use the page
-+ * cache directly.
-+ *
-+ * The IOCB_NOWAIT flag in iocb->ki_flags indicates that -EAGAIN shall be
-+ * returned when no data can be read without waiting for I/O requests to
-+ * complete; it doesn't prevent readahead.
-+ *
-+ * The IOCB_NOIO flag in iocb->ki_flags indicates that no new I/O requests
-+ * shall be made for the read or for readahead.  When no data can be read,
-+ * -EAGAIN shall be returned.  When readahead would be triggered, a partial,
-+ * possibly empty read shall be returned.
-+ *
-+ * Return:
-+ * * number of bytes copied, even for partial reads
-+ * * negative error code (or 0 if IOCB_NOIO) if nothing was read
-+ */
-+ssize_t netfs_buffered_read_iter(struct kiocb *iocb, struct iov_iter *iter)
-+{
-+	struct inode *inode = file_inode(iocb->ki_filp);
-+	struct netfs_inode *ictx = netfs_inode(inode);
-+	ssize_t ret;
-+
-+	if (WARN_ON_ONCE((iocb->ki_flags & IOCB_DIRECT) ||
-+			 test_bit(NETFS_ICTX_UNBUFFERED, &ictx->flags)))
-+		return -EINVAL;
-+
-+	ret = netfs_start_io_read(inode);
-+	if (ret == 0) {
-+		ret = filemap_read(iocb, iter, 0);
-+		netfs_end_io_read(inode);
-+	}
-+	return ret;
-+}
-+EXPORT_SYMBOL(netfs_buffered_read_iter);
-+
-+/**
-+ * netfs_file_read_iter - Generic filesystem read routine
-+ * @iocb: kernel I/O control block
-+ * @iter: destination for the data read
-+ *
-+ * This is the ->read_iter() routine for all filesystems that can use the page
-+ * cache directly.
-+ *
-+ * The IOCB_NOWAIT flag in iocb->ki_flags indicates that -EAGAIN shall be
-+ * returned when no data can be read without waiting for I/O requests to
-+ * complete; it doesn't prevent readahead.
-+ *
-+ * The IOCB_NOIO flag in iocb->ki_flags indicates that no new I/O requests
-+ * shall be made for the read or for readahead.  When no data can be read,
-+ * -EAGAIN shall be returned.  When readahead would be triggered, a partial,
-+ * possibly empty read shall be returned.
-+ *
-+ * Return:
-+ * * number of bytes copied, even for partial reads
-+ * * negative error code (or 0 if IOCB_NOIO) if nothing was read
-+ */
-+ssize_t netfs_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
-+{
-+	struct netfs_inode *ictx = netfs_inode(iocb->ki_filp->f_mapping->host);
-+
-+	if ((iocb->ki_flags & IOCB_DIRECT) ||
-+	    test_bit(NETFS_ICTX_UNBUFFERED, &ictx->flags))
-+		return netfs_unbuffered_read_iter(iocb, iter);
-+
-+	return netfs_buffered_read_iter(iocb, iter);
-+}
-+EXPORT_SYMBOL(netfs_file_read_iter);
+ 
+ static int cachefiles_prepare_write(struct netfs_cache_resources *cres,
+-				    loff_t *_start, size_t *_len, loff_t i_size,
+-				    bool no_space_allocated_yet)
++				    loff_t *_start, size_t *_len, size_t upper_len,
++				    loff_t i_size, bool no_space_allocated_yet)
+ {
+ 	struct cachefiles_object *object = cachefiles_cres_object(cres);
+ 	struct cachefiles_cache *cache = object->volume->cache;
+@@ -608,7 +610,7 @@ static int cachefiles_prepare_write(struct netfs_cache_resources *cres,
+ 
+ 	cachefiles_begin_secure(cache, &saved_cred);
+ 	ret = __cachefiles_prepare_write(object, cachefiles_cres_file(cres),
+-					 _start, _len,
++					 _start, _len, upper_len,
+ 					 no_space_allocated_yet);
+ 	cachefiles_end_secure(cache, saved_cred);
+ 	return ret;
+diff --git a/fs/cachefiles/ondemand.c b/fs/cachefiles/ondemand.c
+index b8fbbb1961bb..5fd74ec60bef 100644
+--- a/fs/cachefiles/ondemand.c
++++ b/fs/cachefiles/ondemand.c
+@@ -50,7 +50,7 @@ static ssize_t cachefiles_ondemand_fd_write_iter(struct kiocb *kiocb,
+ 		return -ENOBUFS;
+ 
+ 	cachefiles_begin_secure(cache, &saved_cred);
+-	ret = __cachefiles_prepare_write(object, file, &pos, &len, true);
++	ret = __cachefiles_prepare_write(object, file, &pos, &len, len, true);
+ 	cachefiles_end_secure(cache, saved_cred);
+ 	if (ret < 0)
+ 		return ret;
+diff --git a/fs/netfs/fscache_io.c b/fs/netfs/fscache_io.c
+index 79171a687930..ad572f7ee897 100644
+--- a/fs/netfs/fscache_io.c
++++ b/fs/netfs/fscache_io.c
+@@ -237,7 +237,7 @@ void __fscache_write_to_cache(struct fscache_cookie *cookie,
+ 				    fscache_access_io_write) < 0)
+ 		goto abandon_free;
+ 
+-	ret = cres->ops->prepare_write(cres, &start, &len, i_size, false);
++	ret = cres->ops->prepare_write(cres, &start, &len, len, i_size, false);
+ 	if (ret < 0)
+ 		goto abandon_end;
+ 
+diff --git a/fs/netfs/io.c b/fs/netfs/io.c
+index 894c3305710d..5d9098db815a 100644
+--- a/fs/netfs/io.c
++++ b/fs/netfs/io.c
+@@ -199,7 +199,7 @@ static void netfs_rreq_do_write_to_cache(struct netfs_io_request *rreq)
+ 		}
+ 
+ 		ret = cres->ops->prepare_write(cres, &subreq->start, &subreq->len,
+-					       rreq->i_size, true);
++					       subreq->len, rreq->i_size, true);
+ 		if (ret < 0) {
+ 			trace_netfs_failure(rreq, subreq, ret, netfs_fail_prepare_write);
+ 			trace_netfs_sreq(subreq, netfs_sreq_trace_write_skip);
+diff --git a/fs/netfs/objects.c b/fs/netfs/objects.c
+index c1218b183197..16252cc4576e 100644
+--- a/fs/netfs/objects.c
++++ b/fs/netfs/objects.c
+@@ -33,6 +33,7 @@ struct netfs_io_request *netfs_alloc_request(struct address_space *mapping,
+ 
+ 	rreq->start	= start;
+ 	rreq->len	= len;
++	rreq->upper_len	= len;
+ 	rreq->origin	= origin;
+ 	rreq->netfs_ops	= ctx->ops;
+ 	rreq->mapping	= mapping;
+diff --git a/fs/netfs/output.c b/fs/netfs/output.c
+index 560cbcea0c0a..cc9065733b42 100644
+--- a/fs/netfs/output.c
++++ b/fs/netfs/output.c
+@@ -280,7 +280,7 @@ EXPORT_SYMBOL(netfs_queue_write_request);
+  */
+ static void netfs_set_up_write_to_cache(struct netfs_io_request *wreq)
+ {
+-	struct netfs_cache_resources *cres;
++	struct netfs_cache_resources *cres = &wreq->cache_resources;
+ 	struct netfs_io_subrequest *subreq;
+ 	struct netfs_inode *ctx = netfs_inode(wreq->inode);
+ 	struct fscache_cookie *cookie = netfs_i_cookie(ctx);
+@@ -294,26 +294,21 @@ static void netfs_set_up_write_to_cache(struct netfs_io_request *wreq)
+ 	}
+ 
+ 	_debug("write to cache");
+-	subreq = netfs_create_write_request(wreq, NETFS_WRITE_TO_CACHE, start, len,
+-					    netfs_write_to_cache_op_worker);
+-	if (!subreq)
++	ret = fscache_begin_write_operation(cres, cookie);
++	if (ret < 0)
+ 		return;
+ 
+-	cres = &wreq->cache_resources;
+-	ret = fscache_begin_read_operation(cres, cookie);
+-	if (ret < 0) {
+-		netfs_write_subrequest_terminated(subreq, ret, false);
++	ret = cres->ops->prepare_write(cres, &start, &len, wreq->upper_len,
++				       i_size_read(wreq->inode), true);
++	if (ret < 0)
+ 		return;
+-	}
+ 
+-	ret = cres->ops->prepare_write(cres, &start, &len, i_size_read(wreq->inode),
+-				       true);
+-	if (ret < 0) {
+-		netfs_write_subrequest_terminated(subreq, ret, false);
++	subreq = netfs_create_write_request(wreq, NETFS_WRITE_TO_CACHE, start, len,
++					    netfs_write_to_cache_op_worker);
++	if (!subreq)
+ 		return;
+-	}
+ 
+-	netfs_queue_write_request(subreq);
++	netfs_write_to_cache_op(subreq);
+ }
+ 
+ /*
+diff --git a/fs/smb/client/fscache.c b/fs/smb/client/fscache.c
+index e5cad149f5a2..c4a3cb736881 100644
+--- a/fs/smb/client/fscache.c
++++ b/fs/smb/client/fscache.c
+@@ -180,7 +180,7 @@ static int fscache_fallback_write_pages(struct inode *inode, loff_t start, size_
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = cres.ops->prepare_write(&cres, &start, &len, i_size_read(inode),
++	ret = cres.ops->prepare_write(&cres, &start, &len, len, i_size_read(inode),
+ 				      no_space_allocated_yet);
+ 	if (ret == 0)
+ 		ret = fscache_write(&cres, start, &iter, NULL, NULL);
 diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-index 46c0a6b45bb8..638f42fdaef5 100644
+index 638f42fdaef5..f98deef22d06 100644
 --- a/include/linux/netfs.h
 +++ b/include/linux/netfs.h
-@@ -381,6 +381,8 @@ struct netfs_cache_ops {
+@@ -263,6 +263,7 @@ struct netfs_io_request {
+ 	atomic_t		nr_copy_ops;	/* Number of copy-to-cache ops in progress */
+ 	size_t			submitted;	/* Amount submitted for I/O so far */
+ 	size_t			len;		/* Length of the request */
++	size_t			upper_len;	/* Length can be extended to here */
+ 	size_t			transferred;	/* Amount to be indicated as transferred */
+ 	short			error;		/* 0 or error that occurred */
+ 	enum netfs_io_origin	origin;		/* Origin of the request */
+@@ -360,8 +361,8 @@ struct netfs_cache_ops {
+ 	 * actually do.
+ 	 */
+ 	int (*prepare_write)(struct netfs_cache_resources *cres,
+-			     loff_t *_start, size_t *_len, loff_t i_size,
+-			     bool no_space_allocated_yet);
++			     loff_t *_start, size_t *_len, size_t upper_len,
++			     loff_t i_size, bool no_space_allocated_yet);
  
- /* High-level read API. */
- ssize_t netfs_unbuffered_read_iter(struct kiocb *iocb, struct iov_iter *iter);
-+ssize_t netfs_buffered_read_iter(struct kiocb *iocb, struct iov_iter *iter);
-+ssize_t netfs_file_read_iter(struct kiocb *iocb, struct iov_iter *iter);
- 
- /* High-level write API */
- ssize_t netfs_perform_write(struct kiocb *iocb, struct iov_iter *iter,
+ 	/* Prepare an on-demand read operation, shortening it to a cached/uncached
+ 	 * boundary as appropriate.
 
