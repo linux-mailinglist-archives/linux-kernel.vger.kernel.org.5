@@ -2,87 +2,581 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D819807D76
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 01:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BC9807D7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441950AbjLGA67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 19:58:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
+        id S1441942AbjLGBAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 20:00:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441942AbjLGA66 (ORCPT
+        with ESMTP id S231264AbjLGA77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 19:58:58 -0500
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C22D53;
-        Wed,  6 Dec 2023 16:59:04 -0800 (PST)
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5c68b5cf14bso282533a12.0;
-        Wed, 06 Dec 2023 16:59:04 -0800 (PST)
+        Wed, 6 Dec 2023 19:59:59 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8934E12F;
+        Wed,  6 Dec 2023 17:00:04 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1d0c4d84bf6so2810175ad.1;
+        Wed, 06 Dec 2023 17:00:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701910804; x=1702515604; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zsGIjCFU5lyJ4K017s44uK87gjwXDiMcgnBYCQQOfWs=;
+        b=lINBcacfxnxuiWvWQXj0W+WxuwWJZcRS4E1pFDRFj9Rp2ffqxOLBhS5qUxFKBHdbaY
+         9eJm5+FsWBIz+vwqFiLl2Ema5HUwgkacopsyYhgiSrB0TYVUxNG8/YdK0UXtyKPp327T
+         HnnBOofRvNIwRYQjstN8JvfEXrOiBtAuORKGvYcDLLvB4rV4oC/x+cxyrfCQ/I2USKgx
+         XWLazA9Koy7dJABRAIllCrTnCuTNxWHBeRJAH2O9FHkGtlZcFvcXxYZ2rPtiwaDg+0W4
+         0LbKcfeBxQNL023NksaQnsrY4FJlpHUK1elsHfWQBPsFxni1SzuJJrGR3bW/vNYlV8ch
+         skNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701910744; x=1702515544;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v80y2sUM3/Aew+y5MU1sFBYpJUDxD3dm27emB8pydjY=;
-        b=cnioQyoYbpVR+7I23iYy2QXncHj8FKBD3xKsq4PEDH3Bc4PnJp8N3+zhyPG9Tlz2EQ
-         59vfRU4xhh0B1ENoD1xq4PpB9uGkO5NkSWWirIXqBq2VgYIVulTPG/cmDvY97FUYNEYg
-         ey7TaQxkoO/QfCQs99FUBEJBpQaxJP4NSu9qPtclPQkC5CFNWQ5AQADTP/uqmj12H2It
-         nrsR4FCoQtaa9uEz1m3mM7EDxgcecDI6vlih8gUFJp/OOZYR5HWRI8eBxTf1RO3SfPzD
-         459Fw8hj7x3EutTGUM+BsuAo7wTgy8ASY3YrKhwrnBlYOgH+JCqxfgcm/k9wOQW+QDGq
-         Zn4A==
-X-Gm-Message-State: AOJu0Yx2VGHr4jCxRxhiQvGWa1dTukWsBaHvUohkNxMOXNfJrpVfGo/1
-        SJGdAtesp7KY3iRtCYlKc/M=
-X-Google-Smtp-Source: AGHT+IH8UFetPLRIAvLcso421cwQuQZAn7pgl9sZ3zxp9q55QYKzltU+3RGshvuk1uo09chMS8hQtQ==
-X-Received: by 2002:a05:6a21:3388:b0:18b:ef96:be44 with SMTP id yy8-20020a056a21338800b0018bef96be44mr1617427pzb.26.1701910744048;
-        Wed, 06 Dec 2023 16:59:04 -0800 (PST)
-Received: from [172.20.2.177] (rrcs-173-197-90-226.west.biz.rr.com. [173.197.90.226])
-        by smtp.gmail.com with ESMTPSA id n20-20020a17090ade9400b00286a275d65asm52005pjv.41.2023.12.06.16.59.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 16:59:03 -0800 (PST)
-Message-ID: <b5819922-60e0-4701-84d4-05c76d2ea5ec@acm.org>
-Date:   Wed, 6 Dec 2023 14:59:00 -1000
+        d=1e100.net; s=20230601; t=1701910804; x=1702515604;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zsGIjCFU5lyJ4K017s44uK87gjwXDiMcgnBYCQQOfWs=;
+        b=YSgJKDDHmDpRRjd40RGGjb+giaPvr2dD4e8RSzMb9HDpLqFAIR8lagEj0App4ldmx6
+         aj+c2FL5gtw5dOK/EOFez+EMcvY1dG7puPxAWlUt0NBTUM0iwjUET+F/mM23XtKkQxz8
+         QJlnyqOyGyt1uTcuBbD28+5PxXEAyYpf+2lsYYyBlxaJM8cbf2Q+absFrD4ynu96vSbV
+         weCL1nb0JHkjsgIGydgZ+e6Cj7xWWtK51pCO2d73A56Lm8h7/0r9VKnWEmns/MK6FdZk
+         0attlsLwKveQ9BEaTyzJt9lUHtZ+GOn3vr2ufjQdoNojcc0pS3GWHWi7TmZUof5H8cZ0
+         GSwA==
+X-Gm-Message-State: AOJu0YzfGGrRabTC6QBV+WBK8UQndYrFGpI8Dx97pU/EXp/0tGtKF/Jf
+        2zpsWud+JyLllQ+vMY7PYSw=
+X-Google-Smtp-Source: AGHT+IEYT0meh5v4+cOmVkY4VpOtcJCuZrKmOhAfrzrneCN6WNofRmsINq37W873FAiLxM6nhzFaGw==
+X-Received: by 2002:a17:903:2642:b0:1d0:6ffd:f214 with SMTP id je2-20020a170903264200b001d06ffdf214mr1476793plb.106.1701910803148;
+        Wed, 06 Dec 2023 17:00:03 -0800 (PST)
+Received: from localhost.localdomain ([1.245.180.67])
+        by smtp.gmail.com with ESMTPSA id b6-20020a170902bd4600b001d0af279a1fsm70671plx.182.2023.12.06.16.59.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 17:00:02 -0800 (PST)
+Date:   Thu, 7 Dec 2023 09:59:46 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v2 14/21] mm/slab: move memcg related functions from
+ slab.h to slub.c
+Message-ID: <ZXEZAnHBJpAi8Sdy@localhost.localdomain>
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-14-9c9c70177183@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] scsi: ufs: core: Add UFS RTC support
-Content-Language: en-US
-To:     Bean Huo <beanhuo@iokpp.de>, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, mani@kernel.org, quic_cang@quicinc.com,
-        quic_asutoshd@quicinc.com, beanhuo@micron.com, thomas@t-8ch.de
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mikebi@micron.com, lporzio@micron.com
-References: <20231202160227.766529-1-beanhuo@iokpp.de>
- <20231202160227.766529-3-beanhuo@iokpp.de>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20231202160227.766529-3-beanhuo@iokpp.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120-slab-remove-slab-v2-14-9c9c70177183@suse.cz>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/23 06:02, Bean Huo wrote:
-> +static int ufshcd_update_rtc(struct ufs_hba *hba)
+On Mon, Nov 20, 2023 at 07:34:25PM +0100, Vlastimil Babka wrote:
+> We don't share those between SLAB and SLUB anymore, so most memcg
+> related functions can be moved to slub.c proper.
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  mm/slab.h | 206 --------------------------------------------------------------
+>  mm/slub.c | 205 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 205 insertions(+), 206 deletions(-)
+> 
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 65ebf86b3fe9..a81ef7c9282d 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -486,12 +486,6 @@ void slabinfo_show_stats(struct seq_file *m, struct kmem_cache *s);
+>  ssize_t slabinfo_write(struct file *file, const char __user *buffer,
+>  		       size_t count, loff_t *ppos);
+>  
+> -static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
+> -{
+> -	return (s->flags & SLAB_RECLAIM_ACCOUNT) ?
+> -		NR_SLAB_RECLAIMABLE_B : NR_SLAB_UNRECLAIMABLE_B;
+> -}
+> -
+>  #ifdef CONFIG_SLUB_DEBUG
+>  #ifdef CONFIG_SLUB_DEBUG_ON
+>  DECLARE_STATIC_KEY_TRUE(slub_debug_enabled);
+> @@ -551,220 +545,20 @@ int memcg_alloc_slab_cgroups(struct slab *slab, struct kmem_cache *s,
+>  				 gfp_t gfp, bool new_slab);
+>  void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  		     enum node_stat_item idx, int nr);
+> -
+> -static inline void memcg_free_slab_cgroups(struct slab *slab)
+> -{
+> -	kfree(slab_objcgs(slab));
+> -	slab->memcg_data = 0;
+> -}
+> -
+> -static inline size_t obj_full_size(struct kmem_cache *s)
+> -{
+> -	/*
+> -	 * For each accounted object there is an extra space which is used
+> -	 * to store obj_cgroup membership. Charge it too.
+> -	 */
+> -	return s->size + sizeof(struct obj_cgroup *);
+> -}
+> -
+> -/*
+> - * Returns false if the allocation should fail.
+> - */
+> -static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+> -					     struct list_lru *lru,
+> -					     struct obj_cgroup **objcgp,
+> -					     size_t objects, gfp_t flags)
+> -{
+> -	struct obj_cgroup *objcg;
+> -
+> -	if (!memcg_kmem_online())
+> -		return true;
+> -
+> -	if (!(flags & __GFP_ACCOUNT) && !(s->flags & SLAB_ACCOUNT))
+> -		return true;
+> -
+> -	/*
+> -	 * The obtained objcg pointer is safe to use within the current scope,
+> -	 * defined by current task or set_active_memcg() pair.
+> -	 * obj_cgroup_get() is used to get a permanent reference.
+> -	 */
+> -	objcg = current_obj_cgroup();
+> -	if (!objcg)
+> -		return true;
+> -
+> -	if (lru) {
+> -		int ret;
+> -		struct mem_cgroup *memcg;
+> -
+> -		memcg = get_mem_cgroup_from_objcg(objcg);
+> -		ret = memcg_list_lru_alloc(memcg, lru, flags);
+> -		css_put(&memcg->css);
+> -
+> -		if (ret)
+> -			return false;
+> -	}
+> -
+> -	if (obj_cgroup_charge(objcg, flags, objects * obj_full_size(s)))
+> -		return false;
+> -
+> -	*objcgp = objcg;
+> -	return true;
+> -}
+> -
+> -static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+> -					      struct obj_cgroup *objcg,
+> -					      gfp_t flags, size_t size,
+> -					      void **p)
+> -{
+> -	struct slab *slab;
+> -	unsigned long off;
+> -	size_t i;
+> -
+> -	if (!memcg_kmem_online() || !objcg)
+> -		return;
+> -
+> -	for (i = 0; i < size; i++) {
+> -		if (likely(p[i])) {
+> -			slab = virt_to_slab(p[i]);
+> -
+> -			if (!slab_objcgs(slab) &&
+> -			    memcg_alloc_slab_cgroups(slab, s, flags,
+> -							 false)) {
+> -				obj_cgroup_uncharge(objcg, obj_full_size(s));
+> -				continue;
+> -			}
+> -
+> -			off = obj_to_index(s, slab, p[i]);
+> -			obj_cgroup_get(objcg);
+> -			slab_objcgs(slab)[off] = objcg;
+> -			mod_objcg_state(objcg, slab_pgdat(slab),
+> -					cache_vmstat_idx(s), obj_full_size(s));
+> -		} else {
+> -			obj_cgroup_uncharge(objcg, obj_full_size(s));
+> -		}
+> -	}
+> -}
+> -
+> -static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> -					void **p, int objects)
+> -{
+> -	struct obj_cgroup **objcgs;
+> -	int i;
+> -
+> -	if (!memcg_kmem_online())
+> -		return;
+> -
+> -	objcgs = slab_objcgs(slab);
+> -	if (!objcgs)
+> -		return;
+> -
+> -	for (i = 0; i < objects; i++) {
+> -		struct obj_cgroup *objcg;
+> -		unsigned int off;
+> -
+> -		off = obj_to_index(s, slab, p[i]);
+> -		objcg = objcgs[off];
+> -		if (!objcg)
+> -			continue;
+> -
+> -		objcgs[off] = NULL;
+> -		obj_cgroup_uncharge(objcg, obj_full_size(s));
+> -		mod_objcg_state(objcg, slab_pgdat(slab), cache_vmstat_idx(s),
+> -				-obj_full_size(s));
+> -		obj_cgroup_put(objcg);
+> -	}
+> -}
+> -
+>  #else /* CONFIG_MEMCG_KMEM */
+>  static inline struct obj_cgroup **slab_objcgs(struct slab *slab)
+>  {
+>  	return NULL;
+>  }
+>  
+> -static inline struct mem_cgroup *memcg_from_slab_obj(void *ptr)
+> -{
+> -	return NULL;
+> -}
+> -
+>  static inline int memcg_alloc_slab_cgroups(struct slab *slab,
+>  					       struct kmem_cache *s, gfp_t gfp,
+>  					       bool new_slab)
+>  {
+>  	return 0;
+>  }
+> -
+> -static inline void memcg_free_slab_cgroups(struct slab *slab)
+> -{
+> -}
+> -
+> -static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+> -					     struct list_lru *lru,
+> -					     struct obj_cgroup **objcgp,
+> -					     size_t objects, gfp_t flags)
+> -{
+> -	return true;
+> -}
+> -
+> -static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+> -					      struct obj_cgroup *objcg,
+> -					      gfp_t flags, size_t size,
+> -					      void **p)
+> -{
+> -}
+> -
+> -static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> -					void **p, int objects)
+> -{
+> -}
+>  #endif /* CONFIG_MEMCG_KMEM */
+>  
+> -static inline struct kmem_cache *virt_to_cache(const void *obj)
+> -{
+> -	struct slab *slab;
+> -
+> -	slab = virt_to_slab(obj);
+> -	if (WARN_ONCE(!slab, "%s: Object is not a Slab page!\n",
+> -					__func__))
+> -		return NULL;
+> -	return slab->slab_cache;
+> -}
+> -
+> -static __always_inline void account_slab(struct slab *slab, int order,
+> -					 struct kmem_cache *s, gfp_t gfp)
+> -{
+> -	if (memcg_kmem_online() && (s->flags & SLAB_ACCOUNT))
+> -		memcg_alloc_slab_cgroups(slab, s, gfp, true);
+> -
+> -	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+> -			    PAGE_SIZE << order);
+> -}
+> -
+> -static __always_inline void unaccount_slab(struct slab *slab, int order,
+> -					   struct kmem_cache *s)
+> -{
+> -	if (memcg_kmem_online())
+> -		memcg_free_slab_cgroups(slab);
+> -
+> -	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+> -			    -(PAGE_SIZE << order));
+> -}
+> -
+> -static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
+> -{
+> -	struct kmem_cache *cachep;
+> -
+> -	if (!IS_ENABLED(CONFIG_SLAB_FREELIST_HARDENED) &&
+> -	    !kmem_cache_debug_flags(s, SLAB_CONSISTENCY_CHECKS))
+> -		return s;
+> -
+> -	cachep = virt_to_cache(x);
+> -	if (WARN(cachep && cachep != s,
+> -		  "%s: Wrong slab cache. %s but object is from %s\n",
+> -		  __func__, s->name, cachep->name))
+> -		print_tracking(cachep, x);
+> -	return cachep;
+> -}
+> -
+>  void free_large_kmalloc(struct folio *folio, void *object);
+>  
+>  size_t __ksize(const void *objp);
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 9eb6508152c2..844e0beb84ee 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -1814,6 +1814,165 @@ static bool freelist_corrupted(struct kmem_cache *s, struct slab *slab,
+>  #endif
+>  #endif /* CONFIG_SLUB_DEBUG */
+>  
+> +static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
 > +{
-> +	int err;
-> +	u32 val;
-> +	struct timespec64 ts64;
+> +	return (s->flags & SLAB_RECLAIM_ACCOUNT) ?
+> +		NR_SLAB_RECLAIMABLE_B : NR_SLAB_UNRECLAIMABLE_B;
+> +}
 > +
-> +	ktime_get_real_ts64(&ts64);
-> +	val = ts64.tv_sec - hba->dev_info.rtc_time_baseline;
+> +#ifdef CONFIG_MEMCG_KMEM
+> +static inline void memcg_free_slab_cgroups(struct slab *slab)
+> +{
+> +	kfree(slab_objcgs(slab));
+> +	slab->memcg_data = 0;
+> +}
+> +
+> +static inline size_t obj_full_size(struct kmem_cache *s)
+> +{
+> +	/*
+> +	 * For each accounted object there is an extra space which is used
+> +	 * to store obj_cgroup membership. Charge it too.
+> +	 */
+> +	return s->size + sizeof(struct obj_cgroup *);
+> +}
+> +
+> +/*
+> + * Returns false if the allocation should fail.
+> + */
+> +static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+> +					     struct list_lru *lru,
+> +					     struct obj_cgroup **objcgp,
+> +					     size_t objects, gfp_t flags)
+> +{
+> +	struct obj_cgroup *objcg;
+> +
+> +	if (!memcg_kmem_online())
+> +		return true;
+> +
+> +	if (!(flags & __GFP_ACCOUNT) && !(s->flags & SLAB_ACCOUNT))
+> +		return true;
+> +
+> +	/*
+> +	 * The obtained objcg pointer is safe to use within the current scope,
+> +	 * defined by current task or set_active_memcg() pair.
+> +	 * obj_cgroup_get() is used to get a permanent reference.
+> +	 */
+> +	objcg = current_obj_cgroup();
+> +	if (!objcg)
+> +		return true;
+> +
+> +	if (lru) {
+> +		int ret;
+> +		struct mem_cgroup *memcg;
+> +
+> +		memcg = get_mem_cgroup_from_objcg(objcg);
+> +		ret = memcg_list_lru_alloc(memcg, lru, flags);
+> +		css_put(&memcg->css);
+> +
+> +		if (ret)
+> +			return false;
+> +	}
+> +
+> +	if (obj_cgroup_charge(objcg, flags, objects * obj_full_size(s)))
+> +		return false;
+> +
+> +	*objcgp = objcg;
+> +	return true;
+> +}
+> +
+> +static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+> +					      struct obj_cgroup *objcg,
+> +					      gfp_t flags, size_t size,
+> +					      void **p)
+> +{
+> +	struct slab *slab;
+> +	unsigned long off;
+> +	size_t i;
+> +
+> +	if (!memcg_kmem_online() || !objcg)
+> +		return;
+> +
+> +	for (i = 0; i < size; i++) {
+> +		if (likely(p[i])) {
+> +			slab = virt_to_slab(p[i]);
+> +
+> +			if (!slab_objcgs(slab) &&
+> +			    memcg_alloc_slab_cgroups(slab, s, flags, false)) {
+> +				obj_cgroup_uncharge(objcg, obj_full_size(s));
+> +				continue;
+> +			}
+> +
+> +			off = obj_to_index(s, slab, p[i]);
+> +			obj_cgroup_get(objcg);
+> +			slab_objcgs(slab)[off] = objcg;
+> +			mod_objcg_state(objcg, slab_pgdat(slab),
+> +					cache_vmstat_idx(s), obj_full_size(s));
+> +		} else {
+> +			obj_cgroup_uncharge(objcg, obj_full_size(s));
+> +		}
+> +	}
+> +}
+> +
+> +static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> +					void **p, int objects)
+> +{
+> +	struct obj_cgroup **objcgs;
+> +	int i;
+> +
+> +	if (!memcg_kmem_online())
+> +		return;
+> +
+> +	objcgs = slab_objcgs(slab);
+> +	if (!objcgs)
+> +		return;
+> +
+> +	for (i = 0; i < objects; i++) {
+> +		struct obj_cgroup *objcg;
+> +		unsigned int off;
+> +
+> +		off = obj_to_index(s, slab, p[i]);
+> +		objcg = objcgs[off];
+> +		if (!objcg)
+> +			continue;
+> +
+> +		objcgs[off] = NULL;
+> +		obj_cgroup_uncharge(objcg, obj_full_size(s));
+> +		mod_objcg_state(objcg, slab_pgdat(slab), cache_vmstat_idx(s),
+> +				-obj_full_size(s));
+> +		obj_cgroup_put(objcg);
+> +	}
+> +}
+> +#else /* CONFIG_MEMCG_KMEM */
+> +static inline struct mem_cgroup *memcg_from_slab_obj(void *ptr)
+> +{
+> +	return NULL;
+> +}
+> +
+> +static inline void memcg_free_slab_cgroups(struct slab *slab)
+> +{
+> +}
+> +
+> +static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+> +					     struct list_lru *lru,
+> +					     struct obj_cgroup **objcgp,
+> +					     size_t objects, gfp_t flags)
+> +{
+> +	return true;
+> +}
+> +
+> +static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+> +					      struct obj_cgroup *objcg,
+> +					      gfp_t flags, size_t size,
+> +					      void **p)
+> +{
+> +}
+> +
+> +static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> +					void **p, int objects)
+> +{
+> +}
+> +#endif /* CONFIG_MEMCG_KMEM */
+> +
+>  /*
+>   * Hooks for other subsystems that check memory allocations. In a typical
+>   * production configuration these hooks all should produce no code at all.
+> @@ -2048,6 +2207,26 @@ static inline bool shuffle_freelist(struct kmem_cache *s, struct slab *slab)
+>  }
+>  #endif /* CONFIG_SLAB_FREELIST_RANDOM */
+>  
+> +static __always_inline void account_slab(struct slab *slab, int order,
+> +					 struct kmem_cache *s, gfp_t gfp)
+> +{
+> +	if (memcg_kmem_online() && (s->flags & SLAB_ACCOUNT))
+> +		memcg_alloc_slab_cgroups(slab, s, gfp, true);
+> +
+> +	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+> +			    PAGE_SIZE << order);
+> +}
+> +
+> +static __always_inline void unaccount_slab(struct slab *slab, int order,
+> +					   struct kmem_cache *s)
+> +{
+> +	if (memcg_kmem_online())
+> +		memcg_free_slab_cgroups(slab);
+> +
+> +	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+> +			    -(PAGE_SIZE << order));
+> +}
+> +
+>  static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
+>  {
+>  	struct slab *slab;
+> @@ -3965,6 +4144,32 @@ void ___cache_free(struct kmem_cache *cache, void *x, unsigned long addr)
+>  }
+>  #endif
+>  
+> +static inline struct kmem_cache *virt_to_cache(const void *obj)
+> +{
+> +	struct slab *slab;
+> +
+> +	slab = virt_to_slab(obj);
+> +	if (WARN_ONCE(!slab, "%s: Object is not a Slab page!\n", __func__))
+> +		return NULL;
+> +	return slab->slab_cache;
+> +}
+> +
+> +static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
+> +{
+> +	struct kmem_cache *cachep;
+> +
+> +	if (!IS_ENABLED(CONFIG_SLAB_FREELIST_HARDENED) &&
+> +	    !kmem_cache_debug_flags(s, SLAB_CONSISTENCY_CHECKS))
+> +		return s;
+> +
+> +	cachep = virt_to_cache(x);
+> +	if (WARN(cachep && cachep != s,
+> +		 "%s: Wrong slab cache. %s but object is from %s\n",
+> +		 __func__, s->name, cachep->name))
+> +		print_tracking(cachep, x);
+> +	return cachep;
+> +}
+> +
+>  void __kmem_cache_free(struct kmem_cache *s, void *x, unsigned long caller)
+>  {
+>  	slab_free(s, virt_to_slab(x), x, NULL, &x, 1, caller);
+> 
+> -- 
 
-A 64-bit value is truncated to a 32-bit value. What should happen if the
-right hand side is larger than what fits into a 32-bit integer? Should
-a comment perhaps be added that uptimes of more than 136 years are not
-supported and also for absolute times that the above code fails after
-the year 2010 + 136 = 2146?
+Looks good to me,
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-Thanks,
-
-Bart.
+> 2.42.1
+> 
+> 
