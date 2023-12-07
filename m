@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B72028087A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042458087A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379241AbjLGMWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 07:22:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35866 "EHLO
+        id S1379234AbjLGMXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:23:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbjLGMWj (ORCPT
+        with ESMTP id S232186AbjLGMXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 07:22:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B06810CA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:22:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB499C433C8;
-        Thu,  7 Dec 2023 12:22:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701951764;
-        bh=epH6N4HOQY9d/F5eZFuiUiKcD6erclTqiNFuoeHNibM=;
-        h=From:Date:Subject:To:Cc:From;
-        b=ZRuAepFhfUG/d4JUckztQmMS323WJgPb0oGVjoiVT16Sw9k3gd2mcP1s2X+UCQhvm
-         TTX8vLZ/lNjgv68XatsoQiJNDp2Kmmq9H854ivI9VPmVLP9p70meAooJGYxI1LJTgL
-         QT/RAmD1b14G3rSJqRc4372ZDLz6i5nKmz2lsxe4xSDv12Y2ByD3xiexVsFxncGrDS
-         TOt/qKsUYnZ/laPTjMCTRn0sqo0B84C9zuiZ566wL1mJ04fGJnN8aY5gdcLCG56hkV
-         9aevdE7LoYOLkHTHMomf0iLxG91JcLifQyl1l9vrt/8PZHvaTouWNw3vypYTYqvEE0
-         ss+Dg2q8YUkIQ==
-From:   Benjamin Tissoires <bentiss@kernel.org>
-Date:   Thu, 07 Dec 2023 13:22:39 +0100
-Subject: [PATCH] selftests/hid: fix failing tablet button tests
+        Thu, 7 Dec 2023 07:23:19 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA22B5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:23:25 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5cd81e76164so6538657b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 04:23:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701951804; x=1702556604; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zsow7R42bQ9UqU+3gHiABlqbyNHgme2JlA6feobUee8=;
+        b=X6R1feD3NmBl6hch0z/pumU3NF6YLeGO5SzKZO4oA1h2vkUtL3KTaugyjWbxy0VmoB
+         l2mz/ZOcFnpRAXezNodmw4z7nEeMOBVLb5vGR+ps1LDS1Yo99ChfLOgrK1bEzhxRXXC/
+         E+seKQoedMToKtTgcF//xdJbbtxF93vJBaF4sHoh0X5gnsBjMTVpy3T4L+AubHv5dLIG
+         ngkf/zx35oVNomz+fowGLmhnIlJfuPAa/p0iDPOoTIn9suJI/Mdbu1jJ3ReB3i7Cs/xl
+         v9KBe0HFxIkBF2NwO83EbuSwuejwR+VWXyI4xVuA7olrTyW5+lLxwi9GvkTVhchF360C
+         +7zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701951804; x=1702556604;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Zsow7R42bQ9UqU+3gHiABlqbyNHgme2JlA6feobUee8=;
+        b=BoYz1OnEZPzVfsGWTF9HAz0oyq+RcvluNMzmNhALQhYB7WYP98Yx8H0mLnIU8/7XXw
+         gASCIUQfClwPfdvim5UxmwfAhkbSHm0ggq8W3yYg48Tt1lZpBgseYtwUAWJBs0YzS7VR
+         AS1H6EqbyrnPzlkeBKIAiBa2awZhyml+XGBO+xuMIkc1j7Gea3ZUbEcbQCYrFviSmfCQ
+         jAvAaxW/ACow5CHm6DYTQR9z5b+j0HUCRiMuSgDlqqXLsmPTDcmjowgvlhdVV/6Kbgg2
+         Xg+uLe65XobsZLcTyolFZMpwK8yu4BdikYgjO9cFX1+aHByXQOjF9lJ5qZGmCX3Beeb3
+         8X4A==
+X-Gm-Message-State: AOJu0YxbxzDBd9DQlQEPaiQ325SLm1eMMir1ddvcrs0U4fW25e/Y4D/X
+        3COGZpck2cevG9lU3OC2+yYOobHoBTSOcPn9mCLqHA==
+X-Google-Smtp-Source: AGHT+IFNoH29WEDXVoVkuFnOOvxiZfSITNbl6Pf075Eno11hrzpebhkcZjVIB++Oz8CQvurJ4Q/6cJw2CGk8SNkd9P4=
+X-Received: by 2002:a81:ad19:0:b0:5d7:1940:dd60 with SMTP id
+ l25-20020a81ad19000000b005d71940dd60mr2152488ywh.54.1701951804590; Thu, 07
+ Dec 2023 04:23:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231207-b4-wip-selftests-v1-1-c4e13fe04a70@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAA65cWUC/x3MQQ5AMBBA0avIrE2i1SKuIha0g0kE6QiSxt01l
- m/xfwShwCTQZhECXSy8bwkqz8AtwzYTsk8GXehS6aLG0eDNBwqt00lyCjplK+uNN7ZuIGVHoIm
- ff9n17/sBuP0ArGIAAAA=
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Peter Hutterer <peter.hutterer@who-t.net>
-Cc:     Jiri Kosina <jkosina@suse.com>,
-        Benjamin Tissoires <bentiss@kernel.org>,
-        linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
+References: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v3-0-dfd1c375ef61@linaro.org>
+ <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v3-4-dfd1c375ef61@linaro.org>
+In-Reply-To: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v3-4-dfd1c375ef61@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 7 Dec 2023 14:23:13 +0200
+Message-ID: <CAA8EJprJzmBKDkmnViD5o8z=SXS4Y873hTSe6NJGKwoEdG7X4A@mail.gmail.com>
+Subject: Re: [PATCH v3 4/7] phy: qcom-qmp: pcs-usb: Add v7 register offsets
+To:     Abel Vesa <abel.vesa@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
         linux-kernel@vger.kernel.org
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701951762; l=1894;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=epH6N4HOQY9d/F5eZFuiUiKcD6erclTqiNFuoeHNibM=;
- b=n/90PDIVzBVYmex40erDeyr8UfBLYJJvGN2LIAvfkl2wkUtPc4ZONsXa4LXWuHGuUhRNjEr3t
- S29RzIxWhgoCbx0SJBI78CjhJjrx8MqBr1/El5ybpfDF2e1WRSpLa54
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An overlook from commit 74452d6329be ("selftests/hid: tablets: add
-variants of states with buttons"), where I don't use the Enum...
+On Thu, 7 Dec 2023 at 14:19, Abel Vesa <abel.vesa@linaro.org> wrote:
+>
+> The X1E80100 platform bumps the HW version of QMP phy to v7 for USB.
+> Add the new PCS USB specific offsets in a dedicated header file.
+>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v7.h | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 
-Fixes: 74452d6329be ("selftests/hid: tablets: add variants of states with buttons")
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
----
-Not sure what happened, but I mustn't have run the tests before
-sending the series, and they fail blatently.
-I'm deeply sorry for that, I thought these failures were fixed.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Cheers,
-Benjamin
----
- tools/testing/selftests/hid/tests/test_tablet.py | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/hid/tests/test_tablet.py b/tools/testing/selftests/hid/tests/test_tablet.py
-index dc8b0fe9e7f3..903f19f7cbe9 100644
---- a/tools/testing/selftests/hid/tests/test_tablet.py
-+++ b/tools/testing/selftests/hid/tests/test_tablet.py
-@@ -115,7 +115,7 @@ class PenState(Enum):
-         # we take only the highest button in account
-         for b in [libevdev.EV_KEY.BTN_STYLUS, libevdev.EV_KEY.BTN_STYLUS2]:
-             if bool(evdev.value[b]):
--                button = b
-+                button = BtnPressed(b)
- 
-         # the kernel tends to insert an EV_SYN once removing the tool, so
-         # the button will be released after
-@@ -155,7 +155,7 @@ class PenState(Enum):
-                 if button_found:
-                     raise ValueError(f"duplicated BTN_STYLUS* in {events}")
-                 button_found = True
--                button = ev.code if ev.value else None
-+                button = BtnPressed(ev.code) if ev.value else None
- 
-         # the kernel tends to insert an EV_SYN once removing the tool, so
-         # the button will be released after
-
----
-base-commit: f556aa957df8cb3e98af0f54bf1fa65f59ae47a3
-change-id: 20231207-b4-wip-selftests-c1565d4d4578
-
-Best regards,
 -- 
-Benjamin Tissoires <bentiss@kernel.org>
-
+With best wishes
+Dmitry
