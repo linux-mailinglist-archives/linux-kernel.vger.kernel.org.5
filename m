@@ -2,117 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F16EA808778
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD95808793
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232494AbjLGMRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 07:17:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45106 "EHLO
+        id S1379207AbjLGMTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232186AbjLGMRt (ORCPT
+        with ESMTP id S232186AbjLGMTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 07:17:49 -0500
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A84FAC;
-        Thu,  7 Dec 2023 04:17:56 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7ECAD5C020C;
-        Thu,  7 Dec 2023 07:17:55 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 07 Dec 2023 07:17:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1701951475; x=1702037875; bh=Nt
-        Da3bmDnBgDJ8cjhBgyb1XZxGUsc6kwF8XIFSHAYps=; b=sR7aLfz/POgf0+KsJ3
-        tQls6OMNBbq7suqFMGkdFziuX5Kw9vJbA4xxFZkqVIfELwpYaRJyhHQPf+vwPHe6
-        PpuPPiTKxzvsKaLzF2/WVPqOLb9AtSAHBUo1c4XTrvpEYjmw2DMEkzgyyg3YRPMg
-        8n/KjV5JBN/Y+a9ye4A2ZjN+cz1tpNkryC7ysV6pwfU8749v3SVJC7uJxuQEjR6I
-        k/tkhcO9MyxTJFJbLGiHuA/cAvjqrWdtqiOgoP4pYd7535jFDziY4mBigPO5AY2s
-        Hxc+E3cOWAq62mI7D8RMBlnVQz3y485D/JA8jn7W/RIF2DdTqZX4b0JiFvGkqwqs
-        HV5g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701951475; x=1702037875; bh=NtDa3bmDnBgDJ
-        8cjhBgyb1XZxGUsc6kwF8XIFSHAYps=; b=GvHgfuOpl1+MRVOT0xlNScBj29na7
-        qeTPopgVkVPIbjBuRL1wB2qd5xVqUQUAoh2isIBSjLC4xHWh5HSCa+MKvBm47vGg
-        r6BpgVXhDR8ZhNd1DpPesk/Vq0UgGFrrzBsBCrP+anPAQzBrUpUYWEiCxBWY2LxC
-        cu9n2LSvDlWRwnNT8R39g7Jqe5VVP6wjzLb2BxzfSGYeaehCKoXjYaG5SRLYd6MT
-        UImnimiFgc/sxBE+GXAZESuPQhu9Zic6azcZWQl8sZXLqqqyV0+kX8g9HQu/c5BT
-        geAYPecwBQduwRVqM//GxUZg3cVwvS/mTyz/WxFlLaEp79nqQpTERev7w==
-X-ME-Sender: <xms:8rdxZfeRUypt0szpz-KcZS-PW5Q-YK6wTdbxJCEojN16xaT4y-qwkw>
-    <xme:8rdxZVMsYyQYqe2PrXw8FWfp4N7T8KONwX49iBiPp92HMWP6HgwXOMkkdi4nR1xbr
-    pcoltxZU_cJSFTW1OU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekvddgfeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:87dxZYjJ8GXEM8vBYvzj-sJ9olY-Hge6p7aPsyFpaMlGpHxv3EsdyA>
-    <xmx:87dxZQ9r2bpfwBkV_KTmGQIQbQJajexQXrxmhrM1uJSjBqYTGsMq2A>
-    <xmx:87dxZbvT2dScZhlgOQNtlj8pfQZkUrAK_GQg_WVGIGrNyUmZ-pxHlg>
-    <xmx:87dxZRUfeReWgy1oy2AED-Bo5WFu0quofZOnUORtNG6HML_tBCiu6A>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id C3D73B60089; Thu,  7 Dec 2023 07:17:54 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
+        Thu, 7 Dec 2023 07:19:30 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BACD084
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:19:36 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a1eb422b412so125272166b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 04:19:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701951575; x=1702556375; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UkIHYUvRBALFNq0yZBkoDW4A6Xngi3bw5KTNzzylyoM=;
+        b=Hi5fR52eM1kghCLlTDL9eQZ0bXk4GGyxXoBlttwLwYVVIgL7nQuK8Rb5dmqC0yzo/p
+         7WB7T70SDaSR7n/eEw4+HfLydexzluhle5mBsPigEYRWm9h9DM6+tVJxw3W3ARfeUP8y
+         iCCeUMUOBWVT0lKCrgdCFu7LvDRlf29RxFELLhHS47ToAKxk77Xafv2yK+pOGtQgRxPS
+         KBiED8FlPiIg8/DA1Bj4mhsPO1fnOvoHYY15CkviYVI+n5ukVoLy0eIZBegcFOSQAGEr
+         sQT2XejWTWO444jHMZasrvXof3uXTKSMVtqr1ucjEzIGT/kyHwyF/TkFc7FYmoSEL8vg
+         XmpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701951575; x=1702556375;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UkIHYUvRBALFNq0yZBkoDW4A6Xngi3bw5KTNzzylyoM=;
+        b=p3DZhKBBUrdlBu3wEU/74vTFd8geKkvUOWCOSw1OrgK7z5Yy8B0ZKoCYmH5kaOxPnx
+         RVhccbfWZLFd892F/pkKpW1RRROn6eAc6jcjRM8wgdhgGGBWydZhI28IX0xAFZrTUqmP
+         GBEg8Kql+oobb298KDkqohwYw2zPvfBftUzXlCl2jUdypOsnXSEgz0rRDdCnER/wBhVC
+         jhNg9COEDExqJinpMrY8VMz8wF6K02gmiSLQRP/I3ZZqd1FOB46OnC9EfBLdnBmvI+e/
+         szn53SnMkaK8PSpr/GKUNTEpzJCKPDf3aWRJnQmlUvloCDYk++M/ln8VD5Cx8BcVnVyN
+         2RFg==
+X-Gm-Message-State: AOJu0Yx6xn1f6sX7EJeNr/phUSimQsyvQX4yuB95ZPvczKlwDj9hgyK1
+        9Ne0ov7Q+9iY4ZU+TDCI8lS2Ig==
+X-Google-Smtp-Source: AGHT+IHrRLkmfjjGTvklEAKWkf38LirPV0giNGNAsHn5IyN6dVCAR5UtmjCFlV7drVANhwFQBhbaCA==
+X-Received: by 2002:a17:906:5353:b0:a1e:842d:ccd5 with SMTP id j19-20020a170906535300b00a1e842dccd5mr1177133ejo.48.1701951575192;
+        Thu, 07 Dec 2023 04:19:35 -0800 (PST)
+Received: from [127.0.1.1] ([82.79.186.233])
+        by smtp.gmail.com with ESMTPSA id f24-20020a170906c09800b00a1e814b7155sm761394ejz.62.2023.12.07.04.19.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 04:19:34 -0800 (PST)
+From:   Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH v3 0/7] phy: qcom: Add register offsets for v6 and v7
+Date:   Thu, 07 Dec 2023 14:19:09 +0200
+Message-Id: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v3-0-dfd1c375ef61@linaro.org>
 MIME-Version: 1.0
-Message-Id: <a6232a15-a7e6-47fd-ad4b-07319932a6f8@app.fastmail.com>
-In-Reply-To: <CAA8EJpp+ikpFZ1BL4PZJG_kK3n_u3mTTGZjd8A+=20gPm_SOyA@mail.gmail.com>
-References: <20231206123828.587065-1-arnd@kernel.org>
- <ZXGySCtdsxW4qCel@kuha.fi.intel.com>
- <CAA8EJprV3O24V0+MnPK1OdQZQ_7F2aMfN1Um13eH9ux4J+ucMw@mail.gmail.com>
- <ZXGzJlv9C3Z9lMeI@kuha.fi.intel.com>
- <c1df6dc4-ad3f-41ba-b024-1b432dac7af1@app.fastmail.com>
- <CAA8EJpp+ikpFZ1BL4PZJG_kK3n_u3mTTGZjd8A+=20gPm_SOyA@mail.gmail.com>
-Date:   Thu, 07 Dec 2023 13:17:33 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>
-Cc:     "Heikki Krogerus" <heikki.krogerus@linux.intel.com>,
-        "Arnd Bergmann" <arnd@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Neil Armstrong" <neil.armstrong@linaro.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: nb7vpq904m: add CONFIG_OF dependency
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAD24cWUC/52OQQ7CIBBFr2JYOwaGFltX3sO4QDq1JC1UaFFje
+ nepO5eazOb9xXvzYpGCpcgOmxcLlGy03mWQ2w0znXZXAttkZshRCoEIY/eE26x744cBkloPOaQ
+ 9OLqDb9tIU4SSmhIrU1WtQpZVFx0JLkE702WZm/s+j2Og1j4+7dM5c2fj5MPz80oS6/pjNQng0
+ NSy4I1UqFRx7K3Twe98uLK1kPAfK2YrirpUmrgpjfyyLsvyBg6EhRJEAQAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2422; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=mB2W6KYDvq8TrXhXBcEaJwg/nTqyORBrvBrPqSlnHwc=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlcbhFn9IOc3pVcyuGjmrlGfBAO41cuSuXYY+e/
+ kDSOqEnaSOJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZXG4RQAKCRAbX0TJAJUV
+ VkGCEACCWpfyOZB/VhvyT92GwvmniwF/RQJMjhbj1qMeLzfBGwuI9cJ+/sm0wH/R4gRRXIiJLsY
+ Kz46ZiBdPtR8pgVzaWVK3cYVZVOJmXhlss0ZjJOdi1+UY0oFx1HAmeJ3q+4bcOmT+UoyHODnVjA
+ /1F25IKfz1e2YZ+MEGV0bJbmptJC2+KIJOQihyePXu9MHhAunqUKhjCxjlUczEWlX8XOCLDZsVw
+ LYoHQGPpXJ73S7XNzyhT6arWIE59loKhyhzbvp2vpryWcNnQKFMfBRg6FGbfLkIppl0ldAgSllr
+ iC6dh1fufpjj6lf3qeIswJo8iqqkWbZHczgXwnQyOfKKtuxr2db/719oie57VUZxovMCCYqjysC
+ jGwR7vjlhbhDq/YuG1g6aFoVa/zJaZMRcpGEqCQjJ4JkOHalCYagNbi7QrOIXT85HZV9INaFe/Y
+ GY+uE7Ph4tz9MioGJc05IAarGZXiZzi2087AVdk4/rA3mqRjP8LwTbalumnbIc6QcGyIy5+aOT+
+ jIFuNQZOUF/2P3MZBtk3grQrosioOniHe1Y0+1bQESS74opmJaboHf2m1NtPvKM+rnoA9lvJCwB
+ 1+hS6obOkSE7TYF+MKbQPjz9Rfjxrf90ZNgT//+2Pi9WKkZKUcOB3mZ6TzngWjNaNmxZbrluH+V
+ ElxjR7Lbf71dLug==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023, at 13:12, Dmitry Baryshkov wrote:
-> On Thu, 7 Dec 2023 at 14:00, Arnd Bergmann <arnd@arndb.de> wrote:
->>
->> On Thu, Dec 7, 2023, at 12:57, Heikki Krogerus wrote:
->> > On Thu, Dec 07, 2023 at 01:55:06PM +0200, Dmitry Baryshkov wrote:
->>
->> > Okay, so this probable should also be
->> >
->> >         select DRM_AUX_BRIDGE if DRM_BRIDGE and OF
->> >
->> > No?
->>
->> I think that fails if CONFIG_OF is disabled and
->> CONFIG_DRM_AUX_BRIDGE, since drm_aux_bridge_register()
->> will still be called from a built-in driver in that
->> case but can't be linked against.
->
-> If DRM_AUX_BRIDGE is not enabled, then the stubs from
-> include/drm/bridge/aux-bridge will be used instead.
+This patchset adds some missing register offsets for the v6 and v6.20,
+as well as the new v7 ones. These register offsets are used by the
+new Qualcomm Snapdragon X Elite (X1E80100) platform.
 
-Sorry, I meant to write CONFIG_DRM_AUX_BRIDGE=m here.
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Changes in v3:
+- Added in some more missing v7 register offsets (needed by the usb3 uni phy driver)
+- Added Dmitry's R-b tag to patch 7
+- Link to v2: https://lore.kernel.org/r/20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v2-0-21956ae0c5c3@linaro.org
 
-     Arnd
+Changes in v2:
+- added Dmitry's R-b tag to patches no. 1, 2 and 6
+- dropped the duplicates of PCS v7 offsets from USB PCS v7 header, like Dmitry suggested
+- fixed comment to suggest v7 (instead of v6) in qserdes com v7 and pcs
+  v7 header files, like Dmitry suggested
+- renamed PCS v7 RX_CONFIG to CDR_RESET_TIME, which is the correct name
+- dropped the "_USB" substring from the include guard of phy-qcom-qmp-qserdes-txrx-v7.h
+- reordered the SO_GAIN_RATE_2 offset in the phy-qcom-qmp-qserdes-txrx-v6_20.h 
+- Link to v1: https://lore.kernel.org/r/20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v1-0-d9340d362664@linaro.org
+
+---
+Abel Vesa (7):
+      phy: qcom-qmp: qserdes-com: Add some more v6 register offsets
+      phy: qcom-qmp: qserdes-txrx: Add some more v6.20 register offsets
+      phy: qcom-qmp: pcs: Add v7 register offsets
+      phy: qcom-qmp: pcs-usb: Add v7 register offsets
+      phy: qcom-qmp: qserdes-com: Add v7 register offsets
+      phy: qcom-qmp: qserdes-txrx: Add V6 N4 register offsets
+      phy: qcom-qmp: qserdes-txrx: Add v7 register offsets
+
+ drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v7.h     | 17 +++++
+ drivers/phy/qualcomm/phy-qcom-qmp-pcs-v7.h         | 32 ++++++++
+ drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h |  5 ++
+ drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v7.h | 87 ++++++++++++++++++++++
+ .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6.h    |  1 +
+ .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6_20.h |  4 +
+ .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6_n4.h | 51 +++++++++++++
+ .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v7.h    | 78 +++++++++++++++++++
+ drivers/phy/qualcomm/phy-qcom-qmp.h                |  6 ++
+ 9 files changed, 281 insertions(+)
+---
+base-commit: 629a3b49f3f957e975253c54846090b8d5ed2e9b
+change-id: 20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-5ed528c88f62
+
+Best regards,
+-- 
+Abel Vesa <abel.vesa@linaro.org>
+
