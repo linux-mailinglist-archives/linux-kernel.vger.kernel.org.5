@@ -2,190 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73124808ADD
+	by mail.lfdr.de (Postfix) with ESMTP id 135D0808ADC
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443359AbjLGOmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:42:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
+        id S1443344AbjLGOmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:42:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235297AbjLGOmG (ORCPT
+        with ESMTP id S1443322AbjLGOmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:42:06 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2055.outbound.protection.outlook.com [40.107.93.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9437D53;
-        Thu,  7 Dec 2023 06:42:11 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UEYWxN/fNL2EjtNlBv41fXlAT718/rqdFYiOvkDoKus3+ykCfpTsInIM5JZBm/fWtx+ZX45ibSwZOFMsgD6MH3QcdIbeVxGsSc7pd9MYbWfJjpuY5fBbJlvQq89l9vmDXQ78h46sKW7QQeGtCQURyaENACoUbxOTcIdGKe0TnRNJDZSEdLLyNtODeaXBykNUqixVgkepWu4l0lmX7bnNQDRd7Kllnopn+ItXgOdkZsJY+8lv3tzV/hrsZcE/8KsauyXPILFiDACsKzRyuSudStRw9lkmNDDdJpqifE6EoYYCPGzM1U+NuYnjVmMne0kpMh7dhqDq7bPlrgROOYq2kA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kKhvPSdvzrDJ8L06qefECZsfLRSUIR+cIod0WsOCJlQ=;
- b=hWXVfGlXmXHBc5sjyOtkA9Afsg9qrjal1d7igG0v9WATPBVuu6hXMQwsjt5hmC8660yOm0lxAFoJXI8UoitTYn7pNKB5AS2rmcb315Ua5A9Xde0LJYn/B0a3NGvH7vItyCPE7Zjd856faIYJnsEKm5SuKr7ZI8HIH0yCKt3kGYFzF9qBPtHP8J/J9dhKjzKFb1C9mamhJ5YLVzrZmRLUsXU5MBv0QxDTAnhRGN0DzifCBtb7p9+9fqyqEmodhQUK+X+K9Do19O7PFlsDJeXwiqsKwSp8m2Ca4vRdnnxrv66u5wHsMB4q48AcLWH1DAm9CX9L+EfyrbjXW3W60Hjs4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kKhvPSdvzrDJ8L06qefECZsfLRSUIR+cIod0WsOCJlQ=;
- b=e6fAFflGPencBAP/frgnHJ0IPNG04cGON0leVfIwbz43ldwkn11Rjle3Zr3A/aBtQu9YdfVRz2hMTN/VxIsmLxwiUH3/R8PTsqZuwlVzsFgtRDWGxbXGqATMEEA5sQiL1xnmSz90la2mWAHfdkYR8uUOLJ3wMZ1p6oOx1jR0z6dNKhMSyNR2L9LtqquKAjh36b3XY1GA3y1adbdlAWIf4yubpJYP71fQoS5BbNorNQdmO/ebmYJztuJrgVhDmKvlc+4cKnaen14NGGFjjILQRuQx3lsWOia8LCAgkDPszfCQYxFkqtFeblDlMFmO9YRIoQW+/HA4/1kBe99VJqY4pA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by IA1PR12MB9031.namprd12.prod.outlook.com (2603:10b6:208:3f9::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Thu, 7 Dec
- 2023 14:42:09 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.038; Thu, 7 Dec 2023
- 14:42:09 +0000
-Date:   Thu, 7 Dec 2023 10:42:08 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
-Message-ID: <20231207144208.GJ2692119@nvidia.com>
-References: <20231117130717.19875-1-yi.l.liu@intel.com>
- <20231117130717.19875-3-yi.l.liu@intel.com>
- <112383df-3ea3-475f-963f-5c53232a1bf4@intel.com>
- <BN9PR11MB5276283CAEAB7A24871B4B188C8BA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5276283CAEAB7A24871B4B188C8BA@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-ClientProxiedBy: MN2PR16CA0032.namprd16.prod.outlook.com
- (2603:10b6:208:134::45) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Thu, 7 Dec 2023 09:42:00 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97834FA;
+        Thu,  7 Dec 2023 06:42:06 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0E0DB669;
+        Thu,  7 Dec 2023 15:41:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701960083;
+        bh=oqYzC0d84cVaTRAlruVMVWSCZEKZ2kE5XcA+BUxZl7U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SwCJCfORVcentryBcSckPtg8b/RXbRVFLvkA2AlDqc504HhDgXnytdpNS6y2aPKGs
+         prQTHuebFcf4ErDU9P882Kk/rHHV5b9sfwCcP/A8SqKyJQ7s45x90xbImYCCpuyzMk
+         0yua0I3ffFDTSWPKEqEnty4316GOe/MFArXHNqRE=
+Date:   Thu, 7 Dec 2023 16:42:10 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Dafna Hirschfeld <dafna@fastmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        kieran.bingham@ideasonboard.com, umang.jain@ideasonboard.com,
+        aford173@gmail.com, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] media: rkisp1: Store IRQ lines
+Message-ID: <20231207144210.GE15521@pendragon.ideasonboard.com>
+References: <20231207-rkisp-irq-fix-v3-0-358a2c871a3c@ideasonboard.com>
+ <20231207-rkisp-irq-fix-v3-3-358a2c871a3c@ideasonboard.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|IA1PR12MB9031:EE_
-X-MS-Office365-Filtering-Correlation-Id: e46bd89a-11e4-40af-49f2-08dbf732b10a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QwjYCA18zd4APSJJhPDlu2jUuzPiycwTH3yMV9vpoPvPvvyYJRliptfjBc3sUWV4Y/1Wm+Xnodus4yV1OCNvsM0vDSvbxXPTi4mJAjm6sR17itzECtw0LABF3COSp5mjIzPGLTLEjO3JGnebTeTw0f0QDVMqm7H6Xg2a3l7F7kS8P9FgiWsfp51L3sbNgTZDp5SAYkkMMXpqpPV7170AoTZvcNK92xqtAF0uqEVRp7YJ3YfPPE1/ulF1guapaSZc01PLhDZbCIyKwlf1uRitz/gnUm2b8Urgi/IamdhOOYb0r2aLCMHmiA9F2GgwEtOhI0Vq3V4HYnBpHhoRJiDLYWl1OiobBl2571GbYsAjU11A8wVbB8asWrTaZb+iWgcK6BkT7q05PMybRW3ikwmXiZFyINdF/8vHs1oxX75UBmBtlhX+HGAAK9hEn/YM05hJzQvCeD4snSiczeDg66QssNXTlxM3x0raXy3RdMzk8Uvs6WswLnyImuxkz7Wpqc+nfTkPPEPcFFC4CjukxIaary7Pei4eE9d++7zinp8/eOcRGANHREUJy+/dj6AyW6hB7jkqchXZloYXZq7t34ILaDcv47AM4wGgAAMH9EZatgE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(39860400002)(396003)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(2906002)(7416002)(8936002)(8676002)(4326008)(5660300002)(316002)(66556008)(66476007)(54906003)(66946007)(6916009)(2616005)(1076003)(966005)(6486002)(6512007)(53546011)(6506007)(36756003)(26005)(41300700001)(478600001)(83380400001)(33656002)(38100700002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OwJDY2E8CTZwaMikKnJ/XbFHN1/BwfmCgWEoKT++/dL7w+o1XHW1R5I9oTvM?=
- =?us-ascii?Q?3ZQ9zZ3AW/vZLG0NyjRKA/mFBENOvQVxXW4XPBUDCeyQh3QAsMCN/urHOhEt?=
- =?us-ascii?Q?O8a2e4uBG9znYhOJ3nMn257NlG8A66v22YG9JgzHxnnOgrCQostyDjwGxE9c?=
- =?us-ascii?Q?jOV5Lt0+1CQpcDniaWmjPsTcJfSRyxACiCbM4S8JQxkclB+LsO9lVXjOQs/V?=
- =?us-ascii?Q?4b5osiPcg+RgjG5AXebAmgFbhVMx3rzJjEU0g0m+w0keJcxdarFZ22nuHxnU?=
- =?us-ascii?Q?1A0xIWdQj7ByX2XTPE9ck9el3ZiW5uONixXAq4tx4L6a/uH4uzVHbHRr3lIP?=
- =?us-ascii?Q?ux32jKoydT6gy6bU7XfPVB9Bj4Syy6Gil1Z+dJSHTD803Z6CPIgmdEN3eS4N?=
- =?us-ascii?Q?2zVwAHDQKARZqBJ8BaZ/x/P/r5tEx7AyOMtwutZGNhr3uwvaNujpttRMoHrI?=
- =?us-ascii?Q?K6RKXyNg8ntp5wMXznChQNWcEI2NtY3by/iQaIyN589ypJUwVLmjdHmDkM0V?=
- =?us-ascii?Q?yCYKFLptb9HpiKRZn4RDK/IOl1sBNH0aCXBd1ZdbAO0tHqlcTMPIELxWTJdg?=
- =?us-ascii?Q?utKuOIbL2kjhco5eMGW71zbJ38Bn7T5NFO7XSXTf8a/abdQiPb8UqN96s6Ws?=
- =?us-ascii?Q?MDtvlgVfDqxoc6nGbOtpS/ZZV5tso32+s2RwQuFNMqkfhscKMD7vIaJFOGg2?=
- =?us-ascii?Q?CRpPCEGHw1JSQ5HZ7NGedVFLHjKFE4H0EGIAxEuePZRzAYQDYehl0F0clhGj?=
- =?us-ascii?Q?SazBM8YXXWziyMYp0VSz8mIdkFvFLxSstUnoqGOvuPPl7Lq8nm0q7qKJWu5V?=
- =?us-ascii?Q?ZrLppmwJHJp+XuaM7r+D6K9rvuzzfsDGiY9KFJxH0erxkQK5ov8JF6YfUnKa?=
- =?us-ascii?Q?RatMBmXPAaLwlgUcyWdIV+fANqX+J+5paucwOJWDLBEoqbfswIvHnHl8toeX?=
- =?us-ascii?Q?FWnSIZdDVL0DO6AVQfbLSoIUoKv2l3AUt1vqhuKWUmaNcDhrx5jUgG5TWipr?=
- =?us-ascii?Q?U+d2QUr5JRsk74waVVftnKEYkaz+2ADHiQbx6dKrqOCTf7D76ZbRlPVVfzLc?=
- =?us-ascii?Q?E6Ty8eAg//YLDxz8sPzIypNSvUdhXGtlX45BxbRJWJenHbCeZAihJ4PnAOQW?=
- =?us-ascii?Q?ucjBeOOwxNbG1Nm+AdnmFwM7zHp0oMtnjujjbYedb6CtTviGpgTO13WcW0v2?=
- =?us-ascii?Q?u9DbnFDyzMl2PeSMgwSmy75Rel4/3ayvwtxfGZRY40nUOhRI+pTKxJzCY7mE?=
- =?us-ascii?Q?j3FKNvOoKIRCuKOIHYoArf2BqVhlmYk3y0nHuRyb3T+lOjy0RGZYpjIKTxEE?=
- =?us-ascii?Q?lReBORkAWKrY9GW6WelsDOyqok0SF7G/Q1eE4PBLmJOc++YXf0F0Ay7rd/xy?=
- =?us-ascii?Q?xJgtl+7V06lq/n0KqE+mIyog3LJ/gUB6pygCtIVW99i8jPolL5ptWmEzDBXu?=
- =?us-ascii?Q?crg7Qi68gnIodpbCbPE1kqNU+IdpG1RcF9jLYSQEBynkSUEmb1fwcqxNIGQ8?=
- =?us-ascii?Q?HulacrHIbsQmlRYGWs0mqjtsrvVAGbkSLUqa09ot0hXbsnWF1RHPmBxMF61q?=
- =?us-ascii?Q?o8VC1Vb9yOMsi2JvuLKXU95AMYpEdLUReNRVDKm4?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e46bd89a-11e4-40af-49f2-08dbf732b10a
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2023 14:42:09.5387
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: H5qSEPxXNUOMYgikeaY69aPfRxJd/l9dKhsmFmFnoDBWP/W8H7uWtJIFFDMH04uq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB9031
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231207-rkisp-irq-fix-v3-3-358a2c871a3c@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 09:04:00AM +0000, Tian, Kevin wrote:
-> > From: Liu, Yi L <yi.l.liu@intel.com>
-> > Sent: Thursday, December 7, 2023 2:59 PM
-> > 
-> > On 2023/11/17 21:07, Yi Liu wrote:
-> > > @@ -613,4 +614,38 @@ struct iommu_hwpt_get_dirty_bitmap {
-> > >   #define IOMMU_HWPT_GET_DIRTY_BITMAP _IO(IOMMUFD_TYPE, \
-> > >
-> > 	IOMMUFD_CMD_HWPT_GET_DIRTY_BITMAP)
-> > >
-> > > +/**
-> > > + * struct iommu_hwpt_invalidate - ioctl(IOMMU_HWPT_INVALIDATE)
-> > > + * @size: sizeof(struct iommu_hwpt_invalidate)
-> > > + * @hwpt_id: HWPT ID of a nested HWPT for cache invalidation
-> > > + * @reqs_uptr: User pointer to an array having @req_num of cache
-> > invalidation
-> > > + *             requests. The request entries in the array are of fixed width
-> > > + *             @req_len, and contain a user data structure for invalidation
-> > > + *             request specific to the given hardware page table.
-> > > + * @req_type: One of enum iommu_hwpt_data_type, defining the data
-> > type of all
-> > > + *            the entries in the invalidation request array. It should suit
-> > > + *            with the data_type passed per the allocation of the hwpt pointed
-> > > + *            by @hwpt_id.
-> > 
-> > @Jason and Kevin,
-> > 
-> > Here a check with you two. I had a conversation with Nic on the definition
-> > of req_type here. It was added to support potential multiple kinds of cache
-> > invalidation data types for a invalidating cache for a single hwpt type[1].
-> > But we defined it as reusing the hwpt_data_type. In this way, it is not
-> > able to support the potential case in[1]. is it? Shall we define a separate
-> > enum for invalidation data types? And how can we let user know the
-> > available invalidation data types for a hwpt type? Any idea?
-> > 
-> > [1] https://lore.kernel.org/linux-
-> > iommu/20231018163720.GA3952@nvidia.com/
-> > 
+Hi Tomi,
+
+Thank you for the patch.
+
+On Thu, Dec 07, 2023 at 09:57:47AM +0200, Tomi Valkeinen wrote:
+> Store the IRQ lines used by the driver for easy access. These are needed
+> in future patches which fix IRQ race issues.
 > 
-> From that thread Jason mentioned to make the invalidation format
-> part of domain allocation. If that is the direction to go then there
-> won't be multiple invalidation formats per hwpt. The user should
-> create multiple hwpt's per invalidation format (though mixing
-> formats in one virtual platform is very unlikely)?
+> Tested-by: Adam Ford <aford173@gmail.com>  #imx8mp-beacon
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-I think we could do either, but I have a vauge cleanness preference
-that the enums are just different? That would follow a pretty typical
-pattern for a structure tag to reflect the content of the structure.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-Jason
+> ---
+>  drivers/media/platform/rockchip/rkisp1/rkisp1-common.h | 11 ++++++++++-
+>  drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c    | 17 +++++++++++++----
+>  2 files changed, 23 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> index 1e7cea1bea5e..2d7f06281c39 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> @@ -61,6 +61,14 @@ struct dentry;
+>  						 RKISP1_CIF_ISP_EXP_END |	\
+>  						 RKISP1_CIF_ISP_HIST_MEASURE_RDY)
+>  
+> +/* IRQ lines */
+> +enum rkisp1_irq_line {
+> +	RKISP1_IRQ_ISP = 0,
+> +	RKISP1_IRQ_MI,
+> +	RKISP1_IRQ_MIPI,
+> +	RKISP1_NUM_IRQS,
+> +};
+> +
+>  /* enum for the resizer pads */
+>  enum rkisp1_rsz_pad {
+>  	RKISP1_RSZ_PAD_SINK,
+> @@ -423,7 +431,6 @@ struct rkisp1_debug {
+>   * struct rkisp1_device - ISP platform device
+>   *
+>   * @base_addr:	   base register address
+> - * @irq:	   the irq number
+>   * @dev:	   a pointer to the struct device
+>   * @clk_size:	   number of clocks
+>   * @clks:	   array of clocks
+> @@ -441,6 +448,7 @@ struct rkisp1_debug {
+>   * @stream_lock:   serializes {start/stop}_streaming callbacks between the capture devices.
+>   * @debug:	   debug params to be exposed on debugfs
+>   * @info:	   version-specific ISP information
+> + * @irqs:          IRQ line numbers
+>   */
+>  struct rkisp1_device {
+>  	void __iomem *base_addr;
+> @@ -461,6 +469,7 @@ struct rkisp1_device {
+>  	struct mutex stream_lock; /* serialize {start/stop}_streaming cb between capture devices */
+>  	struct rkisp1_debug debug;
+>  	const struct rkisp1_info *info;
+> +	int irqs[RKISP1_NUM_IRQS];
+>  };
+>  
+>  /*
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> index 22b2ae0e89c4..c3fa40976140 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> @@ -114,6 +114,7 @@
+>  struct rkisp1_isr_data {
+>  	const char *name;
+>  	irqreturn_t (*isr)(int irq, void *ctx);
+> +	u32 line_mask;
+>  };
+>  
+>  /* ----------------------------------------------------------------------------
+> @@ -471,9 +472,9 @@ static const char * const px30_isp_clks[] = {
+>  };
+>  
+>  static const struct rkisp1_isr_data px30_isp_isrs[] = {
+> -	{ "isp", rkisp1_isp_isr },
+> -	{ "mi", rkisp1_capture_isr },
+> -	{ "mipi", rkisp1_csi_isr },
+> +	{ "isp", rkisp1_isp_isr, BIT(RKISP1_IRQ_ISP) },
+> +	{ "mi", rkisp1_capture_isr, BIT(RKISP1_IRQ_MI) },
+> +	{ "mipi", rkisp1_csi_isr, BIT(RKISP1_IRQ_MIPI) },
+>  };
+>  
+>  static const struct rkisp1_info px30_isp_info = {
+> @@ -492,7 +493,7 @@ static const char * const rk3399_isp_clks[] = {
+>  };
+>  
+>  static const struct rkisp1_isr_data rk3399_isp_isrs[] = {
+> -	{ NULL, rkisp1_isr },
+> +	{ NULL, rkisp1_isr, BIT(RKISP1_IRQ_ISP) | BIT(RKISP1_IRQ_MI) | BIT(RKISP1_IRQ_MIPI) },
+>  };
+>  
+>  static const struct rkisp1_info rk3399_isp_info = {
+> @@ -543,6 +544,9 @@ static int rkisp1_probe(struct platform_device *pdev)
+>  	if (IS_ERR(rkisp1->base_addr))
+>  		return PTR_ERR(rkisp1->base_addr);
+>  
+> +	for (unsigned int il = 0; il < ARRAY_SIZE(rkisp1->irqs); ++il)
+> +		rkisp1->irqs[il] = -1;
+> +
+>  	for (i = 0; i < info->isr_size; i++) {
+>  		irq = info->isrs[i].name
+>  		    ? platform_get_irq_byname(pdev, info->isrs[i].name)
+> @@ -550,6 +554,11 @@ static int rkisp1_probe(struct platform_device *pdev)
+>  		if (irq < 0)
+>  			return irq;
+>  
+> +		for (unsigned int il = 0; il < ARRAY_SIZE(rkisp1->irqs); ++il) {
+> +			if (info->isrs[i].line_mask & BIT(il))
+> +				rkisp1->irqs[il] = irq;
+> +		}
+> +
+>  		ret = devm_request_irq(dev, irq, info->isrs[i].isr, 0,
+>  				       dev_driver_string(dev), dev);
+>  		if (ret) {
+> 
+
+-- 
+Regards,
+
+Laurent Pinchart
