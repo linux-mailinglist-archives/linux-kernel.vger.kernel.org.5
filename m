@@ -2,146 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15134807F01
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 03:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4171F807F03
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 04:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443092AbjLGC7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 21:59:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
+        id S1443150AbjLGDAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 22:00:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjLGC7l (ORCPT
+        with ESMTP id S231297AbjLGDA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 21:59:41 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7956D62
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 18:59:47 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6ce6dd83945so173747b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 18:59:47 -0800 (PST)
+        Wed, 6 Dec 2023 22:00:28 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EED137;
+        Wed,  6 Dec 2023 19:00:34 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6d8d28e4bbeso318559a34.3;
+        Wed, 06 Dec 2023 19:00:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1701917987; x=1702522787; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vmFTswpdUJE2rTRRw/ViFE7rnEIJVMFOJnLGTDou500=;
-        b=WTqr+Fq4U++vP3QVTIWvyPgQllBcgcZK6oJ2/KknbZJumYOQysogp+WoMIpDtP2ehP
-         KHTturc8h4ecu0tJ30BEFet5QGpvN6gjvrV32dbp2i0/fYHrR39KYHKr4SKWwdh9qdZj
-         a1WcmY0KvLP8cmSL0RG7ZTkr0Dkv47/ySBJKywPXn1YtrgHDFIQ1Kt1tEkh9gAiU1E7P
-         4g16dDkUkYHknerDTYchSJDZclGdvoBndiuNIqfq4/7HCfQDOum4D4g6KPozPhAldubD
-         nVrSWYuwuQUQG7P5qFG/bvRKETNUtztPIgc6ouzUoBKCQYkNkoG3j1/x6oyrauBhXhqG
-         R57Q==
+        d=gmail.com; s=20230601; t=1701918034; x=1702522834; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AhSz+48D5Rt4U23Tg+4vmyl42dn2RcUMbGtIBTvQxYI=;
+        b=BMcTTPaod/BN+Urm/9ApJxmjfk5GaoVwvhVJ6Df0wFWe5xHPGcKLu+yGjUGfgyKao6
+         q80fOjJqhpKWER94jMrsRSFJY2jimODImfiAGaPf9qOkNsxSca5a5SUHNh1lIIaLMrC5
+         YRT4MOmHCNhamkRkJECGi70JkCKQP7W2XTmpHhN4p4jklnPP3Gl8MvRLh3aif4T0aG3M
+         I2bfLyMdsBRYCibbJ6Ybu49Cttuk++LZoTKEF8YLJewg6B7a7LZq70ch3yadPArOIlpZ
+         W2eFEBQN2b6GXvJI7y9QR/zyBoe2auI6UUB2QA3L6udWpeBECeViNXqu6m6bNHzeX6FB
+         TGAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701917987; x=1702522787;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vmFTswpdUJE2rTRRw/ViFE7rnEIJVMFOJnLGTDou500=;
-        b=MEg19PJZ0HRJ4jJe2XwpqNtcLy+5w2TNVa8RMSvKUhqx9CmapajTVcpk5FdOuREwu3
-         3l5aN0C5hsBP6pui/NlrcTuZJYEd1J/FkaurMB0Es2P5rgzfBRvBwXXeP1Z1/teBOD1a
-         a58e6vdLNmvyRBq56de2Iy+CkGDUclVBQtnF1eo66Ih6ytTHWrYRcShoat7UoEjpW59P
-         dD3VyW4t0oNrhK2/rJxPSDdEW+yhKzwu/YsFruwzyci8JClwvt6P6i1IzKY4snTr6Hsq
-         jToW/fLmfHvthfHCA9MJ/lCeUlZY9ZfKbXEkf/IHDVriTXAOmpD0+e+IEGHBoh8KYZQb
-         q6EA==
-X-Gm-Message-State: AOJu0YwRU22UdKNzCgkxRfsoPDjRgOK1JD/ws7Y2voRoK1Ni2H/lV5Lq
-        YsBSReZMUpT0rGmduXVG/cY6g+hQ07g41OMzqco=
-X-Google-Smtp-Source: AGHT+IF6coN8MfaVzFORuZNxRFOU6lZR6fn17FZb5urBAAU3XzsEYfnAlXJ92fzrZudE1pF+8aj9kg==
-X-Received: by 2002:a05:6a20:4b03:b0:18f:c42c:d735 with SMTP id fp3-20020a056a204b0300b0018fc42cd735mr2065531pzb.99.1701917987375;
-        Wed, 06 Dec 2023 18:59:47 -0800 (PST)
-Received: from [10.254.104.27] ([139.177.225.245])
-        by smtp.gmail.com with ESMTPSA id 26-20020a17090a005a00b00286be9fb3fdsm154565pjb.40.2023.12.06.18.59.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 18:59:46 -0800 (PST)
-Message-ID: <4b864565-faeb-4814-a803-66a1e54e8ae1@bytedance.com>
-Date:   Thu, 7 Dec 2023 10:59:40 +0800
+        d=1e100.net; s=20230601; t=1701918034; x=1702522834;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AhSz+48D5Rt4U23Tg+4vmyl42dn2RcUMbGtIBTvQxYI=;
+        b=musEAFM0FUha7lYkyy7wNGCAVhKfBV1tsK0ujTo02DjBs8RxwlbbTpNn9cTMvxxLaD
+         H9hdcBmcoGFDOBQWxQvYsfQ3gc/AeTyIdVGnXFUXwTK1Vj69ruVRrQ+dLmmhIvjSKaGn
+         Ecy2YqMGssm4DYKO2odlwctaHYG5T1Q+esWGcgXK0ASUxdOybahihO5ynM7o/FqsAglV
+         7rAHZjjl/pC6mNAeqGuGPVh0VslcoiUzRsZsMaN7O7JQkr2Q9d4hi8rwIJpVTIuZX+aU
+         Ix1RGaFfCL/n3dI4n9LXZILdC885nYNPuAFiqTl2VUlajqRL9Cv67mRQ0jJ+XqEnm7Lv
+         ZDxQ==
+X-Gm-Message-State: AOJu0YxyMxf5SvGUMjhK+1MR8RMu5BbvL/Y4GWkdFtYgXmiO0NcAazrQ
+        oHTPbpAC0oUif6/qhGLS8jjCj4u7KKOXWrXpfsI=
+X-Google-Smtp-Source: AGHT+IHUpb1GnaA/CMOhx1o6Kl2ufAYV1QErXdu0v0VhY9k1KyIeNaAQMTyBECQwibQwAeE5EkGiE9xYBrVBuWfDHRg=
+X-Received: by 2002:a05:6871:6114:b0:1fa:ded0:d8e6 with SMTP id
+ ra20-20020a056871611400b001faded0d8e6mr2094531oab.5.1701918033974; Wed, 06
+ Dec 2023 19:00:33 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/7] mm/zswap: change dstmem size to one page
-Content-Language: en-US
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     Vitaly Wool <vitaly.wool@konsulko.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com>
- <20231206-zswap-lock-optimize-v1-4-e25b059f9c3a@bytedance.com>
- <CAKEwX=M3iYV--kn+TEhLytijAOPH0_077KzvuGBE3+2r7AcW7Q@mail.gmail.com>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <CAKEwX=M3iYV--kn+TEhLytijAOPH0_077KzvuGBE3+2r7AcW7Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20231206181317.27515-1-rdunlap@infradead.org>
+In-Reply-To: <20231206181317.27515-1-rdunlap@infradead.org>
+From:   Peter Chen <hzpeterchen@gmail.com>
+Date:   Thu, 7 Dec 2023 11:00:22 +0800
+Message-ID: <CAL411-rcnuJtNJnvpkq4KWMib7xP08SEH8c5F1eT2mgZi4H6ng@mail.gmail.com>
+Subject: Re: [PATCH] usb: cdns3: starfive: don't misuse /** comment
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Minda Chen <minda.chen@starfivetech.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/7 01:12, Nhat Pham wrote:
-> On Wed, Dec 6, 2023 at 1:46 AM Chengming Zhou
-> <zhouchengming@bytedance.com> wrote:
->>
->> Maybe I missed something, but the dstmem size of 2 * PAGE_SIZE is
->> very confusing, since we only need at most one page when compress,
->> and the "dlen" is also PAGE_SIZE in acomp_request_set_params().
->>
->> So change it to one page, and fix the comments.
->>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->> ---
->>  mm/zswap.c | 5 ++---
->>  1 file changed, 2 insertions(+), 3 deletions(-)
->>
->> diff --git a/mm/zswap.c b/mm/zswap.c
->> index d93a7b58b5af..999671dcb469 100644
->> --- a/mm/zswap.c
->> +++ b/mm/zswap.c
->> @@ -699,7 +699,7 @@ static int zswap_dstmem_prepare(unsigned int cpu)
->>         struct mutex *mutex;
->>         u8 *dst;
->>
->> -       dst = kmalloc_node(PAGE_SIZE * 2, GFP_KERNEL, cpu_to_node(cpu));
->> +       dst = kmalloc_node(PAGE_SIZE, GFP_KERNEL, cpu_to_node(cpu));
->>         if (!dst)
->>                 return -ENOMEM;
->>
->> @@ -1649,8 +1649,7 @@ bool zswap_store(struct folio *folio)
->>         sg_init_table(&input, 1);
->>         sg_set_page(&input, page, PAGE_SIZE, 0);
->>
->> -       /* zswap_dstmem is of size (PAGE_SIZE * 2). Reflect same in sg_list */
->> -       sg_init_one(&output, dst, PAGE_SIZE * 2);
->> +       sg_init_one(&output, dst, PAGE_SIZE);
-> 
-> Hmm. This is very weird. It looks very intentional though, so perhaps
-> we should consult the maintainer or the original author of this logic
-> to double check this?
+On Thu, Dec 7, 2023 at 2:13=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org>=
+ wrote:
+>
+> Use a common C comment "/*" instead of "/**" to prevent a warning
+> from scripts/kernel-doc.
+>
+> cdns3-starfive.c:23: warning: expecting prototype for cdns3(). Prototype =
+was for USB_STRAP_HOST() instead
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Minda Chen <minda.chen@starfivetech.com>
+> Cc: Peter Chen <peter.chen@kernel.org>
+> Cc: Pawel Laszczak <pawell@cadence.com>
+> Cc: Roger Quadros <rogerq@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-usb@vger.kernel.org
+> ---
 
-Yes, it's also weird to me. But it seems to be 2 pages when the zswap code
-merged in mm 10 years ago. Hope the maintainer or author could shed some
-light on it. :)
+Acked-by: Peter Chen <peter.chen@kernel.org>
 
-> My best guess is for cases where the compression algorithm fails - i.e
-> the output (header + payload) is somehow bigger than the original
-> data. But not sure if this happens at all, and if the size > PAGE_SIZE
-> we don't wanna store the output in zswap anyway.
-> 
+Peter
 
-Agree, so I think one page is enough.
 
->>         acomp_request_set_params(acomp_ctx->req, &input, &output, PAGE_SIZE, dlen);
-
-And here we just use PAGE_SIZE in the parameter actually.
-
-Thanks!
-
->>         /*
->>          * it maybe looks a little bit silly that we send an asynchronous request,
->>
->> --
->> b4 0.10.1
+>  drivers/usb/cdns3/cdns3-starfive.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff -- a/drivers/usb/cdns3/cdns3-starfive.c b/drivers/usb/cdns3/cdns3-st=
+arfive.c
+> --- a/drivers/usb/cdns3/cdns3-starfive.c
+> +++ b/drivers/usb/cdns3/cdns3-starfive.c
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -/**
+> +/*
+>   * cdns3-starfive.c - StarFive specific Glue layer for Cadence USB Contr=
+oller
+>   *
+>   * Copyright (C) 2023 StarFive Technology Co., Ltd.
