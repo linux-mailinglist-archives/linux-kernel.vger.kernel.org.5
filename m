@@ -2,117 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6821808DEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5C6808DD5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:50:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbjLGQc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 11:32:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
+        id S232804AbjLGQcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 11:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233092AbjLGQcY (ORCPT
+        with ESMTP id S232532AbjLGQcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 11:32:24 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D371713
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 08:32:27 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6cec976b197so40704b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 08:32:27 -0800 (PST)
+        Thu, 7 Dec 2023 11:32:33 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73039132
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 08:32:39 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d06d42a58aso9536485ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 08:32:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701966747; x=1702571547; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=esUGZflfku9DXDzsKmGJoCZTKHSMJXxpWGFrjWaHjY4=;
-        b=qWROFk9j/J7UnhfyVAxPOwxo5RqYWnL+rvqGvUsirU6+vKFgt/d1C/27dMq0TnHd00
-         bOgRsrmTETKEMTUyGdNeGArbJIvvMjJw1AOSmw4RanHTGZyZDLRJ5HXVzpw0+bzdJMlS
-         oRYy0bpoX9hahRVlJd8T2L60uGPwAm06IplHB5R0S0l/CwXvEdltx3JLdBjz42h3iE2K
-         HZpan3qdL081spUht4BIYnEjQi/rbAUd3REpndR8Zo6SSdWH92YSnnHNi6LMFGI4vzDt
-         YYCGKdOAwNhsR1Td5CxSdU3ZwEBGS1ocYh8iiPbSDYqN3AQ3jvN88dQmWICiv9c2DyXH
-         thkQ==
+        d=google.com; s=20230601; t=1701966759; x=1702571559; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6s/G2fCaPsfjUltC6wP5KXnRvEhfZWy1kUDC1w9CkeU=;
+        b=tiK93JOw6EPMlDBLuaJ/56pp8ogzhRE44uzkXTpapanoNVxCbmfA3JCwlBCothnklj
+         D0CDgbkSyMrxwut27IKSkZ+JNz83pnmsUSv30MWZi7FUZhEDbvgDMtGSNkEoSR2bEFDt
+         AdBM7NtZzQ3PIyE30dZ3dAGDiwzewJCTSr59ov/i+zs8tU6DPytidoA9LAeJu8aFmaZo
+         KWVMnub4fVgmkx/91jyqHqM+0rbUHnfOfg2ZQEpNVwvDgR3NyaTEkAShO5jJKa6w/3Es
+         w1R9x+VAznk4DHhunBmSXPX5ucXq8PXkBVy7MERjHnczqfgFaHUz2cmOV0BZ8xCXm3MQ
+         w8ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701966747; x=1702571547;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=esUGZflfku9DXDzsKmGJoCZTKHSMJXxpWGFrjWaHjY4=;
-        b=nBRuvfcDaxjeHfPu61NvXdG1F4XIFetIVmcnqNlRUfklQCxcLVtujScLzd582uw8sC
-         A0/Xi32R6Nl7wg2FvGeq7XzJHKa0dv4rXwEkKm8tgck+FXVj+i5LLZO7+pZwL3Z460FK
-         pEojXjT4Uu4IFMJmc02sK4QLayRqYScMuioOo/BmP989UlguvEDprjo7Ows/ERbS0v1B
-         FFQkYag7z3rIXLlayMiMW5kTiXh6Dk+/Di31a7FLySciJbtO++vyfLdcRR6rm6RP6COz
-         rCKMxe8STa8iAZSElWxazx65EmRpfi6oGmPOjZlldND+F+TpT7zYbZckrqyW5aJlnkKR
-         eKYQ==
-X-Gm-Message-State: AOJu0YxuV5IvKlZIKxm+o3W/9stO08LQ4nf4I7+kvCqy49jXwmsUyvxQ
-        YThsP6jeJn8SlVqA/EY64MkuQsGTw+EnBpx6OheyyA==
-X-Google-Smtp-Source: AGHT+IFRGlSqxD8x8sx2ixDKNV4Bgn8IR2U64KiJftcFvT6EgKZVa+UqCsno0lRD8ozWGx/9wlUkOGkVbuZ2tQQYsT8=
-X-Received: by 2002:a05:6a00:a04:b0:6ce:696f:d0f5 with SMTP id
- p4-20020a056a000a0400b006ce696fd0f5mr2936740pfh.31.1701966747287; Thu, 07 Dec
- 2023 08:32:27 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701966759; x=1702571559;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6s/G2fCaPsfjUltC6wP5KXnRvEhfZWy1kUDC1w9CkeU=;
+        b=IreN8b7D5Qfit5mrwq6GGgcIqpmOO5pnzE6pPhrRQqSv6w7Ty9Rsc03Rb2oXaNkSFW
+         PHQz3274QNUbpHoPxHCrtkSQm13IsKhdRT3iNqWNqLQOLvR+8uXQgDPfqigj1HZ7F3s1
+         oqdjcgrSo0BxdWpIh3il7feRbvj0eVFp4ubvhE/vXnxuOzzzlJk3UZGKDLCoygYCHzq9
+         9dGsXuliAQ8mi/Yv0HmfMMJ6vA/4huYz2zz735DWf4UKPfecutrCWOByCMDzuPF6hnCk
+         4snh+t/dLSm4z+1zqYwCeNbjD0iHuy+j7Ir0/120LbY6wmDQV16Ub2zP2jHI6MuULE5R
+         PyNg==
+X-Gm-Message-State: AOJu0YwXOAXtUQCV7PKW9gViNSwqz+jm1Un2blK80DK9Yudpx0NWXuoW
+        mbrL76PPm3eHqygIMQvGGY29dA==
+X-Google-Smtp-Source: AGHT+IF7Xpf8qGhXSViJn/hwJ0E80pM/or7yhBmz9pZajunl52yozMy7wL1M2cV5+TGdlip1I553Fg==
+X-Received: by 2002:a17:902:c411:b0:1d0:8e61:1020 with SMTP id k17-20020a170902c41100b001d08e611020mr3546038plk.89.1701966758757;
+        Thu, 07 Dec 2023 08:32:38 -0800 (PST)
+Received: from google.com (170.102.105.34.bc.googleusercontent.com. [34.105.102.170])
+        by smtp.gmail.com with ESMTPSA id j18-20020a170902c3d200b001cc3a6813f8sm6281plj.154.2023.12.07.08.32.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 08:32:38 -0800 (PST)
+Date:   Thu, 7 Dec 2023 16:32:34 +0000
+From:   Carlos Llamas <cmllamas@google.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nhat Pham <nphamcs@gmail.com>
+Subject: Re: linux-next: manual merge of the char-misc tree with the mm tree
+Message-ID: <ZXHzooF07LfQQYiE@google.com>
+References: <20231207134213.25631ae9@canb.auug.org.au>
 MIME-Version: 1.0
-References: <76587DD3-2A77-41A3-9807-6AEE4398EBA6@arista.com>
-In-Reply-To: <76587DD3-2A77-41A3-9807-6AEE4398EBA6@arista.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 7 Dec 2023 17:32:15 +0100
-Message-ID: <CAKfTPtAkhfAhFouCGTy7m4swCeeEsu1VdWEX_ahOVDq1U594Dg@mail.gmail.com>
-Subject: Re: Modifying isolcpus, nohz_full, and rcu_nocb kernel parameters at runtime
-To:     Gianfranco Dutka <gianfranco.dutka@arista.com>
-Cc:     linux-kernel@vger.kernel.org, vincent.guittot@linaro.com,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Tejun Heo <tj@kernel.org>,
-        "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207134213.25631ae9@canb.auug.org.au>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gianfranco,
+On Thu, Dec 07, 2023 at 01:42:13PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the char-misc tree got a conflict in:
+> 
+>   drivers/android/binder_alloc.c
+> 
+> between commit:
+> 
+>   8b59d7857c30 ("list_lru: allow explicit memcg and NUMA node selection")
+> 
+> from the mm tree and commits:
+> 
+>   ea9cdbf0c727 ("binder: rename lru shrinker utilities")
+>   ea2735ce19c1 ("binder: refactor page range allocation")
+> (and maybe others)
+> 
+> from the char-misc tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
 
-+ Adding all scheduler maintainers and few other people that are
-working on similar things
+Oh I wasn't aware of this patch. Thanks for fixing it Stephen!
 
-On Thu, 7 Dec 2023 at 16:07, Gianfranco Dutka
-<gianfranco.dutka@arista.com> wrote:
->
-> Good afternoon maintainers and subscribers to the lkml,
->
-> I'm a bit new to kernel development but I had a question with respect to =
-the kernel parameters: isolcpus, nohz_full, and rcu_nocbs.
->
-> Basically the question is this, am I able to modify the three parameters =
-I mentioned above at runtime after the kernel has already started/booted? D=
-oing some reading online it seems that it=E2=80=99s not possible but I want=
-ed to double check with the maintainers if there wasn=E2=80=99t some sort o=
-f change in the works that might make it possible. If not, what would be re=
-quired to make the change after boot-time through some kind of patch or som=
-ething like that? Would that be something that might be valuable upstream?
+I checked the diff against the char-misc tree and it looks correct. It's
+a much much easier read too. I'll post it below if anyone is interested.
 
-It's not possible but you can achieve something close with cgroup
-although you will still have some housekeeping activities happening in
-your partition.
+--
+Carlos Llamas
 
-This thread tries to do something similar:
-https://lore.kernel.org/lkml/20230804090858.7605-1-rui.zhang@intel.com/
+diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+index a4a4dc87ba53aa..ea5e1ba2d0d77f 100644
+--- a/drivers/android/binder_alloc.c
++++ b/drivers/android/binder_alloc.c
+@@ -210,7 +210,7 @@ static void binder_lru_freelist_add(struct binder_alloc *alloc,
 
+ 		trace_binder_free_lru_start(alloc, index);
 
+-		ret = list_lru_add(&binder_freelist, &page->lru);
++		ret = list_lru_add_obj(&binder_freelist, &page->lru);
+ 		WARN_ON(!ret);
 
->
-> At the moment we are running an application that might see some benefit f=
-rom being able to isolate cpus on the fly without having to reboot everythi=
-ng every time we want to modify the parameters mentioned above.
->
-> Thanks,
-> Gianfranco
+ 		trace_binder_free_lru_end(alloc, index);
+@@ -317,7 +317,7 @@ static void binder_lru_freelist_del(struct binder_alloc *alloc,
+ 		if (page->page_ptr) {
+ 			trace_binder_alloc_lru_start(alloc, index);
+
+-			on_lru = list_lru_del(&binder_freelist, &page->lru);
++			on_lru = list_lru_del_obj(&binder_freelist, &page->lru);
+ 			WARN_ON(!on_lru);
+
+ 			trace_binder_alloc_lru_end(alloc, index);
+@@ -931,7 +931,7 @@ void binder_alloc_deferred_release(struct binder_alloc *alloc)
+ 			if (!alloc->pages[i].page_ptr)
+ 				continue;
+
+-			on_lru = list_lru_del(&binder_freelist,
++			on_lru = list_lru_del_obj(&binder_freelist,
+ 					      &alloc->pages[i].lru);
+ 			page_addr = alloc->buffer + i * PAGE_SIZE;
+ 			binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC,
+@@ -1307,4 +1307,3 @@ int binder_alloc_copy_from_buffer(struct binder_alloc *alloc,
+ 	return binder_alloc_do_buffer_copy(alloc, false, buffer, buffer_offset,
+ 					   dest, bytes);
+ }
+-
