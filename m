@@ -2,50 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4F1808EBC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF9E808EC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443240AbjLGRVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:21:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42144 "EHLO
+        id S1443251AbjLGRVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:21:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjLGRVS (ORCPT
+        with ESMTP id S233127AbjLGRVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:21:18 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79527FA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:21:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBAEDC433C9;
-        Thu,  7 Dec 2023 17:21:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701969684;
-        bh=rU4hXuTRF4ao1EdgYtEDoWkxEgC/yPUpYU2EmGERI4U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e7oCaU1T1HDC9USQplwo3comKIzmFXmkgpaHgB2ZQ3ZgxuK/Wy7T8iWQQCLLfyMQY
-         MCrkPq3w/O/9bEwBTkgICNqqKjG7YMerjpQlqtgog2N/fmAqHenhsHuO+EuG2IcM/9
-         FJufej2gyhvuRAyn109CWUG/LS7ir1r/nUV6M6zzsPHcJwgaorT92Pynj1tm4FxUBj
-         IU7QZDr9c5Zu/87uolSb5woHx03nAnj49kBFh4AXoO1uPmqBdGG4Pt7yvj+4zqCzE9
-         xm794EjdURSSuIsKtXD/p2zYpQiIi9ThyFkAEiks8IyGJHwjYxfZqYDETuG01WoyLP
-         9p0FditxUunIg==
-Date:   Thu, 7 Dec 2023 18:21:18 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Tycho Andersen <tandersen@netflix.com>,
-        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
-Message-ID: <20231207-netzhaut-wachen-81c34f8ee154@brauner>
-References: <20231130163946.277502-1-tycho@tycho.pizza>
+        Thu, 7 Dec 2023 12:21:36 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 32C7510EB;
+        Thu,  7 Dec 2023 09:21:43 -0800 (PST)
+Received: from [192.168.178.49] (dynamic-adsl-84-220-28-122.clienti.tiscali.it [84.220.28.122])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 9F96220B74C0;
+        Thu,  7 Dec 2023 09:21:36 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9F96220B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1701969702;
+        bh=YtdJ7UMxZsFLwYU4tFxDRYnaE/64yQgCMEsvib3m/bA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=SwQ29+jQn81AXayokr2pp0BtZhIxiNZLohtr1pGCfUd5cHIiKBqOTzMrhajI2L7sJ
+         LC5CqjpvrzCSTLd6zMnxyCijH1CCC7Z6gfygOav9C+Lyz2EZ2o+WSSG2C7rvqoFtFO
+         dugTR38i6ArC229yb8b0IweRDZtwvubXeqBkgjQE=
+Message-ID: <8362bf44-f933-4a7e-9e56-a7c425a2ba5a@linux.microsoft.com>
+Date:   Thu, 7 Dec 2023 18:21:33 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231130163946.277502-1-tycho@tycho.pizza>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
+ TDX init
+Content-Language: en-US
+To:     "Huang, Kai" <kai.huang@intel.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "mhkelley58@gmail.com" <mhkelley58@gmail.com>,
+        "Cui, Dexuan" <decui@microsoft.com>
+Cc:     "cascardo@canonical.com" <cascardo@canonical.com>,
+        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
+        "nik.borisov@suse.com" <nik.borisov@suse.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "sashal@kernel.org" <sashal@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>
+References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
+ <20231123135846.pakk44rqbbi7njmb@box.shutemov.name>
+ <9f550947-9d13-479c-90c4-2e3f7674afee@linux.microsoft.com>
+ <20231124104337.gjfyasjmo5pp666l@box.shutemov.name>
+ <58c82110-45b2-4e23-9a82-90e1f3fa43c2@linux.microsoft.com>
+ <20231124133358.sdhomfs25seki3lg@box.shutemov.name>
+ <6f27610f-afc4-4356-b297-13253bb0a232@linux.microsoft.com>
+ <ffcc8c550d5ba6122b201d8170b42ee581826d47.camel@intel.com>
+ <02e079e8-cc72-49d8-9191-8a753526eb18@linux.microsoft.com>
+ <7b725783f1f9102c176737667bfec12f75099961.camel@intel.com>
+ <fa86fbd1-998b-456b-971f-a5a94daeca28@linux.microsoft.com>
+ <59bdfee24a9c0f7656f7c83e65789d72ab203edc.camel@intel.com>
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <59bdfee24a9c0f7656f7c83e65789d72ab203edc.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,81 +82,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc fsdevel & Jan because we had some discussions about fanotify
-returning non-thread-group pidfds. That's just for awareness or in case
-this might need special handling.]
-
-On Thu, Nov 30, 2023 at 09:39:44AM -0700, Tycho Andersen wrote:
-> From: Tycho Andersen <tandersen@netflix.com>
+On 07/12/2023 13:58, Huang, Kai wrote:
+>>
+>> That's how it currently works - all the enlightenments are in hypervisor/paravisor
+>> specific code in arch/x86/hyperv and drivers/hv and the vm is not marked with
+>> X86_FEATURE_TDX_GUEST.
 > 
-> We are using the pidfd family of syscalls with the seccomp userspace
-> notifier. When some thread triggers a seccomp notification, we want to do
-> some things to its context (munge fd tables via pidfd_getfd(), maybe write
-> to its memory, etc.). However, threads created with ~CLONE_FILES or
-> ~CLONE_VM mean that we can't use the pidfd family of syscalls for this
-> purpose, since their fd table or mm are distinct from the thread group
-> leader's. In this patch, we relax this restriction for pidfd_open().
+> And I believe there's a reason that the VM is not marked as TDX guest.
+Yes, as Elena said:
+"""
+OK, so in your case it is a decision of L1 VMM not to set the TDX_CPUID_LEAF_ID
+to reflect that it is a tdx guest and it is on purpose because you want to 
+drop into a special tdx guest, i.e. partitioned guest. 
+"""
+TDX does not provide a means to let the partitioned guest know that it needs to
+cooperate with the paravisor (e.g. because TDVMCALLs are routed to L0) so this is
+exposed in a paravisor specific way (cpuids in patch 1).
+
 > 
-> In order to avoid dangling poll() users we need to notify pidfd waiters
-> when individual threads die, but once we do that all the other machinery
-> seems to work ok viz. the tests. But I suppose there are more cases than
-> just this one.
+>>
+>> But without X86_FEATURE_TDX_GUEST userspace has no unified way to discover that an
+>> environment is protected by TDX and also the VM gets classified as "AMD SEV" in dmesg.
+>> This is due to CC_ATTR_GUEST_MEM_ENCRYPT being set but X86_FEATURE_TDX_GUEST not.
 > 
-> Another weirdness is the open-coding of this vs. exporting using
-> do_notify_pidfd(). This particular location is after __exit_signal() is
-> called, which does __unhash_process() which kills ->thread_pid, so we need
-> to use the copy we have locally, vs do_notify_pid() which accesses it via
-> task_pid(). Maybe this suggests that the notification should live somewhere
-> in __exit_signals()? I just put it here because I saw we were already
-> testing if this task was the leader.
+> Can you provide more information about what does _userspace_ do here?
+
+I gave one usecase in a different email. A workload scheduler like Kubernetes might want to
+place a workload in a confidential environment, and needs a way to determine that a VM is
+TDX protected (or SNP protected) to make that placement decision.
+
 > 
-> Signed-off-by: Tycho Andersen <tandersen@netflix.com>
-> ---
+> What's the difference if it sees a TDX guest or a normal non-coco guest in
+> /proc/cpuinfo?
+> 
+> Looks the whole purpose of this series is to make userspace happy by advertising
+> TDX guest to /proc/cpuinfo.  But if we do that we will have bad side-effect in
+> the kernel so that we need to do things in your patch 2/3.
+> 
 
-So we've always said that if there's a use-case for this then we're
-willing to support it. And I think that stance hasn't changed. I know
-that others have expressed interest in this as well.
+Yes, exactly. It's unifying the two approaches so that userspace doesn't have to
+care.
 
-So currently the series only enables pidfds for threads to be created
-and allows notifications for threads. But all places that currently make
-use of pidfds refuse non-thread-group leaders. We can certainly proceed
-with a patch series that only enables creation and exit notification but
-we should also consider unlocking additional functionality:
+> That doesn't seem very convincing.
 
-* audit of all callers that use pidfd_get_task()
+Why not? 
+The whole point of the kernel is to provide a unified interface to userspace and
+abstract away these small differences. Yes it requires some kernel code to do,
+thats not a reason to force every userspace to implement its own logic. This is
+what the flags in /proc/cpuinfo are for.
 
-  (1) process_madvise()
-  (2) process_mrlease()
+> Is there any other way that userspace can
+> utilize, e.g., any HV hypervisor/paravisor specific attributes that are exposed
+> to userspace?
+> 
 
-  I expect that both can handle threads just fine but we'd need an Ack
-  from mm people.
+There are no HV hyper-/para-visor attributes exposed to userspace directly, but
+userspace can poke at the same cpuid bits as in patch 1 to make this determination.
+Not great for confidential computing adoption.
 
-* pidfd_prepare() is used to create pidfds for:
-
-  (1) CLONE_PIDFD via clone() and clone3()
-  (2) SCM_PIDFD and SO_PEERPIDFD
-  (3) fanotify
-  
-  (1) is what this series here is about.
-
-  For (2) we need to check whether fanotify would be ok to handle pidfds
-  for threads. It might be fine but Jan will probably know more.
-
-  For (3) the change doesn't matter because SCM_CREDS always use the
-  thread-group leader. So even if we allowed the creation of pidfds for
-  threads it wouldn't matter.
-* audit all callers of pidfd_pid() whether they could simply be switched
-  to handle individual threads:
-
-  (1) setns() handles threads just fine so this is safe to allow.
-  (2) pidfd_getfd() I would like to keep restricted and essentially
-      freeze new features for it.
-
-      I'm not happy that we did didn't just implement it as an ioctl to
-      the seccomp notifier. And I wouldn't oppose a patch that would add
-      that functionality to the seccomp notifier itself. But that's a
-      separate topic.
-  (3) pidfd_send_signal(). I think that one is the most interesting on
-      to allow signaling individual threads. I'm not sure that you need
-      to do this right now in this patch but we need to think about what
-      we want to do there.
