@@ -2,68 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 519D1808900
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1940808906
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379444AbjLGNS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:18:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43986 "EHLO
+        id S232767AbjLGNUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjLGNS1 (ORCPT
+        with ESMTP id S229949AbjLGNUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:18:27 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84190AA;
-        Thu,  7 Dec 2023 05:18:33 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B7DIIaN035132;
-        Thu, 7 Dec 2023 07:18:18 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701955098;
-        bh=XzL0V5jpHObgwoHsSR1e+EHS2+JLhi1OEwD843F4iYI=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=aaPsb8Iq9mKwiaC9n8TebzZVZeJXTcQJRPLERU6BjhKQqh7dDAHeTFDO5e9Nxoqd3
-         oWhy8k9RM6+yK3KtwnyJwd3Daii0HAIQpz3es5Es5rZgEDRfD+4zapLswctqSuatGm
-         +y6kz37oNkAB2/FawcKs8xvi4f46vbLSD5XXsyg8=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B7DIIEJ020172
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 7 Dec 2023 07:18:18 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 7
- Dec 2023 07:18:18 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 7 Dec 2023 07:18:18 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B7DIIb4093485;
-        Thu, 7 Dec 2023 07:18:18 -0600
-Date:   Thu, 7 Dec 2023 07:18:18 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     MD Danish Anwar <danishanwar@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Thu, 7 Dec 2023 08:20:38 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB08D5E
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:20:43 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-2851a2b30a2so742065a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 05:20:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701955243; x=1702560043; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DYFq85X/BIHTHq7kGtptVxvPwKJGLk6dGCvTwIzJ+dU=;
+        b=NL7gs/wZCgPM0rqMWLJdFyls4wCWZyBQQyfjvMC84YG2Bkhasgj2+Q03bPxaH+1M9p
+         Kx4ETM2drEN9Mg71FE3bB1yA2MNOqE0oqKKAUPCEgBbgY2xC3E8naCQo+NyOHKuB5cuk
+         SBitel0hghhFR9AVCngoF/UTJh8rgyYdZBGBwCFnk5Onn4vNCShyPz2byXL/AVLjp/+K
+         I/HMbkQS/yt5Ib3RGawC3cuYKjyYfU7TaMmbQT0b1iv1IFR2xD9KsesDkPRiBWXrcB0F
+         xr/igbZNYdeLtJUBQuL3so5LmJXxpgzeiygD3umPbyDc4K2CdT40DCQo1r4CcfONg2QD
+         2ZnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701955243; x=1702560043;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DYFq85X/BIHTHq7kGtptVxvPwKJGLk6dGCvTwIzJ+dU=;
+        b=b6SuR7hfpHx2QnroUx9yVyQduIRvQkagjLRfEuMwUbQpBV+zrGEChic063WOj3oNvc
+         P8Dsw8ZNoKAKUZPmjIvzqvCP+O5fC6noipC7BRtjUTNFz63Sn5P4r+EqdPa4PgIu+a7A
+         EujfZ2e2hKJ4C6/y2uVzIVeHLTbq5WQTMuM94+9mh/KDSHhBNn/ABAXJsfKHnbTdCEUW
+         8R/APAhSa/kyU68ZYruLLI5n6rVJ4HFX0GFga+fSq+BJJp3Od2HyTDDCBKhxm+fXIzsT
+         BrFfisSPJwHziYp3ruzoHWOVMNQ0fOrrBqWAVhMQizOwbh36+f6fP3Wi53duIT7WKiUS
+         yQCw==
+X-Gm-Message-State: AOJu0Ywv6b36Bbrz81pzWZgWCZPlDObpmuPDl7+dTcRQxCBCEKoTTxIB
+        4gJJuidiJ28ij69kFfKqPJV1
+X-Google-Smtp-Source: AGHT+IGkgup8HVw36DeNUf8Hl9xmr9ZQZ/zGq74w+jN8tcKimhg+P7eKKuGTOsm5hdUE53L9XXKyEA==
+X-Received: by 2002:a17:90a:8c0b:b0:286:f5f1:309a with SMTP id a11-20020a17090a8c0b00b00286f5f1309amr2090274pjo.81.1701955243349;
+        Thu, 07 Dec 2023 05:20:43 -0800 (PST)
+Received: from thinkpad ([117.248.6.133])
+        by smtp.gmail.com with ESMTPSA id ju1-20020a170903428100b001cfc030da6bsm1359638plb.253.2023.12.07.05.20.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 05:20:42 -0800 (PST)
+Date:   Thu, 7 Dec 2023 18:50:32 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Tero Kristo <kristo@kernel.org>, <srk@ti.com>,
-        <r-gunasekaran@ti.com>
-Subject: Re: [PATCH 2/3] arm64: dts: ti: k3-am642-evm: add ICSSG1 Ethernet
- support
-Message-ID: <20231207131818.3n7z64ve6izatlvs@unchanged>
-References: <20231207081917.340167-1-danishanwar@ti.com>
- <20231207081917.340167-3-danishanwar@ti.com>
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_vpernami@quicinc.com, quic_parass@quicinc.com
+Subject: Re: [PATCH v3 1/3] dt-bindings: phy: qcom,qmp: Add PCIe
+ qcom,refclk-always-on property
+Message-ID: <20231207132032.GL2932@thinkpad>
+References: <20231201060716.GJ4009@thinkpad>
+ <166d307e-7d1b-48b5-90db-9b6df01d87c2@linaro.org>
+ <20231201111033.GL4009@thinkpad>
+ <f844cd1e-7e4f-4836-bc9a-2e1ed13f064f@linaro.org>
+ <20231201123054.GM4009@thinkpad>
+ <3a7376aa-18a2-41cb-a4c9-680e735ce75b@linaro.org>
+ <20231206131009.GD12802@thinkpad>
+ <ZXGVjY9gYMD6-xFJ@hovoldconsulting.com>
+ <20231207101252.GJ2932@thinkpad>
+ <ZXHDCNosx8PCUzao@hovoldconsulting.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231207081917.340167-3-danishanwar@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZXHDCNosx8PCUzao@hovoldconsulting.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,168 +96,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13:49-20231207, MD Danish Anwar wrote:
-> ICSSG1 provides dual Gigabit Ethernet support with proper FW loaded.
+On Thu, Dec 07, 2023 at 02:05:12PM +0100, Johan Hovold wrote:
+> On Thu, Dec 07, 2023 at 03:42:52PM +0530, Manivannan Sadhasivam wrote:
+> > On Thu, Dec 07, 2023 at 10:51:09AM +0100, Johan Hovold wrote:
+> > > On Wed, Dec 06, 2023 at 06:40:09PM +0530, Manivannan Sadhasivam wrote:
+> > > 
+> > > > OK. How about, "qcom,broken-refclk"? This reflects the fact that the default
+> > > > refclk operation is broken on this platform, so the OS should be prepared for
+> > > > it (by keeping it always on).
+> > > 
+> > > Shouldn't that be
+> > > 
+> > > 	qcom,broken-clkreq
+> > > 
+> > > since its the CLKREQ# signal used to request REFCLK that is broken, not
+> > > the REFCLK itself?
+> > > 
+> > 
+> > Darn... You are right. I got carried away by the initial property name. Thanks
+> > for spotting!
 > 
-> The ICSSG1 MII0 (RGMII1) has DP83869 PHY attached to it. The ICSSG1 shares
-> MII1 (RGMII2) PHY DP83869 with CPSW3g and it's assigned by default to
-> CPSW3g. The MDIO access to MII1 (RGMII2) PHY DP83869 is controlled by MDIO
-> bus switch and also assigned to CPSW3g. Therefore the ICSSG1 MII1 (RGMII2)
-> port is kept disable and ICSSG1 is enabled in single MAC mode by
-> default.
+> Thinking some more on this after hitting send: It may still be wrong
+> with a 'broken-clkreq' property in the PHY instead of in the controller
+> (or endpoint).
 > 
-> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-am642-evm.dts | 105 ++++++++++++++++++++++++
->  1 file changed, 105 insertions(+)
+> Could there not be other ways to handle a broken clkreq signal so that
+> this really should be a decision made by the OS, for example, to disable
+> L1 substates and clock PM?
 > 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-> index 8c5651d2cf5d..04d1c0602d31 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-> @@ -34,6 +34,11 @@ aliases {
->  		ethernet1 = &cpsw_port2;
->  	};
->  
-> +	aliases {
-> +		ethernet2 = &icssg1_emac0;
-> +		ethernet3 = &icssg1_emac1;
-> +	};
 
-Why another aliases section?
+One has to weigh the power consumption between keeping refclk always on and
+disabling L1SS. Chaitanya, can you measure power consumption in both cases?
 
-> +
->  	memory@80000000 {
->  		bootph-all;
->  		device_type = "memory";
-> @@ -229,6 +234,70 @@ transceiver2: can-phy1 {
->  		max-bitrate = <5000000>;
->  		standby-gpios = <&exp1 9 GPIO_ACTIVE_HIGH>;
->  	};
-> +
-> +	icssg1_eth: icssg1-eth {
-> +		compatible = "ti,am642-icssg-prueth";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&icssg1_rgmii1_pins_default>;
-> +
-> +		sram = <&oc_sram>;
-> +		ti,prus = <&pru1_0>, <&rtu1_0>, <&tx_pru1_0>, <&pru1_1>, <&rtu1_1>, <&tx_pru1_1>;
-> +		firmware-name = "ti-pruss/am65x-sr2-pru0-prueth-fw.elf",
-> +				"ti-pruss/am65x-sr2-rtu0-prueth-fw.elf",
-> +				"ti-pruss/am65x-sr2-txpru0-prueth-fw.elf",
-> +				"ti-pruss/am65x-sr2-pru1-prueth-fw.elf",
-> +				"ti-pruss/am65x-sr2-rtu1-prueth-fw.elf",
-> +				"ti-pruss/am65x-sr2-txpru1-prueth-fw.elf";
-
-Umm... am65x??? is that a typo? I'd rather keep it am64x here and drop
-that sr2 thing. Tomorrow there will be a custom bug on am64 and then we
-will have to respin this again.
-
-> +
-> +		ti,pruss-gp-mux-sel = <2>,	/* MII mode */
-> +				      <2>,
-> +				      <2>,
-> +				      <2>,	/* MII mode */
-> +				      <2>,
-> +				      <2>;
-> +
-> +		ti,mii-g-rt = <&icssg1_mii_g_rt>;
-> +		ti,mii-rt = <&icssg1_mii_rt>;
-> +		ti,iep = <&icssg1_iep0>,  <&icssg1_iep1>;
-> +
-> +		interrupt-parent = <&icssg1_intc>;
-> +		interrupts = <24 0 2>, <25 1 3>;
-> +		interrupt-names = "tx_ts0", "tx_ts1";
-> +
-> +		dmas = <&main_pktdma 0xc200 15>, /* egress slice 0 */
-> +		       <&main_pktdma 0xc201 15>, /* egress slice 0 */
-> +		       <&main_pktdma 0xc202 15>, /* egress slice 0 */
-> +		       <&main_pktdma 0xc203 15>, /* egress slice 0 */
-> +		       <&main_pktdma 0xc204 15>, /* egress slice 1 */
-> +		       <&main_pktdma 0xc205 15>, /* egress slice 1 */
-> +		       <&main_pktdma 0xc206 15>, /* egress slice 1 */
-> +		       <&main_pktdma 0xc207 15>, /* egress slice 1 */
-> +		       <&main_pktdma 0x4200 15>, /* ingress slice 0 */
-> +		       <&main_pktdma 0x4201 15>; /* ingress slice 1 */
-> +		dma-names = "tx0-0", "tx0-1", "tx0-2", "tx0-3",
-> +			    "tx1-0", "tx1-1", "tx1-2", "tx1-3",
-> +			    "rx0", "rx1";
-> +
-> +		ethernet-ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			icssg1_emac0: port@0 {
-> +				reg = <0>;
-> +				phy-handle = <&icssg1_phy1>;
-> +				phy-mode = "rgmii-id";
-> +				ti,syscon-rgmii-delay = <&main_conf 0x4110>;
-> +				/* Filled in by bootloader */
-> +				local-mac-address = [00 00 00 00 00 00];
-> +			};
-> +			icssg1_emac1: port@1 {
-> +				reg = <1>;
-> +				ti,syscon-rgmii-delay = <&main_conf 0x4114>;
-> +				/* Filled in by bootloader */
-> +				local-mac-address = [00 00 00 00 00 00];
-> +				status = "disabled";
-> +			};
-> +		};
-> +	};
->  };
->  
->  &main_pmx0 {
-> @@ -383,6 +452,30 @@ ddr_vtt_pins_default: ddr-vtt-default-pins {
->  			AM64X_IOPAD(0x0030, PIN_OUTPUT_PULLUP, 7) /* (L18) OSPI0_CSN1.GPIO0_12 */
->  		>;
->  	};
-> +
-> +	icssg1_mdio1_pins_default: icssg1-mdio1-default-pins {
-> +		pinctrl-single,pins = <
-> +			AM64X_IOPAD(0x015c, PIN_OUTPUT, 0) /* (Y6) PRG1_MDIO0_MDC */
-> +			AM64X_IOPAD(0x0158, PIN_INPUT, 0) /* (AA6) PRG1_MDIO0_MDIO */
-> +		>;
-> +	};
-> +
-> +	icssg1_rgmii1_pins_default: icssg1-rgmii1-default-pins{
-> +		pinctrl-single,pins = <
-> +			AM64X_IOPAD(0x00b8, PIN_INPUT, 2) /* (Y7) PRG1_PRU0_GPO0.PRG1_RGMII1_RD0 */
-> +			AM64X_IOPAD(0x00bc, PIN_INPUT, 2) /* (U8) PRG1_PRU0_GPO1.PRG1_RGMII1_RD1 */
-> +			AM64X_IOPAD(0x00c0, PIN_INPUT, 2) /* (W8) PRG1_PRU0_GPO2.PRG1_RGMII1_RD2 */
-> +			AM64X_IOPAD(0x00c4, PIN_INPUT, 2) /* (V8) PRG1_PRU0_GPO3.PRG1_RGMII1_RD3 */
-> +			AM64X_IOPAD(0x00d0, PIN_INPUT, 2) /* (AA7) PRG1_PRU0_GPO6.PRG1_RGMII1_RXC */
-> +			AM64X_IOPAD(0x00c8, PIN_INPUT, 2) /* (Y8) PRG1_PRU0_GPO4.PRG1_RGMII1_RX_CTL */
-> +			AM64X_IOPAD(0x00e4, PIN_INPUT, 2) /* (AA8) PRG1_PRU0_GPO11.PRG1_RGMII1_TD0 */
-> +			AM64X_IOPAD(0x00e8, PIN_INPUT, 2) /* (U9) PRG1_PRU0_GPO12.PRG1_RGMII1_TD1 */
-> +			AM64X_IOPAD(0x00ec, PIN_INPUT, 2) /* (W9) PRG1_PRU0_GPO13.PRG1_RGMII1_TD2 */
-> +			AM64X_IOPAD(0x00f0, PIN_INPUT, 2) /* (AA9) PRG1_PRU0_GPO14.PRG1_RGMII1_TD3 */
-> +			AM64X_IOPAD(0x00f8, PIN_INPUT, 2) /* (V9) PRG1_PRU0_GPO16.PRG1_RGMII1_TXC */
-> +			AM64X_IOPAD(0x00f4, PIN_INPUT, 2) /* (Y9) PRG1_PRU0_GPO15.PRG1_RGMII1_TX_CTL */
-> +		>;
-> +	};
->  };
->  
->  &main_uart0 {
-> @@ -731,3 +824,15 @@ &main_mcan1 {
->  	pinctrl-0 = <&main_mcan1_pins_default>;
->  	phys = <&transceiver2>;
->  };
-> +
-> +&icssg1_mdio {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&icssg1_mdio1_pins_default>;
-> +
-> +	icssg1_phy1: ethernet-phy@0 {
-> +		reg = <0xf>;
-> +		tx-internal-delay-ps = <250>;
-> +		rx-internal-delay-ps = <2000>;
-> +	};
-> +};
-> -- 
-> 2.34.1
+> Simply leaving the refclk always on in the PHY seems like a bit of a
+> hack and I'm not even sure that can be considered correct.
 > 
+
+I wouldn't agree it is a hack, even though it may sound like one. The option to
+keep refclk always on in the PHY is precisely there for usecase like this.
+
+- Mani
+
+> Having a property that maps directly to that behaviour has rightly been
+> rejected, but it seems that simply renaming the flag but keeping it in
+> the PHY may still not be the right thing to do here.
+> 
+> Johan
 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+மணிவண்ணன் சதாசிவம்
