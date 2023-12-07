@@ -2,253 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B764A807DE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50370807DE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443057AbjLGB0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 20:26:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
+        id S232501AbjLGB2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 20:28:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443286AbjLGB0A (ORCPT
+        with ESMTP id S230508AbjLGB2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 20:26:00 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7B830E7;
-        Wed,  6 Dec 2023 17:23:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701912232; x=1733448232;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=haxRevXN/RxJvUHVAi69/QMEeMdiAMug75ZxQ4vmF6o=;
-  b=eWeLSCjkUGVuw9SoJlRq97E9b/YuFiak38nPQ+hzwmwdBKQFhfX7JFYi
-   K8McFimtd3Y2I5Ab+vkDOEt64ScvDF1COzMSnhicCI0daPv8HhaT1TS+J
-   XtuPbjYGVOmep+MW8Q8UV2+pvuND4yCpg7egh8Hmo2PGtP9Glj2v0+qT+
-   UPiJm2MRApRq+DjWBSf0R3qGlNamvaHzZGOQhe8A3oYriMRsgvQ/87pTH
-   tNZyxEufA0rKPL9S0ZCP9vzI98I2+pE7jfx3Iqq1s4l1kPGAb5wf0Lpao
-   sHhWHjeWXo3J95zc7onWAQBcOEEBJTgHeharo0s6fOyd+W6F/XVQhk7/H
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="391326002"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="391326002"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 17:22:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="894943613"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="894943613"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 06 Dec 2023 17:22:28 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rB35s-000BfC-14;
-        Thu, 07 Dec 2023 01:22:25 +0000
-Date:   Thu, 7 Dec 2023 09:22:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Dumitru Ceclan <mitrutzceclan@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linus.walleij@linaro.org,
-        brgl@bgdev.pl, andy@kernel.org, linux-gpio@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dumitru Ceclan <mitrutzceclan@gmail.com>
-Subject: Re: [PATCH v7 2/2] iio: adc: ad7173: add AD7173 driver
-Message-ID: <202312070921.XWcr7wUd-lkp@intel.com>
-References: <20231205134223.17335-2-mitrutzceclan@gmail.com>
+        Wed, 6 Dec 2023 20:28:33 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89812D4B;
+        Wed,  6 Dec 2023 17:28:39 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1d06d4d685aso2851625ad.3;
+        Wed, 06 Dec 2023 17:28:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701912519; x=1702517319; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3u1soC42kxxszJtJ9Fi1B4cg1LFazMYjfirO31EmOoI=;
+        b=GYi281FAObYriOfmCwajya0urcLabMiSyKKz9b6RKZc2M7IA3cnm/nLBmV+m1ohjBX
+         u9u2+TRmBD4syFFUwH3ST41Ar9JsZ0BqGoKOVnb0+JFoiV+gDYwOSoA+wgp/kZmz0Emy
+         D1Cb5eEnkymqa9CTGy+YdY4tCSfuaqOfhQwDyDcK9FmbV8CEpTQtPOyU11pEPjRlhSV+
+         lEZyXcrFdF4P9nCEirJwUTxajAoHIg8iGrSxSkFz+iYIB5pheTzECUHEmEKaa+j3k+pI
+         wW8ZOcrtLF0d6ZYZR60HLD4uFZjqMBrcKx985c8oHsQX99b/O5D7yBsL8pm7i/K3cl2H
+         YA1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701912519; x=1702517319;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3u1soC42kxxszJtJ9Fi1B4cg1LFazMYjfirO31EmOoI=;
+        b=ApmQjNUojHklXV7toQzjLiRvKcnZUFcasm0AjKX8L/OFfxC7YU1c8/YCr32vicFppO
+         eqni1Vs0OeSPH2q8I9hQ24H2UOZyIB63jMrysfsXohdrF2Xun1drPiOSJqBXTEf5BMo5
+         cguWPqccbUi9g8eoHV9ceTDslhafrEori0I1xnNutEIL8s5REEn3YfA0SYHtgAhDTDzQ
+         TItJRRpuLjyr8wk7n2mfw3Fkr/qlhMiacsSWfF3hHAm3QiVFdB9tWo7CbnTO2FIAFcp3
+         O2FZBK2HSUM6U9Qi0YsH4/bLUBPqTOaq6xq5Vn87NgBx50nKT01wHu5ORmWhIF/k6u1J
+         gwvg==
+X-Gm-Message-State: AOJu0YxvtDhd3z7lp5weOfYmRojwunLBU3b0CwBpE32rncl6PZi815yP
+        mgQBhPk/TUS4YM2y8Wo1n9Y=
+X-Google-Smtp-Source: AGHT+IGx09sA3QjHCBqfxN8uUNcuGoNURkGUfVZC/vkcb6H8V+KrZS46H5LXsWB+131aJ1639Rkiog==
+X-Received: by 2002:a17:902:6bc5:b0:1d0:bfb7:6709 with SMTP id m5-20020a1709026bc500b001d0bfb76709mr1280230plt.24.1701912518601;
+        Wed, 06 Dec 2023 17:28:38 -0800 (PST)
+Received: from localhost.localdomain ([1.245.180.67])
+        by smtp.gmail.com with ESMTPSA id p14-20020a170902780e00b001bf8779e051sm89840pll.289.2023.12.06.17.28.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 17:28:37 -0800 (PST)
+Date:   Thu, 7 Dec 2023 10:28:24 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 17/21] mm/slab: move kmalloc_slab() to mm/slab.h
+Message-ID: <ZXEfuHomAtFw3pKI@localhost.localdomain>
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-17-9c9c70177183@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231205134223.17335-2-mitrutzceclan@gmail.com>
+In-Reply-To: <20231120-slab-remove-slab-v2-17-9c9c70177183@suse.cz>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dumitru,
+On Mon, Nov 20, 2023 at 07:34:28PM +0100, Vlastimil Babka wrote:
+> In preparation for the next patch, move the kmalloc_slab() function to
+> the header, as it will have callers from two files, and make it inline.
+> To avoid unnecessary bloat, remove all size checks/warnings from
+> kmalloc_slab() as they just duplicate those in callers, especially after
+> recent changes to kmalloc_size_roundup(). We just need to adjust handling
+> of zero size in __do_kmalloc_node(). Also we can stop handling NULL
+> result from kmalloc_slab() there as that now cannot happen (unless
+> called too early during boot).
+> 
+> The size_index array becomes visible so rename it to a more specific
+> kmalloc_size_index.
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  mm/slab.h        | 28 ++++++++++++++++++++++++++--
+>  mm/slab_common.c | 43 ++++++++-----------------------------------
+>  2 files changed, 34 insertions(+), 37 deletions(-)
+> 
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 35a55c4a407d..7d7cc7af614e 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -389,8 +389,32 @@ extern const struct kmalloc_info_struct {
+>  void setup_kmalloc_cache_index_table(void);
+>  void create_kmalloc_caches(slab_flags_t);
+>  
+> -/* Find the kmalloc slab corresponding for a certain size */
+> -struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller);
+> +extern u8 kmalloc_size_index[24];
+> +
+> +static inline unsigned int size_index_elem(unsigned int bytes)
+> +{
+> +	return (bytes - 1) / 8;
+> +}
+> +
+> +/*
+> + * Find the kmem_cache structure that serves a given size of
+> + * allocation
+> + *
+> + * This assumes size is larger than zero and not larger than
+> + * KMALLOC_MAX_CACHE_SIZE and the caller must check that.
+> + */
+> +static inline struct kmem_cache *
+> +kmalloc_slab(size_t size, gfp_t flags, unsigned long caller)
+> +{
+> +	unsigned int index;
+> +
+> +	if (size <= 192)
+> +		index = kmalloc_size_index[size_index_elem(size)];
+> +	else
+> +		index = fls(size - 1);
+> +
+> +	return kmalloc_caches[kmalloc_type(flags, caller)][index];
+> +}
+>  
+>  void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
+>  			      int node, size_t orig_size,
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index f4f275613d2a..31ade17a7ad9 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -665,7 +665,7 @@ EXPORT_SYMBOL(random_kmalloc_seed);
+>   * of two cache sizes there. The size of larger slabs can be determined using
+>   * fls.
+>   */
+> -static u8 size_index[24] __ro_after_init = {
+> +u8 kmalloc_size_index[24] __ro_after_init = {
+>  	3,	/* 8 */
+>  	4,	/* 16 */
+>  	5,	/* 24 */
+> @@ -692,33 +692,6 @@ static u8 size_index[24] __ro_after_init = {
+>  	2	/* 192 */
+>  };
+>  
+> -static inline unsigned int size_index_elem(unsigned int bytes)
+> -{
+> -	return (bytes - 1) / 8;
+> -}
+> -
+> -/*
+> - * Find the kmem_cache structure that serves a given size of
+> - * allocation
+> - */
+> -struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller)
+> -{
+> -	unsigned int index;
+> -
+> -	if (size <= 192) {
+> -		if (!size)
+> -			return ZERO_SIZE_PTR;
+> -
+> -		index = size_index[size_index_elem(size)];
+> -	} else {
+> -		if (WARN_ON_ONCE(size > KMALLOC_MAX_CACHE_SIZE))
+> -			return NULL;
+> -		index = fls(size - 1);
+> -	}
+> -
+> -	return kmalloc_caches[kmalloc_type(flags, caller)][index];
+> -}
+> -
+>  size_t kmalloc_size_roundup(size_t size)
+>  {
+>  	if (size && size <= KMALLOC_MAX_CACHE_SIZE) {
+> @@ -843,9 +816,9 @@ void __init setup_kmalloc_cache_index_table(void)
+>  	for (i = 8; i < KMALLOC_MIN_SIZE; i += 8) {
+>  		unsigned int elem = size_index_elem(i);
+>  
+> -		if (elem >= ARRAY_SIZE(size_index))
+> +		if (elem >= ARRAY_SIZE(kmalloc_size_index))
+>  			break;
+> -		size_index[elem] = KMALLOC_SHIFT_LOW;
+> +		kmalloc_size_index[elem] = KMALLOC_SHIFT_LOW;
+>  	}
+>  
+>  	if (KMALLOC_MIN_SIZE >= 64) {
+> @@ -854,7 +827,7 @@ void __init setup_kmalloc_cache_index_table(void)
+>  		 * is 64 byte.
+>  		 */
+>  		for (i = 64 + 8; i <= 96; i += 8)
+> -			size_index[size_index_elem(i)] = 7;
+> +			kmalloc_size_index[size_index_elem(i)] = 7;
+>  
+>  	}
+>  
+> @@ -865,7 +838,7 @@ void __init setup_kmalloc_cache_index_table(void)
+>  		 * instead.
+>  		 */
+>  		for (i = 128 + 8; i <= 192; i += 8)
+> -			size_index[size_index_elem(i)] = 8;
+> +			kmalloc_size_index[size_index_elem(i)] = 8;
+>  	}
+>  }
+>  
+> @@ -977,10 +950,10 @@ void *__do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller
+>  		return ret;
+>  	}
+>  
+> -	s = kmalloc_slab(size, flags, caller);
+> +	if (unlikely(!size))
+> +		return ZERO_SIZE_PTR;
+>  
+> -	if (unlikely(ZERO_OR_NULL_PTR(s)))
+> -		return s;
+> +	s = kmalloc_slab(size, flags, caller);
+>  
+>  	ret = __kmem_cache_alloc_node(s, flags, node, size, caller);
+>  	ret = kasan_kmalloc(s, ret, size, flags);
+> 
+> -- 
 
-kernel test robot noticed the following build warnings:
+Looks good to me,
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-[auto build test WARNING on jic23-iio/togreg]
-[also build test WARNING on linus/master v6.7-rc4 next-20231206]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Dumitru-Ceclan/iio-adc-ad7173-add-AD7173-driver/20231205-214833
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
-patch link:    https://lore.kernel.org/r/20231205134223.17335-2-mitrutzceclan%40gmail.com
-patch subject: [PATCH v7 2/2] iio: adc: ad7173: add AD7173 driver
-config: m68k-randconfig-r071-20231207 (https://download.01.org/0day-ci/archive/20231207/202312070921.XWcr7wUd-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231207/202312070921.XWcr7wUd-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312070921.XWcr7wUd-lkp@intel.com/
-
-smatch warnings:
-drivers/iio/adc/ad7173.c:833 ad7173_fw_parse_channel_config() warn: unsigned 'ref_sel' is never less than zero.
-
-vim +/ref_sel +833 drivers/iio/adc/ad7173.c
-
-   735	
-   736	static int ad7173_fw_parse_channel_config(struct iio_dev *indio_dev)
-   737	{
-   738		struct ad7173_channel *channels_st_priv_arr, *chan_st_priv;
-   739		struct ad7173_state *st = iio_priv(indio_dev);
-   740		struct device *dev = indio_dev->dev.parent;
-   741		struct iio_chan_spec *chan_arr, *chan;
-   742		struct fwnode_handle *child;
-   743		unsigned int ain[2], chan_index = 0;
-   744		unsigned int num_channels;
-   745		const char *ref_label;
-   746		u32 ref_sel;
-   747		int ret;
-   748	
-   749		st->regulators[0].supply = ad7173_ref_sel_str[AD7173_SETUP_REF_SEL_EXT_REF];
-   750		st->regulators[1].supply = ad7173_ref_sel_str[AD7173_SETUP_REF_SEL_EXT_REF2];
-   751		st->regulators[2].supply = ad7173_ref_sel_str[AD7173_SETUP_REF_SEL_AVDD1_AVSS];
-   752	
-   753		/* If a regulator is not available, it will be set to a dummy regulator.
-   754		 * Each channel reference is checked with regulator_get_voltage() before
-   755		 *  setting attributes so if any channel uses a dummy supply the driver
-   756		 *  probe will fail.
-   757		 */
-   758		ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(st->regulators),
-   759					      st->regulators);
-   760		if (ret)
-   761			return dev_err_probe(dev, ret, "Failed to get regulators\n");
-   762	
-   763		ret = regulator_bulk_enable(ARRAY_SIZE(st->regulators), st->regulators);
-   764		if (ret)
-   765			return dev_err_probe(dev, ret, "Failed to enable regulators\n");
-   766	
-   767		ret = devm_add_action_or_reset(dev, ad7173_disable_regulators, st);
-   768		if (ret)
-   769			return dev_err_probe(dev, ret,
-   770					     "Failed to add regulators disable action\n");
-   771	
-   772		num_channels = device_get_child_node_count(dev);
-   773	
-   774		if (st->info->has_temp)
-   775			num_channels++;
-   776	
-   777		if (num_channels == 0)
-   778			return dev_err_probe(dev, -EINVAL, "No channels specified\n");
-   779		st->num_channels = num_channels;
-   780	
-   781		chan_arr = devm_kcalloc(dev, sizeof(*chan_arr), num_channels, GFP_KERNEL);
-   782		if (!chan_arr)
-   783			return -ENOMEM;
-   784	
-   785		channels_st_priv_arr = devm_kcalloc(dev, num_channels,
-   786						    sizeof(*channels_st_priv_arr),
-   787						    GFP_KERNEL);
-   788		if (!channels_st_priv_arr)
-   789			return -ENOMEM;
-   790	
-   791		indio_dev->channels = chan_arr;
-   792		indio_dev->num_channels = num_channels;
-   793		st->channels = channels_st_priv_arr;
-   794	
-   795		if (st->info->has_temp) {
-   796			chan_arr[chan_index] = ad7173_temp_iio_channel_template;
-   797			chan_st_priv = &channels_st_priv_arr[chan_index];
-   798			chan_st_priv->ain =
-   799				AD7173_CH_ADDRESS(chan_arr[chan_index].channel, chan_arr[chan_index].channel2);
-   800			chan_st_priv->cfg.bipolar = false;
-   801			chan_st_priv->cfg.input_buf = true;
-   802			chan_st_priv->cfg.ref_sel = AD7173_SETUP_REF_SEL_INT_REF;
-   803			st->adc_mode |= AD7173_ADC_MODE_REF_EN;
-   804	
-   805			chan_index++;
-   806		}
-   807	
-   808		device_for_each_child_node(dev, child) {
-   809			chan = &chan_arr[chan_index];
-   810			chan_st_priv = &channels_st_priv_arr[chan_index];
-   811			ret = fwnode_property_read_u32_array(child, "diff-channels",
-   812							     ain, ARRAY_SIZE(ain));
-   813			if (ret) {
-   814				fwnode_handle_put(child);
-   815				return ret;
-   816			}
-   817	
-   818			if (ain[0] >= st->info->num_inputs ||
-   819			    ain[1] >= st->info->num_inputs) {
-   820				fwnode_handle_put(child);
-   821				return dev_err_probe(dev, -EINVAL,
-   822						     "Input pin number out of range for pair (%d %d).\n",
-   823						     ain[0], ain[1]);
-   824			}
-   825	
-   826			ref_sel = AD7173_SETUP_REF_SEL_INT_REF;
-   827			ref_label = ad7173_ref_sel_str[AD7173_SETUP_REF_SEL_INT_REF];
-   828	
-   829			fwnode_property_read_string(child, "adi,reference-select",
-   830						    &ref_label);
-   831			ref_sel = match_string(ad7173_ref_sel_str,
-   832					       ARRAY_SIZE(ad7173_ref_sel_str), ref_label);
- > 833			if (ref_sel < 0) {
-   834				fwnode_handle_put(child);
-   835				return dev_err_probe(dev, -EINVAL,
-   836						     "Invalid channel reference name %s\n",
-   837						     ref_label);
-   838			}
-   839	
-   840			if (ref_sel == AD7173_SETUP_REF_SEL_EXT_REF2 &&
-   841			    st->info->id != AD7173_ID) {
-   842				fwnode_handle_put(child);
-   843				return dev_err_probe(dev, -EINVAL, "External reference 2 is only available on ad7173-8\n");
-   844			}
-   845	
-   846			ret = ad7173_get_ref_voltage_milli(st, ref_sel);
-   847			if (ret < 0) {
-   848				fwnode_handle_put(child);
-   849				return dev_err_probe(dev, ret,
-   850						     "Cannot use reference %u\n", ref_sel);
-   851			}
-   852			if (ref_sel == AD7173_SETUP_REF_SEL_INT_REF)
-   853				st->adc_mode |= AD7173_ADC_MODE_REF_EN;
-   854			chan_st_priv->cfg.ref_sel = ref_sel;
-   855	
-   856			*chan = ad7173_channel_template;
-   857			chan->address = chan_index;
-   858			chan->scan_index = chan_index;
-   859			chan->channel = ain[0];
-   860			chan->channel2 = ain[1];
-   861			chan->differential = true;
-   862	
-   863			chan_st_priv->ain = AD7173_CH_ADDRESS(ain[0], ain[1]);
-   864			chan_st_priv->chan_reg = chan_index;
-   865			chan_st_priv->cfg.input_buf = true;
-   866			chan_st_priv->cfg.odr = 0;
-   867	
-   868			chan_st_priv->cfg.bipolar = fwnode_property_read_bool(child, "bipolar");
-   869			if (chan_st_priv->cfg.bipolar)
-   870				chan->info_mask_separate |= BIT(IIO_CHAN_INFO_OFFSET);
-   871	
-   872			chan_index++;
-   873		}
-   874	
-   875		return 0;
-   876	}
-   877	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 2.42.1
+> 
+> 
