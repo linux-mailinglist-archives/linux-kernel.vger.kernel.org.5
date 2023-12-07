@@ -2,186 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F011580966D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 00:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D600809673
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 00:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444122AbjLGXHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 18:07:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
+        id S232490AbjLGXMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 18:12:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232476AbjLGXH0 (ORCPT
+        with ESMTP id S229671AbjLGXMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 18:07:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C951710
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 15:07:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701990450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jVM1WmJwjQIszb+XLXzan7QiLivbxv0y5A1QhrsixGY=;
-        b=CvyKPJcD3GBjwcui2Ijk0kvJ2V+47M2DpYeBD5vZJnHiFQIWv64D4MA/QNhqY+eAZqZpX/
-        0YRLQz7UHj1tUZT6GPh9z+vsDf3tJ3OXcWjpapbUMW/77riCrceJbOa+LEF6CT/e6Z6Mcy
-        Z5+SfS4glykTGpxpcM94r40cD5c9p8Y=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-93-8kNBQv11PkiX0xbrHk0Euw-1; Thu, 07 Dec 2023 18:07:27 -0500
-X-MC-Unique: 8kNBQv11PkiX0xbrHk0Euw-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4257b29b96aso17774731cf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 15:07:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701990447; x=1702595247;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jVM1WmJwjQIszb+XLXzan7QiLivbxv0y5A1QhrsixGY=;
-        b=jkvv9Nq/f2BtbUTIrtI2TRJZIiU0IkoyUw7owuiITqHZ3Z9T4JJfhIUE9xUE6Qp0qA
-         +5ySu9QXbefY+zuCqTkSHJ8ZXWKHcHo0DIVu4TfwTsL+Lh5FmsoElX4LvnW0NRJgZCJD
-         CZwJkXJu7qCLdOtVXTviXBEfbAwQl1iUU6kUMnbH4B0o3PAYc+BUaGKGQscisAmzfNMS
-         JtbJ1cuYtE5qNO9M1EKYbTxflO36mCe6BsR/CTulere774TZFqJ8OgW842ORh+O9h63J
-         ZmYx7WnAco8qp9ZR1PgfD1S7KqpSIOvtXJGblwA7YSO6e1wFVNPs+0TFGwpv+13W0lZz
-         B0ew==
-X-Gm-Message-State: AOJu0YzQt+VoY9wWgWQxWHunDygXw3t7Hxp85uL6f75J9CWWOdtSl6Sl
-        sXTfIvC5tP5b1A6VGjxLsvRq2EBiniCpv8yxTS0mIiKMIX+lZHtLIbfd03+mR2wZvgjRlyWW7+a
-        uxdNCVeEoPYeZcIiSBhywqV0d
-X-Received: by 2002:a05:622a:1a0c:b0:417:fd7e:2154 with SMTP id f12-20020a05622a1a0c00b00417fd7e2154mr4335058qtb.9.1701990447263;
-        Thu, 07 Dec 2023 15:07:27 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IELEnmaKlLkEXPtsoU1QDWmch2MnIAl4zsRZz3furlGlXRAjnhjBjwRDw+3e9RFT1Hd9Ndx5A==
-X-Received: by 2002:a05:622a:1a0c:b0:417:fd7e:2154 with SMTP id f12-20020a05622a1a0c00b00417fd7e2154mr4335040qtb.9.1701990447010;
-        Thu, 07 Dec 2023 15:07:27 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::47])
-        by smtp.gmail.com with ESMTPSA id t18-20020ac865d2000000b00423829b6d91sm294156qto.8.2023.12.07.15.07.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 15:07:26 -0800 (PST)
-Date:   Thu, 7 Dec 2023 17:07:24 -0600
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH net-next v3] net: stmmac: don't create a MDIO bus if
- unnecessary
-Message-ID: <hxds75erxqcfkufxnfbyo2up4b4jeicmi3f5xr6qlb3yf7fe76@4byeq62jhu4o>
-References: <20231207-stmmac-no-mdio-node-v3-1-34b870f2bafb@redhat.com>
- <jz6ot44fjkbmwcezi3fkgqd54nurglblbemrchfgxgq6udlhqz@ntepnnzzelta>
+        Thu, 7 Dec 2023 18:12:30 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330161713
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 15:12:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701990756; x=1733526756;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=PgoMFKpGxhjBEVrUUZeg6L54dIPWQGLxl4CjAsm8rxI=;
+  b=jNS9cTFfBEaj+wZapPXSjNV9z44VP3bumIX+Q8KhxUWuBLZ5VLtVcLOJ
+   xgPtOVnW3dp6eI40yydFrrTkxWY06v3OGPeB8rXrFjfsBc4M019OtvW2t
+   WT5N1SvMosua4tVRK1qNIAmMratUX0iSSRI6qZDBVfiwOm185J80lQSip
+   NdB7yXC1fFhCKWAvZ33mP9fFm/FNjsy/7wNnI087gsDdhcvC8+QLdmcCA
+   ea+DputC6VG3UrdP/YpyniSMGC0HN+fDZet3pjaaS65VHDoXNFVZvxuHZ
+   mx5E9XTa2R4BcUYQZWtWYrhZWNldNgdpySt6vaz5T2n+POJELRCY1kWN2
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1205268"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="1205268"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 15:12:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1019135724"
+X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
+   d="scan'208";a="1019135724"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 07 Dec 2023 15:12:34 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBNXk-000CyP-18;
+        Thu, 07 Dec 2023 23:12:32 +0000
+Date:   Fri, 8 Dec 2023 07:12:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/video/fbdev/cirrusfb.c:1852:28: sparse: sparse: incorrect
+ type in argument 1 (different address spaces)
+Message-ID: <202312080725.XVbb9rMk-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <jz6ot44fjkbmwcezi3fkgqd54nurglblbemrchfgxgq6udlhqz@ntepnnzzelta>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 01:16:12AM +0300, Serge Semin wrote:
-> On Thu, Dec 07, 2023 at 03:12:40PM -0600, Andrew Halaney wrote:
-> > The stmmac_dt_phy() function, which parses the devicetree node of the
-> > MAC and ultimately causes MDIO bus allocation, misinterprets what
-> > fixed-link means in relation to the MAC's MDIO bus. This results in
-> > a MDIO bus being created in situations it need not be.
-> > 
-> > Currently a MDIO bus is created if the description is either:
-> > 
-> >     1. Not fixed-link
-> >     2. fixed-link but contains a MDIO bus as well
-> > 
-> > The "1" case above isn't always accurate. If there's a phy-handle,
-> > it could be referencing a phy on another MDIO controller's bus[1]. In
-> > this case currently the MAC will make a MDIO bus and scan it all
-> > anyways unnecessarily.
-> > 
-> > There's also a lot of upstream devicetrees[2] that expect a MDIO bus to
-> > be created and scanned for a phy. This case can also be inferred from
-> > the platform description by not having a phy-handle && not being
-> > fixed-link. This hits case "1" in the current driver's logic.
-> > 
-> > Let's improve the logic to create a MDIO bus if either:
-> > 
-> 
-> >     - Devicetree contains a MDIO bus
-> >     - !fixed-link && !phy-handle (legacy handling)
-> 
-> If what you suggest here is a free from regressions semantics change
-> (really hope it is) I will be with both my hands for it. This will
-> solve the problem we have with one of our device which doesn't have
-> SMA interface (hardware designers decided to save ~4K gates of the
-> chip area) but has a PHY externally attached to the DW XGMAC<->XPCS
-> interface. PHY is accessible via a GPIO-based MDIO bus. BTW having no
-> SMA interface available on a DW *MAC device but creating the MDIO-bus
-> on top of the non-existent SMA CSRs anyway causes having _32_ dummy
-> PHYs created with zero IDs.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9ace34a8e446c1a566f3b0a3e0c4c483987e39a6
+commit: ded2ee36313c941f1a12b6f85cde295b575264ae openrisc: Add pci bus support
+date:   1 year, 4 months ago
+config: openrisc-randconfig-r112-20231116 (https://download.01.org/0day-ci/archive/20231208/202312080725.XVbb9rMk-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231208/202312080725.XVbb9rMk-lkp@intel.com/reproduce)
 
-I hope it is regression free! I have tested both the [1] and [2] cases
-(I hacked up the devicetree for [1] to make it look like [2]) without
-any issue.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312080725.XVbb9rMk-lkp@intel.com/
 
-Sorry, I don't have any docs for stmmac hardware so this might be
-answered in there (or just common net knowledge that I can't find
-online)... what's SMA stand for? I assume it's the MDIO interface.
+sparse warnings: (new ones prefixed by >>)
+   drivers/video/fbdev/cirrusfb.c:866:30: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/video/fbdev/cirrusfb.c:867:38: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/video/fbdev/cirrusfb.c:871:40: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/video/fbdev/cirrusfb.c:873:25: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/video/fbdev/cirrusfb.c:876:17: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/video/fbdev/cirrusfb.c:877:17: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/video/fbdev/cirrusfb.c:878:27: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/video/fbdev/cirrusfb.c:879:29: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/video/fbdev/cirrusfb.c:1245:17: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/video/fbdev/cirrusfb.c:1246:17: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/video/fbdev/cirrusfb.c:1247:17: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/video/fbdev/cirrusfb.c:1852:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *dest @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/cirrusfb.c:1852:28: sparse:     expected void *dest
+   drivers/video/fbdev/cirrusfb.c:1852:28: sparse:     got char [noderef] __iomem *screen_base
 
-I agree though, if you have a phy-handle and no mdio node in your
-devicetree this patch series should bail out without registering a bus
-in stmmac_mdio_register().
+vim +1852 drivers/video/fbdev/cirrusfb.c
 
-> 
-> > 
-> > Below upstream devicetree snippets can be found that explain some of
-> > the cases above more concretely.
+^1da177e4c3f41 drivers/video/cirrusfb.c Linus Torvalds 2005-04-16  1809  
+8503df65976d0f drivers/video/cirrusfb.c Krzysztof Helt 2007-10-16  1810  static void cirrusfb_imageblit(struct fb_info *info,
+8503df65976d0f drivers/video/cirrusfb.c Krzysztof Helt 2007-10-16  1811  			       const struct fb_image *image)
+^1da177e4c3f41 drivers/video/cirrusfb.c Linus Torvalds 2005-04-16  1812  {
+^1da177e4c3f41 drivers/video/cirrusfb.c Linus Torvalds 2005-04-16  1813  	struct cirrusfb_info *cinfo = info->par;
+7cade31cabec33 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1814  	unsigned char op = (info->var.bits_per_pixel == 24) ? 0xc : 0x4;
+^1da177e4c3f41 drivers/video/cirrusfb.c Linus Torvalds 2005-04-16  1815  
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1816  	if (info->state != FBINFO_STATE_RUNNING)
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1817  		return;
+df3aafd57d590d drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1818  	/* Alpine/SD64 does not work at 24bpp ??? */
+df3aafd57d590d drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1819  	if (info->flags & FBINFO_HWACCEL_DISABLED || image->depth != 1)
+df3aafd57d590d drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1820  		cfb_imageblit(info, image);
+df3aafd57d590d drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1821  	else if ((cinfo->btype == BT_ALPINE || cinfo->btype == BT_SD64) &&
+df3aafd57d590d drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1822  		  op == 0xc)
+^1da177e4c3f41 drivers/video/cirrusfb.c Linus Torvalds 2005-04-16  1823  		cfb_imageblit(info, image);
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1824  	else {
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1825  		unsigned size = ((image->width + 7) >> 3) * image->height;
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1826  		int m = info->var.bits_per_pixel;
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1827  		u32 fg, bg;
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1828  
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1829  		if (info->var.bits_per_pixel == 8) {
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1830  			fg = image->fg_color;
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1831  			bg = image->bg_color;
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1832  		} else {
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1833  			fg = ((u32 *)(info->pseudo_palette))[image->fg_color];
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1834  			bg = ((u32 *)(info->pseudo_palette))[image->bg_color];
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1835  		}
+7cade31cabec33 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1836  		if (info->var.bits_per_pixel == 24) {
+7cade31cabec33 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1837  			/* clear background first */
+7cade31cabec33 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1838  			cirrusfb_RectFill(cinfo->regbase,
+7cade31cabec33 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1839  					  info->var.bits_per_pixel,
+7cade31cabec33 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1840  					  (image->dx * m) / 8, image->dy,
+7cade31cabec33 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1841  					  (image->width * m) / 8,
+7cade31cabec33 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1842  					  image->height,
+7cade31cabec33 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1843  					  bg, bg,
+7cade31cabec33 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1844  					  info->fix.line_length, 0x40);
+7cade31cabec33 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1845  		}
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1846  		cirrusfb_RectFill(cinfo->regbase,
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1847  				  info->var.bits_per_pixel,
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1848  				  (image->dx * m) / 8, image->dy,
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1849  				  (image->width * m) / 8, image->height,
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1850  				  fg, bg,
+7cade31cabec33 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1851  				  info->fix.line_length, op);
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31 @1852  		memcpy(info->screen_base, image->data, size);
+9e848062533207 drivers/video/cirrusfb.c Krzysztof Helt 2009-03-31  1853  	}
+^1da177e4c3f41 drivers/video/cirrusfb.c Linus Torvalds 2005-04-16  1854  }
+^1da177e4c3f41 drivers/video/cirrusfb.c Linus Torvalds 2005-04-16  1855  
 
-<snip>
+:::::: The code at line 1852 was first introduced by commit
+:::::: 9e848062533207130667f6eaa748549367ccbedf cirrusfb: add imageblit function
 
-> > -	if (mdio) {
-> > -		plat->mdio_bus_data =
-> > -			devm_kzalloc(dev, sizeof(struct stmmac_mdio_bus_data),
-> > -				     GFP_KERNEL);
-> 
-> > +	/* Legacy devicetrees allowed for no MDIO bus description and expect
-> > +	 * the bus to be scanned for devices. If there's no phy or fixed-link
-> > +	 * described assume this is the case since there must be something
-> > +	 * connected to the MAC.
-> > +	 */
-> > +	legacy_mdio = !of_phy_is_fixed_link(np) && !plat->phy_node;
-> > +	if (legacy_mdio)
-> > +		dev_info(dev, "Deprecated MDIO bus assumption used\n");
-> > +
-> > +	if (plat->mdio_node || legacy_mdio) {
-> > +		plat->mdio_bus_data = devm_kzalloc(dev,
-> 
-> Special thanks for adding the comment above this code. It will really
-> save time of figuring out why MDIO-bus needs to be created anyway.
-> 
-> > +						   sizeof(struct stmmac_mdio_bus_data),
-> 
-> Should v4 is required I would suggest to change this to
-> sizeof(*plat->mdio_bus_data).
-> 
-> Anyway feel free to add:
-> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-> 
-> -Serge(y)
+:::::: TO: Krzysztof Helt <krzysztof.h1@wp.pl>
+:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
 
-Sure I will spin v4 to pick that up, thanks for catching it. I'll also
-improve the motivation in the commit message a hair more per Andrew
-Lunn's request over here on v2 (and will hold off a little bit just to
-make sure reviews come in before a respin):
-
-    https://lore.kernel.org/netdev/e64b14c3-4b80-4120-8cc4-9baa40cdcb75@lunn.ch/
-
-Thanks,
-Andrew
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
