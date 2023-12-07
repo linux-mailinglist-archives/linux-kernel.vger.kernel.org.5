@@ -2,62 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7947808608
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B775808619
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbjLGKN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 05:13:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51696 "EHLO
+        id S229963AbjLGKPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 05:15:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbjLGKNz (ORCPT
+        with ESMTP id S231543AbjLGKPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 05:13:55 -0500
+        Thu, 7 Dec 2023 05:15:49 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40BAA4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 02:14:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE0C4C433C8;
-        Thu,  7 Dec 2023 10:13:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF027A5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 02:15:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D38D5C433C7;
+        Thu,  7 Dec 2023 10:15:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701944040;
-        bh=imy4ugx4p592rTLtYsew6LM8Qw7swHAvvWpZOmSRbzM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hhHuuJeqjenrJzluJ4waW5koAwpWLKrwzA15G7CY8Utv6hjNfvFBFFodpJSyTaKaF
-         7EN4QZkZ0wMz69gziLzI+1qWic/TNJhzwqb92SOYzocWHNq5gIwurKXze1emnQSkUu
-         5EaDIvOuY5Q9MPaZqjdoMnnNo9cbueXBY7gfxZidJC/YhLIrrDuLczNiynyULhIAXI
-         +Ntbu8iq1JUNgGpTswSapQAtiLCQP87puO1UsFeWiY02poI233eYyilYZXLK6DrKQE
-         vQEMmx2GQCZtFgFbx6pK6MBsP4SP7Y5Bg73JfNkZU6HgGJdvjt7ZSA9LYt+cuYd/lJ
-         E6mNvF9PiP9pg==
-Date:   Thu, 7 Dec 2023 11:13:52 +0100
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, ankita@nvidia.com,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>, oliver.upton@linux.dev,
-        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
-        ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com,
-        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
-        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
-        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Message-ID: <ZXGa4A6rfxLtkTB2@lpieralisi>
-References: <ZW9OSe8Z9gAmM7My@arm.com>
- <20231205164318.GG2692119@nvidia.com>
- <ZW949Tl3VmQfPk0L@arm.com>
- <20231205194822.GL2692119@nvidia.com>
- <ZXCJ3pVbKuHJ3LTz@arm.com>
- <20231206150556.GQ2692119@nvidia.com>
- <ZXCQrTbf6q0BIhSw@lpieralisi>
- <20231206153809.GS2692119@nvidia.com>
- <ZXCf_e-ACqrj6VrV@arm.com>
- <20231206164802.GT2692119@nvidia.com>
+        s=k20201202; t=1701944155;
+        bh=tFwkGv86AFFJXmIQAmk+BCCUjDOTKzu6KJoufVC72Nw=;
+        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+        b=ceNszMbLhUEHsT8JEqxyUMeVOGN24Be3AsHYAdKcok5JSbKLD7cII4b1XQhnm+u/u
+         6OsSkIa4juic5Jyntdfl1CqQjhs12eXt4Cf67bhgRVq7EWcsjeqJ3GWz5QK3ikNIk0
+         y0f68BGaP1bw95DRbT2gv7+y0kB75mM46ohfktY1PBqwEKK9s4uAiKecflx25axWoM
+         qsNwGaWJSKjHHb2zEP4tZ85RJXWxnt8bVxrPSjClbD4Zpj9f82YAPqgDqZQ2DqYkbv
+         ntMuyejSRQfyYWUUka5aVtiENlG18oHgjRUxGtA4gfMW/bcHJixWE1aa0fGLjL0CJW
+         Rj5so2+fhVmVw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206164802.GT2692119@nvidia.com>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath5k: remove unused ath5k_eeprom_info::ee_antenna
+From:   Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20231205111515.21470-1-jirislaby@kernel.org>
+References: <20231205111515.21470-1-jirislaby@kernel.org>
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        Felix Fietkau <nbd@openwrt.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <170194415180.2678961.10511256344434552497.kvalo@kernel.org>
+Date:   Thu,  7 Dec 2023 10:15:53 +0000 (UTC)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,62 +53,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 12:48:02PM -0400, Jason Gunthorpe wrote:
-> On Wed, Dec 06, 2023 at 04:23:25PM +0000, Catalin Marinas wrote:
-> > On Wed, Dec 06, 2023 at 11:38:09AM -0400, Jason Gunthorpe wrote:
-> > > On Wed, Dec 06, 2023 at 04:18:05PM +0100, Lorenzo Pieralisi wrote:
-> > > > On Wed, Dec 06, 2023 at 11:05:56AM -0400, Jason Gunthorpe wrote:
-> > > > > On Wed, Dec 06, 2023 at 02:49:02PM +0000, Catalin Marinas wrote:
-> > > > > > BTW, on those Mellanox devices that require different attributes within
-> > > > > > a BAR, do they have a problem with speculative reads causing
-> > > > > > side-effects? 
-> > > > > 
-> > > > > Yes. We definitely have had that problem in the past on older
-> > > > > devices. VFIO must map the BAR using pgprot_device/noncached() into
-> > > > > the VMM, no other choice is functionally OK.
-> > > > 
-> > > > Were those BARs tagged as prefetchable or non-prefetchable ? I assume the
-> > > > latter but please let me know if I am guessing wrong.
-> > > 
-> > > I don't know it was quite old HW. Probably.
-> > > 
-> > > Just because a BAR is not marked as prefetchable doesn't mean that the
-> > > device can't use NORMAL_NC on subsets of it.
-> > 
-> > What about the other way around - would we have a prefetchable BAR that
-> > has portions which are unprefetchable?
+"Jiri Slaby (SUSE)" <jirislaby@kernel.org> wrote:
+
+> clang-struct [1] found that ee_antenna in struct ath5k_eeprom_info is
+> unused. The commit 1048643ea94d ("ath5k: Clean up eeprom
+> parsing and add missing calibration data") added it, but did not use it
+> in any way. Neither, there is a later user.
 > 
-> I would say possibly.
+> So remove that unused member.
 > 
-> Prefetch is a dead concept in PCIe, it was obsoleted in PCI-X about 20
-> years ago. No PCIe system has ever done prefetch.
+> [1] https://github.com/jirislaby/clang-struct
 > 
-> There is a strong incentive to mark BAR's as prefetchable because it
-> allows 64 bit addressing in configurations with bridges.
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> Cc: Felix Fietkau <nbd@openwrt.org>
+> Cc: Nick Kossifidis <mickflemm@gmail.com>
+> Cc: Luis Chamberlain <mcgrof@kernel.org>
+> Cc: Kalle Valo <kvalo@kernel.org>
+> Cc: linux-wireless@vger.kernel.org
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-If by strong incentive you mean the "Additional guidance on the
-Prefetchable Bit in Memory Space BARs" in the PCI express specifications,
-I think it has been removed from the spec and the criteria that had to be
-met to implement it were basically impossible to fulfill on ARM systems,
-it did not make any sense in the first place.
+Patch applied to ath-next branch of ath.git, thanks.
 
-I agree on your statement related to the prefetchable concept but I
-believe that a prefetchable BAR containing regions that have
-read side-effects is essentially a borked design unless at system level
-speculative reads are prevented (as far as I understand the
-implementation note this could only be an endpoint integrated in a
-system where read speculation can't just happen (?)).
+6783f10a1d07 wifi: ath5k: remove unused ath5k_eeprom_info::ee_antenna
 
-Long story short: a PCIe card/device that can be plugged on any PCIe
-compliant system (x86, ARM or whatever) should not mark a
-BAR region with memory read side-effects as prefetchable, either
-that or I don't understand what the implementation note above
-was all about.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20231205111515.21470-1-jirislaby@kernel.org/
 
-AFAIK the prefetchable concept in PCIe is likely to be scrapped
-altogether in the not too distant future.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-Anyway, that was just for completeness (and to shed light
-on the BAR prefetchable bit usage).
-
-Lorenzo
