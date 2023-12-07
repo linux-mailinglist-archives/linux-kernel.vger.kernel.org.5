@@ -2,64 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DADA4808F43
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C4D808F47
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443615AbjLGR6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:58:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35818 "EHLO
+        id S1443592AbjLGR6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:58:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235228AbjLGR6g (ORCPT
+        with ESMTP id S235231AbjLGR6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:58:36 -0500
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5911A173A;
-        Thu,  7 Dec 2023 09:58:25 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 50ED81BF20D;
-        Thu,  7 Dec 2023 17:58:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701971903;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ztrqr2r+NdGGR17MQHZJfBYqrLR90ks+eNJU1UUR484=;
-        b=BPvuM+nEK1j7qHnJ+Jq4urfc+MAFM7wsIQRL9vOmCGapoIbcgM3x6O4ttn155bCQoAFsB2
-        e2wUr9Alq0uET6He5daVB/IHufexQwpI0MkJopgOc4OvovUHTETfP0kPasGmxDN8+S0dNI
-        OKPS+bv5gbtpxkcn8EWHcpbbAfz4IsL2wPSKdJ9g8NNylm8fCJ43e9c0xFWykY52tocyIL
-        5+LFGLc1G7vU6By0RqUlVfU74saXZH31nJgxJRllWqQASxk7F8mXHuN83zjvF2Fhng/ogj
-        I8mVfFMS5As3J5EOr1217b7pV7WrSm6EVU768zWgEobD7sia8vIj/VCT7ci4kw==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 07 Dec 2023 18:58:12 +0100
-Message-Id: <CXIAOLFK6TFO.1J0V4C5I03Q5F@bootlin.com>
-Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Russell King" <linux@armlinux.org.uk>,
-        "Jiri Slaby" <jirislaby@kernel.org>,
-        "LKML" <linux-kernel@vger.kernel.org>,
-        "linux-serial" <linux-serial@vger.kernel.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>,
-        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
-        "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
-        "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>
-To:     =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v5 2/9] tty: serial: amba: Use linux/{bits,bitfield}.h
- macros
-X-Mailer: aerc 0.15.2
-References: <20231130-mbly-uart-v5-0-6566703a04b5@bootlin.com>
- <20231130-mbly-uart-v5-2-6566703a04b5@bootlin.com>
- <2023120742-argue-slighting-6120@gregkh>
- <CXHZXP7XVD0T.24N3YDLX7I929@bootlin.com>
- <42e8faf-5293-18e4-3877-25e4d094f1d@linux.intel.com>
-In-Reply-To: <42e8faf-5293-18e4-3877-25e4d094f1d@linux.intel.com>
-X-GND-Sasl: theo.lebrun@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Thu, 7 Dec 2023 12:58:35 -0500
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7331718;
+        Thu,  7 Dec 2023 09:58:23 -0800 (PST)
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3b9d23c8bf7so820311b6e.0;
+        Thu, 07 Dec 2023 09:58:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701971902; x=1702576702;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XlGlC1SkIL9mmE58AXO5RRQ634yhMDTeXthN1KRiRhM=;
+        b=oulV3p8FKKu1N+MwwHPqu8KgOslcNAkL3l2U1hkNhCEQhnIDKEHgmWXr7RZJ8S46EI
+         ITOYSAEk4Z/PLR4NXDtMO9PeiITRrqLn+3IG3TbUlmo7FHXjB6z1nKyHE5/a9HPFRyzy
+         8tKp9VIel2Ea3fWNQgHaf3LOUS6fR4bDt/ksslyWhWOKdn5o65tsOboaa5nxcxplMRGb
+         nYIuwlxyf76ZJvDIsNaR6pgl9dAdfaQPrDj4QUIBmkWebf6VdaPDK5NlgcAY50ITW6G6
+         wY8laqR6eXehqLe3rt/0zrDQP+gOTax6M/lnwVnTMVN19NYHIneOSYooSipUvp4HFr7b
+         L4fw==
+X-Gm-Message-State: AOJu0YyKMNGpq2OUlT6gGqYKe8COqKy4af05z06ZQ4dicF+4lu+I2vL9
+        NNOtx1+6gE+uAq2zjPSPoAra5JkGrA==
+X-Google-Smtp-Source: AGHT+IHxq2Dw8sFsLLI+z4S9TgWxaf6l0cocAGF+yc2TisyC49euiJvcC1n+Yr/0HeIX18RO0y1CyA==
+X-Received: by 2002:a05:6870:390c:b0:1fa:fee1:6f1e with SMTP id b12-20020a056870390c00b001fafee16f1emr3075427oap.10.1701971902619;
+        Thu, 07 Dec 2023 09:58:22 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id k29-20020a05687022dd00b001fb0edac63csm58231oaf.6.2023.12.07.09.58.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 09:58:22 -0800 (PST)
+Received: (nullmailer pid 2977746 invoked by uid 1000);
+        Thu, 07 Dec 2023 17:58:20 -0000
+Date:   Thu, 7 Dec 2023 11:58:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Nishanth Menon <nm@ti.com>, linux-mediatek@lists.infradead.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+        Andrew Davis <afd@ti.com>, Andrew Lunn <andrew@lunn.ch>,
+        linux-rockchip@lists.infradead.org,
+        Michal Simek <michal.simek@amd.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        Chen-Yu Tsai <wens@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-amlogic@lists.infradead.org,
+        Bjorn Andersson <andersson@kernel.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        workflows@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v4] docs: dt-bindings: add DTS Coding Style document
+Message-ID: <170197172648.2974247.13097453111547800548.robh@kernel.org>
+References: <20231203174622.18402-1-krzysztof.kozlowski@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231203174622.18402-1-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,54 +88,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Thu Dec 7, 2023 at 10:56 AM CET, Ilpo J=C3=A4rvinen wrote:
-> On Thu, 7 Dec 2023, Th=C3=A9o Lebrun wrote:
-> > On Thu Dec 7, 2023 at 2:37 AM CET, Greg Kroah-Hartman wrote:
-> > > On Thu, Nov 30, 2023 at 03:07:14PM +0100, Th=C3=A9o Lebrun wrote:
-> > > > The driver uses bit shifts and hexadecimal expressions to declare
-> > > > constants. Replace that with the BIT(), GENMASK() & FIELD_PREP_CONS=
-T()
-> > > > macros to clarify intent.
-> > > >=20
-> > > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> > > > Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> > > > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> > > > ---
-> > > >  include/linux/amba/serial.h | 248 +++++++++++++++++++++++---------=
-------------
-> > > >  1 file changed, 127 insertions(+), 121 deletions(-)
-> > >
-> > > As 0-day had a problem with this patch, I've applied only patch 1 of
-> > > this series.  Can you fix it up and rebase and resend the rest again
-> > > (while adding the collected reviewed-by that some patches in this ser=
-ies
-> > > had)?
-> >=20
-> > So the issue is this: the header file gets included in
-> > arch/arm/include/debug/pl01x.S that gets included in arch/arm/kernel/de=
-bug.S
-> > (see #include CONFIG_DEBUG_LL_INCLUDE).
-> >=20
-> > I don't see any easy way out of this, so I guess it means the patch mus=
-t be
-> > dropped. If someone confirms that there are indeed no solution to have =
-BIT(),
-> > GENMASK() & FIELD_PREP_CONST() accessible from assembly, I'll send the =
-next
-> > version.
->
-> Yeah, it seems to require UART01x_FR_TXFF and UART01x_FR_BUSY, plus=20
-> UART01x_DR and UART01x_FR that are not touched by your patch.
->
-> I suppose the rest might be convertable though..
+On Sun, 03 Dec 2023 18:46:22 +0100, Krzysztof Kozlowski wrote:
+> Document preferred coding style for Devicetree sources (DTS and DTSI),
+> to bring consistency among all (sub)architectures and ease in reviews.
+> 
+> Cc: Andrew Davis <afd@ti.com>
+> cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Bjorn Andersson <andersson@kernel.org>
+> Cc: Chen-Yu Tsai <wens@kernel.org>
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Michal Simek <michal.simek@amd.com>
+> Cc: Neil Armstrong <neil.armstrong@linaro.org>
+> Cc: Nishanth Menon <nm@ti.com>
+> Cc: Olof Johansson <olof@lixom.net>
+> Cc: Rafał Miłecki <zajec5@gmail.com>
+> Acked-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Acked-by: Heiko Stuebner <heiko@sntech.de>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Acked-by: Konrad Dybcio <konradybcio@kernel.org>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Merging idea: Rob/DT bindings
+> 
+> Changes in v4
+> =============
+> 1. Drop label at the top (Jon)
+> 2. Grammar fixes (Laurent, Dragan)
+> 3. "Unless a bus defines differently, unit addresses shall ..." (Rob)
+> 4. Use hex in example of dma-controller (Andrew)
+> 5. Example: soc@ -> soc@0
+> 6. Reverse points 2 and 3 in "Indentation" (Andrew)
+> 7. Use full path to coding style doc (Conor)
+> 
+> Changes in v3
+> =============
+> 1. should->shall (Angelo)
+> 2. Comments // -> /* (Angelo, Michal)
+> 3. Use imaginary example in "Order of Properties in Device Node"
+>    (Angelo)
+> 4. Added paragraphs for three sections with justifications of chosen
+>    style.
+> 5. Allow two style of ordering overrides in board DTS: alphabetically or
+>    by order of DTSI (Rob).
+> 6. I did not incorporate feedback about, due to lack of consensus and my
+>    disagreement:
+>    a. SoM being DTS without DTSI in "Organizing DTSI and DTS"
+> 
+> Changes in v2
+> =============
+> 1. Hopefully incorporate entire feedback from comments:
+> a. Fix \ { => / { (Rob)
+> b. Name: dts-coding-style (Rob)
+> c. Exceptions for ordering nodes by name for Renesas and pinctrl (Geert,
+>    Konrad)
+> d. Ordering properties by common/vendor (Rob)
+> e. Array entries in <> (Rob)
+> 
+> 2. New chapter: Organizing DTSI and DTS
+> 
+> 3. Several grammar fixes (missing articles)
+> 
+> Cc: linux-rockchip@lists.infradead.org
+> Cc: linux-mediatek@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-amlogic@lists.infradead.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: workflows@vger.kernel.org
+> Cc: linux-doc@vger.kernel.org
+> ---
+>  .../devicetree/bindings/dts-coding-style.rst  | 196 ++++++++++++++++++
+>  Documentation/devicetree/bindings/index.rst   |   1 +
+>  2 files changed, 197 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dts-coding-style.rst
+> 
 
-Thanks Greg and Ilpo! v6 has been sent.
+I added the quotes as discussed and applied, thanks!
 
-Regards,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Rob
