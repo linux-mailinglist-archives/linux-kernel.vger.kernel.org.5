@@ -2,48 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5B4808E62
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4050808ED5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:35:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443223AbjLGRNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:13:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56002 "EHLO
+        id S1443228AbjLGRPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:15:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232713AbjLGRNk (ORCPT
+        with ESMTP id S233088AbjLGRPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:13:40 -0500
+        Thu, 7 Dec 2023 12:15:22 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E84E10F9
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:13:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03C3CC433C8;
-        Thu,  7 Dec 2023 17:13:44 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0DF1709
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:15:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26AC0C433C8;
+        Thu,  7 Dec 2023 17:15:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701969227;
-        bh=DRPKptBBmLOx5+OFyOUopYmLskN58QcplGFuspiJ3n4=;
+        s=k20201202; t=1701969328;
+        bh=/NZy2kf75bJHAraLx4pRXvEeYyqAAqrTseqq1t9//Z4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VRSgnLgpAB2E+67FK4MbwV1WZOHG/yHsV+TYfLKc4iM9XaZRCVQKBdDHjV1Zjl2e7
-         8DP/Rbh2ZreW2H2NsjROtKzxNqy7jO8bKS2ZQjn9KjHOidM6Anb4so4FRH5ihwIVWc
-         4wgzzvXH/ReD0Avhsbv502RlcQhSWlqCecj7MEp2bohIBM3Lj1fBriDKWO6FiBQDlX
-         vv8cYjHkpftvaL6NhK9xcb7Qw+Zre+tFwtRABPZgd/pxOpLwqu1Gf5zMhvt/Px76IE
-         Keh83FDvSNNA9ul2ua+N43/vQcGuEMARNSXkX5+3riS/G0lVjgqjNpjUoZl0/dlKnV
-         Avyl9oapOmRhQ==
-Date:   Thu, 7 Dec 2023 17:13:41 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, bcousson@baylibre.com, tony@atomide.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] mfd: twl4030-power: accept standard property for
- power controller
-Message-ID: <20231207171341.GH111411@google.com>
-References: <20231203222903.343711-1-andreas@kemnade.info>
- <20231203222903.343711-6-andreas@kemnade.info>
+        b=Uryj+pFN/z19lqg/7cEn4xKACWxpDihfcbOk/XC7lpDOzL+WX5z5VlVKW/3cvc+s4
+         NnYm2WFY7rSGpPSslqD1J6I3Wpr1chYU20ZNrbVvFkl2993ctJ7h/psl1WiexVzUjD
+         8YGtfVufiZ5612U10APSlebah/U99YbyjvEdSPCgjfnElDbT0UYOawzzgTCkqdmJ2m
+         ET+dOj3b6u51JOd/VhhorhTNoRSjmL4GcqgEbKzGpzxePYQSnCSqCXQbtGaITrMvcA
+         hKG2dqxFyUBsO9mrBFlgazs0xmbU8WLuGrDy5M8ZlrJTb9Ehndy63JZSb5e9thcvci
+         dhCJS1KngpLuQ==
+Date:   Thu, 7 Dec 2023 17:15:23 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] media: dt-bindings: ov8856: decouple lanes and link
+ frequency from driver
+Message-ID: <20231207-antics-tummy-5316e38477de@spud>
+References: <20231207142356.100453-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="OSYC6STl8ciQnFnr"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231203222903.343711-6-andreas@kemnade.info>
+In-Reply-To: <20231207142356.100453-1-krzysztof.kozlowski@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -54,44 +58,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 03 Dec 2023, Andreas Kemnade wrote:
 
-> Instead of only accepting the ti specific properties accept also
-> the standard property. For uniformity, search in the parent node
+--OSYC6STl8ciQnFnr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Search 'in' the parent node or 'from' the parent node?
-
-Where is the property?
-
-> for the tag. The code for powering of is also isolated from the
-
-Should this be "off"?
-
-> rest in this file. So it is a pure Linux design decision to put it
-> here.
-> 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+On Thu, Dec 07, 2023 at 03:23:56PM +0100, Krzysztof Kozlowski wrote:
+> The data lanes and link frequency were set to match exiting Linux driver
+> limitations, however bindings should be independent of chosen Linux
+> driver support.
+>=20
+> Decouple these properties from the driver to match what is actually
+> supported by the hardware.
+>=20
+> This also fixes DTS example:
+>=20
+>   ov8856.example.dtb: camera@10: port:endpoint:link-frequencies:0: [36000=
+0000] is too short
+>=20
+> Fixes: 066a94e28a23 ("media: dt-bindings: media: Use graph and video-inte=
+rfaces schemas")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>=20
 > ---
->  drivers/mfd/twl4030-power.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/mfd/twl4030-power.c b/drivers/mfd/twl4030-power.c
-> index e35b0f788c504..3ef892e63b88f 100644
-> --- a/drivers/mfd/twl4030-power.c
-> +++ b/drivers/mfd/twl4030-power.c
-> @@ -686,6 +686,9 @@ static bool twl4030_power_use_poweroff(const struct twl4030_power_data *pdata,
->  	if (of_property_read_bool(node, "ti,use_poweroff"))
->  		return true;
->  
-> +	if (of_device_is_system_power_controller(node->parent))
-> +		return true;
-> +
->  	return false;
->  }
->  
-> -- 
-> 2.39.2
-> 
+>=20
+> Changes in v2:
+> 1. Rework approach: decouple bindings from driver instead of fixing
+>    DTS example (Sakari)
 
--- 
-Lee Jones [李琼斯]
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+> ---
+>  .../devicetree/bindings/media/i2c/ov8856.yaml | 21 +++++++++++--------
+>  1 file changed, 12 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml b/Do=
+cumentation/devicetree/bindings/media/i2c/ov8856.yaml
+> index 57f5e48fd8e0..71102a71cf81 100644
+> --- a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> +++ b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> @@ -67,19 +67,22 @@ properties:
+> =20
+>          properties:
+>            data-lanes:
+> -            description: |-
+> -              The driver only supports four-lane operation.
+> -            items:
+> -              - const: 1
+> -              - const: 2
+> -              - const: 3
+> -              - const: 4
+> +            oneOf:
+> +              - items:
+> +                  - const: 1
+> +              - items:
+> +                  - const: 1
+> +                  - const: 2
+> +              - items:
+> +                  - const: 1
+> +                  - const: 2
+> +                  - const: 3
+> +                  - const: 4
+> =20
+>            link-frequencies:
+>              description: Frequencies listed are driver, not h/w limitati=
+ons.
+> -            maxItems: 2
+>              items:
+> -              enum: [ 360000000, 180000000 ]
+> +              enum: [ 1440000000, 720000000, 360000000, 180000000 ]
+> =20
+>          required:
+>            - link-frequencies
+> --=20
+> 2.34.1
+>=20
+
+--OSYC6STl8ciQnFnr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXH9qwAKCRB4tDGHoIJi
+0hyzAP9aNR0uAwPrTbmO+v6W10FcAGLU1UTX15VyHl6zTw/+zwD7BNYOXpLbWO6V
+oavXs+cccjna3l+eCE+iR8mzZg9kRgg=
+=+455
+-----END PGP SIGNATURE-----
+
+--OSYC6STl8ciQnFnr--
