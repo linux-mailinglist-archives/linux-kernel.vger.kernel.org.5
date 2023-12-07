@@ -2,104 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C1B8092DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 21:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 333AE8092DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 21:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbjLGU6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 15:58:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
+        id S1443929AbjLGU7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 15:59:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjLGU6r (ORCPT
+        with ESMTP id S229671AbjLGU7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 15:58:47 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C94B1719;
-        Thu,  7 Dec 2023 12:58:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701982730;
-        bh=OahjUiyo1OGiDStDJt6xdb3ykfMCzHaeqGJimrbb/ww=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LGhIC5dNRK/Ne+ji5uCQX1VZTo/TFWUTJSLADzhyeSW5SXrr49GpyEVvriCG8WoxY
-         RZg09DANoA0rIf3IJS8yckHrC67T+DKmNVx9wNSSo6xGWgrkZlpqDMHeMe0JdRhDMo
-         Prp2WsQDpSdxD+UTYlgVzX0kSbd9vwI8JK0kNk4+/CU1rfS7Xs6Ez0Gt3jVywXwf3g
-         3oRDlWDveKiaFwhXrYN8/Ks9auN8TzHd259iVCZNUUuwPTIRP+d5CZf9dcw5chdvNP
-         kPCpqKkOmbeicYCnc28ELYm/qNskxTEweCq/gV4sN415tOnbr9onzU/GXW2gwuPEy0
-         sz0UcsjnNmqBg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SmRT63Qqlz4wcK;
-        Fri,  8 Dec 2023 07:58:50 +1100 (AEDT)
-Date:   Fri, 8 Dec 2023 07:58:47 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the devicetree tree
-Message-ID: <20231208075847.6bbd23b8@canb.auug.org.au>
-In-Reply-To: <CAL_JsqKXo+Cr=9s=dt1kCQeMadJ_cnuSpm06zmvK8yd-vd2X3g@mail.gmail.com>
-References: <20231207125737.5e7553e3@canb.auug.org.au>
-        <CAL_JsqKXo+Cr=9s=dt1kCQeMadJ_cnuSpm06zmvK8yd-vd2X3g@mail.gmail.com>
+        Thu, 7 Dec 2023 15:59:16 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024321719
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 12:59:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 973C6C433CB;
+        Thu,  7 Dec 2023 20:59:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701982761;
+        bh=C21rcvb5f90zCPP0WfTqfPYIWbLBcAu22m6JrTOBcPY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=X9c9Deq4Hu5p/+2MCzm19VQNajjN2p45xeo1yF7xkiwC8xz2rGgTxZKv9UDEV9lEb
+         siIg91bqWQA4fHnQVZOK2B7hf/39/siATgl+J3rRFiUJsWkcgFWFCOaQGmOhDyuMya
+         FL3gO7HQ7jsVl3u3zvXSDonLQOvufh/6NS4OYPpI3QlxUpu0MoqmWpOZ2A0pNuRBhB
+         wXAPihB46OwvR1QYV98BwbuLm5T53dglI6vavT1h5tNQkpStpWXetKA5KBdlGg8+Rc
+         yPNQOdWnssXrC/7hv2UFw6f5Sfhx0++xDoXxlx4f0jZhtjCpWuftos831wvIhrRVFZ
+         Iq7jopWWvc4bw==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50be3eed85aso1657854e87.2;
+        Thu, 07 Dec 2023 12:59:21 -0800 (PST)
+X-Gm-Message-State: AOJu0YzoBQWw7K+JV09lUNmIwHPMlnpQUWTdnW4ZMNtxvMXgqVD+tnbR
+        IX5fQq1IjJUqJLcIHbBe879pSQChJtL2sQkG0Q==
+X-Google-Smtp-Source: AGHT+IEVQgvulIjqQm258FjkM+m3ikdwhnUFuJgkTHBt8qMmT08fchzBbboDXtYublXIeoxrUzYy+qKRkBfsZGjDplk=
+X-Received: by 2002:a05:6512:159d:b0:50b:e713:574d with SMTP id
+ bp29-20020a056512159d00b0050be713574dmr2319296lfb.75.1701982759757; Thu, 07
+ Dec 2023 12:59:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Y5My8QC91/48vQRFjaBW_a+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231122235050.2966280-1-robh@kernel.org>
+In-Reply-To: <20231122235050.2966280-1-robh@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 7 Dec 2023 14:59:07 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKrpWoHxU1=FaCkJCg-E5G6JjudjsiUvv4cdQVyKM88KQ@mail.gmail.com>
+Message-ID: <CAL_JsqKrpWoHxU1=FaCkJCg-E5G6JjudjsiUvv4cdQVyKM88KQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: dma: Drop undocumented examples
+To:     Vinod Koul <vkoul@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Y5My8QC91/48vQRFjaBW_a+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Rob,
-
-On Thu, 7 Dec 2023 09:11:22 -0600 Rob Herring <robh@kernel.org> wrote:
+On Wed, Nov 22, 2023 at 5:50=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
+:
 >
-> I'm sending out fixes for all these. I want to get the final patch
-> ("of: Stop circularly including of_device.h and of_platform.h") for
-> all this in next to get some better build coverage and catch any new
-> drivers added. But if it is dropped for every new driver that breaks,
-> I'll never get it in. Can you fix these up or just leave them broken?
-> I can keep the fixes in my tree until they get applied by the
-> corresponding subsystem.
+> The compatibles "ti,omap-sdma" and "ti,dra7-dma-crossbar" aren't document=
+ed
+> by a schema which causes warnings:
+>
+> Documentation/devicetree/bindings/dma/dma-controller.example.dtb: /exampl=
+e-0/dma-controller@48000000: failed to match any schema with compatible: ['=
+ti,omap-sdma']
+> Documentation/devicetree/bindings/dma/dma-router.example.dtb: /example-0/=
+dma-router@4a002b78: failed to match any schema with compatible: ['ti,dra7-=
+dma-crossbar']
+>
+> As no one has cared to fix them, just drop them.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../devicetree/bindings/dma/dma-controller.yaml   | 15 ---------------
+>  .../devicetree/bindings/dma/dma-router.yaml       | 11 -----------
+>  2 files changed, 26 deletions(-)
 
-These dependencies between trees are impossible to handle.  Please if
-you really need the final patch in, then you must put all the necessary
-fixes in the same branch.  There is no telling what order Linus (or I)
-will merge the interdependent branches.
+Vinod, Can you pick this up please.
 
-The alternative is to spray the needed fixes out to the other
-subsystems and then put the final patch in after the merge window
-closes or the next release.
+As pointed out, examples don't document anything. "ti,omap-sdma" is
+not documented at all (though in use). "ti,dra7-dma-crossbar" is
+documented in dma/ti-dma-crossbar.txt and there's still an example
+there.
 
-I cannot "just leave them broken" because that will interfere with
-other's trying to get their work done.  I will try fix up the newly
-added drivers if they are obvious, but in the case of these include file
-cleanups, that can be quite difficult sometimes.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Y5My8QC91/48vQRFjaBW_a+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVyMgcACgkQAVBC80lX
-0Gyepgf/WasA+iIOtn/ZTy7BHxAZLqhsI7Dhvs+SjIeHrj2cw2iXlXo9cJwAdwAw
-h4abJR4iFSOGKmMRz0jwjT99EPZxSu+PNOJzHMH5uPo4+yLrDQ7I8PtH+gzJeaQb
-j3RKwRkYQDwPQxvQ2AUHgaOzxyyekthoN7QFz7C0UgX9HUR0oB++OQ5E6foVEUSz
-lb2NSZ2OKBmI7h9wYa+S06UnhgNIKv/Uz3nIvrdu6NPSoGsheoHwirP0W/82o4tC
-fk3Mn9AKLsJcaohAekMC7dEtDtsAZvov+y6/u9bqY9mtksj3vzoLBL0EesBkH1X1
-7UBuhL8gsT/MPOGTpeIDuVLn0EFcUg==
-=IU0l
------END PGP SIGNATURE-----
-
---Sig_/Y5My8QC91/48vQRFjaBW_a+--
+Rob
