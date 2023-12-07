@@ -2,78 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 317E9808131
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 07:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC50E807E1C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377843AbjLGGvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 01:51:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51794 "EHLO
+        id S1442173AbjLGBnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 20:43:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbjLGGvI (ORCPT
+        with ESMTP id S229777AbjLGBnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 01:51:08 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440531994
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 22:50:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 544E9C433C9;
-        Thu,  7 Dec 2023 06:50:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1701931848;
-        bh=rTrj+609LSXiUpACDhoj4mKW1YyIQfyh+kNZrOdvGXE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FyFgUT00KRW2fhfDQ3yiYl2xNNwFdJETCHpiIa+Bs/eHqvAzXvqLYg3BWAXt6iiPS
-         mJY60DT6d8IpPIkhSAOiAeZ/a50cocZ4feFq6CZAzFBTLsxsvLAWXQ26deRnEJhjNB
-         CcKB62Njz310fFyTo8dTwFN88vjdOlxOjM5HGNh4=
-Date:   Thu, 7 Dec 2023 10:37:38 +0900
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?iso-8859-1?Q?Gr=E9gory?= Clement <gregory.clement@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: Re: [PATCH v5 2/9] tty: serial: amba: Use linux/{bits,bitfield}.h
- macros
-Message-ID: <2023120742-argue-slighting-6120@gregkh>
-References: <20231130-mbly-uart-v5-0-6566703a04b5@bootlin.com>
- <20231130-mbly-uart-v5-2-6566703a04b5@bootlin.com>
+        Wed, 6 Dec 2023 20:43:14 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75E719E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 17:43:18 -0800 (PST)
+X-UUID: 5aa9ead4bf7f45ebb64da22b7e64f6e2-20231207
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:8fb5be05-f92e-467d-8ff9-69eadee6c510,IP:5,U
+        RL:0,TC:0,Content:0,EDM:0,RT:1,SF:-1,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:5
+X-CID-INFO: VERSION:1.1.33,REQID:8fb5be05-f92e-467d-8ff9-69eadee6c510,IP:5,URL
+        :0,TC:0,Content:0,EDM:0,RT:1,SF:-1,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+        elease,TS:5
+X-CID-META: VersionHash:364b77b,CLOUDID:6768e760-c89d-4129-91cb-8ebfae4653fc,B
+        ulkID:2312070943101BF84CQB,BulkQuantity:0,Recheck:0,SF:100|66|24|72|19|42|
+        101|74|64|102,TC:nil,Content:1,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil
+        ,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 5aa9ead4bf7f45ebb64da22b7e64f6e2-20231207
+X-User: jiangyunshui@kylinos.cn
+Received: from localhost.localdomain [(112.64.161.44)] by mailgw
+        (envelope-from <jiangyunshui@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 733524998; Thu, 07 Dec 2023 09:43:08 +0800
+From:   jiangyunshui <jiangyunshui@kylinos.cn>
+To:     christophe.leroy@csgroup.eu
+Cc:     ajd@linux.ibm.com, fbarrat@linux.ibm.com, jiangyunshui@kylinos.cn,
+        kernel-bot@kylinos.cn, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] ocxl: fix driver function comment typo
+Date:   Thu,  7 Dec 2023 09:43:07 +0800
+Message-Id: <20231207014307.12256-1-jiangyunshui@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <2f2aca95-f5a6-45fa-9e3b-37aecf657299@csgroup.eu>
+References: <2f2aca95-f5a6-45fa-9e3b-37aecf657299@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231130-mbly-uart-v5-2-6566703a04b5@bootlin.com>
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 03:07:14PM +0100, Théo Lebrun wrote:
-> The driver uses bit shifts and hexadecimal expressions to declare
-> constants. Replace that with the BIT(), GENMASK() & FIELD_PREP_CONST()
-> macros to clarify intent.
-> 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> Date: Tue, 5 Dec 2023 11:00:16 +0000	[thread overview]
+> Message-ID: <2f2aca95-f5a6-45fa-9e3b-37aecf657299@csgroup.eu> (raw)
+> In-Reply-To: <20231205094319.32114-1-jiangyunshui@kylinos.cn>
+
+> Please add a description explaining why you want to do that change.
+
+> When I grep I see cxlflash driver, I don't know what ocxlflash driver is:
+
+> $ git grep ocxl_config_read_afu
+> ...
+> drivers/scsi/cxlflash/ocxl_hw.c:        rc = ocxl_config_read_afu(pdev, 
+> fcfg, acfg, 0);
+> drivers/scsi/cxlflash/ocxl_hw.c:                dev_err(dev, "%s: 
+> ocxl_config_read_afu failed rc=%d\n",
+> include/misc/ocxl.h:int ocxl_config_read_afu(struct pci_dev *dev,
+
+> Christophe
+
+I checked my commit again and found I'd mismatched the driver's name with other things.
+As you said it doesn't make sense to change cxlflash to ocxlflash.
+Sorry for the inconvenience, you could just drop my commit please.
+Thanks,
+
+Yunshui
+
 > ---
->  include/linux/amba/serial.h | 248 +++++++++++++++++++++++---------------------
->  1 file changed, 127 insertions(+), 121 deletions(-)
-
-As 0-day had a problem with this patch, I've applied only patch 1 of
-this series.  Can you fix it up and rebase and resend the rest again
-(while adding the collected reviewed-by that some patches in this series
-had)?
-
-thanks,
-
-greg k-h
+> Reported-by: k2ci <kernel-bot@kylinos.cn>
+> Signed-off-by: yunshui <jiangyunshui@kylinos.cn>
+> ---
+>   include/misc/ocxl.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/misc/ocxl.h b/include/misc/ocxl.h
+> index 3ed736da02c8..ef7d26009a36 100644
+> --- a/include/misc/ocxl.h
+> +++ b/include/misc/ocxl.h
+> @@ -324,7 +324,7 @@ int ocxl_global_mmio_clear32(struct ocxl_afu *afu, size_t offset,
+>   int ocxl_global_mmio_clear64(struct ocxl_afu *afu, size_t offset,
+>                               enum ocxl_endian endian, u64 mask);
+>
+> -// Functions left here are for compatibility with the cxlflash driver
+> +// Functions left here are for compatibility with the ocxlflash driver
+>
+>   /*
+>    * Read the configuration space of a function for the AFU specified by
+> --
+> 2.25.1
+>
