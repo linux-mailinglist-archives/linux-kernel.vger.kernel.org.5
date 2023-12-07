@@ -2,108 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C71E1808D50
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73572808D2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbjLGQPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 11:15:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
+        id S232655AbjLGQUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 11:20:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232623AbjLGQPp (ORCPT
+        with ESMTP id S232532AbjLGQUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 11:15:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931D7AC
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 08:15:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701965750;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 7 Dec 2023 11:20:32 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373E3D4A;
+        Thu,  7 Dec 2023 08:20:38 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 49D4A1FB8F;
+        Thu,  7 Dec 2023 16:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1701966036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rMjoqh1pXhrqyjtnMgRySm23T44zv9xVYFWsYjgspZw=;
-        b=gMIM1igHT9iNZcoKrCHi3okjPe5dzubhDeTYKdQPwpGw1ozzt0/9bBb79Z6PlxMPoeREbd
-        sktVcDeCN0Qstf2UkpsSy4d5JXUeKKkx6hX2xPgYfbQj1bf2maGBjJJKaoWTBwoZCOi5ie
-        Dqtpq5i9pcT6HRjrtvtceIUxpzorgGI=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-466-PWnkZh2xNsCfpQLFux4wYg-1; Thu, 07 Dec 2023 11:15:49 -0500
-X-MC-Unique: PWnkZh2xNsCfpQLFux4wYg-1
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-286d9064bf8so841189a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 08:15:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701965748; x=1702570548;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rMjoqh1pXhrqyjtnMgRySm23T44zv9xVYFWsYjgspZw=;
-        b=TNp10xOil0AysdUKcokXDhBo7VnCr1rut+wETRlACMg3UVQCvc5pgkDpoet2F2OgtC
-         WZTJNjM+FTsQ5n3YdYoMUGLFXl2ncijJNSIzm2RBQlE0DAyV7htBh2paHnGMIr6UoPDM
-         vIpNL+tORubkLKXa7bdNnZBHz/rLyM1o8nihCCoyHv+lcnr5CNplQlsNVQaKsYgvBorp
-         6wGheRmvREg+ANRf+lDUSILXkcH6hWA3joW2UkqsURzrZ4xWQctNNDYSnp6QjzeyRs19
-         jZSiO2uRvtAcd5bG/9jhGE/5GUWxoaH5SG4K9MpKWZexWhLMUyRUx4EOx5B/HFxxIOMc
-         2H5w==
-X-Gm-Message-State: AOJu0YzLipzSAfdp0MMhJmmifnp758J0AXFnB4AM3oNRkXX5B+KyK86M
-        7qZ92tnhbHIQvAP8u/uXU5QUA4dzmZePRy60nUBxZ2dv1AAeJQZ8B0IQJtgaWZdHZ7PhT19zI3d
-        JXaRabqOJyrOBUddD98wOdbDiR4qKKqU+NYSoEGv5
-X-Received: by 2002:a17:90a:6408:b0:286:5127:d9ba with SMTP id g8-20020a17090a640800b002865127d9bamr6301812pjj.8.1701965748102;
-        Thu, 07 Dec 2023 08:15:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFDeWROLk2K0c9rgPY/R8uuckZIYCTZHL2VBP97UMXh33XnVapX3S2LNC/E4/LGDDmgmTsUek1InciGIGC3BH8=
-X-Received: by 2002:a17:90a:6408:b0:286:5127:d9ba with SMTP id
- g8-20020a17090a640800b002865127d9bamr6301794pjj.8.1701965747782; Thu, 07 Dec
- 2023 08:15:47 -0800 (PST)
+        bh=R9gDJpilOFtri5BMtSk1bR16VKzmy1EoAMg8XN+4Hs8=;
+        b=xxTXJx3GPoOl7SBcxIJqOQY+tneUAmrvullQZsq6Y0AdZHg7xq11tltLJ6XCWQKwQxYcwk
+        HT33a4nMU2w3w9MG+rUa8S0IjxZBChoNpEM/Fk61JsRbYhku/KT2ETpZ6RCdOFtcJMjyDz
+        IKKnYkKtyOjkwmj0q+ZaOkeGmOSUCXE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1701966036;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R9gDJpilOFtri5BMtSk1bR16VKzmy1EoAMg8XN+4Hs8=;
+        b=TGD6PJiW4rWFAKNCxeLhi1pT83vgP+nsYq+vHBQVED9NbLzgVnBTcoOEz45J5WokkGcnPi
+        EpQoh63MFcmvc0Bw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1701966036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R9gDJpilOFtri5BMtSk1bR16VKzmy1EoAMg8XN+4Hs8=;
+        b=xxTXJx3GPoOl7SBcxIJqOQY+tneUAmrvullQZsq6Y0AdZHg7xq11tltLJ6XCWQKwQxYcwk
+        HT33a4nMU2w3w9MG+rUa8S0IjxZBChoNpEM/Fk61JsRbYhku/KT2ETpZ6RCdOFtcJMjyDz
+        IKKnYkKtyOjkwmj0q+ZaOkeGmOSUCXE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1701966036;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R9gDJpilOFtri5BMtSk1bR16VKzmy1EoAMg8XN+4Hs8=;
+        b=TGD6PJiW4rWFAKNCxeLhi1pT83vgP+nsYq+vHBQVED9NbLzgVnBTcoOEz45J5WokkGcnPi
+        EpQoh63MFcmvc0Bw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E7DE013B6A;
+        Thu,  7 Dec 2023 16:20:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id liI5ONPwcWWzXwAAD6G6ig
+        (envelope-from <vbabka@suse.cz>); Thu, 07 Dec 2023 16:20:35 +0000
+Message-ID: <0e84720f-bb52-c77f-e496-40d91e94a4f6@suse.cz>
+Date:   Thu, 7 Dec 2023 17:20:35 +0100
 MIME-Version: 1.0
-References: <6e6816dd-2ec5-4bca-9558-60cfde46ef8c@sapience.com>
-In-Reply-To: <6e6816dd-2ec5-4bca-9558-60cfde46ef8c@sapience.com>
-From:   Xiao Ni <xni@redhat.com>
-Date:   Fri, 8 Dec 2023 00:15:38 +0800
-Message-ID: <CALTww28Fz5Y11q1UE8r6qRrwOHgKOWw=iX3AisoSFGh_VhAbJA@mail.gmail.com>
-Subject: Re: md raid6 oops in 6.6.4 stable
-To:     Genes Lists <lists@sapience.com>
-Cc:     snitzer@kernel.org, song@kernel.org, yukuai3@huawei.com,
-        axboe@kernel.dk, mpatocka@redhat.com, heinzm@redhat.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v10 16/50] x86/sev: Introduce snp leaked pages list
+To:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
+Cc:     linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        bp@alien8.de, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+        pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-17-michael.roth@amd.com>
+Content-Language: en-US
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231016132819.1002933-17-michael.roth@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spam-Score: -4.30
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-3.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_RATELIMIT(0.00)[to_ip_from(RL81e5qggtdx371s8ik49ru6xr)];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         RCPT_COUNT_TWELVE(0.00)[39];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -3.10
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 9:12=E2=80=AFPM Genes Lists <lists@sapience.com> wro=
-te:
->
-> I have not had chance to git bisect this but since it happened in stable
-> I thought it was important to share sooner than later.
->
-> One possibly relevant commit between 6.6.3 and 6.6.4 could be:
->
->    commit 2c975b0b8b11f1ffb1ed538609e2c89d8abf800e
->    Author: Song Liu <song@kernel.org>
->    Date:   Fri Nov 17 15:56:30 2023 -0800
->
->      md: fix bi_status reporting in md_end_clone_io
->
-> log attached shows page_fault_oops.
-> Machine was up for 3 days before crash happened.
->
-> gene
+On 10/16/23 15:27, Michael Roth wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
+> 
+> Pages are unsafe to be released back to the page-allocator, if they
+> have been transitioned to firmware/guest state and can't be reclaimed
+> or transitioned back to hypervisor/shared state. In this case add
+> them to an internal leaked pages list to ensure that they are not freed
 
-Hi all
+Note the adding to the list doesn't ensure anything like that. Not dropping
+the refcount to zero does. But tracking them might indeed not be bad for
+e.g. crashdump investigations so no objection there.
 
-I'm following the crash reference rule to try to find some hints. The
-RDI is ffff8881019312c0 which should be the address of struct
-block_device *part. And the CR2 is ffff8881019312e8. So the panic
-happens when it wants to introduce part->bd_stamp. Hope it's helpful
-if the addresses are right.
+> or touched/accessed to cause fatal page faults.
+> 
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> [mdr: relocate to arch/x86/coco/sev/host.c]
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> ---
+>  arch/x86/include/asm/sev-host.h |  3 +++
+>  arch/x86/virt/svm/sev.c         | 28 ++++++++++++++++++++++++++++
+>  2 files changed, 31 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/sev-host.h b/arch/x86/include/asm/sev-host.h
+> index 1df989411334..7490a665e78f 100644
+> --- a/arch/x86/include/asm/sev-host.h
+> +++ b/arch/x86/include/asm/sev-host.h
+> @@ -19,6 +19,8 @@ void sev_dump_hva_rmpentry(unsigned long address);
+>  int psmash(u64 pfn);
+>  int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int asid, bool immutable);
+>  int rmp_make_shared(u64 pfn, enum pg_level level);
+> +void snp_leak_pages(u64 pfn, unsigned int npages);
+> +
+>  #else
+>  static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return -ENXIO; }
+>  static inline void sev_dump_hva_rmpentry(unsigned long address) {}
+> @@ -29,6 +31,7 @@ static inline int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int as
+>  	return -ENXIO;
+>  }
+>  static inline int rmp_make_shared(u64 pfn, enum pg_level level) { return -ENXIO; }
+> +static inline void snp_leak_pages(u64 pfn, unsigned int npages) {}
+>  #endif
+>  
+>  #endif
+> diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+> index bf9b97046e05..29a69f4b8cfb 100644
+> --- a/arch/x86/virt/svm/sev.c
+> +++ b/arch/x86/virt/svm/sev.c
+> @@ -59,6 +59,12 @@ struct rmpentry {
+>  static struct rmpentry *rmptable_start __ro_after_init;
+>  static u64 rmptable_max_pfn __ro_after_init;
+>  
+> +/* list of pages which are leaked and cannot be reclaimed */
+> +static LIST_HEAD(snp_leaked_pages_list);
+> +static DEFINE_SPINLOCK(snp_leaked_pages_list_lock);
+> +
+> +static atomic_long_t snp_nr_leaked_pages = ATOMIC_LONG_INIT(0);
+> +
+>  #undef pr_fmt
+>  #define pr_fmt(fmt)	"SEV-SNP: " fmt
+>  
+> @@ -518,3 +524,25 @@ int rmp_make_shared(u64 pfn, enum pg_level level)
+>  	return rmpupdate(pfn, &val);
+>  }
+>  EXPORT_SYMBOL_GPL(rmp_make_shared);
+> +
+> +void snp_leak_pages(u64 pfn, unsigned int npages)
+> +{
+> +	struct page *page = pfn_to_page(pfn);
+> +
+> +	pr_debug("%s: leaking PFN range 0x%llx-0x%llx\n", __func__, pfn, pfn + npages);
+> +
+> +	spin_lock(&snp_leaked_pages_list_lock);
+> +	while (npages--) {
+> +		/*
+> +		 * Reuse the page's buddy list for chaining into the leaked
+> +		 * pages list. This page should not be on a free list currently
+> +		 * and is also unsafe to be added to a free list.
+> +		 */
+> +		list_add_tail(&page->buddy_list, &snp_leaked_pages_list);
+> +		sev_dump_rmpentry(pfn);
+> +		pfn++;
 
-Best Regards
-Xiao
+You increment pfn, but not page, which is always pointing to the page of the
+initial pfn, so need to do page++ too.
+But that assumes it's all order-0 pages (hard to tell for me whether that's
+true as we start with a pfn), if there can be compound pages, it would be
+best to only add the head page and skip the tail pages - it's not expected
+to use page->buddy_list of tail pages.
+
+> +	}
+> +	spin_unlock(&snp_leaked_pages_list_lock);
+> +	atomic_long_inc(&snp_nr_leaked_pages);
+> +}
+> +EXPORT_SYMBOL_GPL(snp_leak_pages);
 
