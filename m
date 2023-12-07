@@ -2,192 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F708086CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E248086EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232398AbjLGLew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 06:34:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
+        id S232533AbjLGLlI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Dec 2023 06:41:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232395AbjLGLet (ORCPT
+        with ESMTP id S1379020AbjLGLlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 06:34:49 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6022110C0;
-        Thu,  7 Dec 2023 03:34:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701948895; x=1733484895;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0e0ecIPjielu3IMg9w9+57qtFRSlZw6k9A5nrmNNudM=;
-  b=E13MIFBYMQFsL8EYCwz269U++62FbhdUIjXWg5DLTZHmYQ8cSnyIsA5G
-   eNupv8wyXNnMwBTh4vcavzWGZaUTeNUjEseq7WNjF2GrcHHANrKZ96Wj4
-   vOt2l8HkIVkSy8vXaMAxVxyeYa6m5PQfiskSCHYxU9/pJINK0eWihXoXx
-   nAICDwUJGk0WbnF5cjuGEod2cbq7fJayBQyanIMhMCIj90NW/H62dgEI/
-   8swkn9vdjO06uL7QCyN49jegE4SYMFlr41DNvBb8K1mPY0jmihMkAYYJP
-   6q+YEPQ3fRA0rMysLZxUhZYtH96Y7QsBTjrxyaQIBWtyGEznH0F+UQCeK
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="1098277"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="1098277"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 03:34:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="775371126"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="775371126"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga007.fm.intel.com with SMTP; 07 Dec 2023 03:34:50 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 07 Dec 2023 13:34:49 +0200
-Date:   Thu, 7 Dec 2023 13:34:49 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     RD Babiera <rdbabiera@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org,
-        pmalani@chromium.org, bleung@chromium.org,
-        chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, badhri@google.com, tzungbi@kernel.org,
-        utkarsh.h.patel@intel.com, andriy.shevchenko@linux.intel.com
-Subject: Re: [PATCH v1 01/10] usb: typec: bus: provide transmit type for
- alternate mode drivers
-Message-ID: <ZXGt2drhV/K+qtTG@kuha.fi.intel.com>
-References: <20231207090738.15721-12-rdbabiera@google.com>
- <20231207090738.15721-13-rdbabiera@google.com>
+        Thu, 7 Dec 2023 06:41:06 -0500
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58063A3;
+        Thu,  7 Dec 2023 03:41:10 -0800 (PST)
+Received: from i53875b61.versanet.de ([83.135.91.97] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1rBCkW-000248-Ve; Thu, 07 Dec 2023 12:41:01 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Rob Herring <robh+dt@kernel.org>, Sam Edwards <cfsworks@gmail.com>
+Cc:     linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Daniel =?utf-8?B?S3VraWXFgmE=?= <daniel@kukiela.pl>,
+        Sven Rademakers <sven.rademakers@gmail.com>,
+        Joshua Riek <jjriek@verizon.net>
+Subject: Re: [RESEND PATCH] arm64: dts: rockchip: Add PCIe pinctrls to Turing RK1
+Date:   Thu, 07 Dec 2023 12:41:00 +0100
+Message-ID: <2369165.PYKUYFuaPT@diego>
+In-Reply-To: <d38540c5-79a8-0582-87b9-0e99bf3044d5@gmail.com>
+References: <20231205202900.4617-1-CFSworks@gmail.com> <3331042.e9J7NaK4W3@diego>
+ <d38540c5-79a8-0582-87b9-0e99bf3044d5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231207090738.15721-13-rdbabiera@google.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Dec 07, 2023 at 09:07:32AM +0000, RD Babiera wrote:
-> Add enum tcpm_altmode_transmit_type that Alternate Mode drivers can use
-> to communicate which SOP type to send a SVDM on to the tcpm, and that the
-> tcpm can use to communicate a received SVDM' SOP type to the Alternate Mode
-> drivers.
+Am Mittwoch, 6. Dezember 2023, 19:26:40 CET schrieb Sam Edwards:
 > 
-> Update all typec_altmode_ops users to use tcpm_altmode_transmit_type, and
-> drop all messages that are not TYPEC_ALTMODE_SOP. Default all calls that
-> require sop_type as input to TYPEC_ALTMODE_SOP.
+> On 12/6/23 07:55, Heiko Stübner wrote:
+> > Am Dienstag, 5. Dezember 2023, 21:28:59 CET schrieb Sam Edwards:
+> >> The RK3588 PCIe 3.0 controller seems to have unpredictable behavior when
+> >> no CLKREQ/PERST/WAKE pins are configured in the pinmux. In particular, it
+> >> will sometimes (varying between specific RK3588 chips, not over time) shut
+> >> off the DBI block, and reads to this range will instead stall
+> >> indefinitely.
+> >>
+> >> When this happens, it will prevent Linux from booting altogether. The
+> >> PCIe driver will stall the CPU core once it attempts to read the version
+> >> information from the DBI range.
+> >>
+> >> Fix this boot hang by adding the correct pinctrl configuration to the
+> >> PCIe 3.0 device node, which is the proper thing to do anyway. While
+> >> we're at it, also add the necessary configuration to the PCIe 2.0 node,
+> >> which may or may not fix the equivalent problem over there -- but is the
+> >> proper thing to do anyway. :)
+> >>
+> >> Fixes: 2806a69f3fef6 ("arm64: dts: rockchip: Add Turing RK1 SoM support")
+> >> Signed-off-by: Sam Edwards <CFSworks@gmail.com>
+> >> ---
+> >>   .../arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi | 14 ++------------
+> >>   1 file changed, 2 insertions(+), 12 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi b/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
+> >> index 9570b34aca2e..129f14dbd42f 100644
+> >> --- a/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
+> >> +++ b/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
+> >> @@ -214,7 +214,7 @@ rgmii_phy: ethernet-phy@1 {
+> >>   &pcie2x1l1 {
+> >>   	linux,pci-domain = <1>;
+> >>   	pinctrl-names = "default";
+> >> -	pinctrl-0 = <&pcie2_reset>;
+> >> +	pinctrl-0 = <&pcie30x1m1_pins>;
+> >>   	reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
+> >>   	status = "okay";
+> >>   };
+> >> @@ -226,7 +226,7 @@ &pcie30phy {
+> >>   &pcie3x4 {
+> >>   	linux,pci-domain = <0>;
+> >>   	pinctrl-names = "default";
+> >> -	pinctrl-0 = <&pcie3_reset>;
+> >> +	pinctrl-0 = <&pcie30x4m1_pins>;
 > 
-> Signed-off-by: RD Babiera <rdbabiera@google.com>
-> ---
->  drivers/platform/chrome/cros_typec_vdm.c | 12 +++++++++--
->  drivers/usb/typec/altmodes/displayport.c | 15 +++++++-------
->  drivers/usb/typec/bus.c                  | 17 ++++++++++------
->  drivers/usb/typec/class.c                |  2 +-
->  drivers/usb/typec/tcpm/tcpm.c            | 15 ++++++++------
->  drivers/usb/typec/ucsi/displayport.c     | 18 +++++++++++++---
->  include/linux/usb/typec_altmode.h        | 26 ++++++++++++++++++------
->  7 files changed, 74 insertions(+), 31 deletions(-)
+> Hi Heiko,
+> 
+> > 
+> > also, why are you throwing out the pinctrl for the reset pin.
+> > That seems not related to the regular pins and you could instead just do
+> > 
+> > +	pinctrl-0 = <&pcie30x4m1_pins>, <&pcie3_reset>;
+> 
+> The pcie30x4m1_pins def does include pinmuxing `4 RK_PB6` to the DW 
+> controller already. The v2 patch should probably instead remove the 
+> reset-gpios property, since an out-of-band GPIO reset is not needed when 
+> the controller can do it.
 
-<snip>
+yep, also because of the reset-gpios the pinctrl/gpio driver will mux the
+pin to gpio function even though the pinctrl would've set if the pcie-
+function before that.
 
-> diff --git a/include/linux/usb/typec_altmode.h b/include/linux/usb/typec_altmode.h
-> index 28aeef8f9e7b..4d527d92457d 100644
-> --- a/include/linux/usb/typec_altmode.h
-> +++ b/include/linux/usb/typec_altmode.h
-> @@ -34,6 +34,16 @@ struct typec_altmode {
->  
->  #define to_typec_altmode(d) container_of(d, struct typec_altmode, dev)
->  
-> +/**
-> + * These are used by the Alternate Mode drivers to tell the tcpm to transmit
-> + * over the selected SOP type, and are used by the tcpm to communicate the
-> + * received VDM SOP type to the Alternate Mode drivers.
-> + */
-> +enum typec_altmode_transmit_type {
-> +	TYPEC_ALTMODE_SOP,
-> +	TYPEC_ALTMODE_SOP_PRIME,
-> +};
-> +
->  static inline void typec_altmode_set_drvdata(struct typec_altmode *altmode,
->  					     void *data)
->  {
-> @@ -55,21 +65,25 @@ static inline void *typec_altmode_get_drvdata(struct typec_altmode *altmode)
->   * @activate: User callback for Enter/Exit Mode
->   */
->  struct typec_altmode_ops {
-> -	int (*enter)(struct typec_altmode *altmode, u32 *vdo);
-> -	int (*exit)(struct typec_altmode *altmode);
-> +	int (*enter)(struct typec_altmode *altmode, u32 *vdo,
-> +		     enum typec_altmode_transmit_type sop_type);
-> +	int (*exit)(struct typec_altmode *altmode,
-> +		    enum typec_altmode_transmit_type sop_type);
->  	void (*attention)(struct typec_altmode *altmode, u32 vdo);
->  	int (*vdm)(struct typec_altmode *altmode, const u32 hdr,
-> -		   const u32 *vdo, int cnt);
-> +		   const u32 *vdo, int cnt, enum typec_altmode_transmit_type sop_type);
->  	int (*notify)(struct typec_altmode *altmode, unsigned long conf,
->  		      void *data);
->  	int (*activate)(struct typec_altmode *altmode, int activate);
->  };
->  
-> -int typec_altmode_enter(struct typec_altmode *altmode, u32 *vdo);
-> -int typec_altmode_exit(struct typec_altmode *altmode);
-> +int typec_altmode_enter(struct typec_altmode *altmode, u32 *vdo,
-> +			enum typec_altmode_transmit_type sop_type);
-> +int typec_altmode_exit(struct typec_altmode *altmode, enum typec_altmode_transmit_type sop_type);
->  int typec_altmode_attention(struct typec_altmode *altmode, u32 vdo);
->  int typec_altmode_vdm(struct typec_altmode *altmode,
-> -		      const u32 header, const u32 *vdo, int count);
-> +		      const u32 header, const u32 *vdo, int count,
-> +		      enum typec_altmode_transmit_type sop_type);
->  int typec_altmode_notify(struct typec_altmode *altmode, unsigned long conf,
->  			 void *data);
->  const struct typec_altmode *
+So I'm really in favor of not mixing the two concepts :-)
+When setting the pins, the reset-gpio should be gone and vice-versa.
 
-Instead of forcing this change immediately on every existing user of
-that API, why not supply separate API for the cable alt modes?
+> I'm still looking into the story with the PCIe 2.0 pins, since 2.0x1's 
+> PERST# is definitely 4A2. I'll ask around and try to find out where the 
+> corresponding CLKREQ# is going.
 
-Although the SOP* communication is the same in most parts, at least
-Attention (and probable some other messages too) is not valid with
-cable plugs. So maybe it would be more clear to just separate SOP
-communication from SOP Prime/Double Prime in the API?
-
-So it would look something like this:
-
-diff --git a/include/linux/usb/typec_altmode.h b/include/linux/usb/typec_altmode.h
-index bd41bc362ab0..2f7ae50585b1 100644
---- a/include/linux/usb/typec_altmode.h
-+++ b/include/linux/usb/typec_altmode.h
-@@ -75,6 +75,24 @@ int typec_altmode_notify(struct typec_altmode *altmode, unsigned long conf,
- const struct typec_altmode *
- typec_altmode_get_partner(struct typec_altmode *altmode);
- 
-+/**
-+ * struct typec_cable_ops - Cable alternate mode operations vector
-+ * @enter: Operations to be executed with Enter Mode Command
-+ * @exit: Operations to be executed with Exit Mode Command
-+ * @vdm: Callback for SVID specific commands
-+ */
-+struct typec_cable_ops {
-+       int (*enter)(struct typec_altmode *altmode, enum typec_plug_index sop, u32 *vdo);
-+       int (*exit)(struct typec_altmode *altmode, enum typec_plug_index sop);
-+       int (*vdm)(struct typec_altmode *altmode, enum typec_plug_index sop,
-+                  const u32 hdr, const u32 *vdo, int cnt);
-+};
-+
-+int typec_cable_altmode_enter(struct typec_altmode *altmode, enum typec_plug_index sop, u32 *vdo);
-+int typec_cable_altmode_exit(struct typec_altmode *altmode, enum typec_plug_index sop);
-+int typec_cable_altmode_vdm(struct typec_altmode *altmode, enum typec_plug_index sop,
-+                           const u32 header, const u32 *vdo, int count);
-+
- /*
-  * These are the connector states (USB, Safe and Alt Mode) defined in USB Type-C
-  * Specification. SVID specific connector states are expected to follow and
+Yeah, I tried reading up in the TRM but it was really hard following
+which pin-group actually goes to which controller and the naming
+definitly does not help :-) .
 
 
-thanks,
+Heiko
 
--- 
-heikki
+
+
+> >>   	reset-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
+> >>   	vpcie3v3-supply = <&vcc3v3_pcie30>;
+> >>   	status = "okay";
+> >> @@ -245,17 +245,7 @@ hym8563_int: hym8563-int {
+> >>   		};
+> >>   	};
+> >>   
+> >> -	pcie2 {
+> >> -		pcie2_reset: pcie2-reset {
+> >> -			rockchip,pins = <4 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
+> >> -		};
+> >> -	};
+> >> -
+> >>   	pcie3 {
+> >> -		pcie3_reset: pcie3-reset {
+> >> -			rockchip,pins = <4 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>;
+> >> -		};
+> >> -
+> >>   		vcc3v3_pcie30_en: pcie3-reg {
+> >>   			rockchip,pins = <2 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
+> >>   		};
+> >>
+> > 
+> > 
+> > 
+> > 
+> 
+
+
+
+
