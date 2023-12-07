@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C967C8081FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC6E8081FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 08:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbjLGHbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 02:31:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50346 "EHLO
+        id S1377918AbjLGHb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 02:31:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbjLGHbl (ORCPT
+        with ESMTP id S229809AbjLGHby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 02:31:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D09F11F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 23:31:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E745C433CA;
-        Thu,  7 Dec 2023 07:31:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1701934307;
-        bh=AQ3zRaWsxl12kZ8IbNOLzKipBmlx9MwTy7N5XYMJexA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DfhrW129VGKpUM3TCX2gNqhQjeGfTNPP0SAxtinRm24SLzTOlmXfo800Ka24OTXpr
-         87dvSP087+Z3Z2U65zg19ilH9Aj/9G9DRZhpw2R/Wz2nN/Rc8t+a0ia1SQfRIhjNS0
-         yxed0pwSEub43xZZYv2Wy0FozCrcInu2zwI2iOEA=
-Date:   Thu, 7 Dec 2023 08:31:44 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Sourav Panda <souravpanda@google.com>, corbet@lwn.net,
-        rafael@kernel.org, mike.kravetz@oracle.com, muchun.song@linux.dev,
-        rppt@kernel.org, david@redhat.com, rdunlap@infradead.org,
-        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
-        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
-        yosryahmed@google.com, hannes@cmpxchg.org, shakeelb@google.com,
-        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
-        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
-        surenb@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, willy@infradead.org, weixugc@google.com
-Subject: Re: [PATCH v6 0/1] mm: report per-page metadata information
-Message-ID: <2023120731-deception-handmade-8d49@gregkh>
-References: <20231205223118.3575485-1-souravpanda@google.com>
- <2023120648-droplet-slit-0e31@gregkh>
- <CA+CK2bARjZgnMBL9bOD7p1u=02-fGgWwfiGvsFVpsJWL-VR2ng@mail.gmail.com>
- <2023120645-survey-puppet-4ae0@gregkh>
- <20231206075913.fa2633991bf257f5ffe5f3f8@linux-foundation.org>
+        Thu, 7 Dec 2023 02:31:54 -0500
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DBBD5E;
+        Wed,  6 Dec 2023 23:31:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1701934320; x=1733470320;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=NvfRzA06H3AcI6WpmXO5M+PBAuH7VC1PGViD7SmhVyU=;
+  b=lKRxIdSJLEk/QeuIx+pV1u79AHXtTSdMjrFJIEJCTaDmnr5RO/GK092J
+   sUZEcq/K5/klos/dwgGmfcwFUlp5bp/UM66X0V/flwMLJUTzVHKQmn7mb
+   QCmpdGuIajW74UWochJLprUrR2zu6/GV/I0exKgp0no/ID9LxrvMWL412
+   0QvkTSxwoxVsElSIQR5g7UE8CUhPyNnxd8yZvk+S6nAV/u5bONJ0k0Zfo
+   XnF6HAkfJbnaErKbXn6qjWOV2WGXpHLrS6bBXVTRxuUodxYGIxY0W+//D
+   y2Mlk3kUtP6JzRKyXDuxiywpq0TEcPloJbpNDGXlD6Ft8DXhOBzHtLmfg
+   g==;
+X-IronPort-AV: E=Sophos;i="6.04,256,1695679200"; 
+   d="scan'208";a="34373751"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 07 Dec 2023 08:31:57 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 7F243280075;
+        Thu,  7 Dec 2023 08:31:57 +0100 (CET)
+From:   Alexander Stein <alexander.stein@ew.tq-group.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux@ew.tq-group.com,
+        gregor.herburger@ew.tq-group.com,
+        Gregor Herburger <gregor.herburger@ew.tq-group.com>
+Subject: Re: [PATCH 0/2] TQMLX2160A support
+Date:   Thu, 07 Dec 2023 08:31:56 +0100
+Message-ID: <1874330.tdWV9SEqCh@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20231206-for-ml-tqmlx2160a-v1-0-622e41ae4d8e@ew.tq-group.com>
+References: <20231206-for-ml-tqmlx2160a-v1-0-622e41ae4d8e@ew.tq-group.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206075913.fa2633991bf257f5ffe5f3f8@linux-foundation.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 07:59:13AM -0800, Andrew Morton wrote:
-> On Wed, 6 Dec 2023 12:12:10 +0900 Greg KH <gregkh@linuxfoundation.org> wrote:
-> 
-> > On Tue, Dec 05, 2023 at 09:57:36PM -0500, Pasha Tatashin wrote:
-> > > Hi Greg,
-> > > 
-> > > Sourav removed the new field from sys/device../nodeN/meminfo as you
-> > > requested; however, in nodeN/vmstat fields still get appended, as
-> > > there is code that displays every item in zone_stat_item,
-> > > node_stat_item without option to opt-out. I mentioned it to you at
-> > > LPC.
-> > 
-> > Sorry, I thought that was a proc file, not a sysfs file.  Don't grow
-> > that file please, it should not be that way and adding to it will just
-> > cause others to also want to add to it and we end up with the whole proc
-> > file mess...
-> > 
-> > > In my IOMMU [1] series, there are also fields that are added to
-> > > node_stat_item that as result are appended to nodeN/vmstat.
-> > 
-> > I missed that, that too shouldn't be done please.
-> > 
-> > Again, sysfs is "one value per file" for a reason, don't abuse the fact
-> > that we missed this abuse of the rules for that file by adding more
-> > things to it.
-> 
-> I'm afraid that horse has bolted.
-> 
-> hp2:/usr/src/25> wc /sys/devices/system/node/node0/vmstat 
->   61  122 1309 /sys/devices/system/node/node0/vmstat
-> 
-> We're never going to unpick this into 61 separate files so adding new
-> files at this stage is pointless.
+Hi,
 
-But if it keeps growing, it will eventually overflow and start crashing
-the kernel and you will then have to do the horrid thing of turning it
-into a binary sysfs file.
+Am Mittwoch, 6. Dezember 2023, 15:01:00 CET schrieb Gregor Herburger:
+> Hi,
+>=20
+> this series adds initial support for the TQMLX2160A SoM on MBLX2160a
+> baseboard. The various supported Serdes Configurations are added with
+> overlay files.
+>=20
+> Patch 1 adds the compatible to dt bindings
+> Patch 2 adds the dts files
+>=20
+> ---
+> Gregor Herburger (2):
+>       dt-bindings: arm: fsl: Add TQ-Systems LX2160A based boards
+>       arm64: dts: freescale: add fsl-lx2160a-mblx2160a board
 
-So I can please ask that no new entries be added to the file please,
-let's not keep making things worse.  For new items, just add new files,
-don't add to the existing mess.
+=46or the whole series:
+Reviewed-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-thanks,
+>  Documentation/devicetree/bindings/arm/fsl.yaml     |  10 +
+>  arch/arm64/boot/dts/freescale/Makefile             |  26 ++
+>  .../freescale/fsl-lx2160a-tqmlx2160a-mblx2160a.dts | 338
+> +++++++++++++++++++++ .../fsl-lx2160a-tqmlx2160a-mblx2160a_12_x_x.dtso   =
+|=20
+> 29 ++
+>  .../fsl-lx2160a-tqmlx2160a-mblx2160a_14_x_x.dtso   |  17 ++
+>  .../fsl-lx2160a-tqmlx2160a-mblx2160a_x_11_x.dtso   |  49 +++
+>  .../fsl-lx2160a-tqmlx2160a-mblx2160a_x_7_x.dtso    |  55 ++++
+>  .../fsl-lx2160a-tqmlx2160a-mblx2160a_x_8_x.dtso    |  47 +++
+>  .../boot/dts/freescale/fsl-lx2160a-tqmlx2160a.dtsi |  97 ++++++
+>  9 files changed, 668 insertions(+)
+> ---
+> base-commit: 8728c14129df7a6e29188a2e737b4774fb200953
+> change-id: 20231206-for-ml-tqmlx2160a-68ee235f71cd
+>=20
+> Best regards,
 
-greg k-h
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
+
