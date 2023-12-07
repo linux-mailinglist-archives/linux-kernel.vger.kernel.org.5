@@ -2,108 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE504807E62
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 03:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9329C807E5C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 03:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443026AbjLGCYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 21:24:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
+        id S1442992AbjLGCXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 21:23:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbjLGCYL (ORCPT
+        with ESMTP id S230385AbjLGCXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 21:24:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0B5D5C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 18:24:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701915858; x=1733451858;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=BlyFybv+wIkSnOIH0bgSDQUnQo1Qmc4Q1qqIz58xmyg=;
-  b=DcLqoK4uqAI3ePp5gUDv8cm6mF0CGB6ehXBTMa8cy8SZTQAYPBNfbcvf
-   xD/Hy4NxV0dxj0d3oU+GW5OEd9E9khrH0ONj1/SolBVLXxmwHdvuZ772C
-   SOtgYJEgYG090IXdDCpDmxxLzVj0Q8Xg4v3Zbva1PKvlv10YXoW0fh9xy
-   Fp8SRnFlH5nkZzNa06qKMsDBI51u6fQ39WjOTZPuCL68OX0ZapiFdPY2M
-   G65JDkVszESdOOwseIyJHgGBRfy66ZOIWHSnaE2KGJzZJ5OBnPowqB8V+
-   Mreu8qk4wOnG/C7Ib6ULdS4d3HL9ibbhVjkSUCmnbeYHO1MP6//IMj1+g
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="391331282"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="391331282"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 18:24:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="805848827"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="805848827"
-Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by orsmga001.jf.intel.com with ESMTP; 06 Dec 2023 18:24:15 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>
-Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 1/1] iommu: Set owner token to sva and nested domains
-Date:   Thu,  7 Dec 2023 10:19:38 +0800
-Message-Id: <20231207021938.306738-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 6 Dec 2023 21:23:54 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03294D4B;
+        Wed,  6 Dec 2023 18:24:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VnNxPtULTHkI7+FJBFkxvuhGf4itUHcJaix/h4kMFWk=; b=Ar1MDqmXci7Shf383eNOiYpJEG
+        Xcy3OFqNU4GSO5sHlexxo6Frj3D0bdK7t+mK8aor2Jpel1HIT2ag9M92CZVM0cOjQo9Wnom0g3UGp
+        qx76DkqvBHRVUEP1ZUJKw+GvsKnrHxL5YjJ6SUVJMaeIIsGd5JuJlFvnpM0RIYLRjuRROrME0JNen
+        Amge3ULWWLEFE2Mh5jcjAbSVWVNTsgHByvrf/xDNoMfbt62eVJXxNcbY7h2IUvONyfrwyI6Nl0SLP
+        enz2SulFtL40+bB9YOQ9gbkdJzFPm8Zup2rbNIfhNAkSwgxkLHPAQuHR2xO0Sv6mD34zqUsZTX975
+        vhdOn4gg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rB43R-00831U-1R;
+        Thu, 07 Dec 2023 02:23:57 +0000
+Date:   Thu, 7 Dec 2023 02:23:57 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-cachefs@redhat.com, dhowells@redhat.com,
+        gfs2@lists.linux.dev, dm-devel@lists.linux.dev,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/11] lib/dlock-list: Distributed and lock-protected
+ lists
+Message-ID: <20231207022357.GS1674809@ZenIV>
+References: <20231206060629.2827226-1-david@fromorbit.com>
+ <20231206060629.2827226-2-david@fromorbit.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206060629.2827226-2-david@fromorbit.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit a9c362db3920 ("iommu: Validate that devices match domains") added
-an owner token to an iommu_domain. This token is checked during domain
-attachment to RID or PASID through the generic iommu interfaces.
+On Wed, Dec 06, 2023 at 05:05:30PM +1100, Dave Chinner wrote:
 
-The sva and nested domains are attached to device or PASID through the
-generic iommu interfaces. Therefore, they require the owner token to be
-set during allocation. Otherwise, they fail to attach.
+> +static inline struct dlock_list_node *
+> +__dlock_list_next_entry(struct dlock_list_node *curr,
+> +			struct dlock_list_iter *iter)
+> +{
+> +	/*
+> +	 * Find next entry
+> +	 */
+> +	if (curr)
+> +		curr = list_next_entry(curr, list);
+> +
+> +	if (!curr || (&curr->list == &iter->entry->list)) {
 
-Set the owner token for sva and nested domains.
+Hmm...  hlist, perhaps?  I mean, that way the thing becomes
+	if (curr)
+		curr = hlist_entry_safe(curr->node.next,
+					struct dlock_list_node, node);
+	if (!curr)
+		curr = __dlock_list_next_list(iter);
+	return curr;
 
-Fixes: a9c362db3920 ("iommu: Validate that devices match domains")
-Cc: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/nested.c | 1 +
- drivers/iommu/iommu.c        | 1 +
- 2 files changed, 2 insertions(+)
+BTW, does anybody have objections against
 
-diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
-index b5a5563ab32c..014d4a4e7586 100644
---- a/drivers/iommu/intel/nested.c
-+++ b/drivers/iommu/intel/nested.c
-@@ -108,6 +108,7 @@ struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain *parent,
- 	domain->s1_cfg = vtd;
- 	domain->domain.ops = &intel_nested_domain_ops;
- 	domain->domain.type = IOMMU_DOMAIN_NESTED;
-+	domain->domain.owner = &intel_iommu_ops;
- 	INIT_LIST_HEAD(&domain->devices);
- 	INIT_LIST_HEAD(&domain->dev_pasids);
- 	spin_lock_init(&domain->lock);
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 0d25468d53a6..d0a28667479a 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -3617,6 +3617,7 @@ struct iommu_domain *iommu_sva_domain_alloc(struct device *dev,
- 	domain->type = IOMMU_DOMAIN_SVA;
- 	mmgrab(mm);
- 	domain->mm = mm;
-+	domain->owner = ops;
- 	domain->iopf_handler = iommu_sva_handle_iopf;
- 	domain->fault_data = mm;
- 
--- 
-2.34.1
+#define hlist_first_entry(head, type, member)
+	hlist_entry_safe((head)->first, type, member)
 
+#define hlist_next_entry(pos, member)
+	hlist_entry_safe((pos)->member.next, typeof(*pos), member)
+
+added in list.h?
+
+> +static int __init cpu2idx_init(void)
+> +{
+> +	int idx, cpu;
+> +
+> +	idx = 0;
+> +	for_each_possible_cpu(cpu)
+> +		per_cpu(cpu2idx, cpu) = idx++;
+> +	return 0;
+> +}
+> +postcore_initcall(cpu2idx_init);
+
+Is it early enough?  Feels like that ought to be done from smp_init() or
+right after it...
+
+> +/**
+> + * dlock_lists_empty - Check if all the dlock lists are empty
+> + * @dlist: Pointer to the dlock_list_heads structure
+> + * Return: true if list is empty, false otherwise.
+> + *
+> + * This can be a pretty expensive function call. If this function is required
+> + * in a performance critical path, we may have to maintain a global count
+> + * of the list entries in the global dlock_list_heads structure instead.
+> + */
+> +bool dlock_lists_empty(struct dlock_list_heads *dlist)
+> +{
+> +	int idx;
+> +
+> +	for (idx = 0; idx < nr_cpu_ids; idx++)
+> +		if (!list_empty(&dlist->heads[idx].list))
+> +			return false;
+> +	return true;
+> +}
+
+Umm...  How would one use it, anyway?  You'd need to stop all insertions
+first, wouldn't you?
+
+> + */
+> +struct dlock_list_node *__dlock_list_next_list(struct dlock_list_iter *iter)
+> +{
+> +	struct dlock_list_node *next;
+> +	struct dlock_list_head *head;
+> +
+> +restart:
+> +	if (iter->entry) {
+> +		spin_unlock(&iter->entry->lock);
+> +		iter->entry = NULL;
+> +	}
+> +
+> +next_list:
+> +	/*
+> +	 * Try next list
+> +	 */
+> +	if (++iter->index >= nr_cpu_ids)
+> +		return NULL;	/* All the entries iterated */
+> +
+> +	if (list_empty(&iter->head[iter->index].list))
+> +		goto next_list;
+> +
+> +	head = iter->entry = &iter->head[iter->index];
+> +	spin_lock(&head->lock);
+> +	/*
+> +	 * There is a slight chance that the list may become empty just
+> +	 * before the lock is acquired. So an additional check is
+> +	 * needed to make sure that a valid node will be returned.
+> +	 */
+> +	if (list_empty(&head->list))
+> +		goto restart;
+> +
+> +	next = list_entry(head->list.next, struct dlock_list_node,
+> +			  list);
+> +	WARN_ON_ONCE(next->head != head);
+> +
+> +	return next;
+> +}
+
+Perhaps something like
+
+	if (iter->entry) {
+		spin_unlock(&iter->entry->lock);
+		iter->entry = NULL;
+	}
+	while (++iter->index < nr_cpu_ids) {
+		struct dlock_list_head *head = &iter->head[iter->index];
+
+		if (list_empty(head->list))
+			continue;
+
+		spin_lock(&head->lock);
+		// recheck under lock
+		if (unlikely(list_empty(&head->list))) {
+			spin_unlock(&head->lock);
+			continue;
+		}
+
+		iter->entry = head;
+		next = list_first_entry(&head->list,
+					struct dlock_list_node, list);
+		WARN_ON_ONCE(next->head != head);
+		return next;
+	}
+	return NULL;
