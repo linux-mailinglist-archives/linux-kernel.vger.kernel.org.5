@@ -2,176 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C26808948
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 470E0808950
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441934AbjLGNfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:35:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
+        id S1442007AbjLGNgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:36:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442011AbjLGNfr (ORCPT
+        with ESMTP id S1441947AbjLGNgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:35:47 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD59123;
-        Thu,  7 Dec 2023 05:35:53 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50be3eed85aso886460e87.2;
-        Thu, 07 Dec 2023 05:35:53 -0800 (PST)
+        Thu, 7 Dec 2023 08:36:35 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F5D10E9;
+        Thu,  7 Dec 2023 05:36:41 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id 41be03b00d2f7-5c66bbb3d77so651660a12.0;
+        Thu, 07 Dec 2023 05:36:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701956151; x=1702560951; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DE2zFskkDTSnqEUr5OB7Tct7a2e7vqqhqiLJL3O/hkk=;
-        b=KJQdZ+qJlJ6FVDgAxHaA38o34Hy/dL74T5lvCDNCgp/ceKAGIpzNvO5bgtYEzqXzak
-         j5i1i/ADcZ2C3gF+ILRzbXSs73o68vrO0FwfS2nIa5AZSj/FERjqsAPmgHASmgZnTbcY
-         kq0907N0YNHaTs3UQtb67857AP1kbuyCesANQ5tDi9jgRMrD3ZnFhw1/ZtseLNwVgJqb
-         KeEr8WhewcPk1ukT5nk1xPnG/LRldc7rRR/d3+/QjCGTWnhSxNzYW0lZ5WkG1zjbIvvt
-         3UlLnQl12Huw8dD4C5t/+IrZHVkJjRmC4u4mUZcRZFAiWTVHJ84C4IGXlrGZqrr2YHiH
-         BQRw==
+        d=gmail.com; s=20230601; t=1701956201; x=1702561001; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=VjSQyuSgVvJ/v1Bs+z8zb7EPthGUs1fJmqCPvPc17Jc=;
+        b=SFmElmRpR0e3Fx4Kyt33ra6gciua88FBgArZWAwAca6o5HRysUcC62nEO+Nu0eKuh6
+         N/IedmoDJg2IMBRhNA7DJ98xG77axvve9KMrFGJTZqxWdbrjSHinJeqhpyE0evsXph2b
+         NMgKTxZMxdvpwapjz2KYvleQhkvV40sI7uayN8SQqSpzy3Z9hxypVouxleaaox9SKMHn
+         8RU5YVeA2mX8ug5agFlta7SQ/RAAKsKnAG2Y76THgbf/0p+C84cfbJkF2/FJ4XVISbmb
+         /lFCxyPiDH5Z60qFEP9K0ibmSV2LWsfVXhby+/EEfapvnMNL3pifIPsbw78cxsFtEDyT
+         vh3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701956151; x=1702560951;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DE2zFskkDTSnqEUr5OB7Tct7a2e7vqqhqiLJL3O/hkk=;
-        b=uuqFSNvAkRIp4YzL4XBmzNxjmp7JIaB6MKn6bu2PQ0HtVT1/EFXqnHLUIS9VWcQs9q
-         SJnmHda71TgtNREvmDCVgQYPmWKFYhFnAIH25nWxRgD5loJMf2vt8PpBG1z4J4/rAgUd
-         qodcT0osBSldCnhxjvLoP7VeGRteyhHhJqdpEiTDyR7zuJUiJJnEmbGJyZhV8RelWDZu
-         S+Cc9nY48C2EjkkKdMMHlBrotN2jqrdjN/iHav+RAGGphm3O8nWrcC/JK6sJY2mVh36o
-         2Bl2RGWWZ8fY+/PAxkox8XD38P4LCmtrLjBMwKHSnjemrTXLsh6nHDtj7wl0Ucl1FrqC
-         ggVg==
-X-Gm-Message-State: AOJu0YwSXTfBKWmq48iagfbNYCvEWwIbpDCPSwjSueB7od31VNSCZJIr
-        FTQZLGE8GVazGb1bZFkHLoI=
-X-Google-Smtp-Source: AGHT+IFpxi32i/H2T4l/U2UQxsPFB0f94jLoEstgg/x9ZHx2sGmv9RsyaRRUJxbdN9o8b/cu5/ilBA==
-X-Received: by 2002:a05:6512:3124:b0:50c:a39:ee37 with SMTP id p4-20020a056512312400b0050c0a39ee37mr1567241lfd.109.1701956150819;
-        Thu, 07 Dec 2023 05:35:50 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id bp42-20020a05651215aa00b0050bf8852fb1sm174527lfb.45.2023.12.07.05.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 05:35:50 -0800 (PST)
-Date:   Thu, 7 Dec 2023 16:35:47 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 09/16] net: mdio: Add Synopsys DW XPCS
- management interface support
-Message-ID: <jqwhgthwxfge6y4nv5mdnojqu76m4pi2mt2x6kwqiuqntcwj67@mewh42eey5ny>
-References: <20231205103559.9605-1-fancer.lancer@gmail.com>
- <20231205103559.9605-10-fancer.lancer@gmail.com>
- <20231205133205.3309ab91@device.home>
- <cv6oo27tqbfst3jrgtkg7bcxmeshadtzoomn2xgnzh2arz4nwy@wq5k7oygto6n>
- <15e6857a-b1d1-465a-945e-6f31edac62fb@lunn.ch>
+        d=1e100.net; s=20230601; t=1701956201; x=1702561001;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VjSQyuSgVvJ/v1Bs+z8zb7EPthGUs1fJmqCPvPc17Jc=;
+        b=GNE+tOWaIIbMH7hCqO1LoLJ3kbaBlYQmNezSveVWWqoHJ8wcmY1uAWI4aSz9CW2plT
+         z/q7+WFojnUjRrw+jZKIqUYGw/q6A2Gw/S4luYx7mOWL4QbbM86jJ2Jnobc2kQAxurd0
+         DwRyPWAcESK9adFV+DnUgFx3O+mnovYK4o+XiHLYBDIPiqPHGmCoHYQFVOhCipQO9cXE
+         XLCFju38xNQYXWNUKAlnWpnFRWURv4wqFFT593R116MpWWMOrVqOeyvJZshVwCm3TV3a
+         zIUDwy8SQmSR6UUxogWEs6yVpr8WD68eKoons+En8ZTkielQ4/HV4EdM+H0dmOSp1qZT
+         xh0g==
+X-Gm-Message-State: AOJu0YxEJbHdtEl2byz4b8uOId2oWM1ISvANbOiArMnBfFKnI4Nv0GwM
+        8Ywe1hade99euNiJ/pDSApENVtEVMR6x+aXKz0gSA89TTt7ZBl5YueE=
+X-Google-Smtp-Source: AGHT+IHo/qPLG2H/4BL+OPGDtxBQTSHt9k2BhKOF/IU5s15zvDYUB/DkOWSfgbWcTjkXEKmzl0OkTiGNH6T5dwBCKTY=
+X-Received: by 2002:a17:90a:a406:b0:27e:1ea0:c6fc with SMTP id
+ y6-20020a17090aa40600b0027e1ea0c6fcmr2218828pjp.6.1701956201090; Thu, 07 Dec
+ 2023 05:36:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <15e6857a-b1d1-465a-945e-6f31edac62fb@lunn.ch>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   xingwei lee <xrivendell7@gmail.com>
+Date:   Thu, 7 Dec 2023 21:36:29 +0800
+Message-ID: <CABOYnLxJzspevWrZLOt+6jkybyUEHfYz8MFZbTuRcyyjnExiKA@mail.gmail.com>
+Subject: Re: KMSAN: uninit-value in ip_route_output_key_hash_rcu (4)
+To:     syzbot+549e451574ba8bfd0fd6@syzkaller.appspotmail.com
+Cc:     davem@davemloft.net, glider@google.com, kuba@kernel.org,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew
+Hello
 
-On Wed, Dec 06, 2023 at 06:01:30PM +0100, Andrew Lunn wrote:
-> > > You shouldn't use inline in C files, only in headers.
-> > 
-> > Could you please clarify why? I failed to find such requirement in the
-> > coding style doc. Moreover there are multiple examples of using the
-> > static-inline-ers in the C files in the kernel including the net/mdio
-> > subsystem.
-> 
+I reproduced this bug in the latest upstream linux with repro.c and repro.txt
 
-> The compiler does a better job at deciding what to inline than we
-> humans do. If you can show the compiler is doing it wrong, then we
-> might accept them.
+When fuzzing the latest upstream linux 6.7-rc4,  the following crash
+was triggered.
+HEAD commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
 
-In general I would have agreed with you especially if the methods were
-heavier than what they are:
-static inline ptrdiff_t dw_xpcs_mmio_addr_format(int dev, int reg)
-{               
-        return FIELD_PREP(0x1f0000, dev) | FIELD_PREP(0xffff, reg);
-}               
-        
-static inline u16 dw_xpcs_mmio_addr_page(ptrdiff_t csr)
-{       
-        return FIELD_GET(0x1fff00, csr);
-}       
+If you fix this issue, please add the following tag to the commit:
+Reported-by: xingwei Lee <xrivendell7@gmail.com>
 
-static inline ptrdiff_t dw_xpcs_mmio_addr_offset(ptrdiff_t csr)
-{
-        return FIELD_GET(0xff, csr);
-}
+console_log: https://gist.github.com/xrivendell7/195eb3c1946ea466f9d8f5977b90c6ed#file-console_log
+report: https://gist.github.com/xrivendell7/195eb3c1946ea466f9d8f5977b90c6ed#file-report
+kernel commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=ce27066613dacbb6
+repro.c: https://gist.github.com/xrivendell7/195eb3c1946ea466f9d8f5977b90c6ed#file-repro-c
+repro.txt: https://gist.github.com/xrivendell7/195eb3c1946ea466f9d8f5977b90c6ed#file-repro-txt
 
-> But in general, netdev does not like inline in .C
-> file.
-
-I see. I'll do as you say if you don't change your mind after my
-reasoning below.
-
-> Also, nothing in MDIO is hot path, it spends a lot of time
-> waiting for a slow bus. So inline is likely to just bloat the code for
-> no gain.
-
-I would have been absolutely with you in this matter, if we were talking
-about a normal MDIO bus. In this case the devices are accessed over
-the system IO-memory. So the bus isn't that slow.
-
-Regarding the compiler knowing better when to inline the code. Here is
-what it does with the methods above. If the inline keyword is
-specified the compiler will inline all three methods. If the keyword isn't
-specified then dw_xpcs_mmio_addr_format() won't be inlined while the rest
-two functions will be. So the only part at consideration is the
-dw_xpcs_mmio_addr_format() method since the rest of the functions are
-inlined anyway.
-
-The dw_xpcs_mmio_addr_format() function body is of the 5 asm
-instructions length (on MIPS). Since the function call in this case
-requires two jump instructions (to function and back), one instruction
-to save the previous return address on stack and two instructions for
-the function arguments, the trade-off of having non-inlined function
-are those five additional instructions on each call. There are four
-dw_xpcs_mmio_addr_format() calls. So here is what we get in both
-cases:
-inlined:     5 func ins * 4 calls = 20 ins
-non-inlined: (5 func + 1 jump) ins + (1 jump + 1 ra + 2 arg) ins * 4 calls  = 22 ins
-but seeing the return address needs to be saved anyway in the callers
-here is what we finally get:
-non-inlined: (5 func + 1 jump) ins + (1 jump + 2 arg) ins * 4 calls  = 18 ins
-
-So unless I am mistaken in some of the aspects if we have the function
-non-inlined then we'll save 2 instructions in the object file, but
-each call would require additional _4_ instructions to execute (2
-jumps and 2 arg creations), which makes the function execution almost
-two times longer than it would have been should it was inlined. IMO in
-this case saving 2 instructions of the object file isn't worth than
-getting rid from four instructions on each call seeing the DW XPCS
-MCI/APB3 buses are the memory IO interfaces which don't require any
-long-time waits to perform the ops. Thus I'd suggest to keep the
-inline keywords specified here.
-
-What is your conclusion?
-
--Serge(y)
-
-> 
->    Andrew
+In the lasted kernel: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8 the
+crash likes below:
+[  209.523497][ T8593] =====================================================
+[  209.530316][ T8593] BUG: KMSAN: uninit-value in
+ip_route_output_key_hash_rcu+0x1ee8/0x3810
+[  209.533357][ T8593]  ip_route_output_key_hash_rcu+0x1ee8/0x3810
+[  209.535524][ T8593]  ip_route_output_flow+0x14f/0x320
+[  209.537312][ T8593]  ip_tunnel_xmit+0x1450/0x3e80
+[  209.538995][ T8593]  ipgre_xmit+0xd1c/0xe20
+[  209.540511][ T8593]  dev_hard_start_xmit+0x247/0xa10
+[  209.542211][ T8593]  __dev_queue_xmit+0x33b8/0x5130
+[  209.543742][ T8593]  __bpf_redirect+0xdd7/0x1600
+[  209.545235][ T8593]  bpf_clone_redirect+0x328/0x470
+[  209.546807][ T8593]  ___bpf_prog_run+0x2180/0xdb80
+[  209.548288][ T8593]  __bpf_prog_run512+0xb5/0xe0
+[  209.549864][ T8593]  bpf_test_run+0x482/0xb00
+[  209.551178][ T8593]  bpf_prog_test_run_skb+0x14e5/0x1f20
+[  209.552612][ T8593]  bpf_prog_test_run+0x6af/0xac0
+[  209.553902][ T8593]  __sys_bpf+0x649/0xd60
+[  209.555000][ T8593]  __x64_sys_bpf+0xa0/0xe0
+[  209.556114][ T8593]  do_syscall_64+0x44/0x110
+[  209.557249][ T8593]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+[  209.558676][ T8593]
+[  209.559232][ T8593] Uninit was stored to memory at:
+[  209.560528][ T8593]  ip_tunnel_xmit+0x1161/0x3e80
+[  209.561676][ T8593]  ipgre_xmit+0xd1c/0xe20
+[  209.562711][ T8593]  dev_hard_start_xmit+0x247/0xa10
+[  209.563864][ T8593]  __dev_queue_xmit+0x33b8/0x5130
+[  209.564963][ T8593]  __bpf_redirect+0xdd7/0x1600
+[  209.566044][ T8593]  bpf_clone_redirect+0x328/0x470
+[  209.567151][ T8593]  ___bpf_prog_run+0x2180/0xdb80
+[  209.568184][ T8593]  __bpf_prog_run512+0xb5/0xe0
+[  209.569187][ T8593]  bpf_test_run+0x482/0xb00
+[  209.570201][ T8593]  bpf_prog_test_run_skb+0x14e5/0x1f20
+[  209.571308][ T8593]  bpf_prog_test_run+0x6af/0xac0
+[  209.572284][ T8593]  __sys_bpf+0x649/0xd60
+[  209.573131][ T8593]  __x64_sys_bpf+0xa0/0xe0
+[  209.574010][ T8593]  do_syscall_64+0x44/0x110
+[  209.574902][ T8593]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+[  209.576008][ T8593]
+[  209.576456][ T8593] Uninit was created at:
+[  209.577301][ T8593]  slab_post_alloc_hook+0x129/0xa70
+[  209.578284][ T8593]  kmem_cache_alloc_node+0x5e9/0xb10
+[  209.579233][ T8593]  kmalloc_reserve+0x13d/0x4a0
+[  209.580177][ T8593]  pskb_expand_head+0x226/0x1a00
+[  209.581096][ T8593]  skb_ensure_writable+0x3d3/0x460
+[  209.582015][ T8593]  bpf_clone_redirect+0x17f/0x470
+[  209.582963][ T8593]  ___bpf_prog_run+0x2180/0xdb80
+[  209.583859][ T8593]  __bpf_prog_run512+0xb5/0xe0
+[  209.584725][ T8593]  bpf_test_run+0x482/0xb00
+[  209.585556][ T8593]  bpf_prog_test_run_skb+0x14e5/0x1f20
+[  209.586527][ T8593]  bpf_prog_test_run+0x6af/0xac0
+[  209.587347][ T8593]  __sys_bpf+0x649/0xd60
+[  209.588058][ T8593]  __x64_sys_bpf+0xa0/0xe0
+[  209.588802][ T8593]  do_syscall_64+0x44/0x110
+[  209.589613][ T8593]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
