@@ -2,138 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C662F808F1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E04808F1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443584AbjLGRwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:52:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
+        id S1443579AbjLGRx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:53:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443447AbjLGRww (ORCPT
+        with ESMTP id S1443447AbjLGRx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:52:52 -0500
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BA2170C;
-        Thu,  7 Dec 2023 09:52:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=zG2UGPXCv4/FgbLJTXPGX3Nf8DqXr0h+L8Zc4YpOnTg=; b=RThyG6ynxjFruIcj+Fjw17JpTZ
-        9Xlpp4UZrDFthSmK3pDHBqY5AHfVWp12rkbHjOKkuO7YeVb47/IpVphxP8OZHbED7+45vEsnAj7b2
-        +z4JeO/Lbt6egcVkjiaMEkDmTdrwVuILKEq9PbcLYKM+vHdhc0KUUrY+tHqcRW29k6Hk=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:57946 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1rBIYG-0007oa-0U; Thu, 07 Dec 2023 12:52:45 -0500
-Date:   Thu, 7 Dec 2023 12:52:43 -0500
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        hvilleneuve@dimonoff.com, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        stable@vger.kernel.org, Andy Shevchenko <andy.shevchenko@gmail.com>
-Message-Id: <20231207125243.c056d5cd0f875ea6dfdfa194@hugovil.com>
-In-Reply-To: <202312061443.Cknef7Uq-lkp@intel.com>
-References: <20231130191050.3165862-2-hugo@hugovil.com>
-        <202312061443.Cknef7Uq-lkp@intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Thu, 7 Dec 2023 12:53:26 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831C410CF
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:53:32 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2ca0f21e48cso13953821fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 09:53:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701971611; x=1702576411; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ej8XOnCH2VsZ/qShm6gnD6DULhgsDhDu14Fz2jUUZmE=;
+        b=ZPgQg+itvxzN5Vw5a/c662emHmOeBkmMXS1vW3e6UWjkrUKmHz1p8BtKukTJsUp+w3
+         LNL+xUafOLP9JcDbxxbIwiVA+rYrtBNRPq2PjZQoDw5q45u2aa2f1e1XdI2O0FtzZr+w
+         o9Htppcy1HzHCPs1x2+nsOzi6/p5fo3qJvgs6symtiueJ0qIFEoKgiOGScYmJqVjOI3h
+         TVDEFDxv2Npm66IHUs/wAgkuizAEulmOQh8W+1YP0oDjuVKTWcCZiR6Nve9i+n5JN17p
+         CVLlCn29aWm/5MtbD0H7gYpCk2we/FIjdEQtYP6e93fJ5QJupdZr9ieLs9MOCxklvajU
+         8rqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701971611; x=1702576411;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ej8XOnCH2VsZ/qShm6gnD6DULhgsDhDu14Fz2jUUZmE=;
+        b=BiHXfJOsg1DcKpxqa5lDBpE8n8K6kqpGLDC5kZZWTFP3t8FnIpjoPMerRo6yOc6a/p
+         SP1Pge7gn37quSFyOo6YCtQFA567gWz+Pi2KD17FkhWVE8lRXW9unRF/BYIPW6ypBRue
+         r8tCONmlM/5zcMiT+4MrFUA6TtZjlU3b1e4WCsm0E0lEM2ZU048XSFrgFGo1hUwQVbTc
+         ode0vWNcKKvyrg4tB5DSQ4fvCZ3Gn8/n4izQ5lPFHzeTzXs31LMBLj9wE9aV2PyQmZ/i
+         UKoQ1IHUKkeBnVxw/NxK5oToGQ809+q+BcSQv8JRkMhr6SniP5gY4qq0A2t0TWj4G+Ni
+         xO3g==
+X-Gm-Message-State: AOJu0YwgXrg7VO4EDnDXSOGV/MaeR+mLoXjgWriblp1oYQ7uCl5PYCKQ
+        qQ164cBwGb1WUjvgIFq7tWl1hCXvsGRLC0JzH6s5x8faLMxCSSOqaA4=
+X-Google-Smtp-Source: AGHT+IFSp7ZQgdeytewdjCrCAk/6O+2n4Z6XadRtIMNXGzlOiWvtudw1L7uZcT8Tl9dY9nr57EQaBQT3y1WABj45CSI=
+X-Received: by 2002:a2e:98d7:0:b0:2ca:286:4b1c with SMTP id
+ s23-20020a2e98d7000000b002ca02864b1cmr1948479ljj.91.1701971610472; Thu, 07
+ Dec 2023 09:53:30 -0800 (PST)
+MIME-Version: 1.0
+References: <20231207134614.882991-1-longman@redhat.com>
+In-Reply-To: <20231207134614.882991-1-longman@redhat.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 7 Dec 2023 09:52:54 -0800
+Message-ID: <CAJD7tka2op5wfRKawumoGrScVRA3qD0c2N-WshcmMbPzFBe0wQ@mail.gmail.com>
+Subject: Re: [PATCH-cgroup v2] cgroup: Move rcu_head up near the top of cgroup_root
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yafang Shao <laoar.shao@gmail.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH 1/7] serial: sc16is7xx: fix snprintf format specifier in
- sc16is7xx_regmap_name()
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Dec 2023 14:29:39 +0800
-kernel test robot <lkp@intel.com> wrote:
+On Thu, Dec 7, 2023 at 5:46=E2=80=AFAM Waiman Long <longman@redhat.com> wro=
+te:
+>
+> Commit d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU
+> safe") adds a new rcu_head to the cgroup_root structure and kvfree_rcu()
+> for freeing the cgroup_root.
+>
+> The current implementation of kvfree_rcu(), however, has the limitation
+> that the offset of the rcu_head structure within the larger data
+> structure must be less than 4096 or the compilation will fail. See the
+> macro definition of __is_kvfree_rcu_offset() in include/linux/rcupdate.h
+> for more information.
+>
+> By putting rcu_head below the large cgroup structure, any change to the
+> cgroup structure that makes it larger run the risk of causing build
+> failure under certain configurations. Commit 77070eeb8821 ("cgroup:
+> Avoid false cacheline sharing of read mostly rstat_cpu") happens to be
+> the last straw that breaks it. Fix this problem by moving the rcu_head
+> structure up before the cgroup structure.
+>
+> Fixes: d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU=
+ safe")
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Closes: https://lore.kernel.org/lkml/20231207143806.114e0a74@canb.auug.or=
+g.au/
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> Acked-by: Yafang Shao <laoar.shao@gmail.com>
 
-> Hi Hugo,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on d804987153e7bedf503f8e4ba649afe52cfd7f6d]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Hugo-Villeneuve/serial-sc16is7xx-fix-snprintf-format-specifier-in-sc16is7xx_regmap_name/20231201-031413
-> base:   d804987153e7bedf503f8e4ba649afe52cfd7f6d
-> patch link:    https://lore.kernel.org/r/20231130191050.3165862-2-hugo%40hugovil.com
-> patch subject: [PATCH 1/7] serial: sc16is7xx: fix snprintf format specifier in sc16is7xx_regmap_name()
-> config: x86_64-buildonly-randconfig-001-20231201 (https://download.01.org/0day-ci/archive/20231206/202312061443.Cknef7Uq-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312061443.Cknef7Uq-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202312061443.Cknef7Uq-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    drivers/tty/serial/sc16is7xx.c: In function 'sc16is7xx_i2c_probe':
-> >> drivers/tty/serial/sc16is7xx.c:1703:41: warning: '%u' directive output may be truncated writing between 1 and 10 bytes into a region of size 2 [-Wformat-truncation=]
->     1703 |         snprintf(buf, sizeof(buf), "port%u", port_id);
->          |                                         ^~
->    In function 'sc16is7xx_regmap_name',
->        inlined from 'sc16is7xx_i2c_probe' at drivers/tty/serial/sc16is7xx.c:1805:17:
->    drivers/tty/serial/sc16is7xx.c:1703:36: note: directive argument in the range [0, 4294967294]
->     1703 |         snprintf(buf, sizeof(buf), "port%u", port_id);
->          |                                    ^~~~~~~~
->    drivers/tty/serial/sc16is7xx.c:1703:9: note: 'snprintf' output between 6 and 15 bytes into a destination of size 6
->     1703 |         snprintf(buf, sizeof(buf), "port%u", port_id);
->          |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Hi,
-the only solution I could find is to add this line just before snprintf:
-
-    BUG_ON(port_id > MAX310X_MAX_PORTS);
-
-it allows us to have the smallest buffer size possible.
-
-One other solution would be to change port_id from "unsigned int"
-to "u8", and increase the buffer by an additional 2 bytes to silence
-the warning, but then wasting 2 bytes for each channel, like so:
-
-static const char *max310x_regmap_name(u8 port_id)
-{
-    static char buf[
-        sizeof(MAX310X_PORT_NAME_SUFFIX __stringify(UCHAR_MAX))];
-
-I prefer solution 1, unless there is another solution that I am
-unaware of.
-
-Hugo.
-
-
-> vim +1703 drivers/tty/serial/sc16is7xx.c
-> 
->   1698	
->   1699	static const char *sc16is7xx_regmap_name(unsigned int port_id)
->   1700	{
->   1701		static char buf[6];
->   1702	
-> > 1703		snprintf(buf, sizeof(buf), "port%u", port_id);
->   1704	
->   1705		return buf;
->   1706	}
->   1707	
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
-> 
-
-
--- 
-Hugo Villeneuve
+ Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
