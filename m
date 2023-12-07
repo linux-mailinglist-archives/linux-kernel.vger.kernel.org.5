@@ -2,74 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1478380837A
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7DF80837B
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 09:46:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbjLGIqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 03:46:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33676 "EHLO
+        id S229978AbjLGIqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 03:46:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbjLGIqY (ORCPT
+        with ESMTP id S1378394AbjLGIq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 03:46:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64728C6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 00:46:30 -0800 (PST)
+        Thu, 7 Dec 2023 03:46:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD9019A
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 00:46:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701938789;
+        s=mimecast20190719; t=1701938792;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=S45mCIVP8tXMlQy/LkNkOy2M4lsUi2H4wMiVuvDZzy8=;
-        b=gVf9iER0wo79+lpOHwPbhqseHEn1I214cXKoVJOoPViB8iDeL7oDpmAcVq8gcITwhfsMgQ
-        u0FPvbH70sBs0FQGYJReloJWCNjzmQ9lH6UtENcn+1vhJX0Cnj/LA2o1TmUkpOMXV/FLlc
-        sg8OoIkrJy0K/RreEe+peGHyVpRxb0M=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=jEejCQBe0JpA/tNNsAza2pPtF0USzloo/HRlTyZ5Xy4=;
+        b=aTkiVFZsHRPNZUhFFmz+heBAlELItVXLXqQwfIDE7VHESboWfzsL1q1WYTQT+uSS1H1J43
+        0+SEslzJ0b0Dzi2qW5Bv6gX7LgVm1JyiGE9KtZgLzosku5HkwYa+hzK9vkJwVjHTH+STOg
+        gA1nmt+IZm4SX5koNeWGEz8iZa98sS4=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-612-oq-Y9kW1MgGKeKgrNEahvQ-1; Thu, 07 Dec 2023 03:46:27 -0500
-X-MC-Unique: oq-Y9kW1MgGKeKgrNEahvQ-1
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-286e0d3e04dso774491a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 00:46:27 -0800 (PST)
+ us-mta-695-tJobi6UHONaNN0aqdf-qrw-1; Thu, 07 Dec 2023 03:46:30 -0500
+X-MC-Unique: tJobi6UHONaNN0aqdf-qrw-1
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-286d700f702so560767a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 00:46:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701938787; x=1702543587;
+        d=1e100.net; s=20230601; t=1701938790; x=1702543590;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S45mCIVP8tXMlQy/LkNkOy2M4lsUi2H4wMiVuvDZzy8=;
-        b=rylcgwMTvgcG6o+oUKeMVR21DsK1y/JfQosYHjrzheU/RakK/mUvh/LTATWjJJGFaR
-         lpIe9mG40nhhhSmRdLZO0nSgrIyzU6wKyDobhGLIp4lHRU2zAD0cF4yTGCIHS6KQihvL
-         gmBW9ZOutV1sh295ss7ISpc3y+ZDXqWiYDg0U1xnEupwlVKqPashlKeNebZMjX1OBjjk
-         5MrGfSmFAj+cpXA3LeyM5kVZ/v64bMzB2IU+tIvdEW/ZPQSrDE/wk1g08CqYeaD9A+j3
-         13Niik5JSfD5CoZmCzo2KEZU+fL/kjQvEWxAyRJ9FoGGt4WSGLtS9iO3ay/bgQ+tZn+M
-         KGnA==
-X-Gm-Message-State: AOJu0YwlsjABavYs5jtZpTVzFN3wm1VEg9VwXOrQiK6vMVXYl15Ps+l1
-        BAWb+Kt4KDauRKzTlz8nx1DoTA613xOywZf2YJIBu60tD/Mj5odQ1HwseVsK09Pm63EJgXiN2Vf
-        Ph20zyOj0vPNklDA2Tlay24HzeD8c8wsPeQnTOlLK
-X-Received: by 2002:a17:90b:234a:b0:288:9282:7c17 with SMTP id ms10-20020a17090b234a00b0028892827c17mr886719pjb.80.1701938786897;
-        Thu, 07 Dec 2023 00:46:26 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE4gyKGta7cpog0ORvM1uktlxTI8mNJIKN2VVJzhf6Al11/Ss8DWl8n8RSZQ9Belv4chT6EvPVK4k5lh/sJfiI=
-X-Received: by 2002:a17:90b:234a:b0:288:9282:7c17 with SMTP id
- ms10-20020a17090b234a00b0028892827c17mr886708pjb.80.1701938786629; Thu, 07
- Dec 2023 00:46:26 -0800 (PST)
+        bh=jEejCQBe0JpA/tNNsAza2pPtF0USzloo/HRlTyZ5Xy4=;
+        b=egBk64ReA2HDc5h/bWxcUV+xO8aYeQiErW/az10f86/qNGM6xcGRBFgG0BYVgsDrwR
+         +RDZ2Z+1aITxVa/hLOMWnMJwSnARRGdRGwa30xuWySH9+26egSIwg3lCQUMBWyzkBGUc
+         vhw8d/Iz/YSabr2gC68eVHSu2XUHyDMrCmfPCkc7PiPlYUCWJWZZeMAoxjo27fIGZDGl
+         o3ocB2XoYHs2YNBHOJVZx0qnvMdzh3js+rUUdbxSWNpQDYOoQkuSMdRDiysBfj3baV58
+         UtntgAsQ49szdR18bp/vy0aYImicOAYm0cAoY7vktwys2ywt2K5IApjYNmyPPIg+z0lr
+         rHng==
+X-Gm-Message-State: AOJu0YzUG6bAVXsiPRT5+5sew9bnw5Gc8X46GiG//Uk/t5U4ewivS310
+        soHInww9K1+ACOpUFUKIciY5lp4QXr1ez2xMU+4wX/jx5hp6kBWDsdJNhgVTa5BdUb4txuYHoCY
+        VRHp4XizFBQHQ1C2tVBcrQ7CQgDjoO0YDGac8l0e2
+X-Received: by 2002:a17:90b:4ac7:b0:286:a9a4:9622 with SMTP id mh7-20020a17090b4ac700b00286a9a49622mr1857199pjb.16.1701938789700;
+        Thu, 07 Dec 2023 00:46:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHrKBBpBMdCmmK/AHdieKoV5iLskU9S7/rTabXBcdkwFMoSUxgv/HM5r8pjBgeHjzCnCTcD865cgl25v0Z2UC8=
+X-Received: by 2002:a17:90b:4ac7:b0:286:a9a4:9622 with SMTP id
+ mh7-20020a17090b4ac700b00286a9a49622mr1857192pjb.16.1701938789421; Thu, 07
+ Dec 2023 00:46:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20231205083444.3029239-1-lulu@redhat.com> <20231205083444.3029239-7-lulu@redhat.com>
-In-Reply-To: <20231205083444.3029239-7-lulu@redhat.com>
+References: <20231205083444.3029239-1-lulu@redhat.com> <20231205083444.3029239-3-lulu@redhat.com>
+In-Reply-To: <20231205083444.3029239-3-lulu@redhat.com>
 From:   Jason Wang <jasowang@redhat.com>
-Date:   Thu, 7 Dec 2023 16:46:15 +0800
-Message-ID: <CACGkMEvycvCUjjdKvK50dmoQbDL79Xc9s4YDMVed9BUv+Gf0yg@mail.gmail.com>
-Subject: Re: [PATCH v3 6/7] vduse: Update the vq_info in ioctl VDUSE_VQ_GET_INFO
+Date:   Thu, 7 Dec 2023 16:46:18 +0800
+Message-ID: <CACGkMEt26rDCQAH8Oh-pnEDFb-ShAMhL3kyejWGEkw_Sdo4OUw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/7] vduse: Add new uAPI for vduse reconnection
 To:     Cindy Lu <lulu@redhat.com>
 Cc:     mst@redhat.com, xieyongji@bytedance.com,
         linux-kernel@vger.kernel.org, maxime.coquelin@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -78,102 +77,94 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, Dec 5, 2023 at 4:35=E2=80=AFPM Cindy Lu <lulu@redhat.com> wrote:
 >
-> Once the reconnect memory pages are mapped to userspace, the userspace
-> application will update the "reconnected" bit in the
-> "struct vduse_dev_reconnect_data".
-> The kernel will then check this bit. If it is not set to
-> "VDUSE_NOT_RECONNECT", it means that the application has been
-> reconnected, and the kernel will synchronize the vq information.
-
-Can you explain why we need such a flag?
-
+> To synchronize the information for reconnection, add a new structure
+> struct vduse_dev_reconnect_data to save the device-related information,
+> Add the VDUSE_RECONNCT_MMAP_SIZE for the size of mapped memory for each v=
+q
+> and device status.
 >
 > Signed-off-by: Cindy Lu <lulu@redhat.com>
 > ---
->  drivers/vdpa/vdpa_user/vduse_dev.c | 24 +++++++++++++++++++++++-
->  1 file changed, 23 insertions(+), 1 deletion(-)
+>  include/uapi/linux/vduse.h | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
 >
-> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/=
-vduse_dev.c
-> index f55f415629de..422f1aedebac 100644
-> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> @@ -1193,6 +1193,9 @@ static long vduse_dev_ioctl(struct file *file, unsi=
-gned int cmd,
->                 struct vduse_vq_info vq_info;
->                 struct vduse_virtqueue *vq;
->                 u32 index;
-> +               unsigned long vaddr;
-> +               struct vduse_vq_state *vq_reconnect;
-> +               struct vduse_dev_reconnect_data *dev_reconnect;
+> diff --git a/include/uapi/linux/vduse.h b/include/uapi/linux/vduse.h
+> index 11bd48c72c6c..c22838247814 100644
+> --- a/include/uapi/linux/vduse.h
+> +++ b/include/uapi/linux/vduse.h
+> @@ -350,4 +350,26 @@ struct vduse_dev_response {
+>         };
+>  };
 >
->                 ret =3D -EFAULT;
->                 if (copy_from_user(&vq_info, argp, sizeof(vq_info)))
-> @@ -1209,6 +1212,12 @@ static long vduse_dev_ioctl(struct file *file, uns=
-igned int cmd,
->                 vq_info.device_addr =3D vq->device_addr;
->                 vq_info.num =3D vq->num;
->
-> +               vaddr =3D dev->vdpa_reconnect_vaddr;
-> +               dev_reconnect =3D (struct vduse_dev_reconnect_data *)vadd=
-r;
+> +/**
+> + * struct vduse_dev_reconnect_data - saved the reconnect info for device
+> + * @version; version for userspace APP
+
+I guess it should be the version of the reconnection protocol not the
+userspace application.
+
+> + * @reconnected: indetify if this is reconnected.userspace APP needs set=
+ this
+> + *                to VDUSE_RECONNECT, while reconnecting.kernel will use=
+ this
+> + *                to indetify if this is reconnect
+
+Typos, I think checkpatch may help or you can tweak your editor to
+enable spell checkings.
+
+> + * @features; Device features negotiated in the last connect.
+
+This seems to cause confusion, let's use driver_features instead.
+
+But can't we just get driver_features via VDUSE_DEV_GET_FEATURES?
+
+> + * @status; Device status in last reconnect
+> + */
 > +
-> +               vaddr =3D vq->vdpa_reconnect_vaddr;
-> +               vq_reconnect =3D (struct vduse_vq_state *)vaddr;
+> +struct vduse_dev_reconnect_data {
+> +       __u32 version;
+> +#define VDUSE_RECONNECT 1
+> +#define VDUSE_NOT_RECONNECT 0
+> +       __u32 reconnected;
+> +       __u64 features;
+> +       __u8 status;
+> +};
+
+For status, VDUSE currently forwards the request to the userspace:
+
+static int vduse_dev_set_status(struct vduse_dev *dev, u8 status)
+{
+        struct vduse_dev_msg msg =3D { 0 };
+
+        msg.req.type =3D VDUSE_SET_STATUS;
+        msg.req.s.status =3D status;
+
+        return vduse_dev_msg_sync(dev, &msg);
+}
+
+Do we need to handle the case where the user space crashes when
+dealing with this message? For example, driver set DRIVER_OK but VDUSE
+application crashes when dealing with DRIVER_OK.
+
+At the uAPI level, it probably requires to fetch inflight VDUSE
+requests. It may help for the case where dealing with crash at feature
+negotiation and configuration space access.
+
 > +
->                 if (dev->driver_features & BIT_ULL(VIRTIO_F_RING_PACKED))=
- {
->                         vq_info.packed.last_avail_counter =3D
->                                 vq->state.packed.last_avail_counter;
-> @@ -1218,9 +1227,22 @@ static long vduse_dev_ioctl(struct file *file, uns=
-igned int cmd,
->                                 vq->state.packed.last_used_counter;
->                         vq_info.packed.last_used_idx =3D
->                                 vq->state.packed.last_used_idx;
-> -               } else
-> +                       /*check if the vq is reconnect, if yes then updat=
-e the info*/
-> +                       if (dev_reconnect->reconnected !=3D VDUSE_NOT_REC=
-ONNECT) {
+> +/* the reconnection mmap size for each VQ and dev status */
+> +#define VDUSE_RECONNCT_MMAP_SIZE PAGE_SIZE
 
-So the dev_reconnect is shared, how to synchronize between them?
+PAGE_SIZE should not belong to uAPI. Userspace can query it via e.g sysconf=
+ etc.
 
-> +                               vq_info.packed.last_avail_idx =3D
-> +                                       vq_reconnect->packed.last_avail_i=
-dx;
-> +                               vq_info.packed.last_avail_counter =3D
-> +                                       vq_reconnect->packed.last_avail_c=
-ounter;
-> +                       }
-> +               } else {
->                         vq_info.split.avail_index =3D
->                                 vq->state.split.avail_index;
-> +                       /*check if the vq is reconnect, if yes then updat=
-e the info*/
-> +                       if (dev_reconnect->reconnected !=3D VDUSE_NOT_REC=
-ONNECT) {
-
-If this only check is !=3D, I'd define it as VDUSE_RECONNECT to ease the
-code logic.
-
-> +                               vq_info.split.avail_index =3D
-> +                                       vq_reconnect->split.avail_index;
-> +                       }
-> +               }
-
-It looks like I miss something here
-
-If I read the code correctly, vq_reconnect is written by userspace, so
-userspace query it again via the get_vq_info()? If this is true,
-userspace can just ignore the index via GET_VQ_INFO() or is it just
-for consistency?
-
-Thanks
+Btw, what is the virtqueue part for this? I'd expect there should be
+at least the part of inflight descriptors?
 
 
->
->                 vq_info.ready =3D vq->ready;
->
+
+
+> +
+>  #endif /* _UAPI_VDUSE_H_ */
 > --
 > 2.34.3
 >
