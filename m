@@ -2,67 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82932807F7D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 909BD807F7E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 05:18:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbjLGERY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 23:17:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
+        id S229652AbjLGESD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 23:18:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLGERW (ORCPT
+        with ESMTP id S229449AbjLGESB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 23:17:22 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA862DD
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 20:17:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CB3DC433C7;
-        Thu,  7 Dec 2023 04:17:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701922647;
-        bh=T+v7xQvdCpJ6DcfwiigwsZNAAWWbz1JSdHy4eCuWWWw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=jURRJuZ9+VEQSNiJ/mGla8BQv99HITnl1MpanDWFC2m9APywmIaCm1VQb5IBXnci7
-         OUPfxAad85Y4t0bnci3B4FgmTeCGmMFBnMYAvDQZfuYDW38Tcgd+QjJTLik9bBPBzJ
-         HsP1fK/y3SLK7zzyi/47+cmMVusOngCr5ILZ6MPSyvYWLtW4OYk3mJdv2jE5wk2Lp+
-         jOudlCHnHXKjAFTN0qjFOA8d7czNjckrmNrOCTXg2qd0Jeo2L3Xy1SXJljfFPioNWQ
-         tx7r5rq/RFBJVNAry21GXxX7LNfYZMMCRLs4+fFflB+EpSXrAIPFabnDn1pfVF6OdN
-         4fh4qiHcD3bUA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D7EBFCE0E88; Wed,  6 Dec 2023 20:17:26 -0800 (PST)
-Date:   Wed, 6 Dec 2023 20:17:26 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, rostedt@goodmis.org,
-        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
-Subject: Re: [RFC PATCH 48/86] rcu: handle quiescent states for PREEMPT_RCU=n
-Message-ID: <b6dfa0bb-d598-446d-93b6-941bdb16df96@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107215742.363031-49-ankur.a.arora@oracle.com>
- <2027da00-273d-41cf-b9e7-460776181083@paulmck-laptop>
- <87v89lzu5a.ffs@tglx>
- <209f0e89-7ebd-4759-9883-21d842d0d26c@paulmck-laptop>
- <875y1bwen9.ffs@tglx>
+        Wed, 6 Dec 2023 23:18:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F222D5C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 20:18:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701922686;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BcdeWsLVE0ZLjCzsplESZkvtBaAPo5FuR7NkpRBEkQA=;
+        b=d7C/InwbAT7IDH1/FSl6vaSm+aNM9Qm1qGkHQcouTzQrMI285QT4Qa08QBzx4U7G4OhNip
+        WaixpCZhGGS4N8vilCfkzNRpFV8bOGJUZTgdR8f7flH6tuE1k0+A8YEzU347GfdbfE2JcN
+        Xpc8xwNswNZqIUb2lCcqmNuXoA2rL3I=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-94-9uXx9ycNPIuQy64WxMJy3g-1; Wed, 06 Dec 2023 23:18:04 -0500
+X-MC-Unique: 9uXx9ycNPIuQy64WxMJy3g-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6688F83B86A;
+        Thu,  7 Dec 2023 04:18:04 +0000 (UTC)
+Received: from [10.22.34.92] (unknown [10.22.34.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1885C492BC6;
+        Thu,  7 Dec 2023 04:18:04 +0000 (UTC)
+Message-ID: <d7e24393-540b-4fcc-84a8-3ad9daf26762@redhat.com>
+Date:   Wed, 6 Dec 2023 23:18:03 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <875y1bwen9.ffs@tglx>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: build failure after merge of the cgroup tree
+Content-Language: en-US
+To:     Stephen Rothwell <sfr@canb.auug.org.au>, Tejun Heo <tj@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20231207143806.114e0a74@canb.auug.org.au>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20231207143806.114e0a74@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,87 +65,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 04:10:18PM +0100, Thomas Gleixner wrote:
-> Paul!
-> 
-> On Mon, Dec 04 2023 at 17:33, Paul E. McKenney wrote:
-> > On Tue, Nov 28, 2023 at 06:04:33PM +0100, Thomas Gleixner wrote:
-> >> So:
-> >> 
-> >>     loop()
-> >> 
-> >>       preempt_disable();
-> >> 
-> >>       --> tick interrupt
-> >>             rcu_flavor_sched_clock_irq()
-> >>                 sets NEED_RESCHED
-> >> 
-> >>       preempt_enable()
-> >>         preempt_schedule()
-> >>           schedule()
-> >>             report_QS()
-> >> 
-> >> See? No magic nonsense in preempt_enable(), no cond_resched(), nothing.
-> >
-> > Understood, but that does delay detection of that quiescent state by up
-> > to one tick.
-> 
-> Sure, but does that really matter in practice?
 
-It might, but yes, I would expect it to matter far less than the other
-things I have been calling out.
+On 12/6/23 22:38, Stephen Rothwell wrote:
+> Hi all,
+>
+> After merging the cgroup tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>
+> In file included from <command-line>:
+> kernel/cgroup/cgroup.c: In function 'cgroup_free_root':
+> include/linux/compiler_types.h:435:45: error: call to '__compiletime_assert_1792' declared with attribute error: BUILD_BUG_ON failed: !__is_kvfree_rcu_offset(offsetof(typeof(*(root)), rcu))
+>    435 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>        |                                             ^
+> include/linux/compiler_types.h:416:25: note: in definition of macro '__compiletime_assert'
+>    416 |                         prefix ## suffix();                             \
+>        |                         ^~~~~~
+> include/linux/compiler_types.h:435:9: note: in expansion of macro '_compiletime_assert'
+>    435 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>        |         ^~~~~~~~~~~~~~~~~~~
+> include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+>     39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>        |                                     ^~~~~~~~~~~~~~~~~~
+> include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+>     50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+>        |         ^~~~~~~~~~~~~~~~
+> include/linux/rcupdate.h:985:17: note: in expansion of macro 'BUILD_BUG_ON'
+>    985 |                 BUILD_BUG_ON(!__is_kvfree_rcu_offset(offsetof(typeof(*(ptr)), rhf)));   \
 
-> >> So if that turns out to matter in reality and not just by academic
-> >> inspection, then we are far better off to annotate such code with:
-> >> 
-> >>     do {
-> >>         preempt_lazy_disable();
-> >>         mutex_lock();
-> >>         do_stuff();
-> >>         mutex_unlock();
-> >>         preempt_lazy_enable();
-> >>     }
-> >> 
-> >> and let preempt_lazy_enable() evaluate the NEED_RESCHED_LAZY bit.
-> >
-> > I am not exactly sure what semantics you are proposing with this pairing
-> > as opposed to "this would be a good time to preempt in response to the
-> > pending lazy request".  But I do agree that something like this could
-> > replace at least a few more instance of cond_resched(), so that is good.
-> > Not necessarily all of them, though.
-> 
-> The main semantic difference is that such a mechanism is properly
-> nesting and can be eventually subsumed into the actual locking
-> constructs.
+#define __is_kvfree_rcu_offset(offset) ((offset) < 4096)
 
-OK, fair enough.
+It looks like commit 77070eeb8821 ("cgroup: Avoid false cacheline 
+sharing of read mostly rstat_cpu") has caused the offset of rcu to 
+exceed the 4096 limit under such configuration. After I move the rcu 
+field up, the compilation error was gone. So any change that makes the 
+cgroup structure larger is likely to cause this problem again. The 
+simple fix is just to move the rcu field up. I will send a patch to do that.
 
-And noting that testing should include workloads that exercise things
-like mutex_lock() and mutex_trylock() fastpaths.
+Cheers,
+Longman
 
-> >> Just insisting that RCU_PREEMPT=n requires cond_resched() and whatsoever
-> >> is not really getting us anywhere.
-> >
-> > Except that this is not what is happening, Thomas.  ;-)
-> >
-> > You are asserting that all of the cond_resched() calls can safely be
-> > eliminated.  That might well be, but more than assertion is required.
-> > You have come up with some good ways of getting rid of some classes of
-> > them, which is a very good and very welcome thing.  But that is not the
-> > same as having proved that all of them may be safely removed.
-> 
-> Neither have you proven that any of them will be required with the new
-> PREEMPT_LAZY model. :)
 
-True.  But nor have you proven them unnecessary.  That will need to
-wait for larger-scale testing.
+>        |                 ^~~~~~~~~~~~
+> include/linux/rcupdate.h:957:29: note: in expansion of macro 'kvfree_rcu_arg_2'
+>    957 | #define kfree_rcu(ptr, rhf) kvfree_rcu_arg_2(ptr, rhf)
+>        |                             ^~~~~~~~~~~~~~~~
+> kernel/cgroup/cgroup.c:1318:9: note: in expansion of macro 'kfree_rcu'
+>   1318 |         kfree_rcu(root, rcu);
+>        |         ^~~~~~~~~
+> In function 'cgroup_free_root',
+>      inlined from 'cgroup_destroy_root' at kernel/cgroup/cgroup.c:1363:2:
+> include/linux/compiler_types.h:435:45: error: call to '__compiletime_assert_1792' declared with attribute error: BUILD_BUG_ON failed: !__is_kvfree_rcu_offset(offsetof(typeof(*(root)), rcu))
+>    435 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>        |                                             ^
+> include/linux/compiler_types.h:416:25: note: in definition of macro '__compiletime_assert'
+>    416 |                         prefix ## suffix();                             \
+>        |                         ^~~~~~
+> include/linux/compiler_types.h:435:9: note: in expansion of macro '_compiletime_assert'
+>    435 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>        |         ^~~~~~~~~~~~~~~~~~~
+> include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+>     39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>        |                                     ^~~~~~~~~~~~~~~~~~
+> include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+>     50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+>        |         ^~~~~~~~~~~~~~~~
+> include/linux/rcupdate.h:985:17: note: in expansion of macro 'BUILD_BUG_ON'
+>    985 |                 BUILD_BUG_ON(!__is_kvfree_rcu_offset(offsetof(typeof(*(ptr)), rhf)));   \
+>        |                 ^~~~~~~~~~~~
+> include/linux/rcupdate.h:957:29: note: in expansion of macro 'kvfree_rcu_arg_2'
+>    957 | #define kfree_rcu(ptr, rhf) kvfree_rcu_arg_2(ptr, rhf)
+>        |                             ^~~~~~~~~~~~~~~~
+> kernel/cgroup/cgroup.c:1318:9: note: in expansion of macro 'kfree_rcu'
+>   1318 |         kfree_rcu(root, rcu);
+>        |         ^~~~~~~~~
+>
+> Possibly caused by commit
+>
+>    77070eeb8821 ("cgroup: Avoid false cacheline sharing of read mostly rstat_cpu")
+>
+> I have used the cgroup tree from next-20231206 for today.
+>
+>
+>
 
-> Your experience and knowledge in this area is certainly appreciated, but
-> under the changed semantics of LAZY it's debatable whether observations
-> and assumptions which are based on PREEMPT_NONE behaviour still apply.
-> 
-> We'll see.
-
-That we will!
-
-							Thanx, Paul
