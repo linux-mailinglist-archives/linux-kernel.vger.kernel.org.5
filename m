@@ -2,165 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A128B809003
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 174BE809047
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbjLGSf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 13:35:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
+        id S233319AbjLGSgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 13:36:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233026AbjLGSfZ (ORCPT
+        with ESMTP id S232955AbjLGSgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 13:35:25 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20059171C;
-        Thu,  7 Dec 2023 10:35:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701974131; x=1733510131;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=a0XTHyAi40JPmfv4mrWRB4hoiyBXU5t15cyHpNSGfXU=;
-  b=bbMavK1SBw03wxdTajQCrPe9bL/GqmHMydOqqS97rUTkSpVZ682fw0c9
-   Xp4l+aPWMxF/vuYkh5bMHWKliU1x8DH39ooYvsJZ1/nqE2mV8GBLkws3L
-   iv8900HEap7+jhZl9PfO7kvnknD/Rl8emzOlRh3hCTA1tSj77k6E9O00I
-   esEmazH/V2dDXpJL+usdfWU0vvKZ0+GhYkoyTW9dJ5St9D7B7S4mDS1YF
-   HWy3dyQmWmClsZpq/WxY2vbonpMbrboZXDSK+5TwpCqYAZQsUdHs+JBqS
-   J81rjWVVn+x8jkRZNwEVpaGqW5y7uLE0qr8nk2pTvL0j0pIen6/qbM5bZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="374448203"
-X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="374448203"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 10:35:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="837830160"
-X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="837830160"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Dec 2023 10:35:30 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Dec 2023 10:35:30 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Dec 2023 10:35:29 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 7 Dec 2023 10:35:29 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 7 Dec 2023 10:35:29 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CJvvx1Puo18FIE8CEpbmZKZ41McYnC7EQPlwwJMvwmNKW6mRioA44BuFYw0TuNakCMd9QB9VBToBO35MJzBuukcVmFtw55MCkw2+mbvYTepWlUqZ6aS2qyY/W9Ty4c9HCum/wfcUDmvo1Wuiovu5I6Oc0gG2meD2qCar2W5PT+wHL8R9CYe+la9xy/OEt0M3wyNebf3+X16UN0cMxXX23z/UD4Y+59oUFspdOLQpkMjhSaF9KpgpQ3lFnF33ItCVQ1vsEO9hPuT/+lnNuefxAUDcSuyKm/EIz4teq80nEF0rbqnem0cpy+TK/u4Ls4ZpWQmtnw0GLskcHn9JPUBS3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GIe9Kj34TXVMvyZwLYvNYZBHxuVPQjG7i08qcp4tjBw=;
- b=BgMlBr1V/NT588b05qQZh9U3K7RM7bP7aikWJ7y49bks8oZHjmR74I2pXDr9/fF+PRRPRb0++Uc2ewotUNtBeoCMv3wyUfUunfvg2/3+dD7fgo46Xxkq9axcrYT269GXmOU9YHu6juSj0VxL35L+IzUAAXXjPB/a1b8VIn5eTTIpFdJp6MuY216RHkuLWVpfcKqP9Qzseq91Hcz1HJJ4sOItBi4BvyLkB3Sgl8Bp2vpEHmZzNoDIc8sIrVnA6wQEZDhSBYfctlevDK8xrruCCxCPyUPa0gu3lexIo+OrV6vhskPENOfwODJgK9AOXpxnZ1AGtvOaESOEDfgm4p4jHw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by DM4PR11MB5373.namprd11.prod.outlook.com (2603:10b6:5:394::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Thu, 7 Dec
- 2023 18:35:27 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.7068.025; Thu, 7 Dec 2023
- 18:35:27 +0000
-Message-ID: <bf59d8f2-7977-4dc6-afca-9c80e06ee549@intel.com>
-Date:   Thu, 7 Dec 2023 10:35:25 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 08/26] selftests/resctrl: Split measure_cache_vals()
-Content-Language: en-US
-To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-CC:     <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20231120111340.7805-1-ilpo.jarvinen@linux.intel.com>
- <20231120111340.7805-9-ilpo.jarvinen@linux.intel.com>
- <c303ba1b-d7bd-47cf-9e81-8ea0c60b973c@intel.com>
- <e87d8ba-141a-5779-fc6-27e4735fc1bf@linux.intel.com>
- <8f6c7b40-5218-4427-865d-55e5f09c594f@intel.com>
- <f6f42f73-ef84-535-78d7-c93685625aca@linux.intel.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <f6f42f73-ef84-535-78d7-c93685625aca@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR04CA0138.namprd04.prod.outlook.com
- (2603:10b6:303:84::23) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Thu, 7 Dec 2023 13:36:16 -0500
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0C81711;
+        Thu,  7 Dec 2023 10:36:17 -0800 (PST)
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B7FRV7S008686;
+        Thu, 7 Dec 2023 13:35:50 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3utd13snpd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 13:35:50 -0500 (EST)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 3B7IZmQY024170
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 7 Dec 2023 13:35:48 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Thu, 7 Dec 2023
+ 13:35:47 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Thu, 7 Dec 2023 13:35:47 -0500
+Received: from work.ad.analog.com (HYB-hERzalRezfV.ad.analog.com [10.65.205.129])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3B7IZSpv015039;
+        Thu, 7 Dec 2023 13:35:31 -0500
+From:   Marcelo Schmitt <marcelo.schmitt@analog.com>
+To:     <apw@canonical.com>, <joe@perches.com>, <dwaipayanray1@gmail.com>,
+        <lukas.bulwahn@gmail.com>, <paul.cercueil@analog.com>,
+        <Michael.Hennerich@analog.com>, <lars@metafoo.de>,
+        <jic23@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <dan.carpenter@linaro.org>, <marcelo.schmitt1@gmail.com>
+CC:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 00/13] Add support for AD7091R-2/-4/-8
+Date:   Thu, 7 Dec 2023 15:35:27 -0300
+Message-ID: <cover.1701971344.git.marcelo.schmitt1@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DM4PR11MB5373:EE_
-X-MS-Office365-Filtering-Correlation-Id: b7ee73a9-424a-4172-84c5-08dbf753488a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: j3YrbvFMBphsDYtxdWtajZGcwY80N6VfCaytNA52uvTLHnOGW8io6WnDCWPaBxc2MeC+1lnDAIj7z9Aldutn7lqY0DrpB+/b86c+GAGAxWjDbQMa38Yoy+r4z7pXece5ZJPEvD9cFr34JXLaKHEEGKMpQ6Sk/U4Sh3YXKrnuBjMA9EvNKBiKqIzhNGDnu8t+2b68jP0GPrbqrKvNPzkof00HxMjGs8icPy4Zy5l5wW/Z9f1qgVErspmiqyUxfHRvdSkVrZHOwSbOZoyjcR6eTAyurEOiX0pEC2lmIMm83rXDa4IR9/yDMxK1vNmeB08hLN9cS7d1joV3ez0AUpQlqWmHzfc1V0J82FSNDqr/nAruV9pCu0dKbYLRSJmfXOqjryehizhvNHkndEi/ySQ+qe3MwndxuejI2CqzLFNBkA7xpgZg7+wFJwfnyfChvYiFnoK1SYNIry52DjtaioFwA1cvJnNHM6x4I+061qMfKW79U6tYCDB+8KDAmd4eYZA4uGJWqk7hp/m08JPK2uI9QR32SuWBsjhb+zXugKTefuxWzMxgbZNrCIqFmDB5jveJm4XhW3hQKQJ+urt4od++GaO8Pultl37vBAqg/2UrgV7wnQsHXDgLIsLJ9CLWV4PpoVi/UTesXnKfLjBq8qaO0A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(396003)(366004)(346002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(53546011)(26005)(6512007)(8676002)(54906003)(8936002)(316002)(66556008)(66476007)(66946007)(31696002)(31686004)(6916009)(38100700002)(6506007)(6486002)(2616005)(82960400001)(478600001)(4326008)(4744005)(2906002)(5660300002)(41300700001)(36756003)(44832011)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a3d4eTFYZFYzRkdGRFZMY3lIa2s2Z2sxeGxMTHBIYmtkYU55NTdkZTd3cHQv?=
- =?utf-8?B?K2gxRjRjak5zekhPdFF1VjNxWmxnYU9yc3VnN1VoK0k4TE1OKytIcXVVbVdM?=
- =?utf-8?B?TlZzczBmU2ZmWnJHN2pFSGRlVVd4UjZUK3BkUDZVNmZhOTBHSDZhUzJNVlJC?=
- =?utf-8?B?VEZJMVByL2RpRm5GVGZySE00VHdXK0ZaYkx0MGY0RGZyeHZ0TVJybGZPNjlW?=
- =?utf-8?B?Y096VjdEZjdDMVYyV0ZiTHRSYzRYZTZoMTdIc3VlcFhZa1ZNNVRSajNRTm5i?=
- =?utf-8?B?SGN2RndBVGI1SG1DcU9WanhGUEl1anp3RDZTMjBzeis3SXU3cHZKNWxGa3pm?=
- =?utf-8?B?cUJlTU1wOXdYU3VaU0FhT1lta0hEYmpVZ3JOZENobmdkamJWWUsxWVN2bnpy?=
- =?utf-8?B?YTlUL3R2Q3lSQ3ZmM3NQeWxudE1QZzJqb1hUWU5FSU1IeW5hV0x5VEROd3k0?=
- =?utf-8?B?Nzd0Mng2T05UOGdHZjNmbU0rOHNDZzRLL3hBb3hTTnRFekV2d0pINHJLUjB1?=
- =?utf-8?B?cVVJSlorbVRXdTUxTUZzV1M4NUUrdHJQTElSZS90eHQzQlp5L1A1cTJoTU1a?=
- =?utf-8?B?TWhUWTY1T2pyUjg4K2phMENza0h1MUdXM0p2encyWDI5MVZWaTkzOUJQNjBw?=
- =?utf-8?B?Zlg3d0w2NHJsM2JNNEo0S0oySW92cjIreXRzMHhjeE5tWmwzQ0FuTmNKcTVm?=
- =?utf-8?B?S1JYc0JUMkpaOC9UQ1FGUC9zTTNja0tlNk9UcXVRUHlFL2RmM0oxVWdaM2JG?=
- =?utf-8?B?SVRyOCtOb2p3VkVJekpXZXIyTjMyVjFNd1g3K1lIaVZZSmEvZzBjWlQ5QVJx?=
- =?utf-8?B?aW5HOWFqb0d0cnkwT0dpNTd2RkFJY0JrSzlDOGk2WW10REQrWXZ3MkZaSW1W?=
- =?utf-8?B?ZVpIQ3dYTU1sTEpjcUd6K09LRHFZV1F0Snluckw3ZnZ1Ylg1WDBoVW5BR3Z1?=
- =?utf-8?B?eDJtbno3TzczVmVaTGNyYm9Id0FRTFZyb0FRTzlERXRmdHRHb21RMDd4cmUx?=
- =?utf-8?B?eTRNdXNMZGN5bmZudzNuVFpTZnltbWVBUllBR0hXSjU1SXFDdlRIMnRwTHBy?=
- =?utf-8?B?MTZYeUppclhDNTJRSEtwa3Z6N1NibW01Nmx4WnlWQWRTWkJCNEt3cFRVdlg4?=
- =?utf-8?B?M3o1cDZsOS9qYzZRQ0E1YllkYXZBckwrUUh2SU8xbkNqTXdDMzFVeFA4T2lY?=
- =?utf-8?B?NG9zNmFPZWt4dkRjUzlVYm9EVHUzNlpJbUhtNUU1ZFF3VTdQeEd1ajdTWDRG?=
- =?utf-8?B?RjRDZ1d4Wk1zbDgwVXhXaUFKeHk1VGtwN2xvWHE0ZkRhL1VMWjVXNmFILytw?=
- =?utf-8?B?RzBYMnpNcFB6R2ZtSDRaTTVURUkzb24rVWdyM2hmeC9ESEJ1NWY4eHBUWWIx?=
- =?utf-8?B?V2lqTlN2Qm14Y0p3bVJVS2d3VGVoVDcrTGl1R0FnVTM3aW53eS9BbGlrNDJu?=
- =?utf-8?B?eHowT3orNzFFYzd4RFVmeExtK2V6NlpJcVFMdmFTSHFsL1dmZ0lBTWdHeHQv?=
- =?utf-8?B?K3BJcnRsbitKaUdMeUlHdzhyT1ZkTzRaQUZpRWthWEZLS3FIeFVtdWRKSzVx?=
- =?utf-8?B?Qi80QzJQc3R4S1cwc3hhQUljUExMOTFXbTFPeVc4ZStyajF5aVVGanIvZGE2?=
- =?utf-8?B?MllZSFp0dy9yUmRDQVpOL0s5cGVVSTZ2YWhMcW43dzU3dWZIRUV6TEVBVDJG?=
- =?utf-8?B?SC9vaGRObm5YSjdUSWJlNGVTVklFZkRNMnBkak1TeXhQZUc2NzVGSjBCMFZ2?=
- =?utf-8?B?OEZFczU1anU5OUpZbDdKKzJkOXlSYVZoa2Vrb1pLT01KZ01SSG02NjVMVmx4?=
- =?utf-8?B?VlJFY0NlZWxwbE1ybUtpb0pqSFJQWWhjbXRRM3NCNGVsREFvdjVQeGcyVEZU?=
- =?utf-8?B?bU0yWmdQcUQyRnlTM3VJNlFWM0tiK09VSWlaZDBaUDdyYjBKeXROV0NLTnZl?=
- =?utf-8?B?dzd4Z2loM3VEQ0JsU29JNldzT244a0dFNHdrUmM1SXFmSm9KQWQ3MjdMZVll?=
- =?utf-8?B?cTJYUDZKSGpORmdhQ1MrWnBUTFBwZUlpVU96WlBOYmdXY0JWaTVOMFJabHNP?=
- =?utf-8?B?eGp1U1g4cVluZWNhaGNtWkNlNlh3Zy9USEpERmtlRWZlOTdrcHJ5N2xmOHc3?=
- =?utf-8?B?MUxlWTFJUkVNbGczK0pJdS9VcDJLM0s1STlVdXpSZHIyZElVNzQwTzhHbDBu?=
- =?utf-8?B?QXc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7ee73a9-424a-4172-84c5-08dbf753488a
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2023 18:35:27.6033
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7DBvWt39ezSyNKkrorUMXPbj/l8Bn0k7XrFeRHo51A4FHz2CKR5oF5P3IpRHrpzebBNdG7WMeSQylXN6QtGSt3XtS+pegxOZlUjhivh+ZOo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5373
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: 1SsenXRjwrZh6ziueMLV-vekFJJVkksa
+X-Proofpoint-GUID: 1SsenXRjwrZh6ziueMLV-vekFJJVkksa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-02_01,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ spamscore=0 phishscore=0 adultscore=0 malwarescore=0 priorityscore=1501
+ mlxlogscore=999 suspectscore=0 bulkscore=0 impostorscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312070154
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -169,16 +73,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
 
+----------------- Updates -----------------
 
-On 12/7/2023 10:33 AM, Ilpo Järvinen wrote:
-> 
-> I already spent some moments in converting all return error -> return -1, 
-> since all such places do perror() calls anyway (which I also converted to 
-> ksft_perror() or ksft_print_msg() where perror() didn't make any sense) 
-> there's not much added value in returning the errno which was not 
-> correctly done in the existing code anyway.
+Applied all changes suggested to the previous series.
 
-Thank you very much Ilpo.
+I tried to better explain the changes but, since there is a fair amount of
+rework in ad7091-base and ad7091r5, it may be hard to get the reasoning for the
+early patches before looking at the patch for ad7091r8.
 
-Reinette
+Change log v2 -> v3:
+- Split alert fix patch into 2 fix patches and one alignment cleanup patch
+- Corrected Fixes tag format
+- Moved MAINTAINERS update to the end of the series
+- Reworded some commit messages to provide context and make their goal clearer
+- Removed erroneous gmail sign off
+- Created container struct to store chip_info, regmap_config, and callbacks
+  specific to each ADC design
+- Created callbacks for chip specific tasks such as setting device operation mode
+- Dropped the chip type enum struct
+- Applied suggestions related to device tree documentation
+- Added __aligned to list the of checkpatch attribute notes
+- Other code style tidy ups.
+
+I see regmap's interface for reading device registers under /sys/kernel/debug/regmap/.
+I can read all registers but can't write to any of them unless I force define
+REGMAP_ALLOW_WRITE_DEBUGFS.
+
+When testing events for this driver I often write to device registers
+to set different rising/falling thresholds. I do something like this:
+# echo 0x17 0x100 > /sys/kernel/debug/iio/iio:device0/direct_reg_access
+
+I tried read/writing to files under iio:device events directory but always
+get segmentation fault. I must be forgetting to implement something.
+What am I missing?
+
+Thanks
+Marcelo
+
+----------------- Context -----------------
+
+This series adds support for AD7091R-2/-4/-8 ADCs which can do single shot
+or sequenced readings. Threshold events are also supported.
+Overall, AD7091R-2/-4/-8 are very similar to AD7091R-5 except they use SPI interface.
+
+Changes have been tested with raspberrypi and eval board on raspberrypi kernel
+6.7-rc3 from raspberrypi fork.
+Link: https://wiki.analog.com/resources/tools-software/linux-drivers/iio-adc/ad7091r8
+
+Marcelo Schmitt (13):
+  scripts: checkpatch: Add __aligned to the list of attribute notes
+  iio: adc: ad7091r: Populate device driver data field
+  iio: adc: ad7091r: Set alert bit in config register
+  iio: adc: ad7091r: Align arguments to function call parenthesis
+  iio: adc: ad7091r: Move generic AD7091R code to base driver and header
+    file
+  iio: adc: ad7091r: Move chip init data to container struct
+  iio: adc: ad7091r: Set device mode through chip_info callback
+  iio: adc: ad7091r: Enable internal vref if external vref is not
+    supplied
+  iio: adc: ad7091r: Add chip_info callback to get conversion result
+    channel
+  dt-bindings: iio: Add AD7091R-8
+  iio: adc: Split AD7091R-5 config symbol
+  iio: adc: Add support for AD7091R-8
+  MAINTAINERS: Add MAINTAINERS entry for AD7091R
+
+ .../bindings/iio/adc/adi,ad7091r8.yaml        |  99 +++++++
+ MAINTAINERS                                   |  12 +
+ drivers/iio/adc/Kconfig                       |  16 ++
+ drivers/iio/adc/Makefile                      |   4 +-
+ drivers/iio/adc/ad7091r-base.c                | 141 ++++------
+ drivers/iio/adc/ad7091r-base.h                |  78 +++++-
+ drivers/iio/adc/ad7091r5.c                    | 119 ++++----
+ drivers/iio/adc/ad7091r8.c                    | 261 ++++++++++++++++++
+ scripts/checkpatch.pl                         |   1 +
+ 9 files changed, 597 insertions(+), 134 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
+ create mode 100644 drivers/iio/adc/ad7091r8.c
+
+-- 
+2.42.0
+
