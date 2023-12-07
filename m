@@ -2,158 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E152D809159
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:31:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE933809164
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443827AbjLGTav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 14:30:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
+        id S1443823AbjLGTdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 14:33:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443852AbjLGTaq (ORCPT
+        with ESMTP id S1443666AbjLGTdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 14:30:46 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF1510DE
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 11:30:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701977452; x=1733513452;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Ni9LHcDFxpSKk37CXMF+oPjVX8r7ExfZ+aG86iqZo6w=;
-  b=WrJwdS6fpf7XfsCNME700JvsV5J2M/bedmi1TX0hQW8qlaJ8b0TijHrv
-   f4zDbnG1noHO37IhbtDHmMTRidAq6Gx5k3Eu1zqs4JJd4PISkKYfuVXZY
-   ozXvUOmEwYZyuxLQobDOcGV6z8ioTCZxNC0hplA2wsAgULFplIb6OA53l
-   6HwJTYMcLFBzo3ajhV81MJlotA+vsIY3f50nh4vK43mMHDROOyW/Ail6C
-   mgIRibjr1qDBlFAbMv5Y3cXW629UyaSddpNL6bCKe1BWbeFTqzySUyrF1
-   pM1tq9ydfwdQ6yPJcqyETy76FgNV7N8a8TnlkZlMPgVdJWKeEs61aEEzg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="393161445"
-X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="393161445"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 11:30:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="806132943"
-X-IronPort-AV: E=Sophos;i="6.04,258,1695711600"; 
-   d="scan'208";a="806132943"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 07 Dec 2023 11:30:45 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBK54-000Cjh-2E;
-        Thu, 07 Dec 2023 19:30:42 +0000
-Date:   Fri, 8 Dec 2023 03:30:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Michael Schmitz <schmitzmic@gmail.com>
-Subject: drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to
- restricted __le16
-Message-ID: <202312080308.IqKTXDYM-lkp@intel.com>
+        Thu, 7 Dec 2023 14:33:46 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B92C11D;
+        Thu,  7 Dec 2023 11:33:52 -0800 (PST)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B7JQnnF021849;
+        Thu, 7 Dec 2023 19:33:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2023-11-20; bh=Y/yPB+ZuNveL3sslVVsAPHGJMVwWyWgfjUVsx1MBY5s=;
+ b=S2P8TqDYuRjDyqAhg+Bbp4La35z7Gfu43+5sKwfNBhm3HG8RIcBcylyRrlpYPRF+qoT7
+ Kzsu2pQZNOoatK6nn1w9n0hsGv1JaGnjHq1cu0v+65TlVXhx74AJSn8NtQqOR9PdYV9O
+ 7VPm+5S0MRacQhPWHFmEBV+rq72w6ddKbAVXuo0LcPsup8aX4Nsq1ync+M8+kAnCyZY1
+ 9c3xMcWJHu7FtHhTOz290QkvUszuRVtxZyeQk6FYEgDqteSI5m84dPFJt/zxgjWFK7kN
+ nvfhEpPMz4Ra0py8IIawPgL1SdnoPEEbZq/DsngNNxraLL+gDgDa2H+M8wxhL/biWOxH kw== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3utd1gcv56-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 Dec 2023 19:33:31 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B7IqdQK037847;
+        Thu, 7 Dec 2023 19:33:30 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3utandxwne-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 Dec 2023 19:33:30 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EffPJgxLDHjQ7CI9Bj0yHip/jMd7IuKVboFIxASHiTQlerOvALZjQ8UWiJXk4rXyHWQnR97VyclWmB/ZkcBwo+El1dCemtJ+OkCELUsPOx8AniVegyLX7hSLMImJLr1T7lZE1Qr+JldDIiXYzIweWTnG3NjGsP28/bTOsfSg+3TfuD9GsmBJBdE7dPTTfZyUFYsts1I4sRG9pZLw5mojaSxPfRNRBFD9XiPVg8GG7xmTEqqcZzi8FJazgYXeD8/RRd/GG49XPZIFJgracHXy7/REUHr7AqwvPpCAVCkn6xt+2cI/pjNjz8RZQBItaL7fVnCoEDqJtwLHIY3QCcD9yw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y/yPB+ZuNveL3sslVVsAPHGJMVwWyWgfjUVsx1MBY5s=;
+ b=C/yK8NqnCSbIetKzXaXUahbA/bCATcGa1YEeM3M1SoMiq+RxobrsEzOrPOPtIV1M1K+9gEGbRhSWYfV/peLU93QK9i/JklVL0fen3F9lRqq3GK5kn/EijtHNPOkLy6PUxK+Xa33uvud4/l0tnNmyT75YbMyGSKn4DTGdzQR2gNg845QO/A2S5gZSft/yFsl5tcMp856NpvH3ln48Uj6PrFWLv0bJ3rEgzVV+VjWO7RePnX8noCbAIZwXfRJs31SgHRu7XE9295qclMnaI6Mf8eIg7azrg+w034FZYd6vTHtwLUmI4+vJtaWHCa7rex4gj36HUsMfb350V3nr2mY4Iw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y/yPB+ZuNveL3sslVVsAPHGJMVwWyWgfjUVsx1MBY5s=;
+ b=wfZ6+z7x2eS9h3iTJobBhikhOrdcNpeOTRqbBXfwdEOfmX8a9INm92eGgwa7nZkUXuyWIUpS5akgCCUtU4JXBB/q+TvrMPW8MtT+EathUOfMz4zPydHFirNbQ5E31O2/y3zr771+9Um9UKGkN3Mx11fNpXBRFEeSgaOBiOPAeuY=
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
+ by IA0PR10MB6697.namprd10.prod.outlook.com (2603:10b6:208:443::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Thu, 7 Dec
+ 2023 19:33:23 +0000
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::a5de:b1cb:9ae1:d0cc]) by SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::a5de:b1cb:9ae1:d0cc%7]) with mapi id 15.20.7068.027; Thu, 7 Dec 2023
+ 19:33:23 +0000
+From:   "Liam R. Howlett" <Liam.Howlett@oracle.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-kselftest@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kft-triage@lists.linaro.org, regressions@lists.linux.dev,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        linux-next@vger.kernel.org,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Subject: [PATCH] maple_tree: Fix mas_prev() state separation code
+Date:   Thu,  7 Dec 2023 14:33:19 -0500
+Message-Id: <20231207193319.4025462-1-Liam.Howlett@oracle.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231207014104.n6vul2ylgqjnsfia@revolve>
+References: <20231207014104.n6vul2ylgqjnsfia@revolve>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: YT4PR01CA0266.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:109::14) To SN6PR10MB3022.namprd10.prod.outlook.com
+ (2603:10b6:805:d8::25)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR10MB3022:EE_|IA0PR10MB6697:EE_
+X-MS-Office365-Filtering-Correlation-Id: 854afb06-58c7-437d-4031-08dbf75b604b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Fm5VboOZDDhN5VGxcwC6TJ7F1ejNlZ80UTNh305+rGnrYA1EpvNBiFshOq/hlDp8dFKjPgQam9Dd4MqWOPIy9W9mbV93zepDw0vrGb45UeM590HSqYw3h9ucH1HqPaBqk7V2Evz3g6amw+bbClGn3P4KM8fA6+/R/tB9BzoaV6XLH8McZqSjqhrqCNF/tct4Xi4WfCxrPgQcVJMRq/ZnHc6hffX8PV+VVXC3xBA1XfFAW/PLBAgEwnE03RO8QK8FktJdD4FhIvXM7VZ6YlruGW8BxJUAvbUyMjf/ha/FJBXVkmvLjly/+cWLvx32Eg+l1Z/e663756bzP7Ro7kcZ8t8uNmpPm7NyFzX0fhDWAa3256YlvBmkyVM2trNyUkACw6qiPM8lF5t8gPdsDoBq+9VmfBvBUY1smAnunpStMm2l0vSrXH9omaLNB+aBVAGzHcdpAgoytDZqcq27c5VT8LSbq9HApswD1fgjFgZKVeKUoOufgJzSnwXv/+sw0tEa8nJheJCQLYJBKssEbeB2ty99103mJVdUmjZauHLLzaSkFj9iEksQmSDszZ/4rCKa
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(39860400002)(376002)(346002)(396003)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(6666004)(6506007)(478600001)(38100700002)(6512007)(26005)(107886003)(1076003)(83380400001)(2616005)(5660300002)(8936002)(2906002)(7416002)(8676002)(86362001)(41300700001)(4326008)(36756003)(66946007)(66476007)(54906003)(110136005)(66556008)(316002)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?idHjZXX+j7RlXoWIiePrzDO100TTmkSgjN1ZRltPHZ4UWL/uhcBkjyMAg+u/?=
+ =?us-ascii?Q?WAc2kKdBcgWaR1zsRF2rDSFNJv26sn3Pe1x4gYr01cwpVdEtBVi7wfgx+aTZ?=
+ =?us-ascii?Q?9bNQWfFX/zp+KscegLOC87Oj/FHiqkcnMs9nU+kmeNmrGu1eoamzN8yLuH/x?=
+ =?us-ascii?Q?m+pjwsGH9tJbScSprqBzMzWX5RoDnT0OD9Wxso/usBYHrOVU8DKTaIzCsesb?=
+ =?us-ascii?Q?C6vHp4BeJ3UTmWkBu3h2ZbAeUlPXcrtv+3AoES94uCdPI+bL5HP8adEb7kSe?=
+ =?us-ascii?Q?OrG/2UiFzXLJ6gr61o+OFSAx1JtkS6cLU69r0whSmFHH5F9PQw3ipmXUbFqa?=
+ =?us-ascii?Q?PRCj+3lOCT58KMGUdGVnuU2LSihKARqp2/qKaNrcW2gevNbENQbpzdPVXgUl?=
+ =?us-ascii?Q?qWYMkgY+FAWaPUb1RMK4VSF3+rzoWhstgxIrum34b4WibrE+UEEqz+m9WHOW?=
+ =?us-ascii?Q?hw+YRsK8n5ibVzPiGfbAQGxICyMCNw/A2oPKz7gJpDhjL/24F2kgqw4xx7u8?=
+ =?us-ascii?Q?MGlmz3C8DgH6WZi5vKnSg7vuRA2uyACMj2EbAhM8hxaKjuI710GJ3Na8HYcR?=
+ =?us-ascii?Q?9LW9gJQR7JrCoXUw4c3Q5weuGEKuiKcOW2lazt0Cv55zZuEgr6qk7Ye3bwWf?=
+ =?us-ascii?Q?rGckxu3lqH9AkxW64vi9PlbSEMmQl6bkfga3RZbcrdwc++k9YjJ9P30kVjOR?=
+ =?us-ascii?Q?WZHmKrZ2RX791WH5pY5eI52Zig3LNQyCKt9shRh9ky98PmfHASKY/yilmK9l?=
+ =?us-ascii?Q?GMGoztksS8ZD4DOJmWdpGcVLaE0N+ObgELyvghaR1XIosYt2YY+b/hKGvN/c?=
+ =?us-ascii?Q?qa6CinP8sodYGCQSGG3QB2TMx6pE8iEFNmn1OzJ0L0CxgAkaJ9nwDFUdSxEV?=
+ =?us-ascii?Q?DPNRsmFVNLfJe8kwTaM+H8hRmnWqq+t4Oadm1CgQoa+nmYMCJBcBiwSrP6mW?=
+ =?us-ascii?Q?mqVl1bNqXf6IWTX7AjiHTuGQMWUdoWrGdajHpt60YbFA4K3SUjT/uWz5vY+n?=
+ =?us-ascii?Q?yPdSGwHgaNmFIKEbgZIrxiPGS63Ckg3JBvNsr7FDucYSwcPWScmo0x2DL0hH?=
+ =?us-ascii?Q?ZjchzY4zkLIn/tVpu2k6rlcvjBzsAuHETTji6p+6sNoSm8T4Rjwi6az7KER5?=
+ =?us-ascii?Q?tywahNdhmvEmaGpsQDY/whTXLcxIVph13WY/QXK3s0hx2/oQVFA/eAjUVyYL?=
+ =?us-ascii?Q?BZtISummoHXmcRORn/AQazjnDIoI2YYb98SVnGd1Y/fIxteqFUGorCHIksaA?=
+ =?us-ascii?Q?byd4jYwrnR7E/SK3TikQs6x5f0R55AQahjo+4bUrC6sILyYGfv2i7dWZWsjM?=
+ =?us-ascii?Q?SFxeUHMlpRTBzXweZHCHdATYB7i+gdUBDG10bna2vjL7bhSMxTRVCrpd1Y7s?=
+ =?us-ascii?Q?rS4Q8Bn54BE53R82EqqplohXjmkDdLuVQmWI3a4rgoegkRVjhF7UGUu4uMm2?=
+ =?us-ascii?Q?9KiAZmTXjGB3wzR+/i/tgwhcC/pTAkmEqbKzbfN4lVTU5cz/CfgB75aI74qk?=
+ =?us-ascii?Q?OS6dMYy6Mjw+CsYUC6FIEonCdb8w/Nj3aPY1xsPsyJHhnHdcpT11llGbhA6o?=
+ =?us-ascii?Q?HCvt9G114+Lcf+0+ROqfOKmoVTwsEb15Wx7kg4IR?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?4e9Ti/TB7Locg028zkRmaWn2YfAOvmxMA32duxxdlb64X60e3zR6TKg6c73i?=
+ =?us-ascii?Q?N7oo6oTZTQ86IokGxxX2bhL7bUSHH9RsqH2l5U2Wm5qf0wJ4GqY7OV83alYc?=
+ =?us-ascii?Q?aaKyhfhI75KofmWDgIVrBNahlhfqvFSxSTDgPe/DTH3gJ8n+/HjYMpA2WxfS?=
+ =?us-ascii?Q?S4CzIAbgD5F9+gzFk8OmvED6F+2gFG4ADX0xYYRd9qRZtOVwz4qmztuzMqaM?=
+ =?us-ascii?Q?ToY/qGkJ1pOKwKu4KvPiXfbXNLKAgPCfVkJF1O1QqXtvI2+aZsQPddTBwbRd?=
+ =?us-ascii?Q?wJJU00lpjmet77eyArRzqU2mSaICA8nMG5NTP/7+xqETI6E86VZNGKkJXdEc?=
+ =?us-ascii?Q?cJIwrUoVRFsA0S2XCo4uQ4DyRyCEMQ4DfIahs4YWpKIwKcSz74P4aZkUAtY8?=
+ =?us-ascii?Q?47ns3xVK24ncBIDfrHmcpzL+Qo7miHwMCnECwCKuVJ2+SLnMfWKzctQXYIUw?=
+ =?us-ascii?Q?HLhsE3B5FpcqcMhQQArUKJQtEFYPf8pCz9Y3Xw57fmnbmbc4ZpT1swN+X9VY?=
+ =?us-ascii?Q?BHJji9LNu+BhZ2/Oj9xqZsPKCH2Ke6K7s0mJ6e+I3uB3hIH7DjiSAHQ6L5TA?=
+ =?us-ascii?Q?WH8IsC9yj6EYrx15MfHnG3qEChwCSBqglBNzmRseUKwBBzq3p4P38tVjDb8b?=
+ =?us-ascii?Q?aPQo8DOap/kc8RTpVmyei3FN00o+tOFZGaJvc4h6YSCpHLc06OE3tfUSiKEj?=
+ =?us-ascii?Q?Xgr0TGgwb+RzTrNHMeL/MjCadBn3eo2CU1FrIlqgcfmepiWM3YDW+8qMwUTp?=
+ =?us-ascii?Q?7CwbS1H/GRzEA69ID4/EBQjbAmuX7Y2lb6U7mK01r4mlTYuvwahTMKREGhqM?=
+ =?us-ascii?Q?YAvdU6oxONCIdyHUvyN43wyPB/6v2wZBhzwUlPKUVTd7QnAWef9Z3kgKlhMu?=
+ =?us-ascii?Q?VXgTUCp6Oi7+YdQneJoRpvG3ugqDFgW1CvRfyQo+OZ58CwEzyNC5+izy6wwd?=
+ =?us-ascii?Q?ypUnEHO12mIWI1D5j8FARnmbG1AlPJuE5DD09V3mVRz5yTeFv5C2ESYl+iv8?=
+ =?us-ascii?Q?AagL6oln8EMzKHim98KXg2hqNBMsZ+udBuCrUekmXPR2dHVJbClVNKayd+fq?=
+ =?us-ascii?Q?XGQj6SXArFgHLiqBzGtwp21HiqcmeuaOFGKvi121X0rcpPTYs7wxYRI7F8iV?=
+ =?us-ascii?Q?vPgLYStRrSjb?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 854afb06-58c7-437d-4031-08dbf75b604b
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2023 19:33:23.4995
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZpT93aYK7hfs+DO3ZmoB6x73va7eMerCDX1uK3bMJmXEx5XSLXXSxs2nSInJIyajpUh2wmYfFvY5Z5hdVin90w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR10MB6697
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-07_17,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ bulkscore=0 mlxlogscore=999 phishscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312070164
+X-Proofpoint-ORIG-GUID: 8vT8cIXKKXFAi1jeMNw99CR09tZL2c6O
+X-Proofpoint-GUID: 8vT8cIXKKXFAi1jeMNw99CR09tZL2c6O
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-commit: 30b5e6ef4a32ea4985b99200e06d6660a69f9246 m68k: atari: Make Atari ROM port I/O write macros return void
-date:   1 year, 7 months ago
-config: m68k-randconfig-r131-20231119 (https://download.01.org/0day-ci/archive/20231208/202312080308.IqKTXDYM-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231208/202312080308.IqKTXDYM-lkp@intel.com/reproduce)
+mas_prev() was setting the ma_underflow condition when the limit was
+reached and not when the limit was attempting to go lower.  This
+resulted in the incorrect behaviour on subsequent actions.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312080308.IqKTXDYM-lkp@intel.com/
+This commit fixes the status setting to only set ma_underflow when the
+lower limit is attempted to be decremented, and modifies the testing to
+ensure that's the case.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to restricted __le16
->> drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to restricted __le16
->> drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to restricted __le16
->> drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:173:21: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:173:21: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:173:21: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:173:21: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:205:9: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:205:9: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:205:9: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:205:9: sparse: sparse: cast to restricted __le16
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+---
 
-vim +163 drivers/comedi/drivers/ni_daq_700.c
+Andrew,
 
-a9f9d831454114 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  129  
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  130  static int daq700_ai_rinsn(struct comedi_device *dev,
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  131  			   struct comedi_subdevice *s,
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  132  			   struct comedi_insn *insn, unsigned int *data)
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  133  {
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  134  	int n;
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  135  	int d;
-a9f9d831454114 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  136  	int ret;
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  137  	unsigned int chan	= CR_CHAN(insn->chanspec);
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  138  	unsigned int aref	= CR_AREF(insn->chanspec);
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  139  	unsigned int range	= CR_RANGE(insn->chanspec);
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  140  	unsigned int r3_bits	= 0;
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  141  
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  142  	/* set channel input modes */
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  143  	if (aref == AREF_DIFF)
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  144  		r3_bits |= CMD_R3_DIFF;
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  145  	/* write channel mode/range */
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  146  	if (range >= 1)
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  147  		range++;        /* convert range to hardware value */
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  148  	outb(r3_bits | (range & 0x03), dev->iobase + CMD_R3);
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  149  
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  150  	/* write channel to multiplexer */
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  151  	/* set mask scan bit high to disable scanning */
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  152  	outb(chan | 0x80, dev->iobase + CMD_R1);
-ffed54dced8672 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2014-05-19  153  	/* mux needs 2us to really settle [Fred Brooks]. */
-ffed54dced8672 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2014-05-19  154  	udelay(2);
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  155  
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  156  	/* convert n samples */
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  157  	for (n = 0; n < insn->n; n++) {
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  158  		/* trigger conversion with out0 L to H */
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  159  		outb(0x00, dev->iobase + CMD_R2); /* enable ADC conversions */
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  160  		outb(0x30, dev->iobase + CMO_R); /* mode 0 out0 L, from H */
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  161  		outb(0x00, dev->iobase + ADCLEAR_R);	/* clear the ADC FIFO */
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  162  		/* read 16bit junk from FIFO to clear */
-cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20 @163  		inw(dev->iobase + ADFIFO_R);
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  164  		/* mode 1 out0 H, L to H, start conversion */
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  165  		outb(0x32, dev->iobase + CMO_R);
-a9f9d831454114 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  166  
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  167  		/* wait for conversion to end */
-a9f9d831454114 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  168  		ret = comedi_timeout(dev, s, insn, daq700_ai_eoc, 0);
-22ca19d93d92c7 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  169  		if (ret)
-a9f9d831454114 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  170  			return ret;
-a9f9d831454114 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  171  
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  172  		/* read data */
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  173  		d = inw(dev->iobase + ADFIFO_R);
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  174  		/* mangle the data as necessary */
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  175  		/* Bipolar Offset Binary: 0 to 4095 for -10 to +10 */
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  176  		d &= 0x0fff;
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  177  		d ^= 0x0800;
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  178  		data[n] = d;
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  179  	}
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  180  	return n;
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  181  }
-198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  182  
+This should be clean to squash into 7f79fdb1d94d7 ("maple_tree: separate
+ma_state node from status.") which is currently in your mm-unstable
+branch.
 
-:::::: The code at line 163 was first introduced by commit
-:::::: cf695df834efc718b2ed17e9c83e127fd63c9033 staging: comedi: ni_daq_700: add AI range and input mode switching
+Thanks,
+Liam
 
-:::::: TO: Fred Brooks <frederick.brooks@microchip.com>
-:::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
+ lib/maple_tree.c      | 16 ++++++++++++----
+ lib/test_maple_tree.c |  9 +++++++--
+ 2 files changed, 19 insertions(+), 6 deletions(-)
+
+diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+index 89f8d21602774..47f2a7a973852 100644
+--- a/lib/maple_tree.c
++++ b/lib/maple_tree.c
+@@ -4432,6 +4432,9 @@ static void *mas_prev_slot(struct ma_state *mas, unsigned long min, bool empty)
+ 		mas->last = mas->index - 1;
+ 		mas->index = mas_safe_min(mas, pivots, mas->offset);
+ 	} else  {
++		if (mas->index <= min)
++			goto underflow;
++
+ 		if (mas_prev_node(mas, min)) {
+ 			mas_rewalk(mas, save_point);
+ 			goto retry;
+@@ -4452,15 +4455,15 @@ static void *mas_prev_slot(struct ma_state *mas, unsigned long min, bool empty)
+ 	if (unlikely(mas_rewalk_if_dead(mas, node, save_point)))
+ 		goto retry;
+ 
+-	if (mas->index <= min)
+-		mas->status = ma_underflow;
+ 
+ 	if (likely(entry))
+ 		return entry;
+ 
+ 	if (!empty) {
+-		if (mas_is_underflow(mas))
++		if (mas->index <= min) {
++			mas->status = ma_underflow;
+ 			return NULL;
++		}
+ 
+ 		goto again;
+ 	}
+@@ -4596,7 +4599,7 @@ static void *mas_next_slot(struct ma_state *mas, unsigned long max, bool empty)
+ 		if (unlikely(mas_rewalk_if_dead(mas, node, save_point)))
+ 			goto retry;
+ 
+-		if (pivot >= max) {
++		if (pivot >= max) { /* Was at the limit, next will extend beyond */
+ 			mas->status = ma_overflow;
+ 			return NULL;
+ 		}
+@@ -4611,6 +4614,11 @@ static void *mas_next_slot(struct ma_state *mas, unsigned long max, bool empty)
+ 		else
+ 			mas->last = mas->max;
+ 	} else  {
++		if (mas->last >= max) {
++			mas->status = ma_overflow;
++			return NULL;
++		}
++
+ 		if (mas_next_node(mas, node, max)) {
+ 			mas_rewalk(mas, save_point);
+ 			goto retry;
+diff --git a/lib/test_maple_tree.c b/lib/test_maple_tree.c
+index 15fbeb788f3ac..29185ac5c727f 100644
+--- a/lib/test_maple_tree.c
++++ b/lib/test_maple_tree.c
+@@ -3294,8 +3294,8 @@ static noinline void __init check_state_handling(struct maple_tree *mt)
+ 	MT_BUG_ON(mt, mas.last != 0x1500);
+ 	MT_BUG_ON(mt, !mas_is_active(&mas));
+ 
+-	/* next:active ->active */
+-	entry = mas_next(&mas, ULONG_MAX);
++	/* next:active ->active (spanning limit) */
++	entry = mas_next(&mas, 0x2100);
+ 	MT_BUG_ON(mt, entry != ptr2);
+ 	MT_BUG_ON(mt, mas.index != 0x2000);
+ 	MT_BUG_ON(mt, mas.last != 0x2500);
+@@ -3360,6 +3360,11 @@ static noinline void __init check_state_handling(struct maple_tree *mt)
+ 	MT_BUG_ON(mt, entry != ptr);
+ 	MT_BUG_ON(mt, mas.index != 0x1000);
+ 	MT_BUG_ON(mt, mas.last != 0x1500);
++	MT_BUG_ON(mt, !mas_is_active(&mas)); /* spanning limit */
++	entry = mas_prev(&mas, 0x1200); /* underflow */
++	MT_BUG_ON(mt, entry != NULL);
++	MT_BUG_ON(mt, mas.index != 0x1000);
++	MT_BUG_ON(mt, mas.last != 0x1500);
+ 	MT_BUG_ON(mt, !mas_is_underflow(&mas));
+ 
+ 	/* prev:underflow -> underflow (lower limit) spanning end range */
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.40.1
+
