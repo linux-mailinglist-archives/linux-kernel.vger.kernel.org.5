@@ -2,179 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFE9808601
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDB180862D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378639AbjLGJc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:32:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40612 "EHLO
+        id S1378478AbjLGJiO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Dec 2023 04:38:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378491AbjLGJcj (ORCPT
+        with ESMTP id S231607AbjLGJiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:32:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A141FF7
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:31:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20DE0C433C8;
-        Thu,  7 Dec 2023 09:31:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701941483;
-        bh=ic0z5MdiV/0Is1elWTXze/Uq9YLCT3pb49zs6lpdupM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QBXRsV2obUFdVvgOkKaTQaGJdzTrnhg9uSomhvsreRT8HRHyc5IG+RMnyWtyzvZpb
-         f3GdVQvOTZ9gkuxJLMI83k4bELO1q4xaViHGbpt7ZmZEOqicjc3wqx3clO2sgBNsfZ
-         rV946/t9MsngKplwyDm0tMpjkfbYstmcymvkQDL+942ZbTuaaDQbJg7HH3oUqVYAJ6
-         9oQiTWxwzjNyCUxnuTX62sBPbCtXyLJ80kT4O408PLO/zLcUTwYGsO3ro106Y1xPUX
-         dtpHUO10E6Gy8eIxVOgLDweVqaJrguuBu1Qd7IP0bYqnVZJTVUaND7gjEQq4BTvHEz
-         z4SDPBma0Wxhg==
-Date:   Thu, 7 Dec 2023 15:01:12 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Manikanta Maddireddy <mmaddireddy@nvidia.com>
-Cc:     bhelgaas@google.com, thierry.reding@gmail.com, petlozup@nvidia.com,
-        rafael.j.wysocki@intel.com, lpieralisi@kernel.org, robh@kernel.org,
-        jeffy.chen@rock-chips.com, krzysztof.kozlowski+dt@linaro.org,
-        jonathanh@nvidia.com, dmitry.osipenko@collabora.com,
-        viresh.kumar@linaro.org, gregkh@linuxfoundation.org,
-        steven.price@arm.com, kw@linux.com, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        vidyas@nvidia.com
-Subject: Re: [RFC,v14 4/5] arm64: tegra: Add PCIe port node with PCIe WAKE#
- for C1 controller
-Message-ID: <20231207093112.GH2932@thinkpad>
-References: <20230208111645.3863534-1-mmaddireddy@nvidia.com>
- <20230208111645.3863534-5-mmaddireddy@nvidia.com>
- <20231206153627.GJ12802@thinkpad>
- <c86e8f75-f74a-491e-9ac0-2431a6ec4b80@nvidia.com>
- <20231207075952.GG2932@thinkpad>
- <6e282e1b-39d2-4a08-bdd4-a9d02b2b7f74@nvidia.com>
+        Thu, 7 Dec 2023 04:38:09 -0500
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF881721;
+        Thu,  7 Dec 2023 01:32:06 -0800 (PST)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5d400779f16so3520057b3.0;
+        Thu, 07 Dec 2023 01:32:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701941525; x=1702546325;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7HITPOZ98TcxoeIJZrNjSo/OvrhbnTbF7gIrbNDfuq4=;
+        b=GNfHWzC2mWUudtXiY+2FAqYeRIi00vGYJcUKtW9CoOqnQojs1UZ4daVnY+xmX2VTif
+         6BbT568w/QtqjkHenDuj5RMEoaGF4W79nxCYQKGRQwLoD1cnLCwk7uUAV2raR4XiOZ3P
+         2W1ezFSyb+EiXsJflpMexpTFUHHV+H7PXW04l1hGc49yCpTdpYm01ouhGLfMzXqrUVpf
+         BoajSM5YZPMfQU4MyAld24uv3bUIon6ntXeEShWr6XzxpbW+b05WpBbi+yg5kJ7SuZmw
+         ezG9y5iCdUka1o7nQlgTvxYRaN0UDhhCM0INdD1oOhmxOgJWO5IM0i7eprhz6RK5VTMh
+         QYFQ==
+X-Gm-Message-State: AOJu0YzS6mfM86mtrHfy360/oPOvFY2K8dPcNXxb8QjDILMRd6YgUoXC
+        6qTRzWMu3C83ck2AY3VPxpbEbztB0o4j3o4K
+X-Google-Smtp-Source: AGHT+IHUxkxGdq8C5WBHMuoj9KomT4pansS+cp/BBfvTVIKBqwDbdPfjsvriHOFPykzXf8ZVWIgmgQ==
+X-Received: by 2002:a81:af43:0:b0:5d7:1940:3ef4 with SMTP id x3-20020a81af43000000b005d719403ef4mr1429648ywj.37.1701941525404;
+        Thu, 07 Dec 2023 01:32:05 -0800 (PST)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id b62-20020a0dd941000000b005d6c21adea5sm273318ywe.40.2023.12.07.01.32.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 01:32:04 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5d400779f16so3519897b3.0;
+        Thu, 07 Dec 2023 01:32:04 -0800 (PST)
+X-Received: by 2002:a81:84c3:0:b0:5d6:bc5c:9770 with SMTP id
+ u186-20020a8184c3000000b005d6bc5c9770mr3593778ywf.4.1701941524678; Thu, 07
+ Dec 2023 01:32:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6e282e1b-39d2-4a08-bdd4-a9d02b2b7f74@nvidia.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <00fd1558-fda5-421b-be43-7de69e32cb4e@paragon-software.com> <61494224-68a8-431b-ba76-46b4812c241c@paragon-software.com>
+In-Reply-To: <61494224-68a8-431b-ba76-46b4812c241c@paragon-software.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 7 Dec 2023 10:31:53 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVu1xAHDo1UUsCKEX=pbiZWab0HwkO6hObwE6uB2yD4RQ@mail.gmail.com>
+Message-ID: <CAMuHMdVu1xAHDo1UUsCKEX=pbiZWab0HwkO6hObwE6uB2yD4RQ@mail.gmail.com>
+Subject: Re: [PATCH 08/16] fs/ntfs3: Fix detected field-spanning write (size
+ 8) of single field "le->name"
+To:     Konstantin Komarovc <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 02:23:46PM +0530, Manikanta Maddireddy wrote:
-> 
-> On 07-12-2023 13:29, Manivannan Sadhasivam wrote:
-> > External email: Use caution opening links or attachments
-> > 
-> > 
-> > On Thu, Dec 07, 2023 at 12:54:04PM +0530, Manikanta Maddireddy wrote:
-> > > On 06-12-2023 21:06, Manivannan Sadhasivam wrote:
-> > > > External email: Use caution opening links or attachments
-> > > > 
-> > > > 
-> > > > On Wed, Feb 08, 2023 at 04:46:44PM +0530, Manikanta Maddireddy wrote:
-> > > > > Add PCIe port node under the PCIe controller-1 device tree node to support
-> > > > > PCIe WAKE# interrupt for WiFi.
-> > > > > 
-> > > > > Signed-off-by: Manikanta Maddireddy <mmaddireddy@nvidia.com>
-> > > > > ---
-> > > > > 
-> > > > > Changes in v14:
-> > > > > New patch in the series to support PCIe WAKE# in NVIDIA Jetson AGX Orin.
-> > > > > 
-> > > > >    .../dts/nvidia/tegra234-p3737-0000+p3701-0000.dts     | 11 +++++++++++
-> > > > >    1 file changed, 11 insertions(+)
-> > > > > 
-> > > > > diff --git a/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts b/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
-> > > > > index 8a9747855d6b..9c89be263141 100644
-> > > > > --- a/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
-> > > > > +++ b/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000+p3701-0000.dts
-> > > > > @@ -2147,6 +2147,17 @@ pcie@14100000 {
-> > > > > 
-> > > > >                         phys = <&p2u_hsio_3>;
-> > > > >                         phy-names = "p2u-0";
-> > > > > +
-> > > > > +                     pci@0,0 {
-> > > > > +                             reg = <0x0000 0 0 0 0>;
-> > > > > +                             #address-cells = <3>;
-> > > > > +                             #size-cells = <2>;
-> > > > > +                             ranges;
-> > > > > +
-> > > > > +                             interrupt-parent = <&gpio>;
-> > > > > +                             interrupts = <TEGRA234_MAIN_GPIO(L, 2) IRQ_TYPE_LEVEL_LOW>;
-> > > > > +                             interrupt-names = "wakeup";
-> > > > WAKE# should be part of the PCIe controller, not device. And the interrupt name
-> > > > should be "wake".
-> > > > 
-> > > > - Mani
-> > > Hi,
-> > > 
-> > > Please refer to the discussion in below link, WAKE# is per PCI bridge.
-> > > https://patchwork.ozlabs.org/project/linux-pci/patch/20171226020806.32710-2-jeffy.chen@rock-chips.com/
-> > > 
-> > PCIe Host controller (RC) usually represents host bridge + PCI-PCI bridge. We do
-> > not represent the PCI-PCI bridge in devicetree for any platforms, but only RC as
-> > a whole.
-> > 
-> > Moreover, PERST# is already defined in RC node. So it becomes confusing if
-> > WAKE# is defined in a child node representing bridge.
-> > 
-> > So please move WAKE# to RC node.
-> > 
-> > - Mani
-> 
-> Hi,
-> 
-> We can define PCI-PCI bridge in device tree, refer to below device tree
-> which has 3 ports under a controller,
-> with PERST#(reset-gpios) defined per port.
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/boot/dts/apple/t8103.dtsi#n749
-> 
+Hi Konstantin,
 
-Hmm. For RCs with single bridge, we never defined a DT node (atleast on Qcom
-platforms). But I think it is the time to fix them.
+On Wed, Dec 6, 2023 at 4:12 PM Konstantin Komarovc
+<almaz.alexandrovich@paragon-software.com> wrote:
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
-> Also, of_pci_setup_wake_irq() in below patch is parsing "wakeup" from PCI
-> bridge, not from the host bridge.
-> https://patchwork.ozlabs.org/project/linux-pci/patch/20230208111645.3863534-4-mmaddireddy@nvidia.com/
-> 
+Thanks for your patch, which is now commit d155617006ebc172 ("fs/ntfs3:
+Fix detected field-spanning write (size 8) of single field "le->name"")
+in next-20231207.
 
-I didn't say that WAKE# should be parsed from host bridge, it doesn't make
-sense. But I get your point.
+> --- a/fs/ntfs3/ntfs.h
+> +++ b/fs/ntfs3/ntfs.h
+> @@ -523,7 +523,7 @@ struct ATTR_LIST_ENTRY {
+>       __le64 vcn;        // 0x08: Starting VCN of this attribute.
+>       struct MFT_REF ref;    // 0x10: MFT record number with attribute.
+>       __le16 id;        // 0x18: struct ATTRIB ID.
+> -    __le16 name[3];        // 0x1A: Just to align. To get real name can
+> use bNameOffset.
+> +    __le16 name[];        // 0x1A: Just to align. To get real name can
+> use name_off.
 
-> If a controller has only one port it has to define a PCI bridge under
-> controller device tree node and
-> add wakeup interrupt property, refer to below patch from original author.
-> 
-> https://www.spinics.net/lists/linux-pci/msg135569.html
-> 
+noreply@ellerman.id.au reports for all m68k configs[1]:
 
-Yes, I agree. Thanks for the clarification.
+include/linux/build_bug.h:78:41: error: static assertion failed:
+"sizeof(struct ATTR_LIST_ENTRY) == 0x20"
 
-- Mani
+>
+>   }; // sizeof(0x20)
 
-> Thanks,
-> Manikanta
-> > 
-> > > I carried wakeup name defined in previous version, but wake seems to be
-> > > sufficient.
-> > > 
-> > > Thanks,
-> > > Manikanta
-> > > > > +                     };
-> > > > >                 };
-> > > > > 
-> > > > >                 pcie@14160000 {
-> > > > > --
-> > > > > 2.25.1
-> > > > > 
-> > > > --
-> > > > மணிவண்ணன் சதாசிவம்
-> > --
-> > மணிவண்ணன் சதாசிவம்
+Indeed, we now have a hole of 4 bytes at the end of the structure,
+which shrinks the size of the structure on all architectures where
+alignof(u64) < sizeof(u64).
+
+So either the patch should be reverted, or explicit padding should
+be added.  Your patch description is not very descriptive, so I
+don't know which is the correct solution.
+
+[1] http://kisskb.ellerman.id.au/kisskb/head/8e00ce02066e8f6f1ad5eab49a2ede7bf7a5ef64
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-மணிவண்ணன் சதாசிவம்
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
