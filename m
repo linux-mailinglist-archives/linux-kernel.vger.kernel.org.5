@@ -2,192 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 920A1808B83
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF400808B92
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232943AbjLGPMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 10:12:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
+        id S1443380AbjLGPPp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Dec 2023 10:15:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232097AbjLGPMG (ORCPT
+        with ESMTP id S232946AbjLGPPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 10:12:06 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ECC26D5B
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:12:11 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A6611042;
-        Thu,  7 Dec 2023 07:12:57 -0800 (PST)
-Received: from [10.1.32.134] (XHFQ2J9959.cambridge.arm.com [10.1.32.134])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 769EC3F762;
-        Thu,  7 Dec 2023 07:12:08 -0800 (PST)
-Message-ID: <787eb131-759c-4cd3-a2b7-39caf818cffc@arm.com>
-Date:   Thu, 7 Dec 2023 15:12:07 +0000
+        Thu, 7 Dec 2023 10:15:43 -0500
+Received: from lhr.gtn-esa2.in (gtnesa2.ptcl.net [59.103.87.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 98F3A19A;
+        Thu,  7 Dec 2023 07:15:46 -0800 (PST)
+Message-Id: <573856$1ia2tj@lhr.gtn-esa2.in>
+X-IPAS-Result: =?us-ascii?q?A2FzDgAb33Fl/9t3sbYNTYEJCYFIgU8CkDCgfjs4hH5Wg?=
+ =?us-ascii?q?X0PAQEBAQEBAQEBHRMdBAEBhQEDAocuJzwCDQECBAEBAQEDAgMBAQEBAQEDA?=
+ =?us-ascii?q?QEBBQEBAQEBAQYDAQEBAoEZhS+DBYQOfSiBFrJ4eIE0GmeEX7F6AwGIDAGFW?=
+ =?us-ascii?q?IQ2j3+CUwSDY5wgBwdwR3AbAwcDfw8rBwQwIgYJFC0jBlEEKCEJExI+BG2CR?=
+ =?us-ascii?q?Qp/Pw8OEYI+YTYZSIJbFQw1SnUQQheBEW4bEh43ERIXDQMIdB0CMjwDBQMEM?=
+ =?us-ascii?q?woSDQshBVYDRQZJCwMCGgUDAwSBMwUNHgIQLCcDAxJJAhAUAzsDAwYDCzEDM?=
+ =?us-ascii?q?IEZDE8Dbh82CTwPDB8COQ0nIwIsVgUSAhYDJBo0EQkLKAMvBjgCEwwGBgleJ?=
+ =?us-ascii?q?hYJBCcDCAQDXQMUAzMRHTcJA3g9NQgMG0xHHRKlYkCBUol1mjhpoEsHAwuEB?=
+ =?us-ascii?q?KVHAZNeA5I2hiuGPotZIKpJgWiDWwEBS1GiWoEQAgcLAQEDCYkigUABAQ?=
+IronPort-PHdr: A9a23:Inc18RdiVQGOCnLx5IguezENlGM+MdnLVj580XLHo4xHfqnrxZn+J
+ kuXvawr0AWZG9yLsLkc2qL/iOPJZy8p2dW7jDg6aptCVhsI2409vjcLJ4q7M3D9N+PgdCcgH
+ c5PBxdP9nC/NlVJSo6lPwWB6nK94iQPFRrhKAF7Ovr6GpLIj8Swyuu+54Dfbx9HiTajYr5+N
+ gi6oAbfu8UZnYdvLrs6xwfUrHdPZ+lZymRkKE6JkRr7+sm+4oNo/T5Ku/Im+c5AUKH6cLo9Q
+ LdFEjkoMH076dPyuxXbQgSB+nUTUmMNkhpVGAfF9w31Xo3wsiThqOVw3jSRMNDsQrA1XTSi6
+ LprSAPthSwaOTM17H3bh8pth61cvB+sqQBzz5PNbI2JKfZ1Y6fRcc4aSGZEWMtaSi5PDZ6mb
+ 4YXE+UOMulWoZTjqVUOsxawCxOsCfjzyj9RmnP6wbE23/g8HQzAwQcuH8gOsHPRrNjtOqsfT
+ +C1zLPJzTXYdf9YxTnx45XPfx09u/GMXLxwfdDUx0kvDQzFiE6dqZT5PzyJ0uQBqW6b4PR8V
+ e61k24nqBh8rz6yzcgjlofHnJgaykzY9Spn2oY1I8W1RU9mbdK6H5Vdty+XOpdqTs4hTWxmt
+ iU3x70Jt5OnYCQHx4oqygDDZ/GGb4WF7RzuWuiMLTp6mX5oeayyigu9/EWm1+byVdG03U5Xo
+ idGjNXArG0B2h7R58SdV/dx40Os1SyR2wzO7uxJJ10/mLfBJJE83rA/iIITsVnfHiH4n0X2i
+ bWZdkQi+uWw8+TnfqnpppuGO49ylA7+Lr4imtS8Aek+LwMDQWyb+fmn1L3/40L5WqhEjvw3k
+ 6bHqJ3XK9oXq6y/DgRIyIgs8Qy/AC2j0NkAmHkHK09KdwyfgojyPlHOPOj4DfCig1SwiDtrx
+ +7JPrnmApjVKnfOlKrtcax55kJC0gY/09BS649OBrwCIP/8XFf9tN3eDhAnLwy52/vrBdZj2
+ o8ERG6CAK2UPLnPvVOV4u8jOfeAaJIRtTrlLvgq/f/ujXs3mV8Heqmp2IMaZWyiHvRnLUWVe
+ 3/igtcbHmcMpQc+VPDqh0GGUTJJYXa9Qb486isjCIKlFYvDQJuij6Sb3CinBp1WenxGCleUH
+ Hv2d4iIQ+0MZz6KIs99jjwEUqCsS4sg1RG2qA/6zLxnLuXO+iIGupLuz9h06PfTlRE18jx4F
+ diS02aIT21shGMHWyc23LxjoUx60lqD1al4g+RFFdxQ+f9FThs2OJ/Hwu16Ed/yWgXBftCTR
+ Fm6RdWmBCk9TsgtzN8Wf0Z9B9KigwjH3yqrG78Ul6aEC4Ev/6LT2nj+Pcd9y3Lc2KY9iFkmR
+ 9NDNXe6ia5n6wjTG4nJnl2fmaipbqoS3zLA+n+Cw2WWsk9XXhJ9X73eUHEffETWrdP55kTYQ
+ 7CyDrQnNxdOxtSGKqtOctHpl0lJRO//ONTCZGK8g2OwBReRxrONcYrremUd0T7SCEgBiQ8T/
+ HKGORIiCSempmKNRABpQBjzJUbl6/RvoXayZklxyh2HZAtq0Py34lRd0dWGSv1V/bINvg85t
+ z5wWlCww5TOCIzTnQd5eLRgZoY24E1GzifDtwtxM4eIJLhkwF8CICptuEa7nT53EIRb1/Jg5
+ CcD1gt8b4GY2VVpby+T2db2N6GRMmqkr0PnULLfxlyLiIXewawI8vlt8giLgQ==
+IronPort-Data: A9a23:kxnamao2Jhaa156PsLIPnHig23BeBmJ6YhIvgKrLsJaIsI4StFCzt
+ garIBmAM/vZN2Kgeop0bIXipB4B7MLWzYUwHVZk+CgyQXwTp5acVYWSI27OZC7DdceroGCLT
+ ik9hnssCOhuExcwcz/0auCJQUFUjP3OHvymYAL9EngZqTVMEU/Nsjo93bZl6mJUqYLhWVjU4
+ 4ut+5S31GKNglaYDEpFs8pvlzsy5JweiBtA1rDpTakW1LN2vyB94KM3fcldHVOhKmVnNrfSq
+ 9L48V2M1jixEyHBqD+Suu2TnkUiGtY+NOUV45Zcc/DKbhNq/kTe3kunXRa1hIg+ZzihxrhMJ
+ NtxWZOYGAYlOPGdpvYmWBBXGD1ZYv1mo47pGC3q2SCT5xWun3rE8KQ3ShBse9dFo6AnXFQmG
+ f4wcWBXKEnc2KTvmeP9ELA97iggBJCD0Ic3k2thw3f6Df8gaYjfSKGM49JEmi8z7ixLNauEO
+ JdINWU3BPjGS0VKGUlJFJYVpeixqyLCURx3uX/L4pNitgA/yyQ0itABKuH9ft2SWcJTkVyVq
+ UrX9mT+BVcRM9n34T6E6m+v3LeXwwvqUYIVE/uz8fsCqFmS3n0aBDUZUFK6pb+yjUvWc/Z+E
+ m093AUZgZUb0mS6R9n6WFuzp3uPtxoYM/JUEvQ79RON4qXR6gedQGMDS1ZpbN0/qc46Tjwr0
+ lPQx4rBBTtztbSUTTSW8bL8hTezIDUUIWALYSYUXA8M6fHspYgyilTESdMLOKq0l8D0FTT93
+ zmOojgWiLAajMpN3KK+lXjDgiuxp5TVSQI89y3YW2uk6kVyY4vNT4ip81HQ9/tMLZqxQVyIv
+ XxCkM+bhMgKDIuMnSOPQeEEGpmp4OqAOTzYx1VoGvEJ0zW3+nesf4FU6TcnfG9pNdoBcD7tJ
+ kTUvGt54J5JPXKxYKl6S4K2F8EjzKymHtPgPtjQb8BPbpR2cgCO5yFvTUGV1mHp1kMrlMkXP
+ ZaBcMqrC14QDblq0zuwAewduZcvxzo/yWTVbZP8zx3h17eCDFaRSK0EPFyIRuQw87KJukPe9
+ NM3H8+L0RRTV+vWeTHN8IgPaEsNKWUnBJfwsIpccevrCg5nAmAtDPmUmO0Je4t5mq1UkqHD+
+ XTVcmtZ0lvzgnuCKgyPZ2pkbLfudZZ4sXcyPChqNlGts1AnYJyu4KAZMcYfe6Qj8Oxk0ft9T
+ v1DcMKFatxLSy7G9zMbK5DysZdidTyrgh6LNiuhJjM4evZIQw3T+9PjeE3l+TMPFSq+ndY4o
+ vi4zEXWTYdrbyBjFsfab/Tp406qvXkWkcp8Qg7CL8NXeUOq/IUCAyjwlP47JMdKJhzYxjqy1
+ wGKBB4Zoa/GpIpdzTXSrfnU9cHwTLQ4RxMLWTOCvN5aKBXnw4Zq+qcYOM7gQNwXfDicFHmKD
+ Qme8x0w3DDrUrqHX0qQ3ouHFZ4D2uY=
+IronPort-HdrOrdr: A9a23:WXPxiKlJShN9wZXmLFBbuK00IkTpDfI83DAbv31ZSRFFG/FwWf
+ rPoBzTvSWZtN93YhwdcLG7U5VoLkmslqKdjbNxAV7AZmPbUQKTRelfBO3Zsl/d8kbFmdK1u5
+ 0PT5RD
+X-Talos-CUID: 9a23:X69Flm2GaCB81S8QvomZGrxfS8EpdCGM8mXrKEa3AnpOF+21Em6+wfYx
+X-Talos-MUID: 9a23:Mus1bwiIe+ur2/5c/YA1n8MpbMJL/fqyDGs0nowr4PSmFANhFmnatWHi
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.04,256,1695668400"; 
+   d="scan'208";a="52759475"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from unknown (HELO [91.92.251.85]) ([182.177.119.219])
+  by lhr.gtn-esa2.in with ESMTP; 07 Dec 2023 20:15:27 +0500
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 04/10] mm: thp: Support allocation of anonymous
- multi-size THP
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231204102027.57185-1-ryan.roberts@arm.com>
- <20231204102027.57185-5-ryan.roberts@arm.com>
- <71040a8c-4ea1-4f21-8ac8-65f7c25c217e@redhat.com>
- <f2896d7f-183b-48fb-a3aa-d21bf2257043@arm.com>
- <ca649aad-7b76-4c6d-b513-26b3d58f8e68@redhat.com>
- <126c3b71-1acc-4851-9986-4228cb8a8660@arm.com>
- <94806b4f-2370-4999-9586-2c936955cb87@redhat.com>
- <3d49bcbf-1f9b-48e8-a91a-ede0762b795c@arm.com>
- <369ec8d3-ef6a-4a4e-84e2-2c91b8293929@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <369ec8d3-ef6a-4a4e-84e2-2c91b8293929@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Approval
+To:     "t.maruyama@n-mtec.co.jp" <Arif.Khan@ptcl.net.pk>
+From:   "Chris.R" <Arif.Khan@ptcl.net.pk>
+Cc:     Arif.Khan@ptcl.net.pk
+Date:   Thu, 07 Dec 2023 07:15:00 -0800
+Reply-To: chris-rhodes@cpn.it
+X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,MSGID_FROM_MTA_HEADER,
+        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,
+        RCVD_IN_PSBL,RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/12/2023 15:01, David Hildenbrand wrote:
-> On 07.12.23 15:45, Ryan Roberts wrote:
->> On 07/12/2023 13:28, David Hildenbrand wrote:
->>>>>
->>>>> Right, but you know from the first loop which order is applicable (and will be
->>>>> fed to the second loop) and could just pte_unmap(pte) + tryalloc. If that
->>>>> fails,
->>>>> remap and try with the next orders.
->>>>
->>>> You mean something like this?
->>>>
->>>>      pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
->>>>      if (!pte)
->>>>          return ERR_PTR(-EAGAIN);
->>>>
->>>>      order = highest_order(orders);
->>>>      while (orders) {
->>>>          addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
->>>>          if (!pte_range_none(pte + pte_index(addr), 1 << order)) {
->>>>              order = next_order(&orders, order);
->>>>              continue;
->>>>          }
->>>>
->>>>          pte_unmap(pte);
->>>>                  folio = vma_alloc_folio(gfp, order, vma, addr, true);
->>>>          if (folio) {
->>>>              clear_huge_page(&folio->page, vmf->address, 1 << order);
->>>>              return folio;
->>>>          }
->>>>
->>>>          pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
->>>>          if (!pte)
->>>>              return ERR_PTR(-EAGAIN);
->>>>
->>>>          order = next_order(&orders, order);
->>>>      }
->>>>
->>>>      pte_unmap(pte);
->>>>
->>>> I don't really like that because if high order folio allocations fail, then you
->>>> are calling pte_range_none() again for the next lower order; once that check
->>>> has
->>>> succeeded for an order it shouldn't be required for any lower orders. In this
->>>> case you also have lots of pte map/unmap.
->>>
->>> I see what you mean.
->>>
->>>>
->>>> The original version feels more efficient to me.
->>> Yes it is. Adding in some comments might help, like
->>>
->>> /*
->>>   * Find the largest order where the aligned range is completely prot_none().
->>> Note
->>>   * that all remaining orders will be completely prot_none().
->>>   */
->>> ...
->>>
->>> /* Try allocating the largest of the remaining orders. */
->>
->> OK added.
->>
->>>
->>>>
->>>>>
->>>>> That would make the code certainly easier to understand. That "orders"
->>>>> magic of
->>>>> constructing, filtering, walking is confusing :)
->>>>>
->>>>>
->>>>> I might find some time today to see if there is an easy way to cleanup all
->>>>> what
->>>>> I spelled out above. It really is a mess. But likely that cleanup could be
->>>>> deferred (but you're touching it, so ... :) ).
->>>>
->>>> I'm going to ignore the last 5 words. I heard the "that cleanup could be
->>>> deferred" part loud and clear though :)
->>>
->>> :)
->>>
->>> If we could stop passing orders into thp_vma_allowable_orders(), that would
->>> probably
->>> be the biggest win. It's just all a confusing mess.
->>
->>
->>
->> I tried an approach like you suggested in the other thread originally, but I
->> struggled to define exactly what "thp_vma_configured_orders()" should mean;
->> Ideally, I just want "all the THP orders that are currently enabled for this
->> VMA+flags". But some callers want to enforce_sysfs and others don't, so you
->> probably have to at least pass that flag. Then you have DAX which explicitly
-> 
-> Yes, the flags would still be passed. It's kind of the "context".
-> 
->> ignores enforce_sysfs, but only in a page fault. And shmem, which ignores
->> enforce_sysfs, but only outside of a page fault. So it quickly becomes pretty
->> complex. It is basically thp_vma_allowable_orders() as currently defined.
-> 
-> Yeah, but moving the "can we actually fit a THP in there" check out of the picture.
-> 
->>
->> If this could be a simple function then it could be inline and as you say, we
->> can do the masking in the caller and exit early for the order-0 case. But it is
->> very complex (at least if you want to retain the equivalent logic to what
->> thp_vma_allowable_orders() has) so I'm not sure how to do the order-0 early exit
->> without passing in the orders bitfield. And we are unlikely to exit early
->> because PMD-sized THP is likely enabled and because we didn't pass in a orders
->> bitfield, that wasn't filtered out.
->>
->> In short, I can't see a solution that's better than the one I have. But if you
->> have something in mind, if you can spell it out, then I'll have a go at tidying
->> it up and integrating it into the series. Otherwise I really would prefer to
->> leave it for a separate series.
-> 
-> I'm playing with some cleanups, but they can all be built on top if they
-> materialize.
+Trust you are in good health? I have emailed you earlier without a reply from yo!u.
+Kindly reply for more briefing.
 
-OK, I'm going to post a v9 then. And cross my fingers and hope that's the final
-version.
-
+Thank!s
+Chris R h o d e s
