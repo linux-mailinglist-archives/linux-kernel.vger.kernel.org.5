@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFEE808261
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 09:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB37808269
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 09:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbjLGIBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 03:01:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
+        id S1378098AbjLGICW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 03:02:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbjLGIBn (ORCPT
+        with ESMTP id S231859AbjLGICI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 03:01:43 -0500
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A7AA10CF;
-        Thu,  7 Dec 2023 00:01:48 -0800 (PST)
+        Thu, 7 Dec 2023 03:02:08 -0500
+X-Greylist: delayed 113 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Dec 2023 00:02:09 PST
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.214])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9726B1711;
+        Thu,  7 Dec 2023 00:02:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=zb21F
-        grwTHHIjSU2lLqUEQQ7s329de26aUDP8GoQ+6A=; b=kzoUkzqceLopPCcYi//E7
-        FZqZMZqU7rFswtGmR6ePN+wpVjclKIsaP1mzN0JGVK74OJ9q2osJobEPh+V8RqGP
-        3uqTv0FtKHrAIgodl79m4kJX8RSk1oB+JPaHQxEkUmwzefG0+uhfRdA52ecI2auu
-        d4zdg9KrIASxN1eiGtBL8E=
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=J7E+B
+        pO4zUY8zBD6oBKSRdW051kiXnsXucME7l+c/aQ=; b=mDDS1ncW2MczHVNiWFD8m
+        OPJoK+GCeiGHKPfqsdVIua2pOwXgMd1V+4JznAgzfi6pOKq2Xkk7pE2Vdwc1huCT
+        VNY+cX4VL7UzmIT/IxfbTliBeTsBkzSjkr9dekp5J2yZ0Hh9XHua4LTmaV7BDYgA
+        sleEHaiHZhC5zaw3HJ8h60=
 Received: from ProDesk.. (unknown [58.22.7.114])
-        by zwqz-smtp-mta-g0-0 (Coremail) with SMTP id _____wDnr0uee3FlXgKlEw--.44744S2;
-        Thu, 07 Dec 2023 16:00:33 +0800 (CST)
+        by zwqz-smtp-mta-g5-2 (Coremail) with SMTP id _____wDn706qe3FlJlmfEw--.42456S2;
+        Thu, 07 Dec 2023 16:00:46 +0800 (CST)
 From:   Andy Yan <andyshrk@163.com>
 To:     heiko@sntech.de
 Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
@@ -32,26 +33,26 @@ Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
         devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
         kever.yang@rock-chips.com, chris.obbard@collabora.com,
         Andy Yan <andy.yan@rock-chips.com>
-Subject: [PATCH v4 05/17] drm/rockchip: vop2: Add write mask for VP config done
-Date:   Thu,  7 Dec 2023 16:00:29 +0800
-Message-Id: <20231207080029.652110-1-andyshrk@163.com>
+Subject: [PATCH v4 06/17] drm/rockchip: vop2: Set YUV/RGB overlay mode
+Date:   Thu,  7 Dec 2023 16:00:41 +0800
+Message-Id: <20231207080041.652171-1-andyshrk@163.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231207075906.651771-1-andyshrk@163.com>
 References: <20231207075906.651771-1-andyshrk@163.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wDnr0uee3FlXgKlEw--.44744S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7uw4rKw17GrW5WF13XF4fKrg_yoW8Ar1xpF
-        WrAay5urs2kFsFgr4qkFy5Zr1aya9rAa92yr97Kw13Xas0qr1DZFn09F1jyr98JFWxZr1a
-        ywsrAryrGF4jvrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jSzuXUUUUU=
+X-CM-TRANSID: _____wDn706qe3FlJlmfEw--.42456S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXr18XrWkAFyrWFW3Ww47XFb_yoWrCr1fpw
+        n7ZryYqrWDKF4qqw1kAF98ZF4Skw4Iyay7GFn7Gasxua4vgryDWwnxuas8AFnrXF17urWj
+        yrZFkry5AF42vr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jo5lbUUUUU=
 X-Originating-IP: [58.22.7.114]
-X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/1tbiqAo-XmVOA0YD-wAAsR
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbBEBQ-XmVOA0WnwQAAsu
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_SORBS_WEB,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -60,15 +61,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andy Yan <andy.yan@rock-chips.com>
 
-The write mask bit is used to make sure when writing
-config done bit for one VP will not overwrite the other.
-
-Unfortunately, the write mask bit is missing on
-rk3566/8, that means when we write to these bits,
-it will not take any effect.
-
-We need this to make the vop work properly after
-rk3566/8 variants.
+Set overlay mode register according to the
+output mode is yuv or rgb.
 
 Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
 
@@ -77,41 +71,103 @@ Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
 (no changes since v3)
 
 Changes in v3:
-- split from the vop2 driver patch
+- put bool variable yuv_overlay next to other bool variable
+- define macro for RK3568_OVL_CTRL__YUV_MODE
+- just write RK3568_OVL_CTRL register once in function
+  vop2_setup_layer_mixer
 
- drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/rockchip/rockchip_drm_drv.h  |  1 +
+ drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 18 +++++++++++++++---
+ drivers/gpu/drm/rockchip/rockchip_drm_vop2.h |  1 +
+ 3 files changed, 17 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.h b/drivers/gpu/drm/rockchip/rockchip_drm_drv.h
+index 3d8ab2defa1b..bbb9e0bf6804 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.h
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.h
+@@ -48,6 +48,7 @@ struct rockchip_crtc_state {
+ 	int output_bpc;
+ 	int output_flags;
+ 	bool enable_afbc;
++	bool yuv_overlay;
+ 	u32 bus_format;
+ 	u32 bus_flags;
+ 	int color_space;
 diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-index a019cc9bbd54..25c1f33c5622 100644
+index 25c1f33c5622..40b5c5ca4864 100644
 --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
 +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-@@ -268,12 +268,23 @@ static bool vop2_cluster_window(const struct vop2_win *win)
- 	return win->data->feature & WIN_FEATURE_CLUSTER;
- }
+@@ -1623,6 +1623,8 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
  
-+/*
-+ * Note:
-+ * The write mask function is missing on rk3566/8, write
-+ * to this bit has no effect, for the other soc(rk3588 and
-+ * the following...), this function works well.
-+ *
-+ * GLB_CFG_DONE_EN doesn't have a write mask bit
-+ *
-+ */
- static void vop2_cfg_done(struct vop2_video_port *vp)
- {
- 	struct vop2 *vop2 = vp->vop2;
-+	u32 val = RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN;
+ 	vop2->enable_count++;
+ 
++	vcstate->yuv_overlay = is_yuv_output(vcstate->bus_format);
 +
-+	val |= BIT(vp->id) | (BIT(vp->id) << 16);
+ 	vop2_crtc_enable_irq(vp, VP_INT_POST_BUF_EMPTY);
  
--	regmap_set_bits(vop2->map, RK3568_REG_CFG_DONE,
--			BIT(vp->id) | RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN);
-+	regmap_set_bits(vop2->map, RK3568_REG_CFG_DONE, val);
+ 	polflags = 0;
+@@ -1650,7 +1652,7 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
+ 	if (vop2_output_uv_swap(vcstate->bus_format, vcstate->output_mode))
+ 		dsp_ctrl |= RK3568_VP_DSP_CTRL__DSP_RB_SWAP;
+ 
+-	if (is_yuv_output(vcstate->bus_format))
++	if (vcstate->yuv_overlay)
+ 		dsp_ctrl |= RK3568_VP_DSP_CTRL__POST_DSP_OUT_R2Y;
+ 
+ 	vop2_dither_setup(crtc, &dsp_ctrl);
+@@ -1959,10 +1961,12 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
+ 	u16 hdisplay;
+ 	u32 bg_dly;
+ 	u32 pre_scan_dly;
++	u32 ovl_ctrl;
+ 	int i;
+ 	struct vop2_video_port *vp0 = &vop2->vps[0];
+ 	struct vop2_video_port *vp1 = &vop2->vps[1];
+ 	struct vop2_video_port *vp2 = &vop2->vps[2];
++	struct rockchip_crtc_state *vcstate = to_rockchip_crtc_state(vp->crtc.state);
+ 
+ 	adjusted_mode = &vp->crtc.state->adjusted_mode;
+ 	hsync_len = adjusted_mode->crtc_hsync_end - adjusted_mode->crtc_hsync_start;
+@@ -1975,7 +1979,15 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
+ 	pre_scan_dly = ((bg_dly + (hdisplay >> 1) - 1) << 16) | hsync_len;
+ 	vop2_vp_write(vp, RK3568_VP_PRE_SCAN_HTIMING, pre_scan_dly);
+ 
+-	vop2_writel(vop2, RK3568_OVL_CTRL, 0);
++	ovl_ctrl = vop2_readl(vop2, RK3568_OVL_CTRL);
++	ovl_ctrl |= RK3568_OVL_CTRL__LAYERSEL_REGDONE_IMD;
++	if (vcstate->yuv_overlay)
++		ovl_ctrl |= RK3568_OVL_CTRL__YUV_MODE(vp->id);
++	else
++		ovl_ctrl &= ~RK3568_OVL_CTRL__YUV_MODE(vp->id);
++
++	vop2_writel(vop2, RK3568_OVL_CTRL, ovl_ctrl);
++
+ 	port_sel = vop2_readl(vop2, RK3568_OVL_PORT_SEL);
+ 	port_sel &= RK3568_OVL_PORT_SEL__SEL_PORT;
+ 
+@@ -2047,9 +2059,9 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
+ 		layer_sel |= RK3568_OVL_LAYER_SEL__LAYER(nlayer + ofs, 5);
+ 	}
+ 
++
+ 	vop2_writel(vop2, RK3568_OVL_LAYER_SEL, layer_sel);
+ 	vop2_writel(vop2, RK3568_OVL_PORT_SEL, port_sel);
+-	vop2_writel(vop2, RK3568_OVL_CTRL, RK3568_OVL_CTRL__LAYERSEL_REGDONE_IMD);
  }
  
- static void vop2_win_disable(struct vop2_win *win)
+ static void vop2_setup_dly_for_windows(struct vop2 *vop2)
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.h b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.h
+index 7175f46a2014..8d7ff52523fb 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.h
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.h
+@@ -401,6 +401,7 @@ enum dst_factor_mode {
+ #define VOP2_COLOR_KEY_MASK				BIT(31)
+ 
+ #define RK3568_OVL_CTRL__LAYERSEL_REGDONE_IMD		BIT(28)
++#define RK3568_OVL_CTRL__YUV_MODE(vp)			BIT(vp)
+ 
+ #define RK3568_VP_BG_MIX_CTRL__BG_DLY			GENMASK(31, 24)
+ 
 -- 
 2.34.1
 
