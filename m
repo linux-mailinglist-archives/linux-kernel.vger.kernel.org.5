@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B7E808A4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44819808A5F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443341AbjLGOTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:19:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49104 "EHLO
+        id S1443203AbjLGOW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:22:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443346AbjLGOTT (ORCPT
+        with ESMTP id S1443366AbjLGOWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:19:19 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD3B271F
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:17:54 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a1d2f89ddabso118373566b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 06:17:53 -0800 (PST)
+        Thu, 7 Dec 2023 09:22:01 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25506273B
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:17:55 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2ca0c36f5beso10309771fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 06:17:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1701958658; x=1702563458; darn=vger.kernel.org;
+        d=amarulasolutions.com; s=google; t=1701958659; x=1702563459; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=z6cxFn4aO0yy5UrlpVJXqr6Ib0MVPiNBWSNHmUIHG5s=;
-        b=lFIw9IDmDbFxtTdV2HWq4nh4D43Bw7ixnPJds1UR9LQwepPGs4xq10btTh5p57TA+a
-         83MwlRKgC+8psICTGQPTWdnitWfvqqT4Ho/BaDVDujbACFh6SBPb/txEtYwGToN793hU
-         vsSGHt/sLqSlBSsRG4zs0cku2cKkorzamqXzo=
+        bh=9POmGM8FFxQ0phKiYUCTqq/2h5caBL36ATB9vcbhedE=;
+        b=UB5D7iytgjdf9HTk28WRv6tWXdJfpZVg00OQaQEEFmbMmlocnEYoK27AePWdJL5FVC
+         zUnS0Sg4Q1xS4C4VvWzu7Wtqlsi28ujnBPiPvQWpudRER8C2kTbEWv7zEpG9HZ+RIN/q
+         owuvMQPR+BXzoyKEmVm4BWR6uXzREqqiresYI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701958658; x=1702563458;
+        d=1e100.net; s=20230601; t=1701958659; x=1702563459;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=z6cxFn4aO0yy5UrlpVJXqr6Ib0MVPiNBWSNHmUIHG5s=;
-        b=vB2o+MT6YFLke0ImWVetN+rEY76MOCoL2X78h+UtrRks+TlEO/IYkhcpF2m5eEQNzB
-         ym/0F7VwfWbpHJ++fOdtDbro7p9bxS3G/kBJd7wW6Vcnkh4CTNZ77g8cmuNNJidF3LgJ
-         wS5SOddnd6GESJCDakqUGqIbPtfNtzu3WCItUHNwXMZjG2uTRtDHI1ShBya4OHK90xaN
-         fQqmowlHUNZx93tvYd6jiSkA/oPhWt83k3t2G3ebolDZ+tp03BVAnCT/UFHvbCEFuuki
-         6PzJmSQs3FZXmzfZQ3Isn5ZAWG46Uj6MLkvLfEMQHu8EQMkxCeWOmS3WKgaIevVawTsm
-         WkBA==
-X-Gm-Message-State: AOJu0Yy7w96PJ4zvB2/pQRieZ8CSGlne+97jXI6No+t3s9Yt4Pcf/+WT
-        OH+XAR3HRt1ssTufzatnGLJSzM2/bULDzdbF/rtOhw==
-X-Google-Smtp-Source: AGHT+IGGAZSYbbtS1/UdVDQSsMCNcj+0LYS+cQjCpRwJ2r7bNYLq4TEUTy0xkvrZZLn7ivgCrpQ1hw==
-X-Received: by 2002:a17:906:284:b0:a17:3097:3f6e with SMTP id 4-20020a170906028400b00a1730973f6emr1932701ejf.30.1701958657883;
-        Thu, 07 Dec 2023 06:17:37 -0800 (PST)
+        bh=9POmGM8FFxQ0phKiYUCTqq/2h5caBL36ATB9vcbhedE=;
+        b=UD45zUc8Tl2W4Lj6J6P6NqbEDc8VpMt/TfZDLW4EIzXujCWG15scd+s5OzS5HVGgr+
+         iDb3UbAF6G0k0l73CHjBvgOn55p/FvUD01E97GrWLgwqVkxFy2Jjk9nGWlumLbP3jV7p
+         URL/bfwZuf9cgGmcq+mKSzHogwUSPe+oMYeAmEZoI0jPjjwHGywk0K/zYW4nJfMG/1td
+         Huw7ejnRIopRXKyGjAsPtBI1amYCkuyE+HKM6vhdmHTgVHsAAmWkHBGDbCxa8WVng2Dn
+         wdL/yBQ4Ucu5zBWMd3jfx0BOSlK7W/3ppTs6T522hMgAlIWJqvwZPBm6+zLgjvzA0Pmx
+         3dLA==
+X-Gm-Message-State: AOJu0YyDvQCCUXM29cCRd8A/kIvcwO1rftNxj6WsvdKfZWRw1PkNB46+
+        FmCY/Ukj6bi+6K+IYJijCyBKF9o5iMRF/zGDEyTb8w==
+X-Google-Smtp-Source: AGHT+IF0rcetHY7XsVlKyJSutTPF8Sf6dQa4iwg2cLSaJcL2XX0czyaRGE7Hi6uTkpbsEI6hj8mR0Q==
+X-Received: by 2002:a2e:9194:0:b0:2c9:fc3b:da2b with SMTP id f20-20020a2e9194000000b002c9fc3bda2bmr1638701ljg.104.1701958658970;
+        Thu, 07 Dec 2023 06:17:38 -0800 (PST)
 Received: from localhost.localdomain ([2001:b07:6474:ebbf:9bf:959c:3c66:46c2])
-        by smtp.gmail.com with ESMTPSA id f24-20020a170906c09800b00a1e814b7155sm885421ejz.62.2023.12.07.06.17.36
+        by smtp.gmail.com with ESMTPSA id f24-20020a170906c09800b00a1e814b7155sm885421ejz.62.2023.12.07.06.17.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 06:17:37 -0800 (PST)
+        Thu, 07 Dec 2023 06:17:38 -0800 (PST)
 From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
         michael@amarulasolutions.com,
+        Neil Armstrong <neil.armstrong@linaro.org>,
         Dario Binacchi <dario.binacchi@amarulasolutions.com>,
         Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@gmail.com>,
         Jessica Zhang <quic_jesszhan@quicinc.com>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
         Sam Ravnborg <sam@ravnborg.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v5 08/10] drm/panel: Add Ilitek ILI9805 panel driver
-Date:   Thu,  7 Dec 2023 15:16:37 +0100
-Message-ID: <20231207141723.108004-9-dario.binacchi@amarulasolutions.com>
+Subject: [PATCH v5 09/10] drm/panel: ilitek-ili9805: add support for Tianma TM041XDHG01 panel
+Date:   Thu,  7 Dec 2023 15:16:38 +0100
+Message-ID: <20231207141723.108004-10-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231207141723.108004-1-dario.binacchi@amarulasolutions.com>
 References: <20231207141723.108004-1-dario.binacchi@amarulasolutions.com>
@@ -81,297 +81,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Michael Trimarchi <michael@amarulasolutions.com>
 
-The GPM1790A0 panel is based on the Ilitek ILI9805 Controller.
-Add a driver for it.
+Tianma TM041XDHG01 utilizes the Ilitek ILI9805 controller.
+
+Add this panel's initialzation sequence and timing to ILI9805 driver.
 
 Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 ---
 
 (no changes since v4)
 
 Changes in v4:
-- Remove duplicated code for prepare/unprepare callbacks
+- Add Reviewed-by tag of Neil Armstrong
 
- MAINTAINERS                                  |   6 +
- drivers/gpu/drm/panel/Kconfig                |   9 +
- drivers/gpu/drm/panel/Makefile               |   1 +
- drivers/gpu/drm/panel/panel-ilitek-ili9805.c | 353 +++++++++++++++++++
- 4 files changed, 369 insertions(+)
- create mode 100644 drivers/gpu/drm/panel/panel-ilitek-ili9805.c
+ drivers/gpu/drm/panel/panel-ilitek-ili9805.c | 53 ++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b82dc141d209..4dccc72a0ed6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6646,6 +6646,12 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	Documentation/devicetree/bindings/display/ilitek,ili9486.yaml
- F:	drivers/gpu/drm/tiny/ili9486.c
- 
-+DRM DRIVER FOR ILITEK ILI9805 PANELS
-+M:	Michael Trimarchi <michael@amarulasolutions.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/display/panel/ilitek,ili9805.yaml
-+F:	drivers/gpu/drm/panel/panel-ilitek-ili9805.c
-+
- DRM DRIVER FOR JADARD JD9365DA-H3 MIPI-DSI LCD PANELS
- M:	Jagan Teki <jagan@edgeble.ai>
- S:	Maintained
-diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index d018702be3dc..dad938cf6dec 100644
---- a/drivers/gpu/drm/panel/Kconfig
-+++ b/drivers/gpu/drm/panel/Kconfig
-@@ -194,6 +194,15 @@ config DRM_PANEL_ILITEK_ILI9341
- 	  QVGA (240x320) RGB panels. support serial & parallel rgb
- 	  interface.
- 
-+config DRM_PANEL_ILITEK_ILI9805
-+	tristate "Ilitek ILI9805-based panels"
-+	depends on OF
-+	depends on DRM_MIPI_DSI
-+	depends on BACKLIGHT_CLASS_DEVICE
-+	help
-+	  Say Y if you want to enable support for panels based on the
-+	  Ilitek ILI9805 controller.
-+
- config DRM_PANEL_ILITEK_ILI9881C
- 	tristate "Ilitek ILI9881C-based panels"
- 	depends on OF
-diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-index f267d932c2b5..d94a644d0a6c 100644
---- a/drivers/gpu/drm/panel/Makefile
-+++ b/drivers/gpu/drm/panel/Makefile
-@@ -17,6 +17,7 @@ obj-$(CONFIG_DRM_PANEL_FEIYANG_FY07024DI26A30D) += panel-feiyang-fy07024di26a30d
- obj-$(CONFIG_DRM_PANEL_HIMAX_HX8394) += panel-himax-hx8394.o
- obj-$(CONFIG_DRM_PANEL_ILITEK_IL9322) += panel-ilitek-ili9322.o
- obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9341) += panel-ilitek-ili9341.o
-+obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9805) += panel-ilitek-ili9805.o
- obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9881C) += panel-ilitek-ili9881c.o
- obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9882T) += panel-ilitek-ili9882t.o
- obj-$(CONFIG_DRM_PANEL_INNOLUX_EJ030NA) += panel-innolux-ej030na.o
 diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9805.c b/drivers/gpu/drm/panel/panel-ilitek-ili9805.c
-new file mode 100644
-index 000000000000..e36984b46e14
---- /dev/null
+index e36984b46e14..5054d1a2b2f5 100644
+--- a/drivers/gpu/drm/panel/panel-ilitek-ili9805.c
 +++ b/drivers/gpu/drm/panel/panel-ilitek-ili9805.c
-@@ -0,0 +1,353 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 BSH Hausgerate GmbH
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/errno.h>
-+#include <linux/fb.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+
-+#include <linux/gpio/consumer.h>
-+#include <linux/regulator/consumer.h>
-+
-+#include <drm/drm_mipi_dsi.h>
-+#include <drm/drm_modes.h>
-+#include <drm/drm_panel.h>
-+
-+#include <video/mipi_display.h>
-+
-+#define ILI9805_EXTCMD_CMD_SET_ENABLE_REG	(0xff)
-+#define ILI9805_SETEXTC_PARAMETER1		(0xff)
-+#define ILI9805_SETEXTC_PARAMETER2		(0x98)
-+#define ILI9805_SETEXTC_PARAMETER3		(0x05)
-+
-+#define ILI9805_INSTR(_delay, ...) { \
-+		.delay = (_delay), \
-+		.len = sizeof((u8[]) {__VA_ARGS__}), \
-+		.data = (u8[]){__VA_ARGS__} \
-+	}
-+
-+struct ili9805_instr {
-+	size_t len;
-+	const u8 *data;
-+	u32 delay;
-+};
-+
-+struct ili9805_desc {
-+	const char *name;
-+	const struct ili9805_instr *init;
-+	const size_t init_length;
-+	const struct drm_display_mode *mode;
-+	u32 width_mm;
-+	u32 height_mm;
-+};
-+
-+struct ili9805 {
-+	struct drm_panel	panel;
-+	struct mipi_dsi_device	*dsi;
-+	const struct ili9805_desc	*desc;
-+
-+	struct regulator	*dvdd;
-+	struct regulator	*avdd;
-+	struct gpio_desc	*reset_gpio;
-+};
-+
-+static const struct ili9805_instr gpm1780a0_init[] = {
+@@ -87,6 +87,36 @@ static const struct ili9805_instr gpm1780a0_init[] = {
+ 	ILI9805_INSTR(0, 0xB9, 0x02, 0x00),
+ };
+ 
++static const struct ili9805_instr tm041xdhg01_init[] = {
 +	ILI9805_INSTR(100, ILI9805_EXTCMD_CMD_SET_ENABLE_REG, ILI9805_SETEXTC_PARAMETER1,
 +		      ILI9805_SETEXTC_PARAMETER2, ILI9805_SETEXTC_PARAMETER3),
-+	ILI9805_INSTR(100, 0xFD, 0x0F, 0x10, 0x44, 0x00),
-+	ILI9805_INSTR(0, 0xf8, 0x18, 0x02, 0x02, 0x18, 0x02, 0x02, 0x30, 0x00,
-+		      0x00, 0x30, 0x00, 0x00, 0x30, 0x00, 0x00),
-+	ILI9805_INSTR(0, 0xB8, 0x62),
++	ILI9805_INSTR(100, 0xFD, 0x0F, 0x13, 0x44, 0x00),
++	ILI9805_INSTR(0, 0xf8, 0x18, 0x02, 0x02, 0x18, 0x02, 0x02, 0x30, 0x01,
++		      0x01, 0x30, 0x01, 0x01, 0x30, 0x01, 0x01),
++	ILI9805_INSTR(0, 0xB8, 0x74),
 +	ILI9805_INSTR(0, 0xF1, 0x00),
 +	ILI9805_INSTR(0, 0xF2, 0x00, 0x58, 0x40),
-+	ILI9805_INSTR(0, 0xF3, 0x60, 0x83, 0x04),
 +	ILI9805_INSTR(0, 0xFC, 0x04, 0x0F, 0x01),
 +	ILI9805_INSTR(0, 0xEB, 0x08, 0x0F),
-+	ILI9805_INSTR(0, 0xe0, 0x00, 0x08, 0x0d, 0x0e, 0x0e, 0x0d, 0x0a, 0x08, 0x04,
-+		      0x08, 0x0d, 0x0f, 0x0b, 0x1c, 0x14, 0x0a),
-+	ILI9805_INSTR(0, 0xe1, 0x00, 0x08, 0x0d, 0x0e, 0x0e, 0x0d, 0x0a, 0x08, 0x04,
-+		      0x08, 0x0d, 0x0f, 0x0b, 0x1c, 0x14, 0x0a),
-+	ILI9805_INSTR(10, 0xc1, 0x13, 0x39, 0x19, 0x06),
-+	ILI9805_INSTR(10, 0xc7, 0xe5),
++	ILI9805_INSTR(0, 0xe0, 0x01, 0x0d, 0x15, 0x0e, 0x0f, 0x0f, 0x0b, 0x08, 0x04,
++		      0x07, 0x0a, 0x0d, 0x0c, 0x15, 0x0f, 0x08),
++	ILI9805_INSTR(0, 0xe1, 0x01, 0x0d, 0x15, 0x0e, 0x0f, 0x0f, 0x0b, 0x08, 0x04,
++		      0x07, 0x0a, 0x0d, 0x0c, 0x15, 0x0f, 0x08),
++	ILI9805_INSTR(10, 0xc1, 0x15, 0x03, 0x03, 0x31),
 +	ILI9805_INSTR(10, 0xB1, 0x00, 0x12, 0x14),
 +	ILI9805_INSTR(10, 0xB4, 0x02),
 +	ILI9805_INSTR(0, 0xBB, 0x14, 0x55),
-+	ILI9805_INSTR(0, MIPI_DCS_SET_ADDRESS_MODE, 0x08),
++	ILI9805_INSTR(0, MIPI_DCS_SET_ADDRESS_MODE, 0x0a),
 +	ILI9805_INSTR(0, MIPI_DCS_SET_PIXEL_FORMAT, 0x77),
 +	ILI9805_INSTR(0, 0x20),
-+	ILI9805_INSTR(0, 0xB0, 0x01),
-+	ILI9805_INSTR(0, 0xB6, 0x31, 0x00, 0xef),
-+	ILI9805_INSTR(0, 0xDF, 0x23),
-+	ILI9805_INSTR(0, 0xB9, 0x02, 0x00),
++	ILI9805_INSTR(0, 0xB0, 0x00),
++	ILI9805_INSTR(0, 0xB6, 0x01),
++	ILI9805_INSTR(0, 0xc2, 0x11),
++	ILI9805_INSTR(0, 0x51, 0xFF),
++	ILI9805_INSTR(0, 0x53, 0x24),
++	ILI9805_INSTR(0, 0x55, 0x00),
 +};
 +
-+static inline struct ili9805 *panel_to_ili9805(struct drm_panel *panel)
-+{
-+	return container_of(panel, struct ili9805, panel);
-+}
-+
-+static int ili9805_power_on(struct ili9805 *ctx)
-+{
-+	struct mipi_dsi_device *dsi = ctx->dsi;
-+	struct device *dev = &dsi->dev;
-+	int ret;
-+
-+	ret = regulator_enable(ctx->avdd);
-+	if (ret) {
-+		dev_err(dev, "Failed to enable avdd regulator (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	ret = regulator_enable(ctx->dvdd);
-+	if (ret) {
-+		dev_err(dev, "Failed to enable dvdd regulator (%d)\n", ret);
-+		regulator_disable(ctx->avdd);
-+		return ret;
-+	}
-+
-+	gpiod_set_value(ctx->reset_gpio, 0);
-+	usleep_range(5000, 10000);
-+	gpiod_set_value(ctx->reset_gpio, 1);
-+	msleep(120);
-+
-+	return 0;
-+}
-+
-+static int ili9805_power_off(struct ili9805 *ctx)
-+{
-+	gpiod_set_value(ctx->reset_gpio, 0);
-+	regulator_disable(ctx->dvdd);
-+	regulator_disable(ctx->avdd);
-+
-+	return 0;
-+}
-+
-+static int ili9805_activate(struct ili9805 *ctx)
-+{
-+	struct mipi_dsi_device *dsi = ctx->dsi;
-+	struct device *dev = &dsi->dev;
-+	int i, ret;
-+
-+	for (i = 0; i < ctx->desc->init_length; i++) {
-+		const struct ili9805_instr *instr = &ctx->desc->init[i];
-+
-+		ret = mipi_dsi_dcs_write_buffer(ctx->dsi, instr->data, instr->len);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (instr->delay > 0)
-+			msleep(instr->delay);
-+	}
-+
-+	ret = mipi_dsi_dcs_exit_sleep_mode(ctx->dsi);
-+	if (ret) {
-+		dev_err(dev, "Failed to exit sleep mode (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	usleep_range(5000, 6000);
-+
-+	ret = mipi_dsi_dcs_set_display_on(ctx->dsi);
-+	if (ret) {
-+		dev_err(dev, "Failed to set display ON (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ili9805_prepare(struct drm_panel *panel)
-+{
-+	struct ili9805 *ctx = panel_to_ili9805(panel);
-+	int ret;
-+
-+	ret = ili9805_power_on(ctx);
-+	if (ret)
-+		return ret;
-+
-+	ret = ili9805_activate(ctx);
-+	if (ret) {
-+		ili9805_power_off(ctx);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ili9805_deactivate(struct ili9805 *ctx)
-+{
-+	struct mipi_dsi_device *dsi = ctx->dsi;
-+	struct device *dev = &dsi->dev;
-+	int ret;
-+
-+	ret = mipi_dsi_dcs_set_display_off(ctx->dsi);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to set display OFF (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	usleep_range(5000, 10000);
-+
-+	ret = mipi_dsi_dcs_enter_sleep_mode(ctx->dsi);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to enter sleep mode (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ili9805_unprepare(struct drm_panel *panel)
-+{
-+	struct ili9805 *ctx = panel_to_ili9805(panel);
-+
-+	ili9805_deactivate(ctx);
-+	ili9805_power_off(ctx);
-+
-+	return 0;
-+}
-+
-+static const struct drm_display_mode gpm1780a0_timing = {
+ static inline struct ili9805 *panel_to_ili9805(struct drm_panel *panel)
+ {
+ 	return container_of(panel, struct ili9805, panel);
+@@ -227,6 +257,20 @@ static const struct drm_display_mode gpm1780a0_timing = {
+ 	.vtotal = 480 + 2 + 4 + 10,
+ };
+ 
++static const struct drm_display_mode tm041xdhg01_timing = {
 +	.clock = 26227,
 +
 +	.hdisplay = 480,
@@ -379,136 +152,33 @@ index 000000000000..e36984b46e14
 +	.hsync_end = 480 + 10 + 2,
 +	.htotal = 480 + 10 + 2 + 36,
 +
-+	.vdisplay = 480,
-+	.vsync_start = 480 + 2,
-+	.vsync_end = 480 + 10 + 4,
-+	.vtotal = 480 + 2 + 4 + 10,
++	.vdisplay = 768,
++	.vsync_start = 768 + 2,
++	.vsync_end = 768 + 10 + 4,
++	.vtotal = 768 + 2 + 4 + 10,
 +};
 +
-+static int ili9805_get_modes(struct drm_panel *panel,
-+			      struct drm_connector *connector)
-+{
-+	struct ili9805 *ctx = panel_to_ili9805(panel);
-+	struct drm_display_mode *mode;
-+
-+	mode = drm_mode_duplicate(connector->dev, ctx->desc->mode);
-+	if (!mode) {
-+		dev_err(&ctx->dsi->dev, "failed to add mode %ux%ux@%u\n",
-+			ctx->desc->mode->hdisplay,
-+			ctx->desc->mode->vdisplay,
-+			drm_mode_vrefresh(ctx->desc->mode));
-+		return -ENOMEM;
-+	}
-+
-+	drm_mode_set_name(mode);
-+
-+	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
-+	drm_mode_probed_add(connector, mode);
-+
-+	connector->display_info.width_mm = mode->width_mm;
-+	connector->display_info.height_mm = mode->height_mm;
-+
-+	return 1;
-+}
-+
-+static const struct drm_panel_funcs ili9805_funcs = {
-+	.prepare	= ili9805_prepare,
-+	.unprepare	= ili9805_unprepare,
-+	.get_modes	= ili9805_get_modes,
+ static int ili9805_get_modes(struct drm_panel *panel,
+ 			      struct drm_connector *connector)
+ {
+@@ -331,8 +375,17 @@ static const struct ili9805_desc gpm1780a0_desc = {
+ 	.height_mm = 65,
+ };
+ 
++static const struct ili9805_desc tm041xdhg01_desc = {
++	.init = tm041xdhg01_init,
++	.init_length = ARRAY_SIZE(tm041xdhg01_init),
++	.mode = &tm041xdhg01_timing,
++	.width_mm = 42,
++	.height_mm = 96,
 +};
 +
-+static int ili9805_dsi_probe(struct mipi_dsi_device *dsi)
-+{
-+	struct ili9805 *ctx;
-+	int ret;
-+
-+	ctx = devm_kzalloc(&dsi->dev, sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
-+		return -ENOMEM;
-+	mipi_dsi_set_drvdata(dsi, ctx);
-+	ctx->dsi = dsi;
-+	ctx->desc = of_device_get_match_data(&dsi->dev);
-+
-+	dsi->format = MIPI_DSI_FMT_RGB888;
-+	dsi->mode_flags = MIPI_DSI_MODE_VIDEO_HSE | MIPI_DSI_MODE_VIDEO |
-+		MIPI_DSI_CLOCK_NON_CONTINUOUS | MIPI_DSI_MODE_LPM |
-+		MIPI_DSI_MODE_VIDEO_SYNC_PULSE | MIPI_DSI_MODE_NO_EOT_PACKET;
-+	dsi->lanes = 2;
-+
-+	drm_panel_init(&ctx->panel, &dsi->dev, &ili9805_funcs,
-+		       DRM_MODE_CONNECTOR_DSI);
-+
-+	ctx->dvdd = devm_regulator_get(&dsi->dev, "dvdd");
-+	if (IS_ERR(ctx->dvdd))
-+		return PTR_ERR(ctx->dvdd);
-+	ctx->avdd = devm_regulator_get(&dsi->dev, "avdd");
-+	if (IS_ERR(ctx->avdd))
-+		return PTR_ERR(ctx->avdd);
-+
-+	ctx->reset_gpio = devm_gpiod_get(&dsi->dev, "reset", GPIOD_OUT_LOW);
-+	if (IS_ERR(ctx->reset_gpio)) {
-+		dev_err(&dsi->dev, "Couldn't get our reset GPIO\n");
-+		return PTR_ERR(ctx->reset_gpio);
-+	}
-+
-+	ctx->panel.prepare_prev_first = true;
-+	ret = drm_panel_of_backlight(&ctx->panel);
-+	if (ret)
-+		return ret;
-+
-+	drm_panel_add(&ctx->panel);
-+
-+	ret = mipi_dsi_attach(dsi);
-+	if (ret < 0) {
-+		dev_err(&dsi->dev, "mipi_dsi_attach failed: %d\n", ret);
-+		drm_panel_remove(&ctx->panel);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void ili9805_dsi_remove(struct mipi_dsi_device *dsi)
-+{
-+	struct ili9805 *ctx = mipi_dsi_get_drvdata(dsi);
-+	int ret;
-+
-+	ret = mipi_dsi_detach(dsi);
-+	if (ret < 0)
-+		dev_err(&dsi->dev, "failed to detach from DSI host: %d\n",
-+			ret);
-+
-+	drm_panel_remove(&ctx->panel);
-+}
-+
-+static const struct ili9805_desc gpm1780a0_desc = {
-+	.init = gpm1780a0_init,
-+	.init_length = ARRAY_SIZE(gpm1780a0_init),
-+	.mode = &gpm1780a0_timing,
-+	.width_mm = 65,
-+	.height_mm = 65,
-+};
-+
-+static const struct of_device_id ili9805_of_match[] = {
-+	{ .compatible = "giantplus,gpm1790a0", .data = &gpm1780a0_desc },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, ili9805_of_match);
-+
-+static struct mipi_dsi_driver ili9805_dsi_driver = {
-+	.probe		= ili9805_dsi_probe,
-+	.remove		= ili9805_dsi_remove,
-+	.driver = {
-+		.name		= "ili9805-dsi",
-+		.of_match_table	= ili9805_of_match,
-+	},
-+};
-+module_mipi_dsi_driver(ili9805_dsi_driver);
-+
-+MODULE_AUTHOR("Matthias Proske <Matthias.Proske@bshg.com>");
-+MODULE_AUTHOR("Michael Trimarchi <michael@amarulasolutions.com>");
-+MODULE_DESCRIPTION("Ilitek ILI9805 Controller Driver");
-+MODULE_LICENSE("GPL");
+ static const struct of_device_id ili9805_of_match[] = {
+ 	{ .compatible = "giantplus,gpm1790a0", .data = &gpm1780a0_desc },
++	{ .compatible = "tianma,tm041xdhg01", .data = &tm041xdhg01_desc },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, ili9805_of_match);
 -- 
 2.43.0
 
