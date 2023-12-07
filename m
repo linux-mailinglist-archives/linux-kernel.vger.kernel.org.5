@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 946AB807FF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 06:05:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC890807FEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 06:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbjLGFEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 00:04:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49298 "EHLO
+        id S230247AbjLGFEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 00:04:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLGFEk (ORCPT
+        with ESMTP id S229449AbjLGFEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 00:04:40 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A96DD44
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 21:04:46 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5d7e7e10231so2027587b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 21:04:46 -0800 (PST)
+        Thu, 7 Dec 2023 00:04:42 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 553DDD44
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 21:04:48 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db53919e062so751910276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 21:04:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701925485; x=1702530285; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=R9RMTJtlPt1jfAFH/k4xNYuBt8CVOB8J0dneg0Xx2oQ=;
-        b=KhmO9gzrB0D3xNmF7OcjIEoKLAtShQcKGG5G6Y/OoTVeTdFN3xj1Lr/KEN+SQoMeP2
-         NU5QyM3ScFY+L/A4BGmnVhZxNltwnUUf/UtzNTWzdezsOjFUHdb3+zpQqkRvMN9lXqsp
-         7zI0PHQXMRXlI73BBM6W5GJFNPC734o7Hfy3aVNDty/47ptfJ5tFQhjNL/I0bjc5pDtZ
-         TZMVjzPxvigm6tIfAUrGgqwQ45av1uebT/RDUCmSLL9h6rO10zEzxrqGbqHfmBTuFDCs
-         6jpfoHXbwk6qWdpI1PDMOdK6JlJULpu3d9TzIlpKAM8jMUwQICxCquywushclaLjJd0W
-         ZAxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701925485; x=1702530285;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+        d=google.com; s=20230601; t=1701925487; x=1702530287; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=R9RMTJtlPt1jfAFH/k4xNYuBt8CVOB8J0dneg0Xx2oQ=;
-        b=k9/NVeFq4Cm4FJRf6u+VjOoZkfdNgg6/OhHoyugb8bxc5TDPsAuyTtSRtSskQC5WLk
-         NOfSSvyFCr4YUo89VXfOAC1urYS8bPLDEgka/npWpp4DsWIXS9maUptWaJeFVLLos5TK
-         vHhQJxgO2WonZ96VX+KJODLIdlSc8IPBDWGvjk+4zf58okCbj1bXBdeHeSicsr7aCd6p
-         Fj0312zpl2yvr+uFShAvxhKCEfkuWjWOiUlJd4YGNdxazw7gyaVHY7iokBW9xG/qEp2g
-         YKagTTzfkL8kTfSs94QQKFs1zTUE7J9E40+Vo3Ah0297gFK5jk8JD2fo6B6vggUz+0z8
-         G6PA==
-X-Gm-Message-State: AOJu0Ywd1xWiStq9Xqgg63E5gILL630SRKYqhBMDr1REk+6zCBtbNpSl
-        DyEamRYrzc79z55jE8a6AsDlvw/BYBQG
-X-Google-Smtp-Source: AGHT+IFlYcSaTvvG5Jhy92MCs2tHiMPKJjjuwWzlUJDLK62l2h3mHEbfMkMgGUSXwdUpVOUuVYJBOgORd2NT
+        bh=gJ09ILS0FKw69nllEGHZTddJyQyifMD6obVQZgpi4Qw=;
+        b=ljFipjXPu2ocEJjGS5+bo4ZvUR5mU9WkFW6EY0cXddnbdqCN7uxP4VpZYVQaSh+bN2
+         CZUTGz6UU5H0lp1cXq91jVlmEXpsne41KYWUCiZDhNp2Mr8XyAxdrUqY8R1lMeOAe6ae
+         O+XT+QLgm5NShAQcqAdRq8fhTOrhiDufhvsM7lIfHKdZQ09xG6APHhuyotWzh2SkGZDs
+         tonIxluC68vbr8xowwfdA3vDmRmPp9/K/ZOZcFGI6QZnFoqirJdEQQYHb7HEZZxvnT5w
+         GIP2XIRqHKCSLDzZDX/8XYAt9pIF+8bLljLI/UmMB0YDm0NZaBbB2tWrtLXzQH9+G475
+         vhEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701925487; x=1702530287;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gJ09ILS0FKw69nllEGHZTddJyQyifMD6obVQZgpi4Qw=;
+        b=KaTFQYLnmngPKuT38q+pCyw4HdE3f3VjyPlIoM0Ya+WZPekSZdQ3m6uZjBrQGLzfP8
+         PlIqmPEXgoEgIjG+ER4+o1EItpseZXBnxyaNRZr57xoBuFxng6CtENGqZfd9V5R4QGWV
+         vWYWIjuB8SPy0lKlAKX8YM1UoO7Fa+tpr66CFjr3YQYoYZRv9t383NsNvyCrN7Tp5qLJ
+         0iPb3EBFm3nKRBt/boq0ouEzrm/9BpjypZRX8s0eGc9LMP7Q+sD/K3f6j0dRTSiVBEe3
+         MOG1yEOtdZtH5isG35HQ2uAS6TJ7KxK7jNTuJJbwUG/1TudQwg0QNVR8hHHTgTJDxCdB
+         RRuw==
+X-Gm-Message-State: AOJu0YwmHGQd5ihdyoBN/JFhHk77dZhvdjU1om1xnttmH1o3oY4qssmV
+        IIC7z7TB5aqvBTZe/MdioB1XRfn5hRFW
+X-Google-Smtp-Source: AGHT+IE25ICHr+L0rrthsfiMJT9vor7826Id8YRj/BihCnqEuwJ+wuOTJjyX1ATd/qisp8dd7xqJkTPlrH7E
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:35bf:293e:7696:34e9])
- (user=irogers job=sendgmr) by 2002:a81:be14:0:b0:5d3:56a4:9073 with SMTP id
- i20-20020a81be14000000b005d356a49073mr54099ywn.2.1701925485235; Wed, 06 Dec
- 2023 21:04:45 -0800 (PST)
-Date:   Wed,  6 Dec 2023 21:04:27 -0800
-Message-Id: <20231207050433.1426834-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a25:d144:0:b0:db7:dce9:76cd with SMTP id
+ i65-20020a25d144000000b00db7dce976cdmr24086ybg.9.1701925487528; Wed, 06 Dec
+ 2023 21:04:47 -0800 (PST)
+Date:   Wed,  6 Dec 2023 21:04:28 -0800
+In-Reply-To: <20231207050433.1426834-1-irogers@google.com>
+Message-Id: <20231207050433.1426834-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20231207050433.1426834-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Subject: [PATCH v1 0/6] Add io_dir to avoid memory overhead from opendir
+Subject: [PATCH v1 1/6] tools build: Add a feature test for getdents64
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -74,49 +76,102 @@ To:     Peter Zijlstra <peterz@infradead.org>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-glibc's opendir allocates a minimum of 32kb, when called recursively
-for a directory tree the memory consumption can add up - nearly 300kb
-during perf start-up when processing modules. Add a stack allocated
-variant of readdir sized a little more than 1kb
+getdents64 may be missing from certain libcs, add a feature test to
+determine when such a libc is being used.
 
-This was previously part of the memory saving change set:
-https://lore.kernel.org/lkml/20231127220902.1315692-1-irogers@google.com/
-It is separated here and a feature check and syscall workaround for
-missing getdents64 added.
-
-Ian Rogers (6):
-  tools build: Add a feature test for getdents64
-  tools lib api: Add io_dir an allocation free readdir alternative
-  perf maps: Switch modules tree walk to io_dir__readdir
-  perf pmu: Switch to io_dir__readdir
-  perf header: Switch mem topology to io_dir__readdir
-  perf events: Remove scandir in thread synthesis
-
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
  tools/build/Makefile.feature          |  1 +
- tools/build/feature/Makefile          |  4 ++
- tools/build/feature/test-all.c        |  5 ++
- tools/build/feature/test-getdents64.c | 12 ++++
- tools/lib/api/Makefile                |  2 +-
- tools/lib/api/io_dir.h                | 84 +++++++++++++++++++++++++++
- tools/perf/Makefile.config            |  4 ++
- tools/perf/util/header.c              | 31 +++++-----
- tools/perf/util/machine.c             | 19 +++---
- tools/perf/util/pmu.c                 | 48 ++++++---------
- tools/perf/util/pmus.c                | 30 ++++------
- tools/perf/util/synthetic-events.c    | 22 +++----
- 12 files changed, 177 insertions(+), 85 deletions(-)
+ tools/build/feature/Makefile          |  4 ++++
+ tools/build/feature/test-all.c        |  5 +++++
+ tools/build/feature/test-getdents64.c | 12 ++++++++++++
+ 4 files changed, 22 insertions(+)
  create mode 100644 tools/build/feature/test-getdents64.c
- create mode 100644 tools/lib/api/io_dir.h
 
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index 64df118376df..f051d4d8c71c 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -58,6 +58,7 @@ FEATURE_TESTS_BASIC :=                  \
+         pthread-attr-setaffinity-np     \
+         pthread-barrier     		\
+         reallocarray                    \
++        getdents64                      \
+         stackprotector-all              \
+         timerfd                         \
+         libdw-dwarf-unwind              \
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index 37722e509eb9..5efe89c3b0a6 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -21,6 +21,7 @@ FILES=                                          \
+          test-disassembler-four-args.bin        \
+          test-disassembler-init-styled.bin	\
+          test-reallocarray.bin			\
++         test-getdents64.bin			\
+          test-libbfd-liberty.bin                \
+          test-libbfd-liberty-z.bin              \
+          test-cplus-demangle.bin                \
+@@ -262,6 +263,9 @@ $(OUTPUT)test-disassembler-init-styled.bin:
+ $(OUTPUT)test-reallocarray.bin:
+ 	$(BUILD)
+ 
++$(OUTPUT)test-getdents64.bin:
++	$(BUILD)
++
+ $(OUTPUT)test-libbfd-liberty.bin:
+ 	$(CC) $(CFLAGS) -Wall -Werror -o $@ test-libbfd.c -DPACKAGE='"perf"' $(LDFLAGS) -lbfd -ldl -liberty
+ 
+diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
+index 6f4bf386a3b5..c65096f75032 100644
+--- a/tools/build/feature/test-all.c
++++ b/tools/build/feature/test-all.c
+@@ -166,6 +166,10 @@
+ # include "test-reallocarray.c"
+ #undef main
+ 
++#define main main_test_getdents64
++# include "test-getdents64.c"
++#undef main
++
+ #define main main_test_disassembler_four_args
+ # include "test-disassembler-four-args.c"
+ #undef main
+@@ -216,6 +220,7 @@ int main(int argc, char *argv[])
+ 	main_test_setns();
+ 	main_test_libaio();
+ 	main_test_reallocarray();
++	main_test_getdents64();
+ 	main_test_disassembler_four_args();
+ 	main_test_libzstd();
+ 
+diff --git a/tools/build/feature/test-getdents64.c b/tools/build/feature/test-getdents64.c
+new file mode 100644
+index 000000000000..f7c9df1e2f05
+--- /dev/null
++++ b/tools/build/feature/test-getdents64.c
+@@ -0,0 +1,12 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <stddef.h>
++#define _GNU_SOURCE
++#include <dirent.h>
++
++int main(void)
++{
++	char buf[128];
++	return (int)getdents64(0, buf, sizeof(buf));
++}
++
++#undef _GNU_SOURCE
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
