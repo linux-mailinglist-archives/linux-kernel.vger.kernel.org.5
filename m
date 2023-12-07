@@ -2,75 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2CF8082B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 09:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFB68082BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 09:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbjLGIS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 03:18:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58430 "EHLO
+        id S1378179AbjLGISq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 03:18:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378217AbjLGISV (ORCPT
+        with ESMTP id S231297AbjLGISZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 03:18:21 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C60010CC
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 00:18:23 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5c210e34088so485664a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 00:18:23 -0800 (PST)
+        Thu, 7 Dec 2023 03:18:25 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D91D10F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 00:18:27 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-332f90a375eso624578f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 00:18:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701937102; x=1702541902; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B9W0KpO1imR94830JR1Xh57Aj2QDO4JaVndIv1hL7X0=;
-        b=f6CYSE5m7JzsV6i24f8XY6zltBmN5rC3RDHvJDk/LXWireQyHLOrUEdj5vzhWacHMl
-         dtyls/EsqWwAu88Ma8p+LaRaoRObaP1DpcCEo4chmABed2hi5y2ZD8veq4PV8HDva3E7
-         4G3ZRKLH4jL1udn9NXTInhqC/DuSPzBDO0Zlk=
+        d=linaro.org; s=google; t=1701937106; x=1702541906; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QOiHdnlRFMkFDlB5kWfckw6pOd4LrZY+T64mekZ8KZ8=;
+        b=Sc3utKT+faJf2RLKTIIMOjv8R1v8YBK0cF3zmWbZTvdz/+wXZ/zIfgL46XegSK/xYt
+         EauILm49mpCX37ElX5alvBRy+VvMr16NAnfD0r+sldYntQ5n9XeIuH/zR0JFRJLJDH7z
+         frvVEjuE2G/tqM+ESoC8yNojLxzKbSzkj7sd8S6O9MbsPEEw1gtC9xSFOd/Aa28FgAbs
+         9IbWI9YsqOg4CZ+iTMl+Q4hysdc4aUZiOEjdJsIRyD75jpXI9XlJeAkrgi4iDdVKBzX8
+         gD5CFEy7PAah6eWySgRhP2pjJzLl3/Tt/UKHpfKKPNBypq6IM7FBu5GbqKfqq5BHEBfT
+         rz6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701937102; x=1702541902;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B9W0KpO1imR94830JR1Xh57Aj2QDO4JaVndIv1hL7X0=;
-        b=AftWJvzDdiCoqRk3xw8KvYmvArYdVhKLU3gh/dZjMWX8PmTA87DGdBpHG1yzGG/Lxp
-         gt/CyKTSvByU4GQIEAB2irOQTaZMUnQwLnlCmAhLgi+NkHBGwfyB0WTcPQttwBJjQFJW
-         gjEYnNbhtLYWaqhWe/coMJXrwkClYGf5XU35J9CjNOJ3EHBIVSOq0mcdrcTGQcbms9XM
-         DzAe5KXOwZzbItDGPgLhxn0FuaqYSZ2sJBEvjemmddeUxq9vVYnLNuF+3srkefyzaPXa
-         HTbgnGiSWoyb44akWn4yYqtmwpYCWg0tGLsqfoazp7aZ/j9SeJkr+WU00w2mPJUDrsbS
-         +mhg==
-X-Gm-Message-State: AOJu0YxrD/cQ4fbZB7vsF8jS1iFSV2gwcrkPhkpwIUO49AtFJgsRlQsj
-        19Uyyg43aPfk5TNFif+dzuZj2A==
-X-Google-Smtp-Source: AGHT+IGD3nvCDN0PBWysk4NE4WpFFxnPISjUTsqeRk14M822sXxugaGl8/iLtEa4xELn7Fxv9fn3SA==
-X-Received: by 2002:a17:903:188:b0:1cf:9c44:62e with SMTP id z8-20020a170903018800b001cf9c44062emr2651574plg.34.1701937102657;
-        Thu, 07 Dec 2023 00:18:22 -0800 (PST)
-Received: from treapking.tpe.corp.google.com ([2401:fa00:1:10:663f:6f8e:5f2d:e06c])
-        by smtp.gmail.com with ESMTPSA id t23-20020a1709028c9700b001d09c5424d4sm748128plo.297.2023.12.07.00.18.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 00:18:22 -0800 (PST)
-From:   Pin-yen Lin <treapking@chromium.org>
-To:     Douglas Anderson <dianders@chromium.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <groeck@chromium.org>,
-        dri-devel@lists.freedesktop.org,
-        Pin-yen Lin <treapking@chromium.org>
-Subject: [PATCH v2 4/4] drm/panel-edp: Add some panels with conservative timings
-Date:   Thu,  7 Dec 2023 16:17:38 +0800
-Message-ID: <20231207081801.4049075-5-treapking@chromium.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-In-Reply-To: <20231207081801.4049075-1-treapking@chromium.org>
-References: <20231207081801.4049075-1-treapking@chromium.org>
+        d=1e100.net; s=20230601; t=1701937106; x=1702541906;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QOiHdnlRFMkFDlB5kWfckw6pOd4LrZY+T64mekZ8KZ8=;
+        b=tf4OgpGkm2zUeYlCFAXUX+odzH9TpevxFU1W89lOqKy+zZHp9CWsJ2NQ8tVO2ExiI8
+         QlPmx1IQaSwmIX2JPy+FL04f4uqzyVJxnD/HhSZW4GHmPEDAlWiJ0bs39r7Lz0s6AB59
+         kgwIe+9lzTIM/vWZ7JSvBF+0bRxHZd+jOefLaqTqge4G4KXV35ulZuzcH8S6Lb4C9kTp
+         o6aFvxu0HLNiWiAwb2RfbaAWzw3FpSEaaahfGkRwNxLihhI7019VHbWWnR6MthNeXORg
+         5JKvt3XeiCXyssjpqU79nR2E03Gz2TqxC1iXEgvOW6nPta9VG31KFKAUljq2ciJ9RsFA
+         uq1w==
+X-Gm-Message-State: AOJu0YwfPw4EfrGnhWzCdQ6o/zON1rrriZWSidzJ3l/KmE2wZ2ovT0LV
+        xaEL3IECSjMr0QsW+ZnVvZvgOw==
+X-Google-Smtp-Source: AGHT+IG0Hqjq4jL95ujUQNv0S8dq6POI/VWfXbt1AkrXJOS/hFOqrD20mf12V0yHjuu6XI2Gf3wfZQ==
+X-Received: by 2002:a05:600c:6985:b0:40c:ddd:5758 with SMTP id fp5-20020a05600c698500b0040c0ddd5758mr1451711wmb.12.1701937105870;
+        Thu, 07 Dec 2023 00:18:25 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id o13-20020adfe80d000000b003333d46a9e8sm765592wrm.56.2023.12.07.00.18.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 00:18:25 -0800 (PST)
+Message-ID: <1d58c2b9-4206-409c-b312-87f4fb649512@linaro.org>
+Date:   Thu, 7 Dec 2023 09:18:20 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] media: i2c: Add GC08A3 image sensor driver
+Content-Language: en-US
+To:     Zhi Mao <zhi.mao@mediatek.com>, mchehab@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
+Cc:     shengnan.wang@mediatek.com, yaya.chang@mediatek.com,
+        10572168@qq.com, Project_Global_Chrome_Upstream_Group@mediatek.com,
+        yunkec@chromium.org, conor+dt@kernel.org, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com,
+        jacopo.mondi@ideasonboard.com, sakari.ailus@linux.intel.com,
+        hverkuil-cisco@xs4all.nl, heiko@sntech.de,
+        jernej.skrabec@gmail.com, macromorgan@hotmail.com,
+        linus.walleij@linaro.org, laurent.pinchart@ideasonboard.com,
+        hdegoede@redhat.com, tomi.valkeinen@ideasonboard.com,
+        gerald.loacker@wolfvision.net, andy.shevchenko@gmail.com,
+        bingbu.cao@intel.com, dan.scally@ideasonboard.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20231207052016.25954-1-zhi.mao@mediatek.com>
+ <20231207052016.25954-2-zhi.mao@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231207052016.25954-2-zhi.mao@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,135 +132,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These panels are used by Mediatek MT8173 Chromebooks but we can't find
-the corresponding data sheets, and these panels used to work on v4.19
-kernel without any specified delays.
+On 07/12/2023 06:20, Zhi Mao wrote:
+> Add a V4L2 sub-device driver for Galaxycore GC08A3 image sensor.
+> 
+> Reviewed-By: yunkec@chromium.org
 
-Therefore, instead of having them use the default conservative timings,
-update them with less-conservative timings from other panels of the same
-vendor. The panels should still work under those timings, and we can
-save some delays and suppress the warnings.
+I don't see review given here:
 
-Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+https://lore.kernel.org/linux-media/20231123115104.32094-1-zhi.mao@mediatek.com/
 
----
+This does not look like real review. Where was it performed? How
+thorough was it? How many review iterations did it include?  Why there
+is no name but anonymous review?
 
-(no changes since v1)
 
- drivers/gpu/drm/panel/panel-edp.c | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
 
-diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-index b059f5895d3a..e23737284f31 100644
---- a/drivers/gpu/drm/panel/panel-edp.c
-+++ b/drivers/gpu/drm/panel/panel-edp.c
-@@ -1955,6 +1955,7 @@ static const struct panel_delay delay_200_500_e50_po2e200 = {
- static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x105c, &delay_200_500_e50, "B116XTN01.0"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x1062, &delay_200_500_e50, "B120XAN01.0"),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0x125c, &delay_200_500_e50, "Unknown"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x145c, &delay_200_500_e50, "B116XAB01.4"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x1e9b, &delay_200_500_e50, "B133UAN02.1"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x1ea5, &delay_200_500_e50, "B116XAK01.6"),
-@@ -1965,6 +1966,7 @@ static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x403d, &delay_200_500_e50, "B140HAN04.0"),
- 	EDP_PANEL_ENTRY2('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAK01.0",
- 			 &auo_b116xa3_mode),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0x435c, &delay_200_500_e50, "Unknown"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x582d, &delay_200_500_e50, "B133UAN01.0"),
- 	EDP_PANEL_ENTRY2('A', 'U', 'O', 0x615c, &delay_200_500_e50, "B116XAN06.1",
- 			 &auo_b116xa3_mode),
-@@ -1974,18 +1976,34 @@ static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x8594, &delay_200_500_e50, "B133UAN01.0"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0xf390, &delay_200_500_e50, "B140XTN07.7"),
- 
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0607, &delay_200_500_e200, "Unknown"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0608, &delay_200_500_e50, "NT116WHM-N11"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0668, &delay_200_500_e200, "Unknown"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x068f, &delay_200_500_e200, "Unknown"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x06e5, &delay_200_500_e200, "Unknown"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0705, &delay_200_500_e200, "Unknown"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0715, &delay_200_150_e200, "NT116WHM-N21"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0717, &delay_200_500_e50_po2e200, "NV133FHM-N42"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0731, &delay_200_500_e80, "NT116WHM-N42"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0741, &delay_200_500_e200, "NT116WHM-N44"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0744, &delay_200_500_e200, "Unknown"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x074c, &delay_200_500_e200, "Unknown"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0751, &delay_200_500_e200, "Unknown"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0754, &delay_200_500_e50_po2e200, "NV116WHM-N45"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0771, &delay_200_500_e200, "Unknown"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0786, &delay_200_500_p2e80, "NV116WHM-T01"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0797, &delay_200_500_e200, "Unknown"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x07d1, &boe_nv133fhm_n61.delay, "NV133FHM-N61"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x07d3, &delay_200_500_e200, "Unknown"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x07f6, &delay_200_500_e200, "NT140FHM-N44"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x07f8, &delay_200_500_e200, "Unknown"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0813, &delay_200_500_e200, "Unknown"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0827, &delay_200_500_e50_p2e80, "NT140WHM-N44 V8.0"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x082d, &boe_nv133fhm_n61.delay, "NV133FHM-N62"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0843, &delay_200_500_e200, "Unknown"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x08b2, &delay_200_500_e200, "NT140WHM-N49"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0848, &delay_200_500_e200, "Unknown"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0849, &delay_200_500_e200, "Unknown"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x09c3, &delay_200_500_e50, "NT116WHM-N21,836X2"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x094b, &delay_200_500_e50, "NT116WHM-N21"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0951, &delay_200_500_e80, "NV116WHM-N47"),
-@@ -1997,6 +2015,7 @@ static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x09ad, &delay_200_500_e80, "NV116WHM-N47"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x09ae, &delay_200_500_e200, "NT140FHM-N45"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x09dd, &delay_200_500_e50, "NT116WHM-N21"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0a36, &delay_200_500_e200, "Unknown"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0a5d, &delay_200_500_e50, "NV116WHM-N45"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0ac5, &delay_200_500_e50, "NV116WHM-N4C"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0b43, &delay_200_500_e200, "NV140FHM-T09"),
-@@ -2007,11 +2026,14 @@ static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1132, &delay_200_500_e80_d50, "N116BGE-EA2"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1138, &innolux_n116bca_ea1.delay, "N116BCA-EA1-RC4"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1139, &delay_200_500_e80_d50, "N116BGE-EA2"),
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1141, &delay_200_500_e80_d50, "Unknown"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1145, &delay_200_500_e80_d50, "N116BCN-EB1"),
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x114a, &delay_200_500_e80_d50, "Unknown"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x114c, &innolux_n116bca_ea1.delay, "N116BCA-EA1"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1152, &delay_200_500_e80_d50, "N116BCN-EA1"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1153, &delay_200_500_e80_d50, "N116BGE-EA2"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1154, &delay_200_500_e80_d50, "N116BCA-EA2"),
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1156, &delay_200_500_e80_d50, "Unknown"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1157, &delay_200_500_e80_d50, "N116BGE-EA2"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x115b, &delay_200_500_e80_d50, "N116BCN-EB1"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1247, &delay_200_500_e80_d50, "N120ACA-EA1"),
-@@ -2023,6 +2045,8 @@ static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x14d6, &delay_200_500_e80_d50, "N140BGA-EA4"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x14e5, &delay_200_500_e80_d50, "N140HGA-EA1"),
- 
-+	EDP_PANEL_ENTRY('H', 'K', 'C', 0x2d51, &delay_200_500_e200, "Unknown"),
-+	EDP_PANEL_ENTRY('H', 'K', 'C', 0x2d5b, &delay_200_500_e200, "Unknown"),
- 	EDP_PANEL_ENTRY('H', 'K', 'C', 0x2d5c, &delay_200_500_e200, "MB116AN01-2"),
- 
- 	EDP_PANEL_ENTRY('I', 'V', 'O', 0x048e, &delay_200_500_e200_d10, "M116NWR6 R5"),
-@@ -2031,6 +2055,7 @@ static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('I', 'V', 'O', 0x854b, &delay_200_500_p2e100, "R133NW4K-R0"),
- 	EDP_PANEL_ENTRY('I', 'V', 'O', 0x8c4d, &delay_200_150_e200, "R140NWFM R1"),
- 
-+	EDP_PANEL_ENTRY('K', 'D', 'B', 0x044f, &delay_200_500_e80_d50, "Unknown"),
- 	EDP_PANEL_ENTRY('K', 'D', 'B', 0x0624, &kingdisplay_kd116n21_30nv_a010.delay, "116N21-30NV-A010"),
- 	EDP_PANEL_ENTRY('K', 'D', 'B', 0x1118, &delay_200_500_e50, "KD116N29-30NK-A005"),
- 	EDP_PANEL_ENTRY('K', 'D', 'B', 0x1120, &delay_200_500_e80_d50, "116N29-30NK-C007"),
-@@ -2039,9 +2064,15 @@ static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('K', 'D', 'C', 0x05f1, &delay_200_500_e80_d50, "KD116N5-30NV-G7"),
- 	EDP_PANEL_ENTRY('K', 'D', 'C', 0x0809, &delay_200_500_e50, "KD116N2930A15"),
- 
-+	EDP_PANEL_ENTRY('L', 'G', 'D', 0x0000, &delay_200_500_e200_d200, "Unknown"),
-+	EDP_PANEL_ENTRY('L', 'G', 'D', 0x048d, &delay_200_500_e200_d200, "Unknown"),
- 	EDP_PANEL_ENTRY('L', 'G', 'D', 0x0497, &delay_200_500_e200_d200, "LP116WH7-SPB1"),
- 	EDP_PANEL_ENTRY('L', 'G', 'D', 0x052c, &delay_200_500_e200_d200, "LP133WF2-SPL7"),
-+	EDP_PANEL_ENTRY('L', 'G', 'D', 0x0537, &delay_200_500_e200_d200, "Unknown"),
- 	EDP_PANEL_ENTRY('L', 'G', 'D', 0x054a, &delay_200_500_e200_d200, "LP116WH8-SPC1"),
-+	EDP_PANEL_ENTRY('L', 'G', 'D', 0x0567, &delay_200_500_e200_d200, "Unknown"),
-+	EDP_PANEL_ENTRY('L', 'G', 'D', 0x05af, &delay_200_500_e200_d200, "Unknown"),
-+	EDP_PANEL_ENTRY('L', 'G', 'D', 0x05f1, &delay_200_500_e200_d200, "Unknown"),
- 
- 	EDP_PANEL_ENTRY('S', 'D', 'C', 0x416d, &delay_100_500_e200, "ATNA45AF01"),
- 
--- 
-2.43.0.472.g3155946c3a-goog
+> Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
+> ---
+>  drivers/media/i2c/Kconfig  |   14 +
+>  drivers/media/i2c/Makefile |    1 +
+>  drivers/media/i2c/gc08a3.c | 1888 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 1903 insertions(+)
+>  create mode 100644 drivers/media/i2c/gc08a3.c
+> 
+
+...
+
+> +static inline struct gc08a3 *to_gc08a3(struct v4l2_subdev *sd)
+> +{
+> +	return container_of(sd, struct gc08a3, sd);
+> +}
+> +
+> +static int gc08a3_power_on(struct device *dev)
+> +{
+> +	struct i2c_client *client = to_i2c_client(dev);
+> +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> +	struct gc08a3 *gc08a3 = to_gc08a3(sd);
+> +	int ret;
+> +
+> +	gpiod_set_value_cansleep(gc08a3->enable_gpio, 0);
+
+Why do you put make enable GPIO low? That's not how enable GPIO is
+supposed to work...
+
+> +	usleep_range(GC08A3_MIN_SLEEP_US, GC08A3_MAX_SLEEP_US);
+> +
+> +	ret = regulator_bulk_enable(GC08A3_NUM_SUPPLIES, gc08a3->supplies);
+> +	if (ret < 0) {
+> +		dev_err(gc08a3->dev, "failed to enable regulators: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = clk_prepare_enable(gc08a3->xclk);
+> +	if (ret < 0) {
+> +		regulator_bulk_disable(GC08A3_NUM_SUPPLIES, gc08a3->supplies);
+> +		dev_err(gc08a3->dev, "clk prepare enable failed\n");
+> +		return ret;
+> +	}
+> +
+> +	usleep_range(GC08A3_MIN_SLEEP_US, GC08A3_MAX_SLEEP_US);
+> +
+> +	gpiod_set_value_cansleep(gc08a3->enable_gpio, 1);
+> +	usleep_range(GC08A3_MIN_SLEEP_US, GC08A3_MAX_SLEEP_US);
+> +
+> +	return 0;
+> +}
+> +
+> +static int gc08a3_power_off(struct device *dev)
+> +{
+> +	struct i2c_client *client = to_i2c_client(dev);
+> +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> +	struct gc08a3 *gc08a3 = to_gc08a3(sd);
+> +
+> +	gpiod_set_value_cansleep(gc08a3->enable_gpio, 0);
+
+How making enable GPIO low is related to power off? Enable means you
+turn on some feature, not shutdown. Look at common GPIO consumer
+bindings in the kernel.
+
+
+...
+
+> +static int gc08a3_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	struct gc08a3 *gc08a3;
+> +	int ret;
+> +
+> +	ret = gc08a3_parse_fwnode(dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	gc08a3 = devm_kzalloc(dev, sizeof(*gc08a3), GFP_KERNEL);
+> +	if (!gc08a3)
+> +		return -ENOMEM;
+> +
+> +	gc08a3->dev = dev;
+> +
+> +	gc08a3->xclk = devm_clk_get(dev, NULL);
+> +	if (IS_ERR(gc08a3->xclk))
+> +		return dev_err_probe(dev, PTR_ERR(gc08a3->xclk),
+> +					 "failed to get xclk\n");
+
+Misaligned indentation
+
+> +
+> +	ret = clk_set_rate(gc08a3->xclk, GC08A3_DEFAULT_CLK_FREQ);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret,
+> +					 "failed to set xclk frequency\n");
+
+Misaligned indentation
+
+> +
+> +	ret = gc08a3_get_regulators(dev, gc08a3);
+> +	if (ret < 0)
+> +		return dev_err_probe(dev, ret,
+> +					 "failed to get regulators\n");
+
+Misaligned indentation
+
+> +
+> +	gc08a3->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
+> +	if (IS_ERR(gc08a3->enable_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(gc08a3->enable_gpio),
+> +					 "failed to get gpio\n");
+
+Misaligned indentation... probably entire code is misaligned.
+
+
+Best regards,
+Krzysztof
 
