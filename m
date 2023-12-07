@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E13EA807DB3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8E6807DB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 02:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442993AbjLGBSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 20:18:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48864 "EHLO
+        id S1442980AbjLGBSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 20:18:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442994AbjLGBR7 (ORCPT
+        with ESMTP id S1442968AbjLGBSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 20:17:59 -0500
+        Wed, 6 Dec 2023 20:18:03 -0500
 Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712E910C0
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 17:17:52 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d67fc68a82so1628127b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 17:17:52 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C433010DC
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 17:17:54 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d8da78a5fbso1678847b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 17:17:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701911871; x=1702516671; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701911873; x=1702516673; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=YLs18EUwcJ7v2oX/7NfyA6HjR14FLN4dfhaM88TGxMk=;
-        b=kRAoV4bY/0iOfctTnaq+ytVR7KqTy05l2D/bibubFYQkj8uH7P3Deo2TPEbXHXKy2a
-         Ludsm3nNLohmk6f+4232F4mRVjnwX4YGh3LuKVDT1+HZJi4zC3Nn/WINZpyyw21lgI/D
-         Sy+M6UV3Hu7GyaL5HfkQrmKOruf8M+SYATjax+JEkUQE91sMd0oFjF7mQTlOzFbYueU5
-         TUyXCFOAFK4L89RiXOy7RFO99pqB24DI3Lzmj59qklAYLucsHDPUOXifbjlwfFs0jYdr
-         b3q6oUzkdZYqjSAaBLIe1D45nwwmPde5h/n9E2enM1duFaYCgnerZ+9B9oRnl5qQ3TIp
-         Ocjg==
+        bh=w2/fI4UKQGbXPKpixoT4A6YY7YN3DKvkLzQPho85kC4=;
+        b=fRUXJ7b1rScZjQawpLsDkXqYkoCesK1ay2Cb3Uuqx7sFh3E8GqaDMQOg4m8AxChBKA
+         fDVnwgz5MFsMpXSVuAhHi7FdKUr8N2BfHtzAtjhDM8vsgEQOhhdzGfqF8mJElcWzoPv5
+         m45f2MNX7sVdYlm1HLl2DMVm9t36d59ntu09vM6AO/nlPOu9Edy4/emzPURDDPrFnXoe
+         t+CB0yaYnEFG96jGHAxj7AyuPdh57gZMdnwtxyTQHn24OURM0AEyaw8hxtwEJ9lNZ5Ly
+         fIFvZ15JOaS7Tnt3BJ+UpidFkM6uKNY0VvRIsBN+fgAFxaTh5p+5EeF4ByedjTEPZLV0
+         irdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701911871; x=1702516671;
+        d=1e100.net; s=20230601; t=1701911873; x=1702516673;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YLs18EUwcJ7v2oX/7NfyA6HjR14FLN4dfhaM88TGxMk=;
-        b=aM3ZSFOoiDodyVHcGrgPKN8n0AibjKJg5fHBvLLGyY4KP0LxtHuqd5mPI12LXOQ2Ub
-         S/PdkxAjBvE0BOhjk8yXi1K1Fcg762fc3Mas54R8OBByVF4RLD4uXzHs6bXo9rbFDFUU
-         z753jLHqiVcGfyvK0NxaqDbGw4W1pLcAF3kK6eaB7P3sBAtMpwveZ2c/ZiYob3ghv7SU
-         VgLDzWfRW3NmuYkRIb5fWEo1lI/pmDXnuoc7H1WOpXTZts0V4JNSgLAWtSJ8OPjfFzTA
-         UHC5cbxwj6srE6c0q7vFwvZnHl9uOvdr3/tPApzjd6RfNy1W6vdtuMREc15X7XQyVzSj
-         Fn2Q==
-X-Gm-Message-State: AOJu0YzK6YEo/Som/6QjVO2H4p4L+deriz1c2UTyNUnE1JoIeUWibh1v
-        QPt4EBkb3Pc6YFecNg3xhxIxudFh6zow
-X-Google-Smtp-Source: AGHT+IFPtjgGW+/HVbXi/s6styOGACrpE+wgUPXjW2RbA5UaZ5b03h7MXJLv7jWvZreh5E1/ayyPbBclxVlu
+        bh=w2/fI4UKQGbXPKpixoT4A6YY7YN3DKvkLzQPho85kC4=;
+        b=gy03t4QZFBPRUsX6SZPBpLT955M8xVC0KBV5INMhhIBjKLQOc4f7TSJRqI+Xx5+TCy
+         hGKESlVY2f1DitLwJKDk26pQLN3d4uCkASBms8ZBOmgygfL+BeddNxqEYudptuVp2L/4
+         ieThbwT4P4cYsmzdj7sKhoGSWb1tEv04870B+CjomWNRujHzJXx0rJzZ99tlq2NRqXoZ
+         WDuA1NYP8ka0udfGImmrPVeGuIlzcO5jXkPojPYI9fFAbXsu0166cMmX9jYK0uRgWU01
+         yjH73eOUIpUxGzkW97TVwhQLrvsIlyJclSbOJiuGjCzLltRslEr3O/2k0DsM7llBbDzA
+         Khwg==
+X-Gm-Message-State: AOJu0YxHJ0ikHWNmCT1d5PLB6QFcyea/eRLVSZ5Kw9WbTdbfxBoiJBR3
+        2CsUGnbJRtAREWGdaiUcF2AHDJR9VVaK
+X-Google-Smtp-Source: AGHT+IG3crwuUKA1k1nPZvH9yQllxEOrTpihvd5crtorXk3VOdB7gfg55UWxCR08/ajjSZBH4vJiir/HQEG2
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:35bf:293e:7696:34e9])
- (user=irogers job=sendgmr) by 2002:a05:690c:300e:b0:5d6:e473:bf60 with SMTP
- id ey14-20020a05690c300e00b005d6e473bf60mr24337ywb.8.1701911871171; Wed, 06
- Dec 2023 17:17:51 -0800 (PST)
-Date:   Wed,  6 Dec 2023 17:16:44 -0800
+ (user=irogers job=sendgmr) by 2002:a81:b70b:0:b0:5d3:bf64:5e20 with SMTP id
+ v11-20020a81b70b000000b005d3bf645e20mr25066ywh.9.1701911873370; Wed, 06 Dec
+ 2023 17:17:53 -0800 (PST)
+Date:   Wed,  6 Dec 2023 17:16:45 -0800
 In-Reply-To: <20231207011722.1220634-1-irogers@google.com>
-Message-Id: <20231207011722.1220634-11-irogers@google.com>
+Message-Id: <20231207011722.1220634-12-irogers@google.com>
 Mime-Version: 1.0
 References: <20231207011722.1220634-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Subject: [PATCH v6 10/47] perf thread: Use function to add missing maps lock
+Subject: [PATCH v6 11/47] perf unwind: Use function to add missing maps lock
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -94,78 +94,81 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch thread__prepare_access from loop macro maps__for_each_entry
+Switch read_unwind_spec_eh_frame from loop macro maps__for_each_entry
 to maps__for_each_map function that takes a callback. The function
 holds the maps lock, which should be held during iteration.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/thread.c | 35 +++++++++++++++++------------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
+ tools/perf/util/unwind-libunwind-local.c | 34 +++++++++++++++++-------
+ 1 file changed, 24 insertions(+), 10 deletions(-)
 
-diff --git a/tools/perf/util/thread.c b/tools/perf/util/thread.c
-index b9c2039c4230..b6986a81aa6d 100644
---- a/tools/perf/util/thread.c
-+++ b/tools/perf/util/thread.c
-@@ -349,34 +349,33 @@ int thread__insert_map(struct thread *thread, struct map *map)
- 	return maps__insert(thread__maps(thread), map);
+diff --git a/tools/perf/util/unwind-libunwind-local.c b/tools/perf/util/unwind-libunwind-local.c
+index c0641882fd2f..228f1565bd0b 100644
+--- a/tools/perf/util/unwind-libunwind-local.c
++++ b/tools/perf/util/unwind-libunwind-local.c
+@@ -302,12 +302,31 @@ static int unwind_spec_ehframe(struct dso *dso, struct machine *machine,
+ 	return 0;
  }
  
--static int __thread__prepare_access(struct thread *thread)
-+struct thread__prepare_access_maps_cb_args {
-+	int err;
-+	struct maps *maps;
++struct read_unwind_spec_eh_frame_maps_cb_args {
++	struct dso *dso;
++	u64 base_addr;
 +};
 +
-+static int thread__prepare_access_maps_cb(struct map *map, void *data)
++static int read_unwind_spec_eh_frame_maps_cb(struct map *map, void *data)
++{
++
++	struct read_unwind_spec_eh_frame_maps_cb_args *args = data;
++
++	if (map__dso(map) == args->dso && map__start(map) < args->base_addr)
++		args->base_addr = map__start(map);
++
++	return 0;
++}
++
++
+ static int read_unwind_spec_eh_frame(struct dso *dso, struct unwind_info *ui,
+ 				     u64 *table_data, u64 *segbase,
+ 				     u64 *fde_count)
  {
- 	bool initialized = false;
--	int err = 0;
--	struct maps *maps = thread__maps(thread);
--	struct map_rb_node *rb_node;
--
--	down_read(maps__lock(maps));
--
--	maps__for_each_entry(maps, rb_node) {
--		err = unwind__prepare_access(thread__maps(thread), rb_node->map, &initialized);
--		if (err || initialized)
--			break;
--	}
-+	struct thread__prepare_access_maps_cb_args *args = data;
- 
--	up_read(maps__lock(maps));
-+	args->err = unwind__prepare_access(args->maps, map, &initialized);
- 
--	return err;
-+	return (args->err || initialized) ? 1 : 0;
- }
- 
- static int thread__prepare_access(struct thread *thread)
- {
--	int err = 0;
-+	struct thread__prepare_access_maps_cb_args args = {
-+		.err = 0,
+-	struct map_rb_node *map_node;
+-	u64 base_addr = UINT64_MAX;
++	struct read_unwind_spec_eh_frame_maps_cb_args args = {
++		.dso = dso,
++		.base_addr = UINT64_MAX,
 +	};
+ 	int ret, fd;
  
--	if (dwarf_callchain_users)
--		err = __thread__prepare_access(thread);
-+	if (dwarf_callchain_users) {
-+		args.maps = thread__maps(thread);
-+		maps__for_each_map(thread__maps(thread), thread__prepare_access_maps_cb, &args);
-+	}
+ 	if (dso->data.eh_frame_hdr_offset == 0) {
+@@ -325,16 +344,11 @@ static int read_unwind_spec_eh_frame(struct dso *dso, struct unwind_info *ui,
+ 			return -EINVAL;
+ 	}
  
--	return err;
-+	return args.err;
- }
+-	maps__for_each_entry(thread__maps(ui->thread), map_node) {
+-		struct map *map = map_node->map;
+-		u64 start = map__start(map);
++	maps__for_each_map(thread__maps(ui->thread), read_unwind_spec_eh_frame_maps_cb, &args);
  
- static int thread__clone_maps(struct thread *thread, struct thread *parent, bool do_maps_clone)
+-		if (map__dso(map) == dso && start < base_addr)
+-			base_addr = start;
+-	}
+-	base_addr -= dso->data.elf_base_addr;
++	args.base_addr -= dso->data.elf_base_addr;
+ 	/* Address of .eh_frame_hdr */
+-	*segbase = base_addr + dso->data.eh_frame_hdr_addr;
++	*segbase = args.base_addr + dso->data.eh_frame_hdr_addr;
+ 	ret = unwind_spec_ehframe(dso, ui->machine, dso->data.eh_frame_hdr_offset,
+ 				   table_data, fde_count);
+ 	if (ret)
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
