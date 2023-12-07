@@ -2,81 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B65807E2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 03:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B7D807E35
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 03:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232540AbjLGCFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 21:05:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34304 "EHLO
+        id S1441966AbjLGCIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 21:08:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjLGCFQ (ORCPT
+        with ESMTP id S229582AbjLGCId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 21:05:16 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D8BC3;
-        Wed,  6 Dec 2023 18:05:23 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-286f8ee27aeso465977a91.3;
-        Wed, 06 Dec 2023 18:05:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701914722; x=1702519522; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qo8WdwTNE01KEbEBjzPvpUi0RD4zLVV6lNkHFrnKZ1g=;
-        b=ZljeI4uYnVtEXHqiSv3/Exuoi+H8AEOOYQFeHqagHw8gJWMAgNixFhgNbQyyb61Gib
-         yjyc+8uHFZNUl4JctNEJWWAEjASH0x8epGFro4Vyeyrg92OVl6zkMcQY4GDw2MBghktV
-         S4Ghzqc7LKZNPHhBuCnTudm6qun43eilYyC+Etd6rxvFlwqRLxA4BQ5igydUGK5lCSTy
-         3gd5inubmVmkzeUAXZG0tfSxCQQApfBsgx1hOq9lWSEQqKCTnGYQjYmcNOawvvo+PscB
-         sQXTWZWZrUyDbawdee5ZEtYnjF0KtJFSL+R/1brPUJJB92kQPJqdMKDol1wooOGdBbPH
-         NJdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701914722; x=1702519522;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qo8WdwTNE01KEbEBjzPvpUi0RD4zLVV6lNkHFrnKZ1g=;
-        b=mnJwkQmFY2Q4ImbPJM7Gfw9s3j3AAmTvdGlW6uu3Td9vyo1kcO1ulWRtz/mkbgs62a
-         EzCu66Ofzjl3S7nNWfmet4q+o5I5I6rRNd8qG/uzN2s0ldz+fdtP/ZCCl7uPg4cDntL1
-         T4B3BM0TtSmR9MoOmWDF/vko5R8nwrnaaxwv+VDc2CWR6BJM46X8Zv+83/k+c/U17qDK
-         nSmg/F9DoA2grMp/N4AHVV88ARbk7Yl9mgw0YwiBzpjA9Awj+Rl2dY06/Z4m7HpH0l+J
-         SJoRwZEXVJjUYcZfnJoHD3I/ovQnbkLV/vjhmNk/sWcOAflN2OxsYn9xCHFc1Du/z84j
-         grvw==
-X-Gm-Message-State: AOJu0Yyjf0ZlNgNjL8qN+5LRyLB+LbM05+PcfQAd8pG8VzWjnCfJ+FHK
-        3L99+RmoS5dJBbWtG5CkHyM=
-X-Google-Smtp-Source: AGHT+IGYMVeRpcfNi8Y9ulOlJdsx/6z+qzU68LCGzzsOZ4/4C8xe5yon3k5U17LOU/GKs+aa3ZG2sQ==
-X-Received: by 2002:a17:90b:4a4f:b0:285:ada5:956 with SMTP id lb15-20020a17090b4a4f00b00285ada50956mr1986916pjb.42.1701914722434;
-        Wed, 06 Dec 2023 18:05:22 -0800 (PST)
-Received: from localhost.localdomain ([61.253.179.202])
-        by smtp.googlemail.com with ESMTPSA id u64-20020a17090a51c600b0028672a85808sm99011pjh.35.2023.12.06.18.05.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 18:05:22 -0800 (PST)
-From:   Changwoo Min <multics69@gmail.com>
-X-Google-Original-From: Changwoo Min <changwoo@igalia.com>
-To:     tj@kernel.org
-Cc:     kernel-dev@igalia.com, andrea.righi@canonical.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        brho@google.com, bristot@redhat.com, bsegall@google.com,
-        changwoo@igalia.com, daniel@iogearbox.net, derkling@google.com,
-        dietmar.eggemann@arm.com, dschatzberg@meta.com,
-        dskarlat@cs.cmu.edu, dvernet@meta.com, haoluo@google.com,
-        himadrics@inria.fr, joshdon@google.com, juri.lelli@redhat.com,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        martin.lau@kernel.org, memxor@gmail.com, mgorman@suse.de,
-        mingo@redhat.com, peterz@infradead.org, pjt@google.com,
-        riel@surriel.com, rostedt@goodmis.org,
-        torvalds@linux-foundation.org, vincent.guittot@linaro.org,
-        vschneid@redhat.com
-Subject: [PATCH] scx: set p->scx.ops_state using atomic_long_set_release
-Date:   Thu,  7 Dec 2023 11:04:59 +0900
-Message-ID: <20231207020459.117365-1-changwoo@igalia.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231111024835.2164816-13-tj@kernel.org>
-References: <20231111024835.2164816-13-tj@kernel.org>
+        Wed, 6 Dec 2023 21:08:33 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2EAF7;
+        Wed,  6 Dec 2023 18:08:38 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SlyNt5ZYxz4f3m6f;
+        Thu,  7 Dec 2023 10:08:30 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 83AEB1A0C14;
+        Thu,  7 Dec 2023 10:08:35 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP1 (Coremail) with SMTP id cCh0CgBXWhAgKXFlIBzOCw--.9536S4;
+        Thu, 07 Dec 2023 10:08:33 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     song@kernel.org, yukuai3@huawei.com
+Cc:     pmenzel@molgen.mpg.de, janpieter.sollie@edpnet.be,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: [PATCH v2] md: split MD_RECOVERY_NEEDED out of mddev_resume
+Date:   Thu,  7 Dec 2023 10:07:24 +0800
+Message-Id: <20231207020724.2797445-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+X-CM-TRANSID: cCh0CgBXWhAgKXFlIBzOCw--.9536S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxAw1Dur43Zr17Jw1rGF13XFb_yoW5Zw48pa
+        yxtF95Wr4UZFZ3XrWUGa4kWa45Jw10grZFyFW3u3sxA34rt3yfWr15ur1DXrWkt3s2qFs8
+        Xa1Fva1xAr1jgrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+        7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF9a9DUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,26 +61,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-p->scx.ops_state should be updated using the release semantics,
-atomic_long_set_release(), because it is read using
-atomic_long_read_acquire() at ops_dequeue() and wait_ops_state().
----
- kernel/sched/ext.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+From: Yu Kuai <yukuai3@huawei.com>
 
-diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 53ee906aa2b6..3a40ca2007b6 100644
---- a/kernel/sched/ext.c
-+++ b/kernel/sched/ext.c
-@@ -881,7 +881,7 @@ static void do_enqueue_task(struct rq *rq, struct task_struct *p, u64 enq_flags,
- 	qseq = rq->scx.ops_qseq++ << SCX_OPSS_QSEQ_SHIFT;
+New mddev_resume() calls are added to synchronize IO with array
+reconfiguration, however, this introduces a performance regression while
+adding it in md_start_sync():
+
+1) someone sets MD_RECOVERY_NEEDED first;
+2) daemon thread grabs reconfig_mutex, then clears MD_RECOVERY_NEEDED and
+   queues a new sync work;
+3) daemon thread releases reconfig_mutex;
+4) in md_start_sync
+   a) check that there are spares that can be added/removed, then suspend
+      the array;
+   b) remove_and_add_spares may not be called, or called without really
+      add/remove spares;
+   c) resume the array, then set MD_RECOVERY_NEEDED again!
+
+Loop between 2 - 4, then mddev_suspend() will be called quite often, for
+consequence, normal IO will be quite slow.
+
+Fix this problem by don't set MD_RECOVERY_NEEDED again in md_start_sync(),
+hence the loop will be broken.
+
+Fixes: bc08041b32ab ("md: suspend array in md_start_sync() if array need reconfiguration")
+Suggested-by: Song Liu <song@kernel.org>
+Reported-by: Janpieter Sollie <janpieter.sollie@edpnet.be>
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218200
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+Changes in v2:
+ - use a new approch as suggested by Song Liu;
+
+ drivers/md/md.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index bc9d67af1961..49540db8a210 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -490,7 +490,7 @@ int mddev_suspend(struct mddev *mddev, bool interruptible)
+ }
+ EXPORT_SYMBOL_GPL(mddev_suspend);
  
- 	WARN_ON_ONCE(atomic_long_read(&p->scx.ops_state) != SCX_OPSS_NONE);
--	atomic_long_set(&p->scx.ops_state, SCX_OPSS_QUEUEING | qseq);
-+	atomic_long_set_release(&p->scx.ops_state, SCX_OPSS_QUEUEING | qseq);
+-void mddev_resume(struct mddev *mddev)
++static void __mddev_resume(struct mddev *mddev, bool recovery_needed)
+ {
+ 	lockdep_assert_not_held(&mddev->reconfig_mutex);
  
- 	ddsp_taskp = this_cpu_ptr(&direct_dispatch_task);
- 	WARN_ON_ONCE(*ddsp_taskp);
+@@ -507,12 +507,18 @@ void mddev_resume(struct mddev *mddev)
+ 	percpu_ref_resurrect(&mddev->active_io);
+ 	wake_up(&mddev->sb_wait);
+ 
+-	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
++	if (recovery_needed)
++		set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+ 	md_wakeup_thread(mddev->thread);
+ 	md_wakeup_thread(mddev->sync_thread); /* possibly kick off a reshape */
+ 
+ 	mutex_unlock(&mddev->suspend_mutex);
+ }
++
++void mddev_resume(struct mddev *mddev)
++{
++	return __mddev_resume(mddev, true);
++}
+ EXPORT_SYMBOL_GPL(mddev_resume);
+ 
+ /*
+@@ -9389,7 +9395,9 @@ static void md_start_sync(struct work_struct *ws)
+ 		goto not_running;
+ 	}
+ 
+-	suspend ? mddev_unlock_and_resume(mddev) : mddev_unlock(mddev);
++	mddev_unlock(mddev);
++	if (suspend)
++		__mddev_resume(mddev, false);
+ 	md_wakeup_thread(mddev->sync_thread);
+ 	sysfs_notify_dirent_safe(mddev->sysfs_action);
+ 	md_new_event();
+@@ -9401,7 +9409,9 @@ static void md_start_sync(struct work_struct *ws)
+ 	clear_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
+ 	clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
+ 	clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
+-	suspend ? mddev_unlock_and_resume(mddev) : mddev_unlock(mddev);
++	mddev_unlock(mddev);
++	if (suspend)
++		__mddev_resume(mddev, false);
+ 
+ 	wake_up(&resync_wait);
+ 	if (test_and_clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery) &&
 -- 
-2.43.0
+2.39.2
 
