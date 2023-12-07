@@ -2,126 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 395BD80860C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E04018085EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbjLGKrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 05:47:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
+        id S231955AbjLGKsZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Dec 2023 05:48:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbjLGKrl (ORCPT
+        with ESMTP id S230055AbjLGKsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 05:47:41 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241D7D54;
-        Thu,  7 Dec 2023 02:47:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ktSp3moRHDdSXNk4zatlXahnF9on1Y5nS6HFXFMtcVg=; b=Na4rlRqcXs2nWrU581A6dAgX2x
-        07SymGbQ/HN6yFJA/oNvRSNsAvs7N8uJ5RiS3r7O53wPI/bHYwG8AqY0F/wEAiy6lAd6ycLS49unL
-        1tBIm0Q+BIvG3qGhATdNJfMyaXDEuBeVAtZHgmjYZRQ+K3YKF8s/Ph3yEc+Sxpdc5147mtAu6lk//
-        gK3vmB51KulGre9ujF0l1WUioSof18HF2jtI6vDA7iiSQI8mx8F8bdjV7FjnEdMcQk8H5dQRqGOd5
-        ZjUU6UtXVuZL6h0uDfANcu1VG5zbRnGvqUEvVzXg2y4o54AQYD/o4KZM6WXvGCNSdyZeVRUfTdISv
-        BvpB6JDg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:60806)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rBBur-0000yU-18;
-        Thu, 07 Dec 2023 10:47:37 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rBBus-0003fg-C7; Thu, 07 Dec 2023 10:47:38 +0000
-Date:   Thu, 7 Dec 2023 10:47:38 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v3 02/13] net: phy: at803x: move disable WOL to
- specific at8031 probe
-Message-ID: <ZXGiysQvYXb9YJBT@shell.armlinux.org.uk>
-References: <20231206235728.6985-1-ansuelsmth@gmail.com>
- <20231206235728.6985-3-ansuelsmth@gmail.com>
+        Thu, 7 Dec 2023 05:48:22 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469A2D53;
+        Thu,  7 Dec 2023 02:48:25 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 335198062;
+        Thu,  7 Dec 2023 18:48:18 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 7 Dec
+ 2023 18:48:15 +0800
+Received: from [192.168.60.132] (180.164.60.184) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 7 Dec
+ 2023 18:48:16 +0800
+Message-ID: <e0b84511-dbb4-46fa-9465-713369232f6f@starfivetech.com>
+Date:   Thu, 7 Dec 2023 18:48:13 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206235728.6985-3-ansuelsmth@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [v3 5/6] drm/vs: Add hdmi driver
+Content-Language: en-US
+To:     Andy Yan <andyshrk@163.com>
+CC:     Maxime Ripard <mripard@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        William Qiu <william.qiu@starfivetech.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>,
+        "maarten.lankhorst@linux.intel.com" 
+        <maarten.lankhorst@linux.intel.com>,
+        "suijingfeng@loongson.cn" <suijingfeng@loongson.cn>
+References: <20231204123315.28456-1-keith.zhao@starfivetech.com>
+ <20231204123315.28456-6-keith.zhao@starfivetech.com>
+ <esetsiqgqpk35zue4c6aq7l6zn4kezhxkqqa7ompaz2vhdy3lr@4d5awfqgs2ss>
+ <94a1f9fc-82fb-4a04-a44b-f9b20c2bdfdd@starfivetech.com>
+ <abdl6kmighvpwojvafq443q7grn6w3abwpvw7zwbna4jvtsvjf@fa42rv46n2wh>
+ <40cdd3c7-174e-4611-9ea6-22cb56d1f62b@starfivetech.com>
+ <e90142d.44b1.18c43833b63.Coremail.andyshrk@163.com>
+From:   Keith Zhao <keith.zhao@starfivetech.com>
+In-Reply-To: <e90142d.44b1.18c43833b63.Coremail.andyshrk@163.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [180.164.60.184]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 12:57:17AM +0100, Christian Marangi wrote:
-> Move the WOL disable call to specific at8031 probe to make at803x_probe
-> more generic and drop extra check for PHY ID.
-> 
-> Keep the same previous behaviour by first calling at803x_probe and then
-> disabling WOL.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> ---
->  drivers/net/phy/at803x.c | 29 +++++++++++++++++++----------
->  1 file changed, 19 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-> index ef203b0807e5..85302d96d133 100644
-> --- a/drivers/net/phy/at803x.c
-> +++ b/drivers/net/phy/at803x.c
-> @@ -886,15 +886,6 @@ static int at803x_probe(struct phy_device *phydev)
->  			priv->is_fiber = true;
->  			break;
->  		}
-> -
-> -		/* Disable WoL in 1588 register which is enabled
-> -		 * by default
-> -		 */
-> -		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS,
-> -				     AT803X_PHY_MMD3_WOL_CTRL,
-> -				     AT803X_WOL_EN, 0);
-> -		if (ret)
-> -			return ret;
->  	}
->  
->  	return 0;
-> @@ -1591,6 +1582,24 @@ static int at803x_cable_test_start(struct phy_device *phydev)
->  	return 0;
->  }
->  
-> +static int at8031_probe(struct phy_device *phydev)
-> +{
-> +	int ret;
-> +
-> +	ret = at803x_probe(phydev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Disable WoL in 1588 register which is enabled
-> +	 * by default
-> +	 */
-> +	ret = phy_modify_mmd(phydev, MDIO_MMD_PCS,
-> +			     AT803X_PHY_MMD3_WOL_CTRL,
-> +			     AT803X_WOL_EN, 0);
-> +
-> +	return ret;
 
-	return phy_modify_mmd(...) ?
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+On 2023/12/7 17:02, Andy Yan wrote:
+> 
+> 
+> 
+> 
+> Hi Keith：
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> At 2023-12-06 22:11:33, "Keith Zhao" <keith.zhao@starfivetech.com> wrote:
+>>
+>>
+>>On 2023/12/6 20:56, Maxime Ripard wrote:
+>>> On Wed, Dec 06, 2023 at 08:02:55PM +0800, Keith Zhao wrote:
+>>>> >> +static const struct of_device_id starfive_hdmi_dt_ids[] = {
+>>>> >> +	{ .compatible = "starfive,jh7110-inno-hdmi",},
+>>>> > 
+>>>> > So it's inno hdmi, just like Rockchip then?
+>>>> > 
+>>>> > This should be a common driver.
+>>>>
+>>>> Rockchip has a inno hdmi IP. and Starfive has a inno hdmi IP.
+>>>> but the harewawre difference of them is big , it is not easy to use the common driver
+>>>> maybe i need the inno hdmi version here to make a distinction
+>>> 
+>>> I just had a look at the rockchip header file: all the registers but the
+>>> STARFIVE_* ones are identical.
+>>> 
+>>> There's no need to have two identical drivers then, please use the
+>>> rockchip driver instead.
+>>> 
+>>> Maxime
+>>
+>>ok, have a simple test , edid can get . i will continue 
+> 
+> Maybe you can take drivers/gpu/drm/bridge/synopsys/dw-hdmi as a reference， this
+> is also a hdmi ip used by rockchip/meson/sunxi/jz/imx。
+> We finally make it share one driver。
+>>
+hi Andy:
+
+dw_hdmi seems a good choice , it can handle inno hdmi hardware by define its dw_hdmi_plat_data.
+does it means i can write own driver files such as(dw_hdmi-starfive.c) based on dw_hdmi instead of add plat_data in inno_hdmi.c
+
+Thanks for pointing this out!!!
+
+>>
+>>_______________________________________________
+>>linux-riscv mailing list
+>>linux-riscv@lists.infradead.org
+>>http://lists.infradead.org/mailman/listinfo/linux-riscv
