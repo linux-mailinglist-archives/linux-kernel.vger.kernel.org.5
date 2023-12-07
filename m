@@ -2,68 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3376B808738
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3103808737
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379147AbjLGL7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 06:59:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42234 "EHLO
+        id S232539AbjLGMAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:00:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232186AbjLGL7e (ORCPT
+        with ESMTP id S232555AbjLGMAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 06:59:34 -0500
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA509AA;
-        Thu,  7 Dec 2023 03:59:40 -0800 (PST)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5cece20f006so6246377b3.3;
-        Thu, 07 Dec 2023 03:59:40 -0800 (PST)
+        Thu, 7 Dec 2023 07:00:13 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200D110CA;
+        Thu,  7 Dec 2023 04:00:18 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-77d6f853ba0so42029685a.0;
+        Thu, 07 Dec 2023 04:00:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701950380; x=1702555180; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701950417; x=1702555217; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Pzcrn9pBVNf1FVU0YoFLtUh482zBFVsR0jyYJt8y9LY=;
-        b=H3RJ6O/MTJurKk4YIhJHX/arJEb8Sd5OhlguLRN3FUR2gdsLCbWhPj6qZFbJAvuape
-         alYkVDvWaYHUriWy2dSbzaicC50f+NTrqbj0OZ1nByw+TW4dMveJ0JYPyjhfqXRrwoB2
-         V4lV64CkMv/vBvtKVvCvMnQPrcKGt17Bt9rajI0p3DnwIfZE4yrzeZGfp29lbAZqkpNO
-         w52ihKAM9GjnHno9DgG5hnX8WdhOy2VubDIs/CMkYkVmy4gq2vxLfbil/spnrOQyWh1a
-         sbxKUkJ8hpaVLi0NgUTRd8133edadzNAS/eHcb89Y4mTcELCo08Wn3QapXp4//3Oa0j/
-         /Zhw==
+        bh=8N1+cn+fBSeHCGuo21Zugsp7Q1cczJw+MFPsoqSobZY=;
+        b=kcR7eQ5T/lKtqsRWoAx/y1o4g/R6A+tkpk4MAYJ/Zp9/xCM0QhAii1wCDYkbe4BIXr
+         YEGbKLVncH4ocj6toT8d0rctejB7d85IAQLCAy/v5Qoup/OpKK+RnxeBCn2oRkVgqFTg
+         SLtbWXvQ8OqXx3tXiBnP6cM1ZFBF0qhqrxP1qqtNrtd1U6r4mNhNclU11qcB+qBO+yIA
+         uYZCpoSamoPf8cZ4Ig7Iw1ted+bPVsOH8L9A5ACzga2DHZKA+oRazG4lynENcfzHotJc
+         Z9FSfI0FNUZJU6fJLHghZ+x9O+yfMS7QJcCQwS8HJrLx/kDODIfL0GpIZfv+omQI8tqb
+         pqPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701950380; x=1702555180;
+        d=1e100.net; s=20230601; t=1701950417; x=1702555217;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Pzcrn9pBVNf1FVU0YoFLtUh482zBFVsR0jyYJt8y9LY=;
-        b=OFIwkuntYA8zqGZrYw1jiibexbEoNg/m2WyN2nKCLOEhFeJkL8s4ABxSmQ9zSijxV6
-         3w0a9Jmk4hMoJDMpxSmckrpd7LqW8aDTd2FrGyT4mVjfyD1hkb4xEMWflMsfb30RN/ft
-         bRnnQgLtqR1bAosjC0iteceNMrUiJ6B5A0mAKk7YalnUTH0E9fp3wfkfSSJFjhQ0DdN/
-         9H3ZQPJeywKmn28A1Htw1yxzkBhq8WrhXJ8cy8kvFxTc0NPREpVBojR567NFSd17/lo+
-         METBiQ3Y5yi54L4KCrLFp7Xqym5N9kDf4fN9TP4yoX5KnhX1ZB7C66iPk4ozz//YRpN8
-         /TDw==
-X-Gm-Message-State: AOJu0Yxk+cPYTBWSv5yUq6BUaQ6Bh235bQdefltfibaygUJpaBh2OWZq
-        fnunJp/uxOQlVVtm30drNC8N1uFTdN6eV4SMrx0=
-X-Google-Smtp-Source: AGHT+IEwU2Oa17ghfxEIDVSxGWej/Ung3dJ4wEwQtQtgqzDx1OcoWa6L51OU26eN6kYON1gZ8dLXhswa4QnAchx52HU=
-X-Received: by 2002:a25:aae6:0:b0:db7:dacf:6fd4 with SMTP id
- t93-20020a25aae6000000b00db7dacf6fd4mr1806203ybi.92.1701950379950; Thu, 07
- Dec 2023 03:59:39 -0800 (PST)
+        bh=8N1+cn+fBSeHCGuo21Zugsp7Q1cczJw+MFPsoqSobZY=;
+        b=akQ9wUylxJGOwOBIRjB10nQb7Trc889IUsigmbH8quyjotMxrsf/xNw/3KHX9jmFhm
+         X3MVsi+BaPd70t2MTT9sqjgmwBzGIrH231tCHKc0FRC16UTwv26NRrEJk1XdQmNtI1IM
+         I7EkemHGGaY4Etkh9sDfI87FYZqv9VnqWAfVC0ok5u+6CYenvSxkZzBuhUEun4NGzDte
+         +v7SgLLtCNXwUWFch4pVmTZsx9fGMgx1+PGMYCIVqMn/ZOIqdxOEfAdWfscmHeNTt+jZ
+         dQbKuRVamMT4AQQ2sJn2slonplXKqpbxIkMLObmTOcgl35YUUqgCeam0Bxbh0gHqPbrv
+         sqdg==
+X-Gm-Message-State: AOJu0Yxin22VmXHgmCcBGzqjMugydx/jE4r1jGFNaoxso8Yo3B3amuCl
+        tG89Wsppy4uarSLVuDjd2r5NieYm4iTCWhG28nI=
+X-Google-Smtp-Source: AGHT+IH34Xzv5KtY/D+BMVlkWYo9rwuiVxKqxlh5Ap5AifKPY0cMFdnuMB2UOvEGr+7lT/XiUh+en9FVxjhpx4Akg3E=
+X-Received: by 2002:a05:620a:2486:b0:77f:34bf:5593 with SMTP id
+ i6-20020a05620a248600b0077f34bf5593mr1943614qkn.17.1701950417106; Thu, 07 Dec
+ 2023 04:00:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20231206115355.4319-1-laoar.shao@gmail.com> <2023120644-pry-worried-22a2@gregkh>
- <CALOAHbDtFKDh7C0NYeZ0xBV1z3AsNBDdnL7qRtWOrGbaU7W9VQ@mail.gmail.com> <2023120724-overstep-gesture-75be@gregkh>
-In-Reply-To: <2023120724-overstep-gesture-75be@gregkh>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 7 Dec 2023 19:59:03 +0800
-Message-ID: <CALOAHbAbU8At_iPVCiz9M8=jiGQ_BYFupCbVwsm=d9te85pAyg@mail.gmail.com>
-Subject: Re: [PATCH] drivers: base: Introduce a new kernel parameter driver_sync_probe=
-To:     Greg KH <gregkh@linuxfoundation.org>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org
+References: <20231204180603.470421-1-gnstark@salutedevices.com>
+ <20231204180603.470421-2-gnstark@salutedevices.com> <81798fe5-f89e-482f-b0d0-674ccbfc3666@redhat.com>
+ <29584eb6-fa10-4ce0-9fa3-0c409a582445@salutedevices.com> <17a9fede-30e8-4cd5-ae02-fe34e11f5c20@csgroup.eu>
+ <be693688-2e82-4e1a-9ead-cf1513ee637b@csgroup.eu> <2a68534b-9e64-4d6e-8a49-eeab0889841b@salutedevices.com>
+In-Reply-To: <2a68534b-9e64-4d6e-8a49-eeab0889841b@salutedevices.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 7 Dec 2023 13:59:40 +0200
+Message-ID: <CAHp75VdMzZZg3w_jr-SF2APeyq1wVNHK=r=Amf0+JUOq1hy0Fw@mail.gmail.com>
+Subject: Re: [PATCH v2 01/10] devm-helpers: introduce devm_mutex_init
+To:     George Stark <gnstark@salutedevices.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "pavel@ucw.cz" <pavel@ucw.cz>, "lee@kernel.org" <lee@kernel.org>,
+        "vadimp@nvidia.com" <vadimp@nvidia.com>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "npiggin@gmail.com" <npiggin@gmail.com>,
+        "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        Waiman Long <longman@redhat.com>, mingo@redhat.com,
+        will@kernel.org, boqun.feng@gmail.com,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "kernel@salutedevices.com" <kernel@salutedevices.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,119 +85,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 6:19=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org>=
- wrote:
+On Thu, Dec 7, 2023 at 1:23=E2=80=AFAM George Stark <gnstark@salutedevices.=
+com> wrote:
+> On 12/7/23 01:37, Christophe Leroy wrote:
+> > Le 06/12/2023 =C3=A0 23:14, Christophe Leroy a =C3=A9crit :
+> >> Le 06/12/2023 =C3=A0 19:58, George Stark a =C3=A9crit :
+> >>> On 12/6/23 18:01, Hans de Goede wrote:
+> >>>> On 12/4/23 19:05, George Stark wrote:
+
+...
+
+> >>>> mutex_destroy() only actually does anything if CONFIG_DEBUG_MUTEXES
+> >>>> is set, otherwise it is an empty inline-stub.
+> >>>>
+> >>>> Adding a devres resource to the device just to call an empty inline
+> >>>> stub which is a no-op seems like a waste of resources. IMHO it
+> >>>> would be better to change this to:
+> >>>>
+> >>>> static inline int devm_mutex_init(struct device *dev, struct mutex
+> >>>> *lock)
+> >>>> {
+> >>>>        mutex_init(lock);
+> >>>> #ifdef CONFIG_DEBUG_MUTEXES
+> >>>>        return devm_add_action_or_reset(dev, devm_mutex_release, lock=
+);
+> >>>> #else
+> >>>>        return 0;
+> >>>> #endif
+> >>>> }
+> >>>>
+> >>>> To avoid the unnecessary devres allocation when
+> >>>> CONFIG_DEBUG_MUTEXES is not set.
+> >>>
+> >>> Honestly saying I don't like unnecessary devres allocation either but
+> >>> the proposed approach has its own price:
+> >>>
+> >>> 1) we'll have more than one place with branching if mutex_destroy is
+> >>> empty or not using  indirect condition. If suddenly mutex_destroy is
+> >>> extended for non-debug code (in upstream branch or e.g. by someone fo=
+r
+> >>> local debug) than there'll be a problem.
+> >>>
+> >>> 2) If mutex_destroy is empty or not depends on CONFIG_PREEMPT_RT opti=
+on
+> >>> too. When CONFIG_PREEMPT_RT is on mutex_destroy is always empty.
+> >>>
+> >>> As I see it only the mutex interface (mutex.h) has to say definitely =
+if
+> >>> mutex_destroy must be called. Probably we could add some define to
+> >>> include/linux/mutex.h,like IS_MUTEX_DESTROY_REQUIRED and declare it n=
+ear
+> >>> mutex_destroy definition itself.
+> >>>
+> >>> I tried to put devm_mutex_init itself in mutex.h and it could've help=
+ed
+> >>> too but it's not the place for devm API.
+> >>>
+> >>
+> >> What do you mean by "it's not the place for devm API" ?
+> >>
+> >> If you do a 'grep devm_ include/linux/' you'll find devm_ functions in
+> >> almost 100 .h files. Why wouldn't mutex.h be the place for
+> >> devm_mutex_init() ?
+> mutex.h's maintainers believe so.
 >
-> On Wed, Dec 06, 2023 at 10:08:40PM +0800, Yafang Shao wrote:
-> > On Wed, Dec 6, 2023 at 9:31=E2=80=AFPM Greg KH <gregkh@linuxfoundation.=
-org> wrote:
-> > >
-> > > On Wed, Dec 06, 2023 at 11:53:55AM +0000, Yafang Shao wrote:
-> > > > After upgrading our kernel from version 4.19 to 6.1, certain regres=
-sions
-> > > > occurred due to the driver's asynchronous probe behavior. Specifica=
-lly,
-> > > > the SCSI driver transitioned to an asynchronous probe by default, r=
-esulting
-> > > > in a non-fixed root disk behavior. In the prior 4.19 kernel, the ro=
-ot disk
-> > > > was consistently identified as /dev/sda. However, with kernel 6.1, =
-the root
-> > > > disk can be any of /dev/sdX, leading to issues for applications rel=
-iant on
-> > > > /dev/sda, notably impacting monitoring systems monitoring the root =
-disk.
-> > >
-> > > Device names are never guaranteed to be stable, ALWAYS use a persista=
-nt
-> > > names like a filesystem label or other ways.  Look at /dev/disk/ for =
-the
-> > > needed ways to do this properly.
+> https://lore.kernel.org/lkml/070c174c-057a-46de-ae8e-836e9e20eceb@saluted=
+evices.com/T/#mb42e1d7760816b0cedd3130e08f29690496b5ac2
 > >
-> > The root disk is typically identified as /dev/sda or /dev/vda, right?
->
-> Depends on your system.  It can also be identified, in the proper way,
-> as /dev/disk/by-uuid/eef0abc1-4039-4c3f-a123-81fc99999993 if you want
-> (note, fake uuid, use your own disk uuid please.)
->
-> Why not do that?  That's the most stable and recommended way of doing
-> things.
-
-Adapting to this change isn't straightforward, especially for a large
-fleet of servers. Our monitoring system needs to accommodate and
-adjust accordingly.
-
->
-> > This is because the root disk, which houses the operating system,
-> > cannot be removed or hotplugged.
->
-> Not true at all, happens for many systems (think about how systems that
-> run their whole OS out of ram work...)
->
-> > Therefore, it usually remains as the
-> > first disk in the system. With the synchronous probe, the root disk
-> > maintains a stable and consistent identification.
+> > Looking at it closer, I have the feeling that you want to do similar to
+> > devm_gpio_request() in linux/gpio.h :
 > >
-> > >
-> > > > To address this, a new kernel parameter 'driver_sync_probe=3D' is i=
-ntroduced
-> > > > to enforce synchronous probe behavior for specific drivers.
-> > >
-> > > This should be a per-bus thing, not a driver-specific thing as driver=
-s
-> > > for the same bus could have differing settings here which would cause=
- a
-> > > mess.
-> > >
-> > > Please just revert the scsi bus functionality if you have had
-> > > regressions here, it's not a driver-core thing to do.
-> >
-> > Are you suggesting a reversal of the asynchronous probe code in the
-> > SCSI driver?
+> > In linux/mutex.h, add a prototype for devm_mutex_init() when
+> > CONFIG_DEBUG_MUTEXES is defined and an empty static inline otherwise.
+> > Then define devm_mutex_init() in kernel/locking/mutex-debug.c
 >
-> For your broken scsi driver, yes.
+> Yes, this would be almost perfect decision. BTW just as in linux/gpio.h
+> we wouldn't have to include whole "linux/device.h" into mutex.h, only
+> add forward declaration of struct device;
 >
-> > While reverting to synchronous probing could ensure
-> > stability, it's worth noting that asynchronous probing can potentially
-> > shorten the reboot duration under specific conditions. Thus, there
-> > might be some resistance to reverting this change as it offers
-> > performance benefits in certain scenarios. That's why I prefer to
-> > introduce a kernel parameter for it.
->
-> I don't want to add a new parameter that we need to support for forever
-> and add to the complexity of the system unless it is REALLY needed.
+> > Wouldn't that work ?
 
-BTW, since there's already a 'driver_async_probe=3D', introducing
-another 'driver_sync_probe=3D' wouldn't significantly increase the
-maintenance overhead.
+No. It will require inclusion of device.h (which is a twisted hell
+from the header perspective) into mutex.h. Completely unappreciated
+move.
 
-> Please work with the scsi developers to resolve the issue for your
-> hardware, as it's been working for everyone else for well over a year
-> now, right?
-
-The SCSI guys are added to this mail thread.
-
-I'm uncertain whether it's possible to add SCSI kernel parameters
-selectively. If that's not feasible, we'll need to maintain the
-following modification in our local kernel:
-
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index e934779..8148d12 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -607,7 +607,7 @@ static void sd_set_flush_flag(struct scsi_disk *sdkp)
-                .name           =3D "sd",
-                .owner          =3D THIS_MODULE,
-                .probe          =3D sd_probe,
--               .probe_type     =3D PROBE_PREFER_ASYNCHRONOUS,
-+               .probe_type     =3D PROBE_PREFER_SYNCHRONOUS,
-                .remove         =3D sd_remove,
-                .shutdown       =3D sd_shutdown,
-                .pm             =3D &sd_pm_ops,
-
-
-
-
---
-Regards
-Yafang
+--=20
+With Best Regards,
+Andy Shevchenko
