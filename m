@@ -2,82 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6706C80891D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21156808919
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441822AbjLGNYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:24:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
+        id S1441815AbjLGNYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:24:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232781AbjLGNYd (ORCPT
+        with ESMTP id S232771AbjLGNYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:24:33 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA0210CF;
-        Thu,  7 Dec 2023 05:24:38 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SmFNs2WxKz4f3l1t;
-        Thu,  7 Dec 2023 21:24:29 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-        by mail.maildlp.com (Postfix) with ESMTP id 1E4351A07F3;
-        Thu,  7 Dec 2023 21:24:34 +0800 (CST)
-Received: from [10.174.179.247] (unknown [10.174.179.247])
-        by APP2 (Coremail) with SMTP id Syh0CgAHXkyRx3FljQlYDA--.45823S3;
-        Thu, 07 Dec 2023 21:24:33 +0800 (CST)
-Message-ID: <7dbaaedd-e039-1025-76de-4ebf7fa7bc35@huaweicloud.com>
-Date:   Thu, 7 Dec 2023 21:24:33 +0800
+        Thu, 7 Dec 2023 08:24:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCD610CF
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:24:10 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CC5BC433C8;
+        Thu,  7 Dec 2023 13:24:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701955450;
+        bh=Jox1QVTW8FXBAFs6KYjS5LP35vS3J8LsKIserpsx4M4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gGDYoQUazfRrRuCGF4JdheCnrSUcHxAIAbG6QHlxeYxdA9W1ASLJ7tmX/W0IndNBP
+         FzxogXB9Ae/rUfISxZEtYCtZ4HUei+hSYS3rK41aQ5sQmFzArfEQuH06HOV21MfZ+m
+         dGY2Qwat3aSBQi3zaerNoRjURTPiEDsr2bKRSiiUzfKP34SJPriCH/UNJoPRvpUhhO
+         /2zRt2YM9VrE8hJaOnMNQ1d+BlOOVel4X+NJgZABowrAjCZvH6s7sHRazn6hCvIIAo
+         zJC+M2aJjfn0EA5EjH+gs7Ox0beesWs7tZ8dZ6lmceyc4KTBmsMvcljuOdNBPQgvjl
+         hmiUksYrzbmvQ==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1rBENA-0000PW-0p;
+        Thu, 07 Dec 2023 14:25:00 +0100
+Date:   Thu, 7 Dec 2023 14:25:00 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Jonathan Derrick <jonathan.derrick@linux.dev>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, regressions@leemhuis.info
+Subject: Re: [PATCH v2 0/6] PCI: Fix deadlocks when enabling ASPM
+Message-ID: <ZXHHrCDKKQbGIxli@hovoldconsulting.com>
+References: <20231128081512.19387-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH v5] block: add check that partition length needs to be
- aligned with block size
-To:     Min Li <min15.li@samsung.com>, axboe@kernel.dk, hch@lst.de,
-        dlemoal@kernel.org
-Cc:     gregkh@linuxfoundation.org, kch@nvidia.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, willy@infradead.org
-References: <20230629073322.GB19464@lst.de>
- <CGME20231016060514epcas5p2ab38287c243a9539736453b4cb34e447@epcas5p2.samsung.com>
- <20231016140311.32367-1-min15.li@samsung.com>
-From:   Li Nan <linan666@huaweicloud.com>
-In-Reply-To: <20231016140311.32367-1-min15.li@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgAHXkyRx3FljQlYDA--.45823S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYB7kC6x804xWl14x267AKxVW8JVW5JwAF
-        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xv
-        wVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
-        xvwVC2z280aVCY1x0267AKxVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE
-        52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGV
-        WUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48J
-        M4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
-        kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUojjgDUUUU
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128081512.19387-1-johan+linaro@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-friendly ping ...
+Hi PCI maintainers,
 
-在 2023/10/16 22:03, Min Li 写道:
-> Thanks
+On Tue, Nov 28, 2023 at 09:15:06AM +0100, Johan Hovold wrote:
+> The pci_enable_link_state() helper is currently only called from
+> pci_walk_bus(), something which can lead to a deadlock as both helpers
+> take a pci_bus_sem read lock.
 > 
-> Min li
-> .
+> Add a new locked helper which can be called with the read lock held and
+> fix up the two current users (the second is new in 6.7-rc1).
+> 
+> Note that there are no users left of the original unlocked variant after
+> this series, but I decided to leave it in place for now (e.g. to mirror
+> the corresponding helpers to disable link states).
+> 
+> Included are also a couple of related cleanups.
 
--- 
-Thanks,
-Nan
+> Johan Hovold (6):
+>   PCI/ASPM: Add locked helper for enabling link state
+>   PCI: vmd: Fix deadlock when enabling ASPM
+>   PCI: qcom: Fix deadlock when enabling ASPM
+>   PCI: qcom: Clean up ASPM comment
+>   PCI/ASPM: Clean up disable link state parameter
+>   PCI/ASPM: Add lockdep assert to link state helper
 
+Could we get this merged for 6.7-rc5? Even if the risk of a deadlock is
+not that great, this bug prevents using lockdep on Qualcomm platforms so
+that more locking issues can potentially make their way into the kernel.
+
+And for Qualcomm platforms, this is a regression in 6.7-rc1.
+
+Johan
+
+
+#regzbot introduced: 9f4f3dfad8cf
