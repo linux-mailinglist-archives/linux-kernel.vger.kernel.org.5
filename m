@@ -2,38 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7F9808861
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C77808864
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379473AbjLGMob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 07:44:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35178 "EHLO
+        id S1379508AbjLGMon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:44:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379458AbjLGMo2 (ORCPT
+        with ESMTP id S232659AbjLGMoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 07:44:28 -0500
+        Thu, 7 Dec 2023 07:44:37 -0500
 Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F070D10C9
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:44:34 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7584B122
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:44:42 -0800 (PST)
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SmDVn5DVkz4xPL;
-        Thu,  7 Dec 2023 23:44:33 +1100 (AEDT)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SmDVw5Qlmz4xSc;
+        Thu,  7 Dec 2023 23:44:40 +1100 (AEDT)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-In-Reply-To: <20231120232332.4100288-1-masahiroy@kernel.org>
-References: <20231120232332.4100288-1-masahiroy@kernel.org>
-Subject: Re: [PATCH] powerpc: add crtsavres.o to always-y instead of extra-y
-Message-Id: <170195271160.2310221.3176675115907278770.b4-ty@ellerman.id.au>
+To:     fbarrat@linux.ibm.com, ajd@linux.ibm.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, Li zeming <zeming@nfschina.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231113012202.7887-1-zeming@nfschina.com>
+References: <20231113012202.7887-1-zeming@nfschina.com>
+Subject: Re: [PATCH] misc: ocxl: afu_irq: Remove unnecessary (void*) conversions
+Message-Id: <170195271157.2310221.15419175340995819525.b4-ty@ellerman.id.au>
 Date:   Thu, 07 Dec 2023 23:38:31 +1100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -47,27 +42,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 08:23:32 +0900, Masahiro Yamada wrote:
-> crtsavres.o is linked to modules. However, as explained in commit
-> d0e628cd817f ("kbuild: doc: clarify the difference between extra-y
-> and always-y"), 'make modules' does not build extra-y.
+On Mon, 13 Nov 2023 09:22:02 +0800, Li zeming wrote:
+> The irq pointer does not need to cast the type.
 > 
-> For example, the following command fails:
 > 
->   $ make ARCH=powerpc LLVM=1 KBUILD_MODPOST_WARN=1 mrproper ps3_defconfig modules
->     [snip]
->     LD [M]  arch/powerpc/platforms/cell/spufs/spufs.ko
->   ld.lld: error: cannot open arch/powerpc/lib/crtsavres.o: No such file or directory
->   make[3]: *** [scripts/Makefile.modfinal:56: arch/powerpc/platforms/cell/spufs/spufs.ko] Error 1
->   make[2]: *** [Makefile:1844: modules] Error 2
->   make[1]: *** [/home/masahiro/workspace/linux-kbuild/Makefile:350: __build_one_by_one] Error 2
->   make: *** [Makefile:234: __sub-make] Error 2
-> 
-> [...]
 
 Applied to powerpc/next.
 
-[1/1] powerpc: add crtsavres.o to always-y instead of extra-y
-      https://git.kernel.org/powerpc/c/1b1e38002648819c04773647d5242990e2824264
+[1/1] misc: ocxl: afu_irq: Remove unnecessary (void*) conversions
+      https://git.kernel.org/powerpc/c/84ba5d3675e23e6fa824a2268c5b6a04b52dde4d
 
 cheers
