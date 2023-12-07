@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D0C808F3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DADA4808F43
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 19:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235273AbjLGR6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:58:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49422 "EHLO
+        id S1443615AbjLGR6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:58:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235228AbjLGR6L (ORCPT
+        with ESMTP id S235228AbjLGR6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:58:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CCA173C
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:57:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 500ABC433C8;
-        Thu,  7 Dec 2023 17:57:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701971867;
-        bh=he6LQ25WriwrUDDfYMH36GaKEnf82jbzGv13WZYSigA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l4TN7o1bbCnfchU9RLrHJPvjo+IZ4KULQNSU5zsj3q64CV1bTzf9IP4m/+rGhIOIn
-         oODMJChWCx477zxVUlNsE6IiNamrGVAYLkSOsAW8UWbIDDKQEU0zCFkl5Mk4fYQIts
-         HOo+02W54XWWpeoEuIF0nOJ7f0mHuv24kSBz+ftktQSyzd2VhtGnUmbfYn1oR9I4w+
-         TEmD0BS8uKH8WiFT3owGtMdsYPLRGGonI2MbEl75vFuxW7WT48v05dZDyYWiqibHTF
-         pdqXCqbnIvyVn+8rcYo+hwaS9FmzBMzKw7Ff6x4+jlp2JrR99IxRJkBwBIDAwizBwj
-         cQ2PSv3eCw8wg==
-Date:   Thu, 7 Dec 2023 18:57:42 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Tycho Andersen <tycho@tycho.pizza>, Oleg Nesterov <oleg@redhat.com>
-Cc:     "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Tycho Andersen <tandersen@netflix.com>,
-        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
-Message-ID: <20231207-weither-autopilot-8daee206e6c5@brauner>
-References: <20231130163946.277502-1-tycho@tycho.pizza>
- <20231130173938.GA21808@redhat.com>
- <ZWjM6trZ6uw6yBza@tycho.pizza>
- <ZWoKbHJ0152tiGeD@tycho.pizza>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZWoKbHJ0152tiGeD@tycho.pizza>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 7 Dec 2023 12:58:36 -0500
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5911A173A;
+        Thu,  7 Dec 2023 09:58:25 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 50ED81BF20D;
+        Thu,  7 Dec 2023 17:58:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701971903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ztrqr2r+NdGGR17MQHZJfBYqrLR90ks+eNJU1UUR484=;
+        b=BPvuM+nEK1j7qHnJ+Jq4urfc+MAFM7wsIQRL9vOmCGapoIbcgM3x6O4ttn155bCQoAFsB2
+        e2wUr9Alq0uET6He5daVB/IHufexQwpI0MkJopgOc4OvovUHTETfP0kPasGmxDN8+S0dNI
+        OKPS+bv5gbtpxkcn8EWHcpbbAfz4IsL2wPSKdJ9g8NNylm8fCJ43e9c0xFWykY52tocyIL
+        5+LFGLc1G7vU6By0RqUlVfU74saXZH31nJgxJRllWqQASxk7F8mXHuN83zjvF2Fhng/ogj
+        I8mVfFMS5As3J5EOr1217b7pV7WrSm6EVU768zWgEobD7sia8vIj/VCT7ci4kw==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 07 Dec 2023 18:58:12 +0100
+Message-Id: <CXIAOLFK6TFO.1J0V4C5I03Q5F@bootlin.com>
+Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Russell King" <linux@armlinux.org.uk>,
+        "Jiri Slaby" <jirislaby@kernel.org>,
+        "LKML" <linux-kernel@vger.kernel.org>,
+        "linux-serial" <linux-serial@vger.kernel.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+        "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
+        "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>
+To:     =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v5 2/9] tty: serial: amba: Use linux/{bits,bitfield}.h
+ macros
+X-Mailer: aerc 0.15.2
+References: <20231130-mbly-uart-v5-0-6566703a04b5@bootlin.com>
+ <20231130-mbly-uart-v5-2-6566703a04b5@bootlin.com>
+ <2023120742-argue-slighting-6120@gregkh>
+ <CXHZXP7XVD0T.24N3YDLX7I929@bootlin.com>
+ <42e8faf-5293-18e4-3877-25e4d094f1d@linux.intel.com>
+In-Reply-To: <42e8faf-5293-18e4-3877-25e4d094f1d@linux.intel.com>
+X-GND-Sasl: theo.lebrun@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 09:31:40AM -0700, Tycho Andersen wrote:
-> On Thu, Nov 30, 2023 at 10:57:01AM -0700, Tycho Andersen wrote:
-> > On Thu, Nov 30, 2023 at 06:39:39PM +0100, Oleg Nesterov wrote:
-> > > I think that wake_up_all(wait_pidfd) should have a single caller,
-> > > do_notify_pidfd(). This probably means it should be shiftef from
-> > > do_notify_parent() to exit_notify(), I am not sure...
-> 
-> Indeed, below passes the tests without issue and is much less ugly.
+Hello,
 
-So I think I raised that question on another medium already but what
-does the interaction with de_thread() look like?
+On Thu Dec 7, 2023 at 10:56 AM CET, Ilpo J=C3=A4rvinen wrote:
+> On Thu, 7 Dec 2023, Th=C3=A9o Lebrun wrote:
+> > On Thu Dec 7, 2023 at 2:37 AM CET, Greg Kroah-Hartman wrote:
+> > > On Thu, Nov 30, 2023 at 03:07:14PM +0100, Th=C3=A9o Lebrun wrote:
+> > > > The driver uses bit shifts and hexadecimal expressions to declare
+> > > > constants. Replace that with the BIT(), GENMASK() & FIELD_PREP_CONS=
+T()
+> > > > macros to clarify intent.
+> > > >=20
+> > > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > > > Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> > > > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > > > ---
+> > > >  include/linux/amba/serial.h | 248 +++++++++++++++++++++++---------=
+------------
+> > > >  1 file changed, 127 insertions(+), 121 deletions(-)
+> > >
+> > > As 0-day had a problem with this patch, I've applied only patch 1 of
+> > > this series.  Can you fix it up and rebase and resend the rest again
+> > > (while adding the collected reviewed-by that some patches in this ser=
+ies
+> > > had)?
+> >=20
+> > So the issue is this: the header file gets included in
+> > arch/arm/include/debug/pl01x.S that gets included in arch/arm/kernel/de=
+bug.S
+> > (see #include CONFIG_DEBUG_LL_INCLUDE).
+> >=20
+> > I don't see any easy way out of this, so I guess it means the patch mus=
+t be
+> > dropped. If someone confirms that there are indeed no solution to have =
+BIT(),
+> > GENMASK() & FIELD_PREP_CONST() accessible from assembly, I'll send the =
+next
+> > version.
+>
+> Yeah, it seems to require UART01x_FR_TXFF and UART01x_FR_BUSY, plus=20
+> UART01x_DR and UART01x_FR that are not touched by your patch.
+>
+> I suppose the rest might be convertable though..
 
-Say some process creates pidfd for a thread in a non-empty thread-group
-is created via CLONE_PIDFD. The pidfd_file->private_data is set to
-struct pid of that task. The task the pidfd refers to later exec's.
+Thanks Greg and Ilpo! v6 has been sent.
 
-Once it passed de_thread() the task the pidfd refers to assumes the
-struct pid of the old thread-group leader and continues.
+Regards,
 
-At the same time, the old thread-group leader now assumes the struct pid
-of the task that just exec'd.
-
-So after de_thread() the pidfd now referes to the old thread-group
-leaders struct pid. Any subsequent operation will fail because the
-process has already exited.
-
-Basically, the pidfd now refers to the old thread-group leader and any
-subsequent operation will fail even though the task still exists.
-
-Conversely, if someone had created a pidfd that referred to the old
-thread-group leader task then this pidfd will now suddenly refer to the
-new thread-group leader task for the same reason: the struct pid's were
-exchanged.
-
-So this also means, iiuc, that the pidfd could now be passed to
-waitid(P_PIFD) to retrieve the status of the old thread-group leader
-that just got zapped.
-
-And for the case where the pidfd referred to the old thread-group leader
-task you would now suddenly _not_ be able to wait on that task anymore.
-
-If these concerns are correct, then I think we need to decide what
-semantics we want and how to handle this because that's not ok.
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
