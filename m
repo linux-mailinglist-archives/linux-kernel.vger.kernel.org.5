@@ -2,163 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4B4808612
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C75D680864D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378687AbjLGJgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:36:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51754 "EHLO
+        id S1378545AbjLGJg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:36:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379040AbjLGJfx (ORCPT
+        with ESMTP id S231866AbjLGJgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:35:53 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF68DD;
-        Thu,  7 Dec 2023 01:35:59 -0800 (PST)
+        Thu, 7 Dec 2023 04:36:21 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234BFD5E;
+        Thu,  7 Dec 2023 01:36:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1701941758; x=1733477758;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701941787; x=1733477787;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=zk1dhT6C/KZSArTdzP/p5wqb9G2bfeL3f7SYtKcXyCo=;
-  b=XO5nacc41r26Idi/nmianp+cUzaFk893BFOyqYjB6mO0xE4U7H6DonqD
-   VFCPPhmpI0yX82UX0nYRn+2zQnMx0LKFJNfFR/GVEsmmnnc5V9RYZukbC
-   6AZvb3gz+lfYKzBQ8waveLAzUs8Yom1bCreUwdQYtG6+4w0owtwK0y+Ey
-   XkH+uvNY+/F5oamSmMOcAakgQZGLMu04OFaLAFddk5eaBp+9Xg7jfWn5T
-   ATeoKUU4g7QW3cK5zhCLtnqysOPuRUVxARmuRKzN9UgiyEuQrF5ZJxLPl
-   QZQkNatDzNgJtqpuiaDZRqweZ4Wjif1KSO8BXmOui4lm9FVHYzUUBHO/L
-   A==;
-X-CSE-ConnectionGUID: l1+X6HrHTViYXQWuY+0knA==
-X-CSE-MsgGUID: 3jqu90UXQHGGuQa2OlUe8A==
-X-ThreatScanner-Verdict: Negative
+  bh=2xCC9VMF8HQQ5iJ4fro+1qWC/m9zv5+EUIPiEyIdfFw=;
+  b=cbkudBwGqZoRrekMmwXXWK1oZ8SiUdMWwERTjwO3qfvSs3pJ7iDzFsMM
+   44p6GJ54SaaVojC/fPkWsVZAzA0jdju+Fne48mqwodv29CHX4QqSnn7xe
+   vpRtDuZZ1V0kr84dT+t53UyR2Rd3knIkwOWJ3bvroqbFqIr6o7XZuDaCa
+   UZNom0NY+pI93rpAoy+px7FnCPT7Mclu5v5LzQW2q6oB1AgRMrLKPqNFK
+   ya/MnMa9K629ACdYBnjwmLO8gK1RvR7eKDaYPSUin3Y2lwvIMu81iLm2z
+   qIgX+p5Jxz1pEfKIHySwl84jMa4UouKSMZZXu3oTCgS5iXbC8+c/QrG4d
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="391378018"
 X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="asc'?scan'208";a="12923027"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Dec 2023 02:35:57 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Dec 2023 02:35:33 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Thu, 7 Dec 2023 02:35:29 -0700
-Date:   Thu, 7 Dec 2023 09:34:59 +0000
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Shengyang Chen <shengyang.chen@starfivetech.com>
-CC:     Conor Dooley <conor@kernel.org>, <devicetree@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <neil.armstrong@linaro.org>,
-        <quic_jesszhan@quicinc.com>, <sam@ravnborg.org>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <florian.fainelli@broadcom.com>,
-        <bcm-kernel-feedback-list@broadcom.com>, <eric@anholt.net>,
-        <thierry.reding@gmail.com>, <changhuang.liang@starfivetech.com>,
-        <keith.zhao@starfivetech.com>, <jack.zhu@starfivetech.com>,
-        <linux-rpi-kernel@lists.infradead.org>,
+   d="scan'208";a="391378018"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 01:36:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="895075318"
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="895075318"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 07 Dec 2023 01:36:21 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBAnq-000C2A-2f;
+        Thu, 07 Dec 2023 09:36:18 +0000
+Date:   Thu, 7 Dec 2023 17:35:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Frank Li <Frank.Li@nxp.com>, imx@lists.linux.dev,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:PCI DRIVER FOR IMX6" <linux-pci@vger.kernel.org>,
+        "moderated list:PCI DRIVER FOR IMX6" 
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/2] dt-bindings: display: panel: raspberrypi: Add
- compatible property for waveshare 7inch touchscreen panel
-Message-ID: <20231207-dullness-deprive-ece2d47ff69d@wendy>
-References: <20231124104451.44271-1-shengyang.chen@starfivetech.com>
- <20231124104451.44271-2-shengyang.chen@starfivetech.com>
- <20231124-lesser-sinister-7f9cd7b80e35@spud>
- <2d48e460-e46e-431f-bd7b-e34ebe73a40c@starfivetech.com>
- <20231206-isolating-smoked-b490952029d0@spud>
- <53b992e8-1b36-4540-a993-fde8e550faf9@starfivetech.com>
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH 7/9] PCI: imx6: Simplify switch-case logic by involve
+ init_phy callback
+Message-ID: <202312071732.l6LvuDdy-lkp@intel.com>
+References: <20231206155903.566194-8-Frank.Li@nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="LKkffefepue30ywv"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <53b992e8-1b36-4540-a993-fde8e550faf9@starfivetech.com>
+In-Reply-To: <20231206155903.566194-8-Frank.Li@nxp.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---LKkffefepue30ywv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Frank,
 
-On Thu, Dec 07, 2023 at 11:48:56AM +0800, Shengyang Chen wrote:
-> Hi, Conor
->=20
-> thanks for comment
->=20
-> On 2023/12/6 23:40, Conor Dooley wrote:
-> > On Wed, Dec 06, 2023 at 05:43:48PM +0800, Shengyang Chen wrote:
-> >> Hi, Conor
-> >>=20
-> >> On 2023/11/24 20:31, Conor Dooley wrote:
-> >> > On Fri, Nov 24, 2023 at 06:44:50PM +0800, Shengyang Chen wrote:
-> >> >> The waveshare 7inch touchscreen panel is a kind of raspberrypi pi
-> >> >> panel
-> >> >=20
-> >> > Can you be more specific about what "is a kind of rpi panel" means?
-> >> > Are they using identical chips as controllers or something like that?
-> >> >=20
-> >>=20
-> >> Wareshare panel has same i2c slave address and registers address with=
-=20
-> >> the original raspberry pi panel. They both use Atmel firmware and they
-> >> got same reg id. It can be operated by using the driver of raspberry p=
-i driver
-> >> after some change of the code. So I suppose it may be a kind of raspbe=
-rry pi panel=20
-> >> and discribe it in this way. It's my own judgement. Sorry about that.
-> >> Maybe just like Dave said, It cloned the behaviour of the raspberri pi=
- panel.
-> >> I will change the discribtion in next version to not make other confus=
-ed.
-> >>=20
-> >> By the way, we will try Stefan's method before next version.=20
-> >> The method we used in this patch may be abandoned if Stefan's method i=
-s verified in our platform.
-> >> At that time yaml may also be changed to fit new method.
-> >=20
-> > I don't know what Stefan's approach is, but I do not think that a
-> > bindings patch should be dropped. The waveshare might be a clone, but it
-> > is a distinct device. If the same driver can control both, then the
-> > compatible setups that should be permitted are:
-> > compatible =3D "raspberrypi,7inch-touchscreen-panel";
-> > and
-> > compatible =3D "waveshare,7inch-touchscreen-panel", "raspberrypi,7inch-=
-touchscreen-panel";
+kernel test robot noticed the following build errors:
 
-> If we use Stenfan's method, we can reuse the code of panel-simple.c
-> we may submit our patch to
-> /Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-> /drivers/gpu/drm/panel/panel-simple.c
-> as a new panel porting. That may less confuse.
+[auto build test ERROR on pci/next]
+[also build test ERROR on pci/for-linus linus/master v6.7-rc4 next-20231207]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-As long as you provide a specific compatible, and not re-use the rpi
-one, that's fine. It just sounded like you were intending to reuse that
-here, but from this message it seems like I misunderstood.
+url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/PCI-imx6-Simplify-clock-handling-by-using-HAS_CLK_-bitmask/20231207-000209
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20231206155903.566194-8-Frank.Li%40nxp.com
+patch subject: [PATCH 7/9] PCI: imx6: Simplify switch-case logic by involve init_phy callback
+config: powerpc-randconfig-002-20231207 (https://download.01.org/0day-ci/archive/20231207/202312071732.l6LvuDdy-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231207/202312071732.l6LvuDdy-lkp@intel.com/reproduce)
 
-Thanks,
-Conor.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312071732.l6LvuDdy-lkp@intel.com/
 
---LKkffefepue30ywv
-Content-Type: application/pgp-signature; name="signature.asc"
+All errors (new ones prefixed by >>):
 
------BEGIN PGP SIGNATURE-----
+   powerpc-linux-ld: drivers/pci/controller/dwc/pci-imx6.o: in function `imx6_pcie_host_init':
+>> pci-imx6.c:(.text.imx6_pcie_host_init+0x120): undefined reference to `__ffsdi2'
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXGRvwAKCRB4tDGHoIJi
-0uepAPsFO121yBy+oxhB7OSau+AELQyXEwausDJX8GujOigD2wD+NWi8eCcUWndt
-3hUdUUgCa3P8sLTU12m5hwaHq3cJ9Qo=
-=bdsy
------END PGP SIGNATURE-----
-
---LKkffefepue30ywv--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
