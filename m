@@ -2,133 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1605B80867D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E26A380867E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232478AbjLGLNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 06:13:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44910 "EHLO
+        id S1378893AbjLGLPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 06:15:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378965AbjLGLNd (ORCPT
+        with ESMTP id S232358AbjLGLPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 06:13:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2EA10D4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 03:13:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701947618;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yEnLporZicOdwXzovzLImpcCBG07E/v0woo+yYuLxfQ=;
-        b=bk0a1NWSWKhpRq4SN2lSpj5DY3reCh7TMF6R6FBcF3swKyIAFfqGoisK1L1SZV7Sr21VnL
-        adjn2bfnxJ6bOxZwseNBKB3C4k3XQitNBKOuACo4bnG+oovqSP7ZKPEngVQoyeSKQK9h+6
-        K268YmTH51UFhbk72Da4Swq7nuV/oIY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-595-ZijdJiQQOamHdkna9Z4FVw-1; Thu, 07 Dec 2023 06:13:35 -0500
-X-MC-Unique: ZijdJiQQOamHdkna9Z4FVw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A1270862FDF;
-        Thu,  7 Dec 2023 11:13:34 +0000 (UTC)
-Received: from rotkaeppchen (unknown [10.39.192.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 25BAD40C6EB9;
-        Thu,  7 Dec 2023 11:13:33 +0000 (UTC)
-Date:   Thu, 7 Dec 2023 12:13:31 +0100
-From:   Philipp Rudo <prudo@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Baoquan He <bhe@redhat.com>, Donald Dutile <ddutile@redhat.com>,
-        Jiri Bohac <jbohac@suse.cz>, Pingfan Liu <piliu@redhat.com>,
-        Tao Liu <ltao@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        David Hildenbrand <dhildenb@redhat.com>
-Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
-Message-ID: <20231207121331.59c7e370@rotkaeppchen>
-In-Reply-To: <ZXCRF-bvm8ijXxr4@tiehlicka>
-References: <ZWhg_b3O6piZtkQ-@tiehlicka>
-        <ZWh6ax8YmkhxAzIf@MiWiFi-R3L-srv>
-        <ZWiAsJlLookvCI+h@MiWiFi-R3L-srv>
-        <ZWiQ-II9CvGv8EWK@tiehlicka>
-        <20231201123353.2b3db7fa@rotkaeppchen>
-        <ZWnJyArAmFo_uYPA@tiehlicka>
-        <20231201165113.43211a48@rotkaeppchen>
-        <ZWoQ1k2AikSiMjys@tiehlicka>
-        <20231206120805.4fdcb8ab@rotkaeppchen>
-        <ZXB7_rbC0GAkIp7p@tiehlicka>
-        <ZXCRF-bvm8ijXxr4@tiehlicka>
-Organization: Red Hat inc.
+        Thu, 7 Dec 2023 06:15:04 -0500
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDC2FA
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 03:15:10 -0800 (PST)
+Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-4b2c2e77777so161138e0c.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 03:15:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701947709; x=1702552509; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+1zKx8JGuByRmZeIzOLjwU47rnrPjKnk2Jj1ReloFCE=;
+        b=JBhbQp65tjURrxy7jmLaTYH5H7RZYPGivQV66Ihw3eg3+U4XT9wuuyp0/FO8ZwidaD
+         ewvbJ8nk3qU75sXVmmROHDio1NZtH0UL/J5BTyjN1YPZo9LWaSY6DfC8gtPhs/Bb0K+6
+         FKwxmYWTtZdv8CN2OEAx9CglbZl2lskU++SK0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701947709; x=1702552509;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+1zKx8JGuByRmZeIzOLjwU47rnrPjKnk2Jj1ReloFCE=;
+        b=eUfx/A5hb392ZCTU5F4NEQndsRQ/qrY5FsFU9syU7E1rPlWsvU7jptqOoSUWlmKMYF
+         ykTVOn1Ocj9udhHYC5zK3yN5Lf0hFa8fkkEI10GeMk+jf0uHTA/YyPFhtqeIpZLUBGQ+
+         058m82xeaE2pZnxB3QgltfW1Pk3RrIzC7BrL8QlbgEdaab36+ikcu4n5uGmqrZm1wFnr
+         d76six8CCLKyBr9S+YXCLWT7ZL446Y2LOZmL5C1Ati2pjVNHfBGlhl+WgpLmy0P4bJ5L
+         MQkQacinqJEfRCvR2sO4ndj7riqzA+09/7wmMbq5PyjWYK4lh2ZbGfXGrPn/CHUfbEm2
+         ePcA==
+X-Gm-Message-State: AOJu0Yzl4AIj9mkFDt0m2JqTC3EA1BctskeS4trZ1kXWCyF0syCNj271
+        eCtYgp/ntGIP/SJVrEfgBwG24TB1Fm/T1wjEUJM=
+X-Google-Smtp-Source: AGHT+IHh+dzyGX92NJv7uBnWDcDBdn4BgX4FgKTJgHe/cuD9nQjOLvkdyNzJp5c7BVvRxJXrwZCQXQ==
+X-Received: by 2002:a05:6122:987:b0:4b2:d37e:16c8 with SMTP id g7-20020a056122098700b004b2d37e16c8mr2645372vkd.7.1701947709476;
+        Thu, 07 Dec 2023 03:15:09 -0800 (PST)
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
+        by smtp.gmail.com with ESMTPSA id x23-20020a056122119700b004b28dec2935sm51100vkn.20.2023.12.07.03.15.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 03:15:08 -0800 (PST)
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7c471449998so200663241.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 03:15:08 -0800 (PST)
+X-Received: by 2002:a05:6122:30a2:b0:49a:6dc0:5a89 with SMTP id
+ cd34-20020a05612230a200b0049a6dc05a89mr2860131vkb.5.1701947707983; Thu, 07
+ Dec 2023 03:15:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+References: <20231113123049.4117280-1-fshao@chromium.org> <20231113123049.4117280-3-fshao@chromium.org>
+ <3528639f-85a3-4756-b04b-c233f6c84276@collabora.com>
+In-Reply-To: <3528639f-85a3-4756-b04b-c233f6c84276@collabora.com>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Thu, 7 Dec 2023 19:14:31 +0800
+X-Gmail-Original-Message-ID: <CAC=S1nibsNfo7Ans2J0aiXqJSz5-iTPh2NwTEuUL8-HUM0AJdw@mail.gmail.com>
+Message-ID: <CAC=S1nibsNfo7Ans2J0aiXqJSz5-iTPh2NwTEuUL8-HUM0AJdw@mail.gmail.com>
+Subject: Re: [PATCH 2/4] media: mediatek: vcodec: Drop unnecessary variable
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>, Tiffany Lin <tiffany.lin@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Dec 2023 16:19:51 +0100
-Michal Hocko <mhocko@suse.com> wrote:
+Hi Angelo,
 
-> On Wed 06-12-23 14:49:51, Michal Hocko wrote:
-> > On Wed 06-12-23 12:08:05, Philipp Rudo wrote:  
-> [...]
-> > > If I understand Documentation/core-api/pin_user_pages.rst correctly you
-> > > missed case 1 Direct IO. In that case "short term" DMA is allowed for
-> > > pages without FOLL_LONGTERM. Meaning that there is a way you can
-> > > corrupt the CMA and with that the crash kernel after the production
-> > > kernel has panicked.  
-> > 
-> > Could you expand on this? How exactly direct IO request survives across
-> > into the kdump kernel? I do understand the RMDA case because the IO is
-> > async and out of control of the receiving end.  
-> 
-> OK, I guess I get what you mean. You are worried that there is 
-> DIO request
-> program DMA controller to read into CMA memory
-> <panic>
-> boot into crash kernel backed by CMA
-> DMA transfer is done.
-> 
-> DIO doesn't migrate the pinned memory because it is considered a very
-> quick operation which doesn't block the movability for too long. That is
-> why I have considered that a non-problem. RDMA on the other might pin
-> memory for transfer for much longer but that case is handled by
-> migrating the memory away.
+On Wed, Dec 6, 2023 at 6:19=E2=80=AFPM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
+>
+> Il 13/11/23 13:26, Fei Shao ha scritto:
+> > It's unclear why only mem->size has local copies without particular
+> > usage in mtk_vcodec_mem_alloc() and mtk_vcodec_mem_free(), and they
+> > seem removable.
+> >
+> > Drop them to make the code visually consistent, and update printk forma=
+t
+> > identifier accordingly.
+> >
+> > Signed-off-by: Fei Shao <fshao@chromium.org>
+>
+> That's probably just about personal preferences, as mem->size is not expe=
+cted
+> to change during the flow of those functions.
+>
+> That said, as much as you, I prefer not having this local copy as it's us=
+ing
+> (a very small amount of) memory for no real reason anyway, so:
 
-Right that is the scenario we need to prevent.
+Yes, and I think I should have mentioned this in the commit message...
+I'll revise that in the next version.
 
-> Now I agree that there is a chance of the corruption from DIO. The
-> question I am not entirely clear about right now is how big of a real
-> problem that is. DMA transfers should be a very swift operation. Would
-> it help to wait for a grace period before jumping into the kdump kernel?
+Thanks,
+Fei
 
-Please see my other mail.
 
-> > Also if direct IO is a problem how come this is not a problem for kexec
-> > in general. The new kernel usually shares all the memory with the 1st
-> > kernel.  
-> 
-> This is also more clear now. Pure kexec is shutting down all the devices
-> which should terminate the in-flight DMA transfers.
 
-Right, it _should_ terminate all transfers. But here we are back at the
-shitty device drivers that don't have a working shutdown method. That's
-why we have already seen the problem you describe above with kexec. And
-please believe me that debugging such a scenario is an absolute pain.
-Especially when it's a proprietary, out-of-tree driver that caused the
-mess.
 
-Thanks
-Philipp
 
+>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
+ora.com>
+>
+>
