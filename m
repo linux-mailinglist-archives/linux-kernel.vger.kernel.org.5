@@ -2,231 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCF38096D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 00:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3DA8096D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 00:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232620AbjLGX47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 18:56:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
+        id S232661AbjLGX5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 18:57:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLGX45 (ORCPT
+        with ESMTP id S229671AbjLGX46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 18:56:57 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A9810FC
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 15:57:01 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c9fbb846b7so16476081fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 15:57:01 -0800 (PST)
+        Thu, 7 Dec 2023 18:56:58 -0500
+Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0754F171B;
+        Thu,  7 Dec 2023 15:57:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1701993420; x=1702598220; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RCO9xsQmxA+zz0fLWQyERmhIN174RlFcf3T1BFbUB/o=;
-        b=ybilJOTfi6Qq6HOs3agWBEkiMRV0Y2uZFVcKZUC7tnrN4cWIMarvy/1ryJ535V0PeH
-         YJztKRz3P7tkmE70gcPJjyYr/cYSrD+N3wIlg5fAaoDMgXtFptasvGCvAhtcQHMlHlkX
-         /1c1O2LIHX0/N4cVsHYzSyoXqRYgvHGkVV5WivnHL0gI5Gzk5MpKXAx9GJYn/2UyymfQ
-         ZSS9EnLLDnJDbL+kPFRi9sNdEqXNT38raVUC7GBL7j/QCsLtT4KZ+MAjNe2Eros5NoWW
-         L2Ukg6FKlG62/YDeGHiyWKDdcEpEiAYusz/9rXGTkbFuz9qsGBX0rNd3sQfv0ZGZrx1D
-         8yPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701993420; x=1702598220;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RCO9xsQmxA+zz0fLWQyERmhIN174RlFcf3T1BFbUB/o=;
-        b=OxJWLVV7XiSIhGFJ120bgZUhE0cV+dZe53jr2NfLI54cmKRTShAfn35hqbWRNjfVcO
-         lmibz9cyE5XKtCCCgyHWiQI//7LzrzfXJwiqmPrnONWb+aOjCD8gncO3uRcUKStx2WtQ
-         vo4vbgPR0e/i5SKx9ne5vVb47kceviIHiKWu7S85CxBMftqXoW+MUlb6vIBfGSfMib5m
-         1U7bz7fdtfF8L7O9PEEZBOpOs7VPXhb44HHlX/Q68Ef2a9Aw3b0WCRpcwx7XRFyrJ3FQ
-         +oGkfMIfJNB0RSPProHdGC/HhySjeOI0mXcuYlhko7ONkdjwoEKTJIEk+PdYilvGYys6
-         6SZA==
-X-Gm-Message-State: AOJu0YzqYoxxtH3b+OpbByWaOrVgKzGsneuWzUHSxGwyozUehtebXhmL
-        hZNpRbtKtn9ZWzdx4RwDaXEiy4glvUccDLvoidjCZw==
-X-Google-Smtp-Source: AGHT+IEyjluygHw09UGFMiMZ7prFJI/6OqOyKXgeBZFa+o49V2RIKm3uf5+Bs9y/AtDjTBYcfpIqB8tU7KDM9R6mvRk=
-X-Received: by 2002:a2e:9859:0:b0:2c9:f962:48f1 with SMTP id
- e25-20020a2e9859000000b002c9f96248f1mr1616613ljj.96.1701993420060; Thu, 07
- Dec 2023 15:57:00 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1701993424; x=1733529424;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IcjJtNzwZqIq07uHL5b0sq0gIckWX9Rvrzf/I8qlMrk=;
+  b=NgCmlZBFmmBIx+2mM+VgFYBnA+MqQIgiNP2Q+H37nyM3y47fMS6xOJaV
+   wcJDztUYbAEhEPCHdY7/AMQ7kR4ZVHf8gmQmsnp9w27DOixUgb1XAwAuu
+   Xle78EhBULvSVwpmspV71iC0obWxEBhaneyIuBpoVAan6hvxZhOl9O/w+
+   w=;
+X-IronPort-AV: E=Sophos;i="6.04,259,1695686400"; 
+   d="scan'208";a="381501661"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-af372327.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 23:56:59 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
+        by email-inbound-relay-pdx-2a-m6i4x-af372327.us-west-2.amazon.com (Postfix) with ESMTPS id 74BA560C74;
+        Thu,  7 Dec 2023 23:56:58 +0000 (UTC)
+Received: from EX19MTAUWC001.ant.amazon.com [10.0.21.151:33393]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.10.7:2525] with esmtp (Farcaster)
+ id 460010c9-1d60-4616-8139-c6fc277160fd; Thu, 7 Dec 2023 23:56:58 +0000 (UTC)
+X-Farcaster-Flow-ID: 460010c9-1d60-4616-8139-c6fc277160fd
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 7 Dec 2023 23:56:57 +0000
+Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
+ EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 7 Dec 2023 23:56:56 +0000
+From:   Alexander Graf <graf@amazon.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <linux-doc@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Jan=20H=20=2E=20Sch=C3=B6nherr?= <jschoenh@amazon.de>,
+        James Gowans <jgowans@amazon.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: [PATCH v3] initramfs: Expose retained initrd as sysfs file
+Date:   Thu, 7 Dec 2023 23:56:54 +0000
+Message-ID: <20231207235654.16622-1-graf@amazon.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <cover.1701971344.git.marcelo.schmitt1@gmail.com> <53d55f3195b15bd8d47387e296036730ea270770.1701971344.git.marcelo.schmitt1@gmail.com>
-In-Reply-To: <53d55f3195b15bd8d47387e296036730ea270770.1701971344.git.marcelo.schmitt1@gmail.com>
-From:   David Lechner <dlechner@baylibre.com>
-Date:   Thu, 7 Dec 2023 17:56:48 -0600
-Message-ID: <CAMknhBEFnTUm9FPK-74+GkJs2d80dS+Q9WeGTxd3Ajs-JJGcdA@mail.gmail.com>
-Subject: Re: [PATCH v3 10/13] dt-bindings: iio: Add AD7091R-8
-To:     Marcelo Schmitt <marcelo.schmitt@analog.com>
-Cc:     apw@canonical.com, joe@perches.com, dwaipayanray1@gmail.com,
-        lukas.bulwahn@gmail.com, paul.cercueil@analog.com,
-        Michael.Hennerich@analog.com, lars@metafoo.de, jic23@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, dan.carpenter@linaro.org,
-        marcelo.schmitt1@gmail.com, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.253.83.51]
+X-ClientProxiedBy: EX19D038UWB002.ant.amazon.com (10.13.139.185) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 12:42=E2=80=AFPM Marcelo Schmitt
-<marcelo.schmitt@analog.com> wrote:
->
-> Add device tree documentation for AD7091R-8.
->
-> Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
-> ---
->  .../bindings/iio/adc/adi,ad7091r8.yaml        | 99 +++++++++++++++++++
->  1 file changed, 99 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7091r=
-8.yaml
->
-> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml =
-b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
-> new file mode 100644
-> index 000000000000..02320778f225
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
-> @@ -0,0 +1,99 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/adc/adi,ad7091r8.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices AD7091R8 8-Channel 12-Bit ADC
-> +
-> +maintainers:
-> +  - Marcelo Schmitt <marcelo.schmitt@analog.com>
-> +
-> +description: |
-> +  Analog Devices AD7091R-8 8-Channel 12-Bit ADC
-> +  https://www.analog.com/media/en/technical-documentation/data-sheets/AD=
-7091R-2_7091R-4_7091R-8.pdf
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,ad7091r2
-> +      - adi,ad7091r4
-> +      - adi,ad7091r8
-> +
-> +  reg:
-> +    maxItems: 1
-> +
+When the kernel command line option "retain_initrd" is set, we do not
+free the initrd memory. However, we also don't expose it to anyone for
+consumption. That leaves us in a weird situation where the only user of
+this feature is ppc64 and arm64 specific kexec tooling.
 
-Missing other supplies? Like vdd-supply and vdrive-supply?
+To make it more generally useful, this patch adds a kobject to the
+firmware object that contains the initrd context when "retain_initrd"
+is set. That way, we can access the initrd any time after boot from
+user space and for example hand it into kexec as --initrd parameter
+if we want to reboot the same initrd. Or inspect it directly locally.
 
-> +  vref-supply: true
+With this patch applied, there is a new /sys/firmware/initrd file when
+the kernel was booted with an initrd and "retain_initrd" command line
+option is set.
 
-refin-supply might be a better name to match the datasheet pin name.
+Signed-off-by: Alexander Graf <graf@amazon.com>
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-> +
-> +  adi,conversion-start-gpios:
+---
 
-gpios usually don't get a vendor prefix do they?
+v1 -> v2:
 
-convst-gpios could be a better name to match the pin name on the datasheet.
+  - Reword commit message to explain the new file path
+  - Add a Documentation/ABI/testing/sysfs-firmware-initrd file
 
-> +    description:
-> +      GPIO connected to the CONVST pin.
-> +      This logic input is used to initiate conversions on the analog
-> +      input channels.
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
+v2 -> v3:
 
-A description of what the interrupt is attached to (ALERT/BUSY/GPO0
-pin) would be helpful.
+  - Only expose file when initrd is present (James Gowans)
+---
+ .../ABI/testing/sysfs-firmware-initrd          |  8 ++++++++
+ .../admin-guide/kernel-parameters.txt          |  5 +++--
+ init/initramfs.c                               | 18 +++++++++++++++++-
+ 3 files changed, 28 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-firmware-initrd
 
-> +
-> +patternProperties:
-> +  "^channel@[0-7]$":
-> +    $ref: adc.yaml
-> +    type: object
-> +    description: Represents the external channels which are connected to=
- the ADC.
-> +
-> +    properties:
-> +      reg:
-> +        minimum: 0
-> +        maximum: 7
+diff --git a/Documentation/ABI/testing/sysfs-firmware-initrd b/Documentation/ABI/testing/sysfs-firmware-initrd
+new file mode 100644
+index 000000000000..20bf7cf77a19
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-firmware-initrd
+@@ -0,0 +1,8 @@
++What:		/sys/firmware/initrd
++Date:		December 2023
++Contact:	Alexander Graf <graf@amazon.com>
++Description:
++		When the kernel was booted with an initrd and the
++		"retain_initrd" option is set on the kernel command
++		line, /sys/firmware/initrd contains the contents of the
++		initrd that the kernel was booted with.
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 65731b060e3f..51575cd31741 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -2438,7 +2438,7 @@
+ 			between unregistering the boot console and initializing
+ 			the real console.
+ 
+-	keepinitrd	[HW,ARM]
++	keepinitrd	[HW,ARM] See retain_initrd.
+ 
+ 	kernelcore=	[KNL,X86,IA-64,PPC]
+ 			Format: nn[KMGTPE] | nn% | "mirror"
+@@ -5580,7 +5580,8 @@
+ 			Useful for devices that are detected asynchronously
+ 			(e.g. USB and MMC devices).
+ 
+-	retain_initrd	[RAM] Keep initrd memory after extraction
++	retain_initrd	[RAM] Keep initrd memory after extraction. After boot, it will
++			be accessible via /sys/firmware/initrd.
+ 
+ 	retbleed=	[X86] Control mitigation of RETBleed (Arbitrary
+ 			Speculative Code Execution with Return Instructions)
+diff --git a/init/initramfs.c b/init/initramfs.c
+index 8d0fd946cdd2..76deb48c38cb 100644
+--- a/init/initramfs.c
++++ b/init/initramfs.c
+@@ -574,6 +574,16 @@ extern unsigned long __initramfs_size;
+ #include <linux/initrd.h>
+ #include <linux/kexec.h>
+ 
++static ssize_t raw_read(struct file *file, struct kobject *kobj,
++			struct bin_attribute *attr, char *buf,
++			loff_t pos, size_t count)
++{
++	memcpy(buf, attr->private + pos, count);
++	return count;
++}
++
++static BIN_ATTR(initrd, 0440, raw_read, NULL, 0);
++
+ void __init reserve_initrd_mem(void)
+ {
+ 	phys_addr_t start;
+@@ -715,8 +725,14 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
+ 	 * If the initrd region is overlapped with crashkernel reserved region,
+ 	 * free only memory that is not part of crashkernel region.
+ 	 */
+-	if (!do_retain_initrd && initrd_start && !kexec_free_initrd())
++	if (!do_retain_initrd && initrd_start && !kexec_free_initrd()) {
+ 		free_initrd_mem(initrd_start, initrd_end);
++	} else if (do_retain_initrd && initrd_start) {
++		bin_attr_initrd.size = initrd_end - initrd_start;
++		bin_attr_initrd.private = (void *)initrd_start;
++		if (sysfs_create_bin_file(firmware_kobj, &bin_attr_initrd))
++			pr_err("Failed to create initrd sysfs file");
++	}
+ 	initrd_start = 0;
+ 	initrd_end = 0;
+ 
+-- 
+2.40.1
 
-Shouldn't this be:
 
-        items:
-          - minimum: 0
-            maximum: 7
 
-> +
-> +    required:
-> +      - reg
 
-Missing `unevaluatedProperties: false` for channels?
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
 
-Bigger picture: since no other properties besides `reg` are included
-here, do we actually need channel nodes?
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - adi,conversion-start-gpios
-> +
-> +allOf:
-> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-> +
-> +  # AD7091R-2 does not have ALERT/BUSY/GPO pin
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - adi,ad7091r4
-> +              - adi,ad7091r8
-> +    then:
-> +      properties:
-> +        interrupts: true
 
-Interrupts is already true. Maybe better to only match chips without
-interrupts and set false?
-
-> +    else:
-> +      properties:
-> +        interrupts: false
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    spi {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        adc@0 {
-> +                compatible =3D "adi,ad7091r8";
-> +                reg =3D <0x0>;
-> +                spi-max-frequency =3D <45454545>;
-> +                vref-supply =3D <&adc_vref>;
-> +                adi,conversion-start-gpios =3D <&gpio 25 GPIO_ACTIVE_LOW=
->;
-> +                reset-gpios =3D <&gpio 27 GPIO_ACTIVE_LOW>;
-> +                interrupts =3D <22 IRQ_TYPE_EDGE_FALLING>;
-> +                interrupt-parent =3D <&gpio>;
-> +        };
-> +    };
-> +...
-> --
-> 2.42.0
->
->
