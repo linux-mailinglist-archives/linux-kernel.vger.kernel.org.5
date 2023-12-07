@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B84FC808ECF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C65808EC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443263AbjLGRYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:24:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51758 "EHLO
+        id S1443335AbjLGRZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:25:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235231AbjLGRYT (ORCPT
+        with ESMTP id S235237AbjLGRZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:24:19 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199CC2D56
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:23:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61DA1C433C8;
-        Thu,  7 Dec 2023 17:23:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701969811;
-        bh=5ZGbyElS+x41MFLATnYLsznaU+Z7c+doA4GLhjlaIew=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dkRZ6y5Qj9QrxhwraMvNrHQbxYNnUc2M2Ws9bbkKt+JuGDa4HmB1BPrV1J0phelDG
-         hvhlU7wbIxkEVWP4VkF7WTcgfxvhgSrSPZvgFTvA4zX/pDE/KdKwadzE0oV721g11E
-         ek7H2pt91Li8V97BSTov/77ZSTJMs8jy0w7MymYE0uqYM2K6PZzyRku7gN+8ZUimKI
-         rP5szN53GaJQQKQwCt3/T1d5tjYYxNmv27cLlPIgl9YgOGPL/5dZVYAWECvSLgXZAy
-         jrWDMTAx1RXtudxH21EP4AuhR95sq2kh+jf31AgtqJEJJyT1ZFpijeMAFYIh2r3Stm
-         TddQ5Z7LXvelw==
-Date:   Thu, 7 Dec 2023 09:23:29 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Aron Silverton <aron.silverton@oracle.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        David Ahern <dsahern@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
-        Itay Avraham <itayavr@nvidia.com>,
-        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
-Message-ID: <20231207092329.3ec04dca@kernel.org>
-In-Reply-To: <kakenvblxlgrkjvcrwfflnkm6n5fpxgr4qifwkdttjascth3te@57us7mblobjz>
-References: <20231128162413.GP436702@nvidia.com>
-        <20231128084421.6321b9b2@kernel.org>
-        <20231128175224.GR436702@nvidia.com>
-        <20231128103304.25c2c642@kernel.org>
-        <ZWZJGF7moDM_k6TU@x130>
-        <2023112922-lyricist-unclip-8e78@gregkh>
-        <oxtcvxwbj2hzv4lxnxubo3hoxn7diyzhm2oj3tsw2toxbc3og4@ddglhm6r3oa5>
-        <20231204185210.030a72ca@kernel.org>
-        <fgalnohzpiox7rvsf3wsurkf2x3rdtyhwqq5tk43gesvjlw6yl@i7colkh2sx5h>
-        <20231205204855.52fa5cc1@kernel.org>
-        <kakenvblxlgrkjvcrwfflnkm6n5fpxgr4qifwkdttjascth3te@57us7mblobjz>
+        Thu, 7 Dec 2023 12:25:13 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C31219AA
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:24:54 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a1db99cd1b2so158553966b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 09:24:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701969892; x=1702574692; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OSaCKj49TdBQE/wW0nBbIlYjNisy5X/gJJF/8cHix4E=;
+        b=LIraSdGECWO5t07MKS3BLatmmOjnaU/i9lSaejma3SuvcK292+cy6HZfwVlTMs2Ajk
+         Y+gJwKny2rBCWoe3d/VCuueff38nvjeSD6o0QKl7N0Xm7O6ZCxHXKorPx5x30dWOnO8g
+         rhN/KwmgeLTLJHZYpiFhboBk/kUIG8Rjetu8rKys8fMtuncgFlijUmzduv2JIjzBrZz4
+         vIdZb2ndFYx2cmlSD2k9m+hlZ7yq6nyPowWnvJ2pCOU/j7CHTSTy8ZS66dzb8mdMo8iL
+         eSl5LWwg76mxf/X/Yr60tw1Klo7QVULLD8Z9SxB+2mJ5YkzVwoI6y7kffEFq3MdwLT3T
+         0elQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701969892; x=1702574692;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OSaCKj49TdBQE/wW0nBbIlYjNisy5X/gJJF/8cHix4E=;
+        b=SWgEMioJ2uyW+oEP6yBar1QYGpSXzd1InG3NiFCBGkeXXlVJcZcR1nZ+i84PL7hO6p
+         tCVFfJbwnL/CrIbj6DdkI9EHG2z+KJJs1J71Zb2RKa99/omunfnEhxVvwj3qJfvdmvdc
+         EvheHlvtZ76SRh6f2TUZZsVkp6ul1w1bOJxdXMh36BbCAAzGH4rMw+gvNiOHimLM/7Cl
+         XeM6uAGXbLlNGXkNddap/HtLcYT344rs6epXFnByWY5EzBRsSL0FFbrhfWPVDbQuLrfY
+         xgtQKseZ7V+tnncKIZ+yjldlClgV/la8gaHSSEnwgCUQd/OqzA5FfGlwe7KAIpXoVco4
+         qSzA==
+X-Gm-Message-State: AOJu0Yx1M+/xuhpYbPpK8wArY+UVtvuZYHMQJVOVRwvzaYY5JoOh5a4s
+        322grQVrD/6qEgqWOizpzqwPiHzFmaVoi3XecYE=
+X-Google-Smtp-Source: AGHT+IEtTd+pA4mJobxUqdqM7SglT4EunogmAQ8lpbogM+tHlUMEk4Qwu5mWYwLQ9J+s2P4F/4V7+g==
+X-Received: by 2002:a17:907:5020:b0:a19:9b79:8b5d with SMTP id fw32-20020a170907502000b00a199b798b5dmr1010958ejc.110.1701969892432;
+        Thu, 07 Dec 2023 09:24:52 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.75])
+        by smtp.gmail.com with ESMTPSA id a14-20020a170906684e00b009fd0102f71asm1078898ejs.176.2023.12.07.09.24.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 09:24:50 -0800 (PST)
+Message-ID: <797b9023-e56b-404b-bb4e-6e178b7ada88@linaro.org>
+Date:   Thu, 7 Dec 2023 17:24:48 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
+ spi-nor
+Content-Language: en-US
+To:     Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+        broonie@kernel.org, pratyush@kernel.org, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, sbinding@opensource.cirrus.com,
+        lee@kernel.org, james.schulman@cirrus.com, david.rhodes@cirrus.com,
+        rf@opensource.cirrus.com, perex@perex.cz, tiwai@suse.com
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        michael@walle.cc, linux-mtd@lists.infradead.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        claudiu.beznea@tuxon.dev, michal.simek@amd.com,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+        git@amd.com, amitrkcian2002@gmail.com
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+ <20231125092137.2948-8-amit.kumar-mahapatra@amd.com>
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20231125092137.2948-8-amit.kumar-mahapatra@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Dec 2023 10:41:25 -0600 Aron Silverton wrote:
-> > I understand that having everything packaged and shipped together makes
-> > life easier.  
-> 
-> I think it is a requirement. We operate with Secure Boot. The kernel is
-> locked down. We don't have debugfs access, even if it were sufficient,
-> and we cannot compile and load modules. Even without Secure Boot, there
-> may not be a build environment available.
 
-This 'no debugfs' requirement is a kernel lockdown thing, I presume?
-Are we expected to throw debugfs out the window and for all vendors
-to reimplement their debug functionality via a misc driver taking
-arbitrary ioctls? Not only does that sound like a complete waste of
-time and going backward in terms of quality of the interfaces, needing
-custom vendor tools etc. etc., but also you go from (hopefully somewhat)
-upstream reviewed debugfs interface to an interface where the only
-security assurance is vendor telling you "trust me, it's all good".
+
+On 11/25/23 09:21, Amit Kumar Mahapatra wrote:
+> The current implementation assumes that a maximum of two flashes are
+> connected in stacked mode and both the flashes are of same make but can
+> differ in sizes. So, except the sizes all other flash parameters of both
+> the flashes are identical.
+
+Too much restrictions, isn't it? Have you thought about adding a layer
+on top of SPI NOR managing the stacked/parallel flashes?
