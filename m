@@ -2,110 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C60018089BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E578089C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 15:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442726AbjLGOBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 09:01:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59800 "EHLO
+        id S1442881AbjLGOCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 09:02:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232923AbjLGOBr (ORCPT
+        with ESMTP id S235171AbjLGOCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 09:01:47 -0500
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA94710C2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 06:01:53 -0800 (PST)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-58e28e0461bso361644eaf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 06:01:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701957712; x=1702562512; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FgofkDV1QE+maxkL3S2zjSbu6oUy+IWDuYDQrR9vz/Y=;
-        b=bn5DxgBUnGSxosVGKf/1iQfI+3Fao4pQFZYZSwTiR3BlvgJxWaJQ4YW29MdieD60AZ
-         JqGWwhfGKZiPrafKGq7o5jKklPgi/m0jVKbsU1ODXtMwojZ1izUmm/WfpeC5PXbgqeqa
-         8vhGYMJIo4dobjnAA1a6sL3zMWD/HzKacYCBizpitBiyVbEWigOSwjLuBiCpohi04Iu2
-         8H1FI431fPwq/Qv9QvZoEO5uwiBN7UELAZ8esHT4ASzt8zF6vIJRTDsrLcdJvMIvI2ob
-         cDhLjWiFSlap+VB3dC00F5qwPUw8ykDCFqqdLuNZfFjsjhg+W+cyrxQA9oCKrF89NaoS
-         7e7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701957712; x=1702562512;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FgofkDV1QE+maxkL3S2zjSbu6oUy+IWDuYDQrR9vz/Y=;
-        b=CLmEXUcC/YTVgvovkeFRB07OiatpFlijzvk/kqt2S5WMhxJUNWEm6m7Qctni12fF1I
-         KmFcefmAe5cr1cPmyr5EY1OYBm0p249oqgHIz4hjkxZEuwfgwqiPQCxJMXcrWoO1d/Ww
-         g63juFt3GP30TYYyDcGNxXJa0jspgYnLH1KoB8/hfItJKgCKHFki9SJfO6EdyDk3A2o4
-         O84//sT6dy8y6lV6KHTOI9Tqen16fCwfyizjd6PHA1gkhVc719+wobU77rarJMZTnuIF
-         YSFhNGpe39q/zw6Bku8oZDRh3tLMUXnh5aGvdCY6CBVsggGqGInEaNcRCXV8YHTfnZsZ
-         KdDw==
-X-Gm-Message-State: AOJu0Yx5UVmXymiBLtENy7uf8qnKb55/OEvwMsmybtJ1Lz3B9vlhX3Um
-        dT/geoXJh9s+96cqWc4Vx2ENabPd94shyi72VQ5MFw==
-X-Google-Smtp-Source: AGHT+IH4M1aBn/CT31gTrrwolpvSe2SEDODFou3tTJp1e3rmuWcBNBzkdyGi0z/PBvz1FAZx5dIKms1bMl6jOkL3qeU=
-X-Received: by 2002:a05:6358:7201:b0:170:21b6:627f with SMTP id
- h1-20020a056358720100b0017021b6627fmr3209750rwa.14.1701957712079; Thu, 07 Dec
- 2023 06:01:52 -0800 (PST)
+        Thu, 7 Dec 2023 09:02:41 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DCD5133;
+        Thu,  7 Dec 2023 06:02:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=KToobrjtx8bHUanPqkeSeV34L1vDgN1VtbwPowRALnQ=; b=YPat5xI6eBrv3+C+YkdTiRJB7M
+        oV0REbgHItkm73igzwfcTnvly7Uml7dcjpEamNWAeRjMqXBTQw3d3R1mRAv6+o4uQ+Lt6430a8xpK
+        KHKXt0HVslE/WcX7slKZPBjXLUh2E+cGPKoeVZ98lZvOvnZ0clx6LrhqkAX1LF9IH4BahjDSiRLNy
+        Qo7Yd7qdtyGvN4PU2IzoZpIHT2gT+yPoThPSt9ZK7CtZUedUCbQQyU6duXRZjkSavIdEf9xMZEEed
+        sHvGlelGiJhSW0txg4yAld9oZ8Aw5t0/2gbxYAeUQvkPUMHaiyolKBUPtw5TddSxwah2zQiY1/X/X
+        3B0wRJzA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38332)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rBExQ-0001AL-0q;
+        Thu, 07 Dec 2023 14:02:28 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rBExP-0003mi-5N; Thu, 07 Dec 2023 14:02:27 +0000
+Date:   Thu, 7 Dec 2023 14:02:27 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 09/16] net: mdio: Add Synopsys DW XPCS
+ management interface support
+Message-ID: <ZXHQcyZbXwesy0MV@shell.armlinux.org.uk>
+References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+ <20231205103559.9605-10-fancer.lancer@gmail.com>
+ <20231205133205.3309ab91@device.home>
+ <cv6oo27tqbfst3jrgtkg7bcxmeshadtzoomn2xgnzh2arz4nwy@wq5k7oygto6n>
+ <15e6857a-b1d1-465a-945e-6f31edac62fb@lunn.ch>
+ <jqwhgthwxfge6y4nv5mdnojqu76m4pi2mt2x6kwqiuqntcwj67@mewh42eey5ny>
 MIME-Version: 1.0
-References: <20231207091202.19231-1-brgl@bgdev.pl> <20231207091202.19231-3-brgl@bgdev.pl>
- <e58c7338-b01c-4327-9835-a3f4f8986a4e@kernel.org>
-In-Reply-To: <e58c7338-b01c-4327-9835-a3f4f8986a4e@kernel.org>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 7 Dec 2023 15:01:40 +0100
-Message-ID: <CAMRc=MfGzVODRmhxSjSc16TjwNrLSXS-WWgeSPTDkEkFo9mS4w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] dt-bindings: net: bluetooth: qualcomm: add
- regulators for QCA6390
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jqwhgthwxfge6y4nv5mdnojqu76m4pi2mt2x6kwqiuqntcwj67@mewh42eey5ny>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 2:26=E2=80=AFPM Krzysztof Kozlowski <krzk@kernel.org=
-> wrote:
->
-> On 07/12/2023 10:12, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Add regulator properties for QCA6390 that are missing from the bindings
-> > and enforce required properties for this model as well.
-> >
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> Please use scripts/get_maintainers.pl to get a list of necessary people
-> and lists to CC. It might happen, that command when run on an older
-> kernel, gives you outdated entries. Therefore please be sure you base
-> your patches on recent Linux kernel.
->
-> You missed at least devicetree list (maybe more), so this won't be
-> tested by automated tooling. Performing review on untested code might be
-> a waste of time, thus I will skip this patch entirely till you follow
-> the process allowing the patch to be tested.
->
-> Please kindly resend and include all necessary To/Cc entries.
->
-> Best regards,
-> Krzysztof
->
+On Thu, Dec 07, 2023 at 04:35:47PM +0300, Serge Semin wrote:
+> Hi Andrew
+> 
+> On Wed, Dec 06, 2023 at 06:01:30PM +0100, Andrew Lunn wrote:
+> > The compiler does a better job at deciding what to inline than we
+> > humans do. If you can show the compiler is doing it wrong, then we
+> > might accept them.
+> 
+> In general I would have agreed with you especially if the methods were
+> heavier than what they are:
+> static inline ptrdiff_t dw_xpcs_mmio_addr_format(int dev, int reg)
+> {               
+>         return FIELD_PREP(0x1f0000, dev) | FIELD_PREP(0xffff, reg);
+> }               
+>         
+> static inline u16 dw_xpcs_mmio_addr_page(ptrdiff_t csr)
+> {       
+>         return FIELD_GET(0x1fff00, csr);
+> }       
+> 
+> static inline ptrdiff_t dw_xpcs_mmio_addr_offset(ptrdiff_t csr)
+> {
+>         return FIELD_GET(0xff, csr);
+> }
+> 
+> > But in general, netdev does not like inline in .C
+> > file.
+> 
+> I see. I'll do as you say if you don't change your mind after my
+> reasoning below.
 
-Sorry, I just used the command I used last but this time there were
-additional dt-bindings patches. Will resend it tomorrow.
+This isn't Andrew saying it - you seem to have missed the detail that
+"netdev". If Andrew doesn't say it, then DaveM, Jakub or Paolo will.
 
-Bart
+Have you read the "Inline functions" section in
+Documentation/process/4.Coding.rst ?
+
+> > Also, nothing in MDIO is hot path, it spends a lot of time
+> > waiting for a slow bus. So inline is likely to just bloat the code for
+> > no gain.
+> 
+> I would have been absolutely with you in this matter, if we were talking
+> about a normal MDIO bus. In this case the devices are accessed over
+> the system IO-memory. So the bus isn't that slow.
+> 
+> Regarding the compiler knowing better when to inline the code. Here is
+> what it does with the methods above. If the inline keyword is
+> specified the compiler will inline all three methods. If the keyword isn't
+> specified then dw_xpcs_mmio_addr_format() won't be inlined while the rest
+> two functions will be. So the only part at consideration is the
+> dw_xpcs_mmio_addr_format() method since the rest of the functions are
+> inlined anyway.
+> 
+> The dw_xpcs_mmio_addr_format() function body is of the 5 asm
+> instructions length (on MIPS). Since the function call in this case
+> requires two jump instructions (to function and back), one instruction
+> to save the previous return address on stack and two instructions for
+> the function arguments, the trade-off of having non-inlined function
+> are those five additional instructions on each call. There are four
+> dw_xpcs_mmio_addr_format() calls. So here is what we get in both
+> cases:
+> inlined:     5 func ins * 4 calls = 20 ins
+> non-inlined: (5 func + 1 jump) ins + (1 jump + 1 ra + 2 arg) ins * 4 calls  = 22 ins
+> but seeing the return address needs to be saved anyway in the callers
+> here is what we finally get:
+> non-inlined: (5 func + 1 jump) ins + (1 jump + 2 arg) ins * 4 calls  = 18 ins
+> 
+> So unless I am mistaken in some of the aspects if we have the function
+> non-inlined then we'll save 2 instructions in the object file, but
+> each call would require additional _4_ instructions to execute (2
+> jumps and 2 arg creations), which makes the function execution almost
+> two times longer than it would have been should it was inlined.
+
+Rather than just focusing on instruction count, you also need to
+consider things like branch prediction, prefetching and I-cache
+usage. Modern CPUs don't execute instruction-by-instruction anymore.
+
+It is entirely possible that the compiler is making better choices
+even if it results in more jumps in the code.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
