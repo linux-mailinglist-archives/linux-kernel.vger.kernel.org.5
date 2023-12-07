@@ -2,146 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8540808F08
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C534808F00
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 18:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443451AbjLGRhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 12:37:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58304 "EHLO
+        id S1443479AbjLGRkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 12:40:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443464AbjLGRhk (ORCPT
+        with ESMTP id S1443385AbjLGRkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 12:37:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDE31710
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:37:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BE67C433CA;
-        Thu,  7 Dec 2023 17:37:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701970665;
-        bh=3sD3ogk0NVpfU+VklXA2R5FUXoYkr9sHh9QdJwrb4lM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Sp+8mrnjzS0mh8ZWo/b1VT7M7xanGjzrL4R3/XA1w/JAYje7CiSLb5pRkhwIQah6g
-         LFA8wuhDBjy/4X1vGOgNrRuuAWkkJD6iae8Jescm6zG++r8bGmwwhSaWBQfP5/wB1L
-         KR0KzPYFBj+fgtYbZnOhUjiUPiXQSr2c8kER503VXVvoqzbtDmlIW+qV8Y5GNMgJrr
-         Lqa6l4kKHheSHZgybaBDkR1+Vjuwcoj51Y1k8zsYOVF5kTcrU6Jc+V9dqf6T0kXJwn
-         BTyvDIxNo60IizDKOgFk+D6R0BhGw9nRmoDGrM7ghTPtkVry6iNmpHdtxECQOUaSCM
-         zwZN8q56cnHrQ==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50bfd7be487so1237430e87.0;
-        Thu, 07 Dec 2023 09:37:45 -0800 (PST)
-X-Gm-Message-State: AOJu0YyHbZdQPuOgsdKs6Yp2yOMGeIaH+KAwE0Yaofo061MANnntZfIs
-        k4JB58tM3flslq6ZmU05VJc6AdiGfQrtixuxro4=
-X-Google-Smtp-Source: AGHT+IGnhB2V4T9wS2G8joBMZDTQ2ugpnSkGBO4NIT3rKkY72x3w4bHhZdGuY04nqk011RmddRW8kyBMrqTVy7c5eeE=
-X-Received: by 2002:a05:6512:3da1:b0:50b:f9b2:cf2 with SMTP id
- k33-20020a0565123da100b0050bf9b20cf2mr2182723lfv.40.1701970663497; Thu, 07
- Dec 2023 09:37:43 -0800 (PST)
+        Thu, 7 Dec 2023 12:40:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602DA1703
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 09:40:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701970841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xMnbB7T1LQp0wZWytMfSaP8EVvp37hw/oAE/reqSj0w=;
+        b=PdeR6wOrsbGrEPbDa8bbYWL6HvuQX2arFkOa7EyCQAuj1N8P+jJKDkMmwkCTuyK7NurH/F
+        OoP+bIFstECt6mlYpLvRrOwTeju6YSnCr7mLC62E2SZ7Svg2NMvBgic74vRbwl57dCGBhk
+        MHNt2Tkzwyi5bAIuSSAXUIZnLcSX6SA=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-319-buOtMp_5M4CzKtPTlcRHWw-1; Thu,
+ 07 Dec 2023 12:40:35 -0500
+X-MC-Unique: buOtMp_5M4CzKtPTlcRHWw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8E5CB1C05EB5;
+        Thu,  7 Dec 2023 17:40:34 +0000 (UTC)
+Received: from [10.22.32.209] (unknown [10.22.32.209])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EA010492BC6;
+        Thu,  7 Dec 2023 17:40:33 +0000 (UTC)
+Message-ID: <5c35f648-88cc-4de2-91d7-fb95ceae15b9@redhat.com>
+Date:   Thu, 7 Dec 2023 12:40:33 -0500
 MIME-Version: 1.0
-References: <6e6816dd-2ec5-4bca-9558-60cfde46ef8c@sapience.com>
- <ZXHJEkwIJ5zKTMjV@archie.me> <be56b5df-fef8-4dbe-bb98-f6370a692d6e@sapience.com>
- <714b22c7-b8dd-008d-a1ea-a184dc8ec1cf@linux.dev> <c866bcfa-85cc-44fb-9b54-bb4840f588e6@sapience.com>
-In-Reply-To: <c866bcfa-85cc-44fb-9b54-bb4840f588e6@sapience.com>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 7 Dec 2023 09:37:32 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4Cu5DdxZtZDbwLJ85oUpN9prS78Rr9UeFtgx88OGxUcA@mail.gmail.com>
-Message-ID: <CAPhsuW4Cu5DdxZtZDbwLJ85oUpN9prS78Rr9UeFtgx88OGxUcA@mail.gmail.com>
-Subject: Re: md raid6 oops in 6.6.4 stable
-To:     Genes Lists <lists@sapience.com>
-Cc:     Guoqing Jiang <guoqing.jiang@linux.dev>,
-        Bagas Sanjaya <bagasdotme@gmail.com>, snitzer@kernel.org,
-        yukuai3@huawei.com, axboe@kernel.dk, mpatocka@redhat.com,
-        heinzm@redhat.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux RAID <linux-raid@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Bhanu Victor DiCara <00bvd0+linux@gmail.com>,
-        Xiao Ni <xni@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH-cgroup v2] cgroup: Move rcu_head up near the top of
+ cgroup_root
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yafang Shao <laoar.shao@gmail.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Yosry Ahmed <yosryahmed@google.com>
+References: <20231207134614.882991-1-longman@redhat.com>
+ <65h3s447i3fkygdtilucda2q6uaygtzfpxb6vsjgwoeybwwgtw@6ahmtj47ggzh>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <65h3s447i3fkygdtilucda2q6uaygtzfpxb6vsjgwoeybwwgtw@6ahmtj47ggzh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 7:58=E2=80=AFAM Genes Lists <lists@sapience.com> wro=
-te:
+On 12/7/23 11:46, Michal Koutný wrote:
+> On Thu, Dec 07, 2023 at 08:46:14AM -0500, Waiman Long <longman@redhat.com> wrote:
+>> Commit 77070eeb8821 ("cgroup: Avoid false cacheline sharing of read
+>> mostly rstat_cpu") happens to be the last straw that breaks it.
+> FTR, when I build kernel from that commit, I can see
 >
-> On 12/7/23 09:42, Guoqing Jiang wrote:
-> > Hi,
-> >
-> > On 12/7/23 21:55, Genes Lists wrote:
-> >> On 12/7/23 08:30, Bagas Sanjaya wrote:
-> >>> On Thu, Dec 07, 2023 at 08:10:04AM -0500, Genes Lists wrote:
-> >>>> I have not had chance to git bisect this but since it happened in
-> >>>> stable I
-> >>>> thought it was important to share sooner than later.
-> >>>>
-> >>>> One possibly relevant commit between 6.6.3 and 6.6.4 could be:
-> >>>>
-> >>>>    commit 2c975b0b8b11f1ffb1ed538609e2c89d8abf800e
-> >>>>    Author: Song Liu <song@kernel.org>
-> >>>>    Date:   Fri Nov 17 15:56:30 2023 -0800
-> >>>>
-> >>>>      md: fix bi_status reporting in md_end_clone_io
-> >>>>
-> >>>> log attached shows page_fault_oops.
-> >>>> Machine was up for 3 days before crash happened.
-> >
-> > Could you decode the oops (I can't find it in lore for some reason)
-> > ([1])? And
-> > can it be reproduced reliably? If so, pls share the reproduce step.
-> >
-> > [1]. https://lwn.net/Articles/592724/
-> >
-> > Thanks,
-> > Guoqing
+>> struct cgroup_root {
+>> 	struct kernfs_root *       kf_root;              /*     0     8 */
+>> 	unsigned int               subsys_mask;          /*     8     4 */
+>> 	int                        hierarchy_id;         /*    12     4 */
+>>
+>> 	/* XXX 48 bytes hole, try to pack */
+>>
+>> 	/* --- cacheline 1 boundary (64 bytes) --- */
+>> 	struct cgroup              cgrp __attribute__((__aligned__(64))); /*    64  2368 */
+>>
+>> 	/* XXX last struct has 8 bytes of padding */
+>>
+>> 	/* --- cacheline 38 boundary (2432 bytes) --- */
+>> 	struct cgroup *            cgrp_ancestor_storage; /*  2432     8 */
+>> 	atomic_t                   nr_cgrps;             /*  2440     4 */
+>>
+>> 	/* XXX 4 bytes hole, try to pack */
+>>
+>> 	struct list_head           root_list;            /*  2448    16 */
+>> 	struct callback_head       rcu __attribute__((__aligned__(8))); /*  2464    16 */
+>> 	unsigned int               flags;                /*  2480     4 */
+>> 	char                       release_agent_path[4096]; /*  2484  4096 */
+>> 	/* --- cacheline 102 boundary (6528 bytes) was 52 bytes ago --- */
+>> 	char                       name[64];             /*  6580    64 */
+>>
+>> 	/* size: 6656, cachelines: 104, members: 11 */
+>> 	/* sum members: 6592, holes: 2, sum holes: 52 */
+>> 	/* padding: 12 */
+>> 	/* paddings: 1, sum paddings: 8 */
+>> 	/* forced alignments: 2, forced holes: 1, sum forced holes: 48 */
+>> } __attribute__((__aligned__(64)));
+> 2480 has still quite a reserve below 4096. (I can't see an CONFIG_*
+> affecting this.)
 >
->    - reproducing
->      An rsync runs 2 x / day. It copies to this server from another. The
-> copy is from a (large) top level directory. On the 3rd day after booting
-> 6.6.4,  the second of these rysnc's triggered the oops. I need to do
-> more testing to see if I can reliably reproduce. I have not seen this
-> oops on earlier stable kernels.
->
->    - decoding oops with scripts/decode_stacktrace.sh had errors :
->     readelf: Error: Not an ELF file - it has the wrong magic bytes at
-> the start
->
->     It appears that the decode script doesn't handle compressed modules.
->   I changed the readelf line to decompress first. This fixes the above
-> script complaint and the result is attached.
+> Perhaps, I missed something from the linux-next merging thread?
 
-I probably missed something, but I really don't think the commit
-(2c975b0b8b11f1ffb1ed538609e2c89d8abf800e) could trigger this issue.
+CONFIG_LOCKDEP and some other debug configs are enabled with 
+allmodconfig. This can greatly increase the size of some of the 
+structures. I am not able to use pahole due to missing BTF info so I 
+don't the exact size. However, I can reproduce the build failure and the 
+patch is  able to fix it.
 
-From the trace:
+Cheers,
+Longman
 
-  kernel: RIP: 0010:update_io_ticks+0x2c/0x60
-    =3D>
-       2a:* f0 48 0f b1 77 28     lock cmpxchg %rsi,0x28(%rdi)  << trapped =
-here.
-  [...]
-  kernel: Call Trace:
-  kernel:  <TASK>
-  kernel:  ? __die+0x23/0x70
-  kernel:  ? page_fault_oops+0x171/0x4e0
-  kernel:  ? exc_page_fault+0x175/0x180
-  kernel:  ? asm_exc_page_fault+0x26/0x30
-  kernel:  ? update_io_ticks+0x2c/0x60
-  kernel:  bdev_end_io_acct+0x63/0x160
-  kernel:  md_end_clone_io+0x75/0xa0     <<< change in md_end_clone_io
-
-The commit only changes how we update bi_status. But bi_status was not
-used/checked at all between md_end_clone_io and the trap (lock cmpxchg).
-Did I miss something?
-
-Given the issue takes very long to reproduce. Maybe we have the issue
-before 6.6.4?
-
-Thanks,
-Song
