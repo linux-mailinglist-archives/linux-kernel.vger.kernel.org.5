@@ -2,128 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8A9808924
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CCB2808928
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379555AbjLGN1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:27:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
+        id S1441839AbjLGN2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:28:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjLGN1v (ORCPT
+        with ESMTP id S232759AbjLGN2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:27:51 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4ECD5E;
-        Thu,  7 Dec 2023 05:27:58 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id d9443c01a7336-1d1e1edb10bso7683565ad.1;
-        Thu, 07 Dec 2023 05:27:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701955678; x=1702560478; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qy8bCqLkc/ug6mEJ+c+F03iEuHRroYlHNOEVG+qZwYo=;
-        b=RiJb+HL5+viDEhmHm9O3FUeHqM/qPXpEZra2WZGCZoQBcKogQTDPdLLT8d7MfrmgLo
-         FZtBVVEEPDGp8XGnRrkkW2LrTM4AeoKewUPnGNKWxsio2I/+Z2zrNwfhAAaouf5DKvFy
-         th+qIB0fLfSznYqv1se3caQcIhL0LaAIuy5HCIbTCCn6yS2ILOEz6ulurAE9gli89TEP
-         vczBVbmXIVDgVzwoZbJhU4m15b7auJUgCfvKSLmQ7Xt+DfNS2PaXsNpeN1ru/qv1FNcF
-         Db5K4DBhvkZmFId3SBj4+/KsWR60QblA4uJ0t1VOlIX60LOD6RlGXFMIfTEhplR1kgIa
-         LVuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701955678; x=1702560478;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qy8bCqLkc/ug6mEJ+c+F03iEuHRroYlHNOEVG+qZwYo=;
-        b=d7TQFF4eCpCzJH4XAUuKop47qkVv1nMPAp3fuHVhxjGnAdf/Fzco+pOGdIv/8D96Bv
-         2tJBvWDUABRKvx2IN/75Jezub1cL6g0L0zx/lKN4vrVpUS+7DlN0oocU2jVdWdlO0f7W
-         KwDef0Z0hVXxkYaKzouhaaJb8JZwjTye0FZmCQsEY4bsW9yARqZcsUQIV3nTu6EMUuBy
-         hPOn/qQqxIMvXobEbWgodnPkCWny13YpxYAIWzdSBBQfwQ2phwWgw4Bhwv16OTsE7vUn
-         zLCGAy+akaDKtMV78iHvqhxsudcRAIR1OtP453/wZwACwpgfvI3tMs22Am1dBHGtAl0r
-         bJ2g==
-X-Gm-Message-State: AOJu0YybVIIpaOjeWuqIi44tMwtP4JJ3i2lhV7vYU8N/tkBzUb5Idtfu
-        7R2qqk4/L6PFSpXi6v30aZlZWwdU0vQwkt9OvHo=
-X-Google-Smtp-Source: AGHT+IGfa/eq5WVyw2kvM/MNxsedwjFAeSez7k2ZHxr2vnCrTUNYeb6zx7OQHUPai83QwolE7eWhPDPODQO3E4b3Lzo=
-X-Received: by 2002:a17:903:32d0:b0:1d0:9c03:a7c9 with SMTP id
- i16-20020a17090332d000b001d09c03a7c9mr2471428plr.97.1701955677729; Thu, 07
- Dec 2023 05:27:57 -0800 (PST)
+        Thu, 7 Dec 2023 08:28:04 -0500
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B4710C2;
+        Thu,  7 Dec 2023 05:28:09 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B7DRwAS064537;
+        Thu, 7 Dec 2023 07:27:58 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1701955678;
+        bh=pZBFMNr6/5Bfg5xHkyDDA6oWaIZEocSMoppIXxGwOnQ=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=lakURs+WbCa3KqjEGEoQl8vgSxyaAwIcjgkJgBGwaqAaRHczTLc+Q6h7Te0UK2kGH
+         XLpSY+Hq/OSppt78D6evUcOw4s+t6N9AyxKelbvXgMcrPKYSdZ0KSQfQ4DA4smIJy1
+         aX5KlTfqidjrcao3S1N7KjjD+LEWM+QIickzAbc0=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B7DRwdv005184
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 7 Dec 2023 07:27:58 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 7
+ Dec 2023 07:27:58 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 7 Dec 2023 07:27:58 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B7DRwAa109629;
+        Thu, 7 Dec 2023 07:27:58 -0600
+Date:   Thu, 7 Dec 2023 07:27:58 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     MD Danish Anwar <danishanwar@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Tero Kristo <kristo@kernel.org>, <srk@ti.com>,
+        <r-gunasekaran@ti.com>
+Subject: Re: [PATCH 3/3] arm64: dts: ti: k3-am642-evm: add overlay for icssg1
+ 2nd port
+Message-ID: <20231207132758.wbfn7timsqevdjpu@mortuary>
+References: <20231207081917.340167-1-danishanwar@ti.com>
+ <20231207081917.340167-4-danishanwar@ti.com>
 MIME-Version: 1.0
-From:   xingwei lee <xrivendell7@gmail.com>
-Date:   Thu, 7 Dec 2023 21:27:46 +0800
-Message-ID: <CABOYnLyH=PmSoP8=PdkyK5VG1vhiG8fHKg2Xie4oBrVeYbdhHw@mail.gmail.com>
-Subject: KMSAN: uninit-value in ip_tunnel_xmit
-To:     davem@davemloft.net
-Cc:     dsahern@kernel.org, Eric Dumazet <edumazet@google.com>,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller@googlegroups.com,
-        syzbot+4a2c52677a8a1aa283cb@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231207081917.340167-4-danishanwar@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 13:49-20231207, MD Danish Anwar wrote:
+> The am642-evm doesn't allow to enable 2 x CPSW3g ports and 2 x ICSSG1 ports
+> all together, so base k3-am642-evm.dts enables by default 2 x CPSW3g ports
+> and 1 x ICSSG1 ports, but it also possible to support 1 x CPSW3g ports and
+> 2 x ICSSG1 ports configuration.
+> 
+> This patch adds overlay to support 1 x CPSW3g ports and 2 x ICSSG1 ports
+> configuration:
+> - disable 2nd CPSW3g port
+> - update CPSW3g pinmuxes to not use RGMII2
+> - disable mdio-mux-1 and define mdio-mux-2 to route ICSSG1 MDIO to the
+>   shared DP83869 PHY
+> - add and enable ICSSG1 RGMII2 pinmuxes
+> - enable ICSSG1 MII1 port
+> 
+> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/Makefile               |  2 +
+>  .../dts/ti/k3-am642-evm-icssg1-dualemac.dtso  | 80 +++++++++++++++++++
+>  arch/arm64/boot/dts/ti/k3-am642-evm.dts       |  2 +-
+>  3 files changed, 83 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso
+> 
+> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+> index 5ef49b02c71f..99a4dce47f02 100644
+> --- a/arch/arm64/boot/dts/ti/Makefile
+> +++ b/arch/arm64/boot/dts/ti/Makefile
+> @@ -35,12 +35,14 @@ dtb-$(CONFIG_ARCH_K3) += k3-am62x-sk-csi2-imx219.dtbo
+>  dtb-$(CONFIG_ARCH_K3) += k3-am62x-sk-hdmi-audio.dtbo
+>  
+>  # Boards with AM64x SoC
+> +k3-am642-evm-icssg1-dtbs := k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac.dtbo
 
-When fuzzing the latest upstream linux 6.7-rc4,  the following crash
-was triggered.
-HEAD commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+Why not handle this for CONFIG_OF_ALL_DTBS alone? See commit
+b0044823a6607e535fdb083c89f487fbf183b171
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: xingwei Lee <xrivendell7@gmail.com>
+>  dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
+>  dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
+> +dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-icssg1.dtb
+>  
+>  # Boards with AM65x SoC
+>  k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb k3-am654-base-board-rocktech-rk101-panel.dtbo
+> diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso
+> new file mode 100644
+> index 000000000000..6f33290c1ad6
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso
+> @@ -0,0 +1,80 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/**
+> + * DT overlay for enabling 2nd ICSSG1 port on AM642 EVM
+> + *
+> + * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
+> + */
+> +
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include "k3-pinctrl.h"
+> +
+> +&{/} {
+> +	aliases {
+> +		ethernet1 = "/icssg1-eth/ethernet-ports/port@0";
+> +		ethernet2 = "/icssg1-eth/ethernet-ports/port@1";
 
-console_log: https://gist.github.com/xrivendell7/b41fbc928cd203823783fd90c98b6583#file-console_log
-report: https://gist.github.com/xrivendell7/b41fbc928cd203823783fd90c98b6583#file-report
-kernel commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=ce27066613dacbb6
-repro.c: https://gist.github.com/xrivendell7/b41fbc928cd203823783fd90c98b6583#file-repro-c
-repro.txt: https://gist.github.com/xrivendell7/b41fbc928cd203823783fd90c98b6583#file-repro-txt
+I don't understand what you are overriding here. isn't patch #2 in your
+series already introducing this in the base dts?
 
-In the lasted kernel: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8 the
-[  199.471467][ T8590] =====================================================
-[  199.475015][ T8590] BUG: KMSAN: uninit-value in ip_tunnel_xmit+0x857/0x3e80
-[  199.478180][ T8590]  ip_tunnel_xmit+0x857/0x3e80
-[  199.480541][ T8590]  ipgre_xmit+0xd1c/0xe20
-[  199.482393][ T8590]  dev_hard_start_xmit+0x247/0xa10
-[  199.484530][ T8590]  __dev_queue_xmit+0x33b8/0x5130
-[  199.486433][ T8590]  __bpf_redirect+0xdd7/0x1600
-[  199.488258][ T8590]  bpf_clone_redirect+0x328/0x470
-[  199.490250][ T8590]  ___bpf_prog_run+0x2180/0xdb80
-[  199.491997][ T8590]  __bpf_prog_run512+0xb5/0xe0
-[  199.493691][ T8590]  bpf_test_run+0x482/0xb00
-[  199.495215][ T8590]  bpf_prog_test_run_skb+0x14e5/0x1f20
-[  199.497026][ T8590]  bpf_prog_test_run+0x6af/0xac0
-[  199.498701][ T8590]  __sys_bpf+0x649/0xd60
-[  199.500029][ T8590]  __x64_sys_bpf+0xa0/0xe0
-[  199.501411][ T8590]  do_syscall_64+0x44/0x110
-[  199.502757][ T8590]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-[  199.504463][ T8590]
-[  199.505159][ T8590] Uninit was created at:
-[  199.506344][ T8590]  slab_post_alloc_hook+0x129/0xa70
-[  199.507690][ T8590]  kmem_cache_alloc_node+0x5e9/0xb10
-[  199.509191][ T8590]  kmalloc_reserve+0x13d/0x4a0
-[  199.510411][ T8590]  pskb_expand_head+0x226/0x1a00
-[  199.511657][ T8590]  skb_ensure_writable+0x3d3/0x460
-[  199.512905][ T8590]  bpf_clone_redirect+0x17f/0x470
-[  199.514135][ T8590]  ___bpf_prog_run+0x2180/0xdb80
-[  199.515325][ T8590]  __bpf_prog_run512+0xb5/0xe0
-[  199.516479][ T8590]  bpf_test_run+0x482/0xb00
-[  199.517580][ T8590]  bpf_prog_test_run_skb+0x14e5/0x1f20
-[  199.518901][ T8590]  bpf_prog_test_run+0x6af/0xac0
-[  199.520015][ T8590]  __sys_bpf+0x649/0xd60
-[  199.520996][ T8590]  __x64_sys_bpf+0xa0/0xe0
-[  199.521949][ T8590]  do_syscall_64+0x44/0x110
-[  199.522926][ T8590]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> +	};
+> +
+> +	mdio-mux-2 {
+> +		compatible = "mdio-mux-multiplexer";
+> +		mux-controls = <&mdio_mux>;
+> +		mdio-parent-bus = <&icssg1_mdio>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		mdio@0 {
+> +			reg = <0x0>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			icssg1_phy2: ethernet-phy@3 {
+> +				reg = <3>;
+> +				tx-internal-delay-ps = <250>;
+> +				rx-internal-delay-ps = <2000>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&main_pmx0 {
+> +	icssg1_rgmii2_pins_default: icssg1-rgmii2-default-pins {
+> +		pinctrl-single,pins = <
+> +			AM64X_IOPAD(0x0108, PIN_INPUT, 2) /* (W11) PRG1_PRU1_GPO0.RGMII2_RD0 */
+> +			AM64X_IOPAD(0x010c, PIN_INPUT, 2) /* (V11) PRG1_PRU1_GPO1.RGMII2_RD1 */
+> +			AM64X_IOPAD(0x0110, PIN_INPUT, 2) /* (AA12) PRG1_PRU1_GPO2.RGMII2_RD2 */
+> +			AM64X_IOPAD(0x0114, PIN_INPUT, 2) /* (Y12) PRG1_PRU1_GPO3.RGMII2_RD3 */
+> +			AM64X_IOPAD(0x0120, PIN_INPUT, 2) /* (U11) PRG1_PRU1_GPO6.RGMII2_RXC */
+> +			AM64X_IOPAD(0x0118, PIN_INPUT, 2) /* (W12) PRG1_PRU1_GPO4.RGMII2_RX_CTL */
+> +			AM64X_IOPAD(0x0134, PIN_OUTPUT, 2) /* (AA10) PRG1_PRU1_GPO11.RGMII2_TD0 */
+> +			AM64X_IOPAD(0x0138, PIN_OUTPUT, 2) /* (V10) PRG1_PRU1_GPO12.RGMII2_TD1 */
+> +			AM64X_IOPAD(0x013c, PIN_OUTPUT, 2) /* (U10) PRG1_PRU1_GPO13.RGMII2_TD2 */
+> +			AM64X_IOPAD(0x0140, PIN_OUTPUT, 2) /* (AA11) PRG1_PRU1_GPO14.RGMII2_TD3 */
+> +			AM64X_IOPAD(0x0148, PIN_OUTPUT, 2) /* (Y10) PRG1_PRU1_GPO16.RGMII2_TXC */
+> +			AM64X_IOPAD(0x0144, PIN_OUTPUT, 2) /* (Y11) PRG1_PRU1_GPO15.RGMII2_TX_CTL */
+> +		>;
+> +	};
+> +};
+> +
+> +&cpsw3g {
+> +	pinctrl-0 = <&rgmii1_pins_default>;
+> +};
+> +
+> +&cpsw_port2 {
+> +	status = "disabled";
+> +};
+> +
+> +&mdio_mux_1 {
+> +	status = "disabled";
+> +};
+> +
+> +&icssg1_eth {
+> +	pinctrl-0 = <&icssg1_rgmii1_pins_default &icssg1_rgmii2_pins_default>;
 
-and I notice the problem is reported at 2018/2020 and seems fixed twice.
+Grrr... No! I have been cleaning up after you folks and you folks should
+take notice.
 
-https://syzkaller.appspot.com/bug?id=f62d236e2fceaeb104f4e8f77d2324ef9da4b41b
-https://syzkaller.appspot.com/bug?extid=4a2c52677a8a1aa283cb
+pinctrl-0 = <&icssg1_rgmii1_pins_default>, <&icssg1_rgmii2_pins_default>;
 
 
+> +};
+> +
+> +&icssg1_emac1 {
+> +	status = "okay";
+> +	phy-handle = <&icssg1_phy2>;
+> +	phy-mode = "rgmii-id";
+> +};
+> diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> index 04d1c0602d31..90867090e725 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> @@ -203,7 +203,7 @@ mdio_mux: mux-controller {
+>  		mux-gpios = <&exp1 12 GPIO_ACTIVE_HIGH>;
+>  	};
+>  
+> -	mdio-mux-1 {
+> +	mdio_mux_1: mdio-mux-1 {
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
+Commit message doesn't warn me for this change.
+>  		compatible = "mdio-mux-multiplexer";
+>  		mux-controls = <&mdio_mux>;
+>  		mdio-parent-bus = <&cpsw3g_mdio>;
+> -- 
+> 2.34.1
+> 
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
