@@ -2,134 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F217480912A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CEBF80912D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 20:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbjLGTUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 14:20:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
+        id S232894AbjLGTXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 14:23:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjLGTUt (ORCPT
+        with ESMTP id S229472AbjLGTXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 14:20:49 -0500
-Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491FC10D8
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 11:20:55 -0800 (PST)
-Received: by mail-vk1-xa32.google.com with SMTP id 71dfb90a1353d-4b2d64a368aso619192e0c.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 11:20:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701976854; x=1702581654; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i0eWtcC0cEcM+29fQ7DEe8bVrVzRsIkhiOsp8oEkDaY=;
-        b=rvzcUIHg7wZJ+RvMeE2ejeRbC3cTv5KAPOdFW6HxPWOV7CLTrOhNeeJZukBRjD5cMC
-         +wuEQhUMf4JhGwVwH5FYOJrYchfCy7Qz9CY6mpfm8cLdmNkTpQT+MB8eEDk2NKRUqWWu
-         Yip8k1+XWTgSNNR76n1+suCRn7PQWK7UR32Sj0+PYSu9gKNAj7wMiGsd3RzcW79koX3J
-         tj6jdZNNMCQg+e9gY66GY8Kz2ZqVT1IO42IkaF58M0ua+vclsBxNNu8EFq6lJ3bSbbfV
-         gX2KqVkWWE9Ao3I1xNoh8HKce3giuEx/czRGuIPR/ZarpRrkstHpeZsjguCPCB46GVna
-         BNUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701976854; x=1702581654;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i0eWtcC0cEcM+29fQ7DEe8bVrVzRsIkhiOsp8oEkDaY=;
-        b=OIxzj/MCMMcGQgVgGP52jnq4RCqwRUAki4tk3wBImdomWLfr9v0e76arGGxhzCaAia
-         SVXObHoVIf94AUEQq1vCFNG5P9bYsawOD8ynXSUBFcxBqiTjtitSTv3e8hbL+7MB2bWW
-         HeteOKnt+5ujyMsycv0p6/KNXvVln4lts1p8GAdVq59godp4ifwf7BBeROf39XZ3eWEw
-         RDWaSH60W9K1BUQGC1gl0gpHY8JRn8I6fjQcCE40IV0Vy2AGu3JGsxVwjNjemJOli+O6
-         pOmD5No2hVUCpH4kKCCXmxHTDmb0S6oAtIpacQFvxYiCxsgT7P/mr1SncyjWs4BzjWH9
-         WUIg==
-X-Gm-Message-State: AOJu0Yx3a4wJgH8yz8w0d2ZnHw6+LpxdJe2th399SRzzGNwARbPHcLiF
-        MPm758+iw9uNNil2R6/PU/jOwxVoWS1MAv/+fkQ38Q==
-X-Google-Smtp-Source: AGHT+IFu6WULcTNGRYIvZNfvwgwLiezBZ0ERdRXmVUBophvomj9TjcnmYdxmZIS2cNuz5+rjMogaW8PNinZhFrhPmv0=
-X-Received: by 2002:a1f:cc81:0:b0:48d:5be:2868 with SMTP id
- c123-20020a1fcc81000000b0048d05be2868mr2990447vkg.0.1701976854172; Thu, 07
- Dec 2023 11:20:54 -0800 (PST)
+        Thu, 7 Dec 2023 14:23:14 -0500
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C6810DC;
+        Thu,  7 Dec 2023 11:23:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1701976997;
+        bh=6SYQxYyGrcDvx6IRN+6dIff5PVo7wQPuPHWX4hH6KZA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nJRdrpHl406V8Pqv+diMBiUkggs7GtUBNOx0+SSTMlNWhL6h7/9+XQ/o7Ul2ru7YQ
+         0TkWrmXbCwMT0a04wtzuExXuKNewvXrDMSts24ePrOt49uTn3dQ+Ap0nA1sV5cT09A
+         BvZPUjsgDL//msyJBTFObJS3p7YQtjTXc7BaeONU=
+Date:   Thu, 7 Dec 2023 20:23:16 +0100
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Joel Granados <j.granados@samsung.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+Message-ID: <f327cf10-3680-43ec-a05c-8c038af767c0@t-8ch.de>
+References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+ <ZW66FhWx7W67Y9rP@bombadil.infradead.org>
+ <b4b0b7ea-d8b3-4538-a5b9-87a23bbdac5f@t-8ch.de>
+ <CGME20231205171700eucas1p17edbc33ec1d0be37573b1977b76b9ce6@eucas1p1.samsung.com>
+ <d50978d8-d4e7-4767-8ea7-5849f05d3be1@t-8ch.de>
+ <20231207111957.b24ib4hcxr6xufll@localhost>
 MIME-Version: 1.0
-References: <20231207163458.5554-1-khuey@kylehuey.com> <20231207163458.5554-4-khuey@kylehuey.com>
- <CAEf4Bzbt1abnfj2w6Hmp2w8SqVkQiCW=SimY6ss_Jp_325QyoA@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbt1abnfj2w6Hmp2w8SqVkQiCW=SimY6ss_Jp_325QyoA@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 7 Dec 2023 20:20:16 +0100
-Message-ID: <CANpmjNOLojXk64jvwD+m19B+FsR5MuBwWKv95uakq-Dp1_AGXA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] selftest/bpf: Test a perf bpf program that
- suppresses side effects.
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kyle Huey <me@kylehuey.com>, Kyle Huey <khuey@kylehuey.com>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        "Robert O'Callahan" <robert@ocallahan.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231207111957.b24ib4hcxr6xufll@localhost>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Dec 2023 at 20:12, Andrii Nakryiko <andrii.nakryiko@gmail.com> wr=
-ote:
->
-> On Thu, Dec 7, 2023 at 8:35=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote:
-> >
-> > The test sets a hardware breakpoint and uses a bpf program to suppress =
-the
-> > side effects of a perf event sample, including I/O availability signals=
-,
-> > SIGTRAPs, and decrementing the event counter limit, if the ip matches t=
-he
-> > expected value. Then the function with the breakpoint is executed multi=
-ple
-> > times to test that all effects behave as expected.
-> >
-> > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> > ---
-> >  .../selftests/bpf/prog_tests/perf_skip.c      | 145 ++++++++++++++++++
-> >  .../selftests/bpf/progs/test_perf_skip.c      |  15 ++
-> >  2 files changed, 160 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools=
-/testing/selftests/bpf/prog_tests/perf_skip.c
-> > new file mode 100644
-> > index 000000000000..f6fa9bfd9efa
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
-> > @@ -0,0 +1,145 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#define _GNU_SOURCE
-> > +
-> > +/* We need the latest siginfo from the kernel repo. */
-> > +#include <asm/siginfo.h>
->
-> selftests are built with UAPI headers' copies under tools/include, so
-> CI did catch a real issue, I think. Try copying
-> include/uapi/asm-generic/siginfo.h into
-> tools/include/uapi/asm-generic/siginfo.h ?
+On 2023-12-07 12:19:57+0100, Joel Granados wrote:
+> On Tue, Dec 05, 2023 at 06:16:53PM +0100, Thomas Weißschuh wrote:
+> > Hi Luis, Joel,
+> > 
+> > On 2023-12-05 09:04:08+0100, Thomas Weißschuh wrote:
+> > > On 2023-12-04 21:50:14-0800, Luis Chamberlain wrote:
+> > > > On Mon, Dec 04, 2023 at 08:52:13AM +0100, Thomas Weißschuh wrote:
+> > > > > Tested by booting and with the sysctl selftests on x86.
+> > > > 
+> > > > Can I trouble you to rebase on sysctl-next?
+> > > > 
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=sysctl-next
+> > > 
+> > > Will do.
+> > 
+> > The rebased series is now available at
+> > https://git.sr.ht/~t-8ch/linux b4/const-sysctl
+> > 
+> > Nothing much has changed in contrast to v2.
+> > The only functional change so far is the initialization of
+> > ctl_table_header::type in init_header().
+> > 
+> > I'll wait for Joels and maybe some more reviews before resending it.
+> > 
+> > > [..]
+> > 
+> > For the future I think it would make sense to combine the tree-wide constification
+> > of the structs with the removal of the sentinel values.
 
-I believe parts of this were inspired by
-tools/testing/selftests/perf_events/sigtrap_threads.c - getting the
-kernel headers is allowed, as long as $(KHDR_INCLUDES) is added to
-CFLAGS. See tools/testing/selftests/perf_events/Makefile. Not sure
-it's appropriate for this test though, if you don't want to add
-KHDR_INCLUDES for everything.
+> I don't see how these two would fit. And this is why:
+> 1. The "remove sentinel" stuff is almost done. With the sets going into
+>    6.7 we would only be missing everything under net/*. So you would not
+>    be able to combine them (except for the net stuff)
+> 2. The motivation for the two sets is differnt. This would confuse
+>    rather than simplify the process.
+> 3. In order to introduce the const stuff we would have to go through
+>    another round of "convincing" which can potentially derail the
+>    "remove sentinel" stuff.
+
+Good reasons, especially 1).
+ 
+> I would *not* like to combine them. I think the const set can stand on
+> its own.
+
+It was more about a process optimization. If somebody has to touch each
+sysctl table anyway and test the changes, doing so for both series would
+be easier for the sysctl and subsystem maintainers.
+
+But alas, it seems I have to do it myself and can't heap it onto your
+pile :-)
+
+> > 
+> > This would reduce the impacts of the maintainers.
