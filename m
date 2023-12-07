@@ -2,72 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D918E808930
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8433E808932
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 14:30:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441853AbjLGN3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 08:29:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40822 "EHLO
+        id S1441894AbjLGN3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 08:29:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232759AbjLGN3V (ORCPT
+        with ESMTP id S232833AbjLGN3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 08:29:21 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AC1AA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:29:27 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2ca1e6a94a4so9665511fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 05:29:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701955766; x=1702560566; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S/a+lo/i7Sn7Axq1O/3z2JRGx5rn0ORT1DBmQ8MScBU=;
-        b=MMx0tYN6xzIiU51xV+pZKIgySXopYlpb7rzUs9+HTWQ6KL0FkPpd3mYixu0hQg1KPV
-         kHop7Cf3/Qgtu57KnCNjnDQjGlp3GuuMBj4Xo3UneEBvOqxDo3SgS6azF+M3iBXPxZHz
-         ByIqMcQXCtskGGHTifXMJG39ILWmVf9ZSO8BrZ0x5dYvqnaQgyEhDyywpwsHRuiBNye6
-         BaVgii1SN2tsvzq5kaBIe+9LvIe7hrUVr62KTuk61cUlUhe1fR1nIXFFcgQ0B3MiR/yq
-         Cf5/PkY3VjwIIxE4CfQdxEo9zV1zg0ftica62F4m6r6WyJI3smToMZ/S9Bm68rCvaokf
-         l+2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701955766; x=1702560566;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S/a+lo/i7Sn7Axq1O/3z2JRGx5rn0ORT1DBmQ8MScBU=;
-        b=K7eKCnBy+2v/OfbA7pldXVwigv8bmyPjbMAIe0MxiS043H3uKPFg2HMm5VO4hT3cCS
-         38dWfUEJ4CioqE02RR/aEhN7GYUgJFtDMJrtJHEgX/mcRjCmcgYjQdkHXz+9I7VzUxj0
-         ORlbMh0q6Ynf6fcZ8LziG2rBxliqacNRANWwhnQS1noojHrnAWuJBbHMXDqlWK8hy46e
-         5luQUyrtdcEKwxPMZuTjJXQtibKZZYBgSKVmMnMiVl162vu0gaCh6gQTZCdPsuhMtV5K
-         suY5oKMS4U27NDcPuDd0Cq1FxEXW56z8WQCv5fhofVd61OFQYh4Gg8u4aQk2VfjnJZW2
-         qknw==
-X-Gm-Message-State: AOJu0YywzZ4XtCNb0moI1JtyTdPXD25kBssaDLZE57lCIxy69HG3Si9p
-        fWqNdz9kmAzPqlhtSLb5Prw=
-X-Google-Smtp-Source: AGHT+IFoslo6cvpRwmPfpAtY1gBrzQKEdQU4A7nfXcRBiTJqKaEDhXJJfUOWplbOtja2vLjLuR7cRw==
-X-Received: by 2002:a2e:88c1:0:b0:2c9:ec1b:7004 with SMTP id a1-20020a2e88c1000000b002c9ec1b7004mr1424490ljk.11.1701955765460;
-        Thu, 07 Dec 2023 05:29:25 -0800 (PST)
-Received: from ?IPV6:2001:14ba:16f8:1500::2? (dc78bmyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::2])
-        by smtp.gmail.com with ESMTPSA id v16-20020a2e9250000000b002c9f3e0a075sm241621ljg.55.2023.12.07.05.29.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 05:29:24 -0800 (PST)
-Message-ID: <70cbf708-72a6-4413-8181-99441f676d57@gmail.com>
-Date:   Thu, 7 Dec 2023 15:29:18 +0200
+        Thu, 7 Dec 2023 08:29:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902D210EF
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 05:29:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BF75C433CA;
+        Thu,  7 Dec 2023 13:29:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701955780;
+        bh=lsH0gjdHo2AdfWCRRYeo9NnEhntqeh7VIJfK6uu4bnU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=YEcUE9FfF+miEfD+oAxoZB5MuPTrhhPhv532IJ2UIvto5nBBG+SvAm1DHF/8UzqNS
+         xajCPiAkgSTyPJQLkn8vXr+oI1rVDk+VkQ6yp7q4sFup5TkBsWJ8Q2Vb/aogdhCyyY
+         NmRd+eF8ZaC12XfcCY5GIi92bTthzJKSpwROgGsC09lv/EVuOlmnG2Rmy0+m3po8iT
+         4jyP/S5b09ZZwhWzgPurzjqPyhXRmgKagBDFOua7r7NZajlyLryGL66lcBrmG1unqH
+         1huXpPd/ZCBmlqtcthibLusduutavwQ5K0MKHipDFrSwkkP/2ipxLnO4ty7L6pRgVE
+         43M4gmVhjzL6Q==
+Message-ID: <15578a4d-f749-4bf8-b507-4c6efb7805fa@kernel.org>
+Date:   Thu, 7 Dec 2023 14:29:34 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] regulator: event: Add regulator netlink event support
-Content-Language: en-US, en-GB
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-References: <20231205105207.1262928-1-naresh.solanki@9elements.com>
- <46b1d303-8104-4298-bd43-a649634f5393@gmail.com>
- <CABqG17jwAw6zqy9FLtZ3ppwLT+3fAQ21bGfMr4Xt5eTDm-jQMw@mail.gmail.com>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <CABqG17jwAw6zqy9FLtZ3ppwLT+3fAQ21bGfMr4Xt5eTDm-jQMw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Subject: Re: [PATCH v2 0/3] w1: gpio: Some cleanup and simplifiction
+Content-Language: en-US
+To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+References: <cover.1701727212.git.u.kleine-koenig@pengutronix.de>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <cover.1701727212.git.u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,178 +96,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/23 14:39, Naresh Solanki wrote:
-> Hi Matti,
+On 04/12/2023 23:05, Uwe Kleine-König wrote:
+> Hello,
 > 
+> v1 is available at
+> https://lore.kernel.org/r/20230525095624.615350-1-u.kleine-koenig@pengutronix.de.
 > 
-> On Thu, 7 Dec 2023 at 13:42, Matti Vaittinen <mazziesaccount@gmail.com> wrote:
->>
->> Hi Naresh,
->>
->> On 12/5/23 12:52, Naresh Solanki wrote:
->>> This commit introduces netlink event support to the regulator subsystem.
->>>
->>> Changes:
->>> - Introduce event.c and regnl.h for netlink event handling.
->>> - Implement reg_generate_netlink_event to broadcast regulator events.
->>> - Update Makefile to include the new event.c file.
->>>
->>> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
->>
->> Thanks! I have somehow missed the earlier patches (or just don't
->> remember seeing them). I _really_ like the idea of sending the regulator
->> events as netlink multicasts!
->>
->> ...
-
->>> + */
->>> +#define REGULATOR_EVENT_UNDER_VOLTAGE_WARN   0x2000
->>> +#define REGULATOR_EVENT_OVER_CURRENT_WARN    0x4000
->>> +#define REGULATOR_EVENT_OVER_VOLTAGE_WARN    0x8000
->>> +#define REGULATOR_EVENT_OVER_TEMP_WARN               0x10000
->>> +#define REGULATOR_EVENT_WARN_MASK            0x1E000
->>> +
->>> +struct reg_genl_event {
->>> +     char reg_name[32];
->>> +     uint64_t event;
->>> +};
->>
->> Do you think we could and / or should separate the event type and event
->> severity to own attributes here? I wonder if we will see more
->> 'severities' of events in the future. I see we have currently some
->> activity for deciding if a regulator event should result for example a
->> "data storage protection" by shutting down storage hardware before a
->> back-up capacitor runs out of energy. Maybe we see more cases where the
->> user-space needs to decide whether to run a (partial) system shutdown or
->> do some other action based on regulator events.
->>
->> I have a feeling that there will be "actions" which are common (like
->> system shutdown or data flushing) and could utilize some generic
->> user-space daemon - maybe the severity is something such a generic
->> daemon could use to decide if shutdown/flush/whatsoever is needed? If
->> so, being able to add new severities may be needed - and duplicating
->> event flags for all severities may not scale.
->>
->> OTOH, it's not that hard to append new netlink attributes to the end of
->> the message to give user-space a hint regarding what should be done. In
->> that sense this is not something I would insist - just wonder if you see
->> it sensible?
+> The changes in this v2 since then are:
 > 
-> When I wrote the code, I kept in mind to make sure to receive all events
-> from regulators so that userspace application (in my case BMC
-> application which does power sequence) has regulator events information.
-> Hence I assumed that its upto userspace application to decide on corrective
-> action based on events of interest.
+>  - Fix a build problem in patch #3
+>  - Rebase to today's next
 
-I do also think it probably is. However, do you see cases where the 
-action to be taken is a result of a hardware-design. Maybe in such cases 
-the information like "critical under-voltage, please shut down the 
-system" could originate from the board designer's drawing-table, end up 
-in board device-tree, be read by the drivers/kernel and then be sent to 
-a user-land with suitable severity information indicating that an action 
-should be taken. I am just speculating if we could have a more generic 
-user-space application which took care of this instead of always writing 
-a system-specific user-space application.
+  ✗ No key: openpgp/u.kleine-koenig@pengutronix.de
 
-> At the same time I think having it in a way which is very generic & meets
-> requirement of many use case would be better.
-> 
-> Please correct me if my understanding is inaccurate.
-> As I understand from your inputs, receiving severity information along
-> with event would help application decide corrective information insteading
-> of decoding regulator events.
+Are you sure you exported your key to openpgp and verified addresses?
 
-My current idea was just to treat existing regulator notifications as a 
-event + severity. For example:
-
-REGULATOR_EVENT_UNDER_VOLTAGE and
-REGULATOR_EVENT_UNDER_VOLTAGE_WARN
-
-would send netlink message with same event 'type' attribute 
-(REGULATOR_EVENT_UNDER_VOLTAGE) but with different severity attributes:
-
-REGULATOR_SEVERITY_ERROR Vs. REGULATOR_SEVERITY_WARN.
-
-Still, as I wrote, I am not sure this is too important. I don't know if 
-any 'action' decisions can be done based on currently existing 
-ERROR/WARNING severities - and the netlink message API can be later 
-extended by adding new attributes. So, please treat my message just as a 
-fuel for thought - I'm sure you have better insight to the use of these 
-notifications than I do :)
-
->>> +
->>> +/* attributes of reg_genl_family */
->>> +enum {
->>> +     REG_GENL_ATTR_UNSPEC,
->>> +     REG_GENL_ATTR_EVENT,    /* reg event info needed by user space */
->>> +     __REG_GENL_ATTR_MAX,
->>> +};
->>> +
->>> +#define REG_GENL_ATTR_MAX (__REG_GENL_ATTR_MAX - 1)
->>> +
->>> +/* commands supported by the reg_genl_family */
->>> +enum {
->>> +     REG_GENL_CMD_UNSPEC,
->>> +     REG_GENL_CMD_EVENT,     /* kernel->user notifications for reg events */
->>> +     __REG_GENL_CMD_MAX,
->>> +};
->>> +
->>> +#define REG_GENL_CMD_MAX (__REG_GENL_CMD_MAX - 1)
->>> +
->>> +#define REG_GENL_FAMILY_NAME         "reg_event"
->>> +#define REG_GENL_VERSION             0x01
->>> +#define REG_GENL_MCAST_GROUP_NAME    "reg_mc_group"
->>
->> I am wondering what will the user-space handlers look like? Do we think
->> that there will be a 'I am interested in _all_ regulator multicast
->> events' type of listener, or do we think there will be listeners who
->> would like to listen only for a subset of regulator netlink notifications?
->>
->> Asking this just because I wonder if we should be prepared for more than
->> one regulator multicast group? Do you think that an ability to say "Hey,
->> I'd like to listen for under-voltage events only" or "I would like to
->> get all temperature-related notifications" should/could be supported by
->> more specific multicast groups or is that just over-engineering at this
->> point?
-> Current implementation is such that all events will be sent.
-> But I agree with you that it is not something desired as sometimes
-> application might not be interested in all events.
-> Also I'm not sure on multicast group, as currently only one group
-> exist for regulator event & how adding additional group would help.
-> 
-
-Again, this might be my delusion :) Once upon a time I wrote a 
-(downstream) netlink interface for sending certain specific purpose 
-measurement results to the user-space. I have a faint memory from those 
-days that it was possible to specify the multicast groups of interest at 
-socket bind() - time. In this way "multiplexing" the messages would be 
-done by kernel and user-space code could only listen the messages of 
-interest? Maybe there are caveats I am not aware of though.
-
->> It has been a long while since I wrote netlink code. So, if this makes
->> no sense to you it's probably me who is overlooking something.
-> I'm aligned to make sure regulator netlink serves wider purpose &
-> hence your inputs are highly valuable.
-> 
-> Based on inputs provided by you(please add if missed anything):
-> 1. Add an attribute severity & set it if event is of critical nature like:
->      under-voltage, over-current, event_fail & *any others* ?.
-> 2. Ability to receive specific set of regulator events instead of all events.
-
-Yes. These were my points to consider - but you / Mark are free to use 
-your judgement on if this makes any sense or not. I am not confident 
-enough these are necessary "features" to really push for them.
-
-In any case, I do like this ambition! Do you plan to write open-source 
-user-space tool(s) for listening these events as well?
-
-Yours,
-	-- Matti
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
+Best regards,
+Krzysztof
 
