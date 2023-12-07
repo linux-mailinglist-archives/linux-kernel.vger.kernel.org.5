@@ -2,116 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CADE80813B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 07:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D31AC807E42
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 03:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377842AbjLGGwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 01:52:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
+        id S1442017AbjLGCQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 21:16:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377694AbjLGGvu (ORCPT
+        with ESMTP id S229495AbjLGCQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 01:51:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDA910F7
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 22:51:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44387C433C9;
-        Thu,  7 Dec 2023 06:51:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1701931897;
-        bh=L1TtivioL0Lps3vy6WPsQqR1XcD3JmC00x4u49IX1Tk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KVgdL2kinFybPXfvwdF0P8bEKZTAAsbQBGWfczZMQ+GU2b8rz+nqzmTZAAq6aHvMc
-         rpoWwDa//JVszP3CNaDNv4HbNXooqziBc1krn36s19I6k9Bnhc0KgkPkhZrO7vQgay
-         yTitdxi4x7DZOFyop7tjoXRX9v1RO0GGapzK5U9U=
-Date:   Thu, 7 Dec 2023 11:14:32 +0900
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ricky Wu <ricky_wu@realtek.com>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        ulf.hansson@linaro.org, frank.li@vivo.com,
-        u.kleine-koenig@pengutronix.de, linux-mmc@vger.kernel.org
-Subject: Re: [PATCH v6 1/3] misc: rtsx: add to support new card reader
- rts5264 new definition and function
-Message-ID: <2023120715-reenact-repose-906c@gregkh>
-References: <20231129034856.2001223-1-ricky_wu@realtek.com>
- <20231129034856.2001223-2-ricky_wu@realtek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231129034856.2001223-2-ricky_wu@realtek.com>
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        Wed, 6 Dec 2023 21:16:25 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992E0181
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 18:16:31 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5ddd64f83a4so386907b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 18:16:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701915391; x=1702520191; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=NsPj5qKC8yO/4S4uTFAVTwLtanN0zO749Ogx8NLNS9w=;
+        b=N/6UkiRk3RlTUolRr2U13HbrMbLP6QBYU30cTKCRXAI4Ocat2gS09LcbqVT6mRgBvB
+         6lU9Dkd3QOk7YtPtnX192uxmHeBWNSX2QlrfuM+q5eWrgJJtkfvx1a6OAVI6J+dB/kVE
+         Q30a9m5s1cWkhMjQbXyCqv+N+0CDaXB6lGVv65oAKbxZiiPLiT0ELxxTNN7fsSAoA82S
+         60W2MauRqHl6K996FZNqvwRgkURx8ZzkZkZXymtby186Gi2sMzZUrG/a5Q6Z3sPdla9S
+         IrejgCIeRU4erj7B0z6arqj8BYojnf3h0I/EXaAZRGPQgQoIsPEJT30Qg5Wc8SeTGLt8
+         nGQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701915391; x=1702520191;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NsPj5qKC8yO/4S4uTFAVTwLtanN0zO749Ogx8NLNS9w=;
+        b=LE4hv0+2OIAnauY1kn+I9Q7IaUlNOFwKWvWyjHppdK61O5h8GEO1TzLS5gbpTKc2vz
+         Z1UvO9CXMiXqRz0YnUec/AMg50GsCHNDRPcQ2ABQekgzfBTnrWyr2zEeggYOiArPAC07
+         +kjTrEE3KaTUB5pS61PqEmcptbs/XYce9RIvraMLoJzhGt+MuIp+zNZYjY8ECl+PH57P
+         xbyiT33StU5jEQfeacweHz/yzfd/4izmS+BAhd9RmtVj5y9xPLP3VEiJ7jgSXbdVmO55
+         GFUsvpBGHoaxGofMbeVtv0dbvDBaRKCzul+w5FnWAezra93sg3+OecuONPzZ3JbZLLWm
+         DrDg==
+X-Gm-Message-State: AOJu0Yw5eeuPePVfdIrKWZM30kTCcCD4eqMUKlX4f9mapJHaQd8T9b0e
+        CTXrZWGEq1+OEsEBCNiltg+G46MTkqs4
+X-Google-Smtp-Source: AGHT+IHKrj0RwlDvYvwye9pD9ZReSUK4nwO3Y2DejPuWpye8TRVrJIGwoeP9TIYKuEtMhjsnlPmt8JxE9oN5
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:35bf:293e:7696:34e9])
+ (user=irogers job=sendgmr) by 2002:a05:690c:2893:b0:5d3:b449:e58e with SMTP
+ id ee19-20020a05690c289300b005d3b449e58emr26831ywb.6.1701915390873; Wed, 06
+ Dec 2023 18:16:30 -0800 (PST)
+Date:   Wed,  6 Dec 2023 18:16:27 -0800
+Message-Id: <20231207021627.1322884-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Subject: [PATCH v1] perf record: Reduce memory for recording lost samples event
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 11:48:54AM +0800, Ricky Wu wrote:
-> in order to support NEW chip rts5264, the definitions of some internal
-> registers are define in new file rts5264.h, and some callback functions 
-> and the workflow for rts5264 are define in new file rts5264.c
-> 
-> also add rts5264.o to Makefile
-> 
-> Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
-> ---
-> v4: split new definition part up from v3
-> ---
->  drivers/misc/cardreader/Makefile  |   2 +-
->  drivers/misc/cardreader/rts5264.c | 886 ++++++++++++++++++++++++++++++
->  drivers/misc/cardreader/rts5264.h | 278 ++++++++++
->  3 files changed, 1165 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/misc/cardreader/rts5264.c
->  create mode 100644 drivers/misc/cardreader/rts5264.h
+Reduce from PERF_SAMPLE_MAX_SIZE to "sizeof(*lost) +
+session->machines.host.id_hdr_size".
 
-When building with this change applied, I get lots of build errors.  How
-did you test this?
+Suggested-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+Suggested in:
+https://lore.kernel.org/lkml/CAM9d7cjpYHN_Q63sW70vTCisdW=-SzjsrryUUJjgtZ3+9jdxfA@mail.gmail.com/
+---
+ tools/perf/builtin-record.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-My errors are:
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index eb5a398ddb1d..206110fc2799 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -1954,7 +1954,8 @@ static void record__read_lost_samples(struct record *rec)
+ 
+ 				if (count.lost) {
+ 					if (!lost) {
+-						lost = zalloc(PERF_SAMPLE_MAX_SIZE);
++						lost = zalloc(sizeof(*lost) +
++							      session->machines.host.id_hdr_size);
+ 						if (!lost) {
+ 							pr_debug("Memory allocation failed\n");
+ 							return;
+@@ -1970,7 +1971,8 @@ static void record__read_lost_samples(struct record *rec)
+ 		lost_count = perf_bpf_filter__lost_count(evsel);
+ 		if (lost_count) {
+ 			if (!lost) {
+-				lost = zalloc(PERF_SAMPLE_MAX_SIZE);
++				lost = zalloc(sizeof(*lost) +
++					      session->machines.host.id_hdr_size);
+ 				if (!lost) {
+ 					pr_debug("Memory allocation failed\n");
+ 					return;
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
 
-  CC [M]  drivers/misc/cardreader/rts5264.o
-drivers/misc/cardreader/rts5264.c: In function ‘rts5264_process_ocp’:
-drivers/misc/cardreader/rts5264.c:398:40: error: ‘struct rtsx_pcr’ has no member named ‘ovp_stat’; did you mean ‘ocp_stat’?
-  398 |         rts5264_get_ovpstat(pcr, &pcr->ovp_stat);
-      |                                        ^~~~~~~~
-      |                                        ocp_stat
-drivers/misc/cardreader/rts5264.c:402:31: error: ‘struct rtsx_pcr’ has no member named ‘ovp_stat’; did you mean ‘ocp_stat’?
-  402 |                         (pcr->ovp_stat & (RTS5264_OVP_NOW | RTS5264_OVP_EVER))) {
-      |                               ^~~~~~~~
-      |                               ocp_stat
-drivers/misc/cardreader/rts5264.c:408:22: error: ‘struct rtsx_pcr’ has no member named ‘ovp_stat’; did you mean ‘ocp_stat’?
-  408 |                 pcr->ovp_stat = 0;
-      |                      ^~~~~~~~
-      |                      ocp_stat
-drivers/misc/cardreader/rts5264.c: In function ‘rts5264_extra_init_hw’:
-drivers/misc/cardreader/rts5264.c:534:38: error: ‘RTS5264_AUTOLOAD_CFG2’ undeclared (first use in this function); did you mean ‘RTS5264_AUTOLOAD_CFG3’?
-  534 |         rtsx_pci_write_register(pcr, RTS5264_AUTOLOAD_CFG2,
-      |                                      ^~~~~~~~~~~~~~~~~~~~~
-      |                                      RTS5264_AUTOLOAD_CFG3
-drivers/misc/cardreader/rts5264.c:534:38: note: each undeclared identifier is reported only once for each function it appears in
-drivers/misc/cardreader/rts5264.c:535:25: error: ‘RTS5264_CHIP_RST_N_SEL’ undeclared (first use in this function); did you mean ‘RTS5264_NON_XTAL_SEL’?
-  535 |                         RTS5264_CHIP_RST_N_SEL, 0);
-      |                         ^~~~~~~~~~~~~~~~~~~~~~
-      |                         RTS5264_NON_XTAL_SEL
-drivers/misc/cardreader/rts5264.c:538:38: error: ‘CDGW’ undeclared (first use in this function)
-  538 |         rtsx_pci_write_register(pcr, CDGW, 0xFF, 0x01);
-      |                                      ^~~~
-drivers/misc/cardreader/rts5264.c: In function ‘rts5264_init_params’:
-drivers/misc/cardreader/rts5264.c:883:51: error: ‘SD_OVP_INT_EN’ undeclared (first use in this function); did you mean ‘SD_OCP_INT_EN’?
-  883 |         hw_param->interrupt_en |= (SD_OC_INT_EN | SD_OVP_INT_EN);
-      |                                                   ^~~~~~~~~~~~~
-      |                                                   SD_OCP_INT_EN
-make[5]: *** [scripts/Makefile.build:243: drivers/misc/cardreader/rts5264.o] Error 1
-
-
-
-Remember, each commit can not break the build.  Please fix up this series to
-build properly at each commit.
-
-thanks,
-
-greg k-h
