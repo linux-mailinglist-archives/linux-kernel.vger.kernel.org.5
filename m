@@ -2,134 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6E68082DC
+	by mail.lfdr.de (Postfix) with ESMTP id 7792D8082DB
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 09:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378215AbjLGIWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 03:22:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39242 "EHLO
+        id S1378165AbjLGIWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 03:22:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbjLGIWR (ORCPT
+        with ESMTP id S231386AbjLGIWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 03:22:17 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AD1121;
-        Thu,  7 Dec 2023 00:22:23 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-67a338dfca7so3919296d6.2;
-        Thu, 07 Dec 2023 00:22:23 -0800 (PST)
+        Thu, 7 Dec 2023 03:22:15 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC03110EA
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 00:22:13 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6ce7c1b07e1so320460b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 00:22:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701937342; x=1702542142; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=egv6dYd8ESPNnSbaz+0Kszznpa5K+OI/xeewlObj9YM=;
-        b=AKchBofsXZ2u8xbnnDlij3wORpGQA4iMQHmru4SlzB6sew+25aYkqfNcHxnz0Iwv8M
-         SdHbHnWiuiXEiCW4nimf0fn/llUseBWNuwBwiFZJtATuUEq6/WbwI9ydktN5FN76T61Z
-         7RUERAfky8f76Xsk/pTUF69qtTeS3KntTkufzEPJjP4q8Lzzyw/Kxx8jrZqT9szhjv7T
-         xNoTQuMLeMEutJuQFyQP2syU+jbOb5VRrajI962V1CdEiyW8oIOJN6hlL4w5F8rvqs59
-         GgElBe3U3uME/NzO5ePp9aSMeJw1xfkL/fs4OK3n/loeAvHNB5r40XCmsJ1MACotbqJL
-         BbIw==
+        d=friendlyarm-com.20230601.gappssmtp.com; s=20230601; t=1701937333; x=1702542133; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xjeb4b6lyrZZzJQNF0NTbIeDzIeVTA8ShffAsyhB2JI=;
+        b=byfJvpmDWeAC5/FQCTQtMXSLqar5q/+1tMJQgcD/ehx7ASTCt+dpaA/N514QO+MkrG
+         BnSp3bEQAV4uTMVSnaTrPyFK8pfFcgCPzmBxhwrKYOOFkk86gdvJF7KiXD7xlRXBWOi2
+         ZS+hkW4xN2aq8BD9MX0urj0ozfEIoB43ka10GnTIiqgNuBpCxdgAD77ao8kw91N+Wrp3
+         BQ2115EKHVv2Nbb8ZoqoH5+ErrNQznL+kg1fJtl3EjPRyp7q2+Yl/91qVRCOclJ9JreU
+         ZJb34cZsAoGtWl12/oghr96PF4sMIT7hOrg/jYe+xER1YojUnM9BJVo44bnLkXjwE3Wr
+         jq0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701937342; x=1702542142;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=egv6dYd8ESPNnSbaz+0Kszznpa5K+OI/xeewlObj9YM=;
-        b=wVTsR93FWtNcldaqn/C0/sgaKrnzOiw16L8Tb9r7fjDFxKTVAWBdBrDpdv6/4bq2r5
-         V0mJnJIHxlhGrcT/uJHX06ulk59B0qtNhOqEUOERIij+r4UPo+u4opmzABlbnvVhx2GR
-         JhL8PgR91a1+woIc3fM7QqDfuCJIGwPylgUPLLFHbiYG1nZK51tG+xYdVHWWA4gmqovy
-         L0PMxND3e0OejFq3zG9Lc65ReIZBOzXKmu+XZDEEfqVmfzV0NPs6Wh6HHzwNMfofu9hQ
-         gzSZvcDRZ6tohJfhVHPZpjtynuJ24sk0rq1wY6Y6rslG8VHvf2lrRsson9Xa4jh2iO2B
-         rJJA==
-X-Gm-Message-State: AOJu0YyJEFiV9lfS60NZn0aOSlZV8Qx+rIt5q6QYAhERmH2GdTP9oo92
-        eDZ6LRcQUNNjGKlQkjB3rQoxcxTRuYhFctwaBqQ=
-X-Google-Smtp-Source: AGHT+IGb78uQtvQjOtkF5UieuAgn8fipBbuzXR6STd1V7pkRouaiMB4eNwuv9naPB4lCKqfx5wxl4pb6GfuadpgKBvA=
-X-Received: by 2002:a05:6214:43c2:b0:67a:b72c:3ab5 with SMTP id
- oi2-20020a05621443c200b0067ab72c3ab5mr2965357qvb.62.1701937342424; Thu, 07
- Dec 2023 00:22:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701937333; x=1702542133;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xjeb4b6lyrZZzJQNF0NTbIeDzIeVTA8ShffAsyhB2JI=;
+        b=RJwqiY72ZUBII8xHYPGOnDAsNB637xeyNHS8vlo4sIhU9AikP1deZPq6ESGPyW6Eb1
+         fMVMfjpn3WIVvxdbdepwc4Rw6jgzRU5Vc8eDRQubI1eP/m2LR3mKnw2nt1GHdW8RDA0a
+         qcD7Bfbte8PLwjWweVOp+Vzql/tn6qFqiufGnI9CSBHP2OUhWhKrfn+fL9kfWJ9BYRey
+         h8TMqtdYOKY80/W5BXjee1Nb2eostqNnLUhIuUhpfPyZ6Le59Y95UY5UkKxIDTiapCad
+         DNKykb/3KvXZ7oopUBOXe5dc4efjmWtYTcfUmkGB6ER2riKEQQln5qL7raQJ7RUZBMfA
+         DI8g==
+X-Gm-Message-State: AOJu0YxH8zFzlghO9naedtdUzIp+eZGGK31qhLJHloq1bVR+0x9sAEwH
+        9/Xfcd8t0a/azi/G9hD79wwBrA==
+X-Google-Smtp-Source: AGHT+IEEurwQbxShDq9JggR47aztflJkGvMYj35SfMTSgXCbvptMap7YnxF/CHrueLnQZPyEL1pr1Q==
+X-Received: by 2002:a05:6a00:2d1b:b0:6ce:4b97:b894 with SMTP id fa27-20020a056a002d1b00b006ce4b97b894mr2240031pfb.17.1701937333161;
+        Thu, 07 Dec 2023 00:22:13 -0800 (PST)
+Received: from jensen.next (li999-236.members.linode.com. [45.33.49.236])
+        by smtp.gmail.com with ESMTPSA id o27-20020a63731b000000b005c259cef481sm696377pgc.59.2023.12.07.00.22.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 00:22:12 -0800 (PST)
+From:   Jensen Huang <jensenhuang@friendlyarm.com>
+To:     Heiko Stuebner <heiko@sntech.de>,
+        Andi Shyti <andi.shyti@kernel.org>
+Cc:     Jensen Huang <jensenhuang@friendlyarm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] i2c: rk3x: fix potential spinlock recursion on poll
+Date:   Thu,  7 Dec 2023 16:21:59 +0800
+Message-ID: <20231207082200.16388-1-jensenhuang@friendlyarm.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20231207043753.876437-1-longman@redhat.com>
-In-Reply-To: <20231207043753.876437-1-longman@redhat.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 7 Dec 2023 16:21:46 +0800
-Message-ID: <CALOAHbBrj5CTOeYwHJ4q_f092z+1BNAo9kHFfRbRFTCF=_hQfA@mail.gmail.com>
-Subject: Re: [PATCH-cgroup] cgroup: Move rcu_head up near the top of cgroup_root
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 12:38=E2=80=AFPM Waiman Long <longman@redhat.com> wr=
-ote:
->
-> Commit d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU
-> safe") adds a new rcu_head to the cgroup_root structure and kvfree_rcu()
-> for freeing the cgroup_root.
->
-> The use of kvfree_rcu(), however, has the limitation that the offset of
-> the rcu_head structure within the larger data structure cannot exceed
-> 4096 or the compilation will fail. By putting rcu_head below the cgroup
-> structure, any change to the cgroup structure that makes it larger has
-> the risk of build failure. Commit 77070eeb8821 ("cgroup: Avoid false
-> cacheline sharing of read mostly rstat_cpu") happens to be the commit
-> that breaks it even though it is not its fault. Fix it by moving the
-> rcu_head structure up before the cgroup structure.
->
-> Fixes: d23b5c577715 ("cgroup: Make operations on the cgroup root_list RCU=
- safe")
-> Signed-off-by: Waiman Long <longman@redhat.com>
+Possible deadlock scenario (on reboot):
+rk3x_i2c_xfer_common(polling)
+    -> rk3x_i2c_wait_xfer_poll()
+        -> rk3x_i2c_irq(0, i2c);
+            --> spin_lock(&i2c->lock);
+            ...
+        <rk3x i2c interrupt>
+        -> rk3x_i2c_irq(0, i2c);
+            --> spin_lock(&i2c->lock); (deadlock here)
 
-Acked-by: Yafang Shao <laoar.shao@gmail.com>
+Store the IRQ number and disable/enable it around the polling transfer.
+This patch has been tested on NanoPC-T4.
 
-> ---
->  include/linux/cgroup-defs.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-> index 5a97ea95b564..45359969d8cf 100644
-> --- a/include/linux/cgroup-defs.h
-> +++ b/include/linux/cgroup-defs.h
-> @@ -562,6 +562,10 @@ struct cgroup_root {
->         /* Unique id for this hierarchy. */
->         int hierarchy_id;
->
-> +       /* A list running through the active hierarchies */
-> +       struct list_head root_list;
-> +       struct rcu_head rcu;
-> +
->         /*
->          * The root cgroup. The containing cgroup_root will be destroyed =
-on its
->          * release. cgrp->ancestors[0] will be used overflowing into the
-> @@ -575,10 +579,6 @@ struct cgroup_root {
->         /* Number of cgroups in the hierarchy, used only for /proc/cgroup=
-s */
->         atomic_t nr_cgrps;
->
-> -       /* A list running through the active hierarchies */
-> -       struct list_head root_list;
-> -       struct rcu_head rcu;
-> -
->         /* Hierarchy-specific flags */
->         unsigned int flags;
->
-> --
-> 2.39.3
->
+Signed-off-by: Jensen Huang <jensenhuang@friendlyarm.com>
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+---
+Changes in v2:
+ - Add description for member 'irq' to fix build warning
 
+ drivers/i2c/busses/i2c-rk3x.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
---=20
-Regards
-Yafang
+diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
+index a044ca0c35a1..4362db7c5789 100644
+--- a/drivers/i2c/busses/i2c-rk3x.c
++++ b/drivers/i2c/busses/i2c-rk3x.c
+@@ -178,6 +178,7 @@ struct rk3x_i2c_soc_data {
+  * @clk: function clk for rk3399 or function & Bus clks for others
+  * @pclk: Bus clk for rk3399
+  * @clk_rate_nb: i2c clk rate change notify
++ * @irq: irq number
+  * @t: I2C known timing information
+  * @lock: spinlock for the i2c bus
+  * @wait: the waitqueue to wait for i2c transfer
+@@ -200,6 +201,7 @@ struct rk3x_i2c {
+ 	struct clk *clk;
+ 	struct clk *pclk;
+ 	struct notifier_block clk_rate_nb;
++	int irq;
+ 
+ 	/* Settings */
+ 	struct i2c_timings t;
+@@ -1087,13 +1089,18 @@ static int rk3x_i2c_xfer_common(struct i2c_adapter *adap,
+ 
+ 		spin_unlock_irqrestore(&i2c->lock, flags);
+ 
+-		rk3x_i2c_start(i2c);
+-
+ 		if (!polling) {
++			rk3x_i2c_start(i2c);
++
+ 			timeout = wait_event_timeout(i2c->wait, !i2c->busy,
+ 						     msecs_to_jiffies(WAIT_TIMEOUT));
+ 		} else {
++			disable_irq(i2c->irq);
++			rk3x_i2c_start(i2c);
++
+ 			timeout = rk3x_i2c_wait_xfer_poll(i2c);
++
++			enable_irq(i2c->irq);
+ 		}
+ 
+ 		spin_lock_irqsave(&i2c->lock, flags);
+@@ -1310,6 +1317,8 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	i2c->irq = irq;
++
+ 	platform_set_drvdata(pdev, i2c);
+ 
+ 	if (i2c->soc_data->calc_timings == rk3x_i2c_v0_calc_timings) {
+-- 
+2.42.0
+
