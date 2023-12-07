@@ -2,237 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FA18087E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:36:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A30F8087EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379302AbjLGMdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 07:33:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38708 "EHLO
+        id S232482AbjLGMeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:34:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbjLGMdi (ORCPT
+        with ESMTP id S232583AbjLGMeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 07:33:38 -0500
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB25AD5C;
-        Thu,  7 Dec 2023 04:33:43 -0800 (PST)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-58ce8513da1so322975eaf.2;
-        Thu, 07 Dec 2023 04:33:43 -0800 (PST)
+        Thu, 7 Dec 2023 07:34:20 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601CE10C7
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:34:26 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2ca1e6a94a4so8809791fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 04:34:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701952423; x=1702557223; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=eoyF50C90+byNneOw67lraz5w5fqAkMLns+7xoj94Cw=;
-        b=Rz8pi5yVV5X79T1Yez2j0uZYHI/gmkHZkfKOD9ZZlKQcOQpkXYXaB9LlZrKCwgLWdS
-         3ivpmDrPmoOwgakbf9qtR1Lwx0tCKTze93ONEyyx+QykcyrtEVA2H6mQ8b9yR27PDdV/
-         5NKs1/9ZvnQy8gGfmJOb0mCW31qxE9jekaziOB6by2TO9LR8/KVxnAr9umI6In0cJDio
-         OHFT5g3uqu8M0uqkZUdttxfrylqDbdH2mj442dFgC/bTm4m/DmV1SYjn26sOLGEUQg6X
-         KVHZrgP9UIlKoadsWoirk7tQoKnNEcG0P7GPsBOzvXbT2tOTbGvyMpS8tv7vxQnKw77U
-         qDuQ==
+        d=linaro.org; s=google; t=1701952464; x=1702557264; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=idNFXUDeTCb9cuCDDJuvMArzVa/3N4PhXRLdWCeeLAQ=;
+        b=NCXfN3LvHbkm9CzgBUJPM/GGdPYswnH01PIhYuU/mXMw4FFIVlpJwn6rD8O5zqqAsP
+         XxBCQR11ZQ4FZX4Os+LZUu5IGWGu4tN9wJH+HZM9n4uMtv3ZWdh+cxyQ0XNwZIdNaQDD
+         Zlrx2T0uLwnIPQypT6K4k2zYR19lEDnOrGh/Um1BBS1Vyil3IgEa2JkSv6KTO7RZD2pn
+         kxIgpiiFzqpeBy08j4O1SMOJ/nl01LuofFrlKUfazrcSDW+u2DQqowZ/rxHQNPrPNA8U
+         vY2GEamEjeWqJzwNFEUseC/tiJH8nfG9YlUfodD45B53rAeDPJOdJoCQy9JsCcwUl4Ad
+         nt5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701952423; x=1702557223;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1701952464; x=1702557264;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=eoyF50C90+byNneOw67lraz5w5fqAkMLns+7xoj94Cw=;
-        b=Lw1pBjtyeWYT5MaLzlIxQRCai6PvZuaJmdqNolOdTHWuZGpxzIy7Fl18sFBTWWsGMZ
-         jzzu8gprciVZ0/ufmLIfRnnOkeH9sylRqiRC+rwmagU7F1zEm5IPiklJIGA/pckHSsjd
-         2k1DwfCpD48FFIj/ep89W8d2rRhVmL5v086udBHhGVRCDfa44iydVsWMOTcWM6pEXLcP
-         V9NY481Kd0JaboNK01jtCj2CKdA2KKoxKRvvYdDOGQ81sAmrc6OgqCGHmq+U9/N68d77
-         VupFXTCMRHI0CA0ItD3Nd5AfW/ul70rMp/cKrJ7grLWLyGCvXU/SLUWaTBC4S6LGad4u
-         L7TA==
-X-Gm-Message-State: AOJu0YyOpuic+yskJHW0NK6fVC+DY2eebuT2YSyU7VmJExevIQmcxias
-        kA6U1fac54T0uHrXWke1z5Dp+i/+iCdVrWrnZ0JvHpi++QZNQQ==
-X-Google-Smtp-Source: AGHT+IFS8NwFi5sJw7amN4YsRotWSEY7Uv9GR7UCo3iJnNkSK0NiiYeAUIhB/yWzq4W+sEwWpOCZYlM6kE4su+J5LnI=
-X-Received: by 2002:a05:6820:1ac8:b0:58d:6ea3:8fc with SMTP id
- bu8-20020a0568201ac800b0058d6ea308fcmr2905570oob.2.1701952422933; Thu, 07 Dec
- 2023 04:33:42 -0800 (PST)
+        bh=idNFXUDeTCb9cuCDDJuvMArzVa/3N4PhXRLdWCeeLAQ=;
+        b=w47XnfZM38lSJerMVNHitOyHn4T0Cva1PSEImMSAlrSlM+tM5nU2oTBheXjvQecivx
+         qnyOWhR6wgrLkpyHC5pKURAd9TYAI/Xri7bo0IR5V6iuxy0osw20y4TS2QuezbmykbDY
+         mw2/JjXPR45/+CCBCQPoJCEwk1zFrpt5b2B61yBM1JqyAIFEdCkh5GLM/WFWsFLSvHBe
+         jBYkoF3S1IOrtqyVTV2dte86vpJO/av2ehOxzMdnX8Alj3yS9zuTJ83wAuqQ6BZo7Bcv
+         ECWt0FH3IkxSMBOrCuECUJUeKqwQ3OJ9tfsP7b0yan0UHlYV+pwMxHSIS3+gSwF0Kyh1
+         VDPA==
+X-Gm-Message-State: AOJu0YxE8j67y4Wco7rY25kSSLVSCIVxW1gshQQMJxsl8/M97Q3iTefe
+        L6qHFpx0b+oHAjqgt/w98vP1Fg==
+X-Google-Smtp-Source: AGHT+IFw9+jhBJU5GR2px5plT3QUZ62XtMeTFEJiK9qC7iWCtK5RiA8HWa2W2HfALfRO0GvwU1z8bg==
+X-Received: by 2002:ac2:4428:0:b0:50b:efd4:1475 with SMTP id w8-20020ac24428000000b0050befd41475mr1392716lfl.9.1701952464529;
+        Thu, 07 Dec 2023 04:34:24 -0800 (PST)
+Received: from [127.0.1.1] ([82.79.186.233])
+        by smtp.gmail.com with ESMTPSA id c69-20020a509fcb000000b0054c86f882bcsm747331edf.22.2023.12.07.04.34.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 04:34:24 -0800 (PST)
+From:   Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH v3 0/2] phy: qcom: qmp-usb: Add support for X1E80100 USB3
+ PHY
+Date:   Thu, 07 Dec 2023 14:34:10 +0200
+Message-Id: <20231122-phy-qualcomm-usb3-uniphy-x1e80100-v3-0-273814c300f8@linaro.org>
 MIME-Version: 1.0
-References: <20231204144429.45197-1-linux.amoon@gmail.com> <20231204144429.45197-2-linux.amoon@gmail.com>
- <20231206135311.GA2043711-robh@kernel.org> <CANAwSgTS0ZSFPv4x803pCLEpjH5imh8vEoWpbiJRH14Sy3GZww@mail.gmail.com>
- <21673bfd-bb87-4c7d-a53f-337c263f3a00@linaro.org>
-In-Reply-To: <21673bfd-bb87-4c7d-a53f-337c263f3a00@linaro.org>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Thu, 7 Dec 2023 18:03:25 +0530
-Message-ID: <CANAwSgSo37B0zg-xjrmqndSZ5SbyB3m27_wRsqqN9WTONooeiw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] dt-bindings: usb: Add the binding example for the
- Genesys Logic GL3523 hub
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAMK7cWUC/5WOQQ6CMBBFr0K6dkxnCgquvIdx0cIgTbDFVgjGc
+ HcLO5cs31u8/78icrAcxSX7isCTjda7BOqQibrT7sFgm8SCJClEIhi6D7xG3df++YQxGgWjs6u
+ ckUuJUkJ1VnVZUlEhtyJ1jI4MJmhXd6nkxr5Pcgjc2nkbvt0Tdza+ffhsPyZc7Z7JCUGCagvTE
+ KmmMPm1t04Hf/ThIdb8RLuTlJKoFWNTlcUp57/ksiw/u1tzSzsBAAA=
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Icenowy Zheng <uwu@icenowy.me>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-amlogic@lists.infradead.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Johan Hovold <johan@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1458; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=uCgc7bBM7vglJNBa0/vPovuGzjNc308c2ZpWtT5/tX8=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlcbvHE9IMZ3fwyYvfhXsLPGnaw5Cm10fetNyMn
+ +z/C88MSreJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZXG7xwAKCRAbX0TJAJUV
+ VlmaEADDe5i5PHYiZWvX5vSkL46jtrGdXj183eVPG/jscT/eq9bCp1+Xy8sGeMsjrZAxQge8tDJ
+ ljQ8VE7I3PjguvYmkLhuM3d4ASL1kUxT7LEU05jM5RFFFcVflEgLbQMBDbiPHTEA4Hhwu/Ok0sL
+ YxJ5m9Mzq86x6HSl15BgRVcHf15XiAmMmCJSCwfr2EkF4Ja/ISzJYprn5qnLrvYVAg/S1ssL55V
+ XxHspXYn5J2AfdZwfiTF3x1xMTP0vGzONHTP3iy4wqPS/j1c7QE067x7FgCVQxsJXUK8JzI6hoM
+ qBQlg5jHcLPW+W/5URC7tF9au8HDdtV1sWsDfv/u87aiZ2U5pF3fAQUDXjHNXItPred3tUA82MB
+ EjDh+EDW9nXvhgpatZMw8g6T6PjITCg0KH9cO3yKGt0OuvMhUKNAsoJfc+jCGoFISTyjIoi2tPs
+ +Exf7zKA0NKxLH1rDUkgcoCZ/Cz1AIxJsNsM7mhHdr8rwuOYyaja1n7jb/Ix0rJXw0EL8Gn2pPf
+ AjfsMXmdVXVHGMqtyhmtAvElGzAt0DpJLpeP8Mrvn0etfgiSddu3lKu138t2wHnHT8YENdYqgqn
+ EIvzQHwtQUmPzDxhdaGB9DL9vbNbQurk/PXU8bwnjy0yMKzcVRzGB2EQjF5yzzkgeWUyl59PIR3
+ 7gFqLqQKOQy+wSw==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof
+This patchset adds support for USB3 PHYs instances found on X1E80100.
+It depends on the v7 register offsets added by the following patchset:
 
-On Thu, 7 Dec 2023 at 14:00, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 06/12/2023 18:14, Anand Moon wrote:
-> > Hi Rob,
-> >
-> > On Wed, 6 Dec 2023 at 19:23, Rob Herring <robh@kernel.org> wrote:
-> >>
-> >> On Mon, Dec 04, 2023 at 08:14:25PM +0530, Anand Moon wrote:
-> >>> Add the binding example for the USB3.1 Genesys Logic GL3523
-> >>> integrates with USB 3.1 Gen 1 Super Speed and USB 2.0 High-Speed
-> >>> hub.
-> >>>
-> >>> For onboard hub controllers that support USB 3.x and USB 2.0 hubs
-> >>> with shared resets and power supplies, this property is used to identify
-> >>> the hubs with which these are shared.
-> >>>
-> >>> GL3523 has built-in 5V to 3.3V and 5V to 1.2V regulators, which serves
-> >>> power to the USB HUB, it uses 5V power regulator.
-> >>>
-> >>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> >>> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
-> >>> ---
-> >>> V6: fix the description of the regulators
-> >>> Updated the commit message for regulator updates.
-> >>> add reviewed by Conor Dooley
-> >>> [1] https://lore.kernel.org/all/20231130053130.21966-2-linux.amoon@gmail.com/
-> >>> v5: upgrade peer-hub description : Conor Dooley
-> >>> [0] https://www.genesyslogic.com.tw/en/product_view.php?show=67 [Block Diagram]
-> >>> v4: Fix the description of peer-hub and update the commit message.
-> >>> Schematics of the Odroid N2+
-> >>> https://dn.odroid.com/S922X/ODROID-N2/Schematic/odroid-n2_rev0.6_20210121.pdf
-> >>> V3: fix the dt_binding_check error, added new example for Genesys GL3523
-> >>> v2: added Genesys GL3523 binding
-> >>> v1: none
-> >>> ---
-> >>>  .../bindings/usb/genesys,gl850g.yaml          | 65 +++++++++++++++++--
-> >>>  1 file changed, 61 insertions(+), 4 deletions(-)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> >>> index ee08b9c3721f..c6f63a69396d 100644
-> >>> --- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> >>> +++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> >>> @@ -9,9 +9,6 @@ title: Genesys Logic USB hub controller
-> >>>  maintainers:
-> >>>    - Icenowy Zheng <uwu@icenowy.me>
-> >>>
-> >>> -allOf:
-> >>> -  - $ref: usb-device.yaml#
-> >>> -
-> >>>  properties:
-> >>>    compatible:
-> >>>      enum:
-> >>> @@ -27,12 +24,46 @@ properties:
-> >>>
-> >>>    vdd-supply:
-> >>>      description:
-> >>> -      the regulator that provides 3.3V core power to the hub.
-> >>> +      The regulator that provides 3.3V or 5.0V core power to the hub.
-> >>> +
-> >>> +  peer-hub:
-> >>> +    $ref: /schemas/types.yaml#/definitions/phandle
-> >>> +    description:
-> >>> +      For onboard hub controllers that support USB 3.x and USB 2.0 hubs
-> >>> +      with shared resets and power supplies, this property is used to identify
-> >>> +      the hubs with which these are shared.
-> >>>
-> >>>  required:
-> >>>    - compatible
-> >>>    - reg
-> >>>
-> >>> +allOf:
-> >>> +  - $ref: usb-device.yaml#
-> >>> +  - if:
-> >>> +      properties:
-> >>> +        compatible:
-> >>> +          contains:
-> >>> +            enum:
-> >>> +              - usb5e3,608
-> >>> +    then:
-> >>> +      properties:
-> >>> +        peer-hub: false
-> >>> +        vdd-supply: false
-> >>> +        reset-gpios: true
-> >>> +
-> >>> +  - if:
-> >>> +      properties:
-> >>> +        compatible:
-> >>> +          contains:
-> >>> +            enum:
-> >>> +              - usb5e3,610
-> >>> +              - usb5e3,620
-> >>> +    then:
-> >>> +      properties:
-> >>> +        peer-hub: true
-> >>> +        vdd-supply: true
-> >>> +        reset-gpios: true
-> >>
-> >> No need for this if schema. The default is they are allowed.
-> >>
-> >
-> > If I move reset-gpios to required, I observe the below warning.
-> >
-> >   DTC_CHK Documentation/devicetree/bindings/usb/maxim,max33359.example.dtb
-> > /home/alarm/linux-amlogic-5.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
-> > hub@1: 'reset-gpio' is a required property
-> >         from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
->
-> Where are the properties defined? If you open the binding you see:
-> nowhere. You cannot define properties in some variant with "true".
-> Please define all of them in top-level and only narrow/constrain when
-> applicable.
->
-What I meant is the example below, required meant applicable for both
-the binding
-But it shows me the above warning.
+https://lore.kernel.org/all/20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v3-0-dfd1c375ef61@linaro.org/
 
-required:
-  - compatible
-  - reg
-  - reset-gpio
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Changes in v3:
+- Added qmp_v7_usb3phy_regs_layout like Dmitry suggested
+- Added Krzysztof's R-b tag to 1st patch 
+- Added Dmitry's R-b tag to 2nd patch 
+- Link to v2: https://lore.kernel.org/r/20231122-phy-qualcomm-usb3-uniphy-x1e80100-v2-0-1a3e1d98564e@linaro.org
 
-allOf:
-  - $ref: usb-device.yaml#
-  - if:
-      properties:
-        compatible:
-          contains:
-            enum:
-              - usb5e3,608
-    then:
-      properties:
-        peer-hub: false
-        vdd-supply: false
+Changes in v2:
+- Added qmp_usb_offsets_v7, as Dmitry suggested
+- Properly sorted the init tables, cfg struct and compatible entry, as
+  suggested by Johan
+- Add entries to allOf section in the schema, as suggested by Krzysztof
+- Link to v1: https://lore.kernel.org/r/20231122-phy-qualcomm-usb3-uniphy-x1e80100-v1-0-3f5bd223d5b4@linaro.org
 
-  - if:
-      properties:
-        compatible:
-          contains:
-            enum:
-              - usb5e3,610
-              - usb5e3,620
-    then:
-      properties:
-        peer-hub: true
-        vdd-supply: true
+---
+Abel Vesa (2):
+      dt-bindings: phy: qcom,sc8280xp-qmp-usb3-uni: Add X1E80100 USB PHY binding
+      phy: qcom-qmp-usb: Add Qualcomm X1E80100 USB3 PHY support
 
-additionalProperties: false
+ .../phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml        |   3 +
+ drivers/phy/qualcomm/phy-qcom-qmp-usb.c            | 171 +++++++++++++++++++++
+ 2 files changed, 174 insertions(+)
+---
+base-commit: a2a7cea5da9065b9e34a8bf3275241c1129ebce0
+change-id: 20231122-phy-qualcomm-usb3-uniphy-x1e80100-973c882591ef
 
->
-> Best regards,
-> Krzysztof
->
+Best regards,
+-- 
+Abel Vesa <abel.vesa@linaro.org>
 
-Thanks
--Anand
