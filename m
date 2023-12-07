@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7941F807F40
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 04:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C79807F62
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 04:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229504AbjLGDrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 22:47:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
+        id S229585AbjLGDwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 22:52:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjLGDrF (ORCPT
+        with ESMTP id S229449AbjLGDwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 22:47:05 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67D7D5C;
-        Wed,  6 Dec 2023 19:47:10 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40c09d0b045so6276585e9.0;
-        Wed, 06 Dec 2023 19:47:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701920829; x=1702525629; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+3IkORsGsNJWFyuH3JxwzLsXwTl46eloyKjfI9ce56c=;
-        b=VlH/HaSYUwL2CLpyXsSOTsdmpFEkzKnRBf7uWLH1OXVHX6baRu3EMRL29/seeBfqcF
-         8HQMiaaPxT2eY19TisBB5yLfe1wnwTIRDh+hD80f7q8yuuRsbXrrWtSvaUHeEqVOxBgn
-         nyeAGX5eimE8WdrN31TYkXnEBMkK/5IqIFXA5HksmqYVQsx+PGn0jqHZehMFUOyZFy/D
-         PVAR5KIG9wz+ZFI12xftDWG0+WYyCHwordoW9PAfa/bsA5GyV6W1HtabipdcQKZQfrtT
-         pM9DV90DpRdK6jCKB06Lf6Hv8WQt+myfHAxgeLv9qqKo2TtuhJjT5ACwQq48A3NhEf00
-         L3UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701920829; x=1702525629;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+3IkORsGsNJWFyuH3JxwzLsXwTl46eloyKjfI9ce56c=;
-        b=qXx+ClK/2y1mnVDeXkwVmlAyBRyxLJovJ2X980voavV6/TJcAUx+93ey8EHKz/7/p7
-         1IhyRcyhDVDp3H4tB6WFdGpCluCI6zhRzwj5ff2NydmjIxhk+Ciu9eD+nrCxDumxDuK4
-         aFWKKoliMe0tnD5AQA1BYVJrqi0VE4q6vwXlQiGf7cnBnajgxGFy0n4bvFwPTprh7gpt
-         v5/EcDUyhHzoyuWH5zzzlsWD/qsNwab9xachvDkPLmOFMXOa+iR+KUsbE3dIuBNazCeu
-         aCiii4yBzVGGXurwMOU1QLWypd2bfNBcl1RrlCxY+arp5+GDHx+rLYCO9x1RyO0URN3m
-         XdAg==
-X-Gm-Message-State: AOJu0YzyH7+6MmZgDv+VWtQtvqAw1aV+9UDYpMGvvbUz9n+WevMxGscN
-        S8o67r0QPmMPmeuwmZ2Nonq/w8idkJVx6V9VRR0=
-X-Google-Smtp-Source: AGHT+IGzJ7V9ob+jd+WlyHTlUOXGcJk3JyOU49MSMafqwFkzdGIfr4XULnI7n8pi8eFvy5Qg6IEj4rbdx/PtabPQAPE=
-X-Received: by 2002:a05:600c:4ecf:b0:40c:ddd:575b with SMTP id
- g15-20020a05600c4ecf00b0040c0ddd575bmr774463wmq.76.1701920829193; Wed, 06 Dec
- 2023 19:47:09 -0800 (PST)
+        Wed, 6 Dec 2023 22:52:19 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A7FD71;
+        Wed,  6 Dec 2023 19:52:22 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 2DB5481EA;
+        Thu,  7 Dec 2023 11:52:10 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 7 Dec
+ 2023 11:52:09 +0800
+Received: from [192.168.125.88] (183.27.97.199) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 7 Dec
+ 2023 11:52:08 +0800
+Message-ID: <53b992e8-1b36-4540-a993-fde8e550faf9@starfivetech.com>
+Date:   Thu, 7 Dec 2023 11:48:56 +0800
 MIME-Version: 1.0
-References: <20231201161652.1241695-1-vincent.guittot@linaro.org> <20231201161652.1241695-3-vincent.guittot@linaro.org>
-In-Reply-To: <20231201161652.1241695-3-vincent.guittot@linaro.org>
-From:   Alex Shi <seakeel@gmail.com>
-Date:   Thu, 7 Dec 2023 11:46:33 +0800
-Message-ID: <CAJy-AmkxYkcSwNGu3b8UudmurLFAC=pvaRc_t1DC89GPPPJh9Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] sched/fair: Simplify util_est
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        corbet@lwn.net, alexs@kernel.org, siyanteng@loongson.cn,
-        qyousef@layalina.io, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, lukasz.luba@arm.com,
-        hongyan.xia2@arm.com, yizhou.tang@shopee.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/2] dt-bindings: display: panel: raspberrypi: Add
+ compatible property for waveshare 7inch touchscreen panel
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <neil.armstrong@linaro.org>, <quic_jesszhan@quicinc.com>,
+        <sam@ravnborg.org>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <florian.fainelli@broadcom.com>,
+        <bcm-kernel-feedback-list@broadcom.com>, <eric@anholt.net>,
+        <thierry.reding@gmail.com>, <changhuang.liang@starfivetech.com>,
+        <keith.zhao@starfivetech.com>, <jack.zhu@starfivetech.com>,
+        <linux-rpi-kernel@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231124104451.44271-1-shengyang.chen@starfivetech.com>
+ <20231124104451.44271-2-shengyang.chen@starfivetech.com>
+ <20231124-lesser-sinister-7f9cd7b80e35@spud>
+ <2d48e460-e46e-431f-bd7b-e34ebe73a40c@starfivetech.com>
+ <20231206-isolating-smoked-b490952029d0@spud>
+From:   Shengyang Chen <shengyang.chen@starfivetech.com>
+In-Reply-To: <20231206-isolating-smoked-b490952029d0@spud>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [183.27.97.199]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,372 +69,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good to me.
+Hi, Conor
 
-Reviewed-by: Alex Shi <alexs@kernel.org>
+thanks for comment
 
-On Sat, Dec 2, 2023 at 12:17=E2=80=AFAM Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> With UTIL_EST_FASTUP now being permanent, we can take advantage of the
-> fact that the ewma jumps directly to a higher utilization at dequeue to
-> simplify util_est and remove the enqueued field.
->
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Reviewed-and-tested-by: Lukasz Luba <lukasz.luba@arm.com>
-> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Reviewed-by: Hongyan Xia <hongyan.xia2@arm.com>
-> ---
->  include/linux/sched.h | 49 +++++++-------------------
->  kernel/sched/debug.c  |  7 ++--
->  kernel/sched/fair.c   | 82 ++++++++++++++++---------------------------
->  kernel/sched/pelt.h   |  4 +--
->  4 files changed, 48 insertions(+), 94 deletions(-)
->
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 8d258162deb0..03bfe9ab2951 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -415,42 +415,6 @@ struct load_weight {
->         u32                             inv_weight;
->  };
->
-> -/**
-> - * struct util_est - Estimation utilization of FAIR tasks
-> - * @enqueued: instantaneous estimated utilization of a task/cpu
-> - * @ewma:     the Exponential Weighted Moving Average (EWMA)
-> - *            utilization of a task
-> - *
-> - * Support data structure to track an Exponential Weighted Moving Averag=
-e
-> - * (EWMA) of a FAIR task's utilization. New samples are added to the mov=
-ing
-> - * average each time a task completes an activation. Sample's weight is =
-chosen
-> - * so that the EWMA will be relatively insensitive to transient changes =
-to the
-> - * task's workload.
-> - *
-> - * The enqueued attribute has a slightly different meaning for tasks and=
- cpus:
-> - * - task:   the task's util_avg at last task dequeue time
-> - * - cfs_rq: the sum of util_est.enqueued for each RUNNABLE task on that=
- CPU
-> - * Thus, the util_est.enqueued of a task represents the contribution on =
-the
-> - * estimated utilization of the CPU where that task is currently enqueue=
-d.
-> - *
-> - * Only for tasks we track a moving average of the past instantaneous
-> - * estimated utilization. This allows to absorb sporadic drops in utiliz=
-ation
-> - * of an otherwise almost periodic task.
-> - *
-> - * The UTIL_AVG_UNCHANGED flag is used to synchronize util_est with util=
-_avg
-> - * updates. When a task is dequeued, its util_est should not be updated =
-if its
-> - * util_avg has not been updated in the meantime.
-> - * This information is mapped into the MSB bit of util_est.enqueued at d=
-equeue
-> - * time. Since max value of util_est.enqueued for a task is 1024 (PELT u=
-til_avg
-> - * for a task) it is safe to use MSB.
-> - */
-> -struct util_est {
-> -       unsigned int                    enqueued;
-> -       unsigned int                    ewma;
-> -#define UTIL_EST_WEIGHT_SHIFT          2
-> -#define UTIL_AVG_UNCHANGED             0x80000000
-> -} __attribute__((__aligned__(sizeof(u64))));
-> -
->  /*
->   * The load/runnable/util_avg accumulates an infinite geometric series
->   * (see __update_load_avg_cfs_rq() in kernel/sched/pelt.c).
-> @@ -505,9 +469,20 @@ struct sched_avg {
->         unsigned long                   load_avg;
->         unsigned long                   runnable_avg;
->         unsigned long                   util_avg;
-> -       struct util_est                 util_est;
-> +       unsigned int                    util_est;
->  } ____cacheline_aligned;
->
-> +/*
-> + * The UTIL_AVG_UNCHANGED flag is used to synchronize util_est with util=
-_avg
-> + * updates. When a task is dequeued, its util_est should not be updated =
-if its
-> + * util_avg has not been updated in the meantime.
-> + * This information is mapped into the MSB bit of util_est at dequeue ti=
-me.
-> + * Since max value of util_est for a task is 1024 (PELT util_avg for a t=
-ask)
-> + * it is safe to use MSB.
-> + */
-> +#define UTIL_EST_WEIGHT_SHIFT          2
-> +#define UTIL_AVG_UNCHANGED             0x80000000
-> +
->  struct sched_statistics {
->  #ifdef CONFIG_SCHEDSTATS
->         u64                             wait_start;
-> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-> index 168eecc209b4..8d5d98a5834d 100644
-> --- a/kernel/sched/debug.c
-> +++ b/kernel/sched/debug.c
-> @@ -684,8 +684,8 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct=
- cfs_rq *cfs_rq)
->                         cfs_rq->avg.runnable_avg);
->         SEQ_printf(m, "  .%-30s: %lu\n", "util_avg",
->                         cfs_rq->avg.util_avg);
-> -       SEQ_printf(m, "  .%-30s: %u\n", "util_est_enqueued",
-> -                       cfs_rq->avg.util_est.enqueued);
-> +       SEQ_printf(m, "  .%-30s: %u\n", "util_est",
-> +                       cfs_rq->avg.util_est);
->         SEQ_printf(m, "  .%-30s: %ld\n", "removed.load_avg",
->                         cfs_rq->removed.load_avg);
->         SEQ_printf(m, "  .%-30s: %ld\n", "removed.util_avg",
-> @@ -1075,8 +1075,7 @@ void proc_sched_show_task(struct task_struct *p, st=
-ruct pid_namespace *ns,
->         P(se.avg.runnable_avg);
->         P(se.avg.util_avg);
->         P(se.avg.last_update_time);
-> -       P(se.avg.util_est.ewma);
-> -       PM(se.avg.util_est.enqueued, ~UTIL_AVG_UNCHANGED);
-> +       PM(se.avg.util_est, ~UTIL_AVG_UNCHANGED);
->  #endif
->  #ifdef CONFIG_UCLAMP_TASK
->         __PS("uclamp.min", p->uclamp_req[UCLAMP_MIN].value);
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index e94d65da8d66..823dd76d0546 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4781,9 +4781,7 @@ static inline unsigned long task_runnable(struct ta=
-sk_struct *p)
->
->  static inline unsigned long _task_util_est(struct task_struct *p)
->  {
-> -       struct util_est ue =3D READ_ONCE(p->se.avg.util_est);
-> -
-> -       return max(ue.ewma, (ue.enqueued & ~UTIL_AVG_UNCHANGED));
-> +       return READ_ONCE(p->se.avg.util_est) & ~UTIL_AVG_UNCHANGED;
->  }
->
->  static inline unsigned long task_util_est(struct task_struct *p)
-> @@ -4800,9 +4798,9 @@ static inline void util_est_enqueue(struct cfs_rq *=
-cfs_rq,
->                 return;
->
->         /* Update root cfs_rq's estimated utilization */
-> -       enqueued  =3D cfs_rq->avg.util_est.enqueued;
-> +       enqueued  =3D cfs_rq->avg.util_est;
->         enqueued +=3D _task_util_est(p);
-> -       WRITE_ONCE(cfs_rq->avg.util_est.enqueued, enqueued);
-> +       WRITE_ONCE(cfs_rq->avg.util_est, enqueued);
->
->         trace_sched_util_est_cfs_tp(cfs_rq);
->  }
-> @@ -4816,34 +4814,20 @@ static inline void util_est_dequeue(struct cfs_rq=
- *cfs_rq,
->                 return;
->
->         /* Update root cfs_rq's estimated utilization */
-> -       enqueued  =3D cfs_rq->avg.util_est.enqueued;
-> +       enqueued  =3D cfs_rq->avg.util_est;
->         enqueued -=3D min_t(unsigned int, enqueued, _task_util_est(p));
-> -       WRITE_ONCE(cfs_rq->avg.util_est.enqueued, enqueued);
-> +       WRITE_ONCE(cfs_rq->avg.util_est, enqueued);
->
->         trace_sched_util_est_cfs_tp(cfs_rq);
->  }
->
->  #define UTIL_EST_MARGIN (SCHED_CAPACITY_SCALE / 100)
->
-> -/*
-> - * Check if a (signed) value is within a specified (unsigned) margin,
-> - * based on the observation that:
-> - *
-> - *     abs(x) < y :=3D (unsigned)(x + y - 1) < (2 * y - 1)
-> - *
-> - * NOTE: this only works when value + margin < INT_MAX.
-> - */
-> -static inline bool within_margin(int value, int margin)
-> -{
-> -       return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
-> -}
-> -
->  static inline void util_est_update(struct cfs_rq *cfs_rq,
->                                    struct task_struct *p,
->                                    bool task_sleep)
->  {
-> -       long last_ewma_diff, last_enqueued_diff;
-> -       struct util_est ue;
-> +       unsigned int ewma, dequeued, last_ewma_diff;
->
->         if (!sched_feat(UTIL_EST))
->                 return;
-> @@ -4855,23 +4839,25 @@ static inline void util_est_update(struct cfs_rq =
-*cfs_rq,
->         if (!task_sleep)
->                 return;
->
-> +       /* Get current estimate of utilization */
-> +       ewma =3D READ_ONCE(p->se.avg.util_est);
-> +
->         /*
->          * If the PELT values haven't changed since enqueue time,
->          * skip the util_est update.
->          */
-> -       ue =3D p->se.avg.util_est;
-> -       if (ue.enqueued & UTIL_AVG_UNCHANGED)
-> +       if (ewma & UTIL_AVG_UNCHANGED)
->                 return;
->
-> -       last_enqueued_diff =3D ue.enqueued;
-> +       /* Get utilization at dequeue */
-> +       dequeued =3D task_util(p);
->
->         /*
->          * Reset EWMA on utilization increases, the moving average is use=
-d only
->          * to smooth utilization decreases.
->          */
-> -       ue.enqueued =3D task_util(p);
-> -       if (ue.ewma < ue.enqueued) {
-> -               ue.ewma =3D ue.enqueued;
-> +       if (ewma <=3D dequeued) {
-> +               ewma =3D dequeued;
->                 goto done;
->         }
->
-> @@ -4879,27 +4865,22 @@ static inline void util_est_update(struct cfs_rq =
-*cfs_rq,
->          * Skip update of task's estimated utilization when its members a=
-re
->          * already ~1% close to its last activation value.
->          */
-> -       last_ewma_diff =3D ue.enqueued - ue.ewma;
-> -       last_enqueued_diff -=3D ue.enqueued;
-> -       if (within_margin(last_ewma_diff, UTIL_EST_MARGIN)) {
-> -               if (!within_margin(last_enqueued_diff, UTIL_EST_MARGIN))
-> -                       goto done;
-> -
-> -               return;
-> -       }
-> +       last_ewma_diff =3D ewma - dequeued;
-> +       if (last_ewma_diff < UTIL_EST_MARGIN)
-> +               goto done;
->
->         /*
->          * To avoid overestimation of actual task utilization, skip updat=
-es if
->          * we cannot grant there is idle time in this CPU.
->          */
-> -       if (task_util(p) > arch_scale_cpu_capacity(cpu_of(rq_of(cfs_rq)))=
-)
-> +       if (dequeued > arch_scale_cpu_capacity(cpu_of(rq_of(cfs_rq))))
->                 return;
->
->         /*
->          * To avoid underestimate of task utilization, skip updates of EW=
-MA if
->          * we cannot grant that thread got all CPU time it wanted.
->          */
-> -       if ((ue.enqueued + UTIL_EST_MARGIN) < task_runnable(p))
-> +       if ((dequeued + UTIL_EST_MARGIN) < task_runnable(p))
->                 goto done;
->
->
-> @@ -4907,25 +4888,24 @@ static inline void util_est_update(struct cfs_rq =
-*cfs_rq,
->          * Update Task's estimated utilization
->          *
->          * When *p completes an activation we can consolidate another sam=
-ple
-> -        * of the task size. This is done by storing the current PELT val=
-ue
-> -        * as ue.enqueued and by using this value to update the Exponenti=
-al
-> -        * Weighted Moving Average (EWMA):
-> +        * of the task size. This is done by using this value to update t=
-he
-> +        * Exponential Weighted Moving Average (EWMA):
->          *
->          *  ewma(t) =3D w *  task_util(p) + (1-w) * ewma(t-1)
->          *          =3D w *  task_util(p) +         ewma(t-1)  - w * ewma=
-(t-1)
->          *          =3D w * (task_util(p) -         ewma(t-1)) +     ewma=
-(t-1)
-> -        *          =3D w * (      last_ewma_diff            ) +     ewma=
-(t-1)
-> -        *          =3D w * (last_ewma_diff  +  ewma(t-1) / w)
-> +        *          =3D w * (      -last_ewma_diff           ) +     ewma=
-(t-1)
-> +        *          =3D w * (-last_ewma_diff +  ewma(t-1) / w)
->          *
->          * Where 'w' is the weight of new samples, which is configured to=
- be
->          * 0.25, thus making w=3D1/4 ( >>=3D UTIL_EST_WEIGHT_SHIFT)
->          */
-> -       ue.ewma <<=3D UTIL_EST_WEIGHT_SHIFT;
-> -       ue.ewma  +=3D last_ewma_diff;
-> -       ue.ewma >>=3D UTIL_EST_WEIGHT_SHIFT;
-> +       ewma <<=3D UTIL_EST_WEIGHT_SHIFT;
-> +       ewma  -=3D last_ewma_diff;
-> +       ewma >>=3D UTIL_EST_WEIGHT_SHIFT;
->  done:
-> -       ue.enqueued |=3D UTIL_AVG_UNCHANGED;
-> -       WRITE_ONCE(p->se.avg.util_est, ue);
-> +       ewma |=3D UTIL_AVG_UNCHANGED;
-> +       WRITE_ONCE(p->se.avg.util_est, ewma);
->
->         trace_sched_util_est_se_tp(&p->se);
->  }
-> @@ -7653,16 +7633,16 @@ cpu_util(int cpu, struct task_struct *p, int dst_=
-cpu, int boost)
->         if (sched_feat(UTIL_EST)) {
->                 unsigned long util_est;
->
-> -               util_est =3D READ_ONCE(cfs_rq->avg.util_est.enqueued);
-> +               util_est =3D READ_ONCE(cfs_rq->avg.util_est);
->
->                 /*
->                  * During wake-up @p isn't enqueued yet and doesn't contr=
-ibute
-> -                * to any cpu_rq(cpu)->cfs.avg.util_est.enqueued.
-> +                * to any cpu_rq(cpu)->cfs.avg.util_est.
->                  * If @dst_cpu =3D=3D @cpu add it to "simulate" cpu_util =
-after @p
->                  * has been enqueued.
->                  *
->                  * During exec (@dst_cpu =3D -1) @p is enqueued and does
-> -                * contribute to cpu_rq(cpu)->cfs.util_est.enqueued.
-> +                * contribute to cpu_rq(cpu)->cfs.util_est.
->                  * Remove it to "simulate" cpu_util without @p's contribu=
-tion.
->                  *
->                  * Despite the task_on_rq_queued(@p) check there is still=
- a
-> diff --git a/kernel/sched/pelt.h b/kernel/sched/pelt.h
-> index 3a0e0dc28721..9e1083465fbc 100644
-> --- a/kernel/sched/pelt.h
-> +++ b/kernel/sched/pelt.h
-> @@ -52,13 +52,13 @@ static inline void cfs_se_util_change(struct sched_av=
-g *avg)
->                 return;
->
->         /* Avoid store if the flag has been already reset */
-> -       enqueued =3D avg->util_est.enqueued;
-> +       enqueued =3D avg->util_est;
->         if (!(enqueued & UTIL_AVG_UNCHANGED))
->                 return;
->
->         /* Reset flag to report util_avg has been updated */
->         enqueued &=3D ~UTIL_AVG_UNCHANGED;
-> -       WRITE_ONCE(avg->util_est.enqueued, enqueued);
-> +       WRITE_ONCE(avg->util_est, enqueued);
->  }
->
->  static inline u64 rq_clock_pelt(struct rq *rq)
-> --
-> 2.34.1
->
+On 2023/12/6 23:40, Conor Dooley wrote:
+> On Wed, Dec 06, 2023 at 05:43:48PM +0800, Shengyang Chen wrote:
+>> Hi, Conor
+>> 
+>> On 2023/11/24 20:31, Conor Dooley wrote:
+>> > On Fri, Nov 24, 2023 at 06:44:50PM +0800, Shengyang Chen wrote:
+>> >> The waveshare 7inch touchscreen panel is a kind of raspberrypi pi
+>> >> panel
+>> > 
+>> > Can you be more specific about what "is a kind of rpi panel" means?
+>> > Are they using identical chips as controllers or something like that?
+>> > 
+>> 
+>> Wareshare panel has same i2c slave address and registers address with 
+>> the original raspberry pi panel. They both use Atmel firmware and they
+>> got same reg id. It can be operated by using the driver of raspberry pi driver
+>> after some change of the code. So I suppose it may be a kind of raspberry pi panel 
+>> and discribe it in this way. It's my own judgement. Sorry about that.
+>> Maybe just like Dave said, It cloned the behaviour of the raspberri pi panel.
+>> I will change the discribtion in next version to not make other confused.
+>> 
+>> By the way, we will try Stefan's method before next version. 
+>> The method we used in this patch may be abandoned if Stefan's method is verified in our platform.
+>> At that time yaml may also be changed to fit new method.
+> 
+> I don't know what Stefan's approach is, but I do not think that a
+> bindings patch should be dropped. The waveshare might be a clone, but it
+> is a distinct device. If the same driver can control both, then the
+> compatible setups that should be permitted are:
+> compatible = "raspberrypi,7inch-touchscreen-panel";
+> and
+> compatible = "waveshare,7inch-touchscreen-panel", "raspberrypi,7inch-touchscreen-panel";
+> 
+> Cheers,
+> Conor.
+> 
+
+Here is our consideration of this submit:
+
+Although Waveshare panel reuse the driver of raspberry pi panel, they are different in probing process
+and panel parameters.
+we try to use compatible and data to distinguish these two panel
+
+Here are the reference
+driver part:
+https://elixir.bootlin.com/linux/v6.7-rc3/source/drivers/gpu/drm/panel/panel-simple.c
+dt-binding part:
+https://elixir.bootlin.com/linux/v6.7-rc3/source/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+
+
+For example:
+
+in driver part:
+
+in drivers/gpu/drm/panel/panel-simple.c:#in line 4189
+----------------------------------------------------------------------------------
+we can got different compatible with its own data.
+================================================
+static const struct of_device_id platform_of_match[] = {			//the of_match array list
+	{
+		.compatible = "ampire,am-1280800n3tzqw-t00h",
+		.data = &ampire_am_1280800n3tzqw_t00h,		//we define our panel parameter or special panel function, which can distinguish different panels
+	}, {
+		.compatible = "ampire,am-480272h3tmqw-t01h",
+		.data = &ampire_am_480272h3tmqw_t01h,
+	}, 
+...
+...
+}
+===============================================
+
+in drivers/gpu/drm/panel/panel-simple.c:#in line 4611
+----------------------------------------------------------------------------------
+we can use the generic probing process to probe our driver
+after getting its own data.
+================================================
+static int panel_simple_platform_probe(struct platform_device *pdev)
+{
+	const struct panel_desc *desc;
+
+	desc = of_device_get_match_data(&pdev->dev);			//we get our panel parameter
+	if (!desc)
+		return -ENODEV;
+
+	return panel_simple_probe(&pdev->dev, desc);			//probe with returned data
+}
+
+
+
+================================================
+
+in yamel part:
+
+in /Documentation/devicetree/bindings/display/panel/panel-simple.yaml#in line 33
+----------------------------------------------------------------------------------
+We refer to this approach, adding our compatible to the yaml of raspberry pi panel
+================================================
+
+properties:
+  compatible:
+    enum:
+    # compatible must be listed in alphabetical order, ordered by compatible.
+    # The description in the comment is mandatory for each compatible.
+
+        # Ampire AM-1280800N3TZQW-T00H 10.1" WQVGA TFT LCD panel
+      - ampire,am-1280800n3tzqw-t00h
+        # Ampire AM-480272H3TMQW-T01H 4.3" WQVGA TFT LCD panel
+      - ampire,am-480272h3tmqw-t01h
+================================================
+
+
+
+If we use Stenfan's method, we can reuse the code of panel-simple.c
+we may submit our patch to
+/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+/drivers/gpu/drm/panel/panel-simple.c
+as a new panel porting. That may less confuse.
+
+
+here is Stenfan's method:
+[1] - https://github.com/lategoodbye/rpi-zero/commits/v6.7-7inch-ts
+[2] -
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx-0x-rpidsi.dtso?h=v6.6.2&id=6b4da1354fd81adace0cda448c77d8f2a47d8474
+
+
+Thanks
+
+Best Regards,
+Shengyang
+
+
+>> >> and it can be drived by panel-raspberrypi-touchscreen.c.
+>> >> Add compatible property for it.
+>> >> 
+>> >> Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
+>> >> Signed-off-by: Shengyang Chen <shengyang.chen@starfivetech.com>
+>> >> ---
+>> >>  .../bindings/display/panel/raspberrypi,7inch-touchscreen.yaml | 4 +++-
+>> >>  1 file changed, 3 insertions(+), 1 deletion(-)
+>> >> 
+>> >> diff --git a/Documentation/devicetree/bindings/display/panel/raspberrypi,7inch-touchscreen.yaml b/Documentation/devicetree/bindings/display/panel/raspberrypi,7inch-touchscreen.yaml
+>> >> index 22a083f7bc8e..e4e6cb4d4e5b 100644
+>> >> --- a/Documentation/devicetree/bindings/display/panel/raspberrypi,7inch-touchscreen.yaml
+>> >> +++ b/Documentation/devicetree/bindings/display/panel/raspberrypi,7inch-touchscreen.yaml
+>> >> @@ -22,7 +22,9 @@ description: |+
+>> >>  
+>> >>  properties:
+>> >>    compatible:
+>> >> -    const: raspberrypi,7inch-touchscreen-panel
+>> >> +    enum:
+>> >> +      - raspberrypi,7inch-touchscreen-panel
+>> >> +      - waveshare,7inch-touchscreen-panel
+>> >>  
+>> >>    reg:
+>> >>      const: 0x45
+>> >> -- 
+>> >> 2.17.1
+>> >> 
+>> 
+>> 
+>> thanks.
+>> 
+>> Best Regards,
+>> Shengyang
+>> 
+
