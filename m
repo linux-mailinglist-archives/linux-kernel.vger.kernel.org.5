@@ -2,166 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6D2808696
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99648808690
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379036AbjLGLVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 06:21:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57898 "EHLO
+        id S1378978AbjLGLVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 06:21:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378977AbjLGLVj (ORCPT
+        with ESMTP id S1378921AbjLGLVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 06:21:39 -0500
-Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C11D5B;
-        Thu,  7 Dec 2023 03:21:45 -0800 (PST)
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id 6280942BF9;
-        Thu,  7 Dec 2023 16:21:32 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1701948093; bh=DBs7WSTRsWsDILHndJynPWxZbqbs68OouyDKWJNsV3g=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=Hoa7p5Rd2KrsNDYToioeGzMosAXV7/09a6h/s8R4LlgeC3Y30rZrpurXBXl9x3KwV
-         QXrAjwrbRMVpz1CBZ/eJZDRLADrNSlokhxEdlt/4ENQco2tgHQtRfMI++11UmOGXSm
-         cTbPqGDpd5LGzP4nJRGlAtMcBlvXvvI9U9AaQ19NI8aIEE5qqckgajA+3ggKCt8Of9
-         TlIl8FrHoCOpyuBcORakF4ikUA/AQEfGHXH7VHzq0YSQwI9NiEm4T+31L8wXYi1IFQ
-         KSFTyj9Nx88WD9AasjsYff4mWxfe5j9uk+Njcye1+YrOW0q3Zaj4VbgPkr7hfVSx3m
-         vgurVni9tPpdg==
-From:   Nikita Travkin <nikita@trvn.ru>
-Date:   Thu, 07 Dec 2023 16:20:16 +0500
-Subject: [PATCH 3/3] arm64: dts: qcom: acer-aspire1: Add embedded
- controller
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231207-aspire1-ec-v1-3-ba9e1c227007@trvn.ru>
-References: <20231207-aspire1-ec-v1-0-ba9e1c227007@trvn.ru>
-In-Reply-To: <20231207-aspire1-ec-v1-0-ba9e1c227007@trvn.ru>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org,
+        Thu, 7 Dec 2023 06:21:08 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF716FA
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 03:21:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F956C433C7;
+        Thu,  7 Dec 2023 11:21:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701948074;
+        bh=Y+kCs8J8Xte1h+4V1sfgYUbvivj8bv1hTvD8IuIDh+U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d+gqu0HgAAr0TvC+OmZqlvMV+esi/bBl1U5DBLY5pEgyEhigN3qu5ic0LOFs8xGEW
+         GjubXsS26m3+ZXhanUEOi2q0MuSBCYCOSbgTxODrwr8cEHPIh7Dl7EJGsXDiMj0U+W
+         iKGzC2sbvJPXnJaWKM0Mw05vxO1S25jFERAWaJLB9M4IxPdzoOmgJgzGv6eeQS7RCx
+         frIuj2vmZ3/ydvd3y0ZvUX3oq6V6IBi0iMlKlfSAFKt+btXI6e+4hZCySzkCAV8nqS
+         mkiMIwUtlNdxgDalgPhnuXbOQgYZJFIEsTmWOHm/vHDlF5Er9OWLaoIZ1klFBqoeAg
+         PM+kvTyiDB6HA==
+Date:   Thu, 7 Dec 2023 16:51:01 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Naresh Maramaina <quic_mnaresh@quicinc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Peter Wang <peter.wang@mediatek.com>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Nikita Travkin <nikita@trvn.ru>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2154; i=nikita@trvn.ru;
- h=from:subject:message-id; bh=DBs7WSTRsWsDILHndJynPWxZbqbs68OouyDKWJNsV3g=;
- b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBlcaq5lixDHcI7sL22tX5Fb/fuC6XCZ7nHDrS2U
- q1H48A8gwCJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZXGquQAKCRBDHOzuKBm/
- dTr0EACcFglXesnZoTHlKdBZhPYb1BP5An7F1fTIw0shv46k1t6TRjQgdj8a5A0iID3DaHg5ORL
- XCjyi+YNFNCj63sD/l2mWi+NV054o3NtfcPJB5hgxgHoenY62tSEVhnV0CeFLnoFUl6Hr64h1Gj
- GYWhtSL0/bqan02l5uYiRD8sK1nIplY5dYSgaqJSrhWe3xYYZWkmwTOr/TUMoeRSk5djCi1WPi+
- 6brOb+p1MPxJJvKtDKOhk93MBj39KF2WHiYPGOUsuqkcAtyd6QzQfWETYA0nfIAiR9F3rxIvvx3
- nqcCTuU6YMpFf/FVHvKY+ugVuyvPVZ8HMXLQHswQTVbfs6Wvicb8Lvt4deDLHOrY7d9qgE3OTEe
- tm66QoI/jakdaTEfVB98k1s2D07vWIfIdciRQRtQSJG1XkCGRuBDqp+JBY8bv6Bhbsqie5q8G/O
- hLDz0xZIn8uOQr4v+0B4lxnN6y58lCBXpVqIT8Jl3AFjl6DpGtkkgre7n9OZ3ue1AIiuSacdznO
- GZOiP0Ad5yanbWgGlYGpmfs9I9RPJY06+DIl0gf6TLOMW5wOXd9tAvB36YYMMvud1GdrCfG/Jal
- XZPVmczk5jI2LVAuRVeCdGYNgf7KZK2yxigaQk97Ki9GmIyhkjIuRDEm6VQvTVnQTVHUd+urjQp
- Nq+AOrD8VoWggyA==
-X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
- fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, chu.stanley@gmail.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, quic_cang@quicinc.com,
+        quic_nguyenb@quicinc.com
+Subject: Re: [PATCH V2 1/3] ufs: core: Add CPU latency QoS support for ufs
+ driver
+Message-ID: <20231207112101.GK2932@thinkpad>
+References: <20231204143101.64163-1-quic_mnaresh@quicinc.com>
+ <20231204143101.64163-2-quic_mnaresh@quicinc.com>
+ <590ade27-b4da-49be-933b-e9959aa0cd4c@acm.org>
+ <692cd503-5b14-4be6-831d-d8e9c282a95e@quicinc.com>
+ <5e7c5c75-cb5f-4afe-9d57-b0cab01a6f26@acm.org>
+ <b9373252-710c-4a54-95cc-046314796960@quicinc.com>
+ <20231206153242.GI12802@thinkpad>
+ <effb603e-ca7a-4f24-9783-4d62790165ae@acm.org>
+ <20231207094357.GI2932@thinkpad>
+ <286b6f8a-c634-19ed-cf53-276cfe05d03f@quicinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <286b6f8a-c634-19ed-cf53-276cfe05d03f@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The laptop contains an embedded controller that provides a set of
-features:
+On Thu, Dec 07, 2023 at 03:56:43PM +0530, Nitin Rawat wrote:
+> 
+> 
+> On 12/7/2023 3:13 PM, Manivannan Sadhasivam wrote:
+> > On Wed, Dec 06, 2023 at 03:02:04PM -1000, Bart Van Assche wrote:
+> > > On 12/6/23 05:32, Manivannan Sadhasivam wrote:
+> > > > On Wed, Dec 06, 2023 at 07:32:54PM +0530, Naresh Maramaina wrote:
+> > > > > On 12/5/2023 10:41 PM, Bart Van Assche wrote:
+> > > > > > On 12/4/23 21:58, Naresh Maramaina wrote:
+> > > > > > > On 12/5/2023 12:30 AM, Bart Van Assche wrote:
+> > > > > > > > On 12/4/23 06:30, Maramaina Naresh wrote:
+> > > > > > > > > +    /* This capability allows the host controller driver to
+> > > > > > > > > use the PM QoS
+> > > > > > > > > +     * feature.
+> > > > > > > > > +     */
+> > > > > > > > > +    UFSHCD_CAP_PM_QOS                = 1 << 13,
+> > > > > > > > >     };
+> > > > > > > > 
+> > > > > > > > Why does it depend on the host driver whether or not PM QoS is
+> > > > > > > > enabled? Why isn't it enabled unconditionally?
+> > > > > > > 
+> > > > > > > For some platform vendors power KPI might be more important than
+> > > > > > > random io KPI. Hence this flag is disabled by default and can be
+> > > > > > > enabled based on platform requirement.
+> > > > > > 
+> > > > > > How about leaving this flag out unless if a host vendor asks explicitly
+> > > > > > for this flag?
+> > > > > 
+> > > > > IMHO, instead of completely removing this flag, how about having
+> > > > > flag like "UFSHCD_CAP_DISABLE_PM_QOS" which will make PMQOS enable
+> > > > > by default and if some host vendor wants to disable it explicitly,
+> > > > > they can enable that flag.
+> > > > > Please let me know your opinion.
+> > > 
+> > > That would result in a flag that is tested but that is never set by
+> > > upstream code. I'm not sure that's acceptable.
+> > > 
+> > 
+> > Agree. The flag shouldn't be introduced if there are no users.
+> > 
+> > > > If a vendor wants to disable this feature, then the driver has to be modified.
+> > > > That won't be very convenient. So either this has to be configured through sysfs
+> > > > or Kconfig if flexibility matters.
+> > > 
+> > > Kconfig sounds worse to me because changing any Kconfig flag requires a
+> > > modification of the Android GKI kernel.
+> > > 
+> > 
+> > Hmm, ok. Then I think we can have a sysfs hook to toggle the enable switch.
+> 
+> Hi Bart, Mani
+> 
+> How about keeping this feature enabled by default and having a module
+> parameter to disable pmqos feature if required ?
+> 
 
-- Battery and charger monitoring
-- USB Type-C DP alt mode HPD monitoring
-- Lid status detection
-- Small amount of keyboard configuration*
+Module params not encouraged these days unless there are no other feasible
+options available.
 
-[*] The keyboard is handled by the same EC but it has a dedicated i2c
-bus and is already enabled. This port only provides fn key behavior
-configuration.
+- Mani
 
-Add the EC to the device tree and describe the relationship between the
-EC-managed type-c port and the SoC DisplayPort.
-
-Signed-off-by: Nikita Travkin <nikita@trvn.ru>
----
- arch/arm64/boot/dts/qcom/sc7180-acer-aspire1.dts | 40 +++++++++++++++++++++++-
- 1 file changed, 39 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-acer-aspire1.dts b/arch/arm64/boot/dts/qcom/sc7180-acer-aspire1.dts
-index dbb48934d499..a29f542fa612 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-acer-aspire1.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-acer-aspire1.dts
-@@ -147,7 +147,25 @@ &i2c2 {
- 	clock-frequency = <400000>;
- 	status = "okay";
- 
--	/* embedded-controller@76 */
-+	embedded-controller@76 {
-+		compatible = "acer,aspire1-ec";
-+		reg = <0x76>;
-+
-+		interrupts-extended = <&tlmm 30 IRQ_TYPE_LEVEL_LOW>;
-+
-+		pinctrl-0 = <&ec_int_default>;
-+		pinctrl-names = "default";
-+
-+		connector {
-+			compatible = "usb-c-connector";
-+
-+			port {
-+				ec_dp_in: endpoint {
-+					remote-endpoint = <&mdss_dp_out>;
-+				};
-+			};
-+		};
-+	};
- };
- 
- &i2c4 {
-@@ -298,6 +316,19 @@ &mdss {
- 	status = "okay";
- };
- 
-+&mdss_dp {
-+	data-lanes = <0 1>;
-+
-+	vdda-1p2-supply = <&vreg_l3c_1p2>;
-+	vdda-0p9-supply = <&vreg_l4a_0p8>;
-+
-+	status = "okay";
-+};
-+
-+&mdss_dp_out {
-+	remote-endpoint = <&ec_dp_in>;
-+};
-+
- &mdss_dsi0 {
- 	vdda-supply = <&vreg_l3c_1p2>;
- 	status = "okay";
-@@ -687,6 +718,13 @@ codec_irq_default: codec-irq-deault-state {
- 		bias-disable;
- 	};
- 
-+	ec_int_default: ec-int-default-state {
-+		pins = "gpio30";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
- 	edp_bridge_irq_default: edp-bridge-irq-default-state {
- 		pins = "gpio11";
- 		function = "gpio";
+> Regards,
+> Nitin
+> 
+> > 
+> > - Mani
+> > 
+> > > Thanks,
+> > > 
+> > > Bart.
+> > 
+> 
 
 -- 
-2.43.0
-
+மணிவண்ணன் சதாசிவம்
