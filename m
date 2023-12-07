@@ -2,439 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E5A808620
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88086808659
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 12:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbjLGK4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 05:56:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
+        id S231372AbjLGLFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 06:05:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjLGK4Q (ORCPT
+        with ESMTP id S232072AbjLGLFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 05:56:16 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 86D6E84
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 02:56:20 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3920F12FC;
-        Thu,  7 Dec 2023 02:57:06 -0800 (PST)
-Received: from [10.1.32.134] (XHFQ2J9959.cambridge.arm.com [10.1.32.134])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 629563F762;
-        Thu,  7 Dec 2023 02:56:17 -0800 (PST)
-Message-ID: <841178ee-d29d-43e3-b977-5796c90bd7ad@arm.com>
-Date:   Thu, 7 Dec 2023 10:56:16 +0000
+        Thu, 7 Dec 2023 06:05:22 -0500
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692E4D53;
+        Thu,  7 Dec 2023 03:05:25 -0800 (PST)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231207110524euoutp01613e40d891be59b320c0ade472d29cf4~eh_RfuRbr0152401524euoutp01U;
+        Thu,  7 Dec 2023 11:05:24 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231207110524euoutp01613e40d891be59b320c0ade472d29cf4~eh_RfuRbr0152401524euoutp01U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1701947124;
+        bh=daPuwGpwsCikEu05jfrEZmZPhBfvdaDIM/2Wd7kHU2o=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=mxGpFbe7KXsKyseqrH3jNtn2il9wQdQXl/rOGiAa2M9Xyo1/07WsXczlO6mfXp8tU
+         Jc8TpYWfSptZ/65M4wzfyKmjApuSydZ+TtfOMq9FGiR2UxDviI1yeKrHTqgXTBfzlh
+         m/RHd25QI6OIxfkBmTo9PXGnUQjW8K1yR1qoWmzs=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20231207110523eucas1p1204a194eba3c8a617cef548da848508f~eh_RFEIs72424224242eucas1p12;
+        Thu,  7 Dec 2023 11:05:23 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id A6.43.09552.3F6A1756; Thu,  7
+        Dec 2023 11:05:23 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231207110523eucas1p21e6a6ba5cbe0c2f17f7b0d08a50d6aad~eh_QksM9x1784117841eucas1p2u;
+        Thu,  7 Dec 2023 11:05:23 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231207110523eusmtrp190eca1446906b88559f4ac378aac3f40~eh_QkG1IK1166211662eusmtrp1T;
+        Thu,  7 Dec 2023 11:05:23 +0000 (GMT)
+X-AuditID: cbfec7f5-83dff70000002550-2a-6571a6f3ecee
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id BB.A2.09146.2F6A1756; Thu,  7
+        Dec 2023 11:05:23 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231207110522eusmtip1d56bff99c4aba8b5fee2428935de0000~eh_QX5JuT2586225862eusmtip19;
+        Thu,  7 Dec 2023 11:05:22 +0000 (GMT)
+Received: from localhost (106.210.248.38) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Thu, 7 Dec 2023 11:05:22 +0000
+Date:   Thu, 7 Dec 2023 12:05:21 +0100
+From:   Joel Granados <j.granados@samsung.com>
+To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+CC:     Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+Message-ID: <20231207110521.jeudk6y5ejh6ngf6@localhost>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 03/10] mm: thp: Introduce multi-size THP sysfs
- interface
-Content-Language: en-GB
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231204102027.57185-1-ryan.roberts@arm.com>
- <20231204102027.57185-4-ryan.roberts@arm.com>
- <004ed23d-5571-4474-b7fe-7bc08817c165@redhat.com>
- <ca3a2b97-f08e-452a-91dc-1a53dece0aa6@arm.com>
-In-Reply-To: <ca3a2b97-f08e-452a-91dc-1a53dece0aa6@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="a7f76owrdx7oxple"
+Content-Disposition: inline
+In-Reply-To: <b4b0b7ea-d8b3-4538-a5b9-87a23bbdac5f@t-8ch.de>
+X-Originating-IP: [106.210.248.38]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrNKsWRmVeSWpSXmKPExsWy7djPc7qflxWmGnxqV7RoXryezeLXxWms
+        Fme6cy327D3JYjFv/U9Gi8u75rBZ/P7xjMnixoSnjBbLdvo5cHrMbrjI4rFgU6nHplWdbB77
+        565h9/i8Sc6jv/sYewBbFJdNSmpOZllqkb5dAlfGzKZuxoKFIhWLpv1ibGDsF+xi5OSQEDCR
+        OD21m62LkYtDSGAFo8SWy/OZIZwvjBIbvx5mgnA+M0o8uLKPHablwL8XUC3LGSW+Xe1hhKu6
+        sGU2VMtmRomurussIC0sAioS/69OZAOx2QR0JM6/ucMMYosI2Eis/PaZHaSBWWAXk8S1fSAN
+        HBzCAg4S25okQWp4BcwlGtrPskHYghInZz4Bm8ksUCHxZdIWdpByZgFpieX/OEDCnEAj22e9
+        gbpUSeLw5M/MEHatxKktt8BukxBYzSlx5/pdVoiEi8SNNaugioQlXh3fAtUsI3F6cg8LRMNk
+        Ron9/z6wQ3UzSixr/MoEUWUt0XLlCVSHo8TsX7fAHpAQ4JO48VYQ4lA+iUnbpjNDhHklOtqE
+        IKrVJFbfe8MygVF5FpLXZiF5bRbCaxBhPYkbU6ewYQhrSyxb+JoZwraVWLfuPcsCRvZVjOKp
+        pcW56anFxnmp5XrFibnFpXnpesn5uZsYgWnu9L/jX3cwrnj1Ue8QIxMH4yFGFaDmRxtWX2CU
+        YsnLz0tVEuHNOZ+fKsSbklhZlVqUH19UmpNafIhRmoNFSZxXNUU+VUggPbEkNTs1tSC1CCbL
+        xMEp1cDULieoaSkkU5fmGsJqFTTxmKz2kfXitQ+ZDiyekMstFvF0V0WS9b2Orb5eDVvX504q
+        9tC691bqyK9HxyaKPpTjWZdztyjQr6OmM3PrhdwZL3WjFP3U6/Q9k/S/u7tV3T+36F5B3l5X
+        rWcrL6c9eKa9w8ricOqxbTICLExFMy9GzDtvY8L3ss7ZT6X8UbPhVB3+5+/SNLwe8FZfkhfZ
+        vJznRtarHJNw3okNs9RyY96/W8r6aumLZlvBuXohx3z25/z5O/HH/EUsx764T9tULqB/75Bw
+        ZiCzoPQiQ1Xx/zefztz/htGyp35S3DbVj1+tVf/MML8UyLDu8hV7J3GfeZwbHnVaO6bdfBF8
+        7ZVb6wklluKMREMt5qLiRABd/Gww7gMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGIsWRmVeSWpSXmKPExsVy+t/xu7qflxWmGuzcy2jRvHg9m8Wvi9NY
+        Lc5051rs2XuSxWLe+p+MFpd3zWGz+P3jGZPFjQlPGS2W7fRz4PSY3XCRxWPBplKPTas62Tz2
+        z13D7vF5k5xHf/cx9gC2KD2bovzSklSFjPziElulaEMLIz1DSws9IxNLPUNj81grI1MlfTub
+        lNSczLLUIn27BL2MU1NqCuaLVKy7OIGpgbFXsIuRk0NCwETiwL8XbF2MXBxCAksZJZ4enMkE
+        kZCR2PjlKiuELSzx51oXVNFHRon3TfsZIZzNjBItLd8YQapYBFQk/l+dyAZiswnoSJx/c4cZ
+        xBYRsJFY+e0zO0gDs8AuJolr+66zdDFycAgLOEhsa5IEqeEVMJdoaD8LteEbo0THtGOMEAlB
+        iZMzn7CA2MwCZRL3+q6xgvQyC0hLLP/HARLmBJrfPusNO8SlShKHJ39mhrBrJT7/fcY4gVF4
+        FpJJs5BMmoUwCSKsI7Fz6x02DGFtiWULXzND2LYS69a9Z1nAyL6KUSS1tDg3PbfYUK84Mbe4
+        NC9dLzk/dxMjMNK3Hfu5eQfjvFcf9Q4xMnEwHmJUAep8tGH1BUYplrz8vFQlEd6c8/mpQrwp
+        iZVVqUX58UWlOanFhxhNgaE4kVlKNDkfmILySuINzQxMDU3MLA1MLc2MlcR5PQs6EoUE0hNL
+        UrNTUwtSi2D6mDg4pRqY8h+aHHThWOgc/+pcgKJJ6LGYyCNnBM807NxxONo17dKUukr5ux0B
+        +qfMBC8/rZj35ef0KdaOAQEqV2eEmGuwTMsU+S13tMJEbaKCFbv2+o86Z9YJZhzmEbycoy/t
+        1HtztUvapaluhneYKth3za2ddHTTyhO3zt59PeO/v6AT11VhHR9WybUOemKWx43nf8qMuPVf
+        qaqtpqBdpYlBVLzu26SPOh/TvQRtD+1OSXyWm7Ruwo/re2+V1sWxF6XrnN9tEuen49K2kPeY
+        c7T/faHJJ+9Pi9S6UG3Js7X0a1LjTd9EroJZRosOTGh3ehv2RbBSqC5KxsvtzJ9pSY+inv38
+        56ld+WHZtyQTT7cJd1yUWIozEg21mIuKEwHO4gDwiQMAAA==
+X-CMS-MailID: 20231207110523eucas1p21e6a6ba5cbe0c2f17f7b0d08a50d6aad
+X-Msg-Generator: CA
+X-RootMTR: 20231205080416eucas1p241d86dda65c0009ca352673e1ca5b26d
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231205080416eucas1p241d86dda65c0009ca352673e1ca5b26d
+References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+        <ZW66FhWx7W67Y9rP@bombadil.infradead.org>
+        <CGME20231205080416eucas1p241d86dda65c0009ca352673e1ca5b26d@eucas1p2.samsung.com>
+        <b4b0b7ea-d8b3-4538-a5b9-87a23bbdac5f@t-8ch.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 13:18, Ryan Roberts wrote:
-> On 05/12/2023 16:57, David Hildenbrand wrote:
->> On 04.12.23 11:20, Ryan Roberts wrote:
->>> In preparation for adding support for anonymous multi-size THP,
->>> introduce new sysfs structure that will be used to control the new
->>> behaviours. A new directory is added under transparent_hugepage for each
->>> supported THP size, and contains an `enabled` file, which can be set to
->>> "inherit" (to inherit the global setting), "always", "madvise" or
->>> "never". For now, the kernel still only supports PMD-sized anonymous
->>> THP, so only 1 directory is populated.
->>>
->>> The first half of the change converts transhuge_vma_suitable() and
->>> hugepage_vma_check() so that they take a bitfield of orders for which
->>> the user wants to determine support, and the functions filter out all
->>> the orders that can't be supported, given the current sysfs
->>> configuration and the VMA dimensions. If there is only 1 order set in
->>> the input then the output can continue to be treated like a boolean;
->>> this is the case for most call sites. The resulting functions are
->>> renamed to thp_vma_suitable_orders() and thp_vma_allowable_orders()
->>> respectively.
->>>
->>> The second half of the change implements the new sysfs interface. It has
->>> been done so that each supported THP size has a `struct thpsize`, which
->>> describes the relevant metadata and is itself a kobject. This is pretty
->>> minimal for now, but should make it easy to add new per-thpsize files to
->>> the interface if needed in future (e.g. per-size defrag). Rather than
->>> keep the `enabled` state directly in the struct thpsize, I've elected to
->>> directly encode it into huge_anon_orders_[always|madvise|inherit]
->>> bitfields since this reduces the amount of work required in
->>> thp_vma_allowable_orders() which is called for every page fault.
->>>
->>> See Documentation/admin-guide/mm/transhuge.rst, as modified by this
->>> commit, for details of how the new sysfs interface works.
->>>
->>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>> ---
->>
->> Some comments mostly regarding thp_vma_allowable_orders and friends. In general,
->> LGTM. I'll have to go over the order logic once again, I got a bit lost once we
->> started mixing anon and file orders.
->>
->> [...]
->>
->> Doc updates all looked good to me, skimming over them.
->>
->>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->>> index fa0350b0812a..bd0eadd3befb 100644
->>> --- a/include/linux/huge_mm.h
->>> +++ b/include/linux/huge_mm.h
->>
->> [...]
->>
->>> +static inline unsigned long thp_vma_suitable_orders(struct vm_area_struct *vma,
->>> +        unsigned long addr, unsigned long orders)
->>> +{
->>> +    int order;
->>> +
->>> +    /*
->>> +     * Iterate over orders, highest to lowest, removing orders that don't
->>> +     * meet alignment requirements from the set. Exit loop at first order
->>> +     * that meets requirements, since all lower orders must also meet
->>> +     * requirements.
->>> +     */
->>> +
->>> +    order = first_order(orders);
->>
->> nit: "highest_order" or "largest_order" would be more expressive regarding the
->> actual semantics.
-> 
-> Yep, will call it "highest_order".
-> 
->>
->>> +
->>> +    while (orders) {
->>> +        unsigned long hpage_size = PAGE_SIZE << order;
->>> +        unsigned long haddr = ALIGN_DOWN(addr, hpage_size);
->>> +
->>> +        if (haddr >= vma->vm_start &&
->>> +            haddr + hpage_size <= vma->vm_end) {
->>> +            if (!vma_is_anonymous(vma)) {
->>> +                if (IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) -
->>> +                        vma->vm_pgoff,
->>> +                        hpage_size >> PAGE_SHIFT))
->>> +                    break;
->>> +            } else
->>> +                break;
->>
->> Comment: Codying style wants you to use if () {} else {}
->>
->> But I'd recommend for the conditions:
->>
->> if (haddr < vma->vm_start ||
->>     haddr + hpage_size > vma->vm_end)
->>     continue;
->> /* Don't have to check pgoff for anonymous vma */
->> if (!vma_is_anonymous(vma))
->>     break;
->> if (IS_ALIGNED((...
->>     break;
-> 
-> OK I'll take this structure.
+--a7f76owrdx7oxple
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-FYI I ended up NOT taking this, because I now have thp_vma_suitable_order() and
-thp_vma_suitable_orders(). The former is essentially what was there before
-(except I pass the order and derive the nr_pages, alignment, etc from that
-rather than using the HPAGE_* macros. The latter is just a loop that calls the
-former for each order in the bitfield.
+On Tue, Dec 05, 2023 at 09:04:08AM +0100, Thomas Wei=DFschuh wrote:
+> On 2023-12-04 21:50:14-0800, Luis Chamberlain wrote:
+> > On Mon, Dec 04, 2023 at 08:52:13AM +0100, Thomas Wei=DFschuh wrote:
+> > > Tested by booting and with the sysctl selftests on x86.
+> >=20
+> > Can I trouble you to rebase on sysctl-next?
+> >=20
+> > https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=
+=3Dsysctl-next
+>=20
+> Will do.
+>=20
+> Note:
+>=20
+> I noticed that patch "sysctl: move sysctl type to ctl_table_header" from
+> this series seems to be the better alternative to
+> commit fd696ee2395755a ("sysctl: Fix out of bounds access for empty sysct=
+l registers")
+> which is currently on sysctl-next.
+Indeed. By taking this out of the ctl_table, we would not need to make
+sure that we don't touch that (potentially non-existing) first element.
 
-> 
->>
->> [...]
->>
->>
->>> +/**
->>> + * thp_vma_allowable_orders - determine hugepage orders that are allowed for vma
->>> + * @vma:  the vm area to check
->>> + * @vm_flags: use these vm_flags instead of vma->vm_flags
->>> + * @smaps: whether answer will be used for smaps file
->>> + * @in_pf: whether answer will be used by page fault handler
->>> + * @enforce_sysfs: whether sysfs config should be taken into account
->>> + * @orders: bitfield of all orders to consider
->>> + *
->>> + * Calculates the intersection of the requested hugepage orders and the allowed
->>> + * hugepage orders for the provided vma. Permitted orders are encoded as a set
->>> + * bit at the corresponding bit position (bit-2 corresponds to order-2, bit-3
->>> + * corresponds to order-3, etc). Order-0 is never considered a hugepage order.
->>> + *
->>> + * Return: bitfield of orders allowed for hugepage in the vma. 0 if no hugepage
->>> + * orders are allowed.
->>> + */
->>> +unsigned long thp_vma_allowable_orders(struct vm_area_struct *vma,
->>> +                       unsigned long vm_flags, bool smaps,
->>> +                       bool in_pf, bool enforce_sysfs,
->>> +                       unsigned long orders)
->>> +{
->>> +    /* Check the intersection of requested and supported orders. */
->>> +    orders &= vma_is_anonymous(vma) ?
->>> +            THP_ORDERS_ALL_ANON : THP_ORDERS_ALL_FILE;
->>> +    if (!orders)
->>> +        return 0;
->>
->> Comment: if this is called from some hot path, we might want to move as much as
->> possible into a header, so we can avoid this function call here when e.g., THP
->> are completely disabled etc.
-> 
-> If THP is completely disabled (compiled out) then thp_vma_allowable_orders() is
-> defined as a header inline that returns 0. I'm not sure there are any paths in
-> practice which are likely to ask for a set of orders which are never supported
-> (i.e. where this specific check would return 0). And the "are they run time
-> enabled" check is further down and fairly involved, so not sure that's ideal for
-> an inline.
-> 
-> I haven't changed the pattern from how it was previously, so I don't think it
-> should be any more expensive. Which parts exactly do you want to move to a header?
+This is what I think should be done (@Luis @Kees chime in if you have any
+thoughts):
+1. Leave the current fix for 6.7. AFAIK, it is already queued for that
+   release and it is a bit late in the cycle to put anything new in.
+2. I think this patch has value on its own as a better solution to the
+   "access invalid memory" issue. @thomas: remove this patch from your
+   const set and send it in a different patch series.
+3. const patchset would need to go on top of the new set.
 
-As per my response against the next patch (#4), I have now implemented
-thp_vma_allowable_orders() so that the order check is in the header with an
-early exit if THP is completely disabled.
+Having it on its own will allow it to go in faster and make it easier to
+review without having to thinkg about the const stuff as well.
 
-> 
-> 
->>
->>> +
->>>       if (!vma->vm_mm)        /* vdso */
->>> -        return false;
->>> +        return 0;
->>>         /*
->>>        * Explicitly disabled through madvise or prctl, or some
->>> @@ -88,16 +141,16 @@ bool hugepage_vma_check(struct vm_area_struct *vma,
->>> unsigned long vm_flags,
->>>        * */
->>>       if ((vm_flags & VM_NOHUGEPAGE) ||
->>>           test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
->>> -        return false;
->>> +        return 0;
->>>       /*
->>>        * If the hardware/firmware marked hugepage support disabled.
->>>        */
->>>       if (transparent_hugepage_flags & (1 << TRANSPARENT_HUGEPAGE_UNSUPPORTED))
->>> -        return false;
->>> +        return 0;
->>>         /* khugepaged doesn't collapse DAX vma, but page fault is fine. */
->>>       if (vma_is_dax(vma))
->>> -        return in_pf;
->>> +        return in_pf ? orders : 0;
->>>         /*
->>>        * khugepaged special VMA and hugetlb VMA.
->>> @@ -105,17 +158,29 @@ bool hugepage_vma_check(struct vm_area_struct *vma,
->>> unsigned long vm_flags,
->>>        * VM_MIXEDMAP set.
->>>        */
->>>       if (!in_pf && !smaps && (vm_flags & VM_NO_KHUGEPAGED))
->>> -        return false;
->>> +        return 0;
->>>         /*
->>> -     * Check alignment for file vma and size for both file and anon vma.
->>> +     * Check alignment for file vma and size for both file and anon vma by
->>> +     * filtering out the unsuitable orders.
->>>        *
->>>        * Skip the check for page fault. Huge fault does the check in fault
->>> -     * handlers. And this check is not suitable for huge PUD fault.
->>> +     * handlers.
->>>        */
->>> -    if (!in_pf &&
->>> -        !transhuge_vma_suitable(vma, (vma->vm_end - HPAGE_PMD_SIZE)))
->>> -        return false;
->>> +    if (!in_pf) {
->>> +        int order = first_order(orders);
->>> +        unsigned long addr;
->>> +
->>> +        while (orders) {
->>> +            addr = vma->vm_end - (PAGE_SIZE << order);
->>> +            if (thp_vma_suitable_orders(vma, addr, BIT(order)))
->>> +                break;
->>
->> Comment: you'd want a "thp_vma_suitable_order" helper here. But maybe the
->> compiler is smart enough to optimize the loop and everyything else out.
-> 
-> I'm happy to refactor so that thp_vma_suitable_order() is the basic primitive,
-> then make thp_vma_suitable_orders() a loop that calls thp_vma_suitable_order()
-> (that's basically how it is laid out already, just all in one function). Is that
-> what you are requesting?
-> 
->>
->> [...]
->>
->>> +
->>> +static ssize_t thpsize_enabled_store(struct kobject *kobj,
->>> +                     struct kobj_attribute *attr,
->>> +                     const char *buf, size_t count)
->>> +{
->>> +    int order = to_thpsize(kobj)->order;
->>> +    ssize_t ret = count;
->>> +
->>> +    if (sysfs_streq(buf, "always")) {
->>> +        set_bit(order, &huge_anon_orders_always);
->>> +        clear_bit(order, &huge_anon_orders_inherit);
->>> +        clear_bit(order, &huge_anon_orders_madvise);
->>> +    } else if (sysfs_streq(buf, "inherit")) {
->>> +        set_bit(order, &huge_anon_orders_inherit);
->>> +        clear_bit(order, &huge_anon_orders_always);
->>> +        clear_bit(order, &huge_anon_orders_madvise);
->>> +    } else if (sysfs_streq(buf, "madvise")) {
->>> +        set_bit(order, &huge_anon_orders_madvise);
->>> +        clear_bit(order, &huge_anon_orders_always);
->>> +        clear_bit(order, &huge_anon_orders_inherit);
->>> +    } else if (sysfs_streq(buf, "never")) {
->>> +        clear_bit(order, &huge_anon_orders_always);
->>> +        clear_bit(order, &huge_anon_orders_inherit);
->>> +        clear_bit(order, &huge_anon_orders_madvise);
->>
->> Note: I was wondering for a second if some concurrent cames could lead to an
->> inconsistent state. I think in the worst case we'll simply end up with "never"
->> on races.
-> 
-> You mean if different threads try to write different values to this file
-> concurrently? Or if there is a concurrent fault that tries to read the flags
-> while they are being modified?
-> 
-> I thought about this for a long time too and wasn't sure what was best. The
-> existing global enabled store impl clears the bits first then sets the bit. With
-> this approach you can end up with multiple bits set if there is a race to set
-> diffierent values, and you can end up with a faulting thread seeing never if it
-> reads the bits after they have been cleared but before setting them.
-> 
-> I decided to set the new bit before clearing the old bits, which is different; A
-> racing fault will never see "never" but as you say, a race to set the file could
-> result in "never" being set.
-> 
-> On reflection, it's probably best to set the bit *last* like the global control
-> does?>
-> 
->>
->> [...]
->>
->>>   static int __init hugepage_init_sysfs(struct kobject **hugepage_kobj)
->>>   {
->>>       int err;
->>> +    struct thpsize *thpsize;
->>> +    unsigned long orders;
->>> +    int order;
->>> +
->>> +    /*
->>> +     * Default to setting PMD-sized THP to inherit the global setting and
->>> +     * disable all other sizes. powerpc's PMD_ORDER isn't a compile-time
->>> +     * constant so we have to do this here.
->>> +     */
->>> +    huge_anon_orders_inherit = BIT(PMD_ORDER);
->>>         *hugepage_kobj = kobject_create_and_add("transparent_hugepage", mm_kobj);
->>>       if (unlikely(!*hugepage_kobj)) {
->>> @@ -434,8 +631,24 @@ static int __init hugepage_init_sysfs(struct kobject
->>> **hugepage_kobj)
->>>           goto remove_hp_group;
->>>       }
->>>   +    orders = THP_ORDERS_ALL_ANON;
->>> +    order = first_order(orders);
->>> +    while (orders) {
->>> +        thpsize = thpsize_create(order, *hugepage_kobj);
->>> +        if (IS_ERR(thpsize)) {
->>> +            pr_err("failed to create thpsize for order %d\n", order);
->>> +            err = PTR_ERR(thpsize);
->>> +            goto remove_all;
->>> +        }
->>> +        list_add(&thpsize->node, &thpsize_list);
->>> +        order = next_order(&orders, order);
->>> +    }
->>> +
->>>       return 0;
->>>   
->>
->> [...]
->>
->>>       page = compound_head(page);
->>> @@ -5116,7 +5116,8 @@ static vm_fault_t __handle_mm_fault(struct
->>> vm_area_struct *vma,
->>>           return VM_FAULT_OOM;
->>>   retry_pud:
->>>       if (pud_none(*vmf.pud) &&
->>> -        hugepage_vma_check(vma, vm_flags, false, true, true)) {
->>> +        thp_vma_allowable_orders(vma, vm_flags, false, true, true,
->>> +                     BIT(PUD_ORDER))) {
->>>           ret = create_huge_pud(&vmf);
->>>           if (!(ret & VM_FAULT_FALLBACK))
->>>               return ret;
->>> @@ -5150,7 +5151,8 @@ static vm_fault_t __handle_mm_fault(struct
->>> vm_area_struct *vma,
->>>           goto retry_pud;
->>>         if (pmd_none(*vmf.pmd) &&
->>> -        hugepage_vma_check(vma, vm_flags, false, true, true)) {
->>> +        thp_vma_allowable_orders(vma, vm_flags, false, true, true,
->>> +                     BIT(PMD_ORDER))) {
->>
->> Comment: A helper like "thp_vma_allowable_order(vma, PMD_ORDER)" might make this
->> easier to read -- and the implemenmtation will be faster.
-> 
-> I'm happy to do this and use it to improve readability:
-> 
-> #define thp_vma_allowable_order(..., order) \
-> 	thp_vma_allowable_orders(..., BIT(order))
-> 
-> This wouldn't make the implementation any faster though; Are you suggesting a
-> completely separate impl? Even then, I don't think there is much scope to make
-> it faster for the case where there is only 1 order in the bitfield.
-> 
->>
->>>           ret = create_huge_pmd(&vmf);
->>>           if (!(ret & VM_FAULT_FALLBACK))
->>>               return ret;
->>> diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
->>> index e0b368e545ed..64da127cc267 100644
->>> --- a/mm/page_vma_mapped.c
->>> +++ b/mm/page_vma_mapped.c
->>> @@ -268,7 +268,8 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
->>>                * cleared *pmd but not decremented compound_mapcount().
->>>                */
->>>               if ((pvmw->flags & PVMW_SYNC) &&
->>> -                transhuge_vma_suitable(vma, pvmw->address) &&
->>> +                thp_vma_suitable_orders(vma, pvmw->address,
->>> +                            BIT(PMD_ORDER)) &&
->>
->> Comment: Similarly, a helper like "thp_vma_suitable_order(vma, PMD_ORDER)" might
->> make this easier to read.
-> 
-> Yep, will do this.
-> 
->>
->>>                   (pvmw->nr_pages >= HPAGE_PMD_NR)) {
->>>                   spinlock_t *ptl = pmd_lock(mm, pvmw->pmd);
->>>   
->>
-> 
+Best
+>=20
+> The patch from the series should only depend on
+> "sysctl: drop sysctl_is_perm_empty_ctl_table" from my series.
+>=20
+> Thomas
 
+--=20
+
+Joel Granados
+
+--a7f76owrdx7oxple
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmVxpu8ACgkQupfNUreW
+QU/DNAv/TDQMJUs4oKgPcr+aoFQ/sng5W4yFQY5GA7FAsG3lAFqEcPFG6YB8XWO6
+pUmcI9ZvnpNMaQdN4PBYCo25B165jbGnm4qlyOQ/vCTECPzIESXwC42lNOCblQUQ
+mM0LarwaqRHcUzh0/9EyTdh/8M3n0O3foisGm/3JmKBkMoFrt81ucKW01fyasptR
+GIhFpi4WdbMsb/uRjImsMmJza8oPSa7uTU4Vhs9fMmhRIKwp4/fAW38z+LPZkf60
+/nspxC6IRu1xA9fByp25sv+P/uAu5dx+VVrDFGfAyIyxAJLU1IIgeTLAzWmNKp0M
+/BLnEEJ/8FD59zHUWRYE//yUKO/tfMfenQ9U69x13CeT2aeFEMT+jB3z1XcmaAG6
+l5nycPXZZQsx8Nb0ayfWLaWSmeA5/Vh8Jc8QXCZmO7xLGftipyLWpZcGhjcOwaUi
+upyI4hAm+GL2Gm7BbWUpjgeB34pbhTSCQPDNyGJeWT2x9l6qKKmlUG36eKx6q2NO
+AXRuEQwr
+=YKxV
+-----END PGP SIGNATURE-----
+
+--a7f76owrdx7oxple--
