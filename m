@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3772A808B5D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F91A808B67
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442884AbjLGPEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 10:04:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36170 "EHLO
+        id S1443278AbjLGPF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 10:05:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233041AbjLGPEe (ORCPT
+        with ESMTP id S232943AbjLGPFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 10:04:34 -0500
-Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC54ED53
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:04:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1701961476; x=1702220676;
-        bh=NYodcFpX/b1E1VWmahb0cxH1HMeWexFPLm+/MO5VZa0=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=DbZpTd+RCw007BN+kHHXkzxf1r7t3UmejqtgjZsqAFR6syJ5YlSWm1y+o5lM0FC7M
-         /MpM8ne4aOhcZksrQjz3k801fEe7NjGlbkcIv225Qwxs+PD5PTPH4sLgtP9LhJQqgZ
-         dz3pYMZoL5wIVfA175KG/ebiBkow+WA9w8dkaB5ZCJ9mnfpcrvEYY+v6woHeuWlCl3
-         FuMOjhd4ynAn9CMIA2YbQG9Qx3BnmEwnjUzn95MFtTi6VOywOOkQR8T2DB0uMxLE+m
-         a9fAl/xGO8IJnRPm2mZN1BcCSlaXt5KHYyKMtv5jMHh/JD2ku4z7Z35NZ45CEBUsW5
-         zf7FNVnTbTYWQ==
-Date:   Thu, 07 Dec 2023 15:04:19 +0000
-To:     Jiri Kosina <jikos@kernel.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-From:   Mavroudis Chatzilazaridis <mavchatz@protonmail.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Input Devices <linux-input@vger.kernel.org>,
-        =?utf-8?Q?Filipe_La=C3=ADns?= <lains@riseup.net>,
-        Bastien Nocera <hadess@hadess.net>,
-        LinuxCat <masch77.linuxcat@gmail.com>,
-        Marcelo <mmbossoni@gmail.com>, Takashi Iwai <tiwai@suse.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: Re: Fwd: Logitech G915 Wireless Keyboard acts weird on 6.6.0
-Message-ID: <1358c8e3-8495-461c-a8d8-a551cc4a0d11@protonmail.com>
-In-Reply-To: <nycvar.YFH.7.76.2311211458030.29220@cbobk.fhfr.pm>
-References: <6929ebbf-f2e0-4cd4-addc-1e33ecf3277f@gmail.com> <ZVyr-of1X4RudpWG@archie.me> <0e10112a-7560-4dd8-8a03-5fdfc838168f@leemhuis.info> <nycvar.YFH.7.76.2311211458030.29220@cbobk.fhfr.pm>
-Feedback-ID: 20039310:user:proton
+        Thu, 7 Dec 2023 10:05:22 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F76B19A;
+        Thu,  7 Dec 2023 07:05:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
+        :From:subject:date:message-id:reply-to;
+        bh=uxFGHxakStf7yH8nRFVFur6OexrjKQWIh4WIBrE+e5k=; b=gTaN9ieOG+xb95+U9xzUBuF6hX
+        7+KoPz3qKcNPWhY3HULkwaYfvqom/gjFOf9nUCB4W97ZYs+JUpnoEnIltMYW+druhljkAxtYh5D9Z
+        okJYobKeWW8INde9Tz+C/QwwMR7EP1QDgOTUGAqvkwh/bkFb/hU8o6jt9l3w1GE8E4m8=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:59044 helo=pettiford.lan)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1rBFwI-0006Zh-2x; Thu, 07 Dec 2023 10:05:22 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        leoyang.li@nxp.com, robh@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, hugo@hugovil.com,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Date:   Thu,  7 Dec 2023 10:05:16 -0500
+Message-Id: <20231207150519.1264808-1-hugo@hugovil.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+Subject: [PATCH v2 0/3] board: imx8mn-dimonoff-gateway-evk: add support for Dimonoff gateway EVK board
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-21 16:00, Jiri Kosina wrote:> A comment from Mavroudis just=20
-appeared in
->=20
-> =09https://bugzilla.kernel.org/show_bug.cgi?id=3D218172
->=20
-> pointing out that indeed the report descriptor of the device he is workin=
-g
-> on is different than the ones from the reporter.
->=20
-> Until this mess gets figured out, I am now pretty sure revert is the way
-> to go for 6.7.
->=20
-> --
-> Jiri Kosina
-> SUSE Labs
->=20
+From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Greetings everyone,
+Hello,
+this patch series add support for the Dimonoff gateway EVK board.
 
-I have recently made a new patch [0] aimed at addressing the issues that=20
-have been identified.
+Based on shawnguo/for-next branch.
 
-I would appreciate it if you could test it and provide any feedback on it.
+Thank you.
+
+Link: [v1] https://lore.kernel.org/all/20231206160303.33185-1-hugo@hugovil.com/
+
+Changes for V2:
+- Add Krzysztof Acked-by tag
+- Wrap lines at 80 columns in dts
+- Remove company name from compatible property
+
+Hugo Villeneuve (3):
+  dt-bindings: vendor-prefixes: add dimonoff
+  dt-bindings: arm: fsl: add Dimonoff gateway EVK board
+  arm64: dts: freescale: introduce dimonoff-gateway-evk board
+
+ .../devicetree/bindings/arm/fsl.yaml          |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm64/boot/dts/freescale/Makefile        |   1 +
+ .../freescale/imx8mn-dimonoff-gateway-evk.dts | 160 ++++++++++++++++++
+ 4 files changed, 164 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-dimonoff-gateway-evk.dts
 
 
-[0] https://bugzilla.kernel.org/show_bug.cgi?id=3D218172#c14
+base-commit: 8c3c7094bf5b965a6dfc74864838fa4954dcf1c9
+-- 
+2.39.2
 
