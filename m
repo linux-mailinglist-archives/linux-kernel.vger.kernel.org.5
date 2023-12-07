@@ -2,175 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D72F807EDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 03:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC802807EEC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 03:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443131AbjLGCpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 21:45:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34524 "EHLO
+        id S1443128AbjLGCpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 21:45:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443127AbjLGCpP (ORCPT
+        with ESMTP id S1443195AbjLGCpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 21:45:15 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DF1D72;
-        Wed,  6 Dec 2023 18:45:20 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SlzCJ2k7mz4f3kKx;
-        Thu,  7 Dec 2023 10:45:16 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 697281A0E26;
-        Thu,  7 Dec 2023 10:45:17 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP1 (Coremail) with SMTP id cCh0CgCnqxG5MXFllH3QCw--.13955S3;
-        Thu, 07 Dec 2023 10:45:16 +0800 (CST)
-Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
-To:     Matthew Wilcox <willy@infradead.org>,
-        Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-        kent.overstreet@gmail.com, joern@lazybastard.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, nico@fluxnic.net, xiang@kernel.org,
-        chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-        agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
-        akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
-        linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
- <20231205123728.1866699-2-yukuai1@huaweicloud.com>
- <ZXCMJ9skAAgPm4z3@casper.infradead.org>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <d195aba8-7b89-698f-b7a0-06b87ae01c21@huaweicloud.com>
-Date:   Thu, 7 Dec 2023 10:45:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 6 Dec 2023 21:45:46 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15994D63;
+        Wed,  6 Dec 2023 18:45:53 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6cbd24d9557so138797b3a.1;
+        Wed, 06 Dec 2023 18:45:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701917152; x=1702521952; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8eVcl2KDPJ4smMer/60vC6K9DZX/lHwn01b8AXePVZA=;
+        b=WVF7+3/atU2PCmAv7Vc085uceTWQR7gSFRI70XASg0Igv6Pws9M74XKlX2omvLcfy2
+         HJLk2LpLAGrJVPtkLZAGEDn7+4mQRMhLwDoL8hRUvHabaggDCuSObgDu/suYveG2OIER
+         1vyzVTNLt0eolXdtL7VE9bj4yDRnSuRjZGKj+ukiUs6H7Rv3c+5iaeNxYSGUEjD1MckD
+         Ha1g43CEoLnzwcf9QF8e/rMD6nIIP6z8GUk0izGPdWO2x6dD2GMWJvl43DM4i4YM7AIH
+         vxlg4+buEddR5DTJX4o/KKLGpB8bnJrZD08cndQKi7TJ5vihQJH5/UnlKVxiOgJrF3yY
+         C2Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701917152; x=1702521952;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8eVcl2KDPJ4smMer/60vC6K9DZX/lHwn01b8AXePVZA=;
+        b=qMBd+McGDdqViPJh8WCzoxGLHU46kBrJ45Y2BDUqjVuUIAn53HMCrxFD0TwVMw250H
+         LZXlEP3BgxKYrlNQr+EuNhm0gMdbK/b5wZBGwv7HfzJAvCmi17KcuXPcQjDabu8NimKp
+         gZAwcPRdWgF/8xCl0OegVkJXzBnDxAiXVhmz7BdEEh8bImd6Cw6JutNT6So5Wq//Gy9D
+         k6MO+wZznDnU9B6EvRNSGQg/0SkJZnRfUXAB/j45ItsaiCDQnj8tTVugGT26dhLjGIzH
+         /7ZmsRWonmHmycuohmPljDuVyXFupfMS3D72SVTQJTCZFjGWTa7zXBaTgL8XDTEbz33Y
+         62fA==
+X-Gm-Message-State: AOJu0YymiNViM6diiHMaDgyi+CLPJJPNzyBEAXuNPt/RQLn/gauvZaBV
+        QlDFoBO79r12ivOvEIAclQs=
+X-Google-Smtp-Source: AGHT+IH09WqraumX9Od5MBcINZWd36Ny5g3Mp4llOuonrFbnrJCx/jGfRW8jMrVLGD/L56O9ZZS5Qw==
+X-Received: by 2002:a05:6a21:170f:b0:18f:9c4:d33c with SMTP id nv15-20020a056a21170f00b0018f09c4d33cmr4986434pzb.44.1701917152256;
+        Wed, 06 Dec 2023 18:45:52 -0800 (PST)
+Received: from localhost.localdomain ([1.245.180.67])
+        by smtp.gmail.com with ESMTPSA id p24-20020a639518000000b005c676beba08sm177028pgd.65.2023.12.06.18.45.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 18:45:51 -0800 (PST)
+Date:   Thu, 7 Dec 2023 11:45:43 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v2 00/21] remove the SLAB allocator
+Message-ID: <ZXEx1/p9ejRmkVTS@localhost.localdomain>
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <ZXCMJ9skAAgPm4z3@casper.infradead.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgCnqxG5MXFllH3QCw--.13955S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxuF4Dury5Kr13Aw47Gr4Uurg_yoW5Ar4DpF
-        W8KFZ8JrW8Gr18ursrJa15Z3WFg34UJFW5ZrWxG343C3s0yr9akFWYgws0kayIv3yUJFs7
-        ZFWjvrW8WF1j9FJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9I14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-        4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_
-        WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
-        IYCTnIWIevJa73UjIFyTuYvjfUojjgUUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-ÔÚ 2023/12/06 22:58, Matthew Wilcox Ð´µÀ:
-> On Tue, Dec 05, 2023 at 08:37:15PM +0800, Yu Kuai wrote:
->> +struct folio *bdev_read_folio(struct block_device *bdev, pgoff_t index)
->> +{
->> +	return read_mapping_folio(bdev->bd_inode->i_mapping, index, NULL);
->> +}
->> +EXPORT_SYMBOL_GPL(bdev_read_folio);
+On Mon, Nov 20, 2023 at 07:34:11PM +0100, Vlastimil Babka wrote:
+> Changes from v1:
+> - Added new Patch 01 to fix up kernel docs build (thanks Marco Elver)
+> - Additional changes to Kconfig user visible texts in Patch 02 (thanks Kees
+>   Cook)
+> - Whitespace fixes and other fixups (thanks Kees)
 > 
-> I'm coming to the opinion that 'index' is the wrong parameter here.
-> Looking through all the callers of bdev_read_folio() in this patchset,
-> they all have a position in bytes, and they all convert it to
-> index for this call.  The API should probably be:
-> 
-> struct folio *bdev_read_folio(struct block_device *bdev, loff_t pos)
-> {
-> 	return read_mapping_folio(bdev->bd_inode->i_mapping,
-> 			pos / PAGE_SIZE, NULL);
-> }
+> The SLAB allocator has been deprecated since 6.5 and nobody has objected
+> so far. As we agreed at LSF/MM, we should wait with the removal until
+> the next LTS kernel is released. This is now determined to be 6.6, and
+> we just missed 6.7, so now we can aim for 6.8 and start exposing the
+> removal to linux-next during the 6.7 cycle. If nothing substantial pops
+> up, will start including this in slab-next later this week.
 
-Thanks for reviewing this patchset! Okay, I'll convert to pass in "pos"
-in v2.
-> 
-> ... and at some point, we'll get round to converting read_mapping_folio()
-> to take its argument in loff_t.
-> 
-> Similiarly for these two APIs:
-> 
->> +struct folio *bdev_read_folio_gfp(struct block_device *bdev, pgoff_t index,
->> +				  gfp_t gfp)
->> +struct folio *bdev_get_folio(struct block_device *bdev, pgoff_t index)
-> 
->> +struct folio *bdev_find_or_create_folio(struct block_device *bdev,
->> +					pgoff_t index, gfp_t gfp)
->> +{
->> +	return __filemap_get_folio(bdev->bd_inode->i_mapping, index,
->> +				   FGP_LOCK | FGP_ACCESSED | FGP_CREAT, gfp);
->> +}
->> +EXPORT_SYMBOL_GPL(bdev_find_or_create_folio);
-> 
-> This one probably shouldn't exist.  I've been converting callers of
-> find_or_create_page() to call __filemap_get_folio; I suspect we
-> should expose a __bdev_get_folio and have the callers use the FGP
-> arguments directly, but I'm open to other opinions here.
+I've been testing this for a few weeks on my testing system,
+It passed a set of mm and slab tests on various SLUB configurations.
 
-If nobody against this, I will expose single __bdev_get_folio() to use
-in v2.
+For the series, feel free to add:
+Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+
+Thanks!
+
+> To keep the series reasonably sized and not pull in people from other
+> subsystems than mm and closely related ones, I didn't attempt to remove
+> every trace of unnecessary reference to dead config options in external
+> areas, nor in the defconfigs. Such cleanups can be sent to and handled
+> by respective maintainers after this is merged.
 > 
->> +void bdev_sync_readahead(struct block_device *bdev, struct file_ra_state *ra,
->> +			 struct file *file, pgoff_t index,
->> +			 unsigned long req_count)
->> +{
->> +	struct file_ra_state tmp_ra = {};
->> +
->> +	if (!ra) {
->> +		ra = &tmp_ra;
->> +		file_ra_state_init(ra, bdev->bd_inode->i_mapping);
->> +	}
->> +	page_cache_sync_readahead(bdev->bd_inode->i_mapping, ra, file, index,
->> +				  req_count);
->> +}
+> Instead I have added some patches aimed to reap some immediate benefits
+> of the removal, mainly by not having to split some fastpath code between
+> slab_common.c and slub.c anymore. But that is also not an exhaustive
+> effort and I expect more cleanups and optimizations will follow later.
 > 
-> I think the caller should always be passing in a valid file_ra_state.
-> It's only cramfs that doesn't have one, and it really should!
-> Not entirely sure about the arguments here; part of me says "bytes",
-> but this is weird enough to maybe take arguments in pages.
-
-In fact, bdev_sync_readahead() is only called for cramfs and ext4.
-
-For ext4 it's used in ext4_readdir() so there is valid file_ra_state.
-
-Hoever, for cramfs it's used in cramfs_read(), and cramfs_read() is used
-for:
-
-1) cramfs_read_folio
-2) cramfs_readdir
-3) cramfs_lookup
-4) cramfs_read_super
-
-Looks like it's easy to pass in valid file_ra_state() for 1) and 2),
-however, I don't see an easy way to do this for 3) and 4).
-
-Thanks,
-Kuai
-
+> Patch 09 updates CREDITS for the removed mm/slab.c. Please point out if
+> I missed someone not yet credited.
 > 
-> .
-> 
-
+> Git version: https://git.kernel.org/vbabka/l/slab-remove-slab-v2r1
