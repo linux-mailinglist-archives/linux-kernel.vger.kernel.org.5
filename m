@@ -2,463 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E25AB80847A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 10:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C60808473
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 10:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378676AbjLGJIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 04:08:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
+        id S1378487AbjLGJKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 04:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232043AbjLGJIO (ORCPT
+        with ESMTP id S231439AbjLGJKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 04:08:14 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA777D5B
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:08:15 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d3a1e5f8d6so6649467b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:08:15 -0800 (PST)
+        Thu, 7 Dec 2023 04:10:15 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F6B10DF
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 01:09:45 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-28657040cdcso637260a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 01:09:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701940095; x=1702544895; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+XWVfbECKkYVkmbHjWZO+h6sR43SxXC7QmqywYAISO0=;
-        b=zzRN7Acl4h7bJrdhOhfPFbht2ZvXXbBUeEEqBKCXHacasICpHsu2PoqNmRnzyLzUl2
-         nLyh7Zu0D1Tu6LHhAaKiSqveacJQCSkxcLYVDl4RWTLUit0mJejy2nL2Fs1Bae1aYHKQ
-         v2e6tI8Ugj5snuNgQa+aTgjgocsdV8iZGc5Oiw7XckPFZXqDA3bPcNqIdf5Lk5A8PDkn
-         XaHvEBYpaUo2FOcdeXTVpZfk1jGmnEdmo0i37w/91gL2pzz/8yED7lQfpejnGTl+1Rk1
-         TSYvWq11LLp1yVrvbDX7BiqjKaEAjMxOFfYH0yUTkadllGObPnyX5u1uaRhXC7wGGvjR
-         04xw==
+        d=bytedance.com; s=google; t=1701940185; x=1702544985; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2c4C3n0LRxWIX1WwXTdUDTm3hHPBj3ay99ram+tbJ5c=;
+        b=R+MpIeHsJHivnaHL432W9ENPykPVOhtTnA0XNkp4U6jtWmSSG6NT6HlDA9h+igazof
+         dVgosixcAb518PZlhr6gii+lu36hYymcZbzggLkwArOmI8WVYD4zutQxANL0vzVJeZjo
+         WdU6eFKQzkXiWnQ/szG5krgjo4Etiy69Kek0uAuIQhyPF3PZCxNAVLFTKDoGdC4QTWux
+         a2luye57uxXmBdNAfqjF4kgjo2evgIa6MK4pcLQ/YR6r3IRkMpq3VTBjRX6H4DBgb6ox
+         tubfHCzzsrZ1k8uz9EFAbgRgoqNOmYLSqeosC38v2FJYIzjeVMwKEl+VknfDaEmAha2J
+         mI6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701940095; x=1702544895;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+XWVfbECKkYVkmbHjWZO+h6sR43SxXC7QmqywYAISO0=;
-        b=DqkAHnzD89howh1kPHkyG7xbMpEmNrxtdIZ+gdERp5K/ESiwlgZNadV/NXNsuE0GCY
-         2RTWvjGA3gk6KejzmfBI1vSC/Nu1yV9X57fWfWy2kuhsmtV9fBYaIYjwRaGvrDgn2lWb
-         tcDB6rsLnEla+LB64Vh7oOQSAbSziTGkDQYy+HONiCKToYinxa4QxYoWCciO/5QPZN/v
-         rfsiNn9Ie+5YgTHXRWFWpFFdxdej5nt33eHpXzF9YN+3PVD6XkXzp1dhQ63hfd8VPNNO
-         aZ2KKCoUIljmPG2N2Ua4zK40GcN44fuwseyJgIimRqvcbLYF88ub8Q+PIFm6B4b96Y8A
-         XZyA==
-X-Gm-Message-State: AOJu0Yzvh/sTVyZmMSZrnxEMTaTO0xjlDvLrFNDNUbqb/tHrUHizOvT3
-        PR8R8UIKk5eqpooKsN8iD4H93uFDVQAT+N8=
-X-Google-Smtp-Source: AGHT+IF6/n+XCgXEAd+gDT11AwSGUccx/1U0K8Jdi+mE1mBuUrtIEK2jbtHRYfxy+4WA6vTqloGig2LgrWIARtI=
-X-Received: from rdbabiera.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:18a8])
- (user=rdbabiera job=sendgmr) by 2002:a05:690c:fcd:b0:5d9:712e:202b with SMTP
- id dg13-20020a05690c0fcd00b005d9712e202bmr39599ywb.6.1701940095023; Thu, 07
- Dec 2023 01:08:15 -0800 (PST)
-Date:   Thu,  7 Dec 2023 09:07:41 +0000
-In-Reply-To: <20231207090738.15721-12-rdbabiera@google.com>
-Mime-Version: 1.0
-References: <20231207090738.15721-12-rdbabiera@google.com>
-X-Developer-Key: i=rdbabiera@google.com; a=openpgp; fpr=639A331F1A21D691815CE090416E17CA2BBBD5C8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=13047; i=rdbabiera@google.com;
- h=from:subject; bh=LXtNBwuIotDleeOrfFY5zqTZHszmGVHgznxqotaxm8Q=;
- b=owGbwMvMwCFW0bfok0KS4TbG02pJDKmF3XHSjD4lRgGpK8SntNww1/8+12zHv3PtGs+Wbyxbf
- MHsguy8jlIWBjEOBlkxRRZd/zyDG1dSt8zhrDGGmcPKBDKEgYtTACaSncTwh3+1zpGz1fI1i3ee
- kLzV2uhpmNs4V/sAh3n70RU17/9X2TH8s3+wzGKLe5Rvg+EPMd/kbE92vp9POkVCExv1ezwWsdr wAwA=
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231207090738.15721-22-rdbabiera@google.com>
-Subject: [PATCH v1 10/10] usb: typec: altmodes/displayport: add SOP' support
-From:   RD Babiera <rdbabiera@google.com>
-To:     heikki.krogerus@linux.intel.com, linux@roeck-us.net,
-        gregkh@linuxfoundation.org, pmalani@chromium.org,
-        bleung@chromium.org, chrome-platform@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Cc:     badhri@google.com, tzungbi@kernel.org, utkarsh.h.patel@intel.com,
-        andriy.shevchenko@linux.intel.com,
-        RD Babiera <rdbabiera@google.com>
+        d=1e100.net; s=20230601; t=1701940185; x=1702544985;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2c4C3n0LRxWIX1WwXTdUDTm3hHPBj3ay99ram+tbJ5c=;
+        b=EK4rm4ge105k9/TvpE0ZU5dEr3ni2vxxxbTijD2TrFcClYdvNSkvrruc+r4z2puXXR
+         5JJXt8IwAP4sMj8KtgdGzCYVseeDiRVMwTZKHBN9CmpWOXlHhP6aCE8yoFimEXme0jrq
+         ayEx3jlSxSxI90c8Ivomi19PyFrH2naXlTgIvS8Mgo4wH4UuxL7STfM/a23GWJ/BseT6
+         mWwGdjQjBuOOmUvHExykTG+A/DoP549V/S2mvO6jzI6A34l/p7GSs8CiNi0fEWdb/Pq1
+         iVXA7wxtOosfy1YNipYsgVV1t/FDAdVEtsbnCi4ntXhyRYt6zUe19Z1PV+94OhDLj2tK
+         hgVw==
+X-Gm-Message-State: AOJu0Yxesy8ENutvCFFBSCtH7oZ5y0xdC9A1O98lt0jNjOfc63ekEAow
+        12OpmMSS04rn569Fxlhl4S+Z6HZxTBilcapBUh9UTQ==
+X-Google-Smtp-Source: AGHT+IFK+U+J/GEdq+NYipG+hOrQ/lKIqZ6/I+wyo90SHNVrwK9YL7khjtC+G9Lw2tXREXPfZ0XbM9s5dby1KfOqA4U=
+X-Received: by 2002:a17:90b:3509:b0:286:9231:c5c1 with SMTP id
+ ls9-20020a17090b350900b002869231c5c1mr1903943pjb.7.1701940185105; Thu, 07 Dec
+ 2023 01:09:45 -0800 (PST)
+MIME-Version: 1.0
+References: <20231026143122.279437-1-cleger@rivosinc.com>
+In-Reply-To: <20231026143122.279437-1-cleger@rivosinc.com>
+From:   Xu Lu <luxu.kernel@bytedance.com>
+Date:   Thu, 7 Dec 2023 17:09:33 +0800
+Message-ID: <CAPYmKFsFLQnhXRPXpcoNfO-kEyjYLXD2Hm-F-O=Yxe1WJoSL9w@mail.gmail.com>
+Subject: Re: [External] [RFC PATCH 0/3] riscv: add support for SBI Supervisor
+ Software Events
+To:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atishp@atishpatra.org>,
+        Anup Patel <apatel@ventanamicro.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Himanshu Chauhan <hchauhan@ventanamicro.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement active cable VDM support for SOP' according to the DisplayPort
-Alt Mode 2.0 specification.
+Pardon. It seems that the code in opensbi[1] is not complete for PMU NMI no=
+w.
+For example, the pmu ovf irq is still delegated to supervisor mode and
+thus can not really play a role as NMI. And neither the kernel nor
+opensbi will inject a pmu event.
 
-When probing the DisplayPort driver, the state machine will transition to
-Enter Mode on SOP' if an active cable altmode is detected. The SVDM flow
-is as followed:
-    (1) Enter Mode     SOP'
-    (2) Enter Mode     SOP
-    (3) Status Update  SOP
-    (4) Configure      SOP'
-    (5) Configure      SOP
+To complete the work, we think maybe 'enable_cb' and 'disable_cb'
+functions can be supplied for sbi_sse_cb_ops.
+When sbi_sse_enable is called to enable pmu event, the enable_cb will
+be called to revoke the delegation of pmu ovf irq and enable this irq
+in CSR_MIE.
+When pmu ovf irq occurs, kernel traps into opensbi and opensbi injects
+the event via sbi_sse_inject_event and eret back to kernel.
 
-Status Update on SOP' after Enter Mode is optional and not implemented for
-now. When exiting the alt mode, send Exit Mode over SOP' after SOP.
+Please point it out if we have any misunderstanding.
 
-Should an altmode vdm fail on SOP', the DisplayPort driver will drop its
-reference to the plug and attempt to continue in SOP operation.
+By the way, how is SSE going now? We will appreciate it very much if
+we can participate in some development work in kernel or opensbi and
+be of any help.
 
-Add new dp_state enums DP_STATE_ENTER_PRIME, DP_STATE_CONFIGURE_PRIME, and
-DP_STATE_EXIT_PRIME. dp_altmode adds typec_displayport_data for the cable
-plug to store the plug configuration and adds a typec_altmode reference
-for the cable plug.
+Regards!
 
-dp_altmode_configure takes the cable pin assignment capabilities into
-account when deciding on pin configuration.
+Link: https://github.com/rivosinc/opensbi/tree/dev/cleger/sse [1]
 
-Received Exit Mode ACKs are handled by a new dp_exit_mode_handler for line
-count restraints when accounting for SOP* transmit type.
-
-dp_altmode_activate now attempts to enter on SOP' if applicable, and will
-attempt to enter on SOP if that fails.
-
-Signed-off-by: RD Babiera <rdbabiera@google.com>
----
- drivers/usb/typec/altmodes/displayport.c | 166 +++++++++++++++++++----
- 1 file changed, 139 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/usb/typec/altmodes/displayport.c b/drivers/usb/typec/altmodes/displayport.c
-index 5ed470069c3e..583f99338710 100644
---- a/drivers/usb/typec/altmodes/displayport.c
-+++ b/drivers/usb/typec/altmodes/displayport.c
-@@ -50,13 +50,17 @@ enum {
- enum dp_state {
- 	DP_STATE_IDLE,
- 	DP_STATE_ENTER,
-+	DP_STATE_ENTER_PRIME,
- 	DP_STATE_UPDATE,
- 	DP_STATE_CONFIGURE,
-+	DP_STATE_CONFIGURE_PRIME,
- 	DP_STATE_EXIT,
-+	DP_STATE_EXIT_PRIME,
- };
- 
- struct dp_altmode {
- 	struct typec_displayport_data data;
-+	struct typec_displayport_data data_prime;
- 
- 	enum dp_state state;
- 	bool hpd;
-@@ -67,6 +71,7 @@ struct dp_altmode {
- 	struct typec_altmode *alt;
- 	const struct typec_altmode *port;
- 	struct fwnode_handle *connector_fwnode;
-+	struct typec_altmode *plug_prime;
- };
- 
- static int dp_altmode_notify(struct dp_altmode *dp)
-@@ -99,12 +104,18 @@ static int dp_altmode_configure(struct dp_altmode *dp, u8 con)
- 		conf |= DP_CONF_UFP_U_AS_DFP_D;
- 		pin_assign = DP_CAP_UFP_D_PIN_ASSIGN(dp->alt->vdo) &
- 			     DP_CAP_DFP_D_PIN_ASSIGN(dp->port->vdo);
-+		/* Account for active cable capabilities */
-+		if (dp->plug_prime)
-+			pin_assign &= DP_CAP_DFP_D_PIN_ASSIGN(dp->plug_prime->vdo);
- 		break;
- 	case DP_STATUS_CON_UFP_D:
- 	case DP_STATUS_CON_BOTH: /* NOTE: First acting as DP source */
- 		conf |= DP_CONF_UFP_U_AS_UFP_D;
- 		pin_assign = DP_CAP_PIN_ASSIGN_UFP_D(dp->alt->vdo) &
--				 DP_CAP_PIN_ASSIGN_DFP_D(dp->port->vdo);
-+			     DP_CAP_PIN_ASSIGN_DFP_D(dp->port->vdo);
-+		/* Account for active cable capabilities */
-+		if (dp->plug_prime)
-+			pin_assign &= DP_CAP_UFP_D_PIN_ASSIGN(dp->plug_prime->vdo);
- 		break;
- 	default:
- 		break;
-@@ -130,6 +141,8 @@ static int dp_altmode_configure(struct dp_altmode *dp, u8 con)
- 	}
- 
- 	dp->data.conf = conf;
-+	if (dp->plug_prime)
-+		dp->data_prime.conf = conf;
- 
- 	return 0;
- }
-@@ -143,13 +156,17 @@ static int dp_altmode_status_update(struct dp_altmode *dp)
- 
- 	if (configured && (dp->data.status & DP_STATUS_SWITCH_TO_USB)) {
- 		dp->data.conf = 0;
--		dp->state = DP_STATE_CONFIGURE;
-+		dp->data_prime.conf = 0;
-+		dp->state = dp->plug_prime ? DP_STATE_CONFIGURE_PRIME :
-+					     DP_STATE_CONFIGURE;
- 	} else if (dp->data.status & DP_STATUS_EXIT_DP_MODE) {
- 		dp->state = DP_STATE_EXIT;
-+	/* Partner is connected but not configured */
- 	} else if (!(con & DP_CONF_CURRENTLY(dp->data.conf))) {
- 		ret = dp_altmode_configure(dp, con);
- 		if (!ret) {
--			dp->state = DP_STATE_CONFIGURE;
-+			dp->state = dp->plug_prime ? DP_STATE_CONFIGURE_PRIME :
-+						     DP_STATE_CONFIGURE;
- 			if (dp->hpd != hpd) {
- 				dp->hpd = hpd;
- 				dp->pending_hpd = true;
-@@ -185,9 +202,12 @@ static int dp_altmode_configured(struct dp_altmode *dp)
- 	return dp_altmode_notify(dp);
- }
- 
--static int dp_altmode_configure_vdm(struct dp_altmode *dp, u32 conf)
-+static int dp_altmode_configure_vdm(struct dp_altmode *dp, u32 conf,
-+				    enum typec_altmode_transmit_type sop_type)
- {
--	int svdm_version = typec_altmode_get_svdm_version(dp->alt);
-+	int svdm_version = sop_type == TYPEC_ALTMODE_SOP_PRIME ?
-+				       typec_altmode_get_cable_svdm_version(dp->alt) :
-+				       typec_altmode_get_svdm_version(dp->alt);
- 	u32 header;
- 	int ret;
- 
-@@ -202,7 +222,7 @@ static int dp_altmode_configure_vdm(struct dp_altmode *dp, u32 conf)
- 		return ret;
- 	}
- 
--	ret = typec_altmode_vdm(dp->alt, header, &conf, 2, TYPEC_ALTMODE_SOP);
-+	ret = typec_altmode_vdm(dp->alt, header, &conf, 2, sop_type);
- 	if (ret)
- 		dp_altmode_notify(dp);
- 
-@@ -223,7 +243,20 @@ static void dp_altmode_work(struct work_struct *work)
- 	case DP_STATE_ENTER:
- 		ret = typec_altmode_enter(dp->alt, NULL, TYPEC_ALTMODE_SOP);
- 		if (ret && ret != -EBUSY)
--			dev_err(&dp->alt->dev, "failed to enter mode\n");
-+			dev_err(&dp->alt->dev, "partner failed to enter mode\n");
-+		break;
-+	case DP_STATE_ENTER_PRIME:
-+		ret = typec_altmode_enter(dp->alt, NULL, TYPEC_ALTMODE_SOP_PRIME);
-+		/*
-+		 * If we fail to enter Alt Mode on SOP', then we should drop the
-+		 * plug from the driver and attempt to run the driver without
-+		 * it.
-+		 */
-+		if (ret && ret != -EBUSY) {
-+			dev_err(&dp->alt->dev, "plug failed to enter mode\n");
-+			dp->state = DP_STATE_ENTER;
-+			goto disable_prime;
-+		}
- 		break;
- 	case DP_STATE_UPDATE:
- 		svdm_version = typec_altmode_get_svdm_version(dp->alt);
-@@ -238,15 +271,30 @@ static void dp_altmode_work(struct work_struct *work)
- 				ret);
- 		break;
- 	case DP_STATE_CONFIGURE:
--		ret = dp_altmode_configure_vdm(dp, dp->data.conf);
-+		ret = dp_altmode_configure_vdm(dp, dp->data.conf, TYPEC_ALTMODE_SOP);
- 		if (ret)
- 			dev_err(&dp->alt->dev,
- 				"unable to send Configure command (%d)\n", ret);
- 		break;
-+	case DP_STATE_CONFIGURE_PRIME:
-+		ret = dp_altmode_configure_vdm(dp, dp->data_prime.conf,
-+					       TYPEC_ALTMODE_SOP_PRIME);
-+		if (ret) {
-+			dev_err(&dp->plug_prime->dev,
-+				"unable to send Configure command (%d)\n",
-+				ret);
-+			dp->state = DP_STATE_CONFIGURE;
-+			goto disable_prime;
-+		}
-+		break;
- 	case DP_STATE_EXIT:
- 		if (typec_altmode_exit(dp->alt, TYPEC_ALTMODE_SOP))
- 			dev_err(&dp->alt->dev, "Exit Mode Failed!\n");
- 		break;
-+	case DP_STATE_EXIT_PRIME:
-+		if (typec_altmode_exit(dp->alt, TYPEC_ALTMODE_SOP_PRIME))
-+			dev_err(&dp->plug_prime->dev, "Exit Mode Failed!\n");
-+		break;
- 	default:
- 		break;
- 	}
-@@ -254,6 +302,12 @@ static void dp_altmode_work(struct work_struct *work)
- 	dp->state = DP_STATE_IDLE;
- 
- 	mutex_unlock(&dp->lock);
-+	return;
-+
-+disable_prime:
-+	typec_altmode_put_plug(dp->plug_prime);
-+	dp->plug_prime = NULL;
-+	schedule_work(&dp->work);
- }
- 
- static void dp_altmode_attention(struct typec_altmode *alt, const u32 vdo)
-@@ -282,6 +336,32 @@ static void dp_altmode_attention(struct typec_altmode *alt, const u32 vdo)
- 	mutex_unlock(&dp->lock);
- }
- 
-+static void dp_exit_mode_handler(struct dp_altmode *dp, enum typec_altmode_transmit_type sop_type)
-+{
-+	if (sop_type == TYPEC_ALTMODE_SOP) {
-+		dp->data.status = 0;
-+		dp->data.conf = 0;
-+		if (dp->hpd) {
-+			drm_connector_oob_hotplug_event(dp->connector_fwnode,
-+							connector_status_disconnected);
-+			dp->hpd = false;
-+			sysfs_notify(&dp->alt->dev.kobj, "displayport", "hpd");
-+		}
-+		/*
-+		 * Delay updating active because driver will not be allowed to send VDMs otherwise
-+		 */
-+		if (dp->plug_prime)
-+			dp->state = DP_STATE_EXIT_PRIME;
-+		else
-+			typec_altmode_update_active(dp->alt, false);
-+	} else if (sop_type == TYPEC_ALTMODE_SOP_PRIME) {
-+		dp->data_prime.status = 0;
-+		dp->data_prime.conf = 0;
-+		typec_altmode_update_active(dp->plug_prime, false);
-+		typec_altmode_update_active(dp->alt, false);
-+	}
-+}
-+
- static int dp_altmode_vdm(struct typec_altmode *alt,
- 			  const u32 hdr, const u32 *vdo, int count,
- 			  enum typec_altmode_transmit_type sop_type)
-@@ -302,26 +382,27 @@ static int dp_altmode_vdm(struct typec_altmode *alt,
- 	case CMDT_RSP_ACK:
- 		switch (cmd) {
- 		case CMD_ENTER_MODE:
--			typec_altmode_update_active(alt, true);
--			dp->state = DP_STATE_UPDATE;
-+			if (sop_type == TYPEC_ALTMODE_SOP_PRIME) {
-+				if (dp->plug_prime)
-+					typec_altmode_update_active(dp->plug_prime, true);
-+				dp->state = DP_STATE_ENTER;
-+			} else {
-+				typec_altmode_update_active(alt, true);
-+				dp->state = DP_STATE_UPDATE;
-+			}
- 			break;
- 		case CMD_EXIT_MODE:
--			typec_altmode_update_active(alt, false);
--			dp->data.status = 0;
--			dp->data.conf = 0;
--			if (dp->hpd) {
--				drm_connector_oob_hotplug_event(dp->connector_fwnode,
--								connector_status_disconnected);
--				dp->hpd = false;
--				sysfs_notify(&dp->alt->dev.kobj, "displayport", "hpd");
--			}
-+			dp_exit_mode_handler(dp, sop_type);
- 			break;
- 		case DP_CMD_STATUS_UPDATE:
- 			dp->data.status = *vdo;
- 			ret = dp_altmode_status_update(dp);
- 			break;
- 		case DP_CMD_CONFIGURE:
--			ret = dp_altmode_configured(dp);
-+			if (sop_type == TYPEC_ALTMODE_SOP_PRIME)
-+				dp->state = DP_STATE_CONFIGURE;
-+			else
-+				ret = dp_altmode_configured(dp);
- 			break;
- 		default:
- 			break;
-@@ -330,8 +411,16 @@ static int dp_altmode_vdm(struct typec_altmode *alt,
- 	case CMDT_RSP_NAK:
- 		switch (cmd) {
- 		case DP_CMD_CONFIGURE:
--			dp->data.conf = 0;
--			ret = dp_altmode_configured(dp);
-+			if (sop_type == TYPEC_ALTMODE_SOP_PRIME) {
-+				dp->data_prime.conf = 0;
-+				/* Attempt to configure on SOP, drop plug */
-+				typec_altmode_put_plug(dp->plug_prime);
-+				dp->plug_prime = NULL;
-+				dp->state = DP_STATE_CONFIGURE;
-+			} else {
-+				dp->data.conf = 0;
-+				ret = dp_altmode_configured(dp);
-+			}
- 			break;
- 		default:
- 			break;
-@@ -351,8 +440,23 @@ static int dp_altmode_vdm(struct typec_altmode *alt,
- 
- static int dp_altmode_activate(struct typec_altmode *alt, int activate)
- {
--	return activate ? typec_altmode_enter(alt, NULL, TYPEC_ALTMODE_SOP) :
--			  typec_altmode_exit(alt, TYPEC_ALTMODE_SOP);
-+	struct dp_altmode *dp = typec_altmode_get_drvdata(alt);
-+	int ret;
-+
-+	if (activate) {
-+		if (dp->plug_prime) {
-+			ret = typec_altmode_enter(alt, NULL, TYPEC_ALTMODE_SOP_PRIME);
-+			if (ret < 0) {
-+				typec_altmode_put_plug(dp->plug_prime);
-+				dp->plug_prime = NULL;
-+			} else {
-+				return ret;
-+			}
-+		}
-+		return typec_altmode_enter(alt, NULL, TYPEC_ALTMODE_SOP);
-+	} else {
-+		return typec_altmode_exit(alt, TYPEC_ALTMODE_SOP);
-+	}
- }
- 
- static const struct typec_altmode_ops dp_altmode_ops = {
-@@ -400,7 +504,7 @@ configuration_store(struct device *dev, struct device_attribute *attr,
- 	conf |= con;
- 
- 	if (dp->alt->active) {
--		ret = dp_altmode_configure_vdm(dp, conf);
-+		ret = dp_altmode_configure_vdm(dp, conf, TYPEC_ALTMODE_SOP);
- 		if (ret)
- 			goto err_unlock;
- 	}
-@@ -502,7 +606,7 @@ pin_assignment_store(struct device *dev, struct device_attribute *attr,
- 
- 	/* Only send Configure command if a configuration has been set */
- 	if (dp->alt->active && DP_CONF_CURRENTLY(dp->data.conf)) {
--		ret = dp_altmode_configure_vdm(dp, conf);
-+		ret = dp_altmode_configure_vdm(dp, conf, TYPEC_ALTMODE_SOP);
- 		if (ret)
- 			goto out_unlock;
- 	}
-@@ -575,6 +679,7 @@ static const struct attribute_group dp_altmode_group = {
- int dp_altmode_probe(struct typec_altmode *alt)
- {
- 	const struct typec_altmode *port = typec_altmode_get_partner(alt);
-+	struct typec_altmode *plug = typec_altmode_get_plug(alt, TYPEC_PLUG_SOP_P);
- 	struct fwnode_handle *fwnode;
- 	struct dp_altmode *dp;
- 	int ret;
-@@ -604,6 +709,11 @@ int dp_altmode_probe(struct typec_altmode *alt)
- 	alt->desc = "DisplayPort";
- 	alt->ops = &dp_altmode_ops;
- 
-+	if (plug)
-+		plug->desc = "Displayport";
-+
-+	dp->plug_prime = plug;
-+
- 	fwnode = dev_fwnode(alt->dev.parent->parent); /* typec_port fwnode */
- 	if (fwnode_property_present(fwnode, "displayport"))
- 		dp->connector_fwnode = fwnode_find_reference(fwnode, "displayport", 0);
-@@ -614,7 +724,8 @@ int dp_altmode_probe(struct typec_altmode *alt)
- 
- 	typec_altmode_set_drvdata(alt, dp);
- 
--	dp->state = DP_STATE_ENTER;
-+	dp->state = plug ? DP_STATE_ENTER_PRIME : DP_STATE_ENTER;
-+
- 	schedule_work(&dp->work);
- 
- 	return 0;
-@@ -627,6 +738,7 @@ void dp_altmode_remove(struct typec_altmode *alt)
- 
- 	sysfs_remove_group(&alt->dev.kobj, &dp_altmode_group);
- 	cancel_work_sync(&dp->work);
-+	typec_altmode_put_plug(dp->plug_prime);
- 
- 	if (dp->connector_fwnode) {
- 		drm_connector_oob_hotplug_event(dp->connector_fwnode,
--- 
-2.43.0.rc2.451.g8631bc7472-goog
-
+On Thu, Oct 26, 2023 at 10:31=E2=80=AFPM Cl=C3=A9ment L=C3=A9ger <cleger@ri=
+vosinc.com> wrote:
+>
+> The SBI Supervisor Software Events (SSE) extensions provides a mechanism
+> to inject software events from an SBI implementation to supervisor
+> software such that it preempts all other supervisor level traps and
+> interrupts [1].
+>
+> Various events are defined and can be send asynchronously to supervisor
+> software (RAS, PMU, DEBUG, Asynchronous page fault) from SBI as well
+> as platform specific events. Events can be either local (per-hart) or
+> global. Events can be nested on top of each other based on priority and
+> can interrupt the kernel at any time.
+>
+> First patch adds the SSE definitions. Second one adds support for SSE
+> itself. Implementation is split between arch specific code and generic
+> part (similarly to what is done for ARM SDEI). Finally, the last patch
+> add support fro SSE event in the SBI PMU driver. If the SSE event is
+> available from the SBI then, it will be used instead of the normal
+> interrupt.
+>
+> Amongst the specific points that needs to be handle is the interruption
+> at any point of the kernel execution and more specifically during
+> exception handling. Due to the fact that the exception entry
+> implementation uses the SCRATCH CSR as both the current task struct and
+> as the temporary register to switch the stack and save register, it is
+> difficult to reliably get the current task struct if we get interrupted
+> at this specific moment. A fixup-like mechanism allows to mark the
+> location of the current task struct depending on the entry level
+> (user/kernel) and the location. This is then used in the SSE assembly to
+> determine where is located the current task_struct.
+>
+> Contrary to pseudo NMI [2], SSE does not modifies the way interrupts are
+> handled and does not adds any overhead to existing code. Moreover, it
+> provides "true" NMI-like interrupts which can interrupt the kernel at
+> any time (even in exception handling). This is particularly crucial for
+> RAS errors which needs to be handled as fast as possible to avoid any
+> fault propagation. Additionally, SSE event handling is faster that the
+> standard IRQ handling path with almost half executed instruction (700 vs
+> 1590). Some complementary tests/perf measurements will be done.
+>
+> For testing purpose, one can use the provided SBI implementation at [3].
+> This series also needs patch [4] to fix a bug in the PMU driver.
+>
+> Link: https://lists.riscv.org/g/tech-prs/message/515 [1]
+> Link: https://lore.kernel.org/lkml/20231023082911.23242-10-luxu.kernel@by=
+tedance.com/T/ [2]
+> Link: https://github.com/rivosinc/opensbi/tree/dev/cleger/sse [3]
+> Link: https://lore.kernel.org/linux-arm-kernel/20231026084010.11888-1-ale=
+xghiti@rivosinc.com/ [4]
+>
+> ---
+>
+> Cl=C3=A9ment L=C3=A9ger (3):
+>   riscv: add SBI SSE extension definitions
+>   riscv: add support for SBI Supervisor Software Events extension
+>   perf: RISC-V: add support for SSE event
+>
+>  arch/riscv/include/asm/asm-prototypes.h |   5 +
+>  arch/riscv/include/asm/sbi.h            |  40 ++
+>  arch/riscv/include/asm/sse.h            |  94 +++++
+>  arch/riscv/kernel/Makefile              |   1 +
+>  arch/riscv/kernel/asm-offsets.c         |  17 +
+>  arch/riscv/kernel/entry.S               | 156 ++++++++
+>  arch/riscv/kernel/sbi.c                 |   4 +
+>  arch/riscv/kernel/sse.c                 |  97 +++++
+>  arch/riscv/kernel/stacktrace.c          |  13 +
+>  arch/riscv/kernel/vmlinux.lds.S         |   6 +
+>  drivers/firmware/Kconfig                |  10 +
+>  drivers/firmware/Makefile               |   1 +
+>  drivers/firmware/riscv_sse.c            | 496 ++++++++++++++++++++++++
+>  drivers/perf/riscv_pmu_sbi.c            |  51 ++-
+>  include/linux/riscv_sse.h               |  56 +++
+>  15 files changed, 1038 insertions(+), 9 deletions(-)
+>  create mode 100644 arch/riscv/include/asm/sse.h
+>  create mode 100644 arch/riscv/kernel/sse.c
+>  create mode 100644 drivers/firmware/riscv_sse.c
+>  create mode 100644 include/linux/riscv_sse.h
+>
+> --
+> 2.42.0
+>
