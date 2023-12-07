@@ -2,172 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC67808DE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77269808DE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 17:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbjLGQqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 11:46:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60886 "EHLO
+        id S233299AbjLGQrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 11:47:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232488AbjLGQqA (ORCPT
+        with ESMTP id S233051AbjLGQrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 11:46:00 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5B010D1;
-        Thu,  7 Dec 2023 08:46:07 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+        Thu, 7 Dec 2023 11:47:36 -0500
+Received: from mail.subdimension.ro (unknown [IPv6:2a01:7e01:e001:1d1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6877110D1;
+        Thu,  7 Dec 2023 08:47:41 -0800 (PST)
+Received: from localhost.localdomain (unknown [188.24.94.216])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A62071FBAA;
-        Thu,  7 Dec 2023 16:46:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701967565; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W4o5AJYQxRQ7xI7OJGpx4sGxsNO6SfxiY/aIwYIlBMw=;
-        b=nK/helao8UuRYPbf5PTb5WnKD2dW1pIgAbiTjBiHsPy5TwwiKzduacVuf+XBYbDzqqc0XB
-        Py+coW3Htj10SCh519vgWzg2uwfFBguI7UqXhD/PpWd6ULfELsB8I8CdT3cYHQGQSjxXlv
-        vTv/uEeM+oxaAhNuDKt7zqJ3jOw8/YE=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701967565; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W4o5AJYQxRQ7xI7OJGpx4sGxsNO6SfxiY/aIwYIlBMw=;
-        b=nK/helao8UuRYPbf5PTb5WnKD2dW1pIgAbiTjBiHsPy5TwwiKzduacVuf+XBYbDzqqc0XB
-        Py+coW3Htj10SCh519vgWzg2uwfFBguI7UqXhD/PpWd6ULfELsB8I8CdT3cYHQGQSjxXlv
-        vTv/uEeM+oxaAhNuDKt7zqJ3jOw8/YE=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 91A68139E3;
-        Thu,  7 Dec 2023 16:46:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id Drj4Is32cWUSUwAAn2gu4w
-        (envelope-from <mkoutny@suse.com>); Thu, 07 Dec 2023 16:46:05 +0000
-Date:   Thu, 7 Dec 2023 17:46:04 +0100
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yafang Shao <laoar.shao@gmail.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH-cgroup v2] cgroup: Move rcu_head up near the top of
- cgroup_root
-Message-ID: <65h3s447i3fkygdtilucda2q6uaygtzfpxb6vsjgwoeybwwgtw@6ahmtj47ggzh>
-References: <20231207134614.882991-1-longman@redhat.com>
+        (Client did not present a certificate)
+        by mail.subdimension.ro (Postfix) with ESMTPSA id 96D1428EE6F;
+        Thu,  7 Dec 2023 16:47:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+        s=skycaves; t=1701967659;
+        bh=Gtb+0owkXFeYs1nFwSaAIZKUGamCMAfqYYJIbP08rDg=;
+        h=From:To:Cc:Subject:Date;
+        b=pdufaVZepOM0QlVtfe3TlmudNasU2eiAHvZypW2DIsJ+5OdramSdzMKWLc5jd0tg8
+         X7YfdBk0Nefp6eMYcWBUd0f95gh5e96Un0c7I8b9BsaR07UXn/5ta8NMzKWrW8tCZp
+         nn1G0TiSdw2ImubD9IZum2dSeYpd0uHMaHU8ldbo=
+From:   Petre Rodan <petre.rodan@subdimension.ro>
+To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Petre Rodan <petre.rodan@subdimension.ro>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v8 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
+Date:   Thu,  7 Dec 2023 18:46:28 +0200
+Message-ID: <20231207164634.11998-1-petre.rodan@subdimension.ro>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yoh2mfr4t3txcwc4"
-Content-Disposition: inline
-In-Reply-To: <20231207134614.882991-1-longman@redhat.com>
-X-Spam-Level: 
-X-Spam-Score: -1.40
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -1.40
-X-Spamd-Result: default: False [-1.40 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.20)[multipart/signed,text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         SIGNED_PGP(-2.00)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:~];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[kernel.org,bytedance.com,cmpxchg.org,gmail.com,vger.kernel.org,canb.auug.org.au,google.com];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Adds binding for digital Honeywell TruStability HSC and SSC series
+pressure and temperature sensors.
+Communication is one way. The sensor only requires 4 bytes worth of
+clock pulses on both i2c and spi in order to push the data out.
+The i2c address is hardcoded and depends on the part number.
+There is no additional GPIO control.
+driver is based on iio/togreg
 
---yoh2mfr4t3txcwc4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Datasheet:
+https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf [HSC]
+Datasheet:
+https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf [SSC]
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+---
+v2: - fix yaml struct
+    - cleanup based on Krzysztof's review
+v3: - rename range_str -> honeywell,pressure-triplet to define the string
+       containing the pressure range, measurement unit and type
+    - honeywell,pmax-pascal becomes uint32
+v4: - added enum to honeywell,transfer-function
+v5: - removed pmin-pascal, pmax-pascal $ref
+    - added pmin-pascal, pmax-pascal constraints
+v6: - no change
+v7: - no change
+v8: - no change, driver is now based on iio/togreg
+---
+ .../iio/pressure/honeywell,hsc030pa.yaml      | 142 ++++++++++++++++++
+ 1 file changed, 142 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
 
-On Thu, Dec 07, 2023 at 08:46:14AM -0500, Waiman Long <longman@redhat.com> =
-wrote:
-> Commit 77070eeb8821 ("cgroup: Avoid false cacheline sharing of read
-> mostly rstat_cpu") happens to be the last straw that breaks it.
+diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+new file mode 100644
+index 000000000000..65a24ed67b3c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+@@ -0,0 +1,142 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/pressure/honeywell,hsc030pa.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Honeywell TruStability HSC and SSC pressure sensor series
++
++description: |
++  support for Honeywell TruStability HSC and SSC digital pressure sensor
++  series.
++
++  These sensors have either an I2C, an SPI or an analog interface. Only the
++  digital versions are supported by this driver.
++
++  There are 118 models with different pressure ranges available in each family.
++  The vendor calls them "HSC series" and "SSC series". All of them have an
++  identical programming model but differ in pressure range, unit and transfer
++  function.
++
++  To support different models one needs to specify the pressure range as well
++  as the transfer function. Pressure range can either be provided via
++  pressure-triplet (directly extracted from the part number) or in case it's
++  a custom chip via numerical range limits converted to pascals.
++
++  The transfer function defines the ranges of raw conversion values delivered
++  by the sensor. pmin-pascal and pmax-pascal corespond to the minimum and
++  maximum pressure that can be measured.
++
++  Please note that in case of an SPI-based sensor, the clock signal should not
++  exceed 800kHz and the MOSI signal is not required.
++
++  Specifications about the devices can be found at:
++  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
++  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf
++
++maintainers:
++  - Petre Rodan <petre.rodan@subdimension.ro>
++
++properties:
++  compatible:
++    const: honeywell,hsc030pa
++
++  reg:
++    maxItems: 1
++
++  honeywell,transfer-function:
++    description: |
++      Transfer function which defines the range of valid values delivered by
++      the sensor.
++      0 - A, 10% to 90% of 2^14
++      1 - B, 5% to 95% of 2^14
++      2 - C, 5% to 85% of 2^14
++      3 - F, 4% to 94% of 2^14
++    enum: [0, 1, 2, 3]
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  honeywell,pressure-triplet:
++    description: |
++      Case-sensitive five character string that defines pressure range, unit
++      and type as part of the device nomenclature. In the unlikely case of a
++      custom chip, set to "NA" and provide pmin-pascal and pmax-pascal.
++    enum: [001BA, 1.6BA, 2.5BA, 004BA, 006BA, 010BA, 1.6MD, 2.5MD, 004MD,
++           006MD, 010MD, 016MD, 025MD, 040MD, 060MD, 100MD, 160MD, 250MD,
++           400MD, 600MD, 001BD, 1.6BD, 2.5BD, 004BD, 2.5MG, 004MG, 006MG,
++           010MG, 016MG, 025MG, 040MG, 060MG, 100MG, 160MG, 250MG, 400MG,
++           600MG, 001BG, 1.6BG, 2.5BG, 004BG, 006BG, 010BG, 100KA, 160KA,
++           250KA, 400KA, 600KA, 001GA, 160LD, 250LD, 400LD, 600LD, 001KD,
++           1.6KD, 2.5KD, 004KD, 006KD, 010KD, 016KD, 025KD, 040KD, 060KD,
++           100KD, 160KD, 250KD, 400KD, 250LG, 400LG, 600LG, 001KG, 1.6KG,
++           2.5KG, 004KG, 006KG, 010KG, 016KG, 025KG, 040KG, 060KG, 100KG,
++           160KG, 250KG, 400KG, 600KG, 001GG, 015PA, 030PA, 060PA, 100PA,
++           150PA, 0.5ND, 001ND, 002ND, 004ND, 005ND, 010ND, 020ND, 030ND,
++           001PD, 005PD, 015PD, 030PD, 060PD, 001NG, 002NG, 004NG, 005NG,
++           010NG, 020NG, 030NG, 001PG, 005PG, 015PG, 030PG, 060PG, 100PG,
++           150PG, NA]
++    $ref: /schemas/types.yaml#/definitions/string
++
++  honeywell,pmin-pascal:
++    description: |
++      Minimum pressure value the sensor can measure in pascal.
++      To be specified only if honeywell,pressure-triplet is set to "NA".
++
++  honeywell,pmax-pascal:
++    description: |
++      Maximum pressure value the sensor can measure in pascal.
++      To be specified only if honeywell,pressure-triplet is set to "NA".
++
++  vdd-supply:
++    description:
++      Provide VDD power to the sensor (either 3.3V or 5V depending on the chip)
++
++  spi-max-frequency:
++    maximum: 800000
++
++required:
++  - compatible
++  - reg
++  - honeywell,transfer-function
++  - honeywell,pressure-triplet
++
++additionalProperties: false
++
++dependentSchemas:
++  honeywell,pmin-pascal:
++    properties:
++      honeywell,pressure-triplet:
++        const: NA
++  honeywell,pmax-pascal:
++    properties:
++      honeywell,pressure-triplet:
++        const: NA
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pressure@28 {
++            compatible = "honeywell,hsc030pa";
++            reg = <0x28>;
++            honeywell,transfer-function = <0>;
++            honeywell,pressure-triplet = "030PA";
++        };
++    };
++  - |
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pressure@0 {
++            compatible = "honeywell,hsc030pa";
++            reg = <0>;
++            spi-max-frequency = <800000>;
++            honeywell,transfer-function = <0>;
++            honeywell,pressure-triplet = "NA";
++            honeywell,pmin-pascal = <0>;
++            honeywell,pmax-pascal = <200000>;
++        };
++    };
++...
+-- 
+2.41.0
 
-FTR, when I build kernel from that commit, I can see
-
-> struct cgroup_root {
-> 	struct kernfs_root *       kf_root;              /*     0     8 */
-> 	unsigned int               subsys_mask;          /*     8     4 */
-> 	int                        hierarchy_id;         /*    12     4 */
->=20
-> 	/* XXX 48 bytes hole, try to pack */
->=20
-> 	/* --- cacheline 1 boundary (64 bytes) --- */
-> 	struct cgroup              cgrp __attribute__((__aligned__(64))); /*    =
-64  2368 */
->=20
-> 	/* XXX last struct has 8 bytes of padding */
->=20
-> 	/* --- cacheline 38 boundary (2432 bytes) --- */
-> 	struct cgroup *            cgrp_ancestor_storage; /*  2432     8 */
-> 	atomic_t                   nr_cgrps;             /*  2440     4 */
->=20
-> 	/* XXX 4 bytes hole, try to pack */
->=20
-> 	struct list_head           root_list;            /*  2448    16 */
-> 	struct callback_head       rcu __attribute__((__aligned__(8))); /*  2464=
-    16 */
-> 	unsigned int               flags;                /*  2480     4 */
-> 	char                       release_agent_path[4096]; /*  2484  4096 */
-> 	/* --- cacheline 102 boundary (6528 bytes) was 52 bytes ago --- */
-> 	char                       name[64];             /*  6580    64 */
->=20
-> 	/* size: 6656, cachelines: 104, members: 11 */
-> 	/* sum members: 6592, holes: 2, sum holes: 52 */
-> 	/* padding: 12 */
-> 	/* paddings: 1, sum paddings: 8 */
-> 	/* forced alignments: 2, forced holes: 1, sum forced holes: 48 */
-> } __attribute__((__aligned__(64)));
-
-2480 has still quite a reserve below 4096. (I can't see an CONFIG_*
-affecting this.)
-
-Perhaps, I missed something from the linux-next merging thread?
-
-
-Michal
-
---yoh2mfr4t3txcwc4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZXH2ygAKCRAGvrMr/1gc
-jpZuAP9RgMwrR6LBFr+2ohXuCMXaICW4Vd3Wj2jt2+aVwhZUMwEAv+h6B/ZFotnw
-BWbde0bO3MEumhkx4R695l/j/sSxdws=
-=dUG2
------END PGP SIGNATURE-----
-
---yoh2mfr4t3txcwc4--
