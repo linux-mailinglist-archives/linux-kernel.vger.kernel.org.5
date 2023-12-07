@@ -2,130 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7297A8087AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72028087A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 13:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379221AbjLGMWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 07:22:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35806 "EHLO
+        id S1379241AbjLGMWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 07:22:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbjLGMWf (ORCPT
+        with ESMTP id S232482AbjLGMWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 07:22:35 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F4610D2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:22:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701951761; x=1733487761;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ujh58FHcb5tb2jGK1N8YKu30AfBLDN/psJSNOj5NXOI=;
-  b=jS15MxxmX5AiqzTXTLRe00Dqwg4PHY7rlT7FBpFWjyKqKY/LxmkF5ihO
-   Hzd8SX+wTtVS82ULNQct1p2o8Tv6oJn5nqu5bMuX26BG0qXwHlX8rygVE
-   DUsfxN44DLE5YMgSK65Ip+Dbj9s/U/PpDGUZC8X+pXfvOfc/HqRxtPE2K
-   e0HB3Jmapaic69S3HTTFKM3D4g98oYzIipT9PbS5knajnWKFoPfj08Qq4
-   HbAlJyY9RBoJowtLvQMXSzTSDLCaffIT1I8GG5sMmBDSTkLdzJLgaG0rS
-   hPFAMFsEGaxELXw6gSvY13VVkb+kfw4LYgPplf6flewLMmDHgupoShCOg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="7530806"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="7530806"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 04:22:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="945013859"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="945013859"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 07 Dec 2023 04:22:37 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBDOk-000CDr-2t;
-        Thu, 07 Dec 2023 12:22:34 +0000
-Date:   Thu, 7 Dec 2023 20:21:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Gergo Koteles <soyer@irl.hu>, Shenghao Ding <shenghao-ding@ti.com>,
-        Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, Gergo Koteles <soyer@irl.hu>
-Subject: Re: [PATCH 13/16] ALSA: hda/tas2781: remove sound controls in unbind
-Message-ID: <202312072037.CYK5reOb-lkp@intel.com>
-References: <8f16576930682297fd08bba5e063a9a1f3150388.1701906455.git.soyer@irl.hu>
+        Thu, 7 Dec 2023 07:22:39 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B06810CA
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 04:22:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB499C433C8;
+        Thu,  7 Dec 2023 12:22:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701951764;
+        bh=epH6N4HOQY9d/F5eZFuiUiKcD6erclTqiNFuoeHNibM=;
+        h=From:Date:Subject:To:Cc:From;
+        b=ZRuAepFhfUG/d4JUckztQmMS323WJgPb0oGVjoiVT16Sw9k3gd2mcP1s2X+UCQhvm
+         TTX8vLZ/lNjgv68XatsoQiJNDp2Kmmq9H854ivI9VPmVLP9p70meAooJGYxI1LJTgL
+         QT/RAmD1b14G3rSJqRc4372ZDLz6i5nKmz2lsxe4xSDv12Y2ByD3xiexVsFxncGrDS
+         TOt/qKsUYnZ/laPTjMCTRn0sqo0B84C9zuiZ566wL1mJ04fGJnN8aY5gdcLCG56hkV
+         9aevdE7LoYOLkHTHMomf0iLxG91JcLifQyl1l9vrt/8PZHvaTouWNw3vypYTYqvEE0
+         ss+Dg2q8YUkIQ==
+From:   Benjamin Tissoires <bentiss@kernel.org>
+Date:   Thu, 07 Dec 2023 13:22:39 +0100
+Subject: [PATCH] selftests/hid: fix failing tablet button tests
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f16576930682297fd08bba5e063a9a1f3150388.1701906455.git.soyer@irl.hu>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231207-b4-wip-selftests-v1-1-c4e13fe04a70@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAA65cWUC/x3MQQ5AMBBA0avIrE2i1SKuIha0g0kE6QiSxt01l
+ m/xfwShwCTQZhECXSy8bwkqz8AtwzYTsk8GXehS6aLG0eDNBwqt00lyCjplK+uNN7ZuIGVHoIm
+ ff9n17/sBuP0ArGIAAAA=
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Peter Hutterer <peter.hutterer@who-t.net>
+Cc:     Jiri Kosina <jkosina@suse.com>,
+        Benjamin Tissoires <bentiss@kernel.org>,
+        linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701951762; l=1894;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=epH6N4HOQY9d/F5eZFuiUiKcD6erclTqiNFuoeHNibM=;
+ b=n/90PDIVzBVYmex40erDeyr8UfBLYJJvGN2LIAvfkl2wkUtPc4ZONsXa4LXWuHGuUhRNjEr3t
+ S29RzIxWhgoCbx0SJBI78CjhJjrx8MqBr1/El5ybpfDF2e1WRSpLa54
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gergo,
+An overlook from commit 74452d6329be ("selftests/hid: tablets: add
+variants of states with buttons"), where I don't use the Enum...
 
-kernel test robot noticed the following build warnings:
+Fixes: 74452d6329be ("selftests/hid: tablets: add variants of states with buttons")
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+---
+Not sure what happened, but I mustn't have run the tests before
+sending the series, and they fail blatently.
+I'm deeply sorry for that, I thought these failures were fixed.
 
-[auto build test WARNING on tiwai-sound/for-next]
-[also build test WARNING on tiwai-sound/for-linus broonie-sound/for-next linus/master v6.7-rc4 next-20231207]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Cheers,
+Benjamin
+---
+ tools/testing/selftests/hid/tests/test_tablet.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Gergo-Koteles/ALSA-hda-tas2781-leave-hda_component-in-usable-state/20231207-085947
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-patch link:    https://lore.kernel.org/r/8f16576930682297fd08bba5e063a9a1f3150388.1701906455.git.soyer%40irl.hu
-patch subject: [PATCH 13/16] ALSA: hda/tas2781: remove sound controls in unbind
-config: x86_64-randconfig-013-20231207 (https://download.01.org/0day-ci/archive/20231207/202312072037.CYK5reOb-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231207/202312072037.CYK5reOb-lkp@intel.com/reproduce)
+diff --git a/tools/testing/selftests/hid/tests/test_tablet.py b/tools/testing/selftests/hid/tests/test_tablet.py
+index dc8b0fe9e7f3..903f19f7cbe9 100644
+--- a/tools/testing/selftests/hid/tests/test_tablet.py
++++ b/tools/testing/selftests/hid/tests/test_tablet.py
+@@ -115,7 +115,7 @@ class PenState(Enum):
+         # we take only the highest button in account
+         for b in [libevdev.EV_KEY.BTN_STYLUS, libevdev.EV_KEY.BTN_STYLUS2]:
+             if bool(evdev.value[b]):
+-                button = b
++                button = BtnPressed(b)
+ 
+         # the kernel tends to insert an EV_SYN once removing the tool, so
+         # the button will be released after
+@@ -155,7 +155,7 @@ class PenState(Enum):
+                 if button_found:
+                     raise ValueError(f"duplicated BTN_STYLUS* in {events}")
+                 button_found = True
+-                button = ev.code if ev.value else None
++                button = BtnPressed(ev.code) if ev.value else None
+ 
+         # the kernel tends to insert an EV_SYN once removing the tool, so
+         # the button will be released after
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312072037.CYK5reOb-lkp@intel.com/
+---
+base-commit: f556aa957df8cb3e98af0f54bf1fa65f59ae47a3
+change-id: 20231207-b4-wip-selftests-c1565d4d4578
 
-All warnings (new ones prefixed by >>):
-
-   sound/pci/hda/tas2781_hda_i2c.c: In function 'tas2781_runtime_resume':
->> sound/pci/hda/tas2781_hda_i2c.c:868:1: warning: label 'out' defined but not used [-Wunused-label]
-     868 | out:
-         | ^~~
-
-
-vim +/out +868 sound/pci/hda/tas2781_hda_i2c.c
-
-   852	
-   853	static int tas2781_runtime_resume(struct device *dev)
-   854	{
-   855		struct tas2781_hda *tas_hda = dev_get_drvdata(dev);
-   856	
-   857		dev_dbg(tas_hda->dev, "Runtime Resume\n");
-   858	
-   859		mutex_lock(&tas_hda->priv->codec_lock);
-   860	
-   861		tasdevice_prmg_load(tas_hda->priv, tas_hda->priv->cur_prog);
-   862	
-   863		/* If calibrated data occurs error, dsp will still works with default
-   864		 * calibrated data inside algo.
-   865		 */
-   866		tasdevice_apply_calibration(tas_hda->priv);
-   867	
- > 868	out:
-   869		mutex_unlock(&tas_hda->priv->codec_lock);
-   870	
-   871		return 0;
-   872	}
-   873	
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Benjamin Tissoires <bentiss@kernel.org>
+
