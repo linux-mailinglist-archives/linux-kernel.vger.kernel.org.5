@@ -2,146 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2513B8080E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 07:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7477E8080E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 07:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229484AbjLGGi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 01:38:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42328 "EHLO
+        id S229894AbjLGGlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 01:41:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjLGGiz (ORCPT
+        with ESMTP id S229733AbjLGGk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 01:38:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3288ED5C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 22:39:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAE8DC433C8;
-        Thu,  7 Dec 2023 06:38:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701931140;
-        bh=oEBuYr2m/+uNNqMOsGkoIUp/xfye7K359HZ6CZXafeA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CWUHQgh/Cs7qos5c4D8/jEGRTYGJjaFlBNTygl4+NOn20GgtnwLQU0JHeS5TQ1gJ3
-         VUUF8TS4sbVwQSgekupC2VVt6jnRbxPnLxSbeec10i3vCPz+04j01keJDw0NklLEn/
-         S78TaTT6kgTQVI7/JSJKZEbfPs8sEtMLt0GUJT4v8z+27o/+eKSJN1SYlEoyVygSki
-         0+GYmHdfp91bOb86/1EuRZ+q/xxPqBJpFnGR726BkHKsgKQhM8zzIM1vcpx3ujvnS1
-         81yt4ysFl/BwxTG98vfo9Fz/XExL6BWD3yk7WwcK4AmPfD8sNba4c+Yj2Oe3d5hIa6
-         sao2QRiO6tewg==
-Date:   Thu, 7 Dec 2023 12:08:51 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Qiang Yu <quic_qianyu@quicinc.com>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>, quic_jhugo@quicinc.com,
-        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-        quic_mrana@quicinc.com, Hemant Kumar <quic_hemantk@quicinc.com>,
-        Lazarus Motha <quic_lmotha@quicinc.com>
-Subject: Re: [PATCH v4 4/4] bus: mhi: host: Take irqsave lock after TRE is
- generated
-Message-ID: <20231207063851.GD2932@thinkpad>
-References: <1699939661-7385-1-git-send-email-quic_qianyu@quicinc.com>
- <1699939661-7385-5-git-send-email-quic_qianyu@quicinc.com>
- <20231124100916.GB4536@thinkpad>
- <ae1514d1-1cdf-42f8-ac8c-6e6c2005922f@quicinc.com>
+        Thu, 7 Dec 2023 01:40:59 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C6C137;
+        Wed,  6 Dec 2023 22:41:04 -0800 (PST)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Sm4KZ5VHWz14LrF;
+        Thu,  7 Dec 2023 14:36:02 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 7 Dec 2023 14:41:01 +0800
+Message-ID: <fb79e430-97fb-176e-fc64-2c32a9d8a94f@huawei.com>
+Date:   Thu, 7 Dec 2023 14:41:01 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
+ DIO write race with buffered read
+Content-Language: en-US
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     Jan Kara <jack@suse.cz>, <linux-mm@kvack.org>,
+        <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
+        <willy@infradead.org>, <akpm@linux-foundation.org>,
+        <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
+        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
+References: <20231202091432.8349-1-libaokun1@huawei.com>
+ <20231204121120.mpxntey47rluhcfi@quack3>
+ <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
+ <20231205041755.GG509422@mit.edu>
+ <cda525e9-0dac-9629-9c8e-d69d22811777@huawei.com>
+ <20231206215529.GK509422@mit.edu>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20231206215529.GK509422@mit.edu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ae1514d1-1cdf-42f8-ac8c-6e6c2005922f@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 03:19:49PM +0800, Qiang Yu wrote:
-> 
-> On 11/24/2023 6:09 PM, Manivannan Sadhasivam wrote:
-> > On Tue, Nov 14, 2023 at 01:27:41PM +0800, Qiang Yu wrote:
-> > > From: Hemant Kumar <quic_hemantk@quicinc.com>
-> > > 
-> > > If CONFIG_TRACE_IRQFLAGS is enabled, irq will be enabled once __local_bh_
-> > > enable_ip is called as part of write_unlock_bh. Hence, let's take irqsave
-> > "__local_bh_enable_ip" is a function name, so you should not break it.
-> Thanks for let me know, will note this in following patch.
-> > 
-> > > lock after TRE is generated to avoid running write_unlock_bh when irqsave
-> > > lock is held.
-> > > 
-> > I still don't understand this commit message. Where is the write_unlock_bh()
-> > being called?
-> > 
-> > - Mani
-> Write_unlock_bh() is invoked in mhi_gen_te()
-> The calling flow is like
-> mhi_queue
->     read_lock_irqsave(&mhi_cntrl->pm_lock, flags)
->     mhi_gen_tre
->         write_lock_bh(&mhi_chan->lock)
->         write_unlock_bh(&mhi_chan->lock)   // Will enable irq if
-> CONFIG_TRACE_IRQFLAGS is enabled
->     read_lock_irqsave(&mhi_cntrl->pm_lock, flags)
-> 
-> after adding this patch, the calling flow becomes
-> 
-> mhi_queue
->     mhi_gen_tre
->         write_lock_bh(&mhi_chan->lock)
->         write_unlock_bh(&mhi_chan->lock)
->     read_lock_irqsave(&mhi_cntrl->pm_lock, flags)
->     read_lock_irqsave(&mhi_cntrl->pm_lock, flags)
+On 2023/12/7 5:55, Theodore Ts'o wrote:
+> On Tue, Dec 05, 2023 at 09:19:03PM +0800, Baokun Li wrote:
+>> Thank you very much for your detailed explanation!
+>> But the downstream users do have buffered reads to read the relay log
+>> file, as I confirmed with bpftrace. Here's an introduction to turning on
+>> relay logging, but I'm not sure if you can access this link:
+>> https://blog.csdn.net/javaanddonet/article/details/112596148
+> Well, if a mysql-supplied program is trying read the relay log using a
+> buffered read, when it's being written using Direct I/O, that's a bug
+> in mysql, and it should be reported as such to the mysql folks.
+I was mistaken here, it now looks like reads and writes to the relay
+log are buffered IO, and I'm still trying to locate the issue.
+>
+> It does look like there is a newer way of doing replication which
+> doesn't rely on messign with log files.   From:
+>
+>      https://dev.mysql.com/doc/refman/8.0/en/replication.html
+>
+>      MySQL 8.0 supports different methods of replication. The
+>      traditional method is based on replicating events from the
+>      source's binary log, and requires the log files and positions in
+>      them to be synchronized between source and replica. The newer
+>      method based on global transaction identifiers (GTIDs) is
+>      transactional and therefore does not require working with log
+>      files or positions within these files, which greatly simplifies
+>      many common replication tasks. Replication using GTIDs guarantees
+>      consistency between source and replica as long as all transactions
+>      committed on the source have also been applied on the replica. For
+>      more information about GTIDs and GTID-based replication in MySQL,
+>      see Section 17.1.3, “Replication with Global Transaction
+>      Identifiers”. For information on using binary log file position
+>      based replication, see Section 17.1, “Configuring Replication”.
+>
+> Perhaps you can try and see how mysql handles GTID-based replication
+> using bpftrace?
+>
+> Cheers,
+>
+> 						- Ted
+Thank you very much for your solution! I'll try it.
 
-So this patch essentially fixes the issue caused by patch 1? If so, this should
-be squashed into patch 1.
-
-- Mani
-
-> > 
-> > > Signed-off-by: Hemant Kumar <quic_hemantk@quicinc.com>
-> > > Signed-off-by: Lazarus Motha <quic_lmotha@quicinc.com>
-> > > Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
-> > > ---
-> > >   drivers/bus/mhi/host/main.c | 13 +++++--------
-> > >   1 file changed, 5 insertions(+), 8 deletions(-)
-> > > 
-> > > diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-> > > index 33f27e2..d7abd0b 100644
-> > > --- a/drivers/bus/mhi/host/main.c
-> > > +++ b/drivers/bus/mhi/host/main.c
-> > > @@ -1128,17 +1128,15 @@ static int mhi_queue(struct mhi_device *mhi_dev, struct mhi_buf_info *buf_info,
-> > >   	if (unlikely(MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state)))
-> > >   		return -EIO;
-> > > -	read_lock_irqsave(&mhi_cntrl->pm_lock, flags);
-> > > -
-> > >   	ret = mhi_is_ring_full(mhi_cntrl, tre_ring);
-> > > -	if (unlikely(ret)) {
-> > > -		ret = -EAGAIN;
-> > > -		goto exit_unlock;
-> > > -	}
-> > > +	if (unlikely(ret))
-> > > +		return -EAGAIN;
-> > >   	ret = mhi_gen_tre(mhi_cntrl, mhi_chan, buf_info, mflags);
-> > >   	if (unlikely(ret))
-> > > -		goto exit_unlock;
-> > > +		return ret;
-> > > +
-> > > +	read_lock_irqsave(&mhi_cntrl->pm_lock, flags);
-> > >   	/* Packet is queued, take a usage ref to exit M3 if necessary
-> > >   	 * for host->device buffer, balanced put is done on buffer completion
-> > > @@ -1158,7 +1156,6 @@ static int mhi_queue(struct mhi_device *mhi_dev, struct mhi_buf_info *buf_info,
-> > >   	if (dir == DMA_FROM_DEVICE)
-> > >   		mhi_cntrl->runtime_put(mhi_cntrl);
-> > > -exit_unlock:
-> > >   	read_unlock_irqrestore(&mhi_cntrl->pm_lock, flags);
-> > >   	return ret;
-> > > -- 
-> > > 2.7.4
-> > > 
-> > > 
-> 
-
+Thanks!
 -- 
-மணிவண்ணன் சதாசிவம்
+With Best Regards,
+Baokun Li
+.
