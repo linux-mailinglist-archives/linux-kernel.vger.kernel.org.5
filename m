@@ -2,353 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE0B807D60
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 01:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC1A807D64
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 01:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441861AbjLGAnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 19:43:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
+        id S1441909AbjLGAoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 19:44:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjLGAnX (ORCPT
+        with ESMTP id S231164AbjLGAoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 19:43:23 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD336E0;
-        Wed,  6 Dec 2023 16:43:29 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6ce94f62806so84980b3a.1;
-        Wed, 06 Dec 2023 16:43:29 -0800 (PST)
+        Wed, 6 Dec 2023 19:44:04 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AD9E0
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 16:44:10 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-286d6c9ce6dso411199a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 16:44:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701909809; x=1702514609; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eh9CtMoBA+zmGvG+NMP6SS+GUAPZn7ZW9r8sCwWKZF8=;
-        b=Pj69Ns+x9Mj6nd11Ln5I2lxbsKW32F0sudERQbezDpJJVN2JvbcQEEotU6IFkhPwql
-         U9CRSSaopODLoYRGn0h7oCSmSlDnhFdwJMCuy5d7qudnLeLZ/QtnQ5oNzv8hJWPNIz81
-         5bcKCRSnxycyUVAgmvi1GbCnVIV5rMB+XvNOs09NXve0PVNvv9ZCDBg0yxdtmzj3rF7Z
-         6gry2hbCasNBKtWCOLcT2AtIosl/g98R7LfK1d9wjhmoxbwGCy9Lohhrz5FQf2UxsYUR
-         hk9xe8Q7mu2aKtyERhu3B/XihavSobc4f/vZtOMryOIcdth1+fzK6QIWTmIKy5fhOAnB
-         6D2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701909809; x=1702514609;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1701909850; x=1702514650; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eh9CtMoBA+zmGvG+NMP6SS+GUAPZn7ZW9r8sCwWKZF8=;
-        b=kBqJyHFjUfYLW5LL/raL7DgQEVABwOUDNr19XWCjteJWbIbAeVGKpo/VVJGvNk7G/R
-         s58CdP4n23eG+rFS7t8+YB09r8TU03ci4XK+LJxHKqv6sVv1FCSIMOM56VckJG/QckA/
-         iVNZb0JmkOlfmhpvH0EO1K5rzpzroC7tgUgDADBbVhgCVOUV0YltCcNVZboxppdqI3LK
-         IEjTJReudVGSXOinMssj7EQG0DySNHmNsmxg2NYC0YcjNpW4A2zjfBUVeZX0VQJaoExy
-         qi4X6Ktua4qmH6v9BAt6YVSX+M2YK9rHBzu3Szv+V6rpj1NUGyn8wNUfc0W7fr6BTt4K
-         EMDA==
-X-Gm-Message-State: AOJu0YxvitullPMvcZw5MgxgYWFyCPmMLtcN4z1Dh/cw1An2fcLf1LZ4
-        ZUpGZnd1ZO4VfzkHERO1uQg=
-X-Google-Smtp-Source: AGHT+IHVLxtmkCWrQvVjzfGp4Yyi7Sp2zeTFR6kkuCxxzYtmahqouIYzhFcsyiEwLef13SnL50mS0w==
-X-Received: by 2002:a05:6a20:2449:b0:18a:de88:e0d with SMTP id t9-20020a056a20244900b0018ade880e0dmr1780832pzc.15.1701909808906;
-        Wed, 06 Dec 2023 16:43:28 -0800 (PST)
-Received: from localhost.localdomain ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id p12-20020a170902e74c00b001cf7bd9ade5sm63977plf.3.2023.12.06.16.43.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 16:43:28 -0800 (PST)
-Date:   Thu, 7 Dec 2023 09:43:04 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
+        bh=6DqbVFJwL0a1ATt96jtGqFDNW6gtbbBO5rdQ1Nc1S/s=;
+        b=ldpKWhiGeQeG9UGmVdAZdvz/LZe353mAg3RT7IjWDzwAcDOkH94kg4iMUlQSmakkH/
+         qNFxmCtKqff2GNYSpNxmRVIFl4N+ryHxDbhRFLuGK5EW7T+CosxInwCUZTzUxCVeJWhk
+         aDIvwMp5KWwYemN4Lyj3R2mCEk4g8pSORESv6PGDU1kf8dM0zNuVI4bVQ1MJKGyKVTKq
+         eTW54hL+/nMB2+/abG9IYK0W+g07S/yAfqHe2LOingiAiGoUt9UFnz+/BIPOtKJXR/bR
+         RUw3Sevc7n76EQ366KJOEPU/rHp5VQrodyZFSjxZrZr30mmVHXmzvgtM9t3KOaa+S0wv
+         BIVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701909850; x=1702514650;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6DqbVFJwL0a1ATt96jtGqFDNW6gtbbBO5rdQ1Nc1S/s=;
+        b=M4gKL7Bbl9l2j1DL3OOlvdHdrz3k+OXJALRfP/JzDKlaAMBl343KSsr4WhOYqtXx0Q
+         cqTVvQ2i483qo3qufYucPCb8sLXT1KIqMvfhp6+mFgSvcYL+0KAd3IJT6lGc96EaQnkz
+         gt6CVfjTbAphnjOSO2vL0qjHCb6hJBXQQGJDKr18iCwUs20RGxftVKdn4719BIj68tTS
+         EZPVzGTuxNR1oWZxn3TsVPqVxlWImfkWFj+o9izDT6eFLmb6iWjLWMH/Nshl8hzBbMLk
+         FFtj2fvq2WSCNrLS4/ojgb1aeg077osPDnoA4QXHh+VYtnENEcFJIR7PIjSs5ey9UU4r
+         6zqA==
+X-Gm-Message-State: AOJu0YxS7vFWZ/vE2s3nY7KfNyEGY8z9y4VwefeD/dJfazeLVpX8S8HU
+        NPKXCnJUBCzLHRJ1QmGmmJpDxAfz8cNo4KDfdL0Ccg==
+X-Google-Smtp-Source: AGHT+IHbH12/27Dox62nWh31rnKZQQkO/EPVQAE4ObuI78sX9/bx8m37n7+pZtIAUV1UuCGd3+ftv5vf3lGpwqUF31M=
+X-Received: by 2002:a17:90b:314a:b0:286:9e2f:4755 with SMTP id
+ ip10-20020a17090b314a00b002869e2f4755mr1715556pjb.51.1701909850021; Wed, 06
+ Dec 2023 16:44:10 -0800 (PST)
+MIME-Version: 1.0
+References: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com>
+ <CAKEwX=NXcY3_GuKbh0=Ceg9wj=7u4y0NgmfSVEG3-+deY0jiWQ@mail.gmail.com> <CAJD7tkbErWz7Rjn-JdY8LjSW=GzEyyrNeJ5P1ipChFSufmQmLQ@mail.gmail.com>
+In-Reply-To: <CAJD7tkbErWz7Rjn-JdY8LjSW=GzEyyrNeJ5P1ipChFSufmQmLQ@mail.gmail.com>
+From:   Chris Li <chriscli@google.com>
+Date:   Wed, 6 Dec 2023 16:43:58 -0800
+Message-ID: <CAF8kJuMegmMD3+YZfvsW3h1y1z1-kH7SiyJHPVnrSc89OZASuA@mail.gmail.com>
+Subject: Re: [PATCH 0/7] mm/zswap: optimize the scalability of zswap rb-tree
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Nhat Pham <nphamcs@gmail.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 13/21] mm/slab: move pre/post-alloc hooks from slab.h
- to slub.c
-Message-ID: <ZXEVGNxKTNC6v5NR@localhost.localdomain>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-13-9c9c70177183@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120-slab-remove-slab-v2-13-9c9c70177183@suse.cz>
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 07:34:24PM +0100, Vlastimil Babka wrote:
-> We don't share the hooks between two slab implementations anymore so
-> they can be moved away from the header. As part of the move, also move
-> should_failslab() from slab_common.c as the pre_alloc hook uses it.
-> This means slab.h can stop including fault-inject.h and kmemleak.h.
-> Fix up some files that were depending on the includes transitively.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/kasan/report.c |  1 +
->  mm/memcontrol.c   |  1 +
->  mm/slab.h         | 72 -------------------------------------------------
->  mm/slab_common.c  |  8 +-----
->  mm/slub.c         | 81 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  5 files changed, 84 insertions(+), 79 deletions(-)
-> 
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index e77facb62900..011f727bfaff 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -23,6 +23,7 @@
->  #include <linux/stacktrace.h>
->  #include <linux/string.h>
->  #include <linux/types.h>
-> +#include <linux/vmalloc.h>
->  #include <linux/kasan.h>
->  #include <linux/module.h>
->  #include <linux/sched/task_stack.h>
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 947fb50eba31..8a0603517065 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -64,6 +64,7 @@
->  #include <linux/psi.h>
->  #include <linux/seq_buf.h>
->  #include <linux/sched/isolation.h>
-> +#include <linux/kmemleak.h>
->  #include "internal.h"
->  #include <net/sock.h>
->  #include <net/ip.h>
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 1ac3a2f8d4c0..65ebf86b3fe9 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -9,8 +9,6 @@
->  #include <linux/kobject.h>
->  #include <linux/sched/mm.h>
->  #include <linux/memcontrol.h>
-> -#include <linux/fault-inject.h>
-> -#include <linux/kmemleak.h>
->  #include <linux/kfence.h>
->  #include <linux/kasan.h>
->  
-> @@ -796,76 +794,6 @@ static inline size_t slab_ksize(const struct kmem_cache *s)
->  	return s->size;
->  }
->  
-> -static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
-> -						     struct list_lru *lru,
-> -						     struct obj_cgroup **objcgp,
-> -						     size_t size, gfp_t flags)
-> -{
-> -	flags &= gfp_allowed_mask;
-> -
-> -	might_alloc(flags);
-> -
-> -	if (should_failslab(s, flags))
-> -		return NULL;
-> -
-> -	if (!memcg_slab_pre_alloc_hook(s, lru, objcgp, size, flags))
-> -		return NULL;
-> -
-> -	return s;
-> -}
-> -
-> -static inline void slab_post_alloc_hook(struct kmem_cache *s,
-> -					struct obj_cgroup *objcg, gfp_t flags,
-> -					size_t size, void **p, bool init,
-> -					unsigned int orig_size)
-> -{
-> -	unsigned int zero_size = s->object_size;
-> -	bool kasan_init = init;
-> -	size_t i;
-> -
-> -	flags &= gfp_allowed_mask;
-> -
-> -	/*
-> -	 * For kmalloc object, the allocated memory size(object_size) is likely
-> -	 * larger than the requested size(orig_size). If redzone check is
-> -	 * enabled for the extra space, don't zero it, as it will be redzoned
-> -	 * soon. The redzone operation for this extra space could be seen as a
-> -	 * replacement of current poisoning under certain debug option, and
-> -	 * won't break other sanity checks.
-> -	 */
-> -	if (kmem_cache_debug_flags(s, SLAB_STORE_USER | SLAB_RED_ZONE) &&
-> -	    (s->flags & SLAB_KMALLOC))
-> -		zero_size = orig_size;
-> -
-> -	/*
-> -	 * When slub_debug is enabled, avoid memory initialization integrated
-> -	 * into KASAN and instead zero out the memory via the memset below with
-> -	 * the proper size. Otherwise, KASAN might overwrite SLUB redzones and
-> -	 * cause false-positive reports. This does not lead to a performance
-> -	 * penalty on production builds, as slub_debug is not intended to be
-> -	 * enabled there.
-> -	 */
-> -	if (__slub_debug_enabled())
-> -		kasan_init = false;
-> -
-> -	/*
-> -	 * As memory initialization might be integrated into KASAN,
-> -	 * kasan_slab_alloc and initialization memset must be
-> -	 * kept together to avoid discrepancies in behavior.
-> -	 *
-> -	 * As p[i] might get tagged, memset and kmemleak hook come after KASAN.
-> -	 */
-> -	for (i = 0; i < size; i++) {
-> -		p[i] = kasan_slab_alloc(s, p[i], flags, kasan_init);
-> -		if (p[i] && init && (!kasan_init || !kasan_has_integrated_init()))
-> -			memset(p[i], 0, zero_size);
-> -		kmemleak_alloc_recursive(p[i], s->object_size, 1,
-> -					 s->flags, flags);
-> -		kmsan_slab_alloc(s, p[i], flags);
-> -	}
-> -
-> -	memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
-> -}
->  
->  /*
->   * The slab lists for all objects.
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 63b8411db7ce..bbc2e3f061f1 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -21,6 +21,7 @@
->  #include <linux/swiotlb.h>
->  #include <linux/proc_fs.h>
->  #include <linux/debugfs.h>
-> +#include <linux/kmemleak.h>
->  #include <linux/kasan.h>
->  #include <asm/cacheflush.h>
->  #include <asm/tlbflush.h>
-> @@ -1470,10 +1471,3 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc);
->  EXPORT_TRACEPOINT_SYMBOL(kfree);
->  EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
->  
-> -int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
-> -{
-> -	if (__should_failslab(s, gfpflags))
-> -		return -ENOMEM;
-> -	return 0;
-> -}
-> -ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 979932d046fd..9eb6508152c2 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -34,6 +34,7 @@
->  #include <linux/memory.h>
->  #include <linux/math64.h>
->  #include <linux/fault-inject.h>
-> +#include <linux/kmemleak.h>
->  #include <linux/stacktrace.h>
->  #include <linux/prefetch.h>
->  #include <linux/memcontrol.h>
-> @@ -3494,6 +3495,86 @@ static __always_inline void maybe_wipe_obj_freeptr(struct kmem_cache *s,
->  			0, sizeof(void *));
->  }
->  
-> +noinline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
-> +{
-> +	if (__should_failslab(s, gfpflags))
-> +		return -ENOMEM;
-> +	return 0;
-> +}
-> +ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
-> +
-> +static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
-> +						     struct list_lru *lru,
-> +						     struct obj_cgroup **objcgp,
-> +						     size_t size, gfp_t flags)
-> +{
-> +	flags &= gfp_allowed_mask;
-> +
-> +	might_alloc(flags);
-> +
-> +	if (should_failslab(s, flags))
-> +		return NULL;
-> +
-> +	if (!memcg_slab_pre_alloc_hook(s, lru, objcgp, size, flags))
-> +		return NULL;
-> +
-> +	return s;
-> +}
-> +
-> +static inline void slab_post_alloc_hook(struct kmem_cache *s,
-> +					struct obj_cgroup *objcg, gfp_t flags,
-> +					size_t size, void **p, bool init,
-> +					unsigned int orig_size)
-> +{
-> +	unsigned int zero_size = s->object_size;
-> +	bool kasan_init = init;
-> +	size_t i;
-> +
-> +	flags &= gfp_allowed_mask;
-> +
-> +	/*
-> +	 * For kmalloc object, the allocated memory size(object_size) is likely
-> +	 * larger than the requested size(orig_size). If redzone check is
-> +	 * enabled for the extra space, don't zero it, as it will be redzoned
-> +	 * soon. The redzone operation for this extra space could be seen as a
-> +	 * replacement of current poisoning under certain debug option, and
-> +	 * won't break other sanity checks.
-> +	 */
-> +	if (kmem_cache_debug_flags(s, SLAB_STORE_USER | SLAB_RED_ZONE) &&
-> +	    (s->flags & SLAB_KMALLOC))
-> +		zero_size = orig_size;
-> +
-> +	/*
-> +	 * When slub_debug is enabled, avoid memory initialization integrated
-> +	 * into KASAN and instead zero out the memory via the memset below with
-> +	 * the proper size. Otherwise, KASAN might overwrite SLUB redzones and
-> +	 * cause false-positive reports. This does not lead to a performance
-> +	 * penalty on production builds, as slub_debug is not intended to be
-> +	 * enabled there.
-> +	 */
-> +	if (__slub_debug_enabled())
-> +		kasan_init = false;
-> +
-> +	/*
-> +	 * As memory initialization might be integrated into KASAN,
-> +	 * kasan_slab_alloc and initialization memset must be
-> +	 * kept together to avoid discrepancies in behavior.
-> +	 *
-> +	 * As p[i] might get tagged, memset and kmemleak hook come after KASAN.
-> +	 */
-> +	for (i = 0; i < size; i++) {
-> +		p[i] = kasan_slab_alloc(s, p[i], flags, kasan_init);
-> +		if (p[i] && init && (!kasan_init ||
-> +				     !kasan_has_integrated_init()))
-> +			memset(p[i], 0, zero_size);
-> +		kmemleak_alloc_recursive(p[i], s->object_size, 1,
-> +					 s->flags, flags);
-> +		kmsan_slab_alloc(s, p[i], flags);
-> +	}
-> +
-> +	memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
-> +}
-> +
->  /*
->   * Inlined fastpath so that allocation functions (kmalloc, kmem_cache_alloc)
->   * have the fastpath folded into their functions. So no function call
-> 
-> -- 
+Hi Nhat and Yosry,
 
-Looks good to me,
-Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+On Wed, Dec 6, 2023 at 12:42=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> On Wed, Dec 6, 2023 at 9:24=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrot=
+e:
+> >
+> > + Chris Li
+> >
+> > Chris, I vaguely remember from our last conversation that you have
+> > some concurrent efforts to use xarray here right?
 
-> 2.42.1
-> 
-> 
+Yes, I do have the zswap xarray for older versions of the kernel. The
+recent mm-unstable tree has  a lot of zswap related updates. Give me 2
+days to refresh and post it. The zswap invalid entry and the reference
+count change is causing a good portion of the code to be updated. That
+is the price to pay keeping out of tree patches. My fault is not
+getting to it sooner.
+
+>
+> If I recall correctly, the xarray already reduces the lock contention
+> as lookups are lockless, but Chris knows more here. As you mentioned
+
+Yes. To be exact, xarray can use spin lock (same as current RB tree)
+or take RCU read lock on the lookup path (depending on how you call
+the xarray API). Not completely lockless but the RCU read lock should
+have less lock contention than normal spinlock. +Matthew
+
+> in a different email, it would be nice to get some data so that we can
+> compare different solutions.
+
+Yes, it is certainly welcome to see more data points. If I recall
+correctly, the zswap xarray array makes the lookup similar to the swap
+cache lookup. It has a noticeable difference in the long tail end.
+
+Stay tuned.
+
+Chris
