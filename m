@@ -2,147 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B1180948A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 22:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6078094B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 22:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235544AbjLGVgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 16:36:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
+        id S235617AbjLGViT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 16:38:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235835AbjLGVfk (ORCPT
+        with ESMTP id S235832AbjLGViB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 16:35:40 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39F16EB3;
-        Thu,  7 Dec 2023 13:30:49 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DD5862B09;
-        Thu,  7 Dec 2023 22:30:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701984605;
-        bh=++YvcrFz66sxa8xgV41El02Yomhcy3SFgFNd1nuRnT4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qjHo/ZRz7cMTAzyVsUjZpcWDuOQmvhscaXDaYQ1RRBxxdyqH8SRbU5uNzfrbQMi68
-         6U2jlkEY6KjCvzx5NSH+v9u2KvUGSz2YDo8ysALpNEtSSHkFqEFJW1ZpberVVdlgFl
-         ceq0o2I/6kI1tIn+iHWmMCoAXdpRoWFSsl8IoTGw=
-Date:   Thu, 7 Dec 2023 23:30:52 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Simon Glass <sjg@chromium.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Tom Rini <trini@konsulko.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, workflows@vger.kernel.org
-Subject: Re: [PATCH v9 2/2] arm64: boot: Support Flat Image Tree
-Message-ID: <20231207213052.GD25616@pendragon.ideasonboard.com>
-References: <20231202035511.487946-1-sjg@chromium.org>
- <20231202035511.487946-3-sjg@chromium.org>
- <20231203153401.GV8402@pendragon.ideasonboard.com>
- <20231207142723.GA3187877@google.com>
- <20231207143814.GD15521@pendragon.ideasonboard.com>
- <CAPnjgZ1q3yBeyYfjLumJ03HR7JM1xwN7sMbNJqfUWpsVxFTs4Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAPnjgZ1q3yBeyYfjLumJ03HR7JM1xwN7sMbNJqfUWpsVxFTs4Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 7 Dec 2023 16:38:01 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B13D3843
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 13:34:18 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-daee86e2d70so1911636276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 13:34:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701984857; x=1702589657; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=nVvef+BcVgEroNYpsUvlaSbQE1KPpVwrXco8mT3u6R8=;
+        b=V7RL33fGpxz5liHmJfJ19Gv4HVRjyW7C5bIK8yhkT5aETZHjatGv6RZLmeyU17g/qd
+         vUTREXJ9Xjm5AB00QlBhK7xhq9Hyxx0G6EyI+OOJxQj7vjRBVk1qfYYhcO68grMXz0M0
+         HxGgbwQ9jJgdsPyMk55EzgVCwtYkihg/FzGe2CxZjoJO6JFqGMgwwCIgEo5gNRozsWpU
+         b07gISkkQ87nGOJt120mzrQaI0R99yOZHufCBm4oekrJ3wow8eVhL9JFJ4oJzSlgMYUY
+         P8I7hbY2pTFevjMnQhrROLNafdK9Yy169h+h74QyhJxtHtxmcly4Y1LBJDEe5OHptN5Z
+         0ReA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701984857; x=1702589657;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nVvef+BcVgEroNYpsUvlaSbQE1KPpVwrXco8mT3u6R8=;
+        b=kDpkxZcFVWqX5XJUTwYXr55xbXH4zS4jSSXfiqgTwjEvR2A5VMe8t9QShNX0UZCMJF
+         sqnaA3X+cu2AZe/3GCmLhHKM1xAVop/Mf3RCLYF89fK6Jg9aVsrhcgqxEetX1kGSX2X5
+         cmXGJ31Is7NHip0LcgfgLxjBFNYLnrr9K3Ze4xtXqN0brS1u1nCIZhDW/FUQrejLKleo
+         alTZ0ik6iYkrlJnq6BUQDPUi80f7lClqzKXqCb66QGMvNRp5VpPNZoMYhluyxt59GFts
+         bs6NCVpzpB2QIUPTrg7syJ7WrvEVfwEpumCHHDiOhweNVAj8TYIFIXh4Nut3ouN0xShd
+         +7Lg==
+X-Gm-Message-State: AOJu0Yy9JF3jgHBEHe78AcHEEderFjcwCXXo5l+uH+npuD/C3aviQKfK
+        2TaL4DvS9EhPHPGm3exNiWGOVQ8VkQ==
+X-Google-Smtp-Source: AGHT+IFcnTmpIxE1whdzzseWwxE7PYCbkOE0lyizRjIw5inFfT6N6kmdP3S7jk7PUBfYbA1A3Fdf7qTeBA==
+X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
+ (user=rmoar job=sendgmr) by 2002:a25:d7d1:0:b0:db5:4b1d:c63c with SMTP id
+ o200-20020a25d7d1000000b00db54b1dc63cmr35989ybg.11.1701984857742; Thu, 07 Dec
+ 2023 13:34:17 -0800 (PST)
+Date:   Thu,  7 Dec 2023 21:34:09 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231207213410.417564-1-rmoar@google.com>
+Subject: [PATCH v2 1/2] kunit: tool: fix parsing of test attributes
+From:   Rae Moar <rmoar@google.com>
+To:     shuah@kernel.org, davidgow@google.com, dlatypov@google.com,
+        brendan.higgins@linux.dev
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 01:52:53PM -0700, Simon Glass wrote:
-> On Thu, 7 Dec 2023 at 07:38, Laurent Pinchart wrote:
-> > On Thu, Dec 07, 2023 at 10:27:23PM +0800, Chen-Yu Tsai wrote:
-> > > On Sun, Dec 03, 2023 at 05:34:01PM +0200, Laurent Pinchart wrote:
-> > > > Hi Simon,
-> > > >
-> > > > Thank you for the patch.
-> > > >
-> > > > On Fri, Dec 01, 2023 at 08:54:42PM -0700, Simon Glass wrote:
-> > > > > Add a script which produces a Flat Image Tree (FIT), a single file
-> > > > > containing the built kernel and associated devicetree files.
-> > > > > Compression defaults to gzip which gives a good balance of size and
-> > > > > performance.
-> > > > >
-> > > > > The files compress from about 86MB to 24MB using this approach.
-> > > > >
-> > > > > The FIT can be used by bootloaders which support it, such as U-Boot
-> > > > > and Linuxboot. It permits automatic selection of the correct
-> > > > > devicetree, matching the compatible string of the running board with
-> > > > > the closest compatible string in the FIT. There is no need for
-> > > > > filenames or other workarounds.
-> > > > >
-> > > > > Add a 'make image.fit' build target for arm64, as well. Use
-> > > > > FIT_COMPRESSION to select a different algorithm.
-> > > > >
-> > > > > The FIT can be examined using 'dumpimage -l'.
-> > > > >
-> > > > > This features requires pylibfdt (use 'pip install libfdt'). It also
-> > > > > requires compression utilities for the algorithm being used. Supported
-> > > > > compression options are the same as the Image.xxx files. For now there
-> > > > > is no way to change the compression other than by editing the rule for
-> > > > > $(obj)/image.fit
-> > > > >
-> > > > > While FIT supports a ramdisk / initrd, no attempt is made to support
-> > > > > this here, since it must be built separately from the Linux build.
-> > > >
-> > > > FIT images are very useful, so I think this is a very welcome addition
-> > > > to the kernel build system. It can get tricky though: given the
-> > > > versatile nature of FIT images, there can't be any
-> > > > one-size-fits-them-all solution to build them, and striking the right
-> > > > balance between what makes sense for the kernel and the features that
-> > > > users may request will probably lead to bikeshedding. As we all love
-> > > > bikeshedding, I thought I would start selfishly, with a personal use
-> > > > case :-) This isn't a yak-shaving request though, I don't see any reason
-> > > > to delay merging this series.
-> > > >
-> > > > Have you envisioned building FIT images with a subset of DTBs, or adding
-> > > > DTBOs ? Both would be fairly trivial extensions to this script by
-> > > > extending the supported command line arguments. It would perhaps be more
-> > > > difficult to integrate in the kernel build system though. This leads me
-> > > > to a second question: would you consider merging extensions to this
-> > > > script if they are not used by the kernel build system, but meant for
-> > > > users who manually invoke the script ? More generally, is the script
-> > >
-> > > We'd also be interested in some customization, though in a different way.
-> > > We imagine having a rule file that says X compatible string should map
-> > > to A base DTB, plus B and C DTBO for the configuration section. The base
-> > > DTB would carry all common elements of some device, while the DTBOs
-> > > carry all the possible second source components, like different display
-> > > panels or MIPI cameras for instance. This could drastically reduce the
-> > > size of FIT images in ChromeOS by deduplicating all the common stuff.
-> >
-> > Do you envision the "mapping" compatible string mapping to a config
-> > section in the FIT image, that would bundle the base DTB and the DTBOs ?
-> >
-> > > > meant to be used stand-alone as well, in which case its command line
-> > > > arguments need to remain backward-compatible, or do you see it as being
-> > > > internal to the kernel ?
-> 
-> It is great to see all this discussion! I did send a proposal to the
-> U-Boot ML about extensions but it was mixed up with other things, so
-> I'll start a new thread.
-> 
-> For now, I am really just waiting for this to be applied, before
-> talking too much about future possibilities.
+Add parsing of attributes as diagnostic data. Fixes issue with test plan
+being parsed incorrectly as diagnostic data when located after
+suite-level attributes.
 
-Sure, I don't see any reason to delay this series until you have fixed
-everybody's system images problems :-)
+Note that if there does not exist a test plan line, the diagnostic lines
+between the suite header and the first result will be saved in the suite
+log rather than the first test case log.
 
+Signed-off-by: Rae Moar <rmoar@google.com>
+---
+ tools/testing/kunit/kunit_parser.py | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index 79d8832c862a..ce34be15c929 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -450,7 +450,7 @@ def parse_diagnostic(lines: LineStream) -> List[str]:
+ 	Log of diagnostic lines
+ 	"""
+ 	log = []  # type: List[str]
+-	non_diagnostic_lines = [TEST_RESULT, TEST_HEADER, KTAP_START, TAP_START]
++	non_diagnostic_lines = [TEST_RESULT, TEST_HEADER, KTAP_START, TAP_START, TEST_PLAN]
+ 	while lines and not any(re.match(lines.peek())
+ 			for re in non_diagnostic_lines):
+ 		log.append(lines.pop())
+@@ -726,6 +726,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str], is_subtest:
+ 		# test plan
+ 		test.name = "main"
+ 		ktap_line = parse_ktap_header(lines, test)
++		test.log.extend(parse_diagnostic(lines))
+ 		parse_test_plan(lines, test)
+ 		parent_test = True
+ 	else:
+@@ -737,6 +738,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str], is_subtest:
+ 		if parent_test:
+ 			# If KTAP version line and/or subtest header is found, attempt
+ 			# to parse test plan and print test header
++			test.log.extend(parse_diagnostic(lines))
+ 			parse_test_plan(lines, test)
+ 			print_test_header(test)
+ 	expected_count = test.expected_count
+
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
 -- 
-Regards,
+2.43.0.472.g3155946c3a-goog
 
-Laurent Pinchart
