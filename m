@@ -2,141 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C75D1808BB3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41100808BB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 16:22:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443458AbjLGPWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 10:22:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38890 "EHLO
+        id S1443444AbjLGPWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 10:22:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443444AbjLGPWH (ORCPT
+        with ESMTP id S1443461AbjLGPWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 10:22:07 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FAD2D54
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:22:13 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6d8029dae41so656572a34.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 07:22:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701962532; x=1702567332; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zbxtT8utWMQUhybNg4dQ162bvjOQGcXfeB3SVqpE3QY=;
-        b=X0FbQR8DcFJds7MYeLBKWsqqhYEwYaOIiqw2hnzNGRnobeXgpr+zdzC1V7EqRWLPp9
-         8WoZxV8VJ2MliCGY4ULaZ+y5KfVa6qhBooV9Dpbr9hje5GhBWb3a87tNwSG2msdjEUlR
-         RsYT1a6/lA/HjioyzTxR1bJ7vfwOvZsNsIcug35SUrO9LprlLUJK6Mh9ejKtv0iqw+vB
-         G8ELcIhzHvO1qBFAt+GD7xRPWzafrZX3SZmxPzGNTvNvHBw1LPri9jgAWFS8uSiLudVi
-         gW3mehCKQyge2H630Tu9RL8uOnkEK6HAPPrOhOitIGaRhvPJgKnEeh5MXXD4/MlYUJ/d
-         kSlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701962532; x=1702567332;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zbxtT8utWMQUhybNg4dQ162bvjOQGcXfeB3SVqpE3QY=;
-        b=uonbTkA1N/rolZrgfK6QBZGBKKgntZDN8xoiUvg9Hi0cxS7vbelJ2Dwg6s90lwkkgW
-         4DQ3BerFyNoXXksqLdpSXeGf7O5+QtPal3Spu0xgolKhw9VV6+uy/Y5HiI3Myq8o88fu
-         sesUfgGk3CrXS4yLjZLKTqdstogNoHoDrasq1NMp/a3YQEmruClMo6y6G9FOQPK5yDon
-         zmdZPEmSeGtoEApsNj1ZftBUIqwmkqujH0yGgyx5ogh7N312C8P2xRTpNeJqrdV7Pj/5
-         EJDOvvChXSYO0wz3/N/dLP2P1718vEaRlhAn/JiX+KTjhQ0/NOfspnLVZMAKxD+LYD2q
-         PJfw==
-X-Gm-Message-State: AOJu0Ywlo1W/T02qd4NKbhJjrIl646t2pJntruy+PdmXb+O5y9Nqb5zd
-        3eRuQesMjsJMIhZvoQs+hq7+RA==
-X-Google-Smtp-Source: AGHT+IF78xa8Fo4wWEfGyJ7/I6WNpcltup+AtB/U2yY92tCSSQjYEAspQ8kt2NelTrJbr7GtZSbaoA==
-X-Received: by 2002:a9d:4d82:0:b0:6d9:d307:a63b with SMTP id u2-20020a9d4d82000000b006d9d307a63bmr1939852otk.15.1701962532692;
-        Thu, 07 Dec 2023 07:22:12 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id f30-20020a4a921e000000b0058d76e8ce0dsm279703ooh.36.2023.12.07.07.22.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 07:22:12 -0800 (PST)
-Message-ID: <8e82dae7-342e-4985-b052-29778afe4b31@linaro.org>
-Date:   Thu, 7 Dec 2023 16:22:06 +0100
+        Thu, 7 Dec 2023 10:22:13 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA42D54
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 07:22:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1624C433CA;
+        Thu,  7 Dec 2023 15:22:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701962538;
+        bh=sSg4qggAKfOIMoU7cAGFb55QGJXmj09uIc6zejvgP+o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R65VkIkdHOTIji/Q+amWpQbIa5ZhKCaC/nGH0Et2FdBLZDdJ1xZ+fG9tVzK2fLogq
+         2VFmAPJb3xZjIQxzjxTq2UYn3eMIgub1shc6Dwv/4Adve6lq2RB8wFb+VqvjltE7Bo
+         sdKPzSgBR+og1WmtaOnwAx7tl42wsFaGi7lcnk13Calp1SljdGRneZSXbKPWA3AlAe
+         834IoZuFcZX2BdvF6gFxiQYcfwqnnP02PI7kf7SMR+vBEYO02440yj60jgoPuWwdOW
+         WIenk9BD6LlcXeEUqlmW12ImvuydHf2HiBTeFIfF9bUQmbSv/vXqma1YdYejY4FdKG
+         hPEKHIaWE/zRw==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1rBGDU-0000p1-0H;
+        Thu, 07 Dec 2023 16:23:08 +0100
+Date:   Thu, 7 Dec 2023 16:23:08 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, quic_ppratap@quicinc.com,
+        quic_jackp@quicinc.com
+Subject: Re: [PATCH v2 1/6] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
+ bindings
+Message-ID: <ZXHjXGEbdtbCiOck@hovoldconsulting.com>
+References: <20231204100950.28712-1-quic_kriskura@quicinc.com>
+ <20231204100950.28712-2-quic_kriskura@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] dt-bindings: arm: fsl: add Dimonoff gateway EVK
- board
-Content-Language: en-US
-To:     Hugo Villeneuve <hugo@hugovil.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, leoyang.li@nxp.com,
-        robh@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>
-References: <20231207150519.1264808-1-hugo@hugovil.com>
- <20231207150519.1264808-3-hugo@hugovil.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231207150519.1264808-3-hugo@hugovil.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204100950.28712-2-quic_kriskura@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/12/2023 16:05, Hugo Villeneuve wrote:
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On Mon, Dec 04, 2023 at 03:39:45PM +0530, Krishna Kurapati wrote:
+> The high speed related interrupts present on QC targets are as follows:
 > 
-> Add DT compatible string for Dimonoff gateway EVK board based on a
-> Variscite VAR-SOM-NANO with a NXP MX8MN nano CPU.
+> dp/dm irq's
+> These IRQ's directly reflect changes on the DP/DM pads of the SoC. These
+> are used as wakeup interrupts only on SoCs with non-QUSB2 targets with
+> exception of SDM670/SDM845/SM6350.
 > 
-> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> qusb2_phy irq
+> SoCs with QUSB2 PHY do not have separate DP/DM IRQs and expose only a
+> single IRQ whose behavior can be modified by the QUSB2PHY_INTR_CTRL
+> register. The required DPSE/DMSE configuration is done in
+> QUSB2PHY_INTR_CTRL register of phy address space.
+> 
+> hs_phy_irq
+> This is completely different from the above two and is present on all
+> targets with exception of a few IPQ ones. The interrupt is not enabled by
+> default and its functionality is mutually exclusive of qusb2_phy on QUSB
+> targets and DP/DM on femto phy targets.
+> 
+> The DTs of several QUSB2 PHY based SoCs incorrectly define "hs_phy_irq"
+> when they should have been "qusb2_phy_irq". On Femto phy targets, the
+> "hs_phy_irq" mentioned is either the actual "hs_phy_irq" or "pwr_event",
+> neither of which would never be triggered directly are non-functional
+> currently. The implementation tries to clean up this issue by addressing
+> the discrepencies involved and fixing the hs_phy_irq's in respective DT's.
+> 
+> Classify interrupts based on whether qusb2_phy interrupt is used or
+> {dp/dm}_hs_phy_irq is used and whether hs_phy_irq is present or not.
+
+s/interrupts/SoCs in four groups/
+
+And say something about the SS PHY interrupt being treated as optional
+as there are SoCs with multiple controllers where only some supports SS.
+
+As Krzysztof mentioned you should also add something to motivate why
+this de-facto ABI breakage by reordering interrupts is justified and
+safe in this case.
+ 
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
 > ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+>  .../devicetree/bindings/usb/qcom,dwc3.yaml    | 147 +++++++-----------
+>  1 file changed, 58 insertions(+), 89 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> index 3ec62027f663..94deef765ec3 100644
+> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> @@ -98,12 +98,30 @@ properties:
+>        - const: apps-usb
+>  
+>    interrupts:
+> -    minItems: 1
+> -    maxItems: 4
+> +    description: |
+> +      Different types of interrupts are used based on HS phy used on target::
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Try to use uppercase 'PHY' consistently in text throughout the series.
 
-Best regards,
-Krzysztof
+> +        - qusb2_phy:: SoCs with QUSB2 PHY do not have separate DP/DM IRQs and
+> +                      expose only a single IRQ whose behavior can be modified
+> +                      by the QUSB2PHY_INTR_CTRL register. The required DPSE/
+> +                      DMSE configuration is done in QUSB2PHY_INTR_CTRL register
+> +                      of phy address space.
+> +        - {dp/dm}_hs_phy_irq:: These IRQ's directly reflect changes on the DP/
+> +                               DM pads of the SoC. These are used for wakeup
+> +                               only on SoCs with non-QUSBb2 targets with
 
+QUSB2 typo
+
+> +                               exception of SDM670/SDM845/SM6350.
+> +        - ss_phy_irq:: When in super speed mode of operation, interrupts are
+
+Capitalise 'Super Speed'
+
+> +                       received when a wakeup event is received on ss_phy_irq.
+
+The description as it stands sounds circular. And this one is only used
+for remote wakeup right?
+
+> +        - hs_phY_irq:: Apart from DP/DM/QUSB2 Phy interrupts, there is
+
+s/phY/phy/
+
+Perhaps rephrase to sound less like a commit message and to make it a
+bit more concise.
+
+But this is already an improvement over the current descriptions which
+are too terse and not even correct.
+
+> +                       hs_phy_irq which is not triggered by default and its
+> +                       functionality is mutually exclusive to that of
+> +                       {dp/dm}_hs_phy_irq and qusb2_phy_irq.
+> +        - pwr_event:: Used for wakeup based on other power events.
+
+I'm not sure about the free text description of these (format etc), but
+at least this avoid repeating the descriptions for each permutation.
+
+Perhaps the DT maintainers can chime in here.
+
+I think you should reorder them to match the permutations below though.
+
+> +    minItems: 2
+> +    maxItems: 5
+>  
+>    interrupt-names:
+> -    minItems: 1
+> -    maxItems: 4
+> +    minItems: 2
+> +    maxItems: 5
+>  
+>    qcom,select-utmi-as-pipe-clk:
+>      description:
+> @@ -359,116 +377,54 @@ allOf:
+>          compatible:
+>            contains:
+>              enum:
+> -              - qcom,ipq4019-dwc3
+> +              - qcom,ipq5018-dwc3
+>                - qcom,ipq6018-dwc3
+> -              - qcom,ipq8064-dwc3
+>                - qcom,ipq8074-dwc3
+> -              - qcom,msm8994-dwc3
+> -              - qcom,qcs404-dwc3
+> -              - qcom,sc7180-dwc3
+> -              - qcom,sdm670-dwc3
+> -              - qcom,sdm845-dwc3
+> -              - qcom,sdx55-dwc3
+> -              - qcom,sdx65-dwc3
+> -              - qcom,sdx75-dwc3
+> -              - qcom,sm4250-dwc3
+> -              - qcom,sm6350-dwc3
+> -              - qcom,sm8150-dwc3
+> -              - qcom,sm8250-dwc3
+> -              - qcom,sm8350-dwc3
+> -              - qcom,sm8450-dwc3
+> -              - qcom,sm8550-dwc3
+> -              - qcom,sm8650-dwc3
+> +              - qcom,msm8953-dwc3
+> +              - qcom,msm8998-dwc3
+> +              - qcom,qcm2290-dwc3
+>      then:
+>        properties:
+> -        interrupts:
+> -          items:
+> -            - description: The interrupt that is asserted
+> -                when a wakeup event is received on USB2 bus.
+> -            - description: The interrupt that is asserted
+> -                when a wakeup event is received on USB3 bus.
+> -            - description: Wakeup event on DM line.
+> -            - description: Wakeup event on DP line.
+>          interrupt-names:
+>            items:
+> -            - const: hs_phy_irq
+> -            - const: ss_phy_irq
+> -            - const: dm_hs_phy_irq
+> -            - const: dp_hs_phy_irq
+> +            - const: pwr_event
+> +            - const: qusb2_phy
+> +            - const: ss_phy_irq (optional)
+
+You should not include the string "(optional)" here. It was only a
+notation I used when we discussed this earlier.
+
+The fact that these are optional should be expressed using min/maxItems
+as I mentioned earlier. For the above SoCs that would be
+
+	minItems: 2
+	maxItems: 3
+
+> @@ -522,12 +490,13 @@ examples:
+>                            <&gcc GCC_USB30_PRIM_MASTER_CLK>;
+>              assigned-clock-rates = <19200000>, <150000000>;
+>  
+> -            interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+> -                         <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>,
+> +            interrupts = <GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
+> +                         <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+> +                         <GIC_SPI 489 IRQ_TYPE_EDGE_BOTH>,
+>                           <GIC_SPI 488 IRQ_TYPE_EDGE_BOTH>,
+> -                         <GIC_SPI 489 IRQ_TYPE_EDGE_BOTH>;
+> -            interrupt-names = "hs_phy_irq", "ss_phy_irq",
+> -                          "dm_hs_phy_irq", "dp_hs_phy_irq";
+> +                         <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>;
+> +            interrupt-names = "pwr_event", "hs_phy_irq",
+> +                          "dp_hs_phy_irq", "dm_hs_phy_irq", "ss_phy_irq";
+
+Perhaps you should align the continuation line here too.
+
+>  
+>              power-domains = <&gcc USB30_PRIM_GDSC>;
+
+Also have you set up the tools so that you can verify your bindings
+before posing them? I assume the above wouldn't pass (e.g. due to the
+"(optional)" strings).
+
+There's some more details here:
+
+	https://docs.kernel.org/devicetree/bindings/writing-schema.html
+
+under "Running checks".
+
+Johan
