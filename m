@@ -2,59 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAEC809CF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17803809CF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbjLHHOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 02:14:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
+        id S233009AbjLHHO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 02:14:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjLHHO3 (ORCPT
+        with ESMTP id S233184AbjLHHOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 02:14:29 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8657A10EB
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:14:35 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Smj7Q50v7z4f3lDB
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 15:14:26 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 7B5311A01C8
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 15:14:31 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgDn6hBVwnJltY8_DA--.36836S4;
-        Fri, 08 Dec 2023 15:14:31 +0800 (CST)
-From:   linan666@huaweicloud.com
-To:     richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
-        houtao1@huawei.com, yangerkun@huawei.com
-Subject: [PATCH] ubi: block: fix null-pointer-dereference in ubiblock_create()
-Date:   Fri,  8 Dec 2023 15:13:17 +0800
-Message-Id: <20231208071317.1268465-1-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+        Fri, 8 Dec 2023 02:14:54 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87AC10EB;
+        Thu,  7 Dec 2023 23:14:59 -0800 (PST)
+Received: from kwepemd100008.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Smj7D0TKPzYspD;
+        Fri,  8 Dec 2023 15:14:16 +0800 (CST)
+Received: from [10.67.121.2] (10.67.121.2) by kwepemd100008.china.huawei.com
+ (7.221.188.193) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Fri, 8 Dec
+ 2023 15:14:56 +0800
+Message-ID: <6572C270.6050101@hisilicon.com>
+Date:   Fri, 8 Dec 2023 15:14:56 +0800
+From:   Wei Xu <xuwei5@hisilicon.com>
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDn6hBVwnJltY8_DA--.36836S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrtF1kCw4ktr1ktr4xXry8uFg_yoWfArbE9w
-        4aqrn3WrWxCrn3C34Yyr1fuFWYyr1jgr48uF1xKwsxZFW7XFn7Gr98WF15Wa1DAFW2ka4r
-        Ca10gr1ayr40vjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbSkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l
-        5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67
-        AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7Cj
-        xVA2Y2ka0xkIwI1lw4CEc2x0rVAKj4xxMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6x
-        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
-        w20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-        CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1vJmUUUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+To:     Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <xuwei5@hisilicon.com>
+Subject: Re: [PATCH] dt-bindings: hisilicon: Merge hi3620-clock into hisilicon,sysctrl
+ binding
+References: <20231122235059.2966532-1-robh@kernel.org>
+In-Reply-To: <20231122235059.2966532-1-robh@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.2]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemd100008.china.huawei.com (7.221.188.193)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,31 +54,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Nan <linan122@huawei.com>
+Hi Rob,
 
-If idr_alloc() fails, dev->gd will be put after goto out_cleanup_disk in
-ubiblock_create(), but dev->gd has not been assigned yet at this time, and
-accessing it will trigger a null-pointer-dereference issue. Fix it by put
-gd directly.
+On 2023/11/23 7:50, Rob Herring wrote:
+> The hi3620-clock binding is simple and always a child of the
+> "hisilicon,sysctrl" node, so just add it into the hisilicon,sysctrl
+> binding and drop the old txt binding.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
 
-Signed-off-by: Li Nan <linan122@huawei.com>
----
- drivers/mtd/ubi/block.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied to the HiSilicon arm64 dt tree.
+Thanks!
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 309a42aeaa4c..654bd7372cd8 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -434,7 +434,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 	list_del(&dev->list);
- 	idr_remove(&ubiblock_minor_idr, gd->first_minor);
- out_cleanup_disk:
--	put_disk(dev->gd);
-+	put_disk(gd);
- out_free_tags:
- 	blk_mq_free_tag_set(&dev->tag_set);
- out_free_dev:
--- 
-2.39.2
+Best Regards,
+Wei
 
+>  .../arm/hisilicon/controller/sysctrl.yaml     | 17 ++++++++++++++++
+>  .../bindings/clock/hi3620-clock.txt           | 20 -------------------
+>  2 files changed, 17 insertions(+), 20 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/clock/hi3620-clock.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml b/Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml
+> index 5a53d433b6f0..7a221e1c09df 100644
+> --- a/Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml
+> @@ -82,6 +82,23 @@ properties:
+>  
+>    ranges: true
+>  
+> +patternProperties:
+> +  '^clock@':
+> +    type: object
+> +    additionalProperties: false
+> +
+> +    properties:
+> +      compatible:
+> +        enum:
+> +          - hisilicon,hi3620-clock
+> +          - hisilicon,hi3620-mmc-clock
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +      '#clock-cells':
+> +        const: 1
+> +
+>  required:
+>    - compatible
+>    - reg
+> diff --git a/Documentation/devicetree/bindings/clock/hi3620-clock.txt b/Documentation/devicetree/bindings/clock/hi3620-clock.txt
+> deleted file mode 100644
+> index dad6269f52c5..000000000000
+> --- a/Documentation/devicetree/bindings/clock/hi3620-clock.txt
+> +++ /dev/null
+> @@ -1,20 +0,0 @@
+> -* Hisilicon Hi3620 Clock Controller
+> -
+> -The Hi3620 clock controller generates and supplies clock to various
+> -controllers within the Hi3620 SoC.
+> -
+> -Required Properties:
+> -
+> -- compatible: should be one of the following.
+> -  - "hisilicon,hi3620-clock" - controller compatible with Hi3620 SoC.
+> -  - "hisilicon,hi3620-mmc-clock" - controller specific for Hi3620 mmc.
+> -
+> -- reg: physical base address of the controller and length of memory mapped
+> -  region.
+> -
+> -- #clock-cells: should be 1.
+> -
+> -Each clock is assigned an identifier and client nodes use this identifier
+> -to specify the clock which they consume.
+> -
+> -All these identifier could be found in <dt-bindings/clock/hi3620-clock.h>.
+> 
