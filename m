@@ -2,81 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECEE80A6FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C68080A701
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:13:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574323AbjLHPNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:13:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49430 "EHLO
+        id S1574236AbjLHPNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:13:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574331AbjLHPMq (ORCPT
+        with ESMTP id S1574320AbjLHPMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:12:46 -0500
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8781E2102;
-        Fri,  8 Dec 2023 07:11:54 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A627C240013;
-        Fri,  8 Dec 2023 15:11:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702048313;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jZUfjZrEUjnspuhceJ7+ctQJ1wXG1XV3mAd4MZs0sqI=;
-        b=KO/hg7qC/HGdIVC0A02sNFqeNiYVqLtoVRYZilg2VukX1cOofO5cBzk1mJWHW6AffXnnbB
-        Zjf4szZCnK5eOJlk+uMAxS2To+caXTjHVAAuTlYwr5s3ew/uZJaqLfo51lOo04TrJa10LN
-        cpVRcpN7rokxtyWki3tgoBWnlKW8LeIzdgbWNfd4fDntGpv6EA6ofg3DglkAHK/JEJ1HNy
-        YhocJ8a3EDMl6Tp4gxtjBzJQPw/kvwmtmcCJx73Uwz+yBSxI29gPGzR3GJ8HNbsL18qCHo
-        d9CYgypTkLo/oWoOPoaNgO5rU+VqlUuEL8qzcr8hZjF7lTx81VrhN4nTnG/zTg==
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v9 3/3] ARM64: dts: Add special compatibles for the
- Turris Mox
-In-Reply-To: <20231127-mv88e6xxx-mvebu-fixes-v9-3-d19b963e81fb@linaro.org>
-References: <20231127-mv88e6xxx-mvebu-fixes-v9-0-d19b963e81fb@linaro.org>
- <20231127-mv88e6xxx-mvebu-fixes-v9-3-d19b963e81fb@linaro.org>
-Date:   Fri, 08 Dec 2023 16:11:52 +0100
-Message-ID: <874jgsenk7.fsf@BL-laptop>
+        Fri, 8 Dec 2023 10:12:48 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88982103
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:12:11 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1rBcWH-0001Lh-Gc; Fri, 08 Dec 2023 16:12:01 +0100
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1rBcWG-00ERqP-5p; Fri, 08 Dec 2023 16:12:00 +0100
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+        (envelope-from <ore@pengutronix.de>)
+        id 1rBcWG-00BiHM-0N;
+        Fri, 08 Dec 2023 16:12:00 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH net-next v1 1/2] net: phy: c45: add genphy_c45_pma_read_ext_abilities() function
+Date:   Fri,  8 Dec 2023 16:11:58 +0100
+Message-Id: <20231208151159.2791794-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-GND-Sasl: gregory.clement@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Walleij <linus.walleij@linaro.org> writes:
+Move part of the genphy_c45_pma_read_abilities() code to a separate
+function.
 
-> These special compatibles are added to the Marvell Armada 3720
-> Turris Mox in order to be able to special-case and avoid
-> warnings on the non-standard nodenames that are ABI on this
-> one board due to being used in deployed versions of U-Boot.
->
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Some PHYs do not implement PMA/PMD status 2 register (Register 1.8) but
+do implement PMA/PMD extended ability register (Register 1.11). To make
+use of it, we need to be able to access this part of code separately.
 
-Applied on mvebu/dt64
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ drivers/net/phy/phy-c45.c | 129 ++++++++++++++++++++++----------------
+ include/linux/phy.h       |   1 +
+ 2 files changed, 75 insertions(+), 55 deletions(-)
 
-Thanks,
-
-Gregory
-> ---
->  arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+diff --git a/drivers/net/phy/phy-c45.c b/drivers/net/phy/phy-c45.c
+index 8e6fd4962c48..747d14bf152c 100644
+--- a/drivers/net/phy/phy-c45.c
++++ b/drivers/net/phy/phy-c45.c
+@@ -919,6 +919,79 @@ int genphy_c45_pma_baset1_read_abilities(struct phy_device *phydev)
+ }
+ EXPORT_SYMBOL_GPL(genphy_c45_pma_baset1_read_abilities);
+ 
++/**
++ * genphy_c45_pma_read_ext_abilities - read supported link modes from PMA
++ * @phydev: target phy_device struct
++ *
++ * Read the supported link modes from the PMA/PMD extended ability register
++ * (Register 1.11).
++ */
++int genphy_c45_pma_read_ext_abilities(struct phy_device *phydev)
++{
++	int val;
++
++	val = phy_read_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_PMA_EXTABLE);
++	if (val < 0)
++		return val;
++
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_10000baseLRM_Full_BIT,
++			 phydev->supported,
++			 val & MDIO_PMA_EXTABLE_10GBLRM);
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_10000baseT_Full_BIT,
++			 phydev->supported,
++			 val & MDIO_PMA_EXTABLE_10GBT);
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_10000baseKX4_Full_BIT,
++			 phydev->supported,
++			 val & MDIO_PMA_EXTABLE_10GBKX4);
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT,
++			 phydev->supported,
++			 val & MDIO_PMA_EXTABLE_10GBKR);
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
++			 phydev->supported,
++			 val & MDIO_PMA_EXTABLE_1000BT);
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_1000baseKX_Full_BIT,
++			 phydev->supported,
++			 val & MDIO_PMA_EXTABLE_1000BKX);
++
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT,
++			 phydev->supported,
++			 val & MDIO_PMA_EXTABLE_100BTX);
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_100baseT_Half_BIT,
++			 phydev->supported,
++			 val & MDIO_PMA_EXTABLE_100BTX);
++
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_10baseT_Full_BIT,
++			 phydev->supported,
++			 val & MDIO_PMA_EXTABLE_10BT);
++	linkmode_mod_bit(ETHTOOL_LINK_MODE_10baseT_Half_BIT,
++			 phydev->supported,
++			 val & MDIO_PMA_EXTABLE_10BT);
++
++	if (val & MDIO_PMA_EXTABLE_NBT) {
++		val = phy_read_mmd(phydev, MDIO_MMD_PMAPMD,
++				   MDIO_PMA_NG_EXTABLE);
++		if (val < 0)
++			return val;
++
++		linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT,
++				 phydev->supported,
++				 val & MDIO_PMA_NG_EXTABLE_2_5GBT);
++
++		linkmode_mod_bit(ETHTOOL_LINK_MODE_5000baseT_Full_BIT,
++				 phydev->supported,
++				 val & MDIO_PMA_NG_EXTABLE_5GBT);
++	}
++
++	if (val & MDIO_PMA_EXTABLE_BT1) {
++		val = genphy_c45_pma_baset1_read_abilities(phydev);
++		if (val < 0)
++			return val;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(genphy_c45_pma_read_ext_abilities);
++
+ /**
+  * genphy_c45_pma_read_abilities - read supported link modes from PMA
+  * @phydev: target phy_device struct
+@@ -962,63 +1035,9 @@ int genphy_c45_pma_read_abilities(struct phy_device *phydev)
+ 			 val & MDIO_PMA_STAT2_10GBER);
+ 
+ 	if (val & MDIO_PMA_STAT2_EXTABLE) {
+-		val = phy_read_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_PMA_EXTABLE);
++		val = genphy_c45_pma_read_ext_abilities(phydev);
+ 		if (val < 0)
+ 			return val;
+-
+-		linkmode_mod_bit(ETHTOOL_LINK_MODE_10000baseLRM_Full_BIT,
+-				 phydev->supported,
+-				 val & MDIO_PMA_EXTABLE_10GBLRM);
+-		linkmode_mod_bit(ETHTOOL_LINK_MODE_10000baseT_Full_BIT,
+-				 phydev->supported,
+-				 val & MDIO_PMA_EXTABLE_10GBT);
+-		linkmode_mod_bit(ETHTOOL_LINK_MODE_10000baseKX4_Full_BIT,
+-				 phydev->supported,
+-				 val & MDIO_PMA_EXTABLE_10GBKX4);
+-		linkmode_mod_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT,
+-				 phydev->supported,
+-				 val & MDIO_PMA_EXTABLE_10GBKR);
+-		linkmode_mod_bit(ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
+-				 phydev->supported,
+-				 val & MDIO_PMA_EXTABLE_1000BT);
+-		linkmode_mod_bit(ETHTOOL_LINK_MODE_1000baseKX_Full_BIT,
+-				 phydev->supported,
+-				 val & MDIO_PMA_EXTABLE_1000BKX);
+-
+-		linkmode_mod_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT,
+-				 phydev->supported,
+-				 val & MDIO_PMA_EXTABLE_100BTX);
+-		linkmode_mod_bit(ETHTOOL_LINK_MODE_100baseT_Half_BIT,
+-				 phydev->supported,
+-				 val & MDIO_PMA_EXTABLE_100BTX);
+-
+-		linkmode_mod_bit(ETHTOOL_LINK_MODE_10baseT_Full_BIT,
+-				 phydev->supported,
+-				 val & MDIO_PMA_EXTABLE_10BT);
+-		linkmode_mod_bit(ETHTOOL_LINK_MODE_10baseT_Half_BIT,
+-				 phydev->supported,
+-				 val & MDIO_PMA_EXTABLE_10BT);
+-
+-		if (val & MDIO_PMA_EXTABLE_NBT) {
+-			val = phy_read_mmd(phydev, MDIO_MMD_PMAPMD,
+-					   MDIO_PMA_NG_EXTABLE);
+-			if (val < 0)
+-				return val;
+-
+-			linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT,
+-					 phydev->supported,
+-					 val & MDIO_PMA_NG_EXTABLE_2_5GBT);
+-
+-			linkmode_mod_bit(ETHTOOL_LINK_MODE_5000baseT_Full_BIT,
+-					 phydev->supported,
+-					 val & MDIO_PMA_NG_EXTABLE_5GBT);
+-		}
+-
+-		if (val & MDIO_PMA_EXTABLE_BT1) {
+-			val = genphy_c45_pma_baset1_read_abilities(phydev);
+-			if (val < 0)
+-				return val;
+-		}
+ 	}
+ 
+ 	/* This is optional functionality. If not supported, we may get an error
+diff --git a/include/linux/phy.h b/include/linux/phy.h
+index 6e7ebcc50b85..dbb5e13e3e1b 100644
+--- a/include/linux/phy.h
++++ b/include/linux/phy.h
+@@ -1866,6 +1866,7 @@ int genphy_c45_an_config_aneg(struct phy_device *phydev);
+ int genphy_c45_an_disable_aneg(struct phy_device *phydev);
+ int genphy_c45_read_mdix(struct phy_device *phydev);
+ int genphy_c45_pma_read_abilities(struct phy_device *phydev);
++int genphy_c45_pma_read_ext_abilities(struct phy_device *phydev);
+ int genphy_c45_pma_baset1_read_abilities(struct phy_device *phydev);
+ int genphy_c45_read_eee_abilities(struct phy_device *phydev);
+ int genphy_c45_pma_baset1_read_master_slave(struct phy_device *phydev);
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+2.39.2
+
