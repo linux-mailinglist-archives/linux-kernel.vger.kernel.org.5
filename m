@@ -2,96 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEED80A53E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE8880A541
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573927AbjLHORM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 09:17:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58872 "EHLO
+        id S1573930AbjLHOSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 09:18:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573881AbjLHORK (ORCPT
+        with ESMTP id S1573881AbjLHOSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 09:17:10 -0500
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BDAF171D;
-        Fri,  8 Dec 2023 06:17:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8lkpDrAVThUsmxNqiVZSV0lvTancyxHoyRE7xBofZjI=; b=skVoQXrkyyUv354Yat2EuGTJD1
-        RhNsG3cttkbJH1Ktss/uTn03jI2GZOVLQRd2QfXlw/Vpe3boICyboJxkO19/LfDzJbd/EIqWtiz+H
-        a0Evfy4l3ZD+Fwg8fgxTQy9wWjxi7ZjfDTEQ4tLh3y6fkLFol9FrUNMt2t314ptOP1cO8yWgmPfRc
-        MQQ1RrXIqBx9e5y2rpIrqlXoPqzAJ8C+7U24B6zYyow/JFigdy0Sebs3fe32+t1UdyUg6B+8X5yJ7
-        cSs4r908dmbi/Op7mAo5p2wpR+KvZk66BKoMzIrTR8Bh9Pl66KfRhOa7H1QXCav4kyrLUjq7JH0u8
-        8XIRRkzg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rBbfE-008u9e-18;
-        Fri, 08 Dec 2023 14:17:12 +0000
-Date:   Fri, 8 Dec 2023 14:17:12 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        gus Gusenleitner Klaus <gus@keba.com>,
-        Al Viro <viro@ftp.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [RFC][PATCHES v2] checksum stuff
-Message-ID: <20231208141712.GA1674809@ZenIV>
-References: <20231019063925.GX800259@ZenIV>
- <CANn89iJre=VQ6J=UuD0d2J5t=kXr2b9Dk9b=SwzPX1CM+ph60A@mail.gmail.com>
- <20231019080615.GY800259@ZenIV>
- <20231021071525.GA789610@ZenIV>
- <20231021222203.GA800259@ZenIV>
- <20231022194020.GA972254@ZenIV>
- <20231205022100.GB1674809@ZenIV>
- <602ab11ffa2c4cc49bb9ecae2f0540b0@AcuMS.aculab.com>
- <20231206224359.GR1674809@ZenIV>
- <46711b57a62348059cfe798c8acea941@AcuMS.aculab.com>
+        Fri, 8 Dec 2023 09:18:47 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2822171E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 06:18:53 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77f3159d822so88937285a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 06:18:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702045133; x=1702649933; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b4aUU7dNjS/w6j2yOU1hBuNM/NL6fqAI1SOBM3IICMA=;
+        b=sosVTcFyu2GzDo3ZpJ9JYMr9x8cL+nfMjaYe5l6NX8B6UjAvCK8scD//SXdLHsQqws
+         8jver1uwXhTGs3Brw/1qWLHLetD5hgsBf5HaZTlga6jQWFov3IlLaBKBU+g/++aPAvka
+         IkhhPdieQJvvQduKvns0CaQ6/T1tVGY7TVWPzKdgWurcQ+bqI3XAVicUoqyyXYeES7Yr
+         sy7h2SbV5iGg5IC/090vF8bmTMkF1ByDo0Qhtgg3TcDBqOqm7apNDxsla22HOA4c7fl0
+         W03DqmLDlqNMuXrHeiy14+TMGkKSbv9dfog+IzqfpOO/JlXiLVEPPaxhI94SW8xe9ml5
+         lB2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702045133; x=1702649933;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b4aUU7dNjS/w6j2yOU1hBuNM/NL6fqAI1SOBM3IICMA=;
+        b=BbLeXupdYNpGq+VEbl60Rt3oK3nXJApKNTdAwMNfMFnbYV59duqE3KFoCCvZplo2tP
+         7A70HU1j4d148ib8psgLC8eNxb2Y/JPMUgdixh9BqlioScypudLaTXsyPFj73ss1FVmu
+         xw4bpizis8Zrr8i700aIgGLVHuQW/oFmIkeVEao+9V0CjlYeQyRbsTy1PYnKdImMB+E/
+         w1LPSbdG5vjYB1GvztqvB8VvXziNtOfTR5/35aZ+24Y+4wHgq6Ufi0TychIFkGs2lKIM
+         oR26Bgj8VvT2fN+NrstLq8RauWPz2j0n6Kn9J3CgtVQezHVUqGSsFHmCgzJjq1jENXFq
+         7AmA==
+X-Gm-Message-State: AOJu0YxS+ZAXO7Z1MUBZWj5yFo+Tx2riA0blw9+hyVTiY5VVF3C1Jt8t
+        h+u1T5hY6r2EP2+sku/oJkdMLNgNIMhoBHrYtETPUQ==
+X-Google-Smtp-Source: AGHT+IH8EMqb7H0OjwmlXGKXc/KMyqDWbzvWyGHpM5I7Qm/vaxWs0Al1SPzWhhi4fZH80FWJcx2+zkplz4DLr+7aWfs=
+X-Received: by 2002:a05:6214:1023:b0:67a:be9a:e9df with SMTP id
+ k3-20020a056214102300b0067abe9ae9dfmr23702qvr.17.1702045132939; Fri, 08 Dec
+ 2023 06:18:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <46711b57a62348059cfe798c8acea941@AcuMS.aculab.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-27-iii@linux.ibm.com>
+In-Reply-To: <20231121220155.1217090-27-iii@linux.ibm.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 8 Dec 2023 15:18:16 +0100
+Message-ID: <CAG_fn=UBaF8SnvJ4t4wbBZKbNEBWRyGBY=FA+CTB+k2+pa2qEw@mail.gmail.com>
+Subject: Re: [PATCH v2 26/33] s390/ftrace: Unpoison ftrace_regs in kprobe_ftrace_handler()
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 12:04:24PM +0000, David Laight wrote:
-> I've just read RFC 792 and done some experiments.
-> The kernel ICMP checksum code is just plain broken.
-> 
-> RFC 792 is quite clear that the checksum is the 16-bit ones's
-> complement of the one's complement sum of the ICMP message
-> starting with the ICMP Type.
-> 
-> The one's complement sum of 0xfffe and 0x0001 is zero (not the 0xffff
-
-It is not.  FYI, N-bit one's complement sum is defined as
-
-X + Y <= MAX_N_BIT ? X + Y : X + Y - MAX_N_BIT,
-
-where MAX_N_BIT is 2^N - 1.
-
-You add them as natural numbers.  If there is no carry and result
-fits into N bits, that's it.  If there is carry, you add it to
-the lower N bits of sum.
-
-Discussion of properties of that operation is present e.g. in
-RFC1071, titled "Computing the Internet Checksum".
-
-May I politely suggest that some basic understanding of the
-arithmetics involved might be useful for this discussion?
+On Tue, Nov 21, 2023 at 11:02=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.co=
+m> wrote:
+>
+> s390 uses assembly code to initialize ftrace_regs and call
+> kprobe_ftrace_handler(). Therefore, from the KMSAN's point of view,
+> ftrace_regs is poisoned on kprobe_ftrace_handler() entry. This causes
+> KMSAN warnings when running the ftrace testsuite.
+>
+> Fix by trusting the assembly code and always unpoisoning ftrace_regs in
+> kprobe_ftrace_handler().
+>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
