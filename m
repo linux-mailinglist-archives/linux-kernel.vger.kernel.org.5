@@ -2,109 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E7580AC5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6179980AC68
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:46:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbjLHSoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:44:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39514 "EHLO
+        id S233822AbjLHSq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:46:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235943AbjLHSoh (ORCPT
+        with ESMTP id S229572AbjLHSqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:44:37 -0500
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B11B10F8
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:44:41 -0800 (PST)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 8BD70240106
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 19:44:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1702061078; bh=gdJEGxQD1dyTYKJxTTItwkIZdG3P5X6tnnWz/BIIbGw=;
-        h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:
-         Content-Transfer-Encoding:From;
-        b=amw0D/zBG/8sz8L4nO/+ln4b5LjUMs1PA4MawALRr6ZpulJNfzf/bPIOmnZSmy8Li
-         RcykgmhG4a28WzK3OkBQQqb1kWsOVXeS8bBDZB7Jyo/ER+EGyiTWgJi6lzH6gI1LEM
-         h/ZyoVDY+iKFTML//fBtr54MbX7b/SHT1BC7tq+IL7uJJ2z1bQ/6eJoPVoDKHxKpcA
-         dSAfNGMNJxpu+KYx4588/x6ryy+5JSoaz4/YjIiRSFmL3WFd8uBPf3LQYCiG4OTprs
-         fs0X7UmXa7GwS5sMsrzloIwPViRiOtAyXN34GjrXTWlG3N2NlA6rGq0J2XEK+AsK7X
-         1HDafKZLDiQhw==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4Sn0Rn1jvRz6txc;
-        Fri,  8 Dec 2023 19:44:37 +0100 (CET)
-Date:   Fri,  8 Dec 2023 18:44:36 +0000
-From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
-To:     Armin Wolf <W_Armin@gmx.de>
-Cc:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: (corsair-psu) Fix probe when built-in
-Message-ID: <20231208194436.37e62928@posteo.net>
-In-Reply-To: <20231207210723.222552-1-W_Armin@gmx.de>
-References: <20231207210723.222552-1-W_Armin@gmx.de>
+        Fri, 8 Dec 2023 13:46:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6239E0
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:46:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702061190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oyg9tG3YUMXYWf0fhNWSelQCkgGQnlr8E+uOxhosRhg=;
+        b=XR7Bm6Pg+TPdXvTFRk8PjklNQFG1ePf70kARko8MsD7Iu/1BcXnItSxB859FB7qiDSgOfW
+        7An+QD2LSdqtmYmmnoytNY6CIpvPlkN5na+jYtf7++chCOBshZ/10tPj60ud6z/NdKnjJb
+        +wsrsC3JAhKFcFvT4HtpjafR+Vs/pvA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-122-KwE-bmmkNByZfmLRbef5QA-1; Fri, 08 Dec 2023 13:46:29 -0500
+X-MC-Unique: KwE-bmmkNByZfmLRbef5QA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C7E91101A52A;
+        Fri,  8 Dec 2023 18:46:28 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B03BD112131D;
+        Fri,  8 Dec 2023 18:46:28 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [PATCH] KVM: selftests: fix supported_flags for aarch64
+Date:   Fri,  8 Dec 2023 13:46:28 -0500
+Message-Id: <20231208184628.2297994-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  7 Dec 2023 22:07:23 +0100
-Armin Wolf <W_Armin@gmx.de> wrote:
+KVM/Arm supports readonly memslots; fix the calculation of
+supported_flags in set_memory_region_test.c, otherwise the
+test fails.
 
-Just forgot. Did both, works just fine. Is it okay that way? This is my first
-time.
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ tools/testing/selftests/kvm/set_memory_region_test.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Tested-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-Reviewed-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-
-> It seems that when the driver is built-in, the HID bus is
-> initialized after the driver is loaded, which whould cause
-> module_hid_driver() to fail.
-> Fix this by registering the driver after the HID bus using
-> late_initcall() in accordance with other hwmon HID drivers.
-> 
-> Compile-tested only.
-> 
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> ---
->  drivers/hwmon/corsair-psu.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
-> index 904890598c11..2c7c92272fe3 100644
-> --- a/drivers/hwmon/corsair-psu.c
-> +++ b/drivers/hwmon/corsair-psu.c
-> @@ -899,7 +899,23 @@ static struct hid_driver corsairpsu_driver = {
->  	.reset_resume	= corsairpsu_resume,
->  #endif
->  };
-> -module_hid_driver(corsairpsu_driver);
-> +
-> +static int __init corsair_init(void)
-> +{
-> +	return hid_register_driver(&corsairpsu_driver);
-> +}
-> +
-> +static void __exit corsair_exit(void)
-> +{
-> +	hid_unregister_driver(&corsairpsu_driver);
-> +}
-> +
-> +/*
-> + * With module_init() the driver would load before the HID bus when
-> + * built-in, so use late_initcall() instead.
-> + */
-> +late_initcall(corsair_init);
-> +module_exit(corsair_exit);
-> 
->  MODULE_LICENSE("GPL");
->  MODULE_AUTHOR("Wilken Gottwalt <wilken.gottwalt@posteo.net>");
-> --
-> 2.39.2
-> 
+diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
+index 6637a0845acf..dfd1d1e22da3 100644
+--- a/tools/testing/selftests/kvm/set_memory_region_test.c
++++ b/tools/testing/selftests/kvm/set_memory_region_test.c
+@@ -333,9 +333,11 @@ static void test_invalid_memory_region_flags(void)
+ 	struct kvm_vm *vm;
+ 	int r, i;
+ 
+-#ifdef __x86_64__
++#if defined __aarch64__ || defined __x86_64__
+ 	supported_flags |= KVM_MEM_READONLY;
++#endif
+ 
++#ifdef __x86_64__
+ 	if (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM))
+ 		vm = vm_create_barebones_protected_vm();
+ 	else
+-- 
+2.39.1
 
