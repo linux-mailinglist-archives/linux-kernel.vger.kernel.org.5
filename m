@@ -2,49 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA32580AFD9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3491F80AFDB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:47:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbjLHWoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 17:44:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40690 "EHLO
+        id S233963AbjLHWqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 17:46:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233963AbjLHWoI (ORCPT
+        with ESMTP id S229525AbjLHWqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 17:44:08 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5361738;
-        Fri,  8 Dec 2023 14:44:13 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 639935CC;
-        Fri,  8 Dec 2023 22:44:13 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 639935CC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1702075453; bh=Fk5zWuZFxhvInLzu8bE0Bc/KaXxHT7KVOlPF6tGAnYs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=tRpovcO5j+icIvrL4zKrAPCylna1S3wGDGx37xDsRBbhJ4JI3xEFHLUzzFCM5MDZi
-         ZKJA+a144f+Lyg5Js6tsaSky7hMZVLYI3y2L7M3jN3EpQAp5lUpxk48oUrJJdPZolI
-         Erobs3RD6frbeVpDU+7NSy+5R+4015ORS8AWsGQy9xl2mKz0uZNCx6vL3zGopeZijN
-         3uXe5aiOspTrnucb2fPmFtyD0fJXV4VFo6bJp+eem7994TRtaWbTgCXS1v0ZoIuZ6Z
-         w6xDpwdSQ/ZQnJMXMLyTgBNLOAnTrGKBOu4afWHhXaoB0UEHkXQjjXGx6Lbsnjwnav
-         swxXqPn1KSd+g==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Luca Ceresoli <luca.ceresoli@bootlin.com>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>
-Subject: Re: [PATCH 0/2] docs: nvmem: minor improvements
-In-Reply-To: <20231201-nvmem-docs-kerneldoc-v1-0-3e8f2b706ce6@bootlin.com>
-References: <20231201-nvmem-docs-kerneldoc-v1-0-3e8f2b706ce6@bootlin.com>
-Date:   Fri, 08 Dec 2023 15:44:12 -0700
-Message-ID: <87o7f048n7.fsf@meer.lwn.net>
+        Fri, 8 Dec 2023 17:46:48 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39250AC;
+        Fri,  8 Dec 2023 14:46:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=9AtZTt6OGfjsPDJQOtDfx5Cu6irtFkmWZMjDyBOLAY8=; b=anFV4EKnBK8gQJUQaPbHBdGbmh
+        b2Y7tMQ6hHkQDT5vgOGk/97h6xyIa4MDZnDQV4WFLZMH0Moc2XQBReqMlEddNf22x5eaw0zAoXtGq
+        dyQwgTqMZqIOn/1N4xYUukkUwd2BIl/rwN+ayXO0Y2NWwvxlGU3Yxjp8/bdR9jO8fTnclXdXuFPiN
+        /eQ1qV70Ux813zNWm90BtR+BVtsuhQ7+lpHQtd95lVHbKAbeBGyJQhSdn2Nf39E/FRT7aa1T5sy3K
+        KtlIjlSiXtHdzhKo1SHrWhL9Azqgm2vU4mbnqe/RW5vhus/b8/1CvhOM+ExeLbzwwDLJKGTkrTFIZ
+        Ez+2V7qQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rBjba-006iqm-2j;
+        Fri, 08 Dec 2023 22:46:00 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C66943003F0; Fri,  8 Dec 2023 23:45:57 +0100 (CET)
+Date:   Fri, 8 Dec 2023 23:45:57 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+        Song Liu <songliubraving@meta.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joao Moreira <joao@overdrivepizza.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231208224557.GH36716@noisy.programming.kicks-ass.net>
+References: <20231207093105.GA28727@noisy.programming.kicks-ass.net>
+ <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
+ <20231208102940.GB28727@noisy.programming.kicks-ass.net>
+ <20231208134041.GD28727@noisy.programming.kicks-ass.net>
+ <20231208172152.GD36716@noisy.programming.kicks-ass.net>
+ <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
+ <20231208203535.GG36716@noisy.programming.kicks-ass.net>
+ <CAADnVQJzCw=qcG+jHBYG0q0SxLPkwghni0wpgV4A4PkpgVbGPw@mail.gmail.com>
+ <20231208205241.GK28727@noisy.programming.kicks-ass.net>
+ <CAADnVQL3KsJONShsstDq5jrpbc_4FOU-VQPJgDCt50N9asoFzA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQL3KsJONShsstDq5jrpbc_4FOU-VQPJgDCt50N9asoFzA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,20 +94,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Luca Ceresoli <luca.ceresoli@bootlin.com> writes:
+On Fri, Dec 08, 2023 at 12:58:01PM -0800, Alexei Starovoitov wrote:
+> On Fri, Dec 8, 2023 at 12:52 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Fri, Dec 08, 2023 at 12:41:03PM -0800, Alexei Starovoitov wrote:
+> > > On Fri, Dec 8, 2023 at 12:35 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > > > -__bpf_kfunc void bpf_task_release(struct task_struct *p)
+> > > > +__bpf_kfunc void bpf_task_release(void *p)
+> > >
+> > > Yeah. That won't work. We need a wrapper.
+> > > Since bpf prog is also calling it directly.
+> > > In progs/task_kfunc_common.h
+> > > void bpf_task_release(struct task_struct *p) __ksym;
+> > >
+> > > than later both libbpf and the verifier check that
+> > > what bpf prog is calling actually matches the proto
+> > > of what is in the kernel.
+> > > Effectively we're doing strong prototype check at load time.
+> >
+> > I'm still somewhat confused on how this works, where does BPF get the
+> > address of the function from? and what should I call the wrapper?
+> 
+> It starts with
+> register_btf_id_dtor_kfuncs() that takes a set of btf_ids:
+> {btf_id_of_type, btf_id_of_dtor_function}, ...
+> 
+> Then based on btf_id_of_dtor_function we find its type proto, name, do checks,
+> and eventually:
+> addr = kallsyms_lookup_name(dtor_func_name);
+> field->kptr.dtor = (void *)addr;
+> 
+> bpf_task_release(struct task_struct *p) would need to stay as-is,
+> but we can have a wrapper
+> void bpf_task_release_dtor(void *p)
+> {
+>   bpf_task_release(p);
+> }
+> 
+> And adjust the above lookup with extra "_dtor" suffix.
+> 
+> > > btw instead of EXPORT_SYMBOL_GPL(bpf_task_release)
+> > > can __ADDRESSABLE be used ?
+> > > Since it's not an export symbol.
+> >
+> > No __ADDRESSABLE() is expressly ignored, but we have IBT_NOSEAL() that
+> > should do it. I'll rename the thing and lift it out of x86 to avoid
+> > breaking all other arch builds.
+> 
+> Makes sense.
 
-> This series contains two small improvements to the NVMEM subsystem
-> documentation.
->
-> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-> ---
-> Luca Ceresoli (2):
->       docs: nvmem: generate kernel-doc API documentation
->       docs: nvmem: remove function parameters (fixes hyperlink generation)
->
->  Documentation/driver-api/nvmem.rst | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+Ok, did that. Current patches (on top of bpf-next) are here:
 
-Applied, thanks.
+  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/cfi
 
-jon
+(really should try and write better changelogs, but it's too late)
+
+The test_progs thing still doesn't run to completion, the next problem
+seems to be bpf_throw():
+
+[  247.720159]  ? die+0xa4/0xd0
+[  247.720216]  ? do_trap+0xa5/0x180
+[  247.720281]  ? __cfi_bpf_prog_8ac473954ac6d431_F+0xd/0x10
+[  247.720368]  ? __cfi_bpf_prog_8ac473954ac6d431_F+0xd/0x10
+[  247.720459]  ? do_error_trap+0xba/0x120
+[  247.720525]  ? __cfi_bpf_prog_8ac473954ac6d431_F+0xd/0x10
+[  247.720614]  ? handle_invalid_op+0x2c/0x40
+[  247.720684]  ? __cfi_bpf_prog_8ac473954ac6d431_F+0xd/0x10
+[  247.720775]  ? exc_invalid_op+0x38/0x60
+[  247.720840]  ? asm_exc_invalid_op+0x1a/0x20
+[  247.720909]  ? 0xffffffffc001ba54
+[  247.720971]  ? __cfi_bpf_prog_8ac473954ac6d431_F+0xd/0x10
+[  247.721063]  ? bpf_throw+0x9b/0xf0
+[  247.721126]  ? bpf_test_run+0x108/0x350
+[  247.721191]  ? bpf_prog_5555714b685bf0cf_exception_throw_always_1+0x26/0x26
+[  247.721301]  ? bpf_test_run+0x108/0x350
+[  247.721368]  bpf_test_run+0x212/0x350
+[  247.721433]  ? slab_build_skb+0x22/0x110
+[  247.721503]  bpf_prog_test_run_skb+0x347/0x4a0
+
+But I'm too tired to think staight. Is  this a bpf_callback_t vs
+bpf_exception_cb difference?
+
+I'll prod more later. Zzzz..
