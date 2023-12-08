@@ -2,282 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1215F80A909
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8EA880A90B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574128AbjLHQdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:33:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43860 "EHLO
+        id S233490AbjLHQds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:33:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573889AbjLHQdm (ORCPT
+        with ESMTP id S1574001AbjLHQdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:33:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE54199B
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:33:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702053226;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hXw0XZZEim7nEEhz34fa5B4jxIHSBv8a2Eg+0Dnfzpg=;
-        b=KyAoYNhXVJUv7MC4P6NNRagRGkmvQ7J4Jocst9wPoBkgjWO6NO6iIGb/iRGDG++m9UJ0xR
-        QPUyU2AjkkxAxRdNlAFNw6gKH+rbgDFUropulT70wRpu4oAkrQbQ+lLRfGa6g81gQwCbWs
-        s/fwfpvSNca/vzNs9bxd8ww3nKfIknQ=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-392-S33djehZO6ab79BmDdkZRA-1; Fri, 08 Dec 2023 11:33:44 -0500
-X-MC-Unique: S33djehZO6ab79BmDdkZRA-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-4259aafd543so14193331cf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 08:33:44 -0800 (PST)
+        Fri, 8 Dec 2023 11:33:44 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC5319A4;
+        Fri,  8 Dec 2023 08:33:48 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50be9e6427dso2398844e87.1;
+        Fri, 08 Dec 2023 08:33:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702053226; x=1702658026; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pxwrq+h8nplXaFB//isAgca+iL1KixWEf6Q6TqoQFaU=;
+        b=OzSTCVHhqGZZK7hSL8n1G66JJx3GhKdFLHQ3bJ3ThwKd091kmcEzWT+GGd4RRddEOl
+         GaRSOuXDo1UWb+Io40cBc4GJ7JvWiuJGa1zjiiJXDDqoN9VuRLXh53GXXD1hEB5x6FVL
+         8XSrNMhl+89e2oI+gNG7R88hY0zmeJ+NyVQBIvGAe0lmo+WxSfhyTEuUCma1p7SEqKqx
+         ZblkTgdmRIWqxgCCO41gCqsnfWhP3e6MRLwiJfvrTzy/B7FTyj9MffOxvHodDNuhoHJF
+         pIxurUfFoDM9XZ8+y0SLJE0I1QzoDYQAAlLGCbNjOjLLBDuhfVtg21bq0tR49T6MY91T
+         2WvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702053224; x=1702658024;
+        d=1e100.net; s=20230601; t=1702053226; x=1702658026;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hXw0XZZEim7nEEhz34fa5B4jxIHSBv8a2Eg+0Dnfzpg=;
-        b=FEwxRXVnxK1L90K6HCuWlEsFu6miU3EcG/L5l0yy632fAATpCtG/y0z0aoOXN50CKa
-         oh9yZWo00+nuxDv421hDhF/9SqkAIE4Sr4EWikXREYNUnA1NWuZnXP4n8OMDseZGo9Nr
-         YNkpsb6DZjg+k2A92wCMgzL5W2dM+m5dfauHy8yJIDp9TDxqxYUQ8WOP/j1Tyhebe9PC
-         MCbbM27wlkQSoHY6uj4iDDF2DS3Gy8Nh0mKMfQ13+3BM/ogh50HMN9+2LUgsRNH4K3QA
-         la9/qyuHl4KmmGV632EdIzEkowNq+1ikzg116cdGZJvILWy9rMyrU4Ggzzg6gOlH1jzQ
-         ZZKg==
-X-Gm-Message-State: AOJu0Yzf/Aij9Gp+9UDR4loflB1SIvb9hZlvob69VA8aPuJ5zUW6d7/Y
-        xSKSQ+89eosLS199bJacKrmLTvRSFwGb2p5qcDRNSckfPtOoJLYE3BRdlunb2R3UWgixclFkJNF
-        c80pKNN3UgqnB3KfoDIXl2Nt7
-X-Received: by 2002:ac8:5f8f:0:b0:423:b118:100a with SMTP id j15-20020ac85f8f000000b00423b118100amr397492qta.1.1702053224383;
-        Fri, 08 Dec 2023 08:33:44 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHH9bHNB0WsJAVj+oZ5YejD6BIs/ceRUycn4p6BwtXybFF1QZpkQFOT/VWn88opyf/TmalPZw==
-X-Received: by 2002:ac8:5f8f:0:b0:423:b118:100a with SMTP id j15-20020ac85f8f000000b00423b118100amr397476qta.1.1702053224087;
-        Fri, 08 Dec 2023 08:33:44 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::47])
-        by smtp.gmail.com with ESMTPSA id p20-20020ac87414000000b00423dfab8fc3sm929789qtq.32.2023.12.08.08.33.43
+        bh=pxwrq+h8nplXaFB//isAgca+iL1KixWEf6Q6TqoQFaU=;
+        b=lWGqQjGKNCXFOu+xI+YJV/3RmPK/wxo21TRrTf1r6ynTPm07159AHOMgUYOrlC5I3N
+         KjxIwhy7A2gIWJNOy/8RV+ML0veTDMhNVVx+igsgnrRMV6Bm7XqoPUgDaioSDyZzizI2
+         lwyyt38esgKVdh3HvG9nfE3f2HHw4A2TFhmlG6+aXz1AEhvKYMfcsfiUM1A7V1mvnn62
+         P/k8Ie/1AOoNhfFcQb/lAhbaSQlPpITEnA5P7xW+/i5Ky1t4JA/VuLhuychf8uHFwcZD
+         y0lY8wGPWb0ZbIH0DRjgTtoVNgpJlsgV0abcGqtCCmWLkVyjpZsLwYRR7e53fgr71E/v
+         D8/A==
+X-Gm-Message-State: AOJu0YzJAeaXnyaB9QxbnKEk1MuzgBPJ9ghmCCqhBK7TwhiaGFYNWBQk
+        wNitWqfZ1kiUCJEZIMZ2YiU=
+X-Google-Smtp-Source: AGHT+IGgQKJL0HHO/Evrk7hLdKF/K41Ygp/TVwBLtCjh/+/dieukARYnSOLhKDT1T+59M4U8FY8Rbg==
+X-Received: by 2002:a19:2d45:0:b0:50b:f411:9985 with SMTP id t5-20020a192d45000000b0050bf4119985mr87342lft.17.1702053225818;
+        Fri, 08 Dec 2023 08:33:45 -0800 (PST)
+Received: from skbuf ([188.27.185.68])
+        by smtp.gmail.com with ESMTPSA id a15-20020a50c30f000000b0054bde4df7f0sm941078edb.66.2023.12.08.08.33.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 08:33:43 -0800 (PST)
-Date:   Fri, 8 Dec 2023 10:33:41 -0600
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fri, 08 Dec 2023 08:33:45 -0800 (PST)
+Date:   Fri, 8 Dec 2023 18:33:43 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
         Jose Abreu <joabreu@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Serge Semin <fancer.lancer@gmail.com>
-Subject: Re: [PATCH net-next v2] net: stmmac: don't create a MDIO bus if
- unnecessary
-Message-ID: <plvbqgi2bwlv5quvpiwplq7cxx6m5rl3ghnfhuxfx4bpuhyihl@zmydwrtwdeg6>
-References: <20231206-stmmac-no-mdio-node-v2-1-333cae49b1ca@redhat.com>
- <e64b14c3-4b80-4120-8cc4-9baa40cdcb75@lunn.ch>
- <nx2qggr3aget4t57qbosj6ya5ocq47t6w33ve5ycabs5mzvo7c@vctjvc5gip5d>
- <9eddb32d-c798-4e1b-b0ea-c44d31cc29bf@lunn.ch>
+        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 10/16] net: pcs: xpcs: Add generic DW XPCS
+ MDIO-device support
+Message-ID: <20231208163343.5s74bmirfna3o7yw@skbuf>
+References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+ <20231205103559.9605-11-fancer.lancer@gmail.com>
+ <20231205111351.xjjuwpbf7kwg3vuh@skbuf>
+ <uivunnjv5vi3w3fkc5w2f4lem5bingrgajgjfsu2ih7fuhz6hd@3naeubr5spak>
+ <20231205122316.ihhpklv222f5giz3@skbuf>
+ <nflj4ajgx3byqhwna2eslldwulbbafmcwba4dwgxo65o5c7pmj@zbgqt2zje4ix>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9eddb32d-c798-4e1b-b0ea-c44d31cc29bf@lunn.ch>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <nflj4ajgx3byqhwna2eslldwulbbafmcwba4dwgxo65o5c7pmj@zbgqt2zje4ix>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 02:14:41PM +0100, Andrew Lunn wrote:
-> > I know you said the standard is to make the MDIO bus unconditionally, but
-> > to me that feels like a waste, and describing say an empty MDIO bus
-> > (which would set the phy_mask for us eventually and not scan a
-> > bunch of phys, untested but I think that would work) seems like a bad
-> > description in the devicetree (I could definitely see describing an
-> > empty MDIO bus getting NACKed, but that's a guess).
+On Fri, Dec 08, 2023 at 05:11:20PM +0300, Serge Semin wrote:
+> My idea was to reuse the mdio_device which has already been created
+> either by means of the MDIO-bus OF-subnode or by means of the MDIO-bus
+> board_info infrastructure (can be utilized in the SJA1105 or Wangxun
+> Tx GBE). The xpcs_create() method then either probes the device on the MDIO
+> bus and gets ID from there, or just uses the custom IDs based on the
+> OF compatible match table or on the platform_data. If no MDIO-device
+> was created my patchset is supposed to preserve the previous
+> semantics: create MDIO-device, probe the device on the MDIO-bus, get
+> device IDs from there. See the next patch for more details:
+> https://lore.kernel.org/netdev/20231205103559.9605-11-fancer.lancer@gmail.com/
 > 
-> DT describes the hardware. The MDIO bus master exists. So typically
-> the SoC .dtsi file would include it in the Ethernet node. At the SoC
-> level it is empty, unless there is an integrated PHY in the SoC. The
-> board .dts file then adds any PHYs to the node which the board
-> actually has.
+> > That was attempted a while ago by
+> > Sean Anderson with the Lynx PCS. Are you aware of the fact that even in
+> > the good case in which binding the driver actually works, the user can
+> > then come along and unbind it from the PCS device, and phylink isn't
+> > prepared to handle that, so it will crash the kernel upon the next
+> > phylink_pcs call?
 > 
-> So i doubt adding an empty MDIO node to the SoC .dtsi file will get
-> NACKed, it correctly describes the hardware.
+> To be honest I didn't consider the driver bind/unbind option. But my
+> case a bit different. DW XPCS MDIO-device is supposed to be created
+> automatically by means of the DW XPCS MI driver from the DT-nodes
+> hierarchy like this:
+> mdio@1f05d000 {
+> 	compatible = "snps,dw-xpcs-mi";
+> 	reg = <0 0x1f05d000 0 0x1000>;
+> 
+> 	xgmac_pcs: ethernet-pcs@0 {
+> 		compatible = "snps,dw-xpcs";
+> 		reg = <0>;
+> 	};
+> };
+> The platform-device is created for the mdio@1f05d000 node for which
+> the DW XPCS MI driver is loaded, which calls the
+> devm_of_mdiobus_register() in the probe() method which registers the
+> MDIO-bus and then creates the MDIO-device from the ethernet-pcs@0
+> node. The DW XPCS MDIO-device driver is attached to that MDIO-device
+> then. In such model the PCS can be supplied to the DW *MAC via the
+> "pcs-handle = &xgmac_pcs" property.
+> 
+> Regarding the current semantics it's preserved in the framework of the
+> xpcs_create_byaddr() method (former xpcs_create_mdiodev()) by means of
+> the next code snippet:
+>         if (mdiobus_is_registered_device(bus, addr)) {
+>                 mdiodev = bus->mdio_map[addr];
+>                 mdio_device_get(mdiodev);
+>         } else {
+>                 mdiodev = mdio_device_create(bus, addr);
+>                 if (IS_ERR(mdiodev))
+>                         return ERR_CAST(mdiodev);
+>         }
+> Device can be automatically created if before registering the MDIO-bus
+> the xpcs_create_byaddr() caller registered the MDIO-device board info
+> by means of the mdiobus_register_board_info() method. In addition to
+> that it's now possible to supply some custom data (custom device IDs
+> in my implementation) to the XPCS driver by means of the
+> mdio_board_info.platform_data field. See the next patch for
+> reference:
+> https://lore.kernel.org/netdev/20231205103559.9605-14-fancer.lancer@gmail.com
+> 
+> So what the difference with the Lynx PCS is that in my case the
+> MDIO-device is created automatically as a result of the DW XPCS MI
+> MDIO-bus registration. Additionally I implemented the MDIO-device
+> creation based on the MDIO-board-info, thus there won't be need in the
+> calling mdio_device_create() on each xpcs_create_mdiodev() invocation.
+> The later part isn't that important in the framework of this
+> conversation, but just so you be aware.
 
-Agreed, thanks for helping me consider all the cases. In my particular
-example it would make sense to have SoC dtsi describe the mdio bus,
-leave it disabled, and boards enable it and describe components as
-necessary.
+It's not really different, though. You can connect to the Lynx PCS both
+ways, see dpaa2_pcs_create() which also searches for a pcs-handle before
+calling lynx_pcs_create_fwnode(). What's subtly different is that we
+don't (yet) have "fsl,lynx-pcs" compatible strings in the device tree.
+So the MDIO controller will register the PCS devices as struct phy_device
+(which still have an underlying struct mdio_device). The PCS layer
+connects to the underlying struct mdio_device, and the phy_device on top
+remains unconnected to any phylib/phylink MAC driver. That is confusing,
+I should really get to adding those compatible strings to suppress the
+phy_device creation.
 
-So you have let's say these 8 abbreviated cases:
+> Regarding the driver bind/unbind. As I said I didn't actually consider
+> that option. On the other hand my DW XPCS MDIO-device driver doesn't
+> do actual probe() or remove(). The only implemented thing is the
+> of_device_id table, which is used to assign PCS and PMA IDs if
+> required based on the DT compatible property. So I can easily drop any
+> MDIO device-driver part and parse the of_device_id table right in the
+> xpcs_create_bynode(). From that perspective my implementation won't
+> differ much from the Lynx PCS design. The only difference will be is
+> the way the MDIO-bus is created and registered. In case of Lynx PCS
+> the bus is created by the MAC-driver itself.
 
-Case 1 (MDIO bus used with phy on bus connected to MAC):
+Nope, not true. Follow the pcs-handle in arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi.
 
-	ethernet {
-		status = "okay";
-		phy-handle = <&phy0>;
-		phy-mode = "rgmii";
+> In my case DW XPCS MI is currently created in the framework of the
+> separate platform driver. Do you think it would be better to follow
+> the Lynx design pattern in order to get rid from the possibility of
+> the DW XPCS MI driver being unbound behind the STMMAC+XPCS couple
+> back?
 
-		mdio {
-			status = "okay";
+I think you actually pointed out a flaw in the Lynx PCS design too.
+Actually, it is a larger flaw in the kernel. You can also unbind the
+MDIO bus which holds the phy_device, and phylib (and therefore also
+phylink) won't expect that either, so it will crash.
 
-			phy0: phy@0 {
-			};
-		};
-	};
+> In this case the Dw MAC DT-node hierarchy would look like this:
+> 
+> xgmac: ethernet@1f054000 {
+> 	compatible = "snps,dwxgmac";
+> 	reg = <0 0x1f054000 0 0x4000>;
+> 	reg-names = "stmmaceth";
+> 	ranges;
+> 
+> 	...
+> 
+> 	pcs-handle = &xgmac_pcs;
+> 
+> 	// DW XPCS MI to access the DW XPCS attached to the device
+> 	mdio@1f05d000 {
+> 		compatible = "snps,dwmac-mi";
+> 		reg = <0 0x1f05d000 0 0x1000>;
+> 
+> 		xgmac_pcs: ethernet-pcs@0 {
+> 			compatible = "snps,dw-xpcs";
+> 			reg = <0>;
+> 		};
+> 	};
+> 
+> 	// Normal MDIO-bus to access external PHYs (it's also called
+> 	// as SMA - Station Management Agent - by Synopsys)
+> 	mdio {
+> 		compatible = "snps,dwmac-mdio";
+> 		#address-cells = <1>;
+> 		#size-cells = <0>;
+> 	};
+> };
+> 
+> I actually thought to use that hardware description pattern instead,
+> but after some meditation around that I decided that having the DW
+> XPCS device defined separately from the DW MAC node seemed better at
+> least from the code separation point of view. Now I think that it
+> wasn't the best decision. DW XPCS is always attached to the DW XGMAC
+> controller. So it would be more correct having it defined as a
+> sub-node. It would also helped to avoid the platform device driver
+> bind/unbind problem.
+> 
+> What do you think? Should I re-design my patchset to be supporting the
+> design above? (After having conversion with you I am more inclined to
+> do that now than to stick with the currently implemented solution.)
 
-Case 2 (MDIO bus used but MAC's connect fixed-link):
+I think that the placement of the "mdio" node as lateral vs subordinate
+to the "ethernet" node would have fixed the issue by mistake. We should
+be looking at it as a structural problem of the kernel instead. Don't
+let it influence what you believe should be the correct design.
 
-	ethernet {
-		status = "okay";
-		phy-mode = "rgmii";
+> > The pcs-rzn1-miic.c driver puts a device_link to the MAC to at least
+> > tear down the whole thing when the PCS is unbound, which is saner than
+> > crashing the kernel. I don't see the equivalent protection mechanism here?
+> 
+> You are right. I don't have any equivalent protection here. Thanks for
+> suggesting a solution.
 
-		fixed-link {
-		};
+I think that a device link between the "ethernet" device and the "mdio"
+device (controller, parent of the PHY or PCS), if the Ethernet is not a
+parent of the MDIO controller, could also solve that. But it would also
+require ACK from PHY maintainers, who may have grander plans to address
+this snag.
 
-		mdio {
-			status = "okay";
+> > Can't the xpcs continue to live without a bound driver? Having a
+> > compatible string in the OF description is perfectly fine though,
+> > and should absolutely not preclude that.
+> 
+> As I explained above Dw XPCS device can live without a bound driver
+> because the DW XPCS MDIO-driver doesn't do much but merely gets to be
+> bound based on the of_device_id table. In my case the problem is in
+> the DW XPCS MI driver which indeed can be detached. Please see my
+> long-read text above.
 
-			switch/unrelated-phy {
-			};
-		};
-	};
-
-Case 3 (MDIO bus used but MAC's connected to another bus's phy):
-
-	ethernet {
-		status = "okay";
-		phy-handle = <&phy1>;
-		phy-mode = "rgmii";
-
-		mdio {
-			status = "okay";
-
-			switch/unrelated-phy {
-			};
-		};
-	};
-
-Case 4 (MDIO bus disabled/unused, connected fixed-link):
-
-	ethernet {
-		status = "okay";
-		phy-mode = "rgmii";
-
-		fixed-link {
-		};
-
-		mdio {
-			status = "disabled";
-		};
-	};
-
-Case 5 (MDIO bus disabled/unused, connected to another bus's phy):
-
-	ethernet {
-		status = "okay";
-		phy-handle = <&phy1>;
-		phy-mode = "rgmii";
-
-		mdio {
-			status = "disabled";
-		};
-	};
-
-Case 6 (MDIO bus not described, connected fixed-link):
-
-	ethernet {
-		status = "okay";
-		phy-mode = "rgmii";
-
-		fixed-link {
-		};
-	};
-
-Case 7 (MDIO bus not described, connected to a different bus's phy):
-
-	ethernet {
-		status = "okay";
-		phy-handle = <&phy1>;
-		phy-mode = "rgmii";
-	};
-
-Case 8 (MDIO bus not described, but phy on MDIO bus is connected to MAC,
-        legacy description[2] in my commit message):
-
-	ethernet {
-		status = "okay";
-	};
-
-
-If we look at the logic in stmmac today about how to handle the MDIO
-bus, you've got basically:
-
-	if !fixed-link || mdio_node_present()
-		of_mdiobus_register(np)
-
-Applying current stmmac logic to our cases...
-
-Case 1 (MDIO bus used with phy on bus connected to MAC):
-    MDIO bus made, no unnecessary scanning
-
-Case 2 (MDIO bus used but MAC's fixed-link):
-    MDIO bus made, no unnecessary scanning
-
-Case 3 (MDIO bus used but MAC's connected to another bus's phy):
-    MDIO bus made, no unnecessary scanning
-
-Case 4 (MDIO bus disabled/unused, connected fixed-link):
-    MDIO bus attempted to be made, fails -ENODEV due to disabled
-    and stmmac returns -ENODEV from probe too
-
-Case 5 (MDIO bus disabled/unused, connected to another bus's phy):
-    MDIO bus attempted to be made, fails -ENODEV due to disabled
-    and stmmac returns -ENODEV from probe too
-
-Case 6 (MDIO bus not described, connected fixed-link):
-    MDIO bus not created
-
-Case 7 (MDIO bus not described, connected to a different bus's phy):
-    MDIO bus created, but the whole bus is scanned
-
-Case 8 (MDIO bus not described, but phy on MDIO bus is connected to MAC,
-        legacy description[2] in my commit message):
-    MDIO bus created, the whole bus is scanned and the undescribed but
-    necessary phy is found
-
-
-The things I note of interest are cases 4, 5, 7, 8. Cases 4/5 are a bug in
-stmmac IMO, which breaks the devicetree description you mentioned as
-ideal in my case. Case 7 is the one I'm currently working with, and the
-devicetree can be updated to match case 5, but right now case 7 makes a
-bus and scans it needlessly which isn't great. It _sounds_ like to me
-Serge knows of stmmac variants that also *do not* have an MDIO controller,
-so they'd fall in this case too and really shouldn't create a bus. Case 8
-is the legacy one that I wish didn't exist, but it does, and for that
-reason we should continue to make a bus and scan the whole thing if we can't
-figure out what the MAC's connected to.
-
-So in my opinion there's 3 changes I want to make based on all the
-use cases I could think of:
-
-    1. This patch, which improves the stmmac logic and stops making
-       a bus for case 7
-    2. A new patch to gracefully handle cases 4/5, where currently if the
-       MDIO bus is disabled in the devicetree, as it should be,
-       stmmac handles -ENODEV from of_mdiobus_register() as a failure
-       instead of gracefully continuing knowing this is fine and dandy.
-    3. Clean up the sa8775p dts to have the MDIO bus described in the
-       SoC dtsi and left disabled instead of undescribed (a more
-       accurate hardware description).
-
-Please let me know if you see any holes in my logic, hopefully the
-wall of text is useful in explaining how I got here.
-
-Thanks,
-Andrew
-
+Yeah, common design, common problem.
