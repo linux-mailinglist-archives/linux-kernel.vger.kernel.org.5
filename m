@@ -2,131 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17803809CF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 963B7809CF5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbjLHHO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 02:14:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
+        id S233237AbjLHHP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 02:15:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233184AbjLHHOy (ORCPT
+        with ESMTP id S233184AbjLHHPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 02:14:54 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87AC10EB;
-        Thu,  7 Dec 2023 23:14:59 -0800 (PST)
-Received: from kwepemd100008.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Smj7D0TKPzYspD;
-        Fri,  8 Dec 2023 15:14:16 +0800 (CST)
-Received: from [10.67.121.2] (10.67.121.2) by kwepemd100008.china.huawei.com
- (7.221.188.193) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Fri, 8 Dec
- 2023 15:14:56 +0800
-Message-ID: <6572C270.6050101@hisilicon.com>
-Date:   Fri, 8 Dec 2023 15:14:56 +0800
-From:   Wei Xu <xuwei5@hisilicon.com>
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+        Fri, 8 Dec 2023 02:15:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580601722
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:15:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D39BC433C7;
+        Fri,  8 Dec 2023 07:15:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1702019728;
+        bh=9ZAzaZtUvxqbszf1Z6sWmedcfDOzdZmgyPEELKHvjB0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hakJP1Ku7/n8439qrhK/54mHRBpD+SQVDnLKCytBOxkcdbTeBqDPbuuzOm5Qwa1zk
+         EBiEi+UZPdQIVB9WBU/WHaNuVFGSs8PGqFidEueRHie5yborAmiUBZ5Yg4k00NV3S/
+         TmKz826f1td/op7dx8HejLCKNNtlfpcg+dxxRgnU=
+Date:   Fri, 8 Dec 2023 08:15:26 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com, rafael@kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
+Subject: Re: [PATCH] drivers: base: Introduce a new kernel parameter
+ driver_sync_probe=
+Message-ID: <2023120814-failing-trio-7c8b@gregkh>
+References: <20231206115355.4319-1-laoar.shao@gmail.com>
+ <2023120644-pry-worried-22a2@gregkh>
+ <CALOAHbDtFKDh7C0NYeZ0xBV1z3AsNBDdnL7qRtWOrGbaU7W9VQ@mail.gmail.com>
+ <2023120724-overstep-gesture-75be@gregkh>
+ <CALOAHbAbU8At_iPVCiz9M8=jiGQ_BYFupCbVwsm=d9te85pAyg@mail.gmail.com>
+ <2023120704-conducive-junkman-2e3f@gregkh>
+ <CALOAHbBUu-oa_wb-PCBdn+vs1k1ZddGhVJg2UuVx912wGWoLkQ@mail.gmail.com>
+ <2023120856-empathy-debtless-06b2@gregkh>
+ <CALOAHbBKSrAKvYMTthkUfe7cL_yQ7cm6xtqbtS99_R5asXTKJw@mail.gmail.com>
 MIME-Version: 1.0
-To:     Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <xuwei5@hisilicon.com>
-Subject: Re: [PATCH] dt-bindings: hisilicon: Merge hi3620-clock into hisilicon,sysctrl
- binding
-References: <20231122235059.2966532-1-robh@kernel.org>
-In-Reply-To: <20231122235059.2966532-1-robh@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.121.2]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd100008.china.huawei.com (7.221.188.193)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALOAHbBKSrAKvYMTthkUfe7cL_yQ7cm6xtqbtS99_R5asXTKJw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 2023/11/23 7:50, Rob Herring wrote:
-> The hi3620-clock binding is simple and always a child of the
-> "hisilicon,sysctrl" node, so just add it into the hisilicon,sysctrl
-> binding and drop the old txt binding.
+On Fri, Dec 08, 2023 at 02:49:39PM +0800, Yafang Shao wrote:
+> On Fri, Dec 8, 2023 at 1:36 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Dec 07, 2023 at 08:36:56PM +0800, Yafang Shao wrote:
+> > > On Thu, Dec 7, 2023 at 8:12 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Thu, Dec 07, 2023 at 07:59:03PM +0800, Yafang Shao wrote:
+> > > > > On Thu, Dec 7, 2023 at 6:19 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > > >
+> > > > > > On Wed, Dec 06, 2023 at 10:08:40PM +0800, Yafang Shao wrote:
+> > > > > > > On Wed, Dec 6, 2023 at 9:31 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > > > > >
+> > > > > > > > On Wed, Dec 06, 2023 at 11:53:55AM +0000, Yafang Shao wrote:
+> > > > > > > > > After upgrading our kernel from version 4.19 to 6.1, certain regressions
+> > > > > > > > > occurred due to the driver's asynchronous probe behavior. Specifically,
+> > > > > > > > > the SCSI driver transitioned to an asynchronous probe by default, resulting
+> > > > > > > > > in a non-fixed root disk behavior. In the prior 4.19 kernel, the root disk
+> > > > > > > > > was consistently identified as /dev/sda. However, with kernel 6.1, the root
+> > > > > > > > > disk can be any of /dev/sdX, leading to issues for applications reliant on
+> > > > > > > > > /dev/sda, notably impacting monitoring systems monitoring the root disk.
+> > > > > > > >
+> > > > > > > > Device names are never guaranteed to be stable, ALWAYS use a persistant
+> > > > > > > > names like a filesystem label or other ways.  Look at /dev/disk/ for the
+> > > > > > > > needed ways to do this properly.
+> > > > > > >
+> > > > > > > The root disk is typically identified as /dev/sda or /dev/vda, right?
+> > > > > >
+> > > > > > Depends on your system.  It can also be identified, in the proper way,
+> > > > > > as /dev/disk/by-uuid/eef0abc1-4039-4c3f-a123-81fc99999993 if you want
+> > > > > > (note, fake uuid, use your own disk uuid please.)
+> > > > > >
+> > > > > > Why not do that?  That's the most stable and recommended way of doing
+> > > > > > things.
+> > > > >
+> > > > > Adapting to this change isn't straightforward, especially for a large
+> > > > > fleet of servers. Our monitoring system needs to accommodate and
+> > > > > adjust accordingly.
+> > > >
+> > > > Agreed, that can be rough.  But as this is an issue that was caused by a
+> > > > scsi core change, perhaps the scsi developers can describe why it's ok.
+> > > >
+> > > > But really, device naming has ALWAYS been known to not be
+> > > > deterministic, which is why Pat and I did all the driver core work 20+
+> > > > years ago so that you have the ability to properly name your devices in
+> > > > a way that is deterministic.  Using the kernel name like sda is NOT
+> > > > using that functionality, so while it has been nice to see that it has
+> > > > been stable for you for a while, you are playing with fire here and will
+> > > > get burned one day when the firmware in your devices decide to change
+> > > > response times.
+> > >
+> > > I agree that using UUID is a better approach. However, it's worth
+> > > noting that the widely used IO monitoring tool 'iostat' faces
+> > > challenges when working with UUIDs. This indicates that there's a
+> > > significant amount of work ahead of us in this aspect.
+> >
+> > That indicates that iostat needs to be fixed as this has been an option
+> > that people rely on for 20+ years now.  Or use a better tool :)
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+> The issue arises when a disk contains multiple partitions, such as
+> /dev/sda1 and /dev/sda2. In this case, using 'iostat -j UUID' can only
+> display 'sda' since only its partitions possess UUIDs. Uncertain how
+> to address it yet.
 
-Applied to the HiSilicon arm64 dt tree.
-Thanks!
+Then use one of the other many other unique ids that are in /dev/disk/
+today.  You have loads of things to choose from:
+	$ ls /dev/disk/
+	by-diskseq  by-id  by-label  by-partlabel  by-partuuid  by-path  by-uuid
 
-Best Regards,
-Wei
+You have a plethera of choices here, use whatever works best for your
+systems.  This is a userspace decision to make, not a kernel one, as
+this is a policy choice of yours.
 
->  .../arm/hisilicon/controller/sysctrl.yaml     | 17 ++++++++++++++++
->  .../bindings/clock/hi3620-clock.txt           | 20 -------------------
->  2 files changed, 17 insertions(+), 20 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/clock/hi3620-clock.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml b/Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml
-> index 5a53d433b6f0..7a221e1c09df 100644
-> --- a/Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml
-> @@ -82,6 +82,23 @@ properties:
->  
->    ranges: true
->  
-> +patternProperties:
-> +  '^clock@':
-> +    type: object
-> +    additionalProperties: false
-> +
-> +    properties:
-> +      compatible:
-> +        enum:
-> +          - hisilicon,hi3620-clock
-> +          - hisilicon,hi3620-mmc-clock
-> +
-> +      reg:
-> +        maxItems: 1
-> +
-> +      '#clock-cells':
-> +        const: 1
-> +
->  required:
->    - compatible
->    - reg
-> diff --git a/Documentation/devicetree/bindings/clock/hi3620-clock.txt b/Documentation/devicetree/bindings/clock/hi3620-clock.txt
-> deleted file mode 100644
-> index dad6269f52c5..000000000000
-> --- a/Documentation/devicetree/bindings/clock/hi3620-clock.txt
-> +++ /dev/null
-> @@ -1,20 +0,0 @@
-> -* Hisilicon Hi3620 Clock Controller
-> -
-> -The Hi3620 clock controller generates and supplies clock to various
-> -controllers within the Hi3620 SoC.
-> -
-> -Required Properties:
-> -
-> -- compatible: should be one of the following.
-> -  - "hisilicon,hi3620-clock" - controller compatible with Hi3620 SoC.
-> -  - "hisilicon,hi3620-mmc-clock" - controller specific for Hi3620 mmc.
-> -
-> -- reg: physical base address of the controller and length of memory mapped
-> -  region.
-> -
-> -- #clock-cells: should be 1.
-> -
-> -Each clock is assigned an identifier and client nodes use this identifier
-> -to specify the clock which they consume.
-> -
-> -All these identifier could be found in <dt-bindings/clock/hi3620-clock.h>.
-> 
+good luck!
+
+greg k-h
