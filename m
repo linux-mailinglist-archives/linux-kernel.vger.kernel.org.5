@@ -2,69 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A355B809F5F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9366D809F64
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573433AbjLHJaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 04:30:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
+        id S235839AbjLHJbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 04:31:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235826AbjLHJad (ORCPT
+        with ESMTP id S232968AbjLHJbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 04:30:33 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F351716;
-        Fri,  8 Dec 2023 01:30:39 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Smm472DZRz1Q6XR;
-        Fri,  8 Dec 2023 17:26:47 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 8 Dec
- 2023 17:30:36 +0800
-Subject: Re: [net-next v1 09/16] page_pool: device memory support
-To:     Mina Almasry <almasrymina@google.com>,
-        Shailend Chand <shailend@google.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-arch@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-10-almasrymina@google.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <32211cbf-3a4e-8a86-6214-4304ddb18a98@huawei.com>
-Date:   Fri, 8 Dec 2023 17:30:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Fri, 8 Dec 2023 04:31:02 -0500
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7F6D53
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 01:31:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1702027865; x=1702287065;
+        bh=tIeS2/Jye7HIPtEZsp8KCwBQkwu9VpdtO7V1kQXigqc=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=ScdRc/0Fvy3evj5RN7U6t2wLpBinuZSAnS6GluqehDBmCcrk/iL1MV2YChWPZBoc5
+         3ayvN+vz/q66pPKbS8IQCkFdy6MDouWErb2wG+v4vmiDtTG2jn844nkLltxTu4MPhM
+         1oBsK8Ww+d5wIOS/6gMQWx51Hlym0ktkQjnymZpIJKf3JASfcFsB9lyk94BvTqQhHI
+         oFi7YzjUTZWZE6bjJvt1mDPhh5nvjOw8w1zULBBhkmwp1UUwQXIY0uoxKoZAQMel1V
+         xmhcQ/cqZx5LtJyCgq3+r1ERBVXKUfr+tCP9EuQyGhUyT4pErhyZg/GkSPu/4wGQqT
+         uhvDTwiMAdQ+A==
+Date:   Fri, 08 Dec 2023 09:30:41 +0000
+To:     Alice Ryhl <aliceryhl@google.com>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] rust: sync: add `CondVar::notify_sync`
+Message-ID: <2TyvgVxGiHf9tLVgLAuw9h9gjv5iM0f_5KE0bM4PGIWrnNXRASVZ-UwxnI4v1XQEIp6mkbTTg9Sr7jEigChMd5Sxhpnd2NV8IDJ9sDXgIPo=@proton.me>
+In-Reply-To: <CAH5fLgi37LER-G-ozc13TWGGxraFmP3QVYqX7oBoahyKwgfznQ@mail.gmail.com>
+References: <20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com> <20231206-rb-new-condvar-methods-v1-1-33a4cab7fdaa@google.com> <n18Cdl9DQXfuGtD6d664Mn0rrPfxebZs31-3vQfu5N0vP0ZgfHNwBZYC4qYgU1GD-4Ue4bUhgNqs40-u8t0baAzlQ0cMMiSzTgjQnhcG50o=@proton.me> <CAH5fLgi37LER-G-ozc13TWGGxraFmP3QVYqX7oBoahyKwgfznQ@mail.gmail.com>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-In-Reply-To: <20231208005250.2910004-10-almasrymina@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,111 +59,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/8 8:52, Mina Almasry wrote:
-> Overload the LSB of struct page* to indicate that it's a page_pool_iov.
-> 
-> Refactor mm calls on struct page* into helpers, and add page_pool_iov
-> handling on those helpers. Modify callers of these mm APIs with calls to
-> these helpers instead.
-> 
-> In areas where struct page* is dereferenced, add a check for special
-> handling of page_pool_iov.
-> 
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> 
-> ---
-> 
-> v1:
-> - Disable fragmentation support for iov properly.
-> - fix napi_pp_put_page() path (Yunsheng).
-> 
-> ---
->  include/net/page_pool/helpers.h | 78 ++++++++++++++++++++++++++++++++-
->  net/core/page_pool.c            | 67 ++++++++++++++++++++--------
->  net/core/skbuff.c               | 28 +++++++-----
->  3 files changed, 141 insertions(+), 32 deletions(-)
-> 
-> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-> index 00197f14aa87..2d4e0a2c5620 100644
-> --- a/include/net/page_pool/helpers.h
-> +++ b/include/net/page_pool/helpers.h
-> @@ -154,6 +154,64 @@ static inline struct page_pool_iov *page_to_page_pool_iov(struct page *page)
->  	return NULL;
->  }
->  
-> +static inline int page_pool_page_ref_count(struct page *page)
-> +{
-> +	if (page_is_page_pool_iov(page))
+On 12/8/23 08:29, Alice Ryhl wrote:
+> On Thu, Dec 7, 2023 at 9:22=E2=80=AFPM Benno Lossin <benno.lossin@proton.=
+me> wrote:
+>>
+>> On 12/6/23 11:09, Alice Ryhl wrote:
+>>> Wake up another thread synchronously.
+>>>
+>>> This method behaves like `notify_one`, except that it hints to the
+>>> scheduler that the current thread is about to go to sleep, so it should
+>>> schedule the target thread on the same CPU.
+>>>
+>>> This is used by Rust Binder as a performance optimization. When sending
+>>> a transaction to a different process, we usually know which thread will
+>>> handle it, so we can schedule that thread for execution next on this
+>>> CPU for better cache locality.
+>>>
+>>> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+>>> ---
+>>>  rust/kernel/sync/condvar.rs | 6 ++++++
+>>>  1 file changed, 6 insertions(+)
+>>>
+>>> diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
+>>> index b679b6f6dbeb..9861c6749ad0 100644
+>>> --- a/rust/kernel/sync/condvar.rs
+>>> +++ b/rust/kernel/sync/condvar.rs
+>>> @@ -155,6 +155,12 @@ fn notify(&self, count: i32, flags: u32) {
+>>>          };
+>>>      }
+>>>
+>>> +    /// Calls the kernel function to notify one thread synchronously.
+>>> +    pub fn notify_sync(&self) {
+>>> +        // SAFETY: `wait_list` points to valid memory.
+>>> +        unsafe { bindings::__wake_up_sync(self.wait_list.get(), bindin=
+gs::TASK_NORMAL) };
+>>
+>> I took a look at the C function (i.e. __wake_up_common) and there I
+>> found this:
+>>
+>>     lockdep_assert_held(&wq_head->lock);
+>>
+>> So I think this function requires that the lock is held, how are you
+>> ensuring this?
+>=20
+> No, we don't need to hold a lock. The call stack is:
+>=20
+> 1. __wake_up_sync
+> 2. __wake_up_sync_key
+> 3. __wake_up_common_lock
+> 4. __wake_up_common
+>=20
+> And __wake_up_common_lock will lock wq_head->lock before calling
+> __wake_up_common.
 
-As mentioned before, it seems we need to have the above checking every
-time we need to do some per-page handling in page_pool core, is there
-a plan in your mind how to remove those kind of checking in the future?
+Seems like I just looked at the wrong function.
 
-Even though a static_branch check is added in page_is_page_pool_iov(), it
-does not make much sense that a core has tow different 'struct' for its
-most basic data.
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 
-IMHO, the ppiov for dmabuf is forced fitting into page_pool without much
-design consideration at this point.
-
-> +		return page_pool_iov_refcount(page_to_page_pool_iov(page));
-> +
-> +	return page_ref_count(page);
-> +}
-> +
-
-...
-
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index b157efea5dea..07f802f1adf1 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -896,19 +896,23 @@ bool napi_pp_put_page(struct page *page, bool napi_safe)
->  	bool allow_direct = false;
->  	struct page_pool *pp;
->  
-> -	page = compound_head(page);
-> -
-> -	/* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
-> -	 * in order to preserve any existing bits, such as bit 0 for the
-> -	 * head page of compound page and bit 1 for pfmemalloc page, so
-> -	 * mask those bits for freeing side when doing below checking,
-> -	 * and page_is_pfmemalloc() is checked in __page_pool_put_page()
-> -	 * to avoid recycling the pfmemalloc page.
-> -	 */
-> -	if (unlikely((page->pp_magic & ~0x3UL) != PP_SIGNATURE))
-> -		return false;
-> +	if (!page_is_page_pool_iov(page)) {
-
-For now, the above may work for the the rx part as it seems that you are
-only enabling rx for dmabuf for now.
-
-What is the plan to enable tx for dmabuf? If it is also intergrated into
-page_pool? There was a attempt to enable page_pool for tx, Eric seemed to
-have some comment about this:
-https://lkml.kernel.org/netdev/2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com/T/#mb6ab62dc22f38ec621d516259c56dd66353e24a2
-
-If tx is not intergrated into page_pool, do we need to create a new layer for
-the tx dmabuf?
-
-> +		page = compound_head(page);
-> +
-> +		/* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
-> +		 * in order to preserve any existing bits, such as bit 0 for the
-> +		 * head page of compound page and bit 1 for pfmemalloc page, so
-> +		 * mask those bits for freeing side when doing below checking,
-> +		 * and page_is_pfmemalloc() is checked in __page_pool_put_page()
-> +		 * to avoid recycling the pfmemalloc page.
-> +		 */
-> +		if (unlikely((page->pp_magic & ~0x3UL) != PP_SIGNATURE))
-> +			return false;
->  
-> -	pp = page->pp;
-> +		pp = page->pp;
-> +	} else {
-> +		pp = page_to_page_pool_iov(page)->pp;
-> +	}
->  
->  	/* Allow direct recycle if we have reasons to believe that we are
->  	 * in the same context as the consumer would run, so there's
-> 
+--=20
+Cheers,
+Benno
