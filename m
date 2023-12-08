@@ -2,237 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5303580A074
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4CC80A06A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233330AbjLHKCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 05:02:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56322 "EHLO
+        id S233338AbjLHKE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 05:04:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbjLHKCe (ORCPT
+        with ESMTP id S230506AbjLHKE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 05:02:34 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0F7E5D5B;
-        Fri,  8 Dec 2023 02:02:40 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-        id E473F20B74C0; Fri,  8 Dec 2023 02:02:38 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E473F20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1702029758;
-        bh=bC0rZPUj3vdJkI+4wJKSoDBmkdXIOKDY9tHt0bJ5YcM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=b76OthSm/w/9rCAyVWtY2zPWMN2U/BUue3Vv1sIOluxb3aK0za+esDZ+NuwOYvc1E
-         5deAKd+RE7PEQ5EH09pP4IyHiT+UhGmsiqD1BJYjjve7c2OdUTj0bsvlosi88i5MV8
-         55z8pbrbuCRq7XxNRNiNFoGgJpIQPwcdbimD/VWI=
-From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        yury.norov@gmail.com, leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     schakrabarti@microsoft.com, paulros@microsoft.com,
-        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Subject: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
-Date:   Fri,  8 Dec 2023 02:02:34 -0800
-Message-Id: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 8 Dec 2023 05:04:27 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E38171E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:04:33 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 511202212B;
+        Fri,  8 Dec 2023 10:04:32 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 11D8012FF7;
+        Fri,  8 Dec 2023 10:04:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id +t5LATDqcmVNHgAAD6G6ig
+        (envelope-from <mhocko@suse.com>); Fri, 08 Dec 2023 10:04:32 +0000
+Date:   Fri, 8 Dec 2023 11:04:27 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     Philipp Rudo <prudo@redhat.com>,
+        Donald Dutile <ddutile@redhat.com>,
+        Jiri Bohac <jbohac@suse.cz>, Pingfan Liu <piliu@redhat.com>,
+        Tao Liu <ltao@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        David Hildenbrand <dhildenb@redhat.com>
+Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
+Message-ID: <ZXLqK_Shia2CFqnH@tiehlicka>
+References: <20231201165113.43211a48@rotkaeppchen>
+ <ZWoQ1k2AikSiMjys@tiehlicka>
+ <20231206120805.4fdcb8ab@rotkaeppchen>
+ <ZXB7_rbC0GAkIp7p@tiehlicka>
+ <ZXCRF-bvm8ijXxr4@tiehlicka>
+ <ZXFIsZ+0GmUZMFk3@MiWiFi-R3L-srv>
+ <ZXGIeAgCcatUDa2h@tiehlicka>
+ <20231207121314.50b8e4c4@rotkaeppchen>
+ <ZXGyANwELvFKpysH@tiehlicka>
+ <ZXJ3m4fPZXJnj29z@MiWiFi-R3L-srv>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXJ3m4fPZXJnj29z@MiWiFi-R3L-srv>
+X-Spamd-Result: default: False [15.00 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_SPF_FAIL(1.00)[-all];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         MID_RHS_NOT_FQDN(0.50)[];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+        spf=fail (smtp-out1.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com
+X-Rspamd-Server: rspamd1
+X-Rspamd-Queue-Id: 511202212B
+X-Spam-Score: 15.00
+X-Spam: Yes
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Existing MANA design assigns IRQ to every CPU, including sibling
-hyper-threads. This may cause multiple IRQs to be active simultaneously
-in the same core and may reduce the network performance with RSS.
+On Fri 08-12-23 09:55:39, Baoquan He wrote:
+> On 12/07/23 at 12:52pm, Michal Hocko wrote:
+> > On Thu 07-12-23 12:13:14, Philipp Rudo wrote:
+[...]
+> > > Thing is that users don't only want to reduce the memory usage but also
+> > > the downtime of kdump. In the end I'm afraid that "simply waiting" will
+> > > make things unnecessarily more complex without really solving any issue.
+> > 
+> > I am not sure I see the added complexity. Something as simple as
+> > __crash_kexec:
+> > 	if (crashk_cma_cnt) 
+> > 		mdelay(TIMEOUT)
+> > 
+> > should do the trick.
+> 
+> I would say please don't do this. kdump jumping is a very quick
+> behavirou after corruption, usually in several seconds. I can't see any
+> meaningful stuff with the delay of one minute or several minutes.
 
-Improve the performance by assigning IRQ to non sibling CPUs in local
-NUMA node. The performance improvement we are getting using ntttcp with
-following patch is around 15 percent with existing design and approximately
-11 percent, when trying to assign one IRQ in each core across NUMA nodes,
-if enough cores are present.
+Well, I've been told that DMA should complete within seconds after
+controller is programmed (if that was much more then short term pinning
+is not really appropriate because that would block memory movability for
+way too long and therefore result in failures). This is something we can
+tune for.
 
-Suggested-by: Yury Norov <yury.norov@gmali.com>
-Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
----
-V4 -> V5:
-* Fixed use of for_each_numa_hop_mask in irq_setup, by using
-visited_cpus to mask previous node mask.
-* Changed the way IRQ0 is gettng assigned, to assign it a
-separate CPU if possible rather than assigning it to a already
-assigned CPU.
-* Added Suggested-by tag.
+But if that sounds like a completely wrong approach then I think an
+alternative would be to live with potential inflight DMAs just avoid
+using that memory by the kdump kernel before the DMA controllers (PCI
+bus) is reinitialized by the kdump kernel. That should happen early in
+the boot process IIRC and the CMA backed memory could be added after
+that moment. We already do have means so defer memory initialization
+so an extension shouldn't be hard to do. It will be a slightly more involved
+patch touching core MM which we have tried to avoid so far. Does that
+sound like something acceptable?
 
-V3 -> V4:
-* Used for_each_numa_hop_mask() macro and simplified the code.
-Thanks to Yury Norov for the suggestion.
-* Added code to assign hwc irq separately in mana_gd_setup_irqs.
+[...]
 
-V2 -> V3:
-* Created a helper function to get the next NUMA with CPU.
-* Added some error checks for unsuccessful memory allocation.
-* Fixed some comments on the code.
+> > The thing we should keep in mind is that the memory sitting aside is not
+> > used in majority of time. Crashes (luckily/hopefully) do not happen very
+> > often. And I can really see why people are reluctant to waste it. Every
+> > MB of memory has an operational price tag on it. And let's just be
+> > really honest, a simple reboot without a crash dump is very likely
+> > a cheaper option than wasting a productive memory as long as the issue
+> > happens very seldom.
+> 
+> All the time, I have never heard people don't want to "waste" the
+> memory. E.g, for more than 90% of system on x86, 256M is enough. The
+> rare exceptions will be noted once recognized and documented in product
+> release.
+> 
+> And ,cma is not silver bullet, see this oom issue caused by i40e and its
+> fix , your crashkernel=1G,cma won't help either.
+> 
+> [v1,0/3] Reducing memory usage of i40e for kdump
+> https://patchwork.ozlabs.org/project/intel-wired-lan/cover/20210304025543.334912-1-coxu@redhat.com/
+> 
+> ======Abstrcted from above cover letter==========================
+> After reducing the allocation of tx/rx/arg/asq ring buffers to the
+> minimum, the memory consumption is significantly reduced,
+>     - x86_64: 85.1MB to 1.2MB 
+>     - POWER9: 15368.5MB to 20.8MB
+> ==================================================================
 
-V1 -> V2:
-* Simplified the code by removing filter_mask_list and using avail_cpus.
-* Addressed infinite loop issue when there are numa nodes with no CPUs.
-* Addressed uses of local numa node instead of 0 to start.
-* Removed uses of BUG_ON.
-* Placed cpus_read_lock in parent function to avoid num_online_cpus
-  to get changed before function finishes the affinity assignment.
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 92 +++++++++++++++++--
- 1 file changed, 83 insertions(+), 9 deletions(-)
+Nice to see memory consumption reduction fixes. But, honestly this
+should happen regardless of kdump. CMA backed kdump is not to
+workaround excessive kernel memory consumers. It seems I am failing to
+get the message through :( but I do not know how else to express that the
+pressure on reducing the wasted memory is real. It is not important
+whether 256MB is enough for everybody. Even that would grow to non
+trivial cost in data centers with many machines.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 6367de0c2c2e..18e8908c5d29 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -1243,15 +1243,56 @@ void mana_gd_free_res_map(struct gdma_resource *r)
- 	r->size = 0;
- }
- 
-+static int irq_setup(int *irqs, int nvec, int start_numa_node)
-+{
-+	int w, cnt, cpu, err = 0, i = 0;
-+	int next_node = start_numa_node;
-+	const struct cpumask *next, *prev = cpu_none_mask;
-+	cpumask_var_t curr, cpus;
-+
-+	if (!zalloc_cpumask_var(&curr, GFP_KERNEL)) {
-+		err = -ENOMEM;
-+		return err;
-+	}
-+	if (!zalloc_cpumask_var(&cpus, GFP_KERNEL)) {
-+		err = -ENOMEM;
-+		return err;
-+	}
-+
-+	rcu_read_lock();
-+	for_each_numa_hop_mask(next, next_node) {
-+		cpumask_andnot(curr, next, prev);
-+		for (w = cpumask_weight(curr), cnt = 0; cnt < w; ) {
-+			cpumask_copy(cpus, curr);
-+			for_each_cpu(cpu, cpus) {
-+				irq_set_affinity_and_hint(irqs[i], topology_sibling_cpumask(cpu));
-+				if (++i == nvec)
-+					goto done;
-+				cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
-+				++cnt;
-+			}
-+		}
-+		prev = next;
-+	}
-+done:
-+	rcu_read_unlock();
-+	free_cpumask_var(curr);
-+	free_cpumask_var(cpus);
-+	return err;
-+}
-+
- static int mana_gd_setup_irqs(struct pci_dev *pdev)
- {
--	unsigned int max_queues_per_port = num_online_cpus();
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
-+	unsigned int max_queues_per_port;
- 	struct gdma_irq_context *gic;
- 	unsigned int max_irqs, cpu;
--	int nvec, irq;
-+	int start_irq_index = 1;
-+	int nvec, *irqs, irq;
- 	int err, i = 0, j;
- 
-+	cpus_read_lock();
-+	max_queues_per_port = num_online_cpus();
- 	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
- 		max_queues_per_port = MANA_MAX_NUM_QUEUES;
- 
-@@ -1261,6 +1302,14 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
- 	if (nvec < 0)
- 		return nvec;
-+	if (nvec <= num_online_cpus())
-+		start_irq_index = 0;
-+
-+	irqs = kmalloc_array((nvec - start_irq_index), sizeof(int), GFP_KERNEL);
-+	if (!irqs) {
-+		err = -ENOMEM;
-+		goto free_irq_vector;
-+	}
- 
- 	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
- 				   GFP_KERNEL);
-@@ -1287,21 +1336,44 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 			goto free_irq;
- 		}
- 
--		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
--		if (err)
--			goto free_irq;
--
--		cpu = cpumask_local_spread(i, gc->numa_node);
--		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
-+		if (!i) {
-+			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-+			if (err)
-+				goto free_irq;
-+
-+			/* If number of IRQ is one extra than number of online CPUs,
-+			 * then we need to assign IRQ0 (hwc irq) and IRQ1 to
-+			 * same CPU.
-+			 * Else we will use different CPUs for IRQ0 and IRQ1.
-+			 * Also we are using cpumask_local_spread instead of
-+			 * cpumask_first for the node, because the node can be
-+			 * mem only.
-+			 */
-+			if (start_irq_index) {
-+				cpu = cpumask_local_spread(i, gc->numa_node);
-+				irq_set_affinity_and_hint(irq, cpumask_of(cpu));
-+			} else {
-+				irqs[start_irq_index] = irq;
-+			}
-+		} else {
-+			irqs[i - start_irq_index] = irq;
-+			err = request_irq(irqs[i - start_irq_index], mana_gd_intr, 0,
-+					  gic->name, gic);
-+			if (err)
-+				goto free_irq;
-+		}
- 	}
- 
-+	err = irq_setup(irqs, (nvec - start_irq_index), gc->numa_node);
-+	if (err)
-+		goto free_irq;
- 	err = mana_gd_alloc_res_map(nvec, &gc->msix_resource);
- 	if (err)
- 		goto free_irq;
- 
- 	gc->max_num_msix = nvec;
- 	gc->num_msix_usable = nvec;
--
-+	cpus_read_unlock();
- 	return 0;
- 
- free_irq:
-@@ -1314,8 +1386,10 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 	}
- 
- 	kfree(gc->irq_contexts);
-+	kfree(irqs);
- 	gc->irq_contexts = NULL;
- free_irq_vector:
-+	cpus_read_unlock();
- 	pci_free_irq_vectors(pdev);
- 	return err;
- }
+> And say more about it. This is not the first time of attempt to make use
+> of ,cma area for crashkernel=. In redhat, at least 5 people have tried
+> to add this, finally we gave up after long discussion and investigation.
+> This year, one kernel developer in our team raised this again with a
+> very long mail after his own analysis, we told him the discussion and
+> trying we have done in the past.
+
+This is really hard to comment on without any references to those
+discussions. From this particular email thread I have a perception that
+you guys focus much more on correctness provability than feasibility. If
+we applied the same approach universally then many other features
+couldn't have been merged. E.g. kexec for reasons you have mentioned in
+the email thread.
+
+Anyway, thanks for pointing to regular DMA via gup case which we were
+obviously not aware of. I personally have considered this to be a
+marginal problem comparing to RDMA which is unpredictable wrt timing.
+But we believe that this could be worked around. Now it would be really
+valuable if we knew somebody has _tried_ that and it turned out not
+working because of XYZ reasons.  That would be a solid base to
+re-evaluate and think of different approaches.
+
+Look, this will be your call as maintainers in the end. If you are
+decided then fair enough. We might end up trying this feature downstream
+and maybe come back in the future with an experience which we currently
+do not have. But it seems we are not alone seeing the existing state is
+insufficient (http://lkml.kernel.org/r/20230719224821.GC3528218@google.com).
+
+Thanks!
 -- 
-2.34.1
-
+Michal Hocko
+SUSE Labs
