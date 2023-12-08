@@ -2,46 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C36280999D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 03:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8671F8099E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 03:54:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573019AbjLHCx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 21:53:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
+        id S1573041AbjLHCyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 21:54:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573023AbjLHCxR (ORCPT
+        with ESMTP id S235701AbjLHCxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 21:53:17 -0500
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736221723
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 18:53:22 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1702004000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JPiol85rH/HHWH3MtNGJ1vVzJRIHoY4UOz/xBdoQAl8=;
-        b=NxMVWG21gW8upSMu6W1+UqWPM1mu3TNNK7ySpDZBuJgxSJQJnlV784GJ4eVMKSUVd0+zvX
-        1DuMiRjvpJps0PvFoWiZGOezZxshmLOm4vijHRinD2+eRO6AOMJh3fsAb46TUi6BMzI3VH
-        gXkzeo3fmyYW7grIYjzDRsnY4fGCZgc=
-From:   Gang Li <gang.li@linux.dev>
-To:     David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        ligang.bdlg@bytedance.com, Gang Li <gang.li@linux.dev>
-Subject: [RFC PATCH v2 5/5] hugetlb: parallelize 1G hugetlb initialization
-Date:   Fri,  8 Dec 2023 10:52:40 +0800
-Message-Id: <20231208025240.4744-6-gang.li@linux.dev>
-In-Reply-To: <20231208025240.4744-1-gang.li@linux.dev>
-References: <20231208025240.4744-1-gang.li@linux.dev>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+        Thu, 7 Dec 2023 21:53:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327101BF6;
+        Thu,  7 Dec 2023 18:53:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEC98C433CA;
+        Fri,  8 Dec 2023 02:53:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1702004022;
+        bh=zlhh6P8Mx1zQnoxef6SBwM9ERT2cHE9T+a5LrdiDy0s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UGbKTtPpCj+yAL9sSSDPshkLiG2NhR9HOtITnJf+VRNAzRASnBJyw1eofaAl+1W4q
+         UV5piPNJkbpEtRuDCDbRsixcU6XOwq2eMXvAI87BeSmLu+8Z71B/ob405sqoLFfKi4
+         p3ZJZMPBG3oSHfvZtlUjJasgVrifKQNoQBFSiv/U=
+Date:   Thu, 7 Dec 2023 18:53:41 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Linus Torvalds <torvalds@linuxfoundation.org>
+Cc:     linux-mm@kvack.org, mm-commits@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] hotfixes for 6.7-rc5
+Message-Id: <20231207185341.570f240a4f51d820c08c9e0b@linux-foundation.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -52,140 +45,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Optimizing the initialization speed of 1G huge pages through
-parallelization.
 
-1G hugetlbs are allocated from bootmem, a process that is already
-very fast and does not currently require optimization. Therefore,
-we focus on parallelizing only the initialization phase in
-`gather_bootmem_prealloc`.
+Linus, please merge this batch of hotfixes, thanks.
 
-This patch can achieve 40%-50% improvement in performance.
 
-        test          no patch(ms)   patched(ms)   saved
- ------------------- -------------- ------------- --------
-  256c2t(4 node) 1G           2679          1582   40.95%
-  128c1t(2 node) 1G           3160          1618   48.80%
+The following changes since commit 5b7ad877e4d81f8904ce83982b1ba5c6e83deccb:
 
-Signed-off-by: Gang Li <gang.li@linux.dev>
----
- include/linux/hugetlb.h |  2 +-
- mm/hugetlb.c            | 40 +++++++++++++++++++++++++++++++++-------
- 2 files changed, 34 insertions(+), 8 deletions(-)
+  Merge tag 'afs-fixes-20231124' of git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs (2023-11-24 10:40:03 -0800)
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index d3acecc5db4b3..ca94c43a63b84 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -178,7 +178,7 @@ pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
- struct address_space *hugetlb_page_mapping_lock_write(struct page *hpage);
- 
- extern int sysctl_hugetlb_shm_group;
--extern struct list_head huge_boot_pages;
-+extern struct list_head huge_boot_pages[MAX_NUMNODES];
- 
- /* arch callbacks */
- 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 033e359fdb86b..eb33cb15dce61 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -69,7 +69,7 @@ static bool hugetlb_cma_folio(struct folio *folio, unsigned int order)
- #endif
- static unsigned long hugetlb_cma_size __initdata;
- 
--__initdata LIST_HEAD(huge_boot_pages);
-+__initdata struct list_head huge_boot_pages[MAX_NUMNODES];
- 
- /* for command line parsing */
- static struct hstate * __initdata parsed_hstate;
-@@ -3331,7 +3331,7 @@ int __alloc_bootmem_huge_page(struct hstate *h, int nid)
- 		huge_page_size(h) - PAGE_SIZE);
- 	/* Put them into a private list first because mem_map is not up yet */
- 	INIT_LIST_HEAD(&m->list);
--	list_add(&m->list, &huge_boot_pages);
-+	list_add(&m->list, &huge_boot_pages[node]);
- 	m->hstate = h;
- 	return 1;
- }
-@@ -3382,8 +3382,6 @@ static void __init prep_and_add_bootmem_folios(struct hstate *h,
- 	/* Send list for bulk vmemmap optimization processing */
- 	hugetlb_vmemmap_optimize_folios(h, folio_list);
- 
--	/* Add all new pool pages to free lists in one lock cycle */
--	spin_lock_irqsave(&hugetlb_lock, flags);
- 	list_for_each_entry_safe(folio, tmp_f, folio_list, lru) {
- 		if (!folio_test_hugetlb_vmemmap_optimized(folio)) {
- 			/*
-@@ -3396,23 +3394,27 @@ static void __init prep_and_add_bootmem_folios(struct hstate *h,
- 					HUGETLB_VMEMMAP_RESERVE_PAGES,
- 					pages_per_huge_page(h));
- 		}
-+		/* Subdivide locks to achieve better parallel performance */
-+		spin_lock_irqsave(&hugetlb_lock, flags);
- 		__prep_account_new_huge_page(h, folio_nid(folio));
- 		enqueue_hugetlb_folio(h, folio);
-+		spin_unlock_irqrestore(&hugetlb_lock, flags);
- 	}
--	spin_unlock_irqrestore(&hugetlb_lock, flags);
- }
- 
- /*
-  * Put bootmem huge pages into the standard lists after mem_map is up.
-  * Note: This only applies to gigantic (order > MAX_ORDER) pages.
-  */
--static void __init gather_bootmem_prealloc(void)
-+static void __init __gather_bootmem_prealloc(unsigned long start, unsigned long end, void *arg)
-+
- {
-+	int nid = start;
- 	LIST_HEAD(folio_list);
- 	struct huge_bootmem_page *m;
- 	struct hstate *h = NULL, *prev_h = NULL;
- 
--	list_for_each_entry(m, &huge_boot_pages, list) {
-+	list_for_each_entry(m, &huge_boot_pages[nid], list) {
- 		struct page *page = virt_to_page(m);
- 		struct folio *folio = (void *)page;
- 
-@@ -3445,6 +3447,22 @@ static void __init gather_bootmem_prealloc(void)
- 	prep_and_add_bootmem_folios(h, &folio_list);
- }
- 
-+static void __init gather_bootmem_prealloc(void)
-+{
-+	struct padata_mt_job job = {
-+		.thread_fn	= __gather_bootmem_prealloc,
-+		.fn_arg		= NULL,
-+		.start		= 0,
-+		.size		= num_node_state(N_MEMORY),
-+		.align		= 1,
-+		.min_chunk	= 1,
-+		.max_threads	= num_node_state(N_MEMORY),
-+		.numa_aware	= true,
-+	};
-+
-+	padata_do_multithreaded(&job);
-+}
-+
- static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
- {
- 	unsigned long i;
-@@ -3597,6 +3615,14 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- 		return;
- 	}
- 
-+	/* hugetlb_hstate_alloc_pages will be called many times, init huge_boot_pages once*/
-+	if (huge_boot_pages[0].next == NULL) {
-+		int i = 0;
-+
-+		for (i = 0; i < MAX_NUMNODES; i++)
-+			INIT_LIST_HEAD(&huge_boot_pages[i]);
-+	}
-+
- 	/* do node specific alloc */
- 	if (hugetlb_hstate_alloc_pages_node_specific(h))
- 		return;
--- 
-2.30.2
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2023-12-07-18-47
+
+for you to fetch changes up to b2f557a21bc8fffdcd65794eda8a854e024999f3:
+
+  mm/madvise: add cond_resched() in madvise_cold_or_pageout_pte_range() (2023-12-06 16:12:50 -0800)
+
+----------------------------------------------------------------
+31 hotfixes.  10 of these address pre-6.6 issues and are marked cc:stable.
+The remainder address post-6.6 issues or aren't considered serious enough
+to justify backporting.
+
+----------------------------------------------------------------
+Andrew Morton (2):
+      MAINTAINERS: add Andrew Morton for lib/*
+      mm/memory.c:zap_pte_range() print bad swap entry
+
+Andy Shevchenko (1):
+      units: add missing header
+
+Bagas Sanjaya (1):
+      MAINTAINERS: drop Antti Palosaari
+
+Baoquan He (2):
+      drivers/base/cpu: crash data showing should depends on KEXEC_CORE
+      kernel/Kconfig.kexec: drop select of KEXEC for CRASH_DUMP
+
+Chester Lin (1):
+      .mailmap: add a new address mapping for Chester Lin
+
+Florian Fainelli (1):
+      scripts/gdb: fix lx-device-list-bus and lx-device-list-class
+
+Heiko Carstens (1):
+      checkstack: fix printed address
+
+Hugh Dickins (1):
+      mm: fix oops when filemap_map_pmd() without prealloc_pte
+
+Jiexun Wang (1):
+      mm/madvise: add cond_resched() in madvise_cold_or_pageout_pte_range()
+
+Kuan-Ying Lee (1):
+      scripts/gdb/tasks: fix lx-ps command error
+
+Liu Shixin (2):
+      Revert "mm/kmemleak: move the initialisation of object to __link_object"
+      mm/kmemleak: move set_track_prepare() outside raw_spinlocks
+
+Lizhi Xu (1):
+      squashfs: squashfs_read_data need to check if the length is 0
+
+Mike Kravetz (1):
+      hugetlb: fix null-ptr-deref in hugetlb_vma_lock_write
+
+Ming Lei (1):
+      lib/group_cpus.c: avoid acquiring cpu hotplug lock in group_cpus_evenly
+
+Nico Pache (1):
+      selftests/mm: prevent duplicate runs caused by TEST_GEN_PROGS
+
+Peter Xu (4):
+      mm/pagemap: fix ioctl(PAGEMAP_SCAN) on vma check
+      mm/pagemap: fix wr-protect even if PM_SCAN_WP_MATCHING not set
+      mm/selftests: fix pagemap_ioctl memory map test
+      mm/Kconfig: make userfaultfd a menuconfig
+
+Roman Gushchin (1):
+      mm: kmem: properly initialize local objcg variable in current_obj_cgroup()
+
+Ryusuke Konishi (2):
+      nilfs2: fix missing error check for sb_set_blocksize call
+      nilfs2: prevent WARNING in nilfs_sufile_set_segment_usage()
+
+SeongJae Park (2):
+      mm/damon/core: copy nr_accesses when splitting region
+      mm/damon/sysfs-schemes: add timeout for update_schemes_tried_regions
+
+Sidhartha Kumar (1):
+      mm/hugetlb: have CONFIG_HUGETLB_PAGE select CONFIG_XARRAY_MULTI
+
+Su Hui (1):
+      highmem: fix a memory copy problem in memcpy_from_folio
+
+Sumanth Korikkar (2):
+      mm/memory_hotplug: add missing mem_hotplug_lock
+      mm/memory_hotplug: fix error handling in add_memory_resource()
+
+ .mailmap                                   |   1 +
+ CREDITS                                    |   8 ++
+ MAINTAINERS                                | 186 +++++++----------------------
+ arch/arm/include/asm/kexec.h               |   4 -
+ arch/arm/kernel/Makefile                   |   2 +-
+ drivers/base/cpu.c                         |   6 +-
+ drivers/base/memory.c                      |  18 ++-
+ fs/Kconfig                                 |   1 +
+ fs/nilfs2/sufile.c                         |  42 +++++--
+ fs/nilfs2/the_nilfs.c                      |   6 +-
+ fs/proc/task_mmu.c                         |  26 +++-
+ fs/squashfs/block.c                        |   2 +-
+ include/linux/highmem.h                    |   2 +-
+ include/linux/hugetlb.h                    |   5 +-
+ include/linux/units.h                      |   1 +
+ kernel/Kconfig.kexec                       |   1 -
+ lib/group_cpus.c                           |  22 +++-
+ mm/Kconfig                                 |  16 +--
+ mm/damon/core.c                            |   1 +
+ mm/damon/sysfs-schemes.c                   |  49 +++++++-
+ mm/filemap.c                               |   2 +-
+ mm/hugetlb.c                               |   7 ++
+ mm/kmemleak.c                              |  40 ++++---
+ mm/madvise.c                               |  11 ++
+ mm/memcontrol.c                            |   2 +-
+ mm/memory.c                                |   1 +
+ mm/memory_hotplug.c                        |  15 ++-
+ scripts/checkstack.pl                      |   8 +-
+ scripts/gdb/linux/device.py                |  16 +--
+ scripts/gdb/linux/tasks.py                 |  18 ++-
+ tools/testing/selftests/mm/Makefile        |   4 +-
+ tools/testing/selftests/mm/pagemap_ioctl.c |   9 +-
+ 32 files changed, 282 insertions(+), 250 deletions(-)
 
