@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 959FF809D52
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15820809D59
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573341AbjLHHlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 02:41:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41076 "EHLO
+        id S1573348AbjLHHli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 02:41:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573301AbjLHHlS (ORCPT
+        with ESMTP id S1573313AbjLHHl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 02:41:18 -0500
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4251725;
-        Thu,  7 Dec 2023 23:41:19 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0Vy2TDPR_1702021276;
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vy2TDPR_1702021276)
+        Fri, 8 Dec 2023 02:41:26 -0500
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680171988;
+        Thu,  7 Dec 2023 23:41:22 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R891e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0Vy2PAmy_1702021278;
+Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vy2PAmy_1702021278)
           by smtp.aliyun-inc.com;
-          Fri, 08 Dec 2023 15:41:17 +0800
+          Fri, 08 Dec 2023 15:41:20 +0800
 From:   Wen Gu <guwen@linux.alibaba.com>
 To:     wintera@linux.ibm.com, wenjia@linux.ibm.com, hca@linux.ibm.com,
         gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
@@ -30,9 +30,9 @@ Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
         schnelle@linux.ibm.com, guangguan.wang@linux.alibaba.com,
         linux-s390@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v5 7/9] net/smc: support extended GID in SMC-D lgr netlink attribute
-Date:   Fri,  8 Dec 2023 15:40:57 +0800
-Message-Id: <1702021259-41504-8-git-send-email-guwen@linux.alibaba.com>
+Subject: [PATCH net-next v5 8/9] net/smc: disable SEID on non-s390 archs where virtual ISM may be used
+Date:   Fri,  8 Dec 2023 15:40:58 +0800
+Message-Id: <1702021259-41504-9-git-send-email-guwen@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1702021259-41504-1-git-send-email-guwen@linux.alibaba.com>
 References: <1702021259-41504-1-git-send-email-guwen@linux.alibaba.com>
@@ -46,79 +46,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Virtual ISM devices introduced in SMCv2.1 requires a 128 bit extended
-GID vs. the existing ISM 64bit GID. So the 2nd 64 bit of extended GID
-should be included in SMC-D linkgroup netlink attribute as well.
+The system EID (SEID) is an internal EID used by SMC-D to represent the
+s390 physical machine that OS is executing on. On s390 architecture, it
+predefined by fixed string and part of cpuid and is enabled regardless
+of whether underlay device is virtual ISM or platform firmware ISM.
+
+However on non-s390 architectures where SMC-D can be used with virtual
+ISM devices, there is no similar information to identify physical
+machines, especially in virtualization scenarios. So in such cases, SEID
+is forcibly disabled and the user-defined UEID will be used to represent
+the communicable space.
 
 Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
 ---
- include/uapi/linux/smc.h      | 2 ++
- include/uapi/linux/smc_diag.h | 2 ++
- net/smc/smc_core.c            | 6 ++++++
- net/smc/smc_diag.c            | 2 ++
- 4 files changed, 12 insertions(+)
+ net/smc/smc_clc.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/include/uapi/linux/smc.h b/include/uapi/linux/smc.h
-index 837fcd4..b531e3e 100644
---- a/include/uapi/linux/smc.h
-+++ b/include/uapi/linux/smc.h
-@@ -160,6 +160,8 @@ enum {
- 	SMC_NLA_LGR_D_CHID,		/* u16 */
- 	SMC_NLA_LGR_D_PAD,		/* flag */
- 	SMC_NLA_LGR_D_V2_COMMON,	/* nest */
-+	SMC_NLA_LGR_D_EXT_GID,		/* u64 */
-+	SMC_NLA_LGR_D_PEER_EXT_GID,	/* u64 */
- 	__SMC_NLA_LGR_D_MAX,
- 	SMC_NLA_LGR_D_MAX = __SMC_NLA_LGR_D_MAX - 1
- };
-diff --git a/include/uapi/linux/smc_diag.h b/include/uapi/linux/smc_diag.h
-index 8cb3a6f..58eceb7 100644
---- a/include/uapi/linux/smc_diag.h
-+++ b/include/uapi/linux/smc_diag.h
-@@ -107,6 +107,8 @@ struct smcd_diag_dmbinfo {		/* SMC-D Socket internals */
- 	__aligned_u64	my_gid;		/* My GID */
- 	__aligned_u64	token;		/* Token of DMB */
- 	__aligned_u64	peer_token;	/* Token of remote DMBE */
-+	__aligned_u64	peer_gid_ext;	/* Peer GID (extended part) */
-+	__aligned_u64	my_gid_ext;	/* My GID (extended part) */
- };
+diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
+index 3604150..6d6cfa5 100644
+--- a/net/smc/smc_clc.c
++++ b/net/smc/smc_clc.c
+@@ -155,10 +155,12 @@ static int smc_clc_ueid_remove(char *ueid)
+ 			rc = 0;
+ 		}
+ 	}
++#if IS_ENABLED(CONFIG_S390)
+ 	if (!rc && !smc_clc_eid_table.ueid_cnt) {
+ 		smc_clc_eid_table.seid_enabled = 1;
+ 		rc = -EAGAIN;	/* indicate success and enabling of seid */
+ 	}
++#endif
+ 	write_unlock(&smc_clc_eid_table.lock);
+ 	return rc;
+ }
+@@ -273,22 +275,30 @@ int smc_nl_dump_seid(struct sk_buff *skb, struct netlink_callback *cb)
  
- #endif /* _UAPI_SMC_DIAG_H_ */
-diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-index 672eff0..95cc954 100644
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -526,9 +526,15 @@ static int smc_nl_fill_smcd_lgr(struct smc_link_group *lgr,
- 	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_GID,
- 			      smcd_gid.gid, SMC_NLA_LGR_D_PAD))
- 		goto errattr;
-+	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_EXT_GID,
-+			      smcd_gid.gid_ext, SMC_NLA_LGR_D_PAD))
-+		goto errattr;
- 	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_PEER_GID, lgr->peer_gid.gid,
- 			      SMC_NLA_LGR_D_PAD))
- 		goto errattr;
-+	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_PEER_EXT_GID,
-+			      lgr->peer_gid.gid_ext, SMC_NLA_LGR_D_PAD))
-+		goto errattr;
- 	if (nla_put_u8(skb, SMC_NLA_LGR_D_VLAN_ID, lgr->vlan_id))
- 		goto errattr;
- 	if (nla_put_u32(skb, SMC_NLA_LGR_D_CONNS_NUM, lgr->conns_num))
-diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
-index c180c18..3fbe14e 100644
---- a/net/smc/smc_diag.c
-+++ b/net/smc/smc_diag.c
-@@ -175,8 +175,10 @@ static int __smc_diag_dump(struct sock *sk, struct sk_buff *skb,
+ int smc_nl_enable_seid(struct sk_buff *skb, struct genl_info *info)
+ {
++#if IS_ENABLED(CONFIG_S390)
+ 	write_lock(&smc_clc_eid_table.lock);
+ 	smc_clc_eid_table.seid_enabled = 1;
+ 	write_unlock(&smc_clc_eid_table.lock);
+ 	return 0;
++#else
++	return -EOPNOTSUPP;
++#endif
+ }
  
- 		dinfo.linkid = *((u32 *)conn->lgr->id);
- 		dinfo.peer_gid = conn->lgr->peer_gid.gid;
-+		dinfo.peer_gid_ext = conn->lgr->peer_gid.gid_ext;
- 		smcd->ops->get_local_gid(smcd, &smcd_gid);
- 		dinfo.my_gid = smcd_gid.gid;
-+		dinfo.my_gid_ext = smcd_gid.gid_ext;
- 		dinfo.token = conn->rmb_desc->token;
- 		dinfo.peer_token = conn->peer_token;
+ int smc_nl_disable_seid(struct sk_buff *skb, struct genl_info *info)
+ {
+ 	int rc = 0;
  
++#if IS_ENABLED(CONFIG_S390)
+ 	write_lock(&smc_clc_eid_table.lock);
+ 	if (!smc_clc_eid_table.ueid_cnt)
+ 		rc = -ENOENT;
+ 	else
+ 		smc_clc_eid_table.seid_enabled = 0;
+ 	write_unlock(&smc_clc_eid_table.lock);
++#else
++	rc = -EOPNOTSUPP;
++#endif
+ 	return rc;
+ }
+ 
+@@ -1336,7 +1346,11 @@ void __init smc_clc_init(void)
+ 	INIT_LIST_HEAD(&smc_clc_eid_table.list);
+ 	rwlock_init(&smc_clc_eid_table.lock);
+ 	smc_clc_eid_table.ueid_cnt = 0;
++#if IS_ENABLED(CONFIG_S390)
+ 	smc_clc_eid_table.seid_enabled = 1;
++#else
++	smc_clc_eid_table.seid_enabled = 0;
++#endif
+ }
+ 
+ void smc_clc_exit(void)
 -- 
 1.8.3.1
 
