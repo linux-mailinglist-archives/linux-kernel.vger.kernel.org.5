@@ -2,56 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3728D80A8CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7B180A8D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574064AbjLHQYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:24:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        id S1573991AbjLHQ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:27:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574107AbjLHQYe (ORCPT
+        with ESMTP id S233485AbjLHQ07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:24:34 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732301BCF
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:24:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02C57C433C9;
-        Fri,  8 Dec 2023 16:24:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702052678;
-        bh=gykiqYtc4k3IIgq0rB2Qqi/i6sr8CFwAMkaTgwLZCaY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LC+BiU9KOsLc7DDJe/HQilCeW5KGpfwDI7EHKQbzrIu/+TQuJdIAalhad0VByrU3A
-         0w6++h3e9aM0yPpmhhLL2g0ZoGxdBMwYtmllD6QVKB+R2oe4oPGzSs7+MQcfqlWZk9
-         VcwBdwf2ab2MW310u+dlix4jGulx3l4ZzSfxNGTXVyWCFKdi5LQFWHwtlSwpVncR32
-         nHntqJBVCyScpH9vwYA78Rmovru5AWX8OgkIUp9POW302tOsdjx1gDOwsj37QY3gk0
-         xLMFELWl8xVCMMEK4UbRuWAvaofUUX9KlAh96d95qFDbarK3bT3rvNjZH1/Hl9SfPi
-         jz8NcUvLUzpGw==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1rBdfL-0004nG-2C;
-        Fri, 08 Dec 2023 17:25:28 +0100
-Date:   Fri, 8 Dec 2023 17:25:27 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Tony Lindgren <tony@atomide.com>, marcel@holtmann.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tomi.valkeinen@ideasonboard.com,
-        =?utf-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
-        robh@kernel.org
-Subject: Re: [RFC PATCH 0/3] bluetooth/gnss: GNSS support for TiWi chips
-Message-ID: <ZXNDd57ImXjelBf4@hovoldconsulting.com>
-References: <20231126191840.110564-1-andreas@kemnade.info>
- <20231127135424.GO5169@atomide.com>
- <20231127215108.6e985819@aktux>
+        Fri, 8 Dec 2023 11:26:59 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED67173F;
+        Fri,  8 Dec 2023 08:27:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=t0CMqzi0Or9T5yhoHSEfgXb8zwflGCNNeN2wQKj6R40=; b=LXCHcDS1GTsrpuzZ1wlJ6Ihawd
+        hzs8XrN4sd8AxSDKY+8Gclm09YVmnTAYZM4xVc8KKtB3Xr+8johFi0vSdv0Q+fzDhteeco7mWVlIU
+        Yu0ir3kL4MB6DKWcGy8B3MJCZgEGqQP9bpphlbMQCvIXck77pIL4IcJVvpnksW1UrDvV5+cHIT+TU
+        3Pv1z1WAeEKDZMoN7rc1eCoKNsmA/XceymQLjjJO8xk3Gf+Nh9A7kHrajHoDtHvwdYVngtTgEBYXq
+        M4h5ncihw0LOjc5i0rruRuJLgR6UOrLZL6OZ33oAPtJyAp/rHd/D973O0KTx2MQQGQnyTqE5o19mw
+        R6nmPklQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rBdg9-006dg5-2S;
+        Fri, 08 Dec 2023 16:26:18 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6E4C7300338; Fri,  8 Dec 2023 17:26:16 +0100 (CET)
+Date:   Fri, 8 Dec 2023 17:26:16 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 5/7] rust: file: add `Kuid` wrapper
+Message-ID: <20231208162616.GH28727@noisy.programming.kicks-ass.net>
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+ <20231129-alice-file-v1-5-f81afe8c7261@google.com>
+ <20231129-etappen-knapp-08e2e3af539f@brauner>
+ <20231129164815.GI23596@noisy.programming.kicks-ass.net>
+ <20231130-wohle-einfuhr-1708e9c3e596@brauner>
+ <20231206195911.vcp3c6q57zvkm7bf@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231127215108.6e985819@aktux>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231206195911.vcp3c6q57zvkm7bf@moria.home.lan>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,60 +79,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 09:51:08PM +0100, Andreas Kemnade wrote:
-> On Mon, 27 Nov 2023 15:54:24 +0200
-> Tony Lindgren <tony@atomide.com> wrote:
+On Wed, Dec 06, 2023 at 02:59:11PM -0500, Kent Overstreet wrote:
 
-> > > - Output at /dev/gnssX:
-> > >   AI2 vs. NMEA
-> > >   The chip can be configured into sending AI2-encapsulated NMEA,
-> > >   or proving data in a binary format.
-> > >   Some research has to be done yet for the details.
-> > >   A pile of logs is waiting for further analysis...
+> I suspect even if the manpower existed to go that route we'd end up
+> regretting it, because then the Rust compiler would need to be able to
+> handle _all_ the craziness a modern C compiler knows how to do -
+> preprocessor magic/devilry isn't even the worst of it, it gets even
+> worse when you start to consider things like bitfields and all the crazy
+> __attributes__(()) people have invented.
 
-Can you say something more about what the protocol looks like? Is there
-some common framing that can/should be stripped by the driver in both
-modes?
-
-> > > 
-> > >   Arguments for/against NMEA:
-> > >   + Userspace is prepared to handle it
-> > >   + Power management can be easily done by the kernel
-> > >   - Less functionality can be used.  
-> > 
-> > I'd go with NMEA format as the default setting :)
-> > 
-> yes, that would also be my preference.
-> 
-> > >   Arguments for/against AI2:
-> > >   + Full functionality can be accessed from userspace (incl. A-GPS,
-> > >     maybe raw satellite data)
-> > >   - Userspace has to behave to have proper power management
-> > >   - No freely (not even as in beer) tool available to fully use AI2,
-> > >     so there will be only a real advantage after long "French Cafe"
-> > >     sessions.  
-> > 
-> > Seems AI2 could be optionally enabled as needed with some writes
-> > to /dev/gnss0 to change the mode?
-> 
-> Hmm, we have
-> /sys/class/gnss/gnss0/type to get the mode, maybe we add some file
-> to change the mode? Or having it hidden behing a module parameter
-> and implement something better accessible if any need arrives?
-
-The 'type' attribute is intended to reveal the GNSS receiver type
-(class) as a hint to user space to avoid having to detect it at runtime
-using heuristics.
-
-It does not reflect which mode is currently active for receivers that
-provide both a vendor specific protocol and NMEA (e.g. u-blox
-receivers).
-
-User space can currently switch modes at will by writing to /dev/gnss0
-as Tony mentioned.
-
-It may or may not make sense to make sure a particular mode is set
-during probe, for example, if there's no real use for the proprietary
-protocol and everyone would just switch away from it immediately.
-
-Johan
+Dude, clang can already handle all of that. Both rust and clang are
+build on top of llvm, they generate the same IR, you can simply feed a
+string into libclang and get IR out of it, which you can splice into
+your rust generated IR.
