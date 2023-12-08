@@ -2,119 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C698809707
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C47DE809709
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235834AbjLHARV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 19:17:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
+        id S235720AbjLHARm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 19:17:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235655AbjLHAQ7 (ORCPT
+        with ESMTP id S235816AbjLHARR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 19:16:59 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083EF30F3;
-        Thu,  7 Dec 2023 16:16:32 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5c66418decaso1123416a12.3;
-        Thu, 07 Dec 2023 16:16:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701994592; x=1702599392; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fYaCvNQnFX8gSshhD0U4TjEw0tlZoDuU2wJUbPArFf8=;
-        b=WIh5cGTz09wSE4+SUXHkBH+VTwBndYOxGzkeozcvyKdfK/K3Fsu0armv9KwvSU+vYW
-         Uk7gEKBCTVZVBqnDIFp72D4fB1eBzO6FfQa2N+2AUMNai86Wogqznr/AkKTqgqe5wmwI
-         Wqj4VIjlNyCz5uVP+USRejBrsW75pY4YVNNEM7DPOnx7LhFGBMg/UFf3+FBc8cUzgtRU
-         as7lglpHrB7/0l/ehUbCYm5ibcQLtBzTpPCQNx6y79yV5Cz0LuN10CQamYsD0vYGqJiY
-         3mLp58cVQ2QnhWC2ZeGSNwb+g+S3lmYmgC7Jy70JjTMdhGiF6iD+50bEG9e7GuUZTKPG
-         Bwmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701994592; x=1702599392;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fYaCvNQnFX8gSshhD0U4TjEw0tlZoDuU2wJUbPArFf8=;
-        b=w6XjlQtxBkiQZhKs1cunCI1AKhoGNv2mACktOFhN/quAb/g9eXpuvKHDkzyKH+39u7
-         4qa1rKlJGEsQ9Hd0101F3kERG+5J5msZgS++Wmls+If1l2z2tiGjP78ry9bKkEhLjFoj
-         1pdLi1UL24QtuN6b+ZU/upMt1agy25PCkj1acaCAugp6CbS3tTYg2i9NlQLfCgIn4Uik
-         UggcBAL1HIi7zwAyBWTBmMKGWnpk3uOQ8qBPDQ2FFFCC5pIB5/T74MNB0mkhO3hw5gto
-         /zE5u+cPhYkNd1/ayxPfbThxCi5ZFJnWdYLTpqrQhX5JsU+e1mSvurBL3rfRGX2vn2ac
-         1UuQ==
-X-Gm-Message-State: AOJu0Yx9pLpVC7DqHUqob5eCwQ44Sj4oX/VYdSrhjLAS+MlPzGOlHHyv
-        HZI47Zw4wXGpJUjl3jp4Ar0=
-X-Google-Smtp-Source: AGHT+IFy9HbQWTNcyN32kK0LC8FOvXZMYftP3rKNMYn/O6vKj3WIQqEzLjU+hOsNMtxdAsDBVSv4eA==
-X-Received: by 2002:a17:903:191:b0:1d0:a53e:263a with SMTP id z17-20020a170903019100b001d0a53e263amr3271941plg.109.1701994592059;
-        Thu, 07 Dec 2023 16:16:32 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id ba1-20020a170902720100b001d09c539c95sm403131plb.90.2023.12.07.16.16.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 16:16:31 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 7 Dec 2023 14:16:30 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Changwoo Min <multics69@gmail.com>
-Cc:     kernel-dev@igalia.com, andrea.righi@canonical.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        brho@google.com, bristot@redhat.com, bsegall@google.com,
-        changwoo@igalia.com, daniel@iogearbox.net, derkling@google.com,
-        dietmar.eggemann@arm.com, dschatzberg@meta.com,
-        dskarlat@cs.cmu.edu, dvernet@meta.com, haoluo@google.com,
-        himadrics@inria.fr, joshdon@google.com, juri.lelli@redhat.com,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        martin.lau@kernel.org, memxor@gmail.com, mgorman@suse.de,
-        mingo@redhat.com, peterz@infradead.org, pjt@google.com,
-        riel@surriel.com, rostedt@goodmis.org,
-        torvalds@linux-foundation.org, vincent.guittot@linaro.org,
-        vschneid@redhat.com
-Subject: Re: [PATCH] scx: set p->scx.ops_state using atomic_long_set_release
-Message-ID: <ZXJgXqQlHc1mgd1m@slm.duckdns.org>
-References: <20231111024835.2164816-13-tj@kernel.org>
- <20231207020459.117365-1-changwoo@igalia.com>
+        Thu, 7 Dec 2023 19:17:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B821FD8
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 16:16:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701994614; x=1733530614;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=GmNtcnIA/48rpg6fqjvhaVRjnT8lxRZsbxeYWQdBPdQ=;
+  b=oB2BmM+4Bx41vP23RTu13Le+CXrXWmFICOQ18sl+MWe1T9pZy/Vy+L9m
+   uC5w7L4g8Eau9EqntaVfpep7wJaYlNImQoS7Ha8+VQCyIOC+CztSq57FY
+   0g9/B+OdjW6hoix2Xh+0A6Bm+NvMQYXGtsGegZl/7hgZflZKbLEwvAyfA
+   eoZG6od1CjQkRneSt6m4ZwqLp/dqOh2gThO3V3nBzE2y2RrVPcGPZyYLz
+   460lPbOAGou4np1A3Sj8+FrwfFVPNlSF2Ohxa3ENcVkhBOqtmTkvAOaJ9
+   N8NSdi4CkOUQVfELFaSaikrI1q4sBPAUu2EfbRKOvWW4z5z9mN2xDg4Y0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="397117738"
+X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
+   d="scan'208";a="397117738"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 16:16:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="862677879"
+X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
+   d="scan'208";a="862677879"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 07 Dec 2023 16:16:52 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBOXx-000D14-28;
+        Fri, 08 Dec 2023 00:16:49 +0000
+Date:   Fri, 8 Dec 2023 08:16:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/video/fbdev/omap/lcdc.c:642:23: sparse: sparse: incorrect
+ type in assignment (different address spaces)
+Message-ID: <202312080851.QH738juG-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231207020459.117365-1-changwoo@igalia.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9ace34a8e446c1a566f3b0a3e0c4c483987e39a6
+commit: 804f7f19c2e2928aeb8eafef8379fe8b8d13f98b fbdev: omap: avoid using mach/*.h files
+date:   1 year, 8 months ago
+config: arm-randconfig-r131-20231117 (https://download.01.org/0day-ci/archive/20231208/202312080851.QH738juG-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231208/202312080851.QH738juG-lkp@intel.com/reproduce)
 
-On Thu, Dec 07, 2023 at 11:04:59AM +0900, Changwoo Min wrote:
-> p->scx.ops_state should be updated using the release semantics,
-> atomic_long_set_release(), because it is read using
-> atomic_long_read_acquire() at ops_dequeue() and wait_ops_state().
-> ---
->  kernel/sched/ext.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-> index 53ee906aa2b6..3a40ca2007b6 100644
-> --- a/kernel/sched/ext.c
-> +++ b/kernel/sched/ext.c
-> @@ -881,7 +881,7 @@ static void do_enqueue_task(struct rq *rq, struct task_struct *p, u64 enq_flags,
->  	qseq = rq->scx.ops_qseq++ << SCX_OPSS_QSEQ_SHIFT;
->  
->  	WARN_ON_ONCE(atomic_long_read(&p->scx.ops_state) != SCX_OPSS_NONE);
-> -	atomic_long_set(&p->scx.ops_state, SCX_OPSS_QUEUEING | qseq);
-> +	atomic_long_set_release(&p->scx.ops_state, SCX_OPSS_QUEUEING | qseq);
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312080851.QH738juG-lkp@intel.com/
 
-atomic_long_load_acquire() are used when waiting the transitions out of
-QUEUEING and DISPATCHING states. ie. the interlocking between writer and
-reader is necessary only when transitioning out of those states. In the
-above, @p is going into QUEUEING and release/acquire isn't necessary.
-Selectively using them is kinda subtle but it's less confusing to keep it
-that way, I think.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/video/fbdev/omap/lcdc.c:642:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void [noderef] __iomem *vaddr @@     got void *static [addressable] [assigned] [toplevel] vram_virt @@
+   drivers/video/fbdev/omap/lcdc.c:642:23: sparse:     expected void [noderef] __iomem *vaddr
+   drivers/video/fbdev/omap/lcdc.c:642:23: sparse:     got void *static [addressable] [assigned] [toplevel] vram_virt
+   drivers/video/fbdev/omap/lcdc.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/umh.h, include/linux/kmod.h, ...):
+   include/linux/page-flags.h:258:46: sparse: sparse: self-comparison always evaluates to false
+--
+>> drivers/video/fbdev/omap/lcd_mipid.c:451:23: sparse: sparse: cast to restricted __be32
+   drivers/video/fbdev/omap/lcd_mipid.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/radix-tree.h, ...):
+   include/linux/page-flags.h:258:46: sparse: sparse: self-comparison always evaluates to false
+--
+>> drivers/video/fbdev/omap/omapfb_main.c:1027:11: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/video/fbdev/omap/omapfb_main.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/radix-tree.h, ...):
+   include/linux/page-flags.h:258:46: sparse: sparse: self-comparison always evaluates to false
 
-Thanks.
+vim +642 drivers/video/fbdev/omap/lcdc.c
+
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  620  
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  621  static int alloc_fbmem(struct omapfb_mem_region *region)
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  622  {
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  623  	int bpp;
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  624  	int frame_size;
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  625  	struct lcd_panel *panel = lcdc.fbdev->panel;
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  626  
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  627  	bpp = panel->bpp;
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  628  	if (bpp == 12)
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  629  		bpp = 16;
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  630  	frame_size = PAGE_ALIGN(panel->x_res * bpp / 8 * panel->y_res);
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  631  	if (region->size > frame_size)
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  632  		frame_size = region->size;
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  633  	lcdc.vram_size = frame_size;
+f6e45661f9be54 drivers/video/fbdev/omap/lcdc.c Luis R. Rodriguez 2016-01-22  634  	lcdc.vram_virt = dma_alloc_wc(lcdc.fbdev->dev, lcdc.vram_size,
+f6e45661f9be54 drivers/video/fbdev/omap/lcdc.c Luis R. Rodriguez 2016-01-22  635  				      &lcdc.vram_phys, GFP_KERNEL);
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  636  	if (lcdc.vram_virt == NULL) {
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  637  		dev_err(lcdc.fbdev->dev, "unable to allocate FB DMA memory\n");
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  638  		return -ENOMEM;
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  639  	}
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  640  	region->size = frame_size;
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  641  	region->paddr = lcdc.vram_phys;
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17 @642  	region->vaddr = lcdc.vram_virt;
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  643  	region->alloc = 1;
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  644  
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  645  	memset(lcdc.vram_virt, 0, lcdc.vram_size);
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  646  
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  647  	return 0;
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  648  }
+569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  649  
+
+:::::: The code at line 642 was first introduced by commit
+:::::: 569755c706f0f94409edd2ae60b9878cb420844f OMAP: add TI OMAP1 internal LCD controller
+
+:::::: TO: Imre Deak <imre.deak@solidboot.com>
+:::::: CC: Linus Torvalds <torvalds@woody.linux-foundation.org>
 
 -- 
-tejun
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
