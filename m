@@ -2,164 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A30E580ABA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 747A480ABAC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233807AbjLHSJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:09:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
+        id S233791AbjLHSLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:11:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233768AbjLHSJP (ORCPT
+        with ESMTP id S229811AbjLHSLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:09:15 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682BC1705;
-        Fri,  8 Dec 2023 10:09:21 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6d9e9f3a3abso615620a34.3;
-        Fri, 08 Dec 2023 10:09:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702058960; x=1702663760; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=wVOuaErmv9ZMi8tleknbX62ivKWgy/EVMKd/yv/qG+w=;
-        b=I69ztceoTTgf/1xlF3m4Lemcwe2K8eC0QEFYXs0UJAEGgxyWJVmS095LkextcoXyU6
-         yQCLzyWNhELFOMu+53iPZjrYM15D+ZEJdOvPhwLAnq+yWoEVIXXsmn8xTLTP8bulLj37
-         hotHcp6IziTQuX5soQIoEqYRvR9bgkCJtZL/LLuxTJB9YjZ0B7TsZtXw92BUirm3LzlR
-         IhP6iHo9L1ljUO9ZZ2eSHwv1s2pPCmvZ722ShIlNAW3SXhvBneCBqLrpRRhHn5bNhQg8
-         pX/ITX0t1eIh5NldajE9XWSVSyAcpCehnK+5+7UaE4VQ4deoAZrXFpc9tMp810e1/Hvy
-         cFyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702058960; x=1702663760;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wVOuaErmv9ZMi8tleknbX62ivKWgy/EVMKd/yv/qG+w=;
-        b=EmxGUnkn+h/stJYdAOTsBdPtDQn7gGxu+t1yY08j3pL26MsRQGUJerCSyxvEERVvsH
-         4suOEuj6IZh4ntCxMkCnHj968SELb7J0EiYvSePty//FwRaxHAT/RY1qca8kOxBUrDYq
-         MrIJvpygfn5d/JmA81kkZb3exvQh7wCu8dIY63j4IilVIi0NxwMT4mnQneaFEO//nPKe
-         +mpbWvqNBn8kdAvbndSH1GzEeihYj09pQLxfCZHJSqHLAhxXuXiL7zsQrBVRNUUsGYyL
-         o+GWWorE9BnnrvgGRtwm4nLGVL14iFwMh1wgLk7ArJIVAbEDBZOgaQppsKR7dPGf40uo
-         ZJAA==
-X-Gm-Message-State: AOJu0Yy49te6HNs4Pkcqkc9/JSil8hfEo0s6ipr7GW6rtMp1cgJQmcBM
-        XQ80qA4DN5FlFJe7LBHJn1tCbJxeaW8=
-X-Google-Smtp-Source: AGHT+IFDxwxz/SkLlqLvqipFqQIpf7aQepzYKUXqlB/dAzPE+gzcQQeAQ5Xq0zTxF3TA1Jcz0equEQ==
-X-Received: by 2002:a9d:6e91:0:b0:6d9:e2ef:d74c with SMTP id a17-20020a9d6e91000000b006d9e2efd74cmr404718otr.47.1702058960688;
-        Fri, 08 Dec 2023 10:09:20 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h16-20020a9d7990000000b006d9d8abcdeesm384124otm.40.2023.12.08.10.09.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 10:09:19 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <5b0eb360-3765-40e1-854a-9da6d97eb405@roeck-us.net>
-Date:   Fri, 8 Dec 2023 10:09:17 -0800
+        Fri, 8 Dec 2023 13:11:36 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7705B173B;
+        Fri,  8 Dec 2023 10:11:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1702059047; x=1702663847; i=w_armin@gmx.de;
+        bh=P9edKpKexTHVvkOcXN5hlM+yTHAv/d7T1y5gwBKtBDY=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=ogzh/wErEJl3m6V15nDnjN9SZ+uAT4up6rCslwEYVM/0zoR5NPySf3g+VaFHA+O9
+         p+Lhvpc1UUhc7MYJBiUEy6jUkVqrR78+GslmRzI2rSroiI7pE/Ntu6AH5DVUcumVa
+         xTHdRXM66tja8T8c7zyotsN7XkYVBHl775X7jirqZAii8m/fucZTLNKZOCqkYPMxY
+         oWXy3X9qX41w3nljlHbEgDQHBcvxVJudEQfFE5pan+FqKmwdbFMvqZmx6euD6lxvx
+         hupCs/yOZJXx5LJI621NURFyqg5Vq9wramxSMcr2hEHYCAzyOxLx8zZKVURk/KxW3
+         wMH2mDPwCgjMu7VxPg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MzQg6-1rOuuN2pCi-00vMWS; Fri, 08
+ Dec 2023 19:10:47 +0100
+Message-ID: <e7da54e0-177c-46cc-8407-17bdb07010a0@gmx.de>
+Date:   Fri, 8 Dec 2023 19:10:46 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.4 00/90] 5.4.263-rc3 review
+Subject: Re: [PATCH 5/5] platform/x86: wmi: Add driver development guide
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com
-References: <20231205183241.636315882@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231205183241.636315882@linuxfoundation.org>
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, corbet@lwn.net,
+        Dell.Client.Kernel@dell.com, linux-doc@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231207222623.232074-1-W_Armin@gmx.de>
+ <20231207222623.232074-6-W_Armin@gmx.de>
+ <aefc53a4-2472-4613-ef9d-5d3ad972bef3@linux.intel.com>
+From:   Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <aefc53a4-2472-4613-ef9d-5d3ad972bef3@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:T7gz8CBFZZ/+cLVrnlzQUdkpmoZ1c6nscBTQslx3HIoM5Mtky8l
+ jGLsxbNrWCcGGOZRi1i52etNBUTAT0c8BMs+e49dj6uy7f1868EhogLvy0uHXRheHHBrbnL
+ WK499EcnjCp9b5n9uJqeyx9UKLdgZpu/dT7WDCQy/NUzrX3aQUnUxKAcgJvQC16sF3G//Ue
+ YYQAxuwJMebWnFEffBoYQ==
+UI-OutboundReport: notjunk:1;M01:P0:yyAgzB0BofA=;VWrJ0W4bZblvabSS9HUzMsXIw5a
+ AiqsgXQGHu5tWDoVmsBaiiLhkAbilRv/fk0uSH2SkpDiv1+8rZv6zbKP6aQxu1VgjBgOYK96k
+ QvkEHA/jhnkKXueAviXbtPGk7vJ4nVQ07pgyrFTTVrzoi5nBnF1kor3RrhFhFs9yBn4QU359h
+ f/ck86TV/HHczksasfrDRmGSVCseYWI76LC/Cd9BFkYu0oQFgsmauz7O+sGoI7e15xD6N0uZt
+ ZMKS1/ergSdoJ7lY89fIDLKAOMWHJUviFMQ7m5RGupiRTRFF/IW8LRKCIJXJ+IdfUZegCNiRZ
+ QYFZ5IOLVbdPNA2FtCUAN5FM9Zp9ediGyCBrtylkbKo+dVKW8zFNcro/moCpsIRhOPvkzKzFq
+ +uX+0v+ga701N6Zj4AtRrz+d4nJHHaiHghyLsOQuVHksMw2F9Qn5aixcQK69iKXbG0EIksyYO
+ FUqtSo7lRvgVAvWnQG/WFVSZXAmxgn5aoCKDryEQlxTQzgCGjBqkXuMiud1bQ6QrDzfogarFw
+ VErppY+dagcZQS72gVTfePTYDG7WYPAl8htd/FDb5j2ynLyzclYY3kfLjzRHUIZTof0Y7rkJV
+ i+zP2e+Jq4qIzN+XplTkfXE1gzJySwjMEGMNrxhbtTm1/n/4N9Lm+65QnOF5OsbX2KZpS9wsC
+ thnFaqMUVcJEixXG0sLsO2/y0Z+/61+ztt4WT9Y2JQwkAFdA4PolZwjrdLSqR8WZsu5/HInYd
+ /YsPhhcOmvKNDLeSwjN63sg1041fUkDen0x8wtu9UOVua9iPIQ0bW7tdIyssgwCevQXXc7nZM
+ Hh1VxeMbKtWAmOF+7hZNAfi2lLSHlvJp/kH8VTlUn1cL+grSyDlAcH5AMRJOUGuok5e0vvRSi
+ TdTptJT75owqFET+n54gNN7K46hMxzJ5UfGila9pdwKLEqMKJS3xbIaHSVxG6rDZcdEvT+Mg4
+ 20+tjcvdFnqkSnAUwRYDMQrdhEk=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/5/23 11:22, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.263 release.
-> There are 90 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
-> Anything received after that time might be too late.
-> 
-[ ... ]
-> Qu Wenruo <wqu@suse.com>
->      btrfs: add dmesg output for first mount and last unmount of a filesystem
-> 
+Am 08.12.23 um 13:25 schrieb Ilpo J=C3=A4rvinen:
 
-This patch results in the following code in fs/btrfs/disk-io.c:open_ctree():
+> On Thu, 7 Dec 2023, Armin Wolf wrote:
+>
+>> Since 2010, an LWN article covering WMI drivers exists:
+>>
+>> 	https://lwn.net/Articles/391230/
+>>
+>> Since the introduction of the modern bus-based interface
+>> and other userspace tooling (fwts wmi, bmfdec, ...), this
+>> article is outdated and causes people to still submit new
+>> WMI drivers using the deprecated GUID-based interface.
+>> Fix this by adding a short guid on how to develop WMI drivers
+> Too used to typing guid(?), here you want "guide" instead. :-D (I know
+> that feeling when my fingers type something else than I think).
+>
+>> using the modern bus-based interface.
+>>
+>> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+>> ---
+>>   .../wmi/driver-development-guide.rst          | 126 +++++++++++++++++=
++
+>>   Documentation/wmi/index.rst                   |   1 +
+>>   2 files changed, 127 insertions(+)
+>>   create mode 100644 Documentation/wmi/driver-development-guide.rst
+>>
+>> diff --git a/Documentation/wmi/driver-development-guide.rst b/Documenta=
+tion/wmi/driver-development-guide.rst
+>> new file mode 100644
+>> index 000000000000..a831e2728d25
+>> --- /dev/null
+>> +++ b/Documentation/wmi/driver-development-guide.rst
+>> @@ -0,0 +1,126 @@
+>> +.. SPDX-License-Identifier: GPL-2.0-or-later
+>> +
+>> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+>> +WMI driver development guide
+>> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+>> +
+>> +The WMI subsystem provides a rich driver api for implementing WMI driv=
+ers,
+> API
+>
+>> +documented at Documentation/driver-api/wmi.rst. This document will ser=
+ve
+>> +as an introductory guide for WMI driver writers using this API. It is =
+supposed
+>> +t be an successor to the original `LWN article <https://lwn.net/Articl=
+es/391230/>`_
+> t -> to
+>
+>> +which deals with WMI drivers using the deprecated GUID-based WMI inter=
+face.
+>> +
+>> +Optaining WMI device information
+> Obtaining
+>
+>> +--------------------------------
+>> +
+>> +Before developing an WMI driver, information about the WMI device in q=
+uestion
+>> +must be optained. The `lswmi <https://pypi.org/project/lswmi>`_ utilit=
+y can be
+> obtained
+>
+>> +used to display detailed WMI device information using the following co=
+mmand:
+>> +
+>> +::
+>> +
+>> +  lswmi -V
+>> +
+>> +The resulting output will contain information about all WMI devices in=
+side a given
+>> +machine, plus some extra information.
+>> +
+>> +In order to find out more about the interface used to communicate with=
+ a WMI device,
+>> +the `bmfdec <https://github.com/pali/bmfdec>`_ utilities can be used t=
+o decode
+>> +the Binary MOF information used to describe WMI devices. The ``wmi-bmo=
+f`` driver
+> (Managed Object Format)
+>
+>> +exposes this information to userspace, see Documentation/ABI/stable/sy=
+sfs-platform-wmi-bmof.
+> This should use a true link to the file.
+>
+>> +In order to retrieve the decoded Binary MOF information, use the follo=
+wing command (requires root):
+>> +
+>> +::
+>> +
+>> +  ./bmf2mof /sys/bus/wmi/devices/05901221-D566-11D1-B2F0-00A0C9062910[=
+-X]/bmof
+>> +
+>> +Sometimes, looking at the disassembled ACPI tables used to describe th=
+e WMI device
+>> +helps in understanding how the WMI device is supposed to work. To find=
+ out which
+>> +ACPI method handles which WMI device, the `fwts <https://github.com/fw=
+ts/fwts>`_
+>> +program can be used with the following command (requires root):
+>> +
+>> +::
+>> +
+>> +  fwts wmi -
+>> +
+>> +Basic WMI driver structure
+>> +--------------------------
+>> +
+>> +The basic WMI driver is build around the struct wmi_driver, which is t=
+hen bound
+>> +to matching WMI devices using an struct wmi_device_id table. Please no=
+te that each
+> an struct -> a struct
+>
+>> +WMI driver should be able to be instantiated multiple times.
+>> +
+>> +::
+>> +
+>> +  static const struct wmi_device_id foo_id_table[] =3D {
+>> +         { "936DA01F-9ABD-4D9D-80C7-02AF85C822A8", NULL },
+>> +         { }
+>> +  };
+>> +  MODULE_DEVICE_TABLE(wmi, foo_id_table);
+>> +
+>> +  static struct wmi_driver foo_driver =3D {
+>> +        .driver =3D {
+>> +                .name =3D "foo",
+>> +                .probe_type =3D PROBE_PREFER_ASYNCHRONOUS,        /* o=
+ptional */
+>> +                .pm =3D pm_sleep_ptr(&foo_dev_pm_ops),            /* o=
+ptional */
+>> +        },
+>> +        .id_table =3D foo_id_table,
+>> +        .probe =3D foo_probe,
+>> +        .remove =3D foo_remove,         /* optional, devres is preferr=
+ed */
+>> +        .notify =3D foo_notify,         /* optional, for event handlin=
+g */
+>> +  };
+>> +  module_wmi_driver(foo_driver);
+>> +
+>> +If your WMI driver is not using any deprecated GUID-based WMI function=
+s and is
+>> +able to be instantiated multiple times, please add its GUID to ``allow=
+_duplicates``
+>> +inside drivers/platform/x86/wmi.c, so that the WMI subsystem does not =
+block duplicate
+>> +GUIDs for it.
+> Just voicing wouldn't it be more useful to not burden new stuff with thi=
+s
+> at all and construct the opposite list instead with the GUIDs that have
+> a driver that don't support duplicates? It's the existing set of GUIDs w=
+e
+> have in-tree minus those currently on the list, correct?
 
-	struct btrfs_super_block *disk_super;
-	... (no access to disk_super)
-	btrfs_info(fs_info, "first mount of filesystem %pU", disk_super->fsid);
+You are right about this, i am already thinking about a different approach=
+ which
+does not rely on such a whitelist.
 
-which I would assume _should_ result in btrfs crashes. No idea why that isn't
-actually happening or why gcc doesn't complain. Building allmodconfig with
-clang does complain, but doesn't bail out.
+Basically, the legacy GUID-based functions only act on WMI devices which h=
+ave an
+ID of zero (which means they where found first), so that legacy drivers do=
+ not see
+WMI devices with a duplicate GUID.
+At the same time, WMI drivers would have to set a flag inside their struct=
+ wmi_driver
+to indicate that they can be safely instantiated multiple times, otherwise=
+ they would
+only be allowed to bind to WMI devices with an ID of zero (which are uniqu=
+e).
 
-s/btrfs/disk-io.c:2832:55: warning: variable 'disk_super' is uninitialized when used here [-Wuninitialized]
-         btrfs_info(fs_info, "first mount of filesystem %pU", disk_super->fsid);
-                                                              ^~~~~~~~~~
+This would replace the whitelist with a flag inside wmi_driver, which can =
+be enabled
+by the driver developer without having to touch the WMI driver core at all=
+.
 
-The actual log output is:
+I think i will split out this patch from the next revision of the series, =
+since getting
+rid of the whitelist should be a separate series.
 
-[    7.302427] BTRFS info (device nvme0n1): first mount of filesystem (efault)
+Thanks,
+Armin Wolf
 
-It might be a good idea to either revert this patch or fix it up
-(though I don't know how to fix it up).
-
-Guenter
-
+>> +WMI method drivers
+>> +------------------
+>> +
+>> +WMI drivers can call WMI device methods using wmidev_evaluate_method()=
+, the
+>> +structure of the ACPI buffer passed to this function is device-specifi=
+c and usually
+>> +needs some tinkering to get right. Looking at the ACPI tables containi=
+ng the WMI
+>> +device usually helps here. The method id and instance number passed to=
+ this function
+>> +are also device-specific, looking at the decoded Binary MOF is usually=
+ enough to
+>> +find the right values.
+>> +The maximum instance number can be retrieved during runtime using wmid=
+ev_instance_count().
+>> +
+>> +Take a look at drivers/platform/x86/inspur_platform_profile.c for an e=
+xample WMI method driver.
+>> +
+>> +WMI data block drivers
+>> +----------------------
+>> +
+>> +WMI drivers can query WMI device data blocks using wmidev_block_query(=
+), the
+>> +structure of the returned ACPI object is again device-specific. Some W=
+MI devices
+>> +also allow for setting data blocks using wmidev_block_set().
+>> +The maximum instance number can also be retrieved using wmidev_instanc=
+e_count().
+>> +
+>> +Take a look at drivers/platform/x86/intel/wmi/sbl-fw-update.c for an e=
+xample
+>> +WMI data block driver.
+>> +
+>> +WMI event drivers
+>> +-----------------
+>> +
+>> +WMI drivers can receive WMI event notifications by providing the notif=
+y() callback
+>> +inside the struct wmi_driver. The WMI subsystem will then take care of=
+ setting
+>> +up the WMI event accordingly. Plase note that the ACPI object passed t=
+o this callback
+> Plase -> Please
+>
+>> +is optional and its structure device-specific. It also does not need t=
+o be freed,
+> structure is device-specific.
+>
+>> +the WMI subsystem takes care of that.
+> I'd state the freeing part more strongly:
+>
+> Releasing the ACPI object is handled by the WMI subsystem, not the drive=
+r.
+>
+>> +
+>> +Take a look at drivers/platform/x86/xiaomi-wmi.c for an example WMI ev=
+ent driver.
+>> +
+>> +Things to avoid
+>> +---------------
+>> +
+>> +When developing WMI drivers, there are a couple of things which should=
+ be avoid
+>> +if feasible:
+>> +
+>> +- usage of the deprecated GUID-based WMI interface
+> It would be nice to be more specific because it's far from obvious at th=
+is
+> point how to differentiate. So perhaps adding something like this would
+> help:
+>
+> (avoid functions with wmi_ prefix that input GUID converting it into
+> a wmi_device using wmi_find_device_by_guid()).
+>
+>> +- bypassing of the WMI subsystem when talking to WMI devices
+>> +- WMI drivers which cannot be instantiated multiple times.
+>> +
+>> +Many older WMI drivers violate one or more points from this list. The =
+reason for
+>> +this is that the WMI subsystem evolved significantly over the last two=
+ decades,
+>> +so there is a lot of legacy cruft inside older WMI drivers.
+>
