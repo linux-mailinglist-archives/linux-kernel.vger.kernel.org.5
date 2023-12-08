@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0130480A53A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FEED80A53E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573920AbjLHOQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 09:16:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
+        id S1573927AbjLHORM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 09:17:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573881AbjLHOQp (ORCPT
+        with ESMTP id S1573881AbjLHORK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 09:16:45 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD19B171E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 06:16:51 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-67a91a373edso12000556d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 06:16:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702045011; x=1702649811; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/0j5IioITwyG/4BP+tqSeHc4KXtugt22zIQNy6+j6UA=;
-        b=WrWRZwAtpkfw4vfemJLPRLJrK69voIyMiJCRba03O6Lnsm5A9G3nMKpU+uygsSIXpG
-         V0fw0KAteakWBw3coannnaJ5ioNyd4STAfGc5lCI2EHXEfVv5V2vDkB1GrKG93BayMsa
-         55Qv1t7HqdUNnkjTJX0838kjCXtfn97lc3FzyrJD8IB0HyUQ8xCLQ3F0UTy5bhYPGnAP
-         RfYAERTM8yZsc4ce+ZvlbcgNbC6TWFZLRdouczS5e6VEJNvJUh8EguZWFFoM1u61faii
-         F7Uga2X42hbYCpkIecybPcdjz5IwW8NBvBU7jWwfBB/OmH/kzcmk3BRYKfGBvkG7YGoR
-         iRFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702045011; x=1702649811;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/0j5IioITwyG/4BP+tqSeHc4KXtugt22zIQNy6+j6UA=;
-        b=H9V96DY3uUchzNwn9TlwBzZH3bdp7GtzIx7sD42RYdip9gI65OY1mNbTuLThqF375Q
-         koMcgipjcQApBF8yh0Dwne/DgwK4rasgR8uWR5X8cnN6AYYeg5y3WcuqNEok4v4vQ6t9
-         FplNMLiW88VkjN8rNLTXQrMdM6anskHxVsjNZ74yGS2MIBTX4gT+CsKBvvpkfKDZE9Xu
-         5g2Nza6b8pDmk5OLNQEeb8l8oRh56FFnn4g5Z1lZmzOTU+jAMohyeeoNiHeAceFJKjed
-         Po549GSVElRY3BSuPCidzOvShGXb9CTQXxpurhWxg8jJvLaJNgM7+RlFGwr6DYka+zcx
-         vrng==
-X-Gm-Message-State: AOJu0YxdFJjkOg07icbjQEjuNMWWb0u3aGi9s9hC8bBhgkR4RpkhCbjG
-        L2MH+DgXlvNDUJCdS8IZyqPEvAyyS8/Cm0g8i4iwtg==
-X-Google-Smtp-Source: AGHT+IFKfJa8W1iCMwjchi2t+lHUhYWH09qaDJjCUhvv9aw60UsIUANSwwIZQ5lRRrqoFrKO1oLXig0+0+CIwOJDPpY=
-X-Received: by 2002:a05:6214:4a50:b0:67a:a721:8309 with SMTP id
- ph16-20020a0562144a5000b0067aa7218309mr3763142qvb.99.1702045010694; Fri, 08
- Dec 2023 06:16:50 -0800 (PST)
+        Fri, 8 Dec 2023 09:17:10 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BDAF171D;
+        Fri,  8 Dec 2023 06:17:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8lkpDrAVThUsmxNqiVZSV0lvTancyxHoyRE7xBofZjI=; b=skVoQXrkyyUv354Yat2EuGTJD1
+        RhNsG3cttkbJH1Ktss/uTn03jI2GZOVLQRd2QfXlw/Vpe3boICyboJxkO19/LfDzJbd/EIqWtiz+H
+        a0Evfy4l3ZD+Fwg8fgxTQy9wWjxi7ZjfDTEQ4tLh3y6fkLFol9FrUNMt2t314ptOP1cO8yWgmPfRc
+        MQQ1RrXIqBx9e5y2rpIrqlXoPqzAJ8C+7U24B6zYyow/JFigdy0Sebs3fe32+t1UdyUg6B+8X5yJ7
+        cSs4r908dmbi/Op7mAo5p2wpR+KvZk66BKoMzIrTR8Bh9Pl66KfRhOa7H1QXCav4kyrLUjq7JH0u8
+        8XIRRkzg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rBbfE-008u9e-18;
+        Fri, 08 Dec 2023 14:17:12 +0000
+Date:   Fri, 8 Dec 2023 14:17:12 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        gus Gusenleitner Klaus <gus@keba.com>,
+        Al Viro <viro@ftp.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [RFC][PATCHES v2] checksum stuff
+Message-ID: <20231208141712.GA1674809@ZenIV>
+References: <20231019063925.GX800259@ZenIV>
+ <CANn89iJre=VQ6J=UuD0d2J5t=kXr2b9Dk9b=SwzPX1CM+ph60A@mail.gmail.com>
+ <20231019080615.GY800259@ZenIV>
+ <20231021071525.GA789610@ZenIV>
+ <20231021222203.GA800259@ZenIV>
+ <20231022194020.GA972254@ZenIV>
+ <20231205022100.GB1674809@ZenIV>
+ <602ab11ffa2c4cc49bb9ecae2f0540b0@AcuMS.aculab.com>
+ <20231206224359.GR1674809@ZenIV>
+ <46711b57a62348059cfe798c8acea941@AcuMS.aculab.com>
 MIME-Version: 1.0
-References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-2-iii@linux.ibm.com>
-In-Reply-To: <20231121220155.1217090-2-iii@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 8 Dec 2023 15:16:10 +0100
-Message-ID: <CAG_fn=WHf0t=-OJL0031D+X7cX_D25G7TG0TqROsT34QcEnqsw@mail.gmail.com>
-Subject: Re: [PATCH v2 01/33] ftrace: Unpoison ftrace_regs in ftrace_ops_list_func()
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <46711b57a62348059cfe798c8acea941@AcuMS.aculab.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 11:02=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.co=
-m> wrote:
->
-> Architectures use assembly code to initialize ftrace_regs and call
-> ftrace_ops_list_func(). Therefore, from the KMSAN's point of view,
-> ftrace_regs is poisoned on ftrace_ops_list_func entry(). This causes
-> KMSAN warnings when running the ftrace testsuite.
+On Fri, Dec 08, 2023 at 12:04:24PM +0000, David Laight wrote:
+> I've just read RFC 792 and done some experiments.
+> The kernel ICMP checksum code is just plain broken.
+> 
+> RFC 792 is quite clear that the checksum is the 16-bit ones's
+> complement of the one's complement sum of the ICMP message
+> starting with the ICMP Type.
+> 
+> The one's complement sum of 0xfffe and 0x0001 is zero (not the 0xffff
 
-I couldn't reproduce these warnings on x86, hope you really need this
-change on s390 :)
+It is not.  FYI, N-bit one's complement sum is defined as
 
-> Fix by trusting the architecture-specific assembly code and always
-> unpoisoning ftrace_regs in ftrace_ops_list_func.
->
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+X + Y <= MAX_N_BIT ? X + Y : X + Y - MAX_N_BIT,
+
+where MAX_N_BIT is 2^N - 1.
+
+You add them as natural numbers.  If there is no carry and result
+fits into N bits, that's it.  If there is carry, you add it to
+the lower N bits of sum.
+
+Discussion of properties of that operation is present e.g. in
+RFC1071, titled "Computing the Internet Checksum".
+
+May I politely suggest that some basic understanding of the
+arithmetics involved might be useful for this discussion?
