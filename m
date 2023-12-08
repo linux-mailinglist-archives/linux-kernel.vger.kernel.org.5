@@ -2,276 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6C780A64A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D6F80A548
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574040AbjLHOya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 09:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34756 "EHLO
+        id S1573935AbjLHOTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 09:19:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574147AbjLHOyE (ORCPT
+        with ESMTP id S1573933AbjLHOTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 09:54:04 -0500
-X-Greylist: delayed 1982 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 08 Dec 2023 06:52:19 PST
-Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133EB3866
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 06:52:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codethink.co.uk; s=imap4-20230908; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/lBnAPLXd3bmIiEmokYvLT/eas4j7AzPy7ap5uVAF/8=; b=EKHweu9EyyqV4AJrNpxLR7vMJM
-        pgV19pa8l1FfLAzDsVJfDNmO3Rz8kk7DBEXCKI78NqSa3PAkxrj7662ZAFogRsJo1oHHdxwa5GTN1
-        niJFkZIeMCSauQO+xkgULLagCkRv4VQhfM0z++zpFtK+l5hXXhr1YYUHeovZndJyj0xLbRVicfE4Y
-        6j5Kbm8/lBIUytrBbFRihoeem4Br04wF745GptMq6tAQlOZcWdULkiHdbCWgyRuyHVDQnRi8U7+aB
-        Lr9XdyT7rsYiqdiocsJDplTKebTucJmA0DAgjffs5gH2/kFQl/6ZzYUh06UZxrzDMnPRR4LDSY+wC
-        PxpvDsUw==;
-Received: from [167.98.27.226] (helo=ct-lt-2504.office.codethink.co.uk)
-        by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-        id 1rBbh4-00DTLb-QI; Fri, 08 Dec 2023 14:19:07 +0000
-From:   Ivan Orlov <ivan.orlov@codethink.co.uk>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc:     Ivan Orlov <ivan.orlov@codethink.co.uk>, ajones@ventanamicro.com,
-        conor.dooley@microchip.com, heiko@sntech.de, bjorn@rivosinc.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: lib: Implement optimized memchr function
-Date:   Fri,  8 Dec 2023 14:18:39 +0000
-Message-Id: <20231208141839.174284-1-ivan.orlov@codethink.co.uk>
-X-Mailer: git-send-email 2.34.1
+        Fri, 8 Dec 2023 09:19:11 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061.outbound.protection.outlook.com [40.107.93.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D5F198D;
+        Fri,  8 Dec 2023 06:19:17 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eJC1pI8KZTiJ4vFoBnLTIMetueCU0UeKFQnRPGrICn02zLl6knG4qa3x3zQJyEZjxVaBh9bxrP1CC2QM1QMR+9MrebIHHQdDpyrMympLPzBqueJM2rDFe2UR0M34UQkETU2aDeUAwxePCDBj38VdPoLiRLpmSHzT8DkeLnhVNJY9zqNFBaAlWvVbAd+KK3AgYhK3oigOXErmGfpNLlVAZhrr0dPzQJ6pGJRhsGQ6V+Ytcc0JkI0CxhT/X4ysHSj7aBNBg/6BN9oVUN4lzH+uWXNkuHcA311FTFnzc9wDzfWyzKzDg5P3baMB9dA7CNaHG8HX7hynkGdbib+Ylaa6Vg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bb9ZJh8+GcdP3auO87OneF8Of3tRYgY0DH/bpkyL2Xg=;
+ b=FYJZrRIMJKg988vIorglKVgoG1e11qNdMvrQeF9qufe4xszXxicLM0kbTStyD+HbvlGiXdBNsgo7GyLLhbuf10/a1kPeD/VEQPWmfmI5Ge3hgyiQrYRUfDuCH70ToVtWy9QjkBVxtHEICvp+igmfLaAq6/rCL3M7kNRpwTwPY9HNgau8M4Ur4SX2NkPanTaDtD8qGL8donK4YIVpNmHp3KWKQ6jype/hrN7W2a/VBeqSN56E2pbK/VsxEHink/u+V0CLFx05us4toaGb4bMSd4gInOFmEk1XCFxjfzgLdrG4VeEi22Vt+SOUKbj6Vylq7XWwMwz0Qu6O9XSyRfFvHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bb9ZJh8+GcdP3auO87OneF8Of3tRYgY0DH/bpkyL2Xg=;
+ b=m54+ynBikHdjbnnhlNU3jItVFPu8CjDRj08TS9OH2hphSSQTYQpLdTSTg/NEm4zYxw1zjuxUn6+Vvu67noIReBtsQjgK+CMqAzwk/wbGuiVWSwvga+NqZ847rIKruA6IZM6BQLFDvmKzhLiqU3rzb+w843z1eTBz9gtPa5mISpkugUGgO/kvad/BqCov3J7HG2SYHB+w1wsn0nuAFqC2yZsvWDjCBMLAcBVaYUZQnp+cqwl8R8g5/RVDYomrnPnjqO/d9eWohLLzIjQKfGkNaYGzh5FTjmCeUog4KWfP5BEyiDuZy4nhEBcHAOZyfM8Sqt5y5S/BA+KOI5qqa1ffpw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DM8PR12MB5446.namprd12.prod.outlook.com (2603:10b6:8:3c::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.28; Fri, 8 Dec
+ 2023 14:19:12 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.038; Fri, 8 Dec 2023
+ 14:19:12 +0000
+Date:   Fri, 8 Dec 2023 10:19:11 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leonro@nvidia.com>
+Subject: [GIT PULL] Please pull RDMA subsystem changes
+Message-ID: <20231208141911.GA2934372@nvidia.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BDpsy6xeZP2reSL4"
+Content-Disposition: inline
+X-ClientProxiedBy: MN2PR01CA0040.prod.exchangelabs.com (2603:10b6:208:23f::9)
+ To LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: ivan.orlov@codethink.co.uk
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM8PR12MB5446:EE_
+X-MS-Office365-Filtering-Correlation-Id: 287e9dc4-6afe-46c9-bf6a-08dbf7f8a690
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: b7GqgegKeMs7hY/8iio0vxEtfvFrZmCAYaguUGCSmlDEq58HZitie/1y/by2yNoyUd7pCJm411Vf19TvAEEof4vAFyWq3V/T8q6un3zm8SoWPCTZkD274dOkhrilL+VXQItc3YlwOAGXe83J9/99d8F0lO3Qf7Q6VzwAFlMbweMtT4F75ocnlVWVAr17yYmfN3mVRynnfjfQaufyyc53WxfDEkmXIx3I8xH3nkI29WfazbSVJGU7/SkX5+5uoH/Cl38/+Fv9ZFz/6vZUMKGAXl164TMxzLi+Z1839V2gBsl6076tctFSuq1r+8jSs739DVuUAj2E1UxR1jJYTxzcQBXnvRJgYLggMBE0l6z2C5dKzHu8p2/Y7Y5joeKCuzDNCElKZ80hhz+mVOZec8/9q1CI61oKxVBOvQoXxEyUS2BErJV+SQIijHCvjMluY22xlef96ua3uOacQAeLKEhZqbAZMTHGXnEqUcTRLOmWkxVhuVRl8n+fvRLmoRWjoCLljaWKCQj26h2JPcTLKIn7x2Z+BGOp6TPhNTR5Iv+outzGInFE1CmOJfRtfDJDWoK93pzjdpkEEAAYXFjFLeKWyNVGY0VkO+HthNw/X/HlCQJwGL+kiMjg4ITzP4UHXFJCrwg+c9yncTH6yQp7LY1sgiHyMKz6OZqNY22o4ivD/Fc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(366004)(376002)(230273577357003)(230173577357003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(6486002)(478600001)(66946007)(66556008)(66476007)(38100700002)(6916009)(6512007)(83380400001)(26005)(21480400003)(316002)(6506007)(107886003)(1076003)(2616005)(44144004)(4001150100001)(2906002)(8676002)(8936002)(4326008)(86362001)(5660300002)(33656002)(36756003)(41300700001)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dglgB6chxvJkpr7Hq/qlB7kNpVeT3OjPdv8ay67TpzJG1jXpnaX+d+XZSe2f?=
+ =?us-ascii?Q?qa7pzluS/M9fJhuCnouX/SBI251sZAGYX2NI3Poth6WVyTdTqBfb+dbwhYfv?=
+ =?us-ascii?Q?K8bFE3NgYsBwC6w3eQiBMj3tsPOfqSJs5t6EMKtd7haorpFmHOGIoZ4gGMKj?=
+ =?us-ascii?Q?5yjambGCNStxyqL3sPKqT+faHJjUI1gAWu9Q80XQ2EHx4CF1Xge4aw0g17lB?=
+ =?us-ascii?Q?cRXhZh21M7x48h7opd7alPsmbm/SGslySHufk/EfLnp41HZKYBvHsySwETdB?=
+ =?us-ascii?Q?4IgT9goPCf89o5agHtLJ+J9wv7fMElH4PGegBhBM6Ghkv0BPkX2qyh/0av1K?=
+ =?us-ascii?Q?pHJHbckY3WTWnLgB5i3KCuWJ2ZuDukX7YmJAlpW4cPOOccrXQXMxKlxUoCRT?=
+ =?us-ascii?Q?I5wzHvnnJOd97MwcCfGgaJbjVIh21PWi+yR08kgXC8r53NlXUwkKIySxpcNL?=
+ =?us-ascii?Q?QayOAOn01qxUeiIRJ5N+Mx3a19OZUlh20PhI5ml/rKdjT/4vkmSSsl9MnT9W?=
+ =?us-ascii?Q?zAvAssvGXbcGwQ8WfA84Ai2pHLY8b/gJpKEFEowr/X0U0Yx6SxXeyLgvnFOS?=
+ =?us-ascii?Q?grMWG5gf/+kl+RHbUqfubbM13juQJw7zFSWjWkw0XpKT+5lDGDT2G68IdHMh?=
+ =?us-ascii?Q?QxhcZJp00WbiAnB+QP4jFJpCoRk3lWKu/kaoPPeQzgL31tyzWawuHXHakBne?=
+ =?us-ascii?Q?jGGCI8ueOjR8CQSwQtvoF0sgG6tTplacswtYuX7ln3kwu1UiRcBjqOq4DAuB?=
+ =?us-ascii?Q?fe36mizhXiIBaOTaMN6GP3blOHNd6351pzV43G8F1SkMfTSTL9/z1ep3vMAL?=
+ =?us-ascii?Q?gPYBwnwvpw70n9oq075AAK0bu6Em7ho60yCI2bOcjJTkRNIqgmWAAcV589KU?=
+ =?us-ascii?Q?IaGQb5rC9ONFGYB1/6L07vVtFEE0DUM31JdMNBSji5TPYGap08Tj/TVXDj6A?=
+ =?us-ascii?Q?qX4HI+o62Xwfoxq0DXRYaCvH0esvY5RjmVL1IPizhd3lwc1L9c1aA6qIjCjI?=
+ =?us-ascii?Q?d71KD+A4OmIRUCPD0EJ8Oh6NpqZhYYL4ilb7oZOjNegwXBg0Ia2bgUPuw3Kr?=
+ =?us-ascii?Q?x+vkx47s/SBj4F0EJbdTvLhxlgb54xxz/zmovI+OoHgBoNpvzF9nqf2JXIHx?=
+ =?us-ascii?Q?nxtmgS0aPwI5HlchBimULIPafiWl80465ZNKaqYJw07jpMlbqM1hsJXZWzZP?=
+ =?us-ascii?Q?ybfM1AxYvT/uQptoONaEj1TumSJUt9cebxVYMB1hJ8M2wAOJ+9RVnefzj7DI?=
+ =?us-ascii?Q?VlLwtIolZtx1uegaeHXCO+KTyRqOnmQMuGwO6x/VsV+JsxywESjzagqNtCWU?=
+ =?us-ascii?Q?g3JfnjTXy9FVKYmIaemA/Y93v8I91BZt+dDkzOz78Tx8JRH+eiMFjiJGVdT5?=
+ =?us-ascii?Q?iDjAWHF2JTnQ5RGRxTA14Kzca9SA9CgaV0Yh8XKmT6GYPbaZjtt/FUXz+0p2?=
+ =?us-ascii?Q?lrh6QxZjWBBTKer4NSDs/PcDFPSYYPEfpmDzIqb6GZ7lLU5r2ifAtKD4YMPC?=
+ =?us-ascii?Q?HM6oNd1al87x0m5yEOZVVBpOyEG1MJue4DU6yUOS9LvNZGqRT4doQG4d6ORf?=
+ =?us-ascii?Q?AsYLz/kmzeasVfgaF1m++QrppqmSm7CO45Trytqn?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 287e9dc4-6afe-46c9-bf6a-08dbf7f8a690
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 14:19:12.2882
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2Z75gZjvvEZLnBRDICrI/VlO1AM4hahohlJ2G3z9UCvaydsTv1+lrqsWwkHAugPV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5446
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAD_CREDIT,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the moment we don't have an architecture-specific memchr
-implementation for riscv in the Kernel. The generic version of this
-function iterates the memory area bytewise looking for the target value,
-which is not the optimal approach.
+--BDpsy6xeZP2reSL4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Instead of iterating the memory byte by byte, we can iterate over words
-of memory. Word still takes only one cycle to be loaded, and it could be
-checked for containing the target byte in just 5 operations:
+Hi Linus,
 
-1. Let's say we are looking for the byte BA. XOR the word with
-0xBABA..BA
-2. If we have zero byte in the result, the word contains byte BA. Let's
-subtract 0x0101..01 from the xor result.
-3. Calculate the ~(xor result).
-4. And the results of steps 2 and 3. If in the xor result we had a zero
-bit somewhere, and after subtracting the 0x0101..01 it turned to 1,
-we will get 1 in the result
-5. And the result of step 4 with 0x8080..80. If we had a leading zero
-bit in the xor result which turned to 1 after subtracting 0x0101..01,
-it was the leading bit of a zero byte. So, if result of this step != 0,
-the word contains the byte we are looking for.
+Batch of RC fixes. Probably the last till next year, thanks
 
-The same approach is used in the arm64 implementation of this function.
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
-So, this patch introduces the riscv-specific memchr function which
-accepts 3 parameters (address, target byte and count) and works in the
-following way:
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-0. If count is smaller than 128, iterate the area byte by byte as we
-would not get any performance gain here.
-1. If address is not aligned, iterate SZREG - (address % SZREG) bytes
-to avoid unaligned memory access.
-2. If count is larger than 128, iterate words of memory until we find
-the word which contains the target byte.
-3. If we have found the word, iterate through it byte by byte and return
-the address of the first occurrence.
-4. If we have not found the word, iterate the remainder (in case if
-the count was not divisible by 8).
-5. If we still have not found the target byte, return 0.
+are available in the Git repository at:
 
-Here you can see the benchmark results for "Sifive Hifive Unmatched"
-board, which compares the old and new memchr implementations.
+  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-| test_count | array_size | old_mean_ktime  | new_mean_ktime  |
----------------------------------------------------------------
-|      10000 |         10 |             415 |             409 |
-|      10000 |        100 |             642 |             717 |
-|      10000 |        128 |             714 |             775 |
-|      10000 |        256 |            1031 |             611 |
-|       5000 |        512 |            1686 |             769 |
-|       5000 |        768 |            2320 |             925 |
-|       5000 |       1024 |            2968 |            1095 |
-|       5000 |       1500 |            4165 |            1383 |
-|       5000 |       2048 |            5567 |            1731 |
-|       3000 |       4096 |           10698 |            3028 |
-|       3000 |      16384 |           41630 |           10766 |
-|       1000 |     524288 |         1475454 |          498183 |
-|       1000 |    1048576 |         2952080 |          997018 |
-|        500 |   10485760 |        49491492 |        29335358 |
-|        100 |  134217728 |       636033660 |       377157970 |
-|         20 |  536870912 |      2546979300 |      1510817350 |
-|         20 | 1073741824 |      5095776750 |      3019167250 |
+for you to fetch changes up to e3e82fcb79eeb3f1a88a89f676831773caff514a:
 
-The target symbol was always placed at the last index of the array, and
-the mean time of function execution was measured using the ktime_get
-function.
+  RDMA/irdma: Avoid free the non-cqp_request scratch (2023-12-04 20:02:41 -0400)
 
-As you can see, the new function shows much better results even for
-the small arrays of 256 elements, therefore I believe it could be a
-useful addition to the existing riscv-specific string functions.
+----------------------------------------------------------------
+RDMA first rc pull for v6.7
 
-Signed-off-by: Ivan Orlov <ivan.orlov@codethink.co.uk>
----
- arch/riscv/include/asm/string.h |  2 +
- arch/riscv/kernel/riscv_ksyms.c |  1 +
- arch/riscv/lib/Makefile         |  1 +
- arch/riscv/lib/memchr.S         | 98 +++++++++++++++++++++++++++++++++
- 4 files changed, 102 insertions(+)
- create mode 100644 arch/riscv/lib/memchr.S
+Primarily rtrs and irdma fixes:
 
-diff --git a/arch/riscv/include/asm/string.h b/arch/riscv/include/asm/string.h
-index a96b1fea24fe..ec1a643cb625 100644
---- a/arch/riscv/include/asm/string.h
-+++ b/arch/riscv/include/asm/string.h
-@@ -18,6 +18,8 @@ extern asmlinkage void *__memcpy(void *, const void *, size_t);
- #define __HAVE_ARCH_MEMMOVE
- extern asmlinkage void *memmove(void *, const void *, size_t);
- extern asmlinkage void *__memmove(void *, const void *, size_t);
-+#define __HAVE_ARCH_MEMCHR
-+extern asmlinkage void *memchr(const void *, int, size_t);
- 
- #define __HAVE_ARCH_STRCMP
- extern asmlinkage int strcmp(const char *cs, const char *ct);
-diff --git a/arch/riscv/kernel/riscv_ksyms.c b/arch/riscv/kernel/riscv_ksyms.c
-index a72879b4249a..08c0d846366b 100644
---- a/arch/riscv/kernel/riscv_ksyms.c
-+++ b/arch/riscv/kernel/riscv_ksyms.c
-@@ -9,6 +9,7 @@
- /*
-  * Assembly functions that may be used (directly or indirectly) by modules
-  */
-+EXPORT_SYMBOL(memchr);
- EXPORT_SYMBOL(memset);
- EXPORT_SYMBOL(memcpy);
- EXPORT_SYMBOL(memmove);
-diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
-index 26cb2502ecf8..0a8b64f8ca88 100644
---- a/arch/riscv/lib/Makefile
-+++ b/arch/riscv/lib/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+lib-y			+= memchr.o
- lib-y			+= delay.o
- lib-y			+= memcpy.o
- lib-y			+= memset.o
-diff --git a/arch/riscv/lib/memchr.S b/arch/riscv/lib/memchr.S
-new file mode 100644
-index 000000000000..d48e0fa3cd84
---- /dev/null
-+++ b/arch/riscv/lib/memchr.S
-@@ -0,0 +1,98 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2023 Codethink Ltd.
-+ * Author: Ivan Orlov <ivan.orlov@codethink.co.uk>
-+ */
-+
-+#include <linux/linkage.h>
-+#include <asm/asm.h>
-+
-+#define REP_01 __REG_SEL(0x0101010101010101, 0x01010101)
-+#define REP_80 __REG_SEL(0x8080808080808080, 0x80808080)
-+
-+#define MIN_BORDER 128
-+
-+SYM_FUNC_START(memchr)
-+	andi a1, a1, 0xFF
-+
-+	// use byte-wide iteration for small numbers
-+	add t1, x0, a2
-+	sltiu t2, a2, MIN_BORDER
-+	bnez t2, 6f
-+
-+	// get the number of bytes we should iterate before alignment
-+	andi t0, a0, SZREG - 1
-+	beqz t0, 4f
-+
-+	# get the SZREG - t0
-+	xor t0, t0, SZREG - 1
-+	addi t0, t0, 1
-+
-+	sub a2, a2, t0
-+	// iterate before alignment
-+1:
-+	beq t0, x0, 4f
-+	lbu t2, 0(a0)
-+	beq t2, a1, 3f
-+	addi t0, t0, -1
-+	addi a0, a0, 1
-+	j 1b
-+
-+2:
-+	// found a word. Iterate it until we find the target byte
-+	li t1, SZREG
-+	j 6f
-+3:
-+	ret
-+
-+4:
-+	// get the count remainder
-+	andi t1, a2, SZREG - 1
-+
-+	// align the count
-+	sub a2, a2, t1
-+
-+	// if we have no words to iterate, iterate the remainder
-+	beqz a2, 6f
-+
-+	// from 0xBA we will get 0xBABABABABABABABA
-+	li t3, REP_01
-+	mul t3, t3, a1
-+
-+	add a2, a2, a0
-+
-+	li t4, REP_01
-+	li t5, REP_80
-+
-+5:
-+	REG_L t2, 0(a0)
-+
-+	// after this xor we will get one zero byte in the word if it contains the target byte
-+	xor t2, t2, t3
-+
-+	// word v contains the target byte if (v - 0x01010101) & (~v) & 0x80808080 is positive
-+	sub t0, t2, t4
-+
-+	not t2, t2
-+
-+	and t0, t0, t2
-+	and t0, t0, t5
-+
-+	bnez t0, 2b
-+	addi a0, a0, SZREG
-+	bne a0, a2, 5b
-+
-+6:
-+	// iterate the remainder
-+	beq t1, x0, 7f
-+	lbu t4, 0(a0)
-+	beq t4, a1, 3b
-+	addi a0, a0, 1
-+	addi t1, t1, -1
-+	j 6b
-+
-+7:
-+	addi a0, x0, 0
-+	ret
-+SYM_FUNC_END(memchr)
-+SYM_FUNC_ALIAS(__pi_memchr, memchr)
--- 
-2.34.1
+- Fix uninitialized value in ib_get_eth_speed()
 
+- Fix hns refusing to work if userspace doesn't select the correct
+  congestion control algorithm
+
+- Several irdma fixes - unreliable Send Queue Drain, use after free, 64k
+  page size bugs, device removal races
+
+- Several rtrs bug fixes - crashes, memory leaks, use after free, bad
+  credit accounting, bogus WARN_ON
+
+- Typos and a MAINTAINER update
+
+----------------------------------------------------------------
+Jack Wang (4):
+      RDMA/rtrs-srv: Do not unconditionally enable irq
+      RDMA/rtrs-clt: Start hb after path_up
+      RDMA/rtrs-clt: Fix the max_send_wr setting
+      RDMA/rtrs-clt: Remove the warnings for req in_use check
+
+Junxian Huang (2):
+      RDMA/hns: Fix unnecessary err return when using invalid congest control algorithm
+      MAINTAINERS: Add Chengchang Tang as Hisilicon RoCE maintainer
+
+Kalesh AP (1):
+      RDMA/bnxt_re: Correct module description string
+
+Md Haris Iqbal (3):
+      RDMA/rtrs-srv: Check return values while processing info request
+      RDMA/rtrs-srv: Free srv_mr iu only when always_invalidate is true
+      RDMA/rtrs-srv: Destroy path files after making sure no IOs in-flight
+
+Mike Marciniszyn (3):
+      RDMA/core: Fix umem iterator when PAGE_SIZE is greater then HCA pgsz
+      RDMA/irdma: Ensure iWarp QP queue memory is OS paged aligned
+      RDMA/irdma: Fix support for 64k pages
+
+Mustafa Ismail (2):
+      RDMA/irdma: Do not modify to SQD on error
+      RDMA/irdma: Add wait for suspend on SQD
+
+Shifeng Li (2):
+      RDMA/irdma: Fix UAF in irdma_sc_ccq_get_cqe_info()
+      RDMA/irdma: Avoid free the non-cqp_request scratch
+
+Shigeru Yoshida (1):
+      RDMA/core: Fix uninit-value access in ib_get_eth_speed()
+
+ MAINTAINERS                                |  1 +
+ drivers/infiniband/core/umem.c             |  6 -----
+ drivers/infiniband/core/verbs.c            |  2 +-
+ drivers/infiniband/hw/bnxt_re/main.c       |  2 +-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 13 +++++++----
+ drivers/infiniband/hw/irdma/hw.c           | 16 +++++++------
+ drivers/infiniband/hw/irdma/main.c         |  2 +-
+ drivers/infiniband/hw/irdma/main.h         |  2 +-
+ drivers/infiniband/hw/irdma/verbs.c        | 35 +++++++++++++++++++++-------
+ drivers/infiniband/hw/irdma/verbs.h        |  1 +
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c     |  7 +++---
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c     | 37 ++++++++++++++++++++++--------
+ include/rdma/ib_umem.h                     |  9 +++++++-
+ include/rdma/ib_verbs.h                    |  1 +
+ 14 files changed, 90 insertions(+), 44 deletions(-)
+
+--BDpsy6xeZP2reSL4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRRRCHOFoQz/8F5bUaFwuHvBreFYQUCZXMl3AAKCRCFwuHvBreF
+YcDJAQD032q65/HwdwWiPXFjPI7FJw9lGHHtJvxDWRYj7l7rFwEAxbBi+MoH2l1v
+jJqjfiFUgw464F37t8v+GDlpMdEl9Ac=
+=bscw
+-----END PGP SIGNATURE-----
+
+--BDpsy6xeZP2reSL4--
