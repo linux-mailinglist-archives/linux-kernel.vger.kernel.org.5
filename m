@@ -2,44 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87570809BBD
+	by mail.lfdr.de (Postfix) with ESMTP id 3256F809BBC
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 06:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232431AbjLHFdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 00:33:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48606 "EHLO
+        id S233145AbjLHFd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 00:33:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjLHFdJ (ORCPT
+        with ESMTP id S229637AbjLHFdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 00:33:09 -0500
+        Fri, 8 Dec 2023 00:33:24 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B753D123
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 21:33:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA3BFC433C7;
-        Fri,  8 Dec 2023 05:33:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1702013595;
-        bh=c95vgIGojNc1fgzK6+ldl6rVKTigeKUbZUIuUxNNRPg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yMI5A72U3NgOG4NNCRLUTGvUct5N4T6H+MPoYf9m/FzzWFuZiJIza5lEZTCatJdg4
-         EXTG1GtKEXSYfnuBmS3ynPe3VqMpsyrJyfhmE59ksqC92QP4FyKPPZomvzuVr3UVqQ
-         b3Dd1gz7h2kxufzLDmSpQX/iU2quknyme+8D+xC4=
-Date:   Fri, 8 Dec 2023 06:33:12 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ayush Singh <ayushdevel1325@gmail.com>
-Cc:     greybus-dev@lists.linaro.org, johan@kernel.org, elder@kernel.org,
-        linux-kernel@vger.kernel.org, jkridner@beagleboard.org, nm@ti.com,
-        yujie.liu@intel.com
-Subject: Re: [PATCH 1/1] greybus: gb-beagleplay: Remove use of pad bytes
-Message-ID: <2023120805-endocrine-conflict-b1ff@gregkh>
-References: <20231206150602.176574-1-ayushdevel1325@gmail.com>
- <20231206150602.176574-2-ayushdevel1325@gmail.com>
- <2023120758-coleslaw-unstopped-530c@gregkh>
- <c0823649-8235-40d7-813e-8a4500251219@gmail.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F5E1729
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 21:33:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F38AC433C8;
+        Fri,  8 Dec 2023 05:33:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702013610;
+        bh=57Iuychu+Y6HJndFxVGj0xwfUq2O94hJGtPFq6Hs3bE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=N8tLFs818LJj90WRN8s0XJpAyMFajluMii8/dZUCGN26Sp99+yFxIluN2oqv5k1Fo
+         0zK5XjSQFFhqDiI3yabEQaA0LC0bLYo4i5k+kPQknF+u2HeVSC3IbX4OdIKw+sn4OU
+         eKX6+D6u+Bp5/p3tnBRM8NIHK0G0J5CmqKDlGQMOUMixsn/595AzvSSBDMVwBj+r4A
+         QLfUgtZbDpzG8vPUfCEPJ+hEnmM6Wb3l5Xa8/2kXrWQYzLNnbDL/Epcdcyc5OakQgS
+         id9PK+dBcukWAPJP8WLmG0F50J3sErIQQTyaMPVcpMjkws/pKM90WXMmpBqqMPvada
+         YY4i+LlElWWDg==
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50be03cc8a3so2090305e87.1;
+        Thu, 07 Dec 2023 21:33:30 -0800 (PST)
+X-Gm-Message-State: AOJu0YxC7vgwggckZWPC56gyuPTxQdk6shoKUrjONZ4KV2i4/g66+EP+
+        WFeaLzMsekthuRUWIdcbghZ3VSWqSfCz4XmmMjg=
+X-Google-Smtp-Source: AGHT+IGrWYKEARpYyha5a0BZLMItMM50RLahl12IkQVgDAvW13+O6qc+CP0Wak/gkrsYjmUNkbytn6ssAaOvZubz3jo=
+X-Received: by 2002:a05:6512:12c2:b0:50c:1bc5:6a65 with SMTP id
+ p2-20020a05651212c200b0050c1bc56a65mr1563713lfg.53.1702013608490; Thu, 07 Dec
+ 2023 21:33:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c0823649-8235-40d7-813e-8a4500251219@gmail.com>
+References: <03dd7de1cecdb7084814f2fab300c9bc716aff3e.1701632867.git.christophe.jaillet@wanadoo.fr>
+ <202312041419.81EF03F7B7@keescook>
+In-Reply-To: <202312041419.81EF03F7B7@keescook>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 7 Dec 2023 21:33:17 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW43g-M+xvzD0N1JsJ_zGnvZQOw2Bi1TEqoHKanPnvMHLQ@mail.gmail.com>
+Message-ID: <CAPhsuW43g-M+xvzD0N1JsJ_zGnvZQOw2Bi1TEqoHKanPnvMHLQ@mail.gmail.com>
+Subject: Re: [PATCH] md/md-multipath: Convert "struct mpconf" to flexible array
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -50,86 +61,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 10:33:54PM +0530, Ayush Singh wrote:
-> > > + *
-> > > + * @cport: cport id
-> > > + * @hdr: greybus operation header
-> > > + * @payload: greybus message payload
-> > > + */
-> > > +struct hdlc_greybus_frame {
-> > > +	__le16 cport;
-> > > +	struct gb_operation_msg_hdr hdr;
-> > > +	u8 payload[];
-> > > +} __packed;
-> > > +
-> > >   static void hdlc_rx_greybus_frame(struct gb_beagleplay *bg, u8 *buf, u16 len)
-> > >   {
-> > > -	u16 cport_id;
-> > > -	struct gb_operation_msg_hdr *hdr = (struct gb_operation_msg_hdr *)buf;
-> > > +	struct hdlc_greybus_frame *gb_frame = (struct hdlc_greybus_frame *)buf;
-> > > +	u16 cport_id = le16_to_cpu(gb_frame->cport);
-> > > -	memcpy(&cport_id, hdr->pad, sizeof(cport_id));
-> > > +	/* Ensure that the greybus message is valid */
-> > > +	if (le16_to_cpu(gb_frame->hdr.size) > len - sizeof(cport_id)) {
-> > > +		dev_warn_ratelimited(&bg->sd->dev, "Invalid/Incomplete greybus message");
-> > Don't spam the kernel log for corrupted data on the line, that would be
-> > a mess.  Use a tracepoint?
-> > 
-> > > +		return;
-> > > +	}
-> > >   	dev_dbg(&bg->sd->dev, "Greybus Operation %u type %X cport %u status %u received",
-> > > -		hdr->operation_id, hdr->type, le16_to_cpu(cport_id), hdr->result);
-> > > +		gb_frame->hdr.operation_id, gb_frame->hdr.type, cport_id, gb_frame->hdr.result);
-> > Better yet, put the error in the debug message?
-> Shouldn't corrupt data be a warning rather than debug message, since it
-> indicates something wrong with the transport?
+On Mon, Dec 4, 2023 at 2:20=E2=80=AFPM Kees Cook <keescook@chromium.org> wr=
+ote:
+>
+> On Sun, Dec 03, 2023 at 08:48:06PM +0100, Christophe JAILLET wrote:
+> > The 'multipaths' field of 'struct mpconf' can be declared as a flexible
+> > array.
+> >
+> > The advantages are:
+> >    - 1 less indirection when accessing to the 'multipaths' array
+> >    - save 1 pointer in the structure
+> >    - improve memory usage
+> >    - give the opportunity to use __counted_by() for additional safety
+> >
+> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>
+> This looks like a really nice conversion. I haven't run-tested this, but
+> it reads correct to me.
 
-Do you want messages like that spamming the kernel log all the time if a
-network connection is corrupted?
+Agreed this is a good optimization. However, since MD_MULTIPATH is
+already marked as deprecated. I don't think we should ship further
+changes to it.
 
-Just handle the error and let the upper layers deal with it when the
-problem is eventually reported to userspace, that's all that is needed.
-
-
-> > > -	greybus_data_rcvd(bg->gb_hd, le16_to_cpu(cport_id), buf, len);
-> > > +	greybus_data_rcvd(bg->gb_hd, cport_id, &buf[sizeof(cport_id)],
-> > Fun with pointer math.  This feels really fragile, why not just point to
-> > the field instead?
-> It seems that taking address of members of packed structures is not valid.
-
-That feels really odd.
-
-> I get the `address-of-packed-member` warnings. Is it fine to ignore
-> those in kernel?
-
-What error exactly are you getting?  Packed or not does not mean
-anything to the address of a member.  If it does, perhaps you are doing
-something wrong as you are really doing the same thing here, right?
-Don't ignore the warning by open-coding it.
-
-> > >   }
-> > >   static void hdlc_rx_dbg_frame(const struct gb_beagleplay *bg, const char *buf, u16 len)
-> > > @@ -339,7 +357,7 @@ static struct serdev_device_ops gb_beagleplay_ops = {
-> > >   static int gb_message_send(struct gb_host_device *hd, u16 cport, struct gb_message *msg, gfp_t mask)
-> > >   {
-> > >   	struct gb_beagleplay *bg = dev_get_drvdata(&hd->dev);
-> > > -	struct hdlc_payload payloads[2];
-> > > +	struct hdlc_payload payloads[3];
-> > why 3?
-> > 
-> > It's ok to put this on the stack?
-> 
-> Well, the HDLC payload is just to store the length of the payload along with
-> a pointer to its data. (kind of emulate a fat pointer). The reason for doing
-> it this way is to avoid having to create a temp buffer for each message when
-> sending data over UART (which was done in the initial version of the
-> driver).
-
-Be careful, are you SURE you are allowed to send stack-allocated data?
-I know that many busses forbid this (like USB).  So please check to be
-sure that this is ok to do, and that these are not huge structures that
-you are putting on the very-limited kernel-stack.
-
-thanks,
-
-greg k-h
+Thanks,
+Song
