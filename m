@@ -2,278 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B621E80A564
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F097E80A533
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573953AbjLHOZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 09:25:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54298 "EHLO
+        id S1573912AbjLHONQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 09:13:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573944AbjLHOZx (ORCPT
+        with ESMTP id S1573881AbjLHONP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 09:25:53 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08851987;
-        Fri,  8 Dec 2023 06:25:59 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id 98e67ed59e1d1-28a281bcb3cso659692a91.0;
-        Fri, 08 Dec 2023 06:25:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702045559; x=1702650359; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Qv0/VXj9gO3IRMJ3aNrk4TuraBbkLjJrU94lN6xXrjM=;
-        b=l4JJUDbKlV9SpGBvZTqvn0iYSMAkrfTbFSLRxu1fRC+q087zVvDrr5NZPedabsbwl4
-         JN7nAivoBfwclHlaKjKFRs89dAKQ1FOyG7/cOVFdi82ALvk72408fhF1/mnX0F5Fx5gE
-         BzXZrftl3XqZHub4p3EjaZowmXnLaw4hSzt66TwQokTmTmltsQXXo9HPbBNE2pll9mSa
-         BTZ52jqquhgT9o5lLxhI+B1H+EgPyFrdQJYEUouFkOvAPjIWPcrdoSSk9pEDJGQ5eoQR
-         Ph/mRdValXXAbVr77p9ql46ZGSDUuSf2GAEpGknWqRsJa8Cr2qTViyq9JKC3egaMp9AX
-         59Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702045559; x=1702650359;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Qv0/VXj9gO3IRMJ3aNrk4TuraBbkLjJrU94lN6xXrjM=;
-        b=GlHjojsSTujubz+GLxcSNUEl0WtTctM672n5hhYcg8hrpSaZGj0y5b48d7il/ZeNxV
-         9QK+Aq7Ep1UwgJx9RrGLgHN6S0uBhtAPsbp+E/4IuhRuYR2psGskBl8GrndhfUsVRbRX
-         +UXBtfUDxKu+IWnQYji2V13243HrJftoGV6E4ElCifAjzwfy4X5yNaXpJjWnqOugvknV
-         D1uNw9AwmFJKqpf1nUfuKwygXEJzdnAYsSZDUHMwPxrFATmLoZSpb6dBD4tQsME9rnMj
-         lb9MjrErQKPYdEnzMKZAYIUgv/npDA4w3AJbJ3eryMpDEXMPBwvkOOceyUyyrYsK1LNi
-         NCMA==
-X-Gm-Message-State: AOJu0YwLVuNp6iY7YpVIuSLVjwm2UVrO5kSK4Md+jeIXeg/yr33iGjP5
-        ymhqqstM0E/eJXr6CoRW2qaaEL8/7s7xHmz2vhR2HiE642H7WO4cgY6Z3w==
-X-Google-Smtp-Source: AGHT+IHYDoDA6MQZkyMBbAbte79ulFs2tE76nYYHYQExFcv48WNXuVzBKglVwrFSez/bvdRLxmA8h0oJFnbaNQdnZKs=
-X-Received: by 2002:a17:90b:954:b0:286:f87b:ee0b with SMTP id
- dw20-20020a17090b095400b00286f87bee0bmr224657pjb.19.1702045559212; Fri, 08
- Dec 2023 06:25:59 -0800 (PST)
+        Fri, 8 Dec 2023 09:13:15 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DDF10F1;
+        Fri,  8 Dec 2023 06:13:21 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702044800;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ozIt0NpDzyo+Um0CWiKiW7MbyrySc7KdMzm0CGPzvo=;
+        b=DlHwMQpaXXu9BhQft/LEkcmfYfndeA0JHHiXh79nshdASb0bAd2Z/klENPH+N4myV1G122
+        4B3k4UTw63qVars0Nwp/WQxVw2Wx9blklGJCq9I8Vae6FgrA5hWRwy9l4emdKzWr9pVwhP
+        +kYw8UjZIZsWpL5XuWrfwmaPKIT+I2UEtBdLJleL96glP86AHjLkjqjEXz97NISbeUFba5
+        RQ6/kaEtsbWwsBIbeTQkZW6iS7154lQtl/u50Y2w3kJOH9UXWf2S32eBzfGfauphyD7ZoZ
+        ympLna5q+pczEwnWH1nkk/OtXU+4rt6uXPAW6fYmkZjVM4jMEk4M84altptwwg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702044800;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ozIt0NpDzyo+Um0CWiKiW7MbyrySc7KdMzm0CGPzvo=;
+        b=nNtuGdKFbQkUmGMEp2doPQYFowq/a6IiDjr7VB3UWAe8RUZPqQstA4RYB8U8SC1EroxuSh
+        wRykCv5Ci1i0K6Aw==
+To:     Haoran Liu <liuhaoran14@163.com>, tsbogend@alpha.franken.de
+Cc:     fancer.lancer@gmail.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Haoran Liu <liuhaoran14@163.com>
+Subject: Re: [PATCH] [irqchip] mips-cpu: Add error handling in
+ mips_cpu_register_ipi_domain
+In-Reply-To: <20231130040642.36133-1-liuhaoran14@163.com>
+References: <20231130040642.36133-1-liuhaoran14@163.com>
+Date:   Fri, 08 Dec 2023 15:13:19 +0100
+Message-ID: <87o7f0sry8.ffs@tglx>
 MIME-Version: 1.0
-From:   xingwei lee <xrivendell7@gmail.com>
-Date:   Fri, 8 Dec 2023 22:12:01 +0800
-Message-ID: <CABOYnLwVDrhLB6yqqDgS7xixzo-OA=ZcJwBDoMPeQDMiFR7scA@mail.gmail.com>
-Subject: Re: divide error in mb_update_avg_fragment_size
-To:     harperchen1110@gmail.com
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzkaller@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello I saw you can't reproduce this bug and I reproduce it with
-repro.c and repro.txt
-I test the repro.c in the lastest HEAD: 5e3f5b81de80c98338bcb47c233aebefee5a4801
-kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=6ae1a4ee971a7305
-and the bug also existed.
+On Wed, Nov 29 2023 at 20:06, Haoran Liu wrote:
 
-=* repro.c =*
-// autogenerated by syzkaller (https://github.com/google/syzkaller)
+The subject line:
 
-#define _GNU_SOURCE
+  https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#patch-subject
 
-#include <dirent.h>
-#include <endian.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/prctl.h>
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <time.h>
-#include <unistd.h>
+> This patch enhances the mips_cpu_register_ipi_domain function in
 
-static unsigned long long procid;
+# git grep 'This patch' Documentation/process/
 
-static void sleep_ms(uint64_t ms) { usleep(ms * 1000); }
+> drivers/irqchip/irq-mips-cpu.c by adding error handling for the
+> kzalloc
 
-static uint64_t current_time_ms(void) {
-  struct timespec ts;
-  if (clock_gettime(CLOCK_MONOTONIC, &ts)) exit(1);
-  return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
-}
+The file name is irrelevant. Please read and follow:
 
-static bool write_file(const char* file, const char* what, ...) {
-  char buf[1024];
-  va_list args;
-  va_start(args, what);
-  vsnprintf(buf, sizeof(buf), what, args);
-  va_end(args);
-  buf[sizeof(buf) - 1] = 0;
-  int len = strlen(buf);
-  int fd = open(file, O_WRONLY | O_CLOEXEC);
-  if (fd == -1) return false;
-  if (write(fd, buf, len) != len) {
-    int err = errno;
-    close(fd);
-    errno = err;
-    return false;
-  }
-  close(fd);
-  return true;
-}
+  https://www.kernel.org/doc/html/latest/process/maintainer-tip.html
 
-static void kill_and_wait(int pid, int* status) {
-  kill(-pid, SIGKILL);
-  kill(pid, SIGKILL);
-  for (int i = 0; i < 100; i++) {
-    if (waitpid(-1, status, WNOHANG | __WALL) == pid) return;
-    usleep(1000);
-  }
-  DIR* dir = opendir("/sys/fs/fuse/connections");
-  if (dir) {
-    for (;;) {
-      struct dirent* ent = readdir(dir);
-      if (!ent) break;
-      if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
-        continue;
-      char abort[300];
-      snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
-               ent->d_name);
-      int fd = open(abort, O_WRONLY);
-      if (fd == -1) {
-        continue;
-      }
-      if (write(fd, abort, 1) < 0) {
-      }
-      close(fd);
-    }
-    closedir(dir);
-  } else {
-  }
-  while (waitpid(-1, status, __WALL) != pid) {
-  }
-}
+> call. Previously, the function lacked proper handling for kzalloc
+> failures, which could lead to potential null pointer dereference issues
+> under low memory conditions.
 
-static void setup_test() {
-  prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
-  setpgrp();
-  write_file("/proc/self/oom_score_adj", "1000");
-}
+The value of this "enhancement" is dubious. if that kzalloc() fails then
+any subsequent allocation will fail too and the machine will crash
+anyway.
 
-static void execute_one(void);
-
-#define WAIT_FLAGS __WALL
-
-static void loop(void) {
-  int iter = 0;
-  for (;; iter++) {
-    int pid = fork();
-    if (pid < 0) exit(1);
-    if (pid == 0) {
-      setup_test();
-      execute_one();
-      exit(0);
-    }
-    int status = 0;
-    uint64_t start = current_time_ms();
-    for (;;) {
-      if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid) break;
-      sleep_ms(1);
-      if (current_time_ms() - start < 5000) continue;
-      kill_and_wait(pid, &status);
-      break;
-    }
-  }
-}
-
-uint64_t r[5] = {0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffffff,
-                 0xffffffffffffffff, 0xffffffffffffffff};
-
-void execute_one(void) {
-  intptr_t res = 0;
-  memcpy((void*)0x20000280, "cgroup.controllers\000", 19);
-  res = syscall(__NR_openat, /*fd=*/0xffffff9c, /*file=*/0x20000280ul,
-                /*flags=*/0x275aul, /*mode=*/0ul);
-  if (res != -1) r[0] = res;
-  memcpy((void*)0x20000180, "cgroup.controllers\000", 19);
-  res = syscall(__NR_openat, /*fd=*/0xffffff9c, /*file=*/0x20000180ul,
-                /*flags=*/0x275aul, /*mode=*/0ul);
-  if (res != -1) r[1] = res;
-  res = syscall(__NR_dup3, /*oldfd=*/r[1], /*newfd=*/r[0], /*flags=*/0ul);
-  if (res != -1) r[2] = res;
-  *(uint32_t*)0x20000140 = 0x20;
-  *(uint32_t*)0x20000144 = 0x8c8c;
-  *(uint32_t*)0x20000148 = 0;
-  *(uint32_t*)0x2000014c = 0;
-  *(uint32_t*)0x20000150 = 0;
-  memset((void*)0x20000154, 0, 8);
-  syscall(__NR_ioctl, /*fd=*/r[0], /*cmd=*/0x401c5820, /*arg=*/0x20000140ul);
-  sprintf((char*)0x20000040, "0x%016llx", (long long)0);
-  syscall(__NR_write, /*fd=*/r[0], /*buf=*/0x20000040ul, /*len=*/0xfea0ul);
-  memcpy((void*)0x200001c0, "cpuset.effective_cpus\000", 22);
-  res = syscall(__NR_openat, /*fd=*/0xffffff9c, /*file=*/0x200001c0ul,
-                /*flags=*/0x275aul, /*mode=*/0ul);
-  if (res != -1) r[3] = res;
-  sprintf((char*)0x20000380, "0x%016llx", (long long)0);
-  syscall(__NR_write, /*fd=*/r[3], /*buf=*/0x20000380ul, /*len=*/0x101bful);
-  syscall(__NR_ioctl, /*fd=*/r[3], /*cmd=*/0x660c, 0);
-  *(uint32_t*)0x200000c0 = 0;
-  *(uint32_t*)0x200000c4 = r[3];
-  *(uint64_t*)0x200000c8 = 7;
-  *(uint64_t*)0x200000d0 = 0;
-  *(uint64_t*)0x200000d8 = 0;
-  *(uint64_t*)0x200000e0 = 0;
-  syscall(__NR_ioctl, /*fd=*/r[2], /*cmd=*/0xc028660f, /*arg=*/0x200000c0ul);
-  syscall(__NR_writev, /*fd=*/-1, /*vec=*/0ul, /*vlen=*/0ul);
-  syscall(__NR_ioctl, /*fd=*/-1, /*cmd=*/0x40045569, /*arg=*/9ul);
-  syscall(__NR_openat, /*fd=*/0xffffff9c, /*file=*/0ul, /*flags=*/0x275aul,
-          /*mode=*/0ul);
-  memcpy((void*)0x20000180, "cgroup.controllers\000", 19);
-  res = syscall(__NR_openat, /*fd=*/0xffffff9c, /*file=*/0x20000180ul,
-                /*flags=*/0x275aul, /*mode=*/0ul);
-  if (res != -1) r[4] = res;
-  *(uint64_t*)0x200000c0 = 4;
-  *(uint64_t*)0x200000c8 = 0x16000000000000;
-  *(uint64_t*)0x200000d0 = 0x20;
-  syscall(__NR_ioctl, /*fd=*/r[4], /*cmd=*/0xc0185879, /*arg=*/0x200000c0ul);
-}
-int main(void) {
-  syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  for (procid = 0; procid < 4; procid++) {
-    if (fork() == 0) {
-      loop();
-    }
-  }
-  sleep(1000000);
-  return 0;
-}
-
-=* repro.txt =*
-r0 = openat$cgroup_ro(0xffffffffffffff9c,
-&(0x7f0000000280)='cgroup.controllers\x00', 0x275a, 0x0)
-r1 = openat$cgroup_ro(0xffffffffffffff9c,
-&(0x7f0000000180)='cgroup.controllers\x00', 0x275a, 0x0)
-r2 = dup3(r1, r0, 0x0)
-ioctl$FS_IOC_FSSETXATTR(r0, 0x401c5820, &(0x7f0000000140)={0x20, 0x8c8c})
-write$cgroup_int(r0, &(0x7f0000000040), 0xfea0)
-r3 = openat$cgroup_ro(0xffffffffffffff9c,
-&(0x7f00000001c0)='cpuset.effective_cpus\x00', 0x275a, 0x0)
-write$cgroup_int(r3, &(0x7f0000000380), 0x101bf)
-ioctl$EXT4_IOC_ALLOC_DA_BLKS(r3, 0x660c)
-ioctl$EXT4_IOC_MOVE_EXT(r2, 0xc028660f, &(0x7f00000000c0)={0x0, r3, 0x7})
-writev(0xffffffffffffffff, 0x0, 0x0)
-ioctl$UI_SET_LEDBIT(0xffffffffffffffff, 0x40045569, 0x9)
-openat$cgroup_ro(0xffffffffffffff9c, 0x0, 0x275a, 0x0)
-r4 = openat$cgroup_ro(0xffffffffffffff9c,
-&(0x7f0000000180)='cgroup.controllers\x00', 0x275a, 0x0)
-ioctl$FITRIM(r4, 0xc0185879, &(0x7f00000000c0)={0x4, 0x16000000000000, 0x20})
-
-and also https://gist.github.com/xrivendell7/bad992c2b716ed14310efa2c6f878b7c
