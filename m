@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C62C80ABED
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D12AE80ABEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574586AbjLHSTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:19:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
+        id S1574594AbjLHSTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574152AbjLHSTU (ORCPT
+        with ESMTP id S1574592AbjLHSTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:19:20 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D692590
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:19:26 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a1cc518c5bbso65166766b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:19:26 -0800 (PST)
+        Fri, 8 Dec 2023 13:19:30 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F38172A
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:19:36 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a1d48f0223dso65241266b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:19:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702059565; x=1702664365; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/+e2GMm4IxE2ZPhAT3rwUK0y+pX6drbXEPnTu9WgFI0=;
-        b=OJSod/sbEZ1pticSC/wOfUYgOFlSTK7TejD1Chxyydzbmu7QPen3IhkkOkzA+yRtlG
-         OK1KVOCHuhkEgQSGZ+b/N4rq34B3ilZ99sHJRSJT8FNYUWhfzQegU+nTifRrl3jUn0oU
-         S3g7OYydJpLC0fszdQtBTIbqxwjlpJPcXGeG74kWpRRuNm0GyNJWPwGZvzrs5WHLMsrn
-         VfTG4DfdDiOY/19FNHOKsHOkcB974VR8bp9h5+4EmTNtUJjod+Vm7ezsUdyS6ExH6sEZ
-         ODbstpQK3gw7cTL75zN5iWL9VkYiiUU4KqTZHWL/ss105curcYba0XbaQ8fExbdA9AG+
-         FsZQ==
+        d=gmail.com; s=20230601; t=1702059575; x=1702664375; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kTX3lMeAIKadkUoJwz/Rosz/NiJGwf6YHqZeimpRp6A=;
+        b=mDLbP8vtyMy84mVO3GrO5VmCe7tdhUbP9faumlnvcR+S03q9haSXx6nDgvqPsRNgX4
+         83xv44mZuO7dUnxj9F61UDg7YT8iUCAzVNSA6VynNWScvZFGYXyhbR/Iax12UNX5xw0Q
+         HaopogiWm07f/wdC9/Y+GwDahA0+b6OaZ5D7g0vmr9E268v8i6zvTaCdJ2cNhkPOyfl8
+         Df/ZlfKkyrqShCLofLvXV+G1mwlsxniHhoKA18wKQoqs733QbpqPsej89EYMTbL0xaxP
+         A5NMTmXFnrTBv8nh3lrPuzQtHPe3I8YFUUyO4gYSzQS3NzWXbZKUPdyaWWcb3csfne4P
+         Kk5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702059565; x=1702664365;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/+e2GMm4IxE2ZPhAT3rwUK0y+pX6drbXEPnTu9WgFI0=;
-        b=p4PnirrgYcieAlbPDQLdjPHqVI+qj27a5Hv/1LiHLZFwvY8QxWI+B4fLRZsmJ/NtbP
-         dm7DzL+hPExzTGoGbzGrhYmrQrTZm95t8Q6fGXhVEIBj1GRF1QoCv7gcQk7qMN1DaPcW
-         dMt6LYebGPLGCvdCxmE8uDYSWUwweicqzOHwsBO5NYPogs0q7qu83JC56EYb25/n8qZv
-         A6tOnDH0fqRSBH8a2LFnK0AxsrIBZ05rXKG8xcxuW54sen5JJeJ+efYrdR6IU9EkiPiv
-         co4Vhkq0mR+WTHrIMSzaDkh84ajPOYOF1TuxkYbtS/qok6jv3VcvV8BR6pM21tk0jUZV
-         JWJg==
-X-Gm-Message-State: AOJu0YzGtVH07SeTXQJNbGJLC8dZoEDyfzZ6Ugt4lw2Ko818Z1j4MSWw
-        mGM6Do2z/W902tFSzxLWGD0NChSh5W4=
-X-Google-Smtp-Source: AGHT+IHSHhKdNhaPS3KTBL1ZnE1s7W/L7jwh/CBnt54AmVGKgSBxevLAmAfH0JXel/VQQsT5N6f3Lw==
-X-Received: by 2002:a17:906:ba86:b0:9f2:3e76:5d39 with SMTP id cu6-20020a170906ba8600b009f23e765d39mr513767ejd.0.1702059565189;
-        Fri, 08 Dec 2023 10:19:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702059575; x=1702664375;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kTX3lMeAIKadkUoJwz/Rosz/NiJGwf6YHqZeimpRp6A=;
+        b=gF+X6TClVVcd3MhgrbNMWZ6U0lmHEWaDnF2G+sfnAfcHPrdROX2nhT10HRtE2y9F6y
+         5YKRuK8n+I6B4DgDwIV6rdFmUj0NhzQk4NPE9HaOAEmi1PX2nQrJDqyLXMz1V0B6ycWQ
+         BtnnuB81Eb5hGntXHcGb4R4p2D9KcGprxD8RHo3kc+ifMtEL67qxxnV0AQcuH0zx/epa
+         ikZhki/BRUhTObAZWGkNCjyTQJW8m823IoZ+zMgc3JEg/NIxIzivL4bIGrjH9FPLAmat
+         O7Oqw+jLrKheXv4K9wsudpjohpeoxTax8YGrvIGbDXuuwjrnsrtgs4jWNI0JSBxfdVRp
+         DfmQ==
+X-Gm-Message-State: AOJu0YxjcG/s9RREBls2SnBubVfko5ExRji4TZNS8GyyUlyf4/XV7yOQ
+        DeIhcA6t12cMMiAz0vQwTXA=
+X-Google-Smtp-Source: AGHT+IEa2gyOJV1MQMCzieEEmtEXsvhMMp5A3m//mLOsFG8g1bj4IJth0spuTtuBYjsKzVHut3WiYQ==
+X-Received: by 2002:a17:907:d30a:b0:a1c:dce4:1daf with SMTP id vg10-20020a170907d30a00b00a1cdce41dafmr445458ejc.2.1702059574759;
+        Fri, 08 Dec 2023 10:19:34 -0800 (PST)
 Received: from matrix-ESPRIMO-P710 (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id o20-20020a17090611d400b00a0d02cfa48bsm1277795eja.213.2023.12.08.10.19.24
+        by smtp.gmail.com with ESMTPSA id rd12-20020a170907a28c00b00a11b2677acbsm1266784ejc.163.2023.12.08.10.19.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 10:19:24 -0800 (PST)
-Date:   Fri, 8 Dec 2023 19:19:23 +0100
+        Fri, 08 Dec 2023 10:19:34 -0800 (PST)
+Date:   Fri, 8 Dec 2023 19:19:32 +0100
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/5] staging: rtl8192e: Remove c files dot11d.c/.h
-Message-ID: <cover.1701989555.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 1/5] staging: rtl8192e: Remove function
+ rtllib_update_active_chan_map()
+Message-ID: <bae3ddeffe96e4ac7d929127ce3a72cd23fae8dd.1701989555.git.philipp.g.hortmann@gmail.com>
+References: <cover.1701989555.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <cover.1701989555.git.philipp.g.hortmann@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,51 +72,57 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Remove function rtllib_update_active_chan_map() as "active_channel_map"
-and "channel_map" have the same content. Content of "channel_map" does
-not change.
+and "channel_map" have the same content.
 
-Tested with rtl8192e (WLL6130-D99) in Mode n (12.5 MB/s)
-Transferred this patch over wlan connection of rtl8192e.
+Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+---
+ drivers/staging/rtl8192e/rtllib_softmac.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-Used the following code for testing:
-struct rt_dot11d_info *ph = priv->rtllib->dot11d_info;
-for (i = 1; i <= 13; i++){
-	printk("priv->rtllib->active_channel_map)  [%d] %d\n", i, priv->rtllib->active_channel_map[i]);
-	printk("priv->rtllib->dot11d_info->chan_map[%d] %d\n", i, ph->channel_map[i]);
-}
-Log:
-[ 1141.288386] priv->rtllib->active_channel_map)  [1] 1
-[ 1141.288393] priv->rtllib->dot11d_info->chan_map[1] 1
-[ 1141.288395] priv->rtllib->active_channel_map)  [2] 1
-[ 1141.288396] priv->rtllib->dot11d_info->chan_map[2] 1
-...
-[ 1141.288426] priv->rtllib->active_channel_map)  [11] 1
-[ 1141.288428] priv->rtllib->dot11d_info->chan_map[11] 1
-[ 1141.288429] priv->rtllib->active_channel_map)  [12] 2
-[ 1141.288431] priv->rtllib->dot11d_info->chan_map[12] 2
-[ 1141.288433] priv->rtllib->active_channel_map)  [13] 2
-[ 1141.288434] priv->rtllib->dot11d_info->chan_map[13] 2
-
-Philipp Hortmann (5):
-  staging: rtl8192e: Remove function rtllib_update_active_chan_map()
-  staging: rtl8192e: Remove variable channel_map
-  staging: rtl8192e: Remove variable dot11d_info
-  staging: rtl8192e: Remove function dot11d_channel_map()
-  staging: rtl8192e: Remove files dot11d.c and dot11d.h
-
- drivers/staging/rtl8192e/Makefile            |  1 -
- drivers/staging/rtl8192e/dot11d.c            | 29 -------------------
- drivers/staging/rtl8192e/dot11d.h            | 30 --------------------
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c |  1 -
- drivers/staging/rtl8192e/rtl8192e/rtl_core.h |  2 --
- drivers/staging/rtl8192e/rtllib.h            |  1 -
- drivers/staging/rtl8192e/rtllib_rx.c         |  1 -
- drivers/staging/rtl8192e/rtllib_softmac.c    | 19 -------------
- drivers/staging/rtl8192e/rtllib_softmac_wx.c |  1 -
- 9 files changed, 85 deletions(-)
- delete mode 100644 drivers/staging/rtl8192e/dot11d.c
- delete mode 100644 drivers/staging/rtl8192e/dot11d.h
-
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
+index d20970652432..fdb0e76d20b0 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+@@ -394,12 +394,6 @@ static void rtllib_send_probe_requests(struct rtllib_device *ieee)
+ 	}
+ }
+ 
+-static void rtllib_update_active_chan_map(struct rtllib_device *ieee)
+-{
+-	memcpy(ieee->active_channel_map, GET_DOT11D_INFO(ieee)->channel_map,
+-	       MAX_CHANNEL_NUMBER + 1);
+-}
+-
+ /* this performs syncro scan blocking the caller until all channels
+  * in the allowed channel map has been checked.
+  */
+@@ -408,8 +402,6 @@ static void rtllib_softmac_scan_syncro(struct rtllib_device *ieee)
+ 	union iwreq_data wrqu;
+ 	short ch = 0;
+ 
+-	rtllib_update_active_chan_map(ieee);
+-
+ 	ieee->be_scan_inprogress = true;
+ 
+ 	mutex_lock(&ieee->scan_mutex);
+@@ -475,8 +467,6 @@ static void rtllib_softmac_scan_wq(void *data)
+ 				     struct rtllib_device, softmac_scan_wq);
+ 	u8 last_channel = ieee->current_network.channel;
+ 
+-	rtllib_update_active_chan_map(ieee);
+-
+ 	if (!ieee->ieee_up)
+ 		return;
+ 	if (rtllib_act_scanning(ieee, true))
+@@ -2042,8 +2032,6 @@ void rtllib_start_protocol(struct rtllib_device *ieee)
+ 	short ch = 0;
+ 	int i = 0;
+ 
+-	rtllib_update_active_chan_map(ieee);
+-
+ 	if (ieee->proto_started)
+ 		return;
+ 
 -- 
 2.43.0
 
