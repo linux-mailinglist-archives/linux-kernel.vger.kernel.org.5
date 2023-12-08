@@ -2,115 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0977C809A84
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 04:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB8A809A74
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 04:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573075AbjLHDfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 22:35:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
+        id S1573082AbjLHDdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 22:33:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbjLHDfS (ORCPT
+        with ESMTP id S229531AbjLHDdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 22:35:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F66D10EB
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 19:35:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702006523;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=vh3S+Lns+sOh+ZFwSTFTZocc8C/FbBJ0BQFWEGhlNzI=;
-        b=X4i/1ZvowJk7Ud4QlVhINAKz/tNSK4xJvUgyXrFKvuLZkIzUnRVRYkLoFfePsEhcoGJ0sy
-        utoNZb8AhhIz8tufqAJ5x/N4e22ILlHGvh4WTybHY2t928C/OpeP6jfn5I1roA6/JsAjiR
-        ESD7kHzHAyW82w6M81TfJpws9LFB6OU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-168-QbWSTXDmMXmiBdhqKILqdw-1; Thu,
- 07 Dec 2023 22:35:21 -0500
-X-MC-Unique: QbWSTXDmMXmiBdhqKILqdw-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E778A1C04322;
-        Fri,  8 Dec 2023 03:35:20 +0000 (UTC)
-Received: from virt-mtcollins-01.lab.eng.rdu2.redhat.com (virt-mtcollins-01.lab.eng.rdu2.redhat.com [10.8.1.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D8143492BC6;
-        Fri,  8 Dec 2023 03:35:20 +0000 (UTC)
-From:   Shaoqin Huang <shahuang@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Shaoqin Huang <shahuang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] KVM: selftests: Fix Assertion on non-x86_64 platforms
-Date:   Thu,  7 Dec 2023 22:35:05 -0500
-Message-Id: <20231208033505.2930064-1-shahuang@redhat.com>
+        Thu, 7 Dec 2023 22:33:53 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7043310EB
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 19:33:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76AF4C433C7;
+        Fri,  8 Dec 2023 03:33:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702006439;
+        bh=gvbTjN36aMg/8pd0wDaFdxIHv1L9nizj9pVmZyQNfvU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XT/f7OFCQw+yUyR8eYvAXk3PZ0ZScodSRv43KEThVVXSFdT5lRTRXm6vr8zT5m1og
+         P+W4Drkj4mrQiNkL4zSo6u24njZNzCpBzxEStx2lKX7Bn2elODmrJRjdjK0MRG4j2L
+         osOT9U3Q1XSJseKVhrQW6Qz1PI+THOt65SN6d7jzHeRydw918SG1k2sX+H3IcEIi+v
+         nAYqXYWjK1AF09RPymVhJ6ZgiS72sRLnnRfucYOY6yZ61/pXK8ASkWT5QCqhs8S0al
+         PVsoIOxs3t1WTniTWQ+HIrYHRaIlwqrfnDC5EirMXD4KrpMfkHKkyMk3dw6MbvEA/Z
+         TaMmtJO8IjRRg==
+Date:   Thu, 7 Dec 2023 19:38:33 -0800
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: sm8650: Add DisplayPort device
+ nodes
+Message-ID: <bcecxzpogq6pndwmhgrl52ia3orni2q5brg6mpc6fkn5widigb@v6dy4minwajx>
+References: <20231207-topic-sm8650-upstream-dp-v1-0-b762c06965bb@linaro.org>
+ <20231207-topic-sm8650-upstream-dp-v1-3-b762c06965bb@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207-topic-sm8650-upstream-dp-v1-3-b762c06965bb@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running the set_memory_region_test on arm64 platform, it causes the
-below assert:
+On Thu, Dec 07, 2023 at 05:37:19PM +0100, Neil Armstrong wrote:
+> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+[..]
+> +
+> +			mdss_dp0: displayport-controller@af54000 {
+> +				compatible = "qcom,sm8650-dp";
+> +				reg = <0 0xaf54000 0 0x200>,
+> +				      <0 0xaf54200 0 0x200>,
+> +				      <0 0xaf55000 0 0xc00>,
+> +				      <0 0xaf56000 0 0x400>,
+> +				      <0 0xaf57000 0 0x400>;
+> +
+> +				interrupts-extended = <&mdss 12>;
+> +
+> +				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
+> +					 <&dispcc DISP_CC_MDSS_DPTX0_AUX_CLK>,
+> +					 <&dispcc DISP_CC_MDSS_DPTX0_LINK_CLK>,
+> +					 <&dispcc DISP_CC_MDSS_DPTX0_LINK_INTF_CLK>,
+> +					 <&dispcc DISP_CC_MDSS_DPTX0_PIXEL0_CLK>;
+> +				clock-names = "core_iface",
+> +					      "core_aux",
+> +					      "ctrl_link",
+> +					      "ctrl_link_iface",
+> +					      "stream_pixel";
+> +
+> +				assigned-clocks = <&dispcc DISP_CC_MDSS_DPTX0_LINK_CLK_SRC>,
+> +						  <&dispcc DISP_CC_MDSS_DPTX0_PIXEL0_CLK_SRC>;
+> +				assigned-clock-parents = <&usb_dp_qmpphy QMP_USB43DP_DP_LINK_CLK>,
+> +							 <&usb_dp_qmpphy QMP_USB43DP_DP_VCO_DIV_CLK>;
+> +
+> +				operating-points-v2 = <&dp_opp_table>;
+> +
+> +				power-domains = <&rpmhpd RPMHPD_MX>;
 
-==== Test Assertion Failure ====
-  set_memory_region_test.c:355: r && errno == EINVAL
-  pid=40695 tid=40695 errno=0 - Success
-     1	0x0000000000401baf: test_invalid_memory_region_flags at set_memory_region_test.c:355
-     2	 (inlined by) main at set_memory_region_test.c:541
-     3	0x0000ffff951c879b: ?? ??:0
-     4	0x0000ffff951c886b: ?? ??:0
-     5	0x0000000000401caf: _start at ??:?
-  KVM_SET_USER_MEMORY_REGION should have failed on v2 only flag 0x2
+Are you sure the DP TX block sits in MX? I'd expect this to be
+RPMHPD_MMCX, and then the PHY partially in MX...
 
-This is because the arm64 platform also support the KVM_MEM_READONLY flag, but
-the current implementation add it into the supportd_flags only on x86_64
-platform, so this causes assert on other platform which also support the
-KVM_MEM_READONLY flag.
+> +
+> +				phys = <&usb_dp_qmpphy QMP_USB43DP_DP_PHY>;
+> +				phy-names = "dp";
+> +
+> +				#sound-dai-cells = <0>;
+> +
+> +				status = "disabled";
+> +
+> +				ports {
+> +					#address-cells = <1>;
+> +					#size-cells = <0>;
+> +
+> +					port@0 {
+> +						reg = <0>;
+> +
+> +						mdss_dp0_in: endpoint {
+> +							remote-endpoint = <&dpu_intf0_out>;
+> +						};
+> +					};
+> +
+> +					port@1 {
+> +						reg = <1>;
+> +
+> +						mdss_dp0_out: endpoint {
+> +						};
+> +					};
+> +				};
+> +
+> +				dp_opp_table: opp-table {
 
-Fix it by using the __KVM_HAVE_READONLY_MEM macro to detect if the
-current platform support the KVM_MEM_READONLY, thus fix this problem on
-all other platform which support KVM_MEM_READONLY.
+Is there any reason why we keep sorting 'o' after 'p' in these nodes?
 
-Fixes: 5d74316466f4 ("KVM: selftests: Add a memory region subtest to validate invalid flags")
-Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
----
-This patch is based on the latest kvm-next[1] branch.
-
-[1] https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=next
----
- tools/testing/selftests/kvm/set_memory_region_test.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-index 6637a0845acf..1ce710fd7a5a 100644
---- a/tools/testing/selftests/kvm/set_memory_region_test.c
-+++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-@@ -333,9 +333,11 @@ static void test_invalid_memory_region_flags(void)
- 	struct kvm_vm *vm;
- 	int r, i;
- 
--#ifdef __x86_64__
-+#ifdef __KVM_HAVE_READONLY_MEM
- 	supported_flags |= KVM_MEM_READONLY;
-+#endif
- 
-+#ifdef __x86_64__
- 	if (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM))
- 		vm = vm_create_barebones_protected_vm();
- 	else
--- 
-2.40.1
-
+Regards,
+Bjorn
