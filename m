@@ -2,99 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E1F80AB08
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6BC80AAE9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233776AbjLHRpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:45:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
+        id S1574250AbjLHRjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:39:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLHRpI (ORCPT
+        with ESMTP id S233752AbjLHRjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:45:08 -0500
-X-Greylist: delayed 305 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 08 Dec 2023 09:45:14 PST
-Received: from irl.hu (irl.hu [95.85.9.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B23CF4;
-        Fri,  8 Dec 2023 09:45:13 -0800 (PST)
-Received: from fedori.lan (51b690cd.dsl.pool.telekom.hu [::ffff:81.182.144.205])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 00000000000719DB.00000000657354F6.0011CADC; Fri, 08 Dec 2023 18:40:06 +0100
-From:   Gergo Koteles <soyer@irl.hu>
-To:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Gergo Koteles <soyer@irl.hu>, stable@vger.kernel.org
-Subject: [PATCH] ALSA: hda/tas2781: leave hda_component in usable state
-Date:   Fri,  8 Dec 2023 18:38:19 +0100
-Message-ID: <052224ccd9d24dac777c468d2ef94d5fabe619a0.1702056528.git.soyer@irl.hu>
-X-Mailer: git-send-email 2.43.0
-Mime-Version: 1.0
+        Fri, 8 Dec 2023 12:39:07 -0500
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF752123
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:39:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=ixvrilbdlnczzba4dtnifmhobu.protonmail; t=1702057148; x=1702316348;
+        bh=HY9Md4VHLYQT5RpanAdJRLZSL23/aGNw4oFWZPZrWZg=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=AunkrxB1GjMKQMft60KVeeD1E0BRxc4RbOJeL56qlByAizAea7/v01nZmsdEnQwWK
+         1kOzObe2JVU16Whu9xn03azaQAmOh4KzAnPA1O2f6mPVbH1yRupswNHYGEL/VVzgoU
+         WPhNLURfbPFTKDUTLhPIFZcfK6DIOufo+fXUZB9lmpabKkuAyXqqwTLRzNntoPN5jl
+         ft5a+v5z+a0qy4KIStgL7RXLCcBwAU2qa0yXy9cUUyK2UURBjtkEbKD2D7/w/hJfSD
+         DhcckwiAV4aHPbj8UBNAaPSbiwyl3qk1AIJ6fOSGkYElhI+zduseym2AbPJLAU7T34
+         Ii3g5STYKFycQ==
+Date:   Fri, 08 Dec 2023 17:39:01 +0000
+To:     Alice Ryhl <aliceryhl@google.com>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 6/7] rust: file: add `DeferredFdCloser`
+Message-ID: <MjDmZBGV04fVI1qzhceEjQgcmoBuo3YoVuiQdANKj9F1Ux5JFKud8hQpfeyLXI0O5HG6qicKFaYYzM7JAgR_kVQfMCeVdN6t7PjbPaz0D0U=@proton.me>
+In-Reply-To: <20231206-alice-file-v2-6-af617c0d9d94@google.com>
+References: <20231206-alice-file-v2-0-af617c0d9d94@google.com> <20231206-alice-file-v2-6-af617c0d9d94@google.com>
+Feedback-ID: 71780778:user:proton
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unloading then loading the module causes a NULL ponter dereference.
+On 12/6/23 12:59, Alice Ryhl wrote:
+> +    /// Schedule a task work that closes the file descriptor when this t=
+ask returns to userspace.
+> +    ///
+> +    /// Fails if this is called from a context where we cannot run work =
+when returning to
+> +    /// userspace. (E.g., from a kthread.)
+> +    pub fn close_fd(self, fd: u32) -> Result<(), DeferredFdCloseError> {
+> +        use bindings::task_work_notify_mode_TWA_RESUME as TWA_RESUME;
+> +
+> +        // In this method, we schedule the task work before closing the =
+file. This is because
+> +        // scheduling a task work is fallible, and we need to know wheth=
+er it will fail before we
+> +        // attempt to close the file.
+> +
+> +        // SAFETY: Getting a pointer to current is always safe.
+> +        let current =3D unsafe { bindings::get_current() };
+> +
+> +        // SAFETY: Accessing the `flags` field of `current` is always sa=
+fe.
+> +        let is_kthread =3D (unsafe { (*current).flags } & bindings::PF_K=
+THREAD) !=3D 0;
 
-The hda_unbind zeroes the hda_component, later the hda_bind tries
-to dereference the codec field.
+Since Boqun brought to my attention that we already have a wrapper for
+`get_current()`, how about you use it here as well?
 
-The hda_component is only initialized once by tas2781_generic_fixup.
+> +        if is_kthread {
+> +            return Err(DeferredFdCloseError::TaskWorkUnavailable);
+> +        }
+> +
+> +        // This disables the destructor of the box, so the allocation is=
+ not cleaned up
+> +        // automatically below.
+> +        let inner =3D Box::into_raw(self.inner);
 
-Set only previously modified fields to NULL.
+Importantly this also lifts the uniqueness requirement (maybe add this
+to the comment?).
 
-BUG: kernel NULL pointer dereference, address: 0000000000000322
-Call Trace:
- <TASK>
- ? __die+0x23/0x70
- ? page_fault_oops+0x171/0x4e0
- ? exc_page_fault+0x7f/0x180
- ? asm_exc_page_fault+0x26/0x30
- ? tas2781_hda_bind+0x59/0x140 [snd_hda_scodec_tas2781_i2c]
- component_bind_all+0xf3/0x240
- try_to_bring_up_aggregate_device+0x1c3/0x270
- __component_add+0xbc/0x1a0
- tas2781_hda_i2c_probe+0x289/0x3a0 [snd_hda_scodec_tas2781_i2c]
- i2c_device_probe+0x136/0x2e0
+> +
+> +        // The `callback_head` field is first in the struct, so this cas=
+t correctly gives us a
+> +        // pointer to the field.
+> +        let callback_head =3D inner.cast::<bindings::callback_head>();
+> +        // SAFETY: This pointer offset operation does not go out-of-boun=
+ds.
+> +        let file_field =3D unsafe { core::ptr::addr_of_mut!((*inner).fil=
+e) };
+> +
+> +        // SAFETY: The `callback_head` pointer is compatible with the `d=
+o_close_fd` method.
 
-Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
-CC: stable@vger.kernel.org
-Signed-off-by: Gergo Koteles <soyer@irl.hu>
----
- sound/pci/hda/tas2781_hda_i2c.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Also, `callback_head` is valid, since it is derived from...
 
-diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index fb802802939e..ba4fdae8ec9b 100644
---- a/sound/pci/hda/tas2781_hda_i2c.c
-+++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -612,9 +612,13 @@ static void tas2781_hda_unbind(struct device *dev,
- {
- 	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
- 	struct hda_component *comps = master_data;
-+	comps = &comps[tas_priv->index];
- 
--	if (comps[tas_priv->index].dev == dev)
--		memset(&comps[tas_priv->index], 0, sizeof(*comps));
-+	if (comps[tas_priv->index].dev == dev) {
-+		comps->dev = NULL;
-+		strscpy(comps->name, "", sizeof(comps->name));
-+		comps->playback_hook = NULL;
-+	}
- 
- 	tasdevice_config_info_remove(tas_priv);
- 	tasdevice_dsp_remove(tas_priv);
+> +        unsafe { bindings::init_task_work(callback_head, Some(Self::do_c=
+lose_fd)) };
+> +        // SAFETY: The `callback_head` pointer points at a valid and ful=
+ly initialized task work
+> +        // that is ready to be scheduled.
+> +        //
+> +        // If the task work gets scheduled as-is, then it will be a no-o=
+p. However, we will update
+> +        // the file pointer below to tell it which file to fput.
+> +        let res =3D unsafe { bindings::task_work_add(current, callback_h=
+ead, TWA_RESUME) };
+> +
+> +        if res !=3D 0 {
+> +            // SAFETY: Scheduling the task work failed, so we still have=
+ ownership of the box, so
+> +            // we may destroy it.
+> +            unsafe { drop(Box::from_raw(inner)) };
+> +
+> +            return Err(DeferredFdCloseError::TaskWorkUnavailable);
 
-base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
--- 
-2.43.0
+Just curious, what could make the `task_work_add` call fail? I imagine
+an OOM situation, but is that all?
 
+> +        }
+> +
+> +        // SAFETY: Just an FFI call. This is safe no matter what `fd` is=
+.
+
+I took a look at the C code and there I found this comment:
+
+    /*
+     * variant of close_fd that gets a ref on the file for later fput.
+     * The caller must ensure that filp_close() called on the file.
+     */
+
+And while you do call `filp_close` later, this seems like a safety
+requirement to me.
+Also, you do not call it when `file` is null, which I imagine to be
+fine, but I do not know that since the C comment does not cover that
+case.
+
+> +        let file =3D unsafe { bindings::close_fd_get_file(fd) };
+> +        if file.is_null() {
+> +            // We don't clean up the task work since that might be expen=
+sive if the task work queue
+> +            // is long. Just let it execute and let it clean up for itse=
+lf.
+> +            return Err(DeferredFdCloseError::BadFd);
+> +        }
+> +
+> +        // SAFETY: The `file` pointer points at a valid file.
+> +        unsafe { bindings::get_file(file) };
+> +
+> +        // SAFETY: Due to the above `get_file`, even if the current task=
+ holds an `fdget` to
+> +        // this file right now, the refcount will not drop to zero until=
+ after it is released
+> +        // with `fdput`. This is because when using `fdget`, you must al=
+ways use `fdput` before
+
+Shouldn't this be "the refcount will not drop to zero until after it is
+released with `fput`."?
+
+Why is this the SAFETY comment for `filp_close`? I am not understanding
+the requirement on that function that needs this. This seems more a
+justification for accessing `file` inside `do_close_fd`. In which case I
+think it would be better to make it a type invariant of
+`DeferredFdCloserInner`.
+
+> +        // returning to userspace, and our task work runs after any `fdg=
+et` users have returned
+> +        // to userspace.
+> +        //
+> +        // Note: fl_owner_t is currently a void pointer.
+> +        unsafe { bindings::filp_close(file, (*current).files as bindings=
+::fl_owner_t) };
+> +
+> +        // We update the file pointer that the task work is supposed to =
+fput.
+> +        //
+> +        // SAFETY: Task works are executed on the current thread once we=
+ return to userspace, so
+> +        // this write is guaranteed to happen before `do_close_fd` is ca=
+lled, which means that a
+> +        // race is not possible here.
+> +        //
+> +        // It's okay to pass this pointer to the task work, since we jus=
+t acquired a refcount with
+> +        // the previous call to `get_file`. Furthermore, the refcount wi=
+ll not drop to zero during
+> +        // an `fdget` call, since we defer the `fput` until after return=
+ing to userspace.
+> +        unsafe { *file_field =3D file };
+
+A synchronization question: who guarantees that this write is actually
+available to the cpu that executes `do_close_fd`? Is there some
+synchronization run when returning to userspace?
+
+> +
+> +        Ok(())
+> +    }
+> +
+> +    // SAFETY: This function is an implementation detail of `close_fd`, =
+so its safety comments
+> +    // should be read in extension of that method.
+
+Why not use this?:
+- `inner` is a valid pointer to the `callback_head` field of a valid
+  `DeferredFdCloserInner`.
+- `inner` has exclusive access to the pointee and owns the allocation.
+- `inner` originates from a call to `Box::into_raw`.
+
+> +    unsafe extern "C" fn do_close_fd(inner: *mut bindings::callback_head=
+) {
+> +        // SAFETY: In `close_fd` we use this method together with a poin=
+ter that originates from a
+> +        // `Box<DeferredFdCloserInner>`, and we have just been given own=
+ership of that allocation.
+> +        let inner =3D unsafe { Box::from_raw(inner as *mut DeferredFdClo=
+serInner) };
+
+Use `.cast()`.
+
+> +        if !inner.file.is_null() {
+> +            // SAFETY: This drops a refcount we acquired in `close_fd`. =
+Since this callback runs in
+> +            // a task work after we return to userspace, it is guarantee=
+d that the current thread
+> +            // doesn't hold this file with `fdget`, as `fdget` must be r=
+eleased before returning to
+> +            // userspace.
+> +            unsafe { bindings::fput(inner.file) };
+> +        }
+> +        // Free the allocation.
+> +        drop(inner);
+> +    }
+> +}
+> +
+> +/// Represents a failure to close an fd in a deferred manner.
+> +#[derive(Copy, Clone, Eq, PartialEq)]
+> +pub enum DeferredFdCloseError {
+> +    /// Closing the fd failed because we were unable to schedule a task =
+work.
+> +    TaskWorkUnavailable,
+> +    /// Closing the fd failed because the fd does not exist.
+> +    BadFd,
+> +}
+> +
+> +impl From<DeferredFdCloseError> for Error {
+> +    fn from(err: DeferredFdCloseError) -> Error {
+> +        match err {
+> +            DeferredFdCloseError::TaskWorkUnavailable =3D> ESRCH,
+
+This error reads "No such process", I am not sure if that is the best
+way to express the problem in that situation. I took a quick look at the
+other error codes, but could not find a better fit. Do you have any
+better ideas? Or is this the error that C binder uses?
+
+--=20
+Cheers,
+Benno
+
+> +            DeferredFdCloseError::BadFd =3D> EBADF,
+> +        }
+> +    }
+> +}
