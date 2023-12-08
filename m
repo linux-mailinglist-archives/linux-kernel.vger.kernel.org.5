@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0319809CD4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D444809CD5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:01:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235809AbjLHHBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 02:01:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37578 "EHLO
+        id S233383AbjLHHBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 02:01:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235794AbjLHHAb (ORCPT
+        with ESMTP id S233196AbjLHHAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 02:00:31 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D83199F
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:00:37 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d06819a9cbso13508765ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 23:00:37 -0800 (PST)
+        Fri, 8 Dec 2023 02:00:36 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051A410CF
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:00:42 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1d0ccda19eeso14903345ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 23:00:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702018837; x=1702623637; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702018841; x=1702623641; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2+/0RBXo0Ut4g1LSue/1QXAxKJHirjkCQZ0L8v6kdO8=;
-        b=yk2bjEZQKAPbt/lcroBL2+Q3vcqcuVHba2GQWYL5FLG/dloUc4E3I21h6nuF0P0gWD
-         NBJRCtfXYWtr3B9LvlWGtobzaK4eHq8k93gQM7vh8nOBq73870XuTRQ8bVaNNQrdAyfn
-         n1Efo3+7Cx94QENoH0IoKdi4K7wsZED7kNMnTFiLoyELUyfkD0BxoE2lQyAHA6a6UW6b
-         MO05F0zKMNtgXKLxRgsW4QY9CITUhUR8r9Wpcg4mDf0yQPp7jUm0xzovIxw89/Kylv59
-         avE/+bv1RxxV1j+5w6tNFaP+bJNCSziNdCHxKV2gZpoIp0FHhA5D+CMhmwrbCGtyOmTU
-         tx/Q==
+        bh=8r9qoyiwuNkI/B/mT1i1YBAgOapNu0aoaEC6uqX8X6Q=;
+        b=fryJCTfQFUs2UIr+j5VmRu/0IFn+E77IV5GLEmtHgQL4Xcz1AZLyQkU2azxcd6RTKZ
+         baROwl4joBMzRPY0AdHI6fRgGL2uW4+4I1lnewSAtFUef8CjXcWzAZ9hWPuWwvuGB4cf
+         wUF3nLbGyiyv6DoBC/1pZ2jIulYVshpDvF1mWGCnhH4MXZXNyYVxZO+xrRAEAdbFSb8Y
+         knMd8c8sapHyEz5/fIv2Kzf2bc4ux0Puo5CKjkS2oCex0vTq0wEOBp5BrUEN3rtQejFN
+         I7b81PHbyedxokVf510A/Gg8x8UlEcpTEXEONFhD6aB2/OtQMUyaVHqDyA9YGtyjO8ZE
+         m5nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702018837; x=1702623637;
+        d=1e100.net; s=20230601; t=1702018841; x=1702623641;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2+/0RBXo0Ut4g1LSue/1QXAxKJHirjkCQZ0L8v6kdO8=;
-        b=Y/t1hYwhrbUeNpUEKnap00CLzJHJptUGoz6Dgu/zpIdX4PIAsa5PWXlWK8Fj4QBgsQ
-         84OfGBS+DBd8idWc4CLB/KZMNCQmWYUoujzORkYafRk6QAsweL+IMOA3wbqgmwd3a3y1
-         5CufwJmwMjx46IR/LTLS/m7fIjLIgoRa+XZG5leQCZK9RjFTG/9CRTKGzUiWBB1Y3Bwk
-         rvR0IQerMJXg3kau+mbzSwxw4T8ViY5BdrH9K4OOupcwUu18EdKS8IZWYRTtRve0Q2XX
-         ZSg0QMO9tEQpM7P60Rj13NBfWJbSY57FA0lxL9HQDzthqbezueuTlBAyd4hBcY7qQjVW
-         26bA==
-X-Gm-Message-State: AOJu0YxnYyruL00SXe//jCpcm1ExDcvMdvPtKnwkR0t6aUU9SS4FFi59
-        OoN7hzEAw1wUZjRSQ080/9QJ
-X-Google-Smtp-Source: AGHT+IFpgePBTs9KhPg66z+JEsh/VBMJvj2ot9J4I6Jvibmo2uaLDB8nY99jgWPitg1JXnJO+3F1gg==
-X-Received: by 2002:a17:902:7d97:b0:1d0:71ab:b9b4 with SMTP id a23-20020a1709027d9700b001d071abb9b4mr3508248plm.90.1702018837001;
-        Thu, 07 Dec 2023 23:00:37 -0800 (PST)
+        bh=8r9qoyiwuNkI/B/mT1i1YBAgOapNu0aoaEC6uqX8X6Q=;
+        b=fbQpTIioLkkCBNaa3wtJqu31VWTysvbpDodBWLiu+MYG5mFmpUDGq6eSwHPIdaZAcf
+         CiMqZYsV8odMoG9uB2zc4CcPUcgWPm7Gtw+KczeHXala78xA0kp1akwZ3whbcb/ycnYv
+         7s15xSMhYxbQQuEwSddhaaxCBm6065TnBfs1GG9s/XCORnWX0SVRKZjLXsxWG3Oejx3w
+         1PDzSrjSByZDhYBHDwFvt1mUxNdZb9drDk3rOATjEfMXL/pSIEjQOvjKb/gCEKuDzDdo
+         VOm+IPWKJLWqA62WHUqT0lPTn9uz4HZ5pZ6yZmNfbueb/d8uYA6+ouLYTX57QXUi7MKh
+         EmEw==
+X-Gm-Message-State: AOJu0Yw5R6pKYSn7cNZqfjy0EESjcNll7F9Dghx1eBcrlumXh8bfaM6M
+        ut+NTeE/S/YG6hzJKX3T6Zr2
+X-Google-Smtp-Source: AGHT+IHgEMcuEn/X8ZDnC+EdCxJUjvpDhj1d0x67W7LMHi3+pus9pdNpiEMflc2WfBIowYy/3GAfqg==
+X-Received: by 2002:a17:903:5c5:b0:1d0:6ffe:1e76 with SMTP id kf5-20020a17090305c500b001d06ffe1e76mr2644177plb.89.1702018841527;
+        Thu, 07 Dec 2023 23:00:41 -0800 (PST)
 Received: from localhost.localdomain ([117.216.123.142])
-        by smtp.gmail.com with ESMTPSA id n8-20020a170902e54800b001b03f208323sm934263plf.64.2023.12.07.23.00.32
+        by smtp.gmail.com with ESMTPSA id n8-20020a170902e54800b001b03f208323sm934263plf.64.2023.12.07.23.00.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 23:00:36 -0800 (PST)
+        Thu, 07 Dec 2023 23:00:41 -0800 (PST)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     martin.petersen@oracle.com, jejb@linux.ibm.com
 Cc:     andersson@kernel.org, konrad.dybcio@linaro.org,
@@ -57,9 +57,9 @@ Cc:     andersson@kernel.org, konrad.dybcio@linaro.org,
         linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
         ahalaney@redhat.com, quic_nitirawa@quicinc.com,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 16/17] scsi: ufs: qcom: Use ufshcd_rmwl() where applicable
-Date:   Fri,  8 Dec 2023 12:29:01 +0530
-Message-Id: <20231208065902.11006-17-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2 17/17] scsi: ufs: qcom: Remove unused definitions
+Date:   Fri,  8 Dec 2023 12:29:02 +0530
+Message-Id: <20231208065902.11006-18-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
 References: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
@@ -75,59 +75,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of using both ufshcd_readl() and ufshcd_writel() to read/modify/
-write a register, let's make use of the existing helper.
+Remove unused definitions.
 
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/ufs/host/ufs-qcom.c | 12 ++++--------
- drivers/ufs/host/ufs-qcom.h |  3 +++
- 2 files changed, 7 insertions(+), 8 deletions(-)
+ drivers/ufs/host/ufs-qcom.h | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index 26aa8904c823..549a08645391 100644
---- a/drivers/ufs/host/ufs-qcom.c
-+++ b/drivers/ufs/host/ufs-qcom.c
-@@ -387,9 +387,8 @@ static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
-  */
- static void ufs_qcom_enable_hw_clk_gating(struct ufs_hba *hba)
- {
--	ufshcd_writel(hba,
--		ufshcd_readl(hba, REG_UFS_CFG2) | REG_UFS_CFG2_CGC_EN_ALL,
--		REG_UFS_CFG2);
-+	ufshcd_rmwl(hba, REG_UFS_CFG2_CGC_EN_ALL, REG_UFS_CFG2_CGC_EN_ALL,
-+		    REG_UFS_CFG2);
- 
- 	/* Ensure that HW clock gating is enabled before next operations */
- 	mb();
-@@ -1689,11 +1688,8 @@ static int ufs_qcom_config_esi(struct ufs_hba *hba)
- 		platform_msi_domain_free_irqs(hba->dev);
- 	} else {
- 		if (host->hw_ver.major == 6 && host->hw_ver.minor == 0 &&
--		    host->hw_ver.step == 0) {
--			ufshcd_writel(hba,
--				      ufshcd_readl(hba, REG_UFS_CFG3) | 0x1F000,
--				      REG_UFS_CFG3);
--		}
-+		    host->hw_ver.step == 0)
-+			ufshcd_rmwl(hba, ESI_VEC_MASK, 0x1f00, REG_UFS_CFG3);
- 		ufshcd_mcq_enable_esi(hba);
- 	}
- 
 diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
-index 385480499e71..2ce63a1c7f2f 100644
+index 2ce63a1c7f2f..cdceeb795e70 100644
 --- a/drivers/ufs/host/ufs-qcom.h
 +++ b/drivers/ufs/host/ufs-qcom.h
-@@ -102,6 +102,9 @@ enum {
- #define TMRLUT_HW_CGC_EN	BIT(6)
- #define OCSC_HW_CGC_EN		BIT(7)
+@@ -10,22 +10,16 @@
+ #include <soc/qcom/ice.h>
+ #include <ufs/ufshcd.h>
  
-+/* bit definitions for REG_UFS_CFG3 register */
-+#define ESI_VEC_MASK		GENMASK(22, 12)
-+
- /* bit definitions for REG_UFS_PARAM0 */
- #define MAX_HS_GEAR_MASK	GENMASK(6, 4)
- #define UFS_QCOM_MAX_GEAR(x)	FIELD_GET(MAX_HS_GEAR_MASK, (x))
+-#define MAX_U32                 (~(u32)0)
+ #define MPHY_TX_FSM_STATE       0x41
+ #define TX_FSM_HIBERN8          0x1
+ #define HBRN8_POLL_TOUT_MS      100
+ #define DEFAULT_CLK_RATE_HZ     1000000
+-#define BUS_VECTOR_NAME_LEN     32
+ #define MAX_SUPP_MAC		64
+ 
+ #define UFS_HW_VER_MAJOR_MASK	GENMASK(31, 28)
+ #define UFS_HW_VER_MINOR_MASK	GENMASK(27, 16)
+ #define UFS_HW_VER_STEP_MASK	GENMASK(15, 0)
+ 
+-/* vendor specific pre-defined parameters */
+-#define SLOW 1
+-#define FAST 2
+-
+ #define UFS_QCOM_LIMIT_HS_RATE		PA_HS_MODE_B
+ 
+ /* QCOM UFS host controller vendor specific registers */
 -- 
 2.25.1
 
