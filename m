@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83ACC8099EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 03:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD288099EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 03:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573045AbjLHCzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 21:55:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
+        id S1573130AbjLHCzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 21:55:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573123AbjLHCyB (ORCPT
+        with ESMTP id S1573127AbjLHCyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Dec 2023 21:54:01 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B8141987
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 18:53:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6D0CC433C9;
-        Fri,  8 Dec 2023 02:53:45 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A581BE8
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 18:53:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAFC0C433C7;
+        Fri,  8 Dec 2023 02:53:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702004026;
-        bh=Fz0tiY104hQ+SP9PBMlxjLEbkXLArrk6DRdKJTOJeOs=;
+        s=k20201202; t=1702004027;
+        bh=fCU91NRDGUv9xh9unCDOKnEWr9bjeIP2qmnEa73L4rc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HLWt3ca85Zr7bkNYtm+NUwtm8tt0OoEMCf5kiWXQNHe5nj3XZCYTIaCFHwLt9Ussi
-         JvuhJiLI85KRJSbkw28pRC5PVZ09JsLU0t1feTe5hhcWBAb99s0v18JVGfS24eCPfi
-         2ASzi4czvDvwD37vDC6PIq48HPtmQ8p9K8pQDsHrP1WdeO8QCp5szd9R7h+MyyAZxI
-         ZNKlw6lLRRUJkNEMkTwOy7X7enlJQKnJrftXVjFxEj+eKTChwUOOOnkF0SM8f+VSio
-         0GeXFyECe6I2KyAKZ0YMZM17AHbR8y9Jz22EqAZ9crcTCflA7j1lJGDk/1cefSk/pi
-         9ZVuOBAOEXEWA==
+        b=i7wC/aRqs3mYByXvTkRkgRbWcl/WlmQqSeZhhGqxXRYHQmAN4+lcWSMfq526OM8rV
+         3FRn0I9Bn2Ss/LLdf97E9DvhxzVs13bAn3jj65ZlH3xYVrnFPZ3/kdAnTdf7qHIhKe
+         6Vxgc5VnOXZrBwxuXhfrYsYkTv5MwMjTeYK4lU6SAvKI8LJaSaU0b1ZqEX0BsY9Sz/
+         od+GdXL/E/2nfISkBjdIWFDMMOOmLxE5fKPMKfxrdrcc8tvp1Hwe6FD9fbFOee5ApR
+         u5WJCpH/P0turZAyMwNnmBAOHid37hgeUB3M6BpWxT4x6+4swDqaJ7MzFltwvkn4Gv
+         xMeKVPhIQshIw==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     agross@kernel.org, konrad.dybcio@linaro.org, lee@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, Mukesh Ojha <quic_mojha@quicinc.com>
+To:     agross@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        Rohit Agarwal <quic_rohiagar@quicinc.com>
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v2 1/4] dt-bindings: mfd: qcom,tcsr: Add compatible for sm8250/sm8350
-Date:   Thu,  7 Dec 2023 18:57:50 -0800
-Message-ID: <170200426910.2871025.1931459275540622967.b4-ty@kernel.org>
+Subject: Re: [PATCH v5 0/3] Add devicetree support of Interconnects and USB for SDX75
+Date:   Thu,  7 Dec 2023 18:57:51 -0800
+Message-ID: <170200426925.2871025.11709635276060964808.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <1698253601-11957-1-git-send-email-quic_mojha@quicinc.com>
-References: <1698253601-11957-1-git-send-email-quic_mojha@quicinc.com>
+In-Reply-To: <20231117080737.606687-1-quic_rohiagar@quicinc.com>
+References: <20231117080737.606687-1-quic_rohiagar@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -53,19 +53,24 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Wed, 25 Oct 2023 22:36:38 +0530, Mukesh Ojha wrote:
-> Document the compatible for both sm8250 and sm8350 SoCs.
+On Fri, 17 Nov 2023 13:37:34 +0530, Rohit Agarwal wrote:
+> Changes in v5:
+>  - Rebased on 6.7-rc1.
+>  - Collected the Ack tag.
 > 
+> Changes in v4:
+>  - Reordered the interconnect to keep it in sorted order in patch 1/3.
 > 
+> [...]
 
 Applied, thanks!
 
-[2/4] arm64: dts: qcom: sm8250: Add TCSR halt register space
-      commit: d59653233e8779e3fe082eb5635b9785f2095af6
-[3/4] arm64: dts: qcom: sm8350: Add TCSR halt register space
-      commit: 1accc6031d925c6045c4776d5f3646996b0b242a
-[4/4] arm64: dts: qcom: sm8550: Enable download mode register write
-      commit: 44b1f64cad5703c87918cc9ffbf9b79bb959418d
+[1/3] arm64: dts: qcom: Add interconnect nodes for SDX75
+      commit: ea72a527bd205283db08287cd49737e889788065
+[2/3] arm64: dts: qcom: Add USB3 and PHY support on SDX75
+      commit: f47303a8d0b50e762930d4d09ea883fd741394ea
+[3/3] arm64: dts: qcom: sdx75-idp: Enable USB3 and PHY support
+      commit: a8db1c061f8b4d6881253640119f651031eb3786
 
 Best regards,
 -- 
