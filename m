@@ -2,59 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FA880A4A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE2F80A4A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235891AbjLHNnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:43:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
+        id S1573823AbjLHNpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:45:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235884AbjLHNnW (ORCPT
+        with ESMTP id S233490AbjLHNpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:43:22 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8438172B;
-        Fri,  8 Dec 2023 05:43:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702043008; x=1733579008;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=dokXxTgyGtPuhjl0x3PnNuEf+Q6HC66XteJbDXhIC2s=;
-  b=cnCFSqoRGvNhWZN1S9ZGBzEANlCOZkHyCGG8meqaOvI6UvSO1Dj1pMtx
-   kSZHOeeUJKTOE6UotGlcXuVm5tl5Ze3d2svX/PUag2Q+dtwMRfsn4MRKQ
-   /t46Pky+Vi0IF9t3+l4u1gnvdBCbGjWknl2Fx+tN54IaguC9pkY3RTEw+
-   Las7lqTQTt6CQS0JgS+/rVUXWUsnL+tb4sgmK/y7ZHHviOFzaRxoeuZ+4
-   U7SrQlU/BU4H+INnG+3mMzm3HT24pXWEf4pwpO9ccHJB/dwYRp6rdYLy/
-   tBWy/3ccJd7VXuPkXStKTIsLoEy9XvRd1NiP8e9wG1YOdifdn1Y9F8USL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="398272108"
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="398272108"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 05:43:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895542733"
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="895542733"
-Received: from smatua-mobl.ger.corp.intel.com ([10.251.223.110])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 05:43:26 -0800
-Date:   Fri, 8 Dec 2023 15:43:23 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Armin Wolf <W_Armin@gmx.de>
-cc:     Hans de Goede <hdegoede@redhat.com>, corbet@lwn.net,
-        Dell.Client.Kernel@dell.com, linux-doc@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/5] platform/x86: wmi: Remove chardev interface
-In-Reply-To: <20231207222623.232074-5-W_Armin@gmx.de>
-Message-ID: <92e2d5f-77cd-30b0-64e5-28f767baf776@linux.intel.com>
-References: <20231207222623.232074-1-W_Armin@gmx.de> <20231207222623.232074-5-W_Armin@gmx.de>
+        Fri, 8 Dec 2023 08:45:50 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F604172B;
+        Fri,  8 Dec 2023 05:45:57 -0800 (PST)
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5598D66073AA;
+        Fri,  8 Dec 2023 13:45:52 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702043156;
+        bh=twSl3vT3zaZOdj4/451frioqLeLg5HRJipbHbe5yGRU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HHxhVN/miACQglCgDJJ8KpCp4r5TuOFV3zlVxcj+i76dTjmr+mUknqzmiXJN46EMo
+         qos6VZNCBpn1Xrbsulcn5g+07kXLOEw5xckSHHnWsRtuOE/LXvcD3rf29xPswdqhMV
+         Fmjz7jmp2jqiRMhXfgP4H0/kQ4hxkfDkd+xfpyinLZTNage0D1EnsihwWGv8AHsUJq
+         aHh1R+XXURD+wKT8PEQIT2G+JxNEoqN27hzVwpC271BwLQxTv8lmJY+MHCdvBU5yhM
+         HjvRfSDGkrDxHL555YvFqxEswB/WEF76NqWJUvySMXqNQ9+zyqgZLJIxzn72ygSjG+
+         vmT81RHMKJxgw==
+Date:   Fri, 8 Dec 2023 10:45:46 -0300
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, kernelci@lists.linux.dev,
+        kernel@collabora.com, Guenter Roeck <groeck@chromium.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] kselftest: Add new test for detecting unprobed
+ Devicetree devices
+Message-ID: <e9772963-56e8-4465-9c29-3a2955b6f546@notapiano>
+References: <20230828211424.2964562-1-nfraprado@collabora.com>
+ <20230828211424.2964562-4-nfraprado@collabora.com>
+ <310391e8-fdf2-4c2f-a680-7744eb685177@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1850445610-1702043008=:1875"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <310391e8-fdf2-4c2f-a680-7744eb685177@sirena.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,30 +64,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-1850445610-1702043008=:1875
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-
-On Thu, 7 Dec 2023, Armin Wolf wrote:
-
-> The design of the WMI chardev interface is broken:
-> - it assumes that WMI drivers are not instantiated twice
-> - it offers next to no abstractions, the WMI driver gets
-> a raw byte buffer
-> - it is only used by a single driver, something which is
-> unlikely to change
+On Thu, Dec 07, 2023 at 08:18:49PM +0000, Mark Brown wrote:
+> On Mon, Aug 28, 2023 at 05:13:12PM -0400, Nícolas F. R. A. Prado wrote:
+> > Introduce a new kselftest to detect devices that were declared in the
+> > Devicetree, and are expected to be probed by a driver, but weren't.
 > 
-> Since the only user (dell-smbios-wmi) has been migrated
-> to his own ioctl interface, remove it.
+> I've been running this in my personal CI for a little while now and I'm
+> finding it's pretty marginal for the 45 second default timeout in
+> kselftest on some platforms, especially BeagleBone Black though it's not
+> just that.  BBB is both slow and has a comprehensive DT which won't help
+> matters, there's 253 devices.
 > 
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> I'm running it from nfsroot which is going to be part of the problem but
+> shouldn't be too bad since we're mainly dealing with proc and sysfs and
+> hopefully mostly running cached binaries, I'm also using a serial
+> console to get the output which is going to add overhead especially with
+> a large number odevices with length names.  I'm not sure what the best
+> solution is here - a quick glance at the code doesn't ring any alarm
+> bells for me, this may just be a reasonable runtime for the test.
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Thanks for reporting this. I've experimented a bit and was able to find an
+effective optimization and CC'ed it to you [1]. Hopefully it is as effective for
+your board and setup as it is for mine. Let me know there.
 
--- 
- i.
+[1] https://lore.kernel.org/all/20231208133955.483851-1-nfraprado@collabora.com
 
---8323329-1850445610-1702043008=:1875--
+Thanks,
+Nícolas
