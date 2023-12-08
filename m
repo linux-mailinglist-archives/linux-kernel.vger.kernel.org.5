@@ -2,143 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D3480A0D1
+	by mail.lfdr.de (Postfix) with ESMTP id 570EF80A0D2
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573658AbjLHK2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 05:28:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58210 "EHLO
+        id S1573669AbjLHK2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 05:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573539AbjLHK13 (ORCPT
+        with ESMTP id S1573663AbjLHK1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 05:27:29 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4991FE0
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:27:18 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40c256ffdbcso19688365e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 02:27:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702031237; x=1702636037; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cWhZUf+gPe/bSO5zGD/j3fVyXtRrqs3wk2HxPi4TO80=;
-        b=C9yq5xpBkHKn5vGPnix39zu+GIVyj/MyldTlafusV1TmQasyw0W0ylcUCXMr3cs0ox
-         6rHwU5VNcUxemKDtcagOqfZnXcRNAjJ7BTJ687KigQIR52PAUMo0tgk4rntzZweVcOEx
-         FYfNcbdghl/H4b4xWmN6MYl/Owg4MdZpDFj3/d1NYT61e99/g6oLCzuLbEuVJV/VLrLL
-         GJlCg+3b7wXp4UO/WvEbcxcSSrmQzM2lmx8qvBtZGrTcnyoObykHmUiLy0iG8431WZxO
-         nofb5glHyj4dzcy8G+NBbkdohNJLKgPVZVx0sL8sXWdfGA9jPSV3MU3YK+s2/zmydk76
-         xbUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702031237; x=1702636037;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cWhZUf+gPe/bSO5zGD/j3fVyXtRrqs3wk2HxPi4TO80=;
-        b=eeqF20lNqLb5cjpjw2lcEJ7OLhEzCpmTQM1930YnmLDFXdo0vQIWHIkhlxLgITXxrh
-         l3E6wGm4h+isDNlfdeEPK0Y4s3Ke/lq6Clk0Ug6MWbL8n/BRb5fvoVZI8vbu+/FkLgR2
-         Yqlf1cnvGCbWN6E4k0jeMyax5ASncKASLTqioerks9LxFlvZZzju8An3oRS4MAr4oZAR
-         UWbUaeOw+3XgdpC7JouZDvVhH30XvfN3/0AAK9eZYi/o4J2pXNoeRx3H+wU+JMimFi2U
-         kxz1lcdx0Z2nRIC7s1u/AOoW4wVC3KmIiCJZfROg6iDnIR+iukKQNcoKzOTLwEl72RAb
-         YWpQ==
-X-Gm-Message-State: AOJu0YzzZX7LfuedKe9pi7Hn9r2vXQhG9Cy1iRq3MMw1wLvfMJlhPooT
-        9Ler3/DyhTG54alPvlRTLNvZOA==
-X-Google-Smtp-Source: AGHT+IGABS69s/xUxEK6ZM9bQa31757uK5VXDhOxM+BCcRCdazOk6trSZt79eDgnO/hCeNdgO+I6LQ==
-X-Received: by 2002:a05:600c:4e94:b0:40a:4c7e:6f37 with SMTP id f20-20020a05600c4e9400b0040a4c7e6f37mr2526050wmq.20.1702031236886;
-        Fri, 08 Dec 2023 02:27:16 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id h11-20020a05600c350b00b0040b4cb14d40sm4660869wmq.19.2023.12.08.02.27.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 02:27:16 -0800 (PST)
-Message-ID: <c8e4d495-1d4e-40cb-b599-5a01f75f9257@linaro.org>
-Date:   Fri, 8 Dec 2023 11:27:14 +0100
+        Fri, 8 Dec 2023 05:27:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68C619AD
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:27:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 928C1C433C9;
+        Fri,  8 Dec 2023 10:27:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702031243;
+        bh=4gnOPh72MBp2/UPzOPml+kmyjzVijWhiPGlAlFNB6DE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=C2t7RaJQSrT7iFJnVP9fCJZd6lBh0JXumou5ITkx3xjoSL4I97zMftxsjTZ7AEhJ2
+         reTSrGBdgDX/cGHVnHlD1B6h6uq1pRZYEypdqf1yQSFu2520p15BD49riBz1GAgeAF
+         wPr8/wogs2mMi9jC6zCTu8YuIlqS6NtqUezMH60slaHpyOltvRtAzwKBzWiN+nW0pE
+         MmPMAVJU9PRoyUgu0aM4NQwUAcevT5Yg+E7JjY7/jtikEBgsTjjuUK61EfA6eIYKaW
+         OGk6BPrKeT2ypowDVpR345n+A0ZmGS9hV7y0wMtqb+yv+92EF09/kflptVaJos1KUS
+         AFKkHXquXzkRQ==
+From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>
+Cc:     linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guo Ren <guoren@kernel.org>
+Subject: [PATCH v4 15/33] function_graph: Move graph depth stored data to shadow stack global var
+Date:   Fri,  8 Dec 2023 19:27:17 +0900
+Message-Id: <170203123663.579004.7455942203810529166.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <170203105427.579004.8033550792660734570.stgit@devnote2>
+References: <170203105427.579004.8033550792660734570.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] dt-bindings: input: convert gpio-mouse to json-schema
-Content-Language: en-US
-To:     Anshul Dalal <anshulusr@gmail.com>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20231208075037.114598-1-anshulusr@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231208075037.114598-1-anshulusr@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/2023 08:50, Anshul Dalal wrote:
-> Convert device tree binding documentation for GPIO attached mouse to
-> json-schema.
-> 
-> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-You cannot have v1 being already reviewed. This is some newer version.
+The use of the task->trace_recursion for the logic used for the function
+graph depth was a bit of an abuse of that variable. Now that there
+exists global vars that are per stack for registered graph traces, use that
+instead.
 
-> ---
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+---
+ include/linux/trace_recursion.h |   29 -----------------------------
+ kernel/trace/trace.h            |   34 ++++++++++++++++++++++++++++++++--
+ 2 files changed, 32 insertions(+), 31 deletions(-)
 
-Missing changelog.
-
-
-Best regards,
-Krzysztof
+diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+index 2efd5ec46d7f..00e792bf148d 100644
+--- a/include/linux/trace_recursion.h
++++ b/include/linux/trace_recursion.h
+@@ -44,25 +44,6 @@ enum {
+  */
+ 	TRACE_IRQ_BIT,
+ 
+-	/*
+-	 * In the very unlikely case that an interrupt came in
+-	 * at a start of graph tracing, and we want to trace
+-	 * the function in that interrupt, the depth can be greater
+-	 * than zero, because of the preempted start of a previous
+-	 * trace. In an even more unlikely case, depth could be 2
+-	 * if a softirq interrupted the start of graph tracing,
+-	 * followed by an interrupt preempting a start of graph
+-	 * tracing in the softirq, and depth can even be 3
+-	 * if an NMI came in at the start of an interrupt function
+-	 * that preempted a softirq start of a function that
+-	 * preempted normal context!!!! Luckily, it can't be
+-	 * greater than 3, so the next two bits are a mask
+-	 * of what the depth is when we set TRACE_GRAPH_FL
+-	 */
+-
+-	TRACE_GRAPH_DEPTH_START_BIT,
+-	TRACE_GRAPH_DEPTH_END_BIT,
+-
+ 	/*
+ 	 * To implement set_graph_notrace, if this bit is set, we ignore
+ 	 * function graph tracing of called functions, until the return
+@@ -78,16 +59,6 @@ enum {
+ #define trace_recursion_clear(bit)	do { (current)->trace_recursion &= ~(1<<(bit)); } while (0)
+ #define trace_recursion_test(bit)	((current)->trace_recursion & (1<<(bit)))
+ 
+-#define trace_recursion_depth() \
+-	(((current)->trace_recursion >> TRACE_GRAPH_DEPTH_START_BIT) & 3)
+-#define trace_recursion_set_depth(depth) \
+-	do {								\
+-		current->trace_recursion &=				\
+-			~(3 << TRACE_GRAPH_DEPTH_START_BIT);		\
+-		current->trace_recursion |=				\
+-			((depth) & 3) << TRACE_GRAPH_DEPTH_START_BIT;	\
+-	} while (0)
+-
+ #define TRACE_CONTEXT_BITS	4
+ 
+ #define TRACE_FTRACE_START	TRACE_FTRACE_BIT
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 3b9266aeb43b..e3f452eda0e3 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -896,8 +896,38 @@ extern void free_fgraph_ops(struct trace_array *tr);
+ 
+ enum {
+ 	TRACE_GRAPH_FL		= 1,
++
++	/*
++	 * In the very unlikely case that an interrupt came in
++	 * at a start of graph tracing, and we want to trace
++	 * the function in that interrupt, the depth can be greater
++	 * than zero, because of the preempted start of a previous
++	 * trace. In an even more unlikely case, depth could be 2
++	 * if a softirq interrupted the start of graph tracing,
++	 * followed by an interrupt preempting a start of graph
++	 * tracing in the softirq, and depth can even be 3
++	 * if an NMI came in at the start of an interrupt function
++	 * that preempted a softirq start of a function that
++	 * preempted normal context!!!! Luckily, it can't be
++	 * greater than 3, so the next two bits are a mask
++	 * of what the depth is when we set TRACE_GRAPH_FL
++	 */
++
++	TRACE_GRAPH_DEPTH_START_BIT,
++	TRACE_GRAPH_DEPTH_END_BIT,
+ };
+ 
++static inline unsigned long ftrace_graph_depth(unsigned long *task_var)
++{
++	return (*task_var >> TRACE_GRAPH_DEPTH_START_BIT) & 3;
++}
++
++static inline void ftrace_graph_set_depth(unsigned long *task_var, int depth)
++{
++	*task_var &= ~(3 << TRACE_GRAPH_DEPTH_START_BIT);
++	*task_var |= (depth & 3) << TRACE_GRAPH_DEPTH_START_BIT;
++}
++
+ #ifdef CONFIG_DYNAMIC_FTRACE
+ extern struct ftrace_hash __rcu *ftrace_graph_hash;
+ extern struct ftrace_hash __rcu *ftrace_graph_notrace_hash;
+@@ -930,7 +960,7 @@ ftrace_graph_addr(unsigned long *task_var, struct ftrace_graph_ent *trace)
+ 		 * when the depth is zero.
+ 		 */
+ 		*task_var |= TRACE_GRAPH_FL;
+-		trace_recursion_set_depth(trace->depth);
++		ftrace_graph_set_depth(task_var, trace->depth);
+ 
+ 		/*
+ 		 * If no irqs are to be traced, but a set_graph_function
+@@ -955,7 +985,7 @@ ftrace_graph_addr_finish(struct fgraph_ops *gops, struct ftrace_graph_ret *trace
+ 	unsigned long *task_var = fgraph_get_task_var(gops);
+ 
+ 	if ((*task_var & TRACE_GRAPH_FL) &&
+-	    trace->depth == trace_recursion_depth())
++	    trace->depth == ftrace_graph_depth(task_var))
+ 		*task_var &= ~TRACE_GRAPH_FL;
+ }
+ 
 
