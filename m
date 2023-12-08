@@ -2,163 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEA680A0FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1016480A105
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235918AbjLHKbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 05:31:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
+        id S1573700AbjLHKcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 05:32:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235908AbjLHKbW (ORCPT
+        with ESMTP id S235903AbjLHKbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 05:31:22 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C4E2719
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:31:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6762C433C8;
-        Fri,  8 Dec 2023 10:30:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702031463;
-        bh=8t7YVZmoVUR7dCk/2nFP4SmQbrkuMwJVZH30PnGw0sc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DWhZa3EOQnOFLbqkXnThPPDz2DVUmGjTYOjFwf2l6M56pBwfRF2DkMvTJBFMsdS62
-         AzmIltwCI5BHlEcV3wBKQQ3D9mDNoJ9EGh5gh2LT+nJ9+6yLK9nJtKZJBWXDlXuQlK
-         EbKuwfNZfYFZryd7rOKcpLSA74Q9ry2xkLiDT36oozRzAmTcZ84mImUGVGhRvQBYuU
-         EZ5yAsRvuVTJ2m4pJXhdrJKN3/V81vu0kipeaTB+o/xMoTh3erT+bvrmRU1HUyKdx6
-         XZb5Blz2HPNDUVJjJy8c8OoFf4th9CqYF446V3HrAbtlbLu+cWbdgiUV8r8Y4EyHaq
-         tYOCeKdsIc94w==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>
-Cc:     linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Fri, 8 Dec 2023 05:31:47 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75722325B
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:31:19 -0800 (PST)
+From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702031474;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qKILzRTd25bfCjTNlwp7pDmuYeLxqzS8V4H69hHqUNQ=;
+        b=axBkgfgzmdIk6Uu/T+DeFOn4DAZvck9+YHB+Ch7CwtGxFhYlzn+vXmPjxdxb9aZkFPGDFt
+        n8rCVkaTpPSCCz/0DOKpYE6G1kK0+FYCEYX6fgOgD7SgyGzW2au8oNyw5otbzpelor+3B/
+        jUs0qejV+tDPmxGbYRcGF3Cr9cvfYsXa1G/TXJZ/dBxDD7hJ3+xtwO1RWi5MsuCLKtrRZF
+        YTRLcYZBpPImAmFTeIAof2QCkwTl+Iihe/i8TYtMo1H24OkytjMbQTmrfARD8rCh4uIAaB
+        mWQL6TQRqKKCgRjCHI/TA6zni8TnuwM8HbO86D3clt1byngdeUupX4CqWuLgqw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702031474;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qKILzRTd25bfCjTNlwp7pDmuYeLxqzS8V4H69hHqUNQ=;
+        b=9qQo5uqCEin3poQQUOs72IDiDx4T/0Q/FIGvx0qU1wtTukf/McQnnMGG5xPBrJNgAL99k0
+        9UJ9jyFToQ8MwyCA==
+To:     Sebastian Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <jstultz@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: [PATCH v4 33/33] Documentation: probes: Update fprobe on function-graph tracer
-Date:   Fri,  8 Dec 2023 19:30:57 +0900
-Message-Id: <170203145666.579004.6151223991854866508.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170203105427.579004.8033550792660734570.stgit@devnote2>
-References: <170203105427.579004.8033550792660734570.stgit@devnote2>
-User-Agent: StGit/0.19
+        Eric Dumazet <edumazet@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v9 30/32] timers: Implement the hierarchical pull model
+In-Reply-To: <20231207180928.FZB319OJ@linutronix.de>
+References: <20231201092654.34614-1-anna-maria@linutronix.de>
+ <20231201092654.34614-31-anna-maria@linutronix.de>
+ <20231207180928.FZB319OJ@linutronix.de>
+Date:   Fri, 08 Dec 2023 11:31:13 +0100
+Message-ID: <875y19ouj2.fsf@somnus>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Sebastian Siewior <bigeasy@linutronix.de> writes:
 
-Update fprobe documentation for the new fprobe on function-graph
-tracer. This includes some bahvior changes and pt_regs to
-ftrace_regs interface change.
+> On 2023-12-01 10:26:52 [+0100], Anna-Maria Behnsen wrote:
+>> diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration=
+.c
+>> new file mode 100644
+>> index 000000000000..05cd8f1bc45d
+>> --- /dev/null
+>> +++ b/kernel/time/timer_migration.c
+>> @@ -0,0 +1,1636 @@
+> =E2=80=A6
+>> + * Protection of the tmigr group state information:
+>> + * ------------------------------------------------
+>> + *
+>> + * The state information with the list of active children and migrator =
+needs to
+>> + * be protected by a sequence counter. It prevents a race when updates =
+in a
+>
+> s/a$//
+>
+>> + * child groups are propagated in changed order. The following scenario
+>> + * describes what happens without updating the sequence counter:
+>> + *
+>> + * Therefore, let's take three groups and four CPUs (CPU2 and CPU3 as w=
+ell
+>> + * as GRP0:1 will not change during the scenario):
+>> + *
+>> + *    LVL 1            [GRP1:0]
+>> + *                     migrator =3D GRP0:1
+>> + *                     active   =3D GRP0:0, GRP0:1
+>> + *                   /                \
+>> + *    LVL 0  [GRP0:0]                  [GRP0:1]
+>> + *           migrator =3D CPU0           migrator =3D CPU2
+>> + *           active   =3D CPU0           active   =3D CPU2
+>> + *              /         \                /         \
+>> + *    CPUs     0           1              2           3
+>> + *             active      idle           active      idle
+>> + *
+>> + *
+>> + * 1. CPU0 goes idle (changes are updated in GRP0:0; afterwards the cur=
+rent
+>> + *    states of GRP0:0 and GRP1:0 are stored in the data for walking the
+>> + *    hierarchy):
+>
+>    CPU0 goes idle. The state update is performed lock less and group
+>    wise. In the first step only GRP0:0 has been updated. The update of
+>    GRP1:0 is pending, the CPU walks through the hierarchy.
+>
+>> + *
+>> + *    LVL 1            [GRP1:0]
+>> + *                     migrator =3D GRP0:1
+>> + *                     active   =3D GRP0:0, GRP0:1
+>> + *                   /                \
+>> + *    LVL 0  [GRP0:0]                  [GRP0:1]
+>> + *       --> migrator =3D TMIGR_NONE     migrator =3D CPU2
+>> + *       --> active   =3D                active   =3D CPU2
+>> + *              /         \                /         \
+>> + *    CPUs     0           1              2           3
+>> + *         --> idle        idle           active      idle
+>
+>> + * 2. CPU1 comes out of idle (changes are update in GRP0:0; afterwards =
+the
+>> + *    current states of GRP0:0 and GRP1:0 are stored in the data for wa=
+lking the
+>> + *    hierarchy):
+>
+>    While CPU0 goes idle and continues to update the state, CPU1 comes
+>    out of idle. CPU1 updates GRP0:0. The update for GRP1:0 is pending,
+>    tge CPU walks through the hierarchy. Both CPUs now walk the hierarchy
+>    to perform the needed update from their point of view.
+>    The currently visible state:
+>
+>> + *
+>> + *    LVL 1            [GRP1:0]
+>> + *                     migrator =3D GRP0:1
+>> + *                     active   =3D GRP0:0, GRP0:1
+>> + *                   /                \
+>> + *    LVL 0  [GRP0:0]                  [GRP0:1]
+>> + *       --> migrator =3D CPU1           migrator =3D CPU2
+>> + *       --> active   =3D CPU1           active   =3D CPU2
+>> + *              /         \                /         \
+>> + *    CPUs     0           1              2           3
+>> + *             idle    --> active         active      idle
+>> + *
+>> + * 3. Here comes the change of the order: Propagating the changes of st=
+ep 2
+>> + *    through the hierarchy to GRP1:0 - nothing to be done, because GRP=
+0:0
+>> + *    is already up to date.
+>
+>     Here is the race condition: CPU1 managed to propagate its changes
+>     through the hierarchy to GRP1:0 before CPU0 did. The active members
+>     of GRP1:0 remain unchanged after the update since it is still valid
+>     from CPU1 current point of view:
+>
+>          LVL 1            [GRP1:0]
+>                       --> migrator =3D GRP0:1
+>                       --> active   =3D GRP0:0, GRP0:1
+>                         /                \
+>          LVL 0  [GRP0:0]                  [GRP0:1]
+>                 migrator =3D CPU1           migrator =3D CPU2
+>                 active   =3D CPU1           active   =3D CPU2
+>                    /         \                /         \
+>          CPUs     0           1              2           3
+>                   idle        active         active      idle
+>
+> [ I take it as the migrator remains set to GRP0:1 by CPU1 but it could
+>   be changed to GRP0:0. I assume that both fields (migrator+active) are
+>   changed there via the propagation and the arrow in both fields denotes
+>   this. ]
+>
+>> + * 4. Propagating the changes of step 1 through the hierarchy to GRP1:0
+>
+>      Now CPU0 finally propagates its changes to GRP1:0.
+>
+>> + *
+>> + *    LVL 1            [GRP1:0]
+>> + *                 --> migrator =3D GRP0:1
+>> + *                 --> active   =3D GRP0:1
+>> + *                   /                \
+>> + *    LVL 0  [GRP0:0]                  [GRP0:1]
+>> + *           migrator =3D CPU1           migrator =3D CPU2
+>> + *           active   =3D CPU1           active   =3D CPU2
+>> + *              /         \                /         \
+>> + *    CPUs     0           1              2           3
+>> + *             idle        active         active      idle
+>> + *
+>> + * Now there is a inconsistent overall state because GRP0:0 is active, =
+but
+>> + * it is marked as idle in the GRP1:0. This is prevented by incrementing
+>> + * sequence counter whenever changing the state.
+>
+>    The race of CPU0 vs CPU1 led to an inconsistent state in GRP1:0.
+>    CPU1 is active and is correctly listed as active in GRP0:0. However
+>    GRP1:0 does not have GRP0:0 listed as active which is wrong.
+>    The sequence counter has been added to avoid inconsistent states
+>    during updates. The state is updated atomically only if all members,
+>    including the sequence counter, match the expected value
+>    (compare-and-exchange).
+>    Looking back at the previous example with the addition of the
+>    sequence number: The update as performed by CPU0 in step 4 will fail.
+>    CPU1 changed the sequence number during the update in step 3 so the
+>    expected old value (as seen by CPU0 before starting the walk) does
+>    not match.
+>
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v2:
-  - Update @fregs parameter explanation.
----
- Documentation/trace/fprobe.rst |   42 ++++++++++++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 15 deletions(-)
+Thanks a lot for rephrasing the documentation to make it clearer for the
+reader! I use your proposal with some minor changes.
 
-diff --git a/Documentation/trace/fprobe.rst b/Documentation/trace/fprobe.rst
-index 196f52386aaa..f58bdc64504f 100644
---- a/Documentation/trace/fprobe.rst
-+++ b/Documentation/trace/fprobe.rst
-@@ -9,9 +9,10 @@ Fprobe - Function entry/exit probe
- Introduction
- ============
- 
--Fprobe is a function entry/exit probe mechanism based on ftrace.
--Instead of using ftrace full feature, if you only want to attach callbacks
--on function entry and exit, similar to the kprobes and kretprobes, you can
-+Fprobe is a function entry/exit probe mechanism based on the function-graph
-+tracer.
-+Instead of tracing all functions, if you want to attach callbacks on specific
-+function entry and exit, similar to the kprobes and kretprobes, you can
- use fprobe. Compared with kprobes and kretprobes, fprobe gives faster
- instrumentation for multiple functions with single handler. This document
- describes how to use fprobe.
-@@ -91,12 +92,14 @@ The prototype of the entry/exit callback function are as follows:
- 
- .. code-block:: c
- 
-- int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
- 
-- void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
- 
--Note that the @entry_ip is saved at function entry and passed to exit handler.
--If the entry callback function returns !0, the corresponding exit callback will be cancelled.
-+Note that the @entry_ip is saved at function entry and passed to exit
-+handler.
-+If the entry callback function returns !0, the corresponding exit callback
-+will be cancelled.
- 
- @fp
-         This is the address of `fprobe` data structure related to this handler.
-@@ -112,12 +115,10 @@ If the entry callback function returns !0, the corresponding exit callback will
-         This is the return address that the traced function will return to,
-         somewhere in the caller. This can be used at both entry and exit.
- 
--@regs
--        This is the `pt_regs` data structure at the entry and exit. Note that
--        the instruction pointer of @regs may be different from the @entry_ip
--        in the entry_handler. If you need traced instruction pointer, you need
--        to use @entry_ip. On the other hand, in the exit_handler, the instruction
--        pointer of @regs is set to the current return address.
-+@fregs
-+        This is the `ftrace_regs` data structure at the entry and exit. This
-+        includes the function parameters, or the return values. So user can
-+        access thos values via appropriate `ftrace_regs_*` APIs.
- 
- @entry_data
-         This is a local storage to share the data between entry and exit handlers.
-@@ -125,6 +126,17 @@ If the entry callback function returns !0, the corresponding exit callback will
-         and `entry_data_size` field when registering the fprobe, the storage is
-         allocated and passed to both `entry_handler` and `exit_handler`.
- 
-+Entry data size and exit handlers on the same function
-+======================================================
-+
-+Since the entry data is passed via per-task stack and it is has limited size,
-+the entry data size per probe is limited to `15 * sizeof(long)`. You also need
-+to take care that the different fprobes are probing on the same function, this
-+limit becomes smaller. The entry data size is aligned to `sizeof(long)` and
-+each fprobe which has exit handler uses a `sizeof(long)` space on the stack,
-+you should keep the number of fprobes on the same function as small as
-+possible.
-+
- Share the callbacks with kprobes
- ================================
- 
-@@ -165,8 +177,8 @@ This counter counts up when;
-  - fprobe fails to take ftrace_recursion lock. This usually means that a function
-    which is traced by other ftrace users is called from the entry_handler.
- 
-- - fprobe fails to setup the function exit because of the shortage of rethook
--   (the shadow stack for hooking the function return.)
-+ - fprobe fails to setup the function exit because of failing to allocate the
-+   data buffer from the per-task shadow stack.
- 
- The `fprobe::nmissed` field counts up in both cases. Therefore, the former
- skips both of entry and exit callback and the latter skips the exit
+Thanks,
+
+	Anna-Maria
 
