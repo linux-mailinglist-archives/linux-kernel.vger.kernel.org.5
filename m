@@ -2,123 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F8580A418
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9866180A41D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573736AbjLHNEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:04:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
+        id S1573782AbjLHNGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:06:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjLHND7 (ORCPT
+        with ESMTP id S1573773AbjLHNGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:03:59 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755AC171F
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 05:04:05 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        Fri, 8 Dec 2023 08:06:02 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4594F1995;
+        Fri,  8 Dec 2023 05:06:08 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E733740E00CC;
+        Fri,  8 Dec 2023 13:06:04 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id UcgXcBcz720k; Fri,  8 Dec 2023 13:06:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1702040762; bh=k9BBLCJJHxA1EJZX5E05AB1l8VGWke2lYGmIBt3xYhI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GbulNFr88+NES6gJHTFBzrBKX/G3XJQuA9w1k2sxH60A/Wa+Q0S4Q4ADKct/6sZd7
+         jWtKPKbepUNQmtCtWDUDBg+npO3ghryF1cxT/96f7+4PpMoauZm3/LQj/AZ+po9XXs
+         nfTqUr4v/Po53yiRNUaaeLru/Iw1JXnsWaOrCJv7f5vFwVQ1mrT8aiVQtly4JT4SvD
+         i+uSxZ1UCEMnWehnui2RGaHlOT0kUlAMce/KNpms2x4RWI5TI2GSkmOs5mf7SqHIiS
+         o40ADaVmrbYYCe1DaIbJQpTW5SNs3d62nQpVEp1+bUdXacnFLMUTnj6kuNXDqJmWNo
+         lebCrPQqNlaYsODU4eKlhHYDK68Vbx87AdzVEmBqkce3j+dYhl0qgQWsCFH2nbl9QQ
+         WtJirz/E27HdFcX46vJQoUnQRBbahjobKBRvgejZqMwVGLWiJWRpty46e3aolqeUDA
+         eH1IDSafl/VjW2eltN6Xit1ttGsl36wW+bf4UVfpZ1mi2B0Fq7DnsVRGZmvcdzBW7L
+         iSk7BTgF/O/fJ0srB42um9or3KpbvdcjjDw4RZGuQ9vie2HF2j6X0ZRJ0/Fqo7c12p
+         WPisowwqJylliuaF9EcI7pqy9VkHToC0fGcJMZ1sB3C1BaBZ0FYpe+ND1BmLfusJ5E
+         hEPD6WDU7YS2VPZbYbCGhfnY=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D9A7B1F393;
-        Fri,  8 Dec 2023 13:04:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702040644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=85+E0VpvArWKg1KL7PFWDdwa9GmPlU5dScLhcsU8kLc=;
-        b=P2yiZHMDTnC9HhlxBoK21+5j8O0bshSj13uY7M/RLbBZXc62TyU7wg+w9Z+PQs08N1G6YH
-        Bvx4zvwv/SQ+Uu35Sj90I82zQAsj3OvDpI76JW5rTU2i8rG09sQ3fWrG6WM1e532f71l3w
-        ZDy9dLE+1PmqllJaMDSUTwfcpIrObKk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702040644;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=85+E0VpvArWKg1KL7PFWDdwa9GmPlU5dScLhcsU8kLc=;
-        b=35ZEnRfUOLYrArdaXfwtRUoMvzEQRqrUVU2YZXA/hFTIMHjmoSZ0A5cYXhnSQbnHZrksA7
-        ssuiy82FJ05y0SDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702040643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=85+E0VpvArWKg1KL7PFWDdwa9GmPlU5dScLhcsU8kLc=;
-        b=qJjTYSTT4ccQkfmW8ieIbTyZRbG2iZ9uMAJ3pJaob97JxMfebPN7lfKJAFTRqTj4ho/8XR
-        9e7RLYcd+0kjoUSgWKjDvGfchCGLcSEI1flwOtv2MY93ruIHnUa3bDIwTGDUC8mIIPuPp/
-        w1qFQ0bhXlH4VkEJd5UrUwykkbvdrKc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702040643;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=85+E0VpvArWKg1KL7PFWDdwa9GmPlU5dScLhcsU8kLc=;
-        b=J+ec8WjB/Gk8Q88IhbjqhY561bNd6rBtC6gP9av78FVYcD9AxYk/uFzLVfHVia4z+yanl5
-        DvP8/sPz3tPBuhBg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C6464138FF;
-        Fri,  8 Dec 2023 13:04:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id I9r0LkMUc2X7eAAAn2gu4w
-        (envelope-from <dwagner@suse.de>); Fri, 08 Dec 2023 13:04:03 +0000
-Date:   Fri, 8 Dec 2023 14:04:03 +0100
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH v4 1/4] nvme: move ns id info to struct nvme_ns_head
-Message-ID: <xf5gzrsqsc3a73vfjzpqsjgbvjuaifzazgtqsxeyhnyxzcksj7@ssodhov7n6ny>
-References: <20231207123624.29959-1-dwagner@suse.de>
- <20231207123624.29959-2-dwagner@suse.de>
- <ZXHzVN3jmIIsGyeq@kbusch-mbp>
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B4F4140E00A9;
+        Fri,  8 Dec 2023 13:05:21 +0000 (UTC)
+Date:   Fri, 8 Dec 2023 14:05:20 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+        pankaj.gupta@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 17/50] crypto: ccp: Handle the legacy TMR allocation
+ when SNP is enabled
+Message-ID: <20231208130520.GFZXMUkKR+aexFpxXf@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-18-michael.roth@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZXHzVN3jmIIsGyeq@kbusch-mbp>
-X-Spam-Level: *************
-X-Spam-Score: 13.72
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-        dkim=pass header.d=suse.de header.s=susede2_rsa header.b=qJjTYSTT;
-        dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=J+ec8WjB;
-        dmarc=pass (policy=none) header.from=suse.de;
-        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dwagner@suse.de) smtp.mailfrom=dwagner@suse.de
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-13.37 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-         TO_DN_SOME(0.00)[];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         RCPT_COUNT_FIVE(0.00)[6];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_TRACE(0.00)[suse.de:+];
-         DMARC_POLICY_ALLOW(0.00)[suse.de,none];
-         MX_GOOD(-0.01)[];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         BAYES_HAM(-1.36)[90.55%];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         FROM_HAS_DN(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         DWL_DNSWL_HI(-3.50)[suse.de:dkim];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         WHITELIST_DMARC(-7.00)[suse.de:D:+];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -13.37
-X-Rspamd-Queue-Id: D9A7B1F393
-X-Spam-Flag: NO
+In-Reply-To: <20231016132819.1002933-18-michael.roth@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -129,23 +81,264 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 09:31:16AM -0700, Keith Busch wrote:
-> On Thu, Dec 07, 2023 at 01:36:21PM +0100, Daniel Wagner wrote:
-> > @@ -1906,7 +1908,8 @@ static void nvme_update_disk_info(struct gendisk *disk,
-> >  	 * or smaller than a sector size yet, so catch this early and don't
-> >  	 * allow block I/O.
-> >  	 */
-> > -	if (ns->lba_shift > PAGE_SHIFT || ns->lba_shift < SECTOR_SHIFT) {
-> > +	if (ns->head->lba_shift > PAGE_SHIFT ||
-> > +	    ns->head->lba_shift < SECTOR_SHIFT) {
-> >  		capacity = 0;
-> >  		bs = (1 << 9);
-> >  	}
+On Mon, Oct 16, 2023 at 08:27:46AM -0500, Michael Roth wrote:
+> From: Brijesh Singh <brijesh.singh@amd.com>
 > 
-> A minor conflict here: this series would target nvme-6.8, but the block
-> tree we're based on doesn't have this code. I'll patch it up for the
-> current 6.8 tree and make a note of the conflict for the next merge
-> window.
+> The behavior and requirement for the SEV-legacy command is altered when
+> the SNP firmware is in the INIT state. See SEV-SNP firmware specification
+> for more details.
+> 
+> Allocate the Trusted Memory Region (TMR) as a 2mb sized/aligned region
+> when SNP is enabled to satisfy new requirements for the SNP. Continue
 
-I've missed that nvme-6.8 was available now. I can rebase v5 ontop of
-nvme-6.8 if you want me to do it. Whatever is simpler for you.
+s/the //
+
+> allocating a 1mb region for !SNP configuration.
+> 
+> While at it, provide API that can be used by others to allocate a page
+
+"...an API... ... to allocate a firmware page."
+
+Simple.
+
+> that can be used by the firmware.
+
+> The immediate user for this API will be the KVM driver.
+
+Delete that sentence.
+
+> The KVM driver to need to allocate a firmware context
+
+"The KVM driver needs to allocate ...
+
+> page during the guest creation. The context page need to be updated
+
+"needs"
+
+> by the firmware. See the SEV-SNP specification for further details.
+> 
+> Co-developed-by: Ashish Kalra <ashish.kalra@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> [mdr: use struct sev_data_snp_page_reclaim instead of passing paddr
+>       directly to SEV_CMD_SNP_PAGE_RECLAIM]
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> ---
+>  drivers/crypto/ccp/sev-dev.c | 151 ++++++++++++++++++++++++++++++++---
+>  include/linux/psp-sev.h      |   9 +++
+>  2 files changed, 151 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+> index 613b25f81498..ea21307a2b34 100644
+> --- a/drivers/crypto/ccp/sev-dev.c
+> +++ b/drivers/crypto/ccp/sev-dev.c
+> @@ -30,6 +30,7 @@
+>  #include <asm/smp.h>
+>  #include <asm/cacheflush.h>
+>  #include <asm/e820/types.h>
+> +#include <asm/sev-host.h>
+>  
+>  #include "psp-dev.h"
+>  #include "sev-dev.h"
+> @@ -93,6 +94,13 @@ static void *sev_init_ex_buffer;
+>  struct sev_data_range_list *snp_range_list;
+>  static int __sev_snp_init_locked(int *error);
+>  
+> +/* When SEV-SNP is enabled the TMR needs to be 2MB aligned and 2MB size. */
+> +#define SEV_SNP_ES_TMR_SIZE	(2 * 1024 * 1024)
+
+There's "SEV", "SNP" *and* "ES". Wow.
+
+Let's do this:
+
+#define SEV_TMR_SIZE	SZ_1M
+#define SNP_TMR_SIZE	SZ_2M
+
+Done.
+
+> +static size_t sev_es_tmr_size = SEV_ES_TMR_SIZE;
+> +
+> +static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret);
+
+Instead of doing forward declarations, move the whole logic around
+__sev_do_cmd_locked() up here in the file so that you can call that
+function by other functions without forward declarations.
+
+The move should probably be a pre-patch.
+
+>  static inline bool sev_version_greater_or_equal(u8 maj, u8 min)
+>  {
+>  	struct sev_device *sev = psp_master->sev_data;
+> @@ -193,11 +201,131 @@ static int sev_cmd_buffer_len(int cmd)
+>  	return 0;
+>  }
+>  
+> +static int snp_reclaim_pages(unsigned long paddr, unsigned int npages, bool locked)
+> +{
+> +	/* Cbit maybe set in the paddr */
+> +	unsigned long pfn = __sme_clr(paddr) >> PAGE_SHIFT;
+> +	int ret, err, i, n = 0;
+> +
+> +	for (i = 0; i < npages; i++, pfn++, n++) {
+> +		struct sev_data_snp_page_reclaim data = {0};
+> +
+> +		data.paddr = pfn << PAGE_SHIFT;
+
+This shifting back'n'forth between paddr and pfn makes this function
+hard to read. Let's use only paddr (diff ontop):
+
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index ea21307a2b34..25078b0253bd 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -203,14 +203,15 @@ static int sev_cmd_buffer_len(int cmd)
+ 
+ static int snp_reclaim_pages(unsigned long paddr, unsigned int npages, bool locked)
+ {
+-	/* Cbit maybe set in the paddr */
+-	unsigned long pfn = __sme_clr(paddr) >> PAGE_SHIFT;
+ 	int ret, err, i, n = 0;
+ 
+-	for (i = 0; i < npages; i++, pfn++, n++) {
++	/* C-bit maybe set, clear it: */
++	paddr = __sme_clr(paddr);
++
++	for (i = 0; i < npages; i++, paddr += PAGE_SIZE, n++) {
+ 		struct sev_data_snp_page_reclaim data = {0};
+ 
+-		data.paddr = pfn << PAGE_SHIFT;
++		data.paddr = paddr;
+ 
+ 		if (locked)
+ 			ret = __sev_do_cmd_locked(SEV_CMD_SNP_PAGE_RECLAIM, &data, &err);
+@@ -220,7 +221,7 @@ static int snp_reclaim_pages(unsigned long paddr, unsigned int npages, bool lock
+ 		if (ret)
+ 			goto cleanup;
+ 
+-		ret = rmp_make_shared(pfn, PG_LEVEL_4K);
++		ret = rmp_make_shared(__phys_to_pfn(paddr), PG_LEVEL_4K);
+ 		if (ret)
+ 			goto cleanup;
+ 	}
+@@ -232,7 +233,7 @@ static int snp_reclaim_pages(unsigned long paddr, unsigned int npages, bool lock
+ 	 * If failed to reclaim the page then page is no longer safe to
+ 	 * be release back to the system, leak it.
+ 	 */
+-	snp_leak_pages(pfn, npages - n);
++	snp_leak_pages(__phys_to_pfn(paddr), npages - n);
+ 	return ret;
+ }
+ 
+> +
+> +		if (locked)
+> +			ret = __sev_do_cmd_locked(SEV_CMD_SNP_PAGE_RECLAIM, &data, &err);
+> +		else
+> +			ret = sev_do_cmd(SEV_CMD_SNP_PAGE_RECLAIM, &data, &err);
+> +
+> +		if (ret)
+> +			goto cleanup;
+> +
+> +		ret = rmp_make_shared(pfn, PG_LEVEL_4K);
+> +		if (ret)
+> +			goto cleanup;
+> +	}
+> +
+> +	return 0;
+> +
+> +cleanup:
+> +	/*
+> +	 * If failed to reclaim the page then page is no longer safe to
+> +	 * be release back to the system, leak it.
+
+"released"
+
+> +	 */
+> +	snp_leak_pages(pfn, npages - n);
+> +	return ret;
+> +}
+> +
+> +static int rmp_mark_pages_firmware(unsigned long paddr, unsigned int npages, bool locked)
+> +{
+> +	/* Cbit maybe set in the paddr */
+> +	unsigned long pfn = __sme_clr(paddr) >> PAGE_SHIFT;
+> +	int rc, n = 0, i;
+
+That n looks like it can be replaced by i.
+
+> +
+> +	for (i = 0; i < npages; i++, n++, pfn++) {
+> +		rc = rmp_make_private(pfn, 0, PG_LEVEL_4K, 0, true);
+> +		if (rc)
+> +			goto cleanup;
+> +	}
+> +
+> +	return 0;
+> +
+> +cleanup:
+> +	/*
+> +	 * Try unrolling the firmware state changes by
+> +	 * reclaiming the pages which were already changed to the
+> +	 * firmware state.
+> +	 */
+> +	snp_reclaim_pages(paddr, n, locked);
+> +
+> +	return rc;
+> +}
+> +
+> +static struct page *__snp_alloc_firmware_pages(gfp_t gfp_mask, int order, bool locked)
+
+AFAICT, @locked is always false. So it can go.
+
+> +{
+> +	unsigned long npages = 1ul << order, paddr;
+> +	struct sev_device *sev;
+> +	struct page *page;
+> +
+> +	if (!psp_master || !psp_master->sev_data)
+> +		return NULL;
+> +
+> +	page = alloc_pages(gfp_mask, order);
+> +	if (!page)
+> +		return NULL;
+> +
+> +	/* If SEV-SNP is initialized then add the page in RMP table. */
+> +	sev = psp_master->sev_data;
+> +	if (!sev->snp_initialized)
+> +		return page;
+> +
+> +	paddr = __pa((unsigned long)page_address(page));
+> +	if (rmp_mark_pages_firmware(paddr, npages, locked))
+> +		return NULL;
+> +
+> +	return page;
+> +}
+> +
+> +void *snp_alloc_firmware_page(gfp_t gfp_mask)
+> +{
+> +	struct page *page;
+> +
+> +	page = __snp_alloc_firmware_pages(gfp_mask, 0, false);
+> +
+> +	return page ? page_address(page) : NULL;
+> +}
+> +EXPORT_SYMBOL_GPL(snp_alloc_firmware_page);
+> +
+> +static void __snp_free_firmware_pages(struct page *page, int order, bool locked)a
+
+This @locked too is always false. It becomes true later in
+
+Subject: [PATCH v10 50/50] crypto: ccp: Add panic notifier for SEV/SNP firmware shutdown on kdump
+
+which talks about some panic notifier running in atomic context. But
+then you can't take locks in atomic context.
+
+Looks like this whole dance around the locked thing needs a cleanup.
+
+...
+
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
