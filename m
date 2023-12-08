@@ -2,61 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E25A380A4C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 383CF80A4BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573907AbjLHNut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:50:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
+        id S1573859AbjLHNuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:50:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573903AbjLHNuo (ORCPT
+        with ESMTP id S1573849AbjLHNuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:50:44 -0500
-Received: from helios.alatek.com.pl (helios.alatek.com.pl [85.14.123.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A8D172B;
-        Fri,  8 Dec 2023 05:50:50 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by helios.alatek.com.pl (Postfix) with ESMTP id 24D5A2D00F5E;
-        Fri,  8 Dec 2023 14:50:48 +0100 (CET)
-Received: from helios.alatek.com.pl ([127.0.0.1])
- by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10032)
- with ESMTP id pleziLCz3-db; Fri,  8 Dec 2023 14:50:47 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by helios.alatek.com.pl (Postfix) with ESMTP id A502D2D00F5C;
-        Fri,  8 Dec 2023 14:50:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 helios.alatek.com.pl A502D2D00F5C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alatek.krakow.pl;
-        s=99EE5E86-D06A-11EC-BE24-DBCCD0A148D3; t=1702043447;
-        bh=ju/FSf2NR+b7FjguOOHsH9RocRGF7h6jkhh+cm1imXY=;
-        h=From:To:Date:Message-Id:MIME-Version;
-        b=RxOSNy7AXe5HoVry27P4rhRVv/xcYk2CAY0NJeGLYJb52O3JPBlrTP858QY58iLDO
-         33kaOgqDkOL+K91gqyjUZ7DUQnJZYc/PbTrjDrAWt+zagfKL+rVtdRAl4zEdji9ipv
-         X4SstL6/R9sC1974CZOfHoNErHMQ69OwxWJM9PyLyH13XnHzzvgvYqMybg8R3x58ak
-         H0PbvWGA9oZ/+lORZ/JXOPaORH/+O8W3wjNb4UOBMWUM84bFCmUlghIV7jNvf9/dRy
-         ukU7yssVSuEhVS1whTLf0q375nyjQw4WX3xNqownmT+bsI9IcFE613rcXlYZoZ5xIr
-         KCExKwQ2HLAPw==
-X-Virus-Scanned: amavis at alatek.com.pl
-Received: from helios.alatek.com.pl ([127.0.0.1])
- by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10026)
- with ESMTP id PoYG8YP1WxHn; Fri,  8 Dec 2023 14:50:47 +0100 (CET)
-Received: from localhost.localdomain (unknown [10.125.125.6])
-        by helios.alatek.com.pl (Postfix) with ESMTPSA id 16DAB2D00F5B;
-        Fri,  8 Dec 2023 14:50:47 +0100 (CET)
-From:   Jan Kuliga <jankul@alatek.krakow.pl>
-To:     lizhi.hou@amd.com, brian.xu@amd.com, raj.kumar.rampelli@amd.com,
-        vkoul@kernel.org, michal.simek@amd.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com
-Cc:     jankul@alatek.krakow.pl
-Subject: [PATCH v4 8/8] dmaengine: xilinx: xdma: Introduce interleaved DMA transfers
-Date:   Fri,  8 Dec 2023 14:49:29 +0100
-Message-Id: <20231208134929.49523-9-jankul@alatek.krakow.pl>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231208134838.49500-1-jankul@alatek.krakow.pl>
-References: <20231208134838.49500-1-jankul@alatek.krakow.pl>
+        Fri, 8 Dec 2023 08:50:23 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C953F198C;
+        Fri,  8 Dec 2023 05:50:29 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6cec976b197so887986b3a.0;
+        Fri, 08 Dec 2023 05:50:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702043429; x=1702648229; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=w05jcvJbftuz+V4PIwlumxl68ycFODGUFJ//SIJMXoc=;
+        b=akAduOxGieGm14GFaa/A4ucqm7QvDyaQULiMFmh4yFOPUP3brtqVBuz27VcCSYXDF8
+         bI6ZGC6czjXfWCjnpGLgwqpqoJX3noUrkQLLHM8zq3yFbA2WJVADm06I40WDiXHEqWfl
+         S8eU/HGZePZSlgim66gvHu9cyIdViVB5JSEnCSXTSxC1rv4PYMc0PdyAAaLucmuzocUt
+         1ct4fp3HDh9WyxyIlXb4GpKkFerXZAVx2KbGLfAU6mCiGbeezPxU2Zz28CCNkh9BNbrE
+         Uj5s/JeNz8z0cmwm8p6btRYz5FaIAVKg2BL8MZoEU0Vz6tMKXK0LlwONvZPmUtRAgUoJ
+         7m6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702043429; x=1702648229;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=w05jcvJbftuz+V4PIwlumxl68ycFODGUFJ//SIJMXoc=;
+        b=p2ZFSbBggPI9uAafEWJpBOEuNgzGCP8dZHwvwZyeE8dTFVJTWM7fWUZpj6mk8axlTz
+         tE3IR7TJ0Rgvooqj3LTLNv1MIIa85tfJkj+Cm2bHuB8qRJKW6SqJD3bYIBZMDP4nW7Fq
+         ECq1cQqvCpYDYX64hOBJ3OziqzU06fm3JoEBVi6yz+FM1NkgsUs8NagggFvn+zwdBroe
+         VECMWSABK/Vx/xo7sfTrZiSAm/JOHw8Rf4a5wIaOjd6FvUnFpytALOf+4YPJyM63EX44
+         g7EFVAM53jrHmlC1uHekAzTiyhphN9U3s2rUNlceXpZ0M0AHWzT4N4UPZ39v3bVY7nGf
+         EXoQ==
+X-Gm-Message-State: AOJu0YxJBw7Z92CQjIhGe90H3zOfFFy/bR9SO+UsF2nWQJWEXbwO0EDq
+        2kX7RLGaD/d7ZzcvSB6uVas=
+X-Google-Smtp-Source: AGHT+IG6p9qYniWsOOxCuS7btrPvaasfWo06OhsJ23v6Z7ooK2KImNZUSYg6Z+ZXjnX1zG5bicXbEw==
+X-Received: by 2002:a05:6a20:3ca1:b0:190:55ed:c42 with SMTP id b33-20020a056a203ca100b0019055ed0c42mr39843pzj.63.1702043429043;
+        Fri, 08 Dec 2023 05:50:29 -0800 (PST)
+Received: from localhost ([2804:30c:95c:8600:5b2d:e35b:5f45:dc84])
+        by smtp.gmail.com with ESMTPSA id d3-20020a056a0010c300b006c0316485f9sm1583704pfu.64.2023.12.08.05.50.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 05:50:28 -0800 (PST)
+Date:   Fri, 8 Dec 2023 10:50:15 -0300
+From:   Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     Marcelo Schmitt <marcelo.schmitt@analog.com>, apw@canonical.com,
+        joe@perches.com, dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+        paul.cercueil@analog.com, Michael.Hennerich@analog.com,
+        lars@metafoo.de, jic23@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        dan.carpenter@linaro.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/13] Add support for AD7091R-2/-4/-8
+Message-ID: <ZXMfFxEckIm_cFPJ@debian-BULLSEYE-live-builder-AMD64>
+References: <cover.1701971344.git.marcelo.schmitt1@gmail.com>
+ <CAMknhBFPbAqp4-AQdmbp+VRW-Ksk1PxaLCG+3n=Zk4gyStqhgw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMknhBFPbAqp4-AQdmbp+VRW-Ksk1PxaLCG+3n=Zk4gyStqhgw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,238 +79,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Interleaved DMA functionality allows dmaengine clients' to express
-DMA transfers in an arbitrary way. This is extremely useful in FPGA
-environments, where a greater transfer flexibility is needed. For
-instance, in one FPGA design there may be need to do DMA to/from a FIFO
-(at a fixed address) and also to do DMA to/from a (non)contiguous RAM
-memory.
+On 12/07, David Lechner wrote:
+> On Thu, Dec 7, 2023 at 12:36 PM Marcelo Schmitt
+> <marcelo.schmitt@analog.com> wrote:
+> >
+> > From: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+> >
+[...]
+> >
+> > I see regmap's interface for reading device registers under /sys/kernel/debug/regmap/.
+> > I can read all registers but can't write to any of them unless I force define
+> > REGMAP_ALLOW_WRITE_DEBUGFS.
+> >
+> > When testing events for this driver I often write to device registers
+> > to set different rising/falling thresholds. I do something like this:
+> > # echo 0x17 0x100 > /sys/kernel/debug/iio/iio:device0/direct_reg_access
+> >
+> > I tried read/writing to files under iio:device events directory but always
+> > get segmentation fault. I must be forgetting to implement something.
+> > What am I missing?
+> >
+> 
+> It looks like event callbacks (.read_event_value and friends) are
+> missing from `static const struct iio_info ad7091r_info = { ... }`.
+> These callbacks aren't checked for NULL, e.g. in iio_ev_value_show(),
+> so that is likely where the segfault is happening.
 
-Introduce separate tx preparation callback and add tx-flags handling
-logic. Their behavior is based on the description of interleaved DMA
-transfers in both source code and the DMAEngine's documentation.
-
-Since XDMA is a fully-fledged scatter-gather dma engine, the logic of
-xdma_prep_interleaved_dma() is fairly simple and similar to the other
-tx preparation callbacks. The whole tx-flags handling logic resides in
-xdma_channel_isr(). Transfer of a single frame from a interleaved DMA
-transfer template is pretty similar to the single sg transaction.
-Therefore, the transaction of the whole interleaved DMA transfer
-template is basically a cyclic dma transaction with finite cycles/periods
-(equal to the frame of count) of a single sg transfers.
-
-Signed-off-by: Jan Kuliga <jankul@alatek.krakow.pl>
----
- drivers/dma/xilinx/xdma.c | 103 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 94 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/dma/xilinx/xdma.c b/drivers/dma/xilinx/xdma.c
-index c8ac047249bc..c7d4def4124b 100644
---- a/drivers/dma/xilinx/xdma.c
-+++ b/drivers/dma/xilinx/xdma.c
-@@ -83,8 +83,10 @@ struct xdma_chan {
-  * @desc_num: Number of hardware descriptors
-  * @completed_desc_num: Completed hardware descriptors
-  * @cyclic: Cyclic transfer vs. scatter-gather
-+ * @interleaved_dma: Interleaved DMA transfer
-  * @periods: Number of periods in the cyclic transfer
-  * @period_size: Size of a period in bytes in cyclic transfers
-+ * @frames_left: Number of frames left in interleaved DMA transfer
-  * @error: tx error flag
-  */
- struct xdma_desc {
-@@ -96,8 +98,10 @@ struct xdma_desc {
- 	u32				desc_num;
- 	u32				completed_desc_num;
- 	bool				cyclic;
-+	bool				interleaved_dma;
- 	u32				periods;
- 	u32				period_size;
-+	u32				frames_left;
- 	bool				error;
- };
-
-@@ -607,6 +611,7 @@ xdma_prep_device_sg(struct dma_chan *chan, struct sca=
-tterlist *sgl,
- 	if (!sw_desc)
- 		return NULL;
- 	sw_desc->dir =3D dir;
-+	sw_desc->cyclic =3D sw_desc->interleaved_dma =3D false;
-
- 	if (dir =3D=3D DMA_MEM_TO_DEV) {
- 		dev_addr =3D xdma_chan->cfg.dst_addr;
-@@ -682,6 +687,7 @@ xdma_prep_dma_cyclic(struct dma_chan *chan, dma_addr_=
-t address,
- 	sw_desc->periods =3D periods;
- 	sw_desc->period_size =3D period_size;
- 	sw_desc->dir =3D dir;
-+	sw_desc->interleaved_dma =3D false;
-
- 	addr =3D address;
- 	if (dir =3D=3D DMA_MEM_TO_DEV) {
-@@ -712,6 +718,54 @@ xdma_prep_dma_cyclic(struct dma_chan *chan, dma_addr=
-_t address,
- 	return NULL;
-}
-
-+/**
-+ * xdma_prep_interleaved_dma - Prepare virtual descriptor for interleave=
-d DMA transfers
-+ * @chan: DMA channel
-+ * @xt: DMA transfer template
-+ * @flags: tx flags
-+ */
-+struct dma_async_tx_descriptor *
-+xdma_prep_interleaved_dma(struct dma_chan *chan,
-+			struct dma_interleaved_template *xt,
-+			unsigned long flags)
-+{
-+	int i;
-+	u32 desc_num =3D 0, period_size =3D 0;
-+	struct dma_async_tx_descriptor *tx_desc;
-+	struct xdma_chan *xchan =3D to_xdma_chan(chan);
-+	struct xdma_desc *sw_desc;
-+	u64 src_addr, dst_addr;
-+
-+	for (i =3D 0; i < xt->frame_size; ++i)
-+		desc_num +=3D DIV_ROUND_UP(xt->sgl[i].size, XDMA_DESC_BLEN_MAX);
-+
-+	sw_desc =3D xdma_alloc_desc(xchan, desc_num, false);
-+	if (!sw_desc)
-+		return NULL;
-+	sw_desc->dir =3D xt->dir;
-+	sw_desc->interleaved_dma =3D true;
-+	sw_desc->cyclic =3D flags & DMA_PREP_REPEAT;
-+	sw_desc->frames_left =3D sw_desc->periods =3D xt->numf;
-+
-+	desc_num =3D 0;
-+	src_addr =3D xt->src_start;
-+	dst_addr =3D xt->dst_start;
-+	for (i =3D 0; i < xt->frame_size; ++i) {
-+		desc_num +=3D xdma_fill_descs(sw_desc, src_addr, dst_addr, xt->sgl[i].=
-size, desc_num);
-+		src_addr +=3D dmaengine_get_src_icg(xt, &xt->sgl[i]) + xt->src_inc ? x=
-t->sgl[i].size : 0;
-+		dst_addr +=3D dmaengine_get_dst_icg(xt, &xt->sgl[i]) + xt->dst_inc ? x=
-t->sgl[i].size : 0;
-+		period_size +=3D xt->sgl[i].size;
-+	}
-+	sw_desc->period_size =3D period_size;
-+
-+	tx_desc =3D vchan_tx_prep(&xchan->vchan, &sw_desc->vdesc, flags);
-+	if (tx_desc)
-+		return tx_desc;
-+
-+	xdma_free_desc(&sw_desc->vdesc);
-+	return NULL;
-+}
-+
- /**
-  * xdma_device_config - Configure the DMA channel
-  * @chan: DMA channel
-@@ -812,11 +866,12 @@ static irqreturn_t xdma_channel_isr(int irq, void *=
-dev_id)
-{
- 	struct xdma_chan *xchan =3D dev_id;
- 	u32 complete_desc_num =3D 0;
--	struct xdma_device *xdev;
--	struct virt_dma_desc *vd;
-+	struct xdma_device *xdev =3D xchan->xdev_hdl;
-+	struct virt_dma_desc *vd, *next_vd;
- 	struct xdma_desc *desc;
- 	int ret;
- 	u32 st;
-+	bool repeat_tx;
-
- 	spin_lock(&xchan->vchan.lock);
-
-@@ -826,9 +881,6 @@ static irqreturn_t xdma_channel_isr(int irq, void *de=
-v_id)
- 		goto out;
- 	desc =3D to_xdma_desc(vd);
-
--	desc =3D to_xdma_desc(vd);
--	xdev =3D xchan->xdev_hdl;
--
- 	/* Clear-on-read the status register */
- 	ret =3D regmap_read(xdev->rmap, xchan->base + XDMA_CHAN_STATUS_RC, &st)=
-;
- 	if (ret)
-@@ -847,10 +899,36 @@ static irqreturn_t xdma_channel_isr(int irq, void *=
-dev_id)
- 	if (ret)
- 		goto out;
-
--	if (desc->cyclic) {
--		desc->completed_desc_num =3D complete_desc_num;
--		vchan_cyclic_callback(vd);
--	} else {
-+	desc =3D to_xdma_desc(vd);
-+	if (desc->interleaved_dma) {
-+		xchan->busy =3D false;
-+		desc->completed_desc_num +=3D complete_desc_num;
-+		if (complete_desc_num =3D=3D XDMA_DESC_BLOCK_NUM * XDMA_DESC_ADJACENT)=
- {
-+			xdma_xfer_start(xchan);
-+			goto out;
-+		}
-+
-+		/* last desc of any frame */
-+		desc->frames_left--;
-+		if (desc->frames_left)
-+			goto out;
-+
-+		/* last desc of the last frame  */
-+		repeat_tx =3D vd->tx.flags & DMA_PREP_REPEAT;
-+		next_vd =3D list_first_entry_or_null(&vd->node, struct virt_dma_desc, =
-node);
-+		if (next_vd)
-+			repeat_tx =3D repeat_tx && !(next_vd->tx.flags & DMA_PREP_LOAD_EOT);
-+		if (repeat_tx) {
-+			desc->frames_left =3D desc->periods;
-+			desc->completed_desc_num =3D 0;
-+			vchan_cyclic_callback(vd);
-+		} else {
-+			list_del(&vd->node);
-+			vchan_cookie_complete(vd);
-+		}
-+		/* start (or continue) the tx of a first desc on the vc.desc_issued li=
-st, if any */
-+		xdma_xfer_start(xchan);
-+	} else if (!desc->cyclic) {
- 		xchan->busy =3D false;
- 		desc->completed_desc_num +=3D complete_desc_num;
-
-@@ -867,6 +945,9 @@ static irqreturn_t xdma_channel_isr(int irq, void *de=
-v_id)
-
- 		/* transfer the rest of data */
- 		xdma_xfer_start(xchan);
-+	} else {
-+		desc->completed_desc_num =3D complete_desc_num;
-+		vchan_cyclic_callback(vd);
- 	}
-
- out:
-@@ -1165,6 +1246,9 @@ static int xdma_probe(struct platform_device *pdev)
- 	dma_cap_set(DMA_SLAVE, xdev->dma_dev.cap_mask);
- 	dma_cap_set(DMA_PRIVATE, xdev->dma_dev.cap_mask);
- 	dma_cap_set(DMA_CYCLIC, xdev->dma_dev.cap_mask);
-+	dma_cap_set(DMA_INTERLEAVE, xdev->dma_dev.cap_mask);
-+	dma_cap_set(DMA_REPEAT, xdev->dma_dev.cap_mask);
-+	dma_cap_set(DMA_LOAD_EOT, xdev->dma_dev.cap_mask);
-
- 	xdev->dma_dev.dev =3D &pdev->dev;
- 	xdev->dma_dev.residue_granularity =3D DMA_RESIDUE_GRANULARITY_SEGMENT;
-@@ -1180,6 +1264,7 @@ static int xdma_probe(struct platform_device *pdev)
- 	xdev->dma_dev.filter.mapcnt =3D pdata->device_map_cnt;
- 	xdev->dma_dev.filter.fn =3D xdma_filter_fn;
- 	xdev->dma_dev.device_prep_dma_cyclic =3D xdma_prep_dma_cyclic;
-+	xdev->dma_dev.device_prep_interleaved_dma =3D xdma_prep_interleaved_dma=
-;
-
-	ret =3D dma_async_device_register(&xdev->dma_dev);
- 	if (ret) {
---
-2.34.1
-
+Hi David, thank you for pointing that out.
+Will implement those calls in v4.
