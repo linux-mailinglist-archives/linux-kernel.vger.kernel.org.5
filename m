@@ -2,92 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2146380AAE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E1F80AB08
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:45:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574178AbjLHRh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:37:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35850 "EHLO
+        id S233776AbjLHRpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:45:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233514AbjLHRhz (ORCPT
+        with ESMTP id S229811AbjLHRpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:37:55 -0500
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBBF85;
-        Fri,  8 Dec 2023 09:38:02 -0800 (PST)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5c8c26cf056so21355047b3.1;
-        Fri, 08 Dec 2023 09:38:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702057081; x=1702661881; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r0Z0YmFOw5rXYpuwdmLPjflIJNNlQ47AX9g0hYDvR5o=;
-        b=Kj4boYgQtJLzej0yLJ+7OV6v6OYz3VZ/FbsL1ujauMdyAJgHtVFxiStLDdYUcGe2Zm
-         dfoIjpPkwTU7IWLe8nyCO5XLA3IYa0l+yHSq4vpwD2msyRTXMdbN8tQrpiZLs5KMGW+4
-         +VFk/K1qUn6GQ+KIqukK8k5w168Itux9sQ3rcp2ZPkplCH8KungUvcl0ERAg37tQfvSC
-         fOhsxMJKhQeOZfoQgTp7w6spy+vJwPq0Wmxm0luT8wrazWd6D0U/8gZjTG3HU26IkjiJ
-         cWz79nQjiYwBxGvCYGoHUi9a9HqKSsekooqkNzSShYwwA5fbIWk0gw3QhfbV/w9holZt
-         TITQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702057081; x=1702661881;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r0Z0YmFOw5rXYpuwdmLPjflIJNNlQ47AX9g0hYDvR5o=;
-        b=vmwAUxi5ybJ7G3CB1vH9ufiHOrPVT+QWSvLJpRDvLEEigcUC4QwSVvn06xPCH3ax5d
-         SI9qbxU3UnNjFQhI3UOvfX17b2Fejm/kGCbQqkjGbT3TY0dRY9xnS5HtdPNdw8yvW1v6
-         g3XfnVHOKR+11fSBO90jHFY64qDbLZfmrc8OEXsz9DkiJO7TpgR8MGXQHwrlZUHzvk3C
-         ZjSt15mGT9S6OMGaWscQmNBnrVxSM0s16V1/QT96vp4tXSwQseiZk/siTl/SKK3OWAMl
-         47izNz79vSsn4DDeLojIQ59fHjvkxY160/kv8CIKeb44zlKGneExfYXGnIVmDwNi5k8b
-         CeiA==
-X-Gm-Message-State: AOJu0Yw/+q5+kL7IjqjyBoX9F5Pqxx/cRKJ3sdEEoBQ72VxUQCSY3r9i
-        B4A/wwhTZ/uj1fIRRdgoolGP81QcVgIoH6ZmAtM=
-X-Google-Smtp-Source: AGHT+IFawH7St5qCEWYP8PbcH0z/rJAZe3a3N6xzb6hdNjyDdzrYfhvprq/4hPtmWW3AExesCE1HztRglxhPVMsezf4=
-X-Received: by 2002:a0d:ca05:0:b0:5d7:1941:2c0d with SMTP id
- m5-20020a0dca05000000b005d719412c0dmr353319ywd.58.1702057081504; Fri, 08 Dec
- 2023 09:38:01 -0800 (PST)
-MIME-Version: 1.0
-References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
- <20231129-alice-file-v1-5-f81afe8c7261@google.com> <20231129-etappen-knapp-08e2e3af539f@brauner>
- <20231129164815.GI23596@noisy.programming.kicks-ass.net> <20231130-wohle-einfuhr-1708e9c3e596@brauner>
- <A0BFF59C-311C-4C44-9474-65DB069387BD@gmail.com> <CANiq72k4H2_NZuQcpeKANqyi_9W01fLC0WxXon5cx4z=WsgeXQ@mail.gmail.com>
- <CAKwvOdkgDwnC_jaGjXjk9yKYo=zWDR_3x7Drw3i=KX0Wyij6ew@mail.gmail.com>
-In-Reply-To: <CAKwvOdkgDwnC_jaGjXjk9yKYo=zWDR_3x7Drw3i=KX0Wyij6ew@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 8 Dec 2023 18:37:50 +0100
-Message-ID: <CANiq72nkXu1esMjK-DF3iCw93YfRzRCaFWZxr5emZthnvVr+zg@mail.gmail.com>
-Subject: Re: [PATCH 5/7] rust: file: add `Kuid` wrapper
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     comex <comexk@gmail.com>, Christian Brauner <brauner@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Fri, 8 Dec 2023 12:45:08 -0500
+X-Greylist: delayed 305 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 08 Dec 2023 09:45:14 PST
+Received: from irl.hu (irl.hu [95.85.9.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B23CF4;
+        Fri,  8 Dec 2023 09:45:13 -0800 (PST)
+Received: from fedori.lan (51b690cd.dsl.pool.telekom.hu [::ffff:81.182.144.205])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 00000000000719DB.00000000657354F6.0011CADC; Fri, 08 Dec 2023 18:40:06 +0100
+From:   Gergo Koteles <soyer@irl.hu>
+To:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Gergo Koteles <soyer@irl.hu>, stable@vger.kernel.org
+Subject: [PATCH] ALSA: hda/tas2781: leave hda_component in usable state
+Date:   Fri,  8 Dec 2023 18:38:19 +0100
+Message-ID: <052224ccd9d24dac777c468d2ef94d5fabe619a0.1702056528.git.soyer@irl.hu>
+X-Mailer: git-send-email 2.43.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,28 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 6:09=E2=80=AFPM Nick Desaulniers <ndesaulniers@googl=
-e.com> wrote:
->
-> On paper, nothing comes to mind.  No promises though.
+Unloading then loading the module causes a NULL ponter dereference.
 
-Thanks Nick -- that is useful nevertheless.
+The hda_unbind zeroes the hda_component, later the hda_bind tries
+to dereference the codec field.
 
-> From a build system perspective, I'd rather just point users towards
-> LTO if they have this concern.  We support full and thin lto.  This
-> proposal would add a third variant for just rust drivers.  Each
-> variation on LTO has a maintenance cost and each have had their own
-> distinct fun bugs in the past.  Not sure an additional variant is
-> worth the maintenance cost, even if it's technically feasible.
+The hda_component is only initialized once by tas2781_generic_fixup.
 
-I was thinking it would be something always done for Rust object
-files: under a normal "no LTO" build, the Rust object files would
-always get the cross-language inlining done and therefore no extra
-dimension in the matrix. Would that help?
+Set only previously modified fields to NULL.
 
-I think it is worth at least considering, given there is also a
-non-trivial amount of performance to gain if we always do it, e.g.
-Andreas wanted it for non-LTO kernel for this reason.
+BUG: kernel NULL pointer dereference, address: 0000000000000322
+Call Trace:
+ <TASK>
+ ? __die+0x23/0x70
+ ? page_fault_oops+0x171/0x4e0
+ ? exc_page_fault+0x7f/0x180
+ ? asm_exc_page_fault+0x26/0x30
+ ? tas2781_hda_bind+0x59/0x140 [snd_hda_scodec_tas2781_i2c]
+ component_bind_all+0xf3/0x240
+ try_to_bring_up_aggregate_device+0x1c3/0x270
+ __component_add+0xbc/0x1a0
+ tas2781_hda_i2c_probe+0x289/0x3a0 [snd_hda_scodec_tas2781_i2c]
+ i2c_device_probe+0x136/0x2e0
 
-Cheers,
-Miguel
+Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
+CC: stable@vger.kernel.org
+Signed-off-by: Gergo Koteles <soyer@irl.hu>
+---
+ sound/pci/hda/tas2781_hda_i2c.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
+index fb802802939e..ba4fdae8ec9b 100644
+--- a/sound/pci/hda/tas2781_hda_i2c.c
++++ b/sound/pci/hda/tas2781_hda_i2c.c
+@@ -612,9 +612,13 @@ static void tas2781_hda_unbind(struct device *dev,
+ {
+ 	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
+ 	struct hda_component *comps = master_data;
++	comps = &comps[tas_priv->index];
+ 
+-	if (comps[tas_priv->index].dev == dev)
+-		memset(&comps[tas_priv->index], 0, sizeof(*comps));
++	if (comps[tas_priv->index].dev == dev) {
++		comps->dev = NULL;
++		strscpy(comps->name, "", sizeof(comps->name));
++		comps->playback_hook = NULL;
++	}
+ 
+ 	tasdevice_config_info_remove(tas_priv);
+ 	tasdevice_dsp_remove(tas_priv);
+
+base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
+-- 
+2.43.0
+
