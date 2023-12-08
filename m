@@ -2,75 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 776C880A9E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6136B80A9E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbjLHQ5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:57:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
+        id S233708AbjLHQ66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:58:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232094AbjLHQ5h (ORCPT
+        with ESMTP id S232094AbjLHQ64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:57:37 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DA998;
-        Fri,  8 Dec 2023 08:57:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=+bKWbY0TFFFJG7vCNdsapguiWXk5Tcdbxhr2FyThgV4=; b=IlOPMzwGrh/jGe5Kiyfmvz91r2
-        DMe8pUz8Wq3s7w2GLz1XHY4A9XDGCfk8/cVEQOmWA48/RiYZAMXOFYmmFcYkZDbQ5h502Wb3TteF8
-        J+eVsnXCtfTIqVDaqmNfQaeBL86u5r2eivNqXVdqQpxBYVdwzmBs1BA8ZCzTCsdSRbxTyZ1USB4J9
-        WncYy/GVXmd4+KowpHmPKlrXohHcN4yI5nLjOt0B0uwCa+az5Q3b1GwQobVLUap62blhtXCZj5CqS
-        L1pdQEwmXmBrsIwdIpFqU3ZwVZtB7ZPqAn6DPNNDcZ9YYoiHW7fcc5aBqNppVII1H9it+czae4xK0
-        Ekm1eL/w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1rBe9v-0066Wi-1l; Fri, 08 Dec 2023 16:57:03 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2652A3003F0; Fri,  8 Dec 2023 17:57:02 +0100 (CET)
-Date:   Fri, 8 Dec 2023 17:57:02 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] rust: file: add `Kuid` wrapper
-Message-ID: <20231208165702.GI28727@noisy.programming.kicks-ass.net>
-References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
- <20231206-alice-file-v2-5-af617c0d9d94@google.com>
- <20231206123402.GE30174@noisy.programming.kicks-ass.net>
- <CAH5fLgh+0G85Acf4-zqr_9COB5DUtt6ifVpZP-9V06hjJgd_jQ@mail.gmail.com>
- <20231206134041.GG30174@noisy.programming.kicks-ass.net>
- <CANiq72kK97fxTddrL+Uu2JSah4nND=q_VbJ76-Rdc-R-Kijszw@mail.gmail.com>
+        Fri, 8 Dec 2023 11:58:56 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3911E98
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:59:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC84DC433C8;
+        Fri,  8 Dec 2023 16:58:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702054742;
+        bh=h0JkAKzYF1eCC3VCUFet/wUloQePgRqJtpyUOwrwHs8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VV9pLQrduCHZxqG1gp2gsdESd89zqUJ8T/ztaw9WJVw7s21G8m8muHVlDot3+Gf40
+         65myTt3MriTs13uBBjQtrCxREZctMcuNBTs7qnGtm24UGeLP0ZZIHk1cDe2BqhGoG5
+         6n9im+9fMvwh7N5TggcZFvP6o6io3PyaZcgCS1iYmLOW+edW4FBFuzCKI3FXRVqssq
+         gBwKneVYebD7Q/ruS5A6bejC3WL/NZroDaT74VKIptNNKVPIXywOlsdC0uq209XkCP
+         And+nEwHTfPBhvawAtMy7NfdJGgiRcPQgMJR+qF0p4bLHgxxd7/yjMuh2w1hz5BSiS
+         rFmD07v7UUqtw==
+Date:   Fri, 8 Dec 2023 16:58:55 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Yannick Fertre <yannick.fertre@foss.st.com>,
+        Philippe Cornu <philippe.cornu@foss.st.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] drm/stm: dsi: expose DSI PHY internal clock
+Message-ID: <20231208165855.GA8459@kernel.org>
+References: <20231204101113.276368-1-raphael.gallais-pou@foss.st.com>
+ <20231204101113.276368-4-raphael.gallais-pou@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANiq72kK97fxTddrL+Uu2JSah4nND=q_VbJ76-Rdc-R-Kijszw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231204101113.276368-4-raphael.gallais-pou@foss.st.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,102 +65,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 05:31:59PM +0100, Miguel Ojeda wrote:
-> On Wed, Dec 6, 2023 at 2:41 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > Anywhoo, the longer a function is, the harder it becomes, since you need
-> > to deal with everything a function does and consider the specuation
-> > window length. So trivial functions like the above that do an immediate
-> > dereference and are (and must be) a valid indirect target (because
-> > EXPORT) are ideal.
-> 
-> We discussed this in our weekly meeting, and we would like to ask a
-> few questions:
-> 
->   - Could you please describe an example attack that you are thinking
-> of? (i.e. a "full" attack, rather than just Spectre itself). For
-> instance, would it rely on other vulnerabilities?
+On Mon, Dec 04, 2023 at 11:11:12AM +0100, Raphael Gallais-Pou wrote:
 
-There's a fairly large amount of that on github, google spectre poc and
-stuff like that.
+...
 
->   - Is this a kernel rule everybody should follow now? i.e. "no (new?)
-> short, exported symbols that just dereference their pointer args". If
-> so, could this please be documented? Or is it already somewhere?
+> @@ -514,18 +675,40 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+>  		dsi->lane_max_kbps *= 2;
+>  	}
+>  
+> -	dw_mipi_dsi_stm_plat_data.base = dsi->base;
+> -	dw_mipi_dsi_stm_plat_data.priv_data = dsi;
+> +	dsi->pdata = *pdata;
+> +	dsi->pdata.base = dsi->base;
+> +	dsi->pdata.priv_data = dsi;
+> +
+> +	dsi->pdata.max_data_lanes = 2;
+> +	dsi->pdata.phy_ops = &dw_mipi_dsi_stm_phy_ops;
+>  
+>  	platform_set_drvdata(pdev, dsi);
+>  
+> -	dsi->dsi = dw_mipi_dsi_probe(pdev, &dw_mipi_dsi_stm_plat_data);
+> +	dsi->dsi = dw_mipi_dsi_probe(pdev, &dsi->pdata);
+>  	if (IS_ERR(dsi->dsi)) {
+>  		ret = PTR_ERR(dsi->dsi);
+>  		dev_err_probe(dev, ret, "Failed to initialize mipi dsi host\n");
+>  		goto err_dsi_probe;
+>  	}
+>  
+> +	/*
+> +	 * We need to wait for the generic bridge to probe before enabling and
+> +	 * register the internal pixel clock.
+> +	 */
+> +	ret = clk_prepare_enable(dsi->pclk);
+> +	if (ret) {
+> +		DRM_ERROR("%s: Failed to enable peripheral clk\n", __func__);
+> +		goto err_dsi_probe;
+> +	}
+> +
+> +	ret = dw_mipi_dsi_clk_register(dsi, dev);
+> +	if (ret) {
+> +		DRM_ERROR("Failed to register DSI pixel clock: %d\n", ret);
 
-Gadget scanners are ever evolving and I think there's a bunch of groups
-running them against Linux, but most of us don't have spare time beyond
-trying to plug the latest hole.
+Hi Raphael,
 
->   - Are we checking for this in some way already, e.g. via `objtool`?
-> Especially if this is a rule, then it would be nice to have a way to
-> double-check if we are getting rid of (most of) these "dangerous"
-> symbols (or at least not introduce new ones, and not just in Rust but
-> C too).
+Does clk_disable_unprepare(dsi->pclk) need to be added to this unwind
+chain?
 
-Objtool does not look for these (gadget scanners are quite complicated
-by now and I don't think I want to go there with objtool). At the moment
-I'm simply fixing whatever gets reported from 3rd parties when and where
-time permits.
+Flagged by Smatch.
 
-The thing at hand was just me eyeballing it.
+> +		goto err_dsi_probe;
+> +	}
+> +
+> +	clk_disable_unprepare(dsi->pclk);
+> +
+>  	return 0;
+>  
+>  err_dsi_probe:
 
-> > That would be good, but how are you going to do that without duplicating
-> > the horror that is struct task_struct ?
-> 
-> As Alice pointed out, `bindgen` "solves" that, but it is nevertheless
-> extra maintenance effort.
-> 
-> > Well, I really wish the Rust community would address the C
-> > interoperability in a hurry. Basically make it a requirement for
-> > in-kernel Rust.
-> 
-> Yeah, some of us have advocated for more integrated C support within
-> Rust (or within `rustc` at least).
-
-\o/
-
-> > I mean, how hard can it be to have clang parse the C headers and inject
-> > them into the Rust IR as if they're external FFI things.
-> 
-> That is what `bindgen` does (it uses Clang as a library), except it
-> does not create Rust IR, it outputs normal Rust code, i.e. similar to
-> C declarations.
-
-Right, but then you get into the problem that Rust simply cannot express
-a fair amount of the things we already do, like asm-goto, or even simple
-asm with memops apparently.
-
-> But note that using Clang does not solve the issue of `#define`s in
-> the general case. That is why we would still need "helpers" like these
-> so that the compiler knows how to expand the macro in a C context,
-> which then can be inlined as LLVM IR or similar (which is what I
-> suspect you were actually thinking about, rather than "Rust IR"?).
-
-Yeah, LLVM-IR. And urgh yeah, CPP, this is another down-side of Rust not
-being in the C language family, you can't sanely run CPP on it. Someone
-really should do a Rust like language in the C family, then perhaps it
-will stop looking like line noise to me :-)
-
-I suppose converting things to enum and inline functions where possible
-might help a bit with that, but things like tracepoints, which are built
-from a giant pile of CPP are just not going to be happy :/
-
-Anyway, I think it would be a giant step forwards from where we are
-today.
-
-> That "mix the LLVM IRs from Clang and `rustc`" ("local LTO hack")
-> approach is something we have been discussing in the past for
-> performance reasons (i.e. to inline these small C functions that Rust
-> needs, cross-language, even in non-LTO builds). And if it helps to
-> avoid certain attacks around speculation, then even better. So if the
-> LLVM folks do not have any major concerns about it, then I think we
-> should go ahead with that (please see also my reply to comex).
-
-But does LTO make any guarantees about inlining? The thing is, with
-actual LLVM-IR you can express the __always_inline attribute and
-inlining becomes guaranteed, I don't think you can rely on LTO for the
-same level of guarantees.
-
-And you still need to create these C functions by hand in this
-local-LTO scenario, which is less than ideal.
+...
