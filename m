@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 150DC80A29D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7D180A2A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573691AbjLHLuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 06:50:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51226 "EHLO
+        id S1573624AbjLHLuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 06:50:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235900AbjLHLt5 (ORCPT
+        with ESMTP id S235889AbjLHLuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 06:49:57 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EFC11BCA;
-        Fri,  8 Dec 2023 03:49:52 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B8Bnl6B055144;
-        Fri, 8 Dec 2023 05:49:47 -0600
+        Fri, 8 Dec 2023 06:50:04 -0500
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD689198C;
+        Fri,  8 Dec 2023 03:49:57 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B8BnqMS032102;
+        Fri, 8 Dec 2023 05:49:52 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702036187;
-        bh=3TAoveu5Faa4SHGqUmX3AnfO8QKzu1k/CiAYp6v/wUw=;
+        s=ti-com-17Q1; t=1702036192;
+        bh=aorlw7q/8CKBF4RcNluxucTHfYZ4j4qeFpE43ZjmI5Y=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=E6oV88/yqlrkwxUj62C1TYFw6ngXFX1i67wc3FVmfZcSDw8vbuzV4zf8wxa3+Nuxt
-         64mmSnqzexpUrS6bMrS6l+6t41plDPl0lvpRkSRQwCCARUd7HNgJpfslA5jqZ9/KLE
-         Zz8/8sz1EUucOAfOIgSqNmCuAUXnS51hryNbeW/g=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B8Bnlxc080438
+        b=sY+PzUGTFLunncXDOSRWWlSYtOFkqHFiu7lJgcP7EUGPZTR/IqhBawK6G94SJknjD
+         0EZZoP2Ts0RatBPj/tEfR1pIZGHJR7JABNKsvrlLrw/uCgs0NDf5Wwt1o5R9DEw8Dj
+         UW1Cf6SQRU0zcePEPbdTBvSZGS3ijuyq2OXC39DU=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B8Bnq8x034147
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 8 Dec 2023 05:49:47 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 8 Dec 2023 05:49:52 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 8
- Dec 2023 05:49:47 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ Dec 2023 05:49:51 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 8 Dec 2023 05:49:46 -0600
+ Frontend Transport; Fri, 8 Dec 2023 05:49:51 -0600
 Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
-        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B8BnJPP085375;
-        Fri, 8 Dec 2023 05:49:41 -0600
+        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B8BnJPQ085375;
+        Fri, 8 Dec 2023 05:49:47 -0600
 From:   Neha Malcom Francis <n-francis@ti.com>
 To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
         <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
@@ -50,9 +50,9 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         <aseketeli@baylibre.com>, <jpanis@baylibre.com>, <u-kumar1@ti.com>,
         <j-luthra@ti.com>, <vaishnav.a@ti.com>, <hnagalla@ti.com>,
         <devarsht@ti.com>, <n-francis@ti.com>
-Subject: [PATCH v10 4/7] arm64: dts: ti: k3-j784s4-evm: Add support for TPS6594 PMIC
-Date:   Fri, 8 Dec 2023 17:19:16 +0530
-Message-ID: <20231208114919.3429562-5-n-francis@ti.com>
+Subject: [PATCH v10 5/7] arm64: dts: ti: k3-am69-sk: Add support for TPS6594 PMIC
+Date:   Fri, 8 Dec 2023 17:19:17 +0530
+Message-ID: <20231208114919.3429562-6-n-francis@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231208114919.3429562-1-n-francis@ti.com>
 References: <20231208114919.3429562-1-n-francis@ti.com>
@@ -70,59 +70,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jerome Neanne <jneanne@baylibre.com>
+This patch adds support for TPS6594 PMIC on wkup I2C0 bus. This device
+provides regulators (bucks and LDOs), but also GPIOs, a RTC, a watchdog,
+an ESM (Error Signal Monitor) which monitors the SoC error output
+signal, and a PFSM (Pre-configurable Finite State Machine) which manages
+the operational modes of the PMIC.
 
-This patch adds support for TPS6593 PMIC on wkup I2C0 bus.
-This device provides regulators (bucks and LDOs), but also
-GPIOs, a RTC, a watchdog, an ESM (Error Signal Monitor)
-which monitors the SoC error output signal, and a PFSM
-(Pre-configurable Finite State Machine) which manages the
-operational modes of the PMIC.
-
-Signed-off-by: Jerome Neanne <jneanne@baylibre.com>
-Signed-off-by: Esteban Blanc <eblanc@baylibre.com>
-Signed-off-by: Jai Luthra <j-luthra@ti.com>
 Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 102 +++++++++++++++++++++++
- 1 file changed, 102 insertions(+)
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts | 94 +++++++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-index f1f4c8634ab6..f34b92acc56d 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-@@ -273,6 +273,10 @@ dp0_connector_in: endpoint {
- 	};
- };
+diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+index d6a7ae086244..8da591579868 100644
+--- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+@@ -433,6 +433,13 @@ J784S4_IOPAD(0x000, PIN_INPUT, 7) /* (AN35) EXTINTN.GPIO0_0 */
  
-+&wkup_gpio0 {
-+	status = "okay";
-+};
-+
- &main_pmx0 {
+ &wkup_pmx2 {
  	bootph-all;
- 	main_uart8_pins_default: main-uart8-default-pins {
-@@ -407,6 +411,17 @@ J784S4_WKUP_IOPAD(0x108, PIN_INPUT, 0) /* (Y36) MCU_ADC1_AIN7 */
- 	};
- };
- 
-+&wkup_pmx1 {
-+	status = "okay";
-+
 +	pmic_irq_pins_default: pmic-irq-default-pins {
 +		pinctrl-single,pins = <
-+			/* (G33) MCU_OSPI1_CSn1.WKUP_GPIO0_39 */
-+			J784S4_WKUP_IOPAD(0x028, PIN_INPUT, 7)
++			/* (AA37) MCU_ADC1_AIN4.WKUP_GPIO0_83 */
++			J784S4_WKUP_IOPAD(0x0fc, PIN_INPUT, 7)
 +		>;
 +	};
-+};
 +
- &wkup_pmx0 {
- 	bootph-all;
- 	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-default-pins {
-@@ -471,6 +486,93 @@ eeprom@50 {
- 		compatible = "atmel,24c256";
- 		reg = <0x50>;
+ 	wkup_uart0_pins_default: wkup-uart0-default-pins {
+ 		bootph-all;
+ 		pinctrl-single,pins = <
+@@ -631,6 +638,93 @@ eeprom@51 {
+ 		compatible = "atmel,24c512";
+ 		reg = <0x51>;
  	};
 +
 +	tps659413: pmic@48 {
@@ -213,7 +192,7 @@ index f1f4c8634ab6..f34b92acc56d 100644
 +	};
  };
  
- &mcu_uart0 {
+ &wkup_gpio0 {
 -- 
 2.34.1
 
