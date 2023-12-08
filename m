@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDF580A6FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:12:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1ACC80A6FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574336AbjLHPMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:12:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
+        id S1574360AbjLHPMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:12:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574321AbjLHPMP (ORCPT
+        with ESMTP id S1574187AbjLHPL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:12:15 -0500
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA1E1BC8
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:10:59 -0800 (PST)
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0175F3F4C0
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 15:10:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1702048256;
-        bh=ahAq0bs9SRy7utEnw9I8X1oqpnFPhDexGIr3W8i6/sw=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=Ti4KS7vRnia70hFmmpifOOxX37fpa4kMxFGbSQHupGwLe4IPmtc/OQbQKmh+2zTQd
-         E7Oxw1Pxh+/HqcQ65ZBJxqIyTqWaTqp0Lp8pFjHaTSQL05XtjJPSOjQaNEZv7d0Yue
-         8ETldMgyFHwgXDG4f8HkDNbA8mgNepgVDusnNhm4rNfTRbqGbVdl1Syg5pmY7UtHJM
-         vHzyUkjU43tBXFD+Xb2XW/cQNK6ooePReqmam/0lPU8L3YRbEkadvrK8aYsQOba5hB
-         RzFYVM7yFpyUHYvrHDTzj65eHGMsQX4yrmRQAUtMEBykp9EKgRT1vTB4AFyNum1Nu9
-         ck9MBCJFP0lug==
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a1f6b30185bso42860266b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 07:10:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702048255; x=1702653055;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ahAq0bs9SRy7utEnw9I8X1oqpnFPhDexGIr3W8i6/sw=;
-        b=a85AHUW6fsBnRZWujkU++quXtl+hn09oDrfQPx0Ity+kohDVnnBS6VcSjvD4T42xQO
-         Er01/rOrSFFOgo2eFW4xvEVpO9dhXwfYCHQ1df7TzYwbYYkkzcQkkSSKralKCLI0f654
-         u6CVJANPlH4SSt19WsaKBaIjLwQ4ebI5PVvahgapc6vbav3ZblxfZ6lC5S7ygBG59wgT
-         jBjmNsUEeq2qF7TT/u6CfYUJEW+hUFGeiIeEDMBBpzZ1sDPERKoEbv5QuAWl287kDExj
-         3bUljwTIxsX3YtgXvOTFUX5NfSas79pOPvIJ76KTPpppSmGboJ08HAG1KkBJbaGEQUtd
-         rFkQ==
-X-Gm-Message-State: AOJu0YwAZ33Ft2bFYlybe0AlJOYKdS14gvVFcLJ5kI6NCPfOE8Vs7QgO
-        liuyiSPspNKHFiZaiTasOrPuJCUUnFe5tBsbmDO/uobudvA8Qz1wPaFSYpvwpeZCWrLfN1YNvVD
-        eQ5SClEFmYv9/oeIxEn6KOTYiXL552Bi3GdDXZvyGRw==
-X-Received: by 2002:a17:907:7882:b0:a19:d40a:d225 with SMTP id ku2-20020a170907788200b00a19d40ad225mr30588ejc.241.1702048255607;
-        Fri, 08 Dec 2023 07:10:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGyDTKMZuA0UGfAukUeYUoKzCBZlXeHl6o7b0W3kpy7uvNruLx3UuUJq41J0yRgruhRHcmDAg==
-X-Received: by 2002:a17:907:7882:b0:a19:d40a:d225 with SMTP id ku2-20020a170907788200b00a19d40ad225mr30582ejc.241.1702048255312;
-        Fri, 08 Dec 2023 07:10:55 -0800 (PST)
-Received: from amikhalitsyn.. ([2a02:8109:8624:a300:c1aa:a6b2:15a4:a9b9])
-        by smtp.gmail.com with ESMTPSA id vi12-20020a170907d40c00b00a1a8d03347csm1120847ejc.13.2023.12.08.07.10.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 07:10:54 -0800 (PST)
-From:   Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-To:     brauner@kernel.org
-Cc:     linux-fsdevel@vger.kernel.org,
-        Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
-        Jan Kara <jack@suse.cz>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] fs: super: use GFP_KERNEL instead of GFP_USER for super block allocation
-Date:   Fri,  8 Dec 2023 16:10:22 +0100
-Message-Id: <20231208151022.156273-1-aleksandr.mikhalitsyn@canonical.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 8 Dec 2023 10:11:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B95385C
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:10:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0427C433C9;
+        Fri,  8 Dec 2023 15:10:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702048246;
+        bh=HCvGsfz3Vdu/xFP3RmrxB/dHcXYV1Nvtry8yb2qqgWc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NGjLb6dCAeMjgRqiITyAjM8BpXvxxXmnQ7klcAIgJfgHOQOqZoizF0n1OQ27XFr7Y
+         GywSyKvoMwdu3vLwHMw8yxzdQnQALJIbcbe5yHV/5Zvdi6zI3hE2DUl3vDm9O/38ED
+         D0CLGQvEPTwwQDQCq2vvFPKa+sfYbAUnyY08d0c7UJPMghb3yYgeR7+UO/AS5tFDME
+         IdqTvz5bwvtbnCGca5msjARy4iSlfBIsAGloP0YLlEWgBXYR7Du7tuiBNAXl5h9OiE
+         +41pXxUqimy6zOi8NvUV9kuyqn72damP9IwFBTMAd2+eDdwGudz9y/wZNwdkZGEvki
+         3iqpExDEbNaqg==
+From:   guoren@kernel.org
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        akpm@linux-foundation.org, alexghiti@rivosinc.com,
+        catalin.marinas@arm.com, willy@infradead.org, david@redhat.com,
+        muchun.song@linux.dev, will@kernel.org, peterz@infradead.org,
+        rppt@kernel.org, paulmck@kernel.org, atishp@atishpatra.org,
+        anup@brainfault.org, alex@ghiti.fr, mike.kravetz@oracle.com,
+        dfustini@baylibre.com, wefu@redhat.com, jszhang@kernel.org,
+        falcon@tinylab.org
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>, Guo Ren <guoren@kernel.org>
+Subject: [PATCH] riscv: pgtable: Enhance set_pte to prevent OoO risk
+Date:   Fri,  8 Dec 2023 10:10:36 -0500
+Message-Id: <20231208151036.2458921-1-guoren@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no reason to use a GFP_USER flag for struct super_block allocation
-in the alloc_super(). Instead, let's use GFP_KERNEL for that.
+From: Guo Ren <guoren@linux.alibaba.com>
 
-From the memory management perspective, the only difference between
-GFP_USER and GFP_KERNEL is that GFP_USER allocations are tied to a cpuset,
-while GFP_KERNEL ones are not.
+When changing from an invalid pte to a valid one for a kernel page,
+there is no need for tlb_flush. It's okay for the TSO memory model, but
+there is an OoO risk for the Weak one. eg:
 
-There is no real issue and this is not a candidate to go to the stable,
-but let's fix it for a consistency sake.
+sd t0, (a0) // a0 = pte address, pteval is changed from invalid to valid
+...
+ld t1, (a1) // a1 = va of above pte
 
-Cc: Jan Kara <jack@suse.cz>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+If the ld instruction is executed speculatively before the sd
+instruction. Then it would bring an invalid entry into the TLB, and when
+the ld instruction retired, a spurious page fault occurred. Because the
+vmemmap has been ignored by vmalloc_fault, the spurious page fault would
+cause kernel panic.
+
+This patch was inspired by the commit: 7f0b1bf04511 ("arm64: Fix barriers
+used for page table modifications"). For RISC-V, there is no requirement
+in the spec to guarantee all tlb entries are valid and no requirement to
+PTW filter out invalid entries. Of course, micro-arch could give a more
+robust design, but here, use a software fence to guarantee.
+
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Signed-off-by: Guo Ren <guoren@kernel.org>
 ---
- fs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/include/asm/pgtable.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/fs/super.c b/fs/super.c
-index 076392396e72..6fe482371633 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -323,7 +323,7 @@ static void destroy_unused_super(struct super_block *s)
- static struct super_block *alloc_super(struct file_system_type *type, int flags,
- 				       struct user_namespace *user_ns)
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 294044429e8e..2fae5a5438e0 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -511,6 +511,13 @@ static inline int pte_same(pte_t pte_a, pte_t pte_b)
+ static inline void set_pte(pte_t *ptep, pte_t pteval)
  {
--	struct super_block *s = kzalloc(sizeof(struct super_block),  GFP_USER);
-+	struct super_block *s = kzalloc(sizeof(struct super_block), GFP_KERNEL);
- 	static const struct super_operations default_op;
- 	int i;
+ 	*ptep = pteval;
++
++	/*
++	 * Only if the new pte is present and kernel, otherwise TLB
++	 * maintenance or update_mmu_cache() have the necessary barriers.
++	 */
++	if (pte_val(pteval) & (_PAGE_PRESENT | _PAGE_GLOBAL))
++		RISCV_FENCE(rw,rw);
+ }
  
+ void flush_icache_pte(pte_t pte);
 -- 
-2.34.1
+2.40.1
 
