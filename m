@@ -2,106 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5107D80A4E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C496180A4F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573874AbjLHN6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:58:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54000 "EHLO
+        id S1573892AbjLHOAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 09:00:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573864AbjLHN6I (ORCPT
+        with ESMTP id S1573875AbjLHOAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:58:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5B7A9
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 05:58:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702043893;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZVS2GiFnVhk8BbnE3962ZAIxlqpLh4SepAXQYdXCDKE=;
-        b=O4pbba2/d3rJpSiBVfY7u/w1do9dfXcw8SkLMnVCa8qIdbJHk0eDa7mz9uCpJUN7RAtXxG
-        u3w2JYRcWKDm16LH4e7v7unkRa0p89gzay86GvbL9UZCRggdkf2zWBt9SiexZutpPsDEI6
-        wYaPavobdaV/39eUX+r95kBaftiEhmk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-588-whDzf_fgMXWWbeog9d0oZg-1; Fri, 08 Dec 2023 08:58:08 -0500
-X-MC-Unique: whDzf_fgMXWWbeog9d0oZg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 906F3101A551;
-        Fri,  8 Dec 2023 13:58:07 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.192.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7EF4B40C6EB9;
-        Fri,  8 Dec 2023 13:58:05 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
-References: <20231130163946.277502-1-tycho@tycho.pizza>
-        <874jh3t7e9.fsf@oldenburg.str.redhat.com>
-        <ZWjaSAhG9KI2i9NK@tycho.pizza>
-        <a07b7ae6-8e86-4a87-9347-e6e1a0f2ee65@efficios.com>
-        <87ttp3rprd.fsf@oldenburg.str.redhat.com>
-        <20231207-entdecken-selektiert-d5ce6dca6a80@brauner>
-        <87wmtog7ht.fsf@oldenburg.str.redhat.com>
-        <20231208-hitzig-charmant-6bbdc427bf7e@brauner>
-Date:   Fri, 08 Dec 2023 14:58:03 +0100
-In-Reply-To: <20231208-hitzig-charmant-6bbdc427bf7e@brauner> (Christian
-        Brauner's message of "Fri, 8 Dec 2023 14:48:30 +0100")
-Message-ID: <87cyvgg5jo.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.3 (gnu/linux)
+        Fri, 8 Dec 2023 09:00:32 -0500
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C10A9
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 06:00:37 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 1FA8E5C016A;
+        Fri,  8 Dec 2023 09:00:37 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 08 Dec 2023 09:00:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm1; t=1702044037; x=1702130437; bh=I5hSfWoT/zaxbWvskG0G8aAPc
+        /U4gJg60vnp4mri/nE=; b=KUc4SUJ9icXpk+IlCuT/vSRBaKPPkA0TzzMUW2h2Z
+        782gmfl9UyWRskGM/OXhK9pE3bNh6kx/9jusvwwsIFZk+LgxV6er3aoMtzF76/Fi
+        t2q55yFmSHRWyVnmoiRGvCrg2Azrd3GTzkhJjIgMGsnr5/nYjRrizmyo/m9EDVPC
+        mYrFbLRkk5hLoh5/kS7cJx+lH6iQSOza1g6WsrKaeJyR4FxmozB6aw0rNa8p6mCr
+        Z0DwDEy4pH/xmLCPr6nMIUAE4b+Bs5tTxxy1hzAmDDPR98Qq3IzpLvFAggeLlDNa
+        VpcAPsdJaQENSlRHBEUydUGaSTndh5bRjSIWG3Pm5yR2A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1702044037; x=1702130437; bh=I5hSfWoT/zaxbWvskG0G8aAPc/U4gJg60vn
+        p4mri/nE=; b=28pTMl+8m6bhj8Qile4f1RfTnE0j8XrMz/m3yeTh9aIkQ7tAmgN
+        LIz193w37P520oAufG74yb0yL22Cdfypdd0SDoBwxvwc1oIcGE+uL4cl88t0e3vc
+        QNp69Nt2Ejjh5BD1qUEz58gjUZtd0XD2+2g/yvW9VoJm28AbwNnM+uDN3EZGQn3W
+        DDf1To3Ev4/JFjGqvjQ524FiQknq+adclK9xBaDlyVqmmWcgXViSJXTjqWh/UETC
+        nY0+Z34AjqPzGJBwrIMuLNVzpf28XcNQMVsNW+1A6fIwgoZ5jtPxbrydNMZZZfeY
+        hzFxHKXpDPB2EGGtGducGkRnZ/minQjQtQg==
+X-ME-Sender: <xms:hCFzZRguWSPoVVuXRHDE0aO3o_EDGXM2sXlomj_cC8Uz7WES1XlWJg>
+    <xme:hCFzZWBMeMIRlJ18_YU0lAgB6aOI1rAv1PZ03QHo5PBGD38LndYtZZIs6rxy_8iGK
+    BLWq9OerifTYGbXl38>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekiedgiedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkfffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehrnhgu
+    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
+    hrnhepleetleeghfdvjeeugfeiteekheetvefgvdekieffudejgfehudegfeejuedtgfeg
+    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghdplhhinhgrrhhordhorhhgpdhgihhthh
+    husgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
+    ohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:hCFzZREdt4EG8M5-nY6eLjKdFdUwsZ75qzueUOl1HS4TBPWwPI6Qzg>
+    <xmx:hCFzZWQSpI14_4YBpQgBsLJfrKax_wq1rwwcHfA-L0Cn5U01hM5uxw>
+    <xmx:hCFzZexw1Z-ChCIjTqO2xkiPaBjnMxuVvYV6wxkUFxgZobAC1WEUsQ>
+    <xmx:hSFzZYvPZIfWwtKV5rrSbar4yLzvQ-okd4ty-EfHVJcKn9a_cYosyQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7AB3FB6008D; Fri,  8 Dec 2023 09:00:36 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
+Message-Id: <90aa3b5f-a0d4-4609-85c2-e3d4cc944102@app.fastmail.com>
+Date:   Fri, 08 Dec 2023 14:59:56 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Linus Torvalds" <torvalds@linux-foundation.org>
+Cc:     soc@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, imx@lists.linux.dev,
+        linux-rockchip@lists.infradead.org
+Subject: [GIT PULL] ARM: SoC fixes for v6.7
 Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Christian Brauner:
+The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
 
-> On Fri, Dec 08, 2023 at 02:15:58PM +0100, Florian Weimer wrote:
->> * Christian Brauner:
->> 
->> > File descriptors are reachable for all processes/threads that share a
->> > file descriptor table. Changing that means breaking core userspace
->> > assumptions about how file descriptors work. That's not going to happen
->> > as far as I'm concerned.
->> 
->> It already has happened, though?  Threads are free to call
->> unshare(CLONE_FILES).  I'm sure that we have applications out there that
->
-> If you unshare a file descriptor table it will affect all file
-> descriptors of a given task. We don't allow hiding individual or ranges
-> of file descriptors from close/dup. That's akin to a partially shared
-> file descriptor table which is conceptually probably doable but just
-> plain weird and nasty to get right imho.
->
-> This really is either LSM territory to block such operations or use
-> stuff like io_uring gives you.
+  Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
 
-Sorry, I misunderstood.  I'm imagining for something that doesn't share
-partial tables and relies on explicit action to make available a
-descriptor from a separate different table in another table, based on
-some unique identifier (that is a bit more random than a file
-descriptor).  So a bit similar to the the existing systemd service, but
-not targeted at service restarts.
+are available in the Git repository at:
 
-Thanks,
-Florian
+  https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-fixes-6.7-1
 
+for you to fetch changes up to fd1e5745f87a9e06974d2f42d22b3e1682c99105:
+
+  Merge tag 'v6.7-rockchip-dtsfixes1' of git://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip into arm/fixes (2023-12-08 08:36:25 +0100)
+
+----------------------------------------------------------------
+ARM: SoC fixes for v6.7
+
+Most of the changes are devicetree fixes for NXP, Mediatek, Rockchips
+Arm machines as well as Microchip RISC-V, and most of these address
+build-time warnings for spec violations and other minor issues. One of
+the Mediatek warnings was enabled by default and prevented a clean build.
+The ones that address serious runtime issues are all on the i.MX platform:
+
+ - a boot time panic on imx8qm
+ - USB hanging under load on imx8
+ - regressions on the imx93 ethernet phy
+
+Code fixes include a minor error handling for the i.MX PMU driver, and
+a number of firmware driver fixes:
+
+ - OP-TEE fix for supplicant based device enumeration, and a new
+   sysfs attribute to needed to fix a race against userspace
+
+ - Arm SCMI fix for possible truncation/overflow in the frequency
+   computations
+
+ - Multiple FF-A fixes for the newly added notification support.
+
+----------------------------------------------------------------
+Ahmad Fatoum (1):
+      MAINTAINERS: reinstate freescale ARM64 DT directory in i.MX entry
+
+Alex Bee (2):
+      arm64: dts: rockchip: Expand reg size of vdec node for RK3399
+      ARM: dts: rockchip: Fix sdmmc_pwren's pinmux setting for RK3128
+
+Alexander Stein (4):
+      arm64: dt: imx93: tqma9352-mba93xxla: Fix LPUART2 pad config
+      dt-bindings: pwm: imx-pwm: Unify #pwm-cells for all compatibles
+      arm64: dts: freescale: imx8-ss-lsio: Fix #pwm-cells
+      arm64: dts: freescale: imx8-ss-dma: Fix #pwm-cells
+
+AngeloGioacchino Del Regno (7):
+      arm64: dts: mediatek: mt8195: Fix PM suspend/resume with venc clocks
+      arm64: dts: mediatek: mt8183: Fix unit address for scp reserved memory
+      arm64: dts: mediatek: mt8183-evb: Fix unit_address_vs_reg warning on ntc
+      arm64: dts: mediatek: mt8173-evb: Fix regulator-fixed node names
+      arm64: dts: mediatek: mt8183: Move thermal-zones to the root node
+      arm64: dts: mediatek: mt8186: Change gpu speedbin nvmem cell name
+      arm64: dts: mediatek: cherry: Fix interrupt cells for MT6360 on I2C7
+
+Arnd Bergmann (8):
+      Merge tag 'optee-supplicant-fix-for-v6.7' of git://git.linaro.org:/people/jens.wiklander/linux-tee into arm/fixes
+      Merge tag 'mtk-dts64-fixes-for-6.7' of git://git.kernel.org/pub/scm/linux/kernel/git/mediatek/linux into arm/fixes
+      Merge tag 'riscv-dt-fixes-for-v6.7-rc4' of https://git.kernel.org/pub/scm/linux/kernel/git/conor/linux into arm/fixes
+      Merge tag 'scmi-fixes-6.7' of git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux into arm/fixes
+      Merge tag 'arm-soc/for-6.7/devicetree-fixes' of https://github.com/Broadcom/stblinux into arm/fixes
+      Merge tag 'ffa-fixes-6.7' of git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux into arm/fixes
+      Merge tag 'imx-fixes-6.7' of git://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux into arm/fixes
+      Merge tag 'v6.7-rockchip-dtsfixes1' of git://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip into arm/fixes
+
+Chester Lin (1):
+      MAINTAINERS: change the S32G2 maintainer's email address.
+
+Conor Dooley (2):
+      riscv: dts: sophgo: remove address-cells from intc node
+      riscv: dts: microchip: move timebase-frequency to mpfs.dtsi
+
+Eric Woudstra (1):
+      arm64: dts: mt7986: fix emmc hs400 mode without uboot initialization
+
+Eugen Hristev (3):
+      arm64: dts: mediatek: mt8186: fix clock names for power domains
+      arm64: dts: mediatek: mt7622: fix memory node warning check
+      arm64: dts: mediatek: mt8183-kukui-jacuzzi: fix dsi unnecessary cells properties
+
+Fabio Estevam (2):
+      ARM: dts: imx6ul-pico: Describe the Ethernet PHY clock
+      ARM: dts: imx28-xea: Pass the 'model' property
+
+Frank Wunderlich (2):
+      arm64: dts: mt7986: define 3W max power to both SFP on BPI-R3
+      arm64: dts: mt7986: change cooling trips
+
+Haibo Chen (2):
+      arm64: dts: imx93: update gpio node name to align with register address
+      arm64: dts: imx8ulp: update gpio node name to align with register address
+
+Heiko Stuebner (2):
+      arm64: dts: rockchip: fix rk356x pcie msg interrupt name
+      arm64: dts: rockchip: drop interrupt-names property from rk3588s dfi
+
+Hsin-Yi Wang (1):
+      arm64: dts: mt8183: kukui: Fix underscores in node names
+
+Jonas Karlman (1):
+      arm64: dts: rockchip: Expand reg size of vdec node for RK3328
+
+Krzysztof Kozlowski (2):
+      ARM: dts: rockchip: minor whitespace cleanup around '='
+      arm64: dts: rockchip: minor whitespace cleanup around '='
+
+Kunwu Chan (1):
+      ARM: imx: Check return value of devm_kasprintf in imx_mmdc_perf_init
+
+Lorenzo Pieralisi (1):
+      firmware: arm_ffa: Fix ffa_notification_info_get() IDs handling
+
+Nathan Rossi (1):
+      arm64: dts: imx8mp: imx8mq: Add parkmode-disable-ss-quirk on DWC3
+
+Peng Fan (1):
+      arm64: dts: imx93: correct mediamix power
+
+Philipp Zabel (1):
+      ARM: dts: imx7: Declare timers compatible with fsl,imx6dl-gpt
+
+Rob Herring (1):
+      arm64: dts: rockchip: Fix PCI node addresses on rk3399-gru
+
+Sam Edwards (2):
+      arm64: dts: rockchip: Fix Turing RK1 interrupt pinctrls
+      arm64: dts: rockchip: Fix eMMC Data Strobe PD on rk3588
+
+Sascha Hauer (1):
+      dt-bindings: soc: rockchip: grf: add rockchip,rk3588-pmugrf
+
+Stefan Eichenberger (1):
+      arm64: dts: imx8-apalis: set wifi regulator to always-on
+
+Stefan Kerkmann (1):
+      ARM: dts: imx6q: skov: fix ethernet clock regression
+
+Stefan Wahren (1):
+      ARM: dts: bcm2711-rpi-400: Fix delete-node of led_act
+
+Sudeep Holla (8):
+      firmware: arm_ffa: Declare ffa_bus_type structure in the header
+      firmware: arm_ffa: Allow FF-A initialisation even when notification fails
+      firmware: arm_ffa: Setup the partitions after the notification initialisation
+      firmware: arm_ffa: Add checks for the notification enabled state
+      firmware: arm_ffa: Fix FFA notifications cleanup path
+      firmware: arm_ffa: Fix the size of the allocation in ffa_partitions_cleanup()
+      firmware: arm_scmi: Fix frequency truncation by promoting multiplier type
+      firmware: arm_scmi: Fix possible frequency truncation when using level indexing mode
+
+Sumit Garg (1):
+      tee: optee: Fix supplicant based device enumeration
+
+Xiaolei Wang (1):
+      arm64: dts: imx8qm: Add imx8qm's own pm to avoid panic during startup
+
+ Documentation/ABI/testing/sysfs-bus-optee-devices  |   9 +
+ Documentation/devicetree/bindings/pwm/imx-pwm.yaml |  10 +-
+ .../devicetree/bindings/soc/rockchip/grf.yaml      |   1 +
+ MAINTAINERS                                        |   3 +-
+ arch/arm/boot/dts/broadcom/bcm2711-rpi-400.dts     |   4 +-
+ .../dts/nxp/imx/imx6q-skov-reve-mi1010ait-1cp1.dts |   4 +-
+ arch/arm/boot/dts/nxp/imx/imx6ul-pico.dtsi         |   2 +
+ arch/arm/boot/dts/nxp/imx/imx7s.dtsi               |   8 +-
+ arch/arm/boot/dts/nxp/mxs/imx28-xea.dts            |   1 +
+ arch/arm/boot/dts/rockchip/rk3128.dtsi             |   2 +-
+ arch/arm/boot/dts/rockchip/rk322x.dtsi             |   6 +-
+ arch/arm/mach-imx/mmdc.c                           |   7 +-
+ .../arm64/boot/dts/freescale/imx8-apalis-v1.1.dtsi |   5 +-
+ arch/arm64/boot/dts/freescale/imx8-ss-dma.dtsi     |   2 +-
+ arch/arm64/boot/dts/freescale/imx8-ss-lsio.dtsi    |   8 +-
+ arch/arm64/boot/dts/freescale/imx8mp.dtsi          |   2 +
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi          |   2 +
+ arch/arm64/boot/dts/freescale/imx8qm-ss-dma.dtsi   |  11 +
+ arch/arm64/boot/dts/freescale/imx8ulp.dtsi         |   6 +-
+ .../dts/freescale/imx93-tqma9352-mba93xxla.dts     |   2 +-
+ arch/arm64/boot/dts/freescale/imx93.dtsi           |  10 +-
+ .../boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts  |   2 +-
+ arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts       |   2 +-
+ .../boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts  |  12 +-
+ arch/arm64/boot/dts/mediatek/mt7986a.dtsi          |  24 +-
+ arch/arm64/boot/dts/mediatek/mt8173-evb.dts        |   4 +-
+ arch/arm64/boot/dts/mediatek/mt8183-evb.dts        |   4 +-
+ .../boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi    |   8 +-
+ arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi     |  96 ++++----
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi           | 242 ++++++++++-----------
+ arch/arm64/boot/dts/mediatek/mt8186.dtsi           |  44 ++--
+ arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi    |   2 +-
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi           |   6 +-
+ .../boot/dts/rockchip/px30-ringneck-haikou.dts     |   2 +-
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi           |   2 +-
+ .../boot/dts/rockchip/rk3399-gru-chromebook.dtsi   |   3 +-
+ .../boot/dts/rockchip/rk3399-gru-scarlet-dumo.dts  |   4 +-
+ arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi       |   1 +
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi           |   6 +-
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi           |   2 +-
+ .../arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi |   4 +-
+ .../arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts |   2 +-
+ arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi  |   2 +-
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi          |   1 -
+ arch/riscv/boot/dts/microchip/mpfs-icicle-kit.dts  |   7 -
+ arch/riscv/boot/dts/microchip/mpfs-m100pfsevp.dts  |   7 -
+ arch/riscv/boot/dts/microchip/mpfs-polarberry.dts  |   7 -
+ arch/riscv/boot/dts/microchip/mpfs-sev-kit.dts     |   7 -
+ arch/riscv/boot/dts/microchip/mpfs-tysom-m.dts     |   7 -
+ arch/riscv/boot/dts/microchip/mpfs.dtsi            |   1 +
+ arch/riscv/boot/dts/sophgo/cv1800b.dtsi            |   1 -
+ drivers/firmware/arm_ffa/driver.c                  |  70 ++++--
+ drivers/firmware/arm_scmi/perf.c                   |  18 +-
+ drivers/tee/optee/device.c                         |  17 +-
+ include/linux/arm_ffa.h                            |   2 +
+ 55 files changed, 396 insertions(+), 328 deletions(-)
