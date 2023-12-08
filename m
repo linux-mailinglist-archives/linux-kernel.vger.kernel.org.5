@@ -2,60 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A207480AB01
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEA680AB06
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:44:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233514AbjLHRlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:41:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33360 "EHLO
+        id S233481AbjLHRoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:44:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLHRlJ (ORCPT
+        with ESMTP id S229811AbjLHRoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:41:09 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B503385
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:41:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702057275; x=1733593275;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=3eawyFh1Q+IYKe4V1a+iA3zOSod1oVeeTlwBCv7JR9U=;
-  b=gn781AMpiSlP38AY6n8pEKmanNNv+z6nD8XF7ZO4TycqQ2Bh4Nbgff8N
-   3uKPYoHGtZhGq5zwUG78Muy/ouweHM5Lq19VxUm2ld06BJMYpvzpYWUJF
-   LrhgzCeuN8InvnRLDQ6V8WgoaRG4rsw+QCTOwtFLnNE5EVcUJ2ElQ8/1f
-   7cw0I6dfWDitWilMtidTJuTAKyPyORfPXlhiGiEQtAHEke5tBcU4WQssH
-   8aTsuA5wSGcEh9NFD6HAVGxq2Fk6S021H0J3gUomtHuAkNwZVWok24O7A
-   IQiMDrKLsQxRlSP1TrBeUlz5K16xk95/rJF0l8t7cExDTD1MbheutzdIl
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1317513"
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="1317513"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 09:41:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="772207697"
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="772207697"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 08 Dec 2023 09:41:13 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBeqd-000E7c-0F;
-        Fri, 08 Dec 2023 17:41:11 +0000
-Date:   Sat, 9 Dec 2023 01:40:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>, Fuad Tabba <tabba@google.com>
-Subject: arch/arm64/kvm/hyp/nvhe/stacktrace.c:10:1: sparse: sparse: symbol
- '__pcpu_scope_overflow_stack' was not declared. Should it be static?
-Message-ID: <202312090113.Q6jelIex-lkp@intel.com>
+        Fri, 8 Dec 2023 12:44:09 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B47123;
+        Fri,  8 Dec 2023 09:44:15 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3b83fc26e4cso1495220b6e.2;
+        Fri, 08 Dec 2023 09:44:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702057455; x=1702662255; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=STnIY6jHnonlNBGjhvoP/XKEjxCdoqekmjCFEwWOqqs=;
+        b=R/9D5yryzeBwlns2fWxYB9mVg6xgKF9etEDsO7YvVAKJrjzKPlLhqfPy/a+EXnBWG4
+         DraJxuTGQVZkvqutvStNe/cLZb5DQEIk5WpzOc98YT6YfECY/bP/SCEtaXNtEPG4+J+Q
+         xh+yHFisuh9L9so5hIG5XrnlqlWLQfQ2oyFo464RtOwR+sKtsqwxutCfBiBRYPdNRXxo
+         ULJh3KpeQfk/LAGA/enkHiv0tSzvFn98/w3ihK2gWJER/l9bKJ7aQxcOZiLa8AmQfE7d
+         P8vitSAP8SeUxzkxy4neTTpYxrRTcjsEoBDbygvKeEnXZHXLmA3ge0H0pWB+q++g7uww
+         kNZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702057455; x=1702662255;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=STnIY6jHnonlNBGjhvoP/XKEjxCdoqekmjCFEwWOqqs=;
+        b=FBfII8UqbC7lWG9sDPzR0WYPgf1Va3lNbkEINr14U0zDkQoJJkHIL2NX5qPOPNx54B
+         VRLbTPqB4MAs605J1pwhSNhLyvD5lWDbsoHDTAdC4CPDVxcdaTFDHSZTFWtJWnCl4YZK
+         X2osy5Hs98szjJwulmcHksaNgQXhrf3lr6Y9uMcLNOZCuohnIN42zmVNCyGNnNKbQGA9
+         BQSC+xD7c0I9SYa6h/MKExAC7Ben6GN4nzqDVvViNiV/f/UuxEzIXzHM3irbDvdZJPRe
+         rMsvih7EJ83cqTKoNyGpXxJWqzkpw6ZXmCRtBJQSCODSaFLK4f+8tGTs7v0rEqgrHiRp
+         9IJg==
+X-Gm-Message-State: AOJu0YxnDPs2jZZueA2httz5Eec6uZ/zF9a51cKtCs3AaDqJitIU/XXk
+        RhXFFwMtXjwSKf+0Rph12+k=
+X-Google-Smtp-Source: AGHT+IEzT+HZ9WmsP8OSljEsqprb6rwe8jXFEjOkdMdIcoynbuF30OJkUHTP42lwHHlv2AFGEvJFuw==
+X-Received: by 2002:a05:6808:124a:b0:3b8:b063:8261 with SMTP id o10-20020a056808124a00b003b8b0638261mr354407oiv.99.1702057454735;
+        Fri, 08 Dec 2023 09:44:14 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id ud11-20020a05620a6a8b00b0077d90497738sm841756qkn.102.2023.12.08.09.44.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 09:44:14 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id A51C027C0054;
+        Fri,  8 Dec 2023 12:44:13 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 08 Dec 2023 12:44:13 -0500
+X-ME-Sender: <xms:7FVzZYW7dgchrPjOkXhW0sb6EU31ic_Y-GmkHi5aMNZaED6mo0f2CQ>
+    <xme:7FVzZclxmVbT3_sDjTjWP1NLmwpNcykkBAnVjEKbLCOC9jL3qFRi_NP_1vmqF2wpK
+    XCTb3UIOKsm0zamHw>
+X-ME-Received: <xmr:7FVzZcZgPObt-xFpDA44jJZ_CB5HXvN9D2_jGBI22_zYY3755PmOX21sK58>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekiedguddtiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepueho
+    qhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtf
+    frrghtthgvrhhnpeevgffhueevkedutefgveduuedujeefledthffgheegkeekiefgudek
+    hffggeelfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeeh
+    tdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmse
+    hfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:7FVzZXWEEnbUgdWHrTi0rsh1UBWoGrrYLSY3vXlj-IImUQJ3_Dk17g>
+    <xmx:7FVzZSlIA7eJfcOsPnymAgr8gDAxN-AKO7N_MpiDmjBUy0SmUeiFMw>
+    <xmx:7FVzZccr7XOY28eMqoEef8LbTvmueOQPB9jiSOF34DNQW7hgKIGzMg>
+    <xmx:7VVzZewcjWCPXENIzmDM7mNs-k1EYIZLIK0xtFtbNNO3epM_UHl-yA>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 8 Dec 2023 12:44:11 -0500 (EST)
+Date:   Fri, 8 Dec 2023 09:43:00 -0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        comex <comexk@gmail.com>, Christian Brauner <brauner@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 5/7] rust: file: add `Kuid` wrapper
+Message-ID: <ZXNVpCn0g_aBCpTE@boqun-archlinux>
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+ <20231129-alice-file-v1-5-f81afe8c7261@google.com>
+ <20231129-etappen-knapp-08e2e3af539f@brauner>
+ <20231129164815.GI23596@noisy.programming.kicks-ass.net>
+ <20231130-wohle-einfuhr-1708e9c3e596@brauner>
+ <A0BFF59C-311C-4C44-9474-65DB069387BD@gmail.com>
+ <CANiq72k4H2_NZuQcpeKANqyi_9W01fLC0WxXon5cx4z=WsgeXQ@mail.gmail.com>
+ <CAKwvOdkgDwnC_jaGjXjk9yKYo=zWDR_3x7Drw3i=KX0Wyij6ew@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKwvOdkgDwnC_jaGjXjk9yKYo=zWDR_3x7Drw3i=KX0Wyij6ew@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,27 +130,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5e3f5b81de80c98338bcb47c233aebefee5a4801
-commit: 548ec3336f323db56260b312c232ab37285f0284 KVM: arm64: On stack overflow switch to hyp overflow_stack
-date:   1 year, 4 months ago
-config: arm64-randconfig-r112-20231117 (https://download.01.org/0day-ci/archive/20231209/202312090113.Q6jelIex-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231209/202312090113.Q6jelIex-lkp@intel.com/reproduce)
+On Fri, Dec 08, 2023 at 09:08:47AM -0800, Nick Desaulniers wrote:
+> On Fri, Dec 8, 2023 at 8:19 AM Miguel Ojeda
+> <miguel.ojeda.sandonis@gmail.com> wrote:
+> >
+> > On Fri, Dec 8, 2023 at 6:28 AM comex <comexk@gmail.com> wrote:
+> > >
+> > > Regarding the issue of wrappers not being inlined, it's possible to get LLVM to optimize C and Rust code together into an object file, with the help of a compatible Clang and LLD:
+> > >
+> > > @ rustc -O --emit llvm-bc a.rs
+> > > @ clang --target=x86_64-unknown-linux-gnu -O2 -c -emit-llvm -o b.bc b.c
+> > > @ ld.lld -r -o c.o a.bc b.bc
+> > >
+> > > Basically LTO but within the scope of a single object file.  This would be redundant in cases where kernel-wide LTO is enabled.
+> > >
+> > > Using this approach might slow down compilation a bit due to needing to pass the LLVM bitcode between multiple commands, but probably not very much.
+> > >
+> > > Just chiming in as someone not involved in Rust for Linux but familiar with these tools.  Perhaps this has been considered before and rejected for some reason; I wouldn’t know.
+> >
+> > Thanks comex for chiming in, much appreciated.
+> >
+> > Yeah, this is what we have been calling the "local-LTO hack" and it
+> > was one of the possibilities we were considering for non-LTO kernel
+> > builds for performance reasons originally. I don't recall who
+> > originally suggested it in one of our meetings (Gary or Björn
+> > perhaps).
+> >
+> > If LLVM folks think LLVM-wise nothing will break, then we are happy to
+> 
+> On paper, nothing comes to mind.  No promises though.
+> 
+> From a build system perspective, I'd rather just point users towards
+> LTO if they have this concern.  We support full and thin lto.  This
+> proposal would add a third variant for just rust drivers.  Each
+> variation on LTO has a maintenance cost and each have had their own
+> distinct fun bugs in the past.  Not sure an additional variant is
+> worth the maintenance cost, even if it's technically feasible.
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312090113.Q6jelIex-lkp@intel.com/
+Actually, the "LTO" in "local-LTO" may be misleading ;-) The problem we
+want to resolve here is letting Rust code call small C functions (or
+macros) without exporting the symbols. To me, it's really just "static
+linking" a library (right now it's rust/helpers.o) contains small C
+functions and macros used by Rust into a Rust driver kmodule, the "LTO"
+part can be optional: let the linker make the call.
 
-sparse warnings: (new ones prefixed by >>)
->> arch/arm64/kvm/hyp/nvhe/stacktrace.c:10:1: sparse: sparse: symbol '__pcpu_scope_overflow_stack' was not declared. Should it be static?
+Regards,
+Boqun
 
-vim +/__pcpu_scope_overflow_stack +10 arch/arm64/kvm/hyp/nvhe/stacktrace.c
-
-     9	
-  > 10	DEFINE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)], overflow_stack)
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> > go ahead with that (since it also solves the performance side), but it
+> > would be nice to know if it will always be OK to build like that, i.e.
+> > I think Andreas actually tried it and it seemed to work and boot, but
+> > the worry is whether there is something subtle that could have bad
+> > codegen in the future.
+> >
+> > (We will also need to worry about GCC.)
+> >
+> > Cheers,
+> > Miguel
+> 
+> 
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
