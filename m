@@ -2,48 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3DD80A6AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:08:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DE280A6BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574275AbjLHPIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:08:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38852 "EHLO
+        id S1574238AbjLHPI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:08:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574230AbjLHPIQ (ORCPT
+        with ESMTP id S1574213AbjLHPIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:08:16 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61358199D;
-        Fri,  8 Dec 2023 07:08:22 -0800 (PST)
-Received: from umang.jain (unknown [103.251.226.108])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CDFA1552;
-        Fri,  8 Dec 2023 16:07:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1702048059;
-        bh=++pJ6xBSDGmfMWD1Z0+shMY0/qfwngayfbMUOZTJ3Qk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EHxZ3XqwFkWdOzIR92TaKBGQBbRhMtUzARlXvGyyieAbIuoif2i0pfc0bnOlOFuyh
-         hkWN4q51O5w4YeQkofPZ5hxz1kH/4ynidnpryuw7JSqrSCCMI3z36rDydZYCRbQ27f
-         yEkZMv3n9XZsJt6iNa5qaHaYLD+ttI70h+PS16mc=
-From:   Umang Jain <umang.jain@ideasonboard.com>
-To:     devicetree@vger.kernel.org, linux-media@vger.kernel.org
-Cc:     "Paul J . Murphy" <paul.j.murphy@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Umang Jain <umang.jain@ideasonboard.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 8/8] media: i2c: imx335: Support multiple link frequency
-Date:   Fri,  8 Dec 2023 20:37:54 +0530
-Message-ID: <20231208150756.124720-9-umang.jain@ideasonboard.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231208150756.124720-1-umang.jain@ideasonboard.com>
-References: <20231208150756.124720-1-umang.jain@ideasonboard.com>
+        Fri, 8 Dec 2023 10:08:41 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392481BF8
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:08:46 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40a4848c6e1so26292855e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 07:08:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1702048124; x=1702652924; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WDlnmNszOgddS8dBFWx/WoEU+LfvOrqv92GavQrCmjw=;
+        b=zRp9uEjbqqXuiLz/ZNVOa6qRlTO/koyXsJma9ZCscz6W7BtH8tlZbBTpCwuilzqnsI
+         +AMej+rHAey0IOAiwEUKrUVXZIijSLwrWxPBeq1thtNSoLWv0golFVWfYjG8DYduz1u0
+         ThrVUXoRPeAfj1QWHDivYjkEwEVWOoPyqFz6rJIVsFg1RYoMOGkA0HtCJli0g49tAb4P
+         aimzGlAeZAOGsxpQ0KklYGuPJvho9GfsogWxPV53f+0D8oAhJd3O1C958J6xJ2kQkD8T
+         +0WHABUStMk/ao8a1jYSgsIaoOb+nMNdJ/Mq2YZlmy3EXLS9DCnsGhLCr/n5WaejOPsv
+         Odtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702048124; x=1702652924;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WDlnmNszOgddS8dBFWx/WoEU+LfvOrqv92GavQrCmjw=;
+        b=qGBQG+knl4kx8pfe2ebXIsmqmT89mTjIWB33ixbdhgPvuIX62rtT0RjX0RqwVH1j08
+         0YLs1SgxYjWSNSpPE0dmvQ+H907L0NmzoXxFgNsko35VRU0A6aqMIuDTptIiL+vuai3w
+         7Y7/gSE/yvXsP8PECuObTBWmz7gxnar8XAeanVeb1rKtaOIy7t+7w2qw/+2gedwTROZR
+         YVifXmR//OFn2iDwxrJM+2vtKARSN5JyEvNyYMdcMNYaZH+QYdnjYkvgetACoh+Hurfm
+         UMdBk8YKYLUAy5+8Top8pPDbDKOcE75iKc/3z5KpMrf6atYMZe+dAvsmZ6Jn/K/olCUJ
+         VPRg==
+X-Gm-Message-State: AOJu0YyKnOXkirGI7QObCeksAQA46jHFH9rWHXcZ6sMlZKER7jkbhWAQ
+        gEJMNZRyrymev3LoynO/vfTpYQ==
+X-Google-Smtp-Source: AGHT+IGgoEvGG4TIXnrkvEhDL9ohUy/9JK0zZnX9KJnrl/fd4U4EFWyMkK02TZuT4Dr/S7cum/F7PQ==
+X-Received: by 2002:a05:600c:22d9:b0:40c:24dc:1166 with SMTP id 25-20020a05600c22d900b0040c24dc1166mr48233wmg.189.1702048124640;
+        Fri, 08 Dec 2023 07:08:44 -0800 (PST)
+Received: from [192.168.55.221] (tmo-113-102.customers.d1-online.com. [80.187.113.102])
+        by smtp.gmail.com with ESMTPSA id r25-20020a170906351900b00a1cc1be1146sm1096114eja.217.2023.12.08.07.08.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 07:08:44 -0800 (PST)
+From:   Luca Weiss <luca.weiss@fairphone.com>
+Subject: [PATCH v3 00/11] Remoteprocs (ADSP, CDSP, WPSS) for SC7280
+Date:   Fri, 08 Dec 2023 16:07:56 +0100
+Message-Id: <20231208-sc7280-remoteprocs-v3-0-6aa394d33edf@fairphone.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAE0xc2UC/33NQQrCMBCF4auUrI1kJsamrryHuAjTqc2iTUlKU
+ ErvbtqNIOLyfzDfLCJx9JzEpVpE5OyTD2MJfagE9W58sPRtaYEKNSisZaIarZKRhzDzFAMlqU4
+ WlSUCBi3K4RS5888dvd1L9z7NIb72Hxm29S+XQSqpDHFj2kaDcdfO+Tj1YeQjhUFsZMYPA6B/M
+ lgYNmS61uDZuvqbWdf1Da3UZwv/AAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        =?utf-8?q?Matti_Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.12.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,208 +87,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support link frequency of 445MHz in addition to 594MHz.
+This series adds support for the ADSP, CDSP and WPSS remoteprocs found
+on SC7280. And finally enable them and WiFi on the QCM6490-based
+Fairphone 5 smartphone.
 
-Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+The first two patches are fixes for the MPSS to fix some dt validation
+issues. They're included in this series to avoid conflicts with the
+later patches and keep it simpler.
+
+Then there's two patches reorganizing the reserved-memory setup for
+sc7280 in preparations for the new remoteprocs.
+
+Please note, that the ChromeOS-based devices using SC7280 need different
+driver and dts support, similar to how there's already
+qcom,sc7280-mpss-pas for "standard" firmware and there's
+qcom,sc7280-mss-pil for ChromeOS firmware.
+
+I'm aware of the series also adding SC7280 ADSP support with the last
+revision sent in June this year.
+
+https://lore.kernel.org/linux-arm-msm/20230616103534.4031331-1-quic_mohs@quicinc.com/
+
+However there's some differences since that series added the "pil"
+variant for ChromeOS, not "pas" for standard firmware. Also it seems on
+ChromeOS devices gpr+q6apm+q6prm is used. On my device it appears to be
+instead apr+q6afe+q6asm+q6adm but I don't add either in this series to
+keep it a bit simpler, and I couldn't test much of that yet.
+
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 ---
- drivers/media/i2c/imx335.c | 89 +++++++++++++++++++++++++++++---------
- 1 file changed, 68 insertions(+), 21 deletions(-)
+Changes in v3:
+- Rebase on qcom for-next and resolve conflicts
+- Pick up tags
+- Link to v2: https://lore.kernel.org/r/20231113-sc7280-remoteprocs-v2-0-e5c5fd5268a7@fairphone.com
 
-diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index 76a05624ca94..1d6dc38e3e6b 100644
---- a/drivers/media/i2c/imx335.c
-+++ b/drivers/media/i2c/imx335.c
-@@ -49,7 +49,8 @@
- #define IMX335_INCLK_RATE	24000000
- 
- /* CSI2 HW configuration */
--#define IMX335_LINK_FREQ	594000000
-+#define IMX335_LINK_FREQ_594MHz	594000000
-+#define IMX335_LINK_FREQ_445MHz	445500000
- #define IMX335_NUM_DATA_LANES	4
- 
- #define IMX335_REG_MIN		0x00
-@@ -99,7 +100,6 @@ static const char * const imx335_supply_name[] = {
-  * @vblank_min: Minimum vertical blanking in lines
-  * @vblank_max: Maximum vertical blanking in lines
-  * @pclk: Sensor pixel clock
-- * @link_freq_idx: Link frequency index
-  * @reg_list: Register list for sensor mode
-  */
- struct imx335_mode {
-@@ -111,7 +111,6 @@ struct imx335_mode {
- 	u32 vblank_min;
- 	u32 vblank_max;
- 	u64 pclk;
--	u32 link_freq_idx;
- 	struct imx335_reg_list reg_list;
- };
- 
-@@ -133,6 +132,7 @@ struct imx335_mode {
-  * @again_ctrl: Pointer to analog gain control
-  * @vblank: Vertical blanking in lines
-  * @cur_mode: Pointer to current selected sensor mode
-+ * @link_freq_idx: Selected link frequency index
-  * @mutex: Mutex for serializing sensor controls
-  */
- struct imx335 {
-@@ -155,20 +155,16 @@ struct imx335 {
- 	};
- 	u32 vblank;
- 	const struct imx335_mode *cur_mode;
-+	u32 link_freq_idx;
- 	struct mutex mutex;
- 	u32 cur_mbus_code;
- };
- 
--static const s64 link_freq[] = {
--	IMX335_LINK_FREQ,
--};
- 
- /* Sensor mode registers */
- static const struct imx335_reg mode_2592x1940_regs[] = {
- 	{0x3000, 0x01},
- 	{0x3002, 0x00},
--	{0x300c, 0x3b},
--	{0x300d, 0x2a},
- 	{0x3018, 0x04},
- 	{0x302c, 0x3c},
- 	{0x302e, 0x20},
-@@ -176,10 +172,6 @@ static const struct imx335_reg mode_2592x1940_regs[] = {
- 	{0x3074, 0xc8},
- 	{0x3076, 0x28},
- 	{0x304c, 0x00},
--	{0x314c, 0xc6},
--	{0x315a, 0x02},
--	{0x3168, 0xa0},
--	{0x316a, 0x7e},
- 	{0x31a1, 0x00},
- 	{0x3288, 0x21},
- 	{0x328a, 0x02},
-@@ -265,6 +257,46 @@ static const struct imx335_reg raw12_framefmt_regs[] = {
- 	{0x341d, 0x00},
- };
- 
-+static const struct imx335_reg mipi_data_rate_1188Mbps[] = {
-+	{0x300c, 0x3b},
-+	{0x300d, 0x2a},
-+	{0x314c, 0xc6},
-+	{0x314d, 0x00},
-+	{0x315a, 0x02},
-+	{0x3168, 0xa0},
-+	{0x316a, 0x7e},
-+	{0x319e, 0x01},
-+};
-+
-+static const struct imx335_reg mipi_data_rate_891Mbps[] = {
-+	{0x300c, 0x3b},
-+	{0x300d, 0x2a},
-+	{0x314c, 0x29},
-+	{0x314d, 0x01},
-+	{0x315a, 0x06},
-+	{0x3168, 0xa0},
-+	{0x316a, 0x7e},
-+	{0x319e, 0x02},
-+};
-+
-+static const s64 link_freq[] = {
-+	/* Corresponds to 1188Mbps data lane rate */
-+	IMX335_LINK_FREQ_594MHz,
-+	/* Corresponds to 891Mbps data lane rate */
-+	IMX335_LINK_FREQ_445MHz,
-+};
-+
-+static const struct imx335_reg_list link_freq_reglist[] = {
-+	{
-+		.num_of_regs = ARRAY_SIZE(mipi_data_rate_1188Mbps),
-+		.regs = mipi_data_rate_1188Mbps,
-+	},
-+	{
-+		.num_of_regs = ARRAY_SIZE(mipi_data_rate_891Mbps),
-+		.regs = mipi_data_rate_891Mbps,
-+	},
-+};
-+
- static const u32 imx335_mbus_codes[] = {
- 	MEDIA_BUS_FMT_SRGGB12_1X12,
- 	MEDIA_BUS_FMT_SRGGB10_1X10,
-@@ -279,7 +311,6 @@ static const struct imx335_mode supported_mode = {
- 	.vblank_min = 2560,
- 	.vblank_max = 133060,
- 	.pclk = 396000000,
--	.link_freq_idx = 0,
- 	.reg_list = {
- 		.num_of_regs = ARRAY_SIZE(mode_2592x1940_regs),
- 		.regs = mode_2592x1940_regs,
-@@ -404,7 +435,7 @@ static int imx335_update_controls(struct imx335 *imx335,
- {
- 	int ret;
- 
--	ret = __v4l2_ctrl_s_ctrl(imx335->link_freq_ctrl, mode->link_freq_idx);
-+	ret = __v4l2_ctrl_s_ctrl(imx335->link_freq_ctrl, imx335->link_freq_idx);
- 	if (ret)
- 		return ret;
- 
-@@ -754,6 +785,14 @@ static int imx335_start_streaming(struct imx335 *imx335)
- 	const struct imx335_reg_list *reg_list;
- 	int ret;
- 
-+	/* Setup PLL */
-+	reg_list = &link_freq_reglist[imx335->link_freq_idx];
-+	ret = imx335_write_regs(imx335, reg_list->regs, reg_list->num_of_regs);
-+	if (ret) {
-+		dev_err(imx335->dev, "%s failed to set plls\n", __func__);
-+		return ret;
-+	}
-+
- 	/* Write sensor mode registers */
- 	reg_list = &imx335->cur_mode->reg_list;
- 	ret = imx335_write_regs(imx335, reg_list->regs,
-@@ -880,7 +919,7 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
- 	};
- 	struct fwnode_handle *ep;
- 	unsigned long rate;
--	unsigned int i;
-+	unsigned int i, j;
- 	int ret;
- 
- 	if (!fwnode)
-@@ -944,13 +983,21 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
- 		goto done_endpoint_free;
- 	}
- 
--	for (i = 0; i < bus_cfg.nr_of_link_frequencies; i++)
--		if (bus_cfg.link_frequencies[i] == IMX335_LINK_FREQ)
--			goto done_endpoint_free;
- 
--	dev_err(imx335->dev, "no compatible link frequencies found\n");
-+	for (i = 0; i < bus_cfg.nr_of_link_frequencies; i++) {
-+		for (j = 0; j < ARRAY_SIZE(link_freq); j++) {
-+			if (bus_cfg.link_frequencies[i] == link_freq[j]) {
-+				imx335->link_freq_idx = j;
-+				break;
-+			}
-+		}
- 
--	ret = -EINVAL;
-+		if (j == ARRAY_SIZE(link_freq)) {
-+			ret = dev_err_probe(imx335->dev, -EINVAL,
-+					    "no supported link freq found\n");
-+			goto done_endpoint_free;
-+		}
-+	}
- 
- done_endpoint_free:
- 	v4l2_fwnode_endpoint_free(&bus_cfg);
-@@ -1097,7 +1144,7 @@ static int imx335_init_controls(struct imx335 *imx335)
- 							V4L2_CID_LINK_FREQ,
- 							ARRAY_SIZE(link_freq) -
- 							1,
--							mode->link_freq_idx,
-+							imx335->link_freq_idx,
- 							link_freq);
- 	if (imx335->link_freq_ctrl)
- 		imx335->link_freq_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
+Changes in v2:
+- Add patch renaming memory@ reserved-memory nodes (preparation for
+  next)
+- Add patch moving mpss_mem and wpss_mem to sc7280.dtsi
+- Follow *_mem node being in sc7280.dtsi also for ADSP & CDSP patches
+- Use (squashed) .mbn instead of (split) .mdt for FP5
+- Set qcom,ath11k-calibration-variant for FP5
+- Pick up tags (except for Krzysztof's R-b for ADSP & CDSP since there
+  were changes)
+- Link to v1: https://lore.kernel.org/r/20231027-sc7280-remoteprocs-v1-0-05ce95d9315a@fairphone.com
+
+---
+Luca Weiss (11):
+      dt-bindings: remoteproc: qcom: sc7180-pas: Fix SC7280 MPSS PD-names
+      arm64: dts: qcom: sc7280: Remove unused second MPSS reg
+      arm64: dts: qcom: sc7280: Rename reserved-memory nodes
+      arm64: dts: qcom: sc7280*: move MPSS and WPSS memory to dtsi
+      dt-bindings: remoteproc: qcom: sc7180-pas: Add SC7280 compatibles
+      remoteproc: qcom_q6v5_pas: Add SC7280 ADSP, CDSP & WPSS
+      arm64: dts: qcom: sc7280: Use WPSS PAS instead of PIL
+      arm64: dts: qcom: sc7280: Add ADSP node
+      arm64: dts: qcom: sc7280: Add CDSP node
+      arm64: dts: qcom: qcm6490-fairphone-fp5: Enable various remoteprocs
+      arm64: dts: qcom: qcm6490-fairphone-fp5: Enable WiFi
+
+ .../bindings/remoteproc/qcom,sc7180-pas.yaml       |  21 ++
+ arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts |  45 ++--
+ arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi |  35 ++-
+ .../boot/dts/qcom/sc7280-herobrine-lte-sku.dtsi    |   7 +-
+ .../boot/dts/qcom/sc7280-herobrine-wifi-sku.dtsi   |   1 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 271 +++++++++++++++++++--
+ drivers/remoteproc/qcom_q6v5_pas.c                 |  19 ++
+ 7 files changed, 336 insertions(+), 63 deletions(-)
+---
+base-commit: e7f403a575a315ecf79ee4f411cc76bb60bae2f6
+change-id: 20231027-sc7280-remoteprocs-048208cc1e13
+
+Best regards,
 -- 
-2.41.0
+Luca Weiss <luca.weiss@fairphone.com>
 
