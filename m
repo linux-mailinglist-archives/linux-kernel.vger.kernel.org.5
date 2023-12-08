@@ -2,185 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAF280ADF4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:35:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E69280ADD6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574716AbjLHUfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:35:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52482 "EHLO
+        id S1574688AbjLHU2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:28:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLHUfW (ORCPT
+        with ESMTP id S229572AbjLHU2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:35:22 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3574198C;
-        Fri,  8 Dec 2023 12:35:27 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40a4848c6e1so29638245e9.1;
-        Fri, 08 Dec 2023 12:35:27 -0800 (PST)
+        Fri, 8 Dec 2023 15:28:50 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2D210D8
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:28:56 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1e35c2807fso337226866b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 12:28:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702067726; x=1702672526; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1702067335; x=1702672135; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=5WPzggr+JIIcZt9j2+N/vNpUQEAOa3KMecMg/7uW9IE=;
-        b=GNt935a57YU1ODyelRed/q3gVEF0A3p77smAwUvWNAj18cPFGb1tWns72zj504cOIc
-         oX92zHrDHlePliG50XROTC1yOiWJfA6DgG+4Bvagz7gQfmoZeurTO80KLlZ7h6+loaHy
-         jAjHsG7gPRu/NUyN+p8ai7234qwQJMmOel0xVtmnYe4xUMTofYgBmE8q0rfp+OuP7x9+
-         0tt1zS/i+hxNzgPrgmlQOxLv/XkDgjq9QFUgxEWlaFuaa+0msMU1CMnIrj8VPXiRqfa6
-         Pc3W5K0qRMlDLnBFBk0d2NtNiWwZCumLYhb4qmIk5zpIfWstHuX5qacPPjKnWVzrEF6W
-         VX0w==
+        bh=8YmspBWjlQhgbBaV+faP8n1UzXpJ9XW2J0UVJ+AGzW4=;
+        b=rgVT0ePgVy78F423pHDxJkwXLT+zo8pmlatV37pUwijRNnjI+L+P6AV1ORkoO+UI2Z
+         HCgiPhKoYX8DyhEDCy2BXuetI6O17NLUx5Tir3MCnOFYaTKn+xEzeI+JuCQ3qfFKXQZP
+         da8Ty2OJIaH7MI/uJVlD0I5szqcapvsPhLkiLpbmgFj/ktqhgvJRpy9A5VdPK/VMy/Mh
+         7aERjKPRgncOwQ6jhO2SrT9I87YQgBfxYrx+tSXmhRbd8e1/dN3Wo87aZl+hQiYTI62L
+         IJXDjs4ax9Si10MkzAFYd1StjDEFnsYjuxm1nlG/xMY6pLbeD4YCMUUinka7tpw6rL77
+         E3mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702067726; x=1702672526;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702067335; x=1702672135;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5WPzggr+JIIcZt9j2+N/vNpUQEAOa3KMecMg/7uW9IE=;
-        b=cB3M36yLCEC3nCzSkPpFq/+WzxwSnuV8xIOANYKgFOnP34f9L5RRuYlXBNMDqQWlQ2
-         V5sP5Pv7EmF0p8kglPykNxLjrrcP/OcZpzyA33k1U3sehBdWFxm59pwSKmcF8C9hiRWV
-         +tFBjkBBs3whlB8pLzyB1UgbzaiG6aREF6FynO8HjXUZwBdblWXzh199oTUDBxynBpE9
-         f4nbhZQ3y/3/lULSdhkTS1cJMj27guNEAQNAsU5T+lLaZWJ5/7L8sY9B0WKcgbDuj+4B
-         wCYpZSzsofKD6Z4MuFK9WSIbd0f73Y8MeVnNPYWkB+hnj+WrB6SmOasTAoyW6Toi+250
-         xgPQ==
-X-Gm-Message-State: AOJu0Yy67IezYE7L8UMhQvoxxNj8j7fAhPGIehTD2FeOs58h7ea31bBu
-        w4+IWPX28CIkJFXkuwgBZMY=
-X-Google-Smtp-Source: AGHT+IHdwbAlc9QaVuOmMS3uETMk6NFLdZw5yIXklzl91LInkNaoZgu8mRrfJeijBbH68GTPvWp7PQ==
-X-Received: by 2002:a05:600c:3093:b0:40b:5e21:bdbe with SMTP id g19-20020a05600c309300b0040b5e21bdbemr287462wmn.77.1702067725916;
-        Fri, 08 Dec 2023 12:35:25 -0800 (PST)
-Received: from [192.168.8.100] ([85.255.232.89])
-        by smtp.gmail.com with ESMTPSA id u10-20020a5d434a000000b0033342338a24sm2778357wrr.6.2023.12.08.12.35.23
+        bh=8YmspBWjlQhgbBaV+faP8n1UzXpJ9XW2J0UVJ+AGzW4=;
+        b=sUkkrsubjH26d6TpGqSDxNDJcvIeJZ846ZAr8g31VD5RkIWmo7Rl0W9yE4iM4pXlcY
+         rknwNoSAwF2FXdwERJwS2GHG4e3vJEG32e+JHIWqtr/O4nyUfohOBcxLK1cOdeyw1wVp
+         dXoteJxHDJONRVcdvRVl238xGaKhc2cDXfyxcXPt+ZLtuy2/nezxncLtEVe3l9cfC67V
+         JCYCtThn2s1tEUluPGTFPE36Q07M+nGx2OdpB84Y+edjok5blMg4DodmyffOexbIi8T1
+         ODAYC4rWlBZYmWdxxw6PoRHJyjuHwHxb8dkATYwUbbyntpqlbsnhMCGaTVoz0VdMNUnb
+         PnTA==
+X-Gm-Message-State: AOJu0YxoJN/XWDMS+gHUndKKwowZH9jpteAMg+K0Cyp9MOmqGbUozDw+
+        dnv99n8mjK2X35spS5jyuffrnA==
+X-Google-Smtp-Source: AGHT+IEc7tcHnv918/ZKZGlZduv5n+9LBN3Lm/reTr0YuVnta+dx6/loKsH9F2oO4fZYGauZci07AQ==
+X-Received: by 2002:a17:907:9801:b0:a1c:efe0:bddc with SMTP id ji1-20020a170907980100b00a1cefe0bddcmr356499ejc.116.1702067335108;
+        Fri, 08 Dec 2023 12:28:55 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id j8-20020a1709064b4800b00a1e377ea782sm1375169ejv.196.2023.12.08.12.28.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 12:35:25 -0800 (PST)
-Message-ID: <7e7c2c21-12ba-41c1-92c4-f32a3906f3ee@gmail.com>
-Date:   Fri, 8 Dec 2023 20:28:15 +0000
+        Fri, 08 Dec 2023 12:28:54 -0800 (PST)
+Message-ID: <12b3dce8-92c4-4084-9cc2-4e0d6432c6f3@linaro.org>
+Date:   Fri, 8 Dec 2023 21:28:52 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 10/12] tcp: RX path for devmem TCP
+Subject: Re: [PATCH 1/2] dt-bindings: mmc: brcm,sdhci-brcmstb: Add support for
+ 74165b0
 Content-Language: en-US
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>
-Cc:     Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-11-almasrymina@google.com>
- <ZUk0FGuJ28s1d9OX@google.com>
- <CAHS8izNFv7r6vqYR_TYqcCuDO61F+nnNMhsSu=DrYWSr3sVgrA@mail.gmail.com>
- <CAF=yD-+MFpO5Hdqn+Q9X54SBpgcBeJvKTRD53X2oM4s8uVqnAQ@mail.gmail.com>
- <ZUlp8XutSAScKs_0@google.com>
- <CAF=yD-JZ88j+44MYgX-=oYJngz4Z0zw6Y0V3nHXisZJtNu7q6A@mail.gmail.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAF=yD-JZ88j+44MYgX-=oYJngz4Z0zw6Y0V3nHXisZJtNu7q6A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To:     Kamal Dasu <kamal.dasu@broadcom.com>, ulf.hansson@linaro.org,
+        linux-kernel@vger.kernel.org, alcooperx@gmail.com,
+        linux-arm-kernel@lists.infradead.org, adrian.hunter@intel.com,
+        linux-mmc@vger.kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org
+Cc:     f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        Kamal Dasu <kdasu@broadcom.com>
+References: <20231208202108.7468-1-kamal.dasu@broadcom.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231208202108.7468-1-kamal.dasu@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/23 22:55, Willem de Bruijn wrote:
-> On Mon, Nov 6, 2023 at 2:34 PM Stanislav Fomichev <sdf@google.com> wrote:
->>
->> On 11/06, Willem de Bruijn wrote:
->>>>> IMHO, we need a better UAPI to receive the tokens and give them back to
->>>>> the kernel. CMSG + setsockopt(SO_DEVMEM_DONTNEED) get the job done,
->>>>> but look dated and hacky :-(
->>>>>
->>>>> We should either do some kind of user/kernel shared memory queue to
->>>>> receive/return the tokens (similar to what Jonathan was doing in his
->>>>> proposal?)
->>>>
->>>> I'll take a look at Jonathan's proposal, sorry, I'm not immediately
->>>> familiar but I wanted to respond :-) But is the suggestion here to
->>>> build a new kernel-user communication channel primitive for the
->>>> purpose of passing the information in the devmem cmsg? IMHO that seems
->>>> like an overkill. Why add 100-200 lines of code to the kernel to add
->>>> something that can already be done with existing primitives? I don't
->>>> see anything concretely wrong with cmsg & setsockopt approach, and if
->>>> we switch to something I'd prefer to switch to an existing primitive
->>>> for simplicity?
->>>>
->>>> The only other existing primitive to pass data outside of the linear
->>>> buffer is the MSG_ERRQUEUE that is used for zerocopy. Is that
->>>> preferred? Any other suggestions or existing primitives I'm not aware
->>>> of?
->>>>
->>>>> or bite the bullet and switch to io_uring.
->>>>>
->>>>
->>>> IMO io_uring & socket support are orthogonal, and one doesn't preclude
->>>> the other. As you know we like to use sockets and I believe there are
->>>> issues with io_uring adoption at Google that I'm not familiar with
->>>> (and could be wrong). I'm interested in exploring io_uring support as
->>>> a follow up but I think David Wei will be interested in io_uring
->>>> support as well anyway.
->>>
->>> I also disagree that we need to replace a standard socket interface
->>> with something "faster", in quotes.
->>>
->>> This interface is not the bottleneck to the target workload.
->>>
->>> Replacing the synchronous sockets interface with something more
->>> performant for workloads where it is, is an orthogonal challenge.
->>> However we do that, I think that traditional sockets should continue
->>> to be supported.
->>>
->>> The feature may already even work with io_uring, as both recvmsg with
->>> cmsg and setsockopt have io_uring support now.
->>
->> I'm not really concerned with faster. I would prefer something cleaner :-)
->>
->> Or maybe we should just have it documented. With some kind of path
->> towards beautiful world where we can create dynamic queues..
+On 08/12/2023 21:21, Kamal Dasu wrote:
+> From: Kamal Dasu <kdasu@broadcom.com>
 > 
-> I suppose we just disagree on the elegance of the API.
+> With newer sdio controller core used for 74165b0 we need to update
+> the compatibility with "brcm,bcm74165b0-sdhci".
 > 
-> The concise notification API returns tokens as a range for
-> compression, encoding as two 32-bit unsigned integers start + length.
-> It allows for even further batching by returning multiple such ranges
-> in a single call.
-
-FWIW, nothing prevents io_uring from compressing ranges. The io_uring
-zc RFC returns {offset, size} as well, though at the moment the would
-lie in the same page.
-
-> This is analogous to the MSG_ZEROCOPY notification mechanism from
-> kernel to user.
+> Signed-off-by: Kamal Dasu <kdasu@broadcom.com>
+> ---
+>  .../devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml          | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> The synchronous socket syscall interface can be replaced by something
-> asynchronous like io_uring. This already works today? Whatever
+> diff --git a/Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml b/Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml
+> index c028039bc477..cec9ff063794 100644
+> --- a/Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml
+> @@ -13,6 +13,11 @@ maintainers:
+>  properties:
+>    compatible:
+>      oneOf:
+> +      - items:
+> +          - enum:
+> +              - brcm,bcm74165b0-sdhci
+> +          - const: brcm,bcm74165-sdhci
 
-If you mean async io_uring recv, it does work. In short, internally
-it polls the socket and then calls sock_recvmsg(). There is also a
-feature that would make it return back to polling after sock_recvmsg()
-and loop like this.
+What is exactly the difference between bcm74165b0 and bcm74165? Your
+driver does not use bcm74165, so I wonder what its purpose is.
 
-> asynchronous ring-based API would be selected, io_uring or otherwise,
-> I think the concise notification encoding would remain as is.
-> 
-> Since this is an operation on a socket, I find a setsockopt the
-> fitting interface.
+Few days ago, for different patchset, I was asking "why", because the
+motivation was not clear from the code. Here you said "we need to", but
+I would argue: no you do not need to add bcm74165 if it means nothing,
+thus this commit msg has similar problem. Does not answer why it is done
+like this.
 
--- 
-Pavel Begunkov
+Best regards,
+Krzysztof
+
