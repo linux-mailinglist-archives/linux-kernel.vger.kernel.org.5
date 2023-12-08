@@ -2,265 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D18380B088
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 00:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A5680B094
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 00:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234075AbjLHXZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 18:25:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55958 "EHLO
+        id S233982AbjLHXaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 18:30:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLHXZI (ORCPT
+        with ESMTP id S229525AbjLHXaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 18:25:08 -0500
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5219171E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 15:25:14 -0800 (PST)
-Received: by mail-vk1-xa36.google.com with SMTP id 71dfb90a1353d-4b3203cdc78so644015e0c.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 15:25:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702077914; x=1702682714; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q3tzRei4DqUvL1gHDjLu5ZyN+XyR0fbOVm4A1dgKAmU=;
-        b=rMZfsgNfIBlVfmM5BMuu6izhjLw8tf7OSVrlq0XQSrKAUbMtEZwkGdm7NJcvUIjkhO
-         MfpUNlwFIx72pvw2FXHUJpoB6FAlp2euk5EegmEwpR2XJxbQpf4lj5bozkprsajrDVle
-         xZLduQ/F9vZaZhiIPXIUMAJxIMjaReoTuotPoKPcKLKaXxQktW0iuRymQ/TNsNNQCW5X
-         mWboT2jI90M3URdy+mwzZcYMTCRt++z3e9zdn3P1TAbqiwREVutMY7Ate6kU2Iq4G4SR
-         R7lgPkuJW+rgGlXIrKNlOAegF/GyvJVbKWH4A570ClOYyRscr/vX5LNs/bUtGInjdlro
-         Cthg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702077914; x=1702682714;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q3tzRei4DqUvL1gHDjLu5ZyN+XyR0fbOVm4A1dgKAmU=;
-        b=XRqpv6Hs84A+U3i+P2EO9ZIo5lB68MM26BmwTN2TjbWdBIgh/TnBr3PeRAbQbBbvxp
-         LNYXVg3EPJXFxnKZM5y1G3s+p97LVkO/LYAxVkEsc8iIOilZm+Mn5iUZ0lSaUg1Dfpoz
-         FeJL6pUM7hwcHYpl512SzM2UHebCxJXBEokMJ+TRH/cqUzlzwfqzrnCnAZI7vZbbMpI4
-         b5nSwe3KJFjhY9TYlYeG36oMHnpmu5b6tcWM0pg3CxoeozJuL7ujQF34QD9wG7c6opiq
-         frmTPPrEvK4/fH8UPSCtOjULkWRylE/49ED20JBH3R9yeKUEz3Y4WXpMNuDGO/3XXGTi
-         AZmg==
-X-Gm-Message-State: AOJu0Yx3RUvcd2g9PgtmIC6Wr7QbdtOWxatBbj9VX32B+ceME5Up2s7e
-        MimdSLBW3BGrlsuChug75mOQo6/z8wbtg/wRdfwL8w==
-X-Google-Smtp-Source: AGHT+IEFKUc5exoP0JWsRvhqP/54jx/lwOw3AZl/60NefSo43kRLaVvc1XrXulWzYoWwJeZdst7FzfPYeaWKAp2Juns=
-X-Received: by 2002:a05:6102:3f0a:b0:464:5036:fb69 with SMTP id
- k10-20020a0561023f0a00b004645036fb69mr858666vsv.30.1702077913540; Fri, 08 Dec
- 2023 15:25:13 -0800 (PST)
+        Fri, 8 Dec 2023 18:30:14 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C93137
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 15:30:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC2C8C433C8;
+        Fri,  8 Dec 2023 23:30:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702078220;
+        bh=sQJJfOFlVFTuPvg2+4nGY9orsurru3DljPx/NhcBdmc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FLXnIC45X77IWjDNkt53NYQcpxGPd107eVhf/cdJ9U15myEJim++TELio0Ye4bq5J
+         WxtoyivUW0tuhuP2L0FKuuTvOy0s0PHYinr8KI1CQ2xnapviwpJBKsY+HJmgaAadW0
+         p/cNWtK1S397/DnvjWRnk2mekRNwaaL+5RHLMKFzWjsXDKJfu2ZE//CPrySrevxHdk
+         gnDIYfific9gLNUZLdP1R+WKzJAxalTdORNHvEj60jFDy9lh3gUbUtbNEPn7Cfwbg7
+         mU8r0wesbJ/1U+rB9qkq14YRIxbabENvVOor+vIJKWMsHw7ixTLZBiH3vSY77hKJvM
+         xgQ/WS/x+AxeA==
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     linux-pci@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH] PCI: Treat pci_scan_bridge_extend() 'pass' as int, not boolean
+Date:   Fri,  8 Dec 2023 17:30:16 -0600
+Message-Id: <20231208233016.836687-1-helgaas@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-9-almasrymina@google.com> <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
-In-Reply-To: <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Fri, 8 Dec 2023 15:25:00 -0800
-Message-ID: <CAHS8izNVFx6oHoo7y86P8Di9VCVe8A_n_9UZFkg5Wnt=A=YcNQ@mail.gmail.com>
-Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory provider
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 2:56=E2=80=AFPM Pavel Begunkov <asml.silence@gmail.c=
-om> wrote:
->
-> On 12/8/23 00:52, Mina Almasry wrote:
-...
-> > +     if (pool->p.queue)
-> > +             binding =3D READ_ONCE(pool->p.queue->binding);
-> > +
-> > +     if (binding) {
-> > +             pool->mp_ops =3D &dmabuf_devmem_ops;
-> > +             pool->mp_priv =3D binding;
-> > +     }
->
-> Hmm, I don't understand why would we replace a nice transparent
-> api with page pool relying on a queue having devmem specific
-> pointer? It seemed more flexible and cleaner in the last RFC.
->
+From: Bjorn Helgaas <bhelgaas@google.com>
 
-Jakub requested this change and may chime in, but I suspect it's to
-further abstract the devmem changes from driver. In this iteration,
-the driver grabs the netdev_rx_queue and passes it to the page_pool,
-and any future configurations between the net stack and page_pool can
-be passed this way with the driver unbothered.
+pci_scan_bridge_extend() and pci_scan_bridge() are designed to be called
+twice, with a "pass" parameter to indicate whether it's the first call
+(pass 0) or the second (pass 1).
 
-> > +
-> >       if (pool->mp_ops) {
-> >               err =3D pool->mp_ops->init(pool);
-> >               if (err) {
-> > @@ -1020,3 +1033,77 @@ void page_pool_update_nid(struct page_pool *pool=
-, int new_nid)
-> >       }
-> >   }
-> >   EXPORT_SYMBOL(page_pool_update_nid);
-> > +
-> > +void __page_pool_iov_free(struct page_pool_iov *ppiov)
-> > +{
-> > +     if (WARN_ON(ppiov->pp->mp_ops !=3D &dmabuf_devmem_ops))
-> > +             return;
-> > +
-> > +     netdev_free_dmabuf(ppiov);
-> > +}
-> > +EXPORT_SYMBOL_GPL(__page_pool_iov_free);
->
-> I didn't look too deep but I don't think I immediately follow
-> the pp refcounting. It increments pages_state_hold_cnt on
-> allocation, but IIUC doesn't mark skbs for recycle? Then, they all
-> will be put down via page_pool_iov_put_many() bypassing
-> page_pool_return_page() and friends. That will call
-> netdev_free_dmabuf(), which doesn't bump pages_state_release_cnt.
->
-> At least I couldn't make it work with io_uring, and for my purposes,
-> I forced all puts to go through page_pool_return_page(), which calls
-> the ->release_page callback. The callback will put the reference and
-> ask its page pool to account release_cnt. It also gets rid of
-> __page_pool_iov_free(), as we'd need to add a hook there for
-> customization otherwise.
->
-> I didn't care about overhead because the hot path for me is getting
-> buffers from a ring, which is somewhat analogous to sock_devmem_dontneed(=
-),
-> but done on pp allocations under napi, and it's done separately.
->
-> Completely untested with TCP devmem:
->
-> https://github.com/isilence/linux/commit/14bd56605183dc80b540999e8058c79a=
-c92ae2d8
->
+The "pass" is not a boolean, and callers supply 0 or 1.  For readability,
+update tests to use "pass == 0" instead of "!pass" and "pass > 0" instead
+of "pass".  Update the parameter type from "int" to "unsigned int".
 
-This was a mistake in the last RFC, which should be fixed in v1. In
-the RFC I was not marking the skbs as skb_mark_for_recycle(), so the
-unreffing path wasn't as expected.
+No functional change intended.
 
-In this iteration, that should be completely fixed. I suspect since I
-just posted this you're actually referring to the issue tested on the
-last RFC? Correct me if wrong.
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+---
+ drivers/pci/probe.c | 11 ++++++-----
+ include/linux/pci.h |  2 +-
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
-In this iteration, the reffing story:
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index ed6b7f48736a..ce631d02621b 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1252,7 +1252,7 @@ static bool pci_ea_fixed_busnrs(struct pci_dev *dev, u8 *sec, u8 *sub)
+  */
+ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
+ 				  int max, unsigned int available_buses,
+-				  int pass)
++				  unsigned int pass)
+ {
+ 	struct pci_bus *child;
+ 	int is_cardbus = (dev->hdr_type == PCI_HEADER_TYPE_CARDBUS);
+@@ -1284,7 +1284,7 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
+ 	}
+ 
+ 	/* Check if setup is sensible at all */
+-	if (!pass &&
++	if (pass == 0 &&
+ 	    (primary != bus->number || secondary <= bus->number ||
+ 	     secondary > subordinate)) {
+ 		pci_info(dev, "bridge configuration invalid ([bus %02x-%02x]), reconfiguring\n",
+@@ -1310,7 +1310,7 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
+ 		 * Bus already configured by firmware, process it in the
+ 		 * first pass and just note the configuration.
+ 		 */
+-		if (pass)
++		if (pass > 0)
+ 			goto out;
+ 
+ 		/*
+@@ -1344,7 +1344,7 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
+ 		 * We need to assign a number to this bus which we always
+ 		 * do in the second pass.
+ 		 */
+-		if (!pass) {
++		if (pass == 0) {
+ 			if (pcibios_assign_all_busses() || broken || is_cardbus)
+ 
+ 				/*
+@@ -1496,7 +1496,8 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
+  *
+  * Return: New subordinate number covering all buses behind this bridge.
+  */
+-int pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max, int pass)
++int pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
++		    unsigned int pass)
+ {
+ 	return pci_scan_bridge_extend(bus, dev, max, 0, pass);
+ }
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 4ebecc7896ef..6b1f13e941bf 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -1616,7 +1616,7 @@ int pci_add_dynid(struct pci_driver *drv,
+ const struct pci_device_id *pci_match_id(const struct pci_device_id *ids,
+ 					 struct pci_dev *dev);
+ int pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
+-		    int pass);
++		    unsigned int pass);
+ 
+ void pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void *),
+ 		  void *userdata);
+-- 
+2.34.1
 
-- memory provider allocs ppiov and returns it to the page pool with
-ppiov->refcount =3D=3D 1.
-- The page_pool gives the page to the driver. The driver may
-obtain/release references with page_pool_page_[get|put]_many(), but
-the driver is likely not doing that unless it's doing its own page
-recycling.
-- The net stack obtains references via skb_frag_ref() ->
-page_pool_page_get_many()
-- The net stack drops references via skb_frag_unref() ->
-napi_pp_put_page() -> page_pool_return_page() and friends.
-
-Thus, the issue where the unref path was skipping
-page_pool_return_page() and friends should be resolved in this
-iteration, let me know if you think otherwise, but I think this was an
-issue limited to the last RFC.
-
-> > +
-> > +/*** "Dmabuf devmem memory provider" ***/
-> > +
-> > +static int mp_dmabuf_devmem_init(struct page_pool *pool)
-> > +{
-> > +     struct netdev_dmabuf_binding *binding =3D pool->mp_priv;
-> > +
-> > +     if (!binding)
-> > +             return -EINVAL;
-> > +
-> > +     if (!(pool->p.flags & PP_FLAG_DMA_MAP))
-> > +             return -EOPNOTSUPP;
-> > +
-> > +     if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> > +             return -EOPNOTSUPP;
-> > +
-> > +     netdev_dmabuf_binding_get(binding);
-> > +     return 0;
-> > +}
-> > +
-> > +static struct page *mp_dmabuf_devmem_alloc_pages(struct page_pool *poo=
-l,
-> > +                                              gfp_t gfp)
-> > +{
-> > +     struct netdev_dmabuf_binding *binding =3D pool->mp_priv;
-> > +     struct page_pool_iov *ppiov;
-> > +
-> > +     ppiov =3D netdev_alloc_dmabuf(binding);
-> > +     if (!ppiov)
-> > +             return NULL;
-> > +
-> > +     ppiov->pp =3D pool;
-> > +     pool->pages_state_hold_cnt++;
-> > +     trace_page_pool_state_hold(pool, (struct page *)ppiov,
-> > +                                pool->pages_state_hold_cnt);
-> > +     return (struct page *)((unsigned long)ppiov | PP_IOV);
-> > +}
-> > +
-> > +static void mp_dmabuf_devmem_destroy(struct page_pool *pool)
-> > +{
-> > +     struct netdev_dmabuf_binding *binding =3D pool->mp_priv;
-> > +
-> > +     netdev_dmabuf_binding_put(binding);
-> > +}
-> > +
-> > +static bool mp_dmabuf_devmem_release_page(struct page_pool *pool,
-> > +                                       struct page *page)
-> > +{
-> > +     struct page_pool_iov *ppiov;
-> > +
-> > +     if (WARN_ON_ONCE(!page_is_page_pool_iov(page)))
-> > +             return false;
-> > +
-> > +     ppiov =3D page_to_page_pool_iov(page);
-> > +     page_pool_iov_put_many(ppiov, 1);
-> > +     /* We don't want the page pool put_page()ing our page_pool_iovs. =
-*/
-> > +     return false;
-> > +}
-> > +
-> > +const struct memory_provider_ops dmabuf_devmem_ops =3D {
-> > +     .init                   =3D mp_dmabuf_devmem_init,
-> > +     .destroy                =3D mp_dmabuf_devmem_destroy,
-> > +     .alloc_pages            =3D mp_dmabuf_devmem_alloc_pages,
-> > +     .release_page           =3D mp_dmabuf_devmem_release_page,
-> > +};
-> > +EXPORT_SYMBOL(dmabuf_devmem_ops);
->
-> --
-> Pavel Begunkov
-
-
-
---=20
-Thanks,
-Mina
