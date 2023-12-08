@@ -2,409 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDB9809710
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC77F809718
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444138AbjLHATz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 19:19:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45192 "EHLO
+        id S1444130AbjLHAYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 19:24:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLHATw (ORCPT
+        with ESMTP id S229531AbjLHAX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 19:19:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65509C6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 16:19:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E968EC433C8
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 00:19:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701994798;
-        bh=mDwxbPBb1A5AYZHcCsx/GV3t7KzcIQ+T/wJuXDoRX4w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aQk3jSp5JkmAdvCUyKGsQUWCTdIgctWfiJ4IaebDZsIzvR+ev9P2cf+GUdV2RZiS6
-         er1Klzcfn7xucBwwTFJiDamsloeCsuuLar4Ib+s+byvzKKwJS2gjR18uhPTkO7sj2n
-         rWHuQx1yQLJfBbCl91qs8FCbW/V4vqlRAe+xWyvms7inpzp1IsDveoqqaisG/OOHPt
-         IjPlTfwFccKQ/5TmvaZWt41eq1cS9oiE5Uf/8fptoBv8W3parkOqsJ4xyB9YWUXvQU
-         +RRTKO+2nO+uGzJszYs72xAvftyL9NUyc8sYgUt3+Jq3iTHtNyhwm2UqW0etoUpwp2
-         HTHLjreDo2vDQ==
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-679dd3055faso9103856d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 16:19:57 -0800 (PST)
-X-Gm-Message-State: AOJu0YwjpzwuxiZm1K5y4yFTQlbQADrPD1cwoiW7Eb3bcUnkj5aKPfSn
-        QYk3RiOMS2fuFM896gltVi68bqj0RO9LNqnhW+DwPA==
-X-Google-Smtp-Source: AGHT+IHH8qUzAYmZPIqWzQmA5CT/QTGVkxl12ScCXZvPymESIzGdG+x2E7gfCbehuq7nxkvRQnm/B7h88Z2nEtK/96M=
-X-Received: by 2002:a05:6a20:5603:b0:18c:4f:ce9e with SMTP id
- ir3-20020a056a20560300b0018c004fce9emr3737185pzc.43.1701994776637; Thu, 07
- Dec 2023 16:19:36 -0800 (PST)
+        Thu, 7 Dec 2023 19:23:57 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1707C6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 16:24:02 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c039e9719so17529315e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 16:24:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1701995041; x=1702599841; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=duxYzGzhMectY5+QA9WTprEVFNHw7KBYa84Rdxtr+8M=;
+        b=v4IJLWux7CDSSeHrJjn+U8hO4OGga5e/g1h641KjEyDpvAs4gbe+/npSaPBZ1IbM5o
+         WGwO78VYPYXRxyAnIFmyFH9KjQEwnjCXvDqn1QDl/cfkqoBBTu/zn6gWm8saC8wjgarQ
+         hYLhSruBL7OjXmqJTx3ygQrfjDlO3w47feWafVI78e8OkS8s+42HBW64qhOucbAW4tNb
+         Oa4NMjHwVX5NWX9HDRs/7TfFUq58JDjbth/5yTuJDOPdYm/XMd7eCXXxdrqXz2P87CYb
+         W/YL6rCXDoqo+pNeUz3Rjtaa3p5do1uwCl6dTFunNAXJ9CAP1foTUyoeKPN9RoH0f0+0
+         OCew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701995041; x=1702599841;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=duxYzGzhMectY5+QA9WTprEVFNHw7KBYa84Rdxtr+8M=;
+        b=qRfHxHHllaJslAg9vOgOvRxQE9+sC0My6SDdAK0WC5x4a8LAFWmExdvz9qdjILY03p
+         fkjDkCy4xALKxni6dFm8f7LZrXvbYNeIBJlDmbRFA1pacs4yn/P4HAGO3ZDfY965hVn1
+         tDy3tdHwMy3f+AqO4UM/thGyNUah33hwhGtvjraJ5Fho1c61E64oKfmcWCogCQHo7Ymz
+         +0d+8a+E1haOKjmOdtNbAOQ/UmPvKlshOn5pEEV+MRG9EKpAxA3fC9vWte7Gt95sdqqA
+         Moc4OQppUd9hmf+O3NvjIAeU6Jl95LI8ZrZmOR9G9nt1GEX2Xe3V12PzwSDpJGANhJxq
+         u/8g==
+X-Gm-Message-State: AOJu0YxuCLr0aeTw4Bkule4YduaIH7ZAcKD5OxXMjbFnx8l6YES+so5L
+        ufLXGggIbKDu/7p7l6e68p3zVw==
+X-Google-Smtp-Source: AGHT+IGgHnbFPSoFP8vmgSSWUgsg6EueLDPmKgC9CGTu9MllE4h1XQsl8GyRfKNwPm7JIF8664Bu5w==
+X-Received: by 2002:a05:600c:5489:b0:40c:2c26:4d3f with SMTP id iv9-20020a05600c548900b0040c2c264d3fmr800936wmb.57.1701995040393;
+        Thu, 07 Dec 2023 16:24:00 -0800 (PST)
+Received: from airbuntu.. (host109-153-232-45.range109-153.btcentralplus.com. [109.153.232.45])
+        by smtp.gmail.com with ESMTPSA id u17-20020a05600c19d100b0040c1c269264sm3339653wmq.40.2023.12.07.16.23.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 16:23:59 -0800 (PST)
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>,
+        Rick Yiu <rickyiu@google.com>,
+        Chung-Kai Mei <chungkai@google.com>,
+        Qais Yousef <qyousef@layalina.io>
+Subject: [PATCH v2 0/8] sched: cpufreq: Remove magic hardcoded numbers from  margins
+Date:   Fri,  8 Dec 2023 00:23:34 +0000
+Message-Id: <20231208002342.367117-1-qyousef@layalina.io>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231207192406.3809579-1-nphamcs@gmail.com>
-In-Reply-To: <20231207192406.3809579-1-nphamcs@gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Thu, 7 Dec 2023 16:19:25 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
-Message-ID: <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
-Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, tj@kernel.org, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
-        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        david@ixit.cz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nhat,
+And replace it with more dynamic logic based on hardware/software limitations.
 
+Margins referred to are the ones in:
 
-On Thu, Dec 7, 2023 at 11:24=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote=
-:
->
-> During our experiment with zswap, we sometimes observe swap IOs due to
-> occasional zswap store failures and writebacks-to-swap. These swapping
-> IOs prevent many users who cannot tolerate swapping from adopting zswap
-> to save memory and improve performance where possible.
->
-> This patch adds the option to disable this behavior entirely: do not
-> writeback to backing swapping device when a zswap store attempt fail,
-> and do not write pages in the zswap pool back to the backing swap
-> device (both when the pool is full, and when the new zswap shrinker is
-> called).
->
-> This new behavior can be opted-in/out on a per-cgroup basis via a new
-> cgroup file. By default, writebacks to swap device is enabled, which is
-> the previous behavior. Initially, writeback is enabled for the root
-> cgroup, and a newly created cgroup will inherit the current setting of
-> its parent.
->
-> Note that this is subtly different from setting memory.swap.max to 0, as
-> it still allows for pages to be stored in the zswap pool (which itself
-> consumes swap space in its current form).
->
-> This patch should be applied on top of the zswap shrinker series:
->
-> https://lore.kernel.org/linux-mm/20231130194023.4102148-1-nphamcs@gmail.c=
-om/
->
-> as it also disables the zswap shrinker, a major source of zswap
-> writebacks.
+	* 80% in fits_capacity()
+	* 125% in map_util_perf()
 
-I am wondering about the status of "memory.swap.tiers" proof of concept pat=
-ch?
-Are we still on board to have this two patch merge together somehow so
-we can have
-"memory.swap.tiers" =3D=3D "all" and "memory.swap.tiers" =3D=3D "zswap" cov=
-er the
-memory.zswap.writeback =3D=3D 1 and memory.zswap.writeback =3D=3D 0 case?
+The current values seem to have worked well in the past but on modern hardware
+they pose the following probelms:
 
-Thanks
+	* fits_capacity() is not big enough for little cores
+	* fits_capacity() is too big for mid cores
+	* Leaves questions whether the big core can trigger overutilized
+	  prematurely on powerful systems where the top 20% is still a lot of
+	  perf headroom to be consumed
 
-Chris
+The 1st causes tasks to get stuck for too long underperforming on little cores.
+The 2nd prevents from better utilizing the mid core when the workload at
+a steady state above the 80%. Ideally we need to spread to mids and bigs in
+this case but we end up pushing to bigs only. The 3rd I didn't get a chance to
+quantify its effect in practice yet. But I do think our current definition of
+overutilized being tied to misfit has gotten stale too and needs rethinking.
 
->
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
->  Documentation/admin-guide/cgroup-v2.rst | 12 ++++++++
->  Documentation/admin-guide/mm/zswap.rst  |  6 ++++
->  include/linux/memcontrol.h              | 12 ++++++++
->  include/linux/zswap.h                   |  6 ++++
->  mm/memcontrol.c                         | 38 +++++++++++++++++++++++++
->  mm/page_io.c                            |  6 ++++
->  mm/shmem.c                              |  3 +-
->  mm/zswap.c                              | 13 +++++++--
->  8 files changed, 92 insertions(+), 4 deletions(-)
->
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
-n-guide/cgroup-v2.rst
-> index 3f85254f3cef..2b4ac43efdc8 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1679,6 +1679,18 @@ PAGE_SIZE multiple when read back.
->         limit, it will refuse to take any more stores before existing
->         entries fault back in or are written out to disk.
->
-> +  memory.zswap.writeback
-> +       A read-write single value file. The default value is "1". The
-> +       initial value of the root cgroup is 1, and when a new cgroup is
-> +       created, it inherits the current value of its parent.
-> +
-> +       When this is set to 0, all swapping attempts to swapping devices
-> +       are disabled. This included both zswap writebacks, and swapping d=
-ue
-> +       to zswap store failure.
-> +
-> +       Note that this is subtly different from setting memory.swap.max t=
-o
-> +       0, as it still allows for pages to be written to the zswap pool.
-> +
->    memory.pressure
->         A read-only nested-keyed file.
->
-> diff --git a/Documentation/admin-guide/mm/zswap.rst b/Documentation/admin=
--guide/mm/zswap.rst
-> index 62fc244ec702..cfa653130346 100644
-> --- a/Documentation/admin-guide/mm/zswap.rst
-> +++ b/Documentation/admin-guide/mm/zswap.rst
-> @@ -153,6 +153,12 @@ attribute, e. g.::
->
->  Setting this parameter to 100 will disable the hysteresis.
->
-> +Some users cannot tolerate the swapping that comes with zswap store fail=
-ures
-> +and zswap writebacks. Swapping can be disabled entirely (without disabli=
-ng
-> +zswap itself) on a cgroup-basis as follows:
-> +
-> +       echo 0 > /sys/fs/cgroup/<cgroup-name>/memory.zswap.writeback
-> +
->  When there is a sizable amount of cold memory residing in the zswap pool=
-, it
->  can be advantageous to proactively write these cold pages to swap and re=
-claim
->  the memory for other use cases. By default, the zswap shrinker is disabl=
-ed.
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 43b77363ab8e..5de775e6cdd9 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -219,6 +219,12 @@ struct mem_cgroup {
->
->  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
->         unsigned long zswap_max;
-> +
-> +       /*
-> +        * Prevent pages from this memcg from being written back from zsw=
-ap to
-> +        * swap, and from being swapped out on zswap store failures.
-> +        */
-> +       bool zswap_writeback;
->  #endif
->
->         unsigned long soft_limit;
-> @@ -1941,6 +1947,7 @@ static inline void count_objcg_event(struct obj_cgr=
-oup *objcg,
->  bool obj_cgroup_may_zswap(struct obj_cgroup *objcg);
->  void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size);
->  void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size);
-> +bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg);
->  #else
->  static inline bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
->  {
-> @@ -1954,6 +1961,11 @@ static inline void obj_cgroup_uncharge_zswap(struc=
-t obj_cgroup *objcg,
->                                              size_t size)
->  {
->  }
-> +static inline bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup =
-*memcg)
-> +{
-> +       /* if zswap is disabled, do not block pages going to the swapping=
- device */
-> +       return true;
-> +}
->  #endif
->
->  #endif /* _LINUX_MEMCONTROL_H */
-> diff --git a/include/linux/zswap.h b/include/linux/zswap.h
-> index 08c240e16a01..a78ceaf3a65e 100644
-> --- a/include/linux/zswap.h
-> +++ b/include/linux/zswap.h
-> @@ -35,6 +35,7 @@ void zswap_swapoff(int type);
->  void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
->  void zswap_lruvec_state_init(struct lruvec *lruvec);
->  void zswap_page_swapin(struct page *page);
-> +bool is_zswap_enabled(void);
->  #else
->
->  struct zswap_lruvec_state {};
-> @@ -55,6 +56,11 @@ static inline void zswap_swapoff(int type) {}
->  static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)=
- {}
->  static inline void zswap_lruvec_state_init(struct lruvec *lruvec) {}
->  static inline void zswap_page_swapin(struct page *page) {}
-> +
-> +static inline bool is_zswap_enabled(void)
-> +{
-> +       return false;
-> +}
->  #endif
->
->  #endif /* _LINUX_ZSWAP_H */
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index d7bc47316acb..ae8c62c7aa53 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5538,6 +5538,8 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *pa=
-rent_css)
->         WRITE_ONCE(memcg->soft_limit, PAGE_COUNTER_MAX);
->  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
->         memcg->zswap_max =3D PAGE_COUNTER_MAX;
-> +       WRITE_ONCE(memcg->zswap_writeback,
-> +               !parent || READ_ONCE(parent->zswap_writeback));
->  #endif
->         page_counter_set_high(&memcg->swap, PAGE_COUNTER_MAX);
->         if (parent) {
-> @@ -8174,6 +8176,12 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *=
-objcg, size_t size)
->         rcu_read_unlock();
->  }
->
-> +bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
-> +{
-> +       /* if zswap is disabled, do not block pages going to the swapping=
- device */
-> +       return !is_zswap_enabled() || !memcg || READ_ONCE(memcg->zswap_wr=
-iteback);
-> +}
-> +
->  static u64 zswap_current_read(struct cgroup_subsys_state *css,
->                               struct cftype *cft)
->  {
-> @@ -8206,6 +8214,31 @@ static ssize_t zswap_max_write(struct kernfs_open_=
-file *of,
->         return nbytes;
->  }
->
-> +static int zswap_writeback_show(struct seq_file *m, void *v)
-> +{
-> +       struct mem_cgroup *memcg =3D mem_cgroup_from_seq(m);
-> +
-> +       seq_printf(m, "%d\n", READ_ONCE(memcg->zswap_writeback));
-> +       return 0;
-> +}
-> +
-> +static ssize_t zswap_writeback_write(struct kernfs_open_file *of,
-> +                               char *buf, size_t nbytes, loff_t off)
-> +{
-> +       struct mem_cgroup *memcg =3D mem_cgroup_from_css(of_css(of));
-> +       int zswap_writeback;
-> +       ssize_t parse_ret =3D kstrtoint(strstrip(buf), 0, &zswap_writebac=
-k);
-> +
-> +       if (parse_ret)
-> +               return parse_ret;
-> +
-> +       if (zswap_writeback !=3D 0 && zswap_writeback !=3D 1)
-> +               return -EINVAL;
-> +
-> +       WRITE_ONCE(memcg->zswap_writeback, zswap_writeback);
-> +       return nbytes;
-> +}
-> +
->  static struct cftype zswap_files[] =3D {
->         {
->                 .name =3D "zswap.current",
-> @@ -8218,6 +8251,11 @@ static struct cftype zswap_files[] =3D {
->                 .seq_show =3D zswap_max_show,
->                 .write =3D zswap_max_write,
->         },
-> +       {
-> +               .name =3D "zswap.writeback",
-> +               .seq_show =3D zswap_writeback_show,
-> +               .write =3D zswap_writeback_write,
-> +       },
->         { }     /* terminate */
->  };
->  #endif /* CONFIG_MEMCG_KMEM && CONFIG_ZSWAP */
-> diff --git a/mm/page_io.c b/mm/page_io.c
-> index cb559ae324c6..5e606f1aa2f6 100644
-> --- a/mm/page_io.c
-> +++ b/mm/page_io.c
-> @@ -201,6 +201,12 @@ int swap_writepage(struct page *page, struct writeba=
-ck_control *wbc)
->                 folio_end_writeback(folio);
->                 return 0;
->         }
-> +
-> +       if (!mem_cgroup_zswap_writeback_enabled(folio_memcg(folio))) {
-> +               folio_mark_dirty(folio);
-> +               return AOP_WRITEPAGE_ACTIVATE;
-> +       }
-> +
->         __swap_writepage(&folio->page, wbc);
->         return 0;
->  }
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index c62f904ba1ca..dd084fbafcf1 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1514,8 +1514,7 @@ static int shmem_writepage(struct page *page, struc=
-t writeback_control *wbc)
->
->                 mutex_unlock(&shmem_swaplist_mutex);
->                 BUG_ON(folio_mapped(folio));
-> -               swap_writepage(&folio->page, wbc);
-> -               return 0;
-> +               return swap_writepage(&folio->page, wbc);
->         }
->
->         mutex_unlock(&shmem_swaplist_mutex);
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index daaa949837f2..7ee54a3d8281 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -153,6 +153,11 @@ static bool zswap_shrinker_enabled =3D IS_ENABLED(
->                 CONFIG_ZSWAP_SHRINKER_DEFAULT_ON);
->  module_param_named(shrinker_enabled, zswap_shrinker_enabled, bool, 0644)=
-;
->
-> +bool is_zswap_enabled(void)
-> +{
-> +       return zswap_enabled;
-> +}
-> +
->  /*********************************
->  * data structures
->  **********************************/
-> @@ -596,7 +601,8 @@ static unsigned long zswap_shrinker_scan(struct shrin=
-ker *shrinker,
->         struct zswap_pool *pool =3D shrinker->private_data;
->         bool encountered_page_in_swapcache =3D false;
->
-> -       if (!zswap_shrinker_enabled) {
-> +       if (!zswap_shrinker_enabled ||
-> +                       !mem_cgroup_zswap_writeback_enabled(sc->memcg)) {
->                 sc->nr_scanned =3D 0;
->                 return SHRINK_STOP;
->         }
-> @@ -637,7 +643,7 @@ static unsigned long zswap_shrinker_count(struct shri=
-nker *shrinker,
->         struct lruvec *lruvec =3D mem_cgroup_lruvec(memcg, NODE_DATA(sc->=
-nid));
->         unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
->
-> -       if (!zswap_shrinker_enabled)
-> +       if (!zswap_shrinker_enabled || !mem_cgroup_zswap_writeback_enable=
-d(memcg))
->                 return 0;
->
->  #ifdef CONFIG_MEMCG_KMEM
-> @@ -956,6 +962,9 @@ static int shrink_memcg(struct mem_cgroup *memcg)
->         struct zswap_pool *pool;
->         int nid, shrunk =3D 0;
->
-> +       if (!mem_cgroup_zswap_writeback_enabled(memcg))
-> +               return -EINVAL;
-> +
->         /*
->          * Skip zombies because their LRUs are reparented and we would be
->          * reclaiming from the parent instead of the dead memcg.
->
-> base-commit: cdcab2d34f129f593c0afbb2493bcaf41f4acd61
-> --
-> 2.34.1
->
+	* 125% map_util_perf() ends up causing power/thermal issue on powerful
+	  systems by forcing unnecessary high headroom of idle time.
+
+We could run slower with no perf impact on many cases.
+
+To address these issues we define the limitation of each as follows:
+
+	* fits_capacity() should return true as long as the util will not rise
+	  above the capacity of the CPU before the next load balance.
+
+Load balance is the point of correction for misplacing a task. And we can
+afford to keep the task running on a CPU when
+
+	task->util_avg < capacity_of(cpu)
+
+as long as the task->util_avg won't become higher shortly after leaving the
+task stuck underperforming until a load balancing event comes to save the day.
+
+	* map_util_perf() should provide extra headroom to cater for the fact
+	  we have to wait for N us before requesting another update.
+
+So we need to give cpu->util_avg enough headroom to grow comfortably given the
+fact there will be N us delay before we can update DVFS again due to hardware
+limitation. So for faster DVFS h/w, we need small headroom knowing that we can
+request another update shortly after if we don't go back to idle.
+
+To cater for the need to be able to tweak these values, we introduce a new
+schedutil knob, response_time_ms, to allow userspace to control how fast they
+want DVFS to ramp-up for a given policy. It can also be slowed down if
+power/thermal are larger concern.
+
+I opted to remove the 1.25 default speed up as it somehow constituted a policy
+that is good for some, but not necessary best for all systems out there. With
+the availability of the knob it is better for userspace to learn to tune for
+best perf/power/thermal trade-off.
+
+With uclamp being available, this system tuning should not be necessary if
+userspace is smart and conveys task perf requirement directly.
+
+At the end I opted to keep the patch to control PELT HALFLIFE at boot time.
+I know this wasn't popular before and I don't want to conjure the wrath of the
+titans; but speaking with Vincent about per-task util_est_faster he seemed to
+think that a boot time control might be better. So the matter seemed debatable
+still. Generaly like above, with a smarter userspace that uses uclamp, this
+won't be necessary. But the need I see for it is that we have a constant model
+for all systems in the scheduler, and this gives an easy way to help under
+powered ones to be more reactive. I am happy to drop this and explore other
+alternatives (whatever they might be), but felt it is necessary for a complete
+story on how to allow tweaking ability to migrate faster on underpowered HMP
+systems. Remember, today's high end are tomorrow low end :). For SMP, the
+dvfs_response_time is equivalent to a great extent and I don't see this knob
+should offer any additional benefit for them. So maybe make it conditional on
+HMP.
+
+Testing on Pixel 6 running mainlin(ish) kernel, I see the following in
+schedutil as default response times
+
+	# grep . /sys/devices/system/cpu/cpufreq/policy*/schedutil/*
+	/sys/devices/system/cpu/cpufreq/policy0/schedutil/rate_limit_us:2000
+	/sys/devices/system/cpu/cpufreq/policy0/schedutil/response_time_ms:8
+	/sys/devices/system/cpu/cpufreq/policy4/schedutil/rate_limit_us:2000
+	/sys/devices/system/cpu/cpufreq/policy4/schedutil/response_time_ms:29
+	/sys/devices/system/cpu/cpufreq/policy6/schedutil/rate_limit_us:2000
+	/sys/devices/system/cpu/cpufreq/policy6/schedutil/response_time_ms:155
+
+Changing response time to replicate the 1.25 dvfs headroom (multiply by 0.8)
+
+	# grep . /sys/devices/system/cpu/cpufreq/policy*/schedutil/*
+	/sys/devices/system/cpu/cpufreq/policy0/schedutil/rate_limit_us:2000
+	/sys/devices/system/cpu/cpufreq/policy0/schedutil/response_time_ms:6
+	/sys/devices/system/cpu/cpufreq/policy4/schedutil/rate_limit_us:2000
+	/sys/devices/system/cpu/cpufreq/policy4/schedutil/response_time_ms:23
+	/sys/devices/system/cpu/cpufreq/policy6/schedutil/rate_limit_us:2000
+	/sys/devices/system/cpu/cpufreq/policy6/schedutil/response_time_ms:124
+
+When I set PELT HALFLIFE to 16ms I get:
+
+	# grep . /sys/devices/system/cpu/cpufreq/policy*/schedutil/*
+	/sys/devices/system/cpu/cpufreq/policy0/schedutil/rate_limit_us:2000
+	/sys/devices/system/cpu/cpufreq/policy0/schedutil/response_time_ms:4
+	/sys/devices/system/cpu/cpufreq/policy4/schedutil/rate_limit_us:2000
+	/sys/devices/system/cpu/cpufreq/policy4/schedutil/response_time_ms:15
+	/sys/devices/system/cpu/cpufreq/policy6/schedutil/rate_limit_us:2000
+	/sys/devices/system/cpu/cpufreq/policy6/schedutil/response_time_ms:78
+
+Changing response time to replicate the 1.25 dvfs headroom
+
+	# grep . /sys/devices/system/cpu/cpufreq/policy*/schedutil/*
+	/sys/devices/system/cpu/cpufreq/policy0/schedutil/rate_limit_us:2000
+	/sys/devices/system/cpu/cpufreq/policy0/schedutil/response_time_ms:3
+	/sys/devices/system/cpu/cpufreq/policy4/schedutil/rate_limit_us:2000
+	/sys/devices/system/cpu/cpufreq/policy4/schedutil/response_time_ms:12
+	/sys/devices/system/cpu/cpufreq/policy6/schedutil/rate_limit_us:2000
+	/sys/devices/system/cpu/cpufreq/policy6/schedutil/response_time_ms:62
+
+I didn't try 8ms. As you can see from the values for the little, 16ms PELT
+HALFLIFE is not suitable with TICK being 4ms. With the new definition of
+fits_capacity(), we'd skip the littles and only use them in overutilized state.
+
+Note that I changed the way I calculate the response time. 1024 takes 324
+(IIRC). But the new calculations takes into account that max_freq will be
+reached as soon as util crosses the util for cap@2nd_highest_freq. Which is
+around ~988 (IIRC) for this system. Hence the 155ms at default for biggest
+cluster.
+
+===
+
+Running speedometer browser benchmark I get for an average of 10 runs and power
+numbers are not super accurate here due to some limitation in test setup
+
+       | baseline |   patch   | 1.25 headroom | 16ms PELT | 16ms + 1.25 headroom
+-------+----------+-----------+---------------+-----------+---------------------
+score  |  135.14  |  108.03   |     135.72    |   137.48  |    143.96
+-------+----------+-----------+---------------+-----------+---------------------
+power  | 1455.49  |  1204.75  |    1451.79    |  1690.38  |    1644.69
+
+Removing the hardcoded values from margins loses a lot of perf with large
+power save. Re-applying the 1.25 headroom policy regains same perf and power.
+
+Increasing pelt has a high power cost on this system. With 1.25 DVFS headroom
+there's a decent boost in perf.
+
+===
+
+For UiBench average of 3 runs (each iteration will already repeat subtests
+several times) and power numbers are more accurate though the benchmark does
+have sometimes higher than desired variance from run to run
+
+       | baseline |   patch   | 1.25 headroom | 16ms PELT | 16ms + 1.25 headroom
+-------+----------+-----------+---------------+-----------+---------------------
+jank   |   110.3  |    68.0   |      56.0     |    58.6   |    50.3
+-------+----------+-----------+---------------+-----------+---------------------
+power  |  147.76  |   146.54  |     164.49    |   174.97  |    209.92
+
+Removing the hardcoded values from the margins produces a great improvement in
+score without any power loss. I haven't done *any* detailed analysis, but
+I think it's due to fits_capacity() will return false early on littles and
+we're less likely to end up with UI tasks getting stuck there waiting for load
+balance to save the day and migrate the misfit task.
+
+Re-applying the 1.25 DVFS headroom policy gains more perf at a power cost that
+is justifiable compared to 'patch'. It's a massive win against baseline which
+has the 1.25 headroom.
+
+16ms PELT HALFLIFE numbers look better compared to patch. But at higher power
+cost.
+
+---
+
+Take away: There are perf and power trade-offs associated with these margins
+that are hard to abstract completely. Give the power to sysadmins to find their
+sweet spot meaningfully and make scheduler behavior constrained by actual h/w
+and software limitations.
+
+---
+
+Changes since v1:
+
+	* Rebase on top of tip/sched/core with Vincent rework patch for schedutil
+	* Fix bugs in approximate_util_avg()/approximate_runtime() (Dietmar)
+	* Remove usage of aligned per cpu variable (Peter)
+	* Calculate the response_time_mult once (Peter)
+	* Tweaked response_time_ms calculation to cater for max freq will be
+	  reached well before we hit 1024.
+
+v1 discussion link: https://lore.kernel.org/lkml/20230827233203.1315953-1-qyousef@layalina.io/
+
+Patch 1 changes the default rate_limit_us when cpufreq_transition is not
+provided. The default 10ms is too high for modern hardware. the patch can be
+picked up readily.
+
+Patch 2 renames map_util_perf() into apply_dvfs_headroom() which I believe
+better reflect the actual functionality it performs. And it gives it a doc and
+moves back to sched.h. Patch can be picked up readily too.
+
+Patches 3 and 4 add helper functions to help convert between util_avg and time.
+
+Patches 5 and 6 uses these new function to implement the logic to make
+fits_capacity() and apply_dvfs_headroom() better approximate the limitation of
+the system based on TICK and rate_limit_us as explained earlier.
+
+Patch 7 adds the new response_time_ms to schedutil. The slow down functionality
+has a limitation that is documented.
+
+Patch 8 adds ability to modify PELT HALFLIFE via boot time parameter. Happy to
+drop this one if it is still hated and the need to cater for low end under
+powered systems didn't make sense.
+
+Thanks!
+
+--
+Qais Yousef
+
+Qais Yousef (7):
+  cpufreq: Change default transition delay to 2ms
+  sched: cpufreq: Rename map_util_perf to apply_dvfs_headroom
+  sched/pelt: Add a new function to approximate the future util_avg
+    value
+  sched/pelt: Add a new function to approximate runtime to reach given
+    util
+  sched/fair: Remove magic hardcoded margin in fits_capacity()
+  sched: cpufreq: Remove magic 1.25 headroom from apply_dvfs_headroom()
+  sched/schedutil: Add a new tunable to dictate response time
+
+Vincent Donnefort (1):
+  sched/pelt: Introduce PELT multiplier
+
+ Documentation/admin-guide/pm/cpufreq.rst |  17 ++-
+ drivers/cpufreq/cpufreq.c                |   8 +-
+ include/linux/cpufreq.h                  |   3 +
+ include/linux/sched/cpufreq.h            |   5 -
+ kernel/sched/core.c                      |   3 +-
+ kernel/sched/cpufreq_schedutil.c         | 128 +++++++++++++++++++++--
+ kernel/sched/fair.c                      |  21 +++-
+ kernel/sched/pelt.c                      |  89 ++++++++++++++++
+ kernel/sched/pelt.h                      |  42 +++++++-
+ kernel/sched/sched.h                     |  31 ++++++
+ 10 files changed, 323 insertions(+), 24 deletions(-)
+
+-- 
+2.34.1
+
