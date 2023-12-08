@@ -2,102 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40648809E0A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 09:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBA9809E0C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 09:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573288AbjLHIVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 03:21:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
+        id S1573291AbjLHIWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 03:22:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232968AbjLHIVj (ORCPT
+        with ESMTP id S235774AbjLHIWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 03:21:39 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CB9B5;
-        Fri,  8 Dec 2023 00:21:43 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B88LAy44750433, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B88LAy44750433
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Dec 2023 16:21:10 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Fri, 8 Dec 2023 16:21:10 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 8 Dec 2023 16:21:10 +0800
-Received: from RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3]) by
- RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3%2]) with mapi id
- 15.01.2375.007; Fri, 8 Dec 2023 16:21:10 +0800
-From:   =?big5?B?SmFtZXMgVGFpIFvAuafTrnBd?= <james.tai@realtek.com>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <error27@gmail.com>
-Subject: RE: [PATCH v3 2/6] irqchip: Add interrupt controller support for Realtek DHC SoCs
-Thread-Topic: [PATCH v3 2/6] irqchip: Add interrupt controller support for
- Realtek DHC SoCs
-Thread-Index: AQHaIocg6atZJ97H502y6uXXYTUFxrCQbtQAgABT8ICADlCZYA==
-Date:   Fri, 8 Dec 2023 08:21:10 +0000
-Message-ID: <c558b1de9a8841e498f6dfc406a43158@realtek.com>
-References: <20231129054339.3054202-1-james.tai@realtek.com>
- <20231129054339.3054202-3-james.tai@realtek.com>
- <d94c79bf-04c4-4e87-bd7e-a8755508ac89@suswa.mountain>
- <8f87bfca-ab5f-4b32-a400-a90d09b64cf1@suswa.mountain>
-In-Reply-To: <8f87bfca-ab5f-4b32-a400-a90d09b64cf1@suswa.mountain>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [49.216.16.144]
-x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        Fri, 8 Dec 2023 03:22:06 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D1B172B
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 00:22:11 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1d0c94397c0so13806515ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 00:22:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702023731; x=1702628531; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PZB3VLtXDWaSMaOTo1FiSlMXHqm5+b+9a5ub3BO89z4=;
+        b=T8+MOSYFCKxG+2fgQ0CQF3BEqRjCxui48scHL4UpAVqK0iJKcVCnnv/2E98Rwwbs7I
+         PqAtR9iDJjtpbL4vP97JfU11kJ7Ju+4uupVDE/x0ffpl/4PiKLHVRFIM3IOYY0JqjEWz
+         7XbDiTpnO1y1yz2WX9PDk5SvA2ygSFZgZloy8GBOS4tlwwbBa6ZzoJYRA8BaCrY7OVJG
+         N2BL9+bhbpQn5qZNINipIyVekqrsH+m5MZN/kNu+PhhCTwY7AA/rEILqRpxfzCAsKyFj
+         0h04fMY8Gu/ldtbOEIHT7SETWOLsg2uJUQZssT8TXOd42wnHu3DwY6i4Or4te2ShMfYi
+         Y34A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702023731; x=1702628531;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PZB3VLtXDWaSMaOTo1FiSlMXHqm5+b+9a5ub3BO89z4=;
+        b=akr9yUz2JLLSLHgM3BX2yqKde0hBUfnN5YSZU4v5kCFDkreZ5baKOZIe4oOAUrJ1kf
+         h5TqQ90PbXQ0uRVLeML1DHfqjoWmqGzMf1buLeQsA3pzip+iNY8RNwyyAT/8tEmyfjw4
+         897temnJ8+wOObbx/kdI/KhEu8iGLDQWtjXEM+o/f3XJgSmK9aRg+WxJVoUpurW/OqPZ
+         IRv0Eyg3UG1rErpUDL4S4YHu4c0qvJvd+yLnzZGYfL2L+oRpQlTAALTeWIxNHps6b6QA
+         LeRCLgLNusQ3Rw/hAHfH2PBzc1poH/riaHhDyIupei87Y6nWzE9n/QZIUaeC47dO+N2M
+         kQhw==
+X-Gm-Message-State: AOJu0Yz6Eh2GUPMiVC261WldQiKe1px/2qDvXqlOwhi9af7oYy2fcYju
+        TLb8cGgw2VOtUPHgy1YjxvM=
+X-Google-Smtp-Source: AGHT+IEwgodN/a4UP4l22QNrk4yK0Y694N+zXeDF+v/G+X6i33chicM7XZMRBGXU485HiB36yI/mtA==
+X-Received: by 2002:a17:902:d2c1:b0:1ce:5b93:1596 with SMTP id n1-20020a170902d2c100b001ce5b931596mr4099361plc.5.1702023730976;
+        Fri, 08 Dec 2023 00:22:10 -0800 (PST)
+Received: from ?IPV6:2401:4900:5aa5:8033:d346:47e3:6a7f:374d? ([2401:4900:5aa5:8033:d346:47e3:6a7f:374d])
+        by smtp.gmail.com with ESMTPSA id s14-20020a170902ea0e00b001c88f77a156sm1094407plg.153.2023.12.08.00.22.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Dec 2023 00:22:10 -0800 (PST)
+Message-ID: <6cfbd32b-beb5-49b7-8116-cf95e11586b3@gmail.com>
+Date:   Fri, 8 Dec 2023 13:52:05 +0530
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] greybus: gb-beagleplay: Remove use of pad bytes
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     greybus-dev@lists.linaro.org, johan@kernel.org, elder@kernel.org,
+        linux-kernel@vger.kernel.org, jkridner@beagleboard.org, nm@ti.com,
+        yujie.liu@intel.com
+References: <20231206150602.176574-1-ayushdevel1325@gmail.com>
+ <20231206150602.176574-2-ayushdevel1325@gmail.com>
+ <2023120758-coleslaw-unstopped-530c@gregkh>
+ <c0823649-8235-40d7-813e-8a4500251219@gmail.com>
+ <2023120805-endocrine-conflict-b1ff@gregkh>
+From:   Ayush Singh <ayushdevel1325@gmail.com>
+In-Reply-To: <2023120805-endocrine-conflict-b1ff@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRGFuLA0KDQo+PiBkZXZtXyBhbGxvY2F0aW9ucyBhcmUgY2xlYW5lZCB1cCBhdXRvbWF0aWNh
-bGx5IHNvIHRoZXJlIGlzIG5vIG5lZWQgdG8NCj4+IGNhbGwgZGV2bV9rZnJlZSgpIGJlZm9yZSBy
-ZXR1cm5pbmcuDQo+Pg0KPj4gcmVnYXJkcywNCj4+IGRhbiBjYXJwZW50ZXINCj4NCkkgd2lsbCBy
-ZW1vdmUgaXQuIA0KDQo+PiA+ICsgICB9DQo+PiA+ICsNCj4+ID4gKyAgIGRhdGEtPmluZm8gPSBp
-bmZvOw0KPj4gPiArDQo+PiA+ICsgICByYXdfc3Bpbl9sb2NrX2luaXQoJmRhdGEtPmxvY2spOw0K
-Pj4gPiArDQo+PiA+ICsgICBkYXRhLT5kb21haW4gPSBpcnFfZG9tYWluX2FkZF9saW5lYXIobm9k
-ZSwgMzIsDQo+PiA+ICsgJnJlYWx0ZWtfaW50Y19kb21haW5fb3BzLCBkYXRhKTsNCj4NCj5CdHcs
-IGFzIEkgd2FzIHRlc3RpbmcgdGhlIG90aGVyIHN0YXRpYyBjaGVja2VyIHdhcm5pbmcgZm9yIDw9
-IDAsIG15IHN0YXRpYw0KPmNoZWNrZXIgcmVhbGx5IHdhbnRzIHRoaXMgaXJxX2RvbWFpbl9hZGRf
-bGluZWFyKCkgdG8gYmUgY2xlYW5lZCB1cCBvbiB0aGUgZXJyb3INCj5wYXRoLg0KPg0KPk90aGVy
-d2lzZSBpdCBwcm9iYWJseSBsZWFkcyB0byBhIHVzZSBhZnRlciBmcmVlIGJlY2F1c2Ugd2UgZnJl
-ZSBkYXRhDQo+KGF1dG9tYXRpY2FsbHkgb3IgbWFudWFsbHkpIGJ1dCBpdCdzIHN0aWxsIG9uIGEg
-bGlzdCBzb21ld2hlcmUuDQo+DQpJIHdpbGwgYWRkICdpcnFfZG9tYWluX3JlbW92ZSgpJyB0byBy
-ZWxlYXNlIGl0LiANCg0KPj4gPiArICAgaWYgKCFkYXRhLT5kb21haW4pIHsNCj4+ID4gKyAgICAg
-ICAgICAgcmV0ID0gLUVOT01FTTsNCj4+ID4gKyAgICAgICAgICAgZ290byBvdXRfY2xlYW51cDsN
-Cj4+ID4gKyAgIH0NCj4+ID4gKw0KPj4gPiArICAgZGF0YS0+c3Vic2V0X2RhdGFfbnVtID0gaW5m
-by0+Y2ZnX251bTsNCj4+ID4gKyAgIGZvciAoaSA9IDA7IGkgPCBpbmZvLT5jZmdfbnVtOyBpKysp
-IHsNCj4+ID4gKyAgICAgICAgICAgcmV0ID0gcmVhbHRla19pbnRjX3N1YnNldChub2RlLCBkYXRh
-LCBpKTsNCj4+ID4gKyAgICAgICAgICAgaWYgKHJldCkgew0KPj4gPiArICAgICAgICAgICAgICAg
-ICAgIFdBUk4ocmV0LCAiZmFpbGVkIHRvIGluaXQgc3Vic2V0ICVkOiAlZCIsIGksIHJldCk7DQo+
-PiA+ICsgICAgICAgICAgICAgICAgICAgcmV0ID0gLUVOT01FTTsNCj4+ID4gKyAgICAgICAgICAg
-ICAgICAgICBnb3RvIG91dF9jbGVhbnVwOw0KPg0KPlRoaXMgZXJyb3IgcGF0aC4NCj4NCj5yZWdh
-cmRzLA0KPmRhbiBjYXJwZW50ZXINCj4NCkkgd2lsbCBhZGQgJ2lycV9kb21haW5fcmVtb3ZlKCkn
-IGJlZm9yZSBnb3RvIGNsZWFudXAuDQoNCglmb3IgKGkgPSAwOyBpIDwgaW5mby0+Y2ZnX251bTsg
-aSsrKSB7DQoJCXJldCA9IHJlYWx0ZWtfaW50Y19zdWJzZXQobm9kZSwgZGF0YSwgaSk7DQoJCWlm
-IChyZXQpIHsNCgkJCVdBUk4ocmV0LCAiZmFpbGVkIHRvIGluaXQgc3Vic2V0ICVkOiAlZCIsIGks
-IHJldCk7DQoJCQlpcnFfZG9tYWluX3JlbW92ZShkYXRhLT5kb21haW4pOw0KCQkJcmV0ID0gLUVO
-T01FTTsNCgkJCWdvdG8gb3V0X2NsZWFudXA7DQoJCX0NCgl9DQoNClRoYW5rIHlvdSBmb3IgeW91
-ciBmZWVkYmFjay4NCg0KUmVnYXJkcywNCkphbWVzDQoNCg0K
+On 12/8/23 11:03, Greg KH wrote:
+
+> On Thu, Dec 07, 2023 at 10:33:54PM +0530, Ayush Singh wrote:
+>>>> + *
+>>>> + * @cport: cport id
+>>>> + * @hdr: greybus operation header
+>>>> + * @payload: greybus message payload
+>>>> + */
+>>>> +struct hdlc_greybus_frame {
+>>>> +	__le16 cport;
+>>>> +	struct gb_operation_msg_hdr hdr;
+>>>> +	u8 payload[];
+>>>> +} __packed;
+>>>> +
+>>>>    static void hdlc_rx_greybus_frame(struct gb_beagleplay *bg, u8 *buf, u16 len)
+>>>>    {
+>>>> -	u16 cport_id;
+>>>> -	struct gb_operation_msg_hdr *hdr = (struct gb_operation_msg_hdr *)buf;
+>>>> +	struct hdlc_greybus_frame *gb_frame = (struct hdlc_greybus_frame *)buf;
+>>>> +	u16 cport_id = le16_to_cpu(gb_frame->cport);
+>>>> -	memcpy(&cport_id, hdr->pad, sizeof(cport_id));
+>>>> +	/* Ensure that the greybus message is valid */
+>>>> +	if (le16_to_cpu(gb_frame->hdr.size) > len - sizeof(cport_id)) {
+>>>> +		dev_warn_ratelimited(&bg->sd->dev, "Invalid/Incomplete greybus message");
+>>> Don't spam the kernel log for corrupted data on the line, that would be
+>>> a mess.  Use a tracepoint?
+>>>
+>>>> +		return;
+>>>> +	}
+>>>>    	dev_dbg(&bg->sd->dev, "Greybus Operation %u type %X cport %u status %u received",
+>>>> -		hdr->operation_id, hdr->type, le16_to_cpu(cport_id), hdr->result);
+>>>> +		gb_frame->hdr.operation_id, gb_frame->hdr.type, cport_id, gb_frame->hdr.result);
+>>> Better yet, put the error in the debug message?
+>> Shouldn't corrupt data be a warning rather than debug message, since it
+>> indicates something wrong with the transport?
+> Do you want messages like that spamming the kernel log all the time if a
+> network connection is corrupted?
+>
+> Just handle the error and let the upper layers deal with it when the
+> problem is eventually reported to userspace, that's all that is needed.
+
+Ok
+
+>>>> -	greybus_data_rcvd(bg->gb_hd, le16_to_cpu(cport_id), buf, len);
+>>>> +	greybus_data_rcvd(bg->gb_hd, cport_id, &buf[sizeof(cport_id)],
+>>> Fun with pointer math.  This feels really fragile, why not just point to
+>>> the field instead?
+>> It seems that taking address of members of packed structures is not valid.
+> That feels really odd.
+>
+>> I get the `address-of-packed-member` warnings. Is it fine to ignore
+>> those in kernel?
+> What error exactly are you getting?  Packed or not does not mean
+> anything to the address of a member.  If it does, perhaps you are doing
+> something wrong as you are really doing the same thing here, right?
+> Don't ignore the warning by open-coding it.
+
+So, the error I was getting was `taking address of packed member of 
+'gb_frame' may result in an unaligned pointer value`. I can no longer 
+reproduce the warning, though. I think I accidentally fixed the reason 
+somewhere along the line.
+
+>>>>    }
+>>>>    static void hdlc_rx_dbg_frame(const struct gb_beagleplay *bg, const char *buf, u16 len)
+>>>> @@ -339,7 +357,7 @@ static struct serdev_device_ops gb_beagleplay_ops = {
+>>>>    static int gb_message_send(struct gb_host_device *hd, u16 cport, struct gb_message *msg, gfp_t mask)
+>>>>    {
+>>>>    	struct gb_beagleplay *bg = dev_get_drvdata(&hd->dev);
+>>>> -	struct hdlc_payload payloads[2];
+>>>> +	struct hdlc_payload payloads[3];
+>>> why 3?
+>>>
+>>> It's ok to put this on the stack?
+>> Well, the HDLC payload is just to store the length of the payload along with
+>> a pointer to its data. (kind of emulate a fat pointer). The reason for doing
+>> it this way is to avoid having to create a temp buffer for each message when
+>> sending data over UART (which was done in the initial version of the
+>> driver).
+> Be careful, are you SURE you are allowed to send stack-allocated data?
+> I know that many busses forbid this (like USB).  So please check to be
+> sure that this is ok to do, and that these are not huge structures that
+> you are putting on the very-limited kernel-stack.
+
+Well, the greybus operation header and greybus message are not on the 
+stack (as far as I know, since they are inputs to the function). The 
+memory that is stack allocated for hdlc_payload array is `3 * 
+(sizeof(u16) + sizeof(void *))`, i.e. 30 bytes for 64 bit pointers 
+(ignoring any padding). So I don't think the size of hdlc_payload array 
+should be an issue.
+
+The function `hdlc_tx_frames(bg, ADDRESS_GREYBUS, 0x03, payloads, 3);` 
+actually copies the data to a different circ_buf, which is sent later by 
+workqueue. So the final data sent is not stack allocated. In fact, none 
+of the data from this function is going to be referenced after the call 
+to `hdlc_tx_frames`.
+
+
+Ayush Singh
+
