@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A5480AC28
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9365680AC2C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574614AbjLHSiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:38:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58884 "EHLO
+        id S1574623AbjLHSiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:38:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbjLHSiC (ORCPT
+        with ESMTP id S235911AbjLHSiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:38:02 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4FFC6
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:38:08 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6cea0fd9b53so1830025b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:38:08 -0800 (PST)
+        Fri, 8 Dec 2023 13:38:14 -0500
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4D110C4;
+        Fri,  8 Dec 2023 10:38:21 -0800 (PST)
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-58ceab7daddso1090331eaf.3;
+        Fri, 08 Dec 2023 10:38:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702060688; x=1702665488; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702060701; x=1702665501; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NtN8RJrSywNd9cqTGDXuX00rE8787z779s5kNZbKPTg=;
-        b=eNU1EAx2H0cVhDiB2lfoDQan7fEfMz5udTwfcMi9THoBeXBj746nTvWMWjNVPI/oae
-         7u+kXee+wGaH5DFIw6qBonTMD7k84kKyGR+guCa69j7SvDmbG4aK+5dbRq51nuD/XUdv
-         QUFMyM/mvvGSEpHl888CNEbL3R2m1SDSlUWCE=
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2Hgx7yYZh3wkKhLdlPRLYhW3TuyCT7B7DTgn0GhgaUA=;
+        b=cMlBjeNgNNFxtJDChgOU1XAKJ/mhkZntgNc4/OZsY7RQ8Wfp5yVmq523gVPKHwuNts
+         T0JMqSjwbY3W//NAoJaYOQ++R4Ju4LvvAkRLUeuiAOu0iBhMd/YMg8ZPxYgVG/Qr5VNj
+         Jn4FHhcRpHjIaSRJzGOOIX2GsecdUNg+md9nLn/A31wA7BE6F0AC5JRX1X5D7zN0+iaL
+         9Se0E7e4H6t7yo1OHht0FHiWpi1iAIKqGn7mE6nZXBSuFLnnOUwvy+koy070h0F+kdxz
+         3GREau1h4qUJJnEGFlLgOWyYDXm7k8YjNQUN4t++/FgoFnmh6UVGZHPzOWLcvcll+nuK
+         D9XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702060688; x=1702665488;
+        d=1e100.net; s=20230601; t=1702060701; x=1702665501;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NtN8RJrSywNd9cqTGDXuX00rE8787z779s5kNZbKPTg=;
-        b=ItwkBFVbje6kfhhhQmMgAoXc/CtXRhoF6KxoAufTq1LoiOrZmXVwm3geYEMjybVIpF
-         prLYSCxslzzFCkmzFGOdizw2nMpoQwBf9vgjmhr0cE8KedvLge4X1xusL9vRSBnxnIc7
-         H2mlFZL+fWTyDeTGdp0dIffXXjXRfyvG2EaCw1H+FurUvDwejoKlDGLPSWGkLcNJD1Cf
-         yUsK66RaMMY0ef545+t4jDhQsR5wtfKeuQlkH7AxM9L6Pd3FiT9W78sJ+Xo/6Ko2ashl
-         Z3riQfKHnRCuTNzQN9L7kvoietaUdt/TN3mbJcYUgjDEBvUQkE4h11dPSC18zhW3nhDP
-         iLrw==
-X-Gm-Message-State: AOJu0Ywo9RL+UYbYOAfwOUvtvl1kFYzF/0Ez2aOkbHfvJcXX2au8QvNS
-        /43VtDtIbEg5MosVx+TCZ7aSjA==
-X-Google-Smtp-Source: AGHT+IHJzNo7Hbj+hV0vS5OXcDWV8L1dA0GJLnVKpqyuVHtDw1XXI/AWkfGTwQ2ZZjG7MnXsry4Z7g==
-X-Received: by 2002:a05:6a20:918b:b0:18f:97c:823b with SMTP id v11-20020a056a20918b00b0018f097c823bmr529965pzd.69.1702060688480;
-        Fri, 08 Dec 2023 10:38:08 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id o73-20020a62cd4c000000b006c875abecbcsm1966803pfg.121.2023.12.08.10.38.07
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2Hgx7yYZh3wkKhLdlPRLYhW3TuyCT7B7DTgn0GhgaUA=;
+        b=dTyROPGSBv0cE6XKilBcu0f/fHHqUyLO+yQt0bxXALTGlTcDpBW6ZXlqAinK89vX3C
+         XxNsvTH/VRjxHlg2EhfDJa+MgLAhAFv8POy85Qqi7nHTJV9Ukw0B/X/cp2Zo8lXTxdpI
+         0kwzKrn/YUqvdvIb3d2luZQLnin0AiPvJj+rH+Px3c9zjFClwU4dDcju1L4MTVqMOnDf
+         CwV+PXxUtcBWrXmobMNfbcCHdKNmpmGT2GS+yo1v30m+kVQnqZRmoOtCa8UJua6roPO9
+         toLvxspEbtdlPB+n7gp63DQhVNXrCpR7M9klfgAXVtEgPLnWKOX73IdjJYVtkzR8XuEj
+         +4nw==
+X-Gm-Message-State: AOJu0YwolI718WnK3oIiPrYhXMU65M6wrBydBa5xjc/ru1M5OBICRk8M
+        MrfL7AuPbWW4Kt/WmEUR6oQ=
+X-Google-Smtp-Source: AGHT+IG+xBBqA5n2zgcfZoSDwIoC1P8bg1H4GGQuvr8GWYFF8OtTP0dvkLQoNns+8q9sQ3ptbais6w==
+X-Received: by 2002:a05:6820:1b83:b0:58e:30f0:9bd0 with SMTP id cb3-20020a0568201b8300b0058e30f09bd0mr608404oob.5.1702060700460;
+        Fri, 08 Dec 2023 10:38:20 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o14-20020a4a384e000000b0058dc4a5de5bsm391037oof.14.2023.12.08.10.38.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 10:38:07 -0800 (PST)
-Date:   Fri, 8 Dec 2023 10:38:07 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-api@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v2] ELF: supply userspace with available page shifts
- (AT_PAGE_SHIFT_MASK)
-Message-ID: <202312081037.895E558@keescook>
-References: <6b399b86-a478-48b0-92a1-25240a8ede54@p183>
- <87v89dvuxg.fsf@oldenburg.str.redhat.com>
- <1d679805-8a82-44a4-ba14-49d4f28ff597@p183>
- <202312061236.DE847C52AA@keescook>
- <4f5f29d4-9c50-453c-8ad3-03a92fed192e@p183>
- <202312081027.BA44B7B3@keescook>
- <87lea4czki.fsf@oldenburg.str.redhat.com>
+        Fri, 08 Dec 2023 10:38:20 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 8 Dec 2023 10:38:18 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Armin Wolf <W_Armin@gmx.de>
+Cc:     wilken.gottwalt@posteo.net, jdelvare@suse.com,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: (corsair-psu) Fix probe when built-in
+Message-ID: <65b2126d-7b50-41aa-8a3e-87b409d25561@roeck-us.net>
+References: <20231207210723.222552-1-W_Armin@gmx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87lea4czki.fsf@oldenburg.str.redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231207210723.222552-1-W_Armin@gmx.de>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 07:35:25PM +0100, Florian Weimer wrote:
-> * Kees Cook:
+On Thu, Dec 07, 2023 at 10:07:23PM +0100, Armin Wolf wrote:
+> It seems that when the driver is built-in, the HID bus is
+> initialized after the driver is loaded, which whould cause
+> module_hid_driver() to fail.
+> Fix this by registering the driver after the HID bus using
+> late_initcall() in accordance with other hwmon HID drivers.
 > 
-> > I significantly prefer APIs not being arch-specific, so I'd prefer we
-> > always include AT_PAGE_SHIFT_MASK. For an architecture that doesn't
-> > define its own ARCH_AT_PAGE_SHIFT_MASK, it's not _inaccurate_ to report
-> > 1 << PAGE_SHIFT, but it might be incomplete.
+> Compile-tested only.
 > 
-> The downside is that as an application programmer, I have to go and
-> chase for the information the legacy way if I encounter
-> getauxval(AT_PAGE_SHIFT_MASK) == getpagesize() for a longer time
-> because the interface does not signal the absence of any extended
-> page sizes.
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 
-Are there architectures besides x86 where AT_PAGE_SHIFT_MASK isn't a
-single bit? If so, let's get them added now along with x86.
+Applied. I dropped the "Compile-tested only" comment and added a note
+that the patch was tested but the tested did not provide a Tested-by: tag.
 
--- 
-Kees Cook
+Thanks,
+Guenter
