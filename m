@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C611480A3F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9547180A3F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:54:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573746AbjLHMyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 07:54:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46186 "EHLO
+        id S1573778AbjLHMye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 07:54:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjLHMyU (ORCPT
+        with ESMTP id S229844AbjLHMyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 07:54:20 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F209B171D
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:54:24 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-db4422fff15so2098342276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 04:54:24 -0800 (PST)
+        Fri, 8 Dec 2023 07:54:32 -0500
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC6A199E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:54:34 -0800 (PST)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5cdc0b3526eso15148447b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 04:54:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702040064; x=1702644864; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702040073; x=1702644873; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ByI2BmM76fDl6CBfV37McPabf7tQNlC2zWfp5P+Us7w=;
-        b=c/VfjS1SUuwPa0ud1rF722pXq7krjTYGiyAE8nZHfGfjZDzA3ClrvBBuQ6yUccZEi6
-         /bZoXwdzaqzTm+CoxnSe2Cabmorok2OW1nZ7TOZKAG1E/fUC+sfpYpw1eynWF5d3pJo8
-         sC3wBfO2dKliegsZpEq/ZgpjepQHKUATQPJWV267UIYH+T6XWMO6DS7DtYpyXyPoCZkF
-         mHTGgLAiLNnMGGejmdOT+zTHHjOoBf0u3kUbJ44QN1it0+cms9+IPimtcqpICtrTfzaC
-         h5I9+liC5GdvGp2HvVPgmddd/Hn9iHVyQmSD3rQt4iw2tS2509s5Bqf7eXqb34M3k1GC
-         h1uA==
+        bh=zzKPwdYAwYCdy6h7bjnYf0Ny9x0IXWZf0PctpusOM14=;
+        b=GymOwdMpn2bCXzEW+5FR2yU88+572gP+YVWQgaezvu+Ks+LJ7893+N3yfRaKaDxeQT
+         P7eDhlUSwa0kE2QdfEYz5CPldn974JBEL2o0WIt+RYrc5KZ69akrBntn0SKZZuSEYzKk
+         2dL7s6LghbPXLq2AGxiZYSkLf/jQiIGCPrlZNXiCVJXpe+M7ZihsEp1/+uQ2SxSs+ZgS
+         u1SRngX4omMo41+hmDi6Xj+1EHtrkcVtNWRinetAsHOGj1NulpS6nf11GZ28rTeaAMfl
+         CDyOxzaceGkKRcimdcPEOlwKsFZuTy6RuXJu4HcKgHio50dkv7t6S90yHDvZYjE/1OX2
+         SRsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702040064; x=1702644864;
+        d=1e100.net; s=20230601; t=1702040073; x=1702644873;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ByI2BmM76fDl6CBfV37McPabf7tQNlC2zWfp5P+Us7w=;
-        b=JrqdRZgBAJjptoXWrAyQa5bqFbwT4f4IO94+pFWS2CA55sl8xpOdAKy3uHO8Gnul9a
-         KZcVy22GzKpd6yCAdMvyBb+RAnvHlPHpYUS0DDPI43cnL9e39IqjGvdQ3ihEQxNax7nf
-         FiU5MXyJ9U1Wj/ZfQ5TzrVZx+2EyB6QjWtEVsXUIiovjpExUa753QDZ5wMRSR3whdB2z
-         PCdLTr5sfG0Z0Cj36nbA/mHuEE3T/vJ88GR+MDdfNE07y9EOvwvQ4rEX6guwzPi1SzNm
-         6hdy3/rDgXAykTT6Vz0RDA80AxjlFxBwmE1y2iwLwVgkUW48mHnYzE7xzxUGn2ud2/64
-         lGkA==
-X-Gm-Message-State: AOJu0YyXJFJIV8luqT2VWKwz3jTRDxVNoTQRnvt19CRx67exQESN/HFA
-        fMyylQuyvhkYcEfZrDlfR1ETc/XNuk3Z2Gdf94HtEw==
-X-Google-Smtp-Source: AGHT+IF5iZ4loNbrkDEVIKN0ZuOOKoVeFsgMMcs4UNMekY672SG41YIpWxGAUfSzwyEW89VxsHniMNAuYOLaquPgO8c=
-X-Received: by 2002:a25:2395:0:b0:db7:dad0:76dd with SMTP id
- j143-20020a252395000000b00db7dad076ddmr3075741ybj.121.1702040063846; Fri, 08
- Dec 2023 04:54:23 -0800 (PST)
+        bh=zzKPwdYAwYCdy6h7bjnYf0Ny9x0IXWZf0PctpusOM14=;
+        b=IRDFJ6HRvea9JLm6ivs2Oj/2GI7OD1sLQpr+HYrpGD5bsxt4DI/JRPajW7f885Wi4m
+         zVHR2PCY/NB52FVSZtpFBJdN/Rj3Fjd1mAlvzcvN0IhoW4yV4f82SdcVRG2AayCNw1+m
+         1nnsIvUcCM5mzmwwrTu23BiF5zpuWGUuX61CzhlbNqRlF9+fGRQc60N75RJKhaIjvZGa
+         tAxDbA+AJjaNZzqHe+67podWY+inxoNxuxDIsg5u3rf2YDONASj771tKv/vsVwOlWgGz
+         eGPV+lNsernSmIdjfXlrfdxDuWthPFnBkXWyt57ABTVSnBFLso2Yh/GYZq+K4+HunCdU
+         Tf8Q==
+X-Gm-Message-State: AOJu0Yz2fynJnZnNF6jhgol+aGZa1sQptWPYh3A0kdfiG+JM7jQtMfph
+        Olmo+WJ31SeL+50YG/8jQJOm4xNSPPwDm1qkjpvpsg==
+X-Google-Smtp-Source: AGHT+IEAJXSroSapCiPDjhsK4NjurOOebjH4gHV0wHEUSh+xkwhLq/8/MRN114XW47mChKgdM8zLbDjUan/sQcQJbJY=
+X-Received: by 2002:a0d:cb42:0:b0:5d7:1a33:5ae5 with SMTP id
+ n63-20020a0dcb42000000b005d71a335ae5mr376183ywd.50.1702040073661; Fri, 08 Dec
+ 2023 04:54:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-18-iii@linux.ibm.com>
-In-Reply-To: <20231121220155.1217090-18-iii@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 8 Dec 2023 13:53:41 +0100
-Message-ID: <CAG_fn=Ug6MFyoj=J_yabfd-V+3vGYNS3-CS+fhW9Tsc847xMtw@mail.gmail.com>
-Subject: Re: [PATCH v2 17/33] mm: kfence: Disable KMSAN when checking the canary
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
+References: <20231207111300.80581-1-eichest@gmail.com> <20231207111300.80581-2-eichest@gmail.com>
+In-Reply-To: <20231207111300.80581-2-eichest@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 8 Dec 2023 13:54:21 +0100
+Message-ID: <CACRpkdbSs-vebvchxx-Tg+O5CUF5M3vZf-iytuW=ZECnHb2anA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] dt-bindings: input: atmel,maxtouch: add
+ poweroff-in-suspend property
+To:     Stefan Eichenberger <eichest@gmail.com>
+Cc:     nick@shmanahar.org, dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        claudiu.beznea@tuxon.dev, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Stefan Eichenberger <stefan.eichenberger@toradex.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 11:02=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.co=
-m> wrote:
+On Thu, Dec 7, 2023 at 12:13=E2=80=AFPM Stefan Eichenberger <eichest@gmail.=
+com> wrote:
+
+> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
 >
-> KMSAN warns about check_canary() accessing the canary.
+> Add a new property to indicate that the device should be powered off in
+> suspend mode.
 >
-> The reason is that, even though set_canary() is properly instrumented
-> and sets shadow, slub explicitly poisons the canary's address range
-> afterwards.
->
-> Unpoisoning the canary is not the right thing to do: only
-> check_canary() is supposed to ever touch it. Instead, disable KMSAN
-> checks around canary read accesses.
->
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+> Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+(...)
+> +  atmel,poweroff-in-suspend:
+> +    description: |
+> +      When this property is set, all supplies are turned off when the sy=
+stem is
+> +      going to suspend.
+> +    type: boolean
+   wakeup-source:
+     type: boolean
+
+As Krzysztof says it seems you are describing an operating system feature.
+
+I can't help but wonder: shouldn't that pretty much be the default behaviou=
+r
+if wakeup-source is *not* specified?
+
+I.e. the property kind of describes !wakeup-source.
+
+Yours,
+Linus Walleij
