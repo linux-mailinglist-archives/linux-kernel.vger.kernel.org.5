@@ -2,113 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F133880AB18
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6999F80AB1A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:48:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574479AbjLHRrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:47:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        id S1574500AbjLHRr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:47:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574486AbjLHRrk (ORCPT
+        with ESMTP id S1574486AbjLHRr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:47:40 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F0A173B;
-        Fri,  8 Dec 2023 09:47:46 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BC8971F458;
-        Fri,  8 Dec 2023 17:47:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702057664; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ty0wkmYBzhMqy5lLUe3gr3yBKvt3QqcxRuI17ne1tpQ=;
-        b=tU5rg+J60uTl33suc+vysMg4/c7ONg3pOCdPI5/B0uag7ybZVCxCk3soIVw0N1aq98Vekl
-        uRFPmvqowmZpxJ1QixeFmNMXO3O6hvZ1lMgggPgKrX1yI0wyJV5LTO1WozbKXuL4km6+uM
-        c4RvaarTbxqOP2EOnMW4O11dpw8rmz0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702057664;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ty0wkmYBzhMqy5lLUe3gr3yBKvt3QqcxRuI17ne1tpQ=;
-        b=WY/+/qKjUM23d2X621auToV3XZASU1Jw4lKcsnGiwBykB58+5xS4iHMFiX4pVT65CkN8o8
-        +VgmcyjXbLyf6RCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702057664; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ty0wkmYBzhMqy5lLUe3gr3yBKvt3QqcxRuI17ne1tpQ=;
-        b=tU5rg+J60uTl33suc+vysMg4/c7ONg3pOCdPI5/B0uag7ybZVCxCk3soIVw0N1aq98Vekl
-        uRFPmvqowmZpxJ1QixeFmNMXO3O6hvZ1lMgggPgKrX1yI0wyJV5LTO1WozbKXuL4km6+uM
-        c4RvaarTbxqOP2EOnMW4O11dpw8rmz0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702057664;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ty0wkmYBzhMqy5lLUe3gr3yBKvt3QqcxRuI17ne1tpQ=;
-        b=WY/+/qKjUM23d2X621auToV3XZASU1Jw4lKcsnGiwBykB58+5xS4iHMFiX4pVT65CkN8o8
-        +VgmcyjXbLyf6RCQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AA52013A6B;
-        Fri,  8 Dec 2023 17:47:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id Jl4/KcBWc2VCUgAAn2gu4w
-        (envelope-from <jack@suse.cz>); Fri, 08 Dec 2023 17:47:44 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 43F3EA07DC; Fri,  8 Dec 2023 18:47:44 +0100 (CET)
-Date:   Fri, 8 Dec 2023 18:47:44 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Tycho Andersen <tycho@tycho.pizza>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Tycho Andersen <tandersen@netflix.com>,
-        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
-Message-ID: <20231208174744.2vsubexeolns7nb5@quack3>
-References: <20231130163946.277502-1-tycho@tycho.pizza>
- <20231207-netzhaut-wachen-81c34f8ee154@brauner>
+        Fri, 8 Dec 2023 12:47:56 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09F11738;
+        Fri,  8 Dec 2023 09:48:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=3u/9XNVPaXTvbYqc+nnnyMawNo/lMpvd3yOqY2JQ8xM=; b=V/oW7BdH++6JFKIA/92PKPthBD
+        Dq/lCvPvZ+OZJdrJpWOEQRVSHgXWEQrFa5A/E6TKp1OIn05/5FvE2ywRjlVsVIvO3qFpfbgxGkibl
+        GwfKpRA/jU/pOC9x1CM3ZOQ4bxSxUGDz7YHgWioXvTFe+2hAdxW98lMLQTyOsO+gZkMZluo/+jKto
+        LqF9bK/2jla6EZCxF8DvOxBi/PRhQdK1WJvau0SfWV1ej1RfAOu/RezbK+7oLZ8TVbkNVcog6cV9x
+        51hJGHQihGftnpOwg9ZqmY5wvk0x7AT8JuiFa9kNaxN9EyN4KSNlP4YbrS6eLJ20q2xlIIJl8HrQv
+        yJfO6G7w==;
+Received: from p200301077700c3001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7700:c300:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1rBexA-007As3-Aq; Fri, 08 Dec 2023 18:47:56 +0100
+Date:   Fri, 8 Dec 2023 18:47:53 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Tony Lindgren <tony@atomide.com>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com, johan@kernel.org,
+        arnd@arndb.de, gregkh@linuxfoundation.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tomi.valkeinen@ideasonboard.com,
+        =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
+        robh@kernel.org
+Subject: Re: [RFC PATCH 0/3] bluetooth/gnss: GNSS support for TiWi chips
+Message-ID: <20231208184753.6a88801b@aktux>
+In-Reply-To: <CAHCN7x+veM=izOVGEOvKpTFca53C0VhrLkscJqdcBX1riOOWbA@mail.gmail.com>
+References: <20231126191840.110564-1-andreas@kemnade.info>
+        <20231127135424.GO5169@atomide.com>
+        <20231127215108.6e985819@aktux>
+        <CAHCN7x+veM=izOVGEOvKpTFca53C0VhrLkscJqdcBX1riOOWbA@mail.gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231207-netzhaut-wachen-81c34f8ee154@brauner>
-X-Spam-Level: 
-X-Spam-Score: -3.80
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -119,65 +63,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07-12-23 18:21:18, Christian Brauner wrote:
-> [Cc fsdevel & Jan because we had some discussions about fanotify
-> returning non-thread-group pidfds. That's just for awareness or in case
-> this might need special handling.]
+Hi,
 
-Thanks!
+On Fri, 8 Dec 2023 08:39:21 -0600
+Adam Ford <aford173@gmail.com> wrote:
 
-> On Thu, Nov 30, 2023 at 09:39:44AM -0700, Tycho Andersen wrote:
-> > From: Tycho Andersen <tandersen@netflix.com>
-> > 
-> > We are using the pidfd family of syscalls with the seccomp userspace
-> > notifier. When some thread triggers a seccomp notification, we want to do
-> > some things to its context (munge fd tables via pidfd_getfd(), maybe write
-> > to its memory, etc.). However, threads created with ~CLONE_FILES or
-> > ~CLONE_VM mean that we can't use the pidfd family of syscalls for this
-> > purpose, since their fd table or mm are distinct from the thread group
-> > leader's. In this patch, we relax this restriction for pidfd_open().
-> > 
-> > In order to avoid dangling poll() users we need to notify pidfd waiters
-> > when individual threads die, but once we do that all the other machinery
-> > seems to work ok viz. the tests. But I suppose there are more cases than
-> > just this one.
-> > 
-> > Another weirdness is the open-coding of this vs. exporting using
-> > do_notify_pidfd(). This particular location is after __exit_signal() is
-> > called, which does __unhash_process() which kills ->thread_pid, so we need
-> > to use the copy we have locally, vs do_notify_pid() which accesses it via
-> > task_pid(). Maybe this suggests that the notification should live somewhere
-> > in __exit_signals()? I just put it here because I saw we were already
-> > testing if this task was the leader.
-> > 
-> > Signed-off-by: Tycho Andersen <tandersen@netflix.com>
-> > ---
-> 
-> So we've always said that if there's a use-case for this then we're
-> willing to support it. And I think that stance hasn't changed. I know
-> that others have expressed interest in this as well.
-> 
-> So currently the series only enables pidfds for threads to be created
-> and allows notifications for threads. But all places that currently make
-> use of pidfds refuse non-thread-group leaders. We can certainly proceed
-> with a patch series that only enables creation and exit notification but
-> we should also consider unlocking additional functionality:
- 
-...
+> On Mon, Nov 27, 2023 at 2:51=E2=80=AFPM Andreas Kemnade <andreas@kemnade.=
+info> wrote:
+> >
+> > Hi,
+> >
+> > On Mon, 27 Nov 2023 15:54:24 +0200
+> > Tony Lindgren <tony@atomide.com> wrote:
+> >
+> > [...] =20
+> > > > - Output at /dev/gnssX:
+> > > >   AI2 vs. NMEA
+> > > >   The chip can be configured into sending AI2-encapsulated NMEA,
+> > > >   or proving data in a binary format.
+> > > >   Some research has to be done yet for the details.
+> > > >   A pile of logs is waiting for further analysis...
+> > > >
+> > > >   Arguments for/against NMEA:
+> > > >   + Userspace is prepared to handle it
+> > > >   + Power management can be easily done by the kernel
+> > > >   - Less functionality can be used. =20
+> > >
+> > > I'd go with NMEA format as the default setting :)
+> > > =20
+> > yes, that would also be my preference.
+> > =20
+> > > >   Arguments for/against AI2:
+> > > >   + Full functionality can be accessed from userspace (incl. A-GPS,
+> > > >     maybe raw satellite data)
+> > > >   - Userspace has to behave to have proper power management
+> > > >   - No freely (not even as in beer) tool available to fully use AI2,
+> > > >     so there will be only a real advantage after long "French Cafe"
+> > > >     sessions. =20
+> > >
+> > > Seems AI2 could be optionally enabled as needed with some writes
+> > > to /dev/gnss0 to change the mode? =20
+> >
+> > Hmm, we have
+> > /sys/class/gnss/gnss0/type to get the mode, maybe we add some file
+> > to change the mode? Or having it hidden behing a module parameter
+> > and implement something better accessible if any need arrives?
+> >
+> > If we want NMEA output, probably some init commands will be sent at
+> > open(), but userspace doing something with AI2 probably does not want
+> > the device touched, so it should probably be already be set before open=
+(). =20
+>=20
+> Is there another revision coming or should I try to test this one?  I
+> am not very familiar with the GNSS part of the module, but it sounds
+> like there was some consensus as to which direction we should go.  I
+> should have a little time this weekend.
+>=20
+Progress is only in my test program. No more checksum errors, I have
+made some progress in protocol reverse engineering. So make sure
+you do a git pull for https://github.com/akemnade/bt200tools
 
-> * pidfd_prepare() is used to create pidfds for:
-> 
->   (1) CLONE_PIDFD via clone() and clone3()
->   (2) SCM_PIDFD and SO_PEERPIDFD
->   (3) fanotify
-
-So for fanotify there's no problem I can think of. All we do is return the
-pidfd we get to userspace with the event to identify the task generating
-the event. So in practice this would mean userspace will get proper pidfd
-instead of error value (FAN_EPIDFD) for events generated by
-non-thread-group leader. IMO a win.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Regards,
+Andreas
