@@ -2,157 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCD080AE35
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACAA80AE37
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574730AbjLHUqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:46:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39920 "EHLO
+        id S1574752AbjLHUqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:46:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574749AbjLHUp7 (ORCPT
+        with ESMTP id S233919AbjLHUqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:45:59 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F1B2171F;
-        Fri,  8 Dec 2023 12:46:04 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3332f1512e8so2251245f8f.2;
-        Fri, 08 Dec 2023 12:46:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702068363; x=1702673163; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jlXQF//AUsnwP+nKFBoybb7LMYNoRVOQuSpa/LCcRfc=;
-        b=jrNzYc0pkY3bULNGlQPZ2lwdx0VJOCSAb5ChltHPy5hu8S+WwIeKGHOGv38nueJZD1
-         uqb6vocK5sV7fU0MSUX7UGM2TrHWB9NBKUOU07dJSHR4ybqEw07MP9ThP5Zcj4THj6kE
-         QixdSW/hgX/v6/MYW06oxWSFdyyMJkD+VxASGxuhshR7iwruKEWIPCCq4soTGFX1ussO
-         lvpFUUe7s18gfWt81/5SF7lAKyyVsPi9xa5/Bj00miNzBOPfX02G+3ddHtWf/upaij0g
-         Bagu/jzHD1DYsGSimLKc2azsckmWOB0jggBVYz7xuSfPrK8TZzp+VdnYKNkszVoyFw9m
-         zwsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702068363; x=1702673163;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jlXQF//AUsnwP+nKFBoybb7LMYNoRVOQuSpa/LCcRfc=;
-        b=uf2EuK5KW8B/gAH6NdaP2xD7h40ZkoJEE+8tOY0uBiF+4SvCyZOyz9wd6c2Ef9d8iZ
-         XEbZnYJjvSxZSZrgstnsWSFmeT6nEyKYxDHqCe+XAKCwbM0+2fqniR3YgbbPI3LFu7DO
-         qok/sCBGcjH/n93aHqU4iFxVPqOQhu+n+Iu0fjj3WUd6d1gi6iurjhhSQZtrGxID3MnZ
-         nXv+LHLmazPW3NSxZOlG47mONjCIpuitAtbEc9LjSmmM7MtRuLJhZB1LxQN9zUoBhlSU
-         NChMSTvBtXo/Fmx9tlpnbUjMhmxJasiPzz6X1shTZxtPgyjYR2GuiS/UcIqE5vDssCbG
-         kezg==
-X-Gm-Message-State: AOJu0Ywl4AZSbm7MU0BZdoW3HvEygJgvhLc055IY7sZ8KbgZLGbV5LYJ
-        WkaTHFRNPtlqk4snqDDhGOP0th+UGO4Zt+GXr4Y=
-X-Google-Smtp-Source: AGHT+IE4sHBb5/cNR7lbKXUMWA7pBzCk+Azp42Xup3bWyH2dubUwP/oKuFvKD+DnRI3AEHKgZH07K+Gk15b7iovJNI8=
-X-Received: by 2002:a5d:457b:0:b0:333:129d:239 with SMTP id
- a27-20020a5d457b000000b00333129d0239mr393721wrc.0.1702068362601; Fri, 08 Dec
- 2023 12:46:02 -0800 (PST)
+        Fri, 8 Dec 2023 15:46:15 -0500
+Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr [80.12.242.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 198C21995
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:46:20 -0800 (PST)
+Received: from pop-os.home ([92.140.202.140])
+        by smtp.orange.fr with ESMTPA
+        id BhjkrXIBfToaHBhjkr2fgx; Fri, 08 Dec 2023 21:46:18 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1702068378;
+        bh=c7yN6XYmPkSmYh2d3ai7nF5rpx6ZA/0115qJPRMOJ2Q=;
+        h=From:To:Cc:Subject:Date;
+        b=t+pSJO4x/EZmGcAEdRrc6oukLmyBQhaRLPhPdh4WTYVNlpMHBvWHw2lwi98ggOEU0
+         dBIjGStSWPZ8YQuDdKuJu/0uURu/swVSxKrR+f3KpGsQHeIYWpvclddjl6KLLrOOYD
+         bhZuXSyRGC1yCgIK9DI4QxXamkJ7YilG+1phzyTYSD8Fe2ahI6H0AiM1V3Ofs8BmLM
+         pgok+pd0j9jnzX3Zmp9go7DIpd2KIWzJ6+Y5KuZDSkTBT3c2+UmeDUFLoRkx2blMUb
+         5TtTMEOmxS/Bx30r6zJFsmRZVzUqX5jBUqHSIEJ93n8+USicxGa33ZebtPaW8kbWsO
+         VFTFYsXtiOc6Q==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 08 Dec 2023 21:46:18 +0100
+X-ME-IP: 92.140.202.140
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Bryan Tan <bryantan@vmware.com>, Vishnu Dasa <vdasa@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 1/2] VMCI: Remove handle_arr_calc_size()
+Date:   Fri,  8 Dec 2023 21:46:09 +0100
+Message-Id: <adf0c48a57d911be5509688614d2e00694ff57eb.1702068153.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231204183354.GC7299@noisy.programming.kicks-ass.net>
- <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
- <20231206163814.GB36423@noisy.programming.kicks-ass.net> <20231206183713.GA35897@noisy.programming.kicks-ass.net>
- <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
- <20231207093105.GA28727@noisy.programming.kicks-ass.net> <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
- <20231208102940.GB28727@noisy.programming.kicks-ass.net> <20231208134041.GD28727@noisy.programming.kicks-ass.net>
- <CAADnVQJFB_CPtFS3=VV=RwnP=EQRL3yEsR8wXVcicb07P8NODw@mail.gmail.com> <20231208201819.GE36716@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231208201819.GE36716@noisy.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 8 Dec 2023 12:45:51 -0800
-Message-ID: <CAADnVQ+1nVBuKkjdvh0eu19p+J0UqbO9mcCf3yzVeQtALxzQ+Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 12:18=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Fri, Dec 08, 2023 at 11:32:07AM -0800, Alexei Starovoitov wrote:
-> > On Fri, Dec 8, 2023 at 5:41=E2=80=AFAM Peter Zijlstra <peterz@infradead=
-.org> wrote:
-> > >
-> > > On Fri, Dec 08, 2023 at 11:29:40AM +0100, Peter Zijlstra wrote:
-> > > > The only problem I now have is the one XXX, I'm not entirely sure w=
-hat
-> > > > signature to use there.
-> > >
-> > > > @@ -119,6 +119,7 @@ int bpf_struct_ops_test_run(struct bpf_p
-> > > >       op_idx =3D prog->expected_attach_type;
-> > > >       err =3D bpf_struct_ops_prepare_trampoline(tlinks, link,
-> > > >                                               &st_ops->func_models[=
-op_idx],
-> > > > +                                             /* XXX */ NULL,
-> > > >                                               image, image + PAGE_S=
-IZE);
-> > > >       if (err < 0)
-> > > >               goto out;
-> > >
-> > > Duh, that should ofcourse be something of dummy_ops_test_ret_fn type.
-> > > Let me go fix that.
-> >
-> > Right. That should work.
-> > A bit wasteful to generate real code just to read hash from it
-> > via cfi_get_func_hash(), but it's a neat idea.
->
-> Right, bit wasteful. But the advantage is that I get a structure with
-> pointers that exactly mirrors the structure we're writing.
->
-> > I guess it's hard to get kcfi from __ADDRESSABLE in plain C
-> > and sprinkling asm("cfi_xxx: .long   __kcfi_typeid..."); is worse?
-> > Even if it's a macro ?
->
-> I can try this, but I'm not sure it'll be pretty. Even if I wrap it in a
-> decent macro, I still get to define a ton of variables and then wrap the
-> lot into a structure -- one that expects function pointers.
->
-> I'll see how horrible it will become.
+Use struct_size() instead of handle_arr_calc_size().
+This is much more conventionnal.
 
-I mean we don't need to store a pointer to a func in stubs.
-Can it be, roughly:
+Suggested-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/misc/vmw_vmci/vmci_handle_array.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-extern void bpf_tcp_ca_cong_avoid(struct sock *sk, u32 ack, u32 acked);
-KCFI_MACRO(hash_of_cong_avoid, bpf_tcp_ca_cong_avoid);
-u32 __array_of_kcfi_hash[] =3D {hash_of_cong_avoid, hash_of_set_state,...};
-      .bpf_ops_stubs =3D __array_of_kcfi_hash,
+diff --git a/drivers/misc/vmw_vmci/vmci_handle_array.c b/drivers/misc/vmw_vmci/vmci_handle_array.c
+index de7fee7ead1b..56d48d42736b 100644
+--- a/drivers/misc/vmw_vmci/vmci_handle_array.c
++++ b/drivers/misc/vmw_vmci/vmci_handle_array.c
+@@ -8,12 +8,6 @@
+ #include <linux/slab.h>
+ #include "vmci_handle_array.h"
+ 
+-static size_t handle_arr_calc_size(u32 capacity)
+-{
+-	return VMCI_HANDLE_ARRAY_HEADER_SIZE +
+-	    capacity * sizeof(struct vmci_handle);
+-}
+-
+ struct vmci_handle_arr *vmci_handle_arr_create(u32 capacity, u32 max_capacity)
+ {
+ 	struct vmci_handle_arr *array;
+@@ -25,7 +19,7 @@ struct vmci_handle_arr *vmci_handle_arr_create(u32 capacity, u32 max_capacity)
+ 		capacity = min((u32)VMCI_HANDLE_ARRAY_DEFAULT_CAPACITY,
+ 			       max_capacity);
+ 
+-	array = kmalloc(handle_arr_calc_size(capacity), GFP_ATOMIC);
++	array = kmalloc(struct_size(array, entries, capacity), GFP_ATOMIC);
+ 	if (!array)
+ 		return NULL;
+ 
+@@ -51,8 +45,8 @@ int vmci_handle_arr_append_entry(struct vmci_handle_arr **array_ptr,
+ 		struct vmci_handle_arr *new_array;
+ 		u32 capacity_bump = min(array->max_capacity - array->capacity,
+ 					array->capacity);
+-		size_t new_size = handle_arr_calc_size(array->capacity +
+-						       capacity_bump);
++		size_t new_size = struct_size(array, entries,
++					      array->capacity + capacity_bump);
+ 
+ 		if (array->size >= array->max_capacity)
+ 			return VMCI_ERROR_NO_MEM;
+-- 
+2.34.1
+
