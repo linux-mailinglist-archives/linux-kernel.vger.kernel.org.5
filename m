@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C91B980A005
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3CE880A06D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573459AbjLHJyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 04:54:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
+        id S233259AbjLHJ6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 04:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233259AbjLHJyR (ORCPT
+        with ESMTP id S230506AbjLHJ6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 04:54:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D211724;
-        Fri,  8 Dec 2023 01:54:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702029263; x=1733565263;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=FEzV6DVjh/Ga3HaHooYTXKaezfC0C7UbGiGx01741DE=;
-  b=cSAFltPc2dnI3ZBwEBThccKs0yNEScJTTwPeUtgYakmmanb4/u6/cUwc
-   iiIFNIRuUkjwxMcP+WTsp02ra3K+TINOXDxYmTyFrmgObBtzd6COTYyrl
-   UCUnpwhlEqnqp/5M+GMwehmNt5KgyeWlwUSBVJCXFLOFO2ZXD8MgGo6Ln
-   oD1wLnOpX7YnqI/dKNh82+r20pu8nvqGA4xVRwKNVH2FU3rXzeyBSFc56
-   nqAGRv2UQWs2BAl/R30rQEJqYAuVAidDwI3Lvqj6vHZcsGD2f33StEkzc
-   PK85xSa2SrVTBFLy+sshclDgWgqW3plG7z1oEccQl2iNhgmsKJeFEsvxU
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="393252575"
-X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
-   d="scan'208";a="393252575"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 01:54:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="806353117"
-X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
-   d="scan'208";a="806353117"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 01:54:14 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with ESMTP id C7C0011F995;
-        Fri,  8 Dec 2023 11:54:11 +0200 (EET)
-Date:   Fri, 8 Dec 2023 09:54:11 +0000
-From:   "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>
-To:     Zhi Mao =?utf-8?B?KOavm+aZuik=?= <zhi.mao@mediatek.com>
-Cc:     "conor@kernel.org" <conor@kernel.org>,
-        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-        "heiko@sntech.de" <heiko@sntech.de>,
-        "tomi.valkeinen@ideasonboard.com" <tomi.valkeinen@ideasonboard.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "yunkec@chromium.org" <yunkec@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dan.scally@ideasonboard.com" <dan.scally@ideasonboard.com>,
-        "gerald.loacker@wolfvision.net" <gerald.loacker@wolfvision.net>,
-        Shengnan Wang =?utf-8?B?KOeOi+Wco+eUtyk=?= 
-        <shengnan.wang@mediatek.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        Yaya Chang =?utf-8?B?KOW8tembhea4hSk=?= 
-        <Yaya.Chang@mediatek.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "jacopo.mondi@ideasonboard.com" <jacopo.mondi@ideasonboard.com>,
-        "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "bingbu.cao@intel.com" <bingbu.cao@intel.com>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "10572168@qq.com" <10572168@qq.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "macromorgan@hotmail.com" <macromorgan@hotmail.com>
-Subject: Re: [PATCH 1/2] media: i2c: Add GC08A3 image sensor driver
-Message-ID: <ZXLnwzeD_DSuIyil@kekkonen.localdomain>
-References: <20231207052016.25954-1-zhi.mao@mediatek.com>
- <20231207052016.25954-2-zhi.mao@mediatek.com>
- <ZXGtqwjYruBQVaUr@kekkonen.localdomain>
- <129e3a8b-5e91-424a-8ff8-b015d5175f1a@linaro.org>
- <20231207-outcome-acclaim-d179c8c07fff@spud>
- <0580bc5be77c5e293770f42b661a41c80e1986dd.camel@mediatek.com>
+        Fri, 8 Dec 2023 04:58:40 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67CAD5B;
+        Fri,  8 Dec 2023 01:58:46 -0800 (PST)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B899OeI013547;
+        Fri, 8 Dec 2023 09:58:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=2YndOjHyhkOb5ckp2udC88cU2qRc5IjcyuuMfvzEG5s=;
+ b=BqbDp0gTHP3wpVEIJustI0v+6svVIhsFfuHYNANgGfuwIT4RvHoQYSm3vvTRkjd1fnMz
+ /+ycAEhrvj/uRrzOZsWRP6qvbg5rNLmB18zpRFz/UZL8t+IKht1S7ldwXtw7kPgMuewD
+ F/aCkO6dH6aJ9t5WTCPF5DkRu4i1vTgcJQmCNvrCo4FUjbUHq/zfhK6Zxo2FXvXvvM/u
+ AbT0zgUn6yhYBsz2+l0HJETEtY5RFPwEn3DvzKY8zm4n30gMWedCUVw/JJBSDDQNYs3t
+ 1FmkooNXFe0ZI6OlSPLrTh1aFBEvFawy2uwpQu0Y+4QS3RFrMSnAar5ja0isslA469N2 oA== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3utdda5ny1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Dec 2023 09:58:30 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B89q0Th037399;
+        Fri, 8 Dec 2023 09:58:29 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3utan8pwxw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Dec 2023 09:58:29 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B89wSfL027743;
+        Fri, 8 Dec 2023 09:58:28 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3utan8pwxb-1;
+        Fri, 08 Dec 2023 09:58:28 +0000
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sherry Yang <sherry.yang@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, Roman Li <roman.li@amd.com>,
+        Claudio Suarez <cssk@net-c.es>, hongao <hongao@uniontech.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, harshit.m.mogalapalli@oracle.com
+Subject: [PATCH] drm/amd/display: Fix memory leak in dm_set_writeback()
+Date:   Fri,  8 Dec 2023 01:58:24 -0800
+Message-ID: <20231208095825.1291730-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0580bc5be77c5e293770f42b661a41c80e1986dd.camel@mediatek.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-08_05,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
+ suspectscore=0 mlxscore=0 adultscore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312080082
+X-Proofpoint-GUID: -_K5URp7pXXN0p40jxNmPb_EV7voda20
+X-Proofpoint-ORIG-GUID: -_K5URp7pXXN0p40jxNmPb_EV7voda20
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -107,59 +86,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhi,
+'wb_info' needs to be freed on error paths or it would leak the memory.
 
-On Fri, Dec 08, 2023 at 02:07:36AM +0000, Zhi Mao (毛智) wrote:
-> On Thu, 2023-12-07 at 17:44 +0000, Conor Dooley wrote:
-> > On Thu, Dec 07, 2023 at 01:30:35PM +0100, Krzysztof Kozlowski wrote:
-> > > On 07/12/2023 12:34, Sakari Ailus wrote:
-> > > > > +	ret = gc08a3_parse_fwnode(dev);
-> > > > > +	if (ret)
-> > > > > +		return ret;
-> > > > > +
-> > > > > +	gc08a3 = devm_kzalloc(dev, sizeof(*gc08a3),
-> > > > > GFP_KERNEL);
-> > > > > +	if (!gc08a3)
-> > > > > +		return -ENOMEM;
-> > > > > +
-> > > > > +	gc08a3->dev = dev;
-> > > > > +
-> > > > > +	gc08a3->xclk = devm_clk_get(dev, NULL);
-> > > > > +	if (IS_ERR(gc08a3->xclk))
-> > > > > +		return dev_err_probe(dev, PTR_ERR(gc08a3-
-> > > > > >xclk),
-> > > > > +					 "failed to get
-> > > > > xclk\n");
-> > > > > +
-> > > > > +	ret = clk_set_rate(gc08a3->xclk,
-> > > > > GC08A3_DEFAULT_CLK_FREQ);
-> > > > 
-> > > > Please see:
-> > > > <URL:
-> > > > https://hverkuil.home.xs4all.nl/spec/driver-api/camera-sensor.html#devicetree>
-> > > > ;.
-> > > 
-> > > 
-> > > Oh, that's cool it was documented!
-> > > 
-> > > The canonical link would be:
-> > > 
-> https://www.kernel.org/doc/html/latest/driver-api/media/camera-sensor.html#devicetree
-> > 
-> > I believe this is that answer to the "why are these needed" that I
-> > asked
-> > on the previous version and never got a response to. Instead, they
-> > were
-> > just removed from the binding etc.
-> 
-> About "assigned-clocks" & "assigned-clock-rates" in v1 patch, as they
-> are not used in sensor driver, I have removed them in sensor dts-
-> bindind file. And "clock-names" & "clock-frequency" are also the same,
-> they will be removed in next version.
+Smatch pointed this out.
 
-Ack. You should only need "clocks" there, indeed.
+Fixes: c81e13b929df ("drm/amd/display: Hande writeback request from userspace")
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+This is based on static analysis and only compile tested
+---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index afdcc43ea06c..333995f70239 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -8871,12 +8871,14 @@ static void dm_set_writeback(struct amdgpu_display_manager *dm,
+ 	acrtc = to_amdgpu_crtc(wb_conn->encoder.crtc);
+ 	if (!acrtc) {
+ 		DRM_ERROR("no amdgpu_crtc found\n");
++		kfree(wb_info);
+ 		return;
+ 	}
+ 
+ 	afb = to_amdgpu_framebuffer(new_con_state->writeback_job->fb);
+ 	if (!afb) {
+ 		DRM_ERROR("No amdgpu_framebuffer found\n");
++		kfree(wb_info);
+ 		return;
+ 	}
+ 
 -- 
-Regards,
+2.39.3
 
-Sakari Ailus
