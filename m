@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3AA80A91E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4208A80A928
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574396AbjLHQfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:35:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
+        id S1574441AbjLHQf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:35:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574219AbjLHQfG (ORCPT
+        with ESMTP id S1574298AbjLHQfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:35:06 -0500
+        Fri, 8 Dec 2023 11:35:11 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B599198E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:35:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34BC3C433C7;
-        Fri,  8 Dec 2023 16:35:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F169519A9
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:35:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 144D9C433B6;
+        Fri,  8 Dec 2023 16:35:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702053313;
-        bh=v2mYSDmjqdbapRfO1Kx9bcMiig2SVy+s9w1cLpmU0IY=;
+        s=k20201202; t=1702053317;
+        bh=l/ccn9TohWmVu0gidxLaFZAXe873u+W72QG48wg65qk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ME9PtPfym6Ef0DDZb+Yjsva6Tx8a2WFMT7p9z045HUvh9QMf6RYkYWO9RVuxKCFgU
-         HJcwtvyeTDA4KEjFRvwrIbXOu7CmVeFAVv63UTCBUWBRfBvmLPohHZUqUw8UlH+OjM
-         7XtiUv082yDmJAx1zPZCY03aeXILFNzg8yK+5FTCffZ4PiV0xSKCaQekcRzWHGLWdx
-         tgDLBLsAWL7w1QN3PX4zxsuozv5RHP5xxw1+h7Ke6HDg5/vbmy6mu2P7Z7JC4Keetj
-         GCv1sqJ1XsfaiO78KJ9MM0sDVB1FFKqvhgYXhoCOLIfq7BNf3nUgtbk23tcxonJOAV
-         W9PhRJauc5uaQ==
+        b=KmthFkp9R6S/S5QKzNeYjmgaMpiidbj1m4cc2zhTtKl9OKSy2IzILLGw4PS0qs3VM
+         Hh1heFlMbk9aE/p7RBhwLjnswCE20sB/esq/CO5GoY2rktts5wrkXxi6aHYiCfBRq7
+         XgjhbwiQXDa+9B2X5cePCKwa6R+ED0TZv6+eghgsMEYO2vhqjU8OtofeTWVZmo0N/u
+         RcF5U3Rm/tOZYbODaFJNlgpCv5VWA8Afh+n+MhcgtQiy7TsGZGRJV1CrT1EDsTBqcx
+         1yibxRHME3rt9nAgj5bWwwmxecDUzmirP2JGnoaWXn4gfsho0Ws6VszDbfdaPo5/6D
+         x8AlUT9JYDW2Q==
 From:   Naveen N Rao <naveen@kernel.org>
 To:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
 Cc:     Michael Ellerman <mpe@ellerman.id.au>,
@@ -37,9 +37,9 @@ Cc:     Michael Ellerman <mpe@ellerman.id.au>,
         Mark Rutland <mark.rutland@arm.com>,
         Florent Revest <revest@chromium.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [RFC PATCH 3/9] powerpc/ftrace: Remove nops after the call to ftrace_stub
-Date:   Fri,  8 Dec 2023 22:00:42 +0530
-Message-ID: <8ee5ec520e37d5523654bb2cd65a17512fb774e2.1702045299.git.naveen@kernel.org>
+Subject: [RFC PATCH 4/9] powerpc/Kconfig: Select FUNCTION_ALIGNMENT_4B
+Date:   Fri,  8 Dec 2023 22:00:43 +0530
+Message-ID: <21892186ec44abe24df0daf64f577dac0e78783f.1702045299.git.naveen@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1702045299.git.naveen@kernel.org>
 References: <cover.1702045299.git.naveen@kernel.org>
@@ -55,34 +55,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ftrace_stub is within the same CU, so there is no need for a subsequent
-nop instruction.
+From: Sathvika Vasireddy <sv@linux.ibm.com>
 
-Signed-off-by: Naveen N Rao <naveen@kernel.org>
+Commit d49a0626216b95 ("arch: Introduce CONFIG_FUNCTION_ALIGNMENT")
+introduced a generic function-alignment infrastructure. Move to using
+FUNCTION_ALIGNMENT_4B on powerpc, to use the same alignment as that of
+the existing _GLOBAL macro.
+
+Signed-off-by: Sathvika Vasireddy <sv@linux.ibm.com>
 ---
- arch/powerpc/kernel/trace/ftrace_entry.S | 2 --
- 1 file changed, 2 deletions(-)
+ arch/powerpc/Kconfig               | 1 +
+ arch/powerpc/include/asm/linkage.h | 3 ---
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/kernel/trace/ftrace_entry.S b/arch/powerpc/kernel/trace/ftrace_entry.S
-index 17d1ed3d0b40..244a1c7bb1e8 100644
---- a/arch/powerpc/kernel/trace/ftrace_entry.S
-+++ b/arch/powerpc/kernel/trace/ftrace_entry.S
-@@ -162,7 +162,6 @@ _GLOBAL(ftrace_regs_caller)
- .globl ftrace_regs_call
- ftrace_regs_call:
- 	bl	ftrace_stub
--	nop
- 	ftrace_regs_exit 1
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 6f105ee4f3cf..318e5c1b7454 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -189,6 +189,7 @@ config PPC
+ 	select EDAC_ATOMIC_SCRUB
+ 	select EDAC_SUPPORT
+ 	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY if ARCH_USING_PATCHABLE_FUNCTION_ENTRY
++	select FUNCTION_ALIGNMENT_4B
+ 	select GENERIC_ATOMIC64			if PPC32
+ 	select GENERIC_CLOCKEVENTS_BROADCAST	if SMP
+ 	select GENERIC_CMOS_UPDATE
+diff --git a/arch/powerpc/include/asm/linkage.h b/arch/powerpc/include/asm/linkage.h
+index b88d1d2cf304..b71b9582e754 100644
+--- a/arch/powerpc/include/asm/linkage.h
++++ b/arch/powerpc/include/asm/linkage.h
+@@ -4,9 +4,6 @@
  
- _GLOBAL(ftrace_caller)
-@@ -171,7 +170,6 @@ _GLOBAL(ftrace_caller)
- .globl ftrace_call
- ftrace_call:
- 	bl	ftrace_stub
--	nop
- 	ftrace_regs_exit 0
+ #include <asm/types.h>
  
- _GLOBAL(ftrace_stub)
+-#define __ALIGN		.align 2
+-#define __ALIGN_STR	".align 2"
+-
+ #ifdef CONFIG_PPC64_ELF_ABI_V1
+ #define cond_syscall(x) \
+ 	asm ("\t.weak " #x "\n\t.set " #x ", sys_ni_syscall\n"		\
 -- 
 2.43.0
 
