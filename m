@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CB78096FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4DA8096F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444199AbjLHAPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 19:15:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbjLHAPW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232791AbjLHAPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 7 Dec 2023 19:15:22 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B34E1718
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 16:15:24 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-7b6fe5d67d4so37311439f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 16:15:24 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbjLHAPU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Dec 2023 19:15:20 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81AAE171C
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 16:15:25 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-7b37405f64aso49731439f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 16:15:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701994523; x=1702599323; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701994525; x=1702599325; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XYBfZFrFCQxla/pEibbSMZB/d/vbymc5qpE9CNsTphs=;
-        b=CLugazX+A20X81Nwgj3/07okrth11jKod5GoaeGZC189g7aJGBkRDQGdgblDHxlLr9
-         2kxKlAMND5ZlWunrof6nT99X2iiBGZVoa77yiq+3LUeTu7+/FsplEWmu4GN4wcvI6smA
-         GGlNrGF4k9dN0OK/LYUnGQ8bHIT6CTvwVVBloPxfR0O8I8UltRdZA+7RJOO6Gi4ItTs6
-         tVmBH3ItmRQAbtcXNuJX0YMxGQyFy2WgAHdwU0wbgkXC1sM/9wPwq/BFX3y8jSwJtYy+
-         JrSeOBZyzdmnzpbNPZf7x9cyZs7YU39eYr68qW1JADlLpySayirhoZwQ7yUzJg32xJQG
-         C+YA==
+        bh=RJm+8y0/qDoimPsT2MU0Y1LRoOh1PxcpEIrcd3ya5V0=;
+        b=Ctfq1Rl5X+Kfuw3yv+Ivdd+QvpovYJ+qQ7IpdTDu7xK49lvNxUgWJMwBdxptv5eUBc
+         U9xXvFUXvI7wZo0uEsOOKsn/LsHshdEH4aLV/jLVxkTfG9i7auQnawwbofGJedizGhiu
+         rXSVdlN6SQEMCImjkxiymu56/wloErlEyvSdwiSf9QF8NPvLkhuOF/MzLE7/AYdQy7qm
+         DsmoulYw7GXbUiq44CN5b/iQ46EwQpu2aOdjwVtYf0E2ejsCqfQcu0YclbkbeH+t5Gau
+         +abah8Uku8EnTGBFpJhaCdS1FXAynXtrl4A3z29/Wiaw+qb5HmEz23GhEeJR0BQxWcAC
+         2C/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701994523; x=1702599323;
+        d=1e100.net; s=20230601; t=1701994525; x=1702599325;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XYBfZFrFCQxla/pEibbSMZB/d/vbymc5qpE9CNsTphs=;
-        b=H9Wc66Nes7RPbPnfKVxnY5iA2AxnOq8QzJoG0+mD7anOCW8wnSRvGaBENLOW7kNB/y
-         8o4tnkCGEldBjFkYbXV0r/YDFd1kHZB0mPewAcdFmTMWrnQlmibgu6atYMYEpfMde9Kw
-         2f7yGiz8wJZWTZ9yPek+ScH6vChoISsa7On+WQDGBrbIfyA1AG49aFZlogZ4Rf0LgiPh
-         bsBNn1JjtncfPpRgaJ0aqG+A+vkcCQ3lfpNEz3r+Hz1T/WkwD1xo7U0w4FhkMvZQznnQ
-         SuRIbkGPtYEGdMUP3SMQUUdK6GZQNrdIGlmD5NKB8tGSs9stNCU+CzSxDKwa3UNmIMKZ
-         fAAw==
-X-Gm-Message-State: AOJu0Yx6CjyzJHb9G5fB7u2BLITAilSi+3Ps1Gpv1cC40++AQKCY/xRI
-        iodhCJ8o+5tbdlnQQ6vZUrQ=
-X-Google-Smtp-Source: AGHT+IEdG6hmZblXf2qIZVCAYDs3K/VJTdBFz+9WmiaKGNXjKa1YggWIUX655LRmFNFlQ9EkmhMwiA==
-X-Received: by 2002:a05:6602:4913:b0:7b7:74a:d3a1 with SMTP id ef19-20020a056602491300b007b7074ad3a1mr1109717iob.24.1701994523095;
-        Thu, 07 Dec 2023 16:15:23 -0800 (PST)
+        bh=RJm+8y0/qDoimPsT2MU0Y1LRoOh1PxcpEIrcd3ya5V0=;
+        b=tHNdyq5f7AgcutU3WmBXRnRblD4T/c6qVYJCIw80ljsNUrzlmIoBEw9lZBflPoNI92
+         8QM2BlKpJvSydG7tEtmqv0vHspLATC9okmH/Kjt+FUfbN4PGFDwM4AgJ3SFFM89N+6DA
+         BNtfn5pgbvZ2poHSD3ohrQudm112QF2FcZ+R+Sn0FeVpqhT4RPEoDSo88FvgCUwNEWEg
+         E5jEGUFu42mUCj7fkCZzc5VExoXlB0gIAZutauFTp5xzNk1IqdIEV64W2dcDjae3aros
+         /fwuivAgaiVT6S6QYCIB6PMTq7L+KcsAdB497GI+skFUyd9lElQyGbMXff68Pp1/nxPl
+         Ys/w==
+X-Gm-Message-State: AOJu0YxUbkjMdhg87ZBaOqvLPS654nXAnA9XLEoZBNZXigl2YzQSIKYe
+        dcGj03+2ToH/sBU5+PIWd7dUN8brsF4kOQ==
+X-Google-Smtp-Source: AGHT+IFXJyOCFmbJ8M9MrsCRGtIr0tsrctkU3hsZegUxyES0yMI3LJnMNovTm1fP4+y+ofa/uAKTOg==
+X-Received: by 2002:a6b:ef02:0:b0:7b6:f0b8:56dd with SMTP id k2-20020a6bef02000000b007b6f0b856ddmr2307315ioh.25.1701994524879;
+        Thu, 07 Dec 2023 16:15:24 -0800 (PST)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id z18-20020a056638241200b004664a0a7f2csm184652jat.177.2023.12.07.16.15.21
+        by smtp.googlemail.com with ESMTPSA id z18-20020a056638241200b004664a0a7f2csm184652jat.177.2023.12.07.16.15.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 16:15:22 -0800 (PST)
+        Thu, 07 Dec 2023 16:15:23 -0800 (PST)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     lb@semihalf.com, linux-kernel@vger.kernel.org
 Cc:     akpm@linux-foundation.org, bleung@google.com, contact@emersion.fr,
@@ -60,14 +60,13 @@ Cc:     akpm@linux-foundation.org, bleung@google.com, contact@emersion.fr,
         sergey.senozhatsky@gmail.com, upstream@semihalf.com,
         vincent.whitchurch@axis.com, yanivt@google.com,
         gregkh@linuxfoundation.org
-Subject: [re: PATCH v2 00/15 -  00/11] dyndbg: add support for writing debug logs to trace
-Date:   Thu,  7 Dec 2023 17:15:03 -0700
-Message-ID: <cover.1701993656.git.jim.cromie@gmail.com>
+Subject: [re: PATCH v2 00/15 -  01/11] dyndbg: export _print_hex_dump
+Date:   Thu,  7 Dec 2023 17:15:04 -0700
+Message-ID: <b9d003173239d3b2f3b42697372da8b727527135.1701993656.git.jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <CAK8ByeK8dGcbxfXghw6=LrhSWLmO0a4XuB8C0nsUc812aoU0Pw@mail.gmail.com>
-References: <CAK8ByeK8dGcbxfXghw6=LrhSWLmO0a4XuB8C0nsUc812aoU0Pw@mail.gmail.com>
+In-Reply-To: <cover.1701993656.git.jim.cromie@gmail.com>
+References: <CAK8ByeK8dGcbxfXghw6=LrhSWLmO0a4XuB8C0nsUc812aoU0Pw@mail.gmail.com> <cover.1701993656.git.jim.cromie@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -79,711 +78,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi Lukas,
-
-Sorry for the delay, I probably should have split this up.
-(also cc'g gregkh)
-
-Ive been banging on your v2 patchset:
-https://lore.kernel.org/lkml/20231130234048.157509-1-lb@semihalf.com/
-
-Things are looking pretty good, a few issues follow. And some patches.
-
-trivial:
-
-  dyndbg: export _print_hex_dump  # squash wo comment
-  dyndbg: tweak pr_info format s/trace dest/trace_dest/  # greppability squash
-  dyndbg: disambiguate quoting in a debug msg
-  dyndbg: fix old BUG_ON in >control parser
-
-Then:
-
-  dyndbg: change +T:name_terminator to dot
-  dyndbg: treat comma as a token separator
-
-1st allows 2nd, 2nd allows simpler arg-passing, boot-args, etc:
-
-  echo module,test_dynamic_debug,class,L2,+p > /proc/dynamic_debug/control
-  modprobe test_dynamic_debug dyndbg=class,L2,+mfl
-
-Given theres no legacy wrt comma, swapping it now with dot seems
-better semantically than "dot as token/list separator".
-
-Aside: /proc/dynamic_debug/control is always there (if configd), even
-when <debugfs> isn't mounted.  Its more universal, and copy-pastable.
-
-  dyndbg: __skip_spaces - and comma
-  dyndbg: split multi-query strings with %
-
-% allows escape-free multi-cmd dyndbg args:
-
-  modprobe test_dynamic_debug \
-    dyndbg=open,selftest%class,D2_CORE,+T:selftest.mf
-  
-  dyndbg: reduce verbose/debug clutter
-  dyndbg: move lock,unlock into ddebug_change, drop goto - revisit
-
-Ive just pushed it, I will bump my version here.
-To github.com:jimc/linux.git
- + 20d113eb6f9a...66fa2e4cb989 lukas-v2.1 -> lukas-v2.1 (forced update)
-
-SELFTEST
-
-Ive taken the liberty to write an ad-hoc test script (inline below),
-to exersize the parser with legacy command input, and with the new
-stuff mentioned above: comma-separated-tokens, %-separated-multi-cmds,
-while counting changes to builtin,etc modules, to validate against
-expectations.
-
-The change-count tests achieve some closed-loop testing, but checking
-syslog for messages written always seemed too hard/unreliable.  Your
-private trace-instances work promises a solution, by giving an
-observable closed system to build upon.
-
-I made some attempts to write messages to the trace-buf, but ran out
-of clues*tuits.  And I encountered a couple more definite problems:
-
-1- modprobe/rmmod lifecycle probs
-
-Ive coded some blue-sky and not-so-proper "modprobe,+T:it,-T:it,rmmod"
-life-cycle scenarios, which can wedge a previously created instance.
-Once wedged, I cannot recover.  See the test_private_trace{,_2,_3}
-functions, and the error_log_ref() following each.
-
-This brittleness begs a question; should we have auto-open (mapping
-new names to available 1-63 trc-ids) ?  And non-close ? If it just did
-the right thing, particularly on rmmod, it would prevent "misuse".
-
-I don't think auto-open obsoletes the open (& esp) close commands, but
-Id like to see scripted test scenarios using close in combo with the
-right /sys/kernel/tracing/* manipulations, to prove its not all just a
-fever dream.
-
-Your expertise in opening, writing to, manipulating & destroying
-private (and the global) tracebufs, distilled into new shell funcs,
-would be enormously helpful towards demonstrating the private-buffer
-use case and its value.
-
-2- some new flags parse error:
-
-[ 1273.074535] dyndbg:  32 debug prints in module test_dynamic_debug
-[ 1273.075365] dyndbg: module: test_dynamic_debug dyndbg="class,D2_CORE,+T:foo%class,D2_KMS,+T:foo"
-[ 1273.076307] dyndbg: query 0: <class,D2_CORE,+T:foo> on module: <test_dynamic_debug>
-[ 1273.077068] dyndbg: split into words: "class" "D2_CORE" "+T:foo"
-[ 1273.077673] dyndbg: unknown flag 'c'
-[ 1273.078033] dyndbg: flags parse failed on 2: +T:foo
-[ 1273.078519] dyndbg: query 1: <class,D2_KMS,+T:foo> on module: <test_dynamic_debug>
-[ 1273.079266] dyndbg: split into words: "class" "D2_KMS" "+T:foo"
-[ 1273.079872] dyndbg: unknown flag '�'
-[ 1273.080228] dyndbg: flags parse failed on 2: +T:foo
-[ 1273.080716] dyndbg: processed 2 queries, with 0 matches, 2 errs
-: 0 matches on =Tl 
-
-I have a suspicion this relates to moving the parse_flags call in
-ddebug_query, but I havent dug in.
-
-
-I also have some reservations about the default dest; 1st that it is a
-global state var, as noted at bottom of control:
-
-  [root@v6 lx]# ddgrep \\btrace\\b	# a better/narrower search-term ?  
-  ...
-  Default trace destination: foo	# add a '#:' prefix to these lines ?
-  Opened trace instances:		# all values should be on this line
-
-Then theres the "preset" value, ie each site's dest_id (sorry I forgot
-your fieldname).  I presume the default would override such a "preset"
-(otherwise it would have no effect).
-
-Is the default set on last open ? or on next use of +T:<foo> ?
-
-In the no-default world, a user/tester would decide how many
-trace-instances are needed, and map sets of callsites to them.
-
-  # configure drm-debug streams for this test scenario
-  cat<<EOF >/proc/dynamic_debug/control
-   open drm_core
-   open drm_mix
-   open driver_1 	# we can separate by modname but not drvr-number
-   open driver_2
-   class DRM_UT_CORE -T:drm_core	# set dest_id, disabled state
-   class DRM_UT_CORE +mf		# traces dont do prefixing (should it?)
-   # mix KMS & ATOMIC into 1 stream
-   class DRM_UT_KMS -T:drm_mix
-   class DRM_UT_ATOMIC -T:drm_mix
-  EOF
-
-Then perhaps to turn on/off when needed: (legacy analogue version)
-
-  echo 0x15 > /sys/module/drm/parameters/debug_trace
-
-With those trace-dest presets honored, the configured drm_core &
-drm_mix streams persist.  If a later enablement applies the
-then-current default trace-dest, it would spoil this scheme.
-
-Could you elaborate a scenario or 2 where the default behavior does
-something specific, and that its the right thing ?  I dont understand
-it yet.
-
-OTOH
-
-One limitation of the above: the drm.debug_trace (posited above) would
-turn on all Ts in all those class'd callsites across the whole
-subsystem, irrespective of their preconfigured destination.  That was
-always inherent in drm.debug, but its less than perfect.
-
-It sort-of defeats the point of doing +T only on the useful callsites.
-
-And global event buf is also enabled, it might be flood-prone.
-
-  echo 1 > /sys/kernel/tracing/events/dyndbg/enable
-
-It would help if we could filter on trace-instance names:
-(this sounds familiar :-)
-
-  ddcmd module '*' trace_dest drm_mix +T
-
-
-In reality, the dest-id is not even dependent on tracing per-se, it is
-a user classification system (in contrast to class <subsys-names>).
-It just happens to be tied by +T:name syntax to tracefs.
-
-No promise about +p:_alt_log_.mflt having meaning, or working.
-
-
-
-anyway, Ive gone on long enough.  heres that/those scripts
-
-cat dd-tools.rc
-#!/bin/bash
-
-function ddcmd () {
-    echo $* > /proc/dynamic_debug/control
-}
-function ddcat () {
-    cat $1 > /proc/dynamic_debug/control
-}
-function vx () {
-    echo $1 > /sys/module/dynamic_debug/parameters/verbose
-}
-function ddgrep () {
-    grep $1 /proc/dynamic_debug/control
-}
-function doprints () {
-    cat   /sys/module/test_dynamic_debug/parameters/do_prints
-}
-
-cat dd-selftest.rc
-#!/bin/bash
-# dd-selftest.rc: shell-fns & test-script for dynamic-debug
-# mostly run as:
-# vng --force-9p -v -e ./dd-selftest.rc
-
-. dd-tools.rc
-# vx 3
-
-function check_matches {
-    let ct=$(ddgrep $1 | wc -l )
-    echo  ": $ct matches on $1 "
-    [ "$2" == "-v" ] && ddgrep $1
-}
-function check_instance {
-    # 1. trace instance name 2. -v for verbose
-    if [ -e /sys/kernel/tracing/instances/$1 ]; then
-	if [ "$2" == "-v" ] ; then
-	    echo "ls -l /sys/kernel/tracing/instances/$1: "
-	    ls -l /sys/kernel/tracing/instances/$1
-	fi
-    else
-	echo "no instance: $1"
-    fi
-}
-function tmark {
-    echo $* > /sys/kernel/tracing/trace_marker
-}
-function read_trace_instance {
-    # get traces opened, default
-    tail -n9 /proc/dynamic_debug/control | grep -P \\w+ | grep -vP ^drivers/
-}
-function error_log_ref {
-    # to show what I got
-    : echo "# error-log-ref: $1"
-    : echo cat \$2
-}
-function ifrmmod {
-    lsmod | grep $1 || echo $1 not there
-    lsmod | grep $1 && rmmod $1
-}
-
-echo LOADING TEST FUNCS
-echo SHLVL: $SHLVL
-
-function basic_tests {
-    echo \# BASIC_TESTS
-    
-    ddcmd =_ "# zero everything (except class'd sites)"
-    check_matches =p 0
-
-    # there are several main's :-/
-    ddcmd module main file */module/main.c +p
-    check_matches =p 14
-    ddcmd =_
-    check_matches =p 0
-    
-    ddcmd module mptcp =_
-    ddcmd module mptcp +pmf
-    check_matches =pmf 120
-    ddcmd =_
-
-    # multi-cmd newline separated with embedded comments
-    cat <<"EOF" > /proc/dynamic_debug/control
-      module main +mf       		# multi-query
-      module main file init/main.c +ml	# newline separated
-      module kvm +fl			# comment prefixed
-      module kvm_intel  +flt		#
-EOF
-    # the intersection of all those main's is hard to track/count
-    # esp when mixed with overlapping greps
-    check_matches =mf 27
-    check_matches =ml 0
-    check_matches =mfl 6
-    check_matches =fl 29
-    check_matches =flt 16
-    ddcmd =_
-}
-basic_tests; # run
-
-function comma_terminator_tests {
-    echo \# COMMA_TERMINATOR_TESTS
-
-    # try combos of space & comma
-    ddcmd module,mptcp,=_
-    ddcmd module,mptcp,+mf
-    ddcmd " module, mptcp, +mfl"
-    check_matches =pmf 120
-    ddcmd module , mptcp,-p
-    check_matches =mf 120
-    check_matches =p 0
-    ddcmd ,module ,,  mptcp, -p
-    ddcmd ",module ,,  mptcp, -p"
-    ddcmd =_
-}
-comma_terminator_tests; # run
-
-function private_trace_test {
-    echo \# PRIVATE_TRACE_TEST - proper lifo cycle - open, enable:named disable:named close
-    
-    ddcmd open usb_stream
-    check_instance usb_stream
-    ddcmd module usbcore +T:usb_stream.mf
-    check_matches =T:usb_stream.mf 161
-    ddcmd module usbcore -T:usb_stream.mf
-    check_matches =T:usb_stream.mf 0
-    read_trace_instance
-    ddcmd close usb_stream
-    read_trace_instance
-    ddcmd =_
-}
-private_trace_test; # run
-
-function test_percent_splitting {
-    echo \# TEST_PERCENT_SPLITTING - multi-command splitting on %
-    ddcmd =_
-    modprobe test_dynamic_debug dyndbg=class,D2_CORE,+pf%class,D2_KMS,+pt%class,D2_ATOMIC,+pm
-    check_matches =pf -v
-    check_matches =pt -v
-    check_matches =pm -v
-    ddcmd class,D2_CORE,+mf%class,D2_KMS,+lt%class,D2_ATOMIC,+ml "# add some prefixes"
-    check_matches =pmf -v
-    check_matches =plt -v
-    check_matches =pml -v
-    doprints
-    ifrmmod test_dynamic_debug
-}
-test_percent_splitting; # run
-
-function test_actual_trace {
-    echo \# test_actual_trace
-    ddcmd =_
-    ifrmmod test_dynamic_debug
-    echo 1 >/sys/kernel/tracing/tracing_on
-    echo 1 >/sys/kernel/tracing/events/dyndbg/enable
-
-    modprobe test_dynamic_debug dyndbg=class,D2_CORE,+T
-    check_matches =T -v
-    tmark here comes the WARN
-    doprints
-    cat /sys/kernel/tracing/trace
-}
-test_actual_trace; # run, hits 1313:  WARN_ON_ONCE(!arr)
-
-error_log_ref test_actual_trace <<"EO_LOG"
-[    6.587595] dyndbg: read 3 bytes from userspace
-[    6.588174] dyndbg: query 0: <=_> on module: <*>
-[    6.588842] dyndbg: processed 1 queries, with 3236 matches, 0 errs
-[    6.726160] dyndbg: class[0]: module:test_dynamic_debug base:22 len:8 ty:3
-[    6.727052] dyndbg: class[1]: module:test_dynamic_debug base:14 len:8 ty:1
-[    6.728158] dyndbg: class[2]: module:test_dynamic_debug base:10 len:3 ty:2
-[    6.729112] dyndbg: class[3]: module:test_dynamic_debug base:0 len:10 ty:0
-[    6.729969] dyndbg: module:test_dynamic_debug attached 4 classes
-[    6.730729] dyndbg:  32 debug prints in module test_dynamic_debug
-[    6.731494] dyndbg: module: test_dynamic_debug dyndbg="class,D2_CORE,+T"
-[    6.732350] dyndbg: query 0: <class,D2_CORE,+T> on module: <test_dynamic_debug>
-[    6.733291] dyndbg: processed 1 queries, with 1 matches, 0 errs
-[    6.734224] ------------[ cut here ]------------
-[    6.734811] WARNING: CPU: 1 PID: 472 at lib/dynamic_debug.c:1309 ddebug_printk+0xde/0xf0
-[    6.735814] Modules linked in: test_dynamic_debug(E+) intel_rapl_msr(E) crc32_pclmul(E) intel_rapl_common(E) ghash_clmulni_intel(E) crct10dif_pclmul(E) crc32c_intel(E) joydev(E) serio_raw(E) pcspkr(E) i2c_piix4(E) [last unloaded: test_dynamic_debug(E)]
-[    6.738594] CPU: 1 PID: 472 Comm: modprobe Tainted: G        W   E      6.6.0-tf2-virtme-00026-g20d113eb6f9a-dirty #220
-[    6.740008] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-[    6.741669] RIP: 0010:ddebug_printk+0xde/0xf0
-[    6.742220] Code: 48 8d 44 24 28 48 89 44 24 20 e8 ed 71 9c ff 48 83 c4 58 5b 41 5c 5d c3 48 8d 56 02 48 8d 4c 24 10 31 f6 e8 84 f9 ff ff eb b5 <0f> 0b eb a0 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 41 57 48 89
-[    6.745072] RSP: 0018:ffffb38140453bd0 EFLAGS: 00010246
-[    6.745914] RAX: 0000000000000000 RBX: ffffffffc03b97e0 RCX: ffffb38140453c50
-[    6.747002] RDX: ffffb38140453be0 RSI: ffffffffb26f8150 RDI: 0000000000000000
-[    6.747883] RBP: ffffb38140453c38 R08: 0000000000000020 R09: ffffffffb3370ce4
-[    6.748753] R10: 0000000000000001 R11: 0000000000010000 R12: ffffffffb26f8150
-[    6.749586] R13: ffff9b68029bc440 R14: ffff9b6805640800 R15: ffff9b6805c9d640
-[    6.750497] FS:  00007f7cdc453740(0000) GS:ffff9b683ec80000(0000) knlGS:0000000000000000
-[    6.751537] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    6.752310] CR2: 000055ce7a609ae0 CR3: 000000000575a000 CR4: 0000000000750ee0
-[    6.753238] PKRU: 55555554
-[    6.753604] Call Trace:
-[    6.753910]  <TASK>
-[    6.754240]  ? ddebug_printk+0xde/0xf0
-[    6.754772]  ? __warn+0x7d/0x130
-[    6.755197]  ? ddebug_printk+0xde/0xf0
-[    6.755669]  ? report_bug+0x189/0x1c0
-[    6.756176]  ? handle_bug+0x38/0x70
-[    6.756642]  ? exc_invalid_op+0x13/0x60
-[    6.757112]  ? asm_exc_invalid_op+0x16/0x20
-[    6.757635]  ? ddebug_printk+0xde/0xf0
-[    6.758123]  ? 0xffffffffc03c0000
-[    6.758533]  __dynamic_pr_debug+0x133/0x170
-[    6.759066]  ? 0xffffffffc03c0000
-[    6.759438]  do_cats+0x127/0x180 [test_dynamic_debug]
-[    6.760063]  test_dynamic_debug_init+0x7/0x1000 [test_dynamic_debug]
-[    6.760890]  do_one_initcall+0x43/0x2f0
-[    6.761399]  ? kmalloc_trace+0x26/0x90
-[    6.761904]  do_init_module+0x9d/0x290
-[    6.762377]  init_module_from_file+0x77/0xd0
-[    6.762877]  idempotent_init_module+0xf9/0x270
-[    6.763439]  __x64_sys_finit_module+0x5a/0xb0
-[    6.764040]  do_syscall_64+0x35/0x80
-[    6.764474]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-[    6.765089] RIP: 0033:0x7f7cdc56b5ad
-[    6.765522] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 53 48 0c 00 f7 d8 64 89 01 48
-[    6.767763] RSP: 002b:00007fff198e28d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-[    6.768781] RAX: ffffffffffffffda RBX: 000055ce7bb53980 RCX: 00007f7cdc56b5ad
-[    6.769611] RDX: 0000000000000000 RSI: 000055ce7bb72930 RDI: 0000000000000006
-[    6.770598] RBP: 00007fff198e2990 R08: 0000000000000000 R09: 0000000000000002
-[    6.771447] R10: 0000000000000006 R11: 0000000000000246 R12: 000055ce7bb72930
-[    6.772328] R13: 0000000000040000 R14: 000055ce7bb53bc0 R15: 000055ce7bb72930
-[    6.773252]  </TASK>
-[    6.773532] ---[ end trace 0000000000000000 ]---
-: 2 matches on =T
-drivers/cpufreq/intel_pstate.c:1912 [intel_pstate]core_get_max_pstate =_ "max_pstate=TAC %x\n"
-lib/test_dynamic_debug.c:109 [test_dynamic_debug]do_cats =T:(null) "D2_CORE msg\n" class:D2_CORE
-did do_prints
-# tracer: nop
-#
-# entries-in-buffer/entries-written: 0/0   #P:4
-EO_LOG
-
-# that 2nd =T match has :(null) in the control-line. I didnt chase it.
-
-function test_early_close () {
-    ddcmd open usb_stream
-    ddcmd module usbcore +T:usb_stream.mf
-    check_matches =T:usb_stream.mf 161
-    echo ":not-running # ddcmd module usbcore -T:usb_stream.mf"
-    ddcmd close usb_stream
-}
-# test_early_close - works, unused, refactored below.
-function self_start {
-    echo \# open, modprobe +T:it
-    ddcmd open selftest
-    check_instance selftest
-    modprobe test_dynamic_debug dyndbg=+T:selftest.mf
-    check_matches =T:selftest.mf -v
-}
-function self_end_normal {
-    echo \# disable -T:it, rmmod, close
-    ddcmd module test_dynamic_debug -T:selftest # leave mf
-    check_matches =mf -v
-    ifrmmod test_dynamic_debug
-    ddcmd close selftest
-}
-function self_end_disable_anon {
-    echo \# disable, close, rmmod
-    ddcmd module test_dynamic_debug -T
-    check_matches =mf -v
-    ddcmd close selftest
-    ifrmmod test_dynamic_debug
-}
-function self_end_disable_anon_mf {
-    echo \# disable, close, rmmod
-    ddcmd module test_dynamic_debug -Tf
-    check_matches =m -v
-    ddcmd close selftest
-    ifrmmod test_dynamic_debug
-}
-function self_end_nodisable {
-    echo \# SKIPPING: ddcmd module test_dynamic_debug -T:selftest
-    rmmod test_dynamic_debug
-    echo FAIL_COMING on close
-    ddcmd close selftest
-}
-function self_test_ {
-    echo "# SELFTEST $1"
-    self_start
-    self_end_$1
-}
-
-function cycle_tests_normal {
-    echo \# CYCLE_TESTS_NORMAL
-
-    self_test_ normal		# ok
-    self_test_ disable_anon 	# ok
-    ddgrep selftest
-    
-    self_test_ normal		# ok
-    self_test_ disable_anon_mf	#
-    ddgrep selftest
-}
-cycle_tests_normal; # run
-
-function cycle_tests_problem {
-    self_test_ nodisable	# write error: Device or resource busy
-    ddgrep selftest		# still used, defaulted - prob
-
-    self_test_ normal	# open error, write error persists
-    ddgrep selftest	# still used, defaulted
-
-    ddcmd close selftest # too late ??
-}
-# cycle_tests_problem;
-
-
-function test_private_trace {
-    echo "# TEST_PRIVATE_TRACE"
-    ddcmd =_
-
-    ifrmmod test_dynamic_debug
-    echo 1 >/sys/kernel/tracing/tracing_on
-    echo 1 >/sys/kernel/tracing/events/dyndbg/enable
-    
-    ddcmd open foo
-    modprobe test_dynamic_debug
-    ddcmd class,D2_CORE,+T:foo,%class,D2_KMS,+T:foo
-
-    check_matches =Tl -v
-    check_matches =Tmf -v
-    echo 1 >/sys/kernel/tracing/tracing_on
-    echo 1 >/sys/kernel/tracing/events/dyndbg/enable
-    tmark test_private_trace about to do_prints
-    doprints
-    cat /sys/kernel/tracing/trace
-
-    ddcmd class,D2_CORE,-T:foo
-    ddcmd close foo
-    ddcmd close bar
-    ifrmmod test_dynamic_debug
-}
-test_private_trace; # run
-
-error_log_ref test_private_trace <<EOF
-# test_private_trace
-[    7.803744] dyndbg: read 3 bytes from userspace
-[    7.804329] dyndbg: query 0: <=_> on module: <*>
-[    7.804844] dyndbg: processed 1 queries, with 3236 matches, 0 errs
-rmmod: ERROR: Module test_dynamic_debug is not currently loaded
-[    7.838191] dyndbg: read 9 bytes from userspace
-[    7.838858] dyndbg: query 0: <open foo> on module: <*>
-[    7.872066] dyndbg: processed 1 queries, with 0 matches, 0 errs
-[    7.991723] dyndbg: class[0]: module:test_dynamic_debug base:22 len:8 ty:3
-[    7.992488] dyndbg: class[1]: module:test_dynamic_debug base:14 len:8 ty:1
-[    7.993178] dyndbg: class[2]: module:test_dynamic_debug base:10 len:3 ty:2
-[    7.993873] dyndbg: class[3]: module:test_dynamic_debug base:0 len:10 ty:0
-[    7.994560] dyndbg: module:test_dynamic_debug attached 4 classes
-[    7.995174] dyndbg:  32 debug prints in module test_dynamic_debug
-[    7.998426] dyndbg: read 42 bytes from userspace
-[    7.999169] dyndbg: query 0: <class,D2_CORE,+T:foo,> on module: <*>
-[    8.000126] dyndbg: query 1: <class,D2_KMS,+T:foo> on module: <*>
-[    8.000956] dyndbg: processed 2 queries, with 2 matches, 0 errs
-: 0 matches on =Tl
-: 0 matches on =Tmf
-did do_prints
-# tracer: nop
-#
-# entries-in-buffer/entries-written: 2/2   #P:4
-#
-#                                _-----=> irqs-off/BH-disabled
-#                               / _----=> need-resched
-#                              | / _---=> hardirq/softirq
-#                              || / _--=> preempt-depth
-#                              ||| / _-=> migrate-disable
-#                              |||| /     delay
-#           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-#              | |         |   |||||     |         |
-  dd-selftest.rc-375     [003] .....     6.876234: tracing_mark_write: here comes the WARN
-  dd-selftest.rc-375     [003] .....     8.168406: tracing_mark_write: should be ready
-[    8.093538] dyndbg: read 21 bytes from userspace
-[    8.094156] dyndbg: query 0: <class,D2_CORE,-T:foo> on module: <*>
-[    8.094924] dyndbg: processed 1 queries, with 1 matches, 0 errs
-[    8.095560] dyndbg: read 10 bytes from userspace
-[    8.096038] dyndbg: query 0: <close foo> on module: <*>
-[    8.096565] dyndbg: trace instance is being used name=foo, use_cnt=1
-[    8.097198] dyndbg: processed 1 queries, with 0 matches, 1 errs
-dd-tools.rc: line 4: echo: write error: Device or resource busy
-[    8.097850] dyndbg: read 10 bytes from userspace
-[    8.098356] dyndbg: query 0: <close bar> on module: <*>
-[    8.098887] dyndbg: processed 1 queries, with 0 matches, 1 errs
-dd-tools.rc: line 4: echo: write error: No such file or directory
-EOF
-
-function test_private_trace_2 {
-    echo "# TEST_PRIVATE_TRACE_2"
-    
-    ddcmd =_
-    rmmod test_dynamic_debug
-    echo 1 >/sys/kernel/tracing/tracing_on
-    echo 1 >/sys/kernel/tracing/events/dyndbg/enable
-    
-    ddcmd open foo \; open bar	# 2nd fails
-    modprobe test_dynamic_debug
-    ddcmd class,D2_CORE,+T:foo
-    ddcmd class,D2_KMS,+T:foo
-    ddcmd class D2_CORE +T:foo \; class D2_KMS +T:foo
-
-    echo \# this breaks ??
-    ddcmd "class,D2_CORE,+T:foo;,class,D2_KMS,+T:foo"
-    # ddcmd class,D2_CORE,+T:foo\;class,D2_KMS,+T:foo
-
-    check_matches =Tl -v
-    check_matches =Tmf -v
-    echo 1 >/sys/kernel/tracing/tracing_on
-    echo 1 >/sys/kernel/tracing/events/dyndbg/enable
-    tmark test_private_trace_2 about to do_prints
-    doprints
-    cat /sys/kernel/tracing/trace
-    #rmmod test_dynamic_debug
-}
-test_private_trace_2;  # run
-
-# a real parse error in this log, with same input as worked above.
-# the unkown flag 'c' error conflicts with what the following error
-# says is the flags token
-
-error_log_ref test_private_trace_2 <<EOF
-[    8.107982] d# test_private_trace_2
-yndbg: read 3 bytes from userspace
-[    8.108490] dyndbg: query 0: <=_> on module: <*>
-[    8.108997] dyndbg: processed 1 queries, with 3241 matches, 0 errs
-[    8.139645] dyndbg: removed module "test_dynamic_debug"
-[    8.152344] dyndbg: read 20 bytes from userspace
-[    8.152952] dyndbg: query 0: <open foo > on module: <*>
-[    8.153610] dyndbg: instance is already opened name:foo
-[    8.153610]  
-[    8.153612] dyndbg: query 1: <open bar> on module: <*>
-[    8.185399] dyndbg: processed 2 queries, with 0 matches, 1 errs
-dd-tools.rc: line 4: echo: write error: File exists
-[    8.300750] dyndbg: class[0]: module:test_dynamic_debug base:22 len:8 ty:3
-[    8.301509] dyndbg: class[1]: module:test_dynamic_debug base:14 len:8 ty:1
-[    8.302189] dyndbg: class[2]: module:test_dynamic_debug base:10 len:3 ty:2
-[    8.302876] dyndbg: class[3]: module:test_dynamic_debug base:0 len:10 ty:0
-[    8.303550] dyndbg: module:test_dynamic_debug attached 4 classes
-[    8.304147] dyndbg:  32 debug prints in module test_dynamic_debug
-[    8.307165] dyndbg: read 21 bytes from userspace
-[    8.307754] dyndbg: query 0: <class,D2_CORE,+T:foo> on module: <*>
-[    8.308914] dyndbg: processed 1 queries, with 1 matches, 0 errs
-[    8.310076] dyndbg: read 20 bytes from userspace
-[    8.310916] dyndbg: query 0: <class,D2_KMS,+T:foo> on module: <*>
-[    8.311915] dyndbg: processed 1 queries, with 1 matches, 0 errs
-[    8.312764] dyndbg: read 43 bytes from userspace
-[    8.313597] dyndbg: query 0: <class D2_CORE +T:foo > on module: <*>
-[    8.314697] dyndbg: query 1: <class D2_KMS +T:foo> on module: <*>
-[    8.315687] dyndbg: processed 2 queries, with 2 matches, 0 errs
-# this breaks ??
-[    8.320048] dyndbg: read 41 bytes from userspace
-[    8.320904] dyndbg: query 0: <class,D2_CORE,+T:foo> on module: <*>
-[    8.321925] dyndbg: unknown flag 'c'
-[    8.322525] dyndbg: flags parse failed on 2: +T:foo
-[    8.323348] dyndbg: query 1: <class,D2_KMS,+T:foo> on module: <*>
-[    8.324428] dyndbg: processed 2 queries, with 1 matches, 1 errs
-dd-tools.rc: line 4: echo: write error: Invalid argument
-[    8.325536] dyndbg: read 41 bytes from userspace
-[    8.326305] dyndbg: query 0: <class,D2_CORE,+T:foo> on module: <*>
-[    8.327415] dyndbg: unknown flag 'c'
-[    8.328138] dyndbg: flags parse failed on 2: +T:foo
-[    8.328993] dyndbg: query 1: <class,D2_KMS,+T:foo> on module: <*>
-[    8.330035] dyndbg: processed 2 queries, with 1 matches, 1 errs
-dd-tools.rc: line 4: echo: write error: Invalid argument
-: 0 matches on =Tl 
-: 0 matches on =Tmf 
-did do_prints
-# tracer: nop
-#
-# entries-in-buffer/entries-written: 3/3   #P:4
-#
-#                                _-----=> irqs-off/BH-disabled
-#                               / _----=> need-resched
-#                              | / _---=> hardirq/softirq
-#                              || / _--=> preempt-depth
-#                              ||| / _-=> migrate-disable
-#                              |||| /     delay
-#           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-#              | |         |   |||||     |         |
-  dd-selftest.rc-375     [001] .....     6.934983: tracing_mark_write: here comes the WARN
-  dd-selftest.rc-375     [003] .....     8.208645: tracing_mark_write: test_private_trace about to do_prints
-  dd-selftest.rc-375     [003] .....     8.539307: tracing_mark_write: test_private_trace_2 about to do_prints
-EOF
-
-function test_private_trace_3 {
-    echo "# TEST_PRIVATE_TRACE_3"
-
-    ddcmd =_
-    rmmod test_dynamic_debug
-    echo 1 >/sys/kernel/tracing/tracing_on
-    echo 1 >/sys/kernel/tracing/events/dyndbg/enable
-    
-    ddcmd open foo # gets already open err
-    modprobe test_dynamic_debug dyndbg=class,D2_CORE,+T:foo%class,D2_KMS,+T:foo
-    # triggers:
-    # dyndbg: query 0: <class,D2_CORE,+T:foo> on module: <*>
-    # dyndbg: unknown flag 'c'
-    # dyndbg: flags parse failed
-
-    check_matches =Tl -v
-    check_matches =Tmf -v
-    echo 1 >/sys/kernel/tracing/tracing_on
-    echo 1 >/sys/kernel/tracing/events/dyndbg/enable
-    tmark should be ready
-    doprints
-    cat /sys/kernel/tracing/trace
-    #rmmod test_dynamic_debug
-}
-test_private_trace_3;
-
-echo -n "# done on: "
-date
-
-
-Jim Cromie (11):
-  dyndbg: export _print_hex_dump
-  dyndbg: tweak pr_info format s/trace dest/trace_dest/
-  dyndbg: disambiguate quoting in a debug msg
-  dyndbg: fix old BUG_ON in >control parser
-  dyndbg: change +T:name_terminator to dot
-  dyndbg: treat comma as a token separator
-  dyndbg: __skip_spaces
-  dyndbg: split multi-query strings with %
-  dyndbg: reduce verbose/debug clutter
-  dyndbg: move lock,unlock into ddebug_change, drop goto
-  dyndbg: id the bad word in parse-flags err msg
-
- lib/dynamic_debug.c | 52 ++++++++++++++++++++++++++++-----------------
- 1 file changed, 32 insertions(+), 20 deletions(-)
-
+This fixes a modpost error on amdgpu.ko
+squash in w/o comment.
+
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+---
+ lib/dynamic_debug.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index 71db40df31b2..07c377924160 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -1388,6 +1388,7 @@ void _print_hex_dump(struct _ddebug *descriptor, const char *level,
+ 		}
+ 	}
+ }
++EXPORT_SYMBOL(_print_hex_dump);
+ 
+ void __dynamic_pr_debug(struct _ddebug *descriptor, const char *fmt, ...)
+ {
 -- 
 2.43.0
 
