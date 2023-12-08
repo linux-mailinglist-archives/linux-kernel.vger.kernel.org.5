@@ -2,261 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A56380A358
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C987280A357
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbjLHMfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 07:35:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
+        id S233454AbjLHMfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 07:35:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbjLHMfJ (ORCPT
+        with ESMTP id S233446AbjLHMff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 07:35:09 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AABDD1985;
-        Fri,  8 Dec 2023 04:35:14 -0800 (PST)
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 09A8220B74C0;
-        Fri,  8 Dec 2023 04:35:14 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 09A8220B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1702038914;
-        bh=7mA0Nk9JABJbzejc00vimgy7KH2zEY/kLfO3nzNRrOU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FIAXYAdbbG7wXaKNZ9umrETLQ81Gi/K/zSK47IYj1vgWGJ5wPChtLP5AXt23/FtWY
-         Eed/zyw783mRLv952yR/g0zTgvi2jm0zK+97NfdWxtx/r//fSeEYv89DQ8v0jy0xvl
-         zz/u6tAppPcxRi7D9M5NaAdHiXObeQokUStsOePs=
-From:   Konstantin Taranov <kotaranov@linux.microsoft.com>
-To:     kotaranov@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
-        wei.liu@kernel.org, kuba@kernel.org, leon@kernel.org,
-        decui@microsoft.com, edumazet@google.com, cai.huoqing@linux.dev,
-        pabeni@redhat.com, davem@davemloft.net, longli@microsoft.com
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH] net: mana: add msix index sharing between EQs
-Date:   Fri,  8 Dec 2023 04:35:05 -0800
-Message-Id: <1702038905-29520-1-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 8 Dec 2023 07:35:35 -0500
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98777E0
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:35:41 -0800 (PST)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5cbcfdeaff3so19709907b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 04:35:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702038941; x=1702643741; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GF4BPHYAiYD5N4yRheSGUKFfKbUOf7tXCDFHJS8cLkA=;
+        b=vV79CjBbp1D/VLLWbWXkJImlkRuybeeP8zcWhCY3NuPHKNhr0wQj9gb6qjgSYFpOv8
+         i5XKWinNd8iUTwW8/8QGL6pXj0qMcYtAx/JLMsvbk1ySMaEJOpsVuS+eSv/5FCptutPq
+         CJeIb+Z0adGO6yHkjctDla/l3qHwPr0rOZBWFXXhkts6AO8E2lNDdkaA0q8BrJzX5qHk
+         3sF2HGEUFtOHlHcrzq6zPLVIEKhXQszaW9i3l2kFyUfCP9NKGoMtM2m7vGWta2wrwo5d
+         lOaP9F3acV9Rc78xb3vAMD7q/zzxJbDV0X2tvWvXVUCzyo4LMrz82G0CaHTpAT2ZLfHM
+         qEVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702038941; x=1702643741;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GF4BPHYAiYD5N4yRheSGUKFfKbUOf7tXCDFHJS8cLkA=;
+        b=cPBtNZWc2qFLOmInb2COb5U6sPBcSJeJx5jv+E+QXfLlDVR5PgV5F6mYJqtC3czba6
+         mvKaUvEBaKWXbaJNxEvhAHdz7bQa+GxCP4rO2QA+5uAL/pcau4FR+6l9LEW2rlOymgka
+         hBjh+uq7+SRm8+IcPWDu3DsRgviu7n9cgiLeJnexTP+hFrVZbF87J8NCBC6QdwJNIUbC
+         Cr0z4ucU1EvLsgjMnnNw32sQms60aST04WWQIVGJZ28rEII+kdoCbdXEMnRt4Ly8i3et
+         PwB6CwrirLzxaBZ9hcEvejmL31ZRoQpPagxHu0HXH3tzm6Acvcn5GRFf0e2HT9vz1Cvo
+         u2pA==
+X-Gm-Message-State: AOJu0YznGzXu8V46vrKOX12Mbh9x1urB0Lm5BbOE397Uk88Iv0FFxyzs
+        b3klbW/8nAPPZPPMKtdkDor2i9pS6mcLLKG23Ja9jA==
+X-Google-Smtp-Source: AGHT+IHjiAfVpGoEX5W6+Qp5O0zy6x7IcQev0y6h80bzgke0FujuZlCuGUYIR8OIaRDTiVrsTrVnDcbA7RwRrpbFc7Q=
+X-Received: by 2002:a05:690c:368a:b0:5d8:67b8:6d13 with SMTP id
+ fu10-20020a05690c368a00b005d867b86d13mr4004640ywb.76.1702038940776; Fri, 08
+ Dec 2023 04:35:40 -0800 (PST)
+MIME-Version: 1.0
+References: <20231122-phy-qualcomm-edp-x1e80100-v3-0-576fc4e9559d@linaro.org>
+ <20231122-phy-qualcomm-edp-x1e80100-v3-2-576fc4e9559d@linaro.org>
+ <b6d3928c-75ba-47a3-93fc-a60729be2e35@linaro.org> <545d3ace-66e5-4470-b3a4-cbdac5ae473d@linaro.org>
+ <ab7223a2-9f3f-4c9c-ab97-31512e7a0123@linaro.org> <CAA8EJpoboN85bLiayXJgn5iwh+Gn0OtK0aZ26ZJu9H3xkTT2Tw@mail.gmail.com>
+ <d9d27fa4-6ede-4958-b717-db425be61068@linaro.org> <CAA8EJpq7dB+45fiq2WmkMmSO7KszY0Et_t1gZ9ZvfsSxftpm8g@mail.gmail.com>
+ <d885928d-035b-4abd-890b-c9626b925d76@linaro.org>
+In-Reply-To: <d885928d-035b-4abd-890b-c9626b925d76@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 8 Dec 2023 14:35:29 +0200
+Message-ID: <CAA8EJpr+C23evpRWMHatF6ChNvr3G-sAuXOi4e-7Tix23JV=Fg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] dt-bindings: phy: qcom-edp: Add X1E80100 PHY compatibles
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Johan Hovold <johan@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+On Fri, 8 Dec 2023 at 14:21, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 08/12/2023 13:17, Dmitry Baryshkov wrote:
+> >>>>>> Anyway, I was thinking this should be rather argument to phy-cells.
+> >>>>> I'm not sure I'm for this, because the results would be:
+> >>>>>
+> >>>>> --- device.dts ---
+> >>>>> &dp_controller0 {
+> >>>>>      phys = <&dp_phy0 PHY_EDP>;
+> >>>>> };
+> >>>>>
+> >>>>> &dp_controller1 {
+> >>>>>      phys = <&dp_phy1 PHY_DP>;
+> >>>>> };
+> >>>>> ------------------
+> >>>>>
+> >>>>> as opposed to:
+> >>>>>
+> >>>>> --- device.dts ---
+> >>>>> &dp_phy0 {
+> >>>>>      phy-type <PHY_EDP>;
+> >>>>> };
+> >>>>>
+> >>>>> &dp_phy1 {
+> >>>>>      phy-type = <PHY_DP>;
+> >>>>> };
+> >>>>> ------------------
+> >>>>
+> >>>> Which is exactly what I proposed/wanted to see.
+> >>>>
+> >>>>>
+> >>>>> i.e., we would be saying "this board is connected to this phy
+> >>>>> instead" vs "this phy is of this type on this board".
+> >>>>>
+> >>>>> While none of them really fit the "same hw, different config"
+> >>>>> situation, I'd vote for the latter one being closer to the
+> >>>>> truth
+> >>>>
+> >>>> Then maybe I miss the bigger picture, but commit msg clearly says:
+> >>>> "multiple PHYs that can work in both eDP or DP mode"
+> >>>>
+> >>>> If this is not the case, describe the hardware correctly in the commit
+> >>>> msg, so people will not ask stupid questions...
+> >>>
+> >>> There are multiple PHYs (each of them at its own address space). Each
+> >>> of the PHYs in question can be used either for the DisplayPort output
+> >>> (directly or through the USB-C) or to drive the eDP panel.
+> >>>
+> >>> Same applies to the displayport-controller. It can either drive the DP
+> >>> or eDP output, hardware-wise it is the same.
+> >>
+> >> Therefore what I proposed was correct - the block which uses the phy
+> >> configures its mode. Because this part:
+> >>   "this phy is of this type on this board".
+> >> is not true. The phy is both types.
+> >
+> > But hopefully you don't mean using #phy-cells here. There are no
+> > sub-PHYs or anything like that.
+>
+> I am exactly talking about phy-cells. Look at first example from Abel's
+> code.
 
-This patch allows to assign and poll more than 1 EQ on the same msix index.
-It is achieved by introducing a list of attached EQs in each IRQ context.
-This patch export symbols for creating EQs from other MANA kernel modules.
+I always had an impression that #foo-cells means that there are
+different units within the major handler. I.e. #clock-cells mean that
+there are several different clocks, #reset-cells mean that there are
+several resets, etc.
+Ok, maybe this is not a perfect description. We need cells to identify
+a particular instance within the major block. Maybe that sounds more
+correct.
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 55 ++++++++++++++-----
- .../net/ethernet/microsoft/mana/hw_channel.c  |  1 +
- drivers/net/ethernet/microsoft/mana/mana_en.c |  1 +
- include/net/mana/gdma.h                       |  4 +-
- 4 files changed, 45 insertions(+), 16 deletions(-)
+For the USB+DP PHY we use #phy-cells to select between USB3 and DP
+PHYs. But for these PHYs we do not have sub-devices, sub-blocks, etc.
+There is a single PHY which works in either of the modes.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 6367de0..82a4534 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -401,6 +401,9 @@ static void mana_gd_process_eq_events(void *arg)
- 	u32 head, num_eqe;
- 	int i;
- 
-+	if (eq->id == INVALID_QUEUE_ID)
-+		return;
-+
- 	gc = eq->gdma_dev->gdma_context;
- 
- 	num_eqe = eq->queue_size / GDMA_EQE_SIZE;
-@@ -414,8 +417,12 @@ static void mana_gd_process_eq_events(void *arg)
- 
- 		old_bits = (eq->head / num_eqe - 1) & GDMA_EQE_OWNER_MASK;
- 		/* No more entries */
--		if (owner_bits == old_bits)
-+		if (owner_bits == old_bits) {
-+			/* return here without ringing the doorbell */
-+			if (i == 0)
-+				return;
- 			break;
-+		}
- 
- 		new_bits = (eq->head / num_eqe) & GDMA_EQE_OWNER_MASK;
- 		if (owner_bits != new_bits) {
-@@ -457,12 +464,16 @@ static int mana_gd_register_irq(struct gdma_queue *queue,
- 
- 	spin_lock_irqsave(&r->lock, flags);
- 
--	msi_index = find_first_zero_bit(r->map, r->size);
-+	if (queue->eq.msix_index == INVALID_PCI_MSIX_INDEX)
-+		queue->eq.msix_index = find_first_zero_bit(r->map, r->size);
-+
-+	msi_index = queue->eq.msix_index;
-+
- 	if (msi_index >= r->size || msi_index >= gc->num_msix_usable) {
- 		err = -ENOSPC;
-+		queue->eq.msix_index = INVALID_PCI_MSIX_INDEX;
- 	} else {
- 		bitmap_set(r->map, msi_index, 1);
--		queue->eq.msix_index = msi_index;
- 	}
- 
- 	spin_unlock_irqrestore(&r->lock, flags);
-@@ -476,9 +487,7 @@ static int mana_gd_register_irq(struct gdma_queue *queue,
- 
- 	gic = &gc->irq_contexts[msi_index];
- 
--	WARN_ON(gic->handler || gic->arg);
--
--	gic->arg = queue;
-+	list_add_rcu(&queue->entry, &gic->eq_list);
- 
- 	gic->handler = mana_gd_process_eq_events;
- 
-@@ -493,6 +502,7 @@ static void mana_gd_deregiser_irq(struct gdma_queue *queue)
- 	struct gdma_resource *r;
- 	unsigned int msix_index;
- 	unsigned long flags;
-+	struct gdma_queue *eq;
- 
- 	gc = gd->gdma_context;
- 	r = &gc->msix_resource;
-@@ -502,12 +512,19 @@ static void mana_gd_deregiser_irq(struct gdma_queue *queue)
- 	if (WARN_ON(msix_index >= gc->num_msix_usable))
- 		return;
- 
--	gic = &gc->irq_contexts[msix_index];
--	gic->handler = NULL;
--	gic->arg = NULL;
--
- 	spin_lock_irqsave(&r->lock, flags);
--	bitmap_clear(r->map, msix_index, 1);
-+	gic = &gc->irq_contexts[msix_index];
-+	list_for_each_entry_rcu(eq, &gic->eq_list, entry) {
-+		if (queue == eq) {
-+			list_del_rcu(&eq->entry);
-+			synchronize_rcu();
-+			break;
-+		}
-+	}
-+	if (list_empty(&gic->eq_list)) {
-+		gic->handler = NULL;
-+		bitmap_clear(r->map, msix_index, 1);
-+	}
- 	spin_unlock_irqrestore(&r->lock, flags);
- 
- 	queue->eq.msix_index = INVALID_PCI_MSIX_INDEX;
-@@ -587,7 +604,8 @@ static int mana_gd_create_eq(struct gdma_dev *gd,
- 	u32 log2_num_entries;
- 	int err;
- 
--	queue->eq.msix_index = INVALID_PCI_MSIX_INDEX;
-+	queue->eq.msix_index = spec->eq.msix_index;
-+	queue->id = INVALID_QUEUE_ID;
- 
- 	log2_num_entries = ilog2(queue->queue_size / GDMA_EQE_SIZE);
- 
-@@ -819,6 +837,7 @@ free_q:
- 	kfree(queue);
- 	return err;
- }
-+EXPORT_SYMBOL_NS(mana_gd_create_mana_eq, NET_MANA);
- 
- int mana_gd_create_mana_wq_cq(struct gdma_dev *gd,
- 			      const struct gdma_queue_spec *spec,
-@@ -895,6 +914,7 @@ void mana_gd_destroy_queue(struct gdma_context *gc, struct gdma_queue *queue)
- 	mana_gd_free_memory(gmi);
- 	kfree(queue);
- }
-+EXPORT_SYMBOL_NS(mana_gd_destroy_queue, NET_MANA);
- 
- int mana_gd_verify_vf_version(struct pci_dev *pdev)
- {
-@@ -1217,9 +1237,14 @@ int mana_gd_poll_cq(struct gdma_queue *cq, struct gdma_comp *comp, int num_cqe)
- static irqreturn_t mana_gd_intr(int irq, void *arg)
- {
- 	struct gdma_irq_context *gic = arg;
-+	struct list_head *eq_list = &gic->eq_list;
-+	struct gdma_queue *eq;
- 
--	if (gic->handler)
--		gic->handler(gic->arg);
-+	if (gic->handler) {
-+		list_for_each_entry_rcu(eq, eq_list, entry) {
-+			gic->handler(eq);
-+		}
-+	}
- 
- 	return IRQ_HANDLED;
- }
-@@ -1272,7 +1297,7 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 	for (i = 0; i < nvec; i++) {
- 		gic = &gc->irq_contexts[i];
- 		gic->handler = NULL;
--		gic->arg = NULL;
-+		INIT_LIST_HEAD(&gic->eq_list);
- 
- 		if (!i)
- 			snprintf(gic->name, MANA_IRQ_NAME_SZ, "mana_hwc@pci:%s",
-diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-index 9d1cd3b..0a5fc39 100644
---- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-+++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-@@ -300,6 +300,7 @@ static int mana_hwc_create_gdma_eq(struct hw_channel_context *hwc,
- 	spec.eq.context = ctx;
- 	spec.eq.callback = cb;
- 	spec.eq.log2_throttle_limit = DEFAULT_LOG2_THROTTLING_FOR_ERROR_EQ;
-+	spec.eq.msix_index = INVALID_PCI_MSIX_INDEX;
- 
- 	return mana_gd_create_hwc_queue(hwc->gdma_dev, &spec, queue);
- }
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index fc3d290..8718c04 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -1242,6 +1242,7 @@ static int mana_create_eq(struct mana_context *ac)
- 	spec.eq.callback = NULL;
- 	spec.eq.context = ac->eqs;
- 	spec.eq.log2_throttle_limit = LOG2_EQ_THROTTLE;
-+	spec.eq.msix_index = INVALID_PCI_MSIX_INDEX;
- 
- 	for (i = 0; i < gc->max_num_queues; i++) {
- 		err = mana_gd_create_mana_eq(gd, &spec, &ac->eqs[i].eq);
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 88b6ef7..8d6569d 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -293,6 +293,7 @@ struct gdma_queue {
- 
- 	u32 head;
- 	u32 tail;
-+	struct list_head entry;
- 
- 	/* Extra fields specific to EQ/CQ. */
- 	union {
-@@ -328,6 +329,7 @@ struct gdma_queue_spec {
- 			void *context;
- 
- 			unsigned long log2_throttle_limit;
-+			unsigned int msix_index;
- 		} eq;
- 
- 		struct {
-@@ -344,7 +346,7 @@ struct gdma_queue_spec {
- 
- struct gdma_irq_context {
- 	void (*handler)(void *arg);
--	void *arg;
-+	struct list_head eq_list;
- 	char name[MANA_IRQ_NAME_SZ];
- };
- 
+Last, but not least, using #phy-cells in this way would create
+asymmetry with all the other PHYs (and especially other QMP PHYs)
+present on these platforms.
+
+If you feel that phy-type is not an appropriate solution, I'd vote for
+not having the type in DT at all, letting the DP controller determine
+the proper mode on its own.
+
 -- 
-2.43.0
-
+With best wishes
+Dmitry
