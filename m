@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E3080AEC5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 22:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C140780AEC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 22:19:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574795AbjLHVOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 16:14:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
+        id S1574802AbjLHVOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 16:14:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbjLHVOg (ORCPT
+        with ESMTP id S229826AbjLHVOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Dec 2023 16:14:36 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCD9172B;
-        Fri,  8 Dec 2023 13:14:40 -0800 (PST)
-Date:   Fri, 08 Dec 2023 21:14:38 -0000
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0251738;
+        Fri,  8 Dec 2023 13:14:41 -0800 (PST)
+Date:   Fri, 08 Dec 2023 21:14:39 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702070079;
+        s=2020; t=1702070080;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YPySH3jFpIVr2fDLoaXilgHfUPGWqTOWobs6EMgOif8=;
-        b=MVfaT7i7FqdXQjcMFNGJT6iXu5/C0rBNJfX5SiPQzQALvl5PeMnzVpaghASjRybJF/zkPa
-        3l3j3OG7PJzYyWb0BjekHp6O3FbEF/Qi0dMRKvr9keAuiFK7oqFLGVnOkEfnzMlwj6t06r
-        JpmuuI/nfe6AP5qfRjBNiA8etQIYyVMMClUCGwjw9A72y6T6dDoX5pQmOr0rKa6Bv1SiJt
-        1XM6godzMGLdKeZJeFTAq3bxJBa2bAGyb0AKSYfjTOUjFTr5iyg3mDhADXfyxA/ZaDbCKy
-        auO2OgKHz3u7jhwtfwgQ6hjzgwZAUgc8ofpBQw5rrUDbj+W/ru+pENIX1WQP6A==
+        bh=EDHBJQDZaX7u7SZaleE7r1usB2TuTYUPYo/RxWQVhF0=;
+        b=C+IVN7fOXZhmbTr8KoxrSK/PweN2C7Af/LVbgvJEqYvocsuqA5wb3GhDLCRwpSyBxDRjPI
+        /vAQ6fu9VWftICW14pa4qlTLxi29gVzX3MgG9jMu+1ztp7zYE1eoVJmJQ1q3zaUHnbpX0i
+        FTidnFbobCt8FxSyz30vRFuiV1qqoOvMlZ40At7gr13DnoOniTmPn5CFf6VcOpjQgIn1sV
+        vN8GOtHvH7ntburMVy2goWeqgnWcmjVWSuyKr/XXVQtJVlcsXkNLssUzuitMbxfv2QApJB
+        T/kgttceTzghMEeoiibTgF8xNtbE/rXB+wmdDuX9HG9Q+4ZcU8gn6AlO3W5xsQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702070079;
+        s=2020e; t=1702070080;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YPySH3jFpIVr2fDLoaXilgHfUPGWqTOWobs6EMgOif8=;
-        b=e2VZ15yPOUUu8zyosEfLDIaCeJ3BppDu3BW4nZxARcDdhF4lkCV5YFOdOjt1FoNquCuZz+
-        fV0YYtBwcIe/YzBw==
+        bh=EDHBJQDZaX7u7SZaleE7r1usB2TuTYUPYo/RxWQVhF0=;
+        b=epmVXBZjsHSPLdK3hBsDYOvFMBYo4EbS4ctkelCDzkA2nFM48ANhtBqHvlKMZsYYZtAbQD
+        oV6nTx36dG25nCDg==
 From:   "tip-bot2 for Claudiu Beznea" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] arm64: dts: renesas: r9108g045: Add IA55 interrupt
- controller node
+Subject: [tip: irq/core] dt-bindings: interrupt-controller:
+ renesas,rzg2l-irqc: Document RZ/G3S
 Cc:     Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Conor Dooley <conor.dooley@microchip.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20231120111820.87398-10-claudiu.beznea.uj@bp.renesas.com>
-References: <20231120111820.87398-10-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20231120111820.87398-9-claudiu.beznea.uj@bp.renesas.com>
+References: <20231120111820.87398-9-claudiu.beznea.uj@bp.renesas.com>
 MIME-Version: 1.0
-Message-ID: <170207007858.398.5775493085982200914.tip-bot2@tip-bot2>
+Message-ID: <170207007935.398.16222216258719183208.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -68,108 +70,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     8794f5c3d2299670d16b2fb1e6657f5f33c1518c
-Gitweb:        https://git.kernel.org/tip/8794f5c3d2299670d16b2fb1e6657f5f33c1518c
+Commit-ID:     7e8213bb5ded82dbc6164100fe0e80f7934e9e56
+Gitweb:        https://git.kernel.org/tip/7e8213bb5ded82dbc6164100fe0e80f7934e9e56
 Author:        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-AuthorDate:    Mon, 20 Nov 2023 13:18:20 +02:00
+AuthorDate:    Mon, 20 Nov 2023 13:18:19 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Fri, 08 Dec 2023 22:06:35 +01:00
 
-arm64: dts: renesas: r9108g045: Add IA55 interrupt controller node
+dt-bindings: interrupt-controller: renesas,rzg2l-irqc: Document RZ/G3S
 
-Add IA55 interrupt controller node and set it as interrupt parent for pin
-controller.
+Document the RZ/G3S (R9108G045) interrupt controller. This has few extra
+functionalities compared with RZ/G2UL but the already existing driver
+can still be used.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20231120111820.87398-10-claudiu.beznea.uj@bp.renesas.com
----
- arch/arm64/boot/dts/renesas/r9a08g045.dtsi | 68 +++++++++++++++++++++-
- 1 file changed, 68 insertions(+)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Link: https://lore.kernel.org/r/20231120111820.87398-9-claudiu.beznea.uj@bp.renesas.com
 
-diff --git a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-index 6c7b29b..010bca6 100644
---- a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-@@ -96,6 +96,7 @@
- 			#gpio-cells = <2>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-+			interrupt-parent = <&irqc>;
- 			gpio-ranges = <&pinctrl 0 0 152>;
- 			clocks = <&cpg CPG_MOD R9A08G045_GPIO_HCLK>;
- 			power-domains = <&cpg>;
-@@ -104,6 +105,73 @@
- 				 <&cpg R9A08G045_GPIO_SPARE_RESETN>;
- 		};
+---
+ Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml b/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml
+index 2ef3081..d3b5aec 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml
+@@ -26,6 +26,7 @@ properties:
+           - renesas,r9a07g043u-irqc   # RZ/G2UL
+           - renesas,r9a07g044-irqc    # RZ/G2{L,LC}
+           - renesas,r9a07g054-irqc    # RZ/V2L
++          - renesas,r9a08g045-irqc    # RZ/G3S
+       - const: renesas,rzg2l-irqc
  
-+		irqc: interrupt-controller@11050000 {
-+			compatible = "renesas,r9a08g045-irqc", "renesas,rzg2l-irqc";
-+			#interrupt-cells = <2>;
-+			#address-cells = <0>;
-+			interrupt-controller;
-+			reg = <0 0x11050000 0 0x10000>;
-+			interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 429 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 430 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 431 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 432 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 433 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 434 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 435 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 436 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 437 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 438 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 439 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 440 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 441 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 442 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 443 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 444 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 445 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 446 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 447 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 448 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 449 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 450 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 451 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 452 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 453 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 454 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 455 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 456 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 457 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 458 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 459 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 460 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "nmi",
-+					  "irq0", "irq1", "irq2", "irq3",
-+					  "irq4", "irq5", "irq6", "irq7",
-+					  "tint0", "tint1", "tint2", "tint3",
-+					  "tint4", "tint5", "tint6", "tint7",
-+					  "tint8", "tint9", "tint10", "tint11",
-+					  "tint12", "tint13", "tint14", "tint15",
-+					  "tint16", "tint17", "tint18", "tint19",
-+					  "tint20", "tint21", "tint22", "tint23",
-+					  "tint24", "tint25", "tint26", "tint27",
-+					  "tint28", "tint29", "tint30", "tint31",
-+					  "bus-err";
-+			clocks = <&cpg CPG_MOD R9A08G045_IA55_CLK>,
-+				 <&cpg CPG_MOD R9A08G045_IA55_PCLK>;
-+			clock-names = "clk", "pclk";
-+			power-domains = <&cpg>;
-+			resets = <&cpg R9A08G045_IA55_RESETN>;
-+		};
-+
- 		sdhi0: mmc@11c00000  {
- 			compatible = "renesas,sdhi-r9a08g045", "renesas,rcar-gen3-sdhi";
- 			reg = <0x0 0x11c00000 0 0x10000>;
+   '#interrupt-cells':
+@@ -167,7 +168,9 @@ allOf:
+       properties:
+         compatible:
+           contains:
+-            const: renesas,r9a07g043u-irqc
++            enum:
++              - renesas,r9a07g043u-irqc
++              - renesas,r9a08g045-irqc
+     then:
+       properties:
+         interrupts:
