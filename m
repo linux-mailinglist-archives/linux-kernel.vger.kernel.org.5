@@ -2,220 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CAE480AAB8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:27:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E7A80AABA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233559AbjLHR1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:27:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
+        id S233743AbjLHR1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:27:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLHR1J (ORCPT
+        with ESMTP id S229938AbjLHR1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:27:09 -0500
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D16785;
-        Fri,  8 Dec 2023 09:27:15 -0800 (PST)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1fb04fb8d28so1420606fac.3;
-        Fri, 08 Dec 2023 09:27:15 -0800 (PST)
+        Fri, 8 Dec 2023 12:27:52 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD7F121
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:27:57 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1d2eb06ab11so8593035ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 09:27:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702056434; x=1702661234; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5y6HCRPZuFf1XHIVNqIPnl7q9aMDKbjcEIeBmVq9aVI=;
-        b=MUTFNE7581QED/9sUg33xNKytgnKzxRC3O5Z8/Xd5rdSNUo3TZclsV3MKeKB96tI+V
-         rsASq1Xk9m4mKGA6RRcWjSFFdXYL10Rm2DAiI1SAz6lW+6swLFJTt/NzSt/xIDEECdzr
-         jcrsv2QiFI8eaAWpsCgTEwLF9IfBfqxyL3HZdl4Jo1/litcNaqOvSYO8Vo5HegWQEtyk
-         ZAv3QmWjy+Lj8b16HXfLNV6nLmuTamzL4ndOJxZuBDSEu7/LJN0na36EsQbppip6IPgP
-         57MQF5affNQmtygxAlBJauDp3mC10m4yk7wJ05Dtwf/h94CFz3e64nE76WmtDq/Lwx02
-         TEYQ==
+        d=chromium.org; s=google; t=1702056477; x=1702661277; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Hg6fUEZXStGBp771sMyuxFL70vLJ5BeYI/ptmqsolcE=;
+        b=J/8eZJQrQDM9h9GBp+AfyI/b1z5mDYebqC3SXKnipDtex0OzNu0uKwiv/Z8BSQVsNd
+         a+ZlnbvYo9jqDhuYJQj22iUTpJzsF9UR+iMBNinz8hEtqGOlGREc5YhW5lfGzzc3OWnC
+         xrIJofD9kwr5NSIdzsKD/dicz3JqaQ28UehDg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702056434; x=1702661234;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702056477; x=1702661277;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5y6HCRPZuFf1XHIVNqIPnl7q9aMDKbjcEIeBmVq9aVI=;
-        b=u/YKJH6KP4vPD/N4aD4RsK+BVU4Kt6FRR/mv2XMh3ytJ2m6e7zHVzl4BO1WQvASGrW
-         5B0B9QZbfL1mHfRaTDPri81gSVI7PbdYsnsh2NeWH8UnMKVk3/Sg/6chel+mmG8x5JZQ
-         eRE8d4dDx984LQnwcANU2rwYHj+W+yl0tZ7hMaFRIwKqvOAFSfqwtfhZEcSwEo8ZFvNA
-         oe3m4Umr85qohgFh0aFHYW/UMGTZA35xgiHufXho17CVa72w71DH4hC4/2IivMnhpkDc
-         IIrHK5r5LN4UH43bzA/gEQzLCLEDG5JV8JacPtKljF4+xkFVX1PqeNvh7c+BpmOIpQym
-         /ssw==
-X-Gm-Message-State: AOJu0YzvYJ4Kz7BiRA2POpfblIRc7CydiD3RHdRPPNLeR+N4jVY/88ms
-        qMGB2kEgZNjPEzOocwCnLkk=
-X-Google-Smtp-Source: AGHT+IHR5Nsu7OYrZNkh8DwheOqBrgowsG8O2QZINkUfloB75k/ah2w7bC8zeTWkDF7wcUry3kTqww==
-X-Received: by 2002:a05:6870:858d:b0:1fa:f418:d071 with SMTP id f13-20020a056870858d00b001faf418d071mr406825oal.23.1702056434159;
-        Fri, 08 Dec 2023 09:27:14 -0800 (PST)
-Received: from ?IPV6:2001:470:42c4:101:de4c:e3ab:ccaa:1887? ([2001:470:42c4:101:de4c:e3ab:ccaa:1887])
-        by smtp.gmail.com with ESMTPSA id rk7-20020a05687164c700b001fa39dfef88sm474815oab.37.2023.12.08.09.27.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 09:27:13 -0800 (PST)
-Message-ID: <66f413d2-1a5b-b9e3-3c86-35a1d150f486@gmail.com>
-Date:   Fri, 8 Dec 2023 10:27:10 -0700
+        bh=Hg6fUEZXStGBp771sMyuxFL70vLJ5BeYI/ptmqsolcE=;
+        b=kw8B0UEu4fdziiNceymb1SKD8TatvgWkVj4uJQFBFbJS+/iSFGWhVSklRIVKRrzTp5
+         5/IujlL0sy99LcxBvzJdBVa4UB/IjV6vHY7UrBfm1esKwIIaSquEzazEuXodh7opGy4N
+         3KpxsnGI1pLJ3PWct6P8OW4/mLqb6I+laqC1qItPA33jM12pe0LACXfYv4k/zbYBa/qr
+         fXsIZNpiOOwyL4eleZiiot51PXhGUam0/DVFN31GSHNQayacjr6I6jIdM7twkffHliyG
+         P4yNSgrIRtYKceJJh+QlgPoOLn5buU9kG+Di6gZ59zTuWh51Jootjo3nTY/F0tDCecdX
+         i06Q==
+X-Gm-Message-State: AOJu0YwQoGsea5gx5iX8OvDzUNAXgohFSd/++ht4jdL3P1ByKP/iZO7y
+        jmDLt/iZMeuDm6UwheKEHarXeg==
+X-Google-Smtp-Source: AGHT+IHVTw89wrkKxW6H+y85uDNqkr3bSCVArfzo6yB6zlvvZsJ6ez9TxBemFCSY+J8FoNDku+7DiA==
+X-Received: by 2002:a17:902:6848:b0:1d0:8383:742d with SMTP id f8-20020a170902684800b001d08383742dmr364617pln.37.1702056477358;
+        Fri, 08 Dec 2023 09:27:57 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 12-20020a170902ee4c00b001d0c134dc2dsm1955222plo.77.2023.12.08.09.27.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 09:27:56 -0800 (PST)
+Date:   Fri, 8 Dec 2023 09:27:56 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Song Liu <song@kernel.org>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] md/md-multipath: Convert "struct mpconf" to flexible
+ array
+Message-ID: <202312080926.FBF7A2DDD2@keescook>
+References: <03dd7de1cecdb7084814f2fab300c9bc716aff3e.1701632867.git.christophe.jaillet@wanadoo.fr>
+ <202312041419.81EF03F7B7@keescook>
+ <CAPhsuW43g-M+xvzD0N1JsJ_zGnvZQOw2Bi1TEqoHKanPnvMHLQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] arm64: dts: rockchip: Add PCIe pinctrls to Turing RK1
-Content-Language: en-US
-To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        =?UTF-8?Q?Daniel_Kukie=c5=82a?= <daniel@kukiela.pl>,
-        Sven Rademakers <sven.rademakers@gmail.com>,
-        Joshua Riek <jjriek@verizon.net>
-References: <20231208062510.893392-1-CFSworks@gmail.com>
- <6311244.MhkbZ0Pkbq@diego>
-From:   Sam Edwards <cfsworks@gmail.com>
-In-Reply-To: <6311244.MhkbZ0Pkbq@diego>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAPhsuW43g-M+xvzD0N1JsJ_zGnvZQOw2Bi1TEqoHKanPnvMHLQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 07, 2023 at 09:33:17PM -0800, Song Liu wrote:
+> On Mon, Dec 4, 2023 at 2:20 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Sun, Dec 03, 2023 at 08:48:06PM +0100, Christophe JAILLET wrote:
+> > > The 'multipaths' field of 'struct mpconf' can be declared as a flexible
+> > > array.
+> > >
+> > > The advantages are:
+> > >    - 1 less indirection when accessing to the 'multipaths' array
+> > >    - save 1 pointer in the structure
+> > >    - improve memory usage
+> > >    - give the opportunity to use __counted_by() for additional safety
+> > >
+> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> >
+> > This looks like a really nice conversion. I haven't run-tested this, but
+> > it reads correct to me.
+> 
+> Agreed this is a good optimization. However, since MD_MULTIPATH is
+> already marked as deprecated. I don't think we should ship further
+> changes to it.
 
+Hm, that seems like a weird catch-22 to me. I would say we should
+continue to improve any code in the kernel that people spend time to
+work on, or we should remove that code entirely. Should MD_MULTIPATH be
+removed? How long has it been deprecated? (We just had an LTS release,
+so doing removal now is a good time...)
 
-On 12/8/23 04:05, Heiko Stübner wrote:
-> Hi Sam,
-> 
-> Am Freitag, 8. Dezember 2023, 07:25:10 CET schrieb Sam Edwards:
->> The RK3588 PCIe 3.0 controller seems to have unpredictable behavior when
->> no CLKREQ/PERST/WAKE pins are configured in the pinmux. In particular, it
->> will sometimes (varying between specific RK3588 chips, not over time) shut
->> off the DBI block, and reads to this range will instead stall
->> indefinitely.
->>
->> When this happens, it will prevent Linux from booting altogether. The
->> PCIe driver will stall the CPU core once it attempts to read the version
->> information from the DBI range.
->>
->> Fix this boot hang by adding the correct pinctrl configuration to the
->> PCIe 3.0 device node, which is the proper thing to do anyway. While
->> we're at it, also add the necessary configuration to the PCIe 2.0 node,
->> which may or may not fix the equivalent problem over there -- but is the
->> proper thing to do anyway. :)
->>
->> Fixes: 2806a69f3fef6 ("arm64: dts: rockchip: Add Turing RK1 SoM support")
->> Signed-off-by: Sam Edwards <CFSworks@gmail.com>
->> ---
->>
->> Hi list,
->>
->> Compared to v1, v2 removes the `reset-gpios` properties as well -- this should
->> give control of the PCIe resets exclusively to the PCIe cores. (And even if the
->> `reset-gpios` props had no effect in v1, it'd be confusing to have them there.)
-> 
-> Hmm, I'd think this could result in differing behaviour.
-> 
-> I.e. I tried the same on a different board with a nvme drive on the pci30x4
-> controller. But moving the reset from the gpio-way to "just" setting the
-> perstn pinctrl, simply hung the controller when probing the device.
-
-Ah, I'm guessing it died in:
-ver = dw_pcie_readl_dbi(pci, PCIE_VERSION_NUMBER);
-
-If so, that's the same hang that this patch is aiming to solve. I'm 
-starting to wonder if having muxed pins != 1 for a given signal upsets 
-the RC(s). Is your board (in an earlier boot stage: 
-reset/maskrom/bootloader) muxing a different perstn pin option to that 
-controller (and Linux doesn't know to clear it away)? Then when you add 
-the perstn pinctrl the total number of perstns muxed to the controller 
-comes to 2, and without a reset-gpios = <...>; to take it away again, 
-that number stays at 2 to cause the hang upon the DBI read?
-
-If so, that'd mean the change resolves the hang for me, because it 
-brings the total up to 1 (from 0), but also causes the hang for you, 
-because it brings the total up to 2 (away from 1).
-
-> 
-> So I guess I'd think the best way would be to split the pinctrl up into the
-> 3 separate functions (clkreqn, perstn, waken) so that boards can include
-> them individually.
-
-Mm, maybe. Though that might be more appropriate if a board comes along 
-that doesn't connect all of those signals to the same group of pins. I 
-worry that attempting to solve this hang by doing that will instead just 
-mask the real problem.
-
-> 
-> Nobody is using the controller pinctrl entries so far anyway :-) .
-
-Then it's interesting that this board requires them in order to avoid a 
-hang on boot. I'll see if there's anything else that I can find out.
-
-Happy Friday,
-Sam
-
-> 
-> 
-> Heiko
-> 
-> 
->> Note that it is OK for the pcie2x1l1 node to refer to pcie30x1m1_pins. The
->> pcie2x1l1 device is *in fact* a PCIe 3.0 controller, and the pcie30x1m1_pins
->> pinmux setting is so-named to reflect this. The pcie2x1l1 node is so-named
->> because Linux does not (currently) support routing it to a PCIe 3.0 PHY; so in
->> practice it is effectively a PCIe 2.0 controller, for the time being.
->>
->> Cheers and thank you for your time,
->> Sam
->>
->> ---
->>   .../boot/dts/rockchip/rk3588-turing-rk1.dtsi     | 16 ++--------------
->>   1 file changed, 2 insertions(+), 14 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi b/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
->> index 9570b34aca2e..875446fdb67e 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
->> +++ b/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
->> @@ -214,8 +214,7 @@ rgmii_phy: ethernet-phy@1 {
->>   &pcie2x1l1 {
->>   	linux,pci-domain = <1>;
->>   	pinctrl-names = "default";
->> -	pinctrl-0 = <&pcie2_reset>;
->> -	reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
->> +	pinctrl-0 = <&pcie30x1m1_pins>;
->>   	status = "okay";
->>   };
->>   
->> @@ -226,8 +225,7 @@ &pcie30phy {
->>   &pcie3x4 {
->>   	linux,pci-domain = <0>;
->>   	pinctrl-names = "default";
->> -	pinctrl-0 = <&pcie3_reset>;
->> -	reset-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
->> +	pinctrl-0 = <&pcie30x4m1_pins>;
->>   	vpcie3v3-supply = <&vcc3v3_pcie30>;
->>   	status = "okay";
->>   };
->> @@ -245,17 +243,7 @@ hym8563_int: hym8563-int {
->>   		};
->>   	};
->>   
->> -	pcie2 {
->> -		pcie2_reset: pcie2-reset {
->> -			rockchip,pins = <4 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
->> -		};
->> -	};
->> -
->>   	pcie3 {
->> -		pcie3_reset: pcie3-reset {
->> -			rockchip,pins = <4 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>;
->> -		};
->> -
->>   		vcc3v3_pcie30_en: pcie3-reg {
->>   			rockchip,pins = <2 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
->>   		};
->>
-> 
-> 
-> 
-> 
+-- 
+Kees Cook
