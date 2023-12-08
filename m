@@ -2,50 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2A3809D0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DE6809D10
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573236AbjLHH3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 02:29:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58400 "EHLO
+        id S235722AbjLHHao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 02:30:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232216AbjLHH3d (ORCPT
+        with ESMTP id S232216AbjLHHal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 02:29:33 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7755171E
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:29:39 -0800 (PST)
-Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SmjRq5zG7zWj96;
-        Fri,  8 Dec 2023 15:28:39 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 8 Dec 2023 15:29:36 +0800
-Subject: Re: [PATCH] ubi: block: fix null-pointer-dereference in
- ubiblock_create()
-To:     <linan666@huaweicloud.com>, <richard@nod.at>,
-        <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linan122@huawei.com>, <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
-        <houtao1@huawei.com>, <yangerkun@huawei.com>
-References: <20231208071317.1268465-1-linan666@huaweicloud.com>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <a1e3aa71-d89e-0579-b55f-125c17b45f29@huawei.com>
-Date:   Fri, 8 Dec 2023 15:29:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Fri, 8 Dec 2023 02:30:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30927171E
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:30:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702020647;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Lqd+oR1/9Yw4u2jQUrZmD5XRa3aKzcaLuNSBKTGkq30=;
+        b=LWUjqgxc4GW9PMmLyvxP66h1uNrU5SE4KOgQRwk7KR5mNu7VIV/twA4pLviNX793hjZXAb
+        fH6+47MaeFgFWMEShm76cDwODvBoibB4z9A4su4yWmMxiJRHIEfmJGpOJJZ7QhcaloK3Bo
+        P+w2KyQoTlZThfqTUHSy9I23F7nhLbw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-47-owVotutEOF-CVKYkPKJ4lw-1; Fri, 08 Dec 2023 02:30:45 -0500
+X-MC-Unique: owVotutEOF-CVKYkPKJ4lw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 449CC85A588;
+        Fri,  8 Dec 2023 07:30:44 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.72.112.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 917B98CD0;
+        Fri,  8 Dec 2023 07:30:39 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-next@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-sh@vger.kernel.org, x86@kernel.org,
+        akpm@linux-foundation.org, eric_devolder@yahoo.com,
+        sfr@canb.auug.org.au, ignat@cloudflare.com,
+        Baoquan He <bhe@redhat.com>
+Subject: [PATCH 0/5] kexec: fix the incorrect ifdeffery and dependency of CONFIG_KEXEC
+Date:   Fri,  8 Dec 2023 15:30:31 +0800
+Message-ID: <20231208073036.7884-1-bhe@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20231208071317.1268465-1-linan666@huaweicloud.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
+Content-type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm000013.china.huawei.com (7.193.23.81)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,38 +64,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ÔÚ 2023/12/8 15:13, linan666@huaweicloud.com Ð´µÀ:
-> From: Li Nan <linan122@huawei.com>
->
-> If idr_alloc() fails, dev->gd will be put after goto out_cleanup_disk in
-> ubiblock_create(), but dev->gd has not been assigned yet at this time, and
-> accessing it will trigger a null-pointer-dereference issue. Fix it by put
-> gd directly.
-Function 'put_disk()' checks disk whether is NULL, so I think it's a 
-'memleak' problem, not a null-ptr-deref problem.
->
-> Signed-off-by: Li Nan <linan122@huawei.com>
-> ---
->   drivers/mtd/ubi/block.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-> index 309a42aeaa4c..654bd7372cd8 100644
-> --- a/drivers/mtd/ubi/block.c
-> +++ b/drivers/mtd/ubi/block.c
-> @@ -434,7 +434,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
->   	list_del(&dev->list);
->   	idr_remove(&ubiblock_minor_idr, gd->first_minor);
->   out_cleanup_disk:
-> -	put_disk(dev->gd);
-> +	put_disk(gd);
+The select of KEXEC for CRASH_DUMP in kernel/Kconfig.kexec will be
+dropped, then compiling errors will be triggered if below config
+items are set:
 
-For memleak solution:
+===
+CONFIG_CRASH_CORE=y
+CONFIG_KEXEC_CORE=y
+CONFIG_CRASH_DUMP=y
+===
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+E.g on mips, below link error are seen:
+--------------------------------------------------------------------
+mipsel-linux-ld: kernel/kexec_core.o: in function `kimage_free':
+kernel/kexec_core.c:(.text+0x2200): undefined reference to `machine_kexec_cleanup'
+mipsel-linux-ld: kernel/kexec_core.o: in function `__crash_kexec':
+kernel/kexec_core.c:(.text+0x2480): undefined reference to `machine_crash_shutdown'
+mipsel-linux-ld: kernel/kexec_core.c:(.text+0x2488): undefined reference to `machine_kexec'
+mipsel-linux-ld: kernel/kexec_core.o: in function `kernel_kexec':
+kernel/kexec_core.c:(.text+0x29b8): undefined reference to `machine_shutdown'
+mipsel-linux-ld: kernel/kexec_core.c:(.text+0x29c0): undefined reference to `machine_kexec'
+--------------------------------------------------------------------
 
->   out_free_tags:
->   	blk_mq_free_tag_set(&dev->tag_set);
->   out_free_dev:
+Here, change the incorrect dependency of building kexec_core related object
+files, and the ifdeffery on architectures from CONFIG_KEXEC to
+CONFIG_KEXEC_CORE.
 
+Testing:
+========
+Passed on mips and loognarch with the LKP reproducer.
+
+Baoquan He (5):
+  loongarch, kexec: change dependency of object files
+  m68k, kexec: fix the incorrect ifdeffery and build dependency of
+    CONFIG_KEXEC
+  mips, kexec: fix the incorrect ifdeffery and dependency of
+    CONFIG_KEXEC
+  sh, kexec: fix the incorrect ifdeffery and dependency of CONFIG_KEXEC
+  x86, kexec: fix the wrong ifdeffery CONFIG_KEXEC
+
+ arch/loongarch/kernel/Makefile  |  2 +-
+ arch/m68k/include/asm/kexec.h   |  4 ++--
+ arch/m68k/kernel/Makefile       |  2 +-
+ arch/mips/cavium-octeon/smp.c   |  4 ++--
+ arch/mips/include/asm/kexec.h   |  2 +-
+ arch/mips/include/asm/smp-ops.h |  2 +-
+ arch/mips/include/asm/smp.h     |  2 +-
+ arch/mips/kernel/Makefile       |  2 +-
+ arch/mips/kernel/smp-bmips.c    |  4 ++--
+ arch/mips/kernel/smp-cps.c      | 10 +++++-----
+ arch/mips/loongson64/reset.c    |  4 ++--
+ arch/mips/loongson64/smp.c      |  2 +-
+ arch/sh/include/asm/kexec.h     |  4 ++--
+ arch/sh/kernel/Makefile         |  2 +-
+ arch/sh/kernel/reboot.c         |  4 ++--
+ arch/sh/kernel/setup.c          |  2 +-
+ arch/x86/boot/compressed/acpi.c |  2 +-
+ 17 files changed, 27 insertions(+), 27 deletions(-)
+
+-- 
+2.41.0
 
