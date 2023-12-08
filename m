@@ -2,143 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F30280A8AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4121180A8AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573845AbjLHQXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:23:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
+        id S1573825AbjLHQXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:23:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233643AbjLHQXA (ORCPT
+        with ESMTP id S233618AbjLHQXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Dec 2023 11:23:00 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D5519A5;
-        Fri,  8 Dec 2023 08:23:06 -0800 (PST)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8GMAbK014620;
-        Fri, 8 Dec 2023 16:23:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=zCViFzjRVUuiod7aOYz8mNvI1ZhoyEHR6ou+l1kFt3w=;
- b=Hv3U5MHnM8eiTlONRtSgv4aeFlQgtozhmyfiyL9a6uEMFHrUsE9gjaQjpbQg3TBuxuxd
- wmVgiOSPuZcVoLDh4twx+84jMhr7VK3tFRIrVbzlh3A0JRNQattYLVVt79o79a0HYFpB
- ml+EpdNzBHmYtW5zYSkfx1Tg2N9LQgSimu18WITXeQhVu/a3TkV5lpIAZUFvbzBJu90k
- iXS5lud/Y5CRL8anBO96I9uExrFYvj/eB1Ky+2CV1D98CpX6A75iuV8YsxmzP/QcQZRM
- +I6XIqMhDkuzhyHzhWw4KW1lxcKU19eYkEWHOBL5iC7TpdnRI8PNI05LPrxpeNtrHAjh kw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uv6kng0rg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 16:23:04 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B8GM81u014568;
-        Fri, 8 Dec 2023 16:23:04 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uv6kng0qx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 16:23:04 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8DXqT7027034;
-        Fri, 8 Dec 2023 16:23:03 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3utav3ahvy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 16:23:03 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B8GN28340501988
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Dec 2023 16:23:02 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 03FA15804E;
-        Fri,  8 Dec 2023 16:23:02 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 85D745803F;
-        Fri,  8 Dec 2023 16:23:00 +0000 (GMT)
-Received: from li-2c1e724c-2c76-11b2-a85c-ae42eaf3cb3d.ibm.com.com (unknown [9.61.47.9])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  8 Dec 2023 16:23:00 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, borntraeger@de.ibm.com, pasic@linux.ibm.com,
-        pbonzini@redhat.com, frankja@linux.ibm.com, imbrenda@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        stable@vger.kernel.org
-Subject: [PATCH v1 2/6] s390/vfio-ap: loop over the shadow APCB when filtering guest's AP configuration
-Date:   Fri,  8 Dec 2023 11:22:47 -0500
-Message-ID: <20231208162256.10633-3-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231208162256.10633-1-akrowiak@linux.ibm.com>
-References: <20231208162256.10633-1-akrowiak@linux.ibm.com>
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C65A1989;
+        Fri,  8 Dec 2023 08:23:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=bl7oekikwvbkhhq4nzdqaedpky.protonmail; t=1702052582; x=1702311782;
+        bh=09cIzzcTTW19QYNpR3uVKQ8ubxQmSzjsq6tAhHqkl1o=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=QL7tC3OWmhjbkW9UhAlFm+Nhu+97KWzvZ9kGUqtM7EvSXhDQ8ITlZl3+CQ4PMm/VI
+         rB2+oExNW5SXa5arRInKnsfENrZqxSdWFmmKEl976xU8H6XoChMSUEfln0RKiEfru2
+         sw7l7Jm9gWqj8gRGeweJAQ6s7ifrqKP9s06OInGkBbZFTHbuW0Qo99y3r4MoFPXV/E
+         4sDw9FiIJ7dZYqoddh6JbVD5j0X/QgGGzyRiRZUwEUOabiiTm4m9xoAaF5zDQKapSI
+         cHSSH3NGfE5M3+pl+uyehI3RjWRocNkxCwj6Esuv1ossSJKeXw6+/nB7+JYE2A1tj7
+         HGYOBhFH1Vm0A==
+Date:   Fri, 08 Dec 2023 16:22:48 +0000
+To:     Alice Ryhl <aliceryhl@google.com>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 3/7] rust: security: add abstraction for secctx
+Message-ID: <bynTQw4ZTfXBA0m3PYPL50jFnGQIzZnONT_L0TUNuWGtLwJhk6m0jeYQktfEIRmcVZIvKX9MOHwu4RgLWuH3nm5E_AiWNDKuKt_D2HSqsQw=@proton.me>
+In-Reply-To: <20231206-alice-file-v2-3-af617c0d9d94@google.com>
+References: <20231206-alice-file-v2-0-af617c0d9d94@google.com> <20231206-alice-file-v2-3-af617c0d9d94@google.com>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: TlX8WF3KAjvgeu3NKvpGcA6fHK-0eS6m
-X-Proofpoint-GUID: DffQCkZiqv2BkKBl2-j4XObCCqGIkvjg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-08_11,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 suspectscore=0 adultscore=0 phishscore=0 spamscore=0
- malwarescore=0 impostorscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312080135
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While filtering the mdev matrix, it doesn't make sense - and will have
-unexpected results - to filter an APID from the matrix if the APID or one
-of the associated APQIs is not in the host's AP configuration. There are
-two reasons for this:
+On 12/6/23 12:59, Alice Ryhl wrote:
+> +impl SecurityCtx {
+> +    /// Get the security context given its id.
+> +    pub fn from_secid(secid: u32) -> Result<Self> {
+> +        let mut secdata =3D core::ptr::null_mut();
+> +        let mut seclen =3D 0u32;
+> +        // SAFETY: Just a C FFI call. The pointers are valid for writes.
+> +        unsafe {
+> +            to_result(bindings::security_secid_to_secctx(
+> +                secid,
+> +                &mut secdata,
+> +                &mut seclen,
+> +            ))?;
+> +        }
 
-1. An adapter or domain that is not in the host's AP configuration can be
-   assigned to the matrix; this is known as over-provisioning. Queue
-   devices, however, are only created for adapters and domains in the
-   host's AP configuration, so there will be no queues associated with an
-   over-provisioned adapter or domain to filter.
+Can you move the `unsafe` block inside of the `to_result` call? That way
+we only have the unsafe operation in the unsafe block. Additionally, on
+my side it fits perfectly into 100 characters.
 
-2. The adapter or domain may have been externally removed from the host's
-   configuration via an SE or HMC attached to a DPM enabled LPAR. In this
-   case, the vfio_ap device driver would have been notified by the AP bus
-   via the on_config_changed callback and the adapter or domain would
-   have already been filtered.
+> +        // INVARIANT: If the above call did not fail, then we have a val=
+id security context.
+> +        Ok(Self {
+> +            secdata,
+> +            seclen: seclen as usize,
+> +        })
+> +    }
 
-Since the matrix_mdev->shadow_apcb.apm and matrix_mdev->shadow_apcb.aqm are
-copied from the mdev matrix sans the APIDs and APQIs not in the host's AP
-configuration, let's loop over those bitmaps instead of those assigned to
-the matrix.
+[...]
 
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-Fixes: 48cae940c31d ("s390/vfio-ap: refresh guest's APCB by filtering AP resources assigned to mdev")
-Cc: <stable@vger.kernel.org>
----
- drivers/s390/crypto/vfio_ap_ops.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> +    /// Returns the bytes for this security context.
+> +    pub fn as_bytes(&self) -> &[u8] {
+> +        let ptr =3D self.secdata;
+> +        if ptr.is_null() {
+> +            // We can't pass a null pointer to `slice::from_raw_parts` e=
+ven if the length is zero.
+> +            debug_assert_eq!(self.seclen, 0);
 
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index 9382b32e5bd1..47232e19a50e 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -691,8 +691,9 @@ static bool vfio_ap_mdev_filter_matrix(struct ap_matrix_mdev *matrix_mdev)
- 	bitmap_and(matrix_mdev->shadow_apcb.aqm, matrix_mdev->matrix.aqm,
- 		   (unsigned long *)matrix_dev->info.aqm, AP_DOMAINS);
- 
--	for_each_set_bit_inv(apid, matrix_mdev->matrix.apm, AP_DEVICES) {
--		for_each_set_bit_inv(apqi, matrix_mdev->matrix.aqm, AP_DOMAINS) {
-+	for_each_set_bit_inv(apid, matrix_mdev->shadow_apcb.apm, AP_DEVICES) {
-+		for_each_set_bit_inv(apqi, matrix_mdev->shadow_apcb.aqm,
-+				     AP_DOMAINS) {
- 			/*
- 			 * If the APQN is not bound to the vfio_ap device
- 			 * driver, then we can't assign it to the guest's
--- 
-2.43.0
+Would this be interesting enough to emit some kind of log message when
+this fails?
 
+> +            return &[];
+> +        }
+> +
+> +        // SAFETY: The call to `security_secid_to_secctx` guarantees tha=
+t the pointer is valid for
+> +        // `seclen` bytes. Furthermore, if the length is zero, then we h=
+ave ensured that the
+> +        // pointer is not null.
+> +        unsafe { core::slice::from_raw_parts(ptr.cast(), self.seclen) }
+> +    }
+> +}
+> +
+> +impl Drop for SecurityCtx {
+> +    fn drop(&mut self) {
+> +        // SAFETY: This frees a pointer that came from a successful call=
+ to
+> +        // `security_secid_to_secctx` and has not yet been destroyed by =
+`security_release_secctx`.
+> +        unsafe {
+> +            bindings::security_release_secctx(self.secdata, self.seclen =
+as u32);
+> +        }
+
+If you move the `;` to the outside of the `unsafe` block this also fits
+on a single line.
+
+--=20
+Cheers,
+Benno
+
+> +    }
+> +}
