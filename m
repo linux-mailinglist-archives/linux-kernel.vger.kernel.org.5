@@ -2,162 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D6280A72C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F9C80A726
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574290AbjLHPRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:17:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
+        id S1574282AbjLHPRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:17:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574257AbjLHPRj (ORCPT
+        with ESMTP id S1574257AbjLHPRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:17:39 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70297199C;
-        Fri,  8 Dec 2023 07:17:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702048665; x=1733584665;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=1Or5tHb5fHzhjHflqJfvDkPgXU5gzbQofA88HOaBkuM=;
-  b=bvdM8bnqHkjP5fxc5wP/yS4OZlQD6ugkbOYMsGx3QBpzEe1Ty02CN5HM
-   LbCaHbZrIC4EbBVSTcayvC5Bp2AVlXG/FWfexVGVUeOv7MVEQOgqRnYeo
-   ECU1BWtqDZHH43oOvne9wi7+4Ht+39M80wRUcCZfe811/1PfSq6uTRoBJ
-   TpyNk92Rj6YOpSrOSCi6PHnkDfHhSnwew3PqR5qoGmN2ATrdRxtlpOZo3
-   qHUKgvnTFVMmbB3MhcY3a/msmnyWLe8mXr5+sjx6THhZ5cuzyK3/tfd3L
-   CD/SPhIOWAvXp6JM09ASyfW4SNT416m6Oo7ysRTLcnU3wysPdfiI8IlXl
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="379414288"
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="379414288"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 07:16:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="895564637"
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="895564637"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Dec 2023 07:15:54 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 8 Dec 2023 07:15:54 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 8 Dec 2023 07:15:54 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 8 Dec 2023 07:15:53 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T/1sLHukEd3zp0EwfqobGN1Y48rptIqbcl3MkAEWNHrw5tugmDolwb99UU7Rw2aBNFJLn4iPfCGfg2Rg3fVfkKMutF8b59+n7MtnW/PZiy6F/PaM3FRXB/j/xa/DA3xI73cHTLJGgLbKDQqJsAVc8tvCeeHy0nY4mQCAGvm7y1X3YSlk7PCCB8y7Ikd0GbWo26F+qKtYPXcR5sWmkTSfV4P5sH/caijHkFcmRJ5riTBWhLuYqPZzhgTiwVEnARiW0hSAJkzu+xkdlgSeOTwjT3CC62j2nlrWmdj4FtoYJPL5ebxZa70OcFPejNN3XUmDRD/GwNncfVE1wi/mVYD+2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DAM4qoOGfd1ulQMIBShJu91UrSY4h+x6SIsFPEllZmk=;
- b=DUcbE3cY/2vh8VOobtZ5EkmMyGufPUVl6BjCQ934Nxk55U7sWg+O1MTpZpg6gU/Tgmg5x4dBVmGGEI1acGUlDcZWKeh6CpBs4fXXqOz2q8wdvLRi0E5Tm9cDguEig47iHU4HEIEkdEQMWFhwDz5dtBWtnBBvkvSAOm/nKySM3sCvTND3ZWU0UVIP96An5N3pV4PeuORI92IWf1SLpehsB2XFxPKd9EjN4zu/sITy2rX7aSE4JGK85lrN8V7FH/lipbBwRxl9n73HoTX1ZZj5mcMdSU9jaWY0WFJEcPnovBT3+LFos11Cc7y8rsFz4q84ksE/gVTVbNQhDTIQqApGtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
- by DS0PR11MB7631.namprd11.prod.outlook.com (2603:10b6:8:14e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Fri, 8 Dec
- 2023 15:15:51 +0000
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::ea04:122f:f20c:94e8]) by PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::ea04:122f:f20c:94e8%2]) with mapi id 15.20.7068.028; Fri, 8 Dec 2023
- 15:15:50 +0000
-Message-ID: <26313af3-3a75-4a3c-9935-526b07a6277d@intel.com>
-Date:   Fri, 8 Dec 2023 23:15:39 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 26/26] KVM: nVMX: Enable CET support for nested guest
-Content-Language: en-US
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-CC:     <seanjc@google.com>, <pbonzini@redhat.com>,
-        <dave.hansen@intel.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <peterz@infradead.org>,
-        <chao.gao@intel.com>, <rick.p.edgecombe@intel.com>,
-        <john.allen@amd.com>
-References: <20231124055330.138870-1-weijiang.yang@intel.com>
- <20231124055330.138870-27-weijiang.yang@intel.com>
- <2e280f545e8b15500fc4a2a77f6000a51f6f8bbd.camel@redhat.com>
- <e7d399a2-a4ff-4e27-af09-a8611985648a@intel.com>
- <8a2216b0c1a945e33a18a981cbce7737a07de52d.camel@redhat.com>
- <73119078-7483-42e0-bb1f-b696932b6cd2@intel.com>
- <53a25a11927f0c4b3f689d532af2a0ee67826fa8.camel@redhat.com>
-From:   "Yang, Weijiang" <weijiang.yang@intel.com>
-In-Reply-To: <53a25a11927f0c4b3f689d532af2a0ee67826fa8.camel@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2P153CA0049.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::18)
- To PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+        Fri, 8 Dec 2023 10:17:04 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C97198D;
+        Fri,  8 Dec 2023 07:17:09 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6ce939ecfc2so1654037b3a.2;
+        Fri, 08 Dec 2023 07:17:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702048628; x=1702653428; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=li2KL7zM1Esoqlny5utwNXNaFWmHhkUuIGKdA34eRTA=;
+        b=bzydPdUsBHCcfMm2QJmhCcRPdFdmKDB9ZbSukPBu1oAkQpAkJlJOcW4rJzJWOQXGPo
+         fUPpFFrvBjNb+zeRzZgdofjMEeAAcfWvntTl7K9prfs74w1uciNuFxqcFk4aXLLb7en2
+         +fOFzmGIG7MCaaLuVamgCJuY5KeCv7Xlz/syKwZcP/9+iz58srOlZJBzmqrJESzpQVji
+         iTwPPlr19ii6l2/Ucp8gxw70cw5pznLPR8qJ0RPmAEYRwk24Ub37yrLWPXCpqE6oO5uL
+         W8IpS8lK7WrQMQq0TMR7WDR5UnVCx+ChtlgFe+d5nWxb9hVlFfPwTtyw9x5emc09l8lP
+         Uv1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702048628; x=1702653428;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=li2KL7zM1Esoqlny5utwNXNaFWmHhkUuIGKdA34eRTA=;
+        b=E1sSNUEq6xSwc76uCXH8rbpeGV3jQitKipX+3pxfOGLWXl4iL4diVU6gs4k/QYXlv8
+         yWsy6QQG8vUTyN3KWn/iSdVhCUpdubJ9WV7qTq7d1h3q918jF73sRuUCCK2dsgcia1VH
+         TBsjgG1QrPcNYRdJk121MHN6LtWXOWFX0WxI3vJGR9E5xY0PirCNk6lF7sIImbfzudhY
+         DvwH1UdSh+5/kPraAdPo5ESHBevD/Lf+r+1RwwPuu3ICtK0H6FSX0GRCa9F94vLO9fdb
+         myvu5TGZR+8UQupZX4yF8jxWqit5hYU01UjHyZydk5VRdhQInUyQ0IJ+y+zOFjFxksZN
+         IcsQ==
+X-Gm-Message-State: AOJu0Yw42JTO4ghmFJw9gcYattDbro2XlXtggE9cNfwAhOovSsaqLHrn
+        i9f3IjTopR1XPTXgyycSvQdS8P6Eg/Cv3efKAvE=
+X-Google-Smtp-Source: AGHT+IF9mEwqyGWguiz1ByXrCL5Wq5zoOQs5vxn7xsxXoqJKnxzQPmUlyuH3gpGKE+5i4W9r2z4/oCQwlYj7tUxRePE=
+X-Received: by 2002:a05:6a20:748b:b0:18f:97c:615d with SMTP id
+ p11-20020a056a20748b00b0018f097c615dmr186836pzd.90.1702048628344; Fri, 08 Dec
+ 2023 07:17:08 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|DS0PR11MB7631:EE_
-X-MS-Office365-Filtering-Correlation-Id: 70412189-88cc-4126-d636-08dbf8008ff4
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FlCr7uLhdEgiPzv8fiQ5X3SVaFSXPWR0RbsVrP0PiKVMOMex6Zs/H2cVMsGjVX8MvwNS2Rez2KR94NE6LF5n8CQEGzP1bYjq7RlcnzpZdt9dAuZgm5X0Gdb8SmepJU8+UhIxY1AOgwrKp2OwLJOwvpVdolLRIIy7IP5RmPwd8qFWWMco6IZKlhzD98ApxmE8cFtX/Diiq0eTkMkmo1ezcw+0vD+xXbb3/2oD9m3KWfTnL3wiB7UE4z6STBSobC+aWv7woJKqVslgn/gK1ok34aGCQLKjtNy6QYR23NWOGQ/bC/2eq6Ri0fWKrR2BzZz62kdXqIINcih3EBopBxV1XCDwEotifp5dqP/La0zZsbvqpRWBK+WccWGNoGC7NSYFlH0kxq5fG8DuC8jUYRJ749EOX1xFR5RznttDxmauKH3ILCTt9/3Dx/mH+asgw1DIacDq8W3OfAV++iTkxZHl77ntSWvAI22TC/dnsdQs1x4a7sa9MJfFFmkjRMJH5fLeEyuwjAKcTvK+41N9FKaSsmFqDuq20CMMzQMhiGkJCXIiFG1CCTBCalvt8sAxK47NexfGTi3NyAreQU0FDhi8j9rET7GeEWvrCRKS75mC8GjGKLR3w+QV1jkNi6fXKOWGNvzzNHeRG3knVNxuoqRONg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(366004)(136003)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(31686004)(53546011)(83380400001)(478600001)(2906002)(6512007)(26005)(2616005)(6666004)(6486002)(6506007)(4326008)(82960400001)(8936002)(86362001)(66556008)(5660300002)(41300700001)(36756003)(6916009)(31696002)(316002)(38100700002)(66476007)(66946007)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QlVURlpjNWdNejVxOFJVMXRWdVNzRUlGVGNLb3lKOVZ3Rko3NGJnYkJLSHhw?=
- =?utf-8?B?UWhlS1hKRFdobXFHTjlta3BoeFZBVGlKN3g2Q1E0Q0VqUlVIQmJFNUh3Q0Uw?=
- =?utf-8?B?OXI0V2U4UVQwMDVZZlBWclpENFJkWkcyQVNKTHVIODN4amVuUE44L0tiNk14?=
- =?utf-8?B?VjF6TGFMNys1bU4xTmFxemh4Z0pDZExWdnRPRE1KdlBpejdSeERhL0RqQnlt?=
- =?utf-8?B?eUxkWmduOENKWi9kYnVnN3ltR2RYV0MxKytqUnIyMDA2RHJrSDkxeHVVVWRW?=
- =?utf-8?B?clhZNDF2WVlrVFBEdDdvREwremJSMkVOU3RJUG9BN2hyME9TOU0yZmxSSklN?=
- =?utf-8?B?ekNGYzVOZDViSkJCeVJjVWkwQk5nUWh2ZVlmRWJUeXpIc25XK1VxQWpDUS94?=
- =?utf-8?B?YjMrTWNuMlNhTjMzNllqWXM5K05ZR0EvZnRkaXpGMC9jNkxKNmk4YVBybC9W?=
- =?utf-8?B?NmI2eVVFRTU1WG55Um1zQ0ZOWnlFQTh6eVlHTWhLMWFTUWxLL3VnK0ZGUmNT?=
- =?utf-8?B?NUJTa0lEVlgxTmNEeUwya09idmlZbEtRL0dZVytVTWRTcWlrbWloMmRDdWJr?=
- =?utf-8?B?MGNXenhWdjlsbHZMc0tRRkxxNU1mMmxPS0pWd0krN1JQT0hzU3M3RFlJSlN5?=
- =?utf-8?B?R2RRSS9JVXNDWWN0UWhzemE3ZllxbWlPZ2Znd1ppM2ZrMTVrdFVnZGdNcTNj?=
- =?utf-8?B?Sjl5MjdiL0tMSi81TnBEYStFenBhODN3TFYvRHB0cTd2VlFjUGd2K2tkRmNR?=
- =?utf-8?B?TkF4NnZxMzNvUjI1N0tzSVFZK0M5eUlPOTlUOGkxZENFaEttblhLOHozSW92?=
- =?utf-8?B?NTBDcmVQSW5xcUhmSDlkbVFYTEtBdVQ3SHdXWmJHUktEeTJjVTh3ZHhVTXlY?=
- =?utf-8?B?eE1wY3c5bGp5MXRna1V5R1p2MTVWNXNlTC94N2U4ck5lQ1NaQU40QWdyQitJ?=
- =?utf-8?B?LzluVUI2K3pOdkhaMkg5bnh5ekdWclZEbytZbmFEWEhBM0U3NXg3MDQvMFVx?=
- =?utf-8?B?TC9HWXFrSGk2aGJEK2xQZ3RFMEExcnFGNFNaNnMzRUY2dzVHSUVobmorWVFT?=
- =?utf-8?B?dzZiN3pxTm80aTFMTlp0NVkwZGI4Y0RNNEMxc3RyOFJNT3RWZUxuZFNwV0pM?=
- =?utf-8?B?UEp1TlF4OGszUEFNWHlPb0pMTzlEMDNlVmF0OUk0dHJiTkJnT2pGUENaRmZZ?=
- =?utf-8?B?QWZ3cksvVEhQNDJocHpJcEFxdjM0UXNRMnRHWklERHp3SGY0S2FKWVRmZFd6?=
- =?utf-8?B?M0ZSa0FLaGQ1U2kvQXpZZ2xTaFcvQk1YQjdjMUdEdWxHd053dk16YmdQMzhn?=
- =?utf-8?B?b0cvRCtRcm5kbmJaRjRCeVdLa1RaR3dxOWRncHRROEM0ZVE3MkNSeVV3OWEr?=
- =?utf-8?B?a1AxVUV3Q2dzdmFyd203aTZXT3FkeVBLTjloUk5LenU1SkxZc1QrUWdOZkxO?=
- =?utf-8?B?OVJXOEdUd2hXUE15b1puY2t3bzJFL1l3OUNIWC9BVzQ4ekJIVVc3amh2OUZE?=
- =?utf-8?B?bEVtOFhpMktVcFlOcjFpcXpyMHpKbkZ0cGIwTkZCL0gxd3dGUHRiTE5SdXVn?=
- =?utf-8?B?RFlURzVKUGJnZUE2VExjTWwvZGJIeHNqVjkrSTFjRmpBTjZwNVg3YVlHckJP?=
- =?utf-8?B?WjZPbUp0UGFmWU5FMlVncDl5UEhGU2hkWDQ1MW5lUElTaFRpa1hsWFJDQnBG?=
- =?utf-8?B?Y21SV2UrYlhNK2QvUytzYnY5c0dvUUtjdVRuTFhMaWZkYmloMENlYmlzWi9C?=
- =?utf-8?B?SUlYWUppdFRmdTl1YVFTY21pU1NnSUJiVHd1T1VOSDZYc1A5ZTB6M2UvaDRS?=
- =?utf-8?B?K3JCUDJVdWFHZzRRV0pYUVFuTDQzN21KS29KR2J1ems5d212dk9BR1pkRWJT?=
- =?utf-8?B?c2wwLzJ5WmhOV3RzZ3lyU0ZXb2ZjSDVYSWlKT0ppSG1nTUtlSlRubE54TExx?=
- =?utf-8?B?WmpESi82MGwxODJvNVdJZkw3RGhEdnIxRUkvMXJoTENQNFFBN3NaZG0xbGhY?=
- =?utf-8?B?K2dpZ1h1TVZsbWM5cmtEOFlqbjgzVkNGOWRDY1JTUFZScTZpVm9ZUFd5bXVC?=
- =?utf-8?B?bWtZeS8zRUx4NmxabVpFYkwwSnhhV3JaaUxlb0Q5T0ZEOW5XR2llMXVRdlhx?=
- =?utf-8?B?Ynlxb2NTVnRQWS95eFVWWTNObEdmNDJlYTI3dndmTWphWU5uQUtrUHRNQmN0?=
- =?utf-8?B?M3c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 70412189-88cc-4126-d636-08dbf8008ff4
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 15:15:50.6504
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YDSUp9d2WkILAVimJZbfwTcpPvqwoKJK6rU8vnEK//167ItxwoLAs8Mie7P+g8WRu87Yuvoli9xevoIgu2IHFg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7631
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20231206162003.92010-1-vishnuocv@gmail.com> <2ae27a1b-a472-8a57-994e-f016cc25dafc@linux.intel.com>
+In-Reply-To: <2ae27a1b-a472-8a57-994e-f016cc25dafc@linux.intel.com>
+From:   Vishnu Sankar <vishnuocv@gmail.com>
+Date:   Sat, 9 Dec 2023 00:16:28 +0900
+Message-ID: <CABxCQKvMj8DkmYpPvNeGtdHRNWe7fqENyfTSGomr2hs1dojwQA@mail.gmail.com>
+Subject: Re: [PATCH] platform/x86: thinkpad_acpi: fix for incorrect fan
+ reporting on some ThinkPad systems
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     hdegoede@redhat.com, mpearson-lenovo@squebb.ca,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        markgross@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -165,114 +71,375 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/2023 1:24 AM, Maxim Levitsky wrote:
-> On Wed, 2023-12-06 at 17:22 +0800, Yang, Weijiang wrote:
->> On 12/5/2023 6:12 PM, Maxim Levitsky wrote:
->>> On Mon, 2023-12-04 at 16:50 +0800, Yang, Weijiang wrote:
->> [...]
->>
->>>>>>     	vmx->nested.force_msr_bitmap_recalc = false;
->>>>>> @@ -2469,6 +2491,18 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
->>>>>>     		if (kvm_mpx_supported() && vmx->nested.nested_run_pending &&
->>>>>>     		    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
->>>>>>     			vmcs_write64(GUEST_BNDCFGS, vmcs12->guest_bndcfgs);
->>>>>> +
->>>>>> +		if (vmx->nested.nested_run_pending &&
->>>>> I don't think that nested.nested_run_pending check is needed.
->>>>> prepare_vmcs02_rare is not going to be called unless the nested run is pending.
->>>> But there're other paths along to call prepare_vmcs02_rare(), e.g., vmx_set_nested_state()-> nested_vmx_enter_non_root_mode()-> prepare_vmcs02_rare(), especially when L1 instead of L2 was running. In this case, nested.nested_run_pending == false,
->>>> we don't need to update vmcs02's fields at the point until L2 is being resumed.
->>> - If we restore VM from migration stream when L2 is *not running*, then prepare_vmcs02_rare won't be called,
->>> because nested_vmx_enter_non_root_mode will not be called, because in turn there is no nested vmcs to load.
->>>
->>> - If we restore VM from migration stream when L2 is *about to run* (KVM emulated the VMRESUME/VMLAUNCH,
->>> but we didn't do the actual hardware VMLAUNCH/VMRESUME on vmcs02, then the 'nested_run_pending' will be true, it will be restored
->>> from the migration stream.
->>>
->>> - If we migrate while nested guest was run once but didn't VMEXIT to L1 yet, then yes, nested.nested_run_pending will be false indeed,
->>> but we still need to setup vmcs02, otherwise it will be left with default zero values.
->> Thanks a lot for recapping these cases! I overlooked some nested flags before. It makes sense to remove nested.nested_run_pending.
->>> Remember that prior to setting nested state the VM wasn't running even once usually, unlike when the guest enters nested state normally.
->>>
->>>>>> +		    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
->>>>>> +			if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK)) {
->>>>>> +				vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
->>>>>> +				vmcs_writel(GUEST_INTR_SSP_TABLE,
->>>>>> +					    vmcs12->guest_ssp_tbl);
->>>>>> +			}
->>>>>> +			if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK) ||
->>>>>> +			    guest_can_use(&vmx->vcpu, X86_FEATURE_IBT))
->>>>>> +				vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
->>>>>> +		}
->>>>>>     	}
->>>>>>     
->>>>>>     	if (nested_cpu_has_xsaves(vmcs12))
->>>>>> @@ -4300,6 +4334,15 @@ static void sync_vmcs02_to_vmcs12_rare(struct kvm_vcpu *vcpu,
->>>>>>     	vmcs12->guest_pending_dbg_exceptions =
->>>>>>     		vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS);
->>>>>>     
->>>>>> +	if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK)) {
->>>>>> +		vmcs12->guest_ssp = vmcs_readl(GUEST_SSP);
->>>>>> +		vmcs12->guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
->>>>>> +	}
->>>>>> +	if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK) ||
->>>>>> +	    guest_can_use(&vmx->vcpu, X86_FEATURE_IBT)) {
->>>>>> +		vmcs12->guest_s_cet = vmcs_readl(GUEST_S_CET);
->>>>>> +	}
->>>>> The above code should be conditional on VM_ENTRY_LOAD_CET_STATE - if the guest (L2) state
->>>>> was loaded, then it must be updated on exit - this is usually how VMX works.
->>>> I think this is not for L2 VM_ENTRY_LOAD_CET_STATE, it happens in prepare_vmcs02_rare(). IIUC, the guest registers will be saved into VMCS fields unconditionally when vm-exit happens,
->>>> so these fields for L2 guest should be synced to L1 unconditionally.
->>> "the guest registers will be saved into VMCS fields unconditionally"
->>> This is not true, unless there is a bug.
->> I checked the latest SDM, there's no such kind of wording regarding CET entry/exit control bits. The wording comes from
->> the individual CET spec.:
->> "10.6 VM Exit
->> On processors that support CET, the VM exit saves the state of IA32_S_CET, SSP and IA32_INTERRUPT_SSP_TABLE_ADDR MSR to the VMCS guest-state area unconditionally."
->> But since it doesn't appear in SDM, I shouldn't take it for granted.
-> SDM spec from September 2023:
->
-> 28.3.1 Saving Control Registers, Debug Registers, and MSRs
->
-> "If the processor supports the 1-setting of the “load CET” VM-entry control, the contents of the IA32_S_CET and
-> IA32_INTERRUPT_SSP_TABLE_ADDR MSRs are saved into the corresponding fields. On processors that do not
-> support Intel 64 architecture, bits 63:32 of these MSRs are not saved."
->
-> Honestly it's not 100% clear if the “load CET” should be set to 1 to trigger the restore, or that this control just needs to be
-> supported on the CPU.
-> It does feel like you are right here, that CPU always saves the guest state, but allows to not load it on VM entry via
-> “load CET” VM entry control.
->
-> IMHO its best to check what the bare metal does by rigging a test by patching the host kernel to not set the 'load CET' control,
-> and see if the CPU still updates the guest CET fields on the VM exit.
+Hi Ilpo,
 
-OK, I'll do some tests to see what's happening, thanks!
->>> the vmcs12 VM_ENTRY_LOAD_CET_STATE should be passed through as is to vmcs02, so if the nested guest doesn't set this bit
->>> the entry/exit using vmcs02 will not touch the CET state, which is unusual but allowed by the spec I think - a nested hypervisor can opt for example to save/load
->>> this state manually or use msr load/store lists instead.
->> Right although the use case should be rare, will modify the code to check VM_ENTRY_LOAD_CET_STATE. Thanks!
->
->>> Regardless of this,
->>> if the guest didn't set VM_ENTRY_LOAD_CET_STATE, then vmcs12 guest fields should neither be loaded on VM entry (copied to vmcs02) nor updated on VM exit,
->>> (that is copied back to vmcs12) this is what is written in the VMX spec.
->> What's the VMX spec. your're referring to here?
-> SDM.
->
-> In fact, now that I am thinking about this again, it should be OK to unconditionally copy the CET fields from vmcs12 to vmcs02, because as long as the
-> VM_ENTRY_LOAD_CET_STATE is not set, the CPU should care about their values in the vmcs02.
->
-> And about the other way around, assuming that I made a mistake as I said above, then the other way around is indeed unconditional.
->
->
-> Sorry for a bit of a confusion.
+Thank you for the review
 
-NP, I also double check it with HW Arch and get it back.
-Thanks for raising these questions!
-
-> Best regards,
-> 	Maxim Levitsky
+On Fri, Dec 8, 2023 at 7:53=E2=80=AFPM Ilpo J=C3=A4rvinen
+<ilpo.jarvinen@linux.intel.com> wrote:
 >
+> On Thu, 7 Dec 2023, Vishnu Sankar wrote:
 >
->>
+> Hi Vishnu,
+>
+> Thanks for the patch.
+>
+> > Some ThinkPad systems ECFW use non-standard addresses for fan control
+> > and reporting. This patch adds support for such ECFW so that it can rep=
+ort
+> > the correct fan values.
+> > Tested on Thinkpads L13 Yoga Gen 2 and X13 Yoga Gen 2.
+> >
+> > Co-developed-by: Mark Pearson <mpearson-lenovo@squebb.ca>
+> > Signed-off-by: Vishnu Sankar <vishnuocv@gmail.com>
+>
+> If Mark wrote any lines, his Signed-off-by is also required before yours,
+> as per Documentation/process/5.Posting.rst, this is a hard requirement.
+>
+> If he only helped towards the right direction/solution but provided no
+> code, I recommend using Suggested-by tag instead.
 >
 
+Ack.
+Will change to Suggested-by.
+
+> > ---
+> >  drivers/platform/x86/thinkpad_acpi.c | 88 ++++++++++++++++++++++++----
+> >  1 file changed, 76 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x8=
+6/thinkpad_acpi.c
+> > index d0b5fd4137bc..51ec20e07b23 100644
+> > --- a/drivers/platform/x86/thinkpad_acpi.c
+> > +++ b/drivers/platform/x86/thinkpad_acpi.c
+> > @@ -7950,6 +7950,11 @@ static struct ibm_struct volume_driver_data =3D =
+{
+> >   *   but the ACPI tables just mention level 7.
+> >   */
+> >
+> > +#define FAN_RPM_CAL_CONST 491520     /* FAN RPM calculation offset for=
+ some non-standard ECFW */
+> > +
+> > +#define FAN_NS_CTRL_STATUS   BIT(2)          /* Bit which determines c=
+ontrol is enabled or not */
+> > +#define FAN_NS_CTRL          BIT(4)          /* Bit which determines c=
+ontrol is by host or EC */
+> > +
+> >  enum {                                       /* Fan control constants =
+*/
+> >       fan_status_offset =3D 0x2f,       /* EC register 0x2f */
+> >       fan_rpm_offset =3D 0x84,          /* EC register 0x84: LSB, 0x85 =
+MSB (RPM)
+> > @@ -7957,6 +7962,11 @@ enum {                                 /* Fan co=
+ntrol constants */
+> >       fan_select_offset =3D 0x31,       /* EC register 0x31 (Firmware 7=
+M)
+> >                                          bit 0 selects which fan is act=
+ive */
+> >
+> > +     fan_status_offset_ns =3D 0x93,    /* Special status/control offse=
+t for non-standard EC Fan1 */
+> > +     fan2_status_offset_ns =3D 0x96,   /* Special status/control offse=
+t for non-standard EC Fan2 */
+> > +     fan_rpm_status_ns =3D 0x95,       /* Special offset for Fan1 RPM =
+status for non-standard EC */
+> > +     fan2_rpm_status_ns =3D 0x98,      /* Special offset for Fan2 RPM =
+status for non-standard EC */
+> > +
+> >       TP_EC_FAN_FULLSPEED =3D 0x40,     /* EC fan mode: full speed */
+> >       TP_EC_FAN_AUTO      =3D 0x80,     /* EC fan mode: auto fan contro=
+l */
+> >
+> > @@ -7967,6 +7977,7 @@ enum fan_status_access_mode {
+> >       TPACPI_FAN_NONE =3D 0,            /* No fan status or control */
+> >       TPACPI_FAN_RD_ACPI_GFAN,        /* Use ACPI GFAN */
+> >       TPACPI_FAN_RD_TPEC,             /* Use ACPI EC regs 0x2f, 0x84-0x=
+85 */
+> > +     TPACPI_FAN_RD_TPEC_NS,          /* Use non-standard ACPI EC regs =
+(eg: L13 Yoga gen2 etc.) */
+> >  };
+> >
+> >  enum fan_control_access_mode {
+> > @@ -7994,6 +8005,8 @@ static u8 fan_control_desired_level;
+> >  static u8 fan_control_resume_level;
+> >  static int fan_watchdog_maxinterval;
+> >
+> > +static bool fan_with_ns_addr;
+> > +
+> >  static struct mutex fan_mutex;
+> >
+> >  static void fan_watchdog_fire(struct work_struct *ignored);
+> > @@ -8123,6 +8136,15 @@ static int fan_get_status(u8 *status)
+> >               }
+> >
+> >               break;
+> > +     case TPACPI_FAN_RD_TPEC_NS:
+>
+> There's a big comment about FAN ACCESS MODES and now you seem to be addin=
+g
+> another one. Can you please check if there would be something useful to
+> add/edit in that big comment because of the addition of
+> TPACPI_FAN_RD_TPEC_NS.
+
+I will look into adding this.
+
+>
+> > +             /* Default mode is AUTO which means controlled by EC */
+> > +             if (unlikely(!acpi_ec_read(fan_status_offset_ns, &s)))
+>
+> I'm skeptical that all these unlikely/likely() are useful. Some might eve=
+n
+> be harmful if e.g. is some error condition keeps repeating itself and
+> the particular if handling that is marked with unlikely().
+>
+> I know the code in that file is littered with them already but it would
+> be better to add into that, IMO.
+
+I will look into this as well (removing likely/unlikely).
+>
+> > +                     return -EIO;
+> > +
+> > +             if (likely(status))
+> > +                     *status =3D s;
+> > +
+> > +             break;
+> >
+> >       default:
+> >               return -ENXIO;
+> > @@ -8139,7 +8161,8 @@ static int fan_get_status_safe(u8 *status)
+> >       if (mutex_lock_killable(&fan_mutex))
+> >               return -ERESTARTSYS;
+> >       rc =3D fan_get_status(&s);
+> > -     if (!rc)
+> > +     /* NS EC doesn't have register with level settings */
+> > +     if (!rc && !fan_with_ns_addr)
+> >               fan_update_desired_level(s);
+> >       mutex_unlock(&fan_mutex);
+> >
+> > @@ -8166,7 +8189,13 @@ static int fan_get_speed(unsigned int *speed)
+> >
+> >               if (likely(speed))
+> >                       *speed =3D (hi << 8) | lo;
+> > +             break;
+> > +     case TPACPI_FAN_RD_TPEC_NS:
+> > +             if (unlikely(!acpi_ec_read(fan_rpm_status_ns, &lo)))
+> > +                     return -EIO;
+> >
+> > +             if (likely(speed))
+> > +                     *speed =3D lo ? FAN_RPM_CAL_CONST / lo : 0;
+> >               break;
+> >
+> >       default:
+> > @@ -8178,7 +8207,7 @@ static int fan_get_speed(unsigned int *speed)
+> >
+> >  static int fan2_get_speed(unsigned int *speed)
+> >  {
+> > -     u8 hi, lo;
+> > +     u8 hi, lo, status;
+> >       bool rc;
+> >
+> >       switch (fan_status_access_mode) {
+> > @@ -8194,7 +8223,21 @@ static int fan2_get_speed(unsigned int *speed)
+> >
+> >               if (likely(speed))
+> >                       *speed =3D (hi << 8) | lo;
+> > +             break;
+> >
+> > +     case TPACPI_FAN_RD_TPEC_NS:
+> > +             rc =3D !acpi_ec_read(fan2_status_offset_ns, &status);
+> > +             if (rc)
+> > +                     return -EIO;
+> > +             if (!(status & FAN_NS_CTRL_STATUS)) {
+> > +                     pr_info("fan fan2 control not supported\n");
+>
+> Perhaps "fan2 control ..." would be enough or perhaps "secondary fan
+> control ..." (the latter matching fan_init() printouts) ?
+
+Acked
+
+>
+> > +                     return -EIO;
+> > +             }
+> > +             rc =3D !acpi_ec_read(fan2_rpm_status_ns, &lo);
+> > +             if (rc)
+> > +                     return -EIO;
+> > +             if (likely(speed))
+> > +                     *speed =3D lo ? FAN_RPM_CAL_CONST / lo : 0;
+> >               break;
+> >
+> >       default:
+> > @@ -8697,6 +8740,7 @@ static const struct attribute_group fan_driver_at=
+tr_group =3D {
+> >  #define TPACPI_FAN_2FAN              0x0002          /* EC 0x31 bit 0 =
+selects fan2 */
+> >  #define TPACPI_FAN_2CTL              0x0004          /* selects fan2 c=
+ontrol */
+> >  #define TPACPI_FAN_NOFAN     0x0008          /* no fan available */
+> > +#define TPACPI_FAN_NS                0x0010          /* For EC with no=
+n-Standard register addresses */
+> >
+> >  static const struct tpacpi_quirk fan_quirk_table[] __initconst =3D {
+> >       TPACPI_QEC_IBM('1', 'Y', TPACPI_FAN_Q1),
+> > @@ -8715,6 +8759,8 @@ static const struct tpacpi_quirk fan_quirk_table[=
+] __initconst =3D {
+> >       TPACPI_Q_LNV3('N', '2', 'O', TPACPI_FAN_2CTL),  /* P1 / X1 Extrem=
+e (2nd gen) */
+> >       TPACPI_Q_LNV3('N', '3', '0', TPACPI_FAN_2CTL),  /* P15 (1st gen) =
+/ P15v (1st gen) */
+> >       TPACPI_Q_LNV3('N', '3', '7', TPACPI_FAN_2CTL),  /* T15g (2nd gen)=
+ */
+> > +     TPACPI_Q_LNV3('R', '1', 'F', TPACPI_FAN_NS),    /* L13 Yoga Gen 2=
+ */
+> > +     TPACPI_Q_LNV3('N', '2', 'U', TPACPI_FAN_NS),    /* X13 Yoga Gen 2=
+*/
+> >       TPACPI_Q_LNV3('N', '1', 'O', TPACPI_FAN_NOFAN), /* X1 Tablet (2nd=
+ gen) */
+> >  };
+> >
+> > @@ -8749,6 +8795,13 @@ static int __init fan_init(struct ibm_init_struc=
+t *iibm)
+> >               return -ENODEV;
+> >       }
+> >
+> > +     if (quirks & TPACPI_FAN_NS) {
+> > +             pr_info("ECFW with non-standard fan reg control found\n")=
+;
+> > +             fan_with_ns_addr =3D 1;
+> > +             /* Fan ctrl support from host is undefined for now */
+> > +             tp_features.fan_ctrl_status_undef =3D 1;
+> > +     }
+> > +
+> >       if (gfan_handle) {
+> >               /* 570, 600e/x, 770e, 770x */
+> >               fan_status_access_mode =3D TPACPI_FAN_RD_ACPI_GFAN;
+> > @@ -8756,11 +8809,13 @@ static int __init fan_init(struct ibm_init_stru=
+ct *iibm)
+> >               /* all other ThinkPads: note that even old-style
+> >                * ThinkPad ECs supports the fan control register */
+> >               if (likely(acpi_ec_read(fan_status_offset,
+> > -                                     &fan_control_initial_status))) {
+> > +                                     &fan_control_initial_status)) || =
+fan_with_ns_addr) {
+>
+> So if we know the addresses are non-standard, why is the acpi_ec_read
+> performed at all? That is, why isn't the || logic in reverse order?
+>
+Agreed.
+I will change the logic to reverse order.
+
+> I also wonder what will fan_control_initial_status be set to in this case=
+,
+> is it garbage?
+
+0x84 is still a valid register (but not related to Fan)
+
+>
+> >                       int res;
+> >                       unsigned int speed;
+> >
+> > -                     fan_status_access_mode =3D TPACPI_FAN_RD_TPEC;
+> > +                     fan_status_access_mode =3D fan_with_ns_addr ?
+> > +                             TPACPI_FAN_RD_TPEC_NS : TPACPI_FAN_RD_TPE=
+C;
+> > +
+> >                       if (quirks & TPACPI_FAN_Q1)
+> >                               fan_quirk1_setup();
+> >                       /* Try and probe the 2nd fan */
+> > @@ -8769,7 +8824,8 @@ static int __init fan_init(struct ibm_init_struct=
+ *iibm)
+> >                       if (res >=3D 0 && speed !=3D FAN_NOT_PRESENT) {
+> >                               /* It responded - so let's assume it's th=
+ere */
+> >                               tp_features.second_fan =3D 1;
+> > -                             tp_features.second_fan_ctl =3D 1;
+> > +                             /* fan control not currently available fo=
+r ns ECFW */
+> > +                             tp_features.second_fan_ctl =3D fan_with_n=
+s_addr ? 0 : 1;
+>
+> =3D !fan_with_ns_addr;
+
+Agreed.
+
+>
+> >                               pr_info("secondary fan control detected &=
+ enabled\n");
+> >                       } else {
+> >                               /* Fan not auto-detected */
+> > @@ -8944,6 +9000,7 @@ static int fan_read(struct seq_file *m)
+> >                              str_enabled_disabled(status), status);
+> >               break;
+> >
+> > +     case TPACPI_FAN_RD_TPEC_NS:
+> >       case TPACPI_FAN_RD_TPEC:
+> >               /* all except 570, 600e/x, 770e, 770x */
+> >               rc =3D fan_get_status_safe(&status);
+> > @@ -8958,13 +9015,20 @@ static int fan_read(struct seq_file *m)
+> >
+> >               seq_printf(m, "speed:\t\t%d\n", speed);
+> >
+> > -             if (status & TP_EC_FAN_FULLSPEED)
+> > -                     /* Disengaged mode takes precedence */
+> > -                     seq_printf(m, "level:\t\tdisengaged\n");
+> > -             else if (status & TP_EC_FAN_AUTO)
+> > -                     seq_printf(m, "level:\t\tauto\n");
+> > -             else
+> > -                     seq_printf(m, "level:\t\t%d\n", status);
+> > +             if (fan_status_access_mode =3D=3D TPACPI_FAN_RD_TPEC_NS) =
+{
+> > +                     /* No full speed bit in NS EC*/
+>
+> Missing space. But I'd convert these two comments into a multiline one
+> anyway.
+>
+Acked
+
+> > +                     /* EC Auto mode is set by default. No other level=
+s settings available*/
+> > +                     (status & FAN_NS_CTRL) ? seq_puts(m, "level:\t\tu=
+nknown\n")
+> > +                                     : seq_puts(m, "level:\t\tauto\n")=
+;
+>
+> seq_printf(m, "level:\t\t%s\n", status & FAN_NS_CTRL ? "unknown" : "auto"=
+);
+>
+
+Acked.
+
+> > +             } else {
+> > +                     if (status & TP_EC_FAN_FULLSPEED)
+> > +                             /* Disengaged mode takes precedence */
+> > +                             seq_puts(m, "level:\t\tdisengaged\n");
+> > +                     else if (status & TP_EC_FAN_AUTO)
+> > +                             seq_puts(m, "level:\t\tauto\n");
+>
+> Please don't make an unrelated seq_printf() -> seq_puts() change in this
+> patch.
+
+Ack.
+(The checkpatch.pl threw a warning regarding seq_printf() for these
+lines after the changes I made.)
+
+>
+> > +                     else
+> > +                             seq_printf(m, "level:\t\t%d\n", status);
+> > +             }
+> >               break;
+> >
+> >       case TPACPI_FAN_NONE:
+> >
+>
+> --
+>  i.
+>
+
+Thank you for correcting these and Apologize for any inconvenience caused.
+I have noted the comments. Will share the updated patch soon.
+
+--=20
+
+Regards,
+
+      Vishnu Sankar
+     +817015150407 (Japan)
