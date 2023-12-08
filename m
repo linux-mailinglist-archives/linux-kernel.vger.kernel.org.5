@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0761809CCC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA15809CCF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233336AbjLHHAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 02:00:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
+        id S235655AbjLHHAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 02:00:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233321AbjLHHAH (ORCPT
+        with ESMTP id S233247AbjLHHAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 02:00:07 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4FD1734
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:00:12 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1d03bcf27e9so14973905ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 23:00:12 -0800 (PST)
+        Fri, 8 Dec 2023 02:00:10 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A95B172E
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:00:17 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6cec976b197so641183b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 23:00:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702018812; x=1702623612; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702018816; x=1702623616; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vdbM2PfYii852DpHOsW1XBn04AhqRFyeEuBtlshPQPM=;
-        b=i0ARUHZIMZo3TUvm3DwNHIDr/NbD045vDQfkr+NwCagtWvBDh+YCk7qXGqv1vasn33
-         169Y9Kf9/+7TqODM+Gfc6eCXo1ik3h221iInYdO/xD3BTc/YR4m2VILeMSyvp9tktLuq
-         EI6pNvaJ+bKijhMCWbqyZUmGZLSieTm1DIlJfnLsOxxBwaXIARaH1kcfzeAW5PkeQmB4
-         ApHH2FICEypauGNsRCEmzu28k6ydo4HLH7lDCBXwGxu+xq3UWk+IzJgVn4dnfPLytKnZ
-         y0ILhJtutPFvAgf5SDeGCHzMmYPZsa9mM4nbTjyCDeaS62kFYAWs/knyxaFYiMaE/znw
-         NQ1g==
+        bh=K6ZqhhOHk2iNfWUUPqiv/O7Z6HQrUwIXBT8R8ig4LQ0=;
+        b=TcHOM3b8w6bUNscJUzlIR2LKRSMxUkzNx+FmyjKZRgrwr0+tmAMBrnKTamikcxoaIQ
+         oBBelnXaUJQC1JDVRBQmkTej2FaMoE5srNZ+6PVdPVYdozpMqYvS8D1qux6xRtsxChVA
+         sGxFZmR8MnqW7ogOcf6365wzn+9mBQ0S0nhCRuBk7NMrdY+WeZlGdSLEiuqNajiMU7MB
+         OKz6l/HmoHy14HAZXokfk7R2vmGRe7KlDJ20JwHpfc5vUTSWJ3F4BvYDIRRgJ4/kEZa1
+         8NZEHdP6J/HqDdchbgZ9qN+ZieTKGHDTFYr5o9jrwpd4Io2tzKoGpm7iFAACwLERmDVQ
+         6a4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702018812; x=1702623612;
+        d=1e100.net; s=20230601; t=1702018816; x=1702623616;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vdbM2PfYii852DpHOsW1XBn04AhqRFyeEuBtlshPQPM=;
-        b=AWoSsZsBRdo0W6qxbmscDLgJZWqXim6zQC63gIC6Q7m44rORJadpkVl1fYCKb0zxBt
-         CLEQVF/GLj7pUVJwY7k9UqZF52kXtcRQN1nc2XCbcjzuM/HYqjiRYaiN6CUMmmPh1fJL
-         jlEDvEa6Oay5/cxRCSbbTUebC7dQ/xJvSdIvsynzMKnjnhyZsc3zaymusLSpiduvjRKb
-         9ekKRL1Gqt3ymVIIbxiJvTxS+svELZfVLxStD0D8kqBLe1TskxTjCSyyyQnR3R8VpP3A
-         WJsefBSN2pdECdU14kMxzZI/PSscxB7V4czb6k2qbPyRVNTiIrVvXxPb+D40zF0v++1Z
-         y9lQ==
-X-Gm-Message-State: AOJu0Ywm2LfrbJLEfzJ5Cm6oOCdU9h3Ue6HpexXAHe9Oz79WQKHjXwtE
-        mvsAbld/BHVmbuGmBOdHCKAv
-X-Google-Smtp-Source: AGHT+IGv+GAPa6Ypg344o0UlsXWILp6Hb3RQcQuHpl5BD9CYuBn23Qp5TZa5x8eqFhl33IaLmcYJxg==
-X-Received: by 2002:a17:903:2115:b0:1d0:a0dd:7d3b with SMTP id o21-20020a170903211500b001d0a0dd7d3bmr2951714ple.65.1702018811863;
-        Thu, 07 Dec 2023 23:00:11 -0800 (PST)
+        bh=K6ZqhhOHk2iNfWUUPqiv/O7Z6HQrUwIXBT8R8ig4LQ0=;
+        b=kZ25u07XQ0R1c18Ydh1eCJUncLljJIreROHGOfwpUpa8sqV8GBhjo8m5BoWOeg8vg5
+         sMqSxrwOhChDQrudpOvDm7MskKOlUSz1AO+FnPNSjoAYtn+6QmOCrq/iIYg2OnobRV0y
+         2bzAhSc+uYrJ3LUNFkPHKGDAp+CkkxW1/WlRqAM/t9vBlzNGSE8kuSH/MS8kt6HtwGjr
+         uK+Cg2HwFd9Y7DiPbdEV87t2fq8Yd9f5o7SGbNtWiJxRCmqeREVo4dVs/IRPfUEq5kEc
+         Dih8lHSyqtx3kOm6sP2WgsNKrb1RRPNwDBkgB16R0efBq373NppmT6Fn5P5SFQCkyyRv
+         ZUXw==
+X-Gm-Message-State: AOJu0Yz4oPnsvpYyYFnR1wwAFqs+szSl+2WNsuBcxZY/NRkMzfntdwst
+        IaGzWCRZLSvFDtAVGe/D1ymS
+X-Google-Smtp-Source: AGHT+IHGJSyyR4qnCzZSWOR7Wvf2gGJRyDqvdyimicieitTIKsqODVDkpz0nWgn3k5ddWRH7obqebA==
+X-Received: by 2002:a05:6a20:8f05:b0:190:20d:5b94 with SMTP id b5-20020a056a208f0500b00190020d5b94mr2195421pzk.27.1702018816569;
+        Thu, 07 Dec 2023 23:00:16 -0800 (PST)
 Received: from localhost.localdomain ([117.216.123.142])
-        by smtp.gmail.com with ESMTPSA id n8-20020a170902e54800b001b03f208323sm934263plf.64.2023.12.07.23.00.07
+        by smtp.gmail.com with ESMTPSA id n8-20020a170902e54800b001b03f208323sm934263plf.64.2023.12.07.23.00.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 23:00:11 -0800 (PST)
+        Thu, 07 Dec 2023 23:00:16 -0800 (PST)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     martin.petersen@oracle.com, jejb@linux.ibm.com
 Cc:     andersson@kernel.org, konrad.dybcio@linaro.org,
@@ -57,9 +57,9 @@ Cc:     andersson@kernel.org, konrad.dybcio@linaro.org,
         linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
         ahalaney@redhat.com, quic_nitirawa@quicinc.com,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 11/17] scsi: ufs: qcom: Remove unused ufs_qcom_hosts struct array
-Date:   Fri,  8 Dec 2023 12:28:56 +0530
-Message-Id: <20231208065902.11006-12-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2 12/17] scsi: ufs: qcom: Sort includes alphabetically
+Date:   Fri,  8 Dec 2023 12:28:57 +0530
+Message-Id: <20231208065902.11006-13-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
 References: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
@@ -75,51 +75,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ufs_qcom_hosts array is assigned, but not used anywhere. So let's remove
-it.
+Sort includes alphabetically.
 
-Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+Reviewed-by: Nitin Rawat <quic_nitirawa@quicinc.com>
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/ufs/host/ufs-qcom.c | 5 -----
- drivers/ufs/host/ufs-qcom.h | 1 -
- 2 files changed, 6 deletions(-)
+ drivers/ufs/host/ufs-qcom.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index ae9fafa49ded..18ea41f5bae9 100644
+index 18ea41f5bae9..7fbd35a3eb81 100644
 --- a/drivers/ufs/host/ufs-qcom.c
 +++ b/drivers/ufs/host/ufs-qcom.c
-@@ -90,8 +90,6 @@ static const struct __ufs_qcom_bw_table {
- 	[MODE_MAX][0][0]		    = { 7643136,	307200 },
- };
+@@ -4,26 +4,26 @@
+  */
  
--static struct ufs_qcom_host *ufs_qcom_hosts[MAX_UFS_QCOM_HOSTS];
--
- static void ufs_qcom_get_default_testbus_cfg(struct ufs_qcom_host *host);
- static int ufs_qcom_set_core_clk_ctrl(struct ufs_hba *hba, bool is_scale_up);
+ #include <linux/acpi.h>
+-#include <linux/time.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
++#include <linux/devfreq.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/interconnect.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/platform_device.h>
+ #include <linux/phy/phy.h>
+-#include <linux/gpio/consumer.h>
++#include <linux/platform_device.h>
+ #include <linux/reset-controller.h>
+-#include <linux/devfreq.h>
++#include <linux/time.h>
  
-@@ -1194,9 +1192,6 @@ static int ufs_qcom_init(struct ufs_hba *hba)
- 
- 	ufs_qcom_setup_clocks(hba, true, POST_CHANGE);
- 
--	if (hba->dev->id < MAX_UFS_QCOM_HOSTS)
--		ufs_qcom_hosts[hba->dev->id] = host;
--
- 	ufs_qcom_get_default_testbus_cfg(host);
- 	err = ufs_qcom_testbus_config(host);
- 	if (err)
-diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
-index e2df4c528a2a..53db424a0bcb 100644
---- a/drivers/ufs/host/ufs-qcom.h
-+++ b/drivers/ufs/host/ufs-qcom.h
-@@ -10,7 +10,6 @@
  #include <soc/qcom/ice.h>
- #include <ufs/ufshcd.h>
  
--#define MAX_UFS_QCOM_HOSTS	1
- #define MAX_U32                 (~(u32)0)
- #define MPHY_TX_FSM_STATE       0x41
- #define TX_FSM_HIBERN8          0x1
+ #include <ufs/ufshcd.h>
+-#include "ufshcd-pltfrm.h"
+-#include <ufs/unipro.h>
+-#include "ufs-qcom.h"
+ #include <ufs/ufshci.h>
+ #include <ufs/ufs_quirks.h>
++#include <ufs/unipro.h>
++#include "ufshcd-pltfrm.h"
++#include "ufs-qcom.h"
+ 
+ #define MCQ_QCFGPTR_MASK	GENMASK(7, 0)
+ #define MCQ_QCFGPTR_UNIT	0x200
 -- 
 2.25.1
 
