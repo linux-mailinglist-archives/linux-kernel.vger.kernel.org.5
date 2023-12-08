@@ -2,292 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6BC80AAE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A5B80AAEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574250AbjLHRjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:39:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59580 "EHLO
+        id S233756AbjLHRja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:39:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233752AbjLHRjH (ORCPT
+        with ESMTP id S229811AbjLHRj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:39:07 -0500
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF752123
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:39:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=ixvrilbdlnczzba4dtnifmhobu.protonmail; t=1702057148; x=1702316348;
-        bh=HY9Md4VHLYQT5RpanAdJRLZSL23/aGNw4oFWZPZrWZg=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=AunkrxB1GjMKQMft60KVeeD1E0BRxc4RbOJeL56qlByAizAea7/v01nZmsdEnQwWK
-         1kOzObe2JVU16Whu9xn03azaQAmOh4KzAnPA1O2f6mPVbH1yRupswNHYGEL/VVzgoU
-         WPhNLURfbPFTKDUTLhPIFZcfK6DIOufo+fXUZB9lmpabKkuAyXqqwTLRzNntoPN5jl
-         ft5a+v5z+a0qy4KIStgL7RXLCcBwAU2qa0yXy9cUUyK2UURBjtkEbKD2D7/w/hJfSD
-         DhcckwiAV4aHPbj8UBNAaPSbiwyl3qk1AIJ6fOSGkYElhI+zduseym2AbPJLAU7T34
-         Ii3g5STYKFycQ==
-Date:   Fri, 08 Dec 2023 17:39:01 +0000
-To:     Alice Ryhl <aliceryhl@google.com>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] rust: file: add `DeferredFdCloser`
-Message-ID: <MjDmZBGV04fVI1qzhceEjQgcmoBuo3YoVuiQdANKj9F1Ux5JFKud8hQpfeyLXI0O5HG6qicKFaYYzM7JAgR_kVQfMCeVdN6t7PjbPaz0D0U=@proton.me>
-In-Reply-To: <20231206-alice-file-v2-6-af617c0d9d94@google.com>
-References: <20231206-alice-file-v2-0-af617c0d9d94@google.com> <20231206-alice-file-v2-6-af617c0d9d94@google.com>
-Feedback-ID: 71780778:user:proton
+        Fri, 8 Dec 2023 12:39:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE251994
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:39:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A46BEC433C8;
+        Fri,  8 Dec 2023 17:39:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702057173;
+        bh=Z1QJunFWmvP8Ozi9c83wdN1Wu0Ksv55A8wwkLTDgsxE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=KTwcJWCdXdJkedS9sruBSnLdKvns4uoenFlFRNHT1IyXZ5UgV0/e24pFD2gurpl7V
+         qptyZ0rYWcTH+qGwzVFCUzyZrCXNDoeQO9L4TOFWt05no7tFPjjSTSfXiCdydoXe24
+         vmRgbwSZe2pyyoyB+rxHAvHib8HH5b8jGy3hBgimblIcWnpmqjkoX2l9QzMWG6wX6I
+         Ix2iyoOlfS1LdZYMo/xrjVVVW7ylOcB7O5l7pG9SGl7SISnbNIt0CePsjL4c06Fujt
+         HXWxLIkH3Lqu9AoIT/zO/mkFvLT7RcHLPFrtnjPxnHXvX1M32Cjr8fudI0KI5Fs7WF
+         lfGmJcBeC4eCg==
+Date:   Fri, 8 Dec 2023 11:39:32 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Jonathan Derrick <jonathan.derrick@linux.dev>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Michael Bottini <michael.a.bottini@linux.intel.com>,
+        "David E . Box" <david.e.box@linux.intel.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v2 1/6] PCI/ASPM: Add locked helper for enabling link
+ state
+Message-ID: <20231208173932.GA798089@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXLNONZRafTkOk9U@hovoldconsulting.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/6/23 12:59, Alice Ryhl wrote:
-> +    /// Schedule a task work that closes the file descriptor when this t=
-ask returns to userspace.
-> +    ///
-> +    /// Fails if this is called from a context where we cannot run work =
-when returning to
-> +    /// userspace. (E.g., from a kthread.)
-> +    pub fn close_fd(self, fd: u32) -> Result<(), DeferredFdCloseError> {
-> +        use bindings::task_work_notify_mode_TWA_RESUME as TWA_RESUME;
-> +
-> +        // In this method, we schedule the task work before closing the =
-file. This is because
-> +        // scheduling a task work is fallible, and we need to know wheth=
-er it will fail before we
-> +        // attempt to close the file.
-> +
-> +        // SAFETY: Getting a pointer to current is always safe.
-> +        let current =3D unsafe { bindings::get_current() };
-> +
-> +        // SAFETY: Accessing the `flags` field of `current` is always sa=
-fe.
-> +        let is_kthread =3D (unsafe { (*current).flags } & bindings::PF_K=
-THREAD) !=3D 0;
+On Fri, Dec 08, 2023 at 09:00:56AM +0100, Johan Hovold wrote:
+> On Thu, Dec 07, 2023 at 02:47:16PM -0600, Bjorn Helgaas wrote:
+> > On Tue, Nov 28, 2023 at 09:15:07AM +0100, Johan Hovold wrote:
+> > > Add a helper for enabling link states that can be used in contexts where
+> > > a pci_bus_sem read lock is already held (e.g. from pci_walk_bus()).
+> > > 
+> > > This helper will be used to fix a couple of potential deadlocks where
+> > > the current helper is called with the lock already held, hence the CC
+> > > stable tag.
+> 
+> > As far as I can see, we end up with pci_enable_link_state() defined
+> > but never called and pci_enable_link_state_locked() being called only
+> > by pcie-qcom.c and vmd.c.
+> 
+> Correct, I mentioned this in the cover letter.
 
-Since Boqun brought to my attention that we already have a wrapper for
-`get_current()`, how about you use it here as well?
+Ah, right.  I really don't like these exported locked/unlocked
+interfaces because pci_bus_sem is internal to the PCI core, and the
+caller shouldn't need to know or be able to specify whether it is held
+or not.  They exist for now, but I think we should try to get rid of
+them.
 
-> +        if is_kthread {
-> +            return Err(DeferredFdCloseError::TaskWorkUnavailable);
-> +        }
-> +
-> +        // This disables the destructor of the box, so the allocation is=
- not cleaned up
-> +        // automatically below.
-> +        let inner =3D Box::into_raw(self.inner);
+> > Can we just rename pci_enable_link_state() to
+> > pci_enable_link_state_locked() and assert that pci_bus_sem is held, so
+> > we don't end up with a function that's never used?
+> 
+> That would work too. I went with adding a new helper to facilitate
+> stable backports and to mirror pci_disable_link_state(). The variants
+> are simple wrappers around the implementation so there's no real cost to
+> having the unused one.
 
-Importantly this also lifts the uniqueness requirement (maybe add this
-to the comment?).
+Makes good sense.  There's no real machine cost to the unused one; I'm
+more concerned about the human cost here.
 
-> +
-> +        // The `callback_head` field is first in the struct, so this cas=
-t correctly gives us a
-> +        // pointer to the field.
-> +        let callback_head =3D inner.cast::<bindings::callback_head>();
-> +        // SAFETY: This pointer offset operation does not go out-of-boun=
-ds.
-> +        let file_field =3D unsafe { core::ptr::addr_of_mut!((*inner).fil=
-e) };
-> +
-> +        // SAFETY: The `callback_head` pointer is compatible with the `d=
-o_close_fd` method.
+> But it seems like you think there will never be a need to call this
+> helper outside of pci_walk_bus() and if so we can drop the unlocked
+> variant right away.
+> 
+> Would you prefer basically squashing the first three patches and mark
+> the result for stable even though that patch will fail to apply to older
+> kernels as the Qualcomm bits went into -rc1?
+> 
+> Or should I send a follow-on patch removing the unused helper after
+> merging this series?
 
-Also, `callback_head` is valid, since it is derived from...
+I think you did the right thing.
 
-> +        unsafe { bindings::init_task_work(callback_head, Some(Self::do_c=
-lose_fd)) };
-> +        // SAFETY: The `callback_head` pointer points at a valid and ful=
-ly initialized task work
-> +        // that is ready to be scheduled.
-> +        //
-> +        // If the task work gets scheduled as-is, then it will be a no-o=
-p. However, we will update
-> +        // the file pointer below to tell it which file to fput.
-> +        let res =3D unsafe { bindings::task_work_add(current, callback_h=
-ead, TWA_RESUME) };
-> +
-> +        if res !=3D 0 {
-> +            // SAFETY: Scheduling the task work failed, so we still have=
- ownership of the box, so
-> +            // we may destroy it.
-> +            unsafe { drop(Box::from_raw(inner)) };
-> +
-> +            return Err(DeferredFdCloseError::TaskWorkUnavailable);
-
-Just curious, what could make the `task_work_add` call fail? I imagine
-an OOM situation, but is that all?
-
-> +        }
-> +
-> +        // SAFETY: Just an FFI call. This is safe no matter what `fd` is=
-.
-
-I took a look at the C code and there I found this comment:
-
-    /*
-     * variant of close_fd that gets a ref on the file for later fput.
-     * The caller must ensure that filp_close() called on the file.
-     */
-
-And while you do call `filp_close` later, this seems like a safety
-requirement to me.
-Also, you do not call it when `file` is null, which I imagine to be
-fine, but I do not know that since the C comment does not cover that
-case.
-
-> +        let file =3D unsafe { bindings::close_fd_get_file(fd) };
-> +        if file.is_null() {
-> +            // We don't clean up the task work since that might be expen=
-sive if the task work queue
-> +            // is long. Just let it execute and let it clean up for itse=
-lf.
-> +            return Err(DeferredFdCloseError::BadFd);
-> +        }
-> +
-> +        // SAFETY: The `file` pointer points at a valid file.
-> +        unsafe { bindings::get_file(file) };
-> +
-> +        // SAFETY: Due to the above `get_file`, even if the current task=
- holds an `fdget` to
-> +        // this file right now, the refcount will not drop to zero until=
- after it is released
-> +        // with `fdput`. This is because when using `fdget`, you must al=
-ways use `fdput` before
-
-Shouldn't this be "the refcount will not drop to zero until after it is
-released with `fput`."?
-
-Why is this the SAFETY comment for `filp_close`? I am not understanding
-the requirement on that function that needs this. This seems more a
-justification for accessing `file` inside `do_close_fd`. In which case I
-think it would be better to make it a type invariant of
-`DeferredFdCloserInner`.
-
-> +        // returning to userspace, and our task work runs after any `fdg=
-et` users have returned
-> +        // to userspace.
-> +        //
-> +        // Note: fl_owner_t is currently a void pointer.
-> +        unsafe { bindings::filp_close(file, (*current).files as bindings=
-::fl_owner_t) };
-> +
-> +        // We update the file pointer that the task work is supposed to =
-fput.
-> +        //
-> +        // SAFETY: Task works are executed on the current thread once we=
- return to userspace, so
-> +        // this write is guaranteed to happen before `do_close_fd` is ca=
-lled, which means that a
-> +        // race is not possible here.
-> +        //
-> +        // It's okay to pass this pointer to the task work, since we jus=
-t acquired a refcount with
-> +        // the previous call to `get_file`. Furthermore, the refcount wi=
-ll not drop to zero during
-> +        // an `fdget` call, since we defer the `fput` until after return=
-ing to userspace.
-> +        unsafe { *file_field =3D file };
-
-A synchronization question: who guarantees that this write is actually
-available to the cpu that executes `do_close_fd`? Is there some
-synchronization run when returning to userspace?
-
-> +
-> +        Ok(())
-> +    }
-> +
-> +    // SAFETY: This function is an implementation detail of `close_fd`, =
-so its safety comments
-> +    // should be read in extension of that method.
-
-Why not use this?:
-- `inner` is a valid pointer to the `callback_head` field of a valid
-  `DeferredFdCloserInner`.
-- `inner` has exclusive access to the pointee and owns the allocation.
-- `inner` originates from a call to `Box::into_raw`.
-
-> +    unsafe extern "C" fn do_close_fd(inner: *mut bindings::callback_head=
-) {
-> +        // SAFETY: In `close_fd` we use this method together with a poin=
-ter that originates from a
-> +        // `Box<DeferredFdCloserInner>`, and we have just been given own=
-ership of that allocation.
-> +        let inner =3D unsafe { Box::from_raw(inner as *mut DeferredFdClo=
-serInner) };
-
-Use `.cast()`.
-
-> +        if !inner.file.is_null() {
-> +            // SAFETY: This drops a refcount we acquired in `close_fd`. =
-Since this callback runs in
-> +            // a task work after we return to userspace, it is guarantee=
-d that the current thread
-> +            // doesn't hold this file with `fdget`, as `fdget` must be r=
-eleased before returning to
-> +            // userspace.
-> +            unsafe { bindings::fput(inner.file) };
-> +        }
-> +        // Free the allocation.
-> +        drop(inner);
-> +    }
-> +}
-> +
-> +/// Represents a failure to close an fd in a deferred manner.
-> +#[derive(Copy, Clone, Eq, PartialEq)]
-> +pub enum DeferredFdCloseError {
-> +    /// Closing the fd failed because we were unable to schedule a task =
-work.
-> +    TaskWorkUnavailable,
-> +    /// Closing the fd failed because the fd does not exist.
-> +    BadFd,
-> +}
-> +
-> +impl From<DeferredFdCloseError> for Error {
-> +    fn from(err: DeferredFdCloseError) -> Error {
-> +        match err {
-> +            DeferredFdCloseError::TaskWorkUnavailable =3D> ESRCH,
-
-This error reads "No such process", I am not sure if that is the best
-way to express the problem in that situation. I took a quick look at the
-other error codes, but could not find a better fit. Do you have any
-better ideas? Or is this the error that C binder uses?
-
---=20
-Cheers,
-Benno
-
-> +            DeferredFdCloseError::BadFd =3D> EBADF,
-> +        }
-> +    }
-> +}
+Bjorn
