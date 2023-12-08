@@ -2,161 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AB280992C
+	by mail.lfdr.de (Postfix) with ESMTP id ABCEF80992D
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 03:28:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbjLHC1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 21:27:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53968 "EHLO
+        id S1572996AbjLHC2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 21:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLHC1h (ORCPT
+        with ESMTP id S229531AbjLHC2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 21:27:37 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4EF1719
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 18:27:43 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1d045097b4cso12594305ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 18:27:43 -0800 (PST)
+        Thu, 7 Dec 2023 21:28:12 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63291719;
+        Thu,  7 Dec 2023 18:28:16 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3b9b90f8708so1090067b6e.2;
+        Thu, 07 Dec 2023 18:28:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1702002463; x=1702607263; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bYKvR9biHT3dayV04op9dSPEQWRRtNPHfVpKUnfsyTI=;
-        b=VhFn13j3PqZWb5TLNVMvYBK+V5TLVyqMayuvjHvDyM27TAFpwf3ydIrUHG8tP0NGjg
-         sBuigy4LfAo0iq0+besGdnnVIxZJkyW91LPWvRPZvzaNM9//TSdHtI4sn5ht2kdYlsvl
-         f7RLVnWnv2hSjuKhUzZM5kpwoBEj+YjwPX4Nw=
+        d=gmail.com; s=20230601; t=1702002496; x=1702607296; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=IzrTp4CVflWPKS8RfWxv0dB/to3ENLCGnIZ/8i2cW0k=;
+        b=Ee3CTp9419g0D3S0i9PeoAx6AXAvoS1ERZ8jnbMT6zCkQY001Uh51Xd058cz/GJjRy
+         80SvmtGj3F3QjoDefwRHRS2qgFLLbEwSHzYKHXS+4zDJ4xwR9+YzWoXV4Ds4rI7N9dZ3
+         EHs9YnJPKZO5ZINmIHOENyqOvxUG3n876yQKKJNgy2AVOEpw79pJPV0UsiMfYMcmd6Q/
+         Fb/d6Um7ucW09Jpa8vumcgPgiy2lwh0Xwlo3DLp2PwgKMB2hTskTJJwEE8Mq/N3Dyzg/
+         JWRnvcfe5Z0/T35AEequumG10D69zMFFHLd6iSI0hcha+Qktnu2dhr+OyjFx9xOFqkTa
+         DD/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702002463; x=1702607263;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bYKvR9biHT3dayV04op9dSPEQWRRtNPHfVpKUnfsyTI=;
-        b=L5dBUX/Ba0ruDhZ72FgrSgOPsYSQ80m++RlWVgTCcxQsuEqAEjQky3SOQjGYB9rmo8
-         ifOWmH/H3Lr0X0leIMNLcp2GLor4DpB3efxOn2QOj2CZgyiXF02a+/NjCW5B5Pvdjadl
-         vjvqwLAPCMY/BUsbWkS/H2a0Ndla/Csaq6PRzG8r3CZpEFXnaGWNHIR3KLJhm6lFhyvZ
-         jdmWscbHXBwMKSrS7n78DvlCAJCk1N+Ff6wmTgWcZCyqWUVwZMP00Su13bJIA0JmqAiZ
-         jcltq3rA5LZ/nAnadCwLW5U/1ttvo23zkRGES6lXT6s1Odpr9HXobZoLPqiUTeV7SYcA
-         1aFg==
-X-Gm-Message-State: AOJu0YyjbHDq0ugPV9zTh+T0EWy3tOKfx0MhMVvKSnfTyrU/AGJWLdDD
-        9rmn1QK2LVjcin1gK67SpKPIaQ==
-X-Google-Smtp-Source: AGHT+IE+YH6XCFuLw8IMGfclF6KPMZA8MDgow7b5AP5v+501j19hkR62ob7PHHZkLnrwYuYQEJvI6w==
-X-Received: by 2002:a17:903:230b:b0:1d0:6ffd:cea8 with SMTP id d11-20020a170903230b00b001d06ffdcea8mr3531967plh.97.1702002462996;
-        Thu, 07 Dec 2023 18:27:42 -0800 (PST)
-Received: from [192.168.0.212] ([50.47.85.47])
-        by smtp.gmail.com with ESMTPSA id a7-20020a170902b58700b001d0c41b1d03sm512054pls.32.2023.12.07.18.27.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 18:27:42 -0800 (PST)
-Message-ID: <64074f04-fd72-488b-831a-ad744bbcd950@broadcom.com>
-Date:   Thu, 7 Dec 2023 18:27:39 -0800
+        d=1e100.net; s=20230601; t=1702002496; x=1702607296;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IzrTp4CVflWPKS8RfWxv0dB/to3ENLCGnIZ/8i2cW0k=;
+        b=AlaxCbKbm/JQvX1C24V2qV8nqv7psxGWMvN5O+MYYDpzGysnrC1y2Mv354dtcXk++v
+         cLkubwrhvbEJvqmC9trvVfPUtw3JnJC+PuNkXokvA6GAmF4b7X7fEdLzT+1sOFdnk+Fo
+         t8bXykpkKQeifVu402g5p4wlUgBMAaJ6m1r4IxCxt56+RzD9QcPqT0av7bk9pRM0vEj6
+         LXdR9SMinPrDPFTxkI54lBf32LOCExH/Pt6RcqUDN50OLhDs7+StGJADte6pwyeZ67bl
+         ouxBiKXrV3oJjbmPEMwqrbPumpo7WzTftsgRA7DWTphrkvGh3TLVAYXxX8A9zUXc/Ui7
+         0n9Q==
+X-Gm-Message-State: AOJu0Yyqp++600DQmlv5edYCMB45QufTSYskYSfEHLxz1gnhHpNHaaaN
+        Hx4phYUf1w6rF2rentdzrJU=
+X-Google-Smtp-Source: AGHT+IE7v2bgMmvBcSyKkIr9h6uOw86foWCdYP04toRFeVg3xPkne7EtX6cp6VqBUS3/+LSg2c9KdQ==
+X-Received: by 2002:a54:419a:0:b0:3b9:eb71:ee6f with SMTP id 26-20020a54419a000000b003b9eb71ee6fmr93857oiy.61.1702002495941;
+        Thu, 07 Dec 2023 18:28:15 -0800 (PST)
+Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:c5f1:ea67:a613:5fe])
+        by smtp.gmail.com with ESMTPSA id du6-20020a056a002b4600b006ce97bd5d04sm482330pfb.140.2023.12.07.18.28.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 18:28:15 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Subject: [PATCH] perf lock contention: Account contending locks too
+Date:   Thu,  7 Dec 2023 18:28:13 -0800
+Message-ID: <20231208022813.219673-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/vmware: Add TDX hypercall support
-Content-Language: en-US
-To:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux.dev, hpa@zytor.com,
-        dave.hansen@linux.intel.co, bp@alien8.d, mingo@redhat.com,
-        tglx@linutronix.de, dave.hansen@linux.intel.com
-Cc:     x86@kernel.org, netdev@vger.kernel.org, richardcochran@gmail.com,
-        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
-        zackr@vmware.com, linux-graphics-maintainer@vmware.com,
-        pv-drivers@vmware.com, namit@vmware.com, timothym@vmware.com,
-        akaher@vmware.com, jsipek@vmware.com,
-        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
-        airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
-        maarten.lankhorst@linux.intel.com, horms@kernel.org
-References: <ef8d3e17-7028-47fd-ad31-54dadbb6796d@broadcom.com>
- <20231206071527.59171-1-alexey.makhalov@broadcom.com>
- <53592a3a-3d96-4aa1-8357-ec595f59c5f3@intel.com>
-From:   Alexey Makhalov <alexey.makhalov@broadcom.com>
-Autocrypt: addr=alexey.makhalov@broadcom.com; keydata=
- xsFNBGVo9lkBEACeouRIm6Q3QTvjcnPczfBqgLffURstVJz5nqjnrNR4T+8dwNrZB8PTgOWA
- QdGV4bIyqtNG7UHQuZ7sVKr2tx0gYJyQ5uZgncEHB5YIuhQ/CyAHrVmO+5/0/xWCLI0g44rF
- ZJqsYw2JQ2+vayTWbR65rkOiKL8GOVFNZanDg80BRh6qCmCEMXd/tymxvgnvWpHtxMgukexk
- 4vV9nV4XhxRVYdpLk8mBxsh+AEbHE+nbWgIuJDrmrZDGI2Dha7JFoB0Mi6hbbYd9BdkcHKQ7
- 6c+S1xOrZL3jX7OIFhb4NNnEOhh8/+BDlyby478p6YsimNa7TgAUbrygGyfVG8usrZy8SvO+
- vUbVQwqjcJaCK1xazK12dfuZm2kSMJUrJqa9ng6OMjkE2/WrtnK8ruFNSCdytzbuheT0nYUJ
- Uwy84cU4p2K/N2C4vYjcn+IT+l1BFr5FViKYruoRLVH6zK/WOoZjA+Fc6tdM5nC1pgSB9c7h
- XLQqDSzYPzk3nqeHWG1qJ0Hu7pscIrjxyNTIZ5le0TlpblJdoRcL5maDNw22yle8m4D18ERF
- VrqNoqwW8fObMCHbd6C3m75lzerq1HhrSvLyU4UfprEyAcjOI1C0319SXfYlXDjKXRQyaDZP
- wxln8uShSitSSnx0AsSAjcUa8Cc7km81+G2WSK3S2wVIAN11awARAQABzS5BbGV4ZXkgTWFr
- aGFsb3YgPGFsZXhleS5tYWtoYWxvdkBicm9hZGNvbS5jb20+wsGNBBMBCAA3FiEEjLzRtST/
- a5u42vOKbM7yHr5SJ3cFAmVo9lwFCQ0oaIACGwMECwkIBwUVCAkKCwUWAgMBAAAKCRBszvIe
- vlInd0jTD/9bZtjehewLRrW3dRDAbLG/+J5g1K4X5qQPfAo42NrhZQlOTibL7ixwq7NSXynZ
- V4Iu9jHAW++KXjxJzkg7zjBf9OOvvgCpqZGKYgWNvHHnX4eIVh8Ikp5JtvGPMBcRv7lJA5co
- kb+RHo9iRrB1dvRIOsP1SlGS85SiNA0yvmgqwbigLDmDRSWtvvt9XPwU1iqF+1OopT3UE10i
- /z+qE2ogcw2ADveBovq2W4JeQEBvlETwDKOdh8Q3UBHOqrZUrL7YjpUxgmb89FcjdDzUU95I
- fCB5YxF0hUctxFH5Uujh2F4qk0m2rp7+aOGtxWCJUqkHXjgpOoxyn0FPZiZlDkst84NO5OSI
- 5ZFPwaFqxUrFF+cFCY2O/UE2gpoK9Lt3gYNK6o2WIAtufuiYVdK6lANMkBgZ+t2fDLIN147a
- 172zu8XnyJMTo+tVfUjxwqynoR/NSWpVPs0Ck3K0LGjQE0tJ6HZrH0vudXk3YaiqW+D4CtGh
- I17Pk0h6x8LCdjmWmuDXoc99ezOEFSyWuTHjAYxx3cmgSUyIhdHtimuf0CVLTcFoBErb/5pJ
- zjb11Cj0HP87FMH57bnD3qyfkBMOB6tztfdt3vkCBaWkxaiTGXNhwr4IiLUoi90yIdXDMcTj
- /gvnjXgN+31iYgPWgTOdUEQud0DwDwuDwkzx/0x4sF1Dfc7BTQRlaPZcARAAuGkoYKWcrCh8
- 5RffedM6uBZ4p5Z4+RVj05uq7hlAwhHUpLP/XGbgNzhJP375Lonmnuyg2x7oHxfiwOohuuiA
- MnhSeEXn2qWZJuHosrYxs9y2zyiE/GTUAcqKiYBFa/96zOaZjHpNuQ5qSHYL64WhqvtmCQYg
- fL+jes2Z4IXl2R7MrN9OE+G3A3pOAo8TZKUEmlUV85fSmgopIX+hCiSQmRNRtp2jK6hd2+38
- YAXc+eRxYgXKaWX5zeBgNrfM7Oxeh/0iWRZPWstTvVH2xMlzywOB3e/fqg+Q3NlPGDrTyHoc
- L86ZELSLcMTFn+RXw8lX8oVjTcQA0M8sQHB5g0JEWtMsFjnQZkJGCfeh0Odbn/F8nZ6LQQtu
- +fjc/4n9vRun+PZjdhd3W9ZM9D87W9XJg9txIaYnoUXBLLpHK/OirFfr5cJTUf4svtE3EVXb
- x6P9vr7zqUbE0f76h1eDPmyMwFAuibIXhNoEoKQtEjLX9aKgKYny3hczRiuQpA+6U4oTNn4S
- /CEqphLPT53aMH0w4x0CebMPozf24ZE9YphdX8ECclLBlDL1/zx2xKrJNw8v6wdXMSfsybBW
- 98b5b1eVBk1uc1UMlpDl7AIHyCMTjL9Ha85eoya/Hk9l93aVHgK04hOBY2ED1/ZRpj0M5P5m
- tNX1JqZunpyvKooT1PrJr4UAEQEAAcLBfAQYAQgAJhYhBIy80bUk/2ubuNrzimzO8h6+Uid3
- BQJlaPZeBQkNKGiAAhsMAAoJEGzO8h6+Uid3SDoQAI3XXqsehWKvyAVeGXPxmkk+Suos/nJC
- xZWjp4U2xbbegBnNWladZoNdlVW/WV+FSFsN5IWztxQTWBMI12A0dx+Ooi9PSIANnlN+gQsA
- 9WeQ5iDNveEHZyK1GmuqZ3M3YZ1r3T2KyzTnPPZQ1B8gMQ442bOBWe077MqtLaC0J1jHyWHU
- j6BbUCAyR2/OCV/n1bH4wYIm2lgrOd2WuzoAGvju+j2g7hMRxw/xeHeu8S0czHuEZ0dC6fR1
- ZKUOw03+mM/xRzL1be6RVS9AF7R5oDd11RrTOb7k14z0inFqSRrRwzOPKcuMxrApcquar336
- 3FQuLcJLjBo/SAOh2JatOkkwkw5PZseqdwcAk5+wcCbdYy8J8ttR04iV1FzrdQp8HbVxGNo7
- AlDn1qtoHzvJHSQG51tbXWfLIi1ek3tpwJWj08+Zo+M47X6B65g7wdrwCiiFfclhXhI1eJNy
- fqqZgi3rxgu4sc5lmR846emZ/Tx85/nizqWCv7xUBxQwmhRPZRW+37vS2OLpyrTtBj3/tEM9
- m9GMmTZqaJFeK7WCpprJV4jNHpWZuNAsQrdK1MrceIxb0/6wYe0xK79lScxms+zs9pGTrO4U
- 5RoS4gXK65ECcBH8/mumV6oBmLrNxKUrzTczdo9PnkmRyZcAa6AndbjmQDznwxvTZu2LjMPC EuY0
-In-Reply-To: <53592a3a-3d96-4aa1-8357-ec595f59c5f3@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently it accounts the contention using delta between timestamps in
+lock:contention_begin and lock:contention_end tracepoints.  But it means
+the lock should see the both events during the monitoring period.
 
+Actually there are 4 cases that happen with the monitoring:
 
-On 12/7/23 9:12 AM, Dave Hansen wrote:
-> On 12/5/23 23:15, Alexey Makhalov wrote:
->> +#ifdef CONFIG_INTEL_TDX_GUEST
->> +/* Export tdx hypercall and allow it only for VMware guests. */
->> +void vmware_tdx_hypercall_args(struct tdx_module_args *args)
->> +{
->> +	if (hypervisor_is_type(X86_HYPER_VMWARE))
->> +		__tdx_hypercall(args);
->> +}
->> +EXPORT_SYMBOL_GPL(vmware_tdx_hypercall_args);
->> +#endif
-> 
-> I think this is still too generic.  This still allows anything setting
-> X86_HYPER_VMWARE to make any TDX hypercall.
-> 
-> I'd *much* rather you export something like vmware_tdx_hypercall() or
-> even the high-level calls like hypervisor_ppn_reset_all().  The higher
-> level and more specialized the interface, the less likely it is to be
-> abused.
+                monitoring period
+            /                       \
+            |                       |
+ 1:  B------+-----------------------+--------E
+ 2:    B----+-------------E         |
+ 3:         |           B-----------+----E
+ 4:         |     B-------------E   |
+            |                       |
+            t0                      t1
 
-Dave, I understood your point. Please take a look on the next version of 
-the patch.
+where B and E mean contention BEGIN and END, respectively.  So it only
+accounts the case 4 for now.  It seems there's no way to handle the case
+1.  The case 2 might be handled if it saved the timestamp (t0), but it
+lacks the information from the B notably the flags which shows the lock
+types.  Also it could be a nested lock which it currently ignores.  So
+I think we should ignore the case 2.
 
-I export vmware_tdx_hypercall(), while vmware_tdx_hypercall_args() is a
-static inline wrapper on top.
-Most of the vmware hypercall logic plus sanity checks are now in 
-exported function. While only input and output argument handling remains 
-in the wrapper to allow compiler optimization for hypercalls with few 
-argument. Exporting vmware_tdx_hypercall1, vmware_tdx_hypercall3, and so 
-on is not an option either.
+However we can handle the case 3 if we save the timestamp (t1) at the
+end of the period.  And then it can iterate the map entries in the
+userspace and update the lock stat accordinly.
 
-Regards,
---Alexey
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/bpf_lock_contention.c         | 116 ++++++++++++++++++
+ .../perf/util/bpf_skel/lock_contention.bpf.c  |  16 +--
+ tools/perf/util/bpf_skel/lock_data.h          |   7 ++
+ 3 files changed, 132 insertions(+), 7 deletions(-)
+
+diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
+index e105245eb905..2476459bf2ef 100644
+--- a/tools/perf/util/bpf_lock_contention.c
++++ b/tools/perf/util/bpf_lock_contention.c
+@@ -178,6 +178,119 @@ int lock_contention_prepare(struct lock_contention *con)
+ 	return 0;
+ }
+ 
++static void mark_end_timestamp(void)
++{
++	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
++		.flags = BPF_F_TEST_RUN_ON_CPU,
++	);
++	int prog_fd = bpf_program__fd(skel->progs.end_timestamp);
++
++	bpf_prog_test_run_opts(prog_fd, &opts);
++}
++
++static void update_lock_stat(int map_fd, int pid, u64 end_ts,
++			     enum lock_aggr_mode aggr_mode,
++			     struct tstamp_data *ts_data)
++{
++	u64 delta;
++	struct contention_key stat_key = {};
++	struct contention_data stat_data;
++
++	if (ts_data->timestamp >= end_ts)
++		return;
++
++	delta = end_ts - ts_data->timestamp;
++
++	switch (aggr_mode) {
++	case LOCK_AGGR_CALLER:
++		stat_key.stack_id = ts_data->stack_id;
++		break;
++	case LOCK_AGGR_TASK:
++		stat_key.pid = pid;
++		break;
++	case LOCK_AGGR_ADDR:
++		stat_key.lock_addr_or_cgroup = ts_data->lock;
++		break;
++	case LOCK_AGGR_CGROUP:
++		/* TODO */
++		return;
++	default:
++		return;
++	}
++
++	if (bpf_map_lookup_elem(map_fd, &stat_key, &stat_data) < 0)
++		return;
++
++	stat_data.total_time += delta;
++	stat_data.count++;
++
++	if (delta > stat_data.max_time)
++		stat_data.max_time = delta;
++	if (delta < stat_data.min_time)
++		stat_data.min_time = delta;
++
++	bpf_map_update_elem(map_fd, &stat_key, &stat_data, BPF_EXIST);
++}
++
++/*
++ * Account entries in the tstamp map (which didn't see the corresponding
++ * lock:contention_end tracepoint) using end_ts.
++ */
++static void account_end_timestamp(struct lock_contention *con)
++{
++	int ts_fd, stat_fd;
++	int *prev_key, key;
++	u64 end_ts = skel->bss->end_ts;
++	int total_cpus;
++	enum lock_aggr_mode aggr_mode = con->aggr_mode;
++	struct tstamp_data ts_data, *cpu_data;
++
++	/* Iterate per-task tstamp map (key = TID) */
++	ts_fd = bpf_map__fd(skel->maps.tstamp);
++	stat_fd = bpf_map__fd(skel->maps.lock_stat);
++
++	prev_key = NULL;
++	while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
++		if (bpf_map_lookup_elem(ts_fd, &key, &ts_data) == 0) {
++			int pid = key;
++
++			if (aggr_mode == LOCK_AGGR_TASK && con->owner)
++				pid = ts_data.flags;
++
++			update_lock_stat(stat_fd, pid, end_ts, aggr_mode,
++					 &ts_data);
++		}
++
++		prev_key = &key;
++	}
++
++	/* Now it'll check per-cpu tstamp map which doesn't have TID. */
++	if (aggr_mode == LOCK_AGGR_TASK || aggr_mode == LOCK_AGGR_CGROUP)
++		return;
++
++	total_cpus = cpu__max_cpu().cpu;
++	ts_fd = bpf_map__fd(skel->maps.tstamp_cpu);
++
++	cpu_data = calloc(total_cpus, sizeof(*cpu_data));
++	if (cpu_data == NULL)
++		return;
++
++	prev_key = NULL;
++	while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
++		if (bpf_map_lookup_elem(ts_fd, &key, cpu_data) < 0)
++			goto next;
++
++		for (int i = 0; i < total_cpus; i++) {
++			update_lock_stat(stat_fd, -1, end_ts, aggr_mode,
++					 &cpu_data[i]);
++		}
++
++next:
++		prev_key = &key;
++	}
++	free(cpu_data);
++}
++
+ int lock_contention_start(void)
+ {
+ 	skel->bss->enabled = 1;
+@@ -187,6 +300,7 @@ int lock_contention_start(void)
+ int lock_contention_stop(void)
+ {
+ 	skel->bss->enabled = 0;
++	mark_end_timestamp();
+ 	return 0;
+ }
+ 
+@@ -300,6 +414,8 @@ int lock_contention_read(struct lock_contention *con)
+ 	if (stack_trace == NULL)
+ 		return -1;
+ 
++	account_end_timestamp(con);
++
+ 	if (con->aggr_mode == LOCK_AGGR_TASK) {
+ 		struct thread *idle = __machine__findnew_thread(machine,
+ 								/*pid=*/0,
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index 95cd8414f6ef..fb54bd38e7d0 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -19,13 +19,6 @@
+ #define LCB_F_PERCPU	(1U << 4)
+ #define LCB_F_MUTEX	(1U << 5)
+ 
+-struct tstamp_data {
+-	__u64 timestamp;
+-	__u64 lock;
+-	__u32 flags;
+-	__s32 stack_id;
+-};
+-
+ /* callstack storage  */
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
+@@ -140,6 +133,8 @@ int perf_subsys_id = -1;
+ /* determine the key of lock stat */
+ int aggr_mode;
+ 
++__u64 end_ts;
++
+ /* error stat */
+ int task_fail;
+ int stack_fail;
+@@ -559,4 +554,11 @@ int BPF_PROG(collect_lock_syms)
+ 	return 0;
+ }
+ 
++SEC("raw_tp/bpf_test_finish")
++int BPF_PROG(end_timestamp)
++{
++	end_ts = bpf_ktime_get_ns();
++	return 0;
++}
++
+ char LICENSE[] SEC("license") = "Dual BSD/GPL";
+diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
+index 08482daf61be..36af11faad03 100644
+--- a/tools/perf/util/bpf_skel/lock_data.h
++++ b/tools/perf/util/bpf_skel/lock_data.h
+@@ -3,6 +3,13 @@
+ #ifndef UTIL_BPF_SKEL_LOCK_DATA_H
+ #define UTIL_BPF_SKEL_LOCK_DATA_H
+ 
++struct tstamp_data {
++	u64 timestamp;
++	u64 lock;
++	u32 flags;
++	u32 stack_id;
++};
++
+ struct contention_key {
+ 	u32 stack_id;
+ 	u32 pid;
+-- 
+2.43.0.472.g3155946c3a-goog
+
