@@ -2,119 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D82A280AA8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D12B080AA92
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236001AbjLHRU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:20:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
+        id S1574448AbjLHRVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:21:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236072AbjLHRUN (ORCPT
+        with ESMTP id S1574473AbjLHRUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:20:13 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAC4212E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:19:57 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1rBeU9-0006oS-Lt; Fri, 08 Dec 2023 18:17:57 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1rBeU8-00ESyf-8k; Fri, 08 Dec 2023 18:17:56 +0100
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id CB34F25EAD8;
-        Fri,  8 Dec 2023 17:17:55 +0000 (UTC)
-Date:   Fri, 8 Dec 2023 18:17:54 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     linux-riscv@lists.infradead.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH RESEND v1 0/7] MPFS clock fixes required for correct CAN
- clock modeling
-Message-ID: <20231208-atonable-cable-24ce1ceec083-mkl@pengutronix.de>
-References: <20231208-reenter-ajar-b6223e5134b3@spud>
+        Fri, 8 Dec 2023 12:20:41 -0500
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDA530E0
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:18:22 -0800 (PST)
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b9f3b1c184so68104b6e.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 09:18:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702055901; x=1702660701;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gJ+3R9IxKbkmcTJ74HwTcQdvvH3YUoXYS6y2KZcmboM=;
+        b=heLkUNNJ668NGUqPZtbP8t0BkZSCAmx8lfYvyDSPCaQcvlMtxQQw9UTDk52hXoUjtr
+         F/INa/87Z7xHd2/aZjNLmGikHAR19yqF2vB2LA7GPb1L97acYWw/4zsvksh0EodJt9OM
+         m1kG0ZBKvlLBfs58MVqwPzEjPkUaR8uALpVl9Aum9IptkbRfWIdIZ6FntABqAPDpbPK9
+         gR1g1iTVO08troHxpO39KBHCugQ6shDvSv5NFwpAxTqp7EgBtoY/XJ1DquWstHfP9fTj
+         I4M9eyBbX7URsEt9ROtISNr9oOl9UcNhd/pfgJe3GQBIdckHHgisBn3M94NV9dQHtfDp
+         x4rw==
+X-Gm-Message-State: AOJu0YxPhzDJsu4kXFZFdXamYbryMIgLuNCHJbwvvuoBr3xAVJ9nXoRi
+        HfVAUxkYY9C3BKtiL8P+QghJZbl0CNjJvMTCZlL9OCbXeaWh
+X-Google-Smtp-Source: AGHT+IEaGM8IrISOsncjNqQeBWc5L4m00L5pN75slobOFbwt/DyBySK4kH6Tmip4lZAW2Dp//bRk6iuMAdSNo1mN7aJXQv3Qa4mZ
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xyc7h6dsb2frvsw2"
-Content-Disposition: inline
-In-Reply-To: <20231208-reenter-ajar-b6223e5134b3@spud>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:1924:b0:3b8:b1e2:f631 with SMTP id
+ bf36-20020a056808192400b003b8b1e2f631mr421305oib.0.1702055901267; Fri, 08 Dec
+ 2023 09:18:21 -0800 (PST)
+Date:   Fri, 08 Dec 2023 09:18:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000620dd0060c02c5e1@google.com>
+Subject: [syzbot] [riscv?] riscv/fixes boot error: kernel BUG in __phys_addr_symbol
+From:   syzbot <syzbot+afb726d49f84c8d95ee1@syzkaller.appspotmail.com>
+To:     aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---xyc7h6dsb2frvsw2
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+syzbot found the following issue on:
 
-On 08.12.2023 17:12:22, Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
->=20
-> Resending cos I accidentally only sent the cover letter a few minutes
-> prior to this series, due to screwing up a dry run of sending.
-> :clown_face:
->=20
-> While reviewing a CAN clock driver internally for MPFS [1]
+HEAD commit:    eb46a0076501 riscv: Check if the code to patch lies in the..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=14aa707ae80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a5c1ede998d7cef2
+dashboard link: https://syzkaller.appspot.com/bug?extid=afb726d49f84c8d95ee1
+compiler:       riscv64-linux-gnu-gcc (Debian 12.2.0-13) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: riscv64
 
-> 1 - Hopefully that'll show up on the lists soon, once we are happy with
->   it ourselves.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/a741b348759c/non_bootable_disk-eb46a007.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/472c8c5dc639/vmlinux-eb46a007.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/21ee09184ba1/Image-eb46a007.xz
 
-A CAN clock driver or a complete CAN driver?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+afb726d49f84c8d95ee1@syzkaller.appspotmail.com
 
-Marc
+------------[ cut here ]------------
+kernel BUG at arch/riscv/mm/physaddr.c:31!
+Kernel BUG [#1]
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.7.0-rc1-syzkaller-geb46a0076501 #0
+Hardware name: riscv-virtio,qemu (DT)
+epc : __phys_addr_symbol+0x144/0x150 arch/riscv/mm/physaddr.c:31
+ ra : __phys_addr_symbol+0x144/0x150 arch/riscv/mm/physaddr.c:31
+epc : ffffffff800200b4 ra : ffffffff800200b4 sp : ff20000000013d10
+ gp : ffffffff861f60a0 tp : ff6000000b260000 t0 : 26747970652d3e69
+ t1 : fffffffef0a8ad5d t2 : 0000000000000000 s0 : ff20000000013d40
+ s1 : ff60000003a00000 a0 : 0000000000000006 a1 : ffffffff80000000
+ a2 : 0000000000000002 a3 : ffffffff800200b4 a4 : 0000000000000000
+ a5 : ff6000000b261000 a6 : 0000000000000003 a7 : ffffffff85456aef
+ s2 : ffffffff8816d000 s3 : ffffffff80000000 s4 : ffffffff84e6f2b0
+ s5 : ff60000003a00000 s6 : 0000000000000000 s7 : 0000000000000000
+ s8 : ffffffff861f5c40 s9 : 0000000000000000 s10: 0000000000000000
+ s11: 0000000000000000 t3 : ffffffffffffffff t4 : fffffffef0a8ad5d
+ t5 : fffffffef0a8ad5e t6 : ff60000013e80c70
+status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
+[<ffffffff800200b4>] __phys_addr_symbol+0x144/0x150 arch/riscv/mm/physaddr.c:31
+[<ffffffff80019ede>] __set_memory+0x1c0/0x762 arch/riscv/mm/pageattr.c:308
+[<ffffffff8001a4a4>] set_memory_rw_nx+0x24/0x30 arch/riscv/mm/pageattr.c:346
+[<ffffffff80008778>] set_kernel_memory arch/riscv/include/asm/set_memory.h:27 [inline]
+[<ffffffff80008778>] free_initmem+0x52/0x8c arch/riscv/kernel/setup.c:323
+[<ffffffff837334e6>] kernel_init+0x44/0x21e init/main.c:1450
+[<ffffffff83745cb2>] ret_from_fork+0xe/0x1c arch/riscv/kernel/entry.S:221
+Code: 84b3 4124 b745 4985 1996 bf65 7097 0025 80e7 ecc0 (9002) 7097 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	412484b3          	sub	s1,s1,s2
+   4:	b745                	j	0xffffffffffffffa4
+   6:	4985                	li	s3,1
+   8:	1996                	sll	s3,s3,0x25
+   a:	bf65                	j	0xffffffffffffffc2
+   c:	00257097          	auipc	ra,0x257
+  10:	ecc080e7          	jalr	-308(ra) # 0x256ed8
+* 14:	9002                	ebreak <-- trapping instruction
+  16:	97 70             	Address 0x16 is out of bounds.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
---xyc7h6dsb2frvsw2
-Content-Type: application/pgp-signature; name="signature.asc"
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
------BEGIN PGP SIGNATURE-----
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmVzT78ACgkQvlAcSiqK
-BOhBxQf7BYrhkxcGONNExkw5pTvSe2aLsApA8F4gr/MdexrCCcTenD7cTeiajOzK
-K0oLIoWt5Gu2YpWLNf9rl6YAjTSMel/sbvSpwi5VpC0sJXtQ6snB522S7zB40dBX
-DlV/YH+cIaYauSFFcCRGD/SBAKdNn24jn87i/lG4Ban1OXDZ979dRxwqZC+OXhJ+
-E4noB9XsO4EalZtLDH6R3jKxTUmEgh43ic9c2v73S0tJO4P8v3bEWocQoManBJsa
-09Lk42+pknYNywmrtNJnzBoJ5CAm5DojiSVBRmi0/3VTcOZDulX+1rY4+BeDFtG7
-CszXgKFkjG9kv7z0kmuxK0NANfvGxw==
-=7yOt
------END PGP SIGNATURE-----
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
---xyc7h6dsb2frvsw2--
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
