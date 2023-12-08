@@ -2,72 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9547180A3F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:54:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B651580A401
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573778AbjLHMye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 07:54:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51128 "EHLO
+        id S233456AbjLHM4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 07:56:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjLHMyc (ORCPT
+        with ESMTP id S229844AbjLHM4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 07:54:32 -0500
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC6A199E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:54:34 -0800 (PST)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5cdc0b3526eso15148447b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 04:54:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702040073; x=1702644873; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zzKPwdYAwYCdy6h7bjnYf0Ny9x0IXWZf0PctpusOM14=;
-        b=GymOwdMpn2bCXzEW+5FR2yU88+572gP+YVWQgaezvu+Ks+LJ7893+N3yfRaKaDxeQT
-         P7eDhlUSwa0kE2QdfEYz5CPldn974JBEL2o0WIt+RYrc5KZ69akrBntn0SKZZuSEYzKk
-         2dL7s6LghbPXLq2AGxiZYSkLf/jQiIGCPrlZNXiCVJXpe+M7ZihsEp1/+uQ2SxSs+ZgS
-         u1SRngX4omMo41+hmDi6Xj+1EHtrkcVtNWRinetAsHOGj1NulpS6nf11GZ28rTeaAMfl
-         CDyOxzaceGkKRcimdcPEOlwKsFZuTy6RuXJu4HcKgHio50dkv7t6S90yHDvZYjE/1OX2
-         SRsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702040073; x=1702644873;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zzKPwdYAwYCdy6h7bjnYf0Ny9x0IXWZf0PctpusOM14=;
-        b=IRDFJ6HRvea9JLm6ivs2Oj/2GI7OD1sLQpr+HYrpGD5bsxt4DI/JRPajW7f885Wi4m
-         zVHR2PCY/NB52FVSZtpFBJdN/Rj3Fjd1mAlvzcvN0IhoW4yV4f82SdcVRG2AayCNw1+m
-         1nnsIvUcCM5mzmwwrTu23BiF5zpuWGUuX61CzhlbNqRlF9+fGRQc60N75RJKhaIjvZGa
-         tAxDbA+AJjaNZzqHe+67podWY+inxoNxuxDIsg5u3rf2YDONASj771tKv/vsVwOlWgGz
-         eGPV+lNsernSmIdjfXlrfdxDuWthPFnBkXWyt57ABTVSnBFLso2Yh/GYZq+K4+HunCdU
-         Tf8Q==
-X-Gm-Message-State: AOJu0Yz2fynJnZnNF6jhgol+aGZa1sQptWPYh3A0kdfiG+JM7jQtMfph
-        Olmo+WJ31SeL+50YG/8jQJOm4xNSPPwDm1qkjpvpsg==
-X-Google-Smtp-Source: AGHT+IEAJXSroSapCiPDjhsK4NjurOOebjH4gHV0wHEUSh+xkwhLq/8/MRN114XW47mChKgdM8zLbDjUan/sQcQJbJY=
-X-Received: by 2002:a0d:cb42:0:b0:5d7:1a33:5ae5 with SMTP id
- n63-20020a0dcb42000000b005d71a335ae5mr376183ywd.50.1702040073661; Fri, 08 Dec
- 2023 04:54:33 -0800 (PST)
+        Fri, 8 Dec 2023 07:56:51 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F1410FC
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:56:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3053AC433C7;
+        Fri,  8 Dec 2023 12:56:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702040217;
+        bh=OSuX71e1jZxpO9PhB7QCT9A4hWvPxJ7NxD/Rhqsq+SI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BGURX3CkaHSVViOG1V5VQDRQ5+esvsuA8SRZodR/7mOYi2OmZY0YTIIig2EWe/08v
+         v3E1n4bWGqpOHyGi+5jzU6i0m8N4hrKNGX8/jgWPEa4q29TEe55s8Af8NLKvRDtRl6
+         IuMR2bB3F4SBgvhR2Blk++JH+Fb3W+lZTx5IJ6yyEGeYqJmsoJqfXVq5eICwi6k4vG
+         pzC1qMsDRT+WibmV/PD/CXvAXQwbGsCpEL6yZCBgZDimbODte05HFFP7mdLr9a2vl7
+         KwhTMc3b6xr1XVFMZYfcKGYgexXgGXNwj/hoORjPg4L+JNDDXutQVx0SMl+7q5dkFN
+         iW8SpZ/UMaNkA==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan+linaro@kernel.org>)
+        id 1rBaQM-0002gi-2N;
+        Fri, 08 Dec 2023 13:57:47 +0100
+From:   Johan Hovold <johan+linaro@kernel.org>
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan+linaro@kernel.org>
+Subject: [PATCH] soc: qcom: pmic_glink: disable UCSI on sc8280xp
+Date:   Fri,  8 Dec 2023 13:57:30 +0100
+Message-ID: <20231208125730.10323-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20231207111300.80581-1-eichest@gmail.com> <20231207111300.80581-2-eichest@gmail.com>
-In-Reply-To: <20231207111300.80581-2-eichest@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 8 Dec 2023 13:54:21 +0100
-Message-ID: <CACRpkdbSs-vebvchxx-Tg+O5CUF5M3vZf-iytuW=ZECnHb2anA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] dt-bindings: input: atmel,maxtouch: add
- poweroff-in-suspend property
-To:     Stefan Eichenberger <eichest@gmail.com>
-Cc:     nick@shmanahar.org, dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@tuxon.dev, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Stefan Eichenberger <stefan.eichenberger@toradex.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,32 +54,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 12:13=E2=80=AFPM Stefan Eichenberger <eichest@gmail.=
-com> wrote:
+Enabling UCSI on sc8280xp and the Lenovo ThinkPad X13s in particular
+results in a number of errors and timeouts during boot:
 
-> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
->
-> Add a new property to indicate that the device should be powered off in
-> suspend mode.
->
-> Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
-(...)
-> +  atmel,poweroff-in-suspend:
-> +    description: |
-> +      When this property is set, all supplies are turned off when the sy=
-stem is
-> +      going to suspend.
-> +    type: boolean
-   wakeup-source:
-     type: boolean
+[    9.012421] ucsi_glink.pmic_glink_ucsi pmic_glink.ucsi.0: GET_CONNECTOR_STATUS failed (-95)
+[   14.047379] ucsi_glink.pmic_glink_ucsi pmic_glink.ucsi.0: timeout waiting for UCSI sync write response
+[   14.050708] ucsi_glink.pmic_glink_ucsi pmic_glink.ucsi.0: GET_CONNECTOR_STATUS failed (-110)
+[   20.192382] ucsi_glink.pmic_glink_ucsi pmic_glink.ucsi.0: timeout waiting for UCSI sync write response
+[   20.192542] ucsi_glink.pmic_glink_ucsi pmic_glink.ucsi.0: GET_CONNECTOR_STATUS failed (-110)
 
-As Krzysztof says it seems you are describing an operating system feature.
+Disable UCSI on sc8280xp until this has been resolved.
 
-I can't help but wonder: shouldn't that pretty much be the default behaviou=
-r
-if wakeup-source is *not* specified?
+Fixes: 4db09e7b967b ("soc: qcom: pmic_glink: enable UCSI by default)
+Link: https://lore.kernel.org/r/ZXL5jvDHr-MuxMoz@hovoldconsulting.com
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+---
+ drivers/soc/qcom/pmic_glink.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I.e. the property kind of describes !wakeup-source.
+diff --git a/drivers/soc/qcom/pmic_glink.c b/drivers/soc/qcom/pmic_glink.c
+index 71d8901a9389..511aa40842a1 100644
+--- a/drivers/soc/qcom/pmic_glink.c
++++ b/drivers/soc/qcom/pmic_glink.c
+@@ -342,6 +342,7 @@ static const unsigned long pmic_glink_sm8450_client_mask = BIT(PMIC_GLINK_CLIENT
+ 
+ static const struct of_device_id pmic_glink_of_match[] = {
+ 	{ .compatible = "qcom,sc8180x-pmic-glink", .data = &pmic_glink_sc8180x_client_mask },
++	{ .compatible = "qcom,sc8280xp-pmic-glink", .data = &pmic_glink_sc8180x_client_mask },
+ 	{ .compatible = "qcom,pmic-glink", .data = &pmic_glink_sm8450_client_mask },
+ 	{}
+ };
+-- 
+2.41.0
 
-Yours,
-Linus Walleij
