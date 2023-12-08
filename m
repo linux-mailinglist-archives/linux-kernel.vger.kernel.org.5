@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 294A280AE2C
+	by mail.lfdr.de (Postfix) with ESMTP id 5050B80AE2D
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234222AbjLHUpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:45:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36952 "EHLO
+        id S1574742AbjLHUpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:45:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234276AbjLHUpQ (ORCPT
+        with ESMTP id S1574736AbjLHUpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:45:16 -0500
+        Fri, 8 Dec 2023 15:45:19 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D157019A6
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:45:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6D978C433C7;
-        Fri,  8 Dec 2023 20:45:20 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32D9198E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:45:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6A73AC433C7;
+        Fri,  8 Dec 2023 20:45:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702068320;
-        bh=yRVRqAQzerPrL7IolGQXD7ZPkiuu/3qjaW3gIcHoBBE=;
+        s=k20201202; t=1702068324;
+        bh=K+OWFJryI4pDti8SH/NpnPQEFZ3Y62Vzeopq9So2HrU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=RYL663Lrel9x4K+iecvnywW8nMmD5h4G4/dDV+CIBy+EU+95L9FDPhmewotOuf6zo
-         3AiKhGoAll0S9ls7B62YHsba4UnLFZrJASt/e2hBjmcO/Nz1wU2AkKRVWyAe/ZvHbO
-         DVWltcQCXhEJVcQ4B5fIcmC7NQNm+OOQVNFrYe1D8pSZLpCQ52WGlq3TMooBA5dHBQ
-         +DsBwPNcDevaXcgClDSnD9XVdbCVaLWxi/B8ZzBikj6pPeGMg3eHS+45TPwtJtO8RQ
-         WEYxOiuWUCBCputf4uG2dnx0w8RePJfdJLTkN3f9iWM2fpvgDxHXN170rYzqb6nlT8
-         ddoFPwjxOmRzg==
+        b=J+ZCzDxqInladyzdchUQLH4SW85FzzO6YP3WQf6YfsgSDdSdS21CaPJhixFbOLhu4
+         k3TxdXSSO69Qub7wKoC+Q8zRDzt67kA+3tX6Uj/ej46bYsWLHaPBMxvg1xALxy8XRd
+         lAXU6xxrrlvdNx+W9qX60oyV3BjRkD1lzvxgVsYmsfsKhZ5FDM/pKz6XQw2oqPJEOY
+         /EMN9WeDEn8D4tV1YrUfIZl3ud6rG7V0PFm5biHDpUPTgCa322Bj303UZjjupSzaoo
+         f20tL3x9b65nJsjgc4YRbNzcERvrhE1eKBAU74tSu07cANFeV+D/OsZGXocktLRIPI
+         zQjFNYH8B9IaQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 58AB6DD4F1E;
-        Fri,  8 Dec 2023 20:45:20 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 57FC2C04DD9;
+        Fri,  8 Dec 2023 20:45:24 +0000 (UTC)
+Subject: Re: [GIT PULL] SCSI fixes for 6.7-rc4
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20231208141911.GA2934372@nvidia.com>
-References: <20231208141911.GA2934372@nvidia.com>
-X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231208141911.GA2934372@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: e3e82fcb79eeb3f1a88a89f676831773caff514a
+In-Reply-To: <04e6cd5c53b77f7cf01df448525709f1eb7b7712.camel@HansenPartnership.com>
+References: <04e6cd5c53b77f7cf01df448525709f1eb7b7712.camel@HansenPartnership.com>
+X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <04e6cd5c53b77f7cf01df448525709f1eb7b7712.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: 235f2b548d7f4ac5931d834f05d3f7f5166a2e72
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8aa74869d2e9d868b1c4598eecc1a89f637a92cf
-Message-Id: <170206832035.6831.1964570469740054207.pr-tracker-bot@kernel.org>
-Date:   Fri, 08 Dec 2023 20:45:20 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Leon Romanovsky <leonro@nvidia.com>
+X-PR-Merge-Commit-Id: f2e8a57ee9036c7d5443382b6c3c09b51a92ec7e
+Message-Id: <170206832435.6831.10264763598499219064.pr-tracker-bot@kernel.org>
+Date:   Fri, 08 Dec 2023 20:45:24 +0000
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -57,12 +58,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 8 Dec 2023 10:19:11 -0400:
+The pull request you sent on Fri, 08 Dec 2023 13:44:22 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8aa74869d2e9d868b1c4598eecc1a89f637a92cf
+https://git.kernel.org/torvalds/c/f2e8a57ee9036c7d5443382b6c3c09b51a92ec7e
 
 Thank you!
 
