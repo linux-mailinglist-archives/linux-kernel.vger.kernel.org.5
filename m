@@ -2,199 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F15280A332
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A56380A358
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573695AbjLHM2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 07:28:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
+        id S233394AbjLHMfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 07:35:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjLHM2S (ORCPT
+        with ESMTP id S230256AbjLHMfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 07:28:18 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DBF1732
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:28:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702038504; x=1733574504;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Tf43M3Xn8qQGV/sPjRj6EorXmO+y2FJRuPPdC2zVCHM=;
-  b=NH78FQKIm43I0NanSkRzV7PSJC97ds2NO57/u8Z5gsIEBVnbW2XQ7gNM
-   GY3a7DuMGaFm4IAW8BKV5waRk7K36fBi7mbDjXdFWb0cmVFn9HOv3L1/0
-   WFV65pr+67hkjBQ8j+r+Kei2xnrhqDXwYPicU7GCdsIlCmQRZe85iXsOi
-   YVqcT+GLXOiBBdgPBGahm4Qw5SLT3Q3qw3gi/IgDt93x9JtCET7KhU45B
-   0BnOlgjH/C7QOKcWD5c6MQ09//7lAPW+YAYiKtxKk3G6HvJLIiee6BA4P
-   xFlkOT+Pa8KlAVtnzgmPjZUsP9MuAsrKkTZPygjbaC1TSnwIcst8TQXB0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="391569974"
-X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
-   d="scan'208";a="391569974"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 04:28:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="775776700"
-X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
-   d="scan'208";a="775776700"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 08 Dec 2023 04:28:22 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBZxp-000Dil-2a;
-        Fri, 08 Dec 2023 12:28:18 +0000
-Date:   Fri, 8 Dec 2023 20:28:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kent Overstreet <kmo@daterainc.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/bcachefs/snapshot.c:962:9: sparse: sparse: cast from restricted
- __le32
-Message-ID: <202312082007.cllrt6gU-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 8 Dec 2023 07:35:09 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AABDD1985;
+        Fri,  8 Dec 2023 04:35:14 -0800 (PST)
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 09A8220B74C0;
+        Fri,  8 Dec 2023 04:35:14 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 09A8220B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1702038914;
+        bh=7mA0Nk9JABJbzejc00vimgy7KH2zEY/kLfO3nzNRrOU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FIAXYAdbbG7wXaKNZ9umrETLQ81Gi/K/zSK47IYj1vgWGJ5wPChtLP5AXt23/FtWY
+         Eed/zyw783mRLv952yR/g0zTgvi2jm0zK+97NfdWxtx/r//fSeEYv89DQ8v0jy0xvl
+         zz/u6tAppPcxRi7D9M5NaAdHiXObeQokUStsOePs=
+From:   Konstantin Taranov <kotaranov@linux.microsoft.com>
+To:     kotaranov@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
+        wei.liu@kernel.org, kuba@kernel.org, leon@kernel.org,
+        decui@microsoft.com, edumazet@google.com, cai.huoqing@linux.dev,
+        pabeni@redhat.com, davem@davemloft.net, longli@microsoft.com
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH] net: mana: add msix index sharing between EQs
+Date:   Fri,  8 Dec 2023 04:35:05 -0800
+Message-Id: <1702038905-29520-1-git-send-email-kotaranov@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5e3f5b81de80c98338bcb47c233aebefee5a4801
-commit: f55d6e07bc6c9b90f58586daf9c432adb5f5ce25 bcachefs: Cleanup redundant snapshot nodes
-date:   7 weeks ago
-config: mips-randconfig-r132-20231115 (https://download.01.org/0day-ci/archive/20231208/202312082007.cllrt6gU-lkp@intel.com/config)
-compiler: mips-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231208/202312082007.cllrt6gU-lkp@intel.com/reproduce)
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312082007.cllrt6gU-lkp@intel.com/
+This patch allows to assign and poll more than 1 EQ on the same msix index.
+It is achieved by introducing a list of attached EQs in each IRQ context.
+This patch export symbols for creating EQs from other MANA kernel modules.
 
-sparse warnings: (new ones prefixed by >>)
->> fs/bcachefs/snapshot.c:962:9: sparse: sparse: cast from restricted __le32
-   fs/bcachefs/snapshot.c:989:41: sparse: sparse: cast to restricted __le32
-   fs/bcachefs/snapshot.c:989:39: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 @@     got unsigned int [usertype] @@
-   fs/bcachefs/snapshot.c:989:39: sparse:     expected restricted __le32
-   fs/bcachefs/snapshot.c:989:39: sparse:     got unsigned int [usertype]
-   fs/bcachefs/snapshot.c:1023:17: sparse: sparse: cast from restricted __le32
-   fs/bcachefs/snapshot.c:942:5: sparse: sparse: symbol 'bch2_snapshot_node_delete' was not declared. Should it be static?
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 55 ++++++++++++++-----
+ .../net/ethernet/microsoft/mana/hw_channel.c  |  1 +
+ drivers/net/ethernet/microsoft/mana/mana_en.c |  1 +
+ include/net/mana/gdma.h                       |  4 +-
+ 4 files changed, 45 insertions(+), 16 deletions(-)
 
-vim +962 fs/bcachefs/snapshot.c
-
-   941	
-   942	int bch2_snapshot_node_delete(struct btree_trans *trans, u32 id)
-   943	{
-   944		struct bch_fs *c = trans->c;
-   945		struct btree_iter iter, p_iter = (struct btree_iter) { NULL };
-   946		struct btree_iter c_iter = (struct btree_iter) { NULL };
-   947		struct btree_iter tree_iter = (struct btree_iter) { NULL };
-   948		struct bkey_s_c_snapshot s;
-   949		u32 parent_id, child_id;
-   950		unsigned i;
-   951		int ret = 0;
-   952	
-   953		s = bch2_bkey_get_iter_typed(trans, &iter, BTREE_ID_snapshots, POS(0, id),
-   954					     BTREE_ITER_INTENT, snapshot);
-   955		ret = bkey_err(s);
-   956		bch2_fs_inconsistent_on(bch2_err_matches(ret, ENOENT), c,
-   957					"missing snapshot %u", id);
-   958	
-   959		if (ret)
-   960			goto err;
-   961	
- > 962		BUG_ON(s.v->children[1]);
-   963	
-   964		parent_id = le32_to_cpu(s.v->parent);
-   965		child_id = le32_to_cpu(s.v->children[0]);
-   966	
-   967		if (parent_id) {
-   968			struct bkey_i_snapshot *parent;
-   969	
-   970			parent = bch2_bkey_get_mut_typed(trans, &p_iter,
-   971					     BTREE_ID_snapshots, POS(0, parent_id),
-   972					     0, snapshot);
-   973			ret = PTR_ERR_OR_ZERO(parent);
-   974			bch2_fs_inconsistent_on(bch2_err_matches(ret, ENOENT), c,
-   975						"missing snapshot %u", parent_id);
-   976			if (unlikely(ret))
-   977				goto err;
-   978	
-   979			/* find entry in parent->children for node being deleted */
-   980			for (i = 0; i < 2; i++)
-   981				if (le32_to_cpu(parent->v.children[i]) == id)
-   982					break;
-   983	
-   984			if (bch2_fs_inconsistent_on(i == 2, c,
-   985						"snapshot %u missing child pointer to %u",
-   986						parent_id, id))
-   987				goto err;
-   988	
-   989			parent->v.children[i] = le32_to_cpu(child_id);
-   990	
-   991			normalize_snapshot_child_pointers(&parent->v);
-   992		}
-   993	
-   994		if (child_id) {
-   995			struct bkey_i_snapshot *child;
-   996	
-   997			child = bch2_bkey_get_mut_typed(trans, &c_iter,
-   998					     BTREE_ID_snapshots, POS(0, child_id),
-   999					     0, snapshot);
-  1000			ret = PTR_ERR_OR_ZERO(child);
-  1001			bch2_fs_inconsistent_on(bch2_err_matches(ret, ENOENT), c,
-  1002						"missing snapshot %u", child_id);
-  1003			if (unlikely(ret))
-  1004				goto err;
-  1005	
-  1006			child->v.parent = cpu_to_le32(parent_id);
-  1007	
-  1008			if (!child->v.parent) {
-  1009				child->v.skip[0] = 0;
-  1010				child->v.skip[1] = 0;
-  1011				child->v.skip[2] = 0;
-  1012			}
-  1013		}
-  1014	
-  1015		if (!parent_id) {
-  1016			/*
-  1017			 * We're deleting the root of a snapshot tree: update the
-  1018			 * snapshot_tree entry to point to the new root, or delete it if
-  1019			 * this is the last snapshot ID in this tree:
-  1020			 */
-  1021			struct bkey_i_snapshot_tree *s_t;
-  1022	
-  1023			BUG_ON(s.v->children[1]);
-  1024	
-  1025			s_t = bch2_bkey_get_mut_typed(trans, &tree_iter,
-  1026					BTREE_ID_snapshot_trees, POS(0, le32_to_cpu(s.v->tree)),
-  1027					0, snapshot_tree);
-  1028			ret = PTR_ERR_OR_ZERO(s_t);
-  1029			if (ret)
-  1030				goto err;
-  1031	
-  1032			if (s.v->children[0]) {
-  1033				s_t->v.root_snapshot = s.v->children[0];
-  1034			} else {
-  1035				s_t->k.type = KEY_TYPE_deleted;
-  1036				set_bkey_val_u64s(&s_t->k, 0);
-  1037			}
-  1038		}
-  1039	
-  1040		ret = bch2_btree_delete_at(trans, &iter, 0);
-  1041	err:
-  1042		bch2_trans_iter_exit(trans, &tree_iter);
-  1043		bch2_trans_iter_exit(trans, &p_iter);
-  1044		bch2_trans_iter_exit(trans, &c_iter);
-  1045		bch2_trans_iter_exit(trans, &iter);
-  1046		return ret;
-  1047	}
-  1048	
-
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 6367de0..82a4534 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -401,6 +401,9 @@ static void mana_gd_process_eq_events(void *arg)
+ 	u32 head, num_eqe;
+ 	int i;
+ 
++	if (eq->id == INVALID_QUEUE_ID)
++		return;
++
+ 	gc = eq->gdma_dev->gdma_context;
+ 
+ 	num_eqe = eq->queue_size / GDMA_EQE_SIZE;
+@@ -414,8 +417,12 @@ static void mana_gd_process_eq_events(void *arg)
+ 
+ 		old_bits = (eq->head / num_eqe - 1) & GDMA_EQE_OWNER_MASK;
+ 		/* No more entries */
+-		if (owner_bits == old_bits)
++		if (owner_bits == old_bits) {
++			/* return here without ringing the doorbell */
++			if (i == 0)
++				return;
+ 			break;
++		}
+ 
+ 		new_bits = (eq->head / num_eqe) & GDMA_EQE_OWNER_MASK;
+ 		if (owner_bits != new_bits) {
+@@ -457,12 +464,16 @@ static int mana_gd_register_irq(struct gdma_queue *queue,
+ 
+ 	spin_lock_irqsave(&r->lock, flags);
+ 
+-	msi_index = find_first_zero_bit(r->map, r->size);
++	if (queue->eq.msix_index == INVALID_PCI_MSIX_INDEX)
++		queue->eq.msix_index = find_first_zero_bit(r->map, r->size);
++
++	msi_index = queue->eq.msix_index;
++
+ 	if (msi_index >= r->size || msi_index >= gc->num_msix_usable) {
+ 		err = -ENOSPC;
++		queue->eq.msix_index = INVALID_PCI_MSIX_INDEX;
+ 	} else {
+ 		bitmap_set(r->map, msi_index, 1);
+-		queue->eq.msix_index = msi_index;
+ 	}
+ 
+ 	spin_unlock_irqrestore(&r->lock, flags);
+@@ -476,9 +487,7 @@ static int mana_gd_register_irq(struct gdma_queue *queue,
+ 
+ 	gic = &gc->irq_contexts[msi_index];
+ 
+-	WARN_ON(gic->handler || gic->arg);
+-
+-	gic->arg = queue;
++	list_add_rcu(&queue->entry, &gic->eq_list);
+ 
+ 	gic->handler = mana_gd_process_eq_events;
+ 
+@@ -493,6 +502,7 @@ static void mana_gd_deregiser_irq(struct gdma_queue *queue)
+ 	struct gdma_resource *r;
+ 	unsigned int msix_index;
+ 	unsigned long flags;
++	struct gdma_queue *eq;
+ 
+ 	gc = gd->gdma_context;
+ 	r = &gc->msix_resource;
+@@ -502,12 +512,19 @@ static void mana_gd_deregiser_irq(struct gdma_queue *queue)
+ 	if (WARN_ON(msix_index >= gc->num_msix_usable))
+ 		return;
+ 
+-	gic = &gc->irq_contexts[msix_index];
+-	gic->handler = NULL;
+-	gic->arg = NULL;
+-
+ 	spin_lock_irqsave(&r->lock, flags);
+-	bitmap_clear(r->map, msix_index, 1);
++	gic = &gc->irq_contexts[msix_index];
++	list_for_each_entry_rcu(eq, &gic->eq_list, entry) {
++		if (queue == eq) {
++			list_del_rcu(&eq->entry);
++			synchronize_rcu();
++			break;
++		}
++	}
++	if (list_empty(&gic->eq_list)) {
++		gic->handler = NULL;
++		bitmap_clear(r->map, msix_index, 1);
++	}
+ 	spin_unlock_irqrestore(&r->lock, flags);
+ 
+ 	queue->eq.msix_index = INVALID_PCI_MSIX_INDEX;
+@@ -587,7 +604,8 @@ static int mana_gd_create_eq(struct gdma_dev *gd,
+ 	u32 log2_num_entries;
+ 	int err;
+ 
+-	queue->eq.msix_index = INVALID_PCI_MSIX_INDEX;
++	queue->eq.msix_index = spec->eq.msix_index;
++	queue->id = INVALID_QUEUE_ID;
+ 
+ 	log2_num_entries = ilog2(queue->queue_size / GDMA_EQE_SIZE);
+ 
+@@ -819,6 +837,7 @@ free_q:
+ 	kfree(queue);
+ 	return err;
+ }
++EXPORT_SYMBOL_NS(mana_gd_create_mana_eq, NET_MANA);
+ 
+ int mana_gd_create_mana_wq_cq(struct gdma_dev *gd,
+ 			      const struct gdma_queue_spec *spec,
+@@ -895,6 +914,7 @@ void mana_gd_destroy_queue(struct gdma_context *gc, struct gdma_queue *queue)
+ 	mana_gd_free_memory(gmi);
+ 	kfree(queue);
+ }
++EXPORT_SYMBOL_NS(mana_gd_destroy_queue, NET_MANA);
+ 
+ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+ {
+@@ -1217,9 +1237,14 @@ int mana_gd_poll_cq(struct gdma_queue *cq, struct gdma_comp *comp, int num_cqe)
+ static irqreturn_t mana_gd_intr(int irq, void *arg)
+ {
+ 	struct gdma_irq_context *gic = arg;
++	struct list_head *eq_list = &gic->eq_list;
++	struct gdma_queue *eq;
+ 
+-	if (gic->handler)
+-		gic->handler(gic->arg);
++	if (gic->handler) {
++		list_for_each_entry_rcu(eq, eq_list, entry) {
++			gic->handler(eq);
++		}
++	}
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -1272,7 +1297,7 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+ 	for (i = 0; i < nvec; i++) {
+ 		gic = &gc->irq_contexts[i];
+ 		gic->handler = NULL;
+-		gic->arg = NULL;
++		INIT_LIST_HEAD(&gic->eq_list);
+ 
+ 		if (!i)
+ 			snprintf(gic->name, MANA_IRQ_NAME_SZ, "mana_hwc@pci:%s",
+diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+index 9d1cd3b..0a5fc39 100644
+--- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
++++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+@@ -300,6 +300,7 @@ static int mana_hwc_create_gdma_eq(struct hw_channel_context *hwc,
+ 	spec.eq.context = ctx;
+ 	spec.eq.callback = cb;
+ 	spec.eq.log2_throttle_limit = DEFAULT_LOG2_THROTTLING_FOR_ERROR_EQ;
++	spec.eq.msix_index = INVALID_PCI_MSIX_INDEX;
+ 
+ 	return mana_gd_create_hwc_queue(hwc->gdma_dev, &spec, queue);
+ }
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index fc3d290..8718c04 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1242,6 +1242,7 @@ static int mana_create_eq(struct mana_context *ac)
+ 	spec.eq.callback = NULL;
+ 	spec.eq.context = ac->eqs;
+ 	spec.eq.log2_throttle_limit = LOG2_EQ_THROTTLE;
++	spec.eq.msix_index = INVALID_PCI_MSIX_INDEX;
+ 
+ 	for (i = 0; i < gc->max_num_queues; i++) {
+ 		err = mana_gd_create_mana_eq(gd, &spec, &ac->eqs[i].eq);
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index 88b6ef7..8d6569d 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -293,6 +293,7 @@ struct gdma_queue {
+ 
+ 	u32 head;
+ 	u32 tail;
++	struct list_head entry;
+ 
+ 	/* Extra fields specific to EQ/CQ. */
+ 	union {
+@@ -328,6 +329,7 @@ struct gdma_queue_spec {
+ 			void *context;
+ 
+ 			unsigned long log2_throttle_limit;
++			unsigned int msix_index;
+ 		} eq;
+ 
+ 		struct {
+@@ -344,7 +346,7 @@ struct gdma_queue_spec {
+ 
+ struct gdma_irq_context {
+ 	void (*handler)(void *arg);
+-	void *arg;
++	struct list_head eq_list;
+ 	char name[MANA_IRQ_NAME_SZ];
+ };
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
