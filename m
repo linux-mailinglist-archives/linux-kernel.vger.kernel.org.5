@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7317A80ACC9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 677FD80ACC8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574665AbjLHTTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 14:19:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46770 "EHLO
+        id S1574658AbjLHTTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 14:19:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574649AbjLHTTO (ORCPT
+        with ESMTP id S1574641AbjLHTTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Dec 2023 14:19:14 -0500
-Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D4410EF
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8333410E7
         for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:19:20 -0800 (PST)
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-Received: from shine.dominikbrodowski.net (shine.brodo.linta [10.2.0.112])
-        by isilmar-4.linta.de (Postfix) with ESMTPSA id EB8CE20157B;
-        Fri,  8 Dec 2023 19:19:17 +0000 (UTC)
-Received: by shine.dominikbrodowski.net (Postfix, from userid 1000)
-        id 267DCA0081; Fri,  8 Dec 2023 20:19:08 +0100 (CET)
-Date:   Fri, 8 Dec 2023 20:19:08 +0100
-From:   Dominik Brodowski <linux@dominikbrodowski.net>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Kalle Valo <kvalo@kernel.org>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        linux-arm-kernel@lists.infradead.org,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, kernel@pengutronix.de
-Subject: Re: [PATCH 0/7] pcmcia: Convert to platform remove callback
- returning void
-Message-ID: <ZXNsLJfqs9DLHb1Q@shine.dominikbrodowski.net>
-References: <cover.1702051073.git.u.kleine-koenig@pengutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702063160; x=1733599160;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=8Bgkj91w6gSW3fz6KbSzBzAD4jOqxbVia76/GQnZg6Y=;
+  b=l01YZmcPIPGcJAdrEwKgMgMaM8SSDasYvktcJIMjGzvXsNXjOXzIzJa0
+   tjXcYCO2VeE0PY9aR00kpIfz/vb/L9W5Ee1S7Dk+CzCTVVxPy1Z0SNPrR
+   LUP3Uix5h9pfD0sqGCsy6RZ4qMpbUsgND8BEnoHsR9PDg40pbut7wA0vk
+   +HZSpvFU6MpbQlAAjhicyM6E4VA8FjAi9scPtpC/VWgyfZ5GjGLg8pDd2
+   GJgDhycJhOH7MzdKmr9CNSjBuuul9bSum1MZ3hl4zvJE0BJzgKJ4LTUNH
+   mZ9ho5pP1RwQ5YrbSHEJT1xsSOtuSn9oP/FPSW1L+QmTYZc2EzeEDpXAY
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="425582082"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="425582082"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 11:19:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1103660087"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="1103660087"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 08 Dec 2023 11:19:19 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBgNY-000EFT-36;
+        Fri, 08 Dec 2023 19:19:16 +0000
+Date:   Sat, 9 Dec 2023 03:19:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted
+ __virtio16
+Message-ID: <202312090326.3IgZoXQW-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1702051073.git.u.kleine-koenig@pengutronix.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Fri, Dec 08, 2023 at 05:08:05PM +0100 schrieb Uwe Kleine-König:
-> Hello,
-> 
-> this series changes all platform drivers in drivers/pcmcia to use the
-> .remove_new() callback. See commit 5c5a7680e67b ("platform: Provide a
-> remove callback that returns no value") for an extended explanation and
-> the eventual goal.
-> 
-> All conversations are trivial, because all .remove() callbacks returned
-> zero unconditionally already.
-> 
-> There are no interdependencies between these patches, so they could be
-> picked up individually. However I'd expect them to go in all together.
-> It's unclrear to me though, who will pick them up. Dominik? Greg?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   4df7c5fde316820286dfa6d203a1005d7fbe007d
+commit: d877322bc1adcab9850732275670409e8bcca4c4 openrisc: Fix issue with get_user for 64-bit values
+date:   3 years, 3 months ago
+config: openrisc-randconfig-r131-20231102 (https://download.01.org/0day-ci/archive/20231209/202312090326.3IgZoXQW-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231209/202312090326.3IgZoXQW-lkp@intel.com/reproduce)
 
-Both options are fine with me. In the latter case:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312090326.3IgZoXQW-lkp@intel.com/
 
-	Acked-by: Dominik Brodowski <linux@dominikbrodowski.net>
+sparse warnings: (new ones prefixed by >>)
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: restricted __virtio16 degrades to integer
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: restricted __virtio16 degrades to integer
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
 
-Best
-	Dominik
+vim +567 drivers/vhost/vringh.c
+
+f87d0fbb579818 Rusty Russell      2013-03-20  562  
+f87d0fbb579818 Rusty Russell      2013-03-20  563  /* Userspace access helpers: in this case, addresses are really userspace. */
+b9f7ac8c72894c Michael S. Tsirkin 2014-12-12  564  static inline int getu16_user(const struct vringh *vrh, u16 *val, const __virtio16 *p)
+f87d0fbb579818 Rusty Russell      2013-03-20  565  {
+b9f7ac8c72894c Michael S. Tsirkin 2014-12-12  566  	__virtio16 v = 0;
+b9f7ac8c72894c Michael S. Tsirkin 2014-12-12 @567  	int rc = get_user(v, (__force __virtio16 __user *)p);
+b9f7ac8c72894c Michael S. Tsirkin 2014-12-12  568  	*val = vringh16_to_cpu(vrh, v);
+b9f7ac8c72894c Michael S. Tsirkin 2014-12-12  569  	return rc;
+f87d0fbb579818 Rusty Russell      2013-03-20  570  }
+f87d0fbb579818 Rusty Russell      2013-03-20  571  
+
+:::::: The code at line 567 was first introduced by commit
+:::::: b9f7ac8c72894c19bf258a54ecaa708df4ffbe80 vringh: update for virtio 1.0 APIs
+
+:::::: TO: Michael S. Tsirkin <mst@redhat.com>
+:::::: CC: Michael S. Tsirkin <mst@redhat.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
