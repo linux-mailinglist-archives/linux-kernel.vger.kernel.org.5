@@ -2,128 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9895180A2A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EB380A2A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573594AbjLHLwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 06:52:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
+        id S1573654AbjLHLws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 06:52:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjLHLwU (ORCPT
+        with ESMTP id S233505AbjLHLwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 06:52:20 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEEC171F;
-        Fri,  8 Dec 2023 03:52:24 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-425430fe8d1so12125771cf.1;
-        Fri, 08 Dec 2023 03:52:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702036343; x=1702641143; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LWwkDICaANTCLBkKNyjRtb2b7p1OpvE2Uyw4u3EGEOc=;
-        b=ibOSUrKEPX0W3RLnoVT7TR4db3EOkFiiq8lg8K+55BQXjaicPZLxoAk+m1iGNc9mfQ
-         l0RN5Tl5HaJ2k7Nd5yPS/JH52zOUEe358JaaWR0HHHPBuADB0y0QWkdjOK+Y+4IsdLGg
-         GR50Gp/HMxfoP07OcrZvth4BePhg/ZNqGm814k0GijkLIJhxHNsuD+kP/X2VMUFOlzt6
-         oE1Omf1X5P6Y23AnX3MPzUMvo8pBRvf5sZfM40iI1Ib23H9Ixdk7cpCgVMrEo8H+js3k
-         H3TXIvG5qGyGaofDPCotrz0L8aMgdXfG4HGWUDjvDkI0/mBhPIt1oRq/tinmVjsNSb3t
-         17eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702036343; x=1702641143;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LWwkDICaANTCLBkKNyjRtb2b7p1OpvE2Uyw4u3EGEOc=;
-        b=WxeTuPSg5Kf9f0IpWtG51huz0eUu9uqaMHH2ndWfFogqwbxRN3Kcmn+qKOPw9OTyEg
-         ABrV3GNuHjww60+yaDDGtBG1g3fHjUxf+GS18sWtbDhXf936nDdbwRx8SAxJkq/avy51
-         ZGK822PIRt/y6Axmd9eH7+T1HWaroZeCnUP1DMTQa8AB0ZS8TiwUaNCf+V1SHbFxmfAr
-         mUhc2KDGBaBhIa6Q0Rety0zTCv5M4So0cHQ5+w46HScG5KDqo4PhhaaVSh6f8S8M6Duc
-         bIQbcO/6dUki6qSI4n1G/jgxe0WnbZRhTltlqheO/rwpKGrLiRXlF/TJfx5ilQnO/0ij
-         XoDw==
-X-Gm-Message-State: AOJu0YwQE7rTJwU8OZxO87YKhbENE8CE3ooiQwUAUJxO1TpNHARN/vLp
-        A6I3nt9whA0oOScXwJqzKaFaq0czPnnQNS4SHV4=
-X-Google-Smtp-Source: AGHT+IFvzSllLQfPV5Ta3QUEkfcC0/yZFxXlw1MHSdHhbpAAcNaDB42ZLxb2BVvXPfNRTGMyUQE4P95id9DbuiAG13U=
-X-Received: by 2002:a05:6214:92:b0:67a:a721:782f with SMTP id
- n18-20020a056214009200b0067aa721782fmr3493346qvr.84.1702036343619; Fri, 08
- Dec 2023 03:52:23 -0800 (PST)
+        Fri, 8 Dec 2023 06:52:46 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE11171F;
+        Fri,  8 Dec 2023 03:52:51 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702036369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+Bzhtr8Z/zHR1SS9qrv2WMjasbEmV2BoWGNIe8Z1tRg=;
+        b=pmjuKESv4alxlWy9xXV/apAlv4xR7VxTUs7pAvw6l4veAR6iQbL83UpOdjpY/obRJdLcfo
+        34PRGPNv5BVBMAhFccxAlq9bBigrkpWfoOBs9VEes7vF1akDLgK/JGE4Mxq0ZzCJVISx5l
+        I/dDrPJqVDTtIbL53jyZ+zfZsY4ml/z0eQuZhLdJmsXO5togc6bPvyGnUQgHVXY/inOziR
+        MDetaqoIKi0ESx77qQNtGyhDYIQsv7+Io2/KhThR5FzP3k8xcZxBFkr13T4U9GR6xW1NOY
+        gf+6L4rqZwU7QHAmqMpzi0g3buykKehh/LFn88D+42VGaMV3BXqV805cQ4YHEw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702036369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+Bzhtr8Z/zHR1SS9qrv2WMjasbEmV2BoWGNIe8Z1tRg=;
+        b=pS7ZGZq8uhbuePRlfYDITaiZxhff8pz3xaspEarOeSXWmtVmjO0shwgy4CuY4Dk5GJcri4
+        h5Utb4ZE5vc+OqDQ==
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
+        iommu@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>,
+        kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org,
+        seanjc@google.com, Robin Murphy <robin.murphy@arm.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH RFC 09/13] x86/irq: Install posted MSI notification handler
+In-Reply-To: <20231207204607.2d2a3b72@jacob-builder>
+References: <20231112041643.2868316-1-jacob.jun.pan@linux.intel.com>
+ <20231112041643.2868316-10-jacob.jun.pan@linux.intel.com>
+ <20231115125624.GF3818@noisy.programming.kicks-ass.net>
+ <87cyvjun3z.ffs@tglx> <20231207204607.2d2a3b72@jacob-builder>
+Date:   Fri, 08 Dec 2023 12:52:49 +0100
+Message-ID: <87zfyksyge.ffs@tglx>
 MIME-Version: 1.0
-References: <20231204064934.21236-1-wenchao.chen@unisoc.com> <CAPDyKFpK2Yjj2oDWCUKHpht6PC9uNG-x2rPYO3EBD6GGWg4VZg@mail.gmail.com>
-In-Reply-To: <CAPDyKFpK2Yjj2oDWCUKHpht6PC9uNG-x2rPYO3EBD6GGWg4VZg@mail.gmail.com>
-From:   Wenchao Chen <wenchao.chen666@gmail.com>
-Date:   Fri, 8 Dec 2023 19:52:12 +0800
-Message-ID: <CA+Da2qyB2tQjq5wxoqNwjb5HXhdPHMsWN08Ot7nMEkZzOgQ9LA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sprd: Fix eMMC init failure after hw reset
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Wenchao Chen <wenchao.chen@unisoc.com>, zhang.lyra@gmail.com,
-        orsonzhai@gmail.com, baolin.wang@linux.alibaba.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhenxiong.lai@unisoc.com, yuelin.tang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Dec 2023 at 21:59, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+On Thu, Dec 07 2023 at 20:46, Jacob Pan wrote:
+> On Wed, 06 Dec 2023 20:50:24 +0100, Thomas Gleixner <tglx@linutronix.de>
+> wrote:
+>> I don't understand what the whole copy business is about. It's
+>> absolutely not required.
 >
-> On Mon, 4 Dec 2023 at 07:50, Wenchao Chen <wenchao.chen@unisoc.com> wrote:
-> >
-> > Some eMMC devices that do not close the auto clk gate
-> > after hw reset will cause eMMC initialization to fail.
-> >
-> > Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+> My thinking is the following:
+> The PIR cache line is contended by between CPU and IOMMU, where CPU can
+> access PIR much faster. Nevertheless, when IOMMU does atomic swap of the
+> PID (PIR included), L1 cache gets evicted. Subsequent CPU read or xchg will
+> deal with invalid cold cache.
 >
-> I assume we want this tagged for stable kernels too, but do we have a
-> corresponding fixes commit that we can point out?
+> By making a copy of PIR as quickly as possible and clearing PIR with xchg,
+> we minimized the chance that IOMMU does atomic swap in the middle.
+> Therefore, having less L1D misses.
 >
-> Kind regards
-> Uffe
+> In the code above, it does read, xchg, and call_irq_handler() in a loop
+> to handle the 4 64bit PIR bits at a time. IOMMU has a greater chance to do
+> atomic xchg on the PIR cache line while doing call_irq_handler(). Therefore,
+> it causes more L1D misses.
+
+That makes sense and if we go there it wants to be documented.
+
+> Without PIR copy:
 >
+> DMA memfill bandwidth: 4.944 Gbps
+> Performance counter stats for './run_intr.sh 512 30':                                                             
+>                                                                                                                    
+>     77,313,298,506      L1-dcache-loads                                               (79.98%)                     
+>          8,279,458      L1-dcache-load-misses     #    0.01% of all L1-dcache accesses  (80.03%)                   
+>     41,654,221,245      L1-dcache-stores                                              (80.01%)                     
+>             10,476      LLC-load-misses           #    0.31% of all LL-cache accesses  (79.99%)                    
+>          3,332,748      LLC-loads                                                     (80.00%)                     
+>                                                                                                                    
+>       30.212055434 seconds time elapsed                                                                            
+>                                                                                                                    
+>        0.002149000 seconds user                                                                                    
+>       30.183292000 seconds sys
+>                         
+>
+> With PIR copy:
+> DMA memfill bandwidth: 5.029 Gbps
+> Performance counter stats for './run_intr.sh 512 30':
+>
+>     78,327,247,423      L1-dcache-loads                                               (80.01%)
+>          7,762,311      L1-dcache-load-misses     #    0.01% of all L1-dcache accesses  (80.01%)
+>     42,203,221,466      L1-dcache-stores                                              (79.99%)
+>             23,691      LLC-load-misses           #    0.67% of all LL-cache accesses  (80.01%)
+>          3,561,890      LLC-loads                                                     (80.00%)
+>
+>       30.201065706 seconds time elapsed
+>
+>        0.005950000 seconds user
+>       30.167885000 seconds sys
 
-Hi Uffe
-Sorry, I forgot to add fixes commit.
+Interesting, though I'm not really convinced that this DMA memfill
+microbenchmark resembles real work loads.
 
-Fixes: ff874dbc4f86 ("mmc: sdhci-sprd: Disable CLK_AUTO when the clock
-is less than 400K")
+Did you test with something realistic, e.g. storage or networking, too?
 
-Thanks
+Thanks,
 
-> > ---
-> >  drivers/mmc/host/sdhci-sprd.c | 10 +++++++---
-> >  1 file changed, 7 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
-> > index 6b8a57e2d20f..bed57a1c64b5 100644
-> > --- a/drivers/mmc/host/sdhci-sprd.c
-> > +++ b/drivers/mmc/host/sdhci-sprd.c
-> > @@ -239,15 +239,19 @@ static inline void _sdhci_sprd_set_clock(struct sdhci_host *host,
-> >         div = ((div & 0x300) >> 2) | ((div & 0xFF) << 8);
-> >         sdhci_enable_clk(host, div);
-> >
-> > +       val = sdhci_readl(host, SDHCI_SPRD_REG_32_BUSY_POSI);
-> > +       mask = SDHCI_SPRD_BIT_OUTR_CLK_AUTO_EN | SDHCI_SPRD_BIT_INNR_CLK_AUTO_EN;
-> >         /* Enable CLK_AUTO when the clock is greater than 400K. */
-> >         if (clk > 400000) {
-> > -               val = sdhci_readl(host, SDHCI_SPRD_REG_32_BUSY_POSI);
-> > -               mask = SDHCI_SPRD_BIT_OUTR_CLK_AUTO_EN |
-> > -                       SDHCI_SPRD_BIT_INNR_CLK_AUTO_EN;
-> >                 if (mask != (val & mask)) {
-> >                         val |= mask;
-> >                         sdhci_writel(host, val, SDHCI_SPRD_REG_32_BUSY_POSI);
-> >                 }
-> > +       } else {
-> > +               if (val & mask) {
-> > +                       val &= ~mask;
-> > +                       sdhci_writel(host, val, SDHCI_SPRD_REG_32_BUSY_POSI);
-> > +               }
-> >         }
-> >  }
-> >
-> > --
-> > 2.17.1
-> >
+        tglx
