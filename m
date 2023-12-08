@@ -2,325 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C30028098AB
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD2F8098AA
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 02:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444223AbjLHBjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 20:39:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
+        id S1572920AbjLHBka convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Dec 2023 20:40:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbjLHBi6 (ORCPT
+        with ESMTP id S231491AbjLHBk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 20:38:58 -0500
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2072.outbound.protection.outlook.com [40.107.102.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284921712
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 17:39:04 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cO1/6tEDfsli91CMVJpbEHkcIiWbum6Nb/6kb7BY3MDVUfS21sOda2k8gcDhqlT1H/Zxaq4y0Qe2KZRT5IKI/WxZ6F4FYNey3lTemi4CT8RO9mPDiE6LDIHCNSBd/oznHLVCdI94quCzCrBfSaOZqNN4b48hm1E6fcrfZ9Rk5ttnW5m0JZPRrJTJcBtSakzi5xqenvZgSkFdY0Kz8193hk5OcrAaKPwdw5CtqXZVPHoHhvpcQrfW+dyqflL5Mn40M7EhtQottSSUkh2qwVEPwBaREvR+JVk1Fs0hTu3ZnFYGSPuo+PpaZRF3ztdGXQYWY6eh4EKBXgLJM37FjOYzSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=A+OXwpZtxyaCJv4MFC20l5pbMc7D5W4w1I3CP6dcUDM=;
- b=QD91uuj2sJ5mEKlkspBvtmkUNQYchSZvNc8okoDBNhguNDGL3IsZVYmknjQlh8urXe/HHcuqM7AIfviIF78cpCd4F8wNunBP2Nxh7FV5iZw2/jLOBCJe08cJdwaE4Cc6TD3YUgrrhJ1TwBQMrPraHbDcPFerx0QkEQRGaujTYgzIguwRehGv9B8+Ug/vtc2H/ywOmXQDTlxnmkiIFx33EDDF/Ekmnz8eLUfqHpO9Q8DtaBeZTqUzT5nP0o/xxvtQlFnt1QYwiT/rwo4cvcmz22dow2/AEDEScClUWlf1wKGQ1j4JTpM4dtdXtu4QA26PQmvA+1feC0RwK/knAuAmgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A+OXwpZtxyaCJv4MFC20l5pbMc7D5W4w1I3CP6dcUDM=;
- b=DdsapQRSToI/TaZQBk5SAVj7RTO5Tb1fVyjR7+yI3u4RbGfLOk1YOwpAAt01Ep8aAAUmZDyKxXeDSFGcp1PXMF+ADT3njI5q5VbDCobqnC8f0MwbIePZqNTI6Pw73Si9dbttdQgSGR86SixX1wMk8LDCrWJPxi6FfNZOcbtglTEZ5g02wtqap65br0Do/NEz3Rttv2RHylDZ+QD/HXX6qZF9YZEMHX2SYaDLwdOYf4CR0p9t3fmLJ4UjxbtZ8lXG6kxEv8h0F1lj3w6ucULFChv8BkTxomDO1/unRGEi4t4phE9qwCDDQh42CUPgS6DWEMYhc4pbHTRXgYwZ9vDw7Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
- by DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Fri, 8 Dec
- 2023 01:39:01 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::b8a:1b58:1edf:90e6]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::b8a:1b58:1edf:90e6%7]) with mapi id 15.20.7068.027; Fri, 8 Dec 2023
- 01:39:01 +0000
-References: <20231204105440.61448-1-ryan.roberts@arm.com>
- <20231204105440.61448-15-ryan.roberts@arm.com>
-User-agent: mu4e 1.8.13; emacs 29.1
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Barry Song <21cnbao@gmail.com>, Yang Shi <shy828301@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 14/15] arm64/mm: Implement ptep_set_wrprotects() to
- optimize fork()
-Date:   Fri, 08 Dec 2023 12:37:32 +1100
-In-reply-to: <20231204105440.61448-15-ryan.roberts@arm.com>
-Message-ID: <87cyvha2xd.fsf@nvdebian.thelocal>
-Content-Type: text/plain
-X-ClientProxiedBy: SYCP282CA0005.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:10:80::17) To BYAPR12MB3176.namprd12.prod.outlook.com
- (2603:10b6:a03:134::26)
+        Thu, 7 Dec 2023 20:40:29 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879FC11D;
+        Thu,  7 Dec 2023 17:40:32 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EDEB0220D6;
+        Fri,  8 Dec 2023 01:40:30 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7024413725;
+        Fri,  8 Dec 2023 01:40:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id Mp1ECAp0cmXfEwAAD6G6ig
+        (envelope-from <neilb@suse.de>); Fri, 08 Dec 2023 01:40:26 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|DM4PR12MB5229:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2efbac67-e87d-476d-8f3f-08dbf78e73b5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ryW/E2iZI6cesFLY9UogDGJGiiVLStk04Pm0WvToxqkfDJNAJ9SsYYKQM5zPYKHBMbgTKjZWITppbDnF1Ycgmq7XsHlsrnJZ36GbVC+raqKwSTqAQv9JdUNMWCwvMpu0S/qRJlgQ7mTB6Tpv99O0GmxIQYwOvY8R9UzCEQ8hLCJZkXFvFOMlrwG1s0EdTnuT8wf7G98aTSJZbaTaVq80823xd6F9vduHgKXBx8INvUj8boNVjDjh8KQYlpiKUhszbWkwX9QwtezEvhv0vNxXzp98tziJJhildEsbqn5fUBI8IH51TwA1T3AsEYCKQqzOOvh6FayyweBt04mr7rw17m44XXzHGPgKGjXv8SqgA2tRYjBIQ1T+AA6ujOlX8gJxiQSfJsJ0qvFbE3N77N556p90oDWzVwW4H4RTEsfjPdNCjKyLWFhDZg2s9igG+3GmvO06nCTbRJ5aIqj2vj9A2kPGxCwOazaWH8hAxFjc5UPBOl8OseHA9uFhAoh6byBFAd41oHEREnoZOnYAN5mSJXXi3xXMcrGE2G/Vqstr196gHWIlpHy4mnbyBG2OQ/19/iqmkMwojWvaBGFSyd8xXDq3TUWQ8UNRrjhxfdchxqM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(39860400002)(396003)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(2906002)(7416002)(8936002)(4326008)(8676002)(5660300002)(316002)(66556008)(66476007)(54906003)(66946007)(6916009)(966005)(6486002)(6512007)(9686003)(6506007)(26005)(6666004)(41300700001)(478600001)(83380400001)(38100700002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KF5C2Zd5VtACsN+OTkDlF9rhdnnco4egA4JMAKgnMCDDSjzVGVOUwuwyCZWB?=
- =?us-ascii?Q?UHTeSnL17Z2Zk7seUM8SlpXWReWXGi01C67q2rwJ1gKX5ousCabEvR17UqZ4?=
- =?us-ascii?Q?8LUtLElo7PogTJIevVNtPNxwpHJCN+oIQY72O3MWyIXs+iWC8nwC6JBM/oAK?=
- =?us-ascii?Q?48qto+LI221rldC03zl8LRPjygqbxRPk0aEeZc0xoX9+oXPUi+uKnUqNl81c?=
- =?us-ascii?Q?7oNF45Dzb87XIyBPdkddbnDz4sC8ABdMVyDBjTjV34fO3e2juk1/KCZZDKs5?=
- =?us-ascii?Q?RWFh1gA5L0qCstIyLCbGof5kHUIzLWZuORvzF37MGfCT/zBU4ZbmO4fulgYE?=
- =?us-ascii?Q?HHFToVL/ywlEo7uzeDK7/ReqbRBS1bMZmPgta4QXQy1bXFV1WxQVgDticnGq?=
- =?us-ascii?Q?24VQ3fDzlGp5fhiYigSmo0qTQQWQI3d1foFaGQBF5dLwjwIS3NSaDbL+++Bi?=
- =?us-ascii?Q?UosSORG6/r17SlBRAmKVby7EJ0OHxxYy6UsRQjGaS9WOrVwzchC34M97Nb5T?=
- =?us-ascii?Q?/o7OkPa7VmKWAK98JcEBJhyn2fxGd16daffk+/Kvpm8v9io+SfD5UjxUlAjx?=
- =?us-ascii?Q?SB4L2JN1OuJBwioivloqVvV8GyhCvFH79QXXOUEAEnj8dsfcUsltvuMpttv9?=
- =?us-ascii?Q?BY3PDT3/xj9pSFT4ZjMcwez594BCt+cVxT6YpR3aIsn0+kkgZs/1K0Be+zez?=
- =?us-ascii?Q?ppIQIE7vWLr98H2oYxsNZstH5fyQYC6ZijDje1VvWWPrLxCPpDXaPx1Q1eAJ?=
- =?us-ascii?Q?3qzyzk11EL+kXTVSnLVGsPaqxMrrJK/GGVfk+fxzNrua3cLbrbY9nuOFCkMU?=
- =?us-ascii?Q?4ZSWaxEgk/m8ldhDvfNbClnx1RuFZ9D3syLrzgcGQNJhtS6GOP/Ig2hRV56G?=
- =?us-ascii?Q?yjprAKQpXnnBh36H3/JIhJj9QRUk6zJGxSJPGKLhvfIxNQLo8zP00JdxBLoR?=
- =?us-ascii?Q?JfcXDvQClKygDmNq4rAOJuaHpgEcWW68HxdsyssyhkmSDJGlZ8yOCuOgJtkh?=
- =?us-ascii?Q?lY+60aM9fFGKzM538s6AN5mD+7rJm3fM2Pu0L1BzJoQ+sbKrA+HaoXyu3fWA?=
- =?us-ascii?Q?owEWGNYGGf+z2G2BmkUB/akT5kpI3my8Q7d8mQ1f07DQO1w4spsZuOkSjFX8?=
- =?us-ascii?Q?xywveUsTJBPI9Hnw/HTwnS6I/n2Twy+H5JXwsb5kOCtJI2pI8FNw/R6+M8+3?=
- =?us-ascii?Q?GI6+xKJSQWcNqaP2/Nd54BAqI25dilNLFU1c/bsxHNVwvAqLhRa8hymgkduX?=
- =?us-ascii?Q?UivsdmpbysqqAJmf6TUOgDN2+KYnCVE02C31hR1WOnRwidUjV6XE6YnIgTK8?=
- =?us-ascii?Q?4v13V1+jftx0wzWbBGcBuKtqFyVbUQTZs2ENX9D+kAbQIbUnQaDx4DivoZj9?=
- =?us-ascii?Q?JAX8psZ2+T5KJdkzqpx6Yr3ki4emRUSASzGC9jZwOaSVyXDQvoYj696NpAsS?=
- =?us-ascii?Q?z5Tmr5LLjVFnM2NqC1e8z9+gZwL+CtfxDUkFo9GfP/fEbhMVU9iyXsvCXfoY?=
- =?us-ascii?Q?5s4biU1dThJGbY9SGEbce3/YNNmwZxVwRpR1Tth18vaCVypn7rQRpZgxn4Xv?=
- =?us-ascii?Q?0p9JrNu+d7Agz1Cpye25u06tcBuEC2LGPnZcv3ib?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2efbac67-e87d-476d-8f3f-08dbf78e73b5
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 01:39:00.9649
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CBpDgQTPQ0vg3o+cOLMW9RZ+2O76qIWQtiFQw4Dy5kQvdwF4PNtvTquTm461dKWK8Ct5d+Bw+ysMv9aiQu5xIw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5229
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Christian Brauner" <brauner@kernel.org>
+Cc:     "Jens Axboe" <axboe@kernel.dk>,
+        "Al Viro" <viro@zeniv.linux.org.uk>,
+        "Oleg Nesterov" <oleg@redhat.com>,
+        "Chuck Lever" <chuck.lever@oracle.com>,
+        "Jeff Layton" <jlayton@kernel.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Juri Lelli" <juri.lelli@redhat.com>,
+        "Vincent Guittot" <vincent.guittot@linaro.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] Allow a kthread to declare that it calls task_work_run()
+In-reply-to: <20231206-karawane-kiesgrube-4bbf37bda8e1@brauner>
+References: <e9a1cfed-42e9-4174-bbb3-1a3680cf6a5c@kernel.dk>,
+ <170172377302.7109.11739406555273171485@noble.neil.brown.name>,
+ <a070b6bd-0092-405e-99d2-00002596c0bc@kernel.dk>,
+ <20231205-altbacken-umbesetzen-e5c0c021ab98@brauner>,
+ <170181169515.7109.11121482729257102758@noble.neil.brown.name>,
+ <fb713388-661a-46e0-8925-6d169b46ff9c@kernel.dk>,
+ <3609267c-3fcd-43d6-9b43-9f84bef029a2@kernel.dk>,
+ <170181458198.7109.790647899711986334@noble.neil.brown.name>,
+ <170181861776.7109.6396373836638614121@noble.neil.brown.name>,
+ <c24af958-b933-42dd-9806-9d288463547b@kernel.dk>,
+ <20231206-karawane-kiesgrube-4bbf37bda8e1@brauner>
+Date:   Fri, 08 Dec 2023 12:40:23 +1100
+Message-id: <170199962326.12910.10739164577987751755@noble.neil.brown.name>
+X-Spamd-Result: default: False [3.79 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(4.60)[~all:c];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spamd-Bar: +++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de
+X-Rspamd-Server: rspamd1
+X-Rspamd-Queue-Id: EDEB0220D6
+X-Spam-Score: 3.79
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 07 Dec 2023, Christian Brauner wrote:
+> On Tue, Dec 05, 2023 at 04:31:51PM -0700, Jens Axboe wrote:
+> > On 12/5/23 4:23 PM, NeilBrown wrote:
+> > > On Wed, 06 Dec 2023, NeilBrown wrote:
+> > >> On Wed, 06 Dec 2023, Jens Axboe wrote:
+> > >>> On 12/5/23 2:58 PM, Jens Axboe wrote:
+> > >>>> On 12/5/23 2:28 PM, NeilBrown wrote:
+> > >>>>> On Tue, 05 Dec 2023, Christian Brauner wrote:
+> > >>>>>> On Mon, Dec 04, 2023 at 03:09:44PM -0700, Jens Axboe wrote:
+> > >>>>>>> On 12/4/23 2:02 PM, NeilBrown wrote:
+> > >>>>>>>> It isn't clear to me what _GPL is appropriate, but maybe the rules
+> > >>>>>>>> changed since last I looked..... are there rules?
+> > >>>>>>>>
+> > >>>>>>>> My reasoning was that the call is effectively part of the user-space
+> > >>>>>>>> ABI.  A user-space process can call this trivially by invoking any
+> > >>>>>>>> system call.  The user-space ABI is explicitly a boundary which the GPL
+> > >>>>>>>> does not cross.  So it doesn't seem appropriate to prevent non-GPL
+> > >>>>>>>> kernel code from doing something that non-GPL user-space code can
+> > >>>>>>>> trivially do.
+> > >>>>>>>
+> > >>>>>>> By that reasoning, basically everything in the kernel should be non-GPL
+> > >>>>>>> marked. And while task_work can get used by the application, it happens
+> > >>>>>>> only indirectly or implicitly. So I don't think this reasoning is sound
+> > >>>>>>> at all, it's not an exported ABI or API by itself.
+> > >>>>>>>
+> > >>>>>>> For me, the more core of an export it is, the stronger the reason it
+> > >>>>>>> should be GPL. FWIW, I don't think exporting task_work functionality is
+> > >>>>
+> > >>>>>>
+> > >>>>>> Yeah, I'm not too fond of that part as well. I don't think we want to
+> > >>>>>> give modules the ability to mess with task work. This is just asking for
+> > >>>>>> trouble.
+> > >>>>>>
+> > >>>>>
+> > >>>>> Ok, maybe we need to reframe the problem then.
+> > >>>>>
+> > >>>>> Currently fput(), and hence filp_close(), take control away from kernel
+> > >>>>> threads in that they cannot be sure that a "close" has actually
+> > >>>>> completed.
+> > >>>>>
+> > >>>>> This is already a problem for nfsd.  When renaming a file, nfsd needs to
+> > >>>>> ensure any cached "open" that it has on the file is closed (else when
+> > >>>>> re-exporting an NFS filesystem it can result in a silly-rename).
+> > >>>>>
+> > >>>>> nfsd currently handles this case by calling flush_delayed_fput().  I
+> > >>>>> suspect you are no more happy about exporting that than you are about
+> > >>>>> exporting task_work_run(), but this solution isn't actually 100%
+> > >>>>> reliable.  If some other thread calls flush_delayed_fput() between nfsd
+> > >>>>> calling filp_close() and that same nfsd calling flush_delayed_fput(),
+> > >>>>> then the second flush can return before the first flush (in the other
+> > >>>>> thread) completes all the work it took on.
+> > >>>>>
+> > >>>>> What we really need - both for handling renames and for avoiding
+> > >>>>> possible memory exhaustion - is for nfsd to be able to reliably wait for
+> > >>>>> any fput() that it initiated to complete.
+> > >>>>>
+> > >>>>> How would you like the VFS to provide that service?
+> > >>>>
+> > >>>> Since task_work happens in the context of your task already, why not
+> > >>>> just have a way to get it stashed into a list when final fput is done?
+> > >>>> This avoids all of this "let's expose task_work" and using the task list
+> > >>>> for that, which seems kind of pointless as you're just going to run it
+> > >>>> later on manually anyway.
+> > >>>>
+> > >>>> In semi pseudo code:
+> > >>>>
+> > >>>> bool fput_put_ref(struct file *file)
+> > >>>> {
+> > >>>> 	return atomic_dec_and_test(&file->f_count);
+> > >>>> }
+> > >>>>
+> > >>>> void fput(struct file *file)
+> > >>>> {
+> > >>>> 	if (fput_put_ref(file)) {
+> > >>>> 		...
+> > >>>> 	}
+> > >>>> }
+> > >>>>
+> > >>>> and then your nfsd_file_free() could do:
+> > >>>>
+> > >>>> ret = filp_flush(file, id);
+> > >>>> if (fput_put_ref(file))
+> > >>>> 	llist_add(&file->f_llist, &l->to_free_llist);
+> > >>>>
+> > >>>> or something like that, where l->to_free_llist is where ever you'd
+> > >>>> otherwise punt the actual freeing to.
+> > >>>
+> > >>> Should probably have the put_ref or whatever helper also init the
+> > >>> task_work, and then reuse the list in the callback_head there. Then
+> > >>> whoever flushes it has to call ->func() and avoid exposing ____fput() to
+> > >>> random users. But you get the idea.
+> > >>
+> > >> Interesting ideas - thanks.
+> > >>
+> > >> So maybe the new API would be
+> > >>
+> > >>  fput_queued(struct file *f, struct llist_head *q)
+> > >> and
+> > >>  flush_fput_queue(struct llist_head *q)
+> > >>
+> > >> with the meaning being that fput_queued() is just like fput() except
+> > >> that any file needing __fput() is added to the 'q'; and that
+> > >> flush_fput_queue() calls __fput() on any files in 'q'.
+> > >>
+> > >> So to close a file nfsd would:
+> > >>
+> > >>   fget(f);
+> > >>   flip_close(f);
+> > >>   fput_queued(f, &my_queue);
+> > >>
+> > >> though possibly we could have a
+> > >>   filp_close_queued(f, q)
+> > >> as well.
+> > >>
+> > >> I'll try that out - but am happy to hear alternate suggestions for names :-)
+> > >>
+> > > 
+> > > Actually ....  I'm beginning to wonder if we should just use
+> > > __fput_sync() in nfsd.
+> > > It has a big warning about not doing that blindly, but the detail in the
+> > > warning doesn't seem to apply to nfsd...
+> > 
+> > If you can do it from the context where you do the filp_close() right
+> > now, then yeah there's no reason to over-complicate this at all... FWIW,
+> 
+> As long as nfsd doesn't care that it may get stuck on umount or
+> ->release...
 
-Ryan Roberts <ryan.roberts@arm.com> writes:
+I think we do *care* about getting stuck.  But I don't think we would
+*expect* to get stuck..
 
-> With the core-mm changes in place to batch-copy ptes during fork, we can
-> take advantage of this in arm64 to greatly reduce the number of tlbis we
-> have to issue, and recover the lost fork performance incured when adding
-> support for transparent contiguous ptes.
->
-> If we are write-protecting a whole contig range, we can apply the
-> write-protection to the whole range and know that it won't change
-> whether the range should have the contiguous bit set or not. For ranges
-> smaller than the contig range, we will still have to unfold, apply the
-> write-protection, then fold if the change now means the range is
-> foldable.
->
-> This optimization is possible thanks to the tightening of the Arm ARM in
-> respect to the definition and behaviour when 'Misprogramming the
-> Contiguous bit'. See section D21194 at
-> https://developer.arm.com/documentation/102105/latest/
->
-> Performance tested with the following test written for the will-it-scale
-> framework:
->
-> -------
->
-> char *testcase_description = "fork and exit";
->
-> void testcase(unsigned long long *iterations, unsigned long nr)
-> {
-> 	int pid;
-> 	char *mem;
->
-> 	mem = malloc(SZ_128M);
-> 	assert(mem);
-> 	memset(mem, 1, SZ_128M);
->
-> 	while (1) {
-> 		pid = fork();
-> 		assert(pid >= 0);
->
-> 		if (!pid)
-> 			exit(0);
->
-> 		waitpid(pid, NULL, 0);
->
-> 		(*iterations)++;
-> 	}
-> }
->
-> -------
->
-> I see huge performance regression when PTE_CONT support was added, then
-> the regression is mostly fixed with the addition of this change. The
-> following shows regression relative to before PTE_CONT was enabled
-> (bigger negative value is bigger regression):
->
-> |   cpus |   before opt |   after opt |
-> |-------:|-------------:|------------:|
-> |      1 |       -10.4% |       -5.2% |
-> |      8 |       -15.4% |       -3.5% |
-> |     16 |       -38.7% |       -3.7% |
-> |     24 |       -57.0% |       -4.4% |
-> |     32 |       -65.8% |       -5.4% |
->
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->  arch/arm64/include/asm/pgtable.h | 30 ++++++++++++++++++++---
->  arch/arm64/mm/contpte.c          | 42 ++++++++++++++++++++++++++++++++
->  2 files changed, 69 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index 15bc9cf1eef4..9bd2f57a9e11 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -984,6 +984,16 @@ static inline void __ptep_set_wrprotect(struct mm_struct *mm,
->  	} while (pte_val(pte) != pte_val(old_pte));
->  }
->  
-> +static inline void __ptep_set_wrprotects(struct mm_struct *mm,
-> +					unsigned long address, pte_t *ptep,
-> +					unsigned int nr)
-> +{
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < nr; i++, address += PAGE_SIZE, ptep++)
-> +		__ptep_set_wrprotect(mm, address, ptep);
-> +}
-> +
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  #define __HAVE_ARCH_PMDP_SET_WRPROTECT
->  static inline void pmdp_set_wrprotect(struct mm_struct *mm,
-> @@ -1139,6 +1149,8 @@ extern int contpte_ptep_test_and_clear_young(struct vm_area_struct *vma,
->  				unsigned long addr, pte_t *ptep);
->  extern int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
->  				unsigned long addr, pte_t *ptep);
-> +extern void contpte_set_wrprotects(struct mm_struct *mm, unsigned long addr,
-> +				pte_t *ptep, unsigned int nr);
->  extern int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
->  				unsigned long addr, pte_t *ptep,
->  				pte_t entry, int dirty);
-> @@ -1290,13 +1302,25 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
->  	return contpte_ptep_clear_flush_young(vma, addr, ptep);
->  }
->  
-> +#define ptep_set_wrprotects ptep_set_wrprotects
-> +static inline void ptep_set_wrprotects(struct mm_struct *mm, unsigned long addr,
-> +				pte_t *ptep, unsigned int nr)
-> +{
-> +	if (!contpte_is_enabled(mm))
-> +		__ptep_set_wrprotects(mm, addr, ptep, nr);
-> +	else if (nr == 1) {
+I had a look at varous ->release function.  Quite few do fsync or
+similar which isn't a problem.  nfsd often waits for writes to complete.
+Some lock the inode, which again is something that nfsd threads often
+do.
 
-Why do we need the special case here? Couldn't we just call
-contpte_set_wrprotects() with nr == 1?
+Is there something special that ->release might do but that other
+filesystem operation don't do?
 
-> +		contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
-> +		__ptep_set_wrprotects(mm, addr, ptep, 1);
-> +		contpte_try_fold(mm, addr, ptep, __ptep_get(ptep));
-> +	} else
-> +		contpte_set_wrprotects(mm, addr, ptep, nr);
-> +}
-> +
->  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
->  static inline void ptep_set_wrprotect(struct mm_struct *mm,
->  				unsigned long addr, pte_t *ptep)
->  {
-> -	contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
-> -	__ptep_set_wrprotect(mm, addr, ptep);
-> -	contpte_try_fold(mm, addr, ptep, __ptep_get(ptep));
-> +	ptep_set_wrprotects(mm, addr, ptep, 1);
->  }
->  
->  #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
-> diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
-> index e079ec61d7d1..2a57df16bf58 100644
-> --- a/arch/arm64/mm/contpte.c
-> +++ b/arch/arm64/mm/contpte.c
-> @@ -303,6 +303,48 @@ int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
->  }
->  EXPORT_SYMBOL(contpte_ptep_clear_flush_young);
->  
-> +void contpte_set_wrprotects(struct mm_struct *mm, unsigned long addr,
-> +					pte_t *ptep, unsigned int nr)
-> +{
-> +	unsigned long next;
-> +	unsigned long end = addr + (nr << PAGE_SHIFT);
-> +
-> +	do {
-> +		next = pte_cont_addr_end(addr, end);
-> +		nr = (next - addr) >> PAGE_SHIFT;
-> +
-> +		/*
-> +		 * If wrprotecting an entire contig range, we can avoid
-> +		 * unfolding. Just set wrprotect and wait for the later
-> +		 * mmu_gather flush to invalidate the tlb. Until the flush, the
-> +		 * page may or may not be wrprotected. After the flush, it is
-> +		 * guarranteed wrprotected. If its a partial range though, we
-> +		 * must unfold, because we can't have a case where CONT_PTE is
-> +		 * set but wrprotect applies to a subset of the PTEs; this would
-> +		 * cause it to continue to be unpredictable after the flush.
-> +		 */
-> +		if (nr != CONT_PTES)
-> +			contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
-> +
-> +		__ptep_set_wrprotects(mm, addr, ptep, nr);
-> +
-> +		addr = next;
-> +		ptep += nr;
-> +
-> +		/*
-> +		 * If applying to a partial contig range, the change could have
-> +		 * made the range foldable. Use the last pte in the range we
-> +		 * just set for comparison, since contpte_try_fold() only
-> +		 * triggers when acting on the last pte in the contig range.
-> +		 */
-> +		if (nr != CONT_PTES)
-> +			contpte_try_fold(mm, addr - PAGE_SIZE, ptep - 1,
-> +					 __ptep_get(ptep - 1));
-> +
-> +	} while (addr != end);
-> +}
-> +EXPORT_SYMBOL(contpte_set_wrprotects);
-> +
->  int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
->  					unsigned long addr, pte_t *ptep,
->  					pte_t entry, int dirty)
+I'd really like to understand why __fput is so special that we often
+queue it to a separate thread.
 
+> 
+> > the reason task_work exists is just to ensure a clean context to perform
+> > these operations from the task itself. The more I think about it, it
+> > doesn't make a lot of sense to utilize it for this purpose, which is
+> > where my alternate suggestion came from. But if you can just call it
+> > directly, then that makes everything much easier.
+> 
+> And for better or worse we already expose __fput_sync(). We've recently
+> switched close(2) over to it as well as it was needlessly punting to
+> task work.
+> 
+
+exit_files() would be another good candidate for using __fput_sync().
+Oleg Nesterov has reported problems when a process which a large number
+of files exits - this currently puts lots of entries on the task_works
+lists.  If task_work_cancel is then called before those are all dealt
+with, it can have a long list to search while holding a hot lock.  (I
+hope I got that description right).
+
+Thanks,
+NeilBrown
