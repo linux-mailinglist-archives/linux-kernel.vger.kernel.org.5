@@ -2,182 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06ADB80A917
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2860C80A93D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573915AbjLHQey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
+        id S1574348AbjLHQgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:36:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233597AbjLHQew (ORCPT
+        with ESMTP id S1574446AbjLHQf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:34:52 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2693F1986
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:34:58 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-77f320ca2d5so151209585a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 08:34:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1702053297; x=1702658097; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/2+AmVgLDfypwxW3Bljg7Nlcki/DDdvlAbwDqkv78IU=;
-        b=OabM06RlsYoH86rqmIKGTAdN71vEzChKz6ljpozBVUCt0L86n4wDHJx/nFGzSoBKpr
-         FSUWASqiUGEzGOtiH0I+cTWDNp7me3owCN8jNNoacBmSyE+uc9JIVGYcBI3vapKb9jFo
-         tNoz/tqLEaJY3v0PLxg1ctYBlVd8V4A16sApFS8WRGyEdw4dYCxBYoSJ3iSH0SeaHazh
-         Rc9oke+rIT4pYLfXPfGtfdXVZ01DGuOkXQVYoQmibATsEFpTISQ68/MDxAo8ArVg6G4a
-         9OydwkNyzT7KxSjkzG7SWK0uKX+2Vakd6hjMTPVmbo8mTs10VUf3BDN0wkZ+GsvhBU2j
-         SMGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702053297; x=1702658097;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/2+AmVgLDfypwxW3Bljg7Nlcki/DDdvlAbwDqkv78IU=;
-        b=Eu8fvxr/oE+m/vl+Q6yeKogJf/HaLMZYZ8V6iPr0Gs+Ppk629EUeIeiT3rTBnXvToY
-         FN9abgBBET6IFBOYgkHeOgNKcB9v7ANQ+tDbIDKOk3jjA+45GFsmCJ1xGQdhj6Uyz4hj
-         3tMFR5cw/HbfrOGXw9qHB277WO/zlkK0KugyZ8bMvm3bY5l1SsFTgxIf8p0cg1tm0PNW
-         U/Vqz00DMzH7mFEmsAHz1i2olFuHae9hvrDjeZtlINpdV8dlVlD2+fq1z2242Jxpsqdj
-         NlykHJOqbFFWsiHh9zrzZsBhVPXyIcSpsAStVworV9Dm/rDn3NzfdEV+5WU3Z2iiwzYc
-         XpaQ==
-X-Gm-Message-State: AOJu0YwlxRzMpE8JVS+ZTw7Sm4rcdW0qGYS6uR50qBkYuGVhcCD8XFRm
-        htxOx/3ki2cehOpgPRbqnEqw8g==
-X-Google-Smtp-Source: AGHT+IFe1Xg0qwccEDuPPnzdLWZ8EYqrBETcx+Lf9yWWCpT5/NmbxdDEr56PRuW1STtBLXxRVw3QKg==
-X-Received: by 2002:a05:620a:2187:b0:77e:ffb5:271a with SMTP id g7-20020a05620a218700b0077effb5271amr1661333qka.44.1702053297239;
-        Fri, 08 Dec 2023 08:34:57 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id rc3-20020a05620a8d8300b0077dc7a029bfsm802254qkn.100.2023.12.08.08.34.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 08:34:56 -0800 (PST)
-Date:   Fri, 8 Dec 2023 11:34:51 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Nhat Pham <nphamcs@gmail.com>, Chris Li <chrisl@kernel.org>,
-        akpm@linux-foundation.org, tj@kernel.org, lizefan.x@bytedance.com,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
-        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        david@ixit.cz
-Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
-Message-ID: <20231208163451.GA880930@cmpxchg.org>
-References: <20231207192406.3809579-1-nphamcs@gmail.com>
- <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
- <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
- <CAJD7tkaHaji=0sVobJKajc4hOmOui2U+bZK+1DQ6gbAsQgGLRw@mail.gmail.com>
+        Fri, 8 Dec 2023 11:35:28 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC8919A3;
+        Fri,  8 Dec 2023 08:35:32 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8EOMBo020799;
+        Fri, 8 Dec 2023 16:35:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=0wf4dCNPxqQEpCSrGP/sLqp5OmI0G14RsHaABMItNss=;
+ b=BjOPVWeXEKvPAaNgvRGWeU7+WX+t/UXbgMfCg5zsm/FeIjTVJHS4KOhxxfggkp5lbZb3
+ yQz8A27LC3kyW689zk5Qx9LfFYECz4NJTEMxdxU2Cn/0BCWPhKLkoFsEpM7+r3szaSok
+ T//5q5JLq5Q/ktLCtvNc93ZO0qYry79uX5ipS8XDwOnRphRQF6yj9QpHNCnMlbDdTBXg
+ r3X3MFR/L2GQLP4b8igj3xbJZwL39l0f05eklPfsqyZ4CrNs3xhw9VgZnYGEnFTAe1k+
+ vxG97ZCCW/30gU4HtLBcUAuJgyjGbWbT9azFuEyfQX8FIEzsEm5zoPZ34UFlAn9LSL0G vg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uuphga00n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Dec 2023 16:35:26 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B8GZPJ3012910
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 8 Dec 2023 16:35:25 GMT
+Received: from [10.110.30.94] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Dec
+ 2023 08:35:23 -0800
+Message-ID: <5d4104ae-8737-6576-79ab-e68126bd826a@quicinc.com>
+Date:   Fri, 8 Dec 2023 08:35:22 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkaHaji=0sVobJKajc4hOmOui2U+bZK+1DQ6gbAsQgGLRw@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 04/16] drm/msm/dpu: move csc matrices to dpu_hw_util
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <quic_parellan@quicinc.com>, <quic_jesszhan@quicinc.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Sean Paul <sean@poorly.run>
+References: <20231208050641.32582-1-quic_abhinavk@quicinc.com>
+ <20231208050641.32582-5-quic_abhinavk@quicinc.com>
+ <CAA8EJpro4ehwZ8Gs+ASUmrMJS0HbnDXd5pXwijs1jkDpR-kAOQ@mail.gmail.com>
+ <ceb7e736-22f3-0cf3-3d65-7ec33e7c9d95@quicinc.com>
+ <CAA8EJprr=T1cNst_dTNSToW_fVOM3mo-yRmWuK=8BU5rDNd54Q@mail.gmail.com>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJprr=T1cNst_dTNSToW_fVOM3mo-yRmWuK=8BU5rDNd54Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: P81Qw2rmhF33IGsrdB60dasOyHpdsLa5
+X-Proofpoint-GUID: P81Qw2rmhF33IGsrdB60dasOyHpdsLa5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-08_11,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ adultscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312080136
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 05:12:13PM -0800, Yosry Ahmed wrote:
-> On Thu, Dec 7, 2023 at 5:03 PM Nhat Pham <nphamcs@gmail.com> wrote:
-> > On Thu, Dec 7, 2023 at 4:19 PM Chris Li <chrisl@kernel.org> wrote:
-> > > I am wondering about the status of "memory.swap.tiers" proof of concept patch?
-> > > Are we still on board to have this two patch merge together somehow so
-> > > we can have
-> > > "memory.swap.tiers" == "all" and "memory.swap.tiers" == "zswap" cover the
-> > > memory.zswap.writeback == 1 and memory.zswap.writeback == 0 case?
-> > >
-> > > Thanks
-> > >
-> > > Chris
-> > >
-> >
-> > Hi Chris,
-> >
-> > I briefly summarized my recent discussion with Johannes here:
-> >
-> > https://lore.kernel.org/all/CAKEwX=NwGGRAtXoNPfq63YnNLBCF0ZDOdLVRsvzUmYhK4jxzHA@mail.gmail.com/
-> >
-> > TL;DR is we acknowledge the potential usefulness of swap.tiers
-> > interface, but the use case is not quite there yet, so it does not
-> > make too much sense to build up that heavy machinery now.
-> > zswap.writeback is a more urgent need, and does not prevent swap.tiers
-> > if we do decide to implement it.
+
+
+On 12/8/2023 8:27 AM, Dmitry Baryshkov wrote:
+> On Fri, 8 Dec 2023 at 18:24, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 12/8/2023 3:12 AM, Dmitry Baryshkov wrote:
+>>> On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>>>
+>>>> Since the type and usage of CSC matrices is spanning across DPU
+>>>> lets introduce a helper to the dpu_hw_util to return the CSC
+>>>> corresponding to the request type. This will help to add more
+>>>> supported CSC types such as the RGB to YUV one which is used in
+>>>> the case of CDM.
+>>>>
+>>>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+>>>> ---
+>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c | 54 +++++++++++++++++++++
+>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h |  7 +++
+>>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c   | 39 ++-------------
+>>>>    3 files changed, 64 insertions(+), 36 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
+>>>> index 0b05061e3e62..59a153331194 100644
+>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
+>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
+>>>> @@ -87,6 +87,60 @@ static u32 dpu_hw_util_log_mask = DPU_DBG_MASK_NONE;
+>>>>    #define QOS_QOS_CTRL_VBLANK_EN            BIT(16)
+>>>>    #define QOS_QOS_CTRL_CREQ_VBLANK_MASK     GENMASK(21, 20)
+>>>>
+>>>> +static const struct dpu_csc_cfg dpu_csc_YUV2RGB_601L = {
+>>>> +       {
+>>>> +               /* S15.16 format */
+>>>> +               0x00012A00, 0x00000000, 0x00019880,
+>>>> +               0x00012A00, 0xFFFF9B80, 0xFFFF3000,
+>>>> +               0x00012A00, 0x00020480, 0x00000000,
+>>>> +       },
+>>>> +       /* signed bias */
+>>>> +       { 0xfff0, 0xff80, 0xff80,},
+>>>> +       { 0x0, 0x0, 0x0,},
+>>>> +       /* unsigned clamp */
+>>>> +       { 0x10, 0xeb, 0x10, 0xf0, 0x10, 0xf0,},
+>>>> +       { 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,},
+>>>> +};
+>>>> +
+>>>> +static const struct dpu_csc_cfg dpu_csc10_YUV2RGB_601L = {
+>>>> +       {
+>>>> +               /* S15.16 format */
+>>>> +               0x00012A00, 0x00000000, 0x00019880,
+>>>> +               0x00012A00, 0xFFFF9B80, 0xFFFF3000,
+>>>> +               0x00012A00, 0x00020480, 0x00000000,
+>>>> +       },
+>>>> +       /* signed bias */
+>>>> +       { 0xffc0, 0xfe00, 0xfe00,},
+>>>> +       { 0x0, 0x0, 0x0,},
+>>>> +       /* unsigned clamp */
+>>>> +       { 0x40, 0x3ac, 0x40, 0x3c0, 0x40, 0x3c0,},
+>>>> +       { 0x00, 0x3ff, 0x00, 0x3ff, 0x00, 0x3ff,},
+>>>> +};
+>>>> +
+>>>> +/**
+>>>> + * dpu_hw_get_csc_cfg - get the CSC matrix based on the request type
+>>>> + * @type:              type of the requested CSC matrix from caller
+>>>> + * Return: CSC matrix corresponding to the request type in DPU format
+>>>> + */
+>>>> +const struct dpu_csc_cfg *dpu_hw_get_csc_cfg(enum dpu_hw_csc_cfg_type type)
+>>>> +{
+>>>> +       const struct dpu_csc_cfg *csc_cfg = NULL;
+>>>> +
+>>>> +       switch (type) {
+>>>> +       case DPU_HW_YUV2RGB_601L:
+>>>> +               csc_cfg = &dpu_csc_YUV2RGB_601L;
+>>>> +               break;
+>>>> +       case DPU_HW_YUV2RGB_601L_10BIT:
+>>>> +               csc_cfg = &dpu_csc10_YUV2RGB_601L;
+>>>> +               break;
+>>>> +       default:
+>>>> +               DPU_ERROR("unknown csc_cfg type\n");
+>>>> +               break;
+>>>> +       }
+>>>> +
+>>>> +       return csc_cfg;
+>>>> +}
+>>>> +
+>>>>    void dpu_reg_write(struct dpu_hw_blk_reg_map *c,
+>>>>                   u32 reg_off,
+>>>>                   u32 val,
+>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
+>>>> index fe083b2e5696..49f2bcf6de15 100644
+>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
+>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
+>>>> @@ -19,6 +19,11 @@
+>>>>    #define MISR_CTRL_STATUS_CLEAR          BIT(10)
+>>>>    #define MISR_CTRL_FREE_RUN_MASK         BIT(31)
+>>>>
+>>>> +enum dpu_hw_csc_cfg_type {
+>>>> +       DPU_HW_YUV2RGB_601L,
+>>>> +       DPU_HW_YUV2RGB_601L_10BIT,
+>>>> +};
+>>>> +
+>>>>    /*
+>>>>     * This is the common struct maintained by each sub block
+>>>>     * for mapping the register offsets in this block to the
+>>>> @@ -368,4 +373,6 @@ bool dpu_hw_clk_force_ctrl(struct dpu_hw_blk_reg_map *c,
+>>>>                              const struct dpu_clk_ctrl_reg *clk_ctrl_reg,
+>>>>                              bool enable);
+>>>>
+>>>> +const struct dpu_csc_cfg *dpu_hw_get_csc_cfg(enum dpu_hw_csc_cfg_type type);
+>>>
+>>> I don't think we need extra enum and wrapper. Just export const data
+>>> structures directly.
+>>>
+>>
+>> I liked this approach because the blocks of DPU such as plane and CDM
+>> are clients to the dpu_hw_util and just request the type and the util
+>> handles their request of returning the correct csc matrix.
+>>
+>> Do you see any issue with this?
 > 
-> I am honestly not convinced by this. There is no heavy machinery here.
-> The interface is more generic and extensible, but the implementation
-> is roughly the same. Unless we have a reason to think a swap.tiers
-> interface may make it difficult to extend this later or will not
-> support some use cases, I think we should go ahead with it. If we are
-> worried that "tiers" may not accurately describe future use cases, we
-> can be more generic and call it swap.types or something.
+> Not an issue, but I don't see anything that requires an extra
+> abstraction. We perfectly know which CSC config we would like to get.
+> 
 
-I have to disagree. The generic swap types or tiers ideas actually
-look pretty far-fetched to me, and there is a lack of convincing
-explanation for why this is even a probable direction for swap.
+Correct, so the clients know which "type" of matrix they need and not 
+the matrix itself. That was the idea behind this.
 
-For example,
-
-1. What are the other backends? Where you seem to see a multitude of
-   backends and arbitrary hierarchies of them, I see compression and
-   flash, and really not much else. And there is only one reasonable
-   direction in which to combine those two.
-
-   The IOPs and latencies of HDDs and network compared to modern
-   memory sizes and compute speeds make them for the most part
-   impractical as paging backends.
-
-   So I don't see a common third swap backend, let alone a fourth or a
-   fifth, or a multitude of meaningful ways of combining them...
-
-2. Even if the usecases were there, enabling this would be a ton of
-   work and open interface questions:
-
-  1) There is no generic code to transfer pages between arbitrary
-     backends.
-
-  2) There is no accepted indirection model where a swap pte can refer
-     to backends dynamically, in a way that makes migration feasible
-     at scale.
-
-  3) Arbitrary global strings are somewhat unlikely to be accepted as
-     a way to configure these hierarchies.
-
-  4) Backend file paths in a global sysfs file don't work well with
-     namespacing. The swapfile could be in a container
-     namespace. Containers are not guaranteed to see /sys.
-
-  5) Fixed keywords like "zswap" might not be good enough - what about
-     compression and backend parameters?
-
-None of these are insurmountable. My point is that this would be a
-huge amount of prerequisite code and effort for what seems would be a
-fringe usecase at best right now.
-
-And there could be a lot of curve balls in both the software design as
-well as the hardware development between now and then that could make
-your proposals moot. Is a per-cgroup string file really going to be
-the right way to configure arbitrary hierarchies if they materialize?
-
-This strikes me as premature and speculative, for what could be, some
-day.
-
-We don't even do it for *internal API*. There is a review rule to
-introduce a function in the same patch as its first caller, to make
-sure it's the right abstraction and a good fit for the usecase. There
-is no way we can have a lower bar than that for permanent ABI.
-
-The patch here integrates with what zswap is NOW and always has been:
-a compressing writeback cache for swap.
-
-Should multiple swap tiers overcome all the above and actually become
-real, this knob here would be the least of our worries. It would be
-easy to just ignore, automatically override, or deprecate.
-
-So I don't think you made a reasonable proposal for an alternative, or
-gave convincing reasons to hold off this one.
+>>
+>>>> +
+>>>>    #endif /* _DPU_HW_UTIL_H */
+>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+>>>> index 3235ab132540..31641889b9f0 100644
+>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+>>>> @@ -21,6 +21,7 @@
+>>>>    #include "dpu_kms.h"
+>>>>    #include "dpu_formats.h"
+>>>>    #include "dpu_hw_sspp.h"
+>>>> +#include "dpu_hw_util.h"
+>>>>    #include "dpu_trace.h"
+>>>>    #include "dpu_crtc.h"
+>>>>    #include "dpu_vbif.h"
+>>>> @@ -508,50 +509,16 @@ static void _dpu_plane_setup_pixel_ext(struct dpu_hw_scaler3_cfg *scale_cfg,
+>>>>           }
+>>>>    }
+>>>>
+>>>> -static const struct dpu_csc_cfg dpu_csc_YUV2RGB_601L = {
+>>>> -       {
+>>>> -               /* S15.16 format */
+>>>> -               0x00012A00, 0x00000000, 0x00019880,
+>>>> -               0x00012A00, 0xFFFF9B80, 0xFFFF3000,
+>>>> -               0x00012A00, 0x00020480, 0x00000000,
+>>>> -       },
+>>>> -       /* signed bias */
+>>>> -       { 0xfff0, 0xff80, 0xff80,},
+>>>> -       { 0x0, 0x0, 0x0,},
+>>>> -       /* unsigned clamp */
+>>>> -       { 0x10, 0xeb, 0x10, 0xf0, 0x10, 0xf0,},
+>>>> -       { 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,},
+>>>> -};
+>>>> -
+>>>> -static const struct dpu_csc_cfg dpu_csc10_YUV2RGB_601L = {
+>>>> -       {
+>>>> -               /* S15.16 format */
+>>>> -               0x00012A00, 0x00000000, 0x00019880,
+>>>> -               0x00012A00, 0xFFFF9B80, 0xFFFF3000,
+>>>> -               0x00012A00, 0x00020480, 0x00000000,
+>>>> -               },
+>>>> -       /* signed bias */
+>>>> -       { 0xffc0, 0xfe00, 0xfe00,},
+>>>> -       { 0x0, 0x0, 0x0,},
+>>>> -       /* unsigned clamp */
+>>>> -       { 0x40, 0x3ac, 0x40, 0x3c0, 0x40, 0x3c0,},
+>>>> -       { 0x00, 0x3ff, 0x00, 0x3ff, 0x00, 0x3ff,},
+>>>> -};
+>>>> -
+>>>>    static const struct dpu_csc_cfg *_dpu_plane_get_csc(struct dpu_sw_pipe *pipe,
+>>>>                                                       const struct dpu_format *fmt)
+>>>>    {
+>>>> -       const struct dpu_csc_cfg *csc_ptr;
+>>>> -
+>>>>           if (!DPU_FORMAT_IS_YUV(fmt))
+>>>>                   return NULL;
+>>>>
+>>>>           if (BIT(DPU_SSPP_CSC_10BIT) & pipe->sspp->cap->features)
+>>>> -               csc_ptr = &dpu_csc10_YUV2RGB_601L;
+>>>> +               return dpu_hw_get_csc_cfg(DPU_HW_YUV2RGB_601L_10BIT);
+>>>>           else
+>>>> -               csc_ptr = &dpu_csc_YUV2RGB_601L;
+>>>> -
+>>>> -       return csc_ptr;
+>>>> +               return dpu_hw_get_csc_cfg(DPU_HW_YUV2RGB_601L);
+>>>>    }
+>>>>
+>>>>    static void _dpu_plane_setup_scaler(struct dpu_sw_pipe *pipe,
+>>>> --
+>>>> 2.40.1
+>>>>
+>>>
+>>>
+> 
+> 
+> 
