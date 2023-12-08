@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F21F480A457
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE12480A461
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573805AbjLHNWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:22:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
+        id S1573813AbjLHNX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:23:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjLHNWO (ORCPT
+        with ESMTP id S233499AbjLHNXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:22:14 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A46F1716
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 05:22:20 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9312540E00C7;
-        Fri,  8 Dec 2023 13:22:18 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id KjiTfKNC84O3; Fri,  8 Dec 2023 13:22:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1702041736; bh=9VW5Pgm57o7BPhMBIqaXDaAJ8T8rEibYNmP1Y+5hnGE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HEYEUt2D30FNHiWLxtHu5+9n7JDmVOtFZSaW2SpOoTlh/YzRcZ33yNrKtnNjrkd2w
-         m7IdCPS729hKtVjzH4wbMGomdon4FSp5GxltvBeuf/46DfVfH3MovvHo1nI9/JkN5/
-         u/a9sX5lZsynJCxhm/cIOCq0mny2QKs8Dpn/4m7CGwslLA2W2sDcnmzAEmrDcHI9GZ
-         VzZ5vesyQ0LIiuDC00kVUfttuP0r2tqkKjHPU7EmdjkFm+MvFX7unahR0vxA87fXRN
-         0X/TsxUQE7yz2zV/4Nfq2YX+uEswsD2u+Lwf6+5myWpjm1PSBrGy8BWKVlk3SP2K29
-         Px22VlzfkG7jWehvBvtRnJv8lbaiM1aM2rrMvxYoNhNqVDh1+DjoWrVZob5+3sLSm+
-         Um5ugztGTzl8ROVXP+0vckXlzm2jUtwZeTSyoe282E3/Ys652OazCNi04y4JvHrru+
-         XxectzUlv8rOzL3Wz6/KfyE2KSwK07xEpyF7U3OSpf326cV/Ih2oSrkD+3Zox83kNL
-         hd7PF+ty5qQVClgkyaEsJmR+3Mg0BhKTrolr4Bg8BGKphPpUlBBPXHvPTFb0HuXNXI
-         5yptuwBOVYrNfKW5QFhDoojE9FGXISj0s+9e6tWO2nVqv2ouuO+aV4eksWwvJtMZkv
-         c0poCUNT3dK8mcqNSRWy3MPo=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A265140E00C6;
-        Fri,  8 Dec 2023 13:22:09 +0000 (UTC)
-Date:   Fri, 8 Dec 2023 14:22:04 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, paul.gortmaker@windriver.com,
-        x86@kernel.org, regressions@leemhuis.info,
-        richard.purdie@linuxfoundation.org, regressions@lists.linux.dev
-Subject: Re: [patch 2/2] x86/alternatives: Disable interrupts and sync when
- optimizing NOPs in place
-Message-ID: <20231208132204.GBZXMYfLSaIbn3BvN3@fat_crate.local>
-References: <ZXCXc+BtnLzqMbFv@windriver.com>
- <ZUEgAAGDVqXz2Seo@windriver.com>
- <0adb772c-e8d2-4444-92b0-00cbfdaf1fac@leemhuis.info>
- <87r0k9ym0y.ffs@tglx>
- <20231207193859.961361261@linutronix.de>
- <20231207194518.401797191@linutronix.de>
+        Fri, 8 Dec 2023 08:23:55 -0500
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE869A;
+        Fri,  8 Dec 2023 05:24:01 -0800 (PST)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6d9daa5207eso1024691a34.0;
+        Fri, 08 Dec 2023 05:24:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702041841; x=1702646641;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UFeKun/Ab01EZFKqneUQr7Yz/7P4BKP04UwHAmDFXZo=;
+        b=g7OLXy2t030lvz0Vu+PFn6e5O0nXTmdCHwZscc8NnGKEzquQMPpBWkGi9B8Mg5Oh1/
+         UTstChPU5rJS+/IFZbMKQT0f0rWK2TPgWzAJb0I+TSfzxTFBPHM0h7MUBmbCOY6ahMT/
+         jKXSkZGJaQqLdb/DsKia9O710NjoNvErOcPNymMXpSeTYSajVPy5f/QWMGlEGaNduvx1
+         6ul7AzBq4je6UWy4vxVZyTPfJQqVX/mZZ8uPmIEOVf9+hcvFQuZvgUHUUWTNmzMoi/nU
+         flEIibMx6P4LV39lvvpTRN1D7I21i5RFGUSssddr34vMylhOg7+LeOEVtvc6m+eHVBeW
+         9DaA==
+X-Gm-Message-State: AOJu0YyOtlrMll/iZ9R/Nzg9oeFj73uB+NC9kORGamO/peknIGZcXV+T
+        R1lW6t0zx5+7hj8qfIfC+Myj9ny5FA==
+X-Google-Smtp-Source: AGHT+IEwvAkq9jK6mGhGY5c1svm3c0hRJ957nkwsNCjpz2Tmg7njhNnkY9qrkTB/OkIZBtm29yuCYQ==
+X-Received: by 2002:a05:6830:1159:b0:6d6:441a:a6c with SMTP id x25-20020a056830115900b006d6441a0a6cmr21946otq.12.1702041841089;
+        Fri, 08 Dec 2023 05:24:01 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id w26-20020a056830061a00b006ce28044207sm297875oti.58.2023.12.08.05.24.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 05:24:00 -0800 (PST)
+Received: (nullmailer pid 1155913 invoked by uid 1000);
+        Fri, 08 Dec 2023 13:23:59 -0000
+Date:   Fri, 8 Dec 2023 07:23:59 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>
+Subject: Re: [PATCH] dt-bindings: cache: qcom,llcc: correct QDU1000 reg
+ entries
+Message-ID: <170204182670.1155646.3136881067040734815.robh@kernel.org>
+References: <20231107080436.16747-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231207194518.401797191@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231107080436.16747-1-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 08:49:26PM +0100, Thomas Gleixner wrote:
-> +static void __init_or_module noinline optimize_nops_inplace(u8 *instr, size_t len)
-> +{
-> +	unsigned long flags;
-> +
-> +	local_irq_save(flags);
-> +	optimize_nops(instr, len);
-> +	sync_core();
-> +	local_irq_restore(flags);
-> +}
-> +
->  /*
->   * In this context, "source" is where the instructions are placed in the
->   * section .altinstr_replacement, for example during kernel build by the
-> @@ -438,7 +448,7 @@ void __init_or_module noinline apply_alt
->  		 *   patch if feature is *NOT* present.
->  		 */
->  		if (!boot_cpu_has(a->cpuid) == !(a->flags & ALT_FLAG_NOT)) {
-> -			optimize_nops(instr, a->instrlen);
-> +			optimize_nops_inplace(instr, a->instrlen);
->  			continue;
->  		}
 
-Arguably, the proper thing to do here would be to convert the NOP
-optimizing to the same 2-stage process as normal patching: write insns
-into a buffer and text_poke* it.
+On Tue, 07 Nov 2023 09:04:36 +0100, Krzysztof Kozlowski wrote:
+> Qualcomm QDU1000 DTSI comes with one LLCC0 base address as pointed by
+> dtbs_check:
+> 
+>   qdu1000-idp.dtb: system-cache-controller@19200000: reg-names:2: 'llcc2_base' was expected
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Recent LLCC patches were not tested on QDU1000 thus the LLCC is there
+> broken.  This patch at least tries to bring some sense according to
+> DTSI, but I have no clue what is here correct: driver, DTS or bindings.
+> ---
+>  Documentation/devicetree/bindings/cache/qcom,llcc.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-VS what we currently do: operating straight on kernel memory.
+Applied, thanks!
 
-Lemme put it on the TODO and see how ugly it becomes.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
