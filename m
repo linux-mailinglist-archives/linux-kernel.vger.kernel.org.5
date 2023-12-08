@@ -2,145 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A71809FF6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:52:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F703809FF7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573506AbjLHJwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 04:52:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45028 "EHLO
+        id S1573463AbjLHJwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 04:52:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235927AbjLHJvs (ORCPT
+        with ESMTP id S1573498AbjLHJv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 04:51:48 -0500
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03DB11FD7
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 01:51:11 -0800 (PST)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-58e256505f7so851178eaf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 01:51:11 -0800 (PST)
+        Fri, 8 Dec 2023 04:51:56 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C8E10E6
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 01:51:46 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40c07ed92fdso19803395e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 01:51:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702029071; x=1702633871; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6L21h7YTzNvrxPdnkHfqtungBWb9rqotOm7akioWdJE=;
-        b=kqfpZ4ok6qdf9ukhOUygjkCeUyFj/G/WP1Mv9nFTkUAqwdRhi56g/dflJhljw/pPbC
-         aReJ5eBSblSqiPbEnoOXnNuBdYb6kbRPDUAkabxJd2hn7Pcg46i0vcBUBOfWQygL7qPS
-         96Kn5ZnIyuDRx7OSmH2ceQM/dxGI3nOXyd7skS5RrCLpOq732jeZ3aX/CyeFGZCJ5yTf
-         0cY7u907A2eYNfcBw8IK4xXi1DXUHxzWovBkr7oXEuAOJ1z9mD2oJxZsYm43vdGOAg6i
-         iFPeAACzVU5yXPHtKviYNolj0VzBjLgK1bpwukHajYpGSW+w2AgFNr/faBP+PO6zNDsy
-         qvqw==
+        d=linaro.org; s=google; t=1702029105; x=1702633905; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:cc:references
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0FY8AYNSKeDwoS/SICzwBlUh0Fod4aFCnOTtellaPn4=;
+        b=BSaJ74LqLvqeo/ZJMkwbq49LPvEc9eTmnZSeJ/4fxvnxwEfbLFib8Ab/NHd66Fisap
+         ST8aCmKOwG+7NXrYDjCPtwCN2fbyfxmCO9DxrVeqevBiBbjPFW+wUBIFBpZceym8mDuE
+         n+vEs4ayP7F9y6kdYy7hLvZyToemYJNUVQcDQCJlgRxTNSnZzzy/ZnLjJtXO5RqewHFo
+         gRLA8Xodgy69u5NNb4zgaSFOItcYdSOd73UXb02YaB6m44+jelB/UVJ01z2EQxQ5IZAl
+         rpzloJEKxtY7b/1j5gkVpXDdcbZ1CLMyWjksvHrA8cNt7zoecP7HazCLCCSjwwcPRO0f
+         qiDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702029071; x=1702633871;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1702029105; x=1702633905;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:cc:references
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6L21h7YTzNvrxPdnkHfqtungBWb9rqotOm7akioWdJE=;
-        b=g6XXnImDl5wFbEhMV98gcnnW5vfIJ4cNKba5H+8Fz6jl+Nqo3gXJhgi3OOdX6pFzC0
-         MSPfHORX8CFC9jwYT0gdBmaKpm5jH+EDVuNfWz7Wv9vYa8rOyLWIz+Td+c9MHqAPtkRI
-         MUWOJYQ+xXisU5pH1KOJl+bMLOpSK6beWYk+DadjuesF3E+yoL5t1M2vN1qf/rCzfUIF
-         1I3V5MiTL6vPrtO5s5XSbUMWUaiO+nQ06KAFz6dRHVme6aEdjYP58LY594LxDRVQTa1m
-         JevTZ2X0mS9Da93SCzH3sx+0ShpgOkvi3lj0OL+aMvECAv0GoJFGZryGnWRfTMscpnHH
-         1mHA==
-X-Gm-Message-State: AOJu0Ywwo3n80QPMAIXANnsr/F0NHHSdshOTW1c9bEdg1KHxJe6wLHOJ
-        vIBmbmO74S+r5EG3wB5t/2I8RQ==
-X-Google-Smtp-Source: AGHT+IG3yrBJKShrn9bFMJhh1fczhfYyM+n5aSw+UE1/5hPNj+hMXwBAbyt34COA/L/kuAqdCT5VXw==
-X-Received: by 2002:a05:6359:6609:b0:170:1cd9:b2a2 with SMTP id sm9-20020a056359660900b001701cd9b2a2mr3472117rwb.37.1702029071139;
-        Fri, 08 Dec 2023 01:51:11 -0800 (PST)
-Received: from localhost ([122.172.82.6])
-        by smtp.gmail.com with ESMTPSA id q14-20020a170902dace00b001d08e08003esm1273016plx.174.2023.12.08.01.51.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 01:51:10 -0800 (PST)
-Date:   Fri, 8 Dec 2023 15:21:08 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     David Dai <davidai@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        bh=0FY8AYNSKeDwoS/SICzwBlUh0Fod4aFCnOTtellaPn4=;
+        b=HfrREiHIb2/nuO/+Iky2Nu3XYNDIIN9EKT5AnWNXdLL9/7Qcg6JAssuwuaHhPdhT4F
+         TY47fh/7/v1qQc2O/fObQUiugJvG+vs6tR9qDKV7m8QT2Gf7daV3SX93vxGtCQinwmAA
+         a1tF22mCzYHWBXiwEhIf+feGQDfwaw0f4nk/sZ171yyFPvHCYOh2bK9uJ5Od+RIpoRyB
+         04YT7N6NNuXdQoY+N1fgGXyIPmEasINaXE8Ut8WMu5uQxFEzkZfYNcmvar8Aw3o62CBh
+         vfp1Pug+GMeF8tP41p327q+iSY59nQBq9dIYoOWe5wxHe9oc2wf49BF3JFZsRDNaaNxN
+         Yd6w==
+X-Gm-Message-State: AOJu0YxE0qSAH4vDfJcL/cV9rgnzY4dAxz58vOGNtGSqqWrK+YpIh9sd
+        CuCayYocmpATSDty4niwjmoP/Q==
+X-Google-Smtp-Source: AGHT+IFi9EIss32NZngMA52VabciS8ywNCTnEBIUZ1cqWPN+NvNaDpIW/zHNXMI8M6+Jk5govSOIyg==
+X-Received: by 2002:a05:600c:5385:b0:40b:5e59:b7d5 with SMTP id hg5-20020a05600c538500b0040b5e59b7d5mr2498808wmb.178.1702029104698;
+        Fri, 08 Dec 2023 01:51:44 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id j13-20020a05600c190d00b0040b478da760sm2277323wmq.48.2023.12.08.01.51.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Dec 2023 01:51:44 -0800 (PST)
+Message-ID: <173513e2-d2ec-4932-886a-7c9074633093@linaro.org>
+Date:   Fri, 8 Dec 2023 10:51:42 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: PCI: qcom: Correct reset-names property
+Content-Language: en-US
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>
+References: <20231111142006.51883-1-krzysztof.kozlowski@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Masami Hiramatsu <mhiramat@google.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Pavan Kondeti <quic_pkondeti@quicinc.com>,
-        Gupta Pankaj <pankaj.gupta@amd.com>,
-        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] cpufreq: add virtual-cpufreq driver
-Message-ID: <20231208095108.mg5bz7yjvla6syk2@vireshk-i7>
-References: <20231111014933.1934562-1-davidai@google.com>
- <20231111014933.1934562-3-davidai@google.com>
- <20231115062932.vz2tyg6wgux5lx6t@vireshk-i7>
- <CABN1KCKfCWB6fVAuMSN9AdJOe-zueNMPFUdDnKLcq-uetz2ZFQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABN1KCKfCWB6fVAuMSN9AdJOe-zueNMPFUdDnKLcq-uetz2ZFQ@mail.gmail.com>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231111142006.51883-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-12-23, 10:18, David Dai wrote:
-> Hi Viresh,
+On 11/11/2023 15:20, Krzysztof Kozlowski wrote:
+> There is no "resets-names" property, but "reset-names".
 > 
-> Apologies for the late reply,
-> 
-> On Wed, Nov 15, 2023 at 3:29 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > On 10-11-23, 17:49, David Dai wrote:
-> > > diff --git a/drivers/cpufreq/virtual-cpufreq.c b/drivers/cpufreq/virtual-cpufreq.c
-> > > +static unsigned int virt_cpufreq_set_perf(struct cpufreq_policy *policy)
-> > > +{
-> > > +     writel_relaxed(policy->cached_target_freq,
-> >
-> > Drivers shouldn't be using the cached_target_freq directly. Use the target freq
-> > or index passed from cpufreq core.
-> 
-> We were trying to avoid rounding to frequency table entries to provide
-> more accurate frequency requests. However, we didn't find any
-> significant power or performance regressions using the frequencies
-> from the table, so I'll send another patch series using your
-> suggestion.
-> 
-> >
-> > > +static int virt_cpufreq_cpu_exit(struct cpufreq_policy *policy)
-> > > +{
-> > > +     topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_VIRT, policy->related_cpus);
-> > > +     kfree(policy->freq_table);
+> Fixes: 075a9d55932e ("dt-bindings: PCI: qcom: Convert to YAML")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 
-This becomes a dangling pointer for a very short amount of time. There may or
-may not be a actual race here and so I said the ordering must be just the
-opposite anyway.
+Krzysztof W., Bjorn H., Lorenzo,
 
-> > > +     policy->freq_table = NULL;
+Can you pick this one via PCI tree?
 
-And I thought this isn't required too since the core is going the free the
-policy structure right after returning from here. But maybe it is not a
-guarantee that the core provides (the code can change in future) and so be
-better to unset it anyway.
+Best regards,
+Krzysztof
 
-> > No need of doing this. Also the order of above two calls is wrong anyway.
-> 
-> Can you clarify this point a bit more? Are you suggesting to just
-> remove setting policy->freq_table to NULL and swap the ordering
-> freeing the freq_table vs clearing the topology source? I can
-> alternatively use dev_pm_opp_free_cpufreq_table to mirror the init.
-
-That would be better actually, to let a single piece of code manage this :)
-
--- 
-viresh
