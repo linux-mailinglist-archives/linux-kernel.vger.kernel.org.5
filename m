@@ -2,176 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6585080A74D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3F880A753
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574279AbjLHP0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:26:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60810 "EHLO
+        id S1574288AbjLHP1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:27:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232481AbjLHP0R (ORCPT
+        with ESMTP id S232481AbjLHP1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:26:17 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277E710C0
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:26:23 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-67a91a373edso12402316d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 07:26:23 -0800 (PST)
+        Fri, 8 Dec 2023 10:27:22 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD7AFB
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:27:28 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50bf69afa99so2679865e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 07:27:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702049182; x=1702653982; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fmveRht4WTP9VCfRGY2TlBDNiNt4nqiRyGovDc1Drhw=;
-        b=aMIRCreY4ebtSeY0kuQfq/myxA8NG1/q9ulVo+sy+stLhCK+0g21pM/oW+mXxiyaPH
-         euIZ89cc/WUx5YyxRBoawfCZ860qQ08RYlBZytEYMUudTBY4FNW2/Ju3JUc3/8LybZFX
-         PrBUC3ee9CwFbQ78QNKWmeVcA0rt8APAt26Y7oj+IypxMD5yPtAp5+FIQyfCX8Fh2oLq
-         f39dD6e1sDbB0g9oaz7QP2jI4f9k6bxEZ8qKLDMRO02qzGJwzlDVTkKvzZoHIFPIKP7m
-         mqgl3JrQJ35e3zR9peAkFumSVix0iZepCWZAgcTzrj6zm41jv6cQAZbJVUs6Ct9DhbpY
-         JtEQ==
+        d=linaro.org; s=google; t=1702049247; x=1702654047; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=N9Ak96umiRUkgBSSGvTsmBmpZU1S/LgoTvl404BpOFA=;
+        b=cF1xpExFyleopisP/18L+QnR017G+WokLbsRVzJoF8ilratU1kLA6IjeGpolioxjus
+         yGDUoz1zUzwzgzhhorNCf0L3qYTWJzn27wiHNTjizuuPX+La322Zq2c8Sq3aJ6C+cUsX
+         4eWDvKtIp3GGPwRS0XpYfyLkPm7E9xvqg9T4u5JJD1Ay25eel585E80AwFDUSTNBs5ln
+         5NmQ8JmTghNwFNhhjqpZ03XfjjkZwZhElh0ioM4v7ZgbSVvrr3/O2hnH/jcXf9hXI7G5
+         oQ+YW/iukO3Jmv34qZiGzwl2zqW5JYV5QX7sNXC7cYmtSm4Qkd/2LdFs8y6sIDe6q/b7
+         jW7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702049182; x=1702653982;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1702049247; x=1702654047;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fmveRht4WTP9VCfRGY2TlBDNiNt4nqiRyGovDc1Drhw=;
-        b=jPaTjK/95KVAX12vanIgApLRGf0Gh4hxgSJwE+2JJAVVlR70yDWHYDmlJDyvPtAOFD
-         rqfU2T6sUdmk2w1HTBQcf6FuuGSEddAwPG4vVSRmVV2at9wcJTXGNQXtyU2V52qSJkY0
-         vhI4AakWjT+yf7w750Ihj/YIvg/TX0aqXrrX4Duyrk+vMVa2mx3naIzyx3+t/w1v+4V7
-         +f4Dskllepd87kWN4UEp1GNCl3WyUzQIJalohoFp7wAjo1pz+F5k6TvRF4V2K0i4OrC5
-         6qPrBUnlLTFCQ0uBcjfo3B1fM0P2cSe8fJhFI4GjkV6P4ALSz+dkcELpwtZ//pODVNx/
-         pFGA==
-X-Gm-Message-State: AOJu0YxshTy6d/gf82G7Tex9BvKTV0acvzt8OlPXytoN7zEbQ9dondnG
-        t9sUwUOqQUILHLm+/4dRowU2j7OU8IUCIYk5WlHSQQ==
-X-Google-Smtp-Source: AGHT+IFQWMwRSduRWrugzZXzhW4SP5JgRv6bQmddI9L+WLPciJYPF9LKHJS1ct3eyxJlLmbNonEC+PpCF/NYvyZxUy8=
-X-Received: by 2002:ad4:52eb:0:b0:67a:a721:82f8 with SMTP id
- p11-20020ad452eb000000b0067aa72182f8mr105489qvu.82.1702049182002; Fri, 08 Dec
- 2023 07:26:22 -0800 (PST)
+        bh=N9Ak96umiRUkgBSSGvTsmBmpZU1S/LgoTvl404BpOFA=;
+        b=gt8eBGTHKhAFMrriu9xvH2vPNF+Y4w7iTIVdoCHzL4rglkJCk7A398koqxgsr78X1l
+         Z3qYGzRomFgQiO3HlCmntu1HvbdaFgHkSf5IBiWmRNsVFiU3X5gV7eVJ63NasoNiDPNu
+         W7dlj73L3r4N3pm9aUD6l3PBQ5fq8ZcqvBOzE8HCFTUuI1xPt/n43QUxjaimnj/CyJOL
+         SPHfW1MyevSBQXFTHSu2wc6q/8SHUd+xdmv8phwq0/7jDRnUhWbmb/5smSc5IH+mBvYA
+         nUP4sN/oBDzpO5/wyc2ZykckSwJBayje/cOCclpRDubNnuv08nMTjgpulQSGCfsL2TcF
+         62+g==
+X-Gm-Message-State: AOJu0YyMQfiORxuStkZGuDWWXCj9ZLn/5Gr4azXtFvTMZiPt+N6CwRHY
+        RVz4f4SumuTIzKTWeHpTAZi1kw==
+X-Google-Smtp-Source: AGHT+IEQGeIMrcEK3yigdLhpqxev8fd5skaPLeiQFIISFIgZmapYZOTGsEOyJ+y3hoy1/VtpGBeqQw==
+X-Received: by 2002:a05:6512:969:b0:50b:fcd4:832d with SMTP id v9-20020a056512096900b0050bfcd4832dmr28246lft.113.1702049246906;
+        Fri, 08 Dec 2023 07:27:26 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id k40-20020a05600c1ca800b0040b45356b72sm5443533wms.33.2023.12.08.07.27.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 07:27:26 -0800 (PST)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH 0/2] usb: typec: support Qualcomm WCD939X USB SubSystem
+ Altmode Mux
+Date:   Fri, 08 Dec 2023 16:27:22 +0100
+Message-Id: <20231208-topic-sm8650-upstream-wcd939x-usbss-v1-0-91d1ba680fe0@linaro.org>
 MIME-Version: 1.0
-References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-14-iii@linux.ibm.com>
- <CAG_fn=Vaj3hTRAMxUwofpSMPhFBOizDOWR_An-V9qLNQv-suYw@mail.gmail.com> <69e7bc8e8c8a38c429a793e991e0509cb97a53e1.camel@linux.ibm.com>
-In-Reply-To: <69e7bc8e8c8a38c429a793e991e0509cb97a53e1.camel@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 8 Dec 2023 16:25:41 +0100
-Message-ID: <CAG_fn=UbJ+z8Gmfjodu-jBQz75HApXADw8Abj38BCLHmY_ZW9w@mail.gmail.com>
-Subject: Re: [PATCH v2 13/33] kmsan: Introduce memset_no_sanitize_memory()
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANo1c2UC/x3NwQ6CMAyA4VchPduk3YIyX8VwmKNqD8CygpIQ3
+ t2F43f5/x1MiorBvdmhyFdN56mCLw2kT5zegjpUgyPn2VGHy5w1oY3dtSVcsy1F4oi/NAQfNlz
+ taYbkKRFz5BsFqKVc5KXbeXn0x/EHUxh7ynUAAAA=
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1352;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=ZeeVqSkTaaQgJLzmJA0ExVUlJclEFNl7UqvmeCA9j3M=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlczXcFUMZx5ZnaqoabAI4uoGQtE70iJUJyz5sMcqa
+ KsvaQUyJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZXM13AAKCRB33NvayMhJ0f+XD/
+ 4jI4EjGZGzMyAGDy1t8HM/OSjx+fyCHtpVcEMTV0lMLYLGCghSzolmCxIwjh/k3sRXozq+oSzimrWh
+ 8LOz1NTKNQIb1Q73p4o/n5x52nk1Wf6jMbC/syxi++d7Z0momVlmd76Vbd6cfh8YpEYRLNBYOCdnkq
+ mPWzQAmjqXvEi4wIRzC1l9bapambk5LXJLGy6jy8QBwpgNE+uXnjMJpvjJ4Ruz8LvX+Jhm6qOCPbup
+ HPd6vOrtPXgUm5+DSi6hWhhMaiCnyV13bX8oCPVE/elwgViL//G/0weMHJnNa7WS97ZvOYY1WTNdh2
+ OAhycLzor8rcDWNEZa2y3KxvlekywVU/1+Qm7OU4mOgs17EMptFaYbFZzYiLFw/p5ETItnL/mAExIC
+ WSamqBNyZTyVTo4fk0Cq4xTC77JZ1YhVp4pFc23t5Qjzbe8+T5Bs63rfEtTm5zOZLEXySgqjlUcB0t
+ JWdGpauuVQme0HkojtLsa/v9TIlwbB3ETL2a6hpV9X10B5QDx6Qwh1yydDfJg0uCz+mW+b1urWE5lU
+ wzvSE4iwf/V4AxnoyAVVj1L7UQ9b/NzH9RQ7GS4+jb+H2g5YtNTaLhDRKrMO8O5Czhd0MjSU43Q4+Y
+ R9zpaxludCOcICiaavxaSkLk72NVvYPF0Kznjzix580hIIaq0W/ERO3AAs9g==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> A problem with __memset() is that, at least for me, it always ends
-> up being a call. There is a use case where we need to write only 1
-> byte, so I thought that introducing a call there (when compiling
-> without KMSAN) would be unacceptable.
+Qualcomm WCD9390/WCD9395 is a standalone Hi-Fi audio codec IC with a
+functionally separate USB SubSystem for Altmode/Analog Audio Switch
+accessible over an I2C interface.
 
-Wonder what happens with that use case if we e.g. build with fortify-source.
-Calling memset() for a single byte might be indicating the code is not hot.
+It provides switching USB-C USB2.0 lines between USB and Audio Headphones
+speaker lines, and the USB-C SBU lines between DisplayPort AUX and Audio
+Headphones Microphone/Ground.
 
-> > ...
-> >
-> > > +__no_sanitize_memory
-> > > +static inline void *memset_no_sanitize_memory(void *s, int c,
-> > > size_t n)
-> > > +{
-> > > +       return memset(s, c, n);
-> > > +}
-> >
-> > I think depending on the compiler optimizations this might end up
-> > being a call to normal memset, that would still change the shadow
-> > bytes.
->
-> Interesting, do you have some specific scenario in mind? I vaguely
-> remember that in the past there were cases when sanitizer annotations
-> were lost after inlining, but I thought they were sorted out?
+The Audio Headphone and Microphone data path between the Codec and the
+USB-C Mux subsystems are external to the IC, thus requiring DT
+port-endpoint graph description to handle USB-C altmode & orientation
+switching for Audio Accessory Mode.
 
-Sanitizer annotations are indeed lost after inlining, and we cannot do
-much about that.
-They are implemented using function attributes, and if a function
-dissolves after inlining, we cannot possibly know which instructions
-belonged to it.
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+Neil Armstrong (2):
+      dt-bindings: usb: Document WCD939x USB SubSystem Altmode/Analog Audio Switch
+      usb: typec: mux: add Qualcomm WCD939X USB SubSystem Altmode Mux driver
 
-Consider the following example (also available at
-https://godbolt.org/z/5r7817G8e):
+ .../bindings/usb/qcom,wcd939x-usbss.yaml           |  99 +++
+ drivers/usb/typec/mux/Kconfig                      |  10 +
+ drivers/usb/typec/mux/Makefile                     |   1 +
+ drivers/usb/typec/mux/wcd939x-usbss.c              | 779 +++++++++++++++++++++
+ 4 files changed, 889 insertions(+)
+---
+base-commit: bc63de6e6ba0b16652c5fb4b9c9916b9e7ca1f23
+change-id: 20231208-topic-sm8650-upstream-wcd939x-usbss-030c011a1709
 
-==================================
-void *kmalloc(int size);
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
 
-__attribute__((no_sanitize("kernel-memory")))
-__attribute__((always_inline))
-static void *memset_nosanitize(void *s, int c, int n) {
-  return __builtin_memset(s, c, n);
-}
-
-void *do_something_nosanitize(int size) {
-  void *ptr = kmalloc(size);
-  memset_nosanitize(ptr, 0, size);
-  return ptr;
-}
-
-void *do_something_sanitize(int size) {
-  void *ptr = kmalloc(size);
-  __builtin_memset(ptr, 0, size);
-  return ptr;
-}
-==================================
-
-If memset_nosanitize() has __attribute__((always_inline)), the
-compiler generates the same LLVM IR calling __msan_memset() for both
-do_something_nosanitize() and do_something_sanitize().
-If we comment out this attribute, do_something_nosanitize() calls
-memset_nosanitize(), which doesn't have the sanitize_memory attribute.
-
-But even now __builtin_memset() is still calling __msan_memset(),
-because __attribute__((no_sanitize("kernel-memory"))) somewhat
-counterintuitively still preserves some instrumentation (see
-include/linux/compiler-clang.h for details).
-Replacing __attribute__((no_sanitize("kernel-memory"))) with
-__attribute__((disable_sanitizer_instrumentation)) fixes this
-situation:
-
-define internal fastcc noundef ptr @memset_nosanitize(void*, int,
-int)(ptr noundef returned writeonly %s, i32 noundef %n) unnamed_addr
-#2 {
-entry:
-%conv = sext i32 %n to i64
-tail call void @llvm.memset.p0.i64(ptr align 1 %s, i8 0, i64 %conv, i1 false)
-ret ptr %s
-}
-
->
-> And, in any case, if this were to happen, would not it be considered a
-> compiler bug that needs fixing there, and not in the kernel?
-
-As stated above, I don't think this is more or less working as intended.
-If we really want the ability to inline __memset(), we could transform
-it into memset() in non-sanitizer builds, but perhaps having a call is
-also acceptable?
