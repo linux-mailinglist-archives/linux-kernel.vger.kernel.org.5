@@ -2,57 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D35BC80A3C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0718180A3BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573740AbjLHMrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 07:47:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
+        id S233484AbjLHMp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 07:45:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233520AbjLHMrE (ORCPT
+        with ESMTP id S229844AbjLHMp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 07:47:04 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2B8BE1997;
-        Fri,  8 Dec 2023 04:47:09 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DE6D1063;
-        Fri,  8 Dec 2023 04:47:54 -0800 (PST)
-Received: from bogus (unknown [10.57.42.162])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B4BCE3F762;
-        Fri,  8 Dec 2023 04:47:04 -0800 (PST)
-Date:   Fri, 8 Dec 2023 12:45:03 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     David Dai <davidai@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Masami Hiramatsu <mhiramat@google.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Pavan Kondeti <quic_pkondeti@quicinc.com>,
-        Gupta Pankaj <pankaj.gupta@amd.com>,
-        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: cpufreq: add virtual cpufreq device
-Message-ID: <20231208124503.unhka7c6ihzrrwhu@bogus>
-References: <20231111014933.1934562-1-davidai@google.com>
- <20231111014933.1934562-2-davidai@google.com>
+        Fri, 8 Dec 2023 07:45:57 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB6F10CF
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:46:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702039563; x=1733575563;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=bu4e0kS+eTFh8LO/rxI+3py26OcsItsVKKRs07FwizA=;
+  b=L0lNu5y/ORfws7waVHN1LBC1pWYUmjnDtWwMmbzELMAsVS+Hvv4FlSCw
+   2ZtVdFhj4Zd3JqoNgj0yXxv0vgDyiuvHWdvZ8nmMLGPqqiS/CdCHw7G9k
+   al7d/3S8Nt7o6raokGjR4VXKeHRoGG41PgtRI0oVChC4fWyJlQLZ9pB73
+   0HPNJxP12aGf0p5+1tGvGpeRvDGaEcAJ8R30wNV/YGTMIQ8A6iJ4Ertmg
+   hUJ3Lai3xMwdwnuU9nLi+Ge4ooXq7P2QT362YnAO7Swjjrq0rKdq5wHBi
+   fdvPeu/a5q5xSKD/ngq63B03z9cO4XxCCZGWKAq0Abr0HjRhZMvZ7rsyU
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="460877114"
+X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
+   d="scan'208";a="460877114"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 04:46:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="801107227"
+X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
+   d="scan'208";a="801107227"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.255.31.238]) ([10.255.31.238])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 04:46:00 -0800
+Message-ID: <1161d8aa-9fcc-4e9e-a7d3-c461fee19a54@linux.intel.com>
+Date:   Fri, 8 Dec 2023 20:45:57 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231111014933.1934562-2-davidai@google.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/6] iommu/vt-d: Remove 1:1 mappings from identity
+ domain
+Content-Language: en-US
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+References: <20231205012203.244584-1-baolu.lu@linux.intel.com>
+ <20231205012203.244584-5-baolu.lu@linux.intel.com>
+ <BN9PR11MB52761FF9AB496B422596DDDF8C8AA@BN9PR11MB5276.namprd11.prod.outlook.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB52761FF9AB496B422596DDDF8C8AA@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,140 +70,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 05:49:29PM -0800, David Dai wrote:
-> Adding bindings to represent a virtual cpufreq device.
+On 2023/12/8 17:09, Tian, Kevin wrote:
+>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>> Sent: Tuesday, December 5, 2023 9:22 AM
+>>
+>> Older VT-d hardware implementations did not support pass-through
+>> translation mode. The iommu driver relied on a DMA domain with all
+>> physical memory addresses identically mapped to the same IOVA to
+>> simulate pass-through translation.
+>>
+>> This workaround is no longer necessary due to the evolution of iommu
+>> core. The core has introduced def_domain_type op, allowing the iommu
+>> driver to specify its capabilities. Additionally, the identity domain
+>> has become a static system domain with "never fail" attach semantics.
 > 
-> Virtual machines may expose MMIO regions for a virtual cpufreq device
-> for guests to read frequency information or to request frequency
-> selection. The virtual cpufreq device has an individual controller for
-> each frequency domain.
+> I'm not sure above explains the reason for removing the identity support
+> on older hardware. Looks the reason is simply that continuing to maintain
+> that debt prevents intel-iommu driver from catching up  with iommu core
+> evolution so we decide to remove it.
+
+It is not that simple. I should put more words here.
+
+Generally speaking, hardware lacking passthrough translation support,
+but the iommu driver fakes it by using a DMA domain with 1:1 mappings,
+makes no sense because it doesn't mitigate any hardware overheads.
+
+If the device driver uses the kernel DMA API to do DMA, it does not need
+to care about the DMA translation type. This is a user-decided policy.
+The iommu subsystem has already provided this support to users through
+kernel build options, kernel boot commands, and sysfs nodes.
+
+If the device driver doesn't use kernel API for DMA. While we discourage
+this behavior, the iommu subsystem provides the DMA ownership mechanism.
+This allows the driver to take over the DMA ownership, allocate and
+manage its own domain, and replace it with the default domain, as the
+iommu default domain is only designed for kernel DMA with the DMA API.
+
+In summary, whether or not to use a DMA domain with 1:1 mappings should
+be a design decision made in the device driver, not a common behavior
+for a modern iommu driver.
+
 > 
-> Co-developed-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: David Dai <davidai@google.com>
-> ---
->  .../cpufreq/qemu,cpufreq-virtual.yaml         | 99 +++++++++++++++++++
->  1 file changed, 99 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml
+>>
+>> Eliminate support for the 1:1 mapping domain on older hardware and
+>> removes the unused code that created the 1:1 page table. This paves a
+>> way for the implementation of a global static identity domain.
 > 
-> diff --git a/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml b/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml
-> new file mode 100644
-> index 000000000000..16606cf1fd1a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml
-> @@ -0,0 +1,99 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/cpufreq/qemu,cpufreq-virtual.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Virtual CPUFreq
-> +
-> +maintainers:
-> +  - David Dai <davidai@google.com>
-> +  - Saravana Kannan <saravanak@google.com>
-> +
-> +description:
-> +  Virtual CPUFreq is a virtualized driver in guest kernels that sends frequency
-> +  selection of its vCPUs as a hint to the host through MMIO regions. Each vCPU
-> +  is associated with a frequency domain which can be shared with other vCPUs.
-> +  Each frequency domain has its own set of registers for frequency controls.
-> +
+> Do you know how old such hardware is?
 
-Are these register controls described somewhere ? The reason I ask is we
-should be able to have single implementation of this virtual cpufreq
-irrespective of the firmware used(DT vs ACPI) IMO.
+I am not sure, but I have a desktop that is over 10 years old and
+supports passthrough translation. :-)
 
-> +properties:
-> +  compatible:
-> +    const: qemu,virtual-cpufreq
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description:
-> +      Address and size of region containing frequency controls for each of the
-> +      frequency domains. Regions for each frequency domain is placed
-> +      contiugously and contain registers for controlling DVFS(Dynamic Frequency
-> +      and Voltage) characteristics. The size of the region is proportional to
-> +      total number of frequency domains.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    // This example shows a two CPU configuration with a frequency domain
-> +    // for each CPU.
-> +    cpus {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      cpu@0 {
-> +        compatible = "arm,armv8";
-> +        device_type = "cpu";
-> +        reg = <0x0>;
-> +        operating-points-v2 = <&opp_table0>;
-> +      };
-> +
-> +      cpu@1 {
-> +        compatible = "arm,armv8";
-> +        device_type = "cpu";
-> +        reg = <0x0>;
-> +        operating-points-v2 = <&opp_table1>;
-> +      };
-> +    };
-> +
-> +    opp_table0: opp-table-0 {
-> +      compatible = "operating-points-v2";
-> +      opp-shared;
-> +
-> +      opp1098000000 {
-> +        opp-hz = /bits/ 64 <1098000000>;
-> +        opp-level = <1>;
-> +      };
-> +
-> +      opp1197000000 {
-> +        opp-hz = /bits/ 64 <1197000000>;
-> +        opp-level = <2>;
-> +      };
-> +    };
-> +
-> +    opp_table1: opp-table-1 {
-> +      compatible = "operating-points-v2";
-> +      opp-shared;
-> +
-> +      opp1106000000 {
-> +        opp-hz = /bits/ 64 <1106000000>;
-> +        opp-level = <1>;
-> +      };
-> +
-> +      opp1277000000 {
-> +        opp-hz = /bits/ 64 <1277000000>;
-> +        opp-level = <2>;
-> +      };
-> +    };
->
+> 
+>> @@ -2311,6 +2257,13 @@ static int device_def_domain_type(struct device
+>> *dev)
+>>   			return IOMMU_DOMAIN_IDENTITY;
+>>   	}
+>>
+>> +	/*
+>> +	 * Hardware does not support the passthrough translation mode.
+>> +	 * Always use a dynamaic mapping domain.
+>> +	 */
+>> +	if (!ecap_pass_through(iommu->ecap))
+>> +		return IOMMU_DOMAIN_DMA;
+>> +
+>>   	return 0;
+> 
+> there are two cases above which mandates IDENTITY. Have you confirmed
+> that those platforms support hardware passthrough? otherwise this change
+> is broken.
 
-I think using OPP with absolute frequencies seems not appropriate here.
-Why can't these fetched from the registers and have some abstract values
-instead ?
+Those two cases should be hardware quirks for SoC-integrated devices. It
+makes no reason that a quirk requires IOMMU passthrough translation, but
+the hardware doesn't support it.
 
-> +    soc {
-> +      #address-cells = <1>;
-> +      #size-cells = <1>;
-> +
-> +      cpufreq@1040000 {
-> +        compatible = "qemu,virtual-cpufreq";
-> +        reg = <0x1040000 0x10>;
+If, unfortunately, those quirks turn out to be workarounds for a poorly
+designed device driver, we should remove those quirks and request the
+device driver to utilize the DMA ownership framework to achieve the same
+functionality within the driver itself.
 
-So just 16bytes for 2 CPU system ? How does the register layout look like ?
-I assume just 4 x 32bit registers: 2 for reading and 2 for setting the
-frequencies ?
+Best regards,
+baolu
 
---
-Regards,
-Sudeep
