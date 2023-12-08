@@ -2,183 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 834BE80A2F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A441580A2F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233449AbjLHMRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 07:17:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46856 "EHLO
+        id S1573688AbjLHMR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 07:17:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233448AbjLHMRV (ORCPT
+        with ESMTP id S233484AbjLHMR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 07:17:21 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C221989
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:17:27 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-54c79968ffbso2687415a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 04:17:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702037845; x=1702642645; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9izsQCcCd1CE106RU+2IMRNg5srUJ2uTg6mjoa3meQA=;
-        b=IXTkkBOAOf2ak1C5FnlQMiXlEqpS73XacO2su4MDrtLxjFh+dzCk+9oEBjokpbRTCR
-         rttJSNz/PGp8ammd6PckrAiKQyneBUTUfzRjOwEc7pRsP+TrWuhriKP5xwVd/XVgnmrU
-         m3GngLGbUd9lJLweGaHaPLlMBBb2rNsX9bxq0NN1bE8TFTrX40DS9mz6ZWhgnacVKeOH
-         o3ITWo57aQeseCl8DV51ZOFntSGL5lskdy0RQy6gdgyQYeMM3rPXYdggp2qTs2cpGr7y
-         WH1At4jJ2lqo+2qQLc3+Xl4925FRD0egtbLI7LsFZ33luCLlpjQ9TAXVQCE0J9XyWTIo
-         fwDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702037845; x=1702642645;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9izsQCcCd1CE106RU+2IMRNg5srUJ2uTg6mjoa3meQA=;
-        b=GyCnrmJhSTmd1EgWRRaHwejn5Q8wTF8aPaNqEpAKxveftbZbRoSSi3nnCk0HqdXA8u
-         3GmhWh5BMQUXSgX3nNgIOKYtmqU6pfksFl3+BhtUV6Ug1XVPSAujSwmVYy7y5BGLY99f
-         GK7HquRaj4/4O0i4arH9eGdKT5DD+tEx5ISwgw5K/suKR3BHHYoV2FY8Up0ETF4f4x7O
-         l2gjHOVoMJVMFRdGk57rhmffK4xlmDWyYxDTL0osMwGifgi3GVQ56URjWLxysDaSYkkB
-         g00NAZrU7eVtDJods1sZjjpLVPBabldzLsoKK1T7UFgndLtuJLiDZAEFNxjK6+GxXau6
-         JuvQ==
-X-Gm-Message-State: AOJu0Yxz6Ajr9ME81bfhc7SZOowhHQs4bDG4ncA239XmxH34myD2xdj5
-        airE1zr1X3Ncod60o1TlmqHN4Q==
-X-Google-Smtp-Source: AGHT+IER6W/fDD1Ek54GW5WjcFgQL6SdwO+xnVfxaF8Xad512jmtPAkd6aZarE3UM1Co7yJt/QXdKg==
-X-Received: by 2002:a50:85cc:0:b0:54f:5278:c2e2 with SMTP id q12-20020a5085cc000000b0054f5278c2e2mr16131edh.63.1702037845686;
-        Fri, 08 Dec 2023 04:17:25 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id o29-20020a509b1d000000b0054ca1d90410sm790428edi.85.2023.12.08.04.17.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 04:17:25 -0800 (PST)
-Message-ID: <2e688f4e-11d7-4f8e-b8ec-58f4a97304a8@linaro.org>
-Date:   Fri, 8 Dec 2023 13:17:23 +0100
+        Fri, 8 Dec 2023 07:17:27 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9794A1986;
+        Fri,  8 Dec 2023 04:17:33 -0800 (PST)
+Received: from [10.3.2.161] (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7AD4F66073AA;
+        Fri,  8 Dec 2023 12:17:30 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702037851;
+        bh=jBMziga07aVp3bL6kAN2tx7XMOjaakjxVjC5JZZa2zs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=QMXTiAbpKT36vzwizHSRDGx7XNQyAPt6w/AA54Xy/B00HQ5lEyJbi3oH5WbFENwAj
+         mp6E7V8KUVcD0k2oHA/jQHloJevjOuQsr/6h1+Ma45vVsQuaPnFXxgMFRpPDu9ZM4L
+         uv161qtyHHpYhG8xchf9YJv3Ea0nB4hulWGCxvgEVc4vriK+nq+5PBz3dXQK2k5Alp
+         T+cwyt1jmFv8D7LMUs2IQDB9B8L6WCziGQBlInTyFOHzNCIQyKv2JVOcP53SLYaCGT
+         JLERN18XqzjGChfGr26wqhIa9FvUmpXDr6AqV8OD7F7Y0FCzyA5yFjIxgSZZ/BxwCM
+         6c+S71rVWf+3g==
+Message-ID: <94bf6180-8abf-777d-2dce-498efafb57c1@collabora.com>
+Date:   Fri, 8 Dec 2023 15:17:25 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 1/2] dt-bindings: usb: Add the binding example for the
- Genesys Logic GL3523 hub
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2] i2c: rk3x: fix potential spinlock recursion on poll
 Content-Language: en-US
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Icenowy Zheng <uwu@icenowy.me>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-amlogic@lists.infradead.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231204144429.45197-1-linux.amoon@gmail.com>
- <20231204144429.45197-2-linux.amoon@gmail.com>
- <20231206135311.GA2043711-robh@kernel.org>
- <CANAwSgTS0ZSFPv4x803pCLEpjH5imh8vEoWpbiJRH14Sy3GZww@mail.gmail.com>
- <21673bfd-bb87-4c7d-a53f-337c263f3a00@linaro.org>
- <CANAwSgSo37B0zg-xjrmqndSZ5SbyB3m27_wRsqqN9WTONooeiw@mail.gmail.com>
- <604e653d-c1e2-45c7-b121-8a6b4be5c6bb@linaro.org>
- <CANAwSgRB=XWo2-40rDru=Zy277-kgGNjozJ8Lxnxgv_4ABB-kg@mail.gmail.com>
- <1a78d453-62a2-410a-a40f-1ff0c2b62e86@linaro.org>
- <CANAwSgTy4N7Q8e0OQLsFRkRDWksTSbkOetKQGygaqsQ8++U1_g@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CANAwSgTy4N7Q8e0OQLsFRkRDWksTSbkOetKQGygaqsQ8++U1_g@mail.gmail.com>
+To:     Jensen Huang <jensenhuang@friendlyarm.com>
+Cc:     Dragan Simic <dsimic@manjaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chris Morgan <macroalpha82@gmail.com>,
+        Benjamin Bara <bbara93@gmail.com>
+References: <20231207082200.16388-1-jensenhuang@friendlyarm.com>
+ <ebf6cf8ec3b5befd673d295061fa2738@manjaro.org>
+ <CAMpZ1qHUnTDQ78gdrQF9Sx_-XfLM-B+H-0bL1-+twKsno+JOvg@mail.gmail.com>
+ <5e11553952c02ad20591992be4284bbd@manjaro.org>
+ <95cc7716-ba01-e239-e7c0-eba0b7da7955@collabora.com>
+ <CAMpZ1qENxWsDnvke4jMvK9tYpta3dThHUHxjDWO-u2JV+8dZdQ@mail.gmail.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <CAMpZ1qENxWsDnvke4jMvK9tYpta3dThHUHxjDWO-u2JV+8dZdQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/2023 12:19, Anand Moon wrote:
-> Hi Krzysztof,
-> 
-> On Fri, 8 Dec 2023 at 13:14, Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
+On 12/8/23 11:53, Jensen Huang wrote:
+> On Fri, Dec 8, 2023 at 12:00 AM Dmitry Osipenko
+> <dmitry.osipenko@collabora.com> wrote:
 >>
->> On 08/12/2023 01:24, Anand Moon wrote:
->>>>>>>
->>>>>>> If I move reset-gpios to required, I observe the below warning.
->>>>>>>
->>>>>>>   DTC_CHK Documentation/devicetree/bindings/usb/maxim,max33359.example.dtb
->>>>>>> /home/alarm/linux-amlogic-5.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
->>>>>>> hub@1: 'reset-gpio' is a required property
->>>>>>>         from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+>> On 12/7/23 17:10, Dragan Simic wrote:
+>>> On 2023-12-07 10:25, Jensen Huang wrote:
+>>>> On Thu, Dec 7, 2023 at 4:37 PM Dragan Simic <dsimic@manjaro.org> wrote:
+>>>>>
+>>>>> On 2023-12-07 09:21, Jensen Huang wrote:
+>>>>>> Possible deadlock scenario (on reboot):
+>>>>>> rk3x_i2c_xfer_common(polling)
+>>>>>>     -> rk3x_i2c_wait_xfer_poll()
+>>>>>>         -> rk3x_i2c_irq(0, i2c);
+>>>>>>             --> spin_lock(&i2c->lock);
+>>>>>>             ...
+>>>>>>         <rk3x i2c interrupt>
+>>>>>>         -> rk3x_i2c_irq(0, i2c);
+>>>>>>             --> spin_lock(&i2c->lock); (deadlock here)
 >>>>>>
->>>>>> Where are the properties defined? If you open the binding you see:
->>>>>> nowhere. You cannot define properties in some variant with "true".
->>>>>> Please define all of them in top-level and only narrow/constrain when
->>>>>> applicable.
->>>>>>
->>>>> What I meant is the example below, required meant applicable for both
->>>>> the binding
->>>>> But it shows me the above warning.
+>>>>>> Store the IRQ number and disable/enable it around the polling
+>>>>> transfer.
+>>>>>> This patch has been tested on NanoPC-T4.
+>>>>>
+>>>>> In case you haven't already seen the related discussion linked below,
+>>>>> please have a look.  I also added more people to the list of recipients,
+>>>>> in an attempt to make everyone aware of the different approaches to
+>>>>> solving this issue.
+>>>>>
+>>>>> https://lore.kernel.org/all/655177f4.050a0220.d85c9.3ba0@mx.google.com/T/#m6fc9c214452fec6681843e7f455978c35c6f6c8b
 >>>>
->>>> My explanation stands... So again:
->>>>
->>>>>> Please define all of them in top-level and only narrow/constrain when
->>>>>> applicable.
->>>>
->>> Apologies, But I have tried this multiple times but have not been able
->>> to fix the device tree warning
+>>>> Thank you for providing the information. I hadn't seen this link before.
+>>>> After carefully looking into the related discussion, it appears that
+>>>> Dmitry Osipenko is already working on a suitable patch. To avoid
+>>>> duplication
+>>>> or conflicts, my patch can be discarded.
+>>>
+>>> Thank you for responding so quickly.  Perhaps it would be best to hear
+>>> from Dmitry as well, before discarding anything.  It's been a while
+>>> since Dmitry wrote about working on the patch, so he might have
+>>> abandoned it.
 >>
->> Did you document all properties in top-level "properties:" block?
->>
-> Yes, I have,
+>> This patch is okay. In general, will be better to have IRQ disabled by
+>> default like I did in my variant, it should allow to remove the spinlock
+>> entirely. Of course this also can be done later on in a follow up
+>> patches. Jensen, feel free to use my variant of the patch, add my
+>> s-o-b+co-developed tags to the commit msg if you'll do. Otherwise I'll
+>> be able to send my patch next week.
 > 
-> Can you suggest a couple of examples to follow?
-> I looked at some of the YAML files but could not fix my issue.
+> Thank you for the suggestion. I've updated the patch to your variant, and
+> as confirmed by others, reboots are functioning correctly. I measured the
+> overhead of enable_irq/disable_irq() by calculating ktime in the
+> updated version,
+> and on rk3399, the minimum delta I observed was 291/875 ns. This extra
+> cost may impact most interrupt-based transfers. Therefore, I personally lean
+> towards the current v2 patch and handle the spinlock and irqsave/restore in
+> a follow up patch. I'd like to hear everyone's thoughts on this.
 
-99% of bindings. Look also at example-schema.
+Please don't use ktime for perf measurements, ktime itself is a slow API
+and it should be 200us that ktime takes itself. Also, the 0.2us is
+practically nothing, especially compared to I2C transfers measured in ms.
 
-You can also attach here complete patch for fast look / short review.
+I'm fine with keeping your v2 variant for the bug fix if you prefer
+that. Thanks for addressing the issue :)
 
+-- 
 Best regards,
-Krzysztof
+Dmitry
 
