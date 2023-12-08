@@ -2,91 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0EA680ACDE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2D780ACE2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574649AbjLHTXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 14:23:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32888 "EHLO
+        id S229938AbjLHTXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 14:23:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235948AbjLHTXA (ORCPT
+        with ESMTP id S1574687AbjLHTXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 14:23:00 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B1B1700
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:23:06 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id EB81740E00C9;
-        Fri,  8 Dec 2023 19:23:04 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id lJoqhLpwHWWM; Fri,  8 Dec 2023 19:23:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1702063383; bh=YrdoyyjOauHIuJ9S3ymT89tgVgbZ0WPJEgR2O/39Cn4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lOeWRb6Eq2BEKx1M4bPUB8ZLqVh8roTFgKP7yHcKdPK07Id/KtCPM/sc4HBlsKAL3
-         p951j7SMe8nxYviDLJRI3A6m3BPyQoIldDK+a1DthghppJVPGYdhDSB/GNDgWm/l4M
-         4EvUCyndL502qODOv9AMlzpCOtK3t333tD7pnx1Zi2fy6h0Hi5Wj9vmsyv4PtMo6ZZ
-         iuW0ZvN91hWMt1Xw0AnqNhVWfceK7VZUykzEPZB4ONXs1G5uOaMDlL8NMt3IFGD0R0
-         dOMoj+p4OXLr41WfoG0nqN/7z6xHJXIGUgmPnziDPB+MAAUCEqqDXlC7oAqzbiuj8s
-         wukJBaLzPmtjw9HhGxp5YqkNhv8ZXYwAjO2iK/aSqh6Gz7873obNAyv/4qRPGtyNNA
-         czsU17CnM8bHgYukWRAQw/hqnO709vinYu6V8/Kn8wBKMxwHxzPViOBZlEidrq91mr
-         s8xOGM2QUzxVc57el9426jwdYxzye6T1x1gFM7wiJpwi6uqO+ClgNJ7HUQzOnhUCpn
-         uOh33epCRH2s5mIAa5Ua/HufePVFZwFyAmKwC1tWzB7YXpdsOkZu7m9fkQc2qOk2MQ
-         GnLELhQ6XFBgooUzh0BwEImGYkAvKDyVOP7SGRLK0+rt/Ss6rv/GQrViy1tcLPm3Ar
-         9pv4oWbiCjdpVgZnRmx7nM+A=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 369DA40E00A9;
-        Fri,  8 Dec 2023 19:23:00 +0000 (UTC)
-Date:   Fri, 8 Dec 2023 20:22:54 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Nikolay Borisov <nik.borisov@suse.com>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -v2] x86/ia32: State that IA32 emulation is disabled
-Message-ID: <20231208192254.GCZXNtDjT73Z4L06h/@fat_crate.local>
-References: <20231130155213.1407-1-bp@alien8.de>
- <20231130160903.GJZWizn+dPaaViFVKN@fat_crate.local>
- <20231206172022.GCZXCtVoZtt4t2TLpe@fat_crate.local>
- <4f232dfb-a112-4271-8f43-f85a02c4abeb@suse.com>
+        Fri, 8 Dec 2023 14:23:11 -0500
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA3E1998
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:23:16 -0800 (PST)
+Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-7cac4a9c5b5so142869241.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 11:23:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702063396; x=1702668196; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eNuhxRDBfdQenk+uC5+I+2o2Yad/2wCHUso1pH85sfo=;
+        b=puGdxYqAoQo3bHG294LrXUJmKf0r2uufNMehZOj/ib8lgIMoVsopaKC4B4b6fUFyya
+         +B9rAwaP7t2N4ealA6hhXjhKtZfHcQqR6mND4Wm8Bn+OcwAWZPIz8cpOBRc9eMDbClhr
+         m0HzrbjSOx0Odg45PVXWbTCRw/nXU3Cn7nmp3mL+o1poKncrgSXhF/YFLuLQHGoSStQf
+         RrJGwyuzvUNDUEsmKjSD2uxYZ/BCYB8G86AaueFaliWGMcb/21OR7QeKm0LdzJc1VKhI
+         29fSLZU9MNVBk7gsWs++emPmOErx0U5NoIpQDDk2xKmI0xt174+doddUkTq2O/QdtbwO
+         qpuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702063396; x=1702668196;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eNuhxRDBfdQenk+uC5+I+2o2Yad/2wCHUso1pH85sfo=;
+        b=fTXQF+y2dOV1LYC/syRfXbtA1raEeYFFJvmoT4PLroPXcC9Mn8NIGOdsN5JOelZi7C
+         tsg6pRq8XUQhoEOM70bCEozJh0YnrTU0jXiUlVtFT9Te7CRXj/0qeIbsUGngrYoXO/lR
+         fxxFRRdB+0DHOF/meANYrN2zOXDYH+5hzlIN4/edtbCkToqgXJa9tdxnIZEIFu3ALGpA
+         8dZqtHltZJklJFzcJRuUdZoje5ezpLc67Acr12nE45LmtEbpu6OlzYmx2vDrnt3DdNSF
+         VgX1iB165yyKl3eMPt7wrZuH8UslHhSjKuDs5/G3O2kANgvhORLdC6ajMkXzFif9FLJ/
+         i26g==
+X-Gm-Message-State: AOJu0Yz2sxJSAlt7J4f2HqRG/fA95rx9t6H/q/48u2uxr2O8olJGBCiN
+        SpGhEI10mcP+zRYcMa2MYK4b/objJU8BZ4DnHAAiVA==
+X-Google-Smtp-Source: AGHT+IHb22ZjibDls1yBkhF7QNEaIMpgDSaJZ0OHWa3jb0vnzr6qisUp6akF/Nl59oBqhH37DmVgAI0o7BDgdz/1wpc=
+X-Received: by 2002:a05:6102:38ce:b0:465:e3df:13a with SMTP id
+ k14-20020a05610238ce00b00465e3df013amr837357vst.9.1702063395773; Fri, 08 Dec
+ 2023 11:23:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4f232dfb-a112-4271-8f43-f85a02c4abeb@suse.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-14-almasrymina@google.com> <dd47a2a4-cb80-4164-8855-045999931a8e@kernel.org>
+In-Reply-To: <dd47a2a4-cb80-4164-8855-045999931a8e@kernel.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Fri, 8 Dec 2023 11:23:04 -0800
+Message-ID: <CAHS8izPwkARkYjPYPY2t-5H=XFTdn=NcWk0EwiCycThR5xFmtg@mail.gmail.com>
+Subject: Re: [net-next v1 13/16] tcp: RX path for devmem TCP
+To:     David Ahern <dsahern@kernel.org>
+Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 08:42:29PM +0200, Nikolay Borisov wrote:
-> > +static inline bool ia32_enabled_verbose(void)
-> > +{
-> > +	bool enabled = ia32_enabled();
-> > +
-> > +	if (IS_ENABLED(CONFIG_IA32_EMULATION) && !enabled)
-> 
-> nit: But why check config_ia32_emulation explicitly, its state should
-> already be accounted for in ia32_enabled's value? So this check can simply
-> be 'if (!enabled)'
-> 
-> > +		pr_notice_once("32-bit emulation disabled. You can reenable with ia32_emulation=on\n");
-				^^^^^^^^^^
+On Fri, Dec 8, 2023 at 9:55=E2=80=AFAM David Ahern <dsahern@kernel.org> wro=
+te:
+>
+> On 12/7/23 5:52 PM, Mina Almasry wrote:
+> > In tcp_recvmsg_locked(), detect if the skb being received by the user
+> > is a devmem skb. In this case - if the user provided the MSG_SOCK_DEVME=
+M
+> > flag - pass it to tcp_recvmsg_devmem() for custom handling.
+> >
+> > tcp_recvmsg_devmem() copies any data in the skb header to the linear
+> > buffer, and returns a cmsg to the user indicating the number of bytes
+> > returned in the linear buffer.
+> >
+> > tcp_recvmsg_devmem() then loops over the unaccessible devmem skb frags,
+> > and returns to the user a cmsg_devmem indicating the location of the
+> > data in the dmabuf device memory. cmsg_devmem contains this information=
+:
+> >
+> > 1. the offset into the dmabuf where the payload starts. 'frag_offset'.
+> > 2. the size of the frag. 'frag_size'.
+> > 3. an opaque token 'frag_token' to return to the kernel when the buffer
+> > is to be released.
+> >
+> > The pages awaiting freeing are stored in the newly added
+> > sk->sk_user_pages, and each page passed to userspace is get_page()'d.
+> > This reference is dropped once the userspace indicates that it is
+> > done reading this page.  All pages are released when the socket is
+> > destroyed.
+> >
+> > Signed-off-by: Willem de Bruijn <willemb@google.com>
+> > Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> >
+> > ---
+> >
+> > Changes in v1:
+> > - Added dmabuf_id to dmabuf_cmsg (David/Stan).
+> > - Devmem -> dmabuf (David).
+> > - Change tcp_recvmsg_dmabuf() check to skb->dmabuf (Paolo).
+> > - Use __skb_frag_ref() & napi_pp_put_page() for refcounting (Yunsheng).
+> >
+> > RFC v3:
+> > - Fixed issue with put_cmsg() failing silently.
+> >
+>
+> What happens if a retransmitted packet is received or an rx window is
+> closed and a probe is received where the kernel drops the skb - is the
+> iov reference(s) in the skb returned to the pool by the stack and ready
+> for use again?
 
-If CONFIG_IA32_EMULATION is disabled, is there any 32-bit emulation to
-be enabled, at all?
+When an skb is dropped, skb_frag_unref() is called on the frags, which
+calls napi_pp_put_page(), drops the references, and the iov is
+recycled, yes.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--=20
+Thanks,
+Mina
