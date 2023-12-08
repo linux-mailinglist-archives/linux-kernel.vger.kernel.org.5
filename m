@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78DCB80A9B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCC580A9C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573990AbjLHQuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:50:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
+        id S233694AbjLHQua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:50:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233678AbjLHQuA (ORCPT
+        with ESMTP id S233712AbjLHQuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:50:00 -0500
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3FD31987;
-        Fri,  8 Dec 2023 08:50:06 -0800 (PST)
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3B8GCsTi014354;
-        Fri, 8 Dec 2023 17:49:56 +0100
+        Fri, 8 Dec 2023 11:50:23 -0500
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE763198C;
+        Fri,  8 Dec 2023 08:50:29 -0800 (PST)
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B88kHZu017927;
+        Fri, 8 Dec 2023 17:50:18 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=gmw5KgSBJw8JBiuHaxGZmQ8x/KuH7Q2WDFM7TzdfLro=; b=V0
-        jDnNTyPrQwwMzm2QAA+qUTOFYuWJLIZKR8MTcVeTjt6Zlx/X0JLXq9J0fpcqTgF6
-        E2m/FvjdxXgIOe5imfnVthxW67PthP3nsLFDWdKB28fkyMUpTFXqPyCF7puYMjVN
-        qJjCvKJA8ntFtzYId5vccicyrVNYVtSGebNdQ9qqv8crSQycj87PXywMcZ5t5Ux/
-        26LUCvBUnz6TptIFv7o5suYOFoU8GvSlwVu8YGTAipNDVv6a/nbsGLn7YOX0c3ej
-        oDNzeECULoSXaVEhQIOKQv0cW7r1POGrzfU2oHQwoe4NvmgTlzYDdJ2JO+fuXpCo
-        dB2YqNZG7XGgnaYAs3rw==
+        selector1; bh=6AU3mM4W4Dpoj7He082seCwDnAZEhdu+kcbYvk2yFl8=; b=gV
+        0qgKy9EQQUPNMCYR/j+tV99a/upYaPZx6owk1Szz9sV8zTvNx/9GUH8tkCwhjOgP
+        bORO/1mPZiJJTAskeIXSpslf/+pn3zIuOgO68YJBQ531wg9LP/SrCkLAwY6rE7T2
+        N/iMfkXaYGD/aPGb9pJOkPSa7b+zHbXxeSPiT2zqnRZDEMnqkysR5TD5yNEbd/ID
+        j+oUL+4eBe015BphfPyyXFM2IhL+z6QTHObXsZ7yhf08OJWOzYc3Eg8HsgCGywjH
+        F310iu1xuXlQAgxAzHAmuSz962V/BBqAbLs1L2gwv9GCX29bh49+0w+maZ8LPfX3
+        HaurTgRpwumtTSVS1uRw==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3utd2gndd6-1
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3utd2jn96u-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 17:49:56 +0100 (CET)
+        Fri, 08 Dec 2023 17:50:18 +0100 (CET)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B8EE7100056;
-        Fri,  8 Dec 2023 17:49:55 +0100 (CET)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DBD1E100056;
+        Fri,  8 Dec 2023 17:50:17 +0100 (CET)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AF646236938;
-        Fri,  8 Dec 2023 17:49:55 +0100 (CET)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D3E2C236945;
+        Fri,  8 Dec 2023 17:50:17 +0100 (CET)
 Received: from localhost (10.129.178.213) by SHFDAG1NODE1.st.com
  (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 8 Dec
- 2023 17:49:55 +0100
+ 2023 17:50:17 +0100
 From:   Alain Volmat <alain.volmat@foss.st.com>
 To:     Andi Shyti <andi.shyti@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -56,9 +56,9 @@ CC:     Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 6/7] arm64: dts: st: add i2c2/i2c8 pins for stm32mp25
-Date:   Fri, 8 Dec 2023 17:47:15 +0100
-Message-ID: <20231208164719.3584028-7-alain.volmat@foss.st.com>
+Subject: [PATCH v2 7/7] arm64: dts: st: add i2c2 / i2c8 properties on stm32mp257f-ev1
+Date:   Fri, 8 Dec 2023 17:47:16 +0100
+Message-ID: <20231208164719.3584028-8-alain.volmat@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231208164719.3584028-1-alain.volmat@foss.st.com>
 References: <20231208164719.3584028-1-alain.volmat@foss.st.com>
@@ -80,64 +80,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the i2c2 and i2c8 pins used on STM32MP257F-EV1 board.
+Add properties for i2c2 and i2c8 available on the stm32mp257f-ev1.
+i2c2 is enabled since several devices are attached to it while
+i2c8 is kept disabled since only used via the gpio expansion connector.
 
 Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
 ---
- arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi | 36 +++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-index 66791a974f8f..4194807606ce 100644
---- a/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-+++ b/arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi
-@@ -6,6 +6,23 @@
- #include <dt-bindings/pinctrl/stm32-pinfunc.h>
- 
- &pinctrl {
-+	i2c2_pins_a: i2c2-0 {
-+		pins {
-+			pinmux = <STM32_PINMUX('B', 5, AF9)>, /* I2C2_SCL */
-+				 <STM32_PINMUX('B', 4, AF9)>; /* I2C2_SDA */
-+			bias-disable;
-+			drive-open-drain;
-+			slew-rate = <0>;
-+		};
-+	};
-+
-+	i2c2_sleep_pins_a: i2c2-sleep-0 {
-+		pins {
-+			pinmux = <STM32_PINMUX('B', 5, ANALOG)>, /* I2C2_SCL */
-+				 <STM32_PINMUX('B', 4, ANALOG)>; /* I2C2_SDA */
-+		};
-+	};
-+
- 	sdmmc1_b4_pins_a: sdmmc1-b4-0 {
- 		pins1 {
- 			pinmux = <STM32_PINMUX('E', 4, AF10)>, /* SDMMC1_D0 */
-@@ -90,3 +107,22 @@ pins {
- 		};
- 	};
+diff --git a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+index b2d3afb15758..0ea8e69bfb3d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-ev1.dts
+@@ -55,6 +55,26 @@ &arm_wdt {
+ 	status = "okay";
  };
-+
-+&pinctrl_z {
-+	i2c8_pins_a: i2c8-0 {
-+		pins {
-+			pinmux = <STM32_PINMUX('Z', 4, AF8)>, /* I2C8_SCL */
-+				 <STM32_PINMUX('Z', 3, AF8)>; /* I2C8_SDA */
-+			bias-disable;
-+			drive-open-drain;
-+			slew-rate = <0>;
-+		};
-+	};
-+
-+	i2c8_sleep_pins_a: i2c8-sleep-0 {
-+		pins {
-+			pinmux = <STM32_PINMUX('Z', 4, ANALOG)>, /* I2C8_SCL */
-+				 <STM32_PINMUX('Z', 3, ANALOG)>; /* I2C8_SDA */
-+		};
-+	};
+ 
++&i2c2 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&i2c2_pins_a>;
++	pinctrl-1 = <&i2c2_sleep_pins_a>;
++	i2c-scl-rising-time-ns = <100>;
++	i2c-scl-falling-time-ns = <13>;
++	clock-frequency = <400000>;
++	status = "okay";
 +};
++
++&i2c8 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&i2c8_pins_a>;
++	pinctrl-1 = <&i2c8_sleep_pins_a>;
++	i2c-scl-rising-time-ns = <57>;
++	i2c-scl-falling-time-ns = <7>;
++	clock-frequency = <400000>;
++	status = "disabled";
++};
++
+ &sdmmc1 {
+ 	pinctrl-names = "default", "opendrain", "sleep";
+ 	pinctrl-0 = <&sdmmc1_b4_pins_a>;
 -- 
 2.25.1
 
