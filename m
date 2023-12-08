@@ -2,73 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A14A80AD83
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9364A80AD88
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233989AbjLHUGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:06:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
+        id S1574679AbjLHUHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:07:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbjLHUGL (ORCPT
+        with ESMTP id S233890AbjLHUHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:06:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B17CF1
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:06:18 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76438C433C7;
-        Fri,  8 Dec 2023 20:06:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702065978;
-        bh=AJRugcmqGU7FRRyaxRvctwC7Ym1TtKH9ucxVu6xYxSQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TjZYQtmlieiMq0bzqSV7VeRFOrVA7N6YxttU/rDbwYla8jPLi37LdgIm9XpwLI87h
-         yOqYUZrCR0EVO6ymqIfofzxnIu+Kzd4TzSIe/DY7T3YqYDuM49JcogqT0dQtArtXBo
-         hQ8JJ4dYEGRx3kfwWOqYTykjFj6qk3+UjfHv5SRT567YvC0SQwMDOv5YAlcMcWuSdv
-         VeMQzoi0UWG+aGEq7s175kl/LixERP49B6zPPg5MfDFSUKm+E9mGebd0q/W6KHIiQy
-         Q58Mye3TU9mS00rJg1ygRDbvFYziatTUewDo6IAIdyAQx0y9qO6Sz7rAPdbDiljMpa
-         bVjjH/wQvC+4g==
-Date:   Fri, 8 Dec 2023 21:06:10 +0100
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Alain Volmat <alain.volmat@foss.st.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] i2c: stm32f7: simplify status messages in case of
- errors
-Message-ID: <20231208200610.hrpup7ghhjtehcsc@zenone.zhora.eu>
-References: <20231208164719.3584028-1-alain.volmat@foss.st.com>
- <20231208164719.3584028-3-alain.volmat@foss.st.com>
+        Fri, 8 Dec 2023 15:07:45 -0500
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2BD11D;
+        Fri,  8 Dec 2023 12:07:51 -0800 (PST)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 55d8c26a1fa2925c; Fri, 8 Dec 2023 21:07:50 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 958CF6688FF;
+        Fri,  8 Dec 2023 21:07:49 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH v1 3/4] ACPI: utils: Refine acpi_handle_list_equal() slightly
+Date:   Fri, 08 Dec 2023 21:06:45 +0100
+Message-ID: <2177555.irdbgypaU6@kreacher>
+In-Reply-To: <6008018.lOV4Wx5bFT@kreacher>
+References: <6008018.lOV4Wx5bFT@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208164719.3584028-3-alain.volmat@foss.st.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudekiedgudefgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhguvghgohgvuggvsehrvgguhhgrthdrtghomhdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhm
+ pdhrtghpthhtohepmhhikhgrrdifvghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alain,
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-On Fri, Dec 08, 2023 at 05:47:11PM +0100, Alain Volmat wrote:
-> Avoid usage of __func__ when reporting an error message
-> since dev_err/dev_dbg are already providing enough details
-> to identify the source of the message.
-> 
-> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+It is somewhat better to use the size of the first array element for
+computing the size of the entire array than to rely on the array
+element data type definition knowledge and the former is also
+consistent with the array allocation in acpi_evaluate_reference(),
+so modify the code accordingly.
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+No intentional functional impact.
 
-Thanks,
-Andi
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/utils.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: linux-pm/drivers/acpi/utils.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/utils.c
++++ linux-pm/drivers/acpi/utils.c
+@@ -408,7 +408,7 @@ bool acpi_handle_list_equal(struct acpi_
+ {
+ 	return list1->count == list2->count &&
+ 		!memcmp(list1->handles, list2->handles,
+-		        list1->count * sizeof(acpi_handle));
++		        list1->count * sizeof(*list1->handles));
+ }
+ EXPORT_SYMBOL_GPL(acpi_handle_list_equal);
+ 
+
+
+
