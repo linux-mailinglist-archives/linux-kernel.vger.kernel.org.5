@@ -2,144 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 555CE80A188
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F6F80A18B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573666AbjLHKwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 05:52:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
+        id S1573619AbjLHKw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 05:52:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573453AbjLHKwD (ORCPT
+        with ESMTP id S232374AbjLHKw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 05:52:03 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D748171C
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:52:09 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a1da1017a09so233856966b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 02:52:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702032727; x=1702637527; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3yFkfEp12aI+6U4wU/tq2gheT7TJS/3Q4MuYssvsV5A=;
-        b=M0Rz45jhRNrG+xtYKkVM6CRyO6pyceWKHaE6n+QuV0gBqAjk9meLRq4zCCqMcfSjkS
-         6hB5SvwddqVNQ6NSVVkSSlj2l4UIXHkYvQmjMNNauDhLDq5wYee1Jvwa2YzHDsKcUOyd
-         r9MWgzAuTQyIGyN0fBYwTYd9xGJYYNuvRYi3S4dZGJDOuW9O2UUM9eoDp3WxYl0S/UgJ
-         qZlLdh4YJY4rpWzftbmyRB76lDmLL8RvGMIfwrY+hoZxakVHNjrE1HSHsIxBQ0Ux9LfG
-         HVXbMiVAAa/vQfHwNFNFPtfVeIvku6gI0tW9MLkkedR+Z4/ZxPxkfKNW13U0A5SeDaj8
-         cZmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702032727; x=1702637527;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3yFkfEp12aI+6U4wU/tq2gheT7TJS/3Q4MuYssvsV5A=;
-        b=IWjLiQahItZH15vcvy0Wwcir1C3ylEOWhaKnl8TdkLCtcCL1qBxBBMA93nU5jwASTL
-         EoH6Jl9Yi4MvqwJGZlGoGzq5199C7vUJ3QbD6Z7tJNuzVNITSJ8rx3EyuVbwSL2iMeOC
-         aXyVcet4uUpqq7E47MxGiHj8FGo5irGmsmc98ENto52zCOUg+jkTBOA1UVWeB8yX2Uh9
-         k7lPrgoMTLm8K1h+uO61J5KQ7+59MU15N71GFvFfAJ9l2UmCRg6XA+LqVxnJVXLqV1B9
-         HLyYLvL2iA/UURBQPtu4lXc2jaT/13sAhB5YKhPBwFpKmbL5fL5NmE3rzW2mXPVy0h0Y
-         pQBA==
-X-Gm-Message-State: AOJu0YwkgKNtMHB14fFxbkY200uElV+51WIDl7hV4gTMnrUp8gpXqqnZ
-        NVcb54XzdiR7EJjyoKS/71ed2w==
-X-Google-Smtp-Source: AGHT+IFVGSGWzV2Nk5abJTsBLjnttS05N2wFp85PjCkHQOAwQbKVVnCvVck7KrGQlppIg477ctFxeg==
-X-Received: by 2002:a17:906:a856:b0:9e0:4910:166a with SMTP id dx22-20020a170906a85600b009e04910166amr2681680ejb.32.1702032727601;
-        Fri, 08 Dec 2023 02:52:07 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id tx17-20020a1709078e9100b00a1b75e0e061sm849976ejc.130.2023.12.08.02.52.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 02:52:07 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v3 4/4] arm64: dts: qcom: sm8150: add necessary ref clock to PCIe
-Date:   Fri,  8 Dec 2023 11:51:55 +0100
-Message-Id: <20231208105155.36097-4-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231208105155.36097-1-krzysztof.kozlowski@linaro.org>
-References: <20231208105155.36097-1-krzysztof.kozlowski@linaro.org>
+        Fri, 8 Dec 2023 05:52:57 -0500
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6761727
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:53:03 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1702032755; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=K+RBCHuRflsPVn2/sFv8O7Ts1H6JYHaf60UFExvqzKo4CkV5UQlFwk4IEiRwy69q7z
+    diEpKKKEEdywfjqWRvwpZypGGJ3rWz73aMzwAm8bXPMdNhr+KldbHUwLB0X9aiGpgl6+
+    KknMSRYKYNBaSaMMdSRIyo19xThISEWvSgBtMvnifFnB0jxatwCjJH62Ezedfuew2HZg
+    /OLZwOGP6+0/LEdF/kZLmanzPt71JjzYH1oSTmor5xe54151DfubQXqCfbZQWRAxPDB6
+    wKyum123P17KVW1w07ApPMqE0F010l3QMfQnwHIX4FoJsTWdg15oHw7OhyT7ueh6MQNM
+    A/bw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1702032755;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=lH6SBnQ4xrHrGQeEHvJ5u/3KSpQHUvvzwrmVeb1tOZ8=;
+    b=O4/4aM+60FaeIWXXxmakbYiOk80wIKjx56pYnOf+NKQ4L1JCqqpi3HXN3gRFkFsli1
+    CQv5pHVOAcWacmeQe71w3NubCvHGEHp925oGoYUYIc+A5cPvC/csxDt3JggeOMkI9BxY
+    uoanoEYAhXqxUbQOVWHgDWH1fLSAwRFjQxTYkl6i0NLqUwi5ej59bFJqCnVU9f9AB310
+    qR/tXrra/mCaZQeKh4OUXoXBWXpgH4f00ul6y37jfRcDBmoHYVcTsHMgQwT/p8Fh4+Er
+    iYU2TpDs72oou22WG0XjTO58NSd4/M1D93Uv5NAjzKwu9TsMOwZA++gZNqdVjcnt3u6U
+    aRrw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1702032755;
+    s=strato-dkim-0002; d=xenosoft.de;
+    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=lH6SBnQ4xrHrGQeEHvJ5u/3KSpQHUvvzwrmVeb1tOZ8=;
+    b=GkrttZnEEmTljMGki6GULywxWeVKDPJwje9aehBTYDsAEq4Hu0hYKF5J3dN5/AYSp2
+    b4RPLuV9GhYuXTOeSbyA/pazNWIAp6uEQ0WSGue7QPNwRfeZsCrvsVbDjbZyXoNB2wQ0
+    X6MDP7cP1yOp1VlbXYSF8IQPOv1C/3zo4AnsPV3Dy026MCKm9dR3VSld2lMVmg8dwylS
+    e9XGs7cBYLEKAg4z5hmcTAeZs+JBgnuGka+4qtOMsXaGRjRP44lAdPjVJ+9zlL06UFng
+    wrKrrglfgSuzj0kH7y4o3CqYT9Pe5tFVqf79HyDXKz9nkq/IKJ4MGFiBfkHfJxPCq7ch
+    YeSw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1702032755;
+    s=strato-dkim-0003; d=xenosoft.de;
+    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=lH6SBnQ4xrHrGQeEHvJ5u/3KSpQHUvvzwrmVeb1tOZ8=;
+    b=2pkYr6gv/7SxhRY1a7hLYS44BHKDz8fXWRQNd5qrSfeBu7hQ6fLVYtEIymFXoEkcRa
+    KY2NZQYH8sZ84JlOZcCQ==
+X-RZG-AUTH: ":L2QefEenb+UdBJSdRCXu93KJ1bmSGnhMdmOod1DhGM4l4Hio94KKxRySfLxnHfJ+Dkjp5DdBfi4XXBswJY0lkTEDrUFf1HwyMiKmo0Cv1RTUCg=="
+Received: from [IPV6:2a02:8109:8984:5d00:f8bc:fe1b:3f93:a193]
+    by smtp.strato.de (RZmta 49.10.0 AUTH)
+    with ESMTPSA id 626c0czB8AqYIml
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 8 Dec 2023 11:52:34 +0100 (CET)
+Message-ID: <1dca4a2e-5bde-4825-8e8a-4b4ac8dd958e@xenosoft.de>
+Date:   Fri, 8 Dec 2023 11:52:34 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drm/virtio: Add suppport for non-native buffer formats
+Content-Language: de-DE
+From:   Christian Zigotzky <chzigotzky@xenosoft.de>
+To:     Gerd Hoffmann <kraxel@redhat.com>,
+        David Airlie <airlied@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Laurent Vivier <lvivier@redhat.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        linux-m68k@lists.linux-m68k.org, dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "R.T.Dickinson" <rtd2@xtra.co.nz>,
+        mad skateman <madskateman@gmail.com>,
+        Christian Zigotzky <info@xenosoft.de>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+References: <47a81d2e0e47b1715718779b6978a8b595cc7c5d.1700140609.git.geert@linux-m68k.org>
+ <77c6gkquzq4sdtmrlko3lkxvcnipm2zfjem3kvhgslcellkefh@man7pbbzud47>
+ <a9ade305-f90e-4250-a795-49ef4e29e0ac@xenosoft.de>
+ <CAMuHMdXtUYJmEharJhBXx7D=fA3mQxg6uMP2=4Qgi==2a+kVQw@mail.gmail.com>
+ <37b9e5ab-e170-4071-a912-f3fec0d59d5c@xenosoft.de>
+ <ee75377ad22a3d07f272e17f53cabead7b43afcb.camel@physik.fu-berlin.de>
+ <9e8d2abd-94a1-4fb6-b30a-c6e4c52af011@xenosoft.de>
+ <1bd6d2c8-007b-46f7-85b4-9793ec650f94@xenosoft.de>
+In-Reply-To: <1bd6d2c8-007b-46f7-85b4-9793ec650f94@xenosoft.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PCIe nodes should get the ref clock, according to information from
-Qualcomm.
+On 25 November 2023 at 01:35 pm, Christian Zigotzky wrote:
+> On 25 November 2023 at 01:22 pm, Christian Zigotzky wrote:
+>> On 25 November 2023 at 12:09 pm, John Paul Adrian Glaubitz wrote:
+>>> On Sat, 2023-11-25 at 11:06 +0100, Christian Zigotzky wrote:
+>>>> Could you please revert the v2 patch because of the issue with the
+>>>> virtio-mouse-pci cursor? I will try to use the v1 patch for the RC3 of
+>>>> kernel 6.7.
+>>> I don't understand why the v2 patch should yield any different 
+>>> results as
+>>> the only change compared to v1 is the fixed patch subject. There are no
+>>> functional differences, I just diffed the patches against each other:
+>>>
+>>> --- geert-patch-v1.patch        2023-11-25 12:09:19.122936658 +0100
+>>> +++ geert-patch-v2.patch        2023-11-25 12:09:36.313039085 +0100
+>>> @@ -34,6 +34,9 @@
+>>>   Suggested-by: Gerd Hoffmann <kraxel@redhat.com>
+>>>   Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>>   ---
+>>> +v2:
+>>> +  - Fix truncated one-line summary.
+>>> +---
+>>>    drivers/gpu/drm/virtio/virtgpu_display.c | 11 +++++++++--
+>>>    drivers/gpu/drm/virtio/virtgpu_plane.c   |  6 ++++--
+>>>    2 files changed, 13 insertions(+), 4 deletions(-)
+>>>
+>>> Adrian
+>>>
+>> Hi Adrian,
+>>
+>> Thank you for the hint. I think you are right. I use the following 
+>> patch.
+>>
+>> --- a/drivers/gpu/drm/drm_client.c    2023-11-13 01:19:07.000000000 
+>> +0100
+>> +++ b/drivers/gpu/drm/drm_client.c    2023-11-14 09:45:44.964199272 
+>> +0100
+>> @@ -400,6 +400,16 @@ static int drm_client_buffer_addfb(struc
+>>
+>>      fb_req.width = width;
+>>      fb_req.height = height;
+>> +           if 
+>> (client->dev->mode_config.quirk_addfb_prefer_host_byte_order) {
+>> +               if (format == DRM_FORMAT_XRGB8888)
+>> +                       format = DRM_FORMAT_HOST_XRGB8888;
+>> +               if (format == DRM_FORMAT_ARGB8888)
+>> +                       format = DRM_FORMAT_HOST_ARGB8888;
+>> +               if (format == DRM_FORMAT_RGB565)
+>> +                       format = DRM_FORMAT_HOST_RGB565;
+>> +               if (format == DRM_FORMAT_XRGB1555)
+>> +                       format = DRM_FORMAT_HOST_XRGB1555;
+>> +        }
+>>      fb_req.pixel_format = format;
+>>      fb_req.handles[0] = handle;
+>>      fb_req.pitches[0] = buffer->pitch;
+>>
+>> This patch solved the issue.
+>>
+>> Christian
+> This was the first solution and it works without any problems.
+>
+> Christian
+Hi All,
 
-Link: https://lore.kernel.org/all/20231121065440.GB3315@thinkpad/
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+The issue with the virtio-mouse-pci cursor still exists. I still use the 
+patch for "a/drivers/gpu/drm/drm_client.c".
 
----
+Is there any news regarding a solution?
 
-Patch should go via Qcom tree, if the bindings get accepted.
-
-Changes in v3:
-1. New patch
----
- arch/arm64/boot/dts/qcom/sm8150.dtsi | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index 5edc557ba04a..22ee3cd5549d 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -1858,14 +1858,16 @@ pcie0: pci@1c00000 {
- 				 <&gcc GCC_PCIE_0_MSTR_AXI_CLK>,
- 				 <&gcc GCC_PCIE_0_SLV_AXI_CLK>,
- 				 <&gcc GCC_PCIE_0_SLV_Q2A_AXI_CLK>,
--				 <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>;
-+				 <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>,
-+				 <&rpmhcc RPMH_CXO_CLK>;
- 			clock-names = "pipe",
- 				      "aux",
- 				      "cfg",
- 				      "bus_master",
- 				      "bus_slave",
- 				      "slave_q2a",
--				      "tbu";
-+				      "tbu",
-+				      "ref";
- 
- 			iommu-map = <0x0   &apps_smmu 0x1d80 0x1>,
- 				    <0x100 &apps_smmu 0x1d81 0x1>;
-@@ -1949,14 +1951,16 @@ pcie1: pci@1c08000 {
- 				 <&gcc GCC_PCIE_1_MSTR_AXI_CLK>,
- 				 <&gcc GCC_PCIE_1_SLV_AXI_CLK>,
- 				 <&gcc GCC_PCIE_1_SLV_Q2A_AXI_CLK>,
--				 <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>;
-+				 <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>,
-+				 <&rpmhcc RPMH_CXO_CLK>;
- 			clock-names = "pipe",
- 				      "aux",
- 				      "cfg",
- 				      "bus_master",
- 				      "bus_slave",
- 				      "slave_q2a",
--				      "tbu";
-+				      "tbu",
-+				      "ref";
- 
- 			assigned-clocks = <&gcc GCC_PCIE_1_AUX_CLK>;
- 			assigned-clock-rates = <19200000>;
--- 
-2.34.1
-
+Thanks,
+Christian
