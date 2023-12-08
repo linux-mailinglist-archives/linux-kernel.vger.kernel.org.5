@@ -2,48 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 178B680A449
+	by mail.lfdr.de (Postfix) with ESMTP id 790F380A44A
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573807AbjLHNQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:16:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47308 "EHLO
+        id S1573816AbjLHNQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:16:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235874AbjLHNQZ (ORCPT
+        with ESMTP id S1573799AbjLHNQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Dec 2023 08:16:25 -0500
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C183B172A
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 05:16:30 -0800 (PST)
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6d83f218157so2722160a34.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 05:16:30 -0800 (PST)
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2789199A
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 05:16:31 -0800 (PST)
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6d88143b45bso2866629a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 05:16:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702041390; x=1702646190;
+        d=1e100.net; s=20230601; t=1702041391; x=1702646191;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y1ZnogWDCGCEoUA9e+jdzgHOyFmOK6aq9lqo84rsReo=;
-        b=iikAOfcSfBt9OsjNC570Vs5fVBaKhgmKObGUlEUNiL+abRtEiYLxT/YaFxr6LcW8c6
-         1wNK+VXypz7RLRIjr0srNX4fQ/1+KaPUdqQ83GeOxEKuQuHLv/4NqXO2rfifjNzMLuun
-         utPZEU0aOoQ2PGOhfRIVHscwoPv73srz3NnFzwhvJ3AIgZGdcdLxZIO/pWWaS/WqUeIf
-         kGo9c0Xi40zR7qG8VibZGWWOBxEE6qsziPzObVgW0py9HUyN5c8n+C/5ssLr4fk7AB6W
-         3+RQFMYKnL8r7PScWv5kZlPxb7HcDK3vXm92rOcB8PI7syagBSUQ8wPcTA2F055Xi0tg
-         KK3w==
-X-Gm-Message-State: AOJu0YzTHiTKAj1TTB7GmVhUTPwBHcJokJH42sNw8ocug+i1NdBCeB7c
-        RH+d9nXh/LhUSnVzoHqgenjmKEFTVhQz1tDsAwHypx8g5N5S
-X-Google-Smtp-Source: AGHT+IFm89qWspx5hE1KkOqbc5xL8CVQegKBBnrK/YE6EPOpmiRKLhqfxYTT/RI+RD6RFqa8oV9hi/uPIONbkPgWG85/BxYpnF+a
+        bh=Ad2JqdSOjClv5xhQDHopdA3/PJWoAf52L+6eH5Tqlm0=;
+        b=puQKocgBqAXfeh7D7VeRRImfp7jOI7GdtXQrMKXb1sDjzjJhVcCbfFN6L0ypV1aiDb
+         PZ2gpSDWq1rClqPw6jVysJ+vcSW7Ktal9he8GalCdCOKqBZ3LAHD9YzDQEVQyV9BVUFK
+         Ckxz6Cw+mvC/vOLi1wSP7YC7BI45m9NYACg9+zRl/Ro/AUwFAaw2bmBVBUMLqsxGGZRm
+         hYntxrIAN7SkYHhnpcE2GJToKmSpH+eCPCmXU7+vQaIj2Kf3+EB2maQjz4OUrIhMvAdl
+         S/jxp7MbjINNijhjUChJU9jA6K9eabf3qZFs4q9kj29QhXxdIMynqSZEKW0wJd1BJN+w
+         UusQ==
+X-Gm-Message-State: AOJu0YxEi2wUIRpd7zW6dC2apfELgGuzn9xhS4yur9G+nVCn78DeJlU9
+        AncTYK5i5d0R3GR+6Oe8pX+bkhENmFh5Fuoi+u78cUjZqEbl
+X-Google-Smtp-Source: AGHT+IFpWS8JuwydY2By4SE2Rn78je67aA6WeSBzNdV00EhbPRdiY+n9xBxRrsJu/mKz8qY5Qz4rspbVB6tvI52y3jrfli5bmxdT
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:33e7:b0:6d9:e9da:d786 with SMTP id
- i7-20020a05683033e700b006d9e9dad786mr710228otu.3.1702041390080; Fri, 08 Dec
+X-Received: by 2002:a05:6870:9714:b0:1fb:1b2:fc9d with SMTP id
+ n20-20020a056870971400b001fb01b2fc9dmr25752oaq.5.1702041390325; Fri, 08 Dec
  2023 05:16:30 -0800 (PST)
 Date:   Fri, 08 Dec 2023 05:16:30 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000072e8c7060bff64cf@google.com>
-Subject: [syzbot] Monthly bpf report (Dec 2023)
-From:   syzbot <syzbot+listfafd4fe0e0bf9b4d93f3@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000076a6ea060bff64b3@google.com>
+Subject: [syzbot] Monthly dccp report (Dec 2023)
+From:   syzbot <syzbot+list205929fef9983ad8ebbc@syzkaller.appspotmail.com>
+To:     dccp@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
@@ -55,24 +54,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello bpf maintainers/developers,
+Hello dccp maintainers/developers,
 
-This is a 31-day syzbot report for the bpf subsystem.
+This is a 31-day syzbot report for the dccp subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bpf
+https://syzkaller.appspot.com/upstream/s/dccp
 
-During the period, 4 new issues were detected and 0 were fixed.
-In total, 10 issues are still open and 199 have been fixed so far.
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 5 issues are still open and 6 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref Crashes Repro Title
-<1> 14      Yes   BUG: unable to handle kernel NULL pointer dereference in sk_msg_recvmsg
-                  https://syzkaller.appspot.com/bug?extid=84f695756ed0c4bb3aba
-<2> 2       Yes   INFO: rcu detected stall in sys_newfstatat (4)
-                  https://syzkaller.appspot.com/bug?extid=1c02a56102605204445c
-<3> 1       Yes   INFO: rcu detected stall in sys_unshare (9)
-                  https://syzkaller.appspot.com/bug?extid=872bccd9a68c6ba47718
+<1> 102     Yes   KASAN: use-after-free Read in ccid2_hc_tx_packet_recv
+                  https://syzkaller.appspot.com/bug?extid=554ccde221001ab5479a
+<2> 51      Yes   BUG: "hc->tx_t_ipi == NUM" holds (exception!) at net/dccp/ccids/ccid3.c:LINE/ccid3_update_send_interval()
+                  https://syzkaller.appspot.com/bug?extid=94641ba6c1d768b1e35e
+<3> 23      Yes   general protection fault in dccp_write_xmit (2)
+                  https://syzkaller.appspot.com/bug?extid=c71bc336c5061153b502
+<4> 14      Yes   BUG: stored value of X_recv is zero at net/dccp/ccids/ccid3.c:LINE/ccid3_first_li() (3)
+                  https://syzkaller.appspot.com/bug?extid=2ad8ef335371014d4dc7
 
 ---
 This report is generated by a bot. It may contain errors.
