@@ -2,173 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A68980A80A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1066080A812
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233648AbjLHQBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:01:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37444 "EHLO
+        id S233677AbjLHQDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:03:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233594AbjLHQBc (ORCPT
+        with ESMTP id S233488AbjLHQDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:01:32 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D070B1732;
-        Fri,  8 Dec 2023 08:01:38 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702051297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qvRAzOC1s8CTEnsQtk9rLB7j6MoLVbJs1vS74413VOI=;
-        b=F6b04T2civNLQw/P6s4AjzqPlLxejEuPzBLrsl+3EDPegBJH2cSw9MQ1smQ5Sw29sgPJQu
-        ITzGSWkzHF9HDteBgxCvuKiCROwKwUayT0g5XTT0TV2meAB/hQMDJfPOy5+E6qhvuVdcxz
-        F5h4rv9IjyTf01PH68AhJNVMolCVgX+T9+lF4iqo2ogmyFISaR7ZE58c/FEgr0Ldvm88wA
-        fuJ03avfwq9fqVlsu1VqdbvDFc5IfzeriRwuH5YnME0j4+rgIUvo8xzAw6YYf6aCuz5A6R
-        svKmtinn9ugY0gdh0PrRE0i22zRIx+ijyF9odKxUwrPUGDVK2RqBrnq/aSrTlg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702051297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qvRAzOC1s8CTEnsQtk9rLB7j6MoLVbJs1vS74413VOI=;
-        b=/EgalgirjNm9ep45ZEQnecmn1UAJ6YqdDBfC+cG20lSeVMQLVO8XCGc5FYnuScjwlSzGAe
-        kBHD3v0GQNt+fqCQ==
-To:     Yu Chien Peter Lin <peterlin@andestech.com>, acme@kernel.org,
-        adrian.hunter@intel.com, ajones@ventanamicro.com,
-        alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
-        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
-        conor+dt@kernel.org, conor.dooley@microchip.com, conor@kernel.org,
-        devicetree@vger.kernel.org, dminus@andestech.com,
-        evan@rivosinc.com, geert+renesas@glider.be, guoren@kernel.org,
-        heiko@sntech.de, irogers@google.com, jernej.skrabec@gmail.com,
-        jolsa@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, locus84@andestech.com,
-        magnus.damm@gmail.com, mark.rutland@arm.com, mingo@redhat.com,
-        n.shubin@yadro.com, namhyung@kernel.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, peterlin@andestech.com,
-        peterz@infradead.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        rdunlap@infradead.org, robh+dt@kernel.org, samuel@sholland.org,
-        sunilvl@ventanamicro.com, tim609@andestech.com, uwu@icenowy.me,
-        wens@csie.org, will@kernel.org, ycliang@andestech.com,
-        inochiama@outlook.com
-Subject: Re: [PATCH v4 03/13] irqchip/riscv-intc: Introduce Andes hart-level
- interrupt controller
-In-Reply-To: <20231122121235.827122-4-peterlin@andestech.com>
-References: <20231122121235.827122-1-peterlin@andestech.com>
- <20231122121235.827122-4-peterlin@andestech.com>
-Date:   Fri, 08 Dec 2023 17:01:36 +0100
-Message-ID: <87y1e4r8db.ffs@tglx>
+        Fri, 8 Dec 2023 11:03:00 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEF9172A;
+        Fri,  8 Dec 2023 08:03:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702051386; x=1733587386;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=C19RbT0mHCppC4S0KT3rye9ymMmBfM2p8ZzqvKfQjpY=;
+  b=d9A6iOXrIzHMGNXJxAqm3QbNwomTO2hXjiso+3/EEoGm3wcyPVRz/MFg
+   /BSiluV4IVbujQ/4dqiT0AhdJ2/kXxR/Jw0KQ6ofGSSDOVqsQOZBDYsQV
+   s+ZEhfpRD38+ZRGFebrPVkUbdllNNRujHNZuiGHgmQ+NFXtofF1USPkHE
+   Maw5Yu4PRo8Pk2UBl/AZa4uWA+7gJSHm5V4OrRXnprjNO2TIbTMtjlYuV
+   bnHQ7kEdwiuAyv/0zcbJxPvZm0UAuObERaqSusvJTIP7Qm+LvgDOeZv4J
+   XS2kyd96EOsUxmAxASGmWWACyB+LMNKqmzpdSVW5ffR6JwcS2Turnz01D
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="480618620"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="480618620"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 08:03:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="890167082"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="890167082"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 08 Dec 2023 08:02:59 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBdJZ-000Dx2-0n;
+        Fri, 08 Dec 2023 16:02:57 +0000
+Date:   Sat, 9 Dec 2023 00:02:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mina Almasry <almasrymina@google.com>,
+        Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Mina Almasry <almasrymina@google.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Ahern <dsahern@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [net-next v1 06/16] netdev: support binding dma-buf to netdevice
+Message-ID: <202312082305.DMh51QVo-lkp@intel.com>
+References: <20231208005250.2910004-7-almasrymina@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208005250.2910004-7-almasrymina@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22 2023 at 20:12, Yu Chien Peter Lin wrote:
-> To share the riscv_intc_domain_map() with the generic RISC-V INTC and
-> ACPI, we add a chip parameter to riscv_intc_init_common(), so it can be
+Hi Mina,
 
-s/we//
+kernel test robot noticed the following build warnings:
 
-See: Documentation/process/
+[auto build test WARNING on net-next/main]
 
-> passed to the irq_domain_set_info() as private data.
-> diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
-> index 2fdd40f2a791..30f0036c8978 100644
-> --- a/drivers/irqchip/irq-riscv-intc.c
-> +++ b/drivers/irqchip/irq-riscv-intc.c
-> @@ -17,6 +17,7 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/smp.h>
-> +#include <linux/soc/andes/irq.h>
->  
->  static struct irq_domain *intc_domain;
->  
-> @@ -46,6 +47,31 @@ static void riscv_intc_irq_unmask(struct irq_data *d)
->  	csr_set(CSR_IE, BIT(d->hwirq));
->  }
->  
-> +static void andes_intc_irq_mask(struct irq_data *d)
-> +{
-> +	/*
-> +	 * Andes specific S-mode local interrupt causes (hwirq)
-> +	 * are defined as (256 + n) and controlled by n-th bit
-> +	 * of SLIE.
-> +	 */
-> +	unsigned int mask = BIT(d->hwirq % BITS_PER_LONG);
+url:    https://github.com/intel-lab-lkp/linux/commits/Mina-Almasry/net-page_pool-factor-out-releasing-DMA-from-releasing-the-page/20231208-085531
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20231208005250.2910004-7-almasrymina%40google.com
+patch subject: [net-next v1 06/16] netdev: support binding dma-buf to netdevice
+config: i386-randconfig-141-20231208 (https://download.01.org/0day-ci/archive/20231208/202312082305.DMh51QVo-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231208/202312082305.DMh51QVo-lkp@intel.com/reproduce)
 
-How is this supposed to be correct with BITS_PER_LONG == 64?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312082305.DMh51QVo-lkp@intel.com/
 
-> +
-> +	if (d->hwirq < ANDES_SLI_CAUSE_BASE)
-> +		csr_clear(CSR_IE, mask);
-> +	else
-> +		csr_clear(ANDES_CSR_SLIE, mask);
-> +}
-> +
-> +static void andes_intc_irq_unmask(struct irq_data *d)
-> +{
-> +	unsigned int mask = BIT(d->hwirq % BITS_PER_LONG);
+All warnings (new ones prefixed by >>):
 
-Ditto.
+>> net/core/dev.c:2072:5: warning: format specifies type 'unsigned long' but the argument has type 'size_t' (aka 'unsigned int') [-Wformat]
+                     size, avail))
+                     ^~~~
+   include/asm-generic/bug.h:134:29: note: expanded from macro 'WARN'
+                   __WARN_printf(TAINT_WARN, format);                      \
+                                             ^~~~~~
+   include/asm-generic/bug.h:106:17: note: expanded from macro '__WARN_printf'
+                   __warn_printk(arg);                                     \
+                                 ^~~
+   net/core/dev.c:2072:11: warning: format specifies type 'unsigned long' but the argument has type 'size_t' (aka 'unsigned int') [-Wformat]
+                     size, avail))
+                           ^~~~~
+   include/asm-generic/bug.h:134:29: note: expanded from macro 'WARN'
+                   __WARN_printf(TAINT_WARN, format);                      \
+                                             ^~~~~~
+   include/asm-generic/bug.h:106:17: note: expanded from macro '__WARN_printf'
+                   __warn_printk(arg);                                     \
+                                 ^~~
+   net/core/dev.c:4356:1: warning: unused function 'sch_handle_ingress' [-Wunused-function]
+   sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
+   ^
+   net/core/dev.c:4363:1: warning: unused function 'sch_handle_egress' [-Wunused-function]
+   sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
+   ^
+   net/core/dev.c:5573:19: warning: unused function 'nf_ingress' [-Wunused-function]
+   static inline int nf_ingress(struct sk_buff *skb, struct packet_type **pt_prev,
+                     ^
+   5 warnings generated.
 
-> +	if (d->hwirq < ANDES_SLI_CAUSE_BASE)
-> +		csr_set(CSR_IE, mask);
-> +	else
-> +		csr_set(ANDES_CSR_SLIE, mask);
-> +}
 
->  static int riscv_intc_domain_map(struct irq_domain *d, unsigned int irq,
->  				 irq_hw_number_t hwirq)
->  {
-> +	struct irq_chip *chip = d->host_data;
-> +
->  	irq_set_percpu_devid(irq);
-> -	irq_domain_set_info(d, irq, hwirq, &riscv_intc_chip, d->host_data,
-> +	irq_domain_set_info(d, irq, hwirq, chip, d->host_data,
+vim +2072 net/core/dev.c
 
-So this sets 'chip_data' to the chip itself. What's the point? Just set
-it to NULL as the chip obviously does not need chip_data at all.
+  2060	
+  2061	void __netdev_dmabuf_binding_free(struct netdev_dmabuf_binding *binding)
+  2062	{
+  2063		size_t size, avail;
+  2064	
+  2065		gen_pool_for_each_chunk(binding->chunk_pool,
+  2066					netdev_dmabuf_free_chunk_owner, NULL);
+  2067	
+  2068		size = gen_pool_size(binding->chunk_pool);
+  2069		avail = gen_pool_avail(binding->chunk_pool);
+  2070	
+  2071		if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
+> 2072			  size, avail))
+  2073			gen_pool_destroy(binding->chunk_pool);
+  2074	
+  2075		dma_buf_unmap_attachment(binding->attachment, binding->sgt,
+  2076					 DMA_BIDIRECTIONAL);
+  2077		dma_buf_detach(binding->dmabuf, binding->attachment);
+  2078		dma_buf_put(binding->dmabuf);
+  2079		xa_destroy(&binding->bound_rxq_list);
+  2080		kfree(binding);
+  2081	}
+  2082	
 
->  			    handle_percpu_devid_irq, NULL, NULL);
->  
->  	return 0;
-> @@ -112,11 +147,12 @@ static struct fwnode_handle *riscv_intc_hwnode(void)
->  	return intc_domain->fwnode;
->  }
->  
-> -static int __init riscv_intc_init_common(struct fwnode_handle *fn)
-> +static int __init riscv_intc_init_common(struct fwnode_handle *fn,
-> +					 struct irq_chip *chip)
->  {
->  	int rc;
->  
-> -	intc_domain = irq_domain_create_tree(fn, &riscv_intc_domain_ops, NULL);
-> +	intc_domain = irq_domain_create_tree(fn, &riscv_intc_domain_ops, chip);
->  	if (!intc_domain) {
->  		pr_err("unable to add IRQ domain\n");
->  		return -ENXIO;
-> @@ -138,6 +174,7 @@ static int __init riscv_intc_init(struct device_node *node,
->  {
->  	int rc;
->  	unsigned long hartid;
-> +	struct irq_chip *chip = &riscv_intc_chip;
-
-https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#variable-declarations
-
-Thanks
-
-        tglx
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
