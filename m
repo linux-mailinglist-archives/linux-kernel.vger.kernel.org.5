@@ -2,406 +2,596 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 037C980ABE2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 550D880ABE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233768AbjLHSRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:17:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58760 "EHLO
+        id S1574499AbjLHSR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:17:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLHSRO (ORCPT
+        with ESMTP id S229811AbjLHSRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:17:14 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF71E121
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:17:20 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-35d57ab6f5bso4425ab.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:17:20 -0800 (PST)
+        Fri, 8 Dec 2023 13:17:23 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 178FAD5C
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:17:27 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-da077db5145so2432053276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:17:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702059440; x=1702664240; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rT+IqEgBG0h+KBQVMoiPQaupxIMoYqveRu1390Nm3NU=;
-        b=v7+hDp1SouoCGD1fahvlCGzteeDuK14DgaqE1g+wnA1utMrwlVoBiYiE4C8SDqyjEV
-         TyZre61gCNPXvj35t1Up6W/XZd/24IzN8G/Ls2iY+DvZVfLyTHYNVGbhSGxqHZs331rD
-         NkXPP7xJym5KUarQ18LQSCv96A2W7UnfqzY8Xn3O1OZIWzwOHWT1HEKkn1zlajeBmNJA
-         1xX9E+DJIeJNHj1pyiw3ew/HoGLsivJX6qchCGjhJt1kPvCXm2LLe9Ps789npTouyRiz
-         Fzly3MZIrxolvvLZknULVjuggJ7cMoWg+nHZPIsA5JiQcy7wc6ZtFZD+9esza7TV5re7
-         ds0Q==
+        d=linaro.org; s=google; t=1702059446; x=1702664246; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MABnnH/toxdHIN+dqlIfnSDab54KahtDiJhfQBIZI2Y=;
+        b=PC3JiZ4gDcFBugeFe1RgEyRCyFCLlBVCCIPnmnxh1AcanM7ocmHht5iI6eJHWzCS9Q
+         NxpU5FmFW0hy+GC9kE8xB6IFq9UGgPyjzWsLpS5KxyQ+py9MTonmBAgQXyhinwCdcf+G
+         T+U36NUCKV5rRBxxMgxsdw0K1hDHPTovmWOdWPggeXlnzLciB1yp86vh9hYBtDShqHyN
+         1iJ+51zSnRfmzpmnAaJh4IH552r5prF+myFS996wclMdpGC8qvliVXunpB3cJvfmikLz
+         KyozFqqsdV7LVH5uQ/DPr74KRkiF989tf4CMK5HDmQpyQm+6iaJ6z6sPk7gYb5wNIBRK
+         ksiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702059440; x=1702664240;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rT+IqEgBG0h+KBQVMoiPQaupxIMoYqveRu1390Nm3NU=;
-        b=E/PkWClDLxdNQaocrD8zYNOBly4uhg13Z6ss5iU9rt52tdKKHbXPI5uacXRLgM9aCL
-         Db0Ujabah/kNKX8t6S4u0VNOoND2i/K5+R/MseBN7cjKa8kt++6u+qdE42blLD45U8nA
-         tk8SVNwXV32sJRATdsgaaWgTOnJ8mqxhjsqK+GFY4/3AHhjO9jt2UxlnOoK6j0ZhO6WQ
-         wc0vP6WQBW5MCO6yzDKVxRjnPwH/PZEI7hKtHo3fN0z0vgcg+BAea5m9QWdds3kx7DiI
-         OH6P7vq9RfrbVwoQx4+K7Bvh0t21MgLWKLIsXeDE9hHP/KNwlCwAGbNej7wb7+nbzz/x
-         oT9A==
-X-Gm-Message-State: AOJu0Yz33VdqNFkx8XPZ3McpaziEA/io69Rxj5pRwu3fa+JAhaTNOSMy
-        LcSCIy9qMj3JLh8tES/XjsVfGlG3xPMRVxZ0foBCDQ==
-X-Google-Smtp-Source: AGHT+IH0/NXGMQE81etiuHRrZE0cVxQZNyZhSrRDTKfpiBdT14P7txnmutXo3GyPbc5TdiySCBh+bXEmFC/bDqFzxg4=
-X-Received: by 2002:a92:da05:0:b0:35c:e4c2:5345 with SMTP id
- z5-20020a92da05000000b0035ce4c25345mr190166ilm.21.1702059439867; Fri, 08 Dec
- 2023 10:17:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702059446; x=1702664246;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MABnnH/toxdHIN+dqlIfnSDab54KahtDiJhfQBIZI2Y=;
+        b=boDiXUu5DxlCZGXf4zrap4pXEN2BvvVncg3Dc02LLdEe1RAvE6SugFcHAwRz08pSib
+         qlYghLfQjcDlNaU2oPc5XxFz6cSe01IRVU7b3FmWdFjcJh1yN/sGHQl4MwHL4kRHA3G2
+         CTL5DdFbwNK6+l7TfIKbae9uZhgqMcGOuOSzTceXsR8o9IWZz9j2RoKQcqB7pwzsj/08
+         fmEYnOPZdk3HxofI0YWfID4IovkOLK0nV0AUDpTTtAmQMRnjgGiTLYLt7OefWwrf1LaB
+         7cAIris4KmbQwVWVhaU5TMoM9YflPZz3kjk5U6HO1FnMFB8sc06Ewr0CVoNQljUK27/c
+         CQpA==
+X-Gm-Message-State: AOJu0YzWICFOLyfUaNVt0z+V0+Z3fLP0956oy0LMhNi+gHuFKmpFbX3Q
+        OfaK6dmWSmGvn8U2T1CgBiABXuTwlRCsZjHq5kGAsg==
+X-Google-Smtp-Source: AGHT+IFdeNIu5TuPawIeaLoDT4BwKX+j0AoV/H0wD25vxhGV8Eu0D0Q/6f2VQmp8rbi2/h89BGWPKXHYVZNu8GNul1g=
+X-Received: by 2002:a25:8a12:0:b0:da0:48df:cafa with SMTP id
+ g18-20020a258a12000000b00da048dfcafamr377865ybl.16.1702059446010; Fri, 08 Dec
+ 2023 10:17:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20231201214737.104444-1-tony.luck@intel.com> <20231207195613.153980-1-tony.luck@intel.com>
- <20231207195613.153980-2-tony.luck@intel.com>
-In-Reply-To: <20231207195613.153980-2-tony.luck@intel.com>
-From:   Peter Newman <peternewman@google.com>
-Date:   Fri, 8 Dec 2023 10:17:08 -0800
-Message-ID: <CALPaoCji1yzfkA=tms3LhYMvRB+wSJQM3qzPKrHNEa7a+KduTA@mail.gmail.com>
-Subject: Re: [PATCH v6 1/3] x86/resctrl: Add mount option "mba_MBps_event"
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
+References: <20231208050641.32582-1-quic_abhinavk@quicinc.com>
+ <20231208050641.32582-8-quic_abhinavk@quicinc.com> <CAA8EJpp_9ForVxyQLOaeL3qbPcpEq8fkVR0FmZD+RDhn-quLEA@mail.gmail.com>
+ <36c86e28-b1ee-045b-487c-4d3c9b4849cb@quicinc.com>
+In-Reply-To: <36c86e28-b1ee-045b-487c-4d3c9b4849cb@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 8 Dec 2023 20:17:14 +0200
+Message-ID: <CAA8EJpqapkLJ09=MWhZLnaQnkExC86+uhDj=X0hXbwaOC-U+oA@mail.gmail.com>
+Subject: Re: [PATCH v2 07/16] drm/msm/dpu: add dpu_hw_cdm abstraction for CDM block
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
+        quic_parellan@quicinc.com, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+On Fri, 8 Dec 2023 at 19:09, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+>
+>
+> On 12/8/2023 4:06 AM, Dmitry Baryshkov wrote:
+> > On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+> >>
+> >> CDM block comes with its own set of registers and operations
+> >> which can be done. In-line with other hardware sub-blocks, this
+> >
+> > I always thought that sub-blocks refer to the dpu_foo_sub_blks data,
+> > which CDM doesn't have.
+> >
+>
+> All of these are DPU-sub blks in some sense. If this is confusing to
+> you, I will just say "in-line with other DPU hardware blocks".
 
-On Thu, Dec 7, 2023 at 11:56=E2=80=AFAM Tony Luck <tony.luck@intel.com> wro=
-te:
->
-> The MBA Software Controller(mba_sc) is a feedback loop that uses
-> measurements of local memory bandwidth to adjust MBA throttling levels
-> to keep workloads in a resctrl group within a target bandwidth set in
-> the schemata file.
->
-> Users may want to use total memory bandwidth instead of local to handle
-> workloads that have poor NUMA localization.
->
-> Add a new mount option "mba_MBps_event=3D{event_name}" where event_name
-> is one of "mbm_Local_bytes" or "mbm_total_bytes" that allows a user to
-
-It's "mbm_local_bytes" in the matching logic later on.
-
-
-> specify which monitoring event to use.
->
-> Update the once-per-second polling code to use the chosen event (local
-> or total memory bandwidth).
->
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> ---
->  include/linux/resctrl.h                |  2 +
->  arch/x86/kernel/cpu/resctrl/internal.h |  3 +-
->  arch/x86/kernel/cpu/resctrl/monitor.c  | 21 +++++----
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 61 +++++++++++++++++++++-----
->  4 files changed, 63 insertions(+), 24 deletions(-)
->
-> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> index 66942d7fba7f..1feb3b2e64fa 100644
-> --- a/include/linux/resctrl.h
-> +++ b/include/linux/resctrl.h
-> @@ -129,6 +129,7 @@ enum membw_throttle_mode {
->   * @throttle_mode:     Bandwidth throttling mode when threads request
->   *                     different memory bandwidths
->   * @mba_sc:            True if MBA software controller(mba_sc) is enable=
-d
-> + * @mba_mbps_event:    Event (local or total) for mba_sc
->   * @mb_map:            Mapping of memory B/W percentage to memory B/W de=
-lay
->   */
->  struct resctrl_membw {
-> @@ -138,6 +139,7 @@ struct resctrl_membw {
->         bool                            arch_needs_linear;
->         enum membw_throttle_mode        throttle_mode;
->         bool                            mba_sc;
-> +       enum resctrl_event_id           mba_mbps_event;
->         u32                             *mb_map;
->  };
->
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu=
-/resctrl/internal.h
-> index a4f1aa15f0a2..8b9b8f664324 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -58,7 +58,8 @@ struct rdt_fs_context {
->         struct kernfs_fs_context        kfc;
->         bool                            enable_cdpl2;
->         bool                            enable_cdpl3;
-> -       bool                            enable_mba_mbps;
-> +       bool                            enable_mba_mbps_local;
-> +       bool                            enable_mba_mbps_total;
->         bool                            enable_debug;
->  };
->
-> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/=
-resctrl/monitor.c
-> index f136ac046851..d9e590f1cbc3 100644
-> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
-> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-> @@ -431,9 +431,10 @@ static int __mon_event_count(u32 rmid, struct rmid_r=
-ead *rr)
->   */
->  static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
->  {
-> -       struct mbm_state *m =3D &rr->d->mbm_local[rmid];
->         u64 cur_bw, bytes, cur_bytes;
-> +       struct mbm_state *m;
->
-> +       m =3D get_mbm_state(rr->d, rmid, rr->evtid);
-
-WARN_ON(m =3D=3D NULL) since we assume the caller has confirmed rr->evtid
-is an MBM event?
-
->         cur_bytes =3D rr->val;
->         bytes =3D cur_bytes - m->prev_bw_bytes;
->         m->prev_bw_bytes =3D cur_bytes;
-> @@ -521,19 +522,21 @@ static void update_mba_bw(struct rdtgroup *rgrp, st=
-ruct rdt_domain *dom_mbm)
->         u32 closid, rmid, cur_msr_val, new_msr_val;
->         struct mbm_state *pmbm_data, *cmbm_data;
->         u32 cur_bw, delta_bw, user_bw;
-> +       enum resctrl_event_id evt_id;
->         struct rdt_resource *r_mba;
->         struct rdt_domain *dom_mba;
->         struct list_head *head;
->         struct rdtgroup *entry;
->
-> -       if (!is_mbm_local_enabled())
-> +       if (!is_mbm_enabled())
->                 return;
->
->         r_mba =3D &rdt_resources_all[RDT_RESOURCE_MBA].r_resctrl;
-> +       evt_id =3D r_mba->membw.mba_mbps_event;
->
->         closid =3D rgrp->closid;
->         rmid =3D rgrp->mon.rmid;
-> -       pmbm_data =3D &dom_mbm->mbm_local[rmid];
-> +       pmbm_data =3D get_mbm_state(dom_mbm, rmid, evt_id);
-
-One defensive WARN_ON((!pmbm_data) for this function to ensure evt_id
-is valid for this call and the ones in the loop below?
+Yes, please.
 
 >
->         dom_mba =3D get_domain_from_cpu(smp_processor_id(), r_mba);
->         if (!dom_mba) {
-> @@ -553,7 +556,7 @@ static void update_mba_bw(struct rdtgroup *rgrp, stru=
-ct rdt_domain *dom_mbm)
->          */
->         head =3D &rgrp->mon.crdtgrp_list;
->         list_for_each_entry(entry, head, mon.crdtgrp_list) {
-> -               cmbm_data =3D &dom_mbm->mbm_local[entry->mon.rmid];
-> +               cmbm_data =3D get_mbm_state(dom_mbm, entry->mon.rmid, evt=
-_id);
->                 cur_bw +=3D cmbm_data->prev_bw;
->                 delta_bw +=3D cmbm_data->delta_bw;
->         }
-> @@ -616,18 +619,14 @@ static void mbm_update(struct rdt_resource *r, stru=
-ct rdt_domain *d, int rmid)
->                 rr.evtid =3D QOS_L3_MBM_TOTAL_EVENT_ID;
->                 rr.val =3D 0;
->                 __mon_event_count(rmid, &rr);
-> +               if (is_mba_sc(NULL) && rr.evtid =3D=3D r->membw.mba_mbps_=
-event)
-> +                       mbm_bw_count(rmid, &rr);
->         }
->         if (is_mbm_local_enabled()) {
->                 rr.evtid =3D QOS_L3_MBM_LOCAL_EVENT_ID;
->                 rr.val =3D 0;
->                 __mon_event_count(rmid, &rr);
-> -
-> -               /*
-> -                * Call the MBA software controller only for the
-> -                * control groups and when user has enabled
-> -                * the software controller explicitly.
-> -                */
-> -               if (is_mba_sc(NULL))
-> +               if (is_mba_sc(NULL) && rr.evtid =3D=3D r->membw.mba_mbps_=
-event)
->                         mbm_bw_count(rmid, &rr);
->         }
->  }
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu=
-/resctrl/rdtgroup.c
-> index 69a1de92384a..5f64a0b2597c 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -2294,7 +2294,7 @@ static bool supports_mba_mbps(void)
->  {
->         struct rdt_resource *r =3D &rdt_resources_all[RDT_RESOURCE_MBA].r=
-_resctrl;
+> >
+> >> change adds the dpu_hw_cdm abstraction for the CDM block.
+> >>
+> >> changes in v2:
+> >>          - replace bit magic with relevant defines
+> >>          - use drmm_kzalloc instead of kzalloc/free
+> >>          - some formatting fixes
+> >>          - inline _setup_cdm_ops()
+> >>          - protect bind_pingpong_blk with core_rev check
+> >>          - drop setup_csc_data() and setup_cdwn() ops as they
+> >>            are merged into enable()
+> >>
+> >> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> >> ---
+> >>   drivers/gpu/drm/msm/Makefile                |   1 +
+> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c  | 276 ++++++++++++++++++++
+> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h  | 114 ++++++++
+> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h |   1 +
+> >>   4 files changed, 392 insertions(+)
+> >>   create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
+> >>   create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
+> >>
+> >> diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
+> >> index 49671364fdcf..b1173128b5b9 100644
+> >> --- a/drivers/gpu/drm/msm/Makefile
+> >> +++ b/drivers/gpu/drm/msm/Makefile
+> >> @@ -63,6 +63,7 @@ msm-$(CONFIG_DRM_MSM_DPU) += \
+> >>          disp/dpu1/dpu_encoder_phys_wb.o \
+> >>          disp/dpu1/dpu_formats.o \
+> >>          disp/dpu1/dpu_hw_catalog.o \
+> >> +       disp/dpu1/dpu_hw_cdm.o \
+> >>          disp/dpu1/dpu_hw_ctl.o \
+> >>          disp/dpu1/dpu_hw_dsc.o \
+> >>          disp/dpu1/dpu_hw_dsc_1_2.o \
+> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
+> >> new file mode 100644
+> >> index 000000000000..0dbe2df56cc8
+> >> --- /dev/null
+> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
+> >> @@ -0,0 +1,276 @@
+> >> +// SPDX-License-Identifier: GPL-2.0-only
+> >> +/*
+> >> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
+> >> + */
+> >> +
+> >> +#include <drm/drm_managed.h>
+> >> +
+> >> +#include "dpu_hw_mdss.h"
+> >> +#include "dpu_hw_util.h"
+> >> +#include "dpu_hw_catalog.h"
+> >> +#include "dpu_hw_cdm.h"
+> >> +#include "dpu_kms.h"
+> >> +
+> >> +#define CDM_CSC_10_OPMODE                  0x000
+> >> +#define CDM_CSC_10_BASE                    0x004
+> >> +
+> >> +#define CDM_CDWN2_OP_MODE                  0x100
+> >> +#define CDM_CDWN2_CLAMP_OUT                0x104
+> >> +#define CDM_CDWN2_PARAMS_3D_0              0x108
+> >> +#define CDM_CDWN2_PARAMS_3D_1              0x10C
+> >> +#define CDM_CDWN2_COEFF_COSITE_H_0         0x110
+> >> +#define CDM_CDWN2_COEFF_COSITE_H_1         0x114
+> >> +#define CDM_CDWN2_COEFF_COSITE_H_2         0x118
+> >> +#define CDM_CDWN2_COEFF_OFFSITE_H_0        0x11C
+> >> +#define CDM_CDWN2_COEFF_OFFSITE_H_1        0x120
+> >> +#define CDM_CDWN2_COEFF_OFFSITE_H_2        0x124
+> >> +#define CDM_CDWN2_COEFF_COSITE_V           0x128
+> >> +#define CDM_CDWN2_COEFF_OFFSITE_V          0x12C
+> >> +#define CDM_CDWN2_OUT_SIZE                 0x130
+> >> +
+> >> +#define CDM_HDMI_PACK_OP_MODE              0x200
+> >> +#define CDM_CSC_10_MATRIX_COEFF_0          0x004
+> >> +
+> >> +#define CDM_MUX                            0x224
+> >> +
+> >> +/* CDM CDWN2 sub-block bit definitions */
+> >> +#define CDM_CDWN2_OP_MODE_EN                  BIT(0)
+> >> +#define CDM_CDWN2_OP_MODE_ENABLE_H            BIT(1)
+> >> +#define CDM_CDWN2_OP_MODE_ENABLE_V            BIT(2)
+> >> +#define CDM_CDWN2_OP_MODE_METHOD_H_AVG        BIT(3)
+> >> +#define CDM_CDWN2_OP_MODE_METHOD_H_COSITE     BIT(4)
+> >> +#define CDM_CDWN2_OP_MODE_METHOD_V_AVG        BIT(5)
+> >> +#define CDM_CDWN2_OP_MODE_METHOD_V_COSITE     BIT(6)
+> >> +#define CDM_CDWN2_OP_MODE_BITS_OUT_8BIT       BIT(7)
+> >> +#define CDM_CDWN2_OP_MODE_METHOD_H_OFFSITE    GENMASK(4, 3)
+> >> +#define CDM_CDWN2_OP_MODE_METHOD_V_OFFSITE    GENMASK(6, 5)
+> >> +#define CDM_CDWN2_V_PIXEL_DROP_MASK           GENMASK(6, 5)
+> >> +#define CDM_CDWN2_H_PIXEL_DROP_MASK           GENMASK(4, 3)
+> >> +
+> >> +/* CDM CSC10 sub-block bit definitions */
+> >> +#define CDM_CSC10_OP_MODE_EN               BIT(0)
+> >> +#define CDM_CSC10_OP_MODE_SRC_FMT_YUV      BIT(1)
+> >> +#define CDM_CSC10_OP_MODE_DST_FMT_YUV      BIT(2)
+> >> +
+> >> +/* CDM HDMI pack sub-block bit definitions */
+> >> +#define CDM_HDMI_PACK_OP_MODE_EN           BIT(0)
+> >> +
+> >> +/**
+> >> + * Horizontal coefficients for cosite chroma downscale
+> >> + * s13 representation of coefficients
+> >> + */
+> >> +static u32 cosite_h_coeff[] = {0x00000016, 0x000001cc, 0x0100009e};
+> >> +
+> >> +/**
+> >> + * Horizontal coefficients for offsite chroma downscale
+> >> + */
+> >> +static u32 offsite_h_coeff[] = {0x000b0005, 0x01db01eb, 0x00e40046};
+> >> +
+> >> +/**
+> >> + * Vertical coefficients for cosite chroma downscale
+> >> + */
+> >> +static u32 cosite_v_coeff[] = {0x00080004};
+> >> +/**
+> >> + * Vertical coefficients for offsite chroma downscale
+> >> + */
+> >> +static u32 offsite_v_coeff[] = {0x00060002};
+> >> +
+> >> +static int dpu_hw_cdm_setup_cdwn(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cfg)
+> >> +{
+> >> +       struct dpu_hw_blk_reg_map *c = &ctx->hw;
+> >> +       u32 opmode = 0;
+> >> +       u32 out_size = 0;
+> >> +
+> >> +       if (cfg->output_bit_depth == CDM_CDWN_OUTPUT_10BIT)
+> >> +               opmode &= ~CDM_CDWN2_OP_MODE_BITS_OUT_8BIT;
+> >
+> > We start from opmode = 0. Does it really make sense to mask bits from
+> > the zero opmode?
+> >
 >
-> -       return (is_mbm_local_enabled() &&
-> +       return (is_mbm_enabled() &&
->                 r->alloc_capable && is_mba_linear());
->  }
->
-> @@ -2302,7 +2302,7 @@ static bool supports_mba_mbps(void)
->   * Enable or disable the MBA software controller
->   * which helps user specify bandwidth in MBps.
->   */
-> -static int set_mba_sc(bool mba_sc)
-> +static int set_mba_sc(bool mba_sc, enum resctrl_event_id mba_mbps_event)
->  {
->         struct rdt_resource *r =3D &rdt_resources_all[RDT_RESOURCE_MBA].r=
-_resctrl;
->         u32 num_closid =3D resctrl_arch_get_num_closid(r);
-> @@ -2313,6 +2313,7 @@ static int set_mba_sc(bool mba_sc)
->                 return -EINVAL;
->
->         r->membw.mba_sc =3D mba_sc;
-> +       r->membw.mba_mbps_event =3D mba_mbps_event;
->
->         list_for_each_entry(d, &r->domains, list) {
->                 for (i =3D 0; i < num_closid; i++)
-> @@ -2445,13 +2446,14 @@ static void rdt_disable_ctx(void)
->  {
->         resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
->         resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
-> -       set_mba_sc(false);
-> +       set_mba_sc(false, QOS_L3_MBM_LOCAL_EVENT_ID);
->
->         resctrl_debug =3D false;
->  }
->
->  static int rdt_enable_ctx(struct rdt_fs_context *ctx)
->  {
-> +       enum resctrl_event_id mba_mbps_event;
->         int ret =3D 0;
->
->         if (ctx->enable_cdpl2) {
-> @@ -2466,8 +2468,12 @@ static int rdt_enable_ctx(struct rdt_fs_context *c=
-tx)
->                         goto out_cdpl2;
->         }
->
-> -       if (ctx->enable_mba_mbps) {
-> -               ret =3D set_mba_sc(true);
-> +       if (ctx->enable_mba_mbps_local || ctx->enable_mba_mbps_total) {
-> +               if (ctx->enable_mba_mbps_total)
-> +                       mba_mbps_event =3D QOS_L3_MBM_TOTAL_EVENT_ID;
-> +               else
-> +                       mba_mbps_event =3D QOS_L3_MBM_LOCAL_EVENT_ID;
+> Ack, We can drop the ~ and just keep the | below.
 
-Total takes precedence over local when the user picks both.
+Yep. I think it will make things more clear. We don't have 'update'
+operation, we always setup CDM from the ground up.
 
-> +               ret =3D set_mba_sc(true, mba_mbps_event);
->                 if (ret)
->                         goto out_cdpl3;
->         }
-> @@ -2683,15 +2689,17 @@ enum rdt_param {
->         Opt_cdp,
->         Opt_cdpl2,
->         Opt_mba_mbps,
-> +       Opt_mba_mbps_event,
->         Opt_debug,
->         nr__rdt_params
->  };
 >
->  static const struct fs_parameter_spec rdt_fs_parameters[] =3D {
-> -       fsparam_flag("cdp",             Opt_cdp),
-> -       fsparam_flag("cdpl2",           Opt_cdpl2),
-> -       fsparam_flag("mba_MBps",        Opt_mba_mbps),
-> -       fsparam_flag("debug",           Opt_debug),
-> +       fsparam_flag("cdp",                     Opt_cdp),
-> +       fsparam_flag("cdpl2",                   Opt_cdpl2),
-> +       fsparam_flag("mba_MBps",                Opt_mba_mbps),
-> +       fsparam_string("mba_MBps_event",        Opt_mba_mbps_event),
-> +       fsparam_flag("debug",                   Opt_debug),
->         {}
->  };
+> >> +       else
+> >> +               opmode |= CDM_CDWN2_OP_MODE_BITS_OUT_8BIT;
+> >> +
+> >> +       /* ENABLE DWNS_H bit */
+> >> +       opmode |= CDM_CDWN2_OP_MODE_ENABLE_H;
+> >> +
+> >> +       switch (cfg->h_cdwn_type) {
+> >> +       case CDM_CDWN_DISABLE:
+> >> +               /* CLEAR METHOD_H field */
+> >> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+> >> +               /* CLEAR DWNS_H bit */
+> >> +               opmode &= ~CDM_CDWN2_OP_MODE_ENABLE_H;
+> >> +               break;
+> >> +       case CDM_CDWN_PIXEL_DROP:
+> >> +               /* Clear METHOD_H field (pixel drop is 0) */
+> >> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+> >> +               break;
+> >> +       case CDM_CDWN_AVG:
+> >> +               /* Clear METHOD_H field (Average is 0x1) */
+> >> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+> >> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_H_AVG;
+> >> +               break;
+> >> +       case CDM_CDWN_COSITE:
+> >> +               /* Clear METHOD_H field (Average is 0x2) */
+> >> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+> >> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_H_COSITE;
+> >> +               /* Co-site horizontal coefficients */
+> >> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_0,
+> >> +                               cosite_h_coeff[0]);
+> >> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_1,
+> >> +                               cosite_h_coeff[1]);
+> >> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_2,
+> >> +                               cosite_h_coeff[2]);
+> >> +               break;
+> >> +       case CDM_CDWN_OFFSITE:
+> >> +               /* Clear METHOD_H field (Average is 0x3) */
+> >> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+> >> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_H_OFFSITE;
+> >> +
+> >> +               /* Off-site horizontal coefficients */
+> >> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_0,
+> >> +                               offsite_h_coeff[0]);
+> >> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_1,
+> >> +                               offsite_h_coeff[1]);
+> >> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_2,
+> >> +                               offsite_h_coeff[2]);
+> >> +               break;
+> >> +       default:
+> >> +               pr_err("%s invalid horz down sampling type\n", __func__);
+> >
+> > DPU_ERROR or drm_err
+> >
 >
-> @@ -2715,7 +2723,25 @@ static int rdt_parse_param(struct fs_context *fc, =
-struct fs_parameter *param)
->         case Opt_mba_mbps:
->                 if (!supports_mba_mbps())
->                         return -EINVAL;
-> -               ctx->enable_mba_mbps =3D true;
-> +               if (is_mbm_local_enabled())
-> +                       ctx->enable_mba_mbps_local =3D true;
-> +               else
-> +                       return -EINVAL;
-> +               return 0;
-> +       case Opt_mba_mbps_event:
-> +               if (!supports_mba_mbps())
-> +                       return -EINVAL;
-> +               if (!strcmp("mbm_local_bytes", param->string)) {
-> +                       if (!is_mbm_local_enabled())
-> +                               return -EINVAL;
-> +                       ctx->enable_mba_mbps_local =3D true;
-> +               } else if (!strcmp("mbm_total_bytes", param->string)) {
-> +                       if (!is_mbm_total_enabled())
-> +                               return -EINVAL;
-> +                       ctx->enable_mba_mbps_total =3D true;
-> +               } else {
-> +                       return -EINVAL;
+> Ack.
+>
+> >> +               return -EINVAL;
+> >> +       }
+> >> +
+> >> +       /* ENABLE DWNS_V bit */
+> >> +       opmode |= CDM_CDWN2_OP_MODE_ENABLE_V;
+> >> +
+> >> +       switch (cfg->v_cdwn_type) {
+> >> +       case CDM_CDWN_DISABLE:
+> >> +               /* CLEAR METHOD_V field */
+> >> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+> >> +               /* CLEAR DWNS_V bit */
+> >> +               opmode &= ~CDM_CDWN2_OP_MODE_ENABLE_V;
+> >> +               break;
+> >> +       case CDM_CDWN_PIXEL_DROP:
+> >> +               /* Clear METHOD_V field (pixel drop is 0) */
+> >> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+> >> +               break;
+> >> +       case CDM_CDWN_AVG:
+> >> +               /* Clear METHOD_V field (Average is 0x1) */
+> >> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+> >> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_V_AVG;
+> >> +               break;
+> >> +       case CDM_CDWN_COSITE:
+> >> +               /* Clear METHOD_V field (Average is 0x2) */
+> >> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+> >> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_V_COSITE;
+> >> +               /* Co-site vertical coefficients */
+> >> +               DPU_REG_WRITE(c,
+> >> +                             CDM_CDWN2_COEFF_COSITE_V,
+> >> +                             cosite_v_coeff[0]);
+> >> +               break;
+> >> +       case CDM_CDWN_OFFSITE:
+> >> +               /* Clear METHOD_V field (Average is 0x3) */
+> >> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+> >> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_V_OFFSITE;
+> >> +
+> >> +               /* Off-site vertical coefficients */
+> >> +               DPU_REG_WRITE(c,
+> >> +                             CDM_CDWN2_COEFF_OFFSITE_V,
+> >> +                             offsite_v_coeff[0]);
+> >> +               break;
+> >> +       default:
+> >> +               return -EINVAL;
+> >> +       }
+> >> +
+> >> +       if (cfg->v_cdwn_type || cfg->h_cdwn_type)
+> >> +               opmode |= CDM_CDWN2_OP_MODE_EN; /* EN CDWN module */
+> >> +       else
+> >> +               opmode &= ~CDM_CDWN2_OP_MODE_EN;
+> >> +
+> >> +       out_size = (cfg->output_width & 0xFFFF) | ((cfg->output_height & 0xFFFF) << 16);
+> >> +       DPU_REG_WRITE(c, CDM_CDWN2_OUT_SIZE, out_size);
+> >> +       DPU_REG_WRITE(c, CDM_CDWN2_OP_MODE, opmode);
+> >> +       DPU_REG_WRITE(c, CDM_CDWN2_CLAMP_OUT, ((0x3FF << 16) | 0x0));
+> >> +
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +int dpu_hw_cdm_enable(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cdm)
+> >> +{
+> >> +       struct dpu_hw_blk_reg_map *c = &ctx->hw;
+> >> +       const struct dpu_format *fmt;
+> >> +       u32 opmode = 0;
+> >> +       u32 csc = 0;
+> >> +
+> >> +       if (!ctx || !cdm)
+> >> +               return -EINVAL;
+> >> +
+> >> +       fmt = cdm->output_fmt;
+> >> +
+> >> +       if (!DPU_FORMAT_IS_YUV(fmt))
+> >> +               return -EINVAL;
+> >> +
+> >> +       dpu_hw_csc_setup(&ctx->hw, CDM_CSC_10_MATRIX_COEFF_0, cdm->csc_cfg, true);
+> >> +       dpu_hw_cdm_setup_cdwn(ctx, cdm);
+> >> +
+> >> +       if (cdm->output_type == CDM_CDWN_OUTPUT_HDMI) {
+> >> +               if (fmt->chroma_sample != DPU_CHROMA_H1V2)
+> >> +                       return -EINVAL; /*unsupported format */
+> >> +               opmode = CDM_HDMI_PACK_OP_MODE_EN;
+> >> +               opmode |= (fmt->chroma_sample << 1);
+> >> +       }
+> >> +
+> >> +       csc |= CDM_CSC10_OP_MODE_DST_FMT_YUV;
+> >> +       csc &= ~CDM_CSC10_OP_MODE_SRC_FMT_YUV;
+> >> +       csc |= CDM_CSC10_OP_MODE_EN;
+> >> +
+> >> +       if (ctx && ctx->ops.bind_pingpong_blk)
+> >> +               ctx->ops.bind_pingpong_blk(ctx, true, cdm->pp_id);
+> >> +
+> >> +       DPU_REG_WRITE(c, CDM_CSC_10_OPMODE, csc);
+> >> +       DPU_REG_WRITE(c, CDM_HDMI_PACK_OP_MODE, opmode);
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +void dpu_hw_cdm_disable(struct dpu_hw_cdm *ctx)
+> >> +{
+> >> +       if (!ctx)
+> >> +               return;
+> >> +
+> >> +       if (ctx && ctx->ops.bind_pingpong_blk)
+> >> +               ctx->ops.bind_pingpong_blk(ctx, false, PINGPONG_NONE);
+> >
+> > So the bind/un_pingpong_block gets hidden here. Why do we need to
+> > unbind it manually in the dpu_encoder then?
+> >
+>
+> hmm .... I think we can drop the disable op and just call
+> bind_pingpong_blk directly.
+>
+> >> +}
+> >> +
+> >> +static void dpu_hw_cdm_bind_pingpong_blk(struct dpu_hw_cdm *ctx, bool enable,
+> >> +                                        const enum dpu_pingpong pp)
+> >
+> > I think we settled on the PINGPONG_NONE for removing the binding
+> >
+>
+> Ah okay. i probably missed this. so just drop "enable" and use pp val.
+>
+> >> +{
+> >> +       struct dpu_hw_blk_reg_map *c;
+> >> +       int mux_cfg = 0xF;
+> >> +
+> >> +       c = &ctx->hw;
+> >> +
+> >> +       if (enable)
+> >> +               mux_cfg = (pp - PINGPONG_0) & 0x7;
+> >> +
+> >> +       DPU_REG_WRITE(c, CDM_MUX, mux_cfg);
+> >> +}
+> >> +
+> >> +struct dpu_hw_cdm *dpu_hw_cdm_init(struct drm_device *dev,
+> >> +                                  const struct dpu_cdm_cfg *cfg, void __iomem *addr,
+> >> +                                  const struct dpu_mdss_version *mdss_rev)
+> >> +{
+> >> +       struct dpu_hw_cdm *c;
+> >> +
+> >> +       c = drmm_kzalloc(dev, sizeof(*c), GFP_KERNEL);
+> >> +       if (!c)
+> >> +               return ERR_PTR(-ENOMEM);
+> >> +
+> >> +       c->hw.blk_addr = addr + cfg->base;
+> >> +       c->hw.log_mask = DPU_DBG_MASK_CDM;
+> >> +
+> >> +       /* Assign ops */
+> >> +       c->idx = cfg->id;
+> >> +       c->caps = cfg;
+> >> +
+> >> +       c->ops.enable = dpu_hw_cdm_enable;
+> >> +       c->ops.disable = dpu_hw_cdm_disable;
+> >> +       if (mdss_rev->core_major_ver >= 5)
+> >> +               c->ops.bind_pingpong_blk = dpu_hw_cdm_bind_pingpong_blk;
+> >> +
+> >> +       return c;
+> >> +}
+> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
+> >> new file mode 100644
+> >> index 000000000000..1ca806f9d18d
+> >> --- /dev/null
+> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
+> >> @@ -0,0 +1,114 @@
+> >> +/* SPDX-License-Identifier: GPL-2.0-only */
+> >> +/*
+> >> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
+> >> + */
+> >> +
+> >> +#ifndef _DPU_HW_CDM_H
+> >> +#define _DPU_HW_CDM_H
+> >> +
+> >> +#include "dpu_hw_mdss.h"
+> >> +#include "dpu_hw_top.h"
+> >> +
+> >> +struct dpu_hw_cdm;
+> >> +
+> >> +struct dpu_hw_cdm_cfg {
+> >> +       u32 output_width;
+> >> +       u32 output_height;
+> >> +       u32 output_bit_depth;
+> >> +       u32 h_cdwn_type;
+> >> +       u32 v_cdwn_type;
+> >> +       const struct dpu_format *output_fmt;
+> >> +       const struct dpu_csc_cfg *csc_cfg;
+> >> +       u32 output_type;
+> >> +       int pp_id;
+> >> +};
+> >> +
+> >> +enum dpu_hw_cdwn_type {
+> >> +       CDM_CDWN_DISABLE,
+> >> +       CDM_CDWN_PIXEL_DROP,
+> >> +       CDM_CDWN_AVG,
+> >> +       CDM_CDWN_COSITE,
+> >> +       CDM_CDWN_OFFSITE,
+> >> +};
+> >> +
+> >> +enum dpu_hw_cdwn_output_type {
+> >> +       CDM_CDWN_OUTPUT_HDMI,
+> >> +       CDM_CDWN_OUTPUT_WB,
+> >> +};
+> >> +
+> >> +enum dpu_hw_cdwn_output_bit_depth {
+> >> +       CDM_CDWN_OUTPUT_8BIT,
+> >> +       CDM_CDWN_OUTPUT_10BIT,
+> >> +};
+> >
+> > Can we please get some documentation for these enums?
+> >
+>
+> Ack.
+>
+> >> +
+> >> +/**
+> >> + * struct dpu_hw_cdm_ops : Interface to the chroma down Hw driver functions
+> >> + *                         Assumption is these functions will be called after
+> >> + *                         clocks are enabled
+> >> + *  @enable:               Enables the output to interface and programs the
+> >> + *                         output packer
+> >> + *  @disable:              Puts the cdm in bypass mode
+> >> + *  @bind_pingpong_blk:    enable/disable the connection with pingpong which
+> >> + *                         will feed pixels to this cdm
+> >> + */
+> >> +struct dpu_hw_cdm_ops {
+> >> +       /**
+> >> +        * Enable the CDM module
+> >> +        * @cdm         Pointer to chroma down context
+> >> +        */
+> >> +       int (*enable)(struct dpu_hw_cdm *cdm, struct dpu_hw_cdm_cfg *cfg);
+> >> +
+> >> +       /**
+> >> +        * Disable the CDM module
+> >> +        * @cdm         Pointer to chroma down context
+> >> +        */
+> >> +       void (*disable)(struct dpu_hw_cdm *cdm);
+> >> +
+> >> +       /**
+> >> +        * Enable/disable the connection with pingpong
+> >> +        * @cdm         Pointer to chroma down context
+> >> +        * @enable      Enable/disable control
+> >> +        * @pp          pingpong block id.
+> >> +        */
+> >> +       void (*bind_pingpong_blk)(struct dpu_hw_cdm *cdm, bool enable,
+> >> +                                 const enum dpu_pingpong pp);
+> >> +};
+> >> +
+> >> +/**
+> >> + * struct dpu_hw_cdm - cdm description
+> >> + * @base: Hardware block base structure
+> >> + * @hw: Block hardware details
+> >> + * @idx: CDM index
+> >> + * @caps: Pointer to cdm_cfg
+> >> + * @ops: handle to operations possible for this CDM
+> >> + */
+> >> +struct dpu_hw_cdm {
+> >> +       struct dpu_hw_blk base;
+> >> +       struct dpu_hw_blk_reg_map hw;
+> >> +
+> >> +       /* chroma down */
+> >> +       const struct dpu_cdm_cfg *caps;
+> >> +       enum  dpu_cdm  idx;
+> >> +
+> >> +       /* ops */
+> >> +       struct dpu_hw_cdm_ops ops;
+> >> +};
+> >> +
+> >> +/**
+> >> + * dpu_hw_cdm_init - initializes the cdm hw driver object.
+> >> + * should be called once before accessing every cdm.
+> >> + * @dev: DRM device handle
+> >> + * @cdm: CDM catalog entry for which driver object is required
+> >> + * @addr :   mapped register io address of MDSS
+> >> + * @mdss_rev: mdss hw core revision
+> >> + */
+> >> +struct dpu_hw_cdm *dpu_hw_cdm_init(struct drm_device *dev,
+> >> +                                  const struct dpu_cdm_cfg *cdm, void __iomem *addr,
+> >> +                                  const struct dpu_mdss_version *mdss_rev);
+> >> +
+> >> +static inline struct dpu_hw_cdm *to_dpu_hw_cdm(struct dpu_hw_blk *hw)
+> >> +{
+> >> +       return container_of(hw, struct dpu_hw_cdm, base);
+> >> +}
+> >> +
+> >> +#endif /*_DPU_HW_CDM_H */
+> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> >> index f319c8232ea5..9db4cf61bd29 100644
+> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> >> @@ -466,6 +466,7 @@ struct dpu_mdss_color {
+> >>   #define DPU_DBG_MASK_ROT      (1 << 9)
+> >>   #define DPU_DBG_MASK_DSPP     (1 << 10)
+> >>   #define DPU_DBG_MASK_DSC      (1 << 11)
+> >> +#define DPU_DBG_MASK_CDM      (1 << 12)
+> >>
+> >>   /**
+> >>    * struct dpu_hw_tear_check - Struct contains parameters to configure
+> >> --
+> >> 2.40.1
+> >>
+> >
+> >
+> > --
+> > With best wishes
+> >
+> > Dmitry
 
-It looks like if I pass
-"mba_MBps_event=3Dmbm_total_bytes,mba_MBps_event=3Dmbm_local_bytes" I can
-set both flags true.
 
-> +               }
->                 return 0;
->         case Opt_debug:
->                 ctx->enable_debug =3D true;
-> @@ -3780,16 +3806,27 @@ static int rdtgroup_rename(struct kernfs_node *kn=
-,
->         return ret;
->  }
->
-> +static char *mba_sc_event_opt_name(struct rdt_resource *r)
-> +{
-> +       if (r->membw.mba_mbps_event =3D=3D QOS_L3_MBM_LOCAL_EVENT_ID)
-> +               return ",mba_MBps_event=3Dmbm_local_bytes";
-> +       else if (r->membw.mba_mbps_event =3D=3D QOS_L3_MBM_TOTAL_EVENT_ID=
-)
-> +               return ",mba_MBps_event=3Dmbm_total_bytes";
-> +       return "";
-> +}
-> +
->  static int rdtgroup_show_options(struct seq_file *seq, struct kernfs_roo=
-t *kf)
->  {
-> +       struct rdt_resource *r_mba =3D &rdt_resources_all[RDT_RESOURCE_MB=
-A].r_resctrl;
-> +
->         if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L3))
->                 seq_puts(seq, ",cdp");
->
->         if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L2))
->                 seq_puts(seq, ",cdpl2");
->
-> -       if (is_mba_sc(&rdt_resources_all[RDT_RESOURCE_MBA].r_resctrl))
-> -               seq_puts(seq, ",mba_MBps");
-> +       if (is_mba_sc(r_mba))
-> +               seq_puts(seq, mba_sc_event_opt_name(r_mba));
->
->         if (resctrl_debug)
->                 seq_puts(seq, ",debug");
-> --
-> 2.41.0
->
 
-Consider the setting-both-events quirk and a little bit of defensive
-programming for get_mbm_data() returning NULL.
-
-Assuming the case of "Local" is fixed in the commit message:
-
-Reviewed-by: Peter Newman <peternewman@google.com>
-
-Thanks!
+-- 
+With best wishes
+Dmitry
