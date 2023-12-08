@@ -2,141 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9320280A3B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D35BC80A3C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233450AbjLHMpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 07:45:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59692 "EHLO
+        id S1573740AbjLHMrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 07:47:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232504AbjLHMpD (ORCPT
+        with ESMTP id S233520AbjLHMrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 07:45:03 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E4B1D11C;
-        Fri,  8 Dec 2023 04:45:09 -0800 (PST)
-Received: from [192.168.178.49] (dynamic-adsl-84-220-28-122.clienti.tiscali.it [84.220.28.122])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 6D4F120B74C0;
-        Fri,  8 Dec 2023 04:45:04 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6D4F120B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1702039509;
-        bh=zL4AbNjbmi2aO3fv6OGRUpOmIiBiCf30fFHaYwt5Raw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=BUVmKnGDTA53reQHcFIoKapthWuSsj+Fmj6JeteJHUjBCYTQnSIwz7B6+waD6/wP9
-         LGE6tu/GYfp6DCQzyVDgeWn0q3Gluu/kFJVlcB2qjuyCbBzZmqP0Lbdblyx+6U/ra1
-         o/QBLXcaByDmFUW2O9ZFuXtSmLmoR7hlTN0mpJ98=
-Message-ID: <b99c0f94-da56-4963-984d-ae177b0b7b0b@linux.microsoft.com>
-Date:   Fri, 8 Dec 2023 13:45:01 +0100
+        Fri, 8 Dec 2023 07:47:04 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2B8BE1997;
+        Fri,  8 Dec 2023 04:47:09 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DE6D1063;
+        Fri,  8 Dec 2023 04:47:54 -0800 (PST)
+Received: from bogus (unknown [10.57.42.162])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B4BCE3F762;
+        Fri,  8 Dec 2023 04:47:04 -0800 (PST)
+Date:   Fri, 8 Dec 2023 12:45:03 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     David Dai <davidai@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Masami Hiramatsu <mhiramat@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        Gupta Pankaj <pankaj.gupta@amd.com>,
+        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: cpufreq: add virtual cpufreq device
+Message-ID: <20231208124503.unhka7c6ihzrrwhu@bogus>
+References: <20231111014933.1934562-1-davidai@google.com>
+ <20231111014933.1934562-2-davidai@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
-Content-Language: en-US
-To:     "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc:     "cascardo@canonical.com" <cascardo@canonical.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Cui, Dexuan" <decui@microsoft.com>,
-        "mhkelley58@gmail.com" <mhkelley58@gmail.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
-        "nik.borisov@suse.com" <nik.borisov@suse.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
- <20231123135846.pakk44rqbbi7njmb@box.shutemov.name>
- <9f550947-9d13-479c-90c4-2e3f7674afee@linux.microsoft.com>
- <20231124104337.gjfyasjmo5pp666l@box.shutemov.name>
- <58c82110-45b2-4e23-9a82-90e1f3fa43c2@linux.microsoft.com>
- <20231124133358.sdhomfs25seki3lg@box.shutemov.name>
- <6f27610f-afc4-4356-b297-13253bb0a232@linux.microsoft.com>
- <ffcc8c550d5ba6122b201d8170b42ee581826d47.camel@intel.com>
- <02e079e8-cc72-49d8-9191-8a753526eb18@linux.microsoft.com>
- <7b725783f1f9102c176737667bfec12f75099961.camel@intel.com>
- <fa86fbd1-998b-456b-971f-a5a94daeca28@linux.microsoft.com>
- <DM8PR11MB57503924C64E1C79FB585496E78BA@DM8PR11MB5750.namprd11.prod.outlook.com>
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <DM8PR11MB57503924C64E1C79FB585496E78BA@DM8PR11MB5750.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231111014933.1934562-2-davidai@google.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/12/2023 18:36, Reshetova, Elena wrote:
->>>> The TDVMCALLs are related to the I/O path (networking/block io) into the L2
->> guest, and
->>>> so they intentionally go straight to L0 and are never injected to L1. L1 is not
->>>> involved in that path at all.
->>>>
->>>> Using something different than TDVMCALLs here would lead to additional
->> traps to L1 and
->>>> just add latency/complexity.
->>>
->>> Looks by default you assume we should use TDX partitioning as "paravisor L1" +
->>> "L0 device I/O emulation".
->>>
->>
->> I don't actually want to impose this model on anyone, but this is the one that
->> could use some refactoring. I intend to rework these patches to not use a single
->> "td_partitioning_active" for decisions.
->>
->>> I think we are lacking background of this usage model and how it works.  For
->>> instance, typically L2 is created by L1, and L1 is responsible for L2's device
->>> I/O emulation.  I don't quite understand how could L0 emulate L2's device I/O?
->>>
->>> Can you provide more information?
->>
->> Let's differentiate between fast and slow I/O. The whole point of the paravisor in
->> L1 is to provide device emulation for slow I/O: TPM, RTC, NVRAM, IO-APIC, serial
->> ports.
+On Fri, Nov 10, 2023 at 05:49:29PM -0800, David Dai wrote:
+> Adding bindings to represent a virtual cpufreq device.
 > 
-> Out of my curiosity and not really related to this discussion, but could you please
-> elaborate on RTC part here? Do you actually host secure time in L1 to be provided
-> to the L2? 
+> Virtual machines may expose MMIO regions for a virtual cpufreq device
+> for guests to read frequency information or to request frequency
+> selection. The virtual cpufreq device has an individual controller for
+> each frequency domain.
 > 
-> Best Regards,
-> Elena.
+> Co-developed-by: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: David Dai <davidai@google.com>
+> ---
+>  .../cpufreq/qemu,cpufreq-virtual.yaml         | 99 +++++++++++++++++++
+>  1 file changed, 99 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml b/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml
+> new file mode 100644
+> index 000000000000..16606cf1fd1a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml
+> @@ -0,0 +1,99 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/cpufreq/qemu,cpufreq-virtual.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Virtual CPUFreq
+> +
+> +maintainers:
+> +  - David Dai <davidai@google.com>
+> +  - Saravana Kannan <saravanak@google.com>
+> +
+> +description:
+> +  Virtual CPUFreq is a virtualized driver in guest kernels that sends frequency
+> +  selection of its vCPUs as a hint to the host through MMIO regions. Each vCPU
+> +  is associated with a frequency domain which can be shared with other vCPUs.
+> +  Each frequency domain has its own set of registers for frequency controls.
+> +
 
-Hi Elena,
+Are these register controls described somewhere ? The reason I ask is we
+should be able to have single implementation of this virtual cpufreq
+irrespective of the firmware used(DT vs ACPI) IMO.
 
-I think this RTC is more for compatibility and to give the guest a way to initialize
-the system clock. This could potentially be a secure time source in the future but it
-isn't right now. This is what the guest sees right now (might need some more
-enlightenment):
+> +properties:
+> +  compatible:
+> +    const: qemu,virtual-cpufreq
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description:
+> +      Address and size of region containing frequency controls for each of the
+> +      frequency domains. Regions for each frequency domain is placed
+> +      contiugously and contain registers for controlling DVFS(Dynamic Frequency
+> +      and Voltage) characteristics. The size of the region is proportional to
+> +      total number of frequency domains.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    // This example shows a two CPU configuration with a frequency domain
+> +    // for each CPU.
+> +    cpus {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      cpu@0 {
+> +        compatible = "arm,armv8";
+> +        device_type = "cpu";
+> +        reg = <0x0>;
+> +        operating-points-v2 = <&opp_table0>;
+> +      };
+> +
+> +      cpu@1 {
+> +        compatible = "arm,armv8";
+> +        device_type = "cpu";
+> +        reg = <0x0>;
+> +        operating-points-v2 = <&opp_table1>;
+> +      };
+> +    };
+> +
+> +    opp_table0: opp-table-0 {
+> +      compatible = "operating-points-v2";
+> +      opp-shared;
+> +
+> +      opp1098000000 {
+> +        opp-hz = /bits/ 64 <1098000000>;
+> +        opp-level = <1>;
+> +      };
+> +
+> +      opp1197000000 {
+> +        opp-hz = /bits/ 64 <1197000000>;
+> +        opp-level = <2>;
+> +      };
+> +    };
+> +
+> +    opp_table1: opp-table-1 {
+> +      compatible = "operating-points-v2";
+> +      opp-shared;
+> +
+> +      opp1106000000 {
+> +        opp-hz = /bits/ 64 <1106000000>;
+> +        opp-level = <1>;
+> +      };
+> +
+> +      opp1277000000 {
+> +        opp-hz = /bits/ 64 <1277000000>;
+> +        opp-level = <2>;
+> +      };
+> +    };
+>
 
-# dmesg | grep -E -i 'clock|rtc|tsc'
-[    0.000000] clocksource: hyperv_clocksource_tsc_page: mask: 0xffffffffffffffff max_cycles: 0x24e6a1710, max_idle_ns: 440795202120 ns
-[    0.000001] tsc: Marking TSC unstable due to running on Hyper-V
-[    0.003621] tsc: Detected 2100.000 MHz processor
-[    0.411943] clocksource: refined-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645519600211568 ns
-[    0.887459] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
-[    0.895842] PM: RTC time: 16:31:58, date: 2023-12-07
-[    1.043431] PTP clock support registered
-[    1.096563] clocksource: Switched to clocksource hyperv_clocksource_tsc_page
-[    1.384341] rtc_cmos 00:02: registered as rtc0
-[    1.387469] rtc_cmos 00:02: setting system clock to 2023-12-07T16:31:58 UTC (1701966718)
-[    1.392529] rtc_cmos 00:02: alarms up to one day, 114 bytes nvram
-[    1.484243] sched_clock: Marking stable (1449873200, 33603000)->(3264982600, -1781506400)
+I think using OPP with absolute frequencies seems not appropriate here.
+Why can't these fetched from the registers and have some abstract values
+instead ?
 
-Jeremi
+> +    soc {
+> +      #address-cells = <1>;
+> +      #size-cells = <1>;
+> +
+> +      cpufreq@1040000 {
+> +        compatible = "qemu,virtual-cpufreq";
+> +        reg = <0x1040000 0x10>;
+
+So just 16bytes for 2 CPU system ? How does the register layout look like ?
+I assume just 4 x 32bit registers: 2 for reading and 2 for setting the
+frequencies ?
+
+--
+Regards,
+Sudeep
