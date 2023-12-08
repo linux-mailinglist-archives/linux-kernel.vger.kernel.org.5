@@ -2,275 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B0180AB35
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C3080AB3A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574515AbjLHRxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:53:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
+        id S1574528AbjLHRxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:53:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574152AbjLHRxH (ORCPT
+        with ESMTP id S1574537AbjLHRxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:53:07 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71771D54;
-        Fri,  8 Dec 2023 09:53:13 -0800 (PST)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8HmRuI004859;
-        Fri, 8 Dec 2023 17:53:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=aOeljEYHqNEgKhz/BD6fDUZMLkHsi4yd87IWatixXCA=;
- b=Pm99gtXZ73M74T/25u/BMy31HmcnsfrDH5OGUCGIBUHuXkTgoRo6Qn4qacSD4XlX2NEA
- iR0I/iD2UlF3Tu9ZU+9Y5qRjP+4A+OvPsnFi081sduLBpl5GEqYECDyQPd88YPfo2Rh5
- hq/Ltgz/pgHziDcEHjVRkIQpB9uQXb+Qj9/Rs5sP1dO+r7NQR3D8Jyp7T9/AxntawWws
- obYyEJZ+2pZokdEVvtKr3zl8NFhTG9Qr1iaX8wRCCS98mhbVnPE642pE1Dd4E/HNeLUq
- sjKG+Y7cZX7DnHxlJl1AyxU1+x1hHFoNnt/HPFtf/66ZO+7f4lsue3nQ14wlL4Mol9hp FA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uuj96jtt0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 17:53:06 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B8Hr53C021554
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 8 Dec 2023 17:53:05 GMT
-Received: from [10.110.30.94] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Dec
- 2023 09:53:02 -0800
-Message-ID: <8eea4a8e-0c70-3768-79f0-1a2bfe083ed7@quicinc.com>
-Date:   Fri, 8 Dec 2023 09:53:00 -0800
+        Fri, 8 Dec 2023 12:53:17 -0500
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7300A1999
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:53:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=qfmys4whkrbxhizugrkv3fumau.protonmail; t=1702058001; x=1702317201;
+        bh=hVJsuEvFyRzSwsIFDjR8bBfXvfqQalvBoy1pmXp64qw=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=mE9EkolL56rnQaDX118ZC8Qv3X5TZeYrKUwaDSEIQn+WhbP1IxA31PBFYX1w4PEfm
+         tbDUzGQDgCFongIl664Rpjt0Q6D4+Ta/SBJvda/xqssrHxUAN/jDW+M0rZ26/jZ7bF
+         hndgRizrrT3D+EtySJ7XnPTGMg1V4oE9UN6NpZai6CunjP+grH/LbKkJTx9or3kn/u
+         7Y7h499dZSav1SYvkjLVnEWc7pPhiT0gxp7UgDLVBq3paoIX/LqcVWwVN/TqHRmJOF
+         h6esC13pxSSp19Splgu14PaV0+GojhlmckFGZ9EGMD53F1Wblwgy4oTz1b5PPNmmgL
+         L+R1EmlgGTGvA==
+Date:   Fri, 08 Dec 2023 17:53:08 +0000
+To:     Alice Ryhl <aliceryhl@google.com>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 7/7] rust: file: add abstraction for `poll_table`
+Message-ID: <k_vpgbqKAKoTFzJIBCjvgxGhX73kgkcv6w9kru78lBmTjHHvXPy05g8KxAKJ-ODARBxlZUp3a5e4F9TemGqQiskkwFCpTOhzxlvy378tjHM=@proton.me>
+In-Reply-To: <20231206-alice-file-v2-7-af617c0d9d94@google.com>
+References: <20231206-alice-file-v2-0-af617c0d9d94@google.com> <20231206-alice-file-v2-7-af617c0d9d94@google.com>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 15/16] drm/msm/dpu: introduce separate wb2_format
- arrays for rgb and yuv
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "David Airlie" <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>
-References: <20231208050641.32582-1-quic_abhinavk@quicinc.com>
- <20231208050641.32582-16-quic_abhinavk@quicinc.com>
- <CAA8EJpqfCfETawp1up76S6gryO+Q4KxPB3ThwZCe7DCkp=GkBQ@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJpqfCfETawp1up76S6gryO+Q4KxPB3ThwZCe7DCkp=GkBQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 051TRLS3deczFWlARKUQrV5xBODbhbIn
-X-Proofpoint-ORIG-GUID: 051TRLS3deczFWlARKUQrV5xBODbhbIn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-08_11,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- mlxlogscore=801 malwarescore=0 phishscore=0 bulkscore=0 impostorscore=0
- lowpriorityscore=0 adultscore=0 mlxscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312080147
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/6/23 12:59, Alice Ryhl wrote:
+> diff --git a/rust/bindings/lib.rs b/rust/bindings/lib.rs
+> index 9bcbea04dac3..eeb291cc60db 100644
+> --- a/rust/bindings/lib.rs
+> +++ b/rust/bindings/lib.rs
+> @@ -51,3 +51,4 @@ mod bindings_helper {
+>=20
+>  pub const GFP_KERNEL: gfp_t =3D BINDINGS_GFP_KERNEL;
+>  pub const __GFP_ZERO: gfp_t =3D BINDINGS___GFP_ZERO;
+> +pub const POLLFREE: __poll_t =3D BINDINGS_POLLFREE;
 
+You are no longer using this constant, should this still exist?
 
-On 12/8/2023 3:44 AM, Dmitry Baryshkov wrote:
-> On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->> Lets rename the existing wb2_formats array wb2_formats_rgb to indicate
->> that it has only RGB formats and can be used on any chipset having a WB
->> block.
->>
->> Introduce a new wb2_formats_rgb_yuv array to the catalog to
->> indicate support for YUV formats to writeback in addition to RGB.
->>
->> Chipsets which have support for CDM block will use the newly added
->> wb2_formats_rgb_yuv array.
-> 
-> This means that the catalog can go out of sync, if one adds a CDM
-> block but doesn't update wb_formats and vice versa.
-> Can we deduce the format list from the WB code? Is the format list
-> really static or does it change between platforms (please keep msm8996
-> / msm8998 in mind).
-> 
+[...]
 
-Yes this is a valid concern. catalog could potentially go out of sync.
+> +    fn get_qproc(&self) -> bindings::poll_queue_proc {
+> +        let ptr =3D self.0.get();
+> +        // SAFETY: The `ptr` is valid because it originates from a refer=
+ence, and the `_qproc`
+> +        // field is not modified concurrently with this call since we ha=
+ve an immutable reference.
 
-I checked a few chipsets now and the WB formats didnt change among them.
+This needs an invariant on `PollTable` (i.e. `self.0` is valid).
 
-I do need to check more chipsets but downstream does not maintain this 
-in devicetree which means we can just move these arrays to WB code 
-instead of maintaining them in the catalog.
+> +        unsafe { (*ptr)._qproc }
+> +    }
+> +
+> +    /// Register this [`PollTable`] with the provided [`PollCondVar`], s=
+o that it can be notified
+> +    /// using the condition variable.
+> +    pub fn register_wait(&mut self, file: &File, cv: &PollCondVar) {
+> +        if let Some(qproc) =3D self.get_qproc() {
+> +            // SAFETY: The pointers to `self` and `file` are valid becau=
+se they are references.
 
-We will still need to maintain two arrays. One to be used if CDM block 
-has been added and the other if not.
+What about cv.wait_list...
 
-I must confess one point though. I have not seen any chipset yet where 
-WB block is present but CDM block is not.
+> +            //
+> +            // Before the wait list is destroyed, the destructor of `Pol=
+lCondVar` will clear
+> +            // everything in the wait list, so the wait list is not used=
+ after it is freed.
+> +            unsafe { qproc(file.as_ptr() as _, cv.wait_list.get(), self.=
+0.get()) };
+> +        }
+> +    }
+> +}
+> +
+> +/// A wrapper around [`CondVar`] that makes it usable with [`PollTable`]=
+.
+> +///
+> +/// # Invariant
+> +///
+> +/// If `needs_synchronize_rcu` is false, then there is nothing registere=
+d with `register_wait`.
 
-So at this point, the only purpose of the two arrays will be till the 
-point where CDM blk has been added to all the required chipsets in the 
-catalog. Then we can drop the RGB only array and maintain the one which 
-has all formats.
+Not able to find `needs_synchronize_rcu` anywhere else, should this be
+here?
 
->>
->> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
->> ---
->>   .../msm/disp/dpu1/catalog/dpu_10_0_sm8650.h   |  4 +-
->>   .../msm/disp/dpu1/catalog/dpu_6_0_sm8250.h    |  4 +-
->>   .../msm/disp/dpu1/catalog/dpu_6_2_sc7180.h    |  4 +-
->>   .../msm/disp/dpu1/catalog/dpu_7_2_sc7280.h    |  4 +-
->>   .../msm/disp/dpu1/catalog/dpu_9_0_sm8550.h    |  4 +-
->>   .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    | 37 ++++++++++++++++++-
->>   6 files changed, 46 insertions(+), 11 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
->> index 04d2a73dd942..eb5dfff2ec4f 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
->> @@ -341,8 +341,8 @@ static const struct dpu_wb_cfg sm8650_wb[] = {
->>                  .name = "wb_2", .id = WB_2,
->>                  .base = 0x65000, .len = 0x2c8,
->>                  .features = WB_SM8250_MASK,
->> -               .format_list = wb2_formats,
->> -               .num_formats = ARRAY_SIZE(wb2_formats),
->> +               .format_list = wb2_formats_rgb,
->> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
->>                  .xin_id = 6,
->>                  .vbif_idx = VBIF_RT,
->>                  .maxlinewidth = 4096,
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
->> index 58b0f50518c8..a57d50b1f028 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
->> @@ -336,8 +336,8 @@ static const struct dpu_wb_cfg sm8250_wb[] = {
->>                  .name = "wb_2", .id = WB_2,
->>                  .base = 0x65000, .len = 0x2c8,
->>                  .features = WB_SM8250_MASK,
->> -               .format_list = wb2_formats,
->> -               .num_formats = ARRAY_SIZE(wb2_formats),
->> +               .format_list = wb2_formats_rgb_yuv,
->> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb_yuv),
->>                  .clk_ctrl = DPU_CLK_CTRL_WB2,
->>                  .xin_id = 6,
->>                  .vbif_idx = VBIF_RT,
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
->> index bcfedfc8251a..7382ebb6e5b2 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
->> @@ -157,8 +157,8 @@ static const struct dpu_wb_cfg sc7180_wb[] = {
->>                  .name = "wb_2", .id = WB_2,
->>                  .base = 0x65000, .len = 0x2c8,
->>                  .features = WB_SM8250_MASK,
->> -               .format_list = wb2_formats,
->> -               .num_formats = ARRAY_SIZE(wb2_formats),
->> +               .format_list = wb2_formats_rgb,
->> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
->>                  .clk_ctrl = DPU_CLK_CTRL_WB2,
->>                  .xin_id = 6,
->>                  .vbif_idx = VBIF_RT,
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
->> index 19c2b7454796..2f153e0b5c6a 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
->> @@ -169,8 +169,8 @@ static const struct dpu_wb_cfg sc7280_wb[] = {
->>                  .name = "wb_2", .id = WB_2,
->>                  .base = 0x65000, .len = 0x2c8,
->>                  .features = WB_SM8250_MASK,
->> -               .format_list = wb2_formats,
->> -               .num_formats = ARRAY_SIZE(wb2_formats),
->> +               .format_list = wb2_formats_rgb_yuv,
->> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb_yuv),
->>                  .clk_ctrl = DPU_CLK_CTRL_WB2,
->>                  .xin_id = 6,
->>                  .vbif_idx = VBIF_RT,
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
->> index bf56265967c0..ad48defa154f 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
->> @@ -315,8 +315,8 @@ static const struct dpu_wb_cfg sm8550_wb[] = {
->>                  .name = "wb_2", .id = WB_2,
->>                  .base = 0x65000, .len = 0x2c8,
->>                  .features = WB_SM8250_MASK,
->> -               .format_list = wb2_formats,
->> -               .num_formats = ARRAY_SIZE(wb2_formats),
->> +               .format_list = wb2_formats_rgb,
->> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
->>                  .xin_id = 6,
->>                  .vbif_idx = VBIF_RT,
->>                  .maxlinewidth = 4096,
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
->> index 1be3156cde05..c52cac7a2288 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
->> @@ -202,7 +202,7 @@ static const u32 rotation_v2_formats[] = {
->>          /* TODO add formats after validation */
->>   };
->>
->> -static const uint32_t wb2_formats[] = {
->> +static const uint32_t wb2_formats_rgb[] = {
->>          DRM_FORMAT_RGB565,
->>          DRM_FORMAT_BGR565,
->>          DRM_FORMAT_RGB888,
->> @@ -236,6 +236,41 @@ static const uint32_t wb2_formats[] = {
->>          DRM_FORMAT_XBGR4444,
->>   };
->>
->> +static const uint32_t wb2_formats_rgb_yuv[] = {
->> +       DRM_FORMAT_RGB565,
->> +       DRM_FORMAT_BGR565,
->> +       DRM_FORMAT_RGB888,
->> +       DRM_FORMAT_ARGB8888,
->> +       DRM_FORMAT_RGBA8888,
->> +       DRM_FORMAT_ABGR8888,
->> +       DRM_FORMAT_XRGB8888,
->> +       DRM_FORMAT_RGBX8888,
->> +       DRM_FORMAT_XBGR8888,
->> +       DRM_FORMAT_ARGB1555,
->> +       DRM_FORMAT_RGBA5551,
->> +       DRM_FORMAT_XRGB1555,
->> +       DRM_FORMAT_RGBX5551,
->> +       DRM_FORMAT_ARGB4444,
->> +       DRM_FORMAT_RGBA4444,
->> +       DRM_FORMAT_RGBX4444,
->> +       DRM_FORMAT_XRGB4444,
->> +       DRM_FORMAT_BGR565,
->> +       DRM_FORMAT_BGR888,
->> +       DRM_FORMAT_ABGR8888,
->> +       DRM_FORMAT_BGRA8888,
->> +       DRM_FORMAT_BGRX8888,
->> +       DRM_FORMAT_XBGR8888,
->> +       DRM_FORMAT_ABGR1555,
->> +       DRM_FORMAT_BGRA5551,
->> +       DRM_FORMAT_XBGR1555,
->> +       DRM_FORMAT_BGRX5551,
->> +       DRM_FORMAT_ABGR4444,
->> +       DRM_FORMAT_BGRA4444,
->> +       DRM_FORMAT_BGRX4444,
->> +       DRM_FORMAT_XBGR4444,
->> +       DRM_FORMAT_NV12,
->> +};
->> +
->>   /*************************************************************
->>    * SSPP sub blocks config
->>    *************************************************************/
->> --
->> 2.40.1
->>
-> 
-> 
+> +///
+> +/// [`CondVar`]: crate::sync::CondVar
+> +#[pin_data(PinnedDrop)]
+> +pub struct PollCondVar {
+> +    #[pin]
+> +    inner: CondVar,
+> +}
+
+[..]
+
+> +#[pinned_drop]
+> +impl PinnedDrop for PollCondVar {
+> +    fn drop(self: Pin<&mut Self>) {
+> +        // Clear anything registered using `register_wait`.
+> +        //
+> +        // SAFETY: The pointer points at a valid wait list.
+
+I was a bit confused by "wait list", since the C type is named
+`wait_queue_head`, maybe just use the type name?
+
+--=20
+Cheers,
+Benno
+
+> +        unsafe { bindings::__wake_up_pollfree(self.inner.wait_list.get()=
+) };
+> +
+> +        // Wait for epoll items to be properly removed.
+> +        //
+> +        // SAFETY: Just an FFI call.
+> +        unsafe { bindings::synchronize_rcu() };
+> +    }
+> +}
