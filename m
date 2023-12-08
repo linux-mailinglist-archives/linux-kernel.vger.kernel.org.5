@@ -2,132 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 628EF80AF47
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 658E080AF4B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574821AbjLHWAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 17:00:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60646 "EHLO
+        id S1574831AbjLHWBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 17:01:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235943AbjLHWAa (ORCPT
+        with ESMTP id S1574796AbjLHWBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 17:00:30 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472371716;
-        Fri,  8 Dec 2023 14:00:36 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-332fd81fc8dso2409570f8f.3;
-        Fri, 08 Dec 2023 14:00:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702072835; x=1702677635; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=YMLpYnfVM9iEfLiGUcdGRUL+oUiUpU3M2wg2/3ArWGU=;
-        b=jpJDJgL2I3xGR5RTIUWOUTtHwj4J/5JHqP3NUCT8fn1iXw451Da3id8428VXsge2ch
-         l60+sG5iMOonMl2NTKZ8UW0gH+NWY1LFGPK4JVniYnbos20Ye4LtnKkiwCbIQHYx0jhT
-         FrANCq8uPjblXrixNF57CnrMVbpNHojXQR3ijHgwYARJmcx8RXl1sJEQUTOA9QlsvjFZ
-         A1ugAzcmfueGGExQGCZnqRXVxohOJu5nBxAXw5MdIY7S6MadVdVfAwP9ixHGeKOXNveC
-         ftadUH03Hb7qNEUx120wcSwbqsxE62p/kS7g5vEH44Xb1QGMyXOTWJ8U+uChL9LDmGC6
-         AHIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702072835; x=1702677635;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YMLpYnfVM9iEfLiGUcdGRUL+oUiUpU3M2wg2/3ArWGU=;
-        b=SjAoFJbNYUEIBmAzPxAHs8bfvE1ispH9JgYoHQz0+eLeftDsMrBtrXtY6gUKIUW+tr
-         QCc50qYSEBOdLfo9FDLHG3KVxL1KNfkz3ulKfBTuYXZKAsuXF+9tbSl99y0c3jzRh6/1
-         6+sGVAFq5ck8GiHYs9eL7BlUXNRWjHjC8P5JttFsqCnIXlF1bwsW7KMBs0RNMxpfDeYW
-         GEaQ9HdQXlYhVrnEracsa0DAoeJXmfWaVUqGYd3PouLlzpNygDcT2ufkImezNUowxSr7
-         5mn6FgxIeitLW6RpqZ5p/R1n979X0OFDwi/3D2+AvaKkHb6swHj0dNTuZ7URu8wep/jw
-         7pQQ==
-X-Gm-Message-State: AOJu0YzEA557opD8q3J5O0E9YgUxlUxOGhd9+fy3d4rmGzVhEHw8rZmv
-        L4W5HwJVraH45wgWsJ2Q2yqbEG3eJYb/1w==
-X-Google-Smtp-Source: AGHT+IG9SXThv3yUhXEDCkrqxc4eKcp8Fh/DdpaDLaCsgdbRKVYGChk+W8Ys63O4Y8TnOP80ZNLZiQ==
-X-Received: by 2002:adf:cf05:0:b0:333:2fd2:68b8 with SMTP id o5-20020adfcf05000000b003332fd268b8mr375478wrj.75.1702072834234;
-        Fri, 08 Dec 2023 14:00:34 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id k18-20020a5d5192000000b0033339027c89sm2823380wrv.108.2023.12.08.14.00.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 14:00:33 -0800 (PST)
-Message-ID: <acfff73b4a0b6d325f749b580ee593ce8d0187f6.camel@gmail.com>
-Subject: Re: [PATCH v2] libbpf: add pr_warn() for EINVAL cases in
- linker_sanity_check_elf
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Sergei Trofimovich <slyich@gmail.com>, bpf@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Date:   Sat, 09 Dec 2023 00:00:32 +0200
-In-Reply-To: <20231208215100.435876-1-slyich@gmail.com>
-References: <159e94e7ce82e9432bd2bba0141c8feab0a9a2e6.camel@gmail.com>
-         <20231208215100.435876-1-slyich@gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+        Fri, 8 Dec 2023 17:01:15 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E8B10E0
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 14:01:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86A21C433C8;
+        Fri,  8 Dec 2023 22:01:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702072881;
+        bh=SNEIuK1x82a/ituBsnrXjG/P6Xh0PqqHypBFD2xqtKQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JKAhh+wz98l5nq5AMUM9KBCVxe786nbpWT05ZNlH3IVPCDVJua0Mus2Bwm7GCM6Mo
+         D2QGnJZeO7CBR3qdK3Wely9K8VhPuB8QBJb0LSSZtVQnUCzx3pUG/kOKEuxaE3C0q4
+         YR97a1CJt9qex8GMpMrwqLyIv755Nnzqdd1hERKdeBajk/7p9/1WiA6+IKtvMAhUI5
+         zMjkYPvgTjUs4Nwb1aNValqVAJiHGLdLAhe+GIAOm+ncgDtp2qrca6sJi2b72hBYht
+         lmMrwdyyLCQtwGWqr9C+oUmlug2zjNnou8UnNmbBcd0WB2yM99dImg1SOzFAKbxMlH
+         mojxOyRHlqXEg==
+Date:   Fri, 8 Dec 2023 23:01:15 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Amir Goldstein <amir73il@gmail.com>,
+        Seth Forshee <sforshee@kernel.org>
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, miklos@szeredi.hu,
+        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zohar@linux.ibm.com, paul@paul-moore.com, stefanb@linux.ibm.com,
+        jlayton@kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: Re: [RFC][PATCH] overlayfs: Redirect xattr ops on security.evm to
+ security.evm_overlayfs
+Message-ID: <20231208-tauziehen-zerfetzt-026e7ee800a0@brauner>
+References: <20231208172308.2876481-1-roberto.sassu@huaweicloud.com>
+ <CAOQ4uxivpZ+u0A5kE962XST37-ey2Tv9EtddnZQhk3ohRkcQTw@mail.gmail.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxivpZ+u0A5kE962XST37-ey2Tv9EtddnZQhk3ohRkcQTw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-12-08 at 21:51 +0000, Sergei Trofimovich wrote:
-> Before the change on `i686-linux` `systemd` build failed as:
->=20
->     $ bpftool gen object src/core/bpf/socket_bind/socket-bind.bpf.o src/c=
-ore/bpf/socket_bind/socket-bind.bpf.unstripped.o
->     Error: failed to link 'src/core/bpf/socket_bind/socket-bind.bpf.unstr=
-ipped.o': Invalid argument (22)
->=20
-> After the change it fails as:
->=20
->     $ bpftool gen object src/core/bpf/socket_bind/socket-bind.bpf.o src/c=
-ore/bpf/socket_bind/socket-bind.bpf.unstripped.o
->     libbpf: ELF section #9 has inconsistent alignment addr=3D8 !=3D d=3D4=
- in src/core/bpf/socket_bind/socket-bind.bpf.unstripped.o
->     Error: failed to link 'src/core/bpf/socket_bind/socket-bind.bpf.unstr=
-ipped.o': Invalid argument (22)
->=20
-> Now it's slightly easier to figure out what is wrong with an ELF file.
->=20
-> CC: Alexei Starovoitov <ast@kernel.org>
-> CC: Daniel Borkmann <daniel@iogearbox.net>
-> CC: Andrii Nakryiko <andrii@kernel.org>
-> CC: Martin KaFai Lau <martin.lau@linux.dev>
-> CC: Song Liu <song@kernel.org>
-> CC: Yonghong Song <yonghong.song@linux.dev>
-> CC: John Fastabend <john.fastabend@gmail.com>
-> CC: KP Singh <kpsingh@kernel.org>
-> CC: Stanislav Fomichev <sdf@google.com>
-> CC: Hao Luo <haoluo@google.com>
-> CC: Jiri Olsa <jolsa@kernel.org>
-> CC: Eduard Zingerman <eddyz87@gmail.com>
-> CC: bpf@vger.kernel.org
-> Signed-off-by: Sergei Trofimovich <slyich@gmail.com>
-> ---
->  tools/lib/bpf/linker.c | 24 ++++++++++++++++++++----
->  1 file changed, 20 insertions(+), 4 deletions(-)
-> Change since v1:
-> Following Eduard's suggestion added one extra pr_warn() call around
-> section alignment and added compared values into warning messages.
+On Fri, Dec 08, 2023 at 11:55:19PM +0200, Amir Goldstein wrote:
+> On Fri, Dec 8, 2023 at 7:25 PM Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
+> >
+> > From: Roberto Sassu <roberto.sassu@huawei.com>
+> >
+> > EVM updates the HMAC in security.evm whenever there is a setxattr or
+> > removexattr operation on one of its protected xattrs (e.g. security.ima).
+> >
+> > Unfortunately, since overlayfs redirects those xattrs operations on the
+> > lower filesystem, the EVM HMAC cannot be calculated reliably, since lower
+> > inode attributes on which the HMAC is calculated are different from upper
+> > inode attributes (for example i_generation and s_uuid).
+> >
+> > Although maybe it is possible to align such attributes between the lower
+> > and the upper inode, another idea is to map security.evm to another name
+> > (security.evm_overlayfs)
+> 
+> If we were to accept this solution, this will need to be trusted.overlay.evm
+> to properly support private overlay xattr escaping.
+> 
+> > during an xattr operation, so that it does not
+> > collide with security.evm set by the lower filesystem.
+> 
+> You are using wrong terminology and it is very confusing to me.
 
-Thank you for doing adjustments.
-(Note: when I apply this patch locally full CC block is a part of the
-       commit message, this is usually omitted from commit messages).
+Same.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> see the overlay mount command has lowerdir= and upperdir=.
+> Seems that you are using lower filesystem to refer to the upper fs
+> and upper filesystem to refer to overlayfs.
+> 
+> >
+> > Whenever overlayfs wants to set security.evm, it is actually setting
+> > security.evm_overlayfs calculated with the upper inode attributes. The
+> > lower filesystem continues to update security.evm.
+> >
+> 
+> I understand why that works, but I am having a hard time swallowing
+> the solution, mainly because I feel that there are other issues on the
+> intersection of overlayfs and IMA and I don't feel confident that this
+> addresses them all.
+> 
+> If you want to try to convince me, please try to write a complete
+> model of how IMA/EVM works with overlayfs, using the section
+> "Permission model" in Documentation/filesystems/overlayfs.rst
+> as a reference.
+
+I want us to go the other way. Make the overlayfs layer completely
+irrelevant for EVM and IMA. See a related discussion here:
+
+Subject: Re: [PATCH 09/16] fs: add vfs_set_fscaps()
+https://lore.kernel.org/r/ZXHZ8uNEg1IK5WMW@do-x1extreme
+
+Amir, if you have some time I'd appreciate a comment on that.
