@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BC080990B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 03:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 067EF80990C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 03:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572991AbjLHCKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 21:10:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
+        id S1572949AbjLHCLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 21:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLHCKr (ORCPT
+        with ESMTP id S229531AbjLHCLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 21:10:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C3E172A
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 18:10:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702001452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Il5oopo58FBky7wapbSa4VtHGAOr6/LyABJzUA84HrQ=;
-        b=B+8Jhnni6g2PdTCMcvsR1wQ5ksIIrXQYL0/8WX4InCJ59VntgT+V8Uiw5zqFc0CJ8DCjbM
-        RqFmancyODUeOiAO6CUtUcK2aTCs5rUAYGNkWKvY1+h8CLEdHm0IUverUZzlYMEbAA5oHK
-        3yRnBe1GKYzcbpKsbesr412X/FNDblk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-303-1J2f_jeiOX62oP58qsBoLQ-1; Thu, 07 Dec 2023 21:10:51 -0500
-X-MC-Unique: 1J2f_jeiOX62oP58qsBoLQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 95D37881DF1;
-        Fri,  8 Dec 2023 02:10:50 +0000 (UTC)
-Received: from localhost (unknown [10.72.113.121])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D71DE40C6EB9;
-        Fri,  8 Dec 2023 02:10:49 +0000 (UTC)
-Date:   Fri, 8 Dec 2023 10:10:46 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Philipp Rudo <prudo@redhat.com>,
-        Donald Dutile <ddutile@redhat.com>,
-        Jiri Bohac <jbohac@suse.cz>, Pingfan Liu <piliu@redhat.com>,
-        Tao Liu <ltao@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        David Hildenbrand <dhildenb@redhat.com>
-Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
-Message-ID: <ZXJ7JpcZALSeFvox@MiWiFi-R3L-srv>
-References: <ZWiQ-II9CvGv8EWK@tiehlicka>
- <20231201123353.2b3db7fa@rotkaeppchen>
- <ZWnJyArAmFo_uYPA@tiehlicka>
- <20231201165113.43211a48@rotkaeppchen>
- <ZWoQ1k2AikSiMjys@tiehlicka>
- <20231206120805.4fdcb8ab@rotkaeppchen>
- <ZXB7_rbC0GAkIp7p@tiehlicka>
- <ZXCRF-bvm8ijXxr4@tiehlicka>
- <ZXFIsZ+0GmUZMFk3@MiWiFi-R3L-srv>
- <ZXGIeAgCcatUDa2h@tiehlicka>
+        Thu, 7 Dec 2023 21:11:02 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9C3171D
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 18:11:05 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-dbc4df9fb11so422803276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 18:11:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702001464; x=1702606264; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NrS1+gj4SQqrLBMUECtVXORlr6dGcnhoysWJjVqwxW0=;
+        b=BvxLr56noAj0MwngcFDn9sBX4EkG4BqwIc4Ak82p+YDnmjrGZciQPj2XKeG9dXgxtM
+         CGnKbQYASOFJbdM+AHJd83wDVE7rgJOgN0bIoUQWzSfWmF/exmxNVSrfATL5tz87AZRe
+         0VRXEwfL6Gu7O1lDn/lKAqCcZlraQ6i2HBfKHN4RMhGY38o7V+iZsl1zrybPPOowbOtk
+         FTesiy4M6Gkr7vvNz68zXWA6JLaUZRmOgJD55lMRL1TomYVVCtIdenNjqNxlcdhIh9Ah
+         d6JNZZScjjbxp8YbRa37wGMXjsVAparQZYvs56jrRTqWnQkC6451RKKNi1gs/cjHGrey
+         WZ4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702001464; x=1702606264;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NrS1+gj4SQqrLBMUECtVXORlr6dGcnhoysWJjVqwxW0=;
+        b=fuHXrpOZEkoTfocwVYFgxxOjSYray1C5olMrXidDVcjhCS4a30O3BlJXBy+/J+LBe9
+         OSlpyZHYg/L9FhclNhZiHU3hoC7yb6Uebpc5uFP6DGkKyW7MxYPUBV5T0KNaIWmma1IR
+         Ycn5oc+NgfuKFAI8r2n6eSHdcGyJo4WND3Qqa7FCDGwOXGm13D1xzbSLo000xqIFUsPn
+         UxFseahI2EiX4hkLTM2MNTrDutQuhcbccvEOmL5ubHBPaRdzq+/Kq8O9o5yJR+CCDPGr
+         dgtLOIZNNyE44jMso1RC55/v28V2yfvyj4H4r0l5/7sGatv5s+RP3idFDxez9GwgKEje
+         Atjg==
+X-Gm-Message-State: AOJu0YyYIecFQf/bQyVSFi17JjeaoT4lmtTu+wMIY/rJjnTQKINi6+N8
+        mbicQ8SH8SvioL9jPIDlPElBSinfzX2G3rX3pC2ZwA==
+X-Google-Smtp-Source: AGHT+IFzB/fvfpt3l9KUjfBQeyBhYz5PrQ3cvYlMjYHNiikQIZ+vKmYh5c3DKdUmzSxnO8b96mhu8iTGOuCgu0Nogu4=
+X-Received: by 2002:a25:d415:0:b0:db7:dacf:59f1 with SMTP id
+ m21-20020a25d415000000b00db7dacf59f1mr3933594ybf.101.1702001464147; Thu, 07
+ Dec 2023 18:11:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXGIeAgCcatUDa2h@tiehlicka>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20230630151842.1.If764ede23c4e09a43a842771c2ddf99608f25f8e@changeid>
+ <CAMSo37XcwAn9znSQ8202LUTdBKLDz94QJ9i43aXya5LHs-4GiQ@mail.gmail.com>
+ <87wmtqnk3y.fsf@kernel.org> <CAD=FV=VHHCsjJmVWDXN4g3U=-_SLWc2iWqbAdZPOykn+QMQojw@mail.gmail.com>
+In-Reply-To: <CAD=FV=VHHCsjJmVWDXN4g3U=-_SLWc2iWqbAdZPOykn+QMQojw@mail.gmail.com>
+From:   Yongqin Liu <yongqin.liu@linaro.org>
+Date:   Fri, 8 Dec 2023 10:10:52 +0800
+Message-ID: <CAMSo37UfQmpTb3_+URbGTbX77mTJNn4SC0aaVD5KXasMsW7Jow@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Don't touch the CE interrupt registers after
+ power up
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Kalle Valo <kvalo@kernel.org>, ath10k@lists.infradead.org,
+        Abhishek Kumar <kuabhs@chromium.org>,
+        Youghandhar Chintala <quic_youghand@quicinc.com>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <jstultz@google.com>,
+        Viktor Martensson <vmartensson@google.com>,
+        Amit Pundir <amit.pundir@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,39 +79,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/07/23 at 09:55am, Michal Hocko wrote:
-> On Thu 07-12-23 12:23:13, Baoquan He wrote:
-> [...]
-> > We can't guarantee how swift the DMA transfer could be in the cma, case,
-> > it will be a venture.
-> 
-> We can't guarantee this of course but AFAIK the DMA shouldn't take
-> minutes, right? While not perfect, waiting for some time before jumping
-> into the crash kernel should be acceptable from user POV and it should
-> work around most of those potential lingering programmed DMA transfers.
-> 
-> So I guess what we would like to hear from you as kdump maintainers is
-> this. Is it absolutely imperative that these issue must be proven
-> impossible or is a best effort approach something worth investing time
-> into? Because if the requirement is an absolute guarantee then I simply
-> do not see any feasible way to achieve the goal of reusable memory.
+On Fri, 8 Dec 2023 at 00:49, Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Thu, Dec 7, 2023 at 6:49=E2=80=AFAM Kalle Valo <kvalo@kernel.org> wrot=
+e:
+> >
+> > > Recently during our Android build test on the Dragonboard 845c board,
+> > > with the Android Common Kernel android11-5.4-lts and android12-5.4-lt=
+s branches,
+> > >
+> > > we found there are some ufshcd related changes printed,
+> > > and the serial console gets stuck, no response for input,
+> > > and the Android boot is stuck at the animation window.
+> > >
+> > > The problem is reported here
+> > >     https://issuetracker.google.com/issues/314366682
+> > > You could check there for more log details.
+> > >
+> > > And with some bisection, I found it's related to this commit,
+> > > when I revert this commit, the problem is gone.
+> > >
+> > > So replied here, not sure if you have any idea about it,
+> > > or any suggestions on what we should do next to resolve the problem?
+> >
+> > FWIW we don't support Android kernels, only kernel.org releases.
+>
+> Right. If the problem also reproduces on mainline Linux then that
+> would be interesting to know. I think db845c is at least somewhat well
+> supported by mainline so it should be possible to test it there.
 
-Honestly, I think all the discussions and proof have told clearly it's
-not a good idea. This is not about who wants this, who doesn't. So
-far, this is an objective fact that taking ,cma area for crashkernel= is
-not a good idea, it's very risky.
+I checked with the ACK android-mainline branch, which is based on the
+mainline Linux,
+this commit is there, but the problem is not seen.
 
-We don't deny this at the beginning. I tried to present all what I know,
-we have experienced, we have investigated, we have tried. I wanted to
-see if this time we can clarify some concerns may be mistaken. But it's
-not. The risk is obvious and very likely happen.
+> If I had to guess, I'd think that probably the CE interrupts are
+> firing nonstop for you and not getting handled. Then those constant
+> interrupts are (presumably) causing the UFS controller to timeout. If
+> this is true, the question is: why? Maybe you could use ftrace to
+> confirm this by adding some traces to
+> ath10k_snoc_per_engine_handler()? There's a way to get ftrace buffers
+> dumped on panic (or, if you use kdb, it has a command for it).
 
-> 
-> Let me reiterate that the existing reservation mechanism is showing its
-> limits for production systems and I strongly believe this is something
-> that needs addressing because crash dumps are very often the only tool
-> to investigate complex issues.
+Thanks for the suggestions, I will check internally on how to debug that.
 
-Yes, I admit that. But it haven't got to the point that it's too bad to
-bear so that we have to take the risk to take ,cma instead.
+> If this reproduces on mainline and it's not obvious how to fix this, I
+> don't object to a revert. As per the description of the original
+> patch, the problem being fixed was fairly rare and I didn't have a way
+> to reproduce it. The fix seemed safe to me and we've been using it on
+> Chromebooks based on sc7180, but if it had to get reverted it wouldn't
+> be the end of the world.
+>
+> -Doug
 
+
+
+--=20
+Best Regards,
+Yongqin Liu
+---------------------------------------------------------------
+#mailing list
+linaro-android@lists.linaro.org
+http://lists.linaro.org/mailman/listinfo/linaro-android
