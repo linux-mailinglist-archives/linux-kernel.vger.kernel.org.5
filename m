@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E569C809C14
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 06:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 404A9809C1C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 07:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235813AbjLHF5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 00:57:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51488 "EHLO
+        id S233139AbjLHGCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 01:02:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233276AbjLHF52 (ORCPT
+        with ESMTP id S229531AbjLHGCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 00:57:28 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D59D19A2;
-        Thu,  7 Dec 2023 21:57:03 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B81CqNC028994;
-        Thu, 7 Dec 2023 21:56:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=HEQnHUIqnjI0rxLDWe/wA9HwPEdz9nqzT9bUL9LwXow=;
- b=ZoAVrR6XhBhqwm3jZsjRCUX1EwrmtYbO3Jeam3qDhwrQy98Uw3BDTpX68yD6IRrR1Y6b
- ZKVMUKJhC9UyFjTXbH6xkqndNnfJIIyC5oUF/AkJ6/418qDFOQK5uth7GDSOQTx/OTC4
- llhbGZTf/ndsMCpYRh+p01JtniX3eu8kAaC622fwzzW3+CuVD6erGoOoGs+yP7Zm8CAR
- d7cUE2heN3K87/OmrEIM4sEprbAa81ZlxKBB8iXlsF4e1CpbSfnyUdgUjkkgfxV1kI2l
- tyB19MrPfCqn9MU+AhCytGDUw2Zn1lAmDlKjT+zbhv1uQta3vBIGf9Zm8ulcgxjGNwtF MQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3uubddbuhe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 07 Dec 2023 21:56:55 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 7 Dec
- 2023 21:56:53 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Thu, 7 Dec 2023 21:56:53 -0800
-Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
-        by maili.marvell.com (Postfix) with ESMTP id 573F63F7050;
-        Thu,  7 Dec 2023 21:56:53 -0800 (PST)
-From:   Shinas Rasheed <srasheed@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
-        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
-        <kuba@kernel.org>, <davem@davemloft.net>, <wizhao@redhat.com>,
-        <konguyen@redhat.com>, Shinas Rasheed <srasheed@marvell.com>,
-        "Veerasenareddy Burru" <vburru@marvell.com>,
-        Sathesh Edara <sedara@marvell.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Abhijit Ayarekar <aayarekar@marvell.com>,
-        "Satananda Burla" <sburla@marvell.com>
-Subject: [PATCH net v3] octeon_ep: explicitly test for firmware ready value
-Date:   Thu, 7 Dec 2023 21:56:46 -0800
-Message-ID: <20231208055646.2602363-1-srasheed@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 8 Dec 2023 01:02:01 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A643171D;
+        Thu,  7 Dec 2023 22:02:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702015327; x=1733551327;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=8YfUtY53ybfUCrDRuQ3/gMPNDKuhyX3Iq/kRdGPDIQk=;
+  b=d7N+kUK+dYlFennt86EgJxrqa+EhdbnHv78BvCY539AgEoLem6J/3CJo
+   B9Y2dtbNA0MYUXwYdzFXyYb98uFanAqvdk3e4AkLDJlrtDSWRgFeO70AB
+   LFjCAvmPddVAymJy5P7FHjBzLKHbnjiJQwH6Y2t3X9PtQvz7Hf6HuJNlY
+   ylS5cNuajkBpADlukbM22nm/uNhGi8v2WLa/3RV6ASnzPxvY8YgBp5GGi
+   bQuRSVBvt4SWI6sPprqr9OgmFkFd5jwSRwacxwNEqHXPWMcg3FqM8IJpw
+   DblYFl7anZCItjgZgJb4Q28f4t06CZmS1vvPdLydYgmHXtOa9aax4IKAs
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1467163"
+X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
+   d="scan'208";a="1467163"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 22:02:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="842486903"
+X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
+   d="scan'208";a="842486903"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by fmsmga004.fm.intel.com with ESMTP; 07 Dec 2023 22:02:03 -0800
+Message-ID: <46c80b4e-9f05-4fb2-a31d-7386a41c895a@linux.intel.com>
+Date:   Fri, 8 Dec 2023 13:57:26 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ok7DybbzTglDBUek9-Dr2b8mjc3niAau
-X-Proofpoint-GUID: ok7DybbzTglDBUek9-Dr2b8mjc3niAau
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-08_02,2023-12-07_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] IOMMUFD: Deliver IO page faults to user space
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
+ <20231201142427.GJ1394392@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20231201142427.GJ1394392@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The firmware ready value is 1, and get firmware ready status
-function should explicitly test for that value. The firmware
-ready value read will be 2 after driver load, and on unbind
-till firmware rewrites the firmware ready back to 0, the value
-seen by driver will be 2, which should be regarded as not ready.
+On 12/1/23 10:24 PM, Jason Gunthorpe wrote:
+> On Thu, Oct 26, 2023 at 10:49:24AM +0800, Lu Baolu wrote:
+>> Hi folks,
+>>
+>> This series implements the functionality of delivering IO page faults to
+>> user space through the IOMMUFD framework for nested translation. Nested
+>> translation is a hardware feature that supports two-stage translation
+>> tables for IOMMU. The second-stage translation table is managed by the
+>> host VMM, while the first-stage translation table is owned by user
+>> space. This allows user space to control the IOMMU mappings for its
+>> devices.
+>>
+>> When an IO page fault occurs on the first-stage translation table, the
+>> IOMMU hardware can deliver the page fault to user space through the
+>> IOMMUFD framework. User space can then handle the page fault and respond
+>> to the device top-down through the IOMMUFD. This allows user space to
+>> implement its own IO page fault handling policies.
+>>
+>> User space indicates its capability of handling IO page faults by
+>> setting the IOMMU_HWPT_ALLOC_IOPF_CAPABLE flag when allocating a
+>> hardware page table (HWPT). IOMMUFD will then set up its infrastructure
+>> for page fault delivery. On a successful return of HWPT allocation, the
+>> user can retrieve and respond to page faults by reading and writing to
+>> the file descriptor (FD) returned in out_fault_fd.
+> 
+> This is probably backwards, userspace should allocate the FD with a
+> dedicated ioctl and provide it during domain allocation.
 
-Fixes: 10c073e40469 ("octeon_ep: defer probe if firmware not ready")
-Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
----
-V3:
-  - Removed unnecessary parenthesis around boolean return.
+Introducing a dedicated fault FD for fault handling seems promising. It
+decouples the fault handling from any specific domain. I suppose we need
+different fault fd for recoverable faults (a.k.a. IO page fault) and
+unrecoverable faults. Do I understand you correctly?
 
-V2: https://lore.kernel.org/all/20231207074936.2597889-1-srasheed@marvell.com/
-  - Fixed redundant logic
 
-V1: https://lore.kernel.org/all/20231206063549.2590305-1-srasheed@marvell.com/
+> If the userspace wants a fd per domain then it should do that. If it
+> wants to share fds between domains that should work too.
 
- drivers/net/ethernet/marvell/octeon_ep/octep_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Yes, it's more flexible. The fault message contains the hwpt obj id, so
+user space can recognize the hwpt on which the fault happened.
 
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-index 552970c7dec0..b8ae269f6f97 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-@@ -1258,7 +1258,8 @@ static bool get_fw_ready_status(struct pci_dev *pdev)
- 
- 		pci_read_config_byte(pdev, (pos + 8), &status);
- 		dev_info(&pdev->dev, "Firmware ready status = %u\n", status);
--		return status;
-+#define FW_STATUS_READY 1ULL
-+		return status == FW_STATUS_READY;
- 	}
- 	return false;
- }
--- 
-2.25.1
-
+Best regards,
+baolu
