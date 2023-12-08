@@ -2,141 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B18880A3A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9320280A3B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbjLHMoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 07:44:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
+        id S233450AbjLHMpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 07:45:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233400AbjLHMoD (ORCPT
+        with ESMTP id S232504AbjLHMpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 07:44:03 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF71D1710;
-        Fri,  8 Dec 2023 04:44:09 -0800 (PST)
-Received: from pobox.suse.cz (unknown [10.100.2.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5A52821C42;
-        Fri,  8 Dec 2023 12:44:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702039448; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0n4maJTA6v/hJg+qYTmGFfPnnHUi3IlrWUXV9a2Jkcw=;
-        b=La9eDmjEtgE1tfkDvO3LLp4mDRDaXF3xKrwIFJFiMwHFHb6xlr+pMiycxsNkusq58GMart
-        zjFdME5/0AFg9O/qizY6ctZoB2A/swvLAc5NRKIjICjPPnPDaGDIPmvx9HaOiosY59X2lu
-        BwmBQP5W4xXRVQZkwGn2RykgTOiSKJg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702039448;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0n4maJTA6v/hJg+qYTmGFfPnnHUi3IlrWUXV9a2Jkcw=;
-        b=9hZ8iyq8cl3swcssNyUm+DJlQP4sGp3Bm2m2sorlyfHdav5kl+tzMKuwFr1duEX0Ch98Ps
-        Cw79OFkvi7si5oCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702039448; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0n4maJTA6v/hJg+qYTmGFfPnnHUi3IlrWUXV9a2Jkcw=;
-        b=La9eDmjEtgE1tfkDvO3LLp4mDRDaXF3xKrwIFJFiMwHFHb6xlr+pMiycxsNkusq58GMart
-        zjFdME5/0AFg9O/qizY6ctZoB2A/swvLAc5NRKIjICjPPnPDaGDIPmvx9HaOiosY59X2lu
-        BwmBQP5W4xXRVQZkwGn2RykgTOiSKJg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702039448;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0n4maJTA6v/hJg+qYTmGFfPnnHUi3IlrWUXV9a2Jkcw=;
-        b=9hZ8iyq8cl3swcssNyUm+DJlQP4sGp3Bm2m2sorlyfHdav5kl+tzMKuwFr1duEX0Ch98Ps
-        Cw79OFkvi7si5oCA==
-Date:   Fri, 8 Dec 2023 13:44:09 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v3 11/11] selftests: error out if kernel header files
- are not yet built
-In-Reply-To: <20230606071637.267103-12-jhubbard@nvidia.com>
-Message-ID: <alpine.LSU.2.21.2312081323570.19664@pobox.suse.cz>
-References: <20230606071637.267103-1-jhubbard@nvidia.com> <20230606071637.267103-12-jhubbard@nvidia.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        Fri, 8 Dec 2023 07:45:03 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E4B1D11C;
+        Fri,  8 Dec 2023 04:45:09 -0800 (PST)
+Received: from [192.168.178.49] (dynamic-adsl-84-220-28-122.clienti.tiscali.it [84.220.28.122])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 6D4F120B74C0;
+        Fri,  8 Dec 2023 04:45:04 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6D4F120B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1702039509;
+        bh=zL4AbNjbmi2aO3fv6OGRUpOmIiBiCf30fFHaYwt5Raw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BUVmKnGDTA53reQHcFIoKapthWuSsj+Fmj6JeteJHUjBCYTQnSIwz7B6+waD6/wP9
+         LGE6tu/GYfp6DCQzyVDgeWn0q3Gluu/kFJVlcB2qjuyCbBzZmqP0Lbdblyx+6U/ra1
+         o/QBLXcaByDmFUW2O9ZFuXtSmLmoR7hlTN0mpJ98=
+Message-ID: <b99c0f94-da56-4963-984d-ae177b0b7b0b@linux.microsoft.com>
+Date:   Fri, 8 Dec 2023 13:45:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Score: 1.79
-X-Spamd-Result: default: False [2.34 / 50.00];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_SPAM_SHORT(2.44)[0.814];
-         MIME_GOOD(-0.10)[text/plain];
-         MID_RHS_MATCH_FROMTLD(0.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         RCPT_COUNT_TWELVE(0.00)[13];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         RCVD_COUNT_ZERO(0.00)[0];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         BAYES_HAM(-0.00)[15.61%]
-X-Spam-Flag: NO
-X-Spam-Score: 2.34
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
+ TDX init
+Content-Language: en-US
+To:     "Reshetova, Elena" <elena.reshetova@intel.com>
+Cc:     "cascardo@canonical.com" <cascardo@canonical.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Cui, Dexuan" <decui@microsoft.com>,
+        "mhkelley58@gmail.com" <mhkelley58@gmail.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
+        "nik.borisov@suse.com" <nik.borisov@suse.com>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "sashal@kernel.org" <sashal@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>
+References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
+ <20231123135846.pakk44rqbbi7njmb@box.shutemov.name>
+ <9f550947-9d13-479c-90c4-2e3f7674afee@linux.microsoft.com>
+ <20231124104337.gjfyasjmo5pp666l@box.shutemov.name>
+ <58c82110-45b2-4e23-9a82-90e1f3fa43c2@linux.microsoft.com>
+ <20231124133358.sdhomfs25seki3lg@box.shutemov.name>
+ <6f27610f-afc4-4356-b297-13253bb0a232@linux.microsoft.com>
+ <ffcc8c550d5ba6122b201d8170b42ee581826d47.camel@intel.com>
+ <02e079e8-cc72-49d8-9191-8a753526eb18@linux.microsoft.com>
+ <7b725783f1f9102c176737667bfec12f75099961.camel@intel.com>
+ <fa86fbd1-998b-456b-971f-a5a94daeca28@linux.microsoft.com>
+ <DM8PR11MB57503924C64E1C79FB585496E78BA@DM8PR11MB5750.namprd11.prod.outlook.com>
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <DM8PR11MB57503924C64E1C79FB585496E78BA@DM8PR11MB5750.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John, Muhammad,
-
-On Tue, 6 Jun 2023, John Hubbard wrote:
-
-> As per a discussion with Muhammad Usama Anjum [1], the following is how
-> one is supposed to build selftests:
+On 07/12/2023 18:36, Reshetova, Elena wrote:
+>>>> The TDVMCALLs are related to the I/O path (networking/block io) into the L2
+>> guest, and
+>>>> so they intentionally go straight to L0 and are never injected to L1. L1 is not
+>>>> involved in that path at all.
+>>>>
+>>>> Using something different than TDVMCALLs here would lead to additional
+>> traps to L1 and
+>>>> just add latency/complexity.
+>>>
+>>> Looks by default you assume we should use TDX partitioning as "paravisor L1" +
+>>> "L0 device I/O emulation".
+>>>
+>>
+>> I don't actually want to impose this model on anyone, but this is the one that
+>> could use some refactoring. I intend to rework these patches to not use a single
+>> "td_partitioning_active" for decisions.
+>>
+>>> I think we are lacking background of this usage model and how it works.  For
+>>> instance, typically L2 is created by L1, and L1 is responsible for L2's device
+>>> I/O emulation.  I don't quite understand how could L0 emulate L2's device I/O?
+>>>
+>>> Can you provide more information?
+>>
+>> Let's differentiate between fast and slow I/O. The whole point of the paravisor in
+>> L1 is to provide device emulation for slow I/O: TPM, RTC, NVRAM, IO-APIC, serial
+>> ports.
 > 
->     make headers && make -C tools/testing/selftests/mm
+> Out of my curiosity and not really related to this discussion, but could you please
+> elaborate on RTC part here? Do you actually host secure time in L1 to be provided
+> to the L2? 
 > 
-> Change the selftest build system's lib.mk to fail out with a helpful
-> message if that prerequisite "make headers" has not been done yet.
-> 
-> [1] https://lore.kernel.org/all/bf910fa5-0c96-3707-cce4-5bcc656b6274@collabora.com/
+> Best Regards,
+> Elena.
 
-could you, please, elaborate more on that one is supposed to build 
-selftests with 'make headers'? Yes, Documentation/dev-tools/kselftest.rst 
-mentions that because you might need headers but...
+Hi Elena,
 
-The common way how we test the kernel is to build the kernel, install it 
-somewhere and run selftests on top. The sequence basically being "make 
-rpm-pkg; rpm -ivh; cd tools/testing/selftest/livepatch/ in source tree; 
-sudo make run_tests" (or a similar variation of the procedure). The point 
-is that we want to test the running kernel with its respective environment 
-installed in /lib/modules/`uname -r`/ (if needed). This way we can run 
-newer selftests from the current mainline tree on older kernels among 
-others.
+I think this RTC is more for compatibility and to give the guest a way to initialize
+the system clock. This could potentially be a secure time source in the future but it
+isn't right now. This is what the guest sees right now (might need some more
+enlightenment):
 
-The commit breaks the use case which worked for a long long time.
+# dmesg | grep -E -i 'clock|rtc|tsc'
+[    0.000000] clocksource: hyperv_clocksource_tsc_page: mask: 0xffffffffffffffff max_cycles: 0x24e6a1710, max_idle_ns: 440795202120 ns
+[    0.000001] tsc: Marking TSC unstable due to running on Hyper-V
+[    0.003621] tsc: Detected 2100.000 MHz processor
+[    0.411943] clocksource: refined-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645519600211568 ns
+[    0.887459] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[    0.895842] PM: RTC time: 16:31:58, date: 2023-12-07
+[    1.043431] PTP clock support registered
+[    1.096563] clocksource: Switched to clocksource hyperv_clocksource_tsc_page
+[    1.384341] rtc_cmos 00:02: registered as rtc0
+[    1.387469] rtc_cmos 00:02: setting system clock to 2023-12-07T16:31:58 UTC (1701966718)
+[    1.392529] rtc_cmos 00:02: alarms up to one day, 114 bytes nvram
+[    1.484243] sched_clock: Marking stable (1449873200, 33603000)->(3264982600, -1781506400)
 
-It also breaks what Marcos proposed for livepatch selftests in 
-https://lore.kernel.org/all/20231031-send-lp-kselftests-v3-0-2b1655c2605f@suse.com/
-
-I guess we can always work around it by letting subsystem selftests to 
-override KHDR_DIR but I am not comfortable with the behaviour that your 
-commit introduced in the first place to be honest.
-
-Thank you,
-Miroslav
+Jeremi
