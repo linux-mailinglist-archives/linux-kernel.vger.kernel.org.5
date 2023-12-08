@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 132F180A210
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4A380A212
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573570AbjLHLVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 06:21:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
+        id S233345AbjLHLVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 06:21:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbjLHLVB (ORCPT
+        with ESMTP id S233367AbjLHLVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 06:21:01 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3185A10CF
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 03:21:08 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso2006715276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 03:21:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702034467; x=1702639267; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rmazC+0qAqQxSPROFc0xc84GbFdhI8sWUlQpFJfzTOs=;
-        b=rQ82p9zwU6nbWWZ1nqwXyrUgOMgNkjJ7ZVbyVRXagbyrdFGBVxXDOyz9/IFBoI0Abw
-         96wpE1CjrDsdU9wq3rHNL9+sU87W4XZX+uZAQOFlO2G/1KKIJuCataR/wEyKwAnpA5Ia
-         4ZZgp8zuKB+d7l4JFTqopeViNmdEAYHmOQeRz58/hqvv2RIrWlbPtKppQswdmOVdwvPA
-         09WDL4v6zuMHKE4gDcalQD2XMiH0rYplIN1gkAD+a8gI3LCFvXLj8v7QrOKBih8cemid
-         Ci1SImXuVz65rZWoziQKxMObppgHke+A9pHLnMTJgewi8ESHo4dRh1pUmgNdhfI17pim
-         A5KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702034467; x=1702639267;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rmazC+0qAqQxSPROFc0xc84GbFdhI8sWUlQpFJfzTOs=;
-        b=iYXHsiNIQLhR1GF/Ad3smrOiTqQq1TE66PlVeWuntdvkUDSGVDo+7DqKGy1/EKUaM9
-         UKhD71fdSjVOLJ1AV60Wppx1KfIFiwWlEufQr9gyRKhSsUhU6wnBcPxpe9YFBNGJGsEc
-         d8Aaoqb3hNuFkz+DOzYRmcjtb8/ElXrlOGtITqGGkTABYmTqGzUVFGoPaihdUf/Rqdrw
-         uSNMjFkqggQiw2+7/fSPsKtMCkpAsyzp8x1M1VwnuVnzalL0S0jd0iiZiN/iLqMnnJfu
-         wojZ0RFkFn7T7OvxQg8K5cjKb4TJAjHT77edmzDFrIBbvmnzEr/XkMtrTu4ofA692LY7
-         bu2g==
-X-Gm-Message-State: AOJu0YzOz2hglyr8FFpw9tIAx8f11npnW01IofwsOEJzLIx37D+FtoQs
-        4o6vznF+EwGreLDiEW2G6LNpbehNoCiLU5xs3Z9QVw==
-X-Google-Smtp-Source: AGHT+IHp0377Ybzxt5w6KqA9E+DZI6lyM8tdxkXwFiDkF9togYRg3F/ti2mcvG9rIQBDUE40O7+YuoHQA1vFqx87rvE=
-X-Received: by 2002:a25:2f96:0:b0:db7:dacf:4d66 with SMTP id
- v144-20020a252f96000000b00db7dacf4d66mr2502085ybv.98.1702034467396; Fri, 08
- Dec 2023 03:21:07 -0800 (PST)
+        Fri, 8 Dec 2023 06:21:15 -0500
+Received: from out0-196.mail.aliyun.com (out0-196.mail.aliyun.com [140.205.0.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B229C1736
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 03:21:19 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R921e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047203;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---.VfpW3Bq_1702034472;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.VfpW3Bq_1702034472)
+          by smtp.aliyun-inc.com;
+          Fri, 08 Dec 2023 19:21:17 +0800
+From:   "Tiwei Bie" <tiwei.btw@antgroup.com>
+To:     peterz@infradead.org, mingo@kernel.org, wuyun.abel@bytedance.com
+Cc:     "Tiwei Bie" <tiwei.btw@antgroup.com>,
+        "Juri Lelli" <juri.lelli@redhat.com>,
+        "Vincent Guittot" <vincent.guittot@linaro.org>,
+        "Dietmar Eggemann" <dietmar.eggemann@arm.com>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        "Ben Segall" <bsegall@google.com>, "Mel Gorman" <mgorman@suse.de>,
+        "Daniel Bristot de Oliveira" <bristot@redhat.com>,
+        "Valentin Schneider" <vschneid@redhat.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -tip] sched/fair: gracefully handle EEVDF scheduling failures
+Date:   Fri, 08 Dec 2023 19:20:59 +0800
+Message-Id: <20231208112100.18141-1-tiwei.btw@antgroup.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231208050641.32582-1-quic_abhinavk@quicinc.com> <20231208050641.32582-7-quic_abhinavk@quicinc.com>
-In-Reply-To: <20231208050641.32582-7-quic_abhinavk@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 8 Dec 2023 13:20:56 +0200
-Message-ID: <CAA8EJprAu-4Az07oztew0Nf3SO1yeCcASk2bhXR-938YnzSgMg@mail.gmail.com>
-Subject: Re: [PATCH v2 06/16] drm/msm/dpu: add cdm blocks to sm8250 dpu_hw_catalog
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
-        quic_parellan@quicinc.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
-> Add CDM blocks to the sm8250 dpu_hw_catalog to support
-> YUV format output from writeback block.
->
-> changes in v2:
->         - re-use the cdm definition from sc7280
->
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h | 1 +
->  1 file changed, 1 insertion(+)
+The EEVDF scheduling might fail due to unforeseen issues. Previously,
+it handled such situations gracefully, which was helpful in identifying
+problems, but it no longer does so. Therefore, it would be better to
+restore its previous capability.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+---
+ kernel/sched/fair.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index bcea3d55d95d..1b83b3a8e630 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -878,7 +878,7 @@ struct sched_entity *__pick_first_entity(struct cfs_rq *cfs_rq)
+ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
+ {
+ 	struct rb_node *node = cfs_rq->tasks_timeline.rb_root.rb_node;
+-	struct sched_entity *se = __pick_first_entity(cfs_rq);
++	struct sched_entity *first = __pick_first_entity(cfs_rq);
+ 	struct sched_entity *curr = cfs_rq->curr;
+ 	struct sched_entity *best = NULL;
+ 
+@@ -887,7 +887,7 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
+ 	 * in this cfs_rq, saving some cycles.
+ 	 */
+ 	if (cfs_rq->nr_running == 1)
+-		return curr && curr->on_rq ? curr : se;
++		return curr && curr->on_rq ? curr : first;
+ 
+ 	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
+ 		curr = NULL;
+@@ -900,14 +900,15 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
+ 		return curr;
+ 
+ 	/* Pick the leftmost entity if it's eligible */
+-	if (se && entity_eligible(cfs_rq, se)) {
+-		best = se;
++	if (first && entity_eligible(cfs_rq, first)) {
++		best = first;
+ 		goto found;
+ 	}
+ 
+ 	/* Heap search for the EEVD entity */
+ 	while (node) {
+ 		struct rb_node *left = node->rb_left;
++		struct sched_entity *se;
+ 
+ 		/*
+ 		 * Eligible entities in left subtree are always better
+@@ -937,6 +938,9 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
+ 	if (!best || (curr && entity_before(curr, best)))
+ 		best = curr;
+ 
++	if (WARN_ONCE(!best, "EEVDF scheduling failed, picking leftmost\n"))
++		best = first;
++
+ 	return best;
+ }
+ 
 -- 
-With best wishes
-Dmitry
+2.34.1
+
