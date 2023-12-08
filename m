@@ -2,151 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9189380AE99
+	by mail.lfdr.de (Postfix) with ESMTP id E6D7E80AE9A
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 22:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574772AbjLHVHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 16:07:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
+        id S1574779AbjLHVJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 16:09:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLHVHI (ORCPT
+        with ESMTP id S229817AbjLHVJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 16:07:08 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D295198E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 13:07:15 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db5508d1beeso2740993276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 13:07:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702069634; x=1702674434; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=atKYixDgc1IYLIAixNFTtgRe8JLDt6J5MMwxSW6b7Pg=;
-        b=r7BdHG8VStUbm+h4QyUFMMRIhoNDnQY0D3t/d7dmkMDYDKOyP4v1tYRszFTXTUO31n
-         MxsZetvujkvUK41OaJBcqx0zUSrEdjFPyGJPUMcPxJK1oteunVwzTg48fuUuRaJAyy6d
-         7NWpv1EzHYhMIgyS6r57tlO22qtO711ZfbkMCADPpV+OPF4klJnRZ+1UBbuOSSarB3G8
-         NBAYeJHhb0DQHxsgNwPLd9ozu0J8gQMWNTD7YSwswLPzdhF+p2qVNWx/fzAendxYXIWJ
-         pM63C4V06AW4dRnquvD5EepNv8eamaMt1UunBvdTvkKPajW05e5VgtXtEOyc1wcAMmMp
-         Bh5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702069634; x=1702674434;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=atKYixDgc1IYLIAixNFTtgRe8JLDt6J5MMwxSW6b7Pg=;
-        b=Qy/xVF6zF0tRqgA4TLlu8MzuwDAs8bzK6PxfeCcpxlE5cKrurL8wDhZPL29nH+vQio
-         y1lclAYz9vZayy7zBx0edKhFe8hnjwzL3s/NJsAUy6vMmFLKmq5WkNHlixtM4IbgBc47
-         bLPELV//T+uPW5fsJcuVaEGX14BAG2UL1sGRs4sF7rmqYhHcJGivan9rkgSC1fmLfd8O
-         Uz8dYKmsoGUtvSouKOl60pzLIqAJRWeKKVoGWx0L7bIyJveLRnAVHVJlezaSq+igk4Fk
-         5X5W9QY/hQIrPZWJfipDVHdXQZKP8sQlWRY7aljWVSsdsexGptrMJd8Do5QIPd/cUuD5
-         PcIw==
-X-Gm-Message-State: AOJu0YztWC9H12zz16+nAZrMPFsjR2EDciYMCO0B0GlOjqs50uRHlfeq
-        /4zixM+BpUbDYSOIgN0Bh+8j2K52Jt4b
-X-Google-Smtp-Source: AGHT+IHzeDvqNFdRZWKrYRWtX4T16qXBWuRFYuGxk14i3a32wrWAEXwhbb0Cto5r9VdTV4zgSQTlXO1gQzao
-X-Received: from jiangzp-glinux-dev.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:38e4])
- (user=jiangzp job=sendgmr) by 2002:a25:ce4e:0:b0:d9a:61d2:38ca with SMTP id
- x75-20020a25ce4e000000b00d9a61d238camr7101ybe.10.1702069634325; Fri, 08 Dec
- 2023 13:07:14 -0800 (PST)
-Date:   Fri,  8 Dec 2023 13:07:06 -0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231208130705.kernel.v1.1.Ic5024b3da99b11e39c247a5b8ba44876c18880a0@changeid>
-Subject: [kernel PATCH v1] Bluetooth: btmtksdio: clear BTMTKSDIO_BT_WAKE_ENABLED
- after resume
-From:   Zhengping Jiang <jiangzp@google.com>
-To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
-        luiz.dentz@gmail.com
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        Zhengping Jiang <jiangzp@google.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 8 Dec 2023 16:09:07 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4494A193;
+        Fri,  8 Dec 2023 13:09:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702069754; x=1733605754;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/SGOKoA+Swz5M7d9MFKFLrftb660oNkZR5QqizVC2Sk=;
+  b=N/9O9tL/walmMZXDf8xP9cXNMH5vAy8Cb5YB5Ts7Plecqb/AcKxeZiLh
+   4j0Ob6wllnMjmZ51yDdpdEUlCyHr0caqFEZ+PekikWcznDZKXkdrjaNfP
+   wvah0O9IAzcNadby7bVw8m3tKEmkpAoJRE/LZ4/mSkkZbIw8hl4XPpvSF
+   7Yr3QVmOEBxe4qR+nUBoVRrVfxdhBcKBHYS4wnTBWtqHx3y/GGoHBliPm
+   +7pCRBB4MKFCGNWaH7SxNK9U7PYT36boEBhSgLloVBDX+lytcdYmcOdNR
+   31h4YrVR0YX50l6brVKNLFIwvRfGcC5OFMjRUrruegC/YuWXkRRR8ddfv
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="7791999"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="7791999"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 13:09:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="772261155"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="772261155"
+Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
+  by orsmga002.jf.intel.com with ESMTP; 08 Dec 2023 13:09:13 -0800
+From:   kan.liang@linux.intel.com
+To:     acme@kernel.org, irogers@google.com
+Cc:     namhyung@kernel.org, mark.rutland@arm.com, maz@kernel.org,
+        marcan@marcan.st, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH] perf top: Use evsel's cpus to replace user_requested_cpus
+Date:   Fri,  8 Dec 2023 13:08:55 -0800
+Message-Id: <20231208210855.407580-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Always clear BTMTKSDIO_BT_WAKE_ENABLED bit after resume. When Bluetooth
-does not generate interrupts, the bit will not be cleared and causes
-premature wakeup.
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Fixes: 4ed924fc122f ("Bluetooth: btmtksdio: enable bluetooth wakeup in system suspend")
-Signed-off-by: Zhengping Jiang <jiangzp@google.com>
+perf top errors out on a hybrid machine
+ $perf top
+
+ Error:
+ The cycles:P event is not supported.
+
+The user_requested_cpus may contain CPUs that are invalid for a hybrid
+PMU. It causes perf_event_open to fail.
+
+The commit ef91871c960e ("perf evlist: Propagate user CPU maps
+intersecting core PMU maps") already intersect the requested CPU map
+with the CPU map of the PMU. Use the evsel's cpus to replace
+user_requested_cpus.
+
+The evlist's threads is also propagated to evsel's threads in
+__perf_evlist__propagate_maps(). Replace it as well.
+
+Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
+Closes: https://lore.kernel.org/linux-perf-users/ZXNnDrGKXbEELMXV@kernel.org/
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
+ tools/perf/builtin-top.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Changes in v1:
-- Clear BTMTKSDIO_BT_WAKE_ENABLED flag on resume
-
- drivers/bluetooth/btmtksdio.c    | 10 ++++++++++
- include/net/bluetooth/hci_core.h |  1 +
- net/bluetooth/hci_sync.c         |  2 ++
- 3 files changed, 13 insertions(+)
-
-diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
-index ff4868c83cd8..8f00b71573c8 100644
---- a/drivers/bluetooth/btmtksdio.c
-+++ b/drivers/bluetooth/btmtksdio.c
-@@ -1296,6 +1296,15 @@ static bool btmtksdio_sdio_inband_wakeup(struct hci_dev *hdev)
- 	return device_may_wakeup(bdev->dev);
- }
+diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+index ea8c7eca5eee..cce9350177e2 100644
+--- a/tools/perf/builtin-top.c
++++ b/tools/perf/builtin-top.c
+@@ -1027,8 +1027,8 @@ static int perf_top__start_counters(struct perf_top *top)
  
-+static void btmtksdio_disable_bt_wakeup(struct hci_dev *hdev)
-+{
-+	struct btmtksdio_dev *bdev = hci_get_drvdata(hdev);
-+
-+	if (!bdev)
-+		return;
-+	clear_bit(BTMTKSDIO_BT_WAKE_ENABLED, &bdev->tx_state);
-+}
-+
- static bool btmtksdio_sdio_wakeup(struct hci_dev *hdev)
- {
- 	struct btmtksdio_dev *bdev = hci_get_drvdata(hdev);
-@@ -1363,6 +1372,7 @@ static int btmtksdio_probe(struct sdio_func *func,
- 	hdev->shutdown = btmtksdio_shutdown;
- 	hdev->send     = btmtksdio_send_frame;
- 	hdev->wakeup   = btmtksdio_sdio_wakeup;
-+	hdev->clear_wakeup = btmtksdio_disable_bt_wakeup;
- 	/*
- 	 * If SDIO controller supports wake on Bluetooth, sending a wakeon
- 	 * command is not necessary.
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index 0c1754f416bd..4bbd55335269 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -672,6 +672,7 @@ struct hci_dev {
- 	int (*get_codec_config_data)(struct hci_dev *hdev, __u8 type,
- 				     struct bt_codec *codec, __u8 *vnd_len,
- 				     __u8 **vnd_data);
-+	void (*clear_wakeup)(struct hci_dev *hdev);
- };
+ 	evlist__for_each_entry(evlist, counter) {
+ try_again:
+-		if (evsel__open(counter, top->evlist->core.user_requested_cpus,
+-				     top->evlist->core.threads) < 0) {
++		if (evsel__open(counter, counter->core.cpus,
++				counter->core.threads) < 0) {
  
- #define HCI_PHY_HANDLE(handle)	(handle & 0xff)
-diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
-index 3563a90ed2ac..6c4d5ce40524 100644
---- a/net/bluetooth/hci_sync.c
-+++ b/net/bluetooth/hci_sync.c
-@@ -5947,6 +5947,8 @@ int hci_resume_sync(struct hci_dev *hdev)
- 		return 0;
- 
- 	hdev->suspended = false;
-+	if (hdev->clear_wakeup)
-+		hdev->clear_wakeup(hdev);
- 
- 	/* Restore event mask */
- 	hci_set_event_mask_sync(hdev);
+ 			/*
+ 			 * Specially handle overwrite fall back.
 -- 
-2.43.0.472.g3155946c3a-goog
+2.35.1
 
