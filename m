@@ -2,106 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E7A80AABA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2CF80AAC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233743AbjLHR1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54432 "EHLO
+        id S1574273AbjLHR2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:28:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbjLHR1w (ORCPT
+        with ESMTP id S233790AbjLHR2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:27:52 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD7F121
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:27:57 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1d2eb06ab11so8593035ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 09:27:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702056477; x=1702661277; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Hg6fUEZXStGBp771sMyuxFL70vLJ5BeYI/ptmqsolcE=;
-        b=J/8eZJQrQDM9h9GBp+AfyI/b1z5mDYebqC3SXKnipDtex0OzNu0uKwiv/Z8BSQVsNd
-         a+ZlnbvYo9jqDhuYJQj22iUTpJzsF9UR+iMBNinz8hEtqGOlGREc5YhW5lfGzzc3OWnC
-         xrIJofD9kwr5NSIdzsKD/dicz3JqaQ28UehDg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702056477; x=1702661277;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hg6fUEZXStGBp771sMyuxFL70vLJ5BeYI/ptmqsolcE=;
-        b=kw8B0UEu4fdziiNceymb1SKD8TatvgWkVj4uJQFBFbJS+/iSFGWhVSklRIVKRrzTp5
-         5/IujlL0sy99LcxBvzJdBVa4UB/IjV6vHY7UrBfm1esKwIIaSquEzazEuXodh7opGy4N
-         3KpxsnGI1pLJ3PWct6P8OW4/mLqb6I+laqC1qItPA33jM12pe0LACXfYv4k/zbYBa/qr
-         fXsIZNpiOOwyL4eleZiiot51PXhGUam0/DVFN31GSHNQayacjr6I6jIdM7twkffHliyG
-         P4yNSgrIRtYKceJJh+QlgPoOLn5buU9kG+Di6gZ59zTuWh51Jootjo3nTY/F0tDCecdX
-         i06Q==
-X-Gm-Message-State: AOJu0YwQoGsea5gx5iX8OvDzUNAXgohFSd/++ht4jdL3P1ByKP/iZO7y
-        jmDLt/iZMeuDm6UwheKEHarXeg==
-X-Google-Smtp-Source: AGHT+IHVTw89wrkKxW6H+y85uDNqkr3bSCVArfzo6yB6zlvvZsJ6ez9TxBemFCSY+J8FoNDku+7DiA==
-X-Received: by 2002:a17:902:6848:b0:1d0:8383:742d with SMTP id f8-20020a170902684800b001d08383742dmr364617pln.37.1702056477358;
-        Fri, 08 Dec 2023 09:27:57 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 12-20020a170902ee4c00b001d0c134dc2dsm1955222plo.77.2023.12.08.09.27.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 09:27:56 -0800 (PST)
-Date:   Fri, 8 Dec 2023 09:27:56 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Song Liu <song@kernel.org>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] md/md-multipath: Convert "struct mpconf" to flexible
- array
-Message-ID: <202312080926.FBF7A2DDD2@keescook>
-References: <03dd7de1cecdb7084814f2fab300c9bc716aff3e.1701632867.git.christophe.jaillet@wanadoo.fr>
- <202312041419.81EF03F7B7@keescook>
- <CAPhsuW43g-M+xvzD0N1JsJ_zGnvZQOw2Bi1TEqoHKanPnvMHLQ@mail.gmail.com>
+        Fri, 8 Dec 2023 12:28:06 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7637CE0;
+        Fri,  8 Dec 2023 09:28:12 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8FGnSQ021111;
+        Fri, 8 Dec 2023 17:28:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=CKCRmnaIpTnBPjwf8fSJ3R7eZ64nbAD4RxhqReCI9Lo=;
+ b=iFHL5jQ03uqASHmnodGL3UndQnSuOMMANy8O/R9JKQxGC7cR8jV0fuvhOgYngNc1J4zR
+ c0Rj8wVMVyzJ5BHfr//rz6V7B+X1AS+10wpo0VoKmC4TLmiqPr3PzuwdSN1TqSvMAlx/
+ HTQ4VW/vcyssZ61hAW5qG/xipr8viUB6BF6o2AvtVWr3MVYOr7Dqxj5oU6xZAuDt5Xy7
+ IT5Q3jh+coiyvdIdDHBUoEt1+s7Vd7fvu3c1mlnwbALy7kQ/ZjkQxuUaZxC77tVgsHF2
+ QdoUupsfwjY/UPGyROyByo5VzvFgBg04wksE5dZMAx8cEncvPEwY4rMgNmaIJNkp5RFg lQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uuuu4shqf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Dec 2023 17:28:04 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B8HS3R2007825
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 8 Dec 2023 17:28:03 GMT
+Received: from [10.110.30.94] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Dec
+ 2023 09:28:01 -0800
+Message-ID: <55564921-5e52-d254-1909-d2ebdc6cea1b@quicinc.com>
+Date:   Fri, 8 Dec 2023 09:27:59 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW43g-M+xvzD0N1JsJ_zGnvZQOw2Bi1TEqoHKanPnvMHLQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 12/16] drm/msm/dpu: add an API to setup the CDM block
+ for writeback
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
+        "Sean Paul" <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        "David Airlie" <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
+        <quic_parellan@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231208050641.32582-1-quic_abhinavk@quicinc.com>
+ <20231208050641.32582-13-quic_abhinavk@quicinc.com>
+ <CAA8EJpr5FyYaGQpQX_MBK6y9kLz_UHsLmsKrV2tF6ukz6sU8YQ@mail.gmail.com>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJpr5FyYaGQpQX_MBK6y9kLz_UHsLmsKrV2tF6ukz6sU8YQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 97gP-Z4WbbxpdNBcEsdqSpwCUNj4056u
+X-Proofpoint-ORIG-GUID: 97gP-Z4WbbxpdNBcEsdqSpwCUNj4056u
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-08_11,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ suspectscore=0 spamscore=0 phishscore=0 mlxlogscore=999 adultscore=0
+ malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2312080144
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 09:33:17PM -0800, Song Liu wrote:
-> On Mon, Dec 4, 2023 at 2:20 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Sun, Dec 03, 2023 at 08:48:06PM +0100, Christophe JAILLET wrote:
-> > > The 'multipaths' field of 'struct mpconf' can be declared as a flexible
-> > > array.
-> > >
-> > > The advantages are:
-> > >    - 1 less indirection when accessing to the 'multipaths' array
-> > >    - save 1 pointer in the structure
-> > >    - improve memory usage
-> > >    - give the opportunity to use __counted_by() for additional safety
-> > >
-> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> >
-> > This looks like a really nice conversion. I haven't run-tested this, but
-> > it reads correct to me.
+
+
+On 12/8/2023 3:52 AM, Dmitry Baryshkov wrote:
+> On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>> Add an API dpu_encoder_helper_phys_setup_cdm() which can be used by
+>> the writeback encoder to setup the CDM block.
+>>
+>> Currently, this is defined and used within the writeback's physical
+>> encoder layer however, the function can be modified to be used to setup
+>> the CDM block even for non-writeback interfaces.
+>>
+>> Until those modifications are planned and made, keep it local to
+>> writeback.
+>>
+>> changes in v2:
+>>          - add the RGB2YUV CSC matrix to dpu util as needed by CDM
+>>          - use dpu_hw_get_csc_cfg() to get and program CSC
+>>          - drop usage of setup_csc_data() and setup_cdwn() cdm ops
+>>            as they both have been merged into enable()
+>>          - drop reduntant hw_cdm and hw_pp checks
+>>
+>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+>> ---
+>>   .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h  |  3 +
+>>   .../drm/msm/disp/dpu1/dpu_encoder_phys_wb.c   | 96 ++++++++++++++++++-
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c   | 17 ++++
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h   |  1 +
+>>   4 files changed, 116 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+>> index 410f6225789c..1d6d1eb642b9 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+>> @@ -16,6 +16,7 @@
+>>   #include "dpu_hw_pingpong.h"
+>>   #include "dpu_hw_ctl.h"
+>>   #include "dpu_hw_top.h"
+>> +#include "dpu_hw_cdm.h"
+>>   #include "dpu_encoder.h"
+>>   #include "dpu_crtc.h"
+>>
+>> @@ -210,6 +211,7 @@ static inline int dpu_encoder_phys_inc_pending(struct dpu_encoder_phys *phys)
+>>    * @wbirq_refcount:     Reference count of writeback interrupt
+>>    * @wb_done_timeout_cnt: number of wb done irq timeout errors
+>>    * @wb_cfg:  writeback block config to store fb related details
+>> + * @cdm_cfg: cdm block config needed to store writeback block's CDM configuration
+>>    * @wb_conn: backpointer to writeback connector
+>>    * @wb_job: backpointer to current writeback job
+>>    * @dest:   dpu buffer layout for current writeback output buffer
+>> @@ -219,6 +221,7 @@ struct dpu_encoder_phys_wb {
+>>          atomic_t wbirq_refcount;
+>>          int wb_done_timeout_cnt;
+>>          struct dpu_hw_wb_cfg wb_cfg;
+>> +       struct dpu_hw_cdm_cfg cdm_cfg;
+>>          struct drm_writeback_connector *wb_conn;
+>>          struct drm_writeback_job *wb_job;
+>>          struct dpu_hw_fmt_layout dest;
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
+>> index 4665367cf14f..85429c62d727 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
+>> @@ -259,6 +259,99 @@ static void dpu_encoder_phys_wb_setup_ctl(struct dpu_encoder_phys *phys_enc)
+>>          }
+>>   }
+>>
+>> +/**
+>> + * dpu_encoder_phys_wb_setup_cdp - setup chroma down sampling block
+>> + * @phys_enc:Pointer to physical encoder
+>> + */
+>> +static void dpu_encoder_helper_phys_setup_cdm(struct dpu_encoder_phys *phys_enc)
+>> +{
+>> +       struct dpu_hw_cdm *hw_cdm;
+>> +       struct dpu_hw_cdm_cfg *cdm_cfg;
+>> +       struct dpu_hw_pingpong *hw_pp;
+>> +       struct dpu_encoder_phys_wb *wb_enc;
+>> +       const struct msm_format *format;
+>> +       const struct dpu_format *dpu_fmt;
+>> +       struct drm_writeback_job *wb_job;
+>> +       int ret;
+>> +
+>> +       if (!phys_enc)
+>> +               return;
+>> +
+>> +       wb_enc = to_dpu_encoder_phys_wb(phys_enc);
+>> +       cdm_cfg = &wb_enc->cdm_cfg;
+>> +       hw_pp = phys_enc->hw_pp;
+>> +       hw_cdm = phys_enc->hw_cdm;
+>> +       wb_job = wb_enc->wb_job;
+>> +
+>> +       format = msm_framebuffer_format(wb_enc->wb_job->fb);
+>> +       dpu_fmt = dpu_get_dpu_format_ext(format->pixel_format, wb_job->fb->modifier);
+>> +
+>> +       if (!hw_cdm)
+>> +               return;
+>> +
+>> +       if (!DPU_FORMAT_IS_YUV(dpu_fmt)) {
+>> +               DPU_DEBUG("[enc:%d] cdm_disable fmt:%x\n", DRMID(phys_enc->parent),
+>> +                         dpu_fmt->base.pixel_format);
+>> +               if (hw_cdm->ops.disable)
+>> +                       hw_cdm->ops.disable(hw_cdm);
+>> +
+>> +               return;
+>> +       }
+>> +
+>> +       memset(cdm_cfg, 0, sizeof(struct dpu_hw_cdm_cfg));
+>> +
+>> +       cdm_cfg->output_width = wb_job->fb->width;
+>> +       cdm_cfg->output_height = wb_job->fb->height;
+>> +       cdm_cfg->output_fmt = dpu_fmt;
+>> +       cdm_cfg->output_type = CDM_CDWN_OUTPUT_WB;
+>> +       cdm_cfg->output_bit_depth = DPU_FORMAT_IS_DX(dpu_fmt) ?
+>> +                       CDM_CDWN_OUTPUT_10BIT : CDM_CDWN_OUTPUT_8BIT;
+>> +       cdm_cfg->csc_cfg = dpu_hw_get_csc_cfg(DPU_HW_RGB2YUV_601L_10BIT);
+>> +       if (!cdm_cfg->csc_cfg) {
+>> +               DPU_ERROR("valid csc not found\n");
+>> +               return;
+>> +       }
+>> +
+>> +       /* enable 10 bit logic */
+>> +       switch (cdm_cfg->output_fmt->chroma_sample) {
+>> +       case DPU_CHROMA_RGB:
+>> +               cdm_cfg->h_cdwn_type = CDM_CDWN_DISABLE;
+>> +               cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
+>> +               break;
+>> +       case DPU_CHROMA_H2V1:
+>> +               cdm_cfg->h_cdwn_type = CDM_CDWN_COSITE;
+>> +               cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
+>> +               break;
+>> +       case DPU_CHROMA_420:
+>> +               cdm_cfg->h_cdwn_type = CDM_CDWN_COSITE;
+>> +               cdm_cfg->v_cdwn_type = CDM_CDWN_OFFSITE;
+>> +               break;
+>> +       case DPU_CHROMA_H1V2:
+>> +       default:
+>> +               DPU_ERROR("[enc:%d] unsupported chroma sampling type\n",
+>> +                         DRMID(phys_enc->parent));
+>> +               cdm_cfg->h_cdwn_type = CDM_CDWN_DISABLE;
+>> +               cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
 > 
-> Agreed this is a good optimization. However, since MD_MULTIPATH is
-> already marked as deprecated. I don't think we should ship further
-> changes to it.
+> If it is unsupported, we should return an error here.
+> 
 
-Hm, that seems like a weird catch-22 to me. I would say we should
-continue to improve any code in the kernel that people spend time to
-work on, or we should remove that code entirely. Should MD_MULTIPATH be
-removed? How long has it been deprecated? (We just had an LTS release,
-so doing removal now is a good time...)
+The caller of this API and the caller of the API even before that do not 
+have error checking as they are all void. Disabling CDWN is the 
+appropriate corrective action for this case and should be sufficient.
 
--- 
-Kees Cook
+>> +               break;
+>> +       }
+>> +
+>> +       DPU_DEBUG("[enc:%d] cdm_enable:%d,%d,%X,%d,%d,%d,%d]\n",
+>> +                 DRMID(phys_enc->parent), cdm_cfg->output_width,
+>> +                 cdm_cfg->output_height, cdm_cfg->output_fmt->base.pixel_format,
+>> +                 cdm_cfg->output_type, cdm_cfg->output_bit_depth,
+>> +                 cdm_cfg->h_cdwn_type, cdm_cfg->v_cdwn_type);
+>> +
+>> +       if (hw_cdm->ops.enable) {
+>> +               cdm_cfg->pp_id = hw_pp->idx;
+>> +               ret = hw_cdm->ops.enable(hw_cdm, cdm_cfg);
+>> +               if (ret < 0) {
+>> +                       DPU_ERROR("[enc:%d] failed to enable CDM; ret:%d\n",
+>> +                                 DRMID(phys_enc->parent), ret);
+>> +                       return;
+>> +               }
+>> +       }
+>> +}
+>> +
+>>   /**
+>>    * dpu_encoder_phys_wb_atomic_check - verify and fixup given atomic states
+>>    * @phys_enc:  Pointer to physical encoder
+>> @@ -382,8 +475,9 @@ static void dpu_encoder_phys_wb_setup(
+>>
+>>          dpu_encoder_phys_wb_setup_fb(phys_enc, fb);
+>>
+>> -       dpu_encoder_phys_wb_setup_ctl(phys_enc);
+>> +       dpu_encoder_helper_phys_setup_cdm(phys_enc);
+>>
+>> +       dpu_encoder_phys_wb_setup_ctl(phys_enc);
+>>   }
+>>
+>>   /**
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
+>> index 59a153331194..34143491aba2 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
+>> @@ -87,6 +87,8 @@ static u32 dpu_hw_util_log_mask = DPU_DBG_MASK_NONE;
+>>   #define QOS_QOS_CTRL_VBLANK_EN            BIT(16)
+>>   #define QOS_QOS_CTRL_CREQ_VBLANK_MASK     GENMASK(21, 20)
+>>
+>> +#define TO_S15D16(_x_)((_x_) << 7)
+> 
+> Huh? I don't understand why it is shifted by 7. If you have data in
+> S8.9 format, I'd say that it makes things less obvious compared to
+> S15.16 (where you can perform division on the fly).
+> 
+
+I was referring to below comment and also because the values are in 
+S15.16 in
+
+https://git.codelinaro.org/clo/la/platform/vendor/opensource/display-drivers/-/blob/clo/main/msm/sde/sde_encoder_phys_wb.c?ref_type=heads#L35
+
+428 struct dpu_csc_cfg {
+429 	/* matrix coefficients in S15.16 format */
+430 	uint32_t csc_mv[DPU_CSC_MATRIX_COEFF_SIZE];
+431 	uint32_t csc_pre_bv[DPU_CSC_BIAS_SIZE];
+432 	uint32_t csc_post_bv[DPU_CSC_BIAS_SIZE];
+433 	uint32_t csc_pre_lv[DPU_CSC_CLAMP_SIZE];
+434 	uint32_t csc_post_lv[DPU_CSC_CLAMP_SIZE];
+435 };
+436
+
+
+>> +
+>>   static const struct dpu_csc_cfg dpu_csc_YUV2RGB_601L = {
+>>          {
+>>                  /* S15.16 format */
+>> @@ -117,6 +119,18 @@ static const struct dpu_csc_cfg dpu_csc10_YUV2RGB_601L = {
+>>          { 0x00, 0x3ff, 0x00, 0x3ff, 0x00, 0x3ff,},
+>>   };
+>>
+>> +static const struct dpu_csc_cfg dpu_csc10_rgb2yuv_601l = {
+>> +       {
+>> +               TO_S15D16(0x0083), TO_S15D16(0x0102), TO_S15D16(0x0032),
+>> +               TO_S15D16(0x1fb5), TO_S15D16(0x1f6c), TO_S15D16(0x00e1),
+>> +               TO_S15D16(0x00e1), TO_S15D16(0x1f45), TO_S15D16(0x1fdc)
+>> +       },
+>> +       { 0x00, 0x00, 0x00 },
+>> +       { 0x0040, 0x0200, 0x0200 },
+>> +       { 0x000, 0x3ff, 0x000, 0x3ff, 0x000, 0x3ff },
+>> +       { 0x040, 0x3ac, 0x040, 0x3c0, 0x040, 0x3c0 },
+>> +};
+>> +
+>>   /**
+>>    * dpu_hw_get_csc_cfg - get the CSC matrix based on the request type
+>>    * @type:              type of the requested CSC matrix from caller
+>> @@ -133,6 +147,9 @@ const struct dpu_csc_cfg *dpu_hw_get_csc_cfg(enum dpu_hw_csc_cfg_type type)
+>>          case DPU_HW_YUV2RGB_601L_10BIT:
+>>                  csc_cfg = &dpu_csc10_YUV2RGB_601L;
+>>                  break;
+>> +       case DPU_HW_RGB2YUV_601L_10BIT:
+>> +               csc_cfg = &dpu_csc10_rgb2yuv_601l;
+>> +               break;
+>>          default:
+>>                  DPU_ERROR("unknown csc_cfg type\n");
+>>                  break;
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
+>> index 49f2bcf6de15..ed153d66f660 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
+>> @@ -22,6 +22,7 @@
+>>   enum dpu_hw_csc_cfg_type {
+>>          DPU_HW_YUV2RGB_601L,
+>>          DPU_HW_YUV2RGB_601L_10BIT,
+>> +       DPU_HW_RGB2YUV_601L_10BIT,
+>>   };
+>>
+>>   /*
+>> --
+>> 2.40.1
+>>
+> 
+> 
