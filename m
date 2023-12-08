@@ -2,57 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C2580AC70
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BF380AC74
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbjLHStJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:49:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52534 "EHLO
+        id S233855AbjLHSuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjLHStI (ORCPT
+        with ESMTP id S229572AbjLHSuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:49:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6612E0
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:49:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702061353;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1U4FyBTNgaTu3ym4pmdpXt8ICQFx8oOPzOCvbI3KWnc=;
-        b=Q7m8XMyhnN3VM7cpNK8sb1gGYFNN1K+ClDKO1FnDL9WqSMNwb6vuTOm0aGvlxFMdH1UNND
-        Of/RvjPnHL3hgRzRQ5bl+AjAiPmiGQozJH6+bYBZ4Errf/2jkq0tBcsGrQnIA8t6lf1vQx
-        GCgTrOdfKmGvcdrKjpQBvyApybi3olw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-631-eVXvRh78Mjm_x0I8g51vlQ-1; Fri, 08 Dec 2023 13:49:09 -0500
-X-MC-Unique: eVXvRh78Mjm_x0I8g51vlQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 51FB3832D1B;
-        Fri,  8 Dec 2023 18:49:09 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CD93E40C6EB9;
-        Fri,  8 Dec 2023 18:49:08 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Sean Christopherson <seanjc@google.com>
-Subject: [PATCH v2] KVM: guest-memfd: fix unused-function warning
-Date:   Fri,  8 Dec 2023 13:49:08 -0500
-Message-Id: <20231208184908.2298225-1-pbonzini@redhat.com>
+        Fri, 8 Dec 2023 13:50:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B829E0
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:50:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2A9FEC433C9;
+        Fri,  8 Dec 2023 18:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702061424;
+        bh=sOzOiCooIHWv8JwLcQOBgic7AA/i/2hi5qBpmG99UAQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=OUjDBMGBJIUBC6ckaV9Gmqu7y85/wcFFGAMz0R00eJ9mf/a5NWt9KcjofdBXnXQB+
+         qj28jcFigGux3yc8FWmKsS2iQycF9hKj0LxjP6kPxVWs7avWpd5htby0gMABGNBOGJ
+         zTOvmn/BoMftYVhSRfqN5QuOK59vvp29g7s38B+mNJxdnobhcqPTnMkOdyBlHOJjKz
+         onX836BQUzUueQR8m5SrxkqSfDb33I3xFtxa1m+XyFSeysM4k48qgj5HGBOxmyIqwc
+         zV8TrwL6+WaCJ8hJn9T+Jlob75GjvWPThThZJczI4hu5SoejK68TWdi5ukl+W84rQD
+         nPEAA3kRrdsvQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0F572C04E24;
+        Fri,  8 Dec 2023 18:50:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Subject: Re: [PATCH] team: Fix use-after-free when an option instance allocation
+ fails
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170206142405.6428.2927511697282770717.git-patchwork-notify@kernel.org>
+Date:   Fri, 08 Dec 2023 18:50:24 +0000
+References: <20231206123719.1963153-1-revest@chromium.org>
+In-Reply-To: <20231206123719.1963153-1-revest@chromium.org>
+To:     Florent Revest <revest@chromium.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiri@resnulli.us, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,38 +54,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With migration disabled, one function becomes unused:
+Hello:
 
-virt/kvm/guest_memfd.c:262:12: error: 'kvm_gmem_migrate_folio' defined but not used [-Werror=unused-function]
-  262 | static int kvm_gmem_migrate_folio(struct address_space *mapping,
-      |            ^~~~~~~~~~~~~~~~~~~~~~
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Remove the #ifdef around the reference so that fallback_migrate_folio()
-is never used.  The gmem implementation of the hook is trivial; since
-the gmem mapping is unmovable, the pages should not be migrated anyway.
+On Wed,  6 Dec 2023 13:37:18 +0100 you wrote:
+> In __team_options_register, team_options are allocated and appended to
+> the team's option_list.
+> If one option instance allocation fails, the "inst_rollback" cleanup
+> path frees the previously allocated options but doesn't remove them from
+> the team's option_list.
+> This leaves dangling pointers that can be dereferenced later by other
+> parts of the team driver that iterate over options.
+> 
+> [...]
 
-Fixes: a7800aa80ea4 ("KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for guest-specific backing memory")
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- virt/kvm/guest_memfd.c | 2 --
- 1 file changed, 2 deletions(-)
+Here is the summary with links:
+  - team: Fix use-after-free when an option instance allocation fails
+    https://git.kernel.org/netdev/net/c/c12296bbecc4
 
-diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-index b99272396119..c2e2371720a9 100644
---- a/virt/kvm/guest_memfd.c
-+++ b/virt/kvm/guest_memfd.c
-@@ -300,9 +300,7 @@ static int kvm_gmem_error_page(struct address_space *mapping, struct page *page)
- 
- static const struct address_space_operations kvm_gmem_aops = {
- 	.dirty_folio = noop_dirty_folio,
--#ifdef CONFIG_MIGRATION
- 	.migrate_folio	= kvm_gmem_migrate_folio,
--#endif
- 	.error_remove_page = kvm_gmem_error_page,
- };
- 
+You are awesome, thank you!
 -- 
-2.39.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
