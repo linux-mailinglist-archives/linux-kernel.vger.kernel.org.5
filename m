@@ -2,320 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7B580B077
+	by mail.lfdr.de (Postfix) with ESMTP id D4EFA80B078
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 00:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234020AbjLHXJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 18:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48284 "EHLO
+        id S234079AbjLHXKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 18:10:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLHXJi (ORCPT
+        with ESMTP id S229525AbjLHXKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 18:09:38 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BF590;
-        Fri,  8 Dec 2023 15:09:44 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8MHQrc026832;
-        Fri, 8 Dec 2023 23:09:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=tQ6grR4LJdqpwYa3CRtd1/jjh2P7zwynOMleaQIDQh8=;
- b=RGQOq4w0mqobbvlFfrHSYweW/KymVO3Li2xkVks2Ap8ISiiF9jcB5XAmYTJH+YWnUb+M
- VItQr8POsCSZ01OxR77hrehWT0MNyawjb5EepOjL5YO6bBveuvI7asx7/uN/gAoC62gy
- 43lIWY5vTNtPRo7UZs7Xu2nEm0zqSmPcjmwC4eMPPsKG4Tkqzjk9ilVDqL75/n0ozTz0
- tFkV6Y8JltV/XkKOCS0gERPQseP62Tq6uqC81skYpG6T0F+1Sn/C9hTtFy2ITrcS8fnU
- 8vkON6aDGjwJ2yKOHZpNd8Okb2qhCIrY4NAdneXJnq2uAn7vWSzC9iJU/2+Y9cp0ym7T 8g== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uuyxb1nqv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 23:09:36 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B8N9Zvb028854
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 8 Dec 2023 23:09:35 GMT
-Received: from [10.110.30.94] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Dec
- 2023 15:09:33 -0800
-Message-ID: <1ab1862b-f486-00ee-91b4-ae20ff9e4321@quicinc.com>
-Date:   Fri, 8 Dec 2023 15:09:31 -0800
+        Fri, 8 Dec 2023 18:10:12 -0500
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210DD90;
+        Fri,  8 Dec 2023 15:10:18 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id BDE1C37F;
+        Fri,  8 Dec 2023 23:10:17 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BDE1C37F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1702077017; bh=h1vmUzNrA1esMkjOn4r8ba6qLg2focxoebfLYZwtvB4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MX82t5rwEJ68bqtiGnOJFlwLTLzVjg7hDVYqMCPW9e9CBmeY+Ewes8GA+Fhe4DVco
+         qBm6/Bp4dyMQnP8Q5qDwjDBRoRYirnrL1emysv6sEDAOT5tqkq0md6baS1Vwc2ZZvV
+         UxJdNX/iAy5ezsbsxWM2JZwZs6aukQsK17GSfKp53f3uy/Od5u2IYLL6upfabuif3t
+         OpVt3ZMqhWfvxhBV0CaD4a2LNX5rtbWY1vZQwvbE4swtmUFgsiVPXkbdM5P0KiK8Fj
+         0xy3it+qxINOU55bmjn3uZBXSAQqIy/1exqQM6K3NYcmrxJllZr4sYIXxNOlMv3vaq
+         TXHRITX9xwFog==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH v2] docs: Raise the minimum Sphinx requirement to 2.4.4
+Date:   Fri, 08 Dec 2023 16:10:17 -0700
+Message-ID: <874jgs47fq.fsf@meer.lwn.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 15/16] drm/msm/dpu: introduce separate wb2_format
- arrays for rgb and yuv
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "David Airlie" <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>
-References: <20231208050641.32582-1-quic_abhinavk@quicinc.com>
- <20231208050641.32582-16-quic_abhinavk@quicinc.com>
- <CAA8EJpqfCfETawp1up76S6gryO+Q4KxPB3ThwZCe7DCkp=GkBQ@mail.gmail.com>
- <8eea4a8e-0c70-3768-79f0-1a2bfe083ed7@quicinc.com>
- <CAA8EJpoLzgwEYRcSKZUY1W9KUE9s3WR_bzpA3hmf5X9JGDGutA@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJpoLzgwEYRcSKZUY1W9KUE9s3WR_bzpA3hmf5X9JGDGutA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: dIwmZZZBLyp8LljmQfK7fpc6qbz1m5Ye
-X-Proofpoint-GUID: dIwmZZZBLyp8LljmQfK7fpc6qbz1m5Ye
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-08_14,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 spamscore=0 priorityscore=1501
- malwarescore=0 bulkscore=0 clxscore=1015 adultscore=0 mlxscore=0
- phishscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2312080193
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 31abfdda6527 (docs: Deprecate use of Sphinx < 2.4.x) in 6.2 added a
+warning that support for older versions of Sphinx would be going away.
+There have been no complaints, so the time has come.  Raise the minimum
+Sphinx version to 2.4.4 and clean out some compatibility code that we no
+longer need.
 
+Reviewed-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+---
+Only change since v1 is setting the recommended version to 3.4.3, as
+seems to be the consensus for the best choice.
 
-On 12/8/2023 12:45 PM, Dmitry Baryshkov wrote:
-> On Fri, 8 Dec 2023 at 19:53, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->> On 12/8/2023 3:44 AM, Dmitry Baryshkov wrote:
->>> On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>>>
->>>> Lets rename the existing wb2_formats array wb2_formats_rgb to indicate
->>>> that it has only RGB formats and can be used on any chipset having a WB
->>>> block.
->>>>
->>>> Introduce a new wb2_formats_rgb_yuv array to the catalog to
->>>> indicate support for YUV formats to writeback in addition to RGB.
->>>>
->>>> Chipsets which have support for CDM block will use the newly added
->>>> wb2_formats_rgb_yuv array.
->>>
->>> This means that the catalog can go out of sync, if one adds a CDM
->>> block but doesn't update wb_formats and vice versa.
->>> Can we deduce the format list from the WB code? Is the format list
->>> really static or does it change between platforms (please keep msm8996
->>> / msm8998 in mind).
->>>
->>
->> Yes this is a valid concern. catalog could potentially go out of sync.
->>
->> I checked a few chipsets now and the WB formats didnt change among them.
->>
->> I do need to check more chipsets but downstream does not maintain this
->> in devicetree which means we can just move these arrays to WB code
->> instead of maintaining them in the catalog.
-> 
-> I think we should be comparing to some of the oldest generations, like
-> msm8998/sdm660 or ideally even msm8996/37/17/53.
-> 
+ Documentation/conf.py              |  2 +-
+ Documentation/doc-guide/sphinx.rst |  2 +-
+ Documentation/process/changes.rst  |  2 +-
+ Documentation/sphinx/automarkup.py |  6 +-----
+ Documentation/sphinx/cdomain.py    |  6 +-----
+ Documentation/sphinx/kfigure.py    |  8 +-------
+ scripts/sphinx-pre-install         | 10 +---------
+ 7 files changed, 7 insertions(+), 29 deletions(-)
 
-I compared msm8998 just now and it does have different wb2 formats 
-supported as compared to sc7280/sm8250.
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 20bd74edcca9..3a1a804c3a13 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -47,7 +47,7 @@ from load_config import loadConfig
+ # -- General configuration ------------------------------------------------
+ 
+ # If your documentation needs a minimal Sphinx version, state it here.
+-needs_sphinx = '1.7'
++needs_sphinx = '2.4.4'
+ 
+ # Add any Sphinx extension module names here, as strings. They can be
+ # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
+diff --git a/Documentation/doc-guide/sphinx.rst b/Documentation/doc-guide/sphinx.rst
+index bb7971643fcf..3d125fb4139d 100644
+--- a/Documentation/doc-guide/sphinx.rst
++++ b/Documentation/doc-guide/sphinx.rst
+@@ -28,7 +28,7 @@ Sphinx Install
+ ==============
+ 
+ The ReST markups currently used by the Documentation/ files are meant to be
+-built with ``Sphinx`` version 1.7 or higher.
++built with ``Sphinx`` version 2.4.4 or higher.
+ 
+ There's a script that checks for the Sphinx requirements. Please see
+ :ref:`sphinx-pre-install` for further details.
+diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
+index bb96ca0f774b..559587a89974 100644
+--- a/Documentation/process/changes.rst
++++ b/Documentation/process/changes.rst
+@@ -58,7 +58,7 @@ mcelog                 0.6              mcelog --version
+ iptables               1.4.2            iptables -V
+ openssl & libcrypto    1.0.0            openssl version
+ bc                     1.06.95          bc --version
+-Sphinx\ [#f1]_         1.7              sphinx-build --version
++Sphinx\ [#f1]_         2.4.4            sphinx-build --version
+ cpio                   any              cpio --version
+ GNU tar                1.28             tar --version
+ gtags (optional)       6.6.5            gtags --version
+diff --git a/Documentation/sphinx/automarkup.py b/Documentation/sphinx/automarkup.py
+index acc6d55718bd..a413f8dd5115 100644
+--- a/Documentation/sphinx/automarkup.py
++++ b/Documentation/sphinx/automarkup.py
+@@ -7,11 +7,7 @@
+ from docutils import nodes
+ import sphinx
+ from sphinx import addnodes
+-if sphinx.version_info[0] < 2 or \
+-   sphinx.version_info[0] == 2 and sphinx.version_info[1] < 1:
+-    from sphinx.environment import NoUri
+-else:
+-    from sphinx.errors import NoUri
++from sphinx.errors import NoUri
+ import re
+ from itertools import chain
+ 
+diff --git a/Documentation/sphinx/cdomain.py b/Documentation/sphinx/cdomain.py
+index 4eb150bf509c..e6959af25402 100644
+--- a/Documentation/sphinx/cdomain.py
++++ b/Documentation/sphinx/cdomain.py
+@@ -127,11 +127,7 @@ def setup(app):
+ 
+     # Handle easy Sphinx 3.1+ simple new tags: :c:expr and .. c:namespace::
+     app.connect('source-read', c_markups)
+-
+-    if (major == 1 and minor < 8):
+-        app.override_domain(CDomain)
+-    else:
+-        app.add_domain(CDomain, override=True)
++    app.add_domain(CDomain, override=True)
+ 
+     return dict(
+         version = __version__,
+diff --git a/Documentation/sphinx/kfigure.py b/Documentation/sphinx/kfigure.py
+index 13e885bbd499..97166333b727 100644
+--- a/Documentation/sphinx/kfigure.py
++++ b/Documentation/sphinx/kfigure.py
+@@ -61,13 +61,7 @@ import sphinx
+ from sphinx.util.nodes import clean_astext
+ import kernellog
+ 
+-# Get Sphinx version
+-major, minor, patch = sphinx.version_info[:3]
+-if major == 1 and minor > 3:
+-    # patches.Figure only landed in Sphinx 1.4
+-    from sphinx.directives.patches import Figure  # pylint: disable=C0413
+-else:
+-    Figure = images.Figure
++Figure = images.Figure
+ 
+ __version__  = '1.0.0'
+ 
+diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
+index 1fb88fdceec3..25aefbb35377 100755
+--- a/scripts/sphinx-pre-install
++++ b/scripts/sphinx-pre-install
+@@ -32,8 +32,7 @@ my $python_cmd = "";
+ my $activate_cmd;
+ my $min_version;
+ my $cur_version;
+-my $rec_version = "1.7.9";	# PDF won't build here
+-my $min_pdf_version = "2.4.4";	# Min version where pdf builds
++my $rec_version = "3.4.3";
+ my $latest_avail_ver;
+ 
+ #
+@@ -791,9 +790,6 @@ sub recommend_sphinx_version($)
+ 
+ 	# Version is OK. Nothing to do.
+ 	if ($cur_version && ($cur_version ge $rec_version)) {
+-		if ($cur_version lt $min_pdf_version) {
+-			print "note: If you want pdf, you need at least Sphinx $min_pdf_version.\n";
+-		}
+ 		return;
+ 	};
+ 
+@@ -842,10 +838,6 @@ sub recommend_sphinx_version($)
+ 			printf "\t. $activate_cmd\n";
+ 			deactivate_help();
+ 
+-			if ($latest_avail_ver lt $min_pdf_version) {
+-				print "note: If you want pdf, you need at least Sphinx $min_pdf_version.\n";
+-			}
+-
+ 			return;
+ 		}
+ 
+-- 
+2.42.0
 
-So unfortunately, this will have to remain in catalog for now.
-
->> We will still need to maintain two arrays. One to be used if CDM block
->> has been added and the other if not.
-> 
-> Yes.
-> 
-
->> I must confess one point though. I have not seen any chipset yet where
->> WB block is present but CDM block is not.
-> 
-> I think this was the case for some of mdp5 1.x chips, but according to
-> my data this is correct for all the platforms that we want to support.
-> 
->> So at this point, the only purpose of the two arrays will be till the
->> point where CDM blk has been added to all the required chipsets in the
->> catalog. Then we can drop the RGB only array and maintain the one which
->> has all formats.
->>
-
-I think if we have to generalize this, some more study is needed of how 
-to maintain this in the catalog without missing out on some more 
-formats. But for now, what do you think of below approach:
-
-1) We have these two arrays as I have added these only for sc7280/sm8250 
-and have confirmed that the formats listed there are accurate. At the 
-very least, they do not expose more formats than what is supported. So 
-even if someone adds CDM for other chipsets, they can re-use 
-wb2_formats_rgb_and_yuv. It will certainly work just that its not the 
-full list of supported formats.
-
-2) Even if we do add CDM to other chipsets, what I can confirm is this 
-will not break them as the list of formats we have right now are only 
-lesser than the full list and not more.
-
-3) In the follow up RFT which we discussed in the cover letter, let me 
-try to re-factor wb2_formats based on the list of chipsets that are 
-present in catalog including the older ones you have listed.
-
-The issue is wb2_formats (so writeback) and not CDM itself as these are 
-supported WB formats. So I think we need to re-work this a bit.
-
->>>>
->>>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
->>>> ---
->>>>    .../msm/disp/dpu1/catalog/dpu_10_0_sm8650.h   |  4 +-
->>>>    .../msm/disp/dpu1/catalog/dpu_6_0_sm8250.h    |  4 +-
->>>>    .../msm/disp/dpu1/catalog/dpu_6_2_sc7180.h    |  4 +-
->>>>    .../msm/disp/dpu1/catalog/dpu_7_2_sc7280.h    |  4 +-
->>>>    .../msm/disp/dpu1/catalog/dpu_9_0_sm8550.h    |  4 +-
->>>>    .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    | 37 ++++++++++++++++++-
->>>>    6 files changed, 46 insertions(+), 11 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
->>>> index 04d2a73dd942..eb5dfff2ec4f 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
->>>> @@ -341,8 +341,8 @@ static const struct dpu_wb_cfg sm8650_wb[] = {
->>>>                   .name = "wb_2", .id = WB_2,
->>>>                   .base = 0x65000, .len = 0x2c8,
->>>>                   .features = WB_SM8250_MASK,
->>>> -               .format_list = wb2_formats,
->>>> -               .num_formats = ARRAY_SIZE(wb2_formats),
->>>> +               .format_list = wb2_formats_rgb,
->>>> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
->>>>                   .xin_id = 6,
->>>>                   .vbif_idx = VBIF_RT,
->>>>                   .maxlinewidth = 4096,
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
->>>> index 58b0f50518c8..a57d50b1f028 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
->>>> @@ -336,8 +336,8 @@ static const struct dpu_wb_cfg sm8250_wb[] = {
->>>>                   .name = "wb_2", .id = WB_2,
->>>>                   .base = 0x65000, .len = 0x2c8,
->>>>                   .features = WB_SM8250_MASK,
->>>> -               .format_list = wb2_formats,
->>>> -               .num_formats = ARRAY_SIZE(wb2_formats),
->>>> +               .format_list = wb2_formats_rgb_yuv,
->>>> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb_yuv),
->>>>                   .clk_ctrl = DPU_CLK_CTRL_WB2,
->>>>                   .xin_id = 6,
->>>>                   .vbif_idx = VBIF_RT,
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
->>>> index bcfedfc8251a..7382ebb6e5b2 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
->>>> @@ -157,8 +157,8 @@ static const struct dpu_wb_cfg sc7180_wb[] = {
->>>>                   .name = "wb_2", .id = WB_2,
->>>>                   .base = 0x65000, .len = 0x2c8,
->>>>                   .features = WB_SM8250_MASK,
->>>> -               .format_list = wb2_formats,
->>>> -               .num_formats = ARRAY_SIZE(wb2_formats),
->>>> +               .format_list = wb2_formats_rgb,
->>>> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
->>>>                   .clk_ctrl = DPU_CLK_CTRL_WB2,
->>>>                   .xin_id = 6,
->>>>                   .vbif_idx = VBIF_RT,
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
->>>> index 19c2b7454796..2f153e0b5c6a 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
->>>> @@ -169,8 +169,8 @@ static const struct dpu_wb_cfg sc7280_wb[] = {
->>>>                   .name = "wb_2", .id = WB_2,
->>>>                   .base = 0x65000, .len = 0x2c8,
->>>>                   .features = WB_SM8250_MASK,
->>>> -               .format_list = wb2_formats,
->>>> -               .num_formats = ARRAY_SIZE(wb2_formats),
->>>> +               .format_list = wb2_formats_rgb_yuv,
->>>> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb_yuv),
->>>>                   .clk_ctrl = DPU_CLK_CTRL_WB2,
->>>>                   .xin_id = 6,
->>>>                   .vbif_idx = VBIF_RT,
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
->>>> index bf56265967c0..ad48defa154f 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
->>>> @@ -315,8 +315,8 @@ static const struct dpu_wb_cfg sm8550_wb[] = {
->>>>                   .name = "wb_2", .id = WB_2,
->>>>                   .base = 0x65000, .len = 0x2c8,
->>>>                   .features = WB_SM8250_MASK,
->>>> -               .format_list = wb2_formats,
->>>> -               .num_formats = ARRAY_SIZE(wb2_formats),
->>>> +               .format_list = wb2_formats_rgb,
->>>> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
->>>>                   .xin_id = 6,
->>>>                   .vbif_idx = VBIF_RT,
->>>>                   .maxlinewidth = 4096,
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
->>>> index 1be3156cde05..c52cac7a2288 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
->>>> @@ -202,7 +202,7 @@ static const u32 rotation_v2_formats[] = {
->>>>           /* TODO add formats after validation */
->>>>    };
->>>>
->>>> -static const uint32_t wb2_formats[] = {
->>>> +static const uint32_t wb2_formats_rgb[] = {
->>>>           DRM_FORMAT_RGB565,
->>>>           DRM_FORMAT_BGR565,
->>>>           DRM_FORMAT_RGB888,
->>>> @@ -236,6 +236,41 @@ static const uint32_t wb2_formats[] = {
->>>>           DRM_FORMAT_XBGR4444,
->>>>    };
->>>>
->>>> +static const uint32_t wb2_formats_rgb_yuv[] = {
->>>> +       DRM_FORMAT_RGB565,
->>>> +       DRM_FORMAT_BGR565,
->>>> +       DRM_FORMAT_RGB888,
->>>> +       DRM_FORMAT_ARGB8888,
->>>> +       DRM_FORMAT_RGBA8888,
->>>> +       DRM_FORMAT_ABGR8888,
->>>> +       DRM_FORMAT_XRGB8888,
->>>> +       DRM_FORMAT_RGBX8888,
->>>> +       DRM_FORMAT_XBGR8888,
->>>> +       DRM_FORMAT_ARGB1555,
->>>> +       DRM_FORMAT_RGBA5551,
->>>> +       DRM_FORMAT_XRGB1555,
->>>> +       DRM_FORMAT_RGBX5551,
->>>> +       DRM_FORMAT_ARGB4444,
->>>> +       DRM_FORMAT_RGBA4444,
->>>> +       DRM_FORMAT_RGBX4444,
->>>> +       DRM_FORMAT_XRGB4444,
->>>> +       DRM_FORMAT_BGR565,
->>>> +       DRM_FORMAT_BGR888,
->>>> +       DRM_FORMAT_ABGR8888,
->>>> +       DRM_FORMAT_BGRA8888,
->>>> +       DRM_FORMAT_BGRX8888,
->>>> +       DRM_FORMAT_XBGR8888,
->>>> +       DRM_FORMAT_ABGR1555,
->>>> +       DRM_FORMAT_BGRA5551,
->>>> +       DRM_FORMAT_XBGR1555,
->>>> +       DRM_FORMAT_BGRX5551,
->>>> +       DRM_FORMAT_ABGR4444,
->>>> +       DRM_FORMAT_BGRA4444,
->>>> +       DRM_FORMAT_BGRX4444,
->>>> +       DRM_FORMAT_XBGR4444,
->>>> +       DRM_FORMAT_NV12,
->>>> +};
->>>> +
->>>>    /*************************************************************
->>>>     * SSPP sub blocks config
->>>>     *************************************************************/
->>>> --
->>>> 2.40.1
->>>>
->>>
->>>
-> 
-> 
-> 
