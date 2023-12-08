@@ -2,241 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D871680AB2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B0180AB35
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574511AbjLHRwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:52:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49398 "EHLO
+        id S1574515AbjLHRxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:53:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233802AbjLHRwd (ORCPT
+        with ESMTP id S1574152AbjLHRxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:52:33 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDCC198D
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:52:37 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1d450d5c11so305941566b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 09:52:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702057956; x=1702662756; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xkhmRAvfj7JG1PYVYwn3xPw0RGuzqBpzvxVYSfgiaFU=;
-        b=niO11TFjeMjKb34ChizWVszeEqJdev+njoZ2At0m1cgBSI1ryyU+pbeVF4+GLj9ozs
-         IAJd5HvqysXzpJ9DZyUAcm0WKlhYGQu1bqwc40n0LZw0of7Qkv+FHUAgMEtB3AhXuQR6
-         KgYLHXety9vNPiPqk5Wyszjkzr5BAgM1xodMVMx95Xhxsz+6fcab7GVrIYr9HJ2RjJyc
-         Gl4HNMyOXk8AkoQTXCPjphi6EtIdXG0+upmOEP6RPAXPhXJmd308fdojRJQiF8mnL2hL
-         KxIquwDpv9Bq4QklmPTM+b83ZpwMIqstDhj8WvrDmivkjv6Rjvb2VNFlYeHEdLHVU+gS
-         edNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702057956; x=1702662756;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xkhmRAvfj7JG1PYVYwn3xPw0RGuzqBpzvxVYSfgiaFU=;
-        b=xB+r8EWrjlkSil6fvWLvGVTliH2/SkRYOlX79ZsfYn4JPonGedAgQqYp6m1KZH/SX1
-         pBhLlvjm/AzW7ZUVUqShlrjp/JfaMjuYkxI/b3Xi08xDEPEpaFK/7fKy16kIY4CKAZF/
-         OuqeU7mOCpRH93YrHyYRtUghcrp83Bgs6NjgJ7il/u9gaHOWZI6GEJ+b7GPDyJzRzIn7
-         bfUJN8XJzaEOXl/W25kyNbppls+J0lddko+kDkXgQ8Q5aCHheqv7yxLhicgbwsf2sSxZ
-         x+mRICFLYDyqKrGt8Kw1JrYjqpHpXZJdFOqdPIR1R8oQ6FHa+LLxKsMBmcfWsFAgJYTk
-         NHWg==
-X-Gm-Message-State: AOJu0YxqdaJEBGJIuQ2xrv9giacHAAba73CQ3FmMbtI/2G5QiLLB6Y3L
-        h+CoEuA2L9uGW7o+ca3MVTziBw==
-X-Google-Smtp-Source: AGHT+IFZRw+6ipWfmU4/QV9prwwth2dduKWLodo8shrbb7og17aCelwekR0lM0ONyzliuZFvR1M39w==
-X-Received: by 2002:a17:906:c20e:b0:9e6:38f2:8439 with SMTP id d14-20020a170906c20e00b009e638f28439mr162651ejz.60.1702057956400;
-        Fri, 08 Dec 2023 09:52:36 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id rf19-20020a1709076a1300b00a1f75d21bf3sm498896ejc.6.2023.12.08.09.52.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 09:52:35 -0800 (PST)
-Message-ID: <1ebb4733-0f1d-46ea-b399-34af7df088ac@linaro.org>
-Date:   Fri, 8 Dec 2023 18:52:33 +0100
+        Fri, 8 Dec 2023 12:53:07 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71771D54;
+        Fri,  8 Dec 2023 09:53:13 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8HmRuI004859;
+        Fri, 8 Dec 2023 17:53:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=aOeljEYHqNEgKhz/BD6fDUZMLkHsi4yd87IWatixXCA=;
+ b=Pm99gtXZ73M74T/25u/BMy31HmcnsfrDH5OGUCGIBUHuXkTgoRo6Qn4qacSD4XlX2NEA
+ iR0I/iD2UlF3Tu9ZU+9Y5qRjP+4A+OvPsnFi081sduLBpl5GEqYECDyQPd88YPfo2Rh5
+ hq/Ltgz/pgHziDcEHjVRkIQpB9uQXb+Qj9/Rs5sP1dO+r7NQR3D8Jyp7T9/AxntawWws
+ obYyEJZ+2pZokdEVvtKr3zl8NFhTG9Qr1iaX8wRCCS98mhbVnPE642pE1Dd4E/HNeLUq
+ sjKG+Y7cZX7DnHxlJl1AyxU1+x1hHFoNnt/HPFtf/66ZO+7f4lsue3nQ14wlL4Mol9hp FA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uuj96jtt0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Dec 2023 17:53:06 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B8Hr53C021554
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 8 Dec 2023 17:53:05 GMT
+Received: from [10.110.30.94] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Dec
+ 2023 09:53:02 -0800
+Message-ID: <8eea4a8e-0c70-3768-79f0-1a2bfe083ed7@quicinc.com>
+Date:   Fri, 8 Dec 2023 09:53:00 -0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 05/16] dt-bindings: clock: Add StarFive JH8100 System
- clock and reset generator
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 15/16] drm/msm/dpu: introduce separate wb2_format
+ arrays for rgb and yuv
 Content-Language: en-US
-To:     Sia Jee Heng <jeeheng.sia@starfivetech.com>, kernel@esmil.dk,
-        conor@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, mturquette@baylibre.com,
-        sboyd@kernel.org, p.zabel@pengutronix.de,
-        emil.renner.berthing@canonical.com, hal.feng@starfivetech.com,
-        xingyu.wu@starfivetech.com
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        leyfoon.tan@starfivetech.com
-References: <20231206115000.295825-1-jeeheng.sia@starfivetech.com>
- <20231206115000.295825-6-jeeheng.sia@starfivetech.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231206115000.295825-6-jeeheng.sia@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
+        "Sean Paul" <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        "David Airlie" <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, <quic_jesszhan@quicinc.com>,
+        <quic_parellan@quicinc.com>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>
+References: <20231208050641.32582-1-quic_abhinavk@quicinc.com>
+ <20231208050641.32582-16-quic_abhinavk@quicinc.com>
+ <CAA8EJpqfCfETawp1up76S6gryO+Q4KxPB3ThwZCe7DCkp=GkBQ@mail.gmail.com>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJpqfCfETawp1up76S6gryO+Q4KxPB3ThwZCe7DCkp=GkBQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 051TRLS3deczFWlARKUQrV5xBODbhbIn
+X-Proofpoint-ORIG-GUID: 051TRLS3deczFWlARKUQrV5xBODbhbIn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-08_11,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ mlxlogscore=801 malwarescore=0 phishscore=0 bulkscore=0 impostorscore=0
+ lowpriorityscore=0 adultscore=0 mlxscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312080147
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 12:49, Sia Jee Heng wrote:
-> Add bindings for the System clocks and reset generator
-> (SYSCRG) on JH8100 SoC.
+
+
+On 12/8/2023 3:44 AM, Dmitry Baryshkov wrote:
+> On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>> Lets rename the existing wb2_formats array wb2_formats_rgb to indicate
+>> that it has only RGB formats and can be used on any chipset having a WB
+>> block.
+>>
+>> Introduce a new wb2_formats_rgb_yuv array to the catalog to
+>> indicate support for YUV formats to writeback in addition to RGB.
+>>
+>> Chipsets which have support for CDM block will use the newly added
+>> wb2_formats_rgb_yuv array.
 > 
-> Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
-> Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
-> ---
+> This means that the catalog can go out of sync, if one adds a CDM
+> block but doesn't update wb_formats and vice versa.
+> Can we deduce the format list from the WB code? Is the format list
+> really static or does it change between platforms (please keep msm8996
+> / msm8998 in mind).
+> 
 
-...
+Yes this is a valid concern. catalog could potentially go out of sync.
 
-> +  clocks:
-> +    items:
-> +      - description: Main Oscillator (24 MHz)
-> +      - description: External I2S Rx BCLK clock
-> +      - description: External I2S Rx LRCK clock
-> +      - description: External MCLK clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: clk_osc
-> +      - const: clk_i2srx_bclk_ext
-> +      - const: clk_i2srx_lrck_ext
-> +      - const: clk_mclk_ext
+I checked a few chipsets now and the WB formats didnt change among them.
 
-Drop clk_ prefixes everywhere.
+I do need to check more chipsets but downstream does not maintain this 
+in devicetree which means we can just move these arrays to WB code 
+instead of maintaining them in the catalog.
 
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +    description:
-> +      See <dt-bindings/clock/starfive,jh8100-crg.h> for valid indices.
-> +
-> +  '#reset-cells':
-> +    const: 1
-> +    description:
-> +      See <dt-bindings/reset/starfive-jh8100-crg.h> for valid indices.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - '#clock-cells'
-> +  - '#reset-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/starfive,jh8100-crg.h>
-> +
-> +    clock-controller@126d0000 {
-> +            compatible = "starfive,jh8100-syscrg";
+We will still need to maintain two arrays. One to be used if CDM block 
+has been added and the other if not.
 
-Use 4 spaces for example indentation.
+I must confess one point though. I have not seen any chipset yet where 
+WB block is present but CDM block is not.
 
-> +            reg = <0x126d0000 0x10000>;
-> +            clocks = <&clk_osc>, <&clk_i2srx_bclk_ext>,
-> +                     <&clk_i2srx_lrck_ext>, <&clk_mclk_ext>;
-> +            clock-names = "clk_osc", "clk_i2srx_bclk_ext",
-> +                          "clk_i2srx_lrck_ext", "clk_mclk_ext";
-> +            #clock-cells = <1>;
-> +            #reset-cells = <1>;
-> +    };
-> diff --git a/include/dt-bindings/clock/starfive,jh8100-crg.h b/include/dt-bindings/clock/starfive,jh8100-crg.h
-> new file mode 100644
-> index 000000000000..e5bb588ce798
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/starfive,jh8100-crg.h
-> @@ -0,0 +1,123 @@
-> +/* SPDX-License-Identifier: GPL-2.0 OR MIT */
+So at this point, the only purpose of the two arrays will be till the 
+point where CDM blk has been added to all the required chipsets in the 
+catalog. Then we can drop the RGB only array and maintain the one which 
+has all formats.
 
-How about keeping the same license as binding?
-
-> +/*
-> + * Copyright (C) 2023 StarFive Technology Co., Ltd.
-> + * Sia Jee Heng <jeeheng.sia@starfivetech.com>
-> + *
-> + */
-> +
-
-...
-
-> +#define SYSCRG_CLK_NNE_ICG_EN						108
-> +
-> +#define SYSCRG_CLK_END							109
-
-Drop from binding header.
-
-> +#endif /* __DT_BINDINGS_CLOCK_STARFIVE_JH8100_H__ */
-
-...
-
-> + */
-> +#define SYSCRG_RSTN_SYS_SYSCON					0
-> +#define SYSCRG_RSTN_CLK_MOD					1
-> +#define SYSCRG_RSTN_GPU						2
-> +#define SYSCRG_RSTN_GPU_SPU					3
-> +#define SYSCRG_RSTN_GPU_TVSENSOR				4
-> +#define SYSCRG_RSTN_PPU_OP_NORET_GPU_RESET			5
-> +#define SYSCRG_RSTN_NNE						6
-> +#define SYSCRG_RSTN_HD_AUDIO					7
-> +
-> +#define SYSCRG_RESET_NR_RESETS					8
-
-Drop from binding header.
-
-> +
-> +#endif /* __DT_BINDINGS_RESET_STARFIVE_JH8100_H__ */
-
-Best regards,
-Krzysztof
-
+>>
+>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+>> ---
+>>   .../msm/disp/dpu1/catalog/dpu_10_0_sm8650.h   |  4 +-
+>>   .../msm/disp/dpu1/catalog/dpu_6_0_sm8250.h    |  4 +-
+>>   .../msm/disp/dpu1/catalog/dpu_6_2_sc7180.h    |  4 +-
+>>   .../msm/disp/dpu1/catalog/dpu_7_2_sc7280.h    |  4 +-
+>>   .../msm/disp/dpu1/catalog/dpu_9_0_sm8550.h    |  4 +-
+>>   .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    | 37 ++++++++++++++++++-
+>>   6 files changed, 46 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
+>> index 04d2a73dd942..eb5dfff2ec4f 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
+>> @@ -341,8 +341,8 @@ static const struct dpu_wb_cfg sm8650_wb[] = {
+>>                  .name = "wb_2", .id = WB_2,
+>>                  .base = 0x65000, .len = 0x2c8,
+>>                  .features = WB_SM8250_MASK,
+>> -               .format_list = wb2_formats,
+>> -               .num_formats = ARRAY_SIZE(wb2_formats),
+>> +               .format_list = wb2_formats_rgb,
+>> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
+>>                  .xin_id = 6,
+>>                  .vbif_idx = VBIF_RT,
+>>                  .maxlinewidth = 4096,
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
+>> index 58b0f50518c8..a57d50b1f028 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
+>> @@ -336,8 +336,8 @@ static const struct dpu_wb_cfg sm8250_wb[] = {
+>>                  .name = "wb_2", .id = WB_2,
+>>                  .base = 0x65000, .len = 0x2c8,
+>>                  .features = WB_SM8250_MASK,
+>> -               .format_list = wb2_formats,
+>> -               .num_formats = ARRAY_SIZE(wb2_formats),
+>> +               .format_list = wb2_formats_rgb_yuv,
+>> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb_yuv),
+>>                  .clk_ctrl = DPU_CLK_CTRL_WB2,
+>>                  .xin_id = 6,
+>>                  .vbif_idx = VBIF_RT,
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
+>> index bcfedfc8251a..7382ebb6e5b2 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
+>> @@ -157,8 +157,8 @@ static const struct dpu_wb_cfg sc7180_wb[] = {
+>>                  .name = "wb_2", .id = WB_2,
+>>                  .base = 0x65000, .len = 0x2c8,
+>>                  .features = WB_SM8250_MASK,
+>> -               .format_list = wb2_formats,
+>> -               .num_formats = ARRAY_SIZE(wb2_formats),
+>> +               .format_list = wb2_formats_rgb,
+>> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
+>>                  .clk_ctrl = DPU_CLK_CTRL_WB2,
+>>                  .xin_id = 6,
+>>                  .vbif_idx = VBIF_RT,
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
+>> index 19c2b7454796..2f153e0b5c6a 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
+>> @@ -169,8 +169,8 @@ static const struct dpu_wb_cfg sc7280_wb[] = {
+>>                  .name = "wb_2", .id = WB_2,
+>>                  .base = 0x65000, .len = 0x2c8,
+>>                  .features = WB_SM8250_MASK,
+>> -               .format_list = wb2_formats,
+>> -               .num_formats = ARRAY_SIZE(wb2_formats),
+>> +               .format_list = wb2_formats_rgb_yuv,
+>> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb_yuv),
+>>                  .clk_ctrl = DPU_CLK_CTRL_WB2,
+>>                  .xin_id = 6,
+>>                  .vbif_idx = VBIF_RT,
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
+>> index bf56265967c0..ad48defa154f 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
+>> @@ -315,8 +315,8 @@ static const struct dpu_wb_cfg sm8550_wb[] = {
+>>                  .name = "wb_2", .id = WB_2,
+>>                  .base = 0x65000, .len = 0x2c8,
+>>                  .features = WB_SM8250_MASK,
+>> -               .format_list = wb2_formats,
+>> -               .num_formats = ARRAY_SIZE(wb2_formats),
+>> +               .format_list = wb2_formats_rgb,
+>> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
+>>                  .xin_id = 6,
+>>                  .vbif_idx = VBIF_RT,
+>>                  .maxlinewidth = 4096,
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+>> index 1be3156cde05..c52cac7a2288 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+>> @@ -202,7 +202,7 @@ static const u32 rotation_v2_formats[] = {
+>>          /* TODO add formats after validation */
+>>   };
+>>
+>> -static const uint32_t wb2_formats[] = {
+>> +static const uint32_t wb2_formats_rgb[] = {
+>>          DRM_FORMAT_RGB565,
+>>          DRM_FORMAT_BGR565,
+>>          DRM_FORMAT_RGB888,
+>> @@ -236,6 +236,41 @@ static const uint32_t wb2_formats[] = {
+>>          DRM_FORMAT_XBGR4444,
+>>   };
+>>
+>> +static const uint32_t wb2_formats_rgb_yuv[] = {
+>> +       DRM_FORMAT_RGB565,
+>> +       DRM_FORMAT_BGR565,
+>> +       DRM_FORMAT_RGB888,
+>> +       DRM_FORMAT_ARGB8888,
+>> +       DRM_FORMAT_RGBA8888,
+>> +       DRM_FORMAT_ABGR8888,
+>> +       DRM_FORMAT_XRGB8888,
+>> +       DRM_FORMAT_RGBX8888,
+>> +       DRM_FORMAT_XBGR8888,
+>> +       DRM_FORMAT_ARGB1555,
+>> +       DRM_FORMAT_RGBA5551,
+>> +       DRM_FORMAT_XRGB1555,
+>> +       DRM_FORMAT_RGBX5551,
+>> +       DRM_FORMAT_ARGB4444,
+>> +       DRM_FORMAT_RGBA4444,
+>> +       DRM_FORMAT_RGBX4444,
+>> +       DRM_FORMAT_XRGB4444,
+>> +       DRM_FORMAT_BGR565,
+>> +       DRM_FORMAT_BGR888,
+>> +       DRM_FORMAT_ABGR8888,
+>> +       DRM_FORMAT_BGRA8888,
+>> +       DRM_FORMAT_BGRX8888,
+>> +       DRM_FORMAT_XBGR8888,
+>> +       DRM_FORMAT_ABGR1555,
+>> +       DRM_FORMAT_BGRA5551,
+>> +       DRM_FORMAT_XBGR1555,
+>> +       DRM_FORMAT_BGRX5551,
+>> +       DRM_FORMAT_ABGR4444,
+>> +       DRM_FORMAT_BGRA4444,
+>> +       DRM_FORMAT_BGRX4444,
+>> +       DRM_FORMAT_XBGR4444,
+>> +       DRM_FORMAT_NV12,
+>> +};
+>> +
+>>   /*************************************************************
+>>    * SSPP sub blocks config
+>>    *************************************************************/
+>> --
+>> 2.40.1
+>>
+> 
+> 
