@@ -2,138 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D12B080AA92
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1091C80AA8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574448AbjLHRVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:21:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
+        id S1574434AbjLHRUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:20:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574473AbjLHRUl (ORCPT
+        with ESMTP id S236033AbjLHRUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:20:41 -0500
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDA530E0
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:18:22 -0800 (PST)
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b9f3b1c184so68104b6e.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 09:18:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702055901; x=1702660701;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gJ+3R9IxKbkmcTJ74HwTcQdvvH3YUoXYS6y2KZcmboM=;
-        b=heLkUNNJ668NGUqPZtbP8t0BkZSCAmx8lfYvyDSPCaQcvlMtxQQw9UTDk52hXoUjtr
-         F/INa/87Z7xHd2/aZjNLmGikHAR19yqF2vB2LA7GPb1L97acYWw/4zsvksh0EodJt9OM
-         m1kG0ZBKvlLBfs58MVqwPzEjPkUaR8uALpVl9Aum9IptkbRfWIdIZ6FntABqAPDpbPK9
-         gR1g1iTVO08troHxpO39KBHCugQ6shDvSv5NFwpAxTqp7EgBtoY/XJ1DquWstHfP9fTj
-         I4M9eyBbX7URsEt9ROtISNr9oOl9UcNhd/pfgJe3GQBIdckHHgisBn3M94NV9dQHtfDp
-         x4rw==
-X-Gm-Message-State: AOJu0YxPhzDJsu4kXFZFdXamYbryMIgLuNCHJbwvvuoBr3xAVJ9nXoRi
-        HfVAUxkYY9C3BKtiL8P+QghJZbl0CNjJvMTCZlL9OCbXeaWh
-X-Google-Smtp-Source: AGHT+IEaGM8IrISOsncjNqQeBWc5L4m00L5pN75slobOFbwt/DyBySK4kH6Tmip4lZAW2Dp//bRk6iuMAdSNo1mN7aJXQv3Qa4mZ
+        Fri, 8 Dec 2023 12:20:17 -0500
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5C22D40;
+        Fri,  8 Dec 2023 09:19:52 -0800 (PST)
+Received: from [192.168.1.104] (178.176.72.145) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Fri, 8 Dec
+ 2023 20:19:49 +0300
+Subject: Re: [PATCH v4 09/22] MIPS: traps: Handle CPU with non standard vint
+ offset
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        <linux-mips@vger.kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?UTF-8?Q?Th=c3=a9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20231208161249.1827174-1-gregory.clement@bootlin.com>
+ <20231208161249.1827174-10-gregory.clement@bootlin.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <94e4bafb-7c4d-d6bf-7440-f487243a1a59@omp.ru>
+Date:   Fri, 8 Dec 2023 20:19:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1924:b0:3b8:b1e2:f631 with SMTP id
- bf36-20020a056808192400b003b8b1e2f631mr421305oib.0.1702055901267; Fri, 08 Dec
- 2023 09:18:21 -0800 (PST)
-Date:   Fri, 08 Dec 2023 09:18:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000620dd0060c02c5e1@google.com>
-Subject: [syzbot] [riscv?] riscv/fixes boot error: kernel BUG in __phys_addr_symbol
-From:   syzbot <syzbot+afb726d49f84c8d95ee1@syzkaller.appspotmail.com>
-To:     aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231208161249.1827174-10-gregory.clement@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.72.145]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 12/08/2023 17:00:03
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 181987 [Dec 08 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 6 0.3.6 62f5a4619c57459c9a142aa1486ed27913162963
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.145
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/08/2023 17:07:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/8/2023 1:21:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 12/8/23 7:12 PM, Gregory CLEMENT wrote:
 
-syzbot found the following issue on:
+> From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> 
+> Some BMIPS cpus has none standard start offset for vector interrupts.
+> 
+> Handle those CPUs in vector size calculation and handler setup process.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>  arch/mips/kernel/traps.c | 32 +++++++++++++++++++++++---------
+>  1 file changed, 23 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+> index ea59d321f713e..651c9ec6265a9 100644
+> --- a/arch/mips/kernel/traps.c
+> +++ b/arch/mips/kernel/traps.c
+> @@ -74,7 +74,6 @@
+>  
+>  #include "access-helper.h"
+>  
+> -#define MAX(a, b) ((a) >= (b) ? (a) : (b))
+>  
+>  extern void check_wait(void);
+>  extern asmlinkage void rollback_handle_int(void);
+> @@ -2005,6 +2004,7 @@ void __noreturn nmi_exception_handler(struct pt_regs *regs)
+>  unsigned long ebase;
+>  EXPORT_SYMBOL_GPL(ebase);
+>  unsigned long exception_handlers[32];
+> +static unsigned long vi_vecbase;
+>  unsigned long vi_handlers[64];
+>  
+>  void reserve_exception_space(phys_addr_t addr, unsigned long size)
+> @@ -2074,7 +2074,7 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+>  		handler = (unsigned long) addr;
+>  	vi_handlers[n] = handler;
+>  
+> -	b = (unsigned char *)(ebase + 0x200 + n*VECTORSPACING);
+> +	b = (unsigned char *)(vi_vecbase + n*VECTORSPACING);
 
-HEAD commit:    eb46a0076501 riscv: Check if the code to patch lies in the..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=14aa707ae80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a5c1ede998d7cef2
-dashboard link: https://syzkaller.appspot.com/bug?extid=afb726d49f84c8d95ee1
-compiler:       riscv64-linux-gnu-gcc (Debian 12.2.0-13) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: riscv64
+   Add spaces around * for consistency please.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/a741b348759c/non_bootable_disk-eb46a007.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/472c8c5dc639/vmlinux-eb46a007.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/21ee09184ba1/Image-eb46a007.xz
+[...]
+> @@ -2370,20 +2370,33 @@ void __init trap_init(void)
+>  	extern char except_vec3_generic;
+>  	extern char except_vec4;
+>  	extern char except_vec3_r4000;
+> -	unsigned long i, vec_size;
+> +	unsigned long i, vec_size, vi_vec_offset;
+>  	phys_addr_t ebase_pa;
+>  
+>  	check_wait();
+>  
+> +	if (cpu_has_veic || cpu_has_vint) {
+> +		switch (current_cpu_type()) {
+> +		case CPU_BMIPS3300:
+> +		case CPU_BMIPS4380:
+> +			vi_vec_offset = 0x400;
+> +			break;
+> +		case CPU_BMIPS5000:
+> +			vi_vec_offset = 0x1000;
+> +			break;
+> +		default:
+> +			vi_vec_offset = 0x200;
+> +			break;
+> +		}
+> +		vec_size = vi_vec_offset + VECTORSPACING*64;
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+afb726d49f84c8d95ee1@syzkaller.appspotmail.com
+   Here as well...
 
-------------[ cut here ]------------
-kernel BUG at arch/riscv/mm/physaddr.c:31!
-Kernel BUG [#1]
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.7.0-rc1-syzkaller-geb46a0076501 #0
-Hardware name: riscv-virtio,qemu (DT)
-epc : __phys_addr_symbol+0x144/0x150 arch/riscv/mm/physaddr.c:31
- ra : __phys_addr_symbol+0x144/0x150 arch/riscv/mm/physaddr.c:31
-epc : ffffffff800200b4 ra : ffffffff800200b4 sp : ff20000000013d10
- gp : ffffffff861f60a0 tp : ff6000000b260000 t0 : 26747970652d3e69
- t1 : fffffffef0a8ad5d t2 : 0000000000000000 s0 : ff20000000013d40
- s1 : ff60000003a00000 a0 : 0000000000000006 a1 : ffffffff80000000
- a2 : 0000000000000002 a3 : ffffffff800200b4 a4 : 0000000000000000
- a5 : ff6000000b261000 a6 : 0000000000000003 a7 : ffffffff85456aef
- s2 : ffffffff8816d000 s3 : ffffffff80000000 s4 : ffffffff84e6f2b0
- s5 : ff60000003a00000 s6 : 0000000000000000 s7 : 0000000000000000
- s8 : ffffffff861f5c40 s9 : 0000000000000000 s10: 0000000000000000
- s11: 0000000000000000 t3 : ffffffffffffffff t4 : fffffffef0a8ad5d
- t5 : fffffffef0a8ad5e t6 : ff60000013e80c70
-status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
-[<ffffffff800200b4>] __phys_addr_symbol+0x144/0x150 arch/riscv/mm/physaddr.c:31
-[<ffffffff80019ede>] __set_memory+0x1c0/0x762 arch/riscv/mm/pageattr.c:308
-[<ffffffff8001a4a4>] set_memory_rw_nx+0x24/0x30 arch/riscv/mm/pageattr.c:346
-[<ffffffff80008778>] set_kernel_memory arch/riscv/include/asm/set_memory.h:27 [inline]
-[<ffffffff80008778>] free_initmem+0x52/0x8c arch/riscv/kernel/setup.c:323
-[<ffffffff837334e6>] kernel_init+0x44/0x21e init/main.c:1450
-[<ffffffff83745cb2>] ret_from_fork+0xe/0x1c arch/riscv/kernel/entry.S:221
-Code: 84b3 4124 b745 4985 1996 bf65 7097 0025 80e7 ecc0 (9002) 7097 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	412484b3          	sub	s1,s1,s2
-   4:	b745                	j	0xffffffffffffffa4
-   6:	4985                	li	s3,1
-   8:	1996                	sll	s3,s3,0x25
-   a:	bf65                	j	0xffffffffffffffc2
-   c:	00257097          	auipc	ra,0x257
-  10:	ecc080e7          	jalr	-308(ra) # 0x256ed8
-* 14:	9002                	ebreak <-- trapping instruction
-  16:	97 70             	Address 0x16 is out of bounds.
+[...]
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+MBR, Sergey
