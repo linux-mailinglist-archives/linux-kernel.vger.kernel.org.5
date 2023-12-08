@@ -2,302 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B825780A771
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0470B80A774
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574328AbjLHPbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:31:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55800 "EHLO
+        id S1574260AbjLHPbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:31:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232481AbjLHPbC (ORCPT
+        with ESMTP id S233549AbjLHPba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:31:02 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47BD810F1;
-        Fri,  8 Dec 2023 07:31:05 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702049463;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kM2gfM4stLx1K6L+3Wj5bEw38BxAF95LAx7kBEjCuto=;
-        b=TTjqPrRzGk9nL8pZrlbLig8nLw0elK3wmLC3t/4aftYWymZ9tjnUWH2smJ+JJWgvEkwj3/
-        9+rkK3i7pnw0wiKFTu8NNb/TGug3LJVtDO/GRzKrssaoxKRcO5DfNKEfOcazgbFQhlXw5i
-        7bueF3+LDojAH5/kP3XhDQ1o6JD6MnCt3Svw+VhHt/dmTaNoR4URC5C2U1DWKl4UTBbWqs
-        /m5NLKj65RFR3hy6qvhE1vn4B6ss3eCwMHpSTuTG+IGp8q7jlqzSHteAtlFZof5PsQIOGP
-        Q9oz3gAjBLoDBxhDvd4qqnJgius0uOmFjDHE7VFIRUy8lQ7wexHMQmVmyn5/PQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702049463;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kM2gfM4stLx1K6L+3Wj5bEw38BxAF95LAx7kBEjCuto=;
-        b=IG0x/GKvuLwBqMEc1i1QfOJ2/hxnHDNm8aeL9CD5msZe2NOJs5rU8mlAKByuz+L/sgJT5k
-        nVja4PdTSis57qAg==
-To:     James Tai <james.tai@realtek.com>, Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        James Tai <james.tai@realtek.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <error27@gmail.com>
-Subject: Re: [PATCH v3 2/6] irqchip: Add interrupt controller support for
- Realtek DHC SoCs
-In-Reply-To: <20231129054339.3054202-3-james.tai@realtek.com>
-References: <20231129054339.3054202-1-james.tai@realtek.com>
- <20231129054339.3054202-3-james.tai@realtek.com>
-Date:   Fri, 08 Dec 2023 16:31:02 +0100
-Message-ID: <87cyvgsocp.ffs@tglx>
+        Fri, 8 Dec 2023 10:31:30 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 493E41732;
+        Fri,  8 Dec 2023 07:31:36 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6CE9D106F;
+        Fri,  8 Dec 2023 07:32:21 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 527983F6C4;
+        Fri,  8 Dec 2023 07:31:34 -0800 (PST)
+Message-ID: <22cfb197-b8bd-46c5-f3cb-ea04b95c0792@arm.com>
+Date:   Fri, 8 Dec 2023 15:31:32 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH V3 08/10] coresight: tmc: Move ACPI support from AMBA
+ driver to platform driver
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20231208053939.42901-1-anshuman.khandual@arm.com>
+ <20231208053939.42901-9-anshuman.khandual@arm.com>
+Content-Language: en-US
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20231208053939.42901-9-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29 2023 at 13:43, James Tai wrote:
-> Realtek DHC (Digital Home Center) SoCs share a common interrupt controller
-> design. This universal interrupt controller driver provides support for
-> various variants within the Realtek DHC SoC family.
->
-> Each DHC SoC features two sets of extended interrupt controllers, each
-> capable of handling up to 32 interrupts. These expansion controllers are
-> connected to the GIC (Generic Interrupt Controller).
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <error27@gmail.com>
-> Closes: https://lore.kernel.org/r/202311201929.2FpvMRlg-lkp@intel.com/
 
-These tags are pointless as they are not related to anything in
-tree. You addressed review comments and 0-day fallout, but neither Dan
-nor 0-day reported that the interrupt controller for Realtek DHC SoCs is
-missing.
 
-> +#include "irq-realtek-intc-common.h"
-> +
-> +struct realtek_intc_data;
+On 08/12/2023 05:39, Anshuman Khandual wrote:
+> Add support for the tmc devices in the platform driver, which can then be
+> used on ACPI based platforms. This change would now allow runtime power
+> management for ACPI based systems. The driver would try to enable the APB
+> clock if available.
+> 
+> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> Cc: Sudeep Holla <sudeep.holla@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: James Clark <james.clark@arm.com>
+> Cc: linux-acpi@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: coresight@lists.linaro.org
+> Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
+> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> Changes in V3:
+> 
+> - Added commnets for 'drvdata->pclk'
+> - Used coresight_init_driver()/coresight_remove_driver() helpers instead
+> - Dropped pm_runtime_put() from __tmc_probe()
+> - Added pm_runtime_put() on success path in tmc_probe()
+> - Added pm_runtime_put() on success/error paths in tmc_platform_probe()
+> - Check for drvdata instead of drvdata->pclk in suspend and resume paths
+> 
+>  drivers/acpi/arm64/amba.c                     |   2 -
+>  .../hwtracing/coresight/coresight-tmc-core.c  | 137 ++++++++++++++++--
+>  drivers/hwtracing/coresight/coresight-tmc.h   |   2 +
+>  3 files changed, 124 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
+> index 6d24a8f7914b..d3c1defa7bc8 100644
+> --- a/drivers/acpi/arm64/amba.c
+> +++ b/drivers/acpi/arm64/amba.c
+> @@ -22,10 +22,8 @@
+>  static const struct acpi_device_id amba_id_list[] = {
+>  	{"ARMH0061", 0}, /* PL061 GPIO Device */
+>  	{"ARMH0330", 0}, /* ARM DMA Controller DMA-330 */
+> -	{"ARMHC501", 0}, /* ARM CoreSight ETR */
+>  	{"ARMHC502", 0}, /* ARM CoreSight STM */
+>  	{"ARMHC503", 0}, /* ARM CoreSight Debug */
+> -	{"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
+>  	{"", 0},
+>  };
+>  
+> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
+> index ad61d02f5f75..8482830d73ef 100644
+> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
+> @@ -23,6 +23,8 @@
+>  #include <linux/of.h>
+>  #include <linux/coresight.h>
+>  #include <linux/amba/bus.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/acpi.h>
+>  
+>  #include "coresight-priv.h"
+>  #include "coresight-tmc.h"
+> @@ -437,24 +439,17 @@ static u32 tmc_etr_get_max_burst_size(struct device *dev)
+>  	return burst_size;
+>  }
+>  
+> -static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
+> +static int __tmc_probe(struct device *dev, struct resource *res, void *dev_caps)
 
-struct realtek_intc_data is declared in irq-realtek-intc-common.h, so
-what's the point of this forward declaration?
+I don't think the dev_caps argument is used anymore since the v3 changes.
 
-> +static inline unsigned int realtek_intc_get_ints(struct realtek_intc_data *data)
-> +{
-> +	return readl(data->base + data->info->isr_offset);
-> +}
-> +
-> +static inline void realtek_intc_clear_ints_bit(struct realtek_intc_data *data, int bit)
-> +{
-> +	writel(BIT(bit) & ~1, data->base + data->info->isr_offset);
-
-That '& ~1' solves what aside of preventing bit 0 from being written?
-
-> +static int realtek_intc_domain_map(struct irq_domain *d, unsigned int irq, irq_hw_number_t hw)
-> +{
-> +	struct realtek_intc_data *data = d->host_data;
-> +
-> +	irq_set_chip_and_handler(irq, &realtek_intc_chip, handle_level_irq);
-> +	irq_set_chip_data(irq, data);
-> +	irq_set_probe(irq);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct irq_domain_ops realtek_intc_domain_ops = {
-> +	.xlate = irq_domain_xlate_onecell,
-> +	.map = realtek_intc_domain_map,
-
-	.xlate	= irq_domain_xlate_onecell,
-	.map	= realtek_intc_domain_map,
-
-Please.
-
-> +};
-> +
-> +static int realtek_intc_subset(struct device_node *node, struct realtek_intc_data *data, int index)
-> +{
-> +	struct realtek_intc_subset_data *subset_data = &data->subset_data[index];
-> +	const struct realtek_intc_subset_cfg *cfg = &data->info->cfg[index];
-> +	int irq;
-> +
-> +	irq = irq_of_parse_and_map(node, index);
-
-irq_of_parse_and_map() returns an 'unsigned int' where 0 is fail.
-
-> +	if (irq <= 0)
-> +		return irq;
-> +
-> +	subset_data->common = data;
-> +	subset_data->cfg = cfg;
-> +	subset_data->parent_irq = irq;
-> +	irq_set_chained_handler_and_data(irq, realtek_intc_handler, subset_data);
-> +
-> +	return 0;
-> +}
-> +
-> +int realtek_intc_probe(struct platform_device *pdev, const struct realtek_intc_info *info)
-> +{
-> +	struct realtek_intc_data *data;
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *node = dev->of_node;
-> +	int ret, i;
-> +
-> +	data = devm_kzalloc(dev, struct_size(data, subset_data, info->cfg_num), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->base = of_iomap(node, 0);
-> +	if (!data->base) {
-> +		ret = -ENOMEM;
-> +		goto out_cleanup;
-
-devm_kzalloc() is automatically cleaned up when the probe function
-fails, so 'return -ENOMEM;' is sufficient.
-
-> +	}
-> +
-> +	data->info = info;
-> +
-> +	raw_spin_lock_init(&data->lock);
-> +
-> +	data->domain = irq_domain_add_linear(node, 32, &realtek_intc_domain_ops, data);
-> +	if (!data->domain) {
-> +		ret = -ENOMEM;
-
-This 'ret = -ENOMEM;' is pointless as the only error code returned in this
-function is -ENOMEM. So you can just return -ENOMEM in the error path, no?
-
-> +		goto out_cleanup;
-> +	}
-> +
-> +	data->subset_data_num = info->cfg_num;
-> +	for (i = 0; i < info->cfg_num; i++) {
-> +		ret = realtek_intc_subset(node, data, i);
-> +		if (ret) {
-> +			WARN(ret, "failed to init subset %d: %d", i, ret);
-> +			ret = -ENOMEM;
-> +			goto out_cleanup;
-
-                if (WARN(ret, "....."))
-                	goto cleanup;
-
-> +		}
-> +	}
-> +
-> +	platform_set_drvdata(pdev, data);
-> +
-> +	return 0;
-> +
-> +out_cleanup:
-> +
-> +	if (data->base)
-> +		iounmap(data->base);
-
-Leaks the irqdomain.
-
-> +
-> +	devm_kfree(dev, data);
-
-Pointless exercise.
-
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(realtek_intc_probe);
-
-EXPORT_SYMBOL_GPL
-
-> +/**
-> + * realtek_intc_subset_cfg - subset interrupt mask
-> + * @ints_mask: inetrrupt mask
-> + */
-> +struct realtek_intc_subset_cfg {
-> +	unsigned int	ints_mask;
-> +};
-
-The value of a struct wrapping a single 'unsigned int' is? What's wrong
-with using unsigned int (actually you want u32 as this represents a
-hardware mask) directly? Not enough obfuscation, right?
-
-> +/**
-> + * realtek_intc_info - interrupt controller data.
-> + * @isr_offset: interrupt status register offset.
-> + * @umsk_isr_offset: unmask interrupt status register offset.
-> + * @scpu_int_en_offset: interrupt enable register offset.
-> + * @cfg: cfg of the subset.
-> + * @cfg_num: number of cfg.
-
- * @isr_offset:		interrupt status register offset
- * @umsk_isr_offset:	unmask interrupt status register offset
- * @scpu_int_en_offset:	interrupt enable register offset
-
-Can you spot the difference?
-
-Please fix all over the place.
-
-> + */
-> +struct realtek_intc_info {
-> +	const struct realtek_intc_subset_cfg *cfg;
-> +	unsigned int			     isr_offset;
-> +	unsigned int			     umsk_isr_offset;
-> +	unsigned int			     scpu_int_en_offset;
-> +	const u32			     *isr_to_scpu_int_en_mask;
-> +	int				     cfg_num;
-> +};
-> +
-> +/**
-> + * realtek_intc_subset_data - handler of a interrupt source only handles ints
-> + *                            bits in the mask.
-> + * @cfg: cfg of the subset.
-
-Seriously. 'cfg of'? This is a description, so can you spell the words
-out? This is really neither space constraint nor subject to Xitter
-rules. Fix this all over the place please.
-
-> + * @common: common data.
-> + * @parent_irq: interrupt source.
-> + */
-> +struct realtek_intc_subset_data {
-> +	const struct realtek_intc_subset_cfg *cfg;
-> +	struct realtek_intc_data	     *common;
-> +	int				     parent_irq;
-> +};
-> +
-> +/**
-> + * realtek_intc_data - configuration data for realtek interrupt controller driver.
-> + * @base: base of interrupt register
-> + * @info: info of intc
-> + * @domain: interrupt domain
-> + * @lock: lock
-> + * @saved_en: status of interrupt enable
-> + * @subset_data_num: number of subset data
-> + * @subset_data: subset data
-> + */
-> +struct realtek_intc_data {
-> +	void __iomem			*base;
-> +	const struct realtek_intc_info	*info;
-> +	struct irq_domain		*domain;
-> +	struct raw_spinlock		lock;
-> +	unsigned int			saved_en;
-> +	int				subset_data_num;
-> +	struct realtek_intc_subset_data subset_data[];
-> +};
-> +
-> +#define IRQ_ALWAYS_ENABLED U32_MAX
-> +#define DISABLE_INTC (0)
-> +#define CLEAN_INTC_STATUS GENMASK(31, 1)
-
-#define IRQ_ALWAYS_ENABLED	U32_MAX
-#define DISABLE_INTC		(0)
-#define CLEAN_INTC_STATUS	GENMASK(31, 1)
-
-Please, as that makes this readable.
-
-Thanks,
-
-        tglx
