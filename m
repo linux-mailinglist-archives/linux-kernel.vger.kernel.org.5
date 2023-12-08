@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6502980AF64
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:08:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CDE80AF68
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574876AbjLHWHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 17:07:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43542 "EHLO
+        id S1574896AbjLHWIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 17:08:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236017AbjLHWHj (ORCPT
+        with ESMTP id S229687AbjLHWIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 17:07:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279971FC4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 14:07:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702073235;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1K9qQ8jUBWP1/yoc/0mZr7WMwlg05+6DFH8d8enhnls=;
-        b=df0Buhmkud4pId72+5gbB5qcXyVpEPvpTIrMsKn3DzwZ/GDEXCcQs3ys1Qa7lpHh30fFBo
-        0V/r1aXsmWzw2Atl7hYD9hEIIPhBmlcchWSf8kaSJ8InIJ6PIj/QhIufU1oBwbpPqreq4C
-        qnXUCj13gc7nrPIUdXymCf4Zxuf1QPk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-272-eI_zKEg0NmCiM5sK8cmCIg-1; Fri, 08 Dec 2023 17:07:11 -0500
-X-MC-Unique: eI_zKEg0NmCiM5sK8cmCIg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5CE4485A58C;
-        Fri,  8 Dec 2023 22:07:11 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E177492BE6;
-        Fri,  8 Dec 2023 22:07:10 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     Bill MacAllister <bill@ca-zephyr.org>,
-        linux-afs@lists.infradead.org
-cc:     David Howells <dhowells@redhat.com>,
-        Jeffrey E Altman <jaltman@auristor.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] afs: Fix refcount underflow from error handling race
+        Fri, 8 Dec 2023 17:08:09 -0500
+Received: from helios.alatek.com.pl (helios.alatek.com.pl [85.14.123.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5C21706;
+        Fri,  8 Dec 2023 14:08:14 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by helios.alatek.com.pl (Postfix) with ESMTP id A745B2D00FCF;
+        Fri,  8 Dec 2023 23:08:11 +0100 (CET)
+Received: from helios.alatek.com.pl ([127.0.0.1])
+ by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id Pm6PtbYcO1Xs; Fri,  8 Dec 2023 23:08:10 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by helios.alatek.com.pl (Postfix) with ESMTP id C4CD72D00FCE;
+        Fri,  8 Dec 2023 23:08:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.10.3 helios.alatek.com.pl C4CD72D00FCE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alatek.krakow.pl;
+        s=99EE5E86-D06A-11EC-BE24-DBCCD0A148D3; t=1702073290;
+        bh=OqUf+5qMMYkf8m8dTkgiVgao04lPLCwTYIySk9A5NlY=;
+        h=From:To:Date:Message-Id:MIME-Version;
+        b=hmh5AfGbadyV6Y1sJdDJrvt+W6zrZhbGalxGYhz2woEeVgmT2A07pu1h8vdmYqZ4W
+         sRQi+4cS3MzIPU47Qf5b6X6gZNCspXKZwsnsR4IIVR1Ay1iyfKJhye3L0b43mfWs7e
+         UxHq3pLclgpbCv8riGhpNy3vggV8BHfKrMYVFeoj4mC+OzRNlQI73niTlklqH1HUv0
+         r4ediBNW66UcvTEeptVuH2MfE9jcK380BB2RQ7tIrdbLB/UAAJF2gksfvVB1ZhJeoO
+         27vjQpKdEzlCjC/I+ifMu5dav66kFCQwmvCJPzIzqQL1gcZ2xTWsiahTZ3beI/M9/H
+         Leaq6fG5B1YmQ==
+X-Virus-Scanned: amavis at alatek.com.pl
+Received: from helios.alatek.com.pl ([127.0.0.1])
+ by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id fAPQKYUSh1JW; Fri,  8 Dec 2023 23:08:10 +0100 (CET)
+Received: from localhost.localdomain (unknown [10.125.125.6])
+        by helios.alatek.com.pl (Postfix) with ESMTPSA id 249152D00FCC;
+        Fri,  8 Dec 2023 23:08:10 +0100 (CET)
+From:   Jan Kuliga <jankul@alatek.krakow.pl>
+To:     lizhi.hou@amd.com, brian.xu@amd.com, raj.kumar.rampelli@amd.com,
+        vkoul@kernel.org, michal.simek@amd.com, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com
+Cc:     jankul@alatek.krakow.pl
+Subject: [FIXED PATCH v4 6/8] dmaengine: xilinx: xdma: Add transfer error reporting
+Date:   Fri,  8 Dec 2023 23:08:02 +0100
+Message-Id: <20231208220802.56458-1-jankul@alatek.krakow.pl>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <9d683987-53db-a53e-9215-3a29f0167183@amd.com>
+References: <9d683987-53db-a53e-9215-3a29f0167183@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2633991.1702073229.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 08 Dec 2023 22:07:09 +0000
-Message-ID: <2633992.1702073229@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,137 +64,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an AFS cell that has an unreachable (eg. ENETUNREACH) Volume Location
-server listed, an asynchronous probe to one of its addresses may fail
-immediately because sendmsg() returns an error.  When this happens, a
-refcount underflow can happen if certain events hit a very small window.
+Extend the capability of transfer status reporting. Introduce error flag,
+which allows to report error in case of a interrupt-reported error
+condition.
 
-The way this occurs is:
-
- (1) There are two levels of "call" object, the afs_call and the
-     rxrpc_call.  Each of them can be transitioned to a "completed" state
-     in the event of success or failure.
-
- (2) Asynchronous afs_calls are self-referential whilst they are active to
-     prevent them from evaporating when they're not being processed.  This
-     reference is disposed of when the afs_call is completed.
-
-     Note that an afs_call may only be completed once; once completed
-     completing it again will do nothing.
-
- (3) When a call transmission is made, the app-side rxrpc code queues a Tx
-     buffer for the rxrpc I/O thread to transmit.  The I/O thread invokes
-     sendmsg() to transmit it - and in the case of failure, it transitions
-     the rxrpc_call to the completed state.
-
- (4) When an rxrpc_call is completed, the app layer is notified.  In this
-     case, the app is kafs and it schedules a work item to process events
-     pertaining to an afs_call.
-
- (5) When the afs_call event processor is run, it goes down through the
-     RPC-specific handler to afs_extract_data() to retrieve data from rxrp=
-c
-     - and, in this case, it picks up the error from the rxrpc_call and
-     returns it.
-
-     The error is then propagated to the afs_call and that is completed
-     too.  At this point the self-reference is released.
-
- (6) If the rxrpc I/O thread manages to complete the rxrpc_call within the
-     window between rxrpc_send_data() queuing the request packet and
-     checking for call completion on the way out, then
-     rxrpc_kernel_send_data() will return the error from sendmsg() to the
-     app.
-
- (7) Then afs_make_call() will see an error and will jump to the error
-     handling path which will attempt to clean up the afs_call.
-
- (8) The problem comes when the error handling path in afs_make_call()
-     tries to unconditionally drop an async afs_call's self-reference.
-     This self-reference, however, may already have been dropped by
-     afs_extract_data() completing the afs_call
-
- (9) The refcount underflows when we return to afs_do_probe_vlserver() and
-     that tries to drop its reference on the afs_call.
-
-Fix this by making afs_make_call() attempt to complete the afs_call rather
-than unconditionally putting it.  That way, if afs_extract_data() manages
-to complete the call first, afs_make_call() won't do anything.
-
-The bug can be forced by making do_udp_sendmsg() return -ENETUNREACH and
-sticking an msleep() in rxrpc_send_data() after the 'success:' label.
-
-The error message looks something like:
-
-    refcount_t: underflow; use-after-free.
-    WARNING: CPU: 3 PID: 720 at lib/refcount.c:28 refcount_warn_saturate+0=
-xba/0x110
-    ...
-    RIP: 0010:refcount_warn_saturate+0xba/0x110
-    ...
-    afs_put_call+0x1dc/0x1f0 [kafs]
-    afs_fs_get_capabilities+0x8b/0xe0 [kafs]
-    afs_fs_probe_fileserver+0x188/0x1e0 [kafs]
-    afs_lookup_server+0x3bf/0x3f0 [kafs]
-    afs_alloc_server_list+0x130/0x2e0 [kafs]
-    afs_create_volume+0x162/0x400 [kafs]
-    afs_get_tree+0x266/0x410 [kafs]
-    vfs_get_tree+0x25/0xc0
-    fc_mount+0xe/0x40
-    afs_d_automount+0x1b3/0x390 [kafs]
-    __traverse_mounts+0x8f/0x210
-    step_into+0x340/0x760
-    path_openat+0x13a/0x1260
-    do_filp_open+0xaf/0x160
-    do_sys_openat2+0xaf/0x170
-
-or something like:
-
-    refcount_t: underflow; use-after-free.
-    ...
-    RIP: 0010:refcount_warn_saturate+0x99/0xda
-    ...
-    afs_put_call+0x4a/0x175
-    afs_send_vl_probes+0x108/0x172
-    afs_select_vlserver+0xd6/0x311
-    afs_do_cell_detect_alias+0x5e/0x1e9
-    afs_cell_detect_alias+0x44/0x92
-    afs_validate_fc+0x9d/0x134
-    afs_get_tree+0x20/0x2e6
-    vfs_get_tree+0x1d/0xc9
-    fc_mount+0xe/0x33
-    afs_d_automount+0x48/0x9d
-    __traverse_mounts+0xe0/0x166
-    step_into+0x140/0x274
-    open_last_lookups+0x1c1/0x1df
-    path_openat+0x138/0x1c3
-    do_filp_open+0x55/0xb4
-    do_sys_openat2+0x6c/0xb6
-
-Fixes: 34fa47612bfe ("afs: Fix race in async call refcounting")
-Reported-by: Bill MacAllister <bill@ca-zephyr.org>
-Closes: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D1052304
-Suggested-by: Jeffrey E Altman <jaltman@auristor.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
+Signed-off-by: Jan Kuliga <jankul@alatek.krakow.pl>
 ---
- fs/afs/rxrpc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/dma/xilinx/xdma.c | 26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
 
-diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
-index ed1644e7683f..d642d06a453b 100644
---- a/fs/afs/rxrpc.c
-+++ b/fs/afs/rxrpc.c
-@@ -424,7 +424,7 @@ void afs_make_call(struct afs_addr_cursor *ac, struct =
-afs_call *call, gfp_t gfp)
- 	if (call->async) {
- 		if (cancel_work_sync(&call->async_work))
- 			afs_put_call(call);
--		afs_put_call(call);
-+		afs_set_call_complete(call, ret, 0);
+diff --git a/drivers/dma/xilinx/xdma.c b/drivers/dma/xilinx/xdma.c
+index d1bc36133a45..a7cd378b7e9a 100644
+--- a/drivers/dma/xilinx/xdma.c
++++ b/drivers/dma/xilinx/xdma.c
+@@ -85,6 +85,7 @@ struct xdma_chan {
+  * @cyclic: Cyclic transfer vs. scatter-gather
+  * @periods: Number of periods in the cyclic transfer
+  * @period_size: Size of a period in bytes in cyclic transfers
++ * @error: tx error flag
+  */
+ struct xdma_desc {
+ 	struct virt_dma_desc		vdesc;
+@@ -97,6 +98,7 @@ struct xdma_desc {
+ 	bool				cyclic;
+ 	u32				periods;
+ 	u32				period_size;
++	bool				error;
+ };
+
+ #define XDMA_DEV_STATUS_REG_DMA		BIT(0)
+@@ -274,6 +276,7 @@ xdma_alloc_desc(struct xdma_chan *chan, u32 desc_num,=
+ bool cyclic)
+ 	sw_desc->chan =3D chan;
+ 	sw_desc->desc_num =3D desc_num;
+ 	sw_desc->cyclic =3D cyclic;
++	sw_desc->error =3D false;
+ 	dblk_num =3D DIV_ROUND_UP(desc_num, XDMA_DESC_ADJACENT);
+ 	sw_desc->desc_blocks =3D kcalloc(dblk_num, sizeof(*sw_desc->desc_blocks=
+),
+ 				       GFP_NOWAIT);
+@@ -770,20 +773,20 @@ static enum dma_status xdma_tx_status(struct dma_ch=
+an *chan, dma_cookie_t cookie
+ 	spin_lock_irqsave(&xdma_chan->vchan.lock, flags);
+
+ 	vd =3D vchan_find_desc(&xdma_chan->vchan, cookie);
+-	if (vd)
+-		desc =3D to_xdma_desc(vd);
+-	if (!desc || !desc->cyclic) {
+-		spin_unlock_irqrestore(&xdma_chan->vchan.lock, flags);
+-		return ret;
+-	}
+-
+-	period_idx =3D desc->completed_desc_num % desc->periods;
+-	residue =3D (desc->periods - period_idx) * desc->period_size;
++	if (!vd)
++		goto out;
+
++	desc =3D to_xdma_desc(vd);
++	if (desc->error) {
++		ret =3D DMA_ERROR;
++	} else if (desc->cyclic) {
++		period_idx =3D desc->completed_desc_num % desc->periods;
++		residue =3D (desc->periods - period_idx) * desc->period_size;
++		dma_set_residue(state, residue);
++	}
++out:
+ 	spin_unlock_irqrestore(&xdma_chan->vchan.lock, flags);
+
+-	dma_set_residue(state, residue);
+-
+ 	return ret;
+ }
+
+@@ -820,6 +823,7 @@ static irqreturn_t xdma_channel_isr(int irq, void *de=
+v_id)
+ 	st &=3D XDMA_CHAN_STATUS_MASK;
+ 	if ((st & XDMA_CHAN_ERROR_MASK) ||
+ 		!(st & (CHAN_CTRL_IE_DESC_COMPLETED | CHAN_CTRL_IE_DESC_STOPPED))) {
++		desc->error =3D true;
+ 		xdma_err(xdev, "channel error, status register value: 0x%x", st);
+ 		goto out;
  	}
- =
-
- 	ac->error =3D ret;
+--
+2.34.1
 
