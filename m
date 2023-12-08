@@ -2,150 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B9980A979
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AECB280A985
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:44:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233587AbjLHQnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:43:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46292 "EHLO
+        id S233536AbjLHQoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:44:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232481AbjLHQnR (ORCPT
+        with ESMTP id S232481AbjLHQoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:43:17 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B2E10C0;
-        Fri,  8 Dec 2023 08:43:24 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-77f48aef0a5so68807785a.2;
-        Fri, 08 Dec 2023 08:43:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702053803; x=1702658603; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W2xmBI6l/MRigs2qcRLIfKFKtDGM2v75E3mtvHqRCsg=;
-        b=MC2Qa9ZM4DXAGDa/+6ppKt4Xpe73i7xU5i33UASeM99ne8DjchNursPOiFaSBICVc4
-         VnZgr+yYeaSwC+wHYzU9Yb36IKMcCaXTtxwZJ1sqVQ83rKwazyC8Zr2zxO2kBaOPjbPg
-         SJ+I6UalWSSmxM4PoQgJxIF+VAONg4eL4x/SEbLyClWJfvkrDPNbrkUTE6o95xzftGxF
-         8BfpfN7WguXgIf4EqRSVJfyiSVJIVvkvBiByorde4qew6LnVtwPwWMN8p5rUcxx1Q4So
-         OB1pdvMzpn0DoLyCoXy7IdC2cljZ2iZFFCqEb8RtyeEiggWmX/IZtbmERFVOw6qotb67
-         /IAw==
+        Fri, 8 Dec 2023 11:44:37 -0500
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6FE10C0;
+        Fri,  8 Dec 2023 08:44:44 -0800 (PST)
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6d9e179b217so1048021a34.0;
+        Fri, 08 Dec 2023 08:44:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702053803; x=1702658603;
+        d=1e100.net; s=20230601; t=1702053884; x=1702658684;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W2xmBI6l/MRigs2qcRLIfKFKtDGM2v75E3mtvHqRCsg=;
-        b=eLYFWPpYFiZcLqzVD4kQOaRK0eS/mD+gpQ1dtOiqZvI2DfBqbexd1v3n/eLC6fO2lo
-         EsZmtnxHCNi7VMKnNb02D3BVcWRoqjnDrLGbugttC/IrYQuYYEVUmLj8gmS1iv3fMlam
-         Sll/aCOVeCPQVCS0o4POI6eDfKL+UtPWLxNMn2EN2NBznJf2gQANyKliliTjkQZgmzhN
-         cP9rcKX3bZRNs2UO5FwVfbb+cwhFOurcNhOEdnUErzCEKJttWB01qYvHHBkw2Okf6Sc4
-         VVRclx5eNCxSgqWxjxP6bdIT/px9MCtv3BjyKapJly9+SooHBjKIhPT4E0lhs5vIqdUR
-         x8uA==
-X-Gm-Message-State: AOJu0Yxq5IZ8Mk/r2E6F9qAKtXwsiNP0PsjKixzbE3Mg75tBKQmftVXV
-        1yoXKysoNXzS89wJvTC5N0k=
-X-Google-Smtp-Source: AGHT+IEMOz970vAIG8DxK4T2yh2+WraPteOycduxnsty4R7dX7DngxnM5LsoneUyFj/oXZERR6tzDA==
-X-Received: by 2002:a05:620a:480c:b0:77e:fc1c:97d8 with SMTP id eb12-20020a05620a480c00b0077efc1c97d8mr396826qkb.36.1702053803249;
-        Fri, 08 Dec 2023 08:43:23 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id tn24-20020a05620a3c1800b0077d660ac1b6sm819532qkn.21.2023.12.08.08.43.22
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MQNz+xvqRdVvhqlnaesIupD2ZldVHm05D8bBXCEt6fE=;
+        b=bnEUnLu9z/HvvSg9LYf76G0Opbg12q4r8gQBAzhEPpmFod4HOLl1pbFuUT6EqwtEu6
+         kXAo9HJBWVfMuv6YHqtGLx7WCpzORdrsxNXtMA2HW9W2F9zdD2c0iCNgVxeht+5+4uw/
+         re77XRv8pHt4aJzlyd+GTqJEPOb0gT/lLuN3R2NqNGhQUSrArKzCsnqXSdC63wZ/kGze
+         G72jOieR7ZPzqBp3krrf8KObf2J83eRuaSP9W2Nbcj04QY8Xif0HXX+oDShF3W5FIP7g
+         fCKDvTInIF42CvihB3RxuBgwyCoUt3+MpmtU1a2JnoT47KhSFmtXAbsmRysj6Pjugqdp
+         OUcg==
+X-Gm-Message-State: AOJu0Yy75NfjRN7KbgOOB7iHfxdIlq882h4LDizJrYOk5PBE77vnLz5p
+        brmfkMBkORWqTdyzfcLwuVg1+NJNiQ==
+X-Google-Smtp-Source: AGHT+IEElGzMDgsf5XKgsEJBooUGCELsszhJ/I7kKbKCN+yZO/mIQ5M8oB94icul6SeFg7QJKz8wzw==
+X-Received: by 2002:a9d:6a4a:0:b0:6d9:a5ef:a2c7 with SMTP id h10-20020a9d6a4a000000b006d9a5efa2c7mr372426otn.9.1702053883797;
+        Fri, 08 Dec 2023 08:44:43 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id w26-20020a056830061a00b006ce28044207sm349258oti.58.2023.12.08.08.44.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 08:43:23 -0800 (PST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 460D527C0054;
-        Fri,  8 Dec 2023 11:43:22 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 08 Dec 2023 11:43:22 -0500
-X-ME-Sender: <xms:qUdzZbotq4UvVMS3WlWLbJx9Sp0rj6zkQc0-E2mt7kQndGnjM2kYuA>
-    <xme:qUdzZVqwZXAQ2Byj9o9m6Fqlj9ihFQcVqSB0Vp-FjN9oQhTnayC2KCO9fKofLp2lE
-    BIwdeRe-u1avJL4zg>
-X-ME-Received: <xmr:qUdzZYNKFc5fy14mIlO6iL6XLpqviCe5aG6FYFm-IoRGZyhGcySPiXWePg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekiedgleefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
-    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:qUdzZe7XqW-hjLAsX1oyO4cn0scCOoVHOfAtHCgFpu1pSFm0npM3vQ>
-    <xmx:qUdzZa6I_NLuhDJKl-bRRt8EteI8_p2xnQMJmCuWy67zn35Smy2mtA>
-    <xmx:qUdzZWgioR2VErb7GXQ8neQC1KyE-WOLfOVeLbZ5xMSQn0n7Codz5Q>
-    <xmx:qkdzZdzsKWvY1dwOV2PynGYMI5E4mCr_NqaYeQnuu6_fX35THKQSBQ>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 8 Dec 2023 11:43:20 -0500 (EST)
-Date:   Fri, 8 Dec 2023 08:43:19 -0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Benno Lossin <benno.lossin@proton.me>
-Cc:     Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] rust: file: add `Kuid` wrapper
-Message-ID: <ZXNHp5BoR2LJuv7D@Boquns-Mac-mini.home>
-References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
- <20231206-alice-file-v2-5-af617c0d9d94@google.com>
- <jtCKrRw-FNajNJOXOuI1sweeDxI8T_uYnJ7DxMuqnJc9sgWjS0zouT_XIS-KmPferL7lU51BwD6nu73jZtzzB0T17pDeQP0-sFGRQxdjnaA=@proton.me>
+        Fri, 08 Dec 2023 08:44:43 -0800 (PST)
+Received: (nullmailer pid 1748007 invoked by uid 1000);
+        Fri, 08 Dec 2023 16:44:41 -0000
+Date:   Fri, 8 Dec 2023 10:44:41 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, heiko@sntech.de,
+        dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, tzimmermann@suse.de,
+        conor+dt@kernel.org, airlied@gmail.com, hjc@rock-chips.com,
+        krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
+        daniel@ffwll.ch, linux-arm-kernel@lists.infradead.org,
+        mripard@kernel.org
+Subject: Re: [PATCH v1 1/3] dt-bindings: drm: rockchip: convert
+ inno_hdmi-rockchip.txt to yaml
+Message-ID: <170205385847.1747356.13765108616438619401.robh@kernel.org>
+References: <49c6afec-022f-02de-99a0-d409b64da198@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <jtCKrRw-FNajNJOXOuI1sweeDxI8T_uYnJ7DxMuqnJc9sgWjS0zouT_XIS-KmPferL7lU51BwD6nu73jZtzzB0T17pDeQP0-sFGRQxdjnaA=@proton.me>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <49c6afec-022f-02de-99a0-d409b64da198@gmail.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 04:40:09PM +0000, Benno Lossin wrote:
-> On 12/6/23 12:59, Alice Ryhl wrote:
-> > +    /// Returns the given task's pid in the current pid namespace.
-> > +    pub fn pid_in_current_ns(&self) -> Pid {
-> > +        // SAFETY: Calling `task_active_pid_ns` with the current task is always safe.
-> > +        let namespace = unsafe { bindings::task_active_pid_ns(bindings::get_current()) };
-> 
-> Why not create a safe wrapper for `bindings::get_current()`?
-> This patch series has three occurrences of `get_current`, so I think it
-> should be ok to add a wrapper.
-> I would also prefer to move the call to `bindings::get_current()` out of
-> the `unsafe` block.
 
-FWIW, we have a current!() macro, we should use it here.
+On Mon, 04 Dec 2023 18:39:03 +0100, Johan Jonker wrote:
+> Convert inno_hdmi-rockchip.txt to yaml.
+> 
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
+> 
+> Note for rob+dt:
+>   Used enum to "soon" be able to add "rockchip,rk3128-inno-hdmi"
+> 
+> Changed V1:
+>   Rename file to more common layout
+>   Add/fix hdmi_out port example
+> ---
+>  .../display/rockchip/inno_hdmi-rockchip.txt   |  49 ---------
+>  .../display/rockchip/rockchip,inno-hdmi.yaml  | 103 ++++++++++++++++++
+>  2 files changed, 103 insertions(+), 49 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/display/rockchip/inno_hdmi-rockchip.txt
+>  create mode 100644 Documentation/devicetree/bindings/display/rockchip/rockchip,inno-hdmi.yaml
+> 
 
-Regards,
-Boqun
+Applied, thanks!
 
-> 
-> > +        // SAFETY: We know that `self.0.get()` is valid by the type invariant.
-> 
-> What about `namespace`?
-> 
-> -- 
-> Cheers,
-> Benno
-> 
-> > +        unsafe { bindings::task_tgid_nr_ns(self.0.get(), namespace) }
-> > +    }
