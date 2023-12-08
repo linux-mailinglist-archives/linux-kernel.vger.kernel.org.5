@@ -2,137 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A441580A2F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 827ED80A2FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:17:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573688AbjLHMR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 07:17:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44260 "EHLO
+        id S233421AbjLHMRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 07:17:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233484AbjLHMR1 (ORCPT
+        with ESMTP id S233520AbjLHMRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 07:17:27 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9794A1986;
-        Fri,  8 Dec 2023 04:17:33 -0800 (PST)
-Received: from [10.3.2.161] (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7AD4F66073AA;
-        Fri,  8 Dec 2023 12:17:30 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702037851;
-        bh=jBMziga07aVp3bL6kAN2tx7XMOjaakjxVjC5JZZa2zs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=QMXTiAbpKT36vzwizHSRDGx7XNQyAPt6w/AA54Xy/B00HQ5lEyJbi3oH5WbFENwAj
-         mp6E7V8KUVcD0k2oHA/jQHloJevjOuQsr/6h1+Ma45vVsQuaPnFXxgMFRpPDu9ZM4L
-         uv161qtyHHpYhG8xchf9YJv3Ea0nB4hulWGCxvgEVc4vriK+nq+5PBz3dXQK2k5Alp
-         T+cwyt1jmFv8D7LMUs2IQDB9B8L6WCziGQBlInTyFOHzNCIQyKv2JVOcP53SLYaCGT
-         JLERN18XqzjGChfGr26wqhIa9FvUmpXDr6AqV8OD7F7Y0FCzyA5yFjIxgSZZ/BxwCM
-         6c+S71rVWf+3g==
-Message-ID: <94bf6180-8abf-777d-2dce-498efafb57c1@collabora.com>
-Date:   Fri, 8 Dec 2023 15:17:25 +0300
+        Fri, 8 Dec 2023 07:17:37 -0500
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5894E1986
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:17:43 -0800 (PST)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5d7b1a8ec90so16758347b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 04:17:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702037862; x=1702642662; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DaQSgVgjNOrxYGF+6uUUzWR0hTH/PyjaW2hJgF8XM1Y=;
+        b=R2QGvqbJ1jJSIcQw1HwxWijEwRt4+J4vTNT+X6LS5cB8iJhhbLGifI7JPmRrlHqNbT
+         CW2HB4Euz4N7lhwPIj7GH1v5eRPSdtIHpj6Xz228uZL3oPYj2ynWzhPpltVR4BdPpG6s
+         4TdVnIaaUq5KoE9jSUumKBSquel9YYpQdCTbxsCKYxjEmId8GWBcmgvP84Acj1xLzHDZ
+         Xd3JWnNsUHS6+TMtfJaMLdNBugijLKnYX6Xw2frKpXFZb8URGfHC8Il5/+UOtXAqnAdf
+         KLiFQEqI4w+7SuGsNLVrm0BKd37aQ3UilB1LQ3BTNjxGmixtSH8q78CyfH8jnN2wmf2E
+         H8Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702037862; x=1702642662;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DaQSgVgjNOrxYGF+6uUUzWR0hTH/PyjaW2hJgF8XM1Y=;
+        b=HU4TU8GCgc5s1fNKmACrscgmtHExMdgSegpczy9wtz3qlsdhGUA1kljPXZms+SJTTL
+         uaLeBSSdlTz9hm+mm+5knlNgazy9pBtkac7h2NjSWJVvJXu87VvqWyk0cBkd0TWAuCIT
+         54j28bZGcu2JQcy/d6aoFIsgknk+9FCv5ZGko1jUVpKZ1xJ8U++nGX5vE1b0tuexTpX+
+         3gOehE8pWmMCFK1GMAP12c8kAd42p3mfGx64pclj7kl7luq765i/2tHbyRH47Zz6gJtx
+         xmgTb3E69SVFYeKdSXAAs4calXsdYDFzrlYp0D51m7f5DaeIoRju1Do0DXHZ5rJkE6K1
+         Onrg==
+X-Gm-Message-State: AOJu0YxTDhhmtrQ/7HHm5PVdo6+43kaK/PfCJUrhtVmCe9nyVBChOCVX
+        6TJ8Jtbo8ZWNCwNI2CuTPvolQ5jazpUt1D21j5V2Hg==
+X-Google-Smtp-Source: AGHT+IFVLi0PmrbEXzEz9l5oahwRWzv3grTcYR+5T6Ej5uSDfjl+Pasu1aypm54EERJEJMZsKxQ4QGqbaXU2cg1NKsI=
+X-Received: by 2002:a81:af02:0:b0:5d7:1940:8dd1 with SMTP id
+ n2-20020a81af02000000b005d719408dd1mr3016048ywh.56.1702037862435; Fri, 08 Dec
+ 2023 04:17:42 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] i2c: rk3x: fix potential spinlock recursion on poll
-Content-Language: en-US
-To:     Jensen Huang <jensenhuang@friendlyarm.com>
-Cc:     Dragan Simic <dsimic@manjaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chris Morgan <macroalpha82@gmail.com>,
-        Benjamin Bara <bbara93@gmail.com>
-References: <20231207082200.16388-1-jensenhuang@friendlyarm.com>
- <ebf6cf8ec3b5befd673d295061fa2738@manjaro.org>
- <CAMpZ1qHUnTDQ78gdrQF9Sx_-XfLM-B+H-0bL1-+twKsno+JOvg@mail.gmail.com>
- <5e11553952c02ad20591992be4284bbd@manjaro.org>
- <95cc7716-ba01-e239-e7c0-eba0b7da7955@collabora.com>
- <CAMpZ1qENxWsDnvke4jMvK9tYpta3dThHUHxjDWO-u2JV+8dZdQ@mail.gmail.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <CAMpZ1qENxWsDnvke4jMvK9tYpta3dThHUHxjDWO-u2JV+8dZdQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231122-phy-qualcomm-edp-x1e80100-v3-0-576fc4e9559d@linaro.org>
+ <20231122-phy-qualcomm-edp-x1e80100-v3-2-576fc4e9559d@linaro.org>
+ <b6d3928c-75ba-47a3-93fc-a60729be2e35@linaro.org> <545d3ace-66e5-4470-b3a4-cbdac5ae473d@linaro.org>
+ <ab7223a2-9f3f-4c9c-ab97-31512e7a0123@linaro.org> <CAA8EJpoboN85bLiayXJgn5iwh+Gn0OtK0aZ26ZJu9H3xkTT2Tw@mail.gmail.com>
+ <d9d27fa4-6ede-4958-b717-db425be61068@linaro.org>
+In-Reply-To: <d9d27fa4-6ede-4958-b717-db425be61068@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 8 Dec 2023 14:17:31 +0200
+Message-ID: <CAA8EJpq7dB+45fiq2WmkMmSO7KszY0Et_t1gZ9ZvfsSxftpm8g@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] dt-bindings: phy: qcom-edp: Add X1E80100 PHY compatibles
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Johan Hovold <johan@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/23 11:53, Jensen Huang wrote:
-> On Fri, Dec 8, 2023 at 12:00 AM Dmitry Osipenko
-> <dmitry.osipenko@collabora.com> wrote:
->>
->> On 12/7/23 17:10, Dragan Simic wrote:
->>> On 2023-12-07 10:25, Jensen Huang wrote:
->>>> On Thu, Dec 7, 2023 at 4:37 PM Dragan Simic <dsimic@manjaro.org> wrote:
->>>>>
->>>>> On 2023-12-07 09:21, Jensen Huang wrote:
->>>>>> Possible deadlock scenario (on reboot):
->>>>>> rk3x_i2c_xfer_common(polling)
->>>>>>     -> rk3x_i2c_wait_xfer_poll()
->>>>>>         -> rk3x_i2c_irq(0, i2c);
->>>>>>             --> spin_lock(&i2c->lock);
->>>>>>             ...
->>>>>>         <rk3x i2c interrupt>
->>>>>>         -> rk3x_i2c_irq(0, i2c);
->>>>>>             --> spin_lock(&i2c->lock); (deadlock here)
->>>>>>
->>>>>> Store the IRQ number and disable/enable it around the polling
->>>>> transfer.
->>>>>> This patch has been tested on NanoPC-T4.
->>>>>
->>>>> In case you haven't already seen the related discussion linked below,
->>>>> please have a look.  I also added more people to the list of recipients,
->>>>> in an attempt to make everyone aware of the different approaches to
->>>>> solving this issue.
->>>>>
->>>>> https://lore.kernel.org/all/655177f4.050a0220.d85c9.3ba0@mx.google.com/T/#m6fc9c214452fec6681843e7f455978c35c6f6c8b
->>>>
->>>> Thank you for providing the information. I hadn't seen this link before.
->>>> After carefully looking into the related discussion, it appears that
->>>> Dmitry Osipenko is already working on a suitable patch. To avoid
->>>> duplication
->>>> or conflicts, my patch can be discarded.
->>>
->>> Thank you for responding so quickly.  Perhaps it would be best to hear
->>> from Dmitry as well, before discarding anything.  It's been a while
->>> since Dmitry wrote about working on the patch, so he might have
->>> abandoned it.
->>
->> This patch is okay. In general, will be better to have IRQ disabled by
->> default like I did in my variant, it should allow to remove the spinlock
->> entirely. Of course this also can be done later on in a follow up
->> patches. Jensen, feel free to use my variant of the patch, add my
->> s-o-b+co-developed tags to the commit msg if you'll do. Otherwise I'll
->> be able to send my patch next week.
-> 
-> Thank you for the suggestion. I've updated the patch to your variant, and
-> as confirmed by others, reboots are functioning correctly. I measured the
-> overhead of enable_irq/disable_irq() by calculating ktime in the
-> updated version,
-> and on rk3399, the minimum delta I observed was 291/875 ns. This extra
-> cost may impact most interrupt-based transfers. Therefore, I personally lean
-> towards the current v2 patch and handle the spinlock and irqsave/restore in
-> a follow up patch. I'd like to hear everyone's thoughts on this.
+On Fri, 8 Dec 2023 at 13:45, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 08/12/2023 12:04, Dmitry Baryshkov wrote:
+> > On Fri, 8 Dec 2023 at 09:47, Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> >>
+> >> On 07/12/2023 20:16, Konrad Dybcio wrote:
+> >>>
+> >>>
+> >>> On 12/7/23 17:51, Krzysztof Kozlowski wrote:
+> >>>
+> >>> [...]
+> >>>
+> >>>>> +allOf:
+> >>>>> +  - if:
+> >>>>> +      properties:
+> >>>>> +        compatible:
+> >>>>> +          contains:
+> >>>>> +            enum:
+> >>>>> +              - qcom,x1e80100-dp-phy
+> >>>>> +    then:
+> >>>>> +      properties:
+> >>>>> +        phy-type:
+> >>>>> +          description: DP (default) or eDP type
+> >>>>
+> >>>> Properties must be defined in top-level "properties:" block. In
+> >>>> allOf:if:then you only disallow them for other variants.
+> >>>>
+> >>>>> +          enum: [ 6, 13 ]
+> >>>>> +          default: 6
+> >>>>
+> >>>> Anyway, I was thinking this should be rather argument to phy-cells.
+> >>> I'm not sure I'm for this, because the results would be:
+> >>>
+> >>> --- device.dts ---
+> >>> &dp_controller0 {
+> >>>      phys = <&dp_phy0 PHY_EDP>;
+> >>> };
+> >>>
+> >>> &dp_controller1 {
+> >>>      phys = <&dp_phy1 PHY_DP>;
+> >>> };
+> >>> ------------------
+> >>>
+> >>> as opposed to:
+> >>>
+> >>> --- device.dts ---
+> >>> &dp_phy0 {
+> >>>      phy-type <PHY_EDP>;
+> >>> };
+> >>>
+> >>> &dp_phy1 {
+> >>>      phy-type = <PHY_DP>;
+> >>> };
+> >>> ------------------
+> >>
+> >> Which is exactly what I proposed/wanted to see.
+> >>
+> >>>
+> >>> i.e., we would be saying "this board is connected to this phy
+> >>> instead" vs "this phy is of this type on this board".
+> >>>
+> >>> While none of them really fit the "same hw, different config"
+> >>> situation, I'd vote for the latter one being closer to the
+> >>> truth
+> >>
+> >> Then maybe I miss the bigger picture, but commit msg clearly says:
+> >> "multiple PHYs that can work in both eDP or DP mode"
+> >>
+> >> If this is not the case, describe the hardware correctly in the commit
+> >> msg, so people will not ask stupid questions...
+> >
+> > There are multiple PHYs (each of them at its own address space). Each
+> > of the PHYs in question can be used either for the DisplayPort output
+> > (directly or through the USB-C) or to drive the eDP panel.
+> >
+> > Same applies to the displayport-controller. It can either drive the DP
+> > or eDP output, hardware-wise it is the same.
+>
+> Therefore what I proposed was correct - the block which uses the phy
+> configures its mode. Because this part:
+>   "this phy is of this type on this board".
+> is not true. The phy is both types.
 
-Please don't use ktime for perf measurements, ktime itself is a slow API
-and it should be 200us that ktime takes itself. Also, the 0.2us is
-practically nothing, especially compared to I2C transfers measured in ms.
-
-I'm fine with keeping your v2 variant for the bug fix if you prefer
-that. Thanks for addressing the issue :)
+But hopefully you don't mean using #phy-cells here. There are no
+sub-PHYs or anything like that.
 
 -- 
-Best regards,
+With best wishes
 Dmitry
-
