@@ -2,234 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B92DB8097A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E528097AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444172AbjLHAwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 19:52:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40462 "EHLO
+        id S1444187AbjLHAwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 19:52:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLHAw1 (ORCPT
+        with ESMTP id S229531AbjLHAwu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 19:52:27 -0500
-Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com [209.85.160.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBCB1715
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 16:52:33 -0800 (PST)
-Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1fb1c742f0bso2756147fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 16:52:33 -0800 (PST)
+        Thu, 7 Dec 2023 19:52:50 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80307172C
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 16:52:55 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db5416d0fccso1704609276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 16:52:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701996774; x=1702601574; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oEC4/5l5n2T/qYCGKqOGy0FALO1z9p8+l3xS5q5p7gQ=;
+        b=1yRvIryS++LOF7rZgQjLmhWhBdq+ZVoZiX1AEsXDl6r/d6bKOY5h4CTDFTDV8b5S0W
+         AtYzriitQ/xJ87bwOcBynN/f8TP1No5i6UcAOaXtPwoTiYzn4C9rcJDh1PTPZCFjtGiq
+         7hpyV9SbXVZtpZpsGeDrt8DaczFGkE03yFHlMMn5AiUE99jagXrUDd9DzIuqlAB3GLye
+         X0qD/TxAKM+fIiy6gy6RYm88A09pfS4TQDLJyGD1IiGPoEDwqg14nqDIElX8eNQjXQ4I
+         CTT/Zv9GxG70eS/dZwmz8/lVVKKy0kE3aAMOt4hm5atLzCk2nAeB+x+IyU5UfzZ84gX0
+         IXeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701996752; x=1702601552;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Q+lLU4UeUFRuZ1hTtp7No7qPuCAeUchRtyaBvI4kxJM=;
-        b=C4A1gnjlGCw2VXSanEa3OQH5ohdbAfHTRcWRXDJ4mFKaemIi8ovlTfMesFiX2F9ISi
-         +WLpGWo8QApsCpj+aH3GWTRSA/oEf+guj8eyT9bYnQGCtXIUrb40YJf4KQC85+ojA72y
-         wSHbhvdr8JRKjQLEwvt/z7vvPI3y9fw/5uJTanGqwU7PTMu03Fzt3jo3/dOylDnAAN0N
-         jOgLSLyUoAlS1aA8UUAZXn+6uSOAhJ6nkX7qg1TNNhNpId0PVgSNzdy8JEQzOUblYJVY
-         CBkDE5C3p0jmjCRs5COk0Ukna85Fsaah3vngBGzB70Jy0xC+AaZYpjOWgdCaNsTqwD5d
-         uVRg==
-X-Gm-Message-State: AOJu0YxKPrujniB8xmTvYyRsZOuWbNot6FIj2jpUhJRvOpm+CNH1fDDu
-        hjSpf1asujPDedw58Ecoj3SG8yyGOdflR0MgyUzTmGKU2soS
-X-Google-Smtp-Source: AGHT+IHz0t9HDTwTPbGcqm3L8DilUF699lfVq5Ys0NNmRQ6uTy+NWhRg9XN2Fhdsp7k1S/luzO0oYbl3gzkK+eX+bo/rEqdhdt3s
-MIME-Version: 1.0
-X-Received: by 2002:a05:6870:fba2:b0:1fb:1176:50ff with SMTP id
- kv34-20020a056870fba200b001fb117650ffmr4228508oab.6.1701996750942; Thu, 07
- Dec 2023 16:52:30 -0800 (PST)
-Date:   Thu, 07 Dec 2023 16:52:30 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bfba3a060bf4ffcf@google.com>
-Subject: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert (2)
-From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mani@kernel.org, netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
+        d=1e100.net; s=20230601; t=1701996774; x=1702601574;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oEC4/5l5n2T/qYCGKqOGy0FALO1z9p8+l3xS5q5p7gQ=;
+        b=sgqT7zrqQwvRk/N9thbWgfqyE59/sOr6MmFGP32suUmYB1SvWdhbxn0qT1hbjLix78
+         TdEbuhkZKt1eeSOgBl765EhXqRSqoiLYnYSzEamYYuss0xK+ix4/BP+q23mWYEHzzDeM
+         CTCFkpHIE5MP29GJBqDfqAykpJvgsjbQKdTbGLsMmmlYFGd5vNI3buw0uxAFnz6U8p22
+         oI5b6nN0eNhXFhtxqZXggmsf7c/Ud3BZu7ZgdGhrGAeE1wqagR9BtXMzU6odVJYwHnUc
+         Fv64HML8zjTcS8zkX3YlkRr6Xt7OI+GPmHHG0+ehdtCQV5jwNvBHaB0dJjMQHh4PZR37
+         9qwQ==
+X-Gm-Message-State: AOJu0YxZE6Mo+6sFAnBHqKUK3m3wusfy2nyL/SGPq0qjncWOyhTjw+vF
+        UYtAOALi4eLbLxWoLIm74lQYQgsH0jYzSNFFkQ==
+X-Google-Smtp-Source: AGHT+IHYY0Ghq58S/RpY3ORPjaG8n8Br1tdy1AIbfHpQKaWiIsvY0prGLnPYkvrfw7nIyRm1+GyE8RVLx8dfKnoykA==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2c4:200:f1cf:c733:235b:9fff])
+ (user=almasrymina job=sendgmr) by 2002:a25:e688:0:b0:dbc:1b8a:ea84 with SMTP
+ id d130-20020a25e688000000b00dbc1b8aea84mr37055ybh.7.1701996774666; Thu, 07
+ Dec 2023 16:52:54 -0800 (PST)
+Date:   Thu,  7 Dec 2023 16:52:31 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231208005250.2910004-1-almasrymina@google.com>
+Subject: [net-next v1 00/16] Device Memory TCP
+From:   Mina Almasry <almasrymina@google.com>
+To:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     Mina Almasry <almasrymina@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
         version=3.4.6
-X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Major changes in v1:
+--------------
 
-syzbot found the following issue on:
+1. Implemented MVP queue API ndos to remove the userspace-visible
+   driver reset.
 
-HEAD commit:    33cc938e65a9 Linux 6.7-rc4
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16ddf83ce80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37d1b8bb20150e6
-dashboard link: https://syzkaller.appspot.com/bug?extid=006987d1be3586e13555
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10276ebae80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=128c50d2e80000
+2. Fixed issues in the napi_pp_put_page() devmem frag unref path.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/bd6d7a5ff2af/disk-33cc938e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ce91b40ecddb/vmlinux-33cc938e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5507257fe99e/bzImage-33cc938e.xz
+3. Removed RFC tag.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+006987d1be3586e13555@syzkaller.appspotmail.com
+Many smaller addressed comments across all the patches (patches have
+individual change log).
 
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-BUG: memory leak
-unreferenced object 0xffff88810bbf56d8 (size 576):
-  comm "syz-executor250", pid 5051, jiffies 4294951219 (age 12.920s)
-  hex dump (first 32 bytes):
-    3c 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00  <...............
-    f0 a9 2d 0c 81 88 ff ff f0 56 bf 0b 81 88 ff ff  ..-......V......
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:624 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:712
-    [<ffffffff84ae105d>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
-    [<ffffffff84ae105d>] qrtr_node_enqueue+0x57d/0x630 net/qrtr/af_qrtr.c:348
-    [<ffffffff84ae26f6>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:891
-    [<ffffffff84ae32d2>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:992
-    [<ffffffff83ec3c32>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c32>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d7b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6ddcf>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6ddcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Full tree including the rest of the GVE driver changes:
+https://github.com/mina/linux/commits/tcpdevmem-v1
 
-BUG: memory leak
-unreferenced object 0xffff88810bbf5920 (size 576):
-  comm "syz-executor250", pid 5051, jiffies 4294951219 (age 12.920s)
-  hex dump (first 32 bytes):
-    36 0f 01 00 00 00 00 00 d8 56 bf 0b 81 88 ff ff  6........V......
-    f0 a9 2d 0c 81 88 ff ff 38 59 bf 0b 81 88 ff ff  ..-.....8Y......
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:624 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:712
-    [<ffffffff84ae105d>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
-    [<ffffffff84ae105d>] qrtr_node_enqueue+0x57d/0x630 net/qrtr/af_qrtr.c:348
-    [<ffffffff84ae26f6>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:891
-    [<ffffffff84ae32d2>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:992
-    [<ffffffff83ec3c32>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c32>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d7b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6ddcf>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6ddcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Cc: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Shailend Chand <shailend@google.com>
+Cc: Harshitha Ramamurthy <hramamurthy@google.com>
 
-BUG: memory leak
-unreferenced object 0xffff88810c832000 (size 576):
-  comm "syz-executor250", pid 5051, jiffies 4294951219 (age 12.920s)
-  hex dump (first 32 bytes):
-    30 3f 01 00 00 00 00 00 20 59 bf 0b 81 88 ff ff  0?...... Y......
-    f0 a9 2d 0c 81 88 ff ff 18 20 83 0c 81 88 ff ff  ..-...... ......
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:624 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:712
-    [<ffffffff84ae105d>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
-    [<ffffffff84ae105d>] qrtr_node_enqueue+0x57d/0x630 net/qrtr/af_qrtr.c:348
-    [<ffffffff84ae26f6>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:891
-    [<ffffffff84ae32d2>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:992
-    [<ffffffff83ec3c32>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c32>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d7b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6ddcf>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6ddcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Changes in RFC v3:
+------------------
 
-BUG: memory leak
-unreferenced object 0xffff88810c832248 (size 576):
-  comm "syz-executor250", pid 5051, jiffies 4294951219 (age 12.920s)
-  hex dump (first 32 bytes):
-    2a 3f 00 00 00 00 00 00 00 20 83 0c 81 88 ff ff  *?....... ......
-    f0 a9 2d 0c 81 88 ff ff 60 22 83 0c 81 88 ff ff  ..-.....`"......
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:624 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:712
-    [<ffffffff84ae105d>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
-    [<ffffffff84ae105d>] qrtr_node_enqueue+0x57d/0x630 net/qrtr/af_qrtr.c:348
-    [<ffffffff84ae26f6>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:891
-    [<ffffffff84ae32d2>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:992
-    [<ffffffff83ec3c32>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c32>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d7b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6ddcf>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6ddcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+1. Pulled in the memory-provider dependency from Jakub's RFC[1] to make the
+   series reviewable and mergable.
 
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+2. Implemented multi-rx-queue binding which was a todo in v2.
 
+3. Fix to cmsg handling.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+The sticking point in RFC v2[2] was the device reset required to refill
+the device rx-queues after the dmabuf bind/unbind. The solution
+suggested as I understand is a subset of the per-queue management ops
+Jakub suggested or similar:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+https://lore.kernel.org/netdev/20230815171638.4c057dcd@kernel.org/
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+This is not addressed in this revision, because:
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+1. This point was discussed at netconf & netdev and there is openness to
+   using the current approach of requiring a device reset.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+2. Implementing individual queue resetting seems to be difficult for my
+   test bed with GVE. My prototype to test this ran into issues with the
+   rx-queues not coming back up properly if reset individually. At the
+   moment I'm unsure if it's a mistake in the POC or a genuine issue in
+   the virtualization stack behind GVE, which currently doesn't test
+   individual rx-queue restart.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+3. Our usecases are not bothered by requiring a device reset to refill
+   the buffer queues, and we'd like to support NICs that run into this
+   limitation with resetting individual queues.
 
-If you want to undo deduplication, reply with:
-#syz undup
+My thought is that drivers that have trouble with per-queue configs can
+use the support in this series, while drivers that support new netdev
+ops to reset individual queues can automatically reset the queue as
+part of the dma-buf bind/unbind.
+
+The same approach with device resets is presented again for consideration
+with other sticking points addressed.
+
+This proposal includes the rx devmem path only proposed for merge. For a
+snapshot of my entire tree which includes the GVE POC page pool support &
+device memory support:
+
+https://github.com/torvalds/linux/compare/master...mina:linux:tcpdevmem-v3
+
+[1] https://lore.kernel.org/netdev/f8270765-a27b-6ccf-33ea-cda097168d79@red=
+hat.com/T/
+[2] https://lore.kernel.org/netdev/CAHS8izOVJGJH5WF68OsRWFKJid1_huzzUK+hpKb=
+LcL4pSOD1Jw@mail.gmail.com/T/
+
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Jeroen de Borst <jeroendb@google.com>
+Cc: Praveen Kaligineedi <pkaligineedi@google.com>
+
+Changes in RFC v2:
+------------------
+
+The sticking point in RFC v1[1] was the dma-buf pages approach we used to
+deliver the device memory to the TCP stack. RFC v2 is a proof-of-concept
+that attempts to resolve this by implementing scatterlist support in the
+networking stack, such that we can import the dma-buf scatterlist
+directly. This is the approach proposed at a high level here[2].
+
+Detailed changes:
+1. Replaced dma-buf pages approach with importing scatterlist into the
+   page pool.
+2. Replace the dma-buf pages centric API with a netlink API.
+3. Removed the TX path implementation - there is no issue with
+   implementing the TX path with scatterlist approach, but leaving
+   out the TX path makes it easier to review.
+4. Functionality is tested with this proposal, but I have not conducted
+   perf testing yet. I'm not sure there are regressions, but I removed
+   perf claims from the cover letter until they can be re-confirmed.
+5. Added Signed-off-by: contributors to the implementation.
+6. Fixed some bugs with the RX path since RFC v1.
+
+Any feedback welcome, but specifically the biggest pending questions
+needing feedback IMO are:
+
+1. Feedback on the scatterlist-based approach in general.
+2. Netlink API (Patch 1 & 2).
+3. Approach to handle all the drivers that expect to receive pages from
+   the page pool (Patch 6).
+
+[1] https://lore.kernel.org/netdev/dfe4bae7-13a0-3c5d-d671-f61b375cb0b4@gma=
+il.com/T/
+[2] https://lore.kernel.org/netdev/CAHS8izPm6XRS54LdCDZVd0C75tA1zHSu6jLVO8n=
+zTLXCc=3DH7Nw@mail.gmail.com/
+
+----------------------
+
+* TL;DR:
+
+Device memory TCP (devmem TCP) is a proposal for transferring data to and/o=
+r
+from device memory efficiently, without bouncing the data to a host memory
+buffer.
+
+* Problem:
+
+A large amount of data transfers have device memory as the source and/or
+destination. Accelerators drastically increased the volume of such transfer=
+s.
+Some examples include:
+- ML accelerators transferring large amounts of training data from storage =
+into
+  GPU/TPU memory. In some cases ML training setup time can be as long as 50=
+% of
+  TPU compute time, improving data transfer throughput & efficiency can hel=
+p
+  improving GPU/TPU utilization.
+
+- Distributed training, where ML accelerators, such as GPUs on different ho=
+sts,
+  exchange data among them.
+
+- Distributed raw block storage applications transfer large amounts of data=
+ with
+  remote SSDs, much of this data does not require host processing.
+
+Today, the majority of the Device-to-Device data transfers the network are
+implemented as the following low level operations: Device-to-Host copy,
+Host-to-Host network transfer, and Host-to-Device copy.
+
+The implementation is suboptimal, especially for bulk data transfers, and c=
+an
+put significant strains on system resources, such as host memory bandwidth,
+PCIe bandwidth, etc. One important reason behind the current state is the
+kernel=E2=80=99s lack of semantics to express device to network transfers.
+
+* Proposal:
+
+In this patch series we attempt to optimize this use case by implementing
+socket APIs that enable the user to:
+
+1. send device memory across the network directly, and
+2. receive incoming network packets directly into device memory.
+
+Packet _payloads_ go directly from the NIC to device memory for receive and=
+ from
+device memory to NIC for transmit.
+Packet _headers_ go to/from host memory and are processed by the TCP/IP sta=
+ck
+normally. The NIC _must_ support header split to achieve this.
+
+Advantages:
+
+- Alleviate host memory bandwidth pressure, compared to existing
+ network-transfer + device-copy semantics.
+
+- Alleviate PCIe BW pressure, by limiting data transfer to the lowest level
+  of the PCIe tree, compared to traditional path which sends data through t=
+he
+  root complex.
+
+* Patch overview:
+
+** Part 1: netlink API
+
+Gives user ability to bind dma-buf to an RX queue.
+
+** Part 2: scatterlist support
+
+Currently the standard for device memory sharing is DMABUF, which doesn't
+generate struct pages. On the other hand, networking stack (skbs, drivers, =
+and
+page pool) operate on pages. We have 2 options:
+
+1. Generate struct pages for dmabuf device memory, or,
+2. Modify the networking stack to process scatterlist.
+
+Approach #1 was attempted in RFC v1. RFC v2 implements approach #2.
+
+** part 3: page pool support
+
+We piggy back on page pool memory providers proposal:
+https://github.com/kuba-moo/linux/tree/pp-providers
+
+It allows the page pool to define a memory provider that provides the
+page allocation and freeing. It helps abstract most of the device memory
+TCP changes from the driver.
+
+** part 4: support for unreadable skb frags
+
+Page pool iovs are not accessible by the host; we implement changes
+throughput the networking stack to correctly handle skbs with unreadable
+frags.
+
+** Part 5: recvmsg() APIs
+
+We define user APIs for the user to send and receive device memory.
+
+Not included with this RFC is the GVE devmem TCP support, just to
+simplify the review. Code available here if desired:
+https://github.com/mina/linux/tree/tcpdevmem
+
+This RFC is built on top of net-next with Jakub's pp-providers changes
+cherry-picked.
+
+* NIC dependencies:
+
+1. (strict) Devmem TCP require the NIC to support header split, i.e. the
+   capability to split incoming packets into a header + payload and to put
+   each into a separate buffer. Devmem TCP works by using device memory
+   for the packet payload, and host memory for the packet headers.
+
+2. (optional) Devmem TCP works better with flow steering support & RSS supp=
+ort,
+   i.e. the NIC's ability to steer flows into certain rx queues. This allow=
+s the
+   sysadmin to enable devmem TCP on a subset of the rx queues, and steer
+   devmem TCP traffic onto these queues and non devmem TCP elsewhere.
+
+The NIC I have access to with these properties is the GVE with DQO support
+running in Google Cloud, but any NIC that supports these features would suf=
+fice.
+I may be able to help reviewers bring up devmem TCP on their NICs.
+
+* Testing:
+
+The series includes a udmabuf kselftest that show a simple use case of
+devmem TCP and validates the entire data path end to end without
+a dependency on a specific dmabuf provider.
+
+** Test Setup
+
+Kernel: net-next with this RFC and memory provider API cherry-picked
+locally.
+
+Hardware: Google Cloud A3 VMs.
+
+NIC: GVE with header split & RSS & flow steering support.
+
+Jakub Kicinski (2):
+  net: page_pool: factor out releasing DMA from releasing the page
+  net: page_pool: create hooks for custom page providers
+
+Mina Almasry (14):
+  queue_api: define queue api
+  gve: implement queue api
+  net: netdev netlink api to bind dma-buf to a net device
+  netdev: support binding dma-buf to netdevice
+  netdev: netdevice devmem allocator
+  memory-provider: dmabuf devmem memory provider
+  page_pool: device memory support
+  page_pool: don't release iov on elevanted refcount
+  net: support non paged skb frags
+  net: add support for skbs with unreadable frags
+  tcp: RX path for devmem TCP
+  net: add SO_DEVMEM_DONTNEED setsockopt to release RX frags
+  net: add devmem TCP documentation
+  selftests: add ncdevmem, netcat for devmem TCP
+
+ Documentation/netlink/specs/netdev.yaml      |  52 ++
+ Documentation/networking/devmem.rst          | 270 ++++++++++
+ drivers/net/ethernet/google/gve/gve_adminq.c |   6 +-
+ drivers/net/ethernet/google/gve/gve_adminq.h |   3 +
+ drivers/net/ethernet/google/gve/gve_dqo.h    |   2 +
+ drivers/net/ethernet/google/gve/gve_main.c   | 286 +++++++++++
+ drivers/net/ethernet/google/gve/gve_rx_dqo.c |   5 +-
+ include/linux/netdevice.h                    |  24 +
+ include/linux/skbuff.h                       |  56 ++-
+ include/linux/socket.h                       |   1 +
+ include/net/devmem.h                         | 109 +++++
+ include/net/netdev_rx_queue.h                |   1 +
+ include/net/page_pool/helpers.h              | 162 +++++-
+ include/net/page_pool/types.h                |  48 ++
+ include/net/sock.h                           |   2 +
+ include/net/tcp.h                            |   5 +-
+ include/uapi/asm-generic/socket.h            |   6 +
+ include/uapi/linux/netdev.h                  |  19 +
+ include/uapi/linux/uio.h                     |  14 +
+ net/core/datagram.c                          |   6 +
+ net/core/dev.c                               | 314 +++++++++++-
+ net/core/gro.c                               |   7 +-
+ net/core/netdev-genl-gen.c                   |  19 +
+ net/core/netdev-genl-gen.h                   |   2 +
+ net/core/netdev-genl.c                       | 124 +++++
+ net/core/page_pool.c                         | 239 +++++++--
+ net/core/skbuff.c                            | 108 +++-
+ net/core/sock.c                              |  38 ++
+ net/ipv4/tcp.c                               | 196 +++++++-
+ net/ipv4/tcp_input.c                         |  13 +-
+ net/ipv4/tcp_ipv4.c                          |   8 +
+ net/ipv4/tcp_output.c                        |   5 +-
+ net/packet/af_packet.c                       |   4 +-
+ tools/include/uapi/linux/netdev.h            |  19 +
+ tools/testing/selftests/net/.gitignore       |   1 +
+ tools/testing/selftests/net/Makefile         |   5 +
+ tools/testing/selftests/net/ncdevmem.c       | 489 +++++++++++++++++++
+ 37 files changed, 2585 insertions(+), 83 deletions(-)
+ create mode 100644 Documentation/networking/devmem.rst
+ create mode 100644 include/net/devmem.h
+ create mode 100644 tools/testing/selftests/net/ncdevmem.c
+
+--=20
+2.43.0.472.g3155946c3a-goog
+
