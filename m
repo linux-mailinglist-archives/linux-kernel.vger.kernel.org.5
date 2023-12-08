@@ -2,140 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9707B809D3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79E6809D40
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573284AbjLHHjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 02:39:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58890 "EHLO
+        id S1573286AbjLHHkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 02:40:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573249AbjLHHjF (ORCPT
+        with ESMTP id S1573293AbjLHHkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 02:39:05 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3571721
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:39:11 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40c32bea30dso30065e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 23:39:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702021149; x=1702625949; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FCkP1UOSFN/6Yv9hZtznqIMqYxp7IUc2r86Qofpf4h4=;
-        b=AxHsxAZ/xykqhTKH/4qrAOMgBFMUS6FtjwtZwCt2FJ107pcqxjfJe2TEmC7LTkxXb+
-         rRmw6jAe31h2VQyMtb2IUDm9t9P8hrzRDhIMDR+J+geyyFoOI9QMhR/rJto3YQ3JvgDy
-         Ufli6jeAosTAEhRXe0fviP6h189aLa9SqcyguZfuhLnGIlIoiqGGcPi1xcUedPItOGir
-         Lv1pgYf/N7vI5EcUchnsnJ0JFQtQNtPk1pbSFVOCLY+Cf+v6TCQbmkcNgADIPKzUFL7S
-         zUIvUz1xuWyZakmWucGiOHHSlqoCwv8gIdK2OhGdIefeoGq5TX3WHo8YX/wPtYQPZRk6
-         OK3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702021149; x=1702625949;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FCkP1UOSFN/6Yv9hZtznqIMqYxp7IUc2r86Qofpf4h4=;
-        b=O+DhmQXv0Q8Zv5BWMxKkPAIgMUQjSJr8E/e0oCqjaEYpTghw/EuvMYgv1v7k6eQGV8
-         UAJhBsk7nF/h48sUdi3Ykdelt8ztDGYIg6OYJ45JEmCNv0rVmo2CcZwaGNi1L1gPJGv4
-         8ap17gw+3lSP7V+uKInymJno0DKDk2yTAj3NLy2svDPICLWHs65fUGLCpxRPDvjzPhNt
-         9Et3JE98wdGD7DlWd404fZrG/sneS2QwhBUrWCq+WqF+fBz6Zxjnx3WToZjyLvYp8oqb
-         TfFk+EaHDgZDLuu6NqGbZx+zxuoTte2UhOrUb0KfteeKahU6lm9RKjhjp+HCeE9uMfEA
-         V0Gg==
-X-Gm-Message-State: AOJu0Yw6tO/Zx/3mPZQITOqbV/UaEyGClD5kaKptOtgkvIi/2+VEmJTI
-        n2kseIbwFO7oVSUPZAPvYpJ6hDFnFOsrjuFD2Bbwlg==
-X-Google-Smtp-Source: AGHT+IHtwp5+Xh1T0DDbMixGMxkesvV/WAZ7PB8oqKgeYis6tuJvGlc9TtYOL/dGIFuzzX0bR0zNC49Q9Vw6vStVMM0=
-X-Received: by 2002:a05:600c:2941:b0:405:320a:44f9 with SMTP id
- n1-20020a05600c294100b00405320a44f9mr25035wmd.5.1702021149395; Thu, 07 Dec
- 2023 23:39:09 -0800 (PST)
+        Fri, 8 Dec 2023 02:40:42 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42586DD
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:40:48 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Smjjh2Xy3z4f3lV4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 15:40:40 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+        by mail.maildlp.com (Postfix) with ESMTP id 279B91A04FC
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 15:40:45 +0800 (CST)
+Received: from [10.174.179.247] (unknown [10.174.179.247])
+        by APP2 (Coremail) with SMTP id Syh0CgD3Tk15yHJlMbOhDA--.39237S3;
+        Fri, 08 Dec 2023 15:40:44 +0800 (CST)
+Message-ID: <4385d754-acbb-30b8-f311-ba542a8211e9@huaweicloud.com>
+Date:   Fri, 8 Dec 2023 15:40:40 +0800
 MIME-Version: 1.0
-References: <20231205-kunit_bus-v1-0-635036d3bc13@google.com>
- <20231205-kunit_bus-v1-2-635036d3bc13@google.com> <202312061306.98DA6D275D@keescook>
-In-Reply-To: <202312061306.98DA6D275D@keescook>
-From:   David Gow <davidgow@google.com>
-Date:   Fri, 8 Dec 2023 15:38:56 +0800
-Message-ID: <CABVgOSnTJFeso-=if=2Vs31xoCKNGvN2vM9nCJ37eJNEd=dRYw@mail.gmail.com>
-Subject: Re: [PATCH 2/4] fortify: test: Use kunit_device
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Rae Moar <rmoar@google.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-sound@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH] ubi: block: fix null-pointer-dereference in
+ ubiblock_create()
+To:     Zhihao Cheng <chengzhihao1@huawei.com>, linan666@huaweicloud.com,
+        richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
+        yangerkun@huawei.com
+References: <20231208071317.1268465-1-linan666@huaweicloud.com>
+ <a1e3aa71-d89e-0579-b55f-125c17b45f29@huawei.com>
+From:   Li Nan <linan666@huaweicloud.com>
+In-Reply-To: <a1e3aa71-d89e-0579-b55f-125c17b45f29@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgD3Tk15yHJlMbOhDA--.39237S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF17Gr1rZw1fWr1fXw4fXwb_yoW8GFW7pa
+        ykZa4Y9ryFkF1qkF4qq3WUXFZxJw48G3ykGFWxAw10qrW3Ary2krWa9r4qgrWkZF4xCaya
+        qF17GrWrZFn7Xa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBa14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+        4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x
+        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
+        C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+        04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2js
+        IEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQZ23UUUUU=
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Dec 2023 at 05:07, Kees Cook <keescook@chromium.org> wrote:
->
-> On Tue, Dec 05, 2023 at 03:31:34PM +0800, davidgow@google.com wrote:
-> > Using struct root_device to create fake devices for tests is something
-> > of a hack. The new struct kunit_device is meant for this purpose, so use
-> > it instead.
-> >
-> > Signed-off-by: David Gow <davidgow@google.com>
-> > ---
-> >  lib/fortify_kunit.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/lib/fortify_kunit.c b/lib/fortify_kunit.c
-> > index c8c33cbaae9e..f7a1fce8849b 100644
-> > --- a/lib/fortify_kunit.c
-> > +++ b/lib/fortify_kunit.c
-> > @@ -16,6 +16,7 @@
-> >  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> >
-> >  #include <kunit/test.h>
-> > +#include <kunit/device.h>
-> >  #include <linux/device.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/string.h>
-> > @@ -269,7 +270,7 @@ DEFINE_ALLOC_SIZE_TEST_PAIR(kvmalloc)
-> >       size_t len;                                                     \
-> >                                                                       \
-> >       /* Create dummy device for devm_kmalloc()-family tests. */      \
-> > -     dev = root_device_register(dev_name);                           \
-> > +     dev = kunit_device_register(test, dev_name);                    \
-> >       KUNIT_ASSERT_FALSE_MSG(test, IS_ERR(dev),                       \
-> >                              "Cannot register test device\n");        \
-> >                                                                       \
-> > @@ -303,7 +304,7 @@ DEFINE_ALLOC_SIZE_TEST_PAIR(kvmalloc)
-> >       checker(len, devm_kmemdup(dev, "Ohai", len, gfp),               \
-> >               devm_kfree(dev, p));                                    \
-> >                                                                       \
-> > -     device_unregister(dev);                                         \
-> > +     kunit_device_unregister(test, dev);                             \
-> >  } while (0)
-> >  DEFINE_ALLOC_SIZE_TEST_PAIR(devm_kmalloc)
->
-> Acked-by: Kees Cook <keescook@chromium.org>
->
-> (As an aside; shouldn't this get automatically cleaned up like other
-> kunit resources, though?)
->
 
-We can't just get rid of the {kunit_,}device_unregister() here,
-because otherwise we'd have several devices with the same name during
-the test.
 
-So, yes, these get automatically cleaned up, but the test would have
-to be restructured to either give each device a different name, or
-split the tests up further.
+在 2023/12/8 15:29, Zhihao Cheng 写道:
+> 在 2023/12/8 15:13, linan666@huaweicloud.com 写道:
+>> From: Li Nan <linan122@huawei.com>
+>>
+>> If idr_alloc() fails, dev->gd will be put after goto out_cleanup_disk in
+>> ubiblock_create(), but dev->gd has not been assigned yet at this time, 
+>> and
+>> accessing it will trigger a null-pointer-dereference issue. Fix it by put
+>> gd directly.
+> Function 'put_disk()' checks disk whether is NULL, so I think it's a 
+> 'memleak' problem, not a null-ptr-deref problem.
+>>
 
--- David
+Damn, I overlooked it here. Thanks for your review, I will fix the log
+in v2.
+
+>> Signed-off-by: Li Nan <linan122@huawei.com>
+>> ---
+>>   drivers/mtd/ubi/block.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+>> index 309a42aeaa4c..654bd7372cd8 100644
+>> --- a/drivers/mtd/ubi/block.c
+>> +++ b/drivers/mtd/ubi/block.c
+>> @@ -434,7 +434,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
+>>       list_del(&dev->list);
+>>       idr_remove(&ubiblock_minor_idr, gd->first_minor);
+>>   out_cleanup_disk:
+>> -    put_disk(dev->gd);
+>> +    put_disk(gd);
+> 
+> For memleak solution:
+> 
+> Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> 
+>>   out_free_tags:
+>>       blk_mq_free_tag_set(&dev->tag_set);
+>>   out_free_dev:
+> 
+> 
+> .
+
+-- 
+Thanks,
+Nan
+
