@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C04C80ABCB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C81680ABCC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574597AbjLHSN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:13:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38278 "EHLO
+        id S1574628AbjLHSNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:13:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235941AbjLHSNC (ORCPT
+        with ESMTP id S1574510AbjLHSNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Dec 2023 13:13:02 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C555B199B;
-        Fri,  8 Dec 2023 10:13:05 -0800 (PST)
-Date:   Fri, 08 Dec 2023 18:13:03 -0000
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C0019A6;
+        Fri,  8 Dec 2023 10:13:06 -0800 (PST)
+Date:   Fri, 08 Dec 2023 18:13:04 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702059184;
+        s=2020; t=1702059185;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=mRgMpEtOSJBHDWGivEkUzrK1mBwzcnA7ULdr1D3O8kk=;
-        b=GRKKFx0OhwyKZC8SiqPEB21TfTXQe066OGHnGnkm5FN0JVCm2+uSToyjKl3XBU3buzDGD2
-        73GGP9h+yAtGpD/sktTFX7CDH33eQAZUx1iMXHILO8t4p1Q/WnEo5BmYOvvk+2zzM9eBz7
-        fQWERD/e2x08m1q5wvPVyos2vd6LkVBJ7lEh2gce2l30f5TWYxFq6Wniqw+rZQ+zeX09rs
-        LWYQRdRkMoJP0QBCqmPT4NGlV65XAA6nGaO8ASZpmIUhTRtdRY+xOG6cB7ZXf8xFM9wFLy
-        8o+acu5AHi1TlWkRkTihQm07h1D9436ZuuUT8HkX6vzD7Ym0VzxSAJbSk76B3g==
+        bh=GQOPBY2uEa4mMRruL0EQ10AyfxkhIbfgpfcqyoIWAmA=;
+        b=LeY2QpdpiYp+sG+dROeCR+GDSIaUaddKzJrptUi4ez8idBj4Wb3v6882QyL9hT/yQ/4IWO
+        e5PxJukeDaU5vwHxGqK603mjo40eBweUXRH4btAKhhRT1SMrWLWEiIGm4DbnT1lTKsSdAZ
+        F1s9RhHRPSSiN5zpC0nKcnloNiL1ZmsDIGNCUn7Z0g2rxDz6mn/SJ/+qEdQYBOgpiv0GNu
+        7ydvAmsNUtSZm1NiHkyDDZTpUhiV+YeYYepMt1PR2cHDt9HLzaZxU92Z1ym/K7qRAi6AMh
+        RgSIgtM6EObbpZu8TxAaWIewKQNDFw18BInqEp8dkb7U0lniV8U9VUDy3npvOQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702059184;
+        s=2020e; t=1702059185;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=mRgMpEtOSJBHDWGivEkUzrK1mBwzcnA7ULdr1D3O8kk=;
-        b=7GCNvhFWlJ2j4apzg+PtMg3sa6R9HAcjSIl1BQ98xe66xmQ7VBozQTyiSYuBuug1NozCug
-        23WC4LRRg+yS4NDA==
+        bh=GQOPBY2uEa4mMRruL0EQ10AyfxkhIbfgpfcqyoIWAmA=;
+        b=ZB3xRbtMLTTOOglmtWyPAmFSsd/Z/b2wvZTlrGEM66cghH8RSCxGgPsxsntcxJL0AvJJ+K
+        VNpkCsEJVOA9jIAg==
 From:   "tip-bot2 for Jo Van Bulck" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] selftests/sgx: Fix uninitialized pointer dereferences
- in encl_get_entry
+Subject: [tip: x86/sgx] selftests/sgx: Fix uninitialized pointer dereference
+ in error path
 Cc:     Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <170205918374.398.6959285189365623759.tip-bot2@tip-bot2>
+Message-ID: <170205918453.398.18215984213946504139.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -63,56 +64,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/sgx branch of tip:
 
-Commit-ID:     b84fc2e0139ba4b23b8039bd7cfd242894fe8f8b
-Gitweb:        https://git.kernel.org/tip/b84fc2e0139ba4b23b8039bd7cfd242894fe8f8b
+Commit-ID:     79eba8c924f7decfa71ddf187d38cb9f5f2cd7b3
+Gitweb:        https://git.kernel.org/tip/79eba8c924f7decfa71ddf187d38cb9f5f2cd7b3
 Author:        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-AuthorDate:    Thu, 05 Oct 2023 17:38:43 +02:00
+AuthorDate:    Thu, 05 Oct 2023 17:38:42 +02:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
 CommitterDate: Fri, 08 Dec 2023 10:05:26 -08:00
 
-selftests/sgx: Fix uninitialized pointer dereferences in encl_get_entry
+selftests/sgx: Fix uninitialized pointer dereference in error path
 
-Ensure sym_tab and sym_names are zero-initialized and add an early-out
-condition in the unlikely (erroneous) case that the enclave ELF file would
-not contain a symbol table.
+Ensure ctx is zero-initialized, such that the encl_measure function will
+not call EVP_MD_CTX_destroy with an uninitialized ctx pointer in case of an
+early error during key generation.
 
-This addresses -Werror=maybe-uninitialized compiler warnings for gcc -O2.
-
-Fixes: 33c5aac3bf32 ("selftests/sgx: Test complete changing of page type flow")
+Fixes: 2adcba79e69d ("selftests/x86: Add a selftest for SGX")
 Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Link: https://lore.kernel.org/all/20231005153854.25566-3-jo.vanbulck%40cs.kuleuven.be
+Acked-by: Kai Huang <kai.huang@intel.com>
+Link: https://lore.kernel.org/all/20231005153854.25566-2-jo.vanbulck%40cs.kuleuven.be
 ---
- tools/testing/selftests/sgx/load.c |  9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ tools/testing/selftests/sgx/sigstruct.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/sgx/load.c b/tools/testing/selftests/sgx/load.c
-index 94bdeac..c9f658e 100644
---- a/tools/testing/selftests/sgx/load.c
-+++ b/tools/testing/selftests/sgx/load.c
-@@ -136,11 +136,11 @@ static bool encl_ioc_add_pages(struct encl *encl, struct encl_segment *seg)
-  */
- uint64_t encl_get_entry(struct encl *encl, const char *symbol)
- {
-+	Elf64_Sym *symtab = NULL;
-+	char *sym_names = NULL;
- 	Elf64_Shdr *sections;
--	Elf64_Sym *symtab;
- 	Elf64_Ehdr *ehdr;
--	char *sym_names;
--	int num_sym;
-+	int num_sym = 0;
+diff --git a/tools/testing/selftests/sgx/sigstruct.c b/tools/testing/selftests/sgx/sigstruct.c
+index a07896a..d73b29b 100644
+--- a/tools/testing/selftests/sgx/sigstruct.c
++++ b/tools/testing/selftests/sgx/sigstruct.c
+@@ -318,9 +318,9 @@ bool encl_measure(struct encl *encl)
+ 	struct sgx_sigstruct *sigstruct = &encl->sigstruct;
+ 	struct sgx_sigstruct_payload payload;
+ 	uint8_t digest[SHA256_DIGEST_LENGTH];
++	EVP_MD_CTX *ctx = NULL;
+ 	unsigned int siglen;
+ 	RSA *key = NULL;
+-	EVP_MD_CTX *ctx;
  	int i;
  
- 	ehdr = encl->bin;
-@@ -161,6 +161,9 @@ uint64_t encl_get_entry(struct encl *encl, const char *symbol)
- 		}
- 	}
+ 	memset(sigstruct, 0, sizeof(*sigstruct));
+@@ -384,7 +384,8 @@ bool encl_measure(struct encl *encl)
+ 	return true;
  
-+	if (!symtab || !sym_names)
-+		return 0;
-+
- 	for (i = 0; i < num_sym; i++) {
- 		Elf64_Sym *sym = &symtab[i];
- 
+ err:
+-	EVP_MD_CTX_destroy(ctx);
++	if (ctx)
++		EVP_MD_CTX_destroy(ctx);
+ 	RSA_free(key);
+ 	return false;
+ }
