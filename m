@@ -2,151 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DD780AD3F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9B080AD44
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbjLHTki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 14:40:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48006 "EHLO
+        id S233876AbjLHTnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 14:43:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234071AbjLHTkd (ORCPT
+        with ESMTP id S229572AbjLHTnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 14:40:33 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD5E199F;
-        Fri,  8 Dec 2023 11:40:39 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32f8441dfb5so2226369f8f.0;
-        Fri, 08 Dec 2023 11:40:39 -0800 (PST)
+        Fri, 8 Dec 2023 14:43:21 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77FFF1729
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:43:27 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-332fd78fa9dso2267137f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 11:43:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702064438; x=1702669238; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1702064606; x=1702669406; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lGqhfgnTbLSQhTQ1bMee6eK6lcK7c6hE95qruhtgvEk=;
-        b=VHC0k+mMONG1sn2lHi5PinhxgLT6ZlhKXS2rTAWvS9SpRi8uFvV7GBrsxTuRgYQnT2
-         A3Of7SnVGOKgHlovRIP/zry3ZoAeqRuDeZJ79WqQeRol+BMjtJDSJ+I4mokRcbwJAig9
-         pQZyj46RCdbQ9edaCL+ffQELcz/Z0pLYl2mEVMH/HRuFwS0yBX2AytHap/RNiw5eQKSs
-         Wlt0GqIOz2BcFhZiHXc+SshWBB459LuR6gqghQ5O0jM8fuLW02M5g/t201V82hJ8K94R
-         1hnXaCmckIA07XlON021roKBQE2mH4J93iTIUUR7TXIlUM652fB4eRySiG49crimotyX
-         cXeg==
+        bh=vEJCryZOY7/zM8uMtAIXnTjj+RgXAZj+NQh24K145R8=;
+        b=qz2LBg36Un/64fIiuA/Z/wdRszfRJvtGyGInuxsx9eZKL4kFKaWF9i9TzUiecFv3ab
+         WhCVp6aFBsUzSqwQ1IAPXzOUrrzaE/Efvz7VBOZt/0qwY8ZT39GxjTk6dIX6fh1Fb4ST
+         CbqxA+w/MMIUanHCx2/R7xFpWf8bZKsgXtfByRzqkPKq7sTTquX4SPuH6g61Na0SzMrY
+         /IkFXlAzbftUZ4SMZChI9zEGrCer+oXzN5n1+mDlLRll5j2/NTCRGiB4XjGGcpOGYxb4
+         ldfgr3crGeikCq9LECRQSGfTDDN/wCFFeMUgPBHSBvKpdcK7okFSgJxppXpleZstA31s
+         5TiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702064438; x=1702669238;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702064606; x=1702669406;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lGqhfgnTbLSQhTQ1bMee6eK6lcK7c6hE95qruhtgvEk=;
-        b=ASM7MJfpyKRPlX/sc3Hu0jZNxSOjHOcCiq61fj5YR2PDrIUJwSY5d3W+R7YxJ2qEBQ
-         d2zk8wCgx3+PxUgdDpk/YYwc3KXaugznW3zc6IAyciNE5hou9gaLGvf5r09Y3YxMm5kb
-         7fU/ewsNgh2uu4sdJO6DBIGSG8N4L0Il8RUsVwA/j1TFptyKvkpCIqCb0BuaNpR4n+a9
-         1t9JUiEW84fq4VPl6BLRdvSccqJHvqEnP80p5In/r7MabqKoH4VPIJwdTj0I2YfaF3kF
-         V6imkHKKyMzLFODSO9dKa5XNR2PF7cr06D52xnfGLCXHrUjuxLNAGs2EXnmlkm6ToWOr
-         f4xg==
-X-Gm-Message-State: AOJu0YycaT6A0uUQL2NIhhzVYG/UU69pu81FB/9a2fqATqy2+aP4sJ8j
-        6GVmoXyB+t4ik47hjENzDOh5bOFjrwEtKq7bXH7ejDPv8Ms=
-X-Google-Smtp-Source: AGHT+IHt0AOwYtDELssGf1Db4Jmn3pjjJiojkcuC4s+RabiD4a0X0j4NeWSW3wWlhqFCkvQtOof9Rit1N2UOiD+eLQA=
-X-Received: by 2002:a05:6000:543:b0:333:381d:6a26 with SMTP id
- b3-20020a056000054300b00333381d6a26mr334324wrf.135.1702064438187; Fri, 08 Dec
- 2023 11:40:38 -0800 (PST)
+        bh=vEJCryZOY7/zM8uMtAIXnTjj+RgXAZj+NQh24K145R8=;
+        b=VrUj4/ZA6bCWMtyor/+KrMoo4NwrCo0BKyixuxtClNvDXoBL4UZAjza7fkIsVlY4eH
+         MuWEScZ3z/Pqj/yvtdOg3AzMgnbzZIOPCYEUWBd5rs3Zjr4BMBzjLAyWq1JS7BBIGta7
+         PYzqeHJGft+H5pdTdBgHeK2kOXDJDLIeahsDyYKZFgpzuBADD62Mi5GDvz6k+OPUF3BF
+         IPM4v0kTr2gBFz1YBph+HS15GA1Z7pRVOtHTxlD6EpXkNtkaX1x0/9Xecp5waHXE2Dob
+         F2jE5Rvp5u3oRVq8rQUIjuDwacdYbBzX3oohH7tbjtcxxRBuH3Z15CP/g2LOFe6L2kOu
+         wP2Q==
+X-Gm-Message-State: AOJu0YwMVu1DnnLkGHA030woJGHClHRHRl6FnCmzz6jAyv8hxgh6bDqC
+        UPzqVhwTLVLYoJR1mt95ouvBtw==
+X-Google-Smtp-Source: AGHT+IGUZ0M5XfwQtXVfb2fFWHIXJ8eCSwRd4AUrMyT3otXdE/VM8Wxvk+NVq9q1AibYzcHmtCgkGA==
+X-Received: by 2002:adf:ee0d:0:b0:333:58eb:8d6d with SMTP id y13-20020adfee0d000000b0033358eb8d6dmr136808wrn.103.1702064605915;
+        Fri, 08 Dec 2023 11:43:25 -0800 (PST)
+Received: from [127.0.1.1] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id o10-20020a5d58ca000000b0033338c3ba42sm2653920wrf.111.2023.12.08.11.43.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 11:43:25 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Paul Cercueil <paul@crapouillou.net>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231206221556.15348-1-paul@crapouillou.net>
+References: <20231206221556.15348-1-paul@crapouillou.net>
+Subject: Re: [PATCH 0/3] ARM: dts: samsung: exynos4210-i9100 updates
+Message-Id: <170206460423.126390.6462198989409881978.b4-ty@linaro.org>
+Date:   Fri, 08 Dec 2023 20:43:24 +0100
 MIME-Version: 1.0
-References: <20231204181614.GA7299@noisy.programming.kicks-ass.net>
- <20231204183354.GC7299@noisy.programming.kicks-ass.net> <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
- <20231206163814.GB36423@noisy.programming.kicks-ass.net> <20231206183713.GA35897@noisy.programming.kicks-ass.net>
- <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
- <20231207093105.GA28727@noisy.programming.kicks-ass.net> <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
- <20231208102940.GB28727@noisy.programming.kicks-ass.net> <20231208134041.GD28727@noisy.programming.kicks-ass.net>
- <20231208172152.GD36716@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231208172152.GD36716@noisy.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 8 Dec 2023 11:40:27 -0800
-Message-ID: <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 9:22=E2=80=AFAM Peter Zijlstra <peterz@infradead.org=
-> wrote:
->
-> On Fri, Dec 08, 2023 at 02:40:41PM +0100, Peter Zijlstra wrote:
-> > On Fri, Dec 08, 2023 at 11:29:40AM +0100, Peter Zijlstra wrote:
-> > > The only problem I now have is the one XXX, I'm not entirely sure wha=
-t
-> > > signature to use there.
-> >
-> > > @@ -119,6 +119,7 @@ int bpf_struct_ops_test_run(struct bpf_p
-> > >     op_idx =3D prog->expected_attach_type;
-> > >     err =3D bpf_struct_ops_prepare_trampoline(tlinks, link,
-> > >                                             &st_ops->func_models[op_i=
-dx],
-> > > +                                           /* XXX */ NULL,
-> > >                                             image, image + PAGE_SIZE)=
-;
-> > >     if (err < 0)
-> > >             goto out;
-> >
-> > Duh, that should ofcourse be something of dummy_ops_test_ret_fn type.
-> > Let me go fix that.
->
-> Next one.. bpf_obj_free_fields: field->kptr.dtor(xchg_field);
->
-> The one that trips is bpf_cgroup_release().
->
-> objtool doesn't think the address of that function 'escapes' and
-> 'helpfully' seals that function, and then BPF thinks it does escape and
-> manages the above indirect call and *boom*.
->
-> How can I tell which functions escape according to BPF such that I might
-> teach objtool this?
 
-I'm not following.
-Are you asking to annotate
-__bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
-somehow so that objtool knows that it will be called indirectly?
-typedef void (*btf_dtor_kfunc_t)(void *);
-        btf_dtor_kfunc_t dtor;
-but the bpf_cgroup_release takes 'struct cgroup*'.
-From kcfi pov void * =3D=3D struct cgroup * ?
-Do we need to change it to 'void *cgrp' ?
-What is "sealing" by objtool?
+On Wed, 06 Dec 2023 23:15:53 +0100, Paul Cercueil wrote:
+> Here a small patchset with a fix and some improvements to the DTS for
+> the Galaxy S2 (aka. i9100) phone.
+> 
+> The first patch unconditionally enables a regulator, which seems to be
+> needed for the phone to boot properly. I do not know what it is
+> connected to.
+> 
+> [...]
+
+Applied, thanks!
+
+[1/3] ARM: dts: samsung: exynos4210-i9100: Unconditionally enable LDO12
+      https://git.kernel.org/krzk/linux/c/84228d5e29dbc7a6be51e221000e1d122125826c
+[2/3] ARM: dts: samsung: exynos4210-i9100: Add node for touch keys
+      https://git.kernel.org/krzk/linux/c/6e73b11062b2e3e873666ba35577437502cf1dd2
+[3/3] ARM: dts: samsung: exynos4210-i9100: Add accelerometer node
+      https://git.kernel.org/krzk/linux/c/50c7cdc9a4d2d21373c1ab52c131109ab30c53f5
+
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
