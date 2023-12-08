@@ -2,146 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B7F809736
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14770809739
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbjLHA2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 19:28:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
+        id S232701AbjLHAaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 19:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235722AbjLHAZm (ORCPT
+        with ESMTP id S229531AbjLHAac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 19:25:42 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA94171C
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 16:25:28 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7D93C43395
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 00:25:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701995127;
-        bh=YQ43gqFi340wtHS4UTT/96YjcDawsBIO7bwc4RETQ5M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sxF/mK0kIuq+FAFL3vXGu4VJXAWDLpJkunN6On2kVqmQHlw4qXsW6rmigTA7cQ+UZ
-         zqtk1mxrDfWgCMXn/lw38JDyQTCxm21NVKYpDy5QUh+1x145qkOe7IwGSSmMqTjVdZ
-         U1u+TSwhjarzBonjPeNCY+Gs6W1VUmgff2/uF4IXLy1zKAKc9LQJEggzcMFaiPmwh6
-         NyyQvSldM2gr6c35yByvAVa3QGn9s3Moa+qzOPNT7FNrxND3uVVKLLu0o06TK4yvqN
-         lzHSb2BgM11lLLsskq10Md4pyVlK74hlB6jUOvFq5a1mCpdPL4cfF2z+0menBvxS70
-         HPnwgdxeUcHaA==
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5c6ce4dffb5so1163537a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 16:25:27 -0800 (PST)
-X-Gm-Message-State: AOJu0YywKYCkJs8UsUHBM80phGNPvoBQ9g/7I2b01wMKmmAgXFsIE4IQ
-        5nwA7RX8c/0zkTqKq/BfbcaV4NBdrUKiA5CbHCkBcw==
-X-Google-Smtp-Source: AGHT+IEpsq1zGY0OfKQxvKp1EvVbsLwVD6nMl1S5J/UVuBu11zU3BbaxP90u+Kn0UjEV195rA6g1hCojqNHtHKljjg4=
-X-Received: by 2002:a05:6a20:1604:b0:18f:a271:31a9 with SMTP id
- l4-20020a056a20160400b0018fa27131a9mr3577935pzj.74.1701995127255; Thu, 07 Dec
- 2023 16:25:27 -0800 (PST)
+        Thu, 7 Dec 2023 19:30:32 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BCDD5B;
+        Thu,  7 Dec 2023 16:30:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Mt3Imikle95I2T0moDd1ayBWvk34SQ07JgzqC/mp+9E=; b=SWpHk2xFkLlIJxCT0fxLVd5bYg
+        5FE7UImoYtlwlR/1XUB/VweP+8Pv+6Oqju00FN+DTrUqiHManr3vamB14YtigJXUXgVAeA2lusfor
+        u/UiVU5UiSs+VxHUyIXI7jDAiYuG44vl74gIRZuzzkKRk+u0xJY16793JjZ7grfW31yRjN601maJA
+        LajsngDsk/1+UO+S6+Lb5We6wr3H70cqi/hb/+7fRPpGAjdDBBa6iVibIbVvTm2RF7SF82vCZjZjf
+        yDBPpa93XyV1VPYFPz/ooF4xQ0+fR29i/vrpP8i7kM4DSixLPoRaMHzRNpR4T6+qg1oxZdwG055yl
+        c9r94uKA==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rBOlC-00EKHi-1u;
+        Fri, 08 Dec 2023 00:30:31 +0000
+Message-ID: <d228bf5d-24e3-4fd1-a2eb-f54395697907@infradead.org>
+Date:   Thu, 7 Dec 2023 16:30:27 -0800
 MIME-Version: 1.0
-References: <20231130194023.4102148-5-nphamcs@gmail.com> <20231205193307.2432803-1-nphamcs@gmail.com>
-In-Reply-To: <20231205193307.2432803-1-nphamcs@gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Thu, 7 Dec 2023 16:25:16 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuM9hRx48uG5vqp1E26gtaHMQG-B+AAQUoZKNdkD0YeaPw@mail.gmail.com>
-Message-ID: <CAF8kJuM9hRx48uG5vqp1E26gtaHMQG-B+AAQUoZKNdkD0YeaPw@mail.gmail.com>
-Subject: Re: [PATCH v8 4/6] mm: memcg: add per-memcg zswap writeback stat (fix)
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, yosryahmed@google.com,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mpi3mr: fix printk() format strings
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Chandrakanth patil <chandrakanth.patil@broadcom.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Ranjan Kumar <ranjan.kumar@broadcom.com>,
+        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        mpi3mr-linuxdrv.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231207142813.935717-1-arnd@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231207142813.935717-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: Chris Li <chrisl@kernel.org> (Google)
 
-Chris
 
-On Tue, Dec 5, 2023 at 11:33=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote=
-:
->
-> Rename ZSWP_WB to ZSWPWB to better match the existing counters naming
-> scheme.
->
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+On 12/7/23 06:28, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The newly introduced error messages get multiple format strings wrong: size_t must
+> be printed using the %z modifier rather than %l and dma_addr_t must be printed
+> by reference using the special %pad pointer type:
+> 
+> drivers/scsi/mpi3mr/mpi3mr_app.c: In function 'mpi3mr_build_nvme_prp':
+> include/linux/kern_levels.h:5:25: error: format '%llx' expects argument of type 'long long unsigned int', but argument 4 has type 'dma_addr_t' {aka 'unsigned int'} [-Werror=format=]
+> drivers/scsi/mpi3mr/mpi3mr_app.c:949:25: note: in expansion of macro 'dprint_bsg_err'
+>   949 |                         dprint_bsg_err(mrioc,
+>       |                         ^~~~~~~~~~~~~~
+> include/linux/kern_levels.h:5:25: error: format '%ld' expects argument of type 'long int', but argument 4 has type 'size_t' {aka 'unsigned int'} [-Werror=format=]
+> drivers/scsi/mpi3mr/mpi3mr_app.c:1112:41: note: in expansion of macro 'dprint_bsg_err'
+>  1112 |                                         dprint_bsg_err(mrioc,
+>       |                                         ^~~~~~~~~~~~~~
+> 
+> Fixes: 9536af615dc9 ("scsi: mpi3mr: Support for preallocation of SGL BSG data buffers part-3")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+LGTM. Thanks.
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
 > ---
->  include/linux/vm_event_item.h | 2 +-
->  mm/memcontrol.c               | 2 +-
->  mm/vmstat.c                   | 2 +-
->  mm/zswap.c                    | 4 ++--
->  4 files changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.=
-h
-> index f4569ad98edf..747943bc8cc2 100644
-> --- a/include/linux/vm_event_item.h
-> +++ b/include/linux/vm_event_item.h
-> @@ -142,7 +142,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT=
-,
->  #ifdef CONFIG_ZSWAP
->                 ZSWPIN,
->                 ZSWPOUT,
-> -               ZSWP_WB,
-> +               ZSWPWB,
->  #endif
->  #ifdef CONFIG_X86
->                 DIRECT_MAP_LEVEL2_SPLIT,
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 21d79249c8b4..0286b7d38832 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -703,7 +703,7 @@ static const unsigned int memcg_vm_event_stat[] =3D {
->  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
->         ZSWPIN,
->         ZSWPOUT,
-> -       ZSWP_WB,
-> +       ZSWPWB,
->  #endif
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->         THP_FAULT_ALLOC,
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 2249f85e4a87..cfd8d8256f8e 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1401,7 +1401,7 @@ const char * const vmstat_text[] =3D {
->  #ifdef CONFIG_ZSWAP
->         "zswpin",
->         "zswpout",
-> -       "zswp_wb",
-> +       "zswpwb",
->  #endif
->  #ifdef CONFIG_X86
->         "direct_map_level2_splits",
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index c65b8ccc6b72..0fb0945c0031 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -761,9 +761,9 @@ static enum lru_status shrink_memcg_cb(struct list_he=
-ad *item, struct list_lru_o
->         zswap_written_back_pages++;
->
->         if (entry->objcg)
-> -               count_objcg_event(entry->objcg, ZSWP_WB);
-> +               count_objcg_event(entry->objcg, ZSWPWB);
->
-> -       count_vm_event(ZSWP_WB);
-> +       count_vm_event(ZSWPWB);
->         /*
->          * Writeback started successfully, the page now belongs to the
->          * swapcache. Drop the entry from zswap - unless invalidate alrea=
-dy
-> --
-> 2.34.1
->
+>  drivers/scsi/mpi3mr/mpi3mr_app.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/scsi/mpi3mr/mpi3mr_app.c b/drivers/scsi/mpi3mr/mpi3mr_app.c
+> index 4b93b7440da6..0380996b5ad2 100644
+> --- a/drivers/scsi/mpi3mr/mpi3mr_app.c
+> +++ b/drivers/scsi/mpi3mr/mpi3mr_app.c
+> @@ -947,8 +947,8 @@ static int mpi3mr_build_nvme_prp(struct mpi3mr_ioc *mrioc,
+>  		dma_addr = drv_buf_iter->dma_desc[count].dma_addr;
+>  		if (dma_addr & page_mask) {
+>  			dprint_bsg_err(mrioc,
+> -				       "%s:dma_addr 0x%llx is not aligned with page size 0x%x\n",
+> -				       __func__,  dma_addr, dev_pgsz);
+> +				       "%s:dma_addr %pad is not aligned with page size 0x%x\n",
+> +				       __func__,  &dma_addr, dev_pgsz);
+>  			return -1;
+>  		}
+>  	}
+> @@ -1110,7 +1110,7 @@ static int mpi3mr_build_nvme_prp(struct mpi3mr_ioc *mrioc,
+>  				if ((++desc_count) >=
+>  				   drv_buf_iter->num_dma_desc) {
+>  					dprint_bsg_err(mrioc,
+> -						       "%s: Invalid len %ld while building PRP\n",
+> +						       "%s: Invalid len %zd while building PRP\n",
+>  						       __func__, length);
+>  					goto err_out;
+>  				}
+
+-- 
+~Randy
