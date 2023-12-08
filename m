@@ -2,88 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64BD5809A6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 04:33:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0977C809A84
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 04:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235607AbjLHDd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 22:33:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
+        id S1573075AbjLHDfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 22:35:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbjLHDd2 (ORCPT
+        with ESMTP id S231410AbjLHDfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 22:33:28 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A2410DF
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 19:33:33 -0800 (PST)
-X-UUID: 09d5b064ee4344ea83f3188afeeefba2-20231208
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:46e542b3-30b2-4548-a52b-c14424f86ab6,IP:5,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:-15
-X-CID-INFO: VERSION:1.1.33,REQID:46e542b3-30b2-4548-a52b-c14424f86ab6,IP:5,URL
-        :0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-15
-X-CID-META: VersionHash:364b77b,CLOUDID:f5006dfd-4a48-46e2-b946-12f04f20af8c,B
-        ulkID:231208113324ZJ22WU93,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil
-        ,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,
-        TF_CID_SPAM_ULN
-X-UUID: 09d5b064ee4344ea83f3188afeeefba2-20231208
-X-User: chentao@kylinos.cn
-Received: from vt.. [(116.128.244.169)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1135093599; Fri, 08 Dec 2023 11:33:23 +0800
-From:   Kunwu Chan <chentao@kylinos.cn>
-To:     lee@kernel.org, jpanis@baylibre.com
-Cc:     kunwu.chan@hotmail.com, linux-kernel@vger.kernel.org,
-        Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH v2] mfd: tps6594: Add null pointer check to tps6594_device_init
-Date:   Fri,  8 Dec 2023 11:33:20 +0800
-Message-Id: <20231208033320.49345-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+        Thu, 7 Dec 2023 22:35:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F66D10EB
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 19:35:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702006523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vh3S+Lns+sOh+ZFwSTFTZocc8C/FbBJ0BQFWEGhlNzI=;
+        b=X4i/1ZvowJk7Ud4QlVhINAKz/tNSK4xJvUgyXrFKvuLZkIzUnRVRYkLoFfePsEhcoGJ0sy
+        utoNZb8AhhIz8tufqAJ5x/N4e22ILlHGvh4WTybHY2t928C/OpeP6jfn5I1roA6/JsAjiR
+        ESD7kHzHAyW82w6M81TfJpws9LFB6OU=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-168-QbWSTXDmMXmiBdhqKILqdw-1; Thu,
+ 07 Dec 2023 22:35:21 -0500
+X-MC-Unique: QbWSTXDmMXmiBdhqKILqdw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E778A1C04322;
+        Fri,  8 Dec 2023 03:35:20 +0000 (UTC)
+Received: from virt-mtcollins-01.lab.eng.rdu2.redhat.com (virt-mtcollins-01.lab.eng.rdu2.redhat.com [10.8.1.196])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D8143492BC6;
+        Fri,  8 Dec 2023 03:35:20 +0000 (UTC)
+From:   Shaoqin Huang <shahuang@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Shaoqin Huang <shahuang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] KVM: selftests: Fix Assertion on non-x86_64 platforms
+Date:   Thu,  7 Dec 2023 22:35:05 -0500
+Message-Id: <20231208033505.2930064-1-shahuang@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure.
+When running the set_memory_region_test on arm64 platform, it causes the
+below assert:
 
-Fixes: 325bec7157b3 ("mfd: tps6594: Add driver for TI TPS6594 PMIC")
-Suggested-by: Lee Jones <lee@kernel.org>
-Cc: Kunwu Chan <kunwu.chan@hotmail.com>
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
-v2
-   - Simplified by returning error codes directly
----
- drivers/mfd/tps6594-core.c | 3 +++
- 1 file changed, 3 insertions(+)
+==== Test Assertion Failure ====
+  set_memory_region_test.c:355: r && errno == EINVAL
+  pid=40695 tid=40695 errno=0 - Success
+     1	0x0000000000401baf: test_invalid_memory_region_flags at set_memory_region_test.c:355
+     2	 (inlined by) main at set_memory_region_test.c:541
+     3	0x0000ffff951c879b: ?? ??:0
+     4	0x0000ffff951c886b: ?? ??:0
+     5	0x0000000000401caf: _start at ??:?
+  KVM_SET_USER_MEMORY_REGION should have failed on v2 only flag 0x2
 
-diff --git a/drivers/mfd/tps6594-core.c b/drivers/mfd/tps6594-core.c
-index 0fb9c5cf213a..783ee59901e8 100644
---- a/drivers/mfd/tps6594-core.c
-+++ b/drivers/mfd/tps6594-core.c
-@@ -433,6 +433,9 @@ int tps6594_device_init(struct tps6594 *tps, bool enable_crc)
- 	tps6594_irq_chip.name = devm_kasprintf(dev, GFP_KERNEL, "%s-%ld-0x%02x",
- 					       dev->driver->name, tps->chip_id, tps->reg);
+This is because the arm64 platform also support the KVM_MEM_READONLY flag, but
+the current implementation add it into the supportd_flags only on x86_64
+platform, so this causes assert on other platform which also support the
+KVM_MEM_READONLY flag.
+
+Fix it by using the __KVM_HAVE_READONLY_MEM macro to detect if the
+current platform support the KVM_MEM_READONLY, thus fix this problem on
+all other platform which support KVM_MEM_READONLY.
+
+Fixes: 5d74316466f4 ("KVM: selftests: Add a memory region subtest to validate invalid flags")
+Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
+---
+This patch is based on the latest kvm-next[1] branch.
+
+[1] https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=next
+---
+ tools/testing/selftests/kvm/set_memory_region_test.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
+index 6637a0845acf..1ce710fd7a5a 100644
+--- a/tools/testing/selftests/kvm/set_memory_region_test.c
++++ b/tools/testing/selftests/kvm/set_memory_region_test.c
+@@ -333,9 +333,11 @@ static void test_invalid_memory_region_flags(void)
+ 	struct kvm_vm *vm;
+ 	int r, i;
  
-+	if (!tps6594_irq_chip.name)
-+		return -ENOMEM;
-+
- 	ret = devm_regmap_add_irq_chip(dev, tps->regmap, tps->irq, IRQF_SHARED | IRQF_ONESHOT,
- 				       0, &tps6594_irq_chip, &tps->irq_data);
- 	if (ret)
+-#ifdef __x86_64__
++#ifdef __KVM_HAVE_READONLY_MEM
+ 	supported_flags |= KVM_MEM_READONLY;
++#endif
+ 
++#ifdef __x86_64__
+ 	if (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM))
+ 		vm = vm_create_barebones_protected_vm();
+ 	else
 -- 
-2.39.2
+2.40.1
 
