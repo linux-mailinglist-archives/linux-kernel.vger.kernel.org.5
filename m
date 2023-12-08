@@ -2,81 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A89809AE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 05:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB97809AEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 05:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573110AbjLHENJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 23:13:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50618 "EHLO
+        id S1573124AbjLHEQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 23:16:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLHENH (ORCPT
+        with ESMTP id S229531AbjLHEQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 23:13:07 -0500
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43B91712
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 20:13:13 -0800 (PST)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6d88143b45bso2344893a34.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 20:13:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702008793; x=1702613593;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d60eezRWfTN7z7k53kCNyN44qWasOR83dFsRUInfg5U=;
-        b=NngE9QzGzHroFYkdR8oQXpb/Jm7XRRynHeOSVXGZ2aZjz7R0FaDGBwjKtRbj4CzQAJ
-         sfbV8pPFc2BbWBfOrPjpZ0kPKm9dGnNKBrDkKyGIpaIAo/NS3kwNgDOtHUFDE2IKOB3G
-         86BHR+003hzxDSZXVAwOnVYwG5Xnw5YW8yc8lhObE8n83SfApjbNqrNURCO1dGN/fDkk
-         je1+LeGEPFkdax0sJLdPfQ5WdZmIUv0iFCXY7lqe0w3jjL8P5YD9hWSZDyGvU17abMD8
-         W71MNrh6tIouV9Cb1zAsDCdz6FyfExhLqw8UoNV6A5ETE4AEEYRH2xoohQ+xZMYjFMtX
-         DBvA==
-X-Gm-Message-State: AOJu0YwwNMYTevdsZkJtfQ1egSQF/L0OOu47k2mdXa0huvIAW+leQ9oc
-        NpD4Ru7ZDtDN19HtFx2x6Dv05DJ2GsSWmpmvqc5w6WqALHdkmRE=
-X-Google-Smtp-Source: AGHT+IFTnhbuLsa7HW4mayM2HTmiYsvnEsUdcCH5Mi5B8iYsixM3RcIszlAoEliogzwGqcAZjSox2yp/35Qmu3ajF9E5apyHSA+0
+        Thu, 7 Dec 2023 23:16:11 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743421718;
+        Thu,  7 Dec 2023 20:16:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702008977; x=1733544977;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SxevhwPvl1dlX54v2YDQvnciLdpmAuA4/R+k34yhueQ=;
+  b=UW/QgOZTwTX4Bu5Rp8NgE/VBmc1fS7HYj0POBM/RFFFK85zrW1B5WNrW
+   RZB5nOczK9//6r8wOznLz0BkFuWrx6ylIDUxziljSS8NqiE+VcFarXJ2n
+   7eOseytMsQ1xDJ5+56LYMbiYkk70ofvOrtq4wG/ypw5a+ReWrCAZL+28J
+   8+vFBGQyE3QztTy6s1rBJm8ccCWgujyDqufYamIjRWf/wTN0rr+aXV3SW
+   24C1rbqlaMlet6axpRXAh55bXwtun+LpGbx5t0WVLegiUeWVsWBskUvRf
+   ME0C/oD63obijaOG5xMzeyF+5rduBC7LC/d6wGDsHYm2Uh80KZ+CoeIGA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="374519751"
+X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
+   d="scan'208";a="374519751"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 20:16:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
+   d="scan'208";a="19953059"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 07 Dec 2023 20:16:15 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBSHc-000DEh-0s;
+        Fri, 08 Dec 2023 04:16:12 +0000
+Date:   Fri, 8 Dec 2023 12:15:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Elad Nachman <enachman@marvell.com>, gregory.clement@bootlin.com,
+        andi.shyti@kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        enachman@marvell.com, cyuval@marvell.com
+Subject: Re: [PATCH v2 1/1] i2c: busses: i2c-mv64xxx: fix arb-loss i2c lock
+Message-ID: <202312081143.38GWJJ2J-lkp@intel.com>
+References: <20231207165027.2628302-2-enachman@marvell.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:4581:b0:6d9:d4d1:1610 with SMTP id
- az1-20020a056830458100b006d9d4d11610mr1708781otb.2.1702008793251; Thu, 07 Dec
- 2023 20:13:13 -0800 (PST)
-Date:   Thu, 07 Dec 2023 20:13:13 -0800
-In-Reply-To: <000000000000bfba3a060bf4ffcf@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000086c592060bf7cd42@google.com>
-Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert
-From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207165027.2628302-2-enachman@marvell.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Hi Elad,
 
-***
+kernel test robot noticed the following build warnings:
 
-Subject: [arm-msm?] [net?] memory leak in radix_tree_insert
-Author: lizhi.xu@windriver.com
+[auto build test WARNING on wsa/i2c/for-next]
+[also build test WARNING on linus/master v6.7-rc4 next-20231207]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 33cc938e65a9
+url:    https://github.com/intel-lab-lkp/linux/commits/Elad-Nachman/i2c-busses-i2c-mv64xxx-fix-arb-loss-i2c-lock/20231208-005406
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-next
+patch link:    https://lore.kernel.org/r/20231207165027.2628302-2-enachman%40marvell.com
+patch subject: [PATCH v2 1/1] i2c: busses: i2c-mv64xxx: fix arb-loss i2c lock
+config: i386-buildonly-randconfig-004-20231208 (https://download.01.org/0day-ci/archive/20231208/202312081143.38GWJJ2J-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231208/202312081143.38GWJJ2J-lkp@intel.com/reproduce)
 
-diff --git a/lib/radix-tree.c b/lib/radix-tree.c
-index 976b9bd02a1b..5c2f9d8f2c3e 100644
---- a/lib/radix-tree.c
-+++ b/lib/radix-tree.c
-@@ -714,8 +714,10 @@ int radix_tree_insert(struct radix_tree_root *root, unsigned long index,
- 		return error;
- 
- 	error = insert_entries(node, slot, item);
--	if (error < 0)
-+	if (error < 0) {
-+		__radix_tree_delete(root, node, slot);
- 		return error;
-+	}
- 
- 	if (node) {
- 		unsigned offset = get_slot_offset(node, slot);
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312081143.38GWJJ2J-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/i2c/busses/i2c-mv64xxx.c:440:9: warning: variable 'ret' is uninitialized when used here [-Wuninitialized]
+                           if (!ret) {
+                                ^~~
+   drivers/i2c/busses/i2c-mv64xxx.c:372:12: note: initialize the variable 'ret' to silence this warning
+           int i, ret;
+                     ^
+                      = 0
+   1 warning generated.
+
+
+vim +/ret +440 drivers/i2c/busses/i2c-mv64xxx.c
+
+   367	
+   368	static void
+   369	mv64xxx_i2c_do_action(struct mv64xxx_i2c_data *drv_data)
+   370	{
+   371		struct pinctrl *pc;
+   372		int i, ret;
+   373	
+   374		switch(drv_data->action) {
+   375		case MV64XXX_I2C_ACTION_SEND_RESTART:
+   376			/* We should only get here if we have further messages */
+   377			BUG_ON(drv_data->num_msgs == 0);
+   378	
+   379			drv_data->msgs++;
+   380			drv_data->num_msgs--;
+   381			mv64xxx_i2c_send_start(drv_data);
+   382	
+   383			if (drv_data->errata_delay)
+   384				udelay(5);
+   385	
+   386			/*
+   387			 * We're never at the start of the message here, and by this
+   388			 * time it's already too late to do any protocol mangling.
+   389			 * Thankfully, do not advertise support for that feature.
+   390			 */
+   391			drv_data->send_stop = drv_data->num_msgs == 1;
+   392			break;
+   393	
+   394		case MV64XXX_I2C_ACTION_CONTINUE:
+   395			writel(drv_data->cntl_bits,
+   396				drv_data->reg_base + drv_data->reg_offsets.control);
+   397			break;
+   398	
+   399		case MV64XXX_I2C_ACTION_SEND_ADDR_1:
+   400			writel(drv_data->addr1,
+   401				drv_data->reg_base + drv_data->reg_offsets.data);
+   402			writel(drv_data->cntl_bits,
+   403				drv_data->reg_base + drv_data->reg_offsets.control);
+   404			break;
+   405	
+   406		case MV64XXX_I2C_ACTION_SEND_ADDR_2:
+   407			writel(drv_data->addr2,
+   408				drv_data->reg_base + drv_data->reg_offsets.data);
+   409			writel(drv_data->cntl_bits,
+   410				drv_data->reg_base + drv_data->reg_offsets.control);
+   411			break;
+   412	
+   413		case MV64XXX_I2C_ACTION_SEND_DATA:
+   414			writel(drv_data->msg->buf[drv_data->byte_posn++],
+   415				drv_data->reg_base + drv_data->reg_offsets.data);
+   416			writel(drv_data->cntl_bits,
+   417				drv_data->reg_base + drv_data->reg_offsets.control);
+   418			break;
+   419	
+   420		case MV64XXX_I2C_ACTION_RCV_DATA:
+   421			drv_data->msg->buf[drv_data->byte_posn++] =
+   422				readl(drv_data->reg_base + drv_data->reg_offsets.data);
+   423			writel(drv_data->cntl_bits,
+   424				drv_data->reg_base + drv_data->reg_offsets.control);
+   425			break;
+   426	
+   427		case MV64XXX_I2C_ACTION_UNLOCK_BUS:
+   428			if (!drv_data->soft_reset)
+   429				break;
+   430	
+   431			pc = devm_pinctrl_get(drv_data->adapter.dev.parent);
+   432			if (IS_ERR(pc)) {
+   433				dev_err(&drv_data->adapter.dev,
+   434					"failed to get pinctrl for bus unlock!\n");
+   435				break;
+   436			}
+   437	
+   438			/* Change i2c MPPs state to act as GPIOs: */
+   439			if (pinctrl_select_state(pc, drv_data->i2c_gpio_state) >= 0) {
+ > 440				if (!ret) {
+   441					/*
+   442					 * Toggle i2c scl (serial clock) 10 times.
+   443					 * 10 clocks are enough to transfer a full
+   444					 * byte plus extra as seen from tests with
+   445					 * Ubiquity SFP module causing the issue.
+   446					 * This allows the slave that occupies
+   447					 * the bus to transmit its remaining data,
+   448					 * so it can release the i2c bus:
+   449					 */
+   450					for (i = 0; i < 10; i++) {
+   451						gpio_set_value(drv_data->scl_gpio, 1);
+   452						udelay(100);
+   453						gpio_set_value(drv_data->scl_gpio, 0);
+   454					};
+   455				}
+   456	
+   457				/* restore i2c pin state to MPPs: */
+   458				pinctrl_select_state(pc, drv_data->i2c_mpp_state);
+   459			}
+   460	
+   461			/*
+   462			 * Trigger controller soft reset
+   463			 * This register is write only, with none of the bits defined.
+   464			 * So any value will do.
+   465			 * 0x1 just seems more intuitive than 0x0 ...
+   466			 */
+   467			writel(0x1, drv_data->reg_base + drv_data->reg_offsets.soft_reset);
+   468			/* wait for i2c controller to complete reset: */
+   469			udelay(100);
+   470			/*
+   471			 * need to proceed to the data stop condition generation clause.
+   472			 * This is needed after clock toggling to put the i2c slave
+   473			 * in the correct state.
+   474			 */
+   475			fallthrough;
+   476	
+   477		case MV64XXX_I2C_ACTION_RCV_DATA_STOP:
+   478			drv_data->msg->buf[drv_data->byte_posn++] =
+   479				readl(drv_data->reg_base + drv_data->reg_offsets.data);
+   480			if (!drv_data->atomic)
+   481				drv_data->cntl_bits &= ~MV64XXX_I2C_REG_CONTROL_INTEN;
+   482			writel(drv_data->cntl_bits | MV64XXX_I2C_REG_CONTROL_STOP,
+   483				drv_data->reg_base + drv_data->reg_offsets.control);
+   484			drv_data->block = 0;
+   485			if (drv_data->errata_delay)
+   486				udelay(5);
+   487	
+   488			wake_up(&drv_data->waitq);
+   489			break;
+   490	
+   491		case MV64XXX_I2C_ACTION_INVALID:
+   492		default:
+   493			dev_err(&drv_data->adapter.dev,
+   494				"mv64xxx_i2c_do_action: Invalid action: %d\n",
+   495				drv_data->action);
+   496			drv_data->rc = -EIO;
+   497			fallthrough;
+   498		case MV64XXX_I2C_ACTION_SEND_STOP:
+   499			if (!drv_data->atomic)
+   500				drv_data->cntl_bits &= ~MV64XXX_I2C_REG_CONTROL_INTEN;
+   501			writel(drv_data->cntl_bits | MV64XXX_I2C_REG_CONTROL_STOP,
+   502				drv_data->reg_base + drv_data->reg_offsets.control);
+   503			drv_data->block = 0;
+   504			wake_up(&drv_data->waitq);
+   505			break;
+   506		}
+   507	}
+   508	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
