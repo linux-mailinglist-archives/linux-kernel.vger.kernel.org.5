@@ -2,101 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F93A80ABD4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B9380ABD5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:15:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236061AbjLHSPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:15:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38064 "EHLO
+        id S1574516AbjLHSPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:15:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235994AbjLHSO5 (ORCPT
+        with ESMTP id S233799AbjLHSO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:14:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24E5212A
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:14:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702059266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KlSM/zpPbN5WwWA6OTGpQyhIkatTXb5IjuU41HMpNgA=;
-        b=doYbvatKTUIUX7u1FuHCBgmgJfYpi7ls6Y71WjnaMXqjNJkty4AKVQZmAKWeVJC/wqQAxy
-        SgilN53k//t4cpCsjhL+VwjOBXXAQXCL8nsr82u8xsUHEIRSFOVirJqmdEHVX08by9w5WW
-        Y8/R2mcnuRRkiw7GYVfCwmQndR0Btbk=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-606-EwF9rh8fMVKA3vqIYaYV_g-1; Fri, 08 Dec 2023 13:14:24 -0500
-X-MC-Unique: EwF9rh8fMVKA3vqIYaYV_g-1
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6d9dc6718f4so2564767a34.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:14:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702059263; x=1702664063;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KlSM/zpPbN5WwWA6OTGpQyhIkatTXb5IjuU41HMpNgA=;
-        b=Ut7nfNlADVqzowpRpH0qfTwm/fDhG+qgSSkhUwmM+9MykHh+Ke+3UmYnEGl7Af+lZb
-         T/81L3qh2AkqivXCfzBk+bWweUH1BWMudEaHtlc4ELfDskXKafBEV8SYDOWAUmMlbx+m
-         ZVsOTd4H7Adz4+xzXdVYqsEmcXWomRVumLbp+HtPTKqG8nmKDat79p7wGjN++GVmQQsu
-         Iah77Q4iPyTiAJz+/Xcez465iCIwwuJ24WYzy0W3sChICGzbMM0l+ouyrFTu+jFpgrRx
-         2T0hZ3CJkxzNhw1Ot2RlDfyqueb/wiDk1E7BqHI4flzjjeNkKCmoy8ipilHmJ//qIeZe
-         +0kw==
-X-Gm-Message-State: AOJu0YxH3d9L0ks+qcZdn4HiruiPdfXuLqAUB0qC7xm/73f2CZHE4lxG
-        xtHIW8lcWrUzOr4JaIKNTbHXfJg2edQQ/VqE3/x0pIi0CYK7xsIFPX5L2oQURGOwuXZHa+Q5LZ4
-        dqchi4HU1W++KXkUmnogoU5RFQlY2tx+sRA68ciKo
-X-Received: by 2002:a05:6870:44d3:b0:1fb:19b5:407d with SMTP id t19-20020a05687044d300b001fb19b5407dmr532225oai.61.1702059263608;
-        Fri, 08 Dec 2023 10:14:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG7AOACg3Lf1P9LtBQJnAsa//zi6y83Gtz28lS3HGdoEbMv7ZG8U5H36GSXA/O8Y6UBe2eDB9XKjKRDH8PflPw=
-X-Received: by 2002:a05:6870:44d3:b0:1fb:19b5:407d with SMTP id
- t19-20020a05687044d300b001fb19b5407dmr532218oai.61.1702059263360; Fri, 08 Dec
- 2023 10:14:23 -0800 (PST)
+        Fri, 8 Dec 2023 13:14:59 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213D22135;
+        Fri,  8 Dec 2023 10:14:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702059274; x=1733595274;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=S0DU6UXRnqkwipMQJ+g0tYyAb8FzOeAi6xMp0rCqaJY=;
+  b=LsQI8hDdxm2whJoiTrYdACZyxGZXrUmIa3435B4I6dpbwXcNL6G7RinX
+   S9ioTk+OhVETHChUVh9Jw4V8HcpuwNhHBuU7OHiNGBqkEgS6S0GHhYkyF
+   hg7bbHkNVLCWiNA6rH9MEvseWQPls3H0b+gsG9Tq/06Xx3CHa+c0Dg8yP
+   L2dRTC5++NWzXXisf4QMZFqiIoXWYsFxtB4LkvyliBY73Iha3v6J8l4wi
+   axTXF0Nd9vcK3e8zQj0ZU+pU1d7ZU390jl2uxsny/2PK63K6QQxijKb+0
+   Ph+PyumENXb3w91zGDo4Yt8HwsBJHMJIRLNzBmGVj6zYA0nuynByOdi5p
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="373945582"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="373945582"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 10:14:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1103644637"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="1103644637"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 10:14:32 -0800
+Received: from [10.212.91.62] (unknown [10.212.91.62])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id C7F4D580DA9;
+        Fri,  8 Dec 2023 10:14:29 -0800 (PST)
+Message-ID: <98863f44-4a35-4910-8db0-dbbf0474f6ae@linux.intel.com>
+Date:   Fri, 8 Dec 2023 13:14:28 -0500
 MIME-Version: 1.0
-References: <20231208020734.1705867-1-seanjc@google.com>
-In-Reply-To: <20231208020734.1705867-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Date:   Fri, 8 Dec 2023 19:14:11 +0100
-Message-ID: <CABgObfYbWUy5Bvpnr3a+atE5Pyk72jnY8ynkdw7_cJ8_7A1raQ@mail.gmail.com>
-Subject: Re: [GIT PULL] KVM: x86: Fixes for 6.7-rcN
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 1/5] perf mem: Add mem_events into the supported
+ perf_pmu
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     acme@kernel.org, irogers@google.com, peterz@infradead.org,
+        mingo@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
+        adrian.hunter@intel.com, john.g.garry@oracle.com, will@kernel.org,
+        james.clark@arm.com, mike.leach@linaro.org,
+        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20231207192338.400336-1-kan.liang@linux.intel.com>
+ <20231207192338.400336-2-kan.liang@linux.intel.com>
+ <20231208102922.GB769184@leoy-huanghe.lan>
+Content-Language: en-US
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20231208102922.GB769184@leoy-huanghe.lan>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 3:07=E2=80=AFAM Sean Christopherson <seanjc@google.c=
-om> wrote:
->
-> Please pull a handful of fixes for 6.7-rcN (hopefully N=3D5).  These have=
- all
-> been in -next for a week or so.
->
-> The following changes since commit ffc253263a1375a65fa6c9f62a893e9767fbeb=
-fa:
->
->   Linux 6.6 (2023-10-29 16:31:08 -1000)
->
-> are available in the Git repository at:
->
->   https://github.com/kvm-x86/linux.git tags/kvm-x86-fixes-6.7-rcN
->
-> for you to fetch changes up to ef8d89033c3f1f6a64757f066b2c17e76d1189f8:
->
->   KVM: x86: Remove 'return void' expression for 'void function' (2023-12-=
-01 08:14:27 -0800)
 
-Pulled, thanks.
 
-Paolo
+On 2023-12-08 5:29 a.m., Leo Yan wrote:
+> On Thu, Dec 07, 2023 at 11:23:34AM -0800, kan.liang@linux.intel.com wrote:
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> With the mem_events, perf doesn't need to read sysfs for each PMU to
+>> find the mem-events-supported PMU. The patch also makes it possible to
+>> clean up the related __weak functions later.
+>>
+>> The patch is only to add the mem_events into the perf_pmu for all ARCHs.
+>> It will be used in the later cleanup patches.
+>>
+>> Reviewed-by: Ian Rogers <irogers@google.com>
+>> Tested-by: Ravi Bangoria <ravi.bangoria@amd.com>
+>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+>> ---
+>>  tools/perf/arch/arm64/util/mem-events.c | 4 ++--
+>>  tools/perf/arch/arm64/util/mem-events.h | 7 +++++++
+>>  tools/perf/arch/arm64/util/pmu.c        | 6 ++++++
+>>  tools/perf/arch/s390/util/pmu.c         | 3 +++
+>>  tools/perf/arch/x86/util/mem-events.c   | 4 ++--
+>>  tools/perf/arch/x86/util/mem-events.h   | 9 +++++++++
+>>  tools/perf/arch/x86/util/pmu.c          | 7 +++++++
+>>  tools/perf/util/mem-events.c            | 2 +-
+>>  tools/perf/util/mem-events.h            | 1 +
+>>  tools/perf/util/pmu.c                   | 4 +++-
+>>  tools/perf/util/pmu.h                   | 7 +++++++
+>>  11 files changed, 48 insertions(+), 6 deletions(-)
+>>  create mode 100644 tools/perf/arch/arm64/util/mem-events.h
+>>  create mode 100644 tools/perf/arch/x86/util/mem-events.h
+>>
+>> diff --git a/tools/perf/arch/arm64/util/mem-events.c b/tools/perf/arch/arm64/util/mem-events.c
+>> index 3bcc5c7035c2..aaa4804922b4 100644
+>> --- a/tools/perf/arch/arm64/util/mem-events.c
+>> +++ b/tools/perf/arch/arm64/util/mem-events.c
+>> @@ -4,7 +4,7 @@
+>>  
+>>  #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
+>>  
+>> -static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
+>> +struct perf_mem_event perf_mem_events_arm[PERF_MEM_EVENTS__MAX] = {
+>>  	E("spe-load",	"arm_spe_0/ts_enable=1,pa_enable=1,load_filter=1,store_filter=0,min_latency=%u/",	"arm_spe_0"),
+>>  	E("spe-store",	"arm_spe_0/ts_enable=1,pa_enable=1,load_filter=0,store_filter=1/",			"arm_spe_0"),
+>>  	E("spe-ldst",	"arm_spe_0/ts_enable=1,pa_enable=1,load_filter=1,store_filter=1,min_latency=%u/",	"arm_spe_0"),
+>> @@ -17,7 +17,7 @@ struct perf_mem_event *perf_mem_events__ptr(int i)
+>>  	if (i >= PERF_MEM_EVENTS__MAX)
+>>  		return NULL;
+>>  
+>> -	return &perf_mem_events[i];
+>> +	return &perf_mem_events_arm[i];
+> 
+> I recognized that it's hard code to "arm_spe_0", which might break if
+> system registers different Arm SPE groups.  But this is not the issue
+> introduced by this patch, we might need to consider to fix it later.
+> 
+>>  }
+>>  
+>>  const char *perf_mem_events__name(int i, const char *pmu_name __maybe_unused)
+>> diff --git a/tools/perf/arch/arm64/util/mem-events.h b/tools/perf/arch/arm64/util/mem-events.h
+>> new file mode 100644
+>> index 000000000000..5fc50be4be38
+>> --- /dev/null
+>> +++ b/tools/perf/arch/arm64/util/mem-events.h
+>> @@ -0,0 +1,7 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef _ARM64_MEM_EVENTS_H
+>> +#define _ARM64_MEM_EVENTS_H
+>> +
+>> +extern struct perf_mem_event perf_mem_events_arm[PERF_MEM_EVENTS__MAX];
+>> +
+>> +#endif /* _ARM64_MEM_EVENTS_H */
+>> diff --git a/tools/perf/arch/arm64/util/pmu.c b/tools/perf/arch/arm64/util/pmu.c
+>> index 2a4eab2d160e..06ec9b838807 100644
+>> --- a/tools/perf/arch/arm64/util/pmu.c
+>> +++ b/tools/perf/arch/arm64/util/pmu.c
+>> @@ -8,6 +8,12 @@
+>>  #include <api/fs/fs.h>
+>>  #include <math.h>
+>>  
+>> +void perf_pmu__arch_init(struct perf_pmu *pmu)
+>> +{
+>> +	if (!strcmp(pmu->name, "arm_spe_0"))
+>> +		pmu->mem_events = perf_mem_events_arm;
+> 
+> This is not right and it should cause building failure on aarch64.
+> 
+> aarch64 reuses aarch32's file arch/arm/util/pmu.c, and this file has
+> already defined perf_pmu__arch_init(), you should add above change in
+> the file arch/arm/util/pmu.c.
+> 
 
+Sure.
+
+> Now I cannot access a machine for testing Arm SPE, but I will play
+> a bit for this patch set to ensure it can pass compilation.  After
+> that, I will seek Arm maintainers/reviewers help for the test.
+>
+
+Thanks. I guess I will hold the v3 until the test is done in case there
+are other issues found in ARM.
+
+Thanks,
+Kan
