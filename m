@@ -2,119 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B435A80A9F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D143980A9FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233693AbjLHRC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:02:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38786 "EHLO
+        id S233736AbjLHREj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:04:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233651AbjLHRC4 (ORCPT
+        with ESMTP id S233647AbjLHREg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:02:56 -0500
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACC41712;
-        Fri,  8 Dec 2023 09:03:01 -0800 (PST)
-Received: from [192.168.1.104] (178.176.72.145) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Fri, 8 Dec
- 2023 20:02:53 +0300
-Subject: Re: [PATCH v4 12/22] MIPS: Get rid of CONFIG_NO_EXCEPT_FILL
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        <linux-mips@vger.kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        =?UTF-8?Q?Th=c3=a9o_Lebrun?= <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20231208161249.1827174-1-gregory.clement@bootlin.com>
- <20231208161249.1827174-13-gregory.clement@bootlin.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <bdce5a4b-6173-e1cf-e2a6-be4f51330f61@omp.ru>
-Date:   Fri, 8 Dec 2023 20:02:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 8 Dec 2023 12:04:36 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0FA610F8;
+        Fri,  8 Dec 2023 09:04:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702055083; x=1733591083;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=XyNMLeHiHgz9zyJ+B2ye1DJ6XRbnBWA/BZKLjYEhKJo=;
+  b=LSusbQW+tl+7RaVL+Vl26m991wP7Owlz26sDc018r7aLWYq64JC8kcw0
+   6vNeysbRkoHL0CHOwX6EbeMtxqtPvcLFuWoPU1ELfBO1326K9RkwqMfTo
+   dt1ano/ig/vnuqygR/FKmjdYSLlz1erU3yK0XKiGAzqkZey1oS2LqNGbi
+   o97wcAJNNHiuoV/2oTPCDACvOSfpQNAFKE/1KBAzd6uOjfWzXzVuNi+tD
+   PQZViwJ7G3B2lpdZCPv4/hqluAcQxa6IM0gMDHQET92XLTtn7kAQX6sCX
+   A/0jXg0e1UkAzjBxHo3jZ+Af1vh7RURLlGf/Eo5hkS+hcbN3oMDhkelj2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1311102"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="1311102"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 09:04:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="838189001"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="838189001"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 08 Dec 2023 09:04:38 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 966E9154; Fri,  8 Dec 2023 19:04:37 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: [PATCH v2 0/2] spi: pxa2xx: Update documentation
+Date:   Fri,  8 Dec 2023 19:02:53 +0200
+Message-ID: <20231208170436.3309648-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 MIME-Version: 1.0
-In-Reply-To: <20231208161249.1827174-13-gregory.clement@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.72.145]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 12/08/2023 16:51:05
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 181987 [Dec 08 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 6 0.3.6 62f5a4619c57459c9a142aa1486ed27913162963
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.72.145 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.72.145 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info: omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.145
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/08/2023 16:55:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 12/8/2023 1:21:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/23 7:12 PM, Gregory CLEMENT wrote:
+A couple of documentation updates.
 
-> From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> 
-> NO_EXCEPT_FILL is used to indicate platform that does not
-> need to reserve ebase memory at start of kernel.
-> 
-> This is true for all R2+ platform as they allocate ebase
-> memory on fly, and also true for any platform that does
+Since v1:
+- spelled controller fully in patch 1
+- fixed inconsistent indentation in patch 2
 
-  On the fly?
+Andy Shevchenko (2):
+  spi: pxa2xx: Use inclusive language
+  spi: pxa2xx: Update DMA mapping and using logic in the documentation
 
-> not load kernel at start of physical memory.
->   Using
-> Get rid this Kconfig symbol by use macro to detect conditions
+ Documentation/spi/pxa2xx.rst | 59 +++++++++++++++++-------------------
+ 1 file changed, 28 insertions(+), 31 deletions(-)
 
-   Using.
+-- 
+2.43.0.rc1.1.gbec44491f096
 
-> above.
-> 
-> gc: use KSEG0 only for 32 bit configuration
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-[...]
-
-MBR, Sergey
