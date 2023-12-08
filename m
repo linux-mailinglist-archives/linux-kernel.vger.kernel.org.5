@@ -2,96 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E74B809CA4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 07:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF08809CAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 07:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbjLHG6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 01:58:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51906 "EHLO
+        id S233194AbjLHG7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 01:59:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233070AbjLHG6D (ORCPT
+        with ESMTP id S233199AbjLHG7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 01:58:03 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226BC1724
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 22:58:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0810C433C7;
-        Fri,  8 Dec 2023 06:58:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702018689;
-        bh=GMos9O4HmmM+U55/J8+WlvlVh/uZHHlzuooomDAHT8c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=poAC46PKgZhBiAFlrbze1CMXAMTKpwovQsFdJgOEkVmN7GQu2TDRfmUPf2AQwHWlH
-         /ltyjzWd2/4XtT6kOALILrTKGzZDC1lfoxJsseDAKV1Kpd+wIFGr0A/kqzizofxPNH
-         OF/O9+bD8mzuE9+tbQ5cgYrWesJYMKUdHiqesRvRssMTJaSkwkuaDb1Xtv3OEHTguz
-         XlI2+YnDRUIAJ7hxsJqWtO6XzwItfBxmpl9x1qG65JaJcY3GOxr9Gu+5MEB8UzAKk/
-         og1GQzvJy+IJm9LNkS68ooB6lwUJtl8WkbFO67PyeK6Ly9OhgssdWURyDZ35lE0bka
-         LigbPHxmusB6g==
-Date:   Fri, 8 Dec 2023 07:58:04 +0100
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Daniel Golle <daniel@makrotopia.org>, Lee Jones <lee@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Jakub Kicinski <kuba@kernel.org>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Li Zetao <lizetao1@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] leds: trigger: netdev: extend speeds up to 10G
-Message-ID: <20231208075804.4f8559e6@dellmb>
-In-Reply-To: <cdcab57e-ef73-436d-8dac-f92219e4cbf9@lunn.ch>
-References: <99e7d3304c6bba7f4863a4a80764a869855f2085.1701143925.git.daniel@makrotopia.org>
-        <20231207172923.62ce530e@dellmb>
-        <cdcab57e-ef73-436d-8dac-f92219e4cbf9@lunn.ch>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Fri, 8 Dec 2023 01:59:13 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7B41727
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 22:59:15 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1d045097b4cso13569895ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 22:59:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702018755; x=1702623555; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CQ/+btG3R4BylCT3sRnAP96/2um/WTuuUn1kNLXJGP8=;
+        b=u3E7tP5sJooWyyGLKqgrfdmhGSU1qzqu17kBjFp70pFSXTTE/ZVJLGjaynCx0i0piU
+         0ywuDpc86uuPFsxfeE98f2s9UGLHQkghauq/rUzn5UTTpNZi2D13w/wBIxU8b+EW0sQB
+         bR6LWm02o9Jz55dKBegLjhttLtMU6kajytterlPVAtaj6br/SekiCE55oXwEBO3GEkUs
+         vSzaOlF1IIM8m0HeT3y5bHdf5t1h+LnTz8SP1qi/EFmW4LTGwd1/X7wekLomJN39mfGX
+         kzATlYfMJ5gUyp8skuLqxBg4IrUv/FYsreE6EfPQH1Kp0lpB2USKrRvj5scWqmrt4v4z
+         veyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702018755; x=1702623555;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CQ/+btG3R4BylCT3sRnAP96/2um/WTuuUn1kNLXJGP8=;
+        b=UbC+NW2gEIUuEZHAo6gJJ1bTq6MyIWcflqI2PsC9BkFDdd7H9UKvbjCNAmERVj/kdl
+         h7iBr3hkiAkBIQX18u/ZomazB6074hA8IGUZCquLZUZIg8vxHlzfQX+lEPY4QYAuP6OA
+         uCaRkBlad6jcTtcV8woYlPW81O84KSET7rTB2aSpnPHII59na25F1yr5fau0p46deIs2
+         WlZ8VQQW8u+XehKUaJA+8GfFf5txWvT2gGV8+6/RDwQf6JbF3htHPl1oaKvKIDck7nuw
+         xBixM1e9dhYCeBluaHzhbz0qq4hCJ3I8stQ9hx/kHVpm8ySHcO0OiRjBmt26wcPTnwMy
+         uOrQ==
+X-Gm-Message-State: AOJu0YzuCX/6NBf8n6FgGhtq4yYOVqIUUTfN4qyECjMzFObEyv/uUS3R
+        zDER4wF7myHnCDaowJZs3AnX
+X-Google-Smtp-Source: AGHT+IEWVNS4FBRgNsLlZoUKRQekH/RYMZkGGwR1xlrSIV8+OcGCofWlOOzi7raJq0QNnZm1H9O5xw==
+X-Received: by 2002:a17:902:ecca:b0:1d0:7b65:9f8a with SMTP id a10-20020a170902ecca00b001d07b659f8amr3282715plh.51.1702018754908;
+        Thu, 07 Dec 2023 22:59:14 -0800 (PST)
+Received: from localhost.localdomain ([117.216.123.142])
+        by smtp.gmail.com with ESMTPSA id n8-20020a170902e54800b001b03f208323sm934263plf.64.2023.12.07.22.59.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 22:59:14 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     martin.petersen@oracle.com, jejb@linux.ibm.com
+Cc:     andersson@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
+        ahalaney@redhat.com, quic_nitirawa@quicinc.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2 00/17] scsi: ufs: qcom: Code cleanups
+Date:   Fri,  8 Dec 2023 12:28:45 +0530
+Message-Id: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Dec 2023 18:11:29 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
+Hello,
 
-> On Thu, Dec 07, 2023 at 05:29:23PM +0100, Marek Beh=C3=BAn wrote:
-> > On Tue, 28 Nov 2023 04:00:10 +0000
-> > Daniel Golle <daniel@makrotopia.org> wrote:
-> >  =20
-> > > Add 2.5G, 5G and 10G as available speeds to the netdev LED trigger.
-> > >=20
-> > > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> > > Reviewed-by: Andrew Lunn <andrew@lunn.ch> =20
-> >=20
-> > So what will happen when there are more speeds? Will we create a
-> > separate file for each speed?
-> >=20
-> > Will we have a separate sysfs file for 10, 100, 1000, 2500, 5000,
-> > 10000, 20000, 25000, 40000, 50000, 56000, 100000, 200000, 400000,
-> > 800000 ?
-> >=20
-> > These are all speeds from include/uapi/linux/ethtool.h.
-> >=20
-> > Maybe we should have reused ethtool link mode bits, or something... =20
->=20
-> That gets pretty ugly. The bits are not in any logical order, since
-> they just get appended onto the end as needed.
->=20
-> > Also, the files should only be present if the requested speed is
-> > supported by the net device. So if 2500 mbps is not supported, there
-> > should no be link_2500. =20
->=20
-> Yes, this would be nice. We have the information in the phy_setting
-> settings[] table in phy-core.c.
+This series has code some cleanups to the Qcom UFS driver. No functional
+change. In this version, I've removed code supporting legacy controllers
+ver < 2.0, as the respective platforms were never supported in upstream.
 
-What if the netdev does not have a PHY? The MAC also has speed
-information. Maybe create a function
-  bool dev_supports_speed(netdev, speed)
-?
+Tested on: RB5 development board based on Qcom SM8250 SoC.
 
-Marek
+- Mani
+
+Changes in v2:
+
+* Collected review tags
+* Fixed the comments from Andrew
+* Added a few more patches, most notably one removing the code for old
+  controllers (ver < v2.0)
+
+Manivannan Sadhasivam (17):
+  scsi: ufs: qcom: Use clk_bulk APIs for managing lane clocks
+  scsi: ufs: qcom: Fix the return value of ufs_qcom_ice_program_key()
+  scsi: ufs: qcom: Fix the return value when
+    platform_get_resource_byname() fails
+  scsi: ufs: qcom: Remove superfluous variable assignments
+  scsi: ufs: qcom: Remove the warning message when core_reset is not
+    available
+  scsi: ufs: qcom: Export ufshcd_{enable/disable}_irq helpers and make
+    use of them
+  scsi: ufs: qcom: Fail ufs_qcom_power_up_sequence() when core_reset
+    fails
+  scsi: ufs: qcom: Check the return value of
+    ufs_qcom_power_up_sequence()
+  scsi: ufs: qcom: Remove redundant error print for devm_kzalloc()
+    failure
+  scsi: ufs: qcom: Use dev_err_probe() to simplify error handling of
+    devm_gpiod_get_optional()
+  scsi: ufs: qcom: Remove unused ufs_qcom_hosts struct array
+  scsi: ufs: qcom: Sort includes alphabetically
+  scsi: ufs: qcom: Initialize cycles_in_1us variable in
+    ufs_qcom_set_core_clk_ctrl()
+  scsi: ufs: qcom: Simplify ufs_qcom_{assert/deassert}_reset
+  scsi: ufs: qcom: Remove support for host controllers older than v2.0
+  scsi: ufs: qcom: Use ufshcd_rmwl() where applicable
+  scsi: ufs: qcom: Remove unused definitions
+
+ drivers/ufs/core/ufshcd.c   |   6 +-
+ drivers/ufs/host/ufs-qcom.c | 377 +++++-------------------------------
+ drivers/ufs/host/ufs-qcom.h |  52 +----
+ include/ufs/ufshcd.h        |   2 +
+ 4 files changed, 66 insertions(+), 371 deletions(-)
+
+-- 
+2.25.1
+
