@@ -2,160 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D2E809C54
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 07:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BACD809C64
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 07:33:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbjLHGZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 01:25:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38052 "EHLO
+        id S233168AbjLHGcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 01:32:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLHGZR (ORCPT
+        with ESMTP id S229531AbjLHGcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 01:25:17 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2411723;
-        Thu,  7 Dec 2023 22:25:24 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7b70db00e64so15180039f.2;
-        Thu, 07 Dec 2023 22:25:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702016723; x=1702621523; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zFpM3a3kO+H6eKxWi2Fxy+Ey6betIA4rnEu4oUHt5AI=;
-        b=F+nUt65aNaTGMqw0755syQrKfVb7ik07xoj9ZBf56NiSd9xw/igbD1RO/HSvTO0Uvp
-         wkN+eyANJtBgJ7euFABTMS/EpMC+HG4KOgf7QQzeEdm6YrYCzWdQ/hRZDY4wMs9odOSj
-         KyaGIwumkoV3m5PfeHkL7+nCqXyXPIr5HG8pJu2sVy8H0WyNPcWy9nIlBmQfWNFJP3Jc
-         wqXCpC7TF5jPGlbn2u4RNuFMamyqfzxVTt/eQ1N4H0rSCrSZN6giFQm8raCb3MbNH02J
-         +HiQcBILS6rBqyeAAB2SWmSTorQioED4WOs5qcAjBcjggSnO0pIl+m5rzfouMi0M0k+7
-         F7Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702016723; x=1702621523;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zFpM3a3kO+H6eKxWi2Fxy+Ey6betIA4rnEu4oUHt5AI=;
-        b=UmiNUPG2toGDYSQaaczlg1hgJGnsVU0zn8gIipsyK8iRgD8DOObmrNnpAodtlIjZIu
-         jzjRBypiMmd8q3FmslIB1/6aqUQvj2lH9q0TjkxQ6IzODHtLyoSvrMxPSys/JvRAUhAu
-         6NMl6DGYnVbHVDRCx4ezrH9WdHuvY5jMHyXCTqWkh95ELuGaeqvohHznm8WNimV7B6b5
-         Id+2mbBeUObCcNY8elz/YxbWWxoTzjXxJQqyp578aDqIz4sqKHiTtpeaLTThLNYjPPlC
-         lwAxKDkELYDqothQGjoONRvQb2SRBoWHqR0rF2B5uO0gmDxtyAUeIPqmuA6k5ahpTD8P
-         uCrw==
-X-Gm-Message-State: AOJu0YyhJ0fe6F6yJvMwEHVSXFHdh2bHr7DBAgqH35bYm7M1o5L2RF8v
-        9y9i/PsDvhTAXNQMfaBZ+RM=
-X-Google-Smtp-Source: AGHT+IHD/PmHnKSx9OZ0b73k8RkKfdGrpVKH95h+DLSuZ8wr3y94tZA8ushXUOt0kbv5NYsMvhtXPA==
-X-Received: by 2002:a6b:6a14:0:b0:7b4:28f8:d8 with SMTP id x20-20020a6b6a14000000b007b428f800d8mr4136516iog.33.1702016723587;
-        Thu, 07 Dec 2023 22:25:23 -0800 (PST)
-Received: from celestia.nettie.lan ([2001:470:42c4:101:de4c:e3ab:ccaa:1887])
-        by smtp.gmail.com with ESMTPSA id h25-20020a02cd39000000b0042acf934cbasm301894jaq.72.2023.12.07.22.25.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 22:25:23 -0800 (PST)
-From:   Sam Edwards <cfsworks@gmail.com>
-X-Google-Original-From: Sam Edwards <CFSworks@gmail.com>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
-Cc:     linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        =?UTF-8?q?Daniel=20Kukie=C5=82a?= <daniel@kukiela.pl>,
-        Sven Rademakers <sven.rademakers@gmail.com>,
-        Joshua Riek <jjriek@verizon.net>,
-        Sam Edwards <CFSworks@gmail.com>
-Subject: [PATCH v2] arm64: dts: rockchip: Add PCIe pinctrls to Turing RK1
-Date:   Thu,  7 Dec 2023 23:25:10 -0700
-Message-ID: <20231208062510.893392-1-CFSworks@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 8 Dec 2023 01:32:48 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B08C6;
+        Thu,  7 Dec 2023 22:32:54 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B85KFXV011564;
+        Fri, 8 Dec 2023 06:32:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=iCkKyaxiYdxzfg/WwZHBxHNJPERVT37Zd6iR0xmfKus=;
+ b=dGUwH2oHTjHJoccjkkQT0XK+DUPBQ0Z2jhP9UW8rKYqEFjFe5BmVeWVns6ymQ0PkV3GH
+ xbOfQnxyH+tatJvzYIDcUwl0GW4WT/12EqN84dJNc4O3C4CjhPZ63gFXW37I/jGBiC+C
+ QOWDBeYak+oZcVZK84My9R1xXqGcqMXdHw/r65S7SalXWTfcggOhlVDpGSyek65NSXtr
+ GJdh8VAqGBw+cwfw3ii5VHqMXv7owgLbBEhoaqPD+97E0K9u6SF6ngfTzdhi+xD/x2k7
+ aAJHAi7EXdAAHFKhHDXF4AF78CSVv4AV67SlPgv7oN8AVzv70UjGbF6XcJ73McnhnIGB nQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uuu2089t6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Dec 2023 06:32:36 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B86WZjY000662
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 8 Dec 2023 06:32:35 GMT
+Received: from [10.216.0.250] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Dec
+ 2023 22:28:30 -0800
+Message-ID: <dd585977-50c4-40a4-a664-0ecb5a84807a@quicinc.com>
+Date:   Fri, 8 Dec 2023 11:58:26 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net: stmmac: qcom-ethqos: Add sysfs nodes for
+ qcom ethqos
+Content-Language: en-US
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>, <andersson@kernel.org>
+References: <20231204084854.31543-1-quic_snehshah@quicinc.com>
+ <3e4a1b9c-ed0f-466e-ba11-fc5b7ef308a1@lunn.ch>
+ <5d5f3955-fc30-428c-99f4-42f9b7580a84@quicinc.com>
+ <0c966845-2bbc-4196-806d-6a33e435bf7d@lunn.ch>
+From:   Sneh Shah <quic_snehshah@quicinc.com>
+In-Reply-To: <0c966845-2bbc-4196-806d-6a33e435bf7d@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: B99xYamoXjrVNY8d7lbmhBPPKShxHT9-
+X-Proofpoint-ORIG-GUID: B99xYamoXjrVNY8d7lbmhBPPKShxHT9-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-08_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=948
+ lowpriorityscore=0 bulkscore=0 suspectscore=0 adultscore=0 clxscore=1015
+ impostorscore=0 malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312080051
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RK3588 PCIe 3.0 controller seems to have unpredictable behavior when
-no CLKREQ/PERST/WAKE pins are configured in the pinmux. In particular, it
-will sometimes (varying between specific RK3588 chips, not over time) shut
-off the DBI block, and reads to this range will instead stall
-indefinitely.
 
-When this happens, it will prevent Linux from booting altogether. The
-PCIe driver will stall the CPU core once it attempts to read the version
-information from the DBI range.
 
-Fix this boot hang by adding the correct pinctrl configuration to the
-PCIe 3.0 device node, which is the proper thing to do anyway. While
-we're at it, also add the necessary configuration to the PCIe 2.0 node,
-which may or may not fix the equivalent problem over there -- but is the
-proper thing to do anyway. :)
+On 12/6/2023 7:22 PM, Andrew Lunn wrote:
+> On Wed, Dec 06, 2023 at 05:17:25PM +0530, Sneh Shah wrote:
+>>
+>>
+>> On 12/5/2023 8:38 PM, Andrew Lunn wrote:
+>>> On Mon, Dec 04, 2023 at 02:18:54PM +0530, Sneh Shah wrote:
+>>>> Add sysfs nodes to conifigure routing of specific vlan id to GVM queue.
+>>>> GVM queue is not exposed to PVM stmmac, so TC ops can't configure routing.
+>>>
+>>> Adding files in /sysfs has ~0 chance of being accepted.
+>>>
+>>> As requested, please explain what all these different hardware blocks
+>>> are, and what you are trying to achieve. We can then recommend the
+>>> correct interface.
+>>>
+>>>     Andrew
+>>>
+>>> ---
+>>> pw-bot: cr
+>>
+> 
+>> We have multiVM Architecture here. PVM will have stmmac running with
+>> 4 Rx Tx queues. stmmac in PVM is responsible to configure whole
+>> ethernet HW MAC/DMA/MTL ( including clocks, regulators and other
+>> core bsp elements).
+> 
+> Please remember that stmmac is mostly used in embedded systems. People
+> used to embedded systems generally don't know virtual machine
+> terminology. So please spell out what PBM, GVM, etc mean.
+> 
+>> In GVM we have thin Ethernet driver, which is responsible to
+>> configure and manage only 1 Rx/TX queue, i.e 5th Rx/Tx ethernet
+>> queue. GVM can't access any other resisters apart from this 5th
+>> queue specific MTL and DMA registers.
+>  
+>> We need to route vlan traffic of a specific Priority to GVM Queue
+>> (Ethernet queue 5) via programming a MAC register. The MAC register
+>> is not accessible in GVM and has to be programmed from PVM. stmmac
+>> already has TC OPS to program this routing via vlan
+>> priority. However, as PVM has only 4 queues enabled, TC tool will
+>> not take 5th queue as input. Hence, these nodes were added to
+>> conifure the MAC register to route specific vlan packets to 5th
+>> queue in GVM.
+>  
+>> Note: The queues mentioned above are HW MTL Queues and DMA
+>> Channels. The routing can be done in the HW itself based on vlan pcp
+>> before the packets reach to driver.
+> 
+> Is the normal way you would do this is like this:
+> 
+> tc qdisc add dev eth1 parent root handle 100 \
+> mqprio num_tc 4 \
+> map 0 1 2 3 0 0 0 0 0 0 0 0 0 0 0 0 \
+> queues 1@0 1@1 1@2 1@3 \
+> hw 1
+> 
+> But you are saying that you cannot extend this to 5 queues?
+> 
+>     Andrew
 
-Fixes: 2806a69f3fef6 ("arm64: dts: rockchip: Add Turing RK1 SoM support")
-Signed-off-by: Sam Edwards <CFSworks@gmail.com>
----
-
-Hi list,
-
-Compared to v1, v2 removes the `reset-gpios` properties as well -- this should
-give control of the PCIe resets exclusively to the PCIe cores. (And even if the
-`reset-gpios` props had no effect in v1, it'd be confusing to have them there.)
-
-Note that it is OK for the pcie2x1l1 node to refer to pcie30x1m1_pins. The
-pcie2x1l1 device is *in fact* a PCIe 3.0 controller, and the pcie30x1m1_pins
-pinmux setting is so-named to reflect this. The pcie2x1l1 node is so-named
-because Linux does not (currently) support routing it to a PCIe 3.0 PHY; so in
-practice it is effectively a PCIe 2.0 controller, for the time being.
-
-Cheers and thank you for your time,
-Sam
-
----
- .../boot/dts/rockchip/rk3588-turing-rk1.dtsi     | 16 ++--------------
- 1 file changed, 2 insertions(+), 14 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi b/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
-index 9570b34aca2e..875446fdb67e 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
-@@ -214,8 +214,7 @@ rgmii_phy: ethernet-phy@1 {
- &pcie2x1l1 {
- 	linux,pci-domain = <1>;
- 	pinctrl-names = "default";
--	pinctrl-0 = <&pcie2_reset>;
--	reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
-+	pinctrl-0 = <&pcie30x1m1_pins>;
- 	status = "okay";
- };
- 
-@@ -226,8 +225,7 @@ &pcie30phy {
- &pcie3x4 {
- 	linux,pci-domain = <0>;
- 	pinctrl-names = "default";
--	pinctrl-0 = <&pcie3_reset>;
--	reset-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
-+	pinctrl-0 = <&pcie30x4m1_pins>;
- 	vpcie3v3-supply = <&vcc3v3_pcie30>;
- 	status = "okay";
- };
-@@ -245,17 +243,7 @@ hym8563_int: hym8563-int {
- 		};
- 	};
- 
--	pcie2 {
--		pcie2_reset: pcie2-reset {
--			rockchip,pins = <4 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
--		};
--	};
--
- 	pcie3 {
--		pcie3_reset: pcie3-reset {
--			rockchip,pins = <4 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>;
--		};
--
- 		vcc3v3_pcie30_en: pcie3-reg {
- 			rockchip,pins = <2 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
--- 
-2.41.0
-
+Yes this can't extend to 5 queues. Because, stmmac in primary virtual machine will only have 4 netdev queues. So TC won't take input for 5th queue.
