@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2CA80AA9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F1480AA9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574497AbjLHRVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:21:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
+        id S236041AbjLHRWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:22:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbjLHRVb (ORCPT
+        with ESMTP id S236025AbjLHRVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:21:31 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88822102
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:21:13 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rBeWo-0000mC-64; Fri, 08 Dec 2023 18:20:42 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rBeWm-00ESz6-Dt; Fri, 08 Dec 2023 18:20:40 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rBeWm-00GWT3-4b; Fri, 08 Dec 2023 18:20:40 +0100
-Date:   Fri, 8 Dec 2023 18:20:40 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Young <sean@mess.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 3/4] pwm: bcm2835: allow pwm driver to be used in
- atomic context
-Message-ID: <20231208172040.mgw7aicmwlw6yjyb@pengutronix.de>
-References: <cover.1701248996.git.sean@mess.org>
- <179dc1ce85702a8b64b43c0e0df656b0c5e3ce30.1701248996.git.sean@mess.org>
- <ZXNC3JYy7CTfYsyC@orome.fritz.box>
- <ZXNL5upeUPc4gC1R@gofer.mess.org>
+        Fri, 8 Dec 2023 12:21:42 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB33268A
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:21:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EEEAC433C8;
+        Fri,  8 Dec 2023 17:21:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702056088;
+        bh=ryi1+JoVfvgu/u0KzMXd0k5DlGLPr5+GS23H098zLjs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=asAvpaBXzdOpyoA0TtI3pkRNSJhbYdZyq+M5kiBfp3doZzKntMBxjRpQZL/i/E1pW
+         X9KMj34VwfBlGJe5jJv/TcIY1Rsf1XvdBeVWDQOrTHKuujFDz3MhcAY3sVco58dHET
+         Ac3nVenKZwcCxdoONX+h7Ap4l8xSIbByhRuDSXyBBaHuTdd781U39IpaUa4nQl+hJ2
+         aTVhjLoSzphqmmvoY7inlhIOWstPPskRHGUnUMjF+/KT/55bqKHJo0OxKxu2HnlZ4s
+         jbNXijq5InVNIvpg7bDRGWD/okT2k8pYX5NvvJJEHGbwV2wQmgI9zGECJMnwTni8IR
+         bfsBNvXrybyrQ==
+Date:   Fri, 8 Dec 2023 17:21:22 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-riscv@lists.infradead.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH RESEND v1 0/7] MPFS clock fixes required for correct CAN
+ clock modeling
+Message-ID: <20231208-overlay-idiom-620c83d2775c@spud>
+References: <20231208-reenter-ajar-b6223e5134b3@spud>
+ <20231208-atonable-cable-24ce1ceec083-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ct5bcsf4uq5e5wn5"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qTXgDU+xTXR37z/4"
 Content-Disposition: inline
-In-Reply-To: <ZXNL5upeUPc4gC1R@gofer.mess.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20231208-atonable-cable-24ce1ceec083-mkl@pengutronix.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -67,103 +68,38 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ct5bcsf4uq5e5wn5
-Content-Type: text/plain; charset=iso-8859-1
+--qTXgDU+xTXR37z/4
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 08, 2023 at 05:01:26PM +0000, Sean Young wrote:
-> On Fri, Dec 08, 2023 at 05:22:52PM +0100, Thierry Reding wrote:
-> > On Wed, Nov 29, 2023 at 09:13:36AM +0000, Sean Young wrote:
-> > > clk_get_rate() may do a mutex lock. Fetch the clock rate once, and pr=
-event
-> > > rate changes using clk_rate_exclusive_get().
-> > >=20
-> > > Signed-off-by: Sean Young <sean@mess.org>
-> > > ---
-> > >  drivers/pwm/pwm-bcm2835.c | 31 +++++++++++++++++++++----------
-> > >  1 file changed, 21 insertions(+), 10 deletions(-)
+On Fri, Dec 08, 2023 at 06:17:54PM +0100, Marc Kleine-Budde wrote:
+> On 08.12.2023 17:12:22, Conor Dooley wrote:
+> > From: Conor Dooley <conor.dooley@microchip.com>
 > >=20
-> > s/pwm/PWM/ in the subject. Although, I guess you could just drop the
-> > "PWM" altogether because the subject prefix implies that this is for
-> > PWM.
+> > Resending cos I accidentally only sent the cover letter a few minutes
+> > prior to this series, due to screwing up a dry run of sending.
+> > :clown_face:
+> >=20
+> > While reviewing a CAN clock driver internally for MPFS [1]
 >=20
-> $ git log --no-merges --oneline drivers/pwm/ | sed -r 's/^\w* ([^:]+): .*=
-/\1/' | sort | uniq -c
->    1197 pwm
->       1 PWM
->   ...
+> > 1 - Hopefully that'll show up on the lists soon, once we are happy with
+> >   it ourselves.
 >=20
-> The vast majority of the commits use pwm: as a prefix, only one uses PWM:=
-=2E=20
-> In fact if you look across the tree almost everywhere lower case is used
-> for the prefix.
+> A CAN clock driver or a complete CAN driver?
 
-Thierry doesn't want you to change the subject prefix, but only the
-second "pwm" to make it read:
+Heh, should have proof read it again in the time afforded to me by the
+accident release of the dry run.. It's the latter, sorry.
 
-	pwm: bcm2835: allow PWM driver to be used in atomic context
-
-While I understand Thierry here, I'm fine with a lowercase pwm here,
-too. In my book a PWM in all uppercase is the type of hardware and pwm
-in all lowercase is the framework's name. If you use "PWM driver" or
-"pwm driver" then doesn't matter much.
-
-=09
->=20
-> I'm just trying to follow convention.
->=20
-> Having said that, I think the prefix is totally redundant, it is clear fr=
-om
-> the commit files what they are affecting. I am not sure what it really ad=
-ds.
->=20
-> > Also, please capitalize after the subject prefix.
->=20
-> $ git log --no-merges --oneline drivers/pwm/ | grep -E '^\w* ([^:]+): [A-=
-Z]' | wc -l
-> 217
-> $ git log --no-merges --oneline drivers/pwm/ | grep -E '^\w* ([^:]+): [a-=
-z]' | wc -l
-> 1069
-
-Your matching things like:
-
-	pwm: pwm-tiehrpwm: Add support for configuring polarity of PWM
-
-with the second command. These are perfectly fine as pwm-tiehrpwm is the
-driver name and so shouldn't be capitalized. With a bit more care here,
-we get:
-
-	$ git log --no-merges --oneline drivers/pwm/ | grep -E '^.+: [a-z][^:]*$' =
-| wc -l
-	114
-	$ git log --no-merges --oneline drivers/pwm/ | grep -E '^.+: [A-Z][^:]*$' =
-| wc -l
-	1167
-
-And the newest of the 114 with a small letter is from 2013.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ct5bcsf4uq5e5wn5
+--qTXgDU+xTXR37z/4
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVzUGcACgkQj4D7WH0S
-/k6tQQf/bona8Fvzxu0QxMsufyqPimaBLCRvs+l5rduG1l4p1h3vBMvs+rbPrQ1o
-PLKdltnHbhtp6Apn0v5IFZmRPk7wvVDya9TsGLXK/YXe8WT9/k0knB/00jVxvrh4
-mYycPSvlTZNICuEMrsy+Wmeh3GXP8jLWFK/qwZzgPUa7RkUSl5AKiiPHSjpB/eaG
-NEiXFDDIxn12GuEqO8CxUoOCGit1LeTNCNWwA7ZJeu15KpUfLh9O6KfiEiNV2+50
-gpdzR68mRKh9g36Egru+mSQKm42ybuZBDGUnRoUsH/ZXli+LYzHBIStuAzhg8031
-LbR+ApCpUJvPQApRmYToKH2UmPWUxQ==
-=s4Zz
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXNQkgAKCRB4tDGHoIJi
+0iZWAPwNWUowlloTZivBoyo83wk1jjTAlFSA9wYjLGxZhT8cXAD7Bt8TdOacG3dL
+eZWhIXHj1CMUfYoRUaqAPO5bzj51xAk=
+=/P9s
 -----END PGP SIGNATURE-----
 
---ct5bcsf4uq5e5wn5--
+--qTXgDU+xTXR37z/4--
