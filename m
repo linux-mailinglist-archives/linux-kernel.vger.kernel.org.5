@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9934D80ABF1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:20:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3289F80ABF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574644AbjLHSUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:20:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54948 "EHLO
+        id S1574650AbjLHSUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:20:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574643AbjLHST5 (ORCPT
+        with ESMTP id S1574646AbjLHSUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:19:57 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C49F10EB
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:20:01 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54ce02c1ba2so599982a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:20:01 -0800 (PST)
+        Fri, 8 Dec 2023 13:20:01 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828B310EB
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:20:07 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5451faa3aa7so545885a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:20:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702059599; x=1702664399; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702059606; x=1702664406; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NL738sRXL2selidGyxVJuSE1dSJZ2wGMlE7qfmgnwJM=;
-        b=bgeb2RTnHWBM9BYvVKIFTPWtYVYaLWsypskloEWIQNzkbWkGmTqIzKlORUGoik3ZoG
-         c4/iPsncGwjJHG3uMyLZUvQZrz/7A7ruq2oQOVeDnASkq7rDEWAtVgLx9E4e64ECeklT
-         UOiVanPaIncd8V5HADLQeZLGxVZcjLCS0Fhu1KEWJ2DNqy2/m3LyWroHeiaNsqK9qCke
-         ihUYARIozR6lBNTrR5CpcBsaVaoi4axqIVpPwdasTDFSwNvW4yKOGqPy9xyoNFB1NBSQ
-         pGseH/FQE1x9rqClIenjuaASeEaS6tbTpVjoK4ivRNblqZP2W9aRBbQqnynplZbEInOX
-         4s9g==
+        bh=HoMxh9Soo4aEQSXS16TywESmqL58qNmWTbQ/HnkwzzM=;
+        b=Fugx/t7Ooo+1Et2bbw1VQpIqu7Up4MglEoMOwhDzbDUB3gyPNqV9U192uSB+/uNvQe
+         xgUNBblZ0Kcybh9lL1FZPIgByeOKe/m7vjrLSb75xCnyhd9LOryi9839aDnZe9MtorlZ
+         VsZUtGFftDxexcD1I2o3ORagEy8CvNm4eqj7dW8RkLQkBVePCFxluraIpx8dDIT1e17W
+         CQi2i2z0FVWAmoAZv5cYyDXQxnyZzltH+GwvGGT8Im+oJe8PzLmDQA8gWxQYT9awaqm4
+         As4+zZw2dM7yT3fDWA+iokrneFvJ8buOYv1aERnWciMWFM4uk9LMuVQy+U/oQP2W9R/t
+         aQvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702059599; x=1702664399;
+        d=1e100.net; s=20230601; t=1702059606; x=1702664406;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NL738sRXL2selidGyxVJuSE1dSJZ2wGMlE7qfmgnwJM=;
-        b=JUJ9ZPwtHJ9V9I4DGbvxD+C0F5o7ErYvY9AcTxwXsAfmRLlHuV28O4yh1kWXX5eVXw
-         7u/30gX7HkCAy2TEVERu0HMJxPOSEeFNiPW24l57/Eqt7H8FljWBVar9bjYt0GTBoB6+
-         xWdELo2BlMW3R+2KWpWw3I0OTyTTsfBbuy83ga9aP6L+Fa+qmqdmzOMxRmnfmRu3YVaM
-         2/dVnQmnGpdQsP7l6Q6LOowHPNCo/cKgDCfWw884UItPq/X3fSAAL9+7lbbg/kBlIb/b
-         0eoEEqzqZVrCRrl+12UWTkF3/QNo+IUSduR607jAdTolpM7cqmdk0+BM2WK6wqjRXUG8
-         obrw==
-X-Gm-Message-State: AOJu0YxjYBD6UP/1ZyHYW8WCeQkXMydqEVPXxOCaAcwCsxWeS0Mb//YW
-        CbYJ9y1KcrU6V3bVcqsDv1Vk0eY8/Cg=
-X-Google-Smtp-Source: AGHT+IFdR2UufJ2zugN7gYUxeKAflRUNxo0/XvxIbFy4M2zayiHsvQ4A6Qw6kROU5OKa1Cs9rUdUJg==
-X-Received: by 2002:a17:907:c207:b0:a18:96e3:ae2a with SMTP id ti7-20020a170907c20700b00a1896e3ae2amr446873ejc.5.1702059599455;
-        Fri, 08 Dec 2023 10:19:59 -0800 (PST)
+        bh=HoMxh9Soo4aEQSXS16TywESmqL58qNmWTbQ/HnkwzzM=;
+        b=XiH06RKfIVI/edNq/ZkWdWVW7hRRZuc3fP5uLGtSXLvZTHy3wRlPTh6tsVGjqM2Z5r
+         AOnoKabhZmJHI6eGsUEhorXK7nH8TkepqEcHUdNj5LbyAKb+1K5L0/fG5bm4Dik7ehSS
+         I4tzUj9Jx8zvaY1t7Z2LXDPbsBybja9Civ61DFAJlwsCKE6ZTHZU7hZcV8nXJCpZ+Syd
+         xzuI91pVNXvtxgRM5b8KDMxK5Ci2zals3bEVLHuxmgJAqxo3SUHzY9DZezGRB/w3b66E
+         oWffd5VHJZm0IkE2H71lRudZ546ZBb3brAephGVA9JLt8/4SsBJwTRtpXEsV2GdWppHJ
+         amUQ==
+X-Gm-Message-State: AOJu0YwJXhd94ceJtju3wr3bncnjMKkRP3bNOUaY9KO5FEUX+0Zjo4An
+        n1WT9esXB1X4V1uMvi1eDaA=
+X-Google-Smtp-Source: AGHT+IFMn9cxeKoi5L9gzVrLQAnO6MVj8mKG3A52AQuQQ6B5/EPfEH5iwi0gBIiQYToZFEEiafDLpA==
+X-Received: by 2002:a50:cc8e:0:b0:54c:fed1:81cc with SMTP id q14-20020a50cc8e000000b0054cfed181ccmr666882edi.1.1702059605919;
+        Fri, 08 Dec 2023 10:20:05 -0800 (PST)
 Received: from matrix-ESPRIMO-P710 (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id vo16-20020a170907a81000b00a1d32dfacb9sm1276308ejc.38.2023.12.08.10.19.58
+        by smtp.gmail.com with ESMTPSA id di5-20020a056402318500b0054cea9f91e9sm988808edb.20.2023.12.08.10.20.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 10:19:59 -0800 (PST)
-Date:   Fri, 8 Dec 2023 19:19:57 +0100
+        Fri, 08 Dec 2023 10:20:05 -0800 (PST)
+Date:   Fri, 8 Dec 2023 19:20:04 +0100
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/5] staging: rtl8192e: Remove function dot11d_channel_map()
-Message-ID: <877c0efcf56977cbf0943b34beda4ff2ca514714.1701989555.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 5/5] staging: rtl8192e: Remove files dot11d.c and dot11d.h
+Message-ID: <ed7de82ade0fde1835bbd88aafba74aeb128beed.1701989555.git.philipp.g.hortmann@gmail.com>
 References: <cover.1701989555.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -70,52 +70,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove function dot11d_channel_map() as it is empty.
+Remove files dot11d.c and dot11d.h as they are empty.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/dot11d.c            | 6 ------
- drivers/staging/rtl8192e/dot11d.h            | 2 --
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c | 1 -
- 3 files changed, 9 deletions(-)
+ drivers/staging/rtl8192e/Makefile            |  1 -
+ drivers/staging/rtl8192e/dot11d.c            |  8 --------
+ drivers/staging/rtl8192e/dot11d.h            | 21 --------------------
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.h |  2 --
+ drivers/staging/rtl8192e/rtllib_rx.c         |  1 -
+ drivers/staging/rtl8192e/rtllib_softmac.c    |  1 -
+ drivers/staging/rtl8192e/rtllib_softmac_wx.c |  1 -
+ 7 files changed, 35 deletions(-)
+ delete mode 100644 drivers/staging/rtl8192e/dot11d.c
+ delete mode 100644 drivers/staging/rtl8192e/dot11d.h
 
+diff --git a/drivers/staging/rtl8192e/Makefile b/drivers/staging/rtl8192e/Makefile
+index 6af519938868..a1492215dab1 100644
+--- a/drivers/staging/rtl8192e/Makefile
++++ b/drivers/staging/rtl8192e/Makefile
+@@ -1,6 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+ rtllib-objs :=			\
+-	dot11d.o		\
+ 	rtllib_module.o		\
+ 	rtllib_rx.o		\
+ 	rtllib_tx.o		\
 diff --git a/drivers/staging/rtl8192e/dot11d.c b/drivers/staging/rtl8192e/dot11d.c
-index 8d89f962b3bf..ec71bae05c1f 100644
+deleted file mode 100644
+index ec71bae05c1f..000000000000
 --- a/drivers/staging/rtl8192e/dot11d.c
-+++ b/drivers/staging/rtl8192e/dot11d.c
-@@ -6,9 +6,3 @@
-  * wlanfae <wlanfae@realtek.com>
-  ******************************************************************************/
- #include "dot11d.h"
--
--void dot11d_channel_map(struct rtllib_device *ieee)
--{
--
--}
--EXPORT_SYMBOL(dot11d_channel_map);
++++ /dev/null
+@@ -1,8 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/******************************************************************************
+- * Copyright(c) 2008 - 2010 Realtek Corporation. All rights reserved.
+- *
+- * Contact Information:
+- * wlanfae <wlanfae@realtek.com>
+- ******************************************************************************/
+-#include "dot11d.h"
 diff --git a/drivers/staging/rtl8192e/dot11d.h b/drivers/staging/rtl8192e/dot11d.h
-index 98aa28d0cf72..eeefbfa96938 100644
+deleted file mode 100644
+index eeefbfa96938..000000000000
 --- a/drivers/staging/rtl8192e/dot11d.h
-+++ b/drivers/staging/rtl8192e/dot11d.h
-@@ -18,6 +18,4 @@
-  *		2 - valid (passive scan)
-  */
- 
--void dot11d_channel_map(struct rtllib_device *ieee);
++++ /dev/null
+@@ -1,21 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/******************************************************************************
+- * Copyright(c) 2008 - 2010 Realtek Corporation. All rights reserved.
+- *
+- * Contact Information:
+- * wlanfae <wlanfae@realtek.com>
+- ******************************************************************************/
+-#ifndef __INC_DOT11D_H
+-#define __INC_DOT11D_H
 -
- #endif
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-index 1f45b6b00d1b..72e89ccfb184 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-@@ -761,7 +761,6 @@ static short _rtl92e_get_channel_map(struct net_device *dev)
+-#include "rtllib.h"
+-
+-/**
+- * struct rt_dot11d_info
+- * @channel_map: holds channel values
+- *		0 - invalid,
+- *		1 - valid (active scan),
+- *		2 - valid (passive scan)
+- */
+-
+-#endif
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
+index 546c8a33dae8..1d6d31292f41 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
+@@ -34,8 +34,6 @@
  
- 	struct r8192_priv *priv = rtllib_priv(dev);
+ #include "../rtllib.h"
  
--	dot11d_channel_map(priv->rtllib);
- 	for (i = 1; i <= 11; i++)
- 		(priv->rtllib->active_channel_map)[i] = 1;
- 	(priv->rtllib->active_channel_map)[12] = 2;
+-#include "../dot11d.h"
+-
+ #include "r8192E_firmware.h"
+ #include "r8192E_hw.h"
+ 
+diff --git a/drivers/staging/rtl8192e/rtllib_rx.c b/drivers/staging/rtl8192e/rtllib_rx.c
+index d9517dbc5593..62d02576b441 100644
+--- a/drivers/staging/rtl8192e/rtllib_rx.c
++++ b/drivers/staging/rtl8192e/rtllib_rx.c
+@@ -34,7 +34,6 @@
+ #include <linux/ctype.h>
+ 
+ #include "rtllib.h"
+-#include "dot11d.h"
+ 
+ static void rtllib_rx_mgt(struct rtllib_device *ieee, struct sk_buff *skb,
+ 			  struct rtllib_rx_stats *stats);
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
+index 3c92eb401e8c..5c89744b2bbe 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+@@ -18,7 +18,6 @@
+ #include <linux/uaccess.h>
+ #include <linux/etherdevice.h>
+ #include <linux/ieee80211.h>
+-#include "dot11d.h"
+ 
+ static void rtllib_sta_wakeup(struct rtllib_device *ieee, short nl);
+ 
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac_wx.c b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+index b48c89d2e7bf..5d165d0b134d 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac_wx.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+@@ -14,7 +14,6 @@
+ #include <linux/etherdevice.h>
+ 
+ #include "rtllib.h"
+-#include "dot11d.h"
+ 
+ int rtllib_wx_set_freq(struct rtllib_device *ieee, struct iw_request_info *a,
+ 			     union iwreq_data *wrqu, char *b)
 -- 
 2.43.0
 
