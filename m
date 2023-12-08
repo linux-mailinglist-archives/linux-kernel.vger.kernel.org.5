@@ -2,98 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C12980AB9F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCA880AB9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574565AbjLHSHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:07:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42344 "EHLO
+        id S1574535AbjLHSHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:07:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235941AbjLHSHj (ORCPT
+        with ESMTP id S235962AbjLHSHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:07:39 -0500
-Received: from irl.hu (irl.hu [95.85.9.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472C51729;
-        Fri,  8 Dec 2023 10:07:45 -0800 (PST)
-Received: from fedori.lan (51b690cd.dsl.pool.telekom.hu [::ffff:81.182.144.205])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 00000000000719EC.0000000065735B6F.0011CB93; Fri, 08 Dec 2023 19:07:43 +0100
-From:   Gergo Koteles <soyer@irl.hu>
-To:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Gergo Koteles <soyer@irl.hu>, stable@vger.kernel.org
-Subject: [PATCH v2] ALSA: hda/tas2781: leave hda_component in usable state
-Date:   Fri,  8 Dec 2023 19:06:49 +0100
-Message-ID: <c3e903fedec7d84929664377307019e58dc22494.1702058704.git.soyer@irl.hu>
-X-Mailer: git-send-email 2.43.0
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 8 Dec 2023 13:07:09 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF11198D;
+        Fri,  8 Dec 2023 10:07:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702058836; x=1733594836;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=k3i428SfmhgbbGxwTnZmXhIRi1dfQ6MQmf1eOjd45OQ=;
+  b=YdRQYyHII0f4qsc4Bq9gdrptLdduA0Jx2+ocksGQ6SB19zcGTdUs6edi
+   w8a7Js4TZuyXuBTMyPRN1HAG9o49CxVKEPEBRG+pcrpkJfvt4yYkWF3iR
+   Yak5YlixWAbeJ27Omclp5qOwTiNCfqHKir64NWHVGgOpTmefbWijDwbYf
+   ZERMO+eAWu5+EpByVWWMqr5ts5eele+UENASl1uniroejUY9DdFQYZ01Z
+   f7XMivQ37dbb7SBUS0Tdzr7yIi4aiU/XKpZLIXvTs7KnAW3zRHvvfFXFu
+   gRBJx8oc15BXBv7/EX8++aia1zkIfDhDCfILM3MCHUUHFPEcCDHD03Y94
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="425575369"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="425575369"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 10:07:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="801182284"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="801182284"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 10:07:12 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id 06CC811F995;
+        Fri,  8 Dec 2023 20:07:10 +0200 (EET)
+Date:   Fri, 8 Dec 2023 18:07:09 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] media: dt-bindings: ov8856: decouple lanes and link
+ frequency from driver
+Message-ID: <ZXNbTUg3QrCwKBpp@kekkonen.localdomain>
+References: <20231207142356.100453-1-krzysztof.kozlowski@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207142356.100453-1-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unloading then loading the module causes a NULL ponter dereference.
+Hi Krzysztof,
 
-The hda_unbind zeroes the hda_component, later the hda_bind tries
-to dereference the codec field.
+Thanks for the update.
 
-The hda_component is only initialized once by tas2781_generic_fixup.
+On Thu, Dec 07, 2023 at 03:23:56PM +0100, Krzysztof Kozlowski wrote:
+> The data lanes and link frequency were set to match exiting Linux driver
+> limitations, however bindings should be independent of chosen Linux
+> driver support.
+> 
+> Decouple these properties from the driver to match what is actually
+> supported by the hardware.
+> 
+> This also fixes DTS example:
+> 
+>   ov8856.example.dtb: camera@10: port:endpoint:link-frequencies:0: [360000000] is too short
+> 
+> Fixes: 066a94e28a23 ("media: dt-bindings: media: Use graph and video-interfaces schemas")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Changes in v2:
+> 1. Rework approach: decouple bindings from driver instead of fixing
+>    DTS example (Sakari)
+> ---
+>  .../devicetree/bindings/media/i2c/ov8856.yaml | 21 +++++++++++--------
+>  1 file changed, 12 insertions(+), 9 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> index 57f5e48fd8e0..71102a71cf81 100644
+> --- a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> +++ b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> @@ -67,19 +67,22 @@ properties:
+>  
+>          properties:
+>            data-lanes:
+> -            description: |-
+> -              The driver only supports four-lane operation.
+> -            items:
+> -              - const: 1
+> -              - const: 2
+> -              - const: 3
+> -              - const: 4
+> +            oneOf:
+> +              - items:
+> +                  - const: 1
+> +              - items:
+> +                  - const: 1
+> +                  - const: 2
+> +              - items:
+> +                  - const: 1
+> +                  - const: 2
+> +                  - const: 3
+> +                  - const: 4
+>  
+>            link-frequencies:
+>              description: Frequencies listed are driver, not h/w limitations.
 
-Set only previously modified fields to NULL.
+This should be dropped, too.
 
-BUG: kernel NULL pointer dereference, address: 0000000000000322
-Call Trace:
- <TASK>
- ? __die+0x23/0x70
- ? page_fault_oops+0x171/0x4e0
- ? exc_page_fault+0x7f/0x180
- ? asm_exc_page_fault+0x26/0x30
- ? tas2781_hda_bind+0x59/0x140 [snd_hda_scodec_tas2781_i2c]
- component_bind_all+0xf3/0x240
- try_to_bring_up_aggregate_device+0x1c3/0x270
- __component_add+0xbc/0x1a0
- tas2781_hda_i2c_probe+0x289/0x3a0 [snd_hda_scodec_tas2781_i2c]
- i2c_device_probe+0x136/0x2e0
+> -            maxItems: 2
+>              items:
+> -              enum: [ 360000000, 180000000 ]
+> +              enum: [ 1440000000, 720000000, 360000000, 180000000 ]
 
-Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
-CC: stable@vger.kernel.org
-Signed-off-by: Gergo Koteles <soyer@irl.hu>
----
- sound/pci/hda/tas2781_hda_i2c.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+These frequencies are listed in the datasheet but they're just an
+example---the sensor hardware isn't limited to these, the resulting
+frequency on the CSI-2 bus is simply up to the external clock frequency and
+PLL configuration. I'd remove the values here altogether.
 
-diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index fb802802939e..7dfa8aeb5fcc 100644
---- a/sound/pci/hda/tas2781_hda_i2c.c
-+++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -612,9 +612,13 @@ static void tas2781_hda_unbind(struct device *dev,
- {
- 	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
- 	struct hda_component *comps = master_data;
-+	comps = &comps[tas_priv->index];
- 
--	if (comps[tas_priv->index].dev == dev)
--		memset(&comps[tas_priv->index], 0, sizeof(*comps));
-+	if (comps->dev == dev) {
-+		comps->dev = NULL;
-+		strscpy(comps->name, "", sizeof(comps->name));
-+		comps->playback_hook = NULL;
-+	}
- 
- 	tasdevice_config_info_remove(tas_priv);
- 	tasdevice_dsp_remove(tas_priv);
+>  
+>          required:
+>            - link-frequencies
 
-base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
 -- 
-2.43.0
+Regards,
 
+Sakari Ailus
