@@ -2,302 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF18809848
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 02:00:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF2580984D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 02:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444202AbjLHBAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 20:00:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
+        id S235574AbjLHBCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 20:02:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbjLHBAQ (ORCPT
+        with ESMTP id S230510AbjLHBCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 20:00:16 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C45810C2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 17:00:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701997222; x=1733533222;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=spT6NcJQTddgjFH3rL4fyuzJuLJLtgiZv+Xh2IufNMM=;
-  b=hVGEdwN2nyFO8dCxMW6Q3ZGgJGmSjIJiET/VRiquwzcQQ3/Ld3xvW2Ax
-   LWwi1jH7HjZ58Q2X0EdtAVAtADsbroxkJj4tcbQvW6lStUh69dosE6SqJ
-   hKmshQQWLQ2rrlgZhN0kxZCs21kBQmRx08yWCTCrQqhao+b81lrGyTX/o
-   0opO5o5dpzi31AYonSeAIk3gbDVEbXybYvH3iDLY4zJYLCZ3Ffd/BknaR
-   rks/oO3Jb6EuDwf4df4TE5FULobsba0ouP+Wc+T9bMXaPG3nCa5Iws8QG
-   AybLjdKhKnSXm1QT4bb7p/gc8InB4cG9DT5LtM6Qx42KE/AIMTQfy9MLn
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="394076775"
-X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
-   d="scan'208";a="394076775"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 17:00:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1019161965"
-X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
-   d="scan'208";a="1019161965"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Dec 2023 17:00:09 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Dec 2023 17:00:08 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 7 Dec 2023 17:00:08 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 7 Dec 2023 17:00:08 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RCPBN5F/3VWUVtuIKFsreIPPYaReB4YUZlhptC1x+ZPe5QmDcCyMWakzhLPmj9hwWTOEpiEJM2If4NHTuLWNUw5MpE2VtbTWz6E8vL/vx/ifLd6/uyZ9bdJGz3zLcmRLd1UMCeFw9D/rqLPcI/iOla31Kz3Iolf7J1xdipZ8pPXpAlMXjEs+F94WIj0a2d9XBknGpVnCFUyMUR4VYgN/CdMDweNnmGRrgZ3uAgCKUJClkDSTp5iKps7oKbtARXdFhyRVxB1lNMJLY8F3c0KzhKUdA4lrwcI+H1vhqqBJutuCiZhJ1nM+0ox61WbZwcB3V7gwFh1wC/ajF6gqPwdkiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iTICjuwJUONLvDyxx7K7H+T4fpER8U08HyZZOaRPT6k=;
- b=nns/rgfZU6JIkF81uB4E2DHL0YydcQdfifq6KatV2rRgHJHAl7SSIYfOOZxgL9QQbFs1OOhTRl2HuuR8KrpPQ6LWDtIk5V5mYonsNM2f41HYYu+wOcX/1GtG5G2DGRSnbsIfBZhR3HB+zzIsiSfW4yN4F1glBzwO9IvAOdLdqAd3u0OxYcNhNNPxMFQMrN2fbMvpuRGQN8WuqoJw09QYoxOAZ+VfvSb/nTPWljcWaQ15Nf+OCFuz4Y/iT5BiK0zjQ3I92vbp0qpjXWFXo9MINhg34iQ8avOcQ7ipKO1pd9EQqpCbJlG32/Mpr9P8Xh37gOFZctFXjFasJwPTNrC9uw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MW3PR11MB4620.namprd11.prod.outlook.com (2603:10b6:303:54::14)
- by MW3PR11MB4668.namprd11.prod.outlook.com (2603:10b6:303:54::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Fri, 8 Dec
- 2023 01:00:05 +0000
-Received: from MW3PR11MB4620.namprd11.prod.outlook.com
- ([fe80::9ec5:f5c2:d277:63eb]) by MW3PR11MB4620.namprd11.prod.outlook.com
- ([fe80::9ec5:f5c2:d277:63eb%5]) with mapi id 15.20.7068.027; Fri, 8 Dec 2023
- 01:00:05 +0000
-From:   "Almahallawy, Khaled" <khaled.almahallawy@intel.com>
-To:     "pazz@chromium.org" <pazz@chromium.org>,
-        "Ursulin, Tvrtko" <tvrtko.ursulin@intel.com>,
-        "Hajda, Andrzej" <andrzej.hajda@intel.com>
-CC:     "Das, Nirmoy" <nirmoy.das@intel.com>,
-        "ddavenport@chromium.org" <ddavenport@chromium.org>,
-        "seanpaul@chromium.org" <seanpaul@chromium.org>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "Auld, Matthew" <matthew.auld@intel.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Banik, Subrata" <subratabanik@google.com>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "mwojtas@chromium.org" <mwojtas@chromium.org>
-Subject: Re: [Intel-gfx] [PATCH] [v2] drm/i915/display: Check GGTT to
- determine phys_base
-Thread-Topic: [Intel-gfx] [PATCH] [v2] drm/i915/display: Check GGTT to
- determine phys_base
-Thread-Index: AQHaKHTXu7JlAZ14EUuGn948QxQhRbCektaA
-Date:   Fri, 8 Dec 2023 01:00:04 +0000
-Message-ID: <1d6b9ffa093404631ca8218f3b5b72057a7da6a6.camel@intel.com>
-References: <20231206184736.3769657-1-pazz@chromium.org>
-In-Reply-To: <20231206184736.3769657-1-pazz@chromium.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.36.5-0ubuntu1 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MW3PR11MB4620:EE_|MW3PR11MB4668:EE_
-x-ms-office365-filtering-correlation-id: 7bde9081-28be-431f-b329-08dbf78903da
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0Bw9QszO8+50k4XdV65JVBcB9hktwT6Nc7d0CMHjBnwgcNNOJolBhnR+H6KC8we0A57AptfQ2mjvfb5RLoeeTlhYP9Kg+41zY2rcyxMLMTMAFJx57l8M/g8AaNY3LNH/XcHKpYq4/XU3aK6UagmS6gHxhTv6RS8fF3SXNVwQMpRla50vj/UcEJpSH+VfYetgMP5KihcRyJR8NevepQ41/c+N2Mdy6Utx6ugVuqB8PLF5eyY66jvC1Krzpidf3LJU2POrU+RdkEAvIqNyme7RgGkJaWsyD84BkfbaigCb//s55N3013tODbpdjF8Wv+cM4tsSYAtJ8E+skXNc+7wEwa7roUEZv61HHqtxt6F+pw3UfeLJDf7TJwVYNkaswkPLYV4mI1TZySwfqMU0uqBwMMZj5Ucy7+YCBjCyThG0HxwN1G4NXtXuyr6iln1ZXbsgjjbabXL2pdL38fKD8AOGpxYB2Jn/ogfritOX6+TXFj00fKdEiTTIrtYRQo3M7Vm8lZF8gKDdohSRmeKCLERuh4cFQy1/ODUYsZv5S2DIOdsmsTD4SMY6hr5n0UaKxsK/7m38nXF6XZp6sNUmp0mEAn35p1vgSgNnoPhfDlsKSG5pq5NUtbcEfl/J80UIxZCv
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4620.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(346002)(366004)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(71200400001)(6486002)(478600001)(86362001)(41300700001)(6512007)(6506007)(36756003)(316002)(54906003)(8676002)(66446008)(66946007)(66476007)(64756008)(2616005)(6636002)(26005)(66556008)(76116006)(110136005)(82960400001)(83380400001)(122000001)(38100700002)(38070700009)(8936002)(4326008)(2906002)(5660300002)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-15?Q?KIZQaR16Pjuo5qCNXSJFfAV1FylAK4WAnulLtbTk8Oh8tVNNlppUs5vLz?=
- =?iso-8859-15?Q?kN2Ertmy8uKYeeDL7jAtoqPMGfZ+hl6ewfy7Bb3y97N4ziG2N/5UxyHaT?=
- =?iso-8859-15?Q?+x0ca+mQaUXKKVnqraWnXpSsRoKh8xqdQ8rVkLN2cYYW1yaipGuDH3NgD?=
- =?iso-8859-15?Q?fdY4WOZfrxiMxuBeh4v6O3iy39M0bFb7pkcNeWYkPn1Mj3AL8BV/8pBsi?=
- =?iso-8859-15?Q?Hc2ENvEOsOe4RzEiks7POfkZh8qHhinXfjmtD8cz10oSS1ER8S7jS0BaX?=
- =?iso-8859-15?Q?SrPCG9/7MfVXoKvjPwVOOW8IB0fIUBjOOAXbOJZSiu4wCAkdrdcfHf67t?=
- =?iso-8859-15?Q?Q/ici05/CYOtGUD3QZl/XEYYfkjH2/YUBDJp7qYe8Rb8MJrfLi52D79uG?=
- =?iso-8859-15?Q?8XTmuhRGj98YX0VulfOKPJXqIFom1POap0q671ZAPWP/Nv98ICnvEVixT?=
- =?iso-8859-15?Q?5qC+yOCXT1OU42BfkxNOCMBL5XknjzOaqNJKI5jFbSSMmomga4kJMVjME?=
- =?iso-8859-15?Q?qgJZCY4LZ9ZSyF7qCkbXolFd6g/4rxHWAeWsRQRzskCytyW3tZkp3k/6R?=
- =?iso-8859-15?Q?6iBjZcEhe8K+54uclUnKjmMlYvn4Oruo3pU22EWld3pOXjekuMVOd+BOq?=
- =?iso-8859-15?Q?or9ZrKSH+ety9wdAVnwDsXmGcrgkhHWmJTU8G/Glb6SEbiCMh9ivocll6?=
- =?iso-8859-15?Q?1CGmxXdoMo9kRJ4QrjAKL3iGA6x3S6GqBvsjZ5W6JtkIhUik18X0ktN7g?=
- =?iso-8859-15?Q?JFpIGNajRJJ0jTFd0jWBvkO3Cvnaf2Utn7r4kteEPG5diSDPhVnWhSfOo?=
- =?iso-8859-15?Q?V2mtoJV9Wd85PvewRRdZYcTa7758rE3xYXMrRuskehNkiJXl30BCQGhb6?=
- =?iso-8859-15?Q?+iDwOINc3BhuqBQ8XAV5vatxp3UmDUrFd2qgdQOKaFGi3qKd10H1kOBMS?=
- =?iso-8859-15?Q?dwEJpsjPiYwylKnbG+5vI7XhLSLLzEL/DauEspJ+hxw95jRTfxeG8NPY4?=
- =?iso-8859-15?Q?p0BRYgGfpfy6LlVr0yY+MezNECizPwiNOiHyWqJIQ13DPVO0h+07vDDLY?=
- =?iso-8859-15?Q?XnSuYADAkjPPkRwGh50OXlaCMFuevqI61ZPg2pVCVVgiG/Ho1hM68h+NT?=
- =?iso-8859-15?Q?Jb2T5v+S5RrwbXFDuACUwR1FIId1jhbN+1NWjn70os2TXVQKBMIyU5Z9p?=
- =?iso-8859-15?Q?7egikRFp1sqadY7EWnwCHyMeoGjBRRiTMiltP6lA7i+KR+5heSn6TDT7/?=
- =?iso-8859-15?Q?nXyy4QlacQAxKkC3vw35FgdEDkzELtIiZTGrSy4fXvI6yoJNGxunojYMY?=
- =?iso-8859-15?Q?4c+EOeKgwDEaAOMY3eCDOF44krxJKm46SprwmCWTaFiasVGFAq1jCgXg1?=
- =?iso-8859-15?Q?MHO4scOZIOuuALOxlKWjSHnCaq4ER56DFKkhvr3eswJamnU39O5EcLYL3?=
- =?iso-8859-15?Q?2wM63MEd+1OTSRm85NtGZKflNxt78gQLBARxC8OvEfskaAdlgrXvY+aUO?=
- =?iso-8859-15?Q?ESXbN9+m6JMAr3tbWc8KaR14Bi5SKhlllQ+PP8khCOKUbpWWLvPQJmq6C?=
- =?iso-8859-15?Q?0yrv+QaytYT2s1GHJxMCafy5/EeXA3pMrcv72ixfiY5Xv8uYnh8G61jGW?=
- =?iso-8859-15?Q?+Ohpe3Oc/C4r26cMMjgsqygehEjvFZ+r2mYvcOr1sG3xWbz3Voin4h1Q0?=
- =?iso-8859-15?Q?fnkMxNCWf/RXe+FofbjUtBlqRruSSh/N0QHQh78S+QdePfU=3D?=
-Content-Type: text/plain; charset="iso-8859-15"
-Content-ID: <4E099362E089D24ABE337BCC7B201A1D@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Thu, 7 Dec 2023 20:02:20 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC46D59
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 17:02:26 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d0c94397c0so12237685ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 17:02:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701997345; x=1702602145; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IHjpYG+aTG+cGWCfpcLI6dqd/B/j+rYpLgN/+rREz9Y=;
+        b=oGY1xCSVLMH2HUOCihrvU5FyDOcRXlFz3TUaXWvtJcvfHO6lXyj25xy1IEBaebLJiD
+         6QvGXxWccw74IrPM1jrgOKIS3clt1v2rBGpTfgsYOLhJRNg1P6VGQ92I4O8HHqirXEke
+         /XXDfPJQBIpiQOMYsDgP3pmRS6juBl+jqYWDHj90THCrMTF33ulb/wdph90g3YdgRZhs
+         gyaPAD/5FCa+8DIITIRIGxkXObKaZuxW9HsfXcozPSkp6ZwpP3j7okkBsc6HeIbE9eU9
+         ahHG6iytt7/CuBKbTWLqvnPWahO+q4UWoj9TOcgrIZh9x1w88F++IqCU75bpz3vPywm6
+         eiZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701997345; x=1702602145;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IHjpYG+aTG+cGWCfpcLI6dqd/B/j+rYpLgN/+rREz9Y=;
+        b=uUYOTXerG8ugvp5OoHgcZU1m2VedC9393qtXGMy/cY16G+gTNh4N1V0XgZAVomc8ld
+         AVwMeu0iS8OBCh8Lfino/JAxV/rnOBjzAybQRqTaWqJvsNladSxlf9WadMnLA2t7hCUd
+         UoEQk3cjRsDRDCNP1WfyXKLq20fdYdLYUX+kdrc21UnEAdOck9UaOb+Pe6OQpiMP8AUa
+         D1W1gtpoXXMNZJ6mpHH5OUNQnzbscZHjqYjsVimjtfOfNhkMqY9bOGtRlt0rBVRHfk7K
+         V9tpgWKMavaNlEPifM9FG9aml/tcH7RUsu5izV91JDBb8UCeB86MtEmYJYmdjkMFM4ER
+         E1ag==
+X-Gm-Message-State: AOJu0Yz6XMwm0sdxeKt2qP+cnsTcKjJsE+I4yRZAmHAwdD0bOBdjf5WD
+        6u6QnlGWSrZqPXnI5vWER1MsQw==
+X-Google-Smtp-Source: AGHT+IETnkjdJb69QIsZhyHN/XmPatwPLHf0ROdLScBWbQw+jQfCeWBk6Qo8WhgUG+EzAY3jUQSopQ==
+X-Received: by 2002:a17:903:32ca:b0:1d0:6ffd:ae05 with SMTP id i10-20020a17090332ca00b001d06ffdae05mr3258630plr.108.1701997345466;
+        Thu, 07 Dec 2023 17:02:25 -0800 (PST)
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id g24-20020a170902869800b001bc930d4517sm436637plo.42.2023.12.07.17.02.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 17:02:24 -0800 (PST)
+Date:   Thu, 7 Dec 2023 17:02:16 -0800
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Maxim Kochetkov <fido_max@inbox.ru>
+Cc:     linux-riscv@lists.infradead.org, bigunclemax@gmail.com,
+        Amma Lee <lixiaoyun@binary-semi.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] riscv: optimize ELF relocation function in riscv
+Message-ID: <ZXJrGLwxtjf6cK42@ghost>
+References: <20230913130501.287250-1-fido_max@inbox.ru>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4620.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7bde9081-28be-431f-b329-08dbf78903da
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2023 01:00:04.9904
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jUrfDFQ/8o87ZS71AhrOmQ2gwwvfya5lposfIIv3X9xmYht3yRr974nbj6QF7h9KVyNrmuQWEiyk6We89jS/M45p2iP1CuTaVcMsXWnWmR4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4668
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230913130501.287250-1-fido_max@inbox.ru>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank You for the patch. We noticed a break in the customer board with
-the latest GOP + this patch.
-
-
-Thank You
-Khaled=09
-
-On Wed, 2023-12-06 at 18:46 +0000, Paz Zcharya wrote:
-> There was an assumption that for iGPU there should be a 1:1 mapping
-> of GGTT to physical address pointing to the framebuffer.
-> This assumption is not strictly true effective generation 8 or newer.
-> Fix that by checking GGTT to determine the phys address on gen8+.
->=20
-> The following algorithm for phys_base should be valid for all
-> platforms:
-> 1. Find pte
-> 2. if(IS_DGFX(i915) && pte & GEN12_GGTT_PTE_LM) mem =3D
-> i915->mm.regions[INTEL_REGION_LMEM_0] else mem =3D i915-
-> >mm.stolen_region
-> 3. phys_base =3D (pte & I915_GTT_PAGE_MASK) - mem->region.start;
->=20
-> - On older platforms, stolen_region points to system memory, starting
-> at 0
-> - on DG2, it uses lmem region which starts at 0 as well
-> - on MTL, stolen_region points to stolen-local which starts at
-> 0x800000
->=20
-> Changes from v1:
->   - Add an if statement for gen7-, where there is a 1:1 mapping
->=20
-> Signed-off-by: Paz Zcharya <pazz@chromium.org>
+On Wed, Sep 13, 2023 at 04:05:00PM +0300, Maxim Kochetkov wrote:
+> The patch can optimize the running times of insmod command by modify ELF
+> relocation function.
+> In the 5.10 and latest kernel, when install the riscv ELF drivers which
+> contains multiple symbol table items to be relocated, kernel takes a lot
+> of time to execute the relocation. For example, we install a 3+MB driver
+> need 180+s.
+> We focus on the riscv architecture handle R_RISCV_HI20 and R_RISCV_LO20
+> type items relocation function in the arch\riscv\kernel\module.c and
+> find that there are two-loops in the function. If we modify the begin
+> number in the second for-loops iteration, we could save significant time
+> for installation. We install the same 3+MB driver could just need 2s.
+> 
+> Signed-off-by: Amma Lee <lixiaoyun@binary-semi.com>
+> Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
 > ---
->=20
->  .../drm/i915/display/intel_plane_initial.c    | 64 +++++++++++----
-> ----
->  1 file changed, 39 insertions(+), 25 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/i915/display/intel_plane_initial.c
-> b/drivers/gpu/drm/i915/display/intel_plane_initial.c
-> index a55c09cbd0e4..7d9bb631b93b 100644
-> --- a/drivers/gpu/drm/i915/display/intel_plane_initial.c
-> +++ b/drivers/gpu/drm/i915/display/intel_plane_initial.c
-> @@ -59,44 +59,58 @@ initial_plane_vma(struct drm_i915_private *i915,
->  		return NULL;
-> =20
->  	base =3D round_down(plane_config->base, I915_GTT_MIN_ALIGNMENT);
-> -	if (IS_DGFX(i915)) {
+> Changes in v4:
+> - use 'while' loop instead of 'for' loop to avoid code duplicate
+> ---
+>  arch/riscv/kernel/module.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+> index 7c651d55fcbd..8c9b644ebfdb 100644
+> --- a/arch/riscv/kernel/module.c
+> +++ b/arch/riscv/kernel/module.c
+> @@ -346,6 +346,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+>  	Elf_Sym *sym;
+>  	u32 *location;
+>  	unsigned int i, type;
+> +	unsigned int j_idx = 0;
+>  	Elf_Addr v;
+>  	int res;
+>  
+> @@ -384,9 +385,10 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+>  		v = sym->st_value + rel[i].r_addend;
+>  
+>  		if (type == R_RISCV_PCREL_LO12_I || type == R_RISCV_PCREL_LO12_S) {
+> -			unsigned int j;
+> +			unsigned int j = j_idx;
+> +			bool found = false;
+>  
+> -			for (j = 0; j < sechdrs[relsec].sh_size / sizeof(*rel); j++) {
+> +			do {
+>  				unsigned long hi20_loc =
+>  					sechdrs[sechdrs[relsec].sh_info].sh_addr
+>  					+ rel[j].r_offset;
+> @@ -415,16 +417,26 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+>  					hi20 = (offset + 0x800) & 0xfffff000;
+>  					lo12 = offset - hi20;
+>  					v = lo12;
+> +					found = true;
+>  
+>  					break;
+>  				}
+> -			}
+> -			if (j == sechdrs[relsec].sh_size / sizeof(*rel)) {
 > +
-> +	if (GRAPHICS_VER(i915) < 8) {
-> +		/*
-> +		 * In gen7-, there is a 1:1 mapping
-> +		 * between GSM and physical address.
-> +		 */
-> +		phys_base =3D base;
-> +		mem =3D i915->mm.stolen_region;
-> +	} else {
-> +		/*
-> +		 * In gen8+, there is no 1:1 mapping between
-> +		 * GSM and physical address, so we need to
-> +		 * check GGTT to determine the physical address.
-> +		 */
->  		gen8_pte_t __iomem *gte =3D to_gt(i915)->ggtt->gsm;
->  		gen8_pte_t pte;
-> =20
->  		gte +=3D base / I915_GTT_PAGE_SIZE;
-> -
->  		pte =3D ioread64(gte);
-> -		if (!(pte & GEN12_GGTT_PTE_LM)) {
-> -			drm_err(&i915->drm,
-> -				"Initial plane programming missing
-> PTE_LM bit\n");
-> -			return NULL;
-> -		}
-> -
-> -		phys_base =3D pte & I915_GTT_PAGE_MASK;
-> -		mem =3D i915->mm.regions[INTEL_REGION_LMEM_0];
-> =20
-> -		/*
-> -		 * We don't currently expect this to ever be placed in
-> the
-> -		 * stolen portion.
-> -		 */
-> -		if (phys_base >=3D resource_size(&mem->region)) {
-> -			drm_err(&i915->drm,
-> -				"Initial plane programming using
-> invalid range, phys_base=3D%pa\n",
-> -				&phys_base);
-> -			return NULL;
-> +		if (IS_DGFX(i915)) {
-> +			if (!(pte & GEN12_GGTT_PTE_LM)) {
-> +				drm_err(&i915->drm,
-> +					"Initial plane programming
-> missing PTE_LM bit\n");
-> +				return NULL;
-> +			}
-> +			mem =3D i915->mm.regions[INTEL_REGION_LMEM_0];
-> +		} else {
-> +			mem =3D i915->mm.stolen_region;
+> +				j++;
+> +				if (j > sechdrs[relsec].sh_size / sizeof(*rel))
+> +					j = 0;
+Very interesting algorithm here. Assuming the hi relocation is after the
+previous one seems to be a good heuristic. However I think we can do
+better. In GNU ld, a hashmap of all of the hi relocations is stored and
+a list of all of the lo relocations. After all of the other relocations
+have been parsed, it iterates through all of the lo relocations and
+looks up the associated hi relocation in the hashmap.
+
+There is more memory overhead here but I suspect it will be faster. I
+had started to mock up a hashmap implementation to see if it was faster
+but decided I should mention it here first in case somebody had some
+additional insight. 
+
+- Charlie
+
+> +
+> +			} while (j_idx != j);
+> +
+> +			if (!found) {
+>  				pr_err(
+>  				  "%s: Can not find HI20 relocation information\n",
+>  				  me->name);
+>  				return -EINVAL;
+>  			}
+> +
+> +			/* Record the previous j-loop end index */
+> +			j_idx = j;
 >  		}
-> =20
-> -		drm_dbg(&i915->drm,
-> -			"Using phys_base=3D%pa, based on initial plane
-> programming\n",
-> -			&phys_base);
-> -	} else {
-> -		phys_base =3D base;
-> -		mem =3D i915->mm.stolen_region;
-> +		phys_base =3D (pte & I915_GTT_PAGE_MASK) - mem-
-> >region.start;
->  	}
-> =20
->  	if (!mem)
->  		return NULL;
-> =20
-> +	/*
-> +	 * We don't currently expect this to ever be placed in the
-> +	 * stolen portion.
-> +	 */
-> +	if (phys_base >=3D resource_size(&mem->region)) {
-> +		drm_err(&i915->drm,
-> +			"Initial plane programming using invalid range,
-> phys_base=3D%pa\n",
-> +			&phys_base);
-> +		return NULL;
-> +	}
-> +
-> +	drm_dbg(&i915->drm,
-> +		"Using phys_base=3D%pa, based on initial plane
-> programming\n",
-> +		&phys_base);
-> +
->  	size =3D round_up(plane_config->base + plane_config->size,
->  			mem->min_page_size);
->  	size -=3D base;
+>  
+>  		res = handler(me, location, v);
+> -- 
+> 2.40.1
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
