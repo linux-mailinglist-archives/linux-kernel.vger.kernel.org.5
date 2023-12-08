@@ -2,51 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0127180A36D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7F080A364
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573742AbjLHMhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 07:37:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36824 "EHLO
+        id S233470AbjLHMgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 07:36:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573740AbjLHMhQ (ORCPT
+        with ESMTP id S233400AbjLHMgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 07:37:16 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D661E0
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:37:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4FE1C433C7;
-        Fri,  8 Dec 2023 12:37:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702039042;
-        bh=gqQmFdVmCQcNd8eKCMxCHIDAeVXnQ1wKVZgIjb/cu7E=;
-        h=From:To:Cc:Subject:Date:From;
-        b=rGRLCeNzGWF3GpJdrEeFpcxOAAO3hSBToCupmGi0kWqtNUDaK5uGOOum3/+R1nCIG
-         M21XLvFvzPQV0ZKl7Jptqcb67rDybpXqqQSgESiZjyKnhkEskWo8suGEWt6v3p6E5x
-         n/X7wP1pd+75peLzsXgV0mPX/Qo1uyIl2c0yZYA30n4Rt57/0Qptu4Xf7jYFDLpp30
-         jT4cKNTdm5DP7S8ZneFs98UKXRVhnDCaowJZax3Uueqg57fL1MqwkWQoGp7rm4HKBs
-         tKeWMP1ybW4TtBCJq7fcEG9t7g7zl/MfIXByv4Wva7GlYSk38LyyI0EbtdErq3rBml
-         EIClylnvCZCjw==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan+linaro@kernel.org>)
-        id 1rBa7P-0007o9-1V;
-        Fri, 08 Dec 2023 13:38:12 +0100
-From:   Johan Hovold <johan+linaro@kernel.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH] usb: typec: ucsi: fix gpio-based orientation detection
-Date:   Fri,  8 Dec 2023 13:36:02 +0100
-Message-ID: <20231208123603.29957-1-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.41.0
+        Fri, 8 Dec 2023 07:36:44 -0500
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9394C198D
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:36:48 -0800 (PST)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5d3efc071e2so18326117b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 04:36:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702039008; x=1702643808; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kl14rNbix2kUzr/44N3YRDcJydiYUcssbsUy/Lxl2Z8=;
+        b=XOfpj0vxlepbk0G6TFcUUXcXEywmHU2GDIJnhha/hYzdL2OueK2wQbOBCdBOiR2h9H
+         DI6XJFGO133UJHu7mHxGqBMSntnC2Thto84DmkEHkuqLvYA8fUcFJQGS70TIH343u2q0
+         tDJOeRYU9IDZPY6ob7fgpTjdIqpqyIc9Envf4uE0DEjhpZ/DsKch/VTSD7awleJgpSOt
+         OG5TCyfQsez4hObwE1/3yBO9yUyRGBW2hld7jGnkttq6fSxV+rA9RR5tY0Kfguz6ulOZ
+         KZ6hnM1tkx3FeAKugSneE2eScgnTnNEJDsoBrl0FUoXUt0V9ZO/lqoL0/fPIwskxm3SI
+         aYPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702039008; x=1702643808;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Kl14rNbix2kUzr/44N3YRDcJydiYUcssbsUy/Lxl2Z8=;
+        b=dd2elzkVnY20NHYrO+cs/HdzFzv5jTsROr68FSU/rgXAneYanE/lQKs5ZcNxfyukt2
+         0cpxTkz88feeOfgwkmIzpH5e0sKxJcLRJMoRpZasFmDC9uz1uO9ezjnusfiH4sDcZRSX
+         wjrszCfvb9ZH3PY8ZXZB2khF2jxzBOd9ibbnwQTGBtspp7VRekmNFPodnS4zbWfJ86li
+         t2L+NPVvU3l4GXPKWxpw0zbctop/3q9aNkxKGgStApxWryQbwXSsIMC0CI0ld9T4mP7R
+         3nULbnjwcqTw8WYINqjPJncP+4yn2+ZMsckQQeLzbBc1Cx78f1Kg1F5b974pG0KvwR+D
+         ySvg==
+X-Gm-Message-State: AOJu0YzU6/rP46TkppWcB3xbr9hgHTdUoztz3s3zMUfNBPA4LXP1EIMv
+        c6/KJzHotziZXCcUpdavicKbk/zRxuLWWx3ssF3IRQ==
+X-Google-Smtp-Source: AGHT+IHy1Q9+E3f10R2PU3el+hjqwtKsVqfZDIhUgZWe8w1MbNoJfMJQ2xQDqxpqyqTpj4DJAI8bmmBSs7ObsVLSxWY=
+X-Received: by 2002:a05:690c:fc3:b0:5d3:9f2d:658c with SMTP id
+ dg3-20020a05690c0fc300b005d39f2d658cmr4498370ywb.24.1702039007771; Fri, 08
+ Dec 2023 04:36:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+References: <20231208105155.36097-1-krzysztof.kozlowski@linaro.org>
+ <20231208105155.36097-3-krzysztof.kozlowski@linaro.org> <CAA8EJpqKM45=6R0fHjDjNWfZpR-QxRoJo-ioB-t-WT188jpqnA@mail.gmail.com>
+ <cbf0b9a6-2752-4ab5-ab21-af28e87fc1e6@linaro.org>
+In-Reply-To: <cbf0b9a6-2752-4ab5-ab21-af28e87fc1e6@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 8 Dec 2023 14:36:36 +0200
+Message-ID: <CAA8EJppBTVw5ZoVGCxx9LYu-1dtEPqiE-H6SMk+6BCDd4O_DSA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] dt-bindings: PCI: qcom: correct clocks for SM8150
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,36 +80,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the recently added connector sanity check which was off by one and
-prevented orientation notifications from being handled correctly for the
-second port when using GPIOs to determine orientation.
+On Fri, 8 Dec 2023 at 14:18, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 08/12/2023 12:09, Dmitry Baryshkov wrote:
+> > On Fri, 8 Dec 2023 at 12:52, Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> >>
+> >> PCI node in Qualcomm SM8150 should have exactly 8 clocks, including the
+> >> ref clock.
+> >>
+> >> Suggested-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >>
+> >> ---
+> >>
+> >> Please take the patch via PCI tree.
+> >>
+> >> Changes in v3:
+> >> 1. New patch: Split from sc8180x change.
+> >> 2. Add refclk as explained here:
+> >>    https://lore.kernel.org/all/20231121065440.GB3315@thinkpad/
+> >> ---
+> >>  .../devicetree/bindings/pci/qcom,pcie.yaml    | 26 +++++++++++++++++++
+> >>  1 file changed, 26 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> >> index 5214bf7a9045..a93ab3b54066 100644
+> >> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> >> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> >> @@ -559,6 +559,32 @@ allOf:
+> >>            contains:
+> >>              enum:
+> >>                - qcom,pcie-sm8150
+> >> +    then:
+> >> +      properties:
+> >> +        clocks:
+> >> +          minItems: 8
+> >> +          maxItems: 8
+> >> +        clock-names:
+> >> +          items:
+> >> +            - const: pipe # PIPE clock
+> >> +            - const: aux # Auxiliary clock
+> >> +            - const: cfg # Configuration clock
+> >> +            - const: bus_master # Master AXI clock
+> >> +            - const: bus_slave # Slave AXI clock
+> >> +            - const: slave_q2a # Slave Q2A clock
+> >> +            - const: tbu # PCIe TBU clock
+> >> +            - const: ref # REFERENCE clock
+> >
+> > Can we change the order of the tbu and ref clocks and fold this into
+> > the sc810x case?
+>
+> I prefer not, because this is an ABI-concern and we are supposed to keep
+> things stable.
 
-Fixes: c6165ed2f425 ("usb: ucsi: glink: use the connector orientation GPIO to provide switch events")
-Cc: Neil Armstrong <neil.armstrong@linaro.org>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
+Ack, fair enough.
 
-I found this one through inspection when skimming the driver.
-
-Johan
-
-
- drivers/usb/typec/ucsi/ucsi_glink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
-index db6e248f8208..4853141cd10c 100644
---- a/drivers/usb/typec/ucsi/ucsi_glink.c
-+++ b/drivers/usb/typec/ucsi/ucsi_glink.c
-@@ -228,7 +228,7 @@ static void pmic_glink_ucsi_notify(struct work_struct *work)
- 
- 	con_num = UCSI_CCI_CONNECTOR(cci);
- 	if (con_num) {
--		if (con_num < PMIC_GLINK_MAX_PORTS &&
-+		if (con_num <= PMIC_GLINK_MAX_PORTS &&
- 		    ucsi->port_orientation[con_num - 1]) {
- 			int orientation = gpiod_get_value(ucsi->port_orientation[con_num - 1]);
- 
 -- 
-2.41.0
-
+With best wishes
+Dmitry
