@@ -2,70 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF02280ABE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:18:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 373C880ABEA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:18:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233799AbjLHSSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:18:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43778 "EHLO
+        id S1574514AbjLHSSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:18:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLHSSE (ORCPT
+        with ESMTP id S229811AbjLHSSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:18:04 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A196590
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:18:09 -0800 (PST)
-Date:   Fri, 8 Dec 2023 19:18:05 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702059487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4qcXcYZ78xdrELxs09VB+XM+fkJMkkTc/dXg5CeMfwc=;
-        b=zuUccWji8Yvvt6S2JoRAkpCU22iQ/oG073f7BGW8OALPeQFyRsSLoweMFQcJtHMZm9Xvdp
-        fjs0b7uym9xVfUMEtTTTsm6JkHjwFQ8Ui8hDe7GSwWkKFBzHpWn8zehHbZNk3WZYSCotCi
-        pWYpzNoNDblvYUN4mJieR9D2SpdNHSVHR+pEvGElJhjThbd8GX45s3Gf8F5UvGb2E8vltO
-        copfWNE+qF8vOS+x9LRSZw+HXZihvZ3FmRxhSdJZKbOU4I7B9DmrcK7wt5qGvytFSpJoJf
-        CTqUyL7+zNNVyqyPZN5yGx24sPaURhp93Qq1+Cv8Hn6BuycwxdWGo6pDWqTj1w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702059487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4qcXcYZ78xdrELxs09VB+XM+fkJMkkTc/dXg5CeMfwc=;
-        b=ZAc3EytwEBi27PBPeiZ+KWkDDfOW9c+isJ6HhVsEL9b5QWuJ4/4aPwdF7Jo16Qmf2oXbp3
-        P7gEEcvUhsbtoABg==
-From:   Sebastian Siewior <bigeasy@linutronix.de>
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <jstultz@google.com>,
+        Fri, 8 Dec 2023 13:18:42 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDCDA3
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:18:48 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6cecb004339so1141928b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:18:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1702059528; x=1702664328; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xrT35L8MTIhLwpdhO3H/c+pqRQCxCg0MNTO7FGS/OpU=;
+        b=Srx7Lw7dfmby6qUy+IUZE6TayrZzauBxi67HlNAZ31Q6wc6z9lGZzYS5WsHOkqYG0C
+         7kamCrAc8j+ZwlcOzVOqSbsK2jeXX/4eSe6NzJfp8MHf18llAeSUKM/VPZ5G+6o0FY9u
+         CKEFjCink5viuqFDz+3ldtNywPMi+tECXnXRo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702059528; x=1702664328;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xrT35L8MTIhLwpdhO3H/c+pqRQCxCg0MNTO7FGS/OpU=;
+        b=rbTVXbXFKi5cAOfLEKWLpseGiuRrlgniFNhzBFm0kteQcVypwHMKLYNfmESEYwcajH
+         fyEt6siiG9+BUPd+lmpi6bS+++wsVKdHVi4xG0m98RDNJFQtNgjaAV+WybV3UwVkWCYX
+         mpbs1bOvCbHt2swDJzPtQcZCxV/Faat1N6EZTSw06rW+jtU7Yvlai4AGK91jju7wWVsb
+         bDkFSsQyXP/OH84EaK20qjakMJBav28dfgDjLpS/csMmEcs/OYE/q96i4DozWEAxFlHQ
+         Wrx2m4UHK37qFWaDHlsw718bIY1j1ir08Z1QgD+FUX6onMcEx9/AmubkkHLkHpxLk9On
+         Q+Tw==
+X-Gm-Message-State: AOJu0YwfCVr2HgizAOJSJFf++6ru/VNFIOCmEY23LTz2BguI6QI+ZTzo
+        R6YWExMfGUNtBKWGL9LXoF+gAQ==
+X-Google-Smtp-Source: AGHT+IHcui7vMV2OdqCWva5dAEsJH2d+5AV5Uk+IvX+ZetEUSVVWsrmNmp2gSKs4GaolD2scYZHLig==
+X-Received: by 2002:a05:6a20:8c1b:b0:190:20d:5b94 with SMTP id j27-20020a056a208c1b00b00190020d5b94mr372175pzh.27.1702059528236;
+        Fri, 08 Dec 2023 10:18:48 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id s7-20020a63f047000000b005c67dd98b15sm1867436pgj.74.2023.12.08.10.18.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 10:18:47 -0800 (PST)
+Date:   Fri, 8 Dec 2023 10:18:47 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v9 30/32] timers: Implement the hierarchical pull model
-Message-ID: <20231208181805.BbFDsoJe@linutronix.de>
-References: <20231201092654.34614-1-anna-maria@linutronix.de>
- <20231201092654.34614-31-anna-maria@linutronix.de>
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 5/7] rust: file: add `Kuid` wrapper
+Message-ID: <202312080947.674CD2DC7@keescook>
+References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
+ <20231206-alice-file-v2-5-af617c0d9d94@google.com>
+ <20231206123402.GE30174@noisy.programming.kicks-ass.net>
+ <CAH5fLgh+0G85Acf4-zqr_9COB5DUtt6ifVpZP-9V06hjJgd_jQ@mail.gmail.com>
+ <20231206134041.GG30174@noisy.programming.kicks-ass.net>
+ <CANiq72kK97fxTddrL+Uu2JSah4nND=q_VbJ76-Rdc-R-Kijszw@mail.gmail.com>
+ <20231208165702.GI28727@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231201092654.34614-31-anna-maria@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231208165702.GI28727@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,212 +97,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-01 10:26:52 [+0100], Anna-Maria Behnsen wrote:
-> diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
-> new file mode 100644
-> index 000000000000..05cd8f1bc45d
-> --- /dev/null
-> +++ b/kernel/time/timer_migration.c
-> @@ -0,0 +1,1636 @@
-=E2=80=A6
-> + * Required event and timerqueue update after a remote expiry:
-> + * -----------------------------------------------------------
-> + *
-> + * After a remote expiry of a CPU, a walk through the hierarchy updating=
- the
-> + * events and timerqueues has to be done when there is a 'new' global ti=
-mer of
-> + * the remote CPU (which is obvious) but also if there is no new global =
-timer,
-> + * but the remote CPU is still idle:
+On Fri, Dec 08, 2023 at 05:57:02PM +0100, Peter Zijlstra wrote:
+> On Fri, Dec 08, 2023 at 05:31:59PM +0100, Miguel Ojeda wrote:
+> > On Wed, Dec 6, 2023 at 2:41 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > Anywhoo, the longer a function is, the harder it becomes, since you need
+> > > to deal with everything a function does and consider the specuation
+> > > window length. So trivial functions like the above that do an immediate
+> > > dereference and are (and must be) a valid indirect target (because
+> > > EXPORT) are ideal.
+> > 
+> > We discussed this in our weekly meeting, and we would like to ask a
+> > few questions:
+> > 
+> >   - Could you please describe an example attack that you are thinking
+> > of? (i.e. a "full" attack, rather than just Spectre itself). For
+> > instance, would it rely on other vulnerabilities?
+> 
+> There's a fairly large amount of that on github, google spectre poc and
+> stuff like that.
 
-After expiring timers of a remote CPU, a walk through the hierarchy and
-updating events timerqueues is required. It is obviously needed if there
-is a 'new' global timer but also if there no new global timer but the
-remote CPU is still idle.
+tl;dr: I don't think the introduction of speculation gadgets is a
+sufficient reason to block Rust interfaces like this.
 
-> + * 1. CPU2 is the migrator and does the remote expiry in GRP1:0; expiry =
-of
-> + *    evt-CPU0 and evt-CPU1 are equal:
+Long version:
 
-       CPU0 and CPU1 have both a timer expiring at the same time so both
-       have an event enqueued in the timerqueue. CPU2 and CPU3 have no
-       global timer pending and CPU2 is the only active CPU and also the
-       migrator.
+I think the question here is "what is the threat model?" If I break down
+the objection, I understand it as:
 
-> + *
-> + *    LVL 1            [GRP1:0]
-> + *                     migrator =3D GRP0:1
-> + *                     active   =3D GRP0:1
-> + *                 --> timerqueue =3D evt-GRP0:0
-> + *                   /                \
-> + *    LVL 0  [GRP0:0]                  [GRP0:1]
-> + *           migrator =3D TMIGR_NONE     migrator =3D CPU2
-> + *           active   =3D                active   =3D CPU2
-> + *           groupevt.ignore =3D false   groupevt.ignore =3D true
-> + *           groupevt.cpu =3D CPU0       groupevt.cpu =3D
-> + *           timerqueue =3D evt-CPU0,    timerqueue =3D
-> + *                        evt-CPU1
-> + *              /         \                /         \
-> + *    CPUs     0           1              2           3
-> + *             idle        idle           active      idle
-> + *
-> + * 2. Remove the first event of the timerqueue in GRP1:0 and expire the =
-timers
-> + *    of CPU0 (see evt-GRP0:0->cpu value):
+1) The trivial wrappers-of-inlines are speculation gadgets.
+2) They're exported, so callable by anything.
 
-      CPU2 begins to expire remote timers. It starts with own group
-      GRP0:1. GRP0:1 has nothing in ts timerqueue and continues with its
-      parent, GRP1:0. In GRP1:0 it dequeues the first event. It looks at
-      CPU member expires the pending timer of CPU0.
+If the threat model is "something can call these to trigger
+speculation", I think this is pretty strongly mitigated already;
 
-> + *    LVL 1            [GRP1:0]
-> + *                     migrator =3D GRP0:1
-> + *                     active   =3D GRP0:1
-> + *                 --> timerqueue =3D
-> + *                   /                \
-> + *    LVL 0  [GRP0:0]                  [GRP0:1]
-> + *           migrator =3D TMIGR_NONE     migrator =3D CPU2
-> + *           active   =3D                active   =3D CPU2
-> + *           groupevt.ignore =3D false   groupevt.ignore =3D true
-> + *       --> groupevt.cpu =3D CPU0       groupevt.cpu =3D
-> + *           timerqueue =3D evt-CPU0,    timerqueue =3D
-> + *                        evt-CPU1
-> + *              /         \                /         \
-> + *    CPUs     0           1              2           3
-> + *             idle        idle           active      idle
-> + *
-> + * 3. After the remote expiry CPU0 has no global timer that needs to be
-> + *    enqueued. When skipping the walk, the global timer of CPU1 is not =
-handled,
-> + *    as the group event of GRP0:0 is not updated and not enqueued into =
-GRP1:0. The
-> + *    walk has to be done to update the group events and timerqueues:
+1) These aren't syscall definitions, so their "reachability" is pretty
+limited. In fact, they're already going to be used in places, logically,
+where the inline would be used, so the speculation window is going to be
+same (or longer, given the addition of the direct call and return).
 
-     The work isn't over after expiring timers of CPU0. If we stop
-     here, then CPU1's timer have not been expired and the timerqueue of
-     GRP0:0 has still an event for CPU0 enqueued which has just been
-     processed. So it is required to walk the hierarchy from CPU0's
-     point of view and update it accordingly.
-     CPU0 will be removed from the timerqueue because it has no pending
-     timer. If CPU0 would have a timer pending then it has to expire
-     after CPU1's first timer because all timer from this period have
-     just been expired.
-     Either way CPU1 will be first in GRP0:0's timerqueue and therefore
-     set in the CPU field of the group event which is enqueued in
-     GRP1:0's timerqueue.
+2) If an attacker is in a position to directly call these helpers,
+they're not going to use them: if an attacker already has arbitrary
+execution, they're not going to bother with speculation.
 
-> + *    LVL 1            [GRP1:0]
-> + *                     migrator =3D GRP0:1
-> + *                     active   =3D GRP0:1
-> + *                 --> timerqueue =3D evt-GRP0:0
-> + *                   /                \
-> + *    LVL 0  [GRP0:0]                  [GRP0:1]
-> + *           migrator =3D TMIGR_NONE     migrator =3D CPU2
-> + *           active   =3D                active   =3D CPU2
-> + *           groupevt.ignore =3D false   groupevt.ignore =3D true
-> + *       --> groupevt.cpu =3D CPU1       groupevt.cpu =3D
-> + *       --> timerqueue =3D evt-CPU1     timerqueue =3D
-> + *              /         \                /         \
-> + *    CPUs     0           1              2           3
-> + *             idle        idle           active      idle
-> + *
-> + * Now CPU2 (migrator) is able to handle the timer of CPU1 as CPU2 only =
-scans
-> + * the timerqueues of GRP0:1 and GRP1:0.
+Fundamentally I don't see added risk here. From the security hardening
+perspective we have two goals: kill bug classes and block exploitation
+techniques, and the former is a much more powerful defensive strategy
+since without the bugs, there's no chance to perform an exploit.
 
-    Now CPU2 continues step 2 at GRP1:0 and will expire the timer of
-    CPU1.
+In general, I think we should prioritize bug class elimination over
+exploit technique foiling. In this case, we're adding a potential weakness
+to the image of the kernel of fairly limited scope in support of stronger
+bug elimination goals.
 
-> + * The update of step 3 is valid to be skipped, when the remote CPU went=
- offline
-> + * in the meantime because an update was already done during inactive pa=
-th. When
-> + * CPU became active in the meantime, update isn't required as well, bec=
-ause
-> + * GRP0:0 is now longer idle.
+Even if we look at the prerequisites for mounting an attack here, we've
+already got things in place to help mitigate arbitrary code execution
+(KCFI, BTI, etc). Nothing is perfect, but speculation gadgets are
+pretty far down on the list of concerns, IMO. We have no real x86 ROP
+defense right now in the kernel, so that's a much lower hanging fruit
+for attackers.
 
-   The hierarchy walk in step 3 can be skipped if the migrator notices
-   that a CPU of GRP0:0 is active. The CPU will mark GRP0:0 active and
-   take care of the group and any needed updates within the hierarchy.
+As another comparison, on x86 there are so many direct execution gadgets
+present in middle-of-instruction code patterns that worrying about a
+speculation gadget seems silly to me.
 
-I skipped the "offline" part because it is not needed. Before the CPU
-can go offline it has first to come out of idle. While going offline it
-won't (probably) participate here and the remaining timer will be
-migrated to another CPU.
+> [...]
+> The thing at hand was just me eyeballing it.
 
-> + */
-=E2=80=A6
-> +
-> +typedef bool (*up_f)(struct tmigr_group *, struct tmigr_group *, void *);
-> +
-> +static void __walk_groups(up_f up, void *data,
-> +			  struct tmigr_cpu *tmc)
-> +{
-> +	struct tmigr_group *child =3D NULL, *group =3D tmc->tmgroup;
-> +
-> +	do {
-> +		WARN_ON_ONCE(group->level >=3D tmigr_hierarchy_levels);
-> +
-> +		if (up(group, child, data))
-> +			break;
-> +
-> +		child =3D group;
-> +		group =3D group->parent;
-> +	} while (group);
-> +}
-> +
-> +static void walk_groups(up_f up, void *data, struct tmigr_cpu *tmc)
-> +{
-> +	lockdep_assert_held(&tmc->lock);
-> +
-> +	__walk_groups(up, data, tmc);
-> +}
+I can understand the point you and Greg have both expressed here: "this
+is known to be an anti-pattern, we need to do something else". I generally
+agree with this, but in this case, I don't think it's the right call. This
+is an area we'll naturally see improvement from on the Rust side since
+these calls are a _performance_ concern too, so it's not like this will be
+"forgotten" about. But blocking it until there is a complete and perfect
+solution feels like we're letting perfect be the enemy of good.
 
-So these two. walk_groups() uses all have tmigr_cpu::lock acquired and
-__walk_groups() don't. Also the `up' function passed walk_groups() has
-always the same data type while the data argument passed to
-__walk_groups() has also the same type but different compared to the
-former.
+All of our development is evolutionary, so I think we'd be in a much
+better position to take these (currently ugly) work-arounds (visible
+only in Rust builds) so that we gain the ability to evolve towards more
+memory safe code.
 
-Given the locking situation and the type of the data argument looks like
-walk_groups() is used for thing#1 and __walk_groups() for thing#2.
-Therefore it could make sense have two separate functions (instead of
-walk_groups() and __walk_groups()) to distinguish this.
-Now it is too late but maybe later I figure out why the one type
-requires locking and the other doesn't.
+-Kees
 
-=E2=80=A6
-> +/*
-> + * Return the next event which is already expired of the group timerqueue
-> + *
-> + * Event, which is returned, is also removed from the queue.
-> + */
-> +static struct tmigr_event *tmigr_next_expired_groupevt(struct tmigr_grou=
-p *group,
-> +						     u64 now)
-> +{
-> +	struct tmigr_event *evt =3D tmigr_next_groupevt(group);
-> +
-> +	if (!evt || now < evt->nextevt.expires)
-> +		return NULL;
-> +
-> +	/*
-> +	 * The event is already expired. Remove it. If it's not the last event,
-> +	 * then update all group event related information.
-> +	 */
-
-  The event expired, remove it. Update group's next expire time.
-
-> +	if (timerqueue_del(&group->events, &evt->nextevt))
-> +		tmigr_next_groupevt(group);
-> +	else
-> +		WRITE_ONCE(group->next_expiry, KTIME_MAX);
-
-And then you can invoke tmigr_next_groupevt() unconditionally.
-
-> +	return evt;
-> +}
-> +
-
-Sebastian
+-- 
+Kees Cook
