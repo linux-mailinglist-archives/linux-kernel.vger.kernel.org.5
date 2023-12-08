@@ -2,148 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0669280ADF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:36:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8261180ADFB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574722AbjLHUgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:36:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
+        id S1574727AbjLHUgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:36:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjLHUf7 (ORCPT
+        with ESMTP id S234175AbjLHUgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:35:59 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E962210F8;
-        Fri,  8 Dec 2023 12:36:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Vwp6H7hbWYuJntJS7kS+l0fw/Z+oOc8mMbOkVe4byro=; b=VXkjzuM/7GoObftnaEWoZgdFYY
-        L5xDBcOtO5SXticci6clYrj1K1KscYr+MoTjFYUkZz0ZWWNRoMSMcKuxO0tsaM3zEfH6eF3zU5j8O
-        cUQI6yZ66caIvr7dscGTiK/hdDneafs8+XW2NtmcUWud886gJjMgBetRpivFI+2k3nYvnsQp65YfB
-        hU4YX9RUqEib/aVz06p8+wivpoxMEz+kH1paTVnnirP857fswwl5sTiNJ8EbLZQRfKs655qDWsKpA
-        jp0nWHX5uHWgqj/v4iexBNwei3DfCgzFy0X4rATHIUUHZG65pJYjJNbS3wxpBgX7DtbfBf97DzDCW
-        GFrHBhQQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1rBhZP-006WtK-Ib; Fri, 08 Dec 2023 20:35:35 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3799630050D; Fri,  8 Dec 2023 21:35:35 +0100 (CET)
-Date:   Fri, 8 Dec 2023 21:35:35 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
+        Fri, 8 Dec 2023 15:36:14 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6FF198D
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:36:20 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5ca26c07848so32219717b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 12:36:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702067779; x=1702672579; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=orHiJZT0C6fy8Fk3kj9J2cROYJthdQ2Wc1XwHn5ZMq4=;
+        b=3ln6m9oI3jDYCkIaLkrprMOPDZL4zJLDkHJeUd5TD8ROVnPxu6QusfweP8eUz1WUyi
+         wQvVpdwjLE3YzrqKuwb3sWcVJRWaFjDupLV2U96fw1mDUCpK/d7HFfMhFDu7fTSl83eu
+         n1QLUdGLK5It7eLF3CnQAfXHK138ENkZB1SyZJ4FEfFzLHhiJUDCgYd/he5K2JEc0BIH
+         meA4MobzMMmZ5XmU0RACo8+mqGSlcJ0tIjYI0ws79e0/crMfwSttuwNo99Vm+ZEzOQzK
+         2aiU+4SLLY8VysAsuqC8RGhr6Lc3ztkLhZO1nFwvAHfksOT1VofCKXP9Kt3u5AHyuFTI
+         QQ1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702067779; x=1702672579;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=orHiJZT0C6fy8Fk3kj9J2cROYJthdQ2Wc1XwHn5ZMq4=;
+        b=dQ26mikrjafySIG/6b8u8Hnx0SEExOaChrUu4r8YI4klQS8WwyFBr564ewuKlPbcHd
+         Vq8IDIE97ASAB2x9N19lSX7pbbKtlOLJrOcn0bBzRkK6HpMDyJhjdjO/X/KxIL8GfGyL
+         wND4T1OwQisSZg+WF62HldIN8y7/a8ktZseBXOXkiB0cqW0LSyGBJ8jeA+jpt+UtrFkR
+         TSGAET3ws2S4P9+VUAnHguWvXDvMu5IgSMQ/r5GiS/E740BhI4GVlZmT7lLR5oqZn+HT
+         3H9hJGvBsZW+0K6oqLhIAdS48OHY4Mleyl6xJCQr7VgcCwfQZakZvi9ySuyHUN/CncI2
+         WePA==
+X-Gm-Message-State: AOJu0YxZAZx+UBI89rN/FukpYDzxDk6ZqjVYTQg57L4qeAa16etWhb8Y
+        F4UshmAl/bnXexqMeGVIELZDMm80XGE=
+X-Google-Smtp-Source: AGHT+IGM36poiI66KimXwnmZMFV+cug+a/f2/aHqYZGdi3tEpQylnxIgmZTLgmZqxePMHXCOG7mBMbzoJbc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:d1e:b0:5d2:913a:6421 with SMTP id
+ cn30-20020a05690c0d1e00b005d2913a6421mr5795ywb.8.1702067779340; Fri, 08 Dec
+ 2023 12:36:19 -0800 (PST)
+Date:   Fri, 8 Dec 2023 12:36:17 -0800
+In-Reply-To: <CABgObfb2AxwvseadmEBS7=VWLKKpYVeHkaecrPXG47sMfCKEZg@mail.gmail.com>
+Mime-Version: 1.0
+References: <20231205234956.1156210-1-michael.roth@amd.com>
+ <ZXCTHJPerz6l9sPw@google.com> <CABgObfb2AxwvseadmEBS7=VWLKKpYVeHkaecrPXG47sMfCKEZg@mail.gmail.com>
+Message-ID: <ZXN-QUBpq1nADjUN@google.com>
+Subject: Re: [PATCH] KVM: SEV: Fix handling of EFER_LMA bit when SEV-ES is enabled
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231208203535.GG36716@noisy.programming.kicks-ass.net>
-References: <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
- <20231206163814.GB36423@noisy.programming.kicks-ass.net>
- <20231206183713.GA35897@noisy.programming.kicks-ass.net>
- <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
- <20231207093105.GA28727@noisy.programming.kicks-ass.net>
- <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
- <20231208102940.GB28727@noisy.programming.kicks-ass.net>
- <20231208134041.GD28727@noisy.programming.kicks-ass.net>
- <20231208172152.GD36716@noisy.programming.kicks-ass.net>
- <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 11:40:27AM -0800, Alexei Starovoitov wrote:
+On Fri, Dec 08, 2023, Paolo Bonzini wrote:
+> On Wed, Dec 6, 2023 at 4:28=E2=80=AFPM Sean Christopherson <seanjc@google=
+.com> wrote:
+> > So my very strong preference is to first skip the kvm_is_valid_sregs() =
+check
+>=20
+> No, please don't. If you want to add a quirk that, when disabled,
+> causes all guest state get/set ioctls to fail, go ahead. But invalid
+> processor state remains invalid, and should be rejected, even when KVM
+> won't consume it.
 
-> typedef void (*btf_dtor_kfunc_t)(void *);
->         btf_dtor_kfunc_t dtor;
-> but the bpf_cgroup_release takes 'struct cgroup*'.
-> From kcfi pov void * == struct cgroup * ?
-> Do we need to change it to 'void *cgrp' ?
-
-Yes, doing that naively like the below, gets me lovely things like:
-
-validate_case:FAIL:expect_msg unexpected error: -22
-VERIFIER LOG:
-=============
-=============
-EXPECTED MSG: 'Possibly NULL pointer passed to trusted arg0'
-#48/7    cgrp_kfunc/cgrp_kfunc_acquire_untrusted:FAIL
-run_subtest:PASS:obj_open_mem 0 nsec
-libbpf: extern (func ksym) 'bpf_cgroup_release': func_proto [148] incompatible with vmlinux [125610]
-libbpf: failed to load object 'cgrp_kfunc_failure'
-
-
-But let me try rebuilding everything..
-
-
----
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index b3be5742d6f1..078b207af7f0 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2145,10 +2145,11 @@ __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *p)
-  * bpf_task_release - Release the reference acquired on a task.
-  * @p: The task on which a reference is being released.
-  */
--__bpf_kfunc void bpf_task_release(struct task_struct *p)
-+__bpf_kfunc void bpf_task_release(void *p)
- {
- 	put_task_struct_rcu_user(p);
- }
-+EXPORT_SYMBOL_GPL(bpf_task_release);
- 
- #ifdef CONFIG_CGROUPS
- /**
-@@ -2169,10 +2170,11 @@ __bpf_kfunc struct cgroup *bpf_cgroup_acquire(struct cgroup *cgrp)
-  * drops to 0.
-  * @cgrp: The cgroup on which a reference is being released.
-  */
--__bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
-+__bpf_kfunc void bpf_cgroup_release(void *cgrp)
- {
- 	cgroup_put(cgrp);
- }
-+EXPORT_SYMBOL_GPL(bpf_cgroup_release);
- 
- /**
-  * bpf_cgroup_ancestor - Perform a lookup on an entry in a cgroup's ancestor
+Ugh, true, KVM should still reject garbage.
