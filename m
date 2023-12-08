@@ -2,152 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D301809D32
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88373809D37
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:35:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573252AbjLHHeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 02:34:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59872 "EHLO
+        id S1573281AbjLHHe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 02:34:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233431AbjLHHeN (ORCPT
+        with ESMTP id S235770AbjLHHe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 02:34:13 -0500
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56F51724
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:34:18 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Vy2OoK8_1702020855;
-Received: from 172.20.10.3(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Vy2OoK8_1702020855)
-          by smtp.aliyun-inc.com;
-          Fri, 08 Dec 2023 15:34:16 +0800
-Message-ID: <9ced71c9-4460-4907-abb9-21b517a883c7@linux.alibaba.com>
-Date:   Fri, 8 Dec 2023 15:34:14 +0800
+        Fri, 8 Dec 2023 02:34:56 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42A21731
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:35:00 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-333630e9e43so1791082f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 23:35:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702020899; x=1702625699; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=bQM5luWqpeqaUYRZZNqZZ4E8pvEJxDNuboi6ArN7R6o=;
+        b=hCASgUKxtWK+MOuOCAJyTY9m4HvEUxjFaDiyeJ0X8Y3kkLzqhNxZ2yrjrYOsNdFo8l
+         Zo67zse/4M1coTHs2mhX3bdlExnAq/UhHbggAjqjBQOnbDIwuPFFl2B/vdNJoe3hqbRW
+         DRk04z8MMCgMSP3+/4osbm9N6uruogF0nignvp4fUuJ3gnRkf53cvJ9P49+ykf2es85N
+         3bK21qcPxwfM1jFCVViyynY6C5azZi6E5q5jKpVj98akjGX/LkURs8mBAqvBDG43/KFk
+         WwszuDTqmRVVClNpLabt7iNuai2KWagiarlAht7pe4pjN8Z4ylNeIrU+mKTOSObJIPMw
+         LJ/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702020899; x=1702625699;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bQM5luWqpeqaUYRZZNqZZ4E8pvEJxDNuboi6ArN7R6o=;
+        b=oymphNCYbLs75ULi1LnySsfgnm1sNY6xk16SerCPfAOO6JH1j2T5j5x+BNmQ/9dJDK
+         o5YjU+hjsQwLO8TZpplV8kdcqlZa9VOo9yQVrIDDyzm7BOjuQp9vjxcyssw/rGwc7sNO
+         Qkgb7elnogfz5uPTM7tAuBTgmAR6gmNfUhF71y3xaQvWMkX8gfOXKMQTui46XDWuPvxk
+         p4bc8L8wXvy8yOXMwESCVUMoLIgp4XIueXzLWP0x+4QUb7G3Af5OOPoO3qNJs/z7yNvz
+         CFq7BRXSVkRNcoauxRA4osxZrpuRB+6S6WIwHPQ8Zr+uPl+HTEQJyMWZg4W2GOClIXZm
+         I6lg==
+X-Gm-Message-State: AOJu0Yz5o2/uBIwwpNhhNwjlYsr30mQXL/lNlSqZSTNnc1CIPdvm7Bxw
+        RXto3uotF1vOhg98qkuzz5qeSChFl0YZ03kM9Wo=
+X-Google-Smtp-Source: AGHT+IFenBbl6z6tKHUc85Mm6WZ8llQyWnHWEJHGzHxZOjl4+HE+qC8XGti5jXwtunNOvd1Zq/bDyA==
+X-Received: by 2002:a5d:658e:0:b0:333:2fd2:3bf2 with SMTP id q14-20020a5d658e000000b003332fd23bf2mr1346775wru.171.1702020899035;
+        Thu, 07 Dec 2023 23:34:59 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id r7-20020adfce87000000b003335ebde680sm1391364wrn.75.2023.12.07.23.34.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 23:34:58 -0800 (PST)
+Message-ID: <b8d7ecc8-9937-414c-ba90-a5c7367b6249@linaro.org>
+Date:   Fri, 8 Dec 2023 08:34:56 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] erofs: refine z_erofs_transform_plain() for sub-page
- block support
-To:     Yue Hu <zbestahu@gmail.com>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        huyue2@coolpad.com, zhangwen@coolpad.com
-References: <20231206091057.87027-1-hsiangkao@linux.alibaba.com>
- <20231206091057.87027-5-hsiangkao@linux.alibaba.com>
- <20231208132031.00003b8d.zbestahu@gmail.com>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <20231208132031.00003b8d.zbestahu@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: linux-next: build failure after merge of the devicetree tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Rob Herring <robh@kernel.org>
+Cc:     Kris Chaplin <kris.chaplin@amd.com>,
+        Thomas Delev <thomas.delev@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20231208135133.42704925@canb.auug.org.au>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231208135133.42704925@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/12/8 13:20, Yue Hu wrote:
-> On Wed,  6 Dec 2023 17:10:56 +0800
-> Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+On 08/12/2023 03:51, Stephen Rothwell wrote:
+> Hi all,
 > 
->> Sub-page block support is still unusable even with previous commits if
->> interlaced PLAIN pclusters exist.  Such pclusters can be found if the
->> fragment feature is enabled.
->>
->> This commit tries to handle "the head part" of interlaced PLAIN
->> pclusters first: it was once explained in commit fdffc091e6f9 ("erofs:
->> support interlaced uncompressed data for compressed files").
->>
->> It uses a unique way for both shifted and interlaced PLAIN pclusters.
->> As an added bonus, PLAIN pclusters larger than the block size is also
->> supported now for the upcoming large lclusters.
->>
->> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
->> ---
->>   fs/erofs/decompressor.c | 81 ++++++++++++++++++++++++-----------------
->>   1 file changed, 48 insertions(+), 33 deletions(-)
->>
->> diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
->> index 021be5feb1bc..5ec11f5024b7 100644
->> --- a/fs/erofs/decompressor.c
->> +++ b/fs/erofs/decompressor.c
->> @@ -319,43 +319,58 @@ static int z_erofs_lz4_decompress(struct z_erofs_decompress_req *rq,
->>   static int z_erofs_transform_plain(struct z_erofs_decompress_req *rq,
->>   				   struct page **pagepool)
->>   {
->> -	const unsigned int inpages = PAGE_ALIGN(rq->inputsize) >> PAGE_SHIFT;
->> -	const unsigned int outpages =
->> +	const unsigned int nrpages_in =
->> +		PAGE_ALIGN(rq->pageofs_in + rq->inputsize) >> PAGE_SHIFT;
->> +	const unsigned int nrpages_out =
->>   		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
->> -	const unsigned int righthalf = min_t(unsigned int, rq->outputsize,
->> -					     PAGE_SIZE - rq->pageofs_out);
->> -	const unsigned int lefthalf = rq->outputsize - righthalf;
->> -	const unsigned int interlaced_offset =
->> -		rq->alg == Z_EROFS_COMPRESSION_SHIFTED ? 0 : rq->pageofs_out;
->> -	u8 *src;
->> -
->> -	if (outpages > 2 && rq->alg == Z_EROFS_COMPRESSION_SHIFTED) {
->> -		DBG_BUGON(1);
->> -		return -EFSCORRUPTED;
->> -	}
->> -
->> -	if (rq->out[0] == *rq->in) {
->> -		DBG_BUGON(rq->pageofs_out);
->> -		return 0;
->> +	const unsigned int bs = rq->sb->s_blocksize;
->> +	unsigned int cur = 0, ni = 0, no, pi, po, insz, cnt;
->> +	u8 *kin;
->> +
->> +	DBG_BUGON(rq->outputsize > rq->inputsize);
->> +	if (rq->alg == Z_EROFS_COMPRESSION_INTERLACED) {
->> +		cur = bs - (rq->pageofs_out & (bs - 1));
->> +		pi = (rq->pageofs_in + rq->inputsize - cur) & ~PAGE_MASK;
->> +		cur = min(cur, rq->outputsize);
->> +		if (cur && rq->out[0]) {
->> +			kin = kmap_local_page(rq->in[nrpages_in - 1]);
->> +			if (rq->out[0] == rq->in[nrpages_in - 1]) {
->> +				memmove(kin + rq->pageofs_out, kin + pi, cur);
->> +				flush_dcache_page(rq->out[0]);
->> +			} else {
->> +				memcpy_to_page(rq->out[0], rq->pageofs_out,
->> +					       kin + pi, cur);
->> +			}
->> +			kunmap_local(kin);
->> +		}
->> +		rq->outputsize -= cur;
->>   	}
->>   
->> -	src = kmap_local_page(rq->in[inpages - 1]) + rq->pageofs_in;
->> -	if (rq->out[0])
->> -		memcpy_to_page(rq->out[0], rq->pageofs_out,
->> -			       src + interlaced_offset, righthalf);
->> -
->> -	if (outpages > inpages) {
->> -		DBG_BUGON(!rq->out[outpages - 1]);
->> -		if (rq->out[outpages - 1] != rq->in[inpages - 1]) {
->> -			memcpy_to_page(rq->out[outpages - 1], 0, src +
->> -					(interlaced_offset ? 0 : righthalf),
->> -				       lefthalf);
->> -		} else if (!interlaced_offset) {
->> -			memmove(src, src + righthalf, lefthalf);
->> -			flush_dcache_page(rq->in[inpages - 1]);
->> -		}
->> +	for (; rq->outputsize; rq->pageofs_in = 0, cur += PAGE_SIZE, ni++) {
->> +		insz = min(PAGE_SIZE - rq->pageofs_in, rq->outputsize);
+> After merging the devicetree tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
 > 
-> min_t(unsigned int, ,)?
-> 
-> ../include/linux/minmax.h:21:28: error: comparison of distinct pointer types lacks a cast [-Werror]
->    (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+> drivers/w1/masters/amd_axi_w1.c: In function 'amd_axi_w1_probe':
+> drivers/w1/masters/amd_axi_w1.c:296:35: error: invalid use of undefined type 'struct platform_device'
+>   296 |         struct device *dev = &pdev->dev;
+>       |                                   ^~
 
-What compiler version are you using? I didn't find any error
-and
-https://lore.kernel.org/linux-erofs/202312080122.iCCXzSuE-lkp@intel.com
+Thanks. I saw a fix from Rob for this, I just did not know this is that
+urgent. I will apply it today.
 
-also didn't report this.
+Best regards,
+Krzysztof
 
-Thanks,
-Gao Xiang
