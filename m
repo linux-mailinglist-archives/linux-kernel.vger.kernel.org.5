@@ -2,81 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45053809F98
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F02A809FB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573446AbjLHJjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 04:39:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
+        id S235869AbjLHJm0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Dec 2023 04:42:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbjLHJjV (ORCPT
+        with ESMTP id S233242AbjLHJmO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 04:39:21 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08828E;
-        Fri,  8 Dec 2023 01:39:27 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B89SGhD002936;
-        Fri, 8 Dec 2023 09:39:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=K+knPPXNQpzYP4zps31BoCsqwPGV2DcWwsw+dVvYV9E=;
- b=Qap8WeWJW6HAw131h7G0bTMPTAliu25ppr88Za9rkBKzyJfN+N0M3cAdr9zDs26irxaL
- JF8SQS8154koOgfrRhptkj4thvicy1j1rw/7OoUJUf0p+YUD4LPbGd5houfJ59jn4ONi
- GHrkB/d3TxBlaQojH3fHLnkccAOpKOrFsl6qFzafOKpkN1CwmeH70c1ZjS7UXUzPdGt3
- LK36JAPn9NZsnCyi8RJJQq9e0DFj29KhONzHyfQ6rexjPOwnVJiGzLqBIq1bhOFAFgIK
- J6kVk1T+QdKgXPvzz5Dk1ZaUGb29UtUldCbbXYGryuGtkOEbCK+KwXnNOUGnQ/Ae63Z6 lg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uu928kd67-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 09:39:21 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B89dJLD016371
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 8 Dec 2023 09:39:19 GMT
-Received: from [10.50.44.194] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Dec
- 2023 01:39:15 -0800
-Message-ID: <331d2288-382a-9abb-fd3a-d0973b8542af@quicinc.com>
-Date:   Fri, 8 Dec 2023 15:09:11 +0530
+        Fri, 8 Dec 2023 04:42:14 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2F390;
+        Fri,  8 Dec 2023 01:42:15 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 4E9A317F43;
+        Fri,  8 Dec 2023 17:42:11 +0800 (CST)
+Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 8 Dec
+ 2023 17:42:11 +0800
+Received: from williamqiu-virtual-machine.starfivetech.com (171.223.208.138)
+ by EXMBX068.cuchost.com (172.16.6.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.42; Fri, 8 Dec 2023 17:42:10 +0800
+From:   William Qiu <william.qiu@starfivetech.com>
+To:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pwm@vger.kernel.org>
+CC:     Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "Hal Feng" <hal.feng@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        William Qiu <william.qiu@starfivetech.com>
+Subject: [PATCH v9 0/4] StarFive's Pulse Width Modulation driver support
+Date:   Fri, 8 Dec 2023 17:42:05 +0800
+Message-ID: <20231208094209.1910934-1-william.qiu@starfivetech.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH v2 09/17] scsi: ufs: qcom: Remove redundant error print
- for devm_kzalloc() failure
-Content-Language: en-US
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        <martin.petersen@oracle.com>, <jejb@linux.ibm.com>
-CC:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
-        <ahalaney@redhat.com>
-References: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
- <20231208065902.11006-10-manivannan.sadhasivam@linaro.org>
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-In-Reply-To: <20231208065902.11006-10-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: v0pp7oH1URjfLvc7qoHUaqL--_qr-otF
-X-Proofpoint-GUID: v0pp7oH1URjfLvc7qoHUaqL--_qr-otF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-08_04,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
- priorityscore=1501 suspectscore=0 malwarescore=0 lowpriorityscore=0
- phishscore=0 impostorscore=0 clxscore=1015 bulkscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312080078
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain
+X-Originating-IP: [171.223.208.138]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX068.cuchost.com
+ (172.16.6.68)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,32 +62,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+This patchset adds initial rudimentary support for the StarFive
+Pulse Width Modulation controller driver. And this driver will
+be used in StarFive's VisionFive 2 board.The first patch add
+Documentations for the device and Patch 2 adds device probe for
+the module.
 
-On 12/8/2023 12:28 PM, Manivannan Sadhasivam wrote:
-> devm_kzalloc() will itself print the error message on failure. So let's get
-> rid of the redundant error message in ufs_qcom_init().
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->   drivers/ufs/host/ufs-qcom.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index b141dd2a9346..05a9a25bc34c 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -1109,10 +1109,8 @@ static int ufs_qcom_init(struct ufs_hba *hba)
->   	struct ufs_clk_info *clki;
->   
->   	host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
-> -	if (!host) {
-> -		dev_err(dev, "%s: no memory for qcom ufs host\n", __func__);
-> +	if (!host)
->   		return -ENOMEM;
-> -	}
->   
->   	/* Make a two way bind between the qcom host and the hba */
->   	host->hba = hba;
+Changes v8->v9:
+- Rebased to v6.7rc4.
+- Updated the bindings format.
+- Dropped removed() interface.
 
-Reviewed-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+Changes v7->v8:
+- Rebased to v6.7rc3.
+- Changed compatible to "opencores,pwm-v1"
+- Adjusted the clock unprepare order.
+- Followed dt-bindings Coding style.
+
+Changes v6->v7:
+- Rebased to v6.6.
+- Added dependency architecture.
+- Adopted new rounding algorithm.
+- Added limitation descripton.
+- Used function interfaces instead of macro definitions.
+- Followed the linux coding style.
+
+Changes v5->v6:
+- Rebased to v6.6rc5.
+- Changed driver into a generic OpenCores driver.
+- Modified dt-bindings description into OpenCores.
+- Uesd the StarFive compatible string to parameterize.
+
+Changes v4->v5:
+- Rebased to v6.6rc2.
+- Updated macro definition indent.
+- Replaced the clock initializes the interface.
+- Fixed patch description.
+
+Changes v3->v4:
+- Rebased to v6.5rc7.
+- Sorted the header files in alphabetic order.
+- Changed iowrite32() to writel().
+- Added a way to turn off.
+- Modified polarity inversion implementation.
+- Added 7100 support.
+- Added dts patches.
+- Used the various helpers in linux/math.h.
+- Corrected formatting problems.
+- Renamed dtbinding  to 'starfive,jh7100-pwm.yaml'.
+- Dropped the redundant code.
+
+Changes v2->v3:
+- Fixed some formatting issues.
+
+Changes v1->v2:
+- Renamed the dt-binding 'pwm-starfive.yaml' to 'starfive,jh7110-pwm.yaml'.
+- Dropped the compatible's Items.
+- Dropped the unuse defines.
+- Modified the code to follow the Linux coding style.
+- Changed return value to dev_err_probe.
+- Dropped the unnecessary local variable.
+
+The patch series is based on v6.7rc4.
+
+William Qiu (4):
+  dt-bindings: pwm: Add bindings for OpenCores PWM Controller
+  pwm: opencores: Add PWM driver support
+  riscv: dts: starfive: jh7100: Add PWM node and pins configuration
+  riscv: dts: starfive: jh7110: Add PWM node and pins configuration
+
+ .../bindings/pwm/opencores,pwm.yaml           |  55 +++++
+ MAINTAINERS                                   |   7 +
+ .../boot/dts/starfive/jh7100-common.dtsi      |  24 ++
+ arch/riscv/boot/dts/starfive/jh7100.dtsi      |   9 +
+ .../jh7110-starfive-visionfive-2.dtsi         |  22 ++
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      |   9 +
+ drivers/pwm/Kconfig                           |  12 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-ocores.c                      | 229 ++++++++++++++++++
+ 9 files changed, 368 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/opencores,pwm.yaml
+ create mode 100644 drivers/pwm/pwm-ocores.c
+
+--
+2.34.1
+
