@@ -2,140 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D70F80ACB3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:12:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0972B80ACB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574647AbjLHTMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 14:12:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44122 "EHLO
+        id S1574653AbjLHTMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 14:12:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbjLHTMB (ORCPT
+        with ESMTP id S1574641AbjLHTMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 14:12:01 -0500
-Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98F510DA;
-        Fri,  8 Dec 2023 11:12:07 -0800 (PST)
-Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1faf46f96ebso1368019fac.1;
-        Fri, 08 Dec 2023 11:12:07 -0800 (PST)
+        Fri, 8 Dec 2023 14:12:23 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419A41712
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:12:29 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id 6a1803df08f44-67ad8f3b956so61478306d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 11:12:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702062727; x=1702667527; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=zkEXWSVoTK7DkuxZZb7JKX3bG3doF2YDLXf5su343iE=;
-        b=cE8nMqeM5x17OZeVlWgKuNgQuteCIUaYwuy2inMnAXFcVUBvj2Mti4d4WFn5Zsccnq
-         IDIvSQ/a/Uta45C8PC7HBeRy6as+RnsALOUNWgpULC+SZ1WczrhSfdpdRNyM4+myAIkl
-         ou6HjxAvQKZt1zHtjezA5mQn8SthCoYbR5RnbDrkq9c/3aSvALn/uS+lVG/gOo1S69qh
-         VQZ5gnmy0hwr0kxHroMvKQT6jMF6bmnOB+r6sBGdiiuog8pjwHIgslgwMetetu/xnDN7
-         pmdbrSWCvZQYaCDMu8AUf6jw+DYgpngmRWuns2NJTxyvDlroRfn7sn+YDz/+Z/zTVBm1
-         OGUQ==
+        d=google.com; s=20230601; t=1702062748; x=1702667548; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=nVvef+BcVgEroNYpsUvlaSbQE1KPpVwrXco8mT3u6R8=;
+        b=TtOpdMwpk3HmyGxPMn0lXTJ1YACZLpsGKVjALtvXPgYgZcY36t9V9cUvKebcqvVtLv
+         rHzmU5w01VqPobGCR9NkYT/l+IzVWoLeh2hExeW2HZGo/kXu7oZ/KaqdW8qCO+AsT+yH
+         rlObRSjtVUEdJG6ZycKmb+i0RZQOqhj+/StTJKaltqK56ZepK/fyzwWC7IlFA8Y2vX8U
+         /aVX/poyzT/swMPh+JUF/qC7N4EvnO0Tbui9mDqtqJyZVTgVN+bPQT/ffOAccpXFWuLx
+         6NE+ekEuL8Vx3+qoo9kQp+w8QpwZSIMOhtJW8+GxOuecEzCqpy0eKfoBOpEN0bGFxnGy
+         Oo6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702062727; x=1702667527;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zkEXWSVoTK7DkuxZZb7JKX3bG3doF2YDLXf5su343iE=;
-        b=dw6EbFv9M/mM+CQzVZtGkwPa5wMsNvYInJyeB6GGxQKoMu6TgE294Ls5GW7DrmUqa3
-         /Gw6Py0Tgb8MREhQPVeHOGdMxutnFkJ8jYMAOB/KNV/BXtUhlokJTWbEBkgj0+/XmW4s
-         5hON3tO7Il6ok1FEXKKdt1VhbC6mHvLeQfF8tfhB29OuNjtfdN+wEt3MlleP6AJ8LxcE
-         rERqs7CG47arLioiZC975VVMZrePG0lb+Q7MW8nmZGwUG40o67DO6bdXnVtzhVUQRe5n
-         cLVSUz/MHPzw40PKUa6Swkw1bh9RL8r82Ax57hA0iu4qevghfyt9Q7EWwG8vwOiqRXkx
-         7RTg==
-X-Gm-Message-State: AOJu0Yxnt8LBuz3qy7iy4/f2BwhyttvTyGndJMxgDzzAthp0riHymCES
-        t34eRNFxseBB+L9Udu1rUrw=
-X-Google-Smtp-Source: AGHT+IEmYNESaweRM+7AO8FtxPwiwFlO+fVnSDvEyxaSinix8TaPH90D3SRMjKLLJhM1dRO+KKOJ+w==
-X-Received: by 2002:a05:6870:aa97:b0:1fb:75b:99a0 with SMTP id gr23-20020a056870aa9700b001fb075b99a0mr644612oab.79.1702062727047;
-        Fri, 08 Dec 2023 11:12:07 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id yl13-20020a05687c218d00b001fb17559927sm525316oab.48.2023.12.08.11.12.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 11:12:06 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <a4049a12-f0ea-44fd-8e36-df59b73179a9@roeck-us.net>
-Date:   Fri, 8 Dec 2023 11:12:04 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] hwmon: (corsair-psu) Fix probe when built-in
-Content-Language: en-US
-To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>,
-        Armin Wolf <W_Armin@gmx.de>
-Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231207210723.222552-1-W_Armin@gmx.de>
- <20231208194436.37e62928@posteo.net>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231208194436.37e62928@posteo.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1702062748; x=1702667548;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nVvef+BcVgEroNYpsUvlaSbQE1KPpVwrXco8mT3u6R8=;
+        b=Ri4LZlZ9sCSEdlixVQ0lKnb4z+lVe1R8V1HgV2uQwhSt4aLIA9z2KEKnUnXFGOE3lp
+         i4v7yrdB4SYCn8EoDuFFihtZVE8/hTvk97SUeuWY/FFFRYfRyvAGBqHhbWjLqMc33jrf
+         LcSon0Rdk2cqfkEbWCNV3ZD1UoeTdfUpE44w9Izku/kUqOmu3XlvCCtJ9Az9nYZdwXIA
+         NUWOAsERxmBHZr/2Sa7tpWajo1hDnc2cCArCckZL7TEgAPzgQBVKZFQv0JggMXTz3yiY
+         2kn0yYrA/G2QCEJ5sH4+/w/8JSAxLmEqJKvbGovyy70ZQCFAsPgzNcvdXGsknvrKjLaU
+         g/8Q==
+X-Gm-Message-State: AOJu0Yw5E8FJ1qFSWD4bNbAW3DJgOF6zQ8E3sM6L0GAZgrWuQZN9lwjw
+        lIovuNN34C5iAq8ArAve2btsgeHRRQ==
+X-Google-Smtp-Source: AGHT+IGuOdD3gIEzMskxj65xx+SL0VrhBoEpExw0ALUkNEYuZ/zPOt9y7oxmzmGADGUzBYXekOw1J3gmSA==
+X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
+ (user=rmoar job=sendgmr) by 2002:a0c:f7d1:0:b0:67a:dbad:8ebd with SMTP id
+ f17-20020a0cf7d1000000b0067adbad8ebdmr11575qvo.5.1702062748417; Fri, 08 Dec
+ 2023 11:12:28 -0800 (PST)
+Date:   Fri,  8 Dec 2023 19:12:21 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231208191222.630119-1-rmoar@google.com>
+Subject: [PATCH v3 1/2] kunit: tool: fix parsing of test attributes
+From:   Rae Moar <rmoar@google.com>
+To:     shuah@kernel.org, davidgow@google.com, dlatypov@google.com,
+        brendan.higgins@linux.dev
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/23 10:44, Wilken Gottwalt wrote:
-> On Thu,  7 Dec 2023 22:07:23 +0100
-> Armin Wolf <W_Armin@gmx.de> wrote:
-> 
-> Just forgot. Did both, works just fine. Is it okay that way? This is my first
-> time.
-> 
-> Tested-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-> Reviewed-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-> 
+Add parsing of attributes as diagnostic data. Fixes issue with test plan
+being parsed incorrectly as diagnostic data when located after
+suite-level attributes.
 
-Yes, it is perfect, just a bit late. I sent the pull request pretty much in parallel
-(I didn't want to wait to make sure the patch makes it into v6.7-rc5).
+Note that if there does not exist a test plan line, the diagnostic lines
+between the suite header and the first result will be saved in the suite
+log rather than the first test case log.
 
-Thanks,
-Guenter
+Signed-off-by: Rae Moar <rmoar@google.com>
+---
+ tools/testing/kunit/kunit_parser.py | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index 79d8832c862a..ce34be15c929 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -450,7 +450,7 @@ def parse_diagnostic(lines: LineStream) -> List[str]:
+ 	Log of diagnostic lines
+ 	"""
+ 	log = []  # type: List[str]
+-	non_diagnostic_lines = [TEST_RESULT, TEST_HEADER, KTAP_START, TAP_START]
++	non_diagnostic_lines = [TEST_RESULT, TEST_HEADER, KTAP_START, TAP_START, TEST_PLAN]
+ 	while lines and not any(re.match(lines.peek())
+ 			for re in non_diagnostic_lines):
+ 		log.append(lines.pop())
+@@ -726,6 +726,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str], is_subtest:
+ 		# test plan
+ 		test.name = "main"
+ 		ktap_line = parse_ktap_header(lines, test)
++		test.log.extend(parse_diagnostic(lines))
+ 		parse_test_plan(lines, test)
+ 		parent_test = True
+ 	else:
+@@ -737,6 +738,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str], is_subtest:
+ 		if parent_test:
+ 			# If KTAP version line and/or subtest header is found, attempt
+ 			# to parse test plan and print test header
++			test.log.extend(parse_diagnostic(lines))
+ 			parse_test_plan(lines, test)
+ 			print_test_header(test)
+ 	expected_count = test.expected_count
+
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+-- 
+2.43.0.472.g3155946c3a-goog
 
