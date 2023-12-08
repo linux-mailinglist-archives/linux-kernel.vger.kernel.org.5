@@ -2,88 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7644780A761
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A9080A765
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbjLHP3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:29:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38052 "EHLO
+        id S1574313AbjLHP3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:29:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233534AbjLHP3D (ORCPT
+        with ESMTP id S233549AbjLHP3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:29:03 -0500
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB351732;
-        Fri,  8 Dec 2023 07:29:10 -0800 (PST)
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6d9d0d0e083so1500981a34.2;
-        Fri, 08 Dec 2023 07:29:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702049350; x=1702654150;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B2To1yV3sBlyUIXX2dRxgZLUw8e5tQCWslY62gbS5zc=;
-        b=uuSt5PVHIIv9XjMoynJbPC5N/Wdn+bYHEfO8B64NSRmjeMuZDSgSnt6t5K8TQl7jFM
-         AgQpiJ8PYP+/0swiiDyLJ4BM63nOQm9YYp93gDLIjhGtuVGkpEWPYG2RlhV9kcx1w9H6
-         as15tMOsfsScZv0kXRQHIqyB4l1RJo3i0f4JhWzglDv8Fj9pUPKDqN1JT7iQe/jYY/sk
-         tV50T6LQNNgBR6Rz+jHDGBI4q6mL8I4Vegquhj5Wre+xsnGBi23t1zdtRhtPnysUWXjj
-         geTycgN/DqaXJtQsVJZh4+0zK2m7+kF2WaHhVLTK9bnZ+xU2RhkD/k59WI5AaJKdF8mZ
-         3M5A==
-X-Gm-Message-State: AOJu0Yxi2uHxTEUTS/0LeTk+wgFUc9j7QB74SbIcl254z0nznV5qO+Lu
-        g/ZAvBsgm5ZH5Qg7PvoxMg==
-X-Google-Smtp-Source: AGHT+IHyKKjladIMN927leaaMAXflSx/bGCGRS95D1nFq54QptT3Wo+QdUF8jxOs29jg+9zj+WWbgg==
-X-Received: by 2002:a05:6870:b69d:b0:1fb:75a:6d47 with SMTP id cy29-20020a056870b69d00b001fb075a6d47mr273275oab.110.1702049349884;
-        Fri, 08 Dec 2023 07:29:09 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id lv18-20020a056871439200b001fb24a0c23csm434995oab.35.2023.12.08.07.29.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 07:29:09 -0800 (PST)
-Received: (nullmailer pid 1380806 invoked by uid 1000);
-        Fri, 08 Dec 2023 15:29:08 -0000
-Date:   Fri, 8 Dec 2023 09:29:08 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alex Bee <knaerzche@gmail.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] pmdomain: rockchip: Add missing powerdomains for
- RK3128
-Message-ID: <20231208152908.GA1378274-robh@kernel.org>
-References: <20231202125144.66052-1-knaerzche@gmail.com>
- <20231202125144.66052-2-knaerzche@gmail.com>
+        Fri, 8 Dec 2023 10:29:11 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B63D6FB;
+        Fri,  8 Dec 2023 07:29:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zys2RTvczhHBrTilI40fr1weYiUwJQ9jBZynoNtrbro=; b=A7AsbWlPHxXQuLZcVgdzdcgsCq
+        Y/uiZuV7gP6bvdnUaEsdtkwIgNjhyuu02fcT//c4pnl4MeS/r+Mm/PDUGhhus/EuoDCAeLPvFpK5s
+        Tw+qMxHxrDr3Th8nUVj/gCpINgflX6CWbhc/jFZBFETBT2Q+uJdlIru/CtlacS2a+8ul+p8DOhd4P
+        v6km0MPmNvFExOmqDKge9HyAnO+u33zS5nAHz+N83SKdo49Gb8JJ4KfHlNFM7fz5fnVCfXkeIEPbs
+        LXfqKLMYmLGLctp4U/k+XPBATy10kNBMxYVFu+VFjnST2raLHBaemEfP8CTH8whxx6Wf9JSG+KPTv
+        /A4WmzXA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rBcmu-008w3V-2p;
+        Fri, 08 Dec 2023 15:29:12 +0000
+Date:   Fri, 8 Dec 2023 15:29:12 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        gus Gusenleitner Klaus <gus@keba.com>,
+        Al Viro <viro@ftp.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [RFC][PATCHES v2] checksum stuff
+Message-ID: <20231208152912.GB1674809@ZenIV>
+References: <CANn89iJre=VQ6J=UuD0d2J5t=kXr2b9Dk9b=SwzPX1CM+ph60A@mail.gmail.com>
+ <20231019080615.GY800259@ZenIV>
+ <20231021071525.GA789610@ZenIV>
+ <20231021222203.GA800259@ZenIV>
+ <20231022194020.GA972254@ZenIV>
+ <20231205022100.GB1674809@ZenIV>
+ <602ab11ffa2c4cc49bb9ecae2f0540b0@AcuMS.aculab.com>
+ <20231206224359.GR1674809@ZenIV>
+ <46711b57a62348059cfe798c8acea941@AcuMS.aculab.com>
+ <20231208141712.GA1674809@ZenIV>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231202125144.66052-2-knaerzche@gmail.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231208141712.GA1674809@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 02, 2023 at 01:51:40PM +0100, Alex Bee wrote:
-> For RK3128 the powerdomains PD_PERI, PD_SYS and PD_CRYPTO are currently
-> missing.
-> Add them.
+On Fri, Dec 08, 2023 at 02:17:12PM +0000, Al Viro wrote:
+> On Fri, Dec 08, 2023 at 12:04:24PM +0000, David Laight wrote:
+> > I've just read RFC 792 and done some experiments.
+> > The kernel ICMP checksum code is just plain broken.
+> > 
+> > RFC 792 is quite clear that the checksum is the 16-bit ones's
+> > complement of the one's complement sum of the ICMP message
+> > starting with the ICMP Type.
+> > 
+> > The one's complement sum of 0xfffe and 0x0001 is zero (not the 0xffff
 > 
-> Signed-off-by: Alex Bee <knaerzche@gmail.com>
-> ---
->  drivers/pmdomain/rockchip/pm-domains.c   | 13 ++++++++-----
->  include/dt-bindings/power/rk3128-power.h |  3 +++
+> It is not.  FYI, N-bit one's complement sum is defined as
+> 
+> X + Y <= MAX_N_BIT ? X + Y : X + Y - MAX_N_BIT,
+> 
+> where MAX_N_BIT is 2^N - 1.
+> 
+> You add them as natural numbers.  If there is no carry and result
+> fits into N bits, that's it.  If there is carry, you add it to
+> the lower N bits of sum.
+> 
+> Discussion of properties of that operation is present e.g. in
+> RFC1071, titled "Computing the Internet Checksum".
+> 
+> May I politely suggest that some basic understanding of the
+> arithmetics involved might be useful for this discussion?
 
-Bindings (and DT headers are bindings) should be separate patch.
+FWIW, "one's complement" in the name is due to the fact that this
+operation is how one normally implements addition of integers in
+one's complement representation.
 
-Rob
+The operation itself is on bit vectors - you take two N-bit vectors,
+pad them with 0 on the left, add them as unsigned N+1-bit numbers,
+then add the leftmost bit (carry) to the value in the remaining N bits.
+Since the sum on the first step is no greater than 2^{N+1} - 2, the
+result of the second addition will always fit into N bits.
+
+If bit vectors <A> and <B> represent integers x and y with representable
+sum (i.e. if 2^{N-1} > x + y > -2^{N-1}), then applying this operation will
+produce a vector representing x + y.  In case when the sum allows
+more than one representation (i.e. when x + y is 0), it is biased towards
+negative zero - the only way to get positive zero is (+0) + (+0); in
+particular, your example is (+1) + (-1) yielding (-0).
+
+Your bit vectors are 1111111111111110 and 0000000000000001; padding gives
+01111111111111110 and 00000000000000001; the first addition - 01111111111111111,
+so the carry bit is 0 and result is the lower 16 bits, i.e. 1111111111111111.
+
+Had the second argument been 0000000000000011 (+3), you would get
+10000000000000001 from adding padded vectors, with carry bit being
+1.  So the result would be 1 + 0000000000000001, i.e. 0000000000000010
+((+2), from adding (-1) and (+3)).
+
+References to 1's complement integers aside, the operation above is
+what is used as basis for checksum calculations.  Reasons and
+properties are dealt with in IEN 45 (older than RFC 791/792 - TCP
+design is older than IP, and that's where the choice of checksum had
+been originally dealt with) and in RFC 1071 (which includes
+IEN 45 as appendix, noting that it has not been widely available).
