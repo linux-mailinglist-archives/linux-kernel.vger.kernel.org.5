@@ -2,161 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E69280ADD6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF0C80ADDA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:30:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574688AbjLHU2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:28:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
+        id S234206AbjLHUaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:30:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLHU2u (ORCPT
+        with ESMTP id S229572AbjLHUaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:28:50 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2D210D8
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:28:56 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1e35c2807fso337226866b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 12:28:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702067335; x=1702672135; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8YmspBWjlQhgbBaV+faP8n1UzXpJ9XW2J0UVJ+AGzW4=;
-        b=rgVT0ePgVy78F423pHDxJkwXLT+zo8pmlatV37pUwijRNnjI+L+P6AV1ORkoO+UI2Z
-         HCgiPhKoYX8DyhEDCy2BXuetI6O17NLUx5Tir3MCnOFYaTKn+xEzeI+JuCQ3qfFKXQZP
-         da8Ty2OJIaH7MI/uJVlD0I5szqcapvsPhLkiLpbmgFj/ktqhgvJRpy9A5VdPK/VMy/Mh
-         7aERjKPRgncOwQ6jhO2SrT9I87YQgBfxYrx+tSXmhRbd8e1/dN3Wo87aZl+hQiYTI62L
-         IJXDjs4ax9Si10MkzAFYd1StjDEFnsYjuxm1nlG/xMY6pLbeD4YCMUUinka7tpw6rL77
-         E3mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702067335; x=1702672135;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8YmspBWjlQhgbBaV+faP8n1UzXpJ9XW2J0UVJ+AGzW4=;
-        b=sUkkrsubjH26d6TpGqSDxNDJcvIeJZ846ZAr8g31VD5RkIWmo7Rl0W9yE4iM4pXlcY
-         rknwNoSAwF2FXdwERJwS2GHG4e3vJEG32e+JHIWqtr/O4nyUfohOBcxLK1cOdeyw1wVp
-         dXoteJxHDJONRVcdvRVl238xGaKhc2cDXfyxcXPt+ZLtuy2/nezxncLtEVe3l9cfC67V
-         JCYCtThn2s1tEUluPGTFPE36Q07M+nGx2OdpB84Y+edjok5blMg4DodmyffOexbIi8T1
-         ODAYC4rWlBZYmWdxxw6PoRHJyjuHwHxb8dkATYwUbbyntpqlbsnhMCGaTVoz0VdMNUnb
-         PnTA==
-X-Gm-Message-State: AOJu0YxoJN/XWDMS+gHUndKKwowZH9jpteAMg+K0Cyp9MOmqGbUozDw+
-        dnv99n8mjK2X35spS5jyuffrnA==
-X-Google-Smtp-Source: AGHT+IEc7tcHnv918/ZKZGlZduv5n+9LBN3Lm/reTr0YuVnta+dx6/loKsH9F2oO4fZYGauZci07AQ==
-X-Received: by 2002:a17:907:9801:b0:a1c:efe0:bddc with SMTP id ji1-20020a170907980100b00a1cefe0bddcmr356499ejc.116.1702067335108;
-        Fri, 08 Dec 2023 12:28:55 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id j8-20020a1709064b4800b00a1e377ea782sm1375169ejv.196.2023.12.08.12.28.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 12:28:54 -0800 (PST)
-Message-ID: <12b3dce8-92c4-4084-9cc2-4e0d6432c6f3@linaro.org>
-Date:   Fri, 8 Dec 2023 21:28:52 +0100
-MIME-Version: 1.0
+        Fri, 8 Dec 2023 15:30:04 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2066.outbound.protection.outlook.com [40.107.243.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B142710E6;
+        Fri,  8 Dec 2023 12:30:10 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mVGECp10Ah6kopSza4DH4hJ8MhIkxEUNsY0wk5P7y9YPCzQUevoo5HHoD6ypC5jYrjo7iNrbbubQVcY8H01+cKc+IsgbCJeDQWLNkNYnY5ZVyJMgtrSOl8b/KZbMcqtAe+y0cJj0FWaW0rD6hHBRC4abb9eLvAr7gjf0dvTKJWql+cWe+Rmh4dGAjeC0Cz12U/U5ka+6zOoSAm6iSIUHhK2nguFL+p3bJ+QT6puzF/6YKgz45UyaqsEu1FoqK+xY3yNFmoHkufaUlRdyx10krn6VgCKmvZCfhdNiEHEWrBWppCobDatdsy3KPWYdvSUyB+8vobt7HPhfN8Jl15QxcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kXep31Vj7YsyaCiJHkYToC6i5Awy+k3YfN4DUeffgT0=;
+ b=huCLRlWuXUEKYKcu857HzGsxOSBWwhdas4WVL3V5OdahOzRWAeM9ygGjSpsYt/h2NMSCtDFqjE/M6fOZTSb+AC/Aggs/JW+21QarQoKEsiK/8u5wq1cZsrGY9ZtdsHm70cqPJoFVCWxwKqlO13XEuUIl1HB7vGy+KW3vFHA17ERMMCKi0MBjdevA4ovI5r3SyzM0a9Wv7hL5+4HRMiuv9ReDgW3yD/8ZlnNRA137asqSYiU1ZbIciVZAb9uvrMSGWyjbalPD9IwvdUueNBEHdUYqWsxVbxpFQpxVps4LZbyg38lb4AUUebZ/4gwSKDPE4VZAlAuaOvwfDxcz+VeRQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kXep31Vj7YsyaCiJHkYToC6i5Awy+k3YfN4DUeffgT0=;
+ b=KWnQ7iGoPdtK1dNexlsxDhMWnEF1iDartPxKpxmuQenWRjR7ufqX42kvwaZv1Cbx1ulNWzro4FISFPqi9BQLfyYjYekXEiWpJjHfLReNjxVa/Dnl24bo0Ki5MqkWNfNMo1JmRQ4tHaAxWx4fo4VSnOvmT8KnNLSFJhGFQcnVH/RY4pOuwjYv7pUvLSH5Ygf2nIRTpTDhcTLpLZIY4wQxBy6cp1pfdeqVWiGv7eInxs8/chZCdgK4xDnHuRdR6w0/YRxTNj7r0ltLQZkWCMsvEPHSFEDnltCHVsVN7K/j89fnHuziMOs9HwPJYARRQ16bIObdwZXKZCuEqwP2cUB0aw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
+ by CO6PR12MB5460.namprd12.prod.outlook.com (2603:10b6:5:357::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.28; Fri, 8 Dec
+ 2023 20:30:07 +0000
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::6b9f:df87:1ee2:88ca]) by BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::6b9f:df87:1ee2:88ca%6]) with mapi id 15.20.7068.028; Fri, 8 Dec 2023
+ 20:30:06 +0000
+Message-ID: <c54b4059-e3a7-40bd-84dc-013dc3b15c65@nvidia.com>
+Date:   Fri, 8 Dec 2023 12:29:37 -0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: mmc: brcm,sdhci-brcmstb: Add support for
- 74165b0
+Subject: Re: [PATCH v3 11/11] selftests: error out if kernel header files are
+ not yet built
 Content-Language: en-US
-To:     Kamal Dasu <kamal.dasu@broadcom.com>, ulf.hansson@linaro.org,
-        linux-kernel@vger.kernel.org, alcooperx@gmail.com,
-        linux-arm-kernel@lists.infradead.org, adrian.hunter@intel.com,
-        linux-mmc@vger.kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org
-Cc:     f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        Kamal Dasu <kdasu@broadcom.com>
-References: <20231208202108.7468-1-kamal.dasu@broadcom.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231208202108.7468-1-kamal.dasu@broadcom.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     David Hildenbrand <david@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+References: <20230606071637.267103-1-jhubbard@nvidia.com>
+ <20230606071637.267103-12-jhubbard@nvidia.com>
+ <20231103121652.GA6217@noisy.programming.kicks-ass.net>
+ <a002f903-723f-40ae-8d7a-421ab2e082e2@redhat.com>
+ <20231208151401.GG28727@noisy.programming.kicks-ass.net>
+ <990feea2-c7a8-4cd9-8a6a-bc4bc1c2ffab@redhat.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <990feea2-c7a8-4cd9-8a6a-bc4bc1c2ffab@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BYAPR07CA0083.namprd07.prod.outlook.com
+ (2603:10b6:a03:12b::24) To BY5PR12MB4130.namprd12.prod.outlook.com
+ (2603:10b6:a03:20b::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4130:EE_|CO6PR12MB5460:EE_
+X-MS-Office365-Filtering-Correlation-Id: 920f9016-3763-4c09-7715-08dbf82c771d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /EwtO0Xzl3g98SESY269xqbl7F9+HZizzorrUf+zdtFL6eAt77aBT5XXb9zET84FMUjU9bSm+cFkyQWle6fC3p57q7jOT2WP7fWp94YNyRU2VQnM2Z4P4UXM35m9G8ycKUmEaxRjKEmjg8ICM+mU6vlL4GYMGfqdDm29s8zBTDJbAyf1rvgW6rok+JjuIBAPgEPQqVFLkEST0uMnHIO0HK29jWfMvkwmAB+DMKmUiJnY+fc1I4bQSsuiz3EkOCHiJjyaxLqR9uzXP1cSdrEKJ80c5xVPg9yCzwKc8iOpCzmDcCMpqgbvhnPBqCPRJxHiQRqaFkrm7Eq2M+WEEs+od1mYdaNwxdquuI4tz7dGp8xa7Zx7citWru98tEPTh5E3dpm+7dYpER/Q3qHnsfoykwud0lnfEmdyJdQJ/tnGEyrGmnOw5wItK28cieT8N2cuhC9EWaRyrbPVHXKAJpDB2+XxJlIw5BzlFYBDtj6uxRr2WMVHyQLf6kr1zl5ev43rwSag1Kf9pOmYBDRmLFXKWtrNMg22oYCw6y/hSgem78mwHp2HBHNZCjmZhJxeKNSUKT88wXfXB/ml7v28YFXVjH8UeRFcoD7G5Odzm0LN1StlH4h5cy61170ZkT0weE4UtFzovbEwb7Z2n9VwxM7GQY6Bq2BDbByXkfWlmNJcgnKAnxP+CH9WQRMCQ9aC5TOd
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(136003)(376002)(346002)(230922051799003)(230173577357003)(230273577357003)(451199024)(186009)(1800799012)(64100799003)(6666004)(8676002)(2616005)(6486002)(8936002)(38100700002)(478600001)(4326008)(86362001)(36756003)(6512007)(31696002)(5660300002)(53546011)(41300700001)(31686004)(6506007)(7416002)(316002)(66476007)(66946007)(54906003)(110136005)(66556008)(83380400001)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OFFHZ1NBNndWZjBJQlo4Y3JWQWRkaHRvdXhnMzhkcE1SdnlKVUNUMitNWjVX?=
+ =?utf-8?B?cEpKaTIzK0dGTEdkYjZZY0NOR1prRm9JcGlZVVBPUzdjQWs5cVNSOHY4NzRK?=
+ =?utf-8?B?ZUlMdDVqRCs1U1RkNUdQOVBnK1dJeDMxbGNkanBvM2daZUJKbERraXpwMmcx?=
+ =?utf-8?B?dTBnRTVlaXZhdVhSSjh3TEdwMzB2NnpNYkwyb2VaS3BtKzJaZWR6bEhBZFMz?=
+ =?utf-8?B?dldlSk5zZXhBcGhNOWZjWFdES1oxMGk0MzZTTEQvMmtkZnlTSVo3SnordkNr?=
+ =?utf-8?B?RlhMYytxQis4cUpTUUVjU2NkRHNSTjRiSG8xdVpHZUN0VHVnVWwzZVdSTC9j?=
+ =?utf-8?B?ZGQ1TkNJU0hPRlNyY0lZVjUrRUVRUWoyb0NSQk9QK1FTVzN2NENzMVR2d3ZF?=
+ =?utf-8?B?RWlVblFKa2hBOHZOMWZEVTB1NG1CK0h4U0J4eVVHNlRPczJVZDFlTTFpZ2lY?=
+ =?utf-8?B?N1E3YnVmM05UN0IzUkM4MERJdFBiM0MrdVYvT01nL1ZQMXIyNjl6Q0k4Wk1J?=
+ =?utf-8?B?Y2twZ1JVUU9HVmtCbSs1S3k3R0lzeXJ5WUU5Q0hzMk5XOEVzK1h5blkxSmV0?=
+ =?utf-8?B?bHF2K015eTFpZzd2VjFiVUlUaXZTZDVwbDlONkdOWG1NbzR0aUxrOFVUQzRj?=
+ =?utf-8?B?dUtxRk1hTDhQSzBzQ09INFFEWVI5UXlkUGlncDhhbDZTR3dwRi9NV2U0dFdO?=
+ =?utf-8?B?NzJydjJ4YkZBWUNETFRRMlY4RmE3amtRWlZKNnovL0RMOWpJWXh3MUE4TmVr?=
+ =?utf-8?B?WEdYb0Q4RW92aC9NNzFDb1ZyL3dveitCMjJRZkUzNnFLZlNrRTdvaHhYSlFy?=
+ =?utf-8?B?dTNIZW9GVEdyM0tIQzdEb3dNM1V3NnZiQnRjT01LSEoxWURmbWMrZktUUDdo?=
+ =?utf-8?B?RE1MUWxXb2pRN083UElCVVVVMGlEb1NCUGt3K25oS3pXNHBYRnZJUkluTGxP?=
+ =?utf-8?B?UlhFeE9EakpTWm9hZzczR2Zqd3F2SU9TdFhrUkxYZ0lrWHphSmx2WUxYbCtK?=
+ =?utf-8?B?NTczbkxHcG1YTEFxN3dOYWRWTnpneE1ka0gyVlNkK0lxOTRHb0Nzb21LR0lC?=
+ =?utf-8?B?NjZnQkhvNVJjbklvRmJVZCt2dWRTMlhkZWRlQy9PTTdRQmVCNU9TUzBMQ041?=
+ =?utf-8?B?YVFyNDZZbHV3VlJSWWx1d2FmclVxTTRFSVZqS0Zham9uSG1jWFIxeGVTci9C?=
+ =?utf-8?B?djZDa0IvUEM1cnloanRFajI3ckdpRDdmRHR5M0RWRWZ4cGhQdUptRlQ5eWlK?=
+ =?utf-8?B?M2EzVVFFWVZoNDRpcWRsZnpLakx1bUJJZW91b2p1dzB4Q2ZTWVdmMUo4Ky9a?=
+ =?utf-8?B?M1RmWTMxRXFCVWlYVWllYllTcWJhY1lnWm5MVEFxZFY3Z2cxVzd6WHh0b0l5?=
+ =?utf-8?B?RzBxWVBFY1c1UVNCRExWR1NlcnJKZjFwU3J0a2FMT1MwNXcwcXdkV1VnNE9y?=
+ =?utf-8?B?Qi9VZnVEVmJFa01ZSWpxRFlaY1VpcjFWOC9KRlV0ekk3ai93bURkQkV2dytj?=
+ =?utf-8?B?YVVnK3NFdHh3QVJGazJRVExxWDE3cTJ5MnREbzl6T0FXazVva1NDREdKSG1Q?=
+ =?utf-8?B?OGRJbndFMFhURFlqNHRzK3NaOENzVjkyQkEvZlFZUnBTUi9IZUMzU3N0eGd2?=
+ =?utf-8?B?RlRXb2xZdGpzRXBCcHBINkt4TmVNMmsvcWNxaGgwTDZZMWlYVW9ndGFvYXV1?=
+ =?utf-8?B?L3lDbEdEMFdmM1lHdTQvNXM5dmcwQThtT3FUOGUxaHdZclJUb0VVWWxJdmhm?=
+ =?utf-8?B?ZmpkcHpDc095ZGE0bUw2OHcrbnJsWmxPbGhXejhldmU2dTRncEtQVHFhejM4?=
+ =?utf-8?B?b2lFQ091L2dWNW9tZkpvV3NkaXFYZEdOQ3JVNTNGUUpibnBPb1BQMVhGQmc2?=
+ =?utf-8?B?YUUzbWNJbENGNGVVbGFGZm1kL0RPb2dxTDh1V0JOQ2YwYWluazNwM201eWkr?=
+ =?utf-8?B?YkhVekwrNndyOEtiK0FDK3N5QXNzZVpHTWNCZTlYdkZVMTlsL2xRUGtyanYy?=
+ =?utf-8?B?Y3VnZ3E0OGgzZ2JxN2c1cnNoejJlSGRmZFNTSVdKUkVJUG9aVm1hMFkwcmQ0?=
+ =?utf-8?B?TGpEUHI2RDlPcmM2T1ErZnBYUnVEanRIVlFUZXE0K0d1WHZnY0U2eGtqQzlm?=
+ =?utf-8?B?eVMrRjExaEJmZWdXWk1tV25IM2JGb1pxTVp1bEhKbTYwbVFuV3o5MFFLeUZm?=
+ =?utf-8?B?WWc9PQ==?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 920f9016-3763-4c09-7715-08dbf82c771d
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 20:30:06.8599
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H/29/XPAGC4ZlXw183CQfm0YHJtgdP6aVjk7SlVQIJL2qKxeLnX83vPprF1YDthn//YXudV7/oecfQCEms0gNw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5460
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/2023 21:21, Kamal Dasu wrote:
-> From: Kamal Dasu <kdasu@broadcom.com>
+On 12/8/23 07:21, David Hildenbrand wrote:
+> On 08.12.23 16:14, Peter Zijlstra wrote:
+>> On Fri, Nov 03, 2023 at 01:22:54PM +0100, David Hildenbrand wrote:
+>>> On 03.11.23 13:16, Peter Zijlstra wrote:
+>>>> On Tue, Jun 06, 2023 at 12:16:37AM -0700, John Hubbard wrote:
+>>>>> As per a discussion with Muhammad Usama Anjum [1], the following is 
+>>>>> how
+>>>>> one is supposed to build selftests:
+>>>>>
+>>>>>       make headers && make -C tools/testing/selftests/mm
+>>>>>
+>>>>> Change the selftest build system's lib.mk to fail out with a helpful
+>>>>> message if that prerequisite "make headers" has not been done yet.
+>>>>>
+>>>>
+>>>> NAK NAK NAK
+>>>>
+>>>> This now means I can no longer run selftests, I thank you very much! 
+>>>> :-/
+>>>>
+>>>> root@spr:/usr/src/linux-2.6# make O=defconfig-build/ -j64
+>>>> make[1]: Entering directory '/usr/src/linux-2.6/defconfig-build'
+>>>> ***
+>>>> *** The source tree is not clean, please run 'make mrproper'
+>>>> *** in /usr/src/linux-2.6
+>>>>
+>>>>
+>>>> I've always done:
+>>>>
+>>>>     cd tools/testing/selftests/x86; make
+>>>>
+>>>> and that has always worked
+>>>>
+>>>> Now I can't bloody well build *any* selftest or risk not being able to
+>>>> do builds.
+>>>
+>>> This change landed in 6.5, no? And 6.6 was just released. Just 
+>>> curious why
+>>> you notice that now.
+>>
+>> And I hit it again (different box etc..)
+>>
+>> Can we please get this garbage fixed already?
 > 
-> With newer sdio controller core used for 74165b0 we need to update
-> the compatibility with "brcm,bcm74165b0-sdhci".
+> I'd suggest to either revert or turn into a warning.
+
+That would put us back into a half-broken sort of situation, though...
+see below.
+
 > 
-> Signed-off-by: Kamal Dasu <kdasu@broadcom.com>
-> ---
->  .../devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml          | 5 +++++
->  1 file changed, 5 insertions(+)
+> @John?
 > 
-> diff --git a/Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml b/Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml
-> index c028039bc477..cec9ff063794 100644
-> --- a/Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml
-> @@ -13,6 +13,11 @@ maintainers:
->  properties:
->    compatible:
->      oneOf:
-> +      - items:
-> +          - enum:
-> +              - brcm,bcm74165b0-sdhci
-> +          - const: brcm,bcm74165-sdhci
 
-What is exactly the difference between bcm74165b0 and bcm74165? Your
-driver does not use bcm74165, so I wonder what its purpose is.
+I don't have a strong opinion about how this should be done, and in
+fact I believed at the time that I was bringing the system into
+compliance with what everyone wanted here. :)
 
-Few days ago, for different patchset, I was asking "why", because the
-motivation was not clear from the code. Here you said "we need to", but
-I would argue: no you do not need to add bcm74165 if it means nothing,
-thus this commit msg has similar problem. Does not answer why it is done
-like this.
+There seem to be two conflicting visions:
 
-Best regards,
-Krzysztof
+a) The way it was (much) earlier: use ifdefs and defines to get by
+without the latest kernel headers, or
+
+b) Requiring recent kernel headers to build the various selftests.
+
+Shuah, Peter, others: can we choose a direction please? Either
+way will work, and I personally don't care which one we choose.
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
 
