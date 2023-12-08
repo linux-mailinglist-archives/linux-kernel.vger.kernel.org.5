@@ -2,123 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDD380A65F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E087880A668
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574094AbjLHO7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 09:59:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
+        id S1573995AbjLHPBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:01:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574090AbjLHO6l (ORCPT
+        with ESMTP id S1574034AbjLHPAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 09:58:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A0B2118
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 06:58:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5D1B1C433C7;
-        Fri,  8 Dec 2023 14:58:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702047510;
-        bh=z+uODMNdb+yL0ZZzyWs5UmEeiIVKC6u4wz42h2ik2a8=;
-        h=From:Date:Subject:To:Cc:Reply-To:From;
-        b=VwF0zPtxXQwsYpma2Yw0Mklf9CCRg98430fuCELiUfyB9ycExFgU6rf4trmogH67e
-         8Y0JrXm/fzjtsFbMFal5QKu4hQw/fYXvlU6DdtZTXmxlOeSo400G8zTNQ3VAIbHYTZ
-         tgmB6/dn6VkHEmOnMc3S/SJUL6paeAlR2zN2Uqu10WbInJuusDH1Aw0zAfUsC8De6D
-         9Wc3KdCB7guCdJRnsQ4uMbQQ4PjS/gMFI14HyrgshdmLa6nCc/RxYTopIYcqhVyRNS
-         /D88uq+kgmH2blBiUAKAMzbR+Rzvn7Baqcu/dMviZpnfZMuv9UFEvbzg3tYd5yHub2
-         VTs7hd/ERBbhQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 49AEAC4167B;
-        Fri,  8 Dec 2023 14:58:30 +0000 (UTC)
-From:   Rodrigo Cataldo via B4 Relay 
-        <devnull+rodrigo.cadore.l-acoustics.com@kernel.org>
-Date:   Fri, 08 Dec 2023 15:58:16 +0100
-Subject: [PATCH iwl-net] igc: Fix hicredit calculation
+        Fri, 8 Dec 2023 10:00:41 -0500
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38163F1;
+        Fri,  8 Dec 2023 07:00:46 -0800 (PST)
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6d9da088ca3so1153657a34.1;
+        Fri, 08 Dec 2023 07:00:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702047645; x=1702652445;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yhQWuvNrfy0nDTet/URpa1HIQtUWnl4nOPZplCeKz7Q=;
+        b=STndtIHCyClfCUk87Ad27LlPsWA9C8KNXJbltLeB57byjSdnp2mUtzVcR6LL+IF9Jj
+         MvvTYraasWJ7QQ2+TdiInvnysuBUDWSubArhYFXtrREqBuD0sR86d1QNxG2IVu8WzzzQ
+         DPKBozKqr0Sdr6ymHjONw6Qv4PFqZaWI6WmpMGyu+daiFiJYkEEt7Y3QQMk5+sxM09oT
+         S2furNkEgjhgHpWXYEMbULFZfLe83qUiu9LW3xOielLnn4A5oWPDQDUffFa9u2nFpVZZ
+         Olei8ip6emEr23OTfBuweCLLa8r/eC82Z49+aCYA3cFwvIHegR/e+DgCpgGZ7xHJcGEa
+         FGvQ==
+X-Gm-Message-State: AOJu0Yx+jCSh8yI3w53u4w66b7mTo/W5oTp9XImr2sN2WyGQ46/1pvOm
+        HKE7BKT7pncxLBm5uDs4i2bQn10Z/w==
+X-Google-Smtp-Source: AGHT+IFNLtyInrOf9nIFSbmfUtQCKSgkpfe0CHZ/yGXwzd/BlzrMLoh/hXXynLP9bXaT2VnqR+WYNQ==
+X-Received: by 2002:a05:6830:110f:b0:6d9:ef4a:82db with SMTP id w15-20020a056830110f00b006d9ef4a82dbmr203527otq.13.1702047644628;
+        Fri, 08 Dec 2023 07:00:44 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id bn20-20020a0568300c9400b006d9e756fac2sm283283otb.51.2023.12.08.07.00.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 07:00:43 -0800 (PST)
+Received: (nullmailer pid 1287216 invoked by uid 1000);
+        Fri, 08 Dec 2023 15:00:42 -0000
+Date:   Fri, 8 Dec 2023 09:00:42 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Simon Glass <sjg@chromium.org>
+Cc:     devicetree@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
+        Michael Walle <mwalle@kernel.org>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Pratyush Yadav <ptyadav@amazon.de>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman
+ compatible
+Message-ID: <20231208150042.GA1278773-robh@kernel.org>
+References: <20231116172859.393744-1-sjg@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231208-igc-fix-hicredit-calc-v1-1-7e505fbe249d@l-acoustics.com>
-X-B4-Tracking: v=1; b=H4sIAAcvc2UC/x2M0QpGQBQGX0Xn2qm1+pFXkYt1HHylpV2h5N1t/
- +XUzDwUNUAjtdlDQU9EbD5BkWcki/OzMsbEZI0tC2sqxiw84eYFEnTEweJWYWObYapL+RnXUGr
- 3oEn6fzvCtbLXg/r3/QCLV9ZIcAAAAA==
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Aravindhan Gunasekaran <aravindhan.gunasekaran@intel.com>,
-        Mallikarjuna Chilakala <mallikarjuna.chilakala@intel.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kurt Kanzenbach <kurt@linutronix.de>,
-        Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1657;
- i=rodrigo.cadore@l-acoustics.com; h=from:subject:message-id;
- bh=weMSbJurKkzqYl3uCO65fr+skPXlmh7FrZPzSvAd/0U=;
- b=owGbwMvMwCGWd67IourLsUDG02pJDKnF+qIb625IOjBMseo/ujNfr2h/wfewxacfxdQHmTE/a
- ZgwOde2o5SFQYyDQVZMkUX/N5/T6jIlI47EySth5rAygQxh4OIUgIk8+8XwPzTNNpGBL+zR5MKJ
- p5+Kz2J44/LG1P7HE1UO7Y16mb2/LRkZzta4mXeZPFXaEt0UcW9y+Ou8iaGeHh88FVJOc0ZK2TE
- zAQA=
-X-Developer-Key: i=rodrigo.cadore@l-acoustics.com; a=openpgp;
- fpr=E0F4E67DE69A235AC356157D2DDD1455748BC38F
-X-Endpoint-Received: by B4 Relay for rodrigo.cadore@l-acoustics.com/default with auth_id=109
-X-Original-From: Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
-Reply-To: <rodrigo.cadore@l-acoustics.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231116172859.393744-1-sjg@chromium.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
+On Thu, Nov 16, 2023 at 10:28:50AM -0700, Simon Glass wrote:
+> Add a compatible string for binman, so we can extend fixed-partitions
+> in various ways.
+> 
+> Signed-off-by: Simon Glass <sjg@chromium.org>
+> ---
+> 
+> (no changes since v5)
+> 
+> Changes in v5:
+> - Add #address/size-cells and parternProperties
+> - Drop $ref to fixed-partitions.yaml
+> - Drop 'select: false'
+> 
+> Changes in v4:
+> - Change subject line
+> 
+> Changes in v3:
+> - Drop fixed-partition additional compatible string
+> - Drop fixed-partitions from the example
+> - Mention use of compatible instead of label
+> 
+> Changes in v2:
+> - Drop mention of 'enhanced features' in fixed-partitions.yaml
+> - Mention Binman input and output properties
+> - Use plain partition@xxx for the node name
+> 
+>  .../bindings/mtd/partitions/binman.yaml       | 68 +++++++++++++++++++
+>  .../bindings/mtd/partitions/partitions.yaml   |  1 +
+>  MAINTAINERS                                   |  5 ++
+>  3 files changed, 74 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+> new file mode 100644
+> index 000000000000..329217550a98
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+> @@ -0,0 +1,68 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2023 Google LLC
+> +
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Binman firmware layout
+> +
+> +maintainers:
+> +  - Simon Glass <sjg@chromium.org>
+> +
+> +description: |
+> +  The binman node provides a layout for firmware, used when packaging firmware
+> +  from multiple projects. It is based on fixed-partitions, with some
+> +  extensions, but uses 'compatible' to indicate the contents of the node, to
+> +  avoid perturbing or confusing existing installations which use 'label' for a
+> +  particular purpose.
+> +
+> +  Binman supports properties used as inputs to the firmware-packaging process,
+> +  such as those which control alignment of partitions. This binding addresses
+> +  these 'input' properties. For example, it is common for the 'reg' property
+> +  (an 'output' property) to be set by Binman, based on the alignment requested
+> +  in the input.
+> +
+> +  Once processing is complete, input properties have mostly served their
+> +  purpose, at least until the firmware is repacked later, e.g. due to a
+> +  firmware update. The 'fixed-partitions' binding should provide enough
+> +  information to read the firmware at runtime, including decompression if
+> +  needed.
 
-According to the Intel Software Manual for I225, Section 7.5.2.7,
-hicredit should be multiplied by the constant link-rate value, 0x7736.
+How is this going to work exactly? binman reads these nodes and then 
+writes out 'fixed-partitions' nodes. But then you've lost the binman 
+specifc parts needed for repacking.
 
-Currently, the old constant link-rate value, 0x7735, from the boards
-supported on igb are being used, most likely due to a copy'n'paste, as
-the rest of the logic is the same for both drivers.
-
-Update hicredit accordingly.
-
-Fixes: 1ab011b0bf07 ("igc: Add support for CBS offloading")
-Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
-Signed-off-by: Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
----
-This is a simple fix for the credit calculation on igc devices
-(i225/i226) to match the Intel software manual.
-
-This is my first contribution to the Linux Kernel. Apologies for any
-mistakes and let me know if I improve anything.
----
- drivers/net/ethernet/intel/igc/igc_tsn.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/intel/igc/igc_tsn.c b/drivers/net/ethernet/intel/igc/igc_tsn.c
-index a9c08321aca9..22cefb1eeedf 100644
---- a/drivers/net/ethernet/intel/igc/igc_tsn.c
-+++ b/drivers/net/ethernet/intel/igc/igc_tsn.c
-@@ -227,7 +227,7 @@ static int igc_tsn_enable_offload(struct igc_adapter *adapter)
- 			wr32(IGC_TQAVCC(i), tqavcc);
- 
- 			wr32(IGC_TQAVHC(i),
--			     0x80000000 + ring->hicredit * 0x7735);
-+			     0x80000000 + ring->hicredit * 0x7736);
- 		} else {
- 			/* Disable any CBS for the queue */
- 			txqctl &= ~(IGC_TXQCTL_QAV_SEL_MASK);
-
----
-base-commit: 2078a341f5f609d55667c2dc6337f90d8f322b8f
-change-id: 20231206-igc-fix-hicredit-calc-028bf73c50a8
-
-Best regards,
--- 
-Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
-
+Rob
