@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C598A809C12
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 06:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E569C809C14
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 06:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235817AbjLHF5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 00:57:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51302 "EHLO
+        id S235813AbjLHF5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 00:57:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235818AbjLHF5G (ORCPT
+        with ESMTP id S233276AbjLHF52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 00:57:06 -0500
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D17F1FEE
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 21:56:45 -0800 (PST)
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1fb28b4b7e2so2440156fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 21:56:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702015004; x=1702619804;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=isVzN1pEksgo9KbKcT6Bm9NG+s2hsO68xC5mltUUwTs=;
-        b=wzmomigeMlbRxAVD11uGMpDBUbR5HFdyLpS3IX8Dt0D2HO57RR0CqoDRyy+CZa37Ln
-         UFOWOkTX8+WHef6B+Avx6EP4Si+SuhI8MloRGKlydvomzicXDQKstCMGG0FqkmwgnhYG
-         6rACVBWzljmxKST1UqDJlVtAyAi0sI35HO2++dkvT6S8aKGbKRLi2ibY1z6Tq7xNUlXe
-         Dg+1ANckOt/jUoJQQ/9zvDMJa6FfIUkmHWzh23zqkzM0fmkB+cFqr8XOxIEigbqpxE31
-         erAOJR9iAM6NZzfvROPdYmBlx8KF2YkrH39FxAg96yMfZXlCTdb2jrNWGwMuDUfE/Dko
-         xREQ==
-X-Gm-Message-State: AOJu0Yw/HDLL234mTTZSAlM9wVqQbmwzymlKQc3hpcx5477bc87M/2Qa
-        3HdaqEBtqp6Ae4oRIOcg5ZP61zmRFCUSSxiKP38mWzDxH8P3bh8=
-X-Google-Smtp-Source: AGHT+IGqOqYJK/acjaTE0RfjziknRlrBU1MUKVC04Ts/L7PcUpReAlX28mRbt8iKBn4D/R5W+U9iQbXQz5xmGbFSYNay3SDiTBhS
+        Fri, 8 Dec 2023 00:57:28 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D59D19A2;
+        Thu,  7 Dec 2023 21:57:03 -0800 (PST)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B81CqNC028994;
+        Thu, 7 Dec 2023 21:56:56 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=HEQnHUIqnjI0rxLDWe/wA9HwPEdz9nqzT9bUL9LwXow=;
+ b=ZoAVrR6XhBhqwm3jZsjRCUX1EwrmtYbO3Jeam3qDhwrQy98Uw3BDTpX68yD6IRrR1Y6b
+ ZKVMUKJhC9UyFjTXbH6xkqndNnfJIIyC5oUF/AkJ6/418qDFOQK5uth7GDSOQTx/OTC4
+ llhbGZTf/ndsMCpYRh+p01JtniX3eu8kAaC622fwzzW3+CuVD6erGoOoGs+yP7Zm8CAR
+ d7cUE2heN3K87/OmrEIM4sEprbAa81ZlxKBB8iXlsF4e1CpbSfnyUdgUjkkgfxV1kI2l
+ tyB19MrPfCqn9MU+AhCytGDUw2Zn1lAmDlKjT+zbhv1uQta3vBIGf9Zm8ulcgxjGNwtF MQ== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3uubddbuhe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 07 Dec 2023 21:56:55 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 7 Dec
+ 2023 21:56:53 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Thu, 7 Dec 2023 21:56:53 -0800
+Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
+        by maili.marvell.com (Postfix) with ESMTP id 573F63F7050;
+        Thu,  7 Dec 2023 21:56:53 -0800 (PST)
+From:   Shinas Rasheed <srasheed@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
+        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
+        <kuba@kernel.org>, <davem@davemloft.net>, <wizhao@redhat.com>,
+        <konguyen@redhat.com>, Shinas Rasheed <srasheed@marvell.com>,
+        "Veerasenareddy Burru" <vburru@marvell.com>,
+        Sathesh Edara <sedara@marvell.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Abhijit Ayarekar <aayarekar@marvell.com>,
+        "Satananda Burla" <sburla@marvell.com>
+Subject: [PATCH net v3] octeon_ep: explicitly test for firmware ready value
+Date:   Thu, 7 Dec 2023 21:56:46 -0800
+Message-ID: <20231208055646.2602363-1-srasheed@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:390a:b0:1fb:2a24:f0a9 with SMTP id
- b10-20020a056870390a00b001fb2a24f0a9mr411291oap.1.1702015004548; Thu, 07 Dec
- 2023 21:56:44 -0800 (PST)
-Date:   Thu, 07 Dec 2023 21:56:44 -0800
-In-Reply-To: <000000000000bfba3a060bf4ffcf@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bfa614060bf93f2b@google.com>
-Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert
-From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: ok7DybbzTglDBUek9-Dr2b8mjc3niAau
+X-Proofpoint-GUID: ok7DybbzTglDBUek9-Dr2b8mjc3niAau
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-08_02,2023-12-07_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+The firmware ready value is 1, and get firmware ready status
+function should explicitly test for that value. The firmware
+ready value read will be 2 after driver load, and on unbind
+till firmware rewrites the firmware ready back to 0, the value
+seen by driver will be 2, which should be regarded as not ready.
 
-***
+Fixes: 10c073e40469 ("octeon_ep: defer probe if firmware not ready")
+Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
+---
+V3:
+  - Removed unnecessary parenthesis around boolean return.
 
-Subject: [arm-msm?] [net?] memory leak in radix_tree_insert
-Author: lizhi.xu@windriver.com
+V2: https://lore.kernel.org/all/20231207074936.2597889-1-srasheed@marvell.com/
+  - Fixed redundant logic
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 33cc938e65a9
+V1: https://lore.kernel.org/all/20231206063549.2590305-1-srasheed@marvell.com/
 
-diff --git a/lib/radix-tree.c b/lib/radix-tree.c
-index 976b9bd02a1b..5c2f9d8f2c3e 100644
---- a/lib/radix-tree.c
-+++ b/lib/radix-tree.c
-@@ -714,8 +714,10 @@ int radix_tree_insert(struct radix_tree_root *root, unsigned long index,
- 		return error;
+ drivers/net/ethernet/marvell/octeon_ep/octep_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+index 552970c7dec0..b8ae269f6f97 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+@@ -1258,7 +1258,8 @@ static bool get_fw_ready_status(struct pci_dev *pdev)
  
- 	error = insert_entries(node, slot, item);
--	if (error < 0)
-+	if (error < 0) {
-+		__radix_tree_delete(root, node, slot);
- 		return error;
-+	}
- 
- 	if (node) {
- 		unsigned offset = get_slot_offset(node, slot);
-@@ -55,6 +55,8 @@ struct kmem_cache *radix_tree_node_cachep;
- #define IDR_MAX_PATH		(DIV_ROUND_UP(IDR_INDEX_BITS, \
- 						RADIX_TREE_MAP_SHIFT))
- #define IDR_PRELOAD_SIZE	(IDR_MAX_PATH * 2 - 1)
-+static bool __radix_tree_delete(struct radix_tree_root *root,
-+				struct radix_tree_node *node, void __rcu **slot);
- 
- /*
-  * Per-cpu pool of preloaded nodes
+ 		pci_read_config_byte(pdev, (pos + 8), &status);
+ 		dev_info(&pdev->dev, "Firmware ready status = %u\n", status);
+-		return status;
++#define FW_STATUS_READY 1ULL
++		return status == FW_STATUS_READY;
+ 	}
+ 	return false;
+ }
+-- 
+2.25.1
+
