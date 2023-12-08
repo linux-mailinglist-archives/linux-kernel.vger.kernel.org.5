@@ -2,113 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D444809CD5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2685A809CBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233383AbjLHHBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 02:01:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
+        id S235745AbjLHHAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 02:00:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233196AbjLHHAg (ORCPT
+        with ESMTP id S235659AbjLHG7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 02:00:36 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051A410CF
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:00:42 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1d0ccda19eeso14903345ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 23:00:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702018841; x=1702623641; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8r9qoyiwuNkI/B/mT1i1YBAgOapNu0aoaEC6uqX8X6Q=;
-        b=fryJCTfQFUs2UIr+j5VmRu/0IFn+E77IV5GLEmtHgQL4Xcz1AZLyQkU2azxcd6RTKZ
-         baROwl4joBMzRPY0AdHI6fRgGL2uW4+4I1lnewSAtFUef8CjXcWzAZ9hWPuWwvuGB4cf
-         wUF3nLbGyiyv6DoBC/1pZ2jIulYVshpDvF1mWGCnhH4MXZXNyYVxZO+xrRAEAdbFSb8Y
-         knMd8c8sapHyEz5/fIv2Kzf2bc4ux0Puo5CKjkS2oCex0vTq0wEOBp5BrUEN3rtQejFN
-         I7b81PHbyedxokVf510A/Gg8x8UlEcpTEXEONFhD6aB2/OtQMUyaVHqDyA9YGtyjO8ZE
-         m5nA==
+        Fri, 8 Dec 2023 01:59:46 -0500
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2A619AE
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 22:59:49 -0800 (PST)
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1fb34e3da36so2903851fac.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 22:59:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702018841; x=1702623641;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8r9qoyiwuNkI/B/mT1i1YBAgOapNu0aoaEC6uqX8X6Q=;
-        b=fbQpTIioLkkCBNaa3wtJqu31VWTysvbpDodBWLiu+MYG5mFmpUDGq6eSwHPIdaZAcf
-         CiMqZYsV8odMoG9uB2zc4CcPUcgWPm7Gtw+KczeHXala78xA0kp1akwZ3whbcb/ycnYv
-         7s15xSMhYxbQQuEwSddhaaxCBm6065TnBfs1GG9s/XCORnWX0SVRKZjLXsxWG3Oejx3w
-         1PDzSrjSByZDhYBHDwFvt1mUxNdZb9drDk3rOATjEfMXL/pSIEjQOvjKb/gCEKuDzDdo
-         VOm+IPWKJLWqA62WHUqT0lPTn9uz4HZ5pZ6yZmNfbueb/d8uYA6+ouLYTX57QXUi7MKh
-         EmEw==
-X-Gm-Message-State: AOJu0Yw5R6pKYSn7cNZqfjy0EESjcNll7F9Dghx1eBcrlumXh8bfaM6M
-        ut+NTeE/S/YG6hzJKX3T6Zr2
-X-Google-Smtp-Source: AGHT+IHgEMcuEn/X8ZDnC+EdCxJUjvpDhj1d0x67W7LMHi3+pus9pdNpiEMflc2WfBIowYy/3GAfqg==
-X-Received: by 2002:a17:903:5c5:b0:1d0:6ffe:1e76 with SMTP id kf5-20020a17090305c500b001d06ffe1e76mr2644177plb.89.1702018841527;
-        Thu, 07 Dec 2023 23:00:41 -0800 (PST)
-Received: from localhost.localdomain ([117.216.123.142])
-        by smtp.gmail.com with ESMTPSA id n8-20020a170902e54800b001b03f208323sm934263plf.64.2023.12.07.23.00.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 23:00:41 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     martin.petersen@oracle.com, jejb@linux.ibm.com
-Cc:     andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-        ahalaney@redhat.com, quic_nitirawa@quicinc.com,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 17/17] scsi: ufs: qcom: Remove unused definitions
-Date:   Fri,  8 Dec 2023 12:29:02 +0530
-Message-Id: <20231208065902.11006-18-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
-References: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
+        d=1e100.net; s=20230601; t=1702018789; x=1702623589;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lOzqFhLXzpjBzeA1uOgLdaHhh/B0dFElnG9pBb+RYR0=;
+        b=vUhs2O2o2E6QeqhGwJxNu3ad/YGeGNy9WDmMmHBHqbg6u2kJyASefy0whKhR8JUel4
+         dwA+o/lVnlRYl7gVH1OJqyyDvxNt6npmuflNKsP1TjZYmNMirTkfggXqRlMzHDezlmGG
+         8zQRPCVgp9yOxqiL81cApoQtOF4gg1v9KJ5htuMFbAFCkCFtmASdyUwcMK8TEq8yRqLN
+         zFO6F5ngyHSr17VZE6f3F1ed7QJYZxkl1B8ccnglJpd3NhbBHKPzJKRi32bvx1o41TQi
+         LIIZCZb+vch3Q1YJvzIwOleMLFYg0qf/4m8Lz2qT8o3q4lB8xGbnVBjv77nKuwC6bF9W
+         nDlA==
+X-Gm-Message-State: AOJu0Yx2zl9DhjuPSqnxqX3b82E3ANYp1TZAF4opDPczBnjsxkVCWq88
+        1IXWlkC1c0rBAvH14WoaTLrhESxm6yw2TI98X7w1zI6DmnpvsTA=
+X-Google-Smtp-Source: AGHT+IF3Fzdrz8O1s1yvtwDt3O+GQEZ2KZT1LAaH3GyqW8/eUqDYvugCxj1PB6tOZ/5jkZrPCOnXdAjLveE8Rl07WnnTm9mFO1CB
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:ac08:b0:1fb:3bfc:a07e with SMTP id
+ kw8-20020a056870ac0800b001fb3bfca07emr4618017oab.6.1702018789180; Thu, 07 Dec
+ 2023 22:59:49 -0800 (PST)
+Date:   Thu, 07 Dec 2023 22:59:49 -0800
+In-Reply-To: <000000000000bfba3a060bf4ffcf@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000548be3060bfa2154@google.com>
+Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert
+From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused definitions.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/ufs/host/ufs-qcom.h | 6 ------
- 1 file changed, 6 deletions(-)
+***
 
-diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
-index 2ce63a1c7f2f..cdceeb795e70 100644
---- a/drivers/ufs/host/ufs-qcom.h
-+++ b/drivers/ufs/host/ufs-qcom.h
-@@ -10,22 +10,16 @@
- #include <soc/qcom/ice.h>
- #include <ufs/ufshcd.h>
+Subject: [arm-msm?] [net?] memory leak in radix_tree_insert
+Author: lizhi.xu@windriver.com
+
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 33cc938e65a9
+
+diff --git a/lib/radix-tree.c b/lib/radix-tree.c
+index 976b9bd02a1b..5c2f9d8f2c3e 100644
+--- a/lib/radix-tree.c
++++ b/lib/radix-tree.c
+@@ -714,8 +714,10 @@ int radix_tree_insert(struct radix_tree_root *root, unsigned long index,
+ 		return error;
  
--#define MAX_U32                 (~(u32)0)
- #define MPHY_TX_FSM_STATE       0x41
- #define TX_FSM_HIBERN8          0x1
- #define HBRN8_POLL_TOUT_MS      100
- #define DEFAULT_CLK_RATE_HZ     1000000
--#define BUS_VECTOR_NAME_LEN     32
- #define MAX_SUPP_MAC		64
+ 	error = insert_entries(node, slot, item);
+-	if (error < 0)
++	if (error < 0) {
++		__radix_tree_delete(root, node, slot);
+ 		return error;
++	}
  
- #define UFS_HW_VER_MAJOR_MASK	GENMASK(31, 28)
- #define UFS_HW_VER_MINOR_MASK	GENMASK(27, 16)
- #define UFS_HW_VER_STEP_MASK	GENMASK(15, 0)
+ 	if (node) {
+ 		unsigned offset = get_slot_offset(node, slot);
+@@ -581,6 +579,24 @@ static bool delete_node(struct radix_tree_root *root,
+ 	return deleted;
+ }
  
--/* vendor specific pre-defined parameters */
--#define SLOW 1
--#define FAST 2
++static bool __radix_tree_delete(struct radix_tree_root *root,
++				struct radix_tree_node *node, void __rcu **slot)
++{
++	void *old = rcu_dereference_raw(*slot);
++	int values = xa_is_value(old) ? -1 : 0;
++	unsigned offset = get_slot_offset(node, slot);
++	int tag;
++
++	if (is_idr(root))
++		node_tag_set(root, node, IDR_FREE, offset);
++	else
++		for (tag = 0; tag < RADIX_TREE_MAX_TAGS; tag++)
++			node_tag_clear(root, node, tag, offset);
++
++	replace_slot(slot, NULL, node, -1, values);
++	return node && delete_node(root, node);
++}
++
+ /**
+  *	__radix_tree_create	-	create a slot in a radix tree
+  *	@root:		radix tree root
+@@ -1365,24 +1381,6 @@ radix_tree_gang_lookup_tag_slot(const struct radix_tree_root *root,
+ }
+ EXPORT_SYMBOL(radix_tree_gang_lookup_tag_slot);
+ 
+-static bool __radix_tree_delete(struct radix_tree_root *root,
+-				struct radix_tree_node *node, void __rcu **slot)
+-{
+-	void *old = rcu_dereference_raw(*slot);
+-	int values = xa_is_value(old) ? -1 : 0;
+-	unsigned offset = get_slot_offset(node, slot);
+-	int tag;
 -
- #define UFS_QCOM_LIMIT_HS_RATE		PA_HS_MODE_B
- 
- /* QCOM UFS host controller vendor specific registers */
--- 
-2.25.1
-
+-	if (is_idr(root))
+-		node_tag_set(root, node, IDR_FREE, offset);
+-	else
+-		for (tag = 0; tag < RADIX_TREE_MAX_TAGS; tag++)
+-			node_tag_clear(root, node, tag, offset);
+-
+-	replace_slot(slot, NULL, node, -1, values);
+-	return node && delete_node(root, node);
+-}
+-
+ /**
+  * radix_tree_iter_delete - delete the entry at this iterator position
+  * @root: radix tree root
