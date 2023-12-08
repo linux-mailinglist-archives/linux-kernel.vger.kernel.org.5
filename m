@@ -2,81 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9769380A7A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD29E80A79F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574365AbjLHPlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:41:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54130 "EHLO
+        id S1574423AbjLHPk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:40:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574414AbjLHPk7 (ORCPT
+        with ESMTP id S233617AbjLHPk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:40:59 -0500
+        Fri, 8 Dec 2023 10:40:56 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABEB198E;
-        Fri,  8 Dec 2023 07:41:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC2310EB
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:41:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702050065; x=1733586065;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kuKy0uSZ2sgf2WUnRwww3AtGWNiQbLKjTQKgA9l/IGM=;
-  b=ViMybE+aNvDVaqbxcDI855jc7fdeR+7WXi7c0ZIh3KVABmLVp2PBauIh
-   8MGqC2J3whVjUD86OT8K/BUgG0zTptSoYbFLKy7u0DMK2iLO2Bmr+bW3V
-   wAx23PSQj1PN7kr5S5Q6rXyKeuKIegU43Z+rBEQZ/esZLQR7VyTUaklTB
-   5ONUADL1SbgL2IMR+i/qK4bT6J95pYBR6BZoRz0kH7SZUE9kx+F/02MI2
-   90vTC/QqrWiwUXnofC6aH3ITnrELBpQwHxMR4+ZG752KPlhVlTMRk6YWK
-   pWlIHs+6ICWWxbvMb8nsHgbFROtKkh/F+dtJJLHhx220+xF+8lM4F7/5c
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1276368"
+  t=1702050060; x=1733586060;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=ytgz0mpL+6lejy8F4sFHhys4vbo1P2vx2vpT6QcIsrY=;
+  b=LIGLm4AEczT+TnV2iwzKm0Ptuf3FEmRCWY8IY7Yf7H2gxGj3tAfQtUsV
+   cYUiWfH9iFufvXGr0wRFZ3iKy9vA7xhCKem8TF+IloOWQqG4WgDtUFdvk
+   k+KPv8KTej9Agwa1Rons9BsShlVsGY5R7n/NjuXQQhNwOOJ0Wq5uLALyn
+   9gE8OweVXYcX2ODZe+vM8nbX9ytWuKJh7EJHcMpEqTSVl0KqXhorKchcp
+   TfvnBFBFdw6xZAcnHo/FhXiNB1OsatvA50Y40UUIdLfCHs69ihFpnt9j+
+   Bf7rZyDc6YGsU8VR5oU5bWtcrhMQq4OkXhYTtXjnqoquXx+kfYGTYFgi7
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1276353"
 X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="1276368"
+   d="scan'208";a="1276353"
 Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 07:41:05 -0800
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 07:41:00 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="20136875"
+   d="scan'208";a="20136876"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
   by orviesa001.jf.intel.com with ESMTP; 08 Dec 2023 07:40:59 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1rBcyG-000DuV-07;
+        id 1rBcyG-000Dub-0F;
         Fri, 08 Dec 2023 15:40:56 +0000
-Date:   Fri, 8 Dec 2023 23:40:13 +0800
+Date:   Fri, 8 Dec 2023 23:40:14 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Mina Almasry <almasrymina@google.com>,
-        Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Mina Almasry <almasrymina@google.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Ahern <dsahern@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [net-next v1 06/16] netdev: support binding dma-buf to netdevice
-Message-ID: <202312082303.bCpeCR0q-lkp@intel.com>
-References: <20231208005250.2910004-7-almasrymina@google.com>
+To:     Vineet Gupta <vgupta@synopsys.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org
+Subject: arch/arc/kernel/signal.c:77:31: sparse: sparse: incorrect type in
+ argument 1 (different address spaces)
+Message-ID: <202312082320.VDN5A9hb-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231208005250.2910004-7-almasrymina@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -87,122 +62,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mina,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on net-next/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Mina-Almasry/net-page_pool-factor-out-releasing-DMA-from-releasing-the-page/20231208-085531
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231208005250.2910004-7-almasrymina%40google.com
-patch subject: [net-next v1 06/16] netdev: support binding dma-buf to netdevice
-config: m68k-randconfig-r071-20231208 (https://download.01.org/0day-ci/archive/20231208/202312082303.bCpeCR0q-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231208/202312082303.bCpeCR0q-lkp@intel.com/reproduce)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5e3f5b81de80c98338bcb47c233aebefee5a4801
+commit: 96f1b00138cb8f04c742c82d0a7c460b2202e887 ARCv2: save ABI registers across signal handling
+date:   2 years, 6 months ago
+config: arc-randconfig-r111-20231107 (https://download.01.org/0day-ci/archive/20231208/202312082320.VDN5A9hb-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231208/202312082320.VDN5A9hb-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312082303.bCpeCR0q-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312082320.VDN5A9hb-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+sparse warnings: (new ones prefixed by >>)
+>> arch/arc/kernel/signal.c:77:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __user *to @@     got struct user_regs_arcv2 * @@
+   arch/arc/kernel/signal.c:77:31: sparse:     expected void [noderef] __user *to
+   arch/arc/kernel/signal.c:77:31: sparse:     got struct user_regs_arcv2 *
+>> arch/arc/kernel/signal.c:88:41: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const [noderef] __user *from @@     got struct user_regs_arcv2 * @@
+   arch/arc/kernel/signal.c:88:41: sparse:     expected void const [noderef] __user *from
+   arch/arc/kernel/signal.c:88:41: sparse:     got struct user_regs_arcv2 *
+>> arch/arc/kernel/signal.c:134:42: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sigcontext *mctx @@     got struct sigcontext [noderef] __user * @@
+   arch/arc/kernel/signal.c:134:42: sparse:     expected struct sigcontext *mctx
+   arch/arc/kernel/signal.c:134:42: sparse:     got struct sigcontext [noderef] __user *
+   arch/arc/kernel/signal.c:153:45: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sigcontext *mctx @@     got struct sigcontext [noderef] __user * @@
+   arch/arc/kernel/signal.c:153:45: sparse:     expected struct sigcontext *mctx
+   arch/arc/kernel/signal.c:153:45: sparse:     got struct sigcontext [noderef] __user *
 
-   In file included from include/asm-generic/bug.h:22,
-                    from arch/m68k/include/asm/bug.h:32,
-                    from include/linux/bug.h:5,
-                    from include/linux/thread_info.h:13,
-                    from include/asm-generic/preempt.h:5,
-                    from ./arch/m68k/include/generated/asm/preempt.h:1,
-                    from include/linux/preempt.h:79,
-                    from arch/m68k/include/asm/irqflags.h:6,
-                    from include/linux/irqflags.h:17,
-                    from arch/m68k/include/asm/atomic.h:6,
-                    from include/linux/atomic.h:7,
-                    from include/linux/rcupdate.h:25,
-                    from include/linux/rculist.h:11,
-                    from include/linux/pid.h:5,
-                    from include/linux/sched.h:14,
-                    from include/linux/uaccess.h:8,
-                    from net/core/dev.c:71:
-   net/core/dev.c: In function '__netdev_dmabuf_binding_free':
->> net/core/dev.c:2071:34: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
-    2071 |         if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
-         |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    2072 |                   size, avail))
-         |                   ~~~~            
-         |                   |
-         |                   size_t {aka unsigned int}
-   include/linux/printk.h:427:25: note: in definition of macro 'printk_index_wrap'
-     427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
-         |                         ^~~~
-   include/linux/printk.h:129:17: note: in expansion of macro 'printk'
-     129 |                 printk(fmt, ##__VA_ARGS__);             \
-         |                 ^~~~~~
-   include/asm-generic/bug.h:176:9: note: in expansion of macro 'no_printk'
-     176 |         no_printk(format);                                              \
-         |         ^~~~~~~~~
-   net/core/dev.c:2071:14: note: in expansion of macro 'WARN'
-    2071 |         if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
-         |              ^~~~
-   net/core/dev.c:2071:65: note: format string is defined here
-    2071 |         if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
-         |                                                               ~~^
-         |                                                                 |
-         |                                                                 long unsigned int
-         |                                                               %u
-   net/core/dev.c:2071:34: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
-    2071 |         if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
-         |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    2072 |                   size, avail))
-         |                         ~~~~~     
-         |                         |
-         |                         size_t {aka unsigned int}
-   include/linux/printk.h:427:25: note: in definition of macro 'printk_index_wrap'
-     427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
-         |                         ^~~~
-   include/linux/printk.h:129:17: note: in expansion of macro 'printk'
-     129 |                 printk(fmt, ##__VA_ARGS__);             \
-         |                 ^~~~~~
-   include/asm-generic/bug.h:176:9: note: in expansion of macro 'no_printk'
-     176 |         no_printk(format);                                              \
-         |         ^~~~~~~~~
-   net/core/dev.c:2071:14: note: in expansion of macro 'WARN'
-    2071 |         if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
-         |              ^~~~
-   net/core/dev.c:2071:76: note: format string is defined here
-    2071 |         if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
-         |                                                                          ~~^
-         |                                                                            |
-         |                                                                            long unsigned int
-         |                                                                          %u
+vim +77 arch/arc/kernel/signal.c
 
-
-vim +2071 net/core/dev.c
-
-  2060	
-  2061	void __netdev_dmabuf_binding_free(struct netdev_dmabuf_binding *binding)
-  2062	{
-  2063		size_t size, avail;
-  2064	
-  2065		gen_pool_for_each_chunk(binding->chunk_pool,
-  2066					netdev_dmabuf_free_chunk_owner, NULL);
-  2067	
-  2068		size = gen_pool_size(binding->chunk_pool);
-  2069		avail = gen_pool_avail(binding->chunk_pool);
-  2070	
-> 2071		if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
-  2072			  size, avail))
-  2073			gen_pool_destroy(binding->chunk_pool);
-  2074	
-  2075		dma_buf_unmap_attachment(binding->attachment, binding->sgt,
-  2076					 DMA_BIDIRECTIONAL);
-  2077		dma_buf_detach(binding->dmabuf, binding->attachment);
-  2078		dma_buf_put(binding->dmabuf);
-  2079		xa_destroy(&binding->bound_rxq_list);
-  2080		kfree(binding);
-  2081	}
-  2082	
+    63	
+    64	static int save_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
+    65	{
+    66		int err = 0;
+    67	#ifndef CONFIG_ISA_ARCOMPACT
+    68		struct user_regs_arcv2 v2abi;
+    69	
+    70		v2abi.r30 = regs->r30;
+    71	#ifdef CONFIG_ARC_HAS_ACCL_REGS
+    72		v2abi.r58 = regs->r58;
+    73		v2abi.r59 = regs->r59;
+    74	#else
+    75		v2abi.r58 = v2abi.r59 = 0;
+    76	#endif
+  > 77		err = __copy_to_user(&mctx->v2abi, &v2abi, sizeof(v2abi));
+    78	#endif
+    79		return err;
+    80	}
+    81	
+    82	static int restore_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
+    83	{
+    84		int err = 0;
+    85	#ifndef CONFIG_ISA_ARCOMPACT
+    86		struct user_regs_arcv2 v2abi;
+    87	
+  > 88		err = __copy_from_user(&v2abi, &mctx->v2abi, sizeof(v2abi));
+    89	
+    90		regs->r30 = v2abi.r30;
+    91	#ifdef CONFIG_ARC_HAS_ACCL_REGS
+    92		regs->r58 = v2abi.r58;
+    93		regs->r59 = v2abi.r59;
+    94	#endif
+    95	#endif
+    96		return err;
+    97	}
+    98	
+    99	static int
+   100	stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
+   101		       sigset_t *set)
+   102	{
+   103		int err;
+   104		struct user_regs_struct uregs;
+   105	
+   106		uregs.scratch.bta	= regs->bta;
+   107		uregs.scratch.lp_start	= regs->lp_start;
+   108		uregs.scratch.lp_end	= regs->lp_end;
+   109		uregs.scratch.lp_count	= regs->lp_count;
+   110		uregs.scratch.status32	= regs->status32;
+   111		uregs.scratch.ret	= regs->ret;
+   112		uregs.scratch.blink	= regs->blink;
+   113		uregs.scratch.fp	= regs->fp;
+   114		uregs.scratch.gp	= regs->r26;
+   115		uregs.scratch.r12	= regs->r12;
+   116		uregs.scratch.r11	= regs->r11;
+   117		uregs.scratch.r10	= regs->r10;
+   118		uregs.scratch.r9	= regs->r9;
+   119		uregs.scratch.r8	= regs->r8;
+   120		uregs.scratch.r7	= regs->r7;
+   121		uregs.scratch.r6	= regs->r6;
+   122		uregs.scratch.r5	= regs->r5;
+   123		uregs.scratch.r4	= regs->r4;
+   124		uregs.scratch.r3	= regs->r3;
+   125		uregs.scratch.r2	= regs->r2;
+   126		uregs.scratch.r1	= regs->r1;
+   127		uregs.scratch.r0	= regs->r0;
+   128		uregs.scratch.sp	= regs->sp;
+   129	
+   130		err = __copy_to_user(&(sf->uc.uc_mcontext.regs.scratch), &uregs.scratch,
+   131				     sizeof(sf->uc.uc_mcontext.regs.scratch));
+   132	
+   133		if (is_isa_arcv2())
+ > 134			err |= save_arcv2_regs(&(sf->uc.uc_mcontext), regs);
+   135	
+   136		err |= __copy_to_user(&sf->uc.uc_sigmask, set, sizeof(sigset_t));
+   137	
+   138		return err ? -EFAULT : 0;
+   139	}
+   140	
 
 -- 
 0-DAY CI Kernel Test Service
