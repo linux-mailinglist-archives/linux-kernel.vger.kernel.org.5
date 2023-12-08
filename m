@@ -2,103 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE8880A541
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6C780A64A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573930AbjLHOSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 09:18:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34534 "EHLO
+        id S1574040AbjLHOya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 09:54:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573881AbjLHOSr (ORCPT
+        with ESMTP id S1574147AbjLHOyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 09:18:47 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2822171E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 06:18:53 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77f3159d822so88937285a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 06:18:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702045133; x=1702649933; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b4aUU7dNjS/w6j2yOU1hBuNM/NL6fqAI1SOBM3IICMA=;
-        b=sosVTcFyu2GzDo3ZpJ9JYMr9x8cL+nfMjaYe5l6NX8B6UjAvCK8scD//SXdLHsQqws
-         8jver1uwXhTGs3Brw/1qWLHLetD5hgsBf5HaZTlga6jQWFov3IlLaBKBU+g/++aPAvka
-         IkhhPdieQJvvQduKvns0CaQ6/T1tVGY7TVWPzKdgWurcQ+bqI3XAVicUoqyyXYeES7Yr
-         sy7h2SbV5iGg5IC/090vF8bmTMkF1ByDo0Qhtgg3TcDBqOqm7apNDxsla22HOA4c7fl0
-         W03DqmLDlqNMuXrHeiy14+TMGkKSbv9dfog+IzqfpOO/JlXiLVEPPaxhI94SW8xe9ml5
-         lB2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702045133; x=1702649933;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b4aUU7dNjS/w6j2yOU1hBuNM/NL6fqAI1SOBM3IICMA=;
-        b=BbLeXupdYNpGq+VEbl60Rt3oK3nXJApKNTdAwMNfMFnbYV59duqE3KFoCCvZplo2tP
-         7A70HU1j4d148ib8psgLC8eNxb2Y/JPMUgdixh9BqlioScypudLaTXsyPFj73ss1FVmu
-         xw4bpizis8Zrr8i700aIgGLVHuQW/oFmIkeVEao+9V0CjlYeQyRbsTy1PYnKdImMB+E/
-         w1LPSbdG5vjYB1GvztqvB8VvXziNtOfTR5/35aZ+24Y+4wHgq6Ufi0TychIFkGs2lKIM
-         oR26Bgj8VvT2fN+NrstLq8RauWPz2j0n6Kn9J3CgtVQezHVUqGSsFHmCgzJjq1jENXFq
-         7AmA==
-X-Gm-Message-State: AOJu0YxS+ZAXO7Z1MUBZWj5yFo+Tx2riA0blw9+hyVTiY5VVF3C1Jt8t
-        h+u1T5hY6r2EP2+sku/oJkdMLNgNIMhoBHrYtETPUQ==
-X-Google-Smtp-Source: AGHT+IH8EMqb7H0OjwmlXGKXc/KMyqDWbzvWyGHpM5I7Qm/vaxWs0Al1SPzWhhi4fZH80FWJcx2+zkplz4DLr+7aWfs=
-X-Received: by 2002:a05:6214:1023:b0:67a:be9a:e9df with SMTP id
- k3-20020a056214102300b0067abe9ae9dfmr23702qvr.17.1702045132939; Fri, 08 Dec
- 2023 06:18:52 -0800 (PST)
+        Fri, 8 Dec 2023 09:54:04 -0500
+X-Greylist: delayed 1982 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 08 Dec 2023 06:52:19 PST
+Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133EB3866
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 06:52:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codethink.co.uk; s=imap4-20230908; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=/lBnAPLXd3bmIiEmokYvLT/eas4j7AzPy7ap5uVAF/8=; b=EKHweu9EyyqV4AJrNpxLR7vMJM
+        pgV19pa8l1FfLAzDsVJfDNmO3Rz8kk7DBEXCKI78NqSa3PAkxrj7662ZAFogRsJo1oHHdxwa5GTN1
+        niJFkZIeMCSauQO+xkgULLagCkRv4VQhfM0z++zpFtK+l5hXXhr1YYUHeovZndJyj0xLbRVicfE4Y
+        6j5Kbm8/lBIUytrBbFRihoeem4Br04wF745GptMq6tAQlOZcWdULkiHdbCWgyRuyHVDQnRi8U7+aB
+        Lr9XdyT7rsYiqdiocsJDplTKebTucJmA0DAgjffs5gH2/kFQl/6ZzYUh06UZxrzDMnPRR4LDSY+wC
+        PxpvDsUw==;
+Received: from [167.98.27.226] (helo=ct-lt-2504.office.codethink.co.uk)
+        by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
+        id 1rBbh4-00DTLb-QI; Fri, 08 Dec 2023 14:19:07 +0000
+From:   Ivan Orlov <ivan.orlov@codethink.co.uk>
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
+Cc:     Ivan Orlov <ivan.orlov@codethink.co.uk>, ajones@ventanamicro.com,
+        conor.dooley@microchip.com, heiko@sntech.de, bjorn@rivosinc.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: lib: Implement optimized memchr function
+Date:   Fri,  8 Dec 2023 14:18:39 +0000
+Message-Id: <20231208141839.174284-1-ivan.orlov@codethink.co.uk>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-27-iii@linux.ibm.com>
-In-Reply-To: <20231121220155.1217090-27-iii@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 8 Dec 2023 15:18:16 +0100
-Message-ID: <CAG_fn=UBaF8SnvJ4t4wbBZKbNEBWRyGBY=FA+CTB+k2+pa2qEw@mail.gmail.com>
-Subject: Re: [PATCH v2 26/33] s390/ftrace: Unpoison ftrace_regs in kprobe_ftrace_handler()
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Sender: ivan.orlov@codethink.co.uk
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 11:02=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.co=
-m> wrote:
->
-> s390 uses assembly code to initialize ftrace_regs and call
-> kprobe_ftrace_handler(). Therefore, from the KMSAN's point of view,
-> ftrace_regs is poisoned on kprobe_ftrace_handler() entry. This causes
-> KMSAN warnings when running the ftrace testsuite.
->
-> Fix by trusting the assembly code and always unpoisoning ftrace_regs in
-> kprobe_ftrace_handler().
->
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+At the moment we don't have an architecture-specific memchr
+implementation for riscv in the Kernel. The generic version of this
+function iterates the memory area bytewise looking for the target value,
+which is not the optimal approach.
+
+Instead of iterating the memory byte by byte, we can iterate over words
+of memory. Word still takes only one cycle to be loaded, and it could be
+checked for containing the target byte in just 5 operations:
+
+1. Let's say we are looking for the byte BA. XOR the word with
+0xBABA..BA
+2. If we have zero byte in the result, the word contains byte BA. Let's
+subtract 0x0101..01 from the xor result.
+3. Calculate the ~(xor result).
+4. And the results of steps 2 and 3. If in the xor result we had a zero
+bit somewhere, and after subtracting the 0x0101..01 it turned to 1,
+we will get 1 in the result
+5. And the result of step 4 with 0x8080..80. If we had a leading zero
+bit in the xor result which turned to 1 after subtracting 0x0101..01,
+it was the leading bit of a zero byte. So, if result of this step != 0,
+the word contains the byte we are looking for.
+
+The same approach is used in the arm64 implementation of this function.
+
+So, this patch introduces the riscv-specific memchr function which
+accepts 3 parameters (address, target byte and count) and works in the
+following way:
+
+0. If count is smaller than 128, iterate the area byte by byte as we
+would not get any performance gain here.
+1. If address is not aligned, iterate SZREG - (address % SZREG) bytes
+to avoid unaligned memory access.
+2. If count is larger than 128, iterate words of memory until we find
+the word which contains the target byte.
+3. If we have found the word, iterate through it byte by byte and return
+the address of the first occurrence.
+4. If we have not found the word, iterate the remainder (in case if
+the count was not divisible by 8).
+5. If we still have not found the target byte, return 0.
+
+Here you can see the benchmark results for "Sifive Hifive Unmatched"
+board, which compares the old and new memchr implementations.
+
+| test_count | array_size | old_mean_ktime  | new_mean_ktime  |
+---------------------------------------------------------------
+|      10000 |         10 |             415 |             409 |
+|      10000 |        100 |             642 |             717 |
+|      10000 |        128 |             714 |             775 |
+|      10000 |        256 |            1031 |             611 |
+|       5000 |        512 |            1686 |             769 |
+|       5000 |        768 |            2320 |             925 |
+|       5000 |       1024 |            2968 |            1095 |
+|       5000 |       1500 |            4165 |            1383 |
+|       5000 |       2048 |            5567 |            1731 |
+|       3000 |       4096 |           10698 |            3028 |
+|       3000 |      16384 |           41630 |           10766 |
+|       1000 |     524288 |         1475454 |          498183 |
+|       1000 |    1048576 |         2952080 |          997018 |
+|        500 |   10485760 |        49491492 |        29335358 |
+|        100 |  134217728 |       636033660 |       377157970 |
+|         20 |  536870912 |      2546979300 |      1510817350 |
+|         20 | 1073741824 |      5095776750 |      3019167250 |
+
+The target symbol was always placed at the last index of the array, and
+the mean time of function execution was measured using the ktime_get
+function.
+
+As you can see, the new function shows much better results even for
+the small arrays of 256 elements, therefore I believe it could be a
+useful addition to the existing riscv-specific string functions.
+
+Signed-off-by: Ivan Orlov <ivan.orlov@codethink.co.uk>
+---
+ arch/riscv/include/asm/string.h |  2 +
+ arch/riscv/kernel/riscv_ksyms.c |  1 +
+ arch/riscv/lib/Makefile         |  1 +
+ arch/riscv/lib/memchr.S         | 98 +++++++++++++++++++++++++++++++++
+ 4 files changed, 102 insertions(+)
+ create mode 100644 arch/riscv/lib/memchr.S
+
+diff --git a/arch/riscv/include/asm/string.h b/arch/riscv/include/asm/string.h
+index a96b1fea24fe..ec1a643cb625 100644
+--- a/arch/riscv/include/asm/string.h
++++ b/arch/riscv/include/asm/string.h
+@@ -18,6 +18,8 @@ extern asmlinkage void *__memcpy(void *, const void *, size_t);
+ #define __HAVE_ARCH_MEMMOVE
+ extern asmlinkage void *memmove(void *, const void *, size_t);
+ extern asmlinkage void *__memmove(void *, const void *, size_t);
++#define __HAVE_ARCH_MEMCHR
++extern asmlinkage void *memchr(const void *, int, size_t);
+ 
+ #define __HAVE_ARCH_STRCMP
+ extern asmlinkage int strcmp(const char *cs, const char *ct);
+diff --git a/arch/riscv/kernel/riscv_ksyms.c b/arch/riscv/kernel/riscv_ksyms.c
+index a72879b4249a..08c0d846366b 100644
+--- a/arch/riscv/kernel/riscv_ksyms.c
++++ b/arch/riscv/kernel/riscv_ksyms.c
+@@ -9,6 +9,7 @@
+ /*
+  * Assembly functions that may be used (directly or indirectly) by modules
+  */
++EXPORT_SYMBOL(memchr);
+ EXPORT_SYMBOL(memset);
+ EXPORT_SYMBOL(memcpy);
+ EXPORT_SYMBOL(memmove);
+diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
+index 26cb2502ecf8..0a8b64f8ca88 100644
+--- a/arch/riscv/lib/Makefile
++++ b/arch/riscv/lib/Makefile
+@@ -1,4 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++lib-y			+= memchr.o
+ lib-y			+= delay.o
+ lib-y			+= memcpy.o
+ lib-y			+= memset.o
+diff --git a/arch/riscv/lib/memchr.S b/arch/riscv/lib/memchr.S
+new file mode 100644
+index 000000000000..d48e0fa3cd84
+--- /dev/null
++++ b/arch/riscv/lib/memchr.S
+@@ -0,0 +1,98 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (c) 2023 Codethink Ltd.
++ * Author: Ivan Orlov <ivan.orlov@codethink.co.uk>
++ */
++
++#include <linux/linkage.h>
++#include <asm/asm.h>
++
++#define REP_01 __REG_SEL(0x0101010101010101, 0x01010101)
++#define REP_80 __REG_SEL(0x8080808080808080, 0x80808080)
++
++#define MIN_BORDER 128
++
++SYM_FUNC_START(memchr)
++	andi a1, a1, 0xFF
++
++	// use byte-wide iteration for small numbers
++	add t1, x0, a2
++	sltiu t2, a2, MIN_BORDER
++	bnez t2, 6f
++
++	// get the number of bytes we should iterate before alignment
++	andi t0, a0, SZREG - 1
++	beqz t0, 4f
++
++	# get the SZREG - t0
++	xor t0, t0, SZREG - 1
++	addi t0, t0, 1
++
++	sub a2, a2, t0
++	// iterate before alignment
++1:
++	beq t0, x0, 4f
++	lbu t2, 0(a0)
++	beq t2, a1, 3f
++	addi t0, t0, -1
++	addi a0, a0, 1
++	j 1b
++
++2:
++	// found a word. Iterate it until we find the target byte
++	li t1, SZREG
++	j 6f
++3:
++	ret
++
++4:
++	// get the count remainder
++	andi t1, a2, SZREG - 1
++
++	// align the count
++	sub a2, a2, t1
++
++	// if we have no words to iterate, iterate the remainder
++	beqz a2, 6f
++
++	// from 0xBA we will get 0xBABABABABABABABA
++	li t3, REP_01
++	mul t3, t3, a1
++
++	add a2, a2, a0
++
++	li t4, REP_01
++	li t5, REP_80
++
++5:
++	REG_L t2, 0(a0)
++
++	// after this xor we will get one zero byte in the word if it contains the target byte
++	xor t2, t2, t3
++
++	// word v contains the target byte if (v - 0x01010101) & (~v) & 0x80808080 is positive
++	sub t0, t2, t4
++
++	not t2, t2
++
++	and t0, t0, t2
++	and t0, t0, t5
++
++	bnez t0, 2b
++	addi a0, a0, SZREG
++	bne a0, a2, 5b
++
++6:
++	// iterate the remainder
++	beq t1, x0, 7f
++	lbu t4, 0(a0)
++	beq t4, a1, 3b
++	addi a0, a0, 1
++	addi t1, t1, -1
++	j 6b
++
++7:
++	addi a0, x0, 0
++	ret
++SYM_FUNC_END(memchr)
++SYM_FUNC_ALIAS(__pi_memchr, memchr)
+-- 
+2.34.1
+
