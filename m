@@ -2,162 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 600CA809870
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 02:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE72C809873
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 02:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444217AbjLHBMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 20:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42966 "EHLO
+        id S1444218AbjLHBNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 20:13:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLHBMs (ORCPT
+        with ESMTP id S229531AbjLHBNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 20:12:48 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBA91708
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 17:12:54 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40c0fc1cf3dso16086655e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 17:12:54 -0800 (PST)
+        Thu, 7 Dec 2023 20:13:04 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670841708;
+        Thu,  7 Dec 2023 17:13:10 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6d9ac148ca3so1028940a34.0;
+        Thu, 07 Dec 2023 17:13:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701997973; x=1702602773; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1sCOupMGNpi2gKf6EtIYblzAwxIouOwC3n4C1JZz198=;
-        b=PW0d+ZFvtA9ZuFZDWRnAJaXYWe96NPhYZh6fR9VW+NyWIAUYNGku9T/2GvpopNqyqm
-         9kKV6a3Jfbew/v+jm6ub12OFWAK6FnDeaC4XW+AW6yzXrv2c69J3UFsGbWtvfahu96dE
-         iPX/rFr0E4wx8P22bjELJ1G79odxdTHFOLQH+4GtUgYWi/Lute+8ZwYkUcaADh642xa0
-         WeLHSMASlWY2indc9u5if7wNsl2pIojv4PR1cn+9Hwi/j5uIRADogeSCxqRYSzblDVz9
-         4BxUUJ78hkcAVuLoMVrVcNc3y9apLj9dvY2fb0iH9oW8abaaRzg5kfzBbacONXwKLCCG
-         Oe/w==
+        d=gmail.com; s=20230601; t=1701997989; x=1702602789; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=O9CqMmARklhu+aWShYkB4W+scqzZcjMk/LYLPQHxTpw=;
+        b=NTgI7d2I3C8uvqfvt2ycDIYukTvSDBOsVUWuo94JUP8wZfDsIGCpi/FiYIr7dPP99p
+         o5iVu+50Jd0nFuZKDZ8PYiZ+iPRhWE0QFV8EMPt4V9jjn2YT4zGL8FQwUz7uKWXdG7l3
+         PlKl8Ia+iV9cApKyyAn/WujprouqJg0KjQ4L0aEcA0OiW92NrHHq7Fi1GJi5r4XvbDO3
+         +GLcGOfmQSPb/NO3gBWF3TJjBhRfzD9OUFYTNLrLJOixxXQtCusNauR4ELN6RP6/JsKd
+         LJkC/JH+rDNvHyT9pr3lPN4szmts9Uv1Vt9pNkziED7bi1ljT07x/ZhC7VmGyJm47zX+
+         IDkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701997973; x=1702602773;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1sCOupMGNpi2gKf6EtIYblzAwxIouOwC3n4C1JZz198=;
-        b=CvdWCpHAMao0pWio82iSvlLN5YQi3BD4qSJitw+LglpX8yigpCYrp/ugydQiSSlk8p
-         M1vO3KLR8F36MZqc5a2NclWBp8SxVKAlKVobBNOf8L+rrrbWKbSmZNrTtBVNthsek8jA
-         OPBRyNNARX+5CpQ1w5BstrZZ7DJDjqQlhLW7L6boG7n/H14k64FIImYur28/4mfVWhNu
-         kMmwv/e6ehu+G5TokDdBTQi0CI8WE+SL4+7QsFYPJDEI6u5ByG1oDbySWo48IRxzusHX
-         Q1+h01QkV1i3URFP+Lr0a24fXt+QucmFy+Q3BFRcdN5cBB0tfORg5tp58GyVPKuEysuy
-         OBhQ==
-X-Gm-Message-State: AOJu0YxTr3CD0vcSaEzXZuPNmQ0QrHMMqXy3VMSfXM9ZV59q7bUM5jTW
-        jpymuojUEV5DcXIsiJ8mjgDqmvMLp7SkMd2Dq/QONw==
-X-Google-Smtp-Source: AGHT+IENlQpeWxB91Wsx6O6qERN9474H5YvgjoHd40vy2RadPk90rlVwfy/Uat+QIru5TTcAoCcXwQ/1KNYq19dxYSE=
-X-Received: by 2002:a05:600c:4453:b0:40b:5e21:d350 with SMTP id
- v19-20020a05600c445300b0040b5e21d350mr2123625wmn.89.1701997972737; Thu, 07
- Dec 2023 17:12:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701997989; x=1702602789;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O9CqMmARklhu+aWShYkB4W+scqzZcjMk/LYLPQHxTpw=;
+        b=UI9OgkM2RjaFxnb8Kzx+Z3d219MWcE8ofw1ZW3O13LhhU4zdwPInXOj/6imjkcsqrq
+         SWZQBEXykK2ufn1/55GEAHCVPjfdv/F1v0dPme0jfUEeDnUnAXYE9AvqqI9PPnWh8FrX
+         DzSHlxUHCHIjc3NVKGPrmWJ1LalL0D4mBfvgHAlwxijviTt9HoRjQ4Z44byF8a5ENEVx
+         D/cBCyU3seOo5nKHkF1z6+dldiYyYg06CciYFTVXk7+kQvSVPJuoSUvI6YJn+7GWQfn6
+         Mq1vwr9p7si++TNT1TQ8bJKX0taBtP0Mg4pwDr2vk0Kq5z5ol7QwfIXgwP38iuXH8Ij/
+         N4kA==
+X-Gm-Message-State: AOJu0YwHq2kFgwBRSbm1jWw/qqwsKGbHKuza2/M/ovjMrJbJqdWgwLNh
+        HXp3GtFzuL6FbJicWpU3EmY=
+X-Google-Smtp-Source: AGHT+IHj76UivPYn5LBdsNNyN1HlcikxOqd5/9AFXqCLTbYyAnf/YPa+czn5QHTd0NUlupNDAZmDYg==
+X-Received: by 2002:a05:6870:b68b:b0:1fb:3700:ee1b with SMTP id cy11-20020a056870b68b00b001fb3700ee1bmr3537230oab.47.1701997989445;
+        Thu, 07 Dec 2023 17:13:09 -0800 (PST)
+Received: from localhost.localdomain ([122.8.183.87])
+        by smtp.gmail.com with ESMTPSA id pq15-20020a0568709c8f00b001fa24002089sm206570oab.30.2023.12.07.17.13.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 17:13:09 -0800 (PST)
+From:   Chen Wang <unicornxw@gmail.com>
+To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
+        guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
+        samuel.holland@sifive.com
+Cc:     Chen Wang <unicorn_wang@outlook.com>
+Subject: [PATCH v6 0/4] riscv: sophgo: add clock support for sg2042
+Date:   Fri,  8 Dec 2023 09:13:00 +0800
+Message-Id: <cover.1701997033.git.unicorn_wang@outlook.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
- <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
-In-Reply-To: <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 7 Dec 2023 17:12:13 -0800
-Message-ID: <CAJD7tkaHaji=0sVobJKajc4hOmOui2U+bZK+1DQ6gbAsQgGLRw@mail.gmail.com>
-Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     Chris Li <chrisl@kernel.org>, akpm@linux-foundation.org,
-        tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
-        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        david@ixit.cz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 5:03=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote:
->
-> On Thu, Dec 7, 2023 at 4:19=E2=80=AFPM Chris Li <chrisl@kernel.org> wrote=
-:
-> >
-> > Hi Nhat,
-> >
-> >
-> > On Thu, Dec 7, 2023 at 11:24=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> w=
-rote:
-> > >
-> > > During our experiment with zswap, we sometimes observe swap IOs due t=
-o
-> > > occasional zswap store failures and writebacks-to-swap. These swappin=
-g
-> > > IOs prevent many users who cannot tolerate swapping from adopting zsw=
-ap
-> > > to save memory and improve performance where possible.
-> > >
-> > > This patch adds the option to disable this behavior entirely: do not
-> > > writeback to backing swapping device when a zswap store attempt fail,
-> > > and do not write pages in the zswap pool back to the backing swap
-> > > device (both when the pool is full, and when the new zswap shrinker i=
-s
-> > > called).
-> > >
-> > > This new behavior can be opted-in/out on a per-cgroup basis via a new
-> > > cgroup file. By default, writebacks to swap device is enabled, which =
-is
-> > > the previous behavior. Initially, writeback is enabled for the root
-> > > cgroup, and a newly created cgroup will inherit the current setting o=
-f
-> > > its parent.
-> > >
-> > > Note that this is subtly different from setting memory.swap.max to 0,=
- as
-> > > it still allows for pages to be stored in the zswap pool (which itsel=
-f
-> > > consumes swap space in its current form).
-> > >
-> > > This patch should be applied on top of the zswap shrinker series:
-> > >
-> > > https://lore.kernel.org/linux-mm/20231130194023.4102148-1-nphamcs@gma=
-il.com/
-> > >
-> > > as it also disables the zswap shrinker, a major source of zswap
-> > > writebacks.
-> >
-> > I am wondering about the status of "memory.swap.tiers" proof of concept=
- patch?
-> > Are we still on board to have this two patch merge together somehow so
-> > we can have
-> > "memory.swap.tiers" =3D=3D "all" and "memory.swap.tiers" =3D=3D "zswap"=
- cover the
-> > memory.zswap.writeback =3D=3D 1 and memory.zswap.writeback =3D=3D 0 cas=
-e?
-> >
-> > Thanks
-> >
-> > Chris
-> >
->
-> Hi Chris,
->
-> I briefly summarized my recent discussion with Johannes here:
->
-> https://lore.kernel.org/all/CAKEwX=3DNwGGRAtXoNPfq63YnNLBCF0ZDOdLVRsvzUmY=
-hK4jxzHA@mail.gmail.com/
->
-> TL;DR is we acknowledge the potential usefulness of swap.tiers
-> interface, but the use case is not quite there yet, so it does not
-> make too much sense to build up that heavy machinery now.
-> zswap.writeback is a more urgent need, and does not prevent swap.tiers
-> if we do decide to implement it.
+From: Chen Wang <unicorn_wang@outlook.com>
 
-I am honestly not convinced by this. There is no heavy machinery here.
-The interface is more generic and extensible, but the implementation
-is roughly the same. Unless we have a reason to think a swap.tiers
-interface may make it difficult to extend this later or will not
-support some use cases, I think we should go ahead with it. If we are
-worried that "tiers" may not accurately describe future use cases, we
-can be more generic and call it swap.types or something.
+This series adds clock controller support for sophgo sg2042.
+
+Thanks,
+Chen
+
+---
+
+Changes in v6:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [7].
+  - fixed some warnings/errors reported by kernel test robot <lkp@intel.com>.
+
+Changes in v5:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [6].
+  - dt-bindings: improved yaml, such as:
+    - add vendor prefix for system-ctrl property for clock generator.
+    - Add explanation for system-ctrl property.
+  - move sophgo,sg2042-clkgen.yaml to directly under clock folder.
+  - fixed bugs for driver Makefile/Kconfig
+  - continue cleaning-up debug print for driver code.
+
+Changes in v4:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [5].
+  - dt-bindings: fixed a dt_binding_check error.
+
+Changes in v3:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [3].
+  - DTS: don't use syscon but define sg2042 specific system control node. More
+    background info can read [4].
+  - Updating minor issues in dt-bindings as per input from reviews.
+
+Changes in v2:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [2].
+  - Squashed the patch adding clock definitions with the patch adding the
+    binding for the clock controller.
+  - Updating dt-binding for syscon, remove oneOf for property compatible;
+    define clock controller as child of syscon.
+  - DTS changes: merge sg2042-clock.dtsi into sg2042.dtsi; move clock-frequency
+    property of osc to board devicethree due to the oscillator is outside the
+    SoC.
+  - Fixed some bugs in driver code during testing, including removing warnings
+    for rv32_defconfig.
+  - Updated MAINTAINERS info.
+
+Changes in v1:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [1].
+
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v1 [1]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v2 [2]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v3 [3]
+Link: https://lore.kernel.org/linux-riscv/MA0P287MB03329AE180378E1A2E034374FE82A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM/ [4]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v4 [5]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v5 [6]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v6 [7]
+
+---
+
+Chen Wang (4):
+  dt-bindings: soc: sophgo: Add Sophgo system control module
+  dt-bindings: clock: sophgo: support SG2042
+  clk: sophgo: Add SG2042 clock generator driver
+  riscv: dts: add clock generator for Sophgo SG2042 SoC
+
+ .../bindings/clock/sophgo,sg2042-clkgen.yaml  |   53 +
+ .../soc/sophgo/sophgo,sg2042-sysctrl.yaml     |   34 +
+ MAINTAINERS                                   |    7 +
+ .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  |    4 +
+ arch/riscv/boot/dts/sophgo/sg2042.dtsi        |   79 +
+ drivers/clk/Kconfig                           |    1 +
+ drivers/clk/Makefile                          |    1 +
+ drivers/clk/sophgo/Kconfig                    |    8 +
+ drivers/clk/sophgo/Makefile                   |    2 +
+ drivers/clk/sophgo/clk-sophgo-sg2042.c        | 1356 +++++++++++++++++
+ drivers/clk/sophgo/clk-sophgo-sg2042.h        |  226 +++
+ .../dt-bindings/clock/sophgo,sg2042-clkgen.h  |  169 ++
+ 12 files changed, 1940 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/sophgo,sg2042-clkgen.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
+ create mode 100644 drivers/clk/sophgo/Kconfig
+ create mode 100644 drivers/clk/sophgo/Makefile
+ create mode 100644 drivers/clk/sophgo/clk-sophgo-sg2042.c
+ create mode 100644 drivers/clk/sophgo/clk-sophgo-sg2042.h
+ create mode 100644 include/dt-bindings/clock/sophgo,sg2042-clkgen.h
+
+
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+-- 
+2.25.1
+
