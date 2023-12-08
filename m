@@ -2,109 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D271180A495
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1017380A48F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233737AbjLHNla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:41:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
+        id S233603AbjLHNlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:41:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjLHNl2 (ORCPT
+        with ESMTP id S229844AbjLHNlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:41:28 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229EC1998;
-        Fri,  8 Dec 2023 05:41:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mEwzSQj49+1V+0OqU5JPdRDMA9pBIqO9QxdbK1+psok=; b=UZDv1w4D/0pm8nMQazAuCgRLvP
-        kUoVvd6ilj8Hjwd0Y5fIUgaEUgLc20msRFexR7C9e/R5jJFuu7bZjqIgiL/klT2qwoH/SACGyjE5D
-        pIY+B9k0Lyqc1ioJ98358Ce9+VsG8tCGQG0nIhqFli9RrusQihcQTNhejxgQ19eW4p1pvj3KvnFig
-        MMidSdAN6qqBAZeYoFmUr/sVh9/o3dTb62t0uTDjAvWYahnB8nERNNsZtaGrTwGnY2ZzvDdXs6hji
-        c+xdyrIm44MYQPUN7hS1K511Z1iwDJHo+/f6P9zSOKIaQo/HioUiRcnxmR7aXAYVsIuA48UUj04b+
-        r9rIzZCQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rBb5u-006bFJ-00;
-        Fri, 08 Dec 2023 13:40:42 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A3EDA3003F0; Fri,  8 Dec 2023 14:40:41 +0100 (CET)
-Date:   Fri, 8 Dec 2023 14:40:41 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231208134041.GD28727@noisy.programming.kicks-ass.net>
-References: <ZW4LjmUKj1q6RWdL@krava>
- <20231204181614.GA7299@noisy.programming.kicks-ass.net>
- <20231204183354.GC7299@noisy.programming.kicks-ass.net>
- <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
- <20231206163814.GB36423@noisy.programming.kicks-ass.net>
- <20231206183713.GA35897@noisy.programming.kicks-ass.net>
- <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
- <20231207093105.GA28727@noisy.programming.kicks-ass.net>
- <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
- <20231208102940.GB28727@noisy.programming.kicks-ass.net>
+        Fri, 8 Dec 2023 08:41:11 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0C41706;
+        Fri,  8 Dec 2023 05:41:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702042877; x=1733578877;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=0PJzpPfQVmmySmavIHtuTDJ47oXFef9tPz7lH278iZA=;
+  b=iebnMMueflNm/1lU9OxCPV2E8XQ+k7ubzriyyM5el62Bn4demgJXz6b6
+   ntCbPBp2rFGXmQrhBgUzejg5aJMKcC4ipL1p0dFwfYJ0vV2rx4WCkC7ES
+   Q6QCz+GtuUHFUMssX1RG7+cqGymvOIsMrMhTIlpZ7aNSzX6Qmr9cmxym+
+   TCekVerFBNWs1olvNETfo8X8e2RQopL2nW772aOquBAEJGGdu0Vl3QhIl
+   nvFI1v3LZRjWkanOOuw+incYGwm+QpTqH89WfMcZeJVcXQa6ibGOLvBd3
+   E2btSXUN3bakDTsBgrfbJ8oW4AHYTXCX1HdiLfR7alci/XsQsMJ1mfJ9M
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="384809276"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="384809276"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 05:41:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="772131365"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="772131365"
+Received: from smatua-mobl.ger.corp.intel.com ([10.251.223.110])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 05:41:14 -0800
+Date:   Fri, 8 Dec 2023 15:41:12 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Armin Wolf <W_Armin@gmx.de>
+cc:     Hans de Goede <hdegoede@redhat.com>, corbet@lwn.net,
+        Dell.Client.Kernel@dell.com, linux-doc@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/5] platform/x86: dell-smbios-wmi: Stop using WMI
+ chardev
+In-Reply-To: <20231207222623.232074-4-W_Armin@gmx.de>
+Message-ID: <b4789282-920-e9e-5deb-d107d5bb4c7@linux.intel.com>
+References: <20231207222623.232074-1-W_Armin@gmx.de> <20231207222623.232074-4-W_Armin@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208102940.GB28727@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 11:29:40AM +0100, Peter Zijlstra wrote:
-> The only problem I now have is the one XXX, I'm not entirely sure what
-> signature to use there.
+On Thu, 7 Dec 2023, Armin Wolf wrote:
 
-> @@ -119,6 +119,7 @@ int bpf_struct_ops_test_run(struct bpf_p
->  	op_idx = prog->expected_attach_type;
->  	err = bpf_struct_ops_prepare_trampoline(tlinks, link,
->  						&st_ops->func_models[op_idx],
-> +						/* XXX */ NULL,
->  						image, image + PAGE_SIZE);
->  	if (err < 0)
->  		goto out;
+> The WMI chardev API will be removed in the near future.
+> Reimplement the necessary bits used by this driver so
+> that userspace software depending on it does no break.
+> 
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> ---
+>  drivers/platform/x86/dell/dell-smbios-wmi.c | 163 ++++++++++++++------
+>  1 file changed, 117 insertions(+), 46 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/dell/dell-smbios-wmi.c b/drivers/platform/x86/dell/dell-smbios-wmi.c
+> index 931cc50136de..61f40f462eca 100644
+> --- a/drivers/platform/x86/dell/dell-smbios-wmi.c
+> +++ b/drivers/platform/x86/dell/dell-smbios-wmi.c
 
-Duh, that should ofcourse be something of dummy_ops_test_ret_fn type.
-Let me go fix that.
+> @@ -32,7 +35,9 @@ struct wmi_smbios_priv {
+>  	struct list_head list;
+>  	struct wmi_device *wdev;
+>  	struct device *child;
+> -	u32 req_buf_size;
+> +	u64 req_buf_size;
+> +	u32 hotfix;
+> +	struct miscdevice char_dev;
+>  };
+>  static LIST_HEAD(wmi_list);
+
+
+>  static int dell_smbios_wmi_probe(struct wmi_device *wdev, const void *context)
+>  {
+> -	struct wmi_driver *wdriver =
+> -		container_of(wdev->dev.driver, struct wmi_driver, driver);
+>  	struct wmi_smbios_priv *priv;
+> -	u32 hotfix;
+> +	u32 buffer_size;
+>  	int count;
+>  	int ret;
+> 
+> @@ -162,39 +225,44 @@ static int dell_smbios_wmi_probe(struct wmi_device *wdev, const void *context)
+>  	if (!priv)
+>  		return -ENOMEM;
+> 
+> +	priv->wdev = wdev;
+> +	dev_set_drvdata(&wdev->dev, priv);
+> +
+>  	/* WMI buffer size will be either 4k or 32k depending on machine */
+> -	if (!dell_wmi_get_size(&priv->req_buf_size))
+> +	if (!dell_wmi_get_size(&buffer_size))
+>  		return -EPROBE_DEFER;
+> 
+> +	priv->req_buf_size = buffer_size;
+> +
+>  	/* some SMBIOS calls fail unless BIOS contains hotfix */
+> -	if (!dell_wmi_get_hotfix(&hotfix))
+> +	if (!dell_wmi_get_hotfix(&priv->hotfix))
+>  		return -EPROBE_DEFER;
+> -	if (!hotfix) {
+> +
+> +	if (!priv->hotfix)
+>  		dev_warn(&wdev->dev,
+>  			"WMI SMBIOS userspace interface not supported(%u), try upgrading to a newer BIOS\n",
+> -			hotfix);
+> -		wdriver->filter_callback = NULL;
+> -	}
+> +			priv->hotfix);
+> 
+>  	/* add in the length object we will use internally with ioctl */
+>  	priv->req_buf_size += sizeof(u64);
+> -	ret = set_required_buffer_size(wdev, priv->req_buf_size);
+> -	if (ret)
+> -		return ret;
+> 
+>  	count = get_order(priv->req_buf_size);
+>  	priv->buf = (void *)__get_free_pages(GFP_KERNEL, count);
+>  	if (!priv->buf)
+>  		return -ENOMEM;
+> 
+> +	if (priv->hotfix) {
+> +		ret = dell_smbios_wmi_register_chardev(priv);
+> +		if (ret)
+> +			goto fail_chardev;
+> +	}
+> +
+>  	/* ID is used by dell-smbios to set priority of drivers */
+>  	wdev->dev.id = 1;
+>  	ret = dell_smbios_register_device(&wdev->dev, &dell_smbios_wmi_call);
+>  	if (ret)
+>  		goto fail_register;
+> 
+> -	priv->wdev = wdev;
+> -	dev_set_drvdata(&wdev->dev, priv);
+>  	mutex_lock(&list_mutex);
+>  	list_add_tail(&priv->list, &wmi_list);
+>  	mutex_unlock(&list_mutex);
+> @@ -202,6 +270,9 @@ static int dell_smbios_wmi_probe(struct wmi_device *wdev, const void *context)
+>  	return 0;
+> 
+>  fail_register:
+> +	if (priv->hotfix)
+> +               dell_smbios_wmi_unregister_chardev(priv);
+
+I don't understand how hotfix -> priv->hotfix is related to this patch nor 
+why it's necessary?
+
+Or did you mean to use it also in dell_smbios_wmi_remove() but forgot to 
+add the if (priv->hotfix) there?
+
+In any case, it would be better to put that conversion into own patch 
+before this one.
+
+> @@ -211,6 +282,7 @@ static void dell_smbios_wmi_remove(struct wmi_device *wdev)
+>        struct wmi_smbios_priv *priv = dev_get_drvdata(&wdev->dev);
+>        int count;
+>
+> +      dell_smbios_wmi_unregister_chardev(priv);
+>        mutex_lock(&call_mutex);
+>        mutex_lock(&list_mutex);
+>        list_del(&priv->list);
+
+-- 
+ i.
+
