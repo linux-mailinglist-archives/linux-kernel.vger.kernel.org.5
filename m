@@ -2,102 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8934C80A214
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8BF80A218
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:24:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573571AbjLHLVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 06:21:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
+        id S1573569AbjLHLYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 06:24:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233365AbjLHLVu (ORCPT
+        with ESMTP id S229844AbjLHLYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 06:21:50 -0500
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0AD110CF;
-        Fri,  8 Dec 2023 03:21:52 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B8BLh2e002284;
-        Fri, 8 Dec 2023 05:21:43 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702034503;
-        bh=oLg0AisyamUAtVSfksyGAW5Md+GYqQaIkcHjjDZN0+M=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=JBo6OQEaEjo4IiHFUd8QMeejBINXQLmQfVF8diQajDCYn8bBY/vkw5b6xry6uqAmB
-         /4xKovFzdv8OPaPiW6Aukip5ZvsgHoTaj5Bnosqe0Kefv6VRoKTLJM4+lFQq+RC9A/
-         e74XqpXBO4g5ECzxGFxNdEkHuQeF177X2DAh+Zec=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B8BLgs7015127
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 8 Dec 2023 05:21:43 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 8
- Dec 2023 05:21:42 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 8 Dec 2023 05:21:42 -0600
-Received: from [10.249.48.175] ([10.249.48.175])
-        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B8BLgjq055436;
-        Fri, 8 Dec 2023 05:21:42 -0600
-Message-ID: <d582b9fa-a2bf-c522-278d-58ddf9353be8@ti.com>
-Date:   Fri, 8 Dec 2023 05:21:42 -0600
+        Fri, 8 Dec 2023 06:24:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670EF10CA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 03:24:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702034656;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=RCuVfiFWHDbXLNBhRFvIja18LVxlp+/90vRsS/RVFDc=;
+        b=Ou8kQfLKMr/v3xDfzZ0iZf4axcr21Fwhb2EmAUnVk3tdLiMvk4ZK6dO15H1ezauD7/z/Um
+        6DLfmtzm3kgNP2ERe+ISXIBlNG7yqH+iig80INqUgiutFz8f2+bHVRRUCAQ3AO++VdAfJn
+        r3tq2fH+juWDbZ7VfxZo18tpID7u4LQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-74-nCGHvd_MOzKhTNqMIinvjQ-1; Fri, 08 Dec 2023 06:24:15 -0500
+X-MC-Unique: nCGHvd_MOzKhTNqMIinvjQ-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40b39377136so14054305e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 03:24:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702034654; x=1702639454;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RCuVfiFWHDbXLNBhRFvIja18LVxlp+/90vRsS/RVFDc=;
+        b=mYSEBYIx9GQqYxRn93DbRyuZ3pWQ27Q6n2p/kye0LeWNTarXDOxE4Mg888+1w0JECO
+         zCbr9vuoDkiqH1Bpx7Zm6IbwDLcHw3aoB0sFYggWO7vvq31vSRLHlpbq3y52Lpx0fBYS
+         mt8ghkn4nHzypLI16iPlRxY8KR8LXfW86hF+Mng5iJk4A9G+6gw6mO0POQR+4UvwPpV+
+         AzOWBKmt7o0GJ8qydgxf2ds8VOZiFnlfUtbICENovzLDtlCtvDlmkkcF++HE+gAwL/Jk
+         zwf6udwbMrcQgJEzMwu3fgJpPpps74cvCZcvCvjRGH7CwDAFyFSG1zgotk76AIFT4W2U
+         y+Kg==
+X-Gm-Message-State: AOJu0YxdzDtrlbOHGJQQwgFtEngbKC8Urw8/ZwpR525N11PTW3rCJ5lk
+        JifCT8GgA+vTyVo5P7eGs8eNR9Hmf0i6gEQIwl6EBdzDMCxUfOFzMADttz60yGsukDezv9NyW6y
+        rTG/0wnYul0rWkw8NRVTlu6U+Zz0pJLi0
+X-Received: by 2002:a05:600c:354f:b0:401:bd2e:49fc with SMTP id i15-20020a05600c354f00b00401bd2e49fcmr2276363wmq.24.1702034654028;
+        Fri, 08 Dec 2023 03:24:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFaPAfp15vPF4zwc3FxsV1ECm67uHlRyckS5h6TG1jm03XXMYbkyf487B7AwrqHjAP2WsWlQQ==
+X-Received: by 2002:a05:600c:354f:b0:401:bd2e:49fc with SMTP id i15-20020a05600c354f00b00401bd2e49fcmr2276347wmq.24.1702034653621;
+        Fri, 08 Dec 2023 03:24:13 -0800 (PST)
+Received: from ?IPV6:2003:cb:c724:2100:3826:4f41:d72c:dc1b? (p200300cbc724210038264f41d72cdc1b.dip0.t-ipconnect.de. [2003:cb:c724:2100:3826:4f41:d72c:dc1b])
+        by smtp.gmail.com with ESMTPSA id i6-20020a5d55c6000000b0033340aa3de2sm1822647wrw.14.2023.12.08.03.24.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Dec 2023 03:24:13 -0800 (PST)
+Message-ID: <a09ee569-4f57-4999-b395-623261098296@redhat.com>
+Date:   Fri, 8 Dec 2023 12:24:11 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3 3/5] remoteproc: k3-r5: Add support for IPC-only mode
- for all R5Fs
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 00/39] mm/rmap: interface overhaul
 Content-Language: en-US
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Suman Anna <s-anna@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Praneeth Bajjuri <praneeth@ti.com>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Nishanth Menon <nm@ti.com>,
-        "Su, Bao Cheng (RC-CN DF FA R&D)" <baocheng.su@siemens.com>
-References: <20220213201246.25952-1-s-anna@ti.com>
- <20220213201246.25952-4-s-anna@ti.com>
- <e0bc7eb5-f1b9-4e99-a39f-ca6f31daa9d8@siemens.com> <ZUPDrlVLkDDgJpWm@p14s>
- <106f3a36-16d8-4272-ad7a-287e6a3acfb5@siemens.com>
-From:   Hari Nagalla <hnagalla@ti.com>
-In-Reply-To: <106f3a36-16d8-4272-ad7a-287e6a3acfb5@siemens.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Peter Xu <peterx@redhat.com>,
+        "Yin, Fengwei" <fengwei.yin@intel.com>
+References: <20231204142146.91437-1-david@redhat.com>
+ <993ea322-8cdb-4ab1-84d3-0a1cb40049c9@arm.com>
+ <067753e4-faf0-4bc0-9703-ec97b7de705e@redhat.com>
+ <1ba5dd86-a201-4243-bab0-349395468236@arm.com>
+ <537ac106-e4f6-4845-aa09-29b775269562@redhat.com>
+ <f2955021-af48-4fb8-9159-b700e4ddc926@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
+ 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
+ rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
+ wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
+ 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
+ pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
+ KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
+ BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
+ 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
+ 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
+ M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
+ boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
+ 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
+ XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
+ a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
+ Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
+ 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
+ kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
+ th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
+ jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <f2955021-af48-4fb8-9159-b700e4ddc926@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/23 11:43, Jan Kiszka wrote:
->>> RTI1 watchdog also powers up R5F core 1. And this could happen either in
->> When writing "... also powers up...", other than R5F core 1, what else is being
->> powered?
-> Would be a question for the SoC vendor - I assumed that only mcu_rti1
-> [1] goes on when enabling it. But also mcu_r5fss0_core1 is enabled after
-> that, at least according to the respective TI-SCI query that the is_on
-> handler is performing. I've tested that under Linux and in U-Boot.
+On 05.12.23 14:49, Ryan Roberts wrote:
+> On 05/12/2023 13:39, David Hildenbrand wrote:
+>> On 05.12.23 14:31, Ryan Roberts wrote:
+>>> On 05/12/2023 09:56, David Hildenbrand wrote:
+>>>>>>
+>>>>>> Ryan has series where we would make use of folio_remove_rmap_ptes() [1]
+>>>>>> -- he carries his own batching variant right now -- and
+>>>>>> folio_try_dup_anon_rmap_ptes()/folio_dup_file_rmap_ptes() [2].
+>>>>>
+>>>>> Note that the contpte series at [2] has a new patch in v3 (patch 2), which
+>>>>> could
+>>>>> benefit from folio_remove_rmap_ptes() or equivalent. My plan was to revive [1]
+>>>>> on top of [2] once it is merged.
+>>>>>
+>>>>>>
+>>>>>> There is some overlap with both series (and some other work, like
+>>>>>> multi-size THP [3]), so that will need some coordination, and likely a
+>>>>>> stepwise inclusion.
+>>>>>
+>>>>> Selfishly, I'd really like to get my stuff merged as soon as there is no
+>>>>> technical reason not to. I'd prefer not to add this as a dependency if we can
+>>>>> help it.
+>>>>
+>>>> It's easy to rework either series on top of each other. The mTHP series has
+>>>> highest priority,
+>>>> no question, that will go in first.
+>>>
+>>> Music to my ears! It would be great to either get a reviewed-by or feedback on
+>>> why not, for the key 2 patches in that series (3 & 4) and also your opinion on
+>>> whether we need to wait for compaction to land (see cover letter). It would be
+>>> great to get this into linux-next ASAP IMHO.
+>>
+>> On it :)
+>>
+>>>
+>>>>
+>>>> Regarding the contpte, I think it needs more work. Especially, as raised, to not
+>>>> degrade
+>>>> order-0 performance. Maybe we won't make the next merge window (and you already
+>>>> predicated
+>>>> that in some cover letter :P ). Let's see.
+>>>
+>>> Yeah that's ok. I'll do the work to fix the order-0 perf. And also do the same
+>>> for patch 2 in that series - would also be really helpful if you had a chance to
+>>> look at patch 2 - its new for v3.
+>>
+>> I only skimmed over it, but it seems to go into the direction we'll need.
+>> Keeping order-0 performance unharmed should have highest priority. Hopefully my
+>> microbenchmarks are helpful.
 > 
-As described in section 12.5.2.1 of AM64x TRM 
-(https://www.ti.com/lit/pdf/SPRUIM2) -There is a RTI for each CPU core. 
-And it is not intended to be use RTI provisioned for a particular CPU 
-core with a different core.
-And also as shown in section (5.2.2.2.1.3.1) the CPU core and 
-corresponding RTI share the same power sub module (LPSC), so enabling 
-one powers on the other.
+> Yes absolutely - are you able to share them??
+> 
+>>
+>>>
+>>>>
+>>>> But again, the conflicts are all trivial, so I'll happily rebase on top of
+>>>> whatever is
+>>>> in mm-unstable. Or move the relevant rework to the front so you can just carry
+>>>> them/base on them. (the batched variants for dup do make the contpte code much
+>>>> easier)
+>>>
+>>> So perhaps we should aim for mTHP, then this, then contpte last, benefiting from
+>>> the batching.
+>>
+>> Yeah. And again, I don't care too much if I have to rebase on top of your work
+>> if this here takes longer. It's all a fairly trivial conversion.
+>>
+>>>>
+>>>> [...]
+>>>>
+>>>>>>
+>>>>>>
+>>>>>> New (extended) hugetlb interface that operate on entire folio:
+>>>>>>     * hugetlb_add_new_anon_rmap() -> Already existed
+>>>>>>     * hugetlb_add_anon_rmap() -> Already existed
+>>>>>>     * hugetlb_try_dup_anon_rmap()
+>>>>>>     * hugetlb_try_share_anon_rmap()
+>>>>>>     * hugetlb_add_file_rmap()
+>>>>>>     * hugetlb_remove_rmap()
+>>>>>>
+>>>>>> New "ordinary" interface for small folios / THP::
+>>>>>>     * folio_add_new_anon_rmap() -> Already existed
+>>>>>>     * folio_add_anon_rmap_[pte|ptes|pmd]()
+>>>>>>     * folio_try_dup_anon_rmap_[pte|ptes|pmd]()
+>>>>>>     * folio_try_share_anon_rmap_[pte|pmd]()
+>>>>>>     * folio_add_file_rmap_[pte|ptes|pmd]()
+>>>>>>     * folio_dup_file_rmap_[pte|ptes|pmd]()
+>>>>>>     * folio_remove_rmap_[pte|ptes|pmd]()
+>>>>>
+>>>>> I'm not sure if there are official guidelines, but personally if we are
+>>>>> reworking the API, I'd take the opportunity to move "rmap" to the front of the
+>>>>> name, rather than having it burried in the middle as it is for some of these:
+>>>>>
+>>>>> rmap_hugetlb_*()
+>>>>>
+>>>>> rmap_folio_*()
+>>>>
+>>>> No strong opinion. But we might want slightly different names then. For example,
+>>>> it's "bio_add_folio" and not "bio_folio_add":
+>>>>
+>>>>
+>>>> rmap_add_new_anon_hugetlb()
+>>>> rmap_add_anon_hugetlb()
+>>>> ...
+>>>> rmap_remove_hugetlb()
+>>>>
+>>>>
+>>>> rmap_add_new_anon_folio()
+>>>> rmap_add_anon_folio_[pte|ptes|pmd]()
+>>>> ...
+>>>> rmap_dup_file_folio_[pte|ptes|pmd]()
+>>>> rmap_remove_folio_[pte|ptes|pmd]()
+>>>>
+>>>> Thoughts?
+>>>
+>>> Having now reviewed your series, I have a less strong opinion, perhaps it's
+>>> actually best with your original names; "folio" is actually the subject after
+>>> all; it's the thing being operated on.
 
-As Suman suggested, it seems more appropriate to enable the RTI watchdog 
-timers in the remoteproc driver. Legacy omap remoteproc drivers have 
-this support and needs to be extended to k3 remoteproc drivers.
-Another option could be to DEFER RTI probe until corresponding 
-remoteproc driver is probed.
+So far I sticked to the original names used in this RFC. I'm testing a 
+new series that is based on current mm/unstable (especially, mTHP) and 
+contains all changes discussed here.
 
-Any other solutions to maintain this order of enabling remote core and 
-the corresponding RTI/WDT?
+If I don't here anything else, I'll send that out as v1 on Monday.
+
+Thanks!
+
+-- 
+Cheers,
+
+David / dhildenb
+
