@@ -2,244 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0615C80A8EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F97980A8F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574053AbjLHQ3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:29:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
+        id S1574052AbjLHQbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:31:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235911AbjLHQ3x (ORCPT
+        with ESMTP id S1574038AbjLHQbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:29:53 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CADE199D;
-        Fri,  8 Dec 2023 08:29:59 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a1e7971db2aso257360566b.3;
-        Fri, 08 Dec 2023 08:29:58 -0800 (PST)
+        Fri, 8 Dec 2023 11:31:20 -0500
+Received: from mx08-00376f01.pphosted.com (mx08-00376f01.pphosted.com [91.207.212.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60C2173F
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:31:25 -0800 (PST)
+Received: from pps.filterd (m0168888.ppops.net [127.0.0.1])
+        by mx08-00376f01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B8FDFnI011468;
+        Fri, 8 Dec 2023 16:30:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
+        from:to:cc:subject:date:message-id:content-transfer-encoding
+        :content-type:mime-version; s=dk201812; bh=+7kn1480RGW6VCPSIqFcm
+        8JDYY+fbCoqndAwvZ1IGPA=; b=r6e/LW4sDHpdgEqfuB4qRT10Ea5eKlHBtUazz
+        y0jZEyWgMZADftUdlp6PEmerCSBOCzUWzlSFQSAFfoGjUjldNgU8Nj+fzlcbRrha
+        fo7eo+8On24vAC3QQb4FYSHmiytrDdgViRt5xxobQQesakBd8CBK37KvwTYLPM8C
+        QtGVwKZ2n4796VEhQwZ8kNV3ThSvXZONzEVFotIexumx8MTaLGmAlJBhhRgAlZRK
+        JfCEzHcJhHPCCq4gLkCmXcxxQpo1hIgVDYwXgLDmV5yqL9gG4R3Gs9DZqKt0a6gN
+        XQ2hZ09uvBRg2gslImKTrZa919FfNAzvthDX5789JG9FHjgUw==
+Received: from hhmail05.hh.imgtec.org ([217.156.249.195])
+        by mx08-00376f01.pphosted.com (PPS) with ESMTPS id 3utd359xka-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 08 Dec 2023 16:30:49 +0000 (GMT)
+Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
+ HHMAIL05.hh.imgtec.org (10.100.10.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 8 Dec 2023 16:30:48 +0000
+Received: from GBR01-CWX-obe.outbound.protection.outlook.com (104.47.85.41) by
+ email.imgtec.com (10.100.10.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 8 Dec 2023 16:30:48 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tl9MRziyigKQXM0PVlJtbn3MyrDPecQzxhcgGThD6Bj5iL9NSS+k7IHhKmiVp/Ohgfd67u90sSo8u5HtI+cmjoeK/1xlHyUMYj+5l2gStvurDcXLqsiHWDidm6W2BXugA9Re00uNCeiaYy4npTmPwYcYtVuvEuMhasJMcjtxTG/KftUA1BZVzwbme9f/TaBw/1bFUYQlCH5bQwTecwUSoer4aGa9AZONH+y+54QiA0cwydTf8DTNOlIklvqsyp0Z44TJ0vOelfyIOVVsefjtQwQ4s0sZbEU7lELvcURaBfC+ZpD9GWSs1xbQZGDSuWKxugQxJ5cSZ8QsC0qk2FLsug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+7kn1480RGW6VCPSIqFcm8JDYY+fbCoqndAwvZ1IGPA=;
+ b=clBrj4jiMoRnsrLjmiXM4HU750jX56RY0JCBve9grj6Hv9MLebKznk29BYcf1D+j2AdEjWAHs7x0a81hJ04pkwbbKwMXtqQpy/+RnOmGpnbFKAGjbr10cl3hLV18xUfvVSomH0ZRlQKN/D+w2tBteYOEJ5Gm6Vj6BB9gdG7P5PnMCbZRBATexmMblZL50SIMd4scHR/OyGAfUwJSLQ9O8AEPa7fYouOmBvcgc/JjV5DiW7M+UGAz3sU4qHWbaWYGRCKGWE5N1fz6oglkvWBwBSWdT23FvjZKUfdAsDS7QqTtLPj3TjSUPmxVRVP/KXvUp5PZtvL9K16cU5IYKETBwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
+ dkim=pass header.d=imgtec.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702052997; x=1702657797; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RiBsF6D5ZYEUJwOeHckOEGR0L5lUF+YuBZzP+zur5mg=;
-        b=lPMDMsjNcTSdeIGtAER/fJm4b0PF/8S+ZE0jlHOR+60Fds/WynQlx2FYpqD/LU0CCC
-         HkRVTTiX3n+o4cI0UrrqlEYp/q2pxxwoFidzL9/Omr2HMymtrwzBaVjEnQcCymsgDspz
-         1uDSRR/BpcSbGsHx6TqTFJU/7JtXBxL0/B3SVyjI0kT/5t+t57wxv2OZ3+zG1FIi+a2p
-         ST3kX2o6OK8FEfajNZa9j2HD0CbDLDO0PW+qF/RaIOQPE9AjrSYmxJfw8zeSZknKUnE/
-         zhU6vfFVViL9WueJgqX4inOSZswN0+NZApMa2O4+WGEYM3ovJzuYbfsF2Z6HGf61qEwP
-         6npA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702052997; x=1702657797;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RiBsF6D5ZYEUJwOeHckOEGR0L5lUF+YuBZzP+zur5mg=;
-        b=PfYZtWQIJ31JLBa8o4XBOFb9YNO4BST4R+uyr+W0YEineWuDnzUEshmuYuCuUwpy1B
-         Wh3NWOGDdtKvi1rK2As9GeCV0zW3R3Ys2nwEHd5pfX1YdprFqsOEJzyU1MNXDQ7IJp9T
-         kY1EJ3b5co2nrADDewCif5+dQcysBEyIxG4R7T/OoC0PaUgUct89Vcw2rFONrUs6yAE9
-         kQ+JJM/0WJi6s3m+L2ZoEqOrWK1VYYqiVqHmiNh6VzosU33IPXS54wj1azGOneJONLkK
-         MWF8sgjIdxAUihiNHVf9RqjJy+y1gGDKWwdSvNBrXe3N26P6xGtfQGLZ8Ppzg08z4y+z
-         SaUw==
-X-Gm-Message-State: AOJu0Yyv2l6ScosUps+rDWlhs7v0ANNrr46FARlSmwRnakOqKxeimpb8
-        xPPzAWoBsS4wBArC7bn6RT8=
-X-Google-Smtp-Source: AGHT+IE+njVM1fF9X7EOT+apf46J2+vGmRje/1dygbwe7z0iC14XcXfA48VWpabUKLdviP1zXhn8Og==
-X-Received: by 2002:a17:906:7484:b0:9d4:2080:61dc with SMTP id e4-20020a170906748400b009d4208061dcmr97639ejl.22.1702052997275;
-        Fri, 08 Dec 2023 08:29:57 -0800 (PST)
-Received: from orome.fritz.box (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id tm6-20020a170907c38600b00a1ca6f5f189sm1191269ejc.179.2023.12.08.08.29.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 08:29:56 -0800 (PST)
-Date:   Fri, 8 Dec 2023 17:29:55 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sean Young <sean@mess.org>
-Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 4/4] media: pwm-ir-tx: trigger edges from hrtimer
- interrupt context
-Message-ID: <ZXNEg3ax4MChSJ5A@orome.fritz.box>
-References: <cover.1701248996.git.sean@mess.org>
- <88fdb3a200989458c6f95c26fa9bb84c1e864798.1701248996.git.sean@mess.org>
+ d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+7kn1480RGW6VCPSIqFcm8JDYY+fbCoqndAwvZ1IGPA=;
+ b=KvLiXdqQxhABpgq25eii9nC9d5Hk1/seqRg4S7x47r+5YFG55Ixnd6fJCAKlvSf1okqtvXs6Y1Il96Qn2RPs+3hH36VfTDIZEkzdVs9NXI9bV+pH7Gv+ed4xy9D7ANTXHh5JeDvBSdHJZnv2ECnAfmWSO9HtUzur155mV9HmEFg=
+Received: from LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:23c::11)
+ by CWLP265MB6102.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:181::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.28; Fri, 8 Dec
+ 2023 16:30:47 +0000
+Received: from LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a3f5:aa1a:ff75:79a2]) by LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a3f5:aa1a:ff75:79a2%4]) with mapi id 15.20.7068.025; Fri, 8 Dec 2023
+ 16:30:47 +0000
+From:   Donald Robson <donald.robson@imgtec.com>
+To:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <frank.binns@imgtec.com>, <donald.robson@imgtec.com>,
+        <matt.coster@imgtec.com>, <maarten.lankhorst@linux.intel.com>,
+        <mripard@kernel.org>, <tzimmermann@suse.de>, <airlied@gmail.com>,
+        <daniel@ffwll.ch>
+Subject: [PATCH] drm/imagination: Fixed oops when misusing ioctl CREATE_HWRT_DATASET
+Date:   Fri,  8 Dec 2023 16:30:19 +0000
+Message-Id: <20231208163019.95913-1-donald.robson@imgtec.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: LO0P123CA0012.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:354::20) To LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:23c::11)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Yblp1b8ERDinDWmD"
-Content-Disposition: inline
-In-Reply-To: <88fdb3a200989458c6f95c26fa9bb84c1e864798.1701248996.git.sean@mess.org>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LO2P265MB4600:EE_|CWLP265MB6102:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4dac6a65-a628-4e57-c9db-08dbf80b0845
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uyZDloV0i7lbqAyU+B3wgCgYjwEK38TrzTTwsGnUWW7ZWzu4wMfWNnuD8w5HlJhWiJ7Eq12sQABsM7yMX/a3qclh+VUfJZEaG7VCDB86g2eBxL1HatWxCoWj/4XLywZZNnUuQ6UbxG2n4+Fb9Ah9n/hFQvE77Uomy3+nv8sb7iYlrOMzPossR8gVa6qjgAE8z+fhd1+/OT3t6xEy1fTT8w3lkbJwe9NLKFB+n4NTZrvIfKfQ8iRC5Pxy9Ur2KBn4e/OkEMjl165e8D5IzdkNAuzqtueRR6uUYIIik6HpAWUE9hp7Jc1eh/awhBYHtLfaL9TG52MSzDm8efr+TYvLpIwm9SJhHn8yuyUJlRetqMf8UgI+1EmUBucHHNGhT8mb+l0zd353hXlqTyzno6qgu7j3ierS13V3iPB4+ResE7LSzzsJF9LYzPjamFuW+kH+/gIhrk2Q3ZCfPzMpsk7sDJQb+AUiKa5lM0kJSVUxIAj4gnCSP+dRshGzH4ECMa92Rd5WoGcfbR7wyIEq0AU6qZAexkzQyDbFX8KFJLNh8oQH/KtijsKqEeYA45G8JvljZTkznUUOypsdMEfCqPuZw3NnTStjLGhWEmwM7dQTunJPPGjo1aN3mfpVPVwoa3lr
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39850400004)(366004)(396003)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(6512007)(8676002)(316002)(8936002)(4326008)(44832011)(86362001)(66476007)(6486002)(66556008)(66946007)(478600001)(36756003)(41300700001)(38350700005)(2906002)(5660300002)(38100700002)(1076003)(26005)(6666004)(52116002)(6506007)(83380400001)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sx4jlMVNcNsPSjZkI3HMrjEXNZtGsJtxrwTHShidotEPrOplvUf9QmD4qATW?=
+ =?us-ascii?Q?CWnwgRU+eZlFc2CUKTmTvCA3YTvleYTZLUXNf9m8LfPcKSjWGDTRa7bh6qs8?=
+ =?us-ascii?Q?qulHTQUtw2Xek8sNX5BCQevWMYz5gMv7B80FIy6Z1BCSPNEHxJlgsm4RmCk9?=
+ =?us-ascii?Q?ryp/3Acw0xUxcseJsetqAJPOTkZn6pT49xLPFDTR1pUN7TodRI2j1Y+6xif3?=
+ =?us-ascii?Q?tVW8xohsA6ooLinsAaPWhVVwcthdaJZrCyu0qYuzSDWqE/6PGjhS3xNqD5Z1?=
+ =?us-ascii?Q?ncCvlnASiO9MnrTM3TkwF9c2l8BJSSflaLK7qjgOVGueL1TO+EZ4bVRf+PjU?=
+ =?us-ascii?Q?VfALonsWD5gO5qrY/LA9z1gN9wM5e31a1GPBZVq+uktAlJjvHhKMbpToO496?=
+ =?us-ascii?Q?gxLIEpxxvGJ1TswaKB3TIGfl22EIo+KlrpsepY3peR0Y9TqCDqwda1Jc7W6e?=
+ =?us-ascii?Q?IH9eZQMu0jhlESixblo/mmRm9QVk1GFZD11/QrvOfzN4DpA8MmahdIFJzM5w?=
+ =?us-ascii?Q?qsaEZa3BB4UZHyW7KpDK70XtEs0mxSfhhUIAKhWzfMY7Ugx29/6jXtMI8PKE?=
+ =?us-ascii?Q?6IqI8zQ09WZLApijzCQ6VV9bu+ijuL0IIlS64BKIQcJ2opmTFY26mfrjHtD1?=
+ =?us-ascii?Q?T/+NiHws/ZzIkApXMlIRCvFPilb0ttPjhKgo1iMWrhwQ1J8op444y/HzxFqM?=
+ =?us-ascii?Q?V4FLy/5ov6bFdbq7ayRSm7dKHhq3jMsE1f/xY69nDGx6fvFrXtUOTUVHowXo?=
+ =?us-ascii?Q?nvwUPLrZVf1YTGx+HnAtMFD3qyFEhlYAYdsOcn5oHwZAxeTWwmWkmsyAlav6?=
+ =?us-ascii?Q?vjWBc+YGtPNxz/x1rMuXNVPg+WKtSHg2ZiepxS3TVm/2ZG3A0rQdyhgk0mPe?=
+ =?us-ascii?Q?/lbO5ZPuhiGULg6vI/4SaGL8EEv6fHFT40+4XLFZ4CmFyR2tP1ZQi8JvLvKy?=
+ =?us-ascii?Q?moh2fpdpxAmY/KWWYCaJK619uCJVYOu1fpWB19u+8E4wmjvU8e51sdQbrJxM?=
+ =?us-ascii?Q?ZWfGz96Yb96S+ShwONKtHPXH1UQI8Y7qcbEYedZs4BS+MpZXqLSV/WYYI0LT?=
+ =?us-ascii?Q?fkeNFzeeegqw2w/SPBtYlbgBL93ABlRPZxUgfnyIzFKyao/dDum+q/BwCNIl?=
+ =?us-ascii?Q?ztdAQx8okSXhTOY4HwEyN8E1GMwz9TnRudY6D897MmMDym0nEn4OnHv7DhEX?=
+ =?us-ascii?Q?n7Hxj6uRpmUWBtKUx9YHaksAt556X99PzGFaEch5Xo1Ekb8c4mg961fcRsOb?=
+ =?us-ascii?Q?PJ+YMmW9h7HttUA/qk2uwyBci2dhsljWwdtavwfBgfXK3WFYcokAY5pnd0vC?=
+ =?us-ascii?Q?86HY1qnT02Jkm29pqvo2d7KUqDaSgVbrrZ/lW7KrURAm61KWbdaZDEXgY+8t?=
+ =?us-ascii?Q?8ax1FHVJ7/Op3k25XXomUI6ZMuVANLKlNv3L52oi1FSzcYbRovEDXRVUnIso?=
+ =?us-ascii?Q?mPOYbblCOL8i1cHi6eZcVj3MPk2jCnWujbdpLXbj1okF1bcmKOrQlFh4sn0L?=
+ =?us-ascii?Q?NrhlpqLaCRyamU5G8oR+NBtt2s0vmgWGyWdsKEMaTd0sgXjc1dndgKXUv8uD?=
+ =?us-ascii?Q?9tSrsm8CDtMBkhkgwjo4/WINmxzTYV6U36u6DPUihv5TeeK6LEWD9vNXnT6q?=
+ =?us-ascii?Q?bw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4dac6a65-a628-4e57-c9db-08dbf80b0845
+X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 16:30:47.1292
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VxEd1755un8LFpdxUmMSy1KgddrTJZo4rmMViRrREB5YzhGsHmHSgVD1KM5eL8bVnpydvhNDBlneJ/m8wxZJFsr5VacXIegAPes8T/sly0Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB6102
+X-OriginatorOrg: imgtec.com
+X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
+X-Proofpoint-ORIG-GUID: Rc1aDK3cqQyp8_dyUOAc9yXl_F8Em3xu
+X-Proofpoint-GUID: Rc1aDK3cqQyp8_dyUOAc9yXl_F8Em3xu
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+While writing the matching IGT suite I discovered that it's possible to
+cause a kernel oops when using DRM_IOCTL_PVR_CREATE_HWRT_DATASET when
+the call to hwrt_init_common_fw_structure() fails.
 
---Yblp1b8ERDinDWmD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Use an unwind-type error path to avoid cleaning up the object using the
+the release function before it is fully resolved.
 
-On Wed, Nov 29, 2023 at 09:13:37AM +0000, Sean Young wrote:
-> This makes the generated IR much more precise. Before this change, the
-> driver is unreliable and many users opted to use gpio-ir-tx instead.
->=20
-> Signed-off-by: Sean Young <sean@mess.org>
-> ---
->  drivers/media/rc/pwm-ir-tx.c | 79 ++++++++++++++++++++++++++++++++++--
->  1 file changed, 76 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
-> index cf51e2760975..8575c4596d7b 100644
-> --- a/drivers/media/rc/pwm-ir-tx.c
-> +++ b/drivers/media/rc/pwm-ir-tx.c
-> @@ -10,6 +10,8 @@
->  #include <linux/slab.h>
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
-> +#include <linux/hrtimer.h>
-> +#include <linux/completion.h>
->  #include <media/rc-core.h>
-> =20
->  #define DRIVER_NAME	"pwm-ir-tx"
-> @@ -17,8 +19,14 @@
-> =20
->  struct pwm_ir {
->  	struct pwm_device *pwm;
-> -	unsigned int carrier;
-> -	unsigned int duty_cycle;
-> +	struct hrtimer timer;
-> +	struct completion tx_done;
-> +	struct pwm_state *state;
-> +	u32 carrier;
-> +	u32 duty_cycle;
-> +	uint *txbuf;
+Signed-off-by: Donald Robson <donald.robson@imgtec.com>
+---
+ drivers/gpu/drm/imagination/pvr_hwrt.c | 27 +++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
-Maybe mark this as const to signal that it's not going to get modified?
+diff --git a/drivers/gpu/drm/imagination/pvr_hwrt.c b/drivers/gpu/drm/imagination/pvr_hwrt.c
+index c4213c18489e..54f88d6c01e5 100644
+--- a/drivers/gpu/drm/imagination/pvr_hwrt.c
++++ b/drivers/gpu/drm/imagination/pvr_hwrt.c
+@@ -458,7 +458,7 @@ pvr_hwrt_dataset_create(struct pvr_file *pvr_file,
+ 			struct drm_pvr_ioctl_create_hwrt_dataset_args *args)
+ {
+ 	struct pvr_hwrt_dataset *hwrt;
+-	int err;
++	int err, i = 0;
+ 
+ 	/* Create and fill out the kernel structure */
+ 	hwrt = kzalloc(sizeof(*hwrt), GFP_KERNEL);
+@@ -466,35 +466,36 @@ pvr_hwrt_dataset_create(struct pvr_file *pvr_file,
+ 	if (!hwrt)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	kref_init(&hwrt->ref_count);
+-
+ 	err = hwrt_init_kernel_structure(pvr_file, args, hwrt);
+ 	if (err < 0)
+ 		goto err_free;
+ 
+ 	err = hwrt_init_common_fw_structure(pvr_file, args, hwrt);
+ 	if (err < 0)
+-		goto err_free;
++		goto err_fini_kernel_structure;
+ 
+-	for (int i = 0; i < ARRAY_SIZE(hwrt->data); i++) {
++	for (; i < ARRAY_SIZE(hwrt->data); i++) {
+ 		err = hwrt_data_init_fw_structure(pvr_file, hwrt, args,
+ 						  &args->rt_data_args[i],
+ 						  &hwrt->data[i]);
+-		if (err < 0) {
+-			i--;
+-			/* Destroy already created structures. */
+-			for (; i >= 0; i--)
+-				hwrt_data_fini_fw_structure(hwrt, i);
+-			goto err_free;
+-		}
++		if (err < 0)
++			goto err_fini_data_structures;
+ 
+ 		hwrt->data[i].hwrt_dataset = hwrt;
+ 	}
+ 
++	kref_init(&hwrt->ref_count);
+ 	return hwrt;
+ 
++err_fini_data_structures:
++	while (--i >= 0)
++		hwrt_data_fini_fw_structure(hwrt, i);
++
++err_fini_kernel_structure:
++	hwrt_fini_kernel_structure(hwrt);
++
+ err_free:
+-	pvr_hwrt_dataset_put(hwrt);
++	kfree(hwrt);
+ 
+ 	return ERR_PTR(err);
+ }
+-- 
+2.25.1
 
-> +	uint txbuf_len;
-> +	uint txbuf_index;
-
-uint is rather rare. Or so I thought. There seem to be quite a few
-occurrences throughout the kernel. I'd still prefer unsigned int over
-this abbreviated form, but ultimately up to you and Mauro to decide.
-
->  };
-> =20
->  static const struct of_device_id pwm_ir_of_match[] =3D {
-> @@ -82,6 +90,62 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int =
-*txbuf,
->  	return count;
->  }
-> =20
-> +static int pwm_ir_tx_atomic(struct rc_dev *dev, unsigned int *txbuf,
-> +			    unsigned int count)
-> +{
-> +	struct pwm_ir *pwm_ir =3D dev->priv;
-> +	struct pwm_device *pwm =3D pwm_ir->pwm;
-> +	struct pwm_state state;
-> +
-> +	pwm_init_state(pwm, &state);
-> +
-> +	state.period =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
-> +	pwm_set_relative_duty_cycle(&state, pwm_ir->duty_cycle, 100);
-> +
-> +	pwm_ir->txbuf =3D txbuf;
-> +	pwm_ir->txbuf_len =3D count;
-> +	pwm_ir->txbuf_index =3D 0;
-> +	pwm_ir->state =3D &state;
-> +
-> +	hrtimer_start(&pwm_ir->timer, 0, HRTIMER_MODE_REL);
-> +
-> +	wait_for_completion(&pwm_ir->tx_done);
-> +
-> +	return count;
-> +}
-> +
-> +static enum hrtimer_restart pwm_ir_timer(struct hrtimer *timer)
-> +{
-> +	struct pwm_ir *pwm_ir =3D container_of(timer, struct pwm_ir, timer);
-> +	ktime_t now;
-> +
-> +	/*
-> +	 * If we happen to hit an odd latency spike, loop through the
-> +	 * pulses until we catch up.
-> +	 */
-> +	do {
-> +		u64 ns;
-> +
-> +		pwm_ir->state->enabled =3D !(pwm_ir->txbuf_index % 2);
-> +		pwm_apply_atomic(pwm_ir->pwm, pwm_ir->state);
-> +
-> +		if (pwm_ir->txbuf_index >=3D pwm_ir->txbuf_len) {
-> +			complete(&pwm_ir->tx_done);
-> +
-> +			return HRTIMER_NORESTART;
-> +		}
-> +
-> +		ns =3D US_TO_NS(pwm_ir->txbuf[pwm_ir->txbuf_index]);
-> +		hrtimer_add_expires_ns(timer, ns);
-> +
-> +		pwm_ir->txbuf_index++;
-> +
-> +		now =3D timer->base->get_time();
-> +	} while (hrtimer_get_expires_tv64(timer) < now);
-> +
-> +	return HRTIMER_RESTART;
-> +}
-> +
->  static int pwm_ir_probe(struct platform_device *pdev)
->  {
->  	struct pwm_ir *pwm_ir;
-> @@ -103,10 +167,19 @@ static int pwm_ir_probe(struct platform_device *pde=
-v)
->  	if (!rcdev)
->  		return -ENOMEM;
-> =20
-> +	if (pwm_is_atomic(pwm_ir->pwm)) {
-> +		init_completion(&pwm_ir->tx_done);
-> +		hrtimer_init(&pwm_ir->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-> +		pwm_ir->timer.function =3D pwm_ir_timer;
-> +		rcdev->tx_ir =3D pwm_ir_tx_atomic;
-> +	} else {
-> +		dev_info(&pdev->dev, "tx will not be accurate as pwm device does not s=
-upport atomic mode");
-
-s/tx/TX and s/pwm/PWM/? Also, I'm a bit unhappy about "atomic mode" here
-because the term is overloaded in PWM. If you call pwm_appy_*() then by
-definition it's going to be "atomic" in the "atomic state" sense. So
-maybe switch to something like:
-
-	"TX will not be accurate as PWM device might sleep"
-
-?
-
-Thierry
-
---Yblp1b8ERDinDWmD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmVzRIMACgkQ3SOs138+
-s6Hm9A//Xk/Ax5Tr6GG4g93ovKwf9aILijyg9sraVXVqaJD55fZ0ObhBlY7xSvMv
-t0+DWflHIYFCgFIlsxtScqG0PrpGkoQI4valJzuyR+dKn3TSD8tCrLeVAP5pOTLL
-X88YQXo7Qu/J4F58/mSE5YPB5ut9cBtC2ViDpoNB3rPnfpvl1CQ5QnTKdr8iRnYB
-GiJCRKQkG8v0c69a0nNftVF9ujE0fMhysW+ULc8d7U8iSU7CMcQrr8nPKj+K2UR8
-3qvyLxd/0Irzkvn5Fu8ziWW2aFEsldfWZ9bYyBYGbpDJ2h4a6tRs4s7YJGWIOBM1
-+DkOzkY5ZJnBjIUMHBQ6zyD31PklKxDAVNcvD1rpruRXooHDpWWh/wavvK7JInxa
-/bTcvjKl88+dQFrXzGM6Yt5cdB/iuvZ/QvN1dc1oyZEOPK2k0SaEX5S1X8QsrK4+
-f4q2BrkDViyK2PP6q/wCZTTQAOtNVwN/3nWRDEKd/FeJ7KzU75f5qzOFJTMHBio3
-v26mVcr4cx2woBxfW7pBL6wM+Vt86uRWvdGhQf6vQQcZw3G2DQLOg/QZM13bR41f
-gNH6FMeDKV4gPSMMLybID/60mGUC6movGKjaiHUfUDUiUlzHi7o7nJByiIw+GEQh
-t+DDJ3KmHMXJJFjxbJB6rqW4L9sj2ie+QuO3cyiJ294Hdbpu87c=
-=UtpU
------END PGP SIGNATURE-----
-
---Yblp1b8ERDinDWmD--
