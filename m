@@ -2,257 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CAC80A437
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD26280A43B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233615AbjLHNMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:12:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35286 "EHLO
+        id S1573787AbjLHNNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:13:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjLHNMw (ORCPT
+        with ESMTP id S229844AbjLHNNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:12:52 -0500
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6926171F
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 05:12:57 -0800 (PST)
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 70D8C3F15F
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 13:12:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1702041175;
-        bh=K9zgZeSUkIRgWWjMY0ssDLpumUX4eiD6JCn0PCUYG1U=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=g7CWAWM7LE9NDgp2iKsRf2J/mJ4VMrzl2ALULKIIOlaUq0QL3AuCpp8Mc7/KuLKGq
-         CVFqMrDV5eY390FzA/fbciqRTAHZhYg1XHD9SJBedYokhXOuh59qgWTbRNRNgyVZOx
-         vhWvHsON3ixKlsEccpdL53XFEX+ZJZEmyq+CFSI/LlR1DSSiE/SbmyHW/cTOsHWQmq
-         fFl+bT62l3Kzrg7cUpaVwKx/omysURH0qUjoAv05MDmCLvtBmQdFXJubGTaI3yHTnB
-         Y190X4LFM/VyKQ2nYYt38a6h0suow/AFwMxpLvilzME7R+1qDKNchC1hzx1wyNSzBS
-         7WRnbQo7aKCUg==
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-42599db593fso17764601cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 05:12:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702041174; x=1702645974;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K9zgZeSUkIRgWWjMY0ssDLpumUX4eiD6JCn0PCUYG1U=;
-        b=cYYVodMU0qKedZuZULcy/ZrqpZ58XHD3gwOQIfWccTkSO8UPL8spYMDEC4BGBevU3B
-         gJrCkskEekfk88VFaJoaeA123UPWzWXVyqqaeDvcPD7OieH8O4lNORSYc5CzeDHUsVYb
-         y/Dy0L54bV6CNWpIvxO4hn5eHN3CvTiH/OP/wVC8HuU2wESIfK0hxHbQt7A43o/ioNP+
-         PQXvMUusNBnG2gXrkvzGik+HNrNHM63FxU5aqfQtQxCB32qI7U+Hea3plCdYjw+ZrEIM
-         ro4QPFOlYY+wuqMRmf5LTxngmgnPPumAh186SaYvMLAxTi3vmJ4713IPrqglX1FGqycM
-         Bplw==
-X-Gm-Message-State: AOJu0YydmXKpLUe8tlFfPTfgv03aJBL5gn+azMT1V/W917FbemnPLnLB
-        W3SuL6gohta1BjH0EwwT31UmVGlf9Kf4A+a3ez9XNVU2WEsmV9zantD0WsgVOClec7OFXNy9ZCe
-        DPs27nN1vBW++ixmXQZsHg647IEHwfxL1uVxdLYR6Gtzb3hh6p1jVrCbuKA==
-X-Received: by 2002:a05:622a:44d:b0:425:4054:bc5e with SMTP id o13-20020a05622a044d00b004254054bc5emr1204030qtx.58.1702041174449;
-        Fri, 08 Dec 2023 05:12:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEMDwD1ffbD4BKzlSumuMZD3sOD+sywLn2kwgwb+azE8LEIA/r3L2mxNLPHVXDnFbuSkerKtd9gx6pjrsRIO9Y=
-X-Received: by 2002:a05:622a:44d:b0:425:4054:bc5e with SMTP id
- o13-20020a05622a044d00b004254054bc5emr1204009qtx.58.1702041174155; Fri, 08
- Dec 2023 05:12:54 -0800 (PST)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 8 Dec 2023 08:12:53 -0500
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231206115000.295825-2-jeeheng.sia@starfivetech.com>
-References: <20231206115000.295825-1-jeeheng.sia@starfivetech.com> <20231206115000.295825-2-jeeheng.sia@starfivetech.com>
-Mime-Version: 1.0
-Date:   Fri, 8 Dec 2023 08:12:53 -0500
-Message-ID: <CAJM55Z8uDFH1cmNdqLBy3sdF5ddxA5N1Mf_oeOmEiDg0z03AHg@mail.gmail.com>
-Subject: Re: [PATCH v1 01/16] reset: starfive: Rename file name "jh71x0" to "common"
-To:     Sia Jee Heng <jeeheng.sia@starfivetech.com>, kernel@esmil.dk,
-        conor@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, mturquette@baylibre.com,
-        sboyd@kernel.org, p.zabel@pengutronix.de,
-        emil.renner.berthing@canonical.com, hal.feng@starfivetech.com,
-        xingyu.wu@starfivetech.com
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        leyfoon.tan@starfivetech.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 8 Dec 2023 08:13:43 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4DBE9;
+        Fri,  8 Dec 2023 05:13:50 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8CaXkm016357;
+        Fri, 8 Dec 2023 13:13:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=ZTxNfR2A8QHWVwL5Rht1ivTbcC1bCutQJUKwUvWSP30=;
+ b=MX3zl17y/OZH3uBXN9GqMBAeQqfRMgmFIdh7unJ3nZ8TCM2Sh5DkgrQyKXAIE9GFwO/g
+ fYTFKaYa+9Z3DR9Wil+epleFHQ0106Xfh4jUMfV51OWhfwTMNrrHMILkxtXW1ziYjlUV
+ 2S4QrjsaamPwgfWmBnUXXMRqYrzuxsUtU+Xsqt4OCX+F47sc/LeFEvBjiEUNgiGk31hD
+ XWxIWDC/wS19GXh8FgA5yqWpUPVof07SDfkMDGG+q9cpyTiSNeVQJh5IFbUwWe8rUjXH
+ moqjQJCzO+ZyXgf57h1iegyak5EzLkG4y2dU45EfYDd/hiyZZ9f2ElQrH3oHl2q2Miau mw== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uv1x5876v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Dec 2023 13:13:38 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3B8DDYfR023256;
+        Fri, 8 Dec 2023 13:13:34 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3uqwnmkyt5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 08 Dec 2023 13:13:34 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B8DDYKn023250;
+        Fri, 8 Dec 2023 13:13:34 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3B8DDYli023248;
+        Fri, 08 Dec 2023 13:13:34 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
+        id 485425000A9; Fri,  8 Dec 2023 18:43:33 +0530 (+0530)
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_cang@quicinc.com, Nitin Rawat <quic_nitirawa@quicinc.com>,
+        Manish Pandey <quic_mapa@quicinc.com>
+Subject: [PATCH V5] scsi: ufs: core: store min and max clk freq from OPP table
+Date:   Fri,  8 Dec 2023 18:43:31 +0530
+Message-Id: <20231208131331.12596-1-quic_nitirawa@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: pr8Tl0DmxjZzUn2mAslRDGzq0acFUOeA
+X-Proofpoint-ORIG-GUID: pr8Tl0DmxjZzUn2mAslRDGzq0acFUOeA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-08_08,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
+ suspectscore=0 priorityscore=1501 mlxscore=0 adultscore=0 malwarescore=0
+ spamscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312080109
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sia Jee Heng wrote:
-> StarFive JH8100 shares a similar clock and reset design with JH7110.
-> To facilitate the reuse of the file and its functionalities, files
-> containing the "jh71x0" naming convention are renamed to use the
-> "common" wording.
->
-> Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
-> Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+OPP support added by commit 72208ebe181e ("scsi: ufs: core: Add support
+for parsing OPP") doesn't update the min_freq and max_freq of each clocks
+in 'struct ufs_clk_info'.
 
-Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+But these values are used by the host drivers internally for controller
+configuration. When the OPP support is enabled in devicetree, these
+values will be 0, causing boot issues on the respective platforms.
 
-> ---
->  drivers/clk/starfive/clk-starfive-jh7110-sys.c              | 2 +-
->  drivers/reset/starfive/Kconfig                              | 6 +++---
->  drivers/reset/starfive/Makefile                             | 2 +-
->  .../{reset-starfive-jh71x0.c => reset-starfive-common.c}    | 4 ++--
->  .../{reset-starfive-jh71x0.h => reset-starfive-common.h}    | 6 +++---
->  drivers/reset/starfive/reset-starfive-jh7100.c              | 2 +-
->  drivers/reset/starfive/reset-starfive-jh7110.c              | 4 ++--
->  .../{reset-starfive-jh71x0.h => reset-starfive-common.h}    | 4 ++--
->  8 files changed, 15 insertions(+), 15 deletions(-)
->  rename drivers/reset/starfive/{reset-starfive-jh71x0.c => reset-starfive-common.c} (97%)
->  rename drivers/reset/starfive/{reset-starfive-jh71x0.h => reset-starfive-common.h} (75%)
->  rename include/soc/starfive/{reset-starfive-jh71x0.h => reset-starfive-common.h} (81%)
->
-> diff --git a/drivers/clk/starfive/clk-starfive-jh7110-sys.c b/drivers/clk/starfive/clk-starfive-jh7110-sys.c
-> index 3884eff9fe93..6e45c580c9ba 100644
-> --- a/drivers/clk/starfive/clk-starfive-jh7110-sys.c
-> +++ b/drivers/clk/starfive/clk-starfive-jh7110-sys.c
-> @@ -14,7 +14,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
->
-> -#include <soc/starfive/reset-starfive-jh71x0.h>
-> +#include <soc/starfive/reset-starfive-common.h>
->
->  #include <dt-bindings/clock/starfive,jh7110-crg.h>
->
-> diff --git a/drivers/reset/starfive/Kconfig b/drivers/reset/starfive/Kconfig
-> index d832339f61bc..29fbcf1a7d83 100644
-> --- a/drivers/reset/starfive/Kconfig
-> +++ b/drivers/reset/starfive/Kconfig
-> @@ -1,12 +1,12 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->
-> -config RESET_STARFIVE_JH71X0
-> +config RESET_STARFIVE_COMMON
->  	bool
->
->  config RESET_STARFIVE_JH7100
->  	bool "StarFive JH7100 Reset Driver"
->  	depends on ARCH_STARFIVE || COMPILE_TEST
-> -	select RESET_STARFIVE_JH71X0
-> +	select RESET_STARFIVE_COMMON
->  	default ARCH_STARFIVE
->  	help
->  	  This enables the reset controller driver for the StarFive JH7100 SoC.
-> @@ -15,7 +15,7 @@ config RESET_STARFIVE_JH7110
->  	bool "StarFive JH7110 Reset Driver"
->  	depends on CLK_STARFIVE_JH7110_SYS
->  	select AUXILIARY_BUS
-> -	select RESET_STARFIVE_JH71X0
-> +	select RESET_STARFIVE_COMMON
->  	default ARCH_STARFIVE
->  	help
->  	  This enables the reset controller driver for the StarFive JH7110 SoC.
-> diff --git a/drivers/reset/starfive/Makefile b/drivers/reset/starfive/Makefile
-> index 7a44b66fb9d5..582e4c160bd4 100644
-> --- a/drivers/reset/starfive/Makefile
-> +++ b/drivers/reset/starfive/Makefile
-> @@ -1,5 +1,5 @@
->  # SPDX-License-Identifier: GPL-2.0
-> -obj-$(CONFIG_RESET_STARFIVE_JH71X0)		+= reset-starfive-jh71x0.o
-> +obj-$(CONFIG_RESET_STARFIVE_COMMON)		+= reset-starfive-common.o
->
->  obj-$(CONFIG_RESET_STARFIVE_JH7100)		+= reset-starfive-jh7100.o
->  obj-$(CONFIG_RESET_STARFIVE_JH7110)		+= reset-starfive-jh7110.o
-> diff --git a/drivers/reset/starfive/reset-starfive-jh71x0.c b/drivers/reset/starfive/reset-starfive-common.c
-> similarity index 97%
-> rename from drivers/reset/starfive/reset-starfive-jh71x0.c
-> rename to drivers/reset/starfive/reset-starfive-common.c
-> index 55bbbd2de52c..dab454e46bbf 100644
-> --- a/drivers/reset/starfive/reset-starfive-jh71x0.c
-> +++ b/drivers/reset/starfive/reset-starfive-common.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
->  /*
-> - * Reset driver for the StarFive JH71X0 SoCs
-> + * Reset driver for the StarFive SoCs
->   *
->   * Copyright (C) 2021 Emil Renner Berthing <kernel@esmil.dk>
->   */
-> @@ -12,7 +12,7 @@
->  #include <linux/reset-controller.h>
->  #include <linux/spinlock.h>
->
-> -#include "reset-starfive-jh71x0.h"
-> +#include "reset-starfive-common.h"
->
->  struct jh71x0_reset {
->  	struct reset_controller_dev rcdev;
-> diff --git a/drivers/reset/starfive/reset-starfive-jh71x0.h b/drivers/reset/starfive/reset-starfive-common.h
-> similarity index 75%
-> rename from drivers/reset/starfive/reset-starfive-jh71x0.h
-> rename to drivers/reset/starfive/reset-starfive-common.h
-> index db7d39a87f87..266acc4b2caf 100644
-> --- a/drivers/reset/starfive/reset-starfive-jh71x0.h
-> +++ b/drivers/reset/starfive/reset-starfive-common.h
-> @@ -3,12 +3,12 @@
->   * Copyright (C) 2021 Emil Renner Berthing <kernel@esmil.dk>
->   */
->
-> -#ifndef __RESET_STARFIVE_JH71X0_H
-> -#define __RESET_STARFIVE_JH71X0_H
-> +#ifndef __RESET_STARFIVE_COMMON_H
-> +#define __RESET_STARFIVE_COMMON_H
->
->  int reset_starfive_jh71x0_register(struct device *dev, struct device_node *of_node,
->  				   void __iomem *assert, void __iomem *status,
->  				   const u32 *asserted, unsigned int nr_resets,
->  				   struct module *owner);
->
-> -#endif /* __RESET_STARFIVE_JH71X0_H */
-> +#endif /* __RESET_STARFIVE_COMMON_H */
-> diff --git a/drivers/reset/starfive/reset-starfive-jh7100.c b/drivers/reset/starfive/reset-starfive-jh7100.c
-> index 2a56f7fd4ba7..546dea2e5811 100644
-> --- a/drivers/reset/starfive/reset-starfive-jh7100.c
-> +++ b/drivers/reset/starfive/reset-starfive-jh7100.c
-> @@ -8,7 +8,7 @@
->  #include <linux/mod_devicetable.h>
->  #include <linux/platform_device.h>
->
-> -#include "reset-starfive-jh71x0.h"
-> +#include "reset-starfive-common.h"
->
->  #include <dt-bindings/reset/starfive-jh7100.h>
->
-> diff --git a/drivers/reset/starfive/reset-starfive-jh7110.c b/drivers/reset/starfive/reset-starfive-jh7110.c
-> index 29a43f0f2ad6..87dba01491ae 100644
-> --- a/drivers/reset/starfive/reset-starfive-jh7110.c
-> +++ b/drivers/reset/starfive/reset-starfive-jh7110.c
-> @@ -7,9 +7,9 @@
->
->  #include <linux/auxiliary_bus.h>
->
-> -#include <soc/starfive/reset-starfive-jh71x0.h>
-> +#include <soc/starfive/reset-starfive-common.h>
->
-> -#include "reset-starfive-jh71x0.h"
-> +#include "reset-starfive-common.h"
->
->  #include <dt-bindings/reset/starfive,jh7110-crg.h>
->
-> diff --git a/include/soc/starfive/reset-starfive-jh71x0.h b/include/soc/starfive/reset-starfive-common.h
-> similarity index 81%
-> rename from include/soc/starfive/reset-starfive-jh71x0.h
-> rename to include/soc/starfive/reset-starfive-common.h
-> index 47b486ececc5..56d8f413cf18 100644
-> --- a/include/soc/starfive/reset-starfive-jh71x0.h
-> +++ b/include/soc/starfive/reset-starfive-common.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> -#ifndef __SOC_STARFIVE_RESET_JH71X0_H
-> -#define __SOC_STARFIVE_RESET_JH71X0_H
-> +#ifndef __SOC_STARFIVE_RESET_COMMON_H
-> +#define __SOC_STARFIVE_RESET_COMMON_H
->
->  #include <linux/auxiliary_bus.h>
->  #include <linux/compiler_types.h>
-> --
-> 2.34.1
->
+So add support to parse the min_freq and max_freq of all clocks while
+parsing the OPP table.
+
+Fixes: 72208ebe181e ("scsi: ufs: core: Add support for parsing OPP")
+Co-developed-by: Manish Pandey <quic_mapa@quicinc.com>
+Signed-off-by: Manish Pandey <quic_mapa@quicinc.com>
+Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+Change from v4:
+- Addressed bart's comment to simplify the code
+
+Changes from v3:
+- updated commit description and comment to address christoph's comment
+
+Changes from v2:
+- increment idx in dev_pm_opp_get_freq_indexed
+
+Changes from v1:
+As per Manivannan's comment:
+- Updated commmit description
+- Sort include file alphabetically
+- Added missing dev_pm_opp_put
+- updated function name and documention
+- removed ret variable
+---
+ drivers/ufs/host/ufshcd-pltfrm.c | 54 ++++++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+
+diff --git a/drivers/ufs/host/ufshcd-pltfrm.c b/drivers/ufs/host/ufshcd-pltfrm.c
+index da2558e274b4..db9d9365ff55 100644
+--- a/drivers/ufs/host/ufshcd-pltfrm.c
++++ b/drivers/ufs/host/ufshcd-pltfrm.c
+@@ -8,6 +8,7 @@
+  *	Vinayak Holikatti <h.vinayak@samsung.com>
+  */
+
++#include <linux/clk.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_opp.h>
+@@ -213,6 +214,55 @@ static void ufshcd_init_lanes_per_dir(struct ufs_hba *hba)
+ 	}
+ }
+
++/**
++ * ufshcd_parse_clock_min_max_freq  - Parse MIN and MAX clocks freq
++ * @hba: per adapter instance
++ *
++ * This function parses MIN and MAX frequencies of all clocks required
++ * by the host drivers.
++ *
++ * Returns 0 for success and non-zero for failure
++ */
++static int ufshcd_parse_clock_min_max_freq(struct ufs_hba *hba)
++{
++	struct list_head *head = &hba->clk_list_head;
++	struct ufs_clk_info *clki;
++	struct dev_pm_opp *opp;
++	unsigned long freq;
++	u8 idx = 0;
++
++	list_for_each_entry(clki, head, list) {
++		if (!clki->name)
++			continue;
++
++		clki->clk = devm_clk_get(hba->dev, clki->name);
++		if (IS_ERR(clki->clk))
++			continue;
++
++		/* Find Max Freq */
++		freq = ULONG_MAX;
++		opp = dev_pm_opp_find_freq_floor_indexed(hba->dev, &freq, idx);
++		if (IS_ERR(opp)) {
++			dev_err(hba->dev, "Failed to find OPP for MAX frequency\n");
++			return PTR_ERR(opp);
++		}
++		clki->max_freq = dev_pm_opp_get_freq_indexed(opp, idx);
++		dev_pm_opp_put(opp);
++
++		/* Find Min Freq */
++		freq = 0;
++		opp = dev_pm_opp_find_freq_ceil_indexed(hba->dev, &freq, idx);
++		if (IS_ERR(opp)) {
++			dev_err(hba->dev, "Failed to find OPP for MIN frequency\n");
++			return PTR_ERR(opp);
++		}
++		clki->min_freq = dev_pm_opp_get_freq_indexed(opp, idx++);
++		dev_pm_opp_put(opp);
++	}
++
++	return 0;
++}
++
+ static int ufshcd_parse_operating_points(struct ufs_hba *hba)
+ {
+ 	struct device *dev = hba->dev;
+@@ -279,6 +329,10 @@ static int ufshcd_parse_operating_points(struct ufs_hba *hba)
+ 		return ret;
+ 	}
+
++	ret = ufshcd_parse_clock_min_max_freq(hba);
++	if (ret)
++		return ret;
++
+ 	hba->use_pm_opp = true;
+
+ 	return 0;
+--
+2.17.1
+
