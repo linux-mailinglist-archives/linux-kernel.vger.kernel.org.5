@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4250980A7F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C242A80A7F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574412AbjLHPyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:54:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37464 "EHLO
+        id S1574424AbjLHPyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:54:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233617AbjLHPyR (ORCPT
+        with ESMTP id S1574415AbjLHPya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:54:17 -0500
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18197BD;
-        Fri,  8 Dec 2023 07:54:24 -0800 (PST)
-Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7c59ac49f12so1141897241.1;
-        Fri, 08 Dec 2023 07:54:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702050863; x=1702655663; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HJckfY/O+WNBjP92Ja6mDXLeNrN1XJG5KdYfPf1kDfE=;
-        b=bBHTe6GqfZKijwEanWccxNSxeuRVvqDFSSCOoPotlNvxMiQd29XhPsozqSxgtSO3l0
-         fB/zLm2tltjXORKNVFgnh12GBZ2eAQfp8n8eHwC2xQCSpdU3qNFMMFC+A2XG6AuhaLQg
-         W/rxyLWAcQb1Sp7cBGfLVGw+u2yL5bI1kmneIsyCuYBZkF8F8N+2WeGjeajc6xZQkl1/
-         quJG8duwxdTiybGkGlKBB3Ta5oantGMnDF0Oo5a2k53DGCkqaUh8wMHdJdye8e0q1Yv1
-         YG9qqzQXnZ5pF52A8H7qwx+1zfhAyZqa9DA3C9Y0RDTCfj/T+rSPmQ5GORNGYuNsu9M/
-         buig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702050863; x=1702655663;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HJckfY/O+WNBjP92Ja6mDXLeNrN1XJG5KdYfPf1kDfE=;
-        b=q1Ug+ChiFO0S6/VvKsw8G/ieN9VZcEU9uWf/HWuGHwffN/aymo1dHT9GEaJji+RHoB
-         uy61+rzrvPLgrXCFA1yfWYk/Rl4fdQl9BEeorNaARkKAqNSgEogucO+da0JP+UfYlEi9
-         zwoq2bpaNXKL+tY0uw+tvTl8u/2MVI/PkgbMRCNAw3W3NnMYTjqWzMAEaDiTOUcYKRCx
-         1bgYrdY0s/PMIzrNi2rIctIixq7F1UyWL4p5BaxxGfrJ2NTHVmmfuYEieGzevHhs5UQv
-         kqaMQ02k/kvtmty+F8rSyxIPsmxxLoUfy6EHFq7uDgBl+LI+dKKt5GrxyxUe/I9OzN6b
-         n0mg==
-X-Gm-Message-State: AOJu0Ywew4CvZuAGX44CLurvnGdqIfxU2RlSf/q+WOziBKn8rwaTecQW
-        do8gYKbtaRYu56HXUeoLPB02LHpzFXAsKeOUaQPGVqgBDRBuAw==
-X-Google-Smtp-Source: AGHT+IHqBcm+dyGPEwNbp3iBaa2Wq1bBEaTn16dQ0uJjK1ajD86blAwTvlSgHu6XUY+NKK3+3Id6Eb+/MX/wT5gCikk=
-X-Received: by 2002:a05:6102:1007:b0:464:a0f7:6ce6 with SMTP id
- q7-20020a056102100700b00464a0f76ce6mr870724vsp.13.1702050860319; Fri, 08 Dec
- 2023 07:54:20 -0800 (PST)
+        Fri, 8 Dec 2023 10:54:30 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB261734;
+        Fri,  8 Dec 2023 07:54:36 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702050874;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6O/DmHCMHLUH4FV1veAF/8wiZY0/z4QkGmnuD54M7ss=;
+        b=dUAYIEG5jE088Ag2fa2Z1rmOHZzMqN8lggzcGrdUF+qteYYY6+KScF/UWzOmEkwppSIzMg
+        drYMKkylIh4/jkIuNwWg2RwRfCbgTFEy27hCcz9Gk15i9dRSW78M5DpeqR2QWEKRIKLyHx
+        wDyd9rDgT2FHf75QyRs2uIi2l6vjA1qxtgW30iVOhJiK/nDRv0wwaN3/yoM2ixz4AokyV3
+        zQJjh3UFGsZP+qwKuCSP1Jjc0k3T3iczFPHGvrAcOe0PUf5+TVU2oFxwJl21okm2QGqOr9
+        HP3DNdUlp9E4kYFKpOiZ0aDPB40Qzxtb++qm4dqzsK4Vk2qKeTKYrhvStKL7/w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702050874;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6O/DmHCMHLUH4FV1veAF/8wiZY0/z4QkGmnuD54M7ss=;
+        b=4b3Ipi5s1e37x7+vS4YcQAh1vTCM28hhl4temVUWU7Lfo1Vr/kigWJ41YHwTye0jWEYeM3
+        fXhNrHzTehUYsbBA==
+To:     Yu Chien Peter Lin <peterlin@andestech.com>, acme@kernel.org,
+        adrian.hunter@intel.com, ajones@ventanamicro.com,
+        alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
+        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
+        conor+dt@kernel.org, conor.dooley@microchip.com, conor@kernel.org,
+        devicetree@vger.kernel.org, dminus@andestech.com,
+        evan@rivosinc.com, geert+renesas@glider.be, guoren@kernel.org,
+        heiko@sntech.de, irogers@google.com, jernej.skrabec@gmail.com,
+        jolsa@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, locus84@andestech.com,
+        magnus.damm@gmail.com, mark.rutland@arm.com, mingo@redhat.com,
+        n.shubin@yadro.com, namhyung@kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, peterlin@andestech.com,
+        peterz@infradead.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        rdunlap@infradead.org, robh+dt@kernel.org, samuel@sholland.org,
+        sunilvl@ventanamicro.com, tim609@andestech.com, uwu@icenowy.me,
+        wens@csie.org, will@kernel.org, ycliang@andestech.com,
+        inochiama@outlook.com
+Subject: Re: [PATCH v4 02/13] irqchip/riscv-intc: Allow large non-standard
+ interrupt number
+In-Reply-To: <20231122121235.827122-3-peterlin@andestech.com>
+References: <20231122121235.827122-1-peterlin@andestech.com>
+ <20231122121235.827122-3-peterlin@andestech.com>
+Date:   Fri, 08 Dec 2023 16:54:34 +0100
+Message-ID: <871qbwsn9h.ffs@tglx>
 MIME-Version: 1.0
-References: <20231206151134.26052-1-quic_pintu@quicinc.com>
-In-Reply-To: <20231206151134.26052-1-quic_pintu@quicinc.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Fri, 8 Dec 2023 21:24:08 +0530
-Message-ID: <CAOuPNLhVHHGa45rGvXrcYaDvxvWk7H7Ckip=jiM38ppKw_7uvQ@mail.gmail.com>
-Subject: Re: [PATCH] of: reserved_mem: fix error log for reserved mem init failure
-To:     Pintu Kumar <quic_pintu@quicinc.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, robh+dt@kernel.org, frowand.list@gmail.com,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Dec 2023 at 20:45, Pintu Kumar <quic_pintu@quicinc.com> wrote:
->
-> During fdt_init_reserved_mem() when __reserved_mem_init_node()
-> fail we are using pr_info to print error.
->
-> So, if we change the loglevel to 4 (or below), this error
-> message will be missed.
->
-> Thus, change the pr_info to pr_err for fail case.
->
-> Signed-off-by: Pintu Kumar <quic_pintu@quicinc.com>
-> ---
->  drivers/of/of_reserved_mem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-> index 7ec94cfcbddb..473665e76b6f 100644
-> --- a/drivers/of/of_reserved_mem.c
-> +++ b/drivers/of/of_reserved_mem.c
-> @@ -334,7 +334,7 @@ void __init fdt_init_reserved_mem(void)
->                 if (err == 0) {
->                         err = __reserved_mem_init_node(rmem);
->                         if (err != 0 && err != -ENOENT) {
-> -                               pr_info("node %s compatible matching fail\n",
-> +                               pr_err("node %s compatible matching fail\n",
->                                         rmem->name);
->                                 if (nomap)
->                                         memblock_clear_nomap(rmem->base, rmem->size);
-> --
-> 2.17.1
->
+On Wed, Nov 22 2023 at 20:12, Yu Chien Peter Lin wrote:
+> Currently, the implementation of the RISC-V INTC driver uses the
+> interrupt cause as hwirq and has a limitation of supporting a
 
-Looks like the patch got pushed twice because of some network issue.
-Please consider this one for review.
+s/hwirq/hardware interrupt/
 
-Thanks
+Please spell things out. We are not on Xitter here.
+
+> maximum of 64 hwirqs. However, according to the privileged spec,
+> interrupt causes >= 16 are defined for platform use.
+>
+> This limitation prevents us from fully utilizing the available
+
+This limitation prevents to fully utilize the ... 
+
+> local interrupt sources. Additionally, the hwirqs used on RISC-V
+> are sparse, with only interrupt numbers 1, 5 and 9 (plus Sscofpmf
+> or T-Head's PMU irq) being currently used for supervisor mode.
+>
+> Switch to using irq_domain_create_tree() to create the radix tree
+> map, so a larger number of hardware interrupts can be handled.
