@@ -2,110 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A5780AB94
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D25F80AB96
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:04:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574605AbjLHSEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:04:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46504 "EHLO
+        id S1574611AbjLHSEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:04:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235943AbjLHSET (ORCPT
+        with ESMTP id S235894AbjLHSE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:04:19 -0500
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746061738;
-        Fri,  8 Dec 2023 10:04:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1702058660; x=1702317860;
-        bh=PTmEXgI7BxufT0npzlsJT5kiKHIgc9s02WiJV5XBNQU=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=Ku3Fwe5Ivvvv7/4sAslKhSLbNE2c16L8W9Vp2kURUwCdrCDOtvKhiKIMRbTdK+mLb
-         Ti7kJUTNntqDHGEdE/Z0ZzRQtCNOd1Ub7YXRTUkkM6VYDHMchM9FzkXNzQT/blk/cd
-         VxjB0iLT27kzVChTAGy0f6kaeZxfXQjbAyOG8tlH9uJunL93YkuR+lVz0cyeuMFjM6
-         +cjKRCuJp7gCslhzCntRKnuKz4z9XlyqusEBM3xbN5iiNhb1niGGQIdNc/FDO37NjK
-         BdutuscjCKkjvnVgI/ubh+oIPvQ+s8WYwvM1jJehNprfolLSsWuogbdxl87AYgN+o+
-         CdGM0doVGmiOQ==
-Date:   Fri, 08 Dec 2023 18:04:01 +0000
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Jonathan Corbet <corbet@lwn.net>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: rust: Clarify that 'rustup override' applies to build directory
-Message-ID: <4738ad1c-eb54-4ad6-98c8-3852de3e8fc3@proton.me>
-In-Reply-To: <bf0d4ff21bc25d1ba3a31e49a32bde06dcaf6e44.1702030679.git.viresh.kumar@linaro.org>
-References: <bf0d4ff21bc25d1ba3a31e49a32bde06dcaf6e44.1702030679.git.viresh.kumar@linaro.org>
-Feedback-ID: 71780778:user:proton
+        Fri, 8 Dec 2023 13:04:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801DE10D8
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:04:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702058674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CZQgPsmonl7Wi7hg4g+zI/qzT5CWeAjHhow4pzmW6d4=;
+        b=e1nkeHN3rxldvn6BtaVEEmalXMy/h1SLAA5eZv2CGLyUm3OhLjLXNJrSXGkLsXAIn1eh12
+        rnt3HCM8ireXtTdxRNbhPdxGROXsjRMhT74lEwQz+z3VRV5FRic6FRYKrcSsdMblO0UH9z
+        /GStxonRUs38WpIoHl5/EBXOGS2D3hw=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-442-zi2y-Qi-Ok2-d_rMfNPhQg-1; Fri, 08 Dec 2023 13:04:33 -0500
+X-MC-Unique: zi2y-Qi-Ok2-d_rMfNPhQg-1
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4259975e20dso14320671cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:04:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702058673; x=1702663473;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CZQgPsmonl7Wi7hg4g+zI/qzT5CWeAjHhow4pzmW6d4=;
+        b=DddQcc3iLk1bbErYplokTln0tIJHfE70642H31YydYvcqz6hxQxIkjiZ2TDVH9BV2z
+         Kdk/Z0ojfs4YOgN+G1ELFHCezKMsja6D2T1THohsiZpoGtxSgBv2LOxR+/Fq51bBYW/H
+         Ce6iTjZT0GPJ7QJHpjJ3nuuYdsCN4LBpHPu735Dba2GSYGOcPSYMDvjmIuLt61M/E4g1
+         NyPTA5AH3qVhdR1ngkuswdCbsGwPg4OBqsV6rNHQgt60vZJjR5SHouy9FJBuxbToX+e0
+         gabgshp2gwfu96AyJpsaaHNuuNylHoQ4Pk85EMnqvX2mxm0UoK1tXGouWcrppPFaBfo1
+         Pigw==
+X-Gm-Message-State: AOJu0Ywip4edmiqnrCZ0CORQa48I7sv1nE5/W7tWoAc8OJehZfx0iEPR
+        3RPHGkvsCCryxbyvRooVZEDKBelqOrGLFpCvOK0mbL1Zq0WQ8QUvGZYD51tdvmXVuBmvdxoHDMz
+        pqWTNyGFMq4ywRUHpUvbND5QxkcdcqtxVSxgD/b9j
+X-Received: by 2002:ac8:57c3:0:b0:425:4043:8d3c with SMTP id w3-20020ac857c3000000b0042540438d3cmr493110qta.87.1702058672798;
+        Fri, 08 Dec 2023 10:04:32 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHcQR0AzrXqX8g8QkJ9bHKVbYFY+AcmSXI0mII0WLkYN3Ixd7BiYzX6ZGozilt9HvxSt3eT1+HOAIIlVMeL7L8=
+X-Received: by 2002:ac8:57c3:0:b0:425:4043:8d3c with SMTP id
+ w3-20020ac857c3000000b0042540438d3cmr493094qta.87.1702058672516; Fri, 08 Dec
+ 2023 10:04:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20231205182853.40627-1-leobras.c@gmail.com> <ZXMXOPxyx7YGB43l@buildd.core.avm.de>
+In-Reply-To: <ZXMXOPxyx7YGB43l@buildd.core.avm.de>
+From:   Leonardo Bras Soares Passos <leobras@redhat.com>
+Date:   Fri, 8 Dec 2023 15:04:16 -0300
+Message-ID: <CAJ6HWG6AvwAA0e3J=oSXmjYbzqwidsPRD9SrDL==TAuONh5oWg@mail.gmail.com>
+Subject: Re: [RESEND RFC PATCH v4 1/1] scripts: Introduce a default git.orderFile
+To:     Leonardo Bras <leobras.c@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Leonardo Bras <leobras@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/23 11:18, Viresh Kumar wrote:
-> Rustup override is required to be set for the build directory and not
-> necessarily the kernel source tree (unless the build directory is its
-> subdir).
->=20
-> Clarify the same in quick-start guide.
->=20
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  Documentation/rust/quick-start.rst | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->=20
-> diff --git a/Documentation/rust/quick-start.rst b/Documentation/rust/quic=
-k-start.rst
-> index f382914f4191..a7a08955fe46 100644
-> --- a/Documentation/rust/quick-start.rst
-> +++ b/Documentation/rust/quick-start.rst
-> @@ -39,8 +39,13 @@ If ``rustup`` is being used, enter the checked out sou=
-rce code directory
->  =09rustup override set $(scripts/min-tool-version.sh rustc)
->=20
->  This will configure your working directory to use the correct version of
-> -``rustc`` without affecting your default toolchain. If you are not using
-> -``rustup``, fetch a standalone installer from:
-> +``rustc`` without affecting your default toolchain.
-> +
-> +Note that the override applies to the build directory (and its sub-direc=
-tories).
+On Fri, Dec 8, 2023 at 10:25=E2=80=AFAM Nicolas Schier <nicolas@fjasle.eu> =
+wrote:
+>
+> On Tue, Dec 05, 2023 at 03:28:51PM -0300, Leonardo Bras wrote:
+> > From: Leonardo Bras <leobras@redhat.com>
+> >
+> > When reviewing patches, it looks much nicer to have some changes shown
+> > before others, which allow better understanding of the patch before the
+> > the .c files reviewing.
+> >
+> > Introduce a default git.orderFile, in order to help developers getting =
+the
+> > best ordering easier.
+> >
+> > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> > ---
+> >
+> > Please provide feedback on what else to add / remove / reorder here!
+> >
+> > Changes since RFCv3:
+> > - Added "*types.h" matching so type headers appear before regular heade=
+rs
+> > - Removed line ends ($) in patterns: they previously provided a
+> >   false-positive
+> > - Fixed build patterns to allow matching Kconfig, Kbuild & Makefile
+> >   in any subdirectory
+> >
+> > Changes since RFCv2:
+> > - Fixed licence comment to from /**/ to #
+> > - Fixed filename in how-to comment
+> > - Fix build order: Kconfig -> Kbuild -> Makefile
+> > - Add *.mk extension
+> > - Add line-ends ($) to make sure and get the correct extensions
+> > - Thanks Masahiro Yamada for above suggestions!
+> > - 1 Ack, thanks Randy!
+> >
+> > Changes since RFCv1:
+> > - Added Kconfig* (thanks Randy Dunlap!)
+> > - Changed Kbuild to Kbuild* (improve matching)
+> >
+> >
+> >  scripts/git.orderFile | 34 ++++++++++++++++++++++++++++++++++
+> >  1 file changed, 34 insertions(+)
+> >  create mode 100644 scripts/git.orderFile
+> >
+> > diff --git a/scripts/git.orderFile b/scripts/git.orderFile
+> > new file mode 100644
+> > index 000000000000..7cef02cbba3c
+> > --- /dev/null
+> > +++ b/scripts/git.orderFile
+> > @@ -0,0 +1,34 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +# order file for git, to produce patches which are easier to review
+> > +# by diffing the important stuff like header changes first.
+> > +#
+> > +# one-off usage:
+> > +#   git diff -O scripts/git.orderFile ...
+> > +#
+> > +# add to git config:
+> > +#   git config diff.orderFile scripts/git.orderFile
+> > +#
+> > +
+> > +MAINTAINERS
+> > +
+> > +# Documentation
+> > +Documentation/*
+> > +*.rst
+> > +
+> > +# build system
+> > +*Kconfig*
+> > +*Kbuild*
+> > +*Makefile*
+> > +*.mak
+> > +*.mk
+>
+> I'd like to see 'scripts/*' here, too, to have the build system stuff
+> together.  Possibly it makes sense to add .gitignore files here too.
+>
+> Kind regards,
+> Nicolas
 
-Shouldn't this be "Note that the override only applies to the current
-working directory (and its sub-directories)."?
-I think it would also be useful to continue with this: "But in order
-to build the kernel, this override must affect the build directory.".
+Sure, I will add it and send a v5 soon.
 
-And then you could also mention that in the default location for the
-build directory is in the repository.
+Thanks!
 
---=20
-Cheers,
-Benno
-
-> +If the kernel is built with `O=3D<build directory>`, the override must b=
-e set for
-> +the build directory instead.
-> +
-> +If you are not using ``rustup``, fetch a standalone installer from:
->=20
->  =09https://forge.rust-lang.org/infra/other-installation-methods.html#sta=
-ndalone
+>
+>
+> > +
+> > +# semantic patches
+> > +*.cocci
+> > +
+> > +# headers
+> > +*types.h
+> > +*.h
+> > +
+> > +# code
+> > +*.c
+> > --
+> > 2.42.0
+> >
+>
 
