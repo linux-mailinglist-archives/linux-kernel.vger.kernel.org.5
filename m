@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB2A809BDD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 06:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33237809BED
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 06:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235802AbjLHFld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 00:41:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42214 "EHLO
+        id S1573180AbjLHFwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 00:52:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235655AbjLHFk6 (ORCPT
+        with ESMTP id S229531AbjLHFwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 00:40:58 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9210C1BF9;
-        Thu,  7 Dec 2023 21:40:39 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B85e2Qy9644105, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B85e2Qy9644105
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Dec 2023 13:40:03 +0800
-Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Fri, 8 Dec 2023 13:40:03 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 8 Dec 2023 13:40:01 +0800
-Received: from RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3]) by
- RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3%2]) with mapi id
- 15.01.2375.007; Fri, 8 Dec 2023 13:40:01 +0800
-From:   =?utf-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: RE: [PATCH v3 1/6] dt-bindings: interrupt-controller: Add support for Realtek DHC SoCs
-Thread-Topic: [PATCH v3 1/6] dt-bindings: interrupt-controller: Add support
- for Realtek DHC SoCs
-Thread-Index: AQHaIocbzgu5rIWoH0WCW95lXyvvArCQeOSAgA5Nk3A=
-Date:   Fri, 8 Dec 2023 05:40:01 +0000
-Message-ID: <43d4a52d03374280a5f5dcdf378b39e8@realtek.com>
-References: <20231129054339.3054202-1-james.tai@realtek.com>
- <20231129054339.3054202-2-james.tai@realtek.com>
- <bc95ef35-7eab-4806-9cf8-4594156c9d98@linaro.org>
-In-Reply-To: <bc95ef35-7eab-4806-9cf8-4594156c9d98@linaro.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [49.216.16.144]
-x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 8 Dec 2023 00:52:10 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76AD9171F;
+        Thu,  7 Dec 2023 21:52:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702014737; x=1733550737;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=2CgvhfqEe7oPS8iAqYFe0ARHhvX5HhGtxuEy7yZmrms=;
+  b=FJ9pODvJGSndZ85yMXUM1yZHYqKCRB3XjCOIEfQxtwLF3hYD6WBDkech
+   oUtZqtPO3FQeh2d5stT7K8o0qhS2OfwWgTIq+OEfVZBbIBJEGsPEHmkQ1
+   d814zGM3ddUKV56qt/Wmuo5/YAOMCQV2lNfLGCf9lma9aNM2Rrf3Hr6c0
+   eX2BtLgXoHAUvq2OT4sfO50tO7dARDVOskqJKkxTVvLdHSCPSP2Q10Vwq
+   BFVdr7Bl4ZjWiJVay1mYRcDWCUvM3LV7bBmKYOsmX3Hxh6iwCOrKtlfwT
+   5QLTdRZy1zHAqqBnUp4IpJYFySXQf77PGrhrfILyClXJKTDGXhrMnNc47
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="7685672"
+X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
+   d="scan'208";a="7685672"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 21:52:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="838016425"
+X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
+   d="scan'208";a="838016425"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by fmsmga008.fm.intel.com with ESMTP; 07 Dec 2023 21:52:12 -0800
+Message-ID: <c72184d8-693d-43ce-aed9-00a8fc684137@linux.intel.com>
+Date:   Fri, 8 Dec 2023 13:47:35 +0800
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/6] iommufd: Deliver fault messages to user space
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Joel Granados <j.granados@samsung.com>
+References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
+ <20231026024930.382898-5-baolu.lu@linux.intel.com>
+ <CGME20231207163412eucas1p2fa912b4923031804c27c764e5c8d67e7@eucas1p2.samsung.com>
+ <20231207163410.ap3w4faii6wkgwed@localhost>
+ <20231207171742.GU1489931@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20231207171742.GU1489931@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J6eXN6dG9mLA0KDQo+T24gMjkvMTEvMjAyMyAwNjo0MywgSmFtZXMgVGFpIHdyb3RlOg0K
-Pj4gQWRkIHRoZSBZQU1MIGRvY3VtZW50YXRpb24gZm9yIFJlYWx0ZWsgREhDIChEaWdpdGFsIEhv
-bWUgQ2VudGVyKSBTb0NzLg0KPj4NCj4+IFJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8
-bGtwQGludGVsLmNvbT4NCj4+IENsb3NlczoNCj4+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL29l
-LWtidWlsZC1hbGwvMjAyMzExMTgwOTIxLmF5S2hpRkhMLWxrcEBpbnRlbC4NCj4+IGNvbS8NCj4N
-Cj5Ecm9wIGJvdGguIFRoZXkgYXJlIG5vdCBhcHBsaWNhYmxlIHRvIHRoaXMgcGF0Y2guDQo+DQpP
-a2F5LiBJIHdpbGwgZHJvcCB0aGVtLg0KDQo+PiBDQzogVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxp
-bnV0cm9uaXguZGU+DQo+PiBDQzogTWFyYyBaeW5naWVyIDxtYXpAa2VybmVsLm9yZz4NCj4NCj4+
-IENDOiBSb2IgSGVycmluZyA8cm9iaCtkdEBrZXJuZWwub3JnPg0KPj4gQ0M6IEtyenlzenRvZiBL
-b3psb3dza2kgPGtyenlzenRvZi5rb3psb3dza2krZHRAbGluYXJvLm9yZz4NCj4+IENDOiBDb25v
-ciBEb29sZXkgPGNvbm9yK2R0QGtlcm5lbC5vcmc+DQo+PiBDQzogbGludXgta2VybmVsQHZnZXIu
-a2VybmVsLm9yZw0KPj4gQ0M6IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnDQo+DQo+UGxlYXNl
-IGRyb3AgdGhlIGF1dG9nZW5lcmF0ZWQgc2NyaXB0cy9nZXRfbWFpbnRhaW5lci5wbCBDQy1lbnRy
-aWVzIGZyb20NCj5jb21taXQgbXNnLiBUaGVyZSBpcyBubyBzaW5nbGUgbmVlZCB0byBzdG9yZSBh
-dXRvbWF0ZWQgb3V0cHV0IG9mDQo+Z2V0X21haW50YWluZXJzLnBsIGluIHRoZSBnaXQgbG9nLiBJ
-dCBjYW4gYmUgZWFzaWx5IHJlLWNyZWF0ZWQgYXQgYW55IGdpdmVuIHRpbWUsDQo+dGh1cyBpdHMg
-cHJlc2VuY2UgaW4gdGhlIGdpdCBoaXN0b3J5IGlzIHJlZHVuZGFudCBhbmQgb2JmdXNjYXRlcyB0
-aGUgbG9nLg0KPg0KPklmIHlvdSBuZWVkIGl0IGZvciB5b3VyIG93biBwYXRjaCBtYW5hZ2VtZW50
-IHB1cnBvc2VzLCBrZWVwIGl0IHVuZGVyIHRoZQ0KPi0tLSBzZXBhcmF0b3IuDQo+DQpJIHdpbGwg
-bW92ZSB0aGUgQ0MtZW50cmllcyB1bmRlciB0aGUgJy0tLScgc2VwYXJhdG9yLg0KDQo+TXkgcHJl
-dmlvdXMgY29tbWVudHMgd2VyZSBub3QgYWRkcmVzc2VkLiBXaHkgbGluZXMgYXJlIG5vdCBkZXNj
-cmliZWQNCj4oaXRlbXM6IGRlc2NyaXB0aW9uOik/IEFyZSB0aGV5IGFsbCB0aGUgc2FtZT8gV2h5
-IHlvdSBkaWQgbm90IHJlc3BvbmQgdG8gY2xhcmlmeQ0KPnRoaXMgY29tbWVudD8NCj4NCkkndmUg
-YWRkcmVzc2VkIHRoZSBwcmV2aW91cyBjb21tZW50cyBhbmQgd2lsbCBpbmNsdWRlIGEgZGVzY3Jp
-cHRpb24gZm9yIGVhY2ggbGluZSBpbiB0aGUgbmV4dCBwYXRjaGVzLg0KSSBtaXN1bmRlcnN0b29k
-IHlvdXIgbWVhbmluZywgc28gSSBkaWQgbm90IHByb3ZpZGUgYSBjbGVhciByZXNwb25zZS4NCg0K
-PlRoZSByZXN0IG9mIG15IGNvbW1lbnQgaGVyZSB3YXMgYWxzbyBpZ25vcmVkLiBZb3UgY2Fubm90
-IGp1c3QgaWdub3JlDQo+Y29tbWVudHMsIGJ1dCBtdXN0IHJlc3BvbmQgdG8gdGhlbSBvciBpbXBs
-ZW1lbnQgdGhlbS4NCj4NCkkgd2lsbCBpbXByb3ZlIHRoaXMgcGFydC4NCg0KPlRvIGNsYXJpZnk6
-IEkgZXhwZWN0IGFsbE9mOiBibG9jayBhZnRlciByZXF1aXJlZDogY29uc3RyYWluaW5nIHRoZSBp
-bnRlcnJ1cHRzIHBlcg0KPnZhcmlhbnQuDQo+DQpJIHdpbGwgYWRqdXN0IGl0IGluIG5leHQgcGF0
-Y2hlcy4NCg0KUmVnYXJkcywNCkphbWVzDQoNCg0K
+On 12/8/23 1:17 AM, Jason Gunthorpe wrote:
+> On Thu, Dec 07, 2023 at 05:34:10PM +0100, Joel Granados wrote:
+>>> @@ -58,6 +255,8 @@ static void hw_pagetable_fault_free(struct hw_pgtable_fault *fault)
+>>>   	WARN_ON(!list_empty(&fault->deliver));
+>>>   	WARN_ON(!list_empty(&fault->response));
+>>>   
+>>> +	fput(fault->fault_file);
+>>> +	put_unused_fd(fault->fault_fd);
+>> I have resolved this in a naive way by just not calling the
+>> put_unused_fd function.
+> That is correct.
+> 
+> put_unused_fd() should only be called on error paths prior to the
+> syscall return.
+> 
+> The design of a FD must follow this pattern
+> 
+>   syscall():
+>     fdno = get_unused_fd_flags(O_CLOEXEC);
+>     filep = [..]
+>   
+>     // syscall MUST succeed after this statement:
+>     fd_install(fdno, filep);
+>     return 0;
+> 
+>    err:
+>      put_unused_fd(fdno)
+>      return -ERRNO
+
+Yes. Agreed.
+
+> 
+> Also the refcounting looks a little strange, the filep reference is
+> consumed by fd_install, so what is that fput pairing with in fault_free?
+
+fput() pairs with get_unused_fd_flags()? fd_install() does not seem to
+increase any reference.
+
+Best regards,
+baolu
