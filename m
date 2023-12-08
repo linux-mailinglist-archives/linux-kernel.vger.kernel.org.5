@@ -2,113 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5783B809E37
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 09:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC18B809E52
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 09:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573323AbjLHIfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 03:35:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59698 "EHLO
+        id S1573344AbjLHIg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 03:36:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235765AbjLHIfN (ORCPT
+        with ESMTP id S232974AbjLHIgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 03:35:13 -0500
-Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA621729;
-        Fri,  8 Dec 2023 00:35:18 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 6427B20868;
-        Fri,  8 Dec 2023 09:35:16 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Vb8e2srhxs4k; Fri,  8 Dec 2023 09:35:15 +0100 (CET)
-Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id C9E1F206D2;
-        Fri,  8 Dec 2023 09:35:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com C9E1F206D2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secunet.com;
-        s=202301; t=1702024515;
-        bh=85i0GXjB5ZwUcg8pev6rLBbmnP+O9f3YCQzGI4JsW/Y=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-        b=djDuRS8xoK/daO1oLJphawnOZabnvGyTuKZfx+1nlXadN9DPrBqRdn4a5VgJRuCiN
-         xTczTWVmmnx9UIOMWX7YTuRUVYyicA7He60dtUsraXLyJlARwBY2PT9k9HXIxatE/4
-         jmwIBIZML+uOkIf4XlT89oRKlSIvMJxl8HoWk8XuuxMrcnsnMAWMh7Np6lDRASKbmo
-         ENCBmfOYDnLFEkbT/7EAei9A+P9+aF4A7mzyPUlhLbmQ/zswgD1pBeFpWV7ov9U38o
-         kPccZL3/wWp/wLYDgwSo3utG5toF8fDSfGooa+7TbE3oQ9RfwOuL8vDGj9JuL9AEpq
-         hMY1oUQf3KlGQ==
-Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-        by mailout2.secunet.com (Postfix) with ESMTP id C4F3780004A;
-        Fri,  8 Dec 2023 09:35:15 +0100 (CET)
-Received: from mbx-essen-02.secunet.de (10.53.40.198) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 8 Dec 2023 09:35:15 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
- (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 8 Dec
- 2023 09:35:15 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id 0918D318299E; Fri,  8 Dec 2023 09:35:15 +0100 (CET)
-Date:   Fri, 8 Dec 2023 09:35:14 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Eyal Birger <eyal.birger@gmail.com>
-CC:     Daniel Xu <dxu@dxuuu.xyz>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alexei.starovoitov@gmail.com>, <devel@linux-ipsec.org>,
-        <eddyz87@gmail.com>, <edumazet@google.com>,
-        Eyal Birger <eyal@metanetworks.com>, <yonghong.song@linux.dev>,
-        <kuba@kernel.org>, <bpf@vger.kernel.org>, <pabeni@redhat.com>,
-        <davem@davemloft.net>
-Subject: Re: [devel-ipsec] [PATCH bpf-next v4 01/10] xfrm: bpf: Move
- xfrm_interface_bpf.c to xfrm_bpf.c
-Message-ID: <ZXLVQuqSG7TSjQxD@gauss3.secunet.de>
-References: <cover.1701722991.git.dxu@dxuuu.xyz>
- <a385991bb4f36133e15d6eacb72ed22a3c02da16.1701722991.git.dxu@dxuuu.xyz>
- <ZXGx7H/Spv634xgX@gauss3.secunet.de>
- <CAHsH6GtmhP=hZcf2Qv=21dAOSb5dD4GDa+QYdLFz9_FsCZq6tA@mail.gmail.com>
+        Fri, 8 Dec 2023 03:36:55 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C6A171C
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 00:37:01 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40b27726369so19883335e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 00:37:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702024620; x=1702629420; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wNfU9DBaDJWRRxmgHYFx4nHbGgVZAwp+QKmlmlzyeuQ=;
+        b=gZ5RtFhk197PCmeKXMy761pH5NclNaCp6XuJvUumzJR9BF8Ok3lhhAt5/QioDaMwoK
+         eh+/B3d8TivCVwz8DLqnK4MmI7svyW3R8nUVzxhz51Ixs7iDlA+sm1p9iFdP7YR1q4Qw
+         PCeCgS1L37XeXlHF4wKMDPGxGc0Teh6llHyOPJ2t286FJdqS5qlhLE2oMlblOWUEbrAy
+         /xwATJH5i2SfDP91y7JyLYILjcyngt6CnGnXBcfQIQHvxxNikfagvKVAoWoxn4JGpziM
+         uLUcPF2gnauTrnWIcLhL5Dy267NT8bFbPWUvGd12J5/i+8tQCFmdW5t5cdm6jVDZgeDh
+         RgMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702024620; x=1702629420;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wNfU9DBaDJWRRxmgHYFx4nHbGgVZAwp+QKmlmlzyeuQ=;
+        b=V7WNpmJzaRnib+N0hocC8S8xwbimOMXGgBcLbhItEf6yG/M5wRQlkE40QCaWkqMDnD
+         632biayFxLjkWPZcPUlI7s7PDKEtjiEqm7KRaarrkljZcb8LuL4Mlba843ku0x4c+hko
+         jj/AAztU8KR2iuwwmAKTi41RWcSb0tmGpQJPQ35983OzDzxcrgsxNg/t6BTePWGQtdIr
+         j1ms3FUwOtVPjl87NwiHje9G1KO7u4ZiDLv3hZfXlo+d7yqyFM+9nzqx9i/N7JXnY7Fb
+         8yycccRnnmu5YAZ3fIZv0s0JMj3hBfBnPLXkyfIo0zn5ra3tfR5WhuYD8AOcO6wFuI+K
+         ivcQ==
+X-Gm-Message-State: AOJu0Yz5ZyOktrHkqIJgFJ7M7EtkbHLzCKhe4q1yrtHfX81fubqr3Fqs
+        Lz6KVbPhB/8bApdPorwCJb1KuQ==
+X-Google-Smtp-Source: AGHT+IFTDanBKxnNxQj3jzP20OiOzKn2N0tR8XTkfJOvIBTmyMTeK2zrzuve+Z4+WUb6UkIgGVs/JA==
+X-Received: by 2002:a05:600c:3093:b0:40b:5e59:da99 with SMTP id g19-20020a05600c309300b0040b5e59da99mr2355770wmn.172.1702024619510;
+        Fri, 08 Dec 2023 00:36:59 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:b162:2510:4488:c0c3])
+        by smtp.gmail.com with ESMTPSA id bi11-20020a05600c3d8b00b0040c2963e5f3sm2113880wmb.38.2023.12.08.00.36.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 00:36:59 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [GIT PULL] gpio: immutable branch between the GPIO and pinctrl trees for v6.8-rc1
+Date:   Fri,  8 Dec 2023 09:36:50 +0100
+Message-Id: <20231208083650.25015-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHsH6GtmhP=hZcf2Qv=21dAOSb5dD4GDa+QYdLFz9_FsCZq6tA@mail.gmail.com>
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-02.secunet.de (10.53.40.198)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 01:08:08PM -0800, Eyal Birger wrote:
-> Hi Daniel,
-> 
-> On Thu, Dec 7, 2023 at 3:52 AM Steffen Klassert via Devel
-> <devel@linux-ipsec.org> wrote:
-> >
-> > On Mon, Dec 04, 2023 at 01:56:21PM -0700, Daniel Xu wrote:
-> > > This commit moves the contents of xfrm_interface_bpf.c into a new file,
-> > > xfrm_bpf.c This is in preparation for adding more xfrm kfuncs. We'd like
-> > > to keep all the bpf integrations in a single file.
-> 
-> This takes away the nice ability to reload the xfrm interface
-> related kfuncs when reloading the xfrm interface.
-> 
-> I also find it a little strange that the kfuncs would be available
-> when the xfrm interface isn't loaded.
-> 
-> So imho it makes sense that these kfuncs would be built
-> as part of the module and not as part of the core.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-I proposed to merge all the bpf extensions into one file.
-With that I wanted to avoid to have 'many' files under
-/net/xfrm that fall basically under bpf maintainance
-scope. But if there are practical reasons to have these
-spilted, I'm OK with that too.
+Linus, Andy,
+
+Please pull the following changes into your trees for the next merge window.
+These are the patches providing a safer alternative for gpiochip_is_requested()
+before we rework the locking in GPIOLIB.
+
+Bart
+
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio-remove-gpiochip_is_requested-for-v6.8-rc1
+
+for you to fetch changes up to f8d05e276b45e3097dfddd628fa991ce69c05c99:
+
+  gpiolib: remove gpiochip_is_requested() (2023-12-08 09:26:43 +0100)
+
+----------------------------------------------------------------
+gpio: remove gpiochip_is_requested()
+
+- provide a safer alternative to gpiochip_is_requested()
+- convert all existing users
+- remove gpiochip_is_requested()
+
+----------------------------------------------------------------
+Bartosz Golaszewski (10):
+      gpiolib: provide gpiochip_dup_line_label()
+      gpio: wm831x: use gpiochip_dup_line_label()
+      gpio: wm8994: use gpiochip_dup_line_label()
+      gpio: stmpe: use gpiochip_dup_line_label()
+      pinctrl: abx500: use gpiochip_dup_line_label()
+      pinctrl: nomadik: use gpiochip_dup_line_label()
+      pinctrl: baytrail: use gpiochip_dup_line_label()
+      pinctrl: sppctl: use gpiochip_dup_line_label()
+      gpiolib: use gpiochip_dup_line_label() in for_each helpers
+      gpiolib: remove gpiochip_is_requested()
+
+ drivers/gpio/gpio-stmpe.c                 |  6 ++++-
+ drivers/gpio/gpio-wm831x.c                | 14 +++++++----
+ drivers/gpio/gpio-wm8994.c                | 13 +++++++----
+ drivers/gpio/gpiolib.c                    | 35 ++++++++++++++++-----------
+ drivers/pinctrl/intel/pinctrl-baytrail.c  | 11 +++++----
+ drivers/pinctrl/nomadik/pinctrl-abx500.c  |  9 +++++--
+ drivers/pinctrl/nomadik/pinctrl-nomadik.c |  6 ++++-
+ drivers/pinctrl/sunplus/sppctl.c          | 10 ++++----
+ include/linux/gpio/driver.h               | 39 ++++++++++++++++++++++++-------
+ 9 files changed, 96 insertions(+), 47 deletions(-)
