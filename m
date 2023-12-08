@@ -2,282 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9EAF80A0F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:30:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBDB80A0F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233370AbjLHKaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 05:30:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
+        id S1573655AbjLHKad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 05:30:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573663AbjLHKaF (ORCPT
+        with ESMTP id S235876AbjLHKaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 05:30:05 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93D519BF
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:29:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82C0EC433C7;
-        Fri,  8 Dec 2023 10:29:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702031365;
-        bh=oA88YoOQlagGtzf0XLpmZbrBwGQLOglr7IhXnROpFY0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DR8YD1eE18ip1VP88KiC1uM8UrMRddV3qpJMsh9wM72Mp+RkMbdvb2aS7BPVNsELl
-         snUMFTKWziGy82Hs1IGTfZSH9VNVKNHPAl0eS3OHZ+JqGf1wkCgKUyKC/JzCj/yZdR
-         +yrELu9Z3XANiWTQuX1VoS8uIWFsK4fKYmF4tN3r2ahjTJ9/g6j+1VPZ603oH/SebM
-         DoJRwaMRQ2SD/OEWmu3Wpto5QLHNiQAjsgpiKQXMDHlOdnMusM1tF/wTG5yHF4Ry2x
-         jcg8povqI2LZOiXSWD4x0rPv3LtWnirWDtGOK6UJP+RATSXhQK6H9kBId7sQUxMv1Y
-         lH39CTCXAKp0Q==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>
-Cc:     linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: [PATCH v4 25/33] fprobe: Use ftrace_regs in fprobe exit handler
-Date:   Fri,  8 Dec 2023 19:29:18 +0900
-Message-Id: <170203135846.579004.17734254494569718868.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170203105427.579004.8033550792660734570.stgit@devnote2>
-References: <170203105427.579004.8033550792660734570.stgit@devnote2>
-User-Agent: StGit/0.19
+        Fri, 8 Dec 2023 05:30:07 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D0102106
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:29:31 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1d0c4d84bf6so14260595ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 02:29:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702031371; x=1702636171; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7qoKQ5iQtJ7ORKAjC/jbRnFF5PVRidwsUSKuUbzTiuc=;
+        b=wKNJgN6c/ct0c7iwBrH1iRFQWXotLdF9N88tl0Ec48t0Uf6Sgh/0KRjCgWqvkPSAT3
+         edB5nd2MOPRfvsKWdXJN11Ne7Fm/NaTzoFXTbxnCbp8AbnHJLUWPNlxFo+SDSnJJyNaO
+         9c/iAskhpJniaSdPUHDe/j5CLZPjZ5DAWK7Y39nu8YwOB9IhInl5+5GwzDOvjMvHCUGj
+         m7ISwxZtX3vNBCoVenUkUZTL6v5cuOfbvT5WNJiGgPMv9hyeoF3+L+u7exuURteU2gSt
+         IHYqSBHnNMaol2uNU2GnTvO4BQVHYUKU4f01TrUMw5qAlfwaR1xdmVz+Q1NCj6RWwYEl
+         iUGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702031371; x=1702636171;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7qoKQ5iQtJ7ORKAjC/jbRnFF5PVRidwsUSKuUbzTiuc=;
+        b=C0Z8iOWY1BV+W8PS72CqRmaPA39W53ug23MC8Bj/tgc6Ge1ZTX9wKTxvdMr7+WbCFe
+         +8mfZTJDTu/V2Siv7RkxLlHwHsZIVO5cqYsmlUIHQ9rXeH7dh/BCHLY7qpMG7s4tcPyF
+         X41UQuru9V+1FuemltdopXFkmD0S1Ejb9eiDWU4y/w3oi0FPwe7JUy5LppiDXnmV48xX
+         kKrXh386OTUne4pQojphJC8WLVXA2F93c0yHywN9kYDChIyWlg02iTgKVxkNwq0tpCZg
+         b71QMP0gWdN40T8se1zO3bxCpytH49gPipIJe1GHFg/1us/FenXQZneHbjAlvs/MGrHT
+         2erQ==
+X-Gm-Message-State: AOJu0YyGLQc1BVtoT+Is9QSy7P7NM8/2WKf5Kes8Zf96Mew4meHZF2HZ
+        /oWvLGJJ18LlqWHOgg84h2mFtw==
+X-Google-Smtp-Source: AGHT+IGp6gJKDTnj0Q50k3Oi+iQgxehq4lMqHqUBpi5q+BCl1I8EsTY+C3JfvDplR8rMKUtD5X/swg==
+X-Received: by 2002:a17:903:1209:b0:1d0:cfdc:10cb with SMTP id l9-20020a170903120900b001d0cfdc10cbmr3805283plh.72.1702031370812;
+        Fri, 08 Dec 2023 02:29:30 -0800 (PST)
+Received: from leoy-huanghe.lan ([94.177.131.71])
+        by smtp.gmail.com with ESMTPSA id j15-20020a170902da8f00b001c9db5e2929sm1357806plx.93.2023.12.08.02.29.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 02:29:30 -0800 (PST)
+Date:   Fri, 8 Dec 2023 18:29:22 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     kan.liang@linux.intel.com
+Cc:     acme@kernel.org, irogers@google.com, peterz@infradead.org,
+        mingo@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
+        adrian.hunter@intel.com, john.g.garry@oracle.com, will@kernel.org,
+        james.clark@arm.com, mike.leach@linaro.org,
+        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH V2 1/5] perf mem: Add mem_events into the supported
+ perf_pmu
+Message-ID: <20231208102922.GB769184@leoy-huanghe.lan>
+References: <20231207192338.400336-1-kan.liang@linux.intel.com>
+ <20231207192338.400336-2-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207192338.400336-2-kan.liang@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Thu, Dec 07, 2023 at 11:23:34AM -0800, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
+> 
+> With the mem_events, perf doesn't need to read sysfs for each PMU to
+> find the mem-events-supported PMU. The patch also makes it possible to
+> clean up the related __weak functions later.
+> 
+> The patch is only to add the mem_events into the perf_pmu for all ARCHs.
+> It will be used in the later cleanup patches.
+> 
+> Reviewed-by: Ian Rogers <irogers@google.com>
+> Tested-by: Ravi Bangoria <ravi.bangoria@amd.com>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> ---
+>  tools/perf/arch/arm64/util/mem-events.c | 4 ++--
+>  tools/perf/arch/arm64/util/mem-events.h | 7 +++++++
+>  tools/perf/arch/arm64/util/pmu.c        | 6 ++++++
+>  tools/perf/arch/s390/util/pmu.c         | 3 +++
+>  tools/perf/arch/x86/util/mem-events.c   | 4 ++--
+>  tools/perf/arch/x86/util/mem-events.h   | 9 +++++++++
+>  tools/perf/arch/x86/util/pmu.c          | 7 +++++++
+>  tools/perf/util/mem-events.c            | 2 +-
+>  tools/perf/util/mem-events.h            | 1 +
+>  tools/perf/util/pmu.c                   | 4 +++-
+>  tools/perf/util/pmu.h                   | 7 +++++++
+>  11 files changed, 48 insertions(+), 6 deletions(-)
+>  create mode 100644 tools/perf/arch/arm64/util/mem-events.h
+>  create mode 100644 tools/perf/arch/x86/util/mem-events.h
+> 
+> diff --git a/tools/perf/arch/arm64/util/mem-events.c b/tools/perf/arch/arm64/util/mem-events.c
+> index 3bcc5c7035c2..aaa4804922b4 100644
+> --- a/tools/perf/arch/arm64/util/mem-events.c
+> +++ b/tools/perf/arch/arm64/util/mem-events.c
+> @@ -4,7 +4,7 @@
+>  
+>  #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
+>  
+> -static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
+> +struct perf_mem_event perf_mem_events_arm[PERF_MEM_EVENTS__MAX] = {
+>  	E("spe-load",	"arm_spe_0/ts_enable=1,pa_enable=1,load_filter=1,store_filter=0,min_latency=%u/",	"arm_spe_0"),
+>  	E("spe-store",	"arm_spe_0/ts_enable=1,pa_enable=1,load_filter=0,store_filter=1/",			"arm_spe_0"),
+>  	E("spe-ldst",	"arm_spe_0/ts_enable=1,pa_enable=1,load_filter=1,store_filter=1,min_latency=%u/",	"arm_spe_0"),
+> @@ -17,7 +17,7 @@ struct perf_mem_event *perf_mem_events__ptr(int i)
+>  	if (i >= PERF_MEM_EVENTS__MAX)
+>  		return NULL;
+>  
+> -	return &perf_mem_events[i];
+> +	return &perf_mem_events_arm[i];
 
-Change the fprobe exit handler to use ftrace_regs structure instead of
-pt_regs. This also introduce HAVE_PT_REGS_TO_FTRACE_REGS_CAST which means
-the ftrace_regs's memory layout is equal to the pt_regs so that those are
-able to cast. Fprobe introduces a new dependency with that.
+I recognized that it's hard code to "arm_spe_0", which might break if
+system registers different Arm SPE groups.  But this is not the issue
+introduced by this patch, we might need to consider to fix it later.
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
-  Changes in v3:
-   - Use ftrace_regs_get_return_value()
-  Changes from previous series: NOTHING, just forward ported.
----
- arch/loongarch/Kconfig          |    1 +
- arch/s390/Kconfig               |    1 +
- arch/x86/Kconfig                |    1 +
- include/linux/fprobe.h          |    2 +-
- include/linux/ftrace.h          |    5 +++++
- kernel/trace/Kconfig            |    8 ++++++++
- kernel/trace/bpf_trace.c        |    6 +++++-
- kernel/trace/fprobe.c           |    3 ++-
- kernel/trace/trace_fprobe.c     |    6 +++++-
- lib/test_fprobe.c               |    6 +++---
- samples/fprobe/fprobe_example.c |    2 +-
- 11 files changed, 33 insertions(+), 8 deletions(-)
+>  }
+>  
+>  const char *perf_mem_events__name(int i, const char *pmu_name __maybe_unused)
+> diff --git a/tools/perf/arch/arm64/util/mem-events.h b/tools/perf/arch/arm64/util/mem-events.h
+> new file mode 100644
+> index 000000000000..5fc50be4be38
+> --- /dev/null
+> +++ b/tools/perf/arch/arm64/util/mem-events.h
+> @@ -0,0 +1,7 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ARM64_MEM_EVENTS_H
+> +#define _ARM64_MEM_EVENTS_H
+> +
+> +extern struct perf_mem_event perf_mem_events_arm[PERF_MEM_EVENTS__MAX];
+> +
+> +#endif /* _ARM64_MEM_EVENTS_H */
+> diff --git a/tools/perf/arch/arm64/util/pmu.c b/tools/perf/arch/arm64/util/pmu.c
+> index 2a4eab2d160e..06ec9b838807 100644
+> --- a/tools/perf/arch/arm64/util/pmu.c
+> +++ b/tools/perf/arch/arm64/util/pmu.c
+> @@ -8,6 +8,12 @@
+>  #include <api/fs/fs.h>
+>  #include <math.h>
+>  
+> +void perf_pmu__arch_init(struct perf_pmu *pmu)
+> +{
+> +	if (!strcmp(pmu->name, "arm_spe_0"))
+> +		pmu->mem_events = perf_mem_events_arm;
 
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index ee123820a476..b0bd252aefe8 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -108,6 +108,7 @@ config LOONGARCH
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
- 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS
-+	select HAVE_PT_REGS_TO_FTRACE_REGS_CAST
- 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
- 	select HAVE_EBPF_JIT
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 3bec98d20283..122e9d6e3ad3 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -168,6 +168,7 @@ config S390
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
- 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS
-+	select HAVE_PT_REGS_TO_FTRACE_REGS_CAST
- 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
- 	select HAVE_EBPF_JIT if HAVE_MARCH_Z196_FEATURES
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 3b955c9e4eb6..1d1da801da7f 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -209,6 +209,7 @@ config X86
- 	select HAVE_DYNAMIC_FTRACE
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
- 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS	if X86_64
-+	select HAVE_PT_REGS_TO_FTRACE_REGS_CAST	if X86_64
- 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	select HAVE_SAMPLE_FTRACE_DIRECT	if X86_64
- 	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI	if X86_64
-diff --git a/include/linux/fprobe.h b/include/linux/fprobe.h
-index 36c0595f7b93..879a30956009 100644
---- a/include/linux/fprobe.h
-+++ b/include/linux/fprobe.h
-@@ -38,7 +38,7 @@ struct fprobe {
- 			     unsigned long ret_ip, struct ftrace_regs *regs,
- 			     void *entry_data);
- 	void (*exit_handler)(struct fprobe *fp, unsigned long entry_ip,
--			     unsigned long ret_ip, struct pt_regs *regs,
-+			     unsigned long ret_ip, struct ftrace_regs *fregs,
- 			     void *entry_data);
- };
- 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index da2a23f5a9ed..a72a2eaec576 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -159,6 +159,11 @@ struct ftrace_regs {
- #define ftrace_regs_set_instruction_pointer(fregs, ip) do { } while (0)
- #endif /* CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS */
- 
-+#ifdef CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST
-+
-+static_assert(sizeof(struct pt_regs) == sizeof(struct ftrace_regs));
-+
-+#endif /* CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST */
- 
- static __always_inline struct pt_regs *ftrace_get_regs(struct ftrace_regs *fregs)
- {
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 805d72ab77c6..1a2544712690 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -60,6 +60,13 @@ config HAVE_DYNAMIC_FTRACE_WITH_ARGS
- 	 This allows for use of ftrace_regs_get_argument() and
- 	 ftrace_regs_get_stack_pointer().
- 
-+config HAVE_PT_REGS_TO_FTRACE_REGS_CAST
-+	bool
-+	help
-+	 If this is set, the memory layout of the ftrace_regs data structure
-+	 is the same as the pt_regs. So the pt_regs is possible to be casted
-+	 to ftrace_regs.
-+
- config HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
- 	bool
- 	help
-@@ -291,6 +298,7 @@ config FPROBE
- 	bool "Kernel Function Probe (fprobe)"
- 	depends on FUNCTION_TRACER
- 	depends on DYNAMIC_FTRACE_WITH_REGS || DYNAMIC_FTRACE_WITH_ARGS
-+	depends on HAVE_PT_REGS_TO_FTRACE_REGS_CAST || !HAVE_DYNAMIC_FTRACE_WITH_ARGS
- 	depends on HAVE_RETHOOK
- 	select RETHOOK
- 	default n
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index d3f8745d8ead..efb792f8f2ea 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2749,10 +2749,14 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
- 
- static void
- kprobe_multi_link_exit_handler(struct fprobe *fp, unsigned long fentry_ip,
--			       unsigned long ret_ip, struct pt_regs *regs,
-+			       unsigned long ret_ip, struct ftrace_regs *fregs,
- 			       void *data)
- {
- 	struct bpf_kprobe_multi_link *link;
-+	struct pt_regs *regs = ftrace_get_regs(fregs);
-+
-+	if (!regs)
-+		return;
- 
- 	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
- 	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
-diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-index f12569494d8a..688b897626b4 100644
---- a/kernel/trace/fprobe.c
-+++ b/kernel/trace/fprobe.c
-@@ -124,6 +124,7 @@ static void fprobe_exit_handler(struct rethook_node *rh, void *data,
- {
- 	struct fprobe *fp = (struct fprobe *)data;
- 	struct fprobe_rethook_node *fpr;
-+	struct ftrace_regs *fregs = (struct ftrace_regs *)regs;
- 	int bit;
- 
- 	if (!fp || fprobe_disabled(fp))
-@@ -141,7 +142,7 @@ static void fprobe_exit_handler(struct rethook_node *rh, void *data,
- 		return;
- 	}
- 
--	fp->exit_handler(fp, fpr->entry_ip, ret_ip, regs,
-+	fp->exit_handler(fp, fpr->entry_ip, ret_ip, fregs,
- 			 fp->entry_data_size ? (void *)fpr->data : NULL);
- 	ftrace_test_recursion_unlock(bit);
- }
-diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
-index ef6b36fd05ae..3982626c82e6 100644
---- a/kernel/trace/trace_fprobe.c
-+++ b/kernel/trace/trace_fprobe.c
-@@ -341,10 +341,14 @@ static int fentry_dispatcher(struct fprobe *fp, unsigned long entry_ip,
- NOKPROBE_SYMBOL(fentry_dispatcher);
- 
- static void fexit_dispatcher(struct fprobe *fp, unsigned long entry_ip,
--			     unsigned long ret_ip, struct pt_regs *regs,
-+			     unsigned long ret_ip, struct ftrace_regs *fregs,
- 			     void *entry_data)
- {
- 	struct trace_fprobe *tf = container_of(fp, struct trace_fprobe, fp);
-+	struct pt_regs *regs = ftrace_get_regs(fregs);
-+
-+	if (!regs)
-+		return;
- 
- 	if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
- 		fexit_trace_func(tf, entry_ip, ret_ip, regs);
-diff --git a/lib/test_fprobe.c b/lib/test_fprobe.c
-index ff607babba18..271ce0caeec0 100644
---- a/lib/test_fprobe.c
-+++ b/lib/test_fprobe.c
-@@ -59,9 +59,9 @@ static notrace int fp_entry_handler(struct fprobe *fp, unsigned long ip,
- 
- static notrace void fp_exit_handler(struct fprobe *fp, unsigned long ip,
- 				    unsigned long ret_ip,
--				    struct pt_regs *regs, void *data)
-+				    struct ftrace_regs *fregs, void *data)
- {
--	unsigned long ret = regs_return_value(regs);
-+	unsigned long ret = ftrace_regs_get_return_value(fregs);
- 
- 	KUNIT_EXPECT_FALSE(current_test, preemptible());
- 	if (ip != target_ip) {
-@@ -89,7 +89,7 @@ static notrace int nest_entry_handler(struct fprobe *fp, unsigned long ip,
- 
- static notrace void nest_exit_handler(struct fprobe *fp, unsigned long ip,
- 				      unsigned long ret_ip,
--				      struct pt_regs *regs, void *data)
-+				      struct ftrace_regs *fregs, void *data)
- {
- 	KUNIT_EXPECT_FALSE(current_test, preemptible());
- 	KUNIT_EXPECT_EQ(current_test, ip, target_nest_ip);
-diff --git a/samples/fprobe/fprobe_example.c b/samples/fprobe/fprobe_example.c
-index 1545a1aac616..d476d1f07538 100644
---- a/samples/fprobe/fprobe_example.c
-+++ b/samples/fprobe/fprobe_example.c
-@@ -67,7 +67,7 @@ static int sample_entry_handler(struct fprobe *fp, unsigned long ip,
- }
- 
- static void sample_exit_handler(struct fprobe *fp, unsigned long ip,
--				unsigned long ret_ip, struct pt_regs *regs,
-+				unsigned long ret_ip, struct ftrace_regs *regs,
- 				void *data)
- {
- 	unsigned long rip = ret_ip;
+This is not right and it should cause building failure on aarch64.
 
+aarch64 reuses aarch32's file arch/arm/util/pmu.c, and this file has
+already defined perf_pmu__arch_init(), you should add above change in
+the file arch/arm/util/pmu.c.
+
+Now I cannot access a machine for testing Arm SPE, but I will play
+a bit for this patch set to ensure it can pass compilation.  After
+that, I will seek Arm maintainers/reviewers help for the test.
+
+Thanks,
+Leo
