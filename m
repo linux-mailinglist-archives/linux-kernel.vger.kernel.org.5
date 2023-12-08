@@ -2,124 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E08D680AB76
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5D880AB84
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574579AbjLHR5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:57:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60492 "EHLO
+        id S1574524AbjLHSAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:00:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235943AbjLHR5s (ORCPT
+        with ESMTP id S1574590AbjLHSAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:57:48 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092071700
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:57:54 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c9f166581dso29983101fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 09:57:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702058272; x=1702663072; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Wj704fWHOpU1SWgHtGl87HPV6WWiN6W5xSeHig4mm5A=;
-        b=p0AaqR6CatJS1hBWcTHNIAh3TO0HJ6LCDSgZ3cbzlmN3KiUCm2HQa86L7gNBNg49iE
-         juf6lGAkmW+/lOp0DoaQzYyUiGHlCvqR+ukBNztstVoosHIZnyN85qH1I290aWnzq7tN
-         4Gy01Ie/xFTVXEjaQ1NsrjXX5ULw+sqighs6uD6BID/6yQNrpk/oKPvnqu5yXDbCcKTg
-         lWWMakIcN8iYGvEAuqfUO9H+u8Rm/UwgC/nwndo7zHo9khrsmMXn5lQoXKb+aU6z131g
-         N++8EHERNy8nZwdWpLK/oFYztYb6QoOzO5Kmpc5WIZfXOXjre8KukGvsEp4EOPrSCvwM
-         zhPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702058272; x=1702663072;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wj704fWHOpU1SWgHtGl87HPV6WWiN6W5xSeHig4mm5A=;
-        b=B+bpKBdxcVJjlWIhr7rihkAN7oVW9zx9elY12FXnHkTcdjp7CGN0WNxvzj6xJ7CUBn
-         OBuyAJBMNwNSbjikae++xpMtOLwMjH5V/SAnetkaXJE+T+qwmlE07GjPAn8b28UyBMRk
-         lcEuZDG1YX3+vAk1Xe26L2pjI2S+TECbQCwTPx/4fpEBVwfxCnqJLlylFN5MlQFCQP1Z
-         JzmPRfbByx7Gg+vcaTj1nk6kHkhUPqzmbxo6mtpCScTEGg2SYq5ovN/4WcHGhj3sVE4X
-         quNzDuccGtF4bxrPU2Y9V9QoYmyxSc/T0eef4xuo9E7oSyBmFvE6iRNdwVyU6PgGipYf
-         BaTA==
-X-Gm-Message-State: AOJu0YzI86c/eIfNpEpRB/Cl+nxiXFBLExOIlCjp1qldTtyuzt+S+3m1
-        vmMgekUWTLFydkfGLpDwLkGNmQ==
-X-Google-Smtp-Source: AGHT+IF0kcGp8sfN+cnHJyhS9JDPrARVESTa+vmcxCbIe0cH4FwJJjOYAwlkc/TgzigUFSKs3erSYw==
-X-Received: by 2002:a2e:b358:0:b0:2ca:2d96:d99c with SMTP id q24-20020a2eb358000000b002ca2d96d99cmr145214lja.92.1702058272286;
-        Fri, 08 Dec 2023 09:57:52 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id rf19-20020a1709076a1300b00a1f75d21bf3sm498896ejc.6.2023.12.08.09.57.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 09:57:51 -0800 (PST)
-Message-ID: <9880fbbf-c311-4b6b-a570-aafd61729446@linaro.org>
-Date:   Fri, 8 Dec 2023 18:57:50 +0100
+        Fri, 8 Dec 2023 13:00:46 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDBBD1;
+        Fri,  8 Dec 2023 10:00:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1702058417; x=1702663217; i=w_armin@gmx.de;
+        bh=jCIeWudHWYfPX0tCxiCJvcyjCWHgh2ksRM0QRawqgGA=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=Mn8HAlA1aBZat4uZLhYsMhnjG2wQHpFkSTY0223bYP0uxG4DktDYe9UNbkVHFLyL
+         7Q3S8o0sEtFf/JyBVaN6VtF3l5rlkSRMpunvu1k1D0TOVTBCFMb8NDqUPQ+EWw5yt
+         tp1wJ8qPFODuaZZSmIu0vDkd8S8CNxRsa1UahegetRs6Yr0yDAP8heD/tmhVYuBRT
+         37ApEjc1RfR5CTIdKOBchqMGCGrO1dWhDDeXqM7/NAJhlGOORqRMIV3A/CZZlcBWE
+         eiTxg6SniKQyybtaZyZMpK4iTu639FI6ctiCEBbdXtbn7vhgy+hNpKfbq6bpNV4F2
+         dmuqxgAuQkhDm6HcXg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MVN6j-1qlViA29gd-00SL1v; Fri, 08
+ Dec 2023 19:00:17 +0100
+Message-ID: <44b649bd-b3da-4d66-ab2f-140024db9539@gmx.de>
+Date:   Fri, 8 Dec 2023 19:00:15 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 16/16] riscv: dts: starfive: jh8100: Add clocks and
- resets nodes
+Subject: Re: [PATCH 3/5] platform/x86: dell-smbios-wmi: Stop using WMI chardev
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, corbet@lwn.net,
+        Dell.Client.Kernel@dell.com, linux-doc@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231207222623.232074-1-W_Armin@gmx.de>
+ <20231207222623.232074-4-W_Armin@gmx.de>
+ <b4789282-920-e9e-5deb-d107d5bb4c7@linux.intel.com>
 Content-Language: en-US
-To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Sia Jee Heng <jeeheng.sia@starfivetech.com>, kernel@esmil.dk,
-        conor@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, mturquette@baylibre.com,
-        sboyd@kernel.org, p.zabel@pengutronix.de,
-        hal.feng@starfivetech.com, xingyu.wu@starfivetech.com
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        leyfoon.tan@starfivetech.com
-References: <20231206115000.295825-1-jeeheng.sia@starfivetech.com>
- <20231206115000.295825-17-jeeheng.sia@starfivetech.com>
- <CAJM55Z9bik1QttBeFUCfM3N98HWURge7mgV7ohFBq+AsuvtROg@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAJM55Z9bik1QttBeFUCfM3N98HWURge7mgV7ohFBq+AsuvtROg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From:   Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <b4789282-920-e9e-5deb-d107d5bb4c7@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1yEg3cwfTKNleA0AuC4aDi4P2Ck4NZZftBiMwbpGwDcfcW7B4Xl
+ PE4Y4lSaszH1Q6uZ+UgE9tomytSyXrei5IAxtz02xqmz3p32kCwprVBjEEUU8OqLshe4ZJ2
+ 6ZJq1yatESrZ/wgwxwwMAyRNv0YLDb+rkkCIjBDm1HaX5UdhclObQT8n625vybTFMK2QK3I
+ s/OGMyyKmbvEhrMeF18iQ==
+UI-OutboundReport: notjunk:1;M01:P0:m/fC9DcmGuo=;ftkS8WMT3J2Mw2rmOeLiLWZOV8D
+ 7HA9rymgdFTwJWVLvUzoPrCkgBJAKrV07rkjFZOQOQdBawtiqOfi3e6zdOuTzhtiU3Jf/JoIm
+ qvMJ0X/ztZCGSCh84eLQ1ZPqAI8wHt0p43qVUgnagyoKj9aF8qbiRuWW4fFiFjX77FK2QZcOB
+ TkCrbznTGzdT0AkyDAra/Dc82wq9S1N1mkkyDs5hWHkflWKAC/iDpghL257hQzce5/LzrLRv9
+ JNLvS+/Bzcvt0T/q5vfdLsWYi7NVmq/oJmWSunhMR9VNvANh8FH5pK9W/in+Wx47Ixz8WBgvV
+ jPzCTvnrJsdMxYYYk2Ncqbl4siXi8gdyD7xWD37viqHR465225RSlAPrSI88eLxsq2NoWAwEM
+ kyYxSIWE/fF9WOKxoIM2rclnD2GUylz510Kd13VcrHgnG4yBlsmBXj8rhQbiCv1rEXK7x9mpv
+ DHClbWlyoIFcKvIoMF/rJA5LYn8tmUjc2N58A4V9BqyAZ+cBbLx1wC0TicEyA5dyIw+W8wwfZ
+ uL9yhhaWuxdwisRRQ3erNHaWK1kZ24QLH0TI6MtRJfleSodx2cwJL58lmeb6/cdHHEQywhzg3
+ jWnI64fKt0un84qZaZw3A/TOqqe9TDUCUrt8OrqSDZ8KLg2hd5OQWgVgN1ygjDcnKvWPHIp1m
+ xhWUqoAuwEajVtUQyy7Wf+73QVB/ctQxzgtywhT6G7UBICHQ6tNmaTJYYdcGp9bH3We5XEIFr
+ XcD/Sr77jZ4RpP6MsxBfa5ITzmYUwg95a8eDeKM1Wui8kdiD1DrLxqAXACThD11JiG8G1oHs0
+ pYXIay715SsGXrx0nrtQMrsRrX+M9SXyFRo1IWmt8IAkanxgD5cSyTKmaDHxKlxWwI26IAp9t
+ oPCpbrAG1Sud/ah192XD6vn5oz4F4JL4jdpSiN1DQPCHMPBYk4Dc8hCmP/AzqZC1Wuw2Yq9qU
+ SZfdmq7BYZTBi97DdtbY/cB8+wY=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -128,22 +78,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/2023 17:39, Emil Renner Berthing wrote:
-> Sia Jee Heng wrote:
->> Add SYSCRG/SYSCRG-NE/SYSCRG-NW/SYSCRG-SW/AONCRG clock and reset
->> nodes for JH8100 RISC-V SoC.
+Am 08.12.23 um 14:41 schrieb Ilpo J=C3=A4rvinen:
+
+> On Thu, 7 Dec 2023, Armin Wolf wrote:
+>
+>> The WMI chardev API will be removed in the near future.
+>> Reimplement the necessary bits used by this driver so
+>> that userspace software depending on it does no break.
 >>
->> Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
->> Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+>> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 >> ---
->>  arch/riscv/boot/dts/starfive/jh8100-clk.dtsi | 180 +++++++++++++++++++
->>  arch/riscv/boot/dts/starfive/jh8100.dtsi     | 115 ++++++++++++
-> 
-> Why the split here? I mean why can't the clocks just be in the jh8100.dtsi?
+>>   drivers/platform/x86/dell/dell-smbios-wmi.c | 163 ++++++++++++++-----=
+-
+>>   1 file changed, 117 insertions(+), 46 deletions(-)
+>>
+>> diff --git a/drivers/platform/x86/dell/dell-smbios-wmi.c b/drivers/plat=
+form/x86/dell/dell-smbios-wmi.c
+>> index 931cc50136de..61f40f462eca 100644
+>> --- a/drivers/platform/x86/dell/dell-smbios-wmi.c
+>> +++ b/drivers/platform/x86/dell/dell-smbios-wmi.c
+>> @@ -32,7 +35,9 @@ struct wmi_smbios_priv {
+>>   	struct list_head list;
+>>   	struct wmi_device *wdev;
+>>   	struct device *child;
+>> -	u32 req_buf_size;
+>> +	u64 req_buf_size;
+>> +	u32 hotfix;
+>> +	struct miscdevice char_dev;
+>>   };
+>>   static LIST_HEAD(wmi_list);
+>
+>>   static int dell_smbios_wmi_probe(struct wmi_device *wdev, const void =
+*context)
+>>   {
+>> -	struct wmi_driver *wdriver =3D
+>> -		container_of(wdev->dev.driver, struct wmi_driver, driver);
+>>   	struct wmi_smbios_priv *priv;
+>> -	u32 hotfix;
+>> +	u32 buffer_size;
+>>   	int count;
+>>   	int ret;
+>>
+>> @@ -162,39 +225,44 @@ static int dell_smbios_wmi_probe(struct wmi_devic=
+e *wdev, const void *context)
+>>   	if (!priv)
+>>   		return -ENOMEM;
+>>
+>> +	priv->wdev =3D wdev;
+>> +	dev_set_drvdata(&wdev->dev, priv);
+>> +
+>>   	/* WMI buffer size will be either 4k or 32k depending on machine */
+>> -	if (!dell_wmi_get_size(&priv->req_buf_size))
+>> +	if (!dell_wmi_get_size(&buffer_size))
+>>   		return -EPROBE_DEFER;
+>>
+>> +	priv->req_buf_size =3D buffer_size;
+>> +
+>>   	/* some SMBIOS calls fail unless BIOS contains hotfix */
+>> -	if (!dell_wmi_get_hotfix(&hotfix))
+>> +	if (!dell_wmi_get_hotfix(&priv->hotfix))
+>>   		return -EPROBE_DEFER;
+>> -	if (!hotfix) {
+>> +
+>> +	if (!priv->hotfix)
+>>   		dev_warn(&wdev->dev,
+>>   			"WMI SMBIOS userspace interface not supported(%u), try upgrading t=
+o a newer BIOS\n",
+>> -			hotfix);
+>> -		wdriver->filter_callback =3D NULL;
+>> -	}
+>> +			priv->hotfix);
+>>
+>>   	/* add in the length object we will use internally with ioctl */
+>>   	priv->req_buf_size +=3D sizeof(u64);
+>> -	ret =3D set_required_buffer_size(wdev, priv->req_buf_size);
+>> -	if (ret)
+>> -		return ret;
+>>
+>>   	count =3D get_order(priv->req_buf_size);
+>>   	priv->buf =3D (void *)__get_free_pages(GFP_KERNEL, count);
+>>   	if (!priv->buf)
+>>   		return -ENOMEM;
+>>
+>> +	if (priv->hotfix) {
+>> +		ret =3D dell_smbios_wmi_register_chardev(priv);
+>> +		if (ret)
+>> +			goto fail_chardev;
+>> +	}
+>> +
+>>   	/* ID is used by dell-smbios to set priority of drivers */
+>>   	wdev->dev.id =3D 1;
+>>   	ret =3D dell_smbios_register_device(&wdev->dev, &dell_smbios_wmi_cal=
+l);
+>>   	if (ret)
+>>   		goto fail_register;
+>>
+>> -	priv->wdev =3D wdev;
+>> -	dev_set_drvdata(&wdev->dev, priv);
+>>   	mutex_lock(&list_mutex);
+>>   	list_add_tail(&priv->list, &wmi_list);
+>>   	mutex_unlock(&list_mutex);
+>> @@ -202,6 +270,9 @@ static int dell_smbios_wmi_probe(struct wmi_device =
+*wdev, const void *context)
+>>   	return 0;
+>>
+>>   fail_register:
+>> +	if (priv->hotfix)
+>> +               dell_smbios_wmi_unregister_chardev(priv);
+> I don't understand how hotfix -> priv->hotfix is related to this patch n=
+or
+> why it's necessary?
+>
+> Or did you mean to use it also in dell_smbios_wmi_remove() but forgot to
+> add the if (priv->hotfix) there?
 
-There should be. What's the point? Clocks are internal part of SoC and
-not really re-usable piece of hardware.
+I indeed forgot to add the "if (priv->hotfix)" here, good catch.
 
-Best regards,
-Krzysztof
+> In any case, it would be better to put that conversion into own patch
+> before this one.
 
+I could also drop the priv->hotfix related changes and instead modify the =
+driver
+to use devres (devm_get_free_pages() for example). This would also simplif=
+y the
+error handling code.
+
+I will send a v2 soon containing the necessary patches.
+
+>> @@ -211,6 +282,7 @@ static void dell_smbios_wmi_remove(struct wmi_devic=
+e *wdev)
+>>         struct wmi_smbios_priv *priv =3D dev_get_drvdata(&wdev->dev);
+>>         int count;
+>>
+>> +      dell_smbios_wmi_unregister_chardev(priv);
+>>         mutex_lock(&call_mutex);
+>>         mutex_lock(&list_mutex);
+>>         list_del(&priv->list);
