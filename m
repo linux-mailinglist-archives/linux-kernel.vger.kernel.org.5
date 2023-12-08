@@ -2,101 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 618CB80ACFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:28:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA5180AD08
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574680AbjLHT2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 14:28:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60670 "EHLO
+        id S233860AbjLHTaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 14:30:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLHT2K (ORCPT
+        with ESMTP id S229572AbjLHTaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 14:28:10 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30B41732
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:28:16 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40c3b3caa55so26495e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 11:28:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1702063695; x=1702668495; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rv9sF+QHA+qRGJbR2BSZjDLq0CS33kbmgrIFh2tWFrU=;
-        b=POFHJa6B5DhpBnJSAc5MgvHt6ac3HnkTsnR8hBI+nFOqLvSSxPosHuMGw0l4P7Sqph
-         1zJPyIDepXhJauNiVWVp8LyM0sTxlDCQrYLqwmgAQrijv+G3Ii1SwZX9MVgFJcQBt2oq
-         NZxit8llPlhsBepSW7AS5vanbOdkKrSwXyRHMlG1UQhw17h19nUEAamYQNMLrDmun2Ln
-         9R+AvBf6jcnte4/kY9Y5N2JEcFIpbrd2PMNnbAevjVT4v/ztVv2bfsPEClfYrUdQ99tY
-         W38wvXmtkaAk9mw1vP4L1H1SiD9XD1xAW5nHE4qd/J0f3fYPkEYRpOimDTvkxGm/fQKe
-         Px3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702063695; x=1702668495;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rv9sF+QHA+qRGJbR2BSZjDLq0CS33kbmgrIFh2tWFrU=;
-        b=RAJs7ZGToBfwzp3ssUK0oCU/R4c93vEE4G3hzNVYXq4+Zeq2A+MDCr+o1CWXOuk6GG
-         l/LUqCYuJUu8Qnbne12q2r4uHfOKN5LzrqfsngggNjkNRif2mz+3ZiFCj/3PH3fa+7yc
-         r1ezaRVJbUXW+jfiK6fy/nv0MFzUlFXAcy79LzooKPXpNckcAnkJJmA9HzP/PgXc53hI
-         WEBwgKBqHH4XdoCLgiPDoVmxjWDSDcPKg5tYv9fRTgn+3M/G+XaSGIrKFi4XwqYEYAil
-         1tDO3pog4AnwEGE6nww5lq7WszY7KZBqOg8ftzZoPLOXYT4sDh41l84wFn7iVAuwOc1G
-         SSlA==
-X-Gm-Message-State: AOJu0YwOHffnmmXmnnPsNhCVZAIQaHteirV5EaPdns7tUOStEHRCdtET
-        d6+1Dce79qtgTtYm2fX2cqBVXzq7XKMPMDEcZp+geg==
-X-Google-Smtp-Source: AGHT+IFFFQbBGAOPWpM2U9jSGJT4S2n2V4kWHb50h8/FUw+8k2Lud611bt2P2PtOY0WsSueKTkMQdw==
-X-Received: by 2002:a05:600c:3795:b0:40b:578d:2496 with SMTP id o21-20020a05600c379500b0040b578d2496mr220027wmr.27.1702063695109;
-        Fri, 08 Dec 2023 11:28:15 -0800 (PST)
-Received: from ?IPV6:2a10:bac0:b000:731f:e6b0:e567:aab6:1db2? ([2a10:bac0:b000:731f:e6b0:e567:aab6:1db2])
-        by smtp.gmail.com with ESMTPSA id b1-20020a05600c4e0100b00405959469afsm3784245wmq.3.2023.12.08.11.28.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 11:28:14 -0800 (PST)
-Message-ID: <8af70f29-0853-42bc-aabd-338eda6ed154@suse.com>
-Date:   Fri, 8 Dec 2023 21:28:13 +0200
+        Fri, 8 Dec 2023 14:30:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D7E1706
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:30:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702063821; x=1733599821;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=8asWn5ZBXffEvDkxo+NpeUAxgzQeZVng0bL0sN8FZUQ=;
+  b=gKCRTun551+zMCl2liNlE+bW3wQjxZgRsCwDV9iQg5mTGmXqb4SLJ1i9
+   k58E6E1XKlkK814Q1U/+azix9v1B/RdaL9HwdP8ip3uxvLpKi8ySyN5eW
+   pReWH+hE+abJYA4CTSWUNQtY36P91S4PPUmMmgORTQqBdA26jljegaDvU
+   WTWAy4ijSSu5KDevPUB7W5B0ZqYts7CzTr6sFMeux0hCsOSgyFl3v88wa
+   B4k5r2BL47r0lU5m+rf8RtULhECyHeSp47haa6BMim6ZCkgVb0OmYRsw1
+   DdoXtF7nBXkZpyRBnTE0xXOizmTEFOcAn1nsSC8MCB84Nzlzd7MKXCfuv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="480646022"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="480646022"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 11:30:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="772238878"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="772238878"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 08 Dec 2023 11:30:19 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBgYD-000EGO-1X;
+        Fri, 08 Dec 2023 19:30:17 +0000
+Date:   Sat, 9 Dec 2023 03:29:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Satish Kharat <satishkh@cisco.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: drivers/scsi/fnic/vnic_dev.c:332:32: sparse: sparse: incorrect type
+ in argument 1 (different address spaces)
+Message-ID: <202312090311.SLJL5yUX-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -v2] x86/ia32: State that IA32 emulation is disabled
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20231130155213.1407-1-bp@alien8.de>
- <20231130160903.GJZWizn+dPaaViFVKN@fat_crate.local>
- <20231206172022.GCZXCtVoZtt4t2TLpe@fat_crate.local>
- <4f232dfb-a112-4271-8f43-f85a02c4abeb@suse.com>
- <20231208192254.GCZXNtDjT73Z4L06h/@fat_crate.local>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <20231208192254.GCZXNtDjT73Z4L06h/@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   4df7c5fde316820286dfa6d203a1005d7fbe007d
+commit: 0a2fdd2215e1fa3b417792bd6e9cb719822cbfb6 scsi: fnic: Adding devcmd2 init and posting interfaces
+date:   4 years, 11 months ago
+config: x86_64-randconfig-123-20231025 (https://download.01.org/0day-ci/archive/20231209/202312090311.SLJL5yUX-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231209/202312090311.SLJL5yUX-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312090311.SLJL5yUX-lkp@intel.com/
 
-On 8.12.23 г. 21:22 ч., Borislav Petkov wrote:
-> On Fri, Dec 08, 2023 at 08:42:29PM +0200, Nikolay Borisov wrote:
->>> +static inline bool ia32_enabled_verbose(void)
->>> +{
->>> +	bool enabled = ia32_enabled();
->>> +
->>> +	if (IS_ENABLED(CONFIG_IA32_EMULATION) && !enabled)
->>
->> nit: But why check config_ia32_emulation explicitly, its state should
->> already be accounted for in ia32_enabled's value? So this check can simply
->> be 'if (!enabled)'
->>
->>> +		pr_notice_once("32-bit emulation disabled. You can reenable with ia32_emulation=on\n");
-> 				^^^^^^^^^^
-> 
-> If CONFIG_IA32_EMULATION is disabled, is there any 32-bit emulation to
-> be enabled, at all?
-> 
+sparse warnings: (new ones prefixed by >>)
+   drivers/scsi/fnic/vnic_dev.c:257:5: sparse: sparse: symbol 'vnic_dev_cmd1' was not declared. Should it be static?
+>> drivers/scsi/fnic/vnic_dev.c:332:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem * @@     got unsigned int * @@
+   drivers/scsi/fnic/vnic_dev.c:332:32: sparse:     expected void [noderef] __iomem *
+   drivers/scsi/fnic/vnic_dev.c:332:32: sparse:     got unsigned int *
+   drivers/scsi/fnic/vnic_dev.c:333:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem * @@     got unsigned int * @@
+   drivers/scsi/fnic/vnic_dev.c:333:37: sparse:     expected void [noderef] __iomem *
+   drivers/scsi/fnic/vnic_dev.c:333:37: sparse:     got unsigned int *
+   drivers/scsi/fnic/vnic_dev.c:373:36: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem * @@     got unsigned int * @@
+   drivers/scsi/fnic/vnic_dev.c:373:36: sparse:     expected void [noderef] __iomem *
+   drivers/scsi/fnic/vnic_dev.c:373:36: sparse:     got unsigned int *
+   drivers/scsi/fnic/vnic_dev.c:319:5: sparse: sparse: symbol 'vnic_dev_cmd2' was not declared. Should it be static?
+>> drivers/scsi/fnic/vnic_dev.c:469:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct vnic_wq_ctrl *wq_ctrl @@     got struct vnic_wq_ctrl [noderef] __iomem *ctrl @@
+   drivers/scsi/fnic/vnic_dev.c:469:32: sparse:     expected struct vnic_wq_ctrl *wq_ctrl
+   drivers/scsi/fnic/vnic_dev.c:469:32: sparse:     got struct vnic_wq_ctrl [noderef] __iomem *ctrl
 
-Ah, the !enabled condition will then trigger so it will result in a 
-false print. Fair enough...
+vim +332 drivers/scsi/fnic/vnic_dev.c
+
+   318	
+   319	int vnic_dev_cmd2(struct vnic_dev *vdev, enum vnic_devcmd_cmd cmd,
+   320			int wait)
+   321	{
+   322		struct devcmd2_controller *dc2c = vdev->devcmd2;
+   323		struct devcmd2_result *result;
+   324		u8 color;
+   325		unsigned int i;
+   326		int delay;
+   327		int err;
+   328		u32 fetch_index;
+   329		u32 posted;
+   330		u32 new_posted;
+   331	
+ > 332		posted = ioread32(&dc2c->wq_ctrl->posted_index);
+   333		fetch_index = ioread32(&dc2c->wq_ctrl->fetch_index);
+   334	
+   335		if (posted == 0xFFFFFFFF || fetch_index == 0xFFFFFFFF) {
+   336			/* Hardware surprise removal: return error */
+   337			pr_err("%s: devcmd2 invalid posted or fetch index on cmd %d\n",
+   338					pci_name(vdev->pdev), _CMD_N(cmd));
+   339			pr_err("%s: fetch index: %u, posted index: %u\n",
+   340					pci_name(vdev->pdev), fetch_index, posted);
+   341	
+   342			return -ENODEV;
+   343	
+   344		}
+   345	
+   346		new_posted = (posted + 1) % DEVCMD2_RING_SIZE;
+   347	
+   348		if (new_posted == fetch_index) {
+   349			pr_err("%s: devcmd2 wq full while issuing cmd %d\n",
+   350					pci_name(vdev->pdev), _CMD_N(cmd));
+   351			pr_err("%s: fetch index: %u, posted index: %u\n",
+   352					pci_name(vdev->pdev), fetch_index, posted);
+   353			return -EBUSY;
+   354	
+   355		}
+   356		dc2c->cmd_ring[posted].cmd = cmd;
+   357		dc2c->cmd_ring[posted].flags = 0;
+   358	
+   359		if ((_CMD_FLAGS(cmd) & _CMD_FLAGS_NOWAIT))
+   360			dc2c->cmd_ring[posted].flags |= DEVCMD2_FNORESULT;
+   361		if (_CMD_DIR(cmd) & _CMD_DIR_WRITE) {
+   362			for (i = 0; i < VNIC_DEVCMD_NARGS; i++)
+   363				dc2c->cmd_ring[posted].args[i] = vdev->args[i];
+   364	
+   365		}
+   366	
+   367		/* Adding write memory barrier prevents compiler and/or CPU
+   368		 * reordering, thus avoiding descriptor posting before
+   369		 * descriptor is initialized. Otherwise, hardware can read
+   370		 * stale descriptor fields.
+   371		 */
+   372		wmb();
+   373		iowrite32(new_posted, &dc2c->wq_ctrl->posted_index);
+   374	
+   375		if (dc2c->cmd_ring[posted].flags & DEVCMD2_FNORESULT)
+   376			return 0;
+   377	
+   378		result = dc2c->result + dc2c->next_result;
+   379		color = dc2c->color;
+   380	
+   381		dc2c->next_result++;
+   382		if (dc2c->next_result == dc2c->result_size) {
+   383			dc2c->next_result = 0;
+   384			dc2c->color = dc2c->color ? 0 : 1;
+   385		}
+   386	
+   387		for (delay = 0; delay < wait; delay++) {
+   388			udelay(100);
+   389			if (result->color == color) {
+   390				if (result->error) {
+   391					err = -(int) result->error;
+   392					if (err != ERR_ECMDUNKNOWN ||
+   393							cmd != CMD_CAPABILITY)
+   394						pr_err("%s:Error %d devcmd %d\n",
+   395							pci_name(vdev->pdev),
+   396							err, _CMD_N(cmd));
+   397					return err;
+   398				}
+   399				if (_CMD_DIR(cmd) & _CMD_DIR_READ) {
+   400					rmb(); /*prevent reorder while reding result*/
+   401					for (i = 0; i < VNIC_DEVCMD_NARGS; i++)
+   402						vdev->args[i] = result->results[i];
+   403				}
+   404				return 0;
+   405			}
+   406		}
+   407	
+   408		pr_err("%s:Timed out devcmd %d\n", pci_name(vdev->pdev), _CMD_N(cmd));
+   409	
+   410		return -ETIMEDOUT;
+   411	}
+   412	
+   413	
+   414	int vnic_dev_init_devcmd1(struct vnic_dev *vdev)
+   415	{
+   416		vdev->devcmd = vnic_dev_get_res(vdev, RES_TYPE_DEVCMD, 0);
+   417		if (!vdev->devcmd)
+   418			return -ENODEV;
+   419	
+   420		vdev->devcmd_rtn = &vnic_dev_cmd1;
+   421		return 0;
+   422	}
+   423	
+   424	
+   425	int vnic_dev_init_devcmd2(struct vnic_dev *vdev)
+   426	{
+   427		int err;
+   428		unsigned int fetch_index;
+   429	
+   430		if (vdev->devcmd2)
+   431			return 0;
+   432	
+   433		vdev->devcmd2 = kzalloc(sizeof(*vdev->devcmd2), GFP_ATOMIC);
+   434		if (!vdev->devcmd2)
+   435			return -ENOMEM;
+   436	
+   437		vdev->devcmd2->color = 1;
+   438		vdev->devcmd2->result_size = DEVCMD2_RING_SIZE;
+   439		err = vnic_wq_devcmd2_alloc(vdev, &vdev->devcmd2->wq,
+   440					DEVCMD2_RING_SIZE, DEVCMD2_DESC_SIZE);
+   441		if (err)
+   442			goto err_free_devcmd2;
+   443	
+   444		fetch_index = ioread32(&vdev->devcmd2->wq.ctrl->fetch_index);
+   445		if (fetch_index == 0xFFFFFFFF) { /* check for hardware gone  */
+   446			pr_err("error in devcmd2 init");
+   447			return -ENODEV;
+   448		}
+   449	
+   450		/*
+   451		 * Don't change fetch_index ever and
+   452		 * set posted_index same as fetch_index
+   453		 * when setting up the WQ for devcmd2.
+   454		 */
+   455		vnic_wq_init_start(&vdev->devcmd2->wq, 0, fetch_index,
+   456				fetch_index, 0, 0);
+   457	
+   458		vnic_wq_enable(&vdev->devcmd2->wq);
+   459	
+   460		err = vnic_dev_alloc_desc_ring(vdev, &vdev->devcmd2->results_ring,
+   461				DEVCMD2_RING_SIZE, DEVCMD2_DESC_SIZE);
+   462		if (err)
+   463			goto err_free_wq;
+   464	
+   465		vdev->devcmd2->result =
+   466			(struct devcmd2_result *) vdev->devcmd2->results_ring.descs;
+   467		vdev->devcmd2->cmd_ring =
+   468			(struct vnic_devcmd2 *) vdev->devcmd2->wq.ring.descs;
+ > 469		vdev->devcmd2->wq_ctrl = vdev->devcmd2->wq.ctrl;
+   470		vdev->args[0] = (u64) vdev->devcmd2->results_ring.base_addr |
+   471					VNIC_PADDR_TARGET;
+   472		vdev->args[1] = DEVCMD2_RING_SIZE;
+   473	
+   474		err = vnic_dev_cmd2(vdev, CMD_INITIALIZE_DEVCMD2, 1000);
+   475		if (err)
+   476			goto err_free_desc_ring;
+   477	
+   478		vdev->devcmd_rtn = &vnic_dev_cmd2;
+   479	
+   480		return 0;
+   481	
+   482	err_free_desc_ring:
+   483		vnic_dev_free_desc_ring(vdev, &vdev->devcmd2->results_ring);
+   484	err_free_wq:
+   485		vnic_wq_disable(&vdev->devcmd2->wq);
+   486		vnic_wq_free(&vdev->devcmd2->wq);
+   487	err_free_devcmd2:
+   488		kfree(vdev->devcmd2);
+   489		vdev->devcmd2 = NULL;
+   490	
+   491		return err;
+   492	}
+   493	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
