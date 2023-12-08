@@ -2,156 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A434809E76
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 09:43:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 940E8809E96
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 09:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573290AbjLHIn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 03:43:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
+        id S235792AbjLHIs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 03:48:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232892AbjLHInZ (ORCPT
+        with ESMTP id S235815AbjLHIsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 03:43:25 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF3FF1
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 00:43:30 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c2a444311so16842435e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 00:43:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702025009; x=1702629809; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wBUnhnOsxlBDNa8A++IKX6FM+LUAOdhW/Iwi43YJARg=;
-        b=bo6Xooh7r19hZtqwcT5lwGQWAlwU2n6JGSYNAVjrZ7Q4F7fh8315FvkDr2UvxeJBQW
-         dWREeY8jHqBxnZTQaNMoq4GmYapX0pgh93DMe/UkC103vQJBEnvxf2RIvXNPOPCyWak1
-         VmlNuGLp9k8XGgXrYckkrq0UNKymm+yIvuFRIBWMxagd2alfNbNwZJ/mn3mpWlAtJha/
-         L2A+SXWIvtj4+ByxSKwiA7QYd2Vnz82A+4E0FNYqkL+FduG70OjQ6wcOk49ecThFT5AU
-         gqG9cRMwG40i86CWQIJnbz0YXtQXap2okKNx+nT3SP6aTg1go782w5S4p5lnZ5QarMC2
-         8vGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702025009; x=1702629809;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wBUnhnOsxlBDNa8A++IKX6FM+LUAOdhW/Iwi43YJARg=;
-        b=LlaopmXZZacH6yiZfW9blFduV7mk6axBMWS8/voLz1zOoCPJWa68UyVGH+zB/VQPxn
-         SAjt8iPT4i6LdI7UkL4KecCcgu/8WFVtVkza1XT9xyAltKBlfwQqVbm2eEWiwKF9snJn
-         8mF4L+HFBp/IxQcrrye/6C7UNJkhqjSse/hYRUdxkmy7bY3bLLaOVVwwrKLv3pFId1zY
-         zSDeQIoxFr9e3uSg2CzrUM5QE7rkmf77jw+2Gga36SUyl3aN2wPSQm2zX+svnGwRrQHm
-         vuXp/x8Ra6HT8nOKJ4Aar4jIcdJcU9zcJvF5XQH8T/gAE38MdEouhmaq63MHlQBY6UYw
-         qszw==
-X-Gm-Message-State: AOJu0Yx+ICMudJgsKtwlzSuVOBZSl4e3g+FuQxC6WlXFXnQADTmDB/7U
-        hu6wuUkG7dDGUofAsMewKPVZCQ==
-X-Google-Smtp-Source: AGHT+IH52KU1v4NdmHcMzpoX17x6A8/mjFx3r7sunQ/aFqoqs5RiE+XNCr/8jmz9Govl3MkYIRH0Bg==
-X-Received: by 2002:a05:600c:190e:b0:40b:5f03:b3da with SMTP id j14-20020a05600c190e00b0040b5f03b3damr1274286wmq.252.1702025009141;
-        Fri, 08 Dec 2023 00:43:29 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id w10-20020a05600c474a00b0040b2c195523sm4415798wmo.31.2023.12.08.00.43.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 00:43:28 -0800 (PST)
-Date:   Fri, 8 Dec 2023 11:43:25 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     James Tai =?utf-8?B?W+aItOW/l+WzsF0=?= <james.tai@realtek.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
+        Fri, 8 Dec 2023 03:48:45 -0500
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAF9172C;
+        Fri,  8 Dec 2023 00:48:45 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4C12FC0002;
+        Fri,  8 Dec 2023 08:48:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1702025322;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BI/a9kd3lyurB+jcttNXOa/XaS8zgyXI4PkPmj1fYQc=;
+        b=OtKH0venALl7A2QhgJRFyZltpGLlG6YDjqcRcLP4+ioDu0kWHpTJr7n3+Wa5f/AVb52L7v
+        sQ7xGzfKdbCtD08vVBb51WHnzOL3YHE5LkOkDckyEQ0+BAvqF3DTjaKc1lBvl+zfLKH/DQ
+        OcfO7uJKt7/KrgNwd3r0ixqzVUurngPx1s2jzs6NkdLdw1oBqerOmYZXzmL+xaZgp5fCbN
+        bWmUIPLxW8MTcTgGkR20ktTBrCtFZmKap1/tA4jJ55F+BiAB686jtCitOt3Gflw8Lt9u++
+        UNBmL9m61OycftBOiWT2nG9x+ph228aFBSQ58iwT084dfGCt8Iihheplhhdsxw==
+Date:   Fri, 8 Dec 2023 09:48:40 +0100
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>,
+        Sonal Santan <sonal.santan@amd.com>,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <error27@gmail.com>
-Subject: Re: [PATCH v3 2/6] irqchip: Add interrupt controller support for
- Realtek DHC SoCs
-Message-ID: <f154673d-f577-406e-adb0-c567b604e7f4@suswa.mountain>
-References: <20231129054339.3054202-1-james.tai@realtek.com>
- <20231129054339.3054202-3-james.tai@realtek.com>
- <d94c79bf-04c4-4e87-bd7e-a8755508ac89@suswa.mountain>
- <8f87bfca-ab5f-4b32-a400-a90d09b64cf1@suswa.mountain>
- <c558b1de9a8841e498f6dfc406a43158@realtek.com>
+        PCI <linux-pci@vger.kernel.org>,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
+Message-ID: <20231208094840.01d74fec@bootlin.com>
+In-Reply-To: <CAL_Jsq+je7+9ATR=B6jXHjEJHjn24vQFs4Tvi9=vhDeK9n42Aw@mail.gmail.com>
+References: <20231130165700.685764-1-herve.codina@bootlin.com>
+        <CAL_JsqJvt6FpXK+FgAwE8xN3G5Z23Ktq=SEY-K7VA7nM5XgZRg@mail.gmail.com>
+        <20231204134335.3ded3d46@bootlin.com>
+        <CAL_JsqLtCS3otZ1sfiPEWwrWB4dyNpu4e0xANWJriCEUYr+4Og@mail.gmail.com>
+        <20231204163014.4da383f2@bootlin.com>
+        <CAL_JsqJJ64513pyQggU71agTzawNWPpm6ZpWMB6e0zu-tWL8yw@mail.gmail.com>
+        <20231205090452.7c601eb5@bootlin.com>
+        <CAL_Jsq+je7+9ATR=B6jXHjEJHjn24vQFs4Tvi9=vhDeK9n42Aw@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c558b1de9a8841e498f6dfc406a43158@realtek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 08:21:10AM +0000, James Tai [戴志峰] wrote:
-> Hi Dan,
-> 
-> >> devm_ allocations are cleaned up automatically so there is no need to
-> >> call devm_kfree() before returning.
-> >>
-> >> regards,
-> >> dan carpenter
-> >
-> I will remove it. 
-> 
-> >> > +   }
-> >> > +
-> >> > +   data->info = info;
-> >> > +
-> >> > +   raw_spin_lock_init(&data->lock);
-> >> > +
-> >> > +   data->domain = irq_domain_add_linear(node, 32,
-> >> > + &realtek_intc_domain_ops, data);
-> >
-> >Btw, as I was testing the other static checker warning for <= 0, my static
-> >checker really wants this irq_domain_add_linear() to be cleaned up on the error
-> >path.
-> >
-> >Otherwise it probably leads to a use after free because we free data
-> >(automatically or manually) but it's still on a list somewhere.
-> >
-> I will add 'irq_domain_remove()' to release it. 
-> 
-> >> > +   if (!data->domain) {
-> >> > +           ret = -ENOMEM;
-> >> > +           goto out_cleanup;
-> >> > +   }
-> >> > +
-> >> > +   data->subset_data_num = info->cfg_num;
-> >> > +   for (i = 0; i < info->cfg_num; i++) {
-> >> > +           ret = realtek_intc_subset(node, data, i);
-> >> > +           if (ret) {
-> >> > +                   WARN(ret, "failed to init subset %d: %d", i, ret);
-> >> > +                   ret = -ENOMEM;
-> >> > +                   goto out_cleanup;
-> >
-> >This error path.
-> >
-> >regards,
-> >dan carpenter
-> >
-> I will add 'irq_domain_remove()' before goto cleanup.
-> 
-> 	for (i = 0; i < info->cfg_num; i++) {
-> 		ret = realtek_intc_subset(node, data, i);
-> 		if (ret) {
-> 			WARN(ret, "failed to init subset %d: %d", i, ret);
-> 			irq_domain_remove(data->domain);
-> 			ret = -ENOMEM;
-> 			goto out_cleanup;
-> 		}
-> 	}
-> 
-> Thank you for your feedback.
+Hi Rob,
 
-You're running into the issue because you're using One Err Label style
-error handling.  It would be better to use normal unwind laddering.
-See my blog for more info:
+On Thu, 7 Dec 2023 16:51:56 -0600
+Rob Herring <robh@kernel.org> wrote:
 
-https://staticthinking.wordpress.com/2022/04/28/free-the-last-thing-style/
+> On Tue, Dec 5, 2023 at 2:05 AM Herve Codina <herve.codina@bootlin.com> wrote:
+> >
+> > On Mon, 4 Dec 2023 17:03:21 -0600
+> > Rob Herring <robh@kernel.org> wrote:
+> >  
+> > > On Mon, Dec 4, 2023 at 9:30 AM Herve Codina <herve.codina@bootlin.com> wrote:  
+> > > >
+> > > > Hi Rob,
+> > > >
+> > > > On Mon, 4 Dec 2023 07:59:09 -0600
+> > > > Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > [...]
+> > > >  
+> > > > > > > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
+> > > > > > > index 9c2137dae429..46b252bbe500 100644
+> > > > > > > --- a/drivers/pci/bus.c
+> > > > > > > +++ b/drivers/pci/bus.c
+> > > > > > > @@ -342,8 +342,6 @@ void pci_bus_add_device(struct pci_dev *dev)
+> > > > > > >          */
+> > > > > > >         pcibios_bus_add_device(dev);
+> > > > > > >         pci_fixup_device(pci_fixup_final, dev);
+> > > > > > > -       if (pci_is_bridge(dev))
+> > > > > > > -               of_pci_make_dev_node(dev);
+> > > > > > >         pci_create_sysfs_dev_files(dev);
+> > > > > > >         pci_proc_attach_device(dev);
+> > > > > > >         pci_bridge_d3_update(dev);
+> > > > > > > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> > > > > > > index 51e3dd0ea5ab..e15eaf0127fc 100644
+> > > > > > > --- a/drivers/pci/of.c
+> > > > > > > +++ b/drivers/pci/of.c
+> > > > > > > @@ -31,6 +31,8 @@ int pci_set_of_node(struct pci_dev *dev)
+> > > > > > >                 return 0;
+> > > > > > >
+> > > > > > >         node = of_pci_find_child_device(dev->bus->dev.of_node, dev->devfn);
+> > > > > > > +       if (!node && pci_is_bridge(dev))
+> > > > > > > +               of_pci_make_dev_node(dev);
+> > > > > > >         if (!node)
+> > > > > > >                 return 0;  
+> > > > > >
+> > > > > > Maybe it is too early.
+> > > > > > of_pci_make_dev_node() creates a node and fills some properties based on
+> > > > > > some already set values available in the PCI device such as its struct resource
+> > > > > > values.
+> > > > > > We need to have some values set by the PCI infra in order to create our DT node
+> > > > > > with correct values.  
+> > > > >
+> > > > > Indeed, that's probably the issue I'm having. In that case,
+> > > > > DECLARE_PCI_FIXUP_HEADER should work. That's later, but still before
+> > > > > device_add().
+> > > > >
+> > > > > I think modifying sysfs after device_add() is going to race with
+> > > > > userspace. Userspace is notified of a new device, and then the of_node
+> > > > > link may or may not be there when it reads sysfs. Also, not sure if
+> > > > > we'll need DT modaliases with PCI devices, but they won't work if the
+> > > > > DT node is not set before device_add().  
+> > > >
+> > > > Ok, we can try using DECLARE_PCI_FIXUP_HEADER.
+> > > > On your side, is moving from DECLARE_PCI_FIXUP_EARLY to DECLARE_PCI_FIXUP_HEADER
+> > > > fix your QEMU unittest ?  
+> > >
+> > > No...  
+> 
+> I think the problem is we aren't setting the fwnode, just the of_node
+> ptr, but I haven't had a chance to verify that.
+> 
+> > > And testing the bridge part crashes. That's because there's a
+> > > dependency on the bridge->subordinate to write out bus-range and
+> > > interrupt-map. I think the fix there is we should just not write those
+> > > properties. The bus range isn't needed because the kernel does its own
+> > > assignments. For interrupt-map, it is only needed if "interrupts" is
+> > > present in the child devices. If not present, then the standard PCI
+> > > swizzling is used. Alternatively, I think the interrupt mapping could
+> > > be simplified to just implement the standard swizzling at each level
+> > > which isn't dependent on any of the devices on the bus. I gave that a
+> > > go where each interrupt-map just points to the parent bridge, but ran
+> > > into an issue that the bridge nodes don't have a phandle. That should
+> > > be fixable, but I'd rather go with the first option. I suppose that
+> > > depends on how the interrupts downstream of the PCI device need to get
+> > > resolved. It could be that the PCI device serves as the interrupt
+> > > controller and can resolve the parent interrupt on its own (which may
+> > > be needed for ACPI host anyways).  
+> >
+> > About interrupt, I am a bit stuck on my side.
+> > My dtso (applied at PCI device level) contains the following:
+> >         fragment@0 {
+> >                 target-path="";
+> >                 __overlay__ {
+> >                         pci-ep-bus@0 {
+> >                                 compatible = "simple-bus";
+> >                                 #address-cells = <1>;
+> >                                 #size-cells = <1>;
+> >
+> >                                 /*
+> >                                  * map @0xe2000000 (32MB) to BAR0 (CPU)
+> >                                  * map @0xe0000000 (16MB) to BAR1 (AMBA)
+> >                                  */
+> >                                 ranges = <0xe2000000 0x00 0x00 0x00 0x2000000
+> >                                           0xe0000000 0x01 0x00 0x00 0x1000000>;
+> >
+> >                                 itc: itc {
+> >                                         compatible = "microchip,lan966x-itc";
+> >                                         #interrupt-cells = <1>;
+> >                                         interrupt-controller;
+> >                                         reg = <0xe00c0120 0x190>;
+> >                                 };
+> >
+> >                                 ...
+> >                          };
+> >                 };
+> >         };
+> >
+> > I have a 'simple-bus' with a 'ranges' property to translate the BAR addresses
+> > then several devices. Among them a interrupt controller (itc). Its parent
+> > interrupt is the one used by the PCI device (INTA).
+> > I cannot describe this parent interrupt in the dtso because to that I need the
+> > parent interrupt phandle which will be know only at runtime.  
+> 
+> But you don't. The logic to find the interrupt parent is walk up the
+> parent nodes until you find 'interrupt-parent' or
+> '#interrupt-controller' (and interrupt-map always has
+> #interrupt-controller). So your overlay just needs 'interrupts = <1>'
+> for INTA and it should all just work.
 
-regards,
-dan carpenter
+Yes, I tried some stuffs in that way...
+> 
+> That of course implies that we need interrupt properties in all the
+> bridges which I was hoping to avoid. In the ACPI case, for DT
+> interrupt parsing to work, we're going to need to end up in an
+> 'interrupt-controller' node somewhere. I think the options are either
 
+... and I went up to that point.
+Further more with that way, we need to update the addr value retrieved
+from the device requesting the interrupt.
+  https://elixir.bootlin.com/linux/latest/source/drivers/of/irq.c#L343
+Indeed, with the current 'interrupt-map' at bridges level, a addr value
+update is needed at the PCI device level if the interrupt is requested
+from some PCI device children.
+This is were my (not so good) interrupt-ranges property could play a
+role.
+
+> we walk interrupt-map properties up to the host bridge which then
+> points to something or the PCI device is the interrupt controller. I
+> think the PCI device is the right place. How the downstream interrupts
+
+Agree, the PCI device seems to be the best candidate.
+
+> are routed to PCI interrupts are defined by the device. That would
+> work the same way for both DT and ACPI. If you are concerned about
+> implementing in each driver needing this, some library functions can
+> mitigate that.
+> 
+> I'm trying to play around with the IRQ domains and get this to work,
+> but not having any luck yet.
+
+May I help you on some points?
+
+Got a system with a real hardware (Lan966x) and a setup using an ARM platform (full
+DT) and an other one using an x86 platform (ACPI).
+Also, I have some piece of code to create the PCI host bridge node.
+Of course, this need to be first working on a full DT system but I can do some test
+to be sure that can be still ok on a ACPI system.
+
+> 
+> > Of course, I can modified the overlay applied to tweak the 'interrupt' and
+> > 'interrupt-parent' in the itc node from my PCI device driver at runtime but I
+> > would like to avoid this kind of tweak in the PCI device driver.
+> > This kind of tweak is overlay dependent and needs to be done by each PCI
+> > device driver that need to work with interrupts.
+> >
+> > For BAR addresses translation, we use the 'ranges' property at the PCI device
+> > node to translate 0 0 0 to BAR0, 1 0 0 to BAR1, ...
+> > What do you think about a new 'irq-ranges' property to translate the irq number
+> > and get the irq parent controller base.
+> >
+> > irq-ranges = <child_irq_spec parent_irq_spec length>;  
+> 
+> Seems fragile as you have to know something about the parent (the # of
+> cells), but you don't have the phandle. If you needed multiple
+> entries, you couldn't parse this.
+> 
+
+Right.
+With the PCI device seen as an interrupt controller, there is no more need of
+this interrup-ranges property.
+
+Best regards,
+Hervé
