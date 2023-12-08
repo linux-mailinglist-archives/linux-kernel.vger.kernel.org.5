@@ -2,66 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA4E80AC94
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9791580AC96
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233863AbjLHTAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 14:00:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55670 "EHLO
+        id S235952AbjLHTBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 14:01:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbjLHTAw (ORCPT
+        with ESMTP id S229938AbjLHTA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 14:00:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1D810E6
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:00:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54434C433C7;
-        Fri,  8 Dec 2023 19:00:58 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 6.1.66-rt19
-Date:   Fri, 08 Dec 2023 19:00:15 -0000
-Message-ID: <170206201502.836109.908648168002559885@demetrius>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>,
-        Joseph Salisbury <joseph.salisbury@canonical.com>
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,HK_RANDOM_ENVFROM,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 8 Dec 2023 14:00:59 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4549910E0;
+        Fri,  8 Dec 2023 11:01:05 -0800 (PST)
+Date:   Fri, 08 Dec 2023 19:01:01 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702062063;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=e0J+xS1mZ0HHT3NUtIj/bIdGlok1FYUU5yuG+3+ws1Y=;
+        b=2FRlEOOua6dxLXIWPL2BsQyRzNLgEiDIs0o9g6S6VwVZ5SYUrHdnU751aMAwPyjE6jko0N
+        5TlI8H2LnQK88Fk5K7e5q3dP2i8oWZULat7Tn+zbsCk0ZMcd9xeIzxQux0M5FeP/UYbtRt
+        XfCcSkpHd4YofnKWxcG95UTxv+4AOCu/B/WxKZgH/qpofqDsBoOXrffJvlWGFrp9wVhx99
+        Sh9Hna7UoYQyGPHPdSqUnB8Adnu2y7YMXalCEth7Z0YEpOeUl6Ygh6+LeCDwFPR6D9Y/e2
+        u/O0FYTZ4cn0+dW4Crt7rKLL2L2ag59k0k416J+o1y0Z50B2JuxpijJOwLURVA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702062063;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=e0J+xS1mZ0HHT3NUtIj/bIdGlok1FYUU5yuG+3+ws1Y=;
+        b=1tBNGpYZOfQeB3He5ncNiW468Fdaj/DB1IuvnBex6JRBIaPSoV4u8T0qCWfq5EGLZPrUxr
+        WF2ldbPpFomeAJDg==
+From:   "tip-bot2 for Dave Hansen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/tdx] x86/virt/tdx: Disable TDX host support when kexec is enabled
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+Message-ID: <170206206183.398.10384727190560172183.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+The following commit has been merged into the x86/tdx branch of tip:
 
-I'm pleased to announce the 6.1.66-rt19 stable release.
+Commit-ID:     1363d55c108dfb6280f55a7f5b149017879fe23b
+Gitweb:        https://git.kernel.org/tip/1363d55c108dfb6280f55a7f5b149017879fe23b
+Author:        Dave Hansen <dave.hansen@linux.intel.com>
+AuthorDate:    Fri, 08 Dec 2023 09:07:40 -08:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Fri, 08 Dec 2023 10:17:32 -08:00
 
-You can get this release via the git tree at:
+x86/virt/tdx: Disable TDX host support when kexec is enabled
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+TDX host support currently lacks the ability to handle kexec.  Disable TDX
+when kexec is enabled.
 
-  branch: v6.1-rt
-  Head SHA1: 54538988af185afbf8be0776951791757f97eb25
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Link: https://lore.kernel.org/all/20231208170740.53979-20-dave.hansen%40intel.com
+---
+ arch/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Or to build 6.1.66-rt19 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v6.x/linux-6.1.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v6.x/patch-6.1.66.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/6.1/patch-6.1.66-rt19.patch.xz
-
-
-Enjoy!
-Clark
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index e255d8a..01cdb16 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1973,6 +1973,7 @@ config INTEL_TDX_HOST
+ 	depends on X86_X2APIC
+ 	select ARCH_KEEP_MEMBLOCK
+ 	depends on CONTIG_ALLOC
++	depends on !KEXEC_CORE
+ 	help
+ 	  Intel Trust Domain Extensions (TDX) protects guest VMs from malicious
+ 	  host and certain physical attacks.  This option enables necessary TDX
