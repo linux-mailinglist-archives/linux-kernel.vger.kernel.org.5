@@ -2,95 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 194D980A11D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E78080A126
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573528AbjLHKek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 05:34:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
+        id S1573607AbjLHKgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 05:36:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbjLHKei (ORCPT
+        with ESMTP id S1573808AbjLHKgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 05:34:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E9C1710
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:34:43 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCF51C433C8;
-        Fri,  8 Dec 2023 10:34:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702031683;
-        bh=3pZgEJRxT1FI/bA6lGO5jGck7die4pp5hNpMdbV10qI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eD4Fc59dBMH9+k0tKVg2OdsrGLMAEnnzVrR63ff7Eo1pb5VStpCROIqUvTb8Dca/o
-         b1nKcDuBKzbvjCreJx1VVgyB+SIsU2bMRFp8et7nXmQKF5FmOm38+/FR6qVLhE8CJp
-         mdonPbssL1BmW6perPgzh0qt0o2UdVXV/h2G6tuTYz7i9RwgJ1efsD18fv1wNo60o1
-         qzJTKm20QM6m2b89ZAdP9TnQrFgau0Ikw0f+wu48DSomf2nRf1oO1BR5zD3kouo0MA
-         Wa/aZkqL7wLuRd5qoNptVUVidiRAc36soc6U0cDbTAWE2J8Vgfi7fMVKwixtQ9Wm9O
-         tA8XX7P8hncnA==
-Date:   Fri, 8 Dec 2023 16:04:27 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: PCI: qcom: Correct reset-names property
-Message-ID: <20231208103427.GA15552@thinkpad>
-References: <20231111142006.51883-1-krzysztof.kozlowski@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Fri, 8 Dec 2023 05:36:09 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BFB10C2;
+        Fri,  8 Dec 2023 02:36:15 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D20D11FDBE;
+        Fri,  8 Dec 2023 10:36:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702031773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7AR3HFJePyaASzzVqIP85kgOWWGkIBQjAAvWCqcxot8=;
+        b=U5NoppvyL+rL+UXN5xcofWqE452Kc0pxjVLkC9OBORbZQtodcntAAfMWp4WCc4bXriTlTi
+        dNE6zvjPt0ytuRWIhNr/omAnKGPRhehLthRCo/WyhniX2Ml//FuSMtlMq3FDCgbMfVHaDS
+        LwEuoRLScQKegcFKT6SVAaxEFg2nf4s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702031773;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7AR3HFJePyaASzzVqIP85kgOWWGkIBQjAAvWCqcxot8=;
+        b=YIJW2euSz9eqz587SzZdNxEq1X3yRG3j13EsibEa2WEXqKpFJxqmgBwKJYj66pnRdoNCKY
+        kHJtA1G0upbScDDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702031773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7AR3HFJePyaASzzVqIP85kgOWWGkIBQjAAvWCqcxot8=;
+        b=U5NoppvyL+rL+UXN5xcofWqE452Kc0pxjVLkC9OBORbZQtodcntAAfMWp4WCc4bXriTlTi
+        dNE6zvjPt0ytuRWIhNr/omAnKGPRhehLthRCo/WyhniX2Ml//FuSMtlMq3FDCgbMfVHaDS
+        LwEuoRLScQKegcFKT6SVAaxEFg2nf4s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702031773;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7AR3HFJePyaASzzVqIP85kgOWWGkIBQjAAvWCqcxot8=;
+        b=YIJW2euSz9eqz587SzZdNxEq1X3yRG3j13EsibEa2WEXqKpFJxqmgBwKJYj66pnRdoNCKY
+        kHJtA1G0upbScDDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A4CC712FF7;
+        Fri,  8 Dec 2023 10:36:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id iK7PJp3xcmVUJwAAD6G6ig
+        (envelope-from <tiwai@suse.de>); Fri, 08 Dec 2023 10:36:13 +0000
+Date:   Fri, 08 Dec 2023 11:36:13 +0100
+Message-ID: <874jgtyo9u.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Sound Mailing List <linux-sound@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 6.7-rc5
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231111142006.51883-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Level: ***********
+X-Spam-Score: 11.28
+X-Spamd-Result: default: False [-11.81 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         RCPT_COUNT_FIVE(0.00)[5];
+         RCVD_COUNT_THREE(0.00)[3];
+         TO_DN_ALL(0.00)[];
+         DKIM_TRACE(0.00)[suse.de:+];
+         DMARC_POLICY_ALLOW(0.00)[suse.de,none];
+         MX_GOOD(-0.01)[];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-3.00)[100.00%];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         FROM_HAS_DN(0.00)[];
+         DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         WHITELIST_DMARC(-7.00)[suse.de:D:+];
+         MID_CONTAINS_FROM(1.00)[];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FREEMAIL_CC(0.00)[kernel.org,gmail.com,vger.kernel.org];
+         RCVD_TLS_ALL(0.00)[];
+         RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Flag: NO
+X-Rspamd-Server: rspamd1
+X-Spam-Level: 
+X-Rspamd-Queue-Id: D20D11FDBE
+X-Spam-Score: -11.81
+Authentication-Results: smtp-out2.suse.de;
+        dkim=pass header.d=suse.de header.s=susede2_rsa header.b=U5Noppvy;
+        dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=YIJW2euS;
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of tiwai@suse.de) smtp.mailfrom=tiwai@suse.de;
+        dmarc=pass (policy=none) header.from=suse.de
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11, 2023 at 03:20:06PM +0100, Krzysztof Kozlowski wrote:
-> There is no "resets-names" property, but "reset-names".
-> 
-> Fixes: 075a9d55932e ("dt-bindings: PCI: qcom: Convert to YAML")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Linus,
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+please pull sound fixes for v6.7-rc5 from:
 
-- Mani
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.7-rc5
 
-> ---
->  Documentation/devicetree/bindings/pci/qcom,pcie.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-> index eadba38171e1..8bfae8eb79a3 100644
-> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-> @@ -88,7 +88,7 @@ properties:
->      minItems: 1
->      maxItems: 12
->  
-> -  resets-names:
-> +  reset-names:
->      minItems: 1
->      maxItems: 12
->  
-> -- 
-> 2.34.1
-> 
+The topmost commit is 634e5e1e06f5cdd614a1bc429ecb243a51cc009d
 
--- 
-மணிவண்ணன் சதாசிவம்
+----------------------------------------------------------------
+
+sound fixes for 6.7-rc5
+
+This is a typical bump in the middle of its way; we've gathered lots
+of fixes (mostly for ASoC) at this time.
+
+- PCM array out-of-bound access fix
+- Correction of SOC PCM merge error
+- Lots of ASoC SOF Intel updates
+- A few ASoC AMD quirks
+- More proper timer handling in PCM test module
+- HD-audio and USB-audio quirks as usual
+- Other device-specific fixes for various ASoC codecs
+
+----------------------------------------------------------------
+
+Aleksandrs Vinarskis (1):
+      ALSA: hda/realtek: fix speakers on XPS 9530 (2023)
+
+AngeloGioacchino Del Regno (1):
+      ASoC: SOF: mediatek: mt8186: Add Google Steelix topology compatible
+
+Bin Li (1):
+      ALSA: hda/realtek: Enable headset on Lenovo M90 Gen5
+
+Chancel Liu (1):
+      ASoC: imx-rpmsg: SND_SOC_IMX_RPMSG should depend on OF and I2C
+
+Charles Keepax (1):
+      ASoC: wm8974: Correct boost mixer inputs
+
+David Lin (1):
+      ASoC: nau8822: Fix incorrect type in assignment and cast to restricted __be16
+
+David Rau (1):
+      ASoC: da7219: Support low DC impedance headset
+
+Dinghao Liu (1):
+      ASoC: wm_adsp: fix memleak in wm_adsp_buffer_populate
+
+Ivan Orlov (1):
+      ALSA: pcmtest: stop timer before buffer is released
+
+Jason Zhang (1):
+      ALSA: pcm: fix out-of-bounds in snd_pcm_state_names
+
+Jeremy Soller (1):
+      ASoC: amd: yc: Add DMI entry to support System76 Pangolin 13
+
+Johan Hovold (1):
+      ASoC: soc-pcm: fix up bad merge
+
+Kamil Duljas (3):
+      ASoC: Intel: Skylake: Fix mem leak in few functions
+      ASoC: SOF: topology: Fix mem leak in sof_dai_load()
+      ASoC: Intel: Skylake: mem leak in skl register function
+
+Maciej Strozek (2):
+      ASoC: cs43130: Fix the position of const qualifier
+      ASoC: cs43130: Fix incorrect frame delay configuration
+
+Malcolm Hart (1):
+      ASoC: amd: yc: Fix non-functional mic on ASUS E1504FA
+
+Marian Postevca (1):
+      ASoC: amd: acp: Add support for a new Huawei Matebook laptop
+
+Mario Limonciello (1):
+      ALSA: hda/realtek: Add Framework laptop 16 to quirks
+
+Matus Malych (1):
+      ASoC: amd: yc: Add HP 255 G10 into quirk table
+
+Neil Armstrong (1):
+      ASoC: codecs: lpass-tx-macro: set active_decimator correct default value
+
+Pascal No�l (1):
+      ALSA: hda/realtek: Apply quirk for ASUS UM3504DA
+
+Peter Ujfalusi (5):
+      ASoC: Intel: skl_hda_dsp_generic: Drop HDMI routes when HDMI is not available
+      ASoC: Intel: sof_sdw: Always register the HDMI dai links
+      ASoC: hdac_hda: Conditionally register dais for HDMI and Analog
+      ASoC: SOF: ipc4-topology: Correct data structures for the SRC module
+      ASoC: SOF: ipc4-topology: Correct data structures for the GAIN module
+
+Ranjani Sridharan (2):
+      ASoC: SOF: ipc4-topology: Add core_mask in struct snd_sof_pipeline
+      ASoC: SOF: sof-audio: Modify logic for enabling/disabling topology cores
+
+Sarah Grant (1):
+      ALSA: usb-audio: Add Pioneer DJM-450 mixer controls
+
+Shengjiu Wang (3):
+      ASoC: fsl_sai: Fix no frame sync clock issue on i.MX8MP
+      ASoC: fsl_xcvr: Enable 2 * TX bit clock for spdif only case
+      ASoC: fsl_xcvr: refine the requested phy clock frequency
+
+Shuming Fan (1):
+      ASoC: rt5650: add mutex to avoid the jack detection failure
+
+Srinivas Kandagatla (2):
+      ASoC: ops: add correct range check for limiting volume
+      ASoC: qcom: sc8280xp: Limit speaker digital volumes
+
+Takashi Iwai (1):
+      ALSA: hda/realtek: Add quirk for Lenovo Yoga Pro 7
+
+Tim Bosse (1):
+      ALSA: hda/realtek: add new Framework laptop to quirks
+
+---
+ sound/core/pcm.c                             |  1 +
+ sound/drivers/pcmtest.c                      | 13 +++++-
+ sound/pci/hda/patch_realtek.c                |  6 +++
+ sound/soc/amd/acp-config.c                   | 14 ++++++
+ sound/soc/amd/yc/acp6x-mach.c                | 21 +++++++++
+ sound/soc/codecs/cs43130.c                   |  6 +--
+ sound/soc/codecs/da7219-aad.c                |  2 +-
+ sound/soc/codecs/hdac_hda.c                  | 23 ++++++++--
+ sound/soc/codecs/lpass-tx-macro.c            |  5 +++
+ sound/soc/codecs/nau8822.c                   |  9 ++--
+ sound/soc/codecs/rt5645.c                    | 10 ++++-
+ sound/soc/codecs/wm8974.c                    |  6 +--
+ sound/soc/codecs/wm_adsp.c                   |  8 +++-
+ sound/soc/fsl/Kconfig                        |  1 +
+ sound/soc/fsl/fsl_sai.c                      | 21 +++++++++
+ sound/soc/fsl/fsl_xcvr.c                     | 14 +++++-
+ sound/soc/intel/boards/skl_hda_dsp_generic.c |  2 +
+ sound/soc/intel/boards/sof_sdw.c             | 17 ++++----
+ sound/soc/intel/skylake/skl-pcm.c            |  9 +++-
+ sound/soc/intel/skylake/skl-sst-ipc.c        |  4 +-
+ sound/soc/qcom/sc8280xp.c                    | 17 ++++++++
+ sound/soc/soc-ops.c                          |  2 +-
+ sound/soc/soc-pcm.c                          | 11 ++---
+ sound/soc/sof/ipc3-topology.c                |  2 +
+ sound/soc/sof/ipc4-control.c                 | 20 ++++-----
+ sound/soc/sof/ipc4-topology.c                | 61 +++++++++++++++-----------
+ sound/soc/sof/ipc4-topology.h                | 34 +++++++++++----
+ sound/soc/sof/mediatek/mt8186/mt8186.c       |  3 ++
+ sound/soc/sof/sof-audio.c                    | 65 ++++++++++++++++++----------
+ sound/soc/sof/sof-audio.h                    |  2 +
+ sound/soc/sof/topology.c                     |  4 +-
+ sound/usb/mixer_quirks.c                     | 30 +++++++++++++
+ 32 files changed, 335 insertions(+), 108 deletions(-)
+
