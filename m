@@ -2,195 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEA680AB06
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B20C380AB0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233481AbjLHRoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:44:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38466 "EHLO
+        id S233770AbjLHRqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:46:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLHRoJ (ORCPT
+        with ESMTP id S229938AbjLHRp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:44:09 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B47123;
-        Fri,  8 Dec 2023 09:44:15 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3b83fc26e4cso1495220b6e.2;
-        Fri, 08 Dec 2023 09:44:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702057455; x=1702662255; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=STnIY6jHnonlNBGjhvoP/XKEjxCdoqekmjCFEwWOqqs=;
-        b=R/9D5yryzeBwlns2fWxYB9mVg6xgKF9etEDsO7YvVAKJrjzKPlLhqfPy/a+EXnBWG4
-         DraJxuTGQVZkvqutvStNe/cLZb5DQEIk5WpzOc98YT6YfECY/bP/SCEtaXNtEPG4+J+Q
-         xh+yHFisuh9L9so5hIG5XrnlqlWLQfQ2oyFo464RtOwR+sKtsqwxutCfBiBRYPdNRXxo
-         ULJh3KpeQfk/LAGA/enkHiv0tSzvFn98/w3ihK2gWJER/l9bKJ7aQxcOZiLa8AmQfE7d
-         P8vitSAP8SeUxzkxy4neTTpYxrRTcjsEoBDbygvKeEnXZHXLmA3ge0H0pWB+q++g7uww
-         kNZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702057455; x=1702662255;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=STnIY6jHnonlNBGjhvoP/XKEjxCdoqekmjCFEwWOqqs=;
-        b=FBfII8UqbC7lWG9sDPzR0WYPgf1Va3lNbkEINr14U0zDkQoJJkHIL2NX5qPOPNx54B
-         VRLbTPqB4MAs605J1pwhSNhLyvD5lWDbsoHDTAdC4CPDVxcdaTFDHSZTFWtJWnCl4YZK
-         X2osy5Hs98szjJwulmcHksaNgQXhrf3lr6Y9uMcLNOZCuohnIN42zmVNCyGNnNKbQGA9
-         BQSC+xD7c0I9SYa6h/MKExAC7Ben6GN4nzqDVvViNiV/f/UuxEzIXzHM3irbDvdZJPRe
-         rMsvih7EJ83cqTKoNyGpXxJWqzkpw6ZXmCRtBJQSCODSaFLK4f+8tGTs7v0rEqgrHiRp
-         9IJg==
-X-Gm-Message-State: AOJu0YxnDPs2jZZueA2httz5Eec6uZ/zF9a51cKtCs3AaDqJitIU/XXk
-        RhXFFwMtXjwSKf+0Rph12+k=
-X-Google-Smtp-Source: AGHT+IEzT+HZ9WmsP8OSljEsqprb6rwe8jXFEjOkdMdIcoynbuF30OJkUHTP42lwHHlv2AFGEvJFuw==
-X-Received: by 2002:a05:6808:124a:b0:3b8:b063:8261 with SMTP id o10-20020a056808124a00b003b8b0638261mr354407oiv.99.1702057454735;
-        Fri, 08 Dec 2023 09:44:14 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id ud11-20020a05620a6a8b00b0077d90497738sm841756qkn.102.2023.12.08.09.44.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 09:44:14 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id A51C027C0054;
-        Fri,  8 Dec 2023 12:44:13 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 08 Dec 2023 12:44:13 -0500
-X-ME-Sender: <xms:7FVzZYW7dgchrPjOkXhW0sb6EU31ic_Y-GmkHi5aMNZaED6mo0f2CQ>
-    <xme:7FVzZclxmVbT3_sDjTjWP1NLmwpNcykkBAnVjEKbLCOC9jL3qFRi_NP_1vmqF2wpK
-    XCTb3UIOKsm0zamHw>
-X-ME-Received: <xmr:7FVzZcZgPObt-xFpDA44jJZ_CB5HXvN9D2_jGBI22_zYY3755PmOX21sK58>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekiedguddtiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepueho
-    qhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtf
-    frrghtthgvrhhnpeevgffhueevkedutefgveduuedujeefledthffgheegkeekiefgudek
-    hffggeelfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeeh
-    tdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmse
-    hfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:7FVzZXWEEnbUgdWHrTi0rsh1UBWoGrrYLSY3vXlj-IImUQJ3_Dk17g>
-    <xmx:7FVzZSlIA7eJfcOsPnymAgr8gDAxN-AKO7N_MpiDmjBUy0SmUeiFMw>
-    <xmx:7FVzZccr7XOY28eMqoEef8LbTvmueOQPB9jiSOF34DNQW7hgKIGzMg>
-    <xmx:7VVzZewcjWCPXENIzmDM7mNs-k1EYIZLIK0xtFtbNNO3epM_UHl-yA>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 8 Dec 2023 12:44:11 -0500 (EST)
-Date:   Fri, 8 Dec 2023 09:43:00 -0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        comex <comexk@gmail.com>, Christian Brauner <brauner@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 5/7] rust: file: add `Kuid` wrapper
-Message-ID: <ZXNVpCn0g_aBCpTE@boqun-archlinux>
-References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
- <20231129-alice-file-v1-5-f81afe8c7261@google.com>
- <20231129-etappen-knapp-08e2e3af539f@brauner>
- <20231129164815.GI23596@noisy.programming.kicks-ass.net>
- <20231130-wohle-einfuhr-1708e9c3e596@brauner>
- <A0BFF59C-311C-4C44-9474-65DB069387BD@gmail.com>
- <CANiq72k4H2_NZuQcpeKANqyi_9W01fLC0WxXon5cx4z=WsgeXQ@mail.gmail.com>
- <CAKwvOdkgDwnC_jaGjXjk9yKYo=zWDR_3x7Drw3i=KX0Wyij6ew@mail.gmail.com>
+        Fri, 8 Dec 2023 12:45:59 -0500
+Received: from smtp.smtpout.orange.fr (smtp-18.smtpout.orange.fr [80.12.242.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E3F123
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:46:03 -0800 (PST)
+Received: from [192.168.1.18] ([92.140.202.140])
+        by smtp.orange.fr with ESMTPA
+        id Bev8rCdaRbmKlBev9rpX9g; Fri, 08 Dec 2023 18:46:01 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1702057562;
+        bh=ByKgwV0x98pBzWeiac+KymXWEnZBqPMwaQaFwL44V+Q=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=ceq2K8ctrwCikyi2+51iwfoElOvQwgC2ibR4RTajv//9DiURJyAAJYtf2pTjeF1qY
+         5nH1RltEGRRtNCe22MWpXGvOEoSvfGDs2xqawkKniJNCxp/D//Szsx4iibWP+So2qf
+         R2brmrl2gVxPT5wt5Snwzf9NwRmaRuO8MjbAqWVb6HpsZSkBTpzenHNJ9ZyVUR6za4
+         VCJUtbXYRnQPp4WJigV/6GfP7mBMeRc270SAh+xkrrFxWWsdXZLMjuDR5ggn1pXP4K
+         Lf6xNqjNpICO1Sa638GGioe60JkFkrLdiwcUoSRy3pOsRcGePjx/sQ4nTvd2vKDXbT
+         GYsfc+yWcBixQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 08 Dec 2023 18:46:02 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <26dd45f4-8fb7-476f-b8ec-9cb685a138ef@wanadoo.fr>
+Date:   Fri, 8 Dec 2023 18:45:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH linux-next] drm/amd/display: replace kzalloc and memcpy
+ with kmemdup
+To:     yang.guang5@zte.com.cn, harry.wentland@amd.com
+Cc:     jiang.xuexin@zte.com.cn, chen.haonan2@zte.com.cn,
+        cgel.zte@gmail.com, sunpeng.li@amd.com, rodrigo.siqueira@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        xinhui.pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        wenjing.liu@amd.com, jun.lei@amd.com, qingqing.zhuo@amd.com,
+        alvin.lee2@amd.com, samson.tam@amd.com, aric.cyr@amd.com,
+        chiawen.huang@amd.com, gabe.teeger@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <202312081044568085747@zte.com.cn>
+Content-Language: fr, en-GB
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <202312081044568085747@zte.com.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKwvOdkgDwnC_jaGjXjk9yKYo=zWDR_3x7Drw3i=KX0Wyij6ew@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 09:08:47AM -0800, Nick Desaulniers wrote:
-> On Fri, Dec 8, 2023 at 8:19 AM Miguel Ojeda
-> <miguel.ojeda.sandonis@gmail.com> wrote:
-> >
-> > On Fri, Dec 8, 2023 at 6:28 AM comex <comexk@gmail.com> wrote:
-> > >
-> > > Regarding the issue of wrappers not being inlined, it's possible to get LLVM to optimize C and Rust code together into an object file, with the help of a compatible Clang and LLD:
-> > >
-> > > @ rustc -O --emit llvm-bc a.rs
-> > > @ clang --target=x86_64-unknown-linux-gnu -O2 -c -emit-llvm -o b.bc b.c
-> > > @ ld.lld -r -o c.o a.bc b.bc
-> > >
-> > > Basically LTO but within the scope of a single object file.  This would be redundant in cases where kernel-wide LTO is enabled.
-> > >
-> > > Using this approach might slow down compilation a bit due to needing to pass the LLVM bitcode between multiple commands, but probably not very much.
-> > >
-> > > Just chiming in as someone not involved in Rust for Linux but familiar with these tools.  Perhaps this has been considered before and rejected for some reason; I wouldn’t know.
-> >
-> > Thanks comex for chiming in, much appreciated.
-> >
-> > Yeah, this is what we have been calling the "local-LTO hack" and it
-> > was one of the possibilities we were considering for non-LTO kernel
-> > builds for performance reasons originally. I don't recall who
-> > originally suggested it in one of our meetings (Gary or Björn
-> > perhaps).
-> >
-> > If LLVM folks think LLVM-wise nothing will break, then we are happy to
+Le 08/12/2023 à 03:44, yang.guang5@zte.com.cn a écrit :
+> From: Yang Guang <yang.guang5@zte.com.cn>
 > 
-> On paper, nothing comes to mind.  No promises though.
+> Convert kzalloc/memcpy operations to memdup makes for
+> cleaner code and avoids memcpy() failures
+
+Hi,
+
+usually, function's names are written with () in commit description. 
+(i.e. kzalloc()/memcpy()).
+
+memdup should be kmemdup().
+
+Finally the proposed change does not avoid memcpy() failures. Should it 
+fail (what does it mean in this context?), kmemdup() would behave 
+exactly the same.
+
 > 
-> From a build system perspective, I'd rather just point users towards
-> LTO if they have this concern.  We support full and thin lto.  This
-> proposal would add a third variant for just rust drivers.  Each
-> variation on LTO has a maintenance cost and each have had their own
-> distinct fun bugs in the past.  Not sure an additional variant is
-> worth the maintenance cost, even if it's technically feasible.
+> Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
+> ---
+>   drivers/gpu/drm/amd/display/dc/core/dc.c | 10 ++++------
+>   1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
+> index 76b47f178127..867e1a0fdef6 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+> @@ -2264,12 +2264,10 @@ struct dc_state *dc_copy_state(struct dc_state *src_ctx)
+> 
+>   #ifdef CONFIG_DRM_AMD_DC_FP
+>   	if (new_ctx->bw_ctx.dml2) {
+> -		dml2 = kzalloc(sizeof(struct dml2_context), GFP_KERNEL);
+> -		if (!dml2)
+> -			return NULL;
+> -
+> -		memcpy(dml2, src_ctx->bw_ctx.dml2, sizeof(struct dml2_context));
+> -		new_ctx->bw_ctx.dml2 = dml2;
+> +		dml2 = kmemdup(src_ctx->bw_ctx.dml2, sizeof(struct dml2_context), GFP_KERNEL);
+
+sizeof(struct dml2_context) could be sizeof(*dlm2) to be less verbose.
+
+CJ
+
+> +		if (!dml2)
+> +			return NULL;
+> +		new_ctx->bw_ctx.dml2 = dml2;
+>   	}
+>   #endif
 > 
 
-Actually, the "LTO" in "local-LTO" may be misleading ;-) The problem we
-want to resolve here is letting Rust code call small C functions (or
-macros) without exporting the symbols. To me, it's really just "static
-linking" a library (right now it's rust/helpers.o) contains small C
-functions and macros used by Rust into a Rust driver kmodule, the "LTO"
-part can be optional: let the linker make the call.
-
-Regards,
-Boqun
-
-> > go ahead with that (since it also solves the performance side), but it
-> > would be nice to know if it will always be OK to build like that, i.e.
-> > I think Andreas actually tried it and it seemed to work and boot, but
-> > the worry is whether there is something subtle that could have bad
-> > codegen in the future.
-> >
-> > (We will also need to worry about GCC.)
-> >
-> > Cheers,
-> > Miguel
-> 
-> 
-> 
-> -- 
-> Thanks,
-> ~Nick Desaulniers
