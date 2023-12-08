@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C140780AEC0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 22:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2346A80AEC1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 22:19:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574802AbjLHVOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 16:14:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40374 "EHLO
+        id S235982AbjLHVO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 16:14:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbjLHVOg (ORCPT
+        with ESMTP id S1574769AbjLHVOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 16:14:36 -0500
+        Fri, 8 Dec 2023 16:14:38 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0251738;
-        Fri,  8 Dec 2023 13:14:41 -0800 (PST)
-Date:   Fri, 08 Dec 2023 21:14:39 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC14E193;
+        Fri,  8 Dec 2023 13:14:44 -0800 (PST)
+Date:   Fri, 08 Dec 2023 21:14:40 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702070080;
+        s=2020; t=1702070081;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EDHBJQDZaX7u7SZaleE7r1usB2TuTYUPYo/RxWQVhF0=;
-        b=C+IVN7fOXZhmbTr8KoxrSK/PweN2C7Af/LVbgvJEqYvocsuqA5wb3GhDLCRwpSyBxDRjPI
-        /vAQ6fu9VWftICW14pa4qlTLxi29gVzX3MgG9jMu+1ztp7zYE1eoVJmJQ1q3zaUHnbpX0i
-        FTidnFbobCt8FxSyz30vRFuiV1qqoOvMlZ40At7gr13DnoOniTmPn5CFf6VcOpjQgIn1sV
-        vN8GOtHvH7ntburMVy2goWeqgnWcmjVWSuyKr/XXVQtJVlcsXkNLssUzuitMbxfv2QApJB
-        T/kgttceTzghMEeoiibTgF8xNtbE/rXB+wmdDuX9HG9Q+4ZcU8gn6AlO3W5xsQ==
+        bh=a8Pf5zO7FcVfeZDzY1vNXqYaEeP+fdEf7I5lD/3dNCU=;
+        b=LTfh0+4r5Y/KIbfY3o5zhjGD5mGoxvNHwJlEsqjWQzbsnrE7MIrZqcu9jClmaepYNjszX4
+        9bR09yL38+8RFoY+FDLir98aPrErCjUizoos2z6KRNqdTK16LLIAok5iWE2nP0Xxu9yDxJ
+        r5LOlqq3a70AzFyX5GhORnfO70MC9fv8YeGX+E5wyc0wPg+QeV0enbj9F4CK4UcgCoWjU+
+        pRTml/cS2QJ+c6vty33IGwWgfVccq4IpQB2E5+FGxROdgN1fJl5sm4f4aZ2sGVN0LLEjWO
+        3ANDPdygw4j+P7uwmVTQ6Mm5ylnqIyF65YvpF2IIuKvJ/t/UWVgMSceTL8K3eA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702070080;
+        s=2020e; t=1702070081;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EDHBJQDZaX7u7SZaleE7r1usB2TuTYUPYo/RxWQVhF0=;
-        b=epmVXBZjsHSPLdK3hBsDYOvFMBYo4EbS4ctkelCDzkA2nFM48ANhtBqHvlKMZsYYZtAbQD
-        oV6nTx36dG25nCDg==
+        bh=a8Pf5zO7FcVfeZDzY1vNXqYaEeP+fdEf7I5lD/3dNCU=;
+        b=LgZjjMB4vKdDDYuZ+En50aKmuakDrz1iZ2fWpDj6E2OSgqRaK/znaaGkIRbrVpPGtqkzY2
+        COejtJRoScxk7KAQ==
 From:   "tip-bot2 for Claudiu Beznea" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] dt-bindings: interrupt-controller:
- renesas,rzg2l-irqc: Document RZ/G3S
+Subject: [tip: irq/core] irqchip/renesas-rzg2l: Add macro to retrieve TITSR
+ register offset based on register's index
 Cc:     Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Conor Dooley <conor.dooley@microchip.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20231120111820.87398-9-claudiu.beznea.uj@bp.renesas.com>
-References: <20231120111820.87398-9-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20231120111820.87398-7-claudiu.beznea.uj@bp.renesas.com>
+References: <20231120111820.87398-7-claudiu.beznea.uj@bp.renesas.com>
 MIME-Version: 1.0
-Message-ID: <170207007935.398.16222216258719183208.tip-bot2@tip-bot2>
+Message-ID: <170207008094.398.12496922746207673405.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -70,49 +68,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     7e8213bb5ded82dbc6164100fe0e80f7934e9e56
-Gitweb:        https://git.kernel.org/tip/7e8213bb5ded82dbc6164100fe0e80f7934e9e56
+Commit-ID:     6789991d1049f194eb976d4b346b5def9cfc708a
+Gitweb:        https://git.kernel.org/tip/6789991d1049f194eb976d4b346b5def9cfc708a
 Author:        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-AuthorDate:    Mon, 20 Nov 2023 13:18:19 +02:00
+AuthorDate:    Mon, 20 Nov 2023 13:18:17 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Fri, 08 Dec 2023 22:06:35 +01:00
 
-dt-bindings: interrupt-controller: renesas,rzg2l-irqc: Document RZ/G3S
+irqchip/renesas-rzg2l: Add macro to retrieve TITSR register offset based on register's index
 
-Document the RZ/G3S (R9108G045) interrupt controller. This has few extra
-functionalities compared with RZ/G2UL but the already existing driver
-can still be used.
+There are 2 TITSR registers available on the IA55 interrupt controller.
+
+Add a macro that retrieves the TITSR register offset based on it's
+index. This macro is useful in when adding suspend/resume support so both
+TITSR registers can be accessed in a for loop.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Link: https://lore.kernel.org/r/20231120111820.87398-9-claudiu.beznea.uj@bp.renesas.com
+Link: https://lore.kernel.org/r/20231120111820.87398-7-claudiu.beznea.uj@bp.renesas.com
 
 ---
- Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/irqchip/irq-renesas-rzg2l.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml b/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml
-index 2ef3081..d3b5aec 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml
-@@ -26,6 +26,7 @@ properties:
-           - renesas,r9a07g043u-irqc   # RZ/G2UL
-           - renesas,r9a07g044-irqc    # RZ/G2{L,LC}
-           - renesas,r9a07g054-irqc    # RZ/V2L
-+          - renesas,r9a08g045-irqc    # RZ/G3S
-       - const: renesas,rzg2l-irqc
+diff --git a/drivers/irqchip/irq-renesas-rzg2l.c b/drivers/irqchip/irq-renesas-rzg2l.c
+index d450417..34add75 100644
+--- a/drivers/irqchip/irq-renesas-rzg2l.c
++++ b/drivers/irqchip/irq-renesas-rzg2l.c
+@@ -28,8 +28,7 @@
+ #define ISCR				0x10
+ #define IITSR				0x14
+ #define TSCR				0x20
+-#define TITSR0				0x24
+-#define TITSR1				0x28
++#define TITSR(n)			(0x24 + (n) * 4)
+ #define TITSR0_MAX_INT			16
+ #define TITSEL_WIDTH			0x2
+ #define TSSR(n)				(0x30 + ((n) * 4))
+@@ -200,8 +199,7 @@ static int rzg2l_tint_set_edge(struct irq_data *d, unsigned int type)
+ 	struct rzg2l_irqc_priv *priv = irq_data_to_priv(d);
+ 	unsigned int hwirq = irqd_to_hwirq(d);
+ 	u32 titseln = hwirq - IRQC_TINT_START;
+-	u32 offset;
+-	u8 sense;
++	u8 index, sense;
+ 	u32 reg;
  
-   '#interrupt-cells':
-@@ -167,7 +168,9 @@ allOf:
-       properties:
-         compatible:
-           contains:
--            const: renesas,r9a07g043u-irqc
-+            enum:
-+              - renesas,r9a07g043u-irqc
-+              - renesas,r9a08g045-irqc
-     then:
-       properties:
-         interrupts:
+ 	switch (type & IRQ_TYPE_SENSE_MASK) {
+@@ -217,17 +215,17 @@ static int rzg2l_tint_set_edge(struct irq_data *d, unsigned int type)
+ 		return -EINVAL;
+ 	}
+ 
+-	offset = TITSR0;
++	index = 0;
+ 	if (titseln >= TITSR0_MAX_INT) {
+ 		titseln -= TITSR0_MAX_INT;
+-		offset = TITSR1;
++		index = 1;
+ 	}
+ 
+ 	raw_spin_lock(&priv->lock);
+-	reg = readl_relaxed(priv->base + offset);
++	reg = readl_relaxed(priv->base + TITSR(index));
+ 	reg &= ~(IRQ_MASK << (titseln * TITSEL_WIDTH));
+ 	reg |= sense << (titseln * TITSEL_WIDTH);
+-	writel_relaxed(reg, priv->base + offset);
++	writel_relaxed(reg, priv->base + TITSR(index));
+ 	raw_spin_unlock(&priv->lock);
+ 
+ 	return 0;
