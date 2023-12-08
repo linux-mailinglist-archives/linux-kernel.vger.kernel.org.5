@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8197880A841
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:09:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FE680A844
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbjLHQJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:09:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60318 "EHLO
+        id S235896AbjLHQJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:09:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233534AbjLHQJN (ORCPT
+        with ESMTP id S233712AbjLHQJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:09:13 -0500
+        Fri, 8 Dec 2023 11:09:14 -0500
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FC01989
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:09:19 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729D2198C
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:09:20 -0800 (PST)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1rBdPd-000089-Hm; Fri, 08 Dec 2023 17:09:13 +0100
+        id 1rBdPe-00008A-Et; Fri, 08 Dec 2023 17:09:14 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1rBdPd-00ES0S-0V; Fri, 08 Dec 2023 17:09:13 +0100
+        id 1rBdPd-00ES0V-7c; Fri, 08 Dec 2023 17:09:13 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1rBdPc-00GUaS-NR; Fri, 08 Dec 2023 17:09:12 +0100
+        id 1rBdPc-00GUaW-Ug; Fri, 08 Dec 2023 17:09:12 +0100
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Dominik Brodowski <linux@dominikbrodowski.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
         kernel@pengutronix.de
-Subject: [PATCH 5/7] pcmcia: pxa2xx: Convert to platform remove callback returning void
-Date:   Fri,  8 Dec 2023 17:08:10 +0100
-Message-ID:  <fb750d46ac80b6dfdeaa26053a2cf9d2dc875d4d.1702051073.git.u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 6/7] pcmcia: sa1100: Convert to platform remove callback returning void
+Date:   Fri,  8 Dec 2023 17:08:11 +0100
+Message-ID:  <6473afe67fc5c320a8184d0871a8561f7685e265.1702051073.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1702051073.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1702051073.git.u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1870; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=hvn8AQUIqYIyVFAM+ew2t9GzPmRIrB2d2DyEy1ujsww=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlcz90RZC/CPits6AxPT2VDwenom4vwo7b3Ux8k UrtlvzSI3mJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZXM/dAAKCRCPgPtYfRL+ TkgxB/450LmDHFEQA6eZw+c0u/hHlMa4ZxsV6qeu5sZ0RIGGDgGGcneuz5ggq9a/A6ZpkmhZpcF wKnySPUZ9buT+h0XS0JLrrCAFjxJ/4aKbzB0E4Fr3SmWAZnojZ7chE5T/L3T/BbjmhubSW+HJ6t mb2cIVMPWCId+J0dBsKVo/uoEMztSyQ50zM/Hwl7YtsvUWvyItEAD+5ZNhxMEYfa5HfhOsEgsPA qsbOMmufsdyvb+2t60AZWVeaiMPyHQ8ZL/ndgTJ8WUN75zE+8DRo4JoS8S209V4GTKC3aVBIYP0 AiMynIskF3X1hPg7u6pgQ9o39vBrvV1xc5onmzK7dMHFRt6n
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1892; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=soQnZWwWX5NPDCGNgya11PcjXTdqO51zNv14LXCtkeM=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlcz96dq8FIqBF+9nhRULOPdYII0+SJ2lmN0qx4 vOsf7RMtN2JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZXM/egAKCRCPgPtYfRL+ TsaZCACGrDJbeg57n+TS5zDu2iOt3i8CZPfzAc6KKsn7mM7PtesUBYd47RUUdVFme+9wLJBlq2h z/ybFAM6vFgwnMuArx9SE8DJH712b+aLSnOlmlmCABTBjK3JssgIwT0+0/7DYyntyCS7NOUl0t4 FTwFReArCVrjsTf0R8RewDs5ntQKD4Dy4GtjPecVCcrb9wdONxaJ2D+ui8ioy0Qh/Ixpcl2Ptus Vdgv9EXACyiFSaCmuqcjl3mwb2JgW2FsbWRcTru3TziMRAS/rM3VjTCdVv9L2Z4JdnzhCBRJKd5 PkHLWFxTBCprnaj/y6kcBAA4cyg2MeD/niAksyFzW9Ts9YqS
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -76,39 +75,45 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/pcmcia/pxa2xx_base.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/pcmcia/sa1100_generic.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pcmcia/pxa2xx_base.c b/drivers/pcmcia/pxa2xx_base.c
-index 5254028354f4..457fb81b497a 100644
---- a/drivers/pcmcia/pxa2xx_base.c
-+++ b/drivers/pcmcia/pxa2xx_base.c
-@@ -313,15 +313,13 @@ static int pxa2xx_drv_pcmcia_probe(struct platform_device *dev)
- 	return ret;
+diff --git a/drivers/pcmcia/sa1100_generic.c b/drivers/pcmcia/sa1100_generic.c
+index 89d4ba58c891..ccb219c38761 100644
+--- a/drivers/pcmcia/sa1100_generic.c
++++ b/drivers/pcmcia/sa1100_generic.c
+@@ -158,20 +158,18 @@ static int sa11x0_drv_pcmcia_probe(struct platform_device *pdev)
+ 	return sa11xx_drv_pcmcia_add_one(skt);
  }
  
--static int pxa2xx_drv_pcmcia_remove(struct platform_device *dev)
-+static void pxa2xx_drv_pcmcia_remove(struct platform_device *dev)
+-static int sa11x0_drv_pcmcia_remove(struct platform_device *dev)
++static void sa11x0_drv_pcmcia_remove(struct platform_device *dev)
  {
- 	struct skt_dev_info *sinfo = platform_get_drvdata(dev);
- 	int i;
+ 	struct soc_pcmcia_socket *skt;
  
- 	for (i = 0; i < sinfo->nskt; i++)
- 		soc_pcmcia_remove_one(&sinfo->skt[i]);
+ 	if (dev->id == -1) {
+ 		sa11x0_drv_pcmcia_legacy_remove(dev);
+-		return 0;
++		return;
+ 	}
+ 
+ 	skt = platform_get_drvdata(dev);
+ 
+ 	soc_pcmcia_remove_one(skt);
 -
 -	return 0;
  }
  
- static int pxa2xx_drv_pcmcia_resume(struct device *dev)
-@@ -338,7 +336,7 @@ static const struct dev_pm_ops pxa2xx_drv_pcmcia_pm_ops = {
+ static struct platform_driver sa11x0_pcmcia_driver = {
+@@ -179,7 +177,7 @@ static struct platform_driver sa11x0_pcmcia_driver = {
+ 		.name		= "sa11x0-pcmcia",
+ 	},
+ 	.probe		= sa11x0_drv_pcmcia_probe,
+-	.remove		= sa11x0_drv_pcmcia_remove,
++	.remove_new	= sa11x0_drv_pcmcia_remove,
+ };
  
- static struct platform_driver pxa2xx_pcmcia_driver = {
- 	.probe		= pxa2xx_drv_pcmcia_probe,
--	.remove		= pxa2xx_drv_pcmcia_remove,
-+	.remove_new	= pxa2xx_drv_pcmcia_remove,
- 	.driver		= {
- 		.name	= "pxa2xx-pcmcia",
- 		.pm	= &pxa2xx_drv_pcmcia_pm_ops,
+ /* sa11x0_pcmcia_init()
 -- 
 2.42.0
 
