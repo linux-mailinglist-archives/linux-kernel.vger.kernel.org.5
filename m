@@ -2,313 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCEF80992D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 03:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAD880993F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 03:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572996AbjLHC2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 21:28:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34290 "EHLO
+        id S1572986AbjLHCcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 21:32:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLHC2M (ORCPT
+        with ESMTP id S229531AbjLHCcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 21:28:12 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63291719;
-        Thu,  7 Dec 2023 18:28:16 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3b9b90f8708so1090067b6e.2;
-        Thu, 07 Dec 2023 18:28:16 -0800 (PST)
+        Thu, 7 Dec 2023 21:32:36 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964111719
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 18:32:42 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5c21e185df5so1401574a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 18:32:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702002496; x=1702607296; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=IzrTp4CVflWPKS8RfWxv0dB/to3ENLCGnIZ/8i2cW0k=;
-        b=Ee3CTp9419g0D3S0i9PeoAx6AXAvoS1ERZ8jnbMT6zCkQY001Uh51Xd058cz/GJjRy
-         80SvmtGj3F3QjoDefwRHRS2qgFLLbEwSHzYKHXS+4zDJ4xwR9+YzWoXV4Ds4rI7N9dZ3
-         EHs9YnJPKZO5ZINmIHOENyqOvxUG3n876yQKKJNgy2AVOEpw79pJPV0UsiMfYMcmd6Q/
-         Fb/d6Um7ucW09Jpa8vumcgPgiy2lwh0Xwlo3DLp2PwgKMB2hTskTJJwEE8Mq/N3Dyzg/
-         JWRnvcfe5Z0/T35AEequumG10D69zMFFHLd6iSI0hcha+Qktnu2dhr+OyjFx9xOFqkTa
-         DD/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702002496; x=1702607296;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+        d=broadcom.com; s=google; t=1702002761; x=1702607561; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IzrTp4CVflWPKS8RfWxv0dB/to3ENLCGnIZ/8i2cW0k=;
-        b=AlaxCbKbm/JQvX1C24V2qV8nqv7psxGWMvN5O+MYYDpzGysnrC1y2Mv354dtcXk++v
-         cLkubwrhvbEJvqmC9trvVfPUtw3JnJC+PuNkXokvA6GAmF4b7X7fEdLzT+1sOFdnk+Fo
-         t8bXykpkKQeifVu402g5p4wlUgBMAaJ6m1r4IxCxt56+RzD9QcPqT0av7bk9pRM0vEj6
-         LXdR9SMinPrDPFTxkI54lBf32LOCExH/Pt6RcqUDN50OLhDs7+StGJADte6pwyeZ67bl
-         ouxBiKXrV3oJjbmPEMwqrbPumpo7WzTftsgRA7DWTphrkvGh3TLVAYXxX8A9zUXc/Ui7
-         0n9Q==
-X-Gm-Message-State: AOJu0Yyqp++600DQmlv5edYCMB45QufTSYskYSfEHLxz1gnhHpNHaaaN
-        Hx4phYUf1w6rF2rentdzrJU=
-X-Google-Smtp-Source: AGHT+IE7v2bgMmvBcSyKkIr9h6uOw86foWCdYP04toRFeVg3xPkne7EtX6cp6VqBUS3/+LSg2c9KdQ==
-X-Received: by 2002:a54:419a:0:b0:3b9:eb71:ee6f with SMTP id 26-20020a54419a000000b003b9eb71ee6fmr93857oiy.61.1702002495941;
-        Thu, 07 Dec 2023 18:28:15 -0800 (PST)
-Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:c5f1:ea67:a613:5fe])
-        by smtp.gmail.com with ESMTPSA id du6-20020a056a002b4600b006ce97bd5d04sm482330pfb.140.2023.12.07.18.28.14
+        bh=sK+dpfhTNn2ryOO3zkIQxrXe0eF4GP377XOMqpOvjVM=;
+        b=J3Aiyqp7Mp8ZwSkGaIXodgshkVRpVfGn8fspAuAOiDe/BVXzvplauUDT7WqeyQwn72
+         rmp2DwRswmymNjogO5G2KHKW9/vIqmf09Mb4S8Qee4XWIujccbIBAD3mvVKaDtJjjhBj
+         pdzzVWr9SdcxHlWeq73tn8eeqwqFiy8C9MYus=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702002761; x=1702607561;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sK+dpfhTNn2ryOO3zkIQxrXe0eF4GP377XOMqpOvjVM=;
+        b=I1B0sK0nAt2Y2tmcHQ9eczNEhoaivHwq2FswLcxFC7LWlI4Qdx0cbo0s/9uuf9QgpJ
+         s5t4eOV+stOMHC8XaVmA/F0IuwdwtXpm5bGhmMdmnpuoqE5BYCUyF6r3jf6AtEQVS0BX
+         NJamNU2H4aV3yZbTZtx7gDTvLh536UShC2A7S4pnkksbaXT9hyigUH8gzm0ku5Q+dFb7
+         oGc32PJ9GW5k2BM3DGO6YSFbj6r7CDlH+Gx9FqzPrPUTAIMncpdjjr2vX1LRbNyxx40Q
+         a0H1KnLaeUNdT0QyjxAfOZplML833dmofSR4HCHXx1Ej1ImLIJ7pNWK9u3Pzvr944IDI
+         rthw==
+X-Gm-Message-State: AOJu0Yx/luSn9gCdGo3vZ/o6R8mI6oVuPk0r7S36ZsZaaSb78xDbZfMU
+        anCEtCVR1wIX5beQj5vB+OAAVXui4m2gxgQFBpSt/Ieub7KdDB3B9xkfn/IygUmOsw7jqj9NxAz
+        hdihyQknt+br1Sj9H45V9O7kL+SBz+W5+yCNMI5JOW1oPb5r0vXMlGJG8wFBe6hwBktBrkCA7Vt
+        6voDghbJT+CZOFC4BhxAQ=
+X-Google-Smtp-Source: AGHT+IEzveokbMoywO7bnYhPg9EUBTWQ79PqRORS8/rPU6xUCtgIKr75zOGibzyV7HydSoCKic+JYA==
+X-Received: by 2002:a05:6a20:8f24:b0:18b:4dc2:a4c7 with SMTP id b36-20020a056a208f2400b0018b4dc2a4c7mr4129011pzk.14.1702002761513;
+        Thu, 07 Dec 2023 18:32:41 -0800 (PST)
+Received: from amakhalov-build-vm.eng.vmware.com ([128.177.82.146])
+        by smtp.gmail.com with ESMTPSA id pq18-20020a17090b3d9200b00286dfa09e7asm615887pjb.24.2023.12.07.18.32.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 18:28:15 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Subject: [PATCH] perf lock contention: Account contending locks too
-Date:   Thu,  7 Dec 2023 18:28:13 -0800
-Message-ID: <20231208022813.219673-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+        Thu, 07 Dec 2023 18:32:41 -0800 (PST)
+From:   Alexey Makhalov <alexey.makhalov@broadcom.com>
+To:     linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+        bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
+        mingo@redhat.com, tglx@linutronix.de
+Cc:     x86@kernel.org, netdev@vger.kernel.org, richardcochran@gmail.com,
+        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
+        zackr@vmware.com, linux-graphics-maintainer@vmware.com,
+        pv-drivers@vmware.com, namit@vmware.com, timothym@vmware.com,
+        akaher@vmware.com, jsipek@vmware.com,
+        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
+        airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
+        maarten.lankhorst@linux.intel.com, horms@kernel.org
+Subject: [PATCH] x86/vmware: Add TDX hypercall support
+Date:   Thu,  7 Dec 2023 18:32:33 -0800
+Message-Id: <20231208023233.71170-1-alexey.makhalov@broadcom.com>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <64074f04-fd72-488b-831a-ad744bbcd950@broadcom.com>
+References: <64074f04-fd72-488b-831a-ad744bbcd950@broadcom.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently it accounts the contention using delta between timestamps in
-lock:contention_begin and lock:contention_end tracepoints.  But it means
-the lock should see the both events during the monitoring period.
+From: Alexey Makhalov <amakhalov@vmware.com>
 
-Actually there are 4 cases that happen with the monitoring:
+VMware hypercalls use I/O port, VMCALL or VMMCALL instructions.
+Add __tdx_hypercall path to support TDX guests.
 
-                monitoring period
-            /                       \
-            |                       |
- 1:  B------+-----------------------+--------E
- 2:    B----+-------------E         |
- 3:         |           B-----------+----E
- 4:         |     B-------------E   |
-            |                       |
-            t0                      t1
+No change in high bandwidth hypercalls, as only low bandwidth
+ones are supported for TDX guests.
 
-where B and E mean contention BEGIN and END, respectively.  So it only
-accounts the case 4 for now.  It seems there's no way to handle the case
-1.  The case 2 might be handled if it saved the timestamp (t0), but it
-lacks the information from the B notably the flags which shows the lock
-types.  Also it could be a nested lock which it currently ignores.  So
-I think we should ignore the case 2.
-
-However we can handle the case 3 if we save the timestamp (t1) at the
-end of the period.  And then it can iterate the map entries in the
-userspace and update the lock stat accordinly.
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Co-developed-by: Tim Merrifield <timothym@vmware.com>
+Signed-off-by: Tim Merrifield <timothym@vmware.com>
+Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
+Reviewed-by: Nadav Amit <namit@vmware.com>
 ---
- tools/perf/util/bpf_lock_contention.c         | 116 ++++++++++++++++++
- .../perf/util/bpf_skel/lock_contention.bpf.c  |  16 +--
- tools/perf/util/bpf_skel/lock_data.h          |   7 ++
- 3 files changed, 132 insertions(+), 7 deletions(-)
+ arch/x86/include/asm/vmware.h | 83 +++++++++++++++++++++++++++++++++++
+ arch/x86/kernel/cpu/vmware.c  | 22 ++++++++++
+ 2 files changed, 105 insertions(+)
 
-diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-index e105245eb905..2476459bf2ef 100644
---- a/tools/perf/util/bpf_lock_contention.c
-+++ b/tools/perf/util/bpf_lock_contention.c
-@@ -178,6 +178,119 @@ int lock_contention_prepare(struct lock_contention *con)
- 	return 0;
- }
+diff --git a/arch/x86/include/asm/vmware.h b/arch/x86/include/asm/vmware.h
+index 719e41260ece..04c698b905ab 100644
+--- a/arch/x86/include/asm/vmware.h
++++ b/arch/x86/include/asm/vmware.h
+@@ -34,12 +34,65 @@
+ #define VMWARE_CMD_GETHZ		45
+ #define VMWARE_CMD_GETVCPU_INFO		68
+ #define VMWARE_CMD_STEALCLOCK		91
++/*
++ * Hypercall command mask:
++ *   bits[6:0] command, range [0, 127]
++ *   bits[19:16] sub-command, range [0, 15]
++ */
++#define VMWARE_CMD_MASK			0xf007fULL
  
-+static void mark_end_timestamp(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-+		.flags = BPF_F_TEST_RUN_ON_CPU,
-+	);
-+	int prog_fd = bpf_program__fd(skel->progs.end_timestamp);
+ #define CPUID_VMWARE_FEATURES_ECX_VMMCALL	BIT(0)
+ #define CPUID_VMWARE_FEATURES_ECX_VMCALL	BIT(1)
+ 
+ extern u8 vmware_hypercall_mode;
+ 
++#define VMWARE_TDX_VENDOR_LEAF 0x1af7e4909ULL
++#define VMWARE_TDX_HCALL_FUNC  1
 +
-+	bpf_prog_test_run_opts(prog_fd, &opts);
-+}
-+
-+static void update_lock_stat(int map_fd, int pid, u64 end_ts,
-+			     enum lock_aggr_mode aggr_mode,
-+			     struct tstamp_data *ts_data)
-+{
-+	u64 delta;
-+	struct contention_key stat_key = {};
-+	struct contention_data stat_data;
-+
-+	if (ts_data->timestamp >= end_ts)
-+		return;
-+
-+	delta = end_ts - ts_data->timestamp;
-+
-+	switch (aggr_mode) {
-+	case LOCK_AGGR_CALLER:
-+		stat_key.stack_id = ts_data->stack_id;
-+		break;
-+	case LOCK_AGGR_TASK:
-+		stat_key.pid = pid;
-+		break;
-+	case LOCK_AGGR_ADDR:
-+		stat_key.lock_addr_or_cgroup = ts_data->lock;
-+		break;
-+	case LOCK_AGGR_CGROUP:
-+		/* TODO */
-+		return;
-+	default:
-+		return;
-+	}
-+
-+	if (bpf_map_lookup_elem(map_fd, &stat_key, &stat_data) < 0)
-+		return;
-+
-+	stat_data.total_time += delta;
-+	stat_data.count++;
-+
-+	if (delta > stat_data.max_time)
-+		stat_data.max_time = delta;
-+	if (delta < stat_data.min_time)
-+		stat_data.min_time = delta;
-+
-+	bpf_map_update_elem(map_fd, &stat_key, &stat_data, BPF_EXIST);
-+}
++extern unsigned long vmware_tdx_hypercall(struct tdx_module_args *args);
 +
 +/*
-+ * Account entries in the tstamp map (which didn't see the corresponding
-+ * lock:contention_end tracepoint) using end_ts.
++ * TDCALL[TDG.VP.VMCALL] uses rax (arg0) and rcx (arg2), while the use of
++ * rbp (arg6) is discouraged by the TDX specification. Therefore, we
++ * remap those registers to r12, r13 and r14, respectively.
 + */
-+static void account_end_timestamp(struct lock_contention *con)
++static inline
++unsigned long vmware_tdx_hypercall_args(unsigned long cmd, unsigned long in1,
++					unsigned long in3, unsigned long in4,
++					unsigned long in5, unsigned long in6,
++					uint32_t *out1, uint32_t *out2,
++					uint32_t *out3, uint32_t *out4,
++					uint32_t *out5, uint32_t *out6)
 +{
-+	int ts_fd, stat_fd;
-+	int *prev_key, key;
-+	u64 end_ts = skel->bss->end_ts;
-+	int total_cpus;
-+	enum lock_aggr_mode aggr_mode = con->aggr_mode;
-+	struct tstamp_data ts_data, *cpu_data;
++	unsigned long ret;
 +
-+	/* Iterate per-task tstamp map (key = TID) */
-+	ts_fd = bpf_map__fd(skel->maps.tstamp);
-+	stat_fd = bpf_map__fd(skel->maps.lock_stat);
++	struct tdx_module_args args = {
++		.r13 = cmd,
++		.rbx = in1,
++		.rdx = in3,
++		.rsi = in4,
++		.rdi = in5,
++		.r14 = in6,
++	};
 +
-+	prev_key = NULL;
-+	while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
-+		if (bpf_map_lookup_elem(ts_fd, &key, &ts_data) == 0) {
-+			int pid = key;
++	ret = vmware_tdx_hypercall(&args);
 +
-+			if (aggr_mode == LOCK_AGGR_TASK && con->owner)
-+				pid = ts_data.flags;
++	if (out1)
++		*out1 = args.rbx;
++	if (out2)
++		*out2 = args.r13;
++	if (out3)
++		*out3 = args.rdx;
++	if (out4)
++		*out4 = args.rsi;
++	if (out5)
++		*out5 = args.rdi;
++	if (out6)
++		*out6 = args.r14;
 +
-+			update_lock_stat(stat_fd, pid, end_ts, aggr_mode,
-+					 &ts_data);
-+		}
-+
-+		prev_key = &key;
-+	}
-+
-+	/* Now it'll check per-cpu tstamp map which doesn't have TID. */
-+	if (aggr_mode == LOCK_AGGR_TASK || aggr_mode == LOCK_AGGR_CGROUP)
-+		return;
-+
-+	total_cpus = cpu__max_cpu().cpu;
-+	ts_fd = bpf_map__fd(skel->maps.tstamp_cpu);
-+
-+	cpu_data = calloc(total_cpus, sizeof(*cpu_data));
-+	if (cpu_data == NULL)
-+		return;
-+
-+	prev_key = NULL;
-+	while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
-+		if (bpf_map_lookup_elem(ts_fd, &key, cpu_data) < 0)
-+			goto next;
-+
-+		for (int i = 0; i < total_cpus; i++) {
-+			update_lock_stat(stat_fd, -1, end_ts, aggr_mode,
-+					 &cpu_data[i]);
-+		}
-+
-+next:
-+		prev_key = &key;
-+	}
-+	free(cpu_data);
++	return ret;
 +}
 +
- int lock_contention_start(void)
+ /*
+  * The low bandwidth call. The low word of edx is presumed to have OUT bit
+  * set. The high word of edx may contain input data from the caller.
+@@ -67,6 +120,11 @@ unsigned long vmware_hypercall1(unsigned long cmd, unsigned long in1)
  {
- 	skel->bss->enabled = 1;
-@@ -187,6 +300,7 @@ int lock_contention_start(void)
- int lock_contention_stop(void)
+ 	unsigned long out0;
+ 
++	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
++		return vmware_tdx_hypercall_args(cmd, in1, 0, 0, 0, 0,
++						 NULL, NULL, NULL,
++						 NULL, NULL, NULL);
++
+ 	asm_inline volatile (VMWARE_HYPERCALL
+ 		: "=a" (out0)
+ 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
+@@ -85,6 +143,11 @@ unsigned long vmware_hypercall3(unsigned long cmd, unsigned long in1,
  {
- 	skel->bss->enabled = 0;
-+	mark_end_timestamp();
- 	return 0;
+ 	unsigned long out0;
+ 
++	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
++		return vmware_tdx_hypercall_args(cmd, in1, 0, 0, 0, 0,
++						 out1, out2, NULL,
++						 NULL, NULL, NULL);
++
+ 	asm_inline volatile (VMWARE_HYPERCALL
+ 		: "=a" (out0), "=b" (*out1), "=c" (*out2)
+ 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
+@@ -104,6 +167,11 @@ unsigned long vmware_hypercall4(unsigned long cmd, unsigned long in1,
+ {
+ 	unsigned long out0;
+ 
++	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
++		return vmware_tdx_hypercall_args(cmd, in1, 0, 0, 0, 0,
++						 out1, out2, out3,
++						 NULL, NULL, NULL);
++
+ 	asm_inline volatile (VMWARE_HYPERCALL
+ 		: "=a" (out0), "=b" (*out1), "=c" (*out2), "=d" (*out3)
+ 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
+@@ -123,6 +191,11 @@ unsigned long vmware_hypercall5(unsigned long cmd, unsigned long in1,
+ {
+ 	unsigned long out0;
+ 
++	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
++		return vmware_tdx_hypercall_args(cmd, in1, in3, in4, in5, 0,
++						 NULL, out2, NULL,
++						 NULL, NULL, NULL);
++
+ 	asm_inline volatile (VMWARE_HYPERCALL
+ 		: "=a" (out0), "=c" (*out2)
+ 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
+@@ -145,6 +218,11 @@ unsigned long vmware_hypercall6(unsigned long cmd, unsigned long in1,
+ {
+ 	unsigned long out0;
+ 
++	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
++		return vmware_tdx_hypercall_args(cmd, in1, in3, 0, 0, 0,
++						 NULL, out2, out3,
++						 out4, out5, NULL);
++
+ 	asm_inline volatile (VMWARE_HYPERCALL
+ 		: "=a" (out0), "=c" (*out2), "=d" (*out3), "=S" (*out4),
+ 		  "=D" (*out5)
+@@ -166,6 +244,11 @@ unsigned long vmware_hypercall7(unsigned long cmd, unsigned long in1,
+ {
+ 	unsigned long out0;
+ 
++	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
++		return vmware_tdx_hypercall_args(cmd, in1, in3, in4, in5, 0,
++						 out1, out2, out3,
++						 NULL, NULL, NULL);
++
+ 	asm_inline volatile (VMWARE_HYPERCALL
+ 		: "=a" (out0), "=b" (*out1), "=c" (*out2), "=d" (*out3)
+ 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
+diff --git a/arch/x86/kernel/cpu/vmware.c b/arch/x86/kernel/cpu/vmware.c
+index 3aa1adaed18f..bcf1d0fb3e89 100644
+--- a/arch/x86/kernel/cpu/vmware.c
++++ b/arch/x86/kernel/cpu/vmware.c
+@@ -428,6 +428,28 @@ static bool __init vmware_legacy_x2apic_available(void)
+ 		(eax & BIT(VCPU_LEGACY_X2APIC));
  }
  
-@@ -300,6 +414,8 @@ int lock_contention_read(struct lock_contention *con)
- 	if (stack_trace == NULL)
- 		return -1;
- 
-+	account_end_timestamp(con);
-+
- 	if (con->aggr_mode == LOCK_AGGR_TASK) {
- 		struct thread *idle = __machine__findnew_thread(machine,
- 								/*pid=*/0,
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 95cd8414f6ef..fb54bd38e7d0 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -19,13 +19,6 @@
- #define LCB_F_PERCPU	(1U << 4)
- #define LCB_F_MUTEX	(1U << 5)
- 
--struct tstamp_data {
--	__u64 timestamp;
--	__u64 lock;
--	__u32 flags;
--	__s32 stack_id;
--};
--
- /* callstack storage  */
- struct {
- 	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
-@@ -140,6 +133,8 @@ int perf_subsys_id = -1;
- /* determine the key of lock stat */
- int aggr_mode;
- 
-+__u64 end_ts;
-+
- /* error stat */
- int task_fail;
- int stack_fail;
-@@ -559,4 +554,11 @@ int BPF_PROG(collect_lock_syms)
- 	return 0;
- }
- 
-+SEC("raw_tp/bpf_test_finish")
-+int BPF_PROG(end_timestamp)
++#ifdef CONFIG_INTEL_TDX_GUEST
++unsigned long vmware_tdx_hypercall(struct tdx_module_args *args)
 +{
-+	end_ts = bpf_ktime_get_ns();
-+	return 0;
++	if (!hypervisor_is_type(X86_HYPER_VMWARE))
++		return 0;
++
++	if (args->r13 & ~VMWARE_CMD_MASK) {
++		pr_warn("Out of range command %llx\n", args->r13);
++		return 0;
++	}
++
++	args->r10 = VMWARE_TDX_VENDOR_LEAF;
++	args->r11 = VMWARE_TDX_HCALL_FUNC;
++	args->r12 = VMWARE_HYPERVISOR_MAGIC;
++
++	__tdx_hypercall(args);
++
++	return args->r12;
 +}
++EXPORT_SYMBOL_GPL(vmware_tdx_hypercall);
++#endif
 +
- char LICENSE[] SEC("license") = "Dual BSD/GPL";
-diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
-index 08482daf61be..36af11faad03 100644
---- a/tools/perf/util/bpf_skel/lock_data.h
-+++ b/tools/perf/util/bpf_skel/lock_data.h
-@@ -3,6 +3,13 @@
- #ifndef UTIL_BPF_SKEL_LOCK_DATA_H
- #define UTIL_BPF_SKEL_LOCK_DATA_H
- 
-+struct tstamp_data {
-+	u64 timestamp;
-+	u64 lock;
-+	u32 flags;
-+	u32 stack_id;
-+};
-+
- struct contention_key {
- 	u32 stack_id;
- 	u32 pid;
+ #ifdef CONFIG_AMD_MEM_ENCRYPT
+ static void vmware_sev_es_hcall_prepare(struct ghcb *ghcb,
+ 					struct pt_regs *regs)
 -- 
-2.43.0.472.g3155946c3a-goog
+2.39.0
 
