@@ -2,73 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CE8809799
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7007B80979D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444178AbjLHAtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 19:49:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
+        id S1444184AbjLHAto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 19:49:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLHAtA (ORCPT
+        with ESMTP id S229531AbjLHAtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 19:49:00 -0500
-Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com [209.85.160.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261E01712
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 16:49:07 -0800 (PST)
-Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1fb05b08fd5so2550144fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 16:49:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701996546; x=1702601346;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2AgJoOovxWHsbX8BqN87XUWbk/EHBUVnwib0dw3NfPw=;
-        b=xLLmKwmsnDsecuouRFlyUTKQWw9BCeafylmMH3+sUNSJhWSV1BBB+twDcVVKoRORrP
-         VBnIAq2AG1bbKVH3xLJbDT3thuwZIqMghZc3fXlRJxjzYaoI8la7RDXYvdMy5KU2JBwz
-         QuXiRt80vhvXkoNcypvSTceNegiUFxlPYtit5apcW7JN+RwNvJg8Anr2CU+k025A6gXL
-         +bBzqS/hgCRyXYMSKNA6Q2iY9kOgTt6fNC9o2pd539twlVyCWct/1kPUGDlGGdFL9sKK
-         GIfqZRunekV3bToVV8gHViZ/oZ+XSreEDM8h7hM2PBCC3ptM5QIByTenIz/fmXWVxLzj
-         MiOw==
-X-Gm-Message-State: AOJu0Yww0GapFKjDjAaPyAtJ3fehJpTi8TQjKCr9bZWuAczRFZnHsiWh
-        Z3BCpDHnmL5AoOEkBlEkCpp3zAblQ3BrR0MW6ZAz6eyh3b+YF/g=
-X-Google-Smtp-Source: AGHT+IHAHAB04jleZEFYVJHYpr+/lLXxxwBsACBQITOx5I0RUArn6U79nKtgAjQkF3BtmjcOVkKNCXIW/+6Ae4no3e/WTWWQvuIk
+        Thu, 7 Dec 2023 19:49:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3B9128
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 16:49:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5458BC433C7;
+        Fri,  8 Dec 2023 00:49:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701996589;
+        bh=EHTPFrjAnUcFE5n/Ico6Xo6PnZAf3NpCXQrBkMkxcMk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kMEcxC3dD1bhKGVlnyXeOfTfo+bK1YjU002o2xhG1LsBfyb1ltPY/P6nwVmJQHkZU
+         qEjCUyH/nF5AWxndYQ6P6YNFWakU2OGuilMxx3Qd3sNFI7vkTfKRgjNHRD8Ob01wE3
+         tttm3p4HHJddq4BSUO5UowJcPEl1/CQqO/of4I9sUlQ0q1tpkl1+zikOSa7WEUZ6fB
+         LuKbp8GZjunBpU12rwo5UDft4ffydgpyGvF4Pf0IyzJGNMVoNrhx1tbdvd9U6PUjVa
+         PXyvIJAjZoaL1feVgcym8RghbASu2HyuCi+WuvjrATDJG2pvcw6jK8Rr9RnhcRfrJR
+         FZgFEA6LbRvNQ==
+Date:   Thu, 7 Dec 2023 16:49:47 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Wen Gu <guwen@linux.alibaba.com>
+Cc:     wintera@linux.ibm.com, wenjia@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com, kgraul@linux.ibm.com,
+        jaka@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        raspl@linux.ibm.com, schnelle@linux.ibm.com,
+        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v4 0/9] net/smc: implement SMCv2.1 virtual ISM
+ device support
+Message-ID: <20231207164947.3b338de4@kernel.org>
+In-Reply-To: <1701920994-73705-1-git-send-email-guwen@linux.alibaba.com>
+References: <1701920994-73705-1-git-send-email-guwen@linux.alibaba.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6871:5226:b0:1fb:483:a1d5 with SMTP id
- ht38-20020a056871522600b001fb0483a1d5mr4113375oac.10.1701996546405; Thu, 07
- Dec 2023 16:49:06 -0800 (PST)
-Date:   Thu, 07 Dec 2023 16:49:06 -0800
-In-Reply-To: <2527e5c5-f99c-4f1c-bd46-ed97060e8ca8@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008ebccb060bf4f3cf@google.com>
-Subject: Re: [syzbot] [net?] WARNING in ip6_route_info_create
-From:   syzbot <syzbot+c15aa445274af8674f41@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, sinquersw@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu,  7 Dec 2023 11:49:45 +0800 Wen Gu wrote:
+> (Note that this patch set depends on an under-reviewing bugfix patch:
+> Link: https://lore.kernel.org/netdev/1701882157-87956-1-git-send-email-guwen@linux.alibaba.com/)
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
-
-Reported-and-tested-by: syzbot+c15aa445274af8674f41@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         ac408ca0 net/ipv6: insert the fib6 gc_link of a fib6_i..
-git tree:       https://github.com/ThinkerYzu/linux.git fix-fib6_set_expires_locked
-console output: https://syzkaller.appspot.com/x/log.txt?x=14a55d1ce80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f8715b6ede5c4b90
-dashboard link: https://syzkaller.appspot.com/bug?extid=c15aa445274af8674f41
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+Post as an RFC, please, until the dependencies have converged.
+-- 
+pw-bot: cr
