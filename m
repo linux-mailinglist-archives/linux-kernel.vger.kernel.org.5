@@ -2,211 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E67E9809EB6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:02:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4E0809EB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573420AbjLHJCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 04:02:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39064 "EHLO
+        id S235772AbjLHJD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 04:03:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235771AbjLHJCU (ORCPT
+        with ESMTP id S232892AbjLHJD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 04:02:20 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5851703
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 01:02:25 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rBWkJ-0003GX-Cl; Fri, 08 Dec 2023 10:02:07 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rBWkH-00ENT4-HR; Fri, 08 Dec 2023 10:02:05 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rBWkH-00GLAI-7q; Fri, 08 Dec 2023 10:02:05 +0100
-Date:   Fri, 8 Dec 2023 10:02:05 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        linux-serial@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, Ian Ray <ian.ray@ge.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        kernel@collabora.com, Shawn Guo <shawnguo@kernel.org>,
+        Fri, 8 Dec 2023 04:03:28 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF51710F9;
+        Fri,  8 Dec 2023 01:03:33 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B893L4f8772529, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B893L4f8772529
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 8 Dec 2023 17:03:21 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Fri, 8 Dec 2023 17:03:21 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Fri, 8 Dec 2023 17:03:21 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Fri, 8 Dec 2023 17:03:21 +0800
+From:   =?big5?B?VFlfQ2hhbmdbsWmkbLZoXQ==?= <tychang@realtek.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        "Andy Shevchenko" <andy@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCHv4] serial: imx: Add DMA buffer configuration via sysfs
-Message-ID: <20231208090205.ioc76sych3snjiwb@pengutronix.de>
-References: <20210305115058.92284-1-sebastian.reichel@collabora.com>
- <YEIetFdcuYZU98s/@kroah.com>
- <20210305124252.c3ffgca6wjqpkn45@earth.universe>
- <20210405214446.zhidvtvahcfp4wxa@earth.universe>
- <YGwKAOmlHRgEVh20@kroah.com>
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 1/2] dt-bindings: gpio: realtek: Add realtek,rtd-gpio
+Thread-Topic: [PATCH v3 1/2] dt-bindings: gpio: realtek: Add realtek,rtd-gpio
+Thread-Index: AQHaKPU7BovJRXVvek6zKcsdpY6YorCdUeOAgAGyNsA=
+Date:   Fri, 8 Dec 2023 09:03:20 +0000
+Message-ID: <b3a41f598bc043ce9626b674a92b8da4@realtek.com>
+References: <20231207100723.15015-1-tychang@realtek.com>
+ <20231207100723.15015-2-tychang@realtek.com>
+ <dd22f0fb-e07b-4bd4-bd6a-cf2d8a5687fc@linaro.org>
+In-Reply-To: <dd22f0fb-e07b-4bd4-bd6a-cf2d8a5687fc@linaro.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.21.181.166]
+x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ff53tonb2aszag6u"
-Content-Disposition: inline
-In-Reply-To: <YGwKAOmlHRgEVh20@kroah.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---ff53tonb2aszag6u
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello Greg,
-
-[Cc +=3D dt maintainers]
-
-On Tue, Apr 06, 2021 at 09:13:04AM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Apr 05, 2021 at 11:44:46PM +0200, Sebastian Reichel wrote:
-> > On Fri, Mar 05, 2021 at 01:42:52PM +0100, Sebastian Reichel wrote:
-> > > On Fri, Mar 05, 2021 at 01:06:12PM +0100, Greg Kroah-Hartman wrote:
-> > > > On Fri, Mar 05, 2021 at 12:50:58PM +0100, Sebastian Reichel wrote:
-> > > > > From: Fabien Lahoudere <fabien.lahoudere@collabora.com>
-> > > > >=20
-> > > > > In order to optimize serial communication (performance/throughput=
- VS
-> > > > > latency), we may need to tweak DMA period number and size. This a=
-dds
-> > > > > sysfs attributes to configure those values before initialising DM=
-A.
-> > > > > The defaults will stay the same as before (16 buffers with a size=
- of
-> > > > > 1024 bytes). Afterwards the values can be read/write with the
-> > > > > following sysfs files:
-> > > > >=20
-> > > > > /sys/class/tty/ttymxc*/dma_buffer_size
-> > > > > /sys/class/tty/ttymxc*/dma_buffer_count
-> > > >=20
-> > > > Ick no.  Custom sysfs attributes for things like serial ports are c=
-razy.
-> > > >=20
-> > > > > This is mainly needed for GEHC CS ONE (arch/arm/boot/dts/imx53-pp=
-d.dts),
-> > > > > which has multiple microcontrollers connected via UART controllin=
-g. One
-> > > > > of the UARTs is connected to an on-board microcontroller at 19200=
- baud,
-> > > > > which constantly pushes critical data (so aging character detect
-> > > > > interrupt will never trigger). This data must be processed at 50-=
-200 Hz,
-> > > > > so UART should return data in less than 5-20ms. With 1024 byte DMA
-> > > > > buffer (and a constant data stream) the read operation instead ne=
-eds
-> > > > > 1024 byte / 19200 baud =3D 53.333ms, which is way too long (note:=
- Worst
-> > > > > Case would be remote processor sending data with short pauses <=
-=3D 7
-> > > > > characters, which would further increase this number). The current
-> > > > > downstream kernel instead configures 24 bytes resulting in 1.25ms,
-> > > > > but that is obviously not sensible for normal UART use cases and =
-cannot
-> > > > > be used as new default.
-> > > >=20
-> > > > Why can't this be a device tree attribute? Why does this have to be=
- a
-> > > > sysfs thing that no one will know how to tune and set over time.  T=
-his
-> > > > hardware should not force a user to manually tune it to get it to w=
-ork
-> > > > properly, this isn't the 1990's anymore :(
-> > > >=20
-> > > > Please never force a user to choose stuff like this, they never will
-> > > > know what to do.
-> > >=20
-> > > This used to be a DT attribute in PATCHv1. It has been moved over to
-> > > sysfs since PATCHv2, since it does not describe the hardware, but
-> > > configuration. Unfortunately lore.kernel.org does not have the full
-> > > thread, but this is the discussion:
-> > >=20
-> > > https://lore.kernel.org/linux-serial/20170629182618.jpahpmuq364ldcv2@=
-pengutronix.de/
-> > >=20
-> > > From downstream POV this can be done either by adding a DT property
-> > > to the UART node, or by adding a udev rule.
-> > >=20
-> > > From my POV there is not a huge difference. In both cases we will
-> > > be bound by an ABI afterwards, in both cases people will usually
-> > > stick to the default value and in both cases people that do deviate
-> > > from the default probably ran into problems and started to look
-> > > for a solution.
-> >=20
-> > ping? It's not very nice to get a rejected in cycles :(
->=20
-> I recommend working with the DT people here, as custom sysfs attributes
-> for things like this that are really just describing the hardware is
-> crazy.
-
-I was one who expressed concerns in the earlier rounds that dt isn't the
-right place for this. dt is about hardware description, but choosing
-a good value for the dma buffer size is driver tuning and depends on the
-individual requirements. (latency, throughput, memory consumption,
-robustness under system load). I can even imagine use cases where the
-settings should be changed dynamically, which cannot (easily) be done
-using dt.
-
-While I see your point that a driver specific sysfs property is
-unusual/strange/whatever every downside you mentioned also applies to a
-dt property (or a custom ioctl).
-
-Among the solutions I can imagine, my preference order is:
-
- - automatic tuning
- - sysfs property
- - further discussion
- - dt property
- - custom ioctl
-
-I wonder if there is a sensible way to implement a automatic tuning. In
-the use case mentioned in the commit log, Sebastian's need is low
-latency for a constantly sending microcontroller on the other side. Is
-it sensible to make the used dma buffers smaller if we have a certain
-throughput? Or is that too magic and doomed to fail covering most use
-cases? If that doesn't work, I support Sebastian's approach to do that
-in a sysfs property.
-
-Sebastian, have you evaluated just not using dma for these UARTs?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ff53tonb2aszag6u
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVy24wACgkQj4D7WH0S
-/k7+ggf+Mcv56tDH2NcnNQ7qncn8ZtwodtWIarYf4MDerc7cZntyFdkGOLbJ8CdE
-cCulj6BnK1Yjl9nCz4tYqd6XY0SoDIR5mFdudhQU5ViQTTt9ohYT6pjqeL1F2dVc
-ozhSFoFasBucM1QVIoZR5sgXWQR0mUoPWpY11YFYbjNzC4ZGA4R9Ill3P8iFLMQR
-d7e/M2jBKIR+0XlHO+m4s3zy/oTxh7ZXj4IcBQqhlnfaz+A8vUJutMZ/kDCcVAvH
-k4AhpafOEU3IeH3OJEXPs9Q9MfUzCBGfgCNCI7YX5qrzx3tmGNQg/EWw2V7P2npz
-9nWpionkSNv4oKH2RT7cjG2Ad+JljA==
-=iVEI
------END PGP SIGNATURE-----
-
---ff53tonb2aszag6u--
+SGkgS3J6eXN6dG9mLA0KDQo+PiBkaWZmIC0tZ2l0DQo+PiBhL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9ncGlvL3JlYWx0ZWsscnRkLWdwaW8ueWFtbA0KPj4gYi9Eb2N1bWVudGF0
+aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZ3Bpby9yZWFsdGVrLHJ0ZC1ncGlvLnlhbWwNCj4+IG5l
+dyBmaWxlIG1vZGUgMTAwNjQ0DQo+PiBpbmRleCAwMDAwMDAwMDAwMDAuLjk4NGU3ZGJkMzIyZQ0K
+Pj4gLS0tIC9kZXYvbnVsbA0KPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL2dwaW8vcmVhbHRlayxydGQtZ3Bpby55YW1sDQo+PiBAQCAtMCwwICsxLDY5IEBADQo+PiAr
+IyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogKEdQTC0yLjAgT1IgQlNELTItQ2xhdXNlKSAjIENv
+cHlyaWdodCAyMDIzDQo+PiArUmVhbHRlayBTZW1pY29uZHVjdG9yIENvcnBvcmF0aW9uICVZQU1M
+IDEuMg0KPj4gKy0tLQ0KPj4gKyRpZDogaHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvZ3Bp
+by9yZWFsdGVrLHJ0ZC1ncGlvLnlhbWwjDQo+PiArJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUu
+b3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjDQo+PiArDQo+PiArdGl0bGU6IFJlYWx0ZWsgREhD
+IEdQSU8gY29udHJvbGxlcg0KPj4gKw0KPj4gK21haW50YWluZXJzOg0KPj4gKyAgLSBUenV5aSBD
+aGFuZyA8dHljaGFuZ0ByZWFsdGVrLmNvbT4NCj4+ICsNCj4+ICtkZXNjcmlwdGlvbjoNCj4+ICsg
+IFRoZSBHUElPIGNvbnRyb2xsZXIgaXMgZGVzaWduZWQgZm9yIHRoZSBSZWFsdGVrIERIQyAoRGln
+aXRhbCBIb21lDQo+PiArQ2VudGVyKQ0KPj4gKyAgUlREIHNlcmllcyBTb0MgZmFtaWx5LCB3aGlj
+aCBhcmUgaGlnaC1kZWZpbml0aW9uIG1lZGlhIHByb2Nlc3NvciBTb0NzLg0KPj4gKw0KPj4gK3By
+b3BlcnRpZXM6DQo+PiArICBjb21wYXRpYmxlOg0KPj4gKyAgICBlbnVtOg0KPj4gKyAgICAgIC0g
+cmVhbHRlayxydGQxMjk1LW1pc2MtZ3Bpbw0KPj4gKyAgICAgIC0gcmVhbHRlayxydGQxMjk1LWlz
+by1ncGlvDQo+PiArICAgICAgLSByZWFsdGVrLHJ0ZDEzOTUtaXNvLWdwaW8NCj4+ICsgICAgICAt
+IHJlYWx0ZWsscnRkMTYxOS1pc28tZ3Bpbw0KPj4gKyAgICAgIC0gcmVhbHRlayxydGQxMzE5LWlz
+by1ncGlvDQo+PiArICAgICAgLSByZWFsdGVrLHJ0ZDE2MTliLWlzby1ncGlvDQo+PiArICAgICAg
+LSByZWFsdGVrLHJ0ZDEzMTlkLWlzby1ncGlvDQo+PiArICAgICAgLSByZWFsdGVrLHJ0ZDEzMTVl
+LWlzby1ncGlvDQo+DQo+SWYgdGhlcmUgaXMgZ29pbmcgdG8gYmUgcmVzZW5kLCBwbGVhc2Ugb3Jk
+ZXIgdGhpcyBsaXN0IGFscGhhbnVtZXJpY2FsbHkuDQo+DQoNCkkgd2lsbCByZXZpc2UgaXQgaW4g
+dGhlIG5leHQgdmVyc2lvbg0KDQo+PiArDQo+PiArICByZWc6DQo+PiArICAgIGl0ZW1zOg0KPj4g
+KyAgICAgIC0gZGVzY3JpcHRpb246IEdQSU8gY29udHJvbGxlciByZWdpc3RlcnMNCj4+ICsgICAg
+ICAtIGRlc2NyaXB0aW9uOiBHUElPIGludGVycnVwdCByZWdpc3RlcnMNCj4+ICsNCj4NCj4uLi4N
+Cj4NCj4+ICsNCj4+ICthZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UNCj4+ICsNCj4+ICtleGFt
+cGxlczoNCj4+ICsgIC0gfA0KPj4gKyAgICBncGlvQDEwMCB7DQo+PiArICAgICAgY29tcGF0aWJs
+ZSA9ICJyZWFsdGVrLHJ0ZDEzMTlkLWlzby1ncGlvIjsNCj4+ICsgICAgICByZWcgPSA8MHgxMDAg
+MHgxMDA+LA0KPj4gKyAgICAgICAgICAgIDwweDAwMCAweDBiMD47DQo+DQo+VGhhdCdzIG9kZC4g
+V2h5IG9yZGVyIGlzIGRlY3JlYXNpbmc/IElzbid0IDB4MCB0aGUgYWRkcmVzcyBvZiB0aGUgU29D
+IChzb2NAMCk/DQo+DQoNClRoZSBEVFMgdXNlIGluIG91ciBwbGF0Zm9ybSBmb2xsb3dzIHRoaXMg
+c3RydWN0dXJlOg0KDQpzb2NAMCB7DQogICAgcmJ1czogcmJ1c0A5ODAwMDAwMCB7DQoJICAgIC4u
+Lg0KICAgICAgICBpc286IHN5c2NvbkA3MDAwIHsNCgkJICAgIC4uLg0KICAgICAgICAgICAgZ3Bp
+bzogZ3Bpb0AxMDAgew0KICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAicmVhbHRlayxydGQx
+MzE5ZC1pc28tZ3BpbyI7DQogICAgICAgICAgICAgICAgcmVnID0gPDB4MTAwIDB4MTAwPiwNCiAg
+ICAgICAgICAgICAgICAgICAgICA8MHgwMDAgMHgwYjA+Ow0KICAgICAgICAgICAgICAgIGludGVy
+cnVwdC1wYXJlbnQgPSA8Jmlzb19pcnFfbXV4PjsNCiAgICAgICAgICAgICAgICBpbnRlcnJ1cHRz
+ID0gPDE5PiwgPDIwPjsNCiAgICAgICAgICAgICAgICBncGlvLXJhbmdlcyA9IDwmcGluY3RybCAw
+IDAgODI+Ow0KICAgICAgICAgICAgICAgIGdwaW8tY29udHJvbGxlcjsNCiAgICAgICAgICAgICAg
+ICAjZ3Bpby1jZWxscyA9IDwyPjsNCiAgICAgICAgICAgIH07DQogICAgICAgIH07DQogICAgfTsN
+Cn07DQoNClRoZSBiYXNlIGFkZHJlc3MgZm9yIHRoZSBHUElPIGNvbnRyb2xsZXIgaXMgMHg5ODAw
+NzEwMC4gVGhlIHNlY29uZCBsaW5lIG9mDQoncmVnJyByZWZlcnMgdG8gdGhlIEdQSU8gaW50ZXJy
+dXB0IHN0YXR1cyByZWdpc3RlcnMsIHdoaWNoIGFyZSBkaXN0cmlidXRlZA0Kd2l0aGluIHRoZSBy
+YW5nZSBvZiAweDk4MDA3MDAwIHRvIDB4OTgwMDcwQUYuIFdvdWxkIGl0IGJlIGFkdmlzYWJsZSB0
+byBmZXRjaCB0aGUNCnN5c2NvbiBmcm9tIHBhcmVudCBub2RlKGlzbzogc3lzY29uQDcwMDApIHRv
+IGhhbmRsZSB0aGUgR1BJTyBpbnRlcnJ1cHQgc3RhdHVzDQpyZWdpc3RlcnM/DQoNCj5JdCBpcywg
+YnR3LCAweDAsIG5vdCAweDAwMC4gVGhlIHNhbWUgZm9yIDB4MGIwIC0+IDB4YjAsIHVubGVzcyB5
+b3Ugd2FudCB0byBwYWQNCj50byBmdWxsIHdvcmQuDQo+DQoNCkkgd2lsbCByZXZpc2UgaXQgaW4g
+dGhlIG5leHQgdmVyc2lvbi4NCg0KVGhhbmtzLA0KVHp1eWkgQ2hhbmcNCg==
