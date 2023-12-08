@@ -2,161 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E6380A273
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C93180A27E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233385AbjLHLn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 06:43:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44588 "EHLO
+        id S233475AbjLHLoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 06:44:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232504AbjLHLnY (ORCPT
+        with ESMTP id S232504AbjLHLoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 06:43:24 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2839AD59;
-        Fri,  8 Dec 2023 03:43:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702035811; x=1733571811;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ZmkAP0N/gOOmFK2HS73Ar6ckEAFg8Q3aZC+p9EeSO1Y=;
-  b=GOZ1N66uIDbEVMD4+BhgoazD/AoEsfQ94BjrcIkQdHTbZUOB5cnjx47X
-   b64apZQ1fMDcaDzkh8O4CJIpwkdxJr/vhPfEChmsi75RVxt1aXVXXQzxB
-   W+H9MQYM2Ahv6KqGPo4K8vabl7GWHNn3liYDbGfm7tgdjIPL0X8VyGGEw
-   8/vyGDS5TGKwe0JC95SLyOCcTg5zDK1Ezx/wL0qSmaqTuvP9hsK6irLog
-   7MjevueSoiPOw9liSjmTcgQuNXxUFdyT/X+/+S93SEGX8yAN7YdXWojhm
-   WmVN0GCDJ930q5xO0c5jYG+ESr0EJL4l6R23fPTx8oc/zIikDVW4qai2i
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="394134276"
-X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
-   d="scan'208";a="394134276"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 03:43:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="765465888"
-X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
-   d="scan'208";a="765465888"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.255.31.238]) ([10.255.31.238])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 03:43:27 -0800
-Message-ID: <abc94be4-a909-4255-bb08-f0fcf45a21b8@linux.intel.com>
-Date:   Fri, 8 Dec 2023 19:43:12 +0800
+        Fri, 8 Dec 2023 06:44:23 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC7511D
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 03:44:29 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-db538b07865so2273069276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 03:44:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702035869; x=1702640669; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XustoibYb7jZ112VBHJcFTHqwrwSxZE4Gta6N7Rgvsk=;
+        b=HruYTDrlsSiTsQqNoC2rstY0VoQXoOTtA6SNjTbwszI6L8rRY09KHAGSBZbemuvApK
+         IVmTUoezOoCWX/b6IMxstcQ+0cH5c4GM+Tc5/M8aDu9nJmFuc41UU6al9571vNpszzg4
+         /tH0YGZtMVwL7bduLKVg7dEiyX0k1SnbxQnnluPuLmO4tjRnM1Q5I6H8Z7sahRDKd8hA
+         8mEOib6PqrQ45m1l80iG1dFL/Dq7XxMbb0g5CAe83nPK7NESZeu7dyBWzB6Nftg/Pgnm
+         12ePpMHu4qkR2JWsOkJ5ewkDVuI8jrm8Jlr9/i5agxEmBEzFLj3dapOE2upy/fQx/P2O
+         HquA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702035869; x=1702640669;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XustoibYb7jZ112VBHJcFTHqwrwSxZE4Gta6N7Rgvsk=;
+        b=l/aI9IdPKCc27YJkczfG4pDwpUCiW0ocdbX4oNxUJBiPvqjkL8FkNW0kGw3H3hSdDv
+         mQpfe3N8WhkLxt/hfrtxz79nbUksAMRJx65kfjkDVD3p6s89oe59wrHbCml8HSlsDUkj
+         HgRNr0cc1i5ACr/kMEaBpgOizrBeaE+smguGOdyxLK9mD/iQGZeuMRQWJ7jmXoxcedAq
+         T13P13ifPuxjErzEOEnGyJ/9iS/cAhBinOT2KAV0/mgqTUlpFjqTbcChu2yLC+gQpYJc
+         5d3ycdIsiomwqFq8viBbNMnfEqza2sjzcQzYq1bUijAUkdmx1joljQtmIbQqc2mn9+Lc
+         foZA==
+X-Gm-Message-State: AOJu0YydKC4dUJmHeXMv3RPKx0irdR8g1D5ZXraf9NLGy4Sx+tCAX33B
+        Zqaqp9S7Tm9zhJ7AhYkgOTkSYHEGDnYfo1+7TomDBA==
+X-Google-Smtp-Source: AGHT+IE6ALLhH1k654jYWCbrlhD/X7i139Ly4BPDxq1XcXtit7oJT0kaLgyma1vwYX6I18i9zNeuXYotNU4PMVF46Mk=
+X-Received: by 2002:a25:ae41:0:b0:db5:3f82:8d1f with SMTP id
+ g1-20020a25ae41000000b00db53f828d1fmr3671315ybe.36.1702035868831; Fri, 08 Dec
+ 2023 03:44:28 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] iommufd: Deliver fault messages to user space
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
- <20231026024930.382898-5-baolu.lu@linux.intel.com>
- <20231201152459.GB1489931@ziepe.ca>
-Content-Language: en-US
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20231201152459.GB1489931@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231208050641.32582-1-quic_abhinavk@quicinc.com> <20231208050641.32582-16-quic_abhinavk@quicinc.com>
+In-Reply-To: <20231208050641.32582-16-quic_abhinavk@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 8 Dec 2023 13:44:18 +0200
+Message-ID: <CAA8EJpqfCfETawp1up76S6gryO+Q4KxPB3ThwZCe7DCkp=GkBQ@mail.gmail.com>
+Subject: Re: [PATCH v2 15/16] drm/msm/dpu: introduce separate wb2_format
+ arrays for rgb and yuv
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, quic_jesszhan@quicinc.com,
+        quic_parellan@quicinc.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/1 23:24, Jason Gunthorpe wrote:
-> On Thu, Oct 26, 2023 at 10:49:28AM +0800, Lu Baolu wrote:
-> 
->> +static ssize_t hwpt_fault_fops_write(struct file *filep,
->> +				     const char __user *buf,
->> +				     size_t count, loff_t *ppos)
->> +{
->> +	size_t response_size = sizeof(struct iommu_hwpt_page_response);
->> +	struct hw_pgtable_fault *fault = filep->private_data;
->> +	struct iommu_hwpt_page_response response;
->> +	struct iommufd_hw_pagetable *hwpt;
->> +	struct iopf_group *iter, *group;
->> +	struct iommufd_device *idev;
->> +	size_t done = 0;
->> +	int rc = 0;
->> +
->> +	if (*ppos || count % response_size)
->> +		return -ESPIPE;
->> +
->> +	mutex_lock(&fault->mutex);
->> +	while (!list_empty(&fault->response) && count > done) {
->> +		rc = copy_from_user(&response, buf + done, response_size);
->> +		if (rc)
->> +			break;
->> +
->> +		/* Get the device that this response targets at. */
->> +		idev = container_of(iommufd_get_object(fault->ictx,
->> +						       response.dev_id,
->> +						       IOMMUFD_OBJ_DEVICE),
->> +				    struct iommufd_device, obj);
->> +		if (IS_ERR(idev)) {
->> +			rc = PTR_ERR(idev);
->> +			break;
->> +		}
-> 
-> See here it might be better to have a per-fd list of outstanding
-> faults per-fd and then the cookie would just index that list, then you
-> get everything in one shot instead of having to do a xarray looking
-> and then a linear list search
+On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+> Lets rename the existing wb2_formats array wb2_formats_rgb to indicate
+> that it has only RGB formats and can be used on any chipset having a WB
+> block.
+>
+> Introduce a new wb2_formats_rgb_yuv array to the catalog to
+> indicate support for YUV formats to writeback in addition to RGB.
+>
+> Chipsets which have support for CDM block will use the newly added
+> wb2_formats_rgb_yuv array.
 
-Yours is more efficient. I will do it that way in the next version.
+This means that the catalog can go out of sync, if one adds a CDM
+block but doesn't update wb_formats and vice versa.
+Can we deduce the format list from the WB code? Is the format list
+really static or does it change between platforms (please keep msm8996
+/ msm8998 in mind).
 
-> 
->> +static const struct file_operations hwpt_fault_fops = {
->> +	.owner		= THIS_MODULE,
->> +	.read		= hwpt_fault_fops_read,
->> +	.write		= hwpt_fault_fops_write,
->> +};
-> 
-> nonseekable_open() behavior should be integrated into this
+>
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> ---
+>  .../msm/disp/dpu1/catalog/dpu_10_0_sm8650.h   |  4 +-
+>  .../msm/disp/dpu1/catalog/dpu_6_0_sm8250.h    |  4 +-
+>  .../msm/disp/dpu1/catalog/dpu_6_2_sc7180.h    |  4 +-
+>  .../msm/disp/dpu1/catalog/dpu_7_2_sc7280.h    |  4 +-
+>  .../msm/disp/dpu1/catalog/dpu_9_0_sm8550.h    |  4 +-
+>  .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    | 37 ++++++++++++++++++-
+>  6 files changed, 46 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
+> index 04d2a73dd942..eb5dfff2ec4f 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
+> @@ -341,8 +341,8 @@ static const struct dpu_wb_cfg sm8650_wb[] = {
+>                 .name = "wb_2", .id = WB_2,
+>                 .base = 0x65000, .len = 0x2c8,
+>                 .features = WB_SM8250_MASK,
+> -               .format_list = wb2_formats,
+> -               .num_formats = ARRAY_SIZE(wb2_formats),
+> +               .format_list = wb2_formats_rgb,
+> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
+>                 .xin_id = 6,
+>                 .vbif_idx = VBIF_RT,
+>                 .maxlinewidth = 4096,
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
+> index 58b0f50518c8..a57d50b1f028 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
+> @@ -336,8 +336,8 @@ static const struct dpu_wb_cfg sm8250_wb[] = {
+>                 .name = "wb_2", .id = WB_2,
+>                 .base = 0x65000, .len = 0x2c8,
+>                 .features = WB_SM8250_MASK,
+> -               .format_list = wb2_formats,
+> -               .num_formats = ARRAY_SIZE(wb2_formats),
+> +               .format_list = wb2_formats_rgb_yuv,
+> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb_yuv),
+>                 .clk_ctrl = DPU_CLK_CTRL_WB2,
+>                 .xin_id = 6,
+>                 .vbif_idx = VBIF_RT,
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
+> index bcfedfc8251a..7382ebb6e5b2 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
+> @@ -157,8 +157,8 @@ static const struct dpu_wb_cfg sc7180_wb[] = {
+>                 .name = "wb_2", .id = WB_2,
+>                 .base = 0x65000, .len = 0x2c8,
+>                 .features = WB_SM8250_MASK,
+> -               .format_list = wb2_formats,
+> -               .num_formats = ARRAY_SIZE(wb2_formats),
+> +               .format_list = wb2_formats_rgb,
+> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
+>                 .clk_ctrl = DPU_CLK_CTRL_WB2,
+>                 .xin_id = 6,
+>                 .vbif_idx = VBIF_RT,
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
+> index 19c2b7454796..2f153e0b5c6a 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
+> @@ -169,8 +169,8 @@ static const struct dpu_wb_cfg sc7280_wb[] = {
+>                 .name = "wb_2", .id = WB_2,
+>                 .base = 0x65000, .len = 0x2c8,
+>                 .features = WB_SM8250_MASK,
+> -               .format_list = wb2_formats,
+> -               .num_formats = ARRAY_SIZE(wb2_formats),
+> +               .format_list = wb2_formats_rgb_yuv,
+> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb_yuv),
+>                 .clk_ctrl = DPU_CLK_CTRL_WB2,
+>                 .xin_id = 6,
+>                 .vbif_idx = VBIF_RT,
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
+> index bf56265967c0..ad48defa154f 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
+> @@ -315,8 +315,8 @@ static const struct dpu_wb_cfg sm8550_wb[] = {
+>                 .name = "wb_2", .id = WB_2,
+>                 .base = 0x65000, .len = 0x2c8,
+>                 .features = WB_SM8250_MASK,
+> -               .format_list = wb2_formats,
+> -               .num_formats = ARRAY_SIZE(wb2_formats),
+> +               .format_list = wb2_formats_rgb,
+> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
+>                 .xin_id = 6,
+>                 .vbif_idx = VBIF_RT,
+>                 .maxlinewidth = 4096,
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> index 1be3156cde05..c52cac7a2288 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> @@ -202,7 +202,7 @@ static const u32 rotation_v2_formats[] = {
+>         /* TODO add formats after validation */
+>  };
+>
+> -static const uint32_t wb2_formats[] = {
+> +static const uint32_t wb2_formats_rgb[] = {
+>         DRM_FORMAT_RGB565,
+>         DRM_FORMAT_BGR565,
+>         DRM_FORMAT_RGB888,
+> @@ -236,6 +236,41 @@ static const uint32_t wb2_formats[] = {
+>         DRM_FORMAT_XBGR4444,
+>  };
+>
+> +static const uint32_t wb2_formats_rgb_yuv[] = {
+> +       DRM_FORMAT_RGB565,
+> +       DRM_FORMAT_BGR565,
+> +       DRM_FORMAT_RGB888,
+> +       DRM_FORMAT_ARGB8888,
+> +       DRM_FORMAT_RGBA8888,
+> +       DRM_FORMAT_ABGR8888,
+> +       DRM_FORMAT_XRGB8888,
+> +       DRM_FORMAT_RGBX8888,
+> +       DRM_FORMAT_XBGR8888,
+> +       DRM_FORMAT_ARGB1555,
+> +       DRM_FORMAT_RGBA5551,
+> +       DRM_FORMAT_XRGB1555,
+> +       DRM_FORMAT_RGBX5551,
+> +       DRM_FORMAT_ARGB4444,
+> +       DRM_FORMAT_RGBA4444,
+> +       DRM_FORMAT_RGBX4444,
+> +       DRM_FORMAT_XRGB4444,
+> +       DRM_FORMAT_BGR565,
+> +       DRM_FORMAT_BGR888,
+> +       DRM_FORMAT_ABGR8888,
+> +       DRM_FORMAT_BGRA8888,
+> +       DRM_FORMAT_BGRX8888,
+> +       DRM_FORMAT_XBGR8888,
+> +       DRM_FORMAT_ABGR1555,
+> +       DRM_FORMAT_BGRA5551,
+> +       DRM_FORMAT_XBGR1555,
+> +       DRM_FORMAT_BGRX5551,
+> +       DRM_FORMAT_ABGR4444,
+> +       DRM_FORMAT_BGRA4444,
+> +       DRM_FORMAT_BGRX4444,
+> +       DRM_FORMAT_XBGR4444,
+> +       DRM_FORMAT_NV12,
+> +};
+> +
+>  /*************************************************************
+>   * SSPP sub blocks config
+>   *************************************************************/
+> --
+> 2.40.1
+>
 
-Sure.
 
-> 
->> +static int hw_pagetable_get_fault_fd(struct hw_pgtable_fault *fault)
->> +{
->> +	struct file *filep;
->> +	int fdno;
->> +
->> +	fdno = get_unused_fd_flags(O_CLOEXEC);
->> +	if (fdno < 0)
->> +		return fdno;
->> +
->> +	filep = anon_inode_getfile("[iommufd-pgfault]", &hwpt_fault_fops,
->> +				   fault, O_RDWR);
->> +	if (IS_ERR(filep)) {
->> +		put_unused_fd(fdno);
->> +		return PTR_ERR(filep);
->> +	}
->> +
->> +	fd_install(fdno, filep);
->> +	fault->fault_file = filep;
->> +	fault->fault_fd = fdno;
-> 
-> fd_install must be the very last thing before returning success from a
-> system call because we cannot undo it.
-
-Yes.
-
-> 
-> There are other failure paths before here and the final return
-> 
-> Jason
-
-Best regards,
-baolu
-
+-- 
+With best wishes
+Dmitry
