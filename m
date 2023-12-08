@@ -2,145 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED1E809A15
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 04:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6185B809A1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 04:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573030AbjLHDNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 22:13:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51956 "EHLO
+        id S1573052AbjLHDPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 22:15:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232777AbjLHDNO (ORCPT
+        with ESMTP id S1573050AbjLHDP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 22:13:14 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9827E10DD
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 19:13:16 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54f4a933ddcso3822a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 19:13:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702005195; x=1702609995; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HNS+ovI/q3JlBtEM2uaw1KWaKlXeGtEnkG9NS8Et7tA=;
-        b=gbXD9atyXPm1oP5XU2qeen+pJTOmZ3e7iuZfb3wcN5G4mm0Aag6J77DYgA2Cm/RYz3
-         VnyWsQLRRsJ25zx4+j944KrbGoQTYS5wcATkdB7i2YPSLtNz7949WzZjb+UOH/bxuCyk
-         49Xy4ScmeS2wecVCQ5dxBNxglrovY7RKTfjWETzfq+E82GvCtt9bEWUb/GX9aXiVtLy1
-         vQO+AY6le5lApFq2Mu/fiVNEVpP6HXiQh35qVKDno5R5dN7LZRaQx3wz4xB/4OFFrs7S
-         1oHgf/M3gVEWrGhTyiqEcL0WBMU2iWngKfsFAEHQUVRdL4lWVZJ1EjrxfbTqgyo2JFR2
-         b9Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702005195; x=1702609995;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HNS+ovI/q3JlBtEM2uaw1KWaKlXeGtEnkG9NS8Et7tA=;
-        b=Bov/yCRMYMf37FEVUm/nKihUpmvbK1YprGrFIj/BcwmHCs69JtrVx/fw5bVUoGziUV
-         nVLPp0dmA7IgQzwAdBnrmqhFQ30ccZqlUo1dGaM4A4h+mcpKMMJCxkhXVKNNaDffhXM3
-         ub3EPktPo3ALhfcZT5BhNaykYzpgJZlntoV2awA6wvJuP6/JEitHp7ApeAOwvwOZonfx
-         rmJJgANqW5ec2dBNdTq+1ORLGJIbJvthvPajQdTHvWoM8id6FNqvxpqt+O86hOvoeV9c
-         VMPuMKO2yN4K/Wvlkd1+J9XKEDMW+WHqc+b0URo3IP6SQPUOQX6AX8Q+qwiG9nhrHM78
-         nHjw==
-X-Gm-Message-State: AOJu0YyOiQG+JTc9XiP969TA4QEMJp2v5bDygU2H+rnKh44LEtHsUoTU
-        Afi9cFpii9mAEBpRBbRpBKoVmt4DY82zMwga4QTfiA==
-X-Google-Smtp-Source: AGHT+IF6lnS9jdG7Mel03q85kJn6B8enFm7q6yqnXLrTB095MG3Pt7OgvO20urLr5o46zc0NbKZAl1GRCClQ4zRkKn4=
-X-Received: by 2002:a50:d7c3:0:b0:54a:ee8b:7a99 with SMTP id
- m3-20020a50d7c3000000b0054aee8b7a99mr20514edj.0.1702005194949; Thu, 07 Dec
- 2023 19:13:14 -0800 (PST)
+        Thu, 7 Dec 2023 22:15:29 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E53D10CA;
+        Thu,  7 Dec 2023 19:15:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702005335; x=1733541335;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=E1JJBuiYZ1Cuzr0elmDVx0oyEbdNnlyFecjP6yNQEvM=;
+  b=VKEB1lY4i5jj6OlktfLpMWpLT9i86NSNM5K6Flenf0UIxM+zdIkP9NN2
+   h4rxis4OOO4MO5DNoklo1fgf4ann81L2elcRHr8/xQnTYkSYZ70mv6ZAc
+   XvJaXY5/k/PyPfiA+MYyToJmZgVriluNm2WGtgDKSnbv6E5XlILMdL4Mv
+   5oP2y7/CTE34PfF5S9NnZ9R2REvbjtFbPOLtPm/0ePda7T8q/IrVh+HdO
+   P06TuzIsgTYZeBbwy1CDBWk7eNwhGkSQpRH2DzEHCxgdDNitGadTtGVf8
+   oqtIAXDqs9TVCZnmwG0kFhy8xw9L9F8g25lvueGqHPo16SDkAxsbC8y/G
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="15902082"
+X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
+   d="scan'208";a="15902082"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 19:15:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="721725249"
+X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
+   d="scan'208";a="721725249"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 19:15:32 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Vishal Verma <vishal.l.verma@intel.com>
+Cc:     Dave Jiang <dave.jiang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        <linux-kernel@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+        <linux-cxl@vger.kernel.org>, David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Jonathan Cameron" <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v2 2/2] dax: add a sysfs knob to control
+ memmap_on_memory behavior
+In-Reply-To: <20231206-vv-dax_abi-v2-2-f4f4f2336d08@intel.com> (Vishal Verma's
+        message of "Wed, 6 Dec 2023 21:36:15 -0700")
+References: <20231206-vv-dax_abi-v2-0-f4f4f2336d08@intel.com>
+        <20231206-vv-dax_abi-v2-2-f4f4f2336d08@intel.com>
+Date:   Fri, 08 Dec 2023 11:13:32 +0800
+Message-ID: <8734wd1j4z.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-References: <20231207213410.417564-1-rmoar@google.com> <20231207213410.417564-2-rmoar@google.com>
-In-Reply-To: <20231207213410.417564-2-rmoar@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Fri, 8 Dec 2023 11:13:03 +0800
-Message-ID: <CABVgOSkqH0Gsw-w5Dkm2dRfFTOd5_zhBawn0Lwgf+rkckRWpfQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] kunit: tool: add test for parsing attributes
-To:     Rae Moar <rmoar@google.com>
-Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Dec 2023 at 05:34, Rae Moar <rmoar@google.com> wrote:
+Vishal Verma <vishal.l.verma@intel.com> writes:
+
+> Add a sysfs knob for dax devices to control the memmap_on_memory setting
+> if the dax device were to be hotplugged as system memory.
 >
-> Add test for parsing attributes to kunit_tool_test.py. Test checks
-> attributes are parsed and saved in the test logs.
+> The default memmap_on_memory setting for dax devices originating via
+> pmem or hmem is set to 'false' - i.e. no memmap_on_memory semantics, to
+> preserve legacy behavior. For dax devices via CXL, the default is on.
+> The sysfs control allows the administrator to override the above
+> defaults if needed.
 >
-> This test also checks that the attributes have not interfered with the
-> parsing of other test information, specifically the suite header as
-> the test plan was being incorrectely parsed.
->
-> Signed-off-by: Rae Moar <rmoar@google.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
 > ---
-
-Thanks -- it's good to have this tested. I'm looking forward to our
-actually parsing attributes out and using them for things in the
-future, too.
-
-Reviewed-by: David Gow <davidgow@google.com>
-
-Cheers,
--- David
-
->  tools/testing/kunit/kunit_tool_test.py           | 16 ++++++++++++++++
->  .../kunit/test_data/test_parse_attributes.log    |  9 +++++++++
->  2 files changed, 25 insertions(+)
->  create mode 100644 tools/testing/kunit/test_data/test_parse_attributes.log
+>  drivers/dax/bus.c                       | 40 +++++++++++++++++++++++++++++++++
+>  Documentation/ABI/testing/sysfs-bus-dax | 13 +++++++++++
+>  2 files changed, 53 insertions(+)
 >
-> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> index b28c1510be2e..2beb7327e53f 100755
-> --- a/tools/testing/kunit/kunit_tool_test.py
-> +++ b/tools/testing/kunit/kunit_tool_test.py
-> @@ -331,6 +331,22 @@ class KUnitParserTest(unittest.TestCase):
->                         kunit_parser.parse_run_tests(file.readlines())
->                 self.print_mock.assert_any_call(StrContains('suite (1 subtest)'))
->
-> +       def test_parse_attributes(self):
-> +               ktap_log = test_data_path('test_parse_attributes.log')
-> +               with open(ktap_log) as file:
-> +                       result = kunit_parser.parse_run_tests(file.readlines())
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index 1ff1ab5fa105..11abb57cc031 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -1270,6 +1270,45 @@ static ssize_t numa_node_show(struct device *dev,
+>  }
+>  static DEVICE_ATTR_RO(numa_node);
+>  
+> +static ssize_t memmap_on_memory_show(struct device *dev,
+> +				     struct device_attribute *attr, char *buf)
+> +{
+> +	struct dev_dax *dev_dax = to_dev_dax(dev);
 > +
-> +               # Test should pass with no errors
-> +               self.assertEqual(result.counts, kunit_parser.TestCounts(passed=1, errors=0))
-> +               self.assertEqual(kunit_parser.TestStatus.SUCCESS, result.status)
+> +	return sprintf(buf, "%d\n", dev_dax->memmap_on_memory);
+> +}
 > +
-> +               # Ensure suite header is parsed correctly
-> +               self.print_mock.assert_any_call(StrContains('suite (1 subtest)'))
+> +static ssize_t memmap_on_memory_store(struct device *dev,
+> +				      struct device_attribute *attr,
+> +				      const char *buf, size_t len)
+> +{
+> +	struct dev_dax *dev_dax = to_dev_dax(dev);
+> +	struct dax_region *dax_region = dev_dax->region;
+> +	ssize_t rc;
+> +	bool val;
 > +
-> +               # Ensure attributes in correct test log
-> +               self.assertContains('# module: example', result.subtests[0].log)
-> +               self.assertContains('# test.speed: slow', result.subtests[0].subtests[0].log)
+> +	rc = kstrtobool(buf, &val);
+> +	if (rc)
+> +		return rc;
 > +
->         def test_show_test_output_on_failure(self):
->                 output = """
->                 KTAP version 1
-> diff --git a/tools/testing/kunit/test_data/test_parse_attributes.log b/tools/testing/kunit/test_data/test_parse_attributes.log
-> new file mode 100644
-> index 000000000000..1a13c371fe9d
-> --- /dev/null
-> +++ b/tools/testing/kunit/test_data/test_parse_attributes.log
-> @@ -0,0 +1,9 @@
-> +KTAP version 1
-> +1..1
-> +  KTAP version 1
-> +  # Subtest: suite
-> +  # module: example
-> +  1..1
-> +  # test.speed: slow
-> +  ok 1 test
-> +ok 1 suite
-> \ No newline at end of file
+> +	if (dev_dax->memmap_on_memory == val)
+> +		return len;
+> +
+> +	device_lock(dax_region->dev);
+> +	if (!dax_region->dev->driver) {
 
-Why doesn't this have a newline at the end of the file?
+This still doesn't look right.  Can we check whether the current driver
+is kmem?  And only allow change if it's not kmem?
 
-I'm actually okay with it here (it's good to test the case where there
-isn't one _somewhere_), but in general, I think we'd want to prefer
-KTAP documents end with the trailing newline, like most text file.
+--
+Best Regards,
+Huang, Ying
+
+> +		device_unlock(dax_region->dev);
+> +		return -ENXIO;
+> +	}
+> +
+> +	device_lock(dev);
+> +	dev_dax->memmap_on_memory = val;
+> +	device_unlock(dev);
+> +
+> +	device_unlock(dax_region->dev);
+> +	return rc == 0 ? len : rc;
+> +}
+> +static DEVICE_ATTR_RW(memmap_on_memory);
+> +
+>  static umode_t dev_dax_visible(struct kobject *kobj, struct attribute *a, int n)
+>  {
+>  	struct device *dev = container_of(kobj, struct device, kobj);
+> @@ -1296,6 +1335,7 @@ static struct attribute *dev_dax_attributes[] = {
+>  	&dev_attr_align.attr,
+>  	&dev_attr_resource.attr,
+>  	&dev_attr_numa_node.attr,
+> +	&dev_attr_memmap_on_memory.attr,
+>  	NULL,
+>  };
+>  
+> diff --git a/Documentation/ABI/testing/sysfs-bus-dax b/Documentation/ABI/testing/sysfs-bus-dax
+> index a61a7b186017..bb063a004e41 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-dax
+> +++ b/Documentation/ABI/testing/sysfs-bus-dax
+> @@ -149,3 +149,16 @@ KernelVersion:	v5.1
+>  Contact:	nvdimm@lists.linux.dev
+>  Description:
+>  		(RO) The id attribute indicates the region id of a dax region.
+> +
+> +What:		/sys/bus/dax/devices/daxX.Y/memmap_on_memory
+> +Date:		October, 2023
+> +KernelVersion:	v6.8
+> +Contact:	nvdimm@lists.linux.dev
+> +Description:
+> +		(RW) Control the memmap_on_memory setting if the dax device
+> +		were to be hotplugged as system memory. This determines whether
+> +		the 'altmap' for the hotplugged memory will be placed on the
+> +		device being hotplugged (memmap_on+memory=1) or if it will be
+> +		placed on regular memory (memmap_on_memory=0). This attribute
+> +		must be set before the device is handed over to the 'kmem'
+> +		driver (i.e.  hotplugged into system-ram).
