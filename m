@@ -2,185 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 960CC80AAD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:32:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC6080AAAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233739AbjLHRcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:32:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
+        id S233733AbjLHRZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:25:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574557AbjLHRZp (ORCPT
+        with ESMTP id S232094AbjLHRZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:25:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFF610E3;
-        Fri,  8 Dec 2023 09:25:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702056351; x=1733592351;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=KmdBc3HWqTwUasM7vZjbBzM2mrzmquHQNOkk6b78KiY=;
-  b=fTlEJ7CpPbxGXy9gUyjriiXVFqrH35Mx6lGLKRFEXFJzxb4hKRCh1e8x
-   +aHm3N+hIawSiL5yC4VwhqSsr6Z9BW9d/FR4iXMUq26Ppsa0R+Zn8SfhN
-   PlXOGhczzk/DhNc2NrtnOleLdH/lXFi9BZoRSyKZWUCuFD7A4uGF4jg7C
-   yYMEVWdHx+Mek/HzkDWSvTcSvt4nG2lj4zNaATYKzR4gej1eOp1I2p413
-   fYSU+BnBSrn9cRPf0bUklnFJ+5ewMRk8RcWNTNskdwjMi2Txtg/E0In+f
-   jITeAXzih4RABDheVCr/QFFDUbNIJhsBzWwB/miG75HvgsAnBymoT/L7c
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="379432530"
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="379432530"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 09:25:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="772201694"
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="772201694"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.249.34.218])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 09:25:27 -0800
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Hendrik Brueckner <brueckner@linux.ibm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH RFC V2 4/4] coresight: Have a stab at support for pause / resume
-Date:   Fri,  8 Dec 2023 19:24:49 +0200
-Message-Id: <20231208172449.35444-5-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231208172449.35444-1-adrian.hunter@intel.com>
-References: <20231208172449.35444-1-adrian.hunter@intel.com>
+        Fri, 8 Dec 2023 12:25:00 -0500
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F84E0;
+        Fri,  8 Dec 2023 09:25:06 -0800 (PST)
+Received: from [192.168.1.104] (178.176.72.145) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Fri, 8 Dec
+ 2023 20:24:59 +0300
+Subject: Re: [PATCH v4 03/22] MIPS: spaces: Define a couple of handy macros
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        <linux-mips@vger.kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?UTF-8?Q?Th=c3=a9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20231208161249.1827174-1-gregory.clement@bootlin.com>
+ <20231208161249.1827174-4-gregory.clement@bootlin.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <c7e54907-6665-785b-1aa7-a7bbc2fdd6e2@omp.ru>
+Date:   Fri, 8 Dec 2023 20:24:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231208161249.1827174-4-gregory.clement@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.72.145]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 12/08/2023 17:06:02
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 181987 [Dec 08 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 6 0.3.6 62f5a4619c57459c9a142aa1486ed27913162963
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.72.145 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.72.145 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info: omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.145
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/08/2023 17:10:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/8/2023 1:21:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For discussion only, un-tested, not even compiled...
+On 12/8/23 7:12 PM, Gregory CLEMENT wrote:
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- .../hwtracing/coresight/coresight-etm-perf.c  | 29 ++++++++++++++++---
- 1 file changed, 25 insertions(+), 4 deletions(-)
+> KSEGX_SIZE is defined to size of each KSEG segment.
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index 5ca6278baff4..36e774405c51 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -45,6 +45,7 @@ static bool etm_perf_up;
- struct etm_ctxt {
- 	struct perf_output_handle handle;
- 	struct etm_event_data *event_data;
-+	int pr_allowed;
- };
- 
- static DEFINE_PER_CPU(struct etm_ctxt, etm_ctxt);
-@@ -452,6 +453,13 @@ static void etm_event_start(struct perf_event *event, int flags)
- 	struct list_head *path;
- 	u64 hw_id;
- 
-+	if (mode & PERF_EF_RESUME) {
-+		if (!READ_ONCE(ctxt->pr_allowed))
-+			return;
-+	} else if (READ_ONCE(event->aux_paused)) {
-+		goto out_pr_allowed;
-+	}
-+
- 	if (!csdev)
- 		goto fail;
- 
-@@ -514,6 +522,8 @@ static void etm_event_start(struct perf_event *event, int flags)
- 	event->hw.state = 0;
- 	/* Save the event_data for this ETM */
- 	ctxt->event_data = event_data;
-+out_pr_allowed:
-+	WRITE_ONCE(ctxt->pr_allowed, 1);
- 	return;
- 
- fail_disable_path:
-@@ -530,6 +540,7 @@ static void etm_event_start(struct perf_event *event, int flags)
- 	}
- fail:
- 	event->hw.state = PERF_HES_STOPPED;
-+	WRITE_ONCE(ctxt->pr_allowed, 0);
- 	return;
- }
- 
-@@ -543,6 +554,11 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 	struct etm_event_data *event_data;
- 	struct list_head *path;
- 
-+	if (mode & PERF_EF_PAUSE && !READ_ONCE(ctxt->pr_allowed))
-+		return;
-+
-+	WRITE_ONCE(ctxt->pr_allowed, 0);
-+
- 	/*
- 	 * If we still have access to the event_data via handle,
- 	 * confirm that we haven't messed up the tracking.
-@@ -556,7 +572,7 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 	ctxt->event_data = NULL;
- 
- 	if (event->hw.state == PERF_HES_STOPPED)
--		return;
-+		goto out_pr_allowed;
- 
- 	/* We must have a valid event_data for a running event */
- 	if (WARN_ON(!event_data))
-@@ -627,6 +643,10 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 
- 	/* Disabling the path make its elements available to other sessions */
- 	coresight_disable_path(path);
-+
-+out_pr_allowed:
-+	if (mode & PERF_EF_PAUSE)
-+		WRITE_ONCE(ctxt->pr_allowed, 1);
- }
- 
- static int etm_event_add(struct perf_event *event, int mode)
-@@ -634,7 +654,7 @@ static int etm_event_add(struct perf_event *event, int mode)
- 	int ret = 0;
- 	struct hw_perf_event *hwc = &event->hw;
- 
--	if (mode & PERF_EF_START) {
-+	if (mode & PERF_EF_START && !READ_ONCE(event->aux_paused)) {
- 		etm_event_start(event, 0);
- 		if (hwc->state & PERF_HES_STOPPED)
- 			ret = -EINVAL;
-@@ -886,8 +906,9 @@ int __init etm_perf_init(void)
- {
- 	int ret;
- 
--	etm_pmu.capabilities		= (PERF_PMU_CAP_EXCLUSIVE |
--					   PERF_PMU_CAP_ITRACE);
-+	etm_pmu.capabilities		= PERF_PMU_CAP_EXCLUSIVE |
-+					  PERF_PMU_CAP_ITRACE |
-+					  PERF_PMU_CAP_AUX_PAUSE;
- 
- 	etm_pmu.attr_groups		= etm_pmu_attr_groups;
- 	etm_pmu.task_ctx_nr		= perf_sw_context;
--- 
-2.34.1
+  To the size?
 
+> TO_CAC and TO_UNCAC are defined for 32bits builds and point to KSEG 0
+
+   KSEG0.
+
+> and KSEG1.
+> TO_PHYS remains to be 64bits only as we want people to
+> use __pa to avoid mixup compat address space.
+
+   Mixing up?
+
+> Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+[...]
+
+MBR, Sergey
