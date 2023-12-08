@@ -2,54 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D184809F22
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E57E809F2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbjLHJU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 04:20:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
+        id S1573358AbjLHJXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 04:23:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232974AbjLHJU4 (ORCPT
+        with ESMTP id S231863AbjLHJX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 04:20:56 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3015A1716
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 01:21:02 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rBX2N-0002Kw-04; Fri, 08 Dec 2023 10:20:47 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rBX2M-00ENvp-7x; Fri, 08 Dec 2023 10:20:46 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rBX2L-00GLWC-Uo; Fri, 08 Dec 2023 10:20:45 +0100
-Date:   Fri, 8 Dec 2023 10:20:45 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     kernel test robot <lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Subject: Re: WARNING: modpost: drivers/input/mouse/amimouse: section mismatch
- in reference: amimouse_driver+0x4 (section: .data) -> amimouse_remove
- (section: .exit.text)
-Message-ID: <20231208092045.rk7qta6g33ir7y5q@pengutronix.de>
-References: <202312081423.p7XRxPsZ-lkp@intel.com>
+        Fri, 8 Dec 2023 04:23:28 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F06171D
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 01:23:34 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40c09dfd82aso25210335e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 01:23:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702027413; x=1702632213; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sF5azUrnouYTUY2Q8ByvyW/W1CG+UKUpVM173B2tLAY=;
+        b=lVp4KS2jwtC92RaW/Pw3mhwR4W6yElFDSiw6awBe+4faQI9D8SQYt/YyEgF7rlda4i
+         47IrEblk9TZjYlbml+lpsD5qnUqj3XXtDEAYoON9LF9qJNVom5FYn5h2WviYmoXs4N4T
+         xv+Ka/1tTPC/bsCmBjQ05btj2SeofEXkWvEsKax3JZ/iquqV/jXjW17AD2IFs64KbQWs
+         Smgr9dVxzARxVIceiMXpzxsAx0kAnJllY3YhBm0kwBckT0Z16GHt936Fj+sAmt9MpFjv
+         LJ0Ao3mqFyJNM/2Fid2dlS+odixbj7DqI/NFI3JIqZvaiXt34ffWJynQ2TxiO3YeNFZK
+         UQbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702027413; x=1702632213;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sF5azUrnouYTUY2Q8ByvyW/W1CG+UKUpVM173B2tLAY=;
+        b=ezsp7wjzPHoeJ8N+NKsWxviq1NzJDeLzabr6yQPcymsQiPUHkcgI6oHZ1oPJjPMct5
+         eXNE2zrXZNa1LNccRZSAXi3VyK3Dol0S5r2dX5D7k6PL0OkwlqqkZR+nu4tqUgyMX89v
+         bM407iJMw2jixFk+s/FY2hc4CBVbs5hbytpjBkqppbRCUXYmP+Nf9W3EYMAWeFSTWwG1
+         uSUVpanMDmkETa+VzdPOGHFEoBbQws17dqs5P0SVZg72yIVaY9rV0Axo1tucZ8wC5mQh
+         Zl5madJCB7Ms01b7j6i8+/qxOAByIJ638qCR0kIhrTw7M04g9km8EW2McNPSUbPsB3OP
+         kaDg==
+X-Gm-Message-State: AOJu0YxEXGUml7BJZxYCUem8XeuAXKBmbSyzcFYP3Cp7W2643hyoc9FR
+        VQbzpI4AsbEERXQy1CQN/BgbgA==
+X-Google-Smtp-Source: AGHT+IEvKeHokwVerIBIQ2NqGjJa9qqHzGluDSdDAbP3u6FjHfiIdBV63XLY1yTgGyVKnGHC0iwO0w==
+X-Received: by 2002:a05:600c:444a:b0:40b:5e21:dd3c with SMTP id v10-20020a05600c444a00b0040b5e21dd3cmr2527781wmn.106.1702027413258;
+        Fri, 08 Dec 2023 01:23:33 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id d12-20020a05600c3acc00b0040b5377cf03sm4537310wms.1.2023.12.08.01.23.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 01:23:32 -0800 (PST)
+Date:   Fri, 8 Dec 2023 12:23:28 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] usb: fotg210-hcd: delete an incorrect bounds test
+Message-ID: <87dfa523-1882-417d-97b5-f606ff0099f9@moroto.mountain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ubvdkgmmew7jif2p"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202312081423.p7XRxPsZ-lkp@intel.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Mailer: git-send-email haha only kidding
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,86 +71,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Here "temp" is the number of characters that we have written and "size"
+is the size of the buffer.  The intent was clearly to say that if we have
+written to the end of the buffer then stop.
 
---ubvdkgmmew7jif2p
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+However, for that to work the comparison should have been done on the
+original "size" value instead of the "size -= temp" value.  Not only
+will that not trigger when we want to, but there is a small chance that
+it will trigger incorrectly before we want it to and we break from the
+loop slightly earlier than intended.
 
-Hello,
+This code was recently changed from using snprintf() to scnprintf().  With
+snprintf() we likely would have continued looping and passed a negative
+size parameter to snprintf().  This would have triggered an annoying
+WARN().  Now that we have converted to scnprintf() "size" will never
+drop below 1 and there is no real need for this test.  We could change
+the condition to "if (temp <= 1) goto done;" but just deleting the test
+is cleanest.
 
-On Fri, Dec 08, 2023 at 02:21:30PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t master
-> head:   5e3f5b81de80c98338bcb47c233aebefee5a4801
-> commit: f177cd0c15fcc7bdbb68d8d1a3166dead95314c8 modpost: Don't let "driv=
-er"s reference .exit.*
-> date:   10 weeks ago
-> config: m68k-defconfig (https://download.01.org/0day-ci/archive/20231208/=
-202312081423.p7XRxPsZ-lkp@intel.com/config)
-> compiler: m68k-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20231208/202312081423.p7XRxPsZ-lkp@intel.com/reproduce)
->=20
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202312081423.p7XRxPsZ-lkp=
-@intel.com/
->=20
-> All warnings (new ones prefixed by >>, old ones prefixed by <<):
->=20
-> >> WARNING: modpost: drivers/input/mouse/amimouse: section mismatch in re=
-ference: amimouse_driver+0x4 (section: .data) -> amimouse_remove (section: =
-=2Eexit.text)
-> >> WARNING: modpost: drivers/parport/parport_amiga: section mismatch in r=
-eference: amiga_parallel_driver+0x4 (section: .data) -> amiga_parallel_remo=
-ve (section: .exit.text)
-> >> WARNING: modpost: sound/oss/dmasound/dmasound_paula: section mismatch =
-in reference: amiga_audio_driver+0x4 (section: .data) -> amiga_audio_remove=
- (section: .exit.text)
+Fixes: 1dd33a9f1b95 ("usb: fotg210: Collect pieces of dual mode controller")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ drivers/usb/fotg210/fotg210-hcd.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-It's somewhat expected that a commit introducing a new warning triggers
-new warnings for the offending drivers.
+diff --git a/drivers/usb/fotg210/fotg210-hcd.c b/drivers/usb/fotg210/fotg210-hcd.c
+index b2f8b53cc8ef..8c5aaf860635 100644
+--- a/drivers/usb/fotg210/fotg210-hcd.c
++++ b/drivers/usb/fotg210/fotg210-hcd.c
+@@ -426,8 +426,6 @@ static void qh_lines(struct fotg210_hcd *fotg210, struct fotg210_qh *qh,
+ 				td->urb);
+ 		size -= temp;
+ 		next += temp;
+-		if (temp == size)
+-			goto done;
+ 	}
+ 
+ 	temp = scnprintf(next, size, "\n");
+@@ -435,7 +433,6 @@ static void qh_lines(struct fotg210_hcd *fotg210, struct fotg210_qh *qh,
+ 	size -= temp;
+ 	next += temp;
+ 
+-done:
+ 	*sizep = size;
+ 	*nextp = next;
+ }
+-- 
+2.42.0
 
-There are some more offenders than these. A quick look into these three
-shows that the warning is a false positive (i.e. I don't expect that a
-driver follows a link to a discarded function).
-
-To fix this you either need a commit like
-
-	141626dbc2e6 ("rtc: sh: Mark driver struct with __refdata to prevent secti=
-on mismatch warning")
-
-(if you really want continue using module_platform_driver_probe()), or
-modernize the driver (at the cost of a slightly increased memory
-footprint) with something like:
-
-	1865913dd590 ("media: meson-ir-tx: Drop usage of platform_driver_probe()")
-
-Addressing these is on my todo list, but not at it's top.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ubvdkgmmew7jif2p
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVy3+wACgkQj4D7WH0S
-/k7BdAgAmeNRoYCaR8JTAtI7Gm7e7UCvR1/xFKybG97hTO/6J1F90rSiwX+YmdKl
-qgWbJn7qxXCrENT4YzmI5aiSYXPxcq+rDm7NS1mBRNz4DrSRpeSYi3d5Mw3x1zaD
-VHF5DjlqCvoqZeuPMDictElG9gT2eSjgi11sPhAvj+dWHlAAecv/Gfh7qNHh0BLF
-wDXJ8MUJQmBDV9TMEh9EB2R55WuFC1sb7aXO/SNyf/Y1NUCtCQFDIlekYpHBz/Vb
-eoi3LFs/n3O/EYTVf5LyklVvZk3feEdpLMmMgh6X/BjLIcaJoY3qhEiNKDqQ1su8
-bpw36kgpKFauVxHEJdaAfKhYPeYj8w==
-=PcJp
------END PGP SIGNATURE-----
-
---ubvdkgmmew7jif2p--
