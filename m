@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA4E809A30
+	by mail.lfdr.de (Postfix) with ESMTP id 97A71809A2F
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 04:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573071AbjLHDWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 22:22:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
+        id S1573079AbjLHDWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 22:22:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLHDWO (ORCPT
+        with ESMTP id S1573076AbjLHDWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 22:22:14 -0500
+        Thu, 7 Dec 2023 22:22:19 -0500
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D941712;
-        Thu,  7 Dec 2023 19:22:20 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B83M6zK4576437, This message is accepted by code: ctloc85258
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CF51715;
+        Thu,  7 Dec 2023 19:22:24 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B83MCfpC576501, This message is accepted by code: ctloc85258
 Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B83M6zK4576437
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B83MCfpC576501
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Dec 2023 11:22:06 +0800
+        Fri, 8 Dec 2023 11:22:12 +0800
 Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
  RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2375.32; Fri, 8 Dec 2023 11:22:06 +0800
+ 15.1.2375.32; Fri, 8 Dec 2023 11:22:12 +0800
 Received: from localhost (172.22.81.102) by RTEXMBS01.realtek.com.tw
  (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.34; Fri, 8 Dec
- 2023 11:22:04 +0800
+ 2023 11:22:11 +0800
 From:   Ricky Wu <ricky_wu@realtek.com>
 To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
         <linux-kernel@vger.kernel.org>, <ulf.hansson@linaro.org>,
         <frank.li@vivo.com>, <u.kleine-koenig@pengutronix.de>,
         <linux-mmc@vger.kernel.org>
 CC:     <ricky_wu@realtek.com>
-Subject: [PATCH v7 2/3] misc: rtsx: add to support new card reader rts5264
-Date:   Fri, 8 Dec 2023 11:21:44 +0800
-Message-ID: <20231208032145.2143580-3-ricky_wu@realtek.com>
+Subject: [PATCH v7 3/3] mmc: rtsx: add rts5264 to support sd express card
+Date:   Fri, 8 Dec 2023 11:21:45 +0800
+Message-ID: <20231208032145.2143580-4-ricky_wu@realtek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231208032145.2143580-1-ricky_wu@realtek.com>
 References: <20231208032145.2143580-1-ricky_wu@realtek.com>
@@ -63,144 +63,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-in order to support rts5264 in rtsx_pcr add the id in and
-determine whether the device is rts5264 to call rts5264
-functions and do rts5264 workflows or set rts5264 registers
+rts5264 can support sd express card, so add the id in sd express card init
+to do rts5264 register setting when the sd express card insert
 
 Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
 ---
+v3: split up mmc part from v2 patch
 v4: split new definition up from v3
-v3: split the patch up with cardreader part and mmc part
-v2: removed ic version check
 ---
 ---
- drivers/misc/cardreader/rtsx_pcr.c | 30 +++++++++++++++++++++++++-----
- drivers/misc/cardreader/rtsx_pcr.h |  1 +
- 2 files changed, 26 insertions(+), 5 deletions(-)
+ drivers/mmc/host/rtsx_pci_sdmmc.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
-index a30751ad3733..1a64364700eb 100644
---- a/drivers/misc/cardreader/rtsx_pcr.c
-+++ b/drivers/misc/cardreader/rtsx_pcr.c
-@@ -26,6 +26,7 @@
- #include "rtsx_pcr.h"
- #include "rts5261.h"
- #include "rts5228.h"
-+#include "rts5264.h"
+diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
+index 87d78432a1e0..7dfe7c4e0077 100644
+--- a/drivers/mmc/host/rtsx_pci_sdmmc.c
++++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
+@@ -7,6 +7,7 @@
+  *   Wei WANG <wei_wang@realsil.com.cn>
+  */
  
- static bool msi_en = true;
- module_param(msi_en, bool, S_IRUGO | S_IWUSR);
-@@ -54,6 +55,7 @@ static const struct pci_device_id rtsx_pci_ids[] = {
- 	{ PCI_DEVICE(0x10EC, 0x5260), PCI_CLASS_OTHERS << 16, 0xFF0000 },
- 	{ PCI_DEVICE(0x10EC, 0x5261), PCI_CLASS_OTHERS << 16, 0xFF0000 },
- 	{ PCI_DEVICE(0x10EC, 0x5228), PCI_CLASS_OTHERS << 16, 0xFF0000 },
-+	{ PCI_DEVICE(0x10EC, 0x5264), PCI_CLASS_OTHERS << 16, 0xFF0000 },
- 	{ 0, }
- };
++#include <linux/pci.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/highmem.h>
+@@ -947,7 +948,7 @@ static int sd_power_on(struct realtek_pci_sdmmc *host, unsigned char power_mode)
+ 	/* send at least 74 clocks */
+ 	rtsx_pci_write_register(pcr, SD_BUS_STAT, SD_CLK_TOGGLE_EN, SD_CLK_TOGGLE_EN);
  
-@@ -714,6 +716,9 @@ int rtsx_pci_switch_clock(struct rtsx_pcr *pcr, unsigned int card_clock,
- 	if (PCI_PID(pcr) == PID_5228)
- 		return rts5228_pci_switch_clock(pcr, card_clock,
- 				ssc_depth, initial_mode, double_clk, vpclk);
-+	if (PCI_PID(pcr) == PID_5264)
-+		return rts5264_pci_switch_clock(pcr, card_clock,
-+				ssc_depth, initial_mode, double_clk, vpclk);
- 
- 	if (initial_mode) {
- 		/* We use 250k(around) here, in initial stage */
-@@ -987,7 +992,8 @@ static irqreturn_t rtsx_pci_isr(int irq, void *dev_id)
- 
- 	int_reg &= (pcr->bier | 0x7FFFFF);
- 
--	if (int_reg & SD_OC_INT)
-+	if ((int_reg & SD_OC_INT) ||
-+			((int_reg & SD_OVP_INT) && (PCI_PID(pcr) == PID_5264)))
- 		rtsx_pci_process_ocp_interrupt(pcr);
- 
- 	if (int_reg & SD_INT) {
-@@ -1159,7 +1165,9 @@ void rtsx_pci_enable_oobs_polling(struct rtsx_pcr *pcr)
- {
- 	u16 val;
- 
--	if ((PCI_PID(pcr) != PID_525A) && (PCI_PID(pcr) != PID_5260)) {
-+	if ((PCI_PID(pcr) != PID_525A) &&
-+		(PCI_PID(pcr) != PID_5260) &&
-+		(PCI_PID(pcr) != PID_5264)) {
- 		rtsx_pci_read_phy_register(pcr, 0x01, &val);
- 		val |= 1<<9;
- 		rtsx_pci_write_phy_register(pcr, 0x01, val);
-@@ -1175,7 +1183,9 @@ void rtsx_pci_disable_oobs_polling(struct rtsx_pcr *pcr)
- {
- 	u16 val;
- 
--	if ((PCI_PID(pcr) != PID_525A) && (PCI_PID(pcr) != PID_5260)) {
-+	if ((PCI_PID(pcr) != PID_525A) &&
-+		(PCI_PID(pcr) != PID_5260) &&
-+		(PCI_PID(pcr) != PID_5264)) {
- 		rtsx_pci_read_phy_register(pcr, 0x01, &val);
- 		val &= ~(1<<9);
- 		rtsx_pci_write_phy_register(pcr, 0x01, val);
-@@ -1226,7 +1236,7 @@ static int rtsx_pci_init_hw(struct rtsx_pcr *pcr)
- 	rtsx_pci_enable_bus_int(pcr);
- 
- 	/* Power on SSC */
 -	if (PCI_PID(pcr) == PID_5261) {
 +	if ((PCI_PID(pcr) == PID_5261) || (PCI_PID(pcr) == PID_5264)) {
- 		/* Gating real mcu clock */
- 		err = rtsx_pci_write_register(pcr, RTS5261_FW_CFG1,
- 			RTS5261_MCU_CLOCK_GATING, 0);
-@@ -1270,6 +1280,11 @@ static int rtsx_pci_init_hw(struct rtsx_pcr *pcr)
- 	else if (PCI_PID(pcr) == PID_5228)
- 		rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SSC_CTL2, 0xFF,
- 			RTS5228_SSC_DEPTH_2M);
-+	else if (is_version(pcr, 0x5264, IC_VER_A))
-+		rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SSC_CTL1, SSC_RSTB, 0);
-+	else if (PCI_PID(pcr) == PID_5264)
-+		rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SSC_CTL2, 0xFF,
-+			RTS5264_SSC_DEPTH_2M);
- 	else
- 		rtsx_pci_add_cmd(pcr, WRITE_REG_CMD, SSC_CTL2, 0xFF, 0x12);
+ 		/*
+ 		 * If test mode is set switch to SD Express mandatorily,
+ 		 * this is only for factory testing.
+@@ -1364,6 +1365,14 @@ static int sdmmc_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios)
+ 	struct realtek_pci_sdmmc *host = mmc_priv(mmc);
+ 	struct rtsx_pcr *pcr = host->pcr;
  
-@@ -1305,6 +1320,7 @@ static int rtsx_pci_init_hw(struct rtsx_pcr *pcr)
- 	case PID_5260:
- 	case PID_5261:
- 	case PID_5228:
-+	case PID_5264:
- 		rtsx_pci_write_register(pcr, PM_CLK_FORCE_CTL, 1, 1);
- 		break;
- 	default:
-@@ -1404,6 +1420,10 @@ static int rtsx_pci_init_chip(struct rtsx_pcr *pcr)
- 	case 0x5228:
- 		rts5228_init_params(pcr);
- 		break;
++	if (PCI_PID(pcr) == PID_5264) {
++		pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL2,
++				PCI_EXP_LNKCTL2_TLS, PCI_EXP_LNKCTL2_TLS_2_5GT);
++		pci_write_config_byte(pcr->pci, 0x80e, 0x02);
++		pcie_capability_clear_and_set_word(pcr->pci, PCI_EXP_LNKCTL2,
++				PCI_EXP_LNKCTL2_TLS, PCI_EXP_LNKCTL2_TLS_5_0GT);
++	}
 +
-+	case 0x5264:
-+		rts5264_init_params(pcr);
-+		break;
- 	}
+ 	/* Set relink_time for changing to PCIe card */
+ 	relink_time = 0x8FFF;
  
- 	pcr_dbg(pcr, "PID: 0x%04x, IC version: 0x%02x\n",
-@@ -1544,7 +1564,7 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
- 	pcr->pci = pcidev;
- 	dev_set_drvdata(&pcidev->dev, handle);
+@@ -1379,6 +1388,12 @@ static int sdmmc_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios)
+ 	if (pcr->ops->disable_auto_blink)
+ 		pcr->ops->disable_auto_blink(pcr);
  
--	if (CHK_PCI_PID(pcr, 0x525A))
-+	if ((CHK_PCI_PID(pcr, 0x525A)) || (CHK_PCI_PID(pcr, 0x5264)))
- 		bar = 1;
- 	len = pci_resource_len(pcidev, bar);
- 	base = pci_resource_start(pcidev, bar);
-diff --git a/drivers/misc/cardreader/rtsx_pcr.h b/drivers/misc/cardreader/rtsx_pcr.h
-index 37d1f316ae17..9215d66de00c 100644
---- a/drivers/misc/cardreader/rtsx_pcr.h
-+++ b/drivers/misc/cardreader/rtsx_pcr.h
-@@ -74,6 +74,7 @@ void rtl8411b_init_params(struct rtsx_pcr *pcr);
- void rts5260_init_params(struct rtsx_pcr *pcr);
- void rts5261_init_params(struct rtsx_pcr *pcr);
- void rts5228_init_params(struct rtsx_pcr *pcr);
-+void rts5264_init_params(struct rtsx_pcr *pcr);
- 
- static inline u8 map_sd_drive(int idx)
- {
++	if (PCI_PID(pcr) == PID_5264) {
++		rtsx_pci_write_register(pcr, RTS5264_AUTOLOAD_CFG2,
++			RTS5264_CHIP_RST_N_SEL, RTS5264_CHIP_RST_N_SEL);
++		rtsx_pci_write_register(pcr, GPIO_CTL, 0x02, 0x00);
++	}
++
+ 	/* For PCIe/NVMe mode can't enter delink issue */
+ 	pcr->hw_param.interrupt_en &= ~(SD_INT_EN);
+ 	rtsx_pci_writel(pcr, RTSX_BIER, pcr->hw_param.interrupt_en);
 -- 
 2.25.1
 
