@@ -2,135 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B3580A42E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:11:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A86A480A430
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:11:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbjLHNLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:11:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46090 "EHLO
+        id S235876AbjLHNLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:11:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjLHNLT (ORCPT
+        with ESMTP id S233428AbjLHNLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:11:19 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C765171F;
-        Fri,  8 Dec 2023 05:11:25 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50be4f03b06so1988890e87.0;
-        Fri, 08 Dec 2023 05:11:25 -0800 (PST)
+        Fri, 8 Dec 2023 08:11:42 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3ACB1989;
+        Fri,  8 Dec 2023 05:11:48 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c9eca5bbaeso24922511fa.3;
+        Fri, 08 Dec 2023 05:11:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702041083; x=1702645883; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1Mc8pd+JGsMBBmrhXXZ+fBzvZKyRg4PUPNqkV09w+/0=;
-        b=Qv4Hx1ns26EybK67ZRfPa9N8qPRRpgT2QA4OrXB5K3ehYXazXRTHZGa6bUP8rBMSxA
-         5FJ4D6ctbJdxuc2GPy3xpde3l7OtuSfxy7md9SP9ZLjYV55udL1l9/zAl8eUjoOqEGGF
-         2XuxW4aP4vDa+ttCgLk6f9n3Ht3qJFaA+VgVz9+nUoLE9Gyds2c40n31nR+AdQ3AwoCw
-         aQfJawTC5c7pTwLmOly++2BlCk4WvCKxJh9mZN1voxgYSPhaZiwju2D/w3H3dDqlgjwF
-         ljJdk9mp7WNfjODINETQeuJM1AfH/TAIGNQWxaX/au8NtVTK8aX/3KE2w2dXYSYgEQcL
-         eF9g==
+        d=gmail.com; s=20230601; t=1702041106; x=1702645906; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:cc:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QQN7wOqaADX2FECQYklXLB5Tqg9UqwVc4LsoIF89I/E=;
+        b=LFWVJKeevgHEz8Tf37Ouf5M9Qr9yYZvbUycsffJeXyyjCwJ2fN3t1z7BfFbzHauXP2
+         9o4ITcFndrFWoSMcFkl4cRPjXLQohveOB2gWMMog5tWGZ+7Q0kEHwoNiOybFyAsAq/Ks
+         auv+q2IKP4CsfMT6cegsaZnzlbq9+qJaVBAiMtZwJnyViaHVXHqGq4UYrw96nAn19ww2
+         le2IJBm8YkjNYGisDNTe7dkSId8/2pimKmCBru8gdZVQYH8aM6Z2PQvouMJyv18O5UH0
+         UzoW0x7UgeQVC8et6946uVp/qSqKH0ITSf99JZOQUqtxpnXmpGHyH/BNHdrLajGi4yIA
+         J8oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702041083; x=1702645883;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1702041106; x=1702645906;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:cc:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Mc8pd+JGsMBBmrhXXZ+fBzvZKyRg4PUPNqkV09w+/0=;
-        b=AnCbMJr6UqVgsGaw0jV36RUAjfwHOHNFTiNh3Zj7WSmT/6hzty75faHFQLb3jTIEYh
-         J/+u3VXWxEoFW/CB/p8Gghiw2rb28oISLWIHnnLyiUuL0C/qXQbMds+3Wsqd/3oDFllr
-         Ok+uPYkcDHBDjNXHVT7PWR4HSKdhAv5mJFfv/A+ZwT2s9L4iquk/Mv+mBhiuUwpvr5IG
-         ZBwuRqe49b16Hvddl3rtoFSUgTe3fPThk/8aYiJWxrtsua/+GRa+cxkuyauPah+sYT4K
-         dS054tnKQXIJAGw+C1y8t4uVrsTRr85+2FsOVlLMPUqax4GBezvXG3aOSWg0NsqKnspR
-         XxaQ==
-X-Gm-Message-State: AOJu0YwBOUB8/6ULs5sS3xJoLiG7vrscKO5JGviRHJvVkgFxC4krxn08
-        rsn0Xo1kDjiMtPsEWsBq6GM=
-X-Google-Smtp-Source: AGHT+IGPrHBBxJh0j/3OfMzxwodQkGdjtbgxBw4JHCjuMYIfydB4r+AWvF0NB+wuzWOB8VGMGi3Ekw==
-X-Received: by 2002:ac2:4c0b:0:b0:50c:11:4745 with SMTP id t11-20020ac24c0b000000b0050c00114745mr1725166lfq.137.1702041083136;
-        Fri, 08 Dec 2023 05:11:23 -0800 (PST)
-Received: from eichest-laptop ([2a02:168:af72:0:905b:7c28:f9e2:a6aa])
-        by smtp.gmail.com with ESMTPSA id a4-20020a509e84000000b0054ccc3b2109sm817801edf.57.2023.12.08.05.11.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 05:11:20 -0800 (PST)
-Date:   Fri, 8 Dec 2023 14:11:18 +0100
-From:   Stefan Eichenberger <eichest@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     nick@shmanahar.org, dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@tuxon.dev, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Stefan Eichenberger <stefan.eichenberger@toradex.com>
-Subject: Re: [PATCH v1 1/2] dt-bindings: input: atmel,maxtouch: add
- poweroff-in-suspend property
-Message-ID: <ZXMV9gzFbc05IEKg@eichest-laptop>
-References: <20231207111300.80581-1-eichest@gmail.com>
- <20231207111300.80581-2-eichest@gmail.com>
- <CACRpkdbSs-vebvchxx-Tg+O5CUF5M3vZf-iytuW=ZECnHb2anA@mail.gmail.com>
+        bh=QQN7wOqaADX2FECQYklXLB5Tqg9UqwVc4LsoIF89I/E=;
+        b=VVlX7N9BY/XQKLjMzOJOU/+b5Jyj8I+jlsPv3dUSoCmvoY67dFsyev2gj9yol1akT4
+         A0XvQxCKZghjJpdEw00iPawuPj/0AgExtv+Lu1E8tI9Fxxp3/IKQm92FKN9bQVQY15yD
+         Cd/TnTlFCKOgnHDSO5U1pZ327WEAB0X2D5wescgjwzSFii1BAZYftjLziT5T3xuSJ1+J
+         R4S9b3ayNNhyYwnqLNc/UlKBMHH/7JsZGzsJCsvNHTQO+Lk+swvv2jI27bFC3slgnvGc
+         drWxwLIPg00jvW9q0Ckok2yG27wVv8+CQ+9rRBSMtKlqUSwShWh19b3Jq02qwio2luJW
+         GFfA==
+X-Gm-Message-State: AOJu0YyYoTb/FAoftyB0L5m6Mn+OYvsOFtdycpmG8PvzFW0Js+m81Eas
+        cxTdVSTx4p/RsoYMpRVW9SXC02CosvVwHg==
+X-Google-Smtp-Source: AGHT+IGGkMAvYab/wZG/Zon/PUKK0rHCXJwWYAyNSleQUMOV/alanT+aFaxQxXW3pOOsIw6UCgKTAg==
+X-Received: by 2002:a2e:9887:0:b0:2c9:fa05:6c02 with SMTP id b7-20020a2e9887000000b002c9fa056c02mr1192925ljj.171.1702041106220;
+        Fri, 08 Dec 2023 05:11:46 -0800 (PST)
+Received: from [192.168.0.28] (cable-178-148-234-71.dynamic.sbb.rs. [178.148.234.71])
+        by smtp.gmail.com with ESMTPSA id sk13-20020a170906630d00b00a1d232b39b3sm990819ejc.145.2023.12.08.05.11.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Dec 2023 05:11:45 -0800 (PST)
+Message-ID: <d91d4bf1-3e8d-4b63-baa9-479a91d04eb7@gmail.com>
+Date:   Fri, 8 Dec 2023 14:11:44 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdbSs-vebvchxx-Tg+O5CUF5M3vZf-iytuW=ZECnHb2anA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     savicaleksa83@gmail.com,
+        Wilken Gottwalt <wilken.gottwalt@posteo.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: (corsair-psu) Fix failure to load when built-in to
+ kernel
+To:     linux-hwmon@vger.kernel.org
+References: <20231208130710.191420-1-savicaleksa83@gmail.com>
+Content-Language: en-US
+From:   Aleksa Savic <savicaleksa83@gmail.com>
+In-Reply-To: <20231208130710.191420-1-savicaleksa83@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof and Linux,
-
-On Fri, Dec 08, 2023 at 01:54:21PM +0100, Linus Walleij wrote:
-> On Thu, Dec 7, 2023 at 12:13 PM Stefan Eichenberger <eichest@gmail.com> wrote:
+On 2023-12-08 14:07:10 GMT+01:00, Aleksa Savic wrote:
+> When built-in to the kernel, the corsair-psu driver fails to register with
+> the following message:
 > 
-> > From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
-> >
-> > Add a new property to indicate that the device should be powered off in
-> > suspend mode.
-> >
-> > Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
-> (...)
-> > +  atmel,poweroff-in-suspend:
-> > +    description: |
-> > +      When this property is set, all supplies are turned off when the system is
-> > +      going to suspend.
-> > +    type: boolean
->    wakeup-source:
->      type: boolean
+> "Driver 'corsair-psu' was unable to register with bus_type 'hid'
+> because the bus was not initialized."
 > 
-> As Krzysztof says it seems you are describing an operating system feature.
+> Fix this by initializing the driver after the HID bus using
+> late_initcall(), as hwmon is built before HID.
 > 
-> I can't help but wonder: shouldn't that pretty much be the default behaviour
-> if wakeup-source is *not* specified?
+> Fixes: d115b51e0e56 ("hwmon: add Corsair PSU HID controller driver")
+> Signed-off-by: Aleksa Savic <savicaleksa83@gmail.com>
+> ---
+>  drivers/hwmon/corsair-psu.c | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
 > 
-> I.e. the property kind of describes !wakeup-source.
+> diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
+> index 904890598c11..48831a528965 100644
+> --- a/drivers/hwmon/corsair-psu.c
+> +++ b/drivers/hwmon/corsair-psu.c
+> @@ -899,7 +899,20 @@ static struct hid_driver corsairpsu_driver = {
+>  	.reset_resume	= corsairpsu_resume,
+>  #endif
+>  };
+> -module_hid_driver(corsairpsu_driver);
+> +
+> +static int __init corsairpsu_hid_init(void)
+> +{
+> +	return hid_register_driver(&corsairpsu_driver);
+> +}
+> +
+> +static void __exit corsairpsu_hid_exit(void)
+> +{
+> +	hid_unregister_driver(&corsairpsu_driver);
+> +}
+> +
+> +/* When compiled into the kernel, initialize after the hid bus */
+> +late_initcall(corsairpsu_hid_init);
+> +module_exit(corsairpsu_hid_exit);
+>  
+>  MODULE_LICENSE("GPL");
+>  MODULE_AUTHOR("Wilken Gottwalt <wilken.gottwalt@posteo.net>");
 
-The maxtouch controller has a deep sleep mode which is currently used
-without powering down vdd and vdda. However, because we have a shared
-regulator which powers other peripherals that we want to shut down in
-suspend we need a way to power down vdd and vdda. However, I agree this
-is not really a feature of the device. The feature would basically be
-the internal deep sleep mode. I didn't want to change the default
-behaviour of the driver, so I added this property but maybe I could
-change it to:
 
-atmel,deep-sleep:
-  description: |
-     Use the maxtouch deep-sleep mode instead of powering down vdd and
-     vdda.
+Woops! Just saw that the same fix was sent yesterday. Please disregard, sorry!
 
-Or to not change the default behaviour:
-atmel,no-deep-sleep:
-  description: |
-     Do not use the maxtouch deep-sleep mode but power down vdd and vdda
-     in suspend.
-
-As I understand the datasheet even if the maxtouch is using its deep
-sleep mode it does not act as a wakeup source. It is just faster in
-waking up because it can keep the configuration in memory.
-
-Regards,
-Stefan
+Aleksa
