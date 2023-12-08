@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD05809F4D
+	by mail.lfdr.de (Postfix) with ESMTP id C4EA5809F4E
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235850AbjLHJ2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 04:28:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
+        id S233238AbjLHJ2K convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Dec 2023 04:28:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235826AbjLHJ2J (ORCPT
+        with ESMTP id S231902AbjLHJ2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 04:28:09 -0500
-Received: from mailo.com (msg-1.mailo.com [213.182.54.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32916D53
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 01:28:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
-        t=1702027676; bh=D8+UH4xug/sCJ5OQ4N0Vmv6PxIEliznU2xF1VKbpMN4=;
-        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-         MIME-Version:Content-Transfer-Encoding;
-        b=D6faQmQaG9PEy/Efk5lLgjBunbKQXqs03x7/gHHUpZQHZ9GeA7imA405DuGbm3BL1
-         f3HM8qf1sBKcJEeorFSTqRf3EItv7+c7dYC+9xTVY/l7jXhv9YBZQLpH918x1RKCpv
-         vtqf7h98pFv2CF7yHbYmFEBFohZmO/XPF9RJl1/k=
-Received: by b221-2.in.mailobj.net [192.168.90.22] with ESMTP
-        via ip-22.mailoo.org [213.182.54.22]
-        Fri,  8 Dec 2023 10:27:56 +0100 (CET)
-X-EA-Auth: wqwlBRJW2HQ4K3bJq+SdF9rhtpNrrr1b+urzsLiJV/KpaoTj1fSAIMahQU+yW7sHD/tz5SeBSCKwURkG5v6vUEru+nkMdvZy+4GUjji9r/E=
-From:   Vincent Knecht <vincent.knecht@mailoo.org>
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Vincent Knecht <vincent.knecht@mailoo.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Subject: [PATCH v2] clk: qcom: gcc-msm8939: Fix mclk0 & mclk1 for 24 MHz
-Date:   Fri,  8 Dec 2023 10:27:37 +0100
-Message-ID: <20231208092737.681224-1-vincent.knecht@mailoo.org>
-X-Mailer: git-send-email 2.43.0
+        Fri, 8 Dec 2023 04:28:08 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B1F1724;
+        Fri,  8 Dec 2023 01:28:13 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B89RiMA2781900, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B89RiMA2781900
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 8 Dec 2023 17:27:44 +0800
+Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Fri, 8 Dec 2023 17:27:45 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Fri, 8 Dec 2023 17:27:44 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Fri, 8 Dec 2023 17:27:44 +0800
+From:   Justin Lai <justinlai0215@realtek.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Larry Chiu <larry.chiu@realtek.com>
+Subject: RE: [PATCH net-next v13 01/13] rtase: Add pci table supported in this module
+Thread-Topic: [PATCH net-next v13 01/13] rtase: Add pci table supported in
+ this module
+Thread-Index: AQHaI4J1hYqre02tzkGBvHQzDpC7MLCU5PoAgAV9LKCAALy7AIAECGwQ
+Date:   Fri, 8 Dec 2023 09:27:44 +0000
+Message-ID: <e5281291c4c04630ab818fdc8394841b@realtek.com>
+References: <20231130114327.1530225-1-justinlai0215@realtek.com>
+        <20231130114327.1530225-2-justinlai0215@realtek.com>
+        <20231201203602.7e380716@kernel.org>
+        <ae4807e31b53452ebf176098d95cf1fb@realtek.com>
+ <20231205194050.7033cc2b@kernel.org>
+In-Reply-To: <20231205194050.7033cc2b@kernel.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.21.210.185]
+x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix mclk0 & mclk1 parent map to use correct GPLL6 configuration and
-freq_tbl to use GPLL6 instead of GPLL0 so that they tick at 24 MHz.
+> 
+> On Wed, 6 Dec 2023 03:28:32 +0000 Justin Lai wrote:
+> > > > +static void rtase_remove_one(struct pci_dev *pdev) {
+> > > > +     struct net_device *dev = pci_get_drvdata(pdev);
+> > > > +     struct rtase_private *tp = netdev_priv(dev);
+> > > > +     struct rtase_int_vector *ivec;
+> > > > +     u32 i;
+> > > > +
+> > > > +     for (i = 0; i < tp->int_nums; i++) {
+> > > > +             ivec = &tp->int_vector[i];
+> > > > +             netif_napi_del(&ivec->napi);
+> > >
+> > > NAPI instances should be added on ndo_open()
+> >
+> > Do you want me to call netif_napi_add() in the .ndo_open function, and
+> > netif_napi_del() in the .ndo_stop function? However, I saw that many
+> > drivers do it in probe and remove. What is the purpose of doing this
+> > in .ndo_open and .ndo_stop?
+> 
+> They will sit in a fixed-size hash table used for NAPI lookup in the core. Not a
+> big deal, but not the best way either.
+> 
+> I think the main thing that prompted me to ask was that I couldn't find
+> napi_disable() in the first few patches. You should probably call it on close,
+> otherwise making sure NAPI is not running when you start freeing rings is hard.
+> synchronize_irq() will not help you at all if you're using NAPI.
 
-Fixes: 1664014e4679 ("clk: qcom: gcc-msm8939: Add MSM8939 Generic Clock Controller")
-Suggested-by: Stephan Gerhold <stephan@gerhold.net>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
----
-v2 :
-  - Added tags from Konrad and Bryan
-  - Mainly a resend because v1 didn't make it into lore and patchwork
----
- drivers/clk/qcom/gcc-msm8939.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/clk/qcom/gcc-msm8939.c b/drivers/clk/qcom/gcc-msm8939.c
-index b45f97c07eeb..e4a44377b75f 100644
---- a/drivers/clk/qcom/gcc-msm8939.c
-+++ b/drivers/clk/qcom/gcc-msm8939.c
-@@ -432,7 +432,7 @@ static const struct parent_map gcc_xo_gpll0_gpll1a_gpll6_sleep_map[] = {
- 	{ P_XO, 0 },
- 	{ P_GPLL0, 1 },
- 	{ P_GPLL1_AUX, 2 },
--	{ P_GPLL6, 2 },
-+	{ P_GPLL6, 3 },
- 	{ P_SLEEP_CLK, 6 },
- };
- 
-@@ -1100,7 +1100,7 @@ static struct clk_rcg2 jpeg0_clk_src = {
- };
- 
- static const struct freq_tbl ftbl_gcc_camss_mclk0_1_clk[] = {
--	F(24000000, P_GPLL0, 1, 1, 45),
-+	F(24000000, P_GPLL6, 1, 1, 45),
- 	F(66670000, P_GPLL0, 12, 0, 0),
- 	{ }
- };
--- 
-2.43.0
-
-
-
+Thanks, I will call napi_disable() on close to fix this issue.
