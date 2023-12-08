@@ -2,64 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E2480AF3E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 22:58:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2610A80AF3C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 22:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574839AbjLHV63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 16:58:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47074 "EHLO
+        id S1574823AbjLHV6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 16:58:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236064AbjLHV6N (ORCPT
+        with ESMTP id S236030AbjLHV6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 16:58:13 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E44172A
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 13:57:41 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E02A940E00C7;
-        Fri,  8 Dec 2023 21:57:39 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id pu-SK4I_uqek; Fri,  8 Dec 2023 21:57:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1702072657; bh=HyxNBBw6M4t7K4FsW/QvOnMlGlVd2OH0yYe9euKlsDE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Me4aVv3Gzpsf0YqFQlL2OAjtnafSMDjF7TfgbzEUfcHH5GUjUAsCUZJXm3e80Owbr
-         Ti3x2EGVBhawAJjaaO4qrN8mi5DYVnYSEPZRJWmlVqU3Ce//rg8D/CIpYnDdxEhIqu
-         kLF0fZt3NQsaU4r0q8G7YNvBsmK5SH/6ZY4SwSGfySFWzbfCYgiKs17yDVG29f408r
-         7haQFJKorMcIRB/RQCIRMZpad4CSg9NxrkRZdwbjqYl74zkifri81a11P0NRDygOaz
-         zLgmRupOaOlcBjU4RtUeWf7vy9bApDQZ9tg7UpBe0NOMdItSRMAAUTs4dRFxrC4XoF
-         KaxjUp+zamt0kaYwot+VJpDFbtbamTMhig6TxS663V7e1QFQzwnlwO2B4lU1eY3PHg
-         vI6f+V9xm8/ablZA+H+m9z4/gDYxruG+woU4RiNixTC08WrexFaY2uJgKPe1dxWp50
-         jN72pLsghtgniqsD+uOrttM8kOwMzScYJjhEjyXxuO/QB96RpQDx4TnTeT2q5zoX3J
-         1YO1tRKs8GLWPqaI3tnU1TrVpnmpHkWXI5QBn5Hn//LBBJVl89G42a0DQFTOtCqeQd
-         Qixo+U58KxbHQbCsXHhKvchQy8Pg2z2rc+VZwFUw/kz4F4BKLFlQAuRR2mF4AyMlJc
-         YlBxIRUl5mRI15JW/O9MYt/c=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 30F8E40E00C5;
-        Fri,  8 Dec 2023 21:57:34 +0000 (UTC)
-Date:   Fri, 8 Dec 2023 22:57:33 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH -v2] Documentation/x86: Document what /proc/cpuinfo is for
-Message-ID: <20231208215733.GEZXORTftWz1ubGdYl@fat_crate.local>
-References: <20231129101700.28482-1-bp@alien8.de>
- <4afd33ba-6b7c-415f-b9ef-964a2fc840d8@intel.com>
- <20231208215537.GDZXOQ2TKjOZJlflUz@fat_crate.local>
+        Fri, 8 Dec 2023 16:58:09 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1411999;
+        Fri,  8 Dec 2023 13:57:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702072656; x=1733608656;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=lHqrEpBiJ0PDgr+GI2M9OtrUkO104s4VptIFq7uLSKs=;
+  b=OR5We04lM3C8RyTUqdCLIRaVohMzYoFoG1Bve1NqA7AMUFx2YdOdnqmB
+   X7DQfKcSUcF+K3e4QUvdbspv7/aoK/Uc8lQp9GrGxYEJ+ed/VnNk/FUUH
+   8LA9VtfowPxhIOaSLvGuTOMXcLcomN/WCeP0+F2bL7QJI+kQmP6aofmmC
+   ChXSWIYi1b0X9EU5w1HuN86Ol9wVuEKoxF2QpVoijyx5PmhIT+QEZalT3
+   65HoAFxx2Im0lmrNmN6L4KLUKV6R9/ttu3OLoW10Ts2ho40uWnmuO1xD5
+   L7WthmG17nX/+ksJL/MejxmbRe86Nid3Umy8ytVeCtNTApJTXVJ9nCrr5
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="425599481"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="425599481"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 13:57:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="20239542"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 13:57:35 -0800
+Date:   Fri, 8 Dec 2023 13:57:33 -0800
+From:   Tony Luck <tony.luck@intel.com>
+To:     Peter Newman <peternewman@google.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH v6 1/3] x86/resctrl: Add mount option "mba_MBps_event"
+Message-ID: <ZXORTTIUKWXOsd9p@agluck-desk3>
+References: <20231201214737.104444-1-tony.luck@intel.com>
+ <20231207195613.153980-1-tony.luck@intel.com>
+ <20231207195613.153980-2-tony.luck@intel.com>
+ <CALPaoCji1yzfkA=tms3LhYMvRB+wSJQM3qzPKrHNEa7a+KduTA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231208215537.GDZXOQ2TKjOZJlflUz@fat_crate.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALPaoCji1yzfkA=tms3LhYMvRB+wSJQM3qzPKrHNEa7a+KduTA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,125 +74,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
-Date: Wed, 29 Nov 2023 11:12:55 +0100
+On Fri, Dec 08, 2023 at 10:17:08AM -0800, Peter Newman wrote:
+> Hi Tony,
+> 
+> On Thu, Dec 7, 2023 at 11:56 AM Tony Luck <tony.luck@intel.com> wrote:
+> >
+> > The MBA Software Controller(mba_sc) is a feedback loop that uses
+> > measurements of local memory bandwidth to adjust MBA throttling levels
+> > to keep workloads in a resctrl group within a target bandwidth set in
+> > the schemata file.
+> >
+> > Users may want to use total memory bandwidth instead of local to handle
+> > workloads that have poor NUMA localization.
+> >
+> > Add a new mount option "mba_MBps_event={event_name}" where event_name
+> > is one of "mbm_Local_bytes" or "mbm_total_bytes" that allows a user to
+> 
+> It's "mbm_local_bytes" in the matching logic later on.
 
-This has been long overdue. Write down what x86's version of
-/proc/cpuinfo is and should be used for.
+Clearly my left hand operating the shift key is not well synchronized
+with my right hand moving from "_" to "l".
 
-With improvements by dhansen.
+Will fix.
 
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
----
- Documentation/arch/x86/cpuinfo.rst | 89 +++++++++++++++++++++++-------
- 1 file changed, 68 insertions(+), 21 deletions(-)
+> > diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+> > index a4f1aa15f0a2..8b9b8f664324 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/internal.h
+> > +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+> > @@ -58,7 +58,8 @@ struct rdt_fs_context {
+> >         struct kernfs_fs_context        kfc;
+> >         bool                            enable_cdpl2;
+> >         bool                            enable_cdpl3;
+> > -       bool                            enable_mba_mbps;
+> > +       bool                            enable_mba_mbps_local;
+> > +       bool                            enable_mba_mbps_total;
+> >         bool                            enable_debug;
+> >  };
+> >
+> > diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+> > index f136ac046851..d9e590f1cbc3 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+> > +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+> > @@ -431,9 +431,10 @@ static int __mon_event_count(u32 rmid, struct rmid_read *rr)
+> >   */
+> >  static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
+> >  {
+> > -       struct mbm_state *m = &rr->d->mbm_local[rmid];
+> >         u64 cur_bw, bytes, cur_bytes;
+> > +       struct mbm_state *m;
+> >
+> > +       m = get_mbm_state(rr->d, rmid, rr->evtid);
+> 
+> WARN_ON(m == NULL) since we assume the caller has confirmed rr->evtid
+> is an MBM event?
 
-diff --git a/Documentation/arch/x86/cpuinfo.rst b/Documentation/arch/x86/cpuinfo.rst
-index 08246e8ac835..8895784d4784 100644
---- a/Documentation/arch/x86/cpuinfo.rst
-+++ b/Documentation/arch/x86/cpuinfo.rst
-@@ -7,27 +7,74 @@ x86 Feature Flags
- Introduction
- ============
- 
--On x86, flags appearing in /proc/cpuinfo have an X86_FEATURE definition
--in arch/x86/include/asm/cpufeatures.h. If the kernel cares about a feature
--or KVM want to expose the feature to a KVM guest, it can and should have
--an X86_FEATURE_* defined. These flags represent hardware features as
--well as software features.
--
--If users want to know if a feature is available on a given system, they
--try to find the flag in /proc/cpuinfo. If a given flag is present, it
--means that the kernel supports it and is currently making it available.
--If such flag represents a hardware feature, it also means that the
--hardware supports it.
--
--If the expected flag does not appear in /proc/cpuinfo, things are murkier.
--Users need to find out the reason why the flag is missing and find the way
--how to enable it, which is not always easy. There are several factors that
--can explain missing flags: the expected feature failed to enable, the feature
--is missing in hardware, platform firmware did not enable it, the feature is
--disabled at build or run time, an old kernel is in use, or the kernel does
--not support the feature and thus has not enabled it. In general, /proc/cpuinfo
--shows features which the kernel supports. For a full list of CPUID flags
--which the CPU supports, use tools/arch/x86/kcpuid.
-+The list of feature flags in /proc/cpuinfo is not complete and
-+represents an ill-fated attempt from long time ago to put feature flags
-+in an easy to find place for userspace.
-+
-+However, the amount of feature flags is growing by the CPU generation,
-+leading to unparseable and unwieldy /proc/cpuinfo.
-+
-+What is more, those feature flags do not even need to be in that file
-+because userspace doesn't care about them - glibc et al already use
-+CPUID to find out what the target machine supports and what not.
-+
-+And even if it doesn't show a particular feature flag - although the CPU
-+still does have support for the respective hardware functionality and
-+said CPU supports CPUID faulting - userspace can simply probe for the
-+feature and figure out if it is supported or not, regardless of whether
-+it is being advertised somewhere.
-+
-+Furthermore, those flag strings become an ABI the moment they appear
-+there and maintaining them forever when nothing even uses them is a lot
-+of wasted effort.
-+
-+So, the current use of /proc/cpuinfo is to show features which the
-+kernel has *enabled* and *supports*. As in: the CPUID feature flag is
-+there, there's an additional setup which the kernel has done while
-+booting and the functionality is ready to use. A perfect example for
-+that is "user_shstk" where additional code enablement is present in the
-+kernel to support shadow stack for user programs.
-+
-+So, if users want to know if a feature is available on a given system,
-+they try to find the flag in /proc/cpuinfo. If a given flag is present,
-+it means that
-+
-+* the kernel knows about the feature enough to have an X86_FEATURE bit
-+
-+* the kernel supports it and is currently making it available either to
-+  userspace or some other part of the kernel
-+
-+* if the flag represents a hardware feature the hardware supports it.
-+
-+The absence of a flag in /proc/cpuinfo by itself means almost nothing to
-+an end user.
-+
-+On the one hand, a feature like "vaes" might be fully available to user
-+applications on a kernel that has not defined X86_FEATURE_VAES and thus
-+there is no "vaes" in /proc/cpuinfo.
-+
-+On the other hand, a new kernel running on non-VAES hardware would also
-+have no "vaes" in /proc/cpuinfo.  There's no way for an application or
-+user to tell the difference.
-+
-+The end result is that the flags field in /proc/cpuinfo is marginally
-+useful for kernel debugging, but not really for anything else.
-+Applications should instead use things like the glibc facilities for
-+querying CPU support.  Users should rely on tools like
-+tools/arch/x86/kcpuid and cpuid(1).
-+
-+Regarding implementation, flags appearing in /proc/cpuinfo have an
-+X86_FEATURE definition in arch/x86/include/asm/cpufeatures.h. These flags
-+represent hardware features as well as software features.
-+
-+If the kernel cares about a feature or KVM want to expose the feature to
-+a KVM guest, it should only then expose it to the guest when the guest
-+needs to parse /proc/cpuinfo. Which, as mentioned above, is highly
-+unlikely. KVM can synthesize the CPUID bit and the KVM guest can simply
-+query CPUID and figure out what the hypervisor supports and what not. As
-+already stated, /proc/cpuinfo is not a dumping ground for useless
-+feature flags.
-+
- 
- How are feature flags created?
- ==============================
--- 
-2.42.0.rc0.25.ga82fb66fed25
+Will add this WARN_ON (though I'll write "WARN_ON(!m);" rather than "== NULL").
+> 
+> >         cur_bytes = rr->val;
+> >         bytes = cur_bytes - m->prev_bw_bytes;
+> >         m->prev_bw_bytes = cur_bytes;
+> > @@ -521,19 +522,21 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
+> >         u32 closid, rmid, cur_msr_val, new_msr_val;
+> >         struct mbm_state *pmbm_data, *cmbm_data;
+> >         u32 cur_bw, delta_bw, user_bw;
+> > +       enum resctrl_event_id evt_id;
+> >         struct rdt_resource *r_mba;
+> >         struct rdt_domain *dom_mba;
+> >         struct list_head *head;
+> >         struct rdtgroup *entry;
+> >
+> > -       if (!is_mbm_local_enabled())
+> > +       if (!is_mbm_enabled())
+> >                 return;
+> >
+> >         r_mba = &rdt_resources_all[RDT_RESOURCE_MBA].r_resctrl;
+> > +       evt_id = r_mba->membw.mba_mbps_event;
+> >
+> >         closid = rgrp->closid;
+> >         rmid = rgrp->mon.rmid;
+> > -       pmbm_data = &dom_mbm->mbm_local[rmid];
+> > +       pmbm_data = get_mbm_state(dom_mbm, rmid, evt_id);
+> 
+> One defensive WARN_ON((!pmbm_data) for this function to ensure evt_id
+> is valid for this call and the ones in the loop below?
 
+Will add this. And the WARN_ON(!cmbm_data); in the loop.
 
--- 
-Regards/Gruss,
-    Boris.
+> > @@ -2466,8 +2468,12 @@ static int rdt_enable_ctx(struct rdt_fs_context *ctx)
+> >                         goto out_cdpl2;
+> >         }
+> >
+> > -       if (ctx->enable_mba_mbps) {
+> > -               ret = set_mba_sc(true);
+> > +       if (ctx->enable_mba_mbps_local || ctx->enable_mba_mbps_total) {
+> > +               if (ctx->enable_mba_mbps_total)
+> > +                       mba_mbps_event = QOS_L3_MBM_TOTAL_EVENT_ID;
+> > +               else
+> > +                       mba_mbps_event = QOS_L3_MBM_LOCAL_EVENT_ID;
+> 
+> Total takes precedence over local when the user picks both.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Harmless ... but see below.
+
+> > +               ret = set_mba_sc(true, mba_mbps_event);
+> >                 if (ret)
+> >                         goto out_cdpl3;
+> >         }
+> > @@ -2683,15 +2689,17 @@ enum rdt_param {
+> >         Opt_cdp,
+> >         Opt_cdpl2,
+> >         Opt_mba_mbps,
+> > +       Opt_mba_mbps_event,
+> >         Opt_debug,
+> >         nr__rdt_params
+> >  };
+> >
+> >  static const struct fs_parameter_spec rdt_fs_parameters[] = {
+> > -       fsparam_flag("cdp",             Opt_cdp),
+> > -       fsparam_flag("cdpl2",           Opt_cdpl2),
+> > -       fsparam_flag("mba_MBps",        Opt_mba_mbps),
+> > -       fsparam_flag("debug",           Opt_debug),
+> > +       fsparam_flag("cdp",                     Opt_cdp),
+> > +       fsparam_flag("cdpl2",                   Opt_cdpl2),
+> > +       fsparam_flag("mba_MBps",                Opt_mba_mbps),
+> > +       fsparam_string("mba_MBps_event",        Opt_mba_mbps_event),
+> > +       fsparam_flag("debug",                   Opt_debug),
+> >         {}
+> >  };
+> >
+> > @@ -2715,7 +2723,25 @@ static int rdt_parse_param(struct fs_context *fc, struct fs_parameter *param)
+> >         case Opt_mba_mbps:
+> >                 if (!supports_mba_mbps())
+> >                         return -EINVAL;
+> > -               ctx->enable_mba_mbps = true;
+> > +               if (is_mbm_local_enabled())
+> > +                       ctx->enable_mba_mbps_local = true;
+> > +               else
+> > +                       return -EINVAL;
+> > +               return 0;
+> > +       case Opt_mba_mbps_event:
+> > +               if (!supports_mba_mbps())
+> > +                       return -EINVAL;
+> > +               if (!strcmp("mbm_local_bytes", param->string)) {
+> > +                       if (!is_mbm_local_enabled())
+> > +                               return -EINVAL;
+> > +                       ctx->enable_mba_mbps_local = true;
+> > +               } else if (!strcmp("mbm_total_bytes", param->string)) {
+> > +                       if (!is_mbm_total_enabled())
+> > +                               return -EINVAL;
+> > +                       ctx->enable_mba_mbps_total = true;
+> > +               } else {
+> > +                       return -EINVAL;
+> 
+> It looks like if I pass
+> "mba_MBps_event=mbm_total_bytes,mba_MBps_event=mbm_local_bytes" I can
+> set both flags true.
+
+That's going to be confusing. I'll add code to stop the user from
+passing both options.
+
+> > --
+> > 2.41.0
+> >
+> 
+> Consider the setting-both-events quirk and a little bit of defensive
+> programming for get_mbm_data() returning NULL.
+> 
+> Assuming the case of "Local" is fixed in the commit message:
+> 
+> Reviewed-by: Peter Newman <peternewman@google.com>
+
+Thanks for reviewing, and for the tags for parts 2 & 3.
+
+-Tony
