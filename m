@@ -2,103 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE6B80AE8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 22:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B46280AE8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 22:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574761AbjLHVEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 16:04:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
+        id S1574758AbjLHVFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 16:05:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbjLHVE3 (ORCPT
+        with ESMTP id S229913AbjLHVFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 16:04:29 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D3DBD;
-        Fri,  8 Dec 2023 13:04:35 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c19467a63so28048995e9.3;
-        Fri, 08 Dec 2023 13:04:35 -0800 (PST)
+        Fri, 8 Dec 2023 16:05:07 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E01171E;
+        Fri,  8 Dec 2023 13:05:13 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-35d6644c1f2so6556365ab.0;
+        Fri, 08 Dec 2023 13:05:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702069474; x=1702674274; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D6NtR+oTUIOd2AHKXBfJVs3VbzXFOw3VtZb1y+6tew0=;
-        b=a6D3M7CDcqiuZtCqTSvzJ7k8oed6Ew4yV2mX/vdl94cgE9gPgYLYvw3M61+WxNlU5E
-         cZlq3U14wS/5i54nyxlv2fHwZAQ9RZXXZQOXlkpfxxyUZn+FEU68FzJIOjwD3yT3ykQQ
-         Y/J7NK4NNiemwdlUFFmmlIVBalIESJaUhv49VoxhXvPBg+d45bLAVNkEbOQ0brasAwyz
-         6Fz2QzllfTtYVOnEeWDW1fo8mIeVzXVJ42wmS/mXiSgUW/SxsXzYPnpX9/jjRFg40v3m
-         5ZoWSCzeSv4FUfH7leiB6ZnnNU8rGP18gtGDmkn+bYluKJFa9FzEGRwSA+eJDXTOG/eG
-         FOQg==
+        d=gmail.com; s=20230601; t=1702069513; x=1702674313; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YaHiAFt40ikMOsz0Nbfpr3rQu22G+/tz5j95vM1fm2s=;
+        b=hvb2CS2QIgueTVH/drFMVoPB61jOR20LDQJ/4PSCuF0+e2U9T5DR5CXc8BwPwdnjnY
+         3M5JrYRGWUhWp/bueVcpd5Ybes7mXlykQUhM7mUHwtWzz0lHEa5pSKihbB9IPoSODWCX
+         4C+P9t4tyVUKf78akTF7Zs45pWzNZYNEKMhCClulbzfulqoXAZmqh8PFQgRQvC5pLhTn
+         ZSt0Lx/8u+OsOBTkAgyZVLIVd5F8uNjdZC72vRh2rraLUT8SQLuICji6Di6sMluOLOPV
+         PLGBbPEEamOKOyRObL41nRDW9dJIHnsNBRWaCghHR6wsbUcWHenSjwiOX7AOZIkZeLtj
+         am0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702069474; x=1702674274;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D6NtR+oTUIOd2AHKXBfJVs3VbzXFOw3VtZb1y+6tew0=;
-        b=QI+Q0/by4A4Jak8lYYiz9Lqx5MxRshGmOxdRsdfZIWm4RdhM/62ZPJt1vpEZ687sIN
-         xGz+u6+tZVVArL6zoeQAk114zIDB0SY7ISo/Y9zYCpnxZxkcDCNlOi94zyR8DLF9Ps66
-         9wyB8UoIjOtcbe80usyy7CYc7FV1Gb9X2QUxDNNsxSxlOCi5RrUFuhjmiB3lKpXxobQM
-         RfEnKrYgkINkneEu7c6Tu74UG0oQt982xSpnpu+RwFwyZB/uRP7wQF8eP7/4Oj5FO/Vu
-         XkPIJr6Z/RvIk2WImVcvd2BVO2/RgmxZ1Fto3kdDfkPeBP1rHk5xcTeH3ZBvSunX93EF
-         9eSg==
-X-Gm-Message-State: AOJu0Yz8j5O7YcuPMDor7aFvpeXW4qhcXjAsmAak+zt9ii7c13KhdfqR
-        kGOf0HDQn1lDbIaDGRVrM2LyzgGjY+LQpXhQxwI=
-X-Google-Smtp-Source: AGHT+IEkTtKeS6XS1G3jyMsgzOhUXClVJ029bbBc4Aqz+vIee0Tzhjlve6H0wlutP+qM9rQB9kK5huFu1aQL+LEf+9E=
-X-Received: by 2002:a1c:4c0a:0:b0:40c:2ad3:1aed with SMTP id
- z10-20020a1c4c0a000000b0040c2ad31aedmr288910wmf.35.1702069473424; Fri, 08 Dec
- 2023 13:04:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702069513; x=1702674313;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YaHiAFt40ikMOsz0Nbfpr3rQu22G+/tz5j95vM1fm2s=;
+        b=pWgqtLgHHcsu8AdlQZuVtsDk75tpgJbGZ7vKUrFnrwIURk/dw2pIQu+5V0L9eKLKBQ
+         yC/3W6CBZb5Msyw2kwzx2evZxvcyPQk8Xk9EB0JzyMKNsNtPqQiJLqk7p9dQYKx7pdLZ
+         ujbLK6PC5GzJeF+S6qEWatE1o63JQeeQ2XVSkuTWWJrEJHHlLUH5Ppj4HvkNbmoqrHDh
+         n/d9sn72ZOGn12pTzJL4IzRBJ+1ovnojSqcHBCgblPaiZlwFK1/IqSfI1Blp9vSRX24c
+         NXclShXIzL/s632k8rr2q4Pm0lQHInBP/eOF72Kw/jLbmFrJdnmzUEVCLX9sHdOewlxY
+         /q4Q==
+X-Gm-Message-State: AOJu0Yxqm3V+Tyc8KbyAACnTR2r2bAsm8qFHb95EFjjvYhQFlo51lZsu
+        GmhlODeWdktdZCyxKwbtn40=
+X-Google-Smtp-Source: AGHT+IG8kw2miyA1RJmJqkYCjJ+/skxqXiSep0R5Ldu23xLkq4yF4irBjYP+jGVdgfT12EynmKDxfw==
+X-Received: by 2002:a05:6e02:2148:b0:35c:a889:76f2 with SMTP id d8-20020a056e02214800b0035ca88976f2mr588804ilv.8.1702069513024;
+        Fri, 08 Dec 2023 13:05:13 -0800 (PST)
+Received: from celestia.nettie.lan ([2001:470:42c4:101:971d:15c7:de39:3b4b])
+        by smtp.gmail.com with ESMTPSA id g12-20020a056e020d0c00b0035d5a1760c1sm736458ilj.69.2023.12.08.13.05.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 13:05:12 -0800 (PST)
+From:   Sam Edwards <cfsworks@gmail.com>
+X-Google-Original-From: Sam Edwards <CFSworks@gmail.com>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Stuebner <heiko@sntech.de>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sam Edwards <CFSworks@gmail.com>
+Subject: [PATCH 0/2] Allow disabling USB3 ports in xHCI/DWC3
+Date:   Fri,  8 Dec 2023 14:04:56 -0700
+Message-ID: <20231208210458.912776-1-CFSworks@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20231206163814.GB36423@noisy.programming.kicks-ass.net>
- <20231206183713.GA35897@noisy.programming.kicks-ass.net> <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
- <20231207093105.GA28727@noisy.programming.kicks-ass.net> <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
- <20231208102940.GB28727@noisy.programming.kicks-ass.net> <20231208134041.GD28727@noisy.programming.kicks-ass.net>
- <CAADnVQJFB_CPtFS3=VV=RwnP=EQRL3yEsR8wXVcicb07P8NODw@mail.gmail.com>
- <20231208201819.GE36716@noisy.programming.kicks-ass.net> <CAADnVQ+1nVBuKkjdvh0eu19p+J0UqbO9mcCf3yzVeQtALxzQ+Q@mail.gmail.com>
- <20231208205647.GL28727@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231208205647.GL28727@noisy.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 8 Dec 2023 13:04:22 -0800
-Message-ID: <CAADnVQKjAwWLfn-gBxq03qv4SQTt0YguYSDZXj8L6nmBZqU66g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -106,31 +72,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 12:56=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Fri, Dec 08, 2023 at 12:45:51PM -0800, Alexei Starovoitov wrote:
->
-> > I mean we don't need to store a pointer to a func in stubs.
-> > Can it be, roughly:
-> >
-> > extern void bpf_tcp_ca_cong_avoid(struct sock *sk, u32 ack, u32 acked);
-> > KCFI_MACRO(hash_of_cong_avoid, bpf_tcp_ca_cong_avoid);
-> > u32 __array_of_kcfi_hash[] =3D {hash_of_cong_avoid, hash_of_set_state,.=
-..};
-> >       .bpf_ops_stubs =3D __array_of_kcfi_hash,
->
-> But then how do I index this array? The bpf_ops_stubs thing having the
-> same layout at the target struct made it easy and we could use 'moff'
-> for both.
->
-> That also remains working if someone adds a member to the struct or
-> moves some members around.
+Hi USB devs,
 
-I was thinking to just moff/2 assuming u32 array will have the same order,
-but I missed the fact that init() and release() in tcp_congestion_ops
-come after some variables.
-And you're right it's more fragile when things change in tcp_congestion_ops=
-.
-Storing u32 hash as (void *) into function pointers is just ugly.
-Let's go with your initial approach.
+This patchset is a semi-RFC: I haven't discussed this change yet, and it may
+turn out to be a bad idea. But if there is a consensus that this change is
+appropriate, these patches are the ones I'd submit for inclusion.
+
+These patches were developed while working with a SoC (Rockchip RK3588) that
+contains DWC3-OTG controllers and accompanying USB2 + USB3/DP PHYs. My target
+(Turing RK1) uses its first bus in USB2.0-OTG mode only: the associated USB3
+PHY is reserved for DP. Worse, a driver for the USBDP block (though it exists)
+has not been merged to mainline. Without lighting up the PHY side of the PIPE,
+the DWC3 behaves erratically, even for USB2 operation.
+
+This could be addressed by patching in the (out-of-tree) USBDP driver and
+enabling only its USB backend. However, I found it cleaner (also from a
+user-friendliness standpoint) just to disable the unusable USB3 port. These
+patches achieve that by (1) making it possible to tell the xHCI driver to
+ignore any USB3 port(s), and (2) (perhaps more controversially) making the DWC3
+driver disable USB3 host ports when `maximum-speed` isn't set high enough.
+
+There are other ways to disable the USB3 ports on RK3588, such as via some
+syscon registers. I figured I would start with the most general solution
+(benefitting other SoCs) first, getting more specific only if necessary. :)
+
+Thank you for your attention,
+Sam
+
+Sam Edwards (2):
+  xhci: Introduce "disable-usb3" DT property/quirk
+  usb: dwc3: host: Disable USB3 ports if maximum-speed doesn't permit
+    USB3
+
+ Documentation/devicetree/bindings/usb/usb-xhci.yaml | 4 ++++
+ drivers/usb/dwc3/host.c                             | 5 ++++-
+ drivers/usb/host/xhci-mem.c                         | 4 ++++
+ drivers/usb/host/xhci-plat.c                        | 3 +++
+ drivers/usb/host/xhci.h                             | 1 +
+ 5 files changed, 16 insertions(+), 1 deletion(-)
+
+-- 
+2.41.0
+
