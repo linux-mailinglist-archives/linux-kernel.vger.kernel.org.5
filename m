@@ -2,53 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B302880A48A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 666A980A48E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbjLHNkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:40:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36294 "EHLO
+        id S233637AbjLHNkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:40:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjLHNkA (ORCPT
+        with ESMTP id S233597AbjLHNkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:40:00 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B021706;
-        Fri,  8 Dec 2023 05:40:06 -0800 (PST)
-Received: from localhost.localdomain (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0B32A66073AA;
-        Fri,  8 Dec 2023 13:40:01 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702042805;
-        bh=XyWarEWJXpA/T9XhTV+onEShyeWe+9A2yodWAKUFUJI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hwp9A3WrBnaVFqsUWe+3crnvYWmhKfcMaI94XY4ocrQvK2T0rc8PLVSHNO2jl6QRk
-         OBiYSCn1CFviR5Nie9vd4o1l1dL8pYZJuPm+qGCAiTVEZT4eRGme+t17/y5YOHq+9l
-         GLgYDgqP8UgabULhins15CaD/wIgQTRPG5gIN3tP3MMjGjsG22Znbo5IaiNfn0jwQK
-         eDj0q8BpRMNsaYhpaEBjQdF/NlR9c4zEXzqfrr5vpd+XlHRrjVPDZbJhtYRoMG19SO
-         YPvJlFcz3bBSD8LhFtMiCZ0+k5JAXaNsmC4D3ghKEWpmbkkRaFoHEzV/6gq+R19xYM
-         Si0G8GPrtgBkg==
-From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>
-To:     Rob Herring <robh+dt@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>, kernel@collabora.com,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>, Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH] kselftest: dt: Stop relying on dirname to improve performance
-Date:   Fri,  8 Dec 2023 10:39:27 -0300
-Message-ID: <20231208133955.483851-1-nfraprado@collabora.com>
-X-Mailer: git-send-email 2.43.0
+        Fri, 8 Dec 2023 08:40:21 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBEB1734
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 05:40:27 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-67a959e3afaso11609436d6.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 05:40:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1702042826; x=1702647626; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=n8e2o0WXAr4ymK3d3VhrPB5sSWDppvhuD0Mr+xQ4HHM=;
+        b=nTWe5gl1PBw9JZvp/It9oXA862ulMpFet1/o6nGotv7Vwo0jhcyZylqOx1M77LSGWO
+         gvUoPVCDVaLEgE2RuIHt0256V66DkEB4IMAVjBCdRnmaCnSsW3y7lc9toDPUx2jZ/E0J
+         rZ4FFOalTQaj650GVO+9eiybqbil+was+v/4pcvqCFHZaD1oosB0bc0UJttgZBFfUGp4
+         vMT7I2e0ozkSiLhTUgbUJ3grSFZH6+7xGhivgneDPawuRgECzmo7IkRpCZPcUDJICTLj
+         DzcZ5bL8mn3x4Jg8fs3RkZaODAcv6u9fPo4ICsqylKHOENk5BBK3ENI0+LQCLywoZZoR
+         o/Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702042826; x=1702647626;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n8e2o0WXAr4ymK3d3VhrPB5sSWDppvhuD0Mr+xQ4HHM=;
+        b=mMCIgWf3ZaPKTkLaVUuvNMnloWSmBWQF4RGGUxFSypiMuFhol0OM355UKO+SpZq4hK
+         sHo6Tr4La3E6JIskwDkGWT0SdmTm83q/Xw7QcQNvbdnX9ghAuSq4qLfuaw66l1paTglg
+         wqiOphlmNv2nGb6vUaIoovUO+DQEWLq80dmz+zXS6eWbltZfREau1fPQuxYmxjAX1BGO
+         Ht9m4bO3ckhubpfOj128Yf7c5aL4+PjtbEmjsDeGw9HlGHA0mzUKRPb2FWKiAfIOjxwq
+         G7rT/NT/eCpvQg3s3aWoUpMXZzEFCz9M3mQB4HZ0nclEqXLvx4ZzK9IV2HQmSCoW8AoD
+         KSwQ==
+X-Gm-Message-State: AOJu0Yxq7ZUARkahCdtWVWAqCmBnBUyB7LUEcbRntUkyEl571GWmi9R+
+        IELLthlGsISfEcbuSChySsQaMA==
+X-Google-Smtp-Source: AGHT+IG+42h3wSDDnzyiUdmBDnnmwEZgxwWvJKW+1f6Wnxx1cI9jSsHp0wxIJsybMJwE+p1mPdNlxw==
+X-Received: by 2002:ad4:57ac:0:b0:67a:9d24:5e95 with SMTP id g12-20020ad457ac000000b0067a9d245e95mr3820818qvx.31.1702042826613;
+        Fri, 08 Dec 2023 05:40:26 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id lf10-20020a0562142cca00b0067c4b7ca239sm805168qvb.22.2023.12.08.05.40.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 05:40:25 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1rBb5c-00C888-Tx;
+        Fri, 08 Dec 2023 09:40:24 -0400
+Date:   Fri, 8 Dec 2023 09:40:24 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iommu: Set owner token to SVA domain
+Message-ID: <20231208134024.GV1489931@ziepe.ca>
+References: <20231208015314.320663-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208015314.320663-1-baolu.lu@linux.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,63 +77,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When walking directory trees, instead of looking for specific files and
-running dirname to get the parent folder, traverse all folders and
-ignore the ones not containing the desired files. This avoids the need
-to call dirname inside the loop, which gives a big performance boost,
-approximately halving run time: Running locally on a
-mt8192-asurada-spherion, which reports 160 test cases, has gone from
-5.5s to 2.9s, while running remotely with an nfsroot has gone from
-13.5s to 5.5s.
+On Fri, Dec 08, 2023 at 09:53:14AM +0800, Lu Baolu wrote:
+> Commit a9c362db3920 ("iommu: Validate that devices match domains") added
+> an owner token to the iommu_domain. This token is checked during domain
+> attachment to RID or PASID through the generic iommu interfaces.
+> 
+> The SVA domains are attached to PASIDs through those iommu interfaces.
+> Therefore, they require the owner token to be set during allocation.
+> Otherwise, they fail to attach.
+> 
+> Set the owner token for SVA domains.
+> 
+> Fixes: a9c362db3920 ("iommu: Validate that devices match domains")
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  drivers/iommu/iommu.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-This change has a side-effect, which is that the root DT node now
-also shows in the output, even though it isn't expected to bind to a
-driver. However there shouldn't be a matching driver for the board
-compatible, so the end result will be just an extra skipped test:
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-ok 1 / # SKIP
-
-Reported-by: Mark Brown <broonie@kernel.org>
-Closes: https://lore.kernel.org/all/310391e8-fdf2-4c2f-a680-7744eb685177@sirena.org.uk
-Fixes: 14571ab1ad21 ("kselftest: Add new test for detecting unprobed Devicetree devices")
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-
----
-
- tools/testing/selftests/dt/test_unprobed_devices.sh | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/dt/test_unprobed_devices.sh b/tools/testing/selftests/dt/test_unprobed_devices.sh
-index b07af2a4c4de..7fae90293a9d 100755
---- a/tools/testing/selftests/dt/test_unprobed_devices.sh
-+++ b/tools/testing/selftests/dt/test_unprobed_devices.sh
-@@ -33,8 +33,8 @@ if [[ ! -d "${PDT}" ]]; then
- fi
- 
- nodes_compatible=$(
--	for node_compat in $(find ${PDT} -name compatible); do
--		node=$(dirname "${node_compat}")
-+	for node in $(find ${PDT} -type d); do
-+		[ ! -f "${node}"/compatible ] && continue
- 		# Check if node is available
- 		if [[ -e "${node}"/status ]]; then
- 			status=$(tr -d '\000' < "${node}"/status)
-@@ -46,10 +46,11 @@ nodes_compatible=$(
- 
- nodes_dev_bound=$(
- 	IFS=$'\n'
--	for uevent in $(find /sys/devices -name uevent); do
--		if [[ -d "$(dirname "${uevent}")"/driver ]]; then
--			grep '^OF_FULLNAME=' "${uevent}" | sed -e 's|OF_FULLNAME=||'
--		fi
-+	for dev_dir in $(find /sys/devices -type d); do
-+		[ ! -f "${dev_dir}"/uevent ] && continue
-+		[ ! -d "${dev_dir}"/driver ] && continue
-+
-+		grep '^OF_FULLNAME=' "${dev_dir}"/uevent | sed -e 's|OF_FULLNAME=||'
- 	done
- 	)
- 
--- 
-2.43.0
-
+Jason
