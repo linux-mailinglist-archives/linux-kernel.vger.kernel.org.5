@@ -2,293 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2988D8098B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 02:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30028098AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 02:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572931AbjLHBow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 20:44:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60148 "EHLO
+        id S1444223AbjLHBjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 20:39:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLHBor (ORCPT
+        with ESMTP id S231491AbjLHBi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 20:44:47 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B4A641723;
-        Thu,  7 Dec 2023 17:44:52 -0800 (PST)
-Received: from loongson.cn (unknown [10.2.5.185])
-        by gateway (Coremail) with SMTP id _____8BxyeoSdXJlVtg_AA--.52584S3;
-        Fri, 08 Dec 2023 09:44:50 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.185])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax3twNdXJlUvVXAA--.62660S4;
-        Fri, 08 Dec 2023 09:44:48 +0800 (CST)
-From:   Tianrui Zhao <zhaotianrui@loongson.cn>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
-        Mark Brown <broonie@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
-        zhaotianrui@loongson.cn
-Subject: [PATCH v3 2/2] LoongArch: KVM: Add LASX support
-Date:   Fri,  8 Dec 2023 09:31:51 +0800
-Message-Id: <20231208013151.2668156-3-zhaotianrui@loongson.cn>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20231208013151.2668156-1-zhaotianrui@loongson.cn>
-References: <20231208013151.2668156-1-zhaotianrui@loongson.cn>
+        Thu, 7 Dec 2023 20:38:58 -0500
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2072.outbound.protection.outlook.com [40.107.102.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284921712
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 17:39:04 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cO1/6tEDfsli91CMVJpbEHkcIiWbum6Nb/6kb7BY3MDVUfS21sOda2k8gcDhqlT1H/Zxaq4y0Qe2KZRT5IKI/WxZ6F4FYNey3lTemi4CT8RO9mPDiE6LDIHCNSBd/oznHLVCdI94quCzCrBfSaOZqNN4b48hm1E6fcrfZ9Rk5ttnW5m0JZPRrJTJcBtSakzi5xqenvZgSkFdY0Kz8193hk5OcrAaKPwdw5CtqXZVPHoHhvpcQrfW+dyqflL5Mn40M7EhtQottSSUkh2qwVEPwBaREvR+JVk1Fs0hTu3ZnFYGSPuo+PpaZRF3ztdGXQYWY6eh4EKBXgLJM37FjOYzSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=A+OXwpZtxyaCJv4MFC20l5pbMc7D5W4w1I3CP6dcUDM=;
+ b=QD91uuj2sJ5mEKlkspBvtmkUNQYchSZvNc8okoDBNhguNDGL3IsZVYmknjQlh8urXe/HHcuqM7AIfviIF78cpCd4F8wNunBP2Nxh7FV5iZw2/jLOBCJe08cJdwaE4Cc6TD3YUgrrhJ1TwBQMrPraHbDcPFerx0QkEQRGaujTYgzIguwRehGv9B8+Ug/vtc2H/ywOmXQDTlxnmkiIFx33EDDF/Ekmnz8eLUfqHpO9Q8DtaBeZTqUzT5nP0o/xxvtQlFnt1QYwiT/rwo4cvcmz22dow2/AEDEScClUWlf1wKGQ1j4JTpM4dtdXtu4QA26PQmvA+1feC0RwK/knAuAmgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A+OXwpZtxyaCJv4MFC20l5pbMc7D5W4w1I3CP6dcUDM=;
+ b=DdsapQRSToI/TaZQBk5SAVj7RTO5Tb1fVyjR7+yI3u4RbGfLOk1YOwpAAt01Ep8aAAUmZDyKxXeDSFGcp1PXMF+ADT3njI5q5VbDCobqnC8f0MwbIePZqNTI6Pw73Si9dbttdQgSGR86SixX1wMk8LDCrWJPxi6FfNZOcbtglTEZ5g02wtqap65br0Do/NEz3Rttv2RHylDZ+QD/HXX6qZF9YZEMHX2SYaDLwdOYf4CR0p9t3fmLJ4UjxbtZ8lXG6kxEv8h0F1lj3w6ucULFChv8BkTxomDO1/unRGEi4t4phE9qwCDDQh42CUPgS6DWEMYhc4pbHTRXgYwZ9vDw7Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
+ by DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Fri, 8 Dec
+ 2023 01:39:01 +0000
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::b8a:1b58:1edf:90e6]) by BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::b8a:1b58:1edf:90e6%7]) with mapi id 15.20.7068.027; Fri, 8 Dec 2023
+ 01:39:01 +0000
+References: <20231204105440.61448-1-ryan.roberts@arm.com>
+ <20231204105440.61448-15-ryan.roberts@arm.com>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Barry Song <21cnbao@gmail.com>, Yang Shi <shy828301@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 14/15] arm64/mm: Implement ptep_set_wrprotects() to
+ optimize fork()
+Date:   Fri, 08 Dec 2023 12:37:32 +1100
+In-reply-to: <20231204105440.61448-15-ryan.roberts@arm.com>
+Message-ID: <87cyvha2xd.fsf@nvdebian.thelocal>
+Content-Type: text/plain
+X-ClientProxiedBy: SYCP282CA0005.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:10:80::17) To BYAPR12MB3176.namprd12.prod.outlook.com
+ (2603:10b6:a03:134::26)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Ax3twNdXJlUvVXAA--.62660S4
-X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|DM4PR12MB5229:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2efbac67-e87d-476d-8f3f-08dbf78e73b5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ryW/E2iZI6cesFLY9UogDGJGiiVLStk04Pm0WvToxqkfDJNAJ9SsYYKQM5zPYKHBMbgTKjZWITppbDnF1Ycgmq7XsHlsrnJZ36GbVC+raqKwSTqAQv9JdUNMWCwvMpu0S/qRJlgQ7mTB6Tpv99O0GmxIQYwOvY8R9UzCEQ8hLCJZkXFvFOMlrwG1s0EdTnuT8wf7G98aTSJZbaTaVq80823xd6F9vduHgKXBx8INvUj8boNVjDjh8KQYlpiKUhszbWkwX9QwtezEvhv0vNxXzp98tziJJhildEsbqn5fUBI8IH51TwA1T3AsEYCKQqzOOvh6FayyweBt04mr7rw17m44XXzHGPgKGjXv8SqgA2tRYjBIQ1T+AA6ujOlX8gJxiQSfJsJ0qvFbE3N77N556p90oDWzVwW4H4RTEsfjPdNCjKyLWFhDZg2s9igG+3GmvO06nCTbRJ5aIqj2vj9A2kPGxCwOazaWH8hAxFjc5UPBOl8OseHA9uFhAoh6byBFAd41oHEREnoZOnYAN5mSJXXi3xXMcrGE2G/Vqstr196gHWIlpHy4mnbyBG2OQ/19/iqmkMwojWvaBGFSyd8xXDq3TUWQ8UNRrjhxfdchxqM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(39860400002)(396003)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(2906002)(7416002)(8936002)(4326008)(8676002)(5660300002)(316002)(66556008)(66476007)(54906003)(66946007)(6916009)(966005)(6486002)(6512007)(9686003)(6506007)(26005)(6666004)(41300700001)(478600001)(83380400001)(38100700002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KF5C2Zd5VtACsN+OTkDlF9rhdnnco4egA4JMAKgnMCDDSjzVGVOUwuwyCZWB?=
+ =?us-ascii?Q?UHTeSnL17Z2Zk7seUM8SlpXWReWXGi01C67q2rwJ1gKX5ousCabEvR17UqZ4?=
+ =?us-ascii?Q?8LUtLElo7PogTJIevVNtPNxwpHJCN+oIQY72O3MWyIXs+iWC8nwC6JBM/oAK?=
+ =?us-ascii?Q?48qto+LI221rldC03zl8LRPjygqbxRPk0aEeZc0xoX9+oXPUi+uKnUqNl81c?=
+ =?us-ascii?Q?7oNF45Dzb87XIyBPdkddbnDz4sC8ABdMVyDBjTjV34fO3e2juk1/KCZZDKs5?=
+ =?us-ascii?Q?RWFh1gA5L0qCstIyLCbGof5kHUIzLWZuORvzF37MGfCT/zBU4ZbmO4fulgYE?=
+ =?us-ascii?Q?HHFToVL/ywlEo7uzeDK7/ReqbRBS1bMZmPgta4QXQy1bXFV1WxQVgDticnGq?=
+ =?us-ascii?Q?24VQ3fDzlGp5fhiYigSmo0qTQQWQI3d1foFaGQBF5dLwjwIS3NSaDbL+++Bi?=
+ =?us-ascii?Q?UosSORG6/r17SlBRAmKVby7EJ0OHxxYy6UsRQjGaS9WOrVwzchC34M97Nb5T?=
+ =?us-ascii?Q?/o7OkPa7VmKWAK98JcEBJhyn2fxGd16daffk+/Kvpm8v9io+SfD5UjxUlAjx?=
+ =?us-ascii?Q?SB4L2JN1OuJBwioivloqVvV8GyhCvFH79QXXOUEAEnj8dsfcUsltvuMpttv9?=
+ =?us-ascii?Q?BY3PDT3/xj9pSFT4ZjMcwez594BCt+cVxT6YpR3aIsn0+kkgZs/1K0Be+zez?=
+ =?us-ascii?Q?ppIQIE7vWLr98H2oYxsNZstH5fyQYC6ZijDje1VvWWPrLxCPpDXaPx1Q1eAJ?=
+ =?us-ascii?Q?3qzyzk11EL+kXTVSnLVGsPaqxMrrJK/GGVfk+fxzNrua3cLbrbY9nuOFCkMU?=
+ =?us-ascii?Q?4ZSWaxEgk/m8ldhDvfNbClnx1RuFZ9D3syLrzgcGQNJhtS6GOP/Ig2hRV56G?=
+ =?us-ascii?Q?yjprAKQpXnnBh36H3/JIhJj9QRUk6zJGxSJPGKLhvfIxNQLo8zP00JdxBLoR?=
+ =?us-ascii?Q?JfcXDvQClKygDmNq4rAOJuaHpgEcWW68HxdsyssyhkmSDJGlZ8yOCuOgJtkh?=
+ =?us-ascii?Q?lY+60aM9fFGKzM538s6AN5mD+7rJm3fM2Pu0L1BzJoQ+sbKrA+HaoXyu3fWA?=
+ =?us-ascii?Q?owEWGNYGGf+z2G2BmkUB/akT5kpI3my8Q7d8mQ1f07DQO1w4spsZuOkSjFX8?=
+ =?us-ascii?Q?xywveUsTJBPI9Hnw/HTwnS6I/n2Twy+H5JXwsb5kOCtJI2pI8FNw/R6+M8+3?=
+ =?us-ascii?Q?GI6+xKJSQWcNqaP2/Nd54BAqI25dilNLFU1c/bsxHNVwvAqLhRa8hymgkduX?=
+ =?us-ascii?Q?UivsdmpbysqqAJmf6TUOgDN2+KYnCVE02C31hR1WOnRwidUjV6XE6YnIgTK8?=
+ =?us-ascii?Q?4v13V1+jftx0wzWbBGcBuKtqFyVbUQTZs2ENX9D+kAbQIbUnQaDx4DivoZj9?=
+ =?us-ascii?Q?JAX8psZ2+T5KJdkzqpx6Yr3ki4emRUSASzGC9jZwOaSVyXDQvoYj696NpAsS?=
+ =?us-ascii?Q?z5Tmr5LLjVFnM2NqC1e8z9+gZwL+CtfxDUkFo9GfP/fEbhMVU9iyXsvCXfoY?=
+ =?us-ascii?Q?5s4biU1dThJGbY9SGEbce3/YNNmwZxVwRpR1Tth18vaCVypn7rQRpZgxn4Xv?=
+ =?us-ascii?Q?0p9JrNu+d7Agz1Cpye25u06tcBuEC2LGPnZcv3ib?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2efbac67-e87d-476d-8f3f-08dbf78e73b5
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 01:39:00.9649
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CBpDgQTPQ0vg3o+cOLMW9RZ+2O76qIWQtiFQw4Dy5kQvdwF4PNtvTquTm461dKWK8Ct5d+Bw+ysMv9aiQu5xIw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5229
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds LASX support for LoongArch KVM.
-There will be LASX exception in KVM when guest use the LASX
-instruction. KVM will enable LASX and restore the vector
-registers for guest then return to guest to continue running.
 
-Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
-Reviewed-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/loongarch/include/asm/kvm_host.h |  6 ++++
- arch/loongarch/include/asm/kvm_vcpu.h | 10 ++++++
- arch/loongarch/kernel/fpu.S           |  2 ++
- arch/loongarch/kvm/exit.c             | 18 +++++++++++
- arch/loongarch/kvm/switch.S           | 15 +++++++++
- arch/loongarch/kvm/trace.h            |  4 ++-
- arch/loongarch/kvm/vcpu.c             | 46 ++++++++++++++++++++++++++-
- 7 files changed, 99 insertions(+), 2 deletions(-)
+Ryan Roberts <ryan.roberts@arm.com> writes:
 
-diff --git a/arch/loongarch/include/asm/kvm_host.h b/arch/loongarch/include/asm/kvm_host.h
-index b5fd55f6d0..757a589e6b 100644
---- a/arch/loongarch/include/asm/kvm_host.h
-+++ b/arch/loongarch/include/asm/kvm_host.h
-@@ -95,6 +95,7 @@ enum emulation_result {
- #define KVM_LARCH_SWCSR_LATEST	(0x1 << 1)
- #define KVM_LARCH_HWCSR_USABLE	(0x1 << 2)
- #define KVM_LARCH_LSX		(0x1 << 3)
-+#define KVM_LARCH_LASX		(0x1 << 4)
- 
- struct kvm_vcpu_arch {
- 	/*
-@@ -186,6 +187,11 @@ static inline bool kvm_guest_has_fpu(struct kvm_vcpu_arch *arch)
- 	return arch->cpucfg[2] & CPUCFG2_FP;
- }
- 
-+static inline bool kvm_guest_has_lasx(struct kvm_vcpu_arch *arch)
-+{
-+	return arch->cpucfg[2] & CPUCFG2_LASX;
-+}
-+
- /* Debug: dump vcpu state */
- int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu);
- 
-diff --git a/arch/loongarch/include/asm/kvm_vcpu.h b/arch/loongarch/include/asm/kvm_vcpu.h
-index c629771e12..4f87f16018 100644
---- a/arch/loongarch/include/asm/kvm_vcpu.h
-+++ b/arch/loongarch/include/asm/kvm_vcpu.h
-@@ -67,6 +67,16 @@ static inline void kvm_restore_lsx(struct loongarch_fpu *fpu) { }
- static inline void kvm_restore_lsx_upper(struct loongarch_fpu *fpu) { }
- #endif
- 
-+#ifdef CONFIG_CPU_HAS_LASX
-+void kvm_own_lasx(struct kvm_vcpu *vcpu);
-+void kvm_save_lasx(struct loongarch_fpu *fpu);
-+void kvm_restore_lasx(struct loongarch_fpu *fpu);
-+#else
-+static inline void kvm_own_lasx(struct kvm_vcpu *vcpu) { }
-+static inline void kvm_save_lasx(struct loongarch_fpu *fpu) { }
-+static inline void kvm_restore_lasx(struct loongarch_fpu *fpu) { }
-+#endif
-+
- void kvm_acquire_timer(struct kvm_vcpu *vcpu);
- void kvm_init_timer(struct kvm_vcpu *vcpu, unsigned long hz);
- void kvm_reset_timer(struct kvm_vcpu *vcpu);
-diff --git a/arch/loongarch/kernel/fpu.S b/arch/loongarch/kernel/fpu.S
-index d53ab10f46..4382e36ae3 100644
---- a/arch/loongarch/kernel/fpu.S
-+++ b/arch/loongarch/kernel/fpu.S
-@@ -349,6 +349,7 @@ SYM_FUNC_START(_restore_lsx_upper)
- 	lsx_restore_all_upper a0 t0 t1
- 	jr	ra
- SYM_FUNC_END(_restore_lsx_upper)
-+EXPORT_SYMBOL(_restore_lsx_upper)
- 
- SYM_FUNC_START(_init_lsx_upper)
- 	lsx_init_all_upper t1
-@@ -384,6 +385,7 @@ SYM_FUNC_START(_restore_lasx_upper)
- 	lasx_restore_all_upper a0 t0 t1
- 	jr	ra
- SYM_FUNC_END(_restore_lasx_upper)
-+EXPORT_SYMBOL(_restore_lasx_upper)
- 
- SYM_FUNC_START(_init_lasx_upper)
- 	lasx_init_all_upper t1
-diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
-index e40409ba76..e00aacd6c1 100644
---- a/arch/loongarch/kvm/exit.c
-+++ b/arch/loongarch/kvm/exit.c
-@@ -681,6 +681,23 @@ static int kvm_handle_lsx_disabled(struct kvm_vcpu *vcpu)
- 	return RESUME_GUEST;
- }
- 
-+/*
-+ * kvm_handle_lasx_disabled() - Guest used LASX while disabled in root.
-+ * @vcpu:	Virtual CPU context.
-+ *
-+ * Handle when the guest attempts to use LASX when it is disabled in the root
-+ * context.
-+ */
-+static int kvm_handle_lasx_disabled(struct kvm_vcpu *vcpu)
-+{
-+	if (!kvm_guest_has_lasx(&vcpu->arch))
-+		kvm_queue_exception(vcpu, EXCCODE_INE, 0);
-+	else
-+		kvm_own_lasx(vcpu);
-+
-+	return RESUME_GUEST;
-+}
-+
- /*
-  * LoongArch KVM callback handling for unimplemented guest exiting
-  */
-@@ -710,6 +727,7 @@ static exit_handle_fn kvm_fault_tables[EXCCODE_INT_START] = {
- 	[EXCCODE_TLBM]			= kvm_handle_write_fault,
- 	[EXCCODE_FPDIS]			= kvm_handle_fpu_disabled,
- 	[EXCCODE_LSXDIS]                = kvm_handle_lsx_disabled,
-+	[EXCCODE_LASXDIS]               = kvm_handle_lasx_disabled,
- 	[EXCCODE_GSPR]			= kvm_handle_gspr,
- };
- 
-diff --git a/arch/loongarch/kvm/switch.S b/arch/loongarch/kvm/switch.S
-index 6c48f7d1ca..215c70b2de 100644
---- a/arch/loongarch/kvm/switch.S
-+++ b/arch/loongarch/kvm/switch.S
-@@ -266,6 +266,21 @@ SYM_FUNC_START(kvm_restore_lsx_upper)
- SYM_FUNC_END(kvm_restore_lsx_upper)
- #endif
- 
-+#ifdef CONFIG_CPU_HAS_LASX
-+SYM_FUNC_START(kvm_save_lasx)
-+	fpu_save_csr    a0 t1
-+	fpu_save_cc     a0 t1 t2
-+	lasx_save_data  a0 t1
-+	jr              ra
-+SYM_FUNC_END(kvm_save_lasx)
-+
-+SYM_FUNC_START(kvm_restore_lasx)
-+	lasx_restore_data a0 t1
-+	fpu_restore_cc    a0 t1 t2
-+	fpu_restore_csr   a0 t1 t2
-+	jr                ra
-+SYM_FUNC_END(kvm_restore_lasx)
-+#endif
- 	.section ".rodata"
- SYM_DATA(kvm_exception_size, .quad kvm_exc_entry_end - kvm_exc_entry)
- SYM_DATA(kvm_enter_guest_size, .quad kvm_enter_guest_end - kvm_enter_guest)
-diff --git a/arch/loongarch/kvm/trace.h b/arch/loongarch/kvm/trace.h
-index 7da4e230e8..c2484ad4cf 100644
---- a/arch/loongarch/kvm/trace.h
-+++ b/arch/loongarch/kvm/trace.h
-@@ -103,6 +103,7 @@ TRACE_EVENT(kvm_exit_gspr,
- 
- #define KVM_TRACE_AUX_FPU		1
- #define KVM_TRACE_AUX_LSX		2
-+#define KVM_TRACE_AUX_LASX		3
- 
- #define kvm_trace_symbol_aux_op				\
- 	{ KVM_TRACE_AUX_SAVE,		"save" },	\
-@@ -113,7 +114,8 @@ TRACE_EVENT(kvm_exit_gspr,
- 
- #define kvm_trace_symbol_aux_state			\
- 	{ KVM_TRACE_AUX_FPU,     "FPU" },		\
--	{ KVM_TRACE_AUX_LSX,     "LSX" }
-+	{ KVM_TRACE_AUX_LSX,     "LSX" },		\
-+	{ KVM_TRACE_AUX_LASX,    "LASX" }
- 
- TRACE_EVENT(kvm_aux,
- 	    TP_PROTO(struct kvm_vcpu *vcpu, unsigned int op,
-diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
-index 3c2ee202d2..970ba18a28 100644
---- a/arch/loongarch/kvm/vcpu.c
-+++ b/arch/loongarch/kvm/vcpu.c
-@@ -328,6 +328,13 @@ static int _kvm_loongarch_get_cpucfg_attr(int id, u64 *v)
- 		 */
- 		if (cpu_has_lsx)
- 			*v |= CPUCFG2_LSX;
-+		/*
-+		 * if LASX is supported by CPU, it is also supported by KVM,
-+		 * as we implement it.
-+		 */
-+		if (cpu_has_lasx)
-+			*v |= CPUCFG2_LASX;
-+
- 		break;
- 	default:
- 		ret = -EINVAL;
-@@ -745,12 +752,49 @@ void kvm_own_lsx(struct kvm_vcpu *vcpu)
- }
- #endif
- 
-+#ifdef CONFIG_CPU_HAS_LASX
-+/* Enable LASX for guest and restore context */
-+void kvm_own_lasx(struct kvm_vcpu *vcpu)
-+{
-+	preempt_disable();
-+
-+	set_csr_euen(CSR_EUEN_FPEN | CSR_EUEN_LSXEN | CSR_EUEN_LASXEN);
-+	switch (vcpu->arch.aux_inuse & (KVM_LARCH_FPU | KVM_LARCH_LSX)) {
-+	case KVM_LARCH_LSX | KVM_LARCH_FPU:
-+	case KVM_LARCH_LSX:
-+		/* Guest LSX state already loaded, only restore upper LASX state */
-+		_restore_lasx_upper(&vcpu->arch.fpu);
-+		break;
-+	case KVM_LARCH_FPU:
-+		/* Guest FP state already loaded, only restore 64~256 LASX state */
-+		kvm_restore_lsx_upper(&vcpu->arch.fpu);
-+		_restore_lasx_upper(&vcpu->arch.fpu);
-+		break;
-+	default:
-+		/* Neither FP or LSX already active, restore full LASX state */
-+		kvm_restore_lasx(&vcpu->arch.fpu);
-+		break;
-+	}
-+
-+	trace_kvm_aux(vcpu, KVM_TRACE_AUX_RESTORE, KVM_TRACE_AUX_LASX);
-+	vcpu->arch.aux_inuse |= KVM_LARCH_LASX | KVM_LARCH_LSX | KVM_LARCH_FPU;
-+	preempt_enable();
-+}
-+#endif
-+
- /* Save context and disable FPU */
- void kvm_lose_fpu(struct kvm_vcpu *vcpu)
- {
- 	preempt_disable();
- 
--	if (vcpu->arch.aux_inuse & KVM_LARCH_LSX) {
-+	if (vcpu->arch.aux_inuse & KVM_LARCH_LASX) {
-+		kvm_save_lasx(&vcpu->arch.fpu);
-+		vcpu->arch.aux_inuse &= ~(KVM_LARCH_LSX | KVM_LARCH_FPU | KVM_LARCH_LASX);
-+		trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_LASX);
-+
-+		/* Disable LASX & LSX & FPU */
-+		clear_csr_euen(CSR_EUEN_FPEN | CSR_EUEN_LSXEN | CSR_EUEN_LASXEN);
-+	} else if (vcpu->arch.aux_inuse & KVM_LARCH_LSX) {
- 		kvm_save_lsx(&vcpu->arch.fpu);
- 		vcpu->arch.aux_inuse &= ~(KVM_LARCH_LSX | KVM_LARCH_FPU);
- 		trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_LSX);
--- 
-2.39.1
+> With the core-mm changes in place to batch-copy ptes during fork, we can
+> take advantage of this in arm64 to greatly reduce the number of tlbis we
+> have to issue, and recover the lost fork performance incured when adding
+> support for transparent contiguous ptes.
+>
+> If we are write-protecting a whole contig range, we can apply the
+> write-protection to the whole range and know that it won't change
+> whether the range should have the contiguous bit set or not. For ranges
+> smaller than the contig range, we will still have to unfold, apply the
+> write-protection, then fold if the change now means the range is
+> foldable.
+>
+> This optimization is possible thanks to the tightening of the Arm ARM in
+> respect to the definition and behaviour when 'Misprogramming the
+> Contiguous bit'. See section D21194 at
+> https://developer.arm.com/documentation/102105/latest/
+>
+> Performance tested with the following test written for the will-it-scale
+> framework:
+>
+> -------
+>
+> char *testcase_description = "fork and exit";
+>
+> void testcase(unsigned long long *iterations, unsigned long nr)
+> {
+> 	int pid;
+> 	char *mem;
+>
+> 	mem = malloc(SZ_128M);
+> 	assert(mem);
+> 	memset(mem, 1, SZ_128M);
+>
+> 	while (1) {
+> 		pid = fork();
+> 		assert(pid >= 0);
+>
+> 		if (!pid)
+> 			exit(0);
+>
+> 		waitpid(pid, NULL, 0);
+>
+> 		(*iterations)++;
+> 	}
+> }
+>
+> -------
+>
+> I see huge performance regression when PTE_CONT support was added, then
+> the regression is mostly fixed with the addition of this change. The
+> following shows regression relative to before PTE_CONT was enabled
+> (bigger negative value is bigger regression):
+>
+> |   cpus |   before opt |   after opt |
+> |-------:|-------------:|------------:|
+> |      1 |       -10.4% |       -5.2% |
+> |      8 |       -15.4% |       -3.5% |
+> |     16 |       -38.7% |       -3.7% |
+> |     24 |       -57.0% |       -4.4% |
+> |     32 |       -65.8% |       -5.4% |
+>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>  arch/arm64/include/asm/pgtable.h | 30 ++++++++++++++++++++---
+>  arch/arm64/mm/contpte.c          | 42 ++++++++++++++++++++++++++++++++
+>  2 files changed, 69 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 15bc9cf1eef4..9bd2f57a9e11 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -984,6 +984,16 @@ static inline void __ptep_set_wrprotect(struct mm_struct *mm,
+>  	} while (pte_val(pte) != pte_val(old_pte));
+>  }
+>  
+> +static inline void __ptep_set_wrprotects(struct mm_struct *mm,
+> +					unsigned long address, pte_t *ptep,
+> +					unsigned int nr)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < nr; i++, address += PAGE_SIZE, ptep++)
+> +		__ptep_set_wrprotect(mm, address, ptep);
+> +}
+> +
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  #define __HAVE_ARCH_PMDP_SET_WRPROTECT
+>  static inline void pmdp_set_wrprotect(struct mm_struct *mm,
+> @@ -1139,6 +1149,8 @@ extern int contpte_ptep_test_and_clear_young(struct vm_area_struct *vma,
+>  				unsigned long addr, pte_t *ptep);
+>  extern int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
+>  				unsigned long addr, pte_t *ptep);
+> +extern void contpte_set_wrprotects(struct mm_struct *mm, unsigned long addr,
+> +				pte_t *ptep, unsigned int nr);
+>  extern int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
+>  				unsigned long addr, pte_t *ptep,
+>  				pte_t entry, int dirty);
+> @@ -1290,13 +1302,25 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
+>  	return contpte_ptep_clear_flush_young(vma, addr, ptep);
+>  }
+>  
+> +#define ptep_set_wrprotects ptep_set_wrprotects
+> +static inline void ptep_set_wrprotects(struct mm_struct *mm, unsigned long addr,
+> +				pte_t *ptep, unsigned int nr)
+> +{
+> +	if (!contpte_is_enabled(mm))
+> +		__ptep_set_wrprotects(mm, addr, ptep, nr);
+> +	else if (nr == 1) {
+
+Why do we need the special case here? Couldn't we just call
+contpte_set_wrprotects() with nr == 1?
+
+> +		contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
+> +		__ptep_set_wrprotects(mm, addr, ptep, 1);
+> +		contpte_try_fold(mm, addr, ptep, __ptep_get(ptep));
+> +	} else
+> +		contpte_set_wrprotects(mm, addr, ptep, nr);
+> +}
+> +
+>  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
+>  static inline void ptep_set_wrprotect(struct mm_struct *mm,
+>  				unsigned long addr, pte_t *ptep)
+>  {
+> -	contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
+> -	__ptep_set_wrprotect(mm, addr, ptep);
+> -	contpte_try_fold(mm, addr, ptep, __ptep_get(ptep));
+> +	ptep_set_wrprotects(mm, addr, ptep, 1);
+>  }
+>  
+>  #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
+> diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
+> index e079ec61d7d1..2a57df16bf58 100644
+> --- a/arch/arm64/mm/contpte.c
+> +++ b/arch/arm64/mm/contpte.c
+> @@ -303,6 +303,48 @@ int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
+>  }
+>  EXPORT_SYMBOL(contpte_ptep_clear_flush_young);
+>  
+> +void contpte_set_wrprotects(struct mm_struct *mm, unsigned long addr,
+> +					pte_t *ptep, unsigned int nr)
+> +{
+> +	unsigned long next;
+> +	unsigned long end = addr + (nr << PAGE_SHIFT);
+> +
+> +	do {
+> +		next = pte_cont_addr_end(addr, end);
+> +		nr = (next - addr) >> PAGE_SHIFT;
+> +
+> +		/*
+> +		 * If wrprotecting an entire contig range, we can avoid
+> +		 * unfolding. Just set wrprotect and wait for the later
+> +		 * mmu_gather flush to invalidate the tlb. Until the flush, the
+> +		 * page may or may not be wrprotected. After the flush, it is
+> +		 * guarranteed wrprotected. If its a partial range though, we
+> +		 * must unfold, because we can't have a case where CONT_PTE is
+> +		 * set but wrprotect applies to a subset of the PTEs; this would
+> +		 * cause it to continue to be unpredictable after the flush.
+> +		 */
+> +		if (nr != CONT_PTES)
+> +			contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
+> +
+> +		__ptep_set_wrprotects(mm, addr, ptep, nr);
+> +
+> +		addr = next;
+> +		ptep += nr;
+> +
+> +		/*
+> +		 * If applying to a partial contig range, the change could have
+> +		 * made the range foldable. Use the last pte in the range we
+> +		 * just set for comparison, since contpte_try_fold() only
+> +		 * triggers when acting on the last pte in the contig range.
+> +		 */
+> +		if (nr != CONT_PTES)
+> +			contpte_try_fold(mm, addr - PAGE_SIZE, ptep - 1,
+> +					 __ptep_get(ptep - 1));
+> +
+> +	} while (addr != end);
+> +}
+> +EXPORT_SYMBOL(contpte_set_wrprotects);
+> +
+>  int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
+>  					unsigned long addr, pte_t *ptep,
+>  					pte_t entry, int dirty)
 
