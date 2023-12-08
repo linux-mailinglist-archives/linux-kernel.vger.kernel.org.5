@@ -2,149 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CDE80AF68
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F4E80AF6B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574896AbjLHWIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 17:08:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40144 "EHLO
+        id S1574879AbjLHWIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 17:08:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbjLHWIJ (ORCPT
+        with ESMTP id S233976AbjLHWIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 17:08:09 -0500
-Received: from helios.alatek.com.pl (helios.alatek.com.pl [85.14.123.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5C21706;
-        Fri,  8 Dec 2023 14:08:14 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by helios.alatek.com.pl (Postfix) with ESMTP id A745B2D00FCF;
-        Fri,  8 Dec 2023 23:08:11 +0100 (CET)
-Received: from helios.alatek.com.pl ([127.0.0.1])
- by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10032)
- with ESMTP id Pm6PtbYcO1Xs; Fri,  8 Dec 2023 23:08:10 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by helios.alatek.com.pl (Postfix) with ESMTP id C4CD72D00FCE;
-        Fri,  8 Dec 2023 23:08:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 helios.alatek.com.pl C4CD72D00FCE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alatek.krakow.pl;
-        s=99EE5E86-D06A-11EC-BE24-DBCCD0A148D3; t=1702073290;
-        bh=OqUf+5qMMYkf8m8dTkgiVgao04lPLCwTYIySk9A5NlY=;
-        h=From:To:Date:Message-Id:MIME-Version;
-        b=hmh5AfGbadyV6Y1sJdDJrvt+W6zrZhbGalxGYhz2woEeVgmT2A07pu1h8vdmYqZ4W
-         sRQi+4cS3MzIPU47Qf5b6X6gZNCspXKZwsnsR4IIVR1Ay1iyfKJhye3L0b43mfWs7e
-         UxHq3pLclgpbCv8riGhpNy3vggV8BHfKrMYVFeoj4mC+OzRNlQI73niTlklqH1HUv0
-         r4ediBNW66UcvTEeptVuH2MfE9jcK380BB2RQ7tIrdbLB/UAAJF2gksfvVB1ZhJeoO
-         27vjQpKdEzlCjC/I+ifMu5dav66kFCQwmvCJPzIzqQL1gcZ2xTWsiahTZ3beI/M9/H
-         Leaq6fG5B1YmQ==
-X-Virus-Scanned: amavis at alatek.com.pl
-Received: from helios.alatek.com.pl ([127.0.0.1])
- by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10026)
- with ESMTP id fAPQKYUSh1JW; Fri,  8 Dec 2023 23:08:10 +0100 (CET)
-Received: from localhost.localdomain (unknown [10.125.125.6])
-        by helios.alatek.com.pl (Postfix) with ESMTPSA id 249152D00FCC;
-        Fri,  8 Dec 2023 23:08:10 +0100 (CET)
-From:   Jan Kuliga <jankul@alatek.krakow.pl>
-To:     lizhi.hou@amd.com, brian.xu@amd.com, raj.kumar.rampelli@amd.com,
-        vkoul@kernel.org, michal.simek@amd.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com
-Cc:     jankul@alatek.krakow.pl
-Subject: [FIXED PATCH v4 6/8] dmaengine: xilinx: xdma: Add transfer error reporting
-Date:   Fri,  8 Dec 2023 23:08:02 +0100
-Message-Id: <20231208220802.56458-1-jankul@alatek.krakow.pl>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <9d683987-53db-a53e-9215-3a29f0167183@amd.com>
-References: <9d683987-53db-a53e-9215-3a29f0167183@amd.com>
+        Fri, 8 Dec 2023 17:08:40 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E22171E;
+        Fri,  8 Dec 2023 14:08:45 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8M1qn5026906;
+        Fri, 8 Dec 2023 22:08:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
+ subject : mime-version : content-type : content-transfer-encoding :
+ message-id : to : cc; s=qcppdkim1;
+ bh=B23GovXxqp99o/l4fZ6ai8goWBskAqHEnHVpvbkPoWE=;
+ b=GGCJsY3CyuhTGLZUXlKGQo/1tTO/smZX8Rut95r8qZnXNYfuOMTcxdU9tmRsAdH9/YFr
+ /DDrHSEQteGIZgf5auZQlPWpCCFAt+SbatKXqzL4kktNcAfdOkf+K3RABunYco36Swpw
+ beR6aESXWjFSUivS55RWSIFeGRRne09oSuV1kaBOM1rR3fQcU3w6hCSwjoBXmWTkDfmT
+ wV+DashsilIAkTt3hgTgX21NJE50U9I2F2e+P/xLUXZ0eTj0MVANTJWQXHZnMQGWZJ9n
+ qdUJCoZPLhYiqVzqW35qiplZREfCHrVLn7VLiACnZsSWMUO0hK2+PMaw658hVz5CWza3 5w== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uuu1dt3cm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Dec 2023 22:08:31 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B8M8VlJ000510
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 8 Dec 2023 22:08:31 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Dec
+ 2023 14:08:30 -0800
+From:   Elliot Berman <quic_eberman@quicinc.com>
+Date:   Fri, 8 Dec 2023 14:08:29 -0800
+Subject: [PATCH] clang-format: Add maple tree's for_each macros
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20231208-clang-format-mt-for-each-v1-1-b4b73186b886@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIANyTc2UC/x2MSwqAMAwFryJZG7C1LvQq4iK0UQP+aEWE4t2N7
+ mYG3suQOAon6IoMkS9Jsm8qpizAz7RNjBLUwVa2NrYy6BetOO5xpRPX8yNk8jN6CtQG54iaADo
+ /Io9y/9f98DwvQ5nILmoAAAA=
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Justin Stitt <justinstitt@google.com>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <llvm@lists.linux.dev>, Elliot Berman <quic_eberman@quicinc.com>
+X-Mailer: b4 0.13-dev
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: KzngbB3wzlZSq2qL5v8BZQAwCgEY3oet
+X-Proofpoint-ORIG-GUID: KzngbB3wzlZSq2qL5v8BZQAwCgEY3oet
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-08_14,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ adultscore=0 clxscore=1011 bulkscore=0 mlxlogscore=569 phishscore=0
+ suspectscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312080184
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the capability of transfer status reporting. Introduce error flag,
-which allows to report error in case of a interrupt-reported error
-condition.
+Add maple tree's for_each macros so clang-format operates correctly on
+{mt,mas}_for_each.
 
-Signed-off-by: Jan Kuliga <jankul@alatek.krakow.pl>
+Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 ---
- drivers/dma/xilinx/xdma.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+ .clang-format | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/dma/xilinx/xdma.c b/drivers/dma/xilinx/xdma.c
-index d1bc36133a45..a7cd378b7e9a 100644
---- a/drivers/dma/xilinx/xdma.c
-+++ b/drivers/dma/xilinx/xdma.c
-@@ -85,6 +85,7 @@ struct xdma_chan {
-  * @cyclic: Cyclic transfer vs. scatter-gather
-  * @periods: Number of periods in the cyclic transfer
-  * @period_size: Size of a period in bytes in cyclic transfers
-+ * @error: tx error flag
-  */
- struct xdma_desc {
- 	struct virt_dma_desc		vdesc;
-@@ -97,6 +98,7 @@ struct xdma_desc {
- 	bool				cyclic;
- 	u32				periods;
- 	u32				period_size;
-+	bool				error;
- };
+diff --git a/.clang-format b/.clang-format
+index 0bbb1991defe..54bab11d38f0 100644
+--- a/.clang-format
++++ b/.clang-format
+@@ -494,11 +494,13 @@ ForEachMacros:
+   - 'map_for_each_metric'
+   - 'maps__for_each_entry'
+   - 'maps__for_each_entry_safe'
++  - 'mas_for_each'
+   - 'mci_for_each_dimm'
+   - 'media_device_for_each_entity'
+   - 'media_device_for_each_intf'
+   - 'media_device_for_each_link'
+   - 'media_device_for_each_pad'
++  - 'mt_for_each'
+   - 'msi_for_each_desc'
+   - 'nanddev_io_for_each_page'
+   - 'netdev_for_each_lower_dev'
 
- #define XDMA_DEV_STATUS_REG_DMA		BIT(0)
-@@ -274,6 +276,7 @@ xdma_alloc_desc(struct xdma_chan *chan, u32 desc_num,=
- bool cyclic)
- 	sw_desc->chan =3D chan;
- 	sw_desc->desc_num =3D desc_num;
- 	sw_desc->cyclic =3D cyclic;
-+	sw_desc->error =3D false;
- 	dblk_num =3D DIV_ROUND_UP(desc_num, XDMA_DESC_ADJACENT);
- 	sw_desc->desc_blocks =3D kcalloc(dblk_num, sizeof(*sw_desc->desc_blocks=
-),
- 				       GFP_NOWAIT);
-@@ -770,20 +773,20 @@ static enum dma_status xdma_tx_status(struct dma_ch=
-an *chan, dma_cookie_t cookie
- 	spin_lock_irqsave(&xdma_chan->vchan.lock, flags);
+---
+base-commit: 5eda217cee887e595ba2265435862d585d399769
+change-id: 20231201-clang-format-mt-for-each-cada9d44aa5d
 
- 	vd =3D vchan_find_desc(&xdma_chan->vchan, cookie);
--	if (vd)
--		desc =3D to_xdma_desc(vd);
--	if (!desc || !desc->cyclic) {
--		spin_unlock_irqrestore(&xdma_chan->vchan.lock, flags);
--		return ret;
--	}
--
--	period_idx =3D desc->completed_desc_num % desc->periods;
--	residue =3D (desc->periods - period_idx) * desc->period_size;
-+	if (!vd)
-+		goto out;
-
-+	desc =3D to_xdma_desc(vd);
-+	if (desc->error) {
-+		ret =3D DMA_ERROR;
-+	} else if (desc->cyclic) {
-+		period_idx =3D desc->completed_desc_num % desc->periods;
-+		residue =3D (desc->periods - period_idx) * desc->period_size;
-+		dma_set_residue(state, residue);
-+	}
-+out:
- 	spin_unlock_irqrestore(&xdma_chan->vchan.lock, flags);
-
--	dma_set_residue(state, residue);
--
- 	return ret;
- }
-
-@@ -820,6 +823,7 @@ static irqreturn_t xdma_channel_isr(int irq, void *de=
-v_id)
- 	st &=3D XDMA_CHAN_STATUS_MASK;
- 	if ((st & XDMA_CHAN_ERROR_MASK) ||
- 		!(st & (CHAN_CTRL_IE_DESC_COMPLETED | CHAN_CTRL_IE_DESC_STOPPED))) {
-+		desc->error =3D true;
- 		xdma_err(xdev, "channel error, status register value: 0x%x", st);
- 		goto out;
- 	}
---
-2.34.1
+Best regards,
+-- 
+Elliot Berman <quic_eberman@quicinc.com>
 
