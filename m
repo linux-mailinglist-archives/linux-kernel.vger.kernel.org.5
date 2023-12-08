@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2081E8098D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 02:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 530008098D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 02:53:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572945AbjLHBxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 20:53:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
+        id S1572963AbjLHBxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 20:53:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1572943AbjLHBw4 (ORCPT
+        with ESMTP id S235659AbjLHBxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 20:52:56 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A221723
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 17:53:02 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-334b2ffaa3eso1546954f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 17:53:02 -0800 (PST)
+        Thu, 7 Dec 2023 20:53:04 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E77E172D
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 17:53:04 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-332c46d5988so1688702f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 17:53:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702000380; x=1702605180; darn=vger.kernel.org;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702000383; x=1702605183; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=da7LLhF7dTBCpKaBg/sVxSbQ3IIX4np42FTWMRnWSyE=;
-        b=h3NSf5psqsjkw7XBQeF3kO2syAHTzCZktpbn2UBoH05Gb9Mj+NjtvgHGhszvSSEEtK
-         cdmcuAG9N7l7vQkGrRVGdTmULMWXFWxgt+igiUMabUkxV1ALobffFSZkqXQHq3eIv1w5
-         S2MiHzYgaKWhqzunE8/uYLSqqPSPtRq6uHFJIWqF+g/TS98irxNdI0yabRjnJvmTViWP
-         7CDXCAal0r+udd1WFyCdnw7gCAuU0kF2jrsRGjivYwpC+OJYz4CsGgIsdMhUFalDfKE1
-         7gcPXrIq4Zm0/6iIIPrsBcE9kkeqG1rDFEtOwW96EjkaOUG/AaXdy07xtc7PvMO7gDhU
-         ZozQ==
+        bh=31uCcMHZPgEoDhCw1uvDKEltQSe+mPpn7IW2GIItino=;
+        b=vOrvHqgDi0qxb5BdwhAL0mk6P007jCigtoK2GZFaibOEAN8gtKZYPTvoBKP8m3LYik
+         fV0yEIAlCCGzrSrVzgaHrZpKgcXt6B+vCIqmhPQhdoa3T/S1bTAARxT8IQpr/nIGkNMV
+         skAkL+jzNEkThS0zaOZFpQXiYqqz2y/WyKkDdAM3wHs5lpIDFyy+ymbIJXsLTFNhRFuc
+         jM23QQWJwbMtEw41S7mZu/MHrtHVoe8hpu+DdJOQwVpsVALRG6rxGXqJ+hZ3jVhiUHNb
+         ZhhkvX+yaFHdlQsxE0OGLFs15p3+tSdg9lAbK+W9s7tauTvDe6bZF/J6lWZXaLzJZDUh
+         BuQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702000380; x=1702605180;
+        d=1e100.net; s=20230601; t=1702000383; x=1702605183;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=da7LLhF7dTBCpKaBg/sVxSbQ3IIX4np42FTWMRnWSyE=;
-        b=rW73YTWgjIhtBRN+hPtS/A7a+BlMAiRVv8gXAPcEYCmI6gQS5iOClXEkFHuGNsUa9x
-         xfxSaylqJECRYH6Q476eWE2AZw0FN5RIc50hOFirVNZERC+txnw35eF73sibohUsHOfM
-         VAXp4eksGkCBJD/VxUalgFdfQUVQskg9o7wXoe7zC6j3m2L2kvauJ9+rd628WF8UQzt/
-         hzyifnBXQh2Waxiw73pPdjJP1+FKnbBUNz1r6DBr+X8sfwEP+tIqvZPseWF1KlSaEgwP
-         1znW+HBgvo8ouzCv6oew6uzDOUxOGKGuvaxMnmbnlrFcZdKQL+RTCQHOkYI5SVvWBMU3
-         RB7Q==
-X-Gm-Message-State: AOJu0Ywe3u8xtLLemcHYUttGsacVvz9zXFn/5QfWyuntr5b420vYG8co
-        SV7X1xJiLi/RyFMwvBSLZwkQGA==
-X-Google-Smtp-Source: AGHT+IGrZHyEj+GDKOaEfnmPxdSCkC2yxj/SBOklZX3lgEv39Ku/B2G3SW2ba5uZHZqubXcqURrVgA==
-X-Received: by 2002:a5d:4911:0:b0:333:2fd2:68f5 with SMTP id x17-20020a5d4911000000b003332fd268f5mr1934815wrq.136.1702000380663;
-        Thu, 07 Dec 2023 17:53:00 -0800 (PST)
+        bh=31uCcMHZPgEoDhCw1uvDKEltQSe+mPpn7IW2GIItino=;
+        b=mzjESjxzF7exJH3iZSzk+f4MAXjvvwzzexA4HwV95PxnSmvTKg/pcJn4DnLKg6Lwct
+         hesfki13xOHS2l7GUp5/p0cBrxA9zN87/4WhSRqnHr/ZtYYe18HN5Cb7l9qjIL3yQQtl
+         rAyrJ50Vj8E7vt/7lepLALEN5NUlq2xJU4WXctivlWQ9OSUG27T8+5coWUxRhN9kCDwT
+         cGWQKePkHZxoQiSza7lC9mpIRB0jqHz8HYUuaI1dhTy+yY8qePJatOCP0i600usQyqeF
+         tGxPlsHXChKY+Nvxuv4oxUBLgNC9mlrIOsKvcFtI2Uf0A34JQSRBDDoQQbL+U57tpCUx
+         6SDg==
+X-Gm-Message-State: AOJu0Yzt0FOkTANFfIGxhBB6qyHzgZw8MNkRcDz5rgYd9c5ALAx9O51A
+        8Vdfju/k0MQKgAGzsHWwsy3SBQ==
+X-Google-Smtp-Source: AGHT+IG4IUsa7DV15wnNOlcuAvDlFGhKyQFMusK/if39EeqD0F8ohN6cpsYvBkwY1HdsAijqH552LQ==
+X-Received: by 2002:adf:e952:0:b0:333:2fd2:5d3d with SMTP id m18-20020adfe952000000b003332fd25d3dmr1899176wrn.111.1702000383066;
+        Thu, 07 Dec 2023 17:53:03 -0800 (PST)
 Received: from airbuntu.. (host109-153-232-45.range109-153.btcentralplus.com. [109.153.232.45])
-        by smtp.gmail.com with ESMTPSA id s12-20020adf978c000000b003333a0da243sm902521wrb.81.2023.12.07.17.52.59
+        by smtp.gmail.com with ESMTPSA id s12-20020adf978c000000b003333a0da243sm902521wrb.81.2023.12.07.17.53.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 17:53:00 -0800 (PST)
+        Thu, 07 Dec 2023 17:53:02 -0800 (PST)
 From:   Qais Yousef <qyousef@layalina.io>
 To:     Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -63,9 +63,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         Chung-Kai Mei <chungkai@google.com>,
         Hongyan Xia <hongyan.xia2@arm.com>,
         Qais Yousef <qyousef@layalina.io>
-Subject: [PATCH 3/4] sched/schedutil: Ignore update requests for short running tasks
-Date:   Fri,  8 Dec 2023 01:52:41 +0000
-Message-Id: <20231208015242.385103-4-qyousef@layalina.io>
+Subject: [PATCH 4/4] sched/documentation: Remove reference to max aggregation
+Date:   Fri,  8 Dec 2023 01:52:42 +0000
+Message-Id: <20231208015242.385103-5-qyousef@layalina.io>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231208015242.385103-1-qyousef@layalina.io>
 References: <20231208015242.385103-1-qyousef@layalina.io>
@@ -73,222 +73,342 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ignore freq updates to honour uclamp requests if the task is short
-running. It won't run long enough to see the changes, so avoid the
-unnecessary work and noise.
+Now that max aggregation complexity was removed, update the doc to
+reflect the new working design.
 
-Make sure SCHED_CPUFREQ_PERF_HINTS flag is set in task_tick_fair() so
-that we can do correction action if the task continued to run such that
-it is no longer considered a short task.
-
-Should address the problem of noisy short running tasks unnecessary
-causing frequency spikes when waking up on a CPU that is running a busy
-task capped by UCLAMP_MAX.
-
-Move helper functions to access task_util_est() and related attributes
-to sched.h to enable using it from cpufreq_schedutil.c
+And since we fixed one of the limitation, remove it as well.
 
 Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
 ---
- kernel/sched/cpufreq_schedutil.c | 59 ++++++++++++++++++++++++++++++++
- kernel/sched/fair.c              | 24 +------------
- kernel/sched/sched.h             | 22 ++++++++++++
- 3 files changed, 82 insertions(+), 23 deletions(-)
+ Documentation/scheduler/sched-util-clamp.rst | 239 ++++---------------
+ 1 file changed, 45 insertions(+), 194 deletions(-)
 
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 137636f62593..04a5cfcdbbf2 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -8,11 +8,18 @@
+diff --git a/Documentation/scheduler/sched-util-clamp.rst b/Documentation/scheduler/sched-util-clamp.rst
+index 74d5b7c6431d..642e5f386f8e 100644
+--- a/Documentation/scheduler/sched-util-clamp.rst
++++ b/Documentation/scheduler/sched-util-clamp.rst
+@@ -129,172 +129,50 @@ and the scheduler needs to select a suitable CPU for it to run on.
  
- #define IOWAIT_BOOST_MIN	(SCHED_CAPACITY_SCALE / 8)
- 
-+/*
-+ * Min runtime in us a task should run for above rate_limit_us so that we don't
-+ * ignore it in ignore_short_tasks().
-+ */
-+#define SHORT_TASK_MIN		500
-+
- DEFINE_PER_CPU_READ_MOSTLY(unsigned long, response_time_mult);
- 
- struct sugov_tunables {
- 	struct gov_attr_set	attr_set;
- 	unsigned int		rate_limit_us;
-+	unsigned long		rate_limit_util;
- 	unsigned int		response_time_ms;
- };
- 
-@@ -127,6 +134,49 @@ sugov_apply_response_time(unsigned long util, int cpu)
- 	return mult >> SCHED_CAPACITY_SHIFT;
- }
- 
-+/*
-+ * Ignore updates if current task's runtime is too short for the rate limit.
-+ * The task must run for an average of rate_limit_us + SHORT_TASK_MIN for it
-+ * not to be ignored.
-+ *
-+ * If we made a wrong decision and the task has changed characteristic such
-+ * that it is no longer a short task, we should detect that at tick. Which can
-+ * be a high penalty if the tick value is too high.
-+ *
-+ * XXX: can we take TICK_US into account somehow when verifying if we can
-+ * ignore it?
-+ *
-+ * This is only valid for requests containing SCHED_CPUFREQ_PERF_HINTS flag,
-+ * ie: uclamp hints requests at context switches.
-+ *
-+ * This flag is expected to be passed on context switch and tick. Only fair
-+ * tasks are considered now as we use util to approximate its average runtime.
-+ * We can't do the same without tracking the average runtime of the RT task in
-+ * our accounting. And it might be risky to temporarily ignore the RT task's
-+ * perf requirements as a mistake could have higher consequence.
-+ *
-+ * Once fair gains the concept of latency sensitive tasks, we might need to
-+ * consider the consequence of ignoring them here too. For the same reason
-+ * ignoring RT tasks is risky.
-+ */
-+static inline bool ignore_short_tasks(int cpu,
-+				      struct sugov_policy *sg_policy,
-+				      unsigned int flags)
-+{
-+	struct task_struct *p = cpu_rq(cpu)->curr;
-+	unsigned long task_util;
-+
-+	if (!(flags & SCHED_CPUFREQ_PERF_HINTS))
-+		return false;
-+
-+	if (!fair_policy(p->policy))
-+		return false;
-+
-+	task_util = task_util_est(p);
-+
-+	return task_util < sg_policy->tunables->rate_limit_util;
-+}
-+
- static bool sugov_should_update_freq(struct sugov_policy *sg_policy, u64 time)
- {
- 	s64 delta_ns;
-@@ -396,8 +446,12 @@ static inline bool sugov_update_single_common(struct sugov_cpu *sg_cpu,
- 					      u64 time, unsigned long max_cap,
- 					      unsigned int flags)
- {
-+	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
- 	unsigned long boost;
- 
-+	if (ignore_short_tasks(sg_cpu->cpu, sg_policy, flags))
-+		return false;
-+
- 	sugov_iowait_boost(sg_cpu, time, flags);
- 	sg_cpu->last_update = time;
- 
-@@ -526,6 +580,9 @@ sugov_update_shared(struct update_util_data *hook, u64 time, unsigned int flags)
- 	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
- 	unsigned int next_f;
- 
-+	if (ignore_short_tasks(sg_cpu->cpu, sg_policy, flags))
-+		return;
-+
- 	raw_spin_lock(&sg_policy->update_lock);
- 
- 	sugov_iowait_boost(sg_cpu, time, flags);
-@@ -612,6 +669,7 @@ rate_limit_us_store(struct gov_attr_set *attr_set, const char *buf, size_t count
- 		return -EINVAL;
- 
- 	tunables->rate_limit_us = rate_limit_us;
-+	tunables->rate_limit_util = approximate_util_avg(0, rate_limit_us + SHORT_TASK_MIN);
- 
- 	list_for_each_entry(sg_policy, &attr_set->policy_list, tunables_hook) {
- 
-@@ -853,6 +911,7 @@ static int sugov_init(struct cpufreq_policy *policy)
- 	sg_policy->tunables = tunables;
- 
- 	tunables->rate_limit_us = cpufreq_policy_transition_delay_us(policy);
-+	tunables->rate_limit_util = approximate_util_avg(0, tunables->rate_limit_us + SHORT_TASK_MIN);
- 	tunables->response_time_ms = sugov_calc_freq_response_ms(sg_policy);
- 	sugov_update_response_time_mult(sg_policy);
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 74326179658c..b824e633ac2a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4754,28 +4754,6 @@ static inline unsigned long cfs_rq_load_avg(struct cfs_rq *cfs_rq)
- 
- static int newidle_balance(struct rq *this_rq, struct rq_flags *rf);
- 
--static inline unsigned long task_util(struct task_struct *p)
--{
--	return READ_ONCE(p->se.avg.util_avg);
--}
+ Since the goal of util clamp is to allow requesting a minimum and maximum
+ performance point for a task to run on, it must be able to influence the
+-frequency selection as well as task placement to be most effective. Both of
+-which have implications on the utilization value at CPU runqueue (rq for short)
+-level, which brings us to the main design challenge.
 -
--static inline unsigned long task_runnable(struct task_struct *p)
--{
--	return READ_ONCE(p->se.avg.runnable_avg);
--}
+-When a task wakes up on an rq, the utilization signal of the rq will be
+-affected by the uclamp settings of all the tasks enqueued on it. For example if
+-a task requests to run at UTIL_MIN = 512, then the util signal of the rq needs
+-to respect to this request as well as all other requests from all of the
+-enqueued tasks.
 -
--static inline unsigned long _task_util_est(struct task_struct *p)
--{
--	struct util_est ue = READ_ONCE(p->se.avg.util_est);
+-To be able to aggregate the util clamp value of all the tasks attached to the
+-rq, uclamp must do some housekeeping at every enqueue/dequeue, which is the
+-scheduler hot path. Hence care must be taken since any slow down will have
+-significant impact on a lot of use cases and could hinder its usability in
+-practice.
 -
--	return max(ue.ewma, (ue.enqueued & ~UTIL_AVG_UNCHANGED));
--}
+-The way this is handled is by dividing the utilization range into buckets
+-(struct uclamp_bucket) which allows us to reduce the search space from every
+-task on the rq to only a subset of tasks on the top-most bucket.
 -
--static inline unsigned long task_util_est(struct task_struct *p)
--{
--	return max(task_util(p), _task_util_est(p));
--}
+-When a task is enqueued, the counter in the matching bucket is incremented,
+-and on dequeue it is decremented. This makes keeping track of the effective
+-uclamp value at rq level a lot easier.
 -
- static inline void util_est_enqueue(struct cfs_rq *cfs_rq,
- 				    struct task_struct *p)
- {
-@@ -12544,7 +12522,7 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
+-As tasks are enqueued and dequeued, we keep track of the current effective
+-uclamp value of the rq. See :ref:`section 2.1 <uclamp-buckets>` for details on
+-how this works.
+-
+-Later at any path that wants to identify the effective uclamp value of the rq,
+-it will simply need to read this effective uclamp value of the rq at that exact
+-moment of time it needs to take a decision.
++frequency selection as well as task placement to be most effective.
  
- 	update_misfit_status(curr, rq);
- 	update_overutilized_status(task_rq(curr));
--	cpufreq_update_util(rq, 0);
-+	cpufreq_update_util(rq, SCHED_CPUFREQ_PERF_HINTS);
+ For task placement case, only Energy Aware and Capacity Aware Scheduling
+ (EAS/CAS) make use of uclamp for now, which implies that it is applied on
+-heterogeneous systems only.
+-When a task wakes up, the scheduler will look at the current effective uclamp
+-value of every rq and compare it with the potential new value if the task were
+-to be enqueued there. Favoring the rq that will end up with the most energy
+-efficient combination.
++heterogeneous systems only. When a task wakes up, the scheduler will look at
++the effective uclamp values of the woken task to check if it will fit the
++capacity of the CPU. Favouring the most energy efficient CPU that fits the
++performant request hints. Enabling it to favour a bigger CPU if uclamp_min is
++high even if the utilization of the task is low. Or enable it to run on
++a smaller CPU if UCLAMP_MAX is low, even if the utilization of the task is
++high.
  
- 	task_tick_core(rq, curr);
- }
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index f05a0674a036..b7a8cd768bef 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2952,6 +2952,28 @@ unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
- unsigned long approximate_util_avg(unsigned long util, u64 delta);
- u64 approximate_runtime(unsigned long util);
+ Similarly in schedutil, when it needs to make a frequency update it will look
+-at the current effective uclamp value of the rq which is influenced by the set
+-of tasks currently enqueued there and select the appropriate frequency that
+-will satisfy constraints from requests.
++at the effective uclamp values of the current running task on the rq and select
++the appropriate frequency that will satisfy the performance request hints of
++the task, taking into account the current utilization of the rq.
  
-+static inline unsigned long task_util(struct task_struct *p)
-+{
-+	return READ_ONCE(p->se.avg.util_avg);
-+}
+ Other paths like setting overutilization state (which effectively disables EAS)
+ make use of uclamp as well. Such cases are considered necessary housekeeping to
+ allow the 2 main use cases above and will not be covered in detail here as they
+ could change with implementation details.
+ 
+-.. _uclamp-buckets:
++2.1. Frequency hints are applied at context switch
++--------------------------------------------------
+ 
+-2.1. Buckets
+-------------
++At context switch, we tell schedutil of the new uclamp values (or min/max perf
++requirments) of the newly RUNNING task. It is up to the governor to try its
++best to honour these requests.
+ 
+-::
+-
+-                           [struct rq]
+-
+-  (bottom)                                                    (top)
+-
+-    0                                                          1024
+-    |                                                           |
+-    +-----------+-----------+-----------+----   ----+-----------+
+-    |  Bucket 0 |  Bucket 1 |  Bucket 2 |    ...    |  Bucket N |
+-    +-----------+-----------+-----------+----   ----+-----------+
+-       :           :                                   :
+-       +- p0       +- p3                               +- p4
+-       :                                               :
+-       +- p1                                           +- p5
+-       :
+-       +- p2
+-
+-
+-.. note::
+-  The diagram above is an illustration rather than a true depiction of the
+-  internal data structure.
+-
+-To reduce the search space when trying to decide the effective uclamp value of
+-an rq as tasks are enqueued/dequeued, the whole utilization range is divided
+-into N buckets where N is configured at compile time by setting
+-CONFIG_UCLAMP_BUCKETS_COUNT. By default it is set to 5.
+-
+-The rq has a bucket for each uclamp_id tunables: [UCLAMP_MIN, UCLAMP_MAX].
+-
+-The range of each bucket is 1024/N. For example, for the default value of
+-5 there will be 5 buckets, each of which will cover the following range:
+-
+-::
+-
+-        DELTA = round_closest(1024/5) = 204.8 = 205
+-
+-        Bucket 0: [0:204]
+-        Bucket 1: [205:409]
+-        Bucket 2: [410:614]
+-        Bucket 3: [615:819]
+-        Bucket 4: [820:1024]
+-
+-When a task p with following tunable parameters
+-
+-::
+-
+-        p->uclamp[UCLAMP_MIN] = 300
+-        p->uclamp[UCLAMP_MAX] = 1024
+-
+-is enqueued into the rq, bucket 1 will be incremented for UCLAMP_MIN and bucket
+-4 will be incremented for UCLAMP_MAX to reflect the fact the rq has a task in
+-this range.
+-
+-The rq then keeps track of its current effective uclamp value for each
+-uclamp_id.
+-
+-When a task p is enqueued, the rq value changes to:
+-
+-::
+-
+-        // update bucket logic goes here
+-        rq->uclamp[UCLAMP_MIN] = max(rq->uclamp[UCLAMP_MIN], p->uclamp[UCLAMP_MIN])
+-        // repeat for UCLAMP_MAX
++For uclamp to be effective, it is desired to have a hardware with reasonably
++fast DVFS hardware (rate_limit_us is short).
+ 
+-Similarly, when p is dequeued the rq value changes to:
+-
+-::
+-
+-        // update bucket logic goes here
+-        rq->uclamp[UCLAMP_MIN] = search_top_bucket_for_highest_value()
+-        // repeat for UCLAMP_MAX
+-
+-When all buckets are empty, the rq uclamp values are reset to system defaults.
+-See :ref:`section 3.4 <uclamp-default-values>` for details on default values.
++It is believed that most modern hardware (including lower rend ones) has
++rate_limit_us <= 2ms which should be good enough. Having 500us or below would
++be ideal so the hardware can reasonably catch up with each task's performance
++constraints.
+ 
++Schedutil might ignore the task's performance request if its historical runtime
++has been shorter than the rate_limit_us.
+ 
+-2.2. Max aggregation
+---------------------
++See :ref:`Section 5.2 <schedutil-response-time-issues>` for more details on
++schedutil related limitations.
+ 
+-Util clamp is tuned to honour the request for the task that requires the
+-highest performance point.
+-
+-When multiple tasks are attached to the same rq, then util clamp must make sure
+-the task that needs the highest performance point gets it even if there's
+-another task that doesn't need it or is disallowed from reaching this point.
+-
+-For example, if there are multiple tasks attached to an rq with the following
+-values:
+-
+-::
+-
+-        p0->uclamp[UCLAMP_MIN] = 300
+-        p0->uclamp[UCLAMP_MAX] = 900
+-
+-        p1->uclamp[UCLAMP_MIN] = 500
+-        p1->uclamp[UCLAMP_MAX] = 500
+-
+-then assuming both p0 and p1 are enqueued to the same rq, both UCLAMP_MIN
+-and UCLAMP_MAX become:
+-
+-::
+-
+-        rq->uclamp[UCLAMP_MIN] = max(300, 500) = 500
+-        rq->uclamp[UCLAMP_MAX] = max(900, 500) = 900
+-
+-As we shall see in :ref:`section 5.1 <uclamp-capping-fail>`, this max
+-aggregation is the cause of one of limitations when using util clamp, in
+-particular for UCLAMP_MAX hint when user space would like to save power.
+-
+-2.3. Hierarchical aggregation
++2.2. Hierarchical aggregation
+ -----------------------------
+ 
+ As stated earlier, util clamp is a property of every task in the system. But
+@@ -324,7 +202,7 @@ In other words, this aggregation will not cause an error when a task changes
+ its uclamp values, but rather the system may not be able to satisfy requests
+ based on those factors.
+ 
+-2.4. Range
++2.3. Range
+ ----------
+ 
+ Uclamp performance request has the range of 0 to 1024 inclusive.
+@@ -332,6 +210,14 @@ Uclamp performance request has the range of 0 to 1024 inclusive.
+ For cgroup interface percentage is used (that is 0 to 100 inclusive).
+ Just like other cgroup interfaces, you can use 'max' instead of 100.
+ 
++2.4. Older design
++-----------------
 +
-+static inline unsigned long task_runnable(struct task_struct *p)
-+{
-+	return READ_ONCE(p->se.avg.runnable_avg);
-+}
++Older design was behaving differently due what was called max-aggregation rule
++which was adding high complexity and had some limitations. Please consult the
++docs corresponding to your kernel version as part of this doc might reflect how
++it works on your kernel.
 +
-+static inline unsigned long _task_util_est(struct task_struct *p)
-+{
-+	struct util_est ue = READ_ONCE(p->se.avg.util_est);
+ .. _uclamp-interfaces:
+ 
+ 3. Interfaces
+@@ -594,39 +480,7 @@ possible.
+ 5. Limitations
+ ==============
+ 
+-.. _uclamp-capping-fail:
+-
+-5.1. Capping frequency with uclamp_max fails under certain conditions
+----------------------------------------------------------------------
+-
+-If task p0 is capped to run at 512:
+-
+-::
+-
+-        p0->uclamp[UCLAMP_MAX] = 512
+-
+-and it shares the rq with p1 which is free to run at any performance point:
+-
+-::
+-
+-        p1->uclamp[UCLAMP_MAX] = 1024
+-
+-then due to max aggregation the rq will be allowed to reach max performance
+-point:
+-
+-::
+-
+-        rq->uclamp[UCLAMP_MAX] = max(512, 1024) = 1024
+-
+-Assuming both p0 and p1 have UCLAMP_MIN = 0, then the frequency selection for
+-the rq will depend on the actual utilization value of the tasks.
+-
+-If p1 is a small task but p0 is a CPU intensive task, then due to the fact that
+-both are running at the same rq, p1 will cause the frequency capping to be left
+-from the rq although p1, which is allowed to run at any performance point,
+-doesn't actually need to run at that frequency.
+-
+-5.2. UCLAMP_MAX can break PELT (util_avg) signal
++5.1. UCLAMP_MAX can break PELT (util_avg) signal
+ ------------------------------------------------
+ 
+ PELT assumes that frequency will always increase as the signals grow to ensure
+@@ -650,10 +504,6 @@ CPU is capable of. The max CPU frequency (Fmax) matters here as well,
+ since it designates the shortest computational time to finish the task's
+ work on this CPU.
+ 
+-::
+-
+-        rq->uclamp[UCLAMP_MAX] = 0
+-
+ If the ratio of Fmax/Fmin is 3, then maximum value will be:
+ 
+ ::
+@@ -689,9 +539,8 @@ If task p1 wakes up on this CPU, which have:
+         p1->util_avg = 200
+         p1->uclamp[UCLAMP_MAX] = 1024
+ 
+-then the effective UCLAMP_MAX for the CPU will be 1024 according to max
+-aggregation rule. But since the capped p0 task was running and throttled
+-severely, then the rq->util_avg will be:
++Since the capped p0 task was running and throttled severely, then the
++rq->util_avg will be:
+ 
+ ::
+ 
+@@ -699,9 +548,9 @@ severely, then the rq->util_avg will be:
+         p1->util_avg = 200
+ 
+         rq->util_avg = 1024
+-        rq->uclamp[UCLAMP_MAX] = 1024
+ 
+-Hence lead to a frequency spike since if p0 wasn't throttled we should get:
++Hence lead to a frequency spike when p1 is running. If p0 wasn't throttled we
++should get:
+ 
+ ::
+ 
+@@ -710,9 +559,11 @@ Hence lead to a frequency spike since if p0 wasn't throttled we should get:
+ 
+         rq->util_avg = 500
+ 
+-and run somewhere near mid performance point of that CPU, not the Fmax we get.
++and run somewhere near mid performance point of that CPU, not the Fmax p1 gets.
 +
-+	return max(ue.ewma, (ue.enqueued & ~UTIL_AVG_UNCHANGED));
-+}
-+
-+static inline unsigned long task_util_est(struct task_struct *p)
-+{
-+	return max(task_util(p), _task_util_est(p));
-+}
-+
- /*
-  * Any governor that relies on util signal to drive DVFS, must populate these
-  * percpu dvfs_update_delay variables.
++.. _schedutil_response_time_issues:
+ 
+-5.3. Schedutil response time issues
++5.2. Schedutil response time issues
+ -----------------------------------
+ 
+ schedutil has three limitations:
 -- 
 2.34.1
 
