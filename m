@@ -2,79 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0929780AD68
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B9380AD6C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbjLHT51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 14:57:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
+        id S233986AbjLHT6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 14:58:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjLHT5Z (ORCPT
+        with ESMTP id S229772AbjLHT6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 14:57:25 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93FA1729
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:57:31 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8848FC433C7;
-        Fri,  8 Dec 2023 19:57:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1702065451;
-        bh=t99NEmpj1FuaIiuCbAEn4oZ3Z7HmMn2zlDkQmUMlo68=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=srFtzH7bBResBMSJzOLKtKeNVfecDDDsflVsoADT8dc4QsaV+hDy6JYa0fDT3rdw/
-         /+qA5icI2kfJuHuRz5ObGU1BkO3SSZ/8uf04gOr1HhrVSNw56ay0NTKyE4P4LhYrmL
-         r7yl0odutcZCfTxsazBgPYAlK91jHn3altwqgw78=
-Date:   Fri, 8 Dec 2023 11:57:29 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, yosryahmed@google.com,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
-        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        david@ixit.cz, chrisl@kernel.org
-Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback
- disabling
-Message-Id: <20231208115729.acb78677883c13c2c62a29d3@linux-foundation.org>
-In-Reply-To: <CAKEwX=Oa4hKCvhhR7D9kbQ-gi2LaKBjeC3GNB3b91doVB07vEA@mail.gmail.com>
-References: <20231207192406.3809579-1-nphamcs@gmail.com>
-        <20231207141142.307745be167d044b0eec1b42@linux-foundation.org>
-        <CAKEwX=Oa4hKCvhhR7D9kbQ-gi2LaKBjeC3GNB3b91doVB07vEA@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 8 Dec 2023 14:58:12 -0500
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24B6173B
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:58:16 -0800 (PST)
+Date:   Fri, 8 Dec 2023 14:58:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1702065495;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TsaD7mhW8SXQP1nbpaw4AQMft3LLxjzczN7R3X3tAxQ=;
+        b=r8wNqSd/u9g5IyjKN6ZrfGfi8UvmYzVZvDTBKpMA8L/A0HyY8PSd9pb9uqtoc8VJzsAm5h
+        NUJSsXmCtd0WZcMtOCo+G6RmAn7Deo0J4prFrniY3miadYKZ1B7nX9m6iODDWndhIpOXF5
+        MTwcc2S3heTAvuFucv4fGqpPHv3sGkw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 5/7] rust: file: add `Kuid` wrapper
+Message-ID: <20231208195809.fzpezhcntqsm2ub3@moria.home.lan>
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+ <20231129-alice-file-v1-5-f81afe8c7261@google.com>
+ <20231129-etappen-knapp-08e2e3af539f@brauner>
+ <20231129164815.GI23596@noisy.programming.kicks-ass.net>
+ <20231130-wohle-einfuhr-1708e9c3e596@brauner>
+ <20231206195911.vcp3c6q57zvkm7bf@moria.home.lan>
+ <20231208162616.GH28727@noisy.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208162616.GH28727@noisy.programming.kicks-ass.net>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Dec 2023 16:42:59 -0800 Nhat Pham <nphamcs@gmail.com> wrote:
-
-> >
-> > Also, it would be quite helpful of the changelog were to give us some
-> > idea of how important this tunable is.  What sort of throughput
-> > differences might it cause and under what circumstances?
+On Fri, Dec 08, 2023 at 05:26:16PM +0100, Peter Zijlstra wrote:
+> On Wed, Dec 06, 2023 at 02:59:11PM -0500, Kent Overstreet wrote:
 > 
-> For the most part, this feature is motivated by internal parties who
-> have already established their opinions regarding swapping - the
-> workloads that are highly sensitive to IO, and especially those who
-> are using servers with really slow disk performance (for instance,
-> massive but slow HDDs). For these folks, it's impossible to convince
-> them to even entertain zswap if swapping also comes as a packaged
-> deal. Writeback disabling is quite a useful feature in these
-> situations - on a mixed workloads deployment, they can disable
-> writeback for the more IO-sensitive workloads, and enable writeback
-> for other background workloads.
+> > I suspect even if the manpower existed to go that route we'd end up
+> > regretting it, because then the Rust compiler would need to be able to
+> > handle _all_ the craziness a modern C compiler knows how to do -
+> > preprocessor magic/devilry isn't even the worst of it, it gets even
+> > worse when you start to consider things like bitfields and all the crazy
+> > __attributes__(()) people have invented.
 > 
-> (Maybe we should include the paragraph above as part of the changelog?)
+> Dude, clang can already handle all of that. Both rust and clang are
+> build on top of llvm, they generate the same IR, you can simply feed a
+> string into libclang and get IR out of it, which you can splice into
+> your rust generated IR.
 
-I pasted it in, thanks.
+If only it were that simple :)
+
+This is struct definitions we're talking about, not code, so what you
+want isn't even IR, what you're generating is a memory layout for a
+type, linked in with all your other type information.
+
+And people critize Linux for being a giant monorepo that makes no
+considerations for making our code reusable in other contexts; clang and
+LLVM are no different. But that's not really the issue because you're
+going to need a huge chunk of clang to even parse this stuff, what you
+really want is a way to invoke clang and dump _type information_ in a
+standardized, easy to consume way. What you want is actually more akin
+to the debug info that's generated today.
+
+So... yeah, sure, lovely if it existed, but not the world we live in :)
+
+(As an aside, I've actually got an outstanding bug filed with rustc
+because it needs to be able to handle types that are marked both packed
+and aligned... if anyone in this thread _does_ know some rust compiler
+folks, we need that for bcachefs on disk format types).
