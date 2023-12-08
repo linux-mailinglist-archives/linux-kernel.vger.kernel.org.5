@@ -2,151 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 310A480AC6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3223180AC6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233839AbjLHSrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:47:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
+        id S233841AbjLHSqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:46:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233170AbjLHSrN (ORCPT
+        with ESMTP id S229572AbjLHSqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:47:13 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163B410E6
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:47:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702061239; x=1733597239;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=p0dpiYkFWNfw+Rx+DXW3uexg8WUwCjLmFFW6EqgD4Yc=;
-  b=Rl2XKMPqCuQ42Nc8uLWai9rKd99Qx7mvRh/bv0oS/UYNxajJHdFeS/sx
-   NUE1nbV7W40ypcyvtUvyvLlL5eUB9XZwt1oQvJm1rFW83tOE+d0I6mLtV
-   eeQkfITCgMCFqT1mkM9b8wAAWSDK65kOfh8rGQX4c0lqa+QL/tDE9qBLT
-   sTxXWG21jyqZrLb1nVE0YbMF3j2lfuON1yb5wTg2qpLS4rFwtgH6wf/XM
-   lG5KW5IuuOWX+ZG3Y35TzV1fUIVc4ZZlgR7+z358dd/MAEiz5MUQyFeDc
-   K4PZp0x558CVrEuYdhCBHYcROvclopL1l84rhciPCKUSLEatLcU5in2zO
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1533248"
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="1533248"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 10:47:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="806492487"
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="806492487"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 08 Dec 2023 10:47:17 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBfsY-000ECX-2h;
-        Fri, 08 Dec 2023 18:47:14 +0000
-Date:   Sat, 9 Dec 2023 02:46:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.con>
-Subject: include/linux/compiler_types.h:435:45: error: call to
- '__compiletime_assert_367' declared with attribute error: BUILD_BUG_ON
- failed: sizeof(*vcpup) > SMP_CACHE_BYTES
-Message-ID: <202312090256.cFjQffxG-lkp@intel.com>
+        Fri, 8 Dec 2023 13:46:51 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868DA11F;
+        Fri,  8 Dec 2023 10:46:57 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a06e59384b6so320501466b.1;
+        Fri, 08 Dec 2023 10:46:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702061216; x=1702666016; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+dr8lBkPk/gRBWTFsMFs5wXdj0/vhpvGhmgseUu0tAY=;
+        b=dwDid3ELbjUC/pN5M/iq/HhcnyriHAt7hdjXu8j8BlBaFIrE6jzG/DQQhOh4n28rNZ
+         mzdXFbTY+UTQogXzgWd/8eSs/8h5ikq/rpdPIv7MawUNjHElFqW6qFRQcuII+qTRDhEx
+         u6I9pTjQV4K8cZU/xCZ8ItjSZsCcfcd8lGdpk2QZm5Z9tvXqgnvuqHpMna8FQSVfPJN9
+         470cWSLm8VQc/3AF0MSkZwuBjENFXk07hBTUcktcz2pMdptZR0Ieu9Sl8ACznjGD908y
+         8V8jrqcyrOfDXMFctPx1BMd/852M94YIr4xFk79SC8ggic1B9Ez4j9DOmy6pXw4x9WXg
+         mfFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702061216; x=1702666016;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+dr8lBkPk/gRBWTFsMFs5wXdj0/vhpvGhmgseUu0tAY=;
+        b=R4BbcUMFFFmP8ht/HMCsZgKfj9KyevlHN1/TfrDC2ZvqdGrRcu6+D/S/u7O92TD3WT
+         5C9ol6q6SctpmlwK/xa3XBDQJIzFTThIsGZbXUdNfvWLnAcFRbJyjKyffuEPiyZgkbmJ
+         swqJrILD/XJeeezYZsbhSBcnPDC9JHmJW4w99n+L0zJMSZZkSF29GEryhkijtRl3bCqZ
+         WBqj0ajjCU43YS1bDz6Agtt6Gxbt1xBsMI3JMSnisPlxwNCG5GE4vka93VpUBsq7DznW
+         PDEEk/hVKzj1r3NP2DSsALEERa9MnUBu9wculH0aeyu2hfG2qTkl12Pnup0je0wRDZIl
+         qK2g==
+X-Gm-Message-State: AOJu0YxDSk+AIP0c5e/8/2QvOA+Uu1aBTfx/qSVa5UDrVAUbvyyizyCN
+        f2Wmu+KETw2K8bNrRw3izEE=
+X-Google-Smtp-Source: AGHT+IFqVjj8BiPjTfdPUSjvMIkmUsDvvm2h6RNnCjnqfatSpcv/EcTXmwiu33Eu6zdyUdHxlBmCSA==
+X-Received: by 2002:a17:907:94d5:b0:9b8:b683:5837 with SMTP id dn21-20020a17090794d500b009b8b6835837mr301541ejc.46.1702061215767;
+        Fri, 08 Dec 2023 10:46:55 -0800 (PST)
+Received: from skbuf ([188.27.185.68])
+        by smtp.gmail.com with ESMTPSA id d11-20020a170907272b00b00a1e2aa3d094sm1317479ejl.173.2023.12.08.10.46.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 10:46:55 -0800 (PST)
+Date:   Fri, 8 Dec 2023 20:46:52 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Simon Horman <horms@kernel.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+        mithat.guner@xeront.com, erkin.bozoglu@xeront.com
+Subject: Re: [PATCH net-next 07/15] net: dsa: mt7530: do not run
+ mt7530_setup_port5() if port 5 is disabled
+Message-ID: <20231208184652.k2max4kf7r3fgksg@skbuf>
+References: <20231118123205.266819-1-arinc.unal@arinc9.com>
+ <20231118123205.266819-8-arinc.unal@arinc9.com>
+ <20231121185358.GA16629@kernel.org>
+ <a2826485-70a6-4ba7-89e1-59e68e622901@arinc9.com>
+ <90fde560-054e-4188-b15c-df2e082d3e33@moroto.mountain>
+ <20231207184015.u7uoyfhdxiyuw6hh@skbuf>
+ <9b729dab-aebc-4c0c-a5e1-164845cd0948@suswa.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <9b729dab-aebc-4c0c-a5e1-164845cd0948@suswa.mountain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4df7c5fde316820286dfa6d203a1005d7fbe007d
-commit: db2832309a82b9acc4b8cc33a1831d36507ec13e x86/xen: fix percpu vcpu_info allocation
-date:   10 days ago
-config: i386-buildonly-randconfig-002-20230825 (https://download.01.org/0day-ci/archive/20231209/202312090256.cFjQffxG-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231209/202312090256.cFjQffxG-lkp@intel.com/reproduce)
+On Fri, Dec 08, 2023 at 07:23:38AM +0300, Dan Carpenter wrote:
+> On Thu, Dec 07, 2023 at 08:40:15PM +0200, Vladimir Oltean wrote:
+> > 
+> > We could be more pragmatic about this whole sparse false positive warning,
+> > and just move the "if" block which calls mt7530_setup_port5() right
+> > after the priv->p5_intf_sel assignments, instead of waiting to "break;"
+> > from the for_each_child_of_node() loop.
+> > 
+> > for_each_child_of_node(dn, mac_np) {
+> > 	if (!of_device_is_compatible(mac_np,
+> > 				     "mediatek,eth-mac"))
+> > 		continue;
+> > 
+> > 	ret = of_property_read_u32(mac_np, "reg", &id);
+> > 	if (ret < 0 || id != 1)
+> > 		continue;
+> > 
+> > 	phy_node = of_parse_phandle(mac_np, "phy-handle", 0);
+> > 	if (!phy_node)
+> > 		continue;
+> > 
+> > 	if (phy_node->parent == priv->dev->of_node->parent) {
+> > 		ret = of_get_phy_mode(mac_np, &interface);
+> > 		if (ret && ret != -ENODEV) {
+> > 			of_node_put(mac_np);
+> > 			of_node_put(phy_node);
+> > 			return ret;
+> > 		}
+> > 		id = of_mdio_parse_addr(ds->dev, phy_node);
+> > 		if (id == 0)
+> > 			priv->p5_intf_sel = P5_INTF_SEL_PHY_P0;
+> > 		if (id == 4)
+> > 			priv->p5_intf_sel = P5_INTF_SEL_PHY_P4;
+> > 
+> > 		if (priv->p5_intf_sel == P5_INTF_SEL_PHY_P0 || <---- here
+> > 		    priv->p5_intf_sel == P5_INTF_SEL_PHY_P4)
+> > 			mt7530_setup_port5(ds, interface);
+> 
+> This doesn't solve the problem that Smatch doesn't know what the
+> original value of priv->p5_intf_sel.  And also I don't like this code
+> because now we call mt7530_setup_port5() on every iteration after
+> we find the first P5_INTF_SEL_PHY_P0.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312090256.cFjQffxG-lkp@intel.com/
+You seem to have not parsed the "break" from 4 lines below. There is at
+most one iteration through for_each_child_of_node().
 
-All errors (new ones prefixed by >>):
+And why would the "original" value of priv->p5_intf_sel matter? Original
+or modified by the "if (id == 0)" and "if (id == 4)" blocks, the code
+has already executed the of_get_phy_mode(&interface) call, by the time
+we reach the "if" that calls mt7530_setup_port5().
 
-   In file included from <command-line>:
-   In function 'xen_vcpu_setup',
-       inlined from 'xen_vcpu_setup_restore' at arch/x86/xen/enlighten.c:111:3,
-       inlined from 'xen_vcpu_restore' at arch/x86/xen/enlighten.c:141:3:
->> include/linux/compiler_types.h:435:45: error: call to '__compiletime_assert_367' declared with attribute error: BUILD_BUG_ON failed: sizeof(*vcpup) > SMP_CACHE_BYTES
-     435 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:416:25: note: in definition of macro '__compiletime_assert'
-     416 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:435:9: note: in expansion of macro '_compiletime_assert'
-     435 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^~~~~~~~~~~~~~~~
-   arch/x86/xen/enlighten.c:166:9: note: in expansion of macro 'BUILD_BUG_ON'
-     166 |         BUILD_BUG_ON(sizeof(*vcpup) > SMP_CACHE_BYTES);
-         |         ^~~~~~~~~~~~
-   arch/x86/xen/enlighten.c: In function 'xen_vcpu_setup':
->> include/linux/compiler_types.h:435:45: error: call to '__compiletime_assert_367' declared with attribute error: BUILD_BUG_ON failed: sizeof(*vcpup) > SMP_CACHE_BYTES
-     435 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:416:25: note: in definition of macro '__compiletime_assert'
-     416 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:435:9: note: in expansion of macro '_compiletime_assert'
-     435 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^~~~~~~~~~~~~~~~
-   arch/x86/xen/enlighten.c:166:9: note: in expansion of macro 'BUILD_BUG_ON'
-     166 |         BUILD_BUG_ON(sizeof(*vcpup) > SMP_CACHE_BYTES);
-         |         ^~~~~~~~~~~~
+Hmm, maybe the problem, all along, was that we let the -ENODEV return
+code from of_get_phy_mode() pass through? "interface" will really be
+uninitialized in that case. It's not a false positive.
 
+Instead of:
 
-vim +/__compiletime_assert_367 +435 include/linux/compiler_types.h
+	ret = of_get_phy_mode(mac_np, &interface);
+	if (ret && ret != -ENODEV) {
+		...
+		return ret;
+	}
 
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  421  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  422  #define _compiletime_assert(condition, msg, prefix, suffix) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  423  	__compiletime_assert(condition, msg, prefix, suffix)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  424  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  425  /**
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  426   * compiletime_assert - break build and emit msg if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  427   * @condition: a compile-time constant condition to check
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  428   * @msg:       a message to emit if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  429   *
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  430   * In tradition of POSIX assert, this macro will break the build if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  431   * supplied condition is *false*, emitting the supplied error message if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  432   * compiler has support to do so.
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  433   */
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  434  #define compiletime_assert(condition, msg) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21 @435  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  436  
+it should have been like this, to not complain:
 
-:::::: The code at line 435 was first introduced by commit
-:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
+	ret = of_get_phy_mode(mac_np, &interface);
+	if (ret) {
+		...
+		return ret;
+	}
 
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> > 	}
+> > 	of_node_put(mac_np);
+> > 	of_node_put(phy_node);
+> > 	break;
+> > }
