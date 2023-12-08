@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9228096DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7FD8096DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232649AbjLHAAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 19:00:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56764 "EHLO
+        id S232706AbjLHABS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 19:01:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLHAAX (ORCPT
+        with ESMTP id S229531AbjLHABP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 19:00:23 -0500
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A3C1716
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 16:00:28 -0800 (PST)
-Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-464754e1120so482766137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 16:00:28 -0800 (PST)
+        Thu, 7 Dec 2023 19:01:15 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBA41713
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 16:01:20 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40c2db0ca48so10735e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 16:01:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701993627; x=1702598427; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701993679; x=1702598479; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HlnJWHSSLeyHnhaU7JOqxzY1KDfAFZV5s1/3N5/ws/o=;
-        b=GKJM0KjK/a0EsPLTbet3bXg3ISMRpAGWai95mjBgFFbN7JGuh0CyoudKjPiiQ5GpRj
-         9P7St0QDyH6PnS+gP5sTURGJvfhYcRL31UVbz9E6pQofNT4YUlchDhm+B+FzPwMECpnA
-         ijiz09mQCRMAgAFtI9vWiYCB9K9XXriz+Dyxl33Bsy/+rv8Skdax6Bmw/4I7aLAf65gG
-         N4X2RXC+SwlFBgxUi6ojc1y84sOFIfLylqj+n2GDw1n1vksB9YtuUbFSyU0ua/fvmgfu
-         0gPlhRnP72zzi3Xz7EkN8czs5dK+qrfviOFE/VKVvqEVmFNg25iQo/MJEm3mP8cTPLfw
-         39cw==
+        bh=tmC9wym01J/6ry8rlPcvey9en7u76PStf9fIhgG+Xws=;
+        b=0Zv5jmiOJdMGsIcuNJXqiCXNR2/fJiakN9WraXDaKatSLf3+W5HzA86XRe4mGN3o5X
+         E5IV9XIsDjBHGkX+DEsXAriFyvmb4VuNBlXL4dCrncXqZYTYpmkW/TXPjcT3D6vIL1Dz
+         xFcP8AMW9endQkSEXmLAQetKwnO+GTn6ZcHBg1UslR/rb1fJDsqESccbCWBHUfu31n0h
+         C+hIL/HfzyZae78oYfBiN+H5UDvR08hzeV0VimNq5APvxAkCCpp/WSzbAbOGxWkDQCnV
+         Xysj2Ji3602+25F+GFkl4eNl2AcijK5tZptIm0xLnccH8CAI2ZAzwZSuJyhcacDXaYR+
+         vMwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701993627; x=1702598427;
+        d=1e100.net; s=20230601; t=1701993679; x=1702598479;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HlnJWHSSLeyHnhaU7JOqxzY1KDfAFZV5s1/3N5/ws/o=;
-        b=lV8M56bzMbMrHLUDsD/0w73+las4KV0NQQGXp1NAH3Ns1HbisrGR2Fek0adQeOILMA
-         piBuFdRHWLAPuTrNWwVJv+CRyzHGB4sCTNrxdhgXq+LgCFddp8aoKEF/0DG/r8kdlZuu
-         30Ngfr5svyF+86ogZN8vmeIU5JtfV/pEj4a/RnkrYZku9TxKIIXBetrEXAdQkEwhuaPo
-         wMOkoZuxZRMuGmGX727q3JoMF9eNpP2R1CkC3x5DOAP37R90F79C0R0Igay1AfIH2IIQ
-         1Wo/5ygVCYmSxJWBy0RkDjEYT7nn0jn6hktqMYamaE4SaxFQ5LBRbN2t1vpO8xznM0Jx
-         2t7Q==
-X-Gm-Message-State: AOJu0YyomOIAFtbT5UpwTc9fZgXAP61YMAFXdIeUnlg5LzE17iAtxde5
-        UFZ3At5nHuhrtJ91j25wtq04iGGATkw9DjVDrD0=
-X-Google-Smtp-Source: AGHT+IFvFhu/aXaxifAYsgST4W9l6OWnNSKj54mm6ebeXA9gjRJixSzvRtn4LJyuW5YOo6Iyt4DGPoombQoJx1G28Kg=
-X-Received: by 2002:a05:6102:5489:b0:464:44e0:8f9 with SMTP id
- bk9-20020a056102548900b0046444e008f9mr4223136vsb.35.1701993627086; Thu, 07
- Dec 2023 16:00:27 -0800 (PST)
+        bh=tmC9wym01J/6ry8rlPcvey9en7u76PStf9fIhgG+Xws=;
+        b=R/Avva/8ZszrZF/6/vcpz3ck7CmMpBUXFS4glBwpu9998hOLCnbbkWaGSSmf5Ea68u
+         g9/SFRHL8tN3aK1Ri3a8wkdVpo5iwhJ5YZg7yYVoXLHaf7qvW5eS/Ie8//+eRFU+R/2e
+         0wy+QTX4ZcpINzYR826NS+FEastnFOXHWTN2xp9CkunzETKmJOSPhg8xsoVWi9hUxm+U
+         CSSZ5K8sBu8nAmuVWKECuyRwvDnkB3lc1n7QmNSPmJwaaaS2u9h6yA4CWXG3cz6MKPbg
+         Tm40gqCeH2Ef/ZrDigE4RjDJTfL1IFHK/GV4W88vdpSbYktoniPWHoZMnki39PRAP4C0
+         Khng==
+X-Gm-Message-State: AOJu0Yyw5ABD1aBYMAHI3TL8l93Rhv5H3MgHDWESCLy9V8aXzYsWwTNQ
+        3iIVSraEwbxIo5M4GDSpMn5g9Iib0Qa7hzzPtIDA9Q==
+X-Google-Smtp-Source: AGHT+IG9U5/GREPPnUQ1FSREum3u+LvloP4sjvC7OH4PNjg67TASTmj4/avFevzobZuqwmb50XllnZp61DPg8kDyZ6o=
+X-Received: by 2002:a05:600c:3b20:b0:40c:1e46:508e with SMTP id
+ m32-20020a05600c3b2000b0040c1e46508emr1439wms.0.1701993679134; Thu, 07 Dec
+ 2023 16:01:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20231114014313.67232-1-v-songbaohua@oppo.com> <CAGsJ_4wsWzhosZJWegOb8ggoON3KdiH1mO-8mFZd7kWcn6diuw@mail.gmail.com>
- <CAGsJ_4w4VgpO02YUVEn4pbKThg+SszD_bDpBGbKC9d2G90MpGA@mail.gmail.com>
- <8c7f1a2f-57d2-4f20-abb2-394c7980008e@redhat.com> <CAGsJ_4zqAehJSY9aAQEKkp9+JvuxtJuF1c7OBCxmaG8ZeEze_Q@mail.gmail.com>
- <e1e6dba5-8702-457e-b149-30b2e43156cf@redhat.com> <fb34d312-1049-4932-8f2b-d7f33cfc297c@arm.com>
- <CAGsJ_4zNOCa-bLkBdGXmOAGSZkJQZ0dTe-YWBubkdHmOyOimWg@mail.gmail.com>
- <5de66ff5-b6c8-4ffc-acd9-59aec4604ca4@redhat.com> <bab848b8-edd3-4c57-9a96-f17a33e030d0@arm.com>
- <71c4b8b2-512a-4e50-9160-6ee77a5ec0a4@arm.com> <CAGsJ_4yoYowJLm+cC8i-HujLcNJKGut+G-NnjRhg2eGkYvXz8Q@mail.gmail.com>
- <679a144a-db47-4d05-bbf7-b6a0514f5ed0@arm.com> <c5c82611-3153-4d56-b799-a1df3c953efe@redhat.com>
- <8aa8f095-1840-4a2e-ad06-3f375282ab6a@arm.com> <7065bbd3-64b3-4cd6-a2cd-146c556aac66@redhat.com>
- <CAGsJ_4xR9HsXU-Sib6LF_KRJHpU38g8Xu33HGgogPAVbb=BKbg@mail.gmail.com> <1dcd6985-aa29-4df7-a7cb-ef57ae658861@redhat.com>
-In-Reply-To: <1dcd6985-aa29-4df7-a7cb-ef57ae658861@redhat.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Fri, 8 Dec 2023 13:00:15 +1300
-Message-ID: <CAGsJ_4zLhmOPwjwuC4Sk=ZkWdxvpDsU5gE6PfWoxXH3WBwB_hQ@mail.gmail.com>
-Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
- large folios
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        Steven Price <steven.price@arm.com>, akpm@linux-foundation.org,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
-        shy828301@gmail.com, v-songbaohua@oppo.com,
-        wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
-        ying.huang@intel.com, yuzhao@google.com
+References: <20231207192338.400336-1-kan.liang@linux.intel.com> <20231207192338.400336-4-kan.liang@linux.intel.com>
+In-Reply-To: <20231207192338.400336-4-kan.liang@linux.intel.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 7 Dec 2023 16:01:07 -0800
+Message-ID: <CAP-5=fWh00C+A5rqOuqj_MEcipENcXM0zzjqMkeDDU8+WV=3eA@mail.gmail.com>
+Subject: Re: [PATCH V2 3/5] perf mem: Clean up perf_mem_events__name()
+To:     kan.liang@linux.intel.com
+Cc:     acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        namhyung@kernel.org, jolsa@kernel.org, adrian.hunter@intel.com,
+        john.g.garry@oracle.com, will@kernel.org, james.clark@arm.com,
+        mike.leach@linaro.org, leo.yan@linaro.org,
+        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,111 +76,447 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 11:04=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
+On Thu, Dec 7, 2023 at 11:24=E2=80=AFAM <kan.liang@linux.intel.com> wrote:
 >
-> >>
-> >>> not per-folio? I'm also not sure what it buys us - instead of reading=
- a per-page
-> >>> flag we now have to read 128 bytes of tag for each page and check its=
- zero.
-> >>
-> >> My point is, if that is the corner case, we might not care about that.
-> >
-> > Hi David,
+> From: Kan Liang <kan.liang@linux.intel.com>
 >
-> Hi!
+> Introduce a generic perf_mem_events__name(). Remove the ARCH-specific
+> one.
 >
-> > my understanding is that this is NOT a corner. Alternatively, it is
-> > really a common case.
+> The mem_load events may have a different format. Add ldlat and aux_event
+> in the struct perf_mem_event to indicate the format and the extra aux
+> event.
 >
-> If it happens with < 1% of all large folios on swapout/swapin, it's not
-> the common case. Even if some scenarios you point out below can and will
-> happen.
+> Add perf_mem_events_intel_aux[] to support the extra mem_load_aux event.
 >
+> Rename perf_mem_events__name to perf_pmu__mem_events_name.
+>
+> Tested-by: Ravi Bangoria <ravi.bangoria@amd.com>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 
-Fair enough. If we define "corner case" based on the percentage of those fo=
-lios
-which can get partial MTE tags set or get partial MTE tags invalidated, I a=
-gree
-this is a corner case. I thought  that a corner case was a case which
-could rarely
-happen.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-> >
-> > 1. a large folio can be partially unmapped when it is in swapche and
-> > after it is swapped out
-> > in all cases, its tags can be partially invalidated. I don't think
-> > this is a corner case, as long
-> > as userspaces are still working at the granularity of basepages, this
-> > is always going to
-> > happen. For example, userspace libc such as jemalloc can identify
-> > PAGESIZE, and use
-> > madvise(DONTNEED) to return memory to the kernel. Heap management is
-> > still working
-> > at the granularity of the basepage.
-> >
-> > 2. mprotect on a part of a large folio as Steven pointed out.
-> >
-> > 3.long term, we are working to swap-in large folios as a whole[1] just
-> > like swapping out large
-> > folios as a whole. for those ptes which are still contiguous swap
-> > entries, i mean, which
-> > are not unmapped by userspace after the large folios are swapped out
-> > to swap devices,
-> > we have a chance to swap in a whole large folio, we do have a chance
-> > to restore tags
-> > for the large folio without early-exit. but we still have a good
-> > chance to fall back to base
-> > page if we fail to allocate large folio, in this case, do_swap_page()
-> > still works at the
-> > granularity of basepage. and do_swap_page() will call swap_free(entry),=
-  tags of
-> >
-> > this particular page can be invalidated as a result.
->
-> I don't immediately see how that relates. You get a fresh small folio
-> and simply load that tag from the internal datastructure. No messing
-> with large folios required, because you don't have a large folio. So no
-> considerations about large folio batch MTE tag restore apply.
+Thanks,
+Ian
 
-right. I was thinking the original large folio was partially
-swapped-in and forgot
-the new allocated page was actually one folio with only one page :-)
-
-Indeed, in that case, it is still restoring the MTE tag for the whole
-folio with one
-page.
-
+> ---
+>  tools/perf/arch/arm64/util/mem-events.c   | 26 ++-------
+>  tools/perf/arch/powerpc/util/mem-events.c | 13 ++---
+>  tools/perf/arch/powerpc/util/mem-events.h |  7 +++
+>  tools/perf/arch/powerpc/util/pmu.c        | 11 ++++
+>  tools/perf/arch/x86/util/mem-events.c     | 70 +++++------------------
+>  tools/perf/arch/x86/util/mem-events.h     |  1 +
+>  tools/perf/arch/x86/util/pmu.c            |  8 ++-
+>  tools/perf/util/mem-events.c              | 56 ++++++++++++------
+>  tools/perf/util/mem-events.h              |  3 +-
+>  9 files changed, 89 insertions(+), 106 deletions(-)
+>  create mode 100644 tools/perf/arch/powerpc/util/mem-events.h
+>  create mode 100644 tools/perf/arch/powerpc/util/pmu.c
 >
-> >
-> > 4. too many early-exit might be negative to performance.
-> >
-> >
-> > So I am thinking that in the future, we need two helpers,
-> > 1. void __arch_swap_restore(swp_entry_t entry, struct page *page);
-> > this is always needed to support page-level tag restore.
-> >
-> > 2.  void arch_swap_restore(swp_entry_t entry, struct folio *folio);
-> > this can be a helper when we are able to swap in a whole folio. two
-> > conditions must be met
-> > (a). PTEs entries are still contiguous swap entries just as when large
-> > folios were swapped
-> > out.
-> > (b). we succeed in the allocation of a large folio in do_swap_page.
-> >
-> > For this moment, we only need 1; we will add 2 in swap-in large folio s=
-eries.
-> >
-> > What do you think?
+> diff --git a/tools/perf/arch/arm64/util/mem-events.c b/tools/perf/arch/ar=
+m64/util/mem-events.c
+> index 2602e8688727..eb2ef84f0fc8 100644
+> --- a/tools/perf/arch/arm64/util/mem-events.c
+> +++ b/tools/perf/arch/arm64/util/mem-events.c
+> @@ -2,28 +2,10 @@
+>  #include "map_symbol.h"
+>  #include "mem-events.h"
 >
-> I agree that it's better to keep it simple for now.
+> -#define E(t, n, s) { .tag =3D t, .name =3D n, .sysfs_name =3D s }
+> +#define E(t, n, s, l, a) { .tag =3D t, .name =3D n, .sysfs_name =3D s, .=
+ldlat =3D l, .aux_event =3D a }
 >
+>  struct perf_mem_event perf_mem_events_arm[PERF_MEM_EVENTS__MAX] =3D {
+> -       E("spe-load",   "arm_spe_0/ts_enable=3D1,pa_enable=3D1,load_filte=
+r=3D1,store_filter=3D0,min_latency=3D%u/",       "arm_spe_0"),
+> -       E("spe-store",  "arm_spe_0/ts_enable=3D1,pa_enable=3D1,load_filte=
+r=3D0,store_filter=3D1/",                      "arm_spe_0"),
+> -       E("spe-ldst",   "arm_spe_0/ts_enable=3D1,pa_enable=3D1,load_filte=
+r=3D1,store_filter=3D1,min_latency=3D%u/",       "arm_spe_0"),
+> +       E("spe-load",   "%s/ts_enable=3D1,pa_enable=3D1,load_filter=3D1,s=
+tore_filter=3D0,min_latency=3D%u/",      "arm_spe_0",    true,   0),
+> +       E("spe-store",  "%s/ts_enable=3D1,pa_enable=3D1,load_filter=3D0,s=
+tore_filter=3D1/",                     "arm_spe_0",    false,  0),
+> +       E("spe-ldst",   "%s/ts_enable=3D1,pa_enable=3D1,load_filter=3D1,s=
+tore_filter=3D1,min_latency=3D%u/",      "arm_spe_0",    true,   0),
+>  };
+> -
+> -static char mem_ev_name[100];
+> -
+> -const char *perf_mem_events__name(int i, const char *pmu_name __maybe_un=
+used)
+> -{
+> -       struct perf_mem_event *e =3D &perf_mem_events_arm[i];
+> -
+> -       if (i >=3D PERF_MEM_EVENTS__MAX)
+> -               return NULL;
+> -
+> -       if (i =3D=3D PERF_MEM_EVENTS__LOAD || i =3D=3D PERF_MEM_EVENTS__L=
+OAD_STORE)
+> -               scnprintf(mem_ev_name, sizeof(mem_ev_name),
+> -                         e->name, perf_mem_events__loads_ldlat);
+> -       else /* PERF_MEM_EVENTS__STORE */
+> -               scnprintf(mem_ev_name, sizeof(mem_ev_name), e->name);
+> -
+> -       return mem_ev_name;
+> -}
+> diff --git a/tools/perf/arch/powerpc/util/mem-events.c b/tools/perf/arch/=
+powerpc/util/mem-events.c
+> index 78b986e5268d..b7883e38950f 100644
+> --- a/tools/perf/arch/powerpc/util/mem-events.c
+> +++ b/tools/perf/arch/powerpc/util/mem-events.c
+> @@ -2,11 +2,10 @@
+>  #include "map_symbol.h"
+>  #include "mem-events.h"
+>
+> -/* PowerPC does not support 'ldlat' parameter. */
+> -const char *perf_mem_events__name(int i, const char *pmu_name __maybe_un=
+used)
+> -{
+> -       if (i =3D=3D PERF_MEM_EVENTS__LOAD)
+> -               return "cpu/mem-loads/";
+> +#define E(t, n, s, l, a) { .tag =3D t, .name =3D n, .sysfs_name =3D s, .=
+ldlat =3D l, .aux_event =3D a }
+>
+> -       return "cpu/mem-stores/";
+> -}
+> +struct perf_mem_event perf_mem_events_power[PERF_MEM_EVENTS__MAX] =3D {
+> +       E("ldlat-loads",        "%s/mem-loads/",        "cpu/events/mem-l=
+oads",         false,  0),
+> +       E("ldlat-stores",       "%s/mem-stores/",       "cpu/events/mem-s=
+tores",        false,  0),
+> +       E(NULL,                 NULL,                   NULL,            =
+               false,  0),
+> +};
+> diff --git a/tools/perf/arch/powerpc/util/mem-events.h b/tools/perf/arch/=
+powerpc/util/mem-events.h
+> new file mode 100644
+> index 000000000000..6acc3d1b6873
+> --- /dev/null
+> +++ b/tools/perf/arch/powerpc/util/mem-events.h
+> @@ -0,0 +1,7 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _POWER_MEM_EVENTS_H
+> +#define _POWER_MEM_EVENTS_H
+> +
+> +extern struct perf_mem_event perf_mem_events_power[PERF_MEM_EVENTS__MAX]=
+;
+> +
+> +#endif /* _POWER_MEM_EVENTS_H */
+> diff --git a/tools/perf/arch/powerpc/util/pmu.c b/tools/perf/arch/powerpc=
+/util/pmu.c
+> new file mode 100644
+> index 000000000000..168173f88ddb
+> --- /dev/null
+> +++ b/tools/perf/arch/powerpc/util/pmu.c
+> @@ -0,0 +1,11 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <string.h>
+> +
+> +#include "../../../util/pmu.h"
+> +
+> +void perf_pmu__arch_init(struct perf_pmu *pmu)
+> +{
+> +       if (pmu->is_core)
+> +               pmu->mem_events =3D perf_mem_events_power;
+> +}
+> diff --git a/tools/perf/arch/x86/util/mem-events.c b/tools/perf/arch/x86/=
+util/mem-events.c
+> index 5fb41d50118d..f0e66a0151a0 100644
+> --- a/tools/perf/arch/x86/util/mem-events.c
+> +++ b/tools/perf/arch/x86/util/mem-events.c
+> @@ -7,25 +7,26 @@
+>  #include "linux/string.h"
+>  #include "env.h"
+>
+> -static char mem_loads_name[100];
+> -static bool mem_loads_name__init;
+> -static char mem_stores_name[100];
+> -
+>  #define MEM_LOADS_AUX          0x8203
+> -#define MEM_LOADS_AUX_NAME     "{%s/mem-loads-aux/,%s/mem-loads,ldlat=3D=
+%u/}:P"
+>
+> -#define E(t, n, s) { .tag =3D t, .name =3D n, .sysfs_name =3D s }
+> +#define E(t, n, s, l, a) { .tag =3D t, .name =3D n, .sysfs_name =3D s, .=
+ldlat =3D l, .aux_event =3D a }
+>
+>  struct perf_mem_event perf_mem_events_intel[PERF_MEM_EVENTS__MAX] =3D {
+> -       E("ldlat-loads",        "%s/mem-loads,ldlat=3D%u/P",      "%s/eve=
+nts/mem-loads"),
+> -       E("ldlat-stores",       "%s/mem-stores/P",              "%s/event=
+s/mem-stores"),
+> -       E(NULL,                 NULL,                           NULL),
+> +       E("ldlat-loads",        "%s/mem-loads,ldlat=3D%u/P",      "%s/eve=
+nts/mem-loads",  true,   0),
+> +       E("ldlat-stores",       "%s/mem-stores/P",              "%s/event=
+s/mem-stores", false,  0),
+> +       E(NULL,                 NULL,                           NULL,    =
+               false,  0),
+> +};
+> +
+> +struct perf_mem_event perf_mem_events_intel_aux[PERF_MEM_EVENTS__MAX] =
+=3D {
+> +       E("ldlat-loads",        "{%s/mem-loads-aux/,%s/mem-loads,ldlat=3D=
+%u/}:P", "%s/events/mem-loads",  true,   MEM_LOADS_AUX),
+> +       E("ldlat-stores",       "%s/mem-stores/P",              "%s/event=
+s/mem-stores", false,  0),
+> +       E(NULL,                 NULL,                           NULL,    =
+               false,  0),
+>  };
+>
+>  struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX] =3D {
+> -       E(NULL,         NULL,           NULL),
+> -       E(NULL,         NULL,           NULL),
+> -       E("mem-ldst",   "ibs_op//",     "ibs_op"),
+> +       E(NULL,         NULL,           NULL,           false,  0),
+> +       E(NULL,         NULL,           NULL,           false,  0),
+> +       E("mem-ldst",   "%s//",         "ibs_op",       false,  0),
+>  };
+>
+>  bool is_mem_loads_aux_event(struct evsel *leader)
+> @@ -40,48 +41,3 @@ bool is_mem_loads_aux_event(struct evsel *leader)
+>
+>         return leader->core.attr.config =3D=3D MEM_LOADS_AUX;
+>  }
+> -
+> -const char *perf_mem_events__name(int i, const char *pmu_name)
+> -{
+> -       struct perf_mem_event *e;
+> -
+> -       if (x86__is_amd_cpu())
+> -               e =3D &perf_mem_events_amd[i];
+> -       else
+> -               e =3D &perf_mem_events_intel[i];
+> -
+> -       if (!e)
+> -               return NULL;
+> -
+> -       if (i =3D=3D PERF_MEM_EVENTS__LOAD) {
+> -               if (mem_loads_name__init && !pmu_name)
+> -                       return mem_loads_name;
+> -
+> -               if (!pmu_name) {
+> -                       mem_loads_name__init =3D true;
+> -                       pmu_name =3D "cpu";
+> -               }
+> -
+> -               if (perf_pmus__have_event(pmu_name, "mem-loads-aux")) {
+> -                       scnprintf(mem_loads_name, sizeof(mem_loads_name),
+> -                                 MEM_LOADS_AUX_NAME, pmu_name, pmu_name,
+> -                                 perf_mem_events__loads_ldlat);
+> -               } else {
+> -                       scnprintf(mem_loads_name, sizeof(mem_loads_name),
+> -                                 e->name, pmu_name,
+> -                                 perf_mem_events__loads_ldlat);
+> -               }
+> -               return mem_loads_name;
+> -       }
+> -
+> -       if (i =3D=3D PERF_MEM_EVENTS__STORE) {
+> -               if (!pmu_name)
+> -                       pmu_name =3D "cpu";
+> -
+> -               scnprintf(mem_stores_name, sizeof(mem_stores_name),
+> -                         e->name, pmu_name);
+> -               return mem_stores_name;
+> -       }
+> -
+> -       return e->name;
+> -}
+> diff --git a/tools/perf/arch/x86/util/mem-events.h b/tools/perf/arch/x86/=
+util/mem-events.h
+> index 3959e427f482..f55c8d3b7d59 100644
+> --- a/tools/perf/arch/x86/util/mem-events.h
+> +++ b/tools/perf/arch/x86/util/mem-events.h
+> @@ -3,6 +3,7 @@
+>  #define _X86_MEM_EVENTS_H
+>
+>  extern struct perf_mem_event perf_mem_events_intel[PERF_MEM_EVENTS__MAX]=
+;
+> +extern struct perf_mem_event perf_mem_events_intel_aux[PERF_MEM_EVENTS__=
+MAX];
+>
+>  extern struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX];
+>
+> diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pm=
+u.c
+> index cd22e80e5657..0f49ff13cfe2 100644
+> --- a/tools/perf/arch/x86/util/pmu.c
+> +++ b/tools/perf/arch/x86/util/pmu.c
+> @@ -35,8 +35,12 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_=
+unused)
+>         if (x86__is_amd_cpu()) {
+>                 if (!strcmp(pmu->name, "ibs_op"))
+>                         pmu->mem_events =3D perf_mem_events_amd;
+> -       } else if (pmu->is_core)
+> -               pmu->mem_events =3D perf_mem_events_intel;
+> +       } else if (pmu->is_core) {
+> +               if (perf_pmu__have_event(pmu, "mem-loads-aux"))
+> +                       pmu->mem_events =3D perf_mem_events_intel_aux;
+> +               else
+> +                       pmu->mem_events =3D perf_mem_events_intel;
+> +       }
+>  }
+>
+>  int perf_pmus__num_mem_pmus(void)
+> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+> index 27a33dc44964..c9a40b64e538 100644
+> --- a/tools/perf/util/mem-events.c
+> +++ b/tools/perf/util/mem-events.c
+> @@ -17,17 +17,17 @@
+>
+>  unsigned int perf_mem_events__loads_ldlat =3D 30;
+>
+> -#define E(t, n, s) { .tag =3D t, .name =3D n, .sysfs_name =3D s }
+> +#define E(t, n, s, l, a) { .tag =3D t, .name =3D n, .sysfs_name =3D s, .=
+ldlat =3D l, .aux_event =3D a }
+>
+>  struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] =3D {
+> -       E("ldlat-loads",        "cpu/mem-loads,ldlat=3D%u/P",     "cpu/ev=
+ents/mem-loads"),
+> -       E("ldlat-stores",       "cpu/mem-stores/P",             "cpu/even=
+ts/mem-stores"),
+> -       E(NULL,                 NULL,                           NULL),
+> +       E("ldlat-loads",        "%s/mem-loads,ldlat=3D%u/P",      "cpu/ev=
+ents/mem-loads",         true,   0),
+> +       E("ldlat-stores",       "%s/mem-stores/P",              "cpu/even=
+ts/mem-stores",        false,  0),
+> +       E(NULL,                 NULL,                           NULL,    =
+                       false,  0),
+>  };
+>  #undef E
+>
+>  static char mem_loads_name[100];
+> -static bool mem_loads_name__init;
+> +static char mem_stores_name[100];
+>
+>  struct perf_mem_event *perf_pmu__mem_events_ptr(struct perf_pmu *pmu, in=
+t i)
+>  {
+> @@ -62,23 +62,45 @@ struct perf_pmu *perf_mem_events_find_pmu(void)
+>         return perf_pmus__scan_mem(NULL);
+>  }
+>
+> -const char * __weak perf_mem_events__name(int i, const char *pmu_name  _=
+_maybe_unused)
+> +static const char *perf_pmu__mem_events_name(int i, struct perf_pmu *pmu=
+)
+>  {
+> -       struct perf_mem_event *e =3D &perf_mem_events[i];
+> +       struct perf_mem_event *e =3D &pmu->mem_events[i];
+>
+>         if (!e)
+>                 return NULL;
+>
+> -       if (i =3D=3D PERF_MEM_EVENTS__LOAD) {
+> -               if (!mem_loads_name__init) {
+> -                       mem_loads_name__init =3D true;
+> -                       scnprintf(mem_loads_name, sizeof(mem_loads_name),
+> -                                 e->name, perf_mem_events__loads_ldlat);
+> +       if (i =3D=3D PERF_MEM_EVENTS__LOAD || i =3D=3D PERF_MEM_EVENTS__L=
+OAD_STORE) {
+> +               if (e->ldlat) {
+> +                       if (!e->aux_event) {
+> +                               /* ARM and Most of Intel */
+> +                               scnprintf(mem_loads_name, sizeof(mem_load=
+s_name),
+> +                                         e->name, pmu->name,
+> +                                         perf_mem_events__loads_ldlat);
+> +                       } else {
+> +                               /* Intel with mem-loads-aux event */
+> +                               scnprintf(mem_loads_name, sizeof(mem_load=
+s_name),
+> +                                         e->name, pmu->name, pmu->name,
+> +                                         perf_mem_events__loads_ldlat);
+> +                       }
+> +               } else {
+> +                       if (!e->aux_event) {
+> +                               /* AMD and POWER */
+> +                               scnprintf(mem_loads_name, sizeof(mem_load=
+s_name),
+> +                                         e->name, pmu->name);
+> +                       } else
+> +                               return NULL;
+>                 }
+> +
+>                 return mem_loads_name;
+>         }
+>
+> -       return e->name;
+> +       if (i =3D=3D PERF_MEM_EVENTS__STORE) {
+> +               scnprintf(mem_stores_name, sizeof(mem_stores_name),
+> +                         e->name, pmu->name);
+> +               return mem_stores_name;
+> +       }
+> +
+> +       return NULL;
+>  }
+>
+>  __weak bool is_mem_loads_aux_event(struct evsel *leader __maybe_unused)
+> @@ -175,7 +197,7 @@ void perf_pmu__mem_events_list(struct perf_pmu *pmu)
+>                         e->tag ? 13 : 0,
+>                         e->tag ? : "",
+>                         e->tag && verbose > 0 ? 25 : 0,
+> -                       e->tag && verbose > 0 ? perf_mem_events__name(j, =
+NULL) : "",
+> +                       e->tag && verbose > 0 ? perf_pmu__mem_events_name=
+(j, pmu) : "",
+>                         e->supported ? ": available\n" : "");
+>         }
+>  }
+> @@ -198,15 +220,15 @@ int perf_mem_events__record_args(const char **rec_a=
+rgv, int *argv_nr,
+>
+>                         if (!e->supported) {
+>                                 pr_err("failed: event '%s' not supported\=
+n",
+> -                                       perf_mem_events__name(j, pmu->nam=
+e));
+> +                                       perf_pmu__mem_events_name(j, pmu)=
+);
+>                                 return -1;
+>                         }
+>
+>                         if (perf_pmus__num_mem_pmus() =3D=3D 1) {
+>                                 rec_argv[i++] =3D "-e";
+> -                               rec_argv[i++] =3D perf_mem_events__name(j=
+, NULL);
+> +                               rec_argv[i++] =3D perf_pmu__mem_events_na=
+me(j, pmu);
+>                         } else {
+> -                               const char *s =3D perf_mem_events__name(j=
+, pmu->name);
+> +                               const char *s =3D perf_pmu__mem_events_na=
+me(j, pmu);
+>
+>                                 if (!perf_mem_event__supported(mnt, pmu, =
+e))
+>                                         continue;
+> diff --git a/tools/perf/util/mem-events.h b/tools/perf/util/mem-events.h
+> index 0ad301a2e424..79d342768d12 100644
+> --- a/tools/perf/util/mem-events.h
+> +++ b/tools/perf/util/mem-events.h
+> @@ -14,6 +14,8 @@
+>  struct perf_mem_event {
+>         bool            record;
+>         bool            supported;
+> +       bool            ldlat;
+> +       u32             aux_event;
+>         const char      *tag;
+>         const char      *name;
+>         const char      *sysfs_name;
+> @@ -39,7 +41,6 @@ extern struct perf_mem_event perf_mem_events[PERF_MEM_E=
+VENTS__MAX];
+>  int perf_pmu__mem_events_parse(struct perf_pmu *pmu, const char *str);
+>  int perf_pmu__mem_events_init(struct perf_pmu *pmu);
+>
+> -const char *perf_mem_events__name(int i, const char *pmu_name);
+>  struct perf_mem_event *perf_pmu__mem_events_ptr(struct perf_pmu *pmu, in=
+t i);
+>  struct perf_pmu *perf_mem_events_find_pmu(void);
+>  bool is_mem_loads_aux_event(struct evsel *leader);
 > --
-> Cheers,
+> 2.35.1
 >
-> David / dhildenb
->
-
-Thanks
-Barry
