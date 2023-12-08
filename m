@@ -2,126 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2265D80A4B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CCDF80A4B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573842AbjLHNsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:48:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45690 "EHLO
+        id S1573834AbjLHNs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573831AbjLHNsu (ORCPT
+        with ESMTP id S1573854AbjLHNsz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:48:50 -0500
-Received: from helios.alatek.com.pl (helios.alatek.com.pl [85.14.123.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DFE1995;
-        Fri,  8 Dec 2023 05:48:55 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by helios.alatek.com.pl (Postfix) with ESMTP id C09D92D00F4D;
-        Fri,  8 Dec 2023 14:48:52 +0100 (CET)
-Received: from helios.alatek.com.pl ([127.0.0.1])
- by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10032)
- with ESMTP id 9n85sZtZLwIn; Fri,  8 Dec 2023 14:48:48 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by helios.alatek.com.pl (Postfix) with ESMTP id 803642D00F4C;
-        Fri,  8 Dec 2023 14:48:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 helios.alatek.com.pl 803642D00F4C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alatek.krakow.pl;
-        s=99EE5E86-D06A-11EC-BE24-DBCCD0A148D3; t=1702043328;
-        bh=+VrUs53iMXBZp4C7bjp6gDelybgLg3+ZHMDAxXckBJs=;
-        h=From:To:Date:Message-Id:MIME-Version;
-        b=MYardXXqLKxjfVOaKoQBrfRPdwTUXWmWyzaSnUDJugfH8YrzKCNefTsTAD9Jv+oEF
-         9EVTE9HTbOIw8vCzNpbGpaOJCG0eFp2M2CdaSAV0eNwzTlQmuLnMuNJcpfY70pX3/7
-         Ay+Wp/kBTbJI2PpyXqSmcMYoDjx6WBFCvuGfsxhU9rgeujtCyGxjr8wKSBXbkJtizx
-         OrVne/bn3VeVUJCumU3HOZue+YaU6/fhb9N/BANMm6sYBP5eoQxNsKdZxKg4brkI1s
-         TOshiGnfClOP1Nk3YhNXsSLDSNJOV+gHFfgGdN5Ns3XCHgpXwz5+GJIWuZIhmFX3hK
-         rKeMju6+kauRw==
-X-Virus-Scanned: amavis at alatek.com.pl
-Received: from helios.alatek.com.pl ([127.0.0.1])
- by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10026)
- with ESMTP id cK0tzk6p_mU6; Fri,  8 Dec 2023 14:48:48 +0100 (CET)
-Received: from localhost.localdomain (unknown [10.125.125.6])
-        by helios.alatek.com.pl (Postfix) with ESMTPSA id E35882D00F4A;
-        Fri,  8 Dec 2023 14:48:47 +0100 (CET)
-From:   Jan Kuliga <jankul@alatek.krakow.pl>
-To:     lizhi.hou@amd.com, brian.xu@amd.com, raj.kumar.rampelli@amd.com,
-        vkoul@kernel.org, michal.simek@amd.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com
-Cc:     jankul@alatek.krakow.pl
-Subject: [PATCH v4 0/8] Miscellaneous xdma driver enhancements
-Date:   Fri,  8 Dec 2023 14:48:38 +0100
-Message-Id: <20231208134838.49500-1-jankul@alatek.krakow.pl>
-X-Mailer: git-send-email 2.34.1
+        Fri, 8 Dec 2023 08:48:55 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B244319A5;
+        Fri,  8 Dec 2023 05:49:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702043341; x=1733579341;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=XNlRwVlmc+8hzsq40kB9DkDfrP9F0EEFpnBMErhT0CY=;
+  b=jjII/BUZbzjZSeBHP/Wlg1pkrkOfnZvwwJQ8C5SrLVi0bIV7uKEjYH6W
+   k4LlbJw37vSGrGKYTwU1pEjoTwU00/feQ8R5yI899srZ8Xp/i7bmsKNAL
+   nT+uIZa9PjlpSMlTb1/yM3ng7adN3Z7WffwYIRXqNajWMVQsIW7XNTc0c
+   bWzzeoYdoStkD/Xq2TduIvPV5RmYn40EhdqqMCxUEksBEXPBAJ/Iu8gBF
+   B0cMHU3MbK4B/jh18zQrElMpFxS2piUnCaTL4XCVScCouTxbhX/JXmeah
+   VBDlpGdjW3x9EJnzEC83f1k7WmCJkrEC2Plt0VaO6JV+D4D0pBoIakASc
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="7732128"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="7732128"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 05:49:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="17460342"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.49.180])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 05:48:58 -0800
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        platform-driver-x86@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 1/1] platform/x86: ips: Remove unused debug code
+Date:   Fri,  8 Dec 2023 15:48:45 +0200
+Message-Id: <20231208134845.3900-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Remove unused debug code inside #if 0 ... #endif.
 
-This patchset introduces a couple of xdma driver enhancements. The most
-important change is the introduction of interleaved DMA transfers
-feature, which is a big deal, as it allows DMAEngine clients to express
-DMA transfers in an arbitrary way. This is extremely useful in FPGA
-environments, where in one FPGA system there may be a need to do DMA both
-to/from FIFO at a fixed address and to/from a (non)contiguous RAM.
-
-It is a another reroll of my previous patch series [1], but it is heavily
-modified one as it is based on Miquel's patchset [2]. We agreed on doing
-it that way, as both our patchsets touched the very same piece of code.
-The discussion took place under [2] thread.
-
-I tested it with XDMA v4.1 (Rev.20) IP core, with both sg and
-interleaved DMA transfers.
-
-Jan
-
-Changes since v1:
-[PATCH 1/5]:=20
-Complete a terminated descriptor with dma_cookie_complete()
-Don't reinitialize temporary list head in xdma_terminate_all()=20
-[PATCH 4/5]:
-Fix incorrect text wrapping
-
-Changes since v2:
-[PATCH 1/5]:
-DO NOT schedule callback from within xdma_terminate_all()
-
-Changes since v3:
-Base patchset on Miquel's [2] series
-Reorganize commits` structure
-Introduce interleaved DMA transfers feature
-Implement transfer error reporting
-
-[1]:
-https://lore.kernel.org/dmaengine/20231124192524.134989-1-jankul@alatek.k=
-rakow.pl/T/#t
-
-[2]:
-https://lore.kernel.org/dmaengine/20231130111315.729430-1-miquel.raynal@b=
-ootlin.com/T/#t
-
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 ---
-Jan Kuliga (8):
-  dmaengine: xilinx: xdma: Get rid of unused code
-  dmaengine: xilinx: xdma: Add necessary macro definitions
-  dmaengine: xilinx: xdma: Ease dma_pool alignment requirements
-  dmaengine: xilinx: xdma: Rework xdma_terminate_all()
-  dmaengine: xilinx: xdma: Add error checking in xdma_channel_isr()
-  dmaengine: xilinx: xdma: Add transfer error reporting
-  dmaengine: xilinx: xdma: Prepare the introduction of interleaved DMA
-    transfers
-  dmaengine: xilinx: xdma: Introduce interleaved DMA transfers
+ drivers/platform/x86/intel_ips.c | 33 --------------------------------
+ 1 file changed, 33 deletions(-)
 
- drivers/dma/xilinx/xdma-regs.h |  30 ++--
- drivers/dma/xilinx/xdma.c      | 285 ++++++++++++++++++++++-----------
- 2 files changed, 210 insertions(+), 105 deletions(-)
-
---=20
-2.34.1
+diff --git a/drivers/platform/x86/intel_ips.c b/drivers/platform/x86/intel_ips.c
+index 4dfdbfca6841..e26e7e14c44c 100644
+--- a/drivers/platform/x86/intel_ips.c
++++ b/drivers/platform/x86/intel_ips.c
+@@ -1105,39 +1105,6 @@ static int ips_monitor(void *data)
+ 	return 0;
+ }
+ 
+-#if 0
+-#define THM_DUMPW(reg) \
+-	{ \
+-	u16 val = thm_readw(reg); \
+-	dev_dbg(ips->dev, #reg ": 0x%04x\n", val); \
+-	}
+-#define THM_DUMPL(reg) \
+-	{ \
+-	u32 val = thm_readl(reg); \
+-	dev_dbg(ips->dev, #reg ": 0x%08x\n", val); \
+-	}
+-#define THM_DUMPQ(reg) \
+-	{ \
+-	u64 val = thm_readq(reg); \
+-	dev_dbg(ips->dev, #reg ": 0x%016x\n", val); \
+-	}
+-
+-static void dump_thermal_info(struct ips_driver *ips)
+-{
+-	u16 ptl;
+-
+-	ptl = thm_readw(THM_PTL);
+-	dev_dbg(ips->dev, "Processor temp limit: %d\n", ptl);
+-
+-	THM_DUMPW(THM_CTA);
+-	THM_DUMPW(THM_TRC);
+-	THM_DUMPW(THM_CTV1);
+-	THM_DUMPL(THM_STS);
+-	THM_DUMPW(THM_PTV);
+-	THM_DUMPQ(THM_MGTV);
+-}
+-#endif
+-
+ /**
+  * ips_irq_handler - handle temperature triggers and other IPS events
+  * @irq: irq number
+-- 
+2.30.2
 
