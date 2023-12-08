@@ -2,120 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD6380A706
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 722D180A710
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574305AbjLHPNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:13:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45702 "EHLO
+        id S1574203AbjLHPOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:14:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574335AbjLHPNY (ORCPT
+        with ESMTP id S1574175AbjLHPOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:13:24 -0500
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAEAD19BE;
-        Fri,  8 Dec 2023 07:12:54 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1702048366; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Qtj4EdP4so68Ffcy9/6AJF/A8uD9kAcoRlqtjMMQEV271oaMiAHaX86fApJCwhlJNr
-    Xv0x86cUpq3ZazTaEaJ+o8MeAU11zGxO2CtqV1OhL4vgMRueW1tTjSwvtwHp8m/8qREs
-    NK5d5V/8WBeWcj9NHq3Q3R8sZi21w0k5fXNLVQJMzRG8B4SVE+9qKo8eonirMdcdivYa
-    1GIgBSgqrjHfBtNnGv+XgElzQ0rsPjP6dpgMsip+rqw7JB1I41XwLXj9aynv4rOLeczc
-    soexL/0/BBDlMq46FIqYwaNOH3YEPU0VacX3WZis+B7iAiMjRmmxj7jNP9O6OlltDNlS
-    5kDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1702048366;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=lhsrLh6Tpj4P9K5cubUK772KFrEGbhEVFA2KMXDo9uc=;
-    b=dOiU+5h6IhAuMiDEbSs2Feiyvh/+ak4KGFt9iNxh3ZTkQynqpIztbGXqftQZIAJ2li
-    IkUSvpa9XYz+jBlHnR1iAo80eGuRkQDK/9hzUH3loExR6s77xexQSVoB8jyTvvTgUcJp
-    ppjERxCSUIKVO+xELnV5ULutNToqi9rSOUBSNHeL2TP98WSzH1U6K4rtApduregbgaaR
-    3oSpf4Z+QcBF39/u9yDPXZZnDGv/5GfGSGQjx+XJOP8aZ4L9d387z0GVkHUG1wKGj+sE
-    xsTQq4PKuR1N9xevl1uQoyT63Mz9AcnHVVMP3OwHHlcRQ+fGmv+Z0IfTIFKnT3iS85tG
-    1QJQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1702048365;
-    s=strato-dkim-0002; d=iokpp.de;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=lhsrLh6Tpj4P9K5cubUK772KFrEGbhEVFA2KMXDo9uc=;
-    b=Tcdgrf4WFJ9M3ImclY4n5CROhi26S9+KbhZ4b0VMe6pxc3fFT42cNHqPKi/XXdr+es
-    8U6NM90fkjy65fF3hNwju7HB7HcIkKBqnkOqsDvS8mlfZ+irvQJfX7p8zUASQ32xAxzj
-    Aqawt9yPbbVKD4ct6ZVG3Ahrc5bxyvC62fZArICEFGsMLzmFkwMcztQtNqpXwCBRjeDa
-    4NY7mVRqQ/JvIR4kZnb4t4EiNsy5QrYDaYCmPLWJ1A6zu0u9kRuJT1mz3esxE7b+VLgv
-    29RlhelO6+xCTN3lyHIXCwloUVz2zsm5KzZqVwM6QOFUklrdheAlgSKy8zUc40jrTI3r
-    1jEQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1702048365;
-    s=strato-dkim-0003; d=iokpp.de;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=lhsrLh6Tpj4P9K5cubUK772KFrEGbhEVFA2KMXDo9uc=;
-    b=jf/OEuW9N9VfvRs7wb9IyzSoOjO3tSo07hc+jTxJn2Uo1atdVhXX0dEIPMx2s/p9FY
-    kmIvU07ojPeRG+cQALAA==
-X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSeBwhhSxarlUcu05JCAPyj3VPAceccYJs0uz"
-Received: from [10.176.235.119]
-    by smtp.strato.de (RZmta 49.10.0 AUTH)
-    with ESMTPSA id z4c2a6zB8FCiCbx
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 8 Dec 2023 16:12:44 +0100 (CET)
-Message-ID: <89c02f8b999a90329f2125380ad2d984767d25ae.camel@iokpp.de>
-Subject: Re: [PATCH v4 2/3] scsi: ufs: core: Add UFS RTC support
-From:   Bean Huo <beanhuo@iokpp.de>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     avri.altman@wdc.com, bvanassche@acm.org, alim.akhtar@samsung.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        quic_cang@quicinc.com, quic_asutoshd@quicinc.com,
-        beanhuo@micron.com, thomas@t-8ch.de, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mikebi@micron.com, lporzio@micron.com
-Date:   Fri, 08 Dec 2023 16:12:44 +0100
-In-Reply-To: <20231208145021.GC15552@thinkpad>
-References: <20231208103940.153734-1-beanhuo@iokpp.de>
-         <20231208103940.153734-3-beanhuo@iokpp.de>
-         <20231208145021.GC15552@thinkpad>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Fri, 8 Dec 2023 10:14:14 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8194A1706;
+        Fri,  8 Dec 2023 07:14:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=R35glQOGU4B0yR33HDpJFKOjzNBBa5sMO4yfY0YOJxs=; b=Urb7F/kIqU3YnTZAoccPn2bO2+
+        q2hbXOFx8mmv+dghxtqjzkSNZ2c12hs35s+7mvojrvbNE/3pDv36aUANNXyvU58M23xhkCzJUS1FR
+        S7jxMn6ur/edEUljTKC6sOLqLIEsENqT6RljN36xWH3STUpTeMWnhQV6UcPLmFuzGLQiBqCraPXVp
+        cbDPPlTXGQrnUvSonVWM5h1ZgU3d18O3WJtOk6R6Ozv4Dv0zeCv3BNG5kCaJLoo5e3rsA12YjxwRN
+        9T1zqbN1AZYAQfGZ3zb5sntIy9H2P0QV75N8HpgEdtm73hrcjk5klcnltx0GGEPxnyd4HOIK3vXvd
+        3ykyfbMA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rBcYE-006cfM-3B;
+        Fri, 08 Dec 2023 15:14:03 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E36073003F0; Fri,  8 Dec 2023 16:14:01 +0100 (CET)
+Date:   Fri, 8 Dec 2023 16:14:01 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 11/11] selftests: error out if kernel header files are
+ not yet built
+Message-ID: <20231208151401.GG28727@noisy.programming.kicks-ass.net>
+References: <20230606071637.267103-1-jhubbard@nvidia.com>
+ <20230606071637.267103-12-jhubbard@nvidia.com>
+ <20231103121652.GA6217@noisy.programming.kicks-ass.net>
+ <a002f903-723f-40ae-8d7a-421ab2e082e2@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a002f903-723f-40ae-8d7a-421ab2e082e2@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-12-08 at 20:20 +0530, Manivannan Sadhasivam wrote:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0val =3D ts64.tv_sec - hba->d=
-ev_info.rtc_time_baseline;
-> > +
->=20
-> This logic will work if the host has RTC. But if there is no RTC,
-> then tv_sec
-> will return time elapsed since boot. The spec clearly states that
-> host should
-> use absolute mode if it has RTC and relative otherwise.
->=20
-> Maybe you should add a logic to detect whether RTC is present or not
-> and
-> override the mode in device?
+On Fri, Nov 03, 2023 at 01:22:54PM +0100, David Hildenbrand wrote:
+> On 03.11.23 13:16, Peter Zijlstra wrote:
+> > On Tue, Jun 06, 2023 at 12:16:37AM -0700, John Hubbard wrote:
+> > > As per a discussion with Muhammad Usama Anjum [1], the following is how
+> > > one is supposed to build selftests:
+> > > 
+> > >      make headers && make -C tools/testing/selftests/mm
+> > > 
+> > > Change the selftest build system's lib.mk to fail out with a helpful
+> > > message if that prerequisite "make headers" has not been done yet.
+> > > 
+> > 
+> > NAK NAK NAK
+> > 
+> > This now means I can no longer run selftests, I thank you very much! :-/
+> > 
+> > root@spr:/usr/src/linux-2.6# make O=defconfig-build/ -j64
+> > make[1]: Entering directory '/usr/src/linux-2.6/defconfig-build'
+> > ***
+> > *** The source tree is not clean, please run 'make mrproper'
+> > *** in /usr/src/linux-2.6
+> > 
+> > 
+> > I've always done:
+> > 
+> >    cd tools/testing/selftests/x86; make
+> > 
+> > and that has always worked
+> > 
+> > Now I can't bloody well build *any* selftest or risk not being able to
+> > do builds.
+> 
+> This change landed in 6.5, no? And 6.6 was just released. Just curious why
+> you notice that now.
 
-Thank you for your reviews. I will incorporate the suggested changes
-into the patch, addressing all comments except for the RTC mode switch.
-The proposal is to perform the RTC mode switch during UFS provisioning,
-not at runtime in the UFS online phase. This approach ensures that the
-UFS configuration is populated based on the RTC configuration
-established during provisioning. It is advisable not to change the RTC
-mode after provisioning is complete. Additionally, the usage of tv_sec,
-which returns time elapsed since boot, suggests that there is no issue
-with utilizing the RTC in this context.
+And I hit it again (different box etc..)
 
-Kind regards,
-Bean
+Can we please get this garbage fixed already?
