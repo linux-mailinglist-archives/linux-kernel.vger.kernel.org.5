@@ -2,71 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3D780A2AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5C480A2B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:54:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573676AbjLHLxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 06:53:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58414 "EHLO
+        id S1573644AbjLHLxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 06:53:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233613AbjLHLxG (ORCPT
+        with ESMTP id S233477AbjLHLxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 06:53:06 -0500
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166EA173F
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 03:53:11 -0800 (PST)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5d7b1a8ec90so16588927b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 03:53:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702036390; x=1702641190; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8i54RGr1RVvLQqMhbxbcJTSb8J4fDgdykssHyv9XSuk=;
-        b=ymHKrBa5lL+xD10DVkSFb9+y6O/7+o9HfRlYxPTpbzUtwyR98UnGRkbDse5v3kc6O/
-         zP/Bek90Q7UQFRcO68bpbaeAdZV2Aq15ylA3vUYWw1qRn+/5l/xEowPUvbj/T87VsoUw
-         sAysczVRbxCHEEpclxZbDmvOzwjSslPw9XPjK5h+Qnsx8NME0VxD2+f40hyMk6zl0cB+
-         uizGv9ozNtlb18snmnUT4kzxAEfoAcoGrbitxeQDeGTFnzQdcs8mtOnuzpd+0eike2I+
-         2kokzUaajm3Qmv91GZEaK76dkS9kamQEz/1/YmBPGAM7kzAfdrEVqWg9iAGC9P91+Xvy
-         k9Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702036390; x=1702641190;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8i54RGr1RVvLQqMhbxbcJTSb8J4fDgdykssHyv9XSuk=;
-        b=IB4EzbI+IwVp+kDf1SUAptw6KambgvdvMYPFWYC8uxOukq/KLiNvdpu7F1BI3mNlY5
-         8i8aspWm6Zff6BoByfpicGtiDxa+luwa3h6fORYh3AyK6e/nN5jQ1Lg6AqhnsY3D4HI9
-         rF4R+WEVWjrzWhGZVtVIR+QWD82OQ7AdLs5F+YnQSoC62t+te8iI3GlmQTD1MiB3rigW
-         rGvX755+EL+zk87kFOHIO7NNcP79K/4lg4D6L6E3SYhTyOT3IP6DOQBGlyYhL2dGhHZ9
-         Fu/TeBsr+n+06K69l5wdwVFg4eTjPI10Ls5BnRtNnIs8donIcVqYS8m0I161T2gFKhqg
-         T0og==
-X-Gm-Message-State: AOJu0Yx8N1DcZZHfaDfaXtIDYPHT8FZeWR1gmm1hIxEiODSTq7KZasw9
-        XB0TsPU+t6M13xmyawtKeVKS+NkBJyWMBlAxR9USwA==
-X-Google-Smtp-Source: AGHT+IEg4poe6gaw0ORBZi/F7BU2bI6GuBFeX3z/AbbUF8HE/jVjtrqz6nmYvJTHXebkJqB3As93aV5yZXxT7YrMmtA=
-X-Received: by 2002:a0d:e6d0:0:b0:59e:7f14:4b48 with SMTP id
- p199-20020a0de6d0000000b0059e7f144b48mr3185834ywe.41.1702036390198; Fri, 08
- Dec 2023 03:53:10 -0800 (PST)
+        Fri, 8 Dec 2023 06:53:44 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7FF172E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 03:53:49 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4FB012119D;
+        Fri,  8 Dec 2023 11:53:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1702036428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=biD4CxwZuZP7nMGf3yxzKnyhfCl4MTC6np3ZEE49Lfk=;
+        b=Jzi83PC2gD7pdHdesktf7kElv0gcI8ajA9nyseN286HZxwk/+1ZetC8enz0URydcEDqjoO
+        spuGaayDj5DFIdDJLnU22EVefL7PMaQk1/3wfki7c/3r//v/Grp1hFQoXI7DAV4QNE6mg/
+        xlgVxjnFNm5kUGw37KWqJ6AAETieTLI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1702036428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=biD4CxwZuZP7nMGf3yxzKnyhfCl4MTC6np3ZEE49Lfk=;
+        b=Jzi83PC2gD7pdHdesktf7kElv0gcI8ajA9nyseN286HZxwk/+1ZetC8enz0URydcEDqjoO
+        spuGaayDj5DFIdDJLnU22EVefL7PMaQk1/3wfki7c/3r//v/Grp1hFQoXI7DAV4QNE6mg/
+        xlgVxjnFNm5kUGw37KWqJ6AAETieTLI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E7C2413335;
+        Fri,  8 Dec 2023 11:53:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id kDWpNssDc2WvPQAAD6G6ig
+        (envelope-from <jgross@suse.com>); Fri, 08 Dec 2023 11:53:47 +0000
+Message-ID: <cb98079d-1cbe-4034-8c55-5e71b790a887@suse.com>
+Date:   Fri, 8 Dec 2023 12:53:47 +0100
 MIME-Version: 1.0
-References: <20231208050641.32582-1-quic_abhinavk@quicinc.com> <20231208050641.32582-13-quic_abhinavk@quicinc.com>
-In-Reply-To: <20231208050641.32582-13-quic_abhinavk@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 8 Dec 2023 13:52:59 +0200
-Message-ID: <CAA8EJpr5FyYaGQpQX_MBK6y9kLz_UHsLmsKrV2tF6ukz6sU8YQ@mail.gmail.com>
-Subject: Re: [PATCH v2 12/16] drm/msm/dpu: add an API to setup the CDM block
- for writeback
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
-        quic_parellan@quicinc.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 4/5] x86/paravirt: switch mixed paravirt/alternative
+ calls to alternative_2
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        virtualization@lists.linux.dev,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ajay Kaher <akaher@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20231129133332.31043-1-jgross@suse.com>
+ <20231129133332.31043-5-jgross@suse.com>
+ <20231206110843.GCZXBWO12KW2aDq+MO@fat_crate.local>
+From:   Juergen Gross <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <20231206110843.GCZXBWO12KW2aDq+MO@fat_crate.local>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------EQoxi8jA4JROMOCnY0upXiTY"
+X-Spam-Level: 
+X-Spam-Score: -2.30
+X-Spamd-Result: default: False [-1.35 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         XM_UA_NO_VERSION(0.01)[];
+         TO_DN_SOME(0.00)[];
+         HAS_ATTACHMENT(0.00)[];
+         MIME_BASE64_TEXT_BOGUS(1.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         MIME_BASE64_TEXT(0.10)[];
+         SIGNED_PGP(-2.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
+         MID_RHS_MATCH_FROM(0.00)[];
+         BAYES_HAM(-0.16)[69.07%];
+         MIME_UNKNOWN(0.10)[application/pgp-keys];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         RCPT_COUNT_TWELVE(0.00)[12];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,infradead.org:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -1.35
+Authentication-Results: smtp-out1.suse.de;
+        none
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,243 +136,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
-> Add an API dpu_encoder_helper_phys_setup_cdm() which can be used by
-> the writeback encoder to setup the CDM block.
->
-> Currently, this is defined and used within the writeback's physical
-> encoder layer however, the function can be modified to be used to setup
-> the CDM block even for non-writeback interfaces.
->
-> Until those modifications are planned and made, keep it local to
-> writeback.
->
-> changes in v2:
->         - add the RGB2YUV CSC matrix to dpu util as needed by CDM
->         - use dpu_hw_get_csc_cfg() to get and program CSC
->         - drop usage of setup_csc_data() and setup_cdwn() cdm ops
->           as they both have been merged into enable()
->         - drop reduntant hw_cdm and hw_pp checks
->
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> ---
->  .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h  |  3 +
->  .../drm/msm/disp/dpu1/dpu_encoder_phys_wb.c   | 96 ++++++++++++++++++-
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c   | 17 ++++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h   |  1 +
->  4 files changed, 116 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> index 410f6225789c..1d6d1eb642b9 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> @@ -16,6 +16,7 @@
->  #include "dpu_hw_pingpong.h"
->  #include "dpu_hw_ctl.h"
->  #include "dpu_hw_top.h"
-> +#include "dpu_hw_cdm.h"
->  #include "dpu_encoder.h"
->  #include "dpu_crtc.h"
->
-> @@ -210,6 +211,7 @@ static inline int dpu_encoder_phys_inc_pending(struct dpu_encoder_phys *phys)
->   * @wbirq_refcount:     Reference count of writeback interrupt
->   * @wb_done_timeout_cnt: number of wb done irq timeout errors
->   * @wb_cfg:  writeback block config to store fb related details
-> + * @cdm_cfg: cdm block config needed to store writeback block's CDM configuration
->   * @wb_conn: backpointer to writeback connector
->   * @wb_job: backpointer to current writeback job
->   * @dest:   dpu buffer layout for current writeback output buffer
-> @@ -219,6 +221,7 @@ struct dpu_encoder_phys_wb {
->         atomic_t wbirq_refcount;
->         int wb_done_timeout_cnt;
->         struct dpu_hw_wb_cfg wb_cfg;
-> +       struct dpu_hw_cdm_cfg cdm_cfg;
->         struct drm_writeback_connector *wb_conn;
->         struct drm_writeback_job *wb_job;
->         struct dpu_hw_fmt_layout dest;
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
-> index 4665367cf14f..85429c62d727 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
-> @@ -259,6 +259,99 @@ static void dpu_encoder_phys_wb_setup_ctl(struct dpu_encoder_phys *phys_enc)
->         }
->  }
->
-> +/**
-> + * dpu_encoder_phys_wb_setup_cdp - setup chroma down sampling block
-> + * @phys_enc:Pointer to physical encoder
-> + */
-> +static void dpu_encoder_helper_phys_setup_cdm(struct dpu_encoder_phys *phys_enc)
-> +{
-> +       struct dpu_hw_cdm *hw_cdm;
-> +       struct dpu_hw_cdm_cfg *cdm_cfg;
-> +       struct dpu_hw_pingpong *hw_pp;
-> +       struct dpu_encoder_phys_wb *wb_enc;
-> +       const struct msm_format *format;
-> +       const struct dpu_format *dpu_fmt;
-> +       struct drm_writeback_job *wb_job;
-> +       int ret;
-> +
-> +       if (!phys_enc)
-> +               return;
-> +
-> +       wb_enc = to_dpu_encoder_phys_wb(phys_enc);
-> +       cdm_cfg = &wb_enc->cdm_cfg;
-> +       hw_pp = phys_enc->hw_pp;
-> +       hw_cdm = phys_enc->hw_cdm;
-> +       wb_job = wb_enc->wb_job;
-> +
-> +       format = msm_framebuffer_format(wb_enc->wb_job->fb);
-> +       dpu_fmt = dpu_get_dpu_format_ext(format->pixel_format, wb_job->fb->modifier);
-> +
-> +       if (!hw_cdm)
-> +               return;
-> +
-> +       if (!DPU_FORMAT_IS_YUV(dpu_fmt)) {
-> +               DPU_DEBUG("[enc:%d] cdm_disable fmt:%x\n", DRMID(phys_enc->parent),
-> +                         dpu_fmt->base.pixel_format);
-> +               if (hw_cdm->ops.disable)
-> +                       hw_cdm->ops.disable(hw_cdm);
-> +
-> +               return;
-> +       }
-> +
-> +       memset(cdm_cfg, 0, sizeof(struct dpu_hw_cdm_cfg));
-> +
-> +       cdm_cfg->output_width = wb_job->fb->width;
-> +       cdm_cfg->output_height = wb_job->fb->height;
-> +       cdm_cfg->output_fmt = dpu_fmt;
-> +       cdm_cfg->output_type = CDM_CDWN_OUTPUT_WB;
-> +       cdm_cfg->output_bit_depth = DPU_FORMAT_IS_DX(dpu_fmt) ?
-> +                       CDM_CDWN_OUTPUT_10BIT : CDM_CDWN_OUTPUT_8BIT;
-> +       cdm_cfg->csc_cfg = dpu_hw_get_csc_cfg(DPU_HW_RGB2YUV_601L_10BIT);
-> +       if (!cdm_cfg->csc_cfg) {
-> +               DPU_ERROR("valid csc not found\n");
-> +               return;
-> +       }
-> +
-> +       /* enable 10 bit logic */
-> +       switch (cdm_cfg->output_fmt->chroma_sample) {
-> +       case DPU_CHROMA_RGB:
-> +               cdm_cfg->h_cdwn_type = CDM_CDWN_DISABLE;
-> +               cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
-> +               break;
-> +       case DPU_CHROMA_H2V1:
-> +               cdm_cfg->h_cdwn_type = CDM_CDWN_COSITE;
-> +               cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
-> +               break;
-> +       case DPU_CHROMA_420:
-> +               cdm_cfg->h_cdwn_type = CDM_CDWN_COSITE;
-> +               cdm_cfg->v_cdwn_type = CDM_CDWN_OFFSITE;
-> +               break;
-> +       case DPU_CHROMA_H1V2:
-> +       default:
-> +               DPU_ERROR("[enc:%d] unsupported chroma sampling type\n",
-> +                         DRMID(phys_enc->parent));
-> +               cdm_cfg->h_cdwn_type = CDM_CDWN_DISABLE;
-> +               cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------EQoxi8jA4JROMOCnY0upXiTY
+Content-Type: multipart/mixed; boundary="------------qaEbTYlaM0kPNiMaSX5rzRmV";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ virtualization@lists.linux.dev, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Ajay Kaher <akaher@vmware.com>,
+ Alexey Makhalov <amakhalov@vmware.com>,
+ VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+ Peter Zijlstra <peterz@infradead.org>
+Message-ID: <cb98079d-1cbe-4034-8c55-5e71b790a887@suse.com>
+Subject: Re: [PATCH v5 4/5] x86/paravirt: switch mixed paravirt/alternative
+ calls to alternative_2
+References: <20231129133332.31043-1-jgross@suse.com>
+ <20231129133332.31043-5-jgross@suse.com>
+ <20231206110843.GCZXBWO12KW2aDq+MO@fat_crate.local>
+In-Reply-To: <20231206110843.GCZXBWO12KW2aDq+MO@fat_crate.local>
 
-If it is unsupported, we should return an error here.
+--------------qaEbTYlaM0kPNiMaSX5rzRmV
+Content-Type: multipart/mixed; boundary="------------aCuCz4J40IP9jHRpTzff801t"
 
-> +               break;
-> +       }
-> +
-> +       DPU_DEBUG("[enc:%d] cdm_enable:%d,%d,%X,%d,%d,%d,%d]\n",
-> +                 DRMID(phys_enc->parent), cdm_cfg->output_width,
-> +                 cdm_cfg->output_height, cdm_cfg->output_fmt->base.pixel_format,
-> +                 cdm_cfg->output_type, cdm_cfg->output_bit_depth,
-> +                 cdm_cfg->h_cdwn_type, cdm_cfg->v_cdwn_type);
-> +
-> +       if (hw_cdm->ops.enable) {
-> +               cdm_cfg->pp_id = hw_pp->idx;
-> +               ret = hw_cdm->ops.enable(hw_cdm, cdm_cfg);
-> +               if (ret < 0) {
-> +                       DPU_ERROR("[enc:%d] failed to enable CDM; ret:%d\n",
-> +                                 DRMID(phys_enc->parent), ret);
-> +                       return;
-> +               }
-> +       }
-> +}
-> +
->  /**
->   * dpu_encoder_phys_wb_atomic_check - verify and fixup given atomic states
->   * @phys_enc:  Pointer to physical encoder
-> @@ -382,8 +475,9 @@ static void dpu_encoder_phys_wb_setup(
->
->         dpu_encoder_phys_wb_setup_fb(phys_enc, fb);
->
-> -       dpu_encoder_phys_wb_setup_ctl(phys_enc);
-> +       dpu_encoder_helper_phys_setup_cdm(phys_enc);
->
-> +       dpu_encoder_phys_wb_setup_ctl(phys_enc);
->  }
->
->  /**
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
-> index 59a153331194..34143491aba2 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
-> @@ -87,6 +87,8 @@ static u32 dpu_hw_util_log_mask = DPU_DBG_MASK_NONE;
->  #define QOS_QOS_CTRL_VBLANK_EN            BIT(16)
->  #define QOS_QOS_CTRL_CREQ_VBLANK_MASK     GENMASK(21, 20)
->
-> +#define TO_S15D16(_x_)((_x_) << 7)
+--------------aCuCz4J40IP9jHRpTzff801t
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Huh? I don't understand why it is shifted by 7. If you have data in
-S8.9 format, I'd say that it makes things less obvious compared to
-S15.16 (where you can perform division on the fly).
+T24gMDYuMTIuMjMgMTI6MDgsIEJvcmlzbGF2IFBldGtvdiB3cm90ZToNCj4gT24gV2VkLCBO
+b3YgMjksIDIwMjMgYXQgMDI6MzM6MzFQTSArMDEwMCwgSnVlcmdlbiBHcm9zcyB3cm90ZToN
+Cj4+IEluc3RlYWQgb2Ygc3RhY2tpbmcgYWx0ZXJuYXRpdmUgYW5kIHBhcmF2aXJ0IHBhdGNo
+aW5nLCB1c2UgdGhlIG5ldw0KPj4gQUxUX0ZMQUdfQ0FMTCBmbGFnIHRvIHN3aXRjaCB0aG9z
+ZSBtaXhlZCBjYWxscyB0byBwdXJlIGFsdGVybmF0aXZlDQo+PiBoYW5kbGluZy4NCj4+DQo+
+PiBUaGlzIGVsaW1pbmF0ZXMgdGhlIG5lZWQgdG8gYmUgY2FyZWZ1bCByZWdhcmRpbmcgdGhl
+IHNlcXVlbmNlIG9mDQo+PiBhbHRlcm5hdGl2ZSBhbmQgcGFyYXZpcnQgcGF0Y2hpbmcuDQo+
+Pg0KPj4gU2lnbmVkLW9mZi1ieTogSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuY29tPg0K
+Pj4gQWNrZWQtYnk6IFBldGVyIFppamxzdHJhIChJbnRlbCkgPHBldGVyekBpbmZyYWRlYWQu
+b3JnPg0KPj4gLS0tDQo+PiBWNToNCj4+IC0gcmVtb3ZlIG5vIGxvbmdlciBuZWVkZWQgZXh0
+ZXJuIGRlY2xhcmF0aW9ucyBmcm9tIGFsdGVybmF0aXZlLmMNCj4+ICAgIChCb3JpcyBQZXRr
+b3YpDQo+PiAtIGFkZCBjb21tZW50IGFib3V0IEFMVEVSTkFUSVZFW18yXSgpIG1hY3JvIHVz
+YWdlIChCb3JpcyBQZXRrb3YpDQo+PiAtIHJlYmFzZSB0byB0aXAvbWFzdGVyIChCb3JpcyBQ
+ZXRrb3YpDQo+PiAtLS0NCj4+ICAgYXJjaC94ODYvaW5jbHVkZS9hc20vYWx0ZXJuYXRpdmUu
+aCAgICB8ICA1ICsrLS0NCj4+ICAgYXJjaC94ODYvaW5jbHVkZS9hc20vcGFyYXZpcnQuaCAg
+ICAgICB8ICA5ICsrKystLQ0KPj4gICBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9wYXJhdmlydF90
+eXBlcy5oIHwgNDAgKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tDQo+PiAgIGFyY2gveDg2
+L2tlcm5lbC9hbHRlcm5hdGl2ZS5jICAgICAgICAgfCAgMSAtDQo+PiAgIGFyY2gveDg2L2tl
+cm5lbC9jYWxsdGh1bmtzLmMgICAgICAgICAgfCAxNyArKysrKystLS0tLS0NCj4+ICAgYXJj
+aC94ODYva2VybmVsL21vZHVsZS5jICAgICAgICAgICAgICB8IDIwICsrKystLS0tLS0tLS0t
+DQo+PiAgIDYgZmlsZXMgY2hhbmdlZCwgNDQgaW5zZXJ0aW9ucygrKSwgNDggZGVsZXRpb25z
+KC0pDQo+IA0KPiBBZnRlciB0aGlzIG9uZTogKC5jb25maWcgaXMgYXR0YWNoZWQpLg0KLi4u
+DQoNCk91Y2guDQoNClRvb2sgbWUgYSB3aGlsZSB0byBmaW5kIGl0LiBQYXRjaCA1IHdhcyBy
+ZXBhaXJpbmcgdGhlIGlzc3VlIGFnYWluLCBhbmQgSSB0ZXN0ZWQNCm1vcmUgdGhvcm91Z2hs
+eSBvbmx5IHdpdGggYWxsIDUgcGF0Y2hlcyBhcHBsaWVkLg0KDQoNCkp1ZXJnZW4NCg0K
+--------------aCuCz4J40IP9jHRpTzff801t
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-> +
->  static const struct dpu_csc_cfg dpu_csc_YUV2RGB_601L = {
->         {
->                 /* S15.16 format */
-> @@ -117,6 +119,18 @@ static const struct dpu_csc_cfg dpu_csc10_YUV2RGB_601L = {
->         { 0x00, 0x3ff, 0x00, 0x3ff, 0x00, 0x3ff,},
->  };
->
-> +static const struct dpu_csc_cfg dpu_csc10_rgb2yuv_601l = {
-> +       {
-> +               TO_S15D16(0x0083), TO_S15D16(0x0102), TO_S15D16(0x0032),
-> +               TO_S15D16(0x1fb5), TO_S15D16(0x1f6c), TO_S15D16(0x00e1),
-> +               TO_S15D16(0x00e1), TO_S15D16(0x1f45), TO_S15D16(0x1fdc)
-> +       },
-> +       { 0x00, 0x00, 0x00 },
-> +       { 0x0040, 0x0200, 0x0200 },
-> +       { 0x000, 0x3ff, 0x000, 0x3ff, 0x000, 0x3ff },
-> +       { 0x040, 0x3ac, 0x040, 0x3c0, 0x040, 0x3c0 },
-> +};
-> +
->  /**
->   * dpu_hw_get_csc_cfg - get the CSC matrix based on the request type
->   * @type:              type of the requested CSC matrix from caller
-> @@ -133,6 +147,9 @@ const struct dpu_csc_cfg *dpu_hw_get_csc_cfg(enum dpu_hw_csc_cfg_type type)
->         case DPU_HW_YUV2RGB_601L_10BIT:
->                 csc_cfg = &dpu_csc10_YUV2RGB_601L;
->                 break;
-> +       case DPU_HW_RGB2YUV_601L_10BIT:
-> +               csc_cfg = &dpu_csc10_rgb2yuv_601l;
-> +               break;
->         default:
->                 DPU_ERROR("unknown csc_cfg type\n");
->                 break;
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
-> index 49f2bcf6de15..ed153d66f660 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
-> @@ -22,6 +22,7 @@
->  enum dpu_hw_csc_cfg_type {
->         DPU_HW_YUV2RGB_601L,
->         DPU_HW_YUV2RGB_601L_10BIT,
-> +       DPU_HW_RGB2YUV_601L_10BIT,
->  };
->
->  /*
-> --
-> 2.40.1
->
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
+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
+kt+z4drzFUyEjLM1vVvIMjkUoJs=3D
+=3DeeAB
+-----END PGP PUBLIC KEY BLOCK-----
 
--- 
-With best wishes
-Dmitry
+--------------aCuCz4J40IP9jHRpTzff801t--
+
+--------------qaEbTYlaM0kPNiMaSX5rzRmV--
+
+--------------EQoxi8jA4JROMOCnY0upXiTY
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmVzA8sFAwAAAAAACgkQsN6d1ii/Ey89
+IAf9GjKjUQ+T9ntZDvoyK6Nh9Ua/iEHOvCuhDnZnTPisT1BLzzIT3xrM3ELgwZwsZh8ANbY5aXpB
+SCZQVURzhvtPWQnnQg0vlU3QFZbhdfslMJlWwEr5IT78XHVWq1A1hlSURP52MT74G3lR/S33tTRJ
+6SglvyT5PB0ur96gTJ9CNqJckynbJvwn/SM3N3+PzVF/D0vyvsJ9WrtCRGdmNl7G1gshXO8W/Fg8
+phu/Ii0QyYIZNpXGmb6tBJ7TresmWiPO+r/vYodev/6QfWx0ZFSJ9gwP2NITDfeLdadwl/kNNtMl
+W3SpTTf1wjLZseP9od0D1IjmBrlM0FtxzKalB1TeNA==
+=3aar
+-----END PGP SIGNATURE-----
+
+--------------EQoxi8jA4JROMOCnY0upXiTY--
