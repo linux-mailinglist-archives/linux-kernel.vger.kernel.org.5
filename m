@@ -2,121 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72E0080AE57
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB9A80AE56
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233919AbjLHUxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:53:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41586 "EHLO
+        id S1574744AbjLHUyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:54:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLHUxG (ORCPT
+        with ESMTP id S229572AbjLHUyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:53:06 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1220F1723;
-        Fri,  8 Dec 2023 12:53:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=pY+mb/Qrc+JbGWeBCz5TAVT1HMlwaTqQprEMIVZfjU8=; b=WKHjeQTzRtUa3ehjWvBb5ptG7x
-        X1dzOuu693YBY+CQHFy/qT0nKn2Rtrtilph4cDyUU95v7EfqZRN2J48VaQYxXO0T2gVnhWOXhE0VX
-        e2RDNVyYfmERESlMze5ErEsZUmhi6JjG7R/f/Vilowo8kJYPyH89aai/nLxwgQEOZlMZyyOpI1eXu
-        DOzbxNOqNhOZOlEiS95uxa0YfL8TLyAQ7SdFLWthPC+S3ZJZgmHNShsBWly0Hkz8oEDrmkn8W7jWu
-        YwyK0LGYygYKKTgAEZ6IwlF4vKmbPECNkW13Q8NQI00pRT9EhYDKxuM6/3XNX7QDU331UhZ7nZZAG
-        F0Y1aysQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1rBhpx-006ZJN-SO; Fri, 08 Dec 2023 20:52:42 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 28FDA3003F0; Fri,  8 Dec 2023 21:52:41 +0100 (CET)
-Date:   Fri, 8 Dec 2023 21:52:41 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231208205241.GK28727@noisy.programming.kicks-ass.net>
-References: <20231206183713.GA35897@noisy.programming.kicks-ass.net>
- <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
- <20231207093105.GA28727@noisy.programming.kicks-ass.net>
- <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
- <20231208102940.GB28727@noisy.programming.kicks-ass.net>
- <20231208134041.GD28727@noisy.programming.kicks-ass.net>
- <20231208172152.GD36716@noisy.programming.kicks-ass.net>
- <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
- <20231208203535.GG36716@noisy.programming.kicks-ass.net>
- <CAADnVQJzCw=qcG+jHBYG0q0SxLPkwghni0wpgV4A4PkpgVbGPw@mail.gmail.com>
+        Fri, 8 Dec 2023 15:54:18 -0500
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2058.outbound.protection.outlook.com [40.107.95.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC481720;
+        Fri,  8 Dec 2023 12:54:24 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fUlu5Mr+lxsHp7HzrXRjN6moP8fbuUI4wvNMCzQLfxfJkZmx7IMtWHlg6+bSFj4+YI1zWwgbYkr98mStdJ1sJ41Q3hy7T8/oqqw7Bb/TFnQFZ1L0mjc1rdQAQ2fsDzyYzJ683zXLxg0OyXyqsdZLTgBoH2xtjrJ8ny9yhaRMwVZ8Fmt57pZ/0rgJ4Hxyb/nrdfcc7rDqLSB89m1bAubPuqsw7JRqsj02dT6eonTRxvTgnWWgZEnTVR/MpgQNvbEm3AgbrwtVWjgz35eaxidwnbI0GyHk0P7z955Ir/84L5RAJi0JvV2IcsGyqTuYSjO1vECPxUVMaiv/9WBwLQBY5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=a0mDd65rYssYzWRBtV0aogY1FIT4MPMeaYO5Tclb7n0=;
+ b=V1ng9i85dbjVsj12owZbg38zBkNWn3Veeh5vAq13SvHwYzAwATSJax1+bejX9vRub2TlZYk28tonGYJjOYHo06C7DMqQHSlvLOAK1A7rSbSDfJMhXvpdDgGISOtumJlHpLum2oUZKEQe7YLd0Dy+YsBkIP8UROr+MvI224/Qb+JPJLmb8jtOPzL7WJy22zJhuFlXtZgTD+yxG2Zq8WjIKiswAPOHPV7IK40AhGpVf9FpM3sRjeiMmfSxXis8RlJIQfnvAlA87RVkR0zPz6uPTj0/akbnnnLzBJzt6TLiu4NwRHZ3xTk/IrLz3rueSgmRNzzTTcjpKWXWS+4oeNsVWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a0mDd65rYssYzWRBtV0aogY1FIT4MPMeaYO5Tclb7n0=;
+ b=KafJddU5oHkY3qtqj2N/zyA+k8dfkdiBSphEy21RnxKh1oyb19VxHiKft89iIhYSURzfQEEMOISTNLQdjYVUmlORMEHBTJfLwie7KSVrNZMBr+oLXTLklHxcmSLshATDZGABccorqHTfOEtc0V/viz6AF1O2Y02itD3mdwuj8q4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by DM4PR12MB6662.namprd12.prod.outlook.com (2603:10b6:8:b5::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.28; Fri, 8 Dec
+ 2023 20:54:21 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::3341:faaf:5974:f152]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::3341:faaf:5974:f152%7]) with mapi id 15.20.7068.028; Fri, 8 Dec 2023
+ 20:54:21 +0000
+Message-ID: <f0dc32ea-3b77-1e9e-42fd-3f115c001f7c@amd.com>
+Date:   Fri, 8 Dec 2023 14:54:14 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v10 16/50] x86/sev: Introduce snp leaked pages list
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>, Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+        liam.merwick@oracle.com, zhi.a.wang@intel.com
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-17-michael.roth@amd.com>
+ <20231206204255.GEZXDcz9yfyMiyYQ1H@fat_crate.local>
+From:   "Kalra, Ashish" <ashish.kalra@amd.com>
+In-Reply-To: <20231206204255.GEZXDcz9yfyMiyYQ1H@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN7PR04CA0021.namprd04.prod.outlook.com
+ (2603:10b6:806:f2::26) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJzCw=qcG+jHBYG0q0SxLPkwghni0wpgV4A4PkpgVbGPw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2767:EE_|DM4PR12MB6662:EE_
+X-MS-Office365-Filtering-Correlation-Id: 46b61379-d39f-47c6-9962-08dbf82fd843
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IR6o5tliSKpLkV9yTEmMpauMzmfJDAxDZWF+hIo3m5HRjf0FjUMr6JynaTGEpN2waw4xThs3feTOt2VBDizIWXBTi19Pz5FwDaVGsFcB4RQOl+LPI8IPg/6UmFFRPTw+OZR5LGYkpkziUFsG2Jo0kKsmP8CaSZy6wyOgdYgxpyM8ui5DFxGIHB4greC8WCQz2qp1aU9OqD0wctTdUYsqJ+GV+0VGawSSl85CIU4qiyUvqcpKqc+Hij6DAwGkYedOAu6RjeHe4DvbF7qZERMi46ENAUMehxqAwcpBkbEVDAo/jQfUuGouweq/F7ROu1U5YAl7FVIclT/az6N4uKqIhJK+T5EFldF37snUQkZbfasJWY7Hc6/nToCQLw0QO26aOVPhNctJXxrmGU+la168yDlXBt01T2xeXazRXOaT4Ypj0BajPk9RXI+OV0kbEwCO6RkfZStr/r5Fya05+0oc8LTEPHKXeSKOPEeVyiuHggOhPrx+BU/FdRCHOWhKodPflVp5ram6NvlUZ96bYzvmoPwY/Uql7NMqiW7eSl+iVlRS+0P6DAmKWCXKE9EcW57QUw2cfyaWW+ujcerkG7VBKRzD73DodG/1D9GcbYKVlc3TyHz06NkY3OACrDc/MbyI+DRi1CFBJOiNxWxhth7+XQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(376002)(136003)(346002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(31686004)(38100700002)(66556008)(66946007)(86362001)(66476007)(31696002)(36756003)(26005)(83380400001)(2616005)(6512007)(53546011)(6506007)(6486002)(7416002)(7406005)(4744005)(2906002)(316002)(110136005)(6636002)(6666004)(478600001)(8676002)(5660300002)(4326008)(8936002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N3ZJOUVUZndTK0ptWUlLckRKUVpRMkxIZm4xbTdwa2ozWWFWVFZNSWhGb0tk?=
+ =?utf-8?B?UjlWaWZ1N3hEOWlzeEVuSVl4a1dPd0Q4cEVZVnEwWHgvSW5jNE85SWZlelhU?=
+ =?utf-8?B?aHQrNFhtcnlCZEk1VXFrZzN6dGFSUEVGNnVZYjhhTi9rS0lITEV2c2xyenRO?=
+ =?utf-8?B?VkJPcjRyZmN5cXp4MjRoZzFIWU93TmRKcnZOZVhINkpQQ1hsNG5FOGxBOTkz?=
+ =?utf-8?B?ajVqSkswMld1Sm5wYXN5RkdxN1dmc043ZUpuVVdqeUZJMDBQWHp2MklnYTJG?=
+ =?utf-8?B?UHJZN1JpN1Yxd0FkOGc0azZNT2FvR0I0WEZ3QUYxQzhGbHBJL21oTFpnKzQ1?=
+ =?utf-8?B?cnFmVVhDMStrOFRIVXRxRzFCa2h4cHM0ZXdaOTB5Vnd3ZDArOEk4eDJZV2x5?=
+ =?utf-8?B?dThLa005WnJtZjdYTEFjd0dONGxwL3BMMWF6ZUcrL1o2WExaRlBZamhUZ3RT?=
+ =?utf-8?B?WEJDclNCTUJmMFh3S0tGWXFYMzRxUmVhTStFL2ZQdWtBZkQ1dVduVU4yZ2lQ?=
+ =?utf-8?B?S0VVdlhYQkE5ZTlOU2tGMVFYalhPaTlIcVZWcmFnczRBZGhGQTV6UlVjVGpB?=
+ =?utf-8?B?djFPelRYK1BCY0llZFVVN0hET0JBNUVIYWpnUnRqMWRLWTRQN000NVBFbXkz?=
+ =?utf-8?B?WEMrODhpWTFCWVdqYy9MMk9SdlB1MTFuZ3ZFY2Z3MmsyYi9sQ2F4V3VuNG9R?=
+ =?utf-8?B?cWJBWU5DOFN0N3NWRDQxaEgwUFgwMkU1b2FsdGpkUW5RcDlvNGU5bTdXV3p2?=
+ =?utf-8?B?MDYzdlVoNTNoMlByZW9pT0VKTDI3OG40cDVETHdOMmFtOHIwdWRqTHM0SFBL?=
+ =?utf-8?B?NndGQ2l0QzM4M21EOHU5T0tBcGc1TVZEbUx0elZHWkJKV2JMVHhOY0x3MDVO?=
+ =?utf-8?B?Szk1Rzk2ZDBYUnF6Vm11NkVwdzFLNEtTczhERGZlQmdlWkdXaEtDcWk2QTJQ?=
+ =?utf-8?B?d1lKcW9FNFNmK0VrTlRDOUFOWGtNWkVCOFN1TEdrWkphY1JwanBETlg5U2ZS?=
+ =?utf-8?B?T1BrSTRGdjN2ZjNVSnhxejlSMzhHL0tHQ0lOQUl5QTNxYTlsdjBYSmJaNGJ2?=
+ =?utf-8?B?ZXROdjBQVGRTcnkvZmlFLzlrVkZaYVpkdWcwbEl0U0xHZFArc3NSOWk5cjRE?=
+ =?utf-8?B?dW1pMCs2b1ZnRytOeFl1eXBkY29WeU1HRzlQMFFPZ1VsV2dJTUF4cHRGMmdK?=
+ =?utf-8?B?MjkwUStpRVZTU01MMDdibDREVlJiRy9JVDZPWVNiTHhQekJtVXU2M0lnMjlO?=
+ =?utf-8?B?T3duWS9kZlRscFpJeW51ei92Wk85bUVheDlkWTM3dldhSS9VMS9MVVdFT1BL?=
+ =?utf-8?B?bE1sajRWaHBHbkI4eWwvT1VBUTMyUnFjUzZpbktTNUhJU3VYMWdIQ25qZjBJ?=
+ =?utf-8?B?ZTBmSGpnYXp5MXpWSlZpSGhVOTROUjJCWnYyckpabHc2UzZMYVkvNkx2dHBU?=
+ =?utf-8?B?Qko4c214bXlCWG1HYzd2dnAwZ2EzdEYvQWNQZFgyUUZMYXFzcmZFS0YzdDdC?=
+ =?utf-8?B?TW8wazhyazREWVBwbDdVdFRhWGcxQjlmK3ZMQUJ6Y3M2SlExbE81SjE2ZG1O?=
+ =?utf-8?B?UndFNVpqY0ZSUGw5Yjc4UnNEci96L3JBT2ZGbmFMRS9wanVIYWFjRjMxRzNu?=
+ =?utf-8?B?Yk04VkRWNGE3OEM2N254OWF1VGtzTmYzNEkxL0MrajYwQ2tzSGMyb2Q5S1o5?=
+ =?utf-8?B?SkZya3h4ZzF4eUZhOTJkYVEvU1hHYVNocUo0TnRnQndLcG9wb2dzbXdnay83?=
+ =?utf-8?B?WUd1ZjNjdGZEZHlPaWgzQ25BVFF3b3phd0xudFRJSnN4SXNqci9Xazh4N2I3?=
+ =?utf-8?B?N24xcW9nbk9WRFVuRkJPc1hKYnFLY2tjYXJXbnVlUjFqcXFqMUoyMkFxQ2p4?=
+ =?utf-8?B?K2N4NFZxM0JWdHUwYU1wVTdheTc4V2VZR0krYit5S1RnSGVzOXpkUUJsWlho?=
+ =?utf-8?B?L3kvbmxReXd3TEpZYkx6eTJGSVdUMjUyT2dJSzYxWWVTcWhXb0I3UjBJQ0RF?=
+ =?utf-8?B?UHY2YkFFSXZWbW5IVm9Xem8rT2hlMkpadjQ5V0RIUWxuWEFuMm5nZ0NhT1FB?=
+ =?utf-8?B?YzhXMmlLcFV3L3psdlhxOEdweVRpWUM5Nk94TGdiL1Flbm4wM3kvcDZCMHFa?=
+ =?utf-8?Q?+s99FiQb5MEZspLcpEY8NvcYU?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 46b61379-d39f-47c6-9962-08dbf82fd843
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 20:54:21.3463
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0jsjs6M9BCMyGYfJJu/qT8WpHL/+USVuOcxRAYOX/cGWQXBJRZEC0U87HGDI+NpHW17lTd6jl8LrIha1hE/U7A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6662
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 12:41:03PM -0800, Alexei Starovoitov wrote:
-> On Fri, Dec 8, 2023 at 12:35 PM Peter Zijlstra <peterz@infradead.org> wrote:
-
-> > -__bpf_kfunc void bpf_task_release(struct task_struct *p)
-> > +__bpf_kfunc void bpf_task_release(void *p)
+On 12/6/2023 2:42 PM, Borislav Petkov wrote:
+> On Mon, Oct 16, 2023 at 08:27:45AM -0500, Michael Roth wrote:
+>> +	spin_lock(&snp_leaked_pages_list_lock);
+>> +	while (npages--) {
+>> +		/*
+>> +		 * Reuse the page's buddy list for chaining into the leaked
+>> +		 * pages list. This page should not be on a free list currently
+>> +		 * and is also unsafe to be added to a free list.
+>> +		 */
+>> +		list_add_tail(&page->buddy_list, &snp_leaked_pages_list);
+>> +		sev_dump_rmpentry(pfn);
+>> +		pfn++;
+>> +	}
+>> +	spin_unlock(&snp_leaked_pages_list_lock);
+>> +	atomic_long_inc(&snp_nr_leaked_pages);
 > 
-> Yeah. That won't work. We need a wrapper.
-> Since bpf prog is also calling it directly.
-> In progs/task_kfunc_common.h
-> void bpf_task_release(struct task_struct *p) __ksym;
+> How is this supposed to count?
 > 
-> than later both libbpf and the verifier check that
-> what bpf prog is calling actually matches the proto
-> of what is in the kernel.
-> Effectively we're doing strong prototype check at load time.
+> You're leaking @npages as the function's parameter but are incrementing
+> snp_nr_leaked_pages only once?
+> 
+> Just make it a bog-normal unsigned long and increment it inside the
+> locked section.
+> 
+> Or do at the beginning of the function:
+> 
+> 	atomic_long_add(npages, &snp_nr_leaked_pages);
+> 
 
-I'm still somewhat confused on how this works, where does BPF get the
-address of the function from? and what should I call the wrapper?
+Yes will fix accordingly by incrementing it inside the locked section.
 
-> btw instead of EXPORT_SYMBOL_GPL(bpf_task_release)
-> can __ADDRESSABLE be used ?
-> Since it's not an export symbol.
-
-No __ADDRESSABLE() is expressly ignored, but we have IBT_NOSEAL() that
-should do it. I'll rename the thing and lift it out of x86 to avoid
-breaking all other arch builds.
-
+Thanks,
+Ashish
