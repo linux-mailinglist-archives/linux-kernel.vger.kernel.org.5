@@ -2,109 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 677FD80ACC8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E04780ACCF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574658AbjLHTTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 14:19:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
+        id S1574667AbjLHTUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 14:20:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574641AbjLHTTO (ORCPT
+        with ESMTP id S229913AbjLHTUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 14:19:14 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8333410E7
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:19:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702063160; x=1733599160;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=8Bgkj91w6gSW3fz6KbSzBzAD4jOqxbVia76/GQnZg6Y=;
-  b=l01YZmcPIPGcJAdrEwKgMgMaM8SSDasYvktcJIMjGzvXsNXjOXzIzJa0
-   tjXcYCO2VeE0PY9aR00kpIfz/vb/L9W5Ee1S7Dk+CzCTVVxPy1Z0SNPrR
-   LUP3Uix5h9pfD0sqGCsy6RZ4qMpbUsgND8BEnoHsR9PDg40pbut7wA0vk
-   +HZSpvFU6MpbQlAAjhicyM6E4VA8FjAi9scPtpC/VWgyfZ5GjGLg8pDd2
-   GJgDhycJhOH7MzdKmr9CNSjBuuul9bSum1MZ3hl4zvJE0BJzgKJ4LTUNH
-   mZ9ho5pP1RwQ5YrbSHEJT1xsSOtuSn9oP/FPSW1L+QmTYZc2EzeEDpXAY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="425582082"
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="425582082"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 11:19:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1103660087"
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="1103660087"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 08 Dec 2023 11:19:19 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBgNY-000EFT-36;
-        Fri, 08 Dec 2023 19:19:16 +0000
-Date:   Sat, 9 Dec 2023 03:19:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted
- __virtio16
-Message-ID: <202312090326.3IgZoXQW-lkp@intel.com>
+        Fri, 8 Dec 2023 14:20:39 -0500
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B70C10E7;
+        Fri,  8 Dec 2023 11:20:45 -0800 (PST)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 150833a18591e4b8; Fri, 8 Dec 2023 20:20:43 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 9A3BF6688FC;
+        Fri,  8 Dec 2023 20:20:42 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Subject: [PATCH v1 3/3] thermal: core: Rework thermal zone availability check
+Date:   Fri, 08 Dec 2023 20:20:00 +0100
+Message-ID: <2258035.iZASKD2KPV@kreacher>
+In-Reply-To: <1880915.tdWV9SEqCh@kreacher>
+References: <1880915.tdWV9SEqCh@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudekiedguddvgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgt
+ phhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4df7c5fde316820286dfa6d203a1005d7fbe007d
-commit: d877322bc1adcab9850732275670409e8bcca4c4 openrisc: Fix issue with get_user for 64-bit values
-date:   3 years, 3 months ago
-config: openrisc-randconfig-r131-20231102 (https://download.01.org/0day-ci/archive/20231209/202312090326.3IgZoXQW-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231209/202312090326.3IgZoXQW-lkp@intel.com/reproduce)
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312090326.3IgZoXQW-lkp@intel.com/
+In order to avoid running __thermal_zone_device_update() for thermal
+zones going away, the thermal zone lock is held around device_del()
+in thermal_zone_device_unregister() and thermal_zone_device_update()
+passes the given thermal zone device to device_is_registered().
+This allows thermal_zone_device_update() to skip the
+__thermal_zone_device_update() if device_del() has already run for
+the thermal zone at hand.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
->> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
->> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
->> drivers/vhost/vringh.c:567:18: sparse: sparse: restricted __virtio16 degrades to integer
->> drivers/vhost/vringh.c:567:18: sparse: sparse: restricted __virtio16 degrades to integer
->> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
->> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
+However, instead of looking at driver core internals, the thermal
+subsystem may as well rely on its own data structures for this
+purpose.  Namely, if the thermal zone is not present in
+thermal_tz_list, it can be regarded as unavailable, which in fact is
+already the case in thermal_zone_device_unregister().  Accordingly,
+the device_is_registered() check in thermal_zone_device_update() can
+be replaced with checking whether or not the node list_head in struct
+thermal_zone_device is empty, in which case it is not there in
+thermal_tz_list.
 
-vim +567 drivers/vhost/vringh.c
+To make this work, though, it is necessary to initialize tz->node
+in thermal_zone_device_register_with_trips() before registering the
+thermal zone device and it needs to be added to thermal_tz_list and
+deleted from it under its zone lock.
 
-f87d0fbb579818 Rusty Russell      2013-03-20  562  
-f87d0fbb579818 Rusty Russell      2013-03-20  563  /* Userspace access helpers: in this case, addresses are really userspace. */
-b9f7ac8c72894c Michael S. Tsirkin 2014-12-12  564  static inline int getu16_user(const struct vringh *vrh, u16 *val, const __virtio16 *p)
-f87d0fbb579818 Rusty Russell      2013-03-20  565  {
-b9f7ac8c72894c Michael S. Tsirkin 2014-12-12  566  	__virtio16 v = 0;
-b9f7ac8c72894c Michael S. Tsirkin 2014-12-12 @567  	int rc = get_user(v, (__force __virtio16 __user *)p);
-b9f7ac8c72894c Michael S. Tsirkin 2014-12-12  568  	*val = vringh16_to_cpu(vrh, v);
-b9f7ac8c72894c Michael S. Tsirkin 2014-12-12  569  	return rc;
-f87d0fbb579818 Rusty Russell      2013-03-20  570  }
-f87d0fbb579818 Rusty Russell      2013-03-20  571  
+After the above modifications, the zone lock does not need to be
+held around device_del() in thermal_zone_device_unregister() any more.
 
-:::::: The code at line 567 was first introduced by commit
-:::::: b9f7ac8c72894c19bf258a54ecaa708df4ffbe80 vringh: update for virtio 1.0 APIs
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/thermal/thermal_core.c |   15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-:::::: TO: Michael S. Tsirkin <mst@redhat.com>
-:::::: CC: Michael S. Tsirkin <mst@redhat.com>
+Index: linux-pm/drivers/thermal/thermal_core.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_core.c
++++ linux-pm/drivers/thermal/thermal_core.c
+@@ -505,11 +505,16 @@ int thermal_zone_device_is_enabled(struc
+ 	return tz->mode == THERMAL_DEVICE_ENABLED;
+ }
+ 
++static bool thermal_zone_is_present(struct thermal_zone_device *tz)
++{
++	return !list_empty(&tz->node);
++}
++
+ void thermal_zone_device_update(struct thermal_zone_device *tz,
+ 				enum thermal_notify_event event)
+ {
+ 	mutex_lock(&tz->lock);
+-	if (device_is_registered(&tz->device))
++	if (thermal_zone_is_present(tz))
+ 		__thermal_zone_device_update(tz, event);
+ 	mutex_unlock(&tz->lock);
+ }
+@@ -1304,6 +1309,7 @@ thermal_zone_device_register_with_trips(
+ 	}
+ 
+ 	INIT_LIST_HEAD(&tz->thermal_instances);
++	INIT_LIST_HEAD(&tz->node);
+ 	ida_init(&tz->ida);
+ 	mutex_init(&tz->lock);
+ 	init_completion(&tz->removal);
+@@ -1369,7 +1375,9 @@ thermal_zone_device_register_with_trips(
+ 	}
+ 
+ 	mutex_lock(&thermal_list_lock);
++	mutex_lock(&tz->lock);
+ 	list_add_tail(&tz->node, &thermal_tz_list);
++	mutex_unlock(&tz->lock);
+ 	mutex_unlock(&thermal_list_lock);
+ 
+ 	/* Bind cooling devices for this zone */
+@@ -1460,7 +1468,10 @@ void thermal_zone_device_unregister(stru
+ 		mutex_unlock(&thermal_list_lock);
+ 		return;
+ 	}
++
++	mutex_lock(&tz->lock);
+ 	list_del(&tz->node);
++	mutex_unlock(&tz->lock);
+ 
+ 	/* Unbind all cdevs associated with 'this' thermal zone */
+ 	list_for_each_entry(cdev, &thermal_cdev_list, node)
+@@ -1477,9 +1488,7 @@ void thermal_zone_device_unregister(stru
+ 	ida_free(&thermal_tz_ida, tz->id);
+ 	ida_destroy(&tz->ida);
+ 
+-	mutex_lock(&tz->lock);
+ 	device_del(&tz->device);
+-	mutex_unlock(&tz->lock);
+ 
+ 	kfree(tz->tzp);
+ 
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+
