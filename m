@@ -2,110 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FBA809AB3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 04:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068AF809AB7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 04:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573086AbjLHDyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 22:54:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51664 "EHLO
+        id S1573094AbjLHD4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 22:56:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLHDyN (ORCPT
+        with ESMTP id S230225AbjLHD4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 22:54:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69381706
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 19:54:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702007658;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CMjgdK/2S1PdVSZgnJj0b95Jv4yCNX3anEehreiP6o4=;
-        b=Ku5vKAHLw7A9+G3pilAcUdwGZKK5kWaAqYHLE3Z1oT9+R3W6ve4YcWh6b16AN+y5up/tJi
-        HaHMMRJ9RPUjsncWIAyfnHtE47XdGZwzAVj1sdUCNgZcfJVRKAZLTZMnyU8XYrFXZTIiqg
-        D9q5WN76mpGN018/rD3bxRSnhjlAuDE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-455-v257SBM9Ou6VY-NkZGlbJw-1; Thu, 07 Dec 2023 22:54:14 -0500
-X-MC-Unique: v257SBM9Ou6VY-NkZGlbJw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1F0128057FD;
-        Fri,  8 Dec 2023 03:54:14 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 05A5C2166B35;
-        Fri,  8 Dec 2023 03:54:07 +0000 (UTC)
-Date:   Fri, 8 Dec 2023 11:54:03 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     Li Feng <fengli@smartx.com>, Jens Axboe <axboe@kernel.dk>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:VIRTIO BLOCK AND SCSI DRIVERS" 
-        <virtualization@lists.linux.dev>
-Subject: Re: [PATCH] virtio_blk: set the default scheduler to none
-Message-ID: <ZXKTW7z3UH1kPvod@fedora>
-References: <20231207043118.118158-1-fengli@smartx.com>
- <ZXJ4xNawrSRem2qe@fedora>
- <ZXKDFdzXN4xQAuBm@kbusch-mbp>
+        Thu, 7 Dec 2023 22:56:39 -0500
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD3A1706;
+        Thu,  7 Dec 2023 19:56:45 -0800 (PST)
+Received: from [192.168.68.112] (ppp118-210-181-59.adl-adc-lon-bras34.tpg.internode.on.net [118.210.181.59])
+        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id E526920016;
+        Fri,  8 Dec 2023 11:56:33 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=codeconstruct.com.au; s=2022a; t=1702007800;
+        bh=tyllIWdZHFdzvGcGSWMb1b2dzbhWG0Dcolc/GscISJs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=IpkBpjVlJqrjJbUQM32dDSX0YGxz6gBIhe/tBGjUEzsc8/aqUO/E57MQSLhQJmW+g
+         HARu1kXb4P3QDUh5Jg2MiyauB8vTYbUlMHFgGCqgQJK+DltJy6AQd0+N7gPyfPTqH7
+         USmh9YZfNr0wzfkWYs/l9AtBgIPZhIlp490vLAPCX+oRx5vkE5mCKSdC3v/fn/jLuf
+         S3xtdMlrNhHdpFc+PpuQkJl15BtayAhWbaq0qmGZbOcxl7xIU+7769WluDh2AkGiy+
+         lnvUXItICteaSiZzEKyHAZ3wE1cVuWuQcVg7wGScpPnypxaBnY9ML6O/VrzBUlHox/
+         snvJVTJb19R2A==
+Message-ID: <79ce9162faeb113ecb13efeb58d95f8a71e1a060.camel@codeconstruct.com.au>
+Subject: Re: [PATCH v3 1/2] i2c: aspeed: Handle the coalesced stop
+ conditions with the start conditions.
+From:   Andrew Jeffery <andrew@codeconstruct.com.au>
+To:     Quan Nguyen <quan@os.amperecomputing.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Cosmo Chou <chou.cosmo@gmail.com>,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Date:   Fri, 08 Dec 2023 14:26:31 +1030
+In-Reply-To: <20231208033142.1673232-2-quan@os.amperecomputing.com>
+References: <20231208033142.1673232-1-quan@os.amperecomputing.com>
+         <20231208033142.1673232-2-quan@os.amperecomputing.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXKDFdzXN4xQAuBm@kbusch-mbp>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 07:44:37PM -0700, Keith Busch wrote:
-> On Fri, Dec 08, 2023 at 10:00:36AM +0800, Ming Lei wrote:
-> > On Thu, Dec 07, 2023 at 12:31:05PM +0800, Li Feng wrote:
-> > > virtio-blk is generally used in cloud computing scenarios, where the
-> > > performance of virtual disks is very important. The mq-deadline scheduler
-> > > has a big performance drop compared to none with single queue. In my tests,
-> > > mq-deadline 4k readread iops were 270k compared to 450k for none. So here
-> > > the default scheduler of virtio-blk is set to "none".
-> > 
-> > The test result shows you may not test HDD. backing of virtio-blk.
-> > 
-> > none can lose IO merge capability more or less, so probably sequential IO perf
-> > drops in case of HDD backing.
-> 
-> More of a curiosity, as I don't immediately even have an HDD to test
-> with! Isn't it more useful for the host providing the backing HDD use an
-> appropriate IO scheduler? virtio-blk has similiarities with a stacking
-> block driver, and we usually don't need to stack IO schedulers.
+On Fri, 2023-12-08 at 10:31 +0700, Quan Nguyen wrote:
+> Some masters may drive the transfers with low enough latency between
+> the nak/stop phase of the current command and the start/address phase
+> of the following command that the interrupts are coalesced by the
+> time we process them.
+> Handle the stop conditions before processing SLAVE_MATCH to fix the
+> complaints that sometimes occur below.
+>=20
+> "aspeed-i2c-bus 1e78a040.i2c-bus: irq handled !=3D irq. Expected
+> 0x00000086, but was 0x00000084"
+>=20
+> Fixes: f9eb91350bb2 ("i2c: aspeed: added slave support for Aspeed I2C dri=
+ver")
+> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+> ---
+> v3:
+>   + Change to handle the coalesced stop condition with the start
+> conditions                                                            [An=
+drew]
+>   + Revised commit message                                              [=
+Quan]
+>=20
+> v2:
+>   + Split to separate series                                            [=
+Joel]
+>   + Added the Fixes line                                                [=
+Joel]
+>   + Revised commit message                                              [=
+Quan]
+>=20
+> v1:
+>   + First introduced in
+> https://lore.kernel.org/all/20210519074934.20712-1-quan@os.amperecomputin=
+g.com/
+> ---
+>  drivers/i2c/busses/i2c-aspeed.c | 47 ++++++++++++++++++++++-----------
+>  1 file changed, 31 insertions(+), 16 deletions(-)
+>=20
+> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-asp=
+eed.c
+> index 28e2a5fc4528..1c2a4f4c4e1b 100644
+> --- a/drivers/i2c/busses/i2c-aspeed.c
+> +++ b/drivers/i2c/busses/i2c-aspeed.c
+> @@ -249,18 +249,45 @@ static u32 aspeed_i2c_slave_irq(struct aspeed_i2c_b=
+us *bus, u32 irq_status)
+>  	if (!slave)
+>  		return 0;
+> =20
+> -	command =3D readl(bus->base + ASPEED_I2C_CMD_REG);
+> +	/*
+> +	 * Handle stop conditions early, prior to SLAVE_MATCH. Some masters may=
+ drive
+> +	 * transfers with low enough latency between the nak/stop phase of the =
+current
+> +	 * command and the start/address phase of the following command that th=
+e
+> +	 * interrupts are coalesced by the time we process them.
+> +	 */
+> +	if (irq_status & ASPEED_I2CD_INTR_NORMAL_STOP) {
+> +		irq_handled |=3D ASPEED_I2CD_INTR_NORMAL_STOP;
+> +		bus->slave_state =3D ASPEED_I2C_SLAVE_STOP;
+> +	}
+> =20
+> -	/* Slave was requested, restart state machine. */
+> +	if (irq_status & ASPEED_I2CD_INTR_TX_NAK &&
+> +	    bus->slave_state =3D=3D ASPEED_I2C_SLAVE_READ_PROCESSED) {
+> +		irq_handled |=3D ASPEED_I2CD_INTR_TX_NAK;
+> +		bus->slave_state =3D ASPEED_I2C_SLAVE_STOP;
+> +	}
+> +
+> +	/* Propagate any stop conditions to the slave implementation. */
+> +	if (bus->slave_state =3D=3D ASPEED_I2C_SLAVE_STOP) {
+> +		i2c_slave_event(slave, I2C_SLAVE_STOP, &value);
+> +		bus->slave_state =3D ASPEED_I2C_SLAVE_INACTIVE;
+> +	}
+> +	/*
 
-dm-rq actually uses IO scheduler at high layer, and early merge has some
-benefits:
+If there's a reason to do a v4 then an extra empty line above the
+comment would be nice. But let's not get hung up on that if everyone
+else is happy.
 
-1) virtio-blk inflight requests are reduced, so less chance to throttle
-inside VM, meantime less IOs(bigger size) are handled by QEMU, and submitted
-to host side queue.
+Thanks for the fixes!
 
-2) early merge in VM is cheap than host side, since there can be more block
-IOs originated from different virtio-blk/scsi devices at the same time and
-all images can be stored in single disk, then these IOs become interleaved in
-host side queue, so sequential IO may become random or hard to merge.
+Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
 
-As Jens mentioned, it needs actual test.
-
-
-Thanks,
-Ming
-
+> +	 * Now that we've dealt with any potentially coalesced stop conditions,
+> +	 * address any start conditions.
+> +	 */
+>  	if (irq_status & ASPEED_I2CD_INTR_SLAVE_MATCH) {
+>  		irq_handled |=3D ASPEED_I2CD_INTR_SLAVE_MATCH;
+>  		bus->slave_state =3D ASPEED_I2C_SLAVE_START;
+>  	}
+> =20
