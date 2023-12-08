@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1336E80ADC8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6F680ADCE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574703AbjLHUZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:25:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36090 "EHLO
+        id S1574697AbjLHU2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLHUZg (ORCPT
+        with ESMTP id S229572AbjLHU2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:25:36 -0500
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A3A10D;
-        Fri,  8 Dec 2023 12:25:42 -0800 (PST)
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3b844357f7cso1820024b6e.1;
-        Fri, 08 Dec 2023 12:25:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702067142; x=1702671942;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B0IasXQvJWdqGOSJT9mbD+TBCwZWsYzoBaQM5NAJ5Vk=;
-        b=maZEwoXKaplx4RioXH3M/bFF8vuBD1Hex4eonFmbDPKTatoxu4sErLv6TtUT8lvQts
-         8SvhIp81Mr6rAtOI9vNl3PPsPVQJV5LFPLwWP4nR4PBkM1ukbJKConA7Bjo1PK3fC1bf
-         oeFl4YMP7nefsoZGVMLf2wgIFcJnLM9CdFoJroXD3hqvwZ9n19mfz1wGJUwiUhcYQcUV
-         ukvwg0Na/695HBuOCUjnDXx2GWFgAIbpfFTwbFr2hJa1K8Y+zY5GyhcTetnefMXo5kS8
-         2D+wLMGDpWYeh8Ev0zo52RDKPs5XplbncpDb/G6ECrUmGK5NnmE5h6dE04UrDQ/E9PzG
-         jhPw==
-X-Gm-Message-State: AOJu0YxPIuUy4Jh+YHsZSuZgdNTMoh451q/IDfZIHLU76Jcb+NsItrW0
-        Y+jVIj5IRZhtWZfATHzbog==
-X-Google-Smtp-Source: AGHT+IFjHxqoIzR0RbuwiW28r+05JTaViqeBRKZvgBhK0CJ8WntAGX4XOSvgUidV37wumW/9bax6Bg==
-X-Received: by 2002:a05:6808:16a4:b0:3b8:b063:6bae with SMTP id bb36-20020a05680816a400b003b8b0636baemr651068oib.93.1702067142007;
-        Fri, 08 Dec 2023 12:25:42 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id i26-20020a54409a000000b003b2e2d134a5sm467888oii.35.2023.12.08.12.25.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 12:25:41 -0800 (PST)
-Received: (nullmailer pid 2646256 invoked by uid 1000);
-        Fri, 08 Dec 2023 20:25:40 -0000
-Date:   Fri, 8 Dec 2023 14:25:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Tao Zhang <quic_taozha@quicinc.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        devicetree@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-kernel@vger.kernel.org, Hao Zhang <quic_hazha@quicinc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        James Clark <james.clark@arm.com>,
-        linux-arm-msm@vger.kernel.org, Mike Leach <mike.leach@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, coresight@lists.linaro.org,
-        Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>
-Subject: Re: [PATCH 3/3] dt-bindings: arm: qcom,coresight-tpda: fix
- indentation in the example
-Message-ID: <170206713968.2646196.10411372196062019776.robh@kernel.org>
-References: <20231206115332.22712-1-krzysztof.kozlowski@linaro.org>
- <20231206115332.22712-3-krzysztof.kozlowski@linaro.org>
+        Fri, 8 Dec 2023 15:28:01 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725F110DA;
+        Fri,  8 Dec 2023 12:28:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JEaruMuB4Tlqt0BFZFCjzDOPeC0+ZhBXuiC6tNuESkE=; b=oz3bCKHbBr+1i7AwlkU2bW8Cqa
+        fholQKO6Zp3YpCPRXSWI5rxDyivDmwxbDxZBBDM2Ssv89zNbOFqaWoxUsLTzzOAnNUgyvJ4g4USwF
+        eG+movaebo/2MUs/btQCZ2t/mvdVUv6L7vmw4/fSiDopqEA+7Frtmtsnjlaa2orWePsxhlpt73OLE
+        elw/iRqBA0vjTIbd3gZIWPVL2BQTI8M3iA1KA7pJQIA2V17zdx3Y/BEG41NFkgHe6O622279bc1h6
+        8DrPXnGmpn+YHXoYZtSJoiHBNcAr+At1J1GbouwOpW7CY3gCF3VAvkm+ERrBWLaTXxrto7kX4kVqM
+        XnUF7hpQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1rBhRb-006Vhh-O8; Fri, 08 Dec 2023 20:27:31 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5B7EB3003F0; Fri,  8 Dec 2023 21:27:31 +0100 (CET)
+Date:   Fri, 8 Dec 2023 21:27:31 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+        Song Liu <songliubraving@meta.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joao Moreira <joao@overdrivepizza.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231208202731.GF36716@noisy.programming.kicks-ass.net>
+References: <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+ <20231206163814.GB36423@noisy.programming.kicks-ass.net>
+ <20231206183713.GA35897@noisy.programming.kicks-ass.net>
+ <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
+ <20231207093105.GA28727@noisy.programming.kicks-ass.net>
+ <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
+ <20231208102940.GB28727@noisy.programming.kicks-ass.net>
+ <20231208134041.GD28727@noisy.programming.kicks-ass.net>
+ <20231208172152.GD36716@noisy.programming.kicks-ass.net>
+ <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231206115332.22712-3-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+In-Reply-To: <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,15 +92,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 08, 2023 at 11:40:27AM -0800, Alexei Starovoitov wrote:
 
-On Wed, 06 Dec 2023 12:53:32 +0100, Krzysztof Kozlowski wrote:
-> Fix triple-space indentation to double-space in the example DTS.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  .../bindings/arm/qcom,coresight-tpda.yaml     | 32 +++++++++----------
->  1 file changed, 15 insertions(+), 17 deletions(-)
-> 
+> What is "sealing" by objtool?
 
-Acked-by: Rob Herring <robh@kernel.org>
+Ah, LTO like pass that tries to determine if a function ever gets it's
+address taken.
 
+The basic problem is that the compiler (barring its own LTO pass) must
+emit CFI for every non-local symbol in a translation unit. This means
+that a ton of functions will have CFI on, even if they're never
+indirectly called.
+
+So objtool collects all functions that have CFI but do not get their
+address taken, and sticks their address in a .discard section, then at
+boot time we iterate this section and scribble the CFI state for all
+these functions, making them invalid to be called indirectly.
+
+For one this avoids malicious code from finding a function address in
+the symbol table and indirectly calling it anyway as a means to
+circumvent the EXPORT symbols.
+
+So objtool does not think bpf_cgroup_release() gets its address taken,
+specifically it does not find it's address in a section it knows about.
+And hence it goes on the list and we scribble it and the indirect call
+goes *boom*.
