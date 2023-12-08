@@ -2,115 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC3380A79A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE2380A79C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574374AbjLHPjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:39:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
+        id S1574387AbjLHPkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:40:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574350AbjLHPjx (ORCPT
+        with ESMTP id S1574379AbjLHPkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:39:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739AEFB
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:40:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702049999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QVNp5yABNZJprMXFRXBef0K1nSQmZiO4SNxd+eql7bc=;
-        b=cloKEpw5QIymDPebOPsP7ekNk4uvEATv/K4y8B9Kq2RwRzoneqVI6TPx4KRoy4fbrE1jcb
-        EDsp7k9EfGTFvilInkz7KeTRF7WAKPN5vkly8R9HiVezhvKH5YGXIs5kx1eDhX0rtOCWjc
-        /A/ZqPe2pNdxLWa4fbm+/kizTNDdQgc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-613-pWPxv9W-NpqHHxYh55Bchw-1; Fri, 08 Dec 2023 10:39:53 -0500
-X-MC-Unique: pWPxv9W-NpqHHxYh55Bchw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 73A0585A589;
-        Fri,  8 Dec 2023 15:39:52 +0000 (UTC)
-Received: from [10.22.9.55] (unknown [10.22.9.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6862140C6EB9;
-        Fri,  8 Dec 2023 15:39:51 +0000 (UTC)
-Message-ID: <4cddddc3-699b-44d6-97a4-9964ca2e60b2@redhat.com>
-Date:   Fri, 8 Dec 2023 10:39:50 -0500
+        Fri, 8 Dec 2023 10:40:09 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D97171E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:40:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6405C433C7;
+        Fri,  8 Dec 2023 15:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702050013;
+        bh=ieVNX3t8OHlTPk0YVyjDeXt4NaL02vWfuoHRriWFMQs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VY5BGAL3r0QbzWRb5Eszy5EVO0efv6muA+409Qox0aDL07fC+R/tulhSd+NIh0VKW
+         B2XXfyGuIG5dYNd7vwskPqfAUJZiWliVfU6wMPGfYnE2r5pFU8IcM1qt9jz3QSpCQh
+         0XdY6c+vJ35iWrP5uKh8D0Mg6CxG13byZ8+GMdnleqSCWY3KWVB0wJQ1vPvYceMLYh
+         VP7CEGM9CaNcF/J0jIek78BAORDLAYfQin0TZgg4+KYyqnlPPG53Nj5cNWk7+XI5VC
+         2RN4LDwp0AW+okMbirlRkvGgFduw+S40rLF9yJ+uo/TD7n/LEs6PnX3ZmDJihMvY+M
+         beZTPFdpJ8XZA==
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2ca09601127so27890081fa.1;
+        Fri, 08 Dec 2023 07:40:13 -0800 (PST)
+X-Gm-Message-State: AOJu0Yxru6R0BD0wFqzQMwtYaSUL+mO4pNus8mNh27Z0YYycXOV++XFx
+        MA8G+DUBVxSNZFh6Abk0sXxZR/8kZP6bjQUgB7s=
+X-Google-Smtp-Source: AGHT+IHKpsCoFUwtx0uJ5yciTMXMsGyA+ko6Y6KeazE2iy2abDkzUd5ub7GLATGs7gDzfPSbVQPLUjIZU1LSnW71hi0=
+X-Received: by 2002:a2e:948c:0:b0:2c9:ffcf:ec98 with SMTP id
+ c12-20020a2e948c000000b002c9ffcfec98mr59130ljh.27.1702050012031; Fri, 08 Dec
+ 2023 07:40:12 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Modifying isolcpus, nohz_full, and rcu_nocb kernel parameters at
- runtime
-Content-Language: en-US
-To:     Gianfranco Dutka <gianfranco.dutka@arista.com>
-Cc:     Tejun Heo <tj@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, vincent.guittot@linaro.com,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-References: <76587DD3-2A77-41A3-9807-6AEE4398EBA6@arista.com>
- <CAKfTPtAkhfAhFouCGTy7m4swCeeEsu1VdWEX_ahOVDq1U594Dg@mail.gmail.com>
- <ZXJKAnrRjBUmKx1V@slm.duckdns.org>
- <d46834f4-a490-4a4a-9e95-cca4a6316570@redhat.com>
- <25E6E1E4-DC16-490E-B907-A3236FB9317A@arista.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <25E6E1E4-DC16-490E-B907-A3236FB9317A@arista.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+References: <CAMj1kXFrexNBSDGGRaQQh=6_O=nm2NET_unZ4Qy618461H6maw@mail.gmail.com>
+ <00000000000010057c060c012e63@google.com> <CANp29Y4bxQzV-=rSQOBPfi2Rxrob_GTHZrsGAgvemvnXgC5a3g@mail.gmail.com>
+In-Reply-To: <CANp29Y4bxQzV-=rSQOBPfi2Rxrob_GTHZrsGAgvemvnXgC5a3g@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 8 Dec 2023 16:40:01 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGdLTsDnvqb3pe--eW3p480kbDRfyydMCUOW1m-3Bf9cg@mail.gmail.com>
+Message-ID: <CAMj1kXGdLTsDnvqb3pe--eW3p480kbDRfyydMCUOW1m-3Bf9cg@mail.gmail.com>
+Subject: Re: [syzbot] BUG: corrupted list in efivar_entry_remove
+To:     Aleksandr Nogikh <nogikh@google.com>
+Cc:     syzbot <syzbot+1902c359bfcaf39c46f2@syzkaller.appspotmail.com>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 12/8/23 09:18, Gianfranco Dutka wrote:
+On Fri, 8 Dec 2023 at 16:38, Aleksandr Nogikh <nogikh@google.com> wrote:
 >
->> The isolcpus, nohz_full and rcu_nocbs are boot-time kernel 
->> parameters. I am in the process of improving dynamic CPU isolation at 
->> runtime. Right now, we are able to do isolcpus=domain with the 
->> isolated cpuset partition functionality. Other aspects of CPU 
->> isolation are being looked at with the goal of reducing the gap of 
->> what one can do at boot time versus what can be done at run time. It 
->> will certain take time to reach that goal.
->>
->> Cheers, Longman
->>
+> If a command spans over two lines, syzbot expects a colon.
 >
-> Thank you Waiman for the response. It would seem that getting similar 
-> functionality through cgroups/cpusets is the only option at the 
-> moment. Is it completely out of the question to possibly patch the 
-> kernel to modify these parameters at runtime? Or would that entail a 
-> significant change that might not be so trivial to accomplish? For 
-> instance, the solution wouldn’t be as simple as patching the kernel to 
-> make these writeable and then calling the same functions which run at 
-> boot-time when these parameters are originally written?
+> #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git
+> efivarfs-list-corruption-fix
+>
 
-I would say that using cgroup/cpusets is probably the most you can do 
-with dynamic CPU isolation at the moment. OTOH, it may not be a good 
-idea to have more than one way of doing the same thing as it will lead 
-to code duplication and inconsistency. I don't think it is that easy to 
-make CPU isolation fully dynamic and we must be careful not to introduce 
-any regression.
+It is Gmail that is breaking the line here
 
-Cheers,
-Longman
 
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git:
+efivarfs-list-corruption-fix
