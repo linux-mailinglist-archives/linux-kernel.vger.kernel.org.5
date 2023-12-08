@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6124780A28B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D783680A293
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:49:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233478AbjLHLsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 06:48:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48464 "EHLO
+        id S1573633AbjLHLtX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Dec 2023 06:49:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjLHLsO (ORCPT
+        with ESMTP id S232873AbjLHLtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 06:48:14 -0500
-Received: from mail.avm.de (mail.avm.de [212.42.244.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870A7171F
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 03:48:18 -0800 (PST)
-Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
-        by mail.avm.de (Postfix) with ESMTPS;
-        Fri,  8 Dec 2023 12:48:14 +0100 (CET)
-Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
-        by mail-auth.avm.de (Postfix) with ESMTPA id E5B0A806A5;
-        Fri,  8 Dec 2023 12:48:13 +0100 (CET)
-Received: by buildd.core.avm.de (Postfix, from userid 1000)
-        id D707A180C63; Fri,  8 Dec 2023 12:48:13 +0100 (CET)
-Date:   Fri, 8 Dec 2023 12:48:11 +0100
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     Simon Glass <sjg@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Tom Rini <trini@konsulko.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 1/2] arm64: Add BOOT_TARGETS variable
-Message-ID: <ZXMCfVw7kwvfGn/i@buildd.core.avm.de>
-References: <20231202035511.487946-1-sjg@chromium.org>
- <20231202035511.487946-2-sjg@chromium.org>
+        Fri, 8 Dec 2023 06:49:22 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9B61723
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 03:49:28 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1rBZLw-0005Wy-0d; Fri, 08 Dec 2023 12:49:08 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1rBZLt-00EPDB-Se; Fri, 08 Dec 2023 12:49:05 +0100
+Received: from pza by lupine with local (Exim 4.96)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1rBZLt-0006SD-2c;
+        Fri, 08 Dec 2023 12:49:05 +0100
+Message-ID: <95ef7a9fa76bf3d6fd17c9fbf00d7d561883765c.camel@pengutronix.de>
+Subject: Re: [PATCH 3/9] PCI: imx6: Simplify reset handling by using by
+ using *_FLAG_HAS_*_RESET
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     imx@lists.linux.dev, Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:PCI DRIVER FOR IMX6" <linux-pci@vger.kernel.org>,
+        "moderated list:PCI DRIVER FOR IMX6" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Fri, 08 Dec 2023 12:49:05 +0100
+In-Reply-To: <ZXH8guDh+pLbg0Tn@lizhi-Precision-Tower-5810>
+References: <20231206155903.566194-1-Frank.Li@nxp.com>
+         <20231206155903.566194-4-Frank.Li@nxp.com>
+         <e314466b31dd8e88212ae5d7ac2fecf26b851829.camel@pengutronix.de>
+         <ZXH8guDh+pLbg0Tn@lizhi-Precision-Tower-5810>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="BSFSRSoXpjCiBLZV"
-Content-Disposition: inline
-In-Reply-To: <20231202035511.487946-2-sjg@chromium.org>
-X-purgate-ID: 149429::1702036094-2FFDDD82-4CAFAB7C/0/0
-X-purgate-type: clean
-X-purgate-size: 1914
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Do, 2023-12-07 at 12:10 -0500, Frank Li wrote:
+> On Wed, Dec 06, 2023 at 05:52:23PM +0100, Philipp Zabel wrote:
+[...]
+> > I wonder whether we should just defer the check whether apps/pciephy
+> > resets should be used to the device tree validation, and make this an
+> > unconditional call to get an optional reset control:
+> > 
+> > 	imx6_pcie->apps_reset = devm_reset_control_get_optional_exclusive(dev, "apps");
+> 
+> I think double check here is neccesary. No sure if dts file version
+> binding yaml was exactly matched driver. Sometime user use old version dts. 
+> Double check here will help identify the dts problem. 
 
---BSFSRSoXpjCiBLZV
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 8 Dec 2023 12:48:11 +0100
-From: Nicolas Schier <nicolas@fjasle.eu>
-To: Simon Glass <sjg@chromium.org>
-Cc: linux-arm-kernel@lists.infradead.org,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Ahmad Fatoum <a.fatoum@pengutronix.de>,
-	U-Boot Mailing List <u-boot@lists.denx.de>,
-	Tom Rini <trini@konsulko.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 1/2] arm64: Add BOOT_TARGETS variable
+Makes sense to me,
 
-On Fri, Dec 01, 2023 at 08:54:41PM -0700, Simon Glass wrote:
-> Add a new variable containing a list of possible targets. Mark them as
-> phony. This matches the approach taken for arch/arm
->=20
-> Signed-off-by: Simon Glass <sjg@chromium.org>
-> ---
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-Reviewed-by: Nicolas Schier <n.schier@avm.de>
-
---BSFSRSoXpjCiBLZV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEDv+Fiet06YHnC6RpiMa8nIiabbgFAmVzAnsACgkQiMa8nIia
-bbjzLhAAnGc5zZlSZDcS57dXbgC5jj4DDIk3UsSib8BJO/mrvy5NV1kot35nOlCv
-ITg7qaxJZGZhBIP730+qieDixLLAWCB9ybHnjmqMkmm9GYsPHSpAjTpuWzeyNBxu
-Fu7k3nHjFMOlYM8isC51bifmy3M0+7oogWGYj/JtmKnQDAHnOzGwQxeJJvgAHkUw
-RP8RGHngI/BGjMuyuofQ8zNba3k3RSJQREBwZ/Onu8FaYof77PJ4/0YF+hPaGHQS
-gJpJ7QdhKu24JAkBbhIBSrIWULOvyQUfWhUdjC3HuidoMxfbDEYoG3SICcRaKo9e
-wFbTUk+y5WUXCloKR4whRnsnqNeFxbPUwi4z+lgxLRfHc5QAEDD+KsBJdEV2Q/Rz
-aFN+ASSGU5JIKJJXe58kk3neOG0EOk5z39Xw+6AJudjCgDnRa7cCTbtRwNVwgb+w
-3T+xxMari2SfksRCJ1eSDw/VziqRSvKBw3Sbltfq6wdGMdZnnPZFafu7TQZmPH23
-Q6eowZ2qNTZpL7Dd9cHiWMQribKTTynpaB1k5gE5iV6cN9oMMAEktvxJC+MzPMU5
-1aKJWtlGc7mMPnvRCvVrHraeRWv18P2IT4Y23IGkTkIDUWKpgdTO8blwygmj+SU9
-plEST8o2VyQWcjfok8MCEdFGNDEA1Q8rsmImUImYHIR25cedLsY=
-=Xmw+
------END PGP SIGNATURE-----
-
---BSFSRSoXpjCiBLZV--
+regards
+Philipp
