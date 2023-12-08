@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05EB880A3C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8CF80A3C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573724AbjLHMq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 07:46:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
+        id S1573721AbjLHMre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 07:47:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjLHMq4 (ORCPT
+        with ESMTP id S233578AbjLHMrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 07:46:56 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197F61710
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:47:01 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-54cde11d0f4so2988437a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 04:47:01 -0800 (PST)
+        Fri, 8 Dec 2023 07:47:31 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B0219A7
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:47:37 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a1e35c2807fso274711766b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 04:47:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702039619; x=1702644419; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702039655; x=1702644455; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=QMCWPUav6uhhvWfe9UyLRspCCYQQnVNrnd88EcKumhs=;
-        b=XPAoOWEoKyH+b2bQz5MW+Swx5JzzmXFZEFMtzHDbbvX20Wef3ATwNazf9koOp9p5/i
-         rj17jaAhD567M96CNbGmXJ8qiZPZW5ZLiHL5kkIIQftEhEfXcIVC04Ckij5gG6GmRXYi
-         s6clgaO905BasRMSwufN1/Hubd/ZhYy9UOPFsvpaXeCrsuAldK0ApOeaqeFZu6hm2M7A
-         oJwK1Y9lW5daMSxsCxs3+M79/j4OMrmd6JH4uQNAMjJhxngSCwBruHYLcVSudGF2Jgof
-         0WPYV02lMs0opKQTwO08ueIp5wwbAD3ZAiEJbdvEIsilsYKHLm1jSjUwjKssHG2lJ+wF
-         DHkA==
+        bh=VlhT9aXObqKi8y1q8htSDfgpqEph1BAVgI/CsorIfkg=;
+        b=zNEqIRwVjj2J9EkVEIJx6MdskGbMlcgY3FEYvzGbmbMRUloHA1wc3JDXW8GP7UMRqY
+         1oPjMqPwXuMxPFfe0s61hGnvR+7mOl6k3fqSDpfgNxSNwXxxNfrM+bIxaxifz/QkRCQ4
+         KMwApj0Gve4CfzwGzRbWSlOOQbx2RRwFN48+JCfzdXeVGYjuzLK605Fz8+NfDwkIJ30X
+         bcC2rF/FVbSegNkOW5HPCr9sbkpKv3w1uqu5D7p6vf+UqQva54Pb6amJy+ll10jGaWX1
+         12mRhP7UonM0Wh16LMx1SuGZrcqy4YdNG9EOsS7Q1xRx1tz5mdTGYt2h3O92w4g5t3PS
+         gaWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702039619; x=1702644419;
+        d=1e100.net; s=20230601; t=1702039655; x=1702644455;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QMCWPUav6uhhvWfe9UyLRspCCYQQnVNrnd88EcKumhs=;
-        b=kBLZcRupTaUFX9mCon9k8DjNYMhCduR9HXDXjCP6Dyi/2ksQ1eJXCxiat37vNMDUG3
-         RfmlQusP+T6cEr4Bhl/R9HxzEfZ8/wrH4+7RI5WFT84qxk7G/Tmrv5j+i4MtLqLwYt7z
-         Eyr+M/cTI1zV5gqTi2Ux1y6fprQXbHPhQIXzHcBkC+6FbPi1lYLDQCmTVRFet6Tjze04
-         k9ZivzYNuAUZ9HiuSf2sjIeVI8cacKU+u/L5uMJgzF3/qryb2ayMLleJVS4W5IR34fXs
-         IQAh2GYlZ2R5qt2VddGpdUyaUsH6pzvxIImAu1ImZ/0DSluT0nz3qi8MWfTpw4TeFFNl
-         4Y6Q==
-X-Gm-Message-State: AOJu0YyTkciC2gQvXl2iHDxgy4IgF9Aw6cAMD+mWUCkEetGN1mgGfHPl
-        1URatxLNkTbxLcoVIyqQKN+ncQ==
-X-Google-Smtp-Source: AGHT+IFf/7hcKBe115rybS+BVwW7/Vtd1r005VlJ58gXNQexRruEjFHwY9KlJ4L3L6pP5KNn25tFxQ==
-X-Received: by 2002:a17:906:b20b:b0:a19:a1ba:da4c with SMTP id p11-20020a170906b20b00b00a19a1bada4cmr2454750ejz.115.1702039619554;
-        Fri, 08 Dec 2023 04:46:59 -0800 (PST)
+        bh=VlhT9aXObqKi8y1q8htSDfgpqEph1BAVgI/CsorIfkg=;
+        b=jNIR3MoGPpmmN4hUeCsu9AHAxNJZaNiVz8KyhhylHrVbfwazugUnou3LSQlER9wHhf
+         CRgANdENzdYhGxE2EHwFqC1wwYM0ch+YGG4Thm4sVQXbh5mWo37ws89G1XBF1Y40GzLW
+         nsjJJlXXT4mztXglrbkWfj1uuaCy7ga2Z9slA1vTN7ci1FkWgFyVrf7KZjX0a4ccQowP
+         KttgL6BGVNWbpe89SMMNcnarlW7i2Y77qsA6FWdOnhA7MP9Ufni267ICIisrj/m7i6SS
+         rMQ2oAN3ipxhxYQIg+y3nMEEbj8JOE8n7SXl1K4lcHp1UDUWM2NbGIeXXKVb/7xi+fq2
+         J7EA==
+X-Gm-Message-State: AOJu0YxOZLxtdZS2j0zYnCuiUlAk5ceNHt7K4mefmG3dHFcUPaDwnFs8
+        fzotu4WvuV8U7NnMrgv4bvkmyQ==
+X-Google-Smtp-Source: AGHT+IFn5zsgVdwIup6Zx2HXpwXNh5E7RHsXAsR7yLkQUEQv1ek69g5N9jzZoUdP0pNxBn/K4RrY/Q==
+X-Received: by 2002:a17:906:7f91:b0:9d2:9dbe:a2f9 with SMTP id f17-20020a1709067f9100b009d29dbea2f9mr2565811ejr.50.1702039654613;
+        Fri, 08 Dec 2023 04:47:34 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id tj7-20020a170907c24700b00a1c522990ccsm978114ejc.85.2023.12.08.04.46.57
+        by smtp.gmail.com with ESMTPSA id tj7-20020a170907c24700b00a1c522990ccsm978114ejc.85.2023.12.08.04.47.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 04:46:59 -0800 (PST)
-Message-ID: <29d7c97f-cc98-4f67-9bdc-3005796180c9@linaro.org>
-Date:   Fri, 8 Dec 2023 13:46:57 +0100
+        Fri, 08 Dec 2023 04:47:34 -0800 (PST)
+Message-ID: <7f5fd234-f608-477a-9032-9008e5d88c05@linaro.org>
+Date:   Fri, 8 Dec 2023 13:47:32 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] dt-bindings: phy: qcom-edp: Add X1E80100 PHY
- compatibles
+Subject: Re: [PATCH v1 1/2] dt-bindings: input: atmel,maxtouch: add
+ poweroff-in-suspend property
 Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Johan Hovold <johan@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231122-phy-qualcomm-edp-x1e80100-v3-0-576fc4e9559d@linaro.org>
- <20231122-phy-qualcomm-edp-x1e80100-v3-2-576fc4e9559d@linaro.org>
- <b6d3928c-75ba-47a3-93fc-a60729be2e35@linaro.org>
- <545d3ace-66e5-4470-b3a4-cbdac5ae473d@linaro.org>
- <ab7223a2-9f3f-4c9c-ab97-31512e7a0123@linaro.org>
- <CAA8EJpoboN85bLiayXJgn5iwh+Gn0OtK0aZ26ZJu9H3xkTT2Tw@mail.gmail.com>
- <d9d27fa4-6ede-4958-b717-db425be61068@linaro.org>
- <CAA8EJpq7dB+45fiq2WmkMmSO7KszY0Et_t1gZ9ZvfsSxftpm8g@mail.gmail.com>
- <d885928d-035b-4abd-890b-c9626b925d76@linaro.org>
- <CAA8EJpr+C23evpRWMHatF6ChNvr3G-sAuXOi4e-7Tix23JV=Fg@mail.gmail.com>
+To:     Stefan Eichenberger <eichest@gmail.com>
+Cc:     nick@shmanahar.org, dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        claudiu.beznea@tuxon.dev, linus.walleij@linaro.org,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Stefan Eichenberger <stefan.eichenberger@toradex.com>
+References: <20231207111300.80581-1-eichest@gmail.com>
+ <20231207111300.80581-2-eichest@gmail.com>
+ <b9868bd4-6f14-4628-88ea-56d06027739e@linaro.org>
+ <ZXMN9EgWRjtJyybr@eichest-laptop>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -126,7 +114,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAA8EJpr+C23evpRWMHatF6ChNvr3G-sAuXOi4e-7Tix23JV=Fg@mail.gmail.com>
+In-Reply-To: <ZXMN9EgWRjtJyybr@eichest-laptop>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -139,52 +127,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/2023 13:35, Dmitry Baryshkov wrote:
->>>>> Same applies to the displayport-controller. It can either drive the DP
->>>>> or eDP output, hardware-wise it is the same.
->>>>
->>>> Therefore what I proposed was correct - the block which uses the phy
->>>> configures its mode. Because this part:
->>>>   "this phy is of this type on this board".
->>>> is not true. The phy is both types.
->>>
->>> But hopefully you don't mean using #phy-cells here. There are no
->>> sub-PHYs or anything like that.
+On 08/12/2023 13:37, Stefan Eichenberger wrote:
+> Hi Krzysztof,
+> 
+> On Thu, Dec 07, 2023 at 05:59:08PM +0100, Krzysztof Kozlowski wrote:
+>> On 07/12/2023 12:12, Stefan Eichenberger wrote:
+>>> diff --git a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
+>>> index c40799355ed7..047a5101341c 100644
+>>> --- a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
+>>> +++ b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
+>>> @@ -87,6 +87,12 @@ properties:
+>>>        - 2 # ATMEL_MXT_WAKEUP_GPIO
+>>>      default: 0
+>>>  
+>>> +  atmel,poweroff-in-suspend:
+>>> +    description: |
+>>> +      When this property is set, all supplies are turned off when the system is
+>>> +      going to suspend.
 >>
->> I am exactly talking about phy-cells. Look at first example from Abel's
->> code.
+>> You described the desired Linux feature or behavior, not the actual
+>> hardware. The bindings are about the latter, so instead you need to
+>> rephrase the property and its description to match actual hardware
+>> capabilities/features/configuration etc.
 > 
-> I always had an impression that #foo-cells means that there are
-> different units within the major handler. I.e. #clock-cells mean that
-> there are several different clocks, #reset-cells mean that there are
-> several resets, etc.
-> Ok, maybe this is not a perfect description. We need cells to identify
-> a particular instance within the major block. Maybe that sounds more
-> correct.
-
-No, the cells have also meaning of additional arguments. See usage of
-phy-type (not the one here, but the correct one) and PWMs.
-
+> Thanks a lot for the feedback. Would the following be okay as a
+> description?
 > 
-> For the USB+DP PHY we use #phy-cells to select between USB3 and DP
-> PHYs. But for these PHYs we do not have sub-devices, sub-blocks, etc.
-> There is a single PHY which works in either of the modes.
+> vdda and vdd are switched off in suspend mode.
 
-Is it different than case here?
-
-> 
-> Last, but not least, using #phy-cells in this way would create
-> asymmetry with all the other PHYs (and especially other QMP PHYs)
-> present on these platforms.
-
-OK. Is phy-type not something different?
-
-> 
-> If you feel that phy-type is not an appropriate solution, I'd vote for
-> not having the type in DT at all, letting the DP controller determine
-> the proper mode on its own.
-
-Can we do it? That's BTW the best option.
+Are switched by who? Linux driver? Then nothing changed...
 
 Best regards,
 Krzysztof
