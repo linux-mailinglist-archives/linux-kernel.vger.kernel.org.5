@@ -2,136 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD0F80A73B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:22:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 744D180A740
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574284AbjLHPV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:21:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
+        id S1574308AbjLHPWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:22:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574257AbjLHPV4 (ORCPT
+        with ESMTP id S1574288AbjLHPWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:21:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 438C410DE
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:22:03 -0800 (PST)
+        Fri, 8 Dec 2023 10:22:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45755F1
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:22:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702048922;
+        s=mimecast20190719; t=1702048925;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=v3raiss2uEo+4B2/2jWD3SM9eLFdIuye7z5fprUfGEs=;
-        b=RZmYtzXclHQvUXvFlaMp8b38tWT8cW9doFf3zGgXeFEzfc6D91w47soAOsDJo7UoMOgUKw
-        7aVVrE+8cPBG201hugmK0uz+wpflVfBG1pJsa78BXqjt0uNLNyF+dbBovbx6Bjo8qfZiym
-        QmA3PvO9UPvPBJDgHBoDdhN59cWuJMg=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+         in-reply-to:in-reply-to:references:references;
+        bh=dMpEHEWeBJiRKiljI8AYQOYnbMlOiSxdN7AAtvVlKMY=;
+        b=dLgYDBwPzLl3omQBZ2sf4Hxy79gHdLeDeC0uKF5qmqvdhlU6LNGHBOSiwPMVN3sZgcgd/2
+        5G7ZAe/QfmHKSnI7DCB0KDYOdkEpRhKnUuTqPSOd4gX9QmVm3hFgwDdMleb78qx02arQOc
+        i7UVXG+Pw8MwhP8NeSSDAS2Unt+D4O8=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-597-LIptLboAMDi6C3mTMMxOOQ-1; Fri, 08 Dec 2023 10:22:00 -0500
-X-MC-Unique: LIptLboAMDi6C3mTMMxOOQ-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33335c6d495so1833953f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 07:22:00 -0800 (PST)
+ us-mta-612-wi5QtG2BO4mhKD_nZpUQhw-1; Fri, 08 Dec 2023 10:22:04 -0500
+X-MC-Unique: wi5QtG2BO4mhKD_nZpUQhw-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33343bb5dc2so1854122f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 07:22:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702048919; x=1702653719;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v3raiss2uEo+4B2/2jWD3SM9eLFdIuye7z5fprUfGEs=;
-        b=X3Ifrw2HGHN0LyqpEIIr1ih+2JaR6YQoxghrN/OD1nshRc4rPOW+WWM17dxxXdDXeW
-         R/6r/W5IDIneBXDUzhs5PcfFsGGEv/KK4XfAr80GaIH5g9qLWDHediWcDakuShowyLud
-         XIkAnxLo/E93DE7u6zD8d1YKBBDEIc0snvwPcfxz+XO5YbmHjKoPnDL1qxDbAXNjd5c+
-         3HiYXocr3gJ1E4Rx4T4VMQU1deN79CiqlnpYfAv5TScD8D00Rh+A7jeCzmVYABQSZJXZ
-         mHEq+vjKzAAnmcBOeON6i7s953YWTfnSwIELP/AYU8mm7oh8E09yLSucj1fFVkGaCs3v
-         6H+w==
-X-Gm-Message-State: AOJu0Yyqmr1QgZoYt+ejBq/B+f7mw75H7m3839epDHb6+3Xm05wNwTuB
-        TB9NZdnBDMh2E0wdJuV1a3sYJwLikNO6ZPjTXkohNCAYcIg4pwXoMnoWZw8G6Q6xhWuU3ncv1XM
-        ftANwoxXhXYSyii5YrwypLLIB
-X-Received: by 2002:a5d:614a:0:b0:336:9f9:6df with SMTP id y10-20020a5d614a000000b0033609f906dfmr113824wrt.5.1702048919695;
-        Fri, 08 Dec 2023 07:21:59 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFLgS9qWolessYaG5VTrLIbiadoOzWmYkVXdKEnOILyuEU1JX1wnx9G0HGW3zxhU/vRrSJ6Kw==
-X-Received: by 2002:a5d:614a:0:b0:336:9f9:6df with SMTP id y10-20020a5d614a000000b0033609f906dfmr113808wrt.5.1702048919186;
-        Fri, 08 Dec 2023 07:21:59 -0800 (PST)
-Received: from ?IPV6:2003:cb:c724:2100:3826:4f41:d72c:dc1b? (p200300cbc724210038264f41d72cdc1b.dip0.t-ipconnect.de. [2003:cb:c724:2100:3826:4f41:d72c:dc1b])
-        by smtp.gmail.com with ESMTPSA id w6-20020a5d6806000000b00336103442d2sm830895wru.76.2023.12.08.07.21.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 07:21:58 -0800 (PST)
-Message-ID: <990feea2-c7a8-4cd9-8a6a-bc4bc1c2ffab@redhat.com>
-Date:   Fri, 8 Dec 2023 16:21:57 +0100
+        d=1e100.net; s=20230601; t=1702048923; x=1702653723;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dMpEHEWeBJiRKiljI8AYQOYnbMlOiSxdN7AAtvVlKMY=;
+        b=MHcSoGreGib3acUaATUzML/JOgMMEKrN6A4M8Ls7xfFyRl2wMXkm5qX5DKHe5ED4+9
+         gBCodlzsWljdMacOVWxzy3r8yckq/ZrLFQlJXMXnB6/IxU0TyTVVgZHxp2paUUk5+vRy
+         83fpB8gN8jOh0tMGqrPwiMqIekZMPexIdHskY3hjPu6iDSj1SFNUa3384cRsAKMnEWEk
+         68G7DfsrR5VvQC9us+4EZznj///IttlJJuHyttAS4zXq/0Gnh9qO3ey+JClc1tZ0qhNL
+         4L5RfgrwrSmCDkyItfdtYNiNAtT0hVFkW+BuF9MgPU2Z08foRLsdO8+UelnmDjq4ADxz
+         x/ww==
+X-Gm-Message-State: AOJu0Yx70qHFQ86Ly1F1ckdCSxpQeWsUhXd00N1EhH+c+sV9xIapvPjP
+        /N5QX5Oyok3AvomP3XE/08bSv75Ml4q+zsL2R1Y9tdBXRvtLkUP2K4oA/CZqi9ADiMS2jnbYnAh
+        cKoQK6knmQU59Gy0aqoLy1+oAppCcR+g4
+X-Received: by 2002:a5d:6208:0:b0:333:2fd2:6f54 with SMTP id y8-20020a5d6208000000b003332fd26f54mr95994wru.94.1702048922817;
+        Fri, 08 Dec 2023 07:22:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFHUgZ+fa74kzYWlGL2pTMVmRHNm573py6sxEDn8HMP5DfZ5zq1imbHFg6TR0JWkTaVMxrtSA==
+X-Received: by 2002:a5d:6208:0:b0:333:2fd2:6f54 with SMTP id y8-20020a5d6208000000b003332fd26f54mr95978wru.94.1702048922459;
+        Fri, 08 Dec 2023 07:22:02 -0800 (PST)
+Received: from starship ([89.237.98.20])
+        by smtp.gmail.com with ESMTPSA id d23-20020adf9b97000000b003333beb564asm2281013wrc.5.2023.12.08.07.22.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 07:22:02 -0800 (PST)
+Message-ID: <06298f6200aa0b6e9eaf1d908d8499bb50467fe0.camel@redhat.com>
+Subject: Re: [PATCH v7 26/26] KVM: nVMX: Enable CET support for nested guest
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     "Yang, Weijiang" <weijiang.yang@intel.com>
+Cc:     seanjc@google.com, pbonzini@redhat.com, dave.hansen@intel.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Date:   Fri, 08 Dec 2023 17:22:00 +0200
+In-Reply-To: <26313af3-3a75-4a3c-9935-526b07a6277d@intel.com>
+References: <20231124055330.138870-1-weijiang.yang@intel.com>
+         <20231124055330.138870-27-weijiang.yang@intel.com>
+         <2e280f545e8b15500fc4a2a77f6000a51f6f8bbd.camel@redhat.com>
+         <e7d399a2-a4ff-4e27-af09-a8611985648a@intel.com>
+         <8a2216b0c1a945e33a18a981cbce7737a07de52d.camel@redhat.com>
+         <73119078-7483-42e0-bb1f-b696932b6cd2@intel.com>
+         <53a25a11927f0c4b3f689d532af2a0ee67826fa8.camel@redhat.com>
+         <26313af3-3a75-4a3c-9935-526b07a6277d@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 11/11] selftests: error out if kernel header files are
- not yet built
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-References: <20230606071637.267103-1-jhubbard@nvidia.com>
- <20230606071637.267103-12-jhubbard@nvidia.com>
- <20231103121652.GA6217@noisy.programming.kicks-ass.net>
- <a002f903-723f-40ae-8d7a-421ab2e082e2@redhat.com>
- <20231208151401.GG28727@noisy.programming.kicks-ass.net>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20231208151401.GG28727@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -139,52 +89,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.12.23 16:14, Peter Zijlstra wrote:
-> On Fri, Nov 03, 2023 at 01:22:54PM +0100, David Hildenbrand wrote:
->> On 03.11.23 13:16, Peter Zijlstra wrote:
->>> On Tue, Jun 06, 2023 at 12:16:37AM -0700, John Hubbard wrote:
->>>> As per a discussion with Muhammad Usama Anjum [1], the following is how
->>>> one is supposed to build selftests:
->>>>
->>>>       make headers && make -C tools/testing/selftests/mm
->>>>
->>>> Change the selftest build system's lib.mk to fail out with a helpful
->>>> message if that prerequisite "make headers" has not been done yet.
->>>>
->>>
->>> NAK NAK NAK
->>>
->>> This now means I can no longer run selftests, I thank you very much! :-/
->>>
->>> root@spr:/usr/src/linux-2.6# make O=defconfig-build/ -j64
->>> make[1]: Entering directory '/usr/src/linux-2.6/defconfig-build'
->>> ***
->>> *** The source tree is not clean, please run 'make mrproper'
->>> *** in /usr/src/linux-2.6
->>>
->>>
->>> I've always done:
->>>
->>>     cd tools/testing/selftests/x86; make
->>>
->>> and that has always worked
->>>
->>> Now I can't bloody well build *any* selftest or risk not being able to
->>> do builds.
->>
->> This change landed in 6.5, no? And 6.6 was just released. Just curious why
->> you notice that now.
+On Fri, 2023-12-08 at 23:15 +0800, Yang, Weijiang wrote:
+> On 12/7/2023 1:24 AM, Maxim Levitsky wrote:
+> > On Wed, 2023-12-06 at 17:22 +0800, Yang, Weijiang wrote:
+> > > On 12/5/2023 6:12 PM, Maxim Levitsky wrote:
+> > > > On Mon, 2023-12-04 at 16:50 +0800, Yang, Weijiang wrote:
+> > > [...]
+> > > 
+> > > > > > >     	vmx->nested.force_msr_bitmap_recalc = false;
+> > > > > > > @@ -2469,6 +2491,18 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
+> > > > > > >     		if (kvm_mpx_supported() && vmx->nested.nested_run_pending &&
+> > > > > > >     		    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
+> > > > > > >     			vmcs_write64(GUEST_BNDCFGS, vmcs12->guest_bndcfgs);
+> > > > > > > +
+> > > > > > > +		if (vmx->nested.nested_run_pending &&
+> > > > > > I don't think that nested.nested_run_pending check is needed.
+> > > > > > prepare_vmcs02_rare is not going to be called unless the nested run is pending.
+> > > > > But there're other paths along to call prepare_vmcs02_rare(), e.g., vmx_set_nested_state()-> nested_vmx_enter_non_root_mode()-> prepare_vmcs02_rare(), especially when L1 instead of L2 was running. In this case, nested.nested_run_pending == false,
+> > > > > we don't need to update vmcs02's fields at the point until L2 is being resumed.
+> > > > - If we restore VM from migration stream when L2 is *not running*, then prepare_vmcs02_rare won't be called,
+> > > > because nested_vmx_enter_non_root_mode will not be called, because in turn there is no nested vmcs to load.
+> > > > 
+> > > > - If we restore VM from migration stream when L2 is *about to run* (KVM emulated the VMRESUME/VMLAUNCH,
+> > > > but we didn't do the actual hardware VMLAUNCH/VMRESUME on vmcs02, then the 'nested_run_pending' will be true, it will be restored
+> > > > from the migration stream.
+> > > > 
+> > > > - If we migrate while nested guest was run once but didn't VMEXIT to L1 yet, then yes, nested.nested_run_pending will be false indeed,
+> > > > but we still need to setup vmcs02, otherwise it will be left with default zero values.
+> > > Thanks a lot for recapping these cases! I overlooked some nested flags before. It makes sense to remove nested.nested_run_pending.
+> > > > Remember that prior to setting nested state the VM wasn't running even once usually, unlike when the guest enters nested state normally.
+> > > > 
+> > > > > > > +		    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
+> > > > > > > +			if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK)) {
+> > > > > > > +				vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
+> > > > > > > +				vmcs_writel(GUEST_INTR_SSP_TABLE,
+> > > > > > > +					    vmcs12->guest_ssp_tbl);
+> > > > > > > +			}
+> > > > > > > +			if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK) ||
+> > > > > > > +			    guest_can_use(&vmx->vcpu, X86_FEATURE_IBT))
+> > > > > > > +				vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
+> > > > > > > +		}
+> > > > > > >     	}
+> > > > > > >     
+> > > > > > >     	if (nested_cpu_has_xsaves(vmcs12))
+> > > > > > > @@ -4300,6 +4334,15 @@ static void sync_vmcs02_to_vmcs12_rare(struct kvm_vcpu *vcpu,
+> > > > > > >     	vmcs12->guest_pending_dbg_exceptions =
+> > > > > > >     		vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS);
+> > > > > > >     
+> > > > > > > +	if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK)) {
+> > > > > > > +		vmcs12->guest_ssp = vmcs_readl(GUEST_SSP);
+> > > > > > > +		vmcs12->guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
+> > > > > > > +	}
+> > > > > > > +	if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK) ||
+> > > > > > > +	    guest_can_use(&vmx->vcpu, X86_FEATURE_IBT)) {
+> > > > > > > +		vmcs12->guest_s_cet = vmcs_readl(GUEST_S_CET);
+> > > > > > > +	}
+> > > > > > The above code should be conditional on VM_ENTRY_LOAD_CET_STATE - if the guest (L2) state
+> > > > > > was loaded, then it must be updated on exit - this is usually how VMX works.
+> > > > > I think this is not for L2 VM_ENTRY_LOAD_CET_STATE, it happens in prepare_vmcs02_rare(). IIUC, the guest registers will be saved into VMCS fields unconditionally when vm-exit happens,
+> > > > > so these fields for L2 guest should be synced to L1 unconditionally.
+> > > > "the guest registers will be saved into VMCS fields unconditionally"
+> > > > This is not true, unless there is a bug.
+> > > I checked the latest SDM, there's no such kind of wording regarding CET entry/exit control bits. The wording comes from
+> > > the individual CET spec.:
+> > > "10.6 VM Exit
+> > > On processors that support CET, the VM exit saves the state of IA32_S_CET, SSP and IA32_INTERRUPT_SSP_TABLE_ADDR MSR to the VMCS guest-state area unconditionally."
+> > > But since it doesn't appear in SDM, I shouldn't take it for granted.
+> > SDM spec from September 2023:
+> > 
+> > 28.3.1 Saving Control Registers, Debug Registers, and MSRs
+> > 
+> > "If the processor supports the 1-setting of the “load CET” VM-entry control, the contents of the IA32_S_CET and
+> > IA32_INTERRUPT_SSP_TABLE_ADDR MSRs are saved into the corresponding fields. On processors that do not
+> > support Intel 64 architecture, bits 63:32 of these MSRs are not saved."
+> > 
+> > Honestly it's not 100% clear if the “load CET” should be set to 1 to trigger the restore, or that this control just needs to be
+> > supported on the CPU.
+> > It does feel like you are right here, that CPU always saves the guest state, but allows to not load it on VM entry via
+> > “load CET” VM entry control.
+> > 
+> > IMHO its best to check what the bare metal does by rigging a test by patching the host kernel to not set the 'load CET' control,
+> > and see if the CPU still updates the guest CET fields on the VM exit.
 > 
-> And I hit it again (different box etc..)
+> OK, I'll do some tests to see what's happening, thanks!
+> > > > the vmcs12 VM_ENTRY_LOAD_CET_STATE should be passed through as is to vmcs02, so if the nested guest doesn't set this bit
+> > > > the entry/exit using vmcs02 will not touch the CET state, which is unusual but allowed by the spec I think - a nested hypervisor can opt for example to save/load
+> > > > this state manually or use msr load/store lists instead.
+> > > Right although the use case should be rare, will modify the code to check VM_ENTRY_LOAD_CET_STATE. Thanks!
+> > > > Regardless of this,
+> > > > if the guest didn't set VM_ENTRY_LOAD_CET_STATE, then vmcs12 guest fields should neither be loaded on VM entry (copied to vmcs02) nor updated on VM exit,
+> > > > (that is copied back to vmcs12) this is what is written in the VMX spec.
+> > > What's the VMX spec. your're referring to here?
+> > SDM.
+> > 
+> > In fact, now that I am thinking about this again, it should be OK to unconditionally copy the CET fields from vmcs12 to vmcs02, because as long as the
+> > VM_ENTRY_LOAD_CET_STATE is not set, the CPU should care about their values in the vmcs02.
+I noticed a typo. I meant that the CPU should't  care about their values in the vmcs02.
+
+> > 
+> > And about the other way around, assuming that I made a mistake as I said above, then the other way around is indeed unconditional.
+> > 
+> > 
+> > Sorry for a bit of a confusion.
 > 
-> Can we please get this garbage fixed already?
+> NP, I also double check it with HW Arch and get it back.
+> Thanks for raising these questions!
 
-I'd suggest to either revert or turn into a warning.
+Thanks to you too!
 
-@John?
 
--- 
-Cheers,
+Best regards,
+	Maxim Levitsky
 
-David / dhildenb
+> 
+> > Best regards,
+> > 	Maxim Levitsky
+> > 
+> > 
+
 
