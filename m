@@ -2,112 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA08809D28
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5369809D33
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573270AbjLHHbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 02:31:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56656 "EHLO
+        id S1573276AbjLHHeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 02:34:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573332AbjLHHbb (ORCPT
+        with ESMTP id S1573264AbjLHHeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 02:31:31 -0500
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2041.outbound.protection.outlook.com [40.107.20.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52AE1BCA;
-        Thu,  7 Dec 2023 23:31:28 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fEhWvyjPoVj1qwbHSPfdr+wS3nQJuukN7NeLP4xWfKeDWRLRAtGJuXl6yT5uJcINtRH4bijaFtsptCC/tm08SAbnvESnK+F0XZzBNZZkOkXH6VnWRPv/PhfMhp4wviU9NTJpH6rWmz1WkMUOwq0riNy0INzLZHtbYrgwbZDfx7Q+zFW1Bvxl1s3lpfLyLVac6QIQAU9JdOpIHF9WoVQAsV3eEOx1u6j7iAJuloceFs2BLsFmCbpCiunLvRTFQzy+8Yv2uTDZOvVNXFjJ1L6N7RnhJpHLEQ0ZRzyVKLRX2daqt4fFtFGo22UQPCULNoQ4hYnNgWHdQMoMj5NdfKPXHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lOHHVNN+vRC9ZXQvOH3ZJgA7AhhfrN9rJIIhMiTUaEk=;
- b=c2ztd18fwYpZkKR7Vfm5sa2HkpVXdGoIz5Fr6n1H5Hlkkk7tl7NakhsUgDnWmlC/FCrKztxwotAoBftm+pYeLKmBwJS9ere9ej6aKeiuxbq7FNJ6NK4RtmsA0TIl/hc3BmnUfo094kfVAT6dLKmM293DwxVCMh4408cn/aAXs8YzU4hIOGudOCIpw+IStl2YxuSMnPHEm3HlD+xLze18VPB4HuGkS5MS+P4KX64jag28nqDVbJtN34kzYIdAb6nTh/nzqStMk7xvv6XjqRs0suuqm6c1vB0YHr2jVMzBRaBirMzyMosc0SwOnGqN1aE4LsYzuyjPdV2tbAw8f202TA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lOHHVNN+vRC9ZXQvOH3ZJgA7AhhfrN9rJIIhMiTUaEk=;
- b=Pwx/QtPTUsLUmf63Gjn6/qGhMDd8NOIrfnYYG75da+XP06EVS3XwQXrdMIkM5XqxraQhTbxAEive3EGi50Bk9zcp5Ol0hLYpRp70avLgctWoP1TiVqp9HEzOLtB1WpnE0Zpty6PRZx73fGEtMAT29DyTfnrEsE/YSMtc/025fjw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB6341.eurprd04.prod.outlook.com (2603:10a6:20b:d8::14)
- by AM7PR04MB7061.eurprd04.prod.outlook.com (2603:10a6:20b:114::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.28; Fri, 8 Dec
- 2023 07:31:24 +0000
-Received: from AM6PR04MB6341.eurprd04.prod.outlook.com
- ([fe80::3e09:3606:82b:c7fb]) by AM6PR04MB6341.eurprd04.prod.outlook.com
- ([fe80::3e09:3606:82b:c7fb%6]) with mapi id 15.20.7068.028; Fri, 8 Dec 2023
- 07:31:24 +0000
-From:   Ming Qian <ming.qian@nxp.com>
-To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl
-Cc:     xiaolei.wang@windriver.com, shawnguo@kernel.org,
-        robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, xiahong.bao@nxp.com,
-        eagle.zhou@nxp.com, tao.jiang_2@nxp.com, ming.qian@oss.nxp.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fri, 8 Dec 2023 02:34:22 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA541733
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:34:27 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6ce26a03d9eso1357030b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 23:34:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702020867; x=1702625667; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tD0rhHN+5JgdtIfgP4eoVn3jyNgfaDxDB4LEfmpaOaM=;
+        b=lxK4pvatjPIPyGS8K+wOREafGk5CXfaUuZ0hb/jKsr1JBGPrlXiMDddglyJGWgOKE6
+         nNM5xk+/CAZTZ0N9g6tMLbcx/bHzJpS4tty7iB7t0Pd/Nn1mYnN6KCAkCTSNXNgfbUDR
+         yJGDKXjLBL7tkM3PL+mDrrS1iV91GOCqG9ISx1jjMxl9fHnWX4rpnNchc7yWR/1puILg
+         n815dGdCvwWhXHZPC17r4RLCf6CaeKLLkYqnzwNRg1iHZHKeeXpbAuLjWcsMkANCIuht
+         x35M4BXmBy8Upg1kF8bxsoRPEXw2vp0WZY/Ld2LSbJS2TupPx0xipGwiMJrLH7H52X4o
+         7Mgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702020867; x=1702625667;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tD0rhHN+5JgdtIfgP4eoVn3jyNgfaDxDB4LEfmpaOaM=;
+        b=f+w0t20XRAcQ4uPZHpL9p4ey/pJlljLXNA41xJnQG3NqAkRWf3sTkcdDIDOwDHNwpt
+         a2y8mSZ69wEiUjR44c1xzgir0Q51iCaQLmFKTneNUAANFHQ3R0IMpLzSwPAJsv02Fo2t
+         x3ojkjY3+0VcyU33CxpYheYwdKkHJ4+eYpPeb0CdwyvqvHqm1CnlhhhYIFWq3t8ExetZ
+         JkZps5yVEYm03AF+/rKb44/5A05PRmXc0DOhZGYNYannLhH9qwB67e+dhJMbWVvS3DJ9
+         bGlh4mPL57aoHlP4XYiNf4I5NRnNmvQFxcfeNkwfU9TyXw4JZhaaVP2D6gSB5CLIFThW
+         Jm0g==
+X-Gm-Message-State: AOJu0Yz7IsQufG8cW0w0Jerp6k3c2DwfN4INtlN/3UI4LAyon0IwYx2C
+        NkMKrLaXvEA1h2pkKTXmg7U=
+X-Google-Smtp-Source: AGHT+IHrKqoU8/xdIdRB33s3O0RLVvcp1BCPbz1U7JJ62kJ2qFj1zYqZy+RJCInfQfI/l33Ush6yRQ==
+X-Received: by 2002:a05:6a21:6d8e:b0:18f:97c:9275 with SMTP id wl14-20020a056a216d8e00b0018f097c9275mr3832446pzb.90.1702020867120;
+        Thu, 07 Dec 2023 23:34:27 -0800 (PST)
+Received: from barry-desktop.hub ([2407:7000:8942:5500:4cbb:6c3c:f43b:1e8e])
+        by smtp.gmail.com with ESMTPSA id d7-20020a17090b004700b00286d8a6d249sm1122893pjt.39.2023.12.07.23.34.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 23:34:26 -0800 (PST)
+From:   Barry Song <21cnbao@gmail.com>
+X-Google-Original-From: Barry Song <v-songbaohua@oppo.com>
+To:     akpm@linux-foundation.org, catalin.marinas@arm.com,
+        david@redhat.com, linux-mm@kvack.org, ryan.roberts@arm.com,
+        steven.price@arm.com, will@kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] media: amphion: remove mutext lock in condition of wait_event
-Date:   Fri,  8 Dec 2023 15:33:42 +0800
-Message-Id: <20231208073342.276143-1-ming.qian@nxp.com>
+Cc:     mhocko@suse.com, shy828301@gmail.com, v-songbaohua@oppo.com,
+        wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
+        ying.huang@intel.com, yuzhao@google.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: mm: support THP_SWAP on hardware with MTE
+Date:   Fri,  8 Dec 2023 20:34:01 +1300
+Message-Id: <20231208073401.70153-1-v-songbaohua@oppo.com>
 X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR02CA0005.apcprd02.prod.outlook.com
- (2603:1096:4:194::6) To AM6PR04MB6341.eurprd04.prod.outlook.com
- (2603:10a6:20b:d8::14)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB6341:EE_|AM7PR04MB7061:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0675a8d2-3cf3-4b78-2764-08dbf7bfae81
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ny6FbaM6bScA1NafoGLzCQgUAelJ9IYzg9y7tR9miJp3rMF+kPYldjTeIsstA9x24KhsirFplitdt7tVPTbeMFKziAuW9wglu4bsGdkLk3ZQKr7FjKr57vGMP8FHlTXDM1uoRmrNhybbdmDtaBhoQRvUQfkGa6T2BsfpEoIPZeBmnI03X/gakFMQsl8aL0x2YneUA/rk3FXl5BAG68lfifZYWv/DIgSH7DLN++uZVVXxLrZ4q3S/XnFZqPFxND4rVhPVg+4SE6bUg/gAnm608jOk4wBt9neb647kBdDbd/LTkLDZ+simrh6cW7p17z2dKkhyOlh2lrj96wvJq2A5xsHImatCh+/iZqaRsKeSMAg6BJZwpDB9z7Rdpx0RICJHeTFujBAp/Ef63ymjN1haecijqxEbVelCA6yHjkX9nwUbWH7gRIm2mgI7gOZNsRb3tsmxI3xuzK6JfeTIgTqPs33XkA3AD8MJ/cgeIZKVBB6PC80r8hCP28hxqoUZgUQcvzxM4rgVkFFvqDb7duJ94xxnbnArQOj7ehd2HYg03cRVCUpH0+oRAiR1tEAT7FFBos/DnhBI5QnvznyVq37i6SJ0tN8Ql9pCRbTW6NOWzjVsP68GgsCHrbCKh9/JSs2yx/29trQxuVPR0CQ5NEfk1IS536j3V7FbY1vcN1TysEQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6341.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(136003)(396003)(39860400002)(230173577357003)(230273577357003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(8936002)(1076003)(26005)(83380400001)(2616005)(52116002)(6506007)(6512007)(5660300002)(6666004)(44832011)(41300700001)(4326008)(2906002)(7416002)(6486002)(478600001)(316002)(66946007)(66476007)(66556008)(8676002)(86362001)(36756003)(38100700002)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2DbMIqTmuBZkwZ0ijGyiu85EzpQ7q05nna/n8ximafDt9u+09CUKdFz9Ty3I?=
- =?us-ascii?Q?KCibNKS3zlP5qbXU4U+r7wtbk63jgzgzBIGyEihGvPWwxunEBOP+brh9F4IZ?=
- =?us-ascii?Q?jaEMh67gpwLDS8vIYHSvFVSmht7EU1anSevEtX+BfuKkZi7xTYDcLv+4kjdu?=
- =?us-ascii?Q?4mTfZzDgcyt7rkAqbZaToq+NSzveEnuhOkgjBmt3rs42+QY5djU9rv0pO1m1?=
- =?us-ascii?Q?ap01M9vwS5yLTmZpXzHBpKx2uL/mv3rbRCePJ7kKNyJcQ+x4iPNFnDS6Ngco?=
- =?us-ascii?Q?DMwKWxGCxzgjI6xFqLVIyZzyZRXm9mj4HZ3x6U+UJO8CYPyOiefAJcJIXRIo?=
- =?us-ascii?Q?bhygUOQxCqbBB66B/WT/CpVL9aPYNQoaHnDvJ40JnRVvxmjd0/yH0gqqlnw1?=
- =?us-ascii?Q?TMe5xwjzrfOjDax1yV2W8WPZC5HgeuxabhCsEvYxQ7mwszeUWV9GtyVNcQmL?=
- =?us-ascii?Q?6n94BVEIZzqOIlUXKCCa6ubDWrt/iJ42xT6aTyGV3/a+lA8ZQcXqwOJi+gEs?=
- =?us-ascii?Q?ps6lTFwgodI60KmDEVCYLFKguDafNj+PKovl8xmv4S1Pe3FRukT1d73zQMGb?=
- =?us-ascii?Q?x887ZPvp7/06OctZu21HM5BMWXorsmHDg6UND2oy1Pt4ykdJYTG7dQxu2GFA?=
- =?us-ascii?Q?Ztx+VJJNLepaP9RqtYsIn7k8YzZ8znDXPKAKR3hLkZyUbOUth+g76os5ZP4H?=
- =?us-ascii?Q?GzGi2wW02JHEgw61EaJcSoXqDFvcv+RlXW4XC9LQxNgOyyrzLQLJzOPtZPo/?=
- =?us-ascii?Q?JxIU/9aYWJmxAWWOyrC5xg1DzxZVwbIWozbZbKlDMcvwKNjrtw0PblwSGWqU?=
- =?us-ascii?Q?6ml61iljWsZwuTI3FuUVpQNIkq5m2lSl48wzTSuFnr/WA3/m2eBU64zdcaH+?=
- =?us-ascii?Q?sEyE8d7ORaCZWIQd//7XWPluc2PdO6o+ASznbJeF+xj2k5RFlD6rjNAakAxf?=
- =?us-ascii?Q?7BTquqxPSDqO5AeK0izzRPGmSsUJ2O5ZUZQZOgADajt6RAgpVTnWtiXA92Zi?=
- =?us-ascii?Q?9bh0z1czb5X3HJ8YTxiFAErowxwgjB8wbx2qW9qFUX+iGTRocV6lfiRziy7G?=
- =?us-ascii?Q?faiw+RXd9I674eWMcnyBPuAo3zJjM+z0Zx9q06NRpWjgzyZChMjk8povQhrT?=
- =?us-ascii?Q?vfcg2FJK+HybrXt3rrKtFWM/1KfMY+DJN76Oz2KfetCk053lLTMaiKeRAk1p?=
- =?us-ascii?Q?jrDeiSj8DUbJq2sLiJtKW6fqeLDZW3NGpCxgueMm8cDgjwOKyYXiVIFgueQt?=
- =?us-ascii?Q?3buoafBPPhqjpTUBIRLt4wLDFHX8yA97anjU7vi7dgMgsKS0glw8Qh1fzjc9?=
- =?us-ascii?Q?xXgGL9oVuwME4y/Uk7R0C1Jgh3N23PIdiO9a6K2+jYAwKINat3W4e7YxtA2E?=
- =?us-ascii?Q?01Mzk+mBWpxFDLB5f7ywnPHzuyS9Tb+emUBVU4UyHnYQvgiHvNbD1f89EpJx?=
- =?us-ascii?Q?taAqSjMDop5Jr2qZ0H5Z0LanwCvaWJSVs6lyimr9Y++80UnatHzoOExRqha2?=
- =?us-ascii?Q?661tFmvw7bv9nYdP9D6gKyp1D2lKritx9qW6MJV6ZqbfXbzj863OsMZdX/LP?=
- =?us-ascii?Q?J3oNB+8QjFuVcsNCb1WlpOZwaR8dVRrpzG4eep/0?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0675a8d2-3cf3-4b78-2764-08dbf7bfae81
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6341.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 07:31:24.6386
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PY3fjltHnP+o2rHDQfJTmfyX8jCwreFjUuSLUxhAT+yxP/X+fVeu8dSzcEdVkThwK1mGnkVAeDPyovRW83OsAg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB7061
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,152 +75,273 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mutext_lock should not be called in condition of wait_event, otherwise,
-when CONFIG_DEBUG_ATOMIC_SLEEP is enabled, we may meet the following
-warning:
-do not call blocking ops when !TASK_RUNNING; state=2
-WARNING: CPU: 5 PID: 741 at kernel/sched/core.c:9859
-__might_sleep+0x80/0xa4
-Hardware name: Freescale i.MX8QM MEK (DT)
-pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)  pc :
-__might_sleep+0x80/0xa4  lr : __might_sleep+0x80/0xa4  sp : ffffffc0123738a0
-x29: ffffffc0123738a0 x28: ffffffc009194c48 x27: ffffffc00bbc1050
-x26: ffffff8814b282f0 x25: ffffff8814b280d0 x24: ffffff8814b28080
-x23: 0000000000000001 x22: 0000000000000032 x21: ffffffc00bbc1000
-x20: 000000000000011b x19: ffffffc009324670 x18: 00000000fffffffd
-x17: 30303c5b20746120 x16: 74657320323d6574 x15: 617473203b474e49
-x14: 00058b5b8b9aa1f1 x13: ffffffc00903cda0 x12: 00000000d744fcc9
-x11: 000000000000001c x10: 00000000000009a0 x9 : ffffffc0090201f4
-x8 : ffffff8828245000 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : 00000000410fd080 x4 : 0000000000000002 x3 : ffffff8815aab4c8
-x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffffff8828244600
-Call trace:
- __might_sleep+0x80/0xa4
- mutex_lock+0x2c/0x80
- sync_session_response+0x110/0x310
- vpu_session_send_cmd+0x18c/0x244
- vpu_session_start+0x38/0x70
- vdec_start_session+0x1b4/0x3e0
- vpu_vb2_start_streaming+0xa0/0x1c4
- vb2_start_streaming+0x74/0x160
- vb2_core_qbuf+0x488/0x650
- vb2_qbuf+0x9c/0x100
- v4l2_m2m_qbuf+0x7c/0x224
- v4l2_m2m_ioctl_qbuf+0x20/0x2c
- v4l_qbuf+0x50/0x6c
- __video_do_ioctl+0x174/0x3f0
- video_usercopy+0x210/0x7cc
- video_ioctl2+0x20/0x30
- v4l2_ioctl+0x48/0x6c
+Commit d0637c505f8a1 ("arm64: enable THP_SWAP for arm64") brings up
+THP_SWAP on ARM64, but it doesn't enable THP_SWP on hardware with
+MTE as the MTE code works with the assumption tags save/restore is
+always handling a folio with only one page.
 
-we need to refine check_is_responsed() to remove the mutext_lock, each
-cmd has a monotonically increasing id, and cmds are executed
-sequentially, so we can check the id of the last reponsed cmd, then
-determine whether a command has been responded or not.
+The limitation should be removed as more and more ARM64 SoCs have
+this feature. Co-existence of MTE and THP_SWAP becomes more and
+more important.
 
-Signed-off-by: Ming Qian <ming.qian@nxp.com>
-CC: Xiaolei Wang <xiaolei.wang@windriver.com>
+This patch makes MTE tags saving support large folios, then we don't
+need to split large folios into base pages for swapping out on ARM64
+SoCs with MTE any more.
+
+arch_prepare_to_swap() should take folio rather than page as parameter
+because we support THP swap-out as a whole. It saves tags for all
+pages in a large folio.
+
+Meanwhile, arch_swap_restore() now moves to use page parameter rather
+than folio because swap-in, refault and MTE tags are working at the
+granularity of base pages rather than folio:
+1. a large folio in swapcache can be partially unmapped, thus, MTE
+tags for the unmapped pages will be invalidated;
+2. users might use mprotect() to set MTEs on a part of a large folio.
+
+Thus, it won't be easy to manage MTE tags at the granularity of folios
+since we do have some cases in which a part of pages in a large folios
+have valid tags, while the other part of pages haven't. Furthermore,
+trying to restore MTE tags for a whole folio can lead to many loops and
+early exiting even if the large folio in swapcache are still entirely
+mapped since do_swap_page() only sets PTE and frees swap for the base
+page where PF is happening.
+
+But we still have a chance to restore tags for a whole large folio
+once we support swap-in large folio. So this job is deferred till we
+can do refault and swap-in as a large folio.
+
+arch_thp_swp_supported() is dropped since ARM64 MTE was the only one
+who needed it.
+
+Reviewed-by: Steven Price <steven.price@arm.com>
+Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 ---
- drivers/media/platform/amphion/vpu.h      |  3 ++-
- drivers/media/platform/amphion/vpu_cmds.c | 28 ++++++++---------------
- drivers/media/platform/amphion/vpu_v4l2.c |  1 +
- 3 files changed, 12 insertions(+), 20 deletions(-)
+ -v1:
+   collected reviewed-by from Steven;
+   refine commit log;
+ -rfc v3:
+   https://lore.kernel.org/linux-mm/20231114014313.67232-1-v-songbaohua@oppo.com/
+ -rfc v2:
+   https://lore.kernel.org/lkml/20231104093423.170054-1-v-songbaohua@oppo.com/
+ -rfc v1:
+   https://lore.kernel.org/lkml/20231102223643.7733-1-v-songbaohua@oppo.com/
 
-diff --git a/drivers/media/platform/amphion/vpu.h b/drivers/media/platform/amphion/vpu.h
-index 5a701f64289e..0246cf0ac3a8 100644
---- a/drivers/media/platform/amphion/vpu.h
-+++ b/drivers/media/platform/amphion/vpu.h
-@@ -154,7 +154,6 @@ struct vpu_core {
- 	struct vpu_mbox tx_type;
- 	struct vpu_mbox tx_data;
- 	struct vpu_mbox rx;
--	unsigned long cmd_seq;
+ arch/arm64/include/asm/pgtable.h | 21 ++++---------------
+ arch/arm64/mm/mteswap.c          | 35 ++++++++++++++++++++++++++++++++
+ include/linux/huge_mm.h          | 12 -----------
+ include/linux/pgtable.h          |  4 ++--
+ mm/memory.c                      |  2 +-
+ mm/page_io.c                     |  2 +-
+ mm/shmem.c                       |  2 +-
+ mm/swap_slots.c                  |  2 +-
+ mm/swapfile.c                    |  2 +-
+ 9 files changed, 46 insertions(+), 36 deletions(-)
+
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index b19a8aee684c..c3eef11c1a9e 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -45,12 +45,6 @@
+ 	__flush_tlb_range(vma, addr, end, PUD_SIZE, false, 1)
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
  
- 	wait_queue_head_t ack_wq;
- 	struct completion cmp;
-@@ -253,6 +252,8 @@ struct vpu_inst {
+-static inline bool arch_thp_swp_supported(void)
+-{
+-	return !system_supports_mte();
+-}
+-#define arch_thp_swp_supported arch_thp_swp_supported
+-
+ /*
+  * Outside of a few very special situations (e.g. hibernation), we always
+  * use broadcast TLB invalidation instructions, therefore a spurious page
+@@ -1036,12 +1030,8 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
+ #ifdef CONFIG_ARM64_MTE
  
- 	struct list_head cmd_q;
- 	void *pending;
-+	unsigned long cmd_seq;
-+	atomic_long_t last_response_cmd;
+ #define __HAVE_ARCH_PREPARE_TO_SWAP
+-static inline int arch_prepare_to_swap(struct page *page)
+-{
+-	if (system_supports_mte())
+-		return mte_save_tags(page);
+-	return 0;
+-}
++#define arch_prepare_to_swap arch_prepare_to_swap
++extern int arch_prepare_to_swap(struct folio *folio);
  
- 	struct vpu_inst_ops *ops;
- 	const struct vpu_format *formats;
-diff --git a/drivers/media/platform/amphion/vpu_cmds.c b/drivers/media/platform/amphion/vpu_cmds.c
-index c2337812573e..5695f5c1cb3e 100644
---- a/drivers/media/platform/amphion/vpu_cmds.c
-+++ b/drivers/media/platform/amphion/vpu_cmds.c
-@@ -32,6 +32,7 @@ struct vpu_cmd_t {
- 	struct vpu_cmd_request *request;
- 	struct vpu_rpc_event *pkt;
- 	unsigned long key;
-+	atomic_long_t *last_response_cmd;
- };
- 
- static struct vpu_cmd_request vpu_cmd_requests[] = {
-@@ -115,6 +116,8 @@ static void vpu_free_cmd(struct vpu_cmd_t *cmd)
- {
- 	if (!cmd)
- 		return;
-+	if (cmd->last_response_cmd)
-+		atomic_long_set(cmd->last_response_cmd, cmd->key);
- 	vfree(cmd->pkt);
- 	vfree(cmd);
- }
-@@ -172,7 +175,8 @@ static int vpu_request_cmd(struct vpu_inst *inst, u32 id, void *data,
- 		return -ENOMEM;
- 
- 	mutex_lock(&core->cmd_lock);
--	cmd->key = core->cmd_seq++;
-+	cmd->key = ++inst->cmd_seq;
-+	cmd->last_response_cmd = &inst->last_response_cmd;
- 	if (key)
- 		*key = cmd->key;
- 	if (sync)
-@@ -246,26 +250,12 @@ void vpu_clear_request(struct vpu_inst *inst)
- 
- static bool check_is_responsed(struct vpu_inst *inst, unsigned long key)
- {
--	struct vpu_core *core = inst->core;
--	struct vpu_cmd_t *cmd;
--	bool flag = true;
-+	unsigned long last_response = atomic_long_read(&inst->last_response_cmd);
- 
--	mutex_lock(&core->cmd_lock);
--	cmd = inst->pending;
--	if (cmd && key == cmd->key) {
--		flag = false;
--		goto exit;
--	}
--	list_for_each_entry(cmd, &inst->cmd_q, list) {
--		if (key == cmd->key) {
--			flag = false;
--			break;
--		}
--	}
--exit:
--	mutex_unlock(&core->cmd_lock);
-+	if (key <= last_response && (last_response - key) < (ULONG_MAX >> 1))
-+		return true;
- 
--	return flag;
-+	return false;
+ #define __HAVE_ARCH_SWAP_INVALIDATE
+ static inline void arch_swap_invalidate_page(int type, pgoff_t offset)
+@@ -1057,11 +1047,8 @@ static inline void arch_swap_invalidate_area(int type)
  }
  
- static int sync_session_response(struct vpu_inst *inst, unsigned long key, long timeout, int try)
-diff --git a/drivers/media/platform/amphion/vpu_v4l2.c b/drivers/media/platform/amphion/vpu_v4l2.c
-index 0f6e4c666440..d7e0de49b3dc 100644
---- a/drivers/media/platform/amphion/vpu_v4l2.c
-+++ b/drivers/media/platform/amphion/vpu_v4l2.c
-@@ -716,6 +716,7 @@ int vpu_v4l2_open(struct file *file, struct vpu_inst *inst)
- 		func = &vpu->decoder;
+ #define __HAVE_ARCH_SWAP_RESTORE
+-static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+-{
+-	if (system_supports_mte())
+-		mte_restore_tags(entry, &folio->page);
+-}
++#define arch_swap_restore arch_swap_restore
++extern void arch_swap_restore(swp_entry_t entry, struct page *page);
  
- 	atomic_set(&inst->ref_count, 0);
-+	atomic_long_set(&inst->last_response_cmd, 0);
- 	vpu_inst_get(inst);
- 	inst->vpu = vpu;
- 	inst->core = vpu_request_core(vpu, inst->type);
+ #endif /* CONFIG_ARM64_MTE */
+ 
+diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
+index a31833e3ddc5..d0ebed4e002f 100644
+--- a/arch/arm64/mm/mteswap.c
++++ b/arch/arm64/mm/mteswap.c
+@@ -68,6 +68,13 @@ void mte_invalidate_tags(int type, pgoff_t offset)
+ 	mte_free_tag_storage(tags);
+ }
+ 
++static inline void __mte_invalidate_tags(struct page *page)
++{
++	swp_entry_t entry = page_swap_entry(page);
++
++	mte_invalidate_tags(swp_type(entry), swp_offset(entry));
++}
++
+ void mte_invalidate_tags_area(int type)
+ {
+ 	swp_entry_t entry = swp_entry(type, 0);
+@@ -83,3 +90,31 @@ void mte_invalidate_tags_area(int type)
+ 	}
+ 	xa_unlock(&mte_pages);
+ }
++
++int arch_prepare_to_swap(struct folio *folio)
++{
++	int err;
++	long i;
++
++	if (system_supports_mte()) {
++		long nr = folio_nr_pages(folio);
++
++		for (i = 0; i < nr; i++) {
++			err = mte_save_tags(folio_page(folio, i));
++			if (err)
++				goto out;
++		}
++	}
++	return 0;
++
++out:
++	while (i--)
++		__mte_invalidate_tags(folio_page(folio, i));
++	return err;
++}
++
++void arch_swap_restore(swp_entry_t entry, struct page *page)
++{
++	if (system_supports_mte())
++		mte_restore_tags(entry, page);
++}
+diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+index fa0350b0812a..f83fb8d5241e 100644
+--- a/include/linux/huge_mm.h
++++ b/include/linux/huge_mm.h
+@@ -400,16 +400,4 @@ static inline int split_folio(struct folio *folio)
+ 	return split_folio_to_list(folio, NULL);
+ }
+ 
+-/*
+- * archs that select ARCH_WANTS_THP_SWAP but don't support THP_SWP due to
+- * limitations in the implementation like arm64 MTE can override this to
+- * false
+- */
+-#ifndef arch_thp_swp_supported
+-static inline bool arch_thp_swp_supported(void)
+-{
+-	return true;
+-}
+-#endif
+-
+ #endif /* _LINUX_HUGE_MM_H */
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index af7639c3b0a3..87e3140a55ca 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -897,7 +897,7 @@ static inline int arch_unmap_one(struct mm_struct *mm,
+  * prototypes must be defined in the arch-specific asm/pgtable.h file.
+  */
+ #ifndef __HAVE_ARCH_PREPARE_TO_SWAP
+-static inline int arch_prepare_to_swap(struct page *page)
++static inline int arch_prepare_to_swap(struct folio *folio)
+ {
+ 	return 0;
+ }
+@@ -914,7 +914,7 @@ static inline void arch_swap_invalidate_area(int type)
+ #endif
+ 
+ #ifndef __HAVE_ARCH_SWAP_RESTORE
+-static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
++static inline void arch_swap_restore(swp_entry_t entry, struct page *page)
+ {
+ }
+ #endif
+diff --git a/mm/memory.c b/mm/memory.c
+index 1f18ed4a5497..fad238dd38e7 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4022,7 +4022,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 	 * when reading from swap. This metadata may be indexed by swap entry
+ 	 * so this must be called before swap_free().
+ 	 */
+-	arch_swap_restore(entry, folio);
++	arch_swap_restore(entry, page);
+ 
+ 	/*
+ 	 * Remove the swap entry and conditionally try to free up the swapcache.
+diff --git a/mm/page_io.c b/mm/page_io.c
+index cb559ae324c6..0fd832474c1d 100644
+--- a/mm/page_io.c
++++ b/mm/page_io.c
+@@ -189,7 +189,7 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
+ 	 * Arch code may have to preserve more data than just the page
+ 	 * contents, e.g. memory tags.
+ 	 */
+-	ret = arch_prepare_to_swap(&folio->page);
++	ret = arch_prepare_to_swap(folio);
+ 	if (ret) {
+ 		folio_mark_dirty(folio);
+ 		folio_unlock(folio);
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 91e2620148b2..7d32e50da121 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1892,7 +1892,7 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
+ 	 * Some architectures may have to restore extra metadata to the
+ 	 * folio after reading from swap.
+ 	 */
+-	arch_swap_restore(swap, folio);
++	arch_swap_restore(swap, &folio->page);
+ 
+ 	if (shmem_should_replace_folio(folio, gfp)) {
+ 		error = shmem_replace_folio(&folio, gfp, info, index);
+diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+index 0bec1f705f8e..2325adbb1f19 100644
+--- a/mm/swap_slots.c
++++ b/mm/swap_slots.c
+@@ -307,7 +307,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
+ 	entry.val = 0;
+ 
+ 	if (folio_test_large(folio)) {
+-		if (IS_ENABLED(CONFIG_THP_SWAP) && arch_thp_swp_supported())
++		if (IS_ENABLED(CONFIG_THP_SWAP))
+ 			get_swap_pages(1, &entry, folio_nr_pages(folio));
+ 		goto out;
+ 	}
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 4bc70f459164..6450e0279e35 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -1784,7 +1784,7 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
+ 	 * when reading from swap. This metadata may be indexed by swap entry
+ 	 * so this must be called before swap_free().
+ 	 */
+-	arch_swap_restore(entry, page_folio(page));
++	arch_swap_restore(entry, page);
+ 
+ 	/* See do_swap_page() */
+ 	BUG_ON(!PageAnon(page) && PageMappedToDisk(page));
 -- 
-2.43.0-rc1
+2.34.1
 
