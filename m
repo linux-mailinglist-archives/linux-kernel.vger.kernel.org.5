@@ -2,363 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BBD80A5D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:39:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9612A80A5D7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574012AbjLHOjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 09:39:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52228 "EHLO
+        id S1574002AbjLHOpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 09:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573993AbjLHOj3 (ORCPT
+        with ESMTP id S1573984AbjLHOpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 09:39:29 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA00B1996
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 06:39:34 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40c317723a8so11198965e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 06:39:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702046373; x=1702651173; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=plEFwaE2+Q6Q8bRZcZwrG+K/OzVydU2DtAmeqHfEJNY=;
-        b=cA2GVmHcDRoAjXLmrjMwSuD7CGT2cEMK7CqyO6lctU2OOdD4Ccsx4TkHwIG0F4JS+T
-         PGNdQrodT/i6Fm4nPrWyhd4KvnWHK2334nKeXem9MZYr1S4CcNsCOuYnF7lZYB5LThUj
-         Ez/M9hIDOsmBA1LxUp9M3fHM8nUZvfrU+l1AvBQ98269bmTbZIG89LC6CfCAvdzRXwiA
-         O+5zFfAMUY0118/Mnj9TdbKgwLuTlsrLKhPajxxPpaLVpZnq1zWiHAStOWG/BaRpoOF9
-         miTi+m6jKGOXSZF4vIb5J+dis6lqzdjk8lJCjWaF5Zf7cmzz/reUEyEpqYvI5eFx9IoC
-         d6ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702046373; x=1702651173;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=plEFwaE2+Q6Q8bRZcZwrG+K/OzVydU2DtAmeqHfEJNY=;
-        b=qlS8TrNWBO1Y9+CpZPiDtV1iotTeR5mrlAsCvMzEQt4R6/ptk2WX6pxa4gWE6jHF9H
-         hH1Y7/4UAFkyvqU9v3JakmRJ8dt8khM/apppBafHZA5D+6+4xpAo3LzRY+e5JBIl4jXF
-         vHTkn5xneAXFUOspxZMgBD4pw9e6kdYSX+JlOPHclQs9m1ORV3IV6GBHgSzJmWeFaFo6
-         EMXTs020bDwJR+kT4ikjfXtmthnIvF10V0xjtV9xJrDvEjcXKp9M20AUcbDD9L6fS1s+
-         L+AUiYwk1rof4f/IgcdKu79/cpIpXXFR22BE7X+jzCD5vpyAmHsRlO3UUvhB4EX8Deku
-         D8dQ==
-X-Gm-Message-State: AOJu0YxkOxpDR3Z4+5NOFzFX0HlOZQL4NuqMZPw/JovY4M+SwXWtleY9
-        BKgl23WDXLMfAxk3ZqFlfbC09+qRVHoLr1Jwre9OXw==
-X-Google-Smtp-Source: AGHT+IEZLjmE7HkIBSBz3WRiqIUfV9PHqTmdLRaDQ/JxQGZgxMlCwLfYkoIRf7OcHv/10DAdN5KKuRkNmNs5aSm2deg=
-X-Received: by 2002:a05:600c:2107:b0:40b:5e21:d339 with SMTP id
- u7-20020a05600c210700b0040b5e21d339mr40565wml.66.1702046373348; Fri, 08 Dec
- 2023 06:39:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20231207150348.82096-1-alexghiti@rivosinc.com>
- <20231207150348.82096-4-alexghiti@rivosinc.com> <e783436f-631c-4b02-ba9c-b6145e0e8b5a@csgroup.eu>
-In-Reply-To: <e783436f-631c-4b02-ba9c-b6145e0e8b5a@csgroup.eu>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Fri, 8 Dec 2023 15:39:22 +0100
-Message-ID: <CAHVXubit2NjBREKFb=s14q13PvtcjuthLn2oKnBq8PfFnVMieQ@mail.gmail.com>
-Subject: Re: [PATCH RFC/RFT 3/4] riscv: Stop emitting preventive sfence.vma
- for new userspace mappings
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
+        Fri, 8 Dec 2023 09:45:05 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC1D61720
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 06:45:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B30BC433C7;
+        Fri,  8 Dec 2023 14:45:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702046711;
+        bh=alMIVXtN0++wgPE7Yj1ylmvd8+9QvE9E1C3+NnY8d9Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E5T0C5dxahWbKqUUR68JF6jiGuJfU32NXq04SIiPNtveDTAmklWwhM9kqhQLhF93g
+         xXy7na58IPtgGZs+h5f4LZf+NwJUBFmPKAzBzcRLEkucfRe64wTFtVcFwjE8gmk+Ke
+         YlyS0mcbhOeti4H1RbEIpXVgCzeGf+wKV8El+Xseu9eliukVW8HUr7BOV/uHs1FMJr
+         kRnyF+XAb+qj3xcVRSYbzNxVlEPyAGwEahd3cdOFbsGbh9U30ReR4C/ruk5D80clvo
+         uQt6HakEIDFikQ+bfiUpqQadc+1XoFEmAD9nlj66/xow3E5jxXPQcxojob0BXtWYqr
+         Ocgb7MItOM27A==
+Date:   Fri, 8 Dec 2023 14:45:05 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     William Qiu <william.qiu@starfivetech.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Hal Feng <hal.feng@starfivetech.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ved Shanbhogue <ved@rivosinc.com>,
-        Matt Evans <mev@rivosinc.com>,
-        Dylan Jhong <dylan@andestech.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v9 1/4] dt-bindings: pwm: Add bindings for OpenCores PWM
+ Controller
+Message-ID: <20231208-stunned-ploy-2a9e73933ae8@spud>
+References: <20231208094209.1910934-1-william.qiu@starfivetech.com>
+ <20231208094209.1910934-2-william.qiu@starfivetech.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="VqHdBtEYxkgaGrmF"
+Content-Disposition: inline
+In-Reply-To: <20231208094209.1910934-2-william.qiu@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 5:37=E2=80=AFPM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
-> The subject says "riscv:" but it changes core part and several arch.
-> Maybe this commit should be split in two commits, one for API changes
-> that changes flush_tlb_fix_spurious_fault() to
-> flush_tlb_fix_spurious_write_fault() and adds
-> flush_tlb_fix_spurious_read_fault() including the change in memory.c,
-> then a second patch with the changes to riscv.
 
-You're right, I'll do that, thanks.
+--VqHdBtEYxkgaGrmF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> Le 07/12/2023 =C3=A0 16:03, Alexandre Ghiti a =C3=A9crit :
-> > The preventive sfence.vma were emitted because new mappings must be mad=
-e
-> > visible to the page table walker, either the uarch caches invalid
-> > entries or not.
-> >
-> > Actually, there is no need to preventively sfence.vma on new mappings f=
-or
-> > userspace, this should be handled only in the page fault path.
-> >
-> > This allows to drastically reduce the number of sfence.vma emitted:
-> >
-> > * Ubuntu boot to login:
-> > Before: ~630k sfence.vma
-> > After:  ~200k sfence.vma
-> >
-> > * ltp - mmapstress01
-> > Before: ~45k
-> > After:  ~6.3k
-> >
-> > * lmbench - lat_pagefault
-> > Before: ~665k
-> > After:   832 (!)
-> >
-> > * lmbench - lat_mmap
-> > Before: ~546k
-> > After:   718 (!)
-> >
-> > The only issue with the removal of sfence.vma in update_mmu_cache() is
-> > that on uarchs that cache invalid entries, those won't be invalidated
-> > until the process takes a fault: so that's an additional fault in those
-> > cases.
-> >
-> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > ---
-> >   arch/arm64/include/asm/pgtable.h              |  2 +-
-> >   arch/mips/include/asm/pgtable.h               |  6 +--
-> >   arch/powerpc/include/asm/book3s/64/tlbflush.h |  8 ++--
-> >   arch/riscv/include/asm/pgtable.h              | 43 +++++++++++-------=
--
-> >   include/linux/pgtable.h                       |  8 +++-
-> >   mm/memory.c                                   | 12 +++++-
-> >   6 files changed, 48 insertions(+), 31 deletions(-)
->
-> Did you forget mm/pgtable-generic.c ?
+On Fri, Dec 08, 2023 at 05:42:06PM +0800, William Qiu wrote:
+> Add bindings for OpenCores PWM Controller.
+>=20
+> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
 
-Indeed, I "missed" the occurrence of flush_tlb_fix_spurious_fault()
-there, thanks.
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
->
-> >
-> > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/=
-pgtable.h
-> > index 7f7d9b1df4e5..728f25f529a5 100644
-> > --- a/arch/arm64/include/asm/pgtable.h
-> > +++ b/arch/arm64/include/asm/pgtable.h
-> > @@ -57,7 +57,7 @@ static inline bool arch_thp_swp_supported(void)
-> >    * fault on one CPU which has been handled concurrently by another CP=
-U
-> >    * does not need to perform additional invalidation.
-> >    */
-> > -#define flush_tlb_fix_spurious_fault(vma, address, ptep) do { } while =
-(0)
-> > +#define flush_tlb_fix_spurious_write_fault(vma, address, ptep) do { } =
-while (0)
->
-> Why do you need to do that change ? Nothing is explained about that in
-> the commit message.
+Cheers,
+Conor.
 
-I renamed this macro because in the page fault path,
-flush_tlb_fix_spurious_fault() is called only when the fault is a
-write fault (see
-https://elixir.bootlin.com/linux/latest/source/mm/memory.c#L5016).
-I'll check if that fits the occurrence in mm/pgtable-generic.c too.
+> ---
+>  .../bindings/pwm/opencores,pwm.yaml           | 55 +++++++++++++++++++
+>  1 file changed, 55 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/opencores,pwm.y=
+aml
+>=20
+> diff --git a/Documentation/devicetree/bindings/pwm/opencores,pwm.yaml b/D=
+ocumentation/devicetree/bindings/pwm/opencores,pwm.yaml
+> new file mode 100644
+> index 000000000000..0b85dd861dfd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/opencores,pwm.yaml
+> @@ -0,0 +1,55 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pwm/opencores,pwm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: OpenCores PWM controller
+> +
+> +maintainers:
+> +  - William Qiu <william.qiu@starfivetech.com>
+> +
+> +description:
+> +  The OpenCores PTC ip core contains a PWM controller. When operating in=
+ PWM
+> +  mode, the PTC core generates binary signal with user-programmable low =
+and
+> +  high periods. All PTC counters and registers are 32-bit.
+> +
+> +allOf:
+> +  - $ref: pwm.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - starfive,jh7100-pwm
+> +          - starfive,jh7110-pwm
+> +      - const: opencores,pwm-v1
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  "#pwm-cells":
+> +    const: 3
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    pwm@12490000 {
+> +        compatible =3D "starfive,jh7110-pwm", "opencores,pwm-v1";
+> +        reg =3D <0x12490000 0x10000>;
+> +        clocks =3D <&clkgen 181>;
+> +        resets =3D <&rstgen 109>;
+> +        #pwm-cells =3D <3>;
+> +    };
+> --=20
+> 2.34.1
+>=20
 
-Thanks again for the review,
+--VqHdBtEYxkgaGrmF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Alex
+-----BEGIN PGP SIGNATURE-----
 
->
-> >
-> >   /*
-> >    * ZERO_PAGE is a global shared page that is always zero: used
-> > diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pg=
-table.h
-> > index 430b208c0130..84439fe6ed29 100644
-> > --- a/arch/mips/include/asm/pgtable.h
-> > +++ b/arch/mips/include/asm/pgtable.h
-> > @@ -478,9 +478,9 @@ static inline pgprot_t pgprot_writecombine(pgprot_t=
- _prot)
-> >       return __pgprot(prot);
-> >   }
-> >
-> > -static inline void flush_tlb_fix_spurious_fault(struct vm_area_struct =
-*vma,
-> > -                                             unsigned long address,
-> > -                                             pte_t *ptep)
-> > +static inline void flush_tlb_fix_spurious_write_fault(struct vm_area_s=
-truct *vma,
-> > +                                                   unsigned long addre=
-ss,
-> > +                                                   pte_t *ptep)
-> >   {
-> >   }
-> >
-> > diff --git a/arch/powerpc/include/asm/book3s/64/tlbflush.h b/arch/power=
-pc/include/asm/book3s/64/tlbflush.h
-> > index 1950c1b825b4..7166d56f90db 100644
-> > --- a/arch/powerpc/include/asm/book3s/64/tlbflush.h
-> > +++ b/arch/powerpc/include/asm/book3s/64/tlbflush.h
-> > @@ -128,10 +128,10 @@ static inline void flush_tlb_page(struct vm_area_=
-struct *vma,
-> >   #define flush_tlb_page(vma, addr)   local_flush_tlb_page(vma, addr)
-> >   #endif /* CONFIG_SMP */
-> >
-> > -#define flush_tlb_fix_spurious_fault flush_tlb_fix_spurious_fault
-> > -static inline void flush_tlb_fix_spurious_fault(struct vm_area_struct =
-*vma,
-> > -                                             unsigned long address,
-> > -                                             pte_t *ptep)
-> > +#define flush_tlb_fix_spurious_write_fault flush_tlb_fix_spurious_writ=
-e_fault
-> > +static inline void flush_tlb_fix_spurious_write_fault(struct vm_area_s=
-truct *vma,
-> > +                                                   unsigned long addre=
-ss,
-> > +                                                   pte_t *ptep)
-> >   {
-> >       /*
-> >        * Book3S 64 does not require spurious fault flushes because the =
-PTE
-> > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/=
-pgtable.h
-> > index b2ba3f79cfe9..89aa5650f104 100644
-> > --- a/arch/riscv/include/asm/pgtable.h
-> > +++ b/arch/riscv/include/asm/pgtable.h
-> > @@ -472,28 +472,20 @@ static inline void update_mmu_cache_range(struct =
-vm_fault *vmf,
-> >               struct vm_area_struct *vma, unsigned long address,
-> >               pte_t *ptep, unsigned int nr)
-> >   {
-> > -     /*
-> > -      * The kernel assumes that TLBs don't cache invalid entries, but
-> > -      * in RISC-V, SFENCE.VMA specifies an ordering constraint, not a
-> > -      * cache flush; it is necessary even after writing invalid entrie=
-s.
-> > -      * Relying on flush_tlb_fix_spurious_fault would suffice, but
-> > -      * the extra traps reduce performance.  So, eagerly SFENCE.VMA.
-> > -      */
-> > -     while (nr--)
-> > -             local_flush_tlb_page(address + nr * PAGE_SIZE);
-> >   }
-> >   #define update_mmu_cache(vma, addr, ptep) \
-> >       update_mmu_cache_range(NULL, vma, addr, ptep, 1)
-> >
-> >   #define __HAVE_ARCH_UPDATE_MMU_TLB
-> > -#define update_mmu_tlb update_mmu_cache
-> > +static inline void update_mmu_tlb(struct vm_area_struct *vma,
-> > +                               unsigned long address, pte_t *ptep)
-> > +{
-> > +     flush_tlb_range(vma, address, address + PAGE_SIZE);
-> > +}
-> >
-> >   static inline void update_mmu_cache_pmd(struct vm_area_struct *vma,
-> >               unsigned long address, pmd_t *pmdp)
-> >   {
-> > -     pte_t *ptep =3D (pte_t *)pmdp;
-> > -
-> > -     update_mmu_cache(vma, address, ptep);
-> >   }
-> >
-> >   #define __HAVE_ARCH_PTE_SAME
-> > @@ -548,13 +540,26 @@ static inline int ptep_set_access_flags(struct vm=
-_area_struct *vma,
-> >                                       unsigned long address, pte_t *pte=
-p,
-> >                                       pte_t entry, int dirty)
-> >   {
-> > -     if (!pte_same(*ptep, entry))
-> > +     if (!pte_same(*ptep, entry)) {
-> >               __set_pte_at(ptep, entry);
-> > -     /*
-> > -      * update_mmu_cache will unconditionally execute, handling both
-> > -      * the case that the PTE changed and the spurious fault case.
-> > -      */
-> > -     return true;
-> > +             /* Here only not svadu is impacted */
-> > +             flush_tlb_page(vma, address);
-> > +             return true;
-> > +     }
-> > +
-> > +     return false;
-> > +}
-> > +
-> > +extern u64 nr_sfence_vma_handle_exception;
-> > +extern bool tlb_caching_invalid_entries;
-> > +
-> > +#define flush_tlb_fix_spurious_read_fault flush_tlb_fix_spurious_read_=
-fault
-> > +static inline void flush_tlb_fix_spurious_read_fault(struct vm_area_st=
-ruct *vma,
-> > +                                                  unsigned long addres=
-s,
-> > +                                                  pte_t *ptep)
-> > +{
-> > +     if (tlb_caching_invalid_entries)
-> > +             flush_tlb_page(vma, address);
-> >   }
-> >
-> >   #define __HAVE_ARCH_PTEP_GET_AND_CLEAR
-> > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> > index af7639c3b0a3..7abaf42ef612 100644
-> > --- a/include/linux/pgtable.h
-> > +++ b/include/linux/pgtable.h
-> > @@ -931,8 +931,12 @@ static inline void arch_swap_restore(swp_entry_t e=
-ntry, struct folio *folio)
-> >   # define pte_accessible(mm, pte)    ((void)(pte), 1)
-> >   #endif
-> >
-> > -#ifndef flush_tlb_fix_spurious_fault
-> > -#define flush_tlb_fix_spurious_fault(vma, address, ptep) flush_tlb_pag=
-e(vma, address)
-> > +#ifndef flush_tlb_fix_spurious_write_fault
-> > +#define flush_tlb_fix_spurious_write_fault(vma, address, ptep) flush_t=
-lb_page(vma, address)
-> > +#endif
-> > +
-> > +#ifndef flush_tlb_fix_spurious_read_fault
-> > +#define flush_tlb_fix_spurious_read_fault(vma, address, ptep)
-> >   #endif
-> >
-> >   /*
-> > diff --git a/mm/memory.c b/mm/memory.c
-> > index 517221f01303..5cb0ccf0c03f 100644
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@ -5014,8 +5014,16 @@ static vm_fault_t handle_pte_fault(struct vm_fau=
-lt *vmf)
-> >                * with threads.
-> >                */
-> >               if (vmf->flags & FAULT_FLAG_WRITE)
-> > -                     flush_tlb_fix_spurious_fault(vmf->vma, vmf->addre=
-ss,
-> > -                                                  vmf->pte);
-> > +                     flush_tlb_fix_spurious_write_fault(vmf->vma, vmf-=
->address,
-> > +                                                        vmf->pte);
-> > +             else
-> > +                     /*
-> > +                      * With the pte_same(ptep_get(vmf->pte), entry) c=
-heck
-> > +                      * that calls update_mmu_tlb() above, multiple th=
-reads
-> > +                      * faulting at the same time won't get there.
-> > +                      */
-> > +                     flush_tlb_fix_spurious_read_fault(vmf->vma, vmf->=
-address,
-> > +                                                       vmf->pte);
-> >       }
-> >   unlock:
-> >       pte_unmap_unlock(vmf->pte, vmf->ptl);
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXMr7gAKCRB4tDGHoIJi
+0n1/AQCqxJkSJDrOMIPKQae1c1CejkKWCIbkI6ee1RCIAcEtZgEA6Qa1IO1dkM4G
+cYL6KMxjp8nbExzyXKIz4dUJ1XNNZAE=
+=1aUw
+-----END PGP SIGNATURE-----
+
+--VqHdBtEYxkgaGrmF--
