@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 666A980A48E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D271180A495
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbjLHNkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:40:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
+        id S233737AbjLHNla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:41:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233597AbjLHNkV (ORCPT
+        with ESMTP id S229844AbjLHNl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:40:21 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBEB1734
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 05:40:27 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-67a959e3afaso11609436d6.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 05:40:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1702042826; x=1702647626; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=n8e2o0WXAr4ymK3d3VhrPB5sSWDppvhuD0Mr+xQ4HHM=;
-        b=nTWe5gl1PBw9JZvp/It9oXA862ulMpFet1/o6nGotv7Vwo0jhcyZylqOx1M77LSGWO
-         gvUoPVCDVaLEgE2RuIHt0256V66DkEB4IMAVjBCdRnmaCnSsW3y7lc9toDPUx2jZ/E0J
-         rZ4FFOalTQaj650GVO+9eiybqbil+was+v/4pcvqCFHZaD1oosB0bc0UJttgZBFfUGp4
-         vMT7I2e0ozkSiLhTUgbUJ3grSFZH6+7xGhivgneDPawuRgECzmo7IkRpCZPcUDJICTLj
-         DzcZ5bL8mn3x4Jg8fs3RkZaODAcv6u9fPo4ICsqylKHOENk5BBK3ENI0+LQCLywoZZoR
-         o/Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702042826; x=1702647626;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n8e2o0WXAr4ymK3d3VhrPB5sSWDppvhuD0Mr+xQ4HHM=;
-        b=mMCIgWf3ZaPKTkLaVUuvNMnloWSmBWQF4RGGUxFSypiMuFhol0OM355UKO+SpZq4hK
-         sHo6Tr4La3E6JIskwDkGWT0SdmTm83q/Xw7QcQNvbdnX9ghAuSq4qLfuaw66l1paTglg
-         wqiOphlmNv2nGb6vUaIoovUO+DQEWLq80dmz+zXS6eWbltZfREau1fPQuxYmxjAX1BGO
-         Ht9m4bO3ckhubpfOj128Yf7c5aL4+PjtbEmjsDeGw9HlGHA0mzUKRPb2FWKiAfIOjxwq
-         G7rT/NT/eCpvQg3s3aWoUpMXZzEFCz9M3mQB4HZ0nclEqXLvx4ZzK9IV2HQmSCoW8AoD
-         KSwQ==
-X-Gm-Message-State: AOJu0Yxq7ZUARkahCdtWVWAqCmBnBUyB7LUEcbRntUkyEl571GWmi9R+
-        IELLthlGsISfEcbuSChySsQaMA==
-X-Google-Smtp-Source: AGHT+IG+42h3wSDDnzyiUdmBDnnmwEZgxwWvJKW+1f6Wnxx1cI9jSsHp0wxIJsybMJwE+p1mPdNlxw==
-X-Received: by 2002:ad4:57ac:0:b0:67a:9d24:5e95 with SMTP id g12-20020ad457ac000000b0067a9d245e95mr3820818qvx.31.1702042826613;
-        Fri, 08 Dec 2023 05:40:26 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id lf10-20020a0562142cca00b0067c4b7ca239sm805168qvb.22.2023.12.08.05.40.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 05:40:25 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1rBb5c-00C888-Tx;
-        Fri, 08 Dec 2023 09:40:24 -0400
-Date:   Fri, 8 Dec 2023 09:40:24 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Tian <kevin.tian@intel.com>, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iommu: Set owner token to SVA domain
-Message-ID: <20231208134024.GV1489931@ziepe.ca>
-References: <20231208015314.320663-1-baolu.lu@linux.intel.com>
+        Fri, 8 Dec 2023 08:41:28 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229EC1998;
+        Fri,  8 Dec 2023 05:41:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mEwzSQj49+1V+0OqU5JPdRDMA9pBIqO9QxdbK1+psok=; b=UZDv1w4D/0pm8nMQazAuCgRLvP
+        kUoVvd6ilj8Hjwd0Y5fIUgaEUgLc20msRFexR7C9e/R5jJFuu7bZjqIgiL/klT2qwoH/SACGyjE5D
+        pIY+B9k0Lyqc1ioJ98358Ce9+VsG8tCGQG0nIhqFli9RrusQihcQTNhejxgQ19eW4p1pvj3KvnFig
+        MMidSdAN6qqBAZeYoFmUr/sVh9/o3dTb62t0uTDjAvWYahnB8nERNNsZtaGrTwGnY2ZzvDdXs6hji
+        c+xdyrIm44MYQPUN7hS1K511Z1iwDJHo+/f6P9zSOKIaQo/HioUiRcnxmR7aXAYVsIuA48UUj04b+
+        r9rIzZCQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rBb5u-006bFJ-00;
+        Fri, 08 Dec 2023 13:40:42 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A3EDA3003F0; Fri,  8 Dec 2023 14:40:41 +0100 (CET)
+Date:   Fri, 8 Dec 2023 14:40:41 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+        Song Liu <songliubraving@meta.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joao Moreira <joao@overdrivepizza.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231208134041.GD28727@noisy.programming.kicks-ass.net>
+References: <ZW4LjmUKj1q6RWdL@krava>
+ <20231204181614.GA7299@noisy.programming.kicks-ass.net>
+ <20231204183354.GC7299@noisy.programming.kicks-ass.net>
+ <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+ <20231206163814.GB36423@noisy.programming.kicks-ass.net>
+ <20231206183713.GA35897@noisy.programming.kicks-ass.net>
+ <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
+ <20231207093105.GA28727@noisy.programming.kicks-ass.net>
+ <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
+ <20231208102940.GB28727@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231208015314.320663-1-baolu.lu@linux.intel.com>
+In-Reply-To: <20231208102940.GB28727@noisy.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,24 +93,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 09:53:14AM +0800, Lu Baolu wrote:
-> Commit a9c362db3920 ("iommu: Validate that devices match domains") added
-> an owner token to the iommu_domain. This token is checked during domain
-> attachment to RID or PASID through the generic iommu interfaces.
-> 
-> The SVA domains are attached to PASIDs through those iommu interfaces.
-> Therefore, they require the owner token to be set during allocation.
-> Otherwise, they fail to attach.
-> 
-> Set the owner token for SVA domains.
-> 
-> Fixes: a9c362db3920 ("iommu: Validate that devices match domains")
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/iommu.c | 1 +
->  1 file changed, 1 insertion(+)
+On Fri, Dec 08, 2023 at 11:29:40AM +0100, Peter Zijlstra wrote:
+> The only problem I now have is the one XXX, I'm not entirely sure what
+> signature to use there.
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> @@ -119,6 +119,7 @@ int bpf_struct_ops_test_run(struct bpf_p
+>  	op_idx = prog->expected_attach_type;
+>  	err = bpf_struct_ops_prepare_trampoline(tlinks, link,
+>  						&st_ops->func_models[op_idx],
+> +						/* XXX */ NULL,
+>  						image, image + PAGE_SIZE);
+>  	if (err < 0)
+>  		goto out;
 
-Jason
+Duh, that should ofcourse be something of dummy_ops_test_ret_fn type.
+Let me go fix that.
