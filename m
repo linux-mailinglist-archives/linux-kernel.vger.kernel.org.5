@@ -2,69 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C93180A27E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F0A80A283
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233475AbjLHLoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 06:44:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56492 "EHLO
+        id S233381AbjLHLpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 06:45:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232504AbjLHLoX (ORCPT
+        with ESMTP id S229995AbjLHLpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 06:44:23 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC7511D
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 03:44:29 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-db538b07865so2273069276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 03:44:29 -0800 (PST)
+        Fri, 8 Dec 2023 06:45:18 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81E41720
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 03:45:23 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40b5155e154so23669395e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 03:45:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702035869; x=1702640669; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XustoibYb7jZ112VBHJcFTHqwrwSxZE4Gta6N7Rgvsk=;
-        b=HruYTDrlsSiTsQqNoC2rstY0VoQXoOTtA6SNjTbwszI6L8rRY09KHAGSBZbemuvApK
-         IVmTUoezOoCWX/b6IMxstcQ+0cH5c4GM+Tc5/M8aDu9nJmFuc41UU6al9571vNpszzg4
-         /tH0YGZtMVwL7bduLKVg7dEiyX0k1SnbxQnnluPuLmO4tjRnM1Q5I6H8Z7sahRDKd8hA
-         8mEOib6PqrQ45m1l80iG1dFL/Dq7XxMbb0g5CAe83nPK7NESZeu7dyBWzB6Nftg/Pgnm
-         12ePpMHu4qkR2JWsOkJ5ewkDVuI8jrm8Jlr9/i5agxEmBEzFLj3dapOE2upy/fQx/P2O
-         HquA==
+        d=linaro.org; s=google; t=1702035922; x=1702640722; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=2UbWvB06mmfALjtcN8mYvlcjQ9XovqclQuk0oMAZDfk=;
+        b=QbqUoYptT/Z2dQPIhigk0LFXF9EYfrVP3JD4/ZH7NmRjjsXjai4F1OzQ7pKKDsnvkV
+         vlYxT7ekakI8oiwXBjYfETSH1wJO55WecUy/iMQpggFYISHQAUmJ60FeulRxgitbtBcj
+         aiYzbK0sRCt1ykqEYT5BRxcJd4Vc/SrbdvpkrructJTwzweM/pWwFq8SVjOnKt54+G62
+         hfvlY165k6lC6mS29PiVen6WbLt5EBV+RKlIzgUOWtOPZUalJsblrSr0zhJYVRibG+56
+         B2sS7szttl7zIdJs0dcEcQPV1p1SaKRplheKOox4nxuU4QiRwmrxPmsyzREq5Prbz/pD
+         bBig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702035869; x=1702640669;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XustoibYb7jZ112VBHJcFTHqwrwSxZE4Gta6N7Rgvsk=;
-        b=l/aI9IdPKCc27YJkczfG4pDwpUCiW0ocdbX4oNxUJBiPvqjkL8FkNW0kGw3H3hSdDv
-         mQpfe3N8WhkLxt/hfrtxz79nbUksAMRJx65kfjkDVD3p6s89oe59wrHbCml8HSlsDUkj
-         HgRNr0cc1i5ACr/kMEaBpgOizrBeaE+smguGOdyxLK9mD/iQGZeuMRQWJ7jmXoxcedAq
-         T13P13ifPuxjErzEOEnGyJ/9iS/cAhBinOT2KAV0/mgqTUlpFjqTbcChu2yLC+gQpYJc
-         5d3ycdIsiomwqFq8viBbNMnfEqza2sjzcQzYq1bUijAUkdmx1joljQtmIbQqc2mn9+Lc
-         foZA==
-X-Gm-Message-State: AOJu0YydKC4dUJmHeXMv3RPKx0irdR8g1D5ZXraf9NLGy4Sx+tCAX33B
-        Zqaqp9S7Tm9zhJ7AhYkgOTkSYHEGDnYfo1+7TomDBA==
-X-Google-Smtp-Source: AGHT+IE6ALLhH1k654jYWCbrlhD/X7i139Ly4BPDxq1XcXtit7oJT0kaLgyma1vwYX6I18i9zNeuXYotNU4PMVF46Mk=
-X-Received: by 2002:a25:ae41:0:b0:db5:3f82:8d1f with SMTP id
- g1-20020a25ae41000000b00db53f828d1fmr3671315ybe.36.1702035868831; Fri, 08 Dec
- 2023 03:44:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702035922; x=1702640722;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2UbWvB06mmfALjtcN8mYvlcjQ9XovqclQuk0oMAZDfk=;
+        b=mnnJ4ni+R5ICjNawFo9fmzaQMsU59qnHILvf7LFg6vUlJELWzjj+JOjZx7rJ5BqONe
+         Zr5IiCRGyjdFktFy8UBKcRlQLK3VM6lMne+fUg0D6kGDW0P2hEyA5FWDuRNbS8vQsxao
+         whjnq8K+TPewEG+x9fOra5wceU8I9rn4CCtQs/duSzp0sQoW+di7lPf6Gbw/OM/jM0CH
+         qBLuKQlBUgsl60mgAvtsmNdSHMNTVM404EEEX5M3KzlJAOj9T7xnB1cZw7bbnwRh3ULU
+         PO1bMoTULev45lkvkwJd7DZNhLGWjiPxXD0uF1IGNknyU33dSh2ilsLPxk/mRLEAMXQd
+         ajfA==
+X-Gm-Message-State: AOJu0YxCZ5fO74Nq1JibxJby11RxWh8royU5JkIUFjce7CsJcXBHrec7
+        xeZlP8NucQVTSQfmI0jDPnp43w5nuofXIyWg0Io=
+X-Google-Smtp-Source: AGHT+IHxV8vQZw9lrUg8EA+eqd1XYxg1Nuagx6G+R7swTXbLbbbtS5ZbpjttQnOSm42GpimVlM2dDg==
+X-Received: by 2002:a05:600c:3d19:b0:40c:3417:233 with SMTP id bh25-20020a05600c3d1900b0040c34170233mr324624wmb.102.1702035922201;
+        Fri, 08 Dec 2023 03:45:22 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id b1-20020a05600c4e0100b00405959469afsm2665118wmq.3.2023.12.08.03.45.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Dec 2023 03:45:21 -0800 (PST)
+Message-ID: <d9d27fa4-6ede-4958-b717-db425be61068@linaro.org>
+Date:   Fri, 8 Dec 2023 12:45:19 +0100
 MIME-Version: 1.0
-References: <20231208050641.32582-1-quic_abhinavk@quicinc.com> <20231208050641.32582-16-quic_abhinavk@quicinc.com>
-In-Reply-To: <20231208050641.32582-16-quic_abhinavk@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 8 Dec 2023 13:44:18 +0200
-Message-ID: <CAA8EJpqfCfETawp1up76S6gryO+Q4KxPB3ThwZCe7DCkp=GkBQ@mail.gmail.com>
-Subject: Re: [PATCH v2 15/16] drm/msm/dpu: introduce separate wb2_format
- arrays for rgb and yuv
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, quic_jesszhan@quicinc.com,
-        quic_parellan@quicinc.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] dt-bindings: phy: qcom-edp: Add X1E80100 PHY
+ compatibles
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Johan Hovold <johan@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231122-phy-qualcomm-edp-x1e80100-v3-0-576fc4e9559d@linaro.org>
+ <20231122-phy-qualcomm-edp-x1e80100-v3-2-576fc4e9559d@linaro.org>
+ <b6d3928c-75ba-47a3-93fc-a60729be2e35@linaro.org>
+ <545d3ace-66e5-4470-b3a4-cbdac5ae473d@linaro.org>
+ <ab7223a2-9f3f-4c9c-ab97-31512e7a0123@linaro.org>
+ <CAA8EJpoboN85bLiayXJgn5iwh+Gn0OtK0aZ26ZJu9H3xkTT2Tw@mail.gmail.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAA8EJpoboN85bLiayXJgn5iwh+Gn0OtK0aZ26ZJu9H3xkTT2Tw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,170 +136,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
-> Lets rename the existing wb2_formats array wb2_formats_rgb to indicate
-> that it has only RGB formats and can be used on any chipset having a WB
-> block.
->
-> Introduce a new wb2_formats_rgb_yuv array to the catalog to
-> indicate support for YUV formats to writeback in addition to RGB.
->
-> Chipsets which have support for CDM block will use the newly added
-> wb2_formats_rgb_yuv array.
+On 08/12/2023 12:04, Dmitry Baryshkov wrote:
+> On Fri, 8 Dec 2023 at 09:47, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 07/12/2023 20:16, Konrad Dybcio wrote:
+>>>
+>>>
+>>> On 12/7/23 17:51, Krzysztof Kozlowski wrote:
+>>>
+>>> [...]
+>>>
+>>>>> +allOf:
+>>>>> +  - if:
+>>>>> +      properties:
+>>>>> +        compatible:
+>>>>> +          contains:
+>>>>> +            enum:
+>>>>> +              - qcom,x1e80100-dp-phy
+>>>>> +    then:
+>>>>> +      properties:
+>>>>> +        phy-type:
+>>>>> +          description: DP (default) or eDP type
+>>>>
+>>>> Properties must be defined in top-level "properties:" block. In
+>>>> allOf:if:then you only disallow them for other variants.
+>>>>
+>>>>> +          enum: [ 6, 13 ]
+>>>>> +          default: 6
+>>>>
+>>>> Anyway, I was thinking this should be rather argument to phy-cells.
+>>> I'm not sure I'm for this, because the results would be:
+>>>
+>>> --- device.dts ---
+>>> &dp_controller0 {
+>>>      phys = <&dp_phy0 PHY_EDP>;
+>>> };
+>>>
+>>> &dp_controller1 {
+>>>      phys = <&dp_phy1 PHY_DP>;
+>>> };
+>>> ------------------
+>>>
+>>> as opposed to:
+>>>
+>>> --- device.dts ---
+>>> &dp_phy0 {
+>>>      phy-type <PHY_EDP>;
+>>> };
+>>>
+>>> &dp_phy1 {
+>>>      phy-type = <PHY_DP>;
+>>> };
+>>> ------------------
+>>
+>> Which is exactly what I proposed/wanted to see.
+>>
+>>>
+>>> i.e., we would be saying "this board is connected to this phy
+>>> instead" vs "this phy is of this type on this board".
+>>>
+>>> While none of them really fit the "same hw, different config"
+>>> situation, I'd vote for the latter one being closer to the
+>>> truth
+>>
+>> Then maybe I miss the bigger picture, but commit msg clearly says:
+>> "multiple PHYs that can work in both eDP or DP mode"
+>>
+>> If this is not the case, describe the hardware correctly in the commit
+>> msg, so people will not ask stupid questions...
+> 
+> There are multiple PHYs (each of them at its own address space). Each
+> of the PHYs in question can be used either for the DisplayPort output
+> (directly or through the USB-C) or to drive the eDP panel.
+> 
+> Same applies to the displayport-controller. It can either drive the DP
+> or eDP output, hardware-wise it is the same.
 
-This means that the catalog can go out of sync, if one adds a CDM
-block but doesn't update wb_formats and vice versa.
-Can we deduce the format list from the WB code? Is the format list
-really static or does it change between platforms (please keep msm8996
-/ msm8998 in mind).
+Therefore what I proposed was correct - the block which uses the phy
+configures its mode. Because this part:
+  "this phy is of this type on this board".
+is not true. The phy is both types.
 
->
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> ---
->  .../msm/disp/dpu1/catalog/dpu_10_0_sm8650.h   |  4 +-
->  .../msm/disp/dpu1/catalog/dpu_6_0_sm8250.h    |  4 +-
->  .../msm/disp/dpu1/catalog/dpu_6_2_sc7180.h    |  4 +-
->  .../msm/disp/dpu1/catalog/dpu_7_2_sc7280.h    |  4 +-
->  .../msm/disp/dpu1/catalog/dpu_9_0_sm8550.h    |  4 +-
->  .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    | 37 ++++++++++++++++++-
->  6 files changed, 46 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
-> index 04d2a73dd942..eb5dfff2ec4f 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_10_0_sm8650.h
-> @@ -341,8 +341,8 @@ static const struct dpu_wb_cfg sm8650_wb[] = {
->                 .name = "wb_2", .id = WB_2,
->                 .base = 0x65000, .len = 0x2c8,
->                 .features = WB_SM8250_MASK,
-> -               .format_list = wb2_formats,
-> -               .num_formats = ARRAY_SIZE(wb2_formats),
-> +               .format_list = wb2_formats_rgb,
-> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
->                 .xin_id = 6,
->                 .vbif_idx = VBIF_RT,
->                 .maxlinewidth = 4096,
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
-> index 58b0f50518c8..a57d50b1f028 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_0_sm8250.h
-> @@ -336,8 +336,8 @@ static const struct dpu_wb_cfg sm8250_wb[] = {
->                 .name = "wb_2", .id = WB_2,
->                 .base = 0x65000, .len = 0x2c8,
->                 .features = WB_SM8250_MASK,
-> -               .format_list = wb2_formats,
-> -               .num_formats = ARRAY_SIZE(wb2_formats),
-> +               .format_list = wb2_formats_rgb_yuv,
-> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb_yuv),
->                 .clk_ctrl = DPU_CLK_CTRL_WB2,
->                 .xin_id = 6,
->                 .vbif_idx = VBIF_RT,
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
-> index bcfedfc8251a..7382ebb6e5b2 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_6_2_sc7180.h
-> @@ -157,8 +157,8 @@ static const struct dpu_wb_cfg sc7180_wb[] = {
->                 .name = "wb_2", .id = WB_2,
->                 .base = 0x65000, .len = 0x2c8,
->                 .features = WB_SM8250_MASK,
-> -               .format_list = wb2_formats,
-> -               .num_formats = ARRAY_SIZE(wb2_formats),
-> +               .format_list = wb2_formats_rgb,
-> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
->                 .clk_ctrl = DPU_CLK_CTRL_WB2,
->                 .xin_id = 6,
->                 .vbif_idx = VBIF_RT,
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
-> index 19c2b7454796..2f153e0b5c6a 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
-> @@ -169,8 +169,8 @@ static const struct dpu_wb_cfg sc7280_wb[] = {
->                 .name = "wb_2", .id = WB_2,
->                 .base = 0x65000, .len = 0x2c8,
->                 .features = WB_SM8250_MASK,
-> -               .format_list = wb2_formats,
-> -               .num_formats = ARRAY_SIZE(wb2_formats),
-> +               .format_list = wb2_formats_rgb_yuv,
-> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb_yuv),
->                 .clk_ctrl = DPU_CLK_CTRL_WB2,
->                 .xin_id = 6,
->                 .vbif_idx = VBIF_RT,
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
-> index bf56265967c0..ad48defa154f 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
-> @@ -315,8 +315,8 @@ static const struct dpu_wb_cfg sm8550_wb[] = {
->                 .name = "wb_2", .id = WB_2,
->                 .base = 0x65000, .len = 0x2c8,
->                 .features = WB_SM8250_MASK,
-> -               .format_list = wb2_formats,
-> -               .num_formats = ARRAY_SIZE(wb2_formats),
-> +               .format_list = wb2_formats_rgb,
-> +               .num_formats = ARRAY_SIZE(wb2_formats_rgb),
->                 .xin_id = 6,
->                 .vbif_idx = VBIF_RT,
->                 .maxlinewidth = 4096,
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> index 1be3156cde05..c52cac7a2288 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> @@ -202,7 +202,7 @@ static const u32 rotation_v2_formats[] = {
->         /* TODO add formats after validation */
->  };
->
-> -static const uint32_t wb2_formats[] = {
-> +static const uint32_t wb2_formats_rgb[] = {
->         DRM_FORMAT_RGB565,
->         DRM_FORMAT_BGR565,
->         DRM_FORMAT_RGB888,
-> @@ -236,6 +236,41 @@ static const uint32_t wb2_formats[] = {
->         DRM_FORMAT_XBGR4444,
->  };
->
-> +static const uint32_t wb2_formats_rgb_yuv[] = {
-> +       DRM_FORMAT_RGB565,
-> +       DRM_FORMAT_BGR565,
-> +       DRM_FORMAT_RGB888,
-> +       DRM_FORMAT_ARGB8888,
-> +       DRM_FORMAT_RGBA8888,
-> +       DRM_FORMAT_ABGR8888,
-> +       DRM_FORMAT_XRGB8888,
-> +       DRM_FORMAT_RGBX8888,
-> +       DRM_FORMAT_XBGR8888,
-> +       DRM_FORMAT_ARGB1555,
-> +       DRM_FORMAT_RGBA5551,
-> +       DRM_FORMAT_XRGB1555,
-> +       DRM_FORMAT_RGBX5551,
-> +       DRM_FORMAT_ARGB4444,
-> +       DRM_FORMAT_RGBA4444,
-> +       DRM_FORMAT_RGBX4444,
-> +       DRM_FORMAT_XRGB4444,
-> +       DRM_FORMAT_BGR565,
-> +       DRM_FORMAT_BGR888,
-> +       DRM_FORMAT_ABGR8888,
-> +       DRM_FORMAT_BGRA8888,
-> +       DRM_FORMAT_BGRX8888,
-> +       DRM_FORMAT_XBGR8888,
-> +       DRM_FORMAT_ABGR1555,
-> +       DRM_FORMAT_BGRA5551,
-> +       DRM_FORMAT_XBGR1555,
-> +       DRM_FORMAT_BGRX5551,
-> +       DRM_FORMAT_ABGR4444,
-> +       DRM_FORMAT_BGRA4444,
-> +       DRM_FORMAT_BGRX4444,
-> +       DRM_FORMAT_XBGR4444,
-> +       DRM_FORMAT_NV12,
-> +};
-> +
->  /*************************************************************
->   * SSPP sub blocks config
->   *************************************************************/
-> --
-> 2.40.1
->
+Best regards,
+Krzysztof
 
-
--- 
-With best wishes
-Dmitry
