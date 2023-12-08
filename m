@@ -2,142 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B94CA80AE12
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:40:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CF280AE1B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574714AbjLHUjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:39:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42252 "EHLO
+        id S1574723AbjLHUlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:41:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLHUjt (ORCPT
+        with ESMTP id S229572AbjLHUlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:39:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12833171E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:39:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702067995;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BZ2jOncrEKw232jrvqkJsjD/GwaaXlY1Y1umyeZKqBI=;
-        b=gEeD8FPsNnrR0QG/hwuQWxfEOa2yn5XOcuihrT4Wqh5461mqNbhBw7MsSAK/Di7O3di1I8
-        /hIDIOaMzzem/pbEWm9A7mIKGh5YsEsB4SyFvhCfI3W4513i+YofKtDlnzHvRs4yvcC7rN
-        To9m5FUc1K+Y5L359C9qkDteXaCJ5Bg=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-696-giCgkY__ML2QaEo5-V3dLw-1; Fri, 08 Dec 2023 15:39:54 -0500
-X-MC-Unique: giCgkY__ML2QaEo5-V3dLw-1
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-77f5a5dde50so44345385a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 12:39:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702067993; x=1702672793;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Fri, 8 Dec 2023 15:41:10 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BAA171E;
+        Fri,  8 Dec 2023 12:41:16 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c0a0d068bso25063265e9.3;
+        Fri, 08 Dec 2023 12:41:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702068075; x=1702672875; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BZ2jOncrEKw232jrvqkJsjD/GwaaXlY1Y1umyeZKqBI=;
-        b=Z/q4alTl5uqoyu3mI/SyhNexXeBfLPHpz3ZQB1rPSi+m2gc1MKSi/V/Zsxx73r0RzA
-         44jOq+XKRugN5qWQj9Ys6x2q6eLHQFQmApVOLbSFqHMj+ivc7fdLUrRndAUE0Hup9oT9
-         klmnwNenij1GWHqDQDgROBgu1iS8m2nryb8i6Hrx6+ikXsnV/Q3SW23TeXlfUj2LOp1/
-         PwKgPPD0MiAu2Gk7tiiwwzuMGIXX9dMwpoi7shbAjmg/sTxLDDBq6s+6hEmeWUoYOnVs
-         vL7GIMlplPNRxSpgDgxZz9BWgWCOD/G6afjNGPNwU3AMOp7fkffks84ZGbQJknLTEI/i
-         e9vQ==
-X-Gm-Message-State: AOJu0YyOU3h3dO2Zrk7YfbsusTi3pdxZT98rMuy6+BBhEpMC/RaEgaWp
-        LgR6yQeNaQwYoI2H/UO/g1ePOHkogtUOSP4EQp1yC0zvn/xJ9ooAJmXlnc3tS7/9akSR9DvWVXi
-        vSTV6+h0WGFtJ/WalB1Ivy51h
-X-Received: by 2002:a05:620a:4628:b0:77f:3b42:d9ce with SMTP id br40-20020a05620a462800b0077f3b42d9cemr760945qkb.85.1702067993659;
-        Fri, 08 Dec 2023 12:39:53 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHKxCtQsMQxp/KSOFjCeDbaxYduu4LWKBh1Y0Dagd3wlsrQ4MNeu6AtBDd9TCnEjArfrpOATw==
-X-Received: by 2002:a05:620a:4628:b0:77f:3b42:d9ce with SMTP id br40-20020a05620a462800b0077f3b42d9cemr760936qkb.85.1702067993423;
-        Fri, 08 Dec 2023 12:39:53 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::47])
-        by smtp.gmail.com with ESMTPSA id o1-20020a05620a228100b00775bb02893esm941499qkh.96.2023.12.08.12.39.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 12:39:52 -0800 (PST)
-Date:   Fri, 8 Dec 2023 14:39:50 -0600
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     martin.petersen@oracle.com, jejb@linux.ibm.com,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-        quic_nitirawa@quicinc.com
-Subject: Re: [PATCH v2 00/17] scsi: ufs: qcom: Code cleanups
-Message-ID: <wimggq4gabqgjinxffx5dmaf6y34kf3q2r4wbcytd7s2pjabfu@hwlni6z7kpam>
-References: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
+        bh=Mj7pq+OIwUID+JMsGrWjS7UT9Bcii1A8UE8TU13OktE=;
+        b=G3MZ0atAgyPACTlO2h7s/lMC/oRfCFYkG7eYNPHZso8JoPnWQajw0hBD0IMwaw2k+e
+         9oEUqW7bfQoZ9A+l/ZCrSnsweIma9Tc8w6L3JKjXpRsPc6TKWWxyR0wZ8+bZa5Ok1t6Q
+         agD9I28vIANLCIoPCqAE+0LdgDXekeKg86moQWI2v+kl9C7cKvyaIdptKdI2prnEABas
+         GK1zoen9SwdDyfr2M80/lwFlEcx6HgOyBaOMqffzIQwN6jSffBZaZMrnIrPFGVAHrZ3M
+         zAVDeICaUJz663LD3pOv3GN0VX+wXf7i55v1BI5JFdcxprDOxPJ6piluZAO+k1ktyUgf
+         ZytA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702068075; x=1702672875;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Mj7pq+OIwUID+JMsGrWjS7UT9Bcii1A8UE8TU13OktE=;
+        b=pGiuaErv8MDscLZQpGI5Wmt4Vz2tKoQkhiHIj/M11IG7P0p4o/4HiHilhocEV8rfP8
+         BEz0vHSJMygaJY2pmwLXPnlBEQDntcF4Fk5PTlErJdPY5OCeRO2OJCvA4hrRHpqIZwvm
+         ib0gto0unqQeI4S9doV18QizNjth+nzlTWubGfHvkCBsWuf/Xhjrz/aTbvbF5QUE2EJa
+         oF9B9uwrK756SzPL1AQJo2zJqyuTcMNabvESUpUccPWtzD7pdss9/E1J2KbN3CEeu9m1
+         IuC8CoD72haV0JXBO6FjWJiraUBW0u/Jh7Y1fWsluZomYxMnReMN2D9l0hyuM7m1jYRw
+         6mCA==
+X-Gm-Message-State: AOJu0YxcknAraaNMAEvgBx2yDhu86S2pvZ74f/v9GzYK8fwalkASBi83
+        qBH4ZQzVZyD24TXSNpa40WV4BfQazH1i2WGKqGM=
+X-Google-Smtp-Source: AGHT+IERcqiD0C/8xjZJmHAgSBT2DdIylL4yKHY4jgZtfjgalQtcY6Jcz2MAn3dQVMGiGBWeMdU28s7aF98ziv0/pdE=
+X-Received: by 2002:adf:f00f:0:b0:333:2f14:7642 with SMTP id
+ j15-20020adff00f000000b003332f147642mr344840wro.61.1702068075072; Fri, 08 Dec
+ 2023 12:41:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+ <20231206163814.GB36423@noisy.programming.kicks-ass.net> <20231206183713.GA35897@noisy.programming.kicks-ass.net>
+ <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
+ <20231207093105.GA28727@noisy.programming.kicks-ass.net> <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
+ <20231208102940.GB28727@noisy.programming.kicks-ass.net> <20231208134041.GD28727@noisy.programming.kicks-ass.net>
+ <20231208172152.GD36716@noisy.programming.kicks-ass.net> <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
+ <20231208203535.GG36716@noisy.programming.kicks-ass.net>
+In-Reply-To: <20231208203535.GG36716@noisy.programming.kicks-ass.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 8 Dec 2023 12:41:03 -0800
+Message-ID: <CAADnVQJzCw=qcG+jHBYG0q0SxLPkwghni0wpgV4A4PkpgVbGPw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+        Song Liu <songliubraving@meta.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joao Moreira <joao@overdrivepizza.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 12:28:45PM +0530, Manivannan Sadhasivam wrote:
-> Hello,
-> 
-> This series has code some cleanups to the Qcom UFS driver. No functional
-> change. In this version, I've removed code supporting legacy controllers
-> ver < 2.0, as the respective platforms were never supported in upstream.
-> 
-> Tested on: RB5 development board based on Qcom SM8250 SoC.
-> 
-> - Mani
-> 
-> Changes in v2:
-> 
-> * Collected review tags
-> * Fixed the comments from Andrew
-> * Added a few more patches, most notably one removing the code for old
->   controllers (ver < v2.0)
-> 
+On Fri, Dec 8, 2023 at 12:35=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Fri, Dec 08, 2023 at 11:40:27AM -0800, Alexei Starovoitov wrote:
+>
+> > typedef void (*btf_dtor_kfunc_t)(void *);
+> >         btf_dtor_kfunc_t dtor;
+> > but the bpf_cgroup_release takes 'struct cgroup*'.
+> > From kcfi pov void * =3D=3D struct cgroup * ?
+> > Do we need to change it to 'void *cgrp' ?
+>
+> Yes, doing that naively like the below, gets me lovely things like:
+>
+> validate_case:FAIL:expect_msg unexpected error: -22
+> VERIFIER LOG:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> EXPECTED MSG: 'Possibly NULL pointer passed to trusted arg0'
+> #48/7    cgrp_kfunc/cgrp_kfunc_acquire_untrusted:FAIL
+> run_subtest:PASS:obj_open_mem 0 nsec
+> libbpf: extern (func ksym) 'bpf_cgroup_release': func_proto [148] incompa=
+tible with vmlinux [125610]
+> libbpf: failed to load object 'cgrp_kfunc_failure'
+>
+>
+> But let me try rebuilding everything..
+>
+>
+> ---
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index b3be5742d6f1..078b207af7f0 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2145,10 +2145,11 @@ __bpf_kfunc struct task_struct *bpf_task_acquire(=
+struct task_struct *p)
+>   * bpf_task_release - Release the reference acquired on a task.
+>   * @p: The task on which a reference is being released.
+>   */
+> -__bpf_kfunc void bpf_task_release(struct task_struct *p)
+> +__bpf_kfunc void bpf_task_release(void *p)
 
-I took this for a spin on sa8775p-ride when developing another patch
-today with no issues. Certainly doesn't hit all the cases here, but:
+Yeah. That won't work. We need a wrapper.
+Since bpf prog is also calling it directly.
+In progs/task_kfunc_common.h
+void bpf_task_release(struct task_struct *p) __ksym;
 
-Tested-by: Andrew Halaney <ahalaney@redhat.com> # sa8775p-ride
+than later both libbpf and the verifier check that
+what bpf prog is calling actually matches the proto
+of what is in the kernel.
+Effectively we're doing strong prototype check at load time.
 
-> Manivannan Sadhasivam (17):
->   scsi: ufs: qcom: Use clk_bulk APIs for managing lane clocks
->   scsi: ufs: qcom: Fix the return value of ufs_qcom_ice_program_key()
->   scsi: ufs: qcom: Fix the return value when
->     platform_get_resource_byname() fails
->   scsi: ufs: qcom: Remove superfluous variable assignments
->   scsi: ufs: qcom: Remove the warning message when core_reset is not
->     available
->   scsi: ufs: qcom: Export ufshcd_{enable/disable}_irq helpers and make
->     use of them
->   scsi: ufs: qcom: Fail ufs_qcom_power_up_sequence() when core_reset
->     fails
->   scsi: ufs: qcom: Check the return value of
->     ufs_qcom_power_up_sequence()
->   scsi: ufs: qcom: Remove redundant error print for devm_kzalloc()
->     failure
->   scsi: ufs: qcom: Use dev_err_probe() to simplify error handling of
->     devm_gpiod_get_optional()
->   scsi: ufs: qcom: Remove unused ufs_qcom_hosts struct array
->   scsi: ufs: qcom: Sort includes alphabetically
->   scsi: ufs: qcom: Initialize cycles_in_1us variable in
->     ufs_qcom_set_core_clk_ctrl()
->   scsi: ufs: qcom: Simplify ufs_qcom_{assert/deassert}_reset
->   scsi: ufs: qcom: Remove support for host controllers older than v2.0
->   scsi: ufs: qcom: Use ufshcd_rmwl() where applicable
->   scsi: ufs: qcom: Remove unused definitions
-> 
->  drivers/ufs/core/ufshcd.c   |   6 +-
->  drivers/ufs/host/ufs-qcom.c | 377 +++++-------------------------------
->  drivers/ufs/host/ufs-qcom.h |  52 +----
->  include/ufs/ufshcd.h        |   2 +
->  4 files changed, 66 insertions(+), 371 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
-
+btw instead of EXPORT_SYMBOL_GPL(bpf_task_release)
+can __ADDRESSABLE be used ?
+Since it's not an export symbol.
