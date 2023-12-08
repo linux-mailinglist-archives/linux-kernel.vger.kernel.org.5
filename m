@@ -2,151 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9795180A2C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A83D180A2C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbjLHL5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 06:57:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36102 "EHLO
+        id S233389AbjLHMEh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Dec 2023 07:04:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjLHL5d (ORCPT
+        with ESMTP id S229600AbjLHMEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 06:57:33 -0500
-Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2083.outbound.protection.outlook.com [40.92.103.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BFDC3;
-        Fri,  8 Dec 2023 03:57:38 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n9MMsDnOsw9Ru+bCHLDlc/0OkihQLtMy4Yt+gcADReFSNlxleYGxajTAIWdUdfjp+HcBuCgjcyLB3Vx2leWs2TeNXKhhlrHqQmp/pewnPCeI3cTyQiiZVij+a/xRwRPXLBd7ymdD0GMkRv9cAKrE49DMN7EM5ymEUY/N2Fw/1RFQhQfZDNvLlcSIZTkBh9vbEQrowuot3+0TypjS6/QnoGEL+SGu3zx1nGCjfJvagA1jVFgUwuPVx3v7wywIh0CnF/1kEB83IH09cI3f+F0eMGlrFneONiqGXKpyED/WSimcTMQVKM5RiwzU9yfT5FWbIHUVKVtHSLEp1OOgfgIPfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=f8tChMfbis9BLYzxg91Q49qgx5PBOXP1MXBlC9WdBtQ=;
- b=XFO0oFOrmFRLR0/klqLzpu7OUxQlCNO0S0B3icXJDijfLJfUhPxr3LSON1oZFn4P87wSvZrpGhpCKmvkyUQ+5KNba69S9+Voz2A6xoyg28x67hI5MWMmAsLn9dzJ+rOhFOrw5K4gS+Tg/G6WvHh8+NALJr+CicgnMUe1jp6A+aewObVy6cGaynjwBRjkLYEkJM7NgqM/Z429Nl/cCU84hTsMgAH9/O9DPyAz3z2IOxxZclEMKgOWW325SIQDzbo3FUZ6czBXuO5vHY1weN7b0ivsgM8fl3pWQLg2L6Y6lLuBRf+kwtg9iHRCZrQKRusgCzTZax1AWLshJbZaesuiXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f8tChMfbis9BLYzxg91Q49qgx5PBOXP1MXBlC9WdBtQ=;
- b=R2mRJT89PxEbSqtN8QxgcFyrfurgghAi+zCmurs5ckNAZMUbONupxfG1iR1v2juNyH+F3xpNFFbWFVZepPfmkh/0fIRb9RHgheZSz3U1/kDirdzLEbfE+piElBe5+syst0G61O4tPo7I5xrEaPhb998/qCVsl0nRPC8+zt+Rk0j7+a1nUGLgZrS54von7kxMNoiJQDbLrODcD/Tdwtf2FHplW4s/SJKsQZ8avWzTQkdnqCMKxiVU9LDR7pP1oLliFxwr7qTUQ8fHUfNTcp7gaOF9Enrc3rnefekLmHHLXlhw0KjVaPDI0ledADe4wzpq2vRKUbtTzOlgHEWyaU2Gcw==
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:ab::5) by
- PN0P287MB2020.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:1bd::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7068.28; Fri, 8 Dec 2023 11:57:30 +0000
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::b1a7:eee7:e903:9ef3]) by MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::b1a7:eee7:e903:9ef3%7]) with mapi id 15.20.7068.028; Fri, 8 Dec 2023
- 11:57:30 +0000
-Message-ID: <MA0P287MB0332C1ACD7BB3607694F9E05FE8AA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-Date:   Fri, 8 Dec 2023 19:57:21 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/4] riscv: sophgo: add clock support for sg2042
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
-        chao.wei@sophgo.com, krzysztof.kozlowski+dt@linaro.org,
-        mturquette@baylibre.com, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, richardcochran@gmail.com,
-        robh+dt@kernel.org, sboyd@kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, haijiao.liu@sophgo.com,
-        xiaoguang.xing@sophgo.com, guoren@kernel.org, jszhang@kernel.org,
-        inochiama@outlook.com, samuel.holland@sifive.com
-References: <cover.1701997033.git.unicorn_wang@outlook.com>
- <MA0P287MB0332EEB2858B8B39F151CECAFE8AA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
- <20231208-item-rubbing-e32503c6cdcf@spud>
-From:   Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <20231208-item-rubbing-e32503c6cdcf@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN:  [uCwqi5fXIf2X+6tVIkwMCCdO4ndt7W0C]
-X-ClientProxiedBy: TYCP286CA0224.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:3c5::8) To MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:ab::5)
-X-Microsoft-Original-Message-ID: <62ea0685-ec50-4640-b1a6-ab3eea049c2c@outlook.com>
+        Fri, 8 Dec 2023 07:04:36 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C68D59
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:04:41 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-284-wk_94Km3M2aShqPoVa8iQA-1; Fri, 08 Dec 2023 12:04:38 +0000
+X-MC-Unique: wk_94Km3M2aShqPoVa8iQA-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 8 Dec
+ 2023 12:04:24 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 8 Dec 2023 12:04:24 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Al Viro' <viro@zeniv.linux.org.uk>
+CC:     "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "gus Gusenleitner Klaus" <gus@keba.com>,
+        Al Viro <viro@ftp.linux.org.uk>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "Ingo Molnar" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: RE: [RFC][PATCHES v2] checksum stuff
+Thread-Topic: [RFC][PATCHES v2] checksum stuff
+Thread-Index: AQHaJyGyb9WP/snuGU2gdqpp5IxoMLCcGsYAgADCXYCAAmhtsA==
+Date:   Fri, 8 Dec 2023 12:04:24 +0000
+Message-ID: <46711b57a62348059cfe798c8acea941@AcuMS.aculab.com>
+References: <20231019050250.GV800259@ZenIV> <20231019061427.GW800259@ZenIV>
+ <20231019063925.GX800259@ZenIV>
+ <CANn89iJre=VQ6J=UuD0d2J5t=kXr2b9Dk9b=SwzPX1CM+ph60A@mail.gmail.com>
+ <20231019080615.GY800259@ZenIV> <20231021071525.GA789610@ZenIV>
+ <20231021222203.GA800259@ZenIV> <20231022194020.GA972254@ZenIV>
+ <20231205022100.GB1674809@ZenIV>
+ <602ab11ffa2c4cc49bb9ecae2f0540b0@AcuMS.aculab.com>
+ <20231206224359.GR1674809@ZenIV>
+In-Reply-To: <20231206224359.GR1674809@ZenIV>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB0332:EE_|PN0P287MB2020:EE_
-X-MS-Office365-Filtering-Correlation-Id: dae4a89c-5e02-46d0-de33-08dbf7e4da8e
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BWcZfKPVySd2NWieCMpym5ERHm0Ub7O9xuXElZKGHu3BB9YzBds/wuO4IPZMQhYh1FoAPYLvupNBAjc3yuCAJXqJjqJm1mjB0zyiGUKaE3MU6fU14ADJeqv4is+uPBl5fJ0/Y282Z8R1kZ/pYZ3X5CgiAAc26b9ka7W52P0iMh8gNlQvU3yWcpQCIpCj2d4wi480wIg56rCPQzt7I1murmAxT311frsHorgGYyz9JzjM2apP6jHp0/ldw+Oqrv32OJ3i+uGa/KfRjJuaBHGaQ/kU9Q8WorXGiHTwPd8t6TQNah2wjWnbobFVcJp417hnZijYv2Sup+lQ9Gt+699ENV1aY/r0bFMk4SCPJHzZRLTnnWcZ114ia/ITnpcY4Mn5qvABwyPJ5AjKJNDH1uLXCsrMA4F94VpJFlMnLnPqARJgulhCA1zhd99A7kHKBWX9cnP06rts13x+ScgsxagkcirG2pnnxfCuNqAGtjaSICn6IWlgKx/YQtXmZaLgPtdrZdkehCNEANdlxflxd3ZMUSSjdVlnhwTqQIX88qupg5Gmfrwv8j3XfShsRcHWLtbr
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cy9RbTJnVlJVN0hjSzFPRmZiN1R3M2VGRS9DVTRVcUpySmRJZ3AwTjFtRzA4?=
- =?utf-8?B?WTA0SHh3RFE4Um1UUm9JOXRBTDErUVExRkJtWWd5WHRVSEdqcVhGVU5oMnM4?=
- =?utf-8?B?NmFKRFJBV21TM3BvaEtSUlF5R3dxYzdTQitnN09lMlI2Z0VEd3lXWWVkeTQx?=
- =?utf-8?B?RVZCVTVGK21kUFR6K3hSMW5aa2NjMnA1aHhYd014akNtU29IWGVqUThWenRs?=
- =?utf-8?B?dE1xR0VkakRDV1NGUlFXYmtCQ3JCUmN3SmpJWnJ4Qmh4K2UyTXdDUVFGekVs?=
- =?utf-8?B?Unloa3hFeVdIdXpYWlQ0ZVRDSDhka0NoRXNoZnVJU1piWkx3d2ZGTUJTT1Iw?=
- =?utf-8?B?aEg1OUd1cnhNK0V4N0JwM3d2eEpyRmRkck93eE5oMFBqeFFnbHRiRzl3S1Nk?=
- =?utf-8?B?RzUrY3R2N0h3NjFVa3U5Qmo1Q3o2bnlnK2RJWVJiVmlFSkloTjdIZ29PaU5s?=
- =?utf-8?B?RU5SZ01vVEtpQklONjBrMGxXYm4vZFpJVTRzc0ExMEI3cFJRSzhSKzlFdEpI?=
- =?utf-8?B?amtoK0RjNEtONDN3WDZmYVF2WjdRc1NkSDhCNCt6L3YyRzRjaCtLeUVCYkI3?=
- =?utf-8?B?YUVSbkhDUFNhSEdmT1hJWGp2alM0Sy8vbHMrNzg5dXpkU0hEVkJBTVpFMTln?=
- =?utf-8?B?cEFnaG9PZlgyYjc5SmhqUG9UcXhMeUExZ2VjOVVVVVZOTWNESjlhWjFyYVMr?=
- =?utf-8?B?Y1NHK2xQbnJERFpsVVBvQnJtOEdUekpKZlgvTDdpK3NQUXVOL3BlU0c4MkVU?=
- =?utf-8?B?T3ZCKzF5UUI4WlkrSTJlNDFHWFJGLzhXZ0VWN1gwa3lOMEh5NzRiSzl4MUE5?=
- =?utf-8?B?aERmWWVaOXlNNjhPU21QSHhaMGVBQmhNU0NsOERiWFBqeEVuUU5CbVdoNDU1?=
- =?utf-8?B?Q3ArTnJKeTUvN1RqbnQyU0pBaDd3Ty9mRkdxSEl1V2kxbGxadmo3R3F6dGZw?=
- =?utf-8?B?N2FXdEdPUWlJbGhNTDJzSk0wUzRsTHJmMmtTZjNuSEVTVXhrSnIzdmpVcHdR?=
- =?utf-8?B?MHdLUWNpZU0yd3UydUFzQzU4M3hQTVRqeWJLeWpTWUZLMnRHdXpHR09FSTdN?=
- =?utf-8?B?aGxxV0I2aTlHK1VCY2pRNWdDR2lSMklOdEpQN2dGSHF5QWhBd0xUY1cxZHBa?=
- =?utf-8?B?SFhyUlR6ZzJVcjFVLzF2WXRsaloycjg4THh1QXZjSTZpbzR2NVFYL2pkckxw?=
- =?utf-8?B?N3BqWmJNMnVVYWwzVkZ2QkdVekdBYnozM2UwUW5WR0VpUDQxR0YrcG5sWmpY?=
- =?utf-8?B?MzFWUnVBQlBpTmNyekJ0aVJKK2tLRHpJamFNbVR2QnF2dTY2NmZjMzBQaCtU?=
- =?utf-8?B?QS82VWhUeWRxbkpPdjErWU5JaFptZXQ3TUhuL1hETzdpd0xZMGc0MStpZUtl?=
- =?utf-8?B?OTBxSWI4c3JQcnNvT3BCQ2hFbDM5SnZLWkV4c21wY1BEWmw1R3FjVGxUaTY2?=
- =?utf-8?B?Z1BjckltV3V5Z2J0alNaeC9SQlhlMVFVcG9QbmplamlLMTh5bHRDaUgxRy9x?=
- =?utf-8?B?c1JmblhzclZUVldPNmgxakJjYURrWWZIRjdLVmhoWGRkS0pyNFplWTcxdWJY?=
- =?utf-8?B?VWFkL3BKTlJwTGliOGFoNk5qc1pvWW15cXV3TDc1WGlkTzNVOUdSbEhLS3BC?=
- =?utf-8?Q?lCTirazxsVCwfHPHlSLdZlo2n5aEeScWU5kfF+bICXMY=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dae4a89c-5e02-46d0-de33-08dbf7e4da8e
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 11:57:30.0588
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN0P287MB2020
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Al Viro
+> Sent: 06 December 2023 22:44
+> 
+> On Wed, Dec 06, 2023 at 11:10:45AM +0000, David Laight wrote:
+> 
+> > Do we?
+> > I've not seen any justification for this at all.
+> > IIRC the ICMPv4 reply code needs the checksum function return 0xffff
+> > for all-zero input.
+> >
+> > So the correct and simple fix is to initialise the sum to 0xffff
+> > in the checksum function.
+> 
+> You do realize that ICMPv4 reply code is not the only user of those,
+> right?  Sure, we can special-case it there.  And audit the entire
+> call tree, proving that no other call chains need the same.
+> 
+> Care to post the analysis?  I have the beginnings of that and it's already
+> long and convoluted and touches far too many places, all of which will
+> have to be watched indefinitely, so that changes in there don't introduce
+> new breakage.
+> 
+> I could be wrong.  About many things, including the depth of your
+> aversion to RTFS.  But frankly, until that analysis shows up somewhere,
+> I'm going to ignore your usual handwaving.
 
-On 2023/12/8 18:30, Conor Dooley wrote:
-> On Fri, Dec 08, 2023 at 06:11:10PM +0800, Chen Wang wrote:
->> On 2023/12/8 9:13, Chen Wang wrote:
->>> From: Chen Wang <unicorn_wang@outlook.com>
->>>
->>> This series adds clock controller support for sophgo sg2042.
->>>
->>> Thanks,
->>> Chen
->>>
->>> ---
->> Hi，Conor，
->>
->> Can you please have a review of this patch?
-> Chief, you sent this patch only the other day, please give people some
-> time. I, at least, have an MMO addiction to feed in my spare time
-> alongside reviewing patches.
-Okay, no rush. :)
+I've just read RFC 792 and done some experiments.
+The kernel ICMP checksum code is just plain broken.
 
-Christmas is coming soon. I wish you a happy holiday in advance.
+RFC 792 is quite clear that the checksum is the 16-bit ones's
+complement of the one's complement sum of the ICMP message
+starting with the ICMP Type.
 
->> And I'm not sure if you are ok to pick up this patch so it can be merged
->> into the next v6.8?
-> Stephen is the maintainer for clock drivers. I do pick things up and
-> send them to him as PRs when it makes life easier, but usually that's
-> after other people have reviewed the clock driver itself.
->
-> Thanks,
-> Conor.
->
+The one's complement sum of 0xfffe and 0x0001 is zero (not the 0xffff
+that the adc loop generates.
+So it's one's complement is 0xffff not 0x0000.
+So the checksum field in an ICMP message should never contain zero.
+
+Now for the experiments...
+
+Run: 'tcpdump -n -x icmp' in one window to trace the icmp messages.
+Elsewhere run 'ping -c1 -s2 -p 0000 host'
+The last 6 bytes of the ICMP echo request are the ICMP data eg:
+	0800 c381 347d 0001 0000
+	cmd   sum  id   seq data
+If you repeat the request the 'id' will increase by one or two.
+Replace data with the checksum - so ping -c1 -s2 -p c381
+You won't be quick enough, the checksum will probably be fffd.
+But nearly there...
+Repeat but subtract (say) 8 from the old checksum.
+Then issue the command a few times and the packet checksum
+should go from 0004 down to 0001 then jump to ffff.
+But you'll see a 0000 instead of the 0xffff.
+
+Note that the buffer being summed isn't all zeros but the
+checksum field is still wrong.
+
+I suspect that the real problem is that the value returned
+by csum_fold() should never be put into a packet that is being
+transmitted because the domain is [0..0xfffe] not [1..0xffff].
+
+I bet ICMP isn't the only place where a transmitted checksum
+ends up being zero.
+As I've said before UDP4 treats is as no-checksum (so assume valid)
+and UDP6 states the field must not be zero.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
