@@ -2,147 +2,556 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7B680A2CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C2A80A2D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 13:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233391AbjLHMGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 07:06:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
+        id S233401AbjLHMHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 07:07:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233428AbjLHMGE (ORCPT
+        with ESMTP id S229995AbjLHMHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 07:06:04 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C890F173F;
-        Fri,  8 Dec 2023 04:06:10 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6ce6b62746dso1435881b3a.2;
-        Fri, 08 Dec 2023 04:06:10 -0800 (PST)
+        Fri, 8 Dec 2023 07:07:05 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C98F1716
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 04:07:10 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3b2e330033fso1480008b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 04:07:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702037170; x=1702641970; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=B3bI0QdiAHuPSa9H4aC+fl2+wXCouA4Rc/YcRLrnAcY=;
-        b=nKnk5f0MWkoK4o3NAMEN34B5LmYbfrZQWsJZ+q/PdS5nQvdLTv6kiKh2wVs73qBEhC
-         USQKxRUGMmPIuNvKZkG1LQ6FpnL37gqk4T9xxtfI0PBQE7HEm8nrmlgkvOWyU9CzCmhj
-         qtAoZJW1GO4x5RL3CdXdUh3PTVONCl9baWh3yqNfuGt/mtEVIf9H5lBGpMN/AqI424lK
-         DFCWHCKo473S8NV3zcDO6vpPpEc4po+Vfit/9Q5ybvp3xTiKc98JIx/OSv+4Brv4qYbe
-         dTXK0iqc7VPoJ6HHH52PKZAYcQO98n3MwWCUkWdmOFSoHEPLjUhUpXeXKvbbQJtakO1B
-         6J1w==
+        d=linaro.org; s=google; t=1702037229; x=1702642029; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=POioFhYfE+TcMB/V3ajrgKUTEEhxK8h8U9aHv1oz4c4=;
+        b=YCsCL+T/VfGHlpjsO7eMqwDEH3eNLNi3RFl7BxULBSkEfek+6Tys0wHGxrIeHVbRDT
+         adZniA0tGnsz9icdF7VFTNvEwWaygzB0BN9Ve55sFJG9ebgfdVMSl2gPi1beratBqI5Y
+         oRt6C47H3gnbE35i9cWNcLzE4SF+ZX+mP1ExIGckduGnBRMWQ96VVQG7GNphzCULy64N
+         vwBeTFXHYrGm3BtQG1kPjvJIV6dvutnDmNviQcif7x17vRgGgrdB76TWSH+pHf/XSR9x
+         1GqrEyfv7Y7ndqdmWIT/Q9RMUI5G+vWK3gYxIQQOvd1WyYZKhIvc8URitSSg3TYkybhx
+         Ly6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702037170; x=1702641970;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B3bI0QdiAHuPSa9H4aC+fl2+wXCouA4Rc/YcRLrnAcY=;
-        b=MXVIkn/kTEY8AekmpkL9RudltW8JG5ZP3SI6vTRKQX3lZOWZ1t9DJqFUiUM5DsyNJR
-         FB2EEmQzlUe3vTBHVHbTax9I26Y7MpYtWPxGxkL75Wh0C3i1yum08SbkZeNFoF0CpmDT
-         V5SV7ZeXUnkQjyLSRBdmxTZA1ZvQbwDrF2yrxeuc7TPg4rK8zAO9KqIHiRAAuiMRF3XU
-         drtcOESzotE2INytdiPDNVVvi5EfmePpFYUKq+SmX+/Xp+XIWJ/9yPuLPdziHa75ldJq
-         y15myDYCXXi7EaR1qxBJbGaKqmAXU3Dd2UeUlbWVYDf4Ftzu2T7Eti13KkGIXwLANUwY
-         /Zyg==
-X-Gm-Message-State: AOJu0YymDBIuol7dmnp7eXsZ0sfnyN9Sf0UjTCiOXBFH6YnVManG12sj
-        EhUIZZKioUlEW0K4jGUPhQw=
-X-Google-Smtp-Source: AGHT+IGQSdM4C4EViY+s0Sn5W6g6FNtDH69DOstKuZ/C/eT7GACnBk1UtajaTbdCuvjJysMglaLF1w==
-X-Received: by 2002:a05:6a00:2344:b0:6ce:379c:ced1 with SMTP id j4-20020a056a00234400b006ce379cced1mr4415425pfj.59.1702037170174;
-        Fri, 08 Dec 2023 04:06:10 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id fa24-20020a056a002d1800b006be0fb89ac2sm1416837pfb.197.2023.12.08.04.06.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 04:06:09 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id 00684100829BE; Fri,  8 Dec 2023 19:06:02 +0700 (WIB)
-Date:   Fri, 8 Dec 2023 19:06:02 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Tom Cook <tom.k.cook@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kernel Build System <linux-kbuild@vger.kernel.org>,
-        Linux Crypto API <linux-crypto@vger.kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nick Terrell <terrelln@fb.com>
-Subject: Re: Building signed debs
-Message-ID: <ZXMGqjm1466fQ3g2@archie.me>
-References: <CAFSh4UwYYAOb0YpC=WAL6SD+8jTLuSkhgrgjh8JmogUb10V=zw@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1702037229; x=1702642029;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=POioFhYfE+TcMB/V3ajrgKUTEEhxK8h8U9aHv1oz4c4=;
+        b=sR0iC3wxfmqgngFaaIk8ow3IlevBdFbqtMKAQ1agpbJVKug+Zl7lO8tzOruOE4JtOq
+         9D/0sgYX11GosUByx4YLAWj0wWBru6CMTSgQcOa95GsS5YVAmBSiAgXtS/L+ajtdetin
+         SjzlDKQ5AzcLchRzxnSsy6dyHlc2Kd72OjW+ajfye4PzVcEAmOnB62nOKO+SnJSlUGj+
+         3D8NZvNfeUZlBSEipGuSd2O9bC9P/yAONVpJiDbVUFwM+OgwGCAOA6z5hYiunzwrLo0U
+         N4a+i7a6kS+v2g/Phwf0liQ9MkZ9g4RpS9F32XXdD1dEd6G6RtzTCBqNARyXgWdKS6U5
+         c23A==
+X-Gm-Message-State: AOJu0YxTwAJG7rPuN84qUVkjhDs8em45d+Kr1eD+fJacmXyizD9VFxov
+        P6ePIeD5jVqWHjRdXWRuMmtdyv3dItLLFfgzsLPLkg==
+X-Google-Smtp-Source: AGHT+IHnDJVQ2YIamJjleLvc/DETGQ3eiVbtgEWSZuopj2KFOPUJSx+j9vBrCbPgS+ZQIhyFLFGR9tkI02RJAPRPBg0=
+X-Received: by 2002:a05:6808:1b20:b0:3b9:e80b:708e with SMTP id
+ bx32-20020a0568081b2000b003b9e80b708emr834561oib.82.1702037229475; Fri, 08
+ Dec 2023 04:07:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6UtWxXAwR+spQlxA"
-Content-Disposition: inline
-In-Reply-To: <CAFSh4UwYYAOb0YpC=WAL6SD+8jTLuSkhgrgjh8JmogUb10V=zw@mail.gmail.com>
+References: <20231208050641.32582-1-quic_abhinavk@quicinc.com> <20231208050641.32582-8-quic_abhinavk@quicinc.com>
+In-Reply-To: <20231208050641.32582-8-quic_abhinavk@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 8 Dec 2023 14:06:58 +0200
+Message-ID: <CAA8EJpp_9ForVxyQLOaeL3qbPcpEq8fkVR0FmZD+RDhn-quLEA@mail.gmail.com>
+Subject: Re: [PATCH v2 07/16] drm/msm/dpu: add dpu_hw_cdm abstraction for CDM block
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
+        quic_parellan@quicinc.com, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+> CDM block comes with its own set of registers and operations
+> which can be done. In-line with other hardware sub-blocks, this
 
---6UtWxXAwR+spQlxA
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I always thought that sub-blocks refer to the dpu_foo_sub_blks data,
+which CDM doesn't have.
 
-On Fri, Dec 08, 2023 at 11:14:35AM +0000, Tom Cook wrote:
-> I'm trying to build a signed .deb kernel package of
-> https://github.com/torvalds/linux/tree/v6.6.  I've copied
-> certs/default_x509.genkey to certs/x509.genkey.  The .config is the
-> one from Ubuntu 23.10's default kernel with all new options accepted
-> at their default and CONFIG_SYSTEM_TRUSTED_KEYS=3D"" and
-> CONFIG_SYSTEM_REVOCATION_KEYS=3D"".
->=20
-> This builds the kernel and modules, signs the modules, compresses the
-> modules and then attempts to sign the modules again.  That fails,
-> because the .ko module files are now .ko.zst files and the file it's
-> trying to sign isn't there.  Full failure is pasted below.
->=20
-> Unsetting CONFIG_MODULE_COMPRESS_ZSTD is a workaround (ie disable
-> module compression).
->=20
 
-Seriously? Unrelated option becomes a workaround?
+> change adds the dpu_hw_cdm abstraction for the CDM block.
+>
+> changes in v2:
+>         - replace bit magic with relevant defines
+>         - use drmm_kzalloc instead of kzalloc/free
+>         - some formatting fixes
+>         - inline _setup_cdm_ops()
+>         - protect bind_pingpong_blk with core_rev check
+>         - drop setup_csc_data() and setup_cdwn() ops as they
+>           are merged into enable()
+>
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> ---
+>  drivers/gpu/drm/msm/Makefile                |   1 +
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c  | 276 ++++++++++++++++++++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h  | 114 ++++++++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h |   1 +
+>  4 files changed, 392 insertions(+)
+>  create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
+>  create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
+>
+> diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
+> index 49671364fdcf..b1173128b5b9 100644
+> --- a/drivers/gpu/drm/msm/Makefile
+> +++ b/drivers/gpu/drm/msm/Makefile
+> @@ -63,6 +63,7 @@ msm-$(CONFIG_DRM_MSM_DPU) += \
+>         disp/dpu1/dpu_encoder_phys_wb.o \
+>         disp/dpu1/dpu_formats.o \
+>         disp/dpu1/dpu_hw_catalog.o \
+> +       disp/dpu1/dpu_hw_cdm.o \
+>         disp/dpu1/dpu_hw_ctl.o \
+>         disp/dpu1/dpu_hw_dsc.o \
+>         disp/dpu1/dpu_hw_dsc_1_2.o \
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
+> new file mode 100644
+> index 000000000000..0dbe2df56cc8
+> --- /dev/null
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
+> @@ -0,0 +1,276 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <drm/drm_managed.h>
+> +
+> +#include "dpu_hw_mdss.h"
+> +#include "dpu_hw_util.h"
+> +#include "dpu_hw_catalog.h"
+> +#include "dpu_hw_cdm.h"
+> +#include "dpu_kms.h"
+> +
+> +#define CDM_CSC_10_OPMODE                  0x000
+> +#define CDM_CSC_10_BASE                    0x004
+> +
+> +#define CDM_CDWN2_OP_MODE                  0x100
+> +#define CDM_CDWN2_CLAMP_OUT                0x104
+> +#define CDM_CDWN2_PARAMS_3D_0              0x108
+> +#define CDM_CDWN2_PARAMS_3D_1              0x10C
+> +#define CDM_CDWN2_COEFF_COSITE_H_0         0x110
+> +#define CDM_CDWN2_COEFF_COSITE_H_1         0x114
+> +#define CDM_CDWN2_COEFF_COSITE_H_2         0x118
+> +#define CDM_CDWN2_COEFF_OFFSITE_H_0        0x11C
+> +#define CDM_CDWN2_COEFF_OFFSITE_H_1        0x120
+> +#define CDM_CDWN2_COEFF_OFFSITE_H_2        0x124
+> +#define CDM_CDWN2_COEFF_COSITE_V           0x128
+> +#define CDM_CDWN2_COEFF_OFFSITE_V          0x12C
+> +#define CDM_CDWN2_OUT_SIZE                 0x130
+> +
+> +#define CDM_HDMI_PACK_OP_MODE              0x200
+> +#define CDM_CSC_10_MATRIX_COEFF_0          0x004
+> +
+> +#define CDM_MUX                            0x224
+> +
+> +/* CDM CDWN2 sub-block bit definitions */
+> +#define CDM_CDWN2_OP_MODE_EN                  BIT(0)
+> +#define CDM_CDWN2_OP_MODE_ENABLE_H            BIT(1)
+> +#define CDM_CDWN2_OP_MODE_ENABLE_V            BIT(2)
+> +#define CDM_CDWN2_OP_MODE_METHOD_H_AVG        BIT(3)
+> +#define CDM_CDWN2_OP_MODE_METHOD_H_COSITE     BIT(4)
+> +#define CDM_CDWN2_OP_MODE_METHOD_V_AVG        BIT(5)
+> +#define CDM_CDWN2_OP_MODE_METHOD_V_COSITE     BIT(6)
+> +#define CDM_CDWN2_OP_MODE_BITS_OUT_8BIT       BIT(7)
+> +#define CDM_CDWN2_OP_MODE_METHOD_H_OFFSITE    GENMASK(4, 3)
+> +#define CDM_CDWN2_OP_MODE_METHOD_V_OFFSITE    GENMASK(6, 5)
+> +#define CDM_CDWN2_V_PIXEL_DROP_MASK           GENMASK(6, 5)
+> +#define CDM_CDWN2_H_PIXEL_DROP_MASK           GENMASK(4, 3)
+> +
+> +/* CDM CSC10 sub-block bit definitions */
+> +#define CDM_CSC10_OP_MODE_EN               BIT(0)
+> +#define CDM_CSC10_OP_MODE_SRC_FMT_YUV      BIT(1)
+> +#define CDM_CSC10_OP_MODE_DST_FMT_YUV      BIT(2)
+> +
+> +/* CDM HDMI pack sub-block bit definitions */
+> +#define CDM_HDMI_PACK_OP_MODE_EN           BIT(0)
+> +
+> +/**
+> + * Horizontal coefficients for cosite chroma downscale
+> + * s13 representation of coefficients
+> + */
+> +static u32 cosite_h_coeff[] = {0x00000016, 0x000001cc, 0x0100009e};
+> +
+> +/**
+> + * Horizontal coefficients for offsite chroma downscale
+> + */
+> +static u32 offsite_h_coeff[] = {0x000b0005, 0x01db01eb, 0x00e40046};
+> +
+> +/**
+> + * Vertical coefficients for cosite chroma downscale
+> + */
+> +static u32 cosite_v_coeff[] = {0x00080004};
+> +/**
+> + * Vertical coefficients for offsite chroma downscale
+> + */
+> +static u32 offsite_v_coeff[] = {0x00060002};
+> +
+> +static int dpu_hw_cdm_setup_cdwn(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cfg)
+> +{
+> +       struct dpu_hw_blk_reg_map *c = &ctx->hw;
+> +       u32 opmode = 0;
+> +       u32 out_size = 0;
+> +
+> +       if (cfg->output_bit_depth == CDM_CDWN_OUTPUT_10BIT)
+> +               opmode &= ~CDM_CDWN2_OP_MODE_BITS_OUT_8BIT;
 
-> Is there a way to build a .deb of a signed kernel with compressed modules?
->=20
-> Thanks for any help,
-> Tom
->=20
->   INSTALL debian/linux-libc-dev/usr/include
->   SIGN    debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/even=
-ts/amd/amd-uncore.ko
->   SIGN    debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/even=
-ts/intel/intel-cstate.ko
-> At main.c:298:
-> - SSL error:FFFFFFFF80000002:system library::No such file or
-> directory: ../crypto/bio/bss_file.c:67
+We start from opmode = 0. Does it really make sense to mask bits from
+the zero opmode?
 
-Above means that you don't have a valid certificate/keypair set in
-CONFIG_MODULE_SIG_KEY. If you keep the option value on `certs/signing_key.p=
-em`
-(which is the default), the key should be automatically generated
-(with your observation, only if `certs/x509.genkey` doesn't already exist).
-After building the kernel with `make all`, you should check if the certific=
-ate
-pointed in CONFIG_MODULE_SIG_KEY is present or not. If it isn't the case,
-you have to generate the certificate yourself. For more information, see
-Documentation/admin-guide/module.signing.rst in the kernel sources.
+> +       else
+> +               opmode |= CDM_CDWN2_OP_MODE_BITS_OUT_8BIT;
+> +
+> +       /* ENABLE DWNS_H bit */
+> +       opmode |= CDM_CDWN2_OP_MODE_ENABLE_H;
+> +
+> +       switch (cfg->h_cdwn_type) {
+> +       case CDM_CDWN_DISABLE:
+> +               /* CLEAR METHOD_H field */
+> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+> +               /* CLEAR DWNS_H bit */
+> +               opmode &= ~CDM_CDWN2_OP_MODE_ENABLE_H;
+> +               break;
+> +       case CDM_CDWN_PIXEL_DROP:
+> +               /* Clear METHOD_H field (pixel drop is 0) */
+> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+> +               break;
+> +       case CDM_CDWN_AVG:
+> +               /* Clear METHOD_H field (Average is 0x1) */
+> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_H_AVG;
+> +               break;
+> +       case CDM_CDWN_COSITE:
+> +               /* Clear METHOD_H field (Average is 0x2) */
+> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_H_COSITE;
+> +               /* Co-site horizontal coefficients */
+> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_0,
+> +                               cosite_h_coeff[0]);
+> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_1,
+> +                               cosite_h_coeff[1]);
+> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_2,
+> +                               cosite_h_coeff[2]);
+> +               break;
+> +       case CDM_CDWN_OFFSITE:
+> +               /* Clear METHOD_H field (Average is 0x3) */
+> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_H_OFFSITE;
+> +
+> +               /* Off-site horizontal coefficients */
+> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_0,
+> +                               offsite_h_coeff[0]);
+> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_1,
+> +                               offsite_h_coeff[1]);
+> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_2,
+> +                               offsite_h_coeff[2]);
+> +               break;
+> +       default:
+> +               pr_err("%s invalid horz down sampling type\n", __func__);
 
-Thanks.
+DPU_ERROR or drm_err
 
---=20
-An old man doll... just what I always wanted! - Clara
+> +               return -EINVAL;
+> +       }
+> +
+> +       /* ENABLE DWNS_V bit */
+> +       opmode |= CDM_CDWN2_OP_MODE_ENABLE_V;
+> +
+> +       switch (cfg->v_cdwn_type) {
+> +       case CDM_CDWN_DISABLE:
+> +               /* CLEAR METHOD_V field */
+> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+> +               /* CLEAR DWNS_V bit */
+> +               opmode &= ~CDM_CDWN2_OP_MODE_ENABLE_V;
+> +               break;
+> +       case CDM_CDWN_PIXEL_DROP:
+> +               /* Clear METHOD_V field (pixel drop is 0) */
+> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+> +               break;
+> +       case CDM_CDWN_AVG:
+> +               /* Clear METHOD_V field (Average is 0x1) */
+> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_V_AVG;
+> +               break;
+> +       case CDM_CDWN_COSITE:
+> +               /* Clear METHOD_V field (Average is 0x2) */
+> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_V_COSITE;
+> +               /* Co-site vertical coefficients */
+> +               DPU_REG_WRITE(c,
+> +                             CDM_CDWN2_COEFF_COSITE_V,
+> +                             cosite_v_coeff[0]);
+> +               break;
+> +       case CDM_CDWN_OFFSITE:
+> +               /* Clear METHOD_V field (Average is 0x3) */
+> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_V_OFFSITE;
+> +
+> +               /* Off-site vertical coefficients */
+> +               DPU_REG_WRITE(c,
+> +                             CDM_CDWN2_COEFF_OFFSITE_V,
+> +                             offsite_v_coeff[0]);
+> +               break;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (cfg->v_cdwn_type || cfg->h_cdwn_type)
+> +               opmode |= CDM_CDWN2_OP_MODE_EN; /* EN CDWN module */
+> +       else
+> +               opmode &= ~CDM_CDWN2_OP_MODE_EN;
+> +
+> +       out_size = (cfg->output_width & 0xFFFF) | ((cfg->output_height & 0xFFFF) << 16);
+> +       DPU_REG_WRITE(c, CDM_CDWN2_OUT_SIZE, out_size);
+> +       DPU_REG_WRITE(c, CDM_CDWN2_OP_MODE, opmode);
+> +       DPU_REG_WRITE(c, CDM_CDWN2_CLAMP_OUT, ((0x3FF << 16) | 0x0));
+> +
+> +       return 0;
+> +}
+> +
+> +int dpu_hw_cdm_enable(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cdm)
+> +{
+> +       struct dpu_hw_blk_reg_map *c = &ctx->hw;
+> +       const struct dpu_format *fmt;
+> +       u32 opmode = 0;
+> +       u32 csc = 0;
+> +
+> +       if (!ctx || !cdm)
+> +               return -EINVAL;
+> +
+> +       fmt = cdm->output_fmt;
+> +
+> +       if (!DPU_FORMAT_IS_YUV(fmt))
+> +               return -EINVAL;
+> +
+> +       dpu_hw_csc_setup(&ctx->hw, CDM_CSC_10_MATRIX_COEFF_0, cdm->csc_cfg, true);
+> +       dpu_hw_cdm_setup_cdwn(ctx, cdm);
+> +
+> +       if (cdm->output_type == CDM_CDWN_OUTPUT_HDMI) {
+> +               if (fmt->chroma_sample != DPU_CHROMA_H1V2)
+> +                       return -EINVAL; /*unsupported format */
+> +               opmode = CDM_HDMI_PACK_OP_MODE_EN;
+> +               opmode |= (fmt->chroma_sample << 1);
+> +       }
+> +
+> +       csc |= CDM_CSC10_OP_MODE_DST_FMT_YUV;
+> +       csc &= ~CDM_CSC10_OP_MODE_SRC_FMT_YUV;
+> +       csc |= CDM_CSC10_OP_MODE_EN;
+> +
+> +       if (ctx && ctx->ops.bind_pingpong_blk)
+> +               ctx->ops.bind_pingpong_blk(ctx, true, cdm->pp_id);
+> +
+> +       DPU_REG_WRITE(c, CDM_CSC_10_OPMODE, csc);
+> +       DPU_REG_WRITE(c, CDM_HDMI_PACK_OP_MODE, opmode);
+> +       return 0;
+> +}
+> +
+> +void dpu_hw_cdm_disable(struct dpu_hw_cdm *ctx)
+> +{
+> +       if (!ctx)
+> +               return;
+> +
+> +       if (ctx && ctx->ops.bind_pingpong_blk)
+> +               ctx->ops.bind_pingpong_blk(ctx, false, PINGPONG_NONE);
 
---6UtWxXAwR+spQlxA
-Content-Type: application/pgp-signature; name="signature.asc"
+So the bind/un_pingpong_block gets hidden here. Why do we need to
+unbind it manually in the dpu_encoder then?
 
------BEGIN PGP SIGNATURE-----
+> +}
+> +
+> +static void dpu_hw_cdm_bind_pingpong_blk(struct dpu_hw_cdm *ctx, bool enable,
+> +                                        const enum dpu_pingpong pp)
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZXMGpwAKCRD2uYlJVVFO
-o/gzAP4njblK4gTTlE3jH60ksv9uyLbxlyEwMZPEpSwQpZPIhgD8CZu09C9h+Mqr
-vzrIJsHunbR3/wMX+BYuJKtNv9O9xQs=
-=2b3i
------END PGP SIGNATURE-----
+I think we settled on the PINGPONG_NONE for removing the binding
 
---6UtWxXAwR+spQlxA--
+> +{
+> +       struct dpu_hw_blk_reg_map *c;
+> +       int mux_cfg = 0xF;
+> +
+> +       c = &ctx->hw;
+> +
+> +       if (enable)
+> +               mux_cfg = (pp - PINGPONG_0) & 0x7;
+> +
+> +       DPU_REG_WRITE(c, CDM_MUX, mux_cfg);
+> +}
+> +
+> +struct dpu_hw_cdm *dpu_hw_cdm_init(struct drm_device *dev,
+> +                                  const struct dpu_cdm_cfg *cfg, void __iomem *addr,
+> +                                  const struct dpu_mdss_version *mdss_rev)
+> +{
+> +       struct dpu_hw_cdm *c;
+> +
+> +       c = drmm_kzalloc(dev, sizeof(*c), GFP_KERNEL);
+> +       if (!c)
+> +               return ERR_PTR(-ENOMEM);
+> +
+> +       c->hw.blk_addr = addr + cfg->base;
+> +       c->hw.log_mask = DPU_DBG_MASK_CDM;
+> +
+> +       /* Assign ops */
+> +       c->idx = cfg->id;
+> +       c->caps = cfg;
+> +
+> +       c->ops.enable = dpu_hw_cdm_enable;
+> +       c->ops.disable = dpu_hw_cdm_disable;
+> +       if (mdss_rev->core_major_ver >= 5)
+> +               c->ops.bind_pingpong_blk = dpu_hw_cdm_bind_pingpong_blk;
+> +
+> +       return c;
+> +}
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
+> new file mode 100644
+> index 000000000000..1ca806f9d18d
+> --- /dev/null
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
+> @@ -0,0 +1,114 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#ifndef _DPU_HW_CDM_H
+> +#define _DPU_HW_CDM_H
+> +
+> +#include "dpu_hw_mdss.h"
+> +#include "dpu_hw_top.h"
+> +
+> +struct dpu_hw_cdm;
+> +
+> +struct dpu_hw_cdm_cfg {
+> +       u32 output_width;
+> +       u32 output_height;
+> +       u32 output_bit_depth;
+> +       u32 h_cdwn_type;
+> +       u32 v_cdwn_type;
+> +       const struct dpu_format *output_fmt;
+> +       const struct dpu_csc_cfg *csc_cfg;
+> +       u32 output_type;
+> +       int pp_id;
+> +};
+> +
+> +enum dpu_hw_cdwn_type {
+> +       CDM_CDWN_DISABLE,
+> +       CDM_CDWN_PIXEL_DROP,
+> +       CDM_CDWN_AVG,
+> +       CDM_CDWN_COSITE,
+> +       CDM_CDWN_OFFSITE,
+> +};
+> +
+> +enum dpu_hw_cdwn_output_type {
+> +       CDM_CDWN_OUTPUT_HDMI,
+> +       CDM_CDWN_OUTPUT_WB,
+> +};
+> +
+> +enum dpu_hw_cdwn_output_bit_depth {
+> +       CDM_CDWN_OUTPUT_8BIT,
+> +       CDM_CDWN_OUTPUT_10BIT,
+> +};
+
+Can we please get some documentation for these enums?
+
+> +
+> +/**
+> + * struct dpu_hw_cdm_ops : Interface to the chroma down Hw driver functions
+> + *                         Assumption is these functions will be called after
+> + *                         clocks are enabled
+> + *  @enable:               Enables the output to interface and programs the
+> + *                         output packer
+> + *  @disable:              Puts the cdm in bypass mode
+> + *  @bind_pingpong_blk:    enable/disable the connection with pingpong which
+> + *                         will feed pixels to this cdm
+> + */
+> +struct dpu_hw_cdm_ops {
+> +       /**
+> +        * Enable the CDM module
+> +        * @cdm         Pointer to chroma down context
+> +        */
+> +       int (*enable)(struct dpu_hw_cdm *cdm, struct dpu_hw_cdm_cfg *cfg);
+> +
+> +       /**
+> +        * Disable the CDM module
+> +        * @cdm         Pointer to chroma down context
+> +        */
+> +       void (*disable)(struct dpu_hw_cdm *cdm);
+> +
+> +       /**
+> +        * Enable/disable the connection with pingpong
+> +        * @cdm         Pointer to chroma down context
+> +        * @enable      Enable/disable control
+> +        * @pp          pingpong block id.
+> +        */
+> +       void (*bind_pingpong_blk)(struct dpu_hw_cdm *cdm, bool enable,
+> +                                 const enum dpu_pingpong pp);
+> +};
+> +
+> +/**
+> + * struct dpu_hw_cdm - cdm description
+> + * @base: Hardware block base structure
+> + * @hw: Block hardware details
+> + * @idx: CDM index
+> + * @caps: Pointer to cdm_cfg
+> + * @ops: handle to operations possible for this CDM
+> + */
+> +struct dpu_hw_cdm {
+> +       struct dpu_hw_blk base;
+> +       struct dpu_hw_blk_reg_map hw;
+> +
+> +       /* chroma down */
+> +       const struct dpu_cdm_cfg *caps;
+> +       enum  dpu_cdm  idx;
+> +
+> +       /* ops */
+> +       struct dpu_hw_cdm_ops ops;
+> +};
+> +
+> +/**
+> + * dpu_hw_cdm_init - initializes the cdm hw driver object.
+> + * should be called once before accessing every cdm.
+> + * @dev: DRM device handle
+> + * @cdm: CDM catalog entry for which driver object is required
+> + * @addr :   mapped register io address of MDSS
+> + * @mdss_rev: mdss hw core revision
+> + */
+> +struct dpu_hw_cdm *dpu_hw_cdm_init(struct drm_device *dev,
+> +                                  const struct dpu_cdm_cfg *cdm, void __iomem *addr,
+> +                                  const struct dpu_mdss_version *mdss_rev);
+> +
+> +static inline struct dpu_hw_cdm *to_dpu_hw_cdm(struct dpu_hw_blk *hw)
+> +{
+> +       return container_of(hw, struct dpu_hw_cdm, base);
+> +}
+> +
+> +#endif /*_DPU_HW_CDM_H */
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> index f319c8232ea5..9db4cf61bd29 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> @@ -466,6 +466,7 @@ struct dpu_mdss_color {
+>  #define DPU_DBG_MASK_ROT      (1 << 9)
+>  #define DPU_DBG_MASK_DSPP     (1 << 10)
+>  #define DPU_DBG_MASK_DSC      (1 << 11)
+> +#define DPU_DBG_MASK_CDM      (1 << 12)
+>
+>  /**
+>   * struct dpu_hw_tear_check - Struct contains parameters to configure
+> --
+> 2.40.1
+>
+
+
+--
+With best wishes
+
+Dmitry
