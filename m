@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8825580A6DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BCE80A6E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574289AbjLHPJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
+        id S1574351AbjLHPJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:09:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574281AbjLHPJE (ORCPT
+        with ESMTP id S1574347AbjLHPJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:09:04 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225AB1BF8
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:09:09 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a00c200782dso279720166b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 07:09:09 -0800 (PST)
+        Fri, 8 Dec 2023 10:09:08 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C3D1BE6
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:09:13 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54dccf89cfdso2570534a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 07:09:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1702048147; x=1702652947; darn=vger.kernel.org;
+        d=fairphone.com; s=fair; t=1702048151; x=1702652951; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3GYxu5vNb9UOC9+Ks0EEx/+fAHrpRHM/oRCqL4Wixxg=;
-        b=gNcnwtsH5FFL6ln6fYdy36zFKSkOUrAbU9KdB5G/P8wnKFbS4r14Kc3Tum9RKtGX5/
-         soPsbNEUiSBxrdHO43LEkD2MyQAaftGHHEtQ1kh7GTikGccprmXXKJh7izHmk6uHjcur
-         x7j8hYHDUZXCHTpV0t359pztDD2VYMyahbEGYGjvzm6l0UiZEesVKFaRLDJxymJd+3yt
-         TW/fGgJEUEUXA3HZCWa39ykz+B0ycHd/TJ84UAhXiyvWl6GNvvFw+Pr8ofsluz2fXirW
-         k5fAgQe3Aokmn+MaolrZhr0Zv4HOB+o3QRTIzrWz8I7yQGTQYwmiyMj/mwengNHnBwK5
-         WK3A==
+        bh=Uz469c4gN5niM5rjlwO+5+JkVlMzaiEgq9wGKFyoPqU=;
+        b=4P5H4ocZBphar5DifVkZy6eexJH+QOtyA8Ky+q7fbcZAVkm/KJC15AMIpWmrWdRICq
+         lpxQFuWg8AMfp70Wx3oNC8IaxV49UuweyLge8Sts1BdP2iUZ6kimic09qdV2QOznMCdS
+         6Vq+e0Jfrerk6mTGBDAVAw5A8f7yoRB3ScQHtSKn65r8RhXoaLCXqest1B320YdQsAoT
+         CbZ36JPWnLwPD6/cuW+v9ViaoDxpBh3QCH+zchpFRqkr4M8da8LB+eVWd7Uu+yIK0gvq
+         BdA440yAjC5WPKGM1uXFcXlqT5oeoltoms/ud2sJ62k7TTor9gIqb5t8zIuKQp15YfzR
+         My7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702048147; x=1702652947;
+        d=1e100.net; s=20230601; t=1702048151; x=1702652951;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3GYxu5vNb9UOC9+Ks0EEx/+fAHrpRHM/oRCqL4Wixxg=;
-        b=LAnviYMrImPIz1l7QdpbLxZ/jMwENavPo4fcEwsSJtr/i1wD6idEnKmuBeOG8dIL8b
-         i07a3fMUH+WscIJfyRnyOpXkgawnoOG+NuQipmWWQ5qj8PY2B2hRGuak/MqWMAIKLEVu
-         RWyKgMXlz8H/vlHs7JUkjCAdAf0FarLe1zDOih22ccMtzzo4MeW6iLziIyOjuHozJftR
-         5qj3Xyodbmv8531Q30o6CdJVbmaIwnQ13P009yK5FuWCGA4Mr5dR/FltgqiJcGb8tlC4
-         KCXdi7DZDisdS4N+1oUtw6LVn8NQFnzMNAz/ctjODo4Z3jQ6H1Tsjs3ExXcGwPz78iVn
-         Ls5g==
-X-Gm-Message-State: AOJu0YxPgSQkUSKn8eGot0EU2CbMKHbGeYdz1Lx9xTbo5nVAEQ/j32q5
-        wyHYALmtRGBraLncEoso6GM9VQ==
-X-Google-Smtp-Source: AGHT+IFPKdSvBmgG4k5t8wjzwxLYY7RoBwUh5zsRCXn1qsCZ87DEkz0BTDFQyQWNgiRhavvMjylrwg==
-X-Received: by 2002:a17:907:31cd:b0:a1c:9f65:a414 with SMTP id xf13-20020a17090731cd00b00a1c9f65a414mr41229ejb.152.1702048147713;
-        Fri, 08 Dec 2023 07:09:07 -0800 (PST)
+        bh=Uz469c4gN5niM5rjlwO+5+JkVlMzaiEgq9wGKFyoPqU=;
+        b=bK1XI006kAXXpBdEhXfdvXH4rT5VjXuNDh4AoyC4tuBZc8YD3xuoSVZBdSPr6+MhX8
+         6p/0EWdnvKAELo9I4hfcxTNJZIewFES1ujwJyrthGr3hcOwHB3SH510wXvdhO5b7BfB3
+         ZB74bfdO3s5vnVEzf9L8RquA2Gzm2hLjY7J3la4o9qecuOtMIU74ArICbWY7GQ8p0hg8
+         4Rn1FujGZ42r1z6CBDanewZ270Fouv1GRE9E8PH0vxmLjAsNBLkBZBU8YCkoC1YeQbYq
+         OIiRz2a4lS0qo0rlUKsUIGLbT6TefAf3UkXFa0VhQl2gMVSaZd2zxo9eKdsmyN88Z7Am
+         Rj8g==
+X-Gm-Message-State: AOJu0Yx9CKsKn/w7UNLF8hnbNtfSn9Yp602Rtyj3zfAGoXUYoxlb10GL
+        IBUgkG4l68SKeltUUrSIdkgxlg==
+X-Google-Smtp-Source: AGHT+IHSQ3i9C6rNLUi/kwzRb7sDWmy7dvRBz70Y0zQN3w/4uY2lGSOJrZIYv/smgSuGvXnSWxrstA==
+X-Received: by 2002:a17:906:1114:b0:a1c:c318:4bd9 with SMTP id h20-20020a170906111400b00a1cc3184bd9mr56709eja.154.1702048151506;
+        Fri, 08 Dec 2023 07:09:11 -0800 (PST)
 Received: from [192.168.55.221] (tmo-113-102.customers.d1-online.com. [80.187.113.102])
-        by smtp.gmail.com with ESMTPSA id r25-20020a170906351900b00a1cc1be1146sm1096114eja.217.2023.12.08.07.09.05
+        by smtp.gmail.com with ESMTPSA id r25-20020a170906351900b00a1cc1be1146sm1096114eja.217.2023.12.08.07.09.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 07:09:07 -0800 (PST)
+        Fri, 08 Dec 2023 07:09:11 -0800 (PST)
 From:   Luca Weiss <luca.weiss@fairphone.com>
-Date:   Fri, 08 Dec 2023 16:08:04 +0100
-Subject: [PATCH v3 08/11] arm64: dts: qcom: sc7280: Add ADSP node
+Date:   Fri, 08 Dec 2023 16:08:05 +0100
+Subject: [PATCH v3 09/11] arm64: dts: qcom: sc7280: Add CDSP node
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231208-sc7280-remoteprocs-v3-8-6aa394d33edf@fairphone.com>
+Message-Id: <20231208-sc7280-remoteprocs-v3-9-6aa394d33edf@fairphone.com>
 References: <20231208-sc7280-remoteprocs-v3-0-6aa394d33edf@fairphone.com>
 In-Reply-To: <20231208-sc7280-remoteprocs-v3-0-6aa394d33edf@fairphone.com>
 To:     Andy Gross <agross@kernel.org>,
@@ -77,7 +77,7 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
         Luca Weiss <luca.weiss@fairphone.com>
 X-Mailer: b4 0.12.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -89,138 +89,218 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Add the node for the ADSP found on the SC7280 SoC, using standard
 Qualcomm firmware.
 
+Remove the reserved-memory node from sc7280-chrome-common since CDSP is
+currently not used there.
+
 Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 ---
- arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts |  5 --
- arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi |  5 --
- arch/arm64/boot/dts/qcom/sc7280.dtsi               | 74 ++++++++++++++++++++++
- 3 files changed, 74 insertions(+), 10 deletions(-)
+ arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts |   5 -
+ arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi |   6 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 143 +++++++++++++++++++++
+ 3 files changed, 149 insertions(+), 5 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-index 10f4c75aed3f..b1ea31720d7b 100644
+index b1ea31720d7b..9c25e28a62d9 100644
 --- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
 +++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
 @@ -77,11 +77,6 @@ cont_splash_mem: cont-splash@e1000000 {
  			no-map;
  		};
  
--		adsp_mem: adsp@86700000 {
--			reg = <0x0 0x86700000 0x0 0x2800000>;
+-		cdsp_mem: cdsp@88f00000 {
+-			reg = <0x0 0x88f00000 0x0 0x1e00000>;
 -			no-map;
 -		};
 -
- 		cdsp_mem: cdsp@88f00000 {
- 			reg = <0x0 0x88f00000 0x0 0x1e00000>;
- 			no-map;
+ 		rmtfs_mem: memory@f8500000 {
+ 			compatible = "qcom,rmtfs-mem";
+ 			reg = <0x0 0xf8500000 0x0 0x600000>;
 diff --git a/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi b/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
-index 8f7682fe254a..a60fb58d1bf1 100644
+index a60fb58d1bf1..c53a5f32915a 100644
 --- a/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
-@@ -26,11 +26,6 @@
+@@ -17,6 +17,7 @@
+  * required by the setup for Chrome boards.
+  */
  
- / {
- 	reserved-memory {
--		adsp_mem: memory@86700000 {
--			reg = <0x0 0x86700000 0x0 0x2800000>;
--			no-map;
--		};
--
- 		camera_mem: memory@8ad00000 {
- 			reg = <0x0 0x8ad00000 0x0 0x500000>;
- 			no-map;
++/delete-node/ &cdsp_mem;
+ /delete-node/ &gpu_zap_mem;
+ /delete-node/ &gpu_zap_shader;
+ /delete-node/ &hyp_mem;
+@@ -86,6 +87,11 @@ spi_flash: flash@0 {
+ 	};
+ };
+ 
++/* Currently not used */
++&remoteproc_cdsp {
++	/delete-property/ memory-region;
++};
++
+ &remoteproc_wpss {
+ 	compatible = "qcom,sc7280-wpss-pil";
+ 	clocks = <&gcc GCC_WPSS_AHB_BDG_MST_CLK>,
 diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index f404276361fa..6d319c8c6acf 100644
+index 6d319c8c6acf..0c25b4ecd0dc 100644
 --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -143,6 +143,11 @@ wlan_fw_mem: wlan-fw@80c00000 {
+@@ -148,6 +148,11 @@ adsp_mem: adsp@86700000 {
  			no-map;
  		};
  
-+		adsp_mem: adsp@86700000 {
-+			reg = <0x0 0x86700000 0x0 0x2800000>;
++		cdsp_mem: cdsp@88f00000 {
++			reg = <0x0 0x88f00000 0x0 0x1e00000>;
 +			no-map;
 +		};
 +
  		video_mem: video@8b200000 {
  			reg = <0x0 0x8b200000 0x0 0x500000>;
  			no-map;
-@@ -3600,6 +3605,75 @@ qspi: spi@88dc000 {
- 			status = "disabled";
+@@ -3842,6 +3847,144 @@ nsp_noc: interconnect@a0c0000 {
+ 			qcom,bcm-voters = <&apps_bcm_voter>;
  		};
  
-+		remoteproc_adsp: remoteproc@3700000 {
-+			compatible = "qcom,sc7280-adsp-pas";
-+			reg = <0 0x03700000 0 0x100>;
++		remoteproc_cdsp: remoteproc@a300000 {
++			compatible = "qcom,sc7280-cdsp-pas";
++			reg = <0 0x0a300000 0 0x10000>;
 +
-+			interrupts-extended = <&pdc 6 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&adsp_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
-+					      <&adsp_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
-+					      <&adsp_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
-+					      <&adsp_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
-+					      <&adsp_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
++			interrupts-extended = <&intc GIC_SPI 578 IRQ_TYPE_LEVEL_HIGH>,
++					      <&cdsp_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
++					      <&cdsp_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
++					      <&cdsp_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
++					      <&cdsp_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
++					      <&cdsp_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
 +			interrupt-names = "wdog", "fatal", "ready", "handover",
 +					  "stop-ack", "shutdown-ack";
 +
 +			clocks = <&rpmhcc RPMH_CXO_CLK>;
 +			clock-names = "xo";
 +
-+			power-domains = <&rpmhpd SC7280_LCX>,
-+					<&rpmhpd SC7280_LMX>;
-+			power-domain-names = "lcx", "lmx";
++			power-domains = <&rpmhpd SC7280_CX>,
++					<&rpmhpd SC7280_MX>;
++			power-domain-names = "cx", "mx";
 +
-+			memory-region = <&adsp_mem>;
++			interconnects = <&nsp_noc MASTER_CDSP_PROC 0 &mc_virt SLAVE_EBI1 0>;
++
++			memory-region = <&cdsp_mem>;
 +
 +			qcom,qmp = <&aoss_qmp>;
 +
-+			qcom,smem-states = <&adsp_smp2p_out 0>;
++			qcom,smem-states = <&cdsp_smp2p_out 0>;
 +			qcom,smem-state-names = "stop";
 +
 +			status = "disabled";
 +
 +			glink-edge {
-+				interrupts-extended = <&ipcc IPCC_CLIENT_LPASS
++				interrupts-extended = <&ipcc IPCC_CLIENT_CDSP
 +							     IPCC_MPROC_SIGNAL_GLINK_QMP
 +							     IRQ_TYPE_EDGE_RISING>;
-+
-+				mboxes = <&ipcc IPCC_CLIENT_LPASS
++				mboxes = <&ipcc IPCC_CLIENT_CDSP
 +						IPCC_MPROC_SIGNAL_GLINK_QMP>;
 +
-+				label = "lpass";
-+				qcom,remote-pid = <2>;
++				label = "cdsp";
++				qcom,remote-pid = <5>;
 +
 +				fastrpc {
 +					compatible = "qcom,fastrpc";
 +					qcom,glink-channels = "fastrpcglink-apps-dsp";
-+					label = "adsp";
++					label = "cdsp";
 +					qcom,non-secure-domain;
 +					#address-cells = <1>;
 +					#size-cells = <0>;
 +
++					compute-cb@1 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <1>;
++						iommus = <&apps_smmu 0x11a1 0x0420>,
++							 <&apps_smmu 0x1181 0x0420>;
++					};
++
++					compute-cb@2 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <2>;
++						iommus = <&apps_smmu 0x11a2 0x0420>,
++							 <&apps_smmu 0x1182 0x0420>;
++					};
++
 +					compute-cb@3 {
 +						compatible = "qcom,fastrpc-compute-cb";
 +						reg = <3>;
-+						iommus = <&apps_smmu 0x1803 0x0>;
++						iommus = <&apps_smmu 0x11a3 0x0420>,
++							 <&apps_smmu 0x1183 0x0420>;
 +					};
 +
 +					compute-cb@4 {
 +						compatible = "qcom,fastrpc-compute-cb";
 +						reg = <4>;
-+						iommus = <&apps_smmu 0x1804 0x0>;
++						iommus = <&apps_smmu 0x11a4 0x0420>,
++							 <&apps_smmu 0x1184 0x0420>;
 +					};
 +
 +					compute-cb@5 {
 +						compatible = "qcom,fastrpc-compute-cb";
 +						reg = <5>;
-+						iommus = <&apps_smmu 0x1805 0x0>;
++						iommus = <&apps_smmu 0x11a5 0x0420>,
++							 <&apps_smmu 0x1185 0x0420>;
++					};
++
++					compute-cb@6 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <6>;
++						iommus = <&apps_smmu 0x11a6 0x0420>,
++							 <&apps_smmu 0x1186 0x0420>;
++					};
++
++					compute-cb@7 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <7>;
++						iommus = <&apps_smmu 0x11a7 0x0420>,
++							 <&apps_smmu 0x1187 0x0420>;
++					};
++
++					compute-cb@8 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <8>;
++						iommus = <&apps_smmu 0x11a8 0x0420>,
++							 <&apps_smmu 0x1188 0x0420>;
++					};
++
++					/* note: secure cb9 in downstream */
++
++					compute-cb@11 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <11>;
++						iommus = <&apps_smmu 0x11ab 0x0420>,
++							 <&apps_smmu 0x118b 0x0420>;
++					};
++
++					compute-cb@12 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <12>;
++						iommus = <&apps_smmu 0x11ac 0x0420>,
++							 <&apps_smmu 0x118c 0x0420>;
++					};
++
++					compute-cb@13 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <13>;
++						iommus = <&apps_smmu 0x11ad 0x0420>,
++							 <&apps_smmu 0x118d 0x0420>;
++					};
++
++					compute-cb@14 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <14>;
++						iommus = <&apps_smmu 0x11ae 0x0420>,
++							 <&apps_smmu 0x118e 0x0420>;
 +					};
 +				};
 +			};
 +		};
 +
- 		remoteproc_wpss: remoteproc@8a00000 {
- 			compatible = "qcom,sc7280-wpss-pas";
- 			reg = <0 0x08a00000 0 0x10000>;
+ 		usb_1: usb@a6f8800 {
+ 			compatible = "qcom,sc7280-dwc3", "qcom,dwc3";
+ 			reg = <0 0x0a6f8800 0 0x400>;
 
 -- 
 2.43.0
