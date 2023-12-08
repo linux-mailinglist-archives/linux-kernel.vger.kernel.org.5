@@ -2,126 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8428680A843
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6225C80A849
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573772AbjLHQJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:09:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
+        id S1573876AbjLHQKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:10:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233643AbjLHQJQ (ORCPT
+        with ESMTP id S235966AbjLHQKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:09:16 -0500
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1D3198D
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:09:21 -0800 (PST)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5d719a2004fso18926967b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 08:09:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702051760; x=1702656560; darn=vger.kernel.org;
-        h=message-id:to:from:cc:subject:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u6imjyzF7qx6UKd6s1Syi6NhYQbuoJMem1zS1tbU350=;
-        b=wytdtopD7MqdQGFPKQnpn4UD6hPZGTE6UpdzIOtNoTlXL5Rjt1OkLbOe+uCSy0qF0x
-         KSD2MmIgTwQkga/IIQ1bSPOxh/EiMo2US7Wkf44qMzgua73JIm4kX+NkVTL78nW7cPGk
-         Kt2RduAspR/QX8azx0dkrHn03D3MGh0LN8709S3ngIHwYckUlle7DbxshJXMV0jwHgJF
-         MbrKh3OhmgeXHoPPbTjkS+wEiTJ48SLBbJvFoI/eLmNj6h/qPDT+MuqUWeCazHTxbbDP
-         4QfLXxpjQxl6XrsVElzgRoVkvXgYdsNGB0rvh0IWWDJFtfSFCGI12Rd9ih7I55Pt++jk
-         7ZIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702051760; x=1702656560;
-        h=message-id:to:from:cc:subject:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u6imjyzF7qx6UKd6s1Syi6NhYQbuoJMem1zS1tbU350=;
-        b=EcXlkR/0QQDDDim3ruhDHw20pf8WmaXl5ybHZctMNxHb1PXbCHsad2LYXctOUX2kr1
-         5dK1cDFroCMPtfFnWEurM03iRnC2VUlTd78iBTB+VLmfpczeTgj7GMgPbLA0lx+LRir5
-         oK9lSro778H49vhTlBm7CRAghkwJESQEVCFw+k8ibK36Xvpd3NdyIhdqXK7whB149oRp
-         zwax+t3vzIe4/1NLFVD91C+kf4vf2k6PpfkeIThaJMpoN2g0psidn77g0W05/FpPtbjd
-         XCsbcAQOYwv3dGpU/o8meHupwYpPkVslYIAVdaOu4jx1P5rHGo+qKjkBnPhv9m77hIW8
-         qp5A==
-X-Gm-Message-State: AOJu0YxK+Lpvl2yRCE5aFmvgv9o0HplSQrplA1Y9iF8f/4XwFpVNaKfk
-        qY/naRveIpomjWucYsq/Wh82EQAIhT9D05sUbKI=
-X-Google-Smtp-Source: AGHT+IG1sNFI0tjwkJLDXwhSee+BTMFi+F9FpTRtUaY+XoDDUgPjyW3cBDmhTK2DPzvRyGlXcq6PGw==
-X-Received: by 2002:a0d:dac4:0:b0:5d9:ace2:e496 with SMTP id c187-20020a0ddac4000000b005d9ace2e496mr133461ywe.90.1702051760428;
-        Fri, 08 Dec 2023 08:09:20 -0800 (PST)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id o65-20020a817344000000b00583f8f41cb8sm745193ywc.63.2023.12.08.08.09.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 08:09:19 -0800 (PST)
-Date:   Fri, 08 Dec 2023 08:09:19 -0800 (PST)
-X-Google-Original-Date: Fri, 08 Dec 2023 08:07:52 PST (-0800)
-Subject: [GIT PULL] RISC-V Fixes for 6.7-rc5
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@rivosinc.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-1c062b80-96c4-4146-a689-9338ce7c524c@palmer-ri-x1c9>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,PP_MIME_FAKE_ASCII_TEXT,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 8 Dec 2023 11:10:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BE2199B
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:10:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id ECE54C433C9;
+        Fri,  8 Dec 2023 16:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702051825;
+        bh=k70d+rmqL6gSsL1IMke2eW576j5AfLrvXYwaW5nHJuA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=DY4bWioroVoTMN18u2Csl0cPvH8wi65U946SLuE4Al6smWJECVUbeykfm80OqAi3n
+         CQl+Te9Qe5U3rDd+JptrcvhzL4Ne0H5jkbvx0VhDU6/I7ewVFnFt+TRdZRmA24RPVe
+         pv6csMpO8NV9VA+Q5DoOCKe2vfDpJpnAettap1yu+RnW8uB0lkACRfSUiCJg6RYv6x
+         5Wj7gtQbU3JnUfS+6DEDHWZ/NSv4ktbDdPkB+mhscjgF56yq1U+RzZdPcFdujlGiR9
+         YrmDvlZpVBpxOjBAdlBBfuMSUQ/Us/RjeTvnvLSCCVSsPOElA2dQHVVh11wdLy/zDD
+         6o963YhQuGHSw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D38EFDD4F1E;
+        Fri,  8 Dec 2023 16:10:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH -fixes] riscv: Check if the code to patch lies in the exit
+ section
+From:   patchwork-bot+linux-riscv@kernel.org
+Message-Id: <170205182486.7426.12012524229624787875.git-patchwork-notify@kernel.org>
+Date:   Fri, 08 Dec 2023 16:10:24 +0000
+References: <20231206165458.40610-1-alexghiti@rivosinc.com>
+In-Reply-To: <20231206165458.40610-1-alexghiti@rivosinc.com>
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, zong.li@sifive.com,
+        linux-kernel@vger.kernel.org,
+        syzbot+2c2a76232878c44e0eae@syzkaller.appspotmail.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+Hello:
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+This patch was applied to riscv/linux.git (fixes)
+by Palmer Dabbelt <palmer@rivosinc.com>:
 
-are available in the Git repository at:
+On Wed,  6 Dec 2023 17:54:58 +0100 you wrote:
+> Otherwise we fall through to vmalloc_to_page() which panics since the
+> address does not lie in the vmalloc region.
+> 
+> Fixes: 043cb41a85de ("riscv: introduce interfaces to patch kernel code")
+> Reported-by: syzbot+2c2a76232878c44e0eae@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/000000000000ce4a27060b39ed34@google.com/T/
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> 
+> [...]
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.7-rc5
+Here is the summary with links:
+  - [-fixes] riscv: Check if the code to patch lies in the exit section
+    https://git.kernel.org/riscv/c/eb46a0076501
 
-for you to fetch changes up to ed5b7cfd7839f9280a63365c1133482b42d0981f:
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-  riscv: errata: andes: Probe for IOCP only once in boot stage (2023-12-06 07:18:58 -0800)
 
-----------------------------------------------------------------
-RISC-V Fixes for 6.7-rc5
-
-* A pair of fixes to the new module load-time relocation code.
-* A fix for hwprobe overflowing on rv32.
-* A fix for to correctly decode C.SWSP and C.SDSP, which manifests in
-  misaligned access handling.
-* A fix for a boot-time shadow call stack initialization ordering issue.
-* A fix for Andes' errata probing, which was calling
-  riscv_noncoherent_supported() too late in the boot process and
-  triggering an oops.
-
-----------------------------------------------------------------
-This is all a bit big for rc5, but I think it's really just up to me being out
-for a bit around Plumbers and Thanksgiving.
-
-----------------------------------------------------------------
-Andrew Jones (1):
-      RISC-V: hwprobe: Always use u64 for extension bits
-
-Charlie Jenkins (3):
-      riscv: Safely remove entries from relocation list
-      riscv: Correct type casting in module loading
-      Support rv32 ULEB128 test
-
-Clément Léger (1):
-      riscv: fix misaligned access handling of C.SWSP and C.SDSP
-
-Lad Prabhakar (1):
-      riscv: errata: andes: Probe for IOCP only once in boot stage
-
-Palmer Dabbelt (1):
-      Merge patch series "riscv: Fix issues with module loading"
-
-Rob Herring (1):
-      dt-bindings: perf: riscv,pmu: drop unneeded quotes
-
-Samuel Holland (1):
-      riscv: Fix SMP when shadow call stacks are enabled
-
- .../devicetree/bindings/perf/riscv,pmu.yaml        |   2 +-
- arch/riscv/errata/andes/errata.c                   |  20 ++--
- arch/riscv/kernel/head.S                           |   2 +-
- arch/riscv/kernel/module.c                         | 114 +++++++++++++++------
- arch/riscv/kernel/sys_riscv.c                      |   2 +-
- arch/riscv/kernel/tests/module_test/test_uleb128.S |   8 +-
- arch/riscv/kernel/traps_misaligned.c               |   6 +-
- 7 files changed, 106 insertions(+), 48 deletions(-)
