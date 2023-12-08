@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2163F80AD30
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:38:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1507980AD31
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233896AbjLHTiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 14:38:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
+        id S233985AbjLHTiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 14:38:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLHTiR (ORCPT
+        with ESMTP id S229572AbjLHTiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 14:38:17 -0500
+        Fri, 8 Dec 2023 14:38:21 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3291A98
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:38:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C6C8EC433C7;
-        Fri,  8 Dec 2023 19:38:23 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA231720
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:38:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CB267C433C9;
+        Fri,  8 Dec 2023 19:38:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702064303;
-        bh=pfhHhbxigocqyMNuNVPN29KxhpZWLOu1W6TsIC+kwfw=;
+        s=k20201202; t=1702064307;
+        bh=o/kkmyDEFR0A8zybW0jW+ZY0fX+Y5TDHGh0WHQZZ7k0=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=kB/43SuchKg3T4TURy0NS9BAJHMgJgSWKxRqf3pK/37Fbho5j6BwjfD/t5SdfG2KP
-         5GZrr/2v72lz0R5ysK009INFNSgH++J21Ncx5MVM2BxlVaV+mKkHw8kRZBzL9WoHwQ
-         T+xzSVLj0r7EVTjv3pvYNL3K0ASTTT0Hr85R04DYETg2c3mhmikqyQeXCeMQi6cFcf
-         qXTV/LnLpWAUBIw9qt1DkaOoVzJbQ46JaS9SNSsP9hhjk40mTn2qktp7DuywAvwNwN
-         tJH7HkWkjL4McMo14eTzCgjCe0a99656VHyz5UK0Usy7Vq5R2dz7b4PSLn2LguwolZ
-         jPEL6PXqdBfhQ==
+        b=m2xE6nJ+53cN9nk1J42I1rchFQoh9TDlO3+0fn89/umyw3E/ObKaw1WaEhRBmlPdk
+         370wFUiifcXjYVrLylCIDxK8g+1XZSE+YHUccK3o8GvxOAh/9X0USb8xArQWbyD/g9
+         mChODUdNN9QDSjohKDI13AHTIWyN7BuYbjBARAeIk4wtLGbgYpG+mGRcEnnDuf8qhA
+         39zSGWcLqfy4h9N5pP4E6IWKm9YPAbIwNgi6Ubzd4c6HBfE8Ur7L7vpUt1jdlFS0/P
+         lUE2T/cKdGcvqto4q/937lW8g6scfYZkPMVg2kC50lOj5xfZWiequ6MripAYg2AEYm
+         rQiZgDRyfT4yw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B436ADD4F1E;
-        Fri,  8 Dec 2023 19:38:23 +0000 (UTC)
-Subject: Re: [git pull] drm fixes for 6.7-rc5
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B9672DD4F1E;
+        Fri,  8 Dec 2023 19:38:27 +0000 (UTC)
+Subject: Re: [GIT PULL] sound fixes for 6.7-rc5
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9tw7vc_BOsPH0xAwFvx_ZCQyZ24ofp3pUt1MQe9QA_U5Mg@mail.gmail.com>
-References: <CAPM=9tw7vc_BOsPH0xAwFvx_ZCQyZ24ofp3pUt1MQe9QA_U5Mg@mail.gmail.com>
-X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
- <dri-devel.lists.freedesktop.org>
-X-PR-Tracked-Message-Id: <CAPM=9tw7vc_BOsPH0xAwFvx_ZCQyZ24ofp3pUt1MQe9QA_U5Mg@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2023-12-08
-X-PR-Tracked-Commit-Id: b7b5a56acec819bb8dcd03c687e97a091b29d28f
+In-Reply-To: <874jgtyo9u.wl-tiwai@suse.de>
+References: <874jgtyo9u.wl-tiwai@suse.de>
+X-PR-Tracked-List-Id: <linux-sound.vger.kernel.org>
+X-PR-Tracked-Message-Id: <874jgtyo9u.wl-tiwai@suse.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.7-rc5
+X-PR-Tracked-Commit-Id: 634e5e1e06f5cdd614a1bc429ecb243a51cc009d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 38bafa65b1260cb774cfc0c9a3ddf82d3c563e10
-Message-Id: <170206430372.311.5094699771321399720.pr-tracker-bot@kernel.org>
-Date:   Fri, 08 Dec 2023 19:38:23 +0000
-To:     Dave Airlie <airlied@gmail.com>
+X-PR-Merge-Commit-Id: b8b68d2fd41c1068554290fdf2c5adc6b03d40ce
+Message-Id: <170206430775.311.17101107361265756825.pr-tracker-bot@kernel.org>
+Date:   Fri, 08 Dec 2023 19:38:27 +0000
+To:     Takashi Iwai <tiwai@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Sound Mailing List <linux-sound@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,12 +59,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 8 Dec 2023 14:54:20 +1000:
+The pull request you sent on Fri, 08 Dec 2023 11:36:13 +0100:
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2023-12-08
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.7-rc5
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/38bafa65b1260cb774cfc0c9a3ddf82d3c563e10
+https://git.kernel.org/torvalds/c/b8b68d2fd41c1068554290fdf2c5adc6b03d40ce
 
 Thank you!
 
