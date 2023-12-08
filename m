@@ -2,232 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E4D809EF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6920809F1A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233312AbjLHJOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 04:14:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56304 "EHLO
+        id S233239AbjLHJTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 04:19:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233238AbjLHJOR (ORCPT
+        with ESMTP id S231863AbjLHJTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 04:14:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5481735
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 01:14:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E997C433C7;
-        Fri,  8 Dec 2023 09:14:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702026862;
-        bh=PpqkV81OadB/h6MWWmM9uepUUBI4O85xxP4qkQ1Svng=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c6kPkn7C4GMyEI0IstxPAmJl+5gtuWg9EvwvwW+IgUrErh0VwVr6MkcTST66NuYny
-         jYC6UwgLdz8QGoz2D8pU2gRmKjH8hh1FalxlQnWwM4WhdncRiQ/Ihttua20jlBJpcU
-         KgIROty+rbO3i0wmTkI9aN0mxcFcd7OXIF9cVGtdI4sdfQwFiCJp47R6m9VPsXoN42
-         Cv770NYTWFTDiltQsX+DFu0l4OEGsIK5HoXh8NwD8gMKiCvVyley9c00h5farkpYiu
-         GXt1o9sHdq1eYrpph9nWc9FDlN2mXFUUdTS/Q2lst8jO7708rLH9y39SZDy+cpjmEM
-         ab6dZPzpB71GA==
-Date:   Fri, 8 Dec 2023 10:14:19 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Andy Yan <andyshrk@163.com>
-Cc:     Keith Zhao <keith.zhao@starfivetech.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        William Qiu <william.qiu@starfivetech.com>,
-        Xingyu Wu <xingyu.wu@starfivetech.com>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        Shengyang Chen <shengyang.chen@starfivetech.com>,
-        Jack Zhu <jack.zhu@starfivetech.com>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>,
-        "maarten.lankhorst@linux.intel.com" 
-        <maarten.lankhorst@linux.intel.com>,
-        "suijingfeng@loongson.cn" <suijingfeng@loongson.cn>
-Subject: Re: [v3 5/6] drm/vs: Add hdmi driver
-Message-ID: <xevxqusbizjfs4qt5rufhntd3vd656o2smocvivvulzceh3aeu@uuihphhat5wi>
-References: <20231204123315.28456-6-keith.zhao@starfivetech.com>
- <esetsiqgqpk35zue4c6aq7l6zn4kezhxkqqa7ompaz2vhdy3lr@4d5awfqgs2ss>
- <94a1f9fc-82fb-4a04-a44b-f9b20c2bdfdd@starfivetech.com>
- <abdl6kmighvpwojvafq443q7grn6w3abwpvw7zwbna4jvtsvjf@fa42rv46n2wh>
- <40cdd3c7-174e-4611-9ea6-22cb56d1f62b@starfivetech.com>
- <e90142d.44b1.18c43833b63.Coremail.andyshrk@163.com>
- <e0b84511-dbb4-46fa-9465-713369232f6f@starfivetech.com>
- <43e42269.314.18c46dbb4c5.Coremail.andyshrk@163.com>
- <e1c362dc-8aac-4d13-9356-8b7ccae4727f@starfivetech.com>
- <5a79a4b9.1bd7.18c4773c1ea.Coremail.andyshrk@163.com>
+        Fri, 8 Dec 2023 04:19:10 -0500
+Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A051716;
+        Fri,  8 Dec 2023 01:19:15 -0800 (PST)
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.trvn.ru (Postfix) with ESMTPSA id 8F7AB42C2B;
+        Fri,  8 Dec 2023 14:19:12 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+        t=1702027153; bh=t+bjnp+qG/kG37IDVL7TIjl1JfM4ev6dMaDhwWJWoEY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=c5ZzOKjG5Er4dNbgmllmXYOsiIHPwE5TyX4xo+D+YBfHVtUCASUfamcRjT3c8o9nJ
+         xftb5qT+I7W/lZmrK8L5UPuiOqgg6QHdD/5+uUVWF82gmyzlhyuIVJkyqR0Lz8ujSA
+         uE7aY2O8jJnddaRcNxyXhcduMbfcxWZwIENIfiaDJ84LXL84XVv15fRjlyOs8gX/Hy
+         rUo0y2HjToj/1tn268OMGRl51BCdHuJHxj5dPCjQPD2rxf+bVgqYik+l3q5xI/b4Le
+         fc4tKeIlsigqahrjXrTI4TOShSw/Pn7BU2bDeWxyW8TyZNa9uZB10EYowMkdoNLDx6
+         DM7h54nbzUfUg==
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mclzxbyf7a4jkefy"
-Content-Disposition: inline
-In-Reply-To: <5a79a4b9.1bd7.18c4773c1ea.Coremail.andyshrk@163.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Fri, 08 Dec 2023 14:19:11 +0500
+From:   Nikita Travkin <nikita@trvn.ru>
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] arm64: dts: qcom: pm8916: Add BMS and charger
+In-Reply-To: <mmxk4dko6ib2pgrzcotxf65q5c7d4eaykd4sfh2ryrmfbdabd7@wnttadck2mda>
+References: <20231120-pm8916-dtsi-bms-lbc-v4-0-4f91056c8252@trvn.ru>
+ <20231120-pm8916-dtsi-bms-lbc-v4-2-4f91056c8252@trvn.ru>
+ <mmxk4dko6ib2pgrzcotxf65q5c7d4eaykd4sfh2ryrmfbdabd7@wnttadck2mda>
+Message-ID: <1a6be726b31919a31f369c64e75e0f41@trvn.ru>
+X-Sender: nikita@trvn.ru
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Bjorn Andersson писал(а) 08.12.2023 07:48:
+> On Mon, Nov 20, 2023 at 07:03:04PM +0500, Nikita Travkin wrote:
+>> diff --git a/arch/arm64/boot/dts/qcom/pm8916.dtsi b/arch/arm64/boot/dts/qcom/pm8916.dtsi
+> [..]
+>>
+>> +		pm8916_bms: battery@4000 {
+> 
+> "battery" is not a valid child of the pmic according to
+> mfd/qcom,spmi-pmic.yaml, so please update the binding to remove the
+> warnings that this introduces.
+> 
 
---mclzxbyf7a4jkefy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This should be done in 1/3 which is already accepted to mfd,
+so the warning should be gone when the stuff is pulled together.
 
-Hi,
+Sorry for not making sure it's in earlier
+Nikita
 
-On Fri, Dec 08, 2023 at 11:23:37AM +0800, Andy Yan wrote:
-> =E5=9C=A8 2023-12-08 11:00:31=EF=BC=8C"Keith Zhao" <keith.zhao@starfivete=
-ch.com> =E5=86=99=E9=81=93=EF=BC=9A
-> >
-> >
-> >On 2023/12/8 8:37, Andy Yan wrote:
-> >> Hi Keth=EF=BC=9A
-> >>=20
-> >>=20
-> >>=20
-> >>=20
-> >>=20
-> >>=20
-> >> =E5=9C=A8 2023-12-07 18:48:13=EF=BC=8C"Keith Zhao" <keith.zhao@starfiv=
-etech.com> =E5=86=99=E9=81=93=EF=BC=9A
-> >>>
-> >>>
-> >>>On 2023/12/7 17:02, Andy Yan wrote:
-> >>>>=20
-> >>>>=20
-> >>>>=20
-> >>>>=20
-> >>>> Hi Keith=EF=BC=9A
-> >>>>=20
-> >>>>=20
-> >>>>=20
-> >>>>=20
-> >>>>=20
-> >>>>=20
-> >>>>=20
-> >>>>=20
-> >>>>=20
-> >>>>=20
-> >>>>=20
-> >>>> At 2023-12-06 22:11:33, "Keith Zhao" <keith.zhao@starfivetech.com> w=
-rote:
-> >>>>>
-> >>>>>
-> >>>>>On 2023/12/6 20:56, Maxime Ripard wrote:
-> >>>>>> On Wed, Dec 06, 2023 at 08:02:55PM +0800, Keith Zhao wrote:
-> >>>>>>> >> +static const struct of_device_id starfive_hdmi_dt_ids[] =3D {
-> >>>>>>> >> +	{ .compatible =3D "starfive,jh7110-inno-hdmi",},
-> >>>>>>> >=20
-> >>>>>>> > So it's inno hdmi, just like Rockchip then?
-> >>>>>>> >=20
-> >>>>>>> > This should be a common driver.
-> >>>>>>>
-> >>>>>>> Rockchip has a inno hdmi IP. and Starfive has a inno hdmi IP.
-> >>>>>>> but the harewawre difference of them is big , it is not easy to u=
-se the common driver
-> >>>>>>> maybe i need the inno hdmi version here to make a distinction
-> >>>>>>=20
-> >>>>>> I just had a look at the rockchip header file: all the registers b=
-ut the
-> >>>>>> STARFIVE_* ones are identical.
-> >>>>>>=20
-> >>>>>> There's no need to have two identical drivers then, please use the
-> >>>>>> rockchip driver instead.
-> >>>>>>=20
-> >>>>>> Maxime
-> >>>>>
-> >>>>>ok, have a simple test , edid can get . i will continue=20
-> >>>>=20
-> >>>> Maybe you can take drivers/gpu/drm/bridge/synopsys/dw-hdmi as a refe=
-rence=EF=BC=8C this
-> >>>> is also a hdmi ip used by rockchip/meson/sunxi/jz/imx=E3=80=82
-> >>>> We finally make it share one driver=E3=80=82
-> >>>>>
-> >>>hi Andy:
-> >>>
-> >>>dw_hdmi seems a good choice , it can handle inno hdmi hardware by defi=
-ne its dw_hdmi_plat_data.
-> >>>does it means i can write own driver files such as(dw_hdmi-starfive.c)=
- based on dw_hdmi instead of add plat_data in inno_hdmi.c
-> >>>
-> >>=20
-> >> I think the process maybe like this=EF=BC=9A
-> >>=20
-> >> 1. split the inno_hdmi.c under rockchip to  inno_hdmi.c(the common par=
-t), inno_hdmi-rockchip.c(the soc specific part)
-> >> 2. move the common part inno_hdmi.c to drivers/gpu/drm/bridge/innosili=
-con/
-> >> 3. add startfive specific part, inno_hdmi-startfive.c
-> >>=20
-> >> bellow git log from kernel three show how we convert  dw_hdmi to a com=
-mon driver:=20
-> >>=20
-> >>=20
-> >>=20
-> >> 12b9f204e804 drm: bridge/dw_hdmi: add rockchip rk3288 support
-> >> 74af9e4d03b8 dt-bindings: Add documentation for rockchip dw hdmi
-> >> d346c14eeea9 drm: bridge/dw_hdmi: add function dw_hdmi_phy_enable_spare
-> >> a4d3b8b050d5 drm: bridge/dw_hdmi: clear i2cmphy_stat0 reg in hdmi_phy_=
-wait_i2c_done
-> >> 632d035bace2 drm: bridge/dw_hdmi: add mode_valid support
-> >> 0cd9d1428322 drm: bridge/dw_hdmi: add support for multi-byte register =
-width access
-> >> cd152393967e dt-bindings: add document for dw_hdmi
-> >> b21f4b658df8 drm: imx: imx-hdmi: move imx-hdmi to bridge/dw_hdmi
-> >> aaa757a092c2 drm: imx: imx-hdmi: split phy configuration to platform d=
-river
-> >> 3d1b35a3d9f3 drm: imx: imx-hdmi: convert imx-hdmi to drm_bridge mode
-> >> c2c3848851a7 drm: imx: imx-hdmi: return defer if can't get ddc i2c ada=
-pter
-> >> b587833933de drm: imx: imx-hdmi: make checkpatch happy
-> >>=20
-> >hi Andy:
-> >I got you means,=20
-> >as I don't have a rockchip board on hand , to split the inno_hdmi.c can =
-not be tested.
-> >
-> >how adout this idea:
-> >1=E3=80=81split the starfive_hdmi.c under verisilicion to  inno_hdmi.c(t=
-he common part), inno_hdmi-starfive.c(the soc specific part)
-> >2. move the common part inno_hdmi.c to drivers/gpu/drm/bridge/innosilico=
-n/
-> >3. In the future, inno hdmi.c under rockchip will reuse the public drive=
-r.
->=20
-> I am not sure if drm maintainers are happy with this=E3=80=82
-
-Not really, no.
-
-Because we would still have two drivers for the same controller, and a
-common one that haven't really been tested on anything but a single
-platform. So arguably a worse situation than what you were suggesting in
-the first place.
-
-The best solution would be to find someone with a Rockchip board to test
-your changes, or to get one if it's doable so you can test yourself.
-
-Maxime
-
---mclzxbyf7a4jkefy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZXLeZgAKCRDj7w1vZxhR
-xX+VAQCDN8mU1ig+h/k3GOiSARtjlUBm/gfNxSrc+w8Z+uccaQEAiaFT6xKN1A/R
-YHgxfBULnV+2196VN7w4qNeVghA3BA0=
-=oX5D
------END PGP SIGNATURE-----
-
---mclzxbyf7a4jkefy--
+> Thanks,
+> Bjorn
