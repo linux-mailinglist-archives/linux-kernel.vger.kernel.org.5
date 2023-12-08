@@ -2,140 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB8A809A74
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 04:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B38809AAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 04:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573082AbjLHDdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 22:33:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
+        id S235374AbjLHDrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 22:47:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLHDdx (ORCPT
+        with ESMTP id S229531AbjLHDrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 22:33:53 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7043310EB
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 19:33:59 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76AF4C433C7;
-        Fri,  8 Dec 2023 03:33:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702006439;
-        bh=gvbTjN36aMg/8pd0wDaFdxIHv1L9nizj9pVmZyQNfvU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XT/f7OFCQw+yUyR8eYvAXk3PZ0ZScodSRv43KEThVVXSFdT5lRTRXm6vr8zT5m1og
-         P+W4Drkj4mrQiNkL4zSo6u24njZNzCpBzxEStx2lKX7Bn2elODmrJRjdjK0MRG4j2L
-         osOT9U3Q1XSJseKVhrQW6Qz1PI+THOt65SN6d7jzHeRydw918SG1k2sX+H3IcEIi+v
-         nAYqXYWjK1AF09RPymVhJ6ZgiS72sRLnnRfucYOY6yZ61/pXK8ASkWT5QCqhs8S0al
-         PVsoIOxs3t1WTniTWQ+HIrYHRaIlwqrfnDC5EirMXD4KrpMfkHKkyMk3dw6MbvEA/Z
-         TaMmtJO8IjRRg==
-Date:   Thu, 7 Dec 2023 19:38:33 -0800
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: sm8650: Add DisplayPort device
- nodes
-Message-ID: <bcecxzpogq6pndwmhgrl52ia3orni2q5brg6mpc6fkn5widigb@v6dy4minwajx>
-References: <20231207-topic-sm8650-upstream-dp-v1-0-b762c06965bb@linaro.org>
- <20231207-topic-sm8650-upstream-dp-v1-3-b762c06965bb@linaro.org>
+        Thu, 7 Dec 2023 22:47:01 -0500
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [IPv6:2001:41d0:203:375::ad])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C4810F9
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 19:47:06 -0800 (PST)
+Message-ID: <620df220-4b82-4102-ba56-1ed348c2f8cb@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1702007224;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LRG1tZ4BUZmjduFYGxdtrgVWOq3VdOKTbXXj+ZyvQXQ=;
+        b=Y8auVz02tjoEIUc5pIn0TwqMEITXkgCR9ncdXJWR54TcaBEplXik5NNufV91wm50W4GLzw
+        7VVbQZlJ09/QB7mFD9brVfMbAbi69T7TzFW+6IeSyhOq0FQYFgWkUJTQx0mrIQiA2K16J1
+        6fAg53MbC+XKopi+b74uquU794C1NYc=
+Date:   Thu, 7 Dec 2023 19:46:56 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231207-topic-sm8650-upstream-dp-v1-3-b762c06965bb@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 3/3] selftest/bpf: Test a perf bpf program that
+ suppresses side effects.
+Content-Language: en-GB
+To:     Kyle Huey <me@kylehuey.com>, Marco Elver <elver@google.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Robert O'Callahan <robert@ocallahan.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+References: <20231207163458.5554-1-khuey@kylehuey.com>
+ <20231207163458.5554-4-khuey@kylehuey.com>
+ <CAEf4Bzbt1abnfj2w6Hmp2w8SqVkQiCW=SimY6ss_Jp_325QyoA@mail.gmail.com>
+ <CANpmjNOLojXk64jvwD+m19B+FsR5MuBwWKv95uakq-Dp1_AGXA@mail.gmail.com>
+ <CAP045AoeVP=n5K+0jt2ddBspif7kx4hzOdBM86CuxNGRCgx4VA@mail.gmail.com>
+ <CAP045ArdMgodyOTs_m6-99FxrqUJzRjDth8epkaa69YQtNeSMw@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAP045ArdMgodyOTs_m6-99FxrqUJzRjDth8epkaa69YQtNeSMw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 05:37:19PM +0100, Neil Armstrong wrote:
-> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-[..]
-> +
-> +			mdss_dp0: displayport-controller@af54000 {
-> +				compatible = "qcom,sm8650-dp";
-> +				reg = <0 0xaf54000 0 0x200>,
-> +				      <0 0xaf54200 0 0x200>,
-> +				      <0 0xaf55000 0 0xc00>,
-> +				      <0 0xaf56000 0 0x400>,
-> +				      <0 0xaf57000 0 0x400>;
-> +
-> +				interrupts-extended = <&mdss 12>;
-> +
-> +				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_DPTX0_AUX_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_DPTX0_LINK_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_DPTX0_LINK_INTF_CLK>,
-> +					 <&dispcc DISP_CC_MDSS_DPTX0_PIXEL0_CLK>;
-> +				clock-names = "core_iface",
-> +					      "core_aux",
-> +					      "ctrl_link",
-> +					      "ctrl_link_iface",
-> +					      "stream_pixel";
-> +
-> +				assigned-clocks = <&dispcc DISP_CC_MDSS_DPTX0_LINK_CLK_SRC>,
-> +						  <&dispcc DISP_CC_MDSS_DPTX0_PIXEL0_CLK_SRC>;
-> +				assigned-clock-parents = <&usb_dp_qmpphy QMP_USB43DP_DP_LINK_CLK>,
-> +							 <&usb_dp_qmpphy QMP_USB43DP_DP_VCO_DIV_CLK>;
-> +
-> +				operating-points-v2 = <&dp_opp_table>;
-> +
-> +				power-domains = <&rpmhpd RPMHPD_MX>;
 
-Are you sure the DP TX block sits in MX? I'd expect this to be
-RPMHPD_MMCX, and then the PHY partially in MX...
+On 12/7/23 5:08 PM, Kyle Huey wrote:
+> On Thu, Dec 7, 2023 at 2:56 PM Kyle Huey <me@kylehuey.com> wrote:
+>> On Thu, Dec 7, 2023 at 11:20 AM Marco Elver <elver@google.com> wrote:
+>>> On Thu, 7 Dec 2023 at 20:12, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>>>> On Thu, Dec 7, 2023 at 8:35 AM Kyle Huey <me@kylehuey.com> wrote:
+>>>>> The test sets a hardware breakpoint and uses a bpf program to suppress the
+>>>>> side effects of a perf event sample, including I/O availability signals,
+>>>>> SIGTRAPs, and decrementing the event counter limit, if the ip matches the
+>>>>> expected value. Then the function with the breakpoint is executed multiple
+>>>>> times to test that all effects behave as expected.
+>>>>>
+>>>>> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+>>>>> ---
+>>>>>   .../selftests/bpf/prog_tests/perf_skip.c      | 145 ++++++++++++++++++
+>>>>>   .../selftests/bpf/progs/test_perf_skip.c      |  15 ++
+>>>>>   2 files changed, 160 insertions(+)
+>>>>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
+>>>>>   create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
+>>>>>
+>>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+>>>>> new file mode 100644
+>>>>> index 000000000000..f6fa9bfd9efa
+>>>>> --- /dev/null
+>>>>> +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+>>>>> @@ -0,0 +1,145 @@
+>>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>>> +#define _GNU_SOURCE
+>>>>> +
+>>>>> +/* We need the latest siginfo from the kernel repo. */
+>>>>> +#include <asm/siginfo.h>
+>>>> selftests are built with UAPI headers' copies under tools/include, so
+>>>> CI did catch a real issue, I think. Try copying
+>>>> include/uapi/asm-generic/siginfo.h into
+>>>> tools/include/uapi/asm-generic/siginfo.h ?
+>>> I believe parts of this were inspired by
+>>> tools/testing/selftests/perf_events/sigtrap_threads.c - getting the
+>>> kernel headers is allowed, as long as $(KHDR_INCLUDES) is added to
+>>> CFLAGS. See tools/testing/selftests/perf_events/Makefile. Not sure
+>>> it's appropriate for this test though, if you don't want to add
+>>> KHDR_INCLUDES for everything.
+>> Yes, that's right. Namhyung's commit message for 91c97b36bd69 leads me
+>> to believe that I should copy siginfo.h over into tools/include and
+>> fix the perf_events self tests too.
+>>
+>> - Kyle
+> That doesn't really help (though perhaps it should be done anyway so
+> the selftests aren't reaching into include/) because the glibc headers
+> still redefine a ton of stuff in asm-generic/siginfo.h.
 
-> +
-> +				phys = <&usb_dp_qmpphy QMP_USB43DP_DP_PHY>;
-> +				phy-names = "dp";
-> +
-> +				#sound-dai-cells = <0>;
-> +
-> +				status = "disabled";
-> +
-> +				ports {
-> +					#address-cells = <1>;
-> +					#size-cells = <0>;
-> +
-> +					port@0 {
-> +						reg = <0>;
-> +
-> +						mdss_dp0_in: endpoint {
-> +							remote-endpoint = <&dpu_intf0_out>;
-> +						};
-> +					};
-> +
-> +					port@1 {
-> +						reg = <1>;
-> +
-> +						mdss_dp0_out: endpoint {
-> +						};
-> +					};
-> +				};
-> +
-> +				dp_opp_table: opp-table {
+Just for testing purpose, I think you can avoid includeasm/siginfo.h and directly define necessary structures in the C file 
+directly, right?
 
-Is there any reason why we keep sorting 'o' after 'p' in these nodes?
-
-Regards,
-Bjorn
+>
+> - Kyle
