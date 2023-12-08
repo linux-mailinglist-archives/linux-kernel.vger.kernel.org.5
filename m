@@ -2,203 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D84809D70
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB2A809D98
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 08:52:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573318AbjLHHr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 02:47:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43488 "EHLO
+        id S1573351AbjLHHwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 02:52:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573283AbjLHHr0 (ORCPT
+        with ESMTP id S1573336AbjLHHwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 02:47:26 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C0F171F
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 23:47:29 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3333074512bso1509933f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 23:47:29 -0800 (PST)
+        Fri, 8 Dec 2023 02:52:37 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA1A1712;
+        Thu,  7 Dec 2023 23:52:43 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1d05e4a94c3so16209855ad.1;
+        Thu, 07 Dec 2023 23:52:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702021648; x=1702626448; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=p5vewVIqc/JNWV42uuniJTg8DehvtzRgIujd+f407pY=;
-        b=LJRBdjFIVFlGkmfxgWI4j+kRmd+YM8gPWyQ72FcubJ0X4mZefAPlIpJks3FA3uLbYr
-         dOcmMARwsRNwfeI1JHIh8S5EN3zJS6xwdOUppgjzd+yJaGP2Cwlj/O2Is+1M7fTPxQTY
-         +uNSpixHnNFRER6E7L86c2Ce/iEc6Qb8QKAglktNdQeoRL9fK5QBdvki48pjdcKMMb1I
-         Ea9NJ9dBOuM7POadxP4FDUc5vaMCCiRFUvV/CLOl8ild2D6t5pKcq4kLyymzq/9oIflN
-         K4BQds9IOZUI0enuHPufp5CZEpsDNYgUYgQj60QokmsxJl/zDFrEikawaoEZlb6zHYwm
-         o0kg==
+        d=gmail.com; s=20230601; t=1702021963; x=1702626763; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jnJ6XwvpjbxwbP8d9dhoDJBnR66AamT1l+ZC7uW8glY=;
+        b=l9zxM5YBVBnbdO/eIjXJMFeSNqMYcE8weurIk6PSVoOEU8BTXUzWC5pNvitOrCWLe/
+         l9f7kPxy6BQjV1qYAW0ARNd4+at4CRg4gkLwmY3rSpKTuLnfjYFfbdGXLQnTYqQiACiG
+         UhkFEBn+gViAqIHH2In8P8fBswK3H7HgloO1lhSlxFynh9Cl0VhnTEmPjGOILpJwY69I
+         kM68YTGoI0EZ5DgEORoAO9jAWQRnuPpoGGhnNZnouooe/fyXKBaAYsC6CLWctuRLm9rX
+         2BEYEL+QdQU7Kq6wwltWSVX/yh5VWlYswz1zytZ8U54ecVvJRP3QHfUQ17KNTxCqAIIU
+         Ztiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702021648; x=1702626448;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p5vewVIqc/JNWV42uuniJTg8DehvtzRgIujd+f407pY=;
-        b=US8VkAskW2TBUP2EPpe+IqwXZefxSTyYxXV9VeIEFtNDDgv/NiyRuJmuQN9Dg/ygCh
-         BbmWnpbVIPuoL7tgO9OTK0StB+uuUJOxzksfeG3r0/IFzHnFIwmVXFcGFEDrt0tbm5cz
-         ODMPjmC86hyfszoKOr4CfSi9ztRDs8opDjDRhwodAryTKI3stpx3vPNS752zEvry+b6p
-         3t9Qpq3Og1MS86eiJB5nSk4MjARb3uLqlixI8hu3C0s+dIZ0BC2XzlnW7YkeP+TL5qOq
-         K6prheGTpmghsiQxmc16+fmDbIfHmlrp8JHx1szJ8XHwbGrDZd5+EqCm0jvzhy7lwGu6
-         yrKQ==
-X-Gm-Message-State: AOJu0Yxxps4AytRgQL5Wv2ccKbInk6M7kH02hVcbnXnicG4ybMqxxP9E
-        ocSSJt2aNX+TctVb5A0YT1RCfA==
-X-Google-Smtp-Source: AGHT+IEfvydTk4w7nPbL7Zk/ITGHL8nLhiiHdfMXQSboNERx9g88iW8mL6w6NbHrwPnV7eWGCL93AQ==
-X-Received: by 2002:a05:600c:4e08:b0:40b:5e56:7b59 with SMTP id b8-20020a05600c4e0800b0040b5e567b59mr199107wmq.162.1702021647758;
-        Thu, 07 Dec 2023 23:47:27 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id d12-20020a05600c3acc00b0040b5377cf03sm4280372wms.1.2023.12.07.23.47.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 23:47:27 -0800 (PST)
-Message-ID: <ab7223a2-9f3f-4c9c-ab97-31512e7a0123@linaro.org>
-Date:   Fri, 8 Dec 2023 08:47:24 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] dt-bindings: phy: qcom-edp: Add X1E80100 PHY
- compatibles
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
+        d=1e100.net; s=20230601; t=1702021963; x=1702626763;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jnJ6XwvpjbxwbP8d9dhoDJBnR66AamT1l+ZC7uW8glY=;
+        b=b/0lVuFM/B/FCsWYuz3RWjmmXcCJX58qZ+DLJYLsU5AhHiPrJx5UPlZ6NKVMcKuFEU
+         x3TloFAM0qjm+5MezHyXrcIxS00zhyxkOw1Y8kdr7Y5Qt2XRZXNjQsW8/3wdCeij25Id
+         +J5MYoeNQvuAlySHc7SO0Fkz29bocXtTjoSLmdG06SerkiGGvfBytTAR+3vHU/0HHIHt
+         TnRIv7rVMXFX/3H9E73MpJ+8mxLpPft9a/T2L4fZXQRaxaq9+K7OlWM5o5m2fvCRABZV
+         W4tl8pEneo1GPjNuPRljBI4f4jjkJLNcMjrUtNGYUUzyC147ZxWjyqJ5y3tngkMW6mi9
+         7pRg==
+X-Gm-Message-State: AOJu0YyZMX+PtPXS+2aJlgO8PUVGI3iSU0plQ5T9rhDWolqdIeTdJ6C/
+        3s32fdAwvYS0qSAhYMzQ4nnEZDJwBXpR7R/3
+X-Google-Smtp-Source: AGHT+IF54PYlnGCJpAmNVLe/3ul/Libt8yVj5HcHU8Kmm1Fq4rt1bVUHsYiPTxpmgxZ20YeobsKPJg==
+X-Received: by 2002:a17:902:f68d:b0:1d0:977e:29b0 with SMTP id l13-20020a170902f68d00b001d0977e29b0mr4184857plg.49.1702021962887;
+        Thu, 07 Dec 2023 23:52:42 -0800 (PST)
+Received: from localhost.localdomain ([2401:4900:6277:8af4:45bc:8bc9:c94a:54d2])
+        by smtp.gmail.com with ESMTPSA id j3-20020a170902c08300b001bf52834696sm1028228pld.207.2023.12.07.23.52.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 23:52:42 -0800 (PST)
+From:   Anshul Dalal <anshulusr@gmail.com>
+To:     linux-input@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Anshul Dalal <anshulusr@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Johan Hovold <johan@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231122-phy-qualcomm-edp-x1e80100-v3-0-576fc4e9559d@linaro.org>
- <20231122-phy-qualcomm-edp-x1e80100-v3-2-576fc4e9559d@linaro.org>
- <b6d3928c-75ba-47a3-93fc-a60729be2e35@linaro.org>
- <545d3ace-66e5-4470-b3a4-cbdac5ae473d@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <545d3ace-66e5-4470-b3a4-cbdac5ae473d@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v1] dt-bindings: input: convert gpio-mouse to json-schema
+Date:   Fri,  8 Dec 2023 13:20:35 +0530
+Message-ID: <20231208075037.114598-1-anshulusr@gmail.com>
+X-Mailer: git-send-email 2.42.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/12/2023 20:16, Konrad Dybcio wrote:
-> 
-> 
-> On 12/7/23 17:51, Krzysztof Kozlowski wrote:
-> 
-> [...]
-> 
->>> +allOf:
->>> +  - if:
->>> +      properties:
->>> +        compatible:
->>> +          contains:
->>> +            enum:
->>> +              - qcom,x1e80100-dp-phy
->>> +    then:
->>> +      properties:
->>> +        phy-type:
->>> +          description: DP (default) or eDP type
->>
->> Properties must be defined in top-level "properties:" block. In
->> allOf:if:then you only disallow them for other variants.
->>
->>> +          enum: [ 6, 13 ]
->>> +          default: 6
->>
->> Anyway, I was thinking this should be rather argument to phy-cells.
-> I'm not sure I'm for this, because the results would be:
-> 
-> --- device.dts ---
-> &dp_controller0 {
->      phys = <&dp_phy0 PHY_EDP>;
-> };
-> 
-> &dp_controller1 {
->      phys = <&dp_phy1 PHY_DP>;
-> };
-> ------------------
-> 
-> as opposed to:
-> 
-> --- device.dts ---
-> &dp_phy0 {
->      phy-type <PHY_EDP>;
-> };
-> 
-> &dp_phy1 {
->      phy-type = <PHY_DP>;
-> };
-> ------------------
+Convert device tree binding documentation for GPIO attached mouse to
+json-schema.
 
-Which is exactly what I proposed/wanted to see.
+Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ .../devicetree/bindings/input/gpio-mouse.txt  | 32 ---------
+ .../devicetree/bindings/input/gpio-mouse.yaml | 68 +++++++++++++++++++
+ 2 files changed, 68 insertions(+), 32 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/input/gpio-mouse.txt
+ create mode 100644 Documentation/devicetree/bindings/input/gpio-mouse.yaml
 
-> 
-> i.e., we would be saying "this board is connected to this phy
-> instead" vs "this phy is of this type on this board".
-> 
-> While none of them really fit the "same hw, different config"
-> situation, I'd vote for the latter one being closer to the
-> truth
-
-Then maybe I miss the bigger picture, but commit msg clearly says:
-"multiple PHYs that can work in both eDP or DP mode"
-
-If this is not the case, describe the hardware correctly in the commit
-msg, so people will not ask stupid questions...
-
-Best regards,
-Krzysztof
+diff --git a/Documentation/devicetree/bindings/input/gpio-mouse.txt b/Documentation/devicetree/bindings/input/gpio-mouse.txt
+deleted file mode 100644
+index 519510a11af9..000000000000
+--- a/Documentation/devicetree/bindings/input/gpio-mouse.txt
++++ /dev/null
+@@ -1,32 +0,0 @@
+-Device-Tree bindings for GPIO attached mice
+-
+-This simply uses standard GPIO handles to define a simple mouse connected
+-to 5-7 GPIO lines.
+-
+-Required properties:
+-	- compatible: must be "gpio-mouse"
+-	- scan-interval-ms: The scanning interval in milliseconds
+-	- up-gpios: GPIO line phandle to the line indicating "up"
+-	- down-gpios: GPIO line phandle to the line indicating "down"
+-	- left-gpios: GPIO line phandle to the line indicating "left"
+-	- right-gpios: GPIO line phandle to the line indicating "right"
+-
+-Optional properties:
+-	- button-left-gpios: GPIO line handle to the left mouse button
+-	- button-middle-gpios: GPIO line handle to the middle mouse button
+-	- button-right-gpios: GPIO line handle to the right mouse button
+-Example:
+-
+-#include <dt-bindings/gpio/gpio.h>
+-
+-gpio-mouse {
+-	compatible = "gpio-mouse";
+-	scan-interval-ms = <50>;
+-	up-gpios = <&gpio0 0 GPIO_ACTIVE_LOW>;
+-	down-gpios = <&gpio0 1 GPIO_ACTIVE_LOW>;
+-	left-gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;
+-	right-gpios = <&gpio0 3 GPIO_ACTIVE_LOW>;
+-	button-left-gpios = <&gpio0 4 GPIO_ACTIVE_LOW>;
+-	button-middle-gpios = <&gpio0 5 GPIO_ACTIVE_LOW>;
+-	button-right-gpios = <&gpio0 6 GPIO_ACTIVE_LOW>;
+-};
+diff --git a/Documentation/devicetree/bindings/input/gpio-mouse.yaml b/Documentation/devicetree/bindings/input/gpio-mouse.yaml
+new file mode 100644
+index 000000000000..3928ec6aff1d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/gpio-mouse.yaml
+@@ -0,0 +1,68 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/gpio-mouse.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: GPIO attached mouse
++
++description: |
++  This simply uses standard GPIO handles to define a simple mouse connected
++  to 5-7 GPIO lines.
++
++maintainers:
++  - Anshul Dalal <anshulusr@gmail.com>
++
++properties:
++  compatible:
++    const: gpio-mouse
++
++  scan-interval-ms:
++    maxItems: 1
++
++  up-gpios:
++    maxItems: 1
++
++  down-gpios:
++    maxItems: 1
++
++  left-gpios:
++    maxItems: 1
++
++  right-gpios:
++    maxItems: 1
++
++  button-left-gpios:
++    maxItems: 1
++
++  button-middle-gpios:
++    maxItems: 1
++
++  button-right-gpios:
++    maxItems: 1
++
++required:
++  - compatible
++  - scan-interval-ms
++  - up-gpios
++  - down-gpios
++  - left-gpios
++  - right-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    gpio-mouse {
++        compatible = "gpio-mouse";
++        scan-interval-ms = <50>;
++        up-gpios = <&gpio0 0 GPIO_ACTIVE_LOW>;
++        down-gpios = <&gpio0 1 GPIO_ACTIVE_LOW>;
++        left-gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;
++        right-gpios = <&gpio0 3 GPIO_ACTIVE_LOW>;
++        button-left-gpios = <&gpio0 4 GPIO_ACTIVE_LOW>;
++        button-middle-gpios = <&gpio0 5 GPIO_ACTIVE_LOW>;
++        button-right-gpios = <&gpio0 6 GPIO_ACTIVE_LOW>;
++    };
+-- 
+2.42.1
 
