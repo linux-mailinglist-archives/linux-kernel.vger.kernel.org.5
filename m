@@ -2,161 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CF280AE1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFE280AE1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574723AbjLHUlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:41:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
+        id S231309AbjLHUmd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Dec 2023 15:42:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLHUlK (ORCPT
+        with ESMTP id S230309AbjLHUmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:41:10 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BAA171E;
-        Fri,  8 Dec 2023 12:41:16 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c0a0d068bso25063265e9.3;
-        Fri, 08 Dec 2023 12:41:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702068075; x=1702672875; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mj7pq+OIwUID+JMsGrWjS7UT9Bcii1A8UE8TU13OktE=;
-        b=G3MZ0atAgyPACTlO2h7s/lMC/oRfCFYkG7eYNPHZso8JoPnWQajw0hBD0IMwaw2k+e
-         9oEUqW7bfQoZ9A+l/ZCrSnsweIma9Tc8w6L3JKjXpRsPc6TKWWxyR0wZ8+bZa5Ok1t6Q
-         agD9I28vIANLCIoPCqAE+0LdgDXekeKg86moQWI2v+kl9C7cKvyaIdptKdI2prnEABas
-         GK1zoen9SwdDyfr2M80/lwFlEcx6HgOyBaOMqffzIQwN6jSffBZaZMrnIrPFGVAHrZ3M
-         zAVDeICaUJz663LD3pOv3GN0VX+wXf7i55v1BI5JFdcxprDOxPJ6piluZAO+k1ktyUgf
-         ZytA==
+        Fri, 8 Dec 2023 15:42:31 -0500
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973EE171E;
+        Fri,  8 Dec 2023 12:42:37 -0800 (PST)
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6d9d6f8485eso309232a34.0;
+        Fri, 08 Dec 2023 12:42:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702068075; x=1702672875;
+        d=1e100.net; s=20230601; t=1702068157; x=1702672957;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Mj7pq+OIwUID+JMsGrWjS7UT9Bcii1A8UE8TU13OktE=;
-        b=pGiuaErv8MDscLZQpGI5Wmt4Vz2tKoQkhiHIj/M11IG7P0p4o/4HiHilhocEV8rfP8
-         BEz0vHSJMygaJY2pmwLXPnlBEQDntcF4Fk5PTlErJdPY5OCeRO2OJCvA4hrRHpqIZwvm
-         ib0gto0unqQeI4S9doV18QizNjth+nzlTWubGfHvkCBsWuf/Xhjrz/aTbvbF5QUE2EJa
-         oF9B9uwrK756SzPL1AQJo2zJqyuTcMNabvESUpUccPWtzD7pdss9/E1J2KbN3CEeu9m1
-         IuC8CoD72haV0JXBO6FjWJiraUBW0u/Jh7Y1fWsluZomYxMnReMN2D9l0hyuM7m1jYRw
-         6mCA==
-X-Gm-Message-State: AOJu0YxcknAraaNMAEvgBx2yDhu86S2pvZ74f/v9GzYK8fwalkASBi83
-        qBH4ZQzVZyD24TXSNpa40WV4BfQazH1i2WGKqGM=
-X-Google-Smtp-Source: AGHT+IERcqiD0C/8xjZJmHAgSBT2DdIylL4yKHY4jgZtfjgalQtcY6Jcz2MAn3dQVMGiGBWeMdU28s7aF98ziv0/pdE=
-X-Received: by 2002:adf:f00f:0:b0:333:2f14:7642 with SMTP id
- j15-20020adff00f000000b003332f147642mr344840wro.61.1702068075072; Fri, 08 Dec
- 2023 12:41:15 -0800 (PST)
+        bh=F//99F/9ZrwtkWvIQbflf74wFg1Bqqbh42D5kCs6IT4=;
+        b=kcr2oD8bJkibDNzC3UxrJAzh3BG+k9N1T/q5cU3fbB3N6iJZmqzQtJIYrAIlTGvK8i
+         CFc4XMQ/fD/kJgm0ekwjU0CUcXqF8NFj8B9l2kVqdT9DO1k45K9T4PHPGdsjVy1qPFX3
+         6NWVlP7k47JfPVa5z8e9JtD+s/Pwi9ozPjhDW02t1turfle2bXJm4EoDJMrl7Z7vTYhy
+         290F2aYxpdVeuypE34GhW8imk6/f3zxL7CsmlR+LyVZBJOZiptltdoLMSYjxmiNa/LgS
+         gGsySfpWCVU47sZEw9eB+BuDfQRVqvhCqxFTtz+gXdj+Rc9Ya11nLos9XXy5gkNekEb1
+         olrg==
+X-Gm-Message-State: AOJu0YwIToIDiixVjVyftiEhfBO1fj604/83TMhdz4dyguhtmYzCvh0E
+        TClNPjXsJBmLXGJ3jJ41A8SWk7o2InUUx4B8ep4iotkHDxE=
+X-Google-Smtp-Source: AGHT+IE7DxLp6suofZuaoZ5h58BK60EAcW2F/cXG9PVuPcnc8EWa9am7lgFlk8Gz08xs/HBwPpxBjlHEvOSWVAU5Uq8=
+X-Received: by 2002:a4a:a7c4:0:b0:590:6585:5c41 with SMTP id
+ n4-20020a4aa7c4000000b0059065855c41mr1408409oom.0.1702068156758; Fri, 08 Dec
+ 2023 12:42:36 -0800 (PST)
 MIME-Version: 1.0
-References: <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
- <20231206163814.GB36423@noisy.programming.kicks-ass.net> <20231206183713.GA35897@noisy.programming.kicks-ass.net>
- <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
- <20231207093105.GA28727@noisy.programming.kicks-ass.net> <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
- <20231208102940.GB28727@noisy.programming.kicks-ass.net> <20231208134041.GD28727@noisy.programming.kicks-ass.net>
- <20231208172152.GD36716@noisy.programming.kicks-ass.net> <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
- <20231208203535.GG36716@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231208203535.GG36716@noisy.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 8 Dec 2023 12:41:03 -0800
-Message-ID: <CAADnVQJzCw=qcG+jHBYG0q0SxLPkwghni0wpgV4A4PkpgVbGPw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
+References: <20231201190757.144741-1-daniel.lezcano@linaro.org>
+In-Reply-To: <20231201190757.144741-1-daniel.lezcano@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 8 Dec 2023 21:42:25 +0100
+Message-ID: <CAJZ5v0gNR3AC=fMeipiHNSoOiA0u==_irbQn1r-OJ6aUJ-XBrQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] pm_qos: Rename freq to interval constraint
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rjw@rjwysocki.net, caleb.connolly@linaro.org, lina.iyer@linaro.org,
+        linux-pm@vger.kernel.org, mani@kernel.org,
+        linux-kernel@vger.kernel.org, lukasz.luba@arm.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 12:35=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
+On Fri, Dec 1, 2023 at 8:08 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
 >
-> On Fri, Dec 08, 2023 at 11:40:27AM -0800, Alexei Starovoitov wrote:
+> The frequency pm_qos relies on a couple of values, the min and max
+> frequencies. However more pm_qos will be added with the same logic of
+> a couple of min and max. Instead of writing new set of constraints as
+> well as type, etc... let's rename freq_* to a more generic name
+> interval_*
+
+I'm fine with a rename if it helps, but I would rather call it range_*
+than interval_*.
+
 >
-> > typedef void (*btf_dtor_kfunc_t)(void *);
-> >         btf_dtor_kfunc_t dtor;
-> > but the bpf_cgroup_release takes 'struct cgroup*'.
-> > From kcfi pov void * =3D=3D struct cgroup * ?
-> > Do we need to change it to 'void *cgrp' ?
+> That way, new qos interval based can be added easily.
 >
-> Yes, doing that naively like the below, gets me lovely things like:
->
-> validate_case:FAIL:expect_msg unexpected error: -22
-> VERIFIER LOG:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> EXPECTED MSG: 'Possibly NULL pointer passed to trusted arg0'
-> #48/7    cgrp_kfunc/cgrp_kfunc_acquire_untrusted:FAIL
-> run_subtest:PASS:obj_open_mem 0 nsec
-> libbpf: extern (func ksym) 'bpf_cgroup_release': func_proto [148] incompa=
-tible with vmlinux [125610]
-> libbpf: failed to load object 'cgrp_kfunc_failure'
->
->
-> But let me try rebuilding everything..
->
->
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 > ---
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index b3be5742d6f1..078b207af7f0 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -2145,10 +2145,11 @@ __bpf_kfunc struct task_struct *bpf_task_acquire(=
-struct task_struct *p)
->   * bpf_task_release - Release the reference acquired on a task.
->   * @p: The task on which a reference is being released.
->   */
-> -__bpf_kfunc void bpf_task_release(struct task_struct *p)
-> +__bpf_kfunc void bpf_task_release(void *p)
+>  drivers/base/power/qos.c          |  4 +--
+>  drivers/powercap/dtpm_cpu.c       |  2 +-
+>  drivers/thermal/cpufreq_cooling.c |  2 +-
+>  include/linux/cpufreq.h           |  6 ++--
+>  include/linux/pm_qos.h            | 55 ++++++++++++++++---------------
+>  kernel/power/qos.c                | 53 +++++++++++++++--------------
+>  6 files changed, 61 insertions(+), 61 deletions(-)
+>
+> diff --git a/drivers/base/power/qos.c b/drivers/base/power/qos.c
+> index 8e93167f1783..561d2a0e106c 100644
+> --- a/drivers/base/power/qos.c
+> +++ b/drivers/base/power/qos.c
+> @@ -285,14 +285,14 @@ void dev_pm_qos_constraints_destroy(struct device *dev)
+>                 memset(req, 0, sizeof(*req));
+>         }
+>
+> -       c = &qos->freq.min_freq;
+> +       c = &qos->freq.min;
+>         plist_for_each_entry_safe(req, tmp, &c->list, data.freq.pnode) {
+>                 apply_constraint(req, PM_QOS_REMOVE_REQ,
+>                                  PM_QOS_MIN_FREQUENCY_DEFAULT_VALUE);
+>                 memset(req, 0, sizeof(*req));
+>         }
+>
+> -       c = &qos->freq.max_freq;
+> +       c = &qos->freq.max;
+>         plist_for_each_entry_safe(req, tmp, &c->list, data.freq.pnode) {
+>                 apply_constraint(req, PM_QOS_REMOVE_REQ,
+>                                  PM_QOS_MAX_FREQUENCY_DEFAULT_VALUE);
+> diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+> index 2ff7717530bf..6587c94d0127 100644
+> --- a/drivers/powercap/dtpm_cpu.c
+> +++ b/drivers/powercap/dtpm_cpu.c
+> @@ -28,7 +28,7 @@
+>
+>  struct dtpm_cpu {
+>         struct dtpm dtpm;
+> -       struct freq_qos_request qos_req;
+> +       struct interval_qos_request qos_req;
+>         int cpu;
+>  };
+>
+> diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
+> index e2cc7bd30862..72e9f0cde55c 100644
+> --- a/drivers/thermal/cpufreq_cooling.c
+> +++ b/drivers/thermal/cpufreq_cooling.c
+> @@ -77,7 +77,7 @@ struct cpufreq_cooling_device {
+>  #ifndef CONFIG_SMP
+>         struct time_in_idle *idle_time;
+>  #endif
+> -       struct freq_qos_request qos_req;
+> +       struct interval_qos_request qos_req;
+>  };
+>
+>  #ifdef CONFIG_THERMAL_GOV_POWER_ALLOCATOR
+> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+> index 71d186d6933a..7e2d66c37535 100644
+> --- a/include/linux/cpufreq.h
+> +++ b/include/linux/cpufreq.h
+> @@ -80,9 +80,9 @@ struct cpufreq_policy {
+>         struct work_struct      update; /* if update_policy() needs to be
+>                                          * called, but you're in IRQ context */
+>
+> -       struct freq_constraints constraints;
+> -       struct freq_qos_request *min_freq_req;
+> -       struct freq_qos_request *max_freq_req;
+> +       struct interval_constraints     constraints;
+> +       struct interval_qos_request     *min_freq_req;
+> +       struct interval_qos_request     *max_freq_req;
+>
+>         struct cpufreq_frequency_table  *freq_table;
+>         enum cpufreq_table_sorting freq_table_sorted;
+> diff --git a/include/linux/pm_qos.h b/include/linux/pm_qos.h
+> index 4a69d4af3ff8..a662ac918e3e 100644
+> --- a/include/linux/pm_qos.h
+> +++ b/include/linux/pm_qos.h
+> @@ -77,25 +77,26 @@ struct pm_qos_flags {
+>  #define FREQ_QOS_MIN_DEFAULT_VALUE     0
+>  #define FREQ_QOS_MAX_DEFAULT_VALUE     S32_MAX
+>
+> -enum freq_qos_req_type {
+> -       FREQ_QOS_MIN = 1,
+> +enum interval_qos_req_type {
+> +       INTERVAL_QOS_MIN = 1,
+> +       INTERVAL_QOS_MAX,
+> +       FREQ_QOS_MIN,
+>         FREQ_QOS_MAX,
+>  };
+>
+> -struct freq_constraints {
+> -       struct pm_qos_constraints min_freq;
+> -       struct blocking_notifier_head min_freq_notifiers;
+> -       struct pm_qos_constraints max_freq;
+> -       struct blocking_notifier_head max_freq_notifiers;
+> +struct interval_constraints {
+> +       struct pm_qos_constraints min;
+> +       struct blocking_notifier_head min_notifiers;
+> +       struct pm_qos_constraints max;
+> +       struct blocking_notifier_head max_notifiers;
+>  };
 
-Yeah. That won't work. We need a wrapper.
-Since bpf prog is also calling it directly.
-In progs/task_kfunc_common.h
-void bpf_task_release(struct task_struct *p) __ksym;
+Also I would rename min_freq and max_freq to lower_bound and
+upper_bound, respectively, because this is less likely to get confused
+with other things with the same name.
 
-than later both libbpf and the verifier check that
-what bpf prog is calling actually matches the proto
-of what is in the kernel.
-Effectively we're doing strong prototype check at load time.
+So the above would be
 
-btw instead of EXPORT_SYMBOL_GPL(bpf_task_release)
-can __ADDRESSABLE be used ?
-Since it's not an export symbol.
++struct range_constraints {
++       struct pm_qos_constraints lower_bound;
++       struct blocking_notifier_head lower_bound_notifiers;
++       struct pm_qos_constraints upper_bound;
++       struct blocking_notifier_head upper_bound_notifiers;
+};
