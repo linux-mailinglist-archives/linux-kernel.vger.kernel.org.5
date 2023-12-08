@@ -2,93 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 961F7809E75
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 09:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A434809E76
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 09:43:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233267AbjLHIlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 03:41:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37480 "EHLO
+        id S1573290AbjLHIn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 03:43:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232892AbjLHIlT (ORCPT
+        with ESMTP id S232892AbjLHInZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 03:41:19 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDAC10FC
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 00:41:26 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-77f368b3334so84385485a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 00:41:26 -0800 (PST)
+        Fri, 8 Dec 2023 03:43:25 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF3FF1
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 00:43:30 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c2a444311so16842435e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 00:43:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702024885; x=1702629685; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JllfCZ5QWb670w+A1HFO6uCIu5jBxIFAgbWt4nHdmO8=;
-        b=UjOrt/IwLWf6t0hecklsNpAdxrO8YzGWsCWsLWv8FMpn3HmtQmQfEfQdf9isDdZ1Zf
-         vH2cHQXl4GnxlGU4N5+/MsTobn5z9T5RDgfHQOIVTxrqDhe6ivvHyHOToM2JTrgKF5fM
-         6sIiNvBq1bisqOLuyTEsgNX5FPTSyibFcnlrEb2DuPa9rwVvZOGeT7NFNwQiVnWv7UD1
-         //pJavbA7MAbtcfzwRrpHAdn/LPRTMWyhMjXp5GCDsaZJv4YPGdC4bGEvBsd4HcTdN+m
-         PDGKPSP1twJCsYYWQATyv9b0pXH2jS8cKRet9ufSnZxhg0uLyAjlfpNn/JYHAP5eehZ0
-         7UcA==
+        d=linaro.org; s=google; t=1702025009; x=1702629809; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=wBUnhnOsxlBDNa8A++IKX6FM+LUAOdhW/Iwi43YJARg=;
+        b=bo6Xooh7r19hZtqwcT5lwGQWAlwU2n6JGSYNAVjrZ7Q4F7fh8315FvkDr2UvxeJBQW
+         dWREeY8jHqBxnZTQaNMoq4GmYapX0pgh93DMe/UkC103vQJBEnvxf2RIvXNPOPCyWak1
+         VmlNuGLp9k8XGgXrYckkrq0UNKymm+yIvuFRIBWMxagd2alfNbNwZJ/mn3mpWlAtJha/
+         L2A+SXWIvtj4+ByxSKwiA7QYd2Vnz82A+4E0FNYqkL+FduG70OjQ6wcOk49ecThFT5AU
+         gqG9cRMwG40i86CWQIJnbz0YXtQXap2okKNx+nT3SP6aTg1go782w5S4p5lnZ5QarMC2
+         8vGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702024885; x=1702629685;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JllfCZ5QWb670w+A1HFO6uCIu5jBxIFAgbWt4nHdmO8=;
-        b=sUx0sZoRU1Lf+g2qewQAuG/arAvLd4uQTU6Z7FDllTHD+enuTONjb80YKJTl23rvCF
-         +Kzg87LzY9chTi4nDS4BdPh3hIWY1qH+8nvD44eSRLewuutD4/wnKoXI6cOl2W3uLTRn
-         QLdFaU6bKcrPo09XlXTGdKIld5eYwtF84YioAkFe3AgoHNEkRab0FomHKscFswQejRx1
-         t0cj/3Csj4jFZ13THJb9tE9v4TRT+y1H21A18lIpLBTgtuWwW+M9uA0D8RR6hDkYaPcF
-         y7TXcNl346glqWZtenhmqpRsm3cM1fYreMKnSqycpyTa1wHHgJrfR3s2JlC8sF4XQZr/
-         6Hyg==
-X-Gm-Message-State: AOJu0YynVd+P6xZnhL/LSoMlCRdVMbEIODW/3BF2rlKtofkAd4ZFiBQT
-        OM4NY9mk9X8tCx8efiN9J/0=
-X-Google-Smtp-Source: AGHT+IH1zPeyAxQmIiGO5daKAoxiCfEtMbXJAk86rPGMKT/S/6V8ZKZL7iAmmi1tbl8+b32GQGfvKA==
-X-Received: by 2002:a05:620a:8016:b0:77f:2f6a:361c with SMTP id ee22-20020a05620a801600b0077f2f6a361cmr2777331qkb.40.1702024885228;
-        Fri, 08 Dec 2023 00:41:25 -0800 (PST)
-Received: from pek-lpggp6.wrs.com (unknown-105-121.windriver.com. [147.11.105.121])
-        by smtp.gmail.com with ESMTPSA id rq11-20020a05620a674b00b0077f1645282csm546013qkn.22.2023.12.08.00.41.22
+        d=1e100.net; s=20230601; t=1702025009; x=1702629809;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wBUnhnOsxlBDNa8A++IKX6FM+LUAOdhW/Iwi43YJARg=;
+        b=LlaopmXZZacH6yiZfW9blFduV7mk6axBMWS8/voLz1zOoCPJWa68UyVGH+zB/VQPxn
+         SAjt8iPT4i6LdI7UkL4KecCcgu/8WFVtVkza1XT9xyAltKBlfwQqVbm2eEWiwKF9snJn
+         8mF4L+HFBp/IxQcrrye/6C7UNJkhqjSse/hYRUdxkmy7bY3bLLaOVVwwrKLv3pFId1zY
+         zSDeQIoxFr9e3uSg2CzrUM5QE7rkmf77jw+2Gga36SUyl3aN2wPSQm2zX+svnGwRrQHm
+         vuXp/x8Ra6HT8nOKJ4Aar4jIcdJcU9zcJvF5XQH8T/gAE38MdEouhmaq63MHlQBY6UYw
+         qszw==
+X-Gm-Message-State: AOJu0Yx+ICMudJgsKtwlzSuVOBZSl4e3g+FuQxC6WlXFXnQADTmDB/7U
+        hu6wuUkG7dDGUofAsMewKPVZCQ==
+X-Google-Smtp-Source: AGHT+IH52KU1v4NdmHcMzpoX17x6A8/mjFx3r7sunQ/aFqoqs5RiE+XNCr/8jmz9Govl3MkYIRH0Bg==
+X-Received: by 2002:a05:600c:190e:b0:40b:5f03:b3da with SMTP id j14-20020a05600c190e00b0040b5f03b3damr1274286wmq.252.1702025009141;
+        Fri, 08 Dec 2023 00:43:29 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id w10-20020a05600c474a00b0040b2c195523sm4415798wmo.31.2023.12.08.00.43.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 00:41:24 -0800 (PST)
-From:   Kevin Hao <haokexin@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] fork: Remove redundant TASK_UNINTERRUPTIBLE
-Date:   Fri,  8 Dec 2023 16:41:15 +0800
-Message-Id: <20231208084115.1973285-1-haokexin@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Fri, 08 Dec 2023 00:43:28 -0800 (PST)
+Date:   Fri, 8 Dec 2023 11:43:25 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     James Tai =?utf-8?B?W+aItOW/l+WzsF0=?= <james.tai@realtek.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <error27@gmail.com>
+Subject: Re: [PATCH v3 2/6] irqchip: Add interrupt controller support for
+ Realtek DHC SoCs
+Message-ID: <f154673d-f577-406e-adb0-c567b604e7f4@suswa.mountain>
+References: <20231129054339.3054202-1-james.tai@realtek.com>
+ <20231129054339.3054202-3-james.tai@realtek.com>
+ <d94c79bf-04c4-4e87-bd7e-a8755508ac89@suswa.mountain>
+ <8f87bfca-ab5f-4b32-a400-a90d09b64cf1@suswa.mountain>
+ <c558b1de9a8841e498f6dfc406a43158@realtek.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <c558b1de9a8841e498f6dfc406a43158@realtek.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TASK_KILLABLE already includes TASK_UNINTERRUPTIBLE, so there is no
-need to add a separate TASK_UNINTERRUPTIBLE.
+On Fri, Dec 08, 2023 at 08:21:10AM +0000, James Tai [戴志峰] wrote:
+> Hi Dan,
+> 
+> >> devm_ allocations are cleaned up automatically so there is no need to
+> >> call devm_kfree() before returning.
+> >>
+> >> regards,
+> >> dan carpenter
+> >
+> I will remove it. 
+> 
+> >> > +   }
+> >> > +
+> >> > +   data->info = info;
+> >> > +
+> >> > +   raw_spin_lock_init(&data->lock);
+> >> > +
+> >> > +   data->domain = irq_domain_add_linear(node, 32,
+> >> > + &realtek_intc_domain_ops, data);
+> >
+> >Btw, as I was testing the other static checker warning for <= 0, my static
+> >checker really wants this irq_domain_add_linear() to be cleaned up on the error
+> >path.
+> >
+> >Otherwise it probably leads to a use after free because we free data
+> >(automatically or manually) but it's still on a list somewhere.
+> >
+> I will add 'irq_domain_remove()' to release it. 
+> 
+> >> > +   if (!data->domain) {
+> >> > +           ret = -ENOMEM;
+> >> > +           goto out_cleanup;
+> >> > +   }
+> >> > +
+> >> > +   data->subset_data_num = info->cfg_num;
+> >> > +   for (i = 0; i < info->cfg_num; i++) {
+> >> > +           ret = realtek_intc_subset(node, data, i);
+> >> > +           if (ret) {
+> >> > +                   WARN(ret, "failed to init subset %d: %d", i, ret);
+> >> > +                   ret = -ENOMEM;
+> >> > +                   goto out_cleanup;
+> >
+> >This error path.
+> >
+> >regards,
+> >dan carpenter
+> >
+> I will add 'irq_domain_remove()' before goto cleanup.
+> 
+> 	for (i = 0; i < info->cfg_num; i++) {
+> 		ret = realtek_intc_subset(node, data, i);
+> 		if (ret) {
+> 			WARN(ret, "failed to init subset %d: %d", i, ret);
+> 			irq_domain_remove(data->domain);
+> 			ret = -ENOMEM;
+> 			goto out_cleanup;
+> 		}
+> 	}
+> 
+> Thank you for your feedback.
 
-Signed-off-by: Kevin Hao <haokexin@gmail.com>
----
- kernel/fork.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You're running into the issue because you're using One Err Label style
+error handling.  It would be better to use normal unwind laddering.
+See my blog for more info:
 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index c78e65757eb5..3ea454e1b0b0 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1580,7 +1580,7 @@ static void complete_vfork_done(struct task_struct *tsk)
- static int wait_for_vfork_done(struct task_struct *child,
- 				struct completion *vfork)
- {
--	unsigned int state = TASK_UNINTERRUPTIBLE|TASK_KILLABLE|TASK_FREEZABLE;
-+	unsigned int state = TASK_KILLABLE|TASK_FREEZABLE;
- 	int killed;
- 
- 	cgroup_enter_frozen();
--- 
-2.39.2
+https://staticthinking.wordpress.com/2022/04/28/free-the-last-thing-style/
+
+regards,
+dan carpenter
 
