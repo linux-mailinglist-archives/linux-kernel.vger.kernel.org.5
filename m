@@ -2,124 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6136B80A9E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3983680A9EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233708AbjLHQ66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:58:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52300 "EHLO
+        id S233715AbjLHQ77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:59:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232094AbjLHQ64 (ORCPT
+        with ESMTP id S232094AbjLHQ75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:58:56 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3911E98
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:59:03 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC84DC433C8;
-        Fri,  8 Dec 2023 16:58:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702054742;
-        bh=h0JkAKzYF1eCC3VCUFet/wUloQePgRqJtpyUOwrwHs8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VV9pLQrduCHZxqG1gp2gsdESd89zqUJ8T/ztaw9WJVw7s21G8m8muHVlDot3+Gf40
-         65myTt3MriTs13uBBjQtrCxREZctMcuNBTs7qnGtm24UGeLP0ZZIHk1cDe2BqhGoG5
-         6n9im+9fMvwh7N5TggcZFvP6o6io3PyaZcgCS1iYmLOW+edW4FBFuzCKI3FXRVqssq
-         gBwKneVYebD7Q/ruS5A6bejC3WL/NZroDaT74VKIptNNKVPIXywOlsdC0uq209XkCP
-         And+nEwHTfPBhvawAtMy7NfdJGgiRcPQgMJR+qF0p4bLHgxxd7/yjMuh2w1hz5BSiS
-         rFmD07v7UUqtw==
-Date:   Fri, 8 Dec 2023 16:58:55 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Yannick Fertre <yannick.fertre@foss.st.com>,
-        Philippe Cornu <philippe.cornu@foss.st.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] drm/stm: dsi: expose DSI PHY internal clock
-Message-ID: <20231208165855.GA8459@kernel.org>
-References: <20231204101113.276368-1-raphael.gallais-pou@foss.st.com>
- <20231204101113.276368-4-raphael.gallais-pou@foss.st.com>
+        Fri, 8 Dec 2023 11:59:57 -0500
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EA198;
+        Fri,  8 Dec 2023 09:00:03 -0800 (PST)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5d8e816f77eso22849117b3.0;
+        Fri, 08 Dec 2023 09:00:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702054803; x=1702659603; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jBtWBJQTohnwJ/b4g/t2c8OgOzR4vIJu5QNlR9uw3Ag=;
+        b=S9BTnAv6vbJZmflvnfS6WdzPy1/qUNc45rZHO2y0n0lndurlK3RKpOY495AV2lUBqn
+         Xx1FMbTbCmTCFH8zrfwVUNhZ8kZkEudPiG4kxr8VlQL6SAPN2AQ8FbzcuLyLILFOmmAC
+         wSWaPprUdzsraE/9aF3K7nJsHn79E8Jo3pGFKG9MNbdG/TtlB8OVfwIy5KSW/OE6GLQA
+         Oe6vxrv8c+v2Dr7xr6KIz7Vz4VPga9lMspIZqSYBVojvc0N53Of2v2/NSGDwDl61PFtE
+         4vEmqzJVIgPlEBy9oYFdZPaaqataairMWan8L2oSs3aj9GJbF6Ebiws8Da3HrP7Oq5U7
+         r5yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702054803; x=1702659603;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jBtWBJQTohnwJ/b4g/t2c8OgOzR4vIJu5QNlR9uw3Ag=;
+        b=GeIfApPoLmrB6QKg00Z6X4F1BKzUospe43cck4dsRnxQEJry4dO0yn2vLW8EN9h4NX
+         U+lwgg2+yVdWQTn4Hh2YktJSeJSdWRdG6ragB3WD6Z25Lh11L/opaED1Dv+XzQh3+s6A
+         Xjl3aZESdNu7k4yhXgh56nJp7KwT7/gAnvEjnpbCYCNQFBA2tbTwDsHiGWDUwlixgpIp
+         drEXV1CyiOdONqiIs4j+k3A2YKoAB1+Wn4owHpKiAQYdpazKzNqKYypstWMjEnglhw71
+         F5KusIMlo+KLslpX7P6xDU9QWXtcq+nUrIWn91ptmQCIJzH2hSAzBaAClrfFZLlVdiZw
+         fvHQ==
+X-Gm-Message-State: AOJu0YzC4aRuFs0JnhHzYyfM/tU4s7/FfnRhJ689BUWN2UAtVHmt4cwn
+        lU3BqklJQtVqdU26x02X/+52WIgrJK9VZigdMnY=
+X-Google-Smtp-Source: AGHT+IEDEFuGPlOOaOqUwW/5TKcG+a0eq2uylZH8LKW32NcjbTMw/3yBjEt8q8/2YI2E/lZAzSV05OlXUyuh9c79ALE=
+X-Received: by 2002:a05:6902:1828:b0:db5:4653:7214 with SMTP id
+ cf40-20020a056902182800b00db546537214mr253408ybb.42.1702054802494; Fri, 08
+ Dec 2023 09:00:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204101113.276368-4-raphael.gallais-pou@foss.st.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+ <20231129-mitsingen-umweltschutz-c6f8d9569234@brauner> <20231206200505.nsmauqpetkyisyjd@moria.home.lan>
+In-Reply-To: <20231206200505.nsmauqpetkyisyjd@moria.home.lan>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 8 Dec 2023 17:59:51 +0100
+Message-ID: <CANiq72kWx5td7SfP3KWcce4ZqvWBg1NPjT=dNeed2eG2rEHWjw@mail.gmail.com>
+Subject: Re: [PATCH 0/7] File abstractions needed by Rust Binder
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 11:11:12AM +0100, Raphael Gallais-Pou wrote:
+On Wed, Dec 6, 2023 at 9:05=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> I spoke to Miguel about this and it was my understanding that everything
+> was in place for moving Rust wrappers to the proper directory -
+> previously there was build system stuff blocking, but he said that's all
+> working now. Perhaps the memo just didn't get passed down?
 
-...
+No, it is being worked on (please see my sibling reply).
 
-> @@ -514,18 +675,40 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
->  		dsi->lane_max_kbps *= 2;
->  	}
->  
-> -	dw_mipi_dsi_stm_plat_data.base = dsi->base;
-> -	dw_mipi_dsi_stm_plat_data.priv_data = dsi;
-> +	dsi->pdata = *pdata;
-> +	dsi->pdata.base = dsi->base;
-> +	dsi->pdata.priv_data = dsi;
-> +
-> +	dsi->pdata.max_data_lanes = 2;
-> +	dsi->pdata.phy_ops = &dw_mipi_dsi_stm_phy_ops;
->  
->  	platform_set_drvdata(pdev, dsi);
->  
-> -	dsi->dsi = dw_mipi_dsi_probe(pdev, &dw_mipi_dsi_stm_plat_data);
-> +	dsi->dsi = dw_mipi_dsi_probe(pdev, &dsi->pdata);
->  	if (IS_ERR(dsi->dsi)) {
->  		ret = PTR_ERR(dsi->dsi);
->  		dev_err_probe(dev, ret, "Failed to initialize mipi dsi host\n");
->  		goto err_dsi_probe;
->  	}
->  
-> +	/*
-> +	 * We need to wait for the generic bridge to probe before enabling and
-> +	 * register the internal pixel clock.
-> +	 */
-> +	ret = clk_prepare_enable(dsi->pclk);
-> +	if (ret) {
-> +		DRM_ERROR("%s: Failed to enable peripheral clk\n", __func__);
-> +		goto err_dsi_probe;
-> +	}
-> +
-> +	ret = dw_mipi_dsi_clk_register(dsi, dev);
-> +	if (ret) {
-> +		DRM_ERROR("Failed to register DSI pixel clock: %d\n", ret);
+> (My vote would actually be for fs/ directly, not fs/rust, and a 1:1
+> mapping between .c files and the .rs files that wrap them).
 
-Hi Raphael,
+Thanks Kent for voting :)
 
-Does clk_disable_unprepare(dsi->pclk) need to be added to this unwind
-chain?
+Though note that an exact 1:1 mapping is going to be hard, e.g.
+consider nested Rust submodules which would go in folders or
+abstractions that you may arrange differently even if they wrap the
+same concepts.
 
-Flagged by Smatch.
+But, yeah, one should try to avoid to diverge without a good reason,
+of course, especially in the beginning.
 
-> +		goto err_dsi_probe;
-> +	}
-> +
-> +	clk_disable_unprepare(dsi->pclk);
-> +
->  	return 0;
->  
->  err_dsi_probe:
-
-...
+Cheers,
+Miguel
