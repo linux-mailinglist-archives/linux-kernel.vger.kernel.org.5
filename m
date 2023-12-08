@@ -2,269 +2,420 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AC380973C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 567D3809754
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 01:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235331AbjLHAbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 19:31:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
+        id S232724AbjLHAiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 19:38:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbjLHAb3 (ORCPT
+        with ESMTP id S229531AbjLHAiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 19:31:29 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A1C410DA;
-        Thu,  7 Dec 2023 16:31:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701995495; x=1733531495;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=bzsUbaj1ch0qHaYJ7LTpYjTaIFp/vhzAB/8r+nEWSfY=;
-  b=XtylvYm2Qgx3i+UHMC4HEcyOukhWFf0SeL1e9XF9KuyaNrxLA4FBBrh7
-   mVc2218P25w+NB9Qjoj/RFalPwgy/OclqxZCYxVkLiCcqJaCJByGHeAdU
-   HG87KvUCwrNFctSTnxKn/FIq8JT2EAH2+JjyOuUXBkdQOVAcpMiXpGkbq
-   HtLW3R/0p8ODqZtBHYD/1zpatd2KI+EovPpKvmZ3bmavyEoUHjxScbzV3
-   oebFoOmq4bdeb80qhe72z5IKBc7E9UObBeuOFsFBpo/mnGhAfPTupCAf9
-   Q9BRRxnnQ4bi8m+Bro+7kgET6/a2uJ932uaw3dx6rRXsKl4ECjFXyNjax
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="379337122"
-X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
-   d="scan'208";a="379337122"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 16:31:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="915759132"
-X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
-   d="scan'208";a="915759132"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Dec 2023 16:31:05 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Dec 2023 16:31:04 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 7 Dec 2023 16:31:04 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 7 Dec 2023 16:31:04 -0800
+        Thu, 7 Dec 2023 19:38:15 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2040.outbound.protection.outlook.com [40.107.92.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D865FD5B
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 16:38:20 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OCFRAdRzFUPoGdAi58Stm7kzq41dbxjRQGU5xO+Dg10IRxZBdLc5JtRjokQRcTatrRnrsvb+Sk3JGwUMU9Kyfe91/tB1zgvWBKvB++UGM+rAjS6aqMDBeA+SXocTN9QNrfE1m/XMnoGcZjI2heoZkhDCUdf83yUoXrrAmRC0KTgI7FK4NWO3BDVKKAlsBNQbaDYbFdWguPKsqy860SpHnsUZCpAFtfxv0N+6on+MS2nmaa8iuKj8GPxuQqzAWH3RHpZ0wcknVz52FrRNRkGoFXvIuXIqxokV7tBC8SAYEWOTYWM+KO1TUUZ3chrap9qhPRUz+dAWcJ5epoEV0tK0lg==
+ b=QkjxBWi71pxtpbED2btR8GRBfMm1tWnGf/hGl4TBqSjGgMcKyTW8+zkw/VA5CVs1CzigNLzuWAB7d21MlfgUvX19noBEbu1VvbBSob0ZyiQ+1uj1wE7u455MPGUO3H/5f1GQ6+sd9OVpvBXKoxjxHcIQuC5pWs/sAUF52jlkhWYnmqGT+BUGy1okjQnw8DYBzs4jGaHKB8zG2vteCHTb65UTCu64IQAvPqfiE9Vi3Pbomnc0dwJweZzc+4gFcNBuyN7sTvNRwvjbEgDn9SjXTNRtg9AIbnZhy4uMMPywu1GAfM55IuggMytbN3ZTldSFGcjjblHM3ltFl54NIdvmgw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QsA0oSXjkX35y6MGxussQ/vExsohUC7p4tOEUpPjC+k=;
- b=lHVl2ygv27LI5ULkWnqlkj211UvFznMfVpb5oAl1p0pSKgSrw8zR6UTCyvuV+2Smlm4lhpI6pw4C2Efs46HtlqviQDrA84yNlF8mTn9VjCQvWtOqUf4I0Gj8XJK01YqY8rvZyhxuDmrVxyWwEg4+wyiyF3FG1MJ9vKotVJUx0erVfEeS7XDbp2b9rl9ZqJ4YCUIh7A9ZGNJ9aeJBMQipwUpclhsaMBj1+kVSXLQbfmS+Sq29QxhhO4ag/ZtRBu1pde3Eau/tUBK2ZlkZB7wxtsvRaIe38c4+7sPJxNJ8+faUAjEzPV0z96da/ACnOjE17zbg9wRHMcA3R7OBkK14Kg==
+ bh=Lx1PAMjMnsDB5fK0tnrB98n8Vss/JNzWfKM276KuEIU=;
+ b=ApmK5AvKkXTAnic6z/jVF4S5ti1ESAgx+96nlWGECz2a41tK9T9MuFp0edTivjsUrYoxnM9jS3IEAL+TTp+UilxKxd0UmcSPDsOcR4/tT9XWjli3ZEXawxVtcERd1EhSPnLXRZ5JwBF3ndOyWCa9yxftljgEaVOgmz3CtapcgcZXRXwoUIknc9PfNgT6wGHQEKOZ/f20hgUYs3tEITzTZr3sfXKwwcIxwv534+1bnbkM/YVk/KoqiTKky7NAMYdIEnFhWW2ub9bjBZXoEB1R4vmGfMJLF9Kl1i3FWpLmuDk70zHSEgp69sh5b9PLnOep1ppTyDh8eMgWw6NOqZXNrw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Lx1PAMjMnsDB5fK0tnrB98n8Vss/JNzWfKM276KuEIU=;
+ b=gsXt8oX1z9sZ1mrQVkeYz2Gid9LmUwhBJE41HuaLYfe35fMfV2YT3kpUMO64Y8v+HRlY/Cbekqp/8m5TWzjhytU15WyEyfwH9AlUq8TNMBpgqFBT0TusFbpEjGNr1X/rJ+jtUHjJgZPzVryyrocqeapHzmOH8vfi8h6FHykTYcDxPkFFXe0EiAn2qbw3sMTTVO/oQnUSIGjDVapC5/6Lu8lAqPphUSxuCrqFeaAASbEbfDqYq0LHWgPzTJZaQkyO40wPakdM8WGvLC4FvfS+10jy5EppKBng55O5iy/rX4sd9IhY4E2246d2AghnbslQL3xfXC2SWGBMzR1lfdge5g==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by DS0PR11MB6349.namprd11.prod.outlook.com (2603:10b6:8:ce::11) with
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
+ by PH8PR12MB6964.namprd12.prod.outlook.com (2603:10b6:510:1bf::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Fri, 8 Dec
- 2023 00:31:01 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6362:763e:f84b:4169]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6362:763e:f84b:4169%5]) with mapi id 15.20.7068.025; Fri, 8 Dec 2023
- 00:31:01 +0000
-Date:   Thu, 7 Dec 2023 16:30:58 -0800
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        Shiju Jose <shiju.jose@huawei.com>
-CC:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Ard Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: RE: [PATCH 1/6] cxl/trace: Pass uuid explicitly to event traces
-Message-ID: <657263c249c4c_45e0129471@dwillia2-xfh.jf.intel.com.notmuch>
-References: <20230601-cxl-cper-v1-0-d19f1ac18ab6@intel.com>
- <20230601-cxl-cper-v1-1-d19f1ac18ab6@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230601-cxl-cper-v1-1-d19f1ac18ab6@intel.com>
-X-ClientProxiedBy: MW2PR16CA0030.namprd16.prod.outlook.com (2603:10b6:907::43)
- To PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.25; Fri, 8 Dec
+ 2023 00:38:16 +0000
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::b8a:1b58:1edf:90e6]) by BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::b8a:1b58:1edf:90e6%7]) with mapi id 15.20.7068.027; Fri, 8 Dec 2023
+ 00:38:15 +0000
+References: <20231204105440.61448-1-ryan.roberts@arm.com>
+ <20231204105440.61448-2-ryan.roberts@arm.com>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Barry Song <21cnbao@gmail.com>, Yang Shi <shy828301@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/15] mm: Batch-copy PTE ranges during fork()
+Date:   Fri, 08 Dec 2023 11:32:38 +1100
+In-reply-to: <20231204105440.61448-2-ryan.roberts@arm.com>
+Message-ID: <87lea5a5qm.fsf@nvdebian.thelocal>
+Content-Type: text/plain
+X-ClientProxiedBy: SYCPR01CA0035.ausprd01.prod.outlook.com
+ (2603:10c6:10:e::23) To BYAPR12MB3176.namprd12.prod.outlook.com
+ (2603:10b6:a03:134::26)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|DS0PR11MB6349:EE_
-X-MS-Office365-Filtering-Correlation-Id: 58ad20c9-8312-4430-020f-08dbf784f444
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|PH8PR12MB6964:EE_
+X-MS-Office365-Filtering-Correlation-Id: fc0e10d3-263b-4d6a-dcc0-08dbf785f6cf
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: H6lH2Y6MyMUC4OgFb9WGB7IE5ytMYtEK7zTE7Hm919qIoNlLIdJOkkcJQ3pROSJnFouFTI0ifTXjh59j/U1xuaPJx2ewBwNu46UizogG1axNaizck+72bEef3z4fQZRzpW7fzKhIxWi1ThyE10TjkGVUmvJnuSBOcdeE7dofQq1uHe7bfErpXoQdEg8okGIZXTuNxA7kilQfQJFJWJs+tP2JFUmnQWbj5ZZwfzgr75xoy5Sb56AlR4/u8+CWFGm1sa0M5i6URZgCposulIBUz5UjwUZQfsrsAX8CkFegBRGRH0Qw3li7EDfFdWpVxujgx4e9V2j1lJ0DHPKGCg0txfaSqd0sNUV0niFoItQHJeigojt3hh+IDRfs7AzY/ZiULJnugjfnD4iJrHygfBvNMdG2/krvnR82gNPrjD5F4PDlPUcfxKAEq2gLBUIInSNeEPBN4bcAdQjZ34bfaTti2cx8vHuh3pCe9l33bNdBG0EaqzcE/Cdmz0y6V3Fm0g/lc8lW7FMBUlDpDGAnvAP0vlnOSzWt5rlag7AhYZQLxjc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(396003)(346002)(136003)(376002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(66946007)(66476007)(316002)(110136005)(54906003)(66556008)(478600001)(6486002)(966005)(6666004)(41300700001)(2906002)(5660300002)(86362001)(4326008)(8936002)(38100700002)(107886003)(83380400001)(26005)(6512007)(6506007)(9686003)(8676002)(82960400001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: rGGxvLmRzc9NCW/dXre6Awtp3x4thU57HJzQGyVvJxx/xkcde0TljjhBpYkcw3PG3eQ6ncDqx9S+arLlQDCHbibTs6Z2CdHP8oGxtiWHcZxdkmLC4tm7nUMlhnKEkJvU3RwnOJoAPyI24fizxCPODWQAJPxqY1A0WqEikNIAgbhpQ/N8jgbyPPe3t99h6QOUbn2xluSuMI4IQmaADYvwqBn7oolzUr5DhyutdIJXqgyxxz1IcS/GBlzTc9GcS3zheIoN+rh+TEs5fdfw2fTQz5RCzEADUJndzrOtaEiZSwSQKES24jzzGN7gr2xklFf5XXxLXGAxp/ur8/yq2ptxzJK4/KO/+cybIGDUvDFNiW7cgx0b2qSFsEiWPEFDV+y0Pz2tNOapei7B5O8sKcfHQGLrQNlzBeIOUNRIyx8+JcNn827XB3uQF51s4x1vEijsOMX/REe3Vk+He1nnk+ieFwsRgZ/TDyHgtavaQ4VAKlrAXES+B/3WZiSCw2g6xSeSaI/k89TZXJ1xo8e0ate30lfvcooenMbTyRqAfZkLUZWLNaqpqLA8I3FJIGlPne6oOPGReuEztJy+2DXL6wFOVIHP0+3QHf8OeGXXEyeGKlI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(136003)(346002)(39860400002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(86362001)(26005)(6506007)(6512007)(41300700001)(9686003)(478600001)(6486002)(66946007)(2906002)(38100700002)(6666004)(54906003)(6916009)(316002)(66476007)(4326008)(8676002)(8936002)(7416002)(66556008)(83380400001)(5660300002)(309714004);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KQ6Dlf3b3D//V+8YkH4vmeZHKNjbnqIjDxl9lqaGbKgBe3rmvgqwZrCgBOMk?=
- =?us-ascii?Q?9uwjNv4TcL84E9cVqYLv+5KKu8OjjgS43VtQsFpqV0L5vP7JWXjtkRWOlFQK?=
- =?us-ascii?Q?Y0i58YryhJGGu20BvK8sPox2x0q4fqwhHMSGlOG3Bo6Ma7UlNBHVvkm6Rtxd?=
- =?us-ascii?Q?j/qEDYfJCZdazc6ZJ+wQ1TV4ifkwTauK65kmrYzAi2nGSWDSmJ5ERIEpA5zy?=
- =?us-ascii?Q?brnpk3RD256hwZO3IgadwypVHEbb1NstosdT2xMJJH6c/1wcOXYh2kS2/Qox?=
- =?us-ascii?Q?BeOr9s2psRzxRcUxA0bPkJGevoAs4sAG8ux9U1Rv/C0FQn88TJ3C1tvp6hpz?=
- =?us-ascii?Q?YHHYvsPermCWmGFmHM9aml3Y9wDfbZ3PWzKqziv7kDDF6DSV0CYyKs2xdzpX?=
- =?us-ascii?Q?D4m7/JaOY1HPZZxXdG5r4NvW+BA2Bn5fpBB0b1NpG2PT9VH3DZMrV8NHVcEz?=
- =?us-ascii?Q?SAmPNX1oTOBjTb3wPFtEi9ZSmRHDTSqBLhcm8sqljXQLWQFD7OxGasgb5MwT?=
- =?us-ascii?Q?vrhQ2az4qOWGAnp096/7TCc9gzZN9BGF/OzEm/FoOh/OT15WBjBXGyS7/SiI?=
- =?us-ascii?Q?EWBbsp0T2KMd6Kd5oWualDWlpU1bIsAfIBiKI7ZKtg6qO4kVgGHlRNMDzV/0?=
- =?us-ascii?Q?LiYo9KoULIXO0sjhIqZIBMALiS4LFxw2XWeql27oRqBhbPf3Ny4dlcIVhYcn?=
- =?us-ascii?Q?h26NpFodIb5NXthfn4qOpQyG69xmKptNZlp7Nsr7vmY0GBY2a5BNiDPuGVin?=
- =?us-ascii?Q?K9CX2IukbVowVse6D3TtKNlu02bVNQ0JgcOmQXqGh8ggJvFhwBJdYYOPQLOz?=
- =?us-ascii?Q?/UoRolBHXaUyTVt8gQBvtj70kAZvVF4Wsmth5DMRnEetyFy7PcvapPFVF5R0?=
- =?us-ascii?Q?cqRWX6dux5vhviP5Tx7+B1Y+3vvOkr+m7ezh0QWO678flKldlMONYsns1Bfc?=
- =?us-ascii?Q?9Szk6ZDQOksN6sW0RIzHS281uy9dO9BUtVzK9zbdUJ4+dOjXADF2qzKa5FJA?=
- =?us-ascii?Q?JNWUPKVBcZ3dGvLQXzrA55Zqilu4wxQY/ZA+ui2CeCI9eAltC7MY8wDYOlZR?=
- =?us-ascii?Q?jRWiSIE4Ck6Wpy7q7cGYVGKUMrE4+w/0nrjm5/5CEFMmP6x2R24Htt9qdw0w?=
- =?us-ascii?Q?ETEGlxK4JsZW/CgTwUCu4I+/1eH+pnYH4PYDY1f2e5JKAdvKlZ+uCmmvKu6+?=
- =?us-ascii?Q?63STcaN2Pt+oliwgKX+3b/nzOosjjnF8w1m/ycIUqCChNwYn3mw+POB+3FXB?=
- =?us-ascii?Q?qJUCc99YiQpisUyNJIVTH7MYATK6X1TxucA3m/iZ7FGeCaSDcZkqLkqgECBj?=
- =?us-ascii?Q?U/yizW1fRYePJ0I1VZGUUaLvT8Z1mCcuVfS+tt+cy2bVxAdGb9y7Ng1yi+Zh?=
- =?us-ascii?Q?B6tiF00sjP3gzDrH8xhccrP0dn794hkNFToHPzAaxVpD49BSjPhp92FkroKS?=
- =?us-ascii?Q?MY7mXUwudXmdhs/9UeihzESHsyEz4laKIUZxFP2/BDMshF0LoLnixM2dH7hb?=
- =?us-ascii?Q?wK/0JehMcI/gRq7omRhcCbrNgy4gzyW9AaKt48SzEFCfp7zsQG+YTynCLfsk?=
- =?us-ascii?Q?EIYi86DQdTJRqaIFENCjrSS9OraIvlK0F4xfKc74DD1nXBU9szQt6iOtvjiG?=
- =?us-ascii?Q?uw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58ad20c9-8312-4430-020f-08dbf784f444
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IE2VOYWcS4vVslmi8RzfAlamAMfU0EWoJRO6GvNFD5KOBQBuA7kL2Al9q/fN?=
+ =?us-ascii?Q?p6xksCQjCVd6XCBUcRWoi6KT7np3g4mtxlj8pMqZeqpKprPngsRlHNKXwN+S?=
+ =?us-ascii?Q?h+6UqMLTip2hTo7NLa4k+Ivk6ZFKsn7FuBRjIcobD4w0rfhEzdriaWuhS+9D?=
+ =?us-ascii?Q?bY0Poxg/FG7A5LwEGFA8GSiDDTBpXOgfE4tlwzCXvef6guEX1hfkz1mmr5MN?=
+ =?us-ascii?Q?137+grZVO+luYn5GjQsgQEYZTZ8kK4lUCm+Vt1URUwJppFWIl4Nfmu/eAAoQ?=
+ =?us-ascii?Q?8C8TLWM9MejR0P1LjQR1mTH0nK7wi1/4MOf48pq9GL760Uwt1b/05L4XMxYr?=
+ =?us-ascii?Q?BffQIga/XPnlz2RgifAPpRDaNO7XTR1m9s5rIcSWAGuxWLdM6avCbQCfHhAW?=
+ =?us-ascii?Q?AVaVbneFVaSQwsBM6H72ENVr1OX/xWHWkPjef6d043cdd8AKzmrEFmpADb2q?=
+ =?us-ascii?Q?cKucQmYEK2ltQnjja1ItZDUmoUn1PKigUIZiNX9koIqogc5g1Avxpu2w67Ce?=
+ =?us-ascii?Q?D1Kg/eQXz8yVD3nAZ3YbBWu4fzsPdJyyubeHBla6aS1mywgB5tA/STv3Ivr+?=
+ =?us-ascii?Q?az9Mw4dW8717W+YHpvandLD17m1I7pb0kLTQ6l9JWr3qMnI8tcTfCUCJQYVv?=
+ =?us-ascii?Q?Qe35j80SMIyXviZdtz/TZiSlyjct8FlPX0VxSp9PPt/IAKCIU0IcU2Ze2TGD?=
+ =?us-ascii?Q?7pUln5iUDo0+jNGpGFztNlqFJjvmS2MN9K7Dr/ka+RQi0MHhyv3MszatSV4l?=
+ =?us-ascii?Q?DdAT/9yP1zmqIf38RlDkL3st557KxTQSeqO9H0A0c2ItEWkJep40NcV4vfAR?=
+ =?us-ascii?Q?hCSbrnezcOOUUbhfgg3JNXuRfVW3NhSzgZcnoWcBQMYlEeYI5BzLRPrzLf8m?=
+ =?us-ascii?Q?7Un3YsEQ8UqcFTAGOv9ILbdAQ5fg1XSj5iFVSuoOcjPrgTn4+e46ND5vidnj?=
+ =?us-ascii?Q?kOz73jZWCtp1TJAoWC1xF3YaZ1M38WGbNvSJ4QxXu34NtbOv6Ogxvf1KY8kS?=
+ =?us-ascii?Q?CIuxLUV3J49V99/gAOeskQGiiTLclwk/XGtFelCKY/VmX/2dSZLrqenPVrPA?=
+ =?us-ascii?Q?jtd2Lt5/V5+HC1gk+R5I4KqKL0aPre0cquVGuqCJ1gB+2pFO3lG4puJ97y3q?=
+ =?us-ascii?Q?R4Ms1vyd0Mrvs0iO8y68lsXlUde4C815ZRcNYT1YDHCmU+ENdBWfUDIx3TlP?=
+ =?us-ascii?Q?ZFalveVLmzpYadrapc8Ve9GNpbKb0W6A4dB+FxlxvkR+wN4B6NDCd9YAz5XH?=
+ =?us-ascii?Q?HIcSxxpQLFhq5ZXZubV+d7S64YuXJ2+K2allhay7tdtAkZlIHD5swDVx0UQY?=
+ =?us-ascii?Q?9Bz8XD1weZKWldFg2pqkrv7WtFR7SGfWW2Rg1yTt7uMCVvZz26hqWalNFee4?=
+ =?us-ascii?Q?6UusbkFlRKMvu4eX/r0jrQDP7GEhNCYzILnaXozBF+BvUDdnSyGJ6kSsNcFk?=
+ =?us-ascii?Q?BbPOO9EJLUE9ZFnKO+Nj3I0xCUdrOTgVDXzrBKaIel0IKBo58d/T8SEoa1mI?=
+ =?us-ascii?Q?93tJINrGuVqZ0ty9LhH4rjt6N+R3j+jLpKeG1zZ06PqlQo9BcnYB2qKI8N2+?=
+ =?us-ascii?Q?ESFUzngQMqIBrqVxLOdPNOqT5rV/wVKZVwalVcfW?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc0e10d3-263b-4d6a-dcc0-08dbf785f6cf
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 00:31:01.4921
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 00:38:15.7034
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n5k0gamr82En54cu2/khUyMK2pXvjiJOEuV0eqIpplh+ubzVMwElw3WXLj2Aodzmm6KBD9WNIgH6OXcYMmaj7cGmu1ZGwD2s1f28UWzJLrA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB6349
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8ZDgGkV7p1YH5OFcl2t+yXW0qwWFut8fNsGH/QkHAhVM9x8Qe9Yf5BwdXtcrccc6FPgHiXw/POVytYoNC4n+nw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6964
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ira Weiny wrote:
-> CPER CXL events do not have a UUID associated with them.  It is
-> desirable to share event structures between the CPER CXL event and the
-> CXL event log events.
 
-This parses strange to me, maybe it is trying to capture too many
-changes in too few sentences? Something like this instead?
+Ryan Roberts <ryan.roberts@arm.com> writes:
 
-"CXL CPER events are identified by the CPER Section Type GUID. The GUID
-correlates with the CXL UUID for the event record. It turns out that a
-CXL CPER record is a strict subset of the CXL event record, only the
-UUID header field is chopped.
+<snip>
 
-In order to unify handling between native and CPER flavors of CXL
-events, prepare the code for the UUID to be passed in rather than
-inferred from the record itself.
-
-Later patches update the passed in record to only refer to the common
-data between the formats."
-
-> 
-> Pass the UUID explicitly to each trace event to be able to remove the
-> UUID from the event structures.
-> 
-> Originally it was desirable to remove the UUID from the well known event
-> because the UUID value was redundant.  However, the trace API was
-> already in place.[1]
-> 
-> [1] https://lore.kernel.org/all/36f2d12934d64a278f2c0313cbd01abc@huawei.com/
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
->  drivers/cxl/core/mbox.c  |  8 ++++----
->  drivers/cxl/core/trace.h | 32 ++++++++++++++++----------------
->  2 files changed, 20 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> index 36270dcfb42e..00f429c440df 100644
-> --- a/drivers/cxl/core/mbox.c
-> +++ b/drivers/cxl/core/mbox.c
-> @@ -870,19 +870,19 @@ static void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
->  		struct cxl_event_gen_media *rec =
->  				(struct cxl_event_gen_media *)record;
->  
-> -		trace_cxl_general_media(cxlmd, type, rec);
-> +		trace_cxl_general_media(cxlmd, type, id, rec);
->  	} else if (uuid_equal(id, &dram_event_uuid)) {
->  		struct cxl_event_dram *rec = (struct cxl_event_dram *)record;
->  
-> -		trace_cxl_dram(cxlmd, type, rec);
-> +		trace_cxl_dram(cxlmd, type, id, rec);
->  	} else if (uuid_equal(id, &mem_mod_event_uuid)) {
->  		struct cxl_event_mem_module *rec =
->  				(struct cxl_event_mem_module *)record;
->  
-> -		trace_cxl_memory_module(cxlmd, type, rec);
-> +		trace_cxl_memory_module(cxlmd, type, id, rec);
->  	} else {
->  		/* For unknown record types print just the header */
-> -		trace_cxl_generic_event(cxlmd, type, record);
-> +		trace_cxl_generic_event(cxlmd, type, id, record);
->  	}
+>  /*
+>   * On some architectures hardware does not set page access bit when accessing
+>   * memory page, it is responsibility of software setting this bit. It brings
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 1f18ed4a5497..8a87a488950c 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -924,68 +924,162 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
+>  	return 0;
 >  }
 >  
-> diff --git a/drivers/cxl/core/trace.h b/drivers/cxl/core/trace.h
-> index a0b5819bc70b..2aef185f4cd0 100644
-> --- a/drivers/cxl/core/trace.h
-> +++ b/drivers/cxl/core/trace.h
-> @@ -189,7 +189,7 @@ TRACE_EVENT(cxl_overflow,
->  	__string(memdev, dev_name(&cxlmd->dev))			\
->  	__string(host, dev_name(cxlmd->dev.parent))		\
->  	__field(int, log)					\
-> -	__field_struct(uuid_t, hdr_uuid)			\
-> +	__field_struct(uuid_t, uuid)				\
+> +static int folio_nr_pages_cont_mapped(struct folio *folio,
+> +				      struct page *page, pte_t *pte,
+> +				      unsigned long addr, unsigned long end,
+> +				      pte_t ptent, bool enforce_uffd_wp,
+> +				      int *dirty_nr, int *writable_nr)
+> +{
+> +	int floops;
+> +	int i;
+> +	unsigned long pfn;
+> +	bool prot_none;
+> +	bool uffd_wp;
+> +
+> +	if (!folio_test_large(folio))
+> +		return 1;
+> +
+> +	/*
+> +	 * Loop either to `end` or to end of folio if its contiguously mapped,
+> +	 * whichever is smaller.
+> +	 */
+> +	floops = (end - addr) >> PAGE_SHIFT;
+> +	floops = min_t(int, floops,
+> +		       folio_pfn(folio_next(folio)) - page_to_pfn(page));
 
-Hmm, is it too late to make this rename? I.e. would a script that is
-looking for "hdr_uuid" in one kernel be broken by the rename of the
-field to "uuid" in the next?
+Much better, thanks for addressing my comments here.
 
->  	__field(u64, serial)					\
->  	__field(u32, hdr_flags)					\
->  	__field(u16, hdr_handle)				\
-> @@ -198,12 +198,12 @@ TRACE_EVENT(cxl_overflow,
->  	__field(u8, hdr_length)					\
->  	__field(u8, hdr_maint_op_class)
+> +
+> +	pfn = page_to_pfn(page);
+> +	prot_none = pte_protnone(ptent);
+> +	uffd_wp = pte_uffd_wp(ptent);
+> +
+> +	*dirty_nr = !!pte_dirty(ptent);
+> +	*writable_nr = !!pte_write(ptent);
+> +
+> +	pfn++;
+> +	pte++;
+> +
+> +	for (i = 1; i < floops; i++) {
+> +		ptent = ptep_get(pte);
+> +
+> +		if (!pte_present(ptent) || pte_pfn(ptent) != pfn ||
+> +		    prot_none != pte_protnone(ptent) ||
+> +		    (enforce_uffd_wp && uffd_wp != pte_uffd_wp(ptent)))
+> +			break;
+> +
+> +		if (pte_dirty(ptent))
+> +			(*dirty_nr)++;
+> +		if (pte_write(ptent))
+> +			(*writable_nr)++;
+> +
+> +		pfn++;
+> +		pte++;
+> +	}
+> +
+> +	return i;
+> +}
+> +
+>  /*
+> - * Copy one pte.  Returns 0 if succeeded, or -EAGAIN if one preallocated page
+> - * is required to copy this pte.
+> + * Copy set of contiguous ptes.  Returns number of ptes copied if succeeded
+> + * (always gte 1), or -EAGAIN if one preallocated page is required to copy the
+> + * first pte.
+>   */
+>  static inline int
+> -copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+> -		 pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
+> -		 struct folio **prealloc)
+> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+> +		  pte_t *dst_pte, pte_t *src_pte,
+> +		  unsigned long addr, unsigned long end,
+> +		  int *rss, struct folio **prealloc)
+>  {
+>  	struct mm_struct *src_mm = src_vma->vm_mm;
+>  	unsigned long vm_flags = src_vma->vm_flags;
+>  	pte_t pte = ptep_get(src_pte);
+>  	struct page *page;
+>  	struct folio *folio;
+> +	int nr = 1;
+> +	bool anon = false;
+> +	bool enforce_uffd_wp = userfaultfd_wp(dst_vma);
+> +	int nr_dirty = !!pte_dirty(pte);
+> +	int nr_writable = !!pte_write(pte);
+> +	int i, ret;
 >  
-> -#define CXL_EVT_TP_fast_assign(cxlmd, l, hdr)					\
-> +#define CXL_EVT_TP_fast_assign(cxlmd, l, uuid, hdr)				\
->  	__assign_str(memdev, dev_name(&(cxlmd)->dev));				\
->  	__assign_str(host, dev_name((cxlmd)->dev.parent));			\
->  	__entry->log = (l);							\
->  	__entry->serial = (cxlmd)->cxlds->serial;				\
-> -	memcpy(&__entry->hdr_uuid, &(hdr).id, sizeof(uuid_t));			\
-> +	memcpy(&__entry->uuid, (uuid), sizeof(uuid_t));				\
+>  	page = vm_normal_page(src_vma, addr, pte);
+> -	if (page)
+> +	if (page) {
+>  		folio = page_folio(page);
+> -	if (page && folio_test_anon(folio)) {
+> -		/*
+> -		 * If this page may have been pinned by the parent process,
+> -		 * copy the page immediately for the child so that we'll always
+> -		 * guarantee the pinned page won't be randomly replaced in the
+> -		 * future.
+> -		 */
+> -		folio_get(folio);
+> -		if (unlikely(page_try_dup_anon_rmap(page, false, src_vma))) {
+> -			/* Page may be pinned, we have to copy. */
+> -			folio_put(folio);
+> -			return copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
+> -						 addr, rss, prealloc, page);
+> +		anon = folio_test_anon(folio);
+> +		nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr, end,
+> +						pte, enforce_uffd_wp, &nr_dirty,
+> +						&nr_writable);
+> +		folio_ref_add(folio, nr);
+> +
+> +		for (i = 0; i < nr; i++, page++) {
+> +			if (anon) {
+> +				/*
+> +				 * If this page may have been pinned by the
+> +				 * parent process, copy the page immediately for
+> +				 * the child so that we'll always guarantee the
+> +				 * pinned page won't be randomly replaced in the
+> +				 * future.
+> +				 */
+> +				if (unlikely(page_try_dup_anon_rmap(
+> +						page, false, src_vma))) {
+> +					if (i != 0)
+> +						break;
+> +					/* Page may be pinned, we have to copy. */
+> +					folio_ref_sub(folio, nr);
+> +					ret = copy_present_page(
+> +						dst_vma, src_vma, dst_pte,
+> +						src_pte, addr, rss, prealloc,
+> +						page);
+> +					return ret == 0 ? 1 : ret;
+> +				}
+> +				rss[MM_ANONPAGES]++;
+> +				VM_BUG_ON(PageAnonExclusive(page));
+> +			} else {
+> +				page_dup_file_rmap(page, false);
+> +				rss[mm_counter_file(page)]++;
+> +			}
+>  		}
+> -		rss[MM_ANONPAGES]++;
+> -	} else if (page) {
+> -		folio_get(folio);
+> -		page_dup_file_rmap(page, false);
+> -		rss[mm_counter_file(page)]++;
+> -	}
+>  
+> -	/*
+> -	 * If it's a COW mapping, write protect it both
+> -	 * in the parent and the child
+> -	 */
+> -	if (is_cow_mapping(vm_flags) && pte_write(pte)) {
+> -		ptep_set_wrprotect(src_mm, addr, src_pte);
+> -		pte = pte_wrprotect(pte);
+> +		if (i < nr) {
+> +			folio_ref_sub(folio, nr - i);
+> +			nr = i;
+> +		}
+>  	}
+> -	VM_BUG_ON(page && folio_test_anon(folio) && PageAnonExclusive(page));
+>  
+>  	/*
+> -	 * If it's a shared mapping, mark it clean in
+> -	 * the child
+> +	 * If it's a shared mapping, mark it clean and write protected in the
+> +	 * child, and rely on a write fault to fix up the permissions. This
+> +	 * allows determining batch size without having to consider RO/RW
+> +	 * permissions. As an optimization, skip wrprotect if all ptes in the
+> +	 * batch have the same permissions.
+> +	 *
+> +	 * If its a private (CoW) mapping, mark it dirty in the child if _any_
+> +	 * of the parent mappings in the block were marked dirty. The contiguous
+> +	 * block of mappings are all backed by the same folio, so if any are
+> +	 * dirty then the whole folio is dirty. This allows determining batch
+> +	 * size without having to consider the dirty bit. Further, write protect
+> +	 * it both in the parent and the child so that a future write will cause
+> +	 * a CoW. As as an optimization, skip the wrprotect if all the ptes in
+> +	 * the batch are already readonly.
+>  	 */
+> -	if (vm_flags & VM_SHARED)
+> +	if (vm_flags & VM_SHARED) {
+>  		pte = pte_mkclean(pte);
+> -	pte = pte_mkold(pte);
+> +		if (nr_writable > 0 && nr_writable < nr)
+> +			pte = pte_wrprotect(pte);
+> +	} else {
+> +		if (nr_dirty)
+> +			pte = pte_mkdirty(pte);
+> +		if (nr_writable) {
+> +			ptep_set_wrprotects(src_mm, addr, src_pte, nr);
+> +			pte = pte_wrprotect(pte);
+> +		}
+> +	}
+>  
+> -	if (!userfaultfd_wp(dst_vma))
+> +	pte = pte_mkold(pte);
+> +	pte = pte_clear_soft_dirty(pte);
+> +	if (!enforce_uffd_wp)
+>  		pte = pte_clear_uffd_wp(pte);
+>  
+> -	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
+> -	return 0;
+> +	set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
+> +	return nr;
 
-Per above this would be:
+I don't have any further comments and you have addressed my previous
+ones so feel free to add:
 
-	memcpy(&__entry->hdr_uuid, (uuid), sizeof(uuid_t));				\
+Reviewed-by: Alistair Popple <apopple@nvidia.com>
 
->  	__entry->hdr_length = (hdr).length;					\
->  	__entry->hdr_flags = get_unaligned_le24((hdr).flags);			\
->  	__entry->hdr_handle = le16_to_cpu((hdr).handle);			\
-> @@ -217,7 +217,7 @@ TRACE_EVENT(cxl_overflow,
->  		"maint_op_class=%u : " fmt,					\
->  		__get_str(memdev), __get_str(host), __entry->serial,		\
->  		cxl_event_log_type_str(__entry->log),				\
-> -		__entry->hdr_timestamp, &__entry->hdr_uuid, __entry->hdr_length,\
-> +		__entry->hdr_timestamp, &__entry->uuid, __entry->hdr_length,	\
+However whilst I think the above CoW sequence looks correct it would be
+nice if someone else could take a look as well.
 
-...and this change could be dropped.
+>  }
+>  
+>  static inline struct folio *page_copy_prealloc(struct mm_struct *src_mm,
+> @@ -1021,6 +1115,7 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  	int rss[NR_MM_COUNTERS];
+>  	swp_entry_t entry = (swp_entry_t){0};
+>  	struct folio *prealloc = NULL;
+> +	int nr_ptes;
+>  
+>  again:
+>  	progress = 0;
+> @@ -1051,6 +1146,8 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  	arch_enter_lazy_mmu_mode();
+>  
+>  	do {
+> +		nr_ptes = 1;
+> +
+>  		/*
+>  		 * We are holding two locks at this point - either of them
+>  		 * could generate latencies in another task on another CPU.
+> @@ -1086,16 +1183,21 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  			 * the now present pte.
+>  			 */
+>  			WARN_ON_ONCE(ret != -ENOENT);
+> +			ret = 0;
+>  		}
+> -		/* copy_present_pte() will clear `*prealloc' if consumed */
+> -		ret = copy_present_pte(dst_vma, src_vma, dst_pte, src_pte,
+> -				       addr, rss, &prealloc);
+> +		/* copy_present_ptes() will clear `*prealloc' if consumed */
+> +		nr_ptes = copy_present_ptes(dst_vma, src_vma, dst_pte, src_pte,
+> +					    addr, end, rss, &prealloc);
+> +
+>  		/*
+>  		 * If we need a pre-allocated page for this pte, drop the
+>  		 * locks, allocate, and try again.
+>  		 */
+> -		if (unlikely(ret == -EAGAIN))
+> +		if (unlikely(nr_ptes == -EAGAIN)) {
+> +			ret = -EAGAIN;
+>  			break;
+> +		}
+> +
+>  		if (unlikely(prealloc)) {
+>  			/*
+>  			 * pre-alloc page cannot be reused by next time so as
+> @@ -1106,8 +1208,9 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  			folio_put(prealloc);
+>  			prealloc = NULL;
+>  		}
+> -		progress += 8;
+> -	} while (dst_pte++, src_pte++, addr += PAGE_SIZE, addr != end);
+> +		progress += 8 * nr_ptes;
+> +	} while (dst_pte += nr_ptes, src_pte += nr_ptes,
+> +		 addr += PAGE_SIZE * nr_ptes, addr != end);
+>  
+>  	arch_leave_lazy_mmu_mode();
+>  	pte_unmap_unlock(orig_src_pte, src_ptl);
 
-Other than that, this looks good to me.
