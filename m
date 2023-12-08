@@ -2,343 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9866180A41D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1741D80A41A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573782AbjLHNGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:06:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46688 "EHLO
+        id S231744AbjLHNFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:05:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573773AbjLHNGC (ORCPT
+        with ESMTP id S1573773AbjLHNFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:06:02 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4594F1995;
-        Fri,  8 Dec 2023 05:06:08 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E733740E00CC;
-        Fri,  8 Dec 2023 13:06:04 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id UcgXcBcz720k; Fri,  8 Dec 2023 13:06:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1702040762; bh=k9BBLCJJHxA1EJZX5E05AB1l8VGWke2lYGmIBt3xYhI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GbulNFr88+NES6gJHTFBzrBKX/G3XJQuA9w1k2sxH60A/Wa+Q0S4Q4ADKct/6sZd7
-         jWtKPKbepUNQmtCtWDUDBg+npO3ghryF1cxT/96f7+4PpMoauZm3/LQj/AZ+po9XXs
-         nfTqUr4v/Po53yiRNUaaeLru/Iw1JXnsWaOrCJv7f5vFwVQ1mrT8aiVQtly4JT4SvD
-         i+uSxZ1UCEMnWehnui2RGaHlOT0kUlAMce/KNpms2x4RWI5TI2GSkmOs5mf7SqHIiS
-         o40ADaVmrbYYCe1DaIbJQpTW5SNs3d62nQpVEp1+bUdXacnFLMUTnj6kuNXDqJmWNo
-         lebCrPQqNlaYsODU4eKlhHYDK68Vbx87AdzVEmBqkce3j+dYhl0qgQWsCFH2nbl9QQ
-         WtJirz/E27HdFcX46vJQoUnQRBbahjobKBRvgejZqMwVGLWiJWRpty46e3aolqeUDA
-         eH1IDSafl/VjW2eltN6Xit1ttGsl36wW+bf4UVfpZ1mi2B0Fq7DnsVRGZmvcdzBW7L
-         iSk7BTgF/O/fJ0srB42um9or3KpbvdcjjDw4RZGuQ9vie2HF2j6X0ZRJ0/Fqo7c12p
-         WPisowwqJylliuaF9EcI7pqy9VkHToC0fGcJMZ1sB3C1BaBZ0FYpe+ND1BmLfusJ5E
-         hEPD6WDU7YS2VPZbYbCGhfnY=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B4F4140E00A9;
-        Fri,  8 Dec 2023 13:05:21 +0000 (UTC)
-Date:   Fri, 8 Dec 2023 14:05:20 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-        pankaj.gupta@amd.com, liam.merwick@oracle.com,
-        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v10 17/50] crypto: ccp: Handle the legacy TMR allocation
- when SNP is enabled
-Message-ID: <20231208130520.GFZXMUkKR+aexFpxXf@fat_crate.local>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-18-michael.roth@amd.com>
+        Fri, 8 Dec 2023 08:05:43 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67E9171F;
+        Fri,  8 Dec 2023 05:05:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702040750; x=1733576750;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=QnOL0HstChe82dZJLaFn2ppbg9Lg6p6vs8wKcJ3EoZU=;
+  b=h0kZxPLRvfEdQj2JMxHfOraKbH6V0kN9Nea7K2XxBuYsS5YuCADNe1FO
+   s6Iv842c2fd48a4TRysGMmUE1gRUGFE8o5iRjiir5VBWYbB+1Xx6lKIGB
+   FIVS7WhNms3MRIgAVJN7aV5DrQamrGyAtwQdGxgX7XnNtxNSF4O01uUNG
+   eXsgIPec3c9bx94WCKM+uZoxKjtsYNENpy1ritc7X7XV1gmxD0jO5eOAv
+   34OvIZepWndgy2XUyfwMsNNqE8Vr4Sx6csseybTL0xqxZdTuijUvCJHDO
+   3owq8eHM7de1EhpFScMIasLZcPe9DMvCPgUqXzPichpJ3f1529fzTrhYO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="15954734"
+X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
+   d="scan'208";a="15954734"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 05:05:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="721861244"
+X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
+   d="scan'208";a="721861244"
+Received: from mvafin-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.63.236])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 05:05:43 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Ziqi Zhao <astrajoan@yahoo.com>, astrajoan@yahoo.com,
+        airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, ivan.orlov0322@gmail.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        skhan@linuxfoundation.org, tzimmermann@suse.de
+Cc:     syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
+        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org,
+        glider@google.com,
+        syzbot+4fad2e57beb6397ab2fc@syzkaller.appspotmail.com,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH] drm/crtc: Fix uninit-value bug in drm_mode_setcrtc
+In-Reply-To: <20230721161446.8602-1-astrajoan@yahoo.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230716043411.4950-1-astrajoan@yahoo.com>
+ <20230721161446.8602-1-astrajoan@yahoo.com>
+Date:   Fri, 08 Dec 2023 15:05:40 +0200
+Message-ID: <87h6kszvx7.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231016132819.1002933-18-michael.roth@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 08:27:46AM -0500, Michael Roth wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
-> 
-> The behavior and requirement for the SEV-legacy command is altered when
-> the SNP firmware is in the INIT state. See SEV-SNP firmware specification
-> for more details.
-> 
-> Allocate the Trusted Memory Region (TMR) as a 2mb sized/aligned region
-> when SNP is enabled to satisfy new requirements for the SNP. Continue
+On Fri, 21 Jul 2023, Ziqi Zhao <astrajoan@yahoo.com> wrote:
+> The connector_set contains uninitialized values when allocated with
+> kmalloc_array. However, in the "out" branch, the logic assumes that any
+> element in connector_set would be equal to NULL if failed to
+> initialize, which causes the bug reported by Syzbot. The fix is to use
+> an extra variable to keep track of how many connectors are initialized
+> indeed, and use that variable to decrease any refcounts in the "out"
+> branch.
 
-s/the //
+From one uninit-value bug to another?
 
-> allocating a 1mb region for !SNP configuration.
-> 
-> While at it, provide API that can be used by others to allocate a page
-
-"...an API... ... to allocate a firmware page."
-
-Simple.
-
-> that can be used by the firmware.
-
-> The immediate user for this API will be the KVM driver.
-
-Delete that sentence.
-
-> The KVM driver to need to allocate a firmware context
-
-"The KVM driver needs to allocate ...
-
-> page during the guest creation. The context page need to be updated
-
-"needs"
-
-> by the firmware. See the SEV-SNP specification for further details.
-> 
-> Co-developed-by: Ashish Kalra <ashish.kalra@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> [mdr: use struct sev_data_snp_page_reclaim instead of passing paddr
->       directly to SEV_CMD_SNP_PAGE_RECLAIM]
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
+>
+> Reported-by: syzbot+4fad2e57beb6397ab2fc@syzkaller.appspotmail.com
+> Signed-off-by: Ziqi Zhao <astrajoan@yahoo.com>
 > ---
->  drivers/crypto/ccp/sev-dev.c | 151 ++++++++++++++++++++++++++++++++---
->  include/linux/psp-sev.h      |   9 +++
->  2 files changed, 151 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> index 613b25f81498..ea21307a2b34 100644
-> --- a/drivers/crypto/ccp/sev-dev.c
-> +++ b/drivers/crypto/ccp/sev-dev.c
-> @@ -30,6 +30,7 @@
->  #include <asm/smp.h>
->  #include <asm/cacheflush.h>
->  #include <asm/e820/types.h>
-> +#include <asm/sev-host.h>
+>  drivers/gpu/drm/drm_crtc.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_crtc.c b/drivers/gpu/drm/drm_crtc.c
+> index df9bf3c9206e..d718c17ab1e9 100644
+> --- a/drivers/gpu/drm/drm_crtc.c
+> +++ b/drivers/gpu/drm/drm_crtc.c
+> @@ -715,8 +715,7 @@ int drm_mode_setcrtc(struct drm_device *dev, void *data,
+>  	struct drm_mode_set set;
+>  	uint32_t __user *set_connectors_ptr;
+>  	struct drm_modeset_acquire_ctx ctx;
+> -	int ret;
+> -	int i;
+> +	int ret, i, num_connectors;
+
+num_connectors is uninitialized.
+
 >  
->  #include "psp-dev.h"
->  #include "sev-dev.h"
-> @@ -93,6 +94,13 @@ static void *sev_init_ex_buffer;
->  struct sev_data_range_list *snp_range_list;
->  static int __sev_snp_init_locked(int *error);
+>  	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+>  		return -EOPNOTSUPP;
+> @@ -851,6 +850,7 @@ int drm_mode_setcrtc(struct drm_device *dev, void *data,
+>  			goto out;
+>  		}
 >  
-> +/* When SEV-SNP is enabled the TMR needs to be 2MB aligned and 2MB size. */
-> +#define SEV_SNP_ES_TMR_SIZE	(2 * 1024 * 1024)
+> +		num_connectors = 0;
 
-There's "SEV", "SNP" *and* "ES". Wow.
+num_connectors is initialized only if crtc_req->count_connectors > 0.
 
-Let's do this:
-
-#define SEV_TMR_SIZE	SZ_1M
-#define SNP_TMR_SIZE	SZ_2M
-
-Done.
-
-> +static size_t sev_es_tmr_size = SEV_ES_TMR_SIZE;
-> +
-> +static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret);
-
-Instead of doing forward declarations, move the whole logic around
-__sev_do_cmd_locked() up here in the file so that you can call that
-function by other functions without forward declarations.
-
-The move should probably be a pre-patch.
-
->  static inline bool sev_version_greater_or_equal(u8 maj, u8 min)
->  {
->  	struct sev_device *sev = psp_master->sev_data;
-> @@ -193,11 +201,131 @@ static int sev_cmd_buffer_len(int cmd)
->  	return 0;
->  }
+>  		for (i = 0; i < crtc_req->count_connectors; i++) {
+>  			connector_set[i] = NULL;
+>  			set_connectors_ptr = (uint32_t __user *)(unsigned long)crtc_req->set_connectors_ptr;
+> @@ -871,6 +871,7 @@ int drm_mode_setcrtc(struct drm_device *dev, void *data,
+>  					connector->name);
 >  
-> +static int snp_reclaim_pages(unsigned long paddr, unsigned int npages, bool locked)
-> +{
-> +	/* Cbit maybe set in the paddr */
-> +	unsigned long pfn = __sme_clr(paddr) >> PAGE_SHIFT;
-> +	int ret, err, i, n = 0;
-> +
-> +	for (i = 0; i < npages; i++, pfn++, n++) {
-> +		struct sev_data_snp_page_reclaim data = {0};
-> +
-> +		data.paddr = pfn << PAGE_SHIFT;
+>  			connector_set[i] = connector;
+> +			num_connectors++;
+>  		}
+>  	}
+>  
+> @@ -879,7 +880,7 @@ int drm_mode_setcrtc(struct drm_device *dev, void *data,
+>  	set.y = crtc_req->y;
+>  	set.mode = mode;
+>  	set.connectors = connector_set;
+> -	set.num_connectors = crtc_req->count_connectors;
+> +	set.num_connectors = num_connectors;
 
-This shifting back'n'forth between paddr and pfn makes this function
-hard to read. Let's use only paddr (diff ontop):
+num_connectors is used uninitialized if crtc_req->count_connectors <= 0.
 
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index ea21307a2b34..25078b0253bd 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -203,14 +203,15 @@ static int sev_cmd_buffer_len(int cmd)
- 
- static int snp_reclaim_pages(unsigned long paddr, unsigned int npages, bool locked)
- {
--	/* Cbit maybe set in the paddr */
--	unsigned long pfn = __sme_clr(paddr) >> PAGE_SHIFT;
- 	int ret, err, i, n = 0;
- 
--	for (i = 0; i < npages; i++, pfn++, n++) {
-+	/* C-bit maybe set, clear it: */
-+	paddr = __sme_clr(paddr);
-+
-+	for (i = 0; i < npages; i++, paddr += PAGE_SIZE, n++) {
- 		struct sev_data_snp_page_reclaim data = {0};
- 
--		data.paddr = pfn << PAGE_SHIFT;
-+		data.paddr = paddr;
- 
- 		if (locked)
- 			ret = __sev_do_cmd_locked(SEV_CMD_SNP_PAGE_RECLAIM, &data, &err);
-@@ -220,7 +221,7 @@ static int snp_reclaim_pages(unsigned long paddr, unsigned int npages, bool lock
- 		if (ret)
- 			goto cleanup;
- 
--		ret = rmp_make_shared(pfn, PG_LEVEL_4K);
-+		ret = rmp_make_shared(__phys_to_pfn(paddr), PG_LEVEL_4K);
- 		if (ret)
- 			goto cleanup;
- 	}
-@@ -232,7 +233,7 @@ static int snp_reclaim_pages(unsigned long paddr, unsigned int npages, bool lock
- 	 * If failed to reclaim the page then page is no longer safe to
- 	 * be release back to the system, leak it.
- 	 */
--	snp_leak_pages(pfn, npages - n);
-+	snp_leak_pages(__phys_to_pfn(paddr), npages - n);
- 	return ret;
- }
- 
-> +
-> +		if (locked)
-> +			ret = __sev_do_cmd_locked(SEV_CMD_SNP_PAGE_RECLAIM, &data, &err);
-> +		else
-> +			ret = sev_do_cmd(SEV_CMD_SNP_PAGE_RECLAIM, &data, &err);
-> +
-> +		if (ret)
-> +			goto cleanup;
-> +
-> +		ret = rmp_make_shared(pfn, PG_LEVEL_4K);
-> +		if (ret)
-> +			goto cleanup;
-> +	}
-> +
-> +	return 0;
-> +
-> +cleanup:
-> +	/*
-> +	 * If failed to reclaim the page then page is no longer safe to
-> +	 * be release back to the system, leak it.
+BR,
+Jani.
 
-"released"
-
-> +	 */
-> +	snp_leak_pages(pfn, npages - n);
-> +	return ret;
-> +}
-> +
-> +static int rmp_mark_pages_firmware(unsigned long paddr, unsigned int npages, bool locked)
-> +{
-> +	/* Cbit maybe set in the paddr */
-> +	unsigned long pfn = __sme_clr(paddr) >> PAGE_SHIFT;
-> +	int rc, n = 0, i;
-
-That n looks like it can be replaced by i.
-
-> +
-> +	for (i = 0; i < npages; i++, n++, pfn++) {
-> +		rc = rmp_make_private(pfn, 0, PG_LEVEL_4K, 0, true);
-> +		if (rc)
-> +			goto cleanup;
-> +	}
-> +
-> +	return 0;
-> +
-> +cleanup:
-> +	/*
-> +	 * Try unrolling the firmware state changes by
-> +	 * reclaiming the pages which were already changed to the
-> +	 * firmware state.
-> +	 */
-> +	snp_reclaim_pages(paddr, n, locked);
-> +
-> +	return rc;
-> +}
-> +
-> +static struct page *__snp_alloc_firmware_pages(gfp_t gfp_mask, int order, bool locked)
-
-AFAICT, @locked is always false. So it can go.
-
-> +{
-> +	unsigned long npages = 1ul << order, paddr;
-> +	struct sev_device *sev;
-> +	struct page *page;
-> +
-> +	if (!psp_master || !psp_master->sev_data)
-> +		return NULL;
-> +
-> +	page = alloc_pages(gfp_mask, order);
-> +	if (!page)
-> +		return NULL;
-> +
-> +	/* If SEV-SNP is initialized then add the page in RMP table. */
-> +	sev = psp_master->sev_data;
-> +	if (!sev->snp_initialized)
-> +		return page;
-> +
-> +	paddr = __pa((unsigned long)page_address(page));
-> +	if (rmp_mark_pages_firmware(paddr, npages, locked))
-> +		return NULL;
-> +
-> +	return page;
-> +}
-> +
-> +void *snp_alloc_firmware_page(gfp_t gfp_mask)
-> +{
-> +	struct page *page;
-> +
-> +	page = __snp_alloc_firmware_pages(gfp_mask, 0, false);
-> +
-> +	return page ? page_address(page) : NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(snp_alloc_firmware_page);
-> +
-> +static void __snp_free_firmware_pages(struct page *page, int order, bool locked)a
-
-This @locked too is always false. It becomes true later in
-
-Subject: [PATCH v10 50/50] crypto: ccp: Add panic notifier for SEV/SNP firmware shutdown on kdump
-
-which talks about some panic notifier running in atomic context. But
-then you can't take locks in atomic context.
-
-Looks like this whole dance around the locked thing needs a cleanup.
-
-...
-
+>  	set.fb = fb;
+>  
+>  	if (drm_drv_uses_atomic_modeset(dev))
+> @@ -892,7 +893,7 @@ int drm_mode_setcrtc(struct drm_device *dev, void *data,
+>  		drm_framebuffer_put(fb);
+>  
+>  	if (connector_set) {
+> -		for (i = 0; i < crtc_req->count_connectors; i++) {
+> +		for (i = 0; i < num_connectors; i++) {
+>  			if (connector_set[i])
+>  				drm_connector_put(connector_set[i]);
+>  		}
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Jani Nikula, Intel
