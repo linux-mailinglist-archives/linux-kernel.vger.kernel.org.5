@@ -2,173 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 481BD80ABFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C3D80AC06
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574574AbjLHSWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:22:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
+        id S229872AbjLHS0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:26:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbjLHSW3 (ORCPT
+        with ESMTP id S229811AbjLHS0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:22:29 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2056.outbound.protection.outlook.com [40.107.92.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC0090;
-        Fri,  8 Dec 2023 10:22:31 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TGeOCVqat7p0Q6VmBYJN80BEmYjfE+rUCSWkXQBpOxczzMPQtPq2HCotCBt+ean0b9SVy2l2V//deFZs04B7C4wtbwFxlDpCkrbgVjBm2zdhESxuGYy91D5OAM6Qf+JoPH047dSu2Uxm97V6DwGMvDLaNSqSMvRGoY9h71cYwp2PotXTjM6VCu8r0679PoNhKIdAfBhJsQQYqAIGqh2tA+zdQcOR5AfVvUgpIsJaVYzXgFUuHruOrE3ZUENhPm1cKhNb6pZXlr1NFHj28IoM2iFAy0ou1la4kezeFaBbXxPl8rOTvRxkUQHBMUnL0J6f3dFRGC8K3a+NHWG5dtE3ZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g9Whj5COiQFoeSINVnrPGl6eZGN0zGbvAadKVapN3AA=;
- b=bYNlcLQrDo/Tkpwft9nkXYCvGG1WH2xsIsj7JF5isZu0C26w/aYD70EkTbCRghJ4JKqfEpAaHMj9hCEkzeoDXd+alPP+HWVEK1TeRuixjYAEgeJIro9D7kkdawKppVOeQ7tTfFw475sS0FTH9gXz3Aiq2JMMsquL3++ywdNXGfD4MmWiIC8LY34E+dC6xBYcSObf/hiaTufC6GmdqEAjdxYyoEp4lqUdWjjueZ9dPpo+j7Oo12Pu4p9kTfGGlCHOzcOwh+csAHzdlJytNPmctY/3CNLGQyZvoG/Cx5KJEXj/wULibjwJ5dASVwnt6dSCvvioZJ0hyVQIAO1Eh0UU9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g9Whj5COiQFoeSINVnrPGl6eZGN0zGbvAadKVapN3AA=;
- b=nJ9vp763cKUwq58Zb7DGKeBBt8+LNMMXFYX71M3qluvt+ZbrIMYnkpap8T8cA4eLzkyov6nHbaKYetHtACjSiHO3BwVVhZbam2i/iZetBxBYzSHeRctr3APk9UM9+diHzoOcYzlpSEEDTneQ7wx3+tJFF8ZkvFlHQ/45Ds3HU/k=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by BY5PR12MB4066.namprd12.prod.outlook.com (2603:10b6:a03:207::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.28; Fri, 8 Dec
- 2023 18:22:27 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.7068.028; Fri, 8 Dec 2023
- 18:22:27 +0000
-Message-ID: <0f1b9e43-61be-40a0-881d-69b0164b1926@amd.com>
-Date:   Fri, 8 Dec 2023 12:22:25 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] Input: i8042: Add a quirk for Framework 16" laptop
-Content-Language: en-US
-To:     Rahul Rameshbabu <rrameshbabu@nvidia.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231206212140.7458-1-mario.limonciello@amd.com>
- <20231206212140.7458-2-mario.limonciello@amd.com>
- <ZXNY8a_Zja9rSupQ@google.com> <87y1e4o9ce.fsf@nvidia.com>
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <87y1e4o9ce.fsf@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0501CA0036.namprd05.prod.outlook.com
- (2603:10b6:803:40::49) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+        Fri, 8 Dec 2023 13:26:11 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9E690
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:26:17 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc79f73e58so8085ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:26:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702059977; x=1702664777; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=75zio9oghTkUElUZUVPQLES5Kw5emjlawW+mI0eiLfs=;
+        b=q28rMezCcPtRMa56QW+O2YFjtrVIezvWd0PlN5IELBdx6Qoc6lBjG+tG8yxKCXTNKm
+         qR20DY8hoUu+cIAiUatPbRhg6AuazGWNCvNpp9iGQI/ualX2Vh0X1L/nN9h/FGxBj8iP
+         HnS3xS8bdLcTpYuAR0rdGJNLYwVddVtjLnlU48xp0sGJm/pMxUnDgbtT9iKEbH4HRR2b
+         GTy3VmMOPKogjYiBEU65GRXtvUoagI7o9QucyUQH2oWBWKL3tCDDYBeseHgpEqMkLlzR
+         vl5fuAX/KiWEqzNk1xf67ygRQWkPtsmoUGtcBhLIkcQK79Xz5EuygGHhZUnrOKLvgyH6
+         8xZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702059977; x=1702664777;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=75zio9oghTkUElUZUVPQLES5Kw5emjlawW+mI0eiLfs=;
+        b=AofpsUNAW5yfzynZQktOCCuc0KxCBJb3QE2syzDnGLbXiwsNKVECRHABj7glP781H5
+         YwXeIsjjqdwqbj4ZL8eZSEFhtMNhPIulLgAt7Zdo+2Q4o9WbKqJoeoj1Lv7jYLyYmecs
+         psfd2fbFJ4rRMgx1F8cuyIvHSIh/jADu1wk8OJ/NI4oIf1uoGpL/VconRK6wZO5Q7G1P
+         EdQkImjQwlFpCnuDZXPUt2HT30JWsnINpNKpLNRKBoqVFPZ4KQhJMaIBY709uIizQlDS
+         9utVO2lz4xBo2y5tkktSHbEYVLzUQTylu5RwP3X40/TIb+rduNYJHoybE2P2B6kt6ha5
+         J7Yw==
+X-Gm-Message-State: AOJu0Yz52FVpI3LRIQz0dFnHj562RPE7op+6Ch9N4eBYkgRdwE4ul0mG
+        ok+L1/xhuy6GZaW8rjILuTiSOVRDSsQU6KfB/osO3Q==
+X-Google-Smtp-Source: AGHT+IG1AfEt/Tw51pB1tsGJgVQsx5i9xByxbif3lqRSlA8jKdPIkrRKdier/oxRIv+d1qmJOHXgkvTs0WvAfHdNXkE=
+X-Received: by 2002:a17:903:244f:b0:1cf:9f0e:9524 with SMTP id
+ l15-20020a170903244f00b001cf9f0e9524mr175431pls.27.1702059976843; Fri, 08 Dec
+ 2023 10:26:16 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|BY5PR12MB4066:EE_
-X-MS-Office365-Filtering-Correlation-Id: de55c0f5-330c-4e3b-e6e6-08dbf81aa224
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fz0yRZbRmXuiWw1rPtiv1q8lGG6BPMJYY+Lg/h1kQtLWlPtodvtzyh+vtJq4wOONvtbLMW/ZjCvHabOn/Wie0VBS6l+m/I3w2pRIF6fobuZXof7IotiIRurlc+GaDuYqA/+4ddrRHRkkV+lUGBOg5zWlO5A9ZE1K8HXu/jwRhAAO0zW78wMeW4DspRE/PMhbqAScBzPjpag88EWR2Liw47tfomMlH/A3mE/UVt1F6Ea+gaIrMGVGdhuBrkdNdQPVTObJ42MFpZeLj0plujUGhE/dh08ibItwcLha3QXlida+a0VOKsuNfG8t04b9VfXbFGVQh5Oc5DsjBUInLqKEADHNV09c/j05hQKNOMLSdi/4DYeyBzYXoFcAlhKPDkYH5JWTAkXkAdcGLT5C+nsNooVm+qhdUpf6prQ2YIDWUOUj9QGoJz9jAVqUJNtG+KXWZiZIEPz9GLW+bhcZLLZRMSpofNuvkZm8/zbwq/YOjwUnDXxzVujuuUumy8WjcXZqscBcY/yFg00ipFpSkTiZtBcIDDOxN+ZKQ+sPS8/iKKXwr/cN5OxoE3oux9McOr702Q/IbQrW28RjBnmgeTk8/3NyjyG4kannaFjct0G0d4fgeTXHnH/gtugJnRheDAJUQvW/FHWzJyrs7Ul2sJUgZQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(366004)(376002)(396003)(136003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(53546011)(6512007)(6486002)(26005)(966005)(2616005)(478600001)(6506007)(83380400001)(2906002)(44832011)(5660300002)(41300700001)(110136005)(66476007)(66556008)(66946007)(4326008)(8676002)(8936002)(316002)(36756003)(38100700002)(31696002)(86362001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aEE5Z2FQYzJ2R3lBcXJ1NW5MTEt4NXlXNTgzeHZIUUd1VGp1aXVsU3FaTW83?=
- =?utf-8?B?YmxmbWdKMkVQbkV6ekJDRExuYmFCdUQveXh2ZWZjUHh3TGJqU2Q4ODhJc2Jj?=
- =?utf-8?B?TFM2YmRVUlRhaWJXcktabGRvakdCVElmOFUvK0pXYXdzN1U1Um9NMUpxWHkz?=
- =?utf-8?B?ekNyR1BVano5dzBUSndqY3ZUd3BNM3d4ZnFRbkl5cGZRZGJnMTZMTWw3Wlp0?=
- =?utf-8?B?SUJRbTdxMzBFSloyWTZrM2d2VnZjK2QvWFJrSm9sU3ZGZ0R1VjlDcEo5bUNy?=
- =?utf-8?B?Z0RnWHFISGlkcnd6M1Y4cHFjM1B4S1d3dFBIS2hLZVRRS0FVZmxOQUdjRTA5?=
- =?utf-8?B?bThOaWxBcmwxR2k3NWgyTlRqbXhCa1FOTlllM0VpNitKUzZ5empHaVAvZGdJ?=
- =?utf-8?B?UWFZNTdpUmVwd201ZTZTY1Jubko3QldqVFdoSEtiWnJzMHE0V1U0VCszYWNF?=
- =?utf-8?B?WVM1MWc2YVFYS1UzZ2VUUXhNZ211L0phMmF6UDBnMlpXZFVXcngxaWNFcm9M?=
- =?utf-8?B?RnlMcXVuZVN0NjZLN2pBRDdjMW5Rd2FoY083ODM3YjFNbEFkbFpQQnlhekZQ?=
- =?utf-8?B?M1ducGFKOFJnUEJWWHZMdk12L25wbStxSUk3WE5LcmVGNmN6c0VKaVdqN1hE?=
- =?utf-8?B?K0x2QmQ3QUFZREdzbVRFSDlSNExUQzJxeGc3K2xJdTByM0VRckVwNm1kTlZh?=
- =?utf-8?B?KzBWZE5SWXJUOEFZTGlOWFNQTloyRmRydUc0dUozRWtPODR0dXh0UjRtY3c3?=
- =?utf-8?B?ZzdPSDVNclNobW8zbitIQnpSRS9sV1E0ZnZMSVhlemlMNWlQdnhGek5EUm9Z?=
- =?utf-8?B?amxCU0x4WDR4WldNdlV3RTA5bFFuZHhBR25vaE4vNHpKeWJYTTlGbERFUktN?=
- =?utf-8?B?dGc4Q3FlV2t2T3ZTaEdjR2VIT2lQVk1FTEVFZE9xa2dtRy9EZVFaOGNRaEM2?=
- =?utf-8?B?S2c2TjEraFh4bm1VODhrUzNqUy9PVGN1eUowTHBNeXhpV04ycy8wUDYwQXl2?=
- =?utf-8?B?NlJtaThRK0lHVWhQY0lvdEY4d3FFTGpIazg3MW00am95TmFJY0V5RExOWUkr?=
- =?utf-8?B?QlhLcUdBc0dDSGVUU2tBN1dCZjVzcmM3N2VUVkN3TWJlbkQ3RUZrZGZQWVBL?=
- =?utf-8?B?OFh0OFM0RHFqTkordG1GZ1RZMzZobElNbjFVYnFhV0wvU294a2ZuMU1BZlZX?=
- =?utf-8?B?cE1hUXVJNEtBYjdsRVBsVmtYZS9jSVZiNENLRkxvajRlOHpHV3hiSDhTNDAv?=
- =?utf-8?B?Z1p1NXZjeVVGRDVUR2VOK2tlTUVEOGFpUmdZUTg0SmlwMGk2NnBBbXBGcVBs?=
- =?utf-8?B?TzN3YTJEU3NESjlQNE1Oc0VNMDNlMFU3SEpJay96bzl3djZHWlFZR1prak4x?=
- =?utf-8?B?TzlSK3ZncWh3Y3gvWW5XMGV1aUVOT1Y3L2RmditMQWtQOFNwdmJhclNHVjZX?=
- =?utf-8?B?aW51UEVkUlJpM0Nia2xyWEhMeVZVSzRHWlB3VGhkcVVabHdJMEkxZW9od2Zv?=
- =?utf-8?B?ZDZyVDFmWklNekFtT25IWHdacSt5Nk5vZllVRm9DVDFWaVZGS2NZSVI1V2VB?=
- =?utf-8?B?UnNVWFlBNDh6SXlsamZOMUlXdmR5ajN1RHRsVnlnK05kSkEyOHRTY3VJNTk2?=
- =?utf-8?B?U3crYzhqSVoxTmNRWGdKVXdXOVJVRWFjODhiaTFGejVEbVh5eXVHSHF0WlhJ?=
- =?utf-8?B?cXUzVXJjSTRVTDVxZ3hMUE1CT3RQM1Bra0xKZXpQQi95dW50aisrdll3Nkdo?=
- =?utf-8?B?NXN6T0c1MFVOcU1NTUYzSGdUdnBNQ2VtTE9xTTZFS3BzMVA4WlJSaTJyZmVi?=
- =?utf-8?B?emxwNGJBNkdFVHBYNHh3Wk5PQ2srT0VkSVZJb0UzUmNGMmwybGtXK3RiSlkx?=
- =?utf-8?B?VTAwYnRZamdmREttNzhRSVNHTTJjVDVkaHkzRExkWm56b1VqOW9FREcyRzZU?=
- =?utf-8?B?Wkk1eDlod2FnajZwY05qc2RpYmthREhhMUZMU0gyeXpQc29qRVZCV3dzTEY0?=
- =?utf-8?B?NVVGY3EvbHdzRjhpT1R5YzFpTzZKcTJuTlhPVTcvSjZEVFJBQzRPeDdDUG53?=
- =?utf-8?B?UEd5cytJVS9VWjlxb0lZdWdBVS9rMWFLQjcrbGNEWUVIM09sRWV5dTlLdlEy?=
- =?utf-8?Q?jgotWLIIYJR1yt5uQcjEZAqrB?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: de55c0f5-330c-4e3b-e6e6-08dbf81aa224
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 18:22:27.7463
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: efJMXoLV8eAM7ENV2UkwrvH7+KhZ07j255N+q4HCs1vZT/8YDckEfz216z3uvbMPnj7ZGoZFb/SGje5iLoS0LQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4066
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20231201214737.104444-1-tony.luck@intel.com> <20231207195613.153980-1-tony.luck@intel.com>
+ <20231207195613.153980-3-tony.luck@intel.com>
+In-Reply-To: <20231207195613.153980-3-tony.luck@intel.com>
+From:   Peter Newman <peternewman@google.com>
+Date:   Fri, 8 Dec 2023 10:26:06 -0800
+Message-ID: <CALPaoCgR5qNsSegKLzg2g2eE8EgQB9vixAdDOryQOr8HQ+CPAw@mail.gmail.com>
+Subject: Re: [PATCH v6 2/3] x86/resctrl: Use total bandwidth for mba_MBps
+ option when local isn't present
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/2023 12:08, Rahul Rameshbabu wrote:
-> On Fri, 08 Dec, 2023 17:57:05 +0000 Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
->> On Wed, Dec 06, 2023 at 03:21:40PM -0600, Mario Limonciello wrote:
->>> The Framework 16" laptop doesn't have a PS/2 keyboard. At bootup the
->>> following messages are emitted:
->>>
->>> i8042: PNP: No PS/2 controller found.
->>> i8042: PNP: Probing ports directly.
->>> i8042: Can't read CTR while initializing i8042
->>> i8042: probe of i8042 failed with error -5
->>>
->>> There are no PNP devices as those listed in `pnp_kbd_devids` but
->>> i8042_pnp_init() ignores this and still runs and will continue to
->>> try to probe.
->>>
->>> As there is no PS/2 keyboard or mouse in this laptop, set a quirk
->>> to avoid this behavior.
->>
->> I believe the proper fix for this is for the firmware not report i8042
->> as present by properly setting up FADT. Please take a look at
->> arch/x86/kernel/acpi/boot.c::acpi_parse_fadt() and how it sets flag
->> X86_LEGACY_I8042_FIRMWARE_ABSENT.
-> 
-> This is along the lines of a point I brought up in the v1 of this patch.
-> 
->    https://lore.kernel.org/linux-input/87v89bgl7a.fsf@nvidia.com/
-> 
-> This means that Framework as a manufacturer will need to provide the
-> appropriate fix for what's advertised over ACPI by the device. I think
-> that makes sense instead of creating quirk combinations to avoid
-> resolving the issue at the ACPI level. I guess the only de-merit is that
-> means folks need to depend on vendors with no way to suppress this if a
-> vendor does not correct set up FADT.
-
-Got it, thanks guys.  I'll raise this with them.
-
-> 
->>
->> It will still say "PNP: No PS/2 controller found" which is an
->> "informational" message, but should not try to probe ports directly and
->> report errors.
-> 
+On Thu, Dec 7, 2023 at 11:56=E2=80=AFAM Tony Luck <tony.luck@intel.com> wro=
+te:
+>
+> On Intel systems the memory bandwidth monitoring events are
+> independently enumerated. It is possible for a system to support
+> total memory bandwidth monitoring, but not support local bandwidth
+> monitoring. On such a system a user could not enable mba_sc mode.
+> Users will see this highly unhelpful error message from mount:
+>
+>  # mount -t resctrl -o mba_MBps resctrl /sys/fs/resctrl
+>  mount: /sys/fs/resctrl: wrong fs type, bad option, bad superblock on
+>  resctrl, missing codepage or helper program, or other error.
+>  dmesg(1) may have more information after failed mount system call.
+>
+> dmesg(1) does not provide any additional information.
+>
+> Modify the existing "mba_MBps" mount option to switch to total bandwidth
+> monitoring if local monitoring is not available.
+>
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu=
+/resctrl/rdtgroup.c
+> index 5f64a0b2597c..7410513db45a 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -2725,6 +2725,8 @@ static int rdt_parse_param(struct fs_context *fc, s=
+truct fs_parameter *param)
+>                         return -EINVAL;
+>                 if (is_mbm_local_enabled())
+>                         ctx->enable_mba_mbps_local =3D true;
+> +               else if (is_mbm_total_enabled())
+> +                       ctx->enable_mba_mbps_total =3D true;
+>                 else
+>                         return -EINVAL;
+>                 return 0;
 > --
-> Thanks,
-> 
-> Rahul Rameshbabu
+> 2.41.0
+>
 
+Reviewed-by: Peter Newman <peternewman@google.com>
