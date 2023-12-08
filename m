@@ -2,88 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 790F380A44A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E39980A44C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573816AbjLHNQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:16:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
+        id S1573830AbjLHNQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:16:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573799AbjLHNQZ (ORCPT
+        with ESMTP id S1573820AbjLHNQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:16:25 -0500
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2789199A
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 05:16:31 -0800 (PST)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6d88143b45bso2866629a34.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 05:16:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702041391; x=1702646191;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ad2JqdSOjClv5xhQDHopdA3/PJWoAf52L+6eH5Tqlm0=;
-        b=puQKocgBqAXfeh7D7VeRRImfp7jOI7GdtXQrMKXb1sDjzjJhVcCbfFN6L0ypV1aiDb
-         PZ2gpSDWq1rClqPw6jVysJ+vcSW7Ktal9he8GalCdCOKqBZ3LAHD9YzDQEVQyV9BVUFK
-         Ckxz6Cw+mvC/vOLi1wSP7YC7BI45m9NYACg9+zRl/Ro/AUwFAaw2bmBVBUMLqsxGGZRm
-         hYntxrIAN7SkYHhnpcE2GJToKmSpH+eCPCmXU7+vQaIj2Kf3+EB2maQjz4OUrIhMvAdl
-         S/jxp7MbjINNijhjUChJU9jA6K9eabf3qZFs4q9kj29QhXxdIMynqSZEKW0wJd1BJN+w
-         UusQ==
-X-Gm-Message-State: AOJu0YxEi2wUIRpd7zW6dC2apfELgGuzn9xhS4yur9G+nVCn78DeJlU9
-        AncTYK5i5d0R3GR+6Oe8pX+bkhENmFh5Fuoi+u78cUjZqEbl
-X-Google-Smtp-Source: AGHT+IFpWS8JuwydY2By4SE2Rn78je67aA6WeSBzNdV00EhbPRdiY+n9xBxRrsJu/mKz8qY5Qz4rspbVB6tvI52y3jrfli5bmxdT
+        Fri, 8 Dec 2023 08:16:40 -0500
+Received: from mail.avm.de (mail.avm.de [212.42.244.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980C61724
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 05:16:43 -0800 (PST)
+Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
+        by mail.avm.de (Postfix) with ESMTPS;
+        Fri,  8 Dec 2023 14:16:40 +0100 (CET)
+Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
+        by mail-auth.avm.de (Postfix) with ESMTPA id 9119C806BE;
+        Fri,  8 Dec 2023 14:16:40 +0100 (CET)
+Received: by buildd.core.avm.de (Postfix, from userid 1000)
+        id 81758180D88; Fri,  8 Dec 2023 14:16:40 +0100 (CET)
+Date:   Fri, 8 Dec 2023 14:16:40 +0100
+From:   Nicolas Schier <nicolas@fjasle.eu>
+To:     Leonardo Bras <leobras.c@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Leonardo Bras <leobras@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: Re: [RESEND RFC PATCH v4 1/1] scripts: Introduce a default
+ git.orderFile
+Message-ID: <ZXMXOPxyx7YGB43l@buildd.core.avm.de>
+Mail-Followup-To: Leonardo Bras <leobras.c@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Leonardo Bras <leobras@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+References: <20231205182853.40627-1-leobras.c@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:9714:b0:1fb:1b2:fc9d with SMTP id
- n20-20020a056870971400b001fb01b2fc9dmr25752oaq.5.1702041390325; Fri, 08 Dec
- 2023 05:16:30 -0800 (PST)
-Date:   Fri, 08 Dec 2023 05:16:30 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000076a6ea060bff64b3@google.com>
-Subject: [syzbot] Monthly dccp report (Dec 2023)
-From:   syzbot <syzbot+list205929fef9983ad8ebbc@syzkaller.appspotmail.com>
-To:     dccp@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231205182853.40627-1-leobras.c@gmail.com>
+X-purgate-ID: 149429::1702041400-BD6E3A59-C7872309/0/0
+X-purgate-type: clean
+X-purgate-size: 2482
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello dccp maintainers/developers,
+On Tue, Dec 05, 2023 at 03:28:51PM -0300, Leonardo Bras wrote:
+> From: Leonardo Bras <leobras@redhat.com>
+> 
+> When reviewing patches, it looks much nicer to have some changes shown
+> before others, which allow better understanding of the patch before the
+> the .c files reviewing.
+> 
+> Introduce a default git.orderFile, in order to help developers getting the
+> best ordering easier.
+> 
+> Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> ---
+> 
+> Please provide feedback on what else to add / remove / reorder here!
+> 
+> Changes since RFCv3:
+> - Added "*types.h" matching so type headers appear before regular headers
+> - Removed line ends ($) in patterns: they previously provided a 
+>   false-positive
+> - Fixed build patterns to allow matching Kconfig, Kbuild & Makefile
+>   in any subdirectory
+> 
+> Changes since RFCv2:
+> - Fixed licence comment to from /**/ to #
+> - Fixed filename in how-to comment
+> - Fix build order: Kconfig -> Kbuild -> Makefile
+> - Add *.mk extension 
+> - Add line-ends ($) to make sure and get the correct extensions
+> - Thanks Masahiro Yamada for above suggestions!
+> - 1 Ack, thanks Randy!
+> 
+> Changes since RFCv1:
+> - Added Kconfig* (thanks Randy Dunlap!)
+> - Changed Kbuild to Kbuild* (improve matching)
+> 
+> 
+>  scripts/git.orderFile | 34 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+>  create mode 100644 scripts/git.orderFile
+> 
+> diff --git a/scripts/git.orderFile b/scripts/git.orderFile
+> new file mode 100644
+> index 000000000000..7cef02cbba3c
+> --- /dev/null
+> +++ b/scripts/git.orderFile
+> @@ -0,0 +1,34 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +# order file for git, to produce patches which are easier to review
+> +# by diffing the important stuff like header changes first.
+> +#
+> +# one-off usage:
+> +#   git diff -O scripts/git.orderFile ...
+> +#
+> +# add to git config:
+> +#   git config diff.orderFile scripts/git.orderFile
+> +#
+> +
+> +MAINTAINERS
+> +
+> +# Documentation
+> +Documentation/*
+> +*.rst
+> +
+> +# build system
+> +*Kconfig*
+> +*Kbuild*
+> +*Makefile*
+> +*.mak
+> +*.mk
 
-This is a 31-day syzbot report for the dccp subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/dccp
+I'd like to see 'scripts/*' here, too, to have the build system stuff
+together.  Possibly it makes sense to add .gitignore files here too.
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 5 issues are still open and 6 have been fixed so far.
+Kind regards,
+Nicolas
 
-Some of the still happening issues:
 
-Ref Crashes Repro Title
-<1> 102     Yes   KASAN: use-after-free Read in ccid2_hc_tx_packet_recv
-                  https://syzkaller.appspot.com/bug?extid=554ccde221001ab5479a
-<2> 51      Yes   BUG: "hc->tx_t_ipi == NUM" holds (exception!) at net/dccp/ccids/ccid3.c:LINE/ccid3_update_send_interval()
-                  https://syzkaller.appspot.com/bug?extid=94641ba6c1d768b1e35e
-<3> 23      Yes   general protection fault in dccp_write_xmit (2)
-                  https://syzkaller.appspot.com/bug?extid=c71bc336c5061153b502
-<4> 14      Yes   BUG: stored value of X_recv is zero at net/dccp/ccids/ccid3.c:LINE/ccid3_first_li() (3)
-                  https://syzkaller.appspot.com/bug?extid=2ad8ef335371014d4dc7
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+> +
+> +# semantic patches
+> +*.cocci
+> +
+> +# headers
+> +*types.h
+> +*.h
+> +
+> +# code
+> +*.c
+> -- 
+> 2.42.0
+> 
