@@ -2,151 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A7B80A9F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B435A80A9F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233719AbjLHRCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:02:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60468 "EHLO
+        id S233693AbjLHRC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:02:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233485AbjLHRCb (ORCPT
+        with ESMTP id S233651AbjLHRC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:02:31 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A45BA
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:02:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1702054958; x=1733590958;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Mh27JQlOb6arH7PgW+Gp1KbuEg/QqrNfpjle10/O130=;
-  b=Vr1k8hWdENiTey62ZPpPIf2LdU2k0sA+0bSiAGjcHkTZPyrG1kdHfZ+M
-   GcENdvJ94gFTLvE987anBDdP96/F70u9dE3Od3fXqo8N7eYr/1HmrYWVG
-   z/S6SITEzG8ofFoHiRXWjwCAV2aHsu1UuQDzoIqZC9MGTlnB1RzORS52l
-   za0FdFxgg6RH9lPfsi7+vJTj+nyhuEx22/4VkWcMJCxTTLWOeqQ8/sCgr
-   oadT/GZQvFOdLPEJpBajIkaqiaOkrX5EyAofn9TXFsDRo0DvChO5jliUn
-   bmkHq3QoWJslRPqtf6Shq4TwIvc/QsSs0tI5T/JYqhTaGnxutY8jSLH4E
-   w==;
-X-CSE-ConnectionGUID: z5vkwNd3ShyqqUT0gld90A==
-X-CSE-MsgGUID: hghTHFs3TTqCTfo76SH1DA==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="243689112"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Dec 2023 10:02:37 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 8 Dec 2023 10:02:17 -0700
-Received: from ryan-Precision-3630-Tower.microchip.com (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Fri, 8 Dec 2023 10:02:17 -0700
-From:   <Ryan.Wanner@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <claudiu.beznea@tuxon.dev>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Ryan Wanner <Ryan.Wanner@microchip.com>
-Subject: [PATCH] drivers: soc: atmel: Adjust defines to follow alphabetical order
-Date:   Fri, 8 Dec 2023 10:02:30 -0700
-Message-ID: <20231208170230.551265-1-Ryan.Wanner@microchip.com>
-X-Mailer: git-send-email 2.39.2
+        Fri, 8 Dec 2023 12:02:56 -0500
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACC41712;
+        Fri,  8 Dec 2023 09:03:01 -0800 (PST)
+Received: from [192.168.1.104] (178.176.72.145) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Fri, 8 Dec
+ 2023 20:02:53 +0300
+Subject: Re: [PATCH v4 12/22] MIPS: Get rid of CONFIG_NO_EXCEPT_FILL
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        <linux-mips@vger.kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?UTF-8?Q?Th=c3=a9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20231208161249.1827174-1-gregory.clement@bootlin.com>
+ <20231208161249.1827174-13-gregory.clement@bootlin.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <bdce5a4b-6173-e1cf-e2a6-be4f51330f61@omp.ru>
+Date:   Fri, 8 Dec 2023 20:02:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231208161249.1827174-13-gregory.clement@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.72.145]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 12/08/2023 16:51:05
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 181987 [Dec 08 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 6 0.3.6 62f5a4619c57459c9a142aa1486ed27913162963
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.72.145 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.72.145 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info: omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.145
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/08/2023 16:55:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/8/2023 1:21:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ryan Wanner <Ryan.Wanner@microchip.com>
+On 12/8/23 7:12 PM, Gregory CLEMENT wrote:
 
-Move the defines so that they are in aphabetical order based on SOC.
+> From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> 
+> NO_EXCEPT_FILL is used to indicate platform that does not
+> need to reserve ebase memory at start of kernel.
+> 
+> This is true for all R2+ platform as they allocate ebase
+> memory on fly, and also true for any platform that does
 
-Signed-off-by: Ryan Wanner <Ryan.Wanner@microchip.com>
----
- drivers/soc/atmel/soc.h | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+  On the fly?
 
-diff --git a/drivers/soc/atmel/soc.h b/drivers/soc/atmel/soc.h
-index 26dd26b4f179..9b2d31073b88 100644
---- a/drivers/soc/atmel/soc.h
-+++ b/drivers/soc/atmel/soc.h
-@@ -39,13 +39,13 @@ at91_soc_init(const struct at91_soc *socs);
- #define AT91SAM9261_CIDR_MATCH		0x019703a0
- #define AT91SAM9263_CIDR_MATCH		0x019607a0
- #define AT91SAM9G20_CIDR_MATCH		0x019905a0
--#define AT91SAM9RL64_CIDR_MATCH		0x019b03a0
- #define AT91SAM9G45_CIDR_MATCH		0x019b05a0
--#define AT91SAM9X5_CIDR_MATCH		0x019a05a0
- #define AT91SAM9N12_CIDR_MATCH		0x019a07a0
-+#define AT91SAM9RL64_CIDR_MATCH		0x019b03a0
-+#define AT91SAM9X5_CIDR_MATCH		0x019a05a0
- #define SAM9X60_CIDR_MATCH		0x019b35a0
--#define SAMA7G5_CIDR_MATCH		0x00162100
- #define SAM9X7_CIDR_MATCH		0x09750020
-+#define SAMA7G5_CIDR_MATCH		0x00162100
- 
- #define AT91SAM9M11_EXID_MATCH		0x00000001
- #define AT91SAM9M10_EXID_MATCH		0x00000002
-@@ -62,19 +62,15 @@ at91_soc_init(const struct at91_soc *socs);
- #define AT91SAM9N12_EXID_MATCH		0x00000006
- #define AT91SAM9CN11_EXID_MATCH		0x00000009
- 
-+#define AT91SAM9XE128_CIDR_MATCH	0x329973a0
-+#define AT91SAM9XE256_CIDR_MATCH	0x329a93a0
-+#define AT91SAM9XE512_CIDR_MATCH	0x329aa3a0
-+
- #define SAM9X60_EXID_MATCH		0x00000000
- #define SAM9X60_D5M_EXID_MATCH		0x00000001
- #define SAM9X60_D1G_EXID_MATCH		0x00000010
- #define SAM9X60_D6K_EXID_MATCH		0x00000011
- 
--#define SAMA7G51_EXID_MATCH		0x3
--#define SAMA7G52_EXID_MATCH		0x2
--#define SAMA7G53_EXID_MATCH		0x1
--#define SAMA7G54_EXID_MATCH		0x0
--#define SAMA7G54_D1G_EXID_MATCH		0x00000018
--#define SAMA7G54_D2G_EXID_MATCH		0x00000020
--#define SAMA7G54_D4G_EXID_MATCH		0x00000028
--
- #define SAM9X75_EXID_MATCH		0x00000000
- #define SAM9X72_EXID_MATCH		0x00000004
- #define SAM9X70_EXID_MATCH		0x00000005
-@@ -83,10 +79,6 @@ at91_soc_init(const struct at91_soc *socs);
- #define SAM9X75_D1M_EXID_MATCH		0x00000003
- #define SAM9X75_D2G_EXID_MATCH		0x00000006
- 
--#define AT91SAM9XE128_CIDR_MATCH	0x329973a0
--#define AT91SAM9XE256_CIDR_MATCH	0x329a93a0
--#define AT91SAM9XE512_CIDR_MATCH	0x329aa3a0
--
- #define SAMA5D2_CIDR_MATCH		0x0a5c08c0
- #define SAMA5D21CU_EXID_MATCH		0x0000005a
- #define SAMA5D225C_D1M_EXID_MATCH	0x00000053
-@@ -122,6 +114,14 @@ at91_soc_init(const struct at91_soc *socs);
- #define SAMA5D43_EXID_MATCH		0x00000003
- #define SAMA5D44_EXID_MATCH		0x00000004
- 
-+#define SAMA7G51_EXID_MATCH		0x3
-+#define SAMA7G52_EXID_MATCH		0x2
-+#define SAMA7G53_EXID_MATCH		0x1
-+#define SAMA7G54_EXID_MATCH		0x0
-+#define SAMA7G54_D1G_EXID_MATCH		0x00000018
-+#define SAMA7G54_D2G_EXID_MATCH		0x00000020
-+#define SAMA7G54_D4G_EXID_MATCH		0x00000028
-+
- #define SAME70Q21_CIDR_MATCH		0x21020e00
- #define SAME70Q21_EXID_MATCH		0x00000002
- #define SAME70Q20_CIDR_MATCH		0x21020c00
--- 
-2.39.2
+> not load kernel at start of physical memory.
+>   Using
+> Get rid this Kconfig symbol by use macro to detect conditions
 
+   Using.
+
+> above.
+> 
+> gc: use KSEG0 only for 32 bit configuration
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+[...]
+
+MBR, Sergey
