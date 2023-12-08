@@ -2,127 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 138C880AC12
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D5880AC18
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233819AbjLHSbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:31:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
+        id S233881AbjLHSeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:34:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbjLHSa7 (ORCPT
+        with ESMTP id S229938AbjLHSeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:30:59 -0500
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B174BD;
-        Fri,  8 Dec 2023 10:31:03 -0800 (PST)
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6d9f7af8918so218560a34.0;
-        Fri, 08 Dec 2023 10:31:03 -0800 (PST)
+        Fri, 8 Dec 2023 13:34:16 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D81A3;
+        Fri,  8 Dec 2023 10:34:22 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-db539ab8e02so2729376276.0;
+        Fri, 08 Dec 2023 10:34:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702060461; x=1702665261; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ejXhmdckIcdGK+pLdIJWhvkjFAhDWBpYsBAzxp0p6Sk=;
+        b=luSeH7dfYpc+aRNooJ4mZKwo+hBFMPZnrwEXVyyWBZ6JU3xkDwYct7YIOgy5TqYseF
+         vU+iAFSRSlJe0lZa+aiX+mgTkSc1N5aRAatG+8LX0PoeSmIOEqHNUG3GrghB/S2Mwy5y
+         mX5AsF2TvmCLwqnPTrfgQ6OK7XDLNCw29gp52ChONPbJEYxYj00aEDB+SE5RidQJRcj3
+         IwGYtbjLL6YD6oOCUOJwd4D9oxihiBssjLXtwN19asJsSB49WcztZgLx1Qrd+Jo33miz
+         x6qhlrrP5xLyPgXYcqCaD0mryKDnJb93C49f/TsZluLCbpBqEwczC6vidoRQEujXT7B/
+         cGfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702060262; x=1702665062;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=v+yJeduNngKCWy3/DH0y84rogwCflce9ufqE8UYu448=;
-        b=DTZWEvGkrzLRVyFaf2n1WVyiGQFjsweGp3Gj2cuBhEKA85U/g2mjBA9ZaICa72S0E8
-         W26fuAQgdKhZ0VIr0Uvlt5xRsIPKzdrfhKhBAEF2E2YYg09TdYbHM94QbD7ougo3g0Bv
-         uBrpSkQLCccLYUtHSBWxfOSb8n0hjSogSyR9a5KtHT+uG5x1Plc3J6U6DWAjyMKecWGA
-         IbpIIgH4iJgW8MC/qXVA290UTny5ho6b/+QCJ1H92LYq+FOtJS49eZ6ImDYlb4la74PK
-         aMBnxcnZGH2BwMyL1Mft0NZTj1aoTGcSy3/N1GC/2D82F9KrUlJ6FJRAMcYLE4gc7m/7
-         CCrQ==
-X-Gm-Message-State: AOJu0Yxlvsv6aTOM1rHC3XDS30O0NntO+L3zEY7VsXHSiqA9HCfV8Obp
-        HI8k5CNbSi6GTay6kIpChg==
-X-Google-Smtp-Source: AGHT+IHXtCU+Df3narf9EUnnld4MDBZ1SkRhwu+ygUAtS6Zf9h8UB7gij98jquMR2wdiE98NTVaiyA==
-X-Received: by 2002:a05:6870:7029:b0:1fb:75b:2fd4 with SMTP id u41-20020a056870702900b001fb075b2fd4mr579114oae.107.1702060262327;
-        Fri, 08 Dec 2023 10:31:02 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id hb5-20020a056870780500b001fb1e0a25e8sm507468oab.26.2023.12.08.10.31.00
+        d=1e100.net; s=20230601; t=1702060461; x=1702665261;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ejXhmdckIcdGK+pLdIJWhvkjFAhDWBpYsBAzxp0p6Sk=;
+        b=QPP4C8QEJ2U7uOreGmB39YNDxE7xv0uVskPrGM2flm117ifqK8cTxLi76TygKz5sv3
+         krAwNXhS7eIcuewxpQw2o+JzHlQFbrM/q8ROV46/Y1kCFajzr/DIjj6favNmB0ivXpja
+         Dvy+a8bdnQsFSAaMk/qc8alBPCu/MJuGyNfcg9EJecp+gg4mCStGT8/+qwGb5ERd3ndr
+         H1TMCaCpzBQwlDJLSlOLykGQIyAPF0XTpcpi7/1TDwnh/PdQhBp6B0zHE+OaLdU9pT5H
+         +QPRAQG4M5ishSEbnFhDGmrd7+bMlKpgcBnBhqJ3mJKGhWObcaUXz6Qi7nTsmoOj9bTw
+         4qEA==
+X-Gm-Message-State: AOJu0Yy4DKFXrT4aQM2CNnzZZj6O09oU0e8E+E1Fne+uoFvnn+cakXHl
+        ubIMMcOrAD9qQKTDh6xdk2E=
+X-Google-Smtp-Source: AGHT+IEo4kabG9Kr8bM11ACqdXlyVWy2Ht8cWzY6VZk7DZnzbZ273qR/eHeRAbXyGbTiJm9T0P8ioQ==
+X-Received: by 2002:a25:c3:0:b0:db7:dacf:ed98 with SMTP id 186-20020a2500c3000000b00db7dacfed98mr361626yba.121.1702060461588;
+        Fri, 08 Dec 2023 10:34:21 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:cd3e:7dc3:93ad:7de2])
+        by smtp.gmail.com with ESMTPSA id i20-20020a25bc14000000b00d995a8b956csm767232ybh.51.2023.12.08.10.34.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 10:31:01 -0800 (PST)
-Received: (nullmailer pid 2485978 invoked by uid 1000);
-        Fri, 08 Dec 2023 18:31:00 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Fri, 08 Dec 2023 10:34:21 -0800 (PST)
+Date:   Fri, 8 Dec 2023 10:34:20 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Michael Kelley <mhklinux@outlook.com>
+Subject: Re: [PATCH v2 14/35] PCI: hv: switch hv_get_dom_num() to use atomic
+ find_bit()
+Message-ID: <ZXNhrHWLu6LydQvp@yury-ThinkPad>
+References: <20231203193307.542794-13-yury.norov@gmail.com>
+ <20231204191427.GA623236@bhelgaas>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-riscv@lists.infradead.org,
-        Eric Dumazet <edumazet@google.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-In-Reply-To: <20231208-palpitate-passable-c79bacf2036c@spud>
-References: <20231208-reenter-ajar-b6223e5134b3@spud>
- <20231208-palpitate-passable-c79bacf2036c@spud>
-Message-Id: <170206026051.2485962.13304186324857333888.robh@kernel.org>
-Subject: Re: [PATCH RESEND v1 2/7] dt-bindings: can: mpfs: add missing
- required clock
-Date:   Fri, 08 Dec 2023 12:31:00 -0600
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204191427.GA623236@bhelgaas>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Fri, 08 Dec 2023 17:12:24 +0000, Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
+On Mon, Dec 04, 2023 at 01:14:27PM -0600, Bjorn Helgaas wrote:
+> On Sun, Dec 03, 2023 at 11:32:46AM -0800, Yury Norov wrote:
+> > The function traverses bitmap with for_each_clear_bit() just to allocate
+> > a bit atomically. We can do it better with a dedicated find_and_set_bit().
 > 
-> The CAN controller on PolarFire SoC has an AHB peripheral clock _and_ a
-> CAN bus clock. The bus clock was omitted when the binding was written,
-> but is required for operation. Make up for lost time and add it.
+> No objection from me, but please tweak the subject line to match
+> previous hv history, i.e., capitalize the first word after the prefix:
 > 
-> Cautionary tale in adding bindings without having implemented a real
-> user for them perhaps.
+>   PCI: hv: Use atomic find_and_set_bit()
 > 
-> Fixes: c878d518d7b6 ("dt-bindings: can: mpfs: document the mpfs CAN controller")
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
->  .../devicetree/bindings/net/can/microchip,mpfs-can.yaml    | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> I think there's value in using similar phrasing across the whole
+> series.  Some subjects say "optimize xyz()", some say "rework xyz()",
+> some "rework xyz()", etc.  I think it's more informative to include
+> the "atomic" and "find_bit()" ideas in the subject than the specific
+> functions that *use* it.
 > 
+> I also like how some of the other commit logs clearly say what the
+> patch does, e.g., "Simplify by using dedicated find_and_set_bit()", as
+> opposed to just "We can do it better ..." which technically doesn't
+> say what the patch does.
+> 
+> Very nice simplification in all these users, thanks for doing it!
+> 
+> I assume you'll merge these all together since they depend on [01/35],
+> so:
+> 
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Thank you Bjorn!
 
-yamllint warnings/errors:
+Now as many people asked to move their subsystems patch together with
+#1, I think, if no objections, it's simpler to pull all the series in
+bitmap-for-next.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml: properties:clocks: {'maxItems': 2, 'items': [{'description': 'AHB peripheral clock'}, {'description': 'CAN bus clock'}]} should not be valid under {'required': ['maxItems']}
-	hint: "maxItems" is not needed with an "items" list
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+I'm going to align commit messages wording, as you suggested, address
+some other comments, and will send v3 this weekend.
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231208-palpitate-passable-c79bacf2036c@spud
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+Thanks,
+Yury
