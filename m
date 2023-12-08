@@ -2,59 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6999F80AB1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B15BE80AB1E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:48:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574500AbjLHRr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
+        id S1574474AbjLHRsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:48:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574486AbjLHRr4 (ORCPT
+        with ESMTP id S1574421AbjLHRs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:47:56 -0500
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09F11738;
-        Fri,  8 Dec 2023 09:48:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=3u/9XNVPaXTvbYqc+nnnyMawNo/lMpvd3yOqY2JQ8xM=; b=V/oW7BdH++6JFKIA/92PKPthBD
-        Dq/lCvPvZ+OZJdrJpWOEQRVSHgXWEQrFa5A/E6TKp1OIn05/5FvE2ywRjlVsVIvO3qFpfbgxGkibl
-        GwfKpRA/jU/pOC9x1CM3ZOQ4bxSxUGDz7YHgWioXvTFe+2hAdxW98lMLQTyOsO+gZkMZluo/+jKto
-        LqF9bK/2jla6EZCxF8DvOxBi/PRhQdK1WJvau0SfWV1ej1RfAOu/RezbK+7oLZ8TVbkNVcog6cV9x
-        51hJGHQihGftnpOwg9ZqmY5wvk0x7AT8JuiFa9kNaxN9EyN4KSNlP4YbrS6eLJ20q2xlIIJl8HrQv
-        yJfO6G7w==;
-Received: from p200301077700c3001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7700:c300:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <andreas@kemnade.info>)
-        id 1rBexA-007As3-Aq; Fri, 08 Dec 2023 18:47:56 +0100
-Date:   Fri, 8 Dec 2023 18:47:53 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Tony Lindgren <tony@atomide.com>, marcel@holtmann.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com, johan@kernel.org,
-        arnd@arndb.de, gregkh@linuxfoundation.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tomi.valkeinen@ideasonboard.com,
-        =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
-        robh@kernel.org
-Subject: Re: [RFC PATCH 0/3] bluetooth/gnss: GNSS support for TiWi chips
-Message-ID: <20231208184753.6a88801b@aktux>
-In-Reply-To: <CAHCN7x+veM=izOVGEOvKpTFca53C0VhrLkscJqdcBX1riOOWbA@mail.gmail.com>
-References: <20231126191840.110564-1-andreas@kemnade.info>
-        <20231127135424.GO5169@atomide.com>
-        <20231127215108.6e985819@aktux>
-        <CAHCN7x+veM=izOVGEOvKpTFca53C0VhrLkscJqdcBX1riOOWbA@mail.gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Fri, 8 Dec 2023 12:48:29 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E7AD54
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:48:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C2B6C433C7;
+        Fri,  8 Dec 2023 17:48:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702057715;
+        bh=QhXQPyvQgWIfvDkbSx67u+Zj6uEqAYuquxDBwKePCJE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=vG3IUgCI7Vl1Ae7jqY3QTraWz66PaiSD+WpG1WvnBrANgyZraJ2iA8SAnKT3INQU1
+         LVtpqSYOJ9jbHnCfywwcF7ri2RUAha1/EgX+42PNhDgQRuFRKz3ra0rg1DtBj9H9KJ
+         RoNZsIGJ2YbO1TilE2f329bwgtfBR5Lg+IvgWvF0hqn/2yhF5oFSu2vNWsFAk0b/gZ
+         rTidktVHR0u7SzSqDA9u7ShRYuFqrCmUFLY6J8SOVqhfrC6mUBoqKWEYdaBAQ9nADl
+         6hzrOGEKkLY9HhwOn/M1/P6d9j/R6K2mTpn1xHIzAf+7KIiRibqlj8BlKFQi4kS5ym
+         tFNg+JaK/IVqA==
+Message-ID: <5752508c-f7bc-44ac-8778-c807b2ee5831@kernel.org>
+Date:   Fri, 8 Dec 2023 10:48:33 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [net-next v1 06/16] netdev: support binding dma-buf to netdevice
+Content-Language: en-US
+To:     Mina Almasry <almasrymina@google.com>,
+        Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-7-almasrymina@google.com>
+From:   David Ahern <dsahern@kernel.org>
+In-Reply-To: <20231208005250.2910004-7-almasrymina@google.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,65 +74,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 12/7/23 5:52 PM, Mina Almasry wrote:
+> +
+> +static int netdev_restart_rx_queue(struct net_device *dev, int rxq_idx)
+> +{
+> +	void *new_mem;
+> +	void *old_mem;
+> +	int err;
+> +
+> +	if (!dev || !dev->netdev_ops)
+> +		return -EINVAL;
+> +
+> +	if (!dev->netdev_ops->ndo_queue_stop ||
+> +	    !dev->netdev_ops->ndo_queue_mem_free ||
+> +	    !dev->netdev_ops->ndo_queue_mem_alloc ||
+> +	    !dev->netdev_ops->ndo_queue_start)
+> +		return -EOPNOTSUPP;
+> +
+> +	new_mem = dev->netdev_ops->ndo_queue_mem_alloc(dev, rxq_idx);
+> +	if (!new_mem)
+> +		return -ENOMEM;
+> +
+> +	err = dev->netdev_ops->ndo_queue_stop(dev, rxq_idx, &old_mem);
+> +	if (err)
+> +		goto err_free_new_mem;
+> +
+> +	err = dev->netdev_ops->ndo_queue_start(dev, rxq_idx, new_mem);
+> +	if (err)
+> +		goto err_start_queue;
+> +
+> +	dev->netdev_ops->ndo_queue_mem_free(dev, old_mem);
+> +
+> +	return 0;
+> +
+> +err_start_queue:
+> +	dev->netdev_ops->ndo_queue_start(dev, rxq_idx, old_mem);
+> +
+> +err_free_new_mem:
+> +	dev->netdev_ops->ndo_queue_mem_free(dev, new_mem);
+> +
+> +	return err;
+> +}
+> +
+> +/* Protected by rtnl_lock() */
+> +static DEFINE_XARRAY_FLAGS(netdev_dmabuf_bindings, XA_FLAGS_ALLOC1);
+> +
+> +void netdev_unbind_dmabuf(struct netdev_dmabuf_binding *binding)
+> +{
+> +	struct netdev_rx_queue *rxq;
+> +	unsigned long xa_idx;
+> +	unsigned int rxq_idx;
+> +
+> +	if (!binding)
+> +		return;
+> +
+> +	if (binding->list.next)
+> +		list_del(&binding->list);
+> +
+> +	xa_for_each(&binding->bound_rxq_list, xa_idx, rxq) {
+> +		if (rxq->binding == binding) {
+> +			/* We hold the rtnl_lock while binding/unbinding
+> +			 * dma-buf, so we can't race with another thread that
+> +			 * is also modifying this value. However, the driver
+> +			 * may read this config while it's creating its
+> +			 * rx-queues. WRITE_ONCE() here to match the
+> +			 * READ_ONCE() in the driver.
+> +			 */
+> +			WRITE_ONCE(rxq->binding, NULL);
+> +
+> +			rxq_idx = get_netdev_rx_queue_index(rxq);
+> +
+> +			netdev_restart_rx_queue(binding->dev, rxq_idx);
 
-On Fri, 8 Dec 2023 08:39:21 -0600
-Adam Ford <aford173@gmail.com> wrote:
+Blindly restarting a queue when a dmabuf is heavy handed. If the dmabuf
+has no outstanding references (ie., no references in the RxQ), then no
+restart is needed.
 
-> On Mon, Nov 27, 2023 at 2:51=E2=80=AFPM Andreas Kemnade <andreas@kemnade.=
-info> wrote:
-> >
-> > Hi,
-> >
-> > On Mon, 27 Nov 2023 15:54:24 +0200
-> > Tony Lindgren <tony@atomide.com> wrote:
-> >
-> > [...] =20
-> > > > - Output at /dev/gnssX:
-> > > >   AI2 vs. NMEA
-> > > >   The chip can be configured into sending AI2-encapsulated NMEA,
-> > > >   or proving data in a binary format.
-> > > >   Some research has to be done yet for the details.
-> > > >   A pile of logs is waiting for further analysis...
-> > > >
-> > > >   Arguments for/against NMEA:
-> > > >   + Userspace is prepared to handle it
-> > > >   + Power management can be easily done by the kernel
-> > > >   - Less functionality can be used. =20
-> > >
-> > > I'd go with NMEA format as the default setting :)
-> > > =20
-> > yes, that would also be my preference.
-> > =20
-> > > >   Arguments for/against AI2:
-> > > >   + Full functionality can be accessed from userspace (incl. A-GPS,
-> > > >     maybe raw satellite data)
-> > > >   - Userspace has to behave to have proper power management
-> > > >   - No freely (not even as in beer) tool available to fully use AI2,
-> > > >     so there will be only a real advantage after long "French Cafe"
-> > > >     sessions. =20
-> > >
-> > > Seems AI2 could be optionally enabled as needed with some writes
-> > > to /dev/gnss0 to change the mode? =20
-> >
-> > Hmm, we have
-> > /sys/class/gnss/gnss0/type to get the mode, maybe we add some file
-> > to change the mode? Or having it hidden behing a module parameter
-> > and implement something better accessible if any need arrives?
-> >
-> > If we want NMEA output, probably some init commands will be sent at
-> > open(), but userspace doing something with AI2 probably does not want
-> > the device touched, so it should probably be already be set before open=
-(). =20
->=20
-> Is there another revision coming or should I try to test this one?  I
-> am not very familiar with the GNSS part of the module, but it sounds
-> like there was some consensus as to which direction we should go.  I
-> should have a little time this weekend.
->=20
-Progress is only in my test program. No more checksum errors, I have
-made some progress in protocol reverse engineering. So make sure
-you do a git pull for https://github.com/akemnade/bt200tools
+> +		}
+> +	}
+> +
+> +	xa_erase(&netdev_dmabuf_bindings, binding->id);
+> +
+> +	netdev_dmabuf_binding_put(binding);
+> +}
+> +
+> +int netdev_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
+> +				struct netdev_dmabuf_binding *binding)
+> +{
+> +	struct netdev_rx_queue *rxq;
+> +	u32 xa_idx;
+> +	int err;
+> +
+> +	rxq = __netif_get_rx_queue(dev, rxq_idx);
+> +
+> +	if (rxq->binding)
+> +		return -EEXIST;
+> +
+> +	err = xa_alloc(&binding->bound_rxq_list, &xa_idx, rxq, xa_limit_32b,
+> +		       GFP_KERNEL);
+> +	if (err)
+> +		return err;
+> +
+> +	/* We hold the rtnl_lock while binding/unbinding dma-buf, so we can't
+> +	 * race with another thread that is also modifying this value. However,
+> +	 * the driver may read this config while it's creating its * rx-queues.
+> +	 * WRITE_ONCE() here to match the READ_ONCE() in the driver.
+> +	 */
+> +	WRITE_ONCE(rxq->binding, binding);
+> +
+> +	err = netdev_restart_rx_queue(dev, rxq_idx);
 
-Regards,
-Andreas
+Similarly, here binding a dmabuf to a queue. I was expecting the dmabuf
+binding to add entries to the page pool for the queue. If the pool was
+previously empty, then maybe the queue needs to be "started" in the
+sense of creating with h/w or just pushing buffers into the queue and
+moving the pidx.
+
+
