@@ -2,153 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C47980A5DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C04B180A5E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574020AbjLHOu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 09:50:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55978 "EHLO
+        id S1574037AbjLHOuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 09:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573984AbjLHOuZ (ORCPT
+        with ESMTP id S1574027AbjLHOuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 09:50:25 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CE3173F
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 06:50:30 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c9e9c2989dso27108531fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 06:50:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1702047029; x=1702651829; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p1vCAo/0XghnYmheAcvJKeKXj1PDXUChqBaVuIxQEDk=;
-        b=L++SddHB53ds+BDyxsaCgrubvQa2iCP6jmnnUM20jJFeqUnEt0V9babowwqiEJ7M+m
-         4oXRahXSndOR0chVc4l5qV1/5KA8ZKwg5y/6H0zZrBItRv2q8qrAo1tpq+HDuCZQRwfA
-         kkOMh4IcaKVD1f5/XyCGn4iO3yMYqU9r6rH4UzCPv0CdTi2scs4hFu1nf1X6OFiR2hAm
-         oBi0D/zpRjmSlcaqy3jE0tDYVu1KNhHRvQVYLb2Xp8WEXkNdLZIpUVQx/XA2Tnb1kF7/
-         4WsrK5ezJrOcaL7wTe9s64u+yPTfWKjivjednOeku0/8sixZbTZPHzqJRIXr6S1bfMet
-         JV6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702047029; x=1702651829;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p1vCAo/0XghnYmheAcvJKeKXj1PDXUChqBaVuIxQEDk=;
-        b=Agh5AUq+3gFZOaCQ+7JFmIsSEe5eQOLTDumsoLoz17hVPmvbO3nkOkhtugHHqiOmiF
-         uqp+5u1QKclyZAMVWxHXG9867cOHblkEJLlL2Kp85hPAbnlIsVcs5nku5zGfoS9IYfu1
-         C51KTWoU9HCpOxG8JWcjCPvI/jgDG9jJQSA85ApCqhyGtZS+gnYlK+b7SZYyPWWVKLQr
-         H7D2FiM60P/aK00mddqNto1/Q7t0ukPMJ+tQbypbKWt7623+rvXky7BrRVHIZ7+1juw8
-         1467eC731ZmEiZJSoi7aVUdGOWXp13Nwm5Hs+bIyhdBe6F0GUgL5md0du/9x24Sj1X50
-         +O0A==
-X-Gm-Message-State: AOJu0YyVKqQv2Za6OjLQFm4LQvuavJKdAtZHYxUwh1WSssxM+UsS2VbK
-        RoOfRG9bDAINbP5CFbtmkz48oZ7fair/1rS8snYMvg==
-X-Google-Smtp-Source: AGHT+IF7XrHbo2zzPPfxnAYa+JlWU8BR5gIVI4S58FUUPJRXqcyKVeGHxAfQTma9B0lG/uCzmUYQrmEbcjxPBSW/Wuw=
-X-Received: by 2002:a2e:878d:0:b0:2ca:34d:f80a with SMTP id
- n13-20020a2e878d000000b002ca034df80amr8350lji.64.1702047028634; Fri, 08 Dec
- 2023 06:50:28 -0800 (PST)
+        Fri, 8 Dec 2023 09:50:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF11810DE
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 06:50:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3060C433CB;
+        Fri,  8 Dec 2023 14:50:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702047037;
+        bh=1pmf9sTr8+ZoZw2j7lZ6NJcKXhcHQQe1G5vRiL8Tqcc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W4f+1QP/8Uw2eLGJP/xiIl9Yw5M4uOBD5/HvkdYzrGm32Nl2Tc7WoVBZ1B0FZNS81
+         S8LUGGoh6Lut3e/I5YdVDPrt/5MoipO1pM92hek30BpArqtbDIqruBHgUy8Qye45yG
+         5TU5gogmqORQE0gyFmCFNZldo4qpOcIwABYtvRErqE3Xq4txdAQQgsmQVD+Vu5qNJd
+         0e4J4RqvDP3yRezKX1DDdfkk9ppQhAhd9CaxsJZi+Lk5U4Xw+KqededBLOjA/gtdu9
+         1JgbBb8Ds7NDMjEUf82WwtjbFqbJ+AeYWGgUvm8NifqXoQ1XWuUejK+JS3CohRMKRP
+         p4mvDH1xRQQKA==
+Date:   Fri, 8 Dec 2023 20:20:21 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Bean Huo <beanhuo@iokpp.de>
+Cc:     avri.altman@wdc.com, bvanassche@acm.org, alim.akhtar@samsung.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        quic_cang@quicinc.com, quic_asutoshd@quicinc.com,
+        beanhuo@micron.com, thomas@t-8ch.de, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mikebi@micron.com, lporzio@micron.com
+Subject: Re: [PATCH v4 2/3] scsi: ufs: core: Add UFS RTC support
+Message-ID: <20231208145021.GC15552@thinkpad>
+References: <20231208103940.153734-1-beanhuo@iokpp.de>
+ <20231208103940.153734-3-beanhuo@iokpp.de>
 MIME-Version: 1.0
-References: <cover.1701971344.git.marcelo.schmitt1@gmail.com>
- <53d55f3195b15bd8d47387e296036730ea270770.1701971344.git.marcelo.schmitt1@gmail.com>
- <CAMknhBEFnTUm9FPK-74+GkJs2d80dS+Q9WeGTxd3Ajs-JJGcdA@mail.gmail.com> <ZXMZ-Y18SwIFEIgA@debian-BULLSEYE-live-builder-AMD64>
-In-Reply-To: <ZXMZ-Y18SwIFEIgA@debian-BULLSEYE-live-builder-AMD64>
-From:   David Lechner <dlechner@baylibre.com>
-Date:   Fri, 8 Dec 2023 08:50:17 -0600
-Message-ID: <CAMknhBHxmWTAR-F-92kFW8wbKPn2qnr7v2Sk2xUwA9AmONo+3w@mail.gmail.com>
-Subject: Re: [PATCH v3 10/13] dt-bindings: iio: Add AD7091R-8
-To:     Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Cc:     Marcelo Schmitt <marcelo.schmitt@analog.com>, apw@canonical.com,
-        joe@perches.com, dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        paul.cercueil@analog.com, Michael.Hennerich@analog.com,
-        lars@metafoo.de, jic23@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        dan.carpenter@linaro.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231208103940.153734-3-beanhuo@iokpp.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 7:28=E2=80=AFAM Marcelo Schmitt
-<marcelo.schmitt1@gmail.com> wrote:
->
-> Hi David, thank you for your suggestions.
-> Comments inline.
->
-> On 12/07, David Lechner wrote:
-> > On Thu, Dec 7, 2023 at 12:42=E2=80=AFPM Marcelo Schmitt
-> > <marcelo.schmitt@analog.com> wrote:
-> > >
-> > > Add device tree documentation for AD7091R-8.
-> > >
-> > > Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
-> > > ---
-> > >  .../bindings/iio/adc/adi,ad7091r8.yaml        | 99 +++++++++++++++++=
-++
-> > >  1 file changed, 99 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7=
-091r8.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.y=
-aml b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
-> > > new file mode 100644
-> > > index 000000000000..02320778f225
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
-> > > @@ -0,0 +1,99 @@
-> > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/iio/adc/adi,ad7091r8.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Analog Devices AD7091R8 8-Channel 12-Bit ADC
-> > > +
-> > > +maintainers:
-> > > +  - Marcelo Schmitt <marcelo.schmitt@analog.com>
-> > > +
-> > > +description: |
-> > > +  Analog Devices AD7091R-8 8-Channel 12-Bit ADC
-> > > +  https://www.analog.com/media/en/technical-documentation/data-sheet=
-s/AD7091R-2_7091R-4_7091R-8.pdf
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    enum:
-> > > +      - adi,ad7091r2
-> > > +      - adi,ad7091r4
-> > > +      - adi,ad7091r8
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> >
-> > Missing other supplies? Like vdd-supply and vdrive-supply?
-> >
->
-> I used the name that would work with ad7091r-base.c.
-> If I'm not misinterpreting the datasheet, vdd-supply and vdrive-supply ar=
-e
-> for powering the ADC and setting SPI lanes logic level, respectively.
-> They don't have any impact on ADC readings.
+On Fri, Dec 08, 2023 at 11:39:39AM +0100, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> Add Real Time Clock (RTC) support for UFS device. This enhancement is crucial
+> for the internal maintenance operations of the UFS device. The patch enables
+> the device to handle both absolute and relative time information. Furthermore,
+> it includes periodic task to update the RTC in accordance with the UFS Spec,
+> ensuring the accuracy of RTC information for the device's internal processes.
+> 
+> RTC and qTimestamp serve distinct purposes. The RTC provides a coarse level
+> of granularity with, at best, approximate single-second resolution. This makes
+> the RTC well-suited for the device to determine the approximate age of programmed
+> blocks after being updated by the host. On the other hand, qTimestamp offers
+> nanosecond granularity and is specifically designed for synchronizing Device
+> Error Log entries with corresponding host-side logs.
+> 
+> Given that the RTC has been a standard feature since UFS Spec 2.0, and qTimestamp
+> was introduced in UFS Spec 4.0, the majority of UFS devices currently on the
+> market rely on RTC. Therefore, it is advisable to continue supporting RTC in
+> the Linux kernel. This ensures compatibility with the prevailing UFS device
+> implementations and facilitates seamless integration with existing hardware.
+> By maintaining support for RTC, we ensure broad compatibility and avoid potential
+> issues arising from deviations in device specifications across different UFS
+> versions.
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> Signed-off-by: Mike Bi <mikebi@micron.com>
+> Signed-off-by: Luca Porzio <lporzio@micron.com>
+> Acked-by: Avri Altman <avri.altman@wdc.com>
+> ---
+>  drivers/ufs/core/ufshcd.c | 84 +++++++++++++++++++++++++++++++++++++++
+>  include/ufs/ufs.h         | 14 +++++++
+>  include/ufs/ufshcd.h      |  4 ++
+>  3 files changed, 102 insertions(+)
+> 
+> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+> index 32cfcba66d60..dedb0c08363b 100644
+> --- a/drivers/ufs/core/ufshcd.c
+> +++ b/drivers/ufs/core/ufshcd.c
+> @@ -99,6 +99,9 @@
+>  /* Polling time to wait for fDeviceInit */
+>  #define FDEVICEINIT_COMPL_TIMEOUT 1500 /* millisecs */
+>  
+> +/* Default RTC update every 10 seconds */
+> +#define UFS_RTC_UPDATE_INTERVAL_MS (10 * MSEC_PER_SEC)
+> +
+>  /* UFSHC 4.0 compliant HC support this mode. */
+>  static bool use_mcq_mode = true;
+>  
+> @@ -684,6 +687,8 @@ static void ufshcd_device_reset(struct ufs_hba *hba)
+>  			hba->dev_info.wb_enabled = false;
+>  			hba->dev_info.wb_buf_flush_enabled = false;
+>  		}
+> +		if (hba->dev_info.rtc_type == UFS_RTC_RELATIVE)
+> +			hba->dev_info.rtc_time_baseline = 0;
+>  	}
+>  	if (err != -EOPNOTSUPP)
+>  		ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, err);
+> @@ -8191,6 +8196,77 @@ static void ufs_fixup_device_setup(struct ufs_hba *hba)
+>  	ufshcd_vops_fixup_dev_quirks(hba);
+>  }
+>  
+> +static void ufshcd_update_rtc(struct ufs_hba *hba)
+> +{
+> +	int err;
+> +	u32 val;
+> +	struct timespec64 ts64;
 
-The guidelines [1] say that bindings should be complete even if the
-feature is not used. In the most recent bindings I have submitted,
-Jonathan specifically called out making sure all supplies were
-included in the bindings. So I would assume the same applies here.
+Reverse Xmas order please. Here and in other functions.
 
-[1]: https://www.kernel.org/doc/html/latest/devicetree/bindings/writing-bin=
-dings.html
+> +
+> +	ktime_get_real_ts64(&ts64);
+> +
+> +	if  (ts64.tv_sec < hba->dev_info.rtc_time_baseline) {
 
-> By the way, should maybe I extend ad7091r5 dt doc instead of creating thi=
-s
-> new one?
+Double space after 'if'
 
-If it is pin-compatible or 90% the same, then perhaps.
+> +		dev_warn(hba->dev, "%s: Current time precedes previous setting!\n", __func__);
+
+If there is no RTC on the host, this warning will be printed for 40 years. More below...
+
+> +		return;
+> +	}
+
+Newline
+
+> +	/*
+> +	 * Absolute RTC mode has 136-year limit as of 2010. Modify UFS Spec or choosing relative
+> +	 * RTC mode for longer (beyond year 2146) time spans.
+
+I feel like this comment is not clear enough.
+
+Maybe something like,
+
+"The code is bound to work for 136 years with relative mode and till year 2146
+with absolute mode."
+
+> +	 */
+> +	val = ts64.tv_sec - hba->dev_info.rtc_time_baseline;
+> +
+
+This logic will work if the host has RTC. But if there is no RTC, then tv_sec
+will return time elapsed since boot. The spec clearly states that host should
+use absolute mode if it has RTC and relative otherwise.
+
+Maybe you should add a logic to detect whether RTC is present or not and
+override the mode in device?
+
+> +	ufshcd_rpm_get_sync(hba);
+> +	err = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_WRITE_ATTR, QUERY_ATTR_IDN_SECONDS_PASSED,
+> +				0, 0, &val);
+> +	ufshcd_rpm_put_sync(hba);
+> +
+> +	if (err)
+> +		dev_err(hba->dev, "%s: Failed to update rtc %d\n", __func__, err);
+> +	else if (hba->dev_info.rtc_type == UFS_RTC_RELATIVE)
+> +		hba->dev_info.rtc_time_baseline = ts64.tv_sec;
+> +}
+> +
+> +static void ufshcd_rtc_work(struct work_struct *work)
+> +{
+> +	struct ufs_hba *hba;
+> +	bool is_busy;
+> +
+> +	hba = container_of(to_delayed_work(work), struct ufs_hba, ufs_rtc_update_work);
+> +
+> +	is_busy = ufshcd_is_ufs_dev_busy(hba);
+
+Newline
+
+> +	/*
+> +	 * RTC updates should not interfere with normal IO requests; we should only update the RTC
+
+No semicolon within comments please. Use full stop for sentence breaks.
+
+> +	 * when there are no ongoing requests.
+> +	 */
+> +	if (!is_busy)
+> +		ufshcd_update_rtc(hba);
+> +
+> +	if (ufshcd_is_ufs_dev_active(hba))
+> +		schedule_delayed_work(&hba->ufs_rtc_update_work,
+> +			msecs_to_jiffies(UFS_RTC_UPDATE_INTERVAL_MS));
+> +}
+> +
+> +static void  ufs_init_rtc(struct ufs_hba *hba, u8 *desc_buf)
+
+Double space after void.
+
+> +{
+> +	struct ufs_dev_info *dev_info = &hba->dev_info;
+> +	u16 periodic_rtc_update = get_unaligned_be16(&desc_buf[DEVICE_DESC_PARAM_FRQ_RTC]);
+> +
+> +	if (periodic_rtc_update & UFS_RTC_TIME_BASELINE) {
+> +		dev_info->rtc_type = UFS_RTC_ABSOLUTE;
+
+Newline
+
+- Mani
+
+> +		/*
+> +		 * The concept of measuring time in Linux as the number of seconds elapsed since
+> +		 * 00:00:00 UTC on January 1, 1970, and UFS ABS RTC is elapsed from January 1st
+> +		 * 2010 00:00, here we need to adjust ABS baseline.
+> +		 */
+> +		dev_info->rtc_time_baseline = mktime64(2010, 1, 1, 0, 0, 0) -
+> +							mktime64(1970, 1, 1, 0, 0, 0);
+> +	} else {
+> +		dev_info->rtc_type = UFS_RTC_RELATIVE;
+> +		dev_info->rtc_time_baseline = 0;
+> +	}
+> +
+> +	INIT_DELAYED_WORK(&hba->ufs_rtc_update_work, ufshcd_rtc_work);
+> +}
+> +
+>  static int ufs_get_device_desc(struct ufs_hba *hba)
+>  {
+>  	int err;
+> @@ -8243,6 +8319,8 @@ static int ufs_get_device_desc(struct ufs_hba *hba)
+>  
+>  	ufshcd_temp_notif_probe(hba, desc_buf);
+>  
+> +	ufs_init_rtc(hba, desc_buf);
+> +
+>  	if (hba->ext_iid_sup)
+>  		ufshcd_ext_iid_probe(hba, desc_buf);
+>  
+> @@ -8796,6 +8874,8 @@ static int ufshcd_device_init(struct ufs_hba *hba, bool init_dev_params)
+>  	ufshcd_force_reset_auto_bkops(hba);
+>  
+>  	ufshcd_set_timestamp_attr(hba);
+> +	schedule_delayed_work(&hba->ufs_rtc_update_work,
+> +				msecs_to_jiffies(UFS_RTC_UPDATE_INTERVAL_MS));
+>  
+>  	/* Gear up to HS gear if supported */
+>  	if (hba->max_pwr_info.is_valid) {
+> @@ -9753,6 +9833,8 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  	ret = ufshcd_vops_suspend(hba, pm_op, POST_CHANGE);
+>  	if (ret)
+>  		goto set_link_active;
+> +
+> +	cancel_delayed_work_sync(&hba->ufs_rtc_update_work);
+>  	goto out;
+>  
+>  set_link_active:
+> @@ -9847,6 +9929,8 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  		if (ret)
+>  			goto set_old_link_state;
+>  		ufshcd_set_timestamp_attr(hba);
+> +		schedule_delayed_work(&hba->ufs_rtc_update_work,
+> +					msecs_to_jiffies(UFS_RTC_UPDATE_INTERVAL_MS));
+>  	}
+>  
+>  	if (ufshcd_keep_autobkops_enabled_except_suspend(hba))
+> diff --git a/include/ufs/ufs.h b/include/ufs/ufs.h
+> index e77ab1786856..8022d267fe8a 100644
+> --- a/include/ufs/ufs.h
+> +++ b/include/ufs/ufs.h
+> @@ -14,6 +14,7 @@
+>  #include <linux/bitops.h>
+>  #include <linux/types.h>
+>  #include <uapi/scsi/scsi_bsg_ufs.h>
+> +#include <linux/time64.h>
+>  
+>  /*
+>   * Using static_assert() is not allowed in UAPI header files. Hence the check
+> @@ -551,6 +552,15 @@ struct ufs_vreg_info {
+>  	struct ufs_vreg *vdd_hba;
+>  };
+>  
+> +/*
+> + * UFS device descriptor wPeriodicRTCUpdate bit9 defines RTC time baseline.
+> + */
+> +#define UFS_RTC_TIME_BASELINE BIT(9)
+> +enum ufs_rtc_time {
+> +	UFS_RTC_RELATIVE,
+> +	UFS_RTC_ABSOLUTE
+> +};
+> +
+>  struct ufs_dev_info {
+>  	bool	f_power_on_wp_en;
+>  	/* Keeps information if any of the LU is power on write protected */
+> @@ -578,6 +588,10 @@ struct ufs_dev_info {
+>  
+>  	/* UFS EXT_IID Enable */
+>  	bool	b_ext_iid_en;
+> +
+> +	/* UFS RTC */
+> +	enum ufs_rtc_time rtc_type;
+> +	time64_t rtc_time_baseline;
+>  };
+>  
+>  /*
+> diff --git a/include/ufs/ufshcd.h b/include/ufs/ufshcd.h
+> index d862c8ddce03..727bdf296b34 100644
+> --- a/include/ufs/ufshcd.h
+> +++ b/include/ufs/ufshcd.h
+> @@ -912,6 +912,8 @@ enum ufshcd_mcq_opr {
+>   * @mcq_base: Multi circular queue registers base address
+>   * @uhq: array of supported hardware queues
+>   * @dev_cmd_queue: Queue for issuing device management commands
+> + * @mcq_opr: MCQ operation and runtime registers
+> + * @ufs_rtc_update_work: A work for UFS RTC periodic update
+>   */
+>  struct ufs_hba {
+>  	void __iomem *mmio_base;
+> @@ -1076,6 +1078,8 @@ struct ufs_hba {
+>  	struct ufs_hw_queue *uhq;
+>  	struct ufs_hw_queue *dev_cmd_queue;
+>  	struct ufshcd_mcq_opr_info_t mcq_opr[OPR_MAX];
+> +
+> +	struct delayed_work ufs_rtc_update_work;
+>  };
+>  
+>  /**
+> -- 
+> 2.34.1
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
