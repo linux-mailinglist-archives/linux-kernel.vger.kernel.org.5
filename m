@@ -2,229 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1016480A105
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA1680A106
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573700AbjLHKcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 05:32:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
+        id S230506AbjLHKcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 05:32:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235903AbjLHKbr (ORCPT
+        with ESMTP id S235975AbjLHKbw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 05:31:47 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75722325B
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:31:19 -0800 (PST)
-From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702031474;
+        Fri, 8 Dec 2023 05:31:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7631819A2
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:31:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702031486;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qKILzRTd25bfCjTNlwp7pDmuYeLxqzS8V4H69hHqUNQ=;
-        b=axBkgfgzmdIk6Uu/T+DeFOn4DAZvck9+YHB+Ch7CwtGxFhYlzn+vXmPjxdxb9aZkFPGDFt
-        n8rCVkaTpPSCCz/0DOKpYE6G1kK0+FYCEYX6fgOgD7SgyGzW2au8oNyw5otbzpelor+3B/
-        jUs0qejV+tDPmxGbYRcGF3Cr9cvfYsXa1G/TXJZ/dBxDD7hJ3+xtwO1RWi5MsuCLKtrRZF
-        YTRLcYZBpPImAmFTeIAof2QCkwTl+Iihe/i8TYtMo1H24OkytjMbQTmrfARD8rCh4uIAaB
-        mWQL6TQRqKKCgRjCHI/TA6zni8TnuwM8HbO86D3clt1byngdeUupX4CqWuLgqw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702031474;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qKILzRTd25bfCjTNlwp7pDmuYeLxqzS8V4H69hHqUNQ=;
-        b=9qQo5uqCEin3poQQUOs72IDiDx4T/0Q/FIGvx0qU1wtTukf/McQnnMGG5xPBrJNgAL99k0
-        9UJ9jyFToQ8MwyCA==
-To:     Sebastian Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
+        bh=Tcu3WmbH0rDpAmwPqLlBrIXFmcIviRa8i1AFTtWd1Zs=;
+        b=cOexIkcrsNZ589DDTxh3gqIixiNNnP8xZE8+B6motvcNQXDndK2I1SR5fFdBmJ6ybZ6CuJ
+        i1akEtL/YYuLE4MhUbOys7qr1tjSk1fdFmV2cNwDkMMqG5O9ZhjLMv2HXP3FM5x4GZgb8W
+        oLn11H78pl5gUO6HkzHXj45U0Qe+q7E=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-591-IgU449X2ORazq3drhx04Cw-1; Fri, 08 Dec 2023 05:31:25 -0500
+X-MC-Unique: IgU449X2ORazq3drhx04Cw-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2ca30780a02so13255251fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 02:31:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702031483; x=1702636283;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Tcu3WmbH0rDpAmwPqLlBrIXFmcIviRa8i1AFTtWd1Zs=;
+        b=YsecXL7B4gIxbqrMcbnCy6OWNIuQmJx3QPpj/+NUEpbrz2vGz/weo9BRXsK4a6MRhp
+         /iFD5MLF1mOguBXWBnebGRITaoJT2YK/ALjETAhIYMh5Q85m0v89PSkzuJb426esNIKu
+         JAl3fD/MbscgHXQh8Fu3pZ2UYMt2OnUhxeluXd+oJuuHI2NgFpqtCrFGbj0pJEvN5ZLG
+         eyuYFdDtcNb5Xu2O/MBM35rx+M9myqm8b2eJXr1CCBmNKT11cLi6Klq7D82ta1hwECH9
+         +JrUmMocB/3rcsqBrz0TrDpofChvT1GsQdszXmysakDh15F76JnQIuZ1XiGb+pn1pLaD
+         3orw==
+X-Gm-Message-State: AOJu0Yx5VzdgN463LlMUHeirfbFhQOysjgPC+qt6v+0gw0bq0Ecq0Q+R
+        qwM9Q5eyK+Qs15iRlTf8ehN5nqnHKrTpSoV3SK8cufgBN42lDxY5ArODEKX9qeicil8hdcMhT72
+        0CpwmWkUAAdmWjHqzwr7KLQUV
+X-Received: by 2002:a2e:8884:0:b0:2ca:56:778f with SMTP id k4-20020a2e8884000000b002ca0056778fmr1257129lji.48.1702031483564;
+        Fri, 08 Dec 2023 02:31:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHKcY1LCS/VjPyEMeTLMNoGPvmPdJg2dsZtFpUis0zp6RJwZ5WMd0CWqzm2EoCROz7SrjQSKA==
+X-Received: by 2002:a2e:8884:0:b0:2ca:56:778f with SMTP id k4-20020a2e8884000000b002ca0056778fmr1257123lji.48.1702031483207;
+        Fri, 08 Dec 2023 02:31:23 -0800 (PST)
+Received: from redhat.com ([2a02:14f:1f0:7466:b10d:58c8:869f:7e91])
+        by smtp.gmail.com with ESMTPSA id cu12-20020a170906ba8c00b00a10f3030e11sm829135ejd.1.2023.12.08.02.31.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 02:31:22 -0800 (PST)
+Date:   Fri, 8 Dec 2023 05:31:18 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Tobias Huschle <huschle@linux.ibm.com>
+Cc:     Abel Wu <wuyun.abel@bytedance.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v9 30/32] timers: Implement the hierarchical pull model
-In-Reply-To: <20231207180928.FZB319OJ@linutronix.de>
-References: <20231201092654.34614-1-anna-maria@linutronix.de>
- <20231201092654.34614-31-anna-maria@linutronix.de>
- <20231207180928.FZB319OJ@linutronix.de>
-Date:   Fri, 08 Dec 2023 11:31:13 +0100
-Message-ID: <875y19ouj2.fsf@somnus>
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux.dev,
+        netdev@vger.kernel.org, jasowang@redhat.com
+Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
+ sched/fair: Add lag based placement)
+Message-ID: <20231208052150-mutt-send-email-mst@kernel.org>
+References: <ZVdbdSXg4qefTNtg@DESKTOP-2CCOB1S.>
+ <20231117123759.GP8262@noisy.programming.kicks-ass.net>
+ <46a997c2-5a38-4b60-b589-6073b1fac677@bytedance.com>
+ <ZVyt4UU9+XxunIP7@DESKTOP-2CCOB1S.>
+ <20231122100016.GO8262@noisy.programming.kicks-ass.net>
+ <6564a012.c80a0220.adb78.f0e4SMTPIN_ADDED_BROKEN@mx.google.com>
+ <d4110c79-d64f-49bd-9f69-0a94369b5e86@bytedance.com>
+ <07513.123120701265800278@us-mta-474.us.mimecast.lan>
+ <20231207014626-mutt-send-email-mst@kernel.org>
+ <56082.123120804242300177@us-mta-137.us.mimecast.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56082.123120804242300177@us-mta-137.us.mimecast.lan>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian Siewior <bigeasy@linutronix.de> writes:
+On Fri, Dec 08, 2023 at 10:24:16AM +0100, Tobias Huschle wrote:
+> On Thu, Dec 07, 2023 at 01:48:40AM -0500, Michael S. Tsirkin wrote:
+> > On Thu, Dec 07, 2023 at 07:22:12AM +0100, Tobias Huschle wrote:
+> > > 3. vhost looping endlessly, waiting for kworker to be scheduled
+> > > 
+> > > I dug a little deeper on what the vhost is doing. I'm not an expert on
+> > > virtio whatsoever, so these are just educated guesses that maybe
+> > > someone can verify/correct. Please bear with me probably messing up 
+> > > the terminology.
+> > > 
+> > > - vhost is looping through available queues.
+> > > - vhost wants to wake up a kworker to process a found queue.
+> > > - kworker does something with that queue and terminates quickly.
+> > > 
+> > > What I found by throwing in some very noisy trace statements was that,
+> > > if the kworker is not woken up, the vhost just keeps looping accross
+> > > all available queues (and seems to repeat itself). So it essentially
+> > > relies on the scheduler to schedule the kworker fast enough. Otherwise
+> > > it will just keep on looping until it is migrated off the CPU.
+> > 
+> > 
+> > Normally it takes the buffers off the queue and is done with it.
+> > I am guessing that at the same time guest is running on some other
+> > CPU and keeps adding available buffers?
+> > 
+> 
+> It seems to do just that, there are multiple other vhost instances
+> involved which might keep filling up thoses queues. 
+> 
 
-> On 2023-12-01 10:26:52 [+0100], Anna-Maria Behnsen wrote:
->> diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration=
-.c
->> new file mode 100644
->> index 000000000000..05cd8f1bc45d
->> --- /dev/null
->> +++ b/kernel/time/timer_migration.c
->> @@ -0,0 +1,1636 @@
-> =E2=80=A6
->> + * Protection of the tmigr group state information:
->> + * ------------------------------------------------
->> + *
->> + * The state information with the list of active children and migrator =
-needs to
->> + * be protected by a sequence counter. It prevents a race when updates =
-in a
->
-> s/a$//
->
->> + * child groups are propagated in changed order. The following scenario
->> + * describes what happens without updating the sequence counter:
->> + *
->> + * Therefore, let's take three groups and four CPUs (CPU2 and CPU3 as w=
-ell
->> + * as GRP0:1 will not change during the scenario):
->> + *
->> + *    LVL 1            [GRP1:0]
->> + *                     migrator =3D GRP0:1
->> + *                     active   =3D GRP0:0, GRP0:1
->> + *                   /                \
->> + *    LVL 0  [GRP0:0]                  [GRP0:1]
->> + *           migrator =3D CPU0           migrator =3D CPU2
->> + *           active   =3D CPU0           active   =3D CPU2
->> + *              /         \                /         \
->> + *    CPUs     0           1              2           3
->> + *             active      idle           active      idle
->> + *
->> + *
->> + * 1. CPU0 goes idle (changes are updated in GRP0:0; afterwards the cur=
-rent
->> + *    states of GRP0:0 and GRP1:0 are stored in the data for walking the
->> + *    hierarchy):
->
->    CPU0 goes idle. The state update is performed lock less and group
->    wise. In the first step only GRP0:0 has been updated. The update of
->    GRP1:0 is pending, the CPU walks through the hierarchy.
->
->> + *
->> + *    LVL 1            [GRP1:0]
->> + *                     migrator =3D GRP0:1
->> + *                     active   =3D GRP0:0, GRP0:1
->> + *                   /                \
->> + *    LVL 0  [GRP0:0]                  [GRP0:1]
->> + *       --> migrator =3D TMIGR_NONE     migrator =3D CPU2
->> + *       --> active   =3D                active   =3D CPU2
->> + *              /         \                /         \
->> + *    CPUs     0           1              2           3
->> + *         --> idle        idle           active      idle
->
->> + * 2. CPU1 comes out of idle (changes are update in GRP0:0; afterwards =
-the
->> + *    current states of GRP0:0 and GRP1:0 are stored in the data for wa=
-lking the
->> + *    hierarchy):
->
->    While CPU0 goes idle and continues to update the state, CPU1 comes
->    out of idle. CPU1 updates GRP0:0. The update for GRP1:0 is pending,
->    tge CPU walks through the hierarchy. Both CPUs now walk the hierarchy
->    to perform the needed update from their point of view.
->    The currently visible state:
->
->> + *
->> + *    LVL 1            [GRP1:0]
->> + *                     migrator =3D GRP0:1
->> + *                     active   =3D GRP0:0, GRP0:1
->> + *                   /                \
->> + *    LVL 0  [GRP0:0]                  [GRP0:1]
->> + *       --> migrator =3D CPU1           migrator =3D CPU2
->> + *       --> active   =3D CPU1           active   =3D CPU2
->> + *              /         \                /         \
->> + *    CPUs     0           1              2           3
->> + *             idle    --> active         active      idle
->> + *
->> + * 3. Here comes the change of the order: Propagating the changes of st=
-ep 2
->> + *    through the hierarchy to GRP1:0 - nothing to be done, because GRP=
-0:0
->> + *    is already up to date.
->
->     Here is the race condition: CPU1 managed to propagate its changes
->     through the hierarchy to GRP1:0 before CPU0 did. The active members
->     of GRP1:0 remain unchanged after the update since it is still valid
->     from CPU1 current point of view:
->
->          LVL 1            [GRP1:0]
->                       --> migrator =3D GRP0:1
->                       --> active   =3D GRP0:0, GRP0:1
->                         /                \
->          LVL 0  [GRP0:0]                  [GRP0:1]
->                 migrator =3D CPU1           migrator =3D CPU2
->                 active   =3D CPU1           active   =3D CPU2
->                    /         \                /         \
->          CPUs     0           1              2           3
->                   idle        active         active      idle
->
-> [ I take it as the migrator remains set to GRP0:1 by CPU1 but it could
->   be changed to GRP0:0. I assume that both fields (migrator+active) are
->   changed there via the propagation and the arrow in both fields denotes
->   this. ]
->
->> + * 4. Propagating the changes of step 1 through the hierarchy to GRP1:0
->
->      Now CPU0 finally propagates its changes to GRP1:0.
->
->> + *
->> + *    LVL 1            [GRP1:0]
->> + *                 --> migrator =3D GRP0:1
->> + *                 --> active   =3D GRP0:1
->> + *                   /                \
->> + *    LVL 0  [GRP0:0]                  [GRP0:1]
->> + *           migrator =3D CPU1           migrator =3D CPU2
->> + *           active   =3D CPU1           active   =3D CPU2
->> + *              /         \                /         \
->> + *    CPUs     0           1              2           3
->> + *             idle        active         active      idle
->> + *
->> + * Now there is a inconsistent overall state because GRP0:0 is active, =
-but
->> + * it is marked as idle in the GRP1:0. This is prevented by incrementing
->> + * sequence counter whenever changing the state.
->
->    The race of CPU0 vs CPU1 led to an inconsistent state in GRP1:0.
->    CPU1 is active and is correctly listed as active in GRP0:0. However
->    GRP1:0 does not have GRP0:0 listed as active which is wrong.
->    The sequence counter has been added to avoid inconsistent states
->    during updates. The state is updated atomically only if all members,
->    including the sequence counter, match the expected value
->    (compare-and-exchange).
->    Looking back at the previous example with the addition of the
->    sequence number: The update as performed by CPU0 in step 4 will fail.
->    CPU1 changed the sequence number during the update in step 3 so the
->    expected old value (as seen by CPU0 before starting the walk) does
->    not match.
->
+No vhost is ever only draining queues. Guest is filling them.
 
-Thanks a lot for rephrasing the documentation to make it clearer for the
-reader! I use your proposal with some minor changes.
+> Unfortunately, this makes the problematic vhost instance to stay on
+> the CPU and prevents said kworker to get scheduled. The kworker is
+> explicitly woken up by vhost, so it wants it to do something.
+> 
+> At this point it seems that there is an assumption about the scheduler
+> in place which is no longer fulfilled by EEVDF. From the discussion so
+> far, it seems like EEVDF does what is intended to do.
+> 
+> Shouldn't there be a more explicit mechanism in use that allows the
+> kworker to be scheduled in favor of the vhost?
+> 
+> It is also concerning that the vhost seems cannot be preempted by the
+> scheduler while executing that loop.
 
-Thanks,
 
-	Anna-Maria
+Which loop is that, exactly?
+
+-- 
+MST
 
