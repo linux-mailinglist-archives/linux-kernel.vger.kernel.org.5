@@ -2,134 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1221580ADDF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A68F580ADDD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574712AbjLHUcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:32:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43694 "EHLO
+        id S1574710AbjLHUb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:31:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLHUcC (ORCPT
+        with ESMTP id S229572AbjLHUbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:32:02 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E420A10EF
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:32:08 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6cedc988cf6so742688b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 12:32:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702067528; x=1702672328; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=w2mQlIlH8/Z8tgvJ/zwHnI8QH4gOVcIFjCJw+TXnnTk=;
-        b=C4BlyNZuX0vmWiywMiDGcgYLLtThyzY7EqukTWLvqaoLBkfEkaOCCAlU9XXuJPMOqF
-         MxSr6/JUGCvuEKavfvhjy+99Y2Y66ayNTY8LzDl2kIvmsfphNMKQpAmheuyYS5KuXkhT
-         Met10JV2pE+2z7KRmybincabz6tU+eRbChw0E=
+        Fri, 8 Dec 2023 15:31:24 -0500
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EAD10E0;
+        Fri,  8 Dec 2023 12:31:31 -0800 (PST)
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6d99c3a3a32so1609470a34.3;
+        Fri, 08 Dec 2023 12:31:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702067528; x=1702672328;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w2mQlIlH8/Z8tgvJ/zwHnI8QH4gOVcIFjCJw+TXnnTk=;
-        b=ZmTapdJZQW0lwbixKOxzNPgnYhznv65++fP26D7b26xrMz/iaDGUINLq1Gk/RMXjYf
-         i1K8cYMQNdhvyc2BrH/WyvMvV5iSdg/rigvqD47LTuLKGQQJHxdo4lOvdz0+Vz17w2jw
-         2XWT6i6K5dYliQDXLzOVFgeENQqzHBZeBJcK/969j/s2EjmZ4RiSYiLwtQG4pizWdlNx
-         vEjbqZWy3fXfJLmfbzKjGPo3zY6bp0FPvsTk6S2TRnoaIEjtSNosmwZ5lJcXSutJIjwr
-         nMBhYeo/OI5NAkpE4OCO6Tmm0bJN6ctIlGfSUvq/GzykJjCz1Mf7tya5J7kCRXLi51gJ
-         r3XA==
-X-Gm-Message-State: AOJu0YycWhtCu/uBk3Byc5wosJm3AOAQwm2g4ZL94lwj7fCjSxTYQLff
-        kZMcm0/ksLIDoW4DHipRoKVonQ==
-X-Google-Smtp-Source: AGHT+IECgUmTr570zRuFQm0Wq6yqwNKiCLWdOUXopkyxmxMUTqTpcoylkRBQTtmdDdr1KFvNsC8w6w==
-X-Received: by 2002:a05:6a00:2387:b0:6cb:bc06:b058 with SMTP id f7-20020a056a00238700b006cbbc06b058mr775362pfc.0.1702067528378;
-        Fri, 08 Dec 2023 12:32:08 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:e1ca:b36e:48ba:c0e0])
-        by smtp.gmail.com with ESMTPSA id n24-20020aa78a58000000b006ce4965fdbdsm1995691pfa.116.2023.12.08.12.32.06
+        d=1e100.net; s=20230601; t=1702067490; x=1702672290;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v/vkRtHrUIhvNc94dHT+mJMxUllgbpAsI47gfQ/WkWg=;
+        b=UrUOGgaxOZ0waFajGSZz0mNt+fd88JZZxqGK4IKjDHj3/S5PeVU3OLRBL3qSqS4trq
+         LUGKoBJu1SuVH0E6pbGxp9g0IYTa3BHiqGAtUBMg6n9EhILi7kF7F4W5lpZ+uhDsRbfc
+         n37B82P77O3q85PMym1tfPhY+ad7EfKLQdFGrMX3SGxuP28k8Utvhn4n4NXxTUZhcS27
+         GEVhorSyXD575k128S0zLgKDditrQVJsDsLjvVLJZO4CZrWnkrTZQlmODly62GmqmFY/
+         UMpYOpK/B6kbIQmKZm9tb7EzA/UBukSBxW8yojSYgU+n0zJHetbWULTcDqs1AhLH2Yh8
+         Oj8A==
+X-Gm-Message-State: AOJu0YxzXaa1bUQE8YXBH6jUPtgYaSOL6UtGwW1vVixZH/YupOMmW/+D
+        aoEv/xfHDqwGqzTMuZ2rDndNnpFpYQ==
+X-Google-Smtp-Source: AGHT+IGdbIgqxhhBryWL51enlE+vHu8xlkBOQlHT46ZUQRPrYupw+SdR5iu5LYZkdMIkEC4J7Fmh0g==
+X-Received: by 2002:a05:6830:1093:b0:6d9:d689:cd18 with SMTP id y19-20020a056830109300b006d9d689cd18mr635893oto.36.1702067490639;
+        Fri, 08 Dec 2023 12:31:30 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id c9-20020a056830000900b006d87b167c41sm432894otp.8.2023.12.08.12.31.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 12:32:07 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     linux-usb@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        Eric Dumazet <edumazet@google.com>,
-        Grant Grundler <grundler@chromium.org>,
-        Brian Geffon <bgeffon@google.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hayes Wang <hayeswang@realtek.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: core: Fix crash w/ usb_choose_configuration() if no driver
-Date:   Fri,  8 Dec 2023 12:31:24 -0800
-Message-ID: <20231208123119.1.If27eb3bf7812f91ab83810f232292f032f4203e0@changeid>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+        Fri, 08 Dec 2023 12:31:30 -0800 (PST)
+Received: (nullmailer pid 2653738 invoked by uid 1000);
+        Fri, 08 Dec 2023 20:31:28 -0000
+Date:   Fri, 8 Dec 2023 14:31:28 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Pintu Kumar <quic_pintu@quicinc.com>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, frowand.list@gmail.com,
+        devicetree@vger.kernel.org, pintu.ping@gmail.com
+Subject: Re: [PATCH] of: reserved_mem: fix error log for reserved mem init
+ failure
+Message-ID: <20231208203128.GA2646347-robh@kernel.org>
+References: <20231206151600.26833-1-quic_pintu@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206151600.26833-1-quic_pintu@quicinc.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's possible that usb_choose_configuration() can get called when a
-USB device has no driver. In this case the recent commit a87b8e3be926
-("usb: core: Allow subclassed USB drivers to override
-usb_choose_configuration()") can cause a crash since it dereferenced
-the driver structure without checking for NULL. Let's add a check.
+On Wed, Dec 06, 2023 at 08:46:00PM +0530, Pintu Kumar wrote:
+> During fdt_init_reserved_mem() when __reserved_mem_init_node()
+> fail we are using pr_info to print error.
+> 
+> So, if we change the loglevel to 4 (or below), this error
+> message will be missed.
+> 
+> Thus, change the pr_info to pr_err for fail case.
+> 
+> Signed-off-by: Pintu Kumar <quic_pintu@quicinc.com>
+> ---
+>  drivers/of/of_reserved_mem.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+> index 7ec94cfcbddb..473665e76b6f 100644
+> --- a/drivers/of/of_reserved_mem.c
+> +++ b/drivers/of/of_reserved_mem.c
+> @@ -334,7 +334,7 @@ void __init fdt_init_reserved_mem(void)
+>  		if (err == 0) {
+>  			err = __reserved_mem_init_node(rmem);
+>  			if (err != 0 && err != -ENOENT) {
+> -				pr_info("node %s compatible matching fail\n",
+> +				pr_err("node %s compatible matching fail\n",
 
-This was seen in the real world when usbguard got ahold of a r8152
-device at the wrong time. It can also be simulated via this on a
-computer with one r8152-based USB Ethernet adapter:
-  cd /sys/bus/usb/drivers/r8152-cfgselector
-  to_unbind="$(ls -d *-*)"
-  real_dir="$(readlink -f "${to_unbind}")"
-  echo "${to_unbind}" > unbind
-  cd "${real_dir}"
-  echo 0 > authorized
-  echo 1 > authorized
+Isn't the message just wrong. If compatible match fails, we return 
+ENOENT. The failure here would be from the init function.
 
-Fixes: a87b8e3be926 ("usb: core: Allow subclassed USB drivers to override usb_choose_configuration()")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
- drivers/usb/core/generic.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/usb/core/generic.c b/drivers/usb/core/generic.c
-index dcb897158228..365482347333 100644
---- a/drivers/usb/core/generic.c
-+++ b/drivers/usb/core/generic.c
-@@ -59,15 +59,19 @@ int usb_choose_configuration(struct usb_device *udev)
- 	int num_configs;
- 	int insufficient_power = 0;
- 	struct usb_host_config *c, *best;
--	struct usb_device_driver *udriver = to_usb_device_driver(udev->dev.driver);
-+	struct usb_device_driver *udriver;
- 
- 	if (usb_device_is_owned(udev))
- 		return 0;
- 
--	if (udriver->choose_configuration) {
--		i = udriver->choose_configuration(udev);
--		if (i >= 0)
--			return i;
-+	if (udev->dev.driver) {
-+		udriver = to_usb_device_driver(udev->dev.driver);
-+
-+		if (udriver->choose_configuration) {
-+			i = udriver->choose_configuration(udev);
-+			if (i >= 0)
-+				return i;
-+		}
- 	}
- 
- 	best = NULL;
--- 
-2.43.0.472.g3155946c3a-goog
-
+>  					rmem->name);
+>  				if (nomap)
+>  					memblock_clear_nomap(rmem->base, rmem->size);
+> -- 
+> 2.17.1
+> 
