@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFE280AE1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B56280AE21
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbjLHUmd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Dec 2023 15:42:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
+        id S1574731AbjLHUnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:43:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230309AbjLHUmb (ORCPT
+        with ESMTP id S229572AbjLHUnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:42:31 -0500
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973EE171E;
-        Fri,  8 Dec 2023 12:42:37 -0800 (PST)
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6d9d6f8485eso309232a34.0;
-        Fri, 08 Dec 2023 12:42:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702068157; x=1702672957;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F//99F/9ZrwtkWvIQbflf74wFg1Bqqbh42D5kCs6IT4=;
-        b=kcr2oD8bJkibDNzC3UxrJAzh3BG+k9N1T/q5cU3fbB3N6iJZmqzQtJIYrAIlTGvK8i
-         CFc4XMQ/fD/kJgm0ekwjU0CUcXqF8NFj8B9l2kVqdT9DO1k45K9T4PHPGdsjVy1qPFX3
-         6NWVlP7k47JfPVa5z8e9JtD+s/Pwi9ozPjhDW02t1turfle2bXJm4EoDJMrl7Z7vTYhy
-         290F2aYxpdVeuypE34GhW8imk6/f3zxL7CsmlR+LyVZBJOZiptltdoLMSYjxmiNa/LgS
-         gGsySfpWCVU47sZEw9eB+BuDfQRVqvhCqxFTtz+gXdj+Rc9Ya11nLos9XXy5gkNekEb1
-         olrg==
-X-Gm-Message-State: AOJu0YwIToIDiixVjVyftiEhfBO1fj604/83TMhdz4dyguhtmYzCvh0E
-        TClNPjXsJBmLXGJ3jJ41A8SWk7o2InUUx4B8ep4iotkHDxE=
-X-Google-Smtp-Source: AGHT+IE7DxLp6suofZuaoZ5h58BK60EAcW2F/cXG9PVuPcnc8EWa9am7lgFlk8Gz08xs/HBwPpxBjlHEvOSWVAU5Uq8=
-X-Received: by 2002:a4a:a7c4:0:b0:590:6585:5c41 with SMTP id
- n4-20020a4aa7c4000000b0059065855c41mr1408409oom.0.1702068156758; Fri, 08 Dec
- 2023 12:42:36 -0800 (PST)
+        Fri, 8 Dec 2023 15:43:19 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFB1171F;
+        Fri,  8 Dec 2023 12:43:25 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702068203;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FhWMGItMyMopaoZ9JYHTOAW7DtcvRQ4SKNAg4c9vMrk=;
+        b=z/kpVp+xnVyaxaBZ8E7KDP422Tc0/FU5nU/clN/dKP5WKNzobsdK6+a1sh2Cvxy11eSlLU
+        ZZc3KAeOxzZeo2tT98q92AT6JOpDOb36UU7qi/V8VHy7VR5kSf6HfHFn1F26YXIqLpy44x
+        KmzNODXvLx+WCdqN3EAnck4K2N61fyDgW5gNXVqdznzi2ck5/q52wFJ/OXm1ZNL+XocXyK
+        OwWVw4lCbdSYl/Tf7BYZZz+6PshSeuFzDT1tEN7Yq0Iq/oyPN057Rpz7M1ELbFnzZMgLph
+        XMajUp8xWLkyv5z427R4q+YOYrtKY8/iy4PTncU9i0Vr/RjHNy2/1SOAdBg5zw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702068203;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FhWMGItMyMopaoZ9JYHTOAW7DtcvRQ4SKNAg4c9vMrk=;
+        b=G09GrqqGjLqCD+0vATnk1ceFRWhbzIUYKuO+FvHcAywKkmU9f6GOnGnk1Q/z4BQ2BFLjjv
+        IUlfWrlOkslaKBCg==
+To:     Ben Wolsieffer <ben.wolsieffer@hefring.com>,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Subject: Re: [PATCH 2/2] pinctrl: stm32: fix GPIO level interrupts
+In-Reply-To: <20231204203357.2897008-3-ben.wolsieffer@hefring.com>
+References: <20231204203357.2897008-1-ben.wolsieffer@hefring.com>
+ <20231204203357.2897008-3-ben.wolsieffer@hefring.com>
+Date:   Fri, 08 Dec 2023 21:43:21 +0100
+Message-ID: <87ttosqvbq.ffs@tglx>
 MIME-Version: 1.0
-References: <20231201190757.144741-1-daniel.lezcano@linaro.org>
-In-Reply-To: <20231201190757.144741-1-daniel.lezcano@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 8 Dec 2023 21:42:25 +0100
-Message-ID: <CAJZ5v0gNR3AC=fMeipiHNSoOiA0u==_irbQn1r-OJ6aUJ-XBrQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] pm_qos: Rename freq to interval constraint
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rjw@rjwysocki.net, caleb.connolly@linaro.org, lina.iyer@linaro.org,
-        linux-pm@vger.kernel.org, mani@kernel.org,
-        linux-kernel@vger.kernel.org, lukasz.luba@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,132 +61,183 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 8:08 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->
-> The frequency pm_qos relies on a couple of values, the min and max
-> frequencies. However more pm_qos will be added with the same logic of
-> a couple of min and max. Instead of writing new set of constraints as
-> well as type, etc... let's rename freq_* to a more generic name
-> interval_*
+Ben!
 
-I'm fine with a rename if it helps, but I would rather call it range_*
-than interval_*.
+On Mon, Dec 04 2023 at 15:33, Ben Wolsieffer wrote:
+> The STM32 doesn't support GPIO level interrupts in hardware, so the
+> driver tries to emulate them using edge interrupts, by retriggering the
+> interrupt if necessary based on the pin state after the handler
+> finishes.
+>
+> Currently, this functionality does not work because the irqchip uses
+> handle_edge_irq(), which doesn't run the irq_eoi() or irq_unmask()
+> callbacks after handling the interrupt. This patch fixes this by using
+> handle_level_irq() for level interrupts, which causes irq_unmask() to be
+> called to retrigger the interrupt.
 
->
-> That way, new qos interval based can be added easily.
->
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  drivers/base/power/qos.c          |  4 +--
->  drivers/powercap/dtpm_cpu.c       |  2 +-
->  drivers/thermal/cpufreq_cooling.c |  2 +-
->  include/linux/cpufreq.h           |  6 ++--
->  include/linux/pm_qos.h            | 55 ++++++++++++++++---------------
->  kernel/power/qos.c                | 53 +++++++++++++++--------------
->  6 files changed, 61 insertions(+), 61 deletions(-)
->
-> diff --git a/drivers/base/power/qos.c b/drivers/base/power/qos.c
-> index 8e93167f1783..561d2a0e106c 100644
-> --- a/drivers/base/power/qos.c
-> +++ b/drivers/base/power/qos.c
-> @@ -285,14 +285,14 @@ void dev_pm_qos_constraints_destroy(struct device *dev)
->                 memset(req, 0, sizeof(*req));
->         }
->
-> -       c = &qos->freq.min_freq;
-> +       c = &qos->freq.min;
->         plist_for_each_entry_safe(req, tmp, &c->list, data.freq.pnode) {
->                 apply_constraint(req, PM_QOS_REMOVE_REQ,
->                                  PM_QOS_MIN_FREQUENCY_DEFAULT_VALUE);
->                 memset(req, 0, sizeof(*req));
->         }
->
-> -       c = &qos->freq.max_freq;
-> +       c = &qos->freq.max;
->         plist_for_each_entry_safe(req, tmp, &c->list, data.freq.pnode) {
->                 apply_constraint(req, PM_QOS_REMOVE_REQ,
->                                  PM_QOS_MAX_FREQUENCY_DEFAULT_VALUE);
-> diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-> index 2ff7717530bf..6587c94d0127 100644
-> --- a/drivers/powercap/dtpm_cpu.c
-> +++ b/drivers/powercap/dtpm_cpu.c
-> @@ -28,7 +28,7 @@
->
->  struct dtpm_cpu {
->         struct dtpm dtpm;
-> -       struct freq_qos_request qos_req;
-> +       struct interval_qos_request qos_req;
->         int cpu;
->  };
->
-> diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-> index e2cc7bd30862..72e9f0cde55c 100644
-> --- a/drivers/thermal/cpufreq_cooling.c
-> +++ b/drivers/thermal/cpufreq_cooling.c
-> @@ -77,7 +77,7 @@ struct cpufreq_cooling_device {
->  #ifndef CONFIG_SMP
->         struct time_in_idle *idle_time;
->  #endif
-> -       struct freq_qos_request qos_req;
-> +       struct interval_qos_request qos_req;
->  };
->
->  #ifdef CONFIG_THERMAL_GOV_POWER_ALLOCATOR
-> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-> index 71d186d6933a..7e2d66c37535 100644
-> --- a/include/linux/cpufreq.h
-> +++ b/include/linux/cpufreq.h
-> @@ -80,9 +80,9 @@ struct cpufreq_policy {
->         struct work_struct      update; /* if update_policy() needs to be
->                                          * called, but you're in IRQ context */
->
-> -       struct freq_constraints constraints;
-> -       struct freq_qos_request *min_freq_req;
-> -       struct freq_qos_request *max_freq_req;
-> +       struct interval_constraints     constraints;
-> +       struct interval_qos_request     *min_freq_req;
-> +       struct interval_qos_request     *max_freq_req;
->
->         struct cpufreq_frequency_table  *freq_table;
->         enum cpufreq_table_sorting freq_table_sorted;
-> diff --git a/include/linux/pm_qos.h b/include/linux/pm_qos.h
-> index 4a69d4af3ff8..a662ac918e3e 100644
-> --- a/include/linux/pm_qos.h
-> +++ b/include/linux/pm_qos.h
-> @@ -77,25 +77,26 @@ struct pm_qos_flags {
->  #define FREQ_QOS_MIN_DEFAULT_VALUE     0
->  #define FREQ_QOS_MAX_DEFAULT_VALUE     S32_MAX
->
-> -enum freq_qos_req_type {
-> -       FREQ_QOS_MIN = 1,
-> +enum interval_qos_req_type {
-> +       INTERVAL_QOS_MIN = 1,
-> +       INTERVAL_QOS_MAX,
-> +       FREQ_QOS_MIN,
->         FREQ_QOS_MAX,
->  };
->
-> -struct freq_constraints {
-> -       struct pm_qos_constraints min_freq;
-> -       struct blocking_notifier_head min_freq_notifiers;
-> -       struct pm_qos_constraints max_freq;
-> -       struct blocking_notifier_head max_freq_notifiers;
-> +struct interval_constraints {
-> +       struct pm_qos_constraints min;
-> +       struct blocking_notifier_head min_notifiers;
-> +       struct pm_qos_constraints max;
-> +       struct blocking_notifier_head max_notifiers;
->  };
+This does not make any sense at all. irq_unmask() does not retrigger
+anything. It sets the corresponding bit in the mask register, not more
+not less.
 
-Also I would rename min_freq and max_freq to lower_bound and
-upper_bound, respectively, because this is less likely to get confused
-with other things with the same name.
+Switching to handle_level_irq() makes the following difference
+vs. handle_edge_irq() when an interrupt is handled (ignoring the inner
+loop):
 
-So the above would be
+      + irq_mask();
+        irq_ack();
+        ....
+        handle();
+        ....
+      + irq_unmask();
 
-+struct range_constraints {
-+       struct pm_qos_constraints lower_bound;
-+       struct blocking_notifier_head lower_bound_notifiers;
-+       struct pm_qos_constraints upper_bound;
-+       struct blocking_notifier_head upper_bound_notifiers;
-};
+So in both cases irq_ack() clears the interrupt in the Pending register,
+right?
+
+Now comes the interesting difference.
+
+When the interrupt is raised again after irq_ack() while the handler is
+running, i.e. a full toggle from active to inactive and back to active
+where the back to active transition causes the edge detector to trigger,
+then:
+
+  1) in case of handle_edge_irq() this should immediately set it in the
+     pending register again and raise another CPU interrupt, which
+     should be handled once the interrupt service routine returned.
+
+  2) in case of handle_level_irq() this does not set it in the pending
+     register because it's masked. The unmask will set the pending
+     register bit _if_ and only _if_ the edge detector has latched the
+     detection. No idea whether that's the case. The manual is
+     exceptionally blury about this.
+
+So in theory both #1 and #2 should work. But the explanation in the
+changelog is fairy tale material.
+
+As I couldn't figure out why #1 would not work, I looked at the driver
+in more detail and also at the STM32 manual. That tells me that the
+irqchip driver is at least suboptimal. Why?
+
+The EXTI controller is just an intermediate between the peripheral
+(including GPIO pins) and the NVIC:
+
+         |--------------|
+         | Edge config  |   |-----------------|
+ Source -|              |---| Int. Mask logic |---> Dedicated NVIC interrupt
+         | Edge detect  | | |-----------------|
+         |--------------| |
+                          | |-----------------|   
+                          |-| Evt. Mask logic |---> CPU event input
+                          | |-----------------|   
+                          |
+                          | |-----------------|   
+                          |-| Wakeup logic    |--->....
+                            |-----------------|   
+
+So there are two classes of sources conntect to EXTI:
+
+   1) Direct events
+
+      - Have a fixed edge
+      - Can be masked for Interrupt and Event generation
+      - No software trigger
+      - Not tracked in the Pending register
+      - Can evtl. wakeup the CPUs or from D3
+
+   2) Configurable events
+
+      - Have a configurable edge
+      - Can be masked for Interrupt and Event generation
+      - Software trigger
+      - Tracked in the Pending register
+      - Can evtl. wakeup the CPUs or from D3
+
+The CPU event is a single input to the CPU which can be triggered by any
+source which has the Event mask enabled.
+
+For both classes there are sources which have no connection to the NVIC,
+they can only be used to generate CPU events or trigger the wakeup
+logic.
+
+For direct events there is a category where the peripherial interrupt is
+routed to both the EXTI and the NVIC directly. The EXTI does not provide
+a connection to the NVIC and the event cannot be masked in EXTI to
+prevent CPU interrupts. Only the CPU event masking works.
+
+GPIO pins are configurable events which are connected to the NVIC via
+the EXTI.
+
+But the EXTI driver implements a chained interrupt handler which listens
+on a ton of NVIC interrupts. I.e. for the STM32H7 on:
+
+  <1>, <2>, <3>, <6>, <7>, <8>, <9>, <10>, <23>, <40>, <41>, <62>, <76>
+
+NVIC   1: PVD_PVM           EXTI-SRC 16
+NVIC   2: RTC_TAMP_STAMP    EXTI-SRC 18
+NVIC   3: RTC_WAKEUP        EXTI-SRC 19
+NVIC   6: EXTI0             EXTI-SRC  0
+NVIC   7: EXTI1             EXTI-SRC  1
+NVIC   8: EXTI2             EXTI-SRC  2
+NVIC   9: EXTI3             EXTI-SRC  3
+NVIC  10: EXTI4             EXTI-SRC  4
+NVIC  23: EXTI5-9           EXTI-SRC  5-9
+NVIC  40: EXTI10-15         EXTI-SRC 10-15
+NVIC  41: RTC_ALARM         EXTI-SRC 17
+NVIC  62: ETH_WKUP          EXTI-SRC 86
+NVIC  76: OTG_HS_WKUP       EXTI-SRC 43
+
+Each of these chained interrupts handles the full EXTI interrupt domain
+with all three banks. This does not make any sense at all especially not
+on a SMP machine.
+
+Though it _should_ work, but it might cause interrupts handlers to be
+invoked when nothing is pending when the edge handler is active. Which
+in turn can confuse the underlying device driver depending on the
+quality...
+
+CPU0					CPU1
+
+NVIC int X                      	NVIC int Y
+
+ // read_pending() is serialized by a lock, but both read the same state
+ pend = read_pending()			pend = read_pending()
+ 
+ for_each_bit(bit, pend)	 	for_each_bit(bit, pend)	
+    handle_irq(domain, base + bit)         handle_irq(domain, base + bit)
+      lock(desc);                            lock(desc);
+      ack();
+      do {
+         clear(PENDING);
+         set(IN_PROGRESS);
+         unlock(desc);
+         handle();                           if (IN_PROGRESS) {
+         lock(desc);                           ack();
+                                               set(PENDING);
+         				       unlock(desc);
+         clear(IN_PROGRESS);                   return;
+                                             }
+      } while (PENDING); <- Will loop
+
+See?
+
+In fact the only NVIC interrupts which actually need demultiplexing are
+NVIC #23 and NVIC #40 and those should only care about the EXTI
+interrupts which are actually multiplexed on them. This let's randomly
+run whatever is pending on any demux handler is far from correct.
+
+All others are direct NVIC interrupts which just have the extra EXTI
+interrupt masking, event masking and the wakeup magic. The indirection
+via the chained handler is just pointless overhead and not necessarily
+correct.
+
+The exti_h variant of that driver does the right thing and installs a
+hierarchical interrupt domain which acts as man in the middle between
+the source and the NVIC. Though granted they don't have the odd problem
+of multiplexing several GPIO interrupts to a single NVIC interrupt.
+
+But in fact the regular exti driver could do the same and just handle
+the two NVIC interrupts which need demultiplexing separately and let
+everything else go through the hierarchy without bells and whistles.
+
+Thanks,
+
+        tglx
