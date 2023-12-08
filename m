@@ -2,96 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3899380AFF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E3E80AFEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233960AbjLHW4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 17:56:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
+        id S234036AbjLHWwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 17:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLHW4Q (ORCPT
+        with ESMTP id S229572AbjLHWwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 17:56:16 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3D410D2;
-        Fri,  8 Dec 2023 14:56:21 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3333fbbeab9so2436427f8f.2;
-        Fri, 08 Dec 2023 14:56:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702076180; x=1702680980; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Lb6bW5/0tabUFZtl8Q33e8tjxN2YuHNYvOt9IYVdZ58=;
-        b=VyEEsyaOsdK3V5TsMSY8116TErO/nhbRQoPhTjLkn7QcU2yMHIDR0Vuiflo03oxlb7
-         d7+4FHgEZJrxELOlgQPMIGS6dti6lRCG1+po93ZrQQerJpwk5+cyK5CTJnfrdyTVFqKh
-         dlX7BRD8Judy6o9UBLw97uQ1WXGF3qOoCBB57FUMLOqun+oOVI/IY1udyKAZXwiOylRe
-         Uk8vH90YhRNLwSfGR6fzzUsDO2DzLzmr37AXOesspcw9FuhFgDNl+Vam/JV1JkQVCBht
-         JGsWErbI3U7TCduBKTUeJMVxEcLshIMWxpVJWH1gJ2WeH1TorkM5UGyvtAqx8xUWzFr9
-         QX+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702076180; x=1702680980;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lb6bW5/0tabUFZtl8Q33e8tjxN2YuHNYvOt9IYVdZ58=;
-        b=loB02cijMsUJaptJU/9pF2KshE9vdhVIcUZYlFuOfBrt4mfD0szmrJmD+khoRaHyPt
-         LrBt8IrTXrhZ6rD+mB+jo5DB1Kw8+q4r45ew2iJDXq9m0NQeXn9SQJq79lhi8odkw97V
-         fyyHLkvNScYtD1nlMJjJJq91cqahY6j4VyUfeRZMGI779kA5M+jo4YtyvPrWKnQdRdKV
-         RS1o+kVZvIk256RwWpoQGm68U+jrMh7wBdCLfL2EqC8jGqiFXE1dr384WJgp7cy28WFw
-         BAbAbCk+jd7eK5ocr3k5rvwiKqcK2chMGv8/GQ86LaAOPjY/eWSbO7es/RZbW45xX3Wg
-         E5iA==
-X-Gm-Message-State: AOJu0YzPtAI7WfPa2rR2v1nCigiDsSLofqg71JZ9YjVKuOax6/Q38Tr/
-        BykcLrNVcd8mjFdg4FPubEE=
-X-Google-Smtp-Source: AGHT+IFAmrtgnNNek+1m8q51NDmIrFuDjToi+3B5bJWseuGhKrVhDjl0ENoSpKj3SUNwgp1Op3PP5Q==
-X-Received: by 2002:a5d:5255:0:b0:333:2fd2:68bb with SMTP id k21-20020a5d5255000000b003332fd268bbmr490933wrc.78.1702076179579;
-        Fri, 08 Dec 2023 14:56:19 -0800 (PST)
-Received: from [192.168.8.100] ([85.255.236.117])
-        by smtp.gmail.com with ESMTPSA id n11-20020a5d4c4b000000b0033326e90496sm2902430wrt.18.2023.12.08.14.56.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 14:56:19 -0800 (PST)
-Message-ID: <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
-Date:   Fri, 8 Dec 2023 22:48:39 +0000
+        Fri, 8 Dec 2023 17:52:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422C5AC;
+        Fri,  8 Dec 2023 14:52:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702075933; x=1733611933;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=wxJBoGH9CFPKl0EvmrwyKMNhswe+r2/Y7uw43CtzruU=;
+  b=Wi1nxNE/Pg8fmGSFJrdlo6mcTSpo4jrDVusvxMWzq8H57U+K6npcftGs
+   RV/Vs4UeqCAfq0cuaQOEY1mZ0PbTa97sqHj7V2fee8yk6IL4QCQOF+geT
+   Tr6BOHTqXyKDO85cIYXM4h/sqr/hskINckr3RKeQ+XkB+9lZhSbMDU0Cf
+   OAQDY4f7pcLsBXx6vDftPbVqfmQ/BnMyzxEdZZqCE1HccbDApdplsfxRX
+   eFmDGBcYsC6MVJWa7wdNGuUXM0kDGg62VCKSJTeQH6cXw7YJVAg9HSqX9
+   RZiScSW2k8HV7nAFovDBP94L+yKfKlqCaxSsglM/5QRD77XT07CGTofAk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1599434"
+X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
+   d="scan'208";a="1599434"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 14:52:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="863036214"
+X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
+   d="scan'208";a="863036214"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Dec 2023 14:52:12 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 8 Dec 2023 14:52:12 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 8 Dec 2023 14:52:11 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 8 Dec 2023 14:52:11 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 8 Dec 2023 14:52:11 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AbZw8nIsy1dzvcV6mqSONWpmYCsivKlZwp7RYs/pMykPb8xWIgYQVM9R5CWLHKF8G5ttaX649iXKEKm7kILBowVzX2i3eftvUaTwZVDxNdPonQCredB1aWj6cM/PFcMr+HEB+etWThdoJItshielJKfNOpNKWKonfXk+LdKDfCg7nP7ZBRTnaST0c2wbX9Ze0phIoY7TLNQ721jrLkycvdRYIMtYm+LESryZZTRlSnt7FK4/WbmD6B+EFlFdgFYS66xMSPXjh1zlSEVCSgFWwRFKw+RubeQMyVYpak8wE4YmNbkcV41/wscu0ehosXoB/CqUfmjCV5Wbr2yTO115sA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cb74ZPvgZ1ysfYyWmNDE4WpcTXIELJpvfVLYVwDsovo=;
+ b=ZfBUvWcz5I+X+687W8TKOe9PMr3+1qd9dqT8YpH2DNXDYlW6HIeqpvwAfMc8UcJravc8mvP8Ka8W1PemNuBlIi1D1mTbPlImd1st+bnjPM3Ege+gEzIkxX6IlQnkbqHnTYxBwiy/e723vqGS5SDyt5/pPdL9u0Mk0qNzbAjTqNUcssRf3R5vRB+RBkp0+qy/8i4Nzwt3CRe3NIj9EDqPTwnpIBAhJhsAEofelmyftlCpQhd7oI1sX6Mwbe0eFSjq3yH3f+mmsLFFAkbMxXUqjtchqSNn9Lq8PjmhcC+RH88/kX89pGSWfZy4A4KmwrLxFxC569x4JV6ZvVK4u/TM/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by SJ0PR11MB5118.namprd11.prod.outlook.com (2603:10b6:a03:2dd::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.28; Fri, 8 Dec
+ 2023 22:52:09 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7068.028; Fri, 8 Dec 2023
+ 22:52:09 +0000
+Date:   Fri, 8 Dec 2023 14:52:04 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robert Richter <rrichter@amd.com>
+CC:     Ira Weiny <ira.weiny@intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Fan Ni <nifan.cxl@gmail.com>, Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH] cxl/pci: Get rid of pointer arithmetic reading CDAT table
+Message-ID: <65739e147ba03_1e7d272945d@iweiny-mobl.notmuch>
+References: <20231116-fix-cdat-devm-free-v1-1-b148b40707d7@intel.com>
+ <ZVfIaNhiSc-yQZo5@rric.localdomain>
+ <ZVfJ6Fxidvw_gz7r@rric.localdomain>
+ <656648433bd82_888fe294a6@iweiny-mobl.notmuch>
+ <6572369ea4080_4568a2945f@dwillia2-xfh.jf.intel.com.notmuch>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <6572369ea4080_4568a2945f@dwillia2-xfh.jf.intel.com.notmuch>
+X-ClientProxiedBy: BYAPR07CA0027.namprd07.prod.outlook.com
+ (2603:10b6:a02:bc::40) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory
- provider
-Content-Language: en-US
-To:     Mina Almasry <almasrymina@google.com>,
-        Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-9-almasrymina@google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20231208005250.2910004-9-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|SJ0PR11MB5118:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6d34deeb-3f83-4639-99c3-08dbf8404f03
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IJAFdjD/8Zv/NHpVMQHlrDx/SuWe+3wabM4iaqcwHLyWDFborV55Qc0ZA4zsZH3bV5jhI25okmfwyS5ChCWnrIpO7K2ia4kPX7YX4k6VaYccyiwdwUfLtXu22lE26jXaWEq+xYsyda4uiNHLngyaYda36ahsCTLIlIBK7MAZ4r6ZYto8g0SVazac5rS3kog1/gj1CRTYCWIUMX4ffaZJFxXAkV40fLmnZY5UR9qtP3oaD9IowwmJagnBk5UwYIGWNSpZfaoqLDC1dvshXIqdSmUTtBKUlOnpvdUt5EhsnJRzH7otnoduL9kQ4C2jtjQ8agLtCNjHe5cPIs0ZC3ZWmrwTrO+CW/EDvDA4zW7qI23m9EP5nQDna8VGD1yh9e5lttqC90IZlOuXXbP0w/4nM3q+XdL2bKEY0LiMS7vt8ZItGeYuHGtimVdIbixP1mQnycjMs5Yyu4dCmjJV3lO3H7Mf70SXNrSLUNzNuFzSMdl/e71gaqXbewVTQj2nZ4JTOnXm62mJaO7Ol4RGNNHu5KO/nDqT+m7y7hhjj0teqfYIJJ9QnJjNzGVzgyhrtykjfeILW6tZgELU/TpbhfpEpTCh/W0Jpctr1m14P806SZg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(366004)(346002)(39860400002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(26005)(8936002)(8676002)(4326008)(44832011)(9686003)(38100700002)(6512007)(6506007)(82960400001)(6666004)(6486002)(478600001)(66946007)(66476007)(54906003)(110136005)(316002)(66556008)(4744005)(2906002)(41300700001)(86362001)(5660300002)(26583001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6zS3EQvqI23ONHC5JpuhURf5bJGOzTzRE5+RjP4L97KJFL1/rSZ0YBwaq6xH?=
+ =?us-ascii?Q?gFIZZk/DOqsMe0Z+/oHVTKmpmehajrOxclbWCsZr/50C+Wfb6DYHBZV/RDLX?=
+ =?us-ascii?Q?ukVonbnjiobEFBNeYi14my/z/48T5LF9kCmFqH8BQyjN0JA1Zu1T9BhDn6Ul?=
+ =?us-ascii?Q?3NJPXlRUeMXHP2VEFrg1WB+kKh4Zx+x2vM0pkfg5//HMIkOWKBiaiV0hbGrO?=
+ =?us-ascii?Q?Odq5V+M+GeonKzOq8qdkY/jnWi8lZSJdCe2owbCEEu2cf7yM+gY3hThNra8p?=
+ =?us-ascii?Q?hjoZ2JnVZMkxaGBhEgprBjY95pEZaSoBOU61WCYbUcNab5CTpQoZsjahY5I0?=
+ =?us-ascii?Q?Wi7C6A89VuaFoGlJ6uj3CzvuUl7wQSDIig188V2N94z+5M5a4+yt8FFeEKGi?=
+ =?us-ascii?Q?wr7HMkiYGZ+LJGOL0l0aTBDz4mXUUeBN1gqxIHnMntYFORrGxWJTz3o9lGW/?=
+ =?us-ascii?Q?i7+U7x/kZkH6XqktfeuQ66+YjPuzo0OdNLNnx000A7Jeq4yXkE1YH5ogWvWf?=
+ =?us-ascii?Q?keo/1yZOiXhn+O69JIlPY6wagp8LSpR0JTkGzLWFJhy/efiWdeK2KciXlWjU?=
+ =?us-ascii?Q?mwHumbS4+Er1of+nU3BlBdeuPbOJWj9Hn/0cCbuV8kAJ7ZE6rgD6ycMeK+Ba?=
+ =?us-ascii?Q?xciryT6ZLntrfESXKxkoO4L4YMJ97CsQYOKMbIoAk0zq8TEF+C+s0DFOzEzH?=
+ =?us-ascii?Q?9l45f22U2p4JvliGX6M4cbs/MYeVn3GUiOv6m1H8DXLoxUpsKr66MDlej/4X?=
+ =?us-ascii?Q?h7hNg+fSSiBB5lhPSVeNJuJ8zMguv5AFvrBOpJKWSWF2aNjJ5ldHs/vCbWax?=
+ =?us-ascii?Q?eUhqOBkhyzbcxaEsN6eRQ/+F/VatuXkvpxUl0EphpXAmZoN0fqptYtdXZRvt?=
+ =?us-ascii?Q?GUGY/0KzlFoiyuakb9etj5XWDM2sahFxnjgnAFqGSG5wcP8e7PDyq68mhhwQ?=
+ =?us-ascii?Q?GXxifAWZqjlKSLPgzLzFLk2VOWX3eKsYa2vcPucZd5YnY2HOM8H1bPKz/dId?=
+ =?us-ascii?Q?r1jgwnHrcTx0LB3Y1RvM+Y5vlztrP7HJqpzOxcX0Dkg0PhhuikidEOX0MBjg?=
+ =?us-ascii?Q?ctNRTPYZaVikgiSZp6BCVu6P7Utl5kXRzbeolw04dGB2K1J94UeQTCCZTBxg?=
+ =?us-ascii?Q?EHJS92DdFJmHwF/Xx6VoN491mIIwUjvOUvO0wlz6ifpWyfzWu8i5m8hCxmvn?=
+ =?us-ascii?Q?bYDG55kM1nu5Df34rw+Z8EVgbc9Bej77puguJ86nbgAC+W9pV3oIsWY4z+xk?=
+ =?us-ascii?Q?Z8KtiAFIO2u8sbMG1MLVEn2Ecen1LCk39Xw6EuvRtz5kjnLI9l8J5lrBews1?=
+ =?us-ascii?Q?FnujQC0L0gOArw8BQ0bzd8Y5/OUYcuFyJ80QAffGg+HYPa71c8FmZgWzWt0J?=
+ =?us-ascii?Q?BUMiH+m8xMZ+H9QQbWcjkEnfCTjaPslSFKMDBzSN66JZI45UTxi/QubcC3kM?=
+ =?us-ascii?Q?dF+SgR1nHSONdwAhEi0SIPFSXbMDL9ARGPUEBTUePt9s732Z9+NUbpHj01rl?=
+ =?us-ascii?Q?byTYoAzbyrpiptHVh38j70OGAn6AbBnCAb1SKoh47HChSLYQWXx9+qG+9s7E?=
+ =?us-ascii?Q?X8Ak9Pf78QMVEZtckG40ZAdOqRmIPdr2+AYEKsFf?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d34deeb-3f83-4639-99c3-08dbf8404f03
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 22:52:09.7863
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rBy8yaj0rUXcBir3mX+VXlfoiPoB2yQBY/MGhL6Odyt5iRVSrjuIGkDIe3j7KvbE5uFn4vUbYDIVrmrJxXor2g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5118
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,298 +161,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/23 00:52, Mina Almasry wrote:
-> Implement a memory provider that allocates dmabuf devmem page_pool_iovs.
+Dan Williams wrote:
+> Ira Weiny wrote:
+> > Robert Richter wrote:
+> [..]
+> > > -	cdat_table = cdat_buf + sizeof(__le32);
+> > > -	if (cdat_checksum(cdat_table, cdat_length))
+> > > +	if (cdat_checksum(doe->table, length))
+> > >  		goto err;
+> > >  
+> > > -	port->cdat.table = cdat_table;
+> > > -	port->cdat.length = cdat_length;
+> > > -	return;
+> > > +	port->cdat.table = doe->table;
+> > 
+> > As an aside: the type of port->cdat may need to change at some point too.
 > 
-> The provider receives a reference to the struct netdev_dmabuf_binding
-> via the pool->mp_priv pointer. The driver needs to set this pointer for
-> the provider in the page_pool_params.
-> 
-> The provider obtains a reference on the netdev_dmabuf_binding which
-> guarantees the binding and the underlying mapping remains alive until
-> the provider is destroyed.
-> 
-> Usage of PP_FLAG_DMA_MAP is required for this memory provide such that
-> the page_pool can provide the driver with the dma-addrs of the devmem.
-> 
-> Support for PP_FLAG_DMA_SYNC_DEV is omitted for simplicity.
-> 
-> Signed-off-by: Willem de Bruijn <willemb@google.com>
-> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> 
-> ---
-> 
-> v1:
-> - static_branch check in page_is_page_pool_iov() (Willem & Paolo).
-> - PP_DEVMEM -> PP_IOV (David).
-> - Require PP_FLAG_DMA_MAP (Jakub).
-> 
-> ---
->   include/net/page_pool/helpers.h | 47 +++++++++++++++++
->   include/net/page_pool/types.h   |  9 ++++
->   net/core/page_pool.c            | 89 ++++++++++++++++++++++++++++++++-
->   3 files changed, 144 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-> index 8bfc2d43efd4..00197f14aa87 100644
-> --- a/include/net/page_pool/helpers.h
-> +++ b/include/net/page_pool/helpers.h
-> @@ -53,6 +53,8 @@
->   #define _NET_PAGE_POOL_HELPERS_H
->   
->   #include <net/page_pool/types.h>
-> +#include <net/net_debug.h>
-> +#include <net/devmem.h>
->   
->   #ifdef CONFIG_PAGE_POOL_STATS
->   /* Deprecated driver-facing API, use netlink instead */
-> @@ -92,6 +94,11 @@ static inline unsigned int page_pool_iov_idx(const struct page_pool_iov *ppiov)
->   	return ppiov - page_pool_iov_owner(ppiov)->ppiovs;
->   }
->   
-> +static inline u32 page_pool_iov_binding_id(const struct page_pool_iov *ppiov)
-> +{
-> +	return page_pool_iov_owner(ppiov)->binding->id;
-> +}
-> +
->   static inline dma_addr_t
->   page_pool_iov_dma_addr(const struct page_pool_iov *ppiov)
->   {
-> @@ -107,6 +114,46 @@ page_pool_iov_binding(const struct page_pool_iov *ppiov)
->   	return page_pool_iov_owner(ppiov)->binding;
->   }
->   
-> +static inline int page_pool_iov_refcount(const struct page_pool_iov *ppiov)
-> +{
-> +	return refcount_read(&ppiov->refcount);
-> +}
-> +
-> +static inline void page_pool_iov_get_many(struct page_pool_iov *ppiov,
-> +					  unsigned int count)
-> +{
-> +	refcount_add(count, &ppiov->refcount);
-> +}
-> +
-> +void __page_pool_iov_free(struct page_pool_iov *ppiov);
-> +
-> +static inline void page_pool_iov_put_many(struct page_pool_iov *ppiov,
-> +					  unsigned int count)
-> +{
-> +	if (!refcount_sub_and_test(count, &ppiov->refcount))
-> +		return;
-> +
-> +	__page_pool_iov_free(ppiov);
-> +}
-> +
-> +/* page pool mm helpers */
-> +
-> +DECLARE_STATIC_KEY_FALSE(page_pool_mem_providers);
-> +static inline bool page_is_page_pool_iov(const struct page *page)
-> +{
-> +	return static_branch_unlikely(&page_pool_mem_providers) &&
-> +	       (unsigned long)page & PP_IOV;
-> +}
-> +
-> +static inline struct page_pool_iov *page_to_page_pool_iov(struct page *page)
-> +{
-> +	if (page_is_page_pool_iov(page))
-> +		return (struct page_pool_iov *)((unsigned long)page & ~PP_IOV);
-> +
-> +	DEBUG_NET_WARN_ON_ONCE(true);
-> +	return NULL;
-> +}
-> +
->   /**
->    * page_pool_dev_alloc_pages() - allocate a page.
->    * @pool:	pool from which to allocate
-> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-> index 44faee7a7b02..136930a238de 100644
-> --- a/include/net/page_pool/types.h
-> +++ b/include/net/page_pool/types.h
-> @@ -134,8 +134,15 @@ struct memory_provider_ops {
->   	bool (*release_page)(struct page_pool *pool, struct page *page);
->   };
->   
-> +extern const struct memory_provider_ops dmabuf_devmem_ops;
-> +
->   /* page_pool_iov support */
->   
-> +/*  We overload the LSB of the struct page pointer to indicate whether it's
-> + *  a page or page_pool_iov.
-> + */
-> +#define PP_IOV 0x01UL
-> +
->   /* Owner of the dma-buf chunks inserted into the gen pool. Each scatterlist
->    * entry from the dmabuf is inserted into the genpool as a chunk, and needs
->    * this owner struct to keep track of some metadata necessary to create
-> @@ -159,6 +166,8 @@ struct page_pool_iov {
->   	struct dmabuf_genpool_chunk_owner *owner;
->   
->   	refcount_t refcount;
-> +
-> +	struct page_pool *pp;
->   };
->   
->   struct page_pool {
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index f5c84d2a4510..423c88564a00 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -12,6 +12,7 @@
->   
->   #include <net/page_pool/helpers.h>
->   #include <net/xdp.h>
-> +#include <net/netdev_rx_queue.h>
->   
->   #include <linux/dma-direction.h>
->   #include <linux/dma-mapping.h>
-> @@ -20,12 +21,15 @@
->   #include <linux/poison.h>
->   #include <linux/ethtool.h>
->   #include <linux/netdevice.h>
-> +#include <linux/genalloc.h>
-> +#include <net/devmem.h>
->   
->   #include <trace/events/page_pool.h>
->   
->   #include "page_pool_priv.h"
->   
-> -static DEFINE_STATIC_KEY_FALSE(page_pool_mem_providers);
-> +DEFINE_STATIC_KEY_FALSE(page_pool_mem_providers);
-> +EXPORT_SYMBOL(page_pool_mem_providers);
->   
->   #define DEFER_TIME (msecs_to_jiffies(1000))
->   #define DEFER_WARN_INTERVAL (60 * HZ)
-> @@ -175,6 +179,7 @@ static void page_pool_producer_unlock(struct page_pool *pool,
->   static int page_pool_init(struct page_pool *pool,
->   			  const struct page_pool_params *params)
->   {
-> +	struct netdev_dmabuf_binding *binding = NULL;
->   	unsigned int ring_qsize = 1024; /* Default */
->   	int err;
->   
-> @@ -237,6 +242,14 @@ static int page_pool_init(struct page_pool *pool,
->   	/* Driver calling page_pool_create() also call page_pool_destroy() */
->   	refcount_set(&pool->user_cnt, 1);
->   
-> +	if (pool->p.queue)
-> +		binding = READ_ONCE(pool->p.queue->binding);
-> +
-> +	if (binding) {
-> +		pool->mp_ops = &dmabuf_devmem_ops;
-> +		pool->mp_priv = binding;
-> +	}
+> I did not understand this comment relative to what you expect to see in
+> the next posting, but maybe Robert will when he respins this patch.
 
-Hmm, I don't understand why would we replace a nice transparent
-api with page pool relying on a queue having devmem specific
-pointer? It seemed more flexible and cleaner in the last RFC.
+Robert introduced some new types which better defined what the read algorithm
+was doing.  Right now the table is just a void *.  It would be nice to type it
+more strongly as it starts to be used in the kernel.
 
-> +
->   	if (pool->mp_ops) {
->   		err = pool->mp_ops->init(pool);
->   		if (err) {
-> @@ -1020,3 +1033,77 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
->   	}
->   }
->   EXPORT_SYMBOL(page_pool_update_nid);
-> +
-> +void __page_pool_iov_free(struct page_pool_iov *ppiov)
-> +{
-> +	if (WARN_ON(ppiov->pp->mp_ops != &dmabuf_devmem_ops))
-> +		return;
-> +
-> +	netdev_free_dmabuf(ppiov);
-> +}
-> +EXPORT_SYMBOL_GPL(__page_pool_iov_free);
-
-I didn't look too deep but I don't think I immediately follow
-the pp refcounting. It increments pages_state_hold_cnt on
-allocation, but IIUC doesn't mark skbs for recycle? Then, they all
-will be put down via page_pool_iov_put_many() bypassing
-page_pool_return_page() and friends. That will call
-netdev_free_dmabuf(), which doesn't bump pages_state_release_cnt.
-
-At least I couldn't make it work with io_uring, and for my purposes,
-I forced all puts to go through page_pool_return_page(), which calls
-the ->release_page callback. The callback will put the reference and
-ask its page pool to account release_cnt. It also gets rid of
-__page_pool_iov_free(), as we'd need to add a hook there for
-customization otherwise.
-
-I didn't care about overhead because the hot path for me is getting
-buffers from a ring, which is somewhat analogous to sock_devmem_dontneed(),
-but done on pp allocations under napi, and it's done separately.
-
-Completely untested with TCP devmem:
-
-https://github.com/isilence/linux/commit/14bd56605183dc80b540999e8058c79ac92ae2d8
-
-> +
-> +/*** "Dmabuf devmem memory provider" ***/
-> +
-> +static int mp_dmabuf_devmem_init(struct page_pool *pool)
-> +{
-> +	struct netdev_dmabuf_binding *binding = pool->mp_priv;
-> +
-> +	if (!binding)
-> +		return -EINVAL;
-> +
-> +	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
-> +		return -EOPNOTSUPP;
-> +
-> +	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> +		return -EOPNOTSUPP;
-> +
-> +	netdev_dmabuf_binding_get(binding);
-> +	return 0;
-> +}
-> +
-> +static struct page *mp_dmabuf_devmem_alloc_pages(struct page_pool *pool,
-> +						 gfp_t gfp)
-> +{
-> +	struct netdev_dmabuf_binding *binding = pool->mp_priv;
-> +	struct page_pool_iov *ppiov;
-> +
-> +	ppiov = netdev_alloc_dmabuf(binding);
-> +	if (!ppiov)
-> +		return NULL;
-> +
-> +	ppiov->pp = pool;
-> +	pool->pages_state_hold_cnt++;
-> +	trace_page_pool_state_hold(pool, (struct page *)ppiov,
-> +				   pool->pages_state_hold_cnt);
-> +	return (struct page *)((unsigned long)ppiov | PP_IOV);
-> +}
-> +
-> +static void mp_dmabuf_devmem_destroy(struct page_pool *pool)
-> +{
-> +	struct netdev_dmabuf_binding *binding = pool->mp_priv;
-> +
-> +	netdev_dmabuf_binding_put(binding);
-> +}
-> +
-> +static bool mp_dmabuf_devmem_release_page(struct page_pool *pool,
-> +					  struct page *page)
-> +{
-> +	struct page_pool_iov *ppiov;
-> +
-> +	if (WARN_ON_ONCE(!page_is_page_pool_iov(page)))
-> +		return false;
-> +
-> +	ppiov = page_to_page_pool_iov(page);
-> +	page_pool_iov_put_many(ppiov, 1);
-> +	/* We don't want the page pool put_page()ing our page_pool_iovs. */
-> +	return false;
-> +}
-> +
-> +const struct memory_provider_ops dmabuf_devmem_ops = {
-> +	.init			= mp_dmabuf_devmem_init,
-> +	.destroy		= mp_dmabuf_devmem_destroy,
-> +	.alloc_pages		= mp_dmabuf_devmem_alloc_pages,
-> +	.release_page		= mp_dmabuf_devmem_release_page,
-> +};
-> +EXPORT_SYMBOL(dmabuf_devmem_ops);
-
--- 
-Pavel Begunkov
+Ira
