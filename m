@@ -2,182 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 373C880ABEA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:18:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C62C80ABED
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574514AbjLHSSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:18:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
+        id S1574586AbjLHSTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:19:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLHSSm (ORCPT
+        with ESMTP id S1574152AbjLHSTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:18:42 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDCDA3
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:18:48 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6cecb004339so1141928b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:18:48 -0800 (PST)
+        Fri, 8 Dec 2023 13:19:20 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D692590
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:19:26 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a1cc518c5bbso65166766b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:19:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702059528; x=1702664328; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=xrT35L8MTIhLwpdhO3H/c+pqRQCxCg0MNTO7FGS/OpU=;
-        b=Srx7Lw7dfmby6qUy+IUZE6TayrZzauBxi67HlNAZ31Q6wc6z9lGZzYS5WsHOkqYG0C
-         7kamCrAc8j+ZwlcOzVOqSbsK2jeXX/4eSe6NzJfp8MHf18llAeSUKM/VPZ5G+6o0FY9u
-         CKEFjCink5viuqFDz+3ldtNywPMi+tECXnXRo=
+        d=gmail.com; s=20230601; t=1702059565; x=1702664365; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/+e2GMm4IxE2ZPhAT3rwUK0y+pX6drbXEPnTu9WgFI0=;
+        b=OJSod/sbEZ1pticSC/wOfUYgOFlSTK7TejD1Chxyydzbmu7QPen3IhkkOkzA+yRtlG
+         OK1KVOCHuhkEgQSGZ+b/N4rq34B3ilZ99sHJRSJT8FNYUWhfzQegU+nTifRrl3jUn0oU
+         S3g7OYydJpLC0fszdQtBTIbqxwjlpJPcXGeG74kWpRRuNm0GyNJWPwGZvzrs5WHLMsrn
+         VfTG4DfdDiOY/19FNHOKsHOkcB974VR8bp9h5+4EmTNtUJjod+Vm7ezsUdyS6ExH6sEZ
+         ODbstpQK3gw7cTL75zN5iWL9VkYiiUU4KqTZHWL/ss105curcYba0XbaQ8fExbdA9AG+
+         FsZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702059528; x=1702664328;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1702059565; x=1702664365;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xrT35L8MTIhLwpdhO3H/c+pqRQCxCg0MNTO7FGS/OpU=;
-        b=rbTVXbXFKi5cAOfLEKWLpseGiuRrlgniFNhzBFm0kteQcVypwHMKLYNfmESEYwcajH
-         fyEt6siiG9+BUPd+lmpi6bS+++wsVKdHVi4xG0m98RDNJFQtNgjaAV+WybV3UwVkWCYX
-         mpbs1bOvCbHt2swDJzPtQcZCxV/Faat1N6EZTSw06rW+jtU7Yvlai4AGK91jju7wWVsb
-         bDkFSsQyXP/OH84EaK20qjakMJBav28dfgDjLpS/csMmEcs/OYE/q96i4DozWEAxFlHQ
-         Wrx2m4UHK37qFWaDHlsw718bIY1j1ir08Z1QgD+FUX6onMcEx9/AmubkkHLkHpxLk9On
-         Q+Tw==
-X-Gm-Message-State: AOJu0YwfCVr2HgizAOJSJFf++6ru/VNFIOCmEY23LTz2BguI6QI+ZTzo
-        R6YWExMfGUNtBKWGL9LXoF+gAQ==
-X-Google-Smtp-Source: AGHT+IHcui7vMV2OdqCWva5dAEsJH2d+5AV5Uk+IvX+ZetEUSVVWsrmNmp2gSKs4GaolD2scYZHLig==
-X-Received: by 2002:a05:6a20:8c1b:b0:190:20d:5b94 with SMTP id j27-20020a056a208c1b00b00190020d5b94mr372175pzh.27.1702059528236;
-        Fri, 08 Dec 2023 10:18:48 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s7-20020a63f047000000b005c67dd98b15sm1867436pgj.74.2023.12.08.10.18.47
+        bh=/+e2GMm4IxE2ZPhAT3rwUK0y+pX6drbXEPnTu9WgFI0=;
+        b=p4PnirrgYcieAlbPDQLdjPHqVI+qj27a5Hv/1LiHLZFwvY8QxWI+B4fLRZsmJ/NtbP
+         dm7DzL+hPExzTGoGbzGrhYmrQrTZm95t8Q6fGXhVEIBj1GRF1QoCv7gcQk7qMN1DaPcW
+         dMt6LYebGPLGCvdCxmE8uDYSWUwweicqzOHwsBO5NYPogs0q7qu83JC56EYb25/n8qZv
+         A6tOnDH0fqRSBH8a2LFnK0AxsrIBZ05rXKG8xcxuW54sen5JJeJ+efYrdR6IU9EkiPiv
+         co4Vhkq0mR+WTHrIMSzaDkh84ajPOYOF1TuxkYbtS/qok6jv3VcvV8BR6pM21tk0jUZV
+         JWJg==
+X-Gm-Message-State: AOJu0YzGtVH07SeTXQJNbGJLC8dZoEDyfzZ6Ugt4lw2Ko818Z1j4MSWw
+        mGM6Do2z/W902tFSzxLWGD0NChSh5W4=
+X-Google-Smtp-Source: AGHT+IHSHhKdNhaPS3KTBL1ZnE1s7W/L7jwh/CBnt54AmVGKgSBxevLAmAfH0JXel/VQQsT5N6f3Lw==
+X-Received: by 2002:a17:906:ba86:b0:9f2:3e76:5d39 with SMTP id cu6-20020a170906ba8600b009f23e765d39mr513767ejd.0.1702059565189;
+        Fri, 08 Dec 2023 10:19:25 -0800 (PST)
+Received: from matrix-ESPRIMO-P710 (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id o20-20020a17090611d400b00a0d02cfa48bsm1277795eja.213.2023.12.08.10.19.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 10:18:47 -0800 (PST)
-Date:   Fri, 8 Dec 2023 10:18:47 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] rust: file: add `Kuid` wrapper
-Message-ID: <202312080947.674CD2DC7@keescook>
-References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
- <20231206-alice-file-v2-5-af617c0d9d94@google.com>
- <20231206123402.GE30174@noisy.programming.kicks-ass.net>
- <CAH5fLgh+0G85Acf4-zqr_9COB5DUtt6ifVpZP-9V06hjJgd_jQ@mail.gmail.com>
- <20231206134041.GG30174@noisy.programming.kicks-ass.net>
- <CANiq72kK97fxTddrL+Uu2JSah4nND=q_VbJ76-Rdc-R-Kijszw@mail.gmail.com>
- <20231208165702.GI28727@noisy.programming.kicks-ass.net>
+        Fri, 08 Dec 2023 10:19:24 -0800 (PST)
+Date:   Fri, 8 Dec 2023 19:19:23 +0100
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] staging: rtl8192e: Remove c files dot11d.c/.h
+Message-ID: <cover.1701989555.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231208165702.GI28727@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 05:57:02PM +0100, Peter Zijlstra wrote:
-> On Fri, Dec 08, 2023 at 05:31:59PM +0100, Miguel Ojeda wrote:
-> > On Wed, Dec 6, 2023 at 2:41 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > Anywhoo, the longer a function is, the harder it becomes, since you need
-> > > to deal with everything a function does and consider the specuation
-> > > window length. So trivial functions like the above that do an immediate
-> > > dereference and are (and must be) a valid indirect target (because
-> > > EXPORT) are ideal.
-> > 
-> > We discussed this in our weekly meeting, and we would like to ask a
-> > few questions:
-> > 
-> >   - Could you please describe an example attack that you are thinking
-> > of? (i.e. a "full" attack, rather than just Spectre itself). For
-> > instance, would it rely on other vulnerabilities?
-> 
-> There's a fairly large amount of that on github, google spectre poc and
-> stuff like that.
+Remove function rtllib_update_active_chan_map() as "active_channel_map"
+and "channel_map" have the same content. Content of "channel_map" does
+not change.
 
-tl;dr: I don't think the introduction of speculation gadgets is a
-sufficient reason to block Rust interfaces like this.
+Tested with rtl8192e (WLL6130-D99) in Mode n (12.5 MB/s)
+Transferred this patch over wlan connection of rtl8192e.
 
-Long version:
+Used the following code for testing:
+struct rt_dot11d_info *ph = priv->rtllib->dot11d_info;
+for (i = 1; i <= 13; i++){
+	printk("priv->rtllib->active_channel_map)  [%d] %d\n", i, priv->rtllib->active_channel_map[i]);
+	printk("priv->rtllib->dot11d_info->chan_map[%d] %d\n", i, ph->channel_map[i]);
+}
+Log:
+[ 1141.288386] priv->rtllib->active_channel_map)  [1] 1
+[ 1141.288393] priv->rtllib->dot11d_info->chan_map[1] 1
+[ 1141.288395] priv->rtllib->active_channel_map)  [2] 1
+[ 1141.288396] priv->rtllib->dot11d_info->chan_map[2] 1
+...
+[ 1141.288426] priv->rtllib->active_channel_map)  [11] 1
+[ 1141.288428] priv->rtllib->dot11d_info->chan_map[11] 1
+[ 1141.288429] priv->rtllib->active_channel_map)  [12] 2
+[ 1141.288431] priv->rtllib->dot11d_info->chan_map[12] 2
+[ 1141.288433] priv->rtllib->active_channel_map)  [13] 2
+[ 1141.288434] priv->rtllib->dot11d_info->chan_map[13] 2
 
-I think the question here is "what is the threat model?" If I break down
-the objection, I understand it as:
+Philipp Hortmann (5):
+  staging: rtl8192e: Remove function rtllib_update_active_chan_map()
+  staging: rtl8192e: Remove variable channel_map
+  staging: rtl8192e: Remove variable dot11d_info
+  staging: rtl8192e: Remove function dot11d_channel_map()
+  staging: rtl8192e: Remove files dot11d.c and dot11d.h
 
-1) The trivial wrappers-of-inlines are speculation gadgets.
-2) They're exported, so callable by anything.
-
-If the threat model is "something can call these to trigger
-speculation", I think this is pretty strongly mitigated already;
-
-1) These aren't syscall definitions, so their "reachability" is pretty
-limited. In fact, they're already going to be used in places, logically,
-where the inline would be used, so the speculation window is going to be
-same (or longer, given the addition of the direct call and return).
-
-2) If an attacker is in a position to directly call these helpers,
-they're not going to use them: if an attacker already has arbitrary
-execution, they're not going to bother with speculation.
-
-Fundamentally I don't see added risk here. From the security hardening
-perspective we have two goals: kill bug classes and block exploitation
-techniques, and the former is a much more powerful defensive strategy
-since without the bugs, there's no chance to perform an exploit.
-
-In general, I think we should prioritize bug class elimination over
-exploit technique foiling. In this case, we're adding a potential weakness
-to the image of the kernel of fairly limited scope in support of stronger
-bug elimination goals.
-
-Even if we look at the prerequisites for mounting an attack here, we've
-already got things in place to help mitigate arbitrary code execution
-(KCFI, BTI, etc). Nothing is perfect, but speculation gadgets are
-pretty far down on the list of concerns, IMO. We have no real x86 ROP
-defense right now in the kernel, so that's a much lower hanging fruit
-for attackers.
-
-As another comparison, on x86 there are so many direct execution gadgets
-present in middle-of-instruction code patterns that worrying about a
-speculation gadget seems silly to me.
-
-> [...]
-> The thing at hand was just me eyeballing it.
-
-I can understand the point you and Greg have both expressed here: "this
-is known to be an anti-pattern, we need to do something else". I generally
-agree with this, but in this case, I don't think it's the right call. This
-is an area we'll naturally see improvement from on the Rust side since
-these calls are a _performance_ concern too, so it's not like this will be
-"forgotten" about. But blocking it until there is a complete and perfect
-solution feels like we're letting perfect be the enemy of good.
-
-All of our development is evolutionary, so I think we'd be in a much
-better position to take these (currently ugly) work-arounds (visible
-only in Rust builds) so that we gain the ability to evolve towards more
-memory safe code.
-
--Kees
+ drivers/staging/rtl8192e/Makefile            |  1 -
+ drivers/staging/rtl8192e/dot11d.c            | 29 -------------------
+ drivers/staging/rtl8192e/dot11d.h            | 30 --------------------
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c |  1 -
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.h |  2 --
+ drivers/staging/rtl8192e/rtllib.h            |  1 -
+ drivers/staging/rtl8192e/rtllib_rx.c         |  1 -
+ drivers/staging/rtl8192e/rtllib_softmac.c    | 19 -------------
+ drivers/staging/rtl8192e/rtllib_softmac_wx.c |  1 -
+ 9 files changed, 85 deletions(-)
+ delete mode 100644 drivers/staging/rtl8192e/dot11d.c
+ delete mode 100644 drivers/staging/rtl8192e/dot11d.h
 
 -- 
-Kees Cook
+2.43.0
+
