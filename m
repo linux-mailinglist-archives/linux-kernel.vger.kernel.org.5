@@ -2,113 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F73B80A4DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E309A80A4DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573868AbjLHN43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:56:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40548 "EHLO
+        id S1573880AbjLHN4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:56:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573852AbjLHN41 (ORCPT
+        with ESMTP id S1573849AbjLHN4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:56:27 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2411987
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 05:56:33 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-67a91a373edso11883906d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 05:56:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702043792; x=1702648592; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SlUqBCSJE7b+NOWHxQNrRwEhp2gTAvY03mAPrdADOdo=;
-        b=H2O+yaqNA/Ire4cgW0btDC0qdoE8ugqwlXmk/CYzER8bM8kWjsS5c9gg+INrHUH5cn
-         nB6V3BVZijge9perTdtiFse/qsI142jfCN3L/JG3PCG+0nEpM+pE5rBtbYMHRG/P/P3I
-         m1RhsF8rEtVR2/k9WDDU+EYEpLNwZp6ejIqz/wpVoMTv8GfvlWGbWocbheokZP46/L3Z
-         RSMuL8C4kNBxUInWgM1wnV1m+MfncrUKyrH7gQXYrMFNos+z7syaA17HyoHcqPXUk6eA
-         Kxo46Cvmh6T2vr7s7D7CJu+IC+y+ow+nz8YZxTViB83+8eU+wpo04jKShu/JSufgeZ5g
-         a/iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702043792; x=1702648592;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SlUqBCSJE7b+NOWHxQNrRwEhp2gTAvY03mAPrdADOdo=;
-        b=ksXzvn0XcY2ug57pnJ/OFILywvdWLrcmQEOTO4tVhZGcFGSXGb7wVbUE3Q5lFvz/ix
-         XR+x5AV9LzEmoKQ00A6uLK2DqOYj5b/I1Mj8f/Q8rdgwuLUkEBl39uqSGP2l/3IQm26N
-         2RG0qdwR3Bnkwf5MldnKt/WB5zp4xqnLLI/uVkCml8opctk6e68dthFp2A2jZiD7SNgq
-         vP53FxTGVEzH6k4WEoxbbwHxTr8waR63rMGAalBpP1Si+DUb5PjtxWuhkh5diB9eKcrF
-         P1DXe9PuJBz6xWaxR5mOwj41SnIN7Dhczspmqhso/9t9xAOybxVcXmVFD26PdEr2ooUw
-         EhiA==
-X-Gm-Message-State: AOJu0YxtJdEsQtSExVtSrXkuMV+lU/7XaCtLYCBV0LKHxy0MyO0OHXZl
-        BqXgC9uOyU7zr5xKEoJ0PAamYa9SDhnYwmxCqfrRCA==
-X-Google-Smtp-Source: AGHT+IH23iVUpBsOBONYMPHwppBBTzpfL3Q8/bvfC4kzRpEJUfOAA07YjvKi0Z4sAx0eXzRBOWPNA1eAjy4CZz3bJdM=
-X-Received: by 2002:a05:6214:5802:b0:67a:a951:7fc2 with SMTP id
- mk2-20020a056214580200b0067aa9517fc2mr4258051qvb.119.1702043792410; Fri, 08
- Dec 2023 05:56:32 -0800 (PST)
+        Fri, 8 Dec 2023 08:56:44 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F7B198C;
+        Fri,  8 Dec 2023 05:56:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702043811; x=1733579811;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=55M1hh3vjcTT4qbO8ePl/PG9N+ftOAwqAUqgSIIaDag=;
+  b=QbPbZqnx40/b5djRjENAAqQIPeMs8h/Z+0keaMOUm+ids76OeMO0xge2
+   L8JYANyrOZxgTszBakoF2oasQxCJR/f/4wQ3SMMfWuh9L1RBnZIRa6kyy
+   Jt2dG3GgtFwUxk1rNHiHqSdZInwgEt8vSDOYa/YGAhgrDDBlG5x1b39PT
+   xVVlWQ+nQRuT7A9aVYFOsN/sSip8VyQVlQWfl/MZjhGMoNU4a+uipoQHd
+   oo3m2+OnzTQOsltOlWIjdAR7iGhev8B7pr5NbRPwcZvpC00AcS9idhf3f
+   GXLgJLOHd/DW0Mi8lmm7cPJihoNLfkhB9hGFgn/WAecbaYRTBJJ9vQxm8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="384811841"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="384811841"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 05:56:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="721872348"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="721872348"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orsmga003.jf.intel.com with SMTP; 08 Dec 2023 05:56:47 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 08 Dec 2023 15:56:46 +0200
+Date:   Fri, 8 Dec 2023 15:56:46 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: ucsi: fix gpio-based orientation detection
+Message-ID: <ZXMgntTKDPfAQbYT@kuha.fi.intel.com>
+References: <20231208123603.29957-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
-References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-18-iii@linux.ibm.com>
- <CAG_fn=Ug6MFyoj=J_yabfd-V+3vGYNS3-CS+fhW9Tsc847xMtw@mail.gmail.com>
-In-Reply-To: <CAG_fn=Ug6MFyoj=J_yabfd-V+3vGYNS3-CS+fhW9Tsc847xMtw@mail.gmail.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 8 Dec 2023 14:55:56 +0100
-Message-ID: <CAG_fn=XbDFa_7BWMzR5cVEVp-GuHxK2fyFAZJgXqXb8qL1ZhAA@mail.gmail.com>
-Subject: Re: [PATCH v2 17/33] mm: kfence: Disable KMSAN when checking the canary
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208123603.29957-1-johan+linaro@kernel.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 1:53=E2=80=AFPM Alexander Potapenko <glider@google.c=
-om> wrote:
->
-> On Tue, Nov 21, 2023 at 11:02=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.=
-com> wrote:
-> >
-> > KMSAN warns about check_canary() accessing the canary.
-> >
-> > The reason is that, even though set_canary() is properly instrumented
-> > and sets shadow, slub explicitly poisons the canary's address range
-> > afterwards.
-> >
-> > Unpoisoning the canary is not the right thing to do: only
-> > check_canary() is supposed to ever touch it. Instead, disable KMSAN
-> > checks around canary read accesses.
-> >
-> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> Reviewed-by: Alexander Potapenko <glider@google.com>
+On Fri, Dec 08, 2023 at 01:36:02PM +0100, Johan Hovold wrote:
+> Fix the recently added connector sanity check which was off by one and
+> prevented orientation notifications from being handled correctly for the
+> second port when using GPIOs to determine orientation.
+> 
+> Fixes: c6165ed2f425 ("usb: ucsi: glink: use the connector orientation GPIO to provide switch events")
+> Cc: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 
-and even
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Tested-by: Alexander Potapenko <glider@google.com>
+> ---
+> 
+> I found this one through inspection when skimming the driver.
+> 
+> Johan
+> 
+> 
+>  drivers/usb/typec/ucsi/ucsi_glink.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
+> index db6e248f8208..4853141cd10c 100644
+> --- a/drivers/usb/typec/ucsi/ucsi_glink.c
+> +++ b/drivers/usb/typec/ucsi/ucsi_glink.c
+> @@ -228,7 +228,7 @@ static void pmic_glink_ucsi_notify(struct work_struct *work)
+>  
+>  	con_num = UCSI_CCI_CONNECTOR(cci);
+>  	if (con_num) {
+> -		if (con_num < PMIC_GLINK_MAX_PORTS &&
+> +		if (con_num <= PMIC_GLINK_MAX_PORTS &&
+>  		    ucsi->port_orientation[con_num - 1]) {
+>  			int orientation = gpiod_get_value(ucsi->port_orientation[con_num - 1]);
+>  
+> -- 
+> 2.41.0
+
+-- 
+heikki
