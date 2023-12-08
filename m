@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D72809B89
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 06:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA56809B87
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 06:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235763AbjLHFIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 00:08:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
+        id S235623AbjLHFIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 00:08:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235815AbjLHFII (ORCPT
+        with ESMTP id S233152AbjLHFID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 00:08:08 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234661FE0;
-        Thu,  7 Dec 2023 21:07:35 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B84qN6t026034;
-        Fri, 8 Dec 2023 05:07:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=z6eBZEWSORpxitis68sRuH4ipD5HG69u1ml5phIxpx0=;
- b=h7NzF9qG05eqNnr4zqLE/jWoH2Mj6lASXpqKk/QMJmLIUiCxtDyjpwsqsyCJ2R7LoWD3
- 8q7mMngrrv9cG/SVfYljr1jvDkpQv6cUmJvSWkLMNA4+PfLpwUkaH0MHMPhtM7ZWlLXG
- xk+hrt3eOdcI5wh0KOZf7/+OI0JDADgx5esiJnvFdRknUejLp4QFZ5SzWVV3Ix/86kGb
- X7A+8qZfPNL2UvutK6VUqVs1xia0YLBV2DDSryTQg2xD3ptliASLxhgWTa14ardKZqqB
- aJGlVWuGB5dRazPi9ZROHV0NPT6V7C6baKkV6O/fxkN2yTJeKqPVvtpsfa8owVw5aiFQ sA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utynu40sg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 05:07:29 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B857SGD015295
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 8 Dec 2023 05:07:28 GMT
-Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 7 Dec 2023 21:07:28 -0800
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-To:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 16/16] drm/msm/dpu: add cdm blocks to dpu snapshot
-Date:   Thu, 7 Dec 2023 21:06:41 -0800
-Message-ID: <20231208050641.32582-17-quic_abhinavk@quicinc.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231208050641.32582-1-quic_abhinavk@quicinc.com>
-References: <20231208050641.32582-1-quic_abhinavk@quicinc.com>
+        Fri, 8 Dec 2023 00:08:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E554E19A3
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 21:07:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702012053;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7DjOW++h2qpYv/KAC35xyOMKgc1I7IXf0474RhNm4+E=;
+        b=DCWAZW1keEijMMenLUifNvVAf9whNDBcZ4yHoADZ1Y2lmgI0XnzaS2unJ4c2+foZ7+JO0s
+        qO3xXWFUZJpL87mf2BQZUI+oGbR4ehArenXUtkcQWA4NM52B8pSasddy7QcNuoG4HOC3Iu
+        XHJeM5iTP5G81SpHofECU8MH10PnDqs=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-441-LvQAJoYQPu6cSeQdOfmYCA-1; Fri, 08 Dec 2023 00:07:29 -0500
+X-MC-Unique: LvQAJoYQPu6cSeQdOfmYCA-1
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-286978683d0so1429965a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 21:07:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702012048; x=1702616848;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7DjOW++h2qpYv/KAC35xyOMKgc1I7IXf0474RhNm4+E=;
+        b=qYf9fcTMfrfkbk0u/aVd+eImhG849/WDlMnJVCPHX3A1Dpn5NNob7+B6+mfSD1w573
+         8aOFaMZBZovV5IOS3aNojktAF9mDe6D9ecIB8vaAltSveR1KmcGixQV0SUUHkU6tzkJE
+         RnsdXvcYOpeNPZC7a0wi3reC7EYOpltwODcDHRwJefAyTqbfd1GU3RBqRmWKWGvpzfmp
+         KZy6WRMcYKQNDmvVv/9Sxlw8JmjInzL99ahHgKRqk2pSHGMU8X1PGiyuNn6rSj+oV0JO
+         8/mtm97hWte2bVtfQGJIfy7QUnQUoA/WaQIUHWwgBJ1utEx0riyp86NP/v+THFBTnZz2
+         s2QQ==
+X-Gm-Message-State: AOJu0YyW1o6I3cLM1jBvcj7tEytEt2b6Vl77OX5ItoDxaAqUiJfvrrLm
+        oL8YxoYmH2eXiQvSS+rCxO+swvN7SNjKUj+c39MpBzkty2t7qVOFiIF/sBbKZTOPV+M85lXCFEp
+        L8bC8UcboN8ENxbGIPP2At5hV
+X-Received: by 2002:a17:903:228b:b0:1d0:b16a:b26a with SMTP id b11-20020a170903228b00b001d0b16ab26amr3435382plh.4.1702012048125;
+        Thu, 07 Dec 2023 21:07:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG6LlOSfQMdwKQHpCvinXE+YTOV9LAn4L/4e5piuadXfTGPzQr096NtqUuMnxxErVNRlrsErQ==
+X-Received: by 2002:a17:903:228b:b0:1d0:b16a:b26a with SMTP id b11-20020a170903228b00b001d0b16ab26amr3435375plh.4.1702012047799;
+        Thu, 07 Dec 2023 21:07:27 -0800 (PST)
+Received: from [192.168.68.51] ([43.252.115.3])
+        by smtp.gmail.com with ESMTPSA id g24-20020a170902869800b001cf9ddd3552sm701722plo.85.2023.12.07.21.07.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Dec 2023 21:07:27 -0800 (PST)
+Message-ID: <c8e1594e-1379-4fb3-904f-fba2cd194cdc@redhat.com>
+Date:   Fri, 8 Dec 2023 15:07:22 +1000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: zvCpjqkC6RvJco6gtinjcCksL6kVV0T4
-X-Proofpoint-ORIG-GUID: zvCpjqkC6RvJco6gtinjcCksL6kVV0T4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-08_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- clxscore=1015 priorityscore=1501 lowpriorityscore=0 bulkscore=0
- phishscore=0 malwarescore=0 spamscore=0 impostorscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312080038
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] KVM: selftests: Fix Assertion on non-x86_64 platforms
+Content-Language: en-US
+To:     Shaoqin Huang <shahuang@redhat.com>, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev
+References: <20231208033505.2930064-1-shahuang@redhat.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20231208033505.2930064-1-shahuang@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,30 +83,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that CDM block support has been added to DPU lets also add its
-entry to the DPU snapshot to help debugging.
+On 12/8/23 13:35, Shaoqin Huang wrote:
+> When running the set_memory_region_test on arm64 platform, it causes the
+> below assert:
+> 
+> ==== Test Assertion Failure ====
+>    set_memory_region_test.c:355: r && errno == EINVAL
+>    pid=40695 tid=40695 errno=0 - Success
+>       1	0x0000000000401baf: test_invalid_memory_region_flags at set_memory_region_test.c:355
+>       2	 (inlined by) main at set_memory_region_test.c:541
+>       3	0x0000ffff951c879b: ?? ??:0
+>       4	0x0000ffff951c886b: ?? ??:0
+>       5	0x0000000000401caf: _start at ??:?
+>    KVM_SET_USER_MEMORY_REGION should have failed on v2 only flag 0x2
+> 
+> This is because the arm64 platform also support the KVM_MEM_READONLY flag, but
+> the current implementation add it into the supportd_flags only on x86_64
+> platform, so this causes assert on other platform which also support the
+> KVM_MEM_READONLY flag.
+> 
+> Fix it by using the __KVM_HAVE_READONLY_MEM macro to detect if the
+> current platform support the KVM_MEM_READONLY, thus fix this problem on
+> all other platform which support KVM_MEM_READONLY.
+> 
+> Fixes: 5d74316466f4 ("KVM: selftests: Add a memory region subtest to validate invalid flags")
+> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+> This patch is based on the latest kvm-next[1] branch.
+> 
+> [1] https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=next
+> ---
+>   tools/testing/selftests/kvm/set_memory_region_test.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
 
-Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-index dc24fe4bb3b0..59647ad19906 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-@@ -947,6 +947,10 @@ static void dpu_kms_mdp_snapshot(struct msm_disp_state *disp_state, struct msm_k
- 		}
- 	}
- 
-+	if (cat->cdm)
-+		msm_disp_snapshot_add_block(disp_state, cat->cdm->len,
-+					    dpu_kms->mmio + cat->cdm->base, cat->cdm->name);
-+
- 	pm_runtime_put_sync(&dpu_kms->pdev->dev);
- }
- 
--- 
-2.40.1
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
