@@ -2,59 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F8E80A18E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2444680A192
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573646AbjLHKxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 05:53:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36394 "EHLO
+        id S1573662AbjLHKxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 05:53:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232628AbjLHKx3 (ORCPT
+        with ESMTP id S1573653AbjLHKxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 05:53:29 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF61210CF;
-        Fri,  8 Dec 2023 02:53:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702032814; x=1733568814;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Evl6/fV9FvnpjIv/giDVb7xclTPtiZRexx5A59bvzq8=;
-  b=m0XlDc7lSAg0qKBg3Bd8Bw1AyYK7LBHRJJH66EnlEVE2BRYkcMNsmwt7
-   my61VLOgR7yb6waH/W/2Oyz4gEa3hfMxbNHVsKgKP1VM/EKAqUUDZl+/2
-   yL8xqz3aclx8zpcK7JF56aOhh0ETlM7EEgIZyUB2RYLV67FApLS2XnunW
-   cf318pzh+Hx0BI2S6zmuRaiNb7h+wuFo3LQkjlOkNbr29VCySCduxuFEB
-   BlCp4Ve/mh30QNGCtX00FYJXd4VQ28+QHtghLuxqugHbMiBNTFFgNadnq
-   MpihRax58wA8UHK616RkX8X3z077kM24EqLe+DeHkC4G2mHb+6QvDHXMf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="391560942"
-X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
-   d="scan'208";a="391560942"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 02:53:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="842560542"
-X-IronPort-AV: E=Sophos;i="6.04,260,1695711600"; 
-   d="scan'208";a="842560542"
-Received: from smatua-mobl.ger.corp.intel.com ([10.251.223.110])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 02:53:32 -0800
-Date:   Fri, 8 Dec 2023 12:53:29 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Vishnu Sankar <vishnuocv@gmail.com>
-cc:     hdegoede@redhat.com, mpearson-lenovo@squebb.ca,
-        ilpo.jarvinen@linux.intel.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, markgross@kernel.org
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: fix for incorrect fan
- reporting on some ThinkPad systems
-In-Reply-To: <20231206162003.92010-1-vishnuocv@gmail.com>
-Message-ID: <2ae27a1b-a472-8a57-994e-f016cc25dafc@linux.intel.com>
-References: <20231206162003.92010-1-vishnuocv@gmail.com>
+        Fri, 8 Dec 2023 05:53:37 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A131CAC
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:53:43 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DEC0421188;
+        Fri,  8 Dec 2023 10:53:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702032822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=6Zx4HAi3MJCgNFhjRTmgq2e0WGxIXkyuLgVhCxu8ER4=;
+        b=RsM65RxuZ6KhnsXcJTF2e2b6V4QR+YE9Vpt3JG3588WOLNGuB564xU9WIcUxF3AemyyLFo
+        3ZJtxIv6T4wexY2IdLb9hWoXJtEX6hqo3Ed2jyMp0QkR/hV9EI6n9+EfDoQu4oeLO/j9dP
+        x6gRH67YwfTuKVgBuyVmwe+ITwtMJlA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702032822;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=6Zx4HAi3MJCgNFhjRTmgq2e0WGxIXkyuLgVhCxu8ER4=;
+        b=z9ziEXhl7MuZz6oxhcmGhYOBJOQPPJhPPkJPgIFPaAqVKoFoPPPDauT0uscSKBgfRIcXbu
+        22phbi0vZgNTQaCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702032821; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=6Zx4HAi3MJCgNFhjRTmgq2e0WGxIXkyuLgVhCxu8ER4=;
+        b=k+A13JlbZTevnEwzRtZOvgLGvMpi5AFZtYRF/yqpUr/Xv1hFLcLawFYIyq37oE4gCZvnWG
+        5uj9wS2lB9GntbdzMqflUCDPPjei4vGIPuziiMQDvYhcPycnI9tt0l61M/uEoWLtWsvbjf
+        axWPIcz+qKKYhta6BR6JfZ5na49aUI8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702032821;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=6Zx4HAi3MJCgNFhjRTmgq2e0WGxIXkyuLgVhCxu8ER4=;
+        b=K2Soa8xnuHMJGI690socST+ObCRivTV0kP1mykMJ4tC+GQHxh0+40N5wVbprkVB77usy/Q
+        5C1LL1WM0mEQAJCw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C0C5B138FF;
+        Fri,  8 Dec 2023 10:53:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id +maaLbX1cmUtVgAAn2gu4w
+        (envelope-from <dwagner@suse.de>); Fri, 08 Dec 2023 10:53:41 +0000
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Hannes Reinecke <hare@suse.de>, Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v5 0/6] nvme: add csi, ms and nuse to sysfs
+Date:   Fri,  8 Dec 2023 11:53:31 +0100
+Message-ID: <20231208105337.23409-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: *****************
+X-Spam-Score: 17.99
+X-Spamd-Result: default: False [0.29 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_SPAM(5.10)[100.00%];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_TRACE(0.00)[suse.de:+];
+         DMARC_POLICY_ALLOW(0.00)[suse.de,none];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         MX_GOOD(-0.01)[];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         FROM_HAS_DN(0.00)[];
+         DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         WHITELIST_DMARC(-7.00)[suse.de:D:+];
+         MID_CONTAINS_FROM(1.00)[];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_TLS_ALL(0.00)[];
+         RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spamd-Bar: /
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: DEC0421188
+X-Spam-Score: 0.29
+Authentication-Results: smtp-out1.suse.de;
+        dkim=pass header.d=suse.de header.s=susede2_rsa header.b=k+A13Jlb;
+        dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=K2Soa8xn;
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dwagner@suse.de) smtp.mailfrom=dwagner@suse.de;
+        dmarc=pass (policy=none) header.from=suse.de
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,280 +122,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Dec 2023, Vishnu Sankar wrote:
+I've added two new refactoring patches which convert a bunch of functions to
+accpet nvme_ns_head instead of nvme_ns. Though I've left out the conversion of
+nvme_update_ns_info_block because there are still users of nvme_ns deeper down
+the callchain.
 
-Hi Vishnu,
+Besides this I've addressed all comments from v4, remove debug output, silence
+ratelimit messages and revert the nvme_ns_head coversion in
+nvme_zns_alloc_report_buffer.
 
-Thanks for the patch.
+The benchmark numbers are still roughly the same and all blktests for all
+transports pass with this change. My previous claim in v3 that something is
+broken for rdma turned out it's my test that setup was b0rken.
 
-> Some ThinkPad systems ECFW use non-standard addresses for fan control
-> and reporting. This patch adds support for such ECFW so that it can report
-> the correct fan values.
-> Tested on Thinkpads L13 Yoga Gen 2 and X13 Yoga Gen 2.
-> 
-> Co-developed-by: Mark Pearson <mpearson-lenovo@squebb.ca>
-> Signed-off-by: Vishnu Sankar <vishnuocv@gmail.com>
+Thanks,
+Daniel
 
-If Mark wrote any lines, his Signed-off-by is also required before yours,
-as per Documentation/process/5.Posting.rst, this is a hard requirement. 
+libnvme changes:
+  https://github.com/igaw/libnvme/tree/tree-no-cmd
+  
+changes:
+v5:
+ - reverted trigger happy conversion to nvme_ns_head in
+   nvme_zns_alloc_report_buffer
+ - removed debug output
+ - added refactoring patches
+ - ratelimit silence suppress messages
+ - added reviewed tags
 
-If he only helped towards the right direction/solution but provided no 
-code, I recommend using Suggested-by tag instead.
+v4:
+ - drop 'use nvme_ns_head instead nvme_ns' patches
+ - ratelimit nuse update per namespace not globally
+ - rename ns attribute group
+ - added non-multipath nuse update logic
+ - added cacheline optimization
+ - https://lore.kernel.org/linux-nvme/20231207123624.29959-1-dwagner@suse.de/
 
-> ---
->  drivers/platform/x86/thinkpad_acpi.c | 88 ++++++++++++++++++++++++----
->  1 file changed, 76 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-> index d0b5fd4137bc..51ec20e07b23 100644
-> --- a/drivers/platform/x86/thinkpad_acpi.c
-> +++ b/drivers/platform/x86/thinkpad_acpi.c
-> @@ -7950,6 +7950,11 @@ static struct ibm_struct volume_driver_data = {
->   * 	but the ACPI tables just mention level 7.
->   */
->  
-> +#define FAN_RPM_CAL_CONST 491520	/* FAN RPM calculation offset for some non-standard ECFW */
-> +
-> +#define FAN_NS_CTRL_STATUS	BIT(2)		/* Bit which determines control is enabled or not */
-> +#define FAN_NS_CTRL		BIT(4)		/* Bit which determines control is by host or EC */
-> +
->  enum {					/* Fan control constants */
->  	fan_status_offset = 0x2f,	/* EC register 0x2f */
->  	fan_rpm_offset = 0x84,		/* EC register 0x84: LSB, 0x85 MSB (RPM)
-> @@ -7957,6 +7962,11 @@ enum {					/* Fan control constants */
->  	fan_select_offset = 0x31,	/* EC register 0x31 (Firmware 7M)
->  					   bit 0 selects which fan is active */
->  
-> +	fan_status_offset_ns = 0x93,	/* Special status/control offset for non-standard EC Fan1 */
-> +	fan2_status_offset_ns = 0x96,	/* Special status/control offset for non-standard EC Fan2 */
-> +	fan_rpm_status_ns = 0x95,	/* Special offset for Fan1 RPM status for non-standard EC */
-> +	fan2_rpm_status_ns = 0x98,	/* Special offset for Fan2 RPM status for non-standard EC */
-> +
->  	TP_EC_FAN_FULLSPEED = 0x40,	/* EC fan mode: full speed */
->  	TP_EC_FAN_AUTO	    = 0x80,	/* EC fan mode: auto fan control */
->  
-> @@ -7967,6 +7977,7 @@ enum fan_status_access_mode {
->  	TPACPI_FAN_NONE = 0,		/* No fan status or control */
->  	TPACPI_FAN_RD_ACPI_GFAN,	/* Use ACPI GFAN */
->  	TPACPI_FAN_RD_TPEC,		/* Use ACPI EC regs 0x2f, 0x84-0x85 */
-> +	TPACPI_FAN_RD_TPEC_NS,		/* Use non-standard ACPI EC regs (eg: L13 Yoga gen2 etc.) */
->  };
->  
->  enum fan_control_access_mode {
-> @@ -7994,6 +8005,8 @@ static u8 fan_control_desired_level;
->  static u8 fan_control_resume_level;
->  static int fan_watchdog_maxinterval;
->  
-> +static bool fan_with_ns_addr;
-> +
->  static struct mutex fan_mutex;
->  
->  static void fan_watchdog_fire(struct work_struct *ignored);
-> @@ -8123,6 +8136,15 @@ static int fan_get_status(u8 *status)
->  		}
->  
->  		break;
-> +	case TPACPI_FAN_RD_TPEC_NS:
+v3:
+ - cut overlong lines shorter
+ - fixed disk (queuedata) initialization order
+ - more testing with blktest
+ - added nuse ratelimit
+ - added reviewed tags
+ - https://lore.kernel.org/linux-nvme/20231206081244.32733-1-dwagner@suse.de/
 
-There's a big comment about FAN ACCESS MODES and now you seem to be adding 
-another one. Can you please check if there would be something useful to 
-add/edit in that big comment because of the addition of 
-TPACPI_FAN_RD_TPEC_NS.
+v2:
+ - moved ns id data to nvme_ns_head
+ - dropped ds, nsze
+ - https://lore.kernel.org/linux-nvme/20231201092735.28592-1-dwagner@suse.de/
 
-> +		/* Default mode is AUTO which means controlled by EC */
-> +		if (unlikely(!acpi_ec_read(fan_status_offset_ns, &s)))
+v1:
+ - initial version
+ - https://lore.kernel.org/linux-nvme/20231127103208.25748-1-dwagner@suse.de/
 
-I'm skeptical that all these unlikely/likely() are useful. Some might even 
-be harmful if e.g. is some error condition keeps repeating itself and 
-the particular if handling that is marked with unlikely().
 
-I know the code in that file is littered with them already but it would 
-be better to add into that, IMO.
+Daniel Wagner (6):
+  nvme: move ns id info to struct nvme_ns_head
+  nvme: refactor ns info helpers
+  nvme: refactor ns info setup function
+  nvme: rename ns attribute group
+  nvme: add csi, ms and nuse to sysfs
+  nvme: repack struct nvme_ns_head
 
-> +			return -EIO;
-> +
-> +		if (likely(status))
-> +			*status = s;
-> +
-> +		break;
->  
->  	default:
->  		return -ENXIO;
-> @@ -8139,7 +8161,8 @@ static int fan_get_status_safe(u8 *status)
->  	if (mutex_lock_killable(&fan_mutex))
->  		return -ERESTARTSYS;
->  	rc = fan_get_status(&s);
-> -	if (!rc)
-> +	/* NS EC doesn't have register with level settings */
-> +	if (!rc && !fan_with_ns_addr)
->  		fan_update_desired_level(s);
->  	mutex_unlock(&fan_mutex);
->  
-> @@ -8166,7 +8189,13 @@ static int fan_get_speed(unsigned int *speed)
->  
->  		if (likely(speed))
->  			*speed = (hi << 8) | lo;
-> +		break;
-> +	case TPACPI_FAN_RD_TPEC_NS:
-> +		if (unlikely(!acpi_ec_read(fan_rpm_status_ns, &lo)))
-> +			return -EIO;
->  
-> +		if (likely(speed))
-> +			*speed = lo ? FAN_RPM_CAL_CONST / lo : 0;
->  		break;
->  
->  	default:
-> @@ -8178,7 +8207,7 @@ static int fan_get_speed(unsigned int *speed)
->  
->  static int fan2_get_speed(unsigned int *speed)
->  {
-> -	u8 hi, lo;
-> +	u8 hi, lo, status;
->  	bool rc;
->  
->  	switch (fan_status_access_mode) {
-> @@ -8194,7 +8223,21 @@ static int fan2_get_speed(unsigned int *speed)
->  
->  		if (likely(speed))
->  			*speed = (hi << 8) | lo;
-> +		break;
->  
-> +	case TPACPI_FAN_RD_TPEC_NS:
-> +		rc = !acpi_ec_read(fan2_status_offset_ns, &status);
-> +		if (rc)
-> +			return -EIO;
-> +		if (!(status & FAN_NS_CTRL_STATUS)) {
-> +			pr_info("fan fan2 control not supported\n");
-
-Perhaps "fan2 control ..." would be enough or perhaps "secondary fan 
-control ..." (the latter matching fan_init() printouts) ?
-
-> +			return -EIO;
-> +		}
-> +		rc = !acpi_ec_read(fan2_rpm_status_ns, &lo);
-> +		if (rc)
-> +			return -EIO;
-> +		if (likely(speed))
-> +			*speed = lo ? FAN_RPM_CAL_CONST / lo : 0;
->  		break;
->  
->  	default:
-> @@ -8697,6 +8740,7 @@ static const struct attribute_group fan_driver_attr_group = {
->  #define TPACPI_FAN_2FAN		0x0002		/* EC 0x31 bit 0 selects fan2 */
->  #define TPACPI_FAN_2CTL		0x0004		/* selects fan2 control */
->  #define TPACPI_FAN_NOFAN	0x0008		/* no fan available */
-> +#define TPACPI_FAN_NS		0x0010		/* For EC with non-Standard register addresses */
->  
->  static const struct tpacpi_quirk fan_quirk_table[] __initconst = {
->  	TPACPI_QEC_IBM('1', 'Y', TPACPI_FAN_Q1),
-> @@ -8715,6 +8759,8 @@ static const struct tpacpi_quirk fan_quirk_table[] __initconst = {
->  	TPACPI_Q_LNV3('N', '2', 'O', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (2nd gen) */
->  	TPACPI_Q_LNV3('N', '3', '0', TPACPI_FAN_2CTL),	/* P15 (1st gen) / P15v (1st gen) */
->  	TPACPI_Q_LNV3('N', '3', '7', TPACPI_FAN_2CTL),  /* T15g (2nd gen) */
-> +	TPACPI_Q_LNV3('R', '1', 'F', TPACPI_FAN_NS),	/* L13 Yoga Gen 2 */
-> +	TPACPI_Q_LNV3('N', '2', 'U', TPACPI_FAN_NS),	/* X13 Yoga Gen 2*/
->  	TPACPI_Q_LNV3('N', '1', 'O', TPACPI_FAN_NOFAN),	/* X1 Tablet (2nd gen) */
->  };
->  
-> @@ -8749,6 +8795,13 @@ static int __init fan_init(struct ibm_init_struct *iibm)
->  		return -ENODEV;
->  	}
->  
-> +	if (quirks & TPACPI_FAN_NS) {
-> +		pr_info("ECFW with non-standard fan reg control found\n");
-> +		fan_with_ns_addr = 1;
-> +		/* Fan ctrl support from host is undefined for now */
-> +		tp_features.fan_ctrl_status_undef = 1;
-> +	}
-> +
->  	if (gfan_handle) {
->  		/* 570, 600e/x, 770e, 770x */
->  		fan_status_access_mode = TPACPI_FAN_RD_ACPI_GFAN;
-> @@ -8756,11 +8809,13 @@ static int __init fan_init(struct ibm_init_struct *iibm)
->  		/* all other ThinkPads: note that even old-style
->  		 * ThinkPad ECs supports the fan control register */
->  		if (likely(acpi_ec_read(fan_status_offset,
-> -					&fan_control_initial_status))) {
-> +					&fan_control_initial_status)) || fan_with_ns_addr) {
-
-So if we know the addresses are non-standard, why is the acpi_ec_read 
-performed at all? That is, why isn't the || logic in reverse order?
-
-I also wonder what will fan_control_initial_status be set to in this case, 
-is it garbage?
-
->  			int res;
->  			unsigned int speed;
->  
-> -			fan_status_access_mode = TPACPI_FAN_RD_TPEC;
-> +			fan_status_access_mode = fan_with_ns_addr ?
-> +				TPACPI_FAN_RD_TPEC_NS : TPACPI_FAN_RD_TPEC;
-> +
->  			if (quirks & TPACPI_FAN_Q1)
->  				fan_quirk1_setup();
->  			/* Try and probe the 2nd fan */
-> @@ -8769,7 +8824,8 @@ static int __init fan_init(struct ibm_init_struct *iibm)
->  			if (res >= 0 && speed != FAN_NOT_PRESENT) {
->  				/* It responded - so let's assume it's there */
->  				tp_features.second_fan = 1;
-> -				tp_features.second_fan_ctl = 1;
-> +				/* fan control not currently available for ns ECFW */
-> +				tp_features.second_fan_ctl = fan_with_ns_addr ? 0 : 1;
-
-= !fan_with_ns_addr;
-
->  				pr_info("secondary fan control detected & enabled\n");
->  			} else {
->  				/* Fan not auto-detected */
-> @@ -8944,6 +9000,7 @@ static int fan_read(struct seq_file *m)
->  			       str_enabled_disabled(status), status);
->  		break;
->  
-> +	case TPACPI_FAN_RD_TPEC_NS:
->  	case TPACPI_FAN_RD_TPEC:
->  		/* all except 570, 600e/x, 770e, 770x */
->  		rc = fan_get_status_safe(&status);
-> @@ -8958,13 +9015,20 @@ static int fan_read(struct seq_file *m)
->  
->  		seq_printf(m, "speed:\t\t%d\n", speed);
->  
-> -		if (status & TP_EC_FAN_FULLSPEED)
-> -			/* Disengaged mode takes precedence */
-> -			seq_printf(m, "level:\t\tdisengaged\n");
-> -		else if (status & TP_EC_FAN_AUTO)
-> -			seq_printf(m, "level:\t\tauto\n");
-> -		else
-> -			seq_printf(m, "level:\t\t%d\n", status);
-> +		if (fan_status_access_mode == TPACPI_FAN_RD_TPEC_NS) {
-> +			/* No full speed bit in NS EC*/
-
-Missing space. But I'd convert these two comments into a multiline one 
-anyway.
-
-> +			/* EC Auto mode is set by default. No other levels settings available*/
-> +			(status & FAN_NS_CTRL) ? seq_puts(m, "level:\t\tunknown\n")
-> +					: seq_puts(m, "level:\t\tauto\n");
-
-seq_printf(m, "level:\t\t%s\n", status & FAN_NS_CTRL ? "unknown" : "auto");
-
-> +		} else {
-> +			if (status & TP_EC_FAN_FULLSPEED)
-> +				/* Disengaged mode takes precedence */
-> +				seq_puts(m, "level:\t\tdisengaged\n");
-> +			else if (status & TP_EC_FAN_AUTO)
-> +				seq_puts(m, "level:\t\tauto\n");
-
-Please don't make an unrelated seq_printf() -> seq_puts() change in this 
-patch.
-
-> +			else
-> +				seq_printf(m, "level:\t\t%d\n", status);
-> +		}
->  		break;
->  
->  	case TPACPI_FAN_NONE:
-> 
+ drivers/nvme/host/core.c      | 168 ++++++++++++++++++----------------
+ drivers/nvme/host/ioctl.c     |   8 +-
+ drivers/nvme/host/multipath.c |   2 +-
+ drivers/nvme/host/nvme.h      |  44 +++++----
+ drivers/nvme/host/rdma.c      |   4 +-
+ drivers/nvme/host/sysfs.c     |  99 ++++++++++++++++++--
+ drivers/nvme/host/zns.c       |  35 +++----
+ 7 files changed, 233 insertions(+), 127 deletions(-)
 
 -- 
- i.
+2.43.0
 
