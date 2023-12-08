@@ -2,143 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBEE809FFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B222F80A001
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbjLHJwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 04:52:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46912 "EHLO
+        id S1573460AbjLHJxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 04:53:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233242AbjLHJwd (ORCPT
+        with ESMTP id S232968AbjLHJxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 04:52:33 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25732D5B
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 01:52:40 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40c2db2ee28so13941135e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 01:52:40 -0800 (PST)
+        Fri, 8 Dec 2023 04:53:40 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC545A3
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 01:53:45 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-286867cac72so1489476a91.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 01:53:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702029158; x=1702633958; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:cc:references
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cy1ynQiCsa9hXIviflMSaOGY1IRNHwAjxco9Nm8WCoc=;
-        b=b0EUNmU9lKV2g70chFITM/go+hRjoE/TKV1im/LqTSw0mWn1sjfeQcusl18InBtmO2
-         tXWyohBBpfoWjigqVygvFSHN7eR2ED8mJEnUIlypy31aWb1LVOr0EoFeYIZ+XS+7yQs1
-         pu+ki5zOsp/Qt798JVHpIv15ZJ6eoP5ymF6Yu/v6J/XXvTtVv9YS80b15JqPN7W4w1pa
-         HF4ZXpHGOzhAg29okfDISOrRa6IyWONybxN77VPv8MIIMHeDhAoXGCkkFpKoO/o66jec
-         neQJ0lRKKO3qk4oUnGfQi1StjheIcKAHdxWrj5LL+XAAsjDrFCNCFaXF7T0W/x2/bKdj
-         ur4g==
+        d=gmail.com; s=20230601; t=1702029224; x=1702634024; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hiH20+WIVu5ly0cYmj661IYgJO82SP3K8lNJ5MfYHyg=;
+        b=cVCAZ4NRUOBnqdITDvkb9w1twgViDrnt0vW42huewlY4rfpaiYXEtDR6h55dU0z4AC
+         roWNcM5DNVnMAr0Py+boISWSLuGMoQUC6EuFkGTk2iLMfe8xqUdI5x1XePQtq3ZdJq8U
+         J+LhqWUDLKTGmazlHA8l5av/33Mq8FjrZF+cRKaJjs+r3LqW9p/8q2NuNM7t4OZAg+L2
+         2R1tzg7dgedY6u5UiLMv/dNQKimusVzyp0F70YNW4dtSq4dSs0uoMWSVT6qiyIX3+Ieb
+         Ftledwz/6gFdPNsQ83oR282wn++jnIuq/g/0DtManEkqo2d4ameHgZvNftCTezArMnQc
+         PrSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702029158; x=1702633958;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:cc:references
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cy1ynQiCsa9hXIviflMSaOGY1IRNHwAjxco9Nm8WCoc=;
-        b=UM+h0Nc5/ksGRfb6iw/euZhDVrVMDqoF9j5AN1nXAZQ/EWux2Zj6Bl0Kgmci88heAc
-         T1leyGP0rg2gwT5bGgCgvJkIUpYLhcQxsxMX/XPAttfWHn2/MwQG1CzQcV+W2DawVzDa
-         eHrzCVok1rw8SdK5zthH0Qa21oSON7Aw/afTOc1JD/6s1Vlc6eb2OGDW1T3Xs6F2O30R
-         e6nPEp7JqDiGXqt0oEG97Qnv9I2yuu9D1S4yC9CTWAKMYVB9zYg6tFMmSvQrZVqFZqXM
-         GOjOnIfWxTRftgmyJhzdDXzVUKt+zhJeuUwVIGqvq0eT1cvHWFGUtfjejKkmdbsI5aYx
-         fO3Q==
-X-Gm-Message-State: AOJu0Yz7d7kmPw76aA2kSQKvpDyUwzzfT0fHOEcl9ZHxDeG+Fqv8zsYV
-        vYhZq8bituKPUFPjTuydpi4xjQ==
-X-Google-Smtp-Source: AGHT+IHzyW0VgJFg7ZlEDwoOEEIOPZn3Dwo7sXSmZodnTAIi1ME/YFztbQv2ctdswME0tuv9X5yYYA==
-X-Received: by 2002:a7b:c84e:0:b0:40b:5e1d:83a9 with SMTP id c14-20020a7bc84e000000b0040b5e1d83a9mr2452899wml.61.1702029158404;
-        Fri, 08 Dec 2023 01:52:38 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id j13-20020a05600c190d00b0040b478da760sm2277323wmq.48.2023.12.08.01.52.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 01:52:37 -0800 (PST)
-Message-ID: <9f611e20-9530-42de-b794-b6210f465bf1@linaro.org>
-Date:   Fri, 8 Dec 2023 10:52:36 +0100
+        d=1e100.net; s=20230601; t=1702029224; x=1702634024;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hiH20+WIVu5ly0cYmj661IYgJO82SP3K8lNJ5MfYHyg=;
+        b=WceOHR2Jg2waI67zfGI+Io7T6h+w9kyLNLB/Z5TiMUE7d8Rpl8/2KpwnyVVc79eMwI
+         +TIcvBUfv3swD6tj0S6Rv6jGvFPKkOMepVnrvsuhwabq0R2wFZi2noV46agT3QUMXe6j
+         bsWKDLFvtsYjg/PM0A2mDfc2X769NrTQgbkco7JpIcf04se9naL/Mwy+woQ/1G+oM1TD
+         yQfrtUDJd0kIQlpBT0j62RIeLeU98Tqcmd+GqftwU7vGJAEbqnrpTPdythE+tu/+1HHD
+         FR9cSgyTkyBUGW88AYPKoA6OkT0spQ0aZeKCHWkJ9LbIdJM2Ig1wsonXcWrDPGTEFhRH
+         zO1w==
+X-Gm-Message-State: AOJu0YzpLm51ndlwwKXkOg1DLkKggkxipyXXNuG+dkniMr+c0FFeeapn
+        c5gf+LyjxpB7zbrDPVRRvow8dsgDacwqovbe
+X-Google-Smtp-Source: AGHT+IFcBP3UZcaSf5zWFkK+8uBofBQvnHXm72+xGVs/HAAeD6DDPF2T4jwVPr8HMFB7rMW0fmPZVg==
+X-Received: by 2002:a17:90b:4f43:b0:285:9ec0:892a with SMTP id pj3-20020a17090b4f4300b002859ec0892amr3513274pjb.33.1702029224083;
+        Fri, 08 Dec 2023 01:53:44 -0800 (PST)
+Received: from KASONG-MB2.tencent.com ([103.7.29.31])
+        by smtp.gmail.com with ESMTPSA id q6-20020a17090ac10600b00286ead49257sm1407985pjt.21.2023.12.08.01.53.41
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Fri, 08 Dec 2023 01:53:43 -0800 (PST)
+From:   Kairui Song <ryncsn@gmail.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Baoquan He <bhe@redhat.com>, Kairui Song <kasong@tencent.com>
+Subject: [PATCH v2] x86/mpparse, kexec: switch apic driver early when x2apic is pre-enabled
+Date:   Fri,  8 Dec 2023 17:52:48 +0800
+Message-ID: <20231208095248.59356-1-ryncsn@gmail.com>
+X-Mailer: git-send-email 2.43.0
+Reply-To: Kairui Song <kasong@tencent.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/3] mailbox/arm64: qcom: rework compatibles for
- fallback (continued)
-Content-Language: en-US
-To:     Jassi Brar <jassisinghbrar@gmail.com>
-References: <20231111204916.35835-1-krzysztof.kozlowski@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231111204916.35835-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/2023 21:49, Krzysztof Kozlowski wrote:
-> Hi,
-> 
-> Changes since v4
-> ================
-> v3: https://lore.kernel.org/linux-devicetree/20230322174148.810938-1-krzysztof.kozlowski@linaro.org/
-> v4: https://lore.kernel.org/linux-devicetree/20230327140752.163009-1-krzysztof.kozlowski@linaro.org/
-> 
-> Important: v3 and v4 are quite different.
+From: Kairui Song <kasong@tencent.com>
 
-Jassi,
+Previous Link: https://lore.kernel.org/lkml/20220608064348.66402-3-ryncsn@gmail.com/
 
-Any comments from your side? Can you pick this patchset?
+Following kernel panic is observed when doing kdump/kexec in
+virtual machines that using MPTABLE, not ACPI, and supports x2apic,
+this can be easily reproduced on Fedora using qemu:
 
-Best regards,
-Krzysztof
+  qemu-kvm -nodefaults -nographic -no-acpi -smp 2 -m 1G -monitor none \
+    -serial stdio -hda <distro image using unpatched kernel>
+
+And trigger a kdump/kexec in the qemu VM, it crash with:
+
+Intel MultiProcessor Specification v1.4
+MPTABLE: OEM ID: BOCHSCPU
+MPTABLE: Product ID: 0.1
+MPTABLE: APIC at: 0xFEE00000
+BUG: unable to handle page fault for address: ffffffffff5fc020
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 25e15067 P4D 25e15067 PUD 25e17067 PMD 25e18067 PTE 0
+Oops: 0000 [#1] SMP NOPTI
+CPU: 0 PID: 0 Comm: swapper Not tainted 5.14.10-300.fc35.x86_64 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35 04/01/2014
+RIP: 0010:native_apic_mem_read+0x2/0x10
+Code: 14 25 20 cd e3 82 c3 90 bf 30 08 00 00 ff 14 25 18 cd e3 82 c3 cc cc cc 89 ff 89 b7 00 c0 5f ff c3 0f 1f 80 00 00 00 00 89 ff <8b> 87 00 c0 5f ff c3 0f 1f 80 00 00 00 0
+RSP: 0000:ffffffff82e03e18 EFLAGS: 00010046
+RAX: ffffffff81064840 RBX: ffffffffff240b6c RCX: ffffffff82f17428
+RDX: c0000000ffffdfff RSI: 00000000ffffdfff RDI: 0000000000000020
+RBP: ffff888023200000 R08: 0000000000000000 R09: ffffffff82e03c50
+R10: ffffffff82e03c48 R11: ffffffff82f47468 R12: ffffffffff240b40
+R13: ffffffffff200b30 R14: 0000000000000000 R15: 00000000000000d4
+FS:  0000000000000000(0000) GS:ffffffff8365b000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffff5fc020 CR3: 0000000025e10000 CR4: 00000000000006b0
+Call Trace:
+ ? read_apic_id+0x15/0x30
+ ? register_lapic_address+0x76/0x97
+ ? default_get_smp_config+0x28b/0x42d
+ ? dmi_check_system+0x1c/0x60
+ ? acpi_boot_init+0x1d/0x4c3
+ ? setup_arch+0xb37/0xc2a
+ ? slab_is_available+0x5/0x10
+ ? start_kernel+0x61/0x980
+ ? load_ucode_bsp+0x4c/0xcd
+ ? secondary_startup_64_no_verify+0xc2/0xcb
+Modules linked in:
+CR2: ffffffffff5fc020
+random: get_random_bytes called from oops_exit+0x35/0x60 with crng_init=0
+---[ end trace c9e569df3bdbefd3 ]---
+
+It's still reproducible with latest kernel, the panic happens in following
+init code:
+
+setup_arch()
+  ....
+  check_x2apic()     <-- x2apic is enabled by first kernel before kexec,
+                         this set x2apic_mode = 1, make sure later probes
+                         will recognize pre-enabled x2apic.
+  ....
+  acpi_boot_init();  <-- If ACPI MADT is in use, this will switch apic driver
+                         to x2apic, but it will do nothing with MPTABLE.
+  x86_dtb_init();
+  get_smp_config();
+    default_get_smp_config();  <-- MPTABLE setup.
+      check_physptr();
+        smp_read_mpc();
+          register_lapic_address(); <-- panic here
+  init_apic_mappings();
+  ....
+
+The problem here is MPTABLE setup need to read some boot info from apic, so
+it calls register_lapic_address() to register apic MMIO interface early.
+But the MMIO interface is never mapped for pre-enabled x2apic, since commit
+0450193bffed6 ("x86, x2apic: Don't map lapic addr for preenabled x2apic systems").
+
+Simply map it won't work either, in x2apic mode the MMIO interface is
+not usable (Intel SDM Volume 3A 10.12.2), later code will fail with
+other errors. So here we do a x2apic driver probe and switch to
+x2apic driver for early boot info access.
+
+Such issue is currently only seen with kdump/kexec, kernel enabled the
+x2apic in first kernel and kept it enabled to 2nd kernel.
+
+Signed-off-by: Kairui Song <kasong@tencent.com>
+---
+ arch/x86/include/asm/apic.h           |  1 +
+ arch/x86/kernel/apic/x2apic_cluster.c | 11 +++++++++++
+ arch/x86/kernel/mpparse.c             |  4 +++-
+ 3 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
+index d21f48f1c242..42902c7abedf 100644
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -228,6 +228,7 @@ extern int x2apic_mode;
+ extern int x2apic_phys;
+ extern void __init x2apic_set_max_apicid(u32 apicid);
+ extern void x2apic_setup(void);
++extern void x2apic_kexec_early_fix(void);
+ static inline int x2apic_enabled(void)
+ {
+ 	return boot_cpu_has(X86_FEATURE_X2APIC) && apic_is_x2apic_enabled();
+diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
+index a8306089c91b..2de800bed66d 100644
+--- a/arch/x86/kernel/apic/x2apic_cluster.c
++++ b/arch/x86/kernel/apic/x2apic_cluster.c
+@@ -261,3 +261,14 @@ static struct apic apic_x2apic_cluster __ro_after_init = {
+ };
+ 
+ apic_driver(apic_x2apic_cluster);
++
++/*
++ * Kexec may have x2apic enabled but ACPI disabled,
++ * in such case x2apic driver need to be loaded early
++ * for non-ACPI routine (MPtable) to work.
++ */
++void x2apic_kexec_early_fix(void)
++{
++	if (x2apic_enabled())
++		apic_install_driver(&apic_x2apic_cluster);
++}
+diff --git a/arch/x86/kernel/mpparse.c b/arch/x86/kernel/mpparse.c
+index b223922248e9..509a28febc4a 100644
+--- a/arch/x86/kernel/mpparse.c
++++ b/arch/x86/kernel/mpparse.c
+@@ -197,8 +197,10 @@ static int __init smp_read_mpc(struct mpc_table *mpc, unsigned early)
+ 		return 0;
+ 
+ 	/* Initialize the lapic mapping */
+-	if (!acpi_lapic)
++	if (!acpi_lapic) {
++		x2apic_kexec_early_fix();
+ 		register_lapic_address(mpc->lapic);
++	}
+ 
+ 	if (early)
+ 		return 1;
+-- 
+2.43.0
 
