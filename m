@@ -2,108 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E21F980AC1E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D42E680AC23
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574571AbjLHSfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:35:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51730 "EHLO
+        id S1574566AbjLHSfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:35:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233827AbjLHSfI (ORCPT
+        with ESMTP id S233827AbjLHSf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:35:08 -0500
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359C9118;
-        Fri,  8 Dec 2023 10:35:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=iqgkejpa/rkBjVNHaS0A5K5PJBwcgcqylwReeoFCRMk=; b=T8fPULZ5vJHN49SgmCJX6fdWHu
-        K2+z2sIwrEFOU7FxzoPXvlYTiVfVy/1kf0iqenNn+9+iFZtFhNYTldLX4Rr+NQ/HRQs4KWCwkossM
-        Sc/dQJmTG6XvnTRHyU/gq4AnzkLGN0Avu0Di1LdozAE2/fG4QmSKzbGdau55xtyTEINys4KWTf2vB
-        pGuVJ4uO49mMYJFsmlRnLCFJzYNBrGbaFa3GIhzxGl9ZZ/Y1+jCzll9OZJ+1Buc2kiuBss55jwjx2
-        w/4+Hi3Jek0qA6w9PIuLzevHiFoNU9Yayvv1wbQJpivKSAE7ivt+SznrVQCd7cLDLlgxfBLEeYhhP
-        xuZC4PGw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rBfgr-0091iZ-2K;
-        Fri, 08 Dec 2023 18:35:09 +0000
-Date:   Fri, 8 Dec 2023 18:35:09 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        gus Gusenleitner Klaus <gus@keba.com>,
-        Al Viro <viro@ftp.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [RFC][PATCHES v2] checksum stuff
-Message-ID: <20231208183509.GC1674809@ZenIV>
-References: <20231019080615.GY800259@ZenIV>
- <20231021071525.GA789610@ZenIV>
- <20231021222203.GA800259@ZenIV>
- <20231022194020.GA972254@ZenIV>
- <20231205022100.GB1674809@ZenIV>
- <602ab11ffa2c4cc49bb9ecae2f0540b0@AcuMS.aculab.com>
- <20231206224359.GR1674809@ZenIV>
- <46711b57a62348059cfe798c8acea941@AcuMS.aculab.com>
- <20231208141712.GA1674809@ZenIV>
- <ce18effbe40c47bfb48f87e7ee4f8141@AcuMS.aculab.com>
+        Fri, 8 Dec 2023 13:35:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33387D6D
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:35:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702060532;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O4wJSXXt5neot2flp1x6zxgWM58LefvpkGHJupVSw+E=;
+        b=YyQv3B3A05q6vCzrJ2952MwuECs2zWVVwt7hFW3GkeGZO5N5vVqtyN21glSSsfdqvxwS7G
+        zYOVJ04cC4/Us55AksIWIPdYewthgXJvGhidovI2SaZX1Cuq7UvHBVgQ139OTRGiKVQicQ
+        n1Z6hoyKtywuGXUYOhVlx4J2ancHHeg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-125-gmoEQhd6N3KHZ7niw_I7xw-1; Fri, 08 Dec 2023 13:35:29 -0500
+X-MC-Unique: gmoEQhd6N3KHZ7niw_I7xw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B577A845DC1;
+        Fri,  8 Dec 2023 18:35:28 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.192.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 38C3C3C2E;
+        Fri,  8 Dec 2023 18:35:27 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-api@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v2] ELF: supply userspace with available page shifts
+ (AT_PAGE_SHIFT_MASK)
+References: <6b399b86-a478-48b0-92a1-25240a8ede54@p183>
+        <87v89dvuxg.fsf@oldenburg.str.redhat.com>
+        <1d679805-8a82-44a4-ba14-49d4f28ff597@p183>
+        <202312061236.DE847C52AA@keescook>
+        <4f5f29d4-9c50-453c-8ad3-03a92fed192e@p183>
+        <202312081027.BA44B7B3@keescook>
+Date:   Fri, 08 Dec 2023 19:35:25 +0100
+In-Reply-To: <202312081027.BA44B7B3@keescook> (Kees Cook's message of "Fri, 8
+        Dec 2023 10:29:25 -0800")
+Message-ID: <87lea4czki.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ce18effbe40c47bfb48f87e7ee4f8141@AcuMS.aculab.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 03:56:27PM +0000, David Laight wrote:
+* Kees Cook:
 
-> > You add them as natural numbers.  If there is no carry and result
-> > fits into N bits, that's it.  If there is carry, you add it to
-> > the lower N bits of sum.
-> > 
-> > Discussion of properties of that operation is present e.g. in
-> > RFC1071, titled "Computing the Internet Checksum".
-> > 
-> > May I politely suggest that some basic understanding of the
-> > arithmetics involved might be useful for this discussion?
-> 
-> Well 0x0000 is +0 and 0xffff is -0, mathematically they are (mostly)
-> equal.
+> I significantly prefer APIs not being arch-specific, so I'd prefer we
+> always include AT_PAGE_SHIFT_MASK. For an architecture that doesn't
+> define its own ARCH_AT_PAGE_SHIFT_MASK, it's not _inaccurate_ to report
+> 1 << PAGE_SHIFT, but it might be incomplete.
 
-As representations of signed integers they are.  However, the origin
-of operation in question is irrelevant.  Again, read the fucking RFC.
+The downside is that as an application programmer, I have to go and
+chase for the information the legacy way if I encounter
+getauxval(AT_PAGE_SHIFT_MASK) == getpagesize() for a longer time
+because the interface does not signal the absence of any extended
+page sizes.
 
-> I bet that ICMP response (with id == 0 and seq == 0) is the only
-> place it is possible to get an ip-checksum of a zero buffer.
-> So it will be pretty moot for copy+checksum with can return 0xffff
-> (or lots of other values) for an all-zero buffer.
+Thanks,
+Florian
 
-Egads...  Your bets are your business; you *still* have not bothered
-to look at the callers of these primitives.  Given the accuracy of
-your guesses so far, pardon me for treating any "I bet"/"it stands for
-reason"/etc. coming from you as empty handwaving.
-
-> In terms of copy+checksum returning an error, why not reduce the
-> 32bit wcsum once (to 17 bits) and return -1 (or ~0u) on error?
-> Much simpler than your patch and it won't have the lurking problem
-> of the result being assigned to a 32bit variable.
-
-In case you have somehow missed it, quite a few of the affected places
-are in assembler.  The same would apply to added code that would do
-this reduction.  Which is going to be considerably less trivial than
-the changes done in that patch.
