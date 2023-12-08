@@ -2,158 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67AC580AE74
+	by mail.lfdr.de (Postfix) with ESMTP id 1200A80AE73
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 22:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbjLHU6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:58:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
+        id S230309AbjLHU7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:59:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230309AbjLHU6I (ORCPT
+        with ESMTP id S229913AbjLHU7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:58:08 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E851720;
-        Fri,  8 Dec 2023 12:58:14 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c317723a8so14801395e9.3;
-        Fri, 08 Dec 2023 12:58:14 -0800 (PST)
+        Fri, 8 Dec 2023 15:59:02 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C6A1734
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:59:08 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5c68da9d639so1956530a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 12:59:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702069093; x=1702673893; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jPbPGj/N+kFsGtRBn7sHjIbGBUsdMj/nlx3HBVB+JYE=;
-        b=G2bPEZZYSb2B5Lgnfk/xinK7luuV5ZwdA1w3m5wHamNXH8qJjF+Z1tM9OTX62/HnOE
-         OhV8zvE56h0DgRyx+VDqnobABGyRfCwYI5bQaCrCcVvTydUbvZHZlNWwOoDEeo0S6XMJ
-         WpKPxdPDoitky7AgxAH5ogKWjpbBgV7sx7paOModJ4beN2iXcrA3zzSN/MFQFnydjWpT
-         ANWz/022lm6+6EVc9JyMwTFRHw/+rlnuE9sFPbRvEhHg6a2sgh3KA83eOnlUan8qr4fD
-         egHzRbSF6k0V3veNl7t0Fxm5lhk/OKwTpHIYwts6XaninN+0oI71FYKK3eY6uHjoV8fe
-         INuw==
+        d=chromium.org; s=google; t=1702069148; x=1702673948; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4tDY+el5yb1E7vibUCjRLXcZ8qga+f4zfjehHC1F09k=;
+        b=nuI8q0Tv3MyVrTJvWoYR48vQspiRLC+1Udu/8M1DFXgVLac+IsnGZnqZwbGPW/S6tN
+         7fL2dUHiKyNIjwaEuTvlJlgkLHki3cQmVHH+8EaWBvZIVZf74vIwaqbk8Klq1cBDTAle
+         YBUhbGCuSFOpF2gDK64trTzc7BQtONubSjrJk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702069093; x=1702673893;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jPbPGj/N+kFsGtRBn7sHjIbGBUsdMj/nlx3HBVB+JYE=;
-        b=AvNZLiFpSt0Ht7fXUVHyJCixbhks+NWEq1RlfzmivUqCr6SKBAaD9SG3vrMa9D20pw
-         ciG/N3DUdILP88kw8Cyfky8RzXvahRLECChjJIufXjBHA5MG6mJulTVkvYNQ70Z6ciPr
-         E87/q6K5fTF/3Ak2oxU/HLYMdtBc3YD205JGokSelfRebozgF0xtptq8uFLKnagLCV6t
-         yJxIG8+SXahF02lZvhPqbs9O0Vbn8thTKovdk7ckBTHyQ5LCf9yr25dR/4xvy8OzW4Ax
-         vTxRkdOgb0muAlagBroFywnSysvOBWTRJny1jBkOISx2a4IoF6//OrFwq6q60fG6dB9Y
-         d7gA==
-X-Gm-Message-State: AOJu0YxlCU5TPiSwiw65RSIdjuQ37fpxLkvWHMhRfX/EhcQGfFRtSpEg
-        1owx+hvaMnvpKkoxKEh/cs4W76C4+TEovppWB5A=
-X-Google-Smtp-Source: AGHT+IHEvTazMB26cXxqydUXzZjQ0E1EF3LcABQy94WqsbsZZavl6RKIzemfxTaf1pZCNseT7Ws4y7rzsk2OXl7MDFE=
-X-Received: by 2002:a05:600c:2947:b0:40c:2954:5ad7 with SMTP id
- n7-20020a05600c294700b0040c29545ad7mr288834wmd.120.1702069092800; Fri, 08 Dec
- 2023 12:58:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702069148; x=1702673948;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4tDY+el5yb1E7vibUCjRLXcZ8qga+f4zfjehHC1F09k=;
+        b=HcD/CNYmXv7KXVZO+kNh6jBFYlnj7jXVVSbZRq++6pwgdoBIkh86o1ce6VcZ6/1QVg
+         JMiH30TSkddrgR5VC24ABTNmH7MVVyYSw8DrbjefLYU/WKi4Bw+cd1vFqw0T2/HCRGJJ
+         0vxx3qLtk8ns5g1fOHfDXcxqDXBWEtABaPwaLgR2yN3NTo6ShsvcK+8YMbirlMvEn3Ys
+         xiCovURhlI/a+0CqzI0Rno1Bn5NwDN9zkYYuXdHZO0Z+gDWNT94zcc4rBEJQPbvTgM0m
+         S9TzoxP87yeDlRjhv5dCtmN6uBX0m3fUQAaOlfyAUEBpaUmRPBiYXGR0WpHi2s8EJhdK
+         PF+Q==
+X-Gm-Message-State: AOJu0Yyh6je4PXg0rkEWgjCquPTQyoNM5h7qqXUvQJ1DchWQmDbVeIYf
+        C8APt1GclbKlsEQ9JTHIRkaINh4V7gNr4vzPgy4=
+X-Google-Smtp-Source: AGHT+IHC0xhEEwf9AQh+iBNpO2ZO5pX3d5ZBv46D7LnSDAXnR6AD1N3JqwDjUZmr03O1IpKIMJtjAw==
+X-Received: by 2002:a05:6a21:18c:b0:190:6bc:adf0 with SMTP id le12-20020a056a21018c00b0019006bcadf0mr726883pzb.50.1702069148008;
+        Fri, 08 Dec 2023 12:59:08 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id o15-20020a056a0015cf00b006ce9fb084f4sm2011817pfu.101.2023.12.08.12.59.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 12:59:07 -0800 (PST)
+Date:   Fri, 8 Dec 2023 12:59:07 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Bryan Tan <bryantan@vmware.com>, Vishnu Dasa <vdasa@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] VMCI: Remove handle_arr_calc_size()
+Message-ID: <202312081258.85F7D88E@keescook>
+References: <adf0c48a57d911be5509688614d2e00694ff57eb.1702068153.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-References: <20231206183713.GA35897@noisy.programming.kicks-ass.net>
- <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
- <20231207093105.GA28727@noisy.programming.kicks-ass.net> <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
- <20231208102940.GB28727@noisy.programming.kicks-ass.net> <20231208134041.GD28727@noisy.programming.kicks-ass.net>
- <20231208172152.GD36716@noisy.programming.kicks-ass.net> <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
- <20231208203535.GG36716@noisy.programming.kicks-ass.net> <CAADnVQJzCw=qcG+jHBYG0q0SxLPkwghni0wpgV4A4PkpgVbGPw@mail.gmail.com>
- <20231208205241.GK28727@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231208205241.GK28727@noisy.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 8 Dec 2023 12:58:01 -0800
-Message-ID: <CAADnVQL3KsJONShsstDq5jrpbc_4FOU-VQPJgDCt50N9asoFzA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <adf0c48a57d911be5509688614d2e00694ff57eb.1702068153.git.christophe.jaillet@wanadoo.fr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 12:52=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Fri, Dec 08, 2023 at 12:41:03PM -0800, Alexei Starovoitov wrote:
-> > On Fri, Dec 8, 2023 at 12:35=E2=80=AFPM Peter Zijlstra <peterz@infradea=
-d.org> wrote:
->
-> > > -__bpf_kfunc void bpf_task_release(struct task_struct *p)
-> > > +__bpf_kfunc void bpf_task_release(void *p)
-> >
-> > Yeah. That won't work. We need a wrapper.
-> > Since bpf prog is also calling it directly.
-> > In progs/task_kfunc_common.h
-> > void bpf_task_release(struct task_struct *p) __ksym;
-> >
-> > than later both libbpf and the verifier check that
-> > what bpf prog is calling actually matches the proto
-> > of what is in the kernel.
-> > Effectively we're doing strong prototype check at load time.
->
-> I'm still somewhat confused on how this works, where does BPF get the
-> address of the function from? and what should I call the wrapper?
+On Fri, Dec 08, 2023 at 09:46:09PM +0100, Christophe JAILLET wrote:
+> Use struct_size() instead of handle_arr_calc_size().
+> This is much more conventionnal.
+> 
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-It starts with
-register_btf_id_dtor_kfuncs() that takes a set of btf_ids:
-{btf_id_of_type, btf_id_of_dtor_function}, ...
+Looks good. And since capacity in u32, there's no need for size_add().
 
-Then based on btf_id_of_dtor_function we find its type proto, name, do chec=
-ks,
-and eventually:
-addr =3D kallsyms_lookup_name(dtor_func_name);
-field->kptr.dtor =3D (void *)addr;
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-bpf_task_release(struct task_struct *p) would need to stay as-is,
-but we can have a wrapper
-void bpf_task_release_dtor(void *p)
-{
-  bpf_task_release(p);
-}
-
-And adjust the above lookup with extra "_dtor" suffix.
-
-> > btw instead of EXPORT_SYMBOL_GPL(bpf_task_release)
-> > can __ADDRESSABLE be used ?
-> > Since it's not an export symbol.
->
-> No __ADDRESSABLE() is expressly ignored, but we have IBT_NOSEAL() that
-> should do it. I'll rename the thing and lift it out of x86 to avoid
-> breaking all other arch builds.
-
-Makes sense.
+-- 
+Kees Cook
