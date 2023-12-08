@@ -2,254 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E69D80A9C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A28080A9CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574154AbjLHQum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:50:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57526 "EHLO
+        id S233678AbjLHQvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:51:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233657AbjLHQue (ORCPT
+        with ESMTP id S233556AbjLHQvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:50:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BD01987
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:50:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702054234;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b9G4gtAHl2jdBgyqLp8sobufNphdW1bLmTw+/OLi/vA=;
-        b=daMT4hATPXYhk4artMrKm8Ufy6xW/Xwuf7KVsuk9kpTTrxz+jEgPb1/LB9XIwfex1/C35A
-        Oy7raYIIamfSo1uCXIswLFCMFUETOBJl3No0JMeeP98mfIDeLsaLlLzd5eRVfO/aCm4hiW
-        rpxvQ1A/U42ezUE98L3+B+fuTqCXF88=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-659-d_IIGuYMNA29YojQjXG8mg-1; Fri, 08 Dec 2023 11:50:33 -0500
-X-MC-Unique: d_IIGuYMNA29YojQjXG8mg-1
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-423f436ed56so27633831cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 08:50:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702054233; x=1702659033;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Fri, 8 Dec 2023 11:51:21 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A92212B
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:51:11 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-67a9febb2bfso13033716d6.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 08:51:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702054270; x=1702659070; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=b9G4gtAHl2jdBgyqLp8sobufNphdW1bLmTw+/OLi/vA=;
-        b=UsHQvcKm/uzmVSnfd+VZACz1qLAqdrpGnjqfifi25dAMOs9r2I6wKdze/lTNcS1RhV
-         zjND4vLdU/tmKAGMvdZjSG0aoyoSf4G2D6df3yVBBaki3Nbi/OYrWyBxQpViUmumFpmh
-         VrdIykFnbA3rZhNGzTstJTqWTxBTGhL6TOIIpcVii3uWNxuhnQSNAxR+DLrn05mNy/G0
-         ghbYEYC9Wjy4vjGAn5pLHYhvE2utV2MSt02OdvaATq3yq7RbLz0DVy8FOEEJ3s6MeaZx
-         syvsyuKcLzLYNj4oOp57VBIpAZf60Vb7vWzjQs4v6R6gx5YJnwirb21RqJSnZ2e/E/sC
-         UAyA==
-X-Gm-Message-State: AOJu0Yx3AI7uTkoviCT+vA9GPkShJ5mwz0U8J9LJUbgVTsQKSs5Dm2Ai
-        SEgujKaRr5eDuBQP0JijCNXbq/RXiZeBQCbQXfmmRJoBEbiV1fidr4m0F5W332imJus0HtjNQeG
-        mJMtFBTQdkhFmRj6eIY/qC47B
-X-Received: by 2002:a05:622a:1309:b0:425:9426:91aa with SMTP id v9-20020a05622a130900b00425942691aamr454866qtk.34.1702054232704;
-        Fri, 08 Dec 2023 08:50:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF3MkP5lk5Sl/2AGIEvzOZH8sOYwYpbdXiAWnTwjUg36SFaoDyLKp2Da3nJ+OEmEbw6FcPKYg==
-X-Received: by 2002:a05:622a:1309:b0:425:9426:91aa with SMTP id v9-20020a05622a130900b00425942691aamr454855qtk.34.1702054232378;
-        Fri, 08 Dec 2023 08:50:32 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::47])
-        by smtp.gmail.com with ESMTPSA id g23-20020ac842d7000000b00410a9dd3d88sm923673qtm.68.2023.12.08.08.50.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 08:50:31 -0800 (PST)
-Date:   Fri, 8 Dec 2023 10:50:29 -0600
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH net-next v3] net: stmmac: don't create a MDIO bus if
- unnecessary
-Message-ID: <h5ucipgjtsesrz3jyul5xohu4pqom56v6ayx7aonnfesret3ht@wmblmndj6zir>
-References: <20231207-stmmac-no-mdio-node-v3-1-34b870f2bafb@redhat.com>
- <jz6ot44fjkbmwcezi3fkgqd54nurglblbemrchfgxgq6udlhqz@ntepnnzzelta>
- <hxds75erxqcfkufxnfbyo2up4b4jeicmi3f5xr6qlb3yf7fe76@4byeq62jhu4o>
- <hgz3pt625kggix6kzincohw7kr2okcumrwfkmjgiauw2yvhrzt@ekeygo4b7k3b>
+        bh=eIcp9jypYULc/a0PN4uogFYiIDljiHAuDtNHVxk71mg=;
+        b=YDDwHLv7SUyZKqLAN3Dp3qQ2a+bpKXd61JPV9sC/ojIs/BY69CbfdAf/3HMmJtKvIo
+         xOYIXIpEKPRmzEzOTeLerjXq1EUeuggZUlkssAXPSYqJsxVruf5wXoBgtC+qxQ+u1Nsj
+         J+vN5onqVkCDgZ/PvwNBbjR8gaIbVE5Vf/xJu+HRU1F1RjxEprenqLznBT+SJPkW5DrJ
+         cFFtkUTSQVtTcB8D4yTMp88UUD84FXuAawzAr4qaxMNjkeX8YlzjJggChl5AEVWPO1+i
+         OEmcw7+vZgO8zYqBF2XfNMHgoTFGriK98bH+3ci++yyTgwB24VRQUs5Z+RI28GAjV5E1
+         jEHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702054270; x=1702659070;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eIcp9jypYULc/a0PN4uogFYiIDljiHAuDtNHVxk71mg=;
+        b=cD4Zoc5DuwOB9Lwzt37j3Q8vdvEX4ERMRqSFs6g85gWgGQHmZa3dNS532c07BOg19z
+         61JSkBB0loHowYkQH9w+nWJ4xluXly8gBzFIrirkQvryrgz6srToCbRBPEsLqUdc4Q5p
+         jbfeLSDlWxzgOtUf15wXeuswG+nBPnUEiVsGQ6BttiJHUxqQznvqzTBZ0RgWr6Psx47B
+         NZ1MmmlyuecqMk+9kzNgSNs73opnt6piW3TY87Aq1tc2QbZ2q+3h9Zyzsbcih+6RZ1L0
+         ZbY+JZBGwvOpg/vIhZidkG/F400VcTwIYgHpcjqM+C50kaByFVXHcSTMp0XMV9fvd3EM
+         4LcQ==
+X-Gm-Message-State: AOJu0YwgbLIDJBIdYp786ESNF6ZQ1F63EkeZY/39cUnDETXyR9TFL759
+        bPvs2PV+KofqczM3oepIN2eYWWc/0/iBw9ExaazlIw==
+X-Google-Smtp-Source: AGHT+IE/6Nwbhf4SS9TLr4ojb1XW8J/22KVeKosnXzUvx9TzWSmL9hJNlMtz5gJPuHi3WKCMxewFNFHWT3ygW1WZWRI=
+X-Received: by 2002:a0c:ea88:0:b0:67a:9a7d:ee10 with SMTP id
+ d8-20020a0cea88000000b0067a9a7dee10mr256389qvp.0.1702054270555; Fri, 08 Dec
+ 2023 08:51:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <hgz3pt625kggix6kzincohw7kr2okcumrwfkmjgiauw2yvhrzt@ekeygo4b7k3b>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-19-iii@linux.ibm.com>
+In-Reply-To: <20231121220155.1217090-19-iii@linux.ibm.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 8 Dec 2023 17:50:30 +0100
+Message-ID: <CAG_fn=XQkhecLYFmJugOG+GawvDQ5Xsj5fTRbOAhU8Z5CfsjPA@mail.gmail.com>
+Subject: Re: [PATCH v2 18/33] lib/string: Add KMSAN support to strlcpy() and strlcat()
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 06:07:06PM +0300, Serge Semin wrote:
-> On Thu, Dec 07, 2023 at 05:07:24PM -0600, Andrew Halaney wrote:
-> > On Fri, Dec 08, 2023 at 01:16:12AM +0300, Serge Semin wrote:
-> > > On Thu, Dec 07, 2023 at 03:12:40PM -0600, Andrew Halaney wrote:
-> > > > The stmmac_dt_phy() function, which parses the devicetree node of the
-> > > > MAC and ultimately causes MDIO bus allocation, misinterprets what
-> > > > fixed-link means in relation to the MAC's MDIO bus. This results in
-> > > > a MDIO bus being created in situations it need not be.
-> > > > 
-> > > > Currently a MDIO bus is created if the description is either:
-> > > > 
-> > > >     1. Not fixed-link
-> > > >     2. fixed-link but contains a MDIO bus as well
-> > > > 
-> > > > The "1" case above isn't always accurate. If there's a phy-handle,
-> > > > it could be referencing a phy on another MDIO controller's bus[1]. In
-> > > > this case currently the MAC will make a MDIO bus and scan it all
-> > > > anyways unnecessarily.
-> > > > 
-> > > > There's also a lot of upstream devicetrees[2] that expect a MDIO bus to
-> > > > be created and scanned for a phy. This case can also be inferred from
-> > > > the platform description by not having a phy-handle && not being
-> > > > fixed-link. This hits case "1" in the current driver's logic.
-> > > > 
-> > > > Let's improve the logic to create a MDIO bus if either:
-> > > > 
-> > > 
-> > > >     - Devicetree contains a MDIO bus
-> > > >     - !fixed-link && !phy-handle (legacy handling)
-> > > 
-> > > If what you suggest here is a free from regressions semantics change
-> > > (really hope it is) I will be with both my hands for it. This will
-> > > solve the problem we have with one of our device which doesn't have
-> > > SMA interface (hardware designers decided to save ~4K gates of the
-> > > chip area) but has a PHY externally attached to the DW XGMAC<->XPCS
-> > > interface. PHY is accessible via a GPIO-based MDIO bus. BTW having no
-> > > SMA interface available on a DW *MAC device but creating the MDIO-bus
-> > > on top of the non-existent SMA CSRs anyway causes having _32_ dummy
-> > > PHYs created with zero IDs.
-> > 
-> 
-> > I hope it is regression free! I have tested both the [1] and [2] cases
-> > (I hacked up the devicetree for [1] to make it look like [2]) without
-> > any issue.
-> > 
-> 
-> I doubt you could have tested it on all the possible hardware the
-> STMMAC driver supports. The problem is that the DT-bindings thing is a
-> kind of contract which can't be changed that easily. It's like ABI but
-> for the hardware description so the kernel would bootup correctly on
-> the platforms with the old DT blobs. But if the change isn't that
-> critical, if the device-tree sources in the kernel fit to the updated
-> semantics, if the networking subsystem maintainers aren't against it
-> and I guess with the Rob, Krzysztof or Conor blessing (at least it
-> won't hurt to add them to the Cc-list together with the devicetree
-> mailing-list), then it will likely be accepted.
+On Tue, Nov 21, 2023 at 11:02=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.co=
+m> wrote:
+>
+> Currently KMSAN does not fully propagate metadata in strlcpy() and
+> strlcat(), because they are built with -ffreestanding and call
+> memcpy(). In this combination memcpy() calls are not instrumented.
 
-To be clear, I don't think we're violating the dt-binding ABI contract
-here. My intention is that all the existing use cases continue to work,
-and this just improves one use case. I did a write up
-over on v2 about the use cases I see and the current logic vs what
-changes with this patch series:
+Is this something specific to s390?
 
-    https://lore.kernel.org/netdev/plvbqgi2bwlv5quvpiwplq7cxx6m5rl3ghnfhuxfx4bpuhyihl@zmydwrtwdeg6/
+> Fix by copying the metadata manually. Add the __STDC_HOSTED__ #ifdef in
+> case the code is compiled with different flags in the future.
+>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  lib/string.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/lib/string.c b/lib/string.c
+> index be26623953d2..e83c6dd77ec6 100644
+> --- a/lib/string.c
+> +++ b/lib/string.c
+> @@ -111,6 +111,9 @@ size_t strlcpy(char *dest, const char *src, size_t si=
+ze)
+>         if (size) {
+>                 size_t len =3D (ret >=3D size) ? size - 1 : ret;
+>                 __builtin_memcpy(dest, src, len);
 
-Please comment if you think I have broken some backwards
-compatibility. If I _could_ break compatibility, I'd make everyone
-describe their busses entirely... but as you said that's against the
-spirit of dt-bindings and would upset a lot of people. That's why I've
-left the "!fixed-link && !phy-handle (legacy handling) logic :)
-
-> 
-> > Sorry, I don't have any docs for stmmac hardware so this might be
-> > answered in there (or just common net knowledge that I can't find
-> > online)... what's SMA stand for? I assume it's the MDIO interface.
-> 
-> Right. Synopsys names the MDIO-bus interface as Station Management
-> Agent MDIO module.
-> 
-> > 
-> > I agree though, if you have a phy-handle and no mdio node in your
-> > devicetree this patch series should bail out without registering a bus
-> > in stmmac_mdio_register().
-> 
-> On the other hand why would the MDIO-bus needed in such case? If the
-> phy-handle property is specified with no MDIO-bus DT-subnode, then it
-> will point out to a PHY residing an external bus. The only case I can
-> imagine though is that the DW XPCS device could be still auto-detected
-> on the internal SMA-MDIO-bus. But the only driver which currently has
-> XPCS auto-detection activated is the Intel glue layer (see
-> dwmac-intel.c and has_xpcs flag), but it doesn't use DT interface
-> since it handles a PCIe-based device.  So this case is out of
-> brackets.
-
-Agreed, I think making the bus is not needed in the driver as is in that
-case.
-
-I'd like to think (but am not sure) that when a devicetree based DW XPCS
-description comes around it will allow you to describe it exactly
-instead of doing auto-detection (i.e. something like phy-handle), but I
-am not very familiar with PCS and friends in the stack so that may be a
-crude extension from my knowledge of MDIO.
-
-Thanks,
-Andrew
-
-> 
-> > 
-> > > 
-> > > > 
-> > > > Below upstream devicetree snippets can be found that explain some of
-> > > > the cases above more concretely.
-> > 
-> > <snip>
-> > 
-> > > > -	if (mdio) {
-> > > > -		plat->mdio_bus_data =
-> > > > -			devm_kzalloc(dev, sizeof(struct stmmac_mdio_bus_data),
-> > > > -				     GFP_KERNEL);
-> > > 
-> > > > +	/* Legacy devicetrees allowed for no MDIO bus description and expect
-> > > > +	 * the bus to be scanned for devices. If there's no phy or fixed-link
-> > > > +	 * described assume this is the case since there must be something
-> > > > +	 * connected to the MAC.
-> > > > +	 */
-> > > > +	legacy_mdio = !of_phy_is_fixed_link(np) && !plat->phy_node;
-> > > > +	if (legacy_mdio)
-> > > > +		dev_info(dev, "Deprecated MDIO bus assumption used\n");
-> > > > +
-> > > > +	if (plat->mdio_node || legacy_mdio) {
-> > > > +		plat->mdio_bus_data = devm_kzalloc(dev,
-> > > 
-> > > Special thanks for adding the comment above this code. It will really
-> > > save time of figuring out why MDIO-bus needs to be created anyway.
-> > > 
-> > > > +						   sizeof(struct stmmac_mdio_bus_data),
-> > > 
-> > > Should v4 is required I would suggest to change this to
-> > > sizeof(*plat->mdio_bus_data).
-> > > 
-> > > Anyway feel free to add:
-> > > Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-> > > 
-> > > -Serge(y)
-> > 
-> 
-> > Sure I will spin v4 to pick that up, thanks for catching it. I'll also
-> > improve the motivation in the commit message a hair more per Andrew
-> > Lunn's request over here on v2 (and will hold off a little bit just to
-> > make sure reviews come in before a respin):
-> > 
-> >     https://lore.kernel.org/netdev/e64b14c3-4b80-4120-8cc4-9baa40cdcb75@lunn.ch/
-> 
-> Ok. Thanks.
-> 
-> -Serge(y)
-> 
-> > 
-> > Thanks,
-> > Andrew
-> > 
-> 
-
+On x86, I clearly see this __builtin_memcpy() being replaced with
+__msan_memcpy().
