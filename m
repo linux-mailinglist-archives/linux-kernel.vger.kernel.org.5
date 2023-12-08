@@ -2,113 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C81680ABCC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1C880ABCE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574628AbjLHSNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:13:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38170 "EHLO
+        id S1574494AbjLHSO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:14:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574510AbjLHSNC (ORCPT
+        with ESMTP id S236040AbjLHSOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:13:02 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C0019A6;
-        Fri,  8 Dec 2023 10:13:06 -0800 (PST)
-Date:   Fri, 08 Dec 2023 18:13:04 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702059185;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=GQOPBY2uEa4mMRruL0EQ10AyfxkhIbfgpfcqyoIWAmA=;
-        b=LeY2QpdpiYp+sG+dROeCR+GDSIaUaddKzJrptUi4ez8idBj4Wb3v6882QyL9hT/yQ/4IWO
-        e5PxJukeDaU5vwHxGqK603mjo40eBweUXRH4btAKhhRT1SMrWLWEiIGm4DbnT1lTKsSdAZ
-        F1s9RhHRPSSiN5zpC0nKcnloNiL1ZmsDIGNCUn7Z0g2rxDz6mn/SJ/+qEdQYBOgpiv0GNu
-        7ydvAmsNUtSZm1NiHkyDDZTpUhiV+YeYYepMt1PR2cHDt9HLzaZxU92Z1ym/K7qRAi6AMh
-        RgSIgtM6EObbpZu8TxAaWIewKQNDFw18BInqEp8dkb7U0lniV8U9VUDy3npvOQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702059185;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=GQOPBY2uEa4mMRruL0EQ10AyfxkhIbfgpfcqyoIWAmA=;
-        b=ZB3xRbtMLTTOOglmtWyPAmFSsd/Z/b2wvZTlrGEM66cghH8RSCxGgPsxsntcxJL0AvJJ+K
-        VNpkCsEJVOA9jIAg==
-From:   "tip-bot2 for Jo Van Bulck" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] selftests/sgx: Fix uninitialized pointer dereference
- in error path
-Cc:     Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Fri, 8 Dec 2023 13:14:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 458F82D6A
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:13:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702059214;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=thkLXVvi4ESeehaUbk7FHcY7MvVf7sRDiGhqTuUD1bw=;
+        b=IJlS8vYpxtvx9lMjD17SnflauDwiG/V/XgrfwB8TSRHkfrpXqpdOnJzwx7AW4FsERM9xui
+        hxJovqYCpLix/bDSozbcRKbSAHmMqLbYBuFZpJvmjJIEMktflMA+/YfR7bofnNaml6GMH3
+        6/rSMmoPPL7Tzlj9dDURmBL6CXGG/Hw=
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
+ [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-383-QQCBFAVHOcaW4saMV54ukQ-1; Fri, 08 Dec 2023 13:13:32 -0500
+X-MC-Unique: QQCBFAVHOcaW4saMV54ukQ-1
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1f9fdbb8521so3963127fac.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 10:13:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702059212; x=1702664012;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=thkLXVvi4ESeehaUbk7FHcY7MvVf7sRDiGhqTuUD1bw=;
+        b=rcBhJbW7AqXXdwnyTZx4fKAIq89104gCnlMOz/KpfCMkjHHt8i7GZZ2RLBGrobhaJg
+         RgQkCIsbfJY97j9XdO6MgjOkWs1GqmYSWJFSS1KL+L0xU/VtgssatJbllarSJBb4onB9
+         Z4+6rbVrtvLJ5J6VJmMBtROHjaFlrVYETNNaR/VrmaJkY9VXI5dk2z6LMgLsW+VNA88A
+         qoyrhx+SrS+gI2YRPlEpKQ3KCF2QHweB13DQxwQYF93NRKfdWeovmFXmGE5SB9KmMlIk
+         0Nt330YUHyvG41hnu4Oyynlyw6ODdE9oVXS85e6dlHDGizrzjfykBPMU4oC+0CFltBaW
+         ZOOw==
+X-Gm-Message-State: AOJu0YwYFh1iMDIfan+8c7KZSOQPXwmTHXL99b7lpfp34oNX36lGqrx0
+        OsFLpf0LVU6r/l6jcBY3XtNBLdsjNrc/BQkBaHTDRkDJ+LBBJ8V/eeIpU5lwzO30j5DtG0Aub3I
+        DRgEq88n1BlHwYxZAIm3VHSRDusxmmIynNKXDAfJH
+X-Received: by 2002:a05:6870:9d0e:b0:1fb:75a:6d3a with SMTP id pp14-20020a0568709d0e00b001fb075a6d3amr514105oab.97.1702059211863;
+        Fri, 08 Dec 2023 10:13:31 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFm4qEiQ8h/zEqW68UsgEFDDQ1CGBXnQu7hSfvylqpZk9GjGB2KlkuB5RxbvYYtZ8eZbfTt4oXKVMMdArXHtU0=
+X-Received: by 2002:a05:6870:9d0e:b0:1fb:75a:6d3a with SMTP id
+ pp14-20020a0568709d0e00b001fb075a6d3amr514096oab.97.1702059211668; Fri, 08
+ Dec 2023 10:13:31 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <170205918453.398.18215984213946504139.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231115125111.28217-1-imbrenda@linux.ibm.com>
+In-Reply-To: <20231115125111.28217-1-imbrenda@linux.ibm.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Fri, 8 Dec 2023 19:13:19 +0100
+Message-ID: <CABgObfYt3VH-zPwT1whA0N7uE2ioq9GznTt-QhnES8B5tX76jQ@mail.gmail.com>
+Subject: Re: [GIT PULL v1 0/2] KVM: s390: two small but important fixes
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, hca@linux.ibm.com, agordeev@linux.ibm.com,
+        gor@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sgx branch of tip:
+On Wed, Nov 15, 2023 at 1:51=E2=80=AFPM Claudio Imbrenda <imbrenda@linux.ib=
+m.com> wrote:
+>
+> Hi Paolo,
+>
+> two small but important fixes, please pull :)
 
-Commit-ID:     79eba8c924f7decfa71ddf187d38cb9f5f2cd7b3
-Gitweb:        https://git.kernel.org/tip/79eba8c924f7decfa71ddf187d38cb9f5f2cd7b3
-Author:        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-AuthorDate:    Thu, 05 Oct 2023 17:38:42 +02:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Fri, 08 Dec 2023 10:05:26 -08:00
+Done, thanks.
 
-selftests/sgx: Fix uninitialized pointer dereference in error path
+Paolo
 
-Ensure ctx is zero-initialized, such that the encl_measure function will
-not call EVP_MD_CTX_destroy with an uninitialized ctx pointer in case of an
-early error during key generation.
+>
+> Claudio
+>
+>
+>
+> The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa=
+86:
+>
+>   Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+>
+> are available in the Git repository at:
+>
+>   https://git.kernel.org/pub/scm/linux/kernel/git/kvms390/linux.git tags/=
+kvm-s390-master-6.7-1
+>
+> for you to fetch changes up to 27072b8e18a73ffeffb1c140939023915a35134b:
+>
+>   KVM: s390/mm: Properly reset no-dat (2023-11-14 18:56:46 +0100)
+>
+> ----------------------------------------------------------------
+> Two small but important bugfixes.
+>
+> ----------------------------------------------------------------
+> Claudio Imbrenda (2):
+>       KVM: s390: vsie: fix wrong VIR 37 when MSO is used
+>       KVM: s390/mm: Properly reset no-dat
+>
+>  arch/s390/kvm/vsie.c   | 4 ----
+>  arch/s390/mm/pgtable.c | 2 +-
+>  2 files changed, 1 insertion(+), 5 deletions(-)
+>
+> --
+> 2.41.0
+>
 
-Fixes: 2adcba79e69d ("selftests/x86: Add a selftest for SGX")
-Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Acked-by: Kai Huang <kai.huang@intel.com>
-Link: https://lore.kernel.org/all/20231005153854.25566-2-jo.vanbulck%40cs.kuleuven.be
----
- tools/testing/selftests/sgx/sigstruct.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/sgx/sigstruct.c b/tools/testing/selftests/sgx/sigstruct.c
-index a07896a..d73b29b 100644
---- a/tools/testing/selftests/sgx/sigstruct.c
-+++ b/tools/testing/selftests/sgx/sigstruct.c
-@@ -318,9 +318,9 @@ bool encl_measure(struct encl *encl)
- 	struct sgx_sigstruct *sigstruct = &encl->sigstruct;
- 	struct sgx_sigstruct_payload payload;
- 	uint8_t digest[SHA256_DIGEST_LENGTH];
-+	EVP_MD_CTX *ctx = NULL;
- 	unsigned int siglen;
- 	RSA *key = NULL;
--	EVP_MD_CTX *ctx;
- 	int i;
- 
- 	memset(sigstruct, 0, sizeof(*sigstruct));
-@@ -384,7 +384,8 @@ bool encl_measure(struct encl *encl)
- 	return true;
- 
- err:
--	EVP_MD_CTX_destroy(ctx);
-+	if (ctx)
-+		EVP_MD_CTX_destroy(ctx);
- 	RSA_free(key);
- 	return false;
- }
