@@ -2,266 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 940E8809E96
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 09:49:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D91B2809E9E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 09:52:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235792AbjLHIs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 03:48:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51068 "EHLO
+        id S1573368AbjLHIw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 03:52:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235815AbjLHIsp (ORCPT
+        with ESMTP id S232892AbjLHIw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 03:48:45 -0500
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAF9172C;
-        Fri,  8 Dec 2023 00:48:45 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4C12FC0002;
-        Fri,  8 Dec 2023 08:48:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702025322;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BI/a9kd3lyurB+jcttNXOa/XaS8zgyXI4PkPmj1fYQc=;
-        b=OtKH0venALl7A2QhgJRFyZltpGLlG6YDjqcRcLP4+ioDu0kWHpTJr7n3+Wa5f/AVb52L7v
-        sQ7xGzfKdbCtD08vVBb51WHnzOL3YHE5LkOkDckyEQ0+BAvqF3DTjaKc1lBvl+zfLKH/DQ
-        OcfO7uJKt7/KrgNwd3r0ixqzVUurngPx1s2jzs6NkdLdw1oBqerOmYZXzmL+xaZgp5fCbN
-        bWmUIPLxW8MTcTgGkR20ktTBrCtFZmKap1/tA4jJ55F+BiAB686jtCitOt3Gflw8Lt9u++
-        UNBmL9m61OycftBOiWT2nG9x+ph228aFBSQ58iwT084dfGCt8Iihheplhhdsxw==
-Date:   Fri, 8 Dec 2023 09:48:40 +0100
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>,
-        Sonal Santan <sonal.santan@amd.com>,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
-Message-ID: <20231208094840.01d74fec@bootlin.com>
-In-Reply-To: <CAL_Jsq+je7+9ATR=B6jXHjEJHjn24vQFs4Tvi9=vhDeK9n42Aw@mail.gmail.com>
-References: <20231130165700.685764-1-herve.codina@bootlin.com>
-        <CAL_JsqJvt6FpXK+FgAwE8xN3G5Z23Ktq=SEY-K7VA7nM5XgZRg@mail.gmail.com>
-        <20231204134335.3ded3d46@bootlin.com>
-        <CAL_JsqLtCS3otZ1sfiPEWwrWB4dyNpu4e0xANWJriCEUYr+4Og@mail.gmail.com>
-        <20231204163014.4da383f2@bootlin.com>
-        <CAL_JsqJJ64513pyQggU71agTzawNWPpm6ZpWMB6e0zu-tWL8yw@mail.gmail.com>
-        <20231205090452.7c601eb5@bootlin.com>
-        <CAL_Jsq+je7+9ATR=B6jXHjEJHjn24vQFs4Tvi9=vhDeK9n42Aw@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 8 Dec 2023 03:52:27 -0500
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EADBA10FC
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 00:52:29 -0800 (PST)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 3B88pNQw053793;
+        Fri, 8 Dec 2023 16:51:23 +0800 (+08)
+        (envelope-from Zhiguo.Niu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4Sml8W4CP1z2PBfby;
+        Fri,  8 Dec 2023 16:45:31 +0800 (CST)
+Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Fri, 8 Dec 2023 16:51:21 +0800
+From:   Zhiguo Niu <zhiguo.niu@unisoc.com>
+To:     <jaegeuk@kernel.org>, <chao@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <niuzhiguo84@gmail.com>,
+        <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>
+Subject: [PATCH] f2fs: fix to check return value of f2fs_recover_xattr_data
+Date:   Fri, 8 Dec 2023 16:50:33 +0800
+Message-ID: <1702025433-5860-1-git-send-email-zhiguo.niu@unisoc.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.0.73.87]
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL: SHSQR01.spreadtrum.com 3B88pNQw053793
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Should check return value of f2fs_recover_xattr_data in
+__f2fs_setxattr rather than doing invalid retry if error happen.
 
-On Thu, 7 Dec 2023 16:51:56 -0600
-Rob Herring <robh@kernel.org> wrote:
+Also just do set_page_dirty in f2fs_recover_xattr_data when
+page is changed really.
 
-> On Tue, Dec 5, 2023 at 2:05 AM Herve Codina <herve.codina@bootlin.com> wrote:
-> >
-> > On Mon, 4 Dec 2023 17:03:21 -0600
-> > Rob Herring <robh@kernel.org> wrote:
-> >  
-> > > On Mon, Dec 4, 2023 at 9:30 AM Herve Codina <herve.codina@bootlin.com> wrote:  
-> > > >
-> > > > Hi Rob,
-> > > >
-> > > > On Mon, 4 Dec 2023 07:59:09 -0600
-> > > > Rob Herring <robh@kernel.org> wrote:
-> > > >
-> > > > [...]
-> > > >  
-> > > > > > > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
-> > > > > > > index 9c2137dae429..46b252bbe500 100644
-> > > > > > > --- a/drivers/pci/bus.c
-> > > > > > > +++ b/drivers/pci/bus.c
-> > > > > > > @@ -342,8 +342,6 @@ void pci_bus_add_device(struct pci_dev *dev)
-> > > > > > >          */
-> > > > > > >         pcibios_bus_add_device(dev);
-> > > > > > >         pci_fixup_device(pci_fixup_final, dev);
-> > > > > > > -       if (pci_is_bridge(dev))
-> > > > > > > -               of_pci_make_dev_node(dev);
-> > > > > > >         pci_create_sysfs_dev_files(dev);
-> > > > > > >         pci_proc_attach_device(dev);
-> > > > > > >         pci_bridge_d3_update(dev);
-> > > > > > > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-> > > > > > > index 51e3dd0ea5ab..e15eaf0127fc 100644
-> > > > > > > --- a/drivers/pci/of.c
-> > > > > > > +++ b/drivers/pci/of.c
-> > > > > > > @@ -31,6 +31,8 @@ int pci_set_of_node(struct pci_dev *dev)
-> > > > > > >                 return 0;
-> > > > > > >
-> > > > > > >         node = of_pci_find_child_device(dev->bus->dev.of_node, dev->devfn);
-> > > > > > > +       if (!node && pci_is_bridge(dev))
-> > > > > > > +               of_pci_make_dev_node(dev);
-> > > > > > >         if (!node)
-> > > > > > >                 return 0;  
-> > > > > >
-> > > > > > Maybe it is too early.
-> > > > > > of_pci_make_dev_node() creates a node and fills some properties based on
-> > > > > > some already set values available in the PCI device such as its struct resource
-> > > > > > values.
-> > > > > > We need to have some values set by the PCI infra in order to create our DT node
-> > > > > > with correct values.  
-> > > > >
-> > > > > Indeed, that's probably the issue I'm having. In that case,
-> > > > > DECLARE_PCI_FIXUP_HEADER should work. That's later, but still before
-> > > > > device_add().
-> > > > >
-> > > > > I think modifying sysfs after device_add() is going to race with
-> > > > > userspace. Userspace is notified of a new device, and then the of_node
-> > > > > link may or may not be there when it reads sysfs. Also, not sure if
-> > > > > we'll need DT modaliases with PCI devices, but they won't work if the
-> > > > > DT node is not set before device_add().  
-> > > >
-> > > > Ok, we can try using DECLARE_PCI_FIXUP_HEADER.
-> > > > On your side, is moving from DECLARE_PCI_FIXUP_EARLY to DECLARE_PCI_FIXUP_HEADER
-> > > > fix your QEMU unittest ?  
-> > >
-> > > No...  
-> 
-> I think the problem is we aren't setting the fwnode, just the of_node
-> ptr, but I haven't had a chance to verify that.
-> 
-> > > And testing the bridge part crashes. That's because there's a
-> > > dependency on the bridge->subordinate to write out bus-range and
-> > > interrupt-map. I think the fix there is we should just not write those
-> > > properties. The bus range isn't needed because the kernel does its own
-> > > assignments. For interrupt-map, it is only needed if "interrupts" is
-> > > present in the child devices. If not present, then the standard PCI
-> > > swizzling is used. Alternatively, I think the interrupt mapping could
-> > > be simplified to just implement the standard swizzling at each level
-> > > which isn't dependent on any of the devices on the bus. I gave that a
-> > > go where each interrupt-map just points to the parent bridge, but ran
-> > > into an issue that the bridge nodes don't have a phandle. That should
-> > > be fixable, but I'd rather go with the first option. I suppose that
-> > > depends on how the interrupts downstream of the PCI device need to get
-> > > resolved. It could be that the PCI device serves as the interrupt
-> > > controller and can resolve the parent interrupt on its own (which may
-> > > be needed for ACPI host anyways).  
-> >
-> > About interrupt, I am a bit stuck on my side.
-> > My dtso (applied at PCI device level) contains the following:
-> >         fragment@0 {
-> >                 target-path="";
-> >                 __overlay__ {
-> >                         pci-ep-bus@0 {
-> >                                 compatible = "simple-bus";
-> >                                 #address-cells = <1>;
-> >                                 #size-cells = <1>;
-> >
-> >                                 /*
-> >                                  * map @0xe2000000 (32MB) to BAR0 (CPU)
-> >                                  * map @0xe0000000 (16MB) to BAR1 (AMBA)
-> >                                  */
-> >                                 ranges = <0xe2000000 0x00 0x00 0x00 0x2000000
-> >                                           0xe0000000 0x01 0x00 0x00 0x1000000>;
-> >
-> >                                 itc: itc {
-> >                                         compatible = "microchip,lan966x-itc";
-> >                                         #interrupt-cells = <1>;
-> >                                         interrupt-controller;
-> >                                         reg = <0xe00c0120 0x190>;
-> >                                 };
-> >
-> >                                 ...
-> >                          };
-> >                 };
-> >         };
-> >
-> > I have a 'simple-bus' with a 'ranges' property to translate the BAR addresses
-> > then several devices. Among them a interrupt controller (itc). Its parent
-> > interrupt is the one used by the PCI device (INTA).
-> > I cannot describe this parent interrupt in the dtso because to that I need the
-> > parent interrupt phandle which will be know only at runtime.  
-> 
-> But you don't. The logic to find the interrupt parent is walk up the
-> parent nodes until you find 'interrupt-parent' or
-> '#interrupt-controller' (and interrupt-map always has
-> #interrupt-controller). So your overlay just needs 'interrupts = <1>'
-> for INTA and it should all just work.
+Fixes: 50a472bbc79f ("f2fs: do not return EFSCORRUPTED, but try to run online repair")
+Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+---
+ fs/f2fs/node.c  |  6 +++---
+ fs/f2fs/xattr.c | 12 +++++++-----
+ 2 files changed, 10 insertions(+), 8 deletions(-)
 
-Yes, I tried some stuffs in that way...
-> 
-> That of course implies that we need interrupt properties in all the
-> bridges which I was hoping to avoid. In the ACPI case, for DT
-> interrupt parsing to work, we're going to need to end up in an
-> 'interrupt-controller' node somewhere. I think the options are either
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index e50a093..93bf724 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -2754,11 +2754,11 @@ int f2fs_recover_xattr_data(struct inode *inode, struct page *page)
+ 	f2fs_update_inode_page(inode);
+ 
+ 	/* 3: update and set xattr node page dirty */
+-	if (page)
++	if (page) {
+ 		memcpy(F2FS_NODE(xpage), F2FS_NODE(page),
+ 				VALID_XATTR_BLOCK_SIZE);
+-
+-	set_page_dirty(xpage);
++		set_page_dirty(xpage);
++	}
+ 	f2fs_put_page(xpage, 1);
+ 
+ 	return 0;
+diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c
+index 47e88b4..de92891 100644
+--- a/fs/f2fs/xattr.c
++++ b/fs/f2fs/xattr.c
+@@ -660,11 +660,13 @@ static int __f2fs_setxattr(struct inode *inode, int index,
+ 	here = __find_xattr(base_addr, last_base_addr, NULL, index, len, name);
+ 	if (!here) {
+ 		if (!F2FS_I(inode)->i_xattr_nid) {
+-			f2fs_notice(F2FS_I_SB(inode),
+-				"recover xattr in inode (%lu)", inode->i_ino);
+-			f2fs_recover_xattr_data(inode, NULL);
+-			kfree(base_addr);
+-			goto retry;
++			error = f2fs_recover_xattr_data(inode, NULL);
++			if (!error) {
++				f2fs_notice(F2FS_I_SB(inode),
++					"recover xattr in inode (%lu)", inode->i_ino);
++				kfree(base_addr);
++				goto retry;
++			}
+ 		}
+ 		f2fs_err(F2FS_I_SB(inode), "set inode (%lu) has corrupted xattr",
+ 								inode->i_ino);
+-- 
+1.9.1
 
-... and I went up to that point.
-Further more with that way, we need to update the addr value retrieved
-from the device requesting the interrupt.
-  https://elixir.bootlin.com/linux/latest/source/drivers/of/irq.c#L343
-Indeed, with the current 'interrupt-map' at bridges level, a addr value
-update is needed at the PCI device level if the interrupt is requested
-from some PCI device children.
-This is were my (not so good) interrupt-ranges property could play a
-role.
-
-> we walk interrupt-map properties up to the host bridge which then
-> points to something or the PCI device is the interrupt controller. I
-> think the PCI device is the right place. How the downstream interrupts
-
-Agree, the PCI device seems to be the best candidate.
-
-> are routed to PCI interrupts are defined by the device. That would
-> work the same way for both DT and ACPI. If you are concerned about
-> implementing in each driver needing this, some library functions can
-> mitigate that.
-> 
-> I'm trying to play around with the IRQ domains and get this to work,
-> but not having any luck yet.
-
-May I help you on some points?
-
-Got a system with a real hardware (Lan966x) and a setup using an ARM platform (full
-DT) and an other one using an x86 platform (ACPI).
-Also, I have some piece of code to create the PCI host bridge node.
-Of course, this need to be first working on a full DT system but I can do some test
-to be sure that can be still ok on a ACPI system.
-
-> 
-> > Of course, I can modified the overlay applied to tweak the 'interrupt' and
-> > 'interrupt-parent' in the itc node from my PCI device driver at runtime but I
-> > would like to avoid this kind of tweak in the PCI device driver.
-> > This kind of tweak is overlay dependent and needs to be done by each PCI
-> > device driver that need to work with interrupts.
-> >
-> > For BAR addresses translation, we use the 'ranges' property at the PCI device
-> > node to translate 0 0 0 to BAR0, 1 0 0 to BAR1, ...
-> > What do you think about a new 'irq-ranges' property to translate the irq number
-> > and get the irq parent controller base.
-> >
-> > irq-ranges = <child_irq_spec parent_irq_spec length>;  
-> 
-> Seems fragile as you have to know something about the parent (the # of
-> cells), but you don't have the phandle. If you needed multiple
-> entries, you couldn't parse this.
-> 
-
-Right.
-With the PCI device seen as an interrupt controller, there is no more need of
-this interrup-ranges property.
-
-Best regards,
-Hervé
