@@ -2,138 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 069AF80AB0C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:46:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF6680AB0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233788AbjLHRqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:46:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38740 "EHLO
+        id S1574449AbjLHRqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:46:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbjLHRqL (ORCPT
+        with ESMTP id S233791AbjLHRqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:46:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A2EF4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702057577;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eK8WutytSz3F60Rl2nxPhK1kwwDpKHRRkbGPCAgiMXQ=;
-        b=MXtx457EqFCGzsIW9WNSC5wIR4sjPEF7+dgis521BQ0+FoG2BhM3E1DrgC1uhFk8Qq8cW5
-        F/3qmGAVO8daNTHRJ4gX91p4NAVwC1VYyZn+22GhZJHo1+vKcTpg3LEGgmxZ4AUwX2SrX7
-        NgkEZPky4eCTxxsnJwKywgjHNahYuGo=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-374-uyml8AF6PWKqbUL8YiCgjQ-1; Fri, 08 Dec 2023 12:46:14 -0500
-X-MC-Unique: uyml8AF6PWKqbUL8YiCgjQ-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-77f38f2f6fbso348064885a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 09:46:14 -0800 (PST)
+        Fri, 8 Dec 2023 12:46:40 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E7C1732
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:46:46 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40c31f18274so13569085e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 09:46:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702057605; x=1702662405; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VgDXHztfCADJUTAKOHChM4jQL8m2eqXnxgRSAcP58OY=;
+        b=K1gXoLQiHUvrcII5vKk55xCQjKpnn6APVS6YRT23ZM0hbIwuPDdPZcCymXmkvpfPy4
+         EcOV8uF9XOPBVCYPp2St3HyHwf0WeR7hSJM8HT+jQojYjtqJYAbDIHmaouWCn+TKo1rK
+         rhYmP/bSFgn6iENDde/y3CeNA1KZJ1HZv/KLDIvzizFY/yWJAfdGo5QZrRvPDPl2k/cU
+         mSR6P0vjwZ2m5OCsghnf8h6Bm6XFp42Nco/OQW7KqZmpkIe+Fq+xCcty6XfiYo2MmvvD
+         yNt499fH/cG4InJCbyUwD4o8r8WU3utnnEvSSsqEWD0hNC96Q4lKGorS/9TOJCUTA+ij
+         yFfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702057574; x=1702662374;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eK8WutytSz3F60Rl2nxPhK1kwwDpKHRRkbGPCAgiMXQ=;
-        b=v/4XQPthIhhbB1140koggRqbbiM2fuRZ8w3wuJtgaBYxqK0K+A6WVo4C6uJw8NkxEH
-         iMeKgLwMZH3M4gk48ZXE0d+9mmjTbYEZ2WWjXiEM8HH7rhhz5jWf7o42KOYgGzzDrswA
-         IkUy8TNQ/Hr1RaWKFVKmIlZRo/aToKzFkXMXcvlzjtwVvtvv11zwblXJUWzfuu3jImHN
-         oL82s9c5FlbJ1Ytm/FwXqWTPkcpST9p/pCwGusxQRlj17OyRKn8UiVsnnqCU6E2l+53s
-         T6Rcp7g1IX1dJn6bI/VKhMMGNu+71n4PvxOLZk2+cyPdl196XCjb0F/ABJOWtaqeksEx
-         A7MA==
-X-Gm-Message-State: AOJu0YzO+5PgYSCWMFo63xuseujmNfq0XO12xQirMMrqMqMN8/puWwmJ
-        IV75RvfybO8cCLyDROqdPTiBQy+2owhwrDriXuneFIK67IGskiEES/S0yMCi7Jb+AlQrAYzdyKn
-        5xtWlQ94a73UIt6P9UoF58sT9
-X-Received: by 2002:a05:620a:24d6:b0:77f:56f7:8a8a with SMTP id m22-20020a05620a24d600b0077f56f78a8amr1178687qkn.20.1702057573952;
-        Fri, 08 Dec 2023 09:46:13 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGKpXkgN5JW84WjaqfJ/Jad2WtjBPYW0HrpnzHhaUBDSgtALPzLuH10yyRlapWlhpBegIs/HQ==
-X-Received: by 2002:a05:620a:24d6:b0:77f:56f7:8a8a with SMTP id m22-20020a05620a24d600b0077f56f78a8amr1178678qkn.20.1702057573706;
-        Fri, 08 Dec 2023 09:46:13 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::47])
-        by smtp.gmail.com with ESMTPSA id i19-20020a056214031300b0067aa164861dsm967730qvu.35.2023.12.08.09.46.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 09:46:13 -0800 (PST)
-Date:   Fri, 8 Dec 2023 11:46:11 -0600
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     martin.petersen@oracle.com, jejb@linux.ibm.com,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-        quic_nitirawa@quicinc.com
-Subject: Re: [PATCH v2 14/17] scsi: ufs: qcom: Simplify
- ufs_qcom_{assert/deassert}_reset
-Message-ID: <uz6ely7fzsejqnrelmqtqt4lofjvcfxxywro6ae2lfbrfnqtpl@rnyneul7eazo>
-References: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
- <20231208065902.11006-15-manivannan.sadhasivam@linaro.org>
+        d=1e100.net; s=20230601; t=1702057605; x=1702662405;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VgDXHztfCADJUTAKOHChM4jQL8m2eqXnxgRSAcP58OY=;
+        b=ot0fgJFRs6WATDgZ6xp5Q5jLz01wEiRuUzFYoV+cTxo2sGbie9KKY9rKWz4G3WWyZn
+         IlTJobDP3VzkIm/NSfe7K1opTbeVvX8dujE+s9pf1V2v2bSING+Gl8GOlC5gWvmygGZ1
+         GE7qS3kKzTKLRxf1jHkcQ2HAzBzdUyoGfqzYHAuxJvvkTCyLupQp5raQIvUiidpWm7yA
+         TfKlc+qEf6DWzUN9hP4uj/ND1yaIhB2gWyQl4ZKTUggtzOLocL9kaedoOp/mDwRGAraC
+         0XCAnJOvDYRONMMlauuJSZqL6A2y2NFC4IruO0PsiW8ElwvAzWyA3RjZ0VB9DVhlFykZ
+         FU6A==
+X-Gm-Message-State: AOJu0Yzl/dgiUPrMtblkj+6/ktrHCitm7Mby57zcoClWqfrOddpjtM0y
+        HuwYxxRckPBNWyZccWHByuMRwQ==
+X-Google-Smtp-Source: AGHT+IHCX3EqeyPCxrLkG8tXfgVl859gJUVA7CySALWyVqO2ObV4GGDMHy5kCGeUlhcPfiXkmijd2A==
+X-Received: by 2002:a05:600c:228a:b0:40c:2205:e600 with SMTP id 10-20020a05600c228a00b0040c2205e600mr163393wmf.215.1702057604926;
+        Fri, 08 Dec 2023 09:46:44 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id m11-20020a05600c4f4b00b0040b561924bbsm5829165wmq.21.2023.12.08.09.46.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Dec 2023 09:46:44 -0800 (PST)
+Message-ID: <0915b94c-596e-4a19-925c-1a5b1d0a3531@linaro.org>
+Date:   Fri, 8 Dec 2023 18:46:42 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208065902.11006-15-manivannan.sadhasivam@linaro.org>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 10/17] dt-bindings: display: vop2: Add rk3588 support
+Content-Language: en-US
+To:     Andy Yan <andyshrk@163.com>, heiko@sntech.de
+Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        Andy Yan <andy.yan@rock-chips.com>
+References: <20231207075906.651771-1-andyshrk@163.com>
+ <20231207080133.652417-1-andyshrk@163.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231207080133.652417-1-andyshrk@163.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 12:28:59PM +0530, Manivannan Sadhasivam wrote:
-> In both the functions, UFS_PHY_SOFT_RESET contains the mask of the reset
-> bit. So this can be passed directly as the value to be written for
-> asserting the reset. For deasserting, 0 can be passed.
+On 07/12/2023 09:01, Andy Yan wrote:
+> From: Andy Yan <andy.yan@rock-chips.com>
 > 
-> This gets rid of the FIELD_PREP() inside these functions and also
-> UFS_PHY_RESET_{ENABLE/DISABLE} definitions.
+> The vop2 on rk3588 is similar to which on rk356x
+> but with 4 video ports and need to reference
+> more grf modules.
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-
+> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+> 
 > ---
->  drivers/ufs/host/ufs-qcom.h | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
-> index 53db424a0bcb..a109d3359db4 100644
-> --- a/drivers/ufs/host/ufs-qcom.h
-> +++ b/drivers/ufs/host/ufs-qcom.h
-> @@ -92,9 +92,6 @@ enum {
->  #define TEST_BUS_SEL		GENMASK(22, 19)
->  #define UFS_REG_TEST_BUS_EN	BIT(30)
->  
-> -#define UFS_PHY_RESET_ENABLE	1
-> -#define UFS_PHY_RESET_DISABLE	0
-> -
->  /* bit definitions for REG_UFS_CFG2 register */
->  #define UAWM_HW_CGC_EN		BIT(0)
->  #define UARM_HW_CGC_EN		BIT(1)
-> @@ -157,8 +154,7 @@ ufs_qcom_get_controller_revision(struct ufs_hba *hba,
->  
->  static inline void ufs_qcom_assert_reset(struct ufs_hba *hba)
->  {
-> -	ufshcd_rmwl(hba, UFS_PHY_SOFT_RESET, FIELD_PREP(UFS_PHY_SOFT_RESET, UFS_PHY_RESET_ENABLE),
-> -		    REG_UFS_CFG1);
-> +	ufshcd_rmwl(hba, UFS_PHY_SOFT_RESET, UFS_PHY_SOFT_RESET, REG_UFS_CFG1);
->  
->  	/*
->  	 * Make sure assertion of ufs phy reset is written to
-> @@ -169,8 +165,7 @@ static inline void ufs_qcom_assert_reset(struct ufs_hba *hba)
->  
->  static inline void ufs_qcom_deassert_reset(struct ufs_hba *hba)
->  {
-> -	ufshcd_rmwl(hba, UFS_PHY_SOFT_RESET, FIELD_PREP(UFS_PHY_SOFT_RESET, UFS_PHY_RESET_DISABLE),
-> -		    REG_UFS_CFG1);
-> +	ufshcd_rmwl(hba, UFS_PHY_SOFT_RESET, 0, REG_UFS_CFG1);
->  
->  	/*
->  	 * Make sure de-assertion of ufs phy reset is written to
-> -- 
-> 2.25.1
+> Changes in v4:
+> - drop redundant description.
+> - use full stop at all the description's end.
+> - address Krzysztof's review in v3
+
+What changed? Please list specific changes, not just generic "address
+review".
+
 > 
+> Changes in v3:
+> - constrain properties in allOf:if:then
+> - some description updates
+> 
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+---
+
+This is an automated instruction, just in case, because many review tags
+are being ignored. If you know the process, you can skip it (please do
+not feel offended by me posting it here - no bad intentions intended).
+If you do not know the process, here is a short explanation:
+
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
+
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+
+Best regards,
+Krzysztof
 
