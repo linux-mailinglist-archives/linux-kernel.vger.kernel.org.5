@@ -2,52 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FB780AC8D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C413F80AC8C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233820AbjLHS5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:57:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41582 "EHLO
+        id S233866AbjLHS6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:58:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLHS5Q (ORCPT
+        with ESMTP id S229572AbjLHS6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:57:16 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF8DE0
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:57:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A91DC433C7;
-        Fri,  8 Dec 2023 18:57:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702061842;
-        bh=PyoZd6DEYlQ02STMB/e7rU1xXjX8HG0h4Pgh4yANRaE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=AqHnuTgRAoDHVogR70A/K/mm1Tloo/hzLn4gNuXPZsnvJ7junMjY7hfhBaHU+sLJ/
-         t0ihra9DqQhJNg0Jz0Al2F4X+ACFzwTk+2dSBpS7GLhr6Yal1sdjR8T96ntLXET+8c
-         lH7L7OCUkDhfqOq8B5BqXou/39muDiPWXFffw4nBsqUCSP9JNQvufwX1XxAPptRJLY
-         ebqSd7QNJd+WZzSJrw/oVOJzGTLqZ5ylE9A8uWCb1JnEHiL3HmUcKGnJ8s+rr7J6vK
-         Tr7nEJetD2p6+63hWYr8eimnVgWPoZ8Ho8Nt4xu+ZDoFgussAXoUKNuBP0eDGAVRe1
-         ItjvIVUzCMxdA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0014B403EF; Fri,  8 Dec 2023 15:57:18 -0300 (-03)
-Date:   Fri, 8 Dec 2023 15:57:18 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Kan Liang <kan.liang@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: 'perf top' broken on intel hybrid systems
-Message-ID: <ZXNnDrGKXbEELMXV@kernel.org>
+        Fri, 8 Dec 2023 13:58:53 -0500
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2074.outbound.protection.outlook.com [40.107.105.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C08F11F;
+        Fri,  8 Dec 2023 10:58:59 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kUTHGyDWZAHBfigRi9Blv72unEypgJfsbIjFLGzwX5D9GY8P2oWI5m6L1HAyU05osvVhxQkoczXxvb2JGwo3SQsTDHambezRtPLhAjp4Tr8Y/9pU8sWLiS4dJAId5rpCT/iooq6Z0jsTAI3bkhd5H1ZcK0PXlV4ZCeNcl14tIf1MiPqITPB7TK28pW3uEQwz/f9lDP0uqIXI8aLHslml4aUFx31cx6PB+wbLFex1FmUmdm39Yv1K7fEnaD6bX6E2rswokMI9eCNcTJ6JfISGhqXuZfALUtiLP4j6haEHCJMIewA81sy03p0nbg6rUhxWW8SlMge2nsoi08sk2VmrPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NZ8jobPVJU6CaJcwzT3M1NPnIh0/Cahtdr1H3dOFEpM=;
+ b=D6xB+v0pt/mLoKpp336tSBx6aKbHcpQnqgONYQuVNSSx21JjatsVENJd1iB5wBXyEUgOlVzpWbYSmn2H8VBQgDQmcj9dD8u4ZVvkr7lFIecb/U3QTaqMCsnOnVAr/+yugzph7CKdbfrHeNYZa8WeDZTBLzfYs8zmDiBCnNFhu1ZeeymXNLXpoH4A8UPJFTih9T6CV1SwrLCSAuME5v7wdZLI/8/K/8ITsIzfvnJiSxLj4+GY2nE1InthSWKo7GXym2hEhOERUgVGP5TFPDRQ7RC0kGZVYWStCPuFOgXUBUDHXDkkpcGSUXqU9u4zhPf7PW7dqtycAi3SxgR3JrfJRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NZ8jobPVJU6CaJcwzT3M1NPnIh0/Cahtdr1H3dOFEpM=;
+ b=Jul6muvcO6pPKwHHohBk5J1nIvOZS9E+HRHdxqdN6rAc3HYTVG2PVsWUivXZ0ZD8B2+1vopaHU4+nrLc3LX6xYtOPceem9PSinhPCkDCEP/HrHTM+FbepO8nFjgVOnK0dLD2YjDfkrxT/HpafTO+Z0v/5x3siN5UtC06l8VJSNM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
+ by PA4PR08MB6160.eurprd08.prod.outlook.com (2603:10a6:102:e5::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Fri, 8 Dec
+ 2023 18:58:56 +0000
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::6b40:1e6f:7c94:71dc]) by VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::6b40:1e6f:7c94:71dc%4]) with mapi id 15.20.7068.029; Fri, 8 Dec 2023
+ 18:58:55 +0000
+Message-ID: <196acb44-fb0d-45b6-a9c3-b5a289a41917@wolfvision.net>
+Date:   Fri, 8 Dec 2023 19:58:52 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] usb: typec: tipd: add function to request firmware
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231207-tps6598x_update-v1-0-dc21b5301d91@wolfvision.net>
+ <20231207-tps6598x_update-v1-2-dc21b5301d91@wolfvision.net>
+ <ZXMudF++A9/y4TNk@kuha.fi.intel.com>
+Content-Language: en-US
+From:   Javier Carrasco <javier.carrasco@wolfvision.net>
+In-Reply-To: <ZXMudF++A9/y4TNk@kuha.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0140.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:95::12) To VE1PR08MB4974.eurprd08.prod.outlook.com
+ (2603:10a6:803:111::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PA4PR08MB6160:EE_
+X-MS-Office365-Filtering-Correlation-Id: 37c833b9-6182-4699-727c-08dbf81fb9b5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gKOQMYzKPrgWJZBNYkBy6CJZdF2A7X4iE8stw/LddQZGxzjiEReu4n9M0UA74cNN1gR+2za450jUpJMOJHzSm4/2UveUowAom14HUtkQksyrkqcMjNcRUPpNDByFBcUs1eVrMwGrXMaEtk9mTqlsvo8sPJL6bw0VICBEs8uXv7EgXjKJMA16YrPtAjNvwPE1XYg7rJB1+eWEyXDz9PyV/jIB8w0XV2OQ4fmyvxySt7UT1aY6OeQrm40Zu8V6IIB3JEI7dKZKyLAq1GX1omR9S+O55GIlMh4SFaO3OYMjF8xC5XmxMZ90Q01oTNorcanY7KIECjFq+ZHkjxf5tIhBrG6jyS9FAIdPcFUGjQGG/xtYOzjxVhp4nTHrE+a9JlWml7BuDZ5UQ8RkKLiemkVc67Nu4U1OlPpyiUo0NH31G4ilcdriiBvV6CKqYLLGUuLCi680USf1DoSqHuO9fZ3i3OLO+aI87kv9Aj0T+/0cJgTZyPTAvosA5NYFdHO8AVyV9E6j8j4wVZcYZSZSmVv/QBWP1ImdUZYUOHRFIjwGE/fKTby5H4KXKKSLC+djqw6AqCfq/C6ijmvoq4a0zRF79GbGT306TfkojW4UzI+2rtX8ydSnel+B6kVuyvj9YdeD6dSl56TNjaE0BxAnxVMCSA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39850400004)(346002)(366004)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(5660300002)(41300700001)(2906002)(38100700002)(86362001)(66946007)(6666004)(6512007)(478600001)(2616005)(66476007)(31696002)(8936002)(6506007)(53546011)(83380400001)(6486002)(44832011)(66556008)(8676002)(316002)(4326008)(36756003)(6916009)(66899024)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Skg0dlNvV3Z0bXVuWmNnbUQ1ZXBER0RBK3BWQkNFVmdWSk9adEJ5UTB6MjlB?=
+ =?utf-8?B?WTFlQkMrb0VWbnVqRFVHS3BBTVhUbG9Tc3F2TEFscnJ1ZHlCUWZQL0R4cUMr?=
+ =?utf-8?B?MmtEMDBUY2NVeW1PdFluWEFjUnorU2pudzBURzk0YUxjWUxKQS9mRWg4STZN?=
+ =?utf-8?B?U01jL253VHFJMEJ4OFd3eWtRby8xYUNVNHd1dkRtdzNWYy9XT3V6NDFubXJm?=
+ =?utf-8?B?eEFGSmJwWlZFSlJMSVYwK1pqNXdKYzZKcS9jOWMyOERWR2wrdm8vRXN0UDNK?=
+ =?utf-8?B?YW1zU3RNZ1ZOZHhjZmxwWkxOOUE3VWs5U3NVKzgzM2JsN0pzTzduQTBtZUNY?=
+ =?utf-8?B?Zkg1cXB5dVlCTVM4RXdaODRLaEMzTHA5NnhadmRseTl4N0NOWjdYVmlKMy9X?=
+ =?utf-8?B?SFFuOG1YTE9hbDQrUkdRQlFGcWpPclg5M1plNncwdC9oV09vdVVvbk5aWEI4?=
+ =?utf-8?B?YWZsVmI5WU5kWGo5Z1I3WjdZRHU4b21OOFBaTUp5L3ZuN2VCYTZFRTd2aDBm?=
+ =?utf-8?B?dmR6U0NOTGl4eVFUWlZsMGhaUVA1ZXNCMUNUeGs5NmNuQ0t3YVRhYys5U0xa?=
+ =?utf-8?B?RTN4a0tWVGVRQlVXWGJzVW05ZEhnQlhQS0k1LzMwUFcxUmx3azRMekYzWGJK?=
+ =?utf-8?B?WGFWMmR5L0prWE4xWDJWVTJzdDdnR2NWUkMyeEU3QVNyejRYMHREVjJEcFIv?=
+ =?utf-8?B?UjNPOXY1cDUzY29KTC9CT3JjSUtwbVBNOWdLQ29qYkNJeDRlUkUrQWU1TVk0?=
+ =?utf-8?B?Mm9oTFBvaTFKc09WZWtlQXliN2hDcXVkeVdzZFZvRFJNMW43bnNZU3Zsejd2?=
+ =?utf-8?B?QjJuOXpmZnQvdkxRNEk2ZzB5SzV4eldoK2hlRGJiQzErRlVrc3YvRlhPTUJ2?=
+ =?utf-8?B?cmlnRER1R0gyUFRJTjE3bmVDelBTYVE2Y2xwTHlvWkZmTDM1UW9uVTRycmRJ?=
+ =?utf-8?B?MXRBQlhZVzZ4Y0RZQ0ZjUkpSWTNVUDQxMHFJVmR1elk2OUt6aFRHK1A2MHo2?=
+ =?utf-8?B?YWlFZEpaamFJS1RXdW53UDBxRkdqNlFqb1hhczdDV21icWZ5RVRscVNOcnNr?=
+ =?utf-8?B?bzd3SEJoMW5YTWhvbUtyRFF3T2YyK1h3WXFXb0NqOTJyQ0QyU1R4VmtBemo0?=
+ =?utf-8?B?OGZWZ0hadTQxdHRRZGk3K0lDaTBGZjhIcHhnR2x2Z2d1ck92djl2UlBTcDlI?=
+ =?utf-8?B?U2Nta1luSXF4UTBCMXhZaDVEdUNKeTFaQTdRN0VnRkJFT0tQZW5qeWhabVE4?=
+ =?utf-8?B?aUd6RWszUkJBT3Y5NU9yU2xxSWpEU1pqZmpZNXpTS3pYZmYxTnlJTWpHeHpO?=
+ =?utf-8?B?Um1kWVY0eHlKWWg0Y2lWSCtrMUV3SElSRS96eHFEMnN0SDJmU0ZPOGJZWEpr?=
+ =?utf-8?B?Y21NUVNYNGZlL0dOMnFLeVJ0a2oyMmNVSVdDWGdIb1BTeWJQbFdiMkdIbmdo?=
+ =?utf-8?B?cU9XUHo3aHdlSkl2a2xIUDE5dzRPS2pvSmU0V1pTSVZaS0ZvVEo0R1A0TUp6?=
+ =?utf-8?B?NUhDdVhXUk1qYnVUdmw4MUoyNWQ5MVl2MTdEZFZyMkdONHpYOE5IU3lKdlZk?=
+ =?utf-8?B?S2dndzhDRnBZajkwU3h0YkNKMEU5LzNBSHhWdDdkcjJydXBycUIxdGNPbDFa?=
+ =?utf-8?B?S1ZJaVYzK3grOEF6ejVXYjdDcE53bGZuWmd2LzJYODRXWU1tTkltb3JHSVlL?=
+ =?utf-8?B?Y0pzeGFoT1NPL1dnTTdTWVd0bW9XcUlNbUdpWU5sVzgveUFMR1JvK1NUNEtW?=
+ =?utf-8?B?TDlWZXQwek5ISmtlbEpLQ1NUQWowRjVvOGJxL0xuaUZCSW5ZSmd5TGd0SEdN?=
+ =?utf-8?B?bnFuN3FzcWVVUG5KUGJyZVVpVzEvRXNpSjUxUEwrZkRiYVRkcm9EOVcybXpQ?=
+ =?utf-8?B?Mkc2alpPUDlGRG1Ub2dKNkxjU1BWVWlxc3hWSjlEeDNGeUlVdjRaWW1lSG51?=
+ =?utf-8?B?RTlWMDBLVEg2UnI1a0VBWGhNbmpxdGdBTUptcFk2bEc0NFA3NFdZV2FUSDNk?=
+ =?utf-8?B?YTNSaTlYS2VYajhWUVI0YTNkcVdTTkM2dGxEaVdJVHl4YmdQUm9ITEhJM3Fa?=
+ =?utf-8?B?OFE4cDZOcTlJSllkRzQ5R3hqQ1Vuc0hlZlJocGQ2WUhpVnlQV0ljK1ZlR1Na?=
+ =?utf-8?B?aitCdlFUc2V1d3pYdERnRm9ldDM2ZC9CdFVSY1dEYVU4MUZLNHUrSXhJOTRX?=
+ =?utf-8?B?aTBDQ1JBL2NiMmsxMEtEQ29nMzAreitENGVEQnJEZ1lSNGtWRzE1VWM4YTNY?=
+ =?utf-8?Q?q1wEtOVBAeDMaQp0MiDfDA6r/mCNRvX6n+JeDY41rc=3D?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37c833b9-6182-4699-727c-08dbf81fb9b5
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 18:58:55.2523
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m4XtbKa0c6iVI2vlDbU0yKA4W6DHrbxG7fcnX2AKlfx5DzUEPeydh3yiSqAmS6KuxwTavNEwV7JrW3dIvRWlrKGk5vXk0XPxq2pFuZbP2p4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR08MB6160
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,169 +128,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Heikki,
 
-	So I finally got a recent Intel hybrid system:
+On 08.12.23 15:55, Heikki Krogerus wrote:
 
-root@fedora:~# grep -m1 "model name" /proc/cpuinfo
-model name	: Intel(R) Core(TM) i7-14700K
-root@fedora:~#
+>> +	ret = request_firmware(fw, firmware_name, tps->dev);
+>> +	if (ret) {
+>> +		dev_err(tps->dev, "failed to retrieve \"%s\"\n", firmware_name);
+>> +		/* probe deferring in case the file system is not ready */
+>> +		return (ret == -ENOENT) ? -EPROBE_DEFER : ret;
+> 
+> It's more likely that the firmware really isn't available, and it will
+> never be available in this case. I think there is only one place in
+> kernel where failing request_firmware() can lead to deferred probe
+> (drivers/tee/optee/smc_abi.c) and there the code can actually see the
+> system state - that's actually the condition.
+> 
+> So just return dev_err_probe() here:
+> 
+> 	ret = request_firmware(fw, firmware_name, tps->dev);
+> 	if (ret)
+>                 return dev_err_probe(tps->dev, ret, "failed to retrieve \"%s\"", firmware_name);
+> 
+Thank you for your feedback.
 
-	Most things work, but:
+This solution arose from a real use case: in the system I am using to
+test the tps65987d, the filesystem is not ready when the probe function
+is called. If I just return on -ENOENT, the device will never get the
+update.
 
-root@fedora:~# perf top
+Note that we are only triggering the update if the device is in patch
+mode, so a firmware will be expected for the device to run and reach the
+app mode.
+In that case deferring the probe and keeping on trying to make the
+update makes sense because otherwise the device will not be able to
+offer its functionality. If the device is not in patch mode, no update
+will be triggered and the firmware will not be requested, so there will
+not be any unnecessary probe deferring.
 
-Error:
-The cycles:P event is not supported.
-root@fedora:~#
+I see that the driver you mentioned checks if the system_state is still
+not SYSTEM_RUNNING to defer the probe.
+I have not tested if something like that would be possible in this case,
+but giving up on the first attempt if the firmware is not found makes
+the assumption that the filesystem where the fw resides will always be
+ready when the probe function is called, which in my particular case is
+a wrong assumption.
 
-root@fedora:~# perf top -e cycles:p
-Error:
-The cycles:p event is not supported.
-root@fedora:~# perf top -e cycles:pp
-Error:
-The cycles:pp event is not supported.
-^[[Aroot@fedora:~# perf top -e cycles:ppp
-Error:
-The cycles:ppp event is not supported.
-root@fedora:~#
-root@fedora:~# perf top -e cycles
-Error:
-The cycles event is not supported.
-root@fedora:~#
+If the firmware was updated at any point during normal operation, the
+assumption would be definitely right, but maybe not while booting.
 
-root@fedora:~# perf top -e instructions
-Error:
-The instructions event is not supported.
-root@fedora:~#root@fedora:~# perf top -e cache-misses
-Error:
-The cache-misses event is not supported.
-root@fedora:~#
-
-------------------------------------------------------------
-perf_event_attr:
-  type                             0 (PERF_TYPE_HARDWARE)
-  size                             136
-  config                           0xa00000000
-  { sample_period, sample_freq }   4000
-  sample_type                      IP|TID|TIME|ID|CPU|PERIOD
-  read_format                      ID|LOST
-  disabled                         1
-  inherit                          1
-  mmap                             1
-  comm                             1
-  freq                             1
-  task                             1
-  sample_id_all                    1
-  exclude_guest                    1
-  mmap2                            1
-  comm_exec                        1
-  ksymbol                          1
-  bpf_event                        1
-------------------------------------------------------------
-sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8
-sys_perf_event_open failed, error -2
-Error:
-The cycles event is not supported.
-root@fedora:~#
-
-But...
-
-root@fedora:~# perf record
-^C[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 2.631 MB perf.data (24079 samples) ]
-
-root@fedora:~# perf evlist -v
-cpu_atom/cycles:P/: type: 0 (PERF_TYPE_HARDWARE), size: 136, config: 0xa00000000, { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|CPU|PERIOD|IDENTIFIER, read_format: ID|LOST, disabled: 1, inherit: 1, freq: 1, precise_ip: 3, sample_id_all: 1
-cpu_core/cycles:P/: type: 0 (PERF_TYPE_HARDWARE), size: 136, config: 0x400000000, { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|CPU|PERIOD|IDENTIFIER, read_format: ID|LOST, disabled: 1, inherit: 1, freq: 1, precise_ip: 3, sample_id_all: 1
-dummy:u: type: 1 (PERF_TYPE_SOFTWARE), size: 136, config: 0x9 (PERF_COUNT_SW_DUMMY), { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|CPU|IDENTIFIER, read_format: ID|LOST, inherit: 1, exclude_kernel: 1, exclude_hv: 1, mmap: 1, comm: 1, task: 1, sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-root@fedora:~#
-
-
-root@fedora:~# perf top -e cpu_core/cpu-cycles:P/
-event syntax error: 'cpu_core/cpu-cycles:P/'
-                              \___ Bad event or PMU
-
-Unable to find PMU or event on a PMU of 'cpu_core'
-
-Initial error:
-event syntax error: 'cpu_core/cpu-cycles:P/'
-                              \___ unknown term 'cpu-cycles:P' for pmu 'cpu_core'
-
-valid terms: event,pc,edge,offcore_rsp,ldlat,inv,umask,frontend,cmask,config,config1,config2,config3,name,period,freq,branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size,metric-id,raw,legacy-cache,hardware
-Run 'perf list' for a list of valid events
-
- Usage: perf top [<options>]
-
-    -e, --event <event>   event selector. use 'perf list' to list available events
-root@fedora:~#
-
-So it seems its just 'perf top' breakage:
-
-root@fedora:~# perf top -e cpu_core/cpu-cycles/
-Error:
-The cpu_core/cpu-cycles/ event is not supported.
-root@fedora:~# perf top -e cpu_atom/cpu-cycles/
-Error:
-The cpu_atom/cpu-cycles/ event is not supported.
-root@fedora:~#
-
-I bisected this to:
-
-⬢[acme@toolbox perf-tools-next]$ git bisect good
-251aa040244a3b17068e4e6ec61f138d7e50681a is the first bad commit
-commit 251aa040244a3b17068e4e6ec61f138d7e50681a
-Author: Ian Rogers <irogers@google.com>
-Date:   Thu Jun 1 01:29:53 2023 -0700
-
-    perf parse-events: Wildcard most "numeric" events
-
-    Numeric events are either raw events or those with ABI defined numbers
-    matched by the lexer. PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE events
-    should wildcard match on hybrid systems. So "cycles" should match each
-    PMU type with an extended type, not just PERF_TYPE_HARDWARE.
-
-    Change wildcard matching to add the event even if wildcard PMU
-    scanning fails, there will be no extended type but this best matches
-    previous behavior.
-
-    Only set the extended type when the event type supports it and when
-    perf_pmus__supports_extended_type is true. This new function returns
-    true if >1 core PMU and avoids potential errors on older kernels.
-
-    Modify evsel__compute_group_pmu_name using a helper
-    perf_pmu__is_software to determine when grouping should occur. Try to
-    use PMUs, and evsel__find_pmu, as being more dependable than
-    evsel->pmu_name.
-
-    Set a parse events error if a hardware term's PMU lookup fails, to
-    provide extra diagnostics.
-
-    Fixes: 8bc75f699c141420 ("perf parse-events: Support wildcards on raw events")
-    Reported-by: Kan Liang <kan.liang@linux.intel.com>
-    Signed-off-by: Ian Rogers <irogers@google.com>
-    Tested-by: Kan Liang <kan.liang@linux.intel.com>
-    Cc: Adrian Hunter <adrian.hunter@intel.com>
-    Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-    Cc: Ingo Molnar <mingo@redhat.com>
-    Cc: Jiri Olsa <jolsa@kernel.org>
-    Cc: Mark Rutland <mark.rutland@arm.com>
-    Cc: Namhyung Kim <namhyung@kernel.org>
-    Cc: Peter Zijlstra <peterz@infradead.org>
-    Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-    Cc: Rob Herring <robh@kernel.org>
-    Cc: Thomas Richter <tmricht@linux.ibm.com>
-    Cc: Xing Zhengjun <zhengjun.xing@linux.intel.com>
-    Link: https://lore.kernel.org/r/20230601082954.754318-4-irogers@google.com
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
- tools/perf/util/parse-events.c | 104 +++++++++++++++++++++++++++++------------
- tools/perf/util/parse-events.y |  10 ++--
- tools/perf/util/pmu.c          |  16 +++++++
- tools/perf/util/pmu.h          |   5 ++
- tools/perf/util/pmus.c         |   5 ++
- tools/perf/util/pmus.h         |   1 +
- 6 files changed, 106 insertions(+), 35 deletions(-)
-⬢[acme@toolbox perf-tools-next]$
-
-- Arnaldo
+Thank you and best regards,
+Javier Carrasco
