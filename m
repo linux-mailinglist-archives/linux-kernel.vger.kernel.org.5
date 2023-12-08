@@ -2,164 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2C380AEF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 22:47:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F90880AEFC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 22:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574782AbjLHVrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 16:47:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
+        id S233912AbjLHVuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 16:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbjLHVr3 (ORCPT
+        with ESMTP id S229739AbjLHVue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 16:47:29 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922C610E7
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 13:47:35 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6d9f879f784so244983a34.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 13:47:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1702072055; x=1702676855; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SynoD4CsgQ7zEfOXTEkXQ8TWW2MLXRoyTRAeaNDdrkg=;
-        b=KIlg4QeU2/hWnjYLvIHPEW+1IkPr3vi4efrRTDNu/It3eQ4Z03ZmOdZ8pYfRuMXPCB
-         7ZzJhJcor6XePd45KxLTqC0DjMYsa/oyJj6j2/j1tgaj3lT66p/J6Qm3poS3PsKVNPN+
-         Y7LRRjwptWbA/WCRYQlKg2mf/Z/b7WwI9koj4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702072055; x=1702676855;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SynoD4CsgQ7zEfOXTEkXQ8TWW2MLXRoyTRAeaNDdrkg=;
-        b=n31ll77L5zrol+qbE8fmuGiXe11Iy0/cZbfQcTwgYprN3f1b5OWJJ53nomFlE4q2bz
-         zYX1ensFRhirF6l0O4JL8X+RoI5gTezZOCizmsoFCqcH7/vnTNxkwjjk21zrRzDY2Jjj
-         qIWZf+EQecPaVsiKd/qtYB02vf4sHATqnCTwla9HTh7G+274Vht20+FPtBuPRUToiEuo
-         X5JDfAdOc3lZ03ZKqoTtrbbnC+tQp1T1kt35+j7VQGOH7l2c34qKt3xpn8vuPG1P2KVT
-         sPEvizSGxeod+CAEmPatxesWN+EzMxZhx3j5IJXzbVkYz/meUEP7ivIwuD5QdSltvIsG
-         fZ6w==
-X-Gm-Message-State: AOJu0Yxr+ZEYxCIP0d+J2jiSrOfVXArPRWiDHQKyutNa/xWq7wzLRy0u
-        IdqXevRO5hLX32kKLo2E/5pX4Q==
-X-Google-Smtp-Source: AGHT+IGgpRczxOrXChKNE1rZ0Da2+e/qtltzqNsYSx+tV4HvwnzQsWSdEh7gCeetOUoSQz+2dINgRg==
-X-Received: by 2002:a05:6830:32a6:b0:6d9:a1c1:3ac6 with SMTP id m38-20020a05683032a600b006d9a1c13ac6mr752063ott.58.1702072054901;
-        Fri, 08 Dec 2023 13:47:34 -0800 (PST)
-Received: from localhost (150.254.86.34.bc.googleusercontent.com. [34.86.254.150])
-        by smtp.gmail.com with ESMTPSA id v26-20020ac8729a000000b00421c31faf05sm1109403qto.1.2023.12.08.13.47.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 13:47:34 -0800 (PST)
-Date:   Fri, 8 Dec 2023 21:47:33 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-Subject: Re: [PATCH v5 0/7] SCHED_DEADLINE server infrastructure
-Message-ID: <20231208214733.GA3448992@google.com>
-References: <cover.1699095159.git.bristot@kernel.org>
+        Fri, 8 Dec 2023 16:50:34 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A033EA;
+        Fri,  8 Dec 2023 13:50:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702072241; x=1733608241;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lGTn+rBSOCG48Ab9NF0vjFUxQRip0d3DjXMPj7vFZzc=;
+  b=LWQ/jZGmNCU2NdF0bV/LONBdFHhoDwJ0FyCOd2v4ClRR+Qrx4EyyEeUN
+   15laNQcKVaryV4w7GVkFHHA9Aq7OixFv37er63YZEFGIV84+5WYv7wic7
+   aXFTtiPaOaAeK6ds6siI7msKdpZaBnnl7H0xWRpuJYcFMY1teydO5Rdae
+   CDxEL+/w1w7V28QhX69U/ulXzYrWM6nH+LXH2Cdas7JN/49jC+pzjGlcH
+   ppM9mY0BCmDOJL+Ar2Tk1H0iNLt/8hL2ZicYOzNVo23vqxwTaATxUBgxH
+   5/UEPg8+OFPKFW6YvZEHQqK8XE76AmRs9hmX6itnUWFBoQBUE51uuzGCT
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="393335220"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="393335220"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 13:50:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="765621441"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="765621441"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 13:50:40 -0800
+Date:   Fri, 8 Dec 2023 13:50:38 -0800
+From:   Tony Luck <tony.luck@intel.com>
+To:     babu.moger@amd.com
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH v6 1/3] x86/resctrl: Add mount option "mba_MBps_event"
+Message-ID: <ZXOPrjoDZbJPrl/6@agluck-desk3>
+References: <20231201214737.104444-1-tony.luck@intel.com>
+ <20231207195613.153980-1-tony.luck@intel.com>
+ <20231207195613.153980-2-tony.luck@intel.com>
+ <7de1b242-e8cb-9968-876e-d3e311443b57@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1699095159.git.bristot@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <7de1b242-e8cb-9968-876e-d3e311443b57@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 04, 2023 at 11:59:17AM +0100, Daniel Bristot de Oliveira wrote:
-> This is v5 of Peter's SCHED_DEADLINE server infrastructure
-> implementation [1].
+On Fri, Dec 08, 2023 at 12:29:18PM -0600, Moger, Babu wrote:
+> Hi Tony,
 > 
-> SCHED_DEADLINE servers can help fixing starvation issues of low priority
-> tasks (e.g., SCHED_OTHER) when higher priority tasks monopolize CPU
-> cycles. Today we have RT Throttling; DEADLINE servers should be able to
-> replace and improve that.
+> On 12/7/2023 1:56 PM, Tony Luck wrote:
+> > -static int set_mba_sc(bool mba_sc)
+> > +static int set_mba_sc(bool mba_sc, enum resctrl_event_id mba_mbps_event)
+> >   {
+> >   	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_MBA].r_resctrl;
+> >   	u32 num_closid = resctrl_arch_get_num_closid(r);
+> > @@ -2313,6 +2313,7 @@ static int set_mba_sc(bool mba_sc)
+> >   		return -EINVAL;
+> >   	r->membw.mba_sc = mba_sc;
+> > +	r->membw.mba_mbps_event = mba_mbps_event;
+> >   	list_for_each_entry(d, &r->domains, list) {
+> >   		for (i = 0; i < num_closid; i++)
+> > @@ -2445,13 +2446,14 @@ static void rdt_disable_ctx(void)
+> >   {
+> >   	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
+> >   	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
+> > -	set_mba_sc(false);
+> > +	set_mba_sc(false, QOS_L3_MBM_LOCAL_EVENT_ID);
+> 
+> This is kind of miss leading. Why do you pass "QOS_L3_MBM_LOCAL_EVENT_ID"
+> here?
+> 
+> If you move the following initialization to rdt_enable_ctx, then you don't
+> need to pass the second argument.
+> 
+> r->membw.mba_mbps_event = mba_mbps_event;
 
-Hello!
-Just wanted to provide some ChromeOS data on these patches. There is
-great improvement when using DL-sever along with RT for foreground Chrome's
-display, audio and main threads. Once they are in the background, we set them
-back to CFS (except audio). I think these patches are ready to move forward
-as the data looks good to me. I see Peter picked up some of them already
-which is nice.
+Babu,
 
-One of the key metrics for us is event latency. We have a test that measures
-various latency metrics with typing happening on a Google docs in one window
-and a 16-person Google meet call happening on the other. This is a very
-complex test but gets us close to what the user experiences (as is typical -
-meeting attendees in a Google meet call take notes in a Google doc). As a
-result, getting stable numbers requires a lot of care which is why I used
-P-value to measure the statistical significance of the results. The P-value
-for some metrics show lower significance, so we can ignore those but I still
-provided it in the table.
+Yes. That was funky. I will drop the second argumen to set_mba_sc() and
+move the initialization to rdt_enable_ctx()
 
-The test is run on a Chromebook with 4 cores (Intel(R) Celeron(R) N4100 CPU @
-1.10GHz) and 16GB of RAM. No Hyperthreading.
+Thnaks for the review.
 
-All units are microseconds. The average is calculated as the average of 20
-runs with and without "Chrome using RT + DL-server". The 5% every 1 second
-default does not work for us, so I changed the DL server parameters to 5ms
-every 30ms. This allows CFS to run more often.
-
-This test runs for 6 hours. Total test time for both before and after is 12 hours:
-
----------------------------------------------------------------------------------------------------------
-| MetricName                                      | Average Before | Average After | Change % | P-value |
----------------------------------------------------------------------------------------------------------
-| Ash.EventLatency.Core.TotalLatency              | 90.19          | 78.22         | 13.27%   | 0.03    |
----------------------------------------------------------------------------------------------------------
-| Ash.EventLatency.KeyReleased.TotalLatency       | 90733.76       | 78602.72      | 13.37%   | 0.03    |
----------------------------------------------------------------------------------------------------------
-| Ash.EventLatency.TotalLatency                   | 90.19          | 78.22         | 13.27%   | 0.03    |
----------------------------------------------------------------------------------------------------------
-| Docs.EventLatency.KeyPressed.TotalLatency       | 68269.21       | 63310.99      | 7.26%    | 0.00    |
----------------------------------------------------------------------------------------------------------
-| Docs.EventLatency.MousePressed.TotalLatency     | 192080.44      | 179264.31     | 6.67%    | 0.26    |
----------------------------------------------------------------------------------------------------------
-| Docs.EventLatency.TotalLatency                  | 68795.99       | 63860.04      | 7.17%    | 0.00    |
----------------------------------------------------------------------------------------------------------
-| EventLatency.GestureScrollUpdt.Wheel.TotalLat   | 63420.88       | 59394.18      | 6.35%    | 0.02    |
----------------------------------------------------------------------------------------------------------
-| EventLatency.KeyPressed.TotalLatency            | 68269.21       | 63310.99      | 7.26%    | 0.00    |
----------------------------------------------------------------------------------------------------------
-| EventLatency.MouseDragged.TotalLatency          | 106393.09      | 104152.50     | 2.11%    | 0.57    |
----------------------------------------------------------------------------------------------------------
-| EventLatency.MouseMoved.TotalLatency            | 129225.65      | 113268.48     | 12.35%   | 0.01    |
----------------------------------------------------------------------------------------------------------
-| EventLatency.MousePressed.TotalLatency          | 192080.44      | 179264.31     | 6.67%    | 0.26    |
----------------------------------------------------------------------------------------------------------
-| EventLatency.MouseReleased.TotalLatency         | 152366.33      | 140309.50     | 7.91%    | 0.44    |
----------------------------------------------------------------------------------------------------------
-| EventLatency.TotalLatency                       | 68795.99       | 63862.45      | 7.17%    | 0.00    |
----------------------------------------------------------------------------------------------------------
-| EventLatency.TotalLatency_ash-Chrome            | 68795.99       | 63862.45      | 7.17%    | 0.00    |
----------------------------------------------------------------------------------------------------------
-
-I also did another test where I measure the CFS maximum latency (using perf
-sched) while a YouTube video is playing, and the CFS max latency looks great
-too. In fact, with the vanilla RT throttling, our CFS tasks are doing really
-badly (perhaps because of depending on RT tasks due to locks or such). So we
-definitely need the DL-server to use RT properly!
-
-We are testing dlserver with 5ms/50ms and 5ms/100ms as well to see the
-impact. But at the moment, 5ms/30ms is looking good.
-
-Thanks for all of your work, here's to better Linux and better Chromebooks ;)
-
- - Joel
-
+-Tony
