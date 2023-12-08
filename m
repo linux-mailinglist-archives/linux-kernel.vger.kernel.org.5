@@ -2,173 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B9180B0B5
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 00:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E47B580B0BB
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 00:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234054AbjLHXsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 18:48:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
+        id S234090AbjLHX42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 18:56:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLHXsl (ORCPT
+        with ESMTP id S229525AbjLHX40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 18:48:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CFF1712;
-        Fri,  8 Dec 2023 15:48:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702079327; x=1733615327;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=jEZsderOnNTub6tndL8lbUQrK7I3N0sK/2GGViDijos=;
-  b=WVCtLZNt3biVA6w+wNlTS1peiby0BWDxAD6otuZfPZcuUbfRlUsDE9Jc
-   QEtToMckLHCGgM4DmAJSnFWZ+2SfFLp3IxL3GkasLLbi+/gT+I+LV/vR+
-   uaZbMMaTE6wgUxBeuLYZ280Z9Q3Xo5VyKJDaRNrzcTHZYdaXt+ZGGLrlX
-   eT8liMh/95ET2/pkV8l/jgMwqclKL87lu8uDip987kcS70UVbi0UL5yBo
-   ESRqP07+fxA/N1CdDSjv60/1yUlfNE2g5iwrL8hO2X8qvYLyhFYOXocFh
-   +LlvU+XM5lnGgHgUqTT5DBJw/Bo+Jq5s6WNxHpkJUpr3OuYBI5RHUuIGv
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="460955164"
-X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
-   d="scan'208";a="460955164"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 15:48:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="842786342"
-X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
-   d="scan'208";a="842786342"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Dec 2023 15:48:44 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 8 Dec 2023 15:48:42 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 8 Dec 2023 15:48:42 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 8 Dec 2023 15:48:42 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 8 Dec 2023 15:48:40 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WLIQdQAPCqT45BL8pcXbOvtkcEzGc4JMbE0+GuNgXEDj1DjRd5Y0yhiuXMD/ID3Sc+rSKKI2ju8pD91+8lwfYgNIVn/ojh5QP5KXplVE2zLAAc7cnh49cngb5E0aNgf2CWHuJiTwe4REx4jM60PWjGJIlGDozT7i7sQ1hQRe0OHOHHzd1PEBmX4YILgs5gHVTwHhbN6DRdF6LLjzizNT4WS7X4WLfxt87iINYFoPORtfSv2lSwknrzAtQMxMvEsp9f6QRKad2Mc5K1YdAJ2rhZSVByMdzhLYsaSZOQSlaMLQPMZ5Fb/X/0NF6HDCg07wMWuyJ3cedXUo2/oF5eJP8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8wxTM2WTTvn6EeqqzIqAok8+ZlQbx2qnpZgGk8yMMGg=;
- b=ZTTqEaTe0nP4mbB7Pdne8khmHOVX77sKHAtTEWwyUvtUOePD61APy8//YAGI2TTj1mPPfPDVSWqB+2eShIJsiJGKeJli26M/eV6s3O43zaQDCJtKsSVhfo4xvN4yOAsPcRCac21wmlPmzKJU0r3GJ25lhHapdrAnd5k2kLfduI1GXVYDFGjXWqvU5XBko6zBciKYMV4KtaxKBnQWkTZM6aZneShBXEzdT680Veo7Yj0GiLJOn/J/wEkSuARVWPiQQusi1SxQzfmhiqpI//n07UyYDSPBupz6nizo19ytKWF4jUzVyzxim/gQQoqwoO0FrjbGOrvxcDUXWRgfu4wCfg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SA1PR11MB6734.namprd11.prod.outlook.com (2603:10b6:806:25d::22)
- by SJ0PR11MB6622.namprd11.prod.outlook.com (2603:10b6:a03:478::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Fri, 8 Dec
- 2023 23:48:38 +0000
-Received: from SA1PR11MB6734.namprd11.prod.outlook.com
- ([fe80::3d98:6afd:a4b2:49e3]) by SA1PR11MB6734.namprd11.prod.outlook.com
- ([fe80::3d98:6afd:a4b2:49e3%7]) with mapi id 15.20.7068.027; Fri, 8 Dec 2023
- 23:48:38 +0000
-From:   "Li, Xin3" <xin3.li@intel.com>
-To:     "Gao, Chao" <chao.gao@intel.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "Cui, Dexuan" <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
-Subject: RE: [PATCH v1 13/23] KVM: VMX: Handle VMX nested exception for FRED
-Thread-Topic: [PATCH v1 13/23] KVM: VMX: Handle VMX nested exception for FRED
-Thread-Index: AQHaEnYXOQlvFLhpWkG4lt/jksLCm7B5dqYAgAFC3tCAIVOmcIABoIUAgAAStHCAAQ43gIABYtvg
-Date:   Fri, 8 Dec 2023 23:48:37 +0000
-Message-ID: <SA1PR11MB6734FFE3D3500BFE4AF407DDA88AA@SA1PR11MB6734.namprd11.prod.outlook.com>
-References: <20231108183003.5981-1-xin3.li@intel.com>
- <20231108183003.5981-14-xin3.li@intel.com> <ZVMkVmBPVfaMjDTL@chao-email>
- <SA1PR11MB67348D3637C2BC6B107C5CCAA8B1A@SA1PR11MB6734.namprd11.prod.outlook.com>
- <SA1PR11MB6734EFF17E15C68AAD12A227A884A@SA1PR11MB6734.namprd11.prod.outlook.com>
- <ZXGFcuwwmkBlqq5s@chao-email>
- <SA1PR11MB67342A44E1C2E17E127AA44AA88BA@SA1PR11MB6734.namprd11.prod.outlook.com>
- <ZXJ3z0yCqnHm52sC@chao-email>
-In-Reply-To: <ZXJ3z0yCqnHm52sC@chao-email>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR11MB6734:EE_|SJ0PR11MB6622:EE_
-x-ms-office365-filtering-correlation-id: f59a9df9-0570-4e8f-e8b1-08dbf84832c1
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8jmgpWWuCw50cn82ybksFhnhdr013rRtK7mOWr523Q+31tGlRYyZ9dcDLiqAgIMCD8nqejx7rgbmxQJqT+5LuF2f8ooKdixfSlYGeS+wCZxSOcWQXIKLbiQe8RH0VjhGt6N+C5jVvUvwxgMGzhUm3xa/bMR8GzZ+c36N1c66V2j+sQ662DBkAJMCO8NSOqsR/i8ooDW5E+52djQ8jfHTixHAqsPipSnLcit7PuFySQw49l9KrdqE5IHKf+WYml/6grDF2tlZDhE3opiaI61GCTzSBkSFQxzpD9pZqwV5Gyt9FjlPykzJQLHE3wVv3hicGFAfiOAfXg3W9zL5H1lqdQ25hEVFnwKsEnVlVCft37DDanrqUXnAcJiXoIaCCTY9smStC76J+5zWNhb1R5H0nQjhZL3frD0N/vgD1dPwxMvIgazEc85JeJbDSRU9k11EHJ7Hu0TuI3SZVOcnECh29p5Baw427aXfm7vua2cE0DnoDJoizSmh4qg60cLmp33TvOjtHPy8C6NyT0cPsPiFgu8Hu9oeTQ0U2UKuXyAtnYENG6fooBrkh4x5wbxGkFvASyvxK/XWj9v2qsa8nAhELG2zsnWcAwLoYuaXRPdJ20uTlZAqWeOYuUMywuLqfS/j6YLoP1zeoQl+UYb5atNY/ZfiRrNVAtlgA4dMiyi/hsc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(39860400002)(366004)(396003)(230922051799003)(230273577357003)(230173577357003)(1800799012)(64100799003)(186009)(451199024)(38100700002)(41300700001)(38070700009)(86362001)(26005)(122000001)(55016003)(33656002)(7416002)(5660300002)(82960400001)(2906002)(83380400001)(71200400001)(9686003)(6506007)(7696005)(8936002)(6862004)(52536014)(8676002)(4326008)(64756008)(478600001)(76116006)(6636002)(66556008)(316002)(66946007)(66446008)(54906003)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?SqWlLhGr0ehKIw+fIeqmHonP+AxpxjREUUsVNmQBOuzS6l1bGV139U1OQq9l?=
- =?us-ascii?Q?BCsv0ggAU2nrcyS8EO7hj62Kk9R1AZeDcSQ5clanfynr6WhG1ZKbr7WvG4K8?=
- =?us-ascii?Q?H9Qo3OPFkvYjtS/+3+KhyK2bt+T0XMEAYNPJiSqQcsj9Ndo2/83nDM0blqyV?=
- =?us-ascii?Q?2uANXSL39M3L4ltbjXf0Ve2Fg03cbsA1tzEeCwxwJCGe+5A+EZ+oBPLTD4+7?=
- =?us-ascii?Q?IEhfdDI7H1iN/8ZlaqqcNcbbtBvy9qlto+rJHTskyqkMu8lZdgHc0Dl+fx/9?=
- =?us-ascii?Q?VaOrpefv5lK8jsr++PZBrb+ziZhEyFwO4pHYe8Pdn6cQfjXq1p4JtT6YtNbP?=
- =?us-ascii?Q?8n5RTZwGwfu87M5KXImAIFR0C+BoFnP7nLxh3fqsIO7mnOVsO5vLvu/YAgou?=
- =?us-ascii?Q?u0kpWWukcjUvO75TP0JawjG2jRbxB3hbZGSWY6UbKU/IT+eg4Jn1wPhndtIr?=
- =?us-ascii?Q?1rsFOs5Sf4Qb6T9Lo3uXJX/z9At0rLAnvQZBZYS7yVZqTAbIOYd222cDt7or?=
- =?us-ascii?Q?14w6tTOoUo3Ge6YJ9Fz6GRfACQvEHIeYNqjDeop7bc48Xtey1gFSl6lTm8fC?=
- =?us-ascii?Q?8XVd9L+qJNyB0hiqFpdXattuD9ftE03G6NoVB24c8XnhnX/yVOdpxA0sN/LQ?=
- =?us-ascii?Q?TzyeLnue41wP2IbLDR51kAVe4ZDZYQvpIEnjnfPTkBxBPQW6Er5Ly3bVNj/E?=
- =?us-ascii?Q?mlyZPq+pBcuvxc7LHH9IdbruNOpfWlx2tPamfYSJYv8dNvCOPry0WVuGGZUT?=
- =?us-ascii?Q?35M7J0AduTkArZeiZT4WdF2UuZqY2f9c4Ry3sCQPHzq45uHvYvTTL2bLleRa?=
- =?us-ascii?Q?jIYKZz5hkORgCAUpSrNeSlraqYAq95zqUPN8wiQsX7Nr0BkW7ZESCO5omDFb?=
- =?us-ascii?Q?AqQPa7mUgiGLEQ7Hnmxm6iXNIFDw2ZEuvg1kPopkPpWpz5oEY7qkIgxrYFjL?=
- =?us-ascii?Q?/dbJJLJjk7x75rJsal70gLmBxjDsfGq4B3psKTQo01G4K11OfYvYJPlft3cx?=
- =?us-ascii?Q?mmDsi3R1mjs0sbZqWrO8pKGIMqF1OI9ctwXwhdUOnpR8E5BDeGJJEnuKgxVQ?=
- =?us-ascii?Q?/j/DxC2N9NXImGgWmo0UvuubSY1GjnlWQ8eBE2+Rt052K7UlZfGRor0DlcKz?=
- =?us-ascii?Q?EHZhkCEwcDaxAKGnxuJk97vkRiS9S4Lza5vMHg52QeMBv6JBeS1uEotHkAdS?=
- =?us-ascii?Q?4gNIw2mYcgfaQtfpJvQ/iVFX0klpXp8kE/KSWLF5hDz594IbFnbmLm2pa89L?=
- =?us-ascii?Q?LsXPxbSXMpdLL7B4Hoh9Rwfi4lQWXLM6w9rR+agVl+uS1zHRIS/tcw8AQaLf?=
- =?us-ascii?Q?9fEu8fOKvsE4dkknovht2V4MkWUoi40pWJR5ROFZDnwjW9xi609Fq5Tjn0Ws?=
- =?us-ascii?Q?zCKP0RKEUf7JM5AF9hevZveQzCGR0ogRlNOofEOEw7yVS31TpRhKio6WEuvA?=
- =?us-ascii?Q?8SY23SC2P2pXTTV+23ZqsjYMPnNvGc5UGPAVHBO/EPb0Iip6GYgOJ5yupEFb?=
- =?us-ascii?Q?OG2ECcplOrLjB8VamFlY5qwCuzVV57RTsuZGtxU4rNMMzGWOR1KzSc6kmCVi?=
- =?us-ascii?Q?tB6x8CKHXcYY2d1A5IU=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 8 Dec 2023 18:56:26 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84AE1723
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 15:56:32 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45101C433C7
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 23:56:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702079792;
+        bh=peCMXDo9eaMOOydZ/8L8pLC6/eRpJHpJZfXn1ST7dfg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hj3PU0v9aOgdl1M+5LrdlvjEIv0aHOALa5VsbLO2gpBPFsTBAkbjGBij+QuCNlyh6
+         B1xrzSU1DT24SfGrcjFly7a4KIYhwfbOChnqZDDC5pdRmc9+4dJV06u39OHqmwL2cm
+         5mqAbsRRXWKu1ThcfooNuYa/5GAHsrI4KApagQWgmnHbhHx+d0mriSM39KZBhuvdd/
+         LebmirYNPbNLgtiSycbxc7Sgr42B6cENzERQ1rSgK1J1sbrl7nqiXe6CyyU7dnJ2Ac
+         nrmM0vFhg6c85QFv0pliX7DYK8MPCEC0VBB4Uvn3YfII6vww7Xl8+bll3Z8AxzvY11
+         87l5pAcVEV1LA==
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3b9e6262fccso1116043b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 15:56:32 -0800 (PST)
+X-Gm-Message-State: AOJu0YxJKk6nXgMUp3sM7gnhQlGnoXPqg5nrbJg5zoGna86fyjRYYvJq
+        4Gh81snGz2x/oOIuGmk7UkHxCl/bHjCxHyQkTyJQlg==
+X-Google-Smtp-Source: AGHT+IEdLUYuKILjBCDjMVvEgOABV9Uw5O0Cd4zdfhOQrwVlaEm7GUKQ5yvBboqDgaGFYG7tW1+n9bdx2pTjYygIYy8=
+X-Received: by 2002:a05:6a21:2715:b0:18f:97c:9789 with SMTP id
+ rm21-20020a056a21271500b0018f097c9789mr846669pzb.113.1702079771090; Fri, 08
+ Dec 2023 15:56:11 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6734.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f59a9df9-0570-4e8f-e8b1-08dbf84832c1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2023 23:48:37.5801
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: I59jxCVWQgJeaAOmZLmBEII1gagSyIbMZMt2RBqHksvZoH8lhLngn4nMbfVURc1Ev7HUJdHzr6JNXX37ysb5oQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB6622
-X-OriginatorOrg: intel.com
+References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
+ <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
+In-Reply-To: <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Fri, 8 Dec 2023 15:55:59 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txohSOmZhYA-Q@mail.gmail.com>
+Message-ID: <CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txohSOmZhYA-Q@mail.gmail.com>
+Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     akpm@linux-foundation.org, tj@kernel.org, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
+        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        david@ixit.cz, Kairui Song <kasong@tencent.com>,
+        Minchan Kim <minchan@google.com>,
+        Zhongkun He <hezhongkun.hzk@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -176,100 +69,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >> >> > Exiting-event identification can also have bit 13 set, indicating=
- a
-> >> >> > nested exception encountered and caused VM-exit. when reinjecting=
- the
-> >> >> > exception to guests, kvm needs to set the "nested" bit, right? I
-> >> >> > suspect some changes to e.g., handle_exception_nmi() are needed.
-> >> >>
-> >> >> The current patch relies on kvm_multiple_exception() to do that.  B=
-ut TBH,
-> I'm
-> >> >> not sure it can recognize all nested cases.  I probably should revi=
-sit it.
-> >> >
-> >> >So the conclusion is that kvm_multiple_exception() is smart enough, a=
-nd
-> >> >a VMM doesn't have to check bit 13 of the Exiting-event identificatio=
-n.
-> >> >
-> >> >In FRED spec 5.0, section 9.2 - New VMX Feature: VMX Nested-Exception
-> >> >Support, there is a statement at the end of Exiting-event identificat=
-ion:
-> >> >
-> >> >(The value of this bit is always identical to that of the valid bit o=
-f
-> >> >the original-event identification field.)
-> >> >
-> >> >It means that even w/o VMX Nested-Exception support, a VMM already
-> knows
-> >> >if an exception is a nested exception encountered during delivery of
-> >> >another event in an exception caused VM exit (exit reason 0).  This i=
+Hi Nhat,
+
+On Thu, Dec 7, 2023 at 5:03=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote:
+>
+> On Thu, Dec 7, 2023 at 4:19=E2=80=AFPM Chris Li <chrisl@kernel.org> wrote=
+:
+> >
+> > Hi Nhat,
+> >
+> >
+> > On Thu, Dec 7, 2023 at 11:24=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> w=
+rote:
+> > >
+> > > During our experiment with zswap, we sometimes observe swap IOs due t=
+o
+> > > occasional zswap store failures and writebacks-to-swap. These swappin=
+g
+> > > IOs prevent many users who cannot tolerate swapping from adopting zsw=
+ap
+> > > to save memory and improve performance where possible.
+> > >
+> > > This patch adds the option to disable this behavior entirely: do not
+> > > writeback to backing swapping device when a zswap store attempt fail,
+> > > and do not write pages in the zswap pool back to the backing swap
+> > > device (both when the pool is full, and when the new zswap shrinker i=
 s
-> >> >done in KVM through reading IDT_VECTORING_INFO_FIELD and calling
-> >> >vmx_complete_interrupts() immediately after VM exits.
-> >> >
-> >> >vmx_complete_interrupts() simply queues the original exception if the=
-re is
-> >> >one, and later the nested exception causing the VM exit could be canc=
-elled
-> >> >if it is a shadow page fault.  However if the shadow page fault is ca=
-used
-> >> >by a guest page fault, KVM injects it as a nested exception to have g=
-uest
-> >> >fix its page table.
-> >> >
-> >> >I will add comments about this background in the next iteration.
-> >>
-> >> is it possible that the CPU encounters an exception and causes VM-exit=
- during
-> >> injecting an __interrupt__? in this case, no __exception__ will be (re=
--)queued
-> >> by vmx_complete_interrupts().
+> > > called).
+> > >
+> > > This new behavior can be opted-in/out on a per-cgroup basis via a new
+> > > cgroup file. By default, writebacks to swap device is enabled, which =
+is
+> > > the previous behavior. Initially, writeback is enabled for the root
+> > > cgroup, and a newly created cgroup will inherit the current setting o=
+f
+> > > its parent.
+> > >
+> > > Note that this is subtly different from setting memory.swap.max to 0,=
+ as
+> > > it still allows for pages to be stored in the zswap pool (which itsel=
+f
+> > > consumes swap space in its current form).
+> > >
+> > > This patch should be applied on top of the zswap shrinker series:
+> > >
+> > > https://lore.kernel.org/linux-mm/20231130194023.4102148-1-nphamcs@gma=
+il.com/
+> > >
+> > > as it also disables the zswap shrinker, a major source of zswap
+> > > writebacks.
 > >
-> >I guess the following case is what you're suggesting:
-> >KVM injects an external interrupt after shadow page tables are nuked.
+> > I am wondering about the status of "memory.swap.tiers" proof of concept=
+ patch?
+> > Are we still on board to have this two patch merge together somehow so
+> > we can have
+> > "memory.swap.tiers" =3D=3D "all" and "memory.swap.tiers" =3D=3D "zswap"=
+ cover the
+> > memory.zswap.writeback =3D=3D 1 and memory.zswap.writeback =3D=3D 0 cas=
+e?
 > >
-> >vmx_complete_interrupts() are called after each VM exit to clear both
-> >interrupt and exception queues, which means it always pushes the
-> >deepest event if there is an original event.  In the above case, the
-> >original event is the external interrupt KVM just tried to inject.
->=20
-> in my understanding, your point is:
-> 1. if bit 13 of the Exiting-event identification is set. the original-eve=
-nt
-> identification field should be valid.
-> 2. vmx_complete_interrupts() is done immediately after VM exits and reads
-> original-event identification and reinjects the event there.
-> 3. if KVM injects the exception in exiting-event identification
-> to guest, KVM doesn't need to read the bit 13 because kvm_multiple_except=
-ion()
-> is "smart enough" and recognize the exception as nested-exception because=
- if
-> bit 13 is 1, one exception must has been queued in #2.
->=20
-> my question is:
-> what if the event in original-event identification is an interrupt e.g.,
-> external interrupt or NMI, rather than exception.  vmx_complete_interrupt=
-s()
-> won't queue an exception, then how can KVM or kvm_multiple_exception()
-> know the
-> exception that caused VM-exit is an nested exception w/o reading bit 13 o=
-f the
-> Exiting-event identification?
+> > Thanks
+> >
+> > Chris
+> >
+>
+> Hi Chris,
+>
+> I briefly summarized my recent discussion with Johannes here:
+>
+> https://lore.kernel.org/all/CAKEwX=3DNwGGRAtXoNPfq63YnNLBCF0ZDOdLVRsvzUmY=
+hK4jxzHA@mail.gmail.com/
 
-The good news is that vmx_complete_interrupts() still queues the event
-even it's not a hardware exception.  It's just that kvm_multiple_exception(=
-)
-doesn't check if there is an original interrupt or NMI because IDT event
-delivery doesn't care such a case.
+Sorry I am traveling in a different time zone so not able to get to
+that email sooner. That email is only sent out less than one day
+before the V6 patch right?
 
-I think your point is more of that we should check it when FRED is enabled
-for a guest.  Yes, architecturally we should do it.
+>
+> TL;DR is we acknowledge the potential usefulness of swap.tiers
+> interface, but the use case is not quite there yet, so it does not
 
-What I want to emphasize is that bit 13 of the exiting-event identification
-is set to the valid bit of the original-event identification, they are
-logically the same thing when FRED is enabled.  It doens't matter which one
-a VMM reads and uses.  But a VMM doesn't need to differentiate FRED and IDT
-if it reads the info from original-event identification.
+I disagree about no use case. No use case for Meta !=3D no usage case
+for the rest of the linux kernel community. That mindset really needs
+to shift to do Linux kernel development. Respect other's usage cases.
+It is not just Meta's Linux kernel. It is everybody's Linux kernel.
+
+I can give you three usage cases right now:
+1) Google producting kernel uses SSD only swap, it is currently on
+pilot. This is not expressible by the memory.zswap.writeback. You can
+set the memory.zswap.max =3D 0 and memory.zswap.writeback =3D 1, then SSD
+backed swapfile. But the whole thing feels very clunky, especially
+what you really want is SSD only swap, you need to do all this zswap
+config dance. Google has an internal memory.swapfile feature
+implemented per cgroup swap file type by "zswap only", "real swap file
+only", "both", "none" (the exact keyword might be different). running
+in the production for almost 10 years. The need for more than zswap
+type of per cgroup control is really there.
+
+2) As indicated by this discussion, Tencent has a usage case for SSD
+and hard disk swap as overflow.
+https://lore.kernel.org/linux-mm/20231119194740.94101-9-ryncsn@gmail.com/
++Kairui
+
+3) Android has some fancy swap ideas led by those patches.
+https://lore.kernel.org/linux-mm/20230710221659.2473460-1-minchan@kernel.or=
+g/
+It got shot down due to removal of frontswap. But the usage case and
+product requirement is there.
++Minchan
+
+> make too much sense to build up that heavy machinery now.
+
+Does my minimal memory.swap.tiers patch to support "zswap" and "all"
+sound heavy machinery to you?
+It is the same implementation under the hood. I am only trying to
+avoid introducing something that will be foreseeable obsolete.
+
+> zswap.writeback is a more urgent need, and does not prevent swap.tiers
+> if we do decide to implement it.
+
+I respect that urgent need, that is why I Ack on the V5 path, under
+the understanding that this zswap.writeback is not carved into stones.
+When a better interface comes alone, that interface can be obsolete.
+Frankly speaking I would much prefer not introducing the cgroup API
+which will be obsolete soon.
+
+If you think zswap.writeback is not removable when another better
+alternative is available, please voice it now.
+
+If you squash my minimal memory.swap.tiers patch, it will also address
+your urgent need for merging the "zswap.writeback", no?
+
+
+Chris
