@@ -2,157 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0C880AD79
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2B180AD7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233936AbjLHUEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:04:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
+        id S233991AbjLHUE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:04:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLHUEM (ORCPT
+        with ESMTP id S233969AbjLHUEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:04:12 -0500
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D1E711D;
-        Fri,  8 Dec 2023 12:04:18 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 72A563200A64;
-        Fri,  8 Dec 2023 15:04:16 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 08 Dec 2023 15:04:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1702065855; x=1702152255; bh=GG
-        NlAi0M3/WjzMXprO8Id6miZfyxGyNcpliBuJNnlBU=; b=Z4fson34NdZM6IcEu2
-        iLoZagOg8lFOwUsGY7/MgxiA3LedN4e9kJA3GykFrrqKaqcQkaCw60ioeQdo5tUd
-        HsdIeempYYhyj0pQcCye3E+fdHu3WaEkPkjZSkxP5Y9l7UYdMwHxtF+o0aPUuGzA
-        mVqloC3lOtZUWGKLrmRkVyontchKqZFpNRxkgwT6iofNh3Rk3hYkEzp2JvQWqGG/
-        fixNjBLSn7VZS4dvDpVxcoDSR7lskB75R+oOH9R1ZNW5HHvIp7qR+k2db6sj+IXi
-        tHpMVAAKFuoLZW+IbRQ7h51HhzJB3hDdE18+dWI4IRKeaSdhu752YbLgrYkYaktg
-        LHug==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1702065855; x=1702152255; bh=GGNlAi0M3/Wjz
-        MXprO8Id6miZfyxGyNcpliBuJNnlBU=; b=cB4y2/PSRxjPLQFaqkfAMWDth0DBB
-        3g62xpt6oL50ixWkQs8C0eBT7KLpMYa+9l86QazfOOhEMi9IM2i7tmV2qgAM4bzP
-        jwCW0aSSR5QpzalgCb0thW3FgBHfZzSn0CvrS2lzLo1jOkv5U0feKE6hzvbEPoRg
-        sOd920U+mOGYBDn+YB/9XQnb2M1w8j+zEuwIg+x002Mp5FbeR+RnBMVk/vrUP1Ut
-        fn3wxy0VvHmuF0hecFJ35dnTfMgH4DLgrR9VCE/KKlG+EWN44kGbRn+tQM2QF2ue
-        KhmgFnOzSpwSSv3GU8MXjiY/HKu9Z4AqWLcHRFf9HXprupx1rbfW8QoAw==
-X-ME-Sender: <xms:v3ZzZcxZlzP9F7gZxGqFF1g-O9FKhv7tsQhhfLgBIsUCLRfVwWm4Zw>
-    <xme:v3ZzZQSgJOqvPT9kXwi9Vhj3srGxLrxZW0Ylj8l_n2zXggWUKstvm0Ak871UFIXfJ
-    _F9lYCmDzin7zxxvj0>
-X-ME-Received: <xmr:v3ZzZeURbIzstxM83ZJB7wN38bM_adx6KXAa5wCUDSD-oWbr3xQ_7Vjp6_4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekiedgudefgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigt
-    hhhoucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtf
-    frrghtthgvrhhnpeelveduteeghfehkeeukefhudfftefhheetfedthfevgfetleevvddu
-    veetueefheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhi
-    iiiirg
-X-ME-Proxy: <xmx:v3ZzZajIFjxXuK0OpO2WXKzSOnk9R9-7QodwrzuEBDBt26kwkGDrgA>
-    <xmx:v3ZzZeAjHvXt8Ks21zhawShfuuHJwmwjrYixTHE-wiqfE1FSct7FsQ>
-    <xmx:v3ZzZbIid0UApEmFYARIYTY-EYrG66b-E0OQhspWscn2cMiinwlerg>
-    <xmx:v3ZzZUAzxrDhTBWo8ThOoC7WjBbnJPx-KCkgtSdl9JjfjfFTcr6Ebg>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 8 Dec 2023 15:04:13 -0500 (EST)
-Date:   Fri, 8 Dec 2023 13:04:11 -0700
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Tycho Andersen <tandersen@netflix.com>,
-        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
-Message-ID: <ZXN2u2oJl1Z6FTqt@tycho.pizza>
-References: <20231130163946.277502-1-tycho@tycho.pizza>
- <20231130173938.GA21808@redhat.com>
- <ZWjM6trZ6uw6yBza@tycho.pizza>
- <ZWoKbHJ0152tiGeD@tycho.pizza>
- <20231207-weither-autopilot-8daee206e6c5@brauner>
- <20231207-avancieren-unbezahlbar-9258f45ec3ec@brauner>
+        Fri, 8 Dec 2023 15:04:25 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E980B173B
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:04:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4782C433C7;
+        Fri,  8 Dec 2023 20:04:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702065871;
+        bh=dAzTKis/A168Bq4izb0pTdVXcvwbLPWwjZhbjyGsfuo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WOVNZuLtre13kBHgee4m2/HCdLbvfRd1C1jVy8YMKKwP7MMWca0oI/drSpeiVxYA6
+         d0LAbuKH3mFEpct4nl2L0b8av5Ow5koo0UDmh9UgFhOP+DVBfG2nP5N0tR8sboReaY
+         mzPU/LM0PrPw8axcAzodwT5pjvtKfDrMYWlGUBYSWQLYWfmgVt3ZKEA8N2qkajdR9q
+         sEQa6D0oUosCDitw3268nUaQTbX7ppmAr5dK1heV605xNr9bhdO8OWsNcjjTOqoch6
+         yy41038aEt2+gqOQs7YShU9VmIUGDCI8cZSLrdW5cLADPB2qVeTN4okZyp0VFvMsVM
+         lAVXGb7aruChg==
+Date:   Fri, 8 Dec 2023 21:04:25 +0100
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Alain Volmat <alain.volmat@foss.st.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/7] i2c: stm32f7: perform most of irq job in threaded
+ handler
+Message-ID: <20231208200425.zli2j6b4lt4shasn@zenone.zhora.eu>
+References: <20231208164719.3584028-1-alain.volmat@foss.st.com>
+ <20231208164719.3584028-2-alain.volmat@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231207-avancieren-unbezahlbar-9258f45ec3ec@brauner>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231208164719.3584028-2-alain.volmat@foss.st.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 10:25:09PM +0100, Christian Brauner wrote:
-> > If these concerns are correct
-> 
-> So, ok. I misremebered this. The scenario I had been thinking of is
-> basically the following.
-> 
-> We have a thread-group with thread-group leader 1234 and a thread with
-> 4567 in that thread-group. Assume current thread-group leader is tsk1
-> and the non-thread-group leader is tsk2. tsk1 uses struct pid *tg_pid
-> and tsk2 uses struct pid *t_pid. The struct pids look like this after
-> creation of both thread-group leader tsk1 and thread tsk2:
-> 
-> 	TGID 1234				TID 4567 
-> 	tg_pid[PIDTYPE_PID]  = tsk1		t_pid[PIDTYPE_PID]  = tsk2
-> 	tg_pid[PIDTYPE_TGID] = tsk1		t_pid[PIDTYPE_TGID] = NULL
-> 
-> IOW, tsk2's struct pid has never been used as a thread-group leader and
-> thus PIDTYPE_TGID is NULL. Now assume someone does create pidfds for
-> tsk1 and for tsk2:
-> 	
-> 	tg_pidfd = pidfd_open(tsk1)		t_pidfd = pidfd_open(tsk2)
-> 	-> tg_pidfd->private_data = tg_pid	-> t_pidfd->private_data = t_pid
-> 
-> So we stash away struct pid *tg_pid for a pidfd_open() on tsk1 and we
-> stash away struct pid *t_pid for a pidfd_open() on tsk2.
-> 
-> If we wait on that task via P_PIDFD we get:
-> 
-> 				/* waiting through pidfd */
-> 	waitid(P_PIDFD, tg_pidfd)		waitid(P_PIDFD, t_pidfd)
-> 	tg_pid[PIDTYPE_TGID] == tsk1		t_pid[PIDTYPE_TGID] == NULL
-> 	=> succeeds				=> fails
-> 
-> Because struct pid *tg_pid is used a thread-group leader struct pid we
-> can wait on that tsk1. But we can't via the non-thread-group leader
-> pidfd because the struct pid *t_pid has never been used as a
-> thread-group leader.
-> 
-> Now assume, t_pid exec's and the struct pids are transfered. IIRC, we
-> get:
-> 
-> 	tg_pid[PIDTYPE_PID]   = tsk2		t_pid[PIDTYPE_PID]   = tsk1
-> 	tg_pid[PIDTYPE_TGID]  = tsk2		t_pid[PIDTYPE_TGID]  = NULL
-> 
-> If we wait on that task via P_PIDFD we get:
-> 	
-> 				/* waiting through pidfd */
-> 	waitid(P_PIDFD, tg_pidfd)		waitid(P_PIDFD, t_pid)
-> 	tg_pid[PIDTYPE_TGID] == tsk2		t_pid[PIDTYPE_TGID] == NULL
-> 	=> succeeds				=> fails
-> 
-> Which is what we want. So effectively this should all work and I
-> misremembered the struct pid linkage. So afaict we don't even have a
-> problem here which is great.
+Hi Alain,
 
-It sounds like we need some tests for waitpid() directly though, to
-ensure the semantics stay stable. I can add those and send a v3,
-assuming the location of do_notify_pidfd() looks ok to you in v2:
+On Fri, Dec 08, 2023 at 05:47:10PM +0100, Alain Volmat wrote:
+> The irq handling is currently split between the irq handler
+> and the threaded irq handler.  Some of the handling (such as
+> dma related stuffs) done within the irq handler might sleep or
+> take some time leading to issues if the kernel is built with
+> realtime constraints.  In order to fix that, perform an overall
+> rework to perform most of the job within the threaded handler
+> and only keep fifo access in the non threaded handler.
+> 
+> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
 
-https://lore.kernel.org/all/20231207170946.130823-1-tycho@tycho.pizza/
+quite a difficult review because this git diff algorithm makes it
+difficult to read throuhg.
 
-Tycho
+But it looks like just a copy paste from to
+stm32f7_i2c_isr_event() to stm32f7_i2c_isr_event_thread() of the
+STM32F7_I2C_ISR_NACKF, STM32F7_I2C_ISR_STOPF, STM32F7_I2C_ISR_TC
+and STM32F7_I2C_ISR_TCR.
+
+[...]
+
+> +static irqreturn_t stm32f7_i2c_isr_event_thread(int irq, void *data)
+> +{
+> +	struct stm32f7_i2c_dev *i2c_dev = data;
+> +	struct stm32f7_i2c_msg *f7_msg = &i2c_dev->f7_msg;
+> +	struct stm32_i2c_dma *dma = i2c_dev->dma;
+> +	void __iomem *base = i2c_dev->base;
+> +	u32 status, mask;
+> +	int ret;
+> +
+> +	if (!i2c_dev->master_mode)
+> +		return stm32f7_i2c_slave_isr_event(i2c_dev);
+> +
+> +	status = readl_relaxed(i2c_dev->base + STM32F7_I2C_ISR);
+
+looks to me like this readl_relaxed is read too many times during
+the whole irq handling.
+
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+
+Thanks,
+Andi
