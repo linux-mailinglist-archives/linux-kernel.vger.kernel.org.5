@@ -2,84 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68CFA809EE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:11:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E1E809EF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235815AbjLHJLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 04:11:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
+        id S233227AbjLHJOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 04:14:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235970AbjLHJKz (ORCPT
+        with ESMTP id S231863AbjLHJOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 04:10:55 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BDAC3
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 01:11:02 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6E9601FDAC;
-        Fri,  8 Dec 2023 09:11:00 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5BE6A138FF;
-        Fri,  8 Dec 2023 09:11:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id O4/3FKTdcmVIOQAAn2gu4w
-        (envelope-from <dwagner@suse.de>); Fri, 08 Dec 2023 09:11:00 +0000
-Date:   Fri, 8 Dec 2023 10:10:59 +0100
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH v4 3/4] nvme: add csi, ms and nuse to sysfs
-Message-ID: <dakki3aqgyv6ylnnaketcsqsqwen23ffqawmzsrypfu3p7gh2m@n4ut2vb6hxz3>
-References: <20231207123624.29959-1-dwagner@suse.de>
- <20231207123624.29959-4-dwagner@suse.de>
- <ZXH2is7F56nRlGqd@kbusch-mbp>
+        Fri, 8 Dec 2023 04:14:08 -0500
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2081.outbound.protection.outlook.com [40.107.247.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E1E1703;
+        Fri,  8 Dec 2023 01:14:14 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PlJ7IX+XTS9TQLwHfCOmmcxW/01b8D8RRHMU0mzt6RdV+WRj20MIZ4x8cZL/a/yOQwywhVfdqfROBJd3ywNxi5vDboaGRf4Cr7gw7lJpoDEQDmLDAs5nKvSKsX1QAuewGWfozEa48uttGFb5GFGQtEWJkZ6gI/hDXjABwh1jeXSXDnO7cg7nZBwWrdmrto1l3kOSrb5q5jMhHrlxcrRDGMsdj9wjUnBucOfoqs6E6qxDvjk4neN/eylzueZuYwzOmxt04gW47HzVzMdhZ6PyJVqZUR+os6yPEqlme3yyusfrhNiUNgy8MKDtPwmW2okiPZi0i2xAqVRMW7HqryPTEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+kC1w1bXoFTBQGGU4j5WpDm8ytNSiedyJ89xDQ9f0gU=;
+ b=OxMF6/Wyem/6x/STGYFwsmjL2Zhz+tZu3g92mJjzW2ylqNZp6rSrMtWZAM01mXasgnXYVkLO3ZlGzQnxw8DgOuVtyKzn7xVK/ewP4yK+JA4FISZmf1m/8Kj4OoKfBtbP99Yj1kgRDZDRFijpzhYd57JLmXj3JHmaEyF3eNKhFqV5ku5KllD8KHsDRAmclZppeKw88ViX9kUavACCenFFWo7yguGTDS2zUDMo2yeD+U96p23yekEuX6n2EE5HfNnHaEMBvwaUYg43ghf/QDmBRIuBB/VSXwfcNl+OPW0iExMW1cRvEf+BwJ9CY0tT0oceiSKIZAskyoTyZQWTkz2xYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+kC1w1bXoFTBQGGU4j5WpDm8ytNSiedyJ89xDQ9f0gU=;
+ b=YGLaoYCWOsvseLPfAGnIpdh+M68IYMmLFJCGU2HDYPoZUjfRTi6+OyPqqgdrudUj0rBGHJJf0JUKx8/I+T8j0j7gIi4g9px0U97yWuV05tLIsPudRQxSR1MyuB5h+XwXCeDTb8xFQQ0CpO3/ohKngbJmU5xmAe3ZIYFf6WjGPDU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::7)
+ by AM8PR04MB7284.eurprd04.prod.outlook.com (2603:10a6:20b:1dc::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.28; Fri, 8 Dec
+ 2023 09:14:11 +0000
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::3627:208e:4d62:1e2a]) by AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::3627:208e:4d62:1e2a%6]) with mapi id 15.20.7068.028; Fri, 8 Dec 2023
+ 09:14:11 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     hongxing.zhu@nxp.com, l.stach@pengutronix.de,
+        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com
+Cc:     linux-imx@nxp.com, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] PCI: imx6: Add pci host wakeup support
+Date:   Fri,  8 Dec 2023 17:13:51 +0800
+Message-Id: <20231208091355.1417292-1-sherry.sun@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR06CA0006.apcprd06.prod.outlook.com
+ (2603:1096:4:186::19) To AS8PR04MB8404.eurprd04.prod.outlook.com
+ (2603:10a6:20b:3f8::7)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXH2is7F56nRlGqd@kbusch-mbp>
-X-Spam-Score: 13.79
-X-Spamd-Bar: +++++++++++++
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
-        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dwagner@suse.de) smtp.mailfrom=dwagner@suse.de
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [13.79 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_SPAM_SHORT(3.00)[1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         MID_RHS_NOT_FQDN(0.50)[];
-         R_SPF_SOFTFAIL(4.60)[~all:c];
-         RCPT_COUNT_FIVE(0.00)[6];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         NEURAL_SPAM_LONG(3.50)[1.000];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.00)[20.18%];
-         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
-X-Spam-Score: 13.79
-X-Rspamd-Queue-Id: 6E9601FDAC
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8404:EE_|AM8PR04MB7284:EE_
+X-MS-Office365-Filtering-Correlation-Id: b65f4cc2-151d-40a7-1488-08dbf7ce0a76
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZrXe8j2kBqzXrDliF+KkSy+aN8+GW7qBWkYK50FpDMliEng+VeOiOqffXoJMtBqFxqWdv0wDufRPIxNCgp9YntiG42H19EwHjEIspmo0njutYaKyeqqTE28QrOFDKA4vO/hzXyRiCV3Du+Y40KlGEMC5d7wu4pX3aJREvSGEQ4VdBIPAdfwYdbjCj/z91AhfdLfs+rIRMQG/R8oybXHbDjHfjoxuaWAlOc6YRL+sfqUbweNR5eybcIJJQxdiumTnjvYf7d/XZ2kBYB5zePLWIiErGUSyQpO7LsYyIUyFWfVesa6LUCoRJz9xdLidEncdIyouUlgLirGFzyM7q2SSwMP3E+3skpGybOcOHyfnfK/KeMXjGG7ijTELMliqd2z0EAqJP7kbWt/5+PkQGR7ZMckkKRkLb628AEilyNz+KtzhM6xmSir7xM2WYCNvZ1frizf+Jp9jIecWUFvF0e9zGE5qUKJEH8azxml53BZ0G6vo/WMICBKBZ2JyH39muUjrrL5sleQiuuN+oQQa47OOP0Kmahpd6ztqCpK4NE317j4FaLPyQA/UGUqPKYckJy/2EitPc/DFTaorkhKLUe8MvmtMjflEiRDMumxXzO/0bMPEzTs5WKTnEtq8hiyY+DepIHxv+251ur0JJ0mgAfCKhQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8404.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(396003)(136003)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(8936002)(1076003)(26005)(2616005)(52116002)(6506007)(6512007)(5660300002)(6666004)(4326008)(44832011)(41300700001)(2906002)(7416002)(4744005)(6486002)(478600001)(316002)(66946007)(66476007)(66556008)(8676002)(86362001)(36756003)(38100700002)(38350700005)(921008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GnJpyv1C38bbYEaiLEqdQSlEENAEJCBxDrVLaSmHhNuHSNoaNCH1s2xlsxyo?=
+ =?us-ascii?Q?9oUJn/u5O1B02RacfdqR0sxxkU0ucVxITOff5b+2X55xjsRLwBaGqlDGz8sq?=
+ =?us-ascii?Q?Cv3rOu3P9ZiIeMIlgO8+yQ/KwhufmikGtBKL6K/wZ6gf6iYpro6TzhRqivOL?=
+ =?us-ascii?Q?hlCISVPvHH/5S2XWkDXhJdNwhmoA5V/0qMTchqRVPICU8riIJ611SuYal5Vy?=
+ =?us-ascii?Q?tT/DB1NYYVlTJITUJSDWQ2ZiZdOALqkHeK70DtQNOiNFRN6oXGksocs3DPpZ?=
+ =?us-ascii?Q?R1YOkCOKChv7/4NnW2vyzb+Z6ufmJQdmR8m9LMTT+gw/KUkhI6liyO3ZsYyj?=
+ =?us-ascii?Q?ItagF2uxKztytGm+O28ZbJGdPz9/KUGPvCzc6DOkJngbeQYrJyr74gVaA5fS?=
+ =?us-ascii?Q?2PLWhyHfaIYzsnBaBpjdGh4mPmE0GAywCJIAqmGabnM1+vTGK4ig9p2rJzER?=
+ =?us-ascii?Q?8olxhIJ8FXTXuKAfjDCnL58+cNs809LIieVi9n6t5JbdUMne/fCXGREUQeTP?=
+ =?us-ascii?Q?H+DzQAE+kS3ytfdKAIkpW1swmYJMlJyk0+HGt/OD5zuo8/PLEMIo0NQ0S4Wi?=
+ =?us-ascii?Q?ID6i43ysmhPEzuAbEysPpWUC6kwWJ+hSMsn84IYxluM3YTZKeucYHqe8hji3?=
+ =?us-ascii?Q?fnOnp+N1mQuq1L/58KSzzoAdBpCjQeiubOO4Vy2rWm2DF6+dGKjWsW0swxth?=
+ =?us-ascii?Q?uobRt/CV0YLdN+fA/WfzhvhCH3JgXWtwHYUt+3720YbQ62RXNH4NTuSC7/d8?=
+ =?us-ascii?Q?EgB0Xgko15MSwdQpcu8EnSEeXxHYCVOu3F7K+VYrbE0WtflhaLH+zSOb4Qf5?=
+ =?us-ascii?Q?bcDwvyZVnHWlvxKaICbx+hD934ogdw6D9CIrGIIXp6gS6ixH3Mf+m3rM9Ybc?=
+ =?us-ascii?Q?/MK4tZaSx6pyL6habTuRdzq0em0dKhYhx/kQe4a79d5gZEF5y/90YcyM5pKA?=
+ =?us-ascii?Q?hwPTadh2uiBvWmPpXC7ERCw4NBU9Ji46zDcvb5Jx3GvFSaWFNSjPNxETjasS?=
+ =?us-ascii?Q?HKtbcPAx+CdDWPfxfd01W9fVDZjZK34lzWgdrXf7bdlwZqbJ+5QwksVKXNU8?=
+ =?us-ascii?Q?Z5cKL+/tTqRlqMoBPfmVmzg6A7qfEArHBG9TIvqyNzsWdw4nHDAUX7w1NGMc?=
+ =?us-ascii?Q?4xX8MaGhCin9VPOI2/hL7aapR9RBB6u1dxV/rG8giPlp/m9+b62ZcQRwd+OT?=
+ =?us-ascii?Q?wWzu0PKHa1LusEIPEPT1XOUckVQT27/YNMTi3ob9nRKhzTJxOTLCwZfsWOsi?=
+ =?us-ascii?Q?6B9EPb7QUAGhIRC/vBv+Nsu0dcR7NZJiFYO/sAqFVB2Tf8LfRikBhxWrEGuW?=
+ =?us-ascii?Q?M9hkCJkae6YwgCVCl/3cBxMuEtwebvlHSjvujiH09uEyd608i+cEAwj2fxy5?=
+ =?us-ascii?Q?es1doFlwL9Tk/ZVmoM+JeO7KBsjQKlQUVDv/gmr/8dosbSSO11xPtrwfBsZ7?=
+ =?us-ascii?Q?4SxRdgWIrhoNApSWkJwrDaKTfLScRzZdgdKmZsFCxC/QxYWKWzXOsIoBov+D?=
+ =?us-ascii?Q?6wJnOkXCUPF+WMJglh3f6+kGatfhmEHASGfSc1VTQa/u1CC5eM5rZ2wqGavw?=
+ =?us-ascii?Q?VEV4o22D/6ZlZoDwuduCYtrbslp3310Ni44a+E51?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b65f4cc2-151d-40a7-1488-08dbf7ce0a76
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8404.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 09:14:11.7758
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WbXpigSOQiwUpSvARZV3Bfg6weBLAZZ6RYzOMChG0TSPzKth7eS+fKe9xxgLA69qXRKpZkjyY90U+4LDTc+hHQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7284
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,22 +116,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 09:44:58AM -0700, Keith Busch wrote:
-> On Thu, Dec 07, 2023 at 01:36:23PM +0100, Daniel Wagner wrote:
-> > @@ -3418,6 +3419,7 @@ static struct nvme_ns_head *nvme_alloc_ns_head(struct nvme_ctrl *ctrl,
-> >  	head->ns_id = info->nsid;
-> >  	head->ids = info->ids;
-> >  	head->shared = info->is_shared;
-> > +	ratelimit_state_init(&head->rs_nuse, 5 * HZ, 1);
-> >  	kref_init(&head->ref);
-> 
-> I think we need to add:
-> 
-> 	ratelimit_set_flags(&head->rs_nuse, RATELIMIT_MSG_ON_RELEASE);	
-> 
-> So that we don't get periodic messages like:
-> 
-> 	[   60.469730] ns_head_update_nuse: 39 callbacks suppressed
-> 	[  159.532901] ns_head_update_nuse: 1999 callbacks suppressed
+Add pci host wakeup feature for imx platforms. The host wake pin is a
+standard feature in the PCIe bus specification, so we can add this
+property under PCI dts node to support the host gpio wakeup feature.
 
-Good idea. I'll add this.
+Example of configuring the corresponding dts property under the PCI node:
+    host-wake-gpio = <&gpio5 21 GPIO_ACTIVE_LOW>;
+
+Sherry Sun (4):
+  PCI: imx6: Add pci host wakeup support on imx platforms.
+  dt-bindings: imx6q-pcie: Add host-wake-gpio property
+  arm64: dts: imx8mp-evk: add host-wake-gpio property for pci bus
+  arm64: dts: imx8mq-evk: add host-wake-gpio property for pci bus
+
+ .../bindings/pci/fsl,imx6q-pcie.yaml          |  4 ++
+ arch/arm64/boot/dts/freescale/imx8mp-evk.dts  |  2 +
+ arch/arm64/boot/dts/freescale/imx8mq-evk.dts  |  2 +
+ drivers/pci/controller/dwc/pci-imx6.c         | 69 +++++++++++++++++++
+ 4 files changed, 77 insertions(+)
+
+-- 
+2.34.1
+
