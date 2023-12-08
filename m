@@ -2,50 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C0E80ACCB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7317A80ACC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233840AbjLHTUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 14:20:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35182 "EHLO
+        id S1574665AbjLHTTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 14:19:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjLHTUj (ORCPT
+        with ESMTP id S1574649AbjLHTTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 14:20:39 -0500
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B3510F8;
-        Fri,  8 Dec 2023 11:20:45 -0800 (PST)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id f217744729342198; Fri, 8 Dec 2023 20:20:43 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 5FC206688FC;
-        Fri,  8 Dec 2023 20:20:43 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: [PATCH v1 2/3] thermal: Drop redundant and confusing device_is_registered() checks
-Date:   Fri, 08 Dec 2023 20:19:03 +0100
-Message-ID: <8315317.T7Z3S40VBb@kreacher>
-In-Reply-To: <1880915.tdWV9SEqCh@kreacher>
-References: <1880915.tdWV9SEqCh@kreacher>
+        Fri, 8 Dec 2023 14:19:14 -0500
+Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D4410EF
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:19:20 -0800 (PST)
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from shine.dominikbrodowski.net (shine.brodo.linta [10.2.0.112])
+        by isilmar-4.linta.de (Postfix) with ESMTPSA id EB8CE20157B;
+        Fri,  8 Dec 2023 19:19:17 +0000 (UTC)
+Received: by shine.dominikbrodowski.net (Postfix, from userid 1000)
+        id 267DCA0081; Fri,  8 Dec 2023 20:19:08 +0100 (CET)
+Date:   Fri, 8 Dec 2023 20:19:08 +0100
+From:   Dominik Brodowski <linux@dominikbrodowski.net>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Kalle Valo <kvalo@kernel.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        linux-arm-kernel@lists.infradead.org,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, kernel@pengutronix.de
+Subject: Re: [PATCH 0/7] pcmcia: Convert to platform remove callback
+ returning void
+Message-ID: <ZXNsLJfqs9DLHb1Q@shine.dominikbrodowski.net>
+References: <cover.1702051073.git.u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudekiedguddvgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgt
- phhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1702051073.git.u.kleine-koenig@pengutronix.de>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
@@ -55,216 +70,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Am Fri, Dec 08, 2023 at 05:08:05PM +0100 schrieb Uwe Kleine-König:
+> Hello,
+> 
+> this series changes all platform drivers in drivers/pcmcia to use the
+> .remove_new() callback. See commit 5c5a7680e67b ("platform: Provide a
+> remove callback that returns no value") for an extended explanation and
+> the eventual goal.
+> 
+> All conversations are trivial, because all .remove() callbacks returned
+> zero unconditionally already.
+> 
+> There are no interdependencies between these patches, so they could be
+> picked up individually. However I'd expect them to go in all together.
+> It's unclrear to me though, who will pick them up. Dominik? Greg?
 
-Multiple places in the thermal subsystem (most importantly, sysfs
-attribute callback functions) check if the given thermal zone device is
-still registered in order to return early in case the device_del() in
-thermal_zone_device_unregister() has run already.
+Both options are fine with me. In the latter case:
 
-However, after thermal_zone_device_unregister() has been made wait for
-all of the zone-related activity to complete before returning, it is
-not necessary to do that any more, because all of the code holding a
-reference to the thermal zone device object will be waited for even if
-it does not do anything special to enforce this.
+	Acked-by: Dominik Brodowski <linux@dominikbrodowski.net>
 
-Accordingly, drop all of the device_is_registered() checks that are now
-redundant and get rid of the zone locking that is not necessary any more
-after dropping them.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/thermal_core.c    |    9 -----
- drivers/thermal/thermal_helpers.c |    5 ---
- drivers/thermal/thermal_hwmon.c   |    5 ---
- drivers/thermal/thermal_sysfs.c   |   60 +++-----------------------------------
- 4 files changed, 7 insertions(+), 72 deletions(-)
-
-Index: linux-pm/drivers/thermal/thermal_sysfs.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_sysfs.c
-+++ linux-pm/drivers/thermal/thermal_sysfs.c
-@@ -83,24 +83,12 @@ trip_point_type_show(struct device *dev,
- 		     char *buf)
- {
- 	struct thermal_zone_device *tz = to_thermal_zone(dev);
--	enum thermal_trip_type type;
- 	int trip_id;
- 
- 	if (sscanf(attr->attr.name, "trip_point_%d_type", &trip_id) != 1)
- 		return -EINVAL;
- 
--	mutex_lock(&tz->lock);
--
--	if (!device_is_registered(dev)) {
--		mutex_unlock(&tz->lock);
--		return -ENODEV;
--	}
--
--	type = tz->trips[trip_id].type;
--
--	mutex_unlock(&tz->lock);
--
--	switch (type) {
-+	switch (tz->trips[trip_id].type) {
- 	case THERMAL_TRIP_CRITICAL:
- 		return sprintf(buf, "critical\n");
- 	case THERMAL_TRIP_HOT:
-@@ -132,11 +120,6 @@ trip_point_temp_store(struct device *dev
- 
- 	mutex_lock(&tz->lock);
- 
--	if (!device_is_registered(dev)) {
--		ret = -ENODEV;
--		goto unlock;
--	}
--
- 	trip = &tz->trips[trip_id];
- 
- 	if (temp != trip->temperature) {
-@@ -162,23 +145,12 @@ trip_point_temp_show(struct device *dev,
- 		     char *buf)
- {
- 	struct thermal_zone_device *tz = to_thermal_zone(dev);
--	int trip_id, temp;
-+	int trip_id;
- 
- 	if (sscanf(attr->attr.name, "trip_point_%d_temp", &trip_id) != 1)
- 		return -EINVAL;
- 
--	mutex_lock(&tz->lock);
--
--	if (!device_is_registered(dev)) {
--		mutex_unlock(&tz->lock);
--		return -ENODEV;
--	}
--
--	temp = tz->trips[trip_id].temperature;
--
--	mutex_unlock(&tz->lock);
--
--	return sprintf(buf, "%d\n", temp);
-+	return sprintf(buf, "%d\n", tz->trips[trip_id].temperature);
- }
- 
- static ssize_t
-@@ -199,11 +171,6 @@ trip_point_hyst_store(struct device *dev
- 
- 	mutex_lock(&tz->lock);
- 
--	if (!device_is_registered(dev)) {
--		ret = -ENODEV;
--		goto unlock;
--	}
--
- 	trip = &tz->trips[trip_id];
- 
- 	if (hyst != trip->hysteresis) {
-@@ -229,23 +196,12 @@ trip_point_hyst_show(struct device *dev,
- 		     char *buf)
- {
- 	struct thermal_zone_device *tz = to_thermal_zone(dev);
--	int trip_id, hyst;
-+	int trip_id;
- 
- 	if (sscanf(attr->attr.name, "trip_point_%d_hyst", &trip_id) != 1)
- 		return -EINVAL;
- 
--	mutex_lock(&tz->lock);
--
--	if (!device_is_registered(dev)) {
--		mutex_unlock(&tz->lock);
--		return -ENODEV;
--	}
--
--	hyst = tz->trips[trip_id].hysteresis;
--
--	mutex_unlock(&tz->lock);
--
--	return sprintf(buf, "%d\n", hyst);
-+	return sprintf(buf, "%d\n", tz->trips[trip_id].hysteresis);
- }
- 
- static ssize_t
-@@ -294,11 +250,6 @@ emul_temp_store(struct device *dev, stru
- 
- 	mutex_lock(&tz->lock);
- 
--	if (!device_is_registered(dev)) {
--		ret = -ENODEV;
--		goto unlock;
--	}
--
- 	if (!tz->ops->set_emul_temp)
- 		tz->emul_temperature = temperature;
- 	else
-@@ -307,7 +258,6 @@ emul_temp_store(struct device *dev, stru
- 	if (!ret)
- 		__thermal_zone_device_update(tz, THERMAL_EVENT_UNSPECIFIED);
- 
--unlock:
- 	mutex_unlock(&tz->lock);
- 
- 	return ret ? ret : count;
-Index: linux-pm/drivers/thermal/thermal_core.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_core.c
-+++ linux-pm/drivers/thermal/thermal_core.c
-@@ -203,9 +203,6 @@ int thermal_zone_device_set_policy(struc
- 	mutex_lock(&thermal_governor_lock);
- 	mutex_lock(&tz->lock);
- 
--	if (!device_is_registered(&tz->device))
--		goto exit;
--
- 	gov = __find_governor(strim(policy));
- 	if (!gov)
- 		goto exit;
-@@ -471,12 +468,6 @@ static int thermal_zone_device_set_mode(
- 		return ret;
- 	}
- 
--	if (!device_is_registered(&tz->device)) {
--		mutex_unlock(&tz->lock);
--
--		return -ENODEV;
--	}
--
- 	if (tz->ops->change_mode)
- 		ret = tz->ops->change_mode(tz, mode);
- 
-Index: linux-pm/drivers/thermal/thermal_helpers.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_helpers.c
-+++ linux-pm/drivers/thermal/thermal_helpers.c
-@@ -137,10 +137,7 @@ int thermal_zone_get_temp(struct thermal
- 		goto unlock;
- 	}
- 
--	if (device_is_registered(&tz->device))
--		ret = __thermal_zone_get_temp(tz, temp);
--	else
--		ret = -ENODEV;
-+	ret = __thermal_zone_get_temp(tz, temp);
- 
- unlock:
- 	mutex_unlock(&tz->lock);
-Index: linux-pm/drivers/thermal/thermal_hwmon.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_hwmon.c
-+++ linux-pm/drivers/thermal/thermal_hwmon.c
-@@ -80,10 +80,7 @@ temp_crit_show(struct device *dev, struc
- 
- 	mutex_lock(&tz->lock);
- 
--	if (device_is_registered(&tz->device))
--		ret = tz->ops->get_crit_temp(tz, &temperature);
--	else
--		ret = -ENODEV;
-+	ret = tz->ops->get_crit_temp(tz, &temperature);
- 
- 	mutex_unlock(&tz->lock);
- 
-
-
-
+Best
+	Dominik
