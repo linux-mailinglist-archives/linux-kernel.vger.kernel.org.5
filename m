@@ -2,175 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7950780AE26
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0669280ADF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574737AbjLHUoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:44:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53524 "EHLO
+        id S1574722AbjLHUgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:36:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbjLHUoL (ORCPT
+        with ESMTP id S229772AbjLHUf7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:44:11 -0500
-X-Greylist: delayed 592 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 08 Dec 2023 12:44:17 PST
-Received: from mx.ewheeler.net (mx.ewheeler.net [173.205.220.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5A7171E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:44:17 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by mx.ewheeler.net (Postfix) with ESMTP id D933287;
-        Fri,  8 Dec 2023 12:34:24 -0800 (PST)
-X-Virus-Scanned: amavisd-new at ewheeler.net
-Received: from mx.ewheeler.net ([127.0.0.1])
-        by localhost (mx.ewheeler.net [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id tbfFGu00FUj5; Fri,  8 Dec 2023 12:34:20 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx.ewheeler.net (Postfix) with ESMTPSA id 5E03440;
-        Fri,  8 Dec 2023 12:34:20 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx.ewheeler.net 5E03440
-Date:   Fri, 8 Dec 2023 12:34:19 -0800 (PST)
-From:   Eric Wheeler <dm-devel@lists.ewheeler.net>
-To:     Hongyu Jin <hongyu.jin.cn@gmail.com>
-cc:     Eric Biggers <ebiggers@kernel.org>, agk@redhat.com,
-        snitzer@kernel.org, mpatocka@redhat.com, zhiguo.niu@unisoc.com,
-        ke.wang@unisoc.com, yibin.ding@unisoc.com, hongyu.jin@unisoc.com,
-        linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev
-Subject: Re: [PATCH v2] dm verity: Inherit I/O priority from data I/O when
- read FEC and hash from disk
-In-Reply-To: <20231208015403.GB1160@sol.localdomain>
-Message-ID: <df68c38e-3e38-eaf1-5c32-66e43d68cae3@ewheeler.net>
-References: <83e8ea6c-1d9-36d5-1c23-da686dbfaf80@redhat.com> <20231206113935.9705-1-hongyu.jin.cn@gmail.com> <20231208015403.GB1160@sol.localdomain>
+        Fri, 8 Dec 2023 15:35:59 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E962210F8;
+        Fri,  8 Dec 2023 12:36:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Vwp6H7hbWYuJntJS7kS+l0fw/Z+oOc8mMbOkVe4byro=; b=VXkjzuM/7GoObftnaEWoZgdFYY
+        L5xDBcOtO5SXticci6clYrj1K1KscYr+MoTjFYUkZz0ZWWNRoMSMcKuxO0tsaM3zEfH6eF3zU5j8O
+        cUQI6yZ66caIvr7dscGTiK/hdDneafs8+XW2NtmcUWud886gJjMgBetRpivFI+2k3nYvnsQp65YfB
+        hU4YX9RUqEib/aVz06p8+wivpoxMEz+kH1paTVnnirP857fswwl5sTiNJ8EbLZQRfKs655qDWsKpA
+        jp0nWHX5uHWgqj/v4iexBNwei3DfCgzFy0X4rATHIUUHZG65pJYjJNbS3wxpBgX7DtbfBf97DzDCW
+        GFrHBhQQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1rBhZP-006WtK-Ib; Fri, 08 Dec 2023 20:35:35 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3799630050D; Fri,  8 Dec 2023 21:35:35 +0100 (CET)
+Date:   Fri, 8 Dec 2023 21:35:35 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+        Song Liu <songliubraving@meta.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joao Moreira <joao@overdrivepizza.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231208203535.GG36716@noisy.programming.kicks-ass.net>
+References: <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+ <20231206163814.GB36423@noisy.programming.kicks-ass.net>
+ <20231206183713.GA35897@noisy.programming.kicks-ass.net>
+ <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
+ <20231207093105.GA28727@noisy.programming.kicks-ass.net>
+ <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
+ <20231208102940.GB28727@noisy.programming.kicks-ass.net>
+ <20231208134041.GD28727@noisy.programming.kicks-ass.net>
+ <20231208172152.GD36716@noisy.programming.kicks-ass.net>
+ <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Dec 2023, Eric Biggers wrote:
-> On Wed, Dec 06, 2023 at 07:39:35PM +0800, Hongyu Jin wrote:
-> > From: Hongyu Jin <hongyu.jin@unisoc.com>
-> > 
-> > when read FEC and hash from disk, I/O priority are inconsistent
-> >  with data block and blocked by other I/O with low I/O priority.
-> > 
-> > Add dm_bufio_prefetch_by_ioprio() and dm_bufio_read_by_ioprio(),
-> > can pecific I/O priority for some I/O.
-> > Make I/O for FEC and hash has same I/O priority with data I/O.
+On Fri, Dec 08, 2023 at 11:40:27AM -0800, Alexei Starovoitov wrote:
 
-Hi Hongyu,
+> typedef void (*btf_dtor_kfunc_t)(void *);
+>         btf_dtor_kfunc_t dtor;
+> but the bpf_cgroup_release takes 'struct cgroup*'.
+> From kcfi pov void * == struct cgroup * ?
+> Do we need to change it to 'void *cgrp' ?
 
-+1 for the feature, thank you for cleaning up ioprio in device mapper! 
+Yes, doing that naively like the below, gets me lovely things like:
 
-A few years ago we proposed a similar prior patch in dm-crypt; however, it 
-was never committed, and I did not have the time to shepherd it through.
-Maybe this has since been addressed in some other way, or perhaps your 
-work solves what we were doing with dm-crypt; either way, here is the 
-link to that thread incase it is relevant to your work:
-	https://www.mail-archive.com/dm-devel@redhat.com/msg03828.html
-
-I look forward to seeing all (or at least the most common) device mapper 
-targets cleanly support ioprio.
-
-Cheers,
-
---
-Eric Wheeler
+validate_case:FAIL:expect_msg unexpected error: -22
+VERIFIER LOG:
+=============
+=============
+EXPECTED MSG: 'Possibly NULL pointer passed to trusted arg0'
+#48/7    cgrp_kfunc/cgrp_kfunc_acquire_untrusted:FAIL
+run_subtest:PASS:obj_open_mem 0 nsec
+libbpf: extern (func ksym) 'bpf_cgroup_release': func_proto [148] incompatible with vmlinux [125610]
+libbpf: failed to load object 'cgrp_kfunc_failure'
 
 
+But let me try rebuilding everything..
 
 
-> > Co-developed-by: Yibin Ding <yibin.ding@unisoc.com>
-> > Signed-off-by: Yibin Ding <yibin.ding@unisoc.com>
-> > Signed-off-by: Hongyu Jin <hongyu.jin@unisoc.com>
-> > 
-> > ---
-> > Changes in v2:
-> >   - Add ioprio field in struct dm_io_region
-> >   - Initial struct dm_io_region::ioprio to IOPRIO_DEFAULT
-> >   - Add two interface
-> > ---
-> >  drivers/md/dm-bufio.c           | 50 ++++++++++++++++++++++-----------
-> >  drivers/md/dm-integrity.c       |  5 ++++
-> >  drivers/md/dm-io.c              |  1 +
-> >  drivers/md/dm-log.c             |  1 +
-> >  drivers/md/dm-raid1.c           |  2 ++
-> >  drivers/md/dm-snap-persistent.c |  2 ++
-> >  drivers/md/dm-verity-fec.c      |  3 +-
-> >  drivers/md/dm-verity-target.c   | 10 +++++--
-> >  drivers/md/dm-writecache.c      |  4 +++
-> >  include/linux/dm-bufio.h        |  6 ++++
-> >  include/linux/dm-io.h           |  2 ++
-> >  11 files changed, 66 insertions(+), 20 deletions(-)
-> 
-> Changing so many things in one patch should be avoided if possible.  Is there a
-> way to split this patch up?  Maybe first add ioprio support to dm-io, then add
-> ioprio support to dm-bufio, then make dm-verity set the correct ioprio?
-> 
-> >  void *dm_bufio_read(struct dm_bufio_client *c, sector_t block,
-> >  		    struct dm_buffer **bp)
-> > +{
-> > +	return dm_bufio_read_by_ioprio(c, block, bp, IOPRIO_DEFAULT);
-> > +}
-> > +EXPORT_SYMBOL_GPL(dm_bufio_read);
-> > +
-> > +void *dm_bufio_read_by_ioprio(struct dm_bufio_client *c, sector_t block,
-> > +		    struct dm_buffer **bp, unsigned short ioprio)
-> >  {
-> >  	if (WARN_ON_ONCE(dm_bufio_in_request()))
-> >  		return ERR_PTR(-EINVAL);
-> >  
-> > -	return new_read(c, block, NF_READ, bp);
-> > +	return new_read(c, block, NF_READ, bp, ioprio);
-> >  }
-> > -EXPORT_SYMBOL_GPL(dm_bufio_read);
-> > +EXPORT_SYMBOL_GPL(dm_bufio_read_by_ioprio);
-> >  
-> >  void *dm_bufio_new(struct dm_bufio_client *c, sector_t block,
-> >  		   struct dm_buffer **bp)
-> > @@ -1909,12 +1918,19 @@ void *dm_bufio_new(struct dm_bufio_client *c, sector_t block,
-> >  	if (WARN_ON_ONCE(dm_bufio_in_request()))
-> >  		return ERR_PTR(-EINVAL);
-> >  
-> > -	return new_read(c, block, NF_FRESH, bp);
-> > +	return new_read(c, block, NF_FRESH, bp, IOPRIO_DEFAULT);
-> >  }
-> >  EXPORT_SYMBOL_GPL(dm_bufio_new);
-> >  
-> >  void dm_bufio_prefetch(struct dm_bufio_client *c,
-> >  		       sector_t block, unsigned int n_blocks)
-> > +{
-> > +	return dm_bufio_prefetch_by_ioprio(c, block, n_blocks, IOPRIO_DEFAULT);
-> > +}
-> > +EXPORT_SYMBOL_GPL(dm_bufio_prefetch);
-> > +
-> > +void dm_bufio_prefetch_by_ioprio(struct dm_bufio_client *c,
-> > +		       sector_t block, unsigned int n_blocks, unsigned short ioprio)
-> 
-> I think it would be cleaner to just add the ioprio parameter to dm_bufio_read()
-> and dm_bufio_prefetch(), instead of adding new functions.
-> 
-> > diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
-> > index 26adcfea0302..5945ac1dfdff 100644
-> > --- a/drivers/md/dm-verity-target.c
-> > +++ b/drivers/md/dm-verity-target.c
-> > @@ -51,6 +51,7 @@ static DEFINE_STATIC_KEY_FALSE(use_tasklet_enabled);
-> >  struct dm_verity_prefetch_work {
-> >  	struct work_struct work;
-> >  	struct dm_verity *v;
-> > +	struct dm_verity_io *io;
-> >  	sector_t block;
-> >  	unsigned int n_blocks;
-> >  };
-> 
-> Isn't it possible for 'io' to complete and be freed while the prefetch work is
-> still running?
-> 
-> - Eric
-> 
-> 
+---
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index b3be5742d6f1..078b207af7f0 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2145,10 +2145,11 @@ __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *p)
+  * bpf_task_release - Release the reference acquired on a task.
+  * @p: The task on which a reference is being released.
+  */
+-__bpf_kfunc void bpf_task_release(struct task_struct *p)
++__bpf_kfunc void bpf_task_release(void *p)
+ {
+ 	put_task_struct_rcu_user(p);
+ }
++EXPORT_SYMBOL_GPL(bpf_task_release);
+ 
+ #ifdef CONFIG_CGROUPS
+ /**
+@@ -2169,10 +2170,11 @@ __bpf_kfunc struct cgroup *bpf_cgroup_acquire(struct cgroup *cgrp)
+  * drops to 0.
+  * @cgrp: The cgroup on which a reference is being released.
+  */
+-__bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
++__bpf_kfunc void bpf_cgroup_release(void *cgrp)
+ {
+ 	cgroup_put(cgrp);
+ }
++EXPORT_SYMBOL_GPL(bpf_cgroup_release);
+ 
+ /**
+  * bpf_cgroup_ancestor - Perform a lookup on an entry in a cgroup's ancestor
