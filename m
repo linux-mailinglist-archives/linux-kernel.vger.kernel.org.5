@@ -2,214 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D6F80A548
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D49980A54A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573935AbjLHOTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 09:19:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
+        id S1573937AbjLHOUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 09:20:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573933AbjLHOTL (ORCPT
+        with ESMTP id S1573924AbjLHOUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 09:19:11 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061.outbound.protection.outlook.com [40.107.93.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D5F198D;
-        Fri,  8 Dec 2023 06:19:17 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eJC1pI8KZTiJ4vFoBnLTIMetueCU0UeKFQnRPGrICn02zLl6knG4qa3x3zQJyEZjxVaBh9bxrP1CC2QM1QMR+9MrebIHHQdDpyrMympLPzBqueJM2rDFe2UR0M34UQkETU2aDeUAwxePCDBj38VdPoLiRLpmSHzT8DkeLnhVNJY9zqNFBaAlWvVbAd+KK3AgYhK3oigOXErmGfpNLlVAZhrr0dPzQJ6pGJRhsGQ6V+Ytcc0JkI0CxhT/X4ysHSj7aBNBg/6BN9oVUN4lzH+uWXNkuHcA311FTFnzc9wDzfWyzKzDg5P3baMB9dA7CNaHG8HX7hynkGdbib+Ylaa6Vg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bb9ZJh8+GcdP3auO87OneF8Of3tRYgY0DH/bpkyL2Xg=;
- b=FYJZrRIMJKg988vIorglKVgoG1e11qNdMvrQeF9qufe4xszXxicLM0kbTStyD+HbvlGiXdBNsgo7GyLLhbuf10/a1kPeD/VEQPWmfmI5Ge3hgyiQrYRUfDuCH70ToVtWy9QjkBVxtHEICvp+igmfLaAq6/rCL3M7kNRpwTwPY9HNgau8M4Ur4SX2NkPanTaDtD8qGL8donK4YIVpNmHp3KWKQ6jype/hrN7W2a/VBeqSN56E2pbK/VsxEHink/u+V0CLFx05us4toaGb4bMSd4gInOFmEk1XCFxjfzgLdrG4VeEi22Vt+SOUKbj6Vylq7XWwMwz0Qu6O9XSyRfFvHw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bb9ZJh8+GcdP3auO87OneF8Of3tRYgY0DH/bpkyL2Xg=;
- b=m54+ynBikHdjbnnhlNU3jItVFPu8CjDRj08TS9OH2hphSSQTYQpLdTSTg/NEm4zYxw1zjuxUn6+Vvu67noIReBtsQjgK+CMqAzwk/wbGuiVWSwvga+NqZ847rIKruA6IZM6BQLFDvmKzhLiqU3rzb+w843z1eTBz9gtPa5mISpkugUGgO/kvad/BqCov3J7HG2SYHB+w1wsn0nuAFqC2yZsvWDjCBMLAcBVaYUZQnp+cqwl8R8g5/RVDYomrnPnjqO/d9eWohLLzIjQKfGkNaYGzh5FTjmCeUog4KWfP5BEyiDuZy4nhEBcHAOZyfM8Sqt5y5S/BA+KOI5qqa1ffpw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM8PR12MB5446.namprd12.prod.outlook.com (2603:10b6:8:3c::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.28; Fri, 8 Dec
- 2023 14:19:12 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.038; Fri, 8 Dec 2023
- 14:19:12 +0000
-Date:   Fri, 8 Dec 2023 10:19:11 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Leon Romanovsky <leonro@nvidia.com>
-Subject: [GIT PULL] Please pull RDMA subsystem changes
-Message-ID: <20231208141911.GA2934372@nvidia.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="BDpsy6xeZP2reSL4"
-Content-Disposition: inline
-X-ClientProxiedBy: MN2PR01CA0040.prod.exchangelabs.com (2603:10b6:208:23f::9)
- To LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+        Fri, 8 Dec 2023 09:20:01 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFD8171D;
+        Fri,  8 Dec 2023 06:20:07 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702045206;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xflaWiDw7kr8d/dlbv/fd4pzj3NI4pM3Ha1Gv1hGpME=;
+        b=xqAI9Q7p3eiImDPsYb3EgsmFw2FY4OUext9dxB4kvC+RGzJDOzzxV8/A1wrZAtU/f5dKS8
+        MaZPEr64Dqr691qS0QXo/2FsEo+hSSEU/blc0/lmaDDaTSS13dyEDHpBmd7lR2wQ61VTXO
+        5kevTVfzsbLzZh1XBlIOGO32ogydca3CgoFIBnw14Ia/+6AQzLdqhGWiEsa+PUsUFc7e9e
+        Bep+2+JbDnQPz32EFRTOl09He+JIs74SI23GBxDA/zIYiGwR1Df/FUHbkCOaLCw5xnXKx7
+        gkVTiApYhHW+vhswvyD3q/4YUfbMYl1ikBVJiWP/Kqmq9BqLeGFSsm0/78i+Hw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702045206;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xflaWiDw7kr8d/dlbv/fd4pzj3NI4pM3Ha1Gv1hGpME=;
+        b=5/kaQb7/CisTC8SQuhbs5tQNRgtR1GoYBHF2P6cjQpotgD6wB8Rrfhb6lX+oh5uEnpcYP9
+        VVagnqz7i2+sTyDA==
+To:     Binbin Zhou <zhoubinbin@loongson.cn>,
+        Binbin Zhou <zhoubb.aaron@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, lvjianmin@loongson.cn,
+        WANG Xuerui <git@xen0n.name>, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: Re: [PATCH v5 4/5] irqchip/loongson-liointc: Fix
+ 'loongson,parent_int_map' parse
+In-Reply-To: <fc9b3afaf8826fd437ba91397eb7fa231db2c05c.1700449792.git.zhoubinbin@loongson.cn>
+References: <cover.1700449792.git.zhoubinbin@loongson.cn>
+ <fc9b3afaf8826fd437ba91397eb7fa231db2c05c.1700449792.git.zhoubinbin@loongson.cn>
+Date:   Fri, 08 Dec 2023 15:20:06 +0100
+Message-ID: <87lea4srmx.ffs@tglx>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM8PR12MB5446:EE_
-X-MS-Office365-Filtering-Correlation-Id: 287e9dc4-6afe-46c9-bf6a-08dbf7f8a690
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: b7GqgegKeMs7hY/8iio0vxEtfvFrZmCAYaguUGCSmlDEq58HZitie/1y/by2yNoyUd7pCJm411Vf19TvAEEof4vAFyWq3V/T8q6un3zm8SoWPCTZkD274dOkhrilL+VXQItc3YlwOAGXe83J9/99d8F0lO3Qf7Q6VzwAFlMbweMtT4F75ocnlVWVAr17yYmfN3mVRynnfjfQaufyyc53WxfDEkmXIx3I8xH3nkI29WfazbSVJGU7/SkX5+5uoH/Cl38/+Fv9ZFz/6vZUMKGAXl164TMxzLi+Z1839V2gBsl6076tctFSuq1r+8jSs739DVuUAj2E1UxR1jJYTxzcQBXnvRJgYLggMBE0l6z2C5dKzHu8p2/Y7Y5joeKCuzDNCElKZ80hhz+mVOZec8/9q1CI61oKxVBOvQoXxEyUS2BErJV+SQIijHCvjMluY22xlef96ua3uOacQAeLKEhZqbAZMTHGXnEqUcTRLOmWkxVhuVRl8n+fvRLmoRWjoCLljaWKCQj26h2JPcTLKIn7x2Z+BGOp6TPhNTR5Iv+outzGInFE1CmOJfRtfDJDWoK93pzjdpkEEAAYXFjFLeKWyNVGY0VkO+HthNw/X/HlCQJwGL+kiMjg4ITzP4UHXFJCrwg+c9yncTH6yQp7LY1sgiHyMKz6OZqNY22o4ivD/Fc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(366004)(376002)(230273577357003)(230173577357003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(6486002)(478600001)(66946007)(66556008)(66476007)(38100700002)(6916009)(6512007)(83380400001)(26005)(21480400003)(316002)(6506007)(107886003)(1076003)(2616005)(44144004)(4001150100001)(2906002)(8676002)(8936002)(4326008)(86362001)(5660300002)(33656002)(36756003)(41300700001)(2700100001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dglgB6chxvJkpr7Hq/qlB7kNpVeT3OjPdv8ay67TpzJG1jXpnaX+d+XZSe2f?=
- =?us-ascii?Q?qa7pzluS/M9fJhuCnouX/SBI251sZAGYX2NI3Poth6WVyTdTqBfb+dbwhYfv?=
- =?us-ascii?Q?K8bFE3NgYsBwC6w3eQiBMj3tsPOfqSJs5t6EMKtd7haorpFmHOGIoZ4gGMKj?=
- =?us-ascii?Q?5yjambGCNStxyqL3sPKqT+faHJjUI1gAWu9Q80XQ2EHx4CF1Xge4aw0g17lB?=
- =?us-ascii?Q?cRXhZh21M7x48h7opd7alPsmbm/SGslySHufk/EfLnp41HZKYBvHsySwETdB?=
- =?us-ascii?Q?4IgT9goPCf89o5agHtLJ+J9wv7fMElH4PGegBhBM6Ghkv0BPkX2qyh/0av1K?=
- =?us-ascii?Q?pHJHbckY3WTWnLgB5i3KCuWJ2ZuDukX7YmJAlpW4cPOOccrXQXMxKlxUoCRT?=
- =?us-ascii?Q?I5wzHvnnJOd97MwcCfGgaJbjVIh21PWi+yR08kgXC8r53NlXUwkKIySxpcNL?=
- =?us-ascii?Q?QayOAOn01qxUeiIRJ5N+Mx3a19OZUlh20PhI5ml/rKdjT/4vkmSSsl9MnT9W?=
- =?us-ascii?Q?zAvAssvGXbcGwQ8WfA84Ai2pHLY8b/gJpKEFEowr/X0U0Yx6SxXeyLgvnFOS?=
- =?us-ascii?Q?grMWG5gf/+kl+RHbUqfubbM13juQJw7zFSWjWkw0XpKT+5lDGDT2G68IdHMh?=
- =?us-ascii?Q?QxhcZJp00WbiAnB+QP4jFJpCoRk3lWKu/kaoPPeQzgL31tyzWawuHXHakBne?=
- =?us-ascii?Q?jGGCI8ueOjR8CQSwQtvoF0sgG6tTplacswtYuX7ln3kwu1UiRcBjqOq4DAuB?=
- =?us-ascii?Q?fe36mizhXiIBaOTaMN6GP3blOHNd6351pzV43G8F1SkMfTSTL9/z1ep3vMAL?=
- =?us-ascii?Q?gPYBwnwvpw70n9oq075AAK0bu6Em7ho60yCI2bOcjJTkRNIqgmWAAcV589KU?=
- =?us-ascii?Q?IaGQb5rC9ONFGYB1/6L07vVtFEE0DUM31JdMNBSji5TPYGap08Tj/TVXDj6A?=
- =?us-ascii?Q?qX4HI+o62Xwfoxq0DXRYaCvH0esvY5RjmVL1IPizhd3lwc1L9c1aA6qIjCjI?=
- =?us-ascii?Q?d71KD+A4OmIRUCPD0EJ8Oh6NpqZhYYL4ilb7oZOjNegwXBg0Ia2bgUPuw3Kr?=
- =?us-ascii?Q?x+vkx47s/SBj4F0EJbdTvLhxlgb54xxz/zmovI+OoHgBoNpvzF9nqf2JXIHx?=
- =?us-ascii?Q?nxtmgS0aPwI5HlchBimULIPafiWl80465ZNKaqYJw07jpMlbqM1hsJXZWzZP?=
- =?us-ascii?Q?ybfM1AxYvT/uQptoONaEj1TumSJUt9cebxVYMB1hJ8M2wAOJ+9RVnefzj7DI?=
- =?us-ascii?Q?VlLwtIolZtx1uegaeHXCO+KTyRqOnmQMuGwO6x/VsV+JsxywESjzagqNtCWU?=
- =?us-ascii?Q?g3JfnjTXy9FVKYmIaemA/Y93v8I91BZt+dDkzOz78Tx8JRH+eiMFjiJGVdT5?=
- =?us-ascii?Q?iDjAWHF2JTnQ5RGRxTA14Kzca9SA9CgaV0Yh8XKmT6GYPbaZjtt/FUXz+0p2?=
- =?us-ascii?Q?lrh6QxZjWBBTKer4NSDs/PcDFPSYYPEfpmDzIqb6GZ7lLU5r2ifAtKD4YMPC?=
- =?us-ascii?Q?HM6oNd1al87x0m5yEOZVVBpOyEG1MJue4DU6yUOS9LvNZGqRT4doQG4d6ORf?=
- =?us-ascii?Q?AsYLz/kmzeasVfgaF1m++QrppqmSm7CO45Trytqn?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 287e9dc4-6afe-46c9-bf6a-08dbf7f8a690
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 14:19:12.2882
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2Z75gZjvvEZLnBRDICrI/VlO1AM4hahohlJ2G3z9UCvaydsTv1+lrqsWwkHAugPV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5446
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAD_CREDIT,BAYES_00,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---BDpsy6xeZP2reSL4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Mon, Nov 20 2023 at 17:06, Binbin Zhou wrote:
 
-Hi Linus,
+$Subject: s/parse/parsing/
 
-Batch of RC fixes. Probably the last till next year, thanks
+> In keeping with naming standards, 'loongson,parent_int_map' is renamed
+> to 'loongson,parent-int-map'. But for the driver, we need to make sure
+> that both forms can be parsed.
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+Please keep changelogs in neutral or imperative tone:
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+  For backwards compatibility it is required to parse the original
+  string too.
 
-are available in the Git repository at:
+Makes it entirely clear what this is about without 'we'. See also:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+  https://www.kernel.org/doc/html/latest/process/submitting-patches.rst 
 
-for you to fetch changes up to e3e82fcb79eeb3f1a88a89f676831773caff514a:
+> Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> Acked-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Reviewed-by: Huacai Chen <chenhuacai@loongson.cn>
+> ---
+>  drivers/irqchip/irq-loongson-liointc.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
+> index e4b33aed1c97..add2e0a955b8 100644
+> --- a/drivers/irqchip/irq-loongson-liointc.c
+> +++ b/drivers/irqchip/irq-loongson-liointc.c
+> @@ -330,6 +330,7 @@ static int __init liointc_of_init(struct device_node *node,
+>  	bool have_parent = FALSE;
+>  	int sz, i, index, revision, err = 0;
+>  	struct resource res;
+> +	const char *prop_name = "loongson,parent-int-map";
 
-  RDMA/irdma: Avoid free the non-cqp_request scratch (2023-12-04 20:02:41 -0400)
+Please don't glue variables randomly into the declaration section:
 
-----------------------------------------------------------------
-RDMA first rc pull for v6.7
+  https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#variable-declarations
 
-Primarily rtrs and irdma fixes:
+>  	if (!of_device_is_compatible(node, "loongson,liointc-2.0")) {
+>  		index = 0;
+> @@ -350,8 +351,12 @@ static int __init liointc_of_init(struct device_node *node,
+>  	if (!have_parent)
+>  		return -ENODEV;
+>  
+> +	if (!of_find_property(node, prop_name, &i))
+> +		/* Fallback to 'loongson,parent_int_map'. */
+> +		prop_name = "loongson,parent_int_map";
 
-- Fix uninitialized value in ib_get_eth_speed()
+This lacks curly brackets:
 
-- Fix hns refusing to work if userspace doesn't select the correct
-  congestion control algorithm
+  https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#bracket-rules
 
-- Several irdma fixes - unreliable Send Queue Drain, use after free, 64k
-  page size bugs, device removal races
+>  	sz = of_property_read_variable_u32_array(node,
+> -						"loongson,parent_int_map",
+> +						prop_name,
+>  						&parent_int_map[0],
+>  						LIOINTC_NUM_PARENT,
+>  						LIOINTC_NUM_PARENT);
 
-- Several rtrs bug fixes - crashes, memory leaks, use after free, bad
-  credit accounting, bogus WARN_ON
+Thanks,
 
-- Typos and a MAINTAINER update
-
-----------------------------------------------------------------
-Jack Wang (4):
-      RDMA/rtrs-srv: Do not unconditionally enable irq
-      RDMA/rtrs-clt: Start hb after path_up
-      RDMA/rtrs-clt: Fix the max_send_wr setting
-      RDMA/rtrs-clt: Remove the warnings for req in_use check
-
-Junxian Huang (2):
-      RDMA/hns: Fix unnecessary err return when using invalid congest control algorithm
-      MAINTAINERS: Add Chengchang Tang as Hisilicon RoCE maintainer
-
-Kalesh AP (1):
-      RDMA/bnxt_re: Correct module description string
-
-Md Haris Iqbal (3):
-      RDMA/rtrs-srv: Check return values while processing info request
-      RDMA/rtrs-srv: Free srv_mr iu only when always_invalidate is true
-      RDMA/rtrs-srv: Destroy path files after making sure no IOs in-flight
-
-Mike Marciniszyn (3):
-      RDMA/core: Fix umem iterator when PAGE_SIZE is greater then HCA pgsz
-      RDMA/irdma: Ensure iWarp QP queue memory is OS paged aligned
-      RDMA/irdma: Fix support for 64k pages
-
-Mustafa Ismail (2):
-      RDMA/irdma: Do not modify to SQD on error
-      RDMA/irdma: Add wait for suspend on SQD
-
-Shifeng Li (2):
-      RDMA/irdma: Fix UAF in irdma_sc_ccq_get_cqe_info()
-      RDMA/irdma: Avoid free the non-cqp_request scratch
-
-Shigeru Yoshida (1):
-      RDMA/core: Fix uninit-value access in ib_get_eth_speed()
-
- MAINTAINERS                                |  1 +
- drivers/infiniband/core/umem.c             |  6 -----
- drivers/infiniband/core/verbs.c            |  2 +-
- drivers/infiniband/hw/bnxt_re/main.c       |  2 +-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 13 +++++++----
- drivers/infiniband/hw/irdma/hw.c           | 16 +++++++------
- drivers/infiniband/hw/irdma/main.c         |  2 +-
- drivers/infiniband/hw/irdma/main.h         |  2 +-
- drivers/infiniband/hw/irdma/verbs.c        | 35 +++++++++++++++++++++-------
- drivers/infiniband/hw/irdma/verbs.h        |  1 +
- drivers/infiniband/ulp/rtrs/rtrs-clt.c     |  7 +++---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c     | 37 ++++++++++++++++++++++--------
- include/rdma/ib_umem.h                     |  9 +++++++-
- include/rdma/ib_verbs.h                    |  1 +
- 14 files changed, 90 insertions(+), 44 deletions(-)
-
---BDpsy6xeZP2reSL4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRRRCHOFoQz/8F5bUaFwuHvBreFYQUCZXMl3AAKCRCFwuHvBreF
-YcDJAQD032q65/HwdwWiPXFjPI7FJw9lGHHtJvxDWRYj7l7rFwEAxbBi+MoH2l1v
-jJqjfiFUgw464F37t8v+GDlpMdEl9Ac=
-=bscw
------END PGP SIGNATURE-----
-
---BDpsy6xeZP2reSL4--
+        tglx
