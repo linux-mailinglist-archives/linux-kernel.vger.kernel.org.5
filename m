@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C953C80A8A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 740E880A8C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233589AbjLHQWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:22:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56146 "EHLO
+        id S1573932AbjLHQY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:24:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232481AbjLHQWv (ORCPT
+        with ESMTP id S233647AbjLHQY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:22:51 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A3D1987;
-        Fri,  8 Dec 2023 08:22:56 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54f5469c211so937359a12.0;
-        Fri, 08 Dec 2023 08:22:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702052575; x=1702657375; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=svN1Ndc4QwmNHTO/oqyCiy4PAweEtdwQk3CfZUa3eYo=;
-        b=W1Maeo2o795gYWbrsrMSx81cARvMmDKOgt+wEwXRdvGki2A8GY3wwpZzsGElpUqWuc
-         h8JtN2scX+o+7KFwRX4fT1foDFKOjuG7K/NW+ftLdY4HU+L6MKEW9lnos8mVMrsi5lyW
-         8tlnFMx9bJC44IWyAkhFYksPc3E0NLG3ixzoZyGV5GhzOaGhIk0UPFTDHgFAX0vtbWyC
-         yDrb/UwC1m2ZJvQnFjX4RkBapnRm/2USvWWdEA4PwoJTh99T7K/ukKLp4USGAG9N6sN/
-         M5acjtALmEf/hLDg7GuqZB8EdANxitVN/v3BigEoL0IcofwIJl0F3YkBurwE3L0x5BwY
-         yYSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702052575; x=1702657375;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=svN1Ndc4QwmNHTO/oqyCiy4PAweEtdwQk3CfZUa3eYo=;
-        b=LRaKfM0kiomLP2kpLspgFpGXj9BtmVjsrnowF9FFT6cM+Do67sG0fLo1SBDBwUmyg5
-         Ecq10PFJQAzrlFDNloMp0h5icJM1eGYQsu7wJUNrjOBzP/HgN/amHhSjVb9Mi3zSN1Dy
-         OlJSaVv5BZrOOiaNSGdwaL1YC2UpMbe7lj8uSNloEPu7mR8qi3xA0624lbvUiaoJW69g
-         1FWr0uNf1eaobaHhAvROV7S7v8t9yrw8uYcSa3zhkqK3st8NBbzAGAKbuNtQezMZluci
-         e8fNJVhuJrqBuO0M1nKCCl2RIN6G9FWm4rhNKZFf+rE4D9djvU6A5fFLILXT+WY6Kd4H
-         G66w==
-X-Gm-Message-State: AOJu0Yz8awtT4JGVG5xXLzPAJHEK8XR1Ry6PPL+M8SRFQvIDghAO2jVM
-        PZVCYpHho19GIJDlRlfy9Fg=
-X-Google-Smtp-Source: AGHT+IEqwxQJzb5eeyuxkgyTXIammuAXFxjBenJ1bmCkFNPrxhJJolH7wvgdlhFIJgOFnUSf+Q7z2g==
-X-Received: by 2002:a17:906:7951:b0:a19:a19b:c708 with SMTP id l17-20020a170906795100b00a19a19bc708mr149642ejo.88.1702052574810;
-        Fri, 08 Dec 2023 08:22:54 -0800 (PST)
-Received: from orome.fritz.box (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id vi8-20020a170907d40800b00a1c7b20e9e6sm1179290ejc.32.2023.12.08.08.22.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 08:22:54 -0800 (PST)
-Date:   Fri, 8 Dec 2023 17:22:52 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sean Young <sean@mess.org>
-Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 3/4] pwm: bcm2835: allow pwm driver to be used in
- atomic context
-Message-ID: <ZXNC3JYy7CTfYsyC@orome.fritz.box>
-References: <cover.1701248996.git.sean@mess.org>
- <179dc1ce85702a8b64b43c0e0df656b0c5e3ce30.1701248996.git.sean@mess.org>
+        Fri, 8 Dec 2023 11:24:26 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B10198C;
+        Fri,  8 Dec 2023 08:24:32 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8FZMI9010729;
+        Fri, 8 Dec 2023 16:24:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=JTh/W8E+X96Y3B97mD4d20YenBuucvd9tHFxnzC7JoA=;
+ b=TisIb56WnrMZv9CTLtpKRnw9zyXjXGpPAipridtx7LjOrLy+L8s+ASWjnnc7YWeC+8Mb
+ V2gc5CpeyYCkfnfVSKeP1FEkWAlsP3LiqQiWioPy5YNMTHQ4m9DYKVbB/S07HcrNc9V7
+ rt3nam8whxydj22ul2Od3AmuYWF+vB+UNkKNxW1kXP5nR+xSqBIt8r+wXswZ1W/GTcQS
+ ByzayUic3EhuYCNibR18xgGP+vO8AhrlRCskqGudjafS6NE9vAXM8t1J9AXMCya0ajnK
+ 9N62l7x8LAfqYbJR+D9VepNFS18U+H4CaUQyDt5SrgO4ons28RT7F373NI4I14jdKZS6 TA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uv5wpg5a1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Dec 2023 16:24:24 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B8GOJ3l008604
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 8 Dec 2023 16:24:19 GMT
+Received: from [10.110.30.94] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Dec
+ 2023 08:24:16 -0800
+Message-ID: <ceb7e736-22f3-0cf3-3d65-7ec33e7c9d95@quicinc.com>
+Date:   Fri, 8 Dec 2023 08:24:15 -0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ix9F9B72gOKa/1mD"
-Content-Disposition: inline
-In-Reply-To: <179dc1ce85702a8b64b43c0e0df656b0c5e3ce30.1701248996.git.sean@mess.org>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 04/16] drm/msm/dpu: move csc matrices to dpu_hw_util
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
+        "Sean Paul" <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        "David Airlie" <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
+        <quic_parellan@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231208050641.32582-1-quic_abhinavk@quicinc.com>
+ <20231208050641.32582-5-quic_abhinavk@quicinc.com>
+ <CAA8EJpro4ehwZ8Gs+ASUmrMJS0HbnDXd5pXwijs1jkDpR-kAOQ@mail.gmail.com>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJpro4ehwZ8Gs+ASUmrMJS0HbnDXd5pXwijs1jkDpR-kAOQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 8ewUNYkJJh8i4djhatMbVdf5-6M7br8T
+X-Proofpoint-ORIG-GUID: 8ewUNYkJJh8i4djhatMbVdf5-6M7br8T
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-08_11,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=999 impostorscore=0 adultscore=0 priorityscore=1501 mlxscore=0
+ clxscore=1015 malwarescore=0 phishscore=0 suspectscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312080135
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,44 +88,189 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ix9F9B72gOKa/1mD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 29, 2023 at 09:13:36AM +0000, Sean Young wrote:
-> clk_get_rate() may do a mutex lock. Fetch the clock rate once, and prevent
-> rate changes using clk_rate_exclusive_get().
->=20
-> Signed-off-by: Sean Young <sean@mess.org>
-> ---
->  drivers/pwm/pwm-bcm2835.c | 31 +++++++++++++++++++++----------
->  1 file changed, 21 insertions(+), 10 deletions(-)
+On 12/8/2023 3:12 AM, Dmitry Baryshkov wrote:
+> On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>> Since the type and usage of CSC matrices is spanning across DPU
+>> lets introduce a helper to the dpu_hw_util to return the CSC
+>> corresponding to the request type. This will help to add more
+>> supported CSC types such as the RGB to YUV one which is used in
+>> the case of CDM.
+>>
+>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+>> ---
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c | 54 +++++++++++++++++++++
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h |  7 +++
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c   | 39 ++-------------
+>>   3 files changed, 64 insertions(+), 36 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
+>> index 0b05061e3e62..59a153331194 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
+>> @@ -87,6 +87,60 @@ static u32 dpu_hw_util_log_mask = DPU_DBG_MASK_NONE;
+>>   #define QOS_QOS_CTRL_VBLANK_EN            BIT(16)
+>>   #define QOS_QOS_CTRL_CREQ_VBLANK_MASK     GENMASK(21, 20)
+>>
+>> +static const struct dpu_csc_cfg dpu_csc_YUV2RGB_601L = {
+>> +       {
+>> +               /* S15.16 format */
+>> +               0x00012A00, 0x00000000, 0x00019880,
+>> +               0x00012A00, 0xFFFF9B80, 0xFFFF3000,
+>> +               0x00012A00, 0x00020480, 0x00000000,
+>> +       },
+>> +       /* signed bias */
+>> +       { 0xfff0, 0xff80, 0xff80,},
+>> +       { 0x0, 0x0, 0x0,},
+>> +       /* unsigned clamp */
+>> +       { 0x10, 0xeb, 0x10, 0xf0, 0x10, 0xf0,},
+>> +       { 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,},
+>> +};
+>> +
+>> +static const struct dpu_csc_cfg dpu_csc10_YUV2RGB_601L = {
+>> +       {
+>> +               /* S15.16 format */
+>> +               0x00012A00, 0x00000000, 0x00019880,
+>> +               0x00012A00, 0xFFFF9B80, 0xFFFF3000,
+>> +               0x00012A00, 0x00020480, 0x00000000,
+>> +       },
+>> +       /* signed bias */
+>> +       { 0xffc0, 0xfe00, 0xfe00,},
+>> +       { 0x0, 0x0, 0x0,},
+>> +       /* unsigned clamp */
+>> +       { 0x40, 0x3ac, 0x40, 0x3c0, 0x40, 0x3c0,},
+>> +       { 0x00, 0x3ff, 0x00, 0x3ff, 0x00, 0x3ff,},
+>> +};
+>> +
+>> +/**
+>> + * dpu_hw_get_csc_cfg - get the CSC matrix based on the request type
+>> + * @type:              type of the requested CSC matrix from caller
+>> + * Return: CSC matrix corresponding to the request type in DPU format
+>> + */
+>> +const struct dpu_csc_cfg *dpu_hw_get_csc_cfg(enum dpu_hw_csc_cfg_type type)
+>> +{
+>> +       const struct dpu_csc_cfg *csc_cfg = NULL;
+>> +
+>> +       switch (type) {
+>> +       case DPU_HW_YUV2RGB_601L:
+>> +               csc_cfg = &dpu_csc_YUV2RGB_601L;
+>> +               break;
+>> +       case DPU_HW_YUV2RGB_601L_10BIT:
+>> +               csc_cfg = &dpu_csc10_YUV2RGB_601L;
+>> +               break;
+>> +       default:
+>> +               DPU_ERROR("unknown csc_cfg type\n");
+>> +               break;
+>> +       }
+>> +
+>> +       return csc_cfg;
+>> +}
+>> +
+>>   void dpu_reg_write(struct dpu_hw_blk_reg_map *c,
+>>                  u32 reg_off,
+>>                  u32 val,
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
+>> index fe083b2e5696..49f2bcf6de15 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
+>> @@ -19,6 +19,11 @@
+>>   #define MISR_CTRL_STATUS_CLEAR          BIT(10)
+>>   #define MISR_CTRL_FREE_RUN_MASK         BIT(31)
+>>
+>> +enum dpu_hw_csc_cfg_type {
+>> +       DPU_HW_YUV2RGB_601L,
+>> +       DPU_HW_YUV2RGB_601L_10BIT,
+>> +};
+>> +
+>>   /*
+>>    * This is the common struct maintained by each sub block
+>>    * for mapping the register offsets in this block to the
+>> @@ -368,4 +373,6 @@ bool dpu_hw_clk_force_ctrl(struct dpu_hw_blk_reg_map *c,
+>>                             const struct dpu_clk_ctrl_reg *clk_ctrl_reg,
+>>                             bool enable);
+>>
+>> +const struct dpu_csc_cfg *dpu_hw_get_csc_cfg(enum dpu_hw_csc_cfg_type type);
+> 
+> I don't think we need extra enum and wrapper. Just export const data
+> structures directly.
+> 
 
-s/pwm/PWM/ in the subject. Although, I guess you could just drop the
-"PWM" altogether because the subject prefix implies that this is for
-PWM. Also, please capitalize after the subject prefix.
+I liked this approach because the blocks of DPU such as plane and CDM 
+are clients to the dpu_hw_util and just request the type and the util 
+handles their request of returning the correct csc matrix.
 
-Thierry
+Do you see any issue with this?
 
---ix9F9B72gOKa/1mD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmVzQtwACgkQ3SOs138+
-s6Gu+A//W4O0yDv+AftK43w4DyKG2lCSU+7O2mfysoZU6ycgaOLqxvfT6HYr4W/X
-Uleddmj5ZkyERd4gtLMC9Z5tIJbpjNEoMusUd96915jXWs4SRu8U2w4s+MMuysbN
-h8xJmZleGPOtJl/dI60jDJ+zogYUhmxuTQxvDbEmFPevHRChzEefwKz0DzvUKUz4
-3r7suWMDBq2Gb2wbST/Iz5JfPhZtxiKd0nkxc04JKXMdfH9UhdFW33ZaYTwUqlvA
-gT1SGIOBZ133KObMEQzptxVw47v2wxRRCJdTUfIjv7gKa+8xJhQkthL2hhdEHkoK
-3fN7FEUtYJE9L6GO9bXfTUwjk1PMHABmzxKjuxhkTKzjZsobN4SmLOa+dvh5F51J
-U1mtGYYjcZlVrIEIsi252XvRpcP8trGRI/1pb9NXuvgJTpbCfsC2FPpf+d/OCs/J
-hLsinFaorOrQcf9rTJfkwmMh+obDKlVik81riYAZC0wL9KWgAdhG1f3ZqlwHU+rE
-gEUtKWUad+QO6dg5wFk+olCDvR4SwRsirkjpR2JJW5XmEC01BGqw/f7SXIdeU6B9
-VKV9pc96952S7Ygrj5Ht3gWus5UwC+S6KFbcIJxWfbYby1lxMddZkoTWbMj2Lsth
-mqdNbKHB/kNADvHfcemFkxb+kWfu0bkMuhTRFT5dgLsc+hIyins=
-=BCvn
------END PGP SIGNATURE-----
-
---ix9F9B72gOKa/1mD--
+>> +
+>>   #endif /* _DPU_HW_UTIL_H */
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+>> index 3235ab132540..31641889b9f0 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+>> @@ -21,6 +21,7 @@
+>>   #include "dpu_kms.h"
+>>   #include "dpu_formats.h"
+>>   #include "dpu_hw_sspp.h"
+>> +#include "dpu_hw_util.h"
+>>   #include "dpu_trace.h"
+>>   #include "dpu_crtc.h"
+>>   #include "dpu_vbif.h"
+>> @@ -508,50 +509,16 @@ static void _dpu_plane_setup_pixel_ext(struct dpu_hw_scaler3_cfg *scale_cfg,
+>>          }
+>>   }
+>>
+>> -static const struct dpu_csc_cfg dpu_csc_YUV2RGB_601L = {
+>> -       {
+>> -               /* S15.16 format */
+>> -               0x00012A00, 0x00000000, 0x00019880,
+>> -               0x00012A00, 0xFFFF9B80, 0xFFFF3000,
+>> -               0x00012A00, 0x00020480, 0x00000000,
+>> -       },
+>> -       /* signed bias */
+>> -       { 0xfff0, 0xff80, 0xff80,},
+>> -       { 0x0, 0x0, 0x0,},
+>> -       /* unsigned clamp */
+>> -       { 0x10, 0xeb, 0x10, 0xf0, 0x10, 0xf0,},
+>> -       { 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,},
+>> -};
+>> -
+>> -static const struct dpu_csc_cfg dpu_csc10_YUV2RGB_601L = {
+>> -       {
+>> -               /* S15.16 format */
+>> -               0x00012A00, 0x00000000, 0x00019880,
+>> -               0x00012A00, 0xFFFF9B80, 0xFFFF3000,
+>> -               0x00012A00, 0x00020480, 0x00000000,
+>> -               },
+>> -       /* signed bias */
+>> -       { 0xffc0, 0xfe00, 0xfe00,},
+>> -       { 0x0, 0x0, 0x0,},
+>> -       /* unsigned clamp */
+>> -       { 0x40, 0x3ac, 0x40, 0x3c0, 0x40, 0x3c0,},
+>> -       { 0x00, 0x3ff, 0x00, 0x3ff, 0x00, 0x3ff,},
+>> -};
+>> -
+>>   static const struct dpu_csc_cfg *_dpu_plane_get_csc(struct dpu_sw_pipe *pipe,
+>>                                                      const struct dpu_format *fmt)
+>>   {
+>> -       const struct dpu_csc_cfg *csc_ptr;
+>> -
+>>          if (!DPU_FORMAT_IS_YUV(fmt))
+>>                  return NULL;
+>>
+>>          if (BIT(DPU_SSPP_CSC_10BIT) & pipe->sspp->cap->features)
+>> -               csc_ptr = &dpu_csc10_YUV2RGB_601L;
+>> +               return dpu_hw_get_csc_cfg(DPU_HW_YUV2RGB_601L_10BIT);
+>>          else
+>> -               csc_ptr = &dpu_csc_YUV2RGB_601L;
+>> -
+>> -       return csc_ptr;
+>> +               return dpu_hw_get_csc_cfg(DPU_HW_YUV2RGB_601L);
+>>   }
+>>
+>>   static void _dpu_plane_setup_scaler(struct dpu_sw_pipe *pipe,
+>> --
+>> 2.40.1
+>>
+> 
+> 
