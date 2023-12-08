@@ -2,88 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1A080B002
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A87280B003
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234015AbjLHW6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 17:58:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56950 "EHLO
+        id S234072AbjLHW6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 17:58:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLHW6I (ORCPT
+        with ESMTP id S234048AbjLHW6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 17:58:08 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267CA10D0;
-        Fri,  8 Dec 2023 14:58:14 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-db7d198e791so2592122276.3;
-        Fri, 08 Dec 2023 14:58:14 -0800 (PST)
+        Fri, 8 Dec 2023 17:58:23 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00F01985
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 14:58:28 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a1e2ded3d9fso315217766b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 14:58:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702076293; x=1702681093; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1702076307; x=1702681107; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8vkZJWyCONDAHz0FaVDvZB6zmKrAESqJ9IE9pDa4fis=;
-        b=DxJak9az09YX+RrcjR0SqywDrRGIkChSW8jPuyhrRazmcBYGGCltlV0X6aH+Ka0DN2
-         6bUJMiNHGGhvS6Kua+aZWm6nzQg6r8djsSQCxlRex5Jm8RomRKPe/RdHDe0hx6aQVs+C
-         ZwzUQjrNE3VCerZ+FGKRYEUWetzywvSMuTNsnU06Eqw6IqXctGKZRv1lxeGPVFc8/S0k
-         4VoFiHdLfx/gqBHqCUDMJZlsZHjW0NirsuZ2/xrMn2E5hO1mEosfN/tDP1Hw/VWUMRHR
-         yDzIMxEtK7ITJ9OapZmb+8lBQmW0KkFkUptVgUv5sVbqz1ZtDeXjUgI/Z2helHxfcoBs
-         wp0Q==
+        bh=BMpCWLXMXRBTKeWVwSpx26nw2WRYoXe/hUgsW8+MXwY=;
+        b=LomAtTtg8QE/ULkePZYJXz8kGVnDhRj9W/YvjLj18IjtEPVSyc8gGXxunXwNftqGIG
+         8LVc0+wGvpH2B3p6HafLIxeHvD0WE6oIm5zZGiAReP7NDZQnOqUsdQaYRiUsAjW7KnQF
+         eZiCe0Zvbdog7Z/x5t7ohCZ26QcUAjY/f+e+U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702076293; x=1702681093;
+        d=1e100.net; s=20230601; t=1702076307; x=1702681107;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8vkZJWyCONDAHz0FaVDvZB6zmKrAESqJ9IE9pDa4fis=;
-        b=QenGuk6ugn+Pm9hew0BT6PDbvMGSqO80bikl8qcjWSQbIcmcxuznZwYR9IwJCJI8cF
-         /cYQskHKYxcIfJL+BhfEw9i82U3QNhRqUUB9KS57AoFrC76GnNyI1lTA6/RPtAJ6YjFQ
-         l8QdzJqCeSOouOkPse3SE8xnOBTzmebLa65CCHm0T5JuhgYjYMxKeDIu1mMR2v70LOd8
-         YOOTYSvPkoYxKtbKA8K92+OmmZ9wYxOxCaxqCYmkt5gt7Cuz8FbQYmT0oZihVKzT/z8y
-         xqW4TFsGrRzpxS8XKaeCf2BQ0BoRqzLiXG7dzC4tHdawhbZDp/xWa0b/1jiZwXRDjFiB
-         7bUw==
-X-Gm-Message-State: AOJu0YzWG2JwlsuwzZs+Cus5gE83GEaZdwSl65pU85BcHXe2ApQr7FDi
-        XFiytpM8yEJ2Flm0HUF10rkGf373BESp7jW8Ao0=
-X-Google-Smtp-Source: AGHT+IHRjn7Lp5sdB7NwuF75Sg/gHbOAxY9dG8W4KlGbjzvaQdcV0/6nyKSUuPNwpydoRSS5n2lAP/D1SdV+eaxYSZI=
-X-Received: by 2002:a25:6b4c:0:b0:db4:72de:ba0a with SMTP id
- o12-20020a256b4c000000b00db472deba0amr615111ybm.36.1702076293359; Fri, 08 Dec
- 2023 14:58:13 -0800 (PST)
+        bh=BMpCWLXMXRBTKeWVwSpx26nw2WRYoXe/hUgsW8+MXwY=;
+        b=LKzqYpetXwaq1jM5Bu0k/vk0DdRss0Ov71nLyWJspOpY5d+bb9kjaLxykpLnQlDSl/
+         VfRDxrQJxrBaViVBlIsg0AZltVZQgKEDnAwh6/aEi/LftjX3v9ASTtBfk64d56YaBWo8
+         pN/o0HsJbO9iy1sviiVkpRVrY682FRHypsQ/TkkqhfxYejcNpeDYpKZZrqLXMhCKLHlF
+         NXu5UOq/u+Xet0iz3qEwVujip1Gjbwml/b8Z34gg/R+X4bA1KT5UnbGA+7wWM7H6Qu+Y
+         IOveqLfwjVykh8PcvduhFLRbCQM7/LKsK4hpvAfekOwgLP2hdaTQ/pgLODeMK6j2AkkP
+         iXIA==
+X-Gm-Message-State: AOJu0YytvBcgeCAwj/9y6hL1HhkCD2Mj596L9mdFINIT71ZrOUuvNnRY
+        bXcRdsVyxV0VdmsCHzSq5wEYQ80www/0O8eS9iEOsQ==
+X-Google-Smtp-Source: AGHT+IEC8IAkzhTxZXuXzT95S1oMy3pZuNhKwqQHQUOi0m7PW3dUxcRvZffwon3Pu+gLtvShq4pNOM+wjcjn7p2b8d8=
+X-Received: by 2002:a17:906:2b53:b0:a19:a19b:78c2 with SMTP id
+ b19-20020a1709062b5300b00a19a19b78c2mr408985ejg.133.1702076307046; Fri, 08
+ Dec 2023 14:58:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20231208-clang-format-mt-for-each-v1-1-b4b73186b886@quicinc.com>
-In-Reply-To: <20231208-clang-format-mt-for-each-v1-1-b4b73186b886@quicinc.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 8 Dec 2023 23:58:02 +0100
-Message-ID: <CANiq72n_9woLVKCTnhXAQcUkpS59O2QW_HzTLmpHXnkoGPiCQQ@mail.gmail.com>
-Subject: Re: [PATCH] clang-format: Add maple tree's for_each macros
-To:     Elliot Berman <quic_eberman@quicinc.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
+References: <20231116172859.393744-1-sjg@chromium.org> <20231208150042.GA1278773-robh@kernel.org>
+ <CAPnjgZ2i4gvgiUeHPOfHuOdBooV4e=QQEq6iMo0JbDwOS6dCwA@mail.gmail.com> <CAL_Jsq+xMZ8yz4H9D59uCSyX4h5W+4ruGF++=wVA=msXz+Y01A@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+xMZ8yz4H9D59uCSyX4h5W+4ruGF++=wVA=msXz+Y01A@mail.gmail.com>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Fri, 8 Dec 2023 15:58:10 -0700
+Message-ID: <CAPnjgZ1uW8T6woXSqFUNm301=W3zBYOrADREkrz=DuwSW87qZg@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman compatible
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
+        Michael Walle <mwalle@kernel.org>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Pratyush Yadav <ptyadav@amazon.de>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 11:08=E2=80=AFPM Elliot Berman <quic_eberman@quicinc=
-.com> wrote:
+Hi Rob,
+
+On Fri, 8 Dec 2023 at 14:56, Rob Herring <robh@kernel.org> wrote:
 >
-> Add maple tree's for_each macros so clang-format operates correctly on
-> {mt,mas}_for_each.
+> On Fri, Dec 8, 2023 at 11:47=E2=80=AFAM Simon Glass <sjg@chromium.org> wr=
+ote:
+> >
+> > Hi Rob,
+> >
+> > On Fri, 8 Dec 2023 at 08:00, Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Thu, Nov 16, 2023 at 10:28:50AM -0700, Simon Glass wrote:
+> > > > Add a compatible string for binman, so we can extend fixed-partitio=
+ns
+> > > > in various ways.
+> > > >
+> > > > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > > > ---
+> > > >
+> > > > (no changes since v5)
+> > > >
+> > > > Changes in v5:
+> > > > - Add #address/size-cells and parternProperties
+> > > > - Drop $ref to fixed-partitions.yaml
+> > > > - Drop 'select: false'
+> > > >
+> > > > Changes in v4:
+> > > > - Change subject line
+> > > >
+> > > > Changes in v3:
+> > > > - Drop fixed-partition additional compatible string
+> > > > - Drop fixed-partitions from the example
+> > > > - Mention use of compatible instead of label
+> > > >
+> > > > Changes in v2:
+> > > > - Drop mention of 'enhanced features' in fixed-partitions.yaml
+> > > > - Mention Binman input and output properties
+> > > > - Use plain partition@xxx for the node name
+> > > >
+> > > >  .../bindings/mtd/partitions/binman.yaml       | 68 +++++++++++++++=
+++++
+> > > >  .../bindings/mtd/partitions/partitions.yaml   |  1 +
+> > > >  MAINTAINERS                                   |  5 ++
+> > > >  3 files changed, 74 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/mtd/partition=
+s/binman.yaml
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/mtd/partitions/binma=
+n.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..329217550a98
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+> > > > @@ -0,0 +1,68 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > > +# Copyright 2023 Google LLC
+> > > > +
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Binman firmware layout
+> > > > +
+> > > > +maintainers:
+> > > > +  - Simon Glass <sjg@chromium.org>
+> > > > +
+> > > > +description: |
+> > > > +  The binman node provides a layout for firmware, used when packag=
+ing firmware
+> > > > +  from multiple projects. It is based on fixed-partitions, with so=
+me
+> > > > +  extensions, but uses 'compatible' to indicate the contents of th=
+e node, to
+> > > > +  avoid perturbing or confusing existing installations which use '=
+label' for a
+> > > > +  particular purpose.
+> > > > +
+> > > > +  Binman supports properties used as inputs to the firmware-packag=
+ing process,
+> > > > +  such as those which control alignment of partitions. This bindin=
+g addresses
+> > > > +  these 'input' properties. For example, it is common for the 'reg=
+' property
+> > > > +  (an 'output' property) to be set by Binman, based on the alignme=
+nt requested
+> > > > +  in the input.
+> > > > +
+> > > > +  Once processing is complete, input properties have mostly served=
+ their
+> > > > +  purpose, at least until the firmware is repacked later, e.g. due=
+ to a
+> > > > +  firmware update. The 'fixed-partitions' binding should provide e=
+nough
+> > > > +  information to read the firmware at runtime, including decompres=
+sion if
+> > > > +  needed.
+> > >
+> > > How is this going to work exactly? binman reads these nodes and then
+> > > writes out 'fixed-partitions' nodes. But then you've lost the binman
+> > > specifc parts needed for repacking.
+> >
+> > No, they are the same node. I do want the extra information to stick
+> > around. So long as it is compatible with fixed-partition as well, this
+> > should work OK.
+>
+> How can it be both? The partitions node compatible can be either
+> 'fixed-partitions' or 'binman'.
 
-Thanks, applied (moved `mt_for_each` to the right spot).
+Can we not allow it to be both? I have tried to adjust things in
+response to feedback but perhaps the feedback was leading me down the
+wrong path?
 
-I have also applied a full update of the list on top, since it has
-been a while since we have done so.
+But if not, then whatever works is fine for now. I just want to make
+some progress on this very, very old series.
 
-Cheers,
-Miguel
+>
+> In the partition nodes, 'align' for example is allowed for a binman
+> partition but not a fixed-partition.
+>
+> Note that the schema may not actually warn on extra properties ATM
+> because there are some issues with the schema structure. Since there
+> can be nested partittions, that complicates matters. It's been on my
+> todo list to fix.
+
+OK.
+
+Regards,
+Simon
