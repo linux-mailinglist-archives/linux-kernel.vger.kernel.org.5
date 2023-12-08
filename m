@@ -2,115 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCDF80A4B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:49:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B38A80A4B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 14:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573834AbjLHNs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 08:48:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        id S1573838AbjLHNt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 08:49:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573854AbjLHNsz (ORCPT
+        with ESMTP id S1573812AbjLHNt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 08:48:55 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B244319A5;
-        Fri,  8 Dec 2023 05:49:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702043341; x=1733579341;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=XNlRwVlmc+8hzsq40kB9DkDfrP9F0EEFpnBMErhT0CY=;
-  b=jjII/BUZbzjZSeBHP/Wlg1pkrkOfnZvwwJQ8C5SrLVi0bIV7uKEjYH6W
-   k4LlbJw37vSGrGKYTwU1pEjoTwU00/feQ8R5yI899srZ8Xp/i7bmsKNAL
-   nT+uIZa9PjlpSMlTb1/yM3ng7adN3Z7WffwYIRXqNajWMVQsIW7XNTc0c
-   bWzzeoYdoStkD/Xq2TduIvPV5RmYn40EhdqqMCxUEksBEXPBAJ/Iu8gBF
-   B0cMHU3MbK4B/jh18zQrElMpFxS2piUnCaTL4XCVScCouTxbhX/JXmeah
-   VBDlpGdjW3x9EJnzEC83f1k7WmCJkrEC2Plt0VaO6JV+D4D0pBoIakASc
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="7732128"
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="7732128"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 05:49:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
-   d="scan'208";a="17460342"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.49.180])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 05:48:58 -0800
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        platform-driver-x86@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 1/1] platform/x86: ips: Remove unused debug code
-Date:   Fri,  8 Dec 2023 15:48:45 +0200
-Message-Id: <20231208134845.3900-1-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 8 Dec 2023 08:49:26 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CAE173B
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 05:49:32 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-67a959e3afaso11650266d6.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 05:49:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702043371; x=1702648171; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pyp/ZFyiUOjenQgn6G8kYMLVmsBPMd5m8mXyGEY1Mx8=;
+        b=HzGZGL40VCq48hRUv4ni/hFjp8bYozGF/tTJeOdjnidmwhiHA7c/5xRV5VmDuzdIAO
+         nKXClPDibILMmg7YfybvldwgIRps0nw/vntbReb+zPihNUhm/90sSGnZbeN1oOvh9Lqb
+         8baKHliajyRWOu4i0/v4vnqkMUnaJdBHugn45qz7kDw6C4UKboMz5+yDNagxa1xhbSYA
+         LVGbFg4LUi6yekPeRD5NFta3HXo4G+ZI3XSb4bCekE9ocyFl/2cHtpYbsUBGmgv1QvUa
+         A8r5ZEntXCy+T4mYu5sdOH+pa9DR7a/bGsj6QsNM++0u5wtlHfYxD8B33Ubto4HDCuIW
+         PX2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702043371; x=1702648171;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pyp/ZFyiUOjenQgn6G8kYMLVmsBPMd5m8mXyGEY1Mx8=;
+        b=WVkPlVuk4nuYaMcInn9fj2Sq3El3pVVtVpCIBAcLQHgZ7BUB56ccc8bxaSaFdGNY+0
+         DQky+vdp87BSPdQlSRdDhpy6alpSePmwVb7lX3p3SRKVqh11uUWUQqEr6+AJhwbxLuOG
+         VpD9ZqPYZ+CiAeAIV1ftx+NB0PKdZ9WsUqdEsgI7TONjHX8uLQIxpXW1DiiEoMgIte1z
+         oZMy0M97aPjQKK/dYMWg86P0tm4gbi2gXGyRNZ9VEkJHxjqxJ7cibo5n+ukmT/mh31q8
+         WxmU+7Bw6oEeKLzxUCJ0CY7wWvHHNEadOlUX19nkSaUQ61sF7XnndI6KPw2w24p48qKe
+         Losg==
+X-Gm-Message-State: AOJu0YxOT9xmFDN8ecWTqkjUdySX3cVP1VaUpWO2wplPRrePZXNFG2Vo
+        SgHK15JDRMs5HxAv/gXT7z30uA5it02BWbJjuXpWDA==
+X-Google-Smtp-Source: AGHT+IEr68RmSA5aYBUgmYtuiSsf9rYsZogw9kLYvnY2zqG64Y2/8MrVDe8thwflyfC3jwZMQ9WgLXTtXopCNqK1OqA=
+X-Received: by 2002:ad4:5de2:0:b0:67a:c8ff:1641 with SMTP id
+ jn2-20020ad45de2000000b0067ac8ff1641mr5787725qvb.79.1702043371101; Fri, 08
+ Dec 2023 05:49:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-14-iii@linux.ibm.com>
+In-Reply-To: <20231121220155.1217090-14-iii@linux.ibm.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 8 Dec 2023 14:48:55 +0100
+Message-ID: <CAG_fn=Vaj3hTRAMxUwofpSMPhFBOizDOWR_An-V9qLNQv-suYw@mail.gmail.com>
+Subject: Re: [PATCH v2 13/33] kmsan: Introduce memset_no_sanitize_memory()
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused debug code inside #if 0 ... #endif.
+On Tue, Nov 21, 2023 at 11:06=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.co=
+m> wrote:
+>
+> Add a wrapper for memset() that prevents unpoisoning.
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- drivers/platform/x86/intel_ips.c | 33 --------------------------------
- 1 file changed, 33 deletions(-)
+We have __memset() already, won't it work for this case?
+On the other hand, I am not sure you want to preserve the redzone in
+its previous state (unless it's known to be poisoned).
+You might consider explicitly unpoisoning the redzone instead.
 
-diff --git a/drivers/platform/x86/intel_ips.c b/drivers/platform/x86/intel_ips.c
-index 4dfdbfca6841..e26e7e14c44c 100644
---- a/drivers/platform/x86/intel_ips.c
-+++ b/drivers/platform/x86/intel_ips.c
-@@ -1105,39 +1105,6 @@ static int ips_monitor(void *data)
- 	return 0;
- }
- 
--#if 0
--#define THM_DUMPW(reg) \
--	{ \
--	u16 val = thm_readw(reg); \
--	dev_dbg(ips->dev, #reg ": 0x%04x\n", val); \
--	}
--#define THM_DUMPL(reg) \
--	{ \
--	u32 val = thm_readl(reg); \
--	dev_dbg(ips->dev, #reg ": 0x%08x\n", val); \
--	}
--#define THM_DUMPQ(reg) \
--	{ \
--	u64 val = thm_readq(reg); \
--	dev_dbg(ips->dev, #reg ": 0x%016x\n", val); \
--	}
--
--static void dump_thermal_info(struct ips_driver *ips)
--{
--	u16 ptl;
--
--	ptl = thm_readw(THM_PTL);
--	dev_dbg(ips->dev, "Processor temp limit: %d\n", ptl);
--
--	THM_DUMPW(THM_CTA);
--	THM_DUMPW(THM_TRC);
--	THM_DUMPW(THM_CTV1);
--	THM_DUMPL(THM_STS);
--	THM_DUMPW(THM_PTV);
--	THM_DUMPQ(THM_MGTV);
--}
--#endif
--
- /**
-  * ips_irq_handler - handle temperature triggers and other IPS events
-  * @irq: irq number
--- 
-2.30.2
+...
 
+> +__no_sanitize_memory
+> +static inline void *memset_no_sanitize_memory(void *s, int c, size_t n)
+> +{
+> +       return memset(s, c, n);
+> +}
+
+I think depending on the compiler optimizations this might end up
+being a call to normal memset, that would still change the shadow
+bytes.
