@@ -2,123 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC18B809E52
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 09:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 961F7809E75
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 09:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573344AbjLHIg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 03:36:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
+        id S233267AbjLHIlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 03:41:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232974AbjLHIgz (ORCPT
+        with ESMTP id S232892AbjLHIlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 03:36:55 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C6A171C
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 00:37:01 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40b27726369so19883335e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 00:37:01 -0800 (PST)
+        Fri, 8 Dec 2023 03:41:19 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDAC10FC
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 00:41:26 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-77f368b3334so84385485a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 00:41:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702024620; x=1702629420; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702024885; x=1702629685; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wNfU9DBaDJWRRxmgHYFx4nHbGgVZAwp+QKmlmlzyeuQ=;
-        b=gZ5RtFhk197PCmeKXMy761pH5NclNaCp6XuJvUumzJR9BF8Ok3lhhAt5/QioDaMwoK
-         eh+/B3d8TivCVwz8DLqnK4MmI7svyW3R8nUVzxhz51Ixs7iDlA+sm1p9iFdP7YR1q4Qw
-         PCeCgS1L37XeXlHF4wKMDPGxGc0Teh6llHyOPJ2t286FJdqS5qlhLE2oMlblOWUEbrAy
-         /xwATJH5i2SfDP91y7JyLYILjcyngt6CnGnXBcfQIQHvxxNikfagvKVAoWoxn4JGpziM
-         uLUcPF2gnauTrnWIcLhL5Dy267NT8bFbPWUvGd12J5/i+8tQCFmdW5t5cdm6jVDZgeDh
-         RgMQ==
+        bh=JllfCZ5QWb670w+A1HFO6uCIu5jBxIFAgbWt4nHdmO8=;
+        b=UjOrt/IwLWf6t0hecklsNpAdxrO8YzGWsCWsLWv8FMpn3HmtQmQfEfQdf9isDdZ1Zf
+         vH2cHQXl4GnxlGU4N5+/MsTobn5z9T5RDgfHQOIVTxrqDhe6ivvHyHOToM2JTrgKF5fM
+         6sIiNvBq1bisqOLuyTEsgNX5FPTSyibFcnlrEb2DuPa9rwVvZOGeT7NFNwQiVnWv7UD1
+         //pJavbA7MAbtcfzwRrpHAdn/LPRTMWyhMjXp5GCDsaZJv4YPGdC4bGEvBsd4HcTdN+m
+         PDGKPSP1twJCsYYWQATyv9b0pXH2jS8cKRet9ufSnZxhg0uLyAjlfpNn/JYHAP5eehZ0
+         7UcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702024620; x=1702629420;
+        d=1e100.net; s=20230601; t=1702024885; x=1702629685;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=wNfU9DBaDJWRRxmgHYFx4nHbGgVZAwp+QKmlmlzyeuQ=;
-        b=V7WNpmJzaRnib+N0hocC8S8xwbimOMXGgBcLbhItEf6yG/M5wRQlkE40QCaWkqMDnD
-         632biayFxLjkWPZcPUlI7s7PDKEtjiEqm7KRaarrkljZcb8LuL4Mlba843ku0x4c+hko
-         jj/AAztU8KR2iuwwmAKTi41RWcSb0tmGpQJPQ35983OzDzxcrgsxNg/t6BTePWGQtdIr
-         j1ms3FUwOtVPjl87NwiHje9G1KO7u4ZiDLv3hZfXlo+d7yqyFM+9nzqx9i/N7JXnY7Fb
-         8yycccRnnmu5YAZ3fIZv0s0JMj3hBfBnPLXkyfIo0zn5ra3tfR5WhuYD8AOcO6wFuI+K
-         ivcQ==
-X-Gm-Message-State: AOJu0Yz5ZyOktrHkqIJgFJ7M7EtkbHLzCKhe4q1yrtHfX81fubqr3Fqs
-        Lz6KVbPhB/8bApdPorwCJb1KuQ==
-X-Google-Smtp-Source: AGHT+IFTDanBKxnNxQj3jzP20OiOzKn2N0tR8XTkfJOvIBTmyMTeK2zrzuve+Z4+WUb6UkIgGVs/JA==
-X-Received: by 2002:a05:600c:3093:b0:40b:5e59:da99 with SMTP id g19-20020a05600c309300b0040b5e59da99mr2355770wmn.172.1702024619510;
-        Fri, 08 Dec 2023 00:36:59 -0800 (PST)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:b162:2510:4488:c0c3])
-        by smtp.gmail.com with ESMTPSA id bi11-20020a05600c3d8b00b0040c2963e5f3sm2113880wmb.38.2023.12.08.00.36.58
+        bh=JllfCZ5QWb670w+A1HFO6uCIu5jBxIFAgbWt4nHdmO8=;
+        b=sUx0sZoRU1Lf+g2qewQAuG/arAvLd4uQTU6Z7FDllTHD+enuTONjb80YKJTl23rvCF
+         +Kzg87LzY9chTi4nDS4BdPh3hIWY1qH+8nvD44eSRLewuutD4/wnKoXI6cOl2W3uLTRn
+         QLdFaU6bKcrPo09XlXTGdKIld5eYwtF84YioAkFe3AgoHNEkRab0FomHKscFswQejRx1
+         t0cj/3Csj4jFZ13THJb9tE9v4TRT+y1H21A18lIpLBTgtuWwW+M9uA0D8RR6hDkYaPcF
+         y7TXcNl346glqWZtenhmqpRsm3cM1fYreMKnSqycpyTa1wHHgJrfR3s2JlC8sF4XQZr/
+         6Hyg==
+X-Gm-Message-State: AOJu0YynVd+P6xZnhL/LSoMlCRdVMbEIODW/3BF2rlKtofkAd4ZFiBQT
+        OM4NY9mk9X8tCx8efiN9J/0=
+X-Google-Smtp-Source: AGHT+IH1zPeyAxQmIiGO5daKAoxiCfEtMbXJAk86rPGMKT/S/6V8ZKZL7iAmmi1tbl8+b32GQGfvKA==
+X-Received: by 2002:a05:620a:8016:b0:77f:2f6a:361c with SMTP id ee22-20020a05620a801600b0077f2f6a361cmr2777331qkb.40.1702024885228;
+        Fri, 08 Dec 2023 00:41:25 -0800 (PST)
+Received: from pek-lpggp6.wrs.com (unknown-105-121.windriver.com. [147.11.105.121])
+        by smtp.gmail.com with ESMTPSA id rq11-20020a05620a674b00b0077f1645282csm546013qkn.22.2023.12.08.00.41.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 00:36:59 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [GIT PULL] gpio: immutable branch between the GPIO and pinctrl trees for v6.8-rc1
-Date:   Fri,  8 Dec 2023 09:36:50 +0100
-Message-Id: <20231208083650.25015-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
+        Fri, 08 Dec 2023 00:41:24 -0800 (PST)
+From:   Kevin Hao <haokexin@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] fork: Remove redundant TASK_UNINTERRUPTIBLE
+Date:   Fri,  8 Dec 2023 16:41:15 +0800
+Message-Id: <20231208084115.1973285-1-haokexin@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+TASK_KILLABLE already includes TASK_UNINTERRUPTIBLE, so there is no
+need to add a separate TASK_UNINTERRUPTIBLE.
 
-Linus, Andy,
+Signed-off-by: Kevin Hao <haokexin@gmail.com>
+---
+ kernel/fork.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please pull the following changes into your trees for the next merge window.
-These are the patches providing a safer alternative for gpiochip_is_requested()
-before we rework the locking in GPIOLIB.
+diff --git a/kernel/fork.c b/kernel/fork.c
+index c78e65757eb5..3ea454e1b0b0 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1580,7 +1580,7 @@ static void complete_vfork_done(struct task_struct *tsk)
+ static int wait_for_vfork_done(struct task_struct *child,
+ 				struct completion *vfork)
+ {
+-	unsigned int state = TASK_UNINTERRUPTIBLE|TASK_KILLABLE|TASK_FREEZABLE;
++	unsigned int state = TASK_KILLABLE|TASK_FREEZABLE;
+ 	int killed;
+ 
+ 	cgroup_enter_frozen();
+-- 
+2.39.2
 
-Bart
-
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
-
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio-remove-gpiochip_is_requested-for-v6.8-rc1
-
-for you to fetch changes up to f8d05e276b45e3097dfddd628fa991ce69c05c99:
-
-  gpiolib: remove gpiochip_is_requested() (2023-12-08 09:26:43 +0100)
-
-----------------------------------------------------------------
-gpio: remove gpiochip_is_requested()
-
-- provide a safer alternative to gpiochip_is_requested()
-- convert all existing users
-- remove gpiochip_is_requested()
-
-----------------------------------------------------------------
-Bartosz Golaszewski (10):
-      gpiolib: provide gpiochip_dup_line_label()
-      gpio: wm831x: use gpiochip_dup_line_label()
-      gpio: wm8994: use gpiochip_dup_line_label()
-      gpio: stmpe: use gpiochip_dup_line_label()
-      pinctrl: abx500: use gpiochip_dup_line_label()
-      pinctrl: nomadik: use gpiochip_dup_line_label()
-      pinctrl: baytrail: use gpiochip_dup_line_label()
-      pinctrl: sppctl: use gpiochip_dup_line_label()
-      gpiolib: use gpiochip_dup_line_label() in for_each helpers
-      gpiolib: remove gpiochip_is_requested()
-
- drivers/gpio/gpio-stmpe.c                 |  6 ++++-
- drivers/gpio/gpio-wm831x.c                | 14 +++++++----
- drivers/gpio/gpio-wm8994.c                | 13 +++++++----
- drivers/gpio/gpiolib.c                    | 35 ++++++++++++++++-----------
- drivers/pinctrl/intel/pinctrl-baytrail.c  | 11 +++++----
- drivers/pinctrl/nomadik/pinctrl-abx500.c  |  9 +++++--
- drivers/pinctrl/nomadik/pinctrl-nomadik.c |  6 ++++-
- drivers/pinctrl/sunplus/sppctl.c          | 10 ++++----
- include/linux/gpio/driver.h               | 39 ++++++++++++++++++++++++-------
- 9 files changed, 96 insertions(+), 47 deletions(-)
