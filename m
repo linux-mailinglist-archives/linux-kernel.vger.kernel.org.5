@@ -2,114 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC2380A9DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 776C880A9E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233690AbjLHQ5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:57:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44748 "EHLO
+        id S233706AbjLHQ5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:57:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232094AbjLHQ5B (ORCPT
+        with ESMTP id S232094AbjLHQ5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:57:01 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94EE98
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:57:05 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-67acdcb3ccdso14273936d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 08:57:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702054625; x=1702659425; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p7eBdMYz2oO1gCYv2gO3b03vyzDyBixdRfjwy6xmbYk=;
-        b=PmK2XbxCIv3dIWNCXiX6whjWumGAUc6xF5Vo/I/DNguZMP6/AsTyAAF33DgKQjsU69
-         Hy+a+8Vsqf1eFR+dvvO4N0R8iA3lHLf2z2xLk2ioso4X+JVX7PvxpNZk9aA861nTMOGC
-         ozE1gdUK5vTQESIwfQS8jZHFUp8l9inF7ABOzL1Q06E/iNKqmcDt80fC495/+NtimrBa
-         PkeRnJKPT8ws4rzxnaIZVHfwnvDf0NtKq+CoACtgp7v+RMfUSdJv4tCLgrf46MJ4eATg
-         oiopZPdry7Iuxvi2BJFBMxINisVddJ4Ue5X1R7GgwP/WJppiEA2XEMD7yYx8/KMD50y0
-         XnBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702054625; x=1702659425;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p7eBdMYz2oO1gCYv2gO3b03vyzDyBixdRfjwy6xmbYk=;
-        b=byfixxc3wPQTkvyudQDr2sAHGJPboDNqiCovpDI6Aug3myJype3+sDLFKtLCMs86+e
-         ZZN78WrpAUXtBLmmZ3qC9wzpPyRZBVSj0UGJAkCi+iygJnLNQjbSRtttT9UXm8gq8HHC
-         wrB+cURh/t42CT/+b3luVlnUoNSMtESLd/nsN5SwSGyhVdaUqBCOhsA644IdCMHtq5xj
-         wiwDztBzzcm1/pfN5NPlffh7So60e87/ym+mlBhp+azMh3XZfasqpbWnh7vNzMeDIn53
-         R/vSGW0wA0d2B3QwIFMJIvztD8/++QplaHqgLwSolvNka1xB4kIMIKJ2L7VIcIbb+zFF
-         T0Zw==
-X-Gm-Message-State: AOJu0YyTGJyZSwkcp23FQtkCgP0FLlMRjQ53LiMUgIvVDkdnYmW8sMao
-        DHrNHvi6h5HHmTQ0dlklohkghatMT6SS8FFz9ByICQ==
-X-Google-Smtp-Source: AGHT+IFqYgMXAGDwUGZm2GmXNNwAMogbqw1hEfBIGvEGXG3bN5nU/GorXmHvariAzFFNL09Kz1paH2mUu+0Ssar9SoY=
-X-Received: by 2002:a05:6214:d0:b0:67a:49c5:8cc3 with SMTP id
- f16-20020a05621400d000b0067a49c58cc3mr269853qvs.32.1702054625028; Fri, 08 Dec
- 2023 08:57:05 -0800 (PST)
+        Fri, 8 Dec 2023 11:57:37 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DA998;
+        Fri,  8 Dec 2023 08:57:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=+bKWbY0TFFFJG7vCNdsapguiWXk5Tcdbxhr2FyThgV4=; b=IlOPMzwGrh/jGe5Kiyfmvz91r2
+        DMe8pUz8Wq3s7w2GLz1XHY4A9XDGCfk8/cVEQOmWA48/RiYZAMXOFYmmFcYkZDbQ5h502Wb3TteF8
+        J+eVsnXCtfTIqVDaqmNfQaeBL86u5r2eivNqXVdqQpxBYVdwzmBs1BA8ZCzTCsdSRbxTyZ1USB4J9
+        WncYy/GVXmd4+KowpHmPKlrXohHcN4yI5nLjOt0B0uwCa+az5Q3b1GwQobVLUap62blhtXCZj5CqS
+        L1pdQEwmXmBrsIwdIpFqU3ZwVZtB7ZPqAn6DPNNDcZ9YYoiHW7fcc5aBqNppVII1H9it+czae4xK0
+        Ekm1eL/w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1rBe9v-0066Wi-1l; Fri, 08 Dec 2023 16:57:03 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2652A3003F0; Fri,  8 Dec 2023 17:57:02 +0100 (CET)
+Date:   Fri, 8 Dec 2023 17:57:02 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 5/7] rust: file: add `Kuid` wrapper
+Message-ID: <20231208165702.GI28727@noisy.programming.kicks-ass.net>
+References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
+ <20231206-alice-file-v2-5-af617c0d9d94@google.com>
+ <20231206123402.GE30174@noisy.programming.kicks-ass.net>
+ <CAH5fLgh+0G85Acf4-zqr_9COB5DUtt6ifVpZP-9V06hjJgd_jQ@mail.gmail.com>
+ <20231206134041.GG30174@noisy.programming.kicks-ass.net>
+ <CANiq72kK97fxTddrL+Uu2JSah4nND=q_VbJ76-Rdc-R-Kijszw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-24-iii@linux.ibm.com>
-In-Reply-To: <20231121220155.1217090-24-iii@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 8 Dec 2023 17:56:29 +0100
-Message-ID: <CAG_fn=UBt2A75bOgZmh7q_dS08d0PD8wJRHpoJyUDXRPRk_exA@mail.gmail.com>
-Subject: Re: [PATCH v2 23/33] s390/boot: Add the KMSAN runtime stub
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiq72kK97fxTddrL+Uu2JSah4nND=q_VbJ76-Rdc-R-Kijszw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 11:02=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.co=
-m> wrote:
->
-> It should be possible to have inline functions in the s390 header
-> files, which call kmsan_unpoison_memory(). The problem is that these
-> header files might be included by the decompressor, which does not
-> contain KMSAN runtime, causing linker errors.
->
-> Not compiling these calls if __SANITIZE_MEMORY__ is not defined -
-> either by changing kmsan-checks.h or at the call sites - may cause
-> unintended side effects, since calling these functions from an
-> uninstrumented code that is linked into the kernel is valid use case.
->
-> One might want to explicitly distinguish between the kernel and the
-> decompressor. Checking for a decompressor-specific #define is quite
-> heavy-handed, and will have to be done at all call sites.
->
-> A more generic approach is to provide a dummy kmsan_unpoison_memory()
-> definition. This produces some runtime overhead, but only when building
-> with CONFIG_KMSAN. The benefit is that it does not disturb the existing
-> KMSAN build logic and call sites don't need to be changed.
->
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+On Fri, Dec 08, 2023 at 05:31:59PM +0100, Miguel Ojeda wrote:
+> On Wed, Dec 6, 2023 at 2:41 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > Anywhoo, the longer a function is, the harder it becomes, since you need
+> > to deal with everything a function does and consider the specuation
+> > window length. So trivial functions like the above that do an immediate
+> > dereference and are (and must be) a valid indirect target (because
+> > EXPORT) are ideal.
+> 
+> We discussed this in our weekly meeting, and we would like to ask a
+> few questions:
+> 
+>   - Could you please describe an example attack that you are thinking
+> of? (i.e. a "full" attack, rather than just Spectre itself). For
+> instance, would it rely on other vulnerabilities?
+
+There's a fairly large amount of that on github, google spectre poc and
+stuff like that.
+
+>   - Is this a kernel rule everybody should follow now? i.e. "no (new?)
+> short, exported symbols that just dereference their pointer args". If
+> so, could this please be documented? Or is it already somewhere?
+
+Gadget scanners are ever evolving and I think there's a bunch of groups
+running them against Linux, but most of us don't have spare time beyond
+trying to plug the latest hole.
+
+>   - Are we checking for this in some way already, e.g. via `objtool`?
+> Especially if this is a rule, then it would be nice to have a way to
+> double-check if we are getting rid of (most of) these "dangerous"
+> symbols (or at least not introduce new ones, and not just in Rust but
+> C too).
+
+Objtool does not look for these (gadget scanners are quite complicated
+by now and I don't think I want to go there with objtool). At the moment
+I'm simply fixing whatever gets reported from 3rd parties when and where
+time permits.
+
+The thing at hand was just me eyeballing it.
+
+> > That would be good, but how are you going to do that without duplicating
+> > the horror that is struct task_struct ?
+> 
+> As Alice pointed out, `bindgen` "solves" that, but it is nevertheless
+> extra maintenance effort.
+> 
+> > Well, I really wish the Rust community would address the C
+> > interoperability in a hurry. Basically make it a requirement for
+> > in-kernel Rust.
+> 
+> Yeah, some of us have advocated for more integrated C support within
+> Rust (or within `rustc` at least).
+
+\o/
+
+> > I mean, how hard can it be to have clang parse the C headers and inject
+> > them into the Rust IR as if they're external FFI things.
+> 
+> That is what `bindgen` does (it uses Clang as a library), except it
+> does not create Rust IR, it outputs normal Rust code, i.e. similar to
+> C declarations.
+
+Right, but then you get into the problem that Rust simply cannot express
+a fair amount of the things we already do, like asm-goto, or even simple
+asm with memops apparently.
+
+> But note that using Clang does not solve the issue of `#define`s in
+> the general case. That is why we would still need "helpers" like these
+> so that the compiler knows how to expand the macro in a C context,
+> which then can be inlined as LLVM IR or similar (which is what I
+> suspect you were actually thinking about, rather than "Rust IR"?).
+
+Yeah, LLVM-IR. And urgh yeah, CPP, this is another down-side of Rust not
+being in the C language family, you can't sanely run CPP on it. Someone
+really should do a Rust like language in the C family, then perhaps it
+will stop looking like line noise to me :-)
+
+I suppose converting things to enum and inline functions where possible
+might help a bit with that, but things like tracepoints, which are built
+from a giant pile of CPP are just not going to be happy :/
+
+Anyway, I think it would be a giant step forwards from where we are
+today.
+
+> That "mix the LLVM IRs from Clang and `rustc`" ("local LTO hack")
+> approach is something we have been discussing in the past for
+> performance reasons (i.e. to inline these small C functions that Rust
+> needs, cross-language, even in non-LTO builds). And if it helps to
+> avoid certain attacks around speculation, then even better. So if the
+> LLVM folks do not have any major concerns about it, then I think we
+> should go ahead with that (please see also my reply to comex).
+
+But does LTO make any guarantees about inlining? The thing is, with
+actual LLVM-IR you can express the __always_inline attribute and
+inlining becomes guaranteed, I don't think you can rely on LTO for the
+same level of guarantees.
+
+And you still need to create these C functions by hand in this
+local-LTO scenario, which is less than ideal.
