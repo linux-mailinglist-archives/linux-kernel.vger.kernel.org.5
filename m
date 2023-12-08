@@ -2,104 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A430980AAAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C0680AAB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:25:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235935AbjLHRXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:23:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
+        id S235907AbjLHRZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:25:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233514AbjLHRW5 (ORCPT
+        with ESMTP id S1574454AbjLHRZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:22:57 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F7C199B
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:23:02 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6ce93552cb5so1606266b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 09:23:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702056182; x=1702660982; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WNXDom1pGgFzD7z60+nX5wKE72JYAG4paS5sk2JCKg8=;
-        b=GiY1k/0deCp31KIS/rscp6m71yTNYUEL+kB1zQ9qcDADBj76CBBvx96QLXr4UQf3Nf
-         OYdJGf3XPP7YZoJg1Y2dC9/qVCN1IkX0g2Hy5/Ly98HxRGmVzHiV8Jv+CrND1k4IBlBo
-         +AGAJa6nLkIv8JFMTzIl0elnYLMdooCku0EdA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702056182; x=1702660982;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WNXDom1pGgFzD7z60+nX5wKE72JYAG4paS5sk2JCKg8=;
-        b=BTZAaTUrk6GcbguC4sQPBmTF/8ytyMLOl3lnRc+SugFyU/7NOfBOs7b6si4Vwn18sW
-         O6M2u8RUNj6Sh8geJxuLKcpo2UxpYRvaJTdJIvKYEw8MyU0c3Pf9OZB3967Z/61eUz1n
-         MQIZ6HgCAj42vQKGME2wjWEKDwRyk7MGcTyvbbuyMgbic6l9DI6FTvbyCj8Snf42NKqw
-         WJ+puop4NJLhkpuZap36s3TG42Eo3JJBOzwWtYILktq2lZkAgOkxP9X7BistYxYBJKF0
-         tWCZWKorSurw/JHZU4Xn9lrDwRRcyhgwszhalz7Ub/gCNrEHH42OVy9QTieQlbVtdZjS
-         gdGA==
-X-Gm-Message-State: AOJu0Ywq19TwDVIkPO3n1aXh8DwaM5lYJ2E37n5ad2dB9bRanWtzkkbA
-        ieq7z6dQY45EQtNAur9EEowjOg==
-X-Google-Smtp-Source: AGHT+IF0odaLvAeilH7K2WI0rkMDi0C9smclmU3oIrDkxldyXyKpbjGkUJWAwcvrZUO929m23SwWqw==
-X-Received: by 2002:a05:6a00:1a8f:b0:6ce:50b4:a21 with SMTP id e15-20020a056a001a8f00b006ce50b40a21mr321026pfv.27.1702056181771;
-        Fri, 08 Dec 2023 09:23:01 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id u3-20020a056a00098300b006ce7fb8f59csm1837731pfg.32.2023.12.08.09.23.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 09:23:00 -0800 (PST)
-Date:   Fri, 8 Dec 2023 09:22:55 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     justinstitt@google.com
-Cc:     Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] net: ena: replace deprecated strncpy with strscpy
-Message-ID: <202312080922.881A1515F3@keescook>
-References: <20231207-strncpy-drivers-net-ethernet-amazon-ena-ena_netdev-c-v2-1-a1f2893d1b70@google.com>
+        Fri, 8 Dec 2023 12:25:12 -0500
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73DE11D;
+        Fri,  8 Dec 2023 09:25:17 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SmyJN1wc0z9yskh;
+        Sat,  9 Dec 2023 01:08:04 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+        by mail.maildlp.com (Postfix) with ESMTP id E5EDD14090E;
+        Sat,  9 Dec 2023 01:25:04 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwDnInNoUXNlUnQqAg--.64290S2;
+        Fri, 08 Dec 2023 18:25:04 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     miklos@szeredi.hu, amir73il@gmail.com
+Cc:     linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zohar@linux.ibm.com, paul@paul-moore.com, stefanb@linux.ibm.com,
+        jlayton@kernel.org, brauner@kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [RFC][PATCH] overlayfs: Redirect xattr ops on security.evm to security.evm_overlayfs
+Date:   Fri,  8 Dec 2023 18:23:08 +0100
+Message-Id: <20231208172308.2876481-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231207-strncpy-drivers-net-ethernet-amazon-ena-ena_netdev-c-v2-1-a1f2893d1b70@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwDnInNoUXNlUnQqAg--.64290S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3WryxZFWxAw4DAF4xurW8Xrb_yoW7Zw1DpF
+        Wqya4DKr4rXFy7Wws5Aanruw109w4Fk3WUJ3y5Wwn5AF9xW3Za9FyftryYkFyUJr18ZFy5
+        tayjqw13K3s8Ww7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
+        w2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUsrcTDUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAFBF1jj5dj+AABs8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 09:34:42PM +0000, justinstitt@google.com wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> A suitable replacement is `strscpy` [2] due to the fact that it
-> guarantees NUL-termination on the destination buffer without
-> unnecessarily NUL-padding.
-> 
-> host_info allocation is done in ena_com_allocate_host_info() via
-> dma_alloc_coherent() and is not zero initialized by alloc_etherdev_mq().
-> 
-> However zero initialization of the destination doesn't matter in this case,
-> because strscpy() guarantees a NULL termination.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Yeah, this reads much better.
+EVM updates the HMAC in security.evm whenever there is a setxattr or
+removexattr operation on one of its protected xattrs (e.g. security.ima).
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Unfortunately, since overlayfs redirects those xattrs operations on the
+lower filesystem, the EVM HMAC cannot be calculated reliably, since lower
+inode attributes on which the HMAC is calculated are different from upper
+inode attributes (for example i_generation and s_uuid).
 
+Although maybe it is possible to align such attributes between the lower
+and the upper inode, another idea is to map security.evm to another name
+(security.evm_overlayfs) during an xattr operation, so that it does not
+collide with security.evm set by the lower filesystem.
+
+Whenever overlayfs wants to set security.evm, it is actually setting
+security.evm_overlayfs calculated with the upper inode attributes. The
+lower filesystem continues to update security.evm.
+
+This seems to make things working again, and even allowing IMA appraisal
+to succeed on both the lower and the upper inode.
+
+Example:
+
+# mount -t overlay overlay \
+    -o lowerdir=data,upperdir=root/data,workdir=root/data_work mnt
+
+# echo "appraise fsname=overlay" > /sys/kernel/security/ima/policy
+# echo "appraise fsuid=<lower fs UUID>" > /sys/kernel/security/ima/policy
+
+# cd mnt
+# echo test > test-file
+evm: security.ima: (34) [0404f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93...]
+evm: hmac_misc: (24) [1300000000000000cd9e816c0000000000000000a4810000]
+evm: uuid: [28b23254946744c0b6ba34b12e85a26f]
+evm: digest: [b186cc901ead302572c6b271db85e4e5cd41c6ce]
+evm: security.ima: (34) [0404f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93...]
+evm: hmac_misc: (24) [1300000000000000000000000000000000000000a4810000]
+evm: uuid: [589286d4df13456ea82a9aca97660302]
+evm: digest: [b90586afd1703a6cbf290d9150465f8bdd48fb8a]
+
+The first 4 lines show the HMAC calculation on the lower inode (ext4), the
+remaining 4 the HMAC calculation on the upper inode (overlay).
+
+Now, after mapping security.evm to security.evm_overlayfs, this is the
+result of the getfattr command on overlayfs:
+
+# getfattr -m - -d -e hex test-file
+# file: test-file
+security.evm=0x02b90586afd1703a6cbf290d9150465f8bdd48fb8a
+security.ima=0x0404f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93...
+
+Instead, this is the result of the getfattr command on the lower fs:
+
+# getfattr -m - -d -e hex ../root/data/test-file
+# file: ../root/data/test-file
+security.evm=0x02b186cc901ead302572c6b271db85e4e5cd41c6ce
+security.evm_overlayfs=0x02b90586afd1703a6cbf290d9150465f8bdd48fb8a
+security.ima=0x0404f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93...
+
+Both HMACs are stored on the lower inode.
+
+Trying IMA appraisal, the result is that both the access from overlayfs and
+from the lower fs succeed. From overlayfs:
+
+# cat test-file
+evm: security.ima: (34) [0404f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93...]
+evm: hmac_misc: (24) [1300000000000000000000000000000000000000a4810000]
+evm: uuid: [589286d4df13456ea82a9aca97660302]
+evm: digest: [b90586afd1703a6cbf290d9150465f8bdd48fb8a]
+test
+
+From the lower fs:
+
+# cat ../root/data/test-file
+evm: security.ima: (34) [0404f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93...]
+evm: hmac_misc: (24) [1300000000000000cd9e816c0000000000000000a4810000]
+evm: uuid: [28b23254946744c0b6ba34b12e85a26f]
+evm: digest: [b186cc901ead302572c6b271db85e4e5cd41c6ce]
+test
+
+security.evm_overlayfs is hidden from listxattr in overlayfs.
+
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+---
+ fs/overlayfs/xattrs.c      | 9 +++++++++
+ include/uapi/linux/xattr.h | 4 ++++
+ 2 files changed, 13 insertions(+)
+
+diff --git a/fs/overlayfs/xattrs.c b/fs/overlayfs/xattrs.c
+index 383978e4663c..1141d2fa01db 100644
+--- a/fs/overlayfs/xattrs.c
++++ b/fs/overlayfs/xattrs.c
+@@ -65,6 +65,9 @@ static int ovl_xattr_set(struct dentry *dentry, struct inode *inode, const char
+ 		goto out;
+ 
+ 	old_cred = ovl_override_creds(dentry->d_sb);
++	if (!strcmp(name, XATTR_NAME_EVM))
++		name = XATTR_NAME_EVM_OVERLAYFS;
++
+ 	if (value) {
+ 		err = ovl_do_setxattr(ofs, realdentry, name, value, size,
+ 				      flags);
+@@ -88,6 +91,9 @@ static int ovl_xattr_get(struct dentry *dentry, struct inode *inode, const char
+ 	const struct cred *old_cred;
+ 	struct path realpath;
+ 
++	if (!strcmp(name, XATTR_NAME_EVM))
++		name = XATTR_NAME_EVM_OVERLAYFS;
++
+ 	ovl_i_path_real(inode, &realpath);
+ 	old_cred = ovl_override_creds(dentry->d_sb);
+ 	res = vfs_getxattr(mnt_idmap(realpath.mnt), realpath.dentry, name, value, size);
+@@ -101,6 +107,9 @@ static bool ovl_can_list(struct super_block *sb, const char *s)
+ 	if (ovl_is_private_xattr(sb, s))
+ 		return false;
+ 
++	if (!strcmp(s, XATTR_NAME_EVM_OVERLAYFS))
++		return false;
++
+ 	/* List all non-trusted xattrs */
+ 	if (strncmp(s, XATTR_TRUSTED_PREFIX, XATTR_TRUSTED_PREFIX_LEN) != 0)
+ 		return true;
+diff --git a/include/uapi/linux/xattr.h b/include/uapi/linux/xattr.h
+index 9463db2dfa9d..93930300f69e 100644
+--- a/include/uapi/linux/xattr.h
++++ b/include/uapi/linux/xattr.h
+@@ -51,6 +51,10 @@
+ #define XATTR_EVM_SUFFIX "evm"
+ #define XATTR_NAME_EVM XATTR_SECURITY_PREFIX XATTR_EVM_SUFFIX
+ 
++#define XATTR_EVM_OVERLAYFS_SUFFIX "evm_overlayfs"
++#define XATTR_NAME_EVM_OVERLAYFS \
++	XATTR_SECURITY_PREFIX XATTR_EVM_OVERLAYFS_SUFFIX
++
+ #define XATTR_IMA_SUFFIX "ima"
+ #define XATTR_NAME_IMA XATTR_SECURITY_PREFIX XATTR_IMA_SUFFIX
+ 
 -- 
-Kees Cook
+2.34.1
+
