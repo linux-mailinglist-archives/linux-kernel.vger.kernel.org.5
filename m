@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A489E809988
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 03:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A91A809989
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 03:53:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573009AbjLHCxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 21:53:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
+        id S1573020AbjLHCxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 21:53:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbjLHCxC (ORCPT
+        with ESMTP id S229671AbjLHCxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 21:53:02 -0500
+        Thu, 7 Dec 2023 21:53:05 -0500
 Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [IPv6:2001:41d0:1004:224b::ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591D4171E
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 18:53:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645681715
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 18:53:11 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1702003986;
+        t=1702003990;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nScQm/fmNOjGhlLnCGYZOl5/YmPviWpS9XmgJR18QP0=;
-        b=lfAm3Ag0u+nVvzsnpysTBQspAGEV7RQMWtcMnK+sgx5xG663oyDL2ImjlVJztS/qUUC2Bu
-        ASnstCjN2e7RvnSs5QQnB61n9SzrCi2SL7VTkiqKPo9WPDD641CyExewkH4Cks64v1NnaA
-        Y94xV0mU8qY+cPzuNp+xPfcAHW1VUQI=
+        bh=n5rlcvDOEWSjvMRr90AdsF4YIrGIogPwB5/wbnheBkQ=;
+        b=IHnb3dgPdv0XvvyaI7QPgxVi6IP+FjK3KVXTcR25SvOJ6PmLr1x9emJ+YfIcImJVapgyzg
+        uJKyXe9nXu/y0CFNFbZWwF2f89s3kEfY8JD/9hR223k4PKPEJhAu3rW0LY4r//U8QAMS8M
+        e2PUBAGxjgBmp5nM2aTp82P5yZ+s6bI=
 From:   Gang Li <gang.li@linux.dev>
 To:     David Hildenbrand <david@redhat.com>,
         David Rientjes <rientjes@google.com>,
@@ -34,9 +34,9 @@ To:     David Hildenbrand <david@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         ligang.bdlg@bytedance.com, Gang Li <gang.li@linux.dev>
-Subject: [RFC PATCH v2 1/5] hugetlb: code clean for hugetlb_hstate_alloc_pages
-Date:   Fri,  8 Dec 2023 10:52:36 +0800
-Message-Id: <20231208025240.4744-2-gang.li@linux.dev>
+Subject: [RFC PATCH v2 2/5] hugetlb: split hugetlb_hstate_alloc_pages
+Date:   Fri,  8 Dec 2023 10:52:37 +0800
+Message-Id: <20231208025240.4744-3-gang.li@linux.dev>
 In-Reply-To: <20231208025240.4744-1-gang.li@linux.dev>
 References: <20231208025240.4744-1-gang.li@linux.dev>
 MIME-Version: 1.0
@@ -52,100 +52,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The readability of `hugetlb_hstate_alloc_pages` is poor. By cleaning the
-code, its readability can be improved, facilitating future modifications.
+1G and 2M huge pages have different allocation and initialization logic,
+which leads to subtle differences in parallelization. Therefore, it is
+appropriate to split hugetlb_hstate_alloc_pages into gigantic and
+non-gigantic.
 
-This patch extracts two functions to reduce the complexity of
-`hugetlb_hstate_alloc_pages` and has no functional changes.
-
-- hugetlb_hstate_alloc_pages_node_specific() to handle iterates through
-  each online node and performs allocation if necessary.
-- hugetlb_hstate_alloc_pages_report() report error during allocation.
-  And the value of h->max_huge_pages is updated accordingly.
+This patch has no functional changes.
 
 Signed-off-by: Gang Li <gang.li@linux.dev>
 ---
- mm/hugetlb.c | 46 +++++++++++++++++++++++++++++-----------------
- 1 file changed, 29 insertions(+), 17 deletions(-)
+ mm/hugetlb.c | 86 +++++++++++++++++++++++++++-------------------------
+ 1 file changed, 45 insertions(+), 41 deletions(-)
 
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 51f50bb3dc092..252d6866a0af8 100644
+index 252d6866a0af8..8de1653fc4c4f 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -3475,6 +3475,33 @@ static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
- 	h->max_huge_pages_node[nid] = i;
+@@ -3502,6 +3502,47 @@ static void __init hugetlb_hstate_alloc_pages_report(unsigned long allocated, st
+ 	}
  }
  
-+static bool __init hugetlb_hstate_alloc_pages_node_specific(struct hstate *h)
++static unsigned long __init hugetlb_hstate_alloc_pages_gigantic(struct hstate *h)
 +{
-+	int i;
-+	bool node_specific_alloc = false;
++	unsigned long i;
 +
-+	for_each_online_node(i) {
-+		if (h->max_huge_pages_node[i] > 0) {
-+			hugetlb_hstate_alloc_pages_onenode(h, i);
-+			node_specific_alloc = true;
-+		}
++	for (i = 0; i < h->max_huge_pages; ++i) {
++		/*
++		 * gigantic pages not added to list as they are not
++		 * added to pools now.
++		 */
++		if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
++			break;
++		cond_resched();
 +	}
 +
-+	return node_specific_alloc;
++	return i;
 +}
 +
-+static void __init hugetlb_hstate_alloc_pages_report(unsigned long allocated, struct hstate *h)
++static unsigned long __init hugetlb_hstate_alloc_pages_non_gigantic(struct hstate *h)
 +{
-+	if (allocated < h->max_huge_pages) {
-+		char buf[32];
++	unsigned long i;
++	struct folio *folio;
++	LIST_HEAD(folio_list);
++	nodemask_t node_alloc_noretry;
 +
-+		string_get_size(huge_page_size(h), 1, STRING_UNITS_2, buf, 32);
-+		pr_warn("HugeTLB: allocating %lu of page size %s failed.  Only allocated %lu hugepages.\n",
-+			h->max_huge_pages, buf, allocated);
-+		h->max_huge_pages = allocated;
++	/* Bit mask controlling how hard we retry per-node allocations.*/
++	nodes_clear(node_alloc_noretry);
++
++	for (i = 0; i < h->max_huge_pages; ++i) {
++		folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
++						&node_alloc_noretry);
++		if (!folio)
++			break;
++		list_add(&folio->lru, &folio_list);
++		cond_resched();
 +	}
++
++	prep_and_add_allocated_folios(h, &folio_list);
++
++	return i;
 +}
 +
  /*
   * NOTE: this routine is called in different contexts for gigantic and
   * non-gigantic pages.
-@@ -3492,7 +3519,6 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- 	struct folio *folio;
- 	LIST_HEAD(folio_list);
- 	nodemask_t *node_alloc_noretry;
--	bool node_specific_alloc = false;
+@@ -3515,10 +3556,7 @@ static void __init hugetlb_hstate_alloc_pages_report(unsigned long allocated, st
+  */
+ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ {
+-	unsigned long i;
+-	struct folio *folio;
+-	LIST_HEAD(folio_list);
+-	nodemask_t *node_alloc_noretry;
++	unsigned long allocated;
  
  	/* skip gigantic hugepages allocation if hugetlb_cma enabled */
  	if (hstate_is_gigantic(h) && hugetlb_cma_size) {
-@@ -3501,14 +3527,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- 	}
- 
- 	/* do node specific alloc */
--	for_each_online_node(i) {
--		if (h->max_huge_pages_node[i] > 0) {
--			hugetlb_hstate_alloc_pages_onenode(h, i);
--			node_specific_alloc = true;
--		}
--	}
--
--	if (node_specific_alloc)
-+	if (hugetlb_hstate_alloc_pages_node_specific(h))
- 		return;
+@@ -3532,46 +3570,12 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
  
  	/* below will do all node balanced alloc */
-@@ -3551,14 +3570,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
- 	/* list will be empty if hstate_is_gigantic */
- 	prep_and_add_allocated_folios(h, &folio_list);
- 
--	if (i < h->max_huge_pages) {
--		char buf[32];
--
--		string_get_size(huge_page_size(h), 1, STRING_UNITS_2, buf, 32);
--		pr_warn("HugeTLB: allocating %lu of page size %s failed.  Only allocated %lu hugepages.\n",
--			h->max_huge_pages, buf, i);
--		h->max_huge_pages = i;
+ 	if (!hstate_is_gigantic(h)) {
+-		/*
+-		 * Bit mask controlling how hard we retry per-node allocations.
+-		 * Ignore errors as lower level routines can deal with
+-		 * node_alloc_noretry == NULL.  If this kmalloc fails at boot
+-		 * time, we are likely in bigger trouble.
+-		 */
+-		node_alloc_noretry = kmalloc(sizeof(*node_alloc_noretry),
+-						GFP_KERNEL);
++		allocated = hugetlb_hstate_alloc_pages_non_gigantic(h);
+ 	} else {
+-		/* allocations done at boot time */
+-		node_alloc_noretry = NULL;
 -	}
-+	hugetlb_hstate_alloc_pages_report(i, h);
- 	kfree(node_alloc_noretry);
+-
+-	/* bit mask controlling how hard we retry per-node allocations */
+-	if (node_alloc_noretry)
+-		nodes_clear(*node_alloc_noretry);
+-
+-	for (i = 0; i < h->max_huge_pages; ++i) {
+-		if (hstate_is_gigantic(h)) {
+-			/*
+-			 * gigantic pages not added to list as they are not
+-			 * added to pools now.
+-			 */
+-			if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
+-				break;
+-		} else {
+-			folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
+-							node_alloc_noretry);
+-			if (!folio)
+-				break;
+-			list_add(&folio->lru, &folio_list);
+-		}
+-		cond_resched();
++		allocated = hugetlb_hstate_alloc_pages_gigantic(h);
+ 	}
+ 
+-	/* list will be empty if hstate_is_gigantic */
+-	prep_and_add_allocated_folios(h, &folio_list);
+-
+-	hugetlb_hstate_alloc_pages_report(i, h);
+-	kfree(node_alloc_noretry);
++	hugetlb_hstate_alloc_pages_report(allocated, h);
  }
  
+ static void __init hugetlb_init_hstates(void)
 -- 
 2.30.2
 
