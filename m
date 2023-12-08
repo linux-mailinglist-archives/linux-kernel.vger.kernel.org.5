@@ -2,118 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF0280ACEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14F780ACF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:28:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574654AbjLHT0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 14:26:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34332 "EHLO
+        id S1574675AbjLHT1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 14:27:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbjLHT0K (ORCPT
+        with ESMTP id S229572AbjLHT1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 14:26:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0331706
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:26:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 761F0C433C8;
-        Fri,  8 Dec 2023 19:26:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702063576;
-        bh=HmU9LMehAw9DeUV8uCa+TBiQ2MWNpmsc6U26C4PITlc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q0jHp+lrFGrxQQ5fEQ0yYQ4fe+W9y4ZBbiIbF5Fm6XNgANu/LLyFCi7GKBQlImOK1
-         zQ5FX411R3rVVBA++4kibVU+Ry2zU52I2LBtZFygSsz/2u+K0JWWcT+JXE2mM3eQa5
-         aMaNS4Jl0owLVOpVhyAh5+5NDmpWsy7qBKYlhrzdxgnBQPmrOGOcSpTvp+Y7TY454O
-         WxcxrL2t/YvNsOiGxmkthRidpOyy3nyHyi8BYNeIuulbHZ7ApFNEULZz6fP97KusN/
-         TGdMkp+mrZygRRBt5EpnO283TOKGmC2DO1viuGwbfey/SpXfK9+mVbEe3SEJjdhIMr
-         WKX33bNQlujUg==
-Date:   Fri, 8 Dec 2023 19:26:10 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Cc:     linux-riscv@lists.infradead.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Fri, 8 Dec 2023 14:27:53 -0500
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AEA171D
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:27:59 -0800 (PST)
+Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-4649c501c1fso674301137.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 11:27:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702063678; x=1702668478; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l8NyCuiiYgH2NC+1+G5jDZqmw10slLAD5tJccxA3IOU=;
+        b=wn+1KwpqOUvxlWkstW/oLVbPJnEIbHmb7s+/7bNNdsLzC5es3QyjG7Brk00hx3A6mh
+         OIStZpmgQX/LMTKzWJqSZz4j0zw4pQUGBKsOQFf9DKFAVfSpdNo1H/KXlBmGtl2H0j+U
+         9KwWuVdPoPr5D1mbz0YJDqfPoZgz2rYqKu2cZppU9/+B0WqEpFpkLZlrLJvpMc5JVKjw
+         RlHM68qjUHN7ZsT+fZl55v0QgcUIRlyYMukcCCqMvenFm3i+rl6ShntIlQ8m4OHbPLw3
+         PEjbCV7s9dQKS+JQ4ri+ztcXrYEzdoSCIpqUuO+J4s0aUh/43HpTTpthoYyVf5D440YC
+         MKtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702063678; x=1702668478;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l8NyCuiiYgH2NC+1+G5jDZqmw10slLAD5tJccxA3IOU=;
+        b=XcxiRm/5pK2WXwjXgp911GcCt/OAIm6TJ79JJbPWkV9UYcYt957fpJg5vCbeJCbtUv
+         WQ1Mpi2TnvbEm7QTOnpN3clrw78qbsUqnPLM89BI6kq3QoIAduwkiAFVF7t3nZua/v68
+         XVcwbg7WhensYe7EZuokpNVgSIJ6QmWgMziaeeNlggFfRFoI/VuhvlhkdnGCv4VdfEKv
+         Dzrb17X84ndwlmkeYTuwGU/E3goGsoQfpL7CBTBlmQZ0nfQ3EVK6kqX50J/jhAdJMeZl
+         HBciMzEM1mFkSgMMqVNqwkl3RniDhsaH0j25RHl3K2CpXL1pRjLkljoCZ9mblh9ePVF4
+         dpKg==
+X-Gm-Message-State: AOJu0YyuJYGP71YxwdwAlbBrrJDDyx+Xjc21M5KBC6LkABJvcHiz4Rqj
+        miL0ybPz++jMIXHRqNztUPJeQPFnPmIyZn0AiyMPeA==
+X-Google-Smtp-Source: AGHT+IEPi2qW+CNAMULh3I0uZLV+ENMhuoXZdBR03G3pdL5QZhSSzAfl9wtnjBaGr4ZrWdh/Qk9uo4kpcH6n9EBcDGQ=
+X-Received: by 2002:a05:6102:6ca:b0:464:944d:44de with SMTP id
+ m10-20020a05610206ca00b00464944d44demr731655vsg.27.1702063678195; Fri, 08 Dec
+ 2023 11:27:58 -0800 (PST)
+MIME-Version: 1.0
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-8-almasrymina@google.com> <462da4bf-34f8-40c4-8772-9850b3127baf@kernel.org>
+In-Reply-To: <462da4bf-34f8-40c4-8772-9850b3127baf@kernel.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Fri, 8 Dec 2023 11:27:47 -0800
+Message-ID: <CAHS8izMysKCCoAoVK9KzQrfbtFfagaPMRYSUUjKTqJ-ZwJ53oA@mail.gmail.com>
+Subject: Re: [net-next v1 07/16] netdev: netdevice devmem allocator
+To:     David Ahern <dsahern@kernel.org>
+Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH RESEND v1 1/7] dt-bindings: clock: mpfs: add more MSSPLL
- output definitions
-Message-ID: <20231208-cauterize-hacker-f63dddf39af0@spud>
-References: <20231208-reenter-ajar-b6223e5134b3@spud>
- <20231208-unripe-maximum-fc77f4967561@spud>
- <CAJM55Z_ozf=MwOJCSM154L__TE1Gv7Ec=gM8LFJ31-_eX66OKA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="keUDLXTW9SCPY39T"
-Content-Disposition: inline
-In-Reply-To: <CAJM55Z_ozf=MwOJCSM154L__TE1Gv7Ec=gM8LFJ31-_eX66OKA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---keUDLXTW9SCPY39T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Dec 08, 2023 at 09:40:00AM -0800, Emil Renner Berthing wrote:
-> Conor Dooley wrote:
-> > From: Conor Dooley <conor.dooley@microchip.com>
+On Fri, Dec 8, 2023 at 9:56=E2=80=AFAM David Ahern <dsahern@kernel.org> wro=
+te:
+>
+> On 12/7/23 5:52 PM, Mina Almasry wrote:
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index b8c8be5a912e..30667e4c3b95 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -2120,6 +2120,41 @@ static int netdev_restart_rx_queue(struct net_de=
+vice *dev, int rxq_idx)
+> >       return err;
+> >  }
 > >
-> > There are 3 undocumented outputs of the MSSPLL that are used for the CAN
-> > bus, "user crypto" module and eMMC. Add their clock IDs so that they can
-> > be hooked up in DT.
-> >
-> > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-> > ---
-> >  include/dt-bindings/clock/microchip,mpfs-clock.h | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/include/dt-bindings/clock/microchip,mpfs-clock.h b/include=
-/dt-bindings/clock/microchip,mpfs-clock.h
-> > index 79775a5134ca..b52f19a2b480 100644
-> > --- a/include/dt-bindings/clock/microchip,mpfs-clock.h
-> > +++ b/include/dt-bindings/clock/microchip,mpfs-clock.h
-> > @@ -44,6 +44,11 @@
-> >
-> >  #define CLK_RTCREF	33
-> >  #define CLK_MSSPLL	34
-> > +#define CLK_MSSPLL0	34
->=20
-> You add this new CLK_MSSPLL0 macro with the same value as CLK_MSSPLL, but
-> never seem to use it in this series. Did you mean to rename the CLK_MSSPLL
-> instances CLK_MSSPLL0?
+> > +struct page_pool_iov *netdev_alloc_dmabuf(struct netdev_dmabuf_binding=
+ *binding)
+> > +{
+> > +     struct dmabuf_genpool_chunk_owner *owner;
+> > +     struct page_pool_iov *ppiov;
+> > +     unsigned long dma_addr;
+> > +     ssize_t offset;
+> > +     ssize_t index;
+> > +
+> > +     dma_addr =3D gen_pool_alloc_owner(binding->chunk_pool, PAGE_SIZE,
+>
+> Any reason not to allow allocation sizes other than PAGE_SIZE? e.g.,
+> 2048 for smaller MTUs or 8192 for larger ones. It can be a property of
+> page_pool and constant across allocations vs allowing different size for
+> each allocation.
 
-Yes, that was my intention.
+Only for simplicity. Supporting non-PAGE_SIZE is certainly possible,
+but in my estimation it's a huge can of worms worthy of itss own
+series. I find this series complicated to implement and review and
+support as-is, and if reasonable I would like to punt that as a future
+improvement.
 
---keUDLXTW9SCPY39T
-Content-Type: application/pgp-signature; name="signature.asc"
+At the minimum, I think the needed changes are:
 
------BEGIN PGP SIGNATURE-----
+1. The memory provider needs to report to the page pool the alloc size.
+2. The page_pool needs to handle non-PAGE_SIZE memory regions.
+3. The drivers need to handle non-PAGE_SIZE memory regions. Drivers
+today handle fragged pages, but that is different because it's a
+PAGE_SIZE region that is fragged. This is a non-PAGE_SIZE region in
+the first place.
+4. Any PAGE_SIZE assumptions in the entire net stack need to be removed.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXNt0gAKCRB4tDGHoIJi
-0mr/AQDAPWA0oJFGAgd3kwzO+18/rBTPVxEGkrO5J9+fukpyOAEAyrgQk4472IpW
-41zAPoXiQ9UbdlNLIljJi2H7VMzCYAw=
-=YxhE
------END PGP SIGNATURE-----
+At Google we mostly use page aligned MTUs so we're likely not that
+interested in sub PAGE_SIZE allocations, but we are interested in n *
+PAGE_SIZE allocations, but, I hope, in a separate followup effort.
 
---keUDLXTW9SCPY39T--
+--=20
+Thanks,
+Mina
