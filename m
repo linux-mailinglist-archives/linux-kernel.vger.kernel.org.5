@@ -2,74 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E490B80A171
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C171F80A174
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:50:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233409AbjLHKtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 05:49:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
+        id S233695AbjLHKuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 05:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbjLHKtu (ORCPT
+        with ESMTP id S232628AbjLHKuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 05:49:50 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A93115
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:49:55 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso6520a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 02:49:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702032594; x=1702637394; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a3ICmYU4vtByBj+ZOAeC38kXJDhlJqpO3Ji47gj7LUU=;
-        b=oHdHL+EcaALLHM9gAbj3yE1JWxJMVYcqZI80gPo2PqtCWrWeRcgDpt9knkF7OcUq8y
-         B0/MfEONtWFD3cqHSLbdm7RqqNcG6czi82Wxd8wmSn/XeD3sya4AvoaucdJ/dMngmduG
-         Lr3SpHNJSyfDeuqfs3FQoTP8dHknDCM26LhlEUSqVjc12qMfiJnzQbwHvucawX8AKlTb
-         S0XPzLrchJ/+pDs0rVyeQKKOeEfhwLLNBrtLQPpHJ+HBitdaKej5Ssx3Ed4zM5AJGrS+
-         Nj/UEBBKoYoplgcA6JxJqoEd/LOVhH0hAZeaPKnpNvrKTCahFtrxGdpRzFli7eB+gJ3S
-         iWdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702032594; x=1702637394;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a3ICmYU4vtByBj+ZOAeC38kXJDhlJqpO3Ji47gj7LUU=;
-        b=VAIy3R2U+zV9btK4cjO1n0aMrw6l2fbIFqfn9DgNAK0AuqFf2VSFIqcyXAs0X2oFyS
-         D9t7r08Xk/F7tUJmjN+kW0QwLtc44wdbYtM7otq3W2oX64IlSfLy+u505RRXsFsbwxfX
-         AtrX4n9OyxsEAvWrS6wMcL4XpDfqYg+xPIfsS9K5VVhpxzKWObVULYrWfCIMZmKTYJHK
-         rHiiO2lGo4rq4zQBGmWw2QpGq0aSnUQvx88/jbTbTOvRnEUGlsZK2i4f1IwMLROLlnZU
-         Ljvnz/fiv9YcoTxpWHyaF0w4TwQH+8zskA/sxafItCGgB8m7E3yuLmPzlY3fQxDH2hSc
-         rpIw==
-X-Gm-Message-State: AOJu0Yxd0ruSVrc/r+A+lOTfepYSXEbqKuR0/afgADnJH2Z+dDog9FK2
-        bb4VNzULS3NQ25pqB/HfREf3EdhABS/HISK5LIBRQQ==
-X-Google-Smtp-Source: AGHT+IFJgvPxeKl+froO/n1xOLoH9c4jeQ7frZ9rnypL/gsx3xc0licEqthQwCs4B2IITcdsRQfKl5Yh550YZOykElg=
-X-Received: by 2002:a50:d7ca:0:b0:54a:ee8b:7a8c with SMTP id
- m10-20020a50d7ca000000b0054aee8b7a8cmr45593edj.0.1702032594082; Fri, 08 Dec
- 2023 02:49:54 -0800 (PST)
+        Fri, 8 Dec 2023 05:50:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5900CE9
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:50:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DADA6C433C9;
+        Fri,  8 Dec 2023 10:50:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702032623;
+        bh=LEtB9at6X+SClQxgbXPuelGVlTPDowCMmdLHvwtxK+s=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=XX1rcNpxNeORNo0UsY/rt4dXHIeDAolDpXIHtM8v4YHILUr210ZTqlNXhdcvs6UQb
+         b0XmamUIC8Y/GRxt8OR6yU+MahN9IhcCaCHtDrqHCfE3JamL7lL0M/V4fvXw4P622l
+         1CDzJhJHCRQofsTcq2eG59D4kIWeqb4a0djuiaFvueES3l55pe6QClQQMM5SEYES2I
+         UEnLhE2WjE7nybhheCm9lmmAuf4D/hpOcj59Ebw7eIT8KoYvoI06eAe18zy/nz2iVs
+         O7xa7C5onZLYkgiRdjArRTNJv7jWo3Rxyoij2FuUyjN6kfArdxHJz+68CIVsTwsBEK
+         5lX0zDlyymsZA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C46A8C04E32;
+        Fri,  8 Dec 2023 10:50:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <MN2PR12MB44863139E562A59329E89DBEB982A@MN2PR12MB4486.namprd12.prod.outlook.com>
- <CANn89iKvG5cTNROyBF32958BzATfXysh4zLk5nRR6fgi08vumA@mail.gmail.com> <MN2PR12MB4486457FC77205D246FC834AB98BA@MN2PR12MB4486.namprd12.prod.outlook.com>
-In-Reply-To: <MN2PR12MB4486457FC77205D246FC834AB98BA@MN2PR12MB4486.namprd12.prod.outlook.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 8 Dec 2023 11:49:40 +0100
-Message-ID: <CANn89i+e2TcvSU1EgrVZRUoEmZ5NDauXd3=kEkjpsGjmaypHOw@mail.gmail.com>
-Subject: Re: Bug report connect to VM with Vagrant
-To:     Shachar Kagan <skagan@nvidia.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>, Ido Kalir <idok@nvidia.com>,
-        Topaz Uliel <topazu@nvidia.com>,
-        Shirly Ohnona <shirlyo@nvidia.com>,
-        Ziyad Atiyyeh <ziyadat@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] neighbour: Don't let neigh_forced_gc() disable preemption
+ for long
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170203262380.21119.9612861289100953455.git-patchwork-notify@kernel.org>
+Date:   Fri, 08 Dec 2023 10:50:23 +0000
+References: <20231206033913.1290566-1-judyhsiao@chromium.org>
+In-Reply-To: <20231206033913.1290566-1-judyhsiao@chromium.org>
+To:     Judy Hsiao <judyhsiao@chromium.org>
+Cc:     edumazet@google.com, dsahern@kernel.org, horms@kernel.org,
+        dianders@chromium.org, haleyb.dev@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, joel.granados@gmail.com, ja@ssi.bg,
+        leon@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,36 +56,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 2:03=E2=80=AFPM Shachar Kagan <skagan@nvidia.com> wr=
-ote:
->
->
-> >> On Thu, Nov 30, 2023 at 2:55=E2=80=AFPM Shachar Kagan <skagan@nvidia.c=
-om> wrote:
-> >>
-> >> Hi Eric,
-> >>
-> >> I have an issue that bisection pointed at this patch:
-> >> commit 0a8de364ff7a14558e9676f424283148110384d6
-> >> tcp: no longer abort SYN_SENT when receiving some ICMP
-> >>
-> >
-> > Please provide tcpdump/pcap captures.
-> >
-> >  It is hard to say what is going on just by looking at some application=
- logs.
-> >
->
-> I managed to capture the tcpdump of =E2=80=98Vagrant up=E2=80=99 step ove=
-r old kernel and new kernel where this step fails. Both captures are attach=
-ed.
-> The tcpdump is filtered by given IP of the nested VM.
+Hello:
 
-Hi Shachar
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-I do not see any ICMP messages in these files, can you get them ?
+On Wed,  6 Dec 2023 03:38:33 +0000 you wrote:
+> We are seeing cases where neigh_cleanup_and_release() is called by
+> neigh_forced_gc() many times in a row with preemption turned off.
+> When running on a low powered CPU at a low CPU frequency, this has
+> been measured to keep preemption off for ~10 ms. That's not great on a
+> system with HZ=1000 which expects tasks to be able to schedule in
+> with ~1ms latency.
+> 
+> [...]
 
-Feel free to continue this exchange privately, no need to send MB
-email to various lists.
+Here is the summary with links:
+  - [v2] neighbour: Don't let neigh_forced_gc() disable preemption for long
+    https://git.kernel.org/netdev/net/c/e5dc5afff62f
 
-Thanks.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
