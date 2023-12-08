@@ -2,104 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6024C80AA22
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E71B980AA25
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:09:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574420AbjLHRJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:09:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
+        id S1574447AbjLHRJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:09:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233743AbjLHRJE (ORCPT
+        with ESMTP id S1574367AbjLHRJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:09:04 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03140AD
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:09:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3329C433C8;
-        Fri,  8 Dec 2023 17:09:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702055350;
-        bh=/IphcbvtWoyG/fdkcm9lA/I86nGtTbDJid5q4OPmEp8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ptJPFirgLLzF4T9HWYpbubQGoTykPHi7WT2waoDAsLMD6zIR3crBpBCYOU97GrC5M
-         0FTe8NhXD23I5iDp/Pbschttbk74s0fCaip0kwsrcfJJXJtJMdkVcITZJddmTj8K2E
-         2zdXeK8JrovcaeUTLQrqGbypNw8vpDB+XOxpsggn6sorHggDihewFzdAJJKkFnMydF
-         mBmtq9N89lMSWgH76ElNC+T35o3B+lDqEU+X7E+hscnZo9DL03TuOTduToMCkiLRBL
-         rz7Anh7o7D0lZSUYHDOPKpcZ6JkreGHTFnTSvefUOXnxSalgPiyO3wZVDJCH+Ljbom
-         ZAvDReaocRJjA==
-Date:   Fri, 8 Dec 2023 17:09:04 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     linux-riscv@lists.infradead.org
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v1 0/7] MPFS clock fixes required for correct CAN clock
- modeling
-Message-ID: <20231208-majestic-train-ee55b30de95a@spud>
-References: <20231208-sizably-repressed-16651a4b70e7@spud>
+        Fri, 8 Dec 2023 12:09:18 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4692AAD;
+        Fri,  8 Dec 2023 09:09:24 -0800 (PST)
+Received: from [192.168.178.49] (dynamic-adsl-84-220-28-122.clienti.tiscali.it [84.220.28.122])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4D6C620B74C0;
+        Fri,  8 Dec 2023 09:09:15 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4D6C620B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1702055363;
+        bh=9l5Ru2o2nTcnqhIvnh2spJXetvDDmWSNf5VpeRTEbg8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BR+eQu4RJTh0ceQuXPjHpA9kHIzOrd0+p5df/UHzA0eGNYqc7rUGlPbQK5a/OmO7F
+         BbSngliMq/ni3wzjMbXTyzXGGeWj/BPeGnENYV5rl5q2z1u31ztbdarZNon2OuZnsr
+         0mfhXeVkJmSZMWdfLpcgO7+g7mYQigjJ7RHMbUDM=
+Message-ID: <68b2d6bf-bce7-47f9-bebb-2652cc923ff9@linux.microsoft.com>
+Date:   Fri, 8 Dec 2023 18:09:13 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FA6cKNTv83r5pITX"
-Content-Disposition: inline
-In-Reply-To: <20231208-sizably-repressed-16651a4b70e7@spud>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 06/50] x86/sev: Add the host SEV-SNP initialization
+ support
+Content-Language: en-US
+To:     "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+        liam.merwick@oracle.com, zhi.a.wang@intel.com,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-7-michael.roth@amd.com>
+ <20231107163142.GAZUpmbt/i3himIf+E@fat_crate.local>
+ <4a2016d6-dc1f-ff68-9827-0b72b7c8eac2@amd.com>
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <4a2016d6-dc1f-ff68-9827-0b72b7c8eac2@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07/11/2023 20:00, Kalra, Ashish wrote:
+> Hello Boris,
+> 
+> Addressing of some of the remaining comments:
+> 
+> On 11/7/2023 10:31 AM, Borislav Petkov wrote:
+>> On Mon, Oct 16, 2023 at 08:27:35AM -0500, Michael Roth wrote:
+>>> +static bool early_rmptable_check(void)
+>>> +{
+>>> +    u64 rmp_base, rmp_size;
+>>> +
+>>> +    /*
+>>> +     * For early BSP initialization, max_pfn won't be set up yet, wait until
+>>> +     * it is set before performing the RMP table calculations.
+>>> +     */
+>>> +    if (!max_pfn)
+>>> +        return true;
+>>
+>> This already says that this is called at the wrong point during init.
+>>
+>> Right now we have
+>>
+>> early_identify_cpu -> early_init_amd -> early_detect_mem_encrypt
+>>
+>> which runs only on the BSP but then early_init_amd() is called in
+>> init_amd() too so that it takes care of the APs too.
+>>
+>> Which ends up doing a lot of unnecessary work on each AP in
+>> early_detect_mem_encrypt() like calculating the RMP size on each AP
+>> unnecessarily where this needs to happen exactly once.
+>>
+>> Is there any reason why this function cannot be moved to init_amd()
+>> where it'll do the normal, per-AP init?
+>>
+>> And the stuff that needs to happen once, needs to be called once too.
+>>
+>>> +
+>>> +    return snp_get_rmptable_info(&rmp_base, &rmp_size);
+>>> +}
+>>> +
+>>>   static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
+>>>   {
+>>>       u64 msr;
+>>> @@ -659,6 +674,9 @@ static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
+>>>           if (!(msr & MSR_K7_HWCR_SMMLOCK))
+>>>               goto clear_sev;
+>>>   +        if (cpu_has(c, X86_FEATURE_SEV_SNP) && !early_rmptable_check())
+>>> +            goto clear_snp;
+>>> +
+>>>           return;
+>>>     clear_all:
+>>> @@ -666,6 +684,7 @@ static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
+>>>   clear_sev:
+>>>           setup_clear_cpu_cap(X86_FEATURE_SEV);
+>>>           setup_clear_cpu_cap(X86_FEATURE_SEV_ES);
+>>> +clear_snp:
+>>>           setup_clear_cpu_cap(X86_FEATURE_SEV_SNP);
+>>>       }
+>>>   }
+>>
+>> ...
+>>
+>>> +bool snp_get_rmptable_info(u64 *start, u64 *len)
+>>> +{
+>>> +    u64 max_rmp_pfn, calc_rmp_sz, rmp_sz, rmp_base, rmp_end;
+>>> +
+>>> +    rdmsrl(MSR_AMD64_RMP_BASE, rmp_base);
+>>> +    rdmsrl(MSR_AMD64_RMP_END, rmp_end);
+>>> +
+>>> +    if (!(rmp_base & RMP_ADDR_MASK) || !(rmp_end & RMP_ADDR_MASK)) {
+>>> +        pr_err("Memory for the RMP table has not been reserved by BIOS\n");
+>>> +        return false;
+>>> +    }
+>>
+>> If you're masking off bits 0-12 above...
+>>
+>>> +
+>>> +    if (rmp_base > rmp_end) {
+>>
+>> ... why aren't you using the masked out vars further on?
+>>
+>> I know, the hw will say, yeah, those bits are 0 but still. IOW, do:
+>>
+>>     rmp_base &= RMP_ADDR_MASK;
+>>     rmp_end  &= RMP_ADDR_MASK;
+>>
+>> after reading them.
+>>
+>>> +        pr_err("RMP configuration not valid: base=%#llx, end=%#llx\n", rmp_base, rmp_end);
+>>> +        return false;
+>>> +    }
+>>> +
+>>> +    rmp_sz = rmp_end - rmp_base + 1;
+>>> +
+>>> +    /*
+>>> +     * Calculate the amount the memory that must be reserved by the BIOS to
+>>> +     * address the whole RAM, including the bookkeeping area. The RMP itself
+>>> +     * must also be covered.
+>>> +     */
+>>> +    max_rmp_pfn = max_pfn;
+>>> +    if (PHYS_PFN(rmp_end) > max_pfn)
+>>> +        max_rmp_pfn = PHYS_PFN(rmp_end);
+>>> +
+>>> +    calc_rmp_sz = (max_rmp_pfn << 4) + RMPTABLE_CPU_BOOKKEEPING_SZ;
+>>> +
+>>> +    if (calc_rmp_sz > rmp_sz) {
+>>> +        pr_err("Memory reserved for the RMP table does not cover full system RAM (expected 0x%llx got 0x%llx)\n",
+>>> +               calc_rmp_sz, rmp_sz);
+>>> +        return false;
+>>> +    }
+>>> +
+>>> +    *start = rmp_base;
+>>> +    *len = rmp_sz;
+>>> +
+>>> +    return true;
+>>> +}
+>>> +
+>>> +static __init int __snp_rmptable_init(void)
+>>> +{
+>>> +    u64 rmp_base, rmp_size;
+>>> +    void *rmp_start;
+>>> +    u64 val;
+>>> +
+>>> +    if (!snp_get_rmptable_info(&rmp_base, &rmp_size))
+>>> +        return 1;
+>>> +
+>>> +    pr_info("RMP table physical address [0x%016llx - 0x%016llx]\n",
+>>
+>> That's "RMP table physical range"
+>>
+>>> +        rmp_base, rmp_base + rmp_size - 1);
+>>> +
+>>> +    rmp_start = memremap(rmp_base, rmp_size, MEMREMAP_WB);
+>>> +    if (!rmp_start) {
+>>> +        pr_err("Failed to map RMP table addr 0x%llx size 0x%llx\n", rmp_base, rmp_size);
+>>
+>> No need to dump rmp_base and rmp_size again here - you're dumping them
+>> above.
+>>
+>>> +        return 1;
+>>> +    }
+>>> +
+>>> +    /*
+>>> +     * Check if SEV-SNP is already enabled, this can happen in case of
+>>> +     * kexec boot.
+>>> +     */
+>>> +    rdmsrl(MSR_AMD64_SYSCFG, val);
+>>> +    if (val & MSR_AMD64_SYSCFG_SNP_EN)
+>>> +        goto skip_enable;
+>>> +
+>>> +    /* Initialize the RMP table to zero */
+>>
+>> Again: useless comment.
+>>
+>>> +    memset(rmp_start, 0, rmp_size);
+>>> +
+>>> +    /* Flush the caches to ensure that data is written before SNP is enabled. */
+>>> +    wbinvd_on_all_cpus();
+>>> +
+>>> +    /* MFDM must be enabled on all the CPUs prior to enabling SNP. */
+>>
+>> First of all, use the APM bit name here pls: MtrrFixDramModEn.
+>>
+>> And then, for the life of me, I can't find any mention in the APM why
+>> this bit is needed. Neither in "15.36.2 Enabling SEV-SNP" nor in
+>> "15.34.3 Enabling SEV".
+>>
+>> Looking at the bit defintions of WrMem an RdMem - read and write
+>> requests get directed to system memory instead of MMIO so I guess you
+>> don't want to be able to write MMIO for certain physical ranges when SNP
+>> is enabled but it'll be good to have this properly explained instead of
+>> a "this must happen" information-less sentence.
+> 
+> This is a per-requisite for SNP_INIT as per the SNP Firmware ABI specifications, section 8.8.2:
+> 
+> From the SNP FW ABI specs:
+> 
+> If INIT_RMP is 1, then the firmware ensures the following system requirements are met:
+> • SYSCFG[MemoryEncryptionModEn] must be set to 1 across all cores. (SEV must be
+> enabled.)> • SYSCFG[SecureNestedPagingEn] must be set to 1 across all cores.
+> • SYSCFG[VMPLEn] must be set to 1 across all cores.
+> • SYSCFG[MFDM] must be set to 1 across all cores.
 
---FA6cKNTv83r5pITX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Ashish,
 
-On Fri, Dec 08, 2023 at 05:07:39PM +0000, Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
->=20
-> While reviewing a CAN clock driver internally for MPFS [1], I realised
-> that the modeling of the MSSPLL such that one one of its outputs could
-> be used was not correct. The CAN controllers on MPFS take 2 input
-> clocks - one that is the bus clock, acquired from the main MSSPLL and
-> a second clock for the AHB interface to the result of the SoC.
-> Currently the binding for the CAN controllers and the represetnation
-> of the MSSPLL only allows for one of these clocks.
-> Modify the binding and devicetree to expect two clocks and rework the
-> main clock controller driver for MPFS such that it is capable of
-> providing multiple outputs from the MSSPLL.
->=20
-> Cheers,
-> Conor.
+I just noticed that the kernel shouts at me about this bit when I offline->online a CPU in
+an SNP host:
 
-Whoops, that was meant to get a dry run arg... Please ignore!
+[2692586.589194] smpboot: CPU 63 is now offline
+[2692589.366822] [Firmware Warn]: MTRR: CPU 0: SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit
+[2692589.376582] smpboot: Booting Node 0 Processor 63 APIC 0x3f
+[2692589.378070] [Firmware Warn]: MTRR: CPU 63: SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit
+[2692589.388845] microcode: CPU63: new patch_level=0x0a0011d1
 
---FA6cKNTv83r5pITX
-Content-Type: application/pgp-signature; name="signature.asc"
+Now I understand if you say "CPU offlining is not supported" but there's nothing currently
+blocking it.
 
------BEGIN PGP SIGNATURE-----
+Best wishes,
+Jeremi 
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXNNsAAKCRB4tDGHoIJi
-0js1AP9ZqKk/YBSEPrALxRtNPh7qmxhWn6pQU0kY4tNa5xZ++wD/b+Aro0mcj91z
-Tut9u4n6gLOaDGjwvPG1K/0/eD5mzAg=
-=yfBZ
------END PGP SIGNATURE-----
+> • VM_HSAVE_PA (MSR C001_0117) must be set to 0h across all cores.
+> • HWCR[SmmLock] (MSR C001_0015) must be set to 1 across all cores.
+> 
+> So, this platform enabling code for SNP needs to ensure that these conditions are met before SNP_INIT is called.
+> 
 
---FA6cKNTv83r5pITX--
