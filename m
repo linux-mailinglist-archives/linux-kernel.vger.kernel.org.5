@@ -2,290 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2860C80A93D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D2980A94F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574348AbjLHQgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:36:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
+        id S235932AbjLHQhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:37:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574446AbjLHQf2 (ORCPT
+        with ESMTP id S236040AbjLHQho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:35:28 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC8919A3;
-        Fri,  8 Dec 2023 08:35:32 -0800 (PST)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8EOMBo020799;
-        Fri, 8 Dec 2023 16:35:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=0wf4dCNPxqQEpCSrGP/sLqp5OmI0G14RsHaABMItNss=;
- b=BjOPVWeXEKvPAaNgvRGWeU7+WX+t/UXbgMfCg5zsm/FeIjTVJHS4KOhxxfggkp5lbZb3
- yQz8A27LC3kyW689zk5Qx9LfFYECz4NJTEMxdxU2Cn/0BCWPhKLkoFsEpM7+r3szaSok
- T//5q5JLq5Q/ktLCtvNc93ZO0qYry79uX5ipS8XDwOnRphRQF6yj9QpHNCnMlbDdTBXg
- r3X3MFR/L2GQLP4b8igj3xbJZwL39l0f05eklPfsqyZ4CrNs3xhw9VgZnYGEnFTAe1k+
- vxG97ZCCW/30gU4HtLBcUAuJgyjGbWbT9azFuEyfQX8FIEzsEm5zoPZ34UFlAn9LSL0G vg== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uuphga00n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 16:35:26 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B8GZPJ3012910
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 8 Dec 2023 16:35:25 GMT
-Received: from [10.110.30.94] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Dec
- 2023 08:35:23 -0800
-Message-ID: <5d4104ae-8737-6576-79ab-e68126bd826a@quicinc.com>
-Date:   Fri, 8 Dec 2023 08:35:22 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 04/16] drm/msm/dpu: move csc matrices to dpu_hw_util
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <quic_parellan@quicinc.com>, <quic_jesszhan@quicinc.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Sean Paul <sean@poorly.run>
-References: <20231208050641.32582-1-quic_abhinavk@quicinc.com>
- <20231208050641.32582-5-quic_abhinavk@quicinc.com>
- <CAA8EJpro4ehwZ8Gs+ASUmrMJS0HbnDXd5pXwijs1jkDpR-kAOQ@mail.gmail.com>
- <ceb7e736-22f3-0cf3-3d65-7ec33e7c9d95@quicinc.com>
- <CAA8EJprr=T1cNst_dTNSToW_fVOM3mo-yRmWuK=8BU5rDNd54Q@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJprr=T1cNst_dTNSToW_fVOM3mo-yRmWuK=8BU5rDNd54Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: P81Qw2rmhF33IGsrdB60dasOyHpdsLa5
-X-Proofpoint-GUID: P81Qw2rmhF33IGsrdB60dasOyHpdsLa5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-08_11,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- adultscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312080136
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 8 Dec 2023 11:37:44 -0500
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D5D1FED
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:37:25 -0800 (PST)
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 435513F4CC
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 16:37:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1702053444;
+        bh=YT/kV/Dp30PwQaDY0JCP+r7zoJhVpxRRZO8hjSNjj3s=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=RZrtlVhDDbvMW/NephNnD2KMXX1x+OdI8VxxF+C6dRoCGXLX5S3LaiL9EsSHEMsAd
+         zLDHY1MkpTa4t+juVpC+FyXrYeIwstlRrnPHZYNW5hx3750ZurQarheUPTACH3+hM/
+         a74ywjs90BI+7H/HGQm8qW7Oy3YzdcX1gag/UlZgQJXn30FjUto7b2DrF7Am70bhDC
+         K6zWj5eLswg0BrNRimLhAnwsLGQ3CZMOe6zR9+m9mkhr6w0oP+uDBedssYISD8JPWr
+         89zjx0SvU95txbcCitgxCUc75FwcqrzoqEEcRYDQhJKFV2rYOFyZEBat6AT5faO+iE
+         JbxlRBwG4tkSw==
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2ca25c82d99so19740951fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 08:37:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702053443; x=1702658243;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YT/kV/Dp30PwQaDY0JCP+r7zoJhVpxRRZO8hjSNjj3s=;
+        b=bZbddETOv0Ak3y+U/8FZcSeiD5m0rCh3t3FB/IhhNO2HlqNbgXtjWFNG/bKL9beDYe
+         6c8qdIsZDqfyW3uckrzZ8FbPPQb1+x6K3x0ErJYt4wo3m6L7RYuOHaNMVfYLGAJGURVd
+         Me47VxSZIS1/Dbp3oiSzHupKdNTltpUpIIkMJWjwufHMaftJpgEf6d+lSkYWEG8/mPVw
+         EAoPbpZ6TAhQ5pQJ9EHF816QReR9UeXg+2JI6/rhMBmnOsa1NKyxwC2WdToctviK0d4T
+         3UGM7nMBwSzAaBfNCI8h1WtDOM3/n4i0b4dPiex56GpZTVHtYaECYO1SJnBBH4Dtu1ol
+         ybvA==
+X-Gm-Message-State: AOJu0YzukVJ3GlkPr0xjiSBN1XAGAplHln0IWwF9BzKKgBxV80EZ3b5+
+        x3J5A5/bn5MaK8WCt80OClS61dwrjSSjf2CP4nqraLE4EwQZzOukmeM5Ogkbqz17QL66v7aN7iU
+        uz/9ZsoF6CZQQAPPY/Hi8Us/Bttg+RY0gg3sWw8hbS5VgiJvnbg1j59Yimw==
+X-Received: by 2002:ac2:598a:0:b0:50b:f7c6:2f72 with SMTP id w10-20020ac2598a000000b0050bf7c62f72mr84582lfn.106.1702053443521;
+        Fri, 08 Dec 2023 08:37:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHsNnO1XfYSlnYp1dZD6tNH65TwHmtLaUUmeoX2IT5o0GoT7vAF3CO6XD1zyHCOiQ5LVIYfVi1131QZ4wUZCFs=
+X-Received: by 2002:ac2:598a:0:b0:50b:f7c6:2f72 with SMTP id
+ w10-20020ac2598a000000b0050bf7c62f72mr84575lfn.106.1702053443189; Fri, 08 Dec
+ 2023 08:37:23 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 8 Dec 2023 08:37:21 -0800
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <20231206115000.295825-8-jeeheng.sia@starfivetech.com>
+References: <20231206115000.295825-1-jeeheng.sia@starfivetech.com> <20231206115000.295825-8-jeeheng.sia@starfivetech.com>
+Mime-Version: 1.0
+Date:   Fri, 8 Dec 2023 08:37:21 -0800
+Message-ID: <CAJM55Z-FXV-Go4yj_AJyU4pRC0msHqTCT3q24HkNtBTWW9rAgA@mail.gmail.com>
+Subject: Re: [PATCH v1 07/16] dt-bindings: clock: Add StarFive JH8100
+ System-North-West clock and reset generator
+To:     Sia Jee Heng <jeeheng.sia@starfivetech.com>, kernel@esmil.dk,
+        conor@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, mturquette@baylibre.com,
+        sboyd@kernel.org, p.zabel@pengutronix.de,
+        emil.renner.berthing@canonical.com, hal.feng@starfivetech.com,
+        xingyu.wu@starfivetech.com
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        leyfoon.tan@starfivetech.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sia Jee Heng wrote:
+> Add bindings for the System-North-West clock and reset generator
+> (SYSCRG-NW) on JH8100 SoC.
+>
+> Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+> Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+> ---
+>  .../clock/starfive,jh8100-syscrg-nw.yaml      | 119 ++++++++++++++++++
 
+The JH7110 clocks, the JH8100 system and always-on all follow the Xcrg pattern:
+syscrg
+aoncrg
+stgcrg
+ispcrg
+voutcrg
+etc.
 
-On 12/8/2023 8:27 AM, Dmitry Baryshkov wrote:
-> On Fri, 8 Dec 2023 at 18:24, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->>
->>
->> On 12/8/2023 3:12 AM, Dmitry Baryshkov wrote:
->>> On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>>>
->>>> Since the type and usage of CSC matrices is spanning across DPU
->>>> lets introduce a helper to the dpu_hw_util to return the CSC
->>>> corresponding to the request type. This will help to add more
->>>> supported CSC types such as the RGB to YUV one which is used in
->>>> the case of CDM.
->>>>
->>>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
->>>> ---
->>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c | 54 +++++++++++++++++++++
->>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h |  7 +++
->>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c   | 39 ++-------------
->>>>    3 files changed, 64 insertions(+), 36 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
->>>> index 0b05061e3e62..59a153331194 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
->>>> @@ -87,6 +87,60 @@ static u32 dpu_hw_util_log_mask = DPU_DBG_MASK_NONE;
->>>>    #define QOS_QOS_CTRL_VBLANK_EN            BIT(16)
->>>>    #define QOS_QOS_CTRL_CREQ_VBLANK_MASK     GENMASK(21, 20)
->>>>
->>>> +static const struct dpu_csc_cfg dpu_csc_YUV2RGB_601L = {
->>>> +       {
->>>> +               /* S15.16 format */
->>>> +               0x00012A00, 0x00000000, 0x00019880,
->>>> +               0x00012A00, 0xFFFF9B80, 0xFFFF3000,
->>>> +               0x00012A00, 0x00020480, 0x00000000,
->>>> +       },
->>>> +       /* signed bias */
->>>> +       { 0xfff0, 0xff80, 0xff80,},
->>>> +       { 0x0, 0x0, 0x0,},
->>>> +       /* unsigned clamp */
->>>> +       { 0x10, 0xeb, 0x10, 0xf0, 0x10, 0xf0,},
->>>> +       { 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,},
->>>> +};
->>>> +
->>>> +static const struct dpu_csc_cfg dpu_csc10_YUV2RGB_601L = {
->>>> +       {
->>>> +               /* S15.16 format */
->>>> +               0x00012A00, 0x00000000, 0x00019880,
->>>> +               0x00012A00, 0xFFFF9B80, 0xFFFF3000,
->>>> +               0x00012A00, 0x00020480, 0x00000000,
->>>> +       },
->>>> +       /* signed bias */
->>>> +       { 0xffc0, 0xfe00, 0xfe00,},
->>>> +       { 0x0, 0x0, 0x0,},
->>>> +       /* unsigned clamp */
->>>> +       { 0x40, 0x3ac, 0x40, 0x3c0, 0x40, 0x3c0,},
->>>> +       { 0x00, 0x3ff, 0x00, 0x3ff, 0x00, 0x3ff,},
->>>> +};
->>>> +
->>>> +/**
->>>> + * dpu_hw_get_csc_cfg - get the CSC matrix based on the request type
->>>> + * @type:              type of the requested CSC matrix from caller
->>>> + * Return: CSC matrix corresponding to the request type in DPU format
->>>> + */
->>>> +const struct dpu_csc_cfg *dpu_hw_get_csc_cfg(enum dpu_hw_csc_cfg_type type)
->>>> +{
->>>> +       const struct dpu_csc_cfg *csc_cfg = NULL;
->>>> +
->>>> +       switch (type) {
->>>> +       case DPU_HW_YUV2RGB_601L:
->>>> +               csc_cfg = &dpu_csc_YUV2RGB_601L;
->>>> +               break;
->>>> +       case DPU_HW_YUV2RGB_601L_10BIT:
->>>> +               csc_cfg = &dpu_csc10_YUV2RGB_601L;
->>>> +               break;
->>>> +       default:
->>>> +               DPU_ERROR("unknown csc_cfg type\n");
->>>> +               break;
->>>> +       }
->>>> +
->>>> +       return csc_cfg;
->>>> +}
->>>> +
->>>>    void dpu_reg_write(struct dpu_hw_blk_reg_map *c,
->>>>                   u32 reg_off,
->>>>                   u32 val,
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
->>>> index fe083b2e5696..49f2bcf6de15 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
->>>> @@ -19,6 +19,11 @@
->>>>    #define MISR_CTRL_STATUS_CLEAR          BIT(10)
->>>>    #define MISR_CTRL_FREE_RUN_MASK         BIT(31)
->>>>
->>>> +enum dpu_hw_csc_cfg_type {
->>>> +       DPU_HW_YUV2RGB_601L,
->>>> +       DPU_HW_YUV2RGB_601L_10BIT,
->>>> +};
->>>> +
->>>>    /*
->>>>     * This is the common struct maintained by each sub block
->>>>     * for mapping the register offsets in this block to the
->>>> @@ -368,4 +373,6 @@ bool dpu_hw_clk_force_ctrl(struct dpu_hw_blk_reg_map *c,
->>>>                              const struct dpu_clk_ctrl_reg *clk_ctrl_reg,
->>>>                              bool enable);
->>>>
->>>> +const struct dpu_csc_cfg *dpu_hw_get_csc_cfg(enum dpu_hw_csc_cfg_type type);
->>>
->>> I don't think we need extra enum and wrapper. Just export const data
->>> structures directly.
->>>
->>
->> I liked this approach because the blocks of DPU such as plane and CDM
->> are clients to the dpu_hw_util and just request the type and the util
->> handles their request of returning the correct csc matrix.
->>
->> Do you see any issue with this?
-> 
-> Not an issue, but I don't see anything that requires an extra
-> abstraction. We perfectly know which CSC config we would like to get.
-> 
+Is there a reason the north-west, north-east and south-west breaks this pattern?
+I'd have expected them to be called something like
+nwcrg, JH8100_NWCLK_*, JH8100_NWRST_*,
+necrg, JH8100_NECLK_*, JH8100_NERST_* and
+swcrg, JH8100_SWCLK_*, JH8100_SWRST_*
 
-Correct, so the clients know which "type" of matrix they need and not 
-the matrix itself. That was the idea behind this.
+Just like all the other Starfive drivers.
 
->>
->>>> +
->>>>    #endif /* _DPU_HW_UTIL_H */
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
->>>> index 3235ab132540..31641889b9f0 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
->>>> @@ -21,6 +21,7 @@
->>>>    #include "dpu_kms.h"
->>>>    #include "dpu_formats.h"
->>>>    #include "dpu_hw_sspp.h"
->>>> +#include "dpu_hw_util.h"
->>>>    #include "dpu_trace.h"
->>>>    #include "dpu_crtc.h"
->>>>    #include "dpu_vbif.h"
->>>> @@ -508,50 +509,16 @@ static void _dpu_plane_setup_pixel_ext(struct dpu_hw_scaler3_cfg *scale_cfg,
->>>>           }
->>>>    }
->>>>
->>>> -static const struct dpu_csc_cfg dpu_csc_YUV2RGB_601L = {
->>>> -       {
->>>> -               /* S15.16 format */
->>>> -               0x00012A00, 0x00000000, 0x00019880,
->>>> -               0x00012A00, 0xFFFF9B80, 0xFFFF3000,
->>>> -               0x00012A00, 0x00020480, 0x00000000,
->>>> -       },
->>>> -       /* signed bias */
->>>> -       { 0xfff0, 0xff80, 0xff80,},
->>>> -       { 0x0, 0x0, 0x0,},
->>>> -       /* unsigned clamp */
->>>> -       { 0x10, 0xeb, 0x10, 0xf0, 0x10, 0xf0,},
->>>> -       { 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,},
->>>> -};
->>>> -
->>>> -static const struct dpu_csc_cfg dpu_csc10_YUV2RGB_601L = {
->>>> -       {
->>>> -               /* S15.16 format */
->>>> -               0x00012A00, 0x00000000, 0x00019880,
->>>> -               0x00012A00, 0xFFFF9B80, 0xFFFF3000,
->>>> -               0x00012A00, 0x00020480, 0x00000000,
->>>> -               },
->>>> -       /* signed bias */
->>>> -       { 0xffc0, 0xfe00, 0xfe00,},
->>>> -       { 0x0, 0x0, 0x0,},
->>>> -       /* unsigned clamp */
->>>> -       { 0x40, 0x3ac, 0x40, 0x3c0, 0x40, 0x3c0,},
->>>> -       { 0x00, 0x3ff, 0x00, 0x3ff, 0x00, 0x3ff,},
->>>> -};
->>>> -
->>>>    static const struct dpu_csc_cfg *_dpu_plane_get_csc(struct dpu_sw_pipe *pipe,
->>>>                                                       const struct dpu_format *fmt)
->>>>    {
->>>> -       const struct dpu_csc_cfg *csc_ptr;
->>>> -
->>>>           if (!DPU_FORMAT_IS_YUV(fmt))
->>>>                   return NULL;
->>>>
->>>>           if (BIT(DPU_SSPP_CSC_10BIT) & pipe->sspp->cap->features)
->>>> -               csc_ptr = &dpu_csc10_YUV2RGB_601L;
->>>> +               return dpu_hw_get_csc_cfg(DPU_HW_YUV2RGB_601L_10BIT);
->>>>           else
->>>> -               csc_ptr = &dpu_csc_YUV2RGB_601L;
->>>> -
->>>> -       return csc_ptr;
->>>> +               return dpu_hw_get_csc_cfg(DPU_HW_YUV2RGB_601L);
->>>>    }
->>>>
->>>>    static void _dpu_plane_setup_scaler(struct dpu_sw_pipe *pipe,
->>>> --
->>>> 2.40.1
->>>>
->>>
->>>
-> 
-> 
-> 
+>  .../dt-bindings/clock/starfive,jh8100-crg.h   |  45 +++++++
+>  .../dt-bindings/reset/starfive,jh8100-crg.h   |  15 +++
+>  3 files changed, 179 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh8100-syscrg-nw.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/clock/starfive,jh8100-syscrg-nw.yaml b/Documentation/devicetree/bindings/clock/starfive,jh8100-syscrg-nw.yaml
+> new file mode 100644
+> index 000000000000..b16a874828dd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/starfive,jh8100-syscrg-nw.yaml
+> @@ -0,0 +1,119 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/starfive,jh8100-syscrg-nw.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: StarFive JH8100 System-North-West Clock and Reset Generator
+> +
+> +maintainers:
+> +  - Sia Jee Heng <jeeheng.sia@starfivetech.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: starfive,jh8100-syscrg-nw
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Main Oscillator (24 MHz)
+> +      - description: APB_BUS clock from SYSCRG
+> +      - description: ISP_2X clock from SYSCRG
+> +      - description: ISP_AXI clock from SYSCRG
+> +      - description: VOUT_ROOT0 clock from SYSCRG
+> +      - description: VOUT_ROOT1 clock from SYSCRG
+> +      - description: VOUT_SCAN_ATS clock from SYSCRG
+> +      - description: VOUT_DC_CORE clock from SYSCRG
+> +      - description: VOUT_AXI clock from SYSCRG
+> +      - description: AXI_400 clock from SYSCRG
+> +      - description: AXI_200 clock from SYSCRG
+> +      - description: Peripheral clock from SYSCRG
+> +      - description: External DVP clock
+> +      - description: External ISP DPHY TAP TCK clock
+> +      - description: External golbal clock
+> +      - description: External i2s_tscko clock
+> +      - description: External VOUT MIPI DPHY TAP TCK
+> +      - description: External VOUT eDP TAP TCK
+> +      - description: External SPI In2 clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: clk_osc
+> +      - const: sys_clk_apb_bus
+> +      - const: sys_clk_isp_2x
+> +      - const: sys_clk_isp_axi
+> +      - const: sys_clk_vout_root0
+> +      - const: sys_clk_vout_root1
+> +      - const: sys_clk_vout_scan_ats
+> +      - const: sys_clk_vout_dc_core
+> +      - const: sys_clk_vout_axi
+> +      - const: sys_clk_axi_400
+> +      - const: sys_clk_axi_200
+> +      - const: sys_clk_perh_root_preosc
+> +      - const: clk_dvp_ext
+> +      - const: clk_isp_dphy_tap_tck_ext
+> +      - const: clk_glb_ext_clk
+> +      - const: clk_i2s_tscko
+> +      - const: clk_vout_mipi_dphy_tap_tck_ext
+> +      - const: clk_vout_edp_tap_tck_ext
+> +      - const: clk_spi_in2_ext
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +    description:
+> +      See <dt-bindings/clock/starfive,jh8100-crg.h> for valid indices.
+> +
+> +  '#reset-cells':
+> +    const: 1
+> +    description:
+> +      See <dt-bindings/reset/starfive,jh8100-crg.h> for valid indices.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - '#clock-cells'
+> +  - '#reset-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/starfive,jh8100-crg.h>
+> +
+> +    clock-controller@123c0000 {
+> +            compatible = "starfive,jh8100-syscrg-nw";
+> +            reg = <0x123c0000 0x10000>;
+> +            clocks = <&clk_osc>, <&syscrg SYSCRG_CLK_APB_BUS>,
+> +                     <&syscrg SYSCRG_CLK_ISP_2X>,
+> +                     <&syscrg SYSCRG_CLK_ISP_AXI>,
+> +                     <&syscrg SYSCRG_CLK_VOUT_ROOT0>,
+> +                     <&syscrg SYSCRG_CLK_VOUT_ROOT1>,
+> +                     <&syscrg SYSCRG_CLK_VOUT_SCAN_ATS>,
+> +                     <&syscrg SYSCRG_CLK_VOUT_DC_CORE>,
+> +                     <&syscrg SYSCRG_CLK_VOUT_AXI>,
+> +                     <&syscrg SYSCRG_CLK_AXI_400>,
+> +                     <&syscrg SYSCRG_CLK_AXI_200>,
+> +                     <&syscrg SYSCRG_CLK_PERH_ROOT_PREOSC>,
+> +                     <&clk_dvp_ext>,
+> +                     <&clk_isp_dphy_tap_tck_ext>,
+> +                     <&clk_glb_ext_clk>,
+> +                     <&clk_i2s_tscko>,
+> +                     <&clk_vout_mipi_dphy_tap_tck_ext>,
+> +                     <&clk_vout_edp_tap_tck_ext>,
+> +                     <&clk_spi_in2_ext>;
+> +            clock-names = "clk_osc", "sys_clk_apb_bus", "sys_clk_isp_2x",
+> +                          "sys_clk_isp_axi", "sys_clk_vout_root0",
+> +                          "sys_clk_vout_root1", "sys_clk_vout_scan_ats",
+> +                          "sys_clk_vout_dc_core", "sys_clk_vout_axi",
+> +                          "sys_clk_axi_400", "sys_clk_axi_200",
+> +                          "sys_clk_perh_root_preosc", "clk_dvp_ext",
+> +                          "clk_isp_dphy_tap_tck_ext", "clk_glb_ext_clk",
+> +                          "clk_i2s_tscko", "clk_vout_mipi_dphy_tap_tck_ext",
+> +                          "clk_vout_edp_tap_tck_ext", "clk_spi_in2_ext";
+> +            #clock-cells = <1>;
+> +            #reset-cells = <1>;
+> +    };
+> diff --git a/include/dt-bindings/clock/starfive,jh8100-crg.h b/include/dt-bindings/clock/starfive,jh8100-crg.h
+> index e5bb588ce798..8417455c2409 100644
+> --- a/include/dt-bindings/clock/starfive,jh8100-crg.h
+> +++ b/include/dt-bindings/clock/starfive,jh8100-crg.h
+> @@ -120,4 +120,49 @@
+>  #define SYSCRG_CLK_NNE_ICG_EN						108
+>
+>  #define SYSCRG_CLK_END							109
+> +
+> +/* SYSCRG_NW_CLK */
+> +#define SYSCRG_NW_CLK_PLL5_DIV2						0
+> +#define SYSCRG_NW_CLK_GCLK5						1
+> +#define SYSCRG_NW_CLK_GPIO_100						2
+> +#define SYSCRG_NW_CLK_GPIO_50						3
+> +#define SYSCRG_NW_CLK_GPIO_150						4
+> +#define SYSCRG_NW_CLK_GPIO_60						5
+> +#define SYSCRG_NW_CLK_IOMUX_WEST_PCLK					6
+> +#define SYSCRG_NW_CLK_I2C6_APB						7
+> +#define SYSCRG_NW_CLK_I2C7_APB						8
+> +#define SYSCRG_NW_CLK_SPI2_APB						9
+> +#define SYSCRG_NW_CLK_SPI2_CORE						10
+> +#define SYSCRG_NW_CLK_SPI2_SCLK_IN					11
+> +#define SYSCRG_NW_CLK_SMBUS1_APB					12
+> +#define SYSCRG_NW_CLK_SMBUS1_CORE					13
+> +#define SYSCRG_NW_CLK_ISP_DVP						14
+> +#define SYSCRG_NW_CLK_ISP_CORE_2X					15
+> +#define SYSCRG_NW_CLK_ISP_AXI						16
+> +#define SYSCRG_NW_CLK_ISP_DPHY_TAP_TCK					17
+> +#define SYSCRG_NW_CLK_FLEXNOC_ISPSLV					18
+> +#define SYSCRG_NW_CLK_VOUT_PIX0						19
+> +#define SYSCRG_NW_CLK_VOUT_PIX1						20
+> +#define SYSCRG_NW_CLK_VOUT_SCAN_ATS					21
+> +#define SYSCRG_NW_CLK_VOUT_DC_CORE					22
+> +#define SYSCRG_NW_CLK_VOUT_APB						23
+> +#define SYSCRG_NW_CLK_VOUT_DSI						24
+> +#define SYSCRG_NW_CLK_VOUT_AHB						25
+> +#define SYSCRG_NW_CLK_VOUT_AXI						26
+> +#define SYSCRG_NW_CLK_VOUT_MIPI_DPHY_TAP_TCK				27
+> +#define SYSCRG_NW_CLK_VOUT_EDP_PHY_TAP_TCK				28
+> +#define SYSCRG_NW_CLK_UART5_CORE_PREOSC					29
+> +#define SYSCRG_NW_CLK_UART5_APB						30
+> +#define SYSCRG_NW_CLK_UART5_CORE					31
+> +#define SYSCRG_NW_CLK_UART6_CORE_PREOSC					32
+> +#define SYSCRG_NW_CLK_UART6_APB						33
+> +#define SYSCRG_NW_CLK_UART6_CORE					34
+> +#define SYSCRG_NW_CLK_SPI2_ICG_EN					35
+> +#define SYSCRG_NW_CLK_SMBUS1_ICG_EN					36
+> +#define SYSCRG_NW_CLK_ISP_ICG_EN					37
+> +#define SYSCRG_NW_CLK_VOUT_ICG_EN					38
+> +#define SYSCRG_NW_CLK_UART5_ICG_EN					39
+> +#define SYSCRG_NW_CLK_UART6_ICG_EN					40
+> +
+> +#define SYSCRG_NW_CLK_END						41
+>  #endif /* __DT_BINDINGS_CLOCK_STARFIVE_JH8100_H__ */
+> diff --git a/include/dt-bindings/reset/starfive,jh8100-crg.h b/include/dt-bindings/reset/starfive,jh8100-crg.h
+> index 3b7b92488e76..8c3a858bdf6a 100644
+> --- a/include/dt-bindings/reset/starfive,jh8100-crg.h
+> +++ b/include/dt-bindings/reset/starfive,jh8100-crg.h
+> @@ -20,4 +20,19 @@
+>
+>  #define SYSCRG_RESET_NR_RESETS					8
+>
+> +/*
+> + * syscrg_nw: assert0
+> + */
+> +#define SYSCRG_NW_RSTN_PRESETN					0
+> +#define SYSCRG_NW_RSTN_SYS_IOMUX_W				1
+> +#define SYSCRG_NW_RSTN_I2C6					2
+> +#define SYSCRG_NW_RSTN_I2C7					3
+> +#define SYSCRG_NW_RSTN_SPI2					4
+> +#define SYSCRG_NW_RSTN_SMBUS1					5
+> +#define SYSCRG_NW_RSTN_UART5					6
+> +#define SYSCRG_NW_RSTN_UART6					7
+> +#define SYSCRG_NW_RSTN_MERAK0_TVSENSOR				8
+> +#define SYSCRG_NW_RSTN_MERAK1_TVSENSOR				9
+> +
+> +#define SYSCRG_NW_RESET_NR_RESETS				10
+>  #endif /* __DT_BINDINGS_RESET_STARFIVE_JH8100_H__ */
+> --
+> 2.34.1
+>
