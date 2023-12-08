@@ -2,66 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6C980A536
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0130480A53A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 15:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573916AbjLHOOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 09:14:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
+        id S1573920AbjLHOQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 09:16:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573881AbjLHOOW (ORCPT
+        with ESMTP id S1573881AbjLHOQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 09:14:22 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE2110EB;
-        Fri,  8 Dec 2023 06:14:29 -0800 (PST)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8DIRoF002996;
-        Fri, 8 Dec 2023 14:14:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=3G7Rfp1wGPTrFcOUcQ8bqn3AoifuA4aNkt4dozPC+NA=;
- b=DED7RfPS+GGLKMyspBKPxcNO4ojuMMg5j3Ff35R+JF2OIA1YITx9YrVUEm3PTud9I4me
- 16pNYHp42SoE9Ez7X8NV3uXcEVQib3skw3aa7oCqFYOwJtbz9VP2GNZaKsf9z9/tQfLb
- kasdV5FFz23mWudS8IEaUkr7AaJ4/Gg4ACUVW1Mw2kWLJIVLKKC3MWS7wKClkgGEzxmQ
- pzBsKwxdMCaCcI3kdIR5LpEuVKWRgPrc4FjMtO4khpk4wrftshTlja6YXZ/h3YbJfbOW
- V56DUdTUYPVHNo3y9pDSc+PpovaAujEX+0Gq5hQV5Scdy4CuwAy5f2axrmW6Bxn608I1 Mw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uv3p3hwpu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 14:14:07 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B8DIWuA003552;
-        Fri, 8 Dec 2023 14:14:06 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uv3p3hwpe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 14:14:06 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8DY3dY027096;
-        Fri, 8 Dec 2023 14:14:05 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3utav39wbt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 14:14:05 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B8EE2PY7471714
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Dec 2023 14:14:03 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D6F0D2004B;
-        Fri,  8 Dec 2023 14:14:02 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8C55A20040;
-        Fri,  8 Dec 2023 14:14:01 +0000 (GMT)
-Received: from [9.171.76.38] (unknown [9.171.76.38])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  8 Dec 2023 14:14:01 +0000 (GMT)
-Message-ID: <4f0eb4b4d4f6830f39555dc8a35f6ff88d6f8e63.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 19/33] lib/zlib: Unpoison DFLTCC output buffers
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexander Potapenko <glider@google.com>
+        Fri, 8 Dec 2023 09:16:45 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD19B171E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 06:16:51 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-67a91a373edso12000556d6.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 06:16:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702045011; x=1702649811; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/0j5IioITwyG/4BP+tqSeHc4KXtugt22zIQNy6+j6UA=;
+        b=WrWRZwAtpkfw4vfemJLPRLJrK69voIyMiJCRba03O6Lnsm5A9G3nMKpU+uygsSIXpG
+         V0fw0KAteakWBw3coannnaJ5ioNyd4STAfGc5lCI2EHXEfVv5V2vDkB1GrKG93BayMsa
+         55Qv1t7HqdUNnkjTJX0838kjCXtfn97lc3FzyrJD8IB0HyUQ8xCLQ3F0UTy5bhYPGnAP
+         RfYAERTM8yZsc4ce+ZvlbcgNbC6TWFZLRdouczS5e6VEJNvJUh8EguZWFFoM1u61faii
+         F7Uga2X42hbYCpkIecybPcdjz5IwW8NBvBU7jWwfBB/OmH/kzcmk3BRYKfGBvkG7YGoR
+         iRFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702045011; x=1702649811;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/0j5IioITwyG/4BP+tqSeHc4KXtugt22zIQNy6+j6UA=;
+        b=H9V96DY3uUchzNwn9TlwBzZH3bdp7GtzIx7sD42RYdip9gI65OY1mNbTuLThqF375Q
+         koMcgipjcQApBF8yh0Dwne/DgwK4rasgR8uWR5X8cnN6AYYeg5y3WcuqNEok4v4vQ6t9
+         FplNMLiW88VkjN8rNLTXQrMdM6anskHxVsjNZ74yGS2MIBTX4gT+CsKBvvpkfKDZE9Xu
+         5g2Nza6b8pDmk5OLNQEeb8l8oRh56FFnn4g5Z1lZmzOTU+jAMohyeeoNiHeAceFJKjed
+         Po549GSVElRY3BSuPCidzOvShGXb9CTQXxpurhWxg8jJvLaJNgM7+RlFGwr6DYka+zcx
+         vrng==
+X-Gm-Message-State: AOJu0YxdFJjkOg07icbjQEjuNMWWb0u3aGi9s9hC8bBhgkR4RpkhCbjG
+        L2MH+DgXlvNDUJCdS8IZyqPEvAyyS8/Cm0g8i4iwtg==
+X-Google-Smtp-Source: AGHT+IFKfJa8W1iCMwjchi2t+lHUhYWH09qaDJjCUhvv9aw60UsIUANSwwIZQ5lRRrqoFrKO1oLXig0+0+CIwOJDPpY=
+X-Received: by 2002:a05:6214:4a50:b0:67a:a721:8309 with SMTP id
+ ph16-20020a0562144a5000b0067aa7218309mr3763142qvb.99.1702045010694; Fri, 08
+ Dec 2023 06:16:50 -0800 (PST)
+MIME-Version: 1.0
+References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-2-iii@linux.ibm.com>
+In-Reply-To: <20231121220155.1217090-2-iii@linux.ibm.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 8 Dec 2023 15:16:10 +0100
+Message-ID: <CAG_fn=WHf0t=-OJL0031D+X7cX_D25G7TG0TqROsT34QcEnqsw@mail.gmail.com>
+Subject: Re: [PATCH v2 01/33] ftrace: Unpoison ftrace_regs in ftrace_ops_list_func()
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
 Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Christoph Lameter <cl@linux.com>,
@@ -82,58 +75,33 @@ Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
         linux-trace-kernel@vger.kernel.org,
         Mark Rutland <mark.rutland@arm.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Mikhail Zaslonko <zaslonko@linux.ibm.com>
-Date:   Fri, 08 Dec 2023 15:14:01 +0100
-In-Reply-To: <CAG_fn=WiT7C2QMCwq_nBg9FXZrJ2-mSyJuM1uVz_3Mag8xBHJg@mail.gmail.com>
-References: <20231121220155.1217090-1-iii@linux.ibm.com>
-         <20231121220155.1217090-20-iii@linux.ibm.com>
-         <CAG_fn=WiT7C2QMCwq_nBg9FXZrJ2-mSyJuM1uVz_3Mag8xBHJg@mail.gmail.com>
+        Sven Schnelle <svens@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: hoRrnOaWeMBzUuRaToAfGaqdk4G_1Fq_
-X-Proofpoint-ORIG-GUID: Q-kY3HiQsqOVFy02f6bQ466_FlOXn4Ht
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-08_09,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- mlxscore=0 spamscore=0 adultscore=0 phishscore=0 bulkscore=0
- suspectscore=0 malwarescore=0 mlxlogscore=774 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312080117
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-12-08 at 14:32 +0100, Alexander Potapenko wrote:
-> On Tue, Nov 21, 2023 at 11:07=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.=
-com>
-> wrote:
-> >=20
-> > The constraints of the DFLTCC inline assembly are not precise: they
-> > do not communicate the size of the output buffers to the compiler,
-> > so
-> > it cannot automatically instrument it.
->=20
-> KMSAN usually does a poor job instrumenting inline assembly.
-> Wouldn't be it better to switch to pure C ZLIB implementation, making
-> ZLIB_DFLTCC depend on !KMSAN?
+On Tue, Nov 21, 2023 at 11:02=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.co=
+m> wrote:
+>
+> Architectures use assembly code to initialize ftrace_regs and call
+> ftrace_ops_list_func(). Therefore, from the KMSAN's point of view,
+> ftrace_regs is poisoned on ftrace_ops_list_func entry(). This causes
+> KMSAN warnings when running the ftrace testsuite.
 
-Normally I would agree, but the kernel DFLTCC code base is synced with
-the zlib-ng code base to the extent that it uses the zlib-ng code style
-instead of the kernel code style, and MSAN annotations are already a
-part of the zlib-ng code base. So I would prefer to keep them for
-consistency.
+I couldn't reproduce these warnings on x86, hope you really need this
+change on s390 :)
 
-The code is also somewhat tricky in the are of buffer management, so I
-find it beneficial to have it checked for uninitialized memory
-accesses.
+> Fix by trusting the architecture-specific assembly code and always
+> unpoisoning ftrace_regs in ftrace_ops_list_func.
+>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
