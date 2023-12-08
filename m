@@ -2,176 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD39809C97
+	by mail.lfdr.de (Postfix) with ESMTP id 373DB809C96
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 07:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbjLHGr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 01:47:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
+        id S233119AbjLHGsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 01:48:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLHGrZ (ORCPT
+        with ESMTP id S229531AbjLHGsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 01:47:25 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F2F1723
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 22:47:31 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 241D6C433C8;
-        Fri,  8 Dec 2023 06:47:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1702018051;
-        bh=aVwOp1aJPsPh7+HlQ/vujBgUZmjHqe7FfCfwGE1YeZ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=grMw9MAilAqZVJpURavXBJKJpCfqFYqXS/93nfol1/6O4gqg8/TbHPtjeINDoQ3XL
-         5o0UXU39UnthFKO8a/M6TZ5cd9D5f/5lIVWYHc3xDCUI9NjoTSRfNEWfr6eNmHJFAM
-         G40GKVqdEDQ2ZeQYF3wiWqFQCn6t9VlU2zUH/HPM=
-Date:   Fri, 8 Dec 2023 07:47:29 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alexey Khoroshilov <khoroshilov@ispras.ru>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
-Subject: Re: [PATCH 5.10 000/131] 5.10.203-rc3 review
-Message-ID: <2023120849-catalog-pretzel-ee8f@gregkh>
-References: <20231205183249.651714114@linuxfoundation.org>
- <efdb0591-2259-f86c-0da4-781dfdae22e1@ispras.ru>
+        Fri, 8 Dec 2023 01:48:01 -0500
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DBF1727
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 22:48:07 -0800 (PST)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id EA2A4240104
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:48:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1702018084; bh=XHW0wpRIcKcG33IpWEqGDMS0yycm1FN2SxUGJcODXsQ=;
+        h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:
+         Content-Transfer-Encoding:From;
+        b=jxfxlJoqiQRkZnHGhAiJ2yyjS1igfIsmI0OA1KmF3SBRlAtwMtkS4qIBLJ3U4m56E
+         5vZ4q1zJ0Tcl1E5db5wo/e1uMOFdA75YpqsGuFVaA2vBmfs2M2JhjFC4lQjJlm+tvu
+         SbjAaBS3BmnfVBFxiEQsN3ZxebaZoYt70MSpWyND+4Nko70ToSHWXajREL2j1/xPl1
+         SgCtvMBx5th8+Rq7sJfPUjw500Gj7pDfypiDqqeIn7AyW+TeuwZsGoaIjHt26Xlwoy
+         uyjXc+nLQOIEkNY76yfhDPnPfm60GVOGRFyXpNW5E1lttpgCrqmllGa6i8DyAva4CJ
+         8fFQN8UAC4wPQ==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4SmhXy6Zfqz6tvc;
+        Fri,  8 Dec 2023 07:48:02 +0100 (CET)
+Date:   Fri,  8 Dec 2023 06:48:02 +0000
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     Armin Wolf <W_Armin@gmx.de>
+Cc:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: (corsair-psu) Fix probe when built-in
+Message-ID: <20231208074802.56bb2d78@posteo.net>
+In-Reply-To: <20231207210723.222552-1-W_Armin@gmx.de>
+References: <20231207210723.222552-1-W_Armin@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <efdb0591-2259-f86c-0da4-781dfdae22e1@ispras.ru>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 02:00:06AM +0300, Alexey Khoroshilov wrote:
-> On 05.12.2023 22:22, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.10.203 release.
-> > There are 131 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.203-rc3.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
+On Thu,  7 Dec 2023 22:07:23 +0100
+Armin Wolf <W_Armin@gmx.de> wrote:
+
+> It seems that when the driver is built-in, the HID bus is
+> initialized after the driver is loaded, which whould cause
+> module_hid_driver() to fail.
+> Fix this by registering the driver after the HID bus using
+> late_initcall() in accordance with other hwmon HID drivers.
 > 
+> Compile-tested only.
+
+So you did not test this? Well, I did.
+
+[    2.225831] Driver 'corsair-psu' was unable to register with bus_type 'hid' because the bus was not initialized.
+[    2.225835] amd_pstate: driver load is disabled, boot with specific mode to enable this
+[    2.226363] ledtrig-cpu: registered to indicate activity on CPUs
+[    2.226679] hid: raw HID events driver (C) Jiri Kosina
+
+You are right, it is a timing issue and this can actually happen. I'm fine with
+the fix.
+
+Though, this could even be a bigger issue. There are currently 104 HID drivers
+using the module_hid_driver macro. Maybe it would be a better idea to change the
+module_hid_driver macro to use the lateinit calls instead of the plain init/exit
+calls.
+
+greetings,
+Will
+
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> ---
+>  drivers/hwmon/corsair-psu.c | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
 > 
-> It seems something is seriously broken in this release.
-> 
-> There are patches already applied in 5.10.202 that are in 5.10.203-rc3
-> transformed in some strange way, e.g.
-> 
-> Neil Armstrong <narmstrong@baylibre.com>
->     tty: serial: meson: retrieve port FIFO size from DT
-> 
-> 
-> commit 980c3135f1ae6fe686a70c8ba78eb1bb4bde3060 in 5.10.202
-> 
-> diff --git a/drivers/tty/serial/meson_uart.c
-> b/drivers/tty/serial/meson_uart.c
-> index d06653493f0e..78bda91a6bf1 100644
-> --- a/drivers/tty/serial/meson_uart.c
-> +++ b/drivers/tty/serial/meson_uart.c
-> @@ -728,6 +728,7 @@ static int meson_uart_probe(struct platform_device
-> *pdev)
->  {
->         struct resource *res_mem, *res_irq;
->         struct uart_port *port;
-> +       u32 fifosize = 64; /* Default is 64, 128 for EE UART_0 */
->         int ret = 0;
-> 
->         if (pdev->dev.of_node)
-> @@ -755,6 +756,8 @@ static int meson_uart_probe(struct platform_device
-> *pdev)
->         if (!res_irq)
->                 return -ENODEV;
-> 
-> +       of_property_read_u32(pdev->dev.of_node, "fifo-size", &fifosize);
+> diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
+> index 904890598c11..2c7c92272fe3 100644
+> --- a/drivers/hwmon/corsair-psu.c
+> +++ b/drivers/hwmon/corsair-psu.c
+> @@ -899,7 +899,23 @@ static struct hid_driver corsairpsu_driver = {
+>  	.reset_resume	= corsairpsu_resume,
+>  #endif
+>  };
+> -module_hid_driver(corsairpsu_driver);
 > +
->         if (meson_ports[pdev->id]) {
->                 dev_err(&pdev->dev, "port %d already allocated\n",
-> pdev->id);
->                 return -EBUSY;
-> @@ -784,7 +787,7 @@ static int meson_uart_probe(struct platform_device
-> *pdev)
->         port->type = PORT_MESON;
->         port->x_char = 0;
->         port->ops = &meson_uart_ops;
-> -       port->fifosize = 64;
-> +       port->fifosize = fifosize;
-> 
->         meson_ports[pdev->id] = port;
->         platform_set_drvdata(pdev, port);
-> 
-> vs.
-> 
-> commit 71feab929585232694b4f2fb7d70abde4edc581e in 5.10.203-rc3
-> 
-> diff --git a/drivers/tty/serial/meson_uart.c
-> b/drivers/tty/serial/meson_uart.c
-> index bb66a3f06626..c44ab21a9b7d 100644
-> --- a/drivers/tty/serial/meson_uart.c
-> +++ b/drivers/tty/serial/meson_uart.c
-> @@ -765,6 +765,8 @@ static int meson_uart_probe(struct platform_device
-> *pdev)
->         of_property_read_u32(pdev->dev.of_node, "fifo-size", &fifosize);
->         has_rtscts = of_property_read_bool(pdev->dev.of_node,
-> "uart-has-rtscts");
-> 
-> +       of_property_read_u32(pdev->dev.of_node, "fifo-size", &fifosize);
+> +static int __init corsair_init(void)
+> +{
+> +	return hid_register_driver(&corsairpsu_driver);
+> +}
 > +
->         if (meson_ports[pdev->id]) {
->                 dev_err(&pdev->dev, "port %d already allocated\n",
-> pdev->id);
->                 return -EBUSY;
+> +static void __exit corsair_exit(void)
+> +{
+> +	hid_unregister_driver(&corsairpsu_driver);
+> +}
+> +
+> +/*
+> + * With module_init() the driver would load before the HID bus when
+> + * built-in, so use late_initcall() instead.
+> + */
+> +late_initcall(corsair_init);
+> +module_exit(corsair_exit);
 > 
-> 
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE
-> 
-> 
-> 
-> See also:
-> 
-> Qu Huang <qu.huang@linux.dev>
->     drm/amdgpu: Fix a null pointer access when the smc_rreg pointer is NULL
-> 
-> Axel Lin <axel.lin@ingics.com>
->     i2c: sun6i-p2wi: Prevent potential division by zero
-> 
-> Takashi Iwai <tiwai@suse.de>
->     media: imon: fix access to invalid resource for the second interface
-> 
-> 
-> Also there is a strange pair:
-> 
-> Patrick Thompson <ptf@google.com>
->     net: r8169: Disable multicast filter for RTL8168H and RTL8107E
-> 
-> Heiner Kallweit <hkallweit1@gmail.com>
->     Revert "net: r8169: Disable multicast filter for RTL8168H and RTL8107E"
+>  MODULE_LICENSE("GPL");
+>  MODULE_AUTHOR("Wilken Gottwalt <wilken.gottwalt@posteo.net>");
+> --
+> 2.39.2
 > 
 
-Ok, I dropped all of these and manually verified that there were no
-other duplicates.  thanks for catching them and letting us know.
-
-
-greg k-h
