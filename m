@@ -2,77 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FDF80AE27
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 294A280AE2C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbjLHUpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:45:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52870 "EHLO
+        id S234222AbjLHUpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:45:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbjLHUpH (ORCPT
+        with ESMTP id S234276AbjLHUpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 15:45:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A44A1706;
-        Fri,  8 Dec 2023 12:45:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uuulqJ0udjp/ONQs9URiRO2kRC7WLgYyKoN4bKlDxU8=; b=DHsdeOTEek3iQwO3tU1lWqjYnS
-        9WZO8OJd9l0ESCow217XyrKQiBE9yJ0zqWFYzWFH6tZ5f/h1C9LssraIN5kD9BA4dyQq7v4x37Xdw
-        4ATU9AmTFnjE4CjDlsFrzIdD89OMEh9th3HFZkJ99AlxbYJ36wbZEGFlr9rOWWU5LvRttecpWRhgm
-        gHKRKjJhs98U7yUBoCTZL0Hd5MdQ7z4hTOmisqmM11jTmT1dh9Tcf3ueDE7NV4WmIpVLhUEjA6gZc
-        3lC2lmyClXm6ovkVeLx7RMlUAuZzX0afZAKs+yy1bBdeFK43C67PvE8GINv0rnlHAwzn8dQhRhopr
-        YE6cD9zQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1rBhiX-006YEc-S1; Fri, 08 Dec 2023 20:45:01 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7EC053003F0; Fri,  8 Dec 2023 21:45:01 +0100 (CET)
-Date:   Fri, 8 Dec 2023 21:45:01 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] rust: file: add `Kuid` wrapper
-Message-ID: <20231208204501.GJ28727@noisy.programming.kicks-ass.net>
-References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
- <20231206-alice-file-v2-5-af617c0d9d94@google.com>
- <20231206123402.GE30174@noisy.programming.kicks-ass.net>
- <CAH5fLgh+0G85Acf4-zqr_9COB5DUtt6ifVpZP-9V06hjJgd_jQ@mail.gmail.com>
- <20231206134041.GG30174@noisy.programming.kicks-ass.net>
- <CANiq72kK97fxTddrL+Uu2JSah4nND=q_VbJ76-Rdc-R-Kijszw@mail.gmail.com>
- <20231208165702.GI28727@noisy.programming.kicks-ass.net>
- <202312080947.674CD2DC7@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202312080947.674CD2DC7@keescook>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Fri, 8 Dec 2023 15:45:16 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D157019A6
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:45:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6D978C433C7;
+        Fri,  8 Dec 2023 20:45:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702068320;
+        bh=yRVRqAQzerPrL7IolGQXD7ZPkiuu/3qjaW3gIcHoBBE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=RYL663Lrel9x4K+iecvnywW8nMmD5h4G4/dDV+CIBy+EU+95L9FDPhmewotOuf6zo
+         3AiKhGoAll0S9ls7B62YHsba4UnLFZrJASt/e2hBjmcO/Nz1wU2AkKRVWyAe/ZvHbO
+         DVWltcQCXhEJVcQ4B5fIcmC7NQNm+OOQVNFrYe1D8pSZLpCQ52WGlq3TMooBA5dHBQ
+         +DsBwPNcDevaXcgClDSnD9XVdbCVaLWxi/B8ZzBikj6pPeGMg3eHS+45TPwtJtO8RQ
+         WEYxOiuWUCBCputf4uG2dnx0w8RePJfdJLTkN3f9iWM2fpvgDxHXN170rYzqb6nlT8
+         ddoFPwjxOmRzg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 58AB6DD4F1E;
+        Fri,  8 Dec 2023 20:45:20 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20231208141911.GA2934372@nvidia.com>
+References: <20231208141911.GA2934372@nvidia.com>
+X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20231208141911.GA2934372@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: e3e82fcb79eeb3f1a88a89f676831773caff514a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 8aa74869d2e9d868b1c4598eecc1a89f637a92cf
+Message-Id: <170206832035.6831.1964570469740054207.pr-tracker-bot@kernel.org>
+Date:   Fri, 08 Dec 2023 20:45:20 +0000
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leonro@nvidia.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,22 +57,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 10:18:47AM -0800, Kees Cook wrote:
+The pull request you sent on Fri, 8 Dec 2023 10:19:11 -0400:
 
-> Even if we look at the prerequisites for mounting an attack here, we've
-> already got things in place to help mitigate arbitrary code execution
-> (KCFI, BTI, etc). Nothing is perfect, but speculation gadgets are
-> pretty far down on the list of concerns, IMO. We have no real x86 ROP
-> defense right now in the kernel, so that's a much lower hanging fruit
-> for attackers.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-Supervisor shadow stacks, as they exist today, just can't work on Linux.
-Should get fixed with FRED, but yeah, this is all somewhat unfortunate.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/8aa74869d2e9d868b1c4598eecc1a89f637a92cf
 
-> As another comparison, on x86 there are so many direct execution gadgets
-> present in middle-of-instruction code patterns that worrying about a
-> speculation gadget seems silly to me.
+Thank you!
 
-FineIBT (or even IBT) limits the middle of function gadgets
-significantly.
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
