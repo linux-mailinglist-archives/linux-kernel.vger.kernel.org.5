@@ -2,113 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B9680A1FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D43380A1E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 12:12:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573489AbjLHLR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 06:17:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55574 "EHLO
+        id S233087AbjLHLLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 06:11:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233322AbjLHLRX (ORCPT
+        with ESMTP id S229844AbjLHLLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 06:17:23 -0500
-X-Greylist: delayed 381 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 08 Dec 2023 03:17:24 PST
-Received: from forward502c.mail.yandex.net (forward502c.mail.yandex.net [178.154.239.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C5710CF;
-        Fri,  8 Dec 2023 03:17:24 -0800 (PST)
-Received: from mail-nwsmtp-smtp-production-main-44.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-44.sas.yp-c.yandex.net [IPv6:2a02:6b8:c14:440b:0:640:fa3a:0])
-        by forward502c.mail.yandex.net (Yandex) with ESMTP id 798A36123F;
-        Fri,  8 Dec 2023 14:10:31 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-44.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id TAcpGPeKn8c0-2U9xMJpD;
-        Fri, 08 Dec 2023 14:10:30 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
-        t=1702033830; bh=QmfAlJThz823b12lB5pGa5H06RW2Ph9k8H5H7/pZ/aM=;
-        h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
-        b=qI8mD2DOT3f6+7kzz3VWGRxsU/pcVCkruaIbYecQqa2oBJU30UuHceB61nk45Mhmo
-         YM9uD2TL86SGNiqkfaWPBo5W8oVa2XUviKvr7RIlzgd7azgko6QY+4k8Z06pzannXK
-         8ExQrG8N4xfUQGcP0QwTugajP97+IL0rR9gfhbO0=
-Authentication-Results: mail-nwsmtp-smtp-production-main-44.sas.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
-Message-ID: <2b646678611c3ed7546d880f8875d57a6800c281.camel@maquefel.me>
-Subject: Re: [PATCH v5 17/39] net: cirrus: add DT support for Cirrus EP93xx
-From:   Nikita Shubin <nikita.shubin@maquefel.me>
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Date:   Fri, 08 Dec 2023 14:10:29 +0300
-In-Reply-To: <ZV3xFjmU56hwBfLc@smile.fi.intel.com>
-References: <20231122-ep93xx-v5-0-d59a76d5df29@maquefel.me>
-         <20231122-ep93xx-v5-17-d59a76d5df29@maquefel.me>
-         <ZV3xFjmU56hwBfLc@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+        Fri, 8 Dec 2023 06:11:50 -0500
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93775123
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 03:11:56 -0800 (PST)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5d7b1a8ec90so16282347b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 03:11:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702033916; x=1702638716; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=d5sTiUJetif/fgYO2zq3XsvRjD/RlEkJTpjxX1dPW9o=;
+        b=FI9UmczH+EOkyJ9SmpY8NjmlO9WMp4nc5kX0QGlmMgSgsvJ5zz9EqRYQJP7R7ycegJ
+         O0mowC1pIBhhSD6995KWu0XC06qlwPvyxtObE8xfBl/AqhXvksEaI235BuHc48+DPF9o
+         C7p9O5duCemIcyXLGVQQLh7EW0NhYf8uFdywN7OvSRXbyxKuGdFywp3gUxd9QZ3DKNml
+         jBmqH64mVATFI6By2Y86ox0w0mg38HCR30jwqCOpAfNjhhRdJnyxE7Ivgek1r0ACNwbV
+         YiIpOptEEvxEE/irX52WPsQxZm94HCv9qoAYYwCm1UV2vQpO2rF0AwpVWCznMzc5tPdV
+         YrsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702033916; x=1702638716;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d5sTiUJetif/fgYO2zq3XsvRjD/RlEkJTpjxX1dPW9o=;
+        b=tqAy4nN2htA/gQ2ifxe5A+NLBzQKYAcgv8Q9yMrovC9pRivaRltONkpsc5OUT9MiB8
+         Wg6VgM5EeJ8eTZR3vLCLqej63kq7B+NhnyFFcuwKHmQjaxKgJHDzY6dUgHEJsMltfe0/
+         1yJRu2ljwzGd88ZWjpXFXGtHUpf2Q7S3aHCw8HUWib++Mel95ar5dw40jaUdegDph6gq
+         K96vR6q8LdYadgb47uLkRKGCnBPIERuO0fx8NN73tz1JnfoklLzc4OHwLh1NZ3gJ5iKH
+         khWYQsgfo6CDC92qu8k71kROw7H3c6eE33UIoP1kterWyqI2N6LSHiIgO9M5oaJlNDO2
+         rCgQ==
+X-Gm-Message-State: AOJu0YzfBsXbC7PESPXf0tnUHmSB28ZgZOB8REdpyQ4UCTtkeLqJ4382
+        rmSPM6DNa00ULTJoq1Mok4YVg5EV13Hvro7b0eR95g==
+X-Google-Smtp-Source: AGHT+IGadWRb7RLKWnHwQIGRXCckpkVS7uf7R7LgUD+cmDd+xOtJ0ovssIG5r2vaLiyKiudQIHYP9pqYEOJNDQwjEx0=
+X-Received: by 2002:a81:ae01:0:b0:5d0:aa04:7b71 with SMTP id
+ m1-20020a81ae01000000b005d0aa047b71mr3251777ywh.24.1702033915757; Fri, 08 Dec
+ 2023 03:11:55 -0800 (PST)
 MIME-Version: 1.0
+References: <20231208050641.32582-1-quic_abhinavk@quicinc.com> <20231208050641.32582-4-quic_abhinavk@quicinc.com>
+In-Reply-To: <20231208050641.32582-4-quic_abhinavk@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 8 Dec 2023 13:11:44 +0200
+Message-ID: <CAA8EJpqaZc7xB8Jb8uweKZHgLRb8SBtEN_rUCxWAK_u7hW8H-A@mail.gmail.com>
+Subject: Re: [PATCH v2 03/16] drm/msm/dpu: fix writeback programming for YUV cases
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
+        quic_parellan@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andy!
+On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+> For YUV cases, setting the required format bits was missed
+> out in the register programming. Lets fix it now in preparation
+> of adding YUV formats support for writeback.
+>
+> changes in v2:
+>     - dropped the fixes tag as its not a fix but adding
+>       new functionality
+>
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_wb.c | 3 +++
+>  1 file changed, 3 insertions(+)
 
-Thanks for review (i am counting all review not only this patch), only
-this comment below raised a question:
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-On Wed, 2023-11-22 at 14:16 +0200, Andy Shevchenko wrote:
-> On Wed, Nov 22, 2023 at 11:59:55AM +0300, Nikita Shubin wrote:
-> > - add OF ID match table
-> > - get phy_id from the device tree, as part of mdio
-> > - copy_addr is now always used, as there is no SoC/board that
-> > aren't
-> > - dropped platform header
->=20
-> ...
->=20
-> > =C2=A0#include <linux/interrupt.h>
-> > =C2=A0#include <linux/moduleparam.h>
-> > =C2=A0#include <linux/platform_device.h>
-> > +#include <linux/of.h>
->=20
-> Perhaps more ordering?
->=20
-> > =C2=A0#include <linux/delay.h>
-> > =C2=A0#include <linux/io.h>
-> > =C2=A0#include <linux/slab.h>
->=20
-> ...
->=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0err =3D of_property_read_u32=
-(np, "reg", &phy_id);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0of_node_put(np);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (err)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return dev_err_probe(&pdev->dev, -ENOENT, "Failed
-> > to locate \"phy_id\"\n");
->=20
-> Why shadowing the actual error code?
-
-of_property_read_u32 returns NULL on error.
-
->=20
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dev =3D alloc_etherdev(sizeo=
-f(struct ep93xx_priv));
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (dev =3D=3D NULL) {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0err =3D -ENOMEM;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0goto err_out;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
->=20
-
+-- 
+With best wishes
+Dmitry
