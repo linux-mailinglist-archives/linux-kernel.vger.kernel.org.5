@@ -2,58 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA25780AA0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E7380AA12
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233647AbjLHRIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:08:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
+        id S233771AbjLHRIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:08:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233735AbjLHRIA (ORCPT
+        with ESMTP id S235982AbjLHRIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:08:00 -0500
+        Fri, 8 Dec 2023 12:08:23 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2D710F8
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 09:08:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13DF3C433C8;
-        Fri,  8 Dec 2023 17:08:01 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D744199B;
+        Fri,  8 Dec 2023 09:08:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 36764C433C7;
+        Fri,  8 Dec 2023 17:08:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702055286;
-        bh=L5ejtIWY2RbVcSXfTpmFdQcek5I6KvvEbrzWnLb3alk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Hd2pQG/brFeY0MUHlYGM1FA/ACwdZ/PKIvT+WUz0y/GwxcHFCcBSdORH7AFMk4J4Y
-         8gya+/+u5Xo3nvNnn40z6avHkPojQ6P0N2bwg5UqUqlyhykXWG7kw6fkgkWzsvMjtb
-         HCXsf8smx6RKwc62OCVNPWS7S9SeXA2gxjc9GriczeGD3ApV+r1mROSUxhbJt7lDjE
-         Kxg9m5qgMeNAJnynzyeJFbHatdQwwUdnLatPsUNQB9jpBbAHRcmxg0GcMInl8vmweo
-         BOu70JcQxbs3gMJWAD2Y7iS2DHrMFdH4rvNuYdOtRGWrgQfEHBV3H6HwkEAvM5BJ1R
-         2T+4NSBIxfQTA==
-From:   Conor Dooley <conor@kernel.org>
-To:     linux-riscv@lists.infradead.org
-Cc:     conor@kernel.org, Conor Dooley <conor.dooley@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: [PATCH v1 0/7] MPFS clock fixes required for correct CAN clock modeling
-Date:   Fri,  8 Dec 2023 17:07:39 +0000
-Message-Id: <20231208-sizably-repressed-16651a4b70e7@spud>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2342; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=g/+RSOF+MCs/BzYXcY1ALY/xOCAYFuZb4uSD23xQNkE=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKnFvtHrtsdemV8uxdOg7zQ1vf/tqs9cd2MF91un6K8We Kz61nhLRykLgxgHg6yYIkvi7b4WqfV/XHY497yFmcPKBDKEgYtTACaSas3IcLoxYObBk32GPQkX fRf1bqjc/mTNh5AFCWt4FrC9XK3TupiRocPw1fWLF80f/Vpa0K1X9CUxMMnvBcdM2aTLj+WDD2m u5AYA
-X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1702055310;
+        bh=60Vpjx7/NhWAxeON2bh84Ga6PFDLeO8+JRTVS2fg/ko=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=juchQTLjMkmJ/9aNcFBz5fGJfORSxKxzX3pBvnmp7TN8tSijA1pYSssiJRMCpcnbM
+         vVbmZmCSYqkW2TUsd848ULWpz5WhEq2JGuYxJKt/AR1KGRG0uNQR2xlka0M9ZJK3W4
+         64W/nq3blaFQDDRAKzUDydt7xvvRcbJYRrOhqlYfpJKhxPt7SYGdn8Y/7qbNwE0Fj8
+         kk3kV/zlW/uhdkvXUAepVOyeFEFmDunKedSxVTBkGfZU/QsX+17A75sseAEa6SoV3Y
+         ZfsQVF3dxmXEoL4mjdKv6317ezwM5CUkKfiaDcttMkeeNu7ptmxrT3m3gXk3jni6+h
+         ziGlIln0nd/zw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 25E82C04DD9;
+        Fri,  8 Dec 2023 17:08:30 +0000 (UTC)
+Subject: Re: [GIT PULL] hotfixes for 6.7-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20231207185341.570f240a4f51d820c08c9e0b@linux-foundation.org>
+References: <20231207185341.570f240a4f51d820c08c9e0b@linux-foundation.org>
+X-PR-Tracked-List-Id: <mm-commits.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20231207185341.570f240a4f51d820c08c9e0b@linux-foundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2023-12-07-18-47
+X-PR-Tracked-Commit-Id: b2f557a21bc8fffdcd65794eda8a854e024999f3
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 8e819a7623f19534bce6d53678b581c167b5b079
+Message-Id: <170205531014.9242.8107782711761982831.pr-tracker-bot@kernel.org>
+Date:   Fri, 08 Dec 2023 17:08:30 +0000
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linus Torvalds <torvalds@linuxfoundation.org>, linux-mm@kvack.org,
+        mm-commits@vger.kernel.org, linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -64,62 +56,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Conor Dooley <conor.dooley@microchip.com>
+The pull request you sent on Thu, 7 Dec 2023 18:53:41 -0800:
 
-While reviewing a CAN clock driver internally for MPFS [1], I realised
-that the modeling of the MSSPLL such that one one of its outputs could
-be used was not correct. The CAN controllers on MPFS take 2 input
-clocks - one that is the bus clock, acquired from the main MSSPLL and
-a second clock for the AHB interface to the result of the SoC.
-Currently the binding for the CAN controllers and the represetnation
-of the MSSPLL only allows for one of these clocks.
-Modify the binding and devicetree to expect two clocks and rework the
-main clock controller driver for MPFS such that it is capable of
-providing multiple outputs from the MSSPLL.
+> git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2023-12-07-18-47
 
-Cheers,
-Conor.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/8e819a7623f19534bce6d53678b581c167b5b079
 
-1 - Hopefully that'll show up on the lists soon, once we are happy with
-  it ourselves.
-
-CC: Conor Dooley <conor.dooley@microchip.com>
-CC: Daire McNamara <daire.mcnamara@microchip.com>
-CC: Wolfgang Grandegger <wg@grandegger.com>
-CC: Marc Kleine-Budde <mkl@pengutronix.de>
-CC: "David S. Miller" <davem@davemloft.net>
-CC: Eric Dumazet <edumazet@google.com>
-CC: Jakub Kicinski <kuba@kernel.org>
-CC: Paolo Abeni <pabeni@redhat.com>
-CC: Rob Herring <robh+dt@kernel.org>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC: Paul Walmsley <paul.walmsley@sifive.com>
-CC: Palmer Dabbelt <palmer@dabbelt.com>
-CC: Albert Ou <aou@eecs.berkeley.edu>
-CC: Michael Turquette <mturquette@baylibre.com>
-CC: Stephen Boyd <sboyd@kernel.org>
-CC: linux-riscv@lists.infradead.org
-CC: linux-can@vger.kernel.org
-CC: netdev@vger.kernel.org
-CC: devicetree@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
-CC: linux-clk@vger.kernel.org
-
-Conor Dooley (7):
-  dt-bindings: clock: mpfs: add more MSSPLL output definitions
-  dt-bindings: can: mpfs: add missing required clock
-  clk: microchip: mpfs: split MSSPLL in two
-  clk: microchip: mpfs: setup for using other mss pll outputs
-  clk: microchip: mpfs: add missing MSSPLL outputs
-  clk: microchip: mpfs: convert MSSPLL outputs to clk_divider
-  riscv: dts: microchip: add missing CAN bus clocks
-
- .../bindings/net/can/microchip,mpfs-can.yaml  |   7 +-
- arch/riscv/boot/dts/microchip/mpfs.dtsi       |   4 +-
- drivers/clk/microchip/clk-mpfs.c              | 154 ++++++++++--------
- .../dt-bindings/clock/microchip,mpfs-clock.h  |   5 +
- 4 files changed, 99 insertions(+), 71 deletions(-)
+Thank you!
 
 -- 
-2.39.2
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
