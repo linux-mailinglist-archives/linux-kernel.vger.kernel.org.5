@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA8780A842
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8197880A841
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233721AbjLHQJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:09:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
+        id S233488AbjLHQJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:09:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233610AbjLHQJN (ORCPT
+        with ESMTP id S233534AbjLHQJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Dec 2023 11:09:13 -0500
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61B9171C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FC01989
         for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:09:19 -0800 (PST)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1rBdPe-000088-EY; Fri, 08 Dec 2023 17:09:14 +0100
+        id 1rBdPd-000089-Hm; Fri, 08 Dec 2023 17:09:13 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1rBdPc-00ES0O-Qo; Fri, 08 Dec 2023 17:09:12 +0100
+        id 1rBdPd-00ES0S-0V; Fri, 08 Dec 2023 17:09:13 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1rBdPc-00GUaO-H9; Fri, 08 Dec 2023 17:09:12 +0100
+        id 1rBdPc-00GUaS-NR; Fri, 08 Dec 2023 17:09:12 +0100
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Dominik Brodowski <linux@dominikbrodowski.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Paolo Abeni <pabeni@redhat.com>, Kalle Valo <kvalo@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: [PATCH 4/7] pcmcia: omap_cf: Convert to platform remove callback returning void
-Date:   Fri,  8 Dec 2023 17:08:09 +0100
-Message-ID:  <9d96646b75b10f7562d4d18010e885b7fc55e0ab.1702051073.git.u.kleine-koenig@pengutronix.de>
+Cc:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: [PATCH 5/7] pcmcia: pxa2xx: Convert to platform remove callback returning void
+Date:   Fri,  8 Dec 2023 17:08:10 +0100
+Message-ID:  <fb750d46ac80b6dfdeaa26053a2cf9d2dc875d4d.1702051073.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1702051073.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1702051073.git.u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1745; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=RbjHfi5RXtO4cc8x56c5B+Z/tmcBf4To9DyVqGrX0Mw=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlcz9uzcEXgFvxHOFei0v+/iJGpZmJ3AUq5eLjE /WeNYj57paJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZXM/bgAKCRCPgPtYfRL+ TuNiCACNqZGlNha/Xc541obujpShtx6aayui0pbg6Wz+3ZIzoDiAvtzMRVCvJOaLzjEh13m/bGs tClR79pkmqPpYeAmLQ82WGZbEbvjohsA+5bofFYGzUVFAAv5Iu2YGsz8k0KU9Rgs2EPPSJbBuuG rfFcXDs/n1dlm3DpHuCKOO+XlfxABBtBXD3VgxUXBpEg9LWy55JXRewJQtAP2TTG48q+H6uo7nP bu2Sxwmf1MLzIqLOJYkzv6+HFPR5EMBsaLwLZ9dX2LCKdFwDZT6X0dQJUgNR1hdPrH/i2dNQruQ QWYqvuLCEimGnBiIgTqLzjj+njANSuoYpjF1WfJXxEjxile2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1870; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=hvn8AQUIqYIyVFAM+ew2t9GzPmRIrB2d2DyEy1ujsww=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlcz90RZC/CPits6AxPT2VDwenom4vwo7b3Ux8k UrtlvzSI3mJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZXM/dAAKCRCPgPtYfRL+ TkgxB/450LmDHFEQA6eZw+c0u/hHlMa4ZxsV6qeu5sZ0RIGGDgGGcneuz5ggq9a/A6ZpkmhZpcF wKnySPUZ9buT+h0XS0JLrrCAFjxJ/4aKbzB0E4Fr3SmWAZnojZ7chE5T/L3T/BbjmhubSW+HJ6t mb2cIVMPWCId+J0dBsKVo/uoEMztSyQ50zM/Hwl7YtsvUWvyItEAD+5ZNhxMEYfa5HfhOsEgsPA qsbOMmufsdyvb+2t60AZWVeaiMPyHQ8ZL/ndgTJ8WUN75zE+8DRo4JoS8S209V4GTKC3aVBIYP0 AiMynIskF3X1hPg7u6pgQ9o39vBrvV1xc5onmzK7dMHFRt6n
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -75,38 +76,39 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/pcmcia/omap_cf.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/pcmcia/pxa2xx_base.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pcmcia/omap_cf.c b/drivers/pcmcia/omap_cf.c
-index e613818dc0bc..80137c7afe0d 100644
---- a/drivers/pcmcia/omap_cf.c
-+++ b/drivers/pcmcia/omap_cf.c
-@@ -290,7 +290,7 @@ static int __init omap_cf_probe(struct platform_device *pdev)
- 	return status;
+diff --git a/drivers/pcmcia/pxa2xx_base.c b/drivers/pcmcia/pxa2xx_base.c
+index 5254028354f4..457fb81b497a 100644
+--- a/drivers/pcmcia/pxa2xx_base.c
++++ b/drivers/pcmcia/pxa2xx_base.c
+@@ -313,15 +313,13 @@ static int pxa2xx_drv_pcmcia_probe(struct platform_device *dev)
+ 	return ret;
  }
  
--static int __exit omap_cf_remove(struct platform_device *pdev)
-+static void __exit omap_cf_remove(struct platform_device *pdev)
+-static int pxa2xx_drv_pcmcia_remove(struct platform_device *dev)
++static void pxa2xx_drv_pcmcia_remove(struct platform_device *dev)
  {
- 	struct omap_cf_socket *cf = platform_get_drvdata(pdev);
+ 	struct skt_dev_info *sinfo = platform_get_drvdata(dev);
+ 	int i;
  
-@@ -300,14 +300,13 @@ static int __exit omap_cf_remove(struct platform_device *pdev)
- 	release_mem_region(cf->phys_cf, SZ_8K);
- 	free_irq(cf->irq, cf);
- 	kfree(cf);
+ 	for (i = 0; i < sinfo->nskt; i++)
+ 		soc_pcmcia_remove_one(&sinfo->skt[i]);
+-
 -	return 0;
  }
  
- static struct platform_driver omap_cf_driver = {
- 	.driver = {
- 		.name	= driver_name,
- 	},
--	.remove		= __exit_p(omap_cf_remove),
-+	.remove_new	= __exit_p(omap_cf_remove),
- };
+ static int pxa2xx_drv_pcmcia_resume(struct device *dev)
+@@ -338,7 +336,7 @@ static const struct dev_pm_ops pxa2xx_drv_pcmcia_pm_ops = {
  
- static int __init omap_cf_init(void)
+ static struct platform_driver pxa2xx_pcmcia_driver = {
+ 	.probe		= pxa2xx_drv_pcmcia_probe,
+-	.remove		= pxa2xx_drv_pcmcia_remove,
++	.remove_new	= pxa2xx_drv_pcmcia_remove,
+ 	.driver		= {
+ 		.name	= "pxa2xx-pcmcia",
+ 		.pm	= &pxa2xx_drv_pcmcia_pm_ops,
 -- 
 2.42.0
 
