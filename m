@@ -2,151 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2D780ACE2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C14D680ACE0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 20:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbjLHTXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 14:23:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
+        id S1574663AbjLHTXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 14:23:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574687AbjLHTXL (ORCPT
+        with ESMTP id S1574675AbjLHTXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 14:23:11 -0500
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA3E1998
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:23:16 -0800 (PST)
-Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-7cac4a9c5b5so142869241.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 11:23:16 -0800 (PST)
+        Fri, 8 Dec 2023 14:23:09 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296011718
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 11:23:15 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54cd8f5bb5cso3232525a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 11:23:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702063396; x=1702668196; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eNuhxRDBfdQenk+uC5+I+2o2Yad/2wCHUso1pH85sfo=;
-        b=puGdxYqAoQo3bHG294LrXUJmKf0r2uufNMehZOj/ib8lgIMoVsopaKC4B4b6fUFyya
-         +B9rAwaP7t2N4ealA6hhXjhKtZfHcQqR6mND4Wm8Bn+OcwAWZPIz8cpOBRc9eMDbClhr
-         m0HzrbjSOx0Odg45PVXWbTCRw/nXU3Cn7nmp3mL+o1poKncrgSXhF/YFLuLQHGoSStQf
-         RrJGwyuzvUNDUEsmKjSD2uxYZ/BCYB8G86AaueFaliWGMcb/21OR7QeKm0LdzJc1VKhI
-         29fSLZU9MNVBk7gsWs++emPmOErx0U5NoIpQDDk2xKmI0xt174+doddUkTq2O/QdtbwO
-         qpuw==
+        d=tuxon.dev; s=google; t=1702063393; x=1702668193; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nYer3k5AHgALqQa9MbWQNvQ/NvhzpotSwy0iRJYUHjg=;
+        b=UI/4NpLYxLd82S9b6hJY0f8ZeN7PpXu9hGZ1iUt8jGVDLSCELaZPtmzqr5OoudwIUH
+         g4smNPWS+fWNQHsUq8FXGe4BTBZXt+1FiTJIauSHjt0sOnFS7CwfwiKBtRtB3JpZ6886
+         AM5a1oe5KDwC5rX44ET6y9RCceW+QGA1EjBV63nJPDY50zzVAZXdc5T2FcdK5BnnoyQq
+         nCbZbYHTLoZkJTEnCC0ui6pn1fKoVBlcKujR/TX69to53mz3/Ib7T4awkld+bprPsplR
+         Gw/kCSXbxzMM36PVYwVGvZBg59B65LEC+t+Ag9SeP1NFgLEwWmXzqrnkgllDLs7hg2Ap
+         jdSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702063396; x=1702668196;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eNuhxRDBfdQenk+uC5+I+2o2Yad/2wCHUso1pH85sfo=;
-        b=fTXQF+y2dOV1LYC/syRfXbtA1raEeYFFJvmoT4PLroPXcC9Mn8NIGOdsN5JOelZi7C
-         tsg6pRq8XUQhoEOM70bCEozJh0YnrTU0jXiUlVtFT9Te7CRXj/0qeIbsUGngrYoXO/lR
-         fxxFRRdB+0DHOF/meANYrN2zOXDYH+5hzlIN4/edtbCkToqgXJa9tdxnIZEIFu3ALGpA
-         8dZqtHltZJklJFzcJRuUdZoje5ezpLc67Acr12nE45LmtEbpu6OlzYmx2vDrnt3DdNSF
-         VgX1iB165yyKl3eMPt7wrZuH8UslHhSjKuDs5/G3O2kANgvhORLdC6ajMkXzFif9FLJ/
-         i26g==
-X-Gm-Message-State: AOJu0Yz2sxJSAlt7J4f2HqRG/fA95rx9t6H/q/48u2uxr2O8olJGBCiN
-        SpGhEI10mcP+zRYcMa2MYK4b/objJU8BZ4DnHAAiVA==
-X-Google-Smtp-Source: AGHT+IHb22ZjibDls1yBkhF7QNEaIMpgDSaJZ0OHWa3jb0vnzr6qisUp6akF/Nl59oBqhH37DmVgAI0o7BDgdz/1wpc=
-X-Received: by 2002:a05:6102:38ce:b0:465:e3df:13a with SMTP id
- k14-20020a05610238ce00b00465e3df013amr837357vst.9.1702063395773; Fri, 08 Dec
- 2023 11:23:15 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702063393; x=1702668193;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nYer3k5AHgALqQa9MbWQNvQ/NvhzpotSwy0iRJYUHjg=;
+        b=ZmlGl5Ne4xVd4dT4GzijyxlRH8brQyA7FhLG19przHFNCh+3PDYVmFFRHVNHvysguj
+         vJXsVORsskg9raI5zGaJjStNMUAI/7MMvSIWIl286IzShzoIqkEWTjnOR7gz7uuy4Gsa
+         v/FpEJFcw1m7BNyYInLriWU8Lps5swRe78iVea5d85IZ13QsQUXjR20529XHMEIThJhU
+         UlmuT5Tdm9VIQapbAe7on51PQdlg5zRomzbJU8hH/J3MLsxyHBmnjzArcVpux8aZogRf
+         x1r0soMKw+U/CrZvGlOhi2RUL5nkUpInqoSGZsHB6kjSm0N+yX5jgDmMtIfSauNNNoYG
+         +wUA==
+X-Gm-Message-State: AOJu0YwY4bYfS34WoESpFV09C+FIpeJg4z9HVgVerLUqHCQVCGVsw4Cw
+        W7OsEhzWdLAFKI4w4sdGngLsuw==
+X-Google-Smtp-Source: AGHT+IE9MSc735O8yJ+Sy59fmTbRrabH9hyXZet59qWEG0OGbjPGuhfmOnDpW6nkiL5l2/tKSm9Oow==
+X-Received: by 2002:a17:906:54:b0:a18:aa41:7c6f with SMTP id 20-20020a170906005400b00a18aa417c6fmr207587ejg.7.1702063393502;
+        Fri, 08 Dec 2023 11:23:13 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.22])
+        by smtp.gmail.com with ESMTPSA id vv6-20020a170907a68600b00a1dff479037sm1321205ejc.127.2023.12.08.11.23.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Dec 2023 11:23:13 -0800 (PST)
+Message-ID: <e062a92a-b82d-4d7e-8111-fa901067be57@tuxon.dev>
+Date:   Fri, 8 Dec 2023 21:23:11 +0200
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-14-almasrymina@google.com> <dd47a2a4-cb80-4164-8855-045999931a8e@kernel.org>
-In-Reply-To: <dd47a2a4-cb80-4164-8855-045999931a8e@kernel.org>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Fri, 8 Dec 2023 11:23:04 -0800
-Message-ID: <CAHS8izPwkARkYjPYPY2t-5H=XFTdn=NcWk0EwiCycThR5xFmtg@mail.gmail.com>
-Subject: Re: [net-next v1 13/16] tcp: RX path for devmem TCP
-To:     David Ahern <dsahern@kernel.org>
-Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drivers: soc: atmel: Adjust defines to follow
+ alphabetical order
+Content-Language: en-US
+To:     Ryan.Wanner@microchip.com, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231208170230.551265-1-Ryan.Wanner@microchip.com>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20231208170230.551265-1-Ryan.Wanner@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 9:55=E2=80=AFAM David Ahern <dsahern@kernel.org> wro=
-te:
->
-> On 12/7/23 5:52 PM, Mina Almasry wrote:
-> > In tcp_recvmsg_locked(), detect if the skb being received by the user
-> > is a devmem skb. In this case - if the user provided the MSG_SOCK_DEVME=
-M
-> > flag - pass it to tcp_recvmsg_devmem() for custom handling.
-> >
-> > tcp_recvmsg_devmem() copies any data in the skb header to the linear
-> > buffer, and returns a cmsg to the user indicating the number of bytes
-> > returned in the linear buffer.
-> >
-> > tcp_recvmsg_devmem() then loops over the unaccessible devmem skb frags,
-> > and returns to the user a cmsg_devmem indicating the location of the
-> > data in the dmabuf device memory. cmsg_devmem contains this information=
-:
-> >
-> > 1. the offset into the dmabuf where the payload starts. 'frag_offset'.
-> > 2. the size of the frag. 'frag_size'.
-> > 3. an opaque token 'frag_token' to return to the kernel when the buffer
-> > is to be released.
-> >
-> > The pages awaiting freeing are stored in the newly added
-> > sk->sk_user_pages, and each page passed to userspace is get_page()'d.
-> > This reference is dropped once the userspace indicates that it is
-> > done reading this page.  All pages are released when the socket is
-> > destroyed.
-> >
-> > Signed-off-by: Willem de Bruijn <willemb@google.com>
-> > Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
-> > Signed-off-by: Mina Almasry <almasrymina@google.com>
-> >
-> > ---
-> >
-> > Changes in v1:
-> > - Added dmabuf_id to dmabuf_cmsg (David/Stan).
-> > - Devmem -> dmabuf (David).
-> > - Change tcp_recvmsg_dmabuf() check to skb->dmabuf (Paolo).
-> > - Use __skb_frag_ref() & napi_pp_put_page() for refcounting (Yunsheng).
-> >
-> > RFC v3:
-> > - Fixed issue with put_cmsg() failing silently.
-> >
->
-> What happens if a retransmitted packet is received or an rx window is
-> closed and a probe is received where the kernel drops the skb - is the
-> iov reference(s) in the skb returned to the pool by the stack and ready
-> for use again?
+Hi, Ryan,
 
-When an skb is dropped, skb_frag_unref() is called on the frags, which
-calls napi_pp_put_page(), drops the references, and the iov is
-recycled, yes.
+On 08.12.2023 19:02, Ryan.Wanner@microchip.com wrote:
+> From: Ryan Wanner <Ryan.Wanner@microchip.com>
+> 
+> Move the defines so that they are in aphabetical order based on SOC.
+> 
+> Signed-off-by: Ryan Wanner <Ryan.Wanner@microchip.com>
 
---=20
-Thanks,
-Mina
+This doesn't apply clean on top of v6.7-rc1. I guess it's related to SAM9X7
+defines that are not yet in v6.7-rc1.
+
+Thank you,
+Claudiu Beznea
+
+> ---
+>  drivers/soc/atmel/soc.h | 30 +++++++++++++++---------------
+>  1 file changed, 15 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/soc/atmel/soc.h b/drivers/soc/atmel/soc.h
+> index 26dd26b4f179..9b2d31073b88 100644
+> --- a/drivers/soc/atmel/soc.h
+> +++ b/drivers/soc/atmel/soc.h
+> @@ -39,13 +39,13 @@ at91_soc_init(const struct at91_soc *socs);
+>  #define AT91SAM9261_CIDR_MATCH		0x019703a0
+>  #define AT91SAM9263_CIDR_MATCH		0x019607a0
+>  #define AT91SAM9G20_CIDR_MATCH		0x019905a0
+> -#define AT91SAM9RL64_CIDR_MATCH		0x019b03a0
+>  #define AT91SAM9G45_CIDR_MATCH		0x019b05a0
+> -#define AT91SAM9X5_CIDR_MATCH		0x019a05a0
+>  #define AT91SAM9N12_CIDR_MATCH		0x019a07a0
+> +#define AT91SAM9RL64_CIDR_MATCH		0x019b03a0
+> +#define AT91SAM9X5_CIDR_MATCH		0x019a05a0
+>  #define SAM9X60_CIDR_MATCH		0x019b35a0
+> -#define SAMA7G5_CIDR_MATCH		0x00162100
+>  #define SAM9X7_CIDR_MATCH		0x09750020
+> +#define SAMA7G5_CIDR_MATCH		0x00162100
+>  
+>  #define AT91SAM9M11_EXID_MATCH		0x00000001
+>  #define AT91SAM9M10_EXID_MATCH		0x00000002
+> @@ -62,19 +62,15 @@ at91_soc_init(const struct at91_soc *socs);
+>  #define AT91SAM9N12_EXID_MATCH		0x00000006
+>  #define AT91SAM9CN11_EXID_MATCH		0x00000009
+>  
+> +#define AT91SAM9XE128_CIDR_MATCH	0x329973a0
+> +#define AT91SAM9XE256_CIDR_MATCH	0x329a93a0
+> +#define AT91SAM9XE512_CIDR_MATCH	0x329aa3a0
+> +
+>  #define SAM9X60_EXID_MATCH		0x00000000
+>  #define SAM9X60_D5M_EXID_MATCH		0x00000001
+>  #define SAM9X60_D1G_EXID_MATCH		0x00000010
+>  #define SAM9X60_D6K_EXID_MATCH		0x00000011
+>  
+> -#define SAMA7G51_EXID_MATCH		0x3
+> -#define SAMA7G52_EXID_MATCH		0x2
+> -#define SAMA7G53_EXID_MATCH		0x1
+> -#define SAMA7G54_EXID_MATCH		0x0
+> -#define SAMA7G54_D1G_EXID_MATCH		0x00000018
+> -#define SAMA7G54_D2G_EXID_MATCH		0x00000020
+> -#define SAMA7G54_D4G_EXID_MATCH		0x00000028
+> -
+>  #define SAM9X75_EXID_MATCH		0x00000000
+>  #define SAM9X72_EXID_MATCH		0x00000004
+>  #define SAM9X70_EXID_MATCH		0x00000005
+> @@ -83,10 +79,6 @@ at91_soc_init(const struct at91_soc *socs);
+>  #define SAM9X75_D1M_EXID_MATCH		0x00000003
+>  #define SAM9X75_D2G_EXID_MATCH		0x00000006
+>  
+> -#define AT91SAM9XE128_CIDR_MATCH	0x329973a0
+> -#define AT91SAM9XE256_CIDR_MATCH	0x329a93a0
+> -#define AT91SAM9XE512_CIDR_MATCH	0x329aa3a0
+> -
+>  #define SAMA5D2_CIDR_MATCH		0x0a5c08c0
+>  #define SAMA5D21CU_EXID_MATCH		0x0000005a
+>  #define SAMA5D225C_D1M_EXID_MATCH	0x00000053
+> @@ -122,6 +114,14 @@ at91_soc_init(const struct at91_soc *socs);
+>  #define SAMA5D43_EXID_MATCH		0x00000003
+>  #define SAMA5D44_EXID_MATCH		0x00000004
+>  
+> +#define SAMA7G51_EXID_MATCH		0x3
+> +#define SAMA7G52_EXID_MATCH		0x2
+> +#define SAMA7G53_EXID_MATCH		0x1
+> +#define SAMA7G54_EXID_MATCH		0x0
+> +#define SAMA7G54_D1G_EXID_MATCH		0x00000018
+> +#define SAMA7G54_D2G_EXID_MATCH		0x00000020
+> +#define SAMA7G54_D4G_EXID_MATCH		0x00000028
+> +
+>  #define SAME70Q21_CIDR_MATCH		0x21020e00
+>  #define SAME70Q21_EXID_MATCH		0x00000002
+>  #define SAME70Q20_CIDR_MATCH		0x21020c00
