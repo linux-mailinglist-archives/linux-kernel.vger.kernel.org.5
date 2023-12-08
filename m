@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC69C80AA6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E168F80AA70
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574367AbjLHRRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:17:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
+        id S1574466AbjLHRRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:17:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233788AbjLHRRQ (ORCPT
+        with ESMTP id S235935AbjLHRRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:17:16 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F9711D;
-        Fri,  8 Dec 2023 09:17:22 -0800 (PST)
-Date:   Fri, 08 Dec 2023 17:17:20 -0000
+        Fri, 8 Dec 2023 12:17:19 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D953D54;
+        Fri,  8 Dec 2023 09:17:23 -0800 (PST)
+Date:   Fri, 08 Dec 2023 17:17:21 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1702055841;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=Pa9fzJ/ZtUWmQ4aU5PKAI7vyFrBsSSEyOZIXYm7TOqo=;
-        b=CGf6etnabUaAX0K+Joj/BNcNV31YWXKiBx2bO4LCDsxA1Zr9f70L64wzi52Nn6NoBtksy5
-        8nsbBih7XibMn7PaVnN93nafULgSeP4vRfJDfFJyb3tq0ZnhkKs5j0yZxbj3Xb9hd2O+rR
-        LzKieGZSslg880acozhxuW9pcanDK33tQiA37fVvz1D7KPzYrKFcEc9seMqDNNlJuB/tBq
-        0etEtpfBqH/2kSg5+DEXkcz3VbrpxdoVRwrWbmuV4P2EoJf7Yp72d2E6fNS/Gv+Oly8cFw
-        +wm1G93JITz74vbDAzLFUVCxkHbGmHXgnMYsh1rk+5EvZTBjwhDVJR2jXndcbQ==
+        bh=whWOuJeeI4RxrHi15qpmwr6URJYckjH5vPHef6z4hBs=;
+        b=ueUidS+aF4WbFwUpPF016AR7aY5d904Bf8fjqrGnQHRl6sBFV7PGl9dcZV8vVYkEohzjcv
+        FU95cSnBAVrWw7haGqUBj0FW0EG+NCx9XrF/QhkoHE0KtSeTvqjl4KB31euaiPdMs8SMwc
+        gJDeE++O8IDGoI3iTB0yBW+n4VTtClk3wJVo1p7wppkeVyg6f2B/fWPcKd55UP51UPFPwP
+        A0OJgUEH9hSRYEVed/eVBPM5Hiw8d/BCyb0wvnMQUG5PM0o+oRp8RRSzw6pnj9uPl26sR1
+        L2f54E44MhNyAgreLXUjk+oshi0DJLWOvR9uLQm5BJ7iYCU+tBBzqEFvEI8gKw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1702055841;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=Pa9fzJ/ZtUWmQ4aU5PKAI7vyFrBsSSEyOZIXYm7TOqo=;
-        b=ZCwhItm+pQruF81n2RqIWWF2fgPYkdj2plnCz3Ip2mXSrzriy4qNGzx9bRHjpMO96EQ2hL
-        oXPs6/G/eU33RWCQ==
+        bh=whWOuJeeI4RxrHi15qpmwr6URJYckjH5vPHef6z4hBs=;
+        b=Ycdpmsyynn7E4O0/yGymauFwUShg1xVVDJWLE3cdSwpaNZKGeIFQDYeNvp5zhbxufhWQ9M
+        /oxqLWVvyW1uIDBQ==
 From:   "tip-bot2 for Kai Huang" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/tdx] x86/virt/tdx: Initialize all TDMRs
+Subject: [tip: x86/tdx] x86/virt/tdx: Configure global KeyID on all packages
 Cc:     Kai Huang <kai.huang@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Isaku Yamahata <isaku.yamahata@intel.com>,
@@ -47,15 +47,15 @@ Cc:     Kai Huang <kai.huang@intel.com>,
         Yuan Yao <yuan.yao@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <170205584043.398.16635105990694346142.tip-bot2@tip-bot2>
+Message-ID: <170205584116.398.10552160777675451766.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -64,26 +64,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/tdx branch of tip:
 
-Commit-ID:     0b2bc38131f02d6fd38695f191bbd8c6109ecffc
-Gitweb:        https://git.kernel.org/tip/0b2bc38131f02d6fd38695f191bbd8c6109ecffc
+Commit-ID:     e56d28df2f666af9ce0c27d8d204ad813d3766f4
+Gitweb:        https://git.kernel.org/tip/e56d28df2f666af9ce0c27d8d204ad813d3766f4
 Author:        Kai Huang <kai.huang@intel.com>
-AuthorDate:    Fri, 08 Dec 2023 09:07:35 -08:00
+AuthorDate:    Fri, 08 Dec 2023 09:07:34 -08:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Fri, 08 Dec 2023 09:12:45 -08:00
+CommitterDate: Fri, 08 Dec 2023 09:12:43 -08:00
 
-x86/virt/tdx: Initialize all TDMRs
+x86/virt/tdx: Configure global KeyID on all packages
 
-After the global KeyID has been configured on all packages, initialize
-all TDMRs to make all TDX-usable memory regions that are passed to the
-TDX module become usable.
+After the list of TDMRs and the global KeyID are configured to the TDX
+module, the kernel needs to configure the key of the global KeyID on all
+packages using TDH.SYS.KEY.CONFIG.
 
-This is the last step of initializing the TDX module.
+This SEAMCALL cannot run parallel on different cpus.  Loop all online
+cpus and use smp_call_on_cpu() to call this SEAMCALL on the first cpu of
+each package.
 
-Initializing TDMRs can be time consuming on large memory systems as it
-involves initializing all metadata entries for all pages that can be
-used by TDX guests.  Initializing different TDMRs can be parallelized.
-For now to keep it simple, just initialize all TDMRs one by one.  It can
-be enhanced in the future.
+To keep things simple, this implementation takes no affirmative steps to
+online cpus to make sure there's at least one cpu for each package.  The
+callers (aka. KVM) can ensure success by ensuring sufficient CPUs are
+online for this to succeed.
+
+Intel hardware doesn't guarantee cache coherency across different
+KeyIDs.  The PAMTs are transitioning from being used by the kernel
+mapping (KeyId 0) to the TDX module's "global KeyID" mapping.
+
+This means that the kernel must flush any dirty KeyID-0 PAMT cachelines
+before the TDX module uses the global KeyID to access the PAMTs.
+Otherwise, if those dirty cachelines were written back, they would
+corrupt the TDX module's metadata.  Aside: This corruption would be
+detected by the memory integrity hardware on the next read of the memory
+with the global KeyID.  The result would likely be fatal to the system
+but would not impact TDX security.
+
+Following the TDX module specification, flush cache before configuring
+the global KeyID on all packages.  Given the PAMT size can be large
+(~1/256th of system RAM), just use WBINVD on all CPUs to flush.
+
+If TDH.SYS.KEY.CONFIG fails, the TDX module may already have "converted"
+some memory for TDX module use.  Convert the memory back so that it can
+be safely used by the kernel again.  Note that this is slower than it
+should be because of the "partial write machine check" erratum which
+affects TDX-capable hardware.
+
+Also refactor and introduce a new helper: tdmr_do_pamt_func().  This
+takes a TDMR and runs a function on its PAMT.  It looks a _bit_ odd to
+pass a function pointer around like this, but its use is pretty narrow
+and it does eliminate what would otherwise be some copying and pasting.
+
+[ dhansen: * munge changelog as usual
+	   * remove weird (*pamd_func)() syntax ]
 
 Signed-off-by: Kai Huang <kai.huang@intel.com>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
@@ -91,100 +122,224 @@ Reviewed-by: Isaku Yamahata <isaku.yamahata@intel.com>
 Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Reviewed-by: Yuan Yao <yuan.yao@intel.com>
 Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/all/20231208170740.53979-15-dave.hansen%40intel.com
+Link: https://lore.kernel.org/all/20231208170740.53979-14-dave.hansen%40intel.com
 ---
- arch/x86/virt/vmx/tdx/tdx.c | 61 ++++++++++++++++++++++++++++++------
- arch/x86/virt/vmx/tdx/tdx.h |  1 +-
- 2 files changed, 53 insertions(+), 9 deletions(-)
+ arch/x86/virt/vmx/tdx/tdx.c | 133 ++++++++++++++++++++++++++++++++++-
+ arch/x86/virt/vmx/tdx/tdx.h |   1 +-
+ 2 files changed, 132 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
-index d2e4180..48fb1b3 100644
+index 5146503..d2e4180 100644
 --- a/arch/x86/virt/vmx/tdx/tdx.c
 +++ b/arch/x86/virt/vmx/tdx/tdx.c
-@@ -1034,6 +1034,56 @@ static int config_global_keyid(void)
+@@ -26,6 +26,7 @@
+ #include <linux/sort.h>
+ #include <linux/log2.h>
+ #include <asm/page.h>
++#include <asm/special_insns.h>
+ #include <asm/msr-index.h>
+ #include <asm/msr.h>
+ #include <asm/cpufeature.h>
+@@ -606,7 +607,8 @@ static void tdmr_get_pamt(struct tdmr_info *tdmr, unsigned long *pamt_base,
+ 	*pamt_size = pamt_sz;
+ }
+ 
+-static void tdmr_free_pamt(struct tdmr_info *tdmr)
++static void tdmr_do_pamt_func(struct tdmr_info *tdmr,
++		void (*pamt_func)(unsigned long base, unsigned long size))
+ {
+ 	unsigned long pamt_base, pamt_size;
+ 
+@@ -619,9 +621,19 @@ static void tdmr_free_pamt(struct tdmr_info *tdmr)
+ 	if (WARN_ON_ONCE(!pamt_base))
+ 		return;
+ 
++	pamt_func(pamt_base, pamt_size);
++}
++
++static void free_pamt(unsigned long pamt_base, unsigned long pamt_size)
++{
+ 	free_contig_range(pamt_base >> PAGE_SHIFT, pamt_size >> PAGE_SHIFT);
+ }
+ 
++static void tdmr_free_pamt(struct tdmr_info *tdmr)
++{
++	tdmr_do_pamt_func(tdmr, free_pamt);
++}
++
+ static void tdmrs_free_pamt_all(struct tdmr_info_list *tdmr_list)
+ {
+ 	int i;
+@@ -650,6 +662,41 @@ err:
  	return ret;
  }
  
-+static int init_tdmr(struct tdmr_info *tdmr)
++/*
++ * Convert TDX private pages back to normal by using MOVDIR64B to
++ * clear these pages.  Note this function doesn't flush cache of
++ * these TDX private pages.  The caller should make sure of that.
++ */
++static void reset_tdx_pages(unsigned long base, unsigned long size)
 +{
-+	u64 next;
++	const void *zero_page = (const void *)page_address(ZERO_PAGE(0));
++	unsigned long phys, end;
++
++	end = base + size;
++	for (phys = base; phys < end; phys += 64)
++		movdir64b(__va(phys), zero_page);
 +
 +	/*
-+	 * Initializing a TDMR can be time consuming.  To avoid long
-+	 * SEAMCALLs, the TDX module may only initialize a part of the
-+	 * TDMR in each call.
++	 * MOVDIR64B uses WC protocol.  Use memory barrier to
++	 * make sure any later user of these pages sees the
++	 * updated data.
 +	 */
-+	do {
-+		struct tdx_module_args args = {
-+			.rcx = tdmr->base,
-+		};
-+		int ret;
-+
-+		ret = seamcall_prerr_ret(TDH_SYS_TDMR_INIT, &args);
-+		if (ret)
-+			return ret;
-+		/*
-+		 * RDX contains 'next-to-initialize' address if
-+		 * TDH.SYS.TDMR.INIT did not fully complete and
-+		 * should be retried.
-+		 */
-+		next = args.rdx;
-+		cond_resched();
-+		/* Keep making SEAMCALLs until the TDMR is done */
-+	} while (next < tdmr->base + tdmr->size);
-+
-+	return 0;
++	mb();
 +}
 +
-+static int init_tdmrs(struct tdmr_info_list *tdmr_list)
++static void tdmr_reset_pamt(struct tdmr_info *tdmr)
++{
++	tdmr_do_pamt_func(tdmr, reset_tdx_pages);
++}
++
++static void tdmrs_reset_pamt_all(struct tdmr_info_list *tdmr_list)
 +{
 +	int i;
 +
-+	/*
-+	 * This operation is costly.  It can be parallelized,
-+	 * but keep it simple for now.
-+	 */
-+	for (i = 0; i < tdmr_list->nr_consumed_tdmrs; i++) {
-+		int ret;
++	for (i = 0; i < tdmr_list->nr_consumed_tdmrs; i++)
++		tdmr_reset_pamt(tdmr_entry(tdmr_list, i));
++}
 +
-+		ret = init_tdmr(tdmr_entry(tdmr_list, i));
+ static unsigned long tdmrs_count_pamt_kb(struct tdmr_info_list *tdmr_list)
+ {
+ 	unsigned long pamt_size = 0;
+@@ -929,6 +976,64 @@ static int config_tdx_module(struct tdmr_info_list *tdmr_list, u64 global_keyid)
+ 	return ret;
+ }
+ 
++static int do_global_key_config(void *unused)
++{
++	struct tdx_module_args args = {};
++
++	return seamcall_prerr(TDH_SYS_KEY_CONFIG, &args);
++}
++
++/*
++ * Attempt to configure the global KeyID on all physical packages.
++ *
++ * This requires running code on at least one CPU in each package.
++ * TDMR initialization) will fail will fail if any package in the
++ * system has no online CPUs.
++ *
++ * This code takes no affirmative steps to online CPUs.  Callers (aka.
++ * KVM) can ensure success by ensuring sufficient CPUs are online and
++ * can run SEAMCALLs.
++ */
++static int config_global_keyid(void)
++{
++	cpumask_var_t packages;
++	int cpu, ret = -EINVAL;
++
++	if (!zalloc_cpumask_var(&packages, GFP_KERNEL))
++		return -ENOMEM;
++
++	/*
++	 * Hardware doesn't guarantee cache coherency across different
++	 * KeyIDs.  The kernel needs to flush PAMT's dirty cachelines
++	 * (associated with KeyID 0) before the TDX module can use the
++	 * global KeyID to access the PAMT.  Given PAMTs are potentially
++	 * large (~1/256th of system RAM), just use WBINVD.
++	 */
++	wbinvd_on_all_cpus();
++
++	for_each_online_cpu(cpu) {
++		/*
++		 * The key configuration only needs to be done once per
++		 * package and will return an error if configured more
++		 * than once.  Avoid doing it multiple times per package.
++		 */
++		if (cpumask_test_and_set_cpu(topology_physical_package_id(cpu),
++					packages))
++			continue;
++
++		/*
++		 * TDH.SYS.KEY.CONFIG cannot run concurrently on
++		 * different cpus.  Do it one by one.
++		 */
++		ret = smp_call_on_cpu(cpu, do_global_key_config, NULL, true);
 +		if (ret)
-+			return ret;
++			break;
 +	}
 +
-+	return 0;
++	free_cpumask_var(packages);
++	return ret;
 +}
 +
  static int init_tdx_module(void)
  {
  	struct tdx_tdmr_sysinfo tdmr_sysinfo;
-@@ -1079,15 +1129,8 @@ static int init_tdx_module(void)
+@@ -969,6 +1074,11 @@ static int init_tdx_module(void)
  	if (ret)
- 		goto err_reset_pamts;
+ 		goto err_free_pamts;
  
--	/*
--	 * TODO:
--	 *
--	 *  - Configure the global KeyID on all packages.
--	 *  - Initialize all TDMRs.
--	 *
--	 *  Return error before all steps are done.
--	 */
--	ret = -EINVAL;
-+	/* Initialize TDMRs to complete the TDX module initialization */
-+	ret = init_tdmrs(&tdx_tdmr_list);
++	/* Config the key of global KeyID on all packages */
++	ret = config_global_keyid();
++	if (ret)
++		goto err_reset_pamts;
++
+ 	/*
+ 	 * TODO:
+ 	 *
+@@ -979,7 +1089,7 @@ static int init_tdx_module(void)
+ 	 */
+ 	ret = -EINVAL;
  	if (ret)
- 		goto err_reset_pamts;
+-		goto err_free_pamts;
++		goto err_reset_pamts;
  
+ 	pr_info("%lu KB allocated for PAMT\n", tdmrs_count_pamt_kb(&tdx_tdmr_list));
+ 
+@@ -991,6 +1101,22 @@ out_put_tdxmem:
+ 	put_online_mems();
+ 	return ret;
+ 
++err_reset_pamts:
++	/*
++	 * Part of PAMTs may already have been initialized by the
++	 * TDX module.  Flush cache before returning PAMTs back
++	 * to the kernel.
++	 */
++	wbinvd_on_all_cpus();
++	/*
++	 * According to the TDX hardware spec, if the platform
++	 * doesn't have the "partial write machine check"
++	 * erratum, any kernel read/write will never cause #MC
++	 * in kernel space, thus it's OK to not convert PAMTs
++	 * back to normal.  But do the conversion anyway here
++	 * as suggested by the TDX spec.
++	 */
++	tdmrs_reset_pamt_all(&tdx_tdmr_list);
+ err_free_pamts:
+ 	tdmrs_free_pamt_all(&tdx_tdmr_list);
+ err_free_tdmrs:
+@@ -1024,6 +1150,9 @@ static int __tdx_enable(void)
+  * lock to prevent any new cpu from becoming online; 2) done both VMXON
+  * and tdx_cpu_enable() on all online cpus.
+  *
++ * This function requires there's at least one online cpu for each CPU
++ * package to succeed.
++ *
+  * This function can be called in parallel by multiple callers.
+  *
+  * Return 0 if TDX is enabled successfully, otherwise error.
 diff --git a/arch/x86/virt/vmx/tdx/tdx.h b/arch/x86/virt/vmx/tdx/tdx.h
-index dd35baf..c0610f0 100644
+index fa5bcf8..dd35baf 100644
 --- a/arch/x86/virt/vmx/tdx/tdx.h
 +++ b/arch/x86/virt/vmx/tdx/tdx.h
-@@ -18,6 +18,7 @@
+@@ -14,6 +14,7 @@
+ /*
+  * TDX module SEAMCALL leaf functions
+  */
++#define TDH_SYS_KEY_CONFIG	31
  #define TDH_SYS_INIT		33
  #define TDH_SYS_RD		34
  #define TDH_SYS_LP_INIT		35
-+#define TDH_SYS_TDMR_INIT	36
- #define TDH_SYS_CONFIG		45
- 
- /*
