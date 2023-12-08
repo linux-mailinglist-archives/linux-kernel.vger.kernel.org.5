@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1A680A85C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F29180A861
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573974AbjLHQNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:13:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
+        id S232504AbjLHQNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:13:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573881AbjLHQMw (ORCPT
+        with ESMTP id S1573867AbjLHQMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:12:52 -0500
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0537F1997;
-        Fri,  8 Dec 2023 08:12:57 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A9B636000B;
-        Fri,  8 Dec 2023 16:12:55 +0000 (UTC)
+        Fri, 8 Dec 2023 11:12:53 -0500
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE6B51995;
+        Fri,  8 Dec 2023 08:12:58 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 92239C0004;
+        Fri,  8 Dec 2023 16:12:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702051976;
+        t=1702051977;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FGnu+pKltHatitWmpZe2slSLwq2YMSEGW5QMPSmCvCw=;
-        b=LJ/mIuxr6qHAYUk6svKj9Twgg97pdvMlzT3YnIlrYdWe0JAA4FoaNYNElfpvRP9zg6lnXi
-        Tn1WlWjY8dP3RJ5UK1+K4XpVTK1Rbop72PNOcPzIpdceNrBsf7hNk6e/rxClxvso1KHbRY
-        2cd61JWOc4mJq9/wgD79Z+aRPHMSRCvygC5SPK2vzNX5HmEzUFxGZpUtMyXaPXFxzLc4XR
-        53r8dv0QFCOD3o/U3xB/Tb1n9/Gx8V1aoUTM1AVBe0LFxRP2XnZlyZhMwRo4XhmUqZHN/u
-        wJbTFTVlmOS6bA92h33a8fePoGa4K0ETaVD3Bw34Y3xn7a6eqxngzchJgbniIA==
+        bh=AagYqurduAd05kHY0ow9kHcvI+mUo3FUEEyQW1aeXWI=;
+        b=e1DVOJMbQHAws2a4sJYGD+cU8txY0fD0/bnYzlRUqTuAocj9D/GDKqV13DlDIdi8cP7TX/
+        RqoQg9b65l0xcSt71ElN/z3aURY5EDE9wjcX4XXvb/FzyUigMrz18aCqowHugUJWYbDdKe
+        Cj8KrRZ5GPgpe3ynTZGxw1lFTT4lbVHMhczeIGs3+rhViw5paJ1zNfBCUiRHKcTPLxt5vY
+        +zHK+470tVAGMqc92Ei7tpb1ktcwaytCbV03usp5+78wopLnHTo83p06jJtfBQ5b83uU4N
+        +DPFD7qgzdNTnuFRn+p9UFZxBASmApB0bOZ8t9HcXSsqhaGntCrkUoxXshbjag==
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
 To:     Paul Burton <paulburton@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -41,10 +41,11 @@ Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         =?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
         Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v4 03/22] MIPS: spaces: Define a couple of handy macros
-Date:   Fri,  8 Dec 2023 17:12:19 +0100
-Message-ID: <20231208161249.1827174-4-gregory.clement@bootlin.com>
+Subject: [PATCH v4 04/22] MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
+Date:   Fri,  8 Dec 2023 17:12:20 +0100
+Message-ID: <20231208161249.1827174-5-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231208161249.1827174-1-gregory.clement@bootlin.com>
 References: <20231208161249.1827174-1-gregory.clement@bootlin.com>
@@ -53,57 +54,119 @@ Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KSEGX_SIZE is defined to size of each KSEG segment.
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-TO_CAC and TO_UNCAC are defined for 32bits builds and point to KSEG 0
-and KSEG1.
-TO_PHYS remains to be 64bits only as we want people to
-use __pa to avoid mixup compat address space.
+Use {highest, higher, hi, lo} immediate loading sequence
+to load 64 bit jump address for handler when kernel is
+loaded to XKPHYS.
 
-Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Co-developed-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Co-developed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/include/asm/addrspace.h           | 5 +++++
- arch/mips/include/asm/mach-generic/spaces.h | 2 ++
- 2 files changed, 7 insertions(+)
+ arch/mips/kernel/genex.S | 19 +++++++++++++++----
+ arch/mips/kernel/traps.c | 34 ++++++++++++++++++++++++----------
+ 2 files changed, 39 insertions(+), 14 deletions(-)
 
-diff --git a/arch/mips/include/asm/addrspace.h b/arch/mips/include/asm/addrspace.h
-index 59a48c60a065c..03a5e2c8b5dc9 100644
---- a/arch/mips/include/asm/addrspace.h
-+++ b/arch/mips/include/asm/addrspace.h
-@@ -47,6 +47,11 @@
-  */
- #define KSEGX(a)		((_ACAST32_(a)) & _ACAST32_(0xe0000000))
- 
-+/*
-+ * Gives the size of each kernel segment
-+ */
-+#define KSEGX_SIZE		0x20000000
-+
- /*
-  * Returns the physical address of a CKSEGx / XKPHYS address
-  */
-diff --git a/arch/mips/include/asm/mach-generic/spaces.h b/arch/mips/include/asm/mach-generic/spaces.h
-index b247575c5e699..c502bdd98aad0 100644
---- a/arch/mips/include/asm/mach-generic/spaces.h
-+++ b/arch/mips/include/asm/mach-generic/spaces.h
-@@ -49,6 +49,8 @@
- #define HIGHMEM_START		_AC(0x20000000, UL)
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index b6de8e88c1bd4..fd765ad9ecac0 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -272,11 +272,22 @@ NESTED(except_vec_vi, 0, sp)
+ 	.set	push
+ 	.set	noreorder
+ 	PTR_LA	v1, except_vec_vi_handler
+-FEXPORT(except_vec_vi_lui)
+-	lui	v0, 0		/* Patched */
++#if defined(CONFIG_32BIT) || defined(KBUILD_64BIT_SYM32)
++FEXPORT(except_vec_vi_hi)
++	lui	v0, 0			/* Patched */
++#else
++FEXPORT(except_vec_vi_highest)
++	lui	v0, 0			/* Patched */
++FEXPORT(except_vec_vi_higher)
++	daddiu	v0, 0			/* Patched */
++	dsll	v0, 16
++FEXPORT(except_vec_vi_hi)
++	daddiu	v0, 0			/* Patched */
++	dsll	v0, 16
++#endif
+ 	jr	v1
+-FEXPORT(except_vec_vi_ori)
+-	 ori	v0, 0		/* Patched */
++FEXPORT(except_vec_vi_lo)
++	PTR_ADDIU	v0, 0		/* Patched */
+ 	.set	pop
+ 	END(except_vec_vi)
+ EXPORT(except_vec_vi_end)
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 246c6a6b02614..60c513c51684f 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -2091,18 +2091,26 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ 		 * If no shadow set is selected then use the default handler
+ 		 * that does normal register saving and standard interrupt exit
+ 		 */
+-		extern const u8 except_vec_vi[], except_vec_vi_lui[];
+-		extern const u8 except_vec_vi_ori[], except_vec_vi_end[];
++		extern const u8 except_vec_vi[], except_vec_vi_hi[];
++		extern const u8 except_vec_vi_lo[], except_vec_vi_end[];
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		extern const u8 except_vec_vi_highest[], except_vec_vi_higher[];
++#endif
+ 		extern const u8 rollback_except_vec_vi[];
+ 		const u8 *vec_start = using_rollback_handler() ?
+ 				      rollback_except_vec_vi : except_vec_vi;
+ #if defined(CONFIG_CPU_MICROMIPS) || defined(CONFIG_CPU_BIG_ENDIAN)
+-		const int lui_offset = except_vec_vi_lui - vec_start + 2;
+-		const int ori_offset = except_vec_vi_ori - vec_start + 2;
++		const int imm_offset = 2;
+ #else
+-		const int lui_offset = except_vec_vi_lui - vec_start;
+-		const int ori_offset = except_vec_vi_ori - vec_start;
++		const int imm_offset = 0;
++#endif
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		const int highest_offset = except_vec_vi_highest - vec_start + imm_offset;
++		const int higher_offset = except_vec_vi_higher - vec_start + imm_offset;
  #endif
++		const int hi_offset = except_vec_vi_hi - vec_start + imm_offset;
++		const int lo_offset = except_vec_vi_lo - vec_start + imm_offset;
++
+ 		const int handler_len = except_vec_vi_end - vec_start;
  
-+#define TO_UNCAC(x)		CKSEG1ADDR(x)
-+#define TO_CAC(x)		CKSEG0ADDR(x)
- #endif /* CONFIG_32BIT */
- 
- #ifdef CONFIG_64BIT
+ 		if (handler_len > VECTORSPACING) {
+@@ -2119,10 +2127,16 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ #else
+ 				handler_len);
+ #endif
+-		h = (u16 *)(b + lui_offset);
+-		*h = (handler >> 16) & 0xffff;
+-		h = (u16 *)(b + ori_offset);
+-		*h = (handler & 0xffff);
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		h = (u16 *)(b + highest_offset);
++		*h = uasm_rel_highest(handler);
++		h = (u16 *)(b + higher_offset);
++		*h = uasm_rel_higher(handler);
++#endif
++		h = (u16 *)(b + hi_offset);
++		*h = uasm_rel_hi(handler);
++		h = (u16 *)(b + lo_offset);
++		*h = uasm_rel_lo(handler);
+ 		local_flush_icache_range((unsigned long)b,
+ 					 (unsigned long)(b+handler_len));
+ 	}
 -- 
 2.42.0
 
