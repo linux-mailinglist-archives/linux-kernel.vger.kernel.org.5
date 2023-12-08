@@ -2,180 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F21580AF76
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D8F80AF82
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 23:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574909AbjLHWK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 17:10:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43428 "EHLO
+        id S1574915AbjLHWNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 17:13:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574902AbjLHWKZ (ORCPT
+        with ESMTP id S229647AbjLHWNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 17:10:25 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2067.outbound.protection.outlook.com [40.107.94.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD3E1718;
-        Fri,  8 Dec 2023 14:10:31 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FGR3dn4amyXAj61tWdRUTk4iDDGOSSMZtRO3u08GIzazZ+xOF01Nca3+16FGKD5Zqws42e5W1CcGRg5YqxeAcl4rjP849RG/sUatnmauDJEbjeWpBx+ZNxy8wVmnTuCPXIwkX9YRy4vIrtzi5T1Kcsv2TYXwXd9OkZwYiBb/8j7Kf6zq0FNmk8CgDE8TuRCh2fvQDHFitjlbg+ZqXFFhidXgoop+3SwQxb6E7KgUvH86NERqHmxj/YI25ni7x9rP5X3UDdix586ezrfo4FzqnVNMLHcB/qIxJ3UUFFs3vOzTyXOFV2fmvO00sSFXNB3HPPIWuhKhkXYLsxyQTp2aZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nrYVSg00RUAeD6n4ef919rE9BHN1l7P7nXd3UWK0teo=;
- b=mjjFBNZS1uAakUv3X27jOqGz15TcMYoZj5DJs3hqbQGjUpwwittiwVrEO1sGKi7yX4VY3qsGVSIBYj2z1a2KefC32MPRPDJimu8IwY4DKcVwbvHgvj0YGsJkKmvJ/C58yS8VA3kPr0BGxst+TerGgzz/4wiM+wzQ+dWknWo0nJhlmhHsV1xi8tKCEoRq9v7xidVeL+C/BENYKKuX45L8+/8vqjqKqwoy1AIDO/+YVWf9i0Jg9ngSbSnAkY2zx8Qz0auS/I9r+W7wUDpZ0aIJYeiegM4uqBEsSfwyvj05qqhsTxkI0/QbqaBB4QaOa1rq3tSVkLccau294WjOA2s3VA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nrYVSg00RUAeD6n4ef919rE9BHN1l7P7nXd3UWK0teo=;
- b=WPEWk8GiYUVCPI+/QKzwWsX892kS9H47WQKLwukSUpNfujrkvXDCh3dkuD2kdrCxIc/hWyxCtmxCyZ/zEJ9l8M32a3OmJP13VzzHQ0Tl3HAlSNRdQBalWTjA6QPbFQz4fyR4c6wxGPCAmRtjFR1dZlANFXhNSNYZZyQ+ewB7ch8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SN7PR12MB7346.namprd12.prod.outlook.com (2603:10b6:806:299::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Fri, 8 Dec
- 2023 22:10:28 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::3341:faaf:5974:f152]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::3341:faaf:5974:f152%7]) with mapi id 15.20.7068.028; Fri, 8 Dec 2023
- 22:10:28 +0000
-Message-ID: <b54fdac3-9bdf-184e-f3fc-4790a328837c@amd.com>
-Date:   Fri, 8 Dec 2023 16:10:25 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v10 16/50] x86/sev: Introduce snp leaked pages list
-Content-Language: en-US
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
-Cc:     linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        bp@alien8.de, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
-        liam.merwick@oracle.com, zhi.a.wang@intel.com
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-17-michael.roth@amd.com>
- <0e84720f-bb52-c77f-e496-40d91e94a4f6@suse.cz>
-From:   "Kalra, Ashish" <ashish.kalra@amd.com>
-In-Reply-To: <0e84720f-bb52-c77f-e496-40d91e94a4f6@suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR11CA0132.namprd11.prod.outlook.com
- (2603:10b6:806:131::17) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+        Fri, 8 Dec 2023 17:13:36 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95893118;
+        Fri,  8 Dec 2023 14:13:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=RlxG7vjWqKyoHCmskEV8jhRRkavkqsM6KoNtZ7Hn0ss=; b=QsYAKXgxEwdVvic0OVQS2q1njD
+        KbrlmARUgUPeNq/fvlFmbLHMefvx8bjUUbb0/76kGmGb/Ar0fFT3VrPBNoMXSXCdIGgPYGf1EHla8
+        UJZM7Z2OKSCJJ7SdQP9qJ/8WpI350/ddOdwer1AaZ2eIyhwDV1b2iTrFvBvdzBTmYkA5NPzZySZwX
+        +6wF3rS6ZNxBi7538KUuxvMXwgtiZWQIU4Tx/7AsXtGFbd73+y6Y76mi0it7jargk86CbnRIE6jMM
+        IRGiP40J7DYEBlBtloTTedq8modobMGa15xzjEpvw9VYbZqFBkgEhXQ7TLOgqdRXwJYyxMHEbsYbF
+        +E6oPSYg==;
+Received: from p200301077700c3001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7700:c300:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1rBj6G-007BDR-9G; Fri, 08 Dec 2023 23:13:36 +0100
+Date:   Fri, 8 Dec 2023 23:13:32 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Tony Lindgren <tony@atomide.com>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tomi.valkeinen@ideasonboard.com,
+        =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
+        robh@kernel.org
+Subject: Re: [RFC PATCH 0/3] bluetooth/gnss: GNSS support for TiWi chips
+Message-ID: <20231208231332.20f0b647@aktux>
+In-Reply-To: <ZXNDd57ImXjelBf4@hovoldconsulting.com>
+References: <20231126191840.110564-1-andreas@kemnade.info>
+        <20231127135424.GO5169@atomide.com>
+        <20231127215108.6e985819@aktux>
+        <ZXNDd57ImXjelBf4@hovoldconsulting.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2767:EE_|SN7PR12MB7346:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3017723f-6eca-4c0a-d907-08dbf83a7c59
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DxhH1C+ppUnrbnmLbnXQqqWVeUyPpFqjQ25Hoqm+x4FxAPnwnvk0uaejSSCd7ZtuGC+INIIumLYEmcNSEBwGA+CGdW9eyXOAqaESZVwUguOCCFPte5WeSl7+3MP+5dy9rLC6nne6MBxnGeA5+QmAONSpARS8bzTz7CvOyF63tuZrUVvWSLMpX94wy2L/1FVWhkEiZqRhFphDW1OeMhnIj9hVxAgGEdqrNnX7OPFsAOkfkO7CIKOG4SdXa2DBfrxdWvOiAtkX4LGZfVVrelmlBZx71QTWGUXgRccuSfuPMQ9Wo8q80x90CRiFoGpI3AtsY+B53qCsfHraHKwULyDL5h5SefN8qTdxOsBvYpkVojD5BLsfof1TOuRiNJpgqap0hPxZ8sIWUH3YdiTp4z84w3uajxTcmhRRMUhn2dd/zVh9RThMzEgNJdKR6gFDDyh7ZXMkTI7zQt3S5eF4sYxAZEiv3ervXQskrWQzX1FJqXf3za+DFeIt8Td1eoGVu8B0CfsaDcAgie6MYrIqt6E/RTnTWzDFBrN2mTfyd+4DAGVZhnVzOMppIEx5l8fhKNxZvFhG3WRyx+JhanmYeZXcTEqEnJTC7VGvvPmrovshahiHNX2Pl7yb2Fn5eULuAS4Ai9mBJDeuvw0bpNWQul91pQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(396003)(366004)(39860400002)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(41300700001)(36756003)(38100700002)(2616005)(86362001)(31686004)(26005)(83380400001)(7416002)(5660300002)(7406005)(2906002)(6512007)(6506007)(478600001)(53546011)(31696002)(4326008)(8936002)(8676002)(6666004)(6486002)(110136005)(316002)(66946007)(66476007)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RTg4OWhtdnNseUg3alNrcUZDVU95bnlrRnFVTXhzR2Z2bHJhWkdlMVFWWDlv?=
- =?utf-8?B?MDQ2Z3lSdFRyY29FNEI2bThZUjF3UHFWdEJaMTdvN29ZMytoYjhSRm5xZjlU?=
- =?utf-8?B?cytQMlFqbTVEZzJ1U1NSUmNLMGhJQ3pyRUlCWVRUeDA2amFCdEVJeDh3Uldk?=
- =?utf-8?B?YXZHOTFwOU5LQWRWWGRud3ljMWxFaFJsTEc3VEJacEZkamJIVWFocHR3aVFj?=
- =?utf-8?B?RGNreklhN1RROHpjNmJUMi9XTGM5MitTQ3ZaN0MvbHllcklabGhMcEthd1NS?=
- =?utf-8?B?dnd4MllrOUxaR251dlVUMnMvS09yWmtjSDM4T1I2eWV6Mmw3eXliN1VTU2NS?=
- =?utf-8?B?SW5tK1R1Zitka1oxYmNjeS9uVU0rQktCVTRGWHpuRjVjVFczVUVKWDk1Z2FH?=
- =?utf-8?B?RldkNTBBa1JrUjJqZWwycEhqU05hdkE1S0xFM2dRSWw5MDdBc3EwV0w2bHFN?=
- =?utf-8?B?RnI1Tncwdno2c0JGUjR3RWtGMEVsWjlQMWErTWlpMEZHa2ZFMlUzVWhnMDZj?=
- =?utf-8?B?b1JGS0lHL2FjRy9GVWdCMHZYalBSVC9xcTIrMndQN3k3ZHFVK1h0SzBydGtu?=
- =?utf-8?B?OTdaa1psOFlRK053ZSs3MVRpVlk0UTBNL3NBSlhLUWdtTVVNK2xJNW0wS3Q0?=
- =?utf-8?B?SGtCNkVGdW96UjdpdCs3cnk2VUtNUlVxaXlzNk45dmZweTlLVkI3d0Y5Z09t?=
- =?utf-8?B?T2drcSswOUtQUkRRUisxQUE2OVZwOUkrQzQwcC9FbXNuTENrM05zVm1xcmlw?=
- =?utf-8?B?MGZtTk9wRXFUWHZEbit4UVNDd0t0WlZldDMwaTJvZ29KQmUvYUErWFE3MU1Y?=
- =?utf-8?B?dEtJcVNpUGdSdnBIUzYvNHY1YnIwK0RKUkc1N3BVR0p6TzZxbG9kc05tSkNk?=
- =?utf-8?B?dlZjb25Za0ZjY3RhUTFVWjg2UTh0ZWxWZ3M1S3d4VTM4RzJXK3pRSC9vNEEv?=
- =?utf-8?B?RjlsZlNKRTE0SDAzK21Sa0h1eWNSUmFOZHFPRmYzdnhIM0hxUy9HdGFkUXhR?=
- =?utf-8?B?MGVUbDQ0clFVYk1nZW9ZcXp0dTF0RkxvM083eExUUTVJeklqcFpGa08zWnpm?=
- =?utf-8?B?Q0V0TUhIQTFqa01rQktrN1dlb21iUzZWSzhuN0lSTkcvdUJadHBkbG9NWVFs?=
- =?utf-8?B?YVJmK2o4elliQ3NUUUlrUENveXZVK3dRSzRBYW4yR3ZkQWNUYW92UjU2eHBN?=
- =?utf-8?B?bkVSMUJENkloTG1iVjFiMHVQVXJYL3VHSkppV0FGdS9DZWxObFRETU5sY3JU?=
- =?utf-8?B?WityQUZJWm85Z3lwUWRsdTQzVE5zWXdWZGQ0cW80M1NGcm5XQllvR3VNRHd1?=
- =?utf-8?B?alJLdW00UjlKRTBuRnUrazdGWGtZMXZoMW1sS3ZDRk55ZkJQRDdIUXA1VFlV?=
- =?utf-8?B?T3NLSWQ0V0RIWXNxanh1cnFxZ1BPbFV1MzUySndDVDloZ2o3bWlLcWNSRG9O?=
- =?utf-8?B?TkptQ3Y3TkJuVVhETVd0MWRIWW1JVjlmSGtWYjVNV1pWQWVIZG1QZE9mTWVE?=
- =?utf-8?B?cUJyZElzUXFMNXFzSTQ1RTIrQmsrbDF6ZFVIYXJtcHFmdjVDbXZ4a3haOVAz?=
- =?utf-8?B?ZCtuVnFMeDdYTkdlN1d6UG1NaXFabVpnNU0yRDM5ZnN6c1hGdlAwSWUxSmlV?=
- =?utf-8?B?QkR5d0l1bEwrYllvT2VUOFV0KzNMQWJDQldHQ2VqMTBiU09NZHF3eEFyUTJo?=
- =?utf-8?B?aFBMalJ0cjBUa0VlNXQySWdYTEpTczhEVmlVa3hMN011UmpRczQ3cU9kMyts?=
- =?utf-8?B?dmllUXBVRG5UekZNbFVuVTlJUC9wN01qSjZ6Rm5QNEpWUFZiQ0J3dEd1aGlI?=
- =?utf-8?B?T29XSXVocGJJaUZzdERUODVGdkpNR09zcDdic3RLbUpzVkdFQlhzbS9rRUli?=
- =?utf-8?B?RVl2RmYwOVRwdHN4T1BwS0hVVHM0RXFDWjMveUQ5WEN5RzhmdmdrSnAxSzZ6?=
- =?utf-8?B?eFNUTVNud2JXUThTN3I3ZlRWWVNFeVU5ZTRSVEEwY2ZkSGh5Z0dmL1E3QmIv?=
- =?utf-8?B?YS9jTHZiWnJxN1BBVjA2Q1UrbE1uQWRtMG1WQllvZ3B4ZVFIZ2l2NjZIVjlI?=
- =?utf-8?B?WEtxaDB5MzJhZUZRTzI2YkJ6cncyTzg0UGl0N2RYdkM5dlhPQllqREJCTDJI?=
- =?utf-8?Q?ZgzkJt2R3VlR1LibR6PlzCfGL?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3017723f-6eca-4c0a-d907-08dbf83a7c59
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 22:10:28.2609
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FRPX3edCEuOCxrxCeMZXmLR4xQE668A7AfiCaQNhX1FcpMfa75ZEmb8RzU2lLojxpM+17g5Agvt/PHyDR54rzg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7346
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Vlastimil,
+On Fri, 8 Dec 2023 17:25:27 +0100
+Johan Hovold <johan@kernel.org> wrote:
 
-On 12/7/2023 10:20 AM, Vlastimil Babka wrote:
-
->> +
->> +void snp_leak_pages(u64 pfn, unsigned int npages)
->> +{
->> +	struct page *page = pfn_to_page(pfn);
->> +
->> +	pr_debug("%s: leaking PFN range 0x%llx-0x%llx\n", __func__, pfn, pfn + npages);
->> +
->> +	spin_lock(&snp_leaked_pages_list_lock);
->> +	while (npages--) {
->> +		/*
->> +		 * Reuse the page's buddy list for chaining into the leaked
->> +		 * pages list. This page should not be on a free list currently
->> +		 * and is also unsafe to be added to a free list.
->> +		 */
->> +		list_add_tail(&page->buddy_list, &snp_leaked_pages_list);
->> +		sev_dump_rmpentry(pfn);
->> +		pfn++;
+> On Mon, Nov 27, 2023 at 09:51:08PM +0100, Andreas Kemnade wrote:
+> > On Mon, 27 Nov 2023 15:54:24 +0200
+> > Tony Lindgren <tony@atomide.com> wrote:  
 > 
-> You increment pfn, but not page, which is always pointing to the page of the
-> initial pfn, so need to do page++ too.
+> > > > - Output at /dev/gnssX:
+> > > >   AI2 vs. NMEA
+> > > >   The chip can be configured into sending AI2-encapsulated NMEA,
+> > > >   or proving data in a binary format.
+> > > >   Some research has to be done yet for the details.
+> > > >   A pile of logs is waiting for further analysis...  
+> 
+> Can you say something more about what the protocol looks like? Is there
+> some common framing that can/should be stripped by the driver in both
+> modes?
+>
+The frames (which can be fragmented into multiple gnss_recv_frame() calls)
+consist of:
+- some kind of start marker
+- one or more tlv structures (start marker is escaped here)
+- checksum
+- end marker
 
-Yes, that is a bug and needs to be fixed.
+In case of NMEA reporting we have with this patchset at /dev/gnssX or at /dev/tigps
+found in the bt200 vendor kernel e.g.
 
-> But that assumes it's all order-0 pages (hard to tell for me whether that's
-> true as we start with a pfn), if there can be compound pages, it would be
-> best to only add the head page and skip the tail pages - it's not expected
-> to use page->buddy_list of tail pages.
+1000 d3 1800 82050000 244750474c4c2c2c2c2c2c2c562c4e2a36340d0a 9f05 1003
 
-Can't we use PageCompound() to check if the page is a compound page and 
-then use page->compound_head to get and add the head page to leaked 
-pages list. I understand the tail pages for compound pages are really 
-limited for usage.
+which is:
+1000 = start marker, d3 = NMEA report
+1800 = length (LE)
+82050000 = ms from turning on GPS (LE).
+244750474c4c2c2c2c2c2c2c562c4e2a36340d0a = NMEA sentence
+9f05 = checksum
+1003 = end marker.
 
-Thanks,
-Ashish
+That is one report among others depending on what is enabled. So it
+is not like the situtation with Sirf where you send some magic to turn
+it into binary mode and some other magic turning it into NMEA mode
+and have no other stuff on the line.
+
+> > > > 
+> > > >   Arguments for/against NMEA:
+> > > >   + Userspace is prepared to handle it
+> > > >   + Power management can be easily done by the kernel
+> > > >   - Less functionality can be used.    
+> > > 
+> > > I'd go with NMEA format as the default setting :)
+> > >   
+> > yes, that would also be my preference.
+> >   
+> > > >   Arguments for/against AI2:
+> > > >   + Full functionality can be accessed from userspace (incl. A-GPS,
+> > > >     maybe raw satellite data)
+> > > >   - Userspace has to behave to have proper power management
+> > > >   - No freely (not even as in beer) tool available to fully use AI2,
+> > > >     so there will be only a real advantage after long "French Cafe"
+> > > >     sessions.    
+> > > 
+> > > Seems AI2 could be optionally enabled as needed with some writes
+> > > to /dev/gnss0 to change the mode?  
+> > 
+> > Hmm, we have
+> > /sys/class/gnss/gnss0/type to get the mode, maybe we add some file
+> > to change the mode? Or having it hidden behing a module parameter
+> > and implement something better accessible if any need arrives?  
+> 
+> The 'type' attribute is intended to reveal the GNSS receiver type
+> (class) as a hint to user space to avoid having to detect it at runtime
+> using heuristics.
+> 
+> It does not reflect which mode is currently active for receivers that
+> provide both a vendor specific protocol and NMEA (e.g. u-blox
+> receivers).
+> 
+> User space can currently switch modes at will by writing to /dev/gnss0
+> as Tony mentioned.
+> 
+Well, switching mode would in this case also mean configuring something
+in the driver to do something different as it would mean sending commands
+to enable NMEA reports and strip away the AI2 encapsulation in the driver.
+You usually do not configure drivers through write() but through some
+out-of-band means like ioctl(), sysfs, kernel compile options,
+module parameters.
+
+> It may or may not make sense to make sure a particular mode is set
+> during probe, for example, if there's no real use for the proprietary
+> protocol and everyone would just switch away from it immediately.
+> 
+I would probably not do anything at probe time but turning on GPS and enable
+NMEA reports at open() time.
+
+With a lot of effort you can probably do interesting things with the
+proprietary mode. But given the fact that apparently nobody has done 
+publicly so in the past years, I would not expect that anything arises
+suddenly.
+
+So in practice only NMEA would IMHO be useful and having raw AI2
+might be something behind a module option or compile option to avoid
+introducing some new API before a real need is seen.
+Also as not everybody is using gpsd anymore, implementing any support
+for AI2 in userspace would not be at a single place.
+
+Regards,
+Andreas
