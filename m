@@ -2,72 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBAC809B28
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 05:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A0F809B38
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 05:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573151AbjLHEth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 23:49:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
+        id S1573146AbjLHE4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 23:56:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232855AbjLHEtf (ORCPT
+        with ESMTP id S229531AbjLHE4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 23:49:35 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB4C10DF;
-        Thu,  7 Dec 2023 20:49:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702010980; x=1733546980;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=rRbc8jEQsK6Twf+fS79kJj0RpcKvEBd0c38qzLKizrs=;
-  b=FmG95ClQIe54FWVvc3yFxeqksYWIK91V0GT3JDNc26rWa2rN/W3/FnMf
-   PpPLs2NgjKce7nkfFaN4p+pXG+kVR6n0aKc5+r4PuXx6gu9aa6hQITJvi
-   UCXOdmUufAL++dpjFlLFaEhqXmKOTm4zdVemZhxcHfQ7djr/3SDFuK9HI
-   vfowd+T6aFg5fyCpDzU/NeQrwl9zb6SjLHNA4G6aMArtgu2wBQUoWAxS3
-   1jJCMxLijT3VPmU2pQuC9zrRqh9kR6N8RjiOmYM51zZwPKRunxa6ABlIO
-   EvZtTaPljzaFBBhUuzRf1059LhoiAcD6dBdpvFCnilVZt832LqXq+yHj5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="1180700"
-X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
-   d="scan'208";a="1180700"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 20:49:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="765363581"
-X-IronPort-AV: E=Sophos;i="6.04,259,1695711600"; 
-   d="scan'208";a="765363581"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.24.100.114])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2023 20:49:38 -0800
-Date:   Thu, 7 Dec 2023 20:54:31 -0800
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
-        iommu@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>,
-        kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org,
-        peterz@infradead.org, seanjc@google.com,
-        Robin Murphy <robin.murphy@arm.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH RFC 01/13] x86: Move posted interrupt descriptor out of
- vmx code
-Message-ID: <20231207205431.75a214c2@jacob-builder>
-In-Reply-To: <87wmtruw87.ffs@tglx>
-References: <20231112041643.2868316-1-jacob.jun.pan@linux.intel.com>
-        <20231112041643.2868316-2-jacob.jun.pan@linux.intel.com>
-        <87wmtruw87.ffs@tglx>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 7 Dec 2023 23:56:22 -0500
+Received: from wnew1-smtp.messagingengine.com (wnew1-smtp.messagingengine.com [64.147.123.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B8C10F1
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 20:56:27 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailnew.west.internal (Postfix) with ESMTP id 492732B00124;
+        Thu,  7 Dec 2023 23:56:22 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 07 Dec 2023 23:56:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1702011381; x=1702018581; bh=PI
+        Y64CBSNt0PPb9bxeilH/4eQNVTuavlLXd+xLtdLt4=; b=EofmHpNL/cIg5AKToO
+        umxa3/vm8NffW15CQ/NYWKLTmOntZUlTXzL07BQN9Zzd1qkj/zIQY2BNpeU3NNnE
+        DsyuHH3WZaGBzjQorUzlwiFe/4NPCQlENpKqreDBuJVMeLp6sZaNlIXcysHdaNRc
+        VEBzwBp21QplxcXEbl27bmgnF5pmLSDH0ONvG3vpQ7j3dFUXRgm6b+dWV4nd4HGl
+        SWheN6zX7f77TSnmKwBt69fMkeY7vcpYMbjU7GbnOXep63hQWV1N/LSBPbrYOTRp
+        fXLqehXrXtZqsPTcqJbc3tosb+da+i8EQrUzDBVMvjAsRUUs+nAZG0k6OSVXdw8F
+        kR8Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1702011381; x=1702018581; bh=PIY64CBSNt0PP
+        b9bxeilH/4eQNVTuavlLXd+xLtdLt4=; b=0JoNE5lcC5CNnZsf0Wrxk0j03GnnD
+        jKhNB/IWHt20uvZzwI8UD4N+ZmDmCB7ssaaymo/kcvUG9aTopzcCzQC/kIar85eH
+        FF73aIfF48k+sJCT6KDh2qwa4MpjeIS8zono/MVUEsiM/KpsAwbbQDRFyrE7JP6t
+        iZ+SdSRt+D8vWJNgNstFf7rxNYiEfRWIO/LXVRKWJEc5rSrblhxPCO3hwsPyJ2MA
+        BWB1vtmLc1nS7dNF4hkptHIe+jCQfQKYq6S23Rj84g4b85QqQsisSTFc2aXhhm3q
+        lfGZwhLYxEqTogHcPiuVYoVmuQyjsJtiomiXqlN1FbTEortKcfJ3ehxew==
+X-ME-Sender: <xms:9aFyZYCQddBddhZLtTdmaCagb1YejJJydeA7lnR9rCFc2q2T68f5Rg>
+    <xme:9aFyZaii19_64B-wL9K1uZUjRIE0pAy_5jb714kJnHdyH6bLJuIQ2-8r6Gk8MGV6-
+    SmpbysNcrM9zQ>
+X-ME-Received: <xmr:9aFyZbmJM6VIeIhwKoz-C4nYvlKCuRI71S6CIsmYX141cRu6ODga5VANakJmYUtEfjoWCeTgzgfOBv2l4u53-EaJGhnT6Spfxg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekhedgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
+    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:9aFyZexFHU7norGA_X7Vuge-0fgLPT5e-anhtsm-yBQXlpEC96Xu2w>
+    <xmx:9aFyZdSRHOl3NF57458as0Ve8eZCYGAaF_n1-6gqdF1RZ0r7dlPAHg>
+    <xmx:9aFyZZYrhbQQaBlzWULnF1wKDDRQooLtJAJuUYqDs3mhE7PSQ08drQ>
+    <xmx:9aFyZeSODrZnAjSz5JEizXuxoWQeQSuK2TXNjmKIflKUcWV2ydV1ReukdwI>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 7 Dec 2023 23:56:21 -0500 (EST)
+Date:   Fri, 8 Dec 2023 05:56:19 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Jose Ignacio Tornos Martinez <jtornosm@redhat.com>,
+        davem@davemloft.net, edumazet@google.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, oneukum@suse.com, pabeni@redhat.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v6] net: usb: ax88179_178a: avoid failed operations when
+ device is disconnected
+Message-ID: <2023120813-yummy-scrubbed-517e@gregkh>
+References: <0bd3204e-19f4-48de-b42e-a75640a1b1da@rowland.harvard.edu>
+ <20231207175007.263907-1-jtornosm@redhat.com>
+ <d8c331dd-deb1-4f12-8e66-295bfac8b1d7@rowland.harvard.edu>
+ <20231207123256.337753f9@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207123256.337753f9@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,93 +92,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Thu, Dec 07, 2023 at 12:32:56PM -0800, Jakub Kicinski wrote:
+> On Thu, 7 Dec 2023 15:23:23 -0500 Alan Stern wrote:
+> > Acked-by: Alan Stern <stern@rowland.harvard.edu>
+> 
+> FWIW I'm expecting Greg to pick this up for usb.
 
-On Wed, 06 Dec 2023 17:33:28 +0100, Thomas Gleixner <tglx@linutronix.de>
-wrote:
-
-> On Sat, Nov 11 2023 at 20:16, Jacob Pan wrote:
-> > +/* Posted-Interrupt Descriptor */
-> > +struct pi_desc {
-> > +	u32 pir[8];     /* Posted interrupt requested */
-> > +	union {
-> > +		struct {
-> > +				/* bit 256 - Outstanding Notification
-> > */
-> > +			u16	on	: 1,
-> > +				/* bit 257 - Suppress Notification */
-> > +				sn	: 1,
-> > +				/* bit 271:258 - Reserved */
-> > +				rsvd_1	: 14;
-> > +				/* bit 279:272 - Notification Vector */
-> > +			u8	nv;
-> > +				/* bit 287:280 - Reserved */
-> > +			u8	rsvd_2;
-> > +				/* bit 319:288 - Notification
-> > Destination */
-> > +			u32	ndst; =20
->=20
-> This mixture of bitfields and types is weird and really not intuitive:
->=20
-> /* Posted-Interrupt Descriptor */
-> struct pi_desc {
-> 	/* Posted interrupt requested */
-> 	u32			pir[8];
->=20
-> 	union {
-> 		struct {
-> 				/* bit 256 - Outstanding Notification */
-> 			u64	on	:  1,
-> 				/* bit 257 - Suppress Notification */
-> 				sn	:  1,
-> 				/* bit 271:258 - Reserved */
-> 					: 14,
-> 				/* bit 279:272 - Notification Vector */
-> 				nv	:  8,
-> 				/* bit 287:280 - Reserved */
-> 					:  8,
-> 				/* bit 319:288 - Notification Destination
-> */ ndst	: 32;
-> 		};
-> 		u64		control;
-> 	};
-> 	u32			rsvd[6];
-> } __aligned(64);
->=20
-It seems bit-fields cannot pass type check. I got these compile error.
-
-arch/x86/kernel/irq.c: In function =E2=80=98intel_posted_msi_init=E2=80=99:
-./include/linux/percpu-defs.h:363:20: error: cannot take address of bit-fie=
-ld =E2=80=98nv=E2=80=99
-  363 |  __verify_pcpu_ptr(&(variable));     \
-      |                    ^
-./include/linux/percpu-defs.h:219:47: note: in definition of macro =E2=80=
-=98__verify_pcpu_ptr=E2=80=99
-  219 |  const void __percpu *__vpp_verify =3D (typeof((ptr) + 0))NULL; \
-      |                                               ^~~
-./include/linux/percpu-defs.h:490:34: note: in expansion of macro =E2=80=98=
-__pcpu_size_call=E2=80=99
-  490 | #define this_cpu_write(pcp, val) __pcpu_size_call(this_cpu_write_, =
-pcp, val)
-      |                                  ^~~~~~~~~~~~~~~~
-arch/x86/kernel/irq.c:358:2: note: in expansion of macro =E2=80=98this_cpu_=
-write=E2=80=99
-  358 |  this_cpu_write(posted_interrupt_desc.nv, POSTED_MSI_NOTIFICATION_V=
-ECTOR);
-      |  ^~~~~~~~~~~~~~
-./include/linux/percpu-defs.h:364:15: error: =E2=80=98sizeof=E2=80=99 appli=
-ed to a bit-field
-  364 |  switch(sizeof(variable)) {     \
->=20
-> > +static inline bool pi_test_and_set_on(struct pi_desc *pi_desc)
-> > +{
-> > +	return test_and_set_bit(POSTED_INTR_ON,
-> > +			(unsigned long *)&pi_desc->control); =20
->=20
-> Please get rid of those line breaks.
-will do.
+Sure, will do!
 
 
-Thanks,
-
-Jacob
