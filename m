@@ -2,93 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C91BC809FC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAA3809FCC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233245AbjLHJpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 04:45:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46094 "EHLO
+        id S1573483AbjLHJsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 04:48:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbjLHJph (ORCPT
+        with ESMTP id S233242AbjLHJsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 04:45:37 -0500
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42E690
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 01:45:43 -0800 (PST)
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1fafbf42404so3430617fac.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 01:45:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702028743; x=1702633543;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VAjnMRUxSxfpb3qrgmgdoXzAqWKDHCjSJPqxcRRXhMM=;
-        b=N/QoSoNo58HZc0BVcFlhU80nqWP99H1Agtt4JMw1QJ6TOSJBQg4uavy9Sjky6QZ7/f
-         8bOjkmwI3u6+mOIg44Gvu4aIWw2endt9wjJAci+C4G40HO9m0L8tCSC1olXmRD8625L7
-         GQeUtGg0jQCeLEIIb172M1+zgFuxNeOmY8IGLeeJkRHEMnWQ3Q/WVSbMk7OSMyC9X/Ye
-         v5di/8C9+T7icYqrn482K5wuoyT03kOOMRY2lubJwCrauC8TmnKaN2u6UnUf4j+/kJuo
-         KST2Fh0oDzCNGz07sjtQB+AyJYXNrwi9cnHVQrwIQFg5jGE217R1kABSMnBL62AuJ9oD
-         +sQQ==
-X-Gm-Message-State: AOJu0YwvQ6nhfwC6ZEEH0f3BQdSnwCtaJYEnDY+feoeZyzG+gGtIs8vN
-        DjfvGdhjJ41J0x3axVAFfl9OOJd2zYR0LfjInDWB2WmcZPU+r2A=
-X-Google-Smtp-Source: AGHT+IHoYiT6dgRRk/BQldHBRt2W/ufg4Eu51LcU7njT8M2Mk0qPeF96Hi93e1MBOhUeLkEOkrrbtSF5w5HW5V6ONsfG1gNjOmra
+        Fri, 8 Dec 2023 04:48:05 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108C1D5B;
+        Fri,  8 Dec 2023 01:48:10 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B89lgiuF802602, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B89lgiuF802602
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 8 Dec 2023 17:47:42 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Fri, 8 Dec 2023 17:47:43 +0800
+Received: from RTDOMAIN (172.21.210.160) by RTEXMBS04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 8 Dec 2023
+ 17:47:42 +0800
+From:   Justin Lai <justinlai0215@realtek.com>
+To:     <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <andrew@lunn.ch>, <pkshih@realtek.com>, <larry.chiu@realtek.com>,
+        Justin Lai <justinlai0215@realtek.com>
+Subject: [PATCH net-next v14 00/13] Add Realtek automotive PCIe driver
+Date:   Fri, 8 Dec 2023 17:47:20 +0800
+Message-ID: <20231208094733.1671296-1-justinlai0215@realtek.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:2409:b0:1fa:ed68:afc1 with SMTP id
- n9-20020a056870240900b001faed68afc1mr5100367oap.4.1702028743280; Fri, 08 Dec
- 2023 01:45:43 -0800 (PST)
-Date:   Fri, 08 Dec 2023 01:45:43 -0800
-In-Reply-To: <000000000000bfba3a060bf4ffcf@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a414b7060bfc72b3@google.com>
-Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert
-From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.210.160]
+X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+This series includes adding realtek automotive ethernet driver 
+and adding rtase ethernet driver entry in MAINTAINERS file.
 
-***
+This ethernet device driver for the PCIe interface of 
+Realtek Automotive Ethernet Switch,applicable to 
+RTL9054, RTL9068, RTL9072, RTL9075, RTL9068, RTL9071.
 
-Subject: [arm-msm?] [net?] memory leak in radix_tree_insert
-Author: lizhi.xu@windriver.com
+v1 -> v2:
+- Remove redundent debug message.
+- Modify coding rule.
+- Remove other function codes not related to netdev.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 33cc938e65a9
+v2 -> v3:
+- Remove SR-IOV function - We will add the SR-IOV function together when
+uploading the vf driver in the future.
+- Remove other unnecessary code and macro.
 
-diff --git a/lib/radix-tree.c b/lib/radix-tree.c
-index 976b9bd02a1b..b98e9f2c24ac 100644
---- a/lib/radix-tree.c
-+++ b/lib/radix-tree.c
-@@ -55,6 +55,8 @@ struct kmem_cache *radix_tree_node_cachep;
- #define IDR_MAX_PATH		(DIV_ROUND_UP(IDR_INDEX_BITS, \
- 						RADIX_TREE_MAP_SHIFT))
- #define IDR_PRELOAD_SIZE	(IDR_MAX_PATH * 2 - 1)
-+static bool __radix_tree_delete(struct radix_tree_root *root,
-+				struct radix_tree_node *node, void __rcu **slot);
- 
- /*
-  * Per-cpu pool of preloaded nodes
-@@ -714,8 +716,10 @@ int radix_tree_insert(struct radix_tree_root *root, unsigned long index,
- 		return error;
- 
- 	error = insert_entries(node, slot, item);
--	if (error < 0)
-+	if (error < 0) {
-+		__radix_tree_delete(root, node, slot);
- 		return error;
-+	}
- 
- 	if (node) {
- 		unsigned offset = get_slot_offset(node, slot);
+v3 -> v4:
+- Remove function prototype - Our driver does not use recursion, so we
+have reordered the code and removed the function prototypes.
+- Define macro precisely - Improve macro code readability to make the
+source code cleaner.
+
+v4 -> v5:
+- Modify ethtool function - Remove some unnecessary code.
+- Don't use inline function - Let the compiler decide.
+
+v5 -> v6:
+- Some old macro definitions have been removed and replaced with the
+lastest usage.
+- Replace s32 with int to ensure consistency.
+- Clearly point out the objects of the service and remove unnecessary
+struct.
+
+v6 -> v7:
+- Split this driver into multiple patches.
+- Reorganize this driver code and remove redundant code to make this
+driver more concise.
+
+v7 -> v8:
+- Add the function to calculate time mitigation and the function to 
+calculate packet number mitigation. Users can use these two functions 
+to calculate the reg value that needs to be set for the mitigation value
+they want to set.
+- This device is usually used in automotive embedded systems. The page
+pool api will use more memory in receiving packets and requires more 
+verification, so we currently do not plan to use it in this patch.
+
+v8 -> v9:
+- Declare functions that are not extern as static functions and increase
+the size of the character array named name in the rtase_int_vector struct
+to correct the build warning noticed by the kernel test robot.
+
+v9 -> v10:
+- Currently we change to use the page pool api. However, when we allocate
+more than one page to an rx buffer, it will cause system errors
+in some cases. Therefore, we set the rx buffer to fixed size with 3776
+(PAGE_SIZE - SKB_DATA_ALIGN(sizeof(skb_shared_info) )), and the maximum 
+value of mtu is set to 3754(rx buffer size - VLAN_ETH_HLEN - ETH_FCS_LEN).
+- When ndo_tx_timeout is called, it will dump some device information,
+which can be used for debugging.
+- When the mtu is greater than 1500, the device supports checksums
+but not TSO.
+- Fix compiler warnning.
+
+v10 -> v11:
+- Added error handling of rtase_init_ring().
+- Modify the error related to asymmetric pause in rtase_get_settings.
+- Fix compiler error.
+
+v11 -> v12:
+- Use pm_sleep_ptr and related macros.
+- Remove multicast filter limit.
+- Remove VLAN support and CBS offload functions. 
+- Remove redundent code.
+- Fix compiler warnning.
+
+v12 -> v13:
+- Fixed the compiler warning of unuse rtase_suspend() and rtase_resume()
+when there is no define CONFIG_PM_SLEEP.
+
+v13 -> v14:
+- Remove unuse include.
+- call eth_hw_addr_random() to generate random MAC and set device flag 
+- use pci_enable_msix_exact() instead of pci_enable_msix_range() 
+- If dev->dma_mask is non-NULL, dma_set_mask_and_coherent with a 64-bit
+mask will never fail, so remove the part that determines the 32-bit mask.
+- set dev->pcpu_stat_type before register_netdev() and core will allocate
+stats 
+- call NAPI instance at the right location
+
+Justin Lai (13):
+  rtase: Add pci table supported in this module
+  rtase: Implement the .ndo_open function
+  rtase: Implement the rtase_down function
+  rtase: Implement the interrupt routine and rtase_poll
+  rtase: Implement hardware configuration function
+  rtase: Implement .ndo_start_xmit function
+  rtase: Implement a function to receive packets
+  rtase: Implement net_device_ops
+  rtase: Implement pci_driver suspend and resume function
+  rtase: Implement ethtool function
+  rtase: Add a Makefile in the rtase folder
+  realtek: Update the Makefile and Kconfig in the realtek folder
+  MAINTAINERS: Add the rtase ethernet driver entry
+
+ MAINTAINERS                                   |    7 +
+ drivers/net/ethernet/realtek/Kconfig          |   17 +
+ drivers/net/ethernet/realtek/Makefile         |    1 +
+ drivers/net/ethernet/realtek/rtase/Makefile   |   10 +
+ drivers/net/ethernet/realtek/rtase/rtase.h    |  335 +++
+ .../net/ethernet/realtek/rtase/rtase_main.c   | 2372 +++++++++++++++++
+ 6 files changed, 2742 insertions(+)
+ create mode 100644 drivers/net/ethernet/realtek/rtase/Makefile
+ create mode 100644 drivers/net/ethernet/realtek/rtase/rtase.h
+ create mode 100644 drivers/net/ethernet/realtek/rtase/rtase_main.c
+
 -- 
-2.43.0
+2.34.1
 
