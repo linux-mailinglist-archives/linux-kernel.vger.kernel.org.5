@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C3B80AE89
+	by mail.lfdr.de (Postfix) with ESMTP id C198C80AE8B
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 22:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233900AbjLHVCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 16:02:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
+        id S1574762AbjLHVD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 16:03:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbjLHVCx (ORCPT
+        with ESMTP id S230358AbjLHVDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 16:02:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BD61734
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 13:02:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702069378;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wnR71ERwB0xpUeMudALkEkT2aBnLdTFV83wSZKWUuyk=;
-        b=Aec1e1okdM02CCFdcdf/QXgi2L86Y+BK4EBoitm+xghQ6wj0hjqR40CCOunqmrshQ9VNJ9
-        K7YLYwz7+NlbpbZ4p4a8BKp2n3/ubjpig6kO8T/jvsiIM6RH/TukpIe/nupy5IJSK5fqHF
-        VRyX0xW3F7943bwbmYHVQ+zxzU6pmnM=
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
- [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-695-Z5GfHPbHOrikACI7rlVoCg-1; Fri, 08 Dec 2023 16:02:56 -0500
-X-MC-Unique: Z5GfHPbHOrikACI7rlVoCg-1
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1faf33fe0easo4425215fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 13:02:56 -0800 (PST)
+        Fri, 8 Dec 2023 16:03:25 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67483BD
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 13:03:30 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c9f413d6b2so30941591fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 13:03:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1702069408; x=1702674208; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GCi2po4nRjlaziOyq9XY4t2jyFLyXekskEb5+lw8sWc=;
+        b=1FOuNTasBWa0n+ZFv9ai/qECmd1LcuKQi7m7Qdv8W+/hRj38cHVrGid2zLT9Gie+yZ
+         hAtOLmHFZT3sYiuF40Rojoyv/YLseE48fVk36wcktDtE8LRVtehuvBpBqKTAnmj0/qm8
+         NNYChi1p5STltx0JiMMjBVIXQaTRb7ZHCFQMOG+EfjlpHmsRPvgNmqfk0C3NACMNGHSZ
+         k1CYSu/sFCNC4v0x1Hc5n7f4rkfhK/GuPrHmliybF1XYqj7iKQ9NEYjLKL2vxtxYFmKP
+         6fU6GOsTgppCg1Qgb3of7cyPMW4ocgo0psENWsXTteCbhps6x4bXQ4Oc5jgw7cxoP4Bf
+         LOtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702069375; x=1702674175;
+        d=1e100.net; s=20230601; t=1702069408; x=1702674208;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wnR71ERwB0xpUeMudALkEkT2aBnLdTFV83wSZKWUuyk=;
-        b=gzIHg5kNoZz/fwr+4MRIKM03pmPrMe8Y//MC4MUhV8a6vnbj0P0Ol4YoTFqLH+EFkT
-         6l6JvwY1TJLWvbE+Pj4fjIZnaiYPp0ReXKdI9i9f5jBu6zIIicZiDsGSXKhuaGTiBlpu
-         0EiCJOiAtjPSlcxxAUkp4e92tNyvIRDzro24yPaiKgtLjnX3EERN+fB8V2SK20ybhQQm
-         XzR5kpkYLfalKPFpY9T42+VigUNUWRjujwguTiHyP0pKNn6ic1QkruwKk5FTqGbtAhOe
-         CNGGpGmxjfv9lg9H4hwMaNr+crYhmcp1iBqbKK1l3kaQnZ5JZxSDIeB7y3yxxxWHQLMS
-         /E6A==
-X-Gm-Message-State: AOJu0YzkVYVU7Y7vEpXJubJywtvCcW3ihrQ7SyAvQTAEjASUzwteWNbV
-        YXs+eZfLtyxBcrHHYSLTuE1gmESaapZI3pfKJO8Y5MwJOWbJasDD3EqvKB3uGzAVFvUZ2MQMkrQ
-        npDDBvpoEkljlmdVnZMwvIY5T/8MgHrt/vX4VTsmi
-X-Received: by 2002:a05:6871:5812:b0:1fa:6f5:7b11 with SMTP id oj18-20020a056871581200b001fa06f57b11mr831747oac.36.1702069375681;
-        Fri, 08 Dec 2023 13:02:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG70CYCSZWB6DKvr4hrnjBebC5sVpU0c4XwqZCNGpXXRnlou5CpzlriTsL34en/4bO5Edgmdws7P7mWyGAfy2s=
-X-Received: by 2002:a05:6871:5812:b0:1fa:6f5:7b11 with SMTP id
- oj18-20020a056871581200b001fa06f57b11mr831732oac.36.1702069375461; Fri, 08
- Dec 2023 13:02:55 -0800 (PST)
+        bh=GCi2po4nRjlaziOyq9XY4t2jyFLyXekskEb5+lw8sWc=;
+        b=TDlNJfPUqgNjISdas6Bnp+RfUPJ0DvqH+xL2ppnEMEPxm7hxpSY9KirQkzmWOMdoW1
+         vWS3Br+Wi5aHerYShQ7ngc3ukRsTTehii7hX8cg91PusJOZrjTozHj41LeaQ4oElYeet
+         9k295HPV14Fw/f+guw8dfxcJUQIFWIhOpKevijObqj1JpNipNyL7cxsQ85mOaaIe5GGM
+         haJ7JIGRZGj4DtXA5CyDQ68A0eD82yErqt5Njg3aOdN764byu31oa/LinJER3bl3gB10
+         ecUMw7HqYUeBzzOWR0cWp8+iPT5bx1caVwYT+w3grn5lVf9AO/bf+YJA7UmRFB3CjLDw
+         VYLw==
+X-Gm-Message-State: AOJu0YyheYh0tWDAdfYjpzlA8uA839oy5oLov1lIIn86iu4/LcNdUxKY
+        cTNbUCyzijfD1jVDyoOXmumwOJCZBz2GuplBnXlNEA==
+X-Google-Smtp-Source: AGHT+IHj15CpIXY/CgfF9I+sEq3Guw0XiYVd37u32w3HFLRyzYYLSheTV91Zlsxf/OrVKjPH5Qm0mFm0WpmvcRM5Dj4=
+X-Received: by 2002:a2e:9ec4:0:b0:2ca:1a1:c286 with SMTP id
+ h4-20020a2e9ec4000000b002ca01a1c286mr141361ljk.74.1702069408580; Fri, 08 Dec
+ 2023 13:03:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20231115125111.28217-1-imbrenda@linux.ibm.com> <CABgObfYt3VH-zPwT1whA0N7uE2ioq9GznTt-QhnES8B5tX76jQ@mail.gmail.com>
-In-Reply-To: <CABgObfYt3VH-zPwT1whA0N7uE2ioq9GznTt-QhnES8B5tX76jQ@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Date:   Fri, 8 Dec 2023 22:02:43 +0100
-Message-ID: <CABgObfYVfNsfjy36iBeq7qiV_m3smRKCyOSWQRV2E0OMH1bqAA@mail.gmail.com>
-Subject: Re: [GIT PULL v1 0/2] KVM: s390: two small but important fixes
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, hca@linux.ibm.com, agordeev@linux.ibm.com,
-        gor@linux.ibm.com
+References: <20231208-ad7380-mainline-v1-0-2b33fe2f44ae@baylibre.com> <20231208-ad7380-mainline-v1-2-2b33fe2f44ae@baylibre.com>
+In-Reply-To: <20231208-ad7380-mainline-v1-2-2b33fe2f44ae@baylibre.com>
+From:   David Lechner <dlechner@baylibre.com>
+Date:   Fri, 8 Dec 2023 15:03:17 -0600
+Message-ID: <CAMknhBGKaVmfs6rhb7RfzMEvji8G-BFBu4=QZSS0WSrfL7rrqA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] iio: adc: ad7380: new driver for AD7380 ADCs
+To:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Stefan Popa <stefan.popa@analog.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 7:13=E2=80=AFPM Paolo Bonzini <pbonzini@redhat.com> =
-wrote:
-> >       KVM: s390/mm: Properly reset no-dat
+On Fri, Dec 8, 2023 at 9:52=E2=80=AFAM David Lechner <dlechner@baylibre.com=
+> wrote:
+>
+> This adds a new driver for the AD7380 family ADCs.
+>
+> The driver currently implements basic support for the AD7380, AD7381,
+> AD7383, and AD7384 2-channel differential ADCs. Support for additional
+> single-ended and 4-channel chips that use the same register map as well
+> as additional features of the chip will be added in future patches.
+>
+> Co-developed-by: Stefan Popa <stefan.popa@analog.com>
+> Signed-off-by: Stefan Popa <stefan.popa@analog.com>
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> ---
 
-A small question on this one, would it make sense to clear _all_
-gmap-related bits, including _PGSTE_GPS_ZERO?
+...
 
-Paolo
+> diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+> index bee11d442af4..e046d8004f41 100644
+> --- a/drivers/iio/adc/Makefile
+> +++ b/drivers/iio/adc/Makefile
+> @@ -16,6 +16,7 @@ obj-$(CONFIG_AD7291) +=3D ad7291.o
+>  obj-$(CONFIG_AD7292) +=3D ad7292.o
+>  obj-$(CONFIG_AD7298) +=3D ad7298.o
+>  obj-$(CONFIG_AD7923) +=3D ad7923.o
+> +obj-$(CONFIG_AD7476) +=3D ad7380.o
 
+copy/paste oops: should be CONFIG_AD7380
+
+>  obj-$(CONFIG_AD7476) +=3D ad7476.o
+>  obj-$(CONFIG_AD7606_IFACE_PARALLEL) +=3D ad7606_par.o
+>  obj-$(CONFIG_AD7606_IFACE_SPI) +=3D ad7606_spi.o
