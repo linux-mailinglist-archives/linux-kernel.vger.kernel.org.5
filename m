@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0328098A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 02:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B17918098B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 02:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572908AbjLHBbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 20:31:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
+        id S235568AbjLHBos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 20:44:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbjLHBbd (ORCPT
+        with ESMTP id S232852AbjLHBoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 20:31:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0ED21712
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 17:31:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701999098;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xyLK474iLRCVjM9/S7HxhA2tux3/UIG2K/rlVdDLtwA=;
-        b=bBL1qHaQmZpJc8tuBKISX8SLR4Ro32TRCxOawIyRmbRC69Ze4y4PS/yeVXxg5heeIDNv61
-        a21WN6jVOWYsGMX+DOjCGl4GdFrrJFYxnKAGJNVMU3aI7qsN0ETrH+/C8xnPIa/uhXwnx6
-        +nOpEtcooof7bMbigYl+9XvGCoMWFG0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-416-KfAOKfVyMEyFVsgb8DP7Yw-1; Thu, 07 Dec 2023 20:31:37 -0500
-X-MC-Unique: KfAOKfVyMEyFVsgb8DP7Yw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CFA8085A589;
-        Fri,  8 Dec 2023 01:31:36 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BA7E6C185A0;
-        Fri,  8 Dec 2023 01:31:32 +0000 (UTC)
-Date:   Fri, 8 Dec 2023 09:31:27 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v2 2/6] lib/group_cpus: relax atomicity requirement in
- grp_spread_init_one()
-Message-ID: <ZXJx72/YOGn0l4pI@fedora>
-References: <20231207203900.859776-1-yury.norov@gmail.com>
- <20231207203900.859776-3-yury.norov@gmail.com>
+        Thu, 7 Dec 2023 20:44:46 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD9C11728;
+        Thu,  7 Dec 2023 17:44:50 -0800 (PST)
+Received: from loongson.cn (unknown [10.2.5.185])
+        by gateway (Coremail) with SMTP id _____8Dx_+sOdXJlP9g_AA--.60895S3;
+        Fri, 08 Dec 2023 09:44:46 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.185])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax3twNdXJlUvVXAA--.62660S2;
+        Fri, 08 Dec 2023 09:44:45 +0800 (CST)
+From:   Tianrui Zhao <zhaotianrui@loongson.cn>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
+        zhaotianrui@loongson.cn
+Subject: [PATCH v3 0/2] LoongArch: KVM: Add LSX,LASX support
+Date:   Fri,  8 Dec 2023 09:31:49 +0800
+Message-Id: <20231208013151.2668156-1-zhaotianrui@loongson.cn>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231207203900.859776-3-yury.norov@gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Ax3twNdXJlUvVXAA--.62660S2
+X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
+        nUUI43ZEXa7xR_UUUUUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 12:38:56PM -0800, Yury Norov wrote:
-> Because nmsk and irqmsk are stable, extra atomicity is not required.
-> 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->  lib/group_cpus.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/lib/group_cpus.c b/lib/group_cpus.c
-> index ee272c4cefcc..8eb18c6bbf3b 100644
-> --- a/lib/group_cpus.c
-> +++ b/lib/group_cpus.c
-> @@ -24,8 +24,8 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
->  		if (cpu >= nr_cpu_ids)
->  			return;
->  
-> -		cpumask_clear_cpu(cpu, nmsk);
-> -		cpumask_set_cpu(cpu, irqmsk);
-> +		__cpumask_clear_cpu(cpu, nmsk);
-> +		__cpumask_set_cpu(cpu, irqmsk);
->  		cpus_per_grp--;
->  
->  		/* If the cpu has siblings, use them first */
-> @@ -34,9 +34,8 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
->  			sibl = cpumask_next(sibl, siblmsk);
->  			if (sibl >= nr_cpu_ids)
->  				break;
-> -			if (!cpumask_test_and_clear_cpu(sibl, nmsk))
-> -				continue;
-> -			cpumask_set_cpu(sibl, irqmsk);
-> +			__cpumask_clear_cpu(sibl, nmsk);
-> +			__cpumask_set_cpu(sibl, irqmsk);
->  			cpus_per_grp--;
+This patch series add LSX,LASX support for LoongArch KVM.
+There will be LSX,LASX exception in KVM when guest use the
+LSX,LASX instructions. KVM will enable LSX,LASX and restore
+the vector registers for guest then return to guest to continue
+running.
 
-Here the change isn't simply to remove atomicity, and the test
-part of cpumask_test_and_clear_cpu() is removed, so logic is changed,
-I feel the correct change should be:
+Changes for v3:
+1. Use KVM_GET_DEVICE_ATTR interface to return CPUCFG2
+features which are supported by KVM to user space.
+2. Remove version checking in kvm_check_cpucfg.
 
-	if (cpumask_test_cpu(sibl, nmsk)) {
-		__cpumask_clear_cpu(sibl, nmsk);
-		__cpumask_set_cpu(sibl, irqmsk);
-  		cpus_per_grp--;
-	}
+Changes for v2:
+1. Add interface to return CPUCFG2 features which have
+been supported by current KVM to user space. So that
+user space can get CPU features such as FPU,LSX,LASX
+whether support by KVM.
+2. Add CPUCFG2 checking interface to check that if the
+value which is passed from user space has any errors.
+3. Export both _restore_lsx_upper and _restore_lasx_upper
+to keep consistency.
+4. Use "jr ra" instruction to repalce "jirl zero, ra, 0".
 
+Changes for v1:
+1. Add LSX support for LoongArch KVM.
+2. Add LASX support for LoongArch KVM.
 
+Tianrui Zhao (1):
+  LoongArch: KVM: Add LSX support
 
-Thanks,
-Ming
+zhaotianrui (1):
+  LoongArch: KVM: Add LASX support
+
+ arch/loongarch/include/asm/kvm_host.h |  17 ++
+ arch/loongarch/include/asm/kvm_vcpu.h |  22 +++
+ arch/loongarch/include/uapi/asm/kvm.h |   1 +
+ arch/loongarch/kernel/fpu.S           |   2 +
+ arch/loongarch/kvm/exit.c             |  41 +++++
+ arch/loongarch/kvm/switch.S           |  36 ++++
+ arch/loongarch/kvm/trace.h            |   6 +-
+ arch/loongarch/kvm/vcpu.c             | 245 +++++++++++++++++++++++++-
+ 8 files changed, 364 insertions(+), 6 deletions(-)
+
+-- 
+2.39.1
 
