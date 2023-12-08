@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9401180AD75
+	by mail.lfdr.de (Postfix) with ESMTP id BAD0D80AD76
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 21:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234134AbjLHUAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 15:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49118 "EHLO
+        id S234188AbjLHUAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 15:00:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjLHUAJ (ORCPT
+        with ESMTP id S234071AbjLHUAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Dec 2023 15:00:09 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C6C1732
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05DA1734
         for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 12:00:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4DE6CC433C8;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5C886C433B9;
         Fri,  8 Dec 2023 20:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1702065615;
@@ -28,7 +28,7 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
          pK+k9Po+S3E/MR2fFrqwpxXaDxPG/Jeiyf8It/DuHeO6psKgsItyTqUAbL41ad4Acy
          mV+SDos8A/NWw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2C380C04DD9;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 390F2C04E24;
         Fri,  8 Dec 2023 20:00:15 +0000 (UTC)
 Subject: Re: [GIT PULL] ACPI fix for v6.7-rc5
 From:   pr-tracker-bot@kernel.org
@@ -41,7 +41,7 @@ X-PR-Tracked-Commit-Id: 8f0b960a42badda7a2781e8a33564624200debc9
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
 X-PR-Merge-Commit-Id: c3e2f9bda2ffa2dd7dcaf2b45604db08c6ab0579
-Message-Id: <170206561517.13365.4217672733381363438.pr-tracker-bot@kernel.org>
+Message-Id: <170206561522.12654.8671400626734986914.pr-tracker-bot@kernel.org>
 Date:   Fri, 08 Dec 2023 20:00:15 +0000
 To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -49,7 +49,7 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
