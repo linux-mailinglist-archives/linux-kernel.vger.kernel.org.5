@@ -2,83 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CE880A06D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5CA80C350
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233259AbjLHJ6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 04:58:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
+        id S233983AbjLKIeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 03:34:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbjLHJ6k (ORCPT
+        with ESMTP id S229511AbjLKIeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 04:58:40 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67CAD5B;
-        Fri,  8 Dec 2023 01:58:46 -0800 (PST)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B899OeI013547;
-        Fri, 8 Dec 2023 09:58:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=2YndOjHyhkOb5ckp2udC88cU2qRc5IjcyuuMfvzEG5s=;
- b=BqbDp0gTHP3wpVEIJustI0v+6svVIhsFfuHYNANgGfuwIT4RvHoQYSm3vvTRkjd1fnMz
- /+ycAEhrvj/uRrzOZsWRP6qvbg5rNLmB18zpRFz/UZL8t+IKht1S7ldwXtw7kPgMuewD
- F/aCkO6dH6aJ9t5WTCPF5DkRu4i1vTgcJQmCNvrCo4FUjbUHq/zfhK6Zxo2FXvXvvM/u
- AbT0zgUn6yhYBsz2+l0HJETEtY5RFPwEn3DvzKY8zm4n30gMWedCUVw/JJBSDDQNYs3t
- 1FmkooNXFe0ZI6OlSPLrTh1aFBEvFawy2uwpQu0Y+4QS3RFrMSnAar5ja0isslA469N2 oA== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3utdda5ny1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 Dec 2023 09:58:30 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B89q0Th037399;
-        Fri, 8 Dec 2023 09:58:29 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3utan8pwxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 Dec 2023 09:58:29 +0000
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B89wSfL027743;
-        Fri, 8 Dec 2023 09:58:28 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3utan8pwxb-1;
-        Fri, 08 Dec 2023 09:58:28 +0000
-From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sherry Yang <sherry.yang@oracle.com>,
+        Mon, 11 Dec 2023 03:34:21 -0500
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41BFB7;
+        Mon, 11 Dec 2023 00:34:26 -0800 (PST)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231211083423euoutp02d7a9f17e13c99f10e7c77aa6c360e767~fufkmg7CC3271332713euoutp026;
+        Mon, 11 Dec 2023 08:34:23 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231211083423euoutp02d7a9f17e13c99f10e7c77aa6c360e767~fufkmg7CC3271332713euoutp026
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1702283663;
+        bh=P29krkBAQBqnkKdOFl3EL3UyYbzgflEhF00VK7ufnuM=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=uzUzlNeyBw9G+WkxzlsmJV7laWBEf5QvdxoGfuR+fIDKVJNVVkYgLI8c7eIk6f72x
+         JxXeQYZw2Rv5w2aiTI0gc1mIf0xfcvnAPs3uWqKtVmm2zMTTn7rqQFtwlGlei4MhJZ
+         7abzVXfB93iemPbQOAC24SRYXqhcqzdgWuyKHqy4=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20231211083423eucas1p299da08b36c59c3686e93af53df3983f1~fufkJmrSf1581415814eucas1p20;
+        Mon, 11 Dec 2023 08:34:23 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 22.E4.09814.F89C6756; Mon, 11
+        Dec 2023 08:34:23 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231211083423eucas1p273a157b7e673f588d396d5c2e75e3cc1~fufjyA_v51581515815eucas1p2s;
+        Mon, 11 Dec 2023 08:34:23 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231211083423eusmtrp17aef497af7333a7357f90d125c118c13~fufjw2pMD0981409814eusmtrp1b;
+        Mon, 11 Dec 2023 08:34:23 +0000 (GMT)
+X-AuditID: cbfec7f4-711ff70000002656-b9-6576c98f87a9
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 5D.F5.09274.E89C6756; Mon, 11
+        Dec 2023 08:34:22 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231211083422eusmtip12475ee422a03dbfe874e6401921d8ec9~fufjhYrFT1823418234eusmtip1w;
+        Mon, 11 Dec 2023 08:34:22 +0000 (GMT)
+Received: from localhost (106.110.32.133) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Mon, 11 Dec 2023 08:34:22 +0000
+Date:   Fri, 8 Dec 2023 10:59:26 +0100
+From:   Joel Granados <j.granados@samsung.com>
+To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+CC:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, Roman Li <roman.li@amd.com>,
-        Claudio Suarez <cssk@net-c.es>, hongao <hongao@uniontech.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com, harshit.m.mogalapalli@oracle.com
-Subject: [PATCH] drm/amd/display: Fix memory leak in dm_set_writeback()
-Date:   Fri,  8 Dec 2023 01:58:24 -0800
-Message-ID: <20231208095825.1291730-1-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.42.0
+        <linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+Message-ID: <20231208095926.aavsjrtqbb5rygmb@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-08_05,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
- suspectscore=0 mlxscore=0 adultscore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312080082
-X-Proofpoint-GUID: -_K5URp7pXXN0p40jxNmPb_EV7voda20
-X-Proofpoint-ORIG-GUID: -_K5URp7pXXN0p40jxNmPb_EV7voda20
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="tkudj6zge43ee23g"
+Content-Disposition: inline
+In-Reply-To: <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de>
+X-Originating-IP: [106.110.32.133]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFKsWRmVeSWpSXmKPExsWy7djP87r9J8tSDdqXi1k0L17PZvHr4jRW
+        izPduRZ79p5ksZi3/iejxeVdc9gsfv94xmRxY8JTRotlO/0cOD1mN1xk8ViwqdRj06pONo/9
+        c9ewe3zeJOfR332MPYAtissmJTUnsyy1SN8ugStj6uJjrAXX1CuuLT/C0sD4RL6LkZNDQsBE
+        4sGC/+xdjFwcQgIrGCU2/poJ5XxhlGjce4YFwvnMKPFwwU5GmJY1+2YxQySWM0psPvyICa6q
+        s+8eVP8WRokP77eBtbAIqEh8On+DHcRmE9CROP/mDjOILSJgI7Hy22ewBmaBXUwSjx/OBRrF
+        wSEs4CCxrUkSpIZXwFxi7oeNLBC2oMTJmU/AbGaBComfPxeAlTMLSEss/8cBEuYEGnmoaQE7
+        xKVKEl/f9LJC2LUSp7bcYoKwl3NKHP4RBmG7SEw4tAbqM2GJV8e3QPXKSJye3AP2voTAZEaJ
+        /f8+sEM4qxklljV+hZpkLdFy5QlUh6PEurlLWUEOkhDgk7jxVhDiTj6JSdumM0OEeSU62oQg
+        qtUkVt97wzKBUXkWks9mIflsFsJnEGE9iRtTp7BhCGtLLFv4mhnCtpVYt+49ywJG9lWM4qml
+        xbnpqcVGeanlesWJucWleel6yfm5mxiBSe70v+NfdjAuf/VR7xAjEwfjIUYVoOZHG1ZfYJRi
+        ycvPS1US4ZU5UpwqxJuSWFmVWpQfX1Sak1p8iFGag0VJnFc1RT5VSCA9sSQ1OzW1ILUIJsvE
+        wSnVwCT0X9xgVXbGLoW9s9WYynVnnIjW2/hU9vvMe+fSzppZXDhTz9H8/uIZxuBJCYvXbNyw
+        +3xPyMdI/WX7uvfO3xG15/OLdtO8jRKuLs/z/Q+/M71g+tMtueGY162bsS/Oyi1Kf3Lice2L
+        51PFKmY/1ns357nMlOvXC8zX9jzu7LwqvO9uS5ZWe1C33NtHhzoNxLRFvGV/C27PeXVUW77+
+        1upoY2Hjli3V0mfyDlR99lR98HbVn+qQ+lDvL9YfmDpMxX7oLfjIuN96PfvLmXsnvTh6sbxk
+        9dwZLxpueG+3WX6O6/pTM8uzticyd2VrXDuVsI/z/kFrLYVXmdzf+XwvaDoxzliXfnT2f4m0
+        8o0c1Wn/lFiKMxINtZiLihMBqtWqNO0DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCIsWRmVeSWpSXmKPExsVy+t/xu7p9J8tSDZ7/MrNoXryezeLXxWms
+        Fme6cy327D3JYjFv/U9Gi8u75rBZ/P7xjMnixoSnjBbLdvo5cHrMbrjI4rFgU6nHplWdbB77
+        565h9/i8Sc6jv/sYewBblJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1N
+        SmpOZllqkb5dgl5G/4rPrAVX1CuWv1RpYHwk38XIySEhYCKxZt8sZhBbSGApo8SszmqIuIzE
+        xi9XWSFsYYk/17rYuhi5gGo+MkrMP/2EBaJhC6PEyj5dEJtFQEXi0/kb7CA2m4COxPk3d8CG
+        igjYSKz89pkdpJlZYBeTxOOHc5m6GDk4hAUcJLY1SYLU8AqYS8z9sJEFYsEPRom7jxuZIRKC
+        EidnQixjFiiTuPzxEitIL7OAtMTyfxwgYU6g+YeaFrBDHKok8fVNL9TRtRKf/z5jnMAoPAvJ
+        pFlIJs1CmAQR1pHYufUOG4awtsSyha+ZIWxbiXXr3rMsYGRfxSiSWlqcm55bbKRXnJhbXJqX
+        rpecn7uJERjl24793LKDceWrj3qHGJk4GA8xqgB1Ptqw+gKjFEtefl6qkgivzJHiVCHelMTK
+        qtSi/Pii0pzU4kOMpsBQnMgsJZqcD0w/eSXxhmYGpoYmZpYGppZmxkrivJ4FHYlCAumJJanZ
+        qakFqUUwfUwcnFINTNu2ulh4zfoaWW64ZW31+uB5UorFGh2Xgx05b7R3pa/sbJg69+AzFmX5
+        1uzb6vO11I5Fs4T+ChN81iKzWn/aDKY7Icemh56JuhenrpFXvGWzM+uTgJk5p/wrgp5fDDz0
+        exWj1SGzk/p6bqnHYv7MDV/mn3/mewlXPOuMq8c9hbOTV7AVilZweBjaWFw2fvz6prym1zer
+        OmaF0Cbre/YC4hUm6huTDXZfXXe33cJxg4Bz+heV3OkGVzjrrO4YlvDlTdA+LjDF7C6TL2P9
+        3cLbK1ruthscj6oMYPCb9HlJ40mu3XbrZAInCH6p/20k1VMlm32AKa/2zDT+otmJDoc/O7r9
+        OMhZ/nWFyopXa04qsRRnJBpqMRcVJwIA0IeB34cDAAA=
+X-CMS-MailID: 20231211083423eucas1p273a157b7e673f588d396d5c2e75e3cc1
+X-Msg-Generator: CA
+X-RootMTR: 20231204075237eucas1p27966f7e7da014b5992d3eef89a8fde25
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231204075237eucas1p27966f7e7da014b5992d3eef89a8fde25
+References: <CGME20231204075237eucas1p27966f7e7da014b5992d3eef89a8fde25@eucas1p2.samsung.com>
+        <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+        <20231207104357.kndqvzkhxqkwkkjo@localhost>
+        <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,37 +126,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'wb_info' needs to be freed on error paths or it would leak the memory.
+--tkudj6zge43ee23g
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Smatch pointed this out.
+On Thu, Dec 07, 2023 at 08:19:43PM +0100, Thomas Wei=DFschuh wrote:
+> On 2023-12-07 11:43:57+0100, Joel Granados wrote:
+> > Hey Thomas
+> >=20
+> > You have a couple of test bot issues for your 12/18 patch. Can you
+> > please address those for your next version.
+>=20
+> I have these fixed locally, I assumed Luis would also pick them up
+> directly until I have a proper v2, properly should have communicated
+> that.
+>=20
+> > On Mon, Dec 04, 2023 at 08:52:13AM +0100, Thomas Wei=DFschuh wrote:
+> > > Problem description:
+> > >=20
+> > > The kernel contains a lot of struct ctl_table throught the tree.
+> > > These are very often 'static' definitions.
+> > > It would be good to make the tables unmodifiable by marking them "con=
+st"
+> > Here I would remove "It would be good to". Just state it: "Make the
+> > tables unmodifiable...."
+>=20
+> Ack.
+>=20
+> >=20
+> > > to avoid accidental or malicious modifications.
+> > > This is in line with a general effort to move as much data as possible
+> > > into .rodata. (See for example[0] and [1])
+>=20
+> > If you could find more examples, it would make a better case.
+>=20
+> I'll look for some. So far my constifications went in without them :-)
+>=20
+> > >=20
+> > > Unfortunately the tables can not be made const right now because the
+> > > core registration functions expect mutable tables.
+> > >=20
+> > > This is for two main reasons:
+> > >=20
+> > > 1) sysctl_{set,clear}_perm_empty_ctl_header in the sysctl core modify
+> > >    the table.
+> > > 2) The table is passed to the handler function as a non-const pointer.
+> > >=20
+> > > This series migrates the core and all handlers.
+>=20
+> > awesome!
+> >=20
+> > >=20
+> > > Structure of the series:
+> > >=20
+> > > Patch 1-3:   Cleanup patches
+> > > Patch 4-7:   Non-logic preparation patches
+> > > Patch 8:     Preparation patch changing a bit of logic
+> > > Patch 9-12:  Treewide changes to handler function signature
+> > > Patch 13-14: Adaption of the sysctl core implementation
+> > > Patch 15:    Adaption of the sysctl core interface
+> > > Patch 16:    New entry for checkpatch
+> > > Patch 17-18: Constification of existing "struct ctl_table"s
+> > >=20
+> > > Tested by booting and with the sysctl selftests on x86.
+> > >=20
+> > > Note:
+> > >=20
+> > > This is intentionally sent only to a small number of people as I'd li=
+ke
+> > > to get some more sysctl core-maintainer feedback before sending this =
+to
+> > > essentially everybody.
+>=20
+> > When you do send it to the broader audience, you should chunk up your b=
+ig
+> > patches (12/18 and 11/18) and this is why:
+> > 1. To avoid mail rejections from lists:
+> >    You have to tell a lot of people about the changes in one mail. That
+> >    will make mail header too big for some lists and it will be rejected.
+> >    This happened to me with [3]
+> > 2. Avoid being rejected for the wrong reasons :)
+> >    Maintainers are busy ppl and sending them a set with so many files
+> >    may elicit a rejection on the grounds that it involves too many
+> >    subsystems at the same time.
+> > I suggest you chunk it up with directories in mind. Something similar to
+> > what I did for [4] where I divided stuff that when for fs/*, kernel/*,
+> > net/*, arch/* and drivers/*. That will complicate your patch a tad
+> > because you have to ensure that the tree can be compiled/run for every
+> > commit. But it will pay off once you push it to the broader public.
+>=20
+> This will break bisections. All function signatures need to be switched
+I was suggesting a solution without breaking bisections of course. I can
+think of a couple of ways to do this in chunks but it might be
+premature. You can send it and if you get push back because of this then
+we can deal with chunking it down.
 
-Fixes: c81e13b929df ("drm/amd/display: Hande writeback request from userspace")
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
----
-This is based on static analysis and only compile tested
----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 ++
- 1 file changed, 2 insertions(+)
+I'm still concerned about the header size for those mails. How does the
+mail look like when you run the get maintainers script on it?
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index afdcc43ea06c..333995f70239 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -8871,12 +8871,14 @@ static void dm_set_writeback(struct amdgpu_display_manager *dm,
- 	acrtc = to_amdgpu_crtc(wb_conn->encoder.crtc);
- 	if (!acrtc) {
- 		DRM_ERROR("no amdgpu_crtc found\n");
-+		kfree(wb_info);
- 		return;
- 	}
- 
- 	afb = to_amdgpu_framebuffer(new_con_state->writeback_job->fb);
- 	if (!afb) {
- 		DRM_ERROR("No amdgpu_framebuffer found\n");
-+		kfree(wb_info);
- 		return;
- 	}
- 
--- 
-2.39.3
+> in one step. I would strongly like to avoid introducing broken commits.
+>=20
+> The fact that these big commits have no functional changes at all makes
+> me hope it can work.
 
+--=20
+
+Joel Granados
+
+--tkudj6zge43ee23g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmVy6PQACgkQupfNUreW
+QU/kqwwAl4AzqtXuQrIiZVZuxbjC/B9vxdgnwDjJnHVbQ9QuNz4y3ZJq60tFYYib
+uwYwA72xqqXdZFiWG5RXuqFrqMxZRVxJUKhm4NfEDW+ol0cP+fXMFE4t806KCEQF
+cu+JQVXYWVhmscjWZE6zm79A1xtMLUa9wbaVnzyp6SFr0Q0B8ReM/7/xYIgHi72s
+qj5rd3sj5Ss3t5l5iskdEZ4ncDU75M1fIehCRDlf5bQZSbmifuTpA5q72qTiux5W
+83w3d9rTjo5f4Y9YZMG8dn06MG0CHWSBK919IS+RaiBZ9dWimNRxLgOxlstHxfMX
+Dmm8zUQNl7RMPJEAkYxNoPRmZMSDR2a2mYILLTwCc/w7vUsselS8ngK+L4JdKbbA
+Gl2aet6SwpjP3c/32vq+pCM9iFm6Hh4JYto4Bcqfncsa5bIvOnyiLDBvNe1hoQ0q
+2vV0aY5/IOvW61UnR4p+AkQBFWPs6fln4vM2l7wIzC8pcsdEoqdmdaiyN3OdVKxF
+OCQuggkL
+=xR5S
+-----END PGP SIGNATURE-----
+
+--tkudj6zge43ee23g--
