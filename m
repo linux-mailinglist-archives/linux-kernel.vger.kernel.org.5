@@ -2,108 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9896809EB3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA64809EB2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 10:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573419AbjLHJCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 04:02:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
+        id S1573415AbjLHJB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 04:01:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573418AbjLHJCG (ORCPT
+        with ESMTP id S230390AbjLHJB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 04:02:06 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50B410FC;
-        Fri,  8 Dec 2023 01:02:12 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B891c8C2772277, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B891c8C2772277
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Dec 2023 17:01:38 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Fri, 8 Dec 2023 17:01:38 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 8 Dec 2023 17:01:36 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Fri, 8 Dec 2023 17:01:36 +0800
-From:   =?big5?B?VFlfQ2hhbmdbsWmkbLZoXQ==?= <tychang@realtek.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?big5?B?U3RhbmxleSBDaGFuZ1up96h8vHdd?= <stanley_chang@realtek.com>
-Subject: RE: [PATCH 1/2] dt-bindings: phy: realtek: Add Realtek DHC RTD SoC PCIe PHY
-Thread-Topic: [PATCH 1/2] dt-bindings: phy: realtek: Add Realtek DHC RTD SoC
- PCIe PHY
-Thread-Index: AQHaJERyJL4rQ+THDkqbltcZ8ZneurCXQdKAgAXqHZCAAAb2gIABve4A
-Date:   Fri, 8 Dec 2023 09:01:36 +0000
-Message-ID: <c7dfa01f7b114d56adf8561125536580@realtek.com>
-References: <20231201105207.11786-1-tychang@realtek.com>
- <20231201105207.11786-2-tychang@realtek.com>
- <01946883-e008-4b4c-8e2a-a73787ad9f23@linaro.org>
- <5e57f7b0f54d4a8aa52ed6e15a9af9f5@realtek.com>
- <c864f62e-0ac2-4e5e-83d3-28e493a6f6c0@linaro.org>
-In-Reply-To: <c864f62e-0ac2-4e5e-83d3-28e493a6f6c0@linaro.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.181.166]
-x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        Fri, 8 Dec 2023 04:01:56 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CF510F9
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 01:02:02 -0800 (PST)
+From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702026120;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CmRqxXj61KELQv47LOaO3sGoDuwnlNOMnlmAOuzslGQ=;
+        b=lwObnaLMKAeAMYt25DmXyG+oTyx1hmeZ46o9OuKqQ1GKwsF3ZDkU33CVS843ZpXTA+eWOG
+        H532ihNpEv3+23QmKB/GHdIkAgm22fTyCIOf3kA272LChJJyNfn662W1EE6tpNlqQG6tpe
+        xdWHNyLDCggWChDB22jMxQ725sdp0P1XpSEugmhLXNiloauEOLJNppt/DNO+IXvBaSambQ
+        eZCAinGMi3Z/sw+t6bGFWkt58/r0yGL17xrufgeyZdDzB8sXOtoHlW+6qyLO26H4seVSLj
+        GDc9DspUX5M1EqDyzzoIvXzsCclOfcC9rYeWUYNTE/NqN1qcQb4Stwe8CofLjA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702026120;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CmRqxXj61KELQv47LOaO3sGoDuwnlNOMnlmAOuzslGQ=;
+        b=td9XBibe5SIOCQKq4SW1I7P/mKpM88EAjaxVvrYpWqdFvO6jsLBCfqJEP06wDxJ/n5ujZh
+        /yypgUdjBXbHOuDQ==
+To:     Sebastian Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Dumazet <edumazet@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v9 30/32] timers: Implement the hierarchical pull model
+In-Reply-To: <20231206163536.r9DcrsWQ@linutronix.de>
+References: <20231201092654.34614-1-anna-maria@linutronix.de>
+ <20231201092654.34614-31-anna-maria@linutronix.de>
+ <20231206163536.r9DcrsWQ@linutronix.de>
+Date:   Fri, 08 Dec 2023 10:01:59 +0100
+Message-ID: <878r652hko.fsf@somnus>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J6eXN6dG9mLA0KDQo+Pj4gT24gMDEvMTIvMjAyMyAxMTo1MiwgVHp1eWkgQ2hhbmcgd3Jv
-dGU6DQo+Pj4+ICsgICIjcGh5LWNlbGxzIjoNCj4+Pj4gKyAgICBjb25zdDogMA0KPj4+PiArDQo+
-Pj4+ICsgIG52bWVtLWNlbGxzOg0KPj4+PiArICAgIG1heEl0ZW1zOiAxDQo+Pj4+ICsgICAgZGVz
-Y3JpcHRpb246DQo+Pj4+ICsgICAgICBQaGFuZGxlIHRvIG52bWVtIGNlbGwgdGhhdCBjb250YWlu
-cyAnVHggc3dpbmcgdHJpbScNCj4+Pj4gKyAgICAgIHR1bmluZyBwYXJhbWV0ZXIgdmFsdWUgZm9y
-IFBDSWUgcGh5Lg0KPj4+PiArDQo+Pj4+ICsgIG52bWVtLWNlbGwtbmFtZXM6DQo+Pj4+ICsgICAg
-aXRlbXM6DQo+Pj4+ICsgICAgICAtIGNvbnN0OiB0eF9zd2luZ190cmltDQo+Pj4+ICsNCj4+Pj4g
-KyAgcmVhbHRlayxwY2llLXN5c2NvbjoNCj4+Pj4gKyAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55
-YW1sIy9kZWZpbml0aW9ucy9waGFuZGxlDQo+Pj4+ICsgICAgZGVzY3JpcHRpb246IHBoYW5kbGUg
-b2Ygc3lzY29uIHVzZWQgdG8gY29udHJvbCBQQ0llIE1ESU8gcmVnaXN0ZXIuDQo+Pj4NCj4+PiBX
-aHkgdGhpcyBkb2VzIG5vdCBoYXZlIHJlZyBwcm9wZXJ0eSBidXQgc3lzY29uPyBUaGlzIGxvb2tz
-IGhhY2t5Lg0KPj4+DQo+Pg0KPj4gT3VyIFBDSWUgUEhZIGRyaXZlciBuZWVkcyB0byBhY2Nlc3Mg
-dHdvIHJlZ2lzdGVyczoNCj4+IDEuIFBDSWUgTURJTyByZWdpc3RlcjogVXRpbGl6ZWQgZm9yIGNv
-bmZpZ3VyaW5nIHRoZSBQQ0llIFBIWS4NCj4+IDIuIFBDSWUgTUFDIExpbmsgQ29udHJvbCBhbmQg
-TGluayBTdGF0dXMgUmVnaXN0ZXI6IFVzZSB0byBnZXQgdGhlIGN1cnJlbnQNCj4+ICAgbGluayBz
-cGVlZCBmb3IgY2FsaWJyYXRpb24gcHVycG9zZXMuDQo+Pg0KPj4gQm90aCB0aGVzZSByZWdpc3Rl
-cnMgcmVzaWRlIHdpdGhpbiB0aGUgUENJZSBjb250cm9sbGVyIHJlZ2lzdGVycy4gVGhlDQo+PiBQ
-Q0llIGRyaXZlciBoYXMgbWFwcGVkIHRoZXNlIHJlZ2lzdGVyIGFkZHJlc3MgcmVnaW9uLCBzbyBJ
-IHVzZSByZWdtYXANCj4+IHRvIGFjY2VzcyB0aGVzZSByZWdpc3RlcnMuDQo+DQo+SG0sIGlzbid0
-IGluIHN1Y2ggY2FzZSBQQ0llIFBIWSBhIGNoaWxkIG9mIHRoZSBQQ0llIGNvbnRyb2xsZXI/IEhv
-dyBpcyBpdCB3aXRoDQo+cmVzb3VyY2VzLCBsaWtlIHBvd2VyIGRvbWFpbnMgb3IgcmVndWxhdG9y
-cz8NCg0KSW4gZmFjdCwgSSBwb3NpdGlvbmVkIHRoZSBQQ0llIFBIWSBub2RlIG91dHNpZGUgdGhl
-IFBDSWUgY29udHJvbGxlciBub2RlLg0KSXQgd291bGQgYmUgbW9yZSBhcHByb3ByaWF0ZSBmb3Ig
-dGhlIFBDSWUgUEhZIGFzIHRoZSBjaGlsZCBub2RlIG9mIHRoZSBQQ0llDQpjb250cm9sbGVyLiBJ
-IHdpbGwgcmV2aXNlIHRvIHRoaXMgc3RydWN0dXJlLg0KSSB3aWxsIGFsc28gcmVtb3ZlIHRoZSAi
-cmVhbHRlayxwY2llLXN5c2NvbiIgcHJvcGVydHkgYW5kIHVzZSBkZXYtPnBhcmVudC0+b2Zfbm9k
-ZQ0KdG8gZ2V0IHRoZSBzeXNjb24gb2YgdGhlIFBDSWUgY29udHJvbGxlci4NCg0KU2luY2UgdGhl
-IE1ESU8gcmVnaXN0ZXIgaXMgbG9jYXRlZCB3aXRoaW4gdGhlIFBDSWUgY29udHJvbGxlciByZWdp
-c3RlcnMsIGl0IGNhbg0Kb25seSBiZSBhY2Nlc3NlZCBhZnRlciBlbmFibGluZyB0aGUgY2xvY2sg
-YW5kIGFzc2VydGluZyB0aGUgcmVzZXRzIG9mIHRoZSBQQ0llIGNvbnRyb2xsZXIuDQpUaGVyZWZv
-cmUsIHRoZSBQQ0llIFBIWSBkcml2ZXIgb25seSByZWdpc3RlcnMgdGhlIGNhbGxiYWNrIGZ1bmN0
-aW9ucyBvZiBwaHlfb3BzICguaW5pdCBhbmQgLmNhbGlicmF0ZSkuDQpBZnRlciB0aGUgUENJZSBj
-b250cm9sbGVyIGRyaXZlciBzZXRzIHRoZSBjbG9jayBhbmQgcmVzZXRzLCBpdCB3aWxsIGV4ZWN1
-dGUgUEhZIGZyYW1ld29yayBBUEkgdG8NCmNvbmZpZ3VyZSB0aGUgUEhZLg0KDQpUaGFua3MsDQpU
-enV5aSBDaGFuZw0K
+Sebastian Siewior <bigeasy@linutronix.de> writes:
+
+> On 2023-12-01 10:26:52 [+0100], Anna-Maria Behnsen wrote:
+
+[...]
+
+>> diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+>> index b6c9ac0c3712..ac3e888d053f 100644
+>> --- a/kernel/time/timer.c
+>> +++ b/kernel/time/timer.c
+>> @@ -2103,6 +2104,64 @@ void timer_lock_remote_bases(unsigned int cpu)
+> =E2=80=A6
+>> +static void timer_use_tmigr(unsigned long basej, u64 basem,
+>> +			    unsigned long *nextevt, bool *tick_stop_path,
+>> +			    bool timer_base_idle, struct timer_events *tevt)
+>> +{
+>> +	u64 next_tmigr;
+>> +
+>> +	if (timer_base_idle)
+>> +		next_tmigr =3D tmigr_cpu_new_timer(tevt->global);
+>> +	else if (tick_stop_path)
+>> +		next_tmigr =3D tmigr_cpu_deactivate(tevt->global);
+>> +	else
+>> +		next_tmigr =3D tmigr_quick_check();
+>> +
+>> +	/*
+>> +	 * If the CPU is the last going idle in timer migration hierarchy, make
+>> +	 * sure the CPU will wake up in time to handle remote timers.
+>> +	 * next_tmigr =3D=3D KTIME_MAX if other CPUs are still active.
+>> +	 */
+>> +	if (next_tmigr < tevt->local) {
+>> +		u64 tmp;
+>> +
+>> +		/* If we missed a tick already, force 0 delta */
+>> +		if (next_tmigr < basem)
+>> +			next_tmigr =3D basem;
+>> +
+>> +		tmp =3D div_u64(next_tmigr - basem, TICK_NSEC);
+>
+> Is this considered a hot path? Asking because u64 divs are nice if can
+> be avoided ;)
+
+It's the 'try to go idle path' - so no hot path. Please correct me if
+I'm wrong.
+
+> I guess the original value is from fetch_next_timer_interrupt(). But
+> then you only need it if the caller (__get_next_timer_interrupt()) has
+> the `idle' value set. Otherwise the operation is pointless.
+> Would it somehow work to replace
+> 	base_local->is_idle =3D time_after(nextevt, basej + 1);
+>
+> with maybe something like
+> 	base_local->is_idle =3D tevt.local > basem + TICK_NSEC
+>
+> If so you could avoid the `nextevt' maneuver.
+>
+
+This change could be done indepentant as an improvement on top of the
+queue as well. I will not improve it right now, if it's ok.
+
+>> +		*nextevt =3D basej + (unsigned long)tmp;
+>> +		tevt->local =3D next_tmigr;
+>> +	}
+>> +}
+>> +# else
+
+Thanks for the other input - I already changed it for v10 of the queue.
+
+Thanks,
+
+	Anna-Maria
+
