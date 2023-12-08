@@ -2,120 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB81780A6E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:10:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE7580A6F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574375AbjLHPKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:10:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58376 "EHLO
+        id S1574237AbjLHPLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:11:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574388AbjLHPKO (ORCPT
+        with ESMTP id S1574373AbjLHPLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:10:14 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B95026B1;
-        Fri,  8 Dec 2023 07:09:34 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50bf3efe2cbso2535809e87.2;
-        Fri, 08 Dec 2023 07:09:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702048172; x=1702652972; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ty/29TTzygGMDv96OFi4fv1KRAlm0fzyRN/+tNsm1iU=;
-        b=nqES9lyySV7KcxEf5D1DvZ2mWGR1YcQ20T1kIG25Nmv1G/vnxAyEcNR8RoXmJRH9pm
-         ytqFnzKF3XTgkalvod0iTedrtz6ADhKE2cukmTpKaPLAW1pjgAr3+2ZhEcMtacxQcEUd
-         0ThXlov0LCPZhh8nNBoP0J485RAhH0+gzzGDNDjIqBbZp98gdXMlKCmzDUIw3usUGyDJ
-         3ZicbMfMQ65BH8LvNY8SPEPFEFI/81kCXhTCn32idXcSwGcG+01P8085TMk5FwZuZ3yY
-         q7fjmOQkWLVqdqkt1IPITo8M+Rr75Khg9F07O4LyjCXD2v/hsezDSxYnpxaMc3uhyKi6
-         8bGg==
+        Fri, 8 Dec 2023 10:11:17 -0500
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5851BFC;
+        Fri,  8 Dec 2023 07:10:17 -0800 (PST)
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3b9d2b8c3c6so1388694b6e.1;
+        Fri, 08 Dec 2023 07:10:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702048172; x=1702652972;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702048217; x=1702653017;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ty/29TTzygGMDv96OFi4fv1KRAlm0fzyRN/+tNsm1iU=;
-        b=ETopoIN65eWlTOh2MB61YLUe5//Qw7tZuOjba5S2x/LgQuhGHwrPW5RZFvux+RT8xi
-         8Z4Qg+AuQvUm3QOfBEN++K+e3PXENIB66wEbPdvCBrwO3tdUH+AXkJfRxBUzcGHDO9Ze
-         3kMLeQ3NBw/TQoPrxyFHHC8W0h/pm83DN5Ppl0+nRVMQqM2AJUE9tJyuPCEWfGVyBbRN
-         MBM7zN27lIjxG9tGtsJmSNSDagInwTYZ0VxeA6HAjUPTabZQDK9sUcuj2iSZTIQbJyP6
-         bN44/ctyCypLRuLlw7fSxVbNwTljbgF8ahGSZQh6T46mr1wueTjPEt8GlCOlfTXuZukq
-         pSQA==
-X-Gm-Message-State: AOJu0YwrczprWE2BfUbGwu8EPOSHFdHgM7Tf0gNwLIIL9bahHwCl/blQ
-        PK7nh1jYk8FRWQCzc/GS+qQ=
-X-Google-Smtp-Source: AGHT+IE2/HriMnM04UsszHZPIN2IhDpaQZtu1ft/pq6NRm1cZ88jw68F7XlsEf61IuibCKqQ90+M3g==
-X-Received: by 2002:ac2:5194:0:b0:50c:11:473e with SMTP id u20-20020ac25194000000b0050c0011473emr12611lfi.89.1702048171893;
-        Fri, 08 Dec 2023 07:09:31 -0800 (PST)
-Received: from ?IPV6:2a02:8389:41cf:e200:c92f:1e77:f6cd:6d02? (2a02-8389-41cf-e200-c92f-1e77-f6cd-6d02.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:c92f:1e77:f6cd:6d02])
-        by smtp.gmail.com with ESMTPSA id bd18-20020a056402207200b00542db304680sm846815edb.63.2023.12.08.07.09.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 07:09:31 -0800 (PST)
-Message-ID: <79a9bb81-4488-47d1-a24e-f4abde097d43@gmail.com>
-Date:   Fri, 8 Dec 2023 16:09:29 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/5] hwmon: Add support for Amphenol ChipCap 2
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
+        bh=xNnSwjzfk0DFwMUnASYe+Mep7H717D8Hg3L4xcCwxL4=;
+        b=l4SjBFP+Nj7oam8uEENpy0Nd4C03Vqhm9k5WFFCwmmgL+B9GkSLhs2wi1C55L2wgZk
+         QGTY6UpnuvrEZdjLrQRXDB+daGiOltaRTAhMLf2oJg08TJc9X2AVVAmVBjQzTBYyESTc
+         6uJGonMvLL4IpWuU93TL853ucTPNUprlsgCvcm1LcB+v7UW4tnuTeW5Q7AJ5a1KtUW74
+         ey+NZP9QXrEsq6zKgb95LCTDPT/AWgQQpC5EyfND6sLucUQ5zW99CcnS0nZVyp9HnMZn
+         lqIxxebEQG8E2ZQai1/RgTzQyL5nR0m0TBU3GmCNEenGQm+Ry0sFKn2yudyYQLZBMV3d
+         GlGg==
+X-Gm-Message-State: AOJu0Ywkh6tpjzseG8D7cMGi7V2Q0pDWwDSqiEPd+7cN5thYSeAnf4nE
+        nqV+k43BxMFj2O6lRDIsoQ==
+X-Google-Smtp-Source: AGHT+IEvVmbu2+Qv9wFJy8R9H8r5dTeownvX+CKH+WYzlbAzevvw6b0vu0w5WzVXyWLw9sofpqWUuA==
+X-Received: by 2002:a05:6808:d4d:b0:3b8:b063:8258 with SMTP id w13-20020a0568080d4d00b003b8b0638258mr172675oik.90.1702048217115;
+        Fri, 08 Dec 2023 07:10:17 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id 14-20020aca280e000000b003b8b3bdeb6bsm348309oix.30.2023.12.08.07.10.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 07:10:16 -0800 (PST)
+Received: (nullmailer pid 1354509 invoked by uid 1000);
+        Fri, 08 Dec 2023 15:10:11 -0000
+Date:   Fri, 8 Dec 2023 09:10:11 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>,
+        Frank Rowand <frowand.list@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20231020-topic-chipcap2-v3-0-5b3bb50a5f0b@gmail.com>
- <20231020-topic-chipcap2-v3-5-5b3bb50a5f0b@gmail.com>
- <04475f91-bdce-4677-894c-74c2bb8233d9@sirena.org.uk>
- <5b62afcb-254d-4dfc-8332-7979c62ea2c2@gmail.com>
- <6cce1b87-a9a9-4554-9dae-c24d1d276fb5@sirena.org.uk>
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <6cce1b87-a9a9-4554-9dae-c24d1d276fb5@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Tzung-Bi Shih <tzungbi@kernel.org>,
+        chrome-platform@lists.linux.dev, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
+        linus.walleij@linaro.org, broonie@kernel.org,
+        gregkh@linuxfoundation.org, hdegoede@redhat.com,
+        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
+        rafael@kernel.org, tglx@linutronix.de,
+        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/5] i2c: of: Introduce component probe function
+Message-ID: <20231208151011.GA1289359-robh@kernel.org>
+References: <20231128084236.157152-1-wenst@chromium.org>
+ <20231128084236.157152-3-wenst@chromium.org>
+ <CAD=FV=U_+iQJtV0Wii89DQT1V_fJCeS9wcqA8EJAs-hmmmLLLg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=U_+iQJtV0Wii89DQT1V_fJCeS9wcqA8EJAs-hmmmLLLg@mail.gmail.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.12.23 21:44, Mark Brown wrote:
-
-> There is a specific API for exclusive regulators which the driver is not
-> using, and it's unconditionally doing the disable/enable cycle here.
+On Fri, Dec 01, 2023 at 04:57:46PM -0800, Doug Anderson wrote:
+> Hi,
 > 
+> On Tue, Nov 28, 2023 at 12:45 AM Chen-Yu Tsai <wenst@chromium.org> wrote:
+> >
+> > @@ -217,4 +217,114 @@ static int of_i2c_notify(struct notifier_block *nb, unsigned long action,
+> >  struct notifier_block i2c_of_notifier = {
+> >         .notifier_call = of_i2c_notify,
+> >  };
+> > +
+> > +/*
+> > + * Some devices, such as Google Hana Chromebooks, are produced by multiple
+> > + * vendors each using their preferred components. Such components are all
+> > + * in the device tree. Instead of having all of them enabled and having each
+> > + * driver separately try and probe its device while fighting over shared
+> > + * resources, they can be marked as "fail-needs-probe" and have a prober
+> > + * figure out which one is actually used beforehand.
+> > + *
+> > + * This prober assumes such drop-in parts are on the same I2C bus, have
+> > + * non-conflicting addresses, and can be directly probed by seeing which
+> > + * address responds.
+> > + *
+> > + * TODO:
+> > + * - Support handling common regulators and GPIOs.
+> 
+> IMO you should prototype how you're going to handle regulators and
+> GPIOs before finalizing the design. I was going to write that you
+> should just document that it was up to the caller to power things up
+> before calling this function, but then I realized that the caller
+> would have to duplicate much of this function in order to do so. In
+> the very least they'd have to find the nodes of the relevant devices
+> so that they could grab regulators and/or GPIOs. In order to avoid
+> this duplication, would the design need to change? Perhaps this would
+> be as simple as adding a callback function here that's called with all
+> of the nodes before probing? If that's right, it would be nice to have
+> that callback from the beginning so we don't need two variants of the
+> function...
+> 
+> > + * - Support I2C muxes
+> > + */
+> > +
+> > +/**
+> > + * i2c_of_probe_component() - probe for devices of "type" on the same i2c bus
+> > + * @dev: &struct device of the caller, only used for dev_* printk messages
+> > + * @type: a string to match the device node name prefix to probe for
+> > + *
+> > + * Probe for possible I2C components of the same "type" on the same I2C bus
+> > + * that have their status marked as "fail".
+> 
+> Should document these current limitations with the code:
+> 
+> * Assumes that across the entire device tree the only instances of
+> nodes named "type" are ones we're trying to handle second sourcing
+> for. In other words if we're searching for "touchscreen" then all
+> nodes named "touchscreen" are ones that need to be probed.
 
-That is right, I will call regulator_get_exclusive() instead.
+named "type" and marked as needs probe.
 
-> The driver needs to be explicitly configured for this and have separate
-> code paths for normal operation and operation where the supply can be
-> bounced like this.  In neither code path should the supply be optional.
-> Right now we don't have a mechanism for discovering optionally exclusive
-> and enable/disablable supplies which is what the device needs, we could
-> potentially add that since this does seem like a viable use case and we
-> already have enough information in the DT to say if the supply matches
-> the constraints.  Probably the two properties queryable separately.  If
-> that API were added then the driver would do a normal regulator_get()
-> then check if it has the capabilities it needs and either keep the
-> supply on all the time (or possibly just during measurements?) or enable
-> the alarm functionality.
-In that case I will split the driver development into two steps. First I
-will stick to the existing API and implement only the code path where an
-exclusive regulator is required i.e. not optional, which will simplify
-the review process considerably.
+> 
+> * Assumes that there is exactly one group of each "type". In other
+> words, if we're searching for "touchscreen" then exactly one
+> touchscreen will be enabled across the whole tree.
 
-When the driver makes it through and all other issues are also solved, I
-will work on the optional exclusive regulator. This is probably an edge
-case and it will increase complexity to actually use half of the device
-capabilities to save the exclusive regulator, but at some point I would
-like to offer that as well.
+Does that need to be a limitation? If you just keep going thru all 
+devices, wouldn't that just work?
 
-Thank you again and best regards,
-Javier Carrasco
+Rob
