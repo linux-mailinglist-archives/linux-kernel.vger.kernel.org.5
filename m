@@ -2,91 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E41A180A8B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C953C80A8A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235925AbjLHQX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:23:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
+        id S233589AbjLHQWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:22:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573889AbjLHQXP (ORCPT
+        with ESMTP id S232481AbjLHQWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:23:15 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBC919A5;
-        Fri,  8 Dec 2023 08:23:13 -0800 (PST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8GGJhe026619;
-        Fri, 8 Dec 2023 16:23:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=b9PbWo8DylIxhxCDnRW3UOS2F40QnBD4MsO2TE9Uw4E=;
- b=NUqQj5qWwPnYOYgNiAviF8YWfo92J/M6hWZIDT8CMLCvA/akRpWRC4E2Ir+Bvvo8aC9h
- yEa7tR1L4TphizZJQVkeqvskItWStRS9JVTrRIintKwo1HN72qqme192cayCxfsAe0hn
- SXfn08h+YOEOyPk7QqoHVLM31zt5RjqO5bb4CCT5kLlvPnevmdSmKrjSL8jfcExehNZb
- ik3V7LM1UBO7b+Ho+z2cDdqtpyJSAwfDihWIt9aQgUhcy7k7bj1vxHECwwZM9q67b+iL
- DYXSpN0fLTTcQY0Ktgz2bXRIo6DdnoZDi7APLHErm/gnnYQwucY+M7yY8xf8z7wMJs+4 /w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uv67wgnwh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 16:23:11 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B8GIvnD005454;
-        Fri, 8 Dec 2023 16:23:11 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uv67wgnv7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 16:23:10 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8Dbm0m013754;
-        Fri, 8 Dec 2023 16:23:09 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3utau4jhxa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 16:23:09 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B8GN8Ls7733940
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Dec 2023 16:23:08 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DEBB958054;
-        Fri,  8 Dec 2023 16:23:07 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A13135803F;
-        Fri,  8 Dec 2023 16:23:06 +0000 (GMT)
-Received: from li-2c1e724c-2c76-11b2-a85c-ae42eaf3cb3d.ibm.com.com (unknown [9.61.47.9])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  8 Dec 2023 16:23:06 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, borntraeger@de.ibm.com, pasic@linux.ibm.com,
-        pbonzini@redhat.com, frankja@linux.ibm.com, imbrenda@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        stable@vger.kernel.org
-Subject: [PATCH v1 6/6] s390/vfio-ap: do not reset queue removed from host config
-Date:   Fri,  8 Dec 2023 11:22:51 -0500
-Message-ID: <20231208162256.10633-7-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231208162256.10633-1-akrowiak@linux.ibm.com>
-References: <20231208162256.10633-1-akrowiak@linux.ibm.com>
+        Fri, 8 Dec 2023 11:22:51 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A3D1987;
+        Fri,  8 Dec 2023 08:22:56 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54f5469c211so937359a12.0;
+        Fri, 08 Dec 2023 08:22:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702052575; x=1702657375; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=svN1Ndc4QwmNHTO/oqyCiy4PAweEtdwQk3CfZUa3eYo=;
+        b=W1Maeo2o795gYWbrsrMSx81cARvMmDKOgt+wEwXRdvGki2A8GY3wwpZzsGElpUqWuc
+         h8JtN2scX+o+7KFwRX4fT1foDFKOjuG7K/NW+ftLdY4HU+L6MKEW9lnos8mVMrsi5lyW
+         8tlnFMx9bJC44IWyAkhFYksPc3E0NLG3ixzoZyGV5GhzOaGhIk0UPFTDHgFAX0vtbWyC
+         yDrb/UwC1m2ZJvQnFjX4RkBapnRm/2USvWWdEA4PwoJTh99T7K/ukKLp4USGAG9N6sN/
+         M5acjtALmEf/hLDg7GuqZB8EdANxitVN/v3BigEoL0IcofwIJl0F3YkBurwE3L0x5BwY
+         yYSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702052575; x=1702657375;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=svN1Ndc4QwmNHTO/oqyCiy4PAweEtdwQk3CfZUa3eYo=;
+        b=LRaKfM0kiomLP2kpLspgFpGXj9BtmVjsrnowF9FFT6cM+Do67sG0fLo1SBDBwUmyg5
+         Ecq10PFJQAzrlFDNloMp0h5icJM1eGYQsu7wJUNrjOBzP/HgN/amHhSjVb9Mi3zSN1Dy
+         OlJSaVv5BZrOOiaNSGdwaL1YC2UpMbe7lj8uSNloEPu7mR8qi3xA0624lbvUiaoJW69g
+         1FWr0uNf1eaobaHhAvROV7S7v8t9yrw8uYcSa3zhkqK3st8NBbzAGAKbuNtQezMZluci
+         e8fNJVhuJrqBuO0M1nKCCl2RIN6G9FWm4rhNKZFf+rE4D9djvU6A5fFLILXT+WY6Kd4H
+         G66w==
+X-Gm-Message-State: AOJu0Yz8awtT4JGVG5xXLzPAJHEK8XR1Ry6PPL+M8SRFQvIDghAO2jVM
+        PZVCYpHho19GIJDlRlfy9Fg=
+X-Google-Smtp-Source: AGHT+IEqwxQJzb5eeyuxkgyTXIammuAXFxjBenJ1bmCkFNPrxhJJolH7wvgdlhFIJgOFnUSf+Q7z2g==
+X-Received: by 2002:a17:906:7951:b0:a19:a19b:c708 with SMTP id l17-20020a170906795100b00a19a19bc708mr149642ejo.88.1702052574810;
+        Fri, 08 Dec 2023 08:22:54 -0800 (PST)
+Received: from orome.fritz.box (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id vi8-20020a170907d40800b00a1c7b20e9e6sm1179290ejc.32.2023.12.08.08.22.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 08:22:54 -0800 (PST)
+Date:   Fri, 8 Dec 2023 17:22:52 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Sean Young <sean@mess.org>
+Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 3/4] pwm: bcm2835: allow pwm driver to be used in
+ atomic context
+Message-ID: <ZXNC3JYy7CTfYsyC@orome.fritz.box>
+References: <cover.1701248996.git.sean@mess.org>
+ <179dc1ce85702a8b64b43c0e0df656b0c5e3ce30.1701248996.git.sean@mess.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: bBHm19mEtVDUXcYmoOk2A2qq1IT_dd4d
-X-Proofpoint-ORIG-GUID: NT69NQ8d2mM1-ij1PZLybtAr5XQfc_mo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-08_11,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 suspectscore=0 bulkscore=0 spamscore=0 adultscore=0
- impostorscore=0 priorityscore=1501 clxscore=1015 mlxlogscore=999
- mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312080135
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ix9F9B72gOKa/1mD"
+Content-Disposition: inline
+In-Reply-To: <179dc1ce85702a8b64b43c0e0df656b0c5e3ce30.1701248996.git.sean@mess.org>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,53 +85,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a queue is unbound from the vfio_ap device driver, it is reset to
-ensure its crypto data is not leaked when it is bound to another device
-driver. If the queue is unbound due to the fact that the adapter or domain
-was removed from the host's AP configuration, then attempting to reset it
-will fail with response code 01 (APID not valid) getting returned from the
-reset command. Let's ensure that the queue is assigned to the host's
-configuration before resetting it.
 
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-Fixes: eeb386aeb5b7 ("s390/vfio-ap: handle config changed and scan complete notification")
-Cc: <stable@vger.kernel.org>
----
- drivers/s390/crypto/vfio_ap_ops.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+--ix9F9B72gOKa/1mD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index 5db11d50b4b0..b6928fc3b395 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -2214,6 +2214,8 @@ void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
- 	q = dev_get_drvdata(&apdev->device);
- 	get_update_locks_for_queue(q);
- 	matrix_mdev = q->matrix_mdev;
-+	apid = AP_QID_CARD(q->apqn);
-+	apqi = AP_QID_QUEUE(q->apqn);
- 
- 	if (matrix_mdev) {
- 		/* If the queue is assigned to the guest's AP configuration */
-@@ -2231,8 +2233,16 @@ void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
- 		}
- 	}
- 
--	vfio_ap_mdev_reset_queue(q);
--	flush_work(&q->reset_work);
-+	/*
-+	 * If the queue is not in the host's AP configuration, then resetting
-+	 * it will fail with response code 01, (APQN not valid); so, let's make
-+	 * sure it is in the host's config.
-+	 */
-+	if (test_bit_inv(apid, (unsigned long *)matrix_dev->info.apm) &&
-+	    test_bit_inv(apqi, (unsigned long *)matrix_dev->info.aqm)) {
-+		vfio_ap_mdev_reset_queue(q);
-+		flush_work(&q->reset_work);
-+	}
- 
- done:
- 	if (matrix_mdev)
--- 
-2.43.0
+On Wed, Nov 29, 2023 at 09:13:36AM +0000, Sean Young wrote:
+> clk_get_rate() may do a mutex lock. Fetch the clock rate once, and prevent
+> rate changes using clk_rate_exclusive_get().
+>=20
+> Signed-off-by: Sean Young <sean@mess.org>
+> ---
+>  drivers/pwm/pwm-bcm2835.c | 31 +++++++++++++++++++++----------
+>  1 file changed, 21 insertions(+), 10 deletions(-)
 
+s/pwm/PWM/ in the subject. Although, I guess you could just drop the
+"PWM" altogether because the subject prefix implies that this is for
+PWM. Also, please capitalize after the subject prefix.
+
+Thierry
+
+--ix9F9B72gOKa/1mD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmVzQtwACgkQ3SOs138+
+s6Gu+A//W4O0yDv+AftK43w4DyKG2lCSU+7O2mfysoZU6ycgaOLqxvfT6HYr4W/X
+Uleddmj5ZkyERd4gtLMC9Z5tIJbpjNEoMusUd96915jXWs4SRu8U2w4s+MMuysbN
+h8xJmZleGPOtJl/dI60jDJ+zogYUhmxuTQxvDbEmFPevHRChzEefwKz0DzvUKUz4
+3r7suWMDBq2Gb2wbST/Iz5JfPhZtxiKd0nkxc04JKXMdfH9UhdFW33ZaYTwUqlvA
+gT1SGIOBZ133KObMEQzptxVw47v2wxRRCJdTUfIjv7gKa+8xJhQkthL2hhdEHkoK
+3fN7FEUtYJE9L6GO9bXfTUwjk1PMHABmzxKjuxhkTKzjZsobN4SmLOa+dvh5F51J
+U1mtGYYjcZlVrIEIsi252XvRpcP8trGRI/1pb9NXuvgJTpbCfsC2FPpf+d/OCs/J
+hLsinFaorOrQcf9rTJfkwmMh+obDKlVik81riYAZC0wL9KWgAdhG1f3ZqlwHU+rE
+gEUtKWUad+QO6dg5wFk+olCDvR4SwRsirkjpR2JJW5XmEC01BGqw/f7SXIdeU6B9
+VKV9pc96952S7Ygrj5Ht3gWus5UwC+S6KFbcIJxWfbYby1lxMddZkoTWbMj2Lsth
+mqdNbKHB/kNADvHfcemFkxb+kWfu0bkMuhTRFT5dgLsc+hIyins=
+=BCvn
+-----END PGP SIGNATURE-----
+
+--ix9F9B72gOKa/1mD--
