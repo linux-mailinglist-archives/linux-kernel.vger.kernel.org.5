@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1859B80A122
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EF280A118
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573555AbjLHKfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 05:35:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
+        id S1573539AbjLHKeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 05:34:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbjLHKfG (ORCPT
+        with ESMTP id S235891AbjLHKdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 05:35:06 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D114610C2;
-        Fri,  8 Dec 2023 02:35:12 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5c673b01eeeso1412574a12.1;
-        Fri, 08 Dec 2023 02:35:12 -0800 (PST)
+        Fri, 8 Dec 2023 05:33:47 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09FE62D49
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:33:39 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50be24167efso2193150e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 02:33:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702031712; x=1702636512; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RkstX3w9e/qo2fPuZVECh8CFuxP6tqluCbnekESxGuA=;
-        b=ni8Bhi8Ge4pDwjtbGayUd6MUG2fihGf4CZPzIcwk5ppMVtduxV9CZJWD28qn3dT7X0
-         EmuEH6H2A1g2CAXqb61+GG2RIOFPs7L9lOYotTTeVqDw1UwlVE0M8qJ1de7YU2cZ1Dvb
-         HUUJ911iTPRV+C1QOOkYt1s4g9qHT7Io6ANoxwy0PbWMdcU6RJBwwUnkT/D4ZGS8wzDr
-         CjXygPqKN0o2a/wP9iV7XRerNc7LlE63vHh6MThbxzDdpKFSAfNOcPSXfzv7qNaohLh7
-         OtD/pX3jasBNrFw1UjTNHL8DAotosip+b2AgkckOpbCSUK9paywFS8UO0hqrTwGZNzU8
-         MBrw==
+        d=linaro.org; s=google; t=1702031618; x=1702636418; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=h4cT1vPyF4MV6Slk3a0U6oOkB8CmE1BrFIZp/eFFbf4=;
+        b=QHnmlIRjhtK+UkcUFdtli+wgOIrK27ehHSn9m2hldHYTEjb4JHzhILK7mkhHv5OT9+
+         ueQXwKLwr1YOC8q9UBS3LImd91u+xlbfyBsuXANw76fv+hemMxly3zilqAYZvxpZlyXf
+         7KPplqR+pMmTUFj8XQM7eTNcQRuKDEcTXC58TMw+ahvk3vGi13aWW41KmfrNj+yszxL1
+         gy5TMGKRIq7tV6QpJHqLaRYlcEB5xhK5QRQ7q/rNNZm1k3YX69k1SYgrfKWQPhMHS9Wq
+         MWnNufZAsrX5YkR2JWHXCq1oZxmjlDa1VbLtvx4Iq9Yd25vSTzPQuNVj6xEZ0IIWkQrU
+         WNpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702031712; x=1702636512;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RkstX3w9e/qo2fPuZVECh8CFuxP6tqluCbnekESxGuA=;
-        b=bQrrPMP3/T/Ojr2wWRe+BnFdwM8rGOsmwN7avUtpuT9x5Of7JEyAxffqJbkVFbA6c6
-         rNtm6m6xoiIClhq66/aKkVwipu9dKmwSAR2+4RJmu3mNY3uDRY7l1FlHMk18ledrwpjs
-         QoT/zkttYV72rQpT2YMVvv68rkfc2ApppVoWS9rZ7mqa9fGsK/IfqKTpVr6sUzv7m17A
-         TPro/fLIdhFRwt1fnyN+NJuOOFErROL37CzCY+UjTml9tTasTTS6zgab2g5K3qIlrepj
-         Ugc+loOnf1DvDeVfSQbyuKHs97XcHfdiGd5BiK3qQKUfJKXHCxdlO1/AMed5z0CCUffd
-         VWUQ==
-X-Gm-Message-State: AOJu0Yz1T//jeYZ64pag/OgnzP78xaxVDvIF6uG287tNOG9U4mWJNDPR
-        sApqMasWykwoFelksBYjFUw=
-X-Google-Smtp-Source: AGHT+IEhpNDojxW+0Ttl1fp4tHVdUq1V52TPsbSHLo5etmkQs5V52RtMAzIj20+8QJ93iT2CGJKy0w==
-X-Received: by 2002:a05:6a20:e11c:b0:187:c662:9b7e with SMTP id kr28-20020a056a20e11c00b00187c6629b7emr4544880pzb.25.1702031712168;
-        Fri, 08 Dec 2023 02:35:12 -0800 (PST)
-Received: from ?IPV6:2401:4900:6277:8af4:45bc:8bc9:c94a:54d2? ([2401:4900:6277:8af4:45bc:8bc9:c94a:54d2])
-        by smtp.gmail.com with ESMTPSA id c10-20020a170902aa4a00b001b86dd825e7sm1351866plr.108.2023.12.08.02.35.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 02:35:11 -0800 (PST)
-Message-ID: <61053bca-6a6c-4eed-90f8-df43f7c804cb@gmail.com>
-Date:   Fri, 8 Dec 2023 16:03:03 +0530
+        d=1e100.net; s=20230601; t=1702031618; x=1702636418;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h4cT1vPyF4MV6Slk3a0U6oOkB8CmE1BrFIZp/eFFbf4=;
+        b=uounVRTZQ+UN88NXcoBwO4FOv03KZVsLg0pX0ozR3kSDXpLrAjhnEqlCxk6VdPGEr7
+         3ACVy1Z73LFi/+3oA5ADRNwJuarj11+P0bSF2ge13KC+gUrujYt2nGPWDz+nkoZCu9Df
+         PVTfimsf1MZwBz7S2oP+Gn1l+gYZHlUpkXu4660qwPKqe/rPIFZLBc4RmtsOnOelDFwe
+         WK70mhcuMa/CaBEETk4u+0VJRca18WsVFMaQK5jQsEKN7NEefMHckm/phG2af38s9NFt
+         c15ogDkVUu3g2yAvMxJSQ+1BPZJAflYpA2HZPVf1IRVfAdZZ7SeYocezGKKS/YQM4AAg
+         z5vg==
+X-Gm-Message-State: AOJu0YybJ1GSfXttDH5ZyUC5rn92ZzRhEOPbmgQGwf/ZK2DldfRgywXP
+        +XLDht++sP4VYnhuNyObXC37sA==
+X-Google-Smtp-Source: AGHT+IE1x+vEB0enFOFbtTJdwklZj+bcAzaYQcqHhZJJEoKhfkAXGO7EL1aO6WM7utpSS1pYmNwbYA==
+X-Received: by 2002:ac2:4a84:0:b0:50b:f51a:299d with SMTP id l4-20020ac24a84000000b0050bf51a299dmr1077926lfp.18.1702031617898;
+        Fri, 08 Dec 2023 02:33:37 -0800 (PST)
+Received: from localhost (c-9b0ee555.07-21-73746f28.bbcust.telenor.se. [85.229.14.155])
+        by smtp.gmail.com with ESMTPSA id y1-20020ac24e61000000b0050bff86c497sm176842lfs.23.2023.12.08.02.33.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 02:33:37 -0800 (PST)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     lpieralisi@kernel.org, guohanjun@huawei.com, sudeep.holla@arm.com
+Cc:     linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, james.morse@arm.com,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] drivers: acpi: arm64: thermal_cpufreq: export module
+Date:   Fri,  8 Dec 2023 11:33:32 +0100
+Message-ID: <20231208103332.2829631-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] dt-bindings: input: convert gpio-mouse to json-schema
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20231208075037.114598-1-anshulusr@gmail.com>
- <c8e4d495-1d4e-40cb-b599-5a01f75f9257@linaro.org>
-From:   Anshul Dalal <anshulusr@gmail.com>
-In-Reply-To: <c8e4d495-1d4e-40cb-b599-5a01f75f9257@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following build error shows up when building an allmodconfig kernel
+on arch=arm64:
 
+ERROR: modpost: "acpi_arch_thermal_cpufreq_pctg" [drivers/acpi/processor.ko] undefined!
+make[3]: *** [/next/scripts/Makefile.modpost:145: Module.symvers] Error 1
+make[3]: Target '__modpost' not remade because of errors.
+make[2]: *** [/tmp/next/Makefile:1876: modpost] Error 2
+make[2]: Target '__all' not remade because of errors.
+make[1]: *** [/tmp/next/Makefile:243: __sub-make] Error 2
+make[1]: Target '__all' not remade because of errors.
+make: *** [Makefile:243: __sub-make] Error 2
+make: Target '__all' not remade because of errors.
 
-On 12/8/23 15:57, Krzysztof Kozlowski wrote:
-> On 08/12/2023 08:50, Anshul Dalal wrote:
->> Convert device tree binding documentation for GPIO attached mouse to
->> json-schema.
->>
->> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
->> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> You cannot have v1 being already reviewed. This is some newer version.
-> 
->> ---
-> 
-> Missing changelog.
+Solve the issue by export acpi_arch_thermal_cpufreq_pctg() since the
+function are used in function 'acpi_thermal_cpufreq_config()'.
 
-This is a copy of an earlier patch[1]. Since the patch had been sitting
-idle for past 10 days, I reposed it with the Reviewed-by tags added in.
-Please let me know if this is the right way or if there is need for a
-changelog.
+Fixes: a02f66bb3cf4 ("ACPI: Move ACPI_HOTPLUG_CPU to be disabled on arm64 and riscv")
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ drivers/acpi/arm64/thermal_cpufreq.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-[1]:
-https://lore.kernel.org/lkml/20231126103029.851742-1-anshulusr@gmail.com/
+diff --git a/drivers/acpi/arm64/thermal_cpufreq.c b/drivers/acpi/arm64/thermal_cpufreq.c
+index d524f2cd6044..582854914c5c 100644
+--- a/drivers/acpi/arm64/thermal_cpufreq.c
++++ b/drivers/acpi/arm64/thermal_cpufreq.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ #include <linux/acpi.h>
++#include <linux/export.h>
+ 
+ #include "../internal.h"
+ 
+@@ -18,3 +19,4 @@ int acpi_arch_thermal_cpufreq_pctg(void)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(acpi_arch_thermal_cpufreq_pctg);
+-- 
+2.42.0
 
-Best regards,
-Anshul
