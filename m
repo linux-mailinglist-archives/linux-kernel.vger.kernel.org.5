@@ -2,88 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA1680A106
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7064980A109
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 11:32:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbjLHKcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 05:32:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
+        id S1573753AbjLHKcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 05:32:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235975AbjLHKbw (ORCPT
+        with ESMTP id S235941AbjLHKbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 05:31:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7631819A2
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 02:31:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702031486;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tcu3WmbH0rDpAmwPqLlBrIXFmcIviRa8i1AFTtWd1Zs=;
-        b=cOexIkcrsNZ589DDTxh3gqIixiNNnP8xZE8+B6motvcNQXDndK2I1SR5fFdBmJ6ybZ6CuJ
-        i1akEtL/YYuLE4MhUbOys7qr1tjSk1fdFmV2cNwDkMMqG5O9ZhjLMv2HXP3FM5x4GZgb8W
-        oLn11H78pl5gUO6HkzHXj45U0Qe+q7E=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-591-IgU449X2ORazq3drhx04Cw-1; Fri, 08 Dec 2023 05:31:25 -0500
-X-MC-Unique: IgU449X2ORazq3drhx04Cw-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2ca30780a02so13255251fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 02:31:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702031483; x=1702636283;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tcu3WmbH0rDpAmwPqLlBrIXFmcIviRa8i1AFTtWd1Zs=;
-        b=YsecXL7B4gIxbqrMcbnCy6OWNIuQmJx3QPpj/+NUEpbrz2vGz/weo9BRXsK4a6MRhp
-         /iFD5MLF1mOguBXWBnebGRITaoJT2YK/ALjETAhIYMh5Q85m0v89PSkzuJb426esNIKu
-         JAl3fD/MbscgHXQh8Fu3pZ2UYMt2OnUhxeluXd+oJuuHI2NgFpqtCrFGbj0pJEvN5ZLG
-         eyuYFdDtcNb5Xu2O/MBM35rx+M9myqm8b2eJXr1CCBmNKT11cLi6Klq7D82ta1hwECH9
-         +JrUmMocB/3rcsqBrz0TrDpofChvT1GsQdszXmysakDh15F76JnQIuZ1XiGb+pn1pLaD
-         3orw==
-X-Gm-Message-State: AOJu0Yx5VzdgN463LlMUHeirfbFhQOysjgPC+qt6v+0gw0bq0Ecq0Q+R
-        qwM9Q5eyK+Qs15iRlTf8ehN5nqnHKrTpSoV3SK8cufgBN42lDxY5ArODEKX9qeicil8hdcMhT72
-        0CpwmWkUAAdmWjHqzwr7KLQUV
-X-Received: by 2002:a2e:8884:0:b0:2ca:56:778f with SMTP id k4-20020a2e8884000000b002ca0056778fmr1257129lji.48.1702031483564;
-        Fri, 08 Dec 2023 02:31:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHKcY1LCS/VjPyEMeTLMNoGPvmPdJg2dsZtFpUis0zp6RJwZ5WMd0CWqzm2EoCROz7SrjQSKA==
-X-Received: by 2002:a2e:8884:0:b0:2ca:56:778f with SMTP id k4-20020a2e8884000000b002ca0056778fmr1257123lji.48.1702031483207;
-        Fri, 08 Dec 2023 02:31:23 -0800 (PST)
-Received: from redhat.com ([2a02:14f:1f0:7466:b10d:58c8:869f:7e91])
-        by smtp.gmail.com with ESMTPSA id cu12-20020a170906ba8c00b00a10f3030e11sm829135ejd.1.2023.12.08.02.31.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 02:31:22 -0800 (PST)
-Date:   Fri, 8 Dec 2023 05:31:18 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Tobias Huschle <huschle@linux.ibm.com>
-Cc:     Abel Wu <wuyun.abel@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        kvm@vger.kernel.org, virtualization@lists.linux.dev,
-        netdev@vger.kernel.org, jasowang@redhat.com
-Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
- sched/fair: Add lag based placement)
-Message-ID: <20231208052150-mutt-send-email-mst@kernel.org>
-References: <ZVdbdSXg4qefTNtg@DESKTOP-2CCOB1S.>
- <20231117123759.GP8262@noisy.programming.kicks-ass.net>
- <46a997c2-5a38-4b60-b589-6073b1fac677@bytedance.com>
- <ZVyt4UU9+XxunIP7@DESKTOP-2CCOB1S.>
- <20231122100016.GO8262@noisy.programming.kicks-ass.net>
- <6564a012.c80a0220.adb78.f0e4SMTPIN_ADDED_BROKEN@mx.google.com>
- <d4110c79-d64f-49bd-9f69-0a94369b5e86@bytedance.com>
- <07513.123120701265800278@us-mta-474.us.mimecast.lan>
- <20231207014626-mutt-send-email-mst@kernel.org>
- <56082.123120804242300177@us-mta-137.us.mimecast.lan>
+        Fri, 8 Dec 2023 05:31:55 -0500
+Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE331BD8;
+        Fri,  8 Dec 2023 02:31:32 -0800 (PST)
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.trvn.ru (Postfix) with ESMTPSA id 68CCB40553;
+        Fri,  8 Dec 2023 15:31:28 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+        t=1702031488; bh=4y6IzqXuYCaOZRj832BYim9z7oqNFMfqjRtC49eFuJM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RajIO39JCopnXz/UHAH8GGunqq6K8NXh+7Gh0Dt2D6EgmpAC+4kKE5u/kc+Y9iixy
+         3T5ijAlEqz4za3cgDx7IBwfTV5qtghTKX4ohClLUiDAb1v7P+yXl5B7Q7p626uIS5x
+         dyqDln9a+E4mUV/2S3ydRIS9OvlPoqbd1kRnGhyT0BO0XFhytw48ew8PqkMA4I1rqY
+         uekI9IP8XCIvPcQE/Eb8ve0s0NvR8o37C0Ne9Gp/QyecP/QFiXC6ZBtTDuq4+idi1k
+         AHqTv+rh4NLCJVZ3GV74fac680lt9V3tSWBVACxKWf/RFNU4rHbYeye+O1e1v+c7YF
+         nUjuTgBa2Zo9Q==
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56082.123120804242300177@us-mta-137.us.mimecast.lan>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Date:   Fri, 08 Dec 2023 15:31:27 +0500
+From:   Nikita Travkin <nikita@trvn.ru>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 2/3] power: supply: Add Acer Aspire 1 embedded controller
+ driver
+In-Reply-To: <71459bab-05b9-41f6-bb32-2b744736487d@linaro.org>
+References: <20231207-aspire1-ec-v1-0-ba9e1c227007@trvn.ru>
+ <20231207-aspire1-ec-v1-2-ba9e1c227007@trvn.ru>
+ <71459bab-05b9-41f6-bb32-2b744736487d@linaro.org>
+Message-ID: <8fe5cb8cecf92d98f2768b811deb3ea0@trvn.ru>
+X-Sender: nikita@trvn.ru
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,55 +62,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 10:24:16AM +0100, Tobias Huschle wrote:
-> On Thu, Dec 07, 2023 at 01:48:40AM -0500, Michael S. Tsirkin wrote:
-> > On Thu, Dec 07, 2023 at 07:22:12AM +0100, Tobias Huschle wrote:
-> > > 3. vhost looping endlessly, waiting for kworker to be scheduled
-> > > 
-> > > I dug a little deeper on what the vhost is doing. I'm not an expert on
-> > > virtio whatsoever, so these are just educated guesses that maybe
-> > > someone can verify/correct. Please bear with me probably messing up 
-> > > the terminology.
-> > > 
-> > > - vhost is looping through available queues.
-> > > - vhost wants to wake up a kworker to process a found queue.
-> > > - kworker does something with that queue and terminates quickly.
-> > > 
-> > > What I found by throwing in some very noisy trace statements was that,
-> > > if the kworker is not woken up, the vhost just keeps looping accross
-> > > all available queues (and seems to repeat itself). So it essentially
-> > > relies on the scheduler to schedule the kworker fast enough. Otherwise
-> > > it will just keep on looping until it is migrated off the CPU.
-> > 
-> > 
-> > Normally it takes the buffers off the queue and is done with it.
-> > I am guessing that at the same time guest is running on some other
-> > CPU and keeps adding available buffers?
-> > 
+Konrad Dybcio писал(а) 08.12.2023 00:24:
+> On 12/7/23 12:20, Nikita Travkin wrote:
+>> Acer Aspire 1 is a Snapdragon 7c based laptop. It uses an embedded
+>> controller to control the charging and battery management, as well as to
+>> perform a set of misc functions.
+>>
+>> Unfortunately, while all this functionality is implemented in ACPI, it's
+>> currently not possible to use ACPI to boot Linux on such Qualcomm
+>> devices. To allow Linux to still support the features provided by EC,
+>> this driver reimplments the relevant ACPI parts. This allows us to boot
+>> the laptop with Device Tree and retain all the features.
+>>
+>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>> ---
+> [...]
 > 
-> It seems to do just that, there are multiple other vhost instances
-> involved which might keep filling up thoses queues. 
+>> +	case POWER_SUPPLY_PROP_CAPACITY:
+>> +		val->intval = le16_to_cpu(ddat.capacity_now) * 100
+>> +			      / le16_to_cpu(sdat.capacity_full);
+> It may be just my OCD and im not the maintainer here, but I'd do
+> /= here
+
+Hm you're right, this did look a bit ugly to me when I split the line
+(it was 101/100), Will probably use /= to make it nicer in v2.
+
+> 
+> [...]
+> 
+>> +	case POWER_SUPPLY_PROP_MODEL_NAME:
+>> +		if (sdat.model_id - 1 < ARRAY_SIZE(aspire_ec_psy_battery_model))
+>> +			val->strval = aspire_ec_psy_battery_model[sdat.model_id - 1];
+>> +		else
+>> +			val->strval = "Unknown";
+> Would it make sense to print the model_id that's absent from the LUT
+> here and similarly below?
 > 
 
-No vhost is ever only draining queues. Guest is filling them.
+The original ACPI code returns "Unknown" like this when the value
+is not in the table. I suppose I could warn here but not sure how
+useful it would be... And since this is a rather "hot" path, would
+need to warn only once, so extra complexity for a very unlikely
+situation IMO.
 
-> Unfortunately, this makes the problematic vhost instance to stay on
-> the CPU and prevents said kworker to get scheduled. The kworker is
-> explicitly woken up by vhost, so it wants it to do something.
+>> +		break;
+>> +
+>> +	case POWER_SUPPLY_PROP_MANUFACTURER:
+>> +		if (sdat.vendor_id - 3 < ARRAY_SIZE(aspire_ec_psy_battery_vendor))
+>> +			val->strval = aspire_ec_psy_battery_vendor[sdat.vendor_id - 3];
+>> +		else
+>> +			val->strval = "Unknown";
+>> +		break;
+>> +
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+> Another ocd trip, i'd add a newline before return
+>
+
+Yeah I agree here, missed this. Will add in v2.
+
+>> +	return 0;
+>> +}
+> [...]
 > 
-> At this point it seems that there is an assumption about the scheduler
-> in place which is no longer fulfilled by EEVDF. From the discussion so
-> far, it seems like EEVDF does what is intended to do.
+>> +	/*
+>> +	 * The original ACPI firmware actually has a small sleep in the handler.
+>> +	 *
+>> +	 * It seems like in most cases it's not needed but when the device
+>> +	 * just exits suspend, our i2c driver has a brief time where data
+>> +	 * transfer is not possible yet. So this delay allows us to suppress
+>> +	 * quite a bunch of spurious error messages in dmesg. Thus it's kept.
+> Ouch.. do you think i2c-geni needs fixing on this part?
+
+Not sure, it seems like when we exit suspend, this handler
+gets triggered before geni (or it's dependencies?) is considered
+"awake" (my guess is when the clocks are still off):
+
+[  119.246867] PM: suspend entry (s2idle)
+(...)
+[  119.438052] printk: Suspending console(s) (use no_console_suspend to debug)
+[  119.942498] geni_i2c 888000.i2c: error turning SE resources:-13
+[  119.942550] aspire-ec 2-0076: Failed to read event id: -EACCES
+(...)
+[  119.942657] geni_i2c 888000.i2c: error turning SE resources:-13
+[  119.942666] aspire-ec 2-0076: Failed to read event id: -EACCES
+(...)
+[  120.881452] PM: suspend exit
+
+FWIW it doesn't seem to be a big problem since this is
+a level interrupt, so it will be retried until the event
+can be cleared, but since ACPI also has the sleep, I'm
+happy to inherit in and suppress a couple of red lines :)
+
 > 
-> Shouldn't there be a more explicit mechanism in use that allows the
-> kworker to be scheduled in favor of the vhost?
+> [...]
 > 
-> It is also concerning that the vhost seems cannot be preempted by the
-> scheduler while executing that loop.
+>> +	switch (id) {
+>> +	case 0x0: /* No event */
+>> +		break;
+> Is this a NOP/watchdog sort of thing?
+> 
 
+This is a NOP, yes. I think I was hitting spurious interrupts
+once or twice so I suppressed this.
 
-Which loop is that, exactly?
+> [...]
+> 
+>> +
+>> +static struct i2c_driver aspire_ec_driver = {
+>> +	.driver = {
+>> +		.name = "aspire-ec",
+>> +		.of_match_table = aspire_ec_of_match,
+>> +		.pm = pm_sleep_ptr(&aspire_ec_pm_ops),
+>> +	},
+>> +	.probe = aspire_ec_probe,
+>> +	.id_table = aspire_ec_id,
+> Since it's tristate, I'd expect an entry for .remove_new here
+> 
 
--- 
-MST
+All the resources I allocate are devm_ so I believe I shouldn't need
+to clean anything up on remove...
 
+Thanks for the review!
+Nikita
+
+> Konrad
