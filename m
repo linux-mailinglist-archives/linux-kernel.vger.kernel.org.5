@@ -2,73 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE2380A79C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9769380A7A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574387AbjLHPkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:40:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39562 "EHLO
+        id S1574365AbjLHPlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:41:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574379AbjLHPkJ (ORCPT
+        with ESMTP id S1574414AbjLHPk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:40:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D97171E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 07:40:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6405C433C7;
-        Fri,  8 Dec 2023 15:40:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702050013;
-        bh=ieVNX3t8OHlTPk0YVyjDeXt4NaL02vWfuoHRriWFMQs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VY5BGAL3r0QbzWRb5Eszy5EVO0efv6muA+409Qox0aDL07fC+R/tulhSd+NIh0VKW
-         B2XXfyGuIG5dYNd7vwskPqfAUJZiWliVfU6wMPGfYnE2r5pFU8IcM1qt9jz3QSpCQh
-         0XdY6c+vJ35iWrP5uKh8D0Mg6CxG13byZ8+GMdnleqSCWY3KWVB0wJQ1vPvYceMLYh
-         VP7CEGM9CaNcF/J0jIek78BAORDLAYfQin0TZgg4+KYyqnlPPG53Nj5cNWk7+XI5VC
-         2RN4LDwp0AW+okMbirlRkvGgFduw+S40rLF9yJ+uo/TD7n/LEs6PnX3ZmDJihMvY+M
-         beZTPFdpJ8XZA==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2ca09601127so27890081fa.1;
-        Fri, 08 Dec 2023 07:40:13 -0800 (PST)
-X-Gm-Message-State: AOJu0Yxru6R0BD0wFqzQMwtYaSUL+mO4pNus8mNh27Z0YYycXOV++XFx
-        MA8G+DUBVxSNZFh6Abk0sXxZR/8kZP6bjQUgB7s=
-X-Google-Smtp-Source: AGHT+IHKpsCoFUwtx0uJ5yciTMXMsGyA+ko6Y6KeazE2iy2abDkzUd5ub7GLATGs7gDzfPSbVQPLUjIZU1LSnW71hi0=
-X-Received: by 2002:a2e:948c:0:b0:2c9:ffcf:ec98 with SMTP id
- c12-20020a2e948c000000b002c9ffcfec98mr59130ljh.27.1702050012031; Fri, 08 Dec
- 2023 07:40:12 -0800 (PST)
+        Fri, 8 Dec 2023 10:40:59 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABEB198E;
+        Fri,  8 Dec 2023 07:41:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702050065; x=1733586065;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kuKy0uSZ2sgf2WUnRwww3AtGWNiQbLKjTQKgA9l/IGM=;
+  b=ViMybE+aNvDVaqbxcDI855jc7fdeR+7WXi7c0ZIh3KVABmLVp2PBauIh
+   8MGqC2J3whVjUD86OT8K/BUgG0zTptSoYbFLKy7u0DMK2iLO2Bmr+bW3V
+   wAx23PSQj1PN7kr5S5Q6rXyKeuKIegU43Z+rBEQZ/esZLQR7VyTUaklTB
+   5ONUADL1SbgL2IMR+i/qK4bT6J95pYBR6BZoRz0kH7SZUE9kx+F/02MI2
+   90vTC/QqrWiwUXnofC6aH3ITnrELBpQwHxMR4+ZG752KPlhVlTMRk6YWK
+   pWlIHs+6ICWWxbvMb8nsHgbFROtKkh/F+dtJJLHhx220+xF+8lM4F7/5c
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1276368"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="1276368"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 07:41:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="20136875"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 08 Dec 2023 07:40:59 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBcyG-000DuV-07;
+        Fri, 08 Dec 2023 15:40:56 +0000
+Date:   Fri, 8 Dec 2023 23:40:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mina Almasry <almasrymina@google.com>,
+        Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Mina Almasry <almasrymina@google.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Ahern <dsahern@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [net-next v1 06/16] netdev: support binding dma-buf to netdevice
+Message-ID: <202312082303.bCpeCR0q-lkp@intel.com>
+References: <20231208005250.2910004-7-almasrymina@google.com>
 MIME-Version: 1.0
-References: <CAMj1kXFrexNBSDGGRaQQh=6_O=nm2NET_unZ4Qy618461H6maw@mail.gmail.com>
- <00000000000010057c060c012e63@google.com> <CANp29Y4bxQzV-=rSQOBPfi2Rxrob_GTHZrsGAgvemvnXgC5a3g@mail.gmail.com>
-In-Reply-To: <CANp29Y4bxQzV-=rSQOBPfi2Rxrob_GTHZrsGAgvemvnXgC5a3g@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 8 Dec 2023 16:40:01 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGdLTsDnvqb3pe--eW3p480kbDRfyydMCUOW1m-3Bf9cg@mail.gmail.com>
-Message-ID: <CAMj1kXGdLTsDnvqb3pe--eW3p480kbDRfyydMCUOW1m-3Bf9cg@mail.gmail.com>
-Subject: Re: [syzbot] BUG: corrupted list in efivar_entry_remove
-To:     Aleksandr Nogikh <nogikh@google.com>
-Cc:     syzbot <syzbot+1902c359bfcaf39c46f2@syzkaller.appspotmail.com>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208005250.2910004-7-almasrymina@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Dec 2023 at 16:38, Aleksandr Nogikh <nogikh@google.com> wrote:
->
-> If a command spans over two lines, syzbot expects a colon.
->
-> #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git
-> efivarfs-list-corruption-fix
->
+Hi Mina,
 
-It is Gmail that is breaking the line here
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on net-next/main]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Mina-Almasry/net-page_pool-factor-out-releasing-DMA-from-releasing-the-page/20231208-085531
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20231208005250.2910004-7-almasrymina%40google.com
+patch subject: [net-next v1 06/16] netdev: support binding dma-buf to netdevice
+config: m68k-randconfig-r071-20231208 (https://download.01.org/0day-ci/archive/20231208/202312082303.bCpeCR0q-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231208/202312082303.bCpeCR0q-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312082303.bCpeCR0q-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from include/asm-generic/bug.h:22,
+                    from arch/m68k/include/asm/bug.h:32,
+                    from include/linux/bug.h:5,
+                    from include/linux/thread_info.h:13,
+                    from include/asm-generic/preempt.h:5,
+                    from ./arch/m68k/include/generated/asm/preempt.h:1,
+                    from include/linux/preempt.h:79,
+                    from arch/m68k/include/asm/irqflags.h:6,
+                    from include/linux/irqflags.h:17,
+                    from arch/m68k/include/asm/atomic.h:6,
+                    from include/linux/atomic.h:7,
+                    from include/linux/rcupdate.h:25,
+                    from include/linux/rculist.h:11,
+                    from include/linux/pid.h:5,
+                    from include/linux/sched.h:14,
+                    from include/linux/uaccess.h:8,
+                    from net/core/dev.c:71:
+   net/core/dev.c: In function '__netdev_dmabuf_binding_free':
+>> net/core/dev.c:2071:34: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+    2071 |         if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
+         |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    2072 |                   size, avail))
+         |                   ~~~~            
+         |                   |
+         |                   size_t {aka unsigned int}
+   include/linux/printk.h:427:25: note: in definition of macro 'printk_index_wrap'
+     427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
+         |                         ^~~~
+   include/linux/printk.h:129:17: note: in expansion of macro 'printk'
+     129 |                 printk(fmt, ##__VA_ARGS__);             \
+         |                 ^~~~~~
+   include/asm-generic/bug.h:176:9: note: in expansion of macro 'no_printk'
+     176 |         no_printk(format);                                              \
+         |         ^~~~~~~~~
+   net/core/dev.c:2071:14: note: in expansion of macro 'WARN'
+    2071 |         if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
+         |              ^~~~
+   net/core/dev.c:2071:65: note: format string is defined here
+    2071 |         if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
+         |                                                               ~~^
+         |                                                                 |
+         |                                                                 long unsigned int
+         |                                                               %u
+   net/core/dev.c:2071:34: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+    2071 |         if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
+         |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    2072 |                   size, avail))
+         |                         ~~~~~     
+         |                         |
+         |                         size_t {aka unsigned int}
+   include/linux/printk.h:427:25: note: in definition of macro 'printk_index_wrap'
+     427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
+         |                         ^~~~
+   include/linux/printk.h:129:17: note: in expansion of macro 'printk'
+     129 |                 printk(fmt, ##__VA_ARGS__);             \
+         |                 ^~~~~~
+   include/asm-generic/bug.h:176:9: note: in expansion of macro 'no_printk'
+     176 |         no_printk(format);                                              \
+         |         ^~~~~~~~~
+   net/core/dev.c:2071:14: note: in expansion of macro 'WARN'
+    2071 |         if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
+         |              ^~~~
+   net/core/dev.c:2071:76: note: format string is defined here
+    2071 |         if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
+         |                                                                          ~~^
+         |                                                                            |
+         |                                                                            long unsigned int
+         |                                                                          %u
 
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git:
-efivarfs-list-corruption-fix
+vim +2071 net/core/dev.c
+
+  2060	
+  2061	void __netdev_dmabuf_binding_free(struct netdev_dmabuf_binding *binding)
+  2062	{
+  2063		size_t size, avail;
+  2064	
+  2065		gen_pool_for_each_chunk(binding->chunk_pool,
+  2066					netdev_dmabuf_free_chunk_owner, NULL);
+  2067	
+  2068		size = gen_pool_size(binding->chunk_pool);
+  2069		avail = gen_pool_avail(binding->chunk_pool);
+  2070	
+> 2071		if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
+  2072			  size, avail))
+  2073			gen_pool_destroy(binding->chunk_pool);
+  2074	
+  2075		dma_buf_unmap_attachment(binding->attachment, binding->sgt,
+  2076					 DMA_BIDIRECTIONAL);
+  2077		dma_buf_detach(binding->dmabuf, binding->attachment);
+  2078		dma_buf_put(binding->dmabuf);
+  2079		xa_destroy(&binding->bound_rxq_list);
+  2080		kfree(binding);
+  2081	}
+  2082	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
