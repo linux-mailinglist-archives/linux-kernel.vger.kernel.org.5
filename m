@@ -2,76 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D05809884
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 02:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CD7809889
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 02:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572906AbjLHBPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Dec 2023 20:15:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
+        id S1572900AbjLHBS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Dec 2023 20:18:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1572884AbjLHBPL (ORCPT
+        with ESMTP id S231491AbjLHBS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Dec 2023 20:15:11 -0500
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC1D171F;
-        Thu,  7 Dec 2023 17:15:17 -0800 (PST)
-Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-59052ab970eso610789eaf.1;
-        Thu, 07 Dec 2023 17:15:17 -0800 (PST)
+        Thu, 7 Dec 2023 20:18:57 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AEB585
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Dec 2023 17:19:04 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40b27726369so17210575e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Dec 2023 17:19:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701998116; x=1702602916; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1701998342; x=1702603142; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kMotijnh/qiarlNtyEfMGI6pNts/0ixAszGWpmQazv8=;
-        b=ebr/03kWW+Oh42WDQ/OrWQJngM0B1CICqrE4Av5RiQkxpEWB1XZMV3StNY6N2tBgxq
-         6wM1iYNY7qOpYD9AdAJ/MjMWaoL+6jpwfBGaj52ogdMVn+q+9NJvXL12f3krYyMxigjy
-         O6FVkWtCYoKSQ1Pb04zTAy5rTND75EPzV/y7hGJlpU/ldIaAOBt1LXf5MLKxsRf1nkIc
-         s3MISkFaQkH+jjLdbrIou9+ZbniXCyQB91/7ZrhmGK+QQQdyRuOZqtdtHpDt95NTYP8f
-         4WmGkG7qIAcTGqGYXdrZqbs5XJV99R3wVYlp1zYes79j8aDb6nFkM5yGv/GX+vCCJVb3
-         mUvA==
+        bh=NYzwSCPqiLl7k8qbCaz0m1NIvdf+DIxXUY3+wg3ee94=;
+        b=E9thBKFL18i+pJ5L25jNA6tVkGftyHb3+sNN/BHAu5MicLbZH0Xpc1hYWF4o/aXbUX
+         oNlO1TDm3jroN6PodcwQqAeVhHItH2IOFrkGaDzoG1OhRfKZulOtNMsVAbyIoRXwT/Yg
+         7SoCeTZvOMWKhVpLn52ot2it0o3pd9p00BzaRmU3rliZMCPmN+Iq2QAUGnDLLrOWJRq4
+         ie+brBLyJ8i4rHoDqoqzll9+tEhIZ+/O9GHQs6T6dygsIzAVav5cRg2+whSkDr1y1cLM
+         9UwN3VW6hGrigR48VGkM+J2CYQP18eVlfKQEnVrPPQPM3/QtYvM3jb6pJceTNYbQ/ZTn
+         FQRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701998116; x=1702602916;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701998342; x=1702603142;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kMotijnh/qiarlNtyEfMGI6pNts/0ixAszGWpmQazv8=;
-        b=DMQD26oO6L+0wg+Y6tf5S7QJK7C3IDcZrfaHiN9MMDoPvkVQhg8POr8BAyrHTlJUV3
-         bzf88C2e9bsOkKWTGBnHxtXSqhX/VUKf3jGYGu6Ev7SFMlf4lYskSnWeVOfmzOtyCihM
-         n/fnrwO8qb51zp89E68sr1PS0Cu/Yd/wZP4A68d5ZMWGD1fClh0ufh1JRuoh23Uhu+6E
-         2cfOO8duwMXcwXmOdUsBka6fq1SP7EXe4RJ1TC7FZUWJQckdxzv5bX7N35gZGdpKAbVr
-         +scGQ6ImHDAGjkxzKTS9lS+FHlHydPmhPc0fYkfoqnzbUobmczKN1m7liip7Y9UX/dnl
-         TiMA==
-X-Gm-Message-State: AOJu0Yz4ubpl0tTO8k/IAGEDy4GY5OnMj7P6PkcLKKx7a/xCw6bh9AVJ
-        pwvz3bOIGJbyxw/tvvyIwN0=
-X-Google-Smtp-Source: AGHT+IGOOVBSFoaAoGYjPbsMs6QasYWQhIA4Z8UtwX3Se0kT2Qsz/Gd7BhSQaY8N6FQtPoCIb63Vnw==
-X-Received: by 2002:a05:6870:799:b0:1fb:788:e8ba with SMTP id en25-20020a056870079900b001fb0788e8bamr63989oab.53.1701998116381;
-        Thu, 07 Dec 2023 17:15:16 -0800 (PST)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id ps5-20020a0568709e0500b001fb33181cfasm76280oab.55.2023.12.07.17.15.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 17:15:15 -0800 (PST)
-From:   Chen Wang <unicornxw@gmail.com>
-To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
-        palmer@dabbelt.com, paul.walmsley@sifive.com,
-        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
-        guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
-        samuel.holland@sifive.com
-Cc:     Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH v6 4/4] riscv: dts: add clock generator for Sophgo SG2042 SoC
-Date:   Fri,  8 Dec 2023 09:15:08 +0800
-Message-Id: <7017ba0ffc736103339af041ec014a8cf209bc11.1701997033.git.unicorn_wang@outlook.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1701997033.git.unicorn_wang@outlook.com>
-References: <cover.1701997033.git.unicorn_wang@outlook.com>
+        bh=NYzwSCPqiLl7k8qbCaz0m1NIvdf+DIxXUY3+wg3ee94=;
+        b=RodoqFArT69Yok8EZGvZmNfW2duiHsDzvXNHAB3coWdTRMSsxjAshrbr+mMlNMV/K9
+         7y2l9UvmZptclZIJOljfG0H2A5zhbXEhigVizuYr0aIriJndbj9E/7D4sRMUcNc14/ol
+         DaEhQoGCsKHu2knHM+R5s0m93xvdF1MRGPvBRCKuPZEO22hDvEr3pdtnn4AM/xRPqpCk
+         WXDSEcR+pnV8z5ukGcyyBckAzA1cOWAijpFgKZQ0Hi84w59Olc0/xbS/VPnN5K0t5Rgb
+         xFJUiFOZue9vgW79tYZPe5uct2iTIN81FaLpzQVukLo2zciRMAg6T1aCJXCuxcrrYvZt
+         EksA==
+X-Gm-Message-State: AOJu0Yz7/336qFuief437LP+xvfHyRN+RTE7RIGHbiuJYZ4TUSz8l/7O
+        TLrjD8NnF0RWk+AaM7Oe9VugzZ/FaADYvbAxsKYHHQ==
+X-Google-Smtp-Source: AGHT+IG+m5ndDrZYwAjGiJo+XbvTuXbn4cv9JA7hIaiio0HiC93zA6LGU2W0vDdt642q9QLDRGH9i6qmYPagNCY64U4=
+X-Received: by 2002:a05:600c:246:b0:40b:5e59:da8d with SMTP id
+ 6-20020a05600c024600b0040b5e59da8dmr2133389wmj.160.1701998342457; Thu, 07 Dec
+ 2023 17:19:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20231111014933.1934562-1-davidai@google.com> <20231111014933.1934562-3-davidai@google.com>
+ <20231115062932.vz2tyg6wgux5lx6t@vireshk-i7>
+In-Reply-To: <20231115062932.vz2tyg6wgux5lx6t@vireshk-i7>
+From:   David Dai <davidai@google.com>
+Date:   Fri, 8 Dec 2023 10:18:51 +0900
+Message-ID: <CABN1KCKfCWB6fVAuMSN9AdJOe-zueNMPFUdDnKLcq-uetz2ZFQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] cpufreq: add virtual-cpufreq driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Masami Hiramatsu <mhiramat@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        Gupta Pankaj <pankaj.gupta@amd.com>,
+        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,142 +88,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Wang <unicorn_wang@outlook.com>
+Hi Viresh,
 
-Add clock generator node to device tree for SG2042, and enable clock for
-uart.
+Apologies for the late reply,
 
-Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
----
- .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  |  4 +
- arch/riscv/boot/dts/sophgo/sg2042.dtsi        | 79 +++++++++++++++++++
- 2 files changed, 83 insertions(+)
+On Wed, Nov 15, 2023 at 3:29=E2=80=AFPM Viresh Kumar <viresh.kumar@linaro.o=
+rg> wrote:
+>
+> On 10-11-23, 17:49, David Dai wrote:
+> > diff --git a/drivers/cpufreq/virtual-cpufreq.c b/drivers/cpufreq/virtua=
+l-cpufreq.c
+> > +static unsigned int virt_cpufreq_set_perf(struct cpufreq_policy *polic=
+y)
+> > +{
+> > +     writel_relaxed(policy->cached_target_freq,
+>
+> Drivers shouldn't be using the cached_target_freq directly. Use the targe=
+t freq
+> or index passed from cpufreq core.
 
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts b/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-index 49b4b9c2c101..0b3b3b2b0c64 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-+++ b/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-@@ -14,6 +14,10 @@ chosen {
- 	};
- };
- 
-+&cgi {
-+	clock-frequency = <25000000>;
-+};
-+
- &uart0 {
- 	status = "okay";
- };
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042.dtsi b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-index 93256540d078..f08c41dda216 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-+++ b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/clock/sophgo,sg2042-clkgen.h>
- 
- #include "sg2042-cpus.dtsi"
- 
-@@ -18,6 +19,12 @@ aliases {
- 		serial0 = &uart0;
- 	};
- 
-+	cgi: oscillator {
-+		compatible = "fixed-clock";
-+		clock-output-names = "cgi";
-+		#clock-cells = <0>;
-+	};
-+
- 	soc: soc {
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
-@@ -311,12 +318,84 @@ intc: interrupt-controller@7090000000 {
- 			riscv,ndev = <224>;
- 		};
- 
-+		sys_ctrl: system-controller@7030010000 {
-+			compatible = "sophgo,sg2042-sysctrl";
-+			reg = <0x70 0x30010000 0x0 0x1000>;
-+		};
-+
-+		clkgen: clock-controller@7030012000 {
-+			compatible = "sophgo,sg2042-clkgen";
-+			reg = <0x70 0x30012000 0x0 0x1000>;
-+			sophgo,system-ctrl = <&sys_ctrl>;
-+			#clock-cells = <1>;
-+			clocks = <&cgi>;
-+			assigned-clocks = \
-+				<&clkgen DIV_CLK_FPLL_RP_CPU_NORMAL_1>,
-+				<&clkgen DIV_CLK_FPLL_50M_A53>,
-+				<&clkgen DIV_CLK_FPLL_TOP_RP_CMN_DIV2>,
-+				<&clkgen DIV_CLK_FPLL_UART_500M>,
-+				<&clkgen DIV_CLK_FPLL_AHB_LPC>,
-+				<&clkgen DIV_CLK_FPLL_EFUSE>,
-+				<&clkgen DIV_CLK_FPLL_TX_ETH0>,
-+				<&clkgen DIV_CLK_FPLL_PTP_REF_I_ETH0>,
-+				<&clkgen DIV_CLK_FPLL_REF_ETH0>,
-+				<&clkgen DIV_CLK_FPLL_EMMC>,
-+				<&clkgen DIV_CLK_FPLL_SD>,
-+				<&clkgen DIV_CLK_FPLL_TOP_AXI0>,
-+				<&clkgen DIV_CLK_FPLL_TOP_AXI_HSPERI>,
-+				<&clkgen DIV_CLK_FPLL_AXI_DDR_1>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER1>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER2>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER3>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER4>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER5>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER6>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER7>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER8>,
-+				<&clkgen DIV_CLK_FPLL_100K_EMMC>,
-+				<&clkgen DIV_CLK_FPLL_100K_SD>,
-+				<&clkgen DIV_CLK_FPLL_GPIO_DB>,
-+				<&clkgen DIV_CLK_MPLL_RP_CPU_NORMAL_0>,
-+				<&clkgen DIV_CLK_MPLL_AXI_DDR_0>;
-+			assigned-clock-rates = \
-+				<2000000000>,
-+				<50000000>,
-+				<1000000000>,
-+				<500000000>,
-+				<200000000>,
-+				<25000000>,
-+				<125000000>,
-+				<50000000>,
-+				<25000000>,
-+				<100000000>,
-+				<100000000>,
-+				<100000000>,
-+				<250000000>,
-+				<1000000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<100000>,
-+				<100000>,
-+				<100000>,
-+				<2000000000>,
-+				<1000000000>;
-+		};
-+
- 		uart0: serial@7040000000 {
- 			compatible = "snps,dw-apb-uart";
- 			reg = <0x00000070 0x40000000 0x00000000 0x00001000>;
- 			interrupt-parent = <&intc>;
- 			interrupts = <112 IRQ_TYPE_LEVEL_HIGH>;
- 			clock-frequency = <500000000>;
-+			clocks = <&clkgen GATE_CLK_UART_500M>,
-+				 <&clkgen GATE_CLK_APB_UART>;
-+			clock-names = "baudclk", "apb_pclk";
- 			reg-shift = <2>;
- 			reg-io-width = <4>;
- 			status = "disabled";
--- 
-2.25.1
+We were trying to avoid rounding to frequency table entries to provide
+more accurate frequency requests. However, we didn't find any
+significant power or performance regressions using the frequencies
+from the table, so I'll send another patch series using your
+suggestion.
 
+>
+> > +static int virt_cpufreq_cpu_exit(struct cpufreq_policy *policy)
+> > +{
+> > +     topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_VIRT, policy->=
+related_cpus);
+> > +     kfree(policy->freq_table);
+> > +     policy->freq_table =3D NULL;
+>
+> No need of doing this. Also the order of above two calls is wrong anyway.
+
+Can you clarify this point a bit more? Are you suggesting to just
+remove setting policy->freq_table to NULL and swap the ordering
+freeing the freq_table vs clearing the topology source? I can
+alternatively use dev_pm_opp_free_cpufreq_table to mirror the init.
+
+Thanks,
+David
+
+>
+> --
+> viresh
