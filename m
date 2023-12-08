@@ -2,119 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3649080AAA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5057380AAA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 18:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574477AbjLHRWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 12:22:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34320 "EHLO
+        id S235996AbjLHRXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 12:23:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236004AbjLHRWT (ORCPT
+        with ESMTP id S232481AbjLHRWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 12:22:19 -0500
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8D21BDD;
-        Fri,  8 Dec 2023 09:22:25 -0800 (PST)
-Received: from [192.168.1.104] (178.176.72.145) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Fri, 8 Dec
- 2023 20:22:17 +0300
-Subject: Re: [PATCH v4 05/22] MIPS: Fix set_uncached_handler for ebase in
- XKPHYS
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        <linux-mips@vger.kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        =?UTF-8?Q?Th=c3=a9o_Lebrun?= <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-References: <20231208161249.1827174-1-gregory.clement@bootlin.com>
- <20231208161249.1827174-6-gregory.clement@bootlin.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <84c0be90-a4f6-98b4-3011-8e3efbf6d5c5@omp.ru>
-Date:   Fri, 8 Dec 2023 20:22:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 8 Dec 2023 12:22:51 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3423C10EF;
+        Fri,  8 Dec 2023 09:22:57 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 61CC91F461;
+        Fri,  8 Dec 2023 17:22:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702056175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UAUNZmXImFEly07WmlFPk/rsfz0i0CpByRb3j3+Iq3w=;
+        b=n5QvPTqdKgnIQ7TkatCriUq/ZLfkJnZf0XONhD3dHvd9HhCnmP4AA4KZWTPIx1ipHIyTIi
+        /3Hu+1qjCghRvq8cv/fyUKeHm+20wZA2GO7ZTiA4V7EhBqsWrJlPWOLweVuMQ5fCsA18cP
+        VtlAzmzSLpR1VlnInB/hAIavhryomT0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702056175;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UAUNZmXImFEly07WmlFPk/rsfz0i0CpByRb3j3+Iq3w=;
+        b=POX53lvAyWq1i0hdNqrmb+7w6H+rtpn5UbMBV4yNZxlkZSuvwbb+ZVRwozcafxOsbyT1HJ
+        zoyTu6+TinSJ76Bg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702056174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UAUNZmXImFEly07WmlFPk/rsfz0i0CpByRb3j3+Iq3w=;
+        b=OsByj8iXJQyBMkx30AGQOtPSKx+m+Lqk1WBsX9ZDoBadLPnJamq/fwffbg6garpPjycDNw
+        cp1GlwGrDTOLf/OR1wa8DGBwnBhBi1xZrDKyGGHdZqv8u7nneAWjc3SkBXQU6DzWOz908w
+        JIIIaS4pxDWfNKaz365sHpWfiEAm9Ks=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702056174;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UAUNZmXImFEly07WmlFPk/rsfz0i0CpByRb3j3+Iq3w=;
+        b=50+V6Tu6xyOcSIJou+0iGZ3Js9M6iFM6iIF7whqSMwix/y5OxSpB+RK8LqHgBSjw22TVtn
+        FfGVjLPwaqglp8Dw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4E5B213A6B;
+        Fri,  8 Dec 2023 17:22:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id ZhbTEu5Qc2XTSwAAn2gu4w
+        (envelope-from <jack@suse.cz>); Fri, 08 Dec 2023 17:22:54 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id CD7E6A07DC; Fri,  8 Dec 2023 18:22:49 +0100 (CET)
+Date:   Fri, 8 Dec 2023 18:22:49 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Cc:     brauner@kernel.org, linux-fsdevel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: super: use GFP_KERNEL instead of GFP_USER for super
+ block allocation
+Message-ID: <20231208172249.3274eh4cjdnwhjch@quack3>
+References: <20231208151022.156273-1-aleksandr.mikhalitsyn@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20231208161249.1827174-6-gregory.clement@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.72.145]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 12/08/2023 17:06:02
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 181987 [Dec 08 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 6 0.3.6 62f5a4619c57459c9a142aa1486ed27913162963
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.72.145 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.145
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/08/2023 17:10:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 12/8/2023 1:21:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208151022.156273-1-aleksandr.mikhalitsyn@canonical.com>
+X-Spam-Score: 8.85
+X-Spamd-Bar: +
+Authentication-Results: smtp-out2.suse.de;
+        dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=OsByj8iX;
+        dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=50+V6Tu6;
+        dmarc=none;
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [1.79 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+         TO_DN_SOME(0.00)[];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         RCPT_COUNT_FIVE(0.00)[6];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_TRACE(0.00)[suse.cz:+];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-0.20)[-0.991];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-3.00)[100.00%];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         FROM_HAS_DN(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-1.00)[-0.999];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,canonical.com:email,linux.org.uk:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: 1.79
+X-Rspamd-Queue-Id: 61CC91F461
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/23 7:12 PM, Gregory CLEMENT wrote:
-
-> From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+On Fri 08-12-23 16:10:22, Alexander Mikhalitsyn wrote:
+> There is no reason to use a GFP_USER flag for struct super_block allocation
+> in the alloc_super(). Instead, let's use GFP_KERNEL for that.
 > 
-> ebase may be in XKPHYS if memblock unable to allocate memory
-
-   Is unable...
-
-> within KSEG0 physical range.
+> From the memory management perspective, the only difference between
+> GFP_USER and GFP_KERNEL is that GFP_USER allocations are tied to a cpuset,
+> while GFP_KERNEL ones are not.
 > 
-> To map ebase into uncached space we just convert it back to
-> physical address and then use platform's TO_UNCAC helper
-> to create mapping.
+> There is no real issue and this is not a candidate to go to the stable,
+> but let's fix it for a consistency sake.
 > 
-> Co-developed-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-> Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-> Co-developed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
 
-  Hm, too many developers for such simple patch... :-)
+Yeah, since we allocate other filesystem objects with GFP_KERNEL as well I
+agree. Feel free to add:
 
-[...]
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-MBR, Sergey
+								Honza
+
+> diff --git a/fs/super.c b/fs/super.c
+> index 076392396e72..6fe482371633 100644
+> --- a/fs/super.c
+> +++ b/fs/super.c
+> @@ -323,7 +323,7 @@ static void destroy_unused_super(struct super_block *s)
+>  static struct super_block *alloc_super(struct file_system_type *type, int flags,
+>  				       struct user_namespace *user_ns)
+>  {
+> -	struct super_block *s = kzalloc(sizeof(struct super_block),  GFP_USER);
+> +	struct super_block *s = kzalloc(sizeof(struct super_block), GFP_KERNEL);
+>  	static const struct super_operations default_op;
+>  	int i;
+>  
+> -- 
+> 2.34.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
