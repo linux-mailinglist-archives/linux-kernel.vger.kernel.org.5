@@ -2,217 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9130980A781
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E3880A787
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 16:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574314AbjLHPer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 10:34:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        id S1574352AbjLHPey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 10:34:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232481AbjLHPep (ORCPT
+        with ESMTP id S1574342AbjLHPeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 10:34:45 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2049.outbound.protection.outlook.com [40.107.237.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF4810EB;
-        Fri,  8 Dec 2023 07:34:51 -0800 (PST)
+        Fri, 8 Dec 2023 10:34:50 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2054.outbound.protection.outlook.com [40.107.243.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC25BFB;
+        Fri,  8 Dec 2023 07:34:55 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kJyoLVObNIZO/xhe6kfEoc3cmWH9WoZRn+ovdoIHvHrJRd/8X2akpxlhqMYuBzkDubMQBD0VWYKYE8WkFcJBSXEhnKINCwhvnYjxR0NY8nbhodtKb4SM0PErr9PDoixh2HnWrPrDo73k+wUMl+GqA42K6RyIFiuHAUYyEifAzyazagrNC6dp2epKk5oBrgEYAzGvLzfuzgNz20kNkQP3f0rBuae9tYpiVKWBKAvZ2H6s8BFspIS8yfIktletz9sDAERSRMaMANmlp8sNUDoZAYo7be5QkfmgzIi6IgBFng8u5S/MT+y2y0A4psDfD1F2TYr2ARBBI+hpz9AAwL3ngw==
+ b=Iduiq2y2jEaWqmnp8hDLc+GXInlCv5qHF9OqAFJgXGjRAMhZVU67aUnJN558L8ybW8mcw7Z/8gWZdA8wXyYAq+GC/WI3UPxIHxHMRaAi5kgDsm3f+YL6WUeiGwVGrUPj0cfZV+671EjSVvJnSmdiKGtH4P/HvNcR6rjwOl6rV3Ou81TkEtXfoLu2ZyL/iZuA3n4ftYSDVvyGIqUfedrKVOy3Iy/c6a7Sq6cd2XE9iK4gtBjAhu79qKQoBYUQLHair3PVstxMwXfLVEB9MNM5RPQWbhZ+WJ69/Z/F6stCQUm9NN6XN/q+355Pmq4ynYRETiiZNr0iv5SdPh/QWCV49Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XEaiplXiFsMqhygc0qR4UdYz9nBvmSVYOgtnl68lzVE=;
- b=RFeLzP0l+9Srtrc1/47JWSyFHUllUN5sZE60NU31tao37VHVp7CybXk6+5uv6iOSxJcSbbACdZShmAo1HJHt1dgIFHZr7wFnJjpFXl7CvbFaRd9LB7LWi8SKXZsM2CA7x3JCkiPfldnsDq2xsshEBZxvjVcOzsHYhDKqfT2CfsVoYpekCBi3lDuW2ykIGzH9BZNw8Nq/mgSfNmKf8jolCSn7WsnHg811V/TJv5aSE/DNlhYAljXizjod2ezr2SDPz0FL7iXJoYcjoIRkYPlQD0q3dRRm9lhUqlp0PsEQkc7iH6buJhEAOVexh4nXYPumjvHQX9gv3/S3yvtQvL5ZtA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XEaiplXiFsMqhygc0qR4UdYz9nBvmSVYOgtnl68lzVE=;
- b=dKcCvdns25BGk5PcgN+IEkjXKBpWK154xV1OCQdRsgIqFF3S4Cd8h5Bmy7hqiy+XhU57/V3BbvdEgGArRXxjKHVlY1QPsHLPs0okzqHeFwpnxVY2NUYxULxlLzgIfBdAg7/BSJl0wgkD40EYRlMr5uAwV7N+IVZQJ9F4YVWf4QdX7TNW7wEM541IIbrm86bRgl3a9kfZPg4eUqZzFaZc3Um7Ci6V3TOLPyd8oMr0EKAu1eZqTSjEyvjSl+L8+d/Y4DC7Y32uscrzOzt6Akd/2Obapq8l38oZq3/I5UD7ZrWJXsFVSoOzSL8U1RRiYr/QzXikjuFjJ7RFOEHer/FpbQ==
-Received: from BYAPR21CA0015.namprd21.prod.outlook.com (2603:10b6:a03:114::25)
- by DS7PR12MB6312.namprd12.prod.outlook.com (2603:10b6:8:93::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7068.28; Fri, 8 Dec 2023 15:34:47 +0000
-Received: from MWH0EPF000989E8.namprd02.prod.outlook.com
- (2603:10b6:a03:114:cafe::99) by BYAPR21CA0015.outlook.office365.com
- (2603:10b6:a03:114::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.14 via Frontend
- Transport; Fri, 8 Dec 2023 15:34:47 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- MWH0EPF000989E8.mail.protection.outlook.com (10.167.241.135) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7068.20 via Frontend Transport; Fri, 8 Dec 2023 15:34:47 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 8 Dec 2023
- 07:34:38 -0800
-Received: from [10.41.21.79] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 8 Dec 2023
- 07:34:35 -0800
-Message-ID: <2cfbc633-1e94-d741-2337-e1b0cf48b81b@nvidia.com>
-Date:   Fri, 8 Dec 2023 21:04:32 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 2/2] cpufreq: Wire-up arch-flavored freq info into
- cpufreq_verify_current_freq
+ bh=+eWavWN28GH2sKmampkNxgp4RWhu9GuiIwTZkighzq8=;
+ b=Kq1cXzjVs/04GknL1CbqiQVrqg3ql+jP5WrzyDheqzGlQW40/x9GCMamj8mlVLxZdDJOrbRq62IampzygZGw5XtaOg09qf9uyb3vA/+DC64C4jylp0w3uxQgu9g6yVYl4uVvBepjSl2cTysbSTrX6zcxibOMxcWox6UQddK/TybYvhnV0/w7fslT5wyEmT/FFKlsEiPxfulpQtA18JuNDSGdHc0D10x2rmEPkeVHkRAaY/l2Z1uIiTa1Y/w8/PFQe82hoHHCtSWakJVuJhZxH77pOM1YY4Je1SR0Tx1KgBsrzzxW5G0Ybr6JqSmSLsUSGIuiNQTTlSXNS3hJyWNpzw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
+ dkim=pass header.d=talpey.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=talpey.com;
+Received: from SN6PR01MB4445.prod.exchangelabs.com (2603:10b6:805:e2::33) by
+ DS7PR01MB7805.prod.exchangelabs.com (2603:10b6:8:7c::15) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7068.28; Fri, 8 Dec 2023 15:34:48 +0000
+Received: from SN6PR01MB4445.prod.exchangelabs.com ([fe80::e38:e84:76d4:5061])
+ by SN6PR01MB4445.prod.exchangelabs.com ([fe80::e38:e84:76d4:5061%2]) with
+ mapi id 15.20.7068.028; Fri, 8 Dec 2023 15:34:48 +0000
+Message-ID: <28ae8ff9-2437-4185-bdd7-40fb4c2faf46@talpey.com>
+Date:   Fri, 8 Dec 2023 10:34:46 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ksmbd: validate the zero field of packet header
 Content-Language: en-US
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-CC:     Beata Michalska <beata.michalska@arm.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        <sudeep.holla@arm.covm>, <will@kernel.org>,
-        <catalin.marinas@arm.com>, <viresh.kumar@linaro.org>,
-        <rafael@kernel.org>, <yang@os.amperecomputing.com>,
-        <linux-tegra@vger.kernel.org>, Sumit Gupta <sumitg@nvidia.com>
-References: <20231127160838.1403404-1-beata.michalska@arm.com>
- <20231127160838.1403404-3-beata.michalska@arm.com> <ZWXy0h/fFfQh+Rhy@arm.com>
- <3e6077bb-907c-057f-0896-d0a5814a4229@nvidia.com> <ZW8D5TfSwuJfdYeD@arm.com>
- <c8b4d391-681e-f4a6-2839-e5951429f043@nvidia.com> <ZXGOvsE4mKOsdoLp@arm.com>
-From:   Sumit Gupta <sumitg@nvidia.com>
-In-Reply-To: <ZXGOvsE4mKOsdoLp@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Namjae Jeon <linkinjeon@kernel.org>, linan666@huaweicloud.com
+Cc:     sfrench@samba.org, linux-cifs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linan122@huawei.com,
+        yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
+        yangerkun@huawei.com
+References: <20231208065647.745640-1-linan666@huaweicloud.com>
+ <CAKYAXd9t-J+BV72u_JdYD=MrOyat1Nx1=Jo8rBa59qtsrNviDg@mail.gmail.com>
+From:   Tom Talpey <tom@talpey.com>
+In-Reply-To: <CAKYAXd9t-J+BV72u_JdYD=MrOyat1Nx1=Jo8rBa59qtsrNviDg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: BL1PR13CA0072.namprd13.prod.outlook.com
+ (2603:10b6:208:2b8::17) To SN6PR01MB4445.prod.exchangelabs.com
+ (2603:10b6:805:e2::33)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000989E8:EE_|DS7PR12MB6312:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7fd5afc6-830c-489f-c03d-08dbf80335aa
+X-MS-TrafficTypeDiagnostic: SN6PR01MB4445:EE_|DS7PR01MB7805:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3aaaee6c-9b06-4754-1584-08dbf8033646
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +G6tJH6NC0kILMiADEdlRA9HInYXrQzmOm/zwsoG3oHXgh9fy+yTp00wCGLEXJ28HOFpZV+vu9mCA0XFIMXDoxGYu/j6r7CiP4PH/g/WqN8ibSZW3UQWH5ORIk+OSQkY044NYvtt9NnGj9RuJaLMrTjPSxv6cRSlBYmd6lXprZjkOmpCppsWkkiL3wM7/TOAqHVg6QxGlBlj7IUViVR64yEzRRBe/yaoYuap7xxPLFdZfSK2+B1nqKdvwkbnyeAdfdqKRgfD+OOzODos/0sychLjPUSRa8IfTS2Z6YyjHkBgVaVp3IFoIt3/bOwxPfZRSQVNxs2HZg6a1MBrlRsRUuIc9F7qJpnTkZvQ3ssjy/MiOTFSOw+Wgl2ibkS94M2TQVwKeB1PxqYp1k8cAAKqySHj69uq5jc04USyCQYQhQ1BNo+yFeRmL7xSl8SPP6eCEVimCvaMit7r7y4xrnG2V74/EcQGb2q2M6lwqQGhlSQSLQKwu4Btr8uQj5a84axsBCAeFcrFgxilgE9iEfD3k6WF2UscB/myVambfKovUZweJwDydwR2jJO4KqgBmkLl7yR418JJ0TNiyJJXUMbFueJ478IUHhjN9Dy0PweVxuf+KlxSxB1Jb4Cu3466Bfg4hHNfxinxESMqqVHVOY5RbVbWBS4/YY4lH9y9j36bb559h7Df3jH63Y/EFWrDaz4TfRqCmOEwNsk7VFNeqYAdq35ZFeERoPYM2wQETh6khHXPLPF/gQJaVm9fWb1qPBBJ02AHPUfbrcWzLa52UOh1TwBOXCfWuRs03dl2xjgz2jmAvJ1Ywbi8ABE7bM+PMxW0PtnBRdLBgyCafxDjzsXDcOj/ir8B3sF6VfYgX3Ap4ys=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(346002)(376002)(396003)(230922051799003)(451199024)(186009)(1800799012)(82310400011)(64100799003)(36840700001)(40470700004)(46966006)(26005)(16526019)(2616005)(107886003)(966005)(478600001)(6666004)(47076005)(36860700001)(426003)(336012)(83380400001)(7416002)(2906002)(5660300002)(41300700001)(54906003)(70206006)(70586007)(16576012)(4326008)(8676002)(8936002)(316002)(6916009)(36756003)(356005)(7636003)(82740400003)(31696002)(86362001)(40480700001)(40460700003)(31686004)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 15:34:47.1092
+X-Microsoft-Antispam-Message-Info: PzBRVEcMB/Yg1ysYLIvMSygWXh8hkRc0/7OBn55q2k4dsaCkEdTAzWRpS1FEdaEKfNfFYt2YB9svivdML+4atWYAmWpUrAkMZhY3gFvlJY4FrlivdSNjUG5LW77eYTG7tZKYv5YOxm4j9B1NbGGYG0O6Q/ZvCET3bIyU8G4eT02HzjHfOpltrKyC9wsr+l1FZes2w9sTpcdDfYjWE/E8kx6wZJsPMW4HwXlpOJEcuP7nJZgY5fNIaqtG/D3x2sEHNnxdqhWWnCd0QFYn9cWaohNOdZt9X0PNXb14qSIVIXT/Bws7MnnTZsz2yxnTlnS6TR3uZcPh/auJoeYKUPIYQtbRh/sEJ9Pqtxpv82jM6HxijtkWWCYCoetQzIs43qv8sVzFEqfTWuepEN8EoID+DVbR0jRMzGZsaX1mgsApLSjiO8g/njmDcSIdpW8ClKt9paaaKZVksw7nN/DjhYI1ImZKjYKSii0A9kfzevzjUTqO0IHCRzDm9EBmnq8Q9EIfS3tWleS9+mNo5/O7YyhfktY/xf9dHc2TU37KJPUMCWbqGs0HYyEPywy6CB989b7wem8cfBdNbL2RH3UeIO2OIP8StilHO2rJfUyrZvmv6rs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR01MB4445.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(39830400003)(366004)(346002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(36756003)(41300700001)(7416002)(15650500001)(5660300002)(2906002)(83380400001)(66476007)(66556008)(66946007)(6512007)(478600001)(966005)(6486002)(53546011)(6506007)(2616005)(26005)(31696002)(38100700002)(4326008)(8676002)(8936002)(86362001)(31686004)(316002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UnlxNXEzenlNUm0xcHNxblBhK04ySUhUZkRPZVQ3dDlwdmMzTkE3cUJsYnhx?=
+ =?utf-8?B?Z1NrU2llSTNiY3M3NElKaE9lZlMxMC8ybWl1RVNMR05IR2NMRVlmamNhZzFY?=
+ =?utf-8?B?ODkwQ0hjUzdzelg2Z29iTGZ0am54RUNyY2tCdVpiVzE0QmFFUjBCU0o1Rzhi?=
+ =?utf-8?B?ZlowelJONWxUNitJNmhYYjFWeEhVWnRDMWRSMld3ZzFDb0l6VS8vTHlQM1Zu?=
+ =?utf-8?B?V0o5dkQ0MjIrTUJKMGxYSEg0OWJGTjZIYUp5aUdTbGVjNVluMUJncnNGeEp2?=
+ =?utf-8?B?MitDUGtoY01QTGxuVndiK2grN1c1OWJJZ3NKbWJrNy9QbFdPRmxYd0QrRzBZ?=
+ =?utf-8?B?WkViQ0cvcGk2TjBKdHN3UWRMRVJqa3Vqb1BtVW95RXZTajhCN2NrM3dON2U3?=
+ =?utf-8?B?SjUwaFREQlF0MnZYYXBTN0ZKR1o5M0czREcxdzBQME4rTnJzK2M5am9SVUF6?=
+ =?utf-8?B?N3FrUGdRNjNYVjVzNGE1aWNxWkIwdmFzU0gxRXFtM3NmN3dCSUQ5bVdDV2My?=
+ =?utf-8?B?UzJyWElSUVRWdVVRRWZDSUg4NG1GeE1PMis3RitITU1teUFVZ01nZ1N4Mld2?=
+ =?utf-8?B?Wjh4T1FyR0pqR2ZFVVBLQkFUWW1qZ3AvanhzSVk1L2JPa3NFWm90Lyswc0Yx?=
+ =?utf-8?B?Mzh0djhOdERQdGUwUWNqRWVwQWdhamxGRjhZT3pHUWpDb010bmRwR0hXc2J2?=
+ =?utf-8?B?VHRUVHdsUGtzOHBTOFdEbWdWUUNsbEc3VzlqZi9qVXM2dmREWVVlM2tLTFRN?=
+ =?utf-8?B?NWdUbHRxblA3bG9WdDFUNmxHWG5nYkRpeUY2bkVFaVFhN3JEcEZPdGlzU2Vt?=
+ =?utf-8?B?OXJ4ckpJWkdQT1NZdzdnWUtQVndvb1FYRUlWbytUTVUzZDVKVkdhZ2xrUVRM?=
+ =?utf-8?B?OWFLUllhQnUvQUtHb0l0d1RONWNNWUU3YXVoeTJVRmJRcUJlVDdWUnY5WmRB?=
+ =?utf-8?B?dkh1ZEZNRWFIWDJoaXBvNlBSaVZDZ2oxMmc3QnhnR241dU16ci9VN2FSSmpu?=
+ =?utf-8?B?UGZWY3hzNC9BcFdkaXgxck5aV3VJaW5BSXhrTjRTQnVPQWpKWklDTkpsSTV4?=
+ =?utf-8?B?NWQwM1pFbHVxYXFwdUlxSElXM3pFYUVtWWh0Vm5rdFBjNnlhOU03WXRMS0Ft?=
+ =?utf-8?B?NW9NaUJsWk5hbkMyajVEV2NUZlBNcjE2QTRDNklhNHp6c3gvYUhPc1I4bjIz?=
+ =?utf-8?B?Rk9ZZHljU05uVndPcmhjdHZBMzRheHhzVVkvOWo0Mjk3UnRxcG5Na3JCaVlP?=
+ =?utf-8?B?NUFzTDFlMWJSR0dzKzN5R2MzRlMrL0FkZnB0UlZEUkN0ZmkwajZ1dVlqMkNu?=
+ =?utf-8?B?K041eVBXZTFOSG5zYVg1MWtJREh3QjRoMllEL08vYVVIVWRwVFZVRVByeFVX?=
+ =?utf-8?B?aEU4SFFraS9HRXNhL3lTaXRXckc2akJ6dG82Si9BUHpIOFk0M3dCTXJveGpw?=
+ =?utf-8?B?S1BBRlBGeThVK2g3cmlTcWh6OHUyNDZ3cTd4VVVVeWplcEU1bktwRm5DMDFC?=
+ =?utf-8?B?MjdOekhzc0ZTaE8zSktBSkJRWUJRMFVoaERCVlQ5aVhPUGpkMVdLSm5YdjlR?=
+ =?utf-8?B?U0lBQkFEdW5PQnhwck9UVE5RcFNSa2ZuRENreEJTNGdycUROTUV0c0s3L3Zm?=
+ =?utf-8?B?OTlsSjJjZ0JWdjc4SFFhTjRCYjJrQjltaVNmZ2lUS01pV1RDVFVaSkZFZU9R?=
+ =?utf-8?B?Ri9HSFh0SDBsOGRINUtYcWF3ZWNBeCtCaWlUZmtScTR4MGNoVERrY2RGWldx?=
+ =?utf-8?B?UXhqS2oxeFo1VnBpYlpsOFowYS9JMElJSWFPQXVhTzlVVURHZWR4WHJaY096?=
+ =?utf-8?B?bjNtem14U3JKNFgvcG5ib052TG5jNWgxMmhRUHpCem1jWk9pSU5WRHNleDVS?=
+ =?utf-8?B?ZzVuMkxrWXFlVU84L2w3SUgwSVlveU1IVGFBeG1DS2lmYTlXc1NnUGNWOW5G?=
+ =?utf-8?B?VXB5VEN6a1ZiT1lJeUpLb2ZHUmY0YjB3WHBzT211eVdCaGxZUnNyRUxxSC9U?=
+ =?utf-8?B?WkIyb1lXeldhanA0c2NkdGFhRWxndThGUVQzOVd6cWszT092Q3J3cXN0dE5r?=
+ =?utf-8?B?cmk2Tmp6cEd6RHRYcU9JM1Z1NFpRN0pWTk0xekp3U012eXFBYTRPV2x0TlFl?=
+ =?utf-8?Q?uTWgO0s2aaoo8iX4WrsIex9E5?=
+X-OriginatorOrg: talpey.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3aaaee6c-9b06-4754-1584-08dbf8033646
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR01MB4445.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2023 15:34:48.5680
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7fd5afc6-830c-489f-c03d-08dbf80335aa
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989E8.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6312
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FLMPryMGBGPTylEfEz+8IYkyeqHROWPCwKM8FIxWwmtMQnhTamghqQfRDCqsDtfd
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR01MB7805
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
->>>>>> --- a/drivers/cpufreq/cpufreq.c
->>>>>> +++ b/drivers/cpufreq/cpufreq.c
->>>>>> @@ -1756,7 +1756,8 @@ static unsigned int cpufreq_verify_current_freq(struct cpufreq_policy *policy, b
->>>>>>     {
->>>>>>          unsigned int new_freq;
->>>>>>
->>>>>> -     new_freq = cpufreq_driver->get(policy->cpu);
->>>>>> +     new_freq = arch_freq_get_on_cpu(policy->cpu);
->>>>>> +     new_freq = new_freq ?: cpufreq_driver->get(policy->cpu);
->>>>>
->>>>> Given that arch_freq_get_on_cpu() is an average frequency, it does not
->>>>> seem right to me to trigger the sync & update process of
->>>>> cpufreq_verify_current_freq() based on it.
->>>>>
->>>>> cpufreq_verify_current_freq() will at least modify the internal state of
->>>>> the policy and send PRE and POST notifications, if not do a full frequency
->>>>> update, based on this average frequency, which is likely different from
->>>>> the current frequency, even beyond the 1MHz threshold.
->>>>>
->>>>> While I believe it's okay to return this average frequency in
->>>>> cpuinfo_cur_freq, I don't think it should be used as an indication of
->>>>> an accurate current frequency, which is what
->>>>> cpufreq_verify_current_freq() expects.
->>>>>
->>>>> Sumit, can you give more details on the issue at [1] and why this change
->>>>> fixes it?
->>>>>
->>>>> [1] https://lore.kernel.org/lkml/6a5710f6-bfbb-5dfd-11cd-0cd02220cee7@nvidia.com/
->>>>>
->>>>> Thank you,
->>>>> Ionela.
->>>>>
->>>> cpufreq_verify_current_freq() also updates 'policy->cur' in POST
->>>> notification if the frequency from hardware has more delta (out of sync).
->>>>
->>>> As the value from 'cpufreq_driver->get()' is not reliable due to [1],
->>>> calling the 'get' hook can update the 'policy->cur' with a wrong value when
->>>> governor starts in cpufreq_start_governor().
->>>> And if the frequency is never changed after the governor starts during
->>>> boot e.g. when performance governor is set as default, then
->>>> 'scaling_cur_freq' always returns wrong value.
->>>>
->>>> Instead, the arch_freq_get_on_cpu() API updates 'policy->cur' with a more
->>>> stable freq value.
->>>>
->>>> [1] https://lore.kernel.org/lkml/20230418113459.12860-7-sumitg@nvidia.com/
->>>
->>> Got it, many thanks!
->>>
->>> As the code is right now in v2, arch_freq_get_on_cpu() is called on
->>> show_scaling_cur_freq(), so the problem you describe would not show up.
->>> policy->cur would still be incorrect, but 'scaling_cur_freq' would
->>> return the value from arch_freq_get_on_cpu().
->>>
->>> Would it be enough if arch_freq_get_on_cpu() gets also called from
->>> show_cpuinfo_cur_freq() instead of cpufreq_verify_current_freq()?
->>>
->>> Thanks,
->>> Ionela.
->>>
+On 12/8/2023 9:20 AM, Namjae Jeon wrote:
+> 2023-12-08 15:56 GMT+09:00, linan666@huaweicloud.com <linan666@huaweicloud.com>:
+>> From: Li Nan <linan122@huawei.com>
 >>
->> Yes.
->> I am not sure if making both the nodes 'scaling_cur_freq' and
->> 'cpuinfo_cur_freq' same is fine?
-> 
-> That would happen anyway if arch_freq_get_on_cpu() is called from
-> cpufreq_verify_current_freq().
-> 
-Yes, that will happen in both the cases.
-
-> In principle, according to [1], it would be correct to use it for
-> 'cpuinfo_cur_freq' and not 'scaling_cur_freq'. But the call from
-> show_scaling_cur_freq() is already there before these patches,
-> introduced a long time ago for x86.
-> 
-> The topic was discussed at [2] and the agreement so far was that it
-> would be best to keep the behaviour the same for both x86 and arm.
-> 
-Looking at the previous discussion in [2], seems to be fine.
-
-Best Regards,
-Sumit Gupta
-
-> I don't like going against the user-guide, but these patches don't
-> actually go against the user-guide. The old call to
-> arch_freq_get_on_cpu() from show_scaling_cur_freq() goes against it.
-> But I agree that's something necessary to keep, as legacy for x86.
-> Additionally, you also mentioned that you'd prefer to have a more
-> accurate frequency returned for 'scaling_cur_freq'.
-> 
-> [1] https://www.kernel.org/doc/Documentation/cpu-freq/user-guide.txt
-> [2] https://lore.kernel.org/lkml/20230609043922.eyyqutbwlofqaddz@vireshk-i7/
-> 
-> Thanks,
-> Ionela.
-> 
+>> The SMB2 Protocol requires that "The first byte of the Direct TCP
+>> transport packet header MUST be zero (0x00)"[1]. Commit 1c1bcf2d3ea0
+>> ("ksmbd: validate smb request protocol id") removed the validation of
+>> this 1-byte zero. Add the validation back now.
 >>
->> Best Regards,
->> Sumit Gupta
+>> [1]: [MS-SMB2] - v20230227, page 30.
+>> https://winprotocoldoc.blob.core.windows.net/productionwindowsarchives/MS-SMB2/%5bMS-SMB2%5d-230227.pdf
+>>
+>> Fixes: 1c1bcf2d3ea0 ("ksmbd: validate smb request protocol id")
+>> Signed-off-by: Li Nan <linan122@huawei.com>
+> Acked-by: Namjae Jeon <linkinjeon@kernel.org>
+> Applied it to #ksmbd-for-next-next.
+> Thanks for your patch!
+> 
+> 
+
+Technically speaking, the first byte of the 4-byte header is a flag
+used for multi-segment continuation/reassembly. But since ksmbd does
+not have any code to do such processing, it's best to deny the
+message. So...
+
+Acked-by: Tom Talpey <tom@talpey.com>
