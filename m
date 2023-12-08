@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DB180ABA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C2980ABB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 19:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232869AbjLHSLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 13:11:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47844 "EHLO
+        id S233794AbjLHSMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 13:12:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLHSLS (ORCPT
+        with ESMTP id S229811AbjLHSMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 13:11:18 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704E590
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 10:11:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 147B8C433C7;
-        Fri,  8 Dec 2023 18:11:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702059084;
-        bh=+F+CuKHjMhjOaVmDV9U/s8l7zrO94PrksbiVe6XkcXg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=I8hmSMa+C7BeWc+f7WDx935Prfc4M1k0zk4ffWscm2PljjTOt0YXZQ4pjXhyOZL+n
-         6tMZItugZ/qeVB9J8ejMkOacIJ4C9pkdIl4+NCxC64tIjKs7WhiXuXsGVnctSrKq7y
-         4VTihcYiZQ6e8ZDoLfJIJbWZw/vrH6aKhk9IHIxZddiNAlCLQfhIYAWL+DIhxF8Cx4
-         GWN0G3tF5PuvHjfUr7bSmaAcoxCaFjgtQotOsypI6a2JCPqQVFJKJTwL9yh6lSmvNC
-         FISt9wiMGW1IqTehrbAqq6iPxMFZUrigeoB2+/eQWHnM33OXIycIcYLUGJM9AHgwyE
-         uaDSbIbhT22iA==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50bef9b7a67so2667226e87.1;
-        Fri, 08 Dec 2023 10:11:23 -0800 (PST)
-X-Gm-Message-State: AOJu0YzTtvpOekWdghHpxMcD75XJJxIWQVle6BVF3Xbik70nts38CDqE
-        o97sBDjhZ7aTvERPV0cRATziKCPY/XSQwQX5Zhw=
-X-Google-Smtp-Source: AGHT+IG6LJR5y7Arr5OwpIwgsyoV0O6bDJv5rQ3+/wPqJVZq1OA5HIuoJtYWlq5B7EYjpwpdlv5oQAchTUPCPjAGzKw=
-X-Received: by 2002:a05:6512:488d:b0:50b:e750:dd99 with SMTP id
- eq13-20020a056512488d00b0050be750dd99mr142687lfb.38.1702059082273; Fri, 08
- Dec 2023 10:11:22 -0800 (PST)
+        Fri, 8 Dec 2023 13:12:51 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA02390;
+        Fri,  8 Dec 2023 10:12:57 -0800 (PST)
+Date:   Fri, 08 Dec 2023 18:12:55 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702059176;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=VPq10NsC/rF3pTsW5VwJxHxpL7DlSSTW9H4lmsDaLFM=;
+        b=Ow8pyzuL1flnJc492kWFDsRoQhzA2qs52/Kd1Pt2ViOe3IdnAC8QHHKmmZDFiUEfX/xzht
+        Ly9RugGP05HXyVeAWBXdyCt9a8zzI3YYl69WlHc62MTp+MWIDN9KroFUpfuHyV3VAyGsbW
+        y+w/omIeB0MVcEoSULMsyLEKzNInfLwApT0e5jbXm8bkG9gT4pF8GV4A43ewuLBJtWbXsf
+        KZFfG/TAuw9SyX0tndhBm5Q7ILQBwSpo7sHnUs3EGB/K9bxMaZ8MjRz57Vxf3RgecqOAI8
+        X5s2AzCXUTWTUQD6QueCS2QUx7T8KFhiDcbDT54FqGC4v8D9gcgzam/cPAmKMw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702059176;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=VPq10NsC/rF3pTsW5VwJxHxpL7DlSSTW9H4lmsDaLFM=;
+        b=SQ6OuEP8WsP0VeRP58uaT93aL/b8C51hnIWUvRMS8ZhwSLNorh2pYXKXIqaXouc9L4ujK6
+        MqU5q9wyCqDVzoAg==
+From:   "tip-bot2 for Jo Van Bulck" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sgx] selftests/sgx: Remove incomplete ABI sanitization code
+ in test enclave
+Cc:     Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-References: <03dd7de1cecdb7084814f2fab300c9bc716aff3e.1701632867.git.christophe.jaillet@wanadoo.fr>
- <202312041419.81EF03F7B7@keescook> <CAPhsuW43g-M+xvzD0N1JsJ_zGnvZQOw2Bi1TEqoHKanPnvMHLQ@mail.gmail.com>
- <202312080926.FBF7A2DDD2@keescook>
-In-Reply-To: <202312080926.FBF7A2DDD2@keescook>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 8 Dec 2023 10:11:10 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5F1aRrCRW-ad5Sq=cgxHX+QgXgYZyMX17Zj4Mj=Jnhjw@mail.gmail.com>
-Message-ID: <CAPhsuW5F1aRrCRW-ad5Sq=cgxHX+QgXgYZyMX17Zj4Mj=Jnhjw@mail.gmail.com>
-Subject: Re: [PATCH] md/md-multipath: Convert "struct mpconf" to flexible array
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Message-ID: <170205917549.398.11664796877429502969.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,44 +61,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 9:27=E2=80=AFAM Kees Cook <keescook@chromium.org> wr=
-ote:
->
-> On Thu, Dec 07, 2023 at 09:33:17PM -0800, Song Liu wrote:
-> > On Mon, Dec 4, 2023 at 2:20=E2=80=AFPM Kees Cook <keescook@chromium.org=
-> wrote:
-> > >
-> > > On Sun, Dec 03, 2023 at 08:48:06PM +0100, Christophe JAILLET wrote:
-> > > > The 'multipaths' field of 'struct mpconf' can be declared as a flex=
-ible
-> > > > array.
-> > > >
-> > > > The advantages are:
-> > > >    - 1 less indirection when accessing to the 'multipaths' array
-> > > >    - save 1 pointer in the structure
-> > > >    - improve memory usage
-> > > >    - give the opportunity to use __counted_by() for additional safe=
-ty
-> > > >
-> > > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > >
-> > > This looks like a really nice conversion. I haven't run-tested this, =
-but
-> > > it reads correct to me.
-> >
-> > Agreed this is a good optimization. However, since MD_MULTIPATH is
-> > already marked as deprecated. I don't think we should ship further
-> > changes to it.
->
-> Hm, that seems like a weird catch-22 to me. I would say we should
-> continue to improve any code in the kernel that people spend time to
-> work on, or we should remove that code entirely. Should MD_MULTIPATH be
-> removed? How long has it been deprecated? (We just had an LTS release,
-> so doing removal now is a good time...)
+The following commit has been merged into the x86/sgx branch of tip:
 
-We marked it as deprecated about 2.5 years ago. But to be honest,
-I currently don't have a plan to remove it. I guess I should start thinking
-about it.
+Commit-ID:     886c5be0b12e89b2905c26c4f24d50ae91f261da
+Gitweb:        https://git.kernel.org/tip/886c5be0b12e89b2905c26c4f24d50ae91f261da
+Author:        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+AuthorDate:    Thu, 05 Oct 2023 17:38:54 +02:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Fri, 08 Dec 2023 10:05:28 -08:00
 
-Thanks,
-Song
+selftests/sgx: Remove incomplete ABI sanitization code in test enclave
+
+As the selftest enclave is *not* intended for production, simplify the
+code by not initializing CPU configuration registers as expected by the
+ABI on enclave entry or cleansing caller-save registers on enclave exit.
+
+Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Link: https://lore.kernel.org/all/da0cfb1e-e347-f7f2-ac72-aec0ee0d867d@intel.com/
+Link: https://lore.kernel.org/all/20231005153854.25566-14-jo.vanbulck%40cs.kuleuven.be
+---
+ tools/testing/selftests/sgx/test_encl_bootstrap.S | 16 ++------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
+
+diff --git a/tools/testing/selftests/sgx/test_encl_bootstrap.S b/tools/testing/selftests/sgx/test_encl_bootstrap.S
+index 28fe5d2..d8c4ac9 100644
+--- a/tools/testing/selftests/sgx/test_encl_bootstrap.S
++++ b/tools/testing/selftests/sgx/test_encl_bootstrap.S
+@@ -59,21 +59,11 @@ encl_entry_core:
+ 
+ 	push	%rcx # push the address after EENTER
+ 
++	# NOTE: as the selftest enclave is *not* intended for production,
++	# simplify the code by not initializing ABI registers on entry or
++	# cleansing caller-save registers on exit.
+ 	call	encl_body
+ 
+-	/* Clear volatile GPRs, except RAX (EEXIT function). */
+-	xor     %rcx, %rcx
+-	xor     %rdx, %rdx
+-	xor     %rdi, %rdi
+-	xor     %rsi, %rsi
+-	xor     %r8, %r8
+-	xor     %r9, %r9
+-	xor     %r10, %r10
+-	xor     %r11, %r11
+-
+-	# Reset status flags.
+-	add     %rdx, %rdx # OF = SF = AF = CF = 0; ZF = PF = 1
+-
+ 	# Prepare EEXIT target by popping the address of the instruction after
+ 	# EENTER to RBX.
+ 	pop	%rbx
