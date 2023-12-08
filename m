@@ -2,190 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FE980A915
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 082C880A90F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Dec 2023 17:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574102AbjLHQeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 11:34:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
+        id S1573952AbjLHQeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 11:34:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233654AbjLHQeS (ORCPT
+        with ESMTP id S233644AbjLHQeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 11:34:18 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8D919A9;
-        Fri,  8 Dec 2023 08:34:23 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B8CAp1k005766;
-        Fri, 8 Dec 2023 16:34:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=xZepUCZ6oEW8wRoBDKzVd/MYAdFVGbSFBsuQdlUTUbY=;
- b=iXJyMguFUXyRij6PzrFM1ghPnPK1NwAsF3LvK4H00Ru4+2iSz+a4Bz/BvU2dVj1PYXmt
- y/uGbM1zpbP3o0GR6a0GkpHQskGpupLmBZttbLFb12syuWgson8z9c6jKMa3AnF5uWKB
- 8SDaR15dAUGLmk4KVs7ItMi2YcDunSuSyBuJGlBDLKcDgI6rkSjnkcnKMAMQbSOSE+We
- lIDvl5ZsDoZYkhVLQAgMe0tVkDjOzE9AhM1/N+NRPL51wwsfXudoGh9VqU3n5ztUqfTB
- tBFm8IWZvay7BFxUv0VPzi7Qz+/HnvoL8wSgVnQfxwOKnQGsNSbNMistJphrYN1GRIEV jw== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uuuu4sen2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Dec 2023 16:34:13 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B8GXq4s011161
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 8 Dec 2023 16:33:52 GMT
-Received: from [10.110.30.94] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Dec
- 2023 08:33:50 -0800
-Message-ID: <188e0168-a45b-6e38-ac49-8b0fd41e9110@quicinc.com>
-Date:   Fri, 8 Dec 2023 08:33:48 -0800
+        Fri, 8 Dec 2023 11:34:05 -0500
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61EB31995
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 08:34:12 -0800 (PST)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5cfc3a48ab2so20125877b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 08:34:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702053251; x=1702658051; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pd6zs3d/7wlhgWaZt9MCNMWIKi0xOVjce2BdpNv9ihc=;
+        b=LxJXhZ+L5y6ejsTC/7PEQwEZXt6rQ02CGAvp9f2rh+XhV/GN0qcbx4pWcOrK8HZ03F
+         YMh47JYDZtIcYCXKyvmabrWPfckqPOwVNxsAds2YxEHy4gyq/mmBf+p4yohSJ8IhCJQj
+         zXH6j3zVCD4YXFfpgO1q/MVD1he7po4GYniNZQdsMbUzitYK1DWx6TLEVNKFtiJWCv2S
+         F5iQ0+h2KSU2PSv0FEMZYG3DVljhh07P69eNaX2GHStlQliiMJdnmao+N7uDABmh6J4X
+         Db1eZIM49+MNay08Fro2Bi8OM11Ijj86qVs6VMCULWyam9nnbPHbw7UChl/54Wr7fRfz
+         HuGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702053251; x=1702658051;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Pd6zs3d/7wlhgWaZt9MCNMWIKi0xOVjce2BdpNv9ihc=;
+        b=tUAmvSDD7mLko/ldTELzYUQyuNHVnBjQqJa3xLlbIUx7/FXmJKf0bYmHyAw0IYHjZO
+         3b6EdAbVBLPQIlNRPLN9yCaNtoTAP7WW+F2xF7krwXalEgcha+rKey/3VwnfCoiIzbII
+         B+zryq2EFiXjfvxGKtr8/bPqt9+gEj8pD6TQ0gOk5uruZGs+pDEihheW6TNgM3UyXm8D
+         ITayhnQ/hLjIeoJ5mEZZsXo7PwMs9dLfsoxcHDoUI8AwLS0b5KEjRGG0zs/aY4vf1qqf
+         xyacz4lG4El2Olo14JKalfVHdp0t0mcWf7onzZoKNOVGvoBIEZ86YtIJ1DVy4xGGuFlO
+         C5UA==
+X-Gm-Message-State: AOJu0Yyg8CVZ5TrmWtShK7xd7tWUkvTjLtPvsNk3S6Rju8qMvi99hrI0
+        vWRrrTLG3q0Q/tZN1HObIkqM1RRkBz8SqyAPCzgRCQ==
+X-Google-Smtp-Source: AGHT+IHQO4oXZri4xcfxM6GgbBiWxDFZ1/f1X3OhNr74nP8bbhu0edrkTF8ilxU6KeIllljA4k+b3dUcLwgA2RxhDeA=
+X-Received: by 2002:a0d:c242:0:b0:5d7:1941:aa5 with SMTP id
+ e63-20020a0dc242000000b005d719410aa5mr181393ywd.64.1702053251598; Fri, 08 Dec
+ 2023 08:34:11 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 14/16] drm/msm/dpu: reserve cdm blocks for writeback in
- case of YUV output
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "David Airlie" <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231208050641.32582-1-quic_abhinavk@quicinc.com>
- <20231208050641.32582-15-quic_abhinavk@quicinc.com>
- <CAA8EJpo4XVMJ7RqsZZ6Eh_PjoPeWiMmAW3P1a4dkZ_EHqz7GkQ@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJpo4XVMJ7RqsZZ6Eh_PjoPeWiMmAW3P1a4dkZ_EHqz7GkQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 88loezmmNtNqOB2q57NA__9kvADl_G3q
-X-Proofpoint-ORIG-GUID: 88loezmmNtNqOB2q57NA__9kvADl_G3q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-08_11,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 bulkscore=0 mlxscore=0 lowpriorityscore=0
- suspectscore=0 spamscore=0 phishscore=0 mlxlogscore=961 adultscore=0
- malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2312080137
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231208125730.10323-1-johan+linaro@kernel.org>
+In-Reply-To: <20231208125730.10323-1-johan+linaro@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 8 Dec 2023 18:34:00 +0200
+Message-ID: <CAA8EJpp+wZbHwetDD5pDAXJJLVO+URoZJuW8OQavf5rSTPNWzg@mail.gmail.com>
+Subject: Re: [PATCH] soc: qcom: pmic_glink: disable UCSI on sc8280xp
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 8 Dec 2023 at 14:56, Johan Hovold <johan+linaro@kernel.org> wrote:
+>
+> Enabling UCSI on sc8280xp and the Lenovo ThinkPad X13s in particular
+> results in a number of errors and timeouts during boot:
+>
+> [    9.012421] ucsi_glink.pmic_glink_ucsi pmic_glink.ucsi.0: GET_CONNECTOR_STATUS failed (-95)
+> [   14.047379] ucsi_glink.pmic_glink_ucsi pmic_glink.ucsi.0: timeout waiting for UCSI sync write response
+> [   14.050708] ucsi_glink.pmic_glink_ucsi pmic_glink.ucsi.0: GET_CONNECTOR_STATUS failed (-110)
+> [   20.192382] ucsi_glink.pmic_glink_ucsi pmic_glink.ucsi.0: timeout waiting for UCSI sync write response
+> [   20.192542] ucsi_glink.pmic_glink_ucsi pmic_glink.ucsi.0: GET_CONNECTOR_STATUS failed (-110)
+>
+> Disable UCSI on sc8280xp until this has been resolved.
 
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-On 12/8/2023 3:54 AM, Dmitry Baryshkov wrote:
-> On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->> Reserve CDM blocks for writeback if the format of the output fb
->> is YUV. At the moment, the reservation is done only for writeback
->> but can easily be extended by relaxing the checks once other
->> interfaces are ready to output YUV.
->>
->> changes in v2:
->>          - use needs_cdm from topology struct
->>          - drop fb related checks from atomic_mode_set()
-> 
-> It looks like this should be squashed with the patch 11. The 'unbind
-> CDM' doesn't really make sense without this patch. We need to allocate
-> it first,  before touching it.
-> 
+Johan, if you can capture message traces in
+pmic_glink_ucsi_locked_write() / pmic_glink_ucsi_read() /
+pmic_glink_ucsi_callback(), this would help me understand what is
+causing the issue.
 
-The way I was thinking was that patch just completes the 
-dpu_encoder_phys_cleanup() and yes it was intentionally kept ahead 
-because that will not kick in till hw_cdm is assigned.
-
-Then, this patch only handles reserving/assignment of hw_cdm when needed.
-
-That was the motivation behind this split.
-
->>
->> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
->> ---
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 27 +++++++++++++++++++++
->>   1 file changed, 27 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> index 862912727925..a576e3e62429 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> @@ -16,6 +16,7 @@
->>   #include <drm/drm_crtc.h>
->>   #include <drm/drm_file.h>
->>   #include <drm/drm_probe_helper.h>
->> +#include <drm/drm_framebuffer.h>
->>
->>   #include "msm_drv.h"
->>   #include "dpu_kms.h"
->> @@ -583,6 +584,7 @@ static int dpu_encoder_virt_atomic_check(
->>          struct drm_display_mode *adj_mode;
->>          struct msm_display_topology topology;
->>          struct dpu_global_state *global_state;
->> +       struct drm_framebuffer *fb;
->>          struct drm_dsc_config *dsc;
->>          int i = 0;
->>          int ret = 0;
->> @@ -623,6 +625,22 @@ static int dpu_encoder_virt_atomic_check(
->>
->>          topology = dpu_encoder_get_topology(dpu_enc, dpu_kms, adj_mode, crtc_state, dsc);
->>
->> +       /*
->> +        * Use CDM only for writeback at the moment as other interfaces cannot handle it.
->> +        * if writeback itself cannot handle cdm for some reason it will fail in its atomic_check()
->> +        * earlier.
->> +        */
->> +       if (dpu_enc->disp_info.intf_type == INTF_WB && conn_state->writeback_job) {
->> +               fb = conn_state->writeback_job->fb;
->> +
->> +               if (fb && DPU_FORMAT_IS_YUV(to_dpu_format(msm_framebuffer_format(fb))))
->> +                       topology.needs_cdm = true;
->> +               if (topology.needs_cdm && !dpu_enc->cur_master->hw_cdm)
->> +                       crtc_state->mode_changed = true;
->> +               else if (!topology.needs_cdm && dpu_enc->cur_master->hw_cdm)
->> +                       crtc_state->mode_changed = true;
->> +       }
->> +
->>          /*
->>           * Release and Allocate resources on every modeset
->>           * Dont allocate when active is false.
->> @@ -1063,6 +1081,15 @@ static void dpu_encoder_virt_atomic_mode_set(struct drm_encoder *drm_enc,
->>
->>          dpu_enc->dsc_mask = dsc_mask;
->>
->> +       if (dpu_enc->disp_info.intf_type == INTF_WB && conn_state->writeback_job) {
->> +               struct dpu_hw_blk *hw_cdm = NULL;
->> +
->> +               dpu_rm_get_assigned_resources(&dpu_kms->rm, global_state,
->> +                                             drm_enc->base.id, DPU_HW_BLK_CDM,
->> +                                             &hw_cdm, 1);
->> +               dpu_enc->cur_master->hw_cdm = hw_cdm ? to_dpu_hw_cdm(hw_cdm) : NULL;
->> +       }
->> +
->>          cstate = to_dpu_crtc_state(crtc_state);
->>
->>          for (i = 0; i < num_lm; i++) {
->> --
->> 2.40.1
->>
-> 
-> 
+>
+> Fixes: 4db09e7b967b ("soc: qcom: pmic_glink: enable UCSI by default)
+> Link: https://lore.kernel.org/r/ZXL5jvDHr-MuxMoz@hovoldconsulting.com
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+>  drivers/soc/qcom/pmic_glink.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/soc/qcom/pmic_glink.c b/drivers/soc/qcom/pmic_glink.c
+> index 71d8901a9389..511aa40842a1 100644
+> --- a/drivers/soc/qcom/pmic_glink.c
+> +++ b/drivers/soc/qcom/pmic_glink.c
+> @@ -342,6 +342,7 @@ static const unsigned long pmic_glink_sm8450_client_mask = BIT(PMIC_GLINK_CLIENT
+>
+>  static const struct of_device_id pmic_glink_of_match[] = {
+>         { .compatible = "qcom,sc8180x-pmic-glink", .data = &pmic_glink_sc8180x_client_mask },
+> +       { .compatible = "qcom,sc8280xp-pmic-glink", .data = &pmic_glink_sc8180x_client_mask },
+>         { .compatible = "qcom,pmic-glink", .data = &pmic_glink_sm8450_client_mask },
+>         {}
+>  };
 > --
-> With best wishes
-> 
-> Dmitry
+> 2.41.0
+>
+
+
+-- 
+With best wishes
+Dmitry
