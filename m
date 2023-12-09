@@ -2,199 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3031980B558
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 18:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2357580B559
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 18:03:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbjLIRCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 12:02:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
+        id S230398AbjLIRDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 12:03:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLIRCo (ORCPT
+        with ESMTP id S229519AbjLIRDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 12:02:44 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B845FA
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 09:02:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E851C433C7;
-        Sat,  9 Dec 2023 17:02:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702141368;
-        bh=nRJiA/c/xx7fFzg+0MvluRUxFBY1g4LX9RtAoR1rb7o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DB/SMpLN3+TSmIJTzyBHUsFWgUxwjdSaEWhrwKajdPhTmjj29bhCaUo+Zw8tMAcBU
-         r738kfP9NIslgrbcsmvxqIQCp9Ml+JACSPnN8T+2l7A3Up0BZmxk537Qkh4YRjvhKk
-         W1T+uHnXLv14X7u5PyCRIPjh42BzD+/jddjwXIP5//E8eCtDTpoGWoQOynniJhRtvw
-         U9BRNCgB/3WIGqoH7yF+urooe72ZwdZTc4Z12dp6XKjRTMqNL/yOi59W2Eg1TKzDzY
-         GxWZhJgE/2admwfwdhjDYOXEm3UNFjhz6sMSypzc9EZvAK+t8OTlYIJl5FoS73S/9y
-         VKQxpiTGaMOnw==
-Date:   Sat, 9 Dec 2023 17:02:41 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Herve Codina <herve.codina@bootlin.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        =?utf-8?Q?Nicol=C3=B2?= Veronese <nicveronese@gmail.com>
-Subject: Re: [RFC PATCH net-next v3 01/13] net: phy: Introduce ethernet link
- topology representation
-Message-ID: <20231209170241.GA5817@kernel.org>
-References: <20231201163704.1306431-1-maxime.chevallier@bootlin.com>
- <20231201163704.1306431-2-maxime.chevallier@bootlin.com>
+        Sat, 9 Dec 2023 12:03:30 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D45E10E6
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 09:03:36 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c3fe6c1b5so3896695e9.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 09:03:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702141415; x=1702746215; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Tx2le5/BnUHyvi+5IPaitX6ZIM5+/3txsOImNDqvxRA=;
+        b=CBRE67qXDu0ccHfzMYl+Vl5l6ZVG98WEGiYemaypKRoajGj8Gqp3F/1eLF7Yy6LJ7L
+         huqF6kyxrNbL65YxQrDoWsGh04KUKi4kazO+/ZegCecG9hACesct0jxXdvzmkLhfYK9/
+         nm2UAQvdoc0p1MoAaxyjIY0j0jwbQJytixwPZMJ1L+3I6eWtRKeTU1V3TkYh06PA5y/l
+         iWgHTmbpAZPE45gHu9tvE+tntZhr1hldITTEurQ5BdbS/K59hjtCXRL1N8ODxXdC5j/3
+         H+ZAly49azVK/+uSIGZcLRJ/al54NVoZSHFtNGnznyt2lhYvHBseWmua+IeFvVlhj83A
+         vehQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702141415; x=1702746215;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tx2le5/BnUHyvi+5IPaitX6ZIM5+/3txsOImNDqvxRA=;
+        b=RwlBJAZme5iume/zHL+UeHBlPwTGOZdUi3pJEJd5ZM7mdvz/fjtDlMq+1Z2M26Ex+g
+         xD3RuRB+++EOJTHV5EbCqGBwiRn9AfbsF6fpbOCGOMUK+GF6JKnnUBAbWPo4jpHkkxIQ
+         DVNQF/EYRMEvgjLHWfjr4GxB3C0WeSuAFLe5iDggacAP3OuYflzmrpchIg/n1q24Jr9Q
+         JXUxYPuypwoSU1bnvKr+irOyb3rRjUhg5T3nuA1+CjVvLEJj4ruLONHfi7eJu3x6nJXD
+         U2dKwQl/2gwhCvD0cSFMkrkv7St4SL/X7X/bpmUMTN5Kb7i9FISDFPDDXiwe32VCEhxU
+         GUfw==
+X-Gm-Message-State: AOJu0YyEt65H7dbnGaGpkLXTBJcvuLDUe0WfL8CieFuyWxsnTjkjcPlv
+        z9FCE9Ko8O+E/1qo2f3L+1btFw==
+X-Google-Smtp-Source: AGHT+IEQObXUpPlMuMQ1BFaNsg0e6LLi6dvFYaRJ6sl+M+fJQHSJmKA80wobuGGDg78YXjhj2zhNUw==
+X-Received: by 2002:a05:600c:6020:b0:40c:370d:71fc with SMTP id az32-20020a05600c602000b0040c370d71fcmr782302wmb.85.1702141414941;
+        Sat, 09 Dec 2023 09:03:34 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id h5-20020a05600c314500b0040b56f2cce3sm9310047wmo.23.2023.12.09.09.03.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Dec 2023 09:03:34 -0800 (PST)
+Message-ID: <70ee9d1e-50f9-44d0-ae32-d443cee3af1c@linaro.org>
+Date:   Sat, 9 Dec 2023 18:03:32 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201163704.1306431-2-maxime.chevallier@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [V3, 2/2] mmc: add new sdhci reset sequence for brcm 74165b0
+Content-Language: en-US
+To:     Kamal Dasu <kamal.dasu@broadcom.com>, ulf.hansson@linaro.org,
+        linux-kernel@vger.kernel.org, alcooperx@gmail.com,
+        linux-arm-kernel@lists.infradead.org, adrian.hunter@intel.com,
+        linux-mmc@vger.kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org
+Cc:     f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        Kamal Dasu <kdasu@broadcom.com>
+References: <20231209165816.39044-1-kamal.dasu@broadcom.com>
+ <20231209165816.39044-2-kamal.dasu@broadcom.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231209165816.39044-2-kamal.dasu@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 05:36:51PM +0100, Maxime Chevallier wrote:
-> Link topologies containing multiple network PHYs attached to the same
-> net_device can be found when using a PHY as a media converter for use
-> with an SFP connector, on which an SFP transceiver containing a PHY can
-> be used.
+On 09/12/2023 17:58, Kamal Dasu wrote:
+> From: Kamal Dasu <kdasu@broadcom.com>
 > 
-> With the current model, the transceiver's PHY can't be used for
-> operations such as cable testing, timestamping, macsec offload, etc.
+> 74165b0 shall use a new sdio controller core version which
+> requires a different reset sequence. For core reset we use
+> sdhci_reset. For CMD and/or DATA reset added a new function
+> to also enable SDCHI clocks SDHCI_CLOCK_CARD_EN
+> SDHCI_CLOCK_INT_EN along with the SDHCI_RESET_CMD and/or
+> SDHCI_RESET_DATA fields.
 > 
-> The reason being that most of the logic for these configuration, coming
-> from either ethtool netlink or ioctls tend to use netdev->phydev, which
-> in multi-phy systems will reference the PHY closest to the MAC.
-> 
-> Introduce a numbering scheme allowing to enumerate PHY devices that
-> belong to any netdev, which can in turn allow userspace to take more
-> precise decisions with regard to each PHY's configuration.
-> 
-> The numbering is maintained per-netdev, in a phy_device_list.
-> The numbering works similarly to a netdevice's ifindex, with
-> identifiers that are only recycled once INT_MAX has been reached.
-> 
-> This prevents races that could occur between PHY listing and SFP
-> transceiver removal/insertion.
-> 
-> The identifiers are assigned at phy_attach time, as the numbering
-> depends on the netdevice the phy is attached to.
-> 
-> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+> Signed-off-by: Kamal Dasu <kdasu@broadcom.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202312091608.0VbkRxlh-lkp@intel.com/
+> Closes:
+> https://lore.kernel.org/oe-kbuild-all/202312091905.UGzltx8A-lkp@intel.com/``````````````
 
-Hi Maxime,
+Except malformed `````, drop all three tags.
 
-some minor feedback from my side.
+Please test your patch on local setup. Usually many LPK reports move the
+patch down the queue. :(
 
-...
+Best regards,
+Krzysztof
 
-> diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-> index f65e85c91fc1..3cf7774df57e 100644
-> --- a/drivers/net/phy/Makefile
-> +++ b/drivers/net/phy/Makefile
-> @@ -2,7 +2,7 @@
->  # Makefile for Linux PHY drivers
->  
->  libphy-y			:= phy.o phy-c45.o phy-core.o phy_device.o \
-> -				   linkmode.o
-> +				   linkmode.o phy_link_topology.o
->  mdio-bus-y			+= mdio_bus.o mdio_device.o
->  
->  ifdef CONFIG_MDIO_DEVICE
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-
-...
-
-> @@ -265,6 +266,14 @@ static void phy_mdio_device_remove(struct mdio_device *mdiodev)
->  
->  static struct phy_driver genphy_driver;
->  
-> +static struct phy_link_topology *phy_get_link_topology(struct phy_device *phydev)
-> +{
-> +	if (phydev->attached_dev)
-> +		return &phydev->attached_dev->link_topo;
-> +
-> +	return NULL;
-> +}
-> +
-
-This function is declared static but is unused, which causes
-allmodconfig W=1 builds to fail. Perhaps it could be introduced
-in a latter patch where it is used?
-
-...
-
-> diff --git a/drivers/net/phy/phy_link_topology.c b/drivers/net/phy/phy_link_topology.c
-
-...
-
-> +void phy_link_topo_init(struct phy_link_topology *topo)
-> +{
-> +	xa_init_flags(&topo->phys, XA_FLAGS_ALLOC1);
-> +	topo->next_phy_index = 1;
-> +}
-
-...
-
-> diff --git a/include/linux/phy_link_topology.h b/include/linux/phy_link_topology.h
-
-...
-
-> +#else
-> +static struct phy_device *phy_link_topo_get_phy(struct phy_link_topology *topo,
-> +						u32 phyindex)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static int phy_link_topo_add_phy(struct phy_link_topology *topo,
-> +				 struct phy_device *phy,
-> +				 enum phy_upstream upt, void *upstream)
-> +{
-> +	return 0;
-> +}
-> +
-> +static void phy_link_topo_del_phy(struct phy_link_topology *topo,
-> +				  struct phy_device *phy)
-> +{
-> +}
-> +#endif
-
-nit: functions in .h should be declared static inline
-
-...
-
-> diff --git a/net/core/dev.c b/net/core/dev.c
-
-...
-
-> @@ -10832,6 +10833,8 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
->  #ifdef CONFIG_NET_SCHED
->  	hash_init(dev->qdisc_hash);
->  #endif
-> +	phy_link_topo_init(&dev->link_topo);
-> +
-
-I don't think this can work unless PHYLIB is compiled as a built-in.
-
->  	dev->priv_flags = IFF_XMIT_DST_RELEASE | IFF_XMIT_DST_RELEASE_PERM;
->  	setup(dev);
->  
-> -- 
-> 2.42.0
-> 
