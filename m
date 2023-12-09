@@ -2,209 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 937C580B6DE
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 23:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C5C80B6E0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 23:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbjLIW2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 17:28:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
+        id S231260AbjLIWeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 17:34:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjLIW2r (ORCPT
+        with ESMTP id S229477AbjLIWeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 17:28:47 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD6B125;
-        Sat,  9 Dec 2023 14:28:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702160933; x=1733696933;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=go2OpyoHuQJfkvWrYMKtRz7dEGNntOkffUckFpnEvWM=;
-  b=OG/GZDzs2z6yc8VBw5qpXV9u+0TxJParyizd2mpfQPHxqZjSRPrlFrEl
-   SqFhhiRBltbAdkWmrBnNggFwDNJbYFSA8kfmnR71s9LWXVgkTBKvUWoji
-   Zzb5+t145OamoiMl52Nh+qDlUBs8/4JrpjHZp/fDAsCI8uYhhUjiX/MtQ
-   aQLTbj8Ro/eyMBmUjXV6/Y9/bIsqJXq0B8oYoV2lz2Xn55BSC9a+p+3W2
-   eFVNZO6sulShr7e8h9s5PmguGXiZ/Wgdt2rV76DozIVcKOrdpGGhAQjkn
-   BuLQQxvwjwHsiJOULYwM/PyyDIMvONqrZEx8pZa0HFPTVR2D3TNQG+s9t
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="398389814"
-X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
-   d="scan'208";a="398389814"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 14:28:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="772505822"
-X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
-   d="scan'208";a="772505822"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 09 Dec 2023 14:28:45 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rC5oR-000G2z-0M;
-        Sat, 09 Dec 2023 22:28:43 +0000
-Date:   Sun, 10 Dec 2023 06:28:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, arnd@arndb.de, tglx@linutronix.de,
-        luto@kernel.org, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        mhocko@kernel.org, tj@kernel.org, ying.huang@intel.com,
-        gregory.price@memverge.com, corbet@lwn.net, rakie.kim@sk.com,
-        hyeongtak.ji@sk.com, honggyu.kim@sk.com, vtavarespetr@micron.com,
-        peterz@infradead.org, jgroves@micron.com, ravis.opensrc@micron.com,
-        sthanneeru@micron.com, emirakhur@micron.com, Hasan.Maruf@amd.com
-Subject: Re: [PATCH v2 11/11] mm/mempolicy: extend set_mempolicy2 and mbind2
- to support weighted interleave
-Message-ID: <202312100606.2aOpv2T5-lkp@intel.com>
-References: <20231209065931.3458-12-gregory.price@memverge.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231209065931.3458-12-gregory.price@memverge.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 9 Dec 2023 17:34:13 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B66100
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 14:34:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44937C433C7;
+        Sat,  9 Dec 2023 22:34:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1702161259;
+        bh=XsuMwPIsmzIChD8ndzu9XynHImam+pakPevqcPXRNtg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=C+3ya32iasF+Y/ixGjJWRb6MVRkCX7SUQSlOC7QcPVmApdwOw8RsA8eKFvh3qbP7S
+         qurGC4BZ7+i6bSPwU0DlnsrWqZIH5edTjZK1gJcsz1xuzDcGKFKhsQBdtd2EjljejQ
+         EBBBXu+OIRpADiQ9c+pKSlLavInXYnnt2LwNDXDc=
+Date:   Sat, 9 Dec 2023 14:34:18 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Yuntao Wang <ytcoode@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>
+Subject: Re: [PATCH] crash_core: Fix the check for whether crashkernel is
+ from high memory
+Message-Id: <20231209143418.92f02de6b6c6db2b7b3b1815@linux-foundation.org>
+In-Reply-To: <20231209141438.77233-1-ytcoode@gmail.com>
+References: <20231209141438.77233-1-ytcoode@gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gregory,
+On Sat,  9 Dec 2023 22:14:38 +0800 Yuntao Wang <ytcoode@gmail.com> wrote:
 
-kernel test robot noticed the following build warnings:
+> If crash_base is equal to CRASH_ADDR_LOW_MAX, it also indicates that
+> the crashkernel memory is allocated from high memory. However, the
+> current check only considers the case where crash_base is greater than
+> CRASH_ADDR_LOW_MAX. Fix it.
+> 
+> This patch also includes some minor cleanups.
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on deller-parisc/for-next powerpc/next powerpc/fixes s390/features jcmvbkbc-xtensa/xtensa-for-next arnd-asm-generic/master linus/master v6.7-rc4]
-[cannot apply to tip/x86/asm geert-m68k/for-next geert-m68k/for-linus next-20231208]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Gregory-Price/mm-mempolicy-implement-the-sysfs-based-weighted_interleave-interface/20231209-150314
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231209065931.3458-12-gregory.price%40memverge.com
-patch subject: [PATCH v2 11/11] mm/mempolicy: extend set_mempolicy2 and mbind2 to support weighted interleave
-config: x86_64-randconfig-123-20231210 (https://download.01.org/0day-ci/archive/20231210/202312100606.2aOpv2T5-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231210/202312100606.2aOpv2T5-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312100606.2aOpv2T5-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
-   mm/mempolicy.c: note: in included file (through include/linux/rculist.h, include/linux/pid.h, include/linux/sched.h, ...):
-   include/linux/rcupdate.h:778:9: sparse: sparse: context imbalance in 'queue_folios_pte_range' - unexpected unlock
-   mm/mempolicy.c: note: in included file (through arch/x86/include/asm/uaccess.h, include/linux/uaccess.h, include/linux/sched/task.h, ...):
-   arch/x86/include/asm/uaccess_64.h:88:24: sparse: sparse: cast removes address space '__user' of expression
->> mm/mempolicy.c:1681:29: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned char *weights_ptr @@     got void [noderef] __user * @@
-   mm/mempolicy.c:1681:29: sparse:     expected unsigned char *weights_ptr
-   mm/mempolicy.c:1681:29: sparse:     got void [noderef] __user *
->> mm/mempolicy.c:1684:45: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void const [noderef] __user *src @@     got unsigned char *weights_ptr @@
-   mm/mempolicy.c:1684:45: sparse:     expected void const [noderef] __user *src
-   mm/mempolicy.c:1684:45: sparse:     got unsigned char *weights_ptr
-   mm/mempolicy.c:2042:29: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned char *weights_ptr @@     got void [noderef] __user * @@
-   mm/mempolicy.c:2042:29: sparse:     expected unsigned char *weights_ptr
-   mm/mempolicy.c:2042:29: sparse:     got void [noderef] __user *
->> mm/mempolicy.c:2043:36: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __user *to @@     got unsigned char *weights_ptr @@
-   mm/mempolicy.c:2043:36: sparse:     expected void [noderef] __user *to
-   mm/mempolicy.c:2043:36: sparse:     got unsigned char *weights_ptr
-
-vim +1681 mm/mempolicy.c
-
-  1629	
-  1630	SYSCALL_DEFINE5(mbind2, const struct iovec __user *, vec, size_t, vlen,
-  1631			const struct mpol_args __user *, uargs, size_t, usize,
-  1632			unsigned long, flags)
-  1633	{
-  1634		struct mpol_args kargs;
-  1635		struct mempolicy_args margs;
-  1636		nodemask_t policy_nodes;
-  1637		unsigned long __user *nodes_ptr;
-  1638		struct iovec iovstack[UIO_FASTIOV];
-  1639		struct iovec *iov = iovstack;
-  1640		struct iov_iter iter;
-  1641		unsigned char weights[MAX_NUMNODES];
-  1642		unsigned char *weights_ptr;
-  1643		int err;
-  1644	
-  1645		if (!vec || !vlen)
-  1646			return -EINVAL;
-  1647	
-  1648		err = copy_struct_from_user(&kargs, sizeof(kargs), uargs, usize);
-  1649		if (err)
-  1650			return -EINVAL;
-  1651	
-  1652		err = validate_mpol_flags(kargs.mode, &kargs.mode_flags);
-  1653		if (err)
-  1654			return err;
-  1655	
-  1656		margs.mode = kargs.mode;
-  1657		margs.mode_flags = kargs.mode_flags;
-  1658		margs.addr = kargs.addr;
-  1659	
-  1660		/* if home node given, validate it is online */
-  1661		if (flags & MPOL_MF_HOME_NODE) {
-  1662			if ((kargs.home_node >= MAX_NUMNODES) ||
-  1663				!node_online(kargs.home_node))
-  1664				return -EINVAL;
-  1665			margs.home_node = kargs.home_node;
-  1666		} else
-  1667			margs.home_node = NUMA_NO_NODE;
-  1668		flags &= ~MPOL_MF_HOME_NODE;
-  1669	
-  1670		if (kargs.pol_nodes) {
-  1671			nodes_ptr = u64_to_user_ptr(kargs.pol_nodes);
-  1672			err = get_nodes(&policy_nodes, nodes_ptr,
-  1673					kargs.pol_maxnodes);
-  1674			if (err)
-  1675				return err;
-  1676			margs.policy_nodes = &policy_nodes;
-  1677		} else
-  1678			margs.policy_nodes = NULL;
-  1679	
-  1680		if (kargs.mode == MPOL_WEIGHTED_INTERLEAVE) {
-> 1681			weights_ptr = u64_to_user_ptr(kargs.il_weights);
-  1682			err = copy_struct_from_user(&weights,
-  1683						    sizeof(weights),
-> 1684						    weights_ptr,
-  1685						    kargs.pol_maxnodes);
-  1686			if (err)
-  1687				return err;
-  1688			margs.il_weights = weights;
-  1689		} else {
-  1690			margs.il_weights = NULL;
-  1691			flags |= MPOL_F_GWEIGHT;
-  1692		}
-  1693	
-  1694		/* For each address range in vector, do_mbind */
-  1695		err = import_iovec(ITER_DEST, vec, vlen, ARRAY_SIZE(iovstack), &iov,
-  1696				   &iter);
-  1697		if (err)
-  1698			return err;
-  1699		while (iov_iter_count(&iter)) {
-  1700			unsigned long start, len;
-  1701	
-  1702			start = untagged_addr((unsigned long)iter_iov_addr(&iter));
-  1703			len = iter_iov_len(&iter);
-  1704			err = do_mbind(start, len, &margs, flags);
-  1705			if (err)
-  1706				break;
-  1707			iov_iter_advance(&iter, iter_iov_len(&iter));
-  1708		}
-  1709	
-  1710		kfree(iov);
-  1711		return err;
-  1712	}
-  1713	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Can we please include a description of the runtime effects of this
+change?  ie, what happens now and under what circumstances, and how
+does the fix alter these things?
