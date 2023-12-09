@@ -2,188 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F7580B54E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 17:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B6D80B550
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 17:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbjLIQ4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 11:56:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
+        id S230347AbjLIQ6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 11:58:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLIQ4p (ORCPT
+        with ESMTP id S229519AbjLIQ6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 11:56:45 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C440F10D0;
-        Sat,  9 Dec 2023 08:56:51 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54bf9a54fe3so4362939a12.3;
-        Sat, 09 Dec 2023 08:56:51 -0800 (PST)
+        Sat, 9 Dec 2023 11:58:23 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50CF4B7
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 08:58:30 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1d06d42a58aso28660865ad.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 08:58:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702141010; x=1702745810; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RrZeShfQsr5Zblcz+ciNubf9EBG3Vd49YeN/6rA6zLY=;
-        b=VpjUaaAYRghqn8ShxCWUQF2A4sIYUUtctF5nZI1PQq3w1v5dkm1pU1pCCXZDxys5ix
-         93BOQO0umotoUzP0/pgGblUtcQKshCJGkrCkv/kJwJU5InqAkhhch7rQt4lSz5Wps75c
-         4jpmHK/qEs+5U44uNasRUIJQOQZ4W2Rgx9eqbHa8bY5UNVCJS2NCvxtNlPJ9P/DGRPNT
-         N6UaPyDlCOE4bt0PWE7SlksPiSrzqY1txVbSN2wVd2K5+g43b3izroUFcnRunNa1X2yT
-         cSflZ2jR749ZRmAFNS1MNUWb8Uv8KewUvdynoX4O/lmrASSTNKvxnG+9ziWTMyUTMLlo
-         EpAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702141010; x=1702745810;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=broadcom.com; s=google; t=1702141110; x=1702745910; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RrZeShfQsr5Zblcz+ciNubf9EBG3Vd49YeN/6rA6zLY=;
-        b=kzy/lI0skUbm57+P3paqiFpObT71ZucQXuqHeOe8X1Oa56wl3Ts4/wfzoRhtDYyxub
-         9s63HwZw3eoaLyB0f0sv/M7dEaXJkyg8Xh0DTYs6UpyRsviPRAwKAuf0aKomot/Xln9E
-         uQCqG6WNuvOivEmG8XHAVCFQuHXZwek45i8+A3FaXqWcqFzQgpYxcYh1+V+cr3XaB8EM
-         q99JDSNKSClMsIj/P4IRG+uSV/IWDb2SRYKUe5AGK8v6/7mK3MSQaKVS/39aeKaL8eMe
-         8gA3TKYY9eKaLfM5VDT3BxC8g/5LiETGeDWv6p+1GYjQ4TNcS0wZe3YA9l8FUublJZ73
-         Srng==
-X-Gm-Message-State: AOJu0YwJoXItk/YlW2tG20q5FuHcls0O+0fFGZkUH/6QxIkM8VzKgcob
-        MFgeXMqGpqQ2pWEdrpDxTyvLt45iNeM=
-X-Google-Smtp-Source: AGHT+IGBVbX2g8Tflx252g725MkQPcMQS3na6cE7fBauNq3+oB4zb8pQn9MDqWdldsolY5tXbvb0Dw==
-X-Received: by 2002:a17:907:c715:b0:a1d:551f:a197 with SMTP id ty21-20020a170907c71500b00a1d551fa197mr1030668ejc.82.1702141009970;
-        Sat, 09 Dec 2023 08:56:49 -0800 (PST)
-Received: from jekhomev ([46.251.53.180])
-        by smtp.gmail.com with ESMTPSA id tx18-20020a1709078e9200b00a1b618766cbsm2428271ejc.136.2023.12.09.08.56.49
+        bh=ucFokkA72m+OQyrpdBmnGOpxMsQE114Wd6KJqaJIX5o=;
+        b=d32tZkUqU5M0DQha5bB1SEAa/UVkeq0A1oOZcJCc53XIl4Nu9T7d6D+H8gsafXCZLQ
+         FaoriAJLJH80ml3JyO+rijZNCxB1D1otqG55kBiPCxUOW9HReW+E9nj/cPIRc9r11pFH
+         oxuab50QUCUkRYJ/3nMLZBkoqCKzPbGLfH+xs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702141110; x=1702745910;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ucFokkA72m+OQyrpdBmnGOpxMsQE114Wd6KJqaJIX5o=;
+        b=Zh9cf/43Z/3v0bWDlbvBBS7n+ZfVUylZyEqmMqmxm10MAdIpF8CQpcfpdpDzcVk5EZ
+         ZOIQNZH1MFg1jWItERUSVn3JG3flRwdkNZUj3TwRJvsVjXbsXv4JA938PVYrAyl6S2Zx
+         BEF/HlMWd+EWE8nDNNvTRURg02kuq2mnh0NH5OtCZNR+GZkRoMlmOw71SkRJCtEiu0t+
+         6nYTmtsU13LNumiMrLq1t5O2npfwZYOGWMeRACmlrVEtdIuSzetx/oauPtXoS+Q5Tsz/
+         R0pxirc89o5k/zNd+/PR7H2MLcP3GwNZzZSnZfVvbEhZRl1SF4sY6eRNi+h4gML68FaW
+         ea2w==
+X-Gm-Message-State: AOJu0YxKUZuJ78McpTIIXD4ge+pHPr94HU08YaLGOZ03zf/AG1jdnS9p
+        kF6FqOfM0BzojD7iCnxMp080gVaNOaSjYvDbO2ZMpA==
+X-Google-Smtp-Source: AGHT+IHcQAll+6RBdoaI9xqowSd4iAMH94edPPoza2G3EZtrwYRhfEi5smHB6Z0sUyHEfFWfkKxWzQ==
+X-Received: by 2002:a17:902:e74d:b0:1ce:6669:3260 with SMTP id p13-20020a170902e74d00b001ce66693260mr1510628plf.67.1702141109722;
+        Sat, 09 Dec 2023 08:58:29 -0800 (PST)
+Received: from mail.broadcom.net ([192.19.144.250])
+        by smtp.gmail.com with ESMTPSA id g14-20020a1709029f8e00b001cf7c07be50sm3595751plq.58.2023.12.09.08.58.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Dec 2023 08:56:49 -0800 (PST)
-Date:   Sat, 9 Dec 2023 18:56:48 +0200
-From:   Yauhen Kharuzhy <jekhor@gmail.com>
-To:     Mikhail Khvainitski <me@khvoinitsky.org>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ValdikSS <iam@valdikss.org.ru>
-Subject: Re: [PATCH] HID: lenovo: Detect quirk-free fw on cptkbd and stop
- applying workaround
-Message-ID: <20231209165648.4rfe4gxubaajrl2z@jekhomev>
-References: <20230918145042.37368-1-me@khvoinitsky.org>
- <20230923231522.94060-1-me@khvoinitsky.org>
- <20230923231522.94060-2-me@khvoinitsky.org>
- <ZXRiiPsBKNasioqH@jekhomev>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXRiiPsBKNasioqH@jekhomev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 09 Dec 2023 08:58:28 -0800 (PST)
+From:   Kamal Dasu <kamal.dasu@broadcom.com>
+To:     ulf.hansson@linaro.org, linux-kernel@vger.kernel.org,
+        alcooperx@gmail.com, linux-arm-kernel@lists.infradead.org,
+        adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        Kamal Dasu <kdasu@broadcom.com>
+Subject: [V3, 1/2] dt-bindings: mmc: brcm,sdhci-brcmstb: Add support for 74165b0
+Date:   Sat,  9 Dec 2023 11:58:15 -0500
+Message-Id: <20231209165816.39044-1-kamal.dasu@broadcom.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000003961fc060c169c3b"
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 09, 2023 at 02:50:16PM +0200, Yauhen Kharuzhy wrote:
-> On Sun, Sep 24, 2023 at 01:58:30AM +0300, Mikhail Khvainitski wrote:
-> > Built-in firmware of cptkbd handles scrolling by itself (when middle
-> > button is pressed) but with issues: it does not support horizontal and
-> > hi-res scrolling and upon middle button release it sends middle button
-> > click even if there was a scrolling event. Commit 3cb5ff0220e3 ("HID:
-> > lenovo: Hide middle-button press until release") workarounds last
-> > issue but it's impossible to workaround scrolling-related issues
-> > without firmware modification.
-> > 
-> > Likely, Dennis Schneider has reverse engineered the firmware and
-> > provided an instruction on how to patch it [1]. However,
-> > aforementioned workaround prevents userspace (libinput) from knowing
-> > exact moment when middle button has been pressed down and performing
-> > "On-Button scrolling". This commit detects correctly-behaving patched
-> > firmware if cursor movement events has been received during middle
-> > button being pressed and stops applying workaround for this device.
-> > 
-> > Link: https://hohlerde.org/rauch/en/elektronik/projekte/tpkbd-fix/ [1]
-> 
-> This patch breaks a scrolling at my ThinkPad TrackPoint Keyboard II: it
-> starts to report middle-button push/release events with scrolling events
-> between. A support for this keyboard was added in
-> 24401f291dcc4f2c18b9e2f65763cbaadc7a1528 "HID: lenovo: Add support for
-> ThinkPad TrackPoint Keyboard II" commit.
+--0000000000003961fc060c169c3b
 
-I figured this out.
+From: Kamal Dasu <kdasu@broadcom.com>
 
-This keyboard can emit REL_Y/REL_X events between of middle-button
-events (if user was moving a cursor and press middle button without of
-stopping this), so this algorithm does a false-positive detection and switches
-the workaround off like for patched firmware:
+With newer sdio controller core used for 74165b0 we need to update
+the compatibility with "brcm,bcm74165b0-sdhci".
 
-Event: time 1702140625.854777, type 2 (EV_REL), code 1 (REL_Y), value 2
-Event: time 1702140625.854777, -------------- SYN_REPORT ------------
-Event: time 1702140625.870769, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 1
-Event: time 1702140625.870769, -------------- SYN_REPORT ------------
-Event: time 1702140625.870771, type 2 (EV_REL), code 1 (REL_Y), value 2
-Event: time 1702140625.870771, -------------- SYN_REPORT ------------
-Event: time 1702140625.970780, type 2 (EV_REL), code 8 (REL_WHEEL), value -1
-Event: time 1702140625.970780, -------------- SYN_REPORT ------------
-Event: time 1702140626.058800, type 2 (EV_REL), code 8 (REL_WHEEL), value -1
-Event: time 1702140626.058800, -------------- SYN_REPORT ------------
-Event: time 1702140630.462974, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
-Event: time 1702140630.462974, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 0
-Event: time 1702140630.462974, -------------- SYN_REPORT ------------
+Signed-off-by: Kamal Dasu <kdasu@broadcom.com>
+---
+ .../devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml         | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-
-> 
-> There is an evtest output below:
-> 
-> Without of commit:
-> 
-> Middle-button click:
-> Event: time 1702122290.593300, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 1
-> Event: time 1702122290.593300, -------------- SYN_REPORT ------------
-> Event: time 1702122290.593312, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 0
-> Event: time 1702122290.593312, -------------- SYN_REPORT ------------
-> 
-> Vertical scrolling:
-> Event: time 1702122300.441627, type 2 (EV_REL), code 8 (REL_WHEEL), value -1
-> Event: time 1702122300.441627, -------------- SYN_REPORT ------------
-> Event: time 1702122300.565663, type 2 (EV_REL), code 8 (REL_WHEEL), value -1
-> Event: time 1702122300.565663, -------------- SYN_REPORT ------------
-> 
-> Horizontal scrolling:
-> Event: time 1702122307.845969, type 2 (EV_REL), code 6 (REL_HWHEEL), value -1
-> Event: time 1702122307.845969, -------------- SYN_REPORT ------------
-> Event: time 1702122307.981954, type 2 (EV_REL), code 6 (REL_HWHEEL), value -1
-> Event: time 1702122307.981954, -------------- SYN_REPORT ------------
-> 
-> 
-> 
-> After commit:
-> 
-> Middle-button click:
-> Event: time 1702125091.290045, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
-> Event: time 1702125091.290045, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 1
-> Event: time 1702125091.290045, -------------- SYN_REPORT ------------
-> Event: time 1702125092.626118, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
-> Event: time 1702125092.626118, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 0
-> Event: time 1702125092.626118, -------------- SYN_REPORT ------------
-> 
-> 
-> Vscroll:
-> Event: time 1702125286.653639, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
-> Event: time 1702125286.653639, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 1
-> Event: time 1702125286.653639, -------------- SYN_REPORT ------------
-> Event: time 1702125287.929689, type 2 (EV_REL), code 8 (REL_WHEEL), value -1
-> Event: time 1702125287.929689, -------------- SYN_REPORT ------------
-> Event: time 1702125288.037688, type 2 (EV_REL), code 8 (REL_WHEEL), value -1
-> Event: time 1702125288.037688, -------------- SYN_REPORT ------------
-> Event: time 1702125290.481787, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
-> Event: time 1702125290.481787, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 0
-> Event: time 1702125290.481787, -------------- SYN_REPORT ------------
-> 
-> Hscroll:
-> Event: time 1702125293.841920, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
-> Event: time 1702125293.841920, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 1
-> Event: time 1702125293.841920, -------------- SYN_REPORT ------------
-> Event: time 1702125294.761952, type 2 (EV_REL), code 6 (REL_HWHEEL), value -1
-> Event: time 1702125294.761952, -------------- SYN_REPORT ------------
-> Event: time 1702125294.893967, type 2 (EV_REL), code 6 (REL_HWHEEL), value -1
-> Event: time 1702125294.893967, -------------- SYN_REPORT ------------
-> Event: time 1702125296.134006, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
-> Event: time 1702125296.134006, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 0
-> Event: time 1702125296.134006, -------------- SYN_REPORT ------------
-
+diff --git a/Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml b/Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml
+index c028039bc477..ea97b8c5a283 100644
+--- a/Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml
++++ b/Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml
+@@ -20,11 +20,9 @@ properties:
+           - const: brcm,sdhci-brcmstb
+       - items:
+           - enum:
++              - brcm,bcm74165b0-sdhci
+               - brcm,bcm7445-sdhci
+-          - const: brcm,sdhci-brcmstb
+-      - items:
+-          - enum:
+-              - brcm,bcm7425-sdhci
++	      - brcm,bcm7425-sdhci
+           - const: brcm,sdhci-brcmstb
+ 
+   reg:
 -- 
-Yauhen Kharuzhy
+2.17.1
+
+
+--0000000000003961fc060c169c3b
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+DxuNuBlySpn/GYqPcDcRZd8EENWqnZrjtjHMk0j7ZfrPGXq8sQkbG3OX+DOwSaefPRq1pLGWBZaZ
+YuUo5O7CNHo7h7Hc9GgjiW+6X9BjKAzSaDy8jwIDAQABo4IB2DCCAdQwDgYDVR0PAQH/BAQDAgWg
+MIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUFBzABhjVo
+dHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMDBNBgNV
+HSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2ln
+bi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRwOi8vY3Js
+Lmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAiBgNVHREEGzAZ
+gRdrYW1hbC5kYXN1QGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAW
+gBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUcRYSWvAVyA3hgTrQ2c4AFquBsG0wDQYJ
+KoZIhvcNAQELBQADggEBAIKB2IOweF2sIYGBZTDm+Hwmhga+sjekM167Sk/KwxxvQFwZYP6i0SnR
+7aR59vbfVQVaAiZH/a+35EYxP/sXaIM4+E3bFykBuXwcGEnYyEn6MceiOCkjkWQq1Co2JyOdNvkP
+nAxyPoWlsJtr+N/MF1EYKGpYMdPM7S2T/gujjO9N56BCGu9yJElszWcXHmBl5IsaQqMS36vhsV0b
+NxffjNkeAdgfN/SS9S9Rj4WXD7pF1M0Xq8gPLCLyXrx1i2KkYOYJsj0PWlC6VRg6E1xXkYDte0VL
+fAAG4QsETU27E1HBNQyp5zF1PoPCPvq3EnWQnbLgYk+Jz2iwIUwiqwr/bDgxggJtMIICaQIBATBr
+MFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9i
+YWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgw89WX2Pp7ue922QVkwDQYJYIZI
+AWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIyJJ8dUqd7DDnVPV1SE7aTLagxRtodCxKFBhycF
+FqlUMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTIwOTE2NTgz
+MFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQB
+AjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkq
+hkiG9w0BAQEFAASCAQBhMlHLtdOdi/b7G4LrBDlYehKhMhGSzPILAyIh4OQKN5tkfwV98PHdqzd9
+FMi1NZGVig+5ZLlIPZKzf9wagxX1beNEOOzD45C3LhEnccy/X+Dq3TQYjzDS8Ze10m/mdlmA4JoS
+5NUO24PcP0lo72vpb9D9g7nXnyrD9VnJFJy/IuhiXLaovg3c1X53vJWMKcKF5EviJwGZdMoWygh9
+iFHXXbg01E/yZs5ZlIPR9lVhTvoyUFF93OzjCNghS1Ss+TwK2hi5UZ/WMcYsG5yAsKtww7TfDzOB
+Y9dTdBPjc5H8/9PfQwy+KAeu5uQvyTFEu8gG07Do9fdvGHOTUD2QVdAW
+--0000000000003961fc060c169c3b--
