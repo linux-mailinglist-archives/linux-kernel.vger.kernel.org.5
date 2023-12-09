@@ -2,37 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F31680B2E0
+	by mail.lfdr.de (Postfix) with ESMTP id C626F80B2E1
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 08:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbjLIHrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 02:47:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55966 "EHLO
+        id S230227AbjLIHs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 02:48:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjLIHrP (ORCPT
+        with ESMTP id S229441AbjLIHs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 02:47:15 -0500
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE34F12E;
-        Fri,  8 Dec 2023 23:47:20 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=guanjun@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Vy5Az.R_1702108037;
-Received: from localhost(mailfrom:guanjun@linux.alibaba.com fp:SMTPD_---0Vy5Az.R_1702108037)
-          by smtp.aliyun-inc.com;
-          Sat, 09 Dec 2023 15:47:17 +0800
-From:   'Guanjun' <guanjun@linux.alibaba.com>
-To:     neil.armstrong@linaro.org, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        guanjun@linux.alibaba.com
-Subject: [PATCH 1/1] soc: qcom: Fix compile error caused by uncorrectable definition of TRACE_INCLUDE_PATH
-Date:   Sat,  9 Dec 2023 15:47:16 +0800
-Message-Id: <20231209074716.2689401-1-guanjun@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.3
+        Sat, 9 Dec 2023 02:48:26 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563A010DF
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 23:48:32 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-54f4a933ddcso5118a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 23:48:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702108110; x=1702712910; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6vqszWWOm317d9DU4UzPeszqR4Ym3j0JzkGgMwFQleA=;
+        b=iEVSC/7TeZVp+23tBqaHKrMZ/bpr2scBo8FQI+kLFrouwZs5W8Xt7tKd1EF78jG99A
+         96LVb6Y5hKE+uAuXAx/snuXtv9qKAIIr9WFqIe33ztI5Ctf6z+CSTW9mFExZzHm9IgFJ
+         3gP1WZFNpQDCVNDK0+um5XswemWcjiPU4yqC+yoAzn7isgeNQoYxD7KZ2wayN2cleR6T
+         in2paAfhsFuf+X0IC+UFo6vnDEmr734Hq9rMrEFyg/F6Dm0W+85ql1LVKgdRoxYLHRMj
+         8LB5LPHWToGdXGJNqpXYW1milHw+DPTuVHSfasJ2a9cOj2O1WaCJPwo/pOBhBkQF8kFi
+         7Hyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702108110; x=1702712910;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6vqszWWOm317d9DU4UzPeszqR4Ym3j0JzkGgMwFQleA=;
+        b=oU0AgNwlXLHgsywjZavtV3MC5KUxWXgylVLEWJS8TTW4htZasEJaaQlvPKjP3GtqWl
+         aiQ02xv9vRxJsPgBDHgyveKjXAmNOvivxPzSvK0E8ihnof1FNhE8+HMLfYZl7CBysqaN
+         Uh1le/XBeD0i3ruWSXpcaucj3B4vGS5PuW/1KjNUMfp/znAyAUJKwYbrCY4QyW1BlzZU
+         E9Y7mtQBDipBOq8F5Cv+rqNXyjuxLanKumHo379vyAig5z1xit1MjnCH81dLSLs3wegy
+         qFt8cfR43k8ajiiOiO0sfnZl9wm50AwzBuEOKVMx+RgQ/hP6yuej/CQnh4WeWwGdkNdF
+         MK7Q==
+X-Gm-Message-State: AOJu0YygVuXKImQq9+RcudkDpBnGQm55Owq64MnWAQmEgNt8brEFryaw
+        XX6OCWPu7X3bYUqZXKxIXGaXdKQYswB2DXNz2n2gHg==
+X-Google-Smtp-Source: AGHT+IHtDOYCaJe3OJ2vmWISpPp5/Y0F/uE6kJGg3viAxXnuehSZrlDqfWmDNEV73NA1+s5mUTAqY5Hv/1SNs96ss2s=
+X-Received: by 2002:a50:d643:0:b0:54b:321:ef1a with SMTP id
+ c3-20020a50d643000000b0054b0321ef1amr135735edj.6.1702108110034; Fri, 08 Dec
+ 2023 23:48:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+References: <20231204221932.1465004-1-rmoar@google.com>
+In-Reply-To: <20231204221932.1465004-1-rmoar@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 9 Dec 2023 15:48:17 +0800
+Message-ID: <CABVgOS=5Y_CrTZ4hs57UGdR_p1aK2+1w2-aZ9EVELsbRdVvqTg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] kunit: move KUNIT_TABLE out of INIT_DATA
+To:     Rae Moar <rmoar@google.com>
+Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
+        sadiyakazi@google.com, keescook@chromium.org, arnd@arndb.de,
+        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000004b5864060c0eed75"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -40,34 +71,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guanjun <guanjun@linux.alibaba.com>
+--0000000000004b5864060c0eed75
+Content-Type: text/plain; charset="UTF-8"
 
-Compiler reports the error message when compiling the file drivers/soc/qcom/pmic_pdcharger_ulog.c:
-  - ./include/trace/define_trace.h:95:42: fatal error: ./pmic_pdcharger_ulog.h: No such file or directory
-      95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+On Tue, 5 Dec 2023 at 06:19, Rae Moar <rmoar@google.com> wrote:
+>
+> Alter the linker section of KUNIT_TABLE to move it out of INIT_DATA and
+> into DATA_DATA.
+>
+> Data for KUnit tests does not need to be in the init section.
+>
+> In order to run tests again after boot the KUnit data cannot be labeled as
+> init data as the kernel could write over it.
+>
+> Add a KUNIT_INIT_TABLE in the next patch for KUnit tests that test init
+> data/functions.
+>
+> Signed-off-by: Rae Moar <rmoar@google.com>
+> ---
 
-TRACE_INCLUDE_PATH shoule be relative to the path include/trace/define_trace.h, not
-the file including it. Fix it.
+I think this actually fixes a potential bug, as we loop through the
+list of suites after init has ended in the debugfs logic.
 
-Fixes: 086fdb48bc65d(soc: qcom: add ADSP PDCharger ULOG driver)
-Signed-off-by: Guanjun <guanjun@linux.alibaba.com>
----
- drivers/soc/qcom/pmic_pdcharger_ulog.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So maybe this is:
+Fixes: 90a025a859a3 ("vmlinux.lds.h: add linker section for KUnit test suites")
 
-diff --git a/drivers/soc/qcom/pmic_pdcharger_ulog.h b/drivers/soc/qcom/pmic_pdcharger_ulog.h
-index 9d5d9af4fbe4..3ac994d160bd 100644
---- a/drivers/soc/qcom/pmic_pdcharger_ulog.h
-+++ b/drivers/soc/qcom/pmic_pdcharger_ulog.h
-@@ -28,7 +28,7 @@ TRACE_EVENT(pmic_pdcharger_ulog_msg,
- /* This part must be outside protection */
- 
- #undef TRACE_INCLUDE_PATH
--#define TRACE_INCLUDE_PATH .
-+#define TRACE_INCLUDE_PATH ../../../drivers/soc/qcom/
- 
- #undef TRACE_INCLUDE_FILE
- #define TRACE_INCLUDE_FILE pmic_pdcharger_ulog
--- 
-2.39.3
+Regardless, I'd love to get this in, even if we don't manage to get
+the rest of the series in soon.
 
+Reviewed-by: David Gow <davidgow@google.com>
+
+Cheers,
+-- David
+
+>  include/asm-generic/vmlinux.lds.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index bae0fe4d499b..1107905d37fc 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -370,7 +370,8 @@
+>         BRANCH_PROFILE()                                                \
+>         TRACE_PRINTKS()                                                 \
+>         BPF_RAW_TP()                                                    \
+> -       TRACEPOINT_STR()
+> +       TRACEPOINT_STR()                                                \
+> +       KUNIT_TABLE()
+>
+>  /*
+>   * Data section helpers
+> @@ -699,8 +700,7 @@
+>         THERMAL_TABLE(governor)                                         \
+>         EARLYCON_TABLE()                                                \
+>         LSM_TABLE()                                                     \
+> -       EARLY_LSM_TABLE()                                               \
+> -       KUNIT_TABLE()
+> +       EARLY_LSM_TABLE()
+>
+>  #define INIT_TEXT                                                      \
+>         *(.init.text .init.text.*)                                      \
+>
+> base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+> --
+> 2.43.0.rc2.451.g8631bc7472-goog
+>
+
+--0000000000004b5864060c0eed75
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
+H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
+riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
+impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
+qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
+yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCD/
+sI/7ZoyvsuMNptfqiZv2zuf1SCeNkIIKqbWKWrwlDzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzEyMDkwNzQ4MzBaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAQHe+7eYfGrUsMoio+yNP
+KKlZg0BvjTJpbyaoZJDd7LKqhvnvhEnZkrn4IJOKcKRAsYKcwMb/nFQmyG/t8UN9+tspt5LB6AcX
+LsieKohrWgvUnf3pRVCoqjgSE49yt+M1gpTHywVdE3b9lW+KS/oLlTwdFMpnqaSgVoSZ/MdF1NDp
+LgzwDUbFbjWZNzRCBpK3NyYEqiHySn81P5LUx1rpqP3K8Wv3smqnoHj8KnZHlXT9TbLt2M+xVKV0
+EBk6751LbkEYsIvoe/I4AKM/gbj1H2OgYIR0s69cZQnczzyPQcDGJyzKTGxoE4kVggYnul1+JyKq
+rmK6Qc1llUsaaxfoqQ==
+--0000000000004b5864060c0eed75--
