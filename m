@@ -2,257 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4C080B538
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 17:30:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFFA80B539
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 17:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbjLIQVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 11:21:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
+        id S231286AbjLIQWj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 9 Dec 2023 11:22:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjLIQVD (ORCPT
+        with ESMTP id S229519AbjLIQWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 11:21:03 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F5710C4;
-        Sat,  9 Dec 2023 08:21:08 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 31F6E40E00C6;
-        Sat,  9 Dec 2023 16:21:06 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id p5DJ6hin4UHr; Sat,  9 Dec 2023 16:21:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1702138862; bh=HyDzrkPoCfW4PayZZjMMTzRt/urnsGOPJgwMOc9fuMk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EKzYzcPuer8tSrZAB0fNhs7FnIOpN4mxmIrqVcEiCSbKlecHHLj/m5zD4jrsUb+uX
-         lOHSxV5iQJZvtPa+W+GaoYyhVYU4PbecAXzUWkWeQf/MD0qR6QGX/4jSb/NIHRJsNE
-         TqobEUwJLQpfPlj243QLLqPQ5Zj8iQcW3HvXcLpQi7XeaIqbAVB766/4lZaIR6B2tn
-         ugiddztA2CfiMsDKwmYLZ7Dqbyfoci5UZ5zd+LgnOdY3WqSfevLwy74F2W5samFLjB
-         yODqDWgs8mUG0DGrQrndyMf7qh/PizWiRMziSOOLUjXwU3Tt1l3TFLzwuTpBjLryWu
-         rI9hs7EpZPybT66NM260GDI1Uz3IzM9uOqZ+sCKMpCwWshQa5xFvgTO5B2K0Q4XQTA
-         CMHok9o+X8fUi0PYdfb5SizFgHbrQnAcSd8vUQ751dRBLvMzQBRAgtnsip59aRwnmE
-         HDphyIdN5o2jdbGEOwrCM1NUfcr35ozkcywmRRlh7Ib6OjB1tSD/jTAFedXDK6C9zx
-         RY7+4KRaFo7XX1d5EA13GG904GziO16r8M8rTm3kul9avChAItC1vNunWcFOb3ixec
-         PpLlM5i8J8lAsVlJXW3mZTt2aKW/eaOTZsBpniTohc/fA5UjHTYeVv0gIPi0ic0D0Z
-         tsnjY1f7MPLBAEmzKn5WAGno=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3144440E00A9;
-        Sat,  9 Dec 2023 16:20:21 +0000 (UTC)
-Date:   Sat, 9 Dec 2023 17:20:15 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kalra, Ashish" <ashish.kalra@amd.com>
-Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
-        liam.merwick@oracle.com, zhi.a.wang@intel.com,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Jarkko Sakkinen <jarkko@profian.com>
-Subject: Re: [PATCH v10 14/50] crypto: ccp: Add support to initialize the
- AMD-SP for SEV-SNP
-Message-ID: <20231209162015.GBZXSTv738J09Htf51@fat_crate.local>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-15-michael.roth@amd.com>
- <20231127095937.GLZWRoiaqGlJMX54Xb@fat_crate.local>
- <d5242390-8904-7ec5-d8a1-9e3fb8f6423c@amd.com>
- <20231206170807.GBZXCqd0z8uu2rlhpn@fat_crate.local>
- <9af9b10f-0ab6-1fe8-eaec-c9f98e14a203@amd.com>
+        Sat, 9 Dec 2023 11:22:37 -0500
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F03D5B;
+        Sat,  9 Dec 2023 08:22:43 -0800 (PST)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dbc6658fda3so501161276.3;
+        Sat, 09 Dec 2023 08:22:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702138962; x=1702743762;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zXLi8btoKJJM+Y3mbDTAiN96eN6yPzf/fqmbiitK0RI=;
+        b=vUsdZHpHpomHCWQzDmujWXh97uHAOssck5P1iGH+KCnnfiGcJ66Ld8rWL6GOtk1fvQ
+         kOt62Jf9SJB/EDaip0/suHeMQuRdoxHLlxetpoMN3c61KuBIlybRu4ZuVuWnnumzuoTz
+         XYAwt8bCVabDSgmImUuEypWfGaHnWLD8nyqDBHR0J/y9XAi+ylJleV9vtiiyDOnrEaDB
+         1LqXfO57sBZ2s7sGdZlx95LuKTuaSPtv3NZOeODEkWtCj45SRxrZsZuM/oGfnZRrYUl8
+         jYDprxr9GlrVhM3YzGG8LTwYBg+PRJLnSX1l5I3tJsBrK5YjxBNPDz1XeBuFlHnjTZQl
+         kJUQ==
+X-Gm-Message-State: AOJu0YzGKmr6d3fAKo7VIRFO0xgBxRRj/cRmI1Y/Gw+U3hWTodRgmo1p
+        TylL8WpSdAHCNMrUpsa6NeY98Uh5aiunuQ==
+X-Google-Smtp-Source: AGHT+IFCU7XFERhk9HsAv78kJrpS5GbvP2BDihMYP7wYKxRX44AUJ8Nh/X+xWa+DtpFHJqe8EgvqVw==
+X-Received: by 2002:a05:6902:147:b0:db7:dacf:6206 with SMTP id p7-20020a056902014700b00db7dacf6206mr984506ybh.88.1702138962423;
+        Sat, 09 Dec 2023 08:22:42 -0800 (PST)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id k18-20020a258c12000000b00d9cbf2aabc6sm1344109ybl.14.2023.12.09.08.22.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Dec 2023 08:22:42 -0800 (PST)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5cd81e76164so28977427b3.1;
+        Sat, 09 Dec 2023 08:22:42 -0800 (PST)
+X-Received: by 2002:a81:5cc5:0:b0:5d7:1940:dd83 with SMTP id
+ q188-20020a815cc5000000b005d71940dd83mr1224179ywb.89.1702138961866; Sat, 09
+ Dec 2023 08:22:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9af9b10f-0ab6-1fe8-eaec-c9f98e14a203@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231120111820.87398-2-claudiu.beznea.uj@bp.renesas.com> <170207008477.398.7455050423203256596.tip-bot2@tip-bot2>
+In-Reply-To: <170207008477.398.7455050423203256596.tip-bot2@tip-bot2>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sat, 9 Dec 2023 17:22:30 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVFZvrWGbwsVAfOrLGWqgoSieKrqH_kN4rvoGmw-Fsnrg@mail.gmail.com>
+Message-ID: <CAMuHMdVFZvrWGbwsVAfOrLGWqgoSieKrqH_kN4rvoGmw-Fsnrg@mail.gmail.com>
+Subject: Re: [tip: irq/core] clk: renesas: r9a08g045: Add IA55 pclk and its reset
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-tip-commits@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 02:35:28PM -0600, Kalra, Ashish wrote:
-> The main use case for the probe parameter is to control if we want to do
-> legacy SEV/SEV-ES INIT during probe. There is a usage case where we want to
-> delay legacy SEV INIT till an actual SEV/SEV-ES guest is being launched. So
-> essentially the probe parameter controls if we want to
-> execute __sev_do_init_locked() or not.
-> 
-> We always want to do SNP INIT at probe time.
+Hi Thomas,
 
-Here's what I mean (diff ontop):
+On Fri, Dec 8, 2023 at 10:14 PM tip-bot2 for Claudiu Beznea
+<tip-bot2@linutronix.de> wrote:
+> The following commit has been merged into the irq/core branch of tip:
+>
+> Commit-ID:     63385748bce1ef169438c123c7e32c021c0b9409
+> Gitweb:        https://git.kernel.org/tip/63385748bce1ef169438c123c7e32c021c0b9409
+> Author:        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> AuthorDate:    Mon, 20 Nov 2023 13:18:12 +02:00
+> Committer:     Thomas Gleixner <tglx@linutronix.de>
+> CommitterDate: Fri, 08 Dec 2023 22:06:34 +01:00
+>
+> clk: renesas: r9a08g045: Add IA55 pclk and its reset
 
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index fae1fd45eccd..830d74fcf950 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -479,11 +479,16 @@ static inline int __sev_do_init_locked(int *psp_ret)
- 		return __sev_init_locked(psp_ret);
- }
- 
--static int ___sev_platform_init_locked(int *error, bool probe)
-+/*
-+ * Legacy guests cannot be running while SNP_INIT(_EX) is executing,
-+ * so perform SEV-SNP initialization at probe time.
-+ */
-+static int __sev_platform_init_snp_locked(int *error)
- {
--	int rc, psp_ret = SEV_RET_NO_FW_CALL;
-+
- 	struct psp_device *psp = psp_master;
- 	struct sev_device *sev;
-+	int rc;
- 
- 	if (!psp || !psp->sev_data)
- 		return -ENODEV;
-@@ -493,10 +498,6 @@ static int ___sev_platform_init_locked(int *error, bool probe)
- 	if (sev->state == SEV_STATE_INIT)
- 		return 0;
- 
--	/*
--	 * Legacy guests cannot be running while SNP_INIT(_EX) is executing,
--	 * so perform SEV-SNP initialization at probe time.
--	 */
- 	rc = __sev_snp_init_locked(error);
- 	if (rc && rc != -ENODEV) {
- 		/*
-@@ -506,8 +507,21 @@ static int ___sev_platform_init_locked(int *error, bool probe)
- 		dev_err(sev->dev, "SEV-SNP: failed to INIT rc %d, error %#x\n", rc, *error);
- 	}
- 
--	/* Delay SEV/SEV-ES support initialization */
--	if (probe && !psp_init_on_probe)
-+	return rc;
-+}
-+
-+static int __sev_platform_init_locked(int *error)
-+{
-+	int rc, psp_ret = SEV_RET_NO_FW_CALL;
-+	struct psp_device *psp = psp_master;
-+	struct sev_device *sev;
-+
-+	if (!psp || !psp->sev_data)
-+		return -ENODEV;
-+
-+	sev = psp->sev_data;
-+
-+	if (sev->state == SEV_STATE_INIT)
- 		return 0;
- 
- 	if (!sev_es_tmr) {
-@@ -563,33 +577,32 @@ static int ___sev_platform_init_locked(int *error, bool probe)
- 	return 0;
- }
- 
--static int __sev_platform_init_locked(int *error)
--{
--	return ___sev_platform_init_locked(error, false);
--}
--
--int sev_platform_init(int *error)
-+static int _sev_platform_init_locked(int *error, bool probe)
- {
- 	int rc;
- 
--	mutex_lock(&sev_cmd_mutex);
--	rc = __sev_platform_init_locked(error);
--	mutex_unlock(&sev_cmd_mutex);
-+	rc = __sev_platform_init_snp_locked(error);
-+	if (rc)
-+		return rc;
- 
--	return rc;
-+	/* Delay SEV/SEV-ES support initialization */
-+	if (probe && !psp_init_on_probe)
-+		return 0;
-+
-+	return __sev_platform_init_locked(error);
- }
--EXPORT_SYMBOL_GPL(sev_platform_init);
- 
--static int sev_platform_init_on_probe(int *error)
-+int sev_platform_init(int *error)
- {
- 	int rc;
- 
- 	mutex_lock(&sev_cmd_mutex);
--	rc = ___sev_platform_init_locked(error, true);
-+	rc = _sev_platform_init_locked(error, false);
- 	mutex_unlock(&sev_cmd_mutex);
- 
- 	return rc;
- }
-+EXPORT_SYMBOL_GPL(sev_platform_init);
- 
- static int __sev_platform_shutdown_locked(int *error)
- {
-@@ -691,7 +704,7 @@ static int sev_ioctl_do_pek_pdh_gen(int cmd, struct sev_issue_cmd *argp, bool wr
- 		return -EPERM;
- 
- 	if (sev->state == SEV_STATE_UNINIT) {
--		rc = __sev_platform_init_locked(&argp->error);
-+		rc = _sev_platform_init_locked(&argp->error, false);
- 		if (rc)
- 			return rc;
- 	}
-@@ -734,7 +747,7 @@ static int sev_ioctl_do_pek_csr(struct sev_issue_cmd *argp, bool writable)
- 
- cmd:
- 	if (sev->state == SEV_STATE_UNINIT) {
--		ret = __sev_platform_init_locked(&argp->error);
-+		ret = _sev_platform_init_locked(&argp->error, false);
- 		if (ret)
- 			goto e_free_blob;
- 	}
-@@ -1115,7 +1128,7 @@ static int sev_ioctl_do_pek_import(struct sev_issue_cmd *argp, bool writable)
- 
- 	/* If platform is not in INIT state then transition it to INIT */
- 	if (sev->state != SEV_STATE_INIT) {
--		ret = __sev_platform_init_locked(&argp->error);
-+		ret = _sev_platform_init_locked(&argp->error, false);
- 		if (ret)
- 			goto e_free_oca;
- 	}
-@@ -1246,7 +1259,7 @@ static int sev_ioctl_do_pdh_export(struct sev_issue_cmd *argp, bool writable)
- 		if (!writable)
- 			return -EPERM;
- 
--		ret = __sev_platform_init_locked(&argp->error);
-+		ret = _sev_platform_init_locked(&argp->error, false);
- 		if (ret)
- 			return ret;
- 	}
-@@ -1608,7 +1621,9 @@ void sev_pci_init(void)
- 	}
- 
- 	/* Initialize the platform */
--	rc = sev_platform_init_on_probe(&error);
-+	mutex_lock(&sev_cmd_mutex);
-+	rc = _sev_platform_init_locked(&error, true);
-+	mutex_unlock(&sev_cmd_mutex);
- 	if (rc)
- 		dev_err(sev->dev, "SEV: failed to INIT error %#x, rc %d\n",
- 			error, rc);
+Please do not apply Renesas clock patches to your tree without an
+explicit ack (especially when there are nearby changes in flight).
+Renesas clock patches are intended to go in through the renesas-clk
+and clk trees.
 
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Regards/Gruss,
-    Boris.
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-https://people.kernel.org/tglx/notes-about-netiquette
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
