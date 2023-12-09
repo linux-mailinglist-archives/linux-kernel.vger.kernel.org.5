@@ -2,57 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 231DC80B627
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C167080B626
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbjLIT4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 14:56:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
+        id S230514AbjLIUCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 15:02:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjLIT4G (ORCPT
+        with ESMTP id S229477AbjLIUCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 14:56:06 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5352C11A
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 11:56:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702151772; x=1733687772;
-  h=date:from:to:cc:subject:message-id;
-  bh=bIiy7UJLvFI/1mUObk0E0JXWEF5p48nPOYnsksrVMV0=;
-  b=hRS2Vnm6HvSJGdcaTWd7xB8LHh2n1oRZknHNcPLxUphFbMbuMACD7Ejg
-   tAcEQgucYzcmb0dU6INg7+mYhYjzcUowjgcEmJ7y+zm7q5yzFnfx2mB5T
-   JkzK3b0DJ66xtzJRyHLV5amB03J3WXVTKzrrnHhLVcUf6NXTW4ySYPLax
-   OJxRyVgorJ+MQec2Y+VkBLrc1jXZII+MDjl+7afHxjsK2NgWepIUv7skD
-   sVMK6JTmrCu8d9vSCyN0TPXWlppU2K2Ej2zZOdycsNVoluE+uQQio1muz
-   GcuON1d0RS+gmqlxWF+K5KdZrs78uOffpTe6ghHd6xg25XiRVeDSvj9wS
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="1625675"
-X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
-   d="scan'208";a="1625675"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 11:56:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="1103930321"
-X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
-   d="scan'208";a="1103930321"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 09 Dec 2023 11:56:10 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rC3Qm-000Frp-1E;
-        Sat, 09 Dec 2023 19:56:08 +0000
-Date:   Sun, 10 Dec 2023 03:55:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/tdx] BUILD SUCCESS
- 1363d55c108dfb6280f55a7f5b149017879fe23b
-Message-ID: <202312100347.bXgIrBvg-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Sat, 9 Dec 2023 15:02:36 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5D5121
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 12:02:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 587AAC433C8;
+        Sat,  9 Dec 2023 20:02:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702152162;
+        bh=jH9L5HvC+Ae62Fg3wZ8hVeCEhv1fJUiobgIHaIv4BOA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WgNC7WlFXYNLYO/saHOXzg8UI1M5bFUo49UL16f2E9NupU5fJefAdxJdFsydfntNa
+         GyBwcAE3ZDMNAD6yulE7N0GDFdEH29vAJvbMyUIpIsojhAUziVI2ylESnRNTWVyqGx
+         3404ETsVF4Mr7SXXAFXz60qJ/pL5gQxN0jewHeKm9D3ryuxCrv77svOieKR8ymffPb
+         FPlodUudZXol3gaoOyTs7GnyYzOpcZXQ6Da5TpNjUZS33paa/aeYvTrcdr3if4Nxw+
+         rs85TVWRwdNw0Bi+xjuRiyNbuWWrvIFwRvqiJ8SLF+1qBsTmIe9nApoaCyrPEE4K7E
+         2dd2GxTCMV1OA==
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3b9e1a3e3f0so1925542b6e.1;
+        Sat, 09 Dec 2023 12:02:42 -0800 (PST)
+X-Gm-Message-State: AOJu0YzqxcR5gMZ3ANrKINwkIgZdm3gHVvbyJJz+xmo3e92dgRHSmgi1
+        u9nshQP8ew6x9M75iy8CZ4rnzzOML74Y170LZTw=
+X-Google-Smtp-Source: AGHT+IH8yO8a9hHWT4e+sLk+G0LWSOZK6PiqZI9fJF/nmSs3M/yqpFa1nUwdoV6kz4H7YBhhjTZ9rA9Z2EYcMHqfsfI=
+X-Received: by 2002:a05:6870:d917:b0:1f9:496b:e261 with SMTP id
+ gq23-20020a056870d91700b001f9496be261mr2820590oab.15.1702152161710; Sat, 09
+ Dec 2023 12:02:41 -0800 (PST)
+MIME-Version: 1.0
+References: <20231205104559.2017320-1-msp@baylibre.com>
+In-Reply-To: <20231205104559.2017320-1-msp@baylibre.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 10 Dec 2023 05:02:05 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARxTsORzrQiZ4ywejqys8cWR81m_g1sgoyN4PA3dmQRYA@mail.gmail.com>
+Message-ID: <CAK7LNARxTsORzrQiZ4ywejqys8cWR81m_g1sgoyN4PA3dmQRYA@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: Use KCONFIG_CONFIG instead of .config
+To:     Markus Schneider-Pargmann <msp@baylibre.com>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,152 +57,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/tdx
-branch HEAD: 1363d55c108dfb6280f55a7f5b149017879fe23b  x86/virt/tdx: Disable TDX host support when kexec is enabled
+On Tue, Dec 5, 2023 at 7:46=E2=80=AFPM Markus Schneider-Pargmann
+<msp@baylibre.com> wrote:
+>
+> When using a custom location for kernel config files this merge config
+> command fails as it doesn't use the configuration set with
+> KCONFIG_CONFIG.
+>
+> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+> ---
+>
 
-elapsed time: 1489m
+Applied to linux-kbuild.
+Thanks.
 
-configs tested: 133
-configs skipped: 2
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arc                            hsdk_defconfig   gcc  
-arc                   randconfig-001-20231210   gcc  
-arc                   randconfig-002-20231210   gcc  
-arm                               allnoconfig   gcc  
-arm                         at91_dt_defconfig   gcc  
-arm                                 defconfig   clang
-arm                            dove_defconfig   clang
-arm                   randconfig-001-20231210   gcc  
-arm                   randconfig-002-20231210   gcc  
-arm                   randconfig-003-20231210   gcc  
-arm                   randconfig-004-20231210   gcc  
-arm                         vf610m4_defconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231210   gcc  
-arm64                 randconfig-002-20231210   gcc  
-arm64                 randconfig-003-20231210   gcc  
-arm64                 randconfig-004-20231210   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231210   gcc  
-csky                  randconfig-002-20231210   gcc  
-hexagon                           allnoconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20231210   clang
-hexagon               randconfig-002-20231210   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231209   gcc  
-i386         buildonly-randconfig-002-20231209   gcc  
-i386         buildonly-randconfig-003-20231209   gcc  
-i386         buildonly-randconfig-004-20231209   gcc  
-i386         buildonly-randconfig-005-20231209   gcc  
-i386         buildonly-randconfig-006-20231209   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231209   gcc  
-i386                  randconfig-002-20231209   gcc  
-i386                  randconfig-003-20231209   gcc  
-i386                  randconfig-004-20231209   gcc  
-i386                  randconfig-005-20231209   gcc  
-i386                  randconfig-006-20231209   gcc  
-i386                  randconfig-011-20231209   clang
-i386                  randconfig-012-20231209   clang
-i386                  randconfig-013-20231209   clang
-i386                  randconfig-014-20231209   clang
-i386                  randconfig-015-20231209   clang
-i386                  randconfig-016-20231209   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231210   gcc  
-loongarch             randconfig-002-20231210   gcc  
-m68k                             alldefconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-microblaze                      mmu_defconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231210   gcc  
-nios2                 randconfig-002-20231210   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20231210   gcc  
-parisc                randconfig-002-20231210   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                      bamboo_defconfig   gcc  
-powerpc                       eiger_defconfig   gcc  
-powerpc                     mpc83xx_defconfig   gcc  
-powerpc                  mpc885_ads_defconfig   clang
-powerpc               randconfig-001-20231210   gcc  
-powerpc               randconfig-002-20231210   gcc  
-powerpc               randconfig-003-20231210   gcc  
-powerpc64             randconfig-001-20231210   gcc  
-powerpc64             randconfig-002-20231210   gcc  
-powerpc64             randconfig-003-20231210   gcc  
-riscv                             allnoconfig   clang
-riscv                               defconfig   gcc  
-riscv             nommu_k210_sdcard_defconfig   gcc  
-riscv                 randconfig-001-20231210   gcc  
-riscv                 randconfig-002-20231210   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231210   clang
-s390                  randconfig-002-20231210   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                               j2_defconfig   gcc  
-sh                          kfr2r09_defconfig   gcc  
-sh                    randconfig-001-20231210   gcc  
-sh                    randconfig-002-20231210   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20231210   gcc  
-sparc64               randconfig-002-20231210   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20231210   gcc  
-um                    randconfig-002-20231210   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20231210   gcc  
-xtensa                randconfig-002-20231210   gcc  
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Notes:
+>     Hi,
+>
+>     This patch helps me to merge_configs with config files that are not
+>     .config (set by using KCONFIG_CONFIG=3D<PATH>). I am not sure if I br=
+eak
+>     something with that change.
+>
+>     I didn't add any stable kernels as this is a kernel config issue and =
+no
+>     bug in the kernel code itself.
+>
+>     Best,
+>     Markus
+>
+>  scripts/kconfig/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
+> index 4eee155121a8..106159e75d40 100644
+> --- a/scripts/kconfig/Makefile
+> +++ b/scripts/kconfig/Makefile
+> @@ -99,7 +99,7 @@ config-fragments =3D $(call configfiles,$@)
+>
+>  %.config: $(obj)/conf
+>         $(if $(config-fragments),, $(error $@ fragment does not exists on=
+ this architecture))
+> -       $(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh -m=
+ .config $(config-fragments)
+> +       $(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh -m=
+ $(KCONFIG_CONFIG) $(config-fragments)
+>         $(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
+>
+>  PHONY +=3D tinyconfig
+> --
+> 2.43.0
+>
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
