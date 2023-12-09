@@ -2,222 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAA680B33D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 09:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA42C80B32D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 09:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234563AbjLIIPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 03:15:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
+        id S234527AbjLIIRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 03:17:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234535AbjLIIPM (ORCPT
+        with ESMTP id S229510AbjLIIRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 03:15:12 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F319137;
-        Sat,  9 Dec 2023 00:15:18 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B984onV022969;
-        Sat, 9 Dec 2023 00:15:11 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=EVcOrvA1I3aNP1SHeVpDUNayuysOpaFv6oAonAxyMJA=;
- b=A/kVLwQIlveq8EVPnFqlvEsG95kxhlK6s6jUTm+S1l09HCzGQMWDqKsQWhUmrBhJHEBO
- QxKpAxEQfJ/LG5KNRC1Vg2bD8O+Vshd8uHRbqzOEUhdBEu5o+gcPjHB93yEPVaggOujs
- KWequEw9YSlwFAgKqp01//IwyYHJ7p1nQK4Ps50Hf6K9GY7Vw9eRSpja1XVmfiJ43/Sr
- ujKcW1S86GVTGIpELQ7bkSJQZg+IlehdmVg+KabRreFeStuS4PPCmjP+phB1/ixQS+YK
- MuY8j2jDbTDcXew6Minhc0jqz69iLw//iuHGFjL0lRBKH0s9f+KJy48BTKxo9y1i7rZj Dg== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3uubddfkhp-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sat, 09 Dec 2023 00:15:11 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 9 Dec
- 2023 00:15:03 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Sat, 9 Dec 2023 00:15:02 -0800
-Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
-        by maili.marvell.com (Postfix) with ESMTP id 5CA0B3F70CD;
-        Sat,  9 Dec 2023 00:15:02 -0800 (PST)
-From:   Shinas Rasheed <srasheed@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
-        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
-        <kuba@kernel.org>, <davem@davemloft.net>, <wizhao@redhat.com>,
-        <kheib@redhat.com>, <konguyen@redhat.com>,
-        Shinas Rasheed <srasheed@marvell.com>,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        "Sathesh Edara" <sedara@marvell.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: [PATCH net-next v2 4/4] octeon_ep: support firmware notifications for VFs
-Date:   Sat, 9 Dec 2023 00:14:50 -0800
-Message-ID: <20231209081450.2613561-5-srasheed@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231209081450.2613561-1-srasheed@marvell.com>
-References: <20231209081450.2613561-1-srasheed@marvell.com>
+        Sat, 9 Dec 2023 03:17:48 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6142F137;
+        Sat,  9 Dec 2023 00:17:55 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-7b459364167so101269239f.2;
+        Sat, 09 Dec 2023 00:17:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702109874; x=1702714674; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Vw90yWCuaFmFuU5ynluaqiB/yx3h4VMDt+wN5n9OLZo=;
+        b=Iy/OVlRwshQzUTtWU/6YkQlBVQndchtPGKn5LPQOTU+UtzmRMl9BheydRFfJjxY0ki
+         NgjIGjpicQrVz/ThjyDFkgfQkxR6fS8IDBHEdEBCFUxSbwRXlGNSXZxUrsrgRPW3dGcc
+         OrPYADILpBWM7Opa68JLHD2f5F7pvu+X6Diquvn6KdgXyzEiCbCBovwtO+xuTys4V6nR
+         Nmp3bGcTuRZOIP+n8tascYPr3ZZBs72LYArpLYilNOkEUcq/Y0KMAny+L11nUcPSmqOl
+         +DoeWdQGuROUjS4noksrVt7oNB950jWvMIbFqtn2ifkqLROERuby+t+LWzOX+a5jqazh
+         3pPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702109874; x=1702714674;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vw90yWCuaFmFuU5ynluaqiB/yx3h4VMDt+wN5n9OLZo=;
+        b=FiirOgqac7w/5p182w4onO4gLHGHIDOo7HLNW96NJkFOcnyI+30n4jm7+vPDjDXPiF
+         o37ePyG5XeGpK4yKMZn/gp8BudkFDrNsP/Z2MkT0DlQrg4w4NyjaimDMvUzlvmhFnUYW
+         /gg0IUGc10of5HNKZAytsHT3mZcC/Z6MtCBQrt9iGntOdKgaXA1p+7f1SiHbsng1rtnv
+         SH95B+JlKedCoTTuvSHndFYlsTKzXv37MupmH/Z83US48Sbg356eoUhx8hVMjWpvVgaV
+         JNYS4nL11zYgCjlDokvh0/Xw2Oaidc5a1FcndI3K9U4zcSKJjoN1BQ30RTqwipMOMzNG
+         gXzA==
+X-Gm-Message-State: AOJu0YzSs+bhVcKJo0ZUOcAjEjSbCtGI+jusaUd/XPHJFfY/mxgABjsV
+        ZTITDdvP40cBKcwPoyU/HFc=
+X-Google-Smtp-Source: AGHT+IH+cfKMv3xgzol2WOJ5lHJEvCMIaTKT9Wtn+aUdjQMts0DLGgqa340rZK08kW9nmq1E578iKQ==
+X-Received: by 2002:a05:6e02:16cb:b0:35d:9344:b033 with SMTP id 11-20020a056e0216cb00b0035d9344b033mr1454323ilx.12.1702109874647;
+        Sat, 09 Dec 2023 00:17:54 -0800 (PST)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id k10-20020a170902694a00b001d1c96a0c63sm2863886plt.274.2023.12.09.00.17.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Dec 2023 00:17:54 -0800 (PST)
+Message-ID: <9573bd00-7b9e-40d0-9229-f273bf4e6a16@gmail.com>
+Date:   Sat, 9 Dec 2023 15:17:29 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: VdLjfmQdxx_8RMUtG-LkekZ_u_CHeh9H
-X-Proofpoint-GUID: VdLjfmQdxx_8RMUtG-LkekZ_u_CHeh9H
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] Documentation: xfs: consolidate XFS docs into its own
+ subdirectory
+Content-Language: en-US
+To:     Chandan Babu R <chandan.babu@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux XFS <linux-xfs@vger.kernel.org>,
+        Linux Kernel Workflows <workflows@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Steve French <stfrench@microsoft.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Charles Han <hanchunchao@inspur.com>,
+        Vegard Nossum <vegard.nossum@oracle.com>
+References: <20231129123947.4706-1-bagasdotme@gmail.com>
+ <ZXP6kzbfUcLbBtCi@archie.me>
+ <874jgryf8d.fsf@debian-BULLSEYE-live-builder-AMD64>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <874jgryf8d.fsf@debian-BULLSEYE-live-builder-AMD64>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Notifications from firmware to vf has to pass through PF
-control mbox and via PF-VF mailboxes. The notifications have to
-be parsed out from the control mbox and passed to the
-PF-VF mailbox in order to reach the corresponding VF.
-Version compatibility should also be checked before messages
-are passed to the mailboxes.
+On 12/9/23 15:00, Chandan Babu R wrote:
+> On Sat, Dec 09, 2023 at 12:26:43 PM +0700, Bagas Sanjaya wrote:
+>> [[PGP Signed Part:No public key for F6B9894955514EA3 created at 2023-12-09T10:56:39+0530 using EDDSA]]
+>> On Wed, Nov 29, 2023 at 07:39:47PM +0700, Bagas Sanjaya wrote:
+>>> XFS docs are currently in upper-level Documentation/filesystems.
+>>> Although these are currently 4 docs, they are already outstanding as
+>>> a group and can be moved to its own subdirectory.
+>>>
+>>> Consolidate them into Documentation/filesystems/xfs/.
+>>>
+>>> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+>>
+>> Hi Jon, Chandan, and Darrick,
+>>
+>> FYI, XFS tree [1] is not updated since 2 weeks ago (and this patch doesn't get
+>> picked up). Would you like to route this patch through docs-next tree or
+>> xfs/for-next?
+>>
+> 
+> This patch is part of a collection of patches that I am planning to include in
+> the pull request for v6.8-rc1. I am currently running fstests to make sure
+> that there are no regressions.
+> 
 
-Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
----
-V2:
-  - No changes
+OK, thanks!
 
-V1: https://lore.kernel.org/all/20231208070352.2606192-5-srasheed@marvell.com/
-
- .../marvell/octeon_ep/octep_ctrl_net.c        |  6 ++
- .../marvell/octeon_ep/octep_pfvf_mbox.c       | 58 +++++++++++++++++++
- .../marvell/octeon_ep/octep_pfvf_mbox.h       |  2 +
- 3 files changed, 66 insertions(+)
-
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c
-index 9dff2166dbb7..01b7be154c38 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c
-@@ -13,6 +13,7 @@
- #include "octep_config.h"
- #include "octep_main.h"
- #include "octep_ctrl_net.h"
-+#include "octep_pfvf_mbox.h"
- 
- /* Control plane version */
- #define OCTEP_CP_VERSION_CURRENT	OCTEP_CP_VERSION(1, 0, 0)
-@@ -329,6 +330,11 @@ static int process_mbox_notify(struct octep_device *oct,
- 	    octep_ctrl_net_f2h_cmd_versions[cmd] < OCTEP_CP_VERSION_CURRENT)
- 		return -EOPNOTSUPP;
- 
-+	if (msg->hdr.s.is_vf) {
-+		octep_pfvf_notify(oct, msg);
-+		return 0;
-+	}
-+
- 	switch (cmd) {
- 	case OCTEP_CTRL_NET_F2H_CMD_LINK_STATUS:
- 		if (netif_running(netdev)) {
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c b/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c
-index 57e0184840c2..387a07456f54 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c
-@@ -22,6 +22,15 @@
- #include "octep_pfvf_mbox.h"
- #include "octep_ctrl_net.h"
- 
-+/* When a new command is implemented, the below table should be updated
-+ * with new command and it's version info.
-+ */
-+static u32 pfvf_cmd_versions[OCTEP_PFVF_MBOX_CMD_MAX] = {
-+	[0 ... OCTEP_PFVF_MBOX_CMD_DEV_REMOVE] = OCTEP_PFVF_MBOX_VERSION_V1,
-+	[OCTEP_PFVF_MBOX_CMD_GET_FW_INFO ... OCTEP_PFVF_MBOX_NOTIF_LINK_STATUS] =
-+		OCTEP_PFVF_MBOX_VERSION_V2
-+};
-+
- static void octep_pfvf_validate_version(struct octep_device *oct,  u32 vf_id,
- 					union octep_pfvf_mbox_word cmd,
- 					union octep_pfvf_mbox_word *rsp)
-@@ -88,6 +97,34 @@ static void octep_pfvf_set_rx_state(struct octep_device *oct, u32 vf_id,
- 	rsp->s_link_state.type = OCTEP_PFVF_MBOX_TYPE_RSP_ACK;
- }
- 
-+static int octep_send_notification(struct octep_device *oct, u32 vf_id,
-+				   union octep_pfvf_mbox_word cmd)
-+{
-+	u32 max_rings_per_vf, vf_mbox_queue;
-+	struct octep_mbox *mbox;
-+
-+	/* check if VF PF Mailbox is compatible for this notification */
-+	if (pfvf_cmd_versions[cmd.s.opcode] > oct->vf_info[vf_id].mbox_version) {
-+		dev_dbg(&oct->pdev->dev, "VF Mbox doesn't support Notification:%d on VF ver:%d\n",
-+			cmd.s.opcode, oct->vf_info[vf_id].mbox_version);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	max_rings_per_vf = CFG_GET_MAX_RPVF(oct->conf);
-+	vf_mbox_queue = vf_id * max_rings_per_vf;
-+	if (!oct->mbox[vf_mbox_queue]) {
-+		dev_err(&oct->pdev->dev, "Notif obtained for bad mbox vf %d\n", vf_id);
-+		return -EINVAL;
-+	}
-+	mbox = oct->mbox[vf_mbox_queue];
-+
-+	mutex_lock(&mbox->lock);
-+	writeq(cmd.u64, mbox->pf_vf_data_reg);
-+	mutex_unlock(&mbox->lock);
-+
-+	return 0;
-+}
-+
- static void octep_pfvf_set_mtu(struct octep_device *oct, u32 vf_id,
- 			       union octep_pfvf_mbox_word cmd,
- 			       union octep_pfvf_mbox_word *rsp)
-@@ -327,6 +364,27 @@ static void octep_pfvf_pf_get_data(struct octep_device *oct,
- 	}
- }
- 
-+void octep_pfvf_notify(struct octep_device *oct, struct octep_ctrl_mbox_msg *msg)
-+{
-+	union octep_pfvf_mbox_word notif = { 0 };
-+	struct octep_ctrl_net_f2h_req *req;
-+
-+	req = (struct octep_ctrl_net_f2h_req *)msg->sg_list[0].msg;
-+	switch (req->hdr.s.cmd) {
-+	case OCTEP_CTRL_NET_F2H_CMD_LINK_STATUS:
-+		notif.s_link_status.opcode = OCTEP_PFVF_MBOX_NOTIF_LINK_STATUS;
-+		notif.s_link_status.status = req->link.state;
-+		break;
-+	default:
-+		pr_info("Unknown mbox notif for vf: %u\n",
-+			req->hdr.s.cmd);
-+		return;
-+	}
-+
-+	notif.s.type = OCTEP_PFVF_MBOX_TYPE_CMD;
-+	octep_send_notification(oct, msg->hdr.s.vf_idx, notif);
-+}
-+
- void octep_pfvf_mbox_work(struct work_struct *work)
- {
- 	struct octep_pfvf_mbox_wk *wk = container_of(work, struct octep_pfvf_mbox_wk, work);
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h b/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h
-index c18a9f26fc31..0dc6eead292a 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h
-@@ -37,6 +37,7 @@ enum octep_pfvf_mbox_opcode {
- 	OCTEP_PFVF_MBOX_CMD_DEV_REMOVE,
- 	OCTEP_PFVF_MBOX_CMD_GET_FW_INFO,
- 	OCTEP_PFVF_MBOX_CMD_SET_OFFLOADS,
-+	OCTEP_PFVF_MBOX_NOTIF_LINK_STATUS,
- 	OCTEP_PFVF_MBOX_CMD_MAX,
- };
- 
-@@ -162,4 +163,5 @@ union octep_pfvf_mbox_word {
- void octep_pfvf_mbox_work(struct work_struct *work);
- int octep_setup_pfvf_mbox(struct octep_device *oct);
- void octep_delete_pfvf_mbox(struct octep_device *oct);
-+void octep_pfvf_notify(struct octep_device *oct, struct octep_ctrl_mbox_msg *msg);
- #endif
 -- 
-2.25.1
+An old man doll... just what I always wanted! - Clara
 
