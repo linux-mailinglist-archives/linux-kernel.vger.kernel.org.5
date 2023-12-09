@@ -2,123 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC37C80B24D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 07:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B7580B256
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 07:22:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234288AbjLIGGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 01:06:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60040 "EHLO
+        id S230258AbjLIGR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 01:17:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjLIGGe (ORCPT
+        with ESMTP id S229441AbjLIGR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 01:06:34 -0500
-Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA6710DF
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 22:06:40 -0800 (PST)
-Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-1fb104887fbso1796399fac.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 22:06:40 -0800 (PST)
+        Sat, 9 Dec 2023 01:17:27 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2F410DF
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 22:17:33 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-7b3a8366e13so100844239f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 22:17:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702101999; x=1702706799; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nf6OOTcG7PxYCx6vPFQxKfuzNKzfWsQNsizZ/iXT2to=;
-        b=Ac8p8MJWzVQTOc94MqD9cJmpKz1SjIurkpHFJFZSRSW4VMKaYX1gG3KXFoNILY3EnC
-         8JpNIB/pVDRRsC7k3WzLaBH5DylfyAMMpd6JWnWKmEr4iB+WS7QuI3iSc6Z20m2KFAdF
-         QhnuKoWJAujgzHGX464mQsmk4/+KiN1W4Ih5O7YW9Zgmxl5+C44QNR+mYIO6xJP7J2c7
-         e/JDXgms/grfRURyA6u7OhPV4V3hijknSPSeINg4m7+TrpwHmiMEzCKNAjio7y3BYGrF
-         pWBWWKBE8IPv6y2KiS4SSZ9XPoXsNongCDvp1lPJJmQxM/RxTzDvUzesJbKH15ijBQSq
-         1w9g==
+        d=linaro.org; s=google; t=1702102653; x=1702707453; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=U8morqy+oi5xTO4rvPEOCUiaHl77jTCM6O5fLdzv0Xk=;
+        b=niSttaUe/OgdndU4gtWFh4rz901eWG8HrhIV1E01wWOYJ3rfpmpxD9frV5qdsN7MK6
+         7cJzp1fF9hL6RTg67tSGzEvSmlhBZbVIkyyKOPE59uSMvr7PIpfk1NZvqPDxBQhfLAfQ
+         48KPrNZevLUmdjzno4nRqs1H1bSNGay3JCG+dcKG86ZaMH/pX9gm87X4SI3R1nrPdzQ8
+         fdpKG4BZldLjzI7HnmJSWXuZs5PVfbbj3aWe9XeEFXAoolWwzRdnqruVY1UxvYXy3ZhA
+         Gz92VRWjuW0V1a9LbINjfARRCTo6AryrcXF7zLCcEWVFL0Q/2NxS3pWM/SR4TS8kCWfA
+         nD+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702101999; x=1702706799;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nf6OOTcG7PxYCx6vPFQxKfuzNKzfWsQNsizZ/iXT2to=;
-        b=XJQjsYUjy7LiR31BWfUz2fsfRIGakUBcNlnxz1inYDYBekQjpw1gKQxhkx9nzpKRqQ
-         GgR0PJVxsvhsBor+1bteYg1V8UwLXkrLnZznS85alaQRiy21p7+QiSNH5+Tvd6auCOAx
-         x8TIXd0Y6Fm4cA9Y83S07sBYJlZjfnqlqWcqfD9+NNCRg9nbFzd3WhpwCPwyhoXPpR8w
-         4j3Wm37SQFEFaXWwmmmD96L59+CA7hafiRrpTrpBme6oadOq8DpSGKm5DQnxxIitj3tQ
-         2rhvgK5CTzk0XDAj/ko8YFoZ0fRKt53cFC4/tLwqPYfsSXTYgSERptjHs1SLvmHMyKeW
-         o8Bg==
-X-Gm-Message-State: AOJu0Yz1xk+UVRll43KPEzeK3OB3DhaYurjWnwRad6553KrmYVYVPFRx
-        2knm6GX4ohjPLOw1HA5p/Qu49vOd0LBdv+JopN4s7XIskJLJtw==
-X-Google-Smtp-Source: AGHT+IFopuEBCifPNBT3duj2vrRMB+gTm7VJSiDvYQwASu+1M93cE8+e6nL+a/r5JVbktW+0O1BQ1pb2lk390P8M7Io=
-X-Received: by 2002:a05:6870:d38a:b0:1fb:6e5d:1ecb with SMTP id
- k10-20020a056870d38a00b001fb6e5d1ecbmr1708470oag.54.1702101999590; Fri, 08
- Dec 2023 22:06:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702102653; x=1702707453;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U8morqy+oi5xTO4rvPEOCUiaHl77jTCM6O5fLdzv0Xk=;
+        b=G2u8TV8tOw2dqPcXlDmv45SAM4qlxQhmDknNVmCMJ+x6IiR5o8mhMZnfliITqL9cxk
+         MdpCmUISykmKqcmrhTOSRo8kyzL/gUgrUTQQgCkSLpD6pibZpEmauCEcSRgxR2u+imXq
+         DJc2wRjpwT5h+NwhOuux8CzDHHfQtnVRZ63rdMb6ZeNqyH6DXbw04xjuUraJ8ii6lgtn
+         xOsyXIT5PNJGYTyxEyYjsjDt8jR3epvnW/O6O6Y/fQf/6hgwVNmnUbT/uNfYagQ2T7Np
+         JwOZqcdYbqWZaFxRE72e4Fubph894vVHNU8zwzuypnMDmryroDp6FQbjvvBR5kbE82p6
+         3YWg==
+X-Gm-Message-State: AOJu0Yx0n8EvNKVL5oLi1caPbNQzuDXTVCAUBPSnCqnJS5GIKjSyIqM/
+        RRaVhoVkmQ0RbDsUwnpIvPjjPg==
+X-Google-Smtp-Source: AGHT+IE+UBNr8HK1+udhvTGk4IOL5QEH22TaHi9x7KhWqht8lnlPI8fgDVxefasgjkDUjaMf5tpWVg==
+X-Received: by 2002:a6b:4910:0:b0:7b6:eb7c:7078 with SMTP id u16-20020a6b4910000000b007b6eb7c7078mr1649448iob.0.1702102653115;
+        Fri, 08 Dec 2023 22:17:33 -0800 (PST)
+Received: from leoy-yangtze.lan ([94.177.131.71])
+        by smtp.gmail.com with ESMTPSA id s13-20020a170902ea0d00b001d1d27259cesm2690509plg.180.2023.12.08.22.17.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 22:17:32 -0800 (PST)
+Date:   Sat, 9 Dec 2023 14:17:23 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     kan.liang@linux.intel.com
+Cc:     acme@kernel.org, irogers@google.com, peterz@infradead.org,
+        mingo@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
+        adrian.hunter@intel.com, john.g.garry@oracle.com, will@kernel.org,
+        james.clark@arm.com, mike.leach@linaro.org,
+        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH V2 4/5] perf mem: Clean up perf_mem_event__supported()
+Message-ID: <20231209061723.GC2116834@leoy-yangtze.lan>
+References: <20231207192338.400336-1-kan.liang@linux.intel.com>
+ <20231207192338.400336-5-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-References: <20231207032951.16334-1-yangtiezhu@loongson.cn> <20231207032951.16334-3-yangtiezhu@loongson.cn>
-In-Reply-To: <20231207032951.16334-3-yangtiezhu@loongson.cn>
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-Date:   Sat, 9 Dec 2023 14:06:28 +0800
-Message-ID: <CAEyhmHRs-bJ7Pd9t1wqs4H8FBYZg27gi7gXWZjpEqzLT+naAHA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] LoongArch: BPF: Fix unconditional bswap instructions
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207192338.400336-5-kan.liang@linux.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 11:30=E2=80=AFAM Tiezhu Yang <yangtiezhu@loongson.cn=
-> wrote:
->
-> We can see that "bswap32: Takes an unsigned 32-bit number in either
-> big- or little-endian format and returns the equivalent number with
-> the same bit width but opposite endianness" in BPF Instruction Set
-> Specification, so it should clear the upper 32 bits in the case 32
-> for BPF_ALU and BPF_ALU64.
->
-> [root@linux fedora]# echo 1 > /proc/sys/net/core/bpf_jit_enable
-> [root@linux fedora]# modprobe test_bpf
->
-> Before:
-> test_bpf: #313 BSWAP 32: 0x0123456789abcdef -> 0xefcdab89 jited:1 ret 146=
-0850314 !=3D -271733879 (0x5712ce8a !=3D 0xefcdab89)FAIL (1 times)
-> test_bpf: #317 BSWAP 32: 0xfedcba9876543210 -> 0x10325476 jited:1 ret -14=
-60850316 !=3D 271733878 (0xa8ed3174 !=3D 0x10325476)FAIL (1 times)
->
-> After:
-> test_bpf: #313 BSWAP 32: 0x0123456789abcdef -> 0xefcdab89 jited:1 4 PASS
-> test_bpf: #317 BSWAP 32: 0xfedcba9876543210 -> 0x10325476 jited:1 4 PASS
->
+On Thu, Dec 07, 2023 at 11:23:37AM -0800, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
+> 
+> For some ARCHs, e.g., ARM and AMD, to get the availability of the
+> mem-events, perf checks the existence of a specific PMU. For the other
+> ARCHs, e.g., Intel and Power, perf has to check the existence of some
+> specific events.
+> 
+> The current perf only iterates the mem-events-supported PMUs. It's not
+> required to check the existence of a specific PMU anymore.
 
-Nice catch. I wasn't aware of test_bpf before. For the patch:
+With this change, both Arm and AMD archs have no chance to detect if the
+hardware (or the device driver) is supported and the tool will always
+take the memory events are exited on the system, right?
 
-Acked-by: Hengqi Chen <hengqi.chen@gmail.com>
-
-> Fixes: 4ebf9216e7df ("LoongArch: BPF: Support unconditional bswap instruc=
-tions")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/loongarch/net/bpf_jit.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-> index 8c907c2c42f7..da48398e8794 100644
-> --- a/arch/loongarch/net/bpf_jit.c
-> +++ b/arch/loongarch/net/bpf_jit.c
-> @@ -774,8 +774,8 @@ static int build_insn(const struct bpf_insn *insn, st=
-ruct jit_ctx *ctx, bool ext
->                         break;
->                 case 32:
->                         emit_insn(ctx, revb2w, dst, dst);
-> -                       /* zero-extend 32 bits into 64 bits */
-> -                       emit_zext_32(ctx, dst, is32);
-> +                       /* clear the upper 32 bits */
-> +                       emit_zext_32(ctx, dst, true);
->                         break;
->                 case 64:
->                         emit_insn(ctx, revbd, dst, dst);
-> --
-> 2.42.0
->
+Thanks,
+Leo
