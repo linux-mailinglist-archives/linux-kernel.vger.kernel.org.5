@@ -2,51 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2742F80B0E6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3874780B0E2
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574840AbjLIAU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 19:20:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57792 "EHLO
+        id S234091AbjLIAUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 19:20:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLIAUX (ORCPT
+        with ESMTP id S229525AbjLIAUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Dec 2023 19:20:23 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D329B171F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D681705
         for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 16:20:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5F891C433CC;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 43626C433C9;
         Sat,  9 Dec 2023 00:20:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1702081229;
-        bh=9QTbyhHxnjxUS8mDK0v9LhPk8RQqv5D9wzPUvOZy6Wg=;
+        bh=JUpRHMdkb4y7BJvcT7lF2H+EfHcoSe7p6Xwoi54/epk=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=k+n/QDnMAD+I2D+JxxnVM36kQSOjv9EwZi/WCLoQDrG3rQ4APJ2hn1FlO6jbgZvgo
-         agNN46+fzBXk38N+PKTtRFm4XXQC90bMTYKIyqnejev7gOc7CGrPnbhnSfz8XnKCc3
-         JFEknYp8rEI6aXGGRlSy+S1IdlRBi9UbohNNfe4swf77CDaNDoouhK40RBnyoFa2ii
-         Th14siC1hrLqgXvICKda/aW3j677s7YTXvVEZ8MWzu7ro7ba6SAgKQK7PUiEXq9Ek8
-         DRuqd2uTZvADyGMIvYyKHs/ofN+jf5jzDEESpv0KRQaaDrZywC2nGUOsLCZn30trZU
-         tcIKGFDMKGScw==
+        b=kaztp95a0TeWk6y5yOaOUtQxL4OebMGzT4nkLyOowrQQ5nAmi3srYPEWhfyZfVYie
+         XD/OdPoxwQCZrTshUFavcZYMMh/1EwFADD2rwoLidJN1zoRAvEKgrdC8a6kPb4tbZ5
+         tmjybdkthakoM3H65G/j23rEphZ72Nvbj9tdV+TKdUd2REpKAdc8TC2h8CJ5t2+9gD
+         /BZ6REELfmw6QnX396aNEzHXHQG/fINeS/kTAtMpwNAPeJFxeBn4kXR8xoHdN3krMw
+         hv472llEWU/Y7IWGRJgR5QUBO9MHO7wPhQ+qYwCI9Xms/GQSPFuciXOfjkvJ8Z11o6
+         f9JtSS0HreAgA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3F6DCC595D0;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 29DB2C04E32;
         Sat,  9 Dec 2023 00:20:29 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v3] octeon_ep: initialise control mbox tasks before using
- APIs
+Subject: Re: [PATCH V3 0/3] qca_spi: collection of major fixes
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <170208122925.21357.2124967308969408526.git-patchwork-notify@kernel.org>
+Message-Id: <170208122916.21357.8920685426589017304.git-patchwork-notify@kernel.org>
 Date:   Sat, 09 Dec 2023 00:20:29 +0000
-References: <20231206135228.2591659-1-srasheed@marvell.com>
-In-Reply-To: <20231206135228.2591659-1-srasheed@marvell.com>
-To:     Shinas Rasheed <srasheed@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hgani@marvell.com, vimleshk@marvell.com, egallen@redhat.com,
-        mschmidt@redhat.com, pabeni@redhat.com, horms@kernel.org,
-        kuba@kernel.org, davem@davemloft.net, wizhao@redhat.com,
-        konguyen@redhat.com, vburru@marvell.com, sedara@marvell.com,
-        edumazet@google.com
+References: <20231206141222.52029-1-wahrenst@gmx.net>
+In-Reply-To: <20231206141222.52029-1-wahrenst@gmx.net>
+To:     Stefan Wahren <wahrenst@gmx.net>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,22 +55,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (main)
+This series was applied to netdev/net.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Wed, 6 Dec 2023 05:52:27 -0800 you wrote:
-> Initialise various workqueue tasks and queue interrupt poll task
-> before the first invocation of any control net APIs. Since
-> octep_ctrl_net_get_info was called before the control net receive
-> work task was initialised or even the interrupt poll task was
-> queued, the function call wasn't returning actual firmware
-> info queried from Octeon.
+On Wed,  6 Dec 2023 15:12:19 +0100 you wrote:
+> This series contains a collection of major fixes for the qca_spi driver,
+> which has been recently discovered.
+> 
+> Changes in V3:
+> - Avoid race condition in qcaspi_set_ringparam() as reported by Jakub and
+>   move all traffic handling within qcaspi_spi_thread
+> - use netif_tx_disable instead of netif_stop_queue
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v3] octeon_ep: initialise control mbox tasks before using APIs
-    https://git.kernel.org/netdev/net/c/a1664b991ac1
+  - [V3,1/3] qca_debug: Prevent crash on TX ring changes
+    https://git.kernel.org/netdev/net/c/f4e6064c97c0
+  - [V3,2/3] qca_debug: Fix ethtool -G iface tx behavior
+    https://git.kernel.org/netdev/net/c/96a7e861d9e0
+  - [V3,3/3] qca_spi: Fix reset behavior
+    https://git.kernel.org/netdev/net/c/1057812d146d
 
 You are awesome, thank you!
 -- 
