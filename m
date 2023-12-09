@@ -2,103 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 488A380B1CD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 03:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF1380B1D2
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 03:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbjLICuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 21:50:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43502 "EHLO
+        id S234226AbjLIC4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 21:56:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjLICua (ORCPT
+        with ESMTP id S229731AbjLIC4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 21:50:30 -0500
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958EF10FC;
-        Fri,  8 Dec 2023 18:50:36 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0Vy4ds9j_1702090232;
-Received: from 192.168.0.103(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vy4ds9j_1702090232)
-          by smtp.aliyun-inc.com;
-          Sat, 09 Dec 2023 10:50:34 +0800
-Message-ID: <4ad3a168-f506-fc21-582d-fe8764f404c0@linux.alibaba.com>
-Date:   Sat, 9 Dec 2023 10:50:32 +0800
+        Fri, 8 Dec 2023 21:56:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D942C1700
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 18:56:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78CF7C433C8;
+        Sat,  9 Dec 2023 02:56:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702090600;
+        bh=kF832H0fKF35PnDkBc1TU6nVAAeUJbTnCpDpgEcU20A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mRADnnwR1RrSafNzakM7Psnj39z1KCu4ywwRaJbrO+dyq/dXIhCiIJIA05B5gUF4s
+         0TBqGNC5IOV5/ujB71+DZ2hWmJTE9mOEChKdf6bUVf091uGclOHQ5ed6XwQLyjSoBT
+         rCgI+8B372WhjyRcPX62eis0hFpTv/dtaOydmVaNLDGUW57k77rP+URa2xmZmHrrxI
+         Gpf7kEnxmkppD9iXcwYed6y1/fc2O9uCHU03qdWLwlDdL+YfFz0wsKmA6/5fUOo/gI
+         eZf3aTH/8viArL8lc+V/CQTS45+/CHnZZn6dzywpV7x1hjbwJFOXVW1mtpQ+bzBRzQ
+         HwzvI8C8c8Etg==
+Date:   Fri, 8 Dec 2023 19:01:14 -0800
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Nikita Travkin <nikita@trvn.ru>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] arm64: dts: qcom: pm8916: Add BMS and charger
+Message-ID: <mqfej3mkfbnfzdr3hlziw5jvlgceplqgzhh6yg5anfvqmopbxl@lezh2tmb2ryr>
+References: <20231120-pm8916-dtsi-bms-lbc-v4-0-4f91056c8252@trvn.ru>
+ <20231120-pm8916-dtsi-bms-lbc-v4-2-4f91056c8252@trvn.ru>
+ <mmxk4dko6ib2pgrzcotxf65q5c7d4eaykd4sfh2ryrmfbdabd7@wnttadck2mda>
+ <1a6be726b31919a31f369c64e75e0f41@trvn.ru>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v5 2/9] net/smc: introduce sub-functions for
- smc_clc_send_confirm_accept()
-To:     wintera@linux.ibm.com, wenjia@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        kgraul@linux.ibm.com, jaka@linux.ibm.com
-Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        raspl@linux.ibm.com, schnelle@linux.ibm.com,
-        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1702021259-41504-1-git-send-email-guwen@linux.alibaba.com>
- <1702021259-41504-3-git-send-email-guwen@linux.alibaba.com>
-From:   Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <1702021259-41504-3-git-send-email-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-12.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1a6be726b31919a31f369c64e75e0f41@trvn.ru>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/12/8 15:40, Wen Gu wrote:
-
-> There is a large if-else block in smc_clc_send_confirm_accept() and it
-> is better to split it into two sub-functions.
+On Fri, Dec 08, 2023 at 02:19:11PM +0500, Nikita Travkin wrote:
+> Bjorn Andersson писал(а) 08.12.2023 07:48:
+> > On Mon, Nov 20, 2023 at 07:03:04PM +0500, Nikita Travkin wrote:
+> >> diff --git a/arch/arm64/boot/dts/qcom/pm8916.dtsi b/arch/arm64/boot/dts/qcom/pm8916.dtsi
+> > [..]
+> >>
+> >> +		pm8916_bms: battery@4000 {
+> > 
+> > "battery" is not a valid child of the pmic according to
+> > mfd/qcom,spmi-pmic.yaml, so please update the binding to remove the
+> > warnings that this introduces.
+> > 
 > 
-> Suggested-by: Alexandra Winter <wintera@linux.ibm.com>
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-> ---
->   net/smc/smc_clc.c | 196 +++++++++++++++++++++++++++++++-----------------------
->   1 file changed, 114 insertions(+), 82 deletions(-)
+> This should be done in 1/3 which is already accepted to mfd,
+> so the warning should be gone when the stuff is pulled together.
 > 
-> diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
-> index 0fcb035..52b4ea9 100644
-> --- a/net/smc/smc_clc.c
-> +++ b/net/smc/smc_clc.c
-> @@ -998,6 +998,111 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
->   	return reason_code;
->   }
->   
-> +static void smcd_clc_prep_confirm_accept(struct smc_connection *conn,
-> +				struct smc_clc_msg_accept_confirm_v2 *clc_v2,
 
-checkpatch will complain 'Alignment should match open parenthesis' here.
-But in order to make the length less than 80 columns, there seems to be
-no other good way.
+Very good. I just didn't spot that for some reason.
 
-> +				int first_contact, u8 version,
-> +				u8 *eid, struct smc_init_info *ini,
-> +				int *fce_len,
-> +				struct smc_clc_first_contact_ext_v2x *fce_v2x,
-> +				struct smc_clc_msg_trail *trl)
-> +{
-<...>
+> Sorry for not making sure it's in earlier
 
-> +
-> +static void smcr_clc_prep_confirm_accept(struct smc_connection *conn,
-> +				struct smc_clc_msg_accept_confirm_v2 *clc_v2,
+No fault on your part, I should have spotted it. Sending binding updates
+and DT updates in the same series is preferred way, and as I don't apply
+the binding through my tree these warnings show up there.
 
-And here.
+Thank you,
+Bjorn
 
-> +				int first_contact, u8 version,
-> +				u8 *eid, struct smc_init_info *ini,
-> +				int *fce_len,
-> +				struct smc_clc_first_contact_ext_v2x *fce_v2x,
-> +				struct smc_clc_fce_gid_ext *gle,
-> +				struct smc_clc_msg_trail *trl)
-> +{
-<...>
+> Nikita
+> 
+> > Thanks,
+> > Bjorn
