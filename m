@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC55480B65B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4BD80B65C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbjLIUx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 15:53:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36540 "EHLO
+        id S231180AbjLIUyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 15:54:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjLIUx5 (ORCPT
+        with ESMTP id S230470AbjLIUx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 15:53:57 -0500
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC3ADE1;
-        Sat,  9 Dec 2023 12:54:03 -0800 (PST)
+        Sat, 9 Dec 2023 15:53:58 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6201E5;
+        Sat,  9 Dec 2023 12:54:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702155242;
-        bh=I69yofRInENg2Oy9+9NHwAKvDNRysPthJcXn80JrEQE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Nlo0p7yhFd5BTjEjYW+ZPJaXwexSbYOC3V1otiSjBvr7qv5TlriHJI9uxDDPQgTqv
-         t1LUSAELpUneX+oSyxRdLojBByKK1mhta+D6hWZoBEgPx9/4wjJXmnkJzylWTqZzzI
-         /tcjPeFgHO5U0qe2q3MYrKJY8912ma1wh9AtN+Yir9TBKOx/GCikJlpIbFuonCX7hG
-         ZVMtHj4PQKxCe9sm5QcRDFodAgmwlZYlmLj8fWaI5pPv/AAw3Pz1gMxhqtl2ED5ETn
-         66eBum3WB4/XeSzEnJAr4BxffDMNfYzfFwyWayePILG23cKeaYxBvvQiX60+Fdh0pX
-         fxLyy7N7Wj+6w==
+        s=mail; t=1702155243;
+        bh=xw0Z9G6P6/9GD35fi7UmgEcXakf2yM/DrhCkyvNuWRQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Vc96KMna3yO5G2XXYkNfOe46dqv56EBmIgLuKXN3IBahIDc0/mby273YIYxd9XXUp
+         THSyCUl1lk6n/EoGvYIpTGQm+jMF+G0/vEjSvTVMQBGM9DOCaQlbsXMAUWFIl2d6X6
+         Xa1QnEGb0lGRshuByMXQWSLiBsshjorE9ZAtKvlPi39z1V8fPk/7c6o4IZWoIGBlRi
+         z+P0rd+zEjKtj/yw7g2yoo/I1jz90Xq3vbsdKVbzb4/2bqqW5Mh1krvIVoRQPR1VFQ
+         M6Jw8KL6XVMBLGsvhW94NYXkXm6L9wr1/ghCWXaicyBhWRuqQwcg5+qgeMfsqFTWIH
+         wmc0l6UQdF67g==
 Received: from localhost (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: cristicc)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id EE61F3780C1A;
-        Sat,  9 Dec 2023 20:54:01 +0000 (UTC)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2CAEC37813DA;
+        Sat,  9 Dec 2023 20:54:03 +0000 (UTC)
 From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -54,10 +54,12 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
         sound-open-firmware@alsa-project.org, kernel@collabora.com
-Subject: [PATCH 00/11] Improve SOF support for Steam Deck OLED
-Date:   Sat,  9 Dec 2023 22:53:39 +0200
-Message-ID: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
+Subject: [PATCH 01/11] ASoC: amd: acp: Drop redundant initialization of machine driver data
+Date:   Sat,  9 Dec 2023 22:53:40 +0200
+Message-ID: <20231209205351.880797-2-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
+References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -70,37 +72,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series is a continuation of [1] to provide fixes and improvements to
-SOF drivers targeting the Vangogh platform, as found on the Valve's Steam Deck
-OLED.
+Simplify driver data configuration by removing redundant initialization
+of members in static structs.
 
-The previous series only handled the legacy ACP drivers.
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+---
+ sound/soc/amd/acp/acp-sof-mach.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-[1]: https://lore.kernel.org/all/20231209203229.878730-1-cristian.ciocaltea@collabora.com/
-
-Cristian Ciocaltea (11):
-  ASoC: amd: acp: Drop redundant initialization of machine driver data
-  ASoC: amd: acp: Make use of existing *_CODEC_DAI macros
-  ASoC: amd: acp: Add missing error handling in sof-mach
-  ASoC: amd: acp: Update MODULE_DESCRIPTION for sof-mach
-  ASoC: SOF: amd: Fix memory leak in amd_sof_acp_probe()
-  ASoC: SOF: amd: Optimize quirk for Valve Galileo
-  ASoC: SOF: core: Skip firmware test for undefined fw_name
-  ASoC: SOF: amd: Override default fw name for Valve Galileo
-  ASoC: SOF: amd: Compute file paths on firmware load
-  ASoC: amd: acp: Use correct DAI link ID for BT codec
-  ASoC: SOF: topology: Add new DAI type entry for SOF_DAI_AMD_BT
-
- sound/soc/amd/acp/acp-mach-common.c |  6 +++---
- sound/soc/amd/acp/acp-mach.h        |  2 +-
- sound/soc/amd/acp/acp-sof-mach.c    | 26 +++++++----------------
- sound/soc/sof/amd/acp-loader.c      | 32 +++++++++++++++++++++++------
- sound/soc/sof/amd/acp.c             | 30 ++++++++++++++++-----------
- sound/soc/sof/amd/vangogh.c         |  8 +++++++-
- sound/soc/sof/fw-file-profile.c     |  3 +++
- sound/soc/sof/topology.c            |  1 +
- 8 files changed, 66 insertions(+), 42 deletions(-)
-
+diff --git a/sound/soc/amd/acp/acp-sof-mach.c b/sound/soc/amd/acp/acp-sof-mach.c
+index 2a9fd3275e42..1d313fcb5f2d 100644
+--- a/sound/soc/amd/acp/acp-sof-mach.c
++++ b/sound/soc/amd/acp/acp-sof-mach.c
+@@ -28,7 +28,6 @@ static struct acp_card_drvdata sof_rt5682_rt1019_data = {
+ 	.hs_codec_id = RT5682,
+ 	.amp_codec_id = RT1019,
+ 	.dmic_codec_id = DMIC,
+-	.tdm_mode = false,
+ };
+ 
+ static struct acp_card_drvdata sof_rt5682_max_data = {
+@@ -38,7 +37,6 @@ static struct acp_card_drvdata sof_rt5682_max_data = {
+ 	.hs_codec_id = RT5682,
+ 	.amp_codec_id = MAX98360A,
+ 	.dmic_codec_id = DMIC,
+-	.tdm_mode = false,
+ };
+ 
+ static struct acp_card_drvdata sof_rt5682s_rt1019_data = {
+@@ -48,7 +46,6 @@ static struct acp_card_drvdata sof_rt5682s_rt1019_data = {
+ 	.hs_codec_id = RT5682S,
+ 	.amp_codec_id = RT1019,
+ 	.dmic_codec_id = DMIC,
+-	.tdm_mode = false,
+ };
+ 
+ static struct acp_card_drvdata sof_rt5682s_max_data = {
+@@ -58,7 +55,6 @@ static struct acp_card_drvdata sof_rt5682s_max_data = {
+ 	.hs_codec_id = RT5682S,
+ 	.amp_codec_id = MAX98360A,
+ 	.dmic_codec_id = DMIC,
+-	.tdm_mode = false,
+ };
+ 
+ static struct acp_card_drvdata sof_nau8825_data = {
+@@ -69,7 +65,6 @@ static struct acp_card_drvdata sof_nau8825_data = {
+ 	.amp_codec_id = MAX98360A,
+ 	.dmic_codec_id = DMIC,
+ 	.soc_mclk = true,
+-	.tdm_mode = false,
+ };
+ 
+ static struct acp_card_drvdata sof_rt5682s_hs_rt1019_data = {
+@@ -80,20 +75,15 @@ static struct acp_card_drvdata sof_rt5682s_hs_rt1019_data = {
+ 	.amp_codec_id = RT1019,
+ 	.dmic_codec_id = DMIC,
+ 	.soc_mclk = true,
+-	.tdm_mode = false,
+ };
+ 
+ static struct acp_card_drvdata sof_nau8821_max98388_data = {
+ 	.hs_cpu_id = I2S_SP,
+ 	.amp_cpu_id = I2S_HS,
+ 	.bt_cpu_id = I2S_BT,
+-	.dmic_cpu_id = NONE,
+ 	.hs_codec_id = NAU8821,
+ 	.amp_codec_id = MAX98388,
+-	.bt_codec_id = NONE,
+-	.dmic_codec_id = NONE,
+ 	.soc_mclk = true,
+-	.tdm_mode = false,
+ };
+ 
+ static int acp_sof_probe(struct platform_device *pdev)
 -- 
 2.43.0
 
