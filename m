@@ -2,95 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DDD680B64E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE8880B648
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbjLIUk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 15:40:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55768 "EHLO
+        id S230494AbjLIUeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 15:34:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjLIUkZ (ORCPT
+        with ESMTP id S229477AbjLIUeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 15:40:25 -0500
-X-Greylist: delayed 452 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 09 Dec 2023 12:40:31 PST
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3589B7;
-        Sat,  9 Dec 2023 12:40:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702153983;
-        bh=kkHmtct/9jbgXATg00u9JVP5zqTGs2ziRj22G3LMjJ4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LD3bFORo55KUK6fObZnMQYcXqkeOsf7vwYr4A406XMTgEnIvvm6fjfk2rl/sDRdU0
-         IG9Dwa6kncISK0M3MdNcY3N0DejJIXWC3cXjWcnCo7al12hCc/8C2EqwCnerjnU5LS
-         iNqiAGs2jUhOviXTaONiGB0hukV5yLGGkOPJ32/RFHoaFx4cVR/soceOJv5xfVRm4Y
-         RDbClsjju9ws0/rUHXPVkLAVQFVLmgJgwiGWXderuJj6vIRISmkKPjw9SZNAiHt9Kz
-         OjrqoRUu/8KBfaPEgp5k2D4lQLxAg4DRPGtHuOlaota19dLQVp6z2DhQBKCfOMoe/J
-         IazD667/HstLA==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: cristicc)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9862337813E0;
-        Sat,  9 Dec 2023 20:33:03 +0000 (UTC)
-From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
-        Marian Postevca <posteuca@mutex.one>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        Bard Liao <bard.liao@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: [PATCH 5/5] ASoC: amd: acp: Add missing MODULE_DESCRIPTION in mach-common
-Date:   Sat,  9 Dec 2023 22:32:23 +0200
-Message-ID: <20231209203229.878730-6-cristian.ciocaltea@collabora.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231209203229.878730-1-cristian.ciocaltea@collabora.com>
-References: <20231209203229.878730-1-cristian.ciocaltea@collabora.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sat, 9 Dec 2023 15:34:09 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAF2193
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 12:34:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 436BBC433C7;
+        Sat,  9 Dec 2023 20:34:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702154055;
+        bh=TYueBuMxe1Cd7Vs7fS2FZ4S5BtxUKU1puYqavvmzD7M=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=qWtbGn3qPTLbfzylBWGgxR1VNxadp6dsxfPtJkx/OIrvuDo+rij6/9ve9D7EDBh+W
+         kR9cLMj/p9PlZwDoyXi+Ulwns0ZmD3AnbTcV6NMTiDUaYPc9cwomgjOnIeUynjKS6P
+         QUUx3O5oZzpIMZtr432Igt8ARFWXJ0FVKha3eXLwgom7fX3h+BSJYcoX3SH5erPhSW
+         Z5npHfmQSdogOfNQ2Kwm61VnIU9Ler0J4zFb2J6kcvRjHiQ1kcPdY0o8DcJeX+Kk/C
+         TcRk6cvEWXDqVRzVFGOcKi/OJVrXH295bpF6yWOoSicEP+s885n32vrAtdqc3O9SDX
+         SfR7k+Govk93w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3187FC41677;
+        Sat,  9 Dec 2023 20:34:15 +0000 (UTC)
+Subject: Re: [GIT PULL] LoongArch fixes for v6.7-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20231209112317.1542046-1-chenhuacai@loongson.cn>
+References: <20231209112317.1542046-1-chenhuacai@loongson.cn>
+X-PR-Tracked-List-Id: <loongarch.lists.linux.dev>
+X-PR-Tracked-Message-Id: <20231209112317.1542046-1-chenhuacai@loongson.cn>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.7-2
+X-PR-Tracked-Commit-Id: e2f7b3d8b4b300956a77fa1ab084c931ba1c7421
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b10a3ccaf6e39f6290ca29d7c24604082eacaea0
+Message-Id: <170215405519.1707.5261207253564127214.pr-tracker-bot@kernel.org>
+Date:   Sat, 09 Dec 2023 20:34:15 +0000
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a MODULE_DESCRIPTION() in the generic ACP machine driver to avoid
-the following warning when building with W=1:
+The pull request you sent on Sat,  9 Dec 2023 19:23:17 +0800:
 
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/amd/acp/snd-acp-mach.o
+> git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.7-2
 
-Fixes: d4c750f2c7d4 ("ASoC: amd: acp: Add generic machine driver support for ACP cards")
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
----
- sound/soc/amd/acp/acp-mach-common.c | 1 +
- 1 file changed, 1 insertion(+)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b10a3ccaf6e39f6290ca29d7c24604082eacaea0
 
-diff --git a/sound/soc/amd/acp/acp-mach-common.c b/sound/soc/amd/acp/acp-mach-common.c
-index f7bcf210f0fd..c90ec3419247 100644
---- a/sound/soc/amd/acp/acp-mach-common.c
-+++ b/sound/soc/amd/acp/acp-mach-common.c
-@@ -1773,4 +1773,5 @@ int acp_legacy_dai_links_create(struct snd_soc_card *card)
- }
- EXPORT_SYMBOL_NS_GPL(acp_legacy_dai_links_create, SND_SOC_AMD_MACH);
- 
-+MODULE_DESCRIPTION("AMD ACP Common Machine driver");
- MODULE_LICENSE("GPL v2");
+Thank you!
+
 -- 
-2.43.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
