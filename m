@@ -2,98 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96DC380B67B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 22:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E10A80B684
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 22:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbjLIVSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 16:18:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
+        id S231251AbjLIVYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 16:24:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjLIVSk (ORCPT
+        with ESMTP id S229477AbjLIVYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 16:18:40 -0500
-Received: from irl.hu (irl.hu [95.85.9.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9E5FA;
-        Sat,  9 Dec 2023 13:18:44 -0800 (PST)
-Received: from fedori.lan (51b690cd.dsl.pool.telekom.hu [::ffff:81.182.144.205])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 0000000000071201.000000006574D9B1.0011E9B9; Sat, 09 Dec 2023 22:18:41 +0100
-From:   Gergo Koteles <soyer@irl.hu>
-To:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Gergo Koteles <soyer@irl.hu>, stable@vger.kernel.org
-Subject: [PATCH v3] ALSA: hda/tas2781: leave hda_component in usable state
-Date:   Sat,  9 Dec 2023 22:18:29 +0100
-Message-ID: <8b8ed2bd5f75fbb32e354a3226c2f966fa85b46b.1702156522.git.soyer@irl.hu>
-X-Mailer: git-send-email 2.43.0
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 9 Dec 2023 16:24:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D05103;
+        Sat,  9 Dec 2023 13:24:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702157063; x=1733693063;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZiDja0DRjGF8V4kOTELVdfHO8iGqBQYFHxa1g/OKJdg=;
+  b=YJk8RobzwK80RSYfwStPmErT38PjWyAaUAJmsU2nZT9PqKiUKkQTCJ5n
+   z9WRNIxEwPlWt4w6SmxDtrBr8bW2LkYxwpyvZcQ/CpAO4n3mGLHXL9Puh
+   ZmnfCzLcZJVNKtoXOPK6vg1hshD5ioIX+0W3qBMfyieMlG6/4Z6CpRuf/
+   REolgjKNdo6rtM+qHYi7B02M8WvGZGQT86ZcV7wsm+3xnophEMfBmIaWY
+   HChlYkiyojWJs0Toq821pR9H4EcRJbHnx5vsYp4/dGYQwlm4sG0UD1pC1
+   kr+A3HhOQXMlRGviy21VVFCR9JshVBRTb054Zg1hDYNxTOQWBNdPTqUPh
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="7850927"
+X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
+   d="scan'208";a="7850927"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 13:24:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
+   d="scan'208";a="20490955"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 09 Dec 2023 13:24:16 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rC4o1-000Fxn-17;
+        Sat, 09 Dec 2023 21:24:13 +0000
+Date:   Sun, 10 Dec 2023 05:24:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        arnd@arndb.de, tglx@linutronix.de, luto@kernel.org,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, mhocko@kernel.org, tj@kernel.org,
+        ying.huang@intel.com, gregory.price@memverge.com, corbet@lwn.net,
+        rakie.kim@sk.com, hyeongtak.ji@sk.com, honggyu.kim@sk.com,
+        vtavarespetr@micron.com, peterz@infradead.org, jgroves@micron.com,
+        ravis.opensrc@micron.com, sthanneeru@micron.com,
+        emirakhur@micron.com, Hasan.Maruf@amd.com
+Subject: Re: [PATCH v2 02/11] mm/mempolicy: introduce
+ MPOL_WEIGHTED_INTERLEAVE for weighted interleaving
+Message-ID: <202312100543.ix4jxw81-lkp@intel.com>
+References: <20231209065931.3458-3-gregory.price@memverge.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231209065931.3458-3-gregory.price@memverge.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unloading then loading the module causes a NULL ponter dereference.
+Hi Gregory,
 
-The hda_unbind zeroes the hda_component, later the hda_bind tries
-to dereference the codec field.
+kernel test robot noticed the following build warnings:
 
-The hda_component is only initialized once by tas2781_generic_fixup.
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on deller-parisc/for-next powerpc/next powerpc/fixes s390/features jcmvbkbc-xtensa/xtensa-for-next arnd-asm-generic/master linus/master v6.7-rc4 next-20231208]
+[cannot apply to tip/x86/asm geert-m68k/for-next geert-m68k/for-linus]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Set only previously modified fields to NULL.
+url:    https://github.com/intel-lab-lkp/linux/commits/Gregory-Price/mm-mempolicy-implement-the-sysfs-based-weighted_interleave-interface/20231209-150314
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231209065931.3458-3-gregory.price%40memverge.com
+patch subject: [PATCH v2 02/11] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE for weighted interleaving
+config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20231210/202312100543.ix4jxw81-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231210/202312100543.ix4jxw81-lkp@intel.com/reproduce)
 
-BUG: kernel NULL pointer dereference, address: 0000000000000322
-Call Trace:
- <TASK>
- ? __die+0x23/0x70
- ? page_fault_oops+0x171/0x4e0
- ? exc_page_fault+0x7f/0x180
- ? asm_exc_page_fault+0x26/0x30
- ? tas2781_hda_bind+0x59/0x140 [snd_hda_scodec_tas2781_i2c]
- component_bind_all+0xf3/0x240
- try_to_bring_up_aggregate_device+0x1c3/0x270
- __component_add+0xbc/0x1a0
- tas2781_hda_i2c_probe+0x289/0x3a0 [snd_hda_scodec_tas2781_i2c]
- i2c_device_probe+0x136/0x2e0
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312100543.ix4jxw81-lkp@intel.com/
 
-Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
-CC: stable@vger.kernel.org
-Signed-off-by: Gergo Koteles <soyer@irl.hu>
----
- sound/pci/hda/tas2781_hda_i2c.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+All warnings (new ones prefixed by >>):
 
-diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index fb802802939e..b42837105c22 100644
---- a/sound/pci/hda/tas2781_hda_i2c.c
-+++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -612,9 +612,13 @@ static void tas2781_hda_unbind(struct device *dev,
- {
- 	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
- 	struct hda_component *comps = master_data;
-+	comps = &comps[tas_priv->index];
- 
--	if (comps[tas_priv->index].dev == dev)
--		memset(&comps[tas_priv->index], 0, sizeof(*comps));
-+	if (comps->dev == dev) {
-+		comps->dev = NULL;
-+		memset(comps->name, 0, sizeof(comps->name));
-+		comps->playback_hook = NULL;
-+	}
- 
- 	tasdevice_config_info_remove(tas_priv);
- 	tasdevice_dsp_remove(tas_priv);
+>> mm/mempolicy.c:2355:3: warning: variable 'weight_total' is uninitialized when used here [-Wuninitialized]
+                   weight_total += weight;
+                   ^~~~~~~~~~~~
+   mm/mempolicy.c:2341:27: note: initialize the variable 'weight_total' to silence this warning
+           unsigned int weight_total;
+                                    ^
+                                     = 0
+   1 warning generated.
 
-base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
+
+vim +/weight_total +2355 mm/mempolicy.c
+
+  2329	
+  2330	static unsigned long alloc_pages_bulk_array_weighted_interleave(gfp_t gfp,
+  2331			struct mempolicy *pol, unsigned long nr_pages,
+  2332			struct page **page_array)
+  2333	{
+  2334		struct task_struct *me = current;
+  2335		unsigned long total_allocated = 0;
+  2336		unsigned long nr_allocated;
+  2337		unsigned long rounds;
+  2338		unsigned long node_pages, delta;
+  2339		unsigned char weight;
+  2340		unsigned char weights[MAX_NUMNODES];
+  2341		unsigned int weight_total;
+  2342		unsigned long rem_pages = nr_pages;
+  2343		nodemask_t nodes = pol->nodes;
+  2344		int nnodes, node, prev_node;
+  2345		int i;
+  2346	
+  2347		/* Stabilize the nodemask on the stack */
+  2348		barrier();
+  2349	
+  2350		nnodes = nodes_weight(nodes);
+  2351	
+  2352		/* Collect weights and save them on stack so they don't change */
+  2353		for_each_node_mask(node, nodes) {
+  2354			weight = iw_table[node];
+> 2355			weight_total += weight;
+  2356			weights[node] = weight;
+  2357		}
+  2358	
+  2359		/* Continue allocating from most recent node and adjust the nr_pages */
+  2360		if (pol->wil.cur_weight) {
+  2361			node = next_node_in(me->il_prev, nodes);
+  2362			node_pages = pol->wil.cur_weight;
+  2363			if (node_pages > rem_pages)
+  2364				node_pages = rem_pages;
+  2365			nr_allocated = __alloc_pages_bulk(gfp, node, NULL, node_pages,
+  2366							  NULL, page_array);
+  2367			page_array += nr_allocated;
+  2368			total_allocated += nr_allocated;
+  2369			/* if that's all the pages, no need to interleave */
+  2370			if (rem_pages <= pol->wil.cur_weight) {
+  2371				pol->wil.cur_weight -= rem_pages;
+  2372				return total_allocated;
+  2373			}
+  2374			/* Otherwise we adjust nr_pages down, and continue from there */
+  2375			rem_pages -= pol->wil.cur_weight;
+  2376			pol->wil.cur_weight = 0;
+  2377			prev_node = node;
+  2378		}
+  2379	
+  2380		/* Now we can continue allocating as if from 0 instead of an offset */
+  2381		rounds = rem_pages / weight_total;
+  2382		delta = rem_pages % weight_total;
+  2383		for (i = 0; i < nnodes; i++) {
+  2384			node = next_node_in(prev_node, nodes);
+  2385			weight = weights[node];
+  2386			node_pages = weight * rounds;
+  2387			if (delta) {
+  2388				if (delta > weight) {
+  2389					node_pages += weight;
+  2390					delta -= weight;
+  2391				} else {
+  2392					node_pages += delta;
+  2393					delta = 0;
+  2394				}
+  2395			}
+  2396			/* We may not make it all the way around */
+  2397			if (!node_pages)
+  2398				break;
+  2399			/* If an over-allocation would occur, floor it */
+  2400			if (node_pages + total_allocated > nr_pages) {
+  2401				node_pages = nr_pages - total_allocated;
+  2402				delta = 0;
+  2403			}
+  2404			nr_allocated = __alloc_pages_bulk(gfp, node, NULL, node_pages,
+  2405							  NULL, page_array);
+  2406			page_array += nr_allocated;
+  2407			total_allocated += nr_allocated;
+  2408			prev_node = node;
+  2409		}
+  2410	
+  2411		/*
+  2412		 * Finally, we need to update me->il_prev and pol->wil.cur_weight
+  2413		 * if there were overflow pages, but not equivalent to the node
+  2414		 * weight, set the cur_weight to node_weight - delta and the
+  2415		 * me->il_prev to the previous node. Otherwise if it was perfect
+  2416		 * we can simply set il_prev to node and cur_weight to 0
+  2417		 */
+  2418		if (node_pages) {
+  2419			me->il_prev = prev_node;
+  2420			node_pages %= weight;
+  2421			pol->wil.cur_weight = weight - node_pages;
+  2422		} else {
+  2423			me->il_prev = node;
+  2424			pol->wil.cur_weight = 0;
+  2425		}
+  2426	
+  2427		return total_allocated;
+  2428	}
+  2429	
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
