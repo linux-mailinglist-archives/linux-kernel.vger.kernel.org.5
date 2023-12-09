@@ -2,116 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B87D80B5D6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 19:15:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57EB780B5D8
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 19:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbjLISOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 13:14:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58608 "EHLO
+        id S229485AbjLISR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 13:17:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjLISOG (ORCPT
+        with ESMTP id S229453AbjLISR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 13:14:06 -0500
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D1FC2;
-        Sat,  9 Dec 2023 10:14:12 -0800 (PST)
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6d9e9f3a3abso1266538a34.3;
-        Sat, 09 Dec 2023 10:14:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702145651; x=1702750451;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=G5d03w0HlhTpGtJ6wyqYSsGYLH7rsQTYV63itLXFV8g=;
-        b=eURlC5O4d0C04HrNH5gxhx6oJqOKPkskkKrK+YlnTAqCKt/BqEUkPqWtoaJ03ouAoT
-         xqx07mfOhNE2MNU3mUPpdsbOnYZC7GbX4qWREUlSjvK9GDTYD4BmNzvdTilf9e4t2qt5
-         r1oojgV0FP08vY+Dm+v3BjfoYbPkM5W7WMR3yW10icMpx4kj1ifEmd3Vo2pV5EhLZ0Cz
-         9JzWACiHoHdBTQlY2Yjz2G7oxJOcZHPhnZxjlUDDUZSnFVDr7pvy1upiVUjoQ1AoeXw5
-         u8QsG6x62Vb7jwU56QPgffQHzkJFIeqYpZXCjKUb8squa+OegbtXQBSIf1SDckvIqz1O
-         bgWQ==
-X-Gm-Message-State: AOJu0YzOzEwG9paMWDyh0dLUgbfct9GP1xC3jnxfSIEOHzm16TnX5OzA
-        AqQDh0EasDsSll7ABrsZmQ==
-X-Google-Smtp-Source: AGHT+IGlav0rDJKVQNAn/DjrZw8SZvW5IIiaWNqA37+MFSHe7Ox40MSPatBoD4bGAO59TZhydzaV1Q==
-X-Received: by 2002:a05:6870:3325:b0:1fb:75b:2fc6 with SMTP id x37-20020a056870332500b001fb075b2fc6mr2399447oae.93.1702145651337;
-        Sat, 09 Dec 2023 10:14:11 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id c25-20020a9d4819000000b006d876476f6dsm852704otf.67.2023.12.09.10.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Dec 2023 10:14:10 -0800 (PST)
-Received: (nullmailer pid 1553160 invoked by uid 1000);
-        Sat, 09 Dec 2023 18:14:09 -0000
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+        Sat, 9 Dec 2023 13:17:56 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83134E1
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 10:18:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13820C433C8;
+        Sat,  9 Dec 2023 18:18:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702145882;
+        bh=R5ZqTIsMDapndSl6oaBUH9DW8tz2s6A2Ngjnci39c9M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Gz8aZlmWCPHCAktMsTWG3XsRrJRWaPvTnsi7+zJljDjoHtnkLQQvVV6pwvZIsxhOd
+         A9UpkFMMgfNIxPo3QOeWe+PVRJQKPj7A+RKcbWO9ORNdUNf/sqIOf9J0oUoedDtbjU
+         2BedZ6ToDA7Po2yWRBEemNi16k8YYtw7c/cculnVrGJ2nK0mlpwM0pcDJBu6ReHVVE
+         1He84Ddf+eAgN7VWQgSCJDac2A03+E5QjjrOZIF1YOExCQOybPAlw5YF0Domt+jdwy
+         MsekoHzS1wsozVvGAql6o+9oVTfkfYiRnuiiQZP7QyhICWdTxZEmzvSSJT9zRWPBcZ
+         G6W99hF9OCsDg==
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6d9e2f04f32so1265496a34.1;
+        Sat, 09 Dec 2023 10:18:01 -0800 (PST)
+X-Gm-Message-State: AOJu0YymnBU/w6B6TVveWazqPDQuQ98YmxRPpQlpphUwfTnKUAdGP0In
+        2wtW3K+mOouEnkqRjzrl6xBqdml7+9QRTu3vLm4=
+X-Google-Smtp-Source: AGHT+IEaf0cKHdkciN6jW7bo3skMH9gHfZ3v/7RstDK4kzkOqUuL0iSzr982L2JW49q5sg9OEobLwe6S+bJEm/UztAQ=
+X-Received: by 2002:a05:6358:1e:b0:170:2b33:d77e with SMTP id
+ 30-20020a056358001e00b001702b33d77emr524506rww.55.1702145880374; Sat, 09 Dec
+ 2023 10:18:00 -0800 (PST)
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Kamal Dasu <kamal.dasu@broadcom.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, adrian.hunter@intel.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, ulf.hansson@linaro.org,
-        alcooperx@gmail.com, Kamal Dasu <kdasu@broadcom.com>,
-        f.fainelli@gmail.com
-In-Reply-To: <20231209165816.39044-1-kamal.dasu@broadcom.com>
-References: <20231209165816.39044-1-kamal.dasu@broadcom.com>
-Message-Id: <170214564970.1553144.16154651415666446700.robh@kernel.org>
-Subject: Re: [V3, 1/2] dt-bindings: mmc: brcm,sdhci-brcmstb: Add support
- for 74165b0
-Date:   Sat, 09 Dec 2023 12:14:09 -0600
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <CAFSh4UwYYAOb0YpC=WAL6SD+8jTLuSkhgrgjh8JmogUb10V=zw@mail.gmail.com>
+In-Reply-To: <CAFSh4UwYYAOb0YpC=WAL6SD+8jTLuSkhgrgjh8JmogUb10V=zw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 10 Dec 2023 03:17:23 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASE6H2GoXzJ1PXWEqsemQ3ny1K34vOxN0uVn1fh7Mmt5A@mail.gmail.com>
+Message-ID: <CAK7LNASE6H2GoXzJ1PXWEqsemQ3ny1K34vOxN0uVn1fh7Mmt5A@mail.gmail.com>
+Subject: Re: Building signed debs
+To:     Tom Cook <tom.k.cook@gmail.com>,
+        linux-modules <linux-modules@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 8, 2023 at 8:14=E2=80=AFPM Tom Cook <tom.k.cook@gmail.com> wrot=
+e:
+>
+> I'm trying to build a signed .deb kernel package of
+> https://github.com/torvalds/linux/tree/v6.6.  I've copied
+> certs/default_x509.genkey to certs/x509.genkey.  The .config is the
+> one from Ubuntu 23.10's default kernel with all new options accepted
+> at their default and CONFIG_SYSTEM_TRUSTED_KEYS=3D"" and
+> CONFIG_SYSTEM_REVOCATION_KEYS=3D"".
+>
+> This builds the kernel and modules, signs the modules, compresses the
+> modules and then attempts to sign the modules again.  That fails,
+> because the .ko module files are now .ko.zst files and the file it's
+> trying to sign isn't there.  Full failure is pasted below.
 
-On Sat, 09 Dec 2023 11:58:15 -0500, Kamal Dasu wrote:
-> From: Kamal Dasu <kdasu@broadcom.com>
-> 
-> With newer sdio controller core used for 74165b0 we need to update
-> the compatibility with "brcm,bcm74165b0-sdhci".
-> 
-> Signed-off-by: Kamal Dasu <kdasu@broadcom.com>
-> ---
->  .../devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml         | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml:25:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
+Modules are signed before the compression.
 
-dtschema/dtc warnings/errors:
-make[2]: *** Deleting file 'Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.example.dts'
-Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml:25:1: found a tab character that violates indentation
-make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.example.dts] Error 1
-make[2]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml:25:1: found a tab character that violates indentation
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml: ignoring, error parsing file
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1424: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
 
-doc reference errors (make refcheckdocs):
+Once you compress modules, you cannot re-sign them again unless
+you decompress modules, sign them, and compress them again.
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231209165816.39044-1-kamal.dasu@broadcom.com
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+Now, the kernel can directly load compressed modules, so
+perhaps allowing users to sign compressed modules might
+be beneficial.
+(that is, reverse the order of singing and compression)
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+I am not sure whether it is possible or not, though.
 
-pip3 install dtschema --upgrade
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+I added linux-modules ML.
 
+
+
+
+
+
+
+
+
+
+>
+> Unsetting CONFIG_MODULE_COMPRESS_ZSTD is a workaround (ie disable
+> module compression).
+>
+> Is there a way to build a .deb of a signed kernel with compressed modules=
+?
+>
+> Thanks for any help,
+> Tom
+>
+>   INSTALL debian/linux-libc-dev/usr/include
+>   SIGN    debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/even=
+ts/amd/amd-uncore.ko
+>   SIGN    debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/even=
+ts/intel/intel-cstate.ko
+> At main.c:298:
+> - SSL error:FFFFFFFF80000002:system library::No such file or
+> directory: ../crypto/bio/bss_file.c:67
+> - SSL error:10000080:BIO routines::no such file: ../crypto/bio/bss_file.c=
+:75
+> sign-file: debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/eve=
+nts/amd/amd-uncore.ko
+>   SIGN    debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/even=
+ts/rapl.ko
+> At main.c:298:
+> - SSL error:FFFFFFFF80000002:system library::No such file or
+> directory: ../crypto/bio/bss_file.c:67
+> - SSL error:10000080:BIO routines::no such file: ../crypto/bio/bss_file.c=
+:75
+> sign-file: debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/eve=
+nts/intel/intel-cstate.ko
+>   SIGN    debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/kern=
+el/cpu/mce/mce-inject.ko
+> make[6]: *** [scripts/Makefile.modinst:137:
+> debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/events/amd/amd=
+-uncore.ko]
+> Error 1
+> make[6]: *** Waiting for unfinished jobs....
+> make[6]: *** [scripts/Makefile.modinst:137:
+> debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/events/intel/i=
+ntel-cstate.ko]
+> Error 1
+>   SIGN    debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/kern=
+el/msr.ko
+> At main.c:298:
+> - SSL error:FFFFFFFF80000002:system library::No such file or
+> directory: ../crypto/bio/bss_file.c:67
+> - SSL error:10000080:BIO routines::no such file: ../crypto/bio/bss_file.c=
+:75
+> sign-file: debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/eve=
+nts/rapl.ko
+> make[6]: *** [scripts/Makefile.modinst:137:
+> debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/events/rapl.ko=
+]
+> Error 1
+> At main.c:298:
+> - SSL error:FFFFFFFF80000002:system library::No such file or
+> directory: ../crypto/bio/bss_file.c:67
+> - SSL error:10000080:BIO routines::no such file: ../crypto/bio/bss_file.c=
+:75
+> sign-file: debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/ker=
+nel/cpu/mce/mce-inject.ko
+> make[6]: *** [scripts/Makefile.modinst:137:
+> debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/kernel/cpu/mce=
+/mce-inject.ko]
+> Error 1
+> At main.c:298:
+> - SSL error:FFFFFFFF80000002:system library::No such file or
+> directory: ../crypto/bio/bss_file.c:67
+> - SSL error:10000080:BIO routines::no such file: ../crypto/bio/bss_file.c=
+:75
+> sign-file: debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/ker=
+nel/msr.ko
+> make[6]: *** [scripts/Makefile.modinst:137:
+> debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/kernel/msr.ko]
+> Error 1
+> make[5]: *** [Makefile:1821: modules_install] Error 2
+> make[4]: *** [Makefile:2036: run-command] Error 2
+> make[3]: *** [debian/rules:17: binary-arch] Error 2
+> dpkg-buildpackage: error: make -f debian/rules binary subprocess
+> returned exit status 2
+> make[2]: *** [scripts/Makefile.package:146: bindeb-pkg] Error 2
+> make[1]: *** [/home/tkcook/git/linux/v6.6/Makefile:1538: bindeb-pkg] Erro=
+r 2
+> make: *** [Makefile:234: __sub-make] Error 2
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
