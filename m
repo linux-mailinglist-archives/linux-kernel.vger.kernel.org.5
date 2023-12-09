@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DEC80B40A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 12:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2D080B418
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 13:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbjLILsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 06:48:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
+        id S229873AbjLIL5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 06:57:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLILsK (ORCPT
+        with ESMTP id S229446AbjLIL5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 06:48:10 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DE6F1;
-        Sat,  9 Dec 2023 03:48:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1702122470; x=1702727270; i=linosanfilippo@gmx.de;
-        bh=1UF6FDdhmJ4WxT0YV5JeVePLp1zU4VEaSmjDTTuAp70=;
-        h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-         In-Reply-To;
-        b=OyTUA1WX5/d7+mEig8rVLrCnlQdSN7S6sfv7mH+W7cPclf7wOroPmAH+MXRo+c+B
-         pOzWybX/hWMH+BmEHcBQidsgapRVms31Kta0IQgP50Uys2Wg6BIAL6lNtBKQkD3kT
-         roGLno+RtO0zRYXI+fx1xXsKoYyC6LAk3A+EkoUDMw5cA36MlrVT5hBDXTjIWOBs/
-         eTjyau0AboXzj/zsDEJq4T7ODlHdy51FSZIBzqaYvi4jAhjhcblXaww55SYy58rg4
-         pJwBdBxGquIhdTyqcRT3+B2nHABLwsSqvPOlEZf4/l+a9G/6CFAbiXruSWuJtu7ZB
-         biqrUyuaNfpdu32TDQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.2.42] ([84.180.3.177]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N6KUd-1rItm03Kyv-016d0u; Sat, 09
- Dec 2023 12:47:49 +0100
-Message-ID: <fe28eb93-daa1-41af-a005-f21aa87e1984@gmx.de>
-Date:   Sat, 9 Dec 2023 12:47:47 +0100
+        Sat, 9 Dec 2023 06:57:20 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A7F10DF
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 03:57:26 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a1ca24776c3so829309066b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 03:57:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1702123045; x=1702727845; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mj9IkjGM5bRDRMCtZPs5pD8acnCJT6TuxhCGWsEoCBo=;
+        b=gpE8cWrctNE5uq6ayiROwrSSvv5RMFp1Uod0s6dO2YgmjuAaBVq7kpKthAeDaa8Sh9
+         PAeQNvTko6CMpD8TrCWJUts3a0d30pgX6bLAeK7Ni8+qLQCHdmdDepHsxX8vPxe+5w73
+         FWPxR7KEvrpujSGcSfOMDWgYzU1gjJDpvJ2JfW0/1E9oQzlLIqJhioqXUut/LFoBuLWN
+         83zudLSl0rVJ2j2ZJ9wT0WmCffYJGELNnj/qrzjxohra9op6+VbcaMv1H7T8p/opVvV1
+         73H82jgdciBSSjzgZT1WaflwMhl5/+Xl29aisijFJexDf2rG1sUj8aLlgg/8rjia1IRp
+         QPkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702123045; x=1702727845;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mj9IkjGM5bRDRMCtZPs5pD8acnCJT6TuxhCGWsEoCBo=;
+        b=dW437dO9WJRSpiCUmiwtCrmv9CJGyLdPpeFYCmvhDX51iTKvEdfHB5/MDkhQrQ+XZc
+         Zcie4K0MPPVqyHdiWwSM+u8T6hjHfd3OG9iaMhuJdWfvyNXwG8xUeRX6nu5nIDGVdZM6
+         FewbHjsTwJA2JLvi0jZnr+W2ouxXpx2s3QYUb0R7bOWCMLkgjIvCSCxzm6dfJDfepMxd
+         hOYRhNHYkWDGHv4EMaLeQVNb+3E08nQAjshQnRSL4LC1u+akD70N50/zDpUeexbtAAM7
+         z3XU6e85wzrV1awCUAsMKAriJt6OKjWC59uaxeqPJezILjhwz9oTioCJQA6OEkDEEfvm
+         9Evw==
+X-Gm-Message-State: AOJu0YzAeQmwIS4KHVjJmPcM5Mj+6yDGC7IkdxcalbbZn+1AzHUFfxSA
+        MWm1w3S5PDUWpiGomZOvYEmngQ==
+X-Google-Smtp-Source: AGHT+IGgta7Jxk34kweuhA8Cdq+Ns1KnaFrcUnCwE88ylKeOP19RsoEgQsESwXKcvcbLOsP25P5muA==
+X-Received: by 2002:a17:907:da6:b0:a19:a409:37ce with SMTP id go38-20020a1709070da600b00a19a40937cemr2110755ejc.39.1702123045154;
+        Sat, 09 Dec 2023 03:57:25 -0800 (PST)
+Received: from ?IPV6:2a10:bac0:b000:731f:e6b0:e567:aab6:1db2? ([2a10:bac0:b000:731f:e6b0:e567:aab6:1db2])
+        by smtp.gmail.com with ESMTPSA id mn6-20020a1709077b0600b00a18374ade6bsm2129793ejc.67.2023.12.09.03.57.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Dec 2023 03:57:24 -0800 (PST)
+Message-ID: <b028a431-92e0-4440-adf9-6b855edb88c0@suse.com>
+Date:   Sat, 9 Dec 2023 13:57:23 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: serial: rs485: add rs485-mux-gpios
- binding
+Subject: Re: [PATCH] KVM: x86: User mutex guards to eliminate
+ __kvm_x86_vendor_init()
 Content-Language: en-US
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        "brenda.streiff@ni.com" <brenda.streiff@ni.com>,
-        Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
-        Tomas Paukrt <tomaspaukrt@email.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20231120151056.148450-1-linux@rasmusvillemoes.dk>
- <20231120151056.148450-2-linux@rasmusvillemoes.dk>
- <20231122145344.GA18949@wunner.de>
- <3b8548b1-b8a9-0c9e-4040-5cfda06a85c6@gmx.de>
- <ec66d25162de4cbc92720df1e7008fe8@dh-electronics.com>
- <5c140498-69e3-4187-8703-db0c41e7ca89@gmx.de>
-In-Reply-To: <5c140498-69e3-4187-8703-db0c41e7ca89@gmx.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0XbavJOj6kPYHuY2oqtdIJRTO4bm7RpNZrWc4dxKAl/SToIlDiD
- etgjnvuTWY5NbDj6DCIjpfVQfL7o/Ejo2gwKvCQC0afFcjZVUntHTqwLBQ4SbNhlA0JDUAT
- hTrz4QF9NRuO6y8mnPh+k+j38zoaX8kfa2psegY//i8Qh/QPOE3QfVRNOr2i8kFeiv5h4jW
- oHWqvSsY8NGlCeczOxYKw==
-UI-OutboundReport: notjunk:1;M01:P0:0oeAITP1Ax0=;PFdM72vaTGu0XG/wGErDFlODzYO
- PzT9UFQ9grUckTuGOMBCD0ba7EtDJnP4DB4D2aE8EtUyBn9RER+tv1uLQgf1o6cbMR5PZ0Y9u
- yo90fe4LIrj9lzlGfACRxF1LKrC8YyVszew2PZ4C01BRoTRKie0TvZPRsh0ZTEO0tFtWwAWky
- 57DNGAF2WgsBG9PnxkU0BI+L7vvfJHnLNxQrJ5rRb6ZWP7euAC904jqT6vVaSW7e9TZna9e/V
- tEj3YD7Bfq76G4X9botSlhbfVpZNd7zFooPFU9We3WId9KVvbzG44j3ogH02VHm6k5r/F2jX9
- 0uDd3EAuc4dWtc7hU7x+uR8vVgpagnhjcBRJmSB5f8QBD9pVvupNZ3RoHpIxKBPb+qkUbsrLA
- 4+KNmS9oGAv6HZIVAORwqPXiVuEK3ndK8I3F078ojstL7AL/7MfwCmTkuxC96s06wcNpWjS+D
- DkLjkUQTsFxJGbQqQ4OnnRQYEg81f2B8pvHzKM8cZp1fyydphuOuaZQI26xk2RBEpqnv9dppv
- XzzpyzPr8LQcJexLZV0OWEzmUbJTPxynLfl4lrT5u58xTIuzBfWmSqvO5rG4fVMx/QYF+9p/I
- JzBZHhf7NslomSHoDAnGpJr8On6OJiW30MDQrTZtA7kyXP0HcK28tHbfaoXMpq+jDZgtGJePJ
- VqrPHdeO9R7e4HH2PBwLPx8Ja9XPuu7Tnfx44FswZIRFAvIncBNkwHdaIPOX1LUV2o8zIkkmE
- KRYoE+YtPCfLxwFkeqJZRmSD9Cptq5BPZkIMU9vKtpOmd6Gos2Jx520kJEcLrGLR1J9EC7vMV
- Q8LcZ2JH3XFxey8fnJO3+8AJdRB5t874tJQI/HNTWxldkPbvS7iJG6D8+9yN0MHVF31h7BuhN
- 6aaA8TtbWgpXv72CspBewdC6OE6h1+ZjrguVchD7AJkOwFG9h2zOalEvtb+Pm0rn2L1P2dW9p
- g2EeDtA0oIc/URFH5/LeSirppt0=
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     pbonzini@redhat.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231030141728.1406118-1-nik.borisov@suse.com>
+ <ZT_UtjWSKCwgBxb_@google.com>
+From:   Nikolay Borisov <nik.borisov@suse.com>
+In-Reply-To: <ZT_UtjWSKCwgBxb_@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -96,39 +78,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 06.12.23 16:42, Lino Sanfilippo wrote:
->
+On 30.10.23 г. 18:07 ч., Sean Christopherson wrote:
+> On Mon, Oct 30, 2023, Nikolay Borisov wrote:
+>> Current separation between (__){0,1}kvm_x86_vendor_init() is 
+>> superfluos as
+> 
+> superfluous
+> 
+> But this intro is actively misleading.  The double-underscore variant 
+> most definitely
+> isn't superfluous, e.g. it eliminates the need for gotos reduces the 
+> probability
+> of incorrect error codes, bugs in the error handling, etc.  It _becomes_ 
+> superflous
+> after switching to guard(mutex).
+> 
+> IMO, this is one of the instances where the "problem, then solution" 
+> appoach is
+> counter-productive.  If there are no objections, I'll massage the change 
+> log to
+> the below when applying (for 6.8, in a few weeks).
+> 
+>   Use the recently introduced guard(mutex) infrastructure acquire and
+>   automatically release vendor_module_lock when the guard goes out of 
+> scope.
+>   Drop the inner __kvm_x86_vendor_init(), its sole purpose was to simplify
+>   releasing vendor_module_lock in error paths.
+> 
+>   No functional change intended.
+> 
+>> the the underscore version doesn't have any other callers.
+>>
 
->>>>
->>>> Crescent CY Hsieh (+cc) is in parallel trying to add an RS-422 mode b=
-it
->>>> to struct serial_rs485:
->>>>
->>>> https://lore.kernel.org/all/20231121095122.15948-1-crescentcy.hsieh@m=
-oxa.com/
->>>>
->>>
->>> That new flag was suggested by me instead of using SER_RS422_ENABLED, =
-which
->>> would mostly be redundant to SER_RS485_ENABLED.
 
-A cleaner solution would probably be to not handle RS422 with the RS485 se=
-ttings at
-all, but to introduce another set of ioctls to set and read it.
-
-An own RS422 structure like
-
-struct serial_rs422 {
-	__u32	flags;
-#define SER_RS422_ENABLED		(1 << 0)
-#define SER_RS422_TERMINATE_BUS		(1 << 1)
-};
-
-
-could be used as the parameter for these new ioctls.
-
-Any comments on this?
-
-
-Regards,
-Lino
+Has this fallen through the cracks as I don't see it in 6.7?
