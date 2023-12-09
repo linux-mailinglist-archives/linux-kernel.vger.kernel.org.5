@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A825080B589
+	by mail.lfdr.de (Postfix) with ESMTP id 5161580B587
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 18:31:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbjLIRao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 12:30:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
+        id S230208AbjLIRat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 12:30:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjLIRan (ORCPT
+        with ESMTP id S229705AbjLIRaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 12:30:43 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCC7D54
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 09:30:49 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50bfd3a5b54so3552550e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 09:30:49 -0800 (PST)
+        Sat, 9 Dec 2023 12:30:46 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6A010E6
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 09:30:50 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2ca0c36f5beso39378661fa.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 09:30:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702143048; x=1702747848; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ho0A//e5nku1XNpPeOxEQX2rLe6R8q7cIXkFFUGZs5k=;
-        b=XQfuoC899DKmgqKuh+tHzDE7HmdiKLtYQ4fCxhj4QzXaPMH5Rk4siM/t937Sbc+EiG
-         e1T2cPaztFiv+I268Af71rCSWUX4AdTqzj/75NLUzUAhlSAmqDVkYlpT6zsO5116rjn2
-         zdZ5v7jKVibbgcU09cUEE/87WHXbBxVtzokxar/lQ2nyKcCsUpxXif0U8h41FbPgQXNV
-         dZhnTDWcw9vnfFKI8AbJOOhZfzS23cn92dGka4aZyipd7I9AKrX/AwmxICThM4G0PmWx
-         kBf1wp1Fg4Do7osu55QfI2k1mtZnewQAeBEtcaAROQKBaxnLlmto+1Uq1YtO96f5+jvU
-         QHyg==
+        d=linaro.org; s=google; t=1702143049; x=1702747849; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZGxNyInPX1FnWv8EFnzseBq2mTwZXauB1MxLYzgPaVA=;
+        b=fN+MLyubHaJawA+6R3EICEVv/7KUz/P5uGO1mjqSpyw8OR9IsfHpKyDFilMxTsgDcA
+         YOmkpLBwjkG35UNbAUfuI2Xoz8uIIykFZtiG4mEVGuMwXVfqPbu9kR2fbwJuGvUFHniw
+         /XPdhEHWsxu+QUhgsN0+wSVVIFzvakMZse31fSAq2+xo92CvWaRk+t/89ptnDJvSOlt7
+         lLRVltkgbYZFf/yDeIPzO2Sfrt2efeccs/7HkCkBYKVhpbA4sP3+P7NO8tQ8sa4BpI0v
+         En/DzT+a+KEaBKV4LMTaCCz4mtMw25gAkDVZbFEJkXgDcvo5CJU+1DETg1zHV+JYCezl
+         fbjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702143048; x=1702747848;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ho0A//e5nku1XNpPeOxEQX2rLe6R8q7cIXkFFUGZs5k=;
-        b=gkJ/7YKSfrags5lUDejzXfEAyG1YngJkJfOZwgbJjQheMWxjcq0zcKRDBuVPjYKHKH
-         Bsq21DFiBqEtAUeALm5XHOHPJDua0/WkEBfqO4xg2g4/koWmCRsENzPk48wrNIb/rQPs
-         dXCBKy/a9HKapxlp85qML0735iEjDvAnWLn/LgXBFQne+uCgxJxhnCeIg5RwCB2XikCP
-         B4LRa62pVcYn92VxaegVvHFNunrugHvOda37tOXptMeW6ZVF6AGwrqzZ+hC05VZfEj4x
-         mDXbllk83fJc44AxX1YpTqHJtfUyVMFOEJ9yZMoWyP8AVb/44kO3pPaU4HvI4Yk6I5sE
-         rspg==
-X-Gm-Message-State: AOJu0YyeJcko/dOWqBBIx8+Z1E5xAZQVhyRl3Xr/+8kHTZXal4Vy+ycR
-        3F6HxNUaUED02wYEvEYfZcRvyA==
-X-Google-Smtp-Source: AGHT+IET7Oq0v4OfJpxjjj6CVCaSQsJKZm5hQL+iKxCrZeOieOHs80ikD6xhP3WVTvX3gaMnsgb0XQ==
-X-Received: by 2002:a05:6512:2386:b0:50b:e995:d9e6 with SMTP id c6-20020a056512238600b0050be995d9e6mr969488lfv.93.1702143047640;
-        Sat, 09 Dec 2023 09:30:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702143049; x=1702747849;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZGxNyInPX1FnWv8EFnzseBq2mTwZXauB1MxLYzgPaVA=;
+        b=IHjYtCV8sq2CWrFhJ7OabA+w/S44UORa4Gh/9pEy9+O4hiEQNZ4dabMzOBvb/CvPm9
+         J4NxMsFRWupAKqsSb5kw+KcK0JbzrD8NL1u7HgZ6oFB2dVXbw6iN/d37/EYaFFKx5A4J
+         8DP81vk0p4IVFo2prjXzSgAqDULTN+Jlbq7/anyCfO3LjJXR5plFnrmywIWM/iKZw46k
+         7x47cdzsOoHLieilvWdInhBp3G5puM7nlrY9gH6HIuCQiVBG2W3yY2ZLFu8ES3I4cVIl
+         NUgfMA2kGoaExrYpL8Jl3IizuRgXCqwauUACwXOEpUkDv7WeJvVtI9g1RpEAMF2QHHba
+         zjSw==
+X-Gm-Message-State: AOJu0Yyczx4jKsyTIexplPXNi2iHtI7RZVRt2IbJ4C9sPlhRM5+ACsJ/
+        NvLDrvbasfx2Oc+ZDcDOIWnRqw==
+X-Google-Smtp-Source: AGHT+IGySQvOJT4d+bavrxMPm6g2MuiNYfbCA9x14FdEX50mgGtZpw9szmA1Uo+64KQmfOoK3MUyJQ==
+X-Received: by 2002:a05:6512:693:b0:50b:b9c7:9f3d with SMTP id t19-20020a056512069300b0050bb9c79f3dmr1126978lfe.21.1702143048967;
+        Sat, 09 Dec 2023 09:30:48 -0800 (PST)
 Received: from krzk-bin.. ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id m26-20020a50931a000000b0054ce5c00e74sm1926621eda.88.2023.12.09.09.30.46
+        by smtp.gmail.com with ESMTPSA id m26-20020a50931a000000b0054ce5c00e74sm1926621eda.88.2023.12.09.09.30.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Dec 2023 09:30:47 -0800 (PST)
+        Sat, 09 Dec 2023 09:30:48 -0800 (PST)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Dinh Nguyen <dinguyen@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -56,14 +57,16 @@ To:     Dinh Nguyen <dinguyen@kernel.org>,
         Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 01/15] ARM: dts: socfpga: drop unsupported cdns,page-size and cdns,block-size
-Date:   Sat,  9 Dec 2023 18:30:30 +0100
-Message-Id: <20231209173044.257684-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 02/15] ARM: dts: socfpga: align NAND controller name with bindings
+Date:   Sat,  9 Dec 2023 18:30:31 +0100
+Message-Id: <20231209173044.257684-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231209173044.257684-1-krzysztof.kozlowski@linaro.org>
+References: <20231209173044.257684-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,108 +75,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cdns,page-size and cdns,block-size are neither documented nor used by
-Linux, so remove them to fix dtbs_check warnings like:
+Bindings expect NAND controller node name to match certain patterns:
 
-  socfpga_arria5_socdk.dtb: flash@0: Unevaluated properties are not allowed ('cdns,block-size', 'cdns,page-size' were unexpected)
+  socfpga_arria10_socdk_nand.dtb: nand@ffb90000: $nodename:0: 'nand@ffb90000' does not match '^nand-controller(@.*)?'
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../arm/boot/dts/intel/socfpga/socfpga_arria10_socdk_qspi.dts | 2 --
- arch/arm/boot/dts/intel/socfpga/socfpga_arria5_socdk.dts      | 2 --
- arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_socdk.dts    | 2 --
- arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_sockit.dts   | 2 --
- arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_sodia.dts    | 2 --
- .../boot/dts/intel/socfpga/socfpga_cyclone5_vining_fpga.dts   | 4 ----
- 6 files changed, 14 deletions(-)
+ arch/arm/boot/dts/intel/socfpga/socfpga.dtsi         | 2 +-
+ arch/arm/boot/dts/intel/socfpga/socfpga_arria10.dtsi | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/intel/socfpga/socfpga_arria10_socdk_qspi.dts b/arch/arm/boot/dts/intel/socfpga/socfpga_arria10_socdk_qspi.dts
-index 11ccdc6c2dc6..0434f1c7b665 100644
---- a/arch/arm/boot/dts/intel/socfpga/socfpga_arria10_socdk_qspi.dts
-+++ b/arch/arm/boot/dts/intel/socfpga/socfpga_arria10_socdk_qspi.dts
-@@ -17,8 +17,6 @@ flash0: flash@0 {
- 		spi-max-frequency = <100000000>;
+diff --git a/arch/arm/boot/dts/intel/socfpga/socfpga.dtsi b/arch/arm/boot/dts/intel/socfpga/socfpga.dtsi
+index 4c1d140f40f8..35be14150f41 100644
+--- a/arch/arm/boot/dts/intel/socfpga/socfpga.dtsi
++++ b/arch/arm/boot/dts/intel/socfpga/socfpga.dtsi
+@@ -768,7 +768,7 @@ mmc: mmc@ff704000 {
+ 			status = "disabled";
+ 		};
  
- 		m25p,fast-read;
--		cdns,page-size = <256>;
--		cdns,block-size = <16>;
- 		cdns,read-delay = <3>;
- 		cdns,tshsl-ns = <50>;
- 		cdns,tsd2d-ns = <50>;
-diff --git a/arch/arm/boot/dts/intel/socfpga/socfpga_arria5_socdk.dts b/arch/arm/boot/dts/intel/socfpga/socfpga_arria5_socdk.dts
-index c48385702a85..7342f5942b0d 100644
---- a/arch/arm/boot/dts/intel/socfpga/socfpga_arria5_socdk.dts
-+++ b/arch/arm/boot/dts/intel/socfpga/socfpga_arria5_socdk.dts
-@@ -124,8 +124,6 @@ flash: flash@0 {
- 		spi-max-frequency = <100000000>;
+-		nand0: nand@ff900000 {
++		nand0: nand-controller@ff900000 {
+ 			#address-cells = <0x1>;
+ 			#size-cells = <0x0>;
+ 			compatible = "altr,socfpga-denali-nand";
+diff --git a/arch/arm/boot/dts/intel/socfpga/socfpga_arria10.dtsi b/arch/arm/boot/dts/intel/socfpga/socfpga_arria10.dtsi
+index f36063c57c7f..6b6e77596ffa 100644
+--- a/arch/arm/boot/dts/intel/socfpga/socfpga_arria10.dtsi
++++ b/arch/arm/boot/dts/intel/socfpga/socfpga_arria10.dtsi
+@@ -669,7 +669,7 @@ mmc: mmc@ff808000 {
+ 			status = "disabled";
+ 		};
  
- 		m25p,fast-read;
--		cdns,page-size = <256>;
--		cdns,block-size = <16>;
- 		cdns,read-delay = <4>;
- 		cdns,tshsl-ns = <50>;
- 		cdns,tsd2d-ns = <50>;
-diff --git a/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_socdk.dts b/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_socdk.dts
-index c7f5fa0ba0f2..d37a982e8571 100644
---- a/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_socdk.dts
-+++ b/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_socdk.dts
-@@ -129,8 +129,6 @@ flash0: flash@0 {
- 		spi-max-frequency = <100000000>;
- 
- 		m25p,fast-read;
--		cdns,page-size = <256>;
--		cdns,block-size = <16>;
- 		cdns,read-delay = <4>;
- 		cdns,tshsl-ns = <50>;
- 		cdns,tsd2d-ns = <50>;
-diff --git a/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_sockit.dts b/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_sockit.dts
-index 3dd99c7c95e0..9e4db7407f1a 100644
---- a/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_sockit.dts
-+++ b/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_sockit.dts
-@@ -174,8 +174,6 @@ flash: flash@0 {
- 		spi-max-frequency = <100000000>;
- 
- 		m25p,fast-read;
--		cdns,page-size = <256>;
--		cdns,block-size = <16>;
- 		cdns,read-delay = <4>;
- 		cdns,tshsl-ns = <50>;
- 		cdns,tsd2d-ns = <50>;
-diff --git a/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_sodia.dts b/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_sodia.dts
-index 2564671fc1c6..ce0d6514eeb5 100644
---- a/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_sodia.dts
-+++ b/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_sodia.dts
-@@ -121,8 +121,6 @@ flash0: flash@0 {
- 		spi-max-frequency = <100000000>;
- 
- 		m25p,fast-read;
--		cdns,page-size = <256>;
--		cdns,block-size = <16>;
- 		cdns,read-delay = <4>;
- 		cdns,tshsl-ns = <50>;
- 		cdns,tsd2d-ns = <50>;
-diff --git a/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_vining_fpga.dts b/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_vining_fpga.dts
-index e0630b0eed03..65f390bf8975 100644
---- a/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_vining_fpga.dts
-+++ b/arch/arm/boot/dts/intel/socfpga/socfpga_cyclone5_vining_fpga.dts
-@@ -229,8 +229,6 @@ flash@0 {
- 		spi-max-frequency = <100000000>;
- 		m25p,fast-read;
- 
--		cdns,page-size = <256>;
--		cdns,block-size = <16>;
- 		cdns,read-delay = <4>;
- 		cdns,tshsl-ns = <50>;
- 		cdns,tsd2d-ns = <50>;
-@@ -246,8 +244,6 @@ flash@1 {
- 		spi-max-frequency = <100000000>;
- 		m25p,fast-read;
- 
--		cdns,page-size = <256>;
--		cdns,block-size = <16>;
- 		cdns,read-delay = <4>;
- 		cdns,tshsl-ns = <50>;
- 		cdns,tsd2d-ns = <50>;
+-		nand: nand@ffb90000 {
++		nand: nand-controller@ffb90000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			compatible = "altr,socfpga-denali-nand";
 -- 
 2.34.1
 
