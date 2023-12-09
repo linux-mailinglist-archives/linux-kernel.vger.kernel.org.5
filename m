@@ -2,73 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D49A980B3DE
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 12:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E5080B3E4
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 12:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjLILDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 06:03:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48252 "EHLO
+        id S229947AbjLILFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 06:05:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLILC7 (ORCPT
+        with ESMTP id S229538AbjLILFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 06:02:59 -0500
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DCA910E0
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 03:03:06 -0800 (PST)
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1fb36840642so4779939fac.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 03:03:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702119785; x=1702724585;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yvy4N+xBFdWEhX7gts5zd9HDZEkBme/lPMrmQcBrz/o=;
-        b=hlvmByBeZiyhyhFQITQOuC4lUPEfT0fj9lUiskCSb2fpKyuWpY926hlqviO9tQFRJR
-         Jb05X/aD6Lx1tmXUApP29QjWTJrzq1HCzYkSM5+l109Vl/OoiDim/iusybQf2oW/pNUl
-         HeHj04q40ws0mJHLOS+FTEE+ZS2r6Hw1lxYBzMTjDZj2oJBZxkfNkiqJ+MMi37YPHBGE
-         XZu7g1qBMKtAxs7DU+kBEvBXzTyXvipHvJktjQM1HILY6SIO2FtAIJJHoNUGp+Y53NxS
-         +TzmYTrDiGpGBEyaYHJPvwCQ1ocZk+joupKpkVnF4Gx5VB2zw202jQXxDjsv4g641+LX
-         NBVQ==
-X-Gm-Message-State: AOJu0YyMNwdNeZQ7HBBqKmxMNaGNzJsa2TSPTzF9HsvQyiA6TcVWedT6
-        B4awNgQTSdbt3ZsQvX6CW+9jpExL3f8NS4G6JYaqdXzda0M4
-X-Google-Smtp-Source: AGHT+IEs0ucuoB+Vua4GGz+6FYGyUS4H62F2AXdK3glUw83TVYPZn3nRZM4ohhxr5G5d2oXjPCGxdjFiwSoAXtL3dE7q9onU6yH3
+        Sat, 9 Dec 2023 06:05:02 -0500
+Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C3210E0;
+        Sat,  9 Dec 2023 03:05:07 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1702119865; cv=none; 
+        d=zohomail.in; s=zohoarc; 
+        b=ePOROXgNLRYfFMrTZ5fDHg5lgnPbYUnvAeaUNEM4fFG5a7y07UN1sEFQZhBqWX9PwLwYlSapL48xoq/pDmDjZOST5VFx62eF/rmwLoeSoQ8tA0DBs/arV8vpbS/5Utm4CyKjSj6hlXK7lnc+vZNkX1UV18+eGajihZkzCsfnV0c=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
+        t=1702119865; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+        bh=MXhcSyzmKjfefxZKd0I1TvledRLZO0z+eiFwOUBU9X0=; 
+        b=J+T5te1OKoXrwhQBT7ujz99ae6gpizDOyNjLJaKxADZZNOiyus6mT+uccK2qKCzkLFEJvse5HciZ8l7cytkG7wnhH56PNqL4oqYY5JjoddaYyRcpolgxzxZn/rq/8vo+5nFwoODihhpV74txIaPwWoBgfnjUvmYXIvrJGGDnFw0=
+ARC-Authentication-Results: i=1; mx.zohomail.in;
+        dkim=pass  header.i=siddh.me;
+        spf=pass  smtp.mailfrom=code@siddh.me;
+        dmarc=pass header.from=<code@siddh.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1702119865;
+        s=zmail; d=siddh.me; i=code@siddh.me;
+        h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
+        bh=MXhcSyzmKjfefxZKd0I1TvledRLZO0z+eiFwOUBU9X0=;
+        b=nGaHO5hVfYcm2an8TgYyWoah4TxDbCu1IvMOt7goaGPveqF9i5mza2okyVUYiixR
+        NSfIm9oMoyqAJd5I3Jxn01Zx9bWw8FeAXYz3nkS+50y89awTJ8aipmUb51n/pS9VCTO
+        b0crK/ArjlFDJEqK8P6719mNBQMorY+8x82UeEDo=
+Received: from kampyooter.. (110.227.243.208 [110.227.243.208]) by mx.zoho.in
+        with SMTPS id 1702119864675642.5508323354376; Sat, 9 Dec 2023 16:34:24 +0530 (IST)
+From:   Siddh Raman Pant <code@siddh.me>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Suman Ghosh <sumang@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v4 0/2] nfc: Fix UAF during datagram sending caused by missing refcounting
+Date:   Sat,  9 Dec 2023 16:34:19 +0530
+Message-ID: <cover.1702118242.git.code@siddh.me>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:70a0:b0:1fa:d9e9:2cc with SMTP id
- v32-20020a05687070a000b001fad9e902ccmr1568837oae.3.1702119785471; Sat, 09 Dec
- 2023 03:03:05 -0800 (PST)
-Date:   Sat, 09 Dec 2023 03:03:05 -0800
-In-Reply-To: <aa9e49a1-7450-4df4-8848-8b2b5a868c28@siddh.me>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002da54a060c11a5ad@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in nfc_alloc_send_skb
-From:   syzbot <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
-To:     code@siddh.me, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+(Very sorry for the delay in sending this.)
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+For connectionless transmission, llcp_sock_sendmsg() codepath will
+eventually call nfc_alloc_send_skb() which takes in an nfc_dev as
+an argument for calculating the total size for skb allocation.
 
-Reported-and-tested-by: syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com
+virtual_ncidev_close() codepath eventually releases socket by calling
+nfc_llcp_socket_release() (which sets the sk->sk_state to LLCP_CLOSED)
+and afterwards the nfc_dev will be eventually freed.
 
-Tested on:
+When an ndev gets freed, llcp_sock_sendmsg() will result in an
+use-after-free as it
 
-commit:         f2e8a57e Merge tag 'scsi-fixes' of git://git.kernel.or..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1714d166e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=99a0b898611ad691
-dashboard link: https://syzkaller.appspot.com/bug?extid=bbe84a4010eeea00982d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1330e596e80000
+(1) doesn't have any checks in place for avoiding the datagram sending.
 
-Note: testing is done by a robot and is best-effort only.
+(2) calls nfc_llcp_send_ui_frame(), which also has a do-while loop
+    which can race with freeing. This loop contains the call to
+    nfc_alloc_send_skb() where we dereference the nfc_dev pointer.
+
+nfc_dev is being freed because we do not hold a reference to it when
+we hold a reference to llcp_local. Thus, virtual_ncidev_close()
+eventually calls nfc_release() due to refcount going to 0.
+
+Since state has to be LLCP_BOUND for datagram sending, we can bail out
+early in llcp_sock_sendmsg().
+
+Please review and let me know if any errors are there, and hopefully
+this gets accepted.
+
+Thanks,
+Siddh
+
+Changes in v4:
+- Fix put ordering and comments.
+- Separate freeing in recv() into end labels.
+- Remove obvious comment and add reasoning.
+- Picked up r-bs by Suman.
+
+Changes in v3:
+- Fix missing freeing statements.
+
+Changes in v2:
+- Add net-next in patch subject.
+- Removed unnecessary extra lock and hold nfc_dev ref when holding llcp_sock.
+- Remove last formatting patch.
+- Picked up r-b from Krzysztof for LLCP_BOUND patch.
+
+Siddh Raman Pant (2):
+  nfc: llcp_core: Hold a ref to llcp_local->dev when holding a ref to
+    llcp_local
+  nfc: Do not send datagram if socket state isn't LLCP_BOUND
+
+ net/nfc/llcp_core.c | 55 ++++++++++++++++++++++++++++++++++-----------
+ net/nfc/llcp_sock.c |  5 +++++
+ 2 files changed, 47 insertions(+), 13 deletions(-)
+
+-- 
+2.42.0
+
