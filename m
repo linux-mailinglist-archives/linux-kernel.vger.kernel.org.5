@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1788680B663
+	by mail.lfdr.de (Postfix) with ESMTP id 6D95480B664
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbjLIUyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 15:54:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38278 "EHLO
+        id S231430AbjLIUy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 15:54:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbjLIUyK (ORCPT
+        with ESMTP id S231312AbjLIUyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 15:54:10 -0500
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5261700;
-        Sat,  9 Dec 2023 12:54:12 -0800 (PST)
+        Sat, 9 Dec 2023 15:54:11 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B78C1706;
+        Sat,  9 Dec 2023 12:54:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702155251;
-        bh=UoqvFkaEAiG7kyRT5ZdtctH0/Mb0yDTsfGCKAKoC8Dw=;
+        s=mail; t=1702155252;
+        bh=BLSj6AA16cSdujVBYYq70bIqHuGyTU5UrfHixq/ymCQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dmDDoM7D8lYjc+7UCUEnEFx8lXJdPtzd9zfFMJtjvvDErifqsb7bO2AfgE7510dBB
-         m18vz0bHGZq6wpUKmdz4X84iBKF3Z+VYR17Jj9by1zDQ9YAH5v6I70MZlmAbuQpbg8
-         d5hDFEzxCo6l0H2QyTk1sbxbeEYSDjuuk7OZNwj3puCcHkt/4zEz5unzusJ/fPhGcB
-         Cjp0WA2/h6gXAxtHxvPkUDZ1qB0+zf3kQQynIHpWN2PD8t0mFgMW4nCeKYnVx9O/I0
-         e4+vDEJPAS0QvuVBcduDAKFmhP6nlLKIniQXv5riUrGW8itC8mR133cfoficcmBbJq
-         HHPjCtHiDiIZg==
+        b=kOjWMlwetMwCh9GBKJNyjH+0D7xrtmX9ul5G6aBQ0omyXemNjzithDJNZ61ue00Q3
+         hr2hdRNNeM6fdMqtHy0KosrC2q40e1Xr519BQL7AMzHTegAokhJIZOP6mHnI4POmxi
+         HpVmkpcH5d8R6pXBO9LuK7nLp8JnPoAvu8V11gKWmdju9bdkYEQHRy9tzsAcir04ap
+         TWio7/EXM0mVcsVFrE1nplEU1Z8C3bDHQZkA7RibairQl7WddG03QqDiUaXAEgzxfs
+         XJvRE5nks39I6zAMxAcPGzWVCazMOdZdwouxIkzU0MjYv21vdV7XCy1HRjMe3KQVzl
+         f4uFsHkbkQTBg==
 Received: from localhost (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: cristicc)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 77FD637813DF;
-        Sat,  9 Dec 2023 20:54:11 +0000 (UTC)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id A10B437813E8;
+        Sat,  9 Dec 2023 20:54:12 +0000 (UTC)
 From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -54,9 +54,9 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
         sound-open-firmware@alsa-project.org, kernel@collabora.com
-Subject: [PATCH 08/11] ASoC: SOF: amd: Override default fw name for Valve Galileo
-Date:   Sat,  9 Dec 2023 22:53:47 +0200
-Message-ID: <20231209205351.880797-9-cristian.ciocaltea@collabora.com>
+Subject: [PATCH 09/11] ASoC: SOF: amd: Compute file paths on firmware load
+Date:   Sat,  9 Dec 2023 22:53:48 +0200
+Message-ID: <20231209205351.880797-10-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
 References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
@@ -72,55 +72,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ACP driver for Vangogh platform uses a quirk for Valve Galileo
-device to setup a custom firmware loader, which neither requires nor
-uses the firmware file indicated via the default_fw_filename member of
-struct sof_dev_desc.
+Commit 6c393ebbd74a ("ASoC: SOF: core: Implement IPC version fallback if
+firmware files are missing") changed the order of some operations and
+the firmware paths are not available anymore at snd_sof_probe() time.
 
-Since commit 6c393ebbd74a ("ASoC: SOF: core: Implement IPC version
-fallback if firmware files are missing"), the provided filename gets
-verified and triggers a fatal error on probe:
+Precisely, fw_filename_prefix is set by sof_select_ipc_and_paths() via
 
-[ 7.719337] snd_sof_amd_vangogh 0000:04:00.5: enabling device (0000 -> 0002)
-[ 7.721486] snd_sof_amd_vangogh 0000:04:00.5: SOF firmware and/or topology file not found.
-[ 7.721565] snd_sof_amd_vangogh 0000:04:00.5: Supported default profiles
-[ 7.721569] snd_sof_amd_vangogh 0000:04:00.5: - ipc type 0 (Requested):
-[ 7.721573] snd_sof_amd_vangogh 0000:04:00.5:  Firmware file: amd/sof/sof-vangogh.ri
-[ 7.721577] snd_sof_amd_vangogh 0000:04:00.5:  Topology file: amd/sof-tplg/sof-vangogh-nau8821-max.tplg
-[ 7.721582] snd_sof_amd_vangogh 0000:04:00.5: Check if you have 'sof-firmware' package installed.
-[ 7.721585] snd_sof_amd_vangogh 0000:04:00.5: Optionally it can be manually downloaded from:
-[ 7.721589] snd_sof_amd_vangogh 0000:04:00.5:    https://github.com/thesofproject/sof-bin/
-[ 7.721997] snd_sof_amd_vangogh: probe of 0000:04:00.5 failed with error -2
+  plat_data->fw_filename_prefix = out_profile.fw_path;
 
-Skip testing the default firmware by overriding fw_name in
-sof_vangogh_ops_init().
+but sof_init_environment() which calls this function was moved from
+snd_sof_device_probe() to sof_probe_continue(). Moreover,
+snd_sof_probe() was moved from sof_probe_continue() to
+sof_init_environment(), but before the call to
+sof_select_ipc_and_paths().
 
-Fixes: d0dab6b76a9f ("ASoC: SOF: amd: Add sof support for vangogh platform")
+The problem here is that amd_sof_acp_probe() uses fw_filename_prefix to
+compute fw_code_bin and fw_data_bin paths, and because the field is not
+yet initialized, the paths end up containing (null):
+
+snd_sof_amd_vangogh 0000:04:00.5: Direct firmware load for (null)/sof-vangogh-code.bin failed with error -2
+snd_sof_amd_vangogh 0000:04:00.5: sof signed firmware code bin is missing
+snd_sof_amd_vangogh 0000:04:00.5: error: failed to load DSP firmware -2
+snd_sof_amd_vangogh: probe of 0000:04:00.5 failed with error -2
+
+Move usage of fw_filename_prefix right before request_firmware() calls
+in acp_sof_load_signed_firmware().
+
+Fixes: 6c393ebbd74a ("ASoC: SOF: core: Implement IPC version fallback if firmware files are missing")
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 ---
- sound/soc/sof/amd/vangogh.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/sof/amd/acp-loader.c | 32 ++++++++++++++++++++++++++------
+ sound/soc/sof/amd/acp.c        |  7 ++-----
+ 2 files changed, 28 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/sof/amd/vangogh.c b/sound/soc/sof/amd/vangogh.c
-index de15d21aa6d9..5843ff8a8b40 100644
---- a/sound/soc/sof/amd/vangogh.c
-+++ b/sound/soc/sof/amd/vangogh.c
-@@ -151,8 +151,14 @@ int sof_vangogh_ops_init(struct snd_sof_dev *sdev)
- 	sof_vangogh_ops.num_drv = ARRAY_SIZE(vangogh_sof_dai);
+diff --git a/sound/soc/sof/amd/acp-loader.c b/sound/soc/sof/amd/acp-loader.c
+index e05eb7a86dd4..d2d21478399e 100644
+--- a/sound/soc/sof/amd/acp-loader.c
++++ b/sound/soc/sof/amd/acp-loader.c
+@@ -267,29 +267,49 @@ int acp_sof_load_signed_firmware(struct snd_sof_dev *sdev)
+ {
+ 	struct snd_sof_pdata *plat_data = sdev->pdata;
+ 	struct acp_dev_data *adata = plat_data->hw_pdata;
++	const char *fw_filename;
+ 	int ret;
  
- 	dmi_id = dmi_first_match(acp_sof_quirk_table);
--	if (dmi_id && dmi_id->driver_data)
-+	if (dmi_id && dmi_id->driver_data) {
- 		sof_vangogh_ops.load_firmware = acp_sof_load_signed_firmware;
-+		/*
-+		 * Board doesn't use the default firmware, hence override
-+		 * its name to prevent probe error due to fw validation.
-+		 */
-+		sdev->pdata->ipc_file_profile_base.fw_name = "";
-+	}
+-	ret = request_firmware(&sdev->basefw.fw, adata->fw_code_bin, sdev->dev);
++	fw_filename = kasprintf(GFP_KERNEL, "%s/%s",
++				plat_data->fw_filename_prefix,
++				adata->fw_code_bin);
++	if (!fw_filename)
++		return -ENOMEM;
++
++	ret = request_firmware(&sdev->basefw.fw, fw_filename, sdev->dev);
+ 	if (ret < 0) {
++		kfree(fw_filename);
+ 		dev_err(sdev->dev, "sof signed firmware code bin is missing\n");
+ 		return ret;
+ 	} else {
+-		dev_dbg(sdev->dev, "request_firmware %s successful\n", adata->fw_code_bin);
++		dev_dbg(sdev->dev, "request_firmware %s successful\n", fw_filename);
+ 	}
++	kfree(fw_filename);
++
+ 	ret = snd_sof_dsp_block_write(sdev, SOF_FW_BLK_TYPE_IRAM, 0,
+-				      (void *)sdev->basefw.fw->data, sdev->basefw.fw->size);
++				      (void *)sdev->basefw.fw->data,
++				      sdev->basefw.fw->size);
++
++	fw_filename = kasprintf(GFP_KERNEL, "%s/%s",
++				plat_data->fw_filename_prefix,
++				adata->fw_data_bin);
++	if (!fw_filename)
++		return -ENOMEM;
  
- 	return 0;
+-	ret = request_firmware(&adata->fw_dbin, adata->fw_data_bin, sdev->dev);
++	ret = request_firmware(&adata->fw_dbin, fw_filename, sdev->dev);
+ 	if (ret < 0) {
++		kfree(fw_filename);
+ 		dev_err(sdev->dev, "sof signed firmware data bin is missing\n");
+ 		return ret;
+ 
+ 	} else {
+-		dev_dbg(sdev->dev, "request_firmware %s successful\n", adata->fw_data_bin);
++		dev_dbg(sdev->dev, "request_firmware %s successful\n", fw_filename);
+ 	}
++	kfree(fw_filename);
+ 
+ 	ret = snd_sof_dsp_block_write(sdev, SOF_FW_BLK_TYPE_DRAM, 0,
+-				      (void *)adata->fw_dbin->data, adata->fw_dbin->size);
++				      (void *)adata->fw_dbin->data,
++				      adata->fw_dbin->size);
+ 	return ret;
  }
+ EXPORT_SYMBOL_NS(acp_sof_load_signed_firmware, SND_SOC_SOF_AMD_COMMON);
+diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
+index 1e9840ae8938..87c5c71eac68 100644
+--- a/sound/soc/sof/amd/acp.c
++++ b/sound/soc/sof/amd/acp.c
+@@ -479,7 +479,6 @@ EXPORT_SYMBOL_NS(amd_sof_acp_resume, SND_SOC_SOF_AMD_COMMON);
+ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
+ {
+ 	struct pci_dev *pci = to_pci_dev(sdev->dev);
+-	struct snd_sof_pdata *plat_data = sdev->pdata;
+ 	struct acp_dev_data *adata;
+ 	const struct sof_amd_acp_desc *chip;
+ 	const struct dmi_system_id *dmi_id;
+@@ -547,8 +546,7 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
+ 	dmi_id = dmi_first_match(acp_sof_quirk_table);
+ 	if (dmi_id && dmi_id->driver_data) {
+ 		adata->fw_code_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
+-						    "%s/sof-%s-code.bin",
+-						    plat_data->fw_filename_prefix,
++						    "sof-%s-code.bin",
+ 						    chip->name);
+ 		if (!adata->fw_code_bin) {
+ 			ret = -ENOMEM;
+@@ -556,8 +554,7 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
+ 		}
+ 
+ 		adata->fw_data_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
+-						    "%s/sof-%s-data.bin",
+-						    plat_data->fw_filename_prefix,
++						    "sof-%s-data.bin",
+ 						    chip->name);
+ 		if (!adata->fw_data_bin) {
+ 			ret = -ENOMEM;
 -- 
 2.43.0
 
