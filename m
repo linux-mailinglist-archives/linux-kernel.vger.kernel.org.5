@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF4480B384
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 11:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4867D80B389
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 11:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbjLIJtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 04:49:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36854 "EHLO
+        id S229487AbjLIJwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 04:52:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLIJtr (ORCPT
+        with ESMTP id S229446AbjLIJwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 04:49:47 -0500
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38B810C4;
-        Sat,  9 Dec 2023 01:49:53 -0800 (PST)
+        Sat, 9 Dec 2023 04:52:04 -0500
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FED210C7;
+        Sat,  9 Dec 2023 01:52:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1702115391; bh=K4v35Dp8Lp3NPnkhtZ9R6FJpo7oiN2Hzlx29IfU2Lq0=;
+        t=1702115529; bh=ylrgEA3zbjC4BUaTh9xcfvwH7XspfsRlgzCDfDuD0Cs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I1ET6nwYmIPj1dDOlJ36cuv6adMCSee+/l3bvMCLtEZVJ3gsKIvTkgWpvUyf4/ydw
-         CGstHQFag5r1HK6Ftg6STvHYYVV2iTxngtTBcs5UDam5c9d53JE4Z5TzmbLJ5pyyA3
-         mariSQplhWY+wSwgFCLalvfeRztZooSqtT2s5r0altoeoNl8tTgXkQ09atOVR7mLsm
-         nZYM0UNi0mHCJ4iNfZBqMg0bpb67Qn22K0ZJJ4W09VbwU3fDZid9ynlvX2K6rPGB8A
-         5yqzXwpbcGepDvmlvCc/F1FCV6G/xfzG8oGHxmesi7f6GKT4sekIMzJjC2kufb4kXw
-         dCEcayhOICYsg==
+        b=ji0yme4wBw9VwSR0+h+ffZxLjj3LK6jkp4/rm+0K39pVYaYYMpMVcTYEj74xUfhfg
+         ET9cjglES2OqhiijJjav7UxIQvVLUFAYSvNRXwK+oxqfh8xTNxqNszVxqYs9tWJ6AJ
+         pnK7Jnyia/WJOrRq179PhiZ6zLIh/dPzuwTKA2qrujCbiYlx7Kx4EcTTVDtrUkN9rl
+         uh91y3c48meztAKYlLdvsL5pThDPl/uZMyVM1iecO4721Uy97/oGFqybVA9mTcmB4+
+         u8k9qDhW7glRaPj2SeLJHvxWVSB/KOTVWM8vte2/PRAUFMAh+1/GuHoMMoEJtq6mL8
+         F0ogWKqRYA0OQ==
 Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 9697B100091; Sat,  9 Dec 2023 09:49:51 +0000 (GMT)
-Date:   Sat, 9 Dec 2023 09:49:51 +0000
+        id 4D4D1100091; Sat,  9 Dec 2023 09:52:09 +0000 (GMT)
+Date:   Sat, 9 Dec 2023 09:52:09 +0000
 From:   Sean Young <sean@mess.org>
 To:     Thierry Reding <thierry.reding@gmail.com>
 Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
         Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
         Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/4] pwm: make it possible to apply pwm changes in
- atomic context
-Message-ID: <ZXQ4P39_sq10XD9u@gofer.mess.org>
+        <u.kleine-koenig@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/4] media: pwm-ir-tx: trigger edges from hrtimer
+ interrupt context
+Message-ID: <ZXQ4yYx8QKu6wWwY@gofer.mess.org>
 References: <cover.1701248996.git.sean@mess.org>
- <734c9985a6f54d34d9ef20203ba7f962b572cb45.1701248996.git.sean@mess.org>
- <ZXNCKFZcjFznko89@orome.fritz.box>
+ <88fdb3a200989458c6f95c26fa9bb84c1e864798.1701248996.git.sean@mess.org>
+ <ZXNEg3ax4MChSJ5A@orome.fritz.box>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZXNCKFZcjFznko89@orome.fritz.box>
+In-Reply-To: <ZXNEg3ax4MChSJ5A@orome.fritz.box>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -54,106 +55,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thierry,
-
-
-On Fri, Dec 08, 2023 at 05:19:52PM +0100, Thierry Reding wrote:
-> On Wed, Nov 29, 2023 at 09:13:35AM +0000, Sean Young wrote:
-> > Some pwm devices require sleeping, for example if the pwm device is
-> > connected over i2c. However, many pwm devices could be used from atomic
-> > context, e.g. memmory mapped pwm. This is useful for, for example, the
-> > pwm-ir-tx driver which requires precise timing. Sleeping causes havoc
-> > with the generated IR signal.
-> > 
-> > Since not all pmw devices can support atomic context, we also add a
-> > pwm_is_atomic() function to check if it is supported.
-> 
-> s/i2c/I2C/ and s/pwm/PWM/ in the above. Also, s/memmory/memory/
-
-Thanks for your detailed review. I agree with all your points, they are
-all nice improvements. Just a question at the bottom:
-
-> 
+On Fri, Dec 08, 2023 at 05:29:55PM +0100, Thierry Reding wrote:
+> On Wed, Nov 29, 2023 at 09:13:37AM +0000, Sean Young wrote:
+> > This makes the generated IR much more precise. Before this change, the
+> > driver is unreliable and many users opted to use gpio-ir-tx instead.
 > > 
 > > Signed-off-by: Sean Young <sean@mess.org>
 > > ---
-> >  Documentation/driver-api/pwm.rst |  9 +++++
-> >  drivers/pwm/core.c               | 63 ++++++++++++++++++++++++++------
-> >  drivers/pwm/pwm-renesas-tpu.c    |  1 -
-> >  include/linux/pwm.h              | 29 ++++++++++++++-
-> >  4 files changed, 87 insertions(+), 15 deletions(-)
+> >  drivers/media/rc/pwm-ir-tx.c | 79 ++++++++++++++++++++++++++++++++++--
+> >  1 file changed, 76 insertions(+), 3 deletions(-)
 > > 
-> > diff --git a/Documentation/driver-api/pwm.rst b/Documentation/driver-api/pwm.rst
-> > index f1d8197c8c43..1d4536fdf47c 100644
-> > --- a/Documentation/driver-api/pwm.rst
-> > +++ b/Documentation/driver-api/pwm.rst
-> > @@ -43,6 +43,15 @@ After being requested, a PWM has to be configured using::
+> > diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
+> > index cf51e2760975..8575c4596d7b 100644
+> > --- a/drivers/media/rc/pwm-ir-tx.c
+> > +++ b/drivers/media/rc/pwm-ir-tx.c
+> > @@ -10,6 +10,8 @@
+> >  #include <linux/slab.h>
+> >  #include <linux/of.h>
+> >  #include <linux/platform_device.h>
+> > +#include <linux/hrtimer.h>
+> > +#include <linux/completion.h>
+> >  #include <media/rc-core.h>
 > >  
-> >  	int pwm_apply_might_sleep(struct pwm_device *pwm, struct pwm_state *state);
+> >  #define DRIVER_NAME	"pwm-ir-tx"
+> > @@ -17,8 +19,14 @@
 > >  
-> > +Some PWM devices can be used from atomic context. You can check if this is
-> > +supported with::
-> > +
-> > +        bool pwm_is_atomic(struct pwm_device *pwm);
+> >  struct pwm_ir {
+> >  	struct pwm_device *pwm;
+> > -	unsigned int carrier;
+> > -	unsigned int duty_cycle;
+> > +	struct hrtimer timer;
+> > +	struct completion tx_done;
+> > +	struct pwm_state *state;
+> > +	u32 carrier;
+> > +	u32 duty_cycle;
+> > +	uint *txbuf;
 > 
-> This is now going to look a bit odd. I think it'd be best to change this
-> to pwm_might_sleep() for consistency with the pwm_apply_might_sleep()
-> function. Fine to keep the actual member variable as atomic, though, so
-> we don't have to change the default for all drivers.
+> Maybe mark this as const to signal that it's not going to get modified?
 
-Agreed, I was struggling with finding good name and yours is much better,
-thanks.
+Ah nice, I usually forget const. 
 
- > +{
-> > +	return pwm->chip->atomic;
-> > +}
-> > +
-> >  /* PWM provider APIs */
-> >  int pwm_capture(struct pwm_device *pwm, struct pwm_capture *result,
-> >  		unsigned long timeout);
-> > @@ -406,16 +420,27 @@ struct pwm_device *devm_fwnode_pwm_get(struct device *dev,
-> >  				       struct fwnode_handle *fwnode,
-> >  				       const char *con_id);
-> >  #else
-> > +static inline bool pwm_is_atomic(struct pwm_device *pwm)
-> > +{
-> > +	return false;
-> > +}
-> > +
-> >  static inline int pwm_apply_might_sleep(struct pwm_device *pwm,
-> >  					const struct pwm_state *state)
-> >  {
-> >  	might_sleep();
-> > -	return -ENOTSUPP;
-> > +	return -EOPNOTSUPP;
-> > +}
-> > +
-> > +static inline int pwm_apply_atomic(struct pwm_device *pwm,
-> > +				   const struct pwm_state *state)
-> > +{
-> > +	return -EOPNOTSUPP;
-> >  }
-> >  
-> >  static inline int pwm_adjust_config(struct pwm_device *pwm)
-> >  {
-> > -	return -ENOTSUPP;
-> > +	return -EOPNOTSUPP;
-> >  }
+> > +	uint txbuf_len;
+> > +	uint txbuf_index;
 > 
-> What's wrong with ENOTSUPP?
+> uint is rather rare. Or so I thought. There seem to be quite a few
+> occurrences throughout the kernel. I'd still prefer unsigned int over
+> this abbreviated form, but ultimately up to you and Mauro to decide.
 
-This was found by checkpatch, see
+Yes, unsigned int is used a lot more. Changed.
 
-https://github.com/torvalds/linux/blob/master/scripts/checkpatch.pl#L4891-L4892
+> >  static int pwm_ir_probe(struct platform_device *pdev)
+> >  {
+> >  	struct pwm_ir *pwm_ir;
+> > @@ -103,10 +167,19 @@ static int pwm_ir_probe(struct platform_device *pdev)
+> >  	if (!rcdev)
+> >  		return -ENOMEM;
+> >  
+> > +	if (pwm_is_atomic(pwm_ir->pwm)) {
+> > +		init_completion(&pwm_ir->tx_done);
+> > +		hrtimer_init(&pwm_ir->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> > +		pwm_ir->timer.function = pwm_ir_timer;
+> > +		rcdev->tx_ir = pwm_ir_tx_atomic;
+> > +	} else {
+> > +		dev_info(&pdev->dev, "tx will not be accurate as pwm device does not support atomic mode");
+> 
+> s/tx/TX and s/pwm/PWM/? Also, I'm a bit unhappy about "atomic mode" here
+> because the term is overloaded in PWM. If you call pwm_appy_*() then by
+> definition it's going to be "atomic" in the "atomic state" sense. So
+> maybe switch to something like:
+> 
+> 	"TX will not be accurate as PWM device might sleep"
+> 
+> ?
 
-# ENOTSUPP is not a standard error code and should be avoided in new patches.
-# Folks usually mean EOPNOTSUPP (also called ENOTSUP), when they type ENOTSUPP.
+Very nice, changed.
 
-ENOTSUPP is not really widely used in the tree.
-
-So it was really done to keep checkpatch happy, please let me know what you
-would like me to do here.
-
-Thanks,
-
+Thanks
 Sean
