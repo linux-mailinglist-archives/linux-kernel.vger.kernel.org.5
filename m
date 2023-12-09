@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C05C780B65E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6FB80B65F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbjLIUyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 15:54:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36570 "EHLO
+        id S231299AbjLIUyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 15:54:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231192AbjLIUyB (ORCPT
+        with ESMTP id S231232AbjLIUyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 15:54:01 -0500
+        Sat, 9 Dec 2023 15:54:02 -0500
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECCFE1;
-        Sat,  9 Dec 2023 12:54:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5212DE5;
+        Sat,  9 Dec 2023 12:54:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702155245;
-        bh=Uzyzme1p3X66fqRyIz81KnujYtpDW+X/POMynZA7CsA=;
+        s=mail; t=1702155247;
+        bh=7CzCzac5cmO2jGM6VStYbZvLilLqPqRoSSC4o4Btjfg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ez+KkUY/Mctyu+Il5OAscxfygxVAXr0MyAj8VUhaMowHF/cXZglw6BSp8PStaAbCk
-         naQOFKrMDZ5urm2BOKiMbej+gsyGUucUEfg7E/+tz2/B75oJPLds4u6Q0UYCQ0VAHp
-         7BjI+Wch/+y1qjAgjmi/hU9UA5z+74AuuQQ5BLnVD05La5xEvYKLrFqUxEI9zzmIR8
-         ISQjCRVUDQ1FzaJOM9YzRWeXpVaVCGSg+u1sAieZHY+Tliq47eBmXYHTF89E4AESmk
-         x5Wz8vZokHdUG+wAU4/CPb3Smb6OGWQS7T4USbQDyO2JNm+zkxDP+zp524Bz6U2Ihy
-         dN/fpBpSGDFJg==
+        b=rfd3OPX/DkJaYAA1IcJCQVo90e0x7b9wA6kgig0eMPt398yGiSuYOa1CuI4NEf0fD
+         2kbp0D9aPIkPkO2spXWV9LzA0H/sec4IMQI32PnAt/w2ZVXEFHsZpM3QIMl/6ZkX6z
+         OHfd7uoZXjKWjtgCHrUej714vQGKH185wA/Z1gkh+28S23anVhDwRS8seJqukSdJ8X
+         cKG/rkRNn8U6jQ5SJlWI+XYw4jYarfWnESkjpPTvc6SIVFdbDOYzpw+AwSMW1WOCEK
+         V38nNMtGyMZt6UyMYtFTwIKedK7QAFYUhFzipmIUbC+icjCPtZ+EfdYMqukUNdrDxL
+         N/tWuOX2hf76w==
 Received: from localhost (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: cristicc)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8DB3937813E0;
-        Sat,  9 Dec 2023 20:54:05 +0000 (UTC)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id BBE0437813DD;
+        Sat,  9 Dec 2023 20:54:06 +0000 (UTC)
 From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -54,9 +54,9 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
         sound-open-firmware@alsa-project.org, kernel@collabora.com
-Subject: [PATCH 03/11] ASoC: amd: acp: Add missing error handling in sof-mach
-Date:   Sat,  9 Dec 2023 22:53:42 +0200
-Message-ID: <20231209205351.880797-4-cristian.ciocaltea@collabora.com>
+Subject: [PATCH 04/11] ASoC: amd: acp: Update MODULE_DESCRIPTION for sof-mach
+Date:   Sat,  9 Dec 2023 22:53:43 +0200
+Message-ID: <20231209205351.880797-5-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
 References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
@@ -72,42 +72,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Handle potential acp_sofdsp_dai_links_create() errors in ACP SOF machine
-driver's probe function.  Additionally, switch to dev_err_probe().
+The current MODULE_DESCRIPTION relates to a Chrome board, as that was
+what the driver initially supported.
 
-Fixes: 9f84940f5004 ("ASoC: amd: acp: Add SOF audio support on Chrome board")
+Nonetheless, it has since progressed incrementally and evolved into a
+more comprehensive machine driver. Hence, update MODULE_DESCRIPTION to
+better reflect this.
+
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 ---
- sound/soc/amd/acp/acp-sof-mach.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ sound/soc/amd/acp/acp-sof-mach.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/amd/acp/acp-sof-mach.c b/sound/soc/amd/acp/acp-sof-mach.c
-index 1d313fcb5f2d..6f0ca23638af 100644
+index 6f0ca23638af..19ff4fe5b1ea 100644
 --- a/sound/soc/amd/acp/acp-sof-mach.c
 +++ b/sound/soc/amd/acp/acp-sof-mach.c
-@@ -112,16 +112,14 @@ static int acp_sof_probe(struct platform_device *pdev)
- 	if (dmi_id && dmi_id->driver_data)
- 		acp_card_drvdata->tdm_mode = dmi_id->driver_data;
+@@ -166,7 +166,7 @@ static struct platform_driver acp_asoc_audio = {
+ module_platform_driver(acp_asoc_audio);
  
--	acp_sofdsp_dai_links_create(card);
-+	ret = acp_sofdsp_dai_links_create(card);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret, "Failed to create DAI links\n");
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
--	if (ret) {
--		dev_err(&pdev->dev,
--				"devm_snd_soc_register_card(%s) failed: %d\n",
--				card->name, ret);
--		return ret;
--	}
--
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret,
-+				     "Failed to register card(%s)\n", card->name);
- 	return 0;
- }
- 
+ MODULE_IMPORT_NS(SND_SOC_AMD_MACH);
+-MODULE_DESCRIPTION("ACP chrome SOF audio support");
++MODULE_DESCRIPTION("ACP SOF Machine Driver");
+ MODULE_ALIAS("platform:rt5682-rt1019");
+ MODULE_ALIAS("platform:rt5682-max");
+ MODULE_ALIAS("platform:rt5682s-max");
 -- 
 2.43.0
 
