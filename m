@@ -2,55 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE8880B648
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA60480B647
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:34:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbjLIUeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 15:34:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
+        id S230525AbjLIUeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 15:34:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjLIUeJ (ORCPT
+        with ESMTP id S230499AbjLIUeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 15:34:09 -0500
+        Sat, 9 Dec 2023 15:34:10 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAF2193
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 12:34:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 436BBC433C7;
-        Sat,  9 Dec 2023 20:34:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654C41A1
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 12:34:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 10729C433C8;
+        Sat,  9 Dec 2023 20:34:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702154055;
-        bh=TYueBuMxe1Cd7Vs7fS2FZ4S5BtxUKU1puYqavvmzD7M=;
+        s=k20201202; t=1702154057;
+        bh=gj+XRQZlWwRMenN/19kHl2d4Cx1/cCtddG04ZZs/PZc=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=qWtbGn3qPTLbfzylBWGgxR1VNxadp6dsxfPtJkx/OIrvuDo+rij6/9ve9D7EDBh+W
-         kR9cLMj/p9PlZwDoyXi+Ulwns0ZmD3AnbTcV6NMTiDUaYPc9cwomgjOnIeUynjKS6P
-         QUUx3O5oZzpIMZtr432Igt8ARFWXJ0FVKha3eXLwgom7fX3h+BSJYcoX3SH5erPhSW
-         Z5npHfmQSdogOfNQ2Kwm61VnIU9Ler0J4zFb2J6kcvRjHiQ1kcPdY0o8DcJeX+Kk/C
-         TcRk6cvEWXDqVRzVFGOcKi/OJVrXH295bpF6yWOoSicEP+s885n32vrAtdqc3O9SDX
-         SfR7k+Govk93w==
+        b=kresJePbKD+hIS4yNn9CY4f1y4rCvuvQQlq9zDsXXmadEzH5RneVeNU2iQ41KJ/1u
+         CwsYKRfnFazeho6K2Yqin/6kHNwTQI29MLiRrUOnBVrmcCKQ/G8twRsimUORa1jjpK
+         uX69adoYnzV5NPxLz7BT+ROP3gSJGWipKEV/EOz4LeTxxD3KlNTYuMyOVpMIEDvAmk
+         fldtS38Ds3sub+XlmygqlVZOdp7mq/3Ofv+mDgu833JXuQH65FwRKxPluMOH98jSVJ
+         0YBSmAWp7aibgFw2PzWA/d+m7kZk1XjLlj3obq7T5uPCrgC+u4iU6bIoP7ts3oNV9/
+         rKNug9ovp16Sw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3187FC41677;
-        Sat,  9 Dec 2023 20:34:15 +0000 (UTC)
-Subject: Re: [GIT PULL] LoongArch fixes for v6.7-rc5
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F332DC04DD9;
+        Sat,  9 Dec 2023 20:34:16 +0000 (UTC)
+Subject: Re: [GIT PULL] MIPS fixes for v6.7
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20231209112317.1542046-1-chenhuacai@loongson.cn>
-References: <20231209112317.1542046-1-chenhuacai@loongson.cn>
-X-PR-Tracked-List-Id: <loongarch.lists.linux.dev>
-X-PR-Tracked-Message-Id: <20231209112317.1542046-1-chenhuacai@loongson.cn>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.7-2
-X-PR-Tracked-Commit-Id: e2f7b3d8b4b300956a77fa1ab084c931ba1c7421
+In-Reply-To: <ZXQrKJy+ZW0nF2FF@alpha.franken.de>
+References: <ZXQrKJy+ZW0nF2FF@alpha.franken.de>
+X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZXQrKJy+ZW0nF2FF@alpha.franken.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_6.7_1
+X-PR-Tracked-Commit-Id: a58a173444a68412bb08849bd81c679395f20ca0
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b10a3ccaf6e39f6290ca29d7c24604082eacaea0
-Message-Id: <170215405519.1707.5261207253564127214.pr-tracker-bot@kernel.org>
-Date:   Sat, 09 Dec 2023 20:34:15 +0000
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@loongson.cn>
+X-PR-Merge-Commit-Id: b8503b215789628d3625ef6aa252f323e32be929
+Message-Id: <170215405699.1707.7256622590015108777.pr-tracker-bot@kernel.org>
+Date:   Sat, 09 Dec 2023 20:34:16 +0000
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -61,12 +56,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat,  9 Dec 2023 19:23:17 +0800:
+The pull request you sent on Sat, 9 Dec 2023 09:54:00 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.7-2
+> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_6.7_1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b10a3ccaf6e39f6290ca29d7c24604082eacaea0
+https://git.kernel.org/torvalds/c/b8503b215789628d3625ef6aa252f323e32be929
 
 Thank you!
 
