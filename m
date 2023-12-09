@@ -2,145 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3775480B34C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 09:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 860F280B351
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 09:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbjLIImv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 03:42:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
+        id S229881AbjLIIs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 03:48:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjLIImt (ORCPT
+        with ESMTP id S229510AbjLIIsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 03:42:49 -0500
-Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7B7D5B
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 00:42:54 -0800 (PST)
-Received: from [192.168.1.18] ([92.140.202.140])
-        by smtp.orange.fr with ESMTPA
-        id BsvCrcsGt8sqPBsvCrXaRV; Sat, 09 Dec 2023 09:42:52 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1702111372;
-        bh=OL7jJBAHp3+DKzbCvIViVa6sqM1F9KNTat4GEYWo3l4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=f36WZ639mb34IksRNaZ5zgh56e30qvgeiG2HRFdG0qifwbk17zBUE5ybPQoK4APa/
-         xbOQXM3oS8EEZG3+9TrPSXWbDFOYAUR5Ujf51ci7KTOcppfu5PD05hjq1c+qKtK7Tb
-         k7G/NoiUyKnWc7qJBprEVoQLjAwaftR///q5FLcljBNG1UdCPBGYsfkABYnL96sAHx
-         HEUGdL8lF5Zk7GorqLnf2l5dDaMnXSh8iSmxChgR9cf7H+FYQ1lIJtWHlJpXKJh2yT
-         0HXQqCJjL0cRNQmksacxES8XH3nBxSYeN1RnzG3fpcQDbz7LaMV0Ka6rsnAqOM0Z+u
-         1owR75wXIe9Xw==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 09 Dec 2023 09:42:52 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <02a2787a-1fb9-4238-820b-c3b1e8460e5a@wanadoo.fr>
-Date:   Sat, 9 Dec 2023 09:42:49 +0100
+        Sat, 9 Dec 2023 03:48:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B92710D0;
+        Sat,  9 Dec 2023 00:48:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702111711; x=1733647711;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BArBMRz+Uu5UuNs6uA3RiQFC97rd4SqkRdb+dYG43vQ=;
+  b=OYjoR3u02cYbODohI4k+TGOe/sCWI3aRHtq+hYYuZPhEqLIGanrsTZ5k
+   FKsUkTnuC+Kf90bfnwUmvncpMmrurznmAp7iKzKkhxrUQcBemZELuRbTv
+   QxpFNyYs5d3fGnSFQisn1EAru9Mr1FYCLN7p1znDOZrHikI0QMjPoJVEU
+   b02DaZQQN8G675x5UG52gU94PhvagqK+5AoYjDmcfQg9ltDIpLL0g/ef7
+   3GXUfMuMh7IhPC3/2DeaDym1ymFd1niaJrnpGgvOo6hfEhhJ1Bp/cVb1H
+   faUK701spzedOc1rNgefU8yunHrnfLgGuNbXpp8skO3oC5T7idm1Rpxh7
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1573878"
+X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
+   d="scan'208";a="1573878"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 00:48:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="863150723"
+X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
+   d="scan'208";a="863150723"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 00:48:26 -0800
+Date:   Sat, 9 Dec 2023 10:48:23 +0200
+From:   Raag Jadav <raag.jadav@intel.com>
+To:     mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
+        ardb@kernel.org, will@kernel.org, mark.rutland@arm.com
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org, linux-efi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v3 5/5] perf: arm_cspmu: drop redundant
+ acpi_dev_uid_to_integer()
+Message-ID: <ZXQp18e9IR5w41wW@black.fi.intel.com>
+References: <20231123100617.28020-1-raag.jadav@intel.com>
+ <20231123100617.28020-6-raag.jadav@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] usb: typec: mux: add Qualcomm WCD939X USB SubSystem
- Altmode Mux driver
-Content-Language: fr
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231208-topic-sm8650-upstream-wcd939x-usbss-v1-0-91d1ba680fe0@linaro.org>
- <20231208-topic-sm8650-upstream-wcd939x-usbss-v1-2-91d1ba680fe0@linaro.org>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20231208-topic-sm8650-upstream-wcd939x-usbss-v1-2-91d1ba680fe0@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231123100617.28020-6-raag.jadav@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 08/12/2023 à 16:27, Neil Armstrong a écrit :
-> Qualcomm WCD9390/WCD9395 is a standalone Hi-Fi audio codec IC with a
-> functionally separate USB SubSystem for Altmode/Analog Audio Switch
-> accessible over an I2C interface.
+On Thu, Nov 23, 2023 at 03:36:17PM +0530, Raag Jadav wrote:
+> Now that we have _UID matching support for integer types, we can use
+> acpi_dev_hid_uid_match() for it.
 > 
-> It provides switching USB-C USB2.0 lines between USB and Audio Headphones
-> speaker lines, and the USB-C SBU lines between DisplayPort AUX and Audio
-> Headphones Microphone/Ground.
-> 
-> The Audio Headphone and Microphone data path between the Codec and the
-> USB-C Mux subsystems are external to the IC, thus requiring DT
-> port-endpoint graph description to handle USB-C altmode & orientation
-> switching for Audio Accessory Mode.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+> Acked-by: Will Deacon <will@kernel.org>
 > ---
+>  drivers/perf/arm_cspmu/arm_cspmu.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
+> index 2cc35dded007..50b89b989ce7 100644
+> --- a/drivers/perf/arm_cspmu/arm_cspmu.c
+> +++ b/drivers/perf/arm_cspmu/arm_cspmu.c
+> @@ -1108,7 +1108,6 @@ static int arm_cspmu_request_irq(struct arm_cspmu *cspmu)
+>  
+>  static inline int arm_cspmu_find_cpu_container(int cpu, u32 container_uid)
+>  {
+> -	u64 acpi_uid;
+>  	struct device *cpu_dev;
+>  	struct acpi_device *acpi_dev;
+>  
+> @@ -1118,8 +1117,7 @@ static inline int arm_cspmu_find_cpu_container(int cpu, u32 container_uid)
+>  
+>  	acpi_dev = ACPI_COMPANION(cpu_dev);
+>  	while (acpi_dev) {
+> -		if (acpi_dev_hid_uid_match(acpi_dev, ACPI_PROCESSOR_CONTAINER_HID, NULL) &&
+> -		    !acpi_dev_uid_to_integer(acpi_dev, &acpi_uid) && acpi_uid == container_uid)
+> +		if (acpi_dev_hid_uid_match(acpi_dev, ACPI_PROCESSOR_CONTAINER_HID, container_uid))
+>  			return 0;
 
-...
+On second thought, I just realized that this can cause false positive
+in case container_uid is integer 0.
 
-> +	usbss->sw = typec_switch_register(dev, &sw_desc);
-> +	if (IS_ERR(usbss->sw)) {
-> +		ret = dev_err_probe(dev, PTR_ERR(usbss->sw), "failed to register typec switch\n");
-> +		goto err_regulator_disable;
-> +	}
-> +
-> +	mux_desc.drvdata = usbss;
-> +	mux_desc.fwnode = dev_fwnode(dev);
-> +	mux_desc.set = wcd939x_usbss_mux_set;
-> +
-> +	usbss->mux = typec_mux_register(dev, &mux_desc);
-> +	if (IS_ERR(usbss->mux)) {
-> +		typec_switch_unregister(usbss->sw);
+I'm not aware if that's a valid value to match against in APMT.
+If it is, it's better to drop patches 2 and 5 for now.
 
-Already called at the 'err_switch_unregister' label below.
-
-> +		ret = dev_err_probe(dev, PTR_ERR(usbss->mux), "failed to register typec mux\n");
-> +		goto err_switch_unregister;
-> +	}
-> +
-> +	i2c_set_clientdata(client, usbss);
-> +
-> +	return 0;
-> +
-> +err_switch_unregister:
-> +	typec_switch_unregister(usbss->sw);
-> +
-> +err_regulator_disable:
-> +	regulator_disable(usbss->vdd_supply);
-> +
-> +err_mux_switch:
-> +	typec_switch_put(usbss->codec_switch);
-> +
-> +err_mux_put:
-> +	typec_mux_put(usbss->codec);
-> +
-> +	return ret;
-> +}
-> +
-> +static void wcd939x_usbss_remove(struct i2c_client *client)
-> +{
-> +	struct wcd939x_usbss *usbss = i2c_get_clientdata(client);
-> +
-> +	typec_mux_unregister(usbss->mux);
-> +	typec_switch_unregister(usbss->sw);
-> +
-> +	regulator_disable(usbss->vdd_supply);
-
-Based on error hadling of the probe: typec_switch_put() missing?
-
-> +
-> +	typec_mux_put(usbss->codec);
-> +}
-
-CJ
-
+Raag
