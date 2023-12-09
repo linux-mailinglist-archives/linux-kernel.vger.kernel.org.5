@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A029E80B5BB
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 18:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C7C80B5BC
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 18:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbjLIRwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 12:52:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
+        id S230265AbjLIRwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 12:52:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjLIRwU (ORCPT
+        with ESMTP id S229753AbjLIRwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 12:52:20 -0500
+        Sat, 9 Dec 2023 12:52:22 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38A011F
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 09:52:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93297C433C7;
-        Sat,  9 Dec 2023 17:52:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC2D11F
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 09:52:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7491C433C9;
+        Sat,  9 Dec 2023 17:52:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702144346;
-        bh=gsQJnkRivnNQaWFxwTJwyXNKadVnLfGIQtassmDXzrc=;
+        s=k20201202; t=1702144347;
+        bh=ONsFIGiWbHdnQS2adnSV1qao80egjbH8N4a7p9ZpSXw=;
         h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=EyahjScw7rUBwBb/Az7C8rjCyGbWBP2vletcQoCYAVX3lZtsSre80mv2GTrMxr8NL
-         wprw/YvpHGwLGj/sZiX9SDTz7FVKb5qIotkQ+B8/P/85viFFIP+a1yEfzicL47ah6F
-         dzv8ahYF12/m6GQdGJh97D6v15BT3yG3Mdgzj8lOzx3qCZJg38CSKsdiK3OUbLdSh7
-         wobRmNhaIHKEpmxsurpyd3X8r0pPnKNjMZtlbFhrMhLPDkaBJO56vjkYBsZHGH7JtU
-         PJ6cbj3wg8xwT+uTAWodibo7rXHRwgq1lFRGvmrxQjmspB83REx/HKAPSbVN1DQW6s
-         WuPvkLfJtz1Bg==
+        b=Y+1YhmGbLVIzcDljpsL9WkWNmMe68Sjnge4N0E3K8O5FSCg0vB6ZkbVQTjaO64Q0z
+         MMc+TRICXeMDSUDCqu22YinDQB8IXhn+RC9myv3qDGV9VxFkekv/PYzfDeV5SYADpJ
+         qm3zBM4EzZKc4s/DtBKJ0oAhQaLK0Dqbe9u3PStXnqBbXzdm5TnztTVBC7B5+DffzR
+         YPBaygPNLZumZqxOx2CxkodYeMv9hlTZ/0mNhL3NLyk1XHTsKCCBkf5q1iNS411kL+
+         8SA13zK6gS/8zKQBT45hs1FuF7J+rlkfS7jC9ly7OPcqy3xttaOrTGyY8vhoLt6AGn
+         seWT/8zxL218Q==
 From:   Mark Brown <broonie@kernel.org>
 To:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231207221426.3259806-1-andriy.shevchenko@linux.intel.com>
-References: <20231207221426.3259806-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 0/2] spi: pxa2xx: Update documentation
-Message-Id: <170214434538.2928550.6458260404490253992.b4-ty@kernel.org>
-Date:   Sat, 09 Dec 2023 17:52:25 +0000
+In-Reply-To: <20231208170436.3309648-1-andriy.shevchenko@linux.intel.com>
+References: <20231208170436.3309648-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2 0/2] spi: pxa2xx: Update documentation
+Message-Id: <170214434667.2928550.7302807797153128431.b4-ty@kernel.org>
+Date:   Sat, 09 Dec 2023 17:52:26 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -49,15 +49,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 08 Dec 2023 00:13:38 +0200, Andy Shevchenko wrote:
+On Fri, 08 Dec 2023 19:02:53 +0200, Andy Shevchenko wrote:
 > A couple of documentation updates.
+> 
+> Since v1:
+> - spelled controller fully in patch 1
+> - fixed inconsistent indentation in patch 2
 > 
 > Andy Shevchenko (2):
 >   spi: pxa2xx: Use inclusive language
 >   spi: pxa2xx: Update DMA mapping and using logic in the documentation
-> 
-> Documentation/spi/pxa2xx.rst | 59 +++++++++++++++++-------------------
->  1 file changed, 28 insertions(+), 31 deletions(-)
 > 
 > [...]
 
