@@ -2,165 +2,450 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C0D80B512
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 16:29:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B102280B51D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 16:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbjLIP3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 10:29:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
+        id S230443AbjLIPho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 10:37:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232006AbjLIP3h (ORCPT
+        with ESMTP id S229519AbjLIPhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 10:29:37 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2811A11D;
-        Sat,  9 Dec 2023 07:29:43 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 15A7E25A;
-        Sat,  9 Dec 2023 16:28:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1702135738;
-        bh=6hFFvOxTW1/3aaX8jGizMoDG6E623DXFkvEtdM2wg6k=;
+        Sat, 9 Dec 2023 10:37:43 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FD6A2;
+        Sat,  9 Dec 2023 07:37:48 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8775340E00CC;
+        Sat,  9 Dec 2023 15:37:45 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id TPP-M6g1rhSd; Sat,  9 Dec 2023 15:37:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1702136262; bh=HywvnxVu89INX/LatlIuwdPIGgckcuUtL9N1XjdzJ38=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FHFbiXTn7OCz6eGZWAAKCsnzsdPUOmgiE2RC/qUzjEe8w6I54K6l92xZq2dSsjKBI
-         B9CQDVr+RhQJ+qN7XOLzN3ZqdzOcisy+LTxGZlOTUMQOgpywLKyQRlgInt0vyjxRQd
-         0uUPyZ8UFTDQjVtBV2adaVy0tEIlRybFmoW2Sag0=
-Date:   Sat, 9 Dec 2023 17:29:46 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Simon Glass <sjg@chromium.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Tom Rini <trini@konsulko.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, workflows@vger.kernel.org
-Subject: Re: [PATCH v9 2/2] arm64: boot: Support Flat Image Tree
-Message-ID: <20231209152946.GC13421@pendragon.ideasonboard.com>
-References: <20231202035511.487946-1-sjg@chromium.org>
- <20231202035511.487946-3-sjg@chromium.org>
- <20231203153401.GV8402@pendragon.ideasonboard.com>
- <20231207142723.GA3187877@google.com>
- <20231207143814.GD15521@pendragon.ideasonboard.com>
- <CAGXv+5Go_0pEVAOLQmRCc_a9-YUtZEmBfXtMuBupX_nb9iqwbw@mail.gmail.com>
+        b=lTtGvOEbZFFvp3ZsOpbV+zc8TGFDB3kMG/8DNXjpEXlnfL3BvkyqykYe5DthDl5h+
+         7wBW07E8StqzasbMEhoND1yJjRPqpxS8rzLyJ2PBY23MSXIMCsuZ3xgcuKCuEy44Pn
+         7aEGpFv1KnK9u+he1szmMCaNwtIta9GDehjv89B0PYjyd1Wdl4HEqLpf1l4Rlhfqqp
+         TjDBiHR83f1CpTFAuCtwJPgBE5fGhXiVBOVDFN7+5XWPCli1KS/YB6Rjv8SqKLRT7p
+         0T0C/OYH4qunmooiLoTh4uc3+yyowi3Pxh3TEAnqxzGvCBHF/qOVhUEsEz/Bx/mra0
+         3TfNd5SEwLfDUZPK+Q6/58CPRI6l6EAYdniDg9hLhffYRTclGre6r6yqCuZGck9PO4
+         1k8o+RpXyW6vxnBuPNI+gq/h22237co+rv3v9CjuiXjomHnaBmaXXQp8qGgLmuVaIX
+         f0DzAoyQWkYKfwcxmvYoowvmFMksMZZz3+pnbRyLByhhcXVyCJ45+qg30MIJl4/xEy
+         mzA0Jr7wFWNNwJYYXFXYqIGAezVEeuk7+cuCZeoZhDHryOJGRfz9eyd8hDqlrDayI3
+         ffTY8OkDq7rIPkJg4FnS9w67ONLBkNM3vhQNGLqaesVdJ4FLaSohrD5FjHcDhblbhR
+         D92CxP761a51/RdSm6GFat74=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2D9B740E00C5;
+        Sat,  9 Dec 2023 15:37:02 +0000 (UTC)
+Date:   Sat, 9 Dec 2023 16:36:56 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+        pankaj.gupta@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 18/50] crypto: ccp: Handle the legacy SEV command
+ when SNP is enabled
+Message-ID: <20231209153656.GGZXSJmNAyMUT+qIpQ@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-19-michael.roth@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGXv+5Go_0pEVAOLQmRCc_a9-YUtZEmBfXtMuBupX_nb9iqwbw@mail.gmail.com>
+In-Reply-To: <20231016132819.1002933-19-michael.roth@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 09, 2023 at 10:13:59PM +0900, Chen-Yu Tsai wrote:
-> On Thu, Dec 7, 2023 at 11:38 PM Laurent Pinchart
-> <laurent.pinchart@ideasonboard.com> wrote:
-> >
-> > On Thu, Dec 07, 2023 at 10:27:23PM +0800, Chen-Yu Tsai wrote:
-> > > On Sun, Dec 03, 2023 at 05:34:01PM +0200, Laurent Pinchart wrote:
-> > > > Hi Simon,
-> > > >
-> > > > Thank you for the patch.
-> > > >
-> > > > On Fri, Dec 01, 2023 at 08:54:42PM -0700, Simon Glass wrote:
-> > > > > Add a script which produces a Flat Image Tree (FIT), a single file
-> > > > > containing the built kernel and associated devicetree files.
-> > > > > Compression defaults to gzip which gives a good balance of size and
-> > > > > performance.
-> > > > >
-> > > > > The files compress from about 86MB to 24MB using this approach.
-> > > > >
-> > > > > The FIT can be used by bootloaders which support it, such as U-Boot
-> > > > > and Linuxboot. It permits automatic selection of the correct
-> > > > > devicetree, matching the compatible string of the running board with
-> > > > > the closest compatible string in the FIT. There is no need for
-> > > > > filenames or other workarounds.
-> > > > >
-> > > > > Add a 'make image.fit' build target for arm64, as well. Use
-> > > > > FIT_COMPRESSION to select a different algorithm.
-> > > > >
-> > > > > The FIT can be examined using 'dumpimage -l'.
-> > > > >
-> > > > > This features requires pylibfdt (use 'pip install libfdt'). It also
-> > > > > requires compression utilities for the algorithm being used. Supported
-> > > > > compression options are the same as the Image.xxx files. For now there
-> > > > > is no way to change the compression other than by editing the rule for
-> > > > > $(obj)/image.fit
-> > > > >
-> > > > > While FIT supports a ramdisk / initrd, no attempt is made to support
-> > > > > this here, since it must be built separately from the Linux build.
-> > > >
-> > > > FIT images are very useful, so I think this is a very welcome addition
-> > > > to the kernel build system. It can get tricky though: given the
-> > > > versatile nature of FIT images, there can't be any
-> > > > one-size-fits-them-all solution to build them, and striking the right
-> > > > balance between what makes sense for the kernel and the features that
-> > > > users may request will probably lead to bikeshedding. As we all love
-> > > > bikeshedding, I thought I would start selfishly, with a personal use
-> > > > case :-) This isn't a yak-shaving request though, I don't see any reason
-> > > > to delay merging this series.
-> > > >
-> > > > Have you envisioned building FIT images with a subset of DTBs, or adding
-> > > > DTBOs ? Both would be fairly trivial extensions to this script by
-> > > > extending the supported command line arguments. It would perhaps be more
-> > > > difficult to integrate in the kernel build system though. This leads me
-> > > > to a second question: would you consider merging extensions to this
-> > > > script if they are not used by the kernel build system, but meant for
-> > > > users who manually invoke the script ? More generally, is the script
-> > >
-> > > We'd also be interested in some customization, though in a different way.
-> > > We imagine having a rule file that says X compatible string should map
-> > > to A base DTB, plus B and C DTBO for the configuration section. The base
-> > > DTB would carry all common elements of some device, while the DTBOs
-> > > carry all the possible second source components, like different display
-> > > panels or MIPI cameras for instance. This could drastically reduce the
-> > > size of FIT images in ChromeOS by deduplicating all the common stuff.
-> >
-> > Do you envision the "mapping" compatible string mapping to a config
-> > section in the FIT image, that would bundle the base DTB and the DTBOs ?
+On Mon, Oct 16, 2023 at 08:27:47AM -0500, Michael Roth wrote:
+> From: Brijesh Singh <brijesh.singh@amd.com>
 > 
-> That's exactly the idea. The mapping compatible string could be untied
-> from the base board's compatible string if needed (which we probably do).
-> 
-> So something like:
-> 
-> config {
->     config-1 {
->         compatible = "google,krane-sku0";
->         fdt = "krane-baseboard", "krane-sku0-overlay";
->     };
-> };
-> 
-> With "krane-sku0-overlay" being an overlay that holds the differences
-> between the SKUs, in this case the display panel and MIPI camera (not
-> upstreamed) that applies to SKU0 in particular.
+> The behavior of the SEV-legacy commands is altered when the SNP firmware
+> is in the INIT state. When SNP is in INIT state, all the SEV-legacy
+> commands that cause the firmware to write to memory must be in the
+> firmware state before issuing the command..
 
-The kernel DT makefiles already contain information on what overlays to
-apply to what base boards, in order to test the overlays and produce
-"full" DTBs. Maybe that information could be leveraged to create the
-configurations in the FIT image ?
+I think this is trying to say that the *memory* must be in firmware
+state before the command. Needs massaging.
 
-> Sorry for not giving a more concrete idea.
+> A command buffer may contains a system physical address that the firmware
+
+"contain"
+
+> may write to. There are two cases that need to be handled:
 > 
-> > > > meant to be used stand-alone as well, in which case its command line
-> > > > arguments need to remain backward-compatible, or do you see it as being
-> > > > internal to the kernel ?
-> > >
-> > > [...]
+> 1) system physical address points to a guest memory
+> 2) system physical address points to a host memory
+
+s/a //g
+> 
+> To handle the case #1, change the page state to the firmware in the RMP
+> table before issuing the command and restore the state to shared after the
+> command completes.
+> 
+> For the case #2, use a bounce buffer to complete the request.
+> 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> ---
+>  drivers/crypto/ccp/sev-dev.c | 346 ++++++++++++++++++++++++++++++++++-
+>  drivers/crypto/ccp/sev-dev.h |  12 ++
+>  2 files changed, 348 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+> index ea21307a2b34..b574b0ef2b1f 100644
+> --- a/drivers/crypto/ccp/sev-dev.c
+> +++ b/drivers/crypto/ccp/sev-dev.c
+> @@ -462,12 +462,295 @@ static int sev_write_init_ex_file_if_required(int cmd_id)
+>  	return sev_write_init_ex_file();
+>  }
+>  
+> +static int alloc_snp_host_map(struct sev_device *sev)
+
+If this is allocating intermediary bounce buffers, then call the
+function that it does exactly that. Or what "host_map" is the name
+referring to?
+
+> +{
+> +	struct page *page;
+> +	int i;
+> +
+> +	for (i = 0; i < MAX_SNP_HOST_MAP_BUFS; i++) {
+> +		struct snp_host_map *map = &sev->snp_host_map[i];
+> +
+> +		memset(map, 0, sizeof(*map));
+> +
+> +		page = alloc_pages(GFP_KERNEL_ACCOUNT, get_order(SEV_FW_BLOB_MAX_SIZE));
+> +		if (!page)
+> +			return -ENOMEM;
+
+If the second allocation fails, you just leaked the first one.
+
+> +		map->host = page_address(page);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void free_snp_host_map(struct sev_device *sev)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < MAX_SNP_HOST_MAP_BUFS; i++) {
+> +		struct snp_host_map *map = &sev->snp_host_map[i];
+> +
+> +		if (map->host) {
+> +			__free_pages(virt_to_page(map->host), get_order(SEV_FW_BLOB_MAX_SIZE));
+> +			memset(map, 0, sizeof(*map));
+> +		}
+> +	}
+> +}
+> +
+> +static int map_firmware_writeable(u64 *paddr, u32 len, bool guest, struct snp_host_map *map)
+
+Why is paddr a pointer? You simply pass a "unsigned long paddr" like the
+rest of the gazillion functions dealing with addresses.
+
+And then you do the ERR_PTR, PTR_ERR thing for the return value of this
+function, see include/linux/err.h.
+
+> +{
+> +	unsigned int npages = PAGE_ALIGN(len) >> PAGE_SHIFT;
+> +
+> +	map->active = false;
+
+This toggling of active on function entry and exit is silly.
+
+The usual way to do those things is to mark it as active as the last
+step of the map function, when everything has succeeded and to mark it
+as inactive (active == false) as the first step in the unmap function.
+
+> +
+> +	if (!paddr || !len)
+> +		return 0;
+> +
+> +	map->paddr = *paddr;
+> +	map->len = len;
+> +
+> +	/* If paddr points to a guest memory then change the page state to firmwware. */
+> +	if (guest) {
+> +		if (rmp_mark_pages_firmware(*paddr, npages, true))
+> +			return -EFAULT;
+> +
+> +		goto done;
+> +	}
+
+This is where it tells you that this function wants splitting:
+
+map_guest_firmware_pages
+map_host_firmware_pages
+
+or so.
+
+And then you lose the @guest argument too and you call the different
+functions depending on the SEV cmd.
+
+> +
+> +	if (!map->host)
+
+What in the hell is ->host?! SPA is host memory?
+
+Comments please.
+
+> +		return -ENOMEM;
+> +
+> +	/* Check if the pre-allocated buffer can be used to fullfil the request. */
+
+"fulfill"
+
+> +	if (len > SEV_FW_BLOB_MAX_SIZE)
+> +		return -EINVAL;
+> +
+> +	/* Transition the pre-allocated buffer to the firmware state. */
+> +	if (rmp_mark_pages_firmware(__pa(map->host), npages, true))
+> +		return -EFAULT;
+> +
+> +	/* Set the paddr to use pre-allocated firmware buffer */
+> +	*paddr = __psp_pa(map->host);
+> +
+> +done:
+> +	map->active = true;
+> +	return 0;
+> +}
+
+
+> +
+> +static int unmap_firmware_writeable(u64 *paddr, u32 len, bool guest, struct snp_host_map *map)
+> +{
+> +	unsigned int npages = PAGE_ALIGN(len) >> PAGE_SHIFT;
+> +
+> +	if (!map->active)
+
+Same comments as above for that one.
+
+> +		return 0;
+> +
+> +	/* If paddr points to a guest memory then restore the page state to hypervisor. */
+> +	if (guest) {
+> +		if (snp_reclaim_pages(*paddr, npages, true))
+> +			return -EFAULT;
+> +
+> +		goto done;
+> +	}
+> +
+> +	/*
+> +	 * Transition the pre-allocated buffer to hypervisor state before the access.
+> +	 *
+> +	 * This is because while changing the page state to firmware, the kernel unmaps
+> +	 * the pages from the direct map, and to restore the direct map the pages must
+> +	 * be transitioned back to the shared state.
+> +	 */
+> +	if (snp_reclaim_pages(__pa(map->host), npages, true))
+> +		return -EFAULT;
+> +
+> +	/* Copy the response data firmware buffer to the callers buffer. */
+> +	memcpy(__va(__sme_clr(map->paddr)), map->host, min_t(size_t, len, map->len));
+
+This is not testing whether map->host is NULL as the above counterpart.
+
+> +	*paddr = map->paddr;
+> +
+> +done:
+> +	map->active = false;
+> +	return 0;
+> +}
+> +
+> +static bool sev_legacy_cmd_buf_writable(int cmd)
+> +{
+> +	switch (cmd) {
+> +	case SEV_CMD_PLATFORM_STATUS:
+> +	case SEV_CMD_GUEST_STATUS:
+> +	case SEV_CMD_LAUNCH_START:
+> +	case SEV_CMD_RECEIVE_START:
+> +	case SEV_CMD_LAUNCH_MEASURE:
+> +	case SEV_CMD_SEND_START:
+> +	case SEV_CMD_SEND_UPDATE_DATA:
+> +	case SEV_CMD_SEND_UPDATE_VMSA:
+> +	case SEV_CMD_PEK_CSR:
+> +	case SEV_CMD_PDH_CERT_EXPORT:
+> +	case SEV_CMD_GET_ID:
+> +	case SEV_CMD_ATTESTATION_REPORT:
+> +		return true;
+> +	default:
+> +		return false;
+> +	}
+> +}
+> +
+> +#define prep_buffer(name, addr, len, guest, map) \
+> +	func(&((typeof(name *))cmd_buf)->addr, ((typeof(name *))cmd_buf)->len, guest, map)
+> +
+> +static int __snp_cmd_buf_copy(int cmd, void *cmd_buf, bool to_fw, int fw_err)
+> +{
+> +	int (*func)(u64 *paddr, u32 len, bool guest, struct snp_host_map *map);
+> +	struct sev_device *sev = psp_master->sev_data;
+> +	bool from_fw = !to_fw;
+> +
+> +	/*
+> +	 * After the command is completed, change the command buffer memory to
+> +	 * hypervisor state.
+> +	 *
+> +	 * The immutable bit is automatically cleared by the firmware, so
+> +	 * no not need to reclaim the page.
+> +	 */
+> +	if (from_fw && sev_legacy_cmd_buf_writable(cmd)) {
+> +		if (snp_reclaim_pages(__pa(cmd_buf), 1, true))
+> +			return -EFAULT;
+> +
+> +		/* No need to go further if firmware failed to execute command. */
+> +		if (fw_err)
+> +			return 0;
+> +	}
+> +
+> +	if (to_fw)
+> +		func = map_firmware_writeable;
+> +	else
+> +		func = unmap_firmware_writeable;
+
+Eww, ugly and with the macro above even worse. And completely
+unnecessary.
+
+Define prep_buffer() as a normal function which selects which @func to
+call and then does it. Not like this.
+
+...
+
+> +static inline bool need_firmware_copy(int cmd)
+> +{
+> +	struct sev_device *sev = psp_master->sev_data;
+> +
+> +	/* After SNP is INIT'ed, the behavior of legacy SEV command is changed. */
+
+"initialized"
+
+> +	return ((cmd < SEV_CMD_SNP_INIT) && sev->snp_initialized) ? true : false;
+
+redundant ternary conditional:
+
+	return cmd < SEV_CMD_SNP_INIT && sev->snp_initialized;
+
+> +}
+> +
+> +static int snp_aware_copy_to_firmware(int cmd, void *data)
+
+What does "SNP aware" even mean?
+
+> +{
+> +	return __snp_cmd_buf_copy(cmd, data, true, 0);
+> +}
+> +
+> +static int snp_aware_copy_from_firmware(int cmd, void *data, int fw_err)
+> +{
+> +	return __snp_cmd_buf_copy(cmd, data, false, fw_err);
+> +}
+> +
+>  static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+>  {
+>  	struct psp_device *psp = psp_master;
+>  	struct sev_device *sev;
+>  	unsigned int phys_lsb, phys_msb;
+>  	unsigned int reg, ret = 0;
+> +	void *cmd_buf;
+>  	int buf_len;
+>  
+>  	if (!psp || !psp->sev_data)
+> @@ -487,12 +770,28 @@ static int __sev_do_cmd_locked(int cmd, void *data, int *psp_ret)
+>  	 * work for some memory, e.g. vmalloc'd addresses, and @data may not be
+>  	 * physically contiguous.
+>  	 */
+> -	if (data)
+> -		memcpy(sev->cmd_buf, data, buf_len);
+> +	if (data) {
+> +		if (sev->cmd_buf_active > 2)
+
+What is that silly counter supposed to mean?
+
+Nested SNP commands?
+
+> +			return -EBUSY;
+> +
+> +		cmd_buf = sev->cmd_buf_active ? sev->cmd_buf_backup : sev->cmd_buf;
+> +
+> +		memcpy(cmd_buf, data, buf_len);
+> +		sev->cmd_buf_active++;
+> +
+> +		/*
+> +		 * The behavior of the SEV-legacy commands is altered when the
+> +		 * SNP firmware is in the INIT state.
+> +		 */
+> +		if (need_firmware_copy(cmd) && snp_aware_copy_to_firmware(cmd, cmd_buf))
+
+Move that need_firmware_copy() check inside snp_aware_copy_to_firmware()
+and the other one.
+
+> +			return -EFAULT;
+> +	} else {
+> +		cmd_buf = sev->cmd_buf;
+> +	}
+>  
+>  	/* Get the physical address of the command buffer */
+> -	phys_lsb = data ? lower_32_bits(__psp_pa(sev->cmd_buf)) : 0;
+> -	phys_msb = data ? upper_32_bits(__psp_pa(sev->cmd_buf)) : 0;
+> +	phys_lsb = data ? lower_32_bits(__psp_pa(cmd_buf)) : 0;
+> +	phys_msb = data ? upper_32_bits(__psp_pa(cmd_buf)) : 0;
+>  
+>  	dev_dbg(sev->dev, "sev command id %#x buffer 0x%08x%08x timeout %us\n",
+>  		cmd, phys_msb, phys_lsb, psp_timeout);
+
+...
+
+> @@ -639,6 +947,14 @@ static int ___sev_platform_init_locked(int *error, bool probe)
+>  	if (probe && !psp_init_on_probe)
+>  		return 0;
+>  
+> +	/*
+> +	 * Allocate the intermediate buffers used for the legacy command handling.
+> +	 */
+> +	if (rc != -ENODEV && alloc_snp_host_map(sev)) {
+
+Why isn't this
+
+	if (!rc && ...)
+
+> +		dev_notice(sev->dev, "Failed to alloc host map (disabling legacy SEV)\n");
+> +		goto skip_legacy;
+
+No need for that skip_legacy silly label. Just "return 0" here.
+
+...
+
+Thx.
 
 -- 
-Regards,
+Regards/Gruss,
+    Boris.
 
-Laurent Pinchart
+https://people.kernel.org/tglx/notes-about-netiquette
