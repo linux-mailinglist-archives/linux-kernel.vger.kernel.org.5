@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F60680B105
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D05A580B106
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:32:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574883AbjLIAcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 19:32:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34094 "EHLO
+        id S1574903AbjLIAcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 19:32:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLIAcK (ORCPT
+        with ESMTP id S229884AbjLIAcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 19:32:10 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81664171F
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 16:32:15 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54f4b31494fso2652984a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 16:32:15 -0800 (PST)
+        Fri, 8 Dec 2023 19:32:43 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3401B1706
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 16:32:50 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-50bf7bc38c0so3023056e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 16:32:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1702081934; x=1702686734; darn=vger.kernel.org;
+        d=semihalf.com; s=google; t=1702081968; x=1702686768; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1zT0rCjQnlmdumiyzNm0Bt66rnvFVXBVNpL6Z+0PSGU=;
-        b=Xndo2N/gbFNiGTtK1y4uXddtpuNIFZbrZAO56XYKi1zVNWoTcO1q0uze++KqzM/gAH
-         gvK6JPY0NsZW35A675Ttz/P9LfdffVF3L8jpxl5smCQfnLj+P9xSRr1hk2u2/Ko5tOW2
-         aR4xG7jvCT7mqSJbfzWCl03tMYk+ARa0l4HKXUziXcZ8P/9LT8Z1rS7BYLJxrApX8NIH
-         6aA722XzJb4ADBX3/pgLRucfKYjtM6tWUFnADiy6HmsFgqbXerAFHTB+JIHYC5HCIbX3
-         qYhTutNvESdZRTKEOOuoOzv3gdwQbe1SO8mCrwBYR5gONxBWHOCntSylh0QCIpOkRxn3
-         AUDA==
+        bh=yyeQWsRurvy1kSUlcimMxrlcGEVzENPQAsZovUbW9CU=;
+        b=fzrp43dWS0xB11xuTfGH8QJvUUnPheNFRpy0eVaHrcdQNfZxrptHGaaVN9JuCOz919
+         9GvG8q5ayWMG4l4pMoXlv6MhguHFcfLoVIY7oPFzoWtvnPbfjAIkMtaDa9Yts9KTLbsn
+         cWfE9SKvGq47QmXVzZUSGzM+/5ZM65XgxUucy51iVOBk4g0mYjtKzL44U8CtFWIBHXiV
+         MmzQP4Z1vaKpPn6dzAYu+Pz0Uj8kQWG5B+CZL2LPAIKMycUMCPVD/o2ZDS8U9JwxfoGT
+         tzQrTuT/gqFRymV4A+vyv2hkjG2fBXoWl7byv1thUZvu6K3ERzBX18E8u2KbWH515aIm
+         WHAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702081934; x=1702686734;
+        d=1e100.net; s=20230601; t=1702081968; x=1702686768;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1zT0rCjQnlmdumiyzNm0Bt66rnvFVXBVNpL6Z+0PSGU=;
-        b=DmiFfy9fSqTQTnhlfzyNLElfUMWlTz10FF2efczpR5IA7C6noyhh7JqbcHaNclJKj6
-         8UzStyJuKFGkUD7VBhHStwad7wAatbHkY2L7E5erWyLzB3qahy/Ohigw75dDd8dA+l24
-         EYLyRM6flteiTwBhqXd22PINfswihLiBia9Iq7wNZTIn3w30oEsbdTA1h+Q5ik0WeRPZ
-         xL3g/9kFvKv+EkaaPOyhymmukyFI/JFgUN0MmNCXUrLS9MZoaG3Tte0ieUzS8qWmGWgf
-         8ll2g+hbhTUMgG09hdKllI3ypZGwonHdK2gmvOnpY9jvnlHrqeP8NPDnDj10VZ5h9rMt
-         TDfQ==
-X-Gm-Message-State: AOJu0Yys3T5J6SaIC7R9g2yjoS5QSUa9ARAL1c+05lV/iVc4fPmi7K3s
-        WyoFWsHrvQ23YrP5P4j1PeZMnyhnu/4k99QGMnLz
-X-Google-Smtp-Source: AGHT+IHHb4/CFDSdSGL8ku4sXTz/Zuz2NMj3PRlJS7BVAcYDz1wSEC/dafG8SMRguuuWdu5DWmvagPzV0dmMARmwM9Y=
-X-Received: by 2002:a50:ccd3:0:b0:54c:6d4c:62cb with SMTP id
- b19-20020a50ccd3000000b0054c6d4c62cbmr899546edj.15.1702081933364; Fri, 08 Dec
- 2023 16:32:13 -0800 (PST)
+        bh=yyeQWsRurvy1kSUlcimMxrlcGEVzENPQAsZovUbW9CU=;
+        b=rxuaqNpo5y/bnw7gijJilq78sij04ET3h04erbijEufbWxbiIDXkZZrLyU60NX4/OT
+         Ll3CqSczITaGyR4317ERMaSmiI6iPU9dCrULnfE6q1cJHjQHWxTYnbKerHtputFQBq1Z
+         SmlnbxUDgtG895V9uDbgWKkr3MEPdoIsNcyiqphmEmyeXgVt8eRrf6eS8w6NksigDgH2
+         8yXHG18m3PDeAgyssyiisvo7UCbD7ejJSXtQ7ZxsAyzd88USeswSjP0366INs/S1yvCw
+         Kwzf1T/ZhdIB/Z94dVYlMuTzSBXS6Xzzn25WygaQJ1pItyU6E1oN8trROmoM6yO40Qck
+         wYfw==
+X-Gm-Message-State: AOJu0YxtQkLQcD9wrV3d0m0tpATSu+nUcd89u67LvUJ9lsj+wSi+Y82R
+        nUObKkgzhCKbqLxTuAdCqXxrniWOaxGCUOTFYIUv
+X-Google-Smtp-Source: AGHT+IHiU7+GWBiNesjx96WCv+sBFdbAwue/U9alDgwZI6GXgNhi+ti+rnofq0hx08j6xxA56JsHK5GSt9IgRfX/xsk=
+X-Received: by 2002:a05:6512:33cc:b0:50b:c467:7ca3 with SMTP id
+ d12-20020a05651233cc00b0050bc4677ca3mr364338lfg.22.1702081968383; Fri, 08 Dec
+ 2023 16:32:48 -0800 (PST)
 MIME-Version: 1.0
 References: <CAK8ByeK8dGcbxfXghw6=LrhSWLmO0a4XuB8C0nsUc812aoU0Pw@mail.gmail.com>
- <cover.1701993656.git.jim.cromie@gmail.com> <5351f56289add68eee2aa5288f82a313c2b9f664.1701993656.git.jim.cromie@gmail.com>
-In-Reply-To: <5351f56289add68eee2aa5288f82a313c2b9f664.1701993656.git.jim.cromie@gmail.com>
+ <cover.1701993656.git.jim.cromie@gmail.com> <a9030af05886f375beed5f4d75074004fffd896f.1701993656.git.jim.cromie@gmail.com>
+In-Reply-To: <a9030af05886f375beed5f4d75074004fffd896f.1701993656.git.jim.cromie@gmail.com>
 From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Date:   Sat, 9 Dec 2023 01:32:02 +0100
-Message-ID: <CAK8Bye+3RbUESCTso8ZVAojd9WDoqH1SbC+WF-ALi+cwsKLp9g@mail.gmail.com>
-Subject: Re: [re: PATCH v2 00/15 - 08/11] dyndbg: split multi-query strings
- with %
+Date:   Sat, 9 Dec 2023 01:32:37 +0100
+Message-ID: <CAK8ByeLaE1xumns+g6EMYK1weRwBhyEKR8YpYjx4uQqohvPTzg@mail.gmail.com>
+Subject: Re: [re: PATCH v2 00/15 - 10/11] dyndbg: move lock,unlock into
+ ddebug_change, drop goto
 To:     Jim Cromie <jim.cromie@gmail.com>
 Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
         bleung@google.com, contact@emersion.fr, daniel@ffwll.ch,
@@ -79,99 +79,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 pt., 8 gru 2023 o 01:15 Jim Cromie <jim.cromie@gmail.com> napisa=C5=82(a):
 >
-> Multi-query strings have long allowed:
->
->   modprobe drm dyndbg=3D"class DRM_UT_CORE +p; class DRM_UT_KMS +p"
->   modprobe drm dyndbg=3D<<EOX
->      class DRM_UT_CORE +pmf
->      class DRM_UT_KMS  +pmf
->   EOX
->
-> More recently, the need for quoting was avoided by treating a comma
-> like a space/token-terminator:
->
->   modprobe drm dyndbg=3Dclass,DRM_UT_CORE,+p\;class,DRM_UT_KMS,+p
->
-> But that leaves unfinished business; that semi-colon needs escaping,
-> and thats not robust to further string interpolation.  In particular,
-> it fails when passed to vng (virtme-ng).
->
-> So this patch adds '%' to the existing ';' and '\n' multi-cmd
-> separators, which is more shell-friendly, and avoids quoting and
-> escaping hassles.
->
->   modprobe drm dyndbg=3Dclass,DRM_UT_CORE,+p%class,DRM_UT_KMS,+p
->
-> NOTE: it does alter/break this (ill conceived) search:
->
-> [root@v6 lx]# ddcmd format %s +p
-> [   38.170998] dyndbg: read 13 bytes from userspace
-> [   38.171542] dyndbg: query 0: <format > on module: <*>
-> [   38.172011] dyndbg: bad flag-op f, at start of format
-> [   38.172487] dyndbg: flags parse failed
-> [   38.172839] dyndbg: query 1: <s +p> on module: <*>
-> [   38.173285] dyndbg: expecting pairs of match-spec <value>
-> [   38.173791] dyndbg: query parse failed
-> [   38.174141] dyndbg: processed 2 queries, with 0 matches, 2 errs
-> bash: echo: write error: Invalid argument
->
-> In trade for that minor format selection limitation, we get to do:
->
->   vng -v --user root -p 4 \
->       -a dynamic_debug.verbose=3D3 \
->       -a drm.debug=3D0x15 \
->       -a i915.dyndbg=3Dclass,DRM_UT_CORE,+pfmlt_%class,DRM_UT_KMS,+pfml
->   modprobe drm
->   modprobe i915
->
-> NOTES/TLDR:
->
-> In this example, using both drm.debug & drm.dyndbg is mostly for
-> testing.  Using drm.debug is preferred, because the drivers all
-> explicitly depend on that input/control-point, so settings there are
-> propagated to drivers.
->
-> But more to the point, drm.dyndbg explicitly limits the query to drm.
-> In fact, you could pass a module wildcard in the above, and achieve
-> the same thing:
->
->   vng -v --user root -p 4 \
->       -a dynamic_debug.verbose=3D3 \
->       -a \*.dyndbg=3Dclass,DRM_UT_CORE,+pfmlt_%class,DRM_UT_KMS,+pfm%clas=
-s,DRM_UT_ATOMIC,+pf
->
-> ':' would be a more natural multi-cmd separator, but is reserved
-> for +T:<trace_buf> to designate separate tracebuf instances.
->
-> If '%' is distasteful, the backup plan is ",_,", since that would
-> never appear in a useful <format "$foo"> cmd.
->
-
-What if we use a different character for passing trace instance name
-to the T flag, for example "-", +T-trace_buf
-and then use ":" instead of "%" as a separator ?
-
-
-
 > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 > ---
->  lib/dynamic_debug.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  lib/dynamic_debug.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
 >
 > diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-> index c974f6e19ca1..0ca3ba9e2032 100644
+> index fc903e90ea0d..b63429462d69 100644
 > --- a/lib/dynamic_debug.c
 > +++ b/lib/dynamic_debug.c
-> @@ -963,7 +963,7 @@ static int ddebug_exec_queries(char *query, const cha=
-r *modname)
->         int i, errs =3D 0, exitcode =3D 0, rc, nfound =3D 0;
+> @@ -537,6 +537,8 @@ static int ddebug_change(const struct ddebug_query *q=
+uery,
+>         struct ddebug_class_map *map =3D NULL;
+>         int __outvar valid_class;
 >
->         for (i =3D 0; query; query =3D split) {
-> -               split =3D strpbrk(query, ";\n");
-> +               split =3D strpbrk(query, "%;\n");
->                 if (split)
->                         *split++ =3D '\0';
+> +       mutex_lock(&ddebug_lock);
+> +
+>         /* search for matching ddebugs */
+>         list_for_each_entry(dt, &ddebug_tables, link) {
 >
+> @@ -625,6 +627,7 @@ static int ddebug_change(const struct ddebug_query *q=
+uery,
+>         if (nfound)
+>                 update_tr_default_dst(modifiers);
+>
+> +       mutex_unlock(&ddebug_lock);
+>         return nfound;
+>  }
+>
+> @@ -932,23 +935,17 @@ static int ddebug_exec_query(char *query_string, co=
+nst char *modname)
+>                 return -EINVAL;
+>         }
+>
+> -       mutex_lock(&ddebug_lock);
+> -
+
+I deliberately moved locking here from ddebug_change because
+ddebug_parse_flags calls read_T_args (when T flag is present) and this
+in turn calls find_tr_instance which uses global bitmap (tr.bmap).
+If we add that ddebug_proc_show can be triggered concurrently then it
+can lead to trouble.
+
+For example
+echo "open usb" > /proc/dynamic_debug/control
+echo "module usbcore =3DT:usb" > /proc/dynamic_debug/control   # from one c=
+onsole
+echo "close usb" > / /proc/dynamic_debug/control
+# from another console
+
+and we can end up with an attempt to use closed trace instance"usb"
+
+
+
+>         /* check flags 1st (last arg) so query is pairs of spec,val */
+>         if (ddebug_parse_flags(words[nwords-1], &modifiers)) {
+>                 pr_err("flags parse failed\n");
+> -               goto err;
+> +               return -EINVAL;
+>         }
+>
+>         /* actually go and implement the change */
+>         nfound =3D ddebug_change(&query, &modifiers);
+>
+> -       mutex_unlock(&ddebug_lock);
+>         vpr_info_dq(&query, nfound ? "applied" : "no-match");
+>         return nfound;
+> -err:
+> -       mutex_unlock(&ddebug_lock);
+> -       return -EINVAL;
+>  }
+>
+>  /* handle multiple queries in query string, continue on error, return
 > --
 > 2.43.0
 >
