@@ -2,222 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A76F080B36C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 10:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 086FC80B36D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 10:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbjLIJVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 04:21:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33012 "EHLO
+        id S229821AbjLIJXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 04:23:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLIJVK (ORCPT
+        with ESMTP id S229451AbjLIJXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 04:21:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0D110EF
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 01:21:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AE71C433C9;
-        Sat,  9 Dec 2023 09:21:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1702113675;
-        bh=GHtn58eD2jpCO2AzqaP68FDeBAK7xcIaZwcHN9lMI74=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gBPHABb2Pc1rU3GNdRWKglpuqnztsDfUljGR2L6aV8wc7ayomxxuYWCv5zkDnOnqn
-         Ie+xGib9iARFyAbM25wuu4OJ4rddJLFlqBbPKXJTvGzXQL2tg2EGKAM5LsJFTYiuae
-         VTHxSYf9RLoPMV4HHGFGn7sX4VwSiRVlKfRmJOS4=
-Date:   Sat, 9 Dec 2023 10:21:12 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Vimal Kumar <vimal.kumar32@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chinmoyghosh2001@gmail.com, badolevishal1116@gmail.com,
-        mintupatel89@gmail.com
-Subject: Re: [PATCH] PM / sleep: Mechanism to find source aborting kernel
- suspend transition
-Message-ID: <2023120907-unlucky-playmaker-e27e@gregkh>
-References: <20231209081056.1497-1-vimal.kumar32@gmail.com>
+        Sat, 9 Dec 2023 04:23:06 -0500
+Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D361A1;
+        Sat,  9 Dec 2023 01:23:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1702113792; x=1733649792;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=lpm2Ec+ZtdRX2kOQhYV7jvujbxIe5cPFY0JvY5kUk9c=;
+  b=Lgp4zW9vPqnWu+5BgIrNkexul6HCw3nsFWnHsU4/F+1GH8WnLYuP1Ue6
+   FJVbF9P1wPl8IogmL1Aih+DGe0a3e8h868rIjebeCVhIBSmcYoI8BBbtn
+   3H87a3Ob/yoAmprw5lNVo3g4QF58nRLhC7eKbHqrIxpbm9xm6jNPQP7L4
+   0=;
+X-IronPort-AV: E=Sophos;i="6.04,262,1695686400"; 
+   d="scan'208";a="620750035"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-a65ebc6e.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 09:23:10 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
+        by email-inbound-relay-iad-1e-m6i4x-a65ebc6e.us-east-1.amazon.com (Postfix) with ESMTPS id 08E546967A;
+        Sat,  9 Dec 2023 09:23:08 +0000 (UTC)
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.7.35:36158]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.41.194:2525] with esmtp (Farcaster)
+ id 40036f68-c748-404a-9e97-d8ad31b4c886; Sat, 9 Dec 2023 09:23:08 +0000 (UTC)
+X-Farcaster-Flow-ID: 40036f68-c748-404a-9e97-d8ad31b4c886
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sat, 9 Dec 2023 09:23:08 +0000
+Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
+ (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 9 Dec
+ 2023 09:23:06 +0000
+Message-ID: <b32fe3b6-9123-4c20-864b-5282c8dea567@amazon.com>
+Date:   Sat, 9 Dec 2023 10:23:03 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231209081056.1497-1-vimal.kumar32@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] initramfs: Expose retained initrd as sysfs file
+Content-Language: en-US
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+CC:     Linux Documentation <linux-doc@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        =?UTF-8?Q?Jan_H=2E_Sch=C3=B6nherr?= <jschoenh@amazon.de>,
+        James Gowans <jgowans@amazon.com>
+References: <20231207235654.16622-1-graf@amazon.com>
+ <ZXPkL1jyXwGH11gJ@archie.me>
+From:   Alexander Graf <graf@amazon.com>
+In-Reply-To: <ZXPkL1jyXwGH11gJ@archie.me>
+X-Originating-IP: [10.253.83.51]
+X-ClientProxiedBy: EX19D033UWA002.ant.amazon.com (10.13.139.10) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 09, 2023 at 01:40:54PM +0530, Vimal Kumar wrote:
-> Sometimes kernel suspend transitions can be aborted unconditionally by
-> manipulating pm_abort_suspend value using "hard" wakeup triggers or
-> through "pm_system_wakeup()".
-> 
-> There is no way to trace the source path of module or subsystem which
-> aborted the suspend transitions. This change will create a list of
-> wakeup sources aborting suspend in progress through "hard" events as
-> well as subsytems aborting suspend using "pm_system_wakeup()".
-> 
-> Example: Existing suspend failure logs:
-> [  349.708359] PM: Some devices failed to suspend, or early wake event detected
-> [  350.327842] PM: suspend exit
-> 
-> Suspend failure logs with this change:
-> [  518.761835] PM: Some devices failed to suspend, or early wake event detected
-> [  519.486939] Abort: ws or subsystem uart_suspend_port aborted suspend
-> [  519.500594] PM: suspend exit
-> 
-> Here we can clearly identify the module triggerring abort suspend.
-> 
-> Co-developed-by: Chinmoy Ghosh <chinmoyghosh2001@gmail.com>
-> Signed-off-by: Chinmoy Ghosh <chinmoyghosh2001@gmail.com>
-> Co-developed-by: Mintu Patel <mintupatel89@gmail.com>
-> Signed-off-by: Mintu Patel <mintupatel89@gmail.com>
-> Co-developed-by: Vishal Badole <badolevishal1116@gmail.com>
-> Signed-off-by: Vishal Badole <badolevishal1116@gmail.com>
-> Signed-off-by: Vimal Kumar <vimal.kumar32@gmail.com>
-> ---
->  drivers/base/power/wakeup.c | 75 ++++++++++++++++++++++++++++++++++++-
->  include/linux/suspend.h     |  2 +
->  kernel/power/suspend.c      |  1 +
->  3 files changed, 77 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/base/power/wakeup.c b/drivers/base/power/wakeup.c
-> index a917219feea6..f640034cab6d 100644
-> --- a/drivers/base/power/wakeup.c
-> +++ b/drivers/base/power/wakeup.c
-> @@ -73,6 +73,13 @@ static struct wakeup_source deleted_ws = {
->  
->  static DEFINE_IDA(wakeup_ida);
->  
-> +struct pm_abort_suspend_source {
-> +	struct list_head list;     //linux kernel list implementation
+Ck9uIDA5LjEyLjIzIDA0OjUxLCBCYWdhcyBTYW5qYXlhIHdyb3RlOgo+IE9uIFRodSwgRGVjIDA3
+LCAyMDIzIGF0IDExOjU2OjU0UE0gKzAwMDAsIEFsZXhhbmRlciBHcmFmIHdyb3RlOgo+PiBXaGVu
+IHRoZSBrZXJuZWwgY29tbWFuZCBsaW5lIG9wdGlvbiAicmV0YWluX2luaXRyZCIgaXMgc2V0LCB3
+ZSBkbyBub3QKPj4gZnJlZSB0aGUgaW5pdHJkIG1lbW9yeS4gSG93ZXZlciwgd2UgYWxzbyBkb24n
+dCBleHBvc2UgaXQgdG8gYW55b25lIGZvcgo+PiBjb25zdW1wdGlvbi4gVGhhdCBsZWF2ZXMgdXMg
+aW4gYSB3ZWlyZCBzaXR1YXRpb24gd2hlcmUgdGhlIG9ubHkgdXNlciBvZgo+PiB0aGlzIGZlYXR1
+cmUgaXMgcHBjNjQgYW5kIGFybTY0IHNwZWNpZmljIGtleGVjIHRvb2xpbmcuCj4+Cj4+IFRvIG1h
+a2UgaXQgbW9yZSBnZW5lcmFsbHkgdXNlZnVsLCB0aGlzIHBhdGNoIGFkZHMgYSBrb2JqZWN0IHRv
+IHRoZQo+PiBmaXJtd2FyZSBvYmplY3QgdGhhdCBjb250YWlucyB0aGUgaW5pdHJkIGNvbnRleHQg
+d2hlbiAicmV0YWluX2luaXRyZCIKPj4gaXMgc2V0LiBUaGF0IHdheSwgd2UgY2FuIGFjY2VzcyB0
+aGUgaW5pdHJkIGFueSB0aW1lIGFmdGVyIGJvb3QgZnJvbQo+PiB1c2VyIHNwYWNlIGFuZCBmb3Ig
+ZXhhbXBsZSBoYW5kIGl0IGludG8ga2V4ZWMgYXMgLS1pbml0cmQgcGFyYW1ldGVyCj4+IGlmIHdl
+IHdhbnQgdG8gcmVib290IHRoZSBzYW1lIGluaXRyZC4gT3IgaW5zcGVjdCBpdCBkaXJlY3RseSBs
+b2NhbGx5Lgo+Pgo+PiBXaXRoIHRoaXMgcGF0Y2ggYXBwbGllZCwgdGhlcmUgaXMgYSBuZXcgL3N5
+cy9maXJtd2FyZS9pbml0cmQgZmlsZSB3aGVuCj4+IHRoZSBrZXJuZWwgd2FzIGJvb3RlZCB3aXRo
+IGFuIGluaXRyZCBhbmQgInJldGFpbl9pbml0cmQiIGNvbW1hbmQgbGluZQo+PiBvcHRpb24gaXMg
+c2V0Lgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kZXIgR3JhZiA8Z3JhZkBhbWF6b24uY29t
+Pgo+PiBUZXN0ZWQtYnk6IEJhZ2FzIFNhbmpheWEgPGJhZ2FzZG90bWVAZ21haWwuY29tPgo+Pgo+
+PiAtLS0KPj4KPj4gdjEgLT4gdjI6Cj4+Cj4+ICAgIC0gUmV3b3JkIGNvbW1pdCBtZXNzYWdlIHRv
+IGV4cGxhaW4gdGhlIG5ldyBmaWxlIHBhdGgKPj4gICAgLSBBZGQgYSBEb2N1bWVudGF0aW9uL0FC
+SS90ZXN0aW5nL3N5c2ZzLWZpcm13YXJlLWluaXRyZCBmaWxlCj4+Cj4+IHYyIC0+IHYzOgo+Pgo+
+PiAgICAtIE9ubHkgZXhwb3NlIGZpbGUgd2hlbiBpbml0cmQgaXMgcHJlc2VudCAoSmFtZXMgR293
+YW5zKQo+PiAtLS0KPj4gICAuLi4vQUJJL3Rlc3Rpbmcvc3lzZnMtZmlybXdhcmUtaW5pdHJkICAg
+ICAgICAgIHwgIDggKysrKysrKysKPj4gICAuLi4vYWRtaW4tZ3VpZGUva2VybmVsLXBhcmFtZXRl
+cnMudHh0ICAgICAgICAgIHwgIDUgKysrLS0KPj4gICBpbml0L2luaXRyYW1mcy5jICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHwgMTggKysrKysrKysrKysrKysrKystCj4+ICAgMyBmaWxl
+cyBjaGFuZ2VkLCAyOCBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+PiAgIGNyZWF0ZSBt
+b2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLWZpcm13YXJlLWluaXRy
+ZAo+Pgo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9BQkkvdGVzdGluZy9zeXNmcy1maXJt
+d2FyZS1pbml0cmQgYi9Eb2N1bWVudGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLWZpcm13YXJlLWlu
+aXRyZAo+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+PiBpbmRleCAwMDAwMDAwMDAwMDAuLjIwYmY3
+Y2Y3N2ExOQo+PiAtLS0gL2Rldi9udWxsCj4+ICsrKyBiL0RvY3VtZW50YXRpb24vQUJJL3Rlc3Rp
+bmcvc3lzZnMtZmlybXdhcmUtaW5pdHJkCj4+IEBAIC0wLDAgKzEsOCBAQAo+PiArV2hhdDoJCS9z
+eXMvZmlybXdhcmUvaW5pdHJkCj4+ICtEYXRlOgkJRGVjZW1iZXIgMjAyMwo+PiArQ29udGFjdDoJ
+QWxleGFuZGVyIEdyYWYgPGdyYWZAYW1hem9uLmNvbT4KPj4gK0Rlc2NyaXB0aW9uOgo+PiArCQlX
+aGVuIHRoZSBrZXJuZWwgd2FzIGJvb3RlZCB3aXRoIGFuIGluaXRyZCBhbmQgdGhlCj4+ICsJCSJy
+ZXRhaW5faW5pdHJkIiBvcHRpb24gaXMgc2V0IG9uIHRoZSBrZXJuZWwgY29tbWFuZAo+PiArCQls
+aW5lLCAvc3lzL2Zpcm13YXJlL2luaXRyZCBjb250YWlucyB0aGUgY29udGVudHMgb2YgdGhlCj4+
+ICsJCWluaXRyZCB0aGF0IHRoZSBrZXJuZWwgd2FzIGJvb3RlZCB3aXRoLgo+PiBkaWZmIC0tZ2l0
+IGEvRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9rZXJuZWwtcGFyYW1ldGVycy50eHQgYi9Eb2N1
+bWVudGF0aW9uL2FkbWluLWd1aWRlL2tlcm5lbC1wYXJhbWV0ZXJzLnR4dAo+PiBpbmRleCA2NTcz
+MWIwNjBlM2YuLjUxNTc1Y2QzMTc0MSAxMDA2NDQKPj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9hZG1p
+bi1ndWlkZS9rZXJuZWwtcGFyYW1ldGVycy50eHQKPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9hZG1p
+bi1ndWlkZS9rZXJuZWwtcGFyYW1ldGVycy50eHQKPj4gQEAgLTI0MzgsNyArMjQzOCw3IEBACj4+
+ICAgCQkJYmV0d2VlbiB1bnJlZ2lzdGVyaW5nIHRoZSBib290IGNvbnNvbGUgYW5kIGluaXRpYWxp
+emluZwo+PiAgIAkJCXRoZSByZWFsIGNvbnNvbGUuCj4+ICAgCj4+IC0Ja2VlcGluaXRyZAlbSFcs
+QVJNXQo+PiArCWtlZXBpbml0cmQJW0hXLEFSTV0gU2VlIHJldGFpbl9pbml0cmQuCj4+ICAgCj4+
+ICAgCWtlcm5lbGNvcmU9CVtLTkwsWDg2LElBLTY0LFBQQ10KPj4gICAJCQlGb3JtYXQ6IG5uW0tN
+R1RQRV0gfCBubiUgfCAibWlycm9yIgo+PiBAQCAtNTU4MCw3ICs1NTgwLDggQEAKPj4gICAJCQlV
+c2VmdWwgZm9yIGRldmljZXMgdGhhdCBhcmUgZGV0ZWN0ZWQgYXN5bmNocm9ub3VzbHkKPj4gICAJ
+CQkoZS5nLiBVU0IgYW5kIE1NQyBkZXZpY2VzKS4KPj4gICAKPj4gLQlyZXRhaW5faW5pdHJkCVtS
+QU1dIEtlZXAgaW5pdHJkIG1lbW9yeSBhZnRlciBleHRyYWN0aW9uCj4+ICsJcmV0YWluX2luaXRy
+ZAlbUkFNXSBLZWVwIGluaXRyZCBtZW1vcnkgYWZ0ZXIgZXh0cmFjdGlvbi4gQWZ0ZXIgYm9vdCwg
+aXQgd2lsbAo+PiArCQkJYmUgYWNjZXNzaWJsZSB2aWEgL3N5cy9maXJtd2FyZS9pbml0cmQuCj4+
+ICAgCj4+ICAgCXJldGJsZWVkPQlbWDg2XSBDb250cm9sIG1pdGlnYXRpb24gb2YgUkVUQmxlZWQg
+KEFyYml0cmFyeQo+PiAgIAkJCVNwZWN1bGF0aXZlIENvZGUgRXhlY3V0aW9uIHdpdGggUmV0dXJu
+IEluc3RydWN0aW9ucykKPiBZb3UgbWF5IHdhbnQgdG8gYWRqdXN0IGRvY3VtZW50YXRpb24gdG8g
+YWRkcmVzcyBteSB0ZXN0aW5nIFsxXS4gSW4gc3VtbWFyeSwKPiBvbmx5IHRoZSBmaXJzdCBpbml0
+cmQgYmxvYiB0aGF0IHdhcyBwYXNzZWQgdG8gdGhlIGtlcm5lbCB3aWxsIGJlIGV4cG9zZWQKPiBp
+biAvc3lzL2Zpcm13YXJlL2luaXRyZC4KCgogRnJvbSB0aGUga2VybmVsJ3MgcG9pbnQgb2Ygdmll
+dywgdGhlcmUgaXMgb25seSBhIHNpbmdsZSBpbml0cmQgYmluYXJ5IAo6KS4gV2hldGhlciB5b3Vy
+IGJvb3QgbG9hZGVyIGNvbmNhdGVuYXRlcyBtdWx0aXBsZSBhcmNoaXZlcyB0byBjcmVhdGUgCnRo
+YXQgc2luZ2xlIG9uZSBvdXQgb2YgbXVsdGlwbGUgaW5kaXZpZHVhbCBmaWxlcyBpcyBhIGJvb3Qg
+bG9hZGVyIAppbXBsZW1lbnRhdGlvbiBkZXRhaWwuCgpBbGV4CgoKCgoKQW1hem9uIERldmVsb3Bt
+ZW50IENlbnRlciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0ci4gMzgKMTAxMTcgQmVybGluCkdlc2No
+YWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwgSm9uYXRoYW4gV2Vpc3MKRWluZ2V0
+cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmcgdW50ZXIgSFJCIDE0OTE3MyBCClNp
+dHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5CgoK
 
-Nit, we know this is a list implementation, no need to comment that.
-
-Also did you run checkpatch on this?  You need a ' ' after "//" to be
-correct.
-
-> +	char *source_triggering_abort_suspend;
-> +};
-> +
-> +LIST_HEAD(pm_abort_suspend_list);
-
-No blank line needed, and also, shouldn't this be static?
-
-> +
->  /**
->   * wakeup_source_create - Create a struct wakeup_source object.
->   * @name: Name of the new wakeup source.
-> @@ -575,6 +582,53 @@ static void wakeup_source_activate(struct wakeup_source *ws)
->  	trace_wakeup_source_activate(ws->name, cec);
->  }
->  
-> +/**
-> + * clear_abort_suspend_list: To clear the list containing sources which
-> + * aborted suspend transitions.
-> + * Functionality: The list will be cleared every time system PM exits as we
-> + * can find sources which aborted suspend in the current suspend transisions.
-
-This isn't the correct way to write kernel doc formats, please see the
-documentation for how to do it.
-
-> + */
-> +void clear_abort_suspend_list(void)
-> +{
-> +	struct pm_abort_suspend_source *info, *tmp;
-> +
-> +	if (!list_empty(&pm_abort_suspend_list))
-
-Why check this, doesn't the list loop work properly here?
-
-> +		list_for_each_entry_safe(info, tmp, &pm_abort_suspend_list, list) {
-> +			list_del(&info->list);
-> +			kfree(info);
-> +		}
-
-No locking at all for this list?
-
-> +}
-> +EXPORT_SYMBOL_GPL(clear_abort_suspend_list);
-
-Global functions should be "subsystem_action", not "action_something"
-like you did here.  Otherwise this gets really messy very quickly.
-
-> +
-> +/**
-> + * pm_add_abort_suspend_source: add sources who aborted system suspend transitions.
-> + * @func_name: Name of the WS or subsystem which needs to added in the list
-> + */
-> +void pm_add_abort_suspend_source(const char *source_name)
-> +{
-> +	struct pm_abort_suspend_source *info = NULL;
-> +
-> +	info = kmalloc(sizeof(struct pm_abort_suspend_source), GFP_KERNEL);
-> +	if (unlikely(!info)) {
-
-Only ever use unlikely/likely if you have documented proof that the code
-is faster (i.e. you can measure it.)  For normal calls like this, the
-compiler and the processor knows better than you, so no need to do
-anything.
-
-> +		pr_err("Failed to alloc memory for pm_abort_suspend_source info\n");
-> +		return;
-> +	}
-> +
-> +	/* Initialize the list within the struct if it's not already initialized */
-> +	if (list_empty(&info->list))
-> +		INIT_LIST_HEAD(&info->list);
-> +
-> +	info->source_triggering_abort_suspend = kstrdup(source_name, GFP_KERNEL);
-> +	if (unlikely(!info->source_triggering_abort_suspend)) {
-
-Again, don't use likely/unlikely
-
-> +		pr_err("Failed to get abort_suspend source_name\n");
-> +		kfree(info);
-> +		return;
-> +	}
-> +
-> +	list_add_tail(&info->list, &pm_abort_suspend_list);
-> +}
-> +EXPORT_SYMBOL_GPL(pm_add_abort_suspend_source);
-> +
->  /**
->   * wakeup_source_report_event - Report wakeup event using the given source.
->   * @ws: Wakeup source to report the event for.
-> @@ -590,8 +644,11 @@ static void wakeup_source_report_event(struct wakeup_source *ws, bool hard)
->  	if (!ws->active)
->  		wakeup_source_activate(ws);
->  
-> -	if (hard)
-> +	if (hard) {
-> +		if (pm_suspend_target_state != PM_SUSPEND_ON)
-> +			pm_add_abort_suspend_source(ws->name);
->  		pm_system_wakeup();
-> +	}
->  }
->  
->  /**
-> @@ -893,12 +950,28 @@ bool pm_wakeup_pending(void)
->  		pm_print_active_wakeup_sources();
->  	}
->  
-> +	if (atomic_read(&pm_abort_suspend) > 0) {
-> +		if (!list_empty(&pm_abort_suspend_list))
-> +			list_for_each_entry(info, &pm_abort_suspend_list, list) {
-> +				log_suspend_abort_reason("ws or subsystem %s aborted suspend\n",
-
-What is "ws"?
-
-And again, no locking is just not going to work.
-
-But step back, are you _sure_ you really need this information?  Who is
-going to use it?  Where are they going to use it?  And when are they
-going to use it?
-
-thanks,
-
-greg k-h
