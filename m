@@ -2,245 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF9E80B150
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 02:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BBC80B152
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 02:14:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234162AbjLIBNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 20:13:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
+        id S234095AbjLIBOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 20:14:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjLIBNi (ORCPT
+        with ESMTP id S229731AbjLIBOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 20:13:38 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77EFDA
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 17:13:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702084423; x=1733620423;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=zFBfPMR2Fmwt71VH+xXTD/Dyr4mezMzJQ6xIky+4H34=;
-  b=WPVQIo9rO7YuwdiKbmhkQ8ZUYInnkgQQQ7Rq+dougElLvR3+GaCDf1W+
-   3WO2cSaaokcE9Sg+aRw1e6zjEYL+FYJ054dB2Bn9lejGq8e61sHuJ+3ev
-   Ym8uVvA06HZVzbec+htUURAZM2u5F7Galhl03bIb3v8bGPe9iAR9kV9YP
-   6DSfutBOtURaAK/lOnkoeXOxhxkK9t0do7VhiZ4byNm1sP9keNX5R4BCr
-   NTgA60yaxO0kbJnjiNuYRvTe3lfL3wu7slhJLRKx0INTIoXr1Ou7tA1PQ
-   6DqW1ktTgJalibaghtoI6hH98RijTCSWjbAQc4BlIodxAI3sUDl72d7Ty
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="458802889"
-X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
-   d="scan'208";a="458802889"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 17:13:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
-   d="scan'208";a="20289033"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 08 Dec 2023 17:13:42 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBluV-000Ecz-2Q;
-        Sat, 09 Dec 2023 01:13:39 +0000
-Date:   Sat, 9 Dec 2023 09:12:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/memory/brcmstb_dpfe.c:521:29: sparse: sparse: cast to
- restricted __be32
-Message-ID: <202312090934.5bM1pAFQ-lkp@intel.com>
+        Fri, 8 Dec 2023 20:14:38 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C5FE9
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 17:14:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB189C433C7;
+        Sat,  9 Dec 2023 01:14:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702084485;
+        bh=yW/oNjayrBgmBQcnKaR/BHHHylnywMfGm38sEfYKmLw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m10ex5B7xuxpfbrUpv9WoB9vpJEyd34DLVdb1+6i+oxZrtIHQZEp4rJj/ADeVjkWA
+         Evx5Z0HXbeHMAPOes8z3rRfUE2EM6zPoDc3HP408d7+g48J21i4Qrfsbn/D/5Akmf9
+         9QuLA2W/B9hO7s6TX49TMZ3D3Zgy0CFUa6dy84cOg7nPNME/XX1VQz+K1ZyOJP5ul/
+         t4nm//F4NHhuTQNbjRpOkHDvjG9QsLtf4ddo090XwyGvD2Gk5Nz6jqyUOzqO5bLp4J
+         Q7OqPWZntFPWHM1XARaCXH1cnMpe5e7EWYwiODBvTKAfCteHZagvzy/3wIWxKzU9X4
+         wvXhsKo87Ky/g==
+Date:   Sat, 9 Dec 2023 02:14:36 +0100
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Serge Semin <fancer.lancer@gmail.com>
+Subject: Re: [PATCH v5 24/24] i2c: designware: Fix spelling and other issues
+ in the comments
+Message-ID: <20231209011436.rwvaivgewhbthtzl@zenone.zhora.eu>
+References: <20231207141653.2785124-1-andriy.shevchenko@linux.intel.com>
+ <20231207141653.2785124-25-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231207141653.2785124-25-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f2e8a57ee9036c7d5443382b6c3c09b51a92ec7e
-commit: 904ffa81b709f79b906077e72f4656bdb9930340 memory: brcmstb_dpfe: add separate entry for compile test
-date:   3 years, 4 months ago
-config: openrisc-randconfig-r131-20231102 (https://download.01.org/0day-ci/archive/20231209/202312090934.5bM1pAFQ-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231209/202312090934.5bM1pAFQ-lkp@intel.com/reproduce)
+Hi Andy,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312090934.5bM1pAFQ-lkp@intel.com/
+On Thu, Dec 07, 2023 at 04:14:04PM +0200, Andy Shevchenko wrote:
+> Fix spelling and other issues, such as kernel-doc reported about,
+> in the comments. While at it, fix some indentation issues as well.
+> 
+> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+> Tested-by: Serge Semin <fancer.lancer@gmail.com>
+> Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> Link: https://lore.kernel.org/r/20231120144641.1660574-25-andriy.shevchenko@linux.intel.com
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/memory/brcmstb_dpfe.c:521:29: sparse: sparse: cast to restricted __be32
-   drivers/memory/brcmstb_dpfe.c:522:29: sparse: sparse: cast to restricted __be32
->> drivers/memory/brcmstb_dpfe.c:524:29: sparse: sparse: cast to restricted __le32
->> drivers/memory/brcmstb_dpfe.c:524:29: sparse: sparse: cast to restricted __le32
->> drivers/memory/brcmstb_dpfe.c:524:29: sparse: sparse: cast to restricted __le32
->> drivers/memory/brcmstb_dpfe.c:524:29: sparse: sparse: cast to restricted __le32
->> drivers/memory/brcmstb_dpfe.c:524:29: sparse: sparse: cast to restricted __le32
->> drivers/memory/brcmstb_dpfe.c:524:29: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:525:29: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:525:29: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:525:29: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:525:29: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:525:29: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:525:29: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:548:46: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:548:46: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:548:46: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:548:46: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:548:46: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:548:46: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:548:19: sparse: sparse: cast to restricted __be32
-   drivers/memory/brcmstb_dpfe.c:565:25: sparse: sparse: cast to restricted __be32
-   drivers/memory/brcmstb_dpfe.c:566:28: sparse: sparse: cast to restricted __be32
-   drivers/memory/brcmstb_dpfe.c:567:27: sparse: sparse: cast to restricted __be32
-   drivers/memory/brcmstb_dpfe.c:569:25: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:569:25: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:569:25: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:569:25: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:569:25: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:569:25: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:570:28: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:570:28: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:570:28: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:570:28: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:570:28: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:570:28: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:571:27: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:571:27: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:571:27: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:571:27: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:571:27: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:571:27: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:600:40: sparse: sparse: cast to restricted __be32
-   drivers/memory/brcmstb_dpfe.c:603:40: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:603:40: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:603:40: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:603:40: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:603:40: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c:603:40: sparse: sparse: cast to restricted __le32
-   drivers/memory/brcmstb_dpfe.c: note: in included file (through arch/openrisc/include/asm/io.h, include/linux/io.h):
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:299:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:299:22: sparse:     expected unsigned int [usertype] value
-   include/asm-generic/io.h:299:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:299:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:299:22: sparse:     expected unsigned int [usertype] value
-   include/asm-generic/io.h:299:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:299:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:299:22: sparse:     expected unsigned int [usertype] value
-   include/asm-generic/io.h:299:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:299:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:299:22: sparse:     expected unsigned int [usertype] value
-   include/asm-generic/io.h:299:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:299:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:299:22: sparse:     expected unsigned int [usertype] value
-   include/asm-generic/io.h:299:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:299:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:299:22: sparse:     expected unsigned int [usertype] value
-   include/asm-generic/io.h:299:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:299:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:299:22: sparse:     expected unsigned int [usertype] value
-   include/asm-generic/io.h:299:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:299:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:299:22: sparse:     expected unsigned int [usertype] value
-   include/asm-generic/io.h:299:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:299:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:299:22: sparse:     expected unsigned int [usertype] value
-   include/asm-generic/io.h:299:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
 
-vim +521 drivers/memory/brcmstb_dpfe.c
+Andi I think everything here has been reviewed.
 
-2f330caff57762 Markus Mayer 2017-08-24  505  
-2f330caff57762 Markus Mayer 2017-08-24  506  /* Ensure that the firmware file loaded meets all the requirements. */
-2f330caff57762 Markus Mayer 2017-08-24  507  static int __verify_firmware(struct init_data *init,
-2f330caff57762 Markus Mayer 2017-08-24  508  			     const struct firmware *fw)
-2f330caff57762 Markus Mayer 2017-08-24  509  {
-2f330caff57762 Markus Mayer 2017-08-24  510  	const struct dpfe_firmware_header *header = (void *)fw->data;
-2f330caff57762 Markus Mayer 2017-08-24  511  	unsigned int dmem_size, imem_size, total_size;
-2f330caff57762 Markus Mayer 2017-08-24  512  	bool is_big_endian = false;
-2f330caff57762 Markus Mayer 2017-08-24  513  	const u32 *chksum_ptr;
-2f330caff57762 Markus Mayer 2017-08-24  514  
-2f330caff57762 Markus Mayer 2017-08-24  515  	if (header->magic == DPFE_BE_MAGIC)
-2f330caff57762 Markus Mayer 2017-08-24  516  		is_big_endian = true;
-2f330caff57762 Markus Mayer 2017-08-24  517  	else if (header->magic != DPFE_LE_MAGIC)
-2f330caff57762 Markus Mayer 2017-08-24  518  		return ERR_INVALID_MAGIC;
-2f330caff57762 Markus Mayer 2017-08-24  519  
-2f330caff57762 Markus Mayer 2017-08-24  520  	if (is_big_endian) {
-2f330caff57762 Markus Mayer 2017-08-24 @521  		dmem_size = be32_to_cpu(header->dmem_size);
-2f330caff57762 Markus Mayer 2017-08-24  522  		imem_size = be32_to_cpu(header->imem_size);
-2f330caff57762 Markus Mayer 2017-08-24  523  	} else {
-2f330caff57762 Markus Mayer 2017-08-24 @524  		dmem_size = le32_to_cpu(header->dmem_size);
-2f330caff57762 Markus Mayer 2017-08-24  525  		imem_size = le32_to_cpu(header->imem_size);
-2f330caff57762 Markus Mayer 2017-08-24  526  	}
-2f330caff57762 Markus Mayer 2017-08-24  527  
-2f330caff57762 Markus Mayer 2017-08-24  528  	/* Data and instruction sections are 32 bit words. */
-2f330caff57762 Markus Mayer 2017-08-24  529  	if ((dmem_size % sizeof(u32)) != 0 || (imem_size % sizeof(u32)) != 0)
-2f330caff57762 Markus Mayer 2017-08-24  530  		return ERR_INVALID_SIZE;
-2f330caff57762 Markus Mayer 2017-08-24  531  
-2f330caff57762 Markus Mayer 2017-08-24  532  	/*
-2f330caff57762 Markus Mayer 2017-08-24  533  	 * The header + the data section + the instruction section + the
-2f330caff57762 Markus Mayer 2017-08-24  534  	 * checksum must be equal to the total firmware size.
-2f330caff57762 Markus Mayer 2017-08-24  535  	 */
-2f330caff57762 Markus Mayer 2017-08-24  536  	total_size = dmem_size + imem_size + sizeof(*header) +
-2f330caff57762 Markus Mayer 2017-08-24  537  		sizeof(*chksum_ptr);
-2f330caff57762 Markus Mayer 2017-08-24  538  	if (total_size != fw->size)
-2f330caff57762 Markus Mayer 2017-08-24  539  		return ERR_INVALID_SIZE;
-2f330caff57762 Markus Mayer 2017-08-24  540  
-2f330caff57762 Markus Mayer 2017-08-24  541  	/* The checksum comes at the very end. */
-2f330caff57762 Markus Mayer 2017-08-24  542  	chksum_ptr = (void *)fw->data + sizeof(*header) + dmem_size + imem_size;
-2f330caff57762 Markus Mayer 2017-08-24  543  
-2f330caff57762 Markus Mayer 2017-08-24  544  	init->is_big_endian = is_big_endian;
-2f330caff57762 Markus Mayer 2017-08-24  545  	init->dmem_len = dmem_size;
-2f330caff57762 Markus Mayer 2017-08-24  546  	init->imem_len = imem_size;
-2f330caff57762 Markus Mayer 2017-08-24  547  	init->chksum = (is_big_endian)
-2f330caff57762 Markus Mayer 2017-08-24  548  		? be32_to_cpu(*chksum_ptr) : le32_to_cpu(*chksum_ptr);
-2f330caff57762 Markus Mayer 2017-08-24  549  
-2f330caff57762 Markus Mayer 2017-08-24  550  	return 0;
-2f330caff57762 Markus Mayer 2017-08-24  551  }
-2f330caff57762 Markus Mayer 2017-08-24  552  
-
-:::::: The code at line 521 was first introduced by commit
-:::::: 2f330caff5776239abb3e0337533886dbb21f6df memory: brcmstb: Add driver for DPFE
-
-:::::: TO: Markus Mayer <mmayer@broadcom.com>
-:::::: CC: Florian Fainelli <f.fainelli@gmail.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Andi
