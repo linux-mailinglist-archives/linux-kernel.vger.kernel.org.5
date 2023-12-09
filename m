@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9B480B75F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 00:06:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B586080B765
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 00:18:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbjLIXFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 18:05:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
+        id S231298AbjLIXMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 18:12:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjLIXFi (ORCPT
+        with ESMTP id S229488AbjLIXMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 18:05:38 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5B3FA;
-        Sat,  9 Dec 2023 15:05:44 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3332f1512e8so3078413f8f.2;
-        Sat, 09 Dec 2023 15:05:44 -0800 (PST)
+        Sat, 9 Dec 2023 18:12:36 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE8312E;
+        Sat,  9 Dec 2023 15:12:43 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40c0fc1cf3dso35734925e9.0;
+        Sat, 09 Dec 2023 15:12:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702163143; x=1702767943; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702163561; x=1702768361; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=duSDdrXx/MdhBGHNkwvfOFuexJ4Lp5LgT0yaxlsN+gg=;
-        b=JhXYwaGK6U482bWvb6URGDZx/KhvdxV0JfECIRJ8hmr3QIPvYq/0ucK/O5o5Or8Iuh
-         35Pn7u9naHdLvD8EHm4Dv47lp/mDFRUUlJ0oE/P6R8cmk2+fFKHukHp06PgiPLRx/VeZ
-         2+UXB/5Q2jUYPTMH9gx0XmVBvP1Q5mWv17GUTv4GUqH9PsL4af7DW4DiYptBOe/bpHWn
-         qSKlVXoo0uDcA1FUyfiJ30izNoUIkO6MVp9v+Y1X8dEy0IEzf0ImKSHZ1nVzZf1rPRe0
-         KKQWMKOlEHk29ePV/s9iSNaDXzpvJhaFWH9JbV302Be1Ek4RwbdlOBinKRBAgynSdGsm
-         l+NQ==
+        bh=fyY7xuerRfmnEXL+mjQb56JPNlX5ZA5VFzoyWh1LMIk=;
+        b=IOYBpsJPJJpKaHzIcA6RxIdtDQKYhYFNiFY0nVUhe+0LUqkW1dkbUExszHf2Dns9po
+         q5ZFQosOe3ruiXtJ2GoPZVaLcdpPPuDV11FoMo3ncNzvuJUfNH4inJ0Q+DymZr4+pZsx
+         IZO6VSM7VLv/zkQfWQ2XhM19V8Xak71ocY6lA1rEuVgTWpHqEcdvozGg+ZdXCPmhB1EN
+         +EH3m7JrHF72a9mvbPlqS84O4IHMSWLCuDwN7rzU5i5HnQfDGu1hwm4NKkxOw9IeqRxb
+         flnvuMP6IXAOrx5U1lSJfZ3vMawuGncZXkUxEmF6pc2QReGvjoolGSDLCzVZDATuleUv
+         B1nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702163143; x=1702767943;
+        d=1e100.net; s=20230601; t=1702163561; x=1702768361;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=duSDdrXx/MdhBGHNkwvfOFuexJ4Lp5LgT0yaxlsN+gg=;
-        b=v1c2U90t8EIAAuE6nM+QfxkbUVGnORqW28sLEWla7OpFxDwVb04bCr87T6LWpd5S2c
-         zrQCg2OJS44j91aylOqzwyywKixx7WX4nteedf4AEYRomUayNSVNKBAXOjISc04q3RML
-         Vk7sutknEC1Or3LaTMH3DAjnO7BDDYgrre08uoPBf79/qEjvJbQ+4xFcudTlK/KvsQO0
-         J7WRckNNUPHHlPk/C6jo3fYLX6CfZeOAWsImKKYt18tskWxV32QF+KxqAFQ01l110EXB
-         rQs36rhLnE8eAXA61oC431QVwoBWMqUTR31PjPKIB0/zqC01cSe1+9Cls+Sc7yv/j4YN
-         KuLA==
-X-Gm-Message-State: AOJu0YxQ+atgSESbi+aN2XWHf73Fb3U4LOlUTaDjJUYsp3Jz73Kfq36R
-        RdIwNa3EXYc7A1FL59CW9x4=
-X-Google-Smtp-Source: AGHT+IH8a4E5LwfBo47ptLRB1AvoIqmDkcI8a0+kqSSKA8Oi9xC6xo+U9mqjIOpVPgmdOvHFGVKh7A==
-X-Received: by 2002:a5d:5301:0:b0:333:2fd2:6f5b with SMTP id e1-20020a5d5301000000b003332fd26f5bmr969350wrv.101.1702163142765;
-        Sat, 09 Dec 2023 15:05:42 -0800 (PST)
+        bh=fyY7xuerRfmnEXL+mjQb56JPNlX5ZA5VFzoyWh1LMIk=;
+        b=g2iQi3lV0mDanVHHFg9om/PWn37LZqUhc8swD6cfXNRc/W7unEzTdpVtYT6y67KXMJ
+         YMvVM+UntxF09IgcTACsXjoXSIphSjtLVwDR7177u8QvFzoLebMAobAZh2ff4OeKGZd0
+         5KuSLACAOy0wYZqd3HkVWUdT/8/WaSnC5jxiK0//FwIJy2e9DlNkG3yWpjjUgbl+H4dj
+         rjoLNsSVWVnSq7c0Z7fR45JD5hFH+pGtHaKvSPW3XgSnW5ppSxK33OsyZLJ/Epq058dS
+         rE5wLDC5520CY/18ldrSFJJQyE94Q6RuKc90FFZmt9JTjMnvppuRseRiZpG1Uv+dXfpU
+         rDxQ==
+X-Gm-Message-State: AOJu0YwLYyM1h0QUTK1YEVpQj0vaZ403rvr9hpzmktJRXQcgRUCvQA6u
+        bwECiYvQssVRE6p4bcBNiNE=
+X-Google-Smtp-Source: AGHT+IFdQhHVp2q3+OtY4B0AVXmBxuggoKt0nW2hBV9K4p3VmS1uZOxsooZUrel6k9hnzvgD0bYoDg==
+X-Received: by 2002:a1c:6a16:0:b0:40c:25f6:4585 with SMTP id f22-20020a1c6a16000000b0040c25f64585mr991729wmc.73.1702163561253;
+        Sat, 09 Dec 2023 15:12:41 -0800 (PST)
 Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id w14-20020a5d608e000000b003333c2c313bsm5171210wrt.100.2023.12.09.15.05.42
+        by smtp.gmail.com with ESMTPSA id w10-20020a05600c474a00b0040b2c195523sm10130953wmo.31.2023.12.09.15.12.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Dec 2023 15:05:42 -0800 (PST)
+        Sat, 09 Dec 2023 15:12:40 -0800 (PST)
 From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+To:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>, asahi@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/i915/selftests: Fix spelling mistake "initialiased" -> "initialised"
-Date:   Sat,  9 Dec 2023 23:05:41 +0000
-Message-Id: <20231209230541.4055786-1-colin.i.king@gmail.com>
+Subject: [PATCH][next] iommu/apple-dart: Fix spelling mistake "grups" -> "groups"
+Date:   Sat,  9 Dec 2023 23:12:40 +0000
+Message-Id: <20231209231240.4056082-1-colin.i.king@gmail.com>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -75,26 +73,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a spelling mistake in a pr_err error message. Fix it.
+There is a spelling mistake in a dev_err message. Fix it.
 
 Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c | 2 +-
+ drivers/iommu/apple-dart.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
-index e57f9390076c..d684a70f2c04 100644
---- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
-+++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
-@@ -504,7 +504,7 @@ static int igt_dmabuf_export_vmap(void *arg)
- 	}
+diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
+index 7438e9c82ba9..497a516747bd 100644
+--- a/drivers/iommu/apple-dart.c
++++ b/drivers/iommu/apple-dart.c
+@@ -911,7 +911,7 @@ static struct iommu_group *apple_dart_device_group(struct device *dev)
  
- 	if (memchr_inv(ptr, 0, dmabuf->size)) {
--		pr_err("Exported object not initialiased to zero!\n");
-+		pr_err("Exported object not initialised to zero!\n");
- 		err = -EINVAL;
- 		goto out;
- 	}
+ 		ret = apple_dart_merge_master_cfg(group_master_cfg, cfg);
+ 		if (ret) {
+-			dev_err(dev, "Failed to merge DART IOMMU grups.\n");
++			dev_err(dev, "Failed to merge DART IOMMU groups.\n");
+ 			iommu_group_put(group);
+ 			res = ERR_PTR(ret);
+ 			goto out;
 -- 
 2.39.2
 
