@@ -2,240 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3980880B54F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 17:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F7580B54E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 17:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbjLIQrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 11:47:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
+        id S230192AbjLIQ4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 11:56:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLIQrs (ORCPT
+        with ESMTP id S229519AbjLIQ4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 11:47:48 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11BBC10E6;
-        Sat,  9 Dec 2023 08:47:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702140474; x=1733676474;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9OrBcNRkexSFp7JpzEwrwcmu1QSQkInC3RedZZXvKF0=;
-  b=ghP5WBioZBAVMi+R0lXzHl3v6WJigQygAK1LqAbszuKAde/+fz0ny75N
-   JVwF1wc8QpmHIlJJflP5W8COkdlcl5vElmnonAXi4UNkgx6/TogsUfYzY
-   h2/u/oClYaV1I4E4TmaUlXiKIq7a+39p40hYvdULexw7kHI5thUt7zkip
-   MNDLho2Y1vWkeODk9kyaixTG3izdZF4VevzPU5eQGJzrCGaXYW8tYIIFq
-   RW/avu0XRVZou18BYMBjTCl9ULfdtVU0BzjD1kGM2hdHmiLVnK+BEFNV/
-   60dd2PemblHYCfutUrF3Q1DsoxUuuNmzw6HJd1l2Q5RNr1OElsvYsuIfg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="480711480"
-X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
-   d="scan'208";a="480711480"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 08:47:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="838462061"
-X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
-   d="scan'208";a="838462061"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 09 Dec 2023 08:47:46 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rC0US-000Fdf-2R;
-        Sat, 09 Dec 2023 16:47:44 +0000
-Date:   Sun, 10 Dec 2023 00:46:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, arnd@arndb.de, tglx@linutronix.de,
-        luto@kernel.org, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        mhocko@kernel.org, tj@kernel.org, ying.huang@intel.com,
-        gregory.price@memverge.com, corbet@lwn.net, rakie.kim@sk.com,
-        hyeongtak.ji@sk.com, honggyu.kim@sk.com, vtavarespetr@micron.com,
-        peterz@infradead.org, jgroves@micron.com, ravis.opensrc@micron.com,
-        sthanneeru@micron.com, emirakhur@micron.com, Hasan.Maruf@amd.com
-Subject: Re: [PATCH v2 08/11] mm/mempolicy: add set_mempolicy2 syscall
-Message-ID: <202312100003.aUR6uBvr-lkp@intel.com>
-References: <20231209065931.3458-9-gregory.price@memverge.com>
+        Sat, 9 Dec 2023 11:56:45 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C440F10D0;
+        Sat,  9 Dec 2023 08:56:51 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54bf9a54fe3so4362939a12.3;
+        Sat, 09 Dec 2023 08:56:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702141010; x=1702745810; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RrZeShfQsr5Zblcz+ciNubf9EBG3Vd49YeN/6rA6zLY=;
+        b=VpjUaaAYRghqn8ShxCWUQF2A4sIYUUtctF5nZI1PQq3w1v5dkm1pU1pCCXZDxys5ix
+         93BOQO0umotoUzP0/pgGblUtcQKshCJGkrCkv/kJwJU5InqAkhhch7rQt4lSz5Wps75c
+         4jpmHK/qEs+5U44uNasRUIJQOQZ4W2Rgx9eqbHa8bY5UNVCJS2NCvxtNlPJ9P/DGRPNT
+         N6UaPyDlCOE4bt0PWE7SlksPiSrzqY1txVbSN2wVd2K5+g43b3izroUFcnRunNa1X2yT
+         cSflZ2jR749ZRmAFNS1MNUWb8Uv8KewUvdynoX4O/lmrASSTNKvxnG+9ziWTMyUTMLlo
+         EpAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702141010; x=1702745810;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RrZeShfQsr5Zblcz+ciNubf9EBG3Vd49YeN/6rA6zLY=;
+        b=kzy/lI0skUbm57+P3paqiFpObT71ZucQXuqHeOe8X1Oa56wl3Ts4/wfzoRhtDYyxub
+         9s63HwZw3eoaLyB0f0sv/M7dEaXJkyg8Xh0DTYs6UpyRsviPRAwKAuf0aKomot/Xln9E
+         uQCqG6WNuvOivEmG8XHAVCFQuHXZwek45i8+A3FaXqWcqFzQgpYxcYh1+V+cr3XaB8EM
+         q99JDSNKSClMsIj/P4IRG+uSV/IWDb2SRYKUe5AGK8v6/7mK3MSQaKVS/39aeKaL8eMe
+         8gA3TKYY9eKaLfM5VDT3BxC8g/5LiETGeDWv6p+1GYjQ4TNcS0wZe3YA9l8FUublJZ73
+         Srng==
+X-Gm-Message-State: AOJu0YwJoXItk/YlW2tG20q5FuHcls0O+0fFGZkUH/6QxIkM8VzKgcob
+        MFgeXMqGpqQ2pWEdrpDxTyvLt45iNeM=
+X-Google-Smtp-Source: AGHT+IGBVbX2g8Tflx252g725MkQPcMQS3na6cE7fBauNq3+oB4zb8pQn9MDqWdldsolY5tXbvb0Dw==
+X-Received: by 2002:a17:907:c715:b0:a1d:551f:a197 with SMTP id ty21-20020a170907c71500b00a1d551fa197mr1030668ejc.82.1702141009970;
+        Sat, 09 Dec 2023 08:56:49 -0800 (PST)
+Received: from jekhomev ([46.251.53.180])
+        by smtp.gmail.com with ESMTPSA id tx18-20020a1709078e9200b00a1b618766cbsm2428271ejc.136.2023.12.09.08.56.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Dec 2023 08:56:49 -0800 (PST)
+Date:   Sat, 9 Dec 2023 18:56:48 +0200
+From:   Yauhen Kharuzhy <jekhor@gmail.com>
+To:     Mikhail Khvainitski <me@khvoinitsky.org>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ValdikSS <iam@valdikss.org.ru>
+Subject: Re: [PATCH] HID: lenovo: Detect quirk-free fw on cptkbd and stop
+ applying workaround
+Message-ID: <20231209165648.4rfe4gxubaajrl2z@jekhomev>
+References: <20230918145042.37368-1-me@khvoinitsky.org>
+ <20230923231522.94060-1-me@khvoinitsky.org>
+ <20230923231522.94060-2-me@khvoinitsky.org>
+ <ZXRiiPsBKNasioqH@jekhomev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231209065931.3458-9-gregory.price@memverge.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZXRiiPsBKNasioqH@jekhomev>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gregory,
+On Sat, Dec 09, 2023 at 02:50:16PM +0200, Yauhen Kharuzhy wrote:
+> On Sun, Sep 24, 2023 at 01:58:30AM +0300, Mikhail Khvainitski wrote:
+> > Built-in firmware of cptkbd handles scrolling by itself (when middle
+> > button is pressed) but with issues: it does not support horizontal and
+> > hi-res scrolling and upon middle button release it sends middle button
+> > click even if there was a scrolling event. Commit 3cb5ff0220e3 ("HID:
+> > lenovo: Hide middle-button press until release") workarounds last
+> > issue but it's impossible to workaround scrolling-related issues
+> > without firmware modification.
+> > 
+> > Likely, Dennis Schneider has reverse engineered the firmware and
+> > provided an instruction on how to patch it [1]. However,
+> > aforementioned workaround prevents userspace (libinput) from knowing
+> > exact moment when middle button has been pressed down and performing
+> > "On-Button scrolling". This commit detects correctly-behaving patched
+> > firmware if cursor movement events has been received during middle
+> > button being pressed and stops applying workaround for this device.
+> > 
+> > Link: https://hohlerde.org/rauch/en/elektronik/projekte/tpkbd-fix/ [1]
+> 
+> This patch breaks a scrolling at my ThinkPad TrackPoint Keyboard II: it
+> starts to report middle-button push/release events with scrolling events
+> between. A support for this keyboard was added in
+> 24401f291dcc4f2c18b9e2f65763cbaadc7a1528 "HID: lenovo: Add support for
+> ThinkPad TrackPoint Keyboard II" commit.
 
-kernel test robot noticed the following build errors:
+I figured this out.
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on deller-parisc/for-next powerpc/next powerpc/fixes s390/features jcmvbkbc-xtensa/xtensa-for-next arnd-asm-generic/master linus/master v6.7-rc4]
-[cannot apply to tip/x86/asm geert-m68k/for-next geert-m68k/for-linus next-20231208]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+This keyboard can emit REL_Y/REL_X events between of middle-button
+events (if user was moving a cursor and press middle button without of
+stopping this), so this algorithm does a false-positive detection and switches
+the workaround off like for patched firmware:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Gregory-Price/mm-mempolicy-implement-the-sysfs-based-weighted_interleave-interface/20231209-150314
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231209065931.3458-9-gregory.price%40memverge.com
-patch subject: [PATCH v2 08/11] mm/mempolicy: add set_mempolicy2 syscall
-config: arc-alldefconfig (https://download.01.org/0day-ci/archive/20231210/202312100003.aUR6uBvr-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231210/202312100003.aUR6uBvr-lkp@intel.com/reproduce)
+Event: time 1702140625.854777, type 2 (EV_REL), code 1 (REL_Y), value 2
+Event: time 1702140625.854777, -------------- SYN_REPORT ------------
+Event: time 1702140625.870769, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 1
+Event: time 1702140625.870769, -------------- SYN_REPORT ------------
+Event: time 1702140625.870771, type 2 (EV_REL), code 1 (REL_Y), value 2
+Event: time 1702140625.870771, -------------- SYN_REPORT ------------
+Event: time 1702140625.970780, type 2 (EV_REL), code 8 (REL_WHEEL), value -1
+Event: time 1702140625.970780, -------------- SYN_REPORT ------------
+Event: time 1702140626.058800, type 2 (EV_REL), code 8 (REL_WHEEL), value -1
+Event: time 1702140626.058800, -------------- SYN_REPORT ------------
+Event: time 1702140630.462974, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
+Event: time 1702140630.462974, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 0
+Event: time 1702140630.462974, -------------- SYN_REPORT ------------
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312100003.aUR6uBvr-lkp@intel.com/
 
-All error/warnings (new ones prefixed by >>):
-
-   In file included from init/main.c:21:
->> include/linux/syscalls.h:825:43: warning: 'struct mpol_args' declared inside parameter list will not be visible outside of this definition or declaration
-     825 | asmlinkage long sys_set_mempolicy2(struct mpol_args *args, size_t size,
-         |                                           ^~~~~~~~~
---
-   In file included from arch/arc/kernel/sys.c:3:
->> include/linux/syscalls.h:825:43: warning: 'struct mpol_args' declared inside parameter list will not be visible outside of this definition or declaration
-     825 | asmlinkage long sys_set_mempolicy2(struct mpol_args *args, size_t size,
-         |                                           ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: warning: initialized field overwritten [-Woverride-init]
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
-         |                                    ^
-   include/uapi/asm-generic/unistd.h:29:37: note: in expansion of macro '__SYSCALL'
-      29 | #define __SC_COMP(_nr, _sys, _comp) __SYSCALL(_nr, _sys)
-         |                                     ^~~~~~~~~
-   include/uapi/asm-generic/unistd.h:34:1: note: in expansion of macro '__SC_COMP'
-      34 | __SC_COMP(__NR_io_setup, sys_io_setup, compat_sys_io_setup)
-         | ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: note: (near initialization for 'sys_call_table[0]')
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
-         |                                    ^
-   include/uapi/asm-generic/unistd.h:29:37: note: in expansion of macro '__SYSCALL'
-      29 | #define __SC_COMP(_nr, _sys, _comp) __SYSCALL(_nr, _sys)
-         |                                     ^~~~~~~~~
-   include/uapi/asm-generic/unistd.h:34:1: note: in expansion of macro '__SC_COMP'
-      34 | __SC_COMP(__NR_io_setup, sys_io_setup, compat_sys_io_setup)
-         | ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: warning: initialized field overwritten [-Woverride-init]
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
-         |                                    ^
-   include/uapi/asm-generic/unistd.h:36:1: note: in expansion of macro '__SYSCALL'
-      36 | __SYSCALL(__NR_io_destroy, sys_io_destroy)
-         | ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: note: (near initialization for 'sys_call_table[1]')
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
-         |                                    ^
-   include/uapi/asm-generic/unistd.h:36:1: note: in expansion of macro '__SYSCALL'
-      36 | __SYSCALL(__NR_io_destroy, sys_io_destroy)
-         | ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: warning: initialized field overwritten [-Woverride-init]
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
-         |                                    ^
-   include/uapi/asm-generic/unistd.h:29:37: note: in expansion of macro '__SYSCALL'
-      29 | #define __SC_COMP(_nr, _sys, _comp) __SYSCALL(_nr, _sys)
-         |                                     ^~~~~~~~~
-   include/uapi/asm-generic/unistd.h:38:1: note: in expansion of macro '__SC_COMP'
-      38 | __SC_COMP(__NR_io_submit, sys_io_submit, compat_sys_io_submit)
-         | ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: note: (near initialization for 'sys_call_table[2]')
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
-         |                                    ^
-   include/uapi/asm-generic/unistd.h:29:37: note: in expansion of macro '__SYSCALL'
-      29 | #define __SC_COMP(_nr, _sys, _comp) __SYSCALL(_nr, _sys)
-         |                                     ^~~~~~~~~
-   include/uapi/asm-generic/unistd.h:38:1: note: in expansion of macro '__SC_COMP'
-      38 | __SC_COMP(__NR_io_submit, sys_io_submit, compat_sys_io_submit)
-         | ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: warning: initialized field overwritten [-Woverride-init]
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
-         |                                    ^
-   include/uapi/asm-generic/unistd.h:40:1: note: in expansion of macro '__SYSCALL'
-      40 | __SYSCALL(__NR_io_cancel, sys_io_cancel)
-         | ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: note: (near initialization for 'sys_call_table[3]')
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
-         |                                    ^
-   include/uapi/asm-generic/unistd.h:40:1: note: in expansion of macro '__SYSCALL'
-      40 | __SYSCALL(__NR_io_cancel, sys_io_cancel)
-         | ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: warning: initialized field overwritten [-Woverride-init]
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
-         |                                    ^
-   include/uapi/asm-generic/unistd.h:20:34: note: in expansion of macro '__SYSCALL'
-      20 | #define __SC_3264(_nr, _32, _64) __SYSCALL(_nr, _32)
-         |                                  ^~~~~~~~~
-   include/uapi/asm-generic/unistd.h:44:1: note: in expansion of macro '__SC_3264'
-      44 | __SC_3264(__NR_io_getevents, sys_io_getevents_time32, sys_io_getevents)
-         | ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: note: (near initialization for 'sys_call_table[4]')
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
-         |                                    ^
-   include/uapi/asm-generic/unistd.h:20:34: note: in expansion of macro '__SYSCALL'
-      20 | #define __SC_3264(_nr, _32, _64) __SYSCALL(_nr, _32)
-         |                                  ^~~~~~~~~
-   include/uapi/asm-generic/unistd.h:44:1: note: in expansion of macro '__SC_3264'
-      44 | __SC_3264(__NR_io_getevents, sys_io_getevents_time32, sys_io_getevents)
-         | ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: warning: initialized field overwritten [-Woverride-init]
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
-         |                                    ^
-   include/uapi/asm-generic/unistd.h:48:1: note: in expansion of macro '__SYSCALL'
-      48 | __SYSCALL(__NR_setxattr, sys_setxattr)
-         | ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: note: (near initialization for 'sys_call_table[5]')
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
-         |                                    ^
-   include/uapi/asm-generic/unistd.h:48:1: note: in expansion of macro '__SYSCALL'
-      48 | __SYSCALL(__NR_setxattr, sys_setxattr)
-         | ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: warning: initialized field overwritten [-Woverride-init]
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
-         |                                    ^
-   include/uapi/asm-generic/unistd.h:50:1: note: in expansion of macro '__SYSCALL'
-      50 | __SYSCALL(__NR_lsetxattr, sys_lsetxattr)
-         | ^~~~~~~~~
-   arch/arc/kernel/sys.c:13:36: note: (near initialization for 'sys_call_table[6]')
-      13 | #define __SYSCALL(nr, call) [nr] = (call),
---
-   In file included from kernel/time/hrtimer.c:30:
->> include/linux/syscalls.h:825:43: warning: 'struct mpol_args' declared inside parameter list will not be visible outside of this definition or declaration
-     825 | asmlinkage long sys_set_mempolicy2(struct mpol_args *args, size_t size,
-         |                                           ^~~~~~~~~
-   kernel/time/hrtimer.c:120:35: warning: initialized field overwritten [-Woverride-init]
-     120 |         [CLOCK_REALTIME]        = HRTIMER_BASE_REALTIME,
-         |                                   ^~~~~~~~~~~~~~~~~~~~~
-   kernel/time/hrtimer.c:120:35: note: (near initialization for 'hrtimer_clock_to_base_table[0]')
-   kernel/time/hrtimer.c:121:35: warning: initialized field overwritten [-Woverride-init]
-     121 |         [CLOCK_MONOTONIC]       = HRTIMER_BASE_MONOTONIC,
-         |                                   ^~~~~~~~~~~~~~~~~~~~~~
-   kernel/time/hrtimer.c:121:35: note: (near initialization for 'hrtimer_clock_to_base_table[1]')
-   kernel/time/hrtimer.c:122:35: warning: initialized field overwritten [-Woverride-init]
-     122 |         [CLOCK_BOOTTIME]        = HRTIMER_BASE_BOOTTIME,
-         |                                   ^~~~~~~~~~~~~~~~~~~~~
-   kernel/time/hrtimer.c:122:35: note: (near initialization for 'hrtimer_clock_to_base_table[7]')
-   kernel/time/hrtimer.c:123:35: warning: initialized field overwritten [-Woverride-init]
-     123 |         [CLOCK_TAI]             = HRTIMER_BASE_TAI,
-         |                                   ^~~~~~~~~~~~~~~~
-   kernel/time/hrtimer.c:123:35: note: (near initialization for 'hrtimer_clock_to_base_table[11]')
-   kernel/time/hrtimer.c: In function '__run_hrtimer':
-   kernel/time/hrtimer.c:1651:14: warning: variable 'expires_in_hardirq' set but not used [-Wunused-but-set-variable]
-    1651 |         bool expires_in_hardirq;
-         |              ^~~~~~~~~~~~~~~~~~
---
->> arc-elf-ld: arch/arc/kernel/sys.o:(.data+0x724): undefined reference to `sys_set_mempolicy2'
->> arc-elf-ld: arch/arc/kernel/sys.o:(.data+0x724): undefined reference to `sys_set_mempolicy2'
+> 
+> There is an evtest output below:
+> 
+> Without of commit:
+> 
+> Middle-button click:
+> Event: time 1702122290.593300, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 1
+> Event: time 1702122290.593300, -------------- SYN_REPORT ------------
+> Event: time 1702122290.593312, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 0
+> Event: time 1702122290.593312, -------------- SYN_REPORT ------------
+> 
+> Vertical scrolling:
+> Event: time 1702122300.441627, type 2 (EV_REL), code 8 (REL_WHEEL), value -1
+> Event: time 1702122300.441627, -------------- SYN_REPORT ------------
+> Event: time 1702122300.565663, type 2 (EV_REL), code 8 (REL_WHEEL), value -1
+> Event: time 1702122300.565663, -------------- SYN_REPORT ------------
+> 
+> Horizontal scrolling:
+> Event: time 1702122307.845969, type 2 (EV_REL), code 6 (REL_HWHEEL), value -1
+> Event: time 1702122307.845969, -------------- SYN_REPORT ------------
+> Event: time 1702122307.981954, type 2 (EV_REL), code 6 (REL_HWHEEL), value -1
+> Event: time 1702122307.981954, -------------- SYN_REPORT ------------
+> 
+> 
+> 
+> After commit:
+> 
+> Middle-button click:
+> Event: time 1702125091.290045, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
+> Event: time 1702125091.290045, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 1
+> Event: time 1702125091.290045, -------------- SYN_REPORT ------------
+> Event: time 1702125092.626118, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
+> Event: time 1702125092.626118, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 0
+> Event: time 1702125092.626118, -------------- SYN_REPORT ------------
+> 
+> 
+> Vscroll:
+> Event: time 1702125286.653639, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
+> Event: time 1702125286.653639, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 1
+> Event: time 1702125286.653639, -------------- SYN_REPORT ------------
+> Event: time 1702125287.929689, type 2 (EV_REL), code 8 (REL_WHEEL), value -1
+> Event: time 1702125287.929689, -------------- SYN_REPORT ------------
+> Event: time 1702125288.037688, type 2 (EV_REL), code 8 (REL_WHEEL), value -1
+> Event: time 1702125288.037688, -------------- SYN_REPORT ------------
+> Event: time 1702125290.481787, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
+> Event: time 1702125290.481787, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 0
+> Event: time 1702125290.481787, -------------- SYN_REPORT ------------
+> 
+> Hscroll:
+> Event: time 1702125293.841920, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
+> Event: time 1702125293.841920, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 1
+> Event: time 1702125293.841920, -------------- SYN_REPORT ------------
+> Event: time 1702125294.761952, type 2 (EV_REL), code 6 (REL_HWHEEL), value -1
+> Event: time 1702125294.761952, -------------- SYN_REPORT ------------
+> Event: time 1702125294.893967, type 2 (EV_REL), code 6 (REL_HWHEEL), value -1
+> Event: time 1702125294.893967, -------------- SYN_REPORT ------------
+> Event: time 1702125296.134006, type 4 (EV_MSC), code 4 (MSC_SCAN), value ffa000fb
+> Event: time 1702125296.134006, type 1 (EV_KEY), code 274 (BTN_MIDDLE), value 0
+> Event: time 1702125296.134006, -------------- SYN_REPORT ------------
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Yauhen Kharuzhy
