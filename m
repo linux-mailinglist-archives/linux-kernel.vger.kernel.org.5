@@ -2,105 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A961480B13C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 02:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0864A80B13D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 02:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234110AbjLIBHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 20:07:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42144 "EHLO
+        id S229572AbjLIBHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 20:07:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234166AbjLIBHL (ORCPT
+        with ESMTP id S236101AbjLIBHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 20:07:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A5E19B6
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 17:06:59 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB824C433C8;
-        Sat,  9 Dec 2023 01:06:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702084019;
-        bh=b6IjCysQyxVJK9x8nj1AYEYR5XOXnTtkuZQSQ08vHNU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VI+MJlPwo53axFeWk1xMCwtjB2HzkUa86ouwE+WAHMXJxsW8IZ8MrMKC1fLFLUWdp
-         tZz88EUXQ3jCxD1yqhnjciQsIfJ27ShL2N4wg1jLi5Gpn0XdSKMv2eSD9xUYBOvGdm
-         T3VsQWakNryOkdDG16ABIhRDryPSd5kmdCsm9oeOsHRYolWO9XJzZgYjXWNqWk0hDY
-         pL5R/E3hfC2Iij067Dl5XASdEQ1cWnRYUGjG4SwjdrYs0cr++bz2jOEtUXeTsB8Ql2
-         VkEIjaPS0oGFD2wU11DDnrdaIxqS+5RAjQ54y6ijn9Gy13/kNjAeOZTmHfDuD3pyZT
-         PRAm4wHuV9iXw==
-Date:   Sat, 9 Dec 2023 01:06:56 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Robert O'Callahan <robert@ocallahan.org>
-Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>, jannh@google.com,
-        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH RFT v4 0/5] fork: Support shadow stacks in clone3()
-Message-ID: <ZXO9sPEtVEuaTx/p@finisterre.sirena.org.uk>
-References: <20231128-clone3-shadow-stack-v4-0-8b28ffe4f676@kernel.org>
- <CAOp6jLY8aEFOOqe4ADkgeACvat+07_F_Xj963FhyXkF+0F5Pqw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9+v5nyrr2oNDi4Pq"
-Content-Disposition: inline
-In-Reply-To: <CAOp6jLY8aEFOOqe4ADkgeACvat+07_F_Xj963FhyXkF+0F5Pqw@mail.gmail.com>
-X-Cookie: You might have mail.
+        Fri, 8 Dec 2023 20:07:41 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09AE919AC
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 17:07:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702084068; x=1733620068;
+  h=date:from:to:cc:subject:message-id;
+  bh=EFF9fSEYs4hQgmx/YVvj5qi7tko4x95QUuTKsZKg3e0=;
+  b=kKrgmdCcmTrasV9nUgw+jDLqJgg+cu/2BmQsDt4/6sU0mwA4jIVB5L3Y
+   nTjynS01O8xxqyZ45v8J/xuYRP+Dxf4cDNaIX2A3ku1ReW97iAPjUA5/R
+   zEuCEmre8MaLMtXLAYrfMblgokWUWfC508j4MXYLUU5NRI9kLbO5wWByI
+   BK1qBIfO5AgwlHrS7OQCIwyxeMOW5OjC5b0FH1lAkGDuIH4JU+0uWaM4r
+   zvNwtttEzPjg1TE7o0EoktVoI7ezJyNEw+Oi6CQ9nAJiaUIEWVrbrJbzp
+   W+wFBCsyQfIArhLEGjlhXVad0M5/OWWeecHpJZ9R4GMhFnPgB5oVbqidZ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="384896197"
+X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
+   d="scan'208";a="384896197"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 17:07:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1019542944"
+X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
+   d="scan'208";a="1019542944"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 08 Dec 2023 17:07:41 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBloh-000EcG-18;
+        Sat, 09 Dec 2023 01:07:39 +0000
+Date:   Sat, 09 Dec 2023 09:07:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ e88255c7a26a5807fcb13909ad012298b6073a55
+Message-ID: <202312090908.FpC8x9dt-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: e88255c7a26a5807fcb13909ad012298b6073a55  Merge branch into tip/master: 'x86/percpu'
 
---9+v5nyrr2oNDi4Pq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Warning ids grouped by kconfigs:
 
-On Sat, Dec 09, 2023 at 01:59:16PM +1300, Robert O'Callahan wrote:
+gcc_recent_errors
+`-- i386-randconfig-141-20231209
+    `-- drivers-scsi-libfc-fc_exch.c-fc_exch_mgr_alloc()-warn:returning-freed-memory-mp
 
-> overriding clone_args::shadow_stack_size to zero in the call to
-> clone3(), instead having the replay task call map_shadow_stack() to
-> put the the shadow stack in the right place, and then setting its SSP
-> via ptrace. Will that work?
+elapsed time: 1623m
 
-That should work with the interface in the current series, yes.
+configs tested: 119
+configs skipped: 1
 
---9+v5nyrr2oNDi4Pq
-Content-Type: application/pgp-signature; name="signature.asc"
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
------BEGIN PGP SIGNATURE-----
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              alldefconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231209   gcc  
+arc                   randconfig-002-20231209   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                            dove_defconfig   clang
+arm                        keystone_defconfig   gcc  
+arm                   milbeaut_m10v_defconfig   clang
+arm                         orion5x_defconfig   clang
+arm                   randconfig-001-20231209   gcc  
+arm                   randconfig-002-20231209   gcc  
+arm                   randconfig-003-20231209   gcc  
+arm                   randconfig-004-20231209   gcc  
+arm                         s5pv210_defconfig   clang
+arm                         socfpga_defconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20231209   gcc  
+arm64                 randconfig-002-20231209   gcc  
+arm64                 randconfig-003-20231209   gcc  
+arm64                 randconfig-004-20231209   gcc  
+csky                              allnoconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20231209   gcc  
+csky                  randconfig-002-20231209   gcc  
+hexagon                           allnoconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20231209   clang
+hexagon               randconfig-002-20231209   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20231208   clang
+i386         buildonly-randconfig-002-20231208   clang
+i386         buildonly-randconfig-003-20231208   clang
+i386         buildonly-randconfig-004-20231208   clang
+i386         buildonly-randconfig-005-20231208   clang
+i386         buildonly-randconfig-006-20231208   clang
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231208   clang
+i386                  randconfig-002-20231208   clang
+i386                  randconfig-003-20231208   clang
+i386                  randconfig-004-20231208   clang
+i386                  randconfig-005-20231208   clang
+i386                  randconfig-006-20231208   clang
+i386                  randconfig-011-20231208   gcc  
+i386                  randconfig-012-20231208   gcc  
+i386                  randconfig-013-20231208   gcc  
+i386                  randconfig-014-20231208   gcc  
+i386                  randconfig-015-20231208   gcc  
+i386                  randconfig-016-20231208   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231209   gcc  
+loongarch             randconfig-002-20231209   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5275evb_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   clang
+mips                      bmips_stb_defconfig   clang
+mips                  cavium_octeon_defconfig   clang
+mips                     decstation_defconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20231209   gcc  
+nios2                 randconfig-002-20231209   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20231209   gcc  
+parisc                randconfig-002-20231209   gcc  
+parisc64                            defconfig   gcc  
+powerpc               randconfig-001-20231209   gcc  
+powerpc               randconfig-002-20231209   gcc  
+powerpc               randconfig-003-20231209   gcc  
+powerpc64             randconfig-001-20231209   gcc  
+powerpc64             randconfig-002-20231209   gcc  
+powerpc64             randconfig-003-20231209   gcc  
+riscv                 randconfig-001-20231209   gcc  
+riscv                 randconfig-002-20231209   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                  randconfig-001-20231209   clang
+s390                  randconfig-002-20231209   clang
+sh                               allmodconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                    randconfig-001-20231209   gcc  
+sh                    randconfig-002-20231209   gcc  
+sparc                            allmodconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64               randconfig-001-20231209   gcc  
+sparc64               randconfig-002-20231209   gcc  
+um                               allmodconfig   clang
+um                               allyesconfig   clang
+um                    randconfig-001-20231209   gcc  
+um                    randconfig-002-20231209   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVzva8ACgkQJNaLcl1U
-h9CLYAf/elahxJ0+6pGU/W2cE2bLlKd8hf7OxZlCjvCjqdNNIcfk1AT5m6hhowGw
-8vrXEALM0eN8d9SNyPCdHgdEC9p/qA0SC5AEoYNVb7XNtaBhalLMXRI7YryryF93
-nxul+HAYJrhYxsGrFzpirjb2QiOkLkvGLE7Fvyfvb+z9cserDUUww/LSHsocaPdr
-AE/G/jNrdAEMMbXqdNDdOeiS3of8qPtcN1rXi6z1MItAHBn+6ml9NOnlQrGlxkd1
-WE6Wwm28fdfukIzBys0i7AjdUSn/d7xk0+vWDjF4I+A/2Lt0tFuH7XC6OR9yGy3v
-Fil+OidV+GMhhDfWW6Ym9nLIt3W8Bg==
-=VQz8
------END PGP SIGNATURE-----
-
---9+v5nyrr2oNDi4Pq--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
