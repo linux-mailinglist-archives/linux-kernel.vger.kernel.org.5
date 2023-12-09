@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC33580B661
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B22380B662
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:54:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbjLIUyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 15:54:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38168 "EHLO
+        id S231206AbjLIUyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 15:54:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbjLIUyI (ORCPT
+        with ESMTP id S231276AbjLIUyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 15:54:08 -0500
+        Sat, 9 Dec 2023 15:54:09 -0500
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD3E1BB;
-        Sat,  9 Dec 2023 12:54:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644AD10C7;
+        Sat,  9 Dec 2023 12:54:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702155249;
-        bh=4/ljxDEHtTvIlqAZ4vM3o3PXrWgZstPeEiyPFB52jiY=;
+        s=mail; t=1702155250;
+        bh=6CEHnbgdwJYVfipM0adU97EnT1wECk7R50CpX/0QHJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tMyVa0w9ssaQ4z2ta6GYiFSLZdAZzG6yiwDP9gWn5XrGdJDQCH+Eh9Si3zcfz2lmC
-         sp9w+Fs9GHs4XfG4ovXDzzc3hOT2+iJZepIbbe2dtxomSOjXFU1pppqEUxS8g9wr21
-         C5sOYcBqZY7MvkEzHA+EYhCNS208rPtgTdaGOEu2/C43dT8k9bAYywI18CLOwLMOmk
-         0AsWWQTM8aJWiT5aCPJE2zqO/hhqwKRYc5upHlYMnpbCTlIfBhT7niaTz2aQmOTDl2
-         k/u0bVMrq7AJVO/t3nFZJj7TFRzY+8yLPscxnzpcsrcpMhklK49DPP8NDrULDh4DQF
-         Yr60aIHteyFKQ==
+        b=Id69ZyIDTAm3eTwaAMpObLY7Pfvb6t2SroKMHWS/GNl4eASvs3AODZdJo1MgYBzfV
+         QPBxLhM3s0sbsu1URy5UST72rHUNLWndJ3X74dgM7qMWZVFHqewC4qkYvAxyNGqieX
+         PCGW3w7aPuLW0Vz7NR7HoAWAqgDfx88TAWzGbnU7qem+ekTG9agiVJYk+Xv0gDqnoL
+         u+CiA+lW8Xywq+/oilR2AEEds90QmQMPUgZXF7WboCYQr0JOrZt7zc9vg/VOE1pYZV
+         kPepGinJUExbvcD79cBXMARcD00oP8c+NVWrAV9oIICG5CnKU8yFsQiFU16Dl9vPo8
+         iVdCqQ/FhubdQ==
 Received: from localhost (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: cristicc)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1031037813E1;
-        Sat,  9 Dec 2023 20:54:09 +0000 (UTC)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3E62337813E6;
+        Sat,  9 Dec 2023 20:54:10 +0000 (UTC)
 From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -54,9 +54,9 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
         sound-open-firmware@alsa-project.org, kernel@collabora.com
-Subject: [PATCH 06/11] ASoC: SOF: amd: Optimize quirk for Valve Galileo
-Date:   Sat,  9 Dec 2023 22:53:45 +0200
-Message-ID: <20231209205351.880797-7-cristian.ciocaltea@collabora.com>
+Subject: [PATCH 07/11] ASoC: SOF: core: Skip firmware test for undefined fw_name
+Date:   Sat,  9 Dec 2023 22:53:46 +0200
+Message-ID: <20231209205351.880797-8-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
 References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
@@ -72,36 +72,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Valve's Steam Deck OLED is uniquely identified by vendor and product
-name (Galileo) DMI fields.
+Some SOF drivers like AMD ACP do not always rely on a single static
+firmware file, but may require multiple files having their names
+dynamically computed on probe time, e.g. based on chip name.
 
-Simplify the quirk by removing the unnecessary match on product family.
+In those cases, providing an invalid default_fw_filename in their
+sof_dev_desc struct will prevent probing due to 'SOF firmware
+and/or topology file not found' error.
 
-Additionally, fix the related comment as it points to the old product
-variant.
+Fix the issue by allowing drivers to omit initialization for this member
+(or alternatively provide a dynamic override via ipc_file_profile_base)
+and update sof_test_firmware_file() to verify the given profile data and
+skip firmware testing if either fw_path or fw_name is not defined.
 
+Fixes: 6c393ebbd74a ("ASoC: SOF: core: Implement IPC version fallback if firmware files are missing")
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 ---
- sound/soc/sof/amd/acp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/sof/fw-file-profile.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
-index c6f637f29847..1e9840ae8938 100644
---- a/sound/soc/sof/amd/acp.c
-+++ b/sound/soc/sof/amd/acp.c
-@@ -28,11 +28,10 @@ MODULE_PARM_DESC(enable_fw_debug, "Enable Firmware debug");
+diff --git a/sound/soc/sof/fw-file-profile.c b/sound/soc/sof/fw-file-profile.c
+index 138a1ca2c4a8..e63700234df0 100644
+--- a/sound/soc/sof/fw-file-profile.c
++++ b/sound/soc/sof/fw-file-profile.c
+@@ -21,6 +21,9 @@ static int sof_test_firmware_file(struct device *dev,
+ 	const u32 *magic;
+ 	int ret;
  
- const struct dmi_system_id acp_sof_quirk_table[] = {
- 	{
--		/* Valve Jupiter device */
-+		/* Steam Deck OLED device */
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Valve"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Galileo"),
--			DMI_MATCH(DMI_PRODUCT_FAMILY, "Sephiroth"),
- 		},
- 		.driver_data = (void *)SECURED_FIRMWARE,
- 	},
++	if (!profile->fw_path || !profile->fw_name || !*profile->fw_name)
++		return 0;
++
+ 	fw_filename = kasprintf(GFP_KERNEL, "%s/%s", profile->fw_path,
+ 				profile->fw_name);
+ 	if (!fw_filename)
 -- 
 2.43.0
 
