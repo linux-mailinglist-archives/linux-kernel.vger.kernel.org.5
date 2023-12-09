@@ -2,125 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A878580B602
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 20:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAA080B603
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 20:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbjLITSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 14:18:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
+        id S230337AbjLITWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 14:22:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjLITSC (ORCPT
+        with ESMTP id S229453AbjLITWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 14:18:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6195CA2
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 11:18:09 -0800 (PST)
+        Sat, 9 Dec 2023 14:22:04 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF077AC
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 11:22:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702149489; x=1733685489;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=FSiTq+R7K6AtJ/tXHCs+/XVoB/rsfopmIkdivPR1OZU=;
-  b=g8hVf07VsnltFbnA+LQJXAhfDGuqhEcZuv3+E3uYYuwJl2sJDTrMc4nJ
-   LkQmpbxLYw8pQUgT0M9BIiaRItngt76sYHEyL/kbNb2fx2Va/WeqaSWHq
-   esZ8rhCJWm3Ely4H16nyfqKn210ID6BTn8RX2mC7y2kaNzluF0rUrRU43
-   PXmafjUVB1OYZZWkLRwPPYcmsCkUzu3UqjJvLzvPi5QwuiRf0Fwg1ss5v
-   ONIcFsPmg9K3HjYte//61lrH0q7R4G+OYhyKmmiyJp2cgL/0eBoMz51Cs
-   SV1MiXTXC0BIr8MTcon8M2YP6n7+uaBeermPBhS1c5Oi5cdNx8ARsMiHS
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="1396771"
+  t=1702149729; x=1733685729;
+  h=date:from:to:cc:subject:message-id;
+  bh=zA29k8e3GDEOVJEfTXsr7Y60GWxr37fFHJkRrDG7BQU=;
+  b=A3ghHogSDerK5kEUqNzotGjDxmqbRNW4XAztIscLoD4WrE+1J+zqacik
+   XmtSlf2qQ8aIiZFYxz36bXk+pUaJ5a/YImT9F0kM1VtKf2HMtM59VXczJ
+   xnx5FxrJdr34HzH5nzUm7+0HSGLdQYSpgIClZEmwNkm2MDHFq08O0MBeJ
+   4EQOl9Zv9YsutpwAa110kBpuFZNaqHcdKZvLdp3cQNKoH0r2USGQMBmT1
+   Ob83H7klHbb/MlASjE/5aeur0VAjM2aevGULRaFHiPJMTnc3rIL6GkipZ
+   4UPv2TJWd3QmyVtXS+azjMFcXH90/jOaQJPQG69UHBvk+DP5Tlvlx2M+l
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="1367023"
 X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
-   d="scan'208";a="1396771"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 11:18:09 -0800
+   d="scan'208";a="1367023"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 11:22:08 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="838483692"
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="765843083"
 X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
-   d="scan'208";a="838483692"
+   d="scan'208";a="765843083"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 09 Dec 2023 11:18:07 -0800
+  by orsmga007.jf.intel.com with ESMTP; 09 Dec 2023 11:22:08 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1rC2px-000Fov-1c;
-        Sat, 09 Dec 2023 19:18:05 +0000
-Date:   Sun, 10 Dec 2023 03:17:48 +0800
+        id 1rC2tp-000FpN-2V;
+        Sat, 09 Dec 2023 19:22:05 +0000
+Date:   Sun, 10 Dec 2023 03:21:06 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Sui Jingfeng <suijingfeng@loongson.cn>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse: sparse:
- incorrect type in argument 1 (different address spaces)
-Message-ID: <202312100315.ToF8OHaM-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/sgx] BUILD SUCCESS
+ 981cf568a8644161c2f15c02278ebc2834b51ba6
+Message-ID: <202312100304.t0RkgBLw-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f2e8a57ee9036c7d5443382b6c3c09b51a92ec7e
-commit: f39db26c54281da6a785259498ca74b5e470476f drm: Add kms driver for loongson display controller
-date:   5 months ago
-config: powerpc-randconfig-r113-20231106 (https://download.01.org/0day-ci/archive/20231210/202312100315.ToF8OHaM-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231210/202312100315.ToF8OHaM-lkp@intel.com/reproduce)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/sgx
+branch HEAD: 981cf568a8644161c2f15c02278ebc2834b51ba6  selftests/sgx: Skip non X86_64 platform
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312100315.ToF8OHaM-lkp@intel.com/
+elapsed time: 1484m
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *d @@     got void *kptr @@
-   drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse:     expected void volatile [noderef] __iomem *d
-   drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse:     got void *kptr
->> drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const volatile [noderef] __iomem *s @@     got void *kptr @@
-   drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse:     expected void const volatile [noderef] __iomem *s
-   drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse:     got void *kptr
+configs tested: 182
+configs skipped: 2
 
-vim +27 drivers/gpu/drm/loongson/lsdc_benchmark.c
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-    12	
-    13	typedef void (*lsdc_copy_proc_t)(struct lsdc_bo *src_bo,
-    14					 struct lsdc_bo *dst_bo,
-    15					 unsigned int size,
-    16					 int n);
-    17	
-    18	static void lsdc_copy_gtt_to_vram_cpu(struct lsdc_bo *src_bo,
-    19					      struct lsdc_bo *dst_bo,
-    20					      unsigned int size,
-    21					      int n)
-    22	{
-    23		lsdc_bo_kmap(src_bo);
-    24		lsdc_bo_kmap(dst_bo);
-    25	
-    26		while (n--)
-  > 27			memcpy_toio(dst_bo->kptr, src_bo->kptr, size);
-    28	
-    29		lsdc_bo_kunmap(src_bo);
-    30		lsdc_bo_kunmap(dst_bo);
-    31	}
-    32	
-    33	static void lsdc_copy_vram_to_gtt_cpu(struct lsdc_bo *src_bo,
-    34					      struct lsdc_bo *dst_bo,
-    35					      unsigned int size,
-    36					      int n)
-    37	{
-    38		lsdc_bo_kmap(src_bo);
-    39		lsdc_bo_kmap(dst_bo);
-    40	
-    41		while (n--)
-  > 42			memcpy_fromio(dst_bo->kptr, src_bo->kptr, size);
-    43	
-    44		lsdc_bo_kunmap(src_bo);
-    45		lsdc_bo_kunmap(dst_bo);
-    46	}
-    47	
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              alldefconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs101_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231209   gcc  
+arc                   randconfig-002-20231209   gcc  
+arm                               allnoconfig   gcc  
+arm                                 defconfig   clang
+arm                          exynos_defconfig   gcc  
+arm                        keystone_defconfig   gcc  
+arm                         nhk8815_defconfig   gcc  
+arm                   randconfig-001-20231209   gcc  
+arm                   randconfig-002-20231209   gcc  
+arm                   randconfig-003-20231209   gcc  
+arm                   randconfig-004-20231209   gcc  
+arm                           sama5_defconfig   gcc  
+arm                        spear6xx_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20231209   gcc  
+arm64                 randconfig-002-20231209   gcc  
+arm64                 randconfig-003-20231209   gcc  
+arm64                 randconfig-004-20231209   gcc  
+csky                              allnoconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20231209   gcc  
+csky                  randconfig-002-20231209   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20231209   gcc  
+i386         buildonly-randconfig-002-20231209   gcc  
+i386         buildonly-randconfig-003-20231209   gcc  
+i386         buildonly-randconfig-004-20231209   gcc  
+i386         buildonly-randconfig-005-20231209   gcc  
+i386         buildonly-randconfig-006-20231209   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231209   gcc  
+i386                  randconfig-002-20231209   gcc  
+i386                  randconfig-003-20231209   gcc  
+i386                  randconfig-004-20231209   gcc  
+i386                  randconfig-005-20231209   gcc  
+i386                  randconfig-006-20231209   gcc  
+i386                  randconfig-011-20231209   clang
+i386                  randconfig-012-20231209   clang
+i386                  randconfig-013-20231209   clang
+i386                  randconfig-014-20231209   clang
+i386                  randconfig-015-20231209   clang
+i386                  randconfig-016-20231209   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231209   gcc  
+loongarch             randconfig-002-20231209   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5208evb_defconfig   gcc  
+m68k                       m5275evb_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+mips                     decstation_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20231209   gcc  
+nios2                 randconfig-002-20231209   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20231209   gcc  
+parisc                randconfig-002-20231209   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                    amigaone_defconfig   gcc  
+powerpc                      chrp32_defconfig   gcc  
+powerpc                 mpc837x_rdb_defconfig   gcc  
+powerpc                      pasemi_defconfig   gcc  
+powerpc                      pcm030_defconfig   gcc  
+powerpc               randconfig-001-20231209   gcc  
+powerpc               randconfig-002-20231209   gcc  
+powerpc               randconfig-003-20231209   gcc  
+powerpc                    socrates_defconfig   gcc  
+powerpc                        warp_defconfig   gcc  
+powerpc64             randconfig-001-20231209   gcc  
+powerpc64             randconfig-002-20231209   gcc  
+powerpc64             randconfig-003-20231209   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                    nommu_k210_defconfig   gcc  
+riscv                 randconfig-001-20231209   gcc  
+riscv                 randconfig-002-20231209   gcc  
+riscv                          rv32_defconfig   clang
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                        edosk7760_defconfig   gcc  
+sh                               j2_defconfig   gcc  
+sh                            migor_defconfig   gcc  
+sh                    randconfig-001-20231209   gcc  
+sh                    randconfig-002-20231209   gcc  
+sh                          sdk7786_defconfig   gcc  
+sh                           se7619_defconfig   gcc  
+sh                           se7712_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                       sparc64_defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20231209   gcc  
+sparc64               randconfig-002-20231209   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20231209   gcc  
+um                    randconfig-002-20231209   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           alldefconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20231209   gcc  
+x86_64       buildonly-randconfig-002-20231209   gcc  
+x86_64       buildonly-randconfig-003-20231209   gcc  
+x86_64       buildonly-randconfig-004-20231209   gcc  
+x86_64       buildonly-randconfig-005-20231209   gcc  
+x86_64       buildonly-randconfig-006-20231209   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-011-20231209   gcc  
+x86_64                randconfig-012-20231209   gcc  
+x86_64                randconfig-013-20231209   gcc  
+x86_64                randconfig-014-20231209   gcc  
+x86_64                randconfig-015-20231209   gcc  
+x86_64                randconfig-016-20231209   gcc  
+x86_64                randconfig-071-20231209   gcc  
+x86_64                randconfig-072-20231209   gcc  
+x86_64                randconfig-073-20231209   gcc  
+x86_64                randconfig-074-20231209   gcc  
+x86_64                randconfig-075-20231209   gcc  
+x86_64                randconfig-076-20231209   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                       common_defconfig   gcc  
+xtensa                randconfig-001-20231209   gcc  
+xtensa                randconfig-002-20231209   gcc  
 
 -- 
 0-DAY CI Kernel Test Service
