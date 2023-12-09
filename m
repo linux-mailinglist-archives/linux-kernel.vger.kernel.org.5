@@ -2,169 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D2880B0C5
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4786980B0CA
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574800AbjLIAHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 19:07:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36304 "EHLO
+        id S1574871AbjLIAHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 19:07:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLIAHr (ORCPT
+        with ESMTP id S229525AbjLIAHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 19:07:47 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7222AC
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 16:07:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 101BEC433C7;
-        Sat,  9 Dec 2023 00:07:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702080473;
-        bh=0lDWjZhcpsj5eDD+T3hZ5cTAQQFykaGs0qkCTg3+7Gk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ntoBUAsDFYQIe/0ThhuUrrClxY/6XTFJ3ttIK7D0kCoxzlrPg7XRYTqNlhNe5SmtZ
-         S2yKACJsl4idJTQ7L2eM6ADk958nQDtnL850qlg8YFPmR6a2XdkfYTeJmK18i51v/q
-         5GD3fPm6zeZMOfcElkERh74Xn6Lz2dESFx0cRsPtpck5igqTUlBtTzRVc+kk0g2+Xb
-         gDWsQajUAb7a+r3W5tgjFGcI29ZyybtNQdmZnckY3bKgOE701cJvcSznVHkNBJJb3f
-         CpIJRj75d9tLrlobYZmQkxfI/rgJ2ITmgUHOSozppyT6NQR3b366Z9z/cFA6LZnAuC
-         5JfMDuUAhFq+A==
-Date:   Sat, 9 Dec 2023 01:07:47 +0100
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Alain Volmat <alain.volmat@foss.st.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
-        Valentin Caron <valentin.caron@foss.st.com>,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/7] i2c: stm32f7: add support for stm32mp25 soc
-Message-ID: <20231209000747.4l6462nlzj3po3sf@zenone.zhora.eu>
-References: <20231208164719.3584028-1-alain.volmat@foss.st.com>
- <20231208164719.3584028-5-alain.volmat@foss.st.com>
+        Fri, 8 Dec 2023 19:07:51 -0500
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A956AC;
+        Fri,  8 Dec 2023 16:07:57 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 4FC5932005C1;
+        Fri,  8 Dec 2023 19:07:55 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 08 Dec 2023 19:07:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1702080474; x=1702166874; bh=m98dLHyPwI+eg2Ijq83uqu7OvTQevvvXu+0
+        DP05ozNs=; b=ddIGLF7AaNmnEW79+jOnw5EwvTm7427Hej6wBRLVNLEogCxE9VX
+        UrV3H2uUT0G3am/S/ednqVUmumgqCMkdusoE+QDqR5zrM3sW957QzdTrS2TD9YrP
+        3EwDukzy8EpVk7k2UxT7Uw3dPqLSu7o8faCYm02ID+EA680i4yWaEvv8J3DRAoXP
+        yhh5tRLTXe22KdksfC7joSItsRjRkDt2Nvkk/SjqfijaWigBjYNyENSU5ugz8ZKS
+        9iwSdPj99tffOo61rhbxbfWnVP7u+oerMGNg2eSsVSX4Y0Pu0UT99A1UrPRYc7lg
+        rvYrYx+LzkFjDs8/yXxKUEghGxpcMKe5dNA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1702080474; x=1702166874; bh=m98dLHyPwI+eg2Ijq83uqu7OvTQevvvXu+0
+        DP05ozNs=; b=d+xGH14fpAprU6BJ8STzBEuYXe0FQYuOl2+Q4Er8JyEW2egvFFe
+        NNq2u3/smCxnE6TPc4JV+hVINPaAOYAY9Mgx2F92go0rE9DdxuqZ4xadtRbl99LV
+        7BiAooaVU7dCarvRnLSSGEmEKmg1bgWOHkLJEBbr5IvYsKvOHpgR97O1or1u3vfv
+        FBp7rdkbo0WxL6ogCqn66Sjsgza4S9ggSuhJESpAP1XrxP65LEbaVuAKBok8c9X1
+        9BWO4Q1ZyLA/EV8AUvEADXkOr2Vz17gAtXCwMCFvyqX1nJaFqdt5Sulmbj47Nh5s
+        SGxyeSITeplQ6QbbGYL9JA8BuMjuhvfk7Qg==
+X-ME-Sender: <xms:2q9zZacriLGMalplAmHDmauXTOvPBXnYelEqSXNmuPLO4tA04UPLKg>
+    <xme:2q9zZUO8HEbLaF-23rIW10L3kZgri4mPnEnyaapFz9Z6YY_7KyTgQLXZMcOXcWgFD
+    iXKK67aiUWtZX4tkw>
+X-ME-Received: <xmr:2q9zZbiyhErwE8pXZBC9qvuIxKo5f2ATxXQz_8Rr6bqBwMIn6_DWWn2LnhGdOIAgMvlslofqHA_pLGDx9mcr_t8UT2zE17dhksNq>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekjedgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
+    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
+    enucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeffleetkeekkeeggeffvedt
+    vdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:2q9zZX_UlIk7KVR-TgT5AqPFcpK2GuFcwnVIATnBAorsvyHVr38Mow>
+    <xmx:2q9zZWtYoI7JYEHX0Zo3uLvJ8r4pchkZ61aRDbiCWlXB4m6vcBqpJQ>
+    <xmx:2q9zZeFjQJd-q4YYFzwbl00kbGKZoDlQULT1JbcLgfu2sL7_efolRw>
+    <xmx:2q9zZeQMwZLYJCuvn1cX10USK1fYv1AqMHSE7sNW-yFxJkbUBRT1hw>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 8 Dec 2023 19:07:53 -0500 (EST)
+Date:   Fri, 8 Dec 2023 17:07:51 -0700
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Eyal Birger <eyal.birger@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        steffen.klassert@secunet.com, pabeni@redhat.com, hawk@kernel.org,
+        john.fastabend@gmail.com, kuba@kernel.org, edumazet@google.com,
+        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
+        yonghong.song@linux.dev, eddyz87@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        devel@linux-ipsec.org
+Subject: Re: [PATCH bpf-next v4 02/10] bpf: xfrm: Add
+ bpf_xdp_get_xfrm_state() kfunc
+Message-ID: <ubztsmdzjlyou662foobqjwkky2n6tgcp2ocgvxssd4jwplhdk@o2kmq3cthrkn>
+References: <cover.1701722991.git.dxu@dxuuu.xyz>
+ <e0e2fc6161ceccfbb1075d367bcc37871012072d.1701722991.git.dxu@dxuuu.xyz>
+ <CAHsH6GvRtFRRhjLoVL6HqmthGVY4KEb8EOzT61ofWyXgocD4NA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231208164719.3584028-5-alain.volmat@foss.st.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHsH6GvRtFRRhjLoVL6HqmthGVY4KEb8EOzT61ofWyXgocD4NA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alain,
-
-On Fri, Dec 08, 2023 at 05:47:13PM +0100, Alain Volmat wrote:
-> The stm32mp25 has only a single interrupt line used for both
-> events and errors. In order to cope with that, reorganise the
-> error handling code so that it can be called either from the
-> common handler (used in case of SoC having only a single IT line)
-> and the error handler for others.
-> The CR1 register also embeds a new FMP bit, necessary when running
-> at Fast Mode Plus frequency. This bit should be used instead of
-> the SYSCFG bit used on other platforms.
-> Add a new compatible to distinguish between the SoCs and two
-> boolean within the setup structure in order to know if the
-> platform has a single/multiple IT lines and if the FMP bit
-> within CR1 is available or not.
+On Thu, Dec 07, 2023 at 01:21:11PM -0800, Eyal Birger wrote:
+> On Mon, Dec 4, 2023 at 12:57 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > This commit adds an unstable kfunc helper to access internal xfrm_state
+> > associated with an SA. This is intended to be used for the upcoming
+> > IPsec pcpu work to assign special pcpu SAs to a particular CPU. In other
+> > words: for custom software RSS.
+> >
+> > That being said, the function that this kfunc wraps is fairly generic
+> > and used for a lot of xfrm tasks. I'm sure people will find uses
+> > elsewhere over time.
+> >
+> > Co-developed-by: Antony Antony <antony.antony@secunet.com>
+> > Signed-off-by: Antony Antony <antony.antony@secunet.com>
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> >  include/net/xfrm.h     |   9 ++++
+> >  net/xfrm/xfrm_bpf.c    | 102 +++++++++++++++++++++++++++++++++++++++++
+> >  net/xfrm/xfrm_policy.c |   2 +
+> >  3 files changed, 113 insertions(+)
+> >
+> > diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+> > index c9bb0f892f55..1d107241b901 100644
+> > --- a/include/net/xfrm.h
+> > +++ b/include/net/xfrm.h
+> > @@ -2190,4 +2190,13 @@ static inline int register_xfrm_interface_bpf(void)
+> >
+> >  #endif
+> >
+> > +#if IS_ENABLED(CONFIG_DEBUG_INFO_BTF)
+> > +int register_xfrm_state_bpf(void);
+> > +#else
+> > +static inline int register_xfrm_state_bpf(void)
+> > +{
+> > +       return 0;
+> > +}
+> > +#endif
+> > +
+> >  #endif /* _NET_XFRM_H */
+> > diff --git a/net/xfrm/xfrm_bpf.c b/net/xfrm/xfrm_bpf.c
+> > index 3d3018b87f96..3d6cac7345ca 100644
+> > --- a/net/xfrm/xfrm_bpf.c
+> > +++ b/net/xfrm/xfrm_bpf.c
+> > @@ -6,9 +6,11 @@
+> >   */
+> >
+> >  #include <linux/bpf.h>
+> > +#include <linux/btf.h>
+> >  #include <linux/btf_ids.h>
+> >
+> >  #include <net/dst_metadata.h>
+> > +#include <net/xdp.h>
+> >  #include <net/xfrm.h>
+> >
+> >  #if IS_BUILTIN(CONFIG_XFRM_INTERFACE) || \
+> > @@ -112,3 +114,103 @@ int __init register_xfrm_interface_bpf(void)
+> >  }
+> >
+> >  #endif /* xfrm interface */
+> > +
+> > +/* bpf_xfrm_state_opts - Options for XFRM state lookup helpers
+> > + *
+> > + * Members:
+> > + * @error      - Out parameter, set for any errors encountered
+> > + *              Values:
+> > + *                -EINVAL - netns_id is less than -1
+> > + *                -EINVAL - opts__sz isn't BPF_XFRM_STATE_OPTS_SZ
+> > + *                -ENONET - No network namespace found for netns_id
+> > + * @netns_id   - Specify the network namespace for lookup
+> > + *              Values:
+> > + *                BPF_F_CURRENT_NETNS (-1)
+> > + *                  Use namespace associated with ctx
+> > + *                [0, S32_MAX]
+> > + *                  Network Namespace ID
+> > + * @mark       - XFRM mark to match on
+> > + * @daddr      - Destination address to match on
+> > + * @spi                - Security parameter index to match on
+> > + * @proto      - L3 protocol to match on
+> > + * @family     - L3 protocol family to match on
+> > + */
+> > +struct bpf_xfrm_state_opts {
+> > +       s32 error;
+> > +       s32 netns_id;
+> > +       u32 mark;
+> > +       xfrm_address_t daddr;
+> > +       __be32 spi;
+> > +       u8 proto;
+> > +       u16 family;
+> > +};
+> > +
+> > +enum {
+> > +       BPF_XFRM_STATE_OPTS_SZ = sizeof(struct bpf_xfrm_state_opts),
+> > +};
+> > +
+> > +__bpf_kfunc_start_defs();
+> > +
+> > +/* bpf_xdp_get_xfrm_state - Get XFRM state
+> > + *
+> > + * Parameters:
+> > + * @ctx        - Pointer to ctx (xdp_md) in XDP program
+> > + *                 Cannot be NULL
+> > + * @opts       - Options for lookup (documented above)
+> > + *                 Cannot be NULL
+> > + * @opts__sz   - Length of the bpf_xfrm_state_opts structure
+> > + *                 Must be BPF_XFRM_STATE_OPTS_SZ
+> > + */
+> > +__bpf_kfunc struct xfrm_state *
+> > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts, u32 opts__sz)
+> > +{
+> > +       struct xdp_buff *xdp = (struct xdp_buff *)ctx;
+> > +       struct net *net = dev_net(xdp->rxq->dev);
+> > +       struct xfrm_state *x;
+> > +
+> > +       if (!opts || opts__sz < sizeof(opts->error))
+> > +               return NULL;
+> > +
+> > +       if (opts__sz != BPF_XFRM_STATE_OPTS_SZ) {
+> > +               opts->error = -EINVAL;
+> > +               return NULL;
+> > +       }
+> > +
+> > +       if (unlikely(opts->netns_id < BPF_F_CURRENT_NETNS)) {
+> > +               opts->error = -EINVAL;
+> > +               return NULL;
+> > +       }
+> > +
+> > +       if (opts->netns_id >= 0) {
+> > +               net = get_net_ns_by_id(net, opts->netns_id);
+> > +               if (unlikely(!net)) {
+> > +                       opts->error = -ENONET;
+> > +                       return NULL;
+> > +               }
+> > +       }
+> > +
+> > +       x = xfrm_state_lookup(net, opts->mark, &opts->daddr, opts->spi,
+> > +                             opts->proto, opts->family);
+> > +
+> > +       if (opts->netns_id >= 0)
+> > +               put_net(net);
 > 
-> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-> Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+> Maybe opts->error should be set to something like -ENOENT if x == NULL?
 
-your SoB here should come last because you are the one sending
-the patch.
+Originally I opted not to do that b/c xfrm_state_lookup() chooses not to
+do anything like that (eg PTR_ERR()).
 
-> ---
->  drivers/i2c/busses/i2c-stm32f7.c | 230 ++++++++++++++++++-------------
->  1 file changed, 133 insertions(+), 97 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-> index 2a011deec3c5..5634332900fb 100644
-> --- a/drivers/i2c/busses/i2c-stm32f7.c
-> +++ b/drivers/i2c/busses/i2c-stm32f7.c
-> @@ -50,6 +50,7 @@
->  #define STM32F7_I2C_TXDR			0x28
->  
->  /* STM32F7 I2C control 1 */
-> +#define STM32_I2C_CR1_FMP			BIT(24)
->  #define STM32F7_I2C_CR1_PECEN			BIT(23)
->  #define STM32F7_I2C_CR1_ALERTEN			BIT(22)
->  #define STM32F7_I2C_CR1_SMBHEN			BIT(20)
-> @@ -226,6 +227,8 @@ struct stm32f7_i2c_spec {
->   * @rise_time: Rise time (ns)
->   * @fall_time: Fall time (ns)
->   * @fmp_clr_offset: Fast Mode Plus clear register offset from set register
-> + * @single_it_line: Only a single IT line is used for both events/errors
-> + * @fmp_cr1_bit: Fast Mode Plus control is done via a bit in CR1
+But I don't mind adding it - I think it's reasonable either way.
 
-Is the Fast Mode Plus an optional feature?
+[..]
 
->   */
->  struct stm32f7_i2c_setup {
->  	u32 speed_freq;
-> @@ -233,6 +236,8 @@ struct stm32f7_i2c_setup {
->  	u32 rise_time;
->  	u32 fall_time;
->  	u32 fmp_clr_offset;
-> +	bool single_it_line;
-> +	bool fmp_cr1_bit;
->  };
-
-[...]
-
-> -static irqreturn_t stm32f7_i2c_slave_isr_event(struct stm32f7_i2c_dev *i2c_dev)
-> +static irqreturn_t stm32f7_i2c_slave_isr_event(struct stm32f7_i2c_dev *i2c_dev, u32 status)
->  {
->  	void __iomem *base = i2c_dev->base;
-> -	u32 cr2, status, mask;
-> +	u32 cr2, mask;
->  	u8 val;
->  	int ret;
->  
-> -	status = readl_relaxed(i2c_dev->base + STM32F7_I2C_ISR);
-> -
-
-good to see this change here, relates to my comment in patch 1.
-But I think this should go on a different patch.
-
->  	/* Slave transmitter mode */
->  	if (status & STM32F7_I2C_ISR_TXIS) {
->  		i2c_slave_event(i2c_dev->slave_running,
-> @@ -1494,17 +1504,81 @@ static irqreturn_t stm32f7_i2c_slave_isr_event(struct stm32f7_i2c_dev *i2c_dev)
->  	return IRQ_HANDLED;
->  }
-
-[...]
-
-> -	setup = of_device_get_match_data(&pdev->dev);
-> -	if (!setup) {
-> -		dev_err(&pdev->dev, "Can't get device data\n");
-> -		return -ENODEV;
-> +		ret = devm_request_threaded_irq(&pdev->dev, irq_error,
-> +						NULL,
-> +						stm32f7_i2c_isr_error_thread,
-> +						IRQF_ONESHOT,
-> +						pdev->name, i2c_dev);
-> +		if (ret) {
-> +			dev_err(&pdev->dev, "Failed to request irq error %i\n",
-> +				irq_error);
-
-please use dev_err_probe();
-
-> +			return ret;
-> +		}
-
-out of the scope of the patch and just for curiosity: does the
-driver work without being able to signal on the error interrupt
-line?
-
-Overall the patch looks good to me, though.
-
-Andi
+Thanks,
+Daniel
