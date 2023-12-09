@@ -2,147 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBB580B36E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 10:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C50380B370
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 10:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbjLIJ1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 04:27:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55124 "EHLO
+        id S229581AbjLIJ2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 04:28:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLIJ1P (ORCPT
+        with ESMTP id S229510AbjLIJ2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 04:27:15 -0500
-Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A59B1A1;
-        Sat,  9 Dec 2023 01:27:19 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1702114030; cv=none; 
-        d=zohomail.in; s=zohoarc; 
-        b=c4EPJskWDNc3xa89EkEHx6QoCE59/qC470swWT/Eb/hfEXWL/QFCATp3EsdeOpFEaS/4fDl9tjql2+Zi0iZ44BzggDldqKvlK6Uc2z+NJvtxWexMMAV6zUb5/SGBn/c0JAky7lt7X2keTxVLQvI3vjyMUYKgOHhP+BprhkbfE/8=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
-        t=1702114030; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=9HifBpJc5qMXAFdtxZd4YRtuBh2XKnXg7W7+1B+UIHk=; 
-        b=NxyfT1MOLDabvesW0fyORNyeulsyiEVF0/5zlITUiOLKYvh1YeraV9dn9nZc3YNgLxy1tco+Ic4LLvepfNlP97NEpfQL7XI4Le7KgG4+heNBPWCYHh1Qdjqxoykv2RFS43ievf1bauR8Onsl5s2EjD55t16o69itm1hholEDSRo=
-ARC-Authentication-Results: i=1; mx.zohomail.in;
-        dkim=pass  header.i=siddh.me;
-        spf=pass  smtp.mailfrom=code@siddh.me;
-        dmarc=pass header.from=<code@siddh.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1702114030;
-        s=zmail; d=siddh.me; i=code@siddh.me;
-        h=Message-ID:Date:Date:MIME-Version:To:To:Cc:Cc:References:Subject:Subject:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=9HifBpJc5qMXAFdtxZd4YRtuBh2XKnXg7W7+1B+UIHk=;
-        b=JAwJECmpxynQp4r0Y6oOA5IYCQs0OI/CNGRfldpkA21wFrFyC7HohqaRxFFiXbUK
-        WlYwOsiqqW1crsg8s4IILM2lwo0ZvI3jRikuxiRdQWJ/6/OsuQhNbxqCp5YPE/GKhZC
-        vzNXD+/jRK7ty6bW2wKThbNpkPSNvuHgUQVmj0K4=
-Received: from [192.168.1.12] (110.227.243.208 [110.227.243.208]) by mx.zoho.in
-        with SMTPS id 1702114029175807.7530028703645; Sat, 9 Dec 2023 14:57:09 +0530 (IST)
-Message-ID: <3753ec68-b5e3-40f7-8abe-6e4c737fa5f7@siddh.me>
-Date:   Sat, 9 Dec 2023 14:57:01 +0530
+        Sat, 9 Dec 2023 04:28:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154021700
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 01:28:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31ABDC433C8;
+        Sat,  9 Dec 2023 09:28:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1702114119;
+        bh=MIsat85nOQkIEwt3WRkO5DGJ295mcp3uCca4s0RWya4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qlmu6LiADO/xn3OqfYhWyqtFTO6cK5VnCwZad1VZ5qbk3C32P38p42/+DGOoN39lO
+         qnEkHFwIL6aaSi6izYQ+so5HbDiluggTRFOk470XxwRamtMJOlV4tFNv1DDOpPwhPV
+         SI7JW/vbl9sZK3z44e5h6BMTXsQxHb+9VXRzvEEE=
+Date:   Sat, 9 Dec 2023 10:28:36 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dominik Brodowski <linux@dominikbrodowski.net>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Pavel Machek <pavel@ucw.cz>,
+        Kalle Valo <kvalo@kernel.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        linux-arm-kernel@lists.infradead.org,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, kernel@pengutronix.de
+Subject: Re: [PATCH 0/7] pcmcia: Convert to platform remove callback
+ returning void
+Message-ID: <2023120930-possum-ignore-e8df@gregkh>
+References: <cover.1702051073.git.u.kleine-koenig@pengutronix.de>
+ <ZXNsLJfqs9DLHb1Q@shine.dominikbrodowski.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To:     syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000cb112e0609b419d3@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in
- nfc_alloc_send_skb
-Content-Language: en-US, en-GB, hi-IN
-From:   Siddh Raman Pant <code@siddh.me>
-In-Reply-To: <000000000000cb112e0609b419d3@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZXNsLJfqs9DLHb1Q@shine.dominikbrodowski.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git main
+On Fri, Dec 08, 2023 at 08:19:08PM +0100, Dominik Brodowski wrote:
+> Am Fri, Dec 08, 2023 at 05:08:05PM +0100 schrieb Uwe Kleine-König:
+> > Hello,
+> > 
+> > this series changes all platform drivers in drivers/pcmcia to use the
+> > .remove_new() callback. See commit 5c5a7680e67b ("platform: Provide a
+> > remove callback that returns no value") for an extended explanation and
+> > the eventual goal.
+> > 
+> > All conversations are trivial, because all .remove() callbacks returned
+> > zero unconditionally already.
+> > 
+> > There are no interdependencies between these patches, so they could be
+> > picked up individually. However I'd expect them to go in all together.
+> > It's unclrear to me though, who will pick them up. Dominik? Greg?
+> 
+> Both options are fine with me. In the latter case:
+> 
+> 	Acked-by: Dominik Brodowski <linux@dominikbrodowski.net>
 
----
- net/nfc/llcp_core.c | 40 +++++++++++++++++++++++++++++++++++++---
- 1 file changed, 37 insertions(+), 3 deletions(-)
+I can take these, thanks!
 
-diff --git a/net/nfc/llcp_core.c b/net/nfc/llcp_core.c
-index 1dac28136e6a..fadc8a9ec4df 100644
---- a/net/nfc/llcp_core.c
-+++ b/net/nfc/llcp_core.c
-@@ -145,6 +145,13 @@ static void nfc_llcp_socket_release(struct nfc_llcp_local *local, bool device,
- 
- static struct nfc_llcp_local *nfc_llcp_local_get(struct nfc_llcp_local *local)
- {
-+	/* Since using nfc_llcp_local may result in usage of nfc_dev, whenever
-+	 * we hold a reference to local, we also need to hold a reference to
-+	 * the device to avoid UAF.
-+	 */
-+	if (!nfc_get_device(local->dev->idx))
-+		return NULL;
-+
- 	kref_get(&local->ref);
- 
- 	return local;
-@@ -177,10 +184,18 @@ static void local_release(struct kref *ref)
- 
- int nfc_llcp_local_put(struct nfc_llcp_local *local)
- {
-+	struct nfc_dev *dev;
-+	int ret;
-+
- 	if (local == NULL)
- 		return 0;
- 
--	return kref_put(&local->ref, local_release);
-+	dev = local->dev;
-+
-+	ret = kref_put(&local->ref, local_release);
-+	nfc_put_device(dev);
-+
-+	return ret;
- }
- 
- static struct nfc_llcp_sock *nfc_llcp_sock_get(struct nfc_llcp_local *local,
-@@ -959,8 +974,18 @@ static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
- 	}
- 
- 	new_sock = nfc_llcp_sock(new_sk);
--	new_sock->dev = local->dev;
-+
- 	new_sock->local = nfc_llcp_local_get(local);
-+	if (!new_sock->local) {
-+		reason = LLCP_DM_REJ;
-+		release_sock(&sock->sk);
-+		sock_put(&sock->sk);
-+		sock_put(&new_sock->sk);
-+		nfc_llcp_sock_free(new_sock);
-+		goto fail;
-+	}
-+
-+	new_sock->dev = local->dev;
- 	new_sock->rw = sock->rw;
- 	new_sock->miux = sock->miux;
- 	new_sock->nfc_protocol = sock->nfc_protocol;
-@@ -1597,7 +1622,16 @@ int nfc_llcp_register_device(struct nfc_dev *ndev)
- 	if (local == NULL)
- 		return -ENOMEM;
- 
--	local->dev = ndev;
-+	/* As we are going to initialize local's refcount, we need to get the
-+	 * nfc_dev to avoid UAF, otherwise there is no point in continuing.
-+	 * See nfc_llcp_local_get().
-+	 */
-+	local->dev = nfc_get_device(ndev->idx);
-+	if (!local->dev) {
-+		kfree(local);
-+		return -ENODEV;
-+	}
-+
- 	INIT_LIST_HEAD(&local->list);
- 	kref_init(&local->ref);
- 	mutex_init(&local->sdp_lock);
--- 
-2.42.0
-
+greg k-h
