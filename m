@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3AF80B2F7
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 09:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57B580B2FA
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 09:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234479AbjLIH5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 02:57:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53234 "EHLO
+        id S234363AbjLIH6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 02:58:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234412AbjLIH5q (ORCPT
+        with ESMTP id S234431AbjLIH5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 02:57:46 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A482E198C
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 23:57:47 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40c32bea30dso31325e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 23:57:47 -0800 (PST)
+        Sat, 9 Dec 2023 02:57:54 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB12F199B
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 23:57:57 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c32bea30dso31375e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 23:57:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702108666; x=1702713466; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702108675; x=1702713475; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uf+IfH0HThLv775jb/YeSqCii9F79VgFIcgp8+53yKY=;
-        b=3Z66m11QcXigbFxXmhWzNO/YB0B4RSFqdwXVW/MQCo5ilFBBEFjXJGmMtyY7CXvL7H
-         J5guo6xaY++d8OWryQwHjVoFH+lNlPq0qfBD2h3miDhm00eWLNTQ9v4Hf/kYMVu/Ef0l
-         QcjjMgDPTtXrJkWUCeXYwVyUjQiVMfmy8CN/PO6j182owWht+sVJ4a1f8W9eSXfVNGLJ
-         uKzWTLD/zKFohqtmHN3QyVXkQtIxKtZD9XqbIxVotomH3doomIaA196rEpCUT37cQyTn
-         YVczS4OfSZU6kxW5uM5X9g5eFdT6SgR93yu+f9t3WcVVPXMTCAnXHKdojW0hSOW4+0Qy
-         9iXg==
+        bh=pq57X4im2CLfQ3cLbOKkFuHXUF7vqPPluX6FXjB0spM=;
+        b=OA5bfFoph7NmJwc85rnK2Ua6YL+fz7jTNo8uURl3QLh7JUvCCvZQMUbFDQLyRQIW/A
+         4O4eGn0jrg+WarCJcRXZysB1sTyPqciitpM4igyrZ1dfDY9MXMtB0kljCVB1OSV7ET45
+         I7StOSP65XO/bQVQj02PCkI8r7XCPbSXdnduMhz66poEGSoNUgktOlQx/X5+FjT2UYxT
+         460iBg//8fZ4x8CB9ayzlLm7dRYqlo65L0JNItTs/tl4kUbz+qsk7jChU3T9UNVzPqOF
+         R/fZ3aSZ86PnaPiawLR2R7f2AKxi+O2f14M0DbI1ubHH+WJw7kWwqzneiWql/Y9LIe/1
+         jvfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702108666; x=1702713466;
+        d=1e100.net; s=20230601; t=1702108675; x=1702713475;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Uf+IfH0HThLv775jb/YeSqCii9F79VgFIcgp8+53yKY=;
-        b=KguA8AdU/ZQHoyMETKUG4IFQt0Svi8RTrop9NW9qVZBLmu9/V4cDIw/PHy2oHUlYCq
-         fcRRGI2nHkPAUiZSCIsf/G1P5DH6U6LhSniLU0L1DTNVABq8wKa2y9R2q0C7dS0tURiK
-         sntsqumleFzF7bGwQhKdW5RTGrDZJQnOYJHjaD1GNPRftXPmNw2vVl+vucH31RWk8PUs
-         qEyICiN5P+DFuKWp2AUpZ9ROhehtfnjZVuLw03dvHxmqW5FuIFpyCa9qD+eDlx8FmHw4
-         6N6/xn0/g9jO9yu2PD8VD/23JY766RsYcXB19famSK7vux4nrzqzriA1Rjvnh5M3pJTy
-         uZag==
-X-Gm-Message-State: AOJu0YybTziTmjX8QjZdP6uIEbeic1tKav6UG3ae6eclEJIJ87lOBy0O
-        elaD7UuRNgf7Qf301C9SuAlsMzeWLZUIV2PoViNMZw==
-X-Google-Smtp-Source: AGHT+IFc9qBzSnC0dNyxKf2A8g49QxL0eUL3KYaIdECEROfFUQn68r6OpCA1ZRQkg+XkwaQ2255Zto5E2dAwgd/trP0=
+        bh=pq57X4im2CLfQ3cLbOKkFuHXUF7vqPPluX6FXjB0spM=;
+        b=jwUWzgXawQOox4vOVCasoT+hW4WZHz3vY4zJrbGYWczPW9YOv3BPWBiouw8KW1qDqh
+         HzuZCYiuBpY8/bSPtXgKOVVXQWF7Yce7eu2WI+kAwquZ0sgs9YYq36WMeDX6H7nLlZIw
+         qulo3Y+WJXm+rUbwDI19QzvnOCFBPQ5JD9ze9bmceR/fLDM+dpe1jkmJ9LloBAMecH+Q
+         UKo/Yw6gCv9kSOI/yJ9VsMdDOT/Owe/AIwwfVKJPlQ3zKt0u7u2IGpeBdtH/+PcL5yZC
+         /cufGCTCEz0zDZUSK8za9OwkzL4KmW+o/8oqUl5Rbj7J8SRkrsGv1pIm99O7Eed4Lk8U
+         zdyQ==
+X-Gm-Message-State: AOJu0YzJzKUDJKliXd0gbxR+BfHcTZE8wRSe2E/Uh6ImUA48DvKCslCI
+        bGxtpgMTwVsjp/LKJ/ngle/MNCKbXQnKtSobgC0UOQ==
+X-Google-Smtp-Source: AGHT+IH8Cyx188AVHOWLiD3XyRsQ1opQjcUlD1P6EU9mm78KGF/AxKfS5ZCJpcJxDyH3qfQiij7JrJNWolKLC8rWitc=
 X-Received: by 2002:a05:600c:3648:b0:3f7:3e85:36a with SMTP id
- y8-20020a05600c364800b003f73e85036amr118021wmq.7.1702108665698; Fri, 08 Dec
- 2023 23:57:45 -0800 (PST)
+ y8-20020a05600c364800b003f73e85036amr118023wmq.7.1702108675702; Fri, 08 Dec
+ 2023 23:57:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20231204221932.1465004-1-rmoar@google.com> <20231204221932.1465004-3-rmoar@google.com>
-In-Reply-To: <20231204221932.1465004-3-rmoar@google.com>
+References: <20231204221932.1465004-1-rmoar@google.com> <20231204221932.1465004-4-rmoar@google.com>
+In-Reply-To: <20231204221932.1465004-4-rmoar@google.com>
 From:   David Gow <davidgow@google.com>
-Date:   Sat, 9 Dec 2023 15:57:33 +0800
-Message-ID: <CABVgOSmCBoe549hO9HzX65u=_NR=vwaX6Wy8mmVwsYeqSPWYpg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/6] kunit: add example suite to test init suites
+Date:   Sat, 9 Dec 2023 15:57:43 +0800
+Message-ID: <CABVgOSmbbAyckSvKREmUDBrZJtErQpxaNjXH0vaH1oZjkVt3JA@mail.gmail.com>
+Subject: Re: [PATCH v3 4/6] kunit: add is_init test attribute
 To:     Rae Moar <rmoar@google.com>
 Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
         sadiyakazi@google.com, keescook@chromium.org, arnd@arndb.de,
         linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
         kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000006904d0060c0f0e23"
+        boundary="00000000000000705c060c0f0f1a"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
@@ -71,91 +71,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000006904d0060c0f0e23
+--00000000000000705c060c0f0f1a
 Content-Type: text/plain; charset="UTF-8"
 
 On Tue, 5 Dec 2023 at 06:19, Rae Moar <rmoar@google.com> wrote:
 >
-> Add example_init_test_suite to allow for testing the feature of running
-> test suites marked as init to indicate they use init data and/or
-> functions.
+> Add is_init test attribute of type bool. Add to_string, get, and filter
+> methods to lib/kunit/attributes.c.
 >
-> This suite should always pass and uses a simple init function.
+> Mark each of the tests in the init section with the is_init=true attribute.
 >
-> This suite can also be used to test the is_init attribute introduced in
-> the next patch.
+> Add is_init to the attributes documentation.
 >
 > Signed-off-by: Rae Moar <rmoar@google.com>
 > ---
 
-Can we make the actual test function __init as well? I don't think it
-should be _necessary_ for this to work, but I'd like us to have the
-option of entire tests being marked __init, and so discarded after
-boot.
+Would it be possible to not have this in kunit_attributes? I know it's
+required for the run-after-boot stuff later, but I'd love this to be
+(a) just generated at runtime, or (b) stored only at a suite or
+suite-set level. It seems like a bit of a waste to store this
+per-test-case, and to have it potentially accessible or overwritable
+by users.
 
-This seems to work here if the test is marked __init, and the
-example_init_test_cases and example_init_test_suite are marked
-__initdata.
+Otherwise, this looks good (and I appreciate the automatic setting of
+this when merging the suite sets.
 
-But, as mentioned in the previous patch, that might not work if we
-need to ensure example_init_test_suite and other metadata still
-exists. So maybe we can document that here?
+Maybe if we always kept the init suites in a separate set, we could
+just use pointer comparisons to generate this; otherwise let's make
+this a suite-level-only attribute (inherited by tests).
 
-Otherwise, looks good.
 
-Reviewed-by: David Gow <davidgow@google.com>
-
-Cheers,
 -- David
 
-
-
->  lib/kunit/kunit-example-test.c | 29 +++++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
->
-> diff --git a/lib/kunit/kunit-example-test.c b/lib/kunit/kunit-example-test.c
-> index 6bb5c2ef6696..262a68a59800 100644
-> --- a/lib/kunit/kunit-example-test.c
-> +++ b/lib/kunit/kunit-example-test.c
-> @@ -287,4 +287,33 @@ static struct kunit_suite example_test_suite = {
->   */
->  kunit_test_suites(&example_test_suite);
->
-> +static int __init init_add(int x, int y)
-> +{
-> +       return (x + y);
-> +}
-> +
-> +/*
-> + * This test should always pass. Can be used to test init suites.
-> + */
-> +static void example_init_test(struct kunit *test)
-> +{
-> +       KUNIT_EXPECT_EQ(test, init_add(1, 1), 2);
-> +}
-> +
-> +static struct kunit_case example_init_test_cases[] = {
-> +       KUNIT_CASE(example_init_test),
-> +       {}
-> +};
-> +
-> +static struct kunit_suite example_init_test_suite = {
-> +       .name = "example_init",
-> +       .test_cases = example_init_test_cases,
-> +};
-> +
-> +/*
-> + * This registers the test suite and marks the suite as using init data
-> + * and/or functions.
-> + */
-> +kunit_test_init_section_suites(&example_init_test_suite);
-> +
->  MODULE_LICENSE("GPL v2");
-> --
-> 2.43.0.rc2.451.g8631bc7472-goog
->
-
---0000000000006904d0060c0f0e23
+--00000000000000705c060c0f0f1a
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -222,14 +170,14 @@ impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
 qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
 yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
 R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAa
-sqMttb2Uqvl3QlO/LkMXC5DA0Mu4i8Irpwn7YhlnMTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzEyMDkwNzU3NDZaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCD4
+mqdEXgb+UTpyFDwv7uquG0CIDhrkU+moqYYpwGcmfTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzEyMDkwNzU3NTVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
 BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAjRROR6dDfmUZzwgD/g8M
-gfEW95cH2F876H+5uCQKtK8FkdqsiYAMCU1hVwRZNzoB0XnPsL/nWcptSr++UwCVr+kjwcnuoNFp
-2zVPn6v3TaM89zABy99v3SxjKXWM/XjmIdoM897vfDklIcIKQMzaoNc0/6e6037DdF6Kj2ehh47W
-4brXj7YOS6rG2oenVbhut/PEtPrvZvG2Tn9S3DONRSVOE+PParB4en6qiuHcG7SlIo2ZfXAPZIa6
-bJwbMVDea7tLXMwBWSekFuYKNkaTH+UQ+0fZZkjBqscx/u5dZJ/wkogu0SvlPhwDp951XoOAX/wP
-1N+MBsmGDROQQLHqcQ==
---0000000000006904d0060c0f0e23--
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAZk9zA0VeU3h+80vC3HpI
+Uyc2B3jNWBPG59mENJ9BRt/a+v3/Iv/2gkBfxB8OM4ywQvvvG97xHc/5NUiXn23svcrpFzVR4708
+mGuhj2n0jTUDtnegUcHeSLm+dwP/IhcjYWGVcoxXtLELWhPc/knxSTO8OEL5MoRaEisFo8mA9BKr
+K/Z6j6frZi2Wufg1Hx48kj5YHUuC+UNGTrGp2CHfjELYUSZeFsIUIdC5XEEUTflDivZWB04FXvJF
+1P8K40RznUF+UpGM4sxGZaOc07P79exRpcKVBA18ltoVlwl6YLE0yqa2+9nYRTrvzwWc/kQ6Qjx1
+4KWUq9hU/ryH4ZtGGA==
+--00000000000000705c060c0f0f1a--
