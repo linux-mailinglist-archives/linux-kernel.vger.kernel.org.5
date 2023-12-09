@@ -2,143 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A069680B65A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC55480B65B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbjLIUxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 15:53:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33638 "EHLO
+        id S230505AbjLIUx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 15:53:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjLIUxJ (ORCPT
+        with ESMTP id S229477AbjLIUx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 15:53:09 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B647CE1
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 12:53:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702155196; x=1733691196;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=vsmFGp4tltrRfnwVP7WRUH3KHkFugEu7frCpsnLaLW8=;
-  b=Hcgs7Nlul4N13YvufuJGsvGaI63i9lKVd/tINqxPw9BLB0+Io69+I+9t
-   ptpZEUyUfRvkXJee/oxdT3xvLMOhOnse/+v5EOqZDb+YS2Ot3PU6ZBiFR
-   SO2MSpnOUUnfKd3g7RWZkHir9qifxJfd+p4kw5CDNy+nIvWJaNjo0Zal5
-   GgzhpeuursxsZutIUGjCLVyakGgBM2xJZMvUGBqzIkOKFRiz3isRbjr5p
-   xSnJvyP+GXO7zPDNi5OH798g9ZMYNNjxNw1IM/4PmK1YcCHBXkCEjQmaC
-   X6lGp5MWKcXlHyJMuj6wMxjVEbMcb81t5WLHg+Svukzqlc430A0eOuaP1
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="16077340"
-X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
-   d="scan'208";a="16077340"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 12:53:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="842993032"
-X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
-   d="scan'208";a="842993032"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Dec 2023 12:53:14 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rC4K0-000Fw4-14;
-        Sat, 09 Dec 2023 20:53:12 +0000
-Date:   Sun, 10 Dec 2023 04:52:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Marius Zachmann <mail@mariuszachmann.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: drivers/hwmon/corsair-cpro.c:502:79: sparse: sparse: Using plain
- integer as NULL pointer
-Message-ID: <202312100455.k6m2eO4N-lkp@intel.com>
+        Sat, 9 Dec 2023 15:53:57 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC3ADE1;
+        Sat,  9 Dec 2023 12:54:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702155242;
+        bh=I69yofRInENg2Oy9+9NHwAKvDNRysPthJcXn80JrEQE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Nlo0p7yhFd5BTjEjYW+ZPJaXwexSbYOC3V1otiSjBvr7qv5TlriHJI9uxDDPQgTqv
+         t1LUSAELpUneX+oSyxRdLojBByKK1mhta+D6hWZoBEgPx9/4wjJXmnkJzylWTqZzzI
+         /tcjPeFgHO5U0qe2q3MYrKJY8912ma1wh9AtN+Yir9TBKOx/GCikJlpIbFuonCX7hG
+         ZVMtHj4PQKxCe9sm5QcRDFodAgmwlZYlmLj8fWaI5pPv/AAw3Pz1gMxhqtl2ED5ETn
+         66eBum3WB4/XeSzEnJAr4BxffDMNfYzfFwyWayePILG23cKeaYxBvvQiX60+Fdh0pX
+         fxLyy7N7Wj+6w==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cristicc)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id EE61F3780C1A;
+        Sat,  9 Dec 2023 20:54:01 +0000 (UTC)
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+        Mastan Katragadda <Mastan.Katragadda@amd.com>,
+        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sound-open-firmware@alsa-project.org, kernel@collabora.com
+Subject: [PATCH 00/11] Improve SOF support for Steam Deck OLED
+Date:   Sat,  9 Dec 2023 22:53:39 +0200
+Message-ID: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f2e8a57ee9036c7d5443382b6c3c09b51a92ec7e
-commit: 40c3a445422579db8ad96c234dbe6c0ab3f6b936 hwmon: add Corsair Commander Pro driver
-date:   3 years, 5 months ago
-config: parisc-randconfig-m041-20230821 (https://download.01.org/0day-ci/archive/20231210/202312100455.k6m2eO4N-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20231210/202312100455.k6m2eO4N-lkp@intel.com/reproduce)
+This patch series is a continuation of [1] to provide fixes and improvements to
+SOF drivers targeting the Vangogh platform, as found on the Valve's Steam Deck
+OLED.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312100455.k6m2eO4N-lkp@intel.com/
+The previous series only handled the legacy ACP drivers.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/hwmon/corsair-cpro.c:502:79: sparse: sparse: Using plain integer as NULL pointer
+[1]: https://lore.kernel.org/all/20231209203229.878730-1-cristian.ciocaltea@collabora.com/
 
-vim +502 drivers/hwmon/corsair-cpro.c
+Cristian Ciocaltea (11):
+  ASoC: amd: acp: Drop redundant initialization of machine driver data
+  ASoC: amd: acp: Make use of existing *_CODEC_DAI macros
+  ASoC: amd: acp: Add missing error handling in sof-mach
+  ASoC: amd: acp: Update MODULE_DESCRIPTION for sof-mach
+  ASoC: SOF: amd: Fix memory leak in amd_sof_acp_probe()
+  ASoC: SOF: amd: Optimize quirk for Valve Galileo
+  ASoC: SOF: core: Skip firmware test for undefined fw_name
+  ASoC: SOF: amd: Override default fw name for Valve Galileo
+  ASoC: SOF: amd: Compute file paths on firmware load
+  ASoC: amd: acp: Use correct DAI link ID for BT codec
+  ASoC: SOF: topology: Add new DAI type entry for SOF_DAI_AMD_BT
 
-   460	
-   461	static int ccp_probe(struct hid_device *hdev, const struct hid_device_id *id)
-   462	{
-   463		struct ccp_device *ccp;
-   464		int ret;
-   465	
-   466		ccp = devm_kzalloc(&hdev->dev, sizeof(*ccp), GFP_KERNEL);
-   467		if (!ccp)
-   468			return -ENOMEM;
-   469	
-   470		ccp->buffer = devm_kmalloc(&hdev->dev, OUT_BUFFER_SIZE, GFP_KERNEL);
-   471		if (!ccp->buffer)
-   472			return -ENOMEM;
-   473	
-   474		ret = hid_parse(hdev);
-   475		if (ret)
-   476			return ret;
-   477	
-   478		ret = hid_hw_start(hdev, HID_CONNECT_HIDRAW);
-   479		if (ret)
-   480			return ret;
-   481	
-   482		ret = hid_hw_open(hdev);
-   483		if (ret)
-   484			goto out_hw_stop;
-   485	
-   486		ccp->hdev = hdev;
-   487		hid_set_drvdata(hdev, ccp);
-   488		mutex_init(&ccp->mutex);
-   489		init_completion(&ccp->wait_input_report);
-   490	
-   491		hid_device_io_start(hdev);
-   492	
-   493		/* temp and fan connection status only updates when device is powered on */
-   494		ret = get_temp_cnct(ccp);
-   495		if (ret)
-   496			goto out_hw_close;
-   497	
-   498		ret = get_fan_cnct(ccp);
-   499		if (ret)
-   500			goto out_hw_close;
-   501		ccp->hwmon_dev = hwmon_device_register_with_info(&hdev->dev, "corsaircpro",
- > 502								 ccp, &ccp_chip_info, 0);
-   503		if (IS_ERR(ccp->hwmon_dev)) {
-   504			ret = PTR_ERR(ccp->hwmon_dev);
-   505			goto out_hw_close;
-   506		}
-   507	
-   508		return 0;
-   509	
-   510	out_hw_close:
-   511		hid_hw_close(hdev);
-   512	out_hw_stop:
-   513		hid_hw_stop(hdev);
-   514		return ret;
-   515	}
-   516	
+ sound/soc/amd/acp/acp-mach-common.c |  6 +++---
+ sound/soc/amd/acp/acp-mach.h        |  2 +-
+ sound/soc/amd/acp/acp-sof-mach.c    | 26 +++++++----------------
+ sound/soc/sof/amd/acp-loader.c      | 32 +++++++++++++++++++++++------
+ sound/soc/sof/amd/acp.c             | 30 ++++++++++++++++-----------
+ sound/soc/sof/amd/vangogh.c         |  8 +++++++-
+ sound/soc/sof/fw-file-profile.c     |  3 +++
+ sound/soc/sof/topology.c            |  1 +
+ 8 files changed, 66 insertions(+), 42 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
