@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFFA80B539
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 17:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0139680B53B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 17:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbjLIQWj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 9 Dec 2023 11:22:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36796 "EHLO
+        id S231315AbjLIQYS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 9 Dec 2023 11:24:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLIQWh (ORCPT
+        with ESMTP id S229519AbjLIQYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 11:22:37 -0500
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F03D5B;
-        Sat,  9 Dec 2023 08:22:43 -0800 (PST)
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dbc6658fda3so501161276.3;
-        Sat, 09 Dec 2023 08:22:43 -0800 (PST)
+        Sat, 9 Dec 2023 11:24:16 -0500
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1918AD5B;
+        Sat,  9 Dec 2023 08:24:23 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5d40c728fc4so22640567b3.1;
+        Sat, 09 Dec 2023 08:24:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702138962; x=1702743762;
+        d=1e100.net; s=20230601; t=1702139062; x=1702743862;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zXLi8btoKJJM+Y3mbDTAiN96eN6yPzf/fqmbiitK0RI=;
-        b=vUsdZHpHpomHCWQzDmujWXh97uHAOssck5P1iGH+KCnnfiGcJ66Ld8rWL6GOtk1fvQ
-         kOt62Jf9SJB/EDaip0/suHeMQuRdoxHLlxetpoMN3c61KuBIlybRu4ZuVuWnnumzuoTz
-         XYAwt8bCVabDSgmImUuEypWfGaHnWLD8nyqDBHR0J/y9XAi+ylJleV9vtiiyDOnrEaDB
-         1LqXfO57sBZ2s7sGdZlx95LuKTuaSPtv3NZOeODEkWtCj45SRxrZsZuM/oGfnZRrYUl8
-         jYDprxr9GlrVhM3YzGG8LTwYBg+PRJLnSX1l5I3tJsBrK5YjxBNPDz1XeBuFlHnjTZQl
-         kJUQ==
-X-Gm-Message-State: AOJu0YzGKmr6d3fAKo7VIRFO0xgBxRRj/cRmI1Y/Gw+U3hWTodRgmo1p
-        TylL8WpSdAHCNMrUpsa6NeY98Uh5aiunuQ==
-X-Google-Smtp-Source: AGHT+IFCU7XFERhk9HsAv78kJrpS5GbvP2BDihMYP7wYKxRX44AUJ8Nh/X+xWa+DtpFHJqe8EgvqVw==
-X-Received: by 2002:a05:6902:147:b0:db7:dacf:6206 with SMTP id p7-20020a056902014700b00db7dacf6206mr984506ybh.88.1702138962423;
-        Sat, 09 Dec 2023 08:22:42 -0800 (PST)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id k18-20020a258c12000000b00d9cbf2aabc6sm1344109ybl.14.2023.12.09.08.22.42
+        bh=ftMXe68BPe7sn/wEG9nTEA4djliLUETYEQbnl5rzReQ=;
+        b=DJow0Xo2uEs06Cl5yrTSatZzSq6kSNATCLZkA3lLOtP7yRC6zHRH4VEsQ3ECGublvS
+         9hew/r9JGaPgZb0k8ch7frmkrQmhjgpdzPrxfqFY/T9mFC/6AJ3APnrpP7V55yOu9ldn
+         s86nLuOsXrMY6j5k+Yp6/+qq9SEhQKY1c2QZZTye5XwKau7A6TUftmphBwHstI1vUaYg
+         kxDIOJZkGmCODY9JrdVf0rv9e5yIkZ89efh2SoGKK06bXnk/SNrF6WPlYXs+6h+cdfI8
+         xrYzULPoI/i08W4M1yKfDfzWrRnVCWsCA6YjTg4zjeh6R7991NpOPOg43fhxlQWkr7Mr
+         +XVg==
+X-Gm-Message-State: AOJu0YwfQhgB3SrjU6yVFkbpjGKxauF6NHuLWZNGdER0tbdcx4HWiP0I
+        8SJ4k0CPxJmrfYZWcB4e19Xr8GCGvzsZ8Q==
+X-Google-Smtp-Source: AGHT+IGiJ5UeZzU9kvUDP5lqVGRaLlcvLmVbIyfU20DuaxNCi2waXMER/WRdu4urWhf6MLITmg9JgQ==
+X-Received: by 2002:a81:7102:0:b0:5d7:1940:3ef5 with SMTP id m2-20020a817102000000b005d719403ef5mr1536399ywc.38.1702139062166;
+        Sat, 09 Dec 2023 08:24:22 -0800 (PST)
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
+        by smtp.gmail.com with ESMTPSA id fq13-20020a05690c350d00b005de8c10f283sm1341083ywb.102.2023.12.09.08.24.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Dec 2023 08:22:42 -0800 (PST)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5cd81e76164so28977427b3.1;
-        Sat, 09 Dec 2023 08:22:42 -0800 (PST)
-X-Received: by 2002:a81:5cc5:0:b0:5d7:1940:dd83 with SMTP id
- q188-20020a815cc5000000b005d71940dd83mr1224179ywb.89.1702138961866; Sat, 09
- Dec 2023 08:22:41 -0800 (PST)
+        Sat, 09 Dec 2023 08:24:21 -0800 (PST)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-db54ec0c7b8so2692670276.0;
+        Sat, 09 Dec 2023 08:24:21 -0800 (PST)
+X-Received: by 2002:a25:b54:0:b0:db9:8492:c7ae with SMTP id
+ 81-20020a250b54000000b00db98492c7aemr1768008ybl.0.1702139061644; Sat, 09 Dec
+ 2023 08:24:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20231120111820.87398-2-claudiu.beznea.uj@bp.renesas.com> <170207008477.398.7455050423203256596.tip-bot2@tip-bot2>
-In-Reply-To: <170207008477.398.7455050423203256596.tip-bot2@tip-bot2>
+References: <20231120111820.87398-10-claudiu.beznea.uj@bp.renesas.com> <170207007858.398.5775493085982200914.tip-bot2@tip-bot2>
+In-Reply-To: <170207007858.398.5775493085982200914.tip-bot2@tip-bot2>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sat, 9 Dec 2023 17:22:30 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVFZvrWGbwsVAfOrLGWqgoSieKrqH_kN4rvoGmw-Fsnrg@mail.gmail.com>
-Message-ID: <CAMuHMdVFZvrWGbwsVAfOrLGWqgoSieKrqH_kN4rvoGmw-Fsnrg@mail.gmail.com>
-Subject: Re: [tip: irq/core] clk: renesas: r9a08g045: Add IA55 pclk and its reset
+Date:   Sat, 9 Dec 2023 17:24:10 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUgvP9x3eTcvAnxYtH-79Mfb585EJOBYOyev_w0xfCZEg@mail.gmail.com>
+Message-ID: <CAMuHMdUgvP9x3eTcvAnxYtH-79Mfb585EJOBYOyev_w0xfCZEg@mail.gmail.com>
+Subject: Re: [tip: irq/core] arm64: dts: renesas: r9108g045: Add IA55
+ interrupt controller node
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     linux-tip-commits@vger.kernel.org,
         Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
@@ -69,23 +70,23 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Thomas,
 
-On Fri, Dec 8, 2023 at 10:14 PM tip-bot2 for Claudiu Beznea
+On Fri, Dec 8, 2023 at 10:16 PM tip-bot2 for Claudiu Beznea
 <tip-bot2@linutronix.de> wrote:
 > The following commit has been merged into the irq/core branch of tip:
 >
-> Commit-ID:     63385748bce1ef169438c123c7e32c021c0b9409
-> Gitweb:        https://git.kernel.org/tip/63385748bce1ef169438c123c7e32c021c0b9409
+> Commit-ID:     8794f5c3d2299670d16b2fb1e6657f5f33c1518c
+> Gitweb:        https://git.kernel.org/tip/8794f5c3d2299670d16b2fb1e6657f5f33c1518c
 > Author:        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> AuthorDate:    Mon, 20 Nov 2023 13:18:12 +02:00
+> AuthorDate:    Mon, 20 Nov 2023 13:18:20 +02:00
 > Committer:     Thomas Gleixner <tglx@linutronix.de>
-> CommitterDate: Fri, 08 Dec 2023 22:06:34 +01:00
+> CommitterDate: Fri, 08 Dec 2023 22:06:35 +01:00
 >
-> clk: renesas: r9a08g045: Add IA55 pclk and its reset
+> arm64: dts: renesas: r9108g045: Add IA55 interrupt controller node
 
-Please do not apply Renesas clock patches to your tree without an
-explicit ack (especially when there are nearby changes in flight).
-Renesas clock patches are intended to go in through the renesas-clk
-and clk trees.
+Please do not apply Renesas DTS patches to your tree without an
+explicit ack.
+Renesas DTS patches are intended to go in through the renesas-devel
+and soc trees.
 
 Thanks!
 
