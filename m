@@ -2,214 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0494B80B801
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 00:32:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7053D80B823
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 00:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbjLIX3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 18:29:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47502 "EHLO
+        id S230104AbjLIXod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 18:44:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjLIX3G (ORCPT
+        with ESMTP id S229488AbjLIXob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 18:29:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4449F123
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 15:29:12 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DB64C433C8;
-        Sat,  9 Dec 2023 23:29:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702164551;
-        bh=c9kOjfPZi63X+asNNxhMNmUxQDfFEzKNIVa3FVoqTpU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=b6Hyp1OBNvus/wYWvXxgvsrIZmxWDbJmG7M94TiargWR0ivsB/QtcAV15++RbJpw4
-         0aBA5M26kNQea5FdiS2dxZto+AGylSMARPzNHWPxVoeLKiA0l6cIpNgoAMvW7REZqh
-         c2PQK/kmpYgy9PugIfR9kwNsrZdY4LqqihHztRYSxkc0KCU4dNqt/0Wv0kcB+cWFox
-         YUDbgRYcK7BMoi+NkWVzj/MJSIR5RKcu5gsSTeGkzfQCwahZHG3Vhh7dbv3fYM7C0m
-         IQsB2hHL6ZcSA5LR7vaDJi4nu1TqHUL4AZvEpnYmBrscOL9JKv+KMYpX68+ufgKMLS
-         bL2ldjH3T1UQA==
-Message-ID: <279a2999-3c0a-4839-aa2e-602864197410@kernel.org>
-Date:   Sat, 9 Dec 2023 16:29:09 -0700
+        Sat, 9 Dec 2023 18:44:31 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3E4137;
+        Sat,  9 Dec 2023 15:44:37 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6ce6d926f76so2195359b3a.1;
+        Sat, 09 Dec 2023 15:44:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702165477; x=1702770277; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rtmQ0Co4x4OR8rVEqpmUzS6N/PIvHORpqyImpx7xIwI=;
+        b=R/vDqZPAgYZDOUXm5YOgbHTAYVb94HDVYGLdrR8g0D90YyYtp5SAixk0mdZKrh1Dxx
+         v6Tb1hf1BwtNY4ft7dcWRYyPexXsB2M3VCjvZnJaSUNTn9NO+UTZTzOlm9+NbBQ7D4KZ
+         uUqJX3VwC8FFmyQuvdaW5mLFhgIcEPQY02QClVir1ZRhxALZOYsehyjb8SaS8YD/CiqB
+         /X7cCKVaCuj87sAZUfoTses0Ku+5lPXo7Ntjx80uvvEsj2cw/FeY6mGoRoQocPTmrleS
+         p7tAQ2m6rznUwGj8AOZ1N64Vl550CZwjYTRfnAM+PjS9YPXA3oJv13+55O1gumZqruCY
+         NnOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702165477; x=1702770277;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rtmQ0Co4x4OR8rVEqpmUzS6N/PIvHORpqyImpx7xIwI=;
+        b=NbnB5AKtlB/aEA0lP3nTfyY3b+foDRPW+f1gPD19xf+ep8N6aF3RcO8x+5sNPxhHEL
+         JZ0aJcatliRp7v501peq6EFsCQyafZ+s1BTA3PmNiLMNIr7WMTiCqRAOR6CPXgv5C2m3
+         mxWcaHLxTTJzIwNWf3215gcdTQIRzoIJGEN5/M1X3NbM0m8loe4y/T+Wwd8ESfeccXqM
+         d/0GSjoODMnfn7SJdIJBEwm/nWNX0IJAk1jzF0PiIV74iUYXNN/v/jwujO6kaFVXVMaR
+         GeM+Yt++JGzG+Ag/24PIxNMgqi1AUgVBM43jMKvCoY4TLKriJgGOWKZgO9HTgUlDst7j
+         el1Q==
+X-Gm-Message-State: AOJu0Yxqg40wzTAm4xqZjf+0VPyDTQ8KRaoQNWQ556eL1PFKmtncOlYy
+        FKJOWdUmQlPrpN7aGXKQttQ=
+X-Google-Smtp-Source: AGHT+IEiouUBxZ5U2tgoVTbnxXCZCzTcUY6iJ8p1/HvSrmbmZkSOERNVtlaAR0a62nrX/bRpcNAOaA==
+X-Received: by 2002:a05:6a21:6209:b0:190:199:ba05 with SMTP id wm9-20020a056a21620900b001900199ba05mr2945399pzb.60.1702165476873;
+        Sat, 09 Dec 2023 15:44:36 -0800 (PST)
+Received: from [10.0.2.15] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id p20-20020a63fe14000000b005c67721e6c0sm3698631pgh.53.2023.12.09.15.44.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Dec 2023 15:44:36 -0800 (PST)
+Message-ID: <50830030-dca7-4c43-bcc8-449c7cfa9fbb@gmail.com>
+Date:   Sun, 10 Dec 2023 08:44:33 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next v1 06/16] netdev: support binding dma-buf to netdevice
+From:   Akira Yokosawa <akiyks@gmail.com>
+Subject: Re: [PATCH v2] docs: Raise the minimum Sphinx requirement to 2.4.4
+To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>
+References: <874jgs47fq.fsf@meer.lwn.net>
 Content-Language: en-US
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-7-almasrymina@google.com>
- <5752508c-f7bc-44ac-8778-c807b2ee5831@kernel.org>
- <CAHS8izPsQ2XoJy-vYWkn051Yc=D_kSprtQcG4mmPutf1G3+-aw@mail.gmail.com>
-From:   David Ahern <dsahern@kernel.org>
-In-Reply-To: <CAHS8izPsQ2XoJy-vYWkn051Yc=D_kSprtQcG4mmPutf1G3+-aw@mail.gmail.com>
+In-Reply-To: <874jgs47fq.fsf@meer.lwn.net>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/23 12:22 PM, Mina Almasry wrote:
-> On Fri, Dec 8, 2023 at 9:48 AM David Ahern <dsahern@kernel.org> wrote:
->>
->> On 12/7/23 5:52 PM, Mina Almasry wrote:
-> ...
->>> +
->>> +     xa_for_each(&binding->bound_rxq_list, xa_idx, rxq) {
->>> +             if (rxq->binding == binding) {
->>> +                     /* We hold the rtnl_lock while binding/unbinding
->>> +                      * dma-buf, so we can't race with another thread that
->>> +                      * is also modifying this value. However, the driver
->>> +                      * may read this config while it's creating its
->>> +                      * rx-queues. WRITE_ONCE() here to match the
->>> +                      * READ_ONCE() in the driver.
->>> +                      */
->>> +                     WRITE_ONCE(rxq->binding, NULL);
->>> +
->>> +                     rxq_idx = get_netdev_rx_queue_index(rxq);
->>> +
->>> +                     netdev_restart_rx_queue(binding->dev, rxq_idx);
->>
->> Blindly restarting a queue when a dmabuf is heavy handed. If the dmabuf
->> has no outstanding references (ie., no references in the RxQ), then no
->> restart is needed.
->>
+Hi,
+
+On Fri, 08 Dec 2023 16:10:17 -0700, Jonathan Corbet wrote:
+> Commit 31abfdda6527 (docs: Deprecate use of Sphinx < 2.4.x) in 6.2 added a
+> warning that support for older versions of Sphinx would be going away.
+> There have been no complaints, so the time has come.  Raise the minimum
+> Sphinx version to 2.4.4 and clean out some compatibility code that we no
+> longer need.
 > 
-> I think I need to stop the queue while binding to a dmabuf for the
-> sake of concurrency, no? I.e. the softirq thread may be delivering a
-> packet, and in parallel a separate thread holds rtnl_lock and tries to
-> bind the dma-buf. At that point the page_pool recreation will race
-> with the driver doing page_pool_alloc_page(). I don't think I can
-> insert a lock to handle this into the rx fast path, no?
+> Reviewed-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+> ---
+> Only change since v1 is setting the recommended version to 3.4.3, as
+> seems to be the consensus for the best choice.
 
-I think it depends on the details of how entries are added and removed
-from the pool. I am behind on the pp details at this point, so I do need
-to do some homework.
+With this patch applied, I get a confusing looking warning from
+"make htmldocs" on a machine where the Sphinx version is 2.4.5:
 
-> 
-> Also, this sounds like it requires (lots of) more changes. The
-> page_pool + driver need to report how many pending references there
-> are (with locking so we don't race with incoming packets), and have
-> them reported via an ndo so that we can skip restarting the queue.
-> Implementing the changes in to a huge issue but handling the
-> concurrency may be a genuine blocker. Not sure it's worth the upside
-> of not restarting the single rx queue?
+--------
+Warning: It is recommended at least Sphinx version 3.4.3.
+To upgrade Sphinx, use:
 
-It has to do with the usability of this overall solution. As I mentioned
-most ML use cases can (and will want to) use many memory allocations for
-receiving packets - e.g., allocations per message and receiving multiple
-messages per socket connection.
+	/home/akira/sphinx-2.4.5/bin/python3 -m venv sphinx_2.4.4
+	. sphinx_2.4.4/bin/activate
+	pip install -r ./Documentation/sphinx/requirements.txt
+
+    If you want to exit the virtualenv, you can use:
+	deactivate
+--------
+
+Looks like we need to update requirements.txt as well so that it
+installs Sphinx 3.4.3.  Appended below is a fixup patch to that
+effect.
+
+        Thanks, Akira
 
 > 
->>> +             }
->>> +     }
->>> +
->>> +     xa_erase(&netdev_dmabuf_bindings, binding->id);
->>> +
->>> +     netdev_dmabuf_binding_put(binding);
->>> +}
->>> +
->>> +int netdev_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
->>> +                             struct netdev_dmabuf_binding *binding)
->>> +{
->>> +     struct netdev_rx_queue *rxq;
->>> +     u32 xa_idx;
->>> +     int err;
->>> +
->>> +     rxq = __netif_get_rx_queue(dev, rxq_idx);
->>> +
->>> +     if (rxq->binding)
->>> +             return -EEXIST;
->>> +
->>> +     err = xa_alloc(&binding->bound_rxq_list, &xa_idx, rxq, xa_limit_32b,
->>> +                    GFP_KERNEL);
->>> +     if (err)
->>> +             return err;
->>> +
->>> +     /* We hold the rtnl_lock while binding/unbinding dma-buf, so we can't
->>> +      * race with another thread that is also modifying this value. However,
->>> +      * the driver may read this config while it's creating its * rx-queues.
->>> +      * WRITE_ONCE() here to match the READ_ONCE() in the driver.
->>> +      */
->>> +     WRITE_ONCE(rxq->binding, binding);
->>> +
->>> +     err = netdev_restart_rx_queue(dev, rxq_idx);
->>
->> Similarly, here binding a dmabuf to a queue. I was expecting the dmabuf
->> binding to add entries to the page pool for the queue.
+>  Documentation/conf.py              |  2 +-
+>  Documentation/doc-guide/sphinx.rst |  2 +-
+>  Documentation/process/changes.rst  |  2 +-
+>  Documentation/sphinx/automarkup.py |  6 +-----
+>  Documentation/sphinx/cdomain.py    |  6 +-----
+>  Documentation/sphinx/kfigure.py    |  8 +-------
+>  scripts/sphinx-pre-install         | 10 +---------
+>  7 files changed, 7 insertions(+), 29 deletions(-)
 > 
-> To be honest, I think maybe there's a slight disconnect between how
-> you think the page_pool works, and my primitive understanding of how
-> it works. Today, I see a 1:1 mapping between rx-queue and page_pool in
-> the code. I don't see 1:many or many:1 mappings.
+[...]
 
-I am not referring to 1:N or N:1 for page pool and queues. I am
-referring to entries within a single page pool for a single Rx queue.
+----8<----
+From: Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH] docs: sphinx/requirement.txt: Reflect recommended Sphinx version
 
+sphinx_pre_install parses the version of Sphinx in requirements.txt
+and emits messages based on it.
+Update requirements.txt so that it installs Sphinx 3.4.3, as well as
+the examples in documentation.
 
-> 
-> In theory mapping 1 rx-queue to n page_pools is trivial: the driver
-> can call page_pool_create() multiple times to generate n queues and
-> decide for incoming packets which one to use.
-> 
-> However, mapping n rx-queues to 1 page_pool seems like a can of worms.
-> I see code in the page_pool that looks to me (and Willem) like it's
-> safe only because the page_pool is used from the same napi context.
-> with a n rx-queueue: 1 page_pool mapping, that is no longer true, no?
-> There is a tail end of issues to resolve to be able to map 1 page_pool
-> to n queues as I understand and even if resolved I'm not sure the
-> maintainers are interested in taking the code.
-> 
-> So, per my humble understanding there is no such thing as "add entries
-> to the page pool for the (specific) queue", the page_pool is always
-> used by 1 queue.
-> 
-> Note that even though this limitation exists, we still support binding
-> 1 dma-buf to multiple queues, because multiple page pools can use the
-> same netdev_dmabuf_binding. I should add that to the docs.
-> 
->> If the pool was
->> previously empty, then maybe the queue needs to be "started" in the
->> sense of creating with h/w or just pushing buffers into the queue and
->> moving the pidx.
->>
->>
-> 
-> I don't think it's enough to add buffers to the page_pool, no? The
-> existing buffers in the page_pool (host mem) must be purged. I think
-> maybe the queue needs to be stopped as well so that we don't race with
-> incoming packets and end up with skbs with devmem and non-devmem frags
-> (unless you're thinking it becomes a requirement to support that, I
-> think things are complicated as-is and it's a good simplification).
-> When we already purge the existing buffers & restart the queue, it's
-> little effort to migrate this to become in line with Jakub's queue-api
-> that he also wants to use for per-queue configuration & ndo_stop/open.
-> 
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+---
+ Documentation/doc-guide/sphinx.rst    | 14 +++++++-------
+ Documentation/sphinx/requirements.txt |  4 +++-
+ 2 files changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/doc-guide/sphinx.rst b/Documentation/doc-guide/sphinx.rst
+index 3d125fb4139d..5227a2611026 100644
+--- a/Documentation/doc-guide/sphinx.rst
++++ b/Documentation/doc-guide/sphinx.rst
+@@ -48,13 +48,13 @@ or ``virtualenv``, depending on how your distribution packaged Python 3.
+       on the Sphinx version, it should be installed separately,
+       with ``pip install sphinx_rtd_theme``.
+ 
+-In summary, if you want to install Sphinx version 2.4.4, you should do::
++In summary, if you want to install Sphinx version 3.4.3, you should do::
+ 
+-       $ virtualenv sphinx_2.4.4
+-       $ . sphinx_2.4.4/bin/activate
+-       (sphinx_2.4.4) $ pip install -r Documentation/sphinx/requirements.txt
++       $ virtualenv sphinx_3.4.3
++       $ . sphinx_3.4.3/bin/activate
++       (sphinx_3.4.3) $ pip install -r Documentation/sphinx/requirements.txt
+ 
+-After running ``. sphinx_2.4.4/bin/activate``, the prompt will change,
++After running ``. sphinx_3.4.3/bin/activate``, the prompt will change,
+ in order to indicate that you're using the new environment. If you
+ open a new shell, you need to rerun this command to enter again at
+ the virtual environment before building the documentation.
+@@ -118,8 +118,8 @@ command line options for your distro::
+ 	You should run:
+ 
+ 		sudo dnf install -y texlive-luatex85
+-		/usr/bin/virtualenv sphinx_2.4.4
+-		. sphinx_2.4.4/bin/activate
++		/usr/bin/virtualenv sphinx_3.4.3
++		. sphinx_3.4.3/bin/activate
+ 		pip install -r Documentation/sphinx/requirements.txt
+ 
+ 	Can't build as 1 mandatory dependency is missing at ./scripts/sphinx-pre-install line 468.
+diff --git a/Documentation/sphinx/requirements.txt b/Documentation/sphinx/requirements.txt
+index 335b53df35e2..89329e67e788 100644
+--- a/Documentation/sphinx/requirements.txt
++++ b/Documentation/sphinx/requirements.txt
+@@ -1,3 +1,5 @@
+ # jinja2>=3.1 is not compatible with Sphinx<4.0
+ jinja2<3.1
+-Sphinx==2.4.4
++# docutils>=0.18 is not compatible with 3.0 <= Sphinx < 4.0
++docutils<0.18
++Sphinx==3.4.3
+-- 
+2.34.1
 
