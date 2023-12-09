@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1495480B4C3
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 15:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E7D80B4B5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 15:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbjLINxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 08:53:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
+        id S230346AbjLINx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 08:53:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbjLINxD (ORCPT
+        with ESMTP id S230314AbjLINx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 08:53:03 -0500
+        Sat, 9 Dec 2023 08:53:27 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E46010C8
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 05:53:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72AF8C433C8;
-        Sat,  9 Dec 2023 13:53:07 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF32610C4
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 05:53:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC58EC433C8;
+        Sat,  9 Dec 2023 13:53:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1702129987;
-        bh=uiEXUHSF1CMli8Osbmo8kNmQ4X2/t97OP/e1UIDgpsA=;
+        s=korg; t=1702130013;
+        bh=NGosgo9icqUGfR9kDXlIy5kT5uIVLre2hE6LsRIINVM=;
         h=Date:From:To:Cc:Subject:From;
-        b=StoZVzbvdoj3WlMZceR+eRv82qe8rVTspb7FpkuskPX0oTxnn4Kd0gd1EC3Z1OJKn
-         pfQt0lh/VhB3Gy/C+LazvBOC3AjlooSUvrgW9TX9Lpc1WR48MU638KgsbUejm8wHiO
-         zAjNDY7R97GZkuynO7Bp8Q+WWL81PQu+C/qqppgU=
-Date:   Sat, 9 Dec 2023 14:53:05 +0100
+        b=y9Bmdkr0b7scSy9hvqejhBkxHhSagzPsxJUCSSuIHC7MMRAP8mIzp8gqQDQSUDV6H
+         U52m8AwYIKOPKy8wTtkIpKjnZvkuKBcusUZsACl8Jyh517LpKGeok9wNSrtikgSxBo
+         mhSg/OroQAX3kShaw1AeD3mykaHh3yLC15W2CPUk=
+Date:   Sat, 9 Dec 2023 14:53:30 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Char/Misc driver fixes for 6.7-rc4
-Message-ID: <ZXRxQRNFYbjEevvb@kroah.com>
+Cc:     Jiri Slaby <jslaby@suse.cz>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [GIT PULL] TTY/Serial driver fixes for 6.7-rc5
+Message-ID: <ZXRxWubSRJ4lGC1N@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -45,103 +46,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 33cc938e65a98f1d29d0a18403dbbee050dcad9a:
+The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
 
-  Linux 6.7-rc4 (2023-12-03 18:52:56 +0900)
+  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-6.7-rc5
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-6.7-rc4
 
-for you to fetch changes up to b7c1e53751cb3990153084f31c41f25fde3b629c:
+for you to fetch changes up to e92fad024929c79460403acf946bc9c09ce5c3a9:
 
-  nvmem: Do not expect fixed layouts to grab a layout driver (2023-12-07 11:19:32 +0900)
+  serial: 8250_dw: Add ACPI ID for Granite Rapids-D UART (2023-12-07 10:48:56 +0900)
 
 ----------------------------------------------------------------
-Char/Misc driver fixes for 6.7-rc5
+Serial driver fixes for 6.7-rc4
 
-Here are some small fixes for 6.7-rc5 for a variety of small driver
-subsystems.  Included in here are:
-  - debugfs revert for reported issue
-  - greybus revert for reported issue
-  - greybus fixup for endian build warning
-  - coresight driver fixes
-  - nvmem driver fixes
-  - devcoredump fix
-  - parport new device id
-  - ndtest build fix
+Here are some small serial driver fixes for 6.7-rc4 to resolve some
+reported issues.  Included in here are:
+  - pl011 dma support fix
+  - sc16is7xx driver fix
+  - ma35d1 console index fix
+  - 8250 driver fixes for small issues
 
-All of these have ben in linux-next with no reported issues.
+All of these have been in linux-next with no reported issues.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Alexander Usyskin (1):
-      mei: pxp: fix mei_pxp_send_message return value
+Andi Shyti (1):
+      serial: ma35d1: Validate console index before assignment
 
-Ayush Singh (1):
-      greybus: gb-beagleplay: Ensure le for values in transport
+Andy Shevchenko (1):
+      serial: 8250_dw: Add ACPI ID for Granite Rapids-D UART
 
-Cameron Williams (1):
-      parport: Add support for Brainboxes IX/UC/PX parallel cards
+Arnd Bergmann (1):
+      ARM: PL011: Fix DMA support
 
-Greg Kroah-Hartman (3):
-      Merge 6.7-rc4 into char-misc-linus
-      Revert "greybus: gb-beagleplay: Ensure le for values in transport"
-      Merge tag 'coresight-fixes-for-v6.7-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/coresight/linux into char-misc-next
+Daniel Mack (1):
+      serial: sc16is7xx: address RX timeout interrupt errata
 
-James Clark (1):
-      coresight: Fix crash when Perf and sysfs modes are used concurrently
+Ronald Wahl (3):
+      serial: 8250: 8250_omap: Do not start RX DMA on THRI interrupt
+      serial: 8250_omap: Add earlycon support for the AM654 UART controller
+      serial: 8250: 8250_omap: Clear UART_HAS_RHR_IT_DIS bit
 
-Johannes Berg (1):
-      Revert "debugfs: annotate debugfs handlers vs. removal with lockdep"
-
-Junhao He (4):
-      hwtracing: hisi_ptt: Add dummy callback pmu::read()
-      coresight: ultrasoc-smb: Fix sleep while close preempt in enable_smb
-      coresight: ultrasoc-smb: Config SMB buffer before register sink
-      coresight: ultrasoc-smb: Fix uninitialized before use buf_hw_base
-
-Miquel Raynal (1):
-      nvmem: Do not expect fixed layouts to grab a layout driver
-
-Mukesh Ojha (1):
-      devcoredump: Send uevent once devcd is ready
-
-Randy Dunlap (1):
-      greybus: BeaglePlay driver needs CRC_CCITT
-
-Su Hui (2):
-      misc: mei: client.c: return negative error code in mei_cl_write
-      misc: mei: client.c: fix problem of return '-EOVERFLOW' in mei_cl_write
-
-Uwe Kleine-König (1):
-      coresight: etm4x: Remove bogous __exit annotation for some functions
-
-Vegard Nossum (1):
-      Documentation: coresight: fix `make refcheckdocs` warning
-
-Yi Zhang (1):
-      ndtest: fix typo class_regster -> class_register
-
-Yicong Yang (2):
-      hwtracing: hisi_ptt: Handle the interrupt in hardirq context
-      hwtracing: hisi_ptt: Don't try to attach a task
-
- Documentation/trace/coresight/coresight.rst        |  2 +-
- drivers/base/devcoredump.c                         |  3 ++
- drivers/greybus/Kconfig                            |  1 +
- drivers/hwtracing/coresight/coresight-etm-perf.c   |  4 +-
- drivers/hwtracing/coresight/coresight-etm4x-core.c |  6 +--
- drivers/hwtracing/coresight/ultrasoc-smb.c         | 58 +++++++++-------------
- drivers/hwtracing/coresight/ultrasoc-smb.h         |  6 +--
- drivers/hwtracing/ptt/hisi_ptt.c                   | 14 ++++--
- drivers/misc/mei/client.c                          |  4 +-
- drivers/misc/mei/pxp/mei_pxp.c                     |  3 +-
- drivers/nvmem/core.c                               |  6 +++
- drivers/parport/parport_pc.c                       | 21 ++++++++
- fs/debugfs/file.c                                  | 10 ----
- fs/debugfs/inode.c                                 |  7 ---
- fs/debugfs/internal.h                              |  6 ---
- tools/testing/nvdimm/test/ndtest.c                 |  2 +-
- 16 files changed, 79 insertions(+), 74 deletions(-)
+ drivers/tty/serial/8250/8250_dw.c    |   1 +
+ drivers/tty/serial/8250/8250_early.c |   1 +
+ drivers/tty/serial/8250/8250_omap.c  |  14 +++--
+ drivers/tty/serial/amba-pl011.c      | 112 +++++++++++++++++------------------
+ drivers/tty/serial/ma35d1_serial.c   |  10 +++-
+ drivers/tty/serial/sc16is7xx.c       |  12 ++++
+ 6 files changed, 85 insertions(+), 65 deletions(-)
