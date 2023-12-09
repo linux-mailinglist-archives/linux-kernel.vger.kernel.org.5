@@ -2,59 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1992680B566
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 18:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCFD80B569
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 18:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbjLIRIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 12:08:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41584 "EHLO
+        id S230496AbjLIRKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 12:10:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLIRIE (ORCPT
+        with ESMTP id S229519AbjLIRKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 12:08:04 -0500
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A79C121
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 09:08:09 -0800 (PST)
+        Sat, 9 Dec 2023 12:10:36 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C8410EA
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 09:10:42 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54cdef4c913so8660453a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 09:10:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702141840; x=1702746640; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v5RWH25pS49A9wtTwrglnRYxNRiRU2sSwkBOk9D2iEI=;
+        b=B90zPIvJJWTu2UV8UsC9lgQE2bHVlJNfTp842hXzJHhhAnnF4NDq9h4cE7erM+Moag
+         vCtrl/lW5CkC3l1lcmGw9v6B3fK3RWzbo1FONcAEw+kZTh2gSJ66IHGnGxHsm/ySi4aw
+         jHjT3ww/SNA5bfMJwbcxJxP3qqDzvFlQmZ1hI3rxr0MTQEQS5vXuz51V184EDQuiBEps
+         Sr4EqgtJO8IyIYJD3h2y2koiAWEkCLV15v4wbxVXuWNaPI5vrbnpUFF0EX2ULSvo7T02
+         wbCN96lMIQfl6k/Jo+LUefaxuyBmFOtGHUVt7Bgfk0PF1UuMUt9hovBmue4EzTQ1c/Qx
+         B96Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702141840; x=1702746640;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v5RWH25pS49A9wtTwrglnRYxNRiRU2sSwkBOk9D2iEI=;
+        b=XHgblkFgVKV6ba9hEKvQyB9wgILERit9836CGBH057rtpZthEW+2d8n+GHmkO6++HI
+         5RONCXVrT0Z/edzuJ8R2TZ+bLZof44VRrJLbv5tuDKPO90nZteP/VsaSS8GQpfw1M/Nh
+         LeLnPdbrTeKcga6sHsxSDRdOQWNwA3YmYC7Q4f1CptDMaCTN20gy2dScCXTkYUiqMjYB
+         xtc0HKG0rkLUAQ+L+kF/jUQReHyrsnQy7BvIKZa+9Kegbn+0tSVT9k7TFYu/XzvDKzpP
+         sa7zgmdcB1czp4gJYEc92I/1rfSzqQ4rasXSkWgeg3ngehlISxNuqoLD0568Ww/OWL3h
+         1rcg==
+X-Gm-Message-State: AOJu0Yzszwk+W18CuVqHYiNqDszL1T5WHkcbmRjHwEiA68A9pqwIJ/Pr
+        k+xSqM/mtwdL7N7tA54FNkGWJg==
+X-Google-Smtp-Source: AGHT+IGN48qr0TD6bf2QcADaZTbl9FnlB1gwoIQfpu2bc0k57aGc/i7eP0yBpt6pqz0CkB2Q901+DA==
+X-Received: by 2002:a17:907:9486:b0:a1d:c376:216b with SMTP id dm6-20020a170907948600b00a1dc376216bmr2408908ejc.45.1702141840368;
+        Sat, 09 Dec 2023 09:10:40 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id vs5-20020a170907a58500b00a0a8b2b74ddsm2430029ejc.154.2023.12.09.09.10.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Dec 2023 09:10:40 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] dt-bindings: mmc: synopsys-dw-mshc: add iommus for Intel SocFPGA
+Date:   Sat,  9 Dec 2023 18:10:13 +0100
+Message-Id: <20231209171013.249972-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1702141687;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kh1DA/v53PnINd03bhNbVOefrP+VfCi294Z535BlDZI=;
-        b=RYfj0lvHNRaBwQfdlORTXx0KnsieEEfGpzyIPdQXwLYHoKmRk/H0gtBM6ZvMaEHdqsIaoP
-        +IxStqaO6kA/InJxImrZzgf4UuwlHMGlCRpDXUf99Rf9eGRBriufyPCY4Lf/X3JEjA2GRu
-        TVvPguajcohi/3GBjnBqSPWJHgVljQM=
-Date:   Sat, 09 Dec 2023 17:08:05 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   "Konstantin Ryabitsev" <konstantin.ryabitsev@linux.dev>
-Message-ID: <63e4c6098fdf5b7995dab74b415d55d32f757b5c@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH v7 0/2] Resolve MPM register space situation
-To:     "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Andy Gross" <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        "Marc Zyngier" <maz@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Shawn Guo" <shawn.guo@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>
-Cc:     "Marijn Suijten" <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>
-In-Reply-To: <1c99bb49-51e9-458e-acef-a0615dca95ce@linaro.org>
-References: <1c99bb49-51e9-458e-acef-a0615dca95ce@linaro.org>
- <20230328-topic-msgram_mpm-v7-0-6ee2bfeaac2c@linaro.org> <87il58sr12.ffs@tglx>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,12 +72,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-December 9, 2023 at 9:00 AM, "Konrad Dybcio" <konrad.dybcio@linaro.org> w=
-rote:
-> >  Signed-off-by on the cover letter is completely meaningless.
->=20
->=20Yes, I realize that. Blame b4.
+The DW MSHC node in Intel SocFPGA ARM64 DTS has iommus property, so
+allow it to silence dtbs_check warnings:
 
-It's not -- some subsystems use cover letters as merge commits.
+  socfpga_n5x_socdk.dtb: mmc@ff808000: Unevaluated properties are not allowed ('iommus' was unexpected)
 
--K
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+---
+
+I assume the DTS represents the hardware, thus iommus is real.
+---
+ Documentation/devicetree/bindings/mmc/synopsys-dw-mshc.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mmc/synopsys-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/synopsys-dw-mshc.yaml
+index b13b5166d20a..a6292777e376 100644
+--- a/Documentation/devicetree/bindings/mmc/synopsys-dw-mshc.yaml
++++ b/Documentation/devicetree/bindings/mmc/synopsys-dw-mshc.yaml
+@@ -35,6 +35,9 @@ properties:
+       - const: biu
+       - const: ciu
+ 
++  iommus:
++    maxItems: 1
++
+   altr,sysmgr-syscon:
+     $ref: /schemas/types.yaml#/definitions/phandle-array
+     items:
+@@ -62,6 +65,7 @@ allOf:
+         altr,sysmgr-syscon: true
+     else:
+       properties:
++        iommus: false
+         altr,sysmgr-syscon: false
+ 
+ required:
+-- 
+2.34.1
+
