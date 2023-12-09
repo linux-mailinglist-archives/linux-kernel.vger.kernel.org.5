@@ -2,145 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B3580B180
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 02:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2BC180B18B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 02:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234217AbjLIBjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 20:39:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56796 "EHLO
+        id S235973AbjLIBoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 20:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjLIBjP (ORCPT
+        with ESMTP id S229731AbjLIBoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 20:39:15 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2041.outbound.protection.outlook.com [40.107.237.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1D710F1;
-        Fri,  8 Dec 2023 17:39:22 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nZQjMugkUK7nJ2YvGTumJDupXR/9LH/3n7gsKoPs+AhUqaSObbWBrNvcXSfaPF6lInRkRTEr6Jsr2h3ob9dRsWoCEDA+di4Kq2z6BorutOh179AG/fRfthM1K6mr0qWiu2Z6b8FgL8dLjtxCRk+VZAqn/kdkL6kBfLiO6PqJx6jwxoggIZ/qhPBdKtk6XhIJUs/KZcdmRbfvGBfT5fYn4eB1mtBC6UzMGgx24u8SiCmfCHlDKoKCmCectSZlboqOFDA+pIWm+BTxl6x0gptjQcFBwEJmlMJW9JcLmwU/tv9PI7hioCCXl6Uk0+mZfzs65HxniCYMd0J1pbRTcpX5+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fZNyLHz5EJUWuOm1V7XfwCOTAUHpq0qdi/RVrsASQDM=;
- b=NljH2DaAw/vfMIr4+Spe8CIw4mS2jArEEXupB7U5k0D3TThTK1wodZx1+5TOD0KjC3dZRYBpJHgCOQ6v53t+dPOTLVSoh3t1YoKGGCWvf2wvdNh1OFWxgueyzCSjDu2t+zVXG2lyhCW9CSMawrJnryFtosXUwM+qs1EZQDTTZmAEqIMVx7Kw6lhDg5hKu+A5CqbDlkaxqQaDzvenwZ1MMcbzbfEljBfKF6UY/uT9NmcGI9YaUmWpLlzaCUK9dGfss2PFPgYblErxf5Q+79XXQPFlzFQHJdj0sSx0yp2YPWkXbvVGr+IYAaKKPE64CLKv5gv00r0WmAQjwhjd/QVIRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fZNyLHz5EJUWuOm1V7XfwCOTAUHpq0qdi/RVrsASQDM=;
- b=A2w0A0k2Q5SmOhxeNm8N/XCTQ2n4WZzjJAMjy0QDCJsdnaVEKky2ORaFMrZlLC3wT0DwIu3efyJIU/TUEDi7/MjfefjkrmRuBcpFj/Zst+SAiTqeuFAG9n/4b4A4H4Hom/lF9bVRu0zh4/hlrvXpQ7ajg95hVaCk4w/6KdN58HweGuPrY7VsSyIB5EXZQz6eEFEdubNz+szqOSMIi8FIffcfZNlFRrSvsFJTI4zTvF7zEVnv+7U52uMs31p4gwUkJOEYeBnZ3X1raZs/9kUTFScKDD6Bkz5EhzqrMdQnzAnWHsMUg6HmI6OmmKov7BtTc4K9DZIW5e2w8706Gv81lg==
-Received: from BL0PR01CA0013.prod.exchangelabs.com (2603:10b6:208:71::26) by
- BL1PR12MB5160.namprd12.prod.outlook.com (2603:10b6:208:311::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.29; Sat, 9 Dec
- 2023 01:39:19 +0000
-Received: from MN1PEPF0000F0E5.namprd04.prod.outlook.com
- (2603:10b6:208:71:cafe::38) by BL0PR01CA0013.outlook.office365.com
- (2603:10b6:208:71::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.28 via Frontend
- Transport; Sat, 9 Dec 2023 01:39:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- MN1PEPF0000F0E5.mail.protection.outlook.com (10.167.242.43) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7091.18 via Frontend Transport; Sat, 9 Dec 2023 01:39:18 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 8 Dec 2023
- 17:39:07 -0800
-Received: from [10.110.48.28] (10.126.230.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 8 Dec 2023
- 17:39:07 -0800
-Message-ID: <d12dd3ba-8b24-4fcf-8c55-00c765628836@nvidia.com>
-Date:   Fri, 8 Dec 2023 17:39:06 -0800
+        Fri, 8 Dec 2023 20:44:17 -0500
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E511700
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 17:44:23 -0800 (PST)
+Date:   Fri, 8 Dec 2023 17:44:16 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1702086261;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dEa8QaNsjYl+s8o0gsHyRZ4RaaNqT3abDhzMXeL0qdo=;
+        b=wzRy6s8veFnUU5bJNgdMSFLnGRzIkZYdeFCe2HgzQ9TtGun5P8swPOMFlxqhzIaQBnIJc2
+        dN17ldR8uKRlAw68zDGPd6vFr3H6uDROlDA4T84AjubJVeqt25Zui9OB2yfilnrYcbEf3J
+        +GTkozjJjnjywRbLMcbVBFA+/WO5le8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 2/7] mm: shrinker: Add a .to_text() method for shrinkers
+Message-ID: <ZXPGcHZA7qwvhj_k@P9FQF9L96D.corp.robot.car>
+References: <ZWaHG09fY2BYjyGD@P9FQF9L96D.corp.robot.car>
+ <ZWcBDglmDKUJdwMv@tiehlicka>
+ <20231129231147.7msiocerq7phxnyu@moria.home.lan>
+ <04f63966-af72-43ef-a65c-ff927064a3e4@bytedance.com>
+ <20231130032149.ynap4ai47dj62fy3@moria.home.lan>
+ <ZWjcA4BA5vZe57Eh@P9FQF9L96D.corp.robot.car>
+ <ZWk0dI0PISWBbbKr@dread.disaster.area>
+ <ZWo7ncdgPsj6rP7_@P9FQF9L96D.corp.robot.car>
+ <ZXAtxBKZmKhFxwYB@dread.disaster.area>
+ <20231206191349.x52nm3ercxelh3dx@moria.home.lan>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 11/11] selftests: error out if kernel header files are
- not yet built
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     David Hildenbrand <david@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        "Nathan Chancellor" <nathan@kernel.org>, <linux-mm@kvack.org>,
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Jonathan Corbet <corbet@lwn.net>, <linux-doc@vger.kernel.org>
-References: <20230606071637.267103-1-jhubbard@nvidia.com>
- <20230606071637.267103-12-jhubbard@nvidia.com>
- <20231103121652.GA6217@noisy.programming.kicks-ass.net>
- <a002f903-723f-40ae-8d7a-421ab2e082e2@redhat.com>
- <20231208151401.GG28727@noisy.programming.kicks-ass.net>
- <990feea2-c7a8-4cd9-8a6a-bc4bc1c2ffab@redhat.com>
- <c54b4059-e3a7-40bd-84dc-013dc3b15c65@nvidia.com>
- <20231208221007.GO28727@noisy.programming.kicks-ass.net>
-From:   John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <20231208221007.GO28727@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.230.35]
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E5:EE_|BL1PR12MB5160:EE_
-X-MS-Office365-Filtering-Correlation-Id: ce06c626-b6ac-4c20-43be-08dbf857a976
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XbIWRgtPlpQAajyfESBGgaYjdJ1k+gnposJr1DVtxT0O+EUVlZwx1rhc2ofg7+oKpipvBejOCPjGudwXaILcP5tNtoVZocdsn71BtSwyO/8uyuH8xih/SaWhyVqPv2E81VCreOSJfpWrnNuGRMXnzFeMKA8A50YrPh9nGtoa9xg2Dci8PfKngo2Zr+AozZQD2hjfbb4HRGM8216gWkQk6ez1R2kwNHz9+iP+UOEb1ji2Zfy97ZbIWNV1jMrx+tFM1ngNmB3G5r4+e1w4btfe61zRUMKHo4z95uBhlf/kDXL0OOeWe/0er0ZTctHldFvgwmqL5Qb/zWXEOu13NatcBstbPzhcr1gAqZnOb7nnu3ZKRB0Z+HLN0DugjcrbwfYIAglAFtDYCRi4LNX86RadWFK15UaKn+iary676YfJzYQ42rDy4R1jP9ZQLAgSEo1B6BWGuxCG87tzw6gfN2MIPcwYEY/83vYg007ZOat0nKpKZnTZfTopmQLEGTNJvROu7bdPCmeqz9woKe+t0Sx2r32UR4w5pEtkkKqRNbb0tdF/EbFKDiPbrkImDACpk0EMWEYrtAU4uW+qnVUoU1BTeiJlsxoGETuWKMv6Lke7+4zgLT4VAB78Ks37hkNi6jnJxxe+71gyIt4uwUx1eDeUTjoUu+bhSNgiId3GcAfpQo6He84yfZps3D7qK6/DDRznMxtDukvJDhpPxcni/DvTvSbpTJPI7Lpvz63AUr4mrlrr8rpul7c3rvcYXxqf2LrpwhK54eNY2Kck5fmw2cDfcA==
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(136003)(346002)(39860400002)(230922051799003)(451199024)(64100799003)(1800799012)(82310400011)(186009)(36840700001)(46966006)(40470700004)(40460700003)(2616005)(26005)(336012)(426003)(16526019)(53546011)(47076005)(36860700001)(478600001)(5660300002)(4744005)(7416002)(41300700001)(2906002)(8936002)(8676002)(4326008)(6916009)(70206006)(70586007)(316002)(54906003)(16576012)(356005)(7636003)(82740400003)(86362001)(31696002)(36756003)(31686004)(40480700001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2023 01:39:18.9969
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce06c626-b6ac-4c20-43be-08dbf857a976
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000F0E5.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5160
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206191349.x52nm3ercxelh3dx@moria.home.lan>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/23 14:10, Peter Zijlstra wrote:
-> So as David already argued, the current thing does not in fact help with
-> b. You just have to install once and the error goes away, then carry
-> that tree for a year and you're running old crap again.
+On Wed, Dec 06, 2023 at 02:13:49PM -0500, Kent Overstreet wrote:
+0;95;0c> On Wed, Dec 06, 2023 at 07:16:04PM +1100, Dave Chinner wrote:
+> > On Fri, Dec 01, 2023 at 12:01:33PM -0800, Roman Gushchin wrote:
+> > > What would be the proper solution to this problem from your point of view?
+> > > What functionality/API mm can provide to make the life of fs developers
+> > > better here?
+> > 
+> > What can we do better?
+> > 
+> > The first thing we can do better that comes to mind is to merge
+> > Kent's patches that allow the shrinker owner to output debug
+> > information when requested by the infrastructure.
+> > 
+> > Then we - the shrinker implementers - have some control of our own
+> > destiny.  We can add whatever we need to solve shrinker and OOM
+> > problems realted to our shrinkers not doing the right thing.
+> > 
+> > But without that callout from the infrastructure and the
+> > infrastructure to drive it at appropriate times, we will make zero
+> > progress improving the situation. 
+> > 
+> > Yes, the code may not be perfect and, yes, it may not be useful to
+> > mm developers, but for the people who have to debug shrinker related
+> > problems in production systems we need all the help we can get. We
+> > certainly don't care if it isn't perfect, just having something we
+> > can partially tailor to our iindividual needs is far, far better
+> > than the current situation of nothing at all...
 > 
-> My biggest beef with the whole thing is that I simply do not want to use
-> 'make headers', it doesn't work for me.
-> 
-> I have a ton of output directories and I don't care to build tools into
-> the output dirs, in fact some of them flat out refuse to work that way
-> (bpf comes to mind).
+> Of course if mm people don't want it I've got better things to do than
+> fight uphill battles just to get some reviewed-by tags. Real high
+> quality review feedback in this thread.
 
-Going with that, then, I believe it is best to simply revert commit
-9fc96c7c19df ("selftests: error out if kernel header files are not
-yet built"). And then follow up with a series of (many) changes to
-wean the various selftests off of the kernel headers.
+(ignoring an attack towards all mm people, sigh)
 
-I'll post the revert shortly.
+Kent, I think extending the shrinker debugfs interface is useful.
+And in this context there is no need to limit the output to 10 items.
+Also most of disagreements will vanish (sorry, if I missed something,
+but looks like all concerns are related to the oom part).
+Will it work for you?
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+If yes, would you be able to drop the oom part (at least for now)
+and resend the patchset?
 
+Thanks!
