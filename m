@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE65580B1D8
+	by mail.lfdr.de (Postfix) with ESMTP id 1471880B1D6
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 04:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbjLIDJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 22:09:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43122 "EHLO
+        id S231140AbjLIDKs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Dec 2023 22:10:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjLIDJn (ORCPT
+        with ESMTP id S234216AbjLIDKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 22:09:43 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B2FE4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 19:09:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702091388; x=1733627388;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=2ZlpVIzc9BGXyLaOXJJn+Yoxlme66PiY2pQcJxRkkD0=;
-  b=Nx+pQMorIBauHM43F5RvtJZdQc8LpYpLkPierVWCs28CkCzORJ+CXjo7
-   jXcvts//9zvR9LMJZANlZKG6qHW0BqQ4X0n6G5ko2zftiKcx8Edagr5PI
-   xXyb0nuGdBxN67Qtxodm9255m9wJsvaXGk71VB4ncbX/h6Ibc5j45KRUL
-   yfsZ7Ax0N7KjdmlSB20XcmplD4S6c1j32vSTp7SWcvgwv4aCrodi4uRp2
-   zz1jqZ3XC5biT0uR5vghpJeDvc84ae5PwyGd3nDTvHz3qaUFt2EshLMGe
-   fD8xIX1wlH2GSWy9e66yR47pPLlTffvcKbcV18MeY+N8WQ11pHcJWN0Ln
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="460964950"
-X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
-   d="scan'208";a="460964950"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 19:09:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="772335805"
-X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
-   d="scan'208";a="772335805"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 08 Dec 2023 19:09:46 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBniq-000EkV-2I;
-        Sat, 09 Dec 2023 03:09:44 +0000
-Date:   Sat, 9 Dec 2023 11:09:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>, Fuad Tabba <tabba@google.com>
-Subject: arch/arm64/kvm/arm.c:52:1: sparse: sparse: symbol
- '__pcpu_scope_kvm_arm_hyp_stack_page' was not declared. Should it be static?
-Message-ID: <202312091147.jpPmUHGm-lkp@intel.com>
+        Fri, 8 Dec 2023 22:10:45 -0500
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC95A6;
+        Fri,  8 Dec 2023 19:10:46 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id BAF6E24E203;
+        Sat,  9 Dec 2023 11:10:44 +0800 (CST)
+Received: from EXMBX072.cuchost.com (172.16.6.82) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sat, 9 Dec
+ 2023 11:10:44 +0800
+Received: from localhost.localdomain (202.188.176.82) by EXMBX072.cuchost.com
+ (172.16.6.82) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sat, 9 Dec
+ 2023 11:10:41 +0800
+From:   Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+To:     Michal Simek <michal.simek@amd.com>,
+        Andi Shyti <andi.shyti@kernel.org>
+CC:     Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] i2c: cadence: Add system suspend and resume PM support
+Date:   Sat, 9 Dec 2023 11:09:55 +0800
+Message-ID: <20231209030955.1156905-1-jisheng.teoh@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [202.188.176.82]
+X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX072.cuchost.com
+ (172.16.6.82)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f2e8a57ee9036c7d5443382b6c3c09b51a92ec7e
-commit: db129d486ebdf4e3168282236f9d9008b42cac7e KVM: arm64: Implement non-protected nVHE hyp stack unwinder
-date:   1 year, 4 months ago
-config: arm64-randconfig-r112-20231117 (https://download.01.org/0day-ci/archive/20231209/202312091147.jpPmUHGm-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231209/202312091147.jpPmUHGm-lkp@intel.com/reproduce)
+Enable device system suspend and resume PM support, and mark the device
+state as suspended during system suspend to reject any data transfer.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312091147.jpPmUHGm-lkp@intel.com/
+Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+---
+ drivers/i2c/busses/i2c-cadence.c | 33 ++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-sparse warnings: (new ones prefixed by >>)
->> arch/arm64/kvm/arm.c:52:1: sparse: sparse: symbol '__pcpu_scope_kvm_arm_hyp_stack_page' was not declared. Should it be static?
-
-vim +/__pcpu_scope_kvm_arm_hyp_stack_page +52 arch/arm64/kvm/arm.c
-
-    51	
-  > 52	DEFINE_PER_CPU(unsigned long, kvm_arm_hyp_stack_page);
-    53	unsigned long kvm_arm_hyp_percpu_base[NR_CPUS];
-    54	DECLARE_KVM_NVHE_PER_CPU(struct kvm_nvhe_init_params, kvm_init_params);
-    55	
-
+diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
+index de3f58b60dce..c42d6afded2a 100644
+--- a/drivers/i2c/busses/i2c-cadence.c
++++ b/drivers/i2c/busses/i2c-cadence.c
+@@ -1176,6 +1176,18 @@ static int __maybe_unused cdns_i2c_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
++static int __maybe_unused cdns_i2c_suspend(struct device *dev)
++{
++	struct cdns_i2c *xi2c = dev_get_drvdata(dev);
++
++	i2c_mark_adapter_suspended(&xi2c->adap);
++
++	if (!pm_runtime_status_suspended(dev))
++		return cdns_i2c_runtime_suspend(dev);
++
++	return 0;
++}
++
+ /**
+  * cdns_i2c_init -  Controller initialisation
+  * @id:		Device private data structure
+@@ -1219,7 +1231,28 @@ static int __maybe_unused cdns_i2c_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
++static int __maybe_unused cdns_i2c_resume(struct device *dev)
++{
++	struct cdns_i2c *xi2c = dev_get_drvdata(dev);
++	int err;
++
++	err = cdns_i2c_runtime_resume(dev);
++	if (err)
++		return err;
++
++	if (pm_runtime_status_suspended(dev)) {
++		cdns_i2c_runtime_suspend(dev);
++		if (err)
++			return err;
++	}
++
++	i2c_mark_adapter_resumed(&xi2c->adap);
++
++	return 0;
++}
++
+ static const struct dev_pm_ops cdns_i2c_dev_pm_ops = {
++	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(cdns_i2c_suspend, cdns_i2c_resume)
+ 	SET_RUNTIME_PM_OPS(cdns_i2c_runtime_suspend,
+ 			   cdns_i2c_runtime_resume, NULL)
+ };
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1
+
