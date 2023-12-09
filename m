@@ -2,123 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A1D80B419
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 13:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48BE80B41F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 13:09:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbjLIMBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 07:01:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52382 "EHLO
+        id S229927AbjLIMHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 07:07:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbjLIMBu (ORCPT
+        with ESMTP id S229519AbjLIMHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 07:01:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB9E10E6
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 04:01:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D03DAC433C9
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 12:01:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702123315;
-        bh=ivFsOSgwviRbxCdV/HZOaDIko5Llynvw15OE80tETss=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MaU+cL8FnSJCL5k2K8QhOzLor81yo9ImCRnWMnhPcP1bxO2ljA/GZq0lZWvN7pzRH
-         NTPgdqW2qq1eO4N4AYGJtj9uJ6HZURtre7ySk28wk9m5iYp1TkidGV9+CNOafNP4B2
-         +yaQN/59F5s8MzSTsJENWzj46FEwFmaNd7uSdsq8/SP+Z3kshnJJxf7B3af8vt+xgW
-         AZ0FWZKv2uZgVhUxpdJ9Tp6qI8r+6AQ1e1CmdBs0MVZ437A3F2OdvP3Fwbb5ZbeqcA
-         5/aMKX20yTq9d6TxsMYgeBS/3qgo4RpyCVNvgCsBk6FhHeCudQGWZcC8S1Hn8cTO6y
-         eg6qBiB5SeTEA==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a1d2f89ddabso352705966b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 04:01:55 -0800 (PST)
-X-Gm-Message-State: AOJu0Yz+ZLL6yS9ZiBFwJdtsAc3xiBd8PtPnQRYuhzgH+M419Dqg7p7X
-        Y/6zMgZmXqfa09dsrP8IqPKZ9gXQsqqemq9ztv0=
-X-Google-Smtp-Source: AGHT+IHyvMsUFvPg2VTnl9SYqVZLp2t4+7XqzZsBzz6PBP5lSDwXKnWjYvHkbN1WosxnVz60tLIV3jDoe8KP85A1WJ8=
-X-Received: by 2002:a17:907:7663:b0:a18:b889:d453 with SMTP id
- kk3-20020a170907766300b00a18b889d453mr793925ejc.2.1702123314320; Sat, 09 Dec
- 2023 04:01:54 -0800 (PST)
+        Sat, 9 Dec 2023 07:07:12 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8718E1703
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 04:07:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702123638; x=1733659638;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=8W+D2MdZBDxGU/g4ClpF1K3m+Ponl//xI1L01a/r9nA=;
+  b=CKODSoSMEgxXZPxpfJG2oH2Vc3hbtc8jdpwndpijMcekJ+yQVda39WaV
+   9+omSFMw3mtM9FmoWSbFvUrU0BVmCmvhqAh2E+PwQc4a+x51YVzi847t/
+   MA/9B35mE7NzkRSKAaISknl6jEwN3YyGt7bjKGpSZUf8GABo0nOLdedOm
+   QwxwI6+o89H4Hedde2H0+DZvYpczUw6l9NNqNtaC7ycfV7TZWndJmI6qy
+   XKpvXGIUM62oXJvrHecJPXV1yTkuY718w91iCrdcvdlKhqfFGXGKlzKQQ
+   QRlLCOTOIkXI3dVWCM3a96t/lvlC+9qpygJiox78rZkMi3l3E7yyKqG9s
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="393375164"
+X-IronPort-AV: E=Sophos;i="6.04,263,1695711600"; 
+   d="scan'208";a="393375164"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 04:07:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="842917267"
+X-IronPort-AV: E=Sophos;i="6.04,263,1695711600"; 
+   d="scan'208";a="842917267"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 09 Dec 2023 04:07:15 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBw6z-000FJy-2b;
+        Sat, 09 Dec 2023 12:07:13 +0000
+Date:   Sat, 9 Dec 2023 20:06:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: drivers/scsi/fnic/vnic_dev.c:332:32: sparse: sparse: incorrect type
+ in argument 1 (different address spaces)
+Message-ID: <202312091944.YpTxxc5g-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231207032951.16334-1-yangtiezhu@loongson.cn>
- <20231207032951.16334-3-yangtiezhu@loongson.cn> <CAEyhmHRs-bJ7Pd9t1wqs4H8FBYZg27gi7gXWZjpEqzLT+naAHA@mail.gmail.com>
-In-Reply-To: <CAEyhmHRs-bJ7Pd9t1wqs4H8FBYZg27gi7gXWZjpEqzLT+naAHA@mail.gmail.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Sat, 9 Dec 2023 20:01:44 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5ysu4FhFsrY6iof1WtAHJno1Jfx+g0FD5Ah66au_1m5Q@mail.gmail.com>
-Message-ID: <CAAhV-H5ysu4FhFsrY6iof1WtAHJno1Jfx+g0FD5Ah66au_1m5Q@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] LoongArch: BPF: Fix unconditional bswap instructions
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied, thanks.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f2e8a57ee9036c7d5443382b6c3c09b51a92ec7e
+commit: 8f28ca6bd8211214faf717677bbffe375c2a6072 iomap: constify ioreadX() iomem argument (as in generic implementation)
+date:   3 years, 4 months ago
+config: x86_64-randconfig-123-20231025 (https://download.01.org/0day-ci/archive/20231209/202312091944.YpTxxc5g-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231209/202312091944.YpTxxc5g-lkp@intel.com/reproduce)
 
-Huacai
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312091944.YpTxxc5g-lkp@intel.com/
 
-On Sat, Dec 9, 2023 at 2:06=E2=80=AFPM Hengqi Chen <hengqi.chen@gmail.com> =
-wrote:
->
-> On Thu, Dec 7, 2023 at 11:30=E2=80=AFAM Tiezhu Yang <yangtiezhu@loongson.=
-cn> wrote:
-> >
-> > We can see that "bswap32: Takes an unsigned 32-bit number in either
-> > big- or little-endian format and returns the equivalent number with
-> > the same bit width but opposite endianness" in BPF Instruction Set
-> > Specification, so it should clear the upper 32 bits in the case 32
-> > for BPF_ALU and BPF_ALU64.
-> >
-> > [root@linux fedora]# echo 1 > /proc/sys/net/core/bpf_jit_enable
-> > [root@linux fedora]# modprobe test_bpf
-> >
-> > Before:
-> > test_bpf: #313 BSWAP 32: 0x0123456789abcdef -> 0xefcdab89 jited:1 ret 1=
-460850314 !=3D -271733879 (0x5712ce8a !=3D 0xefcdab89)FAIL (1 times)
-> > test_bpf: #317 BSWAP 32: 0xfedcba9876543210 -> 0x10325476 jited:1 ret -=
-1460850316 !=3D 271733878 (0xa8ed3174 !=3D 0x10325476)FAIL (1 times)
-> >
-> > After:
-> > test_bpf: #313 BSWAP 32: 0x0123456789abcdef -> 0xefcdab89 jited:1 4 PAS=
-S
-> > test_bpf: #317 BSWAP 32: 0xfedcba9876543210 -> 0x10325476 jited:1 4 PAS=
-S
-> >
->
-> Nice catch. I wasn't aware of test_bpf before. For the patch:
->
-> Acked-by: Hengqi Chen <hengqi.chen@gmail.com>
->
-> > Fixes: 4ebf9216e7df ("LoongArch: BPF: Support unconditional bswap instr=
-uctions")
-> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > ---
-> >  arch/loongarch/net/bpf_jit.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.=
-c
-> > index 8c907c2c42f7..da48398e8794 100644
-> > --- a/arch/loongarch/net/bpf_jit.c
-> > +++ b/arch/loongarch/net/bpf_jit.c
-> > @@ -774,8 +774,8 @@ static int build_insn(const struct bpf_insn *insn, =
-struct jit_ctx *ctx, bool ext
-> >                         break;
-> >                 case 32:
-> >                         emit_insn(ctx, revb2w, dst, dst);
-> > -                       /* zero-extend 32 bits into 64 bits */
-> > -                       emit_zext_32(ctx, dst, is32);
-> > +                       /* clear the upper 32 bits */
-> > +                       emit_zext_32(ctx, dst, true);
-> >                         break;
-> >                 case 64:
-> >                         emit_insn(ctx, revbd, dst, dst);
-> > --
-> > 2.42.0
-> >
+sparse warnings: (new ones prefixed by >>)
+>> drivers/scsi/fnic/vnic_dev.c:332:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem * @@     got unsigned int * @@
+   drivers/scsi/fnic/vnic_dev.c:332:32: sparse:     expected void const [noderef] __iomem *
+   drivers/scsi/fnic/vnic_dev.c:332:32: sparse:     got unsigned int *
+   drivers/scsi/fnic/vnic_dev.c:333:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem * @@     got unsigned int * @@
+   drivers/scsi/fnic/vnic_dev.c:333:37: sparse:     expected void const [noderef] __iomem *
+   drivers/scsi/fnic/vnic_dev.c:333:37: sparse:     got unsigned int *
+   drivers/scsi/fnic/vnic_dev.c:373:36: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem * @@     got unsigned int * @@
+   drivers/scsi/fnic/vnic_dev.c:373:36: sparse:     expected void [noderef] __iomem *
+   drivers/scsi/fnic/vnic_dev.c:373:36: sparse:     got unsigned int *
+   drivers/scsi/fnic/vnic_dev.c:469:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct vnic_wq_ctrl *wq_ctrl @@     got struct vnic_wq_ctrl [noderef] __iomem *ctrl @@
+   drivers/scsi/fnic/vnic_dev.c:469:32: sparse:     expected struct vnic_wq_ctrl *wq_ctrl
+   drivers/scsi/fnic/vnic_dev.c:469:32: sparse:     got struct vnic_wq_ctrl [noderef] __iomem *ctrl
+   drivers/scsi/fnic/vnic_dev.c:943:11: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *p @@     got void [noderef] __iomem * @@
+   drivers/scsi/fnic/vnic_dev.c:943:11: sparse:     expected void *p
+   drivers/scsi/fnic/vnic_dev.c:943:11: sparse:     got void [noderef] __iomem *
+
+vim +332 drivers/scsi/fnic/vnic_dev.c
+
+5df6d737dd4b0f Abhijeet Joglekar 2009-04-17  318  
+363f4d937501ba Jason Yan         2020-04-15  319  static int vnic_dev_cmd2(struct vnic_dev *vdev, enum vnic_devcmd_cmd cmd,
+0a2fdd2215e1fa Satish Kharat     2019-01-18  320  		int wait)
+0a2fdd2215e1fa Satish Kharat     2019-01-18  321  {
+0a2fdd2215e1fa Satish Kharat     2019-01-18  322  	struct devcmd2_controller *dc2c = vdev->devcmd2;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  323  	struct devcmd2_result *result;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  324  	u8 color;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  325  	unsigned int i;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  326  	int delay;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  327  	int err;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  328  	u32 fetch_index;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  329  	u32 posted;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  330  	u32 new_posted;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  331  
+0a2fdd2215e1fa Satish Kharat     2019-01-18 @332  	posted = ioread32(&dc2c->wq_ctrl->posted_index);
+0a2fdd2215e1fa Satish Kharat     2019-01-18  333  	fetch_index = ioread32(&dc2c->wq_ctrl->fetch_index);
+0a2fdd2215e1fa Satish Kharat     2019-01-18  334  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  335  	if (posted == 0xFFFFFFFF || fetch_index == 0xFFFFFFFF) {
+0a2fdd2215e1fa Satish Kharat     2019-01-18  336  		/* Hardware surprise removal: return error */
+0a2fdd2215e1fa Satish Kharat     2019-01-18  337  		pr_err("%s: devcmd2 invalid posted or fetch index on cmd %d\n",
+0a2fdd2215e1fa Satish Kharat     2019-01-18  338  				pci_name(vdev->pdev), _CMD_N(cmd));
+0a2fdd2215e1fa Satish Kharat     2019-01-18  339  		pr_err("%s: fetch index: %u, posted index: %u\n",
+0a2fdd2215e1fa Satish Kharat     2019-01-18  340  				pci_name(vdev->pdev), fetch_index, posted);
+0a2fdd2215e1fa Satish Kharat     2019-01-18  341  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  342  		return -ENODEV;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  343  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  344  	}
+0a2fdd2215e1fa Satish Kharat     2019-01-18  345  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  346  	new_posted = (posted + 1) % DEVCMD2_RING_SIZE;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  347  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  348  	if (new_posted == fetch_index) {
+0a2fdd2215e1fa Satish Kharat     2019-01-18  349  		pr_err("%s: devcmd2 wq full while issuing cmd %d\n",
+0a2fdd2215e1fa Satish Kharat     2019-01-18  350  				pci_name(vdev->pdev), _CMD_N(cmd));
+0a2fdd2215e1fa Satish Kharat     2019-01-18  351  		pr_err("%s: fetch index: %u, posted index: %u\n",
+0a2fdd2215e1fa Satish Kharat     2019-01-18  352  				pci_name(vdev->pdev), fetch_index, posted);
+0a2fdd2215e1fa Satish Kharat     2019-01-18  353  		return -EBUSY;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  354  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  355  	}
+0a2fdd2215e1fa Satish Kharat     2019-01-18  356  	dc2c->cmd_ring[posted].cmd = cmd;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  357  	dc2c->cmd_ring[posted].flags = 0;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  358  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  359  	if ((_CMD_FLAGS(cmd) & _CMD_FLAGS_NOWAIT))
+0a2fdd2215e1fa Satish Kharat     2019-01-18  360  		dc2c->cmd_ring[posted].flags |= DEVCMD2_FNORESULT;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  361  	if (_CMD_DIR(cmd) & _CMD_DIR_WRITE) {
+0a2fdd2215e1fa Satish Kharat     2019-01-18  362  		for (i = 0; i < VNIC_DEVCMD_NARGS; i++)
+0a2fdd2215e1fa Satish Kharat     2019-01-18  363  			dc2c->cmd_ring[posted].args[i] = vdev->args[i];
+0a2fdd2215e1fa Satish Kharat     2019-01-18  364  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  365  	}
+0a2fdd2215e1fa Satish Kharat     2019-01-18  366  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  367  	/* Adding write memory barrier prevents compiler and/or CPU
+0a2fdd2215e1fa Satish Kharat     2019-01-18  368  	 * reordering, thus avoiding descriptor posting before
+0a2fdd2215e1fa Satish Kharat     2019-01-18  369  	 * descriptor is initialized. Otherwise, hardware can read
+0a2fdd2215e1fa Satish Kharat     2019-01-18  370  	 * stale descriptor fields.
+0a2fdd2215e1fa Satish Kharat     2019-01-18  371  	 */
+0a2fdd2215e1fa Satish Kharat     2019-01-18  372  	wmb();
+0a2fdd2215e1fa Satish Kharat     2019-01-18  373  	iowrite32(new_posted, &dc2c->wq_ctrl->posted_index);
+0a2fdd2215e1fa Satish Kharat     2019-01-18  374  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  375  	if (dc2c->cmd_ring[posted].flags & DEVCMD2_FNORESULT)
+0a2fdd2215e1fa Satish Kharat     2019-01-18  376  		return 0;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  377  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  378  	result = dc2c->result + dc2c->next_result;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  379  	color = dc2c->color;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  380  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  381  	dc2c->next_result++;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  382  	if (dc2c->next_result == dc2c->result_size) {
+0a2fdd2215e1fa Satish Kharat     2019-01-18  383  		dc2c->next_result = 0;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  384  		dc2c->color = dc2c->color ? 0 : 1;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  385  	}
+0a2fdd2215e1fa Satish Kharat     2019-01-18  386  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  387  	for (delay = 0; delay < wait; delay++) {
+0a2fdd2215e1fa Satish Kharat     2019-01-18  388  		udelay(100);
+0a2fdd2215e1fa Satish Kharat     2019-01-18  389  		if (result->color == color) {
+0a2fdd2215e1fa Satish Kharat     2019-01-18  390  			if (result->error) {
+0a2fdd2215e1fa Satish Kharat     2019-01-18  391  				err = -(int) result->error;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  392  				if (err != ERR_ECMDUNKNOWN ||
+0a2fdd2215e1fa Satish Kharat     2019-01-18  393  						cmd != CMD_CAPABILITY)
+0a2fdd2215e1fa Satish Kharat     2019-01-18  394  					pr_err("%s:Error %d devcmd %d\n",
+0a2fdd2215e1fa Satish Kharat     2019-01-18  395  						pci_name(vdev->pdev),
+0a2fdd2215e1fa Satish Kharat     2019-01-18  396  						err, _CMD_N(cmd));
+0a2fdd2215e1fa Satish Kharat     2019-01-18  397  				return err;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  398  			}
+0a2fdd2215e1fa Satish Kharat     2019-01-18  399  			if (_CMD_DIR(cmd) & _CMD_DIR_READ) {
+0a2fdd2215e1fa Satish Kharat     2019-01-18  400  				rmb(); /*prevent reorder while reding result*/
+0a2fdd2215e1fa Satish Kharat     2019-01-18  401  				for (i = 0; i < VNIC_DEVCMD_NARGS; i++)
+0a2fdd2215e1fa Satish Kharat     2019-01-18  402  					vdev->args[i] = result->results[i];
+0a2fdd2215e1fa Satish Kharat     2019-01-18  403  			}
+0a2fdd2215e1fa Satish Kharat     2019-01-18  404  			return 0;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  405  		}
+0a2fdd2215e1fa Satish Kharat     2019-01-18  406  	}
+0a2fdd2215e1fa Satish Kharat     2019-01-18  407  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  408  	pr_err("%s:Timed out devcmd %d\n", pci_name(vdev->pdev), _CMD_N(cmd));
+0a2fdd2215e1fa Satish Kharat     2019-01-18  409  
+0a2fdd2215e1fa Satish Kharat     2019-01-18  410  	return -ETIMEDOUT;
+0a2fdd2215e1fa Satish Kharat     2019-01-18  411  }
+0a2fdd2215e1fa Satish Kharat     2019-01-18  412  
+
+:::::: The code at line 332 was first introduced by commit
+:::::: 0a2fdd2215e1fa3b417792bd6e9cb719822cbfb6 scsi: fnic: Adding devcmd2 init and posting interfaces
+
+:::::: TO: Satish Kharat <satishkh@cisco.com>
+:::::: CC: Martin K. Petersen <martin.petersen@oracle.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
