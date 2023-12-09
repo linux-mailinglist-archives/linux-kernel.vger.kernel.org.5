@@ -2,254 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E72B080B388
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 11:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF4480B384
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 11:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbjLIJqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 04:46:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39180 "EHLO
+        id S229517AbjLIJtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 04:49:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLIJqP (ORCPT
+        with ESMTP id S229446AbjLIJtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 04:46:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB1910EF
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 01:46:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62F4CC433C8;
-        Sat,  9 Dec 2023 09:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702115180;
-        bh=U6fopzDLFmxYGajaPyLdrMDyEnvHoP8CkiUHB46VBno=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=nW/JZt39Ty/3imZv1AcZJYalRbm4XnTAjssBuReN6HI66CRfpEeYo1GXnhdhltOCP
-         8FNWETVMMxjFg3GBDpZerh7Lq20+McFbq8jaxqF+tVIyyG4h12T4SIkkJ5vryh8iVF
-         nvde1AGf17vezhETL/+1/xET64aZJDHV7VZIz/NQPEayu10fSdAun4WieXdEOKvymW
-         MLsHgWuhzqNyHCgvqj2+1eBfzOt1jkKrg61NKoBapSc80GtYDv1vY+QsJdbpA68Arv
-         bxZs/g7BDigHG1ffFaZzznJeRyhgsjfX3Nzh+I/rWv6YLy0R8r+9Rx20rCkdLefO0U
-         HGSl6RzCMy66g==
-Message-ID: <09cd02dd-a8d9-4b7a-8f10-b445e2c9ea85@kernel.org>
-Date:   Sat, 9 Dec 2023 17:46:13 +0800
+        Sat, 9 Dec 2023 04:49:47 -0500
+Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38B810C4;
+        Sat,  9 Dec 2023 01:49:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+        t=1702115391; bh=K4v35Dp8Lp3NPnkhtZ9R6FJpo7oiN2Hzlx29IfU2Lq0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I1ET6nwYmIPj1dDOlJ36cuv6adMCSee+/l3bvMCLtEZVJ3gsKIvTkgWpvUyf4/ydw
+         CGstHQFag5r1HK6Ftg6STvHYYVV2iTxngtTBcs5UDam5c9d53JE4Z5TzmbLJ5pyyA3
+         mariSQplhWY+wSwgFCLalvfeRztZooSqtT2s5r0altoeoNl8tTgXkQ09atOVR7mLsm
+         nZYM0UNi0mHCJ4iNfZBqMg0bpb67Qn22K0ZJJ4W09VbwU3fDZid9ynlvX2K6rPGB8A
+         5yqzXwpbcGepDvmlvCc/F1FCV6G/xfzG8oGHxmesi7f6GKT4sekIMzJjC2kufb4kXw
+         dCEcayhOICYsg==
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 9697B100091; Sat,  9 Dec 2023 09:49:51 +0000 (GMT)
+Date:   Sat, 9 Dec 2023 09:49:51 +0000
+From:   Sean Young <sean@mess.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 2/4] pwm: make it possible to apply pwm changes in
+ atomic context
+Message-ID: <ZXQ4P39_sq10XD9u@gofer.mess.org>
+References: <cover.1701248996.git.sean@mess.org>
+ <734c9985a6f54d34d9ef20203ba7f962b572cb45.1701248996.git.sean@mess.org>
+ <ZXNCKFZcjFznko89@orome.fritz.box>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] f2fs: fix fallocate failed under pinned block
- situation
-Content-Language: en-US
-To:     Wu Bo <wubo.oduw@gmail.com>, Wu Bo <bo.wu@vivo.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <20231030094024.263707-1-bo.wu@vivo.com>
- <c181256e-9f6e-d43e-4d02-a7d8d5286d56@kernel.org>
- <670ce4a6-f00c-dbe9-86e2-366311221cf3@gmail.com>
- <a69b7544-2312-486c-d655-8b86e370c55e@kernel.org>
- <faa90acc-c03e-2913-c19a-bd50fd93d197@gmail.com>
- <5d8726fc-e912-6954-3820-862eecff07b0@kernel.org>
- <eedad403-5754-4d5e-965d-19eff02e3d40@gmail.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <eedad403-5754-4d5e-965d-19eff02e3d40@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXNCKFZcjFznko89@orome.fritz.box>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/28 20:51, Wu Bo wrote:
-> 
-> On 2023/11/28 14:22, Chao Yu wrote:
->> On 2023/11/17 7:34, Wu Bo wrote:
->>> On 2023/11/11 12:49, Chao Yu wrote:
->>>> On 2023/11/8 21:48, Wu Bo wrote:
->>>>> On 2023/11/7 22:39, Chao Yu wrote:
->>>>>> On 2023/10/30 17:40, Wu Bo wrote:
->>>>>>> If GC victim has pinned block, it can't be recycled.
->>>>>>> And if GC is foreground running, after many failure try, the pinned file
->>>>>>> is expected to be clear pin flag. To enable the section be recycled.
->>>>>>>
->>>>>>> But when fallocate trigger FG_GC, GC can never recycle the pinned
->>>>>>> section. Because GC will go to stop before the failure try meet the
->>>>>>> threshold:
->>>>>>>      if (has_enough_free_secs(sbi, sec_freed, 0)) {
->>>>>>>          if (!gc_control->no_bg_gc &&
->>>>>>>              total_sec_freed < gc_control->nr_free_secs)
->>>>>>>              goto go_gc_more;
->>>>>>>          goto stop;
->>>>>>>      }
->>>>>>>
->>>>>>> So when fallocate trigger FG_GC, at least recycle one.
->>>>>>
->>>>>> Hmm... it may break pinfile's semantics at least on one pinned file?
->>>>>> In this case, I prefer to fail fallocate() rather than unpinning file,
->>>>>> in order to avoid leaving invalid LBA references of unpinned file held
->>>>>> by userspace.
->>>>>
->>>>> As f2fs designed now, FG_GC is able to unpin the pinned file.
->>>>>
->>>>> fallocate() triggered FG_GC, but can't recycle space.  It breaks the
->>>>> design logic of FG_GC.
->>>>
->>>> Yes, contradictoriness exists.
->>>>
->>>> IMO, unpin file by GC looks more dangerous, it may cause potential data
->>>> corruption w/ below case:
->>>> 1. app pins file & holds LBAs of data blocks.
->>>> 2. GC unpins file and migrates its data to new LBAs.
->>>> 3. other file reuses previous LBAs.
->>>> 4. app read/write data via previous LBAs.
->>>>
->>>> So I suggest to normalize use of pinfile and do not add more unpin cases
->>>> in filesystem inner processes.
->>>>
->>>>>
->>>>> This issue is happened in Android OTA scenario.  fallocate() always
->>>>> return failure cause OTA fail.
->>>>
->>>> Can you please check why other pinned files were so fragmented that f2fs_gc()
->>>> can not recycle one free section?
->>>>
->>> Not because pinned files were fragmented, but if the GC victim section has one block is pinned will cause this issue.
->>>
->>> If the section don't unpin the block, it can't be recycled. But there is high chance that the pinned section will be chosen next time under f2fs current victim selection strategy.
->>>
->>> So if we want to avoid unpin files, I think change victim selection to considering pinned blocks can fix this issue.
->>
->> Oh, I get it.
->>
->> How about this?
->>
->> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->> index 325dab01a29d..3fb52dec5df8 100644
->> --- a/fs/f2fs/file.c
->> +++ b/fs/f2fs/file.c
->> @@ -1730,7 +1730,10 @@ next_alloc:
->>              f2fs_down_write(&sbi->gc_lock);
->>              stat_inc_gc_call_count(sbi, FOREGROUND);
->>              err = f2fs_gc(sbi, &gc_control);
->> -            if (err && err != -ENODATA)
->> +
->> +            if (err == -EAGAIN)
->> +                f2fs_balance_fs(sbi, true);
->> +            else if (err && err != -ENODATA)
->>                  goto out_err;
->>          }
-> Do you mean to call f2fs_balance_fs() to recycle one section?
-> But in this situation, f2fs_balance_fs() will return at enough-free-section check:
->      if (has_enough_free_secs(sbi, 0, 0))
->          return;
+Hi Thierry,
 
-As you said, there are lots of free segments, so I guess it's fine for
-latter 2m-aligned allocation, and for the case number of free section is
-lower than fggc threshold, we can call f2fs_balance_fs() to reclaim enough
-free sections.
+
+On Fri, Dec 08, 2023 at 05:19:52PM +0100, Thierry Reding wrote:
+> On Wed, Nov 29, 2023 at 09:13:35AM +0000, Sean Young wrote:
+> > Some pwm devices require sleeping, for example if the pwm device is
+> > connected over i2c. However, many pwm devices could be used from atomic
+> > context, e.g. memmory mapped pwm. This is useful for, for example, the
+> > pwm-ir-tx driver which requires precise timing. Sleeping causes havoc
+> > with the generated IR signal.
+> > 
+> > Since not all pmw devices can support atomic context, we also add a
+> > pwm_is_atomic() function to check if it is supported.
+> 
+> s/i2c/I2C/ and s/pwm/PWM/ in the above. Also, s/memmory/memory/
+
+Thanks for your detailed review. I agree with all your points, they are
+all nice improvements. Just a question at the bottom:
+
+> 
+> > 
+> > Signed-off-by: Sean Young <sean@mess.org>
+> > ---
+> >  Documentation/driver-api/pwm.rst |  9 +++++
+> >  drivers/pwm/core.c               | 63 ++++++++++++++++++++++++++------
+> >  drivers/pwm/pwm-renesas-tpu.c    |  1 -
+> >  include/linux/pwm.h              | 29 ++++++++++++++-
+> >  4 files changed, 87 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/Documentation/driver-api/pwm.rst b/Documentation/driver-api/pwm.rst
+> > index f1d8197c8c43..1d4536fdf47c 100644
+> > --- a/Documentation/driver-api/pwm.rst
+> > +++ b/Documentation/driver-api/pwm.rst
+> > @@ -43,6 +43,15 @@ After being requested, a PWM has to be configured using::
+> >  
+> >  	int pwm_apply_might_sleep(struct pwm_device *pwm, struct pwm_state *state);
+> >  
+> > +Some PWM devices can be used from atomic context. You can check if this is
+> > +supported with::
+> > +
+> > +        bool pwm_is_atomic(struct pwm_device *pwm);
+> 
+> This is now going to look a bit odd. I think it'd be best to change this
+> to pwm_might_sleep() for consistency with the pwm_apply_might_sleep()
+> function. Fine to keep the actual member variable as atomic, though, so
+> we don't have to change the default for all drivers.
+
+Agreed, I was struggling with finding good name and yours is much better,
+thanks.
+
+ > +{
+> > +	return pwm->chip->atomic;
+> > +}
+> > +
+> >  /* PWM provider APIs */
+> >  int pwm_capture(struct pwm_device *pwm, struct pwm_capture *result,
+> >  		unsigned long timeout);
+> > @@ -406,16 +420,27 @@ struct pwm_device *devm_fwnode_pwm_get(struct device *dev,
+> >  				       struct fwnode_handle *fwnode,
+> >  				       const char *con_id);
+> >  #else
+> > +static inline bool pwm_is_atomic(struct pwm_device *pwm)
+> > +{
+> > +	return false;
+> > +}
+> > +
+> >  static inline int pwm_apply_might_sleep(struct pwm_device *pwm,
+> >  					const struct pwm_state *state)
+> >  {
+> >  	might_sleep();
+> > -	return -ENOTSUPP;
+> > +	return -EOPNOTSUPP;
+> > +}
+> > +
+> > +static inline int pwm_apply_atomic(struct pwm_device *pwm,
+> > +				   const struct pwm_state *state)
+> > +{
+> > +	return -EOPNOTSUPP;
+> >  }
+> >  
+> >  static inline int pwm_adjust_config(struct pwm_device *pwm)
+> >  {
+> > -	return -ENOTSUPP;
+> > +	return -EOPNOTSUPP;
+> >  }
+> 
+> What's wrong with ENOTSUPP?
+
+This was found by checkpatch, see
+
+https://github.com/torvalds/linux/blob/master/scripts/checkpatch.pl#L4891-L4892
+
+# ENOTSUPP is not a standard error code and should be avoided in new patches.
+# Folks usually mean EOPNOTSUPP (also called ENOTSUP), when they type ENOTSUPP.
+
+ENOTSUPP is not really widely used in the tree.
+
+So it was really done to keep checkpatch happy, please let me know what you
+would like me to do here.
 
 Thanks,
 
->>
->> However, the code won't fix contradictoriness issue, because the root cause
->> is we left fragmented pinned data in filesystem, which should be avoided in
->> GC-reliance LFS filesyetem as much as possible.
->>
->> Thanks,
->>
->>>
->>>> Thanks,
->>>>
->>>>>
->>>>>    And this commit changed previous behavior of fallocate():
->>>>>
->>>>> Commit 2e42b7f817ac ("f2fs: stop allocating pinned sections if EAGAIN
->>>>> happens")
->>>>>
->>>>> Before this commit, if fallocate() meet this situation, it will trigger
->>>>> FG_GC to recycle pinned space finally.
->>>>>
->>>>> FG_GC is expected to recycle pinned space when there is no more free
->>>>> space.  And this is the right time to do it when fallocate() need free
->>>>> space.
->>>>>
->>>>> It is weird when f2fs shows enough spare space but can't fallocate(). So
->>>>> I think it should be fixed.
->>>>>
->>>>>>
->>>>>> Thoughts?
->>>>>>
->>>>>> Thanks,
->>>>>>
->>>>>>>
->>>>>>> This issue can be reproduced by filling f2fs space as following layout.
->>>>>>> Every segment has one block is pinned:
->>>>>>> +-+-+-+-+-+-+-----+-+
->>>>>>> | | |p| | | | ... | | seg_n
->>>>>>> +-+-+-+-+-+-+-----+-+
->>>>>>> +-+-+-+-+-+-+-----+-+
->>>>>>> | | |p| | | | ... | | seg_n+1
->>>>>>> +-+-+-+-+-+-+-----+-+
->>>>>>> ...
->>>>>>> +-+-+-+-+-+-+-----+-+
->>>>>>> | | |p| | | | ... | | seg_n+k
->>>>>>> +-+-+-+-+-+-+-----+-+
->>>>>>>
->>>>>>> And following are steps to reproduce this issue:
->>>>>>> dd if=/dev/zero of=./f2fs_pin.img bs=2M count=1024
->>>>>>> mkfs.f2fs f2fs_pin.img
->>>>>>> mkdir f2fs
->>>>>>> mount f2fs_pin.img ./f2fs
->>>>>>> cd f2fs
->>>>>>> dd if=/dev/zero of=./large_padding bs=1M count=1760
->>>>>>> ./pin_filling.sh
->>>>>>> rm padding*
->>>>>>> sync
->>>>>>> touch fallocate_40m
->>>>>>> f2fs_io pinfile set fallocate_40m
->>>>>>> fallocate -l 41943040 fallocate_40m
->>>>>>>
->>>>>>> fallocate always fail with EAGAIN even there has enough free space.
->>>>>>>
->>>>>>> 'pin_filling.sh' is:
->>>>>>> count=1
->>>>>>> while :
->>>>>>> do
->>>>>>>       # filling the seg space
->>>>>>>       for i in {1..511}:
->>>>>>>       do
->>>>>>>           name=padding_$count-$i
->>>>>>>           echo write $name
->>>>>>>           dd if=/dev/zero of=./$name bs=4K count=1 > /dev/null 2>&1
->>>>>>>           if [ $? -ne 0 ]; then
->>>>>>>                   exit 0
->>>>>>>           fi
->>>>>>>       done
->>>>>>>       sync
->>>>>>>
->>>>>>>       # pin one block in a segment
->>>>>>>       name=pin_file$count
->>>>>>>       dd if=/dev/zero of=./$name bs=4K count=1 > /dev/null 2>&1
->>>>>>>       sync
->>>>>>>       f2fs_io pinfile set $name
->>>>>>>       count=$(($count + 1))
->>>>>>> done
->>>>>>>
->>>>>>> Signed-off-by: Wu Bo <bo.wu@vivo.com>
->>>>>>> ---
->>>>>>>    fs/f2fs/file.c | 2 +-
->>>>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>>
->>>>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>>>>>> index ca5904129b16..e8a13616543f 100644
->>>>>>> --- a/fs/f2fs/file.c
->>>>>>> +++ b/fs/f2fs/file.c
->>>>>>> @@ -1690,7 +1690,7 @@ static int f2fs_expand_inode_data(struct inode
->>>>>>> *inode, loff_t offset,
->>>>>>>                .init_gc_type = FG_GC,
->>>>>>>                .should_migrate_blocks = false,
->>>>>>>                .err_gc_skipped = true,
->>>>>>> -            .nr_free_secs = 0 };
->>>>>>> +            .nr_free_secs = 1 };
->>>>>>>        pgoff_t pg_start, pg_end;
->>>>>>>        loff_t new_size;
->>>>>>>        loff_t off_end;
+Sean
