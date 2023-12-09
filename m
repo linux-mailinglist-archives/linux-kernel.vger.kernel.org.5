@@ -2,76 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1780D80B33C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 09:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF9E80B32F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 09:26:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbjLIILq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 03:11:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
+        id S234515AbjLIING (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 03:13:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234388AbjLIILl (ORCPT
+        with ESMTP id S229451AbjLIINE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 03:11:41 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B85FB7
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 00:11:47 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50bf26b677dso2781068e87.2
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 00:11:47 -0800 (PST)
+        Sat, 9 Dec 2023 03:13:04 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECCE4F1
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 00:13:10 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a1c7b20f895so333530566b.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 00:13:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702109505; x=1702714305; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702109589; x=1702714389; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=UIJ/Q6eMLTeAjhFzDKcuKqAtgXgPEPS5ycS7mozW2x0=;
-        b=Pz2a78DlIRzgMh3BWy+UCNeAniX4FAZTS76mkvea8nNJ2w9CPaauCVmB8T8rBwgbR7
-         cffkTZFGIGjgCIIXcZetFOWAa1zIlVICZl1jHbVUCAsiUlvWnN5uh3w5DfMEreXvvdDG
-         7qr1hcQxDA8tEOkruXJRpG0lHcUlZrixBVSwI0fCmGRX4kOL7UHdLIHnP/Nus8ciKgLW
-         0b2OwsS7oq/0LaEseAYHbQ0eI6tLyHCz/xfLlSDK1j8Y98C3OKYQK1aCOg5WxMxM+lcz
-         8j+2T9HXUkHagdtX8WoAN+9LZgaG8ry9Qxm/qW7SbQTUr22dFhkQ9lD092i3n9+EhlRu
-         W+1g==
+        bh=MM2Sr/00z9b7gN+VvKVCEt9Xgjmkhw5TWlydzOOP3NQ=;
+        b=OX0q3egKRHAFMyC/L7wWVzevnRBOAMVbekJrEpXCWqolbs/xuil7BX1fOFXetp1RMD
+         SHQhwntmS4mHfdnKIYd+QzgYRUKMsxHbFcZFAo1c03pgh88XMl5IIVTclh1+zhSqaG7L
+         ZOELagilXFdEGZIhih7CjK0aQlCJaCjHCHJyWyAULhvzH8o80oinghyNzIbRhU/6wYfL
+         hKA5dVbmRDngEuzE1nNM29PaP+x2tK22wzvxKetu7jGJVi/50Mer4ZKMoyaWgrijkycu
+         QEpZ1/0LVVITOCRrvVZ9i+G6s/kP1rkJA19o0kc3W5oVEhBBp6O+9PPLAHPEXEsbspOL
+         AHJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702109505; x=1702714305;
+        d=1e100.net; s=20230601; t=1702109589; x=1702714389;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UIJ/Q6eMLTeAjhFzDKcuKqAtgXgPEPS5ycS7mozW2x0=;
-        b=udbO7xlrP7TxbEyo3W4zwaLpA1F1We12ZP6k/pQT22Vbp5fM31/m0ojSigK5Sm4G1f
-         17lJILXMihKE+djB8jS+pQv4jkJtsz0dfBYiBfnujXqMnJ8QbASKM7lgCbj5cZ1E35JT
-         QtraaJyBUdrKW/b05uTJfVdQAlg5zpzPeLJnHfCtBkbJxsAQqmBef/aHsOAbaGk8yN+5
-         28KhrAvutRd5zorCQED5ZsXAF5Zd1EoHwfYy8kVo8z+nkbHmwYYX98oNfc0dDH6ykt9u
-         kgws6bA5FGOm5voJCac7yAVOwZuy53sYOyd2HhiMdHwjm3D+1P9TL6hR0vWeCNMQ3zWQ
-         vjbg==
-X-Gm-Message-State: AOJu0YyVnppuTqfaBZYEOL6yKSj0Sv3zj3nS3yOIia9xGyC+MSKJUYyp
-        nnRCOfX5LplnZJaVJM1fk3PClA==
-X-Google-Smtp-Source: AGHT+IHNowo7b1GM/EuQrc87dFKhD8atK7vzo49lbfkiLTJyl4FKsfSqboMB3Usx7FSxYYoVOPvKCQ==
-X-Received: by 2002:ac2:42c6:0:b0:50c:f16f:5e3 with SMTP id n6-20020ac242c6000000b0050cf16f05e3mr322452lfl.191.1702109505453;
-        Sat, 09 Dec 2023 00:11:45 -0800 (PST)
+        bh=MM2Sr/00z9b7gN+VvKVCEt9Xgjmkhw5TWlydzOOP3NQ=;
+        b=TdNiyQaS0dauC6dV2Z4zmUowbb2UNvQbc08VO5WiRXWamIsxckbHP75caiJO0E6NXa
+         sQaA4GqZPIqSgYIRsKFDr+WlNI19QqL0z5iTUBD3N4G+aaRryqCI643eI7MKdW8sSjmw
+         /tGWkww8aTq3CLKaqTR+D7P88rnu68lgZty2LSaSSMUs7TWW8pwiLFc7vqvKV6/SY4Kh
+         D8k/cCnviH43JnKy85lunR46CvaMlB0EqGw1sW6sfYoGEltKUpgaGEHfffpxg8QaKxVH
+         NHeQHiaxwzfcQPoNsXQULzCOF364Qgzrzt2LZP6iNqpTXlThfENXlPDLmlMSer8q0Rcj
+         uXRw==
+X-Gm-Message-State: AOJu0YymkVZqc9wn1W88bfybQdA8Y7E/ybhIPbpeXDiJUMz9U6AirxjD
+        NhG0QVKhwpMU4XmPr016LjqKaw==
+X-Google-Smtp-Source: AGHT+IGTCc8NzaqCEbYGLpTbx4GP9wRIBW0kXLg23emvlQb4M/aQR32v86u8vLduN+aG92TO/YR7Dw==
+X-Received: by 2002:a17:907:7d9e:b0:a1d:bef8:cea3 with SMTP id oz30-20020a1709077d9e00b00a1dbef8cea3mr697274ejc.75.1702109589433;
+        Sat, 09 Dec 2023 00:13:09 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id uv6-20020a170907cf4600b00a1f699e5217sm1684637ejc.135.2023.12.09.00.11.43
+        by smtp.gmail.com with ESMTPSA id uv6-20020a170907cf4600b00a1f699e5217sm1684637ejc.135.2023.12.09.00.13.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Dec 2023 00:11:45 -0800 (PST)
-Message-ID: <1dc8c529-bb30-43f0-a184-ce00b6d5e9b6@linaro.org>
-Date:   Sat, 9 Dec 2023 09:11:43 +0100
+        Sat, 09 Dec 2023 00:13:09 -0800 (PST)
+Message-ID: <9dc6ff91-d28c-4e94-9ec7-f39aa1555bda@linaro.org>
+Date:   Sat, 9 Dec 2023 09:13:07 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: usb: Document WCD939x USB SubSystem
- Altmode/Analog Audio Switch
+Subject: Re: [PATCH v1 3/3] ASoC: dt-bindings: Add tas2563 into yaml
 Content-Language: en-US
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231208-topic-sm8650-upstream-wcd939x-usbss-v1-0-91d1ba680fe0@linaro.org>
- <20231208-topic-sm8650-upstream-wcd939x-usbss-v1-1-91d1ba680fe0@linaro.org>
+To:     Shenghao Ding <shenghao-ding@ti.com>, broonie@kernel.org
+Cc:     robh+dt@kernel.org, andriy.shevchenko@linux.intel.com,
+        lgirdwood@gmail.com, perex@perex.cz,
+        pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        liam.r.girdwood@intel.com, soyer@irl.hu, tiwai@suse.de
+References: <20231209080742.1290-1-shenghao-ding@ti.com>
+ <20231209080742.1290-3-shenghao-ding@ti.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -117,7 +109,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231208-topic-sm8650-upstream-wcd939x-usbss-v1-1-91d1ba680fe0@linaro.org>
+In-Reply-To: <20231209080742.1290-3-shenghao-ding@ti.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -130,67 +122,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/2023 16:27, Neil Armstrong wrote:
-> Document the Qualcomm WCD9390/WCD9395 USB SubSystem Altmode/Analog Audio Switch
-> which is a separate USB SubSystem for Altmode/Analog Audio Switch accessible
-> over an I2C interface.
+On 09/12/2023 09:07, Shenghao Ding wrote:
+> Support tas2563.
 > 
-> Since Audio Headphone and Microphone data path between the Codec and the USB-C Mux
-> subsystems are external to the IC, it requires a second port to handle USB-C altmode
-> & orientation switching for Audio Accessory Mode to the Codec SubSystem.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 > ---
->  .../bindings/usb/qcom,wcd939x-usbss.yaml           | 99 ++++++++++++++++++++++
->  1 file changed, 99 insertions(+)
+>  .../devicetree/bindings/sound/ti,tas2781.yaml   | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/usb/qcom,wcd939x-usbss.yaml b/Documentation/devicetree/bindings/usb/qcom,wcd939x-usbss.yaml
-> new file mode 100644
-> index 000000000000..da86b1d119d4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/usb/qcom,wcd939x-usbss.yaml
-> @@ -0,0 +1,99 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/usb/qcom,wcd939x-usbss.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm WCD9380/WCD9385 USB SubSystem Altmode/Analog Audio Switch
-> +
-> +maintainers:
-> +  - Neil Armstrong <neil.armstrong@linaro.org>
-> +
-> +description: |
+> diff --git a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+> index a69e6c223308..84e197e15df4 100644
+> --- a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+> +++ b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+> @@ -11,11 +11,11 @@ maintainers:
+>    - Shenghao Ding <shenghao-ding@ti.com>
+>  
+>  description:
+> -  The TAS2781 is a mono, digital input Class-D audio amplifier
+> -  optimized for efficiently driving high peak power into small
+> -  loudspeakers. An integrated on-chip DSP supports Texas Instruments
+> -  Smart Amp speaker protection algorithm. The integrated speaker
+> -  voltage and current sense provides for real time
+> +  The TAS2781/TAS2563 is a mono, digital input Class-D audio
+> +  amplifier optimized for efficiently driving high peak power into
+> +  small loudspeakers. An integrated on-chip DSP supports Texas
+> +  Instruments Smart Amp speaker protection algorithm. The
+> +  integrated speaker voltage and current sense provides for real time
+>    monitoring of loudspeaker behavior.
+>  
+>  allOf:
+> @@ -25,16 +25,19 @@ properties:
+>    compatible:
+>      enum:
+>        - ti,tas2781
+> +      - ti,tas2563
 
-Do not need '|' unless you need to preserve formatting.
-
-> +  Qualcomm WCD9390/WCD9395 is a standalone Hi-Fi audio codec IC with a functionally
-> +  separate USB SubSystem for Altmode/Analog Audio Switch accessible over an I2C interface.
-
-Please wrap at 80. In other descriptions as well.
-
-> +  The Audio Headphone and Microphone data path between the Codec and the USB-C Mux
-> +  subsystems are external to the IC, thus requiring DT port-endpoint graph description
-> +  to handle USB-C altmode & orientation switching for Audio Accessory Mode.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: qcom,wcd9390-usbss
-> +      - items:
-> +          - const: qcom,wcd9395-usbss
-> +          - const: qcom,wcd9390-usbss
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  reset-gpios: true
-
-This is the only GPIO from common GPIOs which actually needs maxItems.
-Please add maxItems: 1
-
-
+Looks like devices are compatible, so express it in the bindings with a
+fallback and drop driver patches.
 
 Best regards,
 Krzysztof
