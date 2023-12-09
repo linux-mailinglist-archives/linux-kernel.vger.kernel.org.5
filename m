@@ -2,191 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3157F80B5A7
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 18:34:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D6080B5AC
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 18:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbjLIReH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 12:34:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54682 "EHLO
+        id S229711AbjLIRiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 12:38:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232502AbjLIRdz (ORCPT
+        with ESMTP id S229535AbjLIRiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 12:33:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BAF019A9
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 09:33:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6C47C433C7;
-        Sat,  9 Dec 2023 17:33:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702143238;
-        bh=4mVZhE9mdS5wzDZreGCJL6zv3QXpgI2brftE/jLZkpM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hBZNKlD7ja5zgBRgYPJ9ZqROXNt7zVF+4LggKlO29CQ3kfSdsnnXilIFUB8N1a9k9
-         70oiEJmyTV71FBrwOEGYi8zc80vJZRGZkl3ucqA3ql2/R1gkr7nvU2rzuVflTCfcvy
-         uD+Zlb/NlfvXphzPu0iB1wkA3qA0FXFD2T5D4qw86Vb+tT6Seim2wHPyqyIEuftXZv
-         KjuWj8xmvtoBUEVBdtsas3fEpwY6yJ4wZ+VfSg8h71fTk1eW2RiGKurzbfbtPoSAn4
-         jytuWNtaybWh+Cs0yWHRrS7tdmCVgfRajYikogaR3Z3aznq/wWHuu2WBCDQr0WCx1c
-         TUaxK55+sHmFA==
-Date:   Sat, 9 Dec 2023 17:33:52 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     longli@linuxonhyperv.com
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Long Li <longli@microsoft.com>
-Subject: Re: [Patch v2 3/3] RDMA/mana_ib: Add CQ interrupt support for RAW QP
-Message-ID: <20231209173352.GC5817@kernel.org>
-References: <1701730979-1148-1-git-send-email-longli@linuxonhyperv.com>
- <1701730979-1148-4-git-send-email-longli@linuxonhyperv.com>
+        Sat, 9 Dec 2023 12:38:50 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32E6D5B
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 09:38:54 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54cdef4c913so8691531a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 09:38:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702143533; x=1702748333; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iTT1z7XWnAP69cMAv9qMbpCUai86iQPk4s0xjb4WIZo=;
+        b=g655wrH+in7/TfapzXN/umh45qHI2I/qiBzrSnbF4K52CjezaYwBJzYOJfYepnIrU0
+         cQm5rFv+/Lcu+Mi7UwXRpnYFfis+yC7iZt2TgQ5aH3JKZ/F8c4liEVfWs6kW8kelTCQl
+         aPLrY/RzLvuqd4ai6G920GVLxGh4nUZoNOffvuq1Knwfo+wQsCW9DVPbJZ91W1d7MADg
+         XAutUFvvzFnM1owsQJu1HpoWROYF4EJYXNZVmjoDlDfwc1710oHEgrjs3Ob5vIGyrvgl
+         4JuUms5p9fmNUgfqaENDk4eolsjBarDLa2ySixht5rwjBTDDhrJ/7N6LQmS+5nqKRSku
+         3Xhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702143533; x=1702748333;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iTT1z7XWnAP69cMAv9qMbpCUai86iQPk4s0xjb4WIZo=;
+        b=nnU5wyodevtJm74tGCpAyKCaFnjcgBrCr0gjaAgggPamtMYE6CFnqkUU6vmv9n8Hpc
+         tZDQJNWuLaGWvQ4qrV5jkBxB3/auqtLFMdzQPGksfz6EyTxgzmKoYB5Tyeh/H6Nd7s+f
+         fJDncy2yCxHDUxmwlvg2IZJaOKHvP4H+fkRwE42vqCOQRYqaF7mZIZrq/ZraHz5Oql+i
+         wGeHk6F/dxSv6tHjwLR63XK0D/0NeV6IpWP37ov460eljtBOEb7Gc7/DU8SbabvIOX40
+         GU/BtdCbd33+HrhujYkFmlFFukaZ+M8jdEzpbr99VP5THNcTGpAPeeowGgrOGXX8WRY+
+         3MCQ==
+X-Gm-Message-State: AOJu0YwvObPvX7Q/E+LP22Lknl4MKyZ5BcRMljIymCO9ANFlP4j5lErh
+        9sKQUaioxJgoVFWlt8paOu9JfA==
+X-Google-Smtp-Source: AGHT+IGAnjEj9Dy+zmGgpXvF65bibs8XFiahHcFvpuNOA/OqMHTYK6n/DGMy2dvUJNCaNmpVfdgkNw==
+X-Received: by 2002:a17:907:7e8b:b0:a1d:58c0:ed7a with SMTP id qb11-20020a1709077e8b00b00a1d58c0ed7amr2292658ejc.38.1702143533142;
+        Sat, 09 Dec 2023 09:38:53 -0800 (PST)
+Received: from [192.168.36.128] (178235179179.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.179])
+        by smtp.gmail.com with ESMTPSA id ig8-20020a1709072e0800b00a1c6e3e454fsm2421151ejc.166.2023.12.09.09.38.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Dec 2023 09:38:52 -0800 (PST)
+Message-ID: <7f890553-5278-4bc3-9f72-a5a60d9596ea@linaro.org>
+Date:   Sat, 9 Dec 2023 18:38:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1701730979-1148-4-git-send-email-longli@linuxonhyperv.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/4] dt-bindings: PCI: qcom: correct clocks for SC8180x
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231208105155.36097-1-krzysztof.kozlowski@linaro.org>
+ <20231208105155.36097-2-krzysztof.kozlowski@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231208105155.36097-2-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 03:02:59PM -0800, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
+On 8.12.2023 11:51, Krzysztof Kozlowski wrote:
+> PCI node in Qualcomm SC8180x DTS has 8 clocks:
 > 
-> At probing time, the MANA core code allocates EQs for supporting interrupts
-> on Ethernet queues. The same interrupt mechanisum is used by RAW QP.
+>   sc8180x-primus.dtb: pci@1c00000: 'oneOf' conditional failed, one must be fixed:
+>     ['pipe', 'aux', 'cfg', 'bus_master', 'bus_slave', 'slave_q2a', 'ref', 'tbu'] is too short
 > 
-> Use the same EQs for delivering interrupts on the CQ for the RAW QP.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
-> Signed-off-by: Long Li <longli@microsoft.com>
+> ---
+[...]
 
-Hi Long Li,
+> +          items:
+> +            - const: pipe # PIPE clock
+> +            - const: aux # Auxiliary clock
+> +            - const: cfg # Configuration clock
+> +            - const: bus_master # Master AXI clock
+> +            - const: bus_slave # Slave AXI clock
+> +            - const: slave_q2a # Slave Q2A clock
+> +            - const: ref # REFERENCE clock
+> +            - const: tbu # PCIe TBU clock
+Are we sure this one is actually necessary? Or is it just for the
+SMMU debug peripheral? [1] Would be nice to test if it works
+normally (unused clk shutdown / forced shutdown of this one might
+be necessary in case it's on from XBL) and during a PCIe-related
+SMMU fault.
 
-some minor feedback from my side.
+Konrad
 
-...
-
-> diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-> index 4667b18ec1dd..186d9829bb93 100644
-> --- a/drivers/infiniband/hw/mana/qp.c
-> +++ b/drivers/infiniband/hw/mana/qp.c
-> @@ -99,25 +99,34 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
->  	struct mana_ib_qp *qp = container_of(ibqp, struct mana_ib_qp, ibqp);
->  	struct mana_ib_dev *mdev =
->  		container_of(pd->device, struct mana_ib_dev, ib_dev);
-> +	struct ib_ucontext *ib_ucontext = pd->uobject->context;
->  	struct ib_rwq_ind_table *ind_tbl = attr->rwq_ind_tbl;
->  	struct mana_ib_create_qp_rss_resp resp = {};
->  	struct mana_ib_create_qp_rss ucmd = {};
-> +	struct mana_ib_ucontext *mana_ucontext;
-> +	struct gdma_queue **gdma_cq_allocated;
->  	mana_handle_t *mana_ind_table;
->  	struct mana_port_context *mpc;
-> +	struct gdma_queue *gdma_cq;
->  	unsigned int ind_tbl_size;
->  	struct mana_context *mc;
->  	struct net_device *ndev;
-> +	struct gdma_context *gc;
->  	struct mana_ib_cq *cq;
->  	struct mana_ib_wq *wq;
->  	struct gdma_dev *gd;
-> +	struct mana_eq *eq;
->  	struct ib_cq *ibcq;
->  	struct ib_wq *ibwq;
->  	int i = 0;
->  	u32 port;
->  	int ret;
->  
-> -	gd = &mdev->gdma_dev->gdma_context->mana;
-> +	gc = mdev->gdma_dev->gdma_context;
-> +	gd = &gc->mana;
->  	mc = gd->driver_data;
-> +	mana_ucontext =
-> +		container_of(ib_ucontext, struct mana_ib_ucontext, ibucontext);
->  
->  	if (!udata || udata->inlen < sizeof(ucmd))
->  		return -EINVAL;
-
-nit: mana_ucontext appears to be set but unused.
-
-     Flagged by W=1 builds.
-
-> @@ -179,6 +188,13 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
->  		goto fail;
->  	}
->  
-> +	gdma_cq_allocated = kcalloc(ind_tbl_size, sizeof(*gdma_cq_allocated),
-> +				    GFP_KERNEL);
-> +	if (!gdma_cq_allocated) {
-> +		ret = -ENOMEM;
-> +		goto fail;
-> +	}
-> +
->  	qp->port = port;
->  
->  	for (i = 0; i < ind_tbl_size; i++) {
-
-...
-
-> @@ -219,6 +236,21 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
->  		resp.entries[i].wqid = wq->id;
->  
->  		mana_ind_table[i] = wq->rx_object;
-> +
-> +		/* Create CQ table entry */
-> +		WARN_ON(gc->cq_table[cq->id]);
-> +		gdma_cq = kzalloc(sizeof(*gdma_cq), GFP_KERNEL);
-> +		if (!gdma_cq) {
-> +			ret = -ENOMEM;
-> +			goto fail;
-> +		}
-> +		gdma_cq_allocated[i] = gdma_cq;
-> +
-> +		gdma_cq->cq.context = cq;
-> +		gdma_cq->type = GDMA_CQ;
-> +		gdma_cq->cq.callback = mana_ib_cq_handler;
-> +		gdma_cq->id = cq->id;
-> +		gc->cq_table[cq->id] = gdma_cq;
->  	}
->  	resp.num_entries = i;
->  
-> @@ -238,6 +270,7 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
->  		goto fail;
->  	}
->  
-> +	kfree(gdma_cq_allocated);
->  	kfree(mana_ind_table);
->  
->  	return 0;
-> @@ -247,8 +280,15 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
->  		ibwq = ind_tbl->ind_tbl[i];
->  		wq = container_of(ibwq, struct mana_ib_wq, ibwq);
->  		mana_destroy_wq_obj(mpc, GDMA_RQ, wq->rx_object);
-> +
-> +		if (gdma_cq_allocated[i]) {
-
-nit: It is not clear to me that condition can ever be false.
-     If we get here then gdma_cq_allocated[i] is a valid pointer.
-
-> +			gc->cq_table[gdma_cq_allocated[i]->id] =
-> +				NULL;
-> +			kfree(gdma_cq_allocated[i]);
-> +		}
->  	}
->  
-> +	kfree(gdma_cq_allocated);
->  	kfree(mana_ind_table);
->  
->  	return ret;
-
-...
+[1] https://lore.kernel.org/linux-arm-msm/20231118042730.2799-1-quic_c_gdjako@quicinc.com/
