@@ -2,132 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 216AE80B119
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:54:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2378B80B11F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234093AbjLIAyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 19:54:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50284 "EHLO
+        id S234158AbjLIA70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 19:59:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLIAyN (ORCPT
+        with ESMTP id S229525AbjLIA7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 19:54:13 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C331716;
-        Fri,  8 Dec 2023 16:54:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702083259; x=1733619259;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=8pxbXmVjtgxQ6jJTKi3HMK6M41nw+oEV1H8AuJRdMJw=;
-  b=nB9fF8tLQHakrm4N6VoggAbm7atLIFWZwON8EVdE+g/w00FERsfSsF7G
-   zWxtpf1kTaNeJzCqmU5tc4+lKBxI67cUXDYXN1I3bPvvpcUuBIWCAMPwJ
-   3SLfWQJSlfrbzMfFVlhrxFbdPni64uJ+sQ/tKSJFiInPukI2Qq5+BxdXW
-   PGEZSqa6ttkeH7vUKc5qF6VTXqwVHNQdKJivMnvHgXRbjMnCS9pflZroh
-   SZIBprcEdBQUSMurFrqAo3QcW6Lofb3LUsNQbOZPpCG8g7oAyMFD0SLC3
-   zdu0KY1UUzUWFS1gq8tvwtvYu5gm+4QjQ9VnGvAdI1LfUNBv3eAwvCCOP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="425613704"
-X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
-   d="scan'208";a="425613704"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 16:54:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="863063915"
-X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
-   d="scan'208";a="863063915"
-Received: from jcquinta-mobl.amr.corp.intel.com (HELO vcostago-mobl3) ([10.209.47.201])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 16:54:17 -0800
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Rodrigo Cataldo via B4 Relay 
-        <devnull+rodrigo.cadore.l-acoustics.com@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Aravindhan Gunasekaran <aravindhan.gunasekaran@intel.com>,
-        Mallikarjuna Chilakala <mallikarjuna.chilakala@intel.com>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kurt Kanzenbach <kurt@linutronix.de>,
-        Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
-Subject: Re: [PATCH iwl-net] igc: Fix hicredit calculation
-In-Reply-To: <20231208-igc-fix-hicredit-calc-v1-1-7e505fbe249d@l-acoustics.com>
-References: <20231208-igc-fix-hicredit-calc-v1-1-7e505fbe249d@l-acoustics.com>
-Date:   Fri, 08 Dec 2023 16:54:17 -0800
-Message-ID: <871qbwry9y.fsf@intel.com>
+        Fri, 8 Dec 2023 19:59:24 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0111710;
+        Fri,  8 Dec 2023 16:59:29 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-42542b1ed5dso17553071cf.1;
+        Fri, 08 Dec 2023 16:59:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail-com.20230601.gappssmtp.com; s=20230601; t=1702083568; x=1702688368; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:reply-to:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4xB8OrZERO5Rc7R1JqpBtCzHbgKs7lLfjwuEVh+zHQ0=;
+        b=P/HLUXnpNVaFZj36qWUhFhsTV/d8q/pXm1//j3+mtGHw8/HpMRLvkX5Qi7PArCA/Q/
+         RR/NkSUfs8yp4kR+K6mA58LcwBdbM1iGN0VU2yDxUB+9bvpASC7IXYVVBBi/MrH1otMk
+         RlmzxvansJCTU11IU8NDg2LsmTNkKPF2jydkWJo86qCsw7WGzs6dSZq+zz+4fAVKstQO
+         DhqKHzPf21Ae4hSegskcIBDoi/jEZcw1CDOruHOCuXNri01oxyamCM9AEnMQ5WgTnwwE
+         PCr4BKq1ZVAK2/hHzbjIA4OmoSg6/6Fj7J/jPDpBXt6lpnlA35MXVISiHfglyv9lPYZ9
+         BtAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702083568; x=1702688368;
+        h=cc:to:subject:message-id:date:from:reply-to:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4xB8OrZERO5Rc7R1JqpBtCzHbgKs7lLfjwuEVh+zHQ0=;
+        b=pFxY3QwunbKkg36jQuIkfBJQWlt4AJYnf1SBYpa9ZgeMgouMCdSk07RLQ8z4fYF16K
+         IVJhq6elSdsCe8VcolP8lCgaSPQDzLN59+u/QfyeSETfjFMafJ8Km2UVvHAAeSq0/lTp
+         tvgh+KuUE43CQyjG1VdVt5qDRzqOY9OUbhNNBSoYLHfj8Bjb+Ldb7qX/H/zB1AwLumyr
+         HjSHap7+AWFz/vROxfU/qPZxQ/atL9YX5C3qHqVsyoLqcO5jhGWsFqkkEXY1wR/kE5xy
+         uaagZrPeK0PIKNYI8St9trgAqWfSwQdhKg1gB79Z/tq3zB4VqVjSCvjZ3OyFSoC9RMEs
+         qHMw==
+X-Gm-Message-State: AOJu0YxymwRRKL+k8lIqiFe/kFNOVuOH07FIOedIRkfmJ+RDGHMjdLqG
+        QJQprUxREGGQth7F3wL7Em7EWRj8woePAoTQMUg=
+X-Google-Smtp-Source: AGHT+IGsGZPqEINhaFGRwR1jMgaduEOJWeTcRGUhCAt+ENgkK2atfn+uV/psa9Yf+oKDboa+r26g2s1qwtgK0WpWCoQ=
+X-Received: by 2002:ac8:5a8e:0:b0:425:4043:96f4 with SMTP id
+ c14-20020ac85a8e000000b00425404396f4mr1034352qtc.129.1702083568530; Fri, 08
+ Dec 2023 16:59:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231128-clone3-shadow-stack-v4-0-8b28ffe4f676@kernel.org>
+In-Reply-To: <20231128-clone3-shadow-stack-v4-0-8b28ffe4f676@kernel.org>
+Reply-To: robert@ocallahan.org
+From:   "Robert O'Callahan" <robert@ocallahan.org>
+Date:   Sat, 9 Dec 2023 13:59:16 +1300
+Message-ID: <CAOp6jLY8aEFOOqe4ADkgeACvat+07_F_Xj963FhyXkF+0F5Pqw@mail.gmail.com>
+Subject: Re: [PATCH RFT v4 0/5] fork: Support shadow stacks in clone3()
+To:     Mark Brown <broonie@kernel.org>
+Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>, jannh@google.com,
+        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rodrigo Cataldo via B4 Relay
-<devnull+rodrigo.cadore.l-acoustics.com@kernel.org> writes:
+On Wed, 29 Nov 2023 at 07:31, Mark Brown <broonie@kernel.org> wrote:
+> Since clone3() is readily extensible let's add support for specifying a
+> shadow stack when creating a new thread or process in a similar manner
+> to how the normal stack is specified, keeping the current implicit
+> allocation behaviour if one is not specified either with clone3() or
+> through the use of clone().  Unlike normal stacks only the shadow stack
+> size is specified, similar issues to those that lead to the creation of
+> map_shadow_stack() apply.
 
-> From: Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
->
-> According to the Intel Software Manual for I225, Section 7.5.2.7,
-> hicredit should be multiplied by the constant link-rate value, 0x7736.
->
-> Currently, the old constant link-rate value, 0x7735, from the boards
-> supported on igb are being used, most likely due to a copy'n'paste, as
-> the rest of the logic is the same for both drivers.
->
-> Update hicredit accordingly.
->
-> Fixes: 1ab011b0bf07 ("igc: Add support for CBS offloading")
-> Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
-> Signed-off-by: Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
-> ---
+rr (https://rr-project.org) records program execution and then reruns
+it with exactly the same behavior (down to memory contents and
+register values). To replay clone() etc in an application using shadow
+stacks, we'll need to be able to ensure the shadow stack is mapped at
+the same address during the replay run as during the recording run. We
+ptrace the replay tasks and have the ability to execute arbitrary
+syscalls in them. It sounds like we might be able to make this work by
+overriding clone_args::shadow_stack_size to zero in the call to
+clone3(), instead having the replay task call map_shadow_stack() to
+put the the shadow stack in the right place, and then setting its SSP
+via ptrace. Will that work?
 
-Very good catch.
-
-Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-
-Just for curiosity, my test machines are busy right now, what kind of
-difference are you seeing?
-
-> This is a simple fix for the credit calculation on igc devices
-> (i225/i226) to match the Intel software manual.
->
-> This is my first contribution to the Linux Kernel. Apologies for any
-> mistakes and let me know if I improve anything.
-> ---
->  drivers/net/ethernet/intel/igc/igc_tsn.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/intel/igc/igc_tsn.c b/drivers/net/ethernet/intel/igc/igc_tsn.c
-> index a9c08321aca9..22cefb1eeedf 100644
-> --- a/drivers/net/ethernet/intel/igc/igc_tsn.c
-> +++ b/drivers/net/ethernet/intel/igc/igc_tsn.c
-> @@ -227,7 +227,7 @@ static int igc_tsn_enable_offload(struct igc_adapter *adapter)
->  			wr32(IGC_TQAVCC(i), tqavcc);
->  
->  			wr32(IGC_TQAVHC(i),
-> -			     0x80000000 + ring->hicredit * 0x7735);
-> +			     0x80000000 + ring->hicredit * 0x7736);
->  		} else {
->  			/* Disable any CBS for the queue */
->  			txqctl &= ~(IGC_TXQCTL_QAV_SEL_MASK);
->
-> ---
-> base-commit: 2078a341f5f609d55667c2dc6337f90d8f322b8f
-> change-id: 20231206-igc-fix-hicredit-calc-028bf73c50a8
->
-> Best regards,
-> -- 
-> Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
->
-
-Cheers,
+Thanks,
+Rob
 -- 
-Vinicius
+Su ot deraeppa sah dna Rehtaf eht htiw saw hcihw, efil lanrete eht uoy
+ot mialcorp ew dna, ti ot yfitset dna ti nees evah ew; deraeppa efil
+eht. Efil fo Drow eht gninrecnoc mialcorp ew siht - dehcuot evah sdnah
+ruo dna ta dekool evah ew hcihw, seye ruo htiw nees evah ew hcihw,
+draeh evah ew hcihw, gninnigeb eht morf saw hcihw taht.
