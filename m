@@ -2,72 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBFC80B66F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 22:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96DC380B67B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 22:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbjLIVLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 16:11:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42102 "EHLO
+        id S230041AbjLIVSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 16:18:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231240AbjLIVLK (ORCPT
+        with ESMTP id S229477AbjLIVSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 16:11:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC7210D
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 13:11:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1AD68C433C9;
-        Sat,  9 Dec 2023 21:11:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702156277;
-        bh=o5cnQLbIn7gCoU4KyY5lfptQg3sQ6pDCVQRZ6btaU+0=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=tIwrUP+7k51xJfTbBe5fiEbRbs+eJ6j4owfTdImpnhFYQ4oSr2r5gB+uR8BhCyJtG
-         XvNa2MyiPBONN/3UQWPLMjjdQnuaVf4QMk7Cv7SIrTlykDxnhG2yDSHHMWlQXTkuRh
-         CN3WrWKHEFJEGDtwMpTLrjX9fPnFHwhGmUkCFjK3n33UuHlPb0lBxfbDcjNA61gBOi
-         N83/AOGye6OLKjLwKRvEw4Oi6Grirc62FSQl4o15y6FR/F3V6atzjiEZhOKkjcdzc7
-         GLyKGb/TADBGA9pJiDuQJxZuyw22YlaA+jiDEjegVqvCuv4l+29QA6PE91gs0bddJ+
-         Edc7I3iUO7oCA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0412DC595C5;
-        Sat,  9 Dec 2023 21:11:17 +0000 (UTC)
-Subject: Re: [GIT PULL] TTY/Serial driver fixes for 6.7-rc5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZXRxWubSRJ4lGC1N@kroah.com>
-References: <ZXRxWubSRJ4lGC1N@kroah.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZXRxWubSRJ4lGC1N@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-6.7-rc4
-X-PR-Tracked-Commit-Id: e92fad024929c79460403acf946bc9c09ce5c3a9
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0b5260904b7d2f55e8c4a6ac9f32e7387dc55a75
-Message-Id: <170215627701.20711.2690821596404624329.pr-tracker-bot@kernel.org>
-Date:   Sat, 09 Dec 2023 21:11:17 +0000
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sat, 9 Dec 2023 16:18:40 -0500
+Received: from irl.hu (irl.hu [95.85.9.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9E5FA;
+        Sat,  9 Dec 2023 13:18:44 -0800 (PST)
+Received: from fedori.lan (51b690cd.dsl.pool.telekom.hu [::ffff:81.182.144.205])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 0000000000071201.000000006574D9B1.0011E9B9; Sat, 09 Dec 2023 22:18:41 +0100
+From:   Gergo Koteles <soyer@irl.hu>
+To:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Gergo Koteles <soyer@irl.hu>, stable@vger.kernel.org
+Subject: [PATCH v3] ALSA: hda/tas2781: leave hda_component in usable state
+Date:   Sat,  9 Dec 2023 22:18:29 +0100
+Message-ID: <8b8ed2bd5f75fbb32e354a3226c2f966fa85b46b.1702156522.git.soyer@irl.hu>
+X-Mailer: git-send-email 2.43.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 9 Dec 2023 14:53:30 +0100:
+Unloading then loading the module causes a NULL ponter dereference.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-6.7-rc4
+The hda_unbind zeroes the hda_component, later the hda_bind tries
+to dereference the codec field.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0b5260904b7d2f55e8c4a6ac9f32e7387dc55a75
+The hda_component is only initialized once by tas2781_generic_fixup.
 
-Thank you!
+Set only previously modified fields to NULL.
 
+BUG: kernel NULL pointer dereference, address: 0000000000000322
+Call Trace:
+ <TASK>
+ ? __die+0x23/0x70
+ ? page_fault_oops+0x171/0x4e0
+ ? exc_page_fault+0x7f/0x180
+ ? asm_exc_page_fault+0x26/0x30
+ ? tas2781_hda_bind+0x59/0x140 [snd_hda_scodec_tas2781_i2c]
+ component_bind_all+0xf3/0x240
+ try_to_bring_up_aggregate_device+0x1c3/0x270
+ __component_add+0xbc/0x1a0
+ tas2781_hda_i2c_probe+0x289/0x3a0 [snd_hda_scodec_tas2781_i2c]
+ i2c_device_probe+0x136/0x2e0
+
+Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
+CC: stable@vger.kernel.org
+Signed-off-by: Gergo Koteles <soyer@irl.hu>
+---
+ sound/pci/hda/tas2781_hda_i2c.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
+index fb802802939e..b42837105c22 100644
+--- a/sound/pci/hda/tas2781_hda_i2c.c
++++ b/sound/pci/hda/tas2781_hda_i2c.c
+@@ -612,9 +612,13 @@ static void tas2781_hda_unbind(struct device *dev,
+ {
+ 	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
+ 	struct hda_component *comps = master_data;
++	comps = &comps[tas_priv->index];
+ 
+-	if (comps[tas_priv->index].dev == dev)
+-		memset(&comps[tas_priv->index], 0, sizeof(*comps));
++	if (comps->dev == dev) {
++		comps->dev = NULL;
++		memset(comps->name, 0, sizeof(comps->name));
++		comps->playback_hook = NULL;
++	}
+ 
+ 	tasdevice_config_info_remove(tas_priv);
+ 	tasdevice_dsp_remove(tas_priv);
+
+base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.43.0
+
