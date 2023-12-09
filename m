@@ -2,131 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9502E80B0C1
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D2880B0C5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234087AbjLIAEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 19:04:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48152 "EHLO
+        id S1574800AbjLIAHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 19:07:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLIAEt (ORCPT
+        with ESMTP id S229525AbjLIAHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 19:04:49 -0500
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5369123;
-        Fri,  8 Dec 2023 16:04:55 -0800 (PST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 796B8320029B;
-        Fri,  8 Dec 2023 19:04:51 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 08 Dec 2023 19:04:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1702080290; x=1702166690; bh=ZlhhGC8MmDwntW/X5pZovx9haHFb4sqy2tr
-        4l/qUhmA=; b=WsagpBE/4lHxnO4cJAERP37lw5hQZJ9dA8uDrsIZaZeR3zPHnaB
-        6lo8X2/n+WMJQkYWQKCf3BhrM4CcISSDi1Q2du6x+lkZyBjGCf5X3wVVBFq11rL1
-        K/zi+NF8nvjqRH5oXglArIMBu48RegZhtqQD/K2gZhGXhin6THuNlpD5NP7vKmHt
-        HZfscyw0ptuu6vC3r/NKZvNd0zZ+02weRZaykCk+6USnEl5919/iqQkaB9m8DrZH
-        3HoTuth4KDfjBZJ2kJiEccopod+ftFF9vOUkVoaRhMmIeeOHSrcf25hkl2eastVF
-        0wqYztwu0319mUg2aQHTrPNvhm2gIi7Z6ow==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1702080290; x=1702166690; bh=ZlhhGC8MmDwntW/X5pZovx9haHFb4sqy2tr
-        4l/qUhmA=; b=uJCPgsY6B12Hjt+ZQnsxdMtY+eYFbyOYYxDIEBAklq/SjGQqeER
-        diE56E0hdOZ/4UIuOIUOvLwTBDDAu+/5xso6zV33eQr9B3YnE5vchemDHjjUUBrR
-        1JBwub/kdxc22XcEnzodGTbZ4nsRJyW1fFuc17SYCM5Pq9ftp5Lkc40riUfH4MW+
-        yuMc1N93TtwNgD+M/kq9vSpgLFdt3yZEgqbzfPrkgYghdMFpu7GAONZv13fxxVJ/
-        OkHtG53RpS/zPAN3Xif9afKBn9TDxteSQPHW/I9dNF1IJC/LkWbVap8ypdmI7oYq
-        Ob9Ts0IaEGzIJsN3+pdZybA/PE3+hBTIJ4A==
-X-ME-Sender: <xms:Ia9zZSS4GxDfvKyTbGcmo9t9SdVP34m1Yg1EZDMXr40_XDJ-R_Vinw>
-    <xme:Ia9zZXzbYwRFfp3k5A2bg2A76hNoVLbjgaPa-1shpnOh15jeR9bwz4RUTFhQpW-Gu
-    etbZPnqmGiQUQsq_A>
-X-ME-Received: <xmr:Ia9zZf0zZmsmS-xffZubVIeCYh2_RFmCZbLQlSxC-gC5E1BUbCNGSFBFUo43AKq7WY4jbxmZoSDc6rQnOlfEjlx8EZVWtEQHbycT>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekjedgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeffleetkeekkeeggeffvedt
-    vdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:Ia9zZeDcWCUxunzmSASplIBSawA1Ex3GMvzMQYhEnJEyX5roIPgPjg>
-    <xmx:Ia9zZbgPC9g4rpv0-sm1GtSeMgDmFFakJM7v-1p09o39kYSApiT-qA>
-    <xmx:Ia9zZaqdW3sw1H_7ormCbEn2UF1KZSKPjx9nwv3lj_Tq_RcIMPMPJg>
-    <xmx:Iq9zZWSCz_bPAd8iXfRgW4fifXhOHSSi63ZJ-ouRIGlyUjK5e7Nxlg>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 8 Dec 2023 19:04:48 -0500 (EST)
-Date:   Fri, 8 Dec 2023 17:04:47 -0700
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Eyal Birger <eyal.birger@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alexei.starovoitov@gmail.com, devel@linux-ipsec.org,
-        eddyz87@gmail.com, edumazet@google.com,
-        Eyal Birger <eyal@metanetworks.com>, yonghong.song@linux.dev,
-        kuba@kernel.org, bpf@vger.kernel.org, pabeni@redhat.com,
-        davem@davemloft.net
-Subject: Re: [devel-ipsec] [PATCH bpf-next v4 01/10] xfrm: bpf: Move
- xfrm_interface_bpf.c to xfrm_bpf.c
-Message-ID: <njhajqix6x6ktmlhatjrdpsgmtehsizgrbyd6equfiippqtqie@rboplircto53>
-References: <cover.1701722991.git.dxu@dxuuu.xyz>
- <a385991bb4f36133e15d6eacb72ed22a3c02da16.1701722991.git.dxu@dxuuu.xyz>
- <ZXGx7H/Spv634xgX@gauss3.secunet.de>
- <CAHsH6GtmhP=hZcf2Qv=21dAOSb5dD4GDa+QYdLFz9_FsCZq6tA@mail.gmail.com>
+        Fri, 8 Dec 2023 19:07:47 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7222AC
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 16:07:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 101BEC433C7;
+        Sat,  9 Dec 2023 00:07:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702080473;
+        bh=0lDWjZhcpsj5eDD+T3hZ5cTAQQFykaGs0qkCTg3+7Gk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ntoBUAsDFYQIe/0ThhuUrrClxY/6XTFJ3ttIK7D0kCoxzlrPg7XRYTqNlhNe5SmtZ
+         S2yKACJsl4idJTQ7L2eM6ADk958nQDtnL850qlg8YFPmR6a2XdkfYTeJmK18i51v/q
+         5GD3fPm6zeZMOfcElkERh74Xn6Lz2dESFx0cRsPtpck5igqTUlBtTzRVc+kk0g2+Xb
+         gDWsQajUAb7a+r3W5tgjFGcI29ZyybtNQdmZnckY3bKgOE701cJvcSznVHkNBJJb3f
+         CpIJRj75d9tLrlobYZmQkxfI/rgJ2ITmgUHOSozppyT6NQR3b366Z9z/cFA6LZnAuC
+         5JfMDuUAhFq+A==
+Date:   Sat, 9 Dec 2023 01:07:47 +0100
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Alain Volmat <alain.volmat@foss.st.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
+        Valentin Caron <valentin.caron@foss.st.com>,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/7] i2c: stm32f7: add support for stm32mp25 soc
+Message-ID: <20231209000747.4l6462nlzj3po3sf@zenone.zhora.eu>
+References: <20231208164719.3584028-1-alain.volmat@foss.st.com>
+ <20231208164719.3584028-5-alain.volmat@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHsH6GtmhP=hZcf2Qv=21dAOSb5dD4GDa+QYdLFz9_FsCZq6tA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231208164719.3584028-5-alain.volmat@foss.st.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eyal,
+Hi Alain,
 
-On Thu, Dec 07, 2023 at 01:08:08PM -0800, Eyal Birger wrote:
-> Hi Daniel,
+On Fri, Dec 08, 2023 at 05:47:13PM +0100, Alain Volmat wrote:
+> The stm32mp25 has only a single interrupt line used for both
+> events and errors. In order to cope with that, reorganise the
+> error handling code so that it can be called either from the
+> common handler (used in case of SoC having only a single IT line)
+> and the error handler for others.
+> The CR1 register also embeds a new FMP bit, necessary when running
+> at Fast Mode Plus frequency. This bit should be used instead of
+> the SYSCFG bit used on other platforms.
+> Add a new compatible to distinguish between the SoCs and two
+> boolean within the setup structure in order to know if the
+> platform has a single/multiple IT lines and if the FMP bit
+> within CR1 is available or not.
 > 
-> On Thu, Dec 7, 2023 at 3:52 AM Steffen Klassert via Devel
-> <devel@linux-ipsec.org> wrote:
-> >
-> > On Mon, Dec 04, 2023 at 01:56:21PM -0700, Daniel Xu wrote:
-> > > This commit moves the contents of xfrm_interface_bpf.c into a new file,
-> > > xfrm_bpf.c This is in preparation for adding more xfrm kfuncs. We'd like
-> > > to keep all the bpf integrations in a single file.
+> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+
+your SoB here should come last because you are the one sending
+the patch.
+
+> ---
+>  drivers/i2c/busses/i2c-stm32f7.c | 230 ++++++++++++++++++-------------
+>  1 file changed, 133 insertions(+), 97 deletions(-)
 > 
-> This takes away the nice ability to reload the xfrm interface
-> related kfuncs when reloading the xfrm interface.
-> 
-> I also find it a little strange that the kfuncs would be available
-> when the xfrm interface isn't loaded.
+> diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+> index 2a011deec3c5..5634332900fb 100644
+> --- a/drivers/i2c/busses/i2c-stm32f7.c
+> +++ b/drivers/i2c/busses/i2c-stm32f7.c
+> @@ -50,6 +50,7 @@
+>  #define STM32F7_I2C_TXDR			0x28
+>  
+>  /* STM32F7 I2C control 1 */
+> +#define STM32_I2C_CR1_FMP			BIT(24)
+>  #define STM32F7_I2C_CR1_PECEN			BIT(23)
+>  #define STM32F7_I2C_CR1_ALERTEN			BIT(22)
+>  #define STM32F7_I2C_CR1_SMBHEN			BIT(20)
+> @@ -226,6 +227,8 @@ struct stm32f7_i2c_spec {
+>   * @rise_time: Rise time (ns)
+>   * @fall_time: Fall time (ns)
+>   * @fmp_clr_offset: Fast Mode Plus clear register offset from set register
+> + * @single_it_line: Only a single IT line is used for both events/errors
+> + * @fmp_cr1_bit: Fast Mode Plus control is done via a bit in CR1
 
-I think technically since the xfrm interface module does the kfunc
-registration, the kfuncs would only be available after the module is
-loaded.
+Is the Fast Mode Plus an optional feature?
 
-> 
-> So imho it makes sense that these kfuncs would be built
-> as part of the module and not as part of the core.
+>   */
+>  struct stm32f7_i2c_setup {
+>  	u32 speed_freq;
+> @@ -233,6 +236,8 @@ struct stm32f7_i2c_setup {
+>  	u32 rise_time;
+>  	u32 fall_time;
+>  	u32 fmp_clr_offset;
+> +	bool single_it_line;
+> +	bool fmp_cr1_bit;
+>  };
 
-But yeah, point taken. I will revert this commit for v5.
+[...]
 
-> 
-> Eyal.
+> -static irqreturn_t stm32f7_i2c_slave_isr_event(struct stm32f7_i2c_dev *i2c_dev)
+> +static irqreturn_t stm32f7_i2c_slave_isr_event(struct stm32f7_i2c_dev *i2c_dev, u32 status)
+>  {
+>  	void __iomem *base = i2c_dev->base;
+> -	u32 cr2, status, mask;
+> +	u32 cr2, mask;
+>  	u8 val;
+>  	int ret;
+>  
+> -	status = readl_relaxed(i2c_dev->base + STM32F7_I2C_ISR);
+> -
 
-Thanks,
-Daniel
+good to see this change here, relates to my comment in patch 1.
+But I think this should go on a different patch.
+
+>  	/* Slave transmitter mode */
+>  	if (status & STM32F7_I2C_ISR_TXIS) {
+>  		i2c_slave_event(i2c_dev->slave_running,
+> @@ -1494,17 +1504,81 @@ static irqreturn_t stm32f7_i2c_slave_isr_event(struct stm32f7_i2c_dev *i2c_dev)
+>  	return IRQ_HANDLED;
+>  }
+
+[...]
+
+> -	setup = of_device_get_match_data(&pdev->dev);
+> -	if (!setup) {
+> -		dev_err(&pdev->dev, "Can't get device data\n");
+> -		return -ENODEV;
+> +		ret = devm_request_threaded_irq(&pdev->dev, irq_error,
+> +						NULL,
+> +						stm32f7_i2c_isr_error_thread,
+> +						IRQF_ONESHOT,
+> +						pdev->name, i2c_dev);
+> +		if (ret) {
+> +			dev_err(&pdev->dev, "Failed to request irq error %i\n",
+> +				irq_error);
+
+please use dev_err_probe();
+
+> +			return ret;
+> +		}
+
+out of the scope of the patch and just for curiosity: does the
+driver work without being able to signal on the error interrupt
+line?
+
+Overall the patch looks good to me, though.
+
+Andi
