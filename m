@@ -2,76 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 167A580B60C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 20:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C1D80B61B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 20:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbjLIT0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 14:26:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40262 "EHLO
+        id S230437AbjLIT3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 14:29:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjLIT0x (ORCPT
+        with ESMTP id S229488AbjLIT3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 14:26:53 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBEAB7;
-        Sat,  9 Dec 2023 11:27:00 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-7b70f451399so70222539f.0;
-        Sat, 09 Dec 2023 11:27:00 -0800 (PST)
+        Sat, 9 Dec 2023 14:29:00 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD76B7;
+        Sat,  9 Dec 2023 11:29:07 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-67aa00ea853so20421056d6.2;
+        Sat, 09 Dec 2023 11:29:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702150019; x=1702754819; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/CS+2dOrg8lRndJOViWuMxTn+pfWJIfx/SVtYqnhXtI=;
-        b=Hh53SB8ahy2b/D0tp9eFElLQPxxwSL6IUPg02di6KBba92UYuFGMJ9QxujiFL7q0Nz
-         3vp1Wk1RqfTV5aMeQC/qg/4wHqyIyCl88i5jDn8dBdws+WvKBwncYcPleTlK8V20lrme
-         UNbp2MS0EJpe1WiqMMnzldwtqQKQvx3Ay8jOXOxmfjSVgiccXWw+tzgqjBrMeB5SOMEg
-         G74QrWdfONX4Dt94Eo4uAzohtCUJsfMgjiQj/dOWrwIDZwSzplGgMC+cukatHf6DUk8R
-         krdBjDDca4xOA2UEcWkJYEXsSZtw2iPbNTgN6S5ALyMJDV3GjuBH1shZCTNgshflVqEF
-         trlg==
+        d=gmail.com; s=20230601; t=1702150146; x=1702754946; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AZjI6eW/j0C4pjx0/V8+b02DUdTKD9CUny5GmPYexxc=;
+        b=mYWJbKiswZCqu+xjHSXEKNJ84gThziotmE+0RrfnA3CRgNR5FtMJ8OwfkRiBrSUdTQ
+         ehZIQ8GahTuR8KHLhnbOcQLtLWWn1tEebaULe2NpHmperI+14zOvIIF5BgO2mLDWMOi7
+         T/0+rc5IeMXFIAa8DQqViF37E+OCdr7lp8845YOumyxGbXOhygV0Y9u0heUDVVxc2/G8
+         /eUbnxs9zfR8W50owJp+MsovnvlnKI3jSJ4Wo8XkD71bHAf2JTvKlMfmzNHA9Orb4cNm
+         QFb2/u8ZsLbNXY2murOm82G88vLqdmO6ImFsC/Vr0EVQGx5Xf4Uv2AXATTypv4veCGBw
+         ZjKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702150019; x=1702754819;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/CS+2dOrg8lRndJOViWuMxTn+pfWJIfx/SVtYqnhXtI=;
-        b=u9UgiauI7w9vwUt0vbo/COnxn5L+pJ8d3g1gI9xgPPPY7lA6ulMlu4fM81JvygLLZY
-         LAr6v6tTKocjVKFCmdtMGONahAhuAwTcRI+i3heJKW1pX2Qh1ew4iYs0VTlPf5lzyuXJ
-         z6Ap8bzuBvT/Wvs5MOCVBjvuMrhrUGcR2F544xdA3slIUxEvHfievuaCN1jFRABNs0g7
-         O1e0Egd9ruRaN24VOI6SSLOB7WxRfCqbADouCA/JvpQ/Iv5YCkxc0jzLyhWiR+Qxp60d
-         kQr7qn1N9dHGMUH28QdQtG9ABbqt6Fg8cZFD7sJ1Cvh1muyw9laxtKnyj836dIZD2av7
-         KMrA==
-X-Gm-Message-State: AOJu0Ywrys5XyZ0ZcJz8tC0KWom1/cD906eoLpEgw75ops+8GUtjsa4Q
-        Ugt15VbW48CPRfZd8j4ZQFE=
-X-Google-Smtp-Source: AGHT+IFGbII4YZhDonPEH7GIate2RH3+ElxvIRJUX8NgI0k1MZogzaEWMhWBgr/qDMtj9j8jLf7vLw==
-X-Received: by 2002:a5e:9413:0:b0:7b7:19d2:b53a with SMTP id q19-20020a5e9413000000b007b719d2b53amr2659456ioj.28.1702150019544;
-        Sat, 09 Dec 2023 11:26:59 -0800 (PST)
-Received: from ?IPV6:2001:470:42c4:101:971d:15c7:de39:3b4b? ([2001:470:42c4:101:971d:15c7:de39:3b4b])
-        by smtp.gmail.com with ESMTPSA id fh11-20020a056638628b00b004690150ade2sm1086084jab.147.2023.12.09.11.26.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Dec 2023 11:26:59 -0800 (PST)
-Message-ID: <9915035d-88ce-f961-00c0-fad24aa07764@gmail.com>
-Date:   Sat, 9 Dec 2023 12:26:52 -0700
+        d=1e100.net; s=20230601; t=1702150146; x=1702754946;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AZjI6eW/j0C4pjx0/V8+b02DUdTKD9CUny5GmPYexxc=;
+        b=DaVGJnzn6lJboQS4JfL+9dprnuEbzGFSTSrzgaxRCW0QwzJKjoJyjaEmc5zzcCmsfF
+         HXN8SKLPQMfdWY6uLId/GEYx0D5EkgxummR6EOFI613nL9XWsgnq/m5tyA/eGG5HtnXh
+         wcV/6YNZEpH0QN/P+eb8AmXx7JjmKhbDtRYk+juRE6i8mVogSVUHhLCnp40UBnlfJ9cc
+         ymQWw0cUEMC1uvSPHwjVq+kUMuDKaU/dZ976i+9gmTBbNyngh9jnKnt+K7NvZPCToIjo
+         glU37+XvYqxOu0xL1OQo5pXGlwH+obd9t7Gr19R2oj1x71PweU15skOjzzB3B/vT4jnf
+         0Bug==
+X-Gm-Message-State: AOJu0Yyyvim4cwZoBEiKDV23Nua0hBwV+4UpZdxi5JNXxganB19Uxc+r
+        BR94vzSf3UrTC6ROUecoADY=
+X-Google-Smtp-Source: AGHT+IGFrpnZiJSQ0VU6Wui/nwJyNhYgaePqWQ1kawPnu209/5DZYJi4ClrTG/rsL4DfUGDaB0hBiw==
+X-Received: by 2002:a0c:e9d0:0:b0:67e:c64c:45d3 with SMTP id q16-20020a0ce9d0000000b0067ec64c45d3mr718491qvo.88.1702150146224;
+        Sat, 09 Dec 2023 11:29:06 -0800 (PST)
+Received: from abdel ([174.95.13.129])
+        by smtp.gmail.com with ESMTPSA id c10-20020a0ceb4a000000b0067a27108513sm1797168qvq.67.2023.12.09.11.29.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Dec 2023 11:29:05 -0800 (PST)
+Date:   Sat, 9 Dec 2023 14:28:55 -0500
+From:   Abdel Alkuor <alkuor@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Conor Dooley <conor@kernel.org>, krzysztof.kozlowski+dt@linaro.org,
+        robh+dt@kernel.org, lars@metafoo.de, conor+dt@kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: temperature: Add AMS AS6200
+Message-ID: <ZXS/9+lcD+/ptfKr@abdel>
+References: <20231202041651.719963-1-alkuor@gmail.com>
+ <20231203-wrecking-sneer-d34f19c39f04@spud>
+ <ZW6IqoelmMhTgjgW@abdel>
+ <20231206174050.12ad1c98@jic23-huawei>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/2] xhci: Introduce "disable-usb3" DT property/quirk
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Stuebner <heiko@sntech.de>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231208210458.912776-1-CFSworks@gmail.com>
- <20231208210458.912776-2-CFSworks@gmail.com>
- <d9ebe207-1f20-4254-9523-f2231bf9a0a4@kernel.org>
-From:   Sam Edwards <cfsworks@gmail.com>
-In-Reply-To: <d9ebe207-1f20-4254-9523-f2231bf9a0a4@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206174050.12ad1c98@jic23-huawei>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,74 +76,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/9/23 06:53, Krzysztof Kozlowski wrote:
-> On 08/12/2023 22:04, Sam Edwards wrote:
->> Some systems may have xHCI controllers that enumerate USB 3.0 ports, but
->> these ports nevertheless cannot be used. Perhaps enabling them triggers a
->> hardware bug, or perhaps they simply aren't connected and it would be
->> confusing to the user to see an unusable USB 3.0 rhub show up -- whatever
->> the case may be, it's reasonable to want to disable these ports.
->>
->> Add a DT property (and associated quirk) to the xHCI driver that skips
->> over (i.e. ignores and doesn't initialize) any USB 3.0 ports discovered
->> during driver initialization.
->>
->> Signed-off-by: Sam Edwards <CFSworks@gmail.com>
->> ---
->>   Documentation/devicetree/bindings/usb/usb-xhci.yaml | 4 ++++
-
-Hi Krzysztof,
-
+On Wed, Dec 06, 2023 at 05:40:50PM +0000, Jonathan Cameron wrote:
+> On Mon, 4 Dec 2023 21:19:22 -0500
+> Abdel Alkuor <alkuor@gmail.com> wrote:
+>
+Hi Jonathan,
+> I'd not noticed this.  Why is this an IIO driver rather than an hwmon one?
 > 
-> Bindings are always separate patches.
+> Mostly we do that only for very high accuracy or weird temperature sensors
+> (infrared ones for example or things with complex thermocouple handling).
+> Simpler devices meant for hardware monitoring type applications typically go
+> in hwmon.
 > 
-> Please do not sneak in properties without DT review.
-> 
+> We have the iio to hwmon bridge driver for things that naturally have uses
+> where IIO features are needed, but which get used for hwmon sometimes.
+> Not sure this is enough IIO focused though, so perhaps list out why you
+> think it should be in IIO?
+No specific reason. I thought IIO is the de facto for such sensors. I'll
+use hwmon instead.
 
-It makes sense that the new property should be introduced in a separate 
-patch. I'll ensure that is the case in v2. (If there is one -- see below.)
+Thanks the clarification.
 
-> Please use scripts/get_maintainers.pl to get a list of necessary people
-> and lists to CC. It might happen, that command when run on an older
-> kernel, gives you outdated entries. Therefore please be sure you base
-> your patches on recent Linux kernel.
-> 
-> You missed at least devicetree list (maybe more), so this won't be
-> tested by automated tooling.
-
-I have tried (and failed) to find the documentation for this 
-linux-devicetree bot. Do you have the link? In particular, I'd like to 
-ensure that patch 2/2 (the one that actually changes established 
-behavior) is tested sufficiently thoroughly.
-
-> Performing review on untested code might be
-> a waste of time, thus I will skip this patch entirely till you follow
-> the process allowing the patch to be tested.
-
-That's fine; this patch has just failed review anyway (due to the new 
-property not being introduced in a separate patch), and I'll need to 
-prepare and send a v2 to proceed. However as I mentioned in the cover, 
-this is a semi-RFC. I haven't discussed the overall idea with anyone 
-yet, so to avoid wasting my own time, I need to give the USB folks ample 
-opportunity to object to the proposed changes or suggest improvements 
-before investing more effort in refining the patchset.
-
-As of now, I'm only seeking commentary, not formal review. I'd 
-appreciate any insights on the approach I've taken and whether there are 
-any potential challenges or alternatives that haven't been explored yet. 
-Therefore, I'll hold off on CC-ing linux-devicetree at this stage to 
-keep the focus on the broader concept, and will loop them in (with any 
-other recipients as appropriate) for v2 when (and if!) there's consensus 
-here on linux-usb that the general direction is worth pursuing.
-
-> 
-> Please kindly resend and include all necessary To/Cc entries.
-> 
-> Best regards,
-> Krzysztof
-> 
-
-Happy Saturday,
-Sam
+Abdel
