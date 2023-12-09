@@ -2,211 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 968E580B5FF
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 20:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A878580B602
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 20:18:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbjLITO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 14:14:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42880 "EHLO
+        id S230081AbjLITSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 14:18:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjLITO0 (ORCPT
+        with ESMTP id S229477AbjLITSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 14:14:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DED295
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 11:14:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A931C433C9;
-        Sat,  9 Dec 2023 19:14:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702149272;
-        bh=o0ozzHhu+CZMfnQcW6TqO/dFGDY8qG0C8est7GCCFDc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JCI488Fq0ln6JmyHv7+rNmX4aj6PqwAma4ZC1HkdfCeJ411b7f1TwryI3E3y4o4O6
-         cpTnrIuym6c8bpeGB40Apf9m4SLrw4rXnsuePFCmBuwnTJcQLQcUodmnx8sKNcpuHx
-         W8vWKn3o/AdxLb2JH83nmuOFBbqAPfO1vjltnhRf0LNViL8qPYPMGxLqZatOmLWp0N
-         mhyC4FNJspIwlt5JQnmi8o3+TLK/M6UtfqCkRou3u4V2arqQz1oL5cFW+vdY+Jg8+F
-         Ncx8XsEebz62F2KbQBp5WiIu7/f6N91+8p7a+zmOcNd3VKBZR1MZdb4e9gA05BNUoK
-         4O+uQfN6rqxyg==
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1fa37df6da8so2149601fac.2;
-        Sat, 09 Dec 2023 11:14:32 -0800 (PST)
-X-Gm-Message-State: AOJu0Yxn93rsluT7nZW91Z1Qc6vbagg0tCiN/LwoD0U+OPoom2GjQN4o
-        zvK+kXY7vmk+gbekHMl8O7crgEQzSo81vz53wM0=
-X-Google-Smtp-Source: AGHT+IGMn+tD3vZ91vtSx2t/y3jD8Hg8fcLiZNFbNmHI5L2jf7XjGF30LghUtlCJbqm0SruLd6vCUhNfILxHLS9hBAk=
-X-Received: by 2002:a05:6870:638b:b0:1fa:f625:e23d with SMTP id
- t11-20020a056870638b00b001faf625e23dmr2688256oap.28.1702149271595; Sat, 09
- Dec 2023 11:14:31 -0800 (PST)
+        Sat, 9 Dec 2023 14:18:02 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6195CA2
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 11:18:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702149489; x=1733685489;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=FSiTq+R7K6AtJ/tXHCs+/XVoB/rsfopmIkdivPR1OZU=;
+  b=g8hVf07VsnltFbnA+LQJXAhfDGuqhEcZuv3+E3uYYuwJl2sJDTrMc4nJ
+   LkQmpbxLYw8pQUgT0M9BIiaRItngt76sYHEyL/kbNb2fx2Va/WeqaSWHq
+   esZ8rhCJWm3Ely4H16nyfqKn210ID6BTn8RX2mC7y2kaNzluF0rUrRU43
+   PXmafjUVB1OYZZWkLRwPPYcmsCkUzu3UqjJvLzvPi5QwuiRf0Fwg1ss5v
+   ONIcFsPmg9K3HjYte//61lrH0q7R4G+OYhyKmmiyJp2cgL/0eBoMz51Cs
+   SV1MiXTXC0BIr8MTcon8M2YP6n7+uaBeermPBhS1c5Oi5cdNx8ARsMiHS
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="1396771"
+X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
+   d="scan'208";a="1396771"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 11:18:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="838483692"
+X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
+   d="scan'208";a="838483692"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 09 Dec 2023 11:18:07 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rC2px-000Fov-1c;
+        Sat, 09 Dec 2023 19:18:05 +0000
+Date:   Sun, 10 Dec 2023 03:17:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sui Jingfeng <suijingfeng@loongson.cn>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse: sparse:
+ incorrect type in argument 1 (different address spaces)
+Message-ID: <202312100315.ToF8OHaM-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231208181802.88528-3-leobras@redhat.com>
-In-Reply-To: <20231208181802.88528-3-leobras@redhat.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 10 Dec 2023 04:13:54 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQk3Nm53qf95p7yQbSQ_M3phD_n5OMGxFWorGg_4fpQZg@mail.gmail.com>
-Message-ID: <CAK7LNAQk3Nm53qf95p7yQbSQ_M3phD_n5OMGxFWorGg_4fpQZg@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 1/1] scripts: Introduce a default git.orderFile
-To:     Leonardo Bras <leobras@redhat.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 9, 2023 at 3:19=E2=80=AFAM Leonardo Bras <leobras@redhat.com> w=
-rote:
->
-> When reviewing patches, it looks much nicer to have some changes shown
-> before others, which allow better understanding of the patch before the
-> the .c files reviewing.
->
-> Introduce a default git.orderFile, in order to help developers getting th=
-e
-> best ordering easier.
->
-> Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
->
-> ---
-> Changes since RFCv4:
-> - Added scripts/* into "build system" section
-> - Added "git-specific" section with this script and .gitignore
-> - Thanks for this feedback Nicolas!
->
-> Changes since RFCv3:
-> - Added "*types.h" matching so type headers appear before regular headers
-> - Removed line ends ($) in patterns: they previously provided a
->   false-positive
-> - Fixed build patterns to allow matching Kconfig, Kbuild & Makefile
->   in any subdirectory
->
-> Changes since RFCv2:
-> - Fixed licence comment to from /**/ to #
-> - Fixed filename in how-to comment
-> - Fix build order: Kconfig -> Kbuild -> Makefile
-> - Add *.mk extension
-> - Add line-ends ($) to make sure and get the correct extensions
-> - Thanks Masahiro Yamada for above suggestions!
-> - 1 Ack, thanks Randy!
->
-> Changes since RFCv1:
-> - Added Kconfig* (thanks Randy Dunlap!)
-> - Changed Kbuild to Kbuild* (improve matching)
->
->
->  scripts/git.orderFile | 39 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 39 insertions(+)
->  create mode 100644 scripts/git.orderFile
->
-> diff --git a/scripts/git.orderFile b/scripts/git.orderFile
-> new file mode 100644
-> index 0000000000000..31649ff53d22c
-> --- /dev/null
-> +++ b/scripts/git.orderFile
-> @@ -0,0 +1,39 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +# order file for git, to produce patches which are easier to review
-> +# by diffing the important stuff like header changes first.
-> +#
-> +# one-off usage:
-> +#   git diff -O scripts/git.orderFile ...
-> +#
-> +# add to git config:
-> +#   git config diff.orderFile scripts/git.orderFile
-> +#
-> +
-> +MAINTAINERS
-> +
-> +# Documentation
-> +Documentation/*
-> +*.rst
-> +
-> +# git-specific
-> +.gitignore
-> +scripts/git.orderFile
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f2e8a57ee9036c7d5443382b6c3c09b51a92ec7e
+commit: f39db26c54281da6a785259498ca74b5e470476f drm: Add kms driver for loongson display controller
+date:   5 months ago
+config: powerpc-randconfig-r113-20231106 (https://download.01.org/0day-ci/archive/20231210/202312100315.ToF8OHaM-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231210/202312100315.ToF8OHaM-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312100315.ToF8OHaM-lkp@intel.com/
 
+sparse warnings: (new ones prefixed by >>)
+>> drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *d @@     got void *kptr @@
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse:     expected void volatile [noderef] __iomem *d
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse:     got void *kptr
+>> drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const volatile [noderef] __iomem *s @@     got void *kptr @@
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse:     expected void const volatile [noderef] __iomem *s
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse:     got void *kptr
 
-I think scripts/git.orderFile should be part of
-"scripts/*" below.
+vim +27 drivers/gpu/drm/loongson/lsdc_benchmark.c
 
+    12	
+    13	typedef void (*lsdc_copy_proc_t)(struct lsdc_bo *src_bo,
+    14					 struct lsdc_bo *dst_bo,
+    15					 unsigned int size,
+    16					 int n);
+    17	
+    18	static void lsdc_copy_gtt_to_vram_cpu(struct lsdc_bo *src_bo,
+    19					      struct lsdc_bo *dst_bo,
+    20					      unsigned int size,
+    21					      int n)
+    22	{
+    23		lsdc_bo_kmap(src_bo);
+    24		lsdc_bo_kmap(dst_bo);
+    25	
+    26		while (n--)
+  > 27			memcpy_toio(dst_bo->kptr, src_bo->kptr, size);
+    28	
+    29		lsdc_bo_kunmap(src_bo);
+    30		lsdc_bo_kunmap(dst_bo);
+    31	}
+    32	
+    33	static void lsdc_copy_vram_to_gtt_cpu(struct lsdc_bo *src_bo,
+    34					      struct lsdc_bo *dst_bo,
+    35					      unsigned int size,
+    36					      int n)
+    37	{
+    38		lsdc_bo_kmap(src_bo);
+    39		lsdc_bo_kmap(dst_bo);
+    40	
+    41		while (n--)
+  > 42			memcpy_fromio(dst_bo->kptr, src_bo->kptr, size);
+    43	
+    44		lsdc_bo_kunmap(src_bo);
+    45		lsdc_bo_kunmap(dst_bo);
+    46	}
+    47	
 
-
-
-
-
-> +
-> +# build system
-> +*Kconfig*
-> +*Kbuild*
-> +*Makefile*
-
-I do not like this because "foo-Makefile-bar"
-is not a Makefile, but would match "*Makefile*".
-
-
-If you do not use wildcard at all, 'Makefile'
-will match to the root-dir and sub-directories.
-
-
-Kconfig
-*/Kconfig*
-Kbuild
-Makefile
-*.mak
-*.mk
-scripts/*
-
-
-may satisfy your needs mostly.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-> +*.mak
-> +*.mk
-> +scripts/*
-> +
-> +# semantic patches
-> +*.cocci
-> +
-> +# headers
-> +*types.h
-> +*.h
-> +
-> +# code
-> +*.c
-> --
-> 2.43.0
->
-
-
---=20
-Best Regards
-Masahiro Yamada
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
