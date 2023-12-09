@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B17580B4D2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 15:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C7180B4D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 15:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbjLIOGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 09:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34606 "EHLO
+        id S230344AbjLIOPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 09:15:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbjLIOGi (ORCPT
+        with ESMTP id S229519AbjLIOPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 09:06:38 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15ACB10E0;
-        Sat,  9 Dec 2023 06:06:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702130802; x=1733666802;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=iPfvm3zc+fI/TfGjrL3RJctCnle4SK9WKb1iTKYiy/4=;
-  b=S+Jrvr3dD10UCy1a9yO3wARdALbemY7Bhx/OC7FfcWuYqC3xnJPkW9dC
-   Bc+YzB3iw+c7DDVxXzieEXbA30o97BhMBiQH5sefmE8V4MVhN5SVsfcj7
-   0NXS1c8wWYLERWrf+y9+KW5A1+8a1D6KhEXQdfYLfKdu9DCr66fT3PTIo
-   Uc86xfA0bv/byXwF8w8PpJSYq048k/isGLvDn0v1qlcKqn2pKqhJbUS9s
-   5M+M27wcJP/66aNcYTLjQpccv6HxDr50Fxg8kfgPNP1mMgDVT0pX/GRl/
-   kxFRBvCEx6f5/IJ4M8zzNT/+v1hZxxBsrMFYIRvgKssSSt/krjtrpoKy8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="391683605"
-X-IronPort-AV: E=Sophos;i="6.04,263,1695711600"; 
-   d="scan'208";a="391683605"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 06:06:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="1019659842"
-X-IronPort-AV: E=Sophos;i="6.04,263,1695711600"; 
-   d="scan'208";a="1019659842"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 09 Dec 2023 06:06:37 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBxyU-000FQB-1K;
-        Sat, 09 Dec 2023 14:06:34 +0000
-Date:   Sat, 9 Dec 2023 22:06:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?iso-8859-1?Q?Gr=E9gory?= Clement <gregory.clement@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v5 2/9] tty: serial: amba: Use linux/{bits,bitfield}.h
- macros
-Message-ID: <202312092110.zA95fW8M-lkp@intel.com>
-References: <20231130-mbly-uart-v5-2-6566703a04b5@bootlin.com>
+        Sat, 9 Dec 2023 09:15:12 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE4910E6
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 06:15:19 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6ce76f0748fso2088268b3a.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 06:15:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702131318; x=1702736118; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dOqfTtQ7ulCx2hj31UovM4Dg0r3q4oUpbgRbtAdcj1A=;
+        b=TZwV+7h1mfOyMA/bfmKRVLiMrfIRwD/xd4vsdJKvCoqDHnpSMIxsrC2PnUgjgwPrbc
+         koax3n9bkZ13o0jSgmxWorZzYXI7x4lQi0VZch7ISjntL/Hta4VTeTzav/CUgkyVO5Af
+         7VIe1jiNxrLjrWSaQ1mf6O+vafX5f+wH0aJIvH/2hftcSUuCqxbSd7xMr8hUrULMXQ1X
+         ShGtNZ4OldFLh9qXwwgPLCjrlIgcGAWTjcjo51zE/CHUgd3nxV/1ROyCsC6Xluot8K9z
+         elo0jBcPFfdYwV+FH/m138UF7ntnjbgMgVJ0IvFEh7G6pbfeqPRgZnt/hs3rxNVxIu2Z
+         h/Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702131318; x=1702736118;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dOqfTtQ7ulCx2hj31UovM4Dg0r3q4oUpbgRbtAdcj1A=;
+        b=dszqdCDemZxztYAsluXWQgDwa/+/xpodsWHhf245a7HKLhxm59Ht0xNB+786l4d/hZ
+         wHKvQrbQKEfXERM4C8KZtMMmhiGbfZBI/ZHI7TFOXOrb8nTarSuyD0mEXHMUapLWl9A2
+         ZEFN15oDiR6vlDhYT9kPARF+6Z6J56Q0KBDV+mucKzCFxQbSZxelKPTg9opxzzw70a2u
+         NVNkxrOL8DgFGFhPCcEwMzKJX/6p5zheOaqf8HHMi/pa9DsqkdBnghYpImydIR7KJWGe
+         VsAYWK0xjiL8nRYi2oCkv4hFwlj4GdNd35fxsJXrwIO3NR2jFgtyqFeGocl+B0lafYHf
+         kccQ==
+X-Gm-Message-State: AOJu0YyyPWx8IAhR1UmmKaS6TFzT+NGpUOk5/cRmWCQpT2/IKNx8gMbZ
+        7oXXpSZ9/8n+UWozeaXlsJ6qXHuWl34=
+X-Google-Smtp-Source: AGHT+IFSIBAclxcKznD5lC6fo4FRkGt5j4oI2WgZx0nii29/9XNjOwtW2hpoPiTe0YBtM1yrS9E1uw==
+X-Received: by 2002:a05:6a20:7fa6:b0:18f:dde5:7211 with SMTP id d38-20020a056a207fa600b0018fdde57211mr861786pzj.7.1702131318201;
+        Sat, 09 Dec 2023 06:15:18 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id m2-20020a635802000000b005b6c1972c99sm3281644pgb.7.2023.12.09.06.15.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Dec 2023 06:15:17 -0800 (PST)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org
+Cc:     Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH] crash_core: Fix the check for whether crashkernel is from high memory
+Date:   Sat,  9 Dec 2023 22:14:38 +0800
+Message-ID: <20231209141438.77233-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231130-mbly-uart-v5-2-6566703a04b5@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,345 +72,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Théo,
+If crash_base is equal to CRASH_ADDR_LOW_MAX, it also indicates that
+the crashkernel memory is allocated from high memory. However, the
+current check only considers the case where crash_base is greater than
+CRASH_ADDR_LOW_MAX. Fix it.
 
-kernel test robot noticed the following build errors:
+This patch also includes some minor cleanups.
 
-[auto build test ERROR on tty/tty-linus]
-[also build test ERROR on usb/usb-testing usb/usb-next usb/usb-linus linus/master v6.7-rc4 next-20231208]
-[cannot apply to tty/tty-testing tty/tty-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Fixes: 0ab97169aa05 ("crash_core: add generic function to do reservation")
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+---
+ kernel/crash_core.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Th-o-Lebrun/tty-serial-amba-Use-linux-bits-bitfield-h-macros/20231130-230738
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-linus
-patch link:    https://lore.kernel.org/r/20231130-mbly-uart-v5-2-6566703a04b5%40bootlin.com
-patch subject: [PATCH v5 2/9] tty: serial: amba: Use linux/{bits,bitfield}.h macros
-config: arm-randconfig-r052-20231206 (https://download.01.org/0day-ci/archive/20231209/202312092110.zA95fW8M-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231209/202312092110.zA95fW8M-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312092110.zA95fW8M-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   include/linux/stddef.h: Assembler messages:
-   include/linux/stddef.h:10: Error: bad instruction `enum {'
-   include/linux/stddef.h:11: Error: junk at end of line, first unrecognized character is `,'
-   include/linux/stddef.h:13: Error: junk at end of line, first unrecognized character is `}'
->> arch/arm/include/asm/swab.h:23: Error: bad instruction `static inline __attribute_const__ __u32 __arch_swahb32(__u32 x)'
->> arch/arm/include/asm/swab.h:24: Error: junk at end of line, first unrecognized character is `{'
->> arch/arm/include/asm/swab.h:25: Error: bad instruction `__asm__ ("rev16 %0, %1":"=r"(x):"r"(x))'
->> arch/arm/include/asm/swab.h:26: Error: bad instruction `return x'
-   arch/arm/include/asm/swab.h:27: Error: junk at end of line, first unrecognized character is `}'
->> arch/arm/include/asm/swab.h:31: Error: bad instruction `static inline __attribute_const__ __u32 __arch_swab32(__u32 x)'
-   arch/arm/include/asm/swab.h:32: Error: junk at end of line, first unrecognized character is `{'
->> arch/arm/include/asm/swab.h:33: Error: bad instruction `__asm__ ("rev %0, %1":"=r"(x):"r"(x))'
-   arch/arm/include/asm/swab.h:34: Error: bad instruction `return x'
-   arch/arm/include/asm/swab.h:35: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:48: Error: bad instruction `static inline __attribute_const__ __u16 __fswab16(__u16 val)'
-   include/uapi/linux/swab.h:49: Error: junk at end of line, first unrecognized character is `{'
->> include/uapi/linux/swab.h:51: Error: bad instruction `return ((__u16)__arch_swahb32(val))'
-   include/uapi/linux/swab.h:55: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:57: Error: bad instruction `static inline __attribute_const__ __u32 __fswab32(__u32 val)'
-   include/uapi/linux/swab.h:58: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:60: Error: bad instruction `return __arch_swab32(val)'
-   include/uapi/linux/swab.h:64: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:66: Error: bad instruction `static inline __attribute_const__ __u64 __fswab64(__u64 val)'
-   include/uapi/linux/swab.h:67: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:71: Error: bad instruction `__u32 h=val>>32'
-   include/uapi/linux/swab.h:72: Error: bad instruction `__u32 l=val&((1ULL<<32)-1)'
-   include/uapi/linux/swab.h:73: Error: bad instruction `return (((__u64)__fswab32(l))<<32)|((__u64)(__fswab32(h)))'
-   include/uapi/linux/swab.h:77: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:79: Error: bad instruction `static inline __attribute_const__ __u32 __fswahw32(__u32 val)'
-   include/uapi/linux/swab.h:80: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:84: Error: bad instruction `return ((__u32)((((__u32)(val)&(__u32)0x0000ffffUL)<<16)|(((__u32)(val)&(__u32)0xffff0000UL)>>16)))'
-   include/uapi/linux/swab.h:86: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:88: Error: bad instruction `static inline __attribute_const__ __u32 __fswahb32(__u32 val)'
-   include/uapi/linux/swab.h:89: Error: junk at end of line, first unrecognized character is `{'
->> include/uapi/linux/swab.h:91: Error: bad instruction `return __arch_swahb32(val)'
-   include/uapi/linux/swab.h:95: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:136: Error: bad instruction `static inline unsigned long __swab(const unsigned long y)'
-   include/uapi/linux/swab.h:137: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:141: Error: bad instruction `return (__u32)(__builtin_constant_p(y)?((__u32)((((__u32)(y)&(__u32)0x000000ffUL)<<24)|(((__u32)(y)&(__u32)0x0000ff00UL)<<8)|(((__u32)(y)&(__u32)0x00ff0000UL)>>8)|(((__u32)(y)&(__u32)0xff000000UL)>>24))):__fswab32(y))'
-   include/uapi/linux/swab.h:143: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:171: Error: bad instruction `static inline __u16 __swab16p(const __u16*p)'
-   include/uapi/linux/swab.h:172: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:176: Error: bad instruction `return (__u16)(__builtin_constant_p(*p)?((__u16)((((__u16)(*p)&(__u16)0x00ffU)<<8)|(((__u16)(*p)&(__u16)0xff00U)>>8))):__fswab16(*p))'
-   include/uapi/linux/swab.h:178: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:184: Error: bad instruction `static inline __u32 __swab32p(const __u32*p)'
-   include/uapi/linux/swab.h:185: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:189: Error: bad instruction `return (__u32)(__builtin_constant_p(*p)?((__u32)((((__u32)(*p)&(__u32)0x000000ffUL)<<24)|(((__u32)(*p)&(__u32)0x0000ff00UL)<<8)|(((__u32)(*p)&(__u32)0x00ff0000UL)>>8)|(((__u32)(*p)&(__u32)0xff000000UL)>>24))):__fswab32(*p))'
-   include/uapi/linux/swab.h:191: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:197: Error: bad instruction `static inline __u64 __swab64p(const __u64*p)'
-   include/uapi/linux/swab.h:198: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:202: Error: bad instruction `return (__u64)(__builtin_constant_p(*p)?((__u64)((((__u64)(*p)&(__u64)0x00000000000000ffULL)<<56)|(((__u64)(*p)&(__u64)0x000000000000ff00ULL)<<40)|(((__u64)(*p)&(__u64)0x0000000000ff0000ULL)<<24)|(((__u64)(*p)&(__u64)0x00000000ff000000ULL)<<8)|(((__u64)(*p)&(__u64)0x000000ff00000000ULL)>>8)|(((__u64)(*p)&(__u64)0x0000ff0000000000ULL)>>24)|(((__u64)(*p)&(__u64)0x00ff000000000000ULL)>>40)|(((__u64)(*p)&(__u64)0xff00000000000000ULL)>>56))):__fswab64(*p))'
-   include/uapi/linux/swab.h:204: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:212: Error: bad instruction `static inline __u32 __swahw32p(const __u32*p)'
-   include/uapi/linux/swab.h:213: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:217: Error: bad instruction `return (__builtin_constant_p((__u32)(*p))?((__u32)((((__u32)(*p)&(__u32)0x0000ffffUL)<<16)|(((__u32)(*p)&(__u32)0xffff0000UL)>>16))):__fswahw32(*p))'
-   include/uapi/linux/swab.h:219: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:227: Error: bad instruction `static inline __u32 __swahb32p(const __u32*p)'
-   include/uapi/linux/swab.h:228: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:232: Error: bad instruction `return (__builtin_constant_p((__u32)(*p))?((__u32)((((__u32)(*p)&(__u32)0x00ff00ffUL)<<8)|(((__u32)(*p)&(__u32)0xff00ff00UL)>>8))):__fswahb32(*p))'
-   include/uapi/linux/swab.h:234: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:240: Error: bad instruction `static inline void __swab16s(__u16*p)'
-   include/uapi/linux/swab.h:241: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:245: Error: junk at end of line, first unrecognized character is `*'
-   include/uapi/linux/swab.h:247: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:252: Error: bad instruction `static inline void __swab32s(__u32*p)'
-   include/uapi/linux/swab.h:253: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:257: Error: junk at end of line, first unrecognized character is `*'
-   include/uapi/linux/swab.h:259: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:265: Error: bad instruction `static inline void __swab64s(__u64*p)'
-   include/uapi/linux/swab.h:266: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:270: Error: junk at end of line, first unrecognized character is `*'
-   include/uapi/linux/swab.h:272: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:280: Error: bad instruction `static inline void __swahw32s(__u32*p)'
-   include/uapi/linux/swab.h:281: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:285: Error: junk at end of line, first unrecognized character is `*'
-   include/uapi/linux/swab.h:287: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/swab.h:295: Error: bad instruction `static inline void __swahb32s(__u32*p)'
-   include/uapi/linux/swab.h:296: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/swab.h:300: Error: junk at end of line, first unrecognized character is `*'
-   include/uapi/linux/swab.h:302: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/swab.h:24: Error: bad instruction `static inline void swab16_array(u16*buf,unsigned int words)'
-   include/linux/swab.h:25: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/swab.h:26: Error: bad instruction `while (words--){'
-   include/linux/swab.h:27: Error: bad instruction `__swab16s(buf)'
-   include/linux/swab.h:28: Error: bad instruction `buf++'
-   include/linux/swab.h:29: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/swab.h:30: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/swab.h:32: Error: bad instruction `static inline void swab32_array(u32*buf,unsigned int words)'
-   include/linux/swab.h:33: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/swab.h:34: Error: bad instruction `while (words--){'
-   include/linux/swab.h:35: Error: bad instruction `__swab32s(buf)'
-   include/linux/swab.h:36: Error: bad instruction `buf++'
-   include/linux/swab.h:37: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/swab.h:38: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/swab.h:40: Error: bad instruction `static inline void swab64_array(u64*buf,unsigned int words)'
-   include/linux/swab.h:41: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/swab.h:42: Error: bad instruction `while (words--){'
-   include/linux/swab.h:43: Error: bad instruction `__swab64s(buf)'
-   include/linux/swab.h:44: Error: bad instruction `buf++'
-   include/linux/swab.h:45: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/swab.h:46: Error: junk at end of line, first unrecognized character is `}'
->> include/uapi/linux/byteorder/big_endian.h:45: Error: bad instruction `static inline __le64 __cpu_to_le64p(const __u64*p)'
->> include/uapi/linux/byteorder/big_endian.h:46: Error: junk at end of line, first unrecognized character is `{'
->> include/uapi/linux/byteorder/big_endian.h:47: Error: bad instruction `return (__force __le64)__swab64p(p)'
-   include/uapi/linux/byteorder/big_endian.h:48: Error: junk at end of line, first unrecognized character is `}'
->> include/uapi/linux/byteorder/big_endian.h:49: Error: bad instruction `static inline __u64 __le64_to_cpup(const __le64*p)'
-   include/uapi/linux/byteorder/big_endian.h:50: Error: junk at end of line, first unrecognized character is `{'
->> include/uapi/linux/byteorder/big_endian.h:51: Error: bad instruction `return __swab64p((__u64*)p)'
-   include/uapi/linux/byteorder/big_endian.h:52: Error: junk at end of line, first unrecognized character is `}'
->> include/uapi/linux/byteorder/big_endian.h:53: Error: bad instruction `static inline __le32 __cpu_to_le32p(const __u32*p)'
-   include/uapi/linux/byteorder/big_endian.h:54: Error: junk at end of line, first unrecognized character is `{'
->> include/uapi/linux/byteorder/big_endian.h:55: Error: bad instruction `return (__force __le32)__swab32p(p)'
-   include/uapi/linux/byteorder/big_endian.h:56: Error: junk at end of line, first unrecognized character is `}'
->> include/uapi/linux/byteorder/big_endian.h:57: Error: bad instruction `static inline __u32 __le32_to_cpup(const __le32*p)'
-   include/uapi/linux/byteorder/big_endian.h:58: Error: junk at end of line, first unrecognized character is `{'
->> include/uapi/linux/byteorder/big_endian.h:59: Error: bad instruction `return __swab32p((__u32*)p)'
-   include/uapi/linux/byteorder/big_endian.h:60: Error: junk at end of line, first unrecognized character is `}'
->> include/uapi/linux/byteorder/big_endian.h:61: Error: bad instruction `static inline __le16 __cpu_to_le16p(const __u16*p)'
-   include/uapi/linux/byteorder/big_endian.h:62: Error: junk at end of line, first unrecognized character is `{'
->> include/uapi/linux/byteorder/big_endian.h:63: Error: bad instruction `return (__force __le16)__swab16p(p)'
-   include/uapi/linux/byteorder/big_endian.h:64: Error: junk at end of line, first unrecognized character is `}'
->> include/uapi/linux/byteorder/big_endian.h:65: Error: bad instruction `static inline __u16 __le16_to_cpup(const __le16*p)'
-   include/uapi/linux/byteorder/big_endian.h:66: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/byteorder/big_endian.h:67: Error: bad instruction `return __swab16p((__u16*)p)'
-   include/uapi/linux/byteorder/big_endian.h:68: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/byteorder/big_endian.h:69: Error: bad instruction `static inline __be64 __cpu_to_be64p(const __u64*p)'
-   include/uapi/linux/byteorder/big_endian.h:70: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/byteorder/big_endian.h:71: Error: bad instruction `return (__force __be64)*p'
-   include/uapi/linux/byteorder/big_endian.h:72: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/byteorder/big_endian.h:73: Error: bad instruction `static inline __u64 __be64_to_cpup(const __be64*p)'
-   include/uapi/linux/byteorder/big_endian.h:74: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/byteorder/big_endian.h:75: Error: bad instruction `return (__force __u64)*p'
-   include/uapi/linux/byteorder/big_endian.h:76: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/byteorder/big_endian.h:77: Error: bad instruction `static inline __be32 __cpu_to_be32p(const __u32*p)'
-   include/uapi/linux/byteorder/big_endian.h:78: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/byteorder/big_endian.h:79: Error: bad instruction `return (__force __be32)*p'
-   include/uapi/linux/byteorder/big_endian.h:80: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/byteorder/big_endian.h:81: Error: bad instruction `static inline __u32 __be32_to_cpup(const __be32*p)'
-   include/uapi/linux/byteorder/big_endian.h:82: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/byteorder/big_endian.h:83: Error: bad instruction `return (__force __u32)*p'
-   include/uapi/linux/byteorder/big_endian.h:84: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/byteorder/big_endian.h:85: Error: bad instruction `static inline __be16 __cpu_to_be16p(const __u16*p)'
-   include/uapi/linux/byteorder/big_endian.h:86: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/byteorder/big_endian.h:87: Error: bad instruction `return (__force __be16)*p'
-   include/uapi/linux/byteorder/big_endian.h:88: Error: junk at end of line, first unrecognized character is `}'
-   include/uapi/linux/byteorder/big_endian.h:89: Error: bad instruction `static inline __u16 __be16_to_cpup(const __be16*p)'
-   include/uapi/linux/byteorder/big_endian.h:90: Error: junk at end of line, first unrecognized character is `{'
-   include/uapi/linux/byteorder/big_endian.h:91: Error: bad instruction `return (__force __u16)*p'
-   include/uapi/linux/byteorder/big_endian.h:92: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/byteorder/generic.h:144: Error: bad instruction `static inline void le16_add_cpu(__le16*var,u16 val)'
-   include/linux/byteorder/generic.h:145: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/byteorder/generic.h:146: Error: junk at end of line, first unrecognized character is `*'
-   include/linux/byteorder/generic.h:147: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/byteorder/generic.h:149: Error: bad instruction `static inline void le32_add_cpu(__le32*var,u32 val)'
-   include/linux/byteorder/generic.h:150: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/byteorder/generic.h:151: Error: junk at end of line, first unrecognized character is `*'
-   include/linux/byteorder/generic.h:152: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/byteorder/generic.h:154: Error: bad instruction `static inline void le64_add_cpu(__le64*var,u64 val)'
-   include/linux/byteorder/generic.h:155: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/byteorder/generic.h:156: Error: junk at end of line, first unrecognized character is `*'
-   include/linux/byteorder/generic.h:157: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/byteorder/generic.h:160: Error: bad instruction `static inline void le32_to_cpu_array(u32*buf,unsigned int words)'
-   include/linux/byteorder/generic.h:161: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/byteorder/generic.h:162: Error: bad instruction `while (words--){'
-   include/linux/byteorder/generic.h:163: Error: bad instruction `__swab32s((buf))'
-   include/linux/byteorder/generic.h:164: Error: bad instruction `buf++'
-   include/linux/byteorder/generic.h:165: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/byteorder/generic.h:166: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/byteorder/generic.h:168: Error: bad instruction `static inline void cpu_to_le32_array(u32*buf,unsigned int words)'
-   include/linux/byteorder/generic.h:169: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/byteorder/generic.h:170: Error: bad instruction `while (words--){'
-   include/linux/byteorder/generic.h:171: Error: bad instruction `__swab32s((buf))'
-   include/linux/byteorder/generic.h:172: Error: bad instruction `buf++'
-   include/linux/byteorder/generic.h:173: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/byteorder/generic.h:174: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/byteorder/generic.h:176: Error: bad instruction `static inline void be16_add_cpu(__be16*var,u16 val)'
-   include/linux/byteorder/generic.h:177: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/byteorder/generic.h:178: Error: junk at end of line, first unrecognized character is `*'
-   include/linux/byteorder/generic.h:179: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/byteorder/generic.h:181: Error: bad instruction `static inline void be32_add_cpu(__be32*var,u32 val)'
-   include/linux/byteorder/generic.h:182: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/byteorder/generic.h:183: Error: junk at end of line, first unrecognized character is `*'
-   include/linux/byteorder/generic.h:184: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/byteorder/generic.h:186: Error: bad instruction `static inline void be64_add_cpu(__be64*var,u64 val)'
-   include/linux/byteorder/generic.h:187: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/byteorder/generic.h:188: Error: junk at end of line, first unrecognized character is `*'
-   include/linux/byteorder/generic.h:189: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/byteorder/generic.h:191: Error: bad instruction `static inline void cpu_to_be32_array(__be32*dst,const u32*src,size_t len)'
-   include/linux/byteorder/generic.h:192: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/byteorder/generic.h:193: Error: bad instruction `size_t i'
-   include/linux/byteorder/generic.h:195: Error: bad instruction `for (i=0'
-   include/linux/byteorder/generic.h:195: Error: bad instruction `i <len'
-   include/linux/byteorder/generic.h:195: Error: bad instruction `i++)'
-   include/linux/byteorder/generic.h:196: Error: bad instruction `dst[i] =((__force __be32)(__u32)(src[i]))'
-   include/linux/byteorder/generic.h:197: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/byteorder/generic.h:199: Error: bad instruction `static inline void be32_to_cpu_array(u32*dst,const __be32*src,size_t len)'
-   include/linux/byteorder/generic.h:200: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/byteorder/generic.h:201: Error: bad instruction `size_t i'
-   include/linux/byteorder/generic.h:203: Error: bad instruction `for (i=0'
-   include/linux/byteorder/generic.h:203: Error: bad instruction `i <len'
-   include/linux/byteorder/generic.h:203: Error: bad instruction `i++)'
-   include/linux/byteorder/generic.h:204: Error: bad instruction `dst[i] =((__force __u32)(__be32)(src[i]))'
-   include/linux/byteorder/generic.h:205: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/bitfield.h:158: Error: bad instruction `extern void __compiletime_error("value doesn't fit into mask")'
-   include/linux/bitfield.h:159: Error: bad instruction `__field_overflow(void)'
-   include/linux/bitfield.h:160: Error: bad instruction `extern void __compiletime_error("bad bitfield mask")'
-   include/linux/bitfield.h:161: Error: bad instruction `__bad_mask(void)'
-   include/linux/bitfield.h:162: Error: bad instruction `static inline u64 field_multiplier(u64 field)'
-   include/linux/bitfield.h:163: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/bitfield.h:164: Error: bad instruction `if ((field|(field-1))&((field|(field-1))+1))'
-   include/linux/bitfield.h:165: Error: bad instruction `__bad_mask()'
-   include/linux/bitfield.h:166: Error: bad instruction `return field&-field'
-   include/linux/bitfield.h:167: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/bitfield.h:168: Error: bad instruction `static inline u64 field_mask(u64 field)'
-   include/linux/bitfield.h:169: Error: junk at end of line, first unrecognized character is `{'
-   include/linux/bitfield.h:170: Error: bad instruction `return field/field_multiplier(field)'
-   include/linux/bitfield.h:171: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/bitfield.h:198: Error: bad instruction `static inline __u8 u8_encode_bits(u8 v,u8 field){ if(__builtin_constant_p(v)&&(v&~field_mask(field)))__field_overflow()'
-   include/linux/bitfield.h:198: Error: bad instruction `return ((v&field_mask(field))*field_multiplier(field))'
-   include/linux/bitfield.h:198: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/bitfield.h:198: Error: junk at end of line, first unrecognized character is `}'
-   include/linux/bitfield.h:198: Error: junk at end of line, first unrecognized character is `}'
-
-
-vim +199 include/linux/bitfield.h
-
-e2192de59e457a Johannes Berg   2023-01-18  119  
-e2192de59e457a Johannes Berg   2023-01-18  120  /**
-e2192de59e457a Johannes Berg   2023-01-18  121   * FIELD_PREP_CONST() - prepare a constant bitfield element
-e2192de59e457a Johannes Berg   2023-01-18  122   * @_mask: shifted mask defining the field's length and position
-e2192de59e457a Johannes Berg   2023-01-18  123   * @_val:  value to put in the field
-e2192de59e457a Johannes Berg   2023-01-18  124   *
-e2192de59e457a Johannes Berg   2023-01-18  125   * FIELD_PREP_CONST() masks and shifts up the value.  The result should
-e2192de59e457a Johannes Berg   2023-01-18  126   * be combined with other fields of the bitfield using logical OR.
-e2192de59e457a Johannes Berg   2023-01-18  127   *
-e2192de59e457a Johannes Berg   2023-01-18  128   * Unlike FIELD_PREP() this is a constant expression and can therefore
-e2192de59e457a Johannes Berg   2023-01-18  129   * be used in initializers. Error checking is less comfortable for this
-e2192de59e457a Johannes Berg   2023-01-18  130   * version, and non-constant masks cannot be used.
-e2192de59e457a Johannes Berg   2023-01-18  131   */
-e2192de59e457a Johannes Berg   2023-01-18  132  #define FIELD_PREP_CONST(_mask, _val)					\
-e2192de59e457a Johannes Berg   2023-01-18  133  	(								\
-e2192de59e457a Johannes Berg   2023-01-18  134  		/* mask must be non-zero */				\
-e2192de59e457a Johannes Berg   2023-01-18  135  		BUILD_BUG_ON_ZERO((_mask) == 0) +			\
-e2192de59e457a Johannes Berg   2023-01-18  136  		/* check if value fits */				\
-e2192de59e457a Johannes Berg   2023-01-18  137  		BUILD_BUG_ON_ZERO(~((_mask) >> __bf_shf(_mask)) & (_val)) + \
-e2192de59e457a Johannes Berg   2023-01-18  138  		/* check if mask is contiguous */			\
-e2192de59e457a Johannes Berg   2023-01-18  139  		__BF_CHECK_POW2((_mask) + (1ULL << __bf_shf(_mask))) +	\
-e2192de59e457a Johannes Berg   2023-01-18  140  		/* and create the value */				\
-e2192de59e457a Johannes Berg   2023-01-18  141  		(((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask))	\
-e2192de59e457a Johannes Berg   2023-01-18  142  	)
-e2192de59e457a Johannes Berg   2023-01-18  143  
-3e9b3112ec74f1 Jakub Kicinski  2016-08-31  144  /**
-3e9b3112ec74f1 Jakub Kicinski  2016-08-31  145   * FIELD_GET() - extract a bitfield element
-3e9b3112ec74f1 Jakub Kicinski  2016-08-31  146   * @_mask: shifted mask defining the field's length and position
-7240767450d6d8 Masahiro Yamada 2017-10-03  147   * @_reg:  value of entire bitfield
-3e9b3112ec74f1 Jakub Kicinski  2016-08-31  148   *
-3e9b3112ec74f1 Jakub Kicinski  2016-08-31  149   * FIELD_GET() extracts the field specified by @_mask from the
-3e9b3112ec74f1 Jakub Kicinski  2016-08-31  150   * bitfield passed in as @_reg by masking and shifting it down.
-3e9b3112ec74f1 Jakub Kicinski  2016-08-31  151   */
-3e9b3112ec74f1 Jakub Kicinski  2016-08-31  152  #define FIELD_GET(_mask, _reg)						\
-3e9b3112ec74f1 Jakub Kicinski  2016-08-31  153  	({								\
-3e9b3112ec74f1 Jakub Kicinski  2016-08-31  154  		__BF_FIELD_CHECK(_mask, _reg, 0U, "FIELD_GET: ");	\
-3e9b3112ec74f1 Jakub Kicinski  2016-08-31  155  		(typeof(_mask))(((_reg) & (_mask)) >> __bf_shf(_mask));	\
-3e9b3112ec74f1 Jakub Kicinski  2016-08-31  156  	})
-3e9b3112ec74f1 Jakub Kicinski  2016-08-31  157  
-e7d4a95da86e0b Johannes Berg   2018-06-20  158  extern void __compiletime_error("value doesn't fit into mask")
-00b0c9b82663ac Al Viro         2017-12-14  159  __field_overflow(void);
-00b0c9b82663ac Al Viro         2017-12-14  160  extern void __compiletime_error("bad bitfield mask")
-00b0c9b82663ac Al Viro         2017-12-14  161  __bad_mask(void);
-00b0c9b82663ac Al Viro         2017-12-14  162  static __always_inline u64 field_multiplier(u64 field)
-00b0c9b82663ac Al Viro         2017-12-14  163  {
-00b0c9b82663ac Al Viro         2017-12-14  164  	if ((field | (field - 1)) & ((field | (field - 1)) + 1))
-00b0c9b82663ac Al Viro         2017-12-14  165  		__bad_mask();
-00b0c9b82663ac Al Viro         2017-12-14  166  	return field & -field;
-00b0c9b82663ac Al Viro         2017-12-14  167  }
-00b0c9b82663ac Al Viro         2017-12-14  168  static __always_inline u64 field_mask(u64 field)
-00b0c9b82663ac Al Viro         2017-12-14  169  {
-00b0c9b82663ac Al Viro         2017-12-14  170  	return field / field_multiplier(field);
-00b0c9b82663ac Al Viro         2017-12-14  171  }
-e31a50162feb35 Alex Elder      2020-03-12  172  #define field_max(field)	((typeof(field))field_mask(field))
-00b0c9b82663ac Al Viro         2017-12-14  173  #define ____MAKE_OP(type,base,to,from)					\
-00b0c9b82663ac Al Viro         2017-12-14  174  static __always_inline __##type type##_encode_bits(base v, base field)	\
-00b0c9b82663ac Al Viro         2017-12-14  175  {									\
-e7d4a95da86e0b Johannes Berg   2018-06-20  176  	if (__builtin_constant_p(v) && (v & ~field_mask(field)))	\
-00b0c9b82663ac Al Viro         2017-12-14  177  		__field_overflow();					\
-00b0c9b82663ac Al Viro         2017-12-14  178  	return to((v & field_mask(field)) * field_multiplier(field));	\
-00b0c9b82663ac Al Viro         2017-12-14  179  }									\
-00b0c9b82663ac Al Viro         2017-12-14  180  static __always_inline __##type type##_replace_bits(__##type old,	\
-00b0c9b82663ac Al Viro         2017-12-14  181  					base val, base field)		\
-00b0c9b82663ac Al Viro         2017-12-14  182  {									\
-00b0c9b82663ac Al Viro         2017-12-14  183  	return (old & ~to(field)) | type##_encode_bits(val, field);	\
-00b0c9b82663ac Al Viro         2017-12-14  184  }									\
-00b0c9b82663ac Al Viro         2017-12-14  185  static __always_inline void type##p_replace_bits(__##type *p,		\
-00b0c9b82663ac Al Viro         2017-12-14  186  					base val, base field)		\
-00b0c9b82663ac Al Viro         2017-12-14  187  {									\
-00b0c9b82663ac Al Viro         2017-12-14  188  	*p = (*p & ~to(field)) | type##_encode_bits(val, field);	\
-00b0c9b82663ac Al Viro         2017-12-14  189  }									\
-00b0c9b82663ac Al Viro         2017-12-14  190  static __always_inline base type##_get_bits(__##type v, base field)	\
-00b0c9b82663ac Al Viro         2017-12-14  191  {									\
-00b0c9b82663ac Al Viro         2017-12-14  192  	return (from(v) & field)/field_multiplier(field);		\
-00b0c9b82663ac Al Viro         2017-12-14  193  }
-00b0c9b82663ac Al Viro         2017-12-14  194  #define __MAKE_OP(size)							\
-00b0c9b82663ac Al Viro         2017-12-14  195  	____MAKE_OP(le##size,u##size,cpu_to_le##size,le##size##_to_cpu)	\
-00b0c9b82663ac Al Viro         2017-12-14  196  	____MAKE_OP(be##size,u##size,cpu_to_be##size,be##size##_to_cpu)	\
-00b0c9b82663ac Al Viro         2017-12-14  197  	____MAKE_OP(u##size,u##size,,)
-37a3862e123826 Johannes Berg   2018-06-20  198  ____MAKE_OP(u8,u8,,)
-00b0c9b82663ac Al Viro         2017-12-14 @199  __MAKE_OP(16)
-00b0c9b82663ac Al Viro         2017-12-14 @200  __MAKE_OP(32)
-00b0c9b82663ac Al Viro         2017-12-14 @201  __MAKE_OP(64)
-00b0c9b82663ac Al Viro         2017-12-14  202  #undef __MAKE_OP
-00b0c9b82663ac Al Viro         2017-12-14  203  #undef ____MAKE_OP
-00b0c9b82663ac Al Viro         2017-12-14  204  
-
+diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+index efe87d501c8c..d4313b53837e 100644
+--- a/kernel/crash_core.c
++++ b/kernel/crash_core.c
+@@ -199,7 +199,7 @@ static __initdata char *suffix_tbl[] = {
+  * It returns 0 on success and -EINVAL on failure.
+  */
+ static int __init parse_crashkernel_suffix(char *cmdline,
+-					   unsigned long long	*crash_size,
++					   unsigned long long *crash_size,
+ 					   const char *suffix)
+ {
+ 	char *cur = cmdline;
+@@ -268,9 +268,9 @@ static int __init __parse_crashkernel(char *cmdline,
+ 			     unsigned long long *crash_base,
+ 			     const char *suffix)
+ {
+-	char	*first_colon, *first_space;
+-	char	*ck_cmdline;
+-	char	*name = "crashkernel=";
++	char *first_colon, *first_space;
++	char *ck_cmdline;
++	char *name = "crashkernel=";
+ 
+ 	BUG_ON(!crash_size || !crash_base);
+ 	*crash_size = 0;
+@@ -440,7 +440,7 @@ void __init reserve_crashkernel_generic(char *cmdline,
+ 		return;
+ 	}
+ 
+-	if ((crash_base > CRASH_ADDR_LOW_MAX) &&
++	if ((crash_base >= CRASH_ADDR_LOW_MAX) &&
+ 	     crash_low_size && reserve_crashkernel_low(crash_low_size)) {
+ 		memblock_phys_free(crash_base, crash_size);
+ 		return;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
