@@ -2,152 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BF980B0DA
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D75EE80B0DD
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574846AbjLIAKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 19:10:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
+        id S1574833AbjLIAPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 19:15:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLIAKf (ORCPT
+        with ESMTP id S229572AbjLIAPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 19:10:35 -0500
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C0D1723;
-        Fri,  8 Dec 2023 16:10:40 -0800 (PST)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96.2)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1rBkvE-00054i-1y;
-        Sat, 09 Dec 2023 00:10:21 +0000
-Date:   Sat, 9 Dec 2023 00:10:13 +0000
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sabrina Dubroca <sd@queasysnail.net>,
-        Jianhui Zhao <zhaojh329@gmail.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        "Garmin.Chang" <Garmin.Chang@mediatek.com>,
-        Sam Shih <sam.shih@mediatek.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] clk: mediatek: Add pcw_chg_shift control
-Message-ID: <ZXOwZdyAJoyLRbk5@makrotopia.org>
-References: <23bc89d407e7797e97b703fa939b43bfe79296ce.1701823757.git.daniel@makrotopia.org>
- <40981d0bb722eb509628bcf82c31f632e4cf747a.1701823757.git.daniel@makrotopia.org>
- <0ebce75d-0074-4128-b35e-e86ee3ee546b@collabora.com>
+        Fri, 8 Dec 2023 19:15:38 -0500
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA2F171F;
+        Fri,  8 Dec 2023 16:15:44 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 81D1E5CC;
+        Sat,  9 Dec 2023 00:15:44 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 81D1E5CC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1702080944; bh=G+BZb1YJhO7EnX9yCvRFq6Nfa15LkoN+WflbTEHxZlw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gNMJw0Mo1k6tb71Yy0jKIGRdcqpmxO01J9dVgeRtVqlGMWTxoYtdUH5GRlG+jYCHJ
+         vSKmBc2nnDqxAMRTbpcUwl6eYuRb4/0Yn5p1623oYEVHYyHex6xWZklndA78aZOjiW
+         3JTHpDp8s7vhM0HTW+2pc7y9gc1eTkR9kyUq4vbMdyzBhvIBw2m0UGL8wW9RsX5FYH
+         I/RhB4Dgkhyoa/neGO6EJXc2NOXTil3BM2HJDd09UW+aw/Jxc0J1EIwgSGKeUnFry0
+         4CfSSj7DdLi3aPq4vImjYBR4cgRw4HKLVmoi5/0VIPIGvCWj6ct0HGhqzAB/uAHoq/
+         gA0B7rNAZOPIg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH RFC] Rework the top-level process page
+Date:   Fri, 08 Dec 2023 17:15:43 -0700
+Message-ID: <87msuk2pu8.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0ebce75d-0074-4128-b35e-e86ee3ee546b@collabora.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Angelo,
+The process book is arguably the most important documentation we have; the
+top three trafficked pages on docs.kernel.org are found here.  Make a
+beginning effort to impose a more useful organization on this page to ease
+developers into the community.
+---
+This is a version of the reworked page I showed briefly during the
+kernel-summit documentation session.  Perhaps more useful than the patch
+itself is the rendered version of the page, which can be seen at:
 
-thank you for taking the time to review and for the helpful comments.
+  https://static.lwn.net/kerneldoc/process/index.html
 
-On Wed, Dec 06, 2023 at 11:38:36AM +0100, AngeloGioacchino Del Regno wrote:
-> Il 06/12/23 01:57, Daniel Golle ha scritto:
-> > From: Sam Shih <sam.shih@mediatek.com>
-> > 
-> > Introduce pcw_chg_shfit control to optionally use that instead of the
-> > hardcoded PCW_CHG_MASK macro.
-> > This will needed for clocks on the MT7988 SoC.
-> > 
-> > Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-> > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> > ---
-> > v3: use git --from ...
-> > v2: no changes
-> > 
-> >   drivers/clk/mediatek/clk-pll.c | 5 ++++-
-> >   drivers/clk/mediatek/clk-pll.h | 1 +
-> >   2 files changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/clk/mediatek/clk-pll.c b/drivers/clk/mediatek/clk-pll.c
-> > index 513ab6b1b3229..9f08bc5d2a8a2 100644
-> > --- a/drivers/clk/mediatek/clk-pll.c
-> > +++ b/drivers/clk/mediatek/clk-pll.c
-> > @@ -114,7 +114,10 @@ static void mtk_pll_set_rate_regs(struct mtk_clk_pll *pll, u32 pcw,
-> >   			pll->data->pcw_shift);
-> >   	val |= pcw << pll->data->pcw_shift;
-> >   	writel(val, pll->pcw_addr);
-> > -	chg = readl(pll->pcw_chg_addr) | PCW_CHG_MASK;
-> > +	if (pll->data->pcw_chg_shift)
-> > +		chg = readl(pll->pcw_chg_addr) | BIT(pll->data->pcw_chg_shift);
-> > +	else
-> > +		chg = readl(pll->pcw_chg_addr) | PCW_CHG_MASK;
-> >   	writel(chg, pll->pcw_chg_addr);
-> >   	if (pll->tuner_addr)
-> >   		writel(val + 1, pll->tuner_addr);
-> > diff --git a/drivers/clk/mediatek/clk-pll.h b/drivers/clk/mediatek/clk-pll.h
-> > index f17278ff15d78..d28d317e84377 100644
-> > --- a/drivers/clk/mediatek/clk-pll.h
-> > +++ b/drivers/clk/mediatek/clk-pll.h
-> > @@ -44,6 +44,7 @@ struct mtk_pll_data {
-> >   	u32 pcw_reg;
-> >   	int pcw_shift;
-> >   	u32 pcw_chg_reg;
-> > +	int pcw_chg_shift;
-> >   	const struct mtk_pll_div_table *div_table;
-> >   	const char *parent_name;
-> >   	u32 en_reg;
-> 
-> Hmm... no, this is not the best at all and can be improved.
-> 
-> Okay, so, the situation here is that one or some PLL(s) on MT7988 have a different
-> PCW_CHG_MASK as far as I understand.
+There is a lot to do to turn this book into a coherent set of
+documentation, but this seems like a plausible step in that direction.
 
-Correct. *All* clocks of MT7988 have a different PCW_CHG_MASK, BIT(2)
-instead of BIT(31).
+ Documentation/process/index.rst | 84 ++++++++++++++++++++++++---------
+ 1 file changed, 63 insertions(+), 21 deletions(-)
 
-> 
-> Situation here is:
->  - Each PLL must be registered to clk-pll
->  - Each driver declaring a PLL does exactly so
->    - There's a function to register the PLL
-> 
-> You definitely don't want to add a conditional in pll_set_rate(): even though
-> this is technically not a performance path on the current SoCs (and will probably
-> never be), it's simply useless to have this (very small) overhead there.
-> 
-> The solution is to:
->  - Change that pcw_chg_shift to an unsigned short int type (or u8, your call):
->    you don't need 32 bits for this number, as the expected range of this member
->    is [0-31], and this can be expressed in just 4 bits (u8 is the smallest though)
+diff --git a/Documentation/process/index.rst b/Documentation/process/index.rst
+index a1daa309b58d..0751c8c05023 100644
+--- a/Documentation/process/index.rst
++++ b/Documentation/process/index.rst
+@@ -15,49 +15,96 @@ to learn about how our community works.  Reading these documents will make
+ it much easier for you to get your changes merged with a minimum of
+ trouble.
+ 
+-Below are the essential guides that every developer should read.
++An introduction to how kernel development works
++-----------------------------------------------
++
++Read these documents first: an understanding of the material here will ease
++your entry into the kernel community.
+ 
+ .. toctree::
+    :maxdepth: 1
+ 
+-   license-rules
+    howto
+-   code-of-conduct
+-   code-of-conduct-interpretation
+    development-process
+    submitting-patches
+-   handling-regressions
++   submit-checklist
++
++Tools and technical guides for kernel developers
++------------------------------------------------
++
++This is a collection of material that kernel developers should be familiar
++with. 
++
++.. toctree::
++   :maxdepth: 1
++
++   changes
+    programming-language
+    coding-style
+-   maintainer-handbooks
+    maintainer-pgp-guide
+    email-clients
++   applying-patches
++   backporting
++   adding-syscalls
++   volatile-considered-harmful
++   botching-up-ioctls
++
++Policy guides and developer statements
++--------------------------------------
++
++These are the rules that we try to live by in the kernel community (and
++beyond).
++
++.. toctree::
++   :maxdepth: 1
++
++   license-rules
++   code-of-conduct
++   code-of-conduct-interpretation
++   contribution-maturity-model
+    kernel-enforcement-statement
+    kernel-driver-statement
++   stable-api-nonsense
++   stable-kernel-rules
++   management-style
++   researcher-guidelines
+ 
+-For security issues, see:
++Dealing with bugs
++-----------------
++
++Bugs are a fact of life; it is important that we handle them properly.
++The documents below describe our policies around the handling of a couple
++of special classes of bugs: regressions and security problems.
+ 
+ .. toctree::
+    :maxdepth: 1
+ 
++   handling-regressions
+    security-bugs
+    embargoed-hardware-issues
+ 
+-Other guides to the community that are of interest to most developers are:
++Maintainer information
++----------------------
++
++How to find the people who will accept your patches.
++
++.. toctree::
++   :maxdepth: 1
++
++   maintainer-handbooks
++   maintainers
++
++Other material
++--------------
++
++Here are some other guides to the community that are of interest to most
++developers are:
+ 
+ .. toctree::
+    :maxdepth: 1
+ 
+-   changes
+-   stable-api-nonsense
+-   management-style
+-   stable-kernel-rules
+-   submit-checklist
+    kernel-docs
+    deprecated
+-   maintainers
+-   researcher-guidelines
+-   contribution-maturity-model
+ 
+ These are some overall technical guides that have been put here for now for
+ lack of a better place.
+@@ -65,12 +112,7 @@ lack of a better place.
+ .. toctree::
+    :maxdepth: 1
+ 
+-   applying-patches
+-   backporting
+-   adding-syscalls
+    magic-number
+-   volatile-considered-harmful
+-   botching-up-ioctls
+    clang-format
+    ../arch/riscv/patch-acceptance
+    ../core-api/unaligned-memory-access
+-- 
+2.42.0
 
-Ack will use u8 instead, despite the struct not being packed, so I
-wonder if it actually makes a difference.
-
->  - Add that to function mtk_clk_register_pll_ops()
->  - Change mtk_pll_set_rate_regs() to always do
->    chg = readl(pll->pcw_chg_addr) | BIT(pll->data->pcw_chg_shift);
-
-As mtk_pll_data is a read-only member of the mtk_pll struct, we can't
-set pcw_chg_shift to 31 in mtk_clk_register_pll_ops() in case it
-is set to 0.
-The only (much more intrusive change) would be to explicitely declare
-.pcw_chg_shift = 31 in all current drivers setting .pcs_chg_reg != 0.
-Should I do that instead?
