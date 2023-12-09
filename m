@@ -2,240 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB20280B50E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 16:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C0D80B512
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 16:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbjLIP3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 10:29:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58990 "EHLO
+        id S232069AbjLIP3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 10:29:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbjLIP3c (ORCPT
+        with ESMTP id S232006AbjLIP3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 10:29:32 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8BAFB;
-        Sat,  9 Dec 2023 07:29:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702135778; x=1733671778;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DrDxsHAvENsxX7mbYnl09JQ4cUEtmC2dirXnkaw6HZc=;
-  b=WVTvsVVzyHmKOi9Zq4W/4dUXNlB4zIUCTIjXcpUy8gsdjefU/7nrly1f
-   41zIxmrxMrfHQqUEnyULQEo17fVmW7f558RFRpmxmN9jHc33ooLV4d/rT
-   PE+stOoFTTXfvHBwxTPinS92KpAC0yc1vFSYjZYli1CAXXXrh14PaGjfb
-   cuMwX95n9vZbENDpRhVYIVwoNmHRcaRdr/AKyjVtV6PPqzQ8zeUepc/vS
-   wqiXHZXKFU7KUkoxfUlLV59osbECJVK59Iq/nhsv4i4Lf4FSfkthCiYsP
-   izQo45phFmPKyB4mF0D2yRqi4t2sYQga4KDlYBxJmC35mtRHsvtTehjo6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="1387975"
-X-IronPort-AV: E=Sophos;i="6.04,263,1695711600"; 
-   d="scan'208";a="1387975"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 07:29:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="1103890949"
-X-IronPort-AV: E=Sophos;i="6.04,263,1695711600"; 
-   d="scan'208";a="1103890949"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmsmga005.fm.intel.com with ESMTP; 09 Dec 2023 07:29:35 -0800
-Date:   Sat, 9 Dec 2023 23:27:18 +0800
-From:   Xu Yilun <yilun.xu@linux.intel.com>
-To:     Marco Pagani <marpagan@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
-Subject: Re: [RFC PATCH v2 1/2] fpga: add a module owner field to
- fpga_manager and fpga_manager_ops
-Message-ID: <ZXSHVguFadvfaUcO@yilunxu-OptiPlex-7050>
-References: <20231124162807.238724-1-marpagan@redhat.com>
- <20231124162807.238724-2-marpagan@redhat.com>
- <ZWG6Tg0egX6Cy9j5@yilunxu-OptiPlex-7050>
- <7004d215-5185-4cce-a51e-42e131a30453@redhat.com>
- <ZWsgFViqdJuC7N1d@yilunxu-OptiPlex-7050>
- <5a8819ad-3551-475e-a645-1a300d3373f1@redhat.com>
+        Sat, 9 Dec 2023 10:29:37 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2811A11D;
+        Sat,  9 Dec 2023 07:29:43 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 15A7E25A;
+        Sat,  9 Dec 2023 16:28:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1702135738;
+        bh=6hFFvOxTW1/3aaX8jGizMoDG6E623DXFkvEtdM2wg6k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FHFbiXTn7OCz6eGZWAAKCsnzsdPUOmgiE2RC/qUzjEe8w6I54K6l92xZq2dSsjKBI
+         B9CQDVr+RhQJ+qN7XOLzN3ZqdzOcisy+LTxGZlOTUMQOgpywLKyQRlgInt0vyjxRQd
+         0uUPyZ8UFTDQjVtBV2adaVy0tEIlRybFmoW2Sag0=
+Date:   Sat, 9 Dec 2023 17:29:46 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Simon Glass <sjg@chromium.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Tom Rini <trini@konsulko.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, workflows@vger.kernel.org
+Subject: Re: [PATCH v9 2/2] arm64: boot: Support Flat Image Tree
+Message-ID: <20231209152946.GC13421@pendragon.ideasonboard.com>
+References: <20231202035511.487946-1-sjg@chromium.org>
+ <20231202035511.487946-3-sjg@chromium.org>
+ <20231203153401.GV8402@pendragon.ideasonboard.com>
+ <20231207142723.GA3187877@google.com>
+ <20231207143814.GD15521@pendragon.ideasonboard.com>
+ <CAGXv+5Go_0pEVAOLQmRCc_a9-YUtZEmBfXtMuBupX_nb9iqwbw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <5a8819ad-3551-475e-a645-1a300d3373f1@redhat.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGXv+5Go_0pEVAOLQmRCc_a9-YUtZEmBfXtMuBupX_nb9iqwbw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >>> I feel the scope of the protection is unclear to me in this patch. What
-> >>> data should be protected from concurrent access by this mutex? From the
-> >>> code seems the racing of mgr dev should be protected but apparently it
-> >>> doesn't have to.
-> >>
-> >> The mutex is there to ensure the lifetime of the manager device and
-> >> its context (struct fpga_manager) if fpga_mgr_get() happens to run
-> >> concurrently with the removal of the low-level module.
-> >>
-> >>>
-> >>> And with this mutex, the get/put/unregister() for one mgr should be
-> >>> exclusive with another mgr, but that also seems not necessary.
-> >>>
-> >>
-> >> I decided to use a static mutex because I thought putting the mutex
-> >> in the manager's context would be unsafe since its life would be tied
-> >> to the manager's life. For instance, consider the following sequence:
-> >>
-> >> - A removes the low-level control module, and delete_module progresses
-> >> up to the point when it calls the module's exit function, which in turn
-> >> calls fpga_mgr_unregister().
-> >>
-> >> - fpga_mgr_unregister() takes the mutex but gets descheduled before
-> >> completing the unregistering of the manager device.
-> >>
-> >> - Meanwhile, B wants to get the manager (it is still there) and calls
-> >> fpga_mgr_get(), which tries to take the mutex but gets suspended since
-> >> it is held by A.
-> >>
-> >> - A resumes and fpga_mgr_unregister() releases the manager device and
-> > 
-> > The lifecycle of the manager device is not entirely decided by
-> > fpga_mgr_unregister(), this func just puts/decreases the device
-> > refcount.
+On Sat, Dec 09, 2023 at 10:13:59PM +0900, Chen-Yu Tsai wrote:
+> On Thu, Dec 7, 2023 at 11:38 PM Laurent Pinchart
+> <laurent.pinchart@ideasonboard.com> wrote:
+> >
+> > On Thu, Dec 07, 2023 at 10:27:23PM +0800, Chen-Yu Tsai wrote:
+> > > On Sun, Dec 03, 2023 at 05:34:01PM +0200, Laurent Pinchart wrote:
+> > > > Hi Simon,
+> > > >
+> > > > Thank you for the patch.
+> > > >
+> > > > On Fri, Dec 01, 2023 at 08:54:42PM -0700, Simon Glass wrote:
+> > > > > Add a script which produces a Flat Image Tree (FIT), a single file
+> > > > > containing the built kernel and associated devicetree files.
+> > > > > Compression defaults to gzip which gives a good balance of size and
+> > > > > performance.
+> > > > >
+> > > > > The files compress from about 86MB to 24MB using this approach.
+> > > > >
+> > > > > The FIT can be used by bootloaders which support it, such as U-Boot
+> > > > > and Linuxboot. It permits automatic selection of the correct
+> > > > > devicetree, matching the compatible string of the running board with
+> > > > > the closest compatible string in the FIT. There is no need for
+> > > > > filenames or other workarounds.
+> > > > >
+> > > > > Add a 'make image.fit' build target for arm64, as well. Use
+> > > > > FIT_COMPRESSION to select a different algorithm.
+> > > > >
+> > > > > The FIT can be examined using 'dumpimage -l'.
+> > > > >
+> > > > > This features requires pylibfdt (use 'pip install libfdt'). It also
+> > > > > requires compression utilities for the algorithm being used. Supported
+> > > > > compression options are the same as the Image.xxx files. For now there
+> > > > > is no way to change the compression other than by editing the rule for
+> > > > > $(obj)/image.fit
+> > > > >
+> > > > > While FIT supports a ramdisk / initrd, no attempt is made to support
+> > > > > this here, since it must be built separately from the Linux build.
+> > > >
+> > > > FIT images are very useful, so I think this is a very welcome addition
+> > > > to the kernel build system. It can get tricky though: given the
+> > > > versatile nature of FIT images, there can't be any
+> > > > one-size-fits-them-all solution to build them, and striking the right
+> > > > balance between what makes sense for the kernel and the features that
+> > > > users may request will probably lead to bikeshedding. As we all love
+> > > > bikeshedding, I thought I would start selfishly, with a personal use
+> > > > case :-) This isn't a yak-shaving request though, I don't see any reason
+> > > > to delay merging this series.
+> > > >
+> > > > Have you envisioned building FIT images with a subset of DTBs, or adding
+> > > > DTBOs ? Both would be fairly trivial extensions to this script by
+> > > > extending the supported command line arguments. It would perhaps be more
+> > > > difficult to integrate in the kernel build system though. This leads me
+> > > > to a second question: would you consider merging extensions to this
+> > > > script if they are not used by the kernel build system, but meant for
+> > > > users who manually invoke the script ? More generally, is the script
+> > >
+> > > We'd also be interested in some customization, though in a different way.
+> > > We imagine having a rule file that says X compatible string should map
+> > > to A base DTB, plus B and C DTBO for the configuration section. The base
+> > > DTB would carry all common elements of some device, while the DTBOs
+> > > carry all the possible second source components, like different display
+> > > panels or MIPI cameras for instance. This could drastically reduce the
+> > > size of FIT images in ChromeOS by deduplicating all the common stuff.
+> >
+> > Do you envision the "mapping" compatible string mapping to a config
+> > section in the FIT image, that would bundle the base DTB and the DTBOs ?
 > 
-> Right, but here I'm considering the case where no one has previously
-> taken the manager device. In that specific case, the refcount will be
-
-I don't think this is valid, anyone should firstly get the manager
-device via get_device() then try to access its context.
-
-> decremented to zero, and the device (with its context) will be released.
-
-If no one has taken the manager device, the device & its context are
-safe to be released.
-
+> That's exactly the idea. The mapping compatible string could be untied
+> from the base board's compatible string if needed (which we probably do).
 > 
-> However, you got me thinking about how the mutex is causing the problem
-> in this case.
+> So something like:
 > 
-> > 
-> > Remember fpga_mgr_get() gets the device via
-> > class_find_device()->get_device(). I assume if the valid device pointer
-> > could be returned by class_find_device(), it would never be released by
-> > other nice players. So I have no worry about the per manager mutex.
-> > 
-> >> its context, including the mutex on which B is suspended.
-> >>
-> >> We could mitigate this specific case using mutex_trylock(). However,
-> >> there will still be other problematic cases, like if fpga_mgr_get()
-> >> gets suspended right before taking the mutex and then delete_module
-> >> proceeds up to when fpga_mgr_unregister() frees the manager device
-> >> and its context.
-> >>
-> >>> I think the mgr->owner & mgr->ops should be protected from concurrent
-> >>> access of delete_module & fpga_mgr_get/put(), so how about:
-> >>>
-> >>> struct fpga_manager_ops {
-> >>> 	struct module *owner;
-> >>> 	...
-> >>> };
-> >>>
-> >>> struct fpga_manager {
-> >>> 	...
-> >>> 	struct mutex mops_lock;
-> >>> 	const struct fpga_manager_ops *mops;
-> >>> 	...
-> >>> };
-> >>>
-> >>>
-> >>> static struct fpga_manager *__fpga_mgr_get(struct device *dev)
-> >>> {
-> >>> 	struct fpga_manager *mgr;
-> >>>
-> >>> 	mgr = to_fpga_manager(dev);
-> >>>
-> >>> 	mutex_lock(&mgr->mops_lock);
-> >>>
-> >>> 	if (!mgr->mops || !try_module_get(mgr->mops->owner))
-> >>> 		mgr = ERR_PTR(-ENODEV);
-> >>>
-> >>> 	mutex_unlock(&mgr->mops_lock);
-> >>> 		
-> >>> 	return mgr;
-> >>> }
-> >>>
-> >>> void fpga_mgr_unregister(struct fpga_manager *mgr)
-> >>> {
-> >>> 	fpga_mgr_fpga_remove(mgr);	
-> >>>
-> >>> 	mutex_lock(&mgr->ops_lock);
-> >>> 	mgr->mops = NULL;
-> >>> 	mutex_unlock(&mgr->ops_lock);
-> >>>
-> >>> 	device_unregister(&mgr->dev);	
-> >>> }
-> >>>
-> >>> Not actually tested.
-> >>>
-> >>
-> >> I think protecting the only the ops is not enough for the same reasons.
-> >> If fpga_mgr_get() gets suspended right after class_find_device(),and
-> >> meanwhile the low-level module is removed, it resumes with a reference
-> >> to a manager device that no longer exists.
-> >>
-> >> In a certain sense, however, using a mutex seems like a mitigation
-> >> that does not solve the problem at its root. I honestly still think
-> >> that taking the module's refcount right when registering the manager
-> >> is the only way that is both safe and robust against code changes.
-> > 
-> > I would nak either. As mentioned above, that makes rmmod vendor module
-> > impossible. Introducing another user interface to release the module's
-> > refcount is also a bad idea. Who decides to take the ref, who releases
-> > it. A user has no knowledge of what is happening inside and should not
-> > enforce.
-> > 
-> >> However, my proposal was rejected.
-> >>
-> >> So, if you prefer, I can drop the mutex entirely in the next version,
-> >> and we leave the responsibility of keeping all kernel pieces to the
-> > 
-> > No, please try to fix it. Could you please reconsider my proposal?
-> > 
+> config {
+>     config-1 {
+>         compatible = "google,krane-sku0";
+>         fdt = "krane-baseboard", "krane-sku0-overlay";
+>     };
+> };
 > 
-> I have considered it and thought about it. However, I don't think we need a
-> mutex to protect mgr->mops. This is because the low-level module's refcount has
-> already been decremented when fpga_mgr_unregister() is called by the module's
-> exit function. So, when we get to the point of executing fpga_mgr_unregister(),
-> any concurrent call to try_module_get() will fail (if no one has taken the
+> With "krane-sku0-overlay" being an overlay that holds the differences
+> between the SKUs, in this case the display panel and MIPI camera (not
+> upstreamed) that applies to SKU0 in particular.
 
-Are you still taking care of your previous finding [1]? It says:
+The kernel DT makefiles already contain information on what overlays to
+apply to what base boards, in order to test the overlays and produce
+"full" DTBs. Maybe that information could be leveraged to create the
+configurations in the FIT image ?
 
-  To be clear, you should only use try_module_get() *iff* you are 100% sure
-  the module already does exist ...
+> Sorry for not giving a more concrete idea.
+> 
+> > > > meant to be used stand-alone as well, in which case its command line
+> > > > arguments need to remain backward-compatible, or do you see it as being
+> > > > internal to the kernel ?
+> > >
+> > > [...]
 
-IIUC, if you do nothing on fpga_mgr_unregister(), the low-level module may
-just disappear and any copy of the owner pointer became invalid. Then
-try_module_get() would not fail but panic.
+-- 
+Regards,
 
-[1] 557aafac1153 ("kernel/module: add documentation for try_module_get()")
-
-Thanks,
-Yilun
-
-> module before) without the need to check mops first.
-> 
-> If we assume (as you pointed out) that class_find_device() can be safely
-> executed concurrently with device_unregister() (returning either a valid dev
-> pointer or null) and, consequently, the manager context is guaranteed to exist
-> after that point. Then, we should be good without the mutex if we call
-> try_module_get() on a copy of the owner pointer stored in the manager context.
-> 
-> >> user. It will still be an improvement over taking the low-level
-> >> module's refcount through the parent device's driver pointer.
-> >>
-> 
-> Thanks,
-> Marco
-> 
-> 
+Laurent Pinchart
