@@ -2,51 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C167080B626
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E92E80B62A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbjLIUCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 15:02:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39164 "EHLO
+        id S230480AbjLIUIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 15:08:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjLIUCg (ORCPT
+        with ESMTP id S229477AbjLIUIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 15:02:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5D5121
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 12:02:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 587AAC433C8;
-        Sat,  9 Dec 2023 20:02:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702152162;
-        bh=jH9L5HvC+Ae62Fg3wZ8hVeCEhv1fJUiobgIHaIv4BOA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WgNC7WlFXYNLYO/saHOXzg8UI1M5bFUo49UL16f2E9NupU5fJefAdxJdFsydfntNa
-         GyBwcAE3ZDMNAD6yulE7N0GDFdEH29vAJvbMyUIpIsojhAUziVI2ylESnRNTWVyqGx
-         3404ETsVF4Mr7SXXAFXz60qJ/pL5gQxN0jewHeKm9D3ryuxCrv77svOieKR8ymffPb
-         FPlodUudZXol3gaoOyTs7GnyYzOpcZXQ6Da5TpNjUZS33paa/aeYvTrcdr3if4Nxw+
-         rs85TVWRwdNw0Bi+xjuRiyNbuWWrvIFwRvqiJ8SLF+1qBsTmIe9nApoaCyrPEE4K7E
-         2dd2GxTCMV1OA==
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3b9e1a3e3f0so1925542b6e.1;
-        Sat, 09 Dec 2023 12:02:42 -0800 (PST)
-X-Gm-Message-State: AOJu0YzqxcR5gMZ3ANrKINwkIgZdm3gHVvbyJJz+xmo3e92dgRHSmgi1
-        u9nshQP8ew6x9M75iy8CZ4rnzzOML74Y170LZTw=
-X-Google-Smtp-Source: AGHT+IH8yO8a9hHWT4e+sLk+G0LWSOZK6PiqZI9fJF/nmSs3M/yqpFa1nUwdoV6kz4H7YBhhjTZ9rA9Z2EYcMHqfsfI=
-X-Received: by 2002:a05:6870:d917:b0:1f9:496b:e261 with SMTP id
- gq23-20020a056870d91700b001f9496be261mr2820590oab.15.1702152161710; Sat, 09
- Dec 2023 12:02:41 -0800 (PST)
+        Sat, 9 Dec 2023 15:08:45 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65A811F
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 12:08:50 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54f4f7d082cso2481084a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 12:08:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1702152529; x=1702757329; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kq9bjArdQXR4dce7uM6lkYuv3BP1L9VNM0n4N4whoow=;
+        b=ZINq9vbXhMjPfeNNl9z+9dWu8JjtjY27oC7Alxiu7Qr9AdxlYdshMUo5YU9iMM9DeU
+         Ijtthm0Y/ivswyL3Vx0eel4I1r90z+OOj3hbJHlmZfoAwPKVdtuGXeh4i33GUz2026r0
+         y8UKnPphxw59o+hIMFEuXU8pTUG0GCkRwC9c4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702152529; x=1702757329;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kq9bjArdQXR4dce7uM6lkYuv3BP1L9VNM0n4N4whoow=;
+        b=B69aDGwrnlL6uCbAO3lBOJdc2SN8pGRwgPjNBrCZmJNZBDySv65j6QB8dOzPOPfjf+
+         EZpbY2TKjNookZC9+1Jt353VD4ZjHoATWpJh69VSudpDrWqjA0aJ1QAqZuZjRrsqy9vp
+         YrlHPyF7eScheDKYUwLc+0X5rtCg85SqaQ4dFloYcl9orPPEdkIdxjLhRLVTduoSNCRf
+         irtNUxkKeux+Lr/6JCqMbaOXsxlfPjdsxnMsLftVZqmuA5hD+8fbybmv8HZ8Cr9/2eBs
+         S2PSkSPcejM5YJhibeK63IWXgOzltIPwz4uTagf+OUT5wshWEKMy3nmZh6qIpFp4D7iT
+         GZag==
+X-Gm-Message-State: AOJu0YwjWftb7be9wTiC5vkWYdWu76wpAEUgXUu1I5KwaGUNfVzSDbso
+        6rEOy0u/8Ko/XP1WXA7isSgqgEK71HKb7/UTqqzHGw==
+X-Google-Smtp-Source: AGHT+IFxkU8JBnVT+PvBsC847PWahsG/TfVcL5s8j+G6SYW3Fw+o60uH7my7vY6g+ZAm7JU2ewOPyw==
+X-Received: by 2002:a50:c2c2:0:b0:54b:2b83:9df5 with SMTP id u2-20020a50c2c2000000b0054b2b839df5mr1267872edf.28.1702152529178;
+        Sat, 09 Dec 2023 12:08:49 -0800 (PST)
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
+        by smtp.gmail.com with ESMTPSA id cx14-20020a05640222ae00b0054cb07a17ebsm1924931edb.31.2023.12.09.12.08.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Dec 2023 12:08:47 -0800 (PST)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a1e2ded3d9fso388984166b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 12:08:47 -0800 (PST)
+X-Received: by 2002:a17:906:7489:b0:a1f:81df:e5f7 with SMTP id
+ e9-20020a170906748900b00a1f81dfe5f7mr597708ejl.16.1702152527461; Sat, 09 Dec
+ 2023 12:08:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20231205104559.2017320-1-msp@baylibre.com>
-In-Reply-To: <20231205104559.2017320-1-msp@baylibre.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 10 Dec 2023 05:02:05 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARxTsORzrQiZ4ywejqys8cWR81m_g1sgoyN4PA3dmQRYA@mail.gmail.com>
-Message-ID: <CAK7LNARxTsORzrQiZ4ywejqys8cWR81m_g1sgoyN4PA3dmQRYA@mail.gmail.com>
-Subject: Re: [PATCH] kconfig: Use KCONFIG_CONFIG instead of .config
-To:     Markus Schneider-Pargmann <msp@baylibre.com>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231206004654.2986026-1-mhal@rbox.co> <CAMzpN2jcEGBcEKbNjwMJ+VCMc-_N1GcpVkGgAhy=XzomJP-Ogw@mail.gmail.com>
+In-Reply-To: <CAMzpN2jcEGBcEKbNjwMJ+VCMc-_N1GcpVkGgAhy=XzomJP-Ogw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linuxfoundation.org>
+Date:   Sat, 9 Dec 2023 12:08:30 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiB2FSWb0HxgzHGJKaDRCaJ6tGSc0OVvodAiZ_QU=05NQ@mail.gmail.com>
+Message-ID: <CAHk-=wiB2FSWb0HxgzHGJKaDRCaJ6tGSc0OVvodAiZ_QU=05NQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] x86: UMIP emulation leaking kernel addresses
+To:     Brian Gerst <brgerst@gmail.com>
+Cc:     Michal Luczaj <mhal@rbox.co>, x86@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        shuah@kernel.org, luto@kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -57,63 +75,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 7:46=E2=80=AFPM Markus Schneider-Pargmann
-<msp@baylibre.com> wrote:
+On Sat, 9 Dec 2023 at 09:16, Brian Gerst <brgerst@gmail.com> wrote:
 >
-> When using a custom location for kernel config files this merge config
-> command fails as it doesn't use the configuration set with
-> KCONFIG_CONFIG.
->
-> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-> ---
->
+> A different way to plug this is to harden ptrace (and sigreturn) to
+> verify that the segments are code or data type segments instead of
+> relying on an IRET fault.
 
-Applied to linux-kbuild.
-Thanks.
+I think that is likely a good idea regardless of this particular issue.
 
+And I don't think you need to even check the segment for any kind of
+validity - all you need to check that it's a valid selector.
 
+And we *kind* of do that already, with the x86 ptrace code checking
 
+  static inline bool invalid_selector(u16 value)
+  {
+        return unlikely(value != 0 && (value & SEGMENT_RPL_MASK) != USER_RPL);
+  }
 
-> Notes:
->     Hi,
->
->     This patch helps me to merge_configs with config files that are not
->     .config (set by using KCONFIG_CONFIG=3D<PATH>). I am not sure if I br=
-eak
->     something with that change.
->
->     I didn't add any stable kernels as this is a kernel config issue and =
-no
->     bug in the kernel code itself.
->
->     Best,
->     Markus
->
->  scripts/kconfig/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
-> index 4eee155121a8..106159e75d40 100644
-> --- a/scripts/kconfig/Makefile
-> +++ b/scripts/kconfig/Makefile
-> @@ -99,7 +99,7 @@ config-fragments =3D $(call configfiles,$@)
->
->  %.config: $(obj)/conf
->         $(if $(config-fragments),, $(error $@ fragment does not exists on=
- this architecture))
-> -       $(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh -m=
- .config $(config-fragments)
-> +       $(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh -m=
- $(KCONFIG_CONFIG) $(config-fragments)
->         $(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
->
->  PHONY +=3D tinyconfig
-> --
-> 2.43.0
->
->
+but the thing is, I think we could limit that a lot more.
 
+I think the only valid GDT entries are 0-15 (that includes the default
+kernel segments, but they don't contain anything interesting), so we
+could tighten that selector check to say that it has to be either a
+LDT entry or a selector < 15.
 
---=20
-Best Regards
-Masahiro Yamada
+So add some kind of requirement for "(value & 4) || (value < 8*16)", perhaps?
+
+              Linus
