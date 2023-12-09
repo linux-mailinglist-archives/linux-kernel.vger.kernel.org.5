@@ -2,247 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4786980B0CA
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DBA080B0D0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 01:10:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574871AbjLIAHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 19:07:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
+        id S1574835AbjLIAKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 19:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLIAHv (ORCPT
+        with ESMTP id S235946AbjLIAKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 19:07:51 -0500
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A956AC;
-        Fri,  8 Dec 2023 16:07:57 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 4FC5932005C1;
-        Fri,  8 Dec 2023 19:07:55 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Fri, 08 Dec 2023 19:07:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1702080474; x=1702166874; bh=m98dLHyPwI+eg2Ijq83uqu7OvTQevvvXu+0
-        DP05ozNs=; b=ddIGLF7AaNmnEW79+jOnw5EwvTm7427Hej6wBRLVNLEogCxE9VX
-        UrV3H2uUT0G3am/S/ednqVUmumgqCMkdusoE+QDqR5zrM3sW957QzdTrS2TD9YrP
-        3EwDukzy8EpVk7k2UxT7Uw3dPqLSu7o8faCYm02ID+EA680i4yWaEvv8J3DRAoXP
-        yhh5tRLTXe22KdksfC7joSItsRjRkDt2Nvkk/SjqfijaWigBjYNyENSU5ugz8ZKS
-        9iwSdPj99tffOo61rhbxbfWnVP7u+oerMGNg2eSsVSX4Y0Pu0UT99A1UrPRYc7lg
-        rvYrYx+LzkFjDs8/yXxKUEghGxpcMKe5dNA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1702080474; x=1702166874; bh=m98dLHyPwI+eg2Ijq83uqu7OvTQevvvXu+0
-        DP05ozNs=; b=d+xGH14fpAprU6BJ8STzBEuYXe0FQYuOl2+Q4Er8JyEW2egvFFe
-        NNq2u3/smCxnE6TPc4JV+hVINPaAOYAY9Mgx2F92go0rE9DdxuqZ4xadtRbl99LV
-        7BiAooaVU7dCarvRnLSSGEmEKmg1bgWOHkLJEBbr5IvYsKvOHpgR97O1or1u3vfv
-        FBp7rdkbo0WxL6ogCqn66Sjsgza4S9ggSuhJESpAP1XrxP65LEbaVuAKBok8c9X1
-        9BWO4Q1ZyLA/EV8AUvEADXkOr2Vz17gAtXCwMCFvyqX1nJaFqdt5Sulmbj47Nh5s
-        SGxyeSITeplQ6QbbGYL9JA8BuMjuhvfk7Qg==
-X-ME-Sender: <xms:2q9zZacriLGMalplAmHDmauXTOvPBXnYelEqSXNmuPLO4tA04UPLKg>
-    <xme:2q9zZUO8HEbLaF-23rIW10L3kZgri4mPnEnyaapFz9Z6YY_7KyTgQLXZMcOXcWgFD
-    iXKK67aiUWtZX4tkw>
-X-ME-Received: <xmr:2q9zZbiyhErwE8pXZBC9qvuIxKo5f2ATxXQz_8Rr6bqBwMIn6_DWWn2LnhGdOIAgMvlslofqHA_pLGDx9mcr_t8UT2zE17dhksNq>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekjedgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeffleetkeekkeeggeffvedt
-    vdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:2q9zZX_UlIk7KVR-TgT5AqPFcpK2GuFcwnVIATnBAorsvyHVr38Mow>
-    <xmx:2q9zZWtYoI7JYEHX0Zo3uLvJ8r4pchkZ61aRDbiCWlXB4m6vcBqpJQ>
-    <xmx:2q9zZeFjQJd-q4YYFzwbl00kbGKZoDlQULT1JbcLgfu2sL7_efolRw>
-    <xmx:2q9zZeQMwZLYJCuvn1cX10USK1fYv1AqMHSE7sNW-yFxJkbUBRT1hw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 8 Dec 2023 19:07:53 -0500 (EST)
-Date:   Fri, 8 Dec 2023 17:07:51 -0700
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Eyal Birger <eyal.birger@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        steffen.klassert@secunet.com, pabeni@redhat.com, hawk@kernel.org,
-        john.fastabend@gmail.com, kuba@kernel.org, edumazet@google.com,
-        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
-        yonghong.song@linux.dev, eddyz87@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        devel@linux-ipsec.org
-Subject: Re: [PATCH bpf-next v4 02/10] bpf: xfrm: Add
- bpf_xdp_get_xfrm_state() kfunc
-Message-ID: <ubztsmdzjlyou662foobqjwkky2n6tgcp2ocgvxssd4jwplhdk@o2kmq3cthrkn>
-References: <cover.1701722991.git.dxu@dxuuu.xyz>
- <e0e2fc6161ceccfbb1075d367bcc37871012072d.1701722991.git.dxu@dxuuu.xyz>
- <CAHsH6GvRtFRRhjLoVL6HqmthGVY4KEb8EOzT61ofWyXgocD4NA@mail.gmail.com>
+        Fri, 8 Dec 2023 19:10:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFB6172A
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 16:10:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77563C433CB
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 00:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702080624;
+        bh=/Qd28qU1g2yFEdsp9oZ9RTK5j/CkVtLWfnrYw6TNGj8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=arQKWW0Xght4tVmWubvLmZ0/ug1w2OA6AOoxvtcZChqOQ40oE69Amlwx129XAtXXI
+         YousS0uGwx2Qx5yIfciZjxIuqmYtqRqvPWeNL75CcV+/bPIlfh/5PmZWTSsnkC8TuD
+         VZdYjptuGdnuTMYdpg3cio0Du2sL7tI5/ufJUrj7zBvGh8JgY4zUXYdSpOFswNNFt3
+         MlAB/nzi0mtk8ZsqCl5otmER1XnoP0idbx93zhaog/YVMoAgKTznaAxIBroiqU++MP
+         AS46vr1/rTLIWyzpaoo72j1x2ehWSdLgNB3HvoD0i9112wsNO5eaHIhy8/JQqoJGUj
+         PCPeUHKJtTgUw==
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-58d18c224c7so1371812eaf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 16:10:24 -0800 (PST)
+X-Gm-Message-State: AOJu0Yy2Xionp4tsskZzL7Q38KRyl6CqtXsoFia2D6sFJfIwWpGMZGsl
+        0FfayNlnJ/yyAhN3XNU4RGHu9R6B1skroFXdDhNuSg==
+X-Google-Smtp-Source: AGHT+IEYanmJJoWkVANumIUyBx+OGbV82E6jJc+vDfUEfLnIWaO7PYxpB1AkcvdAEM9L0SFnAgCCql0eYfg2GAui5DU=
+X-Received: by 2002:a17:90b:1c11:b0:288:4719:75c3 with SMTP id
+ oc17-20020a17090b1c1100b00288471975c3mr676015pjb.45.1702080602635; Fri, 08
+ Dec 2023 16:10:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHsH6GvRtFRRhjLoVL6HqmthGVY4KEb8EOzT61ofWyXgocD4NA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
+ <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com> <CAJD7tkaHaji=0sVobJKajc4hOmOui2U+bZK+1DQ6gbAsQgGLRw@mail.gmail.com>
+In-Reply-To: <CAJD7tkaHaji=0sVobJKajc4hOmOui2U+bZK+1DQ6gbAsQgGLRw@mail.gmail.com>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Fri, 8 Dec 2023 16:09:51 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuMt7_6_8JTNA5UJkhy3Drw6=802wbwXbvUn+hafmsFA7Q@mail.gmail.com>
+Message-ID: <CAF8kJuMt7_6_8JTNA5UJkhy3Drw6=802wbwXbvUn+hafmsFA7Q@mail.gmail.com>
+Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
+        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        david@ixit.cz
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 01:21:11PM -0800, Eyal Birger wrote:
-> On Mon, Dec 4, 2023 at 12:57 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
-> > This commit adds an unstable kfunc helper to access internal xfrm_state
-> > associated with an SA. This is intended to be used for the upcoming
-> > IPsec pcpu work to assign special pcpu SAs to a particular CPU. In other
-> > words: for custom software RSS.
-> >
-> > That being said, the function that this kfunc wraps is fairly generic
-> > and used for a lot of xfrm tasks. I'm sure people will find uses
-> > elsewhere over time.
-> >
-> > Co-developed-by: Antony Antony <antony.antony@secunet.com>
-> > Signed-off-by: Antony Antony <antony.antony@secunet.com>
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > ---
-> >  include/net/xfrm.h     |   9 ++++
-> >  net/xfrm/xfrm_bpf.c    | 102 +++++++++++++++++++++++++++++++++++++++++
-> >  net/xfrm/xfrm_policy.c |   2 +
-> >  3 files changed, 113 insertions(+)
-> >
-> > diff --git a/include/net/xfrm.h b/include/net/xfrm.h
-> > index c9bb0f892f55..1d107241b901 100644
-> > --- a/include/net/xfrm.h
-> > +++ b/include/net/xfrm.h
-> > @@ -2190,4 +2190,13 @@ static inline int register_xfrm_interface_bpf(void)
-> >
-> >  #endif
-> >
-> > +#if IS_ENABLED(CONFIG_DEBUG_INFO_BTF)
-> > +int register_xfrm_state_bpf(void);
-> > +#else
-> > +static inline int register_xfrm_state_bpf(void)
-> > +{
-> > +       return 0;
-> > +}
-> > +#endif
-> > +
-> >  #endif /* _NET_XFRM_H */
-> > diff --git a/net/xfrm/xfrm_bpf.c b/net/xfrm/xfrm_bpf.c
-> > index 3d3018b87f96..3d6cac7345ca 100644
-> > --- a/net/xfrm/xfrm_bpf.c
-> > +++ b/net/xfrm/xfrm_bpf.c
-> > @@ -6,9 +6,11 @@
-> >   */
-> >
-> >  #include <linux/bpf.h>
-> > +#include <linux/btf.h>
-> >  #include <linux/btf_ids.h>
-> >
-> >  #include <net/dst_metadata.h>
-> > +#include <net/xdp.h>
-> >  #include <net/xfrm.h>
-> >
-> >  #if IS_BUILTIN(CONFIG_XFRM_INTERFACE) || \
-> > @@ -112,3 +114,103 @@ int __init register_xfrm_interface_bpf(void)
-> >  }
-> >
-> >  #endif /* xfrm interface */
-> > +
-> > +/* bpf_xfrm_state_opts - Options for XFRM state lookup helpers
-> > + *
-> > + * Members:
-> > + * @error      - Out parameter, set for any errors encountered
-> > + *              Values:
-> > + *                -EINVAL - netns_id is less than -1
-> > + *                -EINVAL - opts__sz isn't BPF_XFRM_STATE_OPTS_SZ
-> > + *                -ENONET - No network namespace found for netns_id
-> > + * @netns_id   - Specify the network namespace for lookup
-> > + *              Values:
-> > + *                BPF_F_CURRENT_NETNS (-1)
-> > + *                  Use namespace associated with ctx
-> > + *                [0, S32_MAX]
-> > + *                  Network Namespace ID
-> > + * @mark       - XFRM mark to match on
-> > + * @daddr      - Destination address to match on
-> > + * @spi                - Security parameter index to match on
-> > + * @proto      - L3 protocol to match on
-> > + * @family     - L3 protocol family to match on
-> > + */
-> > +struct bpf_xfrm_state_opts {
-> > +       s32 error;
-> > +       s32 netns_id;
-> > +       u32 mark;
-> > +       xfrm_address_t daddr;
-> > +       __be32 spi;
-> > +       u8 proto;
-> > +       u16 family;
-> > +};
-> > +
-> > +enum {
-> > +       BPF_XFRM_STATE_OPTS_SZ = sizeof(struct bpf_xfrm_state_opts),
-> > +};
-> > +
-> > +__bpf_kfunc_start_defs();
-> > +
-> > +/* bpf_xdp_get_xfrm_state - Get XFRM state
-> > + *
-> > + * Parameters:
-> > + * @ctx        - Pointer to ctx (xdp_md) in XDP program
-> > + *                 Cannot be NULL
-> > + * @opts       - Options for lookup (documented above)
-> > + *                 Cannot be NULL
-> > + * @opts__sz   - Length of the bpf_xfrm_state_opts structure
-> > + *                 Must be BPF_XFRM_STATE_OPTS_SZ
-> > + */
-> > +__bpf_kfunc struct xfrm_state *
-> > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts, u32 opts__sz)
-> > +{
-> > +       struct xdp_buff *xdp = (struct xdp_buff *)ctx;
-> > +       struct net *net = dev_net(xdp->rxq->dev);
-> > +       struct xfrm_state *x;
-> > +
-> > +       if (!opts || opts__sz < sizeof(opts->error))
-> > +               return NULL;
-> > +
-> > +       if (opts__sz != BPF_XFRM_STATE_OPTS_SZ) {
-> > +               opts->error = -EINVAL;
-> > +               return NULL;
-> > +       }
-> > +
-> > +       if (unlikely(opts->netns_id < BPF_F_CURRENT_NETNS)) {
-> > +               opts->error = -EINVAL;
-> > +               return NULL;
-> > +       }
-> > +
-> > +       if (opts->netns_id >= 0) {
-> > +               net = get_net_ns_by_id(net, opts->netns_id);
-> > +               if (unlikely(!net)) {
-> > +                       opts->error = -ENONET;
-> > +                       return NULL;
-> > +               }
-> > +       }
-> > +
-> > +       x = xfrm_state_lookup(net, opts->mark, &opts->daddr, opts->spi,
-> > +                             opts->proto, opts->family);
-> > +
-> > +       if (opts->netns_id >= 0)
-> > +               put_net(net);
-> 
-> Maybe opts->error should be set to something like -ENOENT if x == NULL?
+Hi Yosry,
 
-Originally I opted not to do that b/c xfrm_state_lookup() chooses not to
-do anything like that (eg PTR_ERR()).
+On Thu, Dec 7, 2023 at 5:12=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
+wrote:
+> > I briefly summarized my recent discussion with Johannes here:
+> >
+> > https://lore.kernel.org/all/CAKEwX=3DNwGGRAtXoNPfq63YnNLBCF0ZDOdLVRsvzU=
+mYhK4jxzHA@mail.gmail.com/
+> >
+> > TL;DR is we acknowledge the potential usefulness of swap.tiers
+> > interface, but the use case is not quite there yet, so it does not
+> > make too much sense to build up that heavy machinery now.
+> > zswap.writeback is a more urgent need, and does not prevent swap.tiers
+> > if we do decide to implement it.
+>
+> I am honestly not convinced by this. There is no heavy machinery here.
+> The interface is more generic and extensible, but the implementation
+> is roughly the same. Unless we have a reason to think a swap.tiers
+> interface may make it difficult to extend this later or will not
+> support some use cases, I think we should go ahead with it. If we are
+> worried that "tiers" may not accurately describe future use cases, we
+> can be more generic and call it swap.types or something.
+>
++100.
 
-But I don't mind adding it - I think it's reasonable either way.
-
-[..]
-
-Thanks,
-Daniel
+Chris
