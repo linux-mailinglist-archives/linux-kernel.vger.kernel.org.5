@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C9280B463
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 13:56:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD7D80B45B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 13:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229446AbjLIMuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 07:50:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
+        id S230115AbjLIM4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 07:56:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbjLIMuW (ORCPT
+        with ESMTP id S229538AbjLIM4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 07:50:22 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910AD1729
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 04:50:27 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54c9116d05fso4088398a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 04:50:27 -0800 (PST)
+        Sat, 9 Dec 2023 07:56:01 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9855210D8
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 04:56:07 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-33350fcb2c7so2146061f8f.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 04:56:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1702126226; x=1702731026; darn=vger.kernel.org;
+        d=tuxon.dev; s=google; t=1702126566; x=1702731366; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=BrIj9e9uqoOd1iDOvTbMSrIuE57nDpQN+X5Gg7BjFI0=;
-        b=eCDfc9joUzQSK1CIL7tEoPlnAQysqzrLyvuCgEjQhqODbKcmK1xrnQ3KSoLe3KVxny
-         zM+eJeU/MMicHylg3WxLf1cAbJmP3S7ZqggAKIwej8uIwDNjtUnir+HYfkJ8R9FTvJHv
-         AXwB7vu2a1Y3SD7arlGqXubh652p6KwB8ZsvlT6VqK7JO6gexy+EX+9P7Q51+gGoXq5A
-         6pBkrUjcZEpHqoiSYsuS0DIAyOgOdeyS0GJKjG1LRYSfJ/7Nv7UQzvFgyLBQxXD28Rxc
-         1eUEQtE4yV9FAj6hEQM2lRCBFf1MQ8xAyCNbzfCRbvC+43/4ITr4tzwUiB5TS+HFu18d
-         LSUQ==
+        bh=cha3RMhWzFtMx++aeV38CHkj+sIQkrAxTwK2Y8f1WFw=;
+        b=fBClOUl1vwSUpmd269E7sbM99MjyaRlHLLb/IjN4GXKgvqI0jC152vjUkX556PydgJ
+         PK+1KKHPSgXfy6idotwyC2oaa6vYT/b8Wj9i/vfdZo26NDvL/S5U4ejMRaA6qJTgXMCm
+         u/1I8geQXc5QzHcScp7vDEBBNpBqdoC3H4NKbMDlKnmvoTGX33jWA8l7jlPuwLvzYWwr
+         uFSmf4kTGmQlEc4w8Vymzy+9uRnJN6cruTjjetRcIuvLrXq3/JPLIl4bQ2CzkjhIpBtX
+         rFaFFRMMYtvkDtN2eO55bvcD7nvAt5mAVFdif7/SrCcPpOjDctoUiEMo0/AxCm/LMhhU
+         D+Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702126226; x=1702731026;
+        d=1e100.net; s=20230601; t=1702126566; x=1702731366;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BrIj9e9uqoOd1iDOvTbMSrIuE57nDpQN+X5Gg7BjFI0=;
-        b=oX0qTI8Lq2XOCnSMra+mgI38tnYWunYGl8jPKri6SmRshvC1HJZQEmQjiG/PYaC+sQ
-         RtHXRaNSDXnop+nV7xKz/IqHe/vaiVzI11sI8AqZ1izXqp1p8nmaIa+N3umUc2fx/dF2
-         2U/sE+Cv4eTXm7XGrgNkBSi5Gq9/CoacXX29t4C2Y478G+lA/dQ2dmCr8AuDCZwL/qMm
-         7Zw6ag3yJUehpTmr0M2tEgiezlF00dByX5TNoR9LKvbtEhw9hlhwxkQKSKkrG3MYAfnU
-         KSx15EMmbJGLZF9k5dLo0iCSDUo94jzos2a33q4WPXTpmLIEsEgjUq2nfQCRX/JRDsMp
-         nkPw==
-X-Gm-Message-State: AOJu0Ywdh4el/AOnO9X4kC+l4jK7GCquuLNe5KaoTx4qdrd6Ty9hckhw
-        /kQhpIaEFsfA81PF4dHsXW3KAw==
-X-Google-Smtp-Source: AGHT+IEYyrmukzbccTc2RXgUzX/w2lPzGR06iu3VIh3Bw5dz4f/tU+btc/ERZJ+BS3SZuifdxyfQzg==
-X-Received: by 2002:a50:85c6:0:b0:54c:8890:6ff2 with SMTP id q6-20020a5085c6000000b0054c88906ff2mr531914edh.13.1702126225714;
-        Sat, 09 Dec 2023 04:50:25 -0800 (PST)
+        bh=cha3RMhWzFtMx++aeV38CHkj+sIQkrAxTwK2Y8f1WFw=;
+        b=c1TnYSzpQX2+60PRONyF0D4NCA5NyOG1J8WgSsSaRxdJP7/nCC9kKGoIbc4GOZ58mm
+         ZeF15fvtDZy1A1sOktou1s2IVDUl4eqMGbcVQplNzkK9/DFu2WC9tM31n6WrGFvNzlz4
+         b8zbES9fWjESwIJ/hoD1AAs0pdrU31er4zBzSbptNXJ9I2ih6yccuZvFAcqrtdI2br33
+         uMqPPOd6AeTL3epJF71hV3X/TjvFdh3sdw9P/nnheyEem/7ZPm3M54MvCwp+qwlcAcCC
+         uE0kdJ26mIjsTEuyxH4/ZWm4kwKgD3bAGTxWPy0Ugm3ryXalR4CrUBqdOJaUqMr57L9m
+         WLsg==
+X-Gm-Message-State: AOJu0YwRt2uHGEjNjf2UBMGLSPBPQwJd1ch4gMOW9PD2g3sLBPAgdWya
+        gdelkrAF+mIYdZOk/ncIETQHjA==
+X-Google-Smtp-Source: AGHT+IFa/1Iy1uYNgD7/XRuRkqfr8XdE2KlpmRUzkBTKu7/i/+f7B/CG9Qn+B4AX9jRSTeQk3dMV8w==
+X-Received: by 2002:adf:fdcd:0:b0:333:4052:bfef with SMTP id i13-20020adffdcd000000b003334052bfefmr885370wrs.52.1702126565987;
+        Sat, 09 Dec 2023 04:56:05 -0800 (PST)
 Received: from [192.168.50.4] ([82.78.167.22])
-        by smtp.gmail.com with ESMTPSA id u20-20020a50d514000000b0054ca3697e2csm1711912edi.25.2023.12.09.04.50.24
+        by smtp.gmail.com with ESMTPSA id cx7-20020a170907168700b009fc576e26e6sm2159109ejd.80.2023.12.09.04.56.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Dec 2023 04:50:25 -0800 (PST)
-Message-ID: <de0ddb41-8d78-45eb-bcb7-6d318bf154fd@tuxon.dev>
-Date:   Sat, 9 Dec 2023 14:50:24 +0200
+        Sat, 09 Dec 2023 04:56:05 -0800 (PST)
+Message-ID: <80cd8878-da98-4093-9fb5-0b702466a17c@tuxon.dev>
+Date:   Sat, 9 Dec 2023 14:56:04 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drivers: soc: atmel: Adjust defines to follow
- aphabetical order
+Subject: Re: [PATCH] ARM: dts: microchip: sama5d27_wlsom1_ek: Remove
+ mmc-ddr-3_3v property from sdmmc0 node
 Content-Language: en-US
-To:     Ryan.Wanner@microchip.com, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231208194532.579893-1-Ryan.Wanner@microchip.com>
+To:     Mihai Sain <mihai.sain@microchip.com>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     cristian.birsan@microchip.com
+References: <20231204072537.2991-1-mihai.sain@microchip.com>
 From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20231208194532.579893-1-Ryan.Wanner@microchip.com>
+In-Reply-To: <20231204072537.2991-1-mihai.sain@microchip.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,108 +78,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Ryan,
 
-On 08.12.2023 21:45, Ryan.Wanner@microchip.com wrote:
-> From: Ryan Wanner <Ryan.Wanner@microchip.com>
+
+On 04.12.2023 09:25, Mihai Sain wrote:
+> On board the sdmmc0 interface is wired to a SD Card socket.
+> According with mmc-controller bindings, the mmc-ddr-3_3v property
+> is used for eMMC devices to enable high-speed DDR mode (3.3V I/O).
+> Remove the mmc-ddr-3_3v property from sdmmc0 node.
 > 
-> Move the defines so that they are in aphabetical order based on SOC.
+> Signed-off-by: Mihai Sain <mihai.sain@microchip.com>
 
-s/aphabetical/alphabetical but maybe alphanumerical a better term.
+Applied to at91-dt, thanks!
 
-Could you please explain what level of alphabetical sort you wanted to
-achieve? I see SAM9X60/SAMA7G5 b/w AT91SAM9X5_CIDR_MATCH and
-AT91SAM9M11_EXID_MATCH or, e.g., AT91SAM9G35_EXID_MATCH after
-AT91SAM9M10_EXID_MATCH.
-
-> 
-> Signed-off-by: Ryan Wanner <Ryan.Wanner@microchip.com>
 > ---
-> Changes from v1 -> v2:
-> - Remove defines that are not yet in v6.7.
+>  arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts | 1 -
+>  1 file changed, 1 deletion(-)
 > 
->  drivers/soc/atmel/soc.h | 38 +++++++++++++++++++-------------------
->  1 file changed, 19 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/soc/atmel/soc.h b/drivers/soc/atmel/soc.h
-> index 7a9f47ce85fb..1f2af6f74160 100644
-> --- a/drivers/soc/atmel/soc.h
-> +++ b/drivers/soc/atmel/soc.h
-> @@ -39,10 +39,10 @@ at91_soc_init(const struct at91_soc *socs);
->  #define AT91SAM9261_CIDR_MATCH		0x019703a0
->  #define AT91SAM9263_CIDR_MATCH		0x019607a0
->  #define AT91SAM9G20_CIDR_MATCH		0x019905a0
-> -#define AT91SAM9RL64_CIDR_MATCH		0x019b03a0
->  #define AT91SAM9G45_CIDR_MATCH		0x019b05a0
-> -#define AT91SAM9X5_CIDR_MATCH		0x019a05a0
->  #define AT91SAM9N12_CIDR_MATCH		0x019a07a0
-> +#define AT91SAM9RL64_CIDR_MATCH		0x019b03a0
-> +#define AT91SAM9X5_CIDR_MATCH		0x019a05a0
->  #define SAM9X60_CIDR_MATCH		0x019b35a0
->  #define SAMA7G5_CIDR_MATCH		0x00162100
+> diff --git a/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts b/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts
+> index e055b9e2fe34..15239834d886 100644
+> --- a/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts
+> +++ b/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts
+> @@ -197,7 +197,6 @@ qspi1_flash: flash@0 {
 >  
-> @@ -61,23 +61,15 @@ at91_soc_init(const struct at91_soc *socs);
->  #define AT91SAM9N12_EXID_MATCH		0x00000006
->  #define AT91SAM9CN11_EXID_MATCH		0x00000009
->  
-> +#define AT91SAM9XE128_CIDR_MATCH	0x329973a0
-> +#define AT91SAM9XE256_CIDR_MATCH	0x329a93a0
-> +#define AT91SAM9XE512_CIDR_MATCH	0x329aa3a0
-> +
->  #define SAM9X60_EXID_MATCH		0x00000000
->  #define SAM9X60_D5M_EXID_MATCH		0x00000001
->  #define SAM9X60_D1G_EXID_MATCH		0x00000010
->  #define SAM9X60_D6K_EXID_MATCH		0x00000011
->  
-> -#define SAMA7G51_EXID_MATCH		0x3
-> -#define SAMA7G52_EXID_MATCH		0x2
-> -#define SAMA7G53_EXID_MATCH		0x1
-> -#define SAMA7G54_EXID_MATCH		0x0
-> -#define SAMA7G54_D1G_EXID_MATCH		0x00000018
-> -#define SAMA7G54_D2G_EXID_MATCH		0x00000020
-> -#define SAMA7G54_D4G_EXID_MATCH		0x00000028
-> -
-> -#define AT91SAM9XE128_CIDR_MATCH	0x329973a0
-> -#define AT91SAM9XE256_CIDR_MATCH	0x329a93a0
-> -#define AT91SAM9XE512_CIDR_MATCH	0x329aa3a0
-> -
->  #define SAMA5D2_CIDR_MATCH		0x0a5c08c0
->  #define SAMA5D21CU_EXID_MATCH		0x0000005a
->  #define SAMA5D225C_D1M_EXID_MATCH	0x00000053
-> @@ -113,6 +105,14 @@ at91_soc_init(const struct at91_soc *socs);
->  #define SAMA5D43_EXID_MATCH		0x00000003
->  #define SAMA5D44_EXID_MATCH		0x00000004
->  
-> +#define SAMA7G51_EXID_MATCH		0x3
-> +#define SAMA7G52_EXID_MATCH		0x2
-> +#define SAMA7G53_EXID_MATCH		0x1
-> +#define SAMA7G54_EXID_MATCH		0x0
-> +#define SAMA7G54_D1G_EXID_MATCH		0x00000018
-> +#define SAMA7G54_D2G_EXID_MATCH		0x00000020
-> +#define SAMA7G54_D4G_EXID_MATCH		0x00000028
-> +
->  #define SAME70Q21_CIDR_MATCH		0x21020e00
->  #define SAME70Q21_EXID_MATCH		0x00000002
->  #define SAME70Q20_CIDR_MATCH		0x21020c00
-> @@ -127,6 +127,11 @@ at91_soc_init(const struct at91_soc *socs);
->  #define SAMS70Q19_CIDR_MATCH		0x211d0a00
->  #define SAMS70Q19_EXID_MATCH		0x00000002
->  
-> +#define SAMV70Q20_CIDR_MATCH		0x21320c00
-> +#define SAMV70Q20_EXID_MATCH		0x00000002
-> +#define SAMV70Q19_CIDR_MATCH		0x213d0a00
-> +#define SAMV70Q19_EXID_MATCH		0x00000002
-> +
->  #define SAMV71Q21_CIDR_MATCH		0x21220e00
->  #define SAMV71Q21_EXID_MATCH		0x00000002
->  #define SAMV71Q20_CIDR_MATCH		0x21220c00
-> @@ -134,9 +139,4 @@ at91_soc_init(const struct at91_soc *socs);
->  #define SAMV71Q19_CIDR_MATCH		0x212d0a00
->  #define SAMV71Q19_EXID_MATCH		0x00000002
->  
-> -#define SAMV70Q20_CIDR_MATCH		0x21320c00
-> -#define SAMV70Q20_EXID_MATCH		0x00000002
-> -#define SAMV70Q19_CIDR_MATCH		0x213d0a00
-> -#define SAMV70Q19_EXID_MATCH		0x00000002
-> -
->  #endif /* __AT91_SOC_H */
+>  &sdmmc0 {
+>  	bus-width = <4>;
+> -	mmc-ddr-3_3v;
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_sdmmc0_default>;
+>  	status = "okay";
