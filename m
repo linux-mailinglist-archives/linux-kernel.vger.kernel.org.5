@@ -2,73 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F6F80B2B1
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 08:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7915680B2C7
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 08:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234338AbjLIHKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 02:10:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48038 "EHLO
+        id S231157AbjLIHYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 02:24:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbjLIHJ7 (ORCPT
+        with ESMTP id S229510AbjLIHYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 02:09:59 -0500
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5037F193
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 23:10:05 -0800 (PST)
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-58d0c968357so3255075eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 23:10:05 -0800 (PST)
+        Sat, 9 Dec 2023 02:24:45 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C4CD5B;
+        Fri,  8 Dec 2023 23:24:50 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b9e7f4a0d7so1159464b6e.1;
+        Fri, 08 Dec 2023 23:24:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702106690; x=1702711490; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gA6npP4B/1h8Lv3vDYT50LP0HFiir56XGpjRhpKMK7Q=;
+        b=PQ+ZyJqyI3alLnQm4J1OcJ0vHwSxcnkBAjQeJqtr8LtTYWT8i06FAtkBo7t8zGWsb1
+         7VW6PvbiN4VKQfJtaUpXvcJrhk1NHb0IEAeT5VhpJANvzKU81p8pvoRK556SNRs37psG
+         HaU/WKxVXtepGBpZ9hVx96mTUxLDhglwx8hGNQB4GEdq9K23x0VP8d6HbWZ2/eQlDHtY
+         mVU/jD4c22mSKVhZqmXOX4TLBvJqP0k5toS+s7PD1HY/AJA7Zb5sG5O6TgSlWLwzTWi9
+         hGoVsbX6RkPHMUXBnfwtVV6Y36mibl2gY4e3zcqRTHKJey1ldw2SyrHCvnbYnNIafM+s
+         +0kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702105804; x=1702710604;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1H7FBuRRymT+i/RuD/6cWcDH+gzYyqrAqT2TyDeE6Us=;
-        b=PgOsDcay4D5vZ8fhgZKd/dPUnXG3J8wupdfaoHnaj4uNskUAJAcyNc1MJ/UHHaKlpy
-         YfavJdpkTUa1g3vLH39IpmRG3p7AACcX2vUGQEICyqcGUuhTAusmkO1YC3MQJIg5Sbht
-         bNeNPX4VESbASc7hXgKAr+PsgN9vZu6qidFY6nQZ5YjlnWODcNZ9be7NNh9fXAxjsIwm
-         y9g2nHWaZQrHu111ZnwqBJMBuIFFh4QPGS+oqsT24B+dGxGU/qm/p7D5xaLqKpqGmrYj
-         QgmAG0+I2UP2ZMSUoRcvYs2XLqHMSYWU0nchlqL2mjY4DMa0MrGceBNFAbnuvAokuuxn
-         dgEA==
-X-Gm-Message-State: AOJu0YyJ3aWL972tvWf9zBXku5IM7pZl+C2+EE0f6iquNyQjcUwn2b/V
-        m0f+b/x0UIyjjYRf89uFEwIcK0kCFae6uFTbQwnyfohPoJAU
-X-Google-Smtp-Source: AGHT+IHSVyGyXNa1GHsUczDX1+qO24/tXhtEx1VvrR1XDUJuCJtPE03O3XowFWpdWuhZQ0XPef8EgwkTZ/DEBwm27oB2jnxOcWAM
-MIME-Version: 1.0
-X-Received: by 2002:a05:6870:7099:b0:1fb:121c:c29b with SMTP id
- v25-20020a056870709900b001fb121cc29bmr1588574oae.1.1702105804771; Fri, 08 Dec
- 2023 23:10:04 -0800 (PST)
-Date:   Fri, 08 Dec 2023 23:10:04 -0800
-In-Reply-To: <tencent_140DE9120A5D895DEA192FCF900D9FA5F807@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dd1538060c0e6346@google.com>
-Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert (2)
-From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1702106690; x=1702711490;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gA6npP4B/1h8Lv3vDYT50LP0HFiir56XGpjRhpKMK7Q=;
+        b=eD44ILXzitgfn1PCUg5BgSlT+B+nhDLW15d/pBdXAaEh9CwCsqC7nC6ciHFIfnhrpM
+         4BS7howJXDs5aFJ1gkl4g02T4Z7KiS7CthpmDAzKQj5U2in2SIZ3l1BFWNfi3Mj7CORa
+         0ObAlxmrHve3NZ/o8l7tNG8/0ChVCQQFrwlJF1e6lKh4ig/HgiPnf9+lesAWyyopCO5r
+         IN2rJTyZG/q7phAzUGVNEEsX9Z1MnBvd/jRrGeHkTWUzj3CumO11T4/8i7tm5t28ls1c
+         3q6q9mJa0rl4CB3uuspVFAhTegI33cFQR0rq36/wnCYH+6Fal4joW7XP+r9n/llSPwpm
+         XcMw==
+X-Gm-Message-State: AOJu0Yyomo21hq7zDwgiC/3z4NbMGBPvthubDmQZMh9Yuk+ltam5Ea48
+        3O6eBuFDz3MqGe0Og9k92es=
+X-Google-Smtp-Source: AGHT+IGYs36YJSRK1ZVmaBkJb+Iy1NEnIFrzQTgWan5NjNjvr9PNhQmEwveSqekX+ik6sq3a4cawzA==
+X-Received: by 2002:a05:6808:120c:b0:3b8:b063:505e with SMTP id a12-20020a056808120c00b003b8b063505emr1458196oil.95.1702106689952;
+        Fri, 08 Dec 2023 23:24:49 -0800 (PST)
+Received: from smtpclient.apple ([2601:647:4b00:6db0:219a:6f4c:ab6a:436d])
+        by smtp.gmail.com with ESMTPSA id q28-20020a056a0002bc00b006ce350d946csm2682652pfs.41.2023.12.08.23.24.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 08 Dec 2023 23:24:49 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Re: [PATCH 5/7] rust: file: add `Kuid` wrapper
+From:   comex <comexk@gmail.com>
+In-Reply-To: <CANiq72k4H2_NZuQcpeKANqyi_9W01fLC0WxXon5cx4z=WsgeXQ@mail.gmail.com>
+Date:   Fri, 8 Dec 2023 23:24:35 -0800
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4364B468-E0DD-4419-B26E-13B9C3F53F7C@gmail.com>
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+ <20231129-alice-file-v1-5-f81afe8c7261@google.com>
+ <20231129-etappen-knapp-08e2e3af539f@brauner>
+ <20231129164815.GI23596@noisy.programming.kicks-ass.net>
+ <20231130-wohle-einfuhr-1708e9c3e596@brauner>
+ <A0BFF59C-311C-4C44-9474-65DB069387BD@gmail.com>
+ <CANiq72k4H2_NZuQcpeKANqyi_9W01fLC0WxXon5cx4z=WsgeXQ@mail.gmail.com>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Dec 8, 2023, at 8:19=E2=80=AFAM, Miguel Ojeda =
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>=20
+> If LLVM folks think LLVM-wise nothing will break, then we are happy to
+> go ahead with that (since it also solves the performance side), but it
+> would be nice to know if it will always be OK to build like that, i.e.
+> I think Andreas actually tried it and it seemed to work and boot, but
+> the worry is whether there is something subtle that could have bad
+> codegen in the future.
 
-syzbot tried to test the proposed patch but the build/boot failed:
+One potential issue is incompatibility between the LLVM versions used by =
+rustc, Clang, and LLD.  At minimum, whichever tool is reading bitcode =
+(LLD in my example) should have an LLVM version >=3D that of the tools =
+producing bitcode, since newer LLVM versions can read older bitcode but =
+not vice versa.  But ideally the tools would all just be linked against =
+the same copy of LLVM.
 
-net/qrtr/af_qrtr.c:293:44: error: 'struct qrtr_tx_flow' has no member named 'failed'; did you mean 'tx_failed'?
-net/qrtr/af_qrtr.c:299:49: error: 'struct qrtr_tx_flow' has no member named 'failed'; did you mean 'tx_failed'?
+If you=E2=80=99re getting your tools from a distro, then that may =
+already be true for you.  But if you=E2=80=99re using upstream rustc =
+binaries, those are built against a custom branch of LLVM, which is =
+based on upstream release versions but adds a handful of patches [1]; by =
+policy, those patches can include cherry-picks of miscompilation fixes =
+that are upstream but haven=E2=80=99t made it into a release yet [2].  =
+Upstream rustc binaries are accompanied by a copy of LLD linked against =
+the same LLVM library, named rust-lld, but there=E2=80=99s no =
+corresponding copy of Clang [3].  I=E2=80=99d say that agreement between =
+rustc and LLD is the most important thing, but it would be nice if =
+they'd make a matching Clang available through rustup.
 
-
-Tested on:
-
-commit:         33cc938e Linux 6.7-rc4
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37d1b8bb20150e6
-dashboard link: https://syzkaller.appspot.com/bug?extid=006987d1be3586e13555
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=11343fcae80000
-
+[1] =
+https://github.com/llvm/llvm-project/compare/release/17.x...rust-lang:llvm=
+-project:rustc/17.0-2023-09-19
+[2] =
+https://rustc-dev-guide.rust-lang.org/backend/updating-llvm.html#bugfix-up=
+dates
+[3] https://github.com/rust-lang/rust/issues/56371=
