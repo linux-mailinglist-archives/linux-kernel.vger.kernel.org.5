@@ -2,122 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9AC80B185
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 02:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD92D80B174
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 02:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574922AbjLIBkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 20:40:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
+        id S234161AbjLIBdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 20:33:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjLIBkM (ORCPT
+        with ESMTP id S229731AbjLIBdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 20:40:12 -0500
-X-Greylist: delayed 555 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 08 Dec 2023 17:40:16 PST
-Received: from mail-m6039.netease.com (mail-m6039.netease.com [210.79.60.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A4810FA;
-        Fri,  8 Dec 2023 17:40:16 -0800 (PST)
-DKIM-Signature: a=rsa-sha256;
-        b=U1A4+o27k8BpDm6vFDm5SLrPKgl34qoVXMOQvOQXRouyshE2USxFMrKUjLBvZqvahaN1PDUCU9HgM8uXSy5TDh1x+LvZ8qX0ywxXkpfTKNVHxQ+uRjDBsoVLKkvr0UTUWJ/zfKU6kxJF2fJr5Yq6Q7h8DxbwtRVqxybgTYz2VTM=;
-        s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
-        bh=3ZfnCGij/I8m1TiIlexdEuiMXvToZHxbD5kG64olyL0=;
-        h=date:mime-version:subject:message-id:from;
-Received: from [172.16.12.141] (unknown [58.22.7.114])
-        by mail-m12779.qiye.163.com (Hmail) with ESMTPA id E461F78018D;
-        Sat,  9 Dec 2023 09:30:30 +0800 (CST)
-Message-ID: <e0181a1a-b649-4f38-b4f8-f5ee22bcb356@rock-chips.com>
-Date:   Sat, 9 Dec 2023 09:30:30 +0800
+        Fri, 8 Dec 2023 20:33:40 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E2E10F1
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 17:33:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702085627; x=1733621627;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6u1bdGnqaxTPzZjyGPeHqcOCEdEQuqsNCKNHyktM/+o=;
+  b=Mo3E+Pb96XFRBhH8fr1LJYgTgQz/LR0NSOLOK2uhMBN7j5JulJXWx10B
+   g8IHqj/lEYvi2Y8WseBJN57Ei2fsrbPFCfR9bS45Bxs29/3YiL0TV0xZP
+   0+HTmUS78aPTaAnWCGQ6NhSH1rEkJWkOtLwEb6pvOWxWf3QUkbLG88xR2
+   qQOHULZUAPpj86nkeA88DwrAJ/WRCUhlj/G8uiOe/CAD/nhNFTAx8v14i
+   tttfqrjLL5C+Hol7XKjnbrRKnIsmjzHTTnx+kXJ7NGM3jnu2KaUYhNtEN
+   l8PT9MqkH92ml+9L+9/ErOnQ4fxRd/Y5IcGE9OoLnL83M2BkQE/Q9Y3pB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="1362000"
+X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
+   d="scan'208";a="1362000"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 17:33:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="916144024"
+X-IronPort-AV: E=Sophos;i="6.04,262,1695711600"; 
+   d="scan'208";a="916144024"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 08 Dec 2023 17:33:42 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBmDs-000Edn-0k;
+        Sat, 09 Dec 2023 01:33:40 +0000
+Date:   Sat, 9 Dec 2023 09:33:10 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Uros Bizjak <ubizjak@gmail.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/alternative: move apply_relocation() out of init
+ section
+Message-ID: <202312090936.qsdfR8TM-lkp@intel.com>
+References: <20231204072856.1033621-1-arnd@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 10/17] dt-bindings: display: vop2: Add rk3588 support
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Yan <andyshrk@163.com>, heiko@sntech.de
-Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
-        kever.yang@rock-chips.com, chris.obbard@collabora.com
-References: <20231207075906.651771-1-andyshrk@163.com>
- <20231207080133.652417-1-andyshrk@163.com>
- <0915b94c-596e-4a19-925c-1a5b1d0a3531@linaro.org>
-From:   Andy Yan <andy.yan@rock-chips.com>
-In-Reply-To: <0915b94c-596e-4a19-925c-1a5b1d0a3531@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGkhPHlYZHh9JQhoZTElMHk9VEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSU5JVUpLS1VKQl
-        kG
-X-HM-Tid: 0a8c4c328fdbb24fkuuue461f78018d
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kz46USo5Hjw1Gk46LB4pSwoO
-        DkJPCx1VSlVKTEtJS0NOT0hKQ0lIVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
-        WUFZTkNVSUlVTFVKSk9ZV1kIAVlBSE1DSDcG
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204072856.1033621-1-arnd@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Krzysztof:
+Hi Arnd,
 
-On 12/9/23 01:46, Krzysztof Kozlowski wrote:
-> On 07/12/2023 09:01, Andy Yan wrote:
->> From: Andy Yan <andy.yan@rock-chips.com>
->>
->> The vop2 on rk3588 is similar to which on rk356x
->> but with 4 video ports and need to reference
->> more grf modules.
->>
->> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
->>
->> ---
->>
->> Changes in v4:
->> - drop redundant description.
->> - use full stop at all the description's end.
->> - address Krzysztof's review in v3
-> 
-> What changed? Please list specific changes, not just generic "address
-> review".
-> 
+kernel test robot noticed the following build warnings:
 
-Sorry, I will keep this in mind in the future.
+[auto build test WARNING on tip/master]
+[also build test WARNING on tip/x86/percpu next-20231208]
+[cannot apply to tip/auto-latest linus/master v6.7-rc4]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
->>
->> Changes in v3:
->> - constrain properties in allOf:if:then
->> - some description updates
->>
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> ---
-> 
-> This is an automated instruction, just in case, because many review tags
-> are being ignored. If you know the process, you can skip it (please do
-> not feel offended by me posting it here - no bad intentions intended).
-> If you do not know the process, here is a short explanation:
-> 
-> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-> versions, under or above your Signed-off-by tag. Tag is "received", when
-> provided in a message replied to you on the mailing list. Tools like b4
-> can help here. However, there's no need to repost patches *only* to add
-> the tags. The upstream maintainer will do that for tags received on the
-> version they apply.
-> 
-> https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/x86-alternative-move-apply_relocation-out-of-init-section/20231204-153129
+base:   tip/master
+patch link:    https://lore.kernel.org/r/20231204072856.1033621-1-arnd%40kernel.org
+patch subject: [PATCH] x86/alternative: move apply_relocation() out of init section
+config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20231209/202312090936.qsdfR8TM-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231209/202312090936.qsdfR8TM-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312090936.qsdfR8TM-lkp@intel.com/
+
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
+
+WARNING: modpost: missing MODULE_DESCRIPTION() in vmlinux.o
+>> WARNING: modpost: vmlinux: section mismatch in reference: __optimize_nops+0xa7 (section: .text) -> add_nop (section: .init.text)
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
