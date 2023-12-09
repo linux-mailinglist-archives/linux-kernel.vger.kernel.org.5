@@ -2,188 +2,452 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5FE80B2FD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 09:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CBDC80B2F8
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 09:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbjLIH5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 02:57:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
+        id S234438AbjLIH5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 02:57:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbjLIH5T (ORCPT
+        with ESMTP id S234454AbjLIH5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 02:57:19 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A45CA6
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 23:57:25 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3333131e08dso3335066f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 23:57:24 -0800 (PST)
+        Sat, 9 Dec 2023 02:57:36 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F5719AA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 23:57:40 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c3963f9fcso18555e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 23:57:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702108643; x=1702713443; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ab29RUBQYwAV6CIE5BNPpJZkkrD12eVnHwKVcHz+iN8=;
-        b=O8v5Oa378qj8ExN/XZkIbr2F3Tv3eg+YRVr9KCqiEsYglYj4pXWeaslnw2AU7zQGYL
-         folI4sVoU+XorDzqArmXGkLcB8BT0P+iL4LRRiLD2D5v/ttVGeufQXOe1mlFwVCPWyMp
-         kLSRZP+27QoBn2jAQ2qmY9F7Bas5EP1c7EBJGuwW0wQdaTyhgwrlKS7K4lvDgJfbiLEg
-         pk528tBBwIsuPwfysFoqyZcojC6FFu4sK2uDc4k0lY6UaCihmC5kbfLrZax3VVR+Jhi3
-         /w4fbZ5SO4zFxunxhEp/wQJ6Axar2aH/TnJewpwbgQgPk8Ivx6g17BLOPRlDlcxE8/+J
-         F92Q==
+        d=google.com; s=20230601; t=1702108659; x=1702713459; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OvpAu8wfZWytHa57vgU+s0jkjAfCm2gUCJ/O5st+mWY=;
+        b=OU5NYxX8V5j36qzVWLhFA2D2zuUHbM62TJyrJVVyZKIUKr53uVXVhG5ReE152kM8A9
+         KPemfOQPXlesoB+MHIQJasSV8s3/WlatvL9O/vSv0IbPPnO1DDYEhI64WiPj2/CDiQET
+         0c/B3ZbCjhBRQ3IFABBMpKnyk6lwA+90MjAinzV67TyuLfp2LRqjPsMJhbnEAlV9qAyr
+         An08bociifgbJBceqBFAyASV645RNttQtpJtOAj8+7SkXCKrW7KChWxPfqjcOPDBgbEI
+         UjA/aetFqHQF15YXhdqUyuECPRd1xBtKQYVBGmMFCxoi6SyskZuhQC5clZkMaaVif13C
+         4U7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702108643; x=1702713443;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ab29RUBQYwAV6CIE5BNPpJZkkrD12eVnHwKVcHz+iN8=;
-        b=CwWyXqmPLfrJ44MeVHDbgnUr+ix64TRDZrtZwq7rgnMEFxZkRbw+EkTWV4GFfr6IrH
-         JE74Nxo2nR9B9QB1AsfQBW1H+XIPkHvlqPuNNVdPC7CxEgYo0bbFbKa8KSDIHT72l2mc
-         HwiQS8g+N9YpkjvdTxBkn/6NJPPoUUBTE70zm90XSTSe5QCPCH0R9dWPtEbq3pMW49LI
-         1rUIEmf/pJG50wbEBAhgsAwDEhu6nV0A708Uz8mHUgKKxVBDdEJr3pc1SMctwdO3GOrh
-         vJWnyt/qvBHfN9VbLNQ/15Jpk49YWaya+Y7/sEXQgzKK1fbz60AnVppD0tU7hqStycp/
-         Q0uA==
-X-Gm-Message-State: AOJu0Ywaao+NncpEJB8dYCuoHN8PmNr43KAmNJl1V9axkVV0Rw83mDfh
-        0cG4A8PuAh9llnFQBu/6BTu2Rg==
-X-Google-Smtp-Source: AGHT+IFnCv2cpocyFJwrsyQtA46Z0yDPvF0huEUTRLKpQ3JDec7kqJaowDRsOHg+sEJ/0kTXfvqiwQ==
-X-Received: by 2002:a5d:408e:0:b0:333:4236:29b5 with SMTP id o14-20020a5d408e000000b00333423629b5mr669954wrp.47.1702108643519;
-        Fri, 08 Dec 2023 23:57:23 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id q18-20020adff952000000b0033609b71825sm3139789wrr.35.2023.12.08.23.57.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 23:57:23 -0800 (PST)
-Message-ID: <d8be450f-290a-438b-ab0d-97854c7983bd@linaro.org>
-Date:   Sat, 9 Dec 2023 08:57:21 +0100
+        d=1e100.net; s=20230601; t=1702108659; x=1702713459;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OvpAu8wfZWytHa57vgU+s0jkjAfCm2gUCJ/O5st+mWY=;
+        b=uKolq85btgovNMrH5PPiIaEyj3/jde2h5BUj/e9zu6pP4oKJ0zTRpbIAqJf/mHcVo/
+         XO4QpFFNEPXvPheCvH7ei2mHot7QyzQxOhOacDnZ/qUUFlR4WXoLAwJNL7xnccBxMfo2
+         sUSa954FI8nz+BRDvCSKeafFNUvWqbgBZGKISaCjPkHPJglxev1+aRLNL8p+tFlywt1/
+         JdSyMBeSBr4fOh2ohGI86X02ASg+TIl8XDVMIbfOCzn6hHav2MScbVFT9S0f4FtFEJso
+         1WSmRPoi8z6+itQO0eZ2ZeFI6KGl/BIxYGBkAzPSi3ZegXNTVZoMcol/qS6e4WVAIfdB
+         s2YA==
+X-Gm-Message-State: AOJu0YxLhjV3iOPuFFDIH3xXpWcmfie4mJFkzi3b+gkJFMzNCEuvKXI/
+        Y0hLFMGAWCpduZwEcRGumCesRAKQiFz3KwxR6F1YAA==
+X-Google-Smtp-Source: AGHT+IGc2kQcyb5PeJtRja8T59KYZs+rRrblriN0acUXYPGU86FVOB58Izgw00OtRXAU6d4zvS40RCj3Anew6rP1S0c=
+X-Received: by 2002:a05:600c:2941:b0:405:320a:44f9 with SMTP id
+ n1-20020a05600c294100b00405320a44f9mr115852wmd.5.1702108658620; Fri, 08 Dec
+ 2023 23:57:38 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add binding for AD7380 ADCs
-Content-Language: en-US
-To:     David Lechner <dlechner@baylibre.com>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        =?UTF-8?Q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-References: <20231208-ad7380-mainline-v1-0-2b33fe2f44ae@baylibre.com>
- <20231208-ad7380-mainline-v1-1-2b33fe2f44ae@baylibre.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231208-ad7380-mainline-v1-1-2b33fe2f44ae@baylibre.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231204221932.1465004-1-rmoar@google.com> <20231204221932.1465004-2-rmoar@google.com>
+In-Reply-To: <20231204221932.1465004-2-rmoar@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 9 Dec 2023 15:57:27 +0800
+Message-ID: <CABVgOSmz_9c_Gj3U+uqwhio96txj7bvpe1Ncn6RU3rf7Q8uKrw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/6] kunit: add KUNIT_INIT_TABLE to init linker section
+To:     Rae Moar <rmoar@google.com>
+Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
+        sadiyakazi@google.com, keescook@chromium.org, arnd@arndb.de,
+        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000ff18f4060c0f0df2"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/2023 16:51, David Lechner wrote:
-> This adds a binding specification for the Analog Devices Inc. AD7380
-> family of ADCs.
-> 
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
+--000000000000ff18f4060c0f0df2
+Content-Type: text/plain; charset="UTF-8"
+
+On Tue, 5 Dec 2023 at 06:19, Rae Moar <rmoar@google.com> wrote:
+>
+> Add KUNIT_INIT_TABLE to the INIT_DATA linker section.
+>
+> Alter the KUnit macros to create init tests:
+> kunit_test_init_section_suites
+>
+> Update lib/kunit/executor.c to run both the suites in KUNIT_TABLE and
+> KUNIT_INIT_TABLE.
+>
+> Signed-off-by: Rae Moar <rmoar@google.com>
 > ---
->  .../devicetree/bindings/iio/adc/adi,ad7380.yaml    | 102 +++++++++++++++++++++
->  MAINTAINERS                                        |   9 ++
->  2 files changed, 111 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml
-> new file mode 100644
-> index 000000000000..e9a0b72cd9d3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml
-> @@ -0,0 +1,102 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/adc/adi,ad7380.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices Simultaneous Sampling Analog to Digital Converters
-> +
-> +maintainers:
-> +  - Michael Hennerich <Michael.Hennerich@analog.com>
-> +  - Nuno Sá <nuno.sa@analog.com>
-> +
-> +description: |
-> +  * https://www.analog.com/en/products/ad7380.html
-> +  * https://www.analog.com/en/products/ad7381.html
-> +  * https://www.analog.com/en/products/ad7383.html
-> +  * https://www.analog.com/en/products/ad7384.html
-> +
-> +$ref: /schemas/spi/spi-peripheral-props.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,ad7380
-> +      - adi,ad7381
-> +      - adi,ad7383
-> +      - adi,ad7384
-> +
-> +  reg: true
 
-maxItems
-(unless 256 items are really possible for this device)
+This works well here.
 
+I'm still a little bit conflicted around the idea of merging suite
+sets at runtime -- I think there could be more efficient ways of
+handling that -- though the more I think about it, the less worried
+I'm getting (since we'll need to keep init suites around somewhere for
+debugfs, anyway, right?).
+
+In fact, that's something we probably need to work out -- is it legal
+for the actual kunit_test_suite struct to be __initdata? I'd thought
+so, but if we need to loop over these later in debugfs to keep their
+logs, then probably not. Unless you wanted to make a copy of the
+kunit_suite itself, not just the pointers to it (though that seems
+excessive).
+
+If we're settled on that (the suite itself can't be __initdata), then this is:
+Reviewed-by: David Gow <davidgow@google.com>
+
+-- David
+
+>  include/asm-generic/vmlinux.lds.h |  9 ++++-
+>  include/kunit/test.h              | 10 ++++-
+>  include/linux/module.h            |  2 +
+>  kernel/module/main.c              |  3 ++
+>  lib/kunit/executor.c              | 64 ++++++++++++++++++++++++++++---
+>  lib/kunit/test.c                  | 26 +++++++++----
+>  6 files changed, 99 insertions(+), 15 deletions(-)
+>
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index 1107905d37fc..5dd3a61d673d 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -700,7 +700,8 @@
+>         THERMAL_TABLE(governor)                                         \
+>         EARLYCON_TABLE()                                                \
+>         LSM_TABLE()                                                     \
+> -       EARLY_LSM_TABLE()
+> +       EARLY_LSM_TABLE()                                               \
+> +       KUNIT_INIT_TABLE()
+>
+>  #define INIT_TEXT                                                      \
+>         *(.init.text .init.text.*)                                      \
+> @@ -926,6 +927,12 @@
+>                 . = ALIGN(8);                                           \
+>                 BOUNDED_SECTION_POST_LABEL(.kunit_test_suites, __kunit_suites, _start, _end)
+>
+> +/* Alignment must be consistent with (kunit_suite *) in include/kunit/test.h */
+> +#define KUNIT_INIT_TABLE()                                             \
+> +               . = ALIGN(8);                                           \
+
+I still hate that we hardcode '8' here, but I guess we've got no
+choice in a linker script.
+
+
+> +               BOUNDED_SECTION_POST_LABEL(.kunit_init_test_suites, \
+> +                               __kunit_init_suites, _start, _end)
 > +
-> +  spi-max-frequency:
-> +    maximum: 80000000
-> +  spi-cpol: true
-> +  spi-cpha: true
+>  #ifdef CONFIG_BLK_DEV_INITRD
+>  #define INIT_RAM_FS                                                    \
+>         . = ALIGN(4);                                                   \
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 20ed9f9275c9..06e826a0b894 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -337,6 +337,9 @@ void __kunit_test_suites_exit(struct kunit_suite **suites, int num_suites);
+>  void kunit_exec_run_tests(struct kunit_suite_set *suite_set, bool builtin);
+>  void kunit_exec_list_tests(struct kunit_suite_set *suite_set, bool include_attr);
+>
+> +struct kunit_suite_set kunit_merge_suite_sets(struct kunit_suite_set init_suite_set,
+> +               struct kunit_suite_set suite_set);
 > +
+>  #if IS_BUILTIN(CONFIG_KUNIT)
+>  int kunit_run_all_tests(void);
+>  #else
+> @@ -371,6 +374,11 @@ static inline int kunit_run_all_tests(void)
+>
+>  #define kunit_test_suite(suite)        kunit_test_suites(&suite)
+>
+> +#define __kunit_init_test_suites(unique_array, ...)                           \
+> +       static struct kunit_suite *unique_array[]                              \
+> +       __aligned(sizeof(struct kunit_suite *))                                \
+> +       __used __section(".kunit_init_test_suites") = { __VA_ARGS__ }
+> +
+>  /**
+>   * kunit_test_init_section_suites() - used to register one or more &struct
+>   *                                   kunit_suite containing init functions or
+> @@ -392,7 +400,7 @@ static inline int kunit_run_all_tests(void)
+>   * this manner.
+>   */
+>  #define kunit_test_init_section_suites(__suites...)                    \
+> -       __kunit_test_suites(CONCATENATE(__UNIQUE_ID(array), _probe),    \
+> +       __kunit_init_test_suites(__UNIQUE_ID(array),                    \
+>                             ##__suites)
+>
+>  #define kunit_test_init_section_suite(suite)   \
+> diff --git a/include/linux/module.h b/include/linux/module.h
+> index a98e188cf37b..9cd0009bd050 100644
+> --- a/include/linux/module.h
+> +++ b/include/linux/module.h
+> @@ -540,6 +540,8 @@ struct module {
+>         struct static_call_site *static_call_sites;
+>  #endif
+>  #if IS_ENABLED(CONFIG_KUNIT)
+> +       int num_kunit_init_suites;
+> +       struct kunit_suite **kunit_init_suites;
+>         int num_kunit_suites;
+>         struct kunit_suite **kunit_suites;
+>  #endif
+> diff --git a/kernel/module/main.c b/kernel/module/main.c
+> index 98fedfdb8db5..36681911c05a 100644
+> --- a/kernel/module/main.c
+> +++ b/kernel/module/main.c
+> @@ -2199,6 +2199,9 @@ static int find_module_sections(struct module *mod, struct load_info *info)
+>         mod->kunit_suites = section_objs(info, ".kunit_test_suites",
+>                                               sizeof(*mod->kunit_suites),
+>                                               &mod->num_kunit_suites);
+> +       mod->kunit_init_suites = section_objs(info, ".kunit_init_test_suites",
+> +                                             sizeof(*mod->kunit_init_suites),
+> +                                             &mod->num_kunit_init_suites);
+>  #endif
+>
+>         mod->extable = section_objs(info, "__ex_table",
+> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> index 1236b3cd2fbb..847329c51e91 100644
+> --- a/lib/kunit/executor.c
+> +++ b/lib/kunit/executor.c
+> @@ -12,6 +12,8 @@
+>   */
+>  extern struct kunit_suite * const __kunit_suites_start[];
+>  extern struct kunit_suite * const __kunit_suites_end[];
+> +extern struct kunit_suite * const __kunit_init_suites_start[];
+> +extern struct kunit_suite * const __kunit_init_suites_end[];
+>
+>  static char *action_param;
+>
+> @@ -292,6 +294,33 @@ void kunit_exec_list_tests(struct kunit_suite_set *suite_set, bool include_attr)
+>         }
+>  }
+>
+> +struct kunit_suite_set kunit_merge_suite_sets(struct kunit_suite_set init_suite_set,
+> +               struct kunit_suite_set suite_set)
+> +{
+> +       struct kunit_suite_set total_suite_set = {NULL, NULL};
+> +       struct kunit_suite **total_suite_start = NULL;
+> +       size_t init_num_suites, num_suites, suite_size;
+> +
+> +       init_num_suites = init_suite_set.end - init_suite_set.start;
+> +       num_suites = suite_set.end - suite_set.start;
+> +       suite_size = sizeof(suite_set.start);
+> +
+> +       /* Allocate memory for array of all kunit suites */
+> +       total_suite_start = kmalloc_array(init_num_suites + num_suites, suite_size, GFP_KERNEL);
+> +       if (!total_suite_start)
+> +               return total_suite_set;
+> +
+> +       /* Append init suites and then all other kunit suites */
+> +       memcpy(total_suite_start, init_suite_set.start, init_num_suites * suite_size);
+> +       memcpy(total_suite_start + init_num_suites, suite_set.start, num_suites * suite_size);
+> +
+> +       /* Set kunit suite set start and end */
+> +       total_suite_set.start = total_suite_start;
+> +       total_suite_set.end = total_suite_start + (init_num_suites + num_suites);
+> +
+> +       return total_suite_set;
+> +}
+> +
+>  #if IS_BUILTIN(CONFIG_KUNIT)
+>
+>  static char *kunit_shutdown;
+> @@ -313,21 +342,41 @@ static void kunit_handle_shutdown(void)
+>
+>  int kunit_run_all_tests(void)
+>  {
+> -       struct kunit_suite_set suite_set = {
+> +       struct kunit_suite_set suite_set = {NULL, NULL};
+> +       struct kunit_suite_set filtered_suite_set = {NULL, NULL};
+> +       struct kunit_suite_set init_suite_set = {
+> +               __kunit_init_suites_start, __kunit_init_suites_end,
+> +       };
+> +       struct kunit_suite_set normal_suite_set = {
+>                 __kunit_suites_start, __kunit_suites_end,
+>         };
+> +       size_t init_num_suites = init_suite_set.end - init_suite_set.start;
+>         int err = 0;
+> +
+> +       if (init_num_suites > 0) {
+> +               suite_set = kunit_merge_suite_sets(init_suite_set, normal_suite_set);
+> +               if (!suite_set.start)
+> +                       goto out;
+> +       } else
+> +               suite_set = normal_suite_set;
+> +
+>         if (!kunit_enabled()) {
+>                 pr_info("kunit: disabled\n");
+> -               goto out;
+> +               goto free_out;
+>         }
+>
+>         if (filter_glob_param || filter_param) {
+> -               suite_set = kunit_filter_suites(&suite_set, filter_glob_param,
+> +               filtered_suite_set = kunit_filter_suites(&suite_set, filter_glob_param,
+>                                 filter_param, filter_action_param, &err);
+> +
+> +               /* Free original suite set before using filtered suite set */
+> +               if (init_num_suites > 0)
+> +                       kfree(suite_set.start);
+> +               suite_set = filtered_suite_set;
+> +
+>                 if (err) {
+>                         pr_err("kunit executor: error filtering suites: %d\n", err);
+> -                       goto out;
+> +                       goto free_out;
+>                 }
+>         }
+>
+> @@ -340,9 +389,12 @@ int kunit_run_all_tests(void)
+>         else
+>                 pr_err("kunit executor: unknown action '%s'\n", action_param);
+>
+> -       if (filter_glob_param || filter_param) { /* a copy was made of each suite */
+> +free_out:
+> +       if (filter_glob_param || filter_param)
+>                 kunit_free_suite_set(suite_set);
+> -       }
+> +       else if (init_num_suites > 0)
+> +               /* Don't use kunit_free_suite_set because suites aren't individually allocated */
+> +               kfree(suite_set.start);
+>
+>  out:
+>         kunit_handle_shutdown();
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index f2eb71f1a66c..8bae6e2bc6a0 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -704,28 +704,40 @@ EXPORT_SYMBOL_GPL(__kunit_test_suites_exit);
+>  #ifdef CONFIG_MODULES
+>  static void kunit_module_init(struct module *mod)
+>  {
+> -       struct kunit_suite_set suite_set = {
+> +       struct kunit_suite_set suite_set, filtered_set;
+> +       struct kunit_suite_set normal_suite_set = {
+>                 mod->kunit_suites, mod->kunit_suites + mod->num_kunit_suites,
+>         };
+> +       struct kunit_suite_set init_suite_set = {
+> +               mod->kunit_init_suites, mod->kunit_init_suites + mod->num_kunit_init_suites,
+> +       };
+>         const char *action = kunit_action();
+>         int err = 0;
+>
+> -       suite_set = kunit_filter_suites(&suite_set,
+> +       if (mod->num_kunit_init_suites > 0)
+> +               suite_set = kunit_merge_suite_sets(init_suite_set, normal_suite_set);
+> +       else
+> +               suite_set = normal_suite_set;
+> +
+> +       filtered_set = kunit_filter_suites(&suite_set,
+>                                         kunit_filter_glob() ?: "*.*",
+>                                         kunit_filter(), kunit_filter_action(),
+>                                         &err);
+>         if (err)
+>                 pr_err("kunit module: error filtering suites: %d\n", err);
+>
+> -       mod->kunit_suites = (struct kunit_suite **)suite_set.start;
+> -       mod->num_kunit_suites = suite_set.end - suite_set.start;
+> +       mod->kunit_suites = (struct kunit_suite **)filtered_set.start;
+> +       mod->num_kunit_suites = filtered_set.end - filtered_set.start;
+> +
+> +       if (mod->num_kunit_init_suites > 0)
+> +               kfree(suite_set.start);
+>
+>         if (!action)
+> -               kunit_exec_run_tests(&suite_set, false);
+> +               kunit_exec_run_tests(&filtered_set, false);
+>         else if (!strcmp(action, "list"))
+> -               kunit_exec_list_tests(&suite_set, false);
+> +               kunit_exec_list_tests(&filtered_set, false);
+>         else if (!strcmp(action, "list_attr"))
+> -               kunit_exec_list_tests(&suite_set, true);
+> +               kunit_exec_list_tests(&filtered_set, true);
+>         else
+>                 pr_err("kunit: unknown action '%s'\n", action);
+>  }
+> --
+> 2.43.0.rc2.451.g8631bc7472-goog
+>
 
+--000000000000ff18f4060c0f0df2
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Best regards,
-Krzysztof
-
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
+H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
+riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
+impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
+qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
+yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCDZ
+VycFKGAhD7oX79YWNFsFIcQBXArQ4LKwAGGSj1AtOTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzEyMDkwNzU3MzlaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEACAjiNyYMTIPs8uCGbWdH
+R4wKramEUKo+xN5+II146zfB2VGjriuklVrK/oy23djFQwZlM7u+DdvBqkDNCa72nF4oUeawAI8A
+nU7/PfEfLQaH8zG/kpV/l4swhguhFnfiT1fvklB3RSa+3CzBalPvqn/0AhyOH0LXB7tdGohPuVUE
+pgjKVfTE6d7eLU0UaVkEXiNrVe1qtr5XiJPvLvaPalZI0rwbAqX5UkKJFPJg4KLS2XoA5MMgifES
+RGAfRElVZd6S5AA9LhTFt5oWMwxbZEIvEgf8htI2kkhW9Enc26oV6mb1oxNuK8RxxOR3G1ReC79J
+xeip0Qske63dPvDkcg==
+--000000000000ff18f4060c0f0df2--
