@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3C680B64D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF41A80B650
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 21:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbjLIUk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 15:40:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
+        id S231215AbjLIUke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 15:40:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjLIUkZ (ORCPT
+        with ESMTP id S230478AbjLIUk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 15:40:25 -0500
-X-Greylist: delayed 452 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 09 Dec 2023 12:40:31 PST
+        Sat, 9 Dec 2023 15:40:26 -0500
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A347AAC;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14AD81A1;
         Sat,  9 Dec 2023 12:40:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702153979;
-        bh=t9K21dB2eGVbwhYMbpXT2V+irIdhqYrsMb8mLbK1jeg=;
+        s=mail; t=1702153980;
+        bh=sIlCWiBKcvvpf7yqKhWxYi3/+vptlEShe0kQnwJBPzI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CwtcUwdG0J0daLz6xwiYM5KvPMkGThjaofb4zw+1z85dMyMfVb0yFtfRA+9w78dVI
-         S4ntPKu/7lkEIV2PfiVJaoSs/xVHTM5kZE9/EOEb+bXhGqTBrAAeyeVtl/g+L6yY1d
-         Oepd0i2TPp/h6D6GqpCalsBgQnkHvLONZY+gJc10kG/knQb1bMJCHhBd4uZUdfTHNa
-         xWwc+lWXxeInirk5SKXq/dby5FgNBsulntBW07A45tqZKal3fjUjJ/UPZRIysCei4n
-         yTrbIiFCjwP5j7AKMJpEQ32LCi6sKwPulSn6EeH1SSWWU5Bb1LiFAPR/RUThQve+ac
-         EKyB/5Hny3kQw==
+        b=nlHLkOkFNVgGOwNF9ebHckGuk+HGEseeWGdr82SOBTEo9ncTuQ3tSZN3nmJAxt69u
+         eLFVouyG9kBlerm5fP1CS4Iia9tOtxPtALoL9PYxXmocwLixkOCI9WakBILb6/mkd4
+         UIOsDT2RHppq0dwft8P4dSIe60qaPcCldIPA5rNzlnsezW0nfyxUn1IML7wEhek64M
+         MdlgI7DBq07cjpSnT+lF4eq5UmXcwBWr6cVFNdEnL7adUgCTeGSf6K5g8Xg0f8pUvW
+         XKmqOZ+Qf91kjNvRN8VNbw2rcyuzns/VR1ETO6SoxHqZ0Vi3qxO67nCUAZuiRs64V6
+         u1ZXjX++YqPUw==
 Received: from localhost (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: cristicc)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id F278837813DA;
-        Sat,  9 Dec 2023 20:32:58 +0000 (UTC)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2A35B37813DB;
+        Sat,  9 Dec 2023 20:33:00 +0000 (UTC)
 From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -52,9 +51,9 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel@collabora.com
-Subject: [PATCH 1/5] ASoC: amd: vangogh: Drop conflicting ACPI-based probing
-Date:   Sat,  9 Dec 2023 22:32:19 +0200
-Message-ID: <20231209203229.878730-2-cristian.ciocaltea@collabora.com>
+Subject: [PATCH 2/5] ASoC: amd: vangogh: Allow probing ACP PCI when SOF is disabled
+Date:   Sat,  9 Dec 2023 22:32:20 +0200
+Message-ID: <20231209203229.878730-3-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231209203229.878730-1-cristian.ciocaltea@collabora.com>
 References: <20231209203229.878730-1-cristian.ciocaltea@collabora.com>
@@ -70,102 +69,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Vangogh machine driver variant based on the MAX98388 amplifier, as
-found on Valve's Steam Deck OLED, relies on probing via an ACPI match
-table.  This worked fine until commit 197b1f7f0df1 ("ASoC: amd: Add new
-dmi entries to config entry") enabled SOF support for the target machine
-(i.e. Galileo product), causing the sound card to enter the deferred
-probe state indefinitely:
+Since commit e89f45edb747 ("ASoC: amd: vangogh: Add check for acp config
+flags in vangogh platform"), the Vangogh ACP PCI driver could not be used
+anymore for boards which happen to have a matching entry in acp-config
+list.
 
-$ cat /sys/kernel/debug/devices_deferred
-AMDI8821:00	acp5x_mach: Register card (acp5x-max98388) failed
+Commit f18818eb0dbe ("ASoC: amd: vangogh: Add condition check for acp
+config flag") slightly changed the behaviour to permit loading the
+driver if AMD_LEGACY flag is set.  However, for AMD_SOF flag the probing
+is still denied, even if SOF support is disabled in kernel
+configuration.
 
-The issue is related to commit e89f45edb747 ("ASoC: amd: vangogh: Add
-check for acp config flags in vangogh platform"), which tries to
-mitigate potential conflicts between SOF and generic ACP Vangogh
-drivers, due to sharing the PCI device IDs.
+While this helps preventing conflicts between SOF and generic ACP
+drivers, there are cases where a fallback to the generic non-SOF support
+would still be needed or useful, e.g. SOF firmware is not available or
+doesn't work properly, SOF driver is broken or doesn't provide full
+support for a particular hardware, or simply for testing/debugging the
+alternative solution.  A real-life example is Steam Deck OLED, which
+works with both drivers.
 
-However, the solution is effective only if the machine driver is
-directly probed by pci-acp5x through platform_device_register_full().
+Prevent returning from probe() when ACP config indicates SOF support for
+the current board *and* the Vangogh SOF driver is not enabled in kernel
+configuration.
 
-Hence, remove the conflicting ACPI based probing and rely exclusively on
-DMI quirks for sound card setup.
-
-Fixes: dba22efd0d17 ("ASoC: amd: vangogh: Add support for NAU8821/MAX98388 variant")
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 ---
- sound/soc/amd/vangogh/acp5x-mach.c | 35 +++++++++++-------------------
- 1 file changed, 13 insertions(+), 22 deletions(-)
+ sound/soc/amd/vangogh/pci-acp5x.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/amd/vangogh/acp5x-mach.c b/sound/soc/amd/vangogh/acp5x-mach.c
-index de4b478a983d..7878e061ecb9 100644
---- a/sound/soc/amd/vangogh/acp5x-mach.c
-+++ b/sound/soc/amd/vangogh/acp5x-mach.c
-@@ -439,7 +439,15 @@ static const struct dmi_system_id acp5x_vg_quirk_table[] = {
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Valve"),
- 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Jupiter"),
--		}
-+		},
-+		.driver_data = (void *)&acp5x_8821_35l41_card,
-+	},
-+	{
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Valve"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Galileo"),
-+		},
-+		.driver_data = (void *)&acp5x_8821_98388_card,
- 	},
- 	{}
- };
-@@ -452,25 +460,15 @@ static int acp5x_probe(struct platform_device *pdev)
- 	struct snd_soc_card *card;
- 	int ret;
+diff --git a/sound/soc/amd/vangogh/pci-acp5x.c b/sound/soc/amd/vangogh/pci-acp5x.c
+index 3826443d77b9..10755c07949c 100644
+--- a/sound/soc/amd/vangogh/pci-acp5x.c
++++ b/sound/soc/amd/vangogh/pci-acp5x.c
+@@ -130,9 +130,13 @@ static int snd_acp5x_probe(struct pci_dev *pci,
+ 	int ret, i;
+ 	u32 addr, val;
  
--	card = (struct snd_soc_card *)device_get_match_data(dev);
--	if (!card) {
--		/*
--		 * This is normally the result of directly probing the driver
--		 * in pci-acp5x through platform_device_register_full(), which
--		 * is necessary for the CS35L41 variant, as it doesn't support
--		 * ACPI probing and relies on DMI quirks.
--		 */
--		dmi_id = dmi_first_match(acp5x_vg_quirk_table);
--		if (!dmi_id)
--			return -ENODEV;
--
--		card = &acp5x_8821_35l41_card;
--	}
-+	dmi_id = dmi_first_match(acp5x_vg_quirk_table);
-+	if (!dmi_id || !dmi_id->driver_data)
-+		return -ENODEV;
+-	/* Return if acp config flag is defined */
++	/*
++	 * Return if ACP config flag is defined, except when board
++	 * supports SOF while it is not being enabled in kernel config.
++	 */
+ 	flag = snd_amd_acp_find_config(pci);
+-	if (flag != FLAG_AMD_LEGACY)
++	if (flag != FLAG_AMD_LEGACY &&
++	    (flag != FLAG_AMD_SOF || IS_ENABLED(CONFIG_SND_SOC_SOF_AMD_VANGOGH)))
+ 		return -ENODEV;
  
- 	machine = devm_kzalloc(dev, sizeof(*machine), GFP_KERNEL);
- 	if (!machine)
- 		return -ENOMEM;
- 
-+	card = dmi_id->driver_data;
- 	card->dev = dev;
- 	platform_set_drvdata(pdev, card);
- 	snd_soc_card_set_drvdata(card, machine);
-@@ -482,17 +480,10 @@ static int acp5x_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static const struct acpi_device_id acp5x_acpi_match[] = {
--	{ "AMDI8821", (kernel_ulong_t)&acp5x_8821_98388_card },
--	{},
--};
--MODULE_DEVICE_TABLE(acpi, acp5x_acpi_match);
--
- static struct platform_driver acp5x_mach_driver = {
- 	.driver = {
- 		.name = DRV_NAME,
- 		.pm = &snd_soc_pm_ops,
--		.acpi_match_table = acp5x_acpi_match,
- 	},
- 	.probe = acp5x_probe,
- };
+ 	irqflags = IRQF_SHARED;
 -- 
 2.43.0
 
