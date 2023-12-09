@@ -2,258 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A1E80B1A2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 03:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD2E80B1A5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 03:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbjLICCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 21:02:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43700 "EHLO
+        id S234208AbjLICDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 21:03:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjLICCL (ORCPT
+        with ESMTP id S229731AbjLICDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 21:02:11 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2047.outbound.protection.outlook.com [40.107.223.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BA4EB;
-        Fri,  8 Dec 2023 18:02:16 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I3FIz9CPDnmdjyejnX6O9BJbp/mrLU+D53NsdtvFwK72EN97yJLbD0+oTSLyRwmyJSi5hmhAjwsMHF17uQGUBDykaKRoik/VRgxn9mKfKTkP2nN+RFc6fbCMraTMx7zWFVN2nSYTlF65Naq1QnC8n+JN75mXzTmJbVhhCwJoF9QcM1J0oWLdtWjI25f6VJMc7gblokkNNMenH0Ia2gUzrY8MRfYunao1lNSys4I4Tue2blr3r2DBdTgGKSKjmiYykW1f+/uWdHqpYHzpSO0pLgma8kjIyxR3IiHVjj7IaXTez1BTZlFbYYJK6MoMrs4IMXBGYbmIS0TVsqY1lQr8vA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QmWOXvwg710M+qzCCZLI1CG62sHXiD8UxWuuyqUgLng=;
- b=M7bSbHbLxRvAyxjAq/NoHzDxaplV2u2ywzXGx3bspwKkjCdV4+rf6/PidmiVd6YRjt/zo367xnhyUS5+GfdWNevs5cGfYONtPoFymBBX+cJ6lewL9yQ+SKW8oFtKjzrEqk2tXIcHkTtrFPH8c8UO4dL+kkeltAid11YjrQqXrxAVRL24/opvQGuaVbIDcDQ23FTfsYoxpkEgs6+cvRXN6v93ulOVDH7ni4jQjh52sSAO40QXtn+9w0+s7/HP5rjDUNr5j65dPMMMY2KKDgCGlII7JAY+LwN1QnKcPWouyTwKHSMn839jQnEKxXL4Bdr2StRm63BJGUs0JErfBDJcJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=linux-foundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QmWOXvwg710M+qzCCZLI1CG62sHXiD8UxWuuyqUgLng=;
- b=NB40n4DrfG1HVQG5eRvX8j5kvghpQwqL3ij1ZL2Kf5PIpBEG56xw2tnwyW5ETY8nNKwHtfVUMEiWfZJZEYDjH56UrRYEYPEEb5SG52B43vvHQTQSc7f/ZEZkPj8XWQO6IQw/uHhXsgRrT8pqw/e4k+DJTC3H69UaHLo1WOQTr0Z8fiO7sGUTvc5akbtDstztqfK/736LX+ALlrTq46wJKaj+uQF+fBXTECaOtoVFoBMP1pCFNr/F1rmCcz3hraUJrGarM9tuSN7dH2Ex3R3RX6LUYbkg1asbSu2IDS9i10i9g6FB7HA2nqQ6fJuERPnF91pDgL/xYc8uUeIbwWMnoA==
-Received: from CH0PR03CA0046.namprd03.prod.outlook.com (2603:10b6:610:b3::21)
- by SJ0PR12MB7475.namprd12.prod.outlook.com (2603:10b6:a03:48d::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.29; Sat, 9 Dec
- 2023 02:02:13 +0000
-Received: from CY4PEPF0000EE38.namprd03.prod.outlook.com
- (2603:10b6:610:b3:cafe::5c) by CH0PR03CA0046.outlook.office365.com
- (2603:10b6:610:b3::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.28 via Frontend
- Transport; Sat, 9 Dec 2023 02:02:11 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CY4PEPF0000EE38.mail.protection.outlook.com (10.167.242.12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7068.26 via Frontend Transport; Sat, 9 Dec 2023 02:02:11 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 8 Dec 2023
- 18:01:56 -0800
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 8 Dec 2023
- 18:01:56 -0800
-Received: from blueforge.nvidia.com (10.127.8.13) by mail.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Fri, 8 Dec 2023 18:01:55 -0800
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     David Hildenbrand <david@redhat.com>, Peter Xu <peterx@redhat.com>,
-        "Shuah Khan" <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>, <linux-mm@kvack.org>,
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Anders Roxell" <anders.roxell@linaro.org>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH] Revert "selftests: error out if kernel header files are not yet built"
-Date:   Fri, 8 Dec 2023 18:01:44 -0800
-Message-ID: <20231209020144.244759-1-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.43.0
+        Fri, 8 Dec 2023 21:03:01 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54342EB
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 18:03:07 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5860C433C9
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 02:03:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702087386;
+        bh=9PeqE8G5f15es8vwnxb8aP1d/82nysKgB4+3G2tHBQ4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gZ52iDK98UPI9WIRd11hNYtRxqoVRQP3Q6k0Zb/cBsTaI8z73hhMOQrtsKMMtSN/k
+         RqeXUJziyi3YHCwNXt4btwLGJEVUFNMi/ZVBlJA8oyv4NnChSl+MGEfZPALs+JsjWk
+         zXrxNId+YGsAZvshNLlaVJ2PyF7aRVqPX6VjhI4fIf5893+oiOFCFNNDAaAGQIBS2u
+         poRv+WnkksmPa1RnSu4RkRe34Cha/1kI3FK3wzK/7xfVVjCBIvPl8mFYWJIiMTC6fO
+         xfNRZwVE0y8f6j1GhohvfIEF6JIGv1sgrnM8/3VjvPqpn4a3xm7ycg/VPNfuIVhwe8
+         2qsd0eGnSlxhg==
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3b9dbbaa9a9so1891997b6e.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 18:03:06 -0800 (PST)
+X-Gm-Message-State: AOJu0YzeNDsemtD7tKyID5GhxRhUKu4Z2hv5SnmT67O/btKcdVdeNMTg
+        19nfp/XLmDcY+4q+KhssiYKqggLbWMyp8ZWf7qXjjg==
+X-Google-Smtp-Source: AGHT+IE5TBF6KTUwljKLninX12nSY4+OBje1txDH4yiTTgQj6FDwsQm0zrIjBlJzGgZdO8gGjmg2Rg2ANRMnHPeGcRs=
+X-Received: by 2002:a05:6358:2919:b0:170:982:5611 with SMTP id
+ y25-20020a056358291900b0017009825611mr1292126rwb.32.1702087365627; Fri, 08
+ Dec 2023 18:02:45 -0800 (PST)
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE38:EE_|SJ0PR12MB7475:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3153e015-60af-488d-bb08-08dbf85adb36
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UDC5APBvc/aC0gKGNv6BtrrX6Qpawyh4HBBcrUn2i9eeezXphGmIztP3W8THKw5MlfP0CoI/+yxTSsp2Zhl6dgpNYzfXKni9yR+YUzPRnDk5Jp/nXmDh5rMRjbzLRPcjx5R3BhlS8UAoiWkS78qx0lMH20VX/O7Ba4oB8nbJuL0WP5tAZ9ytHvTV/y6fX0z6YIgwlfhl5YtzwRqU61QE2Nw9Dcx/E55ghuY1mCQF6ya+bKcPleABRSqCzl37e9014BJ1YhDQYERDDlW4ckJlFiB05jd60FmWqNgMAsqYWjKbiFyjQjkRXfes6vqqjd0dHKpOKfO/hGRibjnw443j3kQaddmh9S83sYpXtkQ4+Axm9+m73rQj9sOwFpiOITxGKJ/iYWuAP1Qa6rSq88tCgJYlpDK9cd0VQSL+h4B1KzkLfGM3TR5kpAm3t2qwD34Jnk0Ezux0kEwG5imy2UEhHVbKtc3hGmojGzprixkh3WV8H9lX4brdzVeOOYl6iJS+udEGnwblywPbKzcu3a52EhQX82gM1RFKGDaAWSmyc81LZ12FtXmy4IcRxYfYVIvIVjQRDBz1jNN9FjdzV7JqOs1WjLHFxLRMYdUUPzKcVeAoKxx5WqHA6KjSATRkJX3do4yjPxw/t34eMA337DUWovKHK0x/jAOnhngs3UCrmU44qJK5e6hDf2KO5oEcthYfEf44nCsota4LTXfZymybCvVzvOIUgiA4NOODZf4Gtu61PptBoMvtFzLCsoLP6Fu//WbX7LuugIuy0JVCSj63BQ==
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(346002)(136003)(39860400002)(230922051799003)(451199024)(64100799003)(1800799012)(82310400011)(186009)(40470700004)(36840700001)(46966006)(70586007)(70206006)(54906003)(41300700001)(7696005)(6666004)(2616005)(1076003)(36756003)(426003)(336012)(26005)(86362001)(82740400003)(356005)(7636003)(47076005)(83380400001)(36860700001)(966005)(478600001)(8936002)(8676002)(4326008)(2906002)(7416002)(5660300002)(40480700001)(40460700003)(6916009)(316002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2023 02:02:11.0505
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3153e015-60af-488d-bb08-08dbf85adb36
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE38.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB7475
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
+ <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
+ <CAJD7tkaHaji=0sVobJKajc4hOmOui2U+bZK+1DQ6gbAsQgGLRw@mail.gmail.com> <20231208163451.GA880930@cmpxchg.org>
+In-Reply-To: <20231208163451.GA880930@cmpxchg.org>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Fri, 8 Dec 2023 18:02:33 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuMKJTb9Aqv8_GbNPuuBoHEuwJCZmYT6Zn8=_X4c58ADTw@mail.gmail.com>
+Message-ID: <CAF8kJuMKJTb9Aqv8_GbNPuuBoHEuwJCZmYT6Zn8=_X4c58ADTw@mail.gmail.com>
+Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>,
+        akpm@linux-foundation.org, tj@kernel.org, lizefan.x@bytedance.com,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
+        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        david@ixit.cz, Minchan Kim <minchan@google.com>,
+        Kairui Song <kasong@tencent.com>,
+        Zhongkun He <hezhongkun.hzk@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 9fc96c7c19df ("selftests: error out if kernel header
-files are not yet built").
+Hi Johannes,
 
-It turns out that requiring the kernel headers to be built as a
-prerequisite to building selftests, does not work in many cases. For
-example, Peter Zijlstra writes:
+On Fri, Dec 8, 2023 at 8:35=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org>=
+ wrote:
+>
+> On Thu, Dec 07, 2023 at 05:12:13PM -0800, Yosry Ahmed wrote:
+> > On Thu, Dec 7, 2023 at 5:03=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wr=
+ote:
+> > > On Thu, Dec 7, 2023 at 4:19=E2=80=AFPM Chris Li <chrisl@kernel.org> w=
+rote:
+> > > > I am wondering about the status of "memory.swap.tiers" proof of con=
+cept patch?
+> > > > Are we still on board to have this two patch merge together somehow=
+ so
+> > > > we can have
+> > > > "memory.swap.tiers" =3D=3D "all" and "memory.swap.tiers" =3D=3D "zs=
+wap" cover the
+> > > > memory.zswap.writeback =3D=3D 1 and memory.zswap.writeback =3D=3D 0=
+ case?
+> > > >
+> > > > Thanks
+> > > >
+> > > > Chris
+> > > >
+> > >
+> > > Hi Chris,
+> > >
+> > > I briefly summarized my recent discussion with Johannes here:
+> > >
+> > > https://lore.kernel.org/all/CAKEwX=3DNwGGRAtXoNPfq63YnNLBCF0ZDOdLVRsv=
+zUmYhK4jxzHA@mail.gmail.com/
+> > >
+> > > TL;DR is we acknowledge the potential usefulness of swap.tiers
+> > > interface, but the use case is not quite there yet, so it does not
+> > > make too much sense to build up that heavy machinery now.
+> > > zswap.writeback is a more urgent need, and does not prevent swap.tier=
+s
+> > > if we do decide to implement it.
+> >
+> > I am honestly not convinced by this. There is no heavy machinery here.
+> > The interface is more generic and extensible, but the implementation
+> > is roughly the same. Unless we have a reason to think a swap.tiers
+> > interface may make it difficult to extend this later or will not
+> > support some use cases, I think we should go ahead with it. If we are
+> > worried that "tiers" may not accurately describe future use cases, we
+> > can be more generic and call it swap.types or something.
+>
+> I have to disagree. The generic swap types or tiers ideas actually
+> look pretty far-fetched to me, and there is a lack of convincing
+> explanation for why this is even a probable direction for swap.
 
-"My biggest beef with the whole thing is that I simply do not want to use
-'make headers', it doesn't work for me.
+It boils down to there being more than just "zswap + SSD" usage cases
+in other parts of the Linux communities.
+The need is real and it is just a question of  how to get there.
 
-I have a ton of output directories and I don't care to build tools into
-the output dirs, in fact some of them flat out refuse to work that way
-(bpf comes to mind)." [1]
+>
+> For example,
+>
+> 1. What are the other backends? Where you seem to see a multitude of
+>    backends and arbitrary hierarchies of them, I see compression and
+>    flash, and really not much else. And there is only one reasonable
+>    direction in which to combine those two.
 
-Therefore, stop erroring out on the selftests build. Additional patches
-will be required in order to change over to not requiring the kernel
-headers.
+I list a few other usage cases here in an earlier email of the same thread.
+https://lore.kernel.org/linux-mm/CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txoh=
+SOmZhYA-Q@mail.gmail.com/T/#t
+TL;DR:
+1) Google has had an internal memory.swapfile in production for almost 10 y=
+ears.
+2) Tencent uses hard drives as SSD swap overflow. +Kairui.
+https://lore.kernel.org/linux-mm/20231119194740.94101-9-ryncsn@gmail.com/
+3) Android has more fancy swap usage. +Kimchan
+https://lore.kernel.org/linux-mm/20230710221659.2473460-1-minchan@kernel.or=
+g/
 
-[1] https://lore.kernel.org/20231208221007.GO28727@noisy.programming.kicks-ass.net
+You can't imagine such an usage is not the reason to block others for
+such usage. Please respect other usage cases as well.
 
-Cc: Anders Roxell <anders.roxell@linaro.org>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- tools/testing/selftests/Makefile | 21 +----------------
- tools/testing/selftests/lib.mk   | 40 +++-----------------------------
- 2 files changed, 4 insertions(+), 57 deletions(-)
+As for the other backends, the first minimal milestone we can
+implement is "all" and "zswap", which is functional equivalent to the
+memory.zswap.writeback.
+Other common back ends there are SSD and hard drive. The exact
+keywords and tiers are up for future discussion. I just want to
+acknowledge the need is there.
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 3b2061d1c1a5..8247a7c69c36 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -155,12 +155,10 @@ ifneq ($(KBUILD_OUTPUT),)
-   abs_objtree := $(realpath $(abs_objtree))
-   BUILD := $(abs_objtree)/kselftest
-   KHDR_INCLUDES := -isystem ${abs_objtree}/usr/include
--  KHDR_DIR := ${abs_objtree}/usr/include
- else
-   BUILD := $(CURDIR)
-   abs_srctree := $(shell cd $(top_srcdir) && pwd)
-   KHDR_INCLUDES := -isystem ${abs_srctree}/usr/include
--  KHDR_DIR := ${abs_srctree}/usr/include
-   DEFAULT_INSTALL_HDR_PATH := 1
- endif
- 
-@@ -174,7 +172,7 @@ export KHDR_INCLUDES
- # all isn't the first target in the file.
- .DEFAULT_GOAL := all
- 
--all: kernel_header_files
-+all:
- 	@ret=1;							\
- 	for TARGET in $(TARGETS); do				\
- 		BUILD_TARGET=$$BUILD/$$TARGET;			\
-@@ -185,23 +183,6 @@ all: kernel_header_files
- 		ret=$$((ret * $$?));				\
- 	done; exit $$ret;
- 
--kernel_header_files:
--	@ls $(KHDR_DIR)/linux/*.h >/dev/null 2>/dev/null;                          \
--	if [ $$? -ne 0 ]; then                                                     \
--            RED='\033[1;31m';                                                  \
--            NOCOLOR='\033[0m';                                                 \
--            echo;                                                              \
--            echo -e "$${RED}error$${NOCOLOR}: missing kernel header files.";   \
--            echo "Please run this and try again:";                             \
--            echo;                                                              \
--            echo "    cd $(top_srcdir)";                                       \
--            echo "    make headers";                                           \
--            echo;                                                              \
--	    exit 1;                                                                \
--	fi
--
--.PHONY: kernel_header_files
--
- run_tests: all
- 	@for TARGET in $(TARGETS); do \
- 		BUILD_TARGET=$$BUILD/$$TARGET;	\
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-index 118e0964bda9..aa646e0661f3 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -44,26 +44,10 @@ endif
- selfdir = $(realpath $(dir $(filter %/lib.mk,$(MAKEFILE_LIST))))
- top_srcdir = $(selfdir)/../../..
- 
--ifeq ("$(origin O)", "command line")
--  KBUILD_OUTPUT := $(O)
-+ifeq ($(KHDR_INCLUDES),)
-+KHDR_INCLUDES := -isystem $(top_srcdir)/usr/include
- endif
- 
--ifneq ($(KBUILD_OUTPUT),)
--  # Make's built-in functions such as $(abspath ...), $(realpath ...) cannot
--  # expand a shell special character '~'. We use a somewhat tedious way here.
--  abs_objtree := $(shell cd $(top_srcdir) && mkdir -p $(KBUILD_OUTPUT) && cd $(KBUILD_OUTPUT) && pwd)
--  $(if $(abs_objtree),, \
--    $(error failed to create output directory "$(KBUILD_OUTPUT)"))
--  # $(realpath ...) resolves symlinks
--  abs_objtree := $(realpath $(abs_objtree))
--  KHDR_DIR := ${abs_objtree}/usr/include
--else
--  abs_srctree := $(shell cd $(top_srcdir) && pwd)
--  KHDR_DIR := ${abs_srctree}/usr/include
--endif
--
--KHDR_INCLUDES := -isystem $(KHDR_DIR)
--
- # The following are built by lib.mk common compile rules.
- # TEST_CUSTOM_PROGS should be used by tests that require
- # custom build rule and prevent common build rule use.
-@@ -74,25 +58,7 @@ TEST_GEN_PROGS := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS))
- TEST_GEN_PROGS_EXTENDED := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS_EXTENDED))
- TEST_GEN_FILES := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_FILES))
- 
--all: kernel_header_files $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) \
--     $(TEST_GEN_FILES)
--
--kernel_header_files:
--	@ls $(KHDR_DIR)/linux/*.h >/dev/null 2>/dev/null;                      \
--	if [ $$? -ne 0 ]; then                                                 \
--            RED='\033[1;31m';                                                  \
--            NOCOLOR='\033[0m';                                                 \
--            echo;                                                              \
--            echo -e "$${RED}error$${NOCOLOR}: missing kernel header files.";   \
--            echo "Please run this and try again:";                             \
--            echo;                                                              \
--            echo "    cd $(top_srcdir)";                                       \
--            echo "    make headers";                                           \
--            echo;                                                              \
--	    exit 1; \
--	fi
--
--.PHONY: kernel_header_files
-+all: $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES)
- 
- define RUN_TESTS
- 	BASE_DIR="$(selfdir)";			\
--- 
-2.43.0
+>
+>    The IOPs and latencies of HDDs and network compared to modern
+>    memory sizes and compute speeds make them for the most part
+>    impractical as paging backends.
 
+I don't see that being a problem as lower tiers for very cold swaps.
+Again, it might not be a usage case for Meta but please respect the
+usage case for others.
+
+>
+>    So I don't see a common third swap backend, let alone a fourth or a
+>    fifth, or a multitude of meaningful ways of combining them...
+
+Does not stop others from wanting to use them.
+
+>
+> 2. Even if the usecases were there, enabling this would be a ton of
+>    work and open interface questions:
+
+If we can agree this interface is more flexible and covers more usage
+cases than "zswap.writeback". We can start from the minimal
+implementation of "zswap" and "all".
+There is not a ton of work in the first minimal milestone. I send out
+the minimal patch here:
+https://lore.kernel.org/linux-mm/ZVrHXJLxvs4_CUxc@google.com/
+
+>
+>   1) There is no generic code to transfer pages between arbitrary
+>      backends.
+
+True, but it does not have to be there to make "swap.tiers" useful. It
+can start without a transfer page between backends. It is just a more
+flexible way to specify what swap the cgroup wants to opt in
+initially, that is a solid need. Everything else can be done later.
+
+>
+>   2) There is no accepted indirection model where a swap pte can refer
+>      to backends dynamically, in a way that makes migration feasible
+>      at scale.
+
+Same as above.
+
+>
+>   3) Arbitrary global strings are somewhat unlikely to be accepted as
+>      a way to configure these hierarchies.
+
+It does not need to be an arbitrary string. We have a string to config
+cgroup.subtree_control for example. I am not saying just borrow the
+subtree control syntax. But we can do some thing similar to that.
+
+>
+>   4) Backend file paths in a global sysfs file don't work well with
+>      namespacing. The swapfile could be in a container
+>      namespace. Containers are not guaranteed to see /sys.
+
+Can you clarify what usage problem you are trying to solve? The
+containers are typically managed by the container manager's service.
+The service sees /sys for sure. Do you want a cgroup interface to
+allow the container usage to self-service the swap file?
+
+>
+>   5) Fixed keywords like "zswap" might not be good enough - what about
+>      compression and backend parameters?
+
+I think those levels of detail are zswap/zpool specific, it belongs to
+the /sys/kernel/mm/zswap/foo_bar for example.
+We can discuss the detail usage, nothing is set in stone yet.
+
+>
+> None of these are insurmountable. My point is that this would be a
+> huge amount of prerequisite code and effort for what seems would be a
+> fringe usecase at best right now.
+
+For the fringe usage a minimal patch exists. Not a huge amount of
+requireste code.
+What you describe are close to the end goal of the swap tiers. I
+
+>
+> And there could be a lot of curve balls in both the software design as
+> well as the hardware development between now and then that could make
+> your proposals moot. Is a per-cgroup string file really going to be
+> the right way to configure arbitrary hierarchies if they materialize?
+>
+> This strikes me as premature and speculative, for what could be, some
+> day.
+
+"swap.tiers" in my mind is strictly better than "zswap.writeback"
+because writeback has only 0 or 1 value. It is not able to describe
+other swap selections. Setting zswap.writeback =3D 0 will disable SSD
+swap as well, that is not very intuitive. If we want SSD only swap, we
+need to set "zswap.writeback" =3D 1 and "zswap.max" =3D 0. All this makes
+me feel that we are limiting ourselves too much from the cubical of
+zswap to look at the rest of the world.
+
+>
+> We don't even do it for *internal API*. There is a review rule to
+> introduce a function in the same patch as its first caller, to make
+> sure it's the right abstraction and a good fit for the usecase. There
+> is no way we can have a lower bar than that for permanent ABI.
+>
+> The patch here integrates with what zswap is NOW and always has been:
+> a compressing writeback cache for swap.
+>
+> Should multiple swap tiers overcome all the above and actually become
+> real, this knob here would be the least of our worries. It would be
+> easy to just ignore, automatically override, or deprecate.
+>
+> So I don't think you made a reasonable proposal for an alternative, or
+> gave convincing reasons to hold off this one.
+>
+Keep in mind that the minimal patch is just trying to avoid the detour
+of introducing the zswap.writeback and obsolete it soon. There is a
+solid need for swap backend other than zswap. Frankly speaking I don't
+see writing "all" to "swap.tiers" is that big a deal different than
+writing "1" to "zswap.writeback". From the API point of view, one is
+more flexible and future proof.
+
+I just don't want "zswap.writeback" to become something carved into
+stone and we cant' remove it later, especially if we can have the
+alternative API compatible with other usage cases.
+
+Chris
