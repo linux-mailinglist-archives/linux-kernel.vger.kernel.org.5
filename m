@@ -2,72 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8675F80B524
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 17:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4C080B538
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 17:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbjLIQFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 11:05:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50082 "EHLO
+        id S231270AbjLIQVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 11:21:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLIQFF (ORCPT
+        with ESMTP id S229848AbjLIQVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 11:05:05 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DBC10E0
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 08:05:11 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c41b43e1eso2120515e9.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 08:05:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702137910; x=1702742710; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lbsPZUF4ysy0Z2Xnr5Uq7PdWYL0AABtRsCTOnasJIcc=;
-        b=xoGJUM7rfbBmtwsgiY0O1yvMYTlFDOoQczLgB/MlOsCyMIcbkdqQmom9a5Jj5iPvKs
-         JKzoxg3F7qyXecj9zCmHCTXLvSUNm5fN06QIpRsja3SThHwH7sdSm506dkyGQr5laJIM
-         74/n6q0QDuocVfJz3l5zN5LxHfy+O/vNHvqNluOP7DNP6/4UTLKSlwZIFktRnRScG5wI
-         ya7QkbpdvLzpzUGObDk05zr4soz8DnjZNdx0AsetYbCKhZv4iDXl/ao0JPeHz5S6DQx9
-         PX+yl0kx3IFDF1Nzyz1f/9lDvmui5C90HNByMN+7LzhJ2ziz+s8ZQY1DiHYIOs9l9doq
-         cvqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702137910; x=1702742710;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lbsPZUF4ysy0Z2Xnr5Uq7PdWYL0AABtRsCTOnasJIcc=;
-        b=whDeqmo/JTNICiHbnaa/LkUSQ6D84YkJ2Urntc/xFSn0AyDizILqn78rDoE7d7kLkK
-         oSFCFQ4SmftMCJbs8dHwdwXAZqvmpzzNtFayDRKq9a7kxYzjd9gF9WqBgPceMYezXkk2
-         WHDJ9EZiIqKMDVgm5cFhEmDYIupDljn//cZP+t20LqjWCw9q5JqJ4Eowuoyhevx7HDrM
-         Fh13vb7OGq8YLDBp5weT4EHrCKVIj6hdhq05NZ0jAXyAlUbzeF7AzTkHv4zEMbRZX+g4
-         b012bvn8flSlm8FE0Hri+okVSn1DIMNGF9SijxrJ9Ew8AxQj3y2XLzMxFXNxuXduoUyw
-         EXbQ==
-X-Gm-Message-State: AOJu0YwdcVH7FsX972xsZ+VzVOp70bSL8uvHkZCHozm8MT1+3VR4B5Wd
-        P3LBf9dEkd81UK0CnYDkbbztrA==
-X-Google-Smtp-Source: AGHT+IFkLcBZfcLMdnzbi+IoTj6s/20AM06M7UlkM7GEdf6A91oFcd3ajlkYSGSjJjvizw73O5wocg==
-X-Received: by 2002:a05:600c:45c9:b0:40b:5e21:bdce with SMTP id s9-20020a05600c45c900b0040b5e21bdcemr840742wmo.93.1702137909793;
-        Sat, 09 Dec 2023 08:05:09 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id mt39-20020a17090761a700b00a0ad10b3f68sm2343077ejc.205.2023.12.09.08.05.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Dec 2023 08:05:09 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Kalle Valo <kvalo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        van Spriel <arend@broadcom.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH net-next] dt-bindings: net: wireless: brcm,bcm4329-fmac: allow local-mac-address
-Date:   Sat,  9 Dec 2023 17:05:05 +0100
-Message-Id: <20231209160505.237843-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Sat, 9 Dec 2023 11:21:03 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F5710C4;
+        Sat,  9 Dec 2023 08:21:08 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 31F6E40E00C6;
+        Sat,  9 Dec 2023 16:21:06 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id p5DJ6hin4UHr; Sat,  9 Dec 2023 16:21:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1702138862; bh=HyDzrkPoCfW4PayZZjMMTzRt/urnsGOPJgwMOc9fuMk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EKzYzcPuer8tSrZAB0fNhs7FnIOpN4mxmIrqVcEiCSbKlecHHLj/m5zD4jrsUb+uX
+         lOHSxV5iQJZvtPa+W+GaoYyhVYU4PbecAXzUWkWeQf/MD0qR6QGX/4jSb/NIHRJsNE
+         TqobEUwJLQpfPlj243QLLqPQ5Zj8iQcW3HvXcLpQi7XeaIqbAVB766/4lZaIR6B2tn
+         ugiddztA2CfiMsDKwmYLZ7Dqbyfoci5UZ5zd+LgnOdY3WqSfevLwy74F2W5samFLjB
+         yODqDWgs8mUG0DGrQrndyMf7qh/PizWiRMziSOOLUjXwU3Tt1l3TFLzwuTpBjLryWu
+         rI9hs7EpZPybT66NM260GDI1Uz3IzM9uOqZ+sCKMpCwWshQa5xFvgTO5B2K0Q4XQTA
+         CMHok9o+X8fUi0PYdfb5SizFgHbrQnAcSd8vUQ751dRBLvMzQBRAgtnsip59aRwnmE
+         HDphyIdN5o2jdbGEOwrCM1NUfcr35ozkcywmRRlh7Ib6OjB1tSD/jTAFedXDK6C9zx
+         RY7+4KRaFo7XX1d5EA13GG904GziO16r8M8rTm3kul9avChAItC1vNunWcFOb3ixec
+         PpLlM5i8J8lAsVlJXW3mZTt2aKW/eaOTZsBpniTohc/fA5UjHTYeVv0gIPi0ic0D0Z
+         tsnjY1f7MPLBAEmzKn5WAGno=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3144440E00A9;
+        Sat,  9 Dec 2023 16:20:21 +0000 (UTC)
+Date:   Sat, 9 Dec 2023 17:20:15 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kalra, Ashish" <ashish.kalra@amd.com>
+Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+        liam.merwick@oracle.com, zhi.a.wang@intel.com,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Jarkko Sakkinen <jarkko@profian.com>
+Subject: Re: [PATCH v10 14/50] crypto: ccp: Add support to initialize the
+ AMD-SP for SEV-SNP
+Message-ID: <20231209162015.GBZXSTv738J09Htf51@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-15-michael.roth@amd.com>
+ <20231127095937.GLZWRoiaqGlJMX54Xb@fat_crate.local>
+ <d5242390-8904-7ec5-d8a1-9e3fb8f6423c@amd.com>
+ <20231206170807.GBZXCqd0z8uu2rlhpn@fat_crate.local>
+ <9af9b10f-0ab6-1fe8-eaec-c9f98e14a203@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <9af9b10f-0ab6-1fe8-eaec-c9f98e14a203@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -78,39 +87,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some boards come with local-mac-address property.  Allow it, and
-mac-address as well, to fix dtbs_check warnings like:
+On Wed, Dec 06, 2023 at 02:35:28PM -0600, Kalra, Ashish wrote:
+> The main use case for the probe parameter is to control if we want to do
+> legacy SEV/SEV-ES INIT during probe. There is a usage case where we want to
+> delay legacy SEV INIT till an actual SEV/SEV-ES guest is being launched. So
+> essentially the probe parameter controls if we want to
+> execute __sev_do_init_locked() or not.
+> 
+> We always want to do SNP INIT at probe time.
 
-  apple/t8103-j456.dtb: network@0,0: Unevaluated properties are not allowed ('local-mac-address' was unexpected)
+Here's what I mean (diff ontop):
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- .../devicetree/bindings/net/wireless/brcm,bcm4329-fmac.yaml  | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/net/wireless/brcm,bcm4329-fmac.yaml b/Documentation/devicetree/bindings/net/wireless/brcm,bcm4329-fmac.yaml
-index 4aa521f1be8c..4c8a7950c83e 100644
---- a/Documentation/devicetree/bindings/net/wireless/brcm,bcm4329-fmac.yaml
-+++ b/Documentation/devicetree/bindings/net/wireless/brcm,bcm4329-fmac.yaml
-@@ -67,6 +67,9 @@ properties:
-     description: Name for the OOB IRQ, this must be set to "host-wake".
-     const: host-wake
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index fae1fd45eccd..830d74fcf950 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -479,11 +479,16 @@ static inline int __sev_do_init_locked(int *psp_ret)
+ 		return __sev_init_locked(psp_ret);
+ }
  
-+  local-mac-address: true
-+  mac-address: true
+-static int ___sev_platform_init_locked(int *error, bool probe)
++/*
++ * Legacy guests cannot be running while SNP_INIT(_EX) is executing,
++ * so perform SEV-SNP initialization at probe time.
++ */
++static int __sev_platform_init_snp_locked(int *error)
+ {
+-	int rc, psp_ret = SEV_RET_NO_FW_CALL;
 +
-   brcm,drive-strength:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description: Drive strength used for the SDIO pins on the device in mA.
-@@ -148,6 +151,8 @@ examples:
-         interrupt-parent = <&gpio>;
-         interrupts = <24 IRQ_TYPE_EDGE_FALLING>;
-         interrupt-names = "host-wake";
-+        /* To be filled by the bootloader */
-+        local-mac-address = [00 00 00 00 00 00];
-         reset-gpios = <&gpio 23 GPIO_ACTIVE_LOW>;
-         brcm,ccode-map = "JP-JP-78", "US-Q2-86";
-       };
--- 
-2.34.1
+ 	struct psp_device *psp = psp_master;
+ 	struct sev_device *sev;
++	int rc;
+ 
+ 	if (!psp || !psp->sev_data)
+ 		return -ENODEV;
+@@ -493,10 +498,6 @@ static int ___sev_platform_init_locked(int *error, bool probe)
+ 	if (sev->state == SEV_STATE_INIT)
+ 		return 0;
+ 
+-	/*
+-	 * Legacy guests cannot be running while SNP_INIT(_EX) is executing,
+-	 * so perform SEV-SNP initialization at probe time.
+-	 */
+ 	rc = __sev_snp_init_locked(error);
+ 	if (rc && rc != -ENODEV) {
+ 		/*
+@@ -506,8 +507,21 @@ static int ___sev_platform_init_locked(int *error, bool probe)
+ 		dev_err(sev->dev, "SEV-SNP: failed to INIT rc %d, error %#x\n", rc, *error);
+ 	}
+ 
+-	/* Delay SEV/SEV-ES support initialization */
+-	if (probe && !psp_init_on_probe)
++	return rc;
++}
++
++static int __sev_platform_init_locked(int *error)
++{
++	int rc, psp_ret = SEV_RET_NO_FW_CALL;
++	struct psp_device *psp = psp_master;
++	struct sev_device *sev;
++
++	if (!psp || !psp->sev_data)
++		return -ENODEV;
++
++	sev = psp->sev_data;
++
++	if (sev->state == SEV_STATE_INIT)
+ 		return 0;
+ 
+ 	if (!sev_es_tmr) {
+@@ -563,33 +577,32 @@ static int ___sev_platform_init_locked(int *error, bool probe)
+ 	return 0;
+ }
+ 
+-static int __sev_platform_init_locked(int *error)
+-{
+-	return ___sev_platform_init_locked(error, false);
+-}
+-
+-int sev_platform_init(int *error)
++static int _sev_platform_init_locked(int *error, bool probe)
+ {
+ 	int rc;
+ 
+-	mutex_lock(&sev_cmd_mutex);
+-	rc = __sev_platform_init_locked(error);
+-	mutex_unlock(&sev_cmd_mutex);
++	rc = __sev_platform_init_snp_locked(error);
++	if (rc)
++		return rc;
+ 
+-	return rc;
++	/* Delay SEV/SEV-ES support initialization */
++	if (probe && !psp_init_on_probe)
++		return 0;
++
++	return __sev_platform_init_locked(error);
+ }
+-EXPORT_SYMBOL_GPL(sev_platform_init);
+ 
+-static int sev_platform_init_on_probe(int *error)
++int sev_platform_init(int *error)
+ {
+ 	int rc;
+ 
+ 	mutex_lock(&sev_cmd_mutex);
+-	rc = ___sev_platform_init_locked(error, true);
++	rc = _sev_platform_init_locked(error, false);
+ 	mutex_unlock(&sev_cmd_mutex);
+ 
+ 	return rc;
+ }
++EXPORT_SYMBOL_GPL(sev_platform_init);
+ 
+ static int __sev_platform_shutdown_locked(int *error)
+ {
+@@ -691,7 +704,7 @@ static int sev_ioctl_do_pek_pdh_gen(int cmd, struct sev_issue_cmd *argp, bool wr
+ 		return -EPERM;
+ 
+ 	if (sev->state == SEV_STATE_UNINIT) {
+-		rc = __sev_platform_init_locked(&argp->error);
++		rc = _sev_platform_init_locked(&argp->error, false);
+ 		if (rc)
+ 			return rc;
+ 	}
+@@ -734,7 +747,7 @@ static int sev_ioctl_do_pek_csr(struct sev_issue_cmd *argp, bool writable)
+ 
+ cmd:
+ 	if (sev->state == SEV_STATE_UNINIT) {
+-		ret = __sev_platform_init_locked(&argp->error);
++		ret = _sev_platform_init_locked(&argp->error, false);
+ 		if (ret)
+ 			goto e_free_blob;
+ 	}
+@@ -1115,7 +1128,7 @@ static int sev_ioctl_do_pek_import(struct sev_issue_cmd *argp, bool writable)
+ 
+ 	/* If platform is not in INIT state then transition it to INIT */
+ 	if (sev->state != SEV_STATE_INIT) {
+-		ret = __sev_platform_init_locked(&argp->error);
++		ret = _sev_platform_init_locked(&argp->error, false);
+ 		if (ret)
+ 			goto e_free_oca;
+ 	}
+@@ -1246,7 +1259,7 @@ static int sev_ioctl_do_pdh_export(struct sev_issue_cmd *argp, bool writable)
+ 		if (!writable)
+ 			return -EPERM;
+ 
+-		ret = __sev_platform_init_locked(&argp->error);
++		ret = _sev_platform_init_locked(&argp->error, false);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -1608,7 +1621,9 @@ void sev_pci_init(void)
+ 	}
+ 
+ 	/* Initialize the platform */
+-	rc = sev_platform_init_on_probe(&error);
++	mutex_lock(&sev_cmd_mutex);
++	rc = _sev_platform_init_locked(&error, true);
++	mutex_unlock(&sev_cmd_mutex);
+ 	if (rc)
+ 		dev_err(sev->dev, "SEV: failed to INIT error %#x, rc %d\n",
+ 			error, rc);
 
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
