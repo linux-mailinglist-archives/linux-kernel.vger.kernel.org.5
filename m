@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2EE80B32E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 09:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E5180B333
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 09:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjLIIJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 03:09:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
+        id S234413AbjLIILH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 03:11:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234416AbjLIIJC (ORCPT
+        with ESMTP id S234412AbjLIIK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 03:09:02 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B397F1
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 00:09:07 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B9882TF054908;
-        Sat, 9 Dec 2023 02:08:02 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702109282;
-        bh=0A5dgG5e8t8hFbkQsmKr04qZPph+V/aEN1MHzvY6hVo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=g+vN7t846qj5ar33iUK3xG4DCTVpHewbFh+WreOVj0+96UgZuN/xh2pzD9Hy++IJi
-         SNZy0EtiMnxzKMlMCFFMmncwACGZu+FvsMkONh40PZLxVPO/CgT3vw4CZuKwGZzpdj
-         qab+YHefwogK037ppf8Ctp9+nLHTota2DserFPro=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B9882xl019101
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 9 Dec 2023 02:08:02 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 9
- Dec 2023 02:08:02 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sat, 9 Dec 2023 02:08:02 -0600
-Received: from LT5CG31242FY.dhcp.ti.com ([10.250.163.83])
-        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B987lHF122124;
-        Sat, 9 Dec 2023 02:07:58 -0600
-From:   Shenghao Ding <shenghao-ding@ti.com>
-To:     <broonie@kernel.org>
-CC:     <krzysztof.kozlowski@linaro.org>, <robh+dt@kernel.org>,
-        <andriy.shevchenko@linux.intel.com>, <lgirdwood@gmail.com>,
-        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>,
-        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
-        <soyer@irl.hu>, <tiwai@suse.de>,
-        Shenghao Ding <shenghao-ding@ti.com>
-Subject: [PATCH v1 3/3] ASoC: dt-bindings: Add tas2563 into yaml
-Date:   Sat, 9 Dec 2023 16:07:42 +0800
-Message-ID: <20231209080742.1290-3-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
-In-Reply-To: <20231209080742.1290-1-shenghao-ding@ti.com>
-References: <20231209080742.1290-1-shenghao-ding@ti.com>
+        Sat, 9 Dec 2023 03:10:58 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FB7F1;
+        Sat,  9 Dec 2023 00:11:04 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b9efed2e6fso771622b6e.0;
+        Sat, 09 Dec 2023 00:11:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702109464; x=1702714264; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hrk2lnfjeqDKI9HEdYdSbpPZmz7wWlvJV9mLFuHUtgI=;
+        b=Tawg3oGtCSfcu61o1Bd5wTIEwmRxDztI97H/P0YN6Ykgf+yQo8tS17RKwdp3psrvzj
+         BkG1+sX/lKkaLzdiZE4ejZd7Fj2IEbVFyeo3mgVTwJbpy9jyEWu1WORzDdGPpd0ZfmxV
+         KdSKps1xBhj4F/WjCoBnuHMMvhRGnrQTwomt2zHR6FjhermFfaz3VGZPK55w4SYWzXrG
+         IV+OSFJ1lo1YEeZRpSi5cjJYbvnH/le4V3+vyB5o1/oqTNMLoEn+npqLWNLjllxOviYS
+         Lto4lY9RvE+E7HGVtoANFzf8zE3aFEhK3DiZ98uct3BcTZ7Nb/b8AOFpHgVSFdGOCeDv
+         vmvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702109464; x=1702714264;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hrk2lnfjeqDKI9HEdYdSbpPZmz7wWlvJV9mLFuHUtgI=;
+        b=dTxBtM4V/Ze/ptYHjDku3mutUNnQf7sHbpk3nB6RAUVNj6Bus0YjFZjD2iFr72VNmB
+         uNNJBl29WA2Zj2MRHetxE8zCT9NkWIM6ce7whuklEZ9PTDiW6MpbvjTerIbdNsRH7TKU
+         C11W3v9pbf5KYjFVXHkoAUB7/1EdD5GqUVn20Xsm+EJ7JkMNmeuobZj5TUp74WN01VLV
+         YS0NvtPnPgU4NJ6iYS6yDEM9z80nElGeIzIixxQFHk+kdj3DobG3uQbUY0cgDKXlswkw
+         +fgUU3iKNcopImveSHBrU82rM901DIuN1TgTqE3c0b+AoTvxTl3T4je+QTvcS/hlKvnj
+         XAdQ==
+X-Gm-Message-State: AOJu0YyVLwXnSEciZGY8h3kjgGRoNDGQlFPtGS79scPVdzRcFpxiNfMZ
+        MsfM6agtt977EoCSdje/XOyB+2UU+xWDXJ0J
+X-Google-Smtp-Source: AGHT+IE/5byaXieDzfwj8AJ8O8aUHnLOZjHuaYVRXZRwtLR1S0cTByy6rcG68SQBXSmGoBKOSrXb6g==
+X-Received: by 2002:a05:6808:2020:b0:3b8:b063:824a with SMTP id q32-20020a056808202000b003b8b063824amr1811581oiw.76.1702109463908;
+        Sat, 09 Dec 2023 00:11:03 -0800 (PST)
+Received: from DESKTOP-KA7F9LU.localdomain ([2406:7400:63:a2b1:6894:2815:4471:20ab])
+        by smtp.googlemail.com with ESMTPSA id t2-20020a62d142000000b00690c0cf97c9sm2873633pfl.73.2023.12.09.00.11.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Dec 2023 00:11:03 -0800 (PST)
+From:   Vimal Kumar <vimal.kumar32@gmail.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     chinmoyghosh2001@gmail.com, badolevishal1116@gmail.com,
+        mintupatel89@gmail.com, Vimal Kumar <vimal.kumar32@gmail.com>
+Subject: [PATCH] PM / sleep: Mechanism to find source aborting kernel suspend transition
+Date:   Sat,  9 Dec 2023 13:40:54 +0530
+Message-Id: <20231209081056.1497-1-vimal.kumar32@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,56 +72,185 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support tas2563.
+Sometimes kernel suspend transitions can be aborted unconditionally by
+manipulating pm_abort_suspend value using "hard" wakeup triggers or
+through "pm_system_wakeup()".
 
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+There is no way to trace the source path of module or subsystem which
+aborted the suspend transitions. This change will create a list of
+wakeup sources aborting suspend in progress through "hard" events as
+well as subsytems aborting suspend using "pm_system_wakeup()".
+
+Example: Existing suspend failure logs:
+[  349.708359] PM: Some devices failed to suspend, or early wake event detected
+[  350.327842] PM: suspend exit
+
+Suspend failure logs with this change:
+[  518.761835] PM: Some devices failed to suspend, or early wake event detected
+[  519.486939] Abort: ws or subsystem uart_suspend_port aborted suspend
+[  519.500594] PM: suspend exit
+
+Here we can clearly identify the module triggerring abort suspend.
+
+Co-developed-by: Chinmoy Ghosh <chinmoyghosh2001@gmail.com>
+Signed-off-by: Chinmoy Ghosh <chinmoyghosh2001@gmail.com>
+Co-developed-by: Mintu Patel <mintupatel89@gmail.com>
+Signed-off-by: Mintu Patel <mintupatel89@gmail.com>
+Co-developed-by: Vishal Badole <badolevishal1116@gmail.com>
+Signed-off-by: Vishal Badole <badolevishal1116@gmail.com>
+Signed-off-by: Vimal Kumar <vimal.kumar32@gmail.com>
 ---
- .../devicetree/bindings/sound/ti,tas2781.yaml   | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ drivers/base/power/wakeup.c | 75 ++++++++++++++++++++++++++++++++++++-
+ include/linux/suspend.h     |  2 +
+ kernel/power/suspend.c      |  1 +
+ 3 files changed, 77 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
-index a69e6c223308..84e197e15df4 100644
---- a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
-+++ b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
-@@ -11,11 +11,11 @@ maintainers:
-   - Shenghao Ding <shenghao-ding@ti.com>
+diff --git a/drivers/base/power/wakeup.c b/drivers/base/power/wakeup.c
+index a917219feea6..f640034cab6d 100644
+--- a/drivers/base/power/wakeup.c
++++ b/drivers/base/power/wakeup.c
+@@ -73,6 +73,13 @@ static struct wakeup_source deleted_ws = {
  
- description:
--  The TAS2781 is a mono, digital input Class-D audio amplifier
--  optimized for efficiently driving high peak power into small
--  loudspeakers. An integrated on-chip DSP supports Texas Instruments
--  Smart Amp speaker protection algorithm. The integrated speaker
--  voltage and current sense provides for real time
-+  The TAS2781/TAS2563 is a mono, digital input Class-D audio
-+  amplifier optimized for efficiently driving high peak power into
-+  small loudspeakers. An integrated on-chip DSP supports Texas
-+  Instruments Smart Amp speaker protection algorithm. The
-+  integrated speaker voltage and current sense provides for real time
-   monitoring of loudspeaker behavior.
+ static DEFINE_IDA(wakeup_ida);
  
- allOf:
-@@ -25,16 +25,19 @@ properties:
-   compatible:
-     enum:
-       - ti,tas2781
-+      - ti,tas2563
++struct pm_abort_suspend_source {
++	struct list_head list;     //linux kernel list implementation
++	char *source_triggering_abort_suspend;
++};
++
++LIST_HEAD(pm_abort_suspend_list);
++
+ /**
+  * wakeup_source_create - Create a struct wakeup_source object.
+  * @name: Name of the new wakeup source.
+@@ -575,6 +582,53 @@ static void wakeup_source_activate(struct wakeup_source *ws)
+ 	trace_wakeup_source_activate(ws->name, cec);
+ }
  
-   reg:
-     description:
--      I2C address, in multiple tas2781s case, all the i2c address
-+      I2C address, in multiple AMP case, all the i2c address
-       aggregate as one Audio Device to support multiple audio slots.
-+      For tas2781, i2c address is from 0x38 to 0x3f; For tas2563,
-+      i2c address is from 0x4e to 0x4f.
-     maxItems: 8
-     minItems: 1
-     items:
-       minimum: 0x38
--      maximum: 0x3f
-+      maximum: 0x4f
++/**
++ * clear_abort_suspend_list: To clear the list containing sources which
++ * aborted suspend transitions.
++ * Functionality: The list will be cleared every time system PM exits as we
++ * can find sources which aborted suspend in the current suspend transisions.
++ */
++void clear_abort_suspend_list(void)
++{
++	struct pm_abort_suspend_source *info, *tmp;
++
++	if (!list_empty(&pm_abort_suspend_list))
++		list_for_each_entry_safe(info, tmp, &pm_abort_suspend_list, list) {
++			list_del(&info->list);
++			kfree(info);
++		}
++}
++EXPORT_SYMBOL_GPL(clear_abort_suspend_list);
++
++/**
++ * pm_add_abort_suspend_source: add sources who aborted system suspend transitions.
++ * @func_name: Name of the WS or subsystem which needs to added in the list
++ */
++void pm_add_abort_suspend_source(const char *source_name)
++{
++	struct pm_abort_suspend_source *info = NULL;
++
++	info = kmalloc(sizeof(struct pm_abort_suspend_source), GFP_KERNEL);
++	if (unlikely(!info)) {
++		pr_err("Failed to alloc memory for pm_abort_suspend_source info\n");
++		return;
++	}
++
++	/* Initialize the list within the struct if it's not already initialized */
++	if (list_empty(&info->list))
++		INIT_LIST_HEAD(&info->list);
++
++	info->source_triggering_abort_suspend = kstrdup(source_name, GFP_KERNEL);
++	if (unlikely(!info->source_triggering_abort_suspend)) {
++		pr_err("Failed to get abort_suspend source_name\n");
++		kfree(info);
++		return;
++	}
++
++	list_add_tail(&info->list, &pm_abort_suspend_list);
++}
++EXPORT_SYMBOL_GPL(pm_add_abort_suspend_source);
++
+ /**
+  * wakeup_source_report_event - Report wakeup event using the given source.
+  * @ws: Wakeup source to report the event for.
+@@ -590,8 +644,11 @@ static void wakeup_source_report_event(struct wakeup_source *ws, bool hard)
+ 	if (!ws->active)
+ 		wakeup_source_activate(ws);
  
-   reset-gpios:
-     maxItems: 1
+-	if (hard)
++	if (hard) {
++		if (pm_suspend_target_state != PM_SUSPEND_ON)
++			pm_add_abort_suspend_source(ws->name);
+ 		pm_system_wakeup();
++	}
+ }
+ 
+ /**
+@@ -893,12 +950,28 @@ bool pm_wakeup_pending(void)
+ 		pm_print_active_wakeup_sources();
+ 	}
+ 
++	if (atomic_read(&pm_abort_suspend) > 0) {
++		if (!list_empty(&pm_abort_suspend_list))
++			list_for_each_entry(info, &pm_abort_suspend_list, list) {
++				log_suspend_abort_reason("ws or subsystem %s aborted suspend\n",
++						info->source_triggering_abort_suspend);
++			}
++	}
++
+ 	return ret || atomic_read(&pm_abort_suspend) > 0;
+ }
+ EXPORT_SYMBOL_GPL(pm_wakeup_pending);
+ 
+ void pm_system_wakeup(void)
+ {
++	char buf[MAX_SUSPEND_ABORT_LEN];
++
++	if (pm_suspend_target_state != PM_SUSPEND_ON) {
++		sprintf(buf, "%ps", __builtin_return_address(0));
++		if (strcmp(buf, "pm_wakeup_ws_event"))
++			pm_add_abort_suspend_source(buf);
++	}
++
+ 	atomic_inc(&pm_abort_suspend);
+ 	s2idle_wake();
+ }
+diff --git a/include/linux/suspend.h b/include/linux/suspend.h
+index ef503088942d..803071f664e7 100644
+--- a/include/linux/suspend.h
++++ b/include/linux/suspend.h
+@@ -528,6 +528,7 @@ extern void pm_print_active_wakeup_sources(void);
+ 
+ extern unsigned int lock_system_sleep(void);
+ extern void unlock_system_sleep(unsigned int);
++extern void clear_abort_suspend_list(void);
+ 
+ #else /* !CONFIG_PM_SLEEP */
+ 
+@@ -556,6 +557,7 @@ static inline void pm_system_irq_wakeup(unsigned int irq_number) {}
+ 
+ static inline unsigned int lock_system_sleep(void) { return 0; }
+ static inline void unlock_system_sleep(unsigned int flags) {}
++static inline void clear_abort_suspend_list(void) {}
+ 
+ #endif /* !CONFIG_PM_SLEEP */
+ 
+diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+index fa3bf161d13f..64a99f26bd51 100644
+--- a/kernel/power/suspend.c
++++ b/kernel/power/suspend.c
+@@ -623,6 +623,7 @@ int pm_suspend(suspend_state_t state)
+ 	} else {
+ 		suspend_stats.success++;
+ 	}
++	clear_abort_suspend_list();
+ 	pr_info("suspend exit\n");
+ 	return error;
+ }
 -- 
-2.34.1
+2.25.1
 
