@@ -2,101 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DA780B3C1
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 11:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B78380B3D6
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 11:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbjLIKoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 05:44:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44400 "EHLO
+        id S229831AbjLIK5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 05:57:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbjLIKoQ (ORCPT
+        with ESMTP id S229910AbjLIK5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 05:44:16 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CB710E0
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 02:44:22 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54dccf89cfdso3535389a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 02:44:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702118660; x=1702723460; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WlRF5ESN+8f4udkYKhzr8luKmrU8RaKXvO/JYQMW7WI=;
-        b=htQiFI9KLIDsHOIf3JDDs+FtkRo0zu92tBbg32lYmqLawWLKFPT8WDrmw+D1a25t0+
-         R5swhrjJCynSy6iFu9QIlEHBt5gyavn+vW56jNlHc+WROjzr2Tr1E8edDlsdwElYgAaZ
-         Qwedfuvb/gItCYwxHFnJlpeU1ZpIoXBz1OryHHqcieY5gz272xJUwcx49BbrW63k7z3n
-         WJBLY09wQ1SM24weDsj9w/50qJ/ax1ijjD3L0al3OAnxaSOMX8IY6Z+KVFvzcEkVOme/
-         CXgN2VohTJ8A4fWXJrtlUWb4+pOYTU6ntVocNLAtXSmwgAt3fViFxjrWmzCrNbGKzRy3
-         Bgag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702118660; x=1702723460;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WlRF5ESN+8f4udkYKhzr8luKmrU8RaKXvO/JYQMW7WI=;
-        b=QbteXg+S6BL85DKM+HyopY5fn/PJytI8cPua/ZInn497XABaT2VbHosWs8VmrOkf7n
-         pKLonadK3iT9rImPqNZgd8WjyPbTIWuofnpwpX6l4m7Gx/NnpY5sFtSCQtqn711ZsA5a
-         4jiWO7shCJv2sDSoIZksFWHyGomfxAgf0JA7ueKRyAyp1OPMNmDuEJPGfH4ehOZvyg4p
-         1Tq9nSW0D3JwvGUfjut83WhA158m39rcN7ZJQB8yD6V3jHL9vGZWo/pBJ67AhQ+AfipW
-         cteCVtXKVQlhr8GK5bWR9YT3czSjr3szetb5SXlT4i5MsYOMluYiqeBEMvkout+5ViJF
-         L6lQ==
-X-Gm-Message-State: AOJu0YyBx5lV4rzUTVUeKKKrVXHI3taK//wkX2Uqh6DDvU5NeRJIrw31
-        nVuDyvI6qKhuZVp8rMg7nXWHEA==
-X-Google-Smtp-Source: AGHT+IHda76JkbbrEN5rBMhtlIG3Ox0CJOlh8Z2lE6T50ouOps31F6tLOfl570vTj7LIB2OLM+9I/A==
-X-Received: by 2002:a05:6402:2152:b0:54d:412:c8f4 with SMTP id bq18-20020a056402215200b0054d0412c8f4mr705393edb.84.1702118660737;
-        Sat, 09 Dec 2023 02:44:20 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id eh12-20020a0564020f8c00b00550e21a4f76sm349604edb.8.2023.12.09.02.44.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Dec 2023 02:44:20 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@codeconstruct.com.au>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 4/4] ARM: dts: aspeed: yosemitev2: correct Mellanox multi-host property
-Date:   Sat,  9 Dec 2023 11:44:12 +0100
-Message-Id: <20231209104412.12916-4-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231209104412.12916-1-krzysztof.kozlowski@linaro.org>
-References: <20231209104412.12916-1-krzysztof.kozlowski@linaro.org>
+        Sat, 9 Dec 2023 05:57:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E790C193
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 02:57:06 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D6E5C433C8;
+        Sat,  9 Dec 2023 10:57:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702119426;
+        bh=LfIhP/af5BHnpvQo4uP7i1HD6/yJmre7AxHGR/IvG54=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uUnmF7CDb4lBM7QWDc8vErl87dZFgiju4DLw8Ih0qLnT+w4aVy9wIgenKuUyH/v2X
+         D5jSkv59gp0NSY/GJSlpq+e+eLxXAn7vEpz/TvH+2I10F0pu6DWDfibGZEgrpKQ2Wl
+         Q3Uoj7/cYn3Pcq8FWY2nU7XR+nYRwn0m9wgZuMS7gWFzfcglm6ufaPsF7YdZAI5vEC
+         cCgh34qJJnPXw97CYrqSuaBYUoZCWe8I8z2q+jp6Fc4SUJ1dGpfiIYaBhRTmn1c+mh
+         hTC5LF7SvezZydDEUnCsv2gCGNwUJ1LiDDf23lCaHQvnUXUoFqVav5Uu/RnnOKEHki
+         dnSOXEc026jLg==
+Date:   Sat, 9 Dec 2023 10:57:01 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Stefan Eichenberger <eichest@gmail.com>, nick@shmanahar.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Stefan Eichenberger <stefan.eichenberger@toradex.com>
+Subject: Re: [PATCH v1 1/2] dt-bindings: input: atmel,maxtouch: add
+ poweroff-in-suspend property
+Message-ID: <20231209-sizzle-monthly-6e4f3c966b0f@spud>
+References: <20231207111300.80581-1-eichest@gmail.com>
+ <20231207111300.80581-2-eichest@gmail.com>
+ <CACRpkdbSs-vebvchxx-Tg+O5CUF5M3vZf-iytuW=ZECnHb2anA@mail.gmail.com>
+ <ZXOoy8mFdhUQsZAu@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="C72rfSVWvZsQ7rnL"
+Content-Disposition: inline
+In-Reply-To: <ZXOoy8mFdhUQsZAu@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"mlx,multi-host" is using incorrect vendor prefix and is not documented.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemitev2.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--C72rfSVWvZsQ7rnL
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemitev2.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemitev2.dts
-index 6bf2ff85a40e..5143f85fbd70 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemitev2.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemitev2.dts
-@@ -95,7 +95,7 @@ &mac0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_rmii1_default>;
- 	use-ncsi;
--	mlx,multi-host;
-+	mellanox,multi-host;
- };
- 
- &adc {
--- 
-2.34.1
+On Fri, Dec 08, 2023 at 11:37:47PM +0000, Dmitry Torokhov wrote:
+> Hi Linus, Krzysztof,
+>=20
+> On Fri, Dec 08, 2023 at 01:54:21PM +0100, Linus Walleij wrote:
+> > On Thu, Dec 7, 2023 at 12:13=E2=80=AFPM Stefan Eichenberger <eichest@gm=
+ail.com> wrote:
+> >=20
+> > > From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+> > >
+> > > Add a new property to indicate that the device should be powered off =
+in
+> > > suspend mode.
+> > >
+> > > Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+> > (...)
+> > > +  atmel,poweroff-in-suspend:
+> > > +    description: |
+> > > +      When this property is set, all supplies are turned off when th=
+e system is
+> > > +      going to suspend.
+> > > +    type: boolean
+> >    wakeup-source:
+> >      type: boolean
+> >=20
+> > As Krzysztof says it seems you are describing an operating system featu=
+re.
+>=20
+> It appears to be an OS feature, but I would argue that it is also a
+> property of a board. It is tempting to say that if DTS defines supplies
+> for the controller we should use them to power off the controller in
+> suspend, otherwise we should use the deep sleep functionality of the
+> controller. But a mere presence of regulators does not indicate if they
+> can actually be powered off in suspend (i.e. if controllers shares power
+> rails with another device that can be a wakeup source), so we need to
+> have additional hints on how OS should behave on a given device.
+>=20
+> On top of that we have regulator framework supplying dummy regulators...
 
+Simply rephrasing the property might be sufficient? The current one
+sounds making policy decisions with the "should be". Reframing the
+commit message and property description etc in terms of what aspect of
+the hardware the ability to turn off all supplies in suspend comes from
+would make it more acceptable. Pretty much answering the question "why
+can't we try and turn off all supplies on all systems with this device"
+should get things rolling.
+
+Cheers,
+Conor.
+
+--C72rfSVWvZsQ7rnL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXRH/QAKCRB4tDGHoIJi
+0gwwAP0f6ZUlt2hLfY6VvqK/jBmyh55L7p9l4zE7YNlHzIYoAgD/QhPbNUmbRBTQ
+ryYrjWFFE9seO+T3W6rJ5AXJgOQskw8=
+=9hx8
+-----END PGP SIGNATURE-----
+
+--C72rfSVWvZsQ7rnL--
