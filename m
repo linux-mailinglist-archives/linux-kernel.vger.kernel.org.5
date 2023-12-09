@@ -2,199 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD54380B3B0
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 11:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FA780B3B2
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 11:42:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbjLIKlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 05:41:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54094 "EHLO
+        id S229789AbjLIKma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 05:42:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjLIKlQ (ORCPT
+        with ESMTP id S229446AbjLIKm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 05:41:16 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2206EC8
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 02:41:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702118482; x=1733654482;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=0EqpImFANYSBcWTRpu4wgb5jHGr73ztwgg58L42Jzy4=;
-  b=GxNlWUbiK3PhHM07YZNti4IwqMo/9IVPNo8tItkpkvHnrysIe1hSHspS
-   LV4WYLu0AmqBKPPoYBHxlcHfkenx8V7JpP8NxW9xAgrCO0UH7m8GhfADc
-   5Yx8yqei9K8Ssf1OCAXAsiwpaveh/XQBiHEujyyIgoaefvU5lgD9+KJLL
-   T7rdMc5QA0xeBGXQjwKI0oLylgq/KCVQAvM6ihdyhKgtTyI7sechvLgU3
-   sLjZgdzasWP2sw7sKyfV8Juahe811btpWyVFUR3L7C6nNN+FoEE9WoRA5
-   0Ln9LLcbA9Dp2pq+3O4uJcud5TicljqNcSbfpdPTbiu89jCZR+y/G7+Xs
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="16056910"
-X-IronPort-AV: E=Sophos;i="6.04,263,1695711600"; 
-   d="scan'208";a="16056910"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 02:41:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="722137199"
-X-IronPort-AV: E=Sophos;i="6.04,263,1695711600"; 
-   d="scan'208";a="722137199"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 09 Dec 2023 02:41:20 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rBulq-000FEu-0e;
-        Sat, 09 Dec 2023 10:41:18 +0000
-Date:   Sat, 9 Dec 2023 18:41:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: io_uring/poll.c:480:43: sparse: sparse: incorrect type in
- initializer (different base types)
-Message-ID: <202312091824.Oiptw6wb-lkp@intel.com>
+        Sat, 9 Dec 2023 05:42:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733F2C8
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 02:42:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702118552;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jYXGvxRUfrhZD8ZKPprmEb3EjUd1OkMKc/tesKE8NYk=;
+        b=czHkUlaRiaNFarIf6BSDsjk88VT9tvhozYXPxIXUCUsU23g9TIrnlziiDoKha1CmmfKduO
+        fstOCHzGxgW31FGX+UT7NbBStab/JULX1Moikmk0df3Z+R/0IU2oGGeu6bM+GtHKXojTK0
+        zAxPpMNgGAd0ec6MER5K97T9Q7at8bI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-441-ES1rarCwOI6_gYNRqZ01Ow-1; Sat, 09 Dec 2023 05:42:30 -0500
+X-MC-Unique: ES1rarCwOI6_gYNRqZ01Ow-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40b3d4d6417so17967935e9.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 02:42:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702118549; x=1702723349;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jYXGvxRUfrhZD8ZKPprmEb3EjUd1OkMKc/tesKE8NYk=;
+        b=qStFiU14v6+w6Su3WSSjpy277woNp2YNJ4dASHvG0yEDWvvxnAmJtTMtONLg6R8y/W
+         hUr+NrW6y/2DEdawjaWHgdVViYIBkaELKqLMBR9WN8d2KHbU1x+BoZCoB/HqGn9smmhV
+         IIyLOX+PECiIN6NSEdQAobTjd/GIBea9VOin7NOBQDtAITfnjDfePhoRkkw8+I0loCCr
+         VmQn382dtAlaLZmSfSUf2pI8lufyC8fAsCF2jKEtXW/erRrZsnHFkQp1MPyNHYeU9OWn
+         wpCDfvEYv9Wsc/Bm1jatqINOM+PkXVCL7jJ2z1PT0eA2WI3DS5cN593Z2t0gTdkQQw43
+         zkKw==
+X-Gm-Message-State: AOJu0YxeGXqb9dXgdoe5To+WnkVFvEfXZ3pTnjLFVO4Ewk3AQc3Yjzzt
+        U6W5Rt6d6JrKKqe6RKGmEMdv1QF2K24XNfNy3FFbytoFzDstDVq5qbfpEAzLWHml1HED7tjAZuO
+        fg7ZZQe7R+tcW/CaV3auN2sJQ
+X-Received: by 2002:a05:600c:808:b0:40c:32df:da03 with SMTP id k8-20020a05600c080800b0040c32dfda03mr347247wmp.305.1702118549572;
+        Sat, 09 Dec 2023 02:42:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGdC86jKPcminvAV1YfnbyeFnlInlsAzYlkskejvPuH6o846ik+MKMa3TBW5xfIsAmcSOb+EA==
+X-Received: by 2002:a05:600c:808:b0:40c:32df:da03 with SMTP id k8-20020a05600c080800b0040c32dfda03mr347239wmp.305.1702118549151;
+        Sat, 09 Dec 2023 02:42:29 -0800 (PST)
+Received: from redhat.com ([2a06:c701:73ff:4f00:b091:120e:5537:ac67])
+        by smtp.gmail.com with ESMTPSA id u15-20020a05600c138f00b004060f0a0fd5sm6031663wmf.13.2023.12.09.02.42.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Dec 2023 02:42:28 -0800 (PST)
+Date:   Sat, 9 Dec 2023 05:42:25 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Tobias Huschle <huschle@linux.ibm.com>
+Cc:     Abel Wu <wuyun.abel@bytedance.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux.dev,
+        netdev@vger.kernel.org, jasowang@redhat.com
+Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
+ sched/fair: Add lag based placement)
+Message-ID: <20231209053443-mutt-send-email-mst@kernel.org>
+References: <46a997c2-5a38-4b60-b589-6073b1fac677@bytedance.com>
+ <ZVyt4UU9+XxunIP7@DESKTOP-2CCOB1S.>
+ <20231122100016.GO8262@noisy.programming.kicks-ass.net>
+ <6564a012.c80a0220.adb78.f0e4SMTPIN_ADDED_BROKEN@mx.google.com>
+ <d4110c79-d64f-49bd-9f69-0a94369b5e86@bytedance.com>
+ <07513.123120701265800278@us-mta-474.us.mimecast.lan>
+ <20231207014626-mutt-send-email-mst@kernel.org>
+ <56082.123120804242300177@us-mta-137.us.mimecast.lan>
+ <20231208052150-mutt-send-email-mst@kernel.org>
+ <53044.123120806415900549@us-mta-342.us.mimecast.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <53044.123120806415900549@us-mta-342.us.mimecast.lan>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f2e8a57ee9036c7d5443382b6c3c09b51a92ec7e
-commit: b9ba8a4463cd78d0aee520c4bf2569820ac29929 io_uring: add support for level triggered poll
-date:   1 year, 5 months ago
-config: x86_64-alldefconfig (https://download.01.org/0day-ci/archive/20231209/202312091824.Oiptw6wb-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231209/202312091824.Oiptw6wb-lkp@intel.com/reproduce)
+On Fri, Dec 08, 2023 at 12:41:38PM +0100, Tobias Huschle wrote:
+> On Fri, Dec 08, 2023 at 05:31:18AM -0500, Michael S. Tsirkin wrote:
+> > On Fri, Dec 08, 2023 at 10:24:16AM +0100, Tobias Huschle wrote:
+> > > On Thu, Dec 07, 2023 at 01:48:40AM -0500, Michael S. Tsirkin wrote:
+> > > > On Thu, Dec 07, 2023 at 07:22:12AM +0100, Tobias Huschle wrote:
+> > > > > 3. vhost looping endlessly, waiting for kworker to be scheduled
+> > > > > 
+> > > > > I dug a little deeper on what the vhost is doing. I'm not an expert on
+> > > > > virtio whatsoever, so these are just educated guesses that maybe
+> > > > > someone can verify/correct. Please bear with me probably messing up 
+> > > > > the terminology.
+> > > > > 
+> > > > > - vhost is looping through available queues.
+> > > > > - vhost wants to wake up a kworker to process a found queue.
+> > > > > - kworker does something with that queue and terminates quickly.
+> > > > > 
+> > > > > What I found by throwing in some very noisy trace statements was that,
+> > > > > if the kworker is not woken up, the vhost just keeps looping accross
+> > > > > all available queues (and seems to repeat itself). So it essentially
+> > > > > relies on the scheduler to schedule the kworker fast enough. Otherwise
+> > > > > it will just keep on looping until it is migrated off the CPU.
+> > > > 
+> > > > 
+> > > > Normally it takes the buffers off the queue and is done with it.
+> > > > I am guessing that at the same time guest is running on some other
+> > > > CPU and keeps adding available buffers?
+> > > > 
+> > > 
+> > > It seems to do just that, there are multiple other vhost instances
+> > > involved which might keep filling up thoses queues. 
+> > > 
+> > 
+> > No vhost is ever only draining queues. Guest is filling them.
+> > 
+> > > Unfortunately, this makes the problematic vhost instance to stay on
+> > > the CPU and prevents said kworker to get scheduled. The kworker is
+> > > explicitly woken up by vhost, so it wants it to do something.
+> > > 
+> > > At this point it seems that there is an assumption about the scheduler
+> > > in place which is no longer fulfilled by EEVDF. From the discussion so
+> > > far, it seems like EEVDF does what is intended to do.
+> > > 
+> > > Shouldn't there be a more explicit mechanism in use that allows the
+> > > kworker to be scheduled in favor of the vhost?
+> > > 
+> > > It is also concerning that the vhost seems cannot be preempted by the
+> > > scheduler while executing that loop.
+> > 
+> > 
+> > Which loop is that, exactly?
+> 
+> The loop continously passes translate_desc in drivers/vhost/vhost.c
+> That's where I put the trace statements.
+> 
+> The overall sequence seems to be (top to bottom):
+> 
+> handle_rx
+> get_rx_bufs
+> vhost_get_vq_desc
+> vhost_get_avail_head
+> vhost_get_avail
+> __vhost_get_user_slow
+> translate_desc               << trace statement in here
+> vhost_iotlb_itree_first
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312091824.Oiptw6wb-lkp@intel.com/
+I wonder why do you keep missing cache and re-translating.
+Is pr_debug enabled for you? If not could you check if it
+outputs anything?
+Or you can tweak:
 
-sparse warnings: (new ones prefixed by >>)
-   io_uring/poll.c:165:38: sparse: sparse: incorrect type in assignment (different base types) @@     expected signed int [usertype] res @@     got restricted __poll_t @@
-   io_uring/poll.c:165:38: sparse:     expected signed int [usertype] res
-   io_uring/poll.c:165:38: sparse:     got restricted __poll_t
-   io_uring/poll.c:176:56: sparse: sparse: restricted __poll_t degrades to integer
-   io_uring/poll.c:175:66: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected restricted __poll_t [usertype] val @@     got unsigned int @@
-   io_uring/poll.c:175:66: sparse:     expected restricted __poll_t [usertype] val
-   io_uring/poll.c:175:66: sparse:     got unsigned int
-   io_uring/poll.c:175:52: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __poll_t [usertype] mask @@     got unsigned short @@
-   io_uring/poll.c:175:52: sparse:     expected restricted __poll_t [usertype] mask
-   io_uring/poll.c:175:52: sparse:     got unsigned short
-   io_uring/poll.c:181:50: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected signed int [usertype] res @@     got restricted __poll_t [usertype] mask @@
-   io_uring/poll.c:181:50: sparse:     expected signed int [usertype] res
-   io_uring/poll.c:181:50: sparse:     got restricted __poll_t [usertype] mask
-   io_uring/poll.c:216:63: sparse: sparse: restricted __poll_t degrades to integer
-   io_uring/poll.c:216:57: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected restricted __poll_t [usertype] val @@     got unsigned int @@
-   io_uring/poll.c:216:57: sparse:     expected restricted __poll_t [usertype] val
-   io_uring/poll.c:216:57: sparse:     got unsigned int
-   io_uring/poll.c:334:40: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected int mask @@     got restricted __poll_t [usertype] mask @@
-   io_uring/poll.c:334:40: sparse:     expected int mask
-   io_uring/poll.c:334:40: sparse:     got restricted __poll_t [usertype] mask
-   io_uring/poll.c:430:24: sparse: sparse: incorrect type in return expression (different base types) @@     expected int @@     got restricted __poll_t [assigned] [usertype] mask @@
-   io_uring/poll.c:430:24: sparse:     expected int
-   io_uring/poll.c:430:24: sparse:     got restricted __poll_t [assigned] [usertype] mask
-   io_uring/poll.c:451:40: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected int mask @@     got restricted __poll_t [assigned] [usertype] mask @@
-   io_uring/poll.c:451:40: sparse:     expected int mask
-   io_uring/poll.c:451:40: sparse:     got restricted __poll_t [assigned] [usertype] mask
-   io_uring/poll.c:480:45: sparse: sparse: restricted __poll_t degrades to integer
->> io_uring/poll.c:480:43: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __poll_t [usertype] mask @@     got unsigned int @@
-   io_uring/poll.c:480:43: sparse:     expected restricted __poll_t [usertype] mask
-   io_uring/poll.c:480:43: sparse:     got unsigned int
-   io_uring/poll.c:528:33: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected int mask @@     got restricted __poll_t [assigned] [usertype] mask @@
-   io_uring/poll.c:528:33: sparse:     expected int mask
-   io_uring/poll.c:528:33: sparse:     got restricted __poll_t [assigned] [usertype] mask
-   io_uring/poll.c:528:50: sparse: sparse: incorrect type in argument 6 (different base types) @@     expected int events @@     got restricted __poll_t [usertype] events @@
-   io_uring/poll.c:528:50: sparse:     expected int events
-   io_uring/poll.c:528:50: sparse:     got restricted __poll_t [usertype] events
-   io_uring/poll.c:642:24: sparse: sparse: invalid assignment: |=
-   io_uring/poll.c:642:24: sparse:    left side has type unsigned int
-   io_uring/poll.c:642:24: sparse:    right side has type restricted __poll_t
-   io_uring/poll.c:644:24: sparse: sparse: invalid assignment: |=
-   io_uring/poll.c:644:24: sparse:    left side has type unsigned int
-   io_uring/poll.c:644:24: sparse:    right side has type restricted __poll_t
-   io_uring/poll.c:646:55: sparse: sparse: restricted __poll_t degrades to integer
-   io_uring/poll.c:645:29: sparse: sparse: restricted __poll_t degrades to integer
-   io_uring/poll.c:645:38: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __poll_t @@     got unsigned int @@
-   io_uring/poll.c:645:38: sparse:     expected restricted __poll_t
-   io_uring/poll.c:645:38: sparse:     got unsigned int
-   io_uring/poll.c:741:38: sparse: sparse: invalid assignment: &=
-   io_uring/poll.c:741:38: sparse:    left side has type restricted __poll_t
-   io_uring/poll.c:741:38: sparse:    right side has type int
-   io_uring/poll.c:742:52: sparse: sparse: restricted __poll_t degrades to integer
-   io_uring/poll.c:742:38: sparse: sparse: invalid assignment: |=
-   io_uring/poll.c:742:38: sparse:    left side has type restricted __poll_t
-   io_uring/poll.c:742:38: sparse:    right side has type unsigned int
-   io_uring/poll.c: note: in included file:
-   io_uring/io_uring_types.h:92:37: sparse: sparse: array of flexible structures
+#define vq_err(vq, fmt, ...) do {                                  \
+                pr_debug(pr_fmt(fmt), ##__VA_ARGS__);       \
+                if ((vq)->error_ctx)                               \
+                                eventfd_signal((vq)->error_ctx, 1);\
+        } while (0)
 
-vim +480 io_uring/poll.c
+to do pr_err if you prefer.
 
-   473	
-   474	int io_arm_poll_handler(struct io_kiocb *req, unsigned issue_flags)
-   475	{
-   476		const struct io_op_def *def = &io_op_defs[req->opcode];
-   477		struct io_ring_ctx *ctx = req->ctx;
-   478		struct async_poll *apoll;
-   479		struct io_poll_table ipt;
- > 480		__poll_t mask = POLLPRI | POLLERR | EPOLLET;
-   481		int ret;
-   482	
-   483		if (!def->pollin && !def->pollout)
-   484			return IO_APOLL_ABORTED;
-   485		if (!file_can_poll(req->file))
-   486			return IO_APOLL_ABORTED;
-   487		if ((req->flags & (REQ_F_POLLED|REQ_F_PARTIAL_IO)) == REQ_F_POLLED)
-   488			return IO_APOLL_ABORTED;
-   489		if (!(req->flags & REQ_F_APOLL_MULTISHOT))
-   490			mask |= EPOLLONESHOT;
-   491	
-   492		if (def->pollin) {
-   493			mask |= EPOLLIN | EPOLLRDNORM;
-   494	
-   495			/* If reading from MSG_ERRQUEUE using recvmsg, ignore POLLIN */
-   496			if (req->flags & REQ_F_CLEAR_POLLIN)
-   497				mask &= ~EPOLLIN;
-   498		} else {
-   499			mask |= EPOLLOUT | EPOLLWRNORM;
-   500		}
-   501		if (def->poll_exclusive)
-   502			mask |= EPOLLEXCLUSIVE;
-   503		if (req->flags & REQ_F_POLLED) {
-   504			apoll = req->apoll;
-   505			kfree(apoll->double_poll);
-   506		} else if (!(issue_flags & IO_URING_F_UNLOCKED) &&
-   507			   !list_empty(&ctx->apoll_cache)) {
-   508			apoll = list_first_entry(&ctx->apoll_cache, struct async_poll,
-   509							poll.wait.entry);
-   510			list_del_init(&apoll->poll.wait.entry);
-   511		} else {
-   512			apoll = kmalloc(sizeof(*apoll), GFP_ATOMIC);
-   513			if (unlikely(!apoll))
-   514				return IO_APOLL_ABORTED;
-   515		}
-   516		apoll->double_poll = NULL;
-   517		req->apoll = apoll;
-   518		req->flags |= REQ_F_POLLED;
-   519		ipt.pt._qproc = io_async_queue_proc;
-   520	
-   521		io_kbuf_recycle(req, issue_flags);
-   522	
-   523		ret = __io_arm_poll_handler(req, &apoll->poll, &ipt, mask);
-   524		if (ret || ipt.error)
-   525			return ret ? IO_APOLL_READY : IO_APOLL_ABORTED;
-   526	
-   527		trace_io_uring_poll_arm(ctx, req, req->cqe.user_data, req->opcode,
-   528					mask, apoll->poll.events);
-   529		return IO_APOLL_OK;
-   530	}
-   531	
+> These functions show up as having increased overhead in perf.
+> 
+> There are multiple loops going on in there.
+> Again the disclaimer though, I'm not familiar with that code at all.
+
+
+So there's a limit there: vhost_exceeds_weight should requeue work:
+
+        } while (likely(!vhost_exceeds_weight(vq, ++recv_pkts, total_len)));
+
+then we invoke scheduler each time before re-executing it:
+
+
+{       
+        struct vhost_worker *worker = data;
+        struct vhost_work *work, *work_next;
+        struct llist_node *node;
+        
+        node = llist_del_all(&worker->work_list);
+        if (node) {
+                __set_current_state(TASK_RUNNING);
+
+                node = llist_reverse_order(node);
+                /* make sure flag is seen after deletion */
+                smp_wmb();
+                llist_for_each_entry_safe(work, work_next, node, node) {
+                        clear_bit(VHOST_WORK_QUEUED, &work->flags);
+                        kcov_remote_start_common(worker->kcov_handle);
+                        work->fn(work);
+                        kcov_remote_stop();
+                        cond_resched();
+                }
+        }
+
+        return !!node;
+}       
+
+These are the byte and packet limits:
+
+/* Max number of bytes transferred before requeueing the job.
+ * Using this limit prevents one virtqueue from starving others. */
+#define VHOST_NET_WEIGHT 0x80000
+
+/* Max number of packets transferred before requeueing the job.
+ * Using this limit prevents one virtqueue from starving others with small
+ * pkts.
+ */
+#define VHOST_NET_PKT_WEIGHT 256
+
+
+Try reducing the VHOST_NET_WEIGHT limit and see if that improves things any?
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+MST
+
