@@ -2,77 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C4880B220
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 06:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 022A380B21F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 06:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjLIEvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Dec 2023 23:51:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
+        id S234277AbjLIEvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Dec 2023 23:51:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjLIEva (ORCPT
+        with ESMTP id S234264AbjLIEvf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Dec 2023 23:51:30 -0500
-Received: from out0-200.mail.aliyun.com (out0-200.mail.aliyun.com [140.205.0.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA4510DA
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 20:51:35 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047203;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---.VgCM59c_1702097490;
-Received: from 30.39.230.13(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.VgCM59c_1702097490)
-          by smtp.aliyun-inc.com;
-          Sat, 09 Dec 2023 12:51:31 +0800
-Message-ID: <598033f7-f937-4d32-a4ec-b3e0d094c637@antgroup.com>
-Date:   Sat, 09 Dec 2023 12:51:27 +0800
+        Fri, 8 Dec 2023 23:51:35 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E9110DF;
+        Fri,  8 Dec 2023 20:51:40 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-332fd78fa9dso2566897f8f.3;
+        Fri, 08 Dec 2023 20:51:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702097499; x=1702702299; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E9jLsGhfGkMZnWhDYfHQ0jvQvXqjfciOlusSLK9GhRY=;
+        b=KeESuLTeX8T5ede0i/kSECpSnduJslTf/82J4Z57rkWkSf8dSMVICt52nYkMFTOITW
+         099C3aWGMtSw770fNLMxYbnj8Flv7HGJMeJpx8n29C0BMB+kz4LKbf26wUiYEVblcqIV
+         eJ8kmYDYcNE8tfSblEWCCPuvlQ3sIoo3DhX/ssxWrC8rnhS9czhqJAmkrmA9WOD3ILP1
+         o3Vj1z3dABjSQA3jPb9x9rm6dDK+EO1NpB+Sb/FmhNhAwpJM4qECPWTrf5YHCr/+8iNw
+         puYmU9Fvq4imcj/3AzNgZ4XiuRgkS2XibAg3jB69haE6GgMTNRlrxNG9Dehpb6ffErJ/
+         KmPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702097499; x=1702702299;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E9jLsGhfGkMZnWhDYfHQ0jvQvXqjfciOlusSLK9GhRY=;
+        b=AeMAll1+7Hm+LqvEgTNXH0lzxGQd4etsowOeyJqcehBysYX5I4uc9Bn/MeYGzNIATK
+         yLBMYbR/TPVfdBazATRCdYDkV5ACWwR+DXXvHkqlbdHklegH/ug7DMclYdEl5i5VGRDx
+         ItNK+dxzOLR7/4oRJqk6HKC/c2A5dskk82CsyTfZENAtSPjwXavvsj1JN/NWcykxBhJM
+         px07D4wQwEGJCLANU0RO1ophOJr/50eKInDah80Nmivxk3tPQgSDR5VWVLYRklF8CeRd
+         sXN1uGZoP2G5QVErF5YbJ4tN0PJeDUkmEsZUSFnaBK4cXauohmYLCv+04+rHD78zjNB9
+         1+eQ==
+X-Gm-Message-State: AOJu0YyiAm7KxmTwW4K2yvhry/jBGf0KDBa9HkklvsuoE/W6DggJA4xe
+        b2VWKJndrwX0/dEB2ZjxJB8qBxffeQ0xqXUlzbc=
+X-Google-Smtp-Source: AGHT+IGWegoXbG6riU09aOxjScmI6QdU76ibtag8Pupqd8K6QoQZC3fgz8qhZUFCULCtLMsl2YQJg9oU3fR3idrWio4=
+X-Received: by 2002:adf:ce8d:0:b0:333:49a8:73e4 with SMTP id
+ r13-20020adfce8d000000b0033349a873e4mr197659wrn.201.1702097499187; Fri, 08
+ Dec 2023 20:51:39 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -tip] sched/fair: gracefully handle EEVDF scheduling
- failures
-Content-Language: en-US
+References: <20231207093105.GA28727@noisy.programming.kicks-ass.net>
+ <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
+ <20231208102940.GB28727@noisy.programming.kicks-ass.net> <20231208134041.GD28727@noisy.programming.kicks-ass.net>
+ <20231208172152.GD36716@noisy.programming.kicks-ass.net> <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
+ <20231208203535.GG36716@noisy.programming.kicks-ass.net> <CAADnVQJzCw=qcG+jHBYG0q0SxLPkwghni0wpgV4A4PkpgVbGPw@mail.gmail.com>
+ <20231208205241.GK28727@noisy.programming.kicks-ass.net> <CAADnVQL3KsJONShsstDq5jrpbc_4FOU-VQPJgDCt50N9asoFzA@mail.gmail.com>
+ <20231208224557.GH36716@noisy.programming.kicks-ass.net>
+In-Reply-To: <20231208224557.GH36716@noisy.programming.kicks-ass.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 8 Dec 2023 20:51:27 -0800
+Message-ID: <CAADnVQ+Z7UcXXBBhMubhcMM=R-dExk-uHtfOLtoLxQ1XxEpqEA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
 To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, wuyun.abel@bytedance.com,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org
-References: <20231208112100.18141-1-tiwei.btw@antgroup.com>
- <20231208143208.GF28727@noisy.programming.kicks-ass.net>
-From:   "Tiwei Bie" <tiwei.btw@antgroup.com>
-In-Reply-To: <20231208143208.GF28727@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+        Song Liu <songliubraving@meta.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joao Moreira <joao@overdrivepizza.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/23 10:32 PM, Peter Zijlstra wrote:
-> On Fri, Dec 08, 2023 at 07:20:59PM +0800, Tiwei Bie wrote:
->> The EEVDF scheduling might fail due to unforeseen issues. Previously,
-> 
-> I might also fly if I jump up. But is there any actual reason to believe
-> something like that will happen?
+On Fri, Dec 8, 2023 at 2:46=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
+> wrote:
+>
+>
+> Ok, did that. Current patches (on top of bpf-next) are here:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/cfi
 
-Thanks for the quick reply! Sorry, after re-reading the commit log,
-it looks confusing to me as well. I didn't mean something like that
-will happen. I just thought it might be worthwhile to have a sanity
-check on 'best'. Because, the 'best' is initialized to NULL and is
-conditionally updated. The added 'WARN_ONCE' on '!best' is more like
-a 'default' case to catch an unreachable case in a 'switch' block.
-There was a similar check in the past that was helpful. And there
-seems to be no harm in doing it. If this is reasonable, I'd like to
-submit a v2 patch.
+Looks really great. The last patch is cleaner than I expected. Good idea.
 
-PS. I just noticed that the subject line should start with a uppercase
-letter according to the rules in the tip tree handbook [1]. The subject
-line should be something like: "sched/fair: Sanity check best in pick_eevdf()".
+> (really should try and write better changelogs, but it's too late)
 
-[1] https://www.kernel.org/doc/html/next/process/maintainer-tip.html#patch-subject
+commit logs look fine except the "pilfer" word that I had to look up
+in the dictionary :)
 
-Regards,
-Tiwei
+> [  247.721063]  ? bpf_throw+0x9b/0xf0
+> [  247.721126]  ? bpf_test_run+0x108/0x350
+> [  247.721191]  ? bpf_prog_5555714b685bf0cf_exception_throw_always_1+0x26=
+/0x26
+> [  247.721301]  ? bpf_test_run+0x108/0x350
+> [  247.721368]  bpf_test_run+0x212/0x350
+> [  247.721433]  ? slab_build_skb+0x22/0x110
+> [  247.721503]  bpf_prog_test_run_skb+0x347/0x4a0
+>
+> But I'm too tired to think staight. Is  this a bpf_callback_t vs
+> bpf_exception_cb difference?
+
+Yep.
+It's easy to fix:
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 0e162eae8639..e36b3f41751e 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1484,7 +1484,7 @@ struct bpf_prog_aux {
+        int cgroup_atype; /* enum cgroup_bpf_attach_type */
+        struct bpf_map *cgroup_storage[MAX_BPF_CGROUP_STORAGE_TYPE];
+        char name[BPF_OBJ_NAME_LEN];
+-       unsigned int (*bpf_exception_cb)(u64 cookie, u64 sp, u64 bp);
++       u64 (*bpf_exception_cb)(u64 cookie, u64 sp, u64 bp, u64, u64);
+ #ifdef CONFIG_SECURITY
+        void *security;
+ #endif
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index fe229b28e4a9..650ebe8ff183 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2537,7 +2537,7 @@ __bpf_kfunc void bpf_throw(u64 cookie)
+         * which skips compiler generated instrumentation to do the same.
+         */
+        kasan_unpoison_task_stack_below((void *)(long)ctx.sp);
+-       ctx.aux->bpf_exception_cb(cookie, ctx.sp, ctx.bp);
++       ctx.aux->bpf_exception_cb(cookie, ctx.sp, ctx.bp, 0, 0);
+        WARN(1, "A call to BPF exception callback should never return\n");
+ }
+
+and with that all of test_progs runs successfully without CFI panics.
+*happy dance*
+
+Only test_progs -t btf/line_info fails suspiciously.
+There we check that line info embedded in the prog looks sane.
+New cfi preamble is probably tripping something.
+It could be a test issue. I'll investigate. It's not a blocker.
+
+Do you mind resending the whole set so that BPF CI can test it
+on different archs ?
