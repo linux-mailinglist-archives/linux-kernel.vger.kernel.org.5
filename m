@@ -2,152 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8504480B3D4
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 11:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD54380B3B0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 11:41:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjLIK4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 05:56:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51818 "EHLO
+        id S229834AbjLIKlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 05:41:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbjLIKjY (ORCPT
+        with ESMTP id S229743AbjLIKlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 05:39:24 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF07173B
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 02:39:30 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c3fe6c08fso2198425e9.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 02:39:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702118369; x=1702723169; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=3A9KBI2OGN1Pl4lBDK8C36QaojUwvAjMDhDDFl3YeK0=;
-        b=oW8MlwVEbdb7uHtNo6uroZ0YD/OFW8QYIqtyPPAfEX/04rOYqjkGjd2LStwGh2kHPn
-         YWYqYwJ7bPXQRzxX7jxMo26Kw2DDOAAR4+Hk8LZ+2RsG5wHI1PxeXILaFguMHmXaZ5Ez
-         qLy/mq3b3Gd1jUemnAeDOWHAt5mE+NVy6p7O7IDwzZFvksWpOK5GoDXtjuvpO9JNTVJd
-         LvDZmt1xagJzv+eVR58ie5V/4q+DnIB5G7Z+KzUKpZXXd00NGDfamN8TiJQY7tgAgjGI
-         k4PyyavB7vxvep6yyfzm9C06gAeUWjumHgwYfN6YxCcz/0G2juZrjSzZswQ4u5XXdhK0
-         N6+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702118369; x=1702723169;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3A9KBI2OGN1Pl4lBDK8C36QaojUwvAjMDhDDFl3YeK0=;
-        b=V8bD2dMiuSBLLFV8z8J+/tot/voCy91knX3o19lBwubk9AMtKKvYKqw/UpGqttlcTD
-         g+ZxO7gvjwcxz4Am7kAB6G7HWOYIOattuYnUikuqwCOh86Zpihyb/zSVsyZitjyyG/ck
-         L1h+7k6TgBr2y1yy6ZqJLZxBmZlN38d3s5YTbguXGqsegBQPZIyGgJSgbnADfpCYq+AH
-         1+N7QuWcOivPskYNu09RvjCLXnkTwsJTSzx7VQL+R16KBru06RgSP3azK0KS4m2fs+Zo
-         4MuW40yTcY1ajUUpWELDNY9o8+qQpgKvzKUKXoANoq7y0V2T4Z7FI0YYoi2765Kfm/DC
-         XVtQ==
-X-Gm-Message-State: AOJu0YxAbeounB29utSKetOmxet5/27BwhNVKauEUGL4UPdRd56MAtqx
-        X47GsGfpdBhct0GLObxNaBXRlw==
-X-Google-Smtp-Source: AGHT+IHrY/lfZZZnH/WwX1SDBc2ofG1ZUj0QjwW0vZ4/PFYjfDDu8R46NI4Bs8vKzdl2NzwxcgK3/g==
-X-Received: by 2002:a7b:c857:0:b0:40c:260d:4527 with SMTP id c23-20020a7bc857000000b0040c260d4527mr560333wml.236.1702118368561;
-        Sat, 09 Dec 2023 02:39:28 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id vk2-20020a170907cbc200b00a1f76acb08fsm1258531ejc.134.2023.12.09.02.39.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Dec 2023 02:39:28 -0800 (PST)
-Message-ID: <390187fb-4ab4-49e6-b382-7be1fa117f01@linaro.org>
-Date:   Sat, 9 Dec 2023 11:39:26 +0100
+        Sat, 9 Dec 2023 05:41:16 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2206EC8
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 02:41:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702118482; x=1733654482;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=0EqpImFANYSBcWTRpu4wgb5jHGr73ztwgg58L42Jzy4=;
+  b=GxNlWUbiK3PhHM07YZNti4IwqMo/9IVPNo8tItkpkvHnrysIe1hSHspS
+   LV4WYLu0AmqBKPPoYBHxlcHfkenx8V7JpP8NxW9xAgrCO0UH7m8GhfADc
+   5Yx8yqei9K8Ssf1OCAXAsiwpaveh/XQBiHEujyyIgoaefvU5lgD9+KJLL
+   T7rdMc5QA0xeBGXQjwKI0oLylgq/KCVQAvM6ihdyhKgtTyI7sechvLgU3
+   sLjZgdzasWP2sw7sKyfV8Juahe811btpWyVFUR3L7C6nNN+FoEE9WoRA5
+   0Ln9LLcbA9Dp2pq+3O4uJcud5TicljqNcSbfpdPTbiu89jCZR+y/G7+Xs
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="16056910"
+X-IronPort-AV: E=Sophos;i="6.04,263,1695711600"; 
+   d="scan'208";a="16056910"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 02:41:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="722137199"
+X-IronPort-AV: E=Sophos;i="6.04,263,1695711600"; 
+   d="scan'208";a="722137199"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 09 Dec 2023 02:41:20 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rBulq-000FEu-0e;
+        Sat, 09 Dec 2023 10:41:18 +0000
+Date:   Sat, 9 Dec 2023 18:41:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: io_uring/poll.c:480:43: sparse: sparse: incorrect type in
+ initializer (different base types)
+Message-ID: <202312091824.Oiptw6wb-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/2] ARM: dts: aspeed: Harma: Add Facebook Harma
- (AST2600) BMC
-To:     Peter Yin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20231206155316.4181813-1-peteryin.openbmc@gmail.com>
- <20231206155316.4181813-3-peteryin.openbmc@gmail.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231206155316.4181813-3-peteryin.openbmc@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 16:53, Peter Yin wrote:
-> Add linux device tree entry related to
-> Harma specific devices connected to BMC SoC.
-> 
-> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
-> ---
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f2e8a57ee9036c7d5443382b6c3c09b51a92ec7e
+commit: b9ba8a4463cd78d0aee520c4bf2569820ac29929 io_uring: add support for level triggered poll
+date:   1 year, 5 months ago
+config: x86_64-alldefconfig (https://download.01.org/0day-ci/archive/20231209/202312091824.Oiptw6wb-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231209/202312091824.Oiptw6wb-lkp@intel.com/reproduce)
 
-...
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312091824.Oiptw6wb-lkp@intel.com/
 
-> +&mac3 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_rmii4_default>;
-> +	no-hw-checksum;
-> +	use-ncsi;
-> +	ncsi-ctrl,start-redo-probe;
-> +	ncsi-ctrl,no-channel-monitor;
-> +	mlx,multi-host;
+sparse warnings: (new ones prefixed by >>)
+   io_uring/poll.c:165:38: sparse: sparse: incorrect type in assignment (different base types) @@     expected signed int [usertype] res @@     got restricted __poll_t @@
+   io_uring/poll.c:165:38: sparse:     expected signed int [usertype] res
+   io_uring/poll.c:165:38: sparse:     got restricted __poll_t
+   io_uring/poll.c:176:56: sparse: sparse: restricted __poll_t degrades to integer
+   io_uring/poll.c:175:66: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected restricted __poll_t [usertype] val @@     got unsigned int @@
+   io_uring/poll.c:175:66: sparse:     expected restricted __poll_t [usertype] val
+   io_uring/poll.c:175:66: sparse:     got unsigned int
+   io_uring/poll.c:175:52: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __poll_t [usertype] mask @@     got unsigned short @@
+   io_uring/poll.c:175:52: sparse:     expected restricted __poll_t [usertype] mask
+   io_uring/poll.c:175:52: sparse:     got unsigned short
+   io_uring/poll.c:181:50: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected signed int [usertype] res @@     got restricted __poll_t [usertype] mask @@
+   io_uring/poll.c:181:50: sparse:     expected signed int [usertype] res
+   io_uring/poll.c:181:50: sparse:     got restricted __poll_t [usertype] mask
+   io_uring/poll.c:216:63: sparse: sparse: restricted __poll_t degrades to integer
+   io_uring/poll.c:216:57: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected restricted __poll_t [usertype] val @@     got unsigned int @@
+   io_uring/poll.c:216:57: sparse:     expected restricted __poll_t [usertype] val
+   io_uring/poll.c:216:57: sparse:     got unsigned int
+   io_uring/poll.c:334:40: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected int mask @@     got restricted __poll_t [usertype] mask @@
+   io_uring/poll.c:334:40: sparse:     expected int mask
+   io_uring/poll.c:334:40: sparse:     got restricted __poll_t [usertype] mask
+   io_uring/poll.c:430:24: sparse: sparse: incorrect type in return expression (different base types) @@     expected int @@     got restricted __poll_t [assigned] [usertype] mask @@
+   io_uring/poll.c:430:24: sparse:     expected int
+   io_uring/poll.c:430:24: sparse:     got restricted __poll_t [assigned] [usertype] mask
+   io_uring/poll.c:451:40: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected int mask @@     got restricted __poll_t [assigned] [usertype] mask @@
+   io_uring/poll.c:451:40: sparse:     expected int mask
+   io_uring/poll.c:451:40: sparse:     got restricted __poll_t [assigned] [usertype] mask
+   io_uring/poll.c:480:45: sparse: sparse: restricted __poll_t degrades to integer
+>> io_uring/poll.c:480:43: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __poll_t [usertype] mask @@     got unsigned int @@
+   io_uring/poll.c:480:43: sparse:     expected restricted __poll_t [usertype] mask
+   io_uring/poll.c:480:43: sparse:     got unsigned int
+   io_uring/poll.c:528:33: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected int mask @@     got restricted __poll_t [assigned] [usertype] mask @@
+   io_uring/poll.c:528:33: sparse:     expected int mask
+   io_uring/poll.c:528:33: sparse:     got restricted __poll_t [assigned] [usertype] mask
+   io_uring/poll.c:528:50: sparse: sparse: incorrect type in argument 6 (different base types) @@     expected int events @@     got restricted __poll_t [usertype] events @@
+   io_uring/poll.c:528:50: sparse:     expected int events
+   io_uring/poll.c:528:50: sparse:     got restricted __poll_t [usertype] events
+   io_uring/poll.c:642:24: sparse: sparse: invalid assignment: |=
+   io_uring/poll.c:642:24: sparse:    left side has type unsigned int
+   io_uring/poll.c:642:24: sparse:    right side has type restricted __poll_t
+   io_uring/poll.c:644:24: sparse: sparse: invalid assignment: |=
+   io_uring/poll.c:644:24: sparse:    left side has type unsigned int
+   io_uring/poll.c:644:24: sparse:    right side has type restricted __poll_t
+   io_uring/poll.c:646:55: sparse: sparse: restricted __poll_t degrades to integer
+   io_uring/poll.c:645:29: sparse: sparse: restricted __poll_t degrades to integer
+   io_uring/poll.c:645:38: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __poll_t @@     got unsigned int @@
+   io_uring/poll.c:645:38: sparse:     expected restricted __poll_t
+   io_uring/poll.c:645:38: sparse:     got unsigned int
+   io_uring/poll.c:741:38: sparse: sparse: invalid assignment: &=
+   io_uring/poll.c:741:38: sparse:    left side has type restricted __poll_t
+   io_uring/poll.c:741:38: sparse:    right side has type int
+   io_uring/poll.c:742:52: sparse: sparse: restricted __poll_t degrades to integer
+   io_uring/poll.c:742:38: sparse: sparse: invalid assignment: |=
+   io_uring/poll.c:742:38: sparse:    left side has type restricted __poll_t
+   io_uring/poll.c:742:38: sparse:    right side has type unsigned int
+   io_uring/poll.c: note: in included file:
+   io_uring/io_uring_types.h:92:37: sparse: sparse: array of flexible structures
 
-There is no such property. Please stop copying downstream code into
-upstream.
+vim +480 io_uring/poll.c
 
-Best regards,
-Krzysztof
+   473	
+   474	int io_arm_poll_handler(struct io_kiocb *req, unsigned issue_flags)
+   475	{
+   476		const struct io_op_def *def = &io_op_defs[req->opcode];
+   477		struct io_ring_ctx *ctx = req->ctx;
+   478		struct async_poll *apoll;
+   479		struct io_poll_table ipt;
+ > 480		__poll_t mask = POLLPRI | POLLERR | EPOLLET;
+   481		int ret;
+   482	
+   483		if (!def->pollin && !def->pollout)
+   484			return IO_APOLL_ABORTED;
+   485		if (!file_can_poll(req->file))
+   486			return IO_APOLL_ABORTED;
+   487		if ((req->flags & (REQ_F_POLLED|REQ_F_PARTIAL_IO)) == REQ_F_POLLED)
+   488			return IO_APOLL_ABORTED;
+   489		if (!(req->flags & REQ_F_APOLL_MULTISHOT))
+   490			mask |= EPOLLONESHOT;
+   491	
+   492		if (def->pollin) {
+   493			mask |= EPOLLIN | EPOLLRDNORM;
+   494	
+   495			/* If reading from MSG_ERRQUEUE using recvmsg, ignore POLLIN */
+   496			if (req->flags & REQ_F_CLEAR_POLLIN)
+   497				mask &= ~EPOLLIN;
+   498		} else {
+   499			mask |= EPOLLOUT | EPOLLWRNORM;
+   500		}
+   501		if (def->poll_exclusive)
+   502			mask |= EPOLLEXCLUSIVE;
+   503		if (req->flags & REQ_F_POLLED) {
+   504			apoll = req->apoll;
+   505			kfree(apoll->double_poll);
+   506		} else if (!(issue_flags & IO_URING_F_UNLOCKED) &&
+   507			   !list_empty(&ctx->apoll_cache)) {
+   508			apoll = list_first_entry(&ctx->apoll_cache, struct async_poll,
+   509							poll.wait.entry);
+   510			list_del_init(&apoll->poll.wait.entry);
+   511		} else {
+   512			apoll = kmalloc(sizeof(*apoll), GFP_ATOMIC);
+   513			if (unlikely(!apoll))
+   514				return IO_APOLL_ABORTED;
+   515		}
+   516		apoll->double_poll = NULL;
+   517		req->apoll = apoll;
+   518		req->flags |= REQ_F_POLLED;
+   519		ipt.pt._qproc = io_async_queue_proc;
+   520	
+   521		io_kbuf_recycle(req, issue_flags);
+   522	
+   523		ret = __io_arm_poll_handler(req, &apoll->poll, &ipt, mask);
+   524		if (ret || ipt.error)
+   525			return ret ? IO_APOLL_READY : IO_APOLL_ABORTED;
+   526	
+   527		trace_io_uring_poll_arm(ctx, req, req->cqe.user_data, req->opcode,
+   528					mask, apoll->poll.events);
+   529		return IO_APOLL_OK;
+   530	}
+   531	
 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
