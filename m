@@ -2,161 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 066E780B4D1
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 15:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F03D80B4E0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 15:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbjLIOXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 09:23:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
+        id S230468AbjLIO2B convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 9 Dec 2023 09:28:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLIOXH (ORCPT
+        with ESMTP id S229519AbjLIO16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 09:23:07 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C9310E0
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 06:23:14 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a1f33c13ff2so246570866b.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 06:23:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702131792; x=1702736592; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4g0Ql0HSI1unyhrbNS+xVTJppYqi/HCOhP+DhZyP3C0=;
-        b=QHoIi1T8IHWPlxDIYARIPVNEzTeAyD7LXqImrtc1ZhTcNS8EhtOkqp4lwJqTIvXvkY
-         R4TeTFUvwiWqxuKyPPuxM+1Nho+KyFyKg4OYx3oDpXO3bxjuIFUtkTYO/678qc8fH2Rl
-         +fqrxKouThlYZcFAKoxd+a3yU0A3vbUb9wqeOe9FE04zicT/kyPnftArjFM2EayR8Jz2
-         UgFiYGXmdp7F/aVJORRPw0N6ne8AGp4m4UNa0Y90GcQqNStGumslRM1HNpzJBKq1cwVI
-         bjhItoMh9jNQ//MrWGn/zKI2kFoHZFSD78hrdrIAW1vnJy3ZEkUi8Kd7gxqvw5yq3Ran
-         ZAPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702131792; x=1702736592;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4g0Ql0HSI1unyhrbNS+xVTJppYqi/HCOhP+DhZyP3C0=;
-        b=q1PYUIL3FkSAjNGbc+8U2ktvshkC+gFjOVYYWpMkfbH/PzxZhw5/jlR9xjTPPvAWtF
-         PpHloEbG5u3Ve5RMfZuERsi/7FsAoCRMGFV1ehWIzeNMjzL19EG/TPOJYicxtcK1e3fo
-         PNPcvUCvGv31Yf3Mm4yAzhfn6N7ZJHusyQkAoUdKH3Dj7957OXNldpJiqMAIjY1fySP2
-         P2oZZl9KdPlsKmWG6lNW3SUaiPylUnrW+UOHUSCLnv2K4kpDa0rHlOlJe7rbWMXuVZq0
-         CPFKKh4RxuZUKVKhgIARfsZZzlsITOa14YOY+9WZ9AKx6zrCTg5T+Wv/1ONo+QiP3NwH
-         X4Rg==
-X-Gm-Message-State: AOJu0YwnUFZcp2ip3zZPGGCcDLTLbgcT72oCWpaxSPrT7iiOnrqISgUh
-        5PIIsFe7bGHSMLICWrkeSCZ9Mg==
-X-Google-Smtp-Source: AGHT+IF/+osBbGWpGXWQzTH9f0PuH26cfc5YGS5PW9IGpDDm9sF3L5L005T3bLJ5Vv7bl/Tc3vVXDQ==
-X-Received: by 2002:a17:906:106:b0:a10:ef07:fa9e with SMTP id 6-20020a170906010600b00a10ef07fa9emr1117110eje.6.1702131792580;
-        Sat, 09 Dec 2023 06:23:12 -0800 (PST)
-Received: from [192.168.36.128] (178235179179.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.179])
-        by smtp.gmail.com with ESMTPSA id tb19-20020a1709078b9300b00a1cd30d06d1sm2311036ejc.14.2023.12.09.06.23.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Dec 2023 06:23:12 -0800 (PST)
-Message-ID: <b71982c3-9f28-4586-8528-3a4f5dbc6eae@linaro.org>
-Date:   Sat, 9 Dec 2023 15:23:10 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/2] irqchip: irq-qcom-mpm: Support passing a slice of
- SRAM as reg space
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
+        Sat, 9 Dec 2023 09:27:58 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01C310E6;
+        Sat,  9 Dec 2023 06:28:01 -0800 (PST)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id A80F624DB84;
+        Sat,  9 Dec 2023 22:27:53 +0800 (CST)
+Received: from EXMBX072.cuchost.com (172.16.6.82) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sat, 9 Dec
+ 2023 22:27:53 +0800
+Received: from localhost.localdomain (202.188.176.82) by EXMBX072.cuchost.com
+ (172.16.6.82) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sat, 9 Dec
+ 2023 22:27:48 +0800
+From:   Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+To:     Xingyu Wu <xingyu.wu@starfivetech.com>,
+        Samin Guo <samin.guo@starfivetech.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-References: <20230328-topic-msgram_mpm-v7-0-6ee2bfeaac2c@linaro.org>
- <20230328-topic-msgram_mpm-v7-2-6ee2bfeaac2c@linaro.org>
- <87fs0csqu1.ffs@tglx>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <87fs0csqu1.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+CC:     Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        <linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 0/2] Add StarFive JH8100 watchdog 
+Date:   Sat, 9 Dec 2023 22:27:21 +0800
+Message-ID: <20231209142723.2060196-1-jisheng.teoh@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [202.188.176.82]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX072.cuchost.com
+ (172.16.6.82)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8.12.2023 15:37, Thomas Gleixner wrote:
-> On Mon, Nov 27 2023 at 16:52, Konrad Dybcio wrote:
-> 
-> The prefix in the subject is wrong. Also please write out register. This
-> is not Xitter.
-Had a feeling it would be too long, but actually it'd be perfect
-72 chars :)
+StarFive's JH8100 watchdog reuses JH7100 register mapping.
+This patchset extends the JH7100 watchdog driver to support
+JH8100 by adding "starfive,jh8100-wdt" to the compatible field.
 
-> 
->> The MPM hardware is accessible to us from the ARM CPUs through a shared
-> 
-> to us? Can you access that hardware? I doubt it.
-With a small enough "stick".. but I get your point
+DT-binding of JH7100 watchdog is also extended to support JH8100.
+Since JH8100 only uses 1 reset signal, update the binding to
+support one reset for "starfive,jh8100-wdt" compatible.
 
-> 
-> Please use neutral tone as documented in Documentation/process/
-> 
->> memory region (RPM MSG RAM) that's also concurrently accessed by other
->> kinds of cores on the system (like modem, ADSP etc.). Modeling this
->> relation in a (somewhat) sane manner in the device tree basically
->> requires us to either present the MPM as a child of said memory region
->> (which makes little sense, as a mapped memory carveout is not a bus),
->> define nodes which bleed their register spaces into one another, or
->> passing their slice of the MSG RAM through some kind of a property.
->>
->> Go with the third option and add a way to map a region passed through
->> the "qcom,rpm-msg-ram" property as our register space.
->>
->> The current way of using 'reg' is preserved for ABI reasons.
-> 
-> It's not an ABI reason. It's backwards compatibility with old device
-> trees, right?
-Yes, I thought of something else.
+Ji Sheng Teoh (2):
+  watchdog: starfive-wdt: Add JH8100 watchdog compatible string
+  dt-bindings: watchdog: starfive,jh7100-wdt: Add compatible for JH8100
 
-> 
-> I'll fix it up for you this time. No need to resend.
-Thanks!
+ .../watchdog/starfive,jh7100-wdt.yaml         | 29 ++++++++++++++-----
+ drivers/watchdog/starfive-wdt.c               |  1 +
+ 2 files changed, 22 insertions(+), 8 deletions(-)
 
-Konrad
+-- 
+2.25.1
+
