@@ -2,77 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 509CF80B259
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 07:26:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF59680B25A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 07:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234318AbjLIG0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 01:26:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
+        id S234320AbjLIG1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 01:27:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjLIG03 (ORCPT
+        with ESMTP id S229441AbjLIG1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 01:26:29 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F004121
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 22:26:32 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-77f3c4914e5so134635285a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 22:26:32 -0800 (PST)
+        Sat, 9 Dec 2023 01:27:19 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3130121
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Dec 2023 22:27:25 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5bdb0be3591so2325220a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Dec 2023 22:27:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1702103191; x=1702707991; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rGEqRbAOqRDZpXV3cM8EuFLtIYKbtDmEW5PqabCIpAE=;
-        b=MZq5jTgVRTRSPm3zRY4rft+fJRk2xCHY19K6F7t2gL/RFh4wmcqtJfjyK2aS1ZOYBW
-         QUGL8BU78j6BnrsmL/bTLfodSHpIFW63qRrllfV6ShR6qfZzR8R0SKc/p7Za2mK1K8h6
-         rkp/ndLAMS2CkUSkzS5BqzI2cyzzcP2K1wwI4=
+        d=linaro.org; s=google; t=1702103245; x=1702708045; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FOywlATSaLLTLIkfA5QrbrC4pRY38TI520iihL5e3qI=;
+        b=VyT/tVB6HmkoGkkl7flJwE3lbmlmTs4zIoQBfOfY7qVyu3KYSRKDrW6J8TfZvYIC/4
+         ggF207DLRC0i2cmlF9fMci3nB6WedTypdjQ4yRtif27OSR2srAZjRgHIpBcVngt/8YB+
+         21293DC4V0QnmCvjjHaNsjNnC/1MYD54IN9jK7SmJC14zRIzpyFx/0/tELEW4lbNHzMo
+         Y5do5IfaLBS53QIGYkscUr4q6SwjfiJyvbdDdFWgg4xckF1BtcjOAtdhMbG5A7mwBEPa
+         hQLVsKxhtDxSUas2YnE5/tuXypJPjTpsoC6CPXzsPojqqdRaSkCH/UYa30hJv1KAFlZ1
+         2TkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702103191; x=1702707991;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rGEqRbAOqRDZpXV3cM8EuFLtIYKbtDmEW5PqabCIpAE=;
-        b=H+/iT4c8on9NnzaP26eMenTxA6v4+Gs8WoUOH8U4g2QqZanr2GKlXgJGYYNoeZrLNV
-         /wEiUK9B98xnKf7JenMvs9nCXl8X0Z2tym5OeCliDxONwHuZN2pmy6xWiQhfeneuNBSR
-         pMK9qH8ZahyYcKvVqAOV9VQhCFjKL0SSB1aKApaIzTCtgCWJj9KR+oShZRXEFiX59ps9
-         aZQKHnvW1Nv7Gu6VkzTs4GsrsqMf9JsofL9PkJvxFDvFx4L8+xExDWQf35X+7TefIzc3
-         CyufBkVbE3xkYubQiFKXpAW3bt5J28HphOAfcrxmlKg0GtsftfwYf8/3mkQPnbs6aeQR
-         qQWA==
-X-Gm-Message-State: AOJu0YzpOvSRljaTFnuSrUaciuTos+xzeDd0lPeBBdeGGg1uoniMkPOy
-        Y86UHSoZjsJiiBC1AF0wvy6L8A==
-X-Google-Smtp-Source: AGHT+IEfmFqu5X1I7POQ6eMTDP02vZ0lPLNqpg+VRe6aWHQnfAy9uIrcy9YbOSXaWuirdwtTFLv3PA==
-X-Received: by 2002:ae9:c013:0:b0:77f:395c:3794 with SMTP id u19-20020ae9c013000000b0077f395c3794mr1423302qkk.106.1702103191221;
-        Fri, 08 Dec 2023 22:26:31 -0800 (PST)
-Received: from [100.115.92.196] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id tn24-20020a05620a3c1800b0077f052fa73bsm1227929qkn.15.2023.12.08.22.26.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 22:26:30 -0800 (PST)
-Message-ID: <0d531690-1240-4356-a647-b4c71a56b31d@joelfernandes.org>
-Date:   Sat, 9 Dec 2023 01:26:27 -0500
+        d=1e100.net; s=20230601; t=1702103245; x=1702708045;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FOywlATSaLLTLIkfA5QrbrC4pRY38TI520iihL5e3qI=;
+        b=iVTSeScG2W2QtNDJeFmIbplu20MO7GBakiiOpQcEau9++D8gIKYfBvo8gAXKP3H8xa
+         DAgppiyGM3bH0sPJZk1r0kCmUeVmEOX1+ekJ9ZOYS5lIEZo0wh7TGrrOK7x6ehIJTsd7
+         btPGFI/05xsTr/UbRn1PKMI+7KSIbsddArtJURykbcXk/rCUe2T7OQyXC5lp7YRXOtKK
+         uC9x2wr9jcdK6ur3PTaHcbTQOCQF0/fxZ6chn8S9ADu0/hVUx2E0u4tG5ksnZmUaqyJk
+         j6/CVdGv+QVaqBN9Y/vfkzBSYppPgRJpHw3WMkIOKOGdxtG5evC88diedZIIc5jk+oyx
+         xKtQ==
+X-Gm-Message-State: AOJu0Yy1nPT3af2ykUejKGiQhc8oBSkaA6AnfBPCSJbzGoTFi98b+MLV
+        FjDfMTbwURIyT0RziCpnO04fJg==
+X-Google-Smtp-Source: AGHT+IG9nHpHovhaTeu532zPZLD/DDj4SvRjGeL7lzhycSyevoMivwHnKhcOWE0TbNrPry+h/gO4sw==
+X-Received: by 2002:a05:6a21:339b:b0:18b:30e2:7e55 with SMTP id yy27-20020a056a21339b00b0018b30e27e55mr1463576pzb.46.1702103245352;
+        Fri, 08 Dec 2023 22:27:25 -0800 (PST)
+Received: from leoy-yangtze.lan ([94.177.131.71])
+        by smtp.gmail.com with ESMTPSA id a4-20020aa78644000000b006ce36ffb0cfsm2579290pfo.33.2023.12.08.22.27.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 22:27:24 -0800 (PST)
+Date:   Sat, 9 Dec 2023 14:27:09 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     kan.liang@linux.intel.com
+Cc:     acme@kernel.org, irogers@google.com, peterz@infradead.org,
+        mingo@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
+        adrian.hunter@intel.com, john.g.garry@oracle.com, will@kernel.org,
+        james.clark@arm.com, mike.leach@linaro.org,
+        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH V2 5/5] perf mem: Clean up is_mem_loads_aux_event()
+Message-ID: <20231209062709.GD2116834@leoy-yangtze.lan>
+References: <20231207192338.400336-1-kan.liang@linux.intel.com>
+ <20231207192338.400336-6-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
-Content-Language: en-US
-To:     Qais Yousef <qyousef@layalina.io>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-References: <20231203011252.233748-1-qyousef@layalina.io>
- <20231205162043.GA2558193@google.com>
- <20231207172032.kto27hfdxa4juq7b@airbuntu>
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <20231207172032.kto27hfdxa4juq7b@airbuntu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207192338.400336-6-kan.liang@linux.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -83,73 +78,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/23 12:20, Qais Yousef wrote:
-> On 12/05/23 16:20, Joel Fernandes wrote:
+On Thu, Dec 07, 2023 at 11:23:38AM -0800, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
->> I think a better approach is not do an anti-CONFIG option and instead do
->> a shorter parameter "rcutree.lazy=0". If CONFIG_RCU_LAZY is set, then we can
->> just default to keeping lazy on. I'd like to avoid proliferation of already
->> large number of RCU config options and more chances of errors.
+> The aux_event can be retrieved from the perf_pmu now. Implement a
+> generic support.
 > 
-> The issue is that we don't want to ship with default on :-)
-
-Yes, so you can ship with rcutree.enable_lazy=0 which this patch adds, no? In
-theory, you can accomplish this by simply CONFIG_RCU_LAZY=y and
-rcutree.enable_lazy=0 or rcutree.lazy=0.
-
-However, I see the inconvenience factor (you have to set a boot parameter
-without making this a purely .config affair) so I am not terribly opposed with
-this patch (I am also guilty of adding a CONFIG option to avoid having to set a
-boot parameter (for unrelated feature), but in my defense I did not know a boot
-parameter existed for the said feature). ;-)
-
->> I also want lazy to be ON for everybody configuring it into the kernel by
->> default (those who don't want it just set CONFIG_RCU_LAZY=n), this is what
+> Reviewed-by: Ian Rogers <irogers@google.com>
+> Tested-by: Ravi Bangoria <ravi.bangoria@amd.com>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> ---
+>  tools/perf/arch/x86/util/mem-events.c | 23 ++++-------------------
+>  tools/perf/util/mem-events.c          | 14 ++++++++++++--
+>  2 files changed, 16 insertions(+), 21 deletions(-)
 > 
-> This is still the default behavior.
-> 
-> And all or nothing approach is not practical. You're telling me if I can't ship
-> with default off, then I must disable it altogether. Adoption will become
-> harder IMHO.
+> diff --git a/tools/perf/arch/x86/util/mem-events.c b/tools/perf/arch/x86/util/mem-events.c
+> index b776d849fc64..62df03e91c7e 100644
+> --- a/tools/perf/arch/x86/util/mem-events.c
+> +++ b/tools/perf/arch/x86/util/mem-events.c
+> @@ -1,11 +1,9 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -#include "util/pmu.h"
+> -#include "util/pmus.h"
+> -#include "util/env.h"
+> -#include "map_symbol.h"
+> -#include "mem-events.h"
+>  #include "linux/string.h"
+> -#include "env.h"
+> +#include "util/map_symbol.h"
+> +#include "util/mem-events.h"
+> +#include "mem-events.h"
+> +
+>  
+>  #define MEM_LOADS_AUX		0x8203
+>  
+> @@ -28,16 +26,3 @@ struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX] = {
+>  	E(NULL,		NULL,		NULL,	false,	0),
+>  	E("mem-ldst",	"%s//",		NULL,	false,	0),
+>  };
+> -
+> -bool is_mem_loads_aux_event(struct evsel *leader)
+> -{
+> -	struct perf_pmu *pmu = perf_pmus__find("cpu");
+> -
+> -	if (!pmu)
+> -		pmu = perf_pmus__find("cpu_core");
+> -
+> -	if (pmu && !perf_pmu__have_event(pmu, "mem-loads-aux"))
+> -		return false;
+> -
+> -	return leader->core.attr.config == MEM_LOADS_AUX;
+> -}
+> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+> index 0d174f161034..d418320e52e3 100644
+> --- a/tools/perf/util/mem-events.c
+> +++ b/tools/perf/util/mem-events.c
+> @@ -103,9 +103,19 @@ static const char *perf_pmu__mem_events_name(int i, struct perf_pmu *pmu)
+>  	return NULL;
+>  }
+>  
+> -__weak bool is_mem_loads_aux_event(struct evsel *leader __maybe_unused)
+> +bool is_mem_loads_aux_event(struct evsel *leader)
+>  {
+> -	return false;
+> +	struct perf_pmu *pmu = leader->pmu;
+> +	struct perf_mem_event *e;
+> +
+> +	if (!pmu || !pmu->mem_events)
+> +		return false;
+> +
+> +	e = &pmu->mem_events[PERF_MEM_EVENTS__LOAD];
+> +	if (!e->aux_event)
+> +		return false;
+> +
+> +	return leader->core.attr.config == e->aux_event;
+>  }
 
-No, that's not what I said. You misunderstood me (which is probably my fault at
-not being more clear). It is not all or nothing. I am just saying you can
-accomplish "default off" by just setting the boot parameter. With this patch,
-you are not willing to do that out of convenience, which I can understand but
-still we should at least have a discussion about that.
+I am wandering if we need to set the field 'aux_event' for Arm SPE.
 
-> 
->> tglx also suggested that's why we made changed of our initial prototypes of
->> call_rcu_lazy() and instead we made call_rcu() to put everyone on the lazy
->> train and not add more APIs (thus causing more confusion to kernel
->> developers). This was a bit painful, but it was worth it.
-> 
-> I think implementation details make sense, but orthogonal to the problem of
-> enabling CONFIG_RCU_LAZY=y but still ship with default off. It is a risky
-> change and we want to start staging with default off first.
+So a quesiton maybe is not relevant with this patch actually, we can
+see is_mem_loads_aux_event() is invoked in the file util/record.c:
 
-Never had any issue with that. I very much want to see this safely rolled out to
-Android. ;-)
+  static struct evsel *evsel__read_sampler(struct evsel *evsel, struct evlist *evlist)
+  {
+          struct evsel *leader = evsel__leader(evsel);
 
-> Not allowing this
-> in upstream means I'll either have to resort to keep it disabled, or carry out
-> of tree patch to get what I want. Both of which would be unfortunate.
+          if (evsel__is_aux_event(leader) || arch_topdown_sample_read(leader) ||
+              is_mem_loads_aux_event(leader)) {
+              ...
+          }
+  
+          return leader;
+  }
 
-There is already precedent for building things into the kernel but keeping them
-default off, so I don't have an issue with the experimentation use case. I was
-just discussing whether the additional CONFIG is really needed when you already
-have added a boot param to keep it default-off. If you have an argument for why
-that would be really helpful [1].
+Has evsel__is_aux_event() covered the memory load aux event?  If it's,
+then is_mem_loads_aux_event() is not needed anymore.
 
-Also, nit: rcutree.enable_lazy is probably better than rcutree.enable_rcu_lazy.
-The 'rcu' is redundant.
-
-Other than that, the patch LGTM but if you could update the commit log with
-details about [1], that would be great. And while at it, you could add my tag:
-
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-thanks,
-
- - Joel
-
+Thanks,
+Leo
