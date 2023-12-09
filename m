@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DD980B5C4
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 18:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BCB80B5D5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Dec 2023 19:15:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbjLIRyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 12:54:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60366 "EHLO
+        id S229586AbjLISGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 13:06:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbjLIRyO (ORCPT
+        with ESMTP id S229485AbjLISGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 12:54:14 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDDD10D9
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 09:54:20 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-54c64316a22so4196814a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 09:54:20 -0800 (PST)
+        Sat, 9 Dec 2023 13:06:12 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C24E5
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 10:06:17 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54c9116d05fso4379930a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 10:06:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702144459; x=1702749259; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702145175; x=1702749975; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=HvHND4P/HoZ0eN5ekFdH68Ldcd5nj6SfIoXhqMddDPY=;
-        b=I4xr/Iv6SLgHHpwdkZtQCtK4UjSqyVe1HwfXmM7YRkjlRRrcSunBkhcVCzgj/gQt4c
-         ZGxal6YgS+6Y8oPmPvGTSilrUfyQJgD1uHTQ5CtzxLYLH/iBLg77ny/zvSnjSC3XwdaS
-         NqTJ1rphqOhZ8449ZshDQLWin1gOejFml1n7SQxBswVY7S145nrkI3hN9JVth6AF8dCh
-         RIUzSByM+R2gyiQ473lGLr9AzPmrSLyH1879BpUvsYmWkWvDe33FIhrFi+rUUKQsLlpW
-         3UMNvbtXi2Z9x9fmjv0YEzCNKNaw2sOul/2/+TahAdC6MAprQDidhE+hrtLDM/MXoogP
-         +aLw==
+        bh=S92a7fqULbrEMilkRlrKeNQnqm+Il9bmhuzzD2asOkg=;
+        b=NizuPfqWMgVWF4VcEgAx40XFLOAEllWZse4VnaUNpUibeysy2Tnl54KESJiWyHZciP
+         jEyc0QQTls+cBoKfrpLngh2ddcWCv96Yo4SYGcSbhCpVFQzh3d1bDeYakrELp+LWE31o
+         GVn9EQP/1cXom56mSZ0mYcOPOak7K6Ms3+8ZDrLDCoG/44WVL9N2EkhTV/84bgQlAcUe
+         GtyA/lAReRFyvAa1eVqMbML66q8+jHkr+Z0oFwvsXCtdA6j//gfm4IC5kmxIA7seI089
+         8/daFBhQp5Nhq62rC7ip3H02ca3/eto/BsmG6pDdbplGH/4ZBxdfUCxayxwkVCEIREKd
+         Cwyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702144459; x=1702749259;
+        d=1e100.net; s=20230601; t=1702145175; x=1702749975;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HvHND4P/HoZ0eN5ekFdH68Ldcd5nj6SfIoXhqMddDPY=;
-        b=G3VX4zdgVHdm0u4TwgGLZirMgJYIuMn9elBE6NCxv4tFlPJjYoSD73dewKn+yuqwC9
-         UGpXfvjByJzjThlWu1f+R9SbjIp1hLKfsHNkAes41OSxj53IbRI8whxIvnJ9wYE90Sid
-         9QKN4cBVdHE1DVl3toSJi4PS8GecT3+i9pZ1YltKvDBBLBl2SGBRsJSHWhEBr1ZCCE8y
-         oTzc49iCTDGNC4eVOkBs8bMEYE22L2MqV5ovFCsF/reJIG9pXjZF+kMUxdcou4F5BFWt
-         7dx7zoA3+nUz26jiuLZNtv++EKbS9S7lhkX9Wyr0sh7MRVH9dnl85LxBkrCqOaJwBA4I
-         ZqNA==
-X-Gm-Message-State: AOJu0YxNI3ptJA03f6SlOvwSYr1VmfPFFdW3FnBnvKr5aey0CJGhe9o+
-        s9m8vTFuRtgRUF5m8vtFHxuI1g==
-X-Google-Smtp-Source: AGHT+IFbUBIScunhp/10BaKOKvxkgMMwaF3LauB+6T2wH4SVYcWBBxfmq1CkdZ3cs0JM9TjOOGO9cQ==
-X-Received: by 2002:a17:907:6190:b0:a1f:6761:c8dc with SMTP id mt16-20020a170907619000b00a1f6761c8dcmr796454ejc.124.1702144458937;
-        Sat, 09 Dec 2023 09:54:18 -0800 (PST)
+        bh=S92a7fqULbrEMilkRlrKeNQnqm+Il9bmhuzzD2asOkg=;
+        b=BHn42m3eg+4tP8vpcfQVbcTwLAGrrqAjHZGPZ7gOYMOlNPIHC/rNjQs1vnZKK2WRoo
+         bs7ETuBKkBioWFJAwMwdzlXIohAEdm7ncAEbfO3MFd1XR6qT3W3h/xM8SmR20NYJUqei
+         nKw4ufzjjouJilmVT26iS20IMea56WXBWkqDIlj70HtikStJSQyOw2UV2DhA4RfY61vR
+         qmsm3ExvsT+QAcWNfjD+NN4HnXy5+9BqKzmN65bIKPGEcABr6TLXm/xcsw16NOJWdPn6
+         xtujSxdiLrYvV7D48VE9hs8KkkTyqrzPgdZBdkmBF2NPvgjDd5d4cyM6SCKGBa39LxY7
+         sOqg==
+X-Gm-Message-State: AOJu0YzT+l8oS1sDazl7YdZRMh7Me8y5D0Fm9OupPwHx2kL8h2vtGmC0
+        d6FE5VSDs8cN9GkMGRRurn1FPH7+oKjmWKcayt0=
+X-Google-Smtp-Source: AGHT+IGL+RUzfiNlVYUbxi/RKdaYhCItlqf4dDEDP5kV2JQ/KdKdV2e0gKg2iTuBh4O/UcwbdVurpw==
+X-Received: by 2002:a50:85c6:0:b0:54c:8890:6ff2 with SMTP id q6-20020a5085c6000000b0054c88906ff2mr670070edh.13.1702145175453;
+        Sat, 09 Dec 2023 10:06:15 -0800 (PST)
 Received: from [192.168.36.128] (178235179179.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.179])
-        by smtp.gmail.com with ESMTPSA id rm6-20020a1709076b0600b00a1bec12448csm2457107ejc.150.2023.12.09.09.54.16
+        by smtp.gmail.com with ESMTPSA id h28-20020a50cddc000000b0054c72a6a07csm1948184edj.84.2023.12.09.10.06.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Dec 2023 09:54:18 -0800 (PST)
-Message-ID: <3f921a53-8eac-48e6-be17-43c07a0313d0@linaro.org>
-Date:   Sat, 9 Dec 2023 18:54:16 +0100
+        Sat, 09 Dec 2023 10:06:15 -0800 (PST)
+Message-ID: <76f18323-a59e-4724-96ec-6306e5dcd2dc@linaro.org>
+Date:   Sat, 9 Dec 2023 19:06:12 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] interconnect: qcom: Add MSM8909 interconnect provider
- driver
+Subject: Re: [PATCH v4 2/3] remoteproc: qcom: pas: make region assign more
+ generic
 Content-Language: en-US
-To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        Georgi Djakov <djakov@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Adam Skladowski <a39.skl@gmail.com>
-References: <20231206-icc-msm8909-v1-0-fe0dd632beff@kernkonzept.com>
- <20231206-icc-msm8909-v1-2-fe0dd632beff@kernkonzept.com>
+        Mukesh Ojha <quic_mojha@quicinc.com>
+References: <20231208-topic-sm8650-upstream-remoteproc-v4-0-a96c3e5f0913@linaro.org>
+ <20231208-topic-sm8650-upstream-remoteproc-v4-2-a96c3e5f0913@linaro.org>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -105,12 +106,12 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231206-icc-msm8909-v1-2-fe0dd632beff@kernkonzept.com>
+In-Reply-To: <20231208-topic-sm8650-upstream-remoteproc-v4-2-a96c3e5f0913@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -118,42 +119,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6.12.2023 15:35, Stephan Gerhold wrote:
-> From: Adam Skladowski <a39.skl@gmail.com>
+On 8.12.2023 16:04, Neil Armstrong wrote:
+> The current memory region assign only supports a single
+> memory region.
 > 
-> Add driver for interconnect busses found in MSM8909 based platforms.
-> The topology consists of three NoCs that are partially controlled by a
-> RPM processor.
+> But new platforms introduces more regions to make the
+> memory requirements more flexible for various use cases.
+> Those new platforms also shares the memory region between the
+> DSP and HLOS.
 > 
-> In the downstream/vendor kernel from Qualcomm there is an additional
-> "mm-snoc". However, it doesn't have a separate RPM clock assigned. It
-> looks like this is actually the same NoC in hardware and the "mm-snoc"
-> was only defined to assign a different "qcom,util-fact". In mainline we
-> can represent this by assigning the equivalent "ab_coeff" to all the
-> nodes that are part of "mm-snoc" downstream.
-Worth mentioning that snoc_mm used the same clock as snoc, which is not
-obvious with some of these older designs:
-
-static DEFINE_CLK_VOTER(snoc_msmbus_a_clk,  &snoc_a_clk.c,  LONG_MAX);
-static DEFINE_CLK_VOTER(snoc_mm_msmbus_a_clk,  &snoc_a_clk.c,  LONG_MAX);
-
+> To handle this, make the region assign more generic in order
+> to support more than a single memory region and also permit
+> setting the regions permissions as shared.
+> 
+> Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
 [...]
 
+> +	for (offset = 0; offset < adsp->region_assign_count; ++offset) {
+> +		struct reserved_mem *rmem = NULL;
 > +
-> +static struct platform_driver msm8909_noc_driver = {
-> +	.probe = qnoc_probe,
-> +	.remove = qnoc_remove,
-> +	.driver = {
-> +		.name = "qnoc-msm8909",
-> +		.of_match_table = msm8909_noc_of_match,
-> +		.sync_state = icc_sync_state,
-> +	},
-> +};
-> +module_platform_driver(msm8909_noc_driver);
-And you may want this to be a bit higher up in the food chain!
+> +		node = of_parse_phandle(adsp->dev->of_node, "memory-region",
+> +					adsp->region_assign_idx + offset);
+> +		if (node)
+> +			rmem = of_reserved_mem_lookup(node);
+> +		of_node_put(node);
+Shouldn't this only be called when parse_phandle succeeds? (separate
+patch with a fix + cc stable if so?)
 
-Otherwise I don't see anything obviously wrong, I assume you tested
-this without clk/pd_ignore_unused, with rpmcc cleanup and can confirm
-the QoS programming went through without angry resets.
+> +		if (!rmem) {
+> +			dev_err(adsp->dev, "unable to resolve shareable memory-region index %d\n",
+> +				offset);
+> +			return -EINVAL;
+> +		}
+>  
+> -	perm.vmid = QCOM_SCM_VMID_MSS_MSA;
+> -	perm.perm = QCOM_SCM_PERM_RW;
+> +		if (adsp->region_assign_shared)  {
+> +			perm[0].vmid = QCOM_SCM_VMID_HLOS;
+> +			perm[0].perm = QCOM_SCM_PERM_RW;
+> +			perm[1].vmid = adsp->region_assign_vmid;
+> +			perm[1].perm = QCOM_SCM_PERM_RW;
+> +			perm_size = 2;
+> +		} else {
+> +			perm[0].vmid = adsp->region_assign_vmid;
+> +			perm[0].perm = QCOM_SCM_PERM_RW;
+> +			perm_size = 1;
+> +		}
+>  
+> -	adsp->region_assign_phys = rmem->base;
+> -	adsp->region_assign_size = rmem->size;
+> -	adsp->region_assign_perms = BIT(QCOM_SCM_VMID_HLOS);
+> +		adsp->region_assign_phys[offset] = rmem->base;
+> +		adsp->region_assign_size[offset] = rmem->size;
+> +		adsp->region_assign_perms[offset] = BIT(QCOM_SCM_VMID_HLOS);
+>  
+> -	ret = qcom_scm_assign_mem(adsp->region_assign_phys,
+> -				  adsp->region_assign_size,
+> -				  &adsp->region_assign_perms,
+I think this should be renamed to region_assign_owner(s)
+
+> -				  &perm, 1);
+> -	if (ret < 0) {
+> -		dev_err(adsp->dev, "assign memory failed\n");
+> -		return ret;
+> +		ret = qcom_scm_assign_mem(adsp->region_assign_phys[offset],
+> +					  adsp->region_assign_size[offset],
+> +					  &adsp->region_assign_perms[offset],
+> +					  perm, perm_size);
+> +		if (ret < 0) {
+> +			dev_err(adsp->dev, "assign memory %d failed\n", offset);
+> +			return ret;
+> +		}
+>  	}
+>  
+>  	return 0;
+> @@ -629,20 +653,23 @@ static int adsp_assign_memory_region(struct qcom_adsp *adsp)
+>  static void adsp_unassign_memory_region(struct qcom_adsp *adsp)
+>  {
+>  	struct qcom_scm_vmperm perm;
+> +	int offset;
+>  	int ret;
+>  
+> -	if (!adsp->region_assign_idx)
+> +	if (!adsp->region_assign_idx || adsp->region_assign_shared)
+So when it's *shared*, we don't want to un-assign it?
 
 Konrad
