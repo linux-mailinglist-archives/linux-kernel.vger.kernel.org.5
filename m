@@ -2,136 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A71C80B9B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 08:36:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03DEF80B9AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 08:36:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbjLJHaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 02:30:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60696 "EHLO
+        id S231644AbjLJHgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 02:36:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjLJHaK (ORCPT
+        with ESMTP id S229481AbjLJHgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 02:30:10 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFF7BD;
-        Sat,  9 Dec 2023 23:30:14 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so2880709a12.1;
-        Sat, 09 Dec 2023 23:30:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702193414; x=1702798214; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PJZ68NEWh29H4sGqzC2fIlY8OiY/jserKoz9/XMRFts=;
-        b=YQj5MxqpFmS3F4wAUDUkndAhFQvwmEhEN4RBTWS5eFoLHQO/vKcpKDrrwo8mE9xAHH
-         5CcU4J0AXUbt5bTOkJXpReIw4fAg8b0wD6h8IGL5voq2ny53uxWJzMCmsKc+9bicUXZ0
-         QinC7tfuubQDwykKlxvUU5gmXl9cwHCBT/gCwu6atH8zbn8Tfcf9UGaqlvped8hpPwfr
-         SossnzV3V1MdkcpzgHjnV0vCBEiVvJYErXpVC4q5EvMolzWEkknOTf3UTNmyBsx6WF5u
-         /bRXbZ2iXOq9GBUgqsMEt3pwhy9y3BhUNn8m9Cgt4Imns6FO3nkcy7TVtjUfjFHykrds
-         Jetw==
+        Sun, 10 Dec 2023 02:36:00 -0500
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A938A106
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 23:36:06 -0800 (PST)
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3b9dff5942fso4939923b6e.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 23:36:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702193414; x=1702798214;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702193766; x=1702798566;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PJZ68NEWh29H4sGqzC2fIlY8OiY/jserKoz9/XMRFts=;
-        b=H6csmPLg26ij78VGkHl5Wzzgra+pNPjl4hrPffqOUlf+NTQAIK5hYHivQ1uneREpdP
-         uuIfDiMkO68DfzB2IwunWZL7RtCMpbhAXGSj2fLAChi0uGqXpe3iUB+QxLXr1K3BKLkN
-         9WljgCadWifRLtqDEHbAnoJ/9kdcaR+AX1elznaIGSz7imcb1r40rJ92bPDKH5gvR7Jf
-         v8vn/eR+Oza38kr9KmSBQKn4jdsv2CDpFMcR5wXKojrt+cg2syEpNUy/E0zj5f+0Y1pS
-         klIfxP0hSj4e1eFLKRFm4BxVwv5p2XFBS9A/BibTwasufliOwuBAHbtD/TdkvOdbYG/B
-         oG2g==
-X-Gm-Message-State: AOJu0YyyGXuG3ntcGB7q41lMGOUte906GEh9SuoVUpjoKl+kN3cXsyl6
-        sssLmg8dYN3Ts9ucFgBLHwQ=
-X-Google-Smtp-Source: AGHT+IE4E/haG2aufMTkcvK3NaUCG+up+gPhQuwhMTIAchkganZEWSFvdmizSOzYzpS7+oaJliX8vg==
-X-Received: by 2002:a17:902:f686:b0:1cf:cf34:d4fa with SMTP id l6-20020a170902f68600b001cfcf34d4famr2556606plg.28.1702193414038;
-        Sat, 09 Dec 2023 23:30:14 -0800 (PST)
-Received: from [192.168.0.106] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id hx11-20020a17090b440b00b002886e13bcbesm6075884pjb.56.2023.12.09.23.30.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Dec 2023 23:30:13 -0800 (PST)
-Message-ID: <7cf21703-391a-4123-b862-14a1af62aeaa@gmail.com>
-Date:   Sun, 10 Dec 2023 14:30:08 +0700
+        bh=fSmnz/5E1URbsDXTcRSZ8VE8A0zVjiZdSSSYw32sibo=;
+        b=cGJ1xc7KY4qIuvqXUZrviUtfjbTdGVAqgI4wnJBEgsOtnnVKGiuvGP/AMZafoaW2aO
+         hnnpjzhsXVkBkAzMxY9vrdgBkM9h+C5QF41hhJ+nPVHvFl9qEBvo+0eQIKE0yestcNtC
+         ZsP2x3ZvFTYT9m82VOvjOO7Zeli85mthFSykdls3pR3jZo1TFxo6PCwrBCTmBq7lpFll
+         1tdrBsFtTyFFrE+m5cgvCoUHC/FGXHPPiaRK5lQZl3ig3wDWFZfzNXoDjVg3VmGdFUfI
+         qNRgpyIUXuQLoxd4axq+ubbmF3fFkEO1QOYWjWvQAh5bouHc+6gPAxqO+R+2yb+S5PLN
+         PUcQ==
+X-Gm-Message-State: AOJu0Yz0LR7pAzH3F8dLukHEa+CSBySj78EL6zZfyfllcxZVDu50YzMo
+        cp4y3hYLKLrYJOs0FWR7dG40WuzP7HWyw6GHqMUXZUpZZHUB
+X-Google-Smtp-Source: AGHT+IFCxGMtStiqgM/51Xvk++2OvLNjOZFLH428tWDczK3ODa2dJIv7TSfs+moj7pW8y63wRrsedl1AJYFXWEIus0LOjyCw1cvf
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Fwd: Kernel 6.6.1 hangs on "loading initial ramdisk"
-Content-Language: en-US
-To:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     bwg <whirl@mniotilta.ca>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, shibedrill1@gmail.com
-References: <9057d7de-f2e0-44ba-bec7-8b0861b2a850@gmail.com>
- <ZXVdZE3D-KFBqPnj@archie.me>
- <fe7a2b72-9418-42dc-b6fb-2aa93bc4eabc@leemhuis.info>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <fe7a2b72-9418-42dc-b6fb-2aa93bc4eabc@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:221c:b0:3ad:29a4:f54f with SMTP id
+ bd28-20020a056808221c00b003ad29a4f54fmr2555744oib.4.1702193765959; Sat, 09
+ Dec 2023 23:36:05 -0800 (PST)
+Date:   Sat, 09 Dec 2023 23:36:05 -0800
+In-Reply-To: <tencent_B4064DC995AEF2AEC3CC9E27EE06ED12D706@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c2518e060c22de21@google.com>
+Subject: Re: [syzbot] [jfs?] UBSAN: array-index-out-of-bounds in diNewExt
+From:   syzbot <syzbot+553d90297e6d2f50dbc7@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/23 14:15, Linux regression tracking (Thorsten Leemhuis) wrote:
-> [Moved a lot of people CCed in the previous mail to BCC, as I'm pretty
-> sure they do not care about this regression; at the same time add the
-> x86 maintainers and the efi list.]
-> 
-> [Top posting for once to make this easier accessible for everyone.]
-> 
-> Ard, Boris, just to make it obvious: the regression report quoted below
->  was bisected to a1b87d54f4e45f ("x86/efistub: Avoid legacy decompressor
-> when doing EFI boot") [v6.6-rc1] from Ard which committed by Boris.
-> There are two users that seem to be affected by this. Both seem to run
-> Arch. For details see:
-> https://bugzilla.kernel.org/show_bug.cgi?id=218173
-> 
-> Bagas, FWIW, I know you want to help, but your previous mail is not
-> helpful at all -- on the contrary, as it is yet another one that is
-> likely hurting my regression tracking efforts[1]. Please stop and just
-> tell me about things like this in a private mail, as we agreed on earlier.
-> 
-> Ciao, Thorsten
-> 
-> [1] This is why: You just added Ard and Boris to the CC, but did not
-> make it obvious *why* they should care about that mail. They (and all
-> the other recipients) for sure will have no idea what a1b87d54f4e45f
-> exactly is, so you should have mentioned the commit summary. And doing
-> that after a big quote makes it worse, as many people now need to scroll
-> down to see if that mails contains something that might be relevant for
-> them -- and just a waste of time if not.
-> 
-> Furthermore, sending the first mail of the thread to all those people
-> and lists was likely not very wise, as nobody is likely to care in a
-> case like this. And not removing all those people and lists in the
-> second mail of the thread make it a lot worse, as it became clear that
-> many people and list do not care about it now that the regression was
-> bisected. Hence it's best to remove them, we all get enough mail already.
-> 
-> All that makes people ignore mails from you -- and maybe about
-> regression tracking in general. :-(
-> 
+Hello,
 
-Oops, I didn't greet additional Cc's as you mentioned (that's my
-tendency when handling regressions).
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+UBSAN: array-index-out-of-bounds in diNewExt
 
-So maybe we continue tracking this on Bugzilla or keeping on ML or
-both?
+loop0: detected capacity change from 0 to 32768
+agno: -878706688, ipimap: ffff88806b342930, iagp: ffff888024d4f000, sbi: ffff888016657a00, agl2s: 13
+agno: -878706688, ipimap: ffff88806b342930, iagp: ffff888024d4f000, sbi: ffff888016657a00, agl2s: 13
+================================================================================
+UBSAN: array-index-out-of-bounds in fs/jfs/jfs_imap.c:2367:2
+index -878706688 is out of range for type 'struct iagctl[128]'
+CPU: 0 PID: 5481 Comm: syz-executor.0 Not tainted 6.7.0-rc4-syzkaller-00009-gbee0e7762ad2-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_out_of_bounds+0x11c/0x150 lib/ubsan.c:348
+ diNewExt+0x3b39/0x3e00 fs/jfs/jfs_imap.c:2367
+ diAllocExt fs/jfs/jfs_imap.c:1949 [inline]
+ diAllocAG+0xbe8/0x1e50 fs/jfs/jfs_imap.c:1666
+ diAlloc+0x1d3/0x1760 fs/jfs/jfs_imap.c:1587
+ ialloc+0x8f/0x900 fs/jfs/jfs_inode.c:56
+ jfs_mkdir+0x1c5/0xb90 fs/jfs/namei.c:225
+ vfs_mkdir+0x2f1/0x4b0 fs/namei.c:4106
+ do_mkdirat+0x264/0x3a0 fs/namei.c:4129
+ __do_sys_mkdirat fs/namei.c:4144 [inline]
+ __se_sys_mkdirat fs/namei.c:4142 [inline]
+ __x64_sys_mkdirat+0x89/0xa0 fs/namei.c:4142
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x45/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f857287b5e7
+Code: 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 02 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f8571bfdee8 EFLAGS: 00000246 ORIG_RAX: 0000000000000102
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f857287b5e7
+RDX: 00000000000001ff RSI: 0000000020000140 RDI: 00000000ffffff9c
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000020000140
+R13: 00007f8571bfdf40 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+================================================================================
 
-Thanks.
 
--- 
-An old man doll... just what I always wanted! - Clara
+Tested on:
+
+commit:         bee0e776 Merge tag 'for-linus-iommufd' of git://git.ke..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=135fd132e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b45dfd882e46ec91
+dashboard link: https://syzkaller.appspot.com/bug?extid=553d90297e6d2f50dbc7
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10668e46e80000
 
