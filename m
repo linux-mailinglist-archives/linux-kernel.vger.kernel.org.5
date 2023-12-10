@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8B580BA65
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 12:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CF580BA5F
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 12:36:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbjLJLgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 06:36:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53900 "EHLO
+        id S232321AbjLJLgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 06:36:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232032AbjLJLgA (ORCPT
+        with ESMTP id S232064AbjLJLgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 06:36:00 -0500
+        Sun, 10 Dec 2023 06:36:04 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E541DFE
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 03:36:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2476C433C7;
-        Sun, 10 Dec 2023 11:36:04 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B156F11F
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 03:36:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C726C433CB;
+        Sun, 10 Dec 2023 11:36:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702208166;
-        bh=hIUlpOJ3aDB7nGkcog2qFsHcADMxnRlMDotLaomis/4=;
+        s=k20201202; t=1702208168;
+        bh=17M2pG5LF+yTUT42vRyb2J9RQolF4UPApTsylmOgOqo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K6wvItDiHuOzned+j4BhIjpFIQoZDWqwoE4wwGaR4Fw+eY5+AkRtDWnwteNFlwMrv
-         +CaTN0Kh7EwMjhsSMWh/CfmCoTSjUstW04Q4ro+besEvfsC0nVcfwpr256ctyDlolw
-         QCKDXMbUs5vv2nMM4qA7zii7GlhNcLsokDcrr8yVYiHm9OLgW6xznggE816B5fwOnb
-         o/8/3pCllvh2sUfJolQ+l0fVepwd1uImEVX8aMmesN5mM8e61tuCJROLZI5Pl1XUrO
-         xOK08NqPz5D2euciBnLvdkzhWYo2cVrDSUTy+0hPQoWwhowAezT3QysEst52Hq92Tn
-         GYBWdA36GuvXw==
+        b=VhKpZ6bMkrzIwnh96I+1vV0Y2OCIZV/ymzd7baK1mrWUah3lbAoHJjqI7MB/s3SRm
+         Vl4hGgaRM7HzUXf8iw7IiZQTR7CQzPHnmb0NF2RrsVZY68DRUwdGsaX3fwKzgXd2zJ
+         JKdR5UcjWAcNU3PFutjamQmTrdJ6ubvaKMJdHjtaw927MIKe9aFFER8GfR5+fqAqdJ
+         s7YwuahFs/xFV/RUX/bvsLCDeKpZ+TG9cuTsIiDfGsdYKC8ihmdV605qwAcFRtmUXk
+         FyPeza8fPKgHSCoeyAaBiwEjhicRI1nEZKg88Q61Hs5j/YhVbRf2K4ZkP0h16h6wGZ
+         5KsDwZJHvABfQ==
 From:   Chao Yu <chao@kernel.org>
 To:     jaegeuk@kernel.org
 Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <chao@kernel.org>,
-        Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 4/6] f2fs: don't set FI_PREALLOCATED_ALL for partial write
-Date:   Sun, 10 Dec 2023 19:35:45 +0800
-Message-Id: <20231210113547.3412782-4-chao@kernel.org>
+        linux-kernel@vger.kernel.org, Chao Yu <chao@kernel.org>
+Subject: [PATCH 5/6] f2fs: fix to restrict condition of compress inode conversion
+Date:   Sun, 10 Dec 2023 19:35:46 +0800
+Message-Id: <20231210113547.3412782-5-chao@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231210113547.3412782-1-chao@kernel.org>
 References: <20231210113547.3412782-1-chao@kernel.org>
@@ -50,39 +49,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In f2fs_preallocate_blocks(), if it is partial write in 4KB, it's not
-necessary to call f2fs_map_blocks() and set FI_PREALLOCATED_ALL flag.
+This patch adds i_size check during compress inode conversion in order
+to avoid .page_mkwrite races w/ conversion.
 
-Cc: Eric Biggers <ebiggers@google.com>
+Fixes: 4c8ff7095bef ("f2fs: support data compression")
 Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- fs/f2fs/file.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ fs/f2fs/f2fs.h | 8 +++++++-
+ fs/f2fs/file.c | 5 ++---
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 65294e3b0bef..c9b8a1953913 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -4397,13 +4397,19 @@ static inline int set_compress_context(struct inode *inode)
+ #endif
+ }
+ 
++static inline bool inode_has_data(struct inode *inode)
++{
++	return (S_ISREG(inode->i_mode) &&
++		(F2FS_HAS_BLOCKS(inode) || i_size_read(inode)));
++}
++
+ static inline bool f2fs_disable_compressed_file(struct inode *inode)
+ {
+ 	struct f2fs_inode_info *fi = F2FS_I(inode);
+ 
+ 	if (!f2fs_compressed_file(inode))
+ 		return true;
+-	if (S_ISREG(inode->i_mode) && F2FS_HAS_BLOCKS(inode))
++	if (inode_has_data(inode))
+ 		return false;
+ 
+ 	fi->i_flags &= ~F2FS_COMPR_FL;
 diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 5c2f99ada6be..1a3c29a9a6a0 100644
+index 1a3c29a9a6a0..8af4b29c3e1a 100644
 --- a/fs/f2fs/file.c
 +++ b/fs/f2fs/file.c
-@@ -4561,13 +4561,14 @@ static int f2fs_preallocate_blocks(struct kiocb *iocb, struct iov_iter *iter,
- 			return ret;
+@@ -1922,8 +1922,7 @@ static int f2fs_setflags_common(struct inode *inode, u32 iflags, u32 mask)
+ 
+ 			f2fs_down_write(&F2FS_I(inode)->i_sem);
+ 			if (!f2fs_may_compress(inode) ||
+-					(S_ISREG(inode->i_mode) &&
+-					F2FS_HAS_BLOCKS(inode))) {
++					inode_has_data(inode)) {
+ 				f2fs_up_write(&F2FS_I(inode)->i_sem);
+ 				return -EINVAL;
+ 			}
+@@ -3996,7 +3995,7 @@ static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+ 		goto out;
  	}
  
--	/* Do not preallocate blocks that will be written partially in 4KB. */
- 	map.m_lblk = F2FS_BLK_ALIGN(pos);
- 	map.m_len = F2FS_BYTES_TO_BLK(pos + count);
--	if (map.m_len > map.m_lblk)
--		map.m_len -= map.m_lblk;
--	else
--		map.m_len = 0;
-+
-+	/* Do not preallocate blocks that will be written partially in 4KB. */
-+	if (map.m_len <= map.m_lblk)
-+		return 0;
-+
-+	map.m_len -= map.m_lblk;
- 	map.m_may_create = true;
- 	if (dio) {
- 		map.m_seg_type = f2fs_rw_hint_to_seg_type(inode->i_write_hint);
+-	if (F2FS_HAS_BLOCKS(inode)) {
++	if (inode_has_data(inode)) {
+ 		ret = -EFBIG;
+ 		goto out;
+ 	}
 -- 
 2.40.1
 
