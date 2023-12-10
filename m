@@ -2,200 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E75DA80B8CE
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 05:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A1780B8EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 06:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbjLJEIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 23:08:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55882 "EHLO
+        id S231485AbjLJETW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 23:19:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbjLJEIQ (ORCPT
+        with ESMTP id S230128AbjLJETS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 23:08:16 -0500
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F38EB
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 20:08:07 -0800 (PST)
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1faf4442fa5so5859063fac.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 20:08:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702181287; x=1702786087;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O1ucpX9GtPXf2qy8IMPdYCdmRnC06lUTmQWKejBpx6c=;
-        b=PAT86h3nAjH/I72SwgsAdK8mTg9YhGFb5cCtkxD32oIhn4nIrZLuGDFxnFw5a423Lv
-         EbXbS8YJY5gx1CMBX0wM1lbfjk/PWB1lXPJTHxM5hoJi0e5T+N14CLQ+hmt0Ock/U3vw
-         Oy1QFrdEA2H15NlhIB/NghS4pERVzu5mgaV1vJDr4r7kk+0FkQ/fbITBaRqOnlDdk1cf
-         VWtVtGHwoRqjz1STr5uEL+/IUFG5gavfNHRg6iZRaPSxdhN3taMaooTHKpvRWx7Etu4T
-         C0kMT94CD08Jm/slNHDRDRYjtaGHGU6wodIOtJGu8VUwXgTI2PRngB78BOwvhVmcny6p
-         kyAg==
-X-Gm-Message-State: AOJu0YwOMhv8+rdNeec8cXD0SUNi+wkmSk+0/iEemze+4SrM8LEKCVQj
-        NOPWKnWihrgBg1Veyctz9vGx7uVjf22/EEY/+yXYdaGFKtSd
-X-Google-Smtp-Source: AGHT+IFPrig1GY8Oa4lAIq6NYbXoCyN5oInMJkYXz+mcNhfXMORTYMvXyolT4m+1iqNLWK0WfCJ+JOxGBXgcKdYt4iaHKRYhoGFT
+        Sat, 9 Dec 2023 23:19:18 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC64FF2;
+        Sat,  9 Dec 2023 20:19:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702181963; x=1733717963;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=asvKB3ReQvJ+jiqRWBtIOZ61VkP+wjyfmq7Jgp5pQkw=;
+  b=MpeKQgpGJ0z4uA1+f36OVE+zmhnX0Q2pN12/pvgyT0qw7+Zz2EUK36VJ
+   8hVCLfiINGnqfdirwaCbE/7AyWm2t02PISndqOkI+QN0tVXFnwGg5kcs0
+   u3lDLoJNi061LQgIAVmn3Qbtxjd+jLfD5G7Lm7d63+qeGFwxoRPKUk497
+   GVF68fJOlTHAzqW2WAW1YnFvS+v03/UOxL0VPov4Hfh0nheMoSuJbEwq7
+   spjGBya2YwBKiGQywYmOKwUhTynJgd7Wr+AB2Vs9N3Vrhd4/qNp78dJir
+   708053qtFLQuq0WnEhAFne1Exjx0pYobwcMK2pfRoiOZakH60NFUs4hyj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="458851117"
+X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
+   d="scan'208";a="458851117"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 20:19:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="890647084"
+X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
+   d="scan'208";a="890647084"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 09 Dec 2023 20:19:19 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rCBHh-000GNr-1g;
+        Sun, 10 Dec 2023 04:19:17 +0000
+Date:   Sun, 10 Dec 2023 12:18:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kamal Dasu <kamal.dasu@broadcom.com>, ulf.hansson@linaro.org,
+        linux-kernel@vger.kernel.org, alcooperx@gmail.com,
+        linux-arm-kernel@lists.infradead.org, adrian.hunter@intel.com,
+        linux-mmc@vger.kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        Kamal Dasu <kdasu@broadcom.com>
+Subject: Re: [V3, 1/2] dt-bindings: mmc: brcm,sdhci-brcmstb: Add support for
+ 74165b0
+Message-ID: <202312101146.IK4Nrw1S-lkp@intel.com>
+References: <20231209165816.39044-1-kamal.dasu@broadcom.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:e415:b0:1fb:f51:25bb with SMTP id
- n21-20020a056870e41500b001fb0f5125bbmr2665014oag.5.1702181287071; Sat, 09 Dec
- 2023 20:08:07 -0800 (PST)
-Date:   Sat, 09 Dec 2023 20:08:07 -0800
-In-Reply-To: <tencent_1571C9B12ED06EED4CAC67FD86C052FC4606@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f59633060c1ff65d@google.com>
-Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert (2)
-From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231209165816.39044-1-kamal.dasu@broadcom.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Kamal,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-memory leak in radix_tree_insert
+kernel test robot noticed the following build warnings:
 
-2023/12/10 04:02:40 executed programs: 1
-BUG: memory leak
-unreferenced object 0xffff88810e4ac248 (size 576):
-  comm "syz-executor.0", pid 5510, jiffies 4294944556 (age 13.040s)
-  hex dump (first 32 bytes):
-    3c 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00  <...............
-    30 3c 8d 1a 81 88 ff ff 60 c2 4a 0e 81 88 ff ff  0<......`.J.....
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:624 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:712
-    [<ffffffff84ae1012>] qrtr_tx_wait net/qrtr/af_qrtr.c:281 [inline]
-    [<ffffffff84ae1012>] qrtr_node_enqueue+0x512/0x6d0 net/qrtr/af_qrtr.c:354
-    [<ffffffff84ae27b6>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:897
-    [<ffffffff84ae3392>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:998
-    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6ddcf>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6ddcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on soc/for-next linus/master v6.7-rc4 next-20231208]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-BUG: memory leak
-unreferenced object 0xffff88810e4ac000 (size 576):
-  comm "syz-executor.0", pid 5510, jiffies 4294944556 (age 13.040s)
-  hex dump (first 32 bytes):
-    36 0f 01 00 00 00 00 00 48 c2 4a 0e 81 88 ff ff  6.......H.J.....
-    30 3c 8d 1a 81 88 ff ff 18 c0 4a 0e 81 88 ff ff  0<........J.....
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:624 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:712
-    [<ffffffff84ae1012>] qrtr_tx_wait net/qrtr/af_qrtr.c:281 [inline]
-    [<ffffffff84ae1012>] qrtr_node_enqueue+0x512/0x6d0 net/qrtr/af_qrtr.c:354
-    [<ffffffff84ae27b6>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:897
-    [<ffffffff84ae3392>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:998
-    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6ddcf>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6ddcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+url:    https://github.com/intel-lab-lkp/linux/commits/Kamal-Dasu/mmc-add-new-sdhci-reset-sequence-for-brcm-74165b0/20231210-010145
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20231209165816.39044-1-kamal.dasu%40broadcom.com
+patch subject: [V3, 1/2] dt-bindings: mmc: brcm,sdhci-brcmstb: Add support for 74165b0
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231210/202312101146.IK4Nrw1S-lkp@intel.com/reproduce)
 
-BUG: memory leak
-unreferenced object 0xffff88810e4adda8 (size 576):
-  comm "syz-executor.0", pid 5510, jiffies 4294944556 (age 13.040s)
-  hex dump (first 32 bytes):
-    30 3f 01 00 00 00 00 00 00 c0 4a 0e 81 88 ff ff  0?........J.....
-    30 3c 8d 1a 81 88 ff ff c0 dd 4a 0e 81 88 ff ff  0<........J.....
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:624 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:712
-    [<ffffffff84ae1012>] qrtr_tx_wait net/qrtr/af_qrtr.c:281 [inline]
-    [<ffffffff84ae1012>] qrtr_node_enqueue+0x512/0x6d0 net/qrtr/af_qrtr.c:354
-    [<ffffffff84ae27b6>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:897
-    [<ffffffff84ae3392>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:998
-    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6ddcf>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6ddcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312101146.IK4Nrw1S-lkp@intel.com/
 
-BUG: memory leak
-unreferenced object 0xffff88810e4da000 (size 576):
-  comm "syz-executor.0", pid 5510, jiffies 4294944556 (age 13.040s)
-  hex dump (first 32 bytes):
-    2a 3f 00 00 00 00 00 00 a8 dd 4a 0e 81 88 ff ff  *?........J.....
-    30 3c 8d 1a 81 88 ff ff 18 a0 4d 0e 81 88 ff ff  0<........M.....
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:624 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:712
-    [<ffffffff84ae1012>] qrtr_tx_wait net/qrtr/af_qrtr.c:281 [inline]
-    [<ffffffff84ae1012>] qrtr_node_enqueue+0x512/0x6d0 net/qrtr/af_qrtr.c:354
-    [<ffffffff84ae27b6>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:897
-    [<ffffffff84ae3392>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:998
-    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6ddcf>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6ddcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+dtcheck warnings: (new ones prefixed by >>)
+>> Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml:25:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
+--
+>> Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml:25:1: found a tab character that violates indentation
+   Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml: properties:honeywell,pmin-pascal: '$ref' should not be valid under {'const': '$ref'}
+   	hint: Standard unit suffix properties don't need a type $ref
+   	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+   Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml: properties:honeywell,pmax-pascal: '$ref' should not be valid under {'const': '$ref'}
+   	hint: Standard unit suffix properties don't need a type $ref
+   	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+--
+>> Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml: ignoring, error parsing file
 
+vim +25 Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml
 
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07   8  
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07   9  maintainers:
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  10    - Al Cooper <alcooperx@gmail.com>
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  11    - Florian Fainelli <f.fainelli@gmail.com>
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  12  
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  13  properties:
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  14    compatible:
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  15      oneOf:
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  16        - items:
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  17            - enum:
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  18                - brcm,bcm7216-sdhci
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  19            - const: brcm,bcm7445-sdhci
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  20            - const: brcm,sdhci-brcmstb
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  21        - items:
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  22            - enum:
+48e24385c58e80 Kamal Dasu          2023-12-09  23                - brcm,bcm74165b0-sdhci
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  24                - brcm,bcm7445-sdhci
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07 @25  	      - brcm,bcm7425-sdhci
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  26            - const: brcm,sdhci-brcmstb
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  27  
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  28    reg:
+b16ebda6d00361 Krzysztof Kozlowski 2022-04-28  29      maxItems: 2
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  30  
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  31    reg-names:
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  32      items:
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  33        - const: host
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  34        - const: cfg
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  35  
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  36    interrupts:
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  37      maxItems: 1
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  38  
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  39    clocks:
+2f8690ef64128b Kamal Dasu          2022-05-20  40      minItems: 1
+2f8690ef64128b Kamal Dasu          2022-05-20  41      items:
+2f8690ef64128b Kamal Dasu          2022-05-20  42        - description: handle to core clock for the sdhci controller
+2f8690ef64128b Kamal Dasu          2022-05-20  43        - description: handle to improved 150Mhz clock for sdhci controller (Optional clock)
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  44  
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  45    clock-names:
+2f8690ef64128b Kamal Dasu          2022-05-20  46      minItems: 1
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  47      items:
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  48        - const: sw_sdio
+2f8690ef64128b Kamal Dasu          2022-05-20  49        - const: sdio_freq # Optional clock
+2f8690ef64128b Kamal Dasu          2022-05-20  50  
+2f8690ef64128b Kamal Dasu          2022-05-20  51    clock-frequency:
+2f8690ef64128b Kamal Dasu          2022-05-20  52      description:
+2f8690ef64128b Kamal Dasu          2022-05-20  53        Maximum operating frequency of sdio_freq sdhci controller clock
+2f8690ef64128b Kamal Dasu          2022-05-20  54      $ref: /schemas/types.yaml#/definitions/uint32
+2f8690ef64128b Kamal Dasu          2022-05-20  55      minimum: 100000000
+2f8690ef64128b Kamal Dasu          2022-05-20  56      maximum: 150000000
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  57  
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  58    sdhci,auto-cmd12:
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  59      type: boolean
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  60      description: Specifies that controller should use auto CMD12
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  61  
+2f8690ef64128b Kamal Dasu          2022-05-20  62  allOf:
+2f8690ef64128b Kamal Dasu          2022-05-20  63    - $ref: mmc-controller.yaml#
+2f8690ef64128b Kamal Dasu          2022-05-20  64    - if:
+2f8690ef64128b Kamal Dasu          2022-05-20  65        properties:
+2f8690ef64128b Kamal Dasu          2022-05-20  66          clock-names:
+2f8690ef64128b Kamal Dasu          2022-05-20  67            contains:
+2f8690ef64128b Kamal Dasu          2022-05-20  68              const: sdio_freq
+2f8690ef64128b Kamal Dasu          2022-05-20  69  
+2f8690ef64128b Kamal Dasu          2022-05-20  70      then:
+2f8690ef64128b Kamal Dasu          2022-05-20  71        required:
+2f8690ef64128b Kamal Dasu          2022-05-20  72          - clock-frequency
+2f8690ef64128b Kamal Dasu          2022-05-20  73  
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  74  required:
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  75    - compatible
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  76    - reg
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  77    - interrupts
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  78    - clocks
+2f8690ef64128b Kamal Dasu          2022-05-20  79    - clock-names
+50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  80  
 
-Tested on:
-
-commit:         33cc938e Linux 6.7-rc4
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1485aebce80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37d1b8bb20150e6
-dashboard link: https://syzkaller.appspot.com/bug?extid=006987d1be3586e13555
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=10dfa02ae80000
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
