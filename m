@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CA380BE6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 01:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBF180BE46
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 00:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232212AbjLKAL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 19:11:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
+        id S229569AbjLJXhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 18:37:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjLKAL2 (ORCPT
+        with ESMTP id S229483AbjLJXhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 19:11:28 -0500
-X-Greylist: delayed 1945 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 10 Dec 2023 16:11:33 PST
-Received: from smtp.bekkoame.ne.jp (lbkksmtpnat.bekkoame.ne.jp [150.95.255.128])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7454CE9
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 16:11:33 -0800 (PST)
-Received: from smtp.3web.ne.jp (localhost [127.0.0.1])
-        by smtp.bekkoame.ne.jp (Postfix) with ESMTP id 74464107947
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:33:57 +0900 (JST)
-Received: from [127.0.0.1] (unknown [20.222.88.142])
-        by mx1.tky.3web.ne.jp (Postfix) with ESMTPA id 62A29107946
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:33:57 +0900 (JST)
+        Sun, 10 Dec 2023 18:37:37 -0500
+Received: from irl.hu (irl.hu [95.85.9.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F82EB;
+        Sun, 10 Dec 2023 15:37:44 -0800 (PST)
+Received: from fedori.lan (51b690cd.dsl.pool.telekom.hu [::ffff:81.182.144.205])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 000000000006E46F.0000000065764BC4.0012065E; Mon, 11 Dec 2023 00:37:40 +0100
+From:   Gergo Koteles <soyer@irl.hu>
+To:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Gergo Koteles <soyer@irl.hu>, stable@vger.kernel.org
+Subject: [PATCH] ALSA: hda/tas2781: handle missing EFI calibration data
+Date:   Mon, 11 Dec 2023 00:37:33 +0100
+Message-ID: <f1f6583bda918f78556f67d522ca7b3b91cebbd5.1702251102.git.soyer@irl.hu>
+X-Mailer: git-send-email 2.43.0
+Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-X-Ms-Exchange-Organization-Messagedirectionality: Originating
-X-Ms-Exchange-Organization-Authas: Internal
-X-Ms-Exchange-Organization-Authmechanism: 02
-X-Ms-Exchange-Organization-Authsource: MWHPR22MB0014.namprd22.prod.outlook.com
-X-Ms-Exchange-Organization-Network-Message-ID: ffe8bf42-c85a-42c8-a084-08d75b722819
-X-Ma4-Node: false
-From:   "vger.kernel.org" <infoma@tky.3web.ne.jp>
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?44GK5L2/44GE44Gudmdlci5rZXJuZWwub3Jn44Ki?=
- =?UTF-8?B?44Kr44Km44Oz44OI44Gv44Ki44OD44OX44Kw44Os?=
- =?UTF-8?B?44O844OJ5q616ZqO44Gr6YGU44GX44G+44GX44Gf?=
-Message-ID: <0d893988-8a99-7f58-2c5c-fbc7626ac4de@tky.3web.ne.jp>
-Content-Transfer-Encoding: base64
-Date:   Sun, 10 Dec 2023 23:33:57 +0000
-MIME-Version: 1.0
-X-Spam-Status: Yes, score=7.2 required=5.0 tests=BAYES_99,BAYES_999,
-        PDS_FRNOM_TODOM_NAKED_TO,PDS_FROM_NAME_TO_DOMAIN,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+Content-Transfer-Encoding: 7bit
+X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
-X-Spam-Report: *  0.2 BAYES_999 BODY: Bayes spam probability is 99.9 to 100%
-        *      [score: 0.9994]
-        *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
-        *      [score: 0.9994]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.0 PDS_FROM_NAME_TO_DOMAIN From:name looks like To:domain
-        *  1.5 PDS_FRNOM_TODOM_NAKED_TO Naked to From name equals to Domain
-X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-5oud5ZWTIGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmfjgIENCg0K44GK5L2/44GE44Gudmdl
-ci5rZXJuZWwub3Jn44Ki44Kr44Km44Oz44OI44Gv44Ki44OD44OX44Kw44Os44O844OJ5q616ZqO
-44Gr6YGU44GX44G+44GX44Gf44CC5byV44GN57aa44GN44GU5Yip55So44GE44Gf44Gg44GP44Gf
-44KB44Gr44CB44Om44O844K244O844Gu44Oh44O844Or44KS56K66KqN44GX44Gm44GE44Gf44Gg
-44GP5b+F6KaB44GM44GC44KK44G+44GZ44CCDQoNCuOBk+OBruaJi+e2muOBjeOBr+OCouOCq+OC
-puODs+ODiOOBruWuieWFqOaAp+OCkueiuuS/neOBmeOCi+OBn+OCgeOBq+mHjeimgeOBp+OBmeOA
-guS7peS4i+OBruODquODs+OCr+OCkuOCr+ODquODg+OCr+OBl+OBpuaJi+e2muOBjeOCkumAsuOC
-geOBpuOBj+OBoOOBleOBhO+8mg0KDQpbaHR0cHM6Ly9lbnZpc2VvbWFya2V0aW5nLm5ldC9tcy9h
-Y2NvdW50LzIwMjM/dWlkPWxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmddDQoNCuOBk+OBrumH
-jeimgeS6i+mgheOBuOOBrumAn+OChOOBi+OBquWvvuW/nOOAgeiqoOOBq+OBguOCiuOBjOOBqOOB
-huOBlOOBluOBhOOBvuOBmeOAgg0KDQrjgojjgo3jgZfjgY/jgYrpoZjjgYTjgYTjgZ/jgZfjgb7j
-gZnjgIINCg0KDQrigLvjgZPjga7jg6Hjg7zjg6vjga/pgIHkv6HlsILnlKjjgqLjg4njg6zjgrnj
-gYvjgonoh6rli5XpgIHkv6HjgZXjgozjgabjgYTjgb7jgZnjgILmnKzjg6Hjg7zjg6vjgbjjga7o
-v5Tkv6Hjga/jgafjgY3jgb7jgZvjgpPjgII=
+The code does not properly check whether the calibration variable is
+available in the EFI. If it is not available, it causes a NULL pointer
+dereference.
+
+Check the return value of the first get_variable call also.
+
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+Call Trace:
+ <TASK>
+ ? __die+0x23/0x70
+ ? page_fault_oops+0x171/0x4e0
+ ? srso_alias_return_thunk+0x5/0x7f
+ ? schedule+0x5e/0xd0
+ ? exc_page_fault+0x7f/0x180
+ ? asm_exc_page_fault+0x26/0x30
+ ? crc32_body+0x2c/0x120
+ ? tas2781_save_calibration+0xe4/0x220 [snd_hda_scodec_tas2781_i2c]
+ tasdev_fw_ready+0x1af/0x280 [snd_hda_scodec_tas2781_i2c]
+ request_firmware_work_func+0x59/0xa0
+
+Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
+CC: stable@vger.kernel.org
+Signed-off-by: Gergo Koteles <soyer@irl.hu>
+---
+ sound/pci/hda/tas2781_hda_i2c.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
+index fb802802939e..6e506efe61cd 100644
+--- a/sound/pci/hda/tas2781_hda_i2c.c
++++ b/sound/pci/hda/tas2781_hda_i2c.c
+@@ -455,9 +455,9 @@ static int tas2781_save_calibration(struct tasdevice_priv *tas_priv)
+ 		status = efi.get_variable(efi_name, &efi_guid, &attr,
+ 			&tas_priv->cali_data.total_sz,
+ 			tas_priv->cali_data.data);
+-		if (status != EFI_SUCCESS)
+-			return -EINVAL;
+ 	}
++	if (status != EFI_SUCCESS)
++		return -EINVAL;
+ 
+ 	tmp_val = (unsigned int *)tas_priv->cali_data.data;
+ 
+
+base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
+-- 
+2.43.0
+
