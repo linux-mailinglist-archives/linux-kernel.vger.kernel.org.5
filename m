@@ -2,336 +2,400 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3FC80BCFA
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2BD80BCF9
 	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 21:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbjLJUZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 15:25:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
+        id S232128AbjLJUZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 15:25:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232062AbjLJUZC (ORCPT
+        with ESMTP id S232086AbjLJUZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 15:25:02 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4005CD8;
-        Sun, 10 Dec 2023 12:25:08 -0800 (PST)
+        Sun, 10 Dec 2023 15:25:03 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408C8ED;
+        Sun, 10 Dec 2023 12:25:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1702239895; x=1702844695; i=w_armin@gmx.de;
-        bh=FXptV17hEQfrk/SdFKWK5/BHx6pY5MLIQJDt8cM6pCk=;
+        t=1702239897; x=1702844697; i=w_armin@gmx.de;
+        bh=z2briIBbm053fUXWlDuaVSbzSNJEI/volk9WInlWf48=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
          References;
-        b=N+smmKKyhXs3UJovrNIdjaQjGUWRB5Ai1g8B+CxwvZ79mvlaKjuiozhtep615gVW
-         TY53yvlGRFW9DW2hYtC3wHFIMYUVm09Ldr9shdIF6pHyT1ICjyv1g8IXrM8nsE1hv
-         bIHkoIGW2+jmEsICzJXcIEbZpRggweRkJ5D33LaQ5BDZ96GND2xoQ4uoC4JWznQ5h
-         Mb66Vd36AOda5hlNZ/OGtLTycQyUpgsTmY60Ja/9zPGzohV4BjLxEHQGiTmmuyHcm
-         Oe0iq23mwfVWd2qhQWJFDsLSNMXUgfB6s8X5Sz9rCqHfnhWI0TR2A8+dIjmMRoBp8
-         Jl1T51Hd8gWE8IcK6w==
+        b=CLi7FtdiqLtORmbNnMgVD52i8jBqxHzfjpUNGLR343zwl6y6QlYyGyxQCW7SxYo4
+         uQkC1esmex1HS+N/droEtDf4QvxmKMHAPUgMQIktsxlpD7quoCFo6o9gncCIMFGEK
+         JFHHYAxSQPbnZx4L9cnmnkZC+FVmfr7qmbYjGg6fc1tGRNsgYWo4rOWb/CcAJTwFa
+         82JabuYFmHoOMs2TF9EvrRZgiKMbaaUOIdHsLgXpQ55K/LZn5kujfF+XScN/RAYxu
+         B0tpH8WQfmaWaPzyK84VdT55b31B6jSza3oj+TryJdPx0wsnvP/oNjTqR4jaJb9PS
+         9lZXImSKg0V3wOpmqw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MmDEg-1rczgN1JtA-00iFNB; Sun, 10 Dec 2023 21:24:55 +0100
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1N9Mta-1rFwWD0et2-015Fa6; Sun, 10 Dec 2023 21:24:57 +0100
 From:   Armin Wolf <W_Armin@gmx.de>
 To:     hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com, corbet@lwn.net
 Cc:     Dell.Client.Kernel@dell.com, linux-doc@vger.kernel.org,
         platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/5] platform/x86: dell-smbios-wmi: Stop using WMI chardev
-Date:   Sun, 10 Dec 2023 21:24:42 +0100
-Message-Id: <20231210202443.646427-5-W_Armin@gmx.de>
+Subject: [PATCH v2 5/5] platform/x86: wmi: Remove chardev interface
+Date:   Sun, 10 Dec 2023 21:24:43 +0100
+Message-Id: <20231210202443.646427-6-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231210202443.646427-1-W_Armin@gmx.de>
 References: <20231210202443.646427-1-W_Armin@gmx.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:XC4EOXkjV5iFFakqAqxeHDjqFAxWM4zLLG2pWJIWJy25P26olbU
- fpESgLJr3zjXRCrQ9EmXnFDZwHxPSZSwncbwokHtSf/3wghUOUSJYT5Sxz5uLUGRyKS1cca
- QPgpFpgyrS6P0/HOvjOKKBLaPShT5LirHpcPm8560TAbzSCBorh75AuHG5M2W4DB2HnioyJ
- q+ivM4vJ9VSczV7q8J0bQ==
-UI-OutboundReport: notjunk:1;M01:P0:HfBKhUUs1wM=;VYVakxdyaAU789AdpI6gSnAVQJ1
- scl/R93vdpv4HbrPpMPuwioSUkkoj31XcDfiJdqK8tFY1O086u7wtCFRYq5/r74yfr0OWerXT
- LcCEysf7TKj4tiiDoBoStiqnPYkvyBGz5Wy4Ah84sJRA2h5DL5MFsEiBsKE6JaCpx1ETae8LZ
- BgBg1obqrTA4f6Lu1qKoyFGy2Ty7mLpRjIM9ttIcrufApaO6RLbiyvLDUEMdtu1LK3ZFMjSsH
- 77ndDQ2D2dD2SORxZRGYzIioFH+n4uadi/ekoGNhQEkjz1w7vJ/WrsMbeGIBg4bcNT6Zh16lp
- s1RPRGWva1tbapaDDiegP88YU41nZkqB2ErEn2bLvgsHIX64Fpt74wlQDLJ+yiIcsokSkCy1B
- 0Uch8soz+Kqf/LOT46Snb/pJkEC2xQ21ipXXUSPufI9XRU3gY/F6eg9FefAhuokPX/zh6vR52
- tsvazQNX0OVlm4D9S7tWs2uXIvubxOx/n8hqANmyV+OS5H2ACs4ZV1CuTLneaCLdfRp+w9EOz
- xVlb/ckMchhvhWnxlS37Jan/KbgpvFbc0GjgAeYqXdhJkFGrKU6pAYZ9388cCEGPQWX/mpYRk
- D5m0hGkmewJPh1BfPsAygVVBde1U/yDRKWCR2sQCX1i0aW11/U3JCeLoa177yAtYoLpRys2uy
- ZFXbTS8asKO1K3pu7j2UM7FM2FTVwo6FIlqir71NQLqj/NBR10gMJOGDVhDEdfLInS1ZoxYFB
- BUEbsCDgvGkWysxalItxcMn9Gcc2nSORFQ4IcxFTUT8p1w+lfJ/y3K9y6BPRqjeDm1QCDGX7k
- As2fxD/p4AHrzzvZGNecsq8R9eDq4Sf2ye8d44x9Syk7nCU8+wjmm031Fe8GR+L3jdkhpuKQ6
- scyNItjunrQY88uOftF9LA7vNbMToirHp3ULX5bvpniqmJ2T/FYAMCq6XoBvNx/yYtoYb1MFL
- kMUMemk3kXfp2/CgoCL9mATrKjQ=
+X-Provags-ID: V03:K1:Rx43nDQ+cUMVEjHnGMob8ZR08dCPdjhf8FfXaalQpFFiwKQ7cUT
+ Q9NdCQQw1eIDM7d+B6+mYS+QebrmDMtwa9XCbdRvR9Xxx896v73VzENrip40go0PXGmBlmc
+ RKmWCgstqXV7gqCBZLo5BKCVqGi0Hr46RoujtPcRZXnicCyNNbubZxiT5I4CvSQZRh5dHZ1
+ 8oy7fNO+KKnPekAUCbKWg==
+UI-OutboundReport: notjunk:1;M01:P0:0txKairzWsU=;avq/YmJk8xuohDb/0W9xFK+dAuc
+ FrflKnJAaaA52+wo1Fdgq345N2a50KNXDSfnc4FDdKdUECAYkcaLCTFNJQNnx6yusuG0mN777
+ nRy6O+DvDCrI6vyl7HxFDnRTotZlb3bMVBwZa52b5ejFbgIOoHV4XyFf0tV8kicNCAdnDV5Ls
+ 8mEOxjmiuSXCWaobqe/SLBSDmQwSorIKbOerMoq6ROYfj59b1s/zBvrPlJM7oQs+BJqmI++29
+ y2KjYp8gX3VcwBfQwBlv2Mn0UvGZyBJXI6AJtLAa6MJXUk4hoBwAEti6pW9+QgCw8XJ1Xduy0
+ GQ62QXQu8qOHs3XfTXq7k9smNYdf7d4hOjs2XUR/1NhejYlaH2/VH3pbhOLp+DHkO278yqc/O
+ /GVdoo2Sm53SCQw38UTcaJ1wOjZf4SYmbi2ZwqHqyqhjRnbMS1RI7/l9DaU9R0CUT2lgXr8JG
+ GZ4xnjRUhhYTTzt5+q0JjNi18z26htQwxxsHhOwc0Ag9wnEElHK5kvbUPl/va0OzS5v6qib5j
+ TtbcbdWlCsHFRjbGynnvn0piUUo6UHTV5rgKM/IS+sHVXIAxIyrtHfPIfqMcm7wJvIXxh1yiI
+ RDJspxsXueLEyOTJHylZMXZR/81E003RquEQuH+91xzFlKPHhYeHkYKoTNq72ArJpRfMSHkOg
+ +cxuzVscCzbpLgO+Jh5ce4YmD+shHbtCpBM8MbSqLfFcZy3Gnexc3BI3J9KJmHw3FeNfjknjk
+ 4ofj6bk+ZJ8lFAk1Q5udMaxeDrzqe5se2W4QO9KWyAiwe5KfkRlRMzqTcAwkrt+M9fQ4P0sGi
+ +PE6P3iCe7ylfRXm2jy4MWcDjreAzwpUmMrqkE580tq2iohOkTaB+j6MAjBbSkEMgfpGWcaI2
+ Jonrcl/3996TzVRF7ViZ+zISjCQtWsxI5aEKBNduDihmrOqUd1vFKqrY6kE/ydOPBBkrDCSiC
+ INplyMq3AV+Htmh1ZQ08erV8Hw0=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The WMI chardev API will be removed in the near future.
-Reimplement the necessary bits used by this driver so
-that userspace software depending on it does no break.
+The design of the WMI chardev interface is broken:
+- it assumes that WMI drivers are not instantiated twice
+- it offers next to no abstractions, the WMI driver gets
+a raw byte buffer
+- it is only used by a single driver, something which is
+unlikely to change
 
+Since the only user (dell-smbios-wmi) has been migrated
+to his own ioctl interface, remove it.
+
+Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 =2D--
- drivers/platform/x86/dell/dell-smbios-wmi.c | 161 ++++++++++++++------
- 1 file changed, 117 insertions(+), 44 deletions(-)
+ drivers/platform/x86/wmi.c | 180 ++-----------------------------------
+ include/linux/wmi.h        |   8 --
+ 2 files changed, 5 insertions(+), 183 deletions(-)
 
-diff --git a/drivers/platform/x86/dell/dell-smbios-wmi.c b/drivers/platfor=
-m/x86/dell/dell-smbios-wmi.c
-index 7eb7c61bb27d..ae9012549560 100644
-=2D-- a/drivers/platform/x86/dell/dell-smbios-wmi.c
-+++ b/drivers/platform/x86/dell/dell-smbios-wmi.c
-@@ -8,11 +8,14 @@
-
- #include <linux/device.h>
- #include <linux/dmi.h>
-+#include <linux/fs.h>
+diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+index 7df5b5ee7983..7303702290e5 100644
+=2D-- a/drivers/platform/x86/wmi.c
++++ b/drivers/platform/x86/wmi.c
+@@ -23,17 +23,14 @@
+ #include <linux/init.h>
+ #include <linux/kernel.h>
  #include <linux/list.h>
-+#include <linux/miscdevice.h>
+-#include <linux/miscdevice.h>
  #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/uaccess.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/sysfs.h>
+ #include <linux/types.h>
+-#include <linux/uaccess.h>
+ #include <linux/uuid.h>
  #include <linux/wmi.h>
-+#include <uapi/linux/wmi.h>
- #include "dell-smbios.h"
- #include "dell-wmi-descriptor.h"
+ #include <linux/fs.h>
+-#include <uapi/linux/wmi.h>
 
-@@ -33,7 +36,8 @@ struct wmi_smbios_priv {
+ MODULE_AUTHOR("Carlos Corbacho");
+ MODULE_DESCRIPTION("ACPI-WMI Mapping Driver");
+@@ -66,12 +63,9 @@ struct wmi_block {
+ 	struct wmi_device dev;
  	struct list_head list;
- 	struct wmi_device *wdev;
- 	struct device *child;
--	u32 req_buf_size;
-+	u64 req_buf_size;
-+	struct miscdevice char_dev;
+ 	struct guid_block gblock;
+-	struct miscdevice char_dev;
+-	struct mutex char_mutex;
+ 	struct acpi_device *acpi_device;
+ 	wmi_notify_handler handler;
+ 	void *handler_data;
+-	u64 req_buf_size;
+ 	unsigned long flags;
  };
- static LIST_HEAD(wmi_list);
 
-@@ -109,48 +113,115 @@ static int dell_smbios_wmi_call(struct calling_inte=
-rface_buffer *buffer)
- 	return ret;
- }
+@@ -256,26 +250,6 @@ static void wmi_device_put(struct wmi_device *wdev)
+  * Exported WMI functions
+  */
 
--static long dell_smbios_wmi_filter(struct wmi_device *wdev, unsigned int =
-cmd,
--				   struct wmi_ioctl_buffer *arg)
-+static int dell_smbios_wmi_open(struct inode *inode, struct file *filp)
- {
- 	struct wmi_smbios_priv *priv;
--	int ret =3D 0;
+-/**
+- * set_required_buffer_size - Sets the buffer size needed for performing =
+IOCTL
+- * @wdev: A wmi bus device from a driver
+- * @length: Required buffer size
+- *
+- * Allocates memory needed for buffer, stores the buffer size in that mem=
+ory.
+- *
+- * Return: 0 on success or a negative error code for failure.
+- */
+-int set_required_buffer_size(struct wmi_device *wdev, u64 length)
+-{
+-	struct wmi_block *wblock;
 -
--	switch (cmd) {
--	case DELL_WMI_SMBIOS_CMD:
--		mutex_lock(&call_mutex);
--		priv =3D dev_get_drvdata(&wdev->dev);
--		if (!priv) {
--			ret =3D -ENODEV;
--			goto fail_smbios_cmd;
+-	wblock =3D container_of(wdev, struct wmi_block, dev);
+-	wblock->req_buf_size =3D length;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(set_required_buffer_size);
+-
+ /**
+  * wmi_instance_count - Get number of WMI object instances
+  * @guid_string: 36 char string of the form fa50ff2b-f2e8-45de-83fa-65417=
+f2f49ba
+@@ -884,111 +858,12 @@ static int wmi_dev_match(struct device *dev, struct=
+ device_driver *driver)
+
+ 	return 0;
+ }
+-static int wmi_char_open(struct inode *inode, struct file *filp)
+-{
+-	/*
+-	 * The miscdevice already stores a pointer to itself
+-	 * inside filp->private_data
+-	 */
+-	struct wmi_block *wblock =3D container_of(filp->private_data, struct wmi=
+_block, char_dev);
+-
+-	filp->private_data =3D wblock;
+-
+-	return nonseekable_open(inode, filp);
+-}
+-
+-static ssize_t wmi_char_read(struct file *filp, char __user *buffer,
+-			     size_t length, loff_t *offset)
+-{
+-	struct wmi_block *wblock =3D filp->private_data;
+-
+-	return simple_read_from_buffer(buffer, length, offset,
+-				       &wblock->req_buf_size,
+-				       sizeof(wblock->req_buf_size));
+-}
+-
+-static long wmi_ioctl(struct file *filp, unsigned int cmd, unsigned long =
+arg)
+-{
+-	struct wmi_ioctl_buffer __user *input =3D
+-		(struct wmi_ioctl_buffer __user *) arg;
+-	struct wmi_block *wblock =3D filp->private_data;
+-	struct wmi_ioctl_buffer *buf;
+-	struct wmi_driver *wdriver;
+-	int ret;
+-
+-	if (_IOC_TYPE(cmd) !=3D WMI_IOC)
+-		return -ENOTTY;
+-
+-	/* make sure we're not calling a higher instance than exists*/
+-	if (_IOC_NR(cmd) >=3D wblock->gblock.instance_count)
+-		return -EINVAL;
+-
+-	mutex_lock(&wblock->char_mutex);
+-	buf =3D wblock->handler_data;
+-	if (get_user(buf->length, &input->length)) {
+-		dev_dbg(&wblock->dev.dev, "Read length from user failed\n");
+-		ret =3D -EFAULT;
+-		goto out_ioctl;
+-	}
+-	/* if it's too small, abort */
+-	if (buf->length < wblock->req_buf_size) {
+-		dev_err(&wblock->dev.dev,
+-			"Buffer %lld too small, need at least %lld\n",
+-			buf->length, wblock->req_buf_size);
+-		ret =3D -EINVAL;
+-		goto out_ioctl;
+-	}
+-	/* if it's too big, warn, driver will only use what is needed */
+-	if (buf->length > wblock->req_buf_size)
+-		dev_warn(&wblock->dev.dev,
+-			"Buffer %lld is bigger than required %lld\n",
+-			buf->length, wblock->req_buf_size);
+-
+-	/* copy the structure from userspace */
+-	if (copy_from_user(buf, input, wblock->req_buf_size)) {
+-		dev_dbg(&wblock->dev.dev, "Copy %llu from user failed\n",
+-			wblock->req_buf_size);
+-		ret =3D -EFAULT;
+-		goto out_ioctl;
+-	}
+-
+-	/* let the driver do any filtering and do the call */
+-	wdriver =3D drv_to_wdrv(wblock->dev.dev.driver);
+-	if (!try_module_get(wdriver->driver.owner)) {
+-		ret =3D -EBUSY;
+-		goto out_ioctl;
+-	}
+-	ret =3D wdriver->filter_callback(&wblock->dev, cmd, buf);
+-	module_put(wdriver->driver.owner);
+-	if (ret)
+-		goto out_ioctl;
+-
+-	/* return the result (only up to our internal buffer size) */
+-	if (copy_to_user(input, buf, wblock->req_buf_size)) {
+-		dev_dbg(&wblock->dev.dev, "Copy %llu to user failed\n",
+-			wblock->req_buf_size);
+-		ret =3D -EFAULT;
+-	}
+-
+-out_ioctl:
+-	mutex_unlock(&wblock->char_mutex);
+-	return ret;
+-}
+-
+-static const struct file_operations wmi_fops =3D {
+-	.owner		=3D THIS_MODULE,
+-	.read		=3D wmi_char_read,
+-	.open		=3D wmi_char_open,
+-	.unlocked_ioctl	=3D wmi_ioctl,
+-	.compat_ioctl	=3D compat_ptr_ioctl,
+-};
+
+ static int wmi_dev_probe(struct device *dev)
+ {
+ 	struct wmi_block *wblock =3D dev_to_wblock(dev);
+ 	struct wmi_driver *wdriver =3D drv_to_wdrv(dev->driver);
+ 	int ret =3D 0;
+-	char *buf;
+
+ 	if (ACPI_FAILURE(wmi_method_enable(wblock, true)))
+ 		dev_warn(dev, "failed to enable device -- probing anyway\n");
+@@ -996,55 +871,17 @@ static int wmi_dev_probe(struct device *dev)
+ 	if (wdriver->probe) {
+ 		ret =3D wdriver->probe(dev_to_wdev(dev),
+ 				find_guid_context(wblock, wdriver));
+-		if (ret !=3D 0)
+-			goto probe_failure;
+-	}
+-
+-	/* driver wants a character device made */
+-	if (wdriver->filter_callback) {
+-		/* check that required buffer size declared by driver or MOF */
+-		if (!wblock->req_buf_size) {
+-			dev_err(&wblock->dev.dev,
+-				"Required buffer size not set\n");
+-			ret =3D -EINVAL;
+-			goto probe_failure;
 -		}
--		memcpy(priv->buf, arg, priv->req_buf_size);
--		if (dell_smbios_call_filter(&wdev->dev, &priv->buf->std)) {
--			dev_err(&wdev->dev, "Invalid call %d/%d:%8x\n",
--				priv->buf->std.cmd_class,
--				priv->buf->std.cmd_select,
--				priv->buf->std.input[0]);
--			ret =3D -EFAULT;
--			goto fail_smbios_cmd;
++		if (!ret) {
++			if (ACPI_FAILURE(wmi_method_enable(wblock, false)))
++				dev_warn(dev, "Failed to disable device\n");
+
+-		wblock->handler_data =3D kmalloc(wblock->req_buf_size,
+-					       GFP_KERNEL);
+-		if (!wblock->handler_data) {
+-			ret =3D -ENOMEM;
+-			goto probe_failure;
 -		}
--		ret =3D run_smbios_call(priv->wdev);
--		if (ret)
--			goto fail_smbios_cmd;
--		memcpy(arg, priv->buf, priv->req_buf_size);
--fail_smbios_cmd:
--		mutex_unlock(&call_mutex);
--		break;
--	default:
--		ret =3D -ENOIOCTLCMD;
-+
-+	priv =3D container_of(filp->private_data, struct wmi_smbios_priv, char_d=
-ev);
-+	filp->private_data =3D priv;
-+
-+	return nonseekable_open(inode, filp);
-+}
-+
-+static ssize_t dell_smbios_wmi_read(struct file *filp, char __user *buffe=
-r, size_t length,
-+				    loff_t *offset)
-+{
-+	struct wmi_smbios_priv *priv =3D filp->private_data;
-+
-+	return simple_read_from_buffer(buffer, length, offset, &priv->req_buf_si=
-ze,
-+				       sizeof(priv->req_buf_size));
-+}
-+
-+static long dell_smbios_wmi_do_ioctl(struct wmi_smbios_priv *priv,
-+				     struct dell_wmi_smbios_buffer __user *arg)
-+{
-+	long ret;
-+
-+	if (get_user(priv->buf->length, &arg->length))
-+		return -EFAULT;
-+
-+	if (priv->buf->length < priv->req_buf_size)
-+		return -EINVAL;
-+
-+	/* if it's too big, warn, driver will only use what is needed */
-+	if (priv->buf->length > priv->req_buf_size)
-+		dev_err(&priv->wdev->dev, "Buffer %llu is bigger than required %llu\n",
-+			priv->buf->length, priv->req_buf_size);
-+
-+	if (copy_from_user(priv->buf, arg, priv->req_buf_size))
-+		return -EFAULT;
-+
-+	if (dell_smbios_call_filter(&priv->wdev->dev, &priv->buf->std)) {
-+		dev_err(&priv->wdev->dev, "Invalid call %d/%d:%8x\n",
-+			priv->buf->std.cmd_class,
-+			priv->buf->std.cmd_select,
-+			priv->buf->std.input[0]);
-+
-+		return -EINVAL;
+-
+-		buf =3D kasprintf(GFP_KERNEL, "wmi/%s", wdriver->driver.name);
+-		if (!buf) {
+-			ret =3D -ENOMEM;
+-			goto probe_string_failure;
+-		}
+-		wblock->char_dev.minor =3D MISC_DYNAMIC_MINOR;
+-		wblock->char_dev.name =3D buf;
+-		wblock->char_dev.fops =3D &wmi_fops;
+-		wblock->char_dev.mode =3D 0444;
+-		ret =3D misc_register(&wblock->char_dev);
+-		if (ret) {
+-			dev_warn(dev, "failed to register char dev: %d\n", ret);
+-			ret =3D -ENOMEM;
+-			goto probe_misc_failure;
++			return ret;
+ 		}
  	}
-+
-+	ret =3D run_smbios_call(priv->wdev);
-+	if (ret)
-+		return ret;
-+
-+	if (copy_to_user(arg, priv->buf, priv->req_buf_size))
-+		return -EFAULT;
-+
+
+ 	set_bit(WMI_PROBED, &wblock->flags);
+-	return 0;
+
+-probe_misc_failure:
+-	kfree(buf);
+-probe_string_failure:
+-	kfree(wblock->handler_data);
+-probe_failure:
+-	if (ACPI_FAILURE(wmi_method_enable(wblock, false)))
+-		dev_warn(dev, "failed to disable device\n");
+-	return ret;
 +	return 0;
-+}
-+
-+static long dell_smbios_wmi_ioctl(struct file *filp, unsigned int cmd, un=
-signed long arg)
-+{
-+	struct dell_wmi_smbios_buffer __user *input =3D (struct dell_wmi_smbios_=
-buffer __user *)arg;
-+	struct wmi_smbios_priv *priv =3D filp->private_data;
-+	long ret;
-+
-+	if (cmd !=3D DELL_WMI_SMBIOS_CMD)
-+		return -ENOIOCTLCMD;
-+
-+	mutex_lock(&call_mutex);
-+	ret =3D dell_smbios_wmi_do_ioctl(priv, input);
-+	mutex_unlock(&call_mutex);
-+
- 	return ret;
  }
 
-+static const struct file_operations dell_smbios_wmi_fops =3D {
-+	.owner		=3D THIS_MODULE,
-+	.open		=3D dell_smbios_wmi_open,
-+	.read		=3D dell_smbios_wmi_read,
-+	.unlocked_ioctl	=3D dell_smbios_wmi_ioctl,
-+	.compat_ioctl	=3D compat_ptr_ioctl,
-+};
-+
-+static void dell_smbios_wmi_unregister_chardev(void *data)
-+{
-+	struct miscdevice *char_dev =3D data;
-+
-+	misc_deregister(char_dev);
-+}
-+
-+static int dell_smbios_wmi_register_chardev(struct wmi_smbios_priv *priv)
-+{
-+	int ret;
-+
-+	priv->char_dev.minor =3D MISC_DYNAMIC_MINOR;
-+	priv->char_dev.name =3D "wmi/dell-smbios";
-+	priv->char_dev.fops =3D &dell_smbios_wmi_fops;
-+	priv->char_dev.mode =3D 0444;
-+
-+	ret =3D misc_register(&priv->char_dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	return devm_add_action_or_reset(&priv->wdev->dev, dell_smbios_wmi_unregi=
-ster_chardev,
-+					&priv->char_dev);
-+}
-+
- static int dell_smbios_wmi_probe(struct wmi_device *wdev, const void *con=
-text)
- {
--	struct wmi_driver *wdriver =3D
--		container_of(wdev->dev.driver, struct wmi_driver, driver);
- 	struct wmi_smbios_priv *priv;
--	u32 hotfix;
-+	u32 buffer_size, hotfix;
- 	int count;
- 	int ret;
+ static void wmi_dev_remove(struct device *dev)
+@@ -1054,12 +891,6 @@ static void wmi_dev_remove(struct device *dev)
 
-@@ -163,39 +234,42 @@ static int dell_smbios_wmi_probe(struct wmi_device *=
-wdev, const void *context)
- 	if (!priv)
- 		return -ENOMEM;
+ 	clear_bit(WMI_PROBED, &wblock->flags);
 
-+	priv->wdev =3D wdev;
-+	dev_set_drvdata(&wdev->dev, priv);
-+
- 	/* WMI buffer size will be either 4k or 32k depending on machine */
--	if (!dell_wmi_get_size(&priv->req_buf_size))
-+	if (!dell_wmi_get_size(&buffer_size))
- 		return -EPROBE_DEFER;
-
-+	priv->req_buf_size =3D buffer_size;
-+
- 	/* some SMBIOS calls fail unless BIOS contains hotfix */
- 	if (!dell_wmi_get_hotfix(&hotfix))
- 		return -EPROBE_DEFER;
--	if (!hotfix) {
-+
-+	if (!hotfix)
- 		dev_warn(&wdev->dev,
- 			"WMI SMBIOS userspace interface not supported(%u), try upgrading to a =
-newer BIOS\n",
- 			hotfix);
--		wdriver->filter_callback =3D NULL;
+-	if (wdriver->filter_callback) {
+-		misc_deregister(&wblock->char_dev);
+-		kfree(wblock->char_dev.name);
+-		kfree(wblock->handler_data);
 -	}
+-
+ 	if (wdriver->remove)
+ 		wdriver->remove(dev_to_wdev(dev));
 
- 	/* add in the length object we will use internally with ioctl */
- 	priv->req_buf_size +=3D sizeof(u64);
--	ret =3D set_required_buffer_size(wdev, priv->req_buf_size);
--	if (ret)
--		return ret;
+@@ -1131,7 +962,6 @@ static int wmi_create_device(struct device *wmi_bus_d=
+ev,
 
- 	count =3D get_order(priv->req_buf_size);
- 	priv->buf =3D (void *)devm_get_free_pages(&wdev->dev, GFP_KERNEL, count)=
-;
- 	if (!priv->buf)
- 		return -ENOMEM;
+ 	if (wblock->gblock.flags & ACPI_WMI_METHOD) {
+ 		wblock->dev.dev.type =3D &wmi_type_method;
+-		mutex_init(&wblock->char_mutex);
+ 		goto out_init;
+ 	}
 
-+	ret =3D dell_smbios_wmi_register_chardev(priv);
-+	if (ret)
-+		return ret;
-+
- 	/* ID is used by dell-smbios to set priority of drivers */
- 	wdev->dev.id =3D 1;
- 	ret =3D dell_smbios_register_device(&wdev->dev, &dell_smbios_wmi_call);
- 	if (ret)
- 		return ret;
+diff --git a/include/linux/wmi.h b/include/linux/wmi.h
+index 8a643c39fcce..50f7f1e4fd4f 100644
+=2D-- a/include/linux/wmi.h
++++ b/include/linux/wmi.h
+@@ -11,7 +11,6 @@
+ #include <linux/device.h>
+ #include <linux/acpi.h>
+ #include <linux/mod_devicetable.h>
+-#include <uapi/linux/wmi.h>
 
--	priv->wdev =3D wdev;
--	dev_set_drvdata(&wdev->dev, priv);
- 	mutex_lock(&list_mutex);
- 	list_add_tail(&priv->list, &wmi_list);
- 	mutex_unlock(&list_mutex);
-@@ -250,7 +324,6 @@ static struct wmi_driver dell_smbios_wmi_driver =3D {
- 	.probe =3D dell_smbios_wmi_probe,
- 	.remove =3D dell_smbios_wmi_remove,
- 	.id_table =3D dell_smbios_wmi_id_table,
--	.filter_callback =3D dell_smbios_wmi_filter,
+ /**
+  * struct wmi_device - WMI device structure
+@@ -47,8 +46,6 @@ acpi_status wmidev_block_set(struct wmi_device *wdev, u8=
+ instance, const struct
+
+ u8 wmidev_instance_count(struct wmi_device *wdev);
+
+-extern int set_required_buffer_size(struct wmi_device *wdev, u64 length);
+-
+ /**
+  * struct wmi_driver - WMI driver structure
+  * @driver: Driver model structure
+@@ -57,11 +54,8 @@ extern int set_required_buffer_size(struct wmi_device *=
+wdev, u64 length);
+  * @probe: Callback for device binding
+  * @remove: Callback for device unbinding
+  * @notify: Callback for receiving WMI events
+- * @filter_callback: Callback for filtering device IOCTLs
+  *
+  * This represents WMI drivers which handle WMI devices.
+- * @filter_callback is only necessary for drivers which
+- * want to set up a WMI IOCTL interface.
+  */
+ struct wmi_driver {
+ 	struct device_driver driver;
+@@ -71,8 +65,6 @@ struct wmi_driver {
+ 	int (*probe)(struct wmi_device *wdev, const void *context);
+ 	void (*remove)(struct wmi_device *wdev);
+ 	void (*notify)(struct wmi_device *device, union acpi_object *data);
+-	long (*filter_callback)(struct wmi_device *wdev, unsigned int cmd,
+-				struct wmi_ioctl_buffer *arg);
  };
 
- int init_dell_smbios_wmi(void)
+ extern int __must_check __wmi_driver_register(struct wmi_driver *driver,
 =2D-
 2.39.2
 
