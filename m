@@ -2,189 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F37F80BB24
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 14:44:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BAB80BB47
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 14:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231778AbjLJNkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 08:40:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34482 "EHLO
+        id S232396AbjLJNse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 08:48:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232347AbjLJNkE (ORCPT
+        with ESMTP id S229584AbjLJNsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 08:40:04 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F734DF;
-        Sun, 10 Dec 2023 05:40:08 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50bfd3a5b54so4041048e87.3;
-        Sun, 10 Dec 2023 05:40:08 -0800 (PST)
+        Sun, 10 Dec 2023 08:48:33 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 607B3E3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 05:48:39 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40c29f7b068so34450105e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 05:48:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702215606; x=1702820406; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uqJWa0R4WviXMXZaOcIckjKhjVqbAnCbIK00QJSP7SU=;
-        b=jUIJ/qs2MV6q6c83eJOxNMrJ3brd4BvS7TUCiSj06O72WGymIRMddy+cI/d0CdVnIF
-         NeGu5fVxrf/nQRrV0D/EJNXYwf94P5WEAwa26ap6HyQZyGEhDuXzCUqy9UjuicBv97Aj
-         HxQAE95hBfxjxZqXQIm0BbrZL/zKEG2fkK3i6RHMRuYh9pOV9sv7yXnyB3coQ9OTqFhl
-         8lKvjD5z+DB51TnF1Xe0IFyXS6vrtfkQsBQjbbGutWl7Zjg0sYjs6H5midJlRcoIq5gJ
-         GrpcJCui55RQKKdY6EuCokLiVlRCkvXu1znxNqJ39aHWYRqF3JIZ3zDl7mtL8gFQaAIn
-         a2dQ==
+        d=linaro.org; s=google; t=1702216118; x=1702820918; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3064XmdITzZhPjLLGnjAD2LPSNczuONCpTaBgiThtlU=;
+        b=ozW74SMYErSiAOdKNaS4fRVIHiDxvu0elJCcVpN/PSKbrJ0/mGB1DbvBEDqDfaWehb
+         W5rOUn/efJVgl4JRyGfBLpo1ASXbzCWBCn1sdcNUwam9Iej8Isuk4MRsQFcs/tZD6WPh
+         3JRolH1A2Gc4J5mibJalaSoDSuBFFeyz8ZjthpAC+ZgMRE7UdHcOeSrEJwS3tpqbye6V
+         riDklu+X/wKjt/5plIy1hd/azrCrXFFNsYXrx4lr1/ISgoOUyi4gSQ7v5ztLPtOlHY4O
+         BrpLhEwK6k5HGOveBGxjYLXwL+z/lAUCkXeijO2LutulD3QlH3BqJjf9ZLkP3M69xXd0
+         gtXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702215606; x=1702820406;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uqJWa0R4WviXMXZaOcIckjKhjVqbAnCbIK00QJSP7SU=;
-        b=QR0NlVVhh0x43wxrawIaRySguDn4GIVQHqCYV/+m6kEs8GpSne3Hepp4RSSKYongFK
-         X8fQufH4wCVJo6yBaBYllg6Ci4+6OoRtx/W0NumvMMeJuU16Vtlr809XGf3BIZY5qzkQ
-         LF6M6599mxCp7ZS6GGjD2ZR2YXUwh8VYpbSQaO/qJdmHhJIOFKf1Hu9az1geTl8Vw+eq
-         MWfIFFZZaiFiCYA9H8kwYi+Ox62RJ5PmYl6TDvsGKyKmgsbYA03E8OV+fYcmZHE/lYNX
-         EypVHq+djvL8Mc1eMPsbT/ve9wB1j92s84RxOUXGM88tbTRiAXwSHGckm+4nMvsfIwYA
-         7TcA==
-X-Gm-Message-State: AOJu0YzDPD/A218QeUIOD9+jCFD9MIDCpEuEpzPL6io44NzJd59/nM4v
-        x2NGUlm4D2CdXmbmvSDqThlVVVWP8HU=
-X-Google-Smtp-Source: AGHT+IHsRQ8HYlH7jPEcQG32Ivqj+aYwpjDpJw+O9BBN+u0MLI4twWP/36cq6r+6V+WuHFW81KncRg==
-X-Received: by 2002:ac2:5201:0:b0:50b:f9b2:cf2 with SMTP id a1-20020ac25201000000b0050bf9b20cf2mr1151770lfl.40.1702215606127;
-        Sun, 10 Dec 2023 05:40:06 -0800 (PST)
-Received: from gmail.com (83-233-6-197.cust.bredband2.com. [83.233.6.197])
-        by smtp.gmail.com with ESMTPSA id k4-20020a05651210c400b0050bef21a012sm807699lfg.191.2023.12.10.05.40.05
+        d=1e100.net; s=20230601; t=1702216118; x=1702820918;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3064XmdITzZhPjLLGnjAD2LPSNczuONCpTaBgiThtlU=;
+        b=oL1KxEe2X6NMOKF4V929kX1n4r+SUoIr2XiBbXO4M+7NqUJVFzyZHOORFKjvgBWKtN
+         c2GhvH2g1yspnWpTNKdTGsQv3WYJYi14J9Ht7Mv0ysRvTpRTsvNd29EGvWYSsnmcyFoX
+         wo458qai0tmLYVz2ZdxBW76+/YlsSSS1h7MMXQIhoQxXKbBf16fyTLrJePezBHCcbS7p
+         Lu8nE8q2prXkYrSwYNuWm6cRhf7ISth9sAhnsiU+tOVWJ7K2ksBesR0jNys/fmeO8Jc4
+         wqwB4Bzs0YJ/lqCDvrozkuNOZkapdRM8Bu3N5636ztMDMO5nD7tzW56TSAy0j84EXIZ1
+         7uxg==
+X-Gm-Message-State: AOJu0YyObcr0XlIEbLfAz372EE5d9LUt2Ip7BaxwR9Itlcmf1AX7cN/0
+        VuuRmE92Ietm4F4Uk7pp78+MQA==
+X-Google-Smtp-Source: AGHT+IEYQWyFLps+8a1ktVUX5+xvwEHwYnJq6SULwm1krEw6dm0X1VeyTvwbJRq3QCqZsYXhNWCVrg==
+X-Received: by 2002:a05:600c:3107:b0:40c:2dd8:3a38 with SMTP id g7-20020a05600c310700b0040c2dd83a38mr1452502wmo.80.1702216117646;
+        Sun, 10 Dec 2023 05:48:37 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id be9-20020a05600c1e8900b0040596352951sm12062097wmb.5.2023.12.10.05.48.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 05:40:05 -0800 (PST)
-Date:   Sun, 10 Dec 2023 14:44:40 +0100
-From:   Marcus Folkesson <marcus.folkesson@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Kent Gustavsson <kent@minoris.se>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] iio: adc: mcp3911: simplify code with guard macro
-Message-ID: <ZXXAyEkA55MFw5iH@gmail.com>
-References: <20231206-mcp3911-guard-v4-1-30c3c5d4340f@gmail.com>
- <20231210113632.7880e730@jic23-huawei>
+        Sun, 10 Dec 2023 05:48:37 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] dt-bindings: samsung: exynos-sysreg: combine exynosautov920 with other enum
+Date:   Sun, 10 Dec 2023 14:48:34 +0100
+Message-Id: <20231210134834.43943-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ivf6EFFOCMSRLL93"
-Content-Disposition: inline
-In-Reply-To: <20231210113632.7880e730@jic23-huawei>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+No need to create a new enum every time we bring-up new SoC.
 
---ivf6EFFOCMSRLL93
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ .../bindings/soc/samsung/samsung,exynos-sysreg.yaml        | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-On Sun, Dec 10, 2023 at 11:36:32AM +0000, Jonathan Cameron wrote:
-> On Wed, 06 Dec 2023 19:39:04 +0100
-> Marcus Folkesson <marcus.folkesson@gmail.com> wrote:
->=20
-> > Use the guard(mutex) macro for handle mutex lock/unlocks.
-> >=20
-> > Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
-> Various changes inline - most are focused around simplifying the
-> path for any given flow through the code.
->=20
-> Rather than going for a v5 - I've applied this with the following diff on=
- top
-> diff --git a/drivers/iio/adc/mcp3911.c b/drivers/iio/adc/mcp3911.c
-> index dfcb6cb7570f..7a32e7a1be9d 100644
-> --- a/drivers/iio/adc/mcp3911.c
-> +++ b/drivers/iio/adc/mcp3911.c
-> @@ -317,7 +317,7 @@ static int mcp3911_read_raw(struct iio_dev *indio_dev,
->                             int *val2, long mask)
->  {
->         struct mcp3911 *adc =3D iio_priv(indio_dev);
-> -       int ret =3D -EINVAL;
-> +       int ret;
-> =20
->         guard(mutex)(&adc->lock);
->         switch (mask) {
-> @@ -331,17 +331,23 @@ static int mcp3911_read_raw(struct iio_dev *indio_d=
-ev,
->                 return IIO_VAL_INT;
->         case IIO_CHAN_INFO_OFFSET:
->                 ret =3D adc->chip->get_offset(adc, channel->channel, val);
-> -               return (ret) ? ret : IIO_VAL_INT;
-> +               if (ret)
-> +                       return ret;
-> +
-> +               return IIO_VAL_INT;
->         case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
->                 ret =3D adc->chip->get_osr(adc, val);
-> -               return (ret) ? ret : IIO_VAL_INT;
-> +               if (ret)
-> +                       return ret;
-> +
-> +               return IIO_VAL_INT;
->         case IIO_CHAN_INFO_SCALE:
->                 *val =3D mcp3911_scale_table[ilog2(adc->gain[channel->cha=
-nnel])][0];
->                 *val2 =3D mcp3911_scale_table[ilog2(adc->gain[channel->ch=
-annel])][1];
->                 return IIO_VAL_INT_PLUS_NANO;
-> +       default:
-> +               return -EINVAL;
->         }
-> -
-> -       return ret;
->  }
-> =20
->  static int mcp3911_write_raw(struct iio_dev *indio_dev,
-> @@ -361,7 +367,7 @@ static int mcp3911_write_raw(struct iio_dev *indio_de=
-v,
->                                 return adc->chip->set_scale(adc, channel-=
->channel, i);
->                         }
->                 }
-> -               break;
-> +               return -EINVAL;
->         case IIO_CHAN_INFO_OFFSET:
->                 if (val2 !=3D 0)
->                         return -EINVAL;
-> @@ -373,9 +379,10 @@ static int mcp3911_write_raw(struct iio_dev *indio_d=
-ev,
->                                 return adc->chip->set_osr(adc, i);
->                         }
->                 }
-> -               break;
-> +               return -EINVAL;
-> +       default:
-> +               return -EINVAL;
->         }
-> -       return -EINVAL;
->  }
->=20
-> hope that's ok with you!
+diff --git a/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml b/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml
+index 2de4301a467d..b00f25482fec 100644
+--- a/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml
++++ b/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml
+@@ -17,6 +17,8 @@ properties:
+               - samsung,exynos3-sysreg
+               - samsung,exynos4-sysreg
+               - samsung,exynos5-sysreg
++              - samsung,exynosautov920-peric0-sysreg
++              - samsung,exynosautov920-peric1-sysreg
+               - tesla,fsd-cam-sysreg
+               - tesla,fsd-fsys0-sysreg
+               - tesla,fsd-fsys1-sysreg
+@@ -50,11 +52,6 @@ properties:
+               - samsung,exynosautov9-peric1-sysreg
+           - const: samsung,exynosautov9-sysreg
+           - const: syscon
+-      - items:
+-          - enum:
+-              - samsung,exynosautov920-peric0-sysreg
+-              - samsung,exynosautov920-peric1-sysreg
+-          - const: syscon
+ 
+   reg:
+     maxItems: 1
+-- 
+2.34.1
 
-Thank you Jonathan
-
-Best regards
-Marcus Folkesson
-
---ivf6EFFOCMSRLL93
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEBVGi6LZstU1kwSxliIBOb1ldUjIFAmV1wMMACgkQiIBOb1ld
-UjJJWg//d6A7m1jCTld/R+jAvYfBNLAYcxBNWWyKbzA1wOsQwt9VLpFdxMdB/HfC
-egZxUaQB4MyA9xSBkS9vWqDZUt8+YujOW/cND15evJKokbXUXSEXxOjinU01ZNyL
-3gMIHNoyYMXzI26R8IvZ8T/xAp5B3KzY28DOmYYahnKePdCMlnfia/H0qYYEgy8h
-IUeLZwGHIb+rW6k4TWiUKfDWQxUBUk+TMqKBkQShPBYjlzJf8Xp3OTf2YEtHDZNn
-SaC0rMVrsAuFGCYTkZKWJs+ctkb6tivyR5EeT5+pqNMhUZwh601hK+pGYvcC9791
-qJg7GQqynquiDyaTLk9jv3gSNgu9mvBBuszEb2vCyWX5fSEyRYzeKedqJZMecUFe
-bln0n1gpxJ1E/mX69+5cMt0/nGb1+j8vLzHLeVtCVRTrAFYDn3a5nfdz2ftY27mQ
-85BZ2Fy21YzvRYBam/Mhq3ZLSdCknekcb4OnYKpN9+zgIwLrdE8i4lbjm052R4Pi
-BdTxeqDoCsvL0nv62xBe3+fETijpC++Cc5sWnAo95JPybxk5ntO5iRbCwnM/fBgy
-Xc+9JB/RYrhMWt1wcvSYNzkKZl+jIZH4NSzZU9XBAakqlcvkwI+aicj8EPjdiOH2
-y4Xo1TEcwHxLHW3L5ky29PIkBE+HSogJEpiPXiftiYdLV7uHSSM=
-=fRkE
------END PGP SIGNATURE-----
-
---ivf6EFFOCMSRLL93--
