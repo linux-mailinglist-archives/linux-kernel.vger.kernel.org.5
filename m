@@ -2,59 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C799980BC50
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 18:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDBA80BC52
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 18:19:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbjLJRJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 12:09:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48454 "EHLO
+        id S231898AbjLJRNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 12:13:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjLJRJL (ORCPT
+        with ESMTP id S229503AbjLJRNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 12:09:11 -0500
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [IPv6:2a0c:5a00:149::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE4AF4
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 09:09:15 -0800 (PST)
-Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
-        by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <mhal@rbox.co>)
-        id 1rCNIU-008G0x-Sa; Sun, 10 Dec 2023 18:08:54 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-        s=selector2; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:
-        Cc:To:Subject:From:MIME-Version:Date:Message-ID;
-        bh=wzssA5RDSeBhKXHdo/qPtI/xWxJzHpVHi6/0JT/R5Zw=; b=CF6SwrHmFowUxhyBZmiCB+ceIz
-        rsjhzssV20ditnB3t/7+h/nrB8+nSP1ewtdrwRPEO7tiIh7+g0d1XVmP6pv7BAWBgEGYneYi+zBvs
-        l210KysIyoJM51gH/9BJio5hfAaKzS5l0h2pb6m6MhIp3lA+KCoWfkL0iCxzX5XwXTp/SrKmfO8NE
-        IOG0pvXQZlqDVJVEUud9D6F9EH4sR0dOGPn3T4K3K8H7lDgKWWnPd2YlRY/k5uybUgPVZNtnWj+ik
-        xVmawcwyn3D+Tn4mSOUt047MJ74BWCn7G3/m9xXcvnBOJrE6dDHHIyQ+Qm0v9aBPiFR+pWAmXeITf
-        jDMgIk4g==;
-Received: from [10.9.9.73] (helo=submission02.runbox)
-        by mailtransmit02.runbox with esmtp (Exim 4.86_2)
-        (envelope-from <mhal@rbox.co>)
-        id 1rCNIT-0006TW-Ma; Sun, 10 Dec 2023 18:08:53 +0100
-Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.93)
-        id 1rCNIM-00BOjU-3d; Sun, 10 Dec 2023 18:08:46 +0100
-Message-ID: <c2da6e0b-aad1-4151-a8d3-07afb149b1c5@rbox.co>
-Date:   Sun, 10 Dec 2023 18:08:43 +0100
+        Sun, 10 Dec 2023 12:13:16 -0500
+Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1E4FC
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 09:13:18 -0800 (PST)
+Received: from pop-os.home ([92.140.202.140])
+        by smtp.orange.fr with ESMTPA
+        id CNMfrZCRcvumxCNMgrCEpi; Sun, 10 Dec 2023 18:13:16 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1702228396;
+        bh=rcjCWYjJHAMlpZ0Yk1Euqbw2V9DTH6RMOjoIxBb+Yi8=;
+        h=From:To:Cc:Subject:Date;
+        b=Ym/78PpfeJGeur44+gRGBXxG75EXyjCRCalSoudtmzKt2SWfHwM46nXPBjSRpL9q3
+         5pM+69VDDlCUVxdQouaYxN6MYzZyCBHUAGUSx9PXL6QAQnPLJFFlvao3J6fdGDL6un
+         O19DKLiL8cMyalwsKr2A6aZjw8SX8oX2U9SD6vHlf9ptAZnQaUKaFexSyYUzmFdvy5
+         y4Ed0DpGtftzHZCdLea3o+hfr9FLd27GWpTpd0y/n9zF0+MF48N33+oWHfxskexQTo
+         tD+2YIf1nccFQmhAaNdZR4+3dHQiGtj6VDM63g3oFsgBY0kaFdauq8m+yEvtsOOat1
+         QYjSPNk/gEMSw==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 10 Dec 2023 18:13:16 +0100
+X-ME-IP: 92.140.202.140
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Vishal Verma <vishal.l.verma@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        nvdimm@lists.linux.dev
+Subject: [PATCH] nvdimm: Remove usage of the deprecated ida_simple_xx() API
+Date:   Sun, 10 Dec 2023 18:13:09 +0100
+Message-Id: <50719568e4108f65f3b989ba05c1563e17afba3f.1702228319.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Michal Luczaj <mhal@rbox.co>
-Subject: Re: [PATCH 0/2] x86: UMIP emulation leaking kernel addresses
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        dave.hansen@linux.intel.com, shuah@kernel.org, luto@kernel.org,
-        torvalds@linuxfoundation.org, linux-kernel@vger.kernel.org
-References: <20231206004654.2986026-1-mhal@rbox.co>
- <20231209155308.GAZXSNZB9PPlcHBI4W@fat_crate.local>
-Content-Language: pl-PL, en-GB
-In-Reply-To: <20231209155308.GAZXSNZB9PPlcHBI4W@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,126 +56,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/23 16:53, Borislav Petkov wrote:
-> On Wed, Dec 06, 2023 at 01:43:43AM +0100, Michal Luczaj wrote:
->> Introducing a DPL check in insn_get_seg_base(), or even in get_desc(),
->> seems enough to prevent the decoder from disclosing data.
->>
->> diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
->> index 558a605929db..4c1eea736519 100644
->> --- a/arch/x86/lib/insn-eval.c
->> +++ b/arch/x86/lib/insn-eval.c
->> @@ -725,6 +725,18 @@ unsigned long insn_get_seg_base(struct pt_regs *regs, int seg_reg_idx)
->>  	if (!get_desc(&desc, sel))
->>  		return -1L;
->>  
->> +	/*
->> +	 * Some segment selectors coming from @regs do not necessarily reflect
->> +	 * the state of CPU; see get_segment_selector(). Their values might
->> +	 * have been altered by ptrace. Thus, the instruction decoder can be
->> +	 * tricked into "dereferencing" a segment descriptor that would
->> +	 * otherwise cause a CPU exception -- for example due to mismatched
->> +	 * privilege levels. This opens up the possibility to expose kernel
->> +	 * space base address of DPL=0 segments.
->> +	 */
->> +	if (desc.dpl < (regs->cs & SEGMENT_RPL_MASK))
->> +		return -1L;
->> +
->>  	return get_desc_base(&desc);
->>  }
->>  
->> That said, I guess instead of trying to harden the decoder,
-> 
-> Well, here's what my CPU manual says:
-> 
-> "4.10.1 Accessing Data Segments
-> 
-> ...
-> 
-> The processor compares the effective privilege level with the DPL in the
-> descriptor-table entry referenced by the segment selector. If the
-> effective privilege level is greater than or equal to (numerically
-> lower-than or equal-to) the DPL, then the processor loads the segment
-> register with the data-segment selector. 
-> 
-> If the effective privilege level is lower than (numerically
-> greater-than) the DPL, a general-protection exception (#GP) occurs and
-> the segment register is not loaded.
-> 
-> ...
-> 
-> 4.10.2 Accessing Stack Segments
-> 
-> The processor compares the CPL with the DPL in the descriptor-table
-> entry referenced by the segment selector. The two values must be equal.
-> If they are not equal, a #GP occurs and the SS register is not loaded."
->
-> So *actually* doing those checks in the insn decoder is the proper thing
-> to do, IMNSVHO.
+ida_alloc() and ida_free() should be preferred to the deprecated
+ida_simple_get() and ida_simple_remove().
 
-Are you suggesting checking only CPL vs. DPL or making sure the insn
-decoder faithfully emulates all the other stuff CPU does? Like the desc.s
-issue described below.
+This is less verbose.
 
->> Now, I'm far from being competent, but here's an idea I've tried: tell
->> the #GP handler that UMIP-related exceptions come only as #GP(0):
->>
->>  	if (static_cpu_has(X86_FEATURE_UMIP)) {
->> -		if (user_mode(regs) && fixup_umip_exception(regs))
->> +		if (user_mode(regs) && !error_code && fixup_umip_exception(regs))
->>  			goto exit;
->>  	}
-> 
-> And yap, as you've realized, that alone doesn't fix the leaking.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/nvdimm/btt_devs.c       | 6 +++---
+ drivers/nvdimm/bus.c            | 4 ++--
+ drivers/nvdimm/dax_devs.c       | 4 ++--
+ drivers/nvdimm/dimm_devs.c      | 4 ++--
+ drivers/nvdimm/namespace_devs.c | 7 +++----
+ drivers/nvdimm/pfn_devs.c       | 4 ++--
+ 6 files changed, 14 insertions(+), 15 deletions(-)
 
-With this fix applied, I can't see any way to sufficiently confuse the
-UMIP emulation with a non-ESPFIX bad IRET. It appears that #GP(selector)
-takes precedence over #GP(0), so tripping IRET with any malformed selector
-always ends up with #GP handler's error_code != 0, even if conditions were
-met for #GP(0) just as well. Is there something I'm missing?
+diff --git a/drivers/nvdimm/btt_devs.c b/drivers/nvdimm/btt_devs.c
+index fabbb31f2c35..497fd434a6a1 100644
+--- a/drivers/nvdimm/btt_devs.c
++++ b/drivers/nvdimm/btt_devs.c
+@@ -19,7 +19,7 @@ static void nd_btt_release(struct device *dev)
+ 
+ 	dev_dbg(dev, "trace\n");
+ 	nd_detach_ndns(&nd_btt->dev, &nd_btt->ndns);
+-	ida_simple_remove(&nd_region->btt_ida, nd_btt->id);
++	ida_free(&nd_region->btt_ida, nd_btt->id);
+ 	kfree(nd_btt->uuid);
+ 	kfree(nd_btt);
+ }
+@@ -191,7 +191,7 @@ static struct device *__nd_btt_create(struct nd_region *nd_region,
+ 	if (!nd_btt)
+ 		return NULL;
+ 
+-	nd_btt->id = ida_simple_get(&nd_region->btt_ida, 0, 0, GFP_KERNEL);
++	nd_btt->id = ida_alloc(&nd_region->btt_ida, GFP_KERNEL);
+ 	if (nd_btt->id < 0)
+ 		goto out_nd_btt;
+ 
+@@ -217,7 +217,7 @@ static struct device *__nd_btt_create(struct nd_region *nd_region,
+ 	return dev;
+ 
+ out_put_id:
+-	ida_simple_remove(&nd_region->btt_ida, nd_btt->id);
++	ida_free(&nd_region->btt_ida, nd_btt->id);
+ 
+ out_nd_btt:
+ 	kfree(nd_btt);
+diff --git a/drivers/nvdimm/bus.c b/drivers/nvdimm/bus.c
+index 5852fe290523..ef3d0f83318b 100644
+--- a/drivers/nvdimm/bus.c
++++ b/drivers/nvdimm/bus.c
+@@ -285,7 +285,7 @@ static void nvdimm_bus_release(struct device *dev)
+ 	struct nvdimm_bus *nvdimm_bus;
+ 
+ 	nvdimm_bus = container_of(dev, struct nvdimm_bus, dev);
+-	ida_simple_remove(&nd_ida, nvdimm_bus->id);
++	ida_free(&nd_ida, nvdimm_bus->id);
+ 	kfree(nvdimm_bus);
+ }
+ 
+@@ -342,7 +342,7 @@ struct nvdimm_bus *nvdimm_bus_register(struct device *parent,
+ 	INIT_LIST_HEAD(&nvdimm_bus->list);
+ 	INIT_LIST_HEAD(&nvdimm_bus->mapping_list);
+ 	init_waitqueue_head(&nvdimm_bus->wait);
+-	nvdimm_bus->id = ida_simple_get(&nd_ida, 0, 0, GFP_KERNEL);
++	nvdimm_bus->id = ida_alloc(&nd_ida, GFP_KERNEL);
+ 	if (nvdimm_bus->id < 0) {
+ 		kfree(nvdimm_bus);
+ 		return NULL;
+diff --git a/drivers/nvdimm/dax_devs.c b/drivers/nvdimm/dax_devs.c
+index 3bd61f245788..6b4922de3047 100644
+--- a/drivers/nvdimm/dax_devs.c
++++ b/drivers/nvdimm/dax_devs.c
+@@ -18,7 +18,7 @@ static void nd_dax_release(struct device *dev)
+ 
+ 	dev_dbg(dev, "trace\n");
+ 	nd_detach_ndns(dev, &nd_pfn->ndns);
+-	ida_simple_remove(&nd_region->dax_ida, nd_pfn->id);
++	ida_free(&nd_region->dax_ida, nd_pfn->id);
+ 	kfree(nd_pfn->uuid);
+ 	kfree(nd_dax);
+ }
+@@ -55,7 +55,7 @@ static struct nd_dax *nd_dax_alloc(struct nd_region *nd_region)
+ 		return NULL;
+ 
+ 	nd_pfn = &nd_dax->nd_pfn;
+-	nd_pfn->id = ida_simple_get(&nd_region->dax_ida, 0, 0, GFP_KERNEL);
++	nd_pfn->id = ida_alloc(&nd_region->dax_ida, GFP_KERNEL);
+ 	if (nd_pfn->id < 0) {
+ 		kfree(nd_dax);
+ 		return NULL;
+diff --git a/drivers/nvdimm/dimm_devs.c b/drivers/nvdimm/dimm_devs.c
+index 1273873582be..3ceddae0509f 100644
+--- a/drivers/nvdimm/dimm_devs.c
++++ b/drivers/nvdimm/dimm_devs.c
+@@ -194,7 +194,7 @@ static void nvdimm_release(struct device *dev)
+ {
+ 	struct nvdimm *nvdimm = to_nvdimm(dev);
+ 
+-	ida_simple_remove(&dimm_ida, nvdimm->id);
++	ida_free(&dimm_ida, nvdimm->id);
+ 	kfree(nvdimm);
+ }
+ 
+@@ -592,7 +592,7 @@ struct nvdimm *__nvdimm_create(struct nvdimm_bus *nvdimm_bus,
+ 	if (!nvdimm)
+ 		return NULL;
+ 
+-	nvdimm->id = ida_simple_get(&dimm_ida, 0, 0, GFP_KERNEL);
++	nvdimm->id = ida_alloc(&dimm_ida, GFP_KERNEL);
+ 	if (nvdimm->id < 0) {
+ 		kfree(nvdimm);
+ 		return NULL;
+diff --git a/drivers/nvdimm/namespace_devs.c b/drivers/nvdimm/namespace_devs.c
+index 07177eadc56e..fa1202e848d9 100644
+--- a/drivers/nvdimm/namespace_devs.c
++++ b/drivers/nvdimm/namespace_devs.c
+@@ -27,7 +27,7 @@ static void namespace_pmem_release(struct device *dev)
+ 	struct nd_region *nd_region = to_nd_region(dev->parent);
+ 
+ 	if (nspm->id >= 0)
+-		ida_simple_remove(&nd_region->ns_ida, nspm->id);
++		ida_free(&nd_region->ns_ida, nspm->id);
+ 	kfree(nspm->alt_name);
+ 	kfree(nspm->uuid);
+ 	kfree(nspm);
+@@ -1810,7 +1810,7 @@ static struct device *nd_namespace_pmem_create(struct nd_region *nd_region)
+ 	res->name = dev_name(&nd_region->dev);
+ 	res->flags = IORESOURCE_MEM;
+ 
+-	nspm->id = ida_simple_get(&nd_region->ns_ida, 0, 0, GFP_KERNEL);
++	nspm->id = ida_alloc(&nd_region->ns_ida, GFP_KERNEL);
+ 	if (nspm->id < 0) {
+ 		kfree(nspm);
+ 		return NULL;
+@@ -2188,8 +2188,7 @@ int nd_region_register_namespaces(struct nd_region *nd_region, int *err)
+ 			struct nd_namespace_pmem *nspm;
+ 
+ 			nspm = to_nd_namespace_pmem(dev);
+-			id = ida_simple_get(&nd_region->ns_ida, 0, 0,
+-					    GFP_KERNEL);
++			id = ida_alloc(&nd_region->ns_ida, GFP_KERNEL);
+ 			nspm->id = id;
+ 		} else
+ 			id = i;
+diff --git a/drivers/nvdimm/pfn_devs.c b/drivers/nvdimm/pfn_devs.c
+index 0d08e21a1cea..586348125b61 100644
+--- a/drivers/nvdimm/pfn_devs.c
++++ b/drivers/nvdimm/pfn_devs.c
+@@ -22,7 +22,7 @@ static void nd_pfn_release(struct device *dev)
+ 
+ 	dev_dbg(dev, "trace\n");
+ 	nd_detach_ndns(&nd_pfn->dev, &nd_pfn->ndns);
+-	ida_simple_remove(&nd_region->pfn_ida, nd_pfn->id);
++	ida_free(&nd_region->pfn_ida, nd_pfn->id);
+ 	kfree(nd_pfn->uuid);
+ 	kfree(nd_pfn);
+ }
+@@ -326,7 +326,7 @@ static struct nd_pfn *nd_pfn_alloc(struct nd_region *nd_region)
+ 	if (!nd_pfn)
+ 		return NULL;
+ 
+-	nd_pfn->id = ida_simple_get(&nd_region->pfn_ida, 0, 0, GFP_KERNEL);
++	nd_pfn->id = ida_alloc(&nd_region->pfn_ida, GFP_KERNEL);
+ 	if (nd_pfn->id < 0) {
+ 		kfree(nd_pfn);
+ 		return NULL;
+-- 
+2.34.1
 
-That said, there's still the case of #DF handler feeding #GP handler after
-a fault in ESPFIX. Consider
-
-	cs = (GDT_ENTRY_TSS << 3) | USER_RPL
-	ss = (SOME_LDT_ENTRY << 3) | SEGMENT_LDT | USER_RPL
-	ip = "sgdt %cs:(%reg)"
-
-Attempting IRET with such illegal CS raises #GP(selector), but (because of
-ESPFIX) this #GP is promoted to #DF where it becomes #GP(0). And UMIP
-emulation is triggered.
-
-UMIP emulator starts by fetching code from user. insn decoder does
-`copy_from_user(buf, (void __user *)ip, MAX_INSN_SIZE)` where `ip` is
-CS.base+IP and CS.base here is actually a (part of) GDT_ENTRY_TSS.base, a
-kernel address. With IP under user's control, no fault while copying.
-
-Next, insn_get_code_seg_params() concludes that, given TSS as a code
-segment, address and operand size are both 16-bit. Prefix SGDT with size
-overrides, and we're back to 32-bit. Then insn_get_addr_ref() and
-copy_to_user() does the leaking.
-
-I don't know if/how to deal with ESPFIX losing #GP's error code. As for
-telling insn decoder that system segments aren't code:
-
---- a/arch/x86/lib/insn-eval.c
-+++ b/arch/x86/lib/insn-eval.c
-@@ -809,6 +809,10 @@ int insn_get_code_seg_params(struct pt_regs *regs)
-        if (!get_desc(&desc, sel))
-                return -EINVAL;
-
-+       /* System segments are not code. */
-+       if (!desc.s)
-+               return -EINVAL;
-+
-        /*
-         * The most significant byte of the Type field of the segment descriptor
-         * determines whether a segment contains data or code. If this is a data
-
-Is this something in the right direction?
-
-(Note, get_segment_selector() is broken for selectors with the high bit
-set. I'll send patch later.)
-
-thanks,
-Michal
